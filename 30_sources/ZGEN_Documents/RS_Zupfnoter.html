@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="german" xml:lang="german">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Bernhard Weichel (www.weichel21.de)" />
+  <title>ZupfNoter Requirements</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">ZupfNoter Requirements</h1>
+<h2 class="author">Bernhard Weichel (www.weichel21.de)</h2>
+<h3 class="date">18.5.2014</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#objectives"><span class="toc-section-number">2</span> Objectives</a></li>
+<li><a href="#requirements"><span class="toc-section-number">3</span> Requirements</a><ul>
+<li><a href="#system-requirements"><span class="toc-section-number">3.1</span> System Requirements</a></li>
+<li><a href="#input"><span class="toc-section-number">3.2</span> Input</a><ul>
+<li><a href="#interactive-editor"><span class="toc-section-number">3.2.1</span> interactive editor</a></li>
+</ul></li>
+<li><a href="#output"><span class="toc-section-number">3.3</span> Output</a></li>
+<li><a href="#support-of-table-harp-notation"><span class="toc-section-number">3.4</span> Support of Table Harp notation</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="introduction"><a href="#introduction"><span class="header-section-number">1</span> Introduction</a></h1>
+<p>Zupfnoter is an attempt to implemente a tool to create music sheets for &#8220;Table Harp&#8221; (http://Table Harp-harfen.de) respectively &#8220;Zauberharfe&#8221; (http://www.musik-im-spiel.de).</p>
+<p>Basic approach in for these instruments is, that the music sheet is placed on the instrument such that the particular note and the string are visually connected.</p>
+<p>The following piece</p>
+<p><embed src="../RS_Requirements/example_notation.pdf"></embed>&#160;</p>
+<p>This document describes the initial requirements for &#8220;Zupfpnoter&#8221;; Basic approach is</p>
+<ul>
+<li>use as commandline tool</li>
+<li>apply &#8220;abc-Notation and convert it to Table Harp Noten&#8221;</li>
+</ul>
+<p>Details on abc see</p>
+<ul>
+<li><a href="http://normanschmidt.net/abc/index.php">http://normanschmidt.net/abc/index.php</a></li>
+<li>abcnotation.com</li>
+</ul>
+<p>Interesting details how to apply Table Harp see <a href="http://homepage.bnv-bamberg.de/flg-blw-partnerschaft/musik-facharbeit-eva-klein.pdf">http://homepage.bnv-bamberg.de/flg-blw-partnerschaft/musik-facharbeit-eva-klein.pdf</a></p>
+<h1 id="objectives"><a href="#objectives"><span class="header-section-number">2</span> Objectives</a></h1>
+<p>The following objectives are valid for Zupfnoter</p>
+<ul>
+<li><p><a id="RS-MG-001">[RS_MG_001]</a> <strong>Easily create Table Harp Music sheets</strong> { Zupfnoter shall be an easy tool to create music sheets for Table Harp. But it shall provide all the possibilites of the Table Harp - Notation. }()</p></li>
+<li><p><a id="RS-MG-002">[RS_MG_002]</a> <strong>Apply for private use</strong> { The primary focus of Zupfnoter is the private use. It is not intended for professional use. }()</p></li>
+<li><p><a id="RS-MG-003">[RS_MG_003]</a> <strong>Open Source</strong> { Zufpnoter shall be free and open source in order to help utilizatio of Table Harp. }()</p></li>
+<li><p><a id="RS-MG-004">[RS_MG_004]</a> <strong>Utilize existing Software and Tunes</strong> { There is a lot of music material which can be found e.g.&#160;in the internet. Such meterial shall be easily be used with Zupfnoter.</p>
+<p>Also there are many Typesetting Tools for music. Zufpnoter shall be utilized with such programs as well. }()</p></li>
+<li><p><a id="RS-MG-005">[RS_MG_005]</a> <strong>Applicable on various platforms</strong> { Shall be applicable on common platforms. }()</p></li>
+</ul>
+<h1 id="requirements"><a href="#requirements"><span class="header-section-number">3</span> Requirements</a></h1>
+<h2 id="system-requirements"><a href="#system-requirements"><span class="header-section-number">3.1</span> System Requirements</a></h2>
+<ul>
+<li><p><a id="RS-SYS-001">[RS_SYS_001]</a> <strong>Shall be portable</strong> { Shall run on OSX, Linux and Windows. It should be implemented in a portable language.</p>
+<p>Example is java, python, ruby or javascript. }(<a href="#RS-MG-002">RS_MG_002</a>, <a href="#RS-MG-003">RS_MG_003</a>, <a href="#RS-MG-004">RS_MG_004</a>, <a href="#RS-MG-005">RS_MG_005</a>)</p></li>
+<li><p><a id="RS-SYS-002">[RS_SYS_002]</a> <strong>Shall be a framework easy to integrate</strong> { Shall be a framework which can even be integrated in music editors</p>
+As an eample see:
+<ul>
+<li>http://code.google.com/p/jspdf/</li>
+</ul>
+<p>}(<a href="#RS-MG-002">RS_MG_002</a>, <a href="#RS-MG-003">RS_MG_003</a>, <a href="#RS-MG-004">RS_MG_004</a>)</p></li>
+<li><p><a id="RS-SYS-003">[RS_SYS_003]</a> <strong>Shall apply popular frameworks</strong> { Example for applicable Frameworks:</p>
+<ul>
+<li><a href="http://bytescout.com/products/developer/pdfgeneratorsdkjs/create_pdf_invoice_javascript.html">BytescoutPDF</a></li>
+<li><a href="http://code.google.com/p/jspdf/">jspdf</a></li>
+<li><a href="http://code.google.com/p/abcjs/">abcjs</a></li>
+<li><a href="http://www.drawthedots.com/">drawthedots</a></li>
+<li><a href="http://prawnpdf.org">prawnpdf</a></li>
+<li><a href="http://midijs.net/">midjs</a></li>
+<li><a href="https://github.com/mudcube/MIDI.js">https://github.com/mudcube/MIDI.js</a></li>
+</ul>
+<p>}(<a href="#RS-MG-004">RS_MG_004</a>)</p></li>
+<li><p><a id="RS-SYS-004">[RS_SYS_004]</a> <strong>Interactive Operation</strong> { Zupfnoter shall be operated as interactive tool. }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-SYS-005">[RS_SYS_005]</a> <strong>Batch Operation</strong> { Zupfnoter shall be operational as batch tool }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+</ul>
+<h2 id="input"><a href="#input"><span class="header-section-number">3.2</span> Input</a></h2>
+<ul>
+<li><p><a id="RS-IN-001">[RS_IN_001]</a> <strong>Shall be able to process various input formatc</strong> { Zupfnoter shall be able to process various input formats. Primarily such as</p>
+<ul>
+<li>abc</li>
+<li>MusicXml</li>
+<li>Lilypond</li>
+</ul>
+<p>This might be implemented by predrive converters. }(<a href="#RS-MG-004">RS_MG_004</a>)</p></li>
+</ul>
+<h3 id="interactive-editor"><a href="#interactive-editor"><span class="header-section-number">3.2.1</span> interactive editor</a></h3>
+<ul>
+<li><p><a id="RS-IN-002">[RS_IN_002]</a> <strong>interactive editor</strong> { Zupfnoter shall be available as interactive editor such that one of the formats in [<a href="#RS-IN-001">RS_IN_001</a>] can be editied. Thereby an audible and visual feedback shall be provided.</p>
+<p>The kind of audible / visual feedback shall be selectable ([<a href="#RS-IN-003">RS_IN_003</a>], [<a href="#RS-IN-005">RS_IN_005</a>], [<a href="#RS-IN-005">RS_IN_005</a>])</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-IN-003">[RS_IN_003]</a> <strong>audible Feedback of curent note</strong> { The current note shall be played after it is entered / changed / selected.</p>
+<p>&#8220;Selected&#8221; means</p>
+<ul>
+<li>that the cursor is moved around in the editor</li>
+<li>A sequence of notes is selected in the editor</li>
+<li>a note is clicked in one of the other visualizations</li>
+</ul>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-IN-004">[RS_IN_004]</a> <strong>Feedback to the entire tune</strong> { The entire tune shall be played upon requrest}(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-IN-005">[RS_IN_005]</a> <strong>Visual Feedback as Music Sheet</strong> { As the tune is entered / changed in the input field, a music sheet shall be displayed and updated. }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-IN-006">[RS_IN_006]</a> <strong>Visual Feedback as Table Harp Notes</strong> { As the tune is entered / changed in the input field, a preview of th Table Harp Notes sheet shall be displayed and updated.</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><a id="RS-IN-007">[RS_IN_007]</a> <strong>Synchronized feedback</strong> { The various representations shall be synchronized:
+<ul>
+<li>highlight the object in note sheet and &#8220;veen notes&#8221; when cursor is moved in input</li>
+<li>highlight the the object in input upon click on a note in note sheet or &#8220;Table Harp notes&#8221; }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</li>
+</ul></li>
+</ul>
+<h2 id="output"><a href="#output"><span class="header-section-number">3.3</span> Output</a></h2>
+<ul>
+<li><p><a id="RS-OUT-001">[RS_OUT_001]</a> <strong>Shall produce PDF output</strong> { Zupfnoter shall produce an out in PDF format }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-OUT-002">[RS_OUT_002]</a> <strong>Shall handle A4 pages</strong> { A Table Harp notes are larger than A4 pages, Zupfnoter shall provide a print which can easily be combined.</p>
+This is in paricular to support the fact that private userd usually do not have A3 printers [<a href="#RS-MG-002">RS_MG_002</a>]
+<ul>
+<li>divide the sheet on a4 pages</li>
+<li>print proper marks where and how to glue the pages</li>
+<li>print some overlap</li>
+<li>print cut marks to indicate where to cut the second page</li>
+<li>avoid cutting in between a note</li>
+</ul>
+<p>Note that smaller songs might fit on an A4 page in landscape. }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-OUT-003">[RS_OUT_003]</a> <strong>Should support A3 printers</strong> { There may be users with an A3 Printer, so it should support printing on a full A3 Page. }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-OUT-004">[RS_OUT_004]</a> <strong>Optimize page layout</strong> { Page layout shall be optimized depending on user request:</p>
+<ul>
+<li>compact, the vertical distance is constant and selectable by the user in grid measueres. One grid measure is the size of the smallest note</li>
+<li>automatically, the vertical distance depends on the amount of notes which need to be rendered such that the entire scheet is filled.}(<a href="#RS-MG-002">RS_MG_002</a>)</li>
+</ul></li>
+</ul>
+<h2 id="support-of-table-harp-notation"><a href="#support-of-table-harp-notation"><span class="header-section-number">3.4</span> Support of Table Harp notation</a></h2>
+<ul>
+<li><p><a id="RS-VN-001">[RS_VN_001]</a><strong>Shall Support the Header annotation</strong>{ Zupfnoter shall be able to denote the Meta-Information about the piece. It is a text block on the top left of the page.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-002">[RS_VN_002]</a><strong>May Support the lyrics</strong>{ Zupfnoter may be able to print the lyrics on the right margin of the page.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-003">[RS_VN_003]</a><strong>Shall Basic Table Harp notation</strong>{ Zupfnoter shall support the basic Table Harp notation:</p>
+<ul>
+<li><p>Repreesentation of note length</p>
+<table>
+<col width="40%"></col>
+<col width="59%"></col>
+<thead>
+<tr class="header">
+<th align="left">note</th>
+<th align="left">representation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><p>full</p></td>
+<td align="left"><p>big empty circle</p></td>
+</tr>
+<tr class="even">
+<td align="left"><p>half</p></td>
+<td align="left"><p>empty circle</p></td>
+</tr>
+<tr class="odd">
+<td align="left"><p>quarter</p></td>
+<td align="left"><p>filled circle</p></td>
+</tr>
+<tr class="even">
+<td align="left"><p>eights</p></td>
+<td align="left"><p>small filled circle</p></td>
+</tr>
+<tr class="odd">
+<td align="left"><p>sixteenth</p></td>
+<td align="left"><p>smaller filled circle or cross</p></td>
+</tr>
+</tbody>
+</table></li>
+<li><p>The notes of one particular tune are connected by a solid line</p></li>
+</ul>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-004">[RS_VN_004]</a><strong>Shall Suport chords</strong>{ Zupfnoter shall support notes which are played simultaneously. This is indicated by dotted lines connecting the particular notes of the chord.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-005">[RS_VN_005]</a><strong>Shall repetitions</strong>{ Zupfnoter shall be able to denote repetitions by drawing a rectangular line backwards.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-006">[RS_VN_006]</a><strong>Shall Support arbitrary annotations</strong>{ Zupfnoter shall be able to denote short annotations embedded in the tunes. These notes shall be placed on the right part of the page vertically aligned to the respective note}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+</ul>
+</body>
+</html>

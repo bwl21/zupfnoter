@@ -1,0 +1,12 @@
+InfoBegin
+InfoKey: Creator
+InfoValue: Prawn
+InfoBegin
+InfoKey: Producer
+InfoValue: Prawn
+NumberOfPages: 1
+PageMediaBegin
+PageMediaNumber: 1
+PageMediaRotation: 0
+PageMediaRect: 0 0 1190.55 841.89
+PageMediaDimensions: 1190.55 841.89

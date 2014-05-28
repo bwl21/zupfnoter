@@ -1,0 +1,567 @@
+\documentclass[twoside,a4paper,12pt,german,]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+    \setmainfont{Calibri}
+    \setsansfont{Calibri}
+\fi
+\usepackage[a4paper]{geometry}
+\usepackage{longtable}
+\usepackage{float} % provides the H option for float placement
+\usepackage{graphicx}
+% We will generate all images so they have a width \maxwidth. This means
+% that they will get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+\else\Gin@nat@width\fi}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+\else\Gin@nat@width\fi}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+%\renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=\maxwidth]{#1}}
+% Determine if the image is too wide for the page.
+%
+{%
+ \catcode`\@=11\relax%
+ \gdef\includegraphics{\@ifnextchar[{\Oldincludegraphics}{\Oldincludegraphics[width=\maxwidth]}}%
+}%
+%
+
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              bookmarksdepth=3, %
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Bernhard Weichel (www.weichel21.de)},
+            pdftitle={ZupfNoter Requirements},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{german}
+\else
+  \usepackage[german]{babel}
+\fi
+
+\title{ZupfNoter Requirements}
+\author{Bernhard Weichel (www.weichel21.de)}
+\date{18.5.2014}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Wortsammler specific settings
+%
+%list environment by reinhard Jahraus
+{\catcode`\@=11\relax%
+\gdef\itemize{%
+  \ifnum \@itemdepth >\thr@@\@toodeep\else
+    \advance\@itemdepth\@ne
+    \edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
+    \expandafter
+    \list
+      \csname\@itemitem\endcsname
+      {\def\makelabel##1{\hss\llap{##1}}%
+       \addtolength{\leftmargin}{-10pt}% 29.37pt
+       \addtolength{\rightmargin}{0.0pt}% 0.0pt
+       \addtolength{\labelsep}{0pt}% 23.50pt
+       \addtolength{\itemsep}{-3.0pt}% 5.0pt
+       \addtolength{\parsep}{-1pt}% 5.0pt
+       \addtolength{\topsep}{-5pt}% 10.0pt
+       \addtolength{\partopsep}{0pt}% 3.0pt
+      }%
+  \fi}
+}%
+
+%
+% improve nesting of lists
+% %http://stackoverflow.com/questions/1935952/maximum-nesting-level-of-lists-in-latex
+%
+\usepackage{enumitem}
+\setlistdepth{9}
+\setlist[itemize,1]{label=$\bullet$}
+\setlist[itemize,2]{label=$\bullet$}
+\setlist[itemize,3]{label=$\bullet$}
+\setlist[itemize,4]{label=$\bullet$}
+\setlist[itemize,5]{label=$\bullet$}
+\setlist[itemize,6]{label=$\bullet$}
+\setlist[itemize,7]{label=$\bullet$}
+\setlist[itemize,8]{label=$\bullet$}
+\setlist[itemize,9]{label=$\bullet$}
+\renewlist{itemize}{itemize}{9}
+%
+% multicol
+%
+\usepackage{multicol}
+\newcommand{\wsbegintwocol}{\begin{multicols}{2}}
+\newcommand{\wsendtwocol}{\end{multicols}}
+
+%
+% embed an image in the text
+%
+% usage: \wsembedimage{file}{r|l}{width}{height}
+\usepackage{wrapfig}
+\usepackage{needspace}
+\newcommand{\wsembedimage}[4]{\needspace{#4}\begin{wrapfigure}{#2}{#3}\centering%
+\vspace{-5mm}\includegraphics{#1}\vspace{-1cm}\end{wrapfigure}}
+%
+% adjust page layout
+%
+\setlength{\oddsidemargin}{-0.5cm}
+\setlength{\evensidemargin}{-0.5cm}
+\setlength{\textwidth}{17cm}
+\setlength{\topmargin}{-2.0cm}
+\setlength{\headheight}{1cm}
+\setlength{\headsep}{1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\footskip}{1cm}
+
+% adjust the toc layout
+\makeatletter
+% \renewcommand*\l@section{\@dottedtocline{2}{1.8em}{4em}}
+ \renewcommand*\l@subsection{\@dottedtocline{2}{1.5em}{4em}}
+ \renewcommand*\l@subsubsection{\@dottedtocline{2}{5.5em}{4em}}
+\makeatother
+
+\usepackage{pdfpages}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\chead{\begin{center}\textbf{ZupfNoter Requirements} \end{center}}
+\lhead{\includegraphics{../ZSUPP_Styles/logo.jpg}}
+\rhead{\leftmark}
+\lfoot{Bernhard Weichel (www.weichel21.de)}
+\rfoot{\today~18.5.2014}
+\renewcommand{\footrulewidth}{0.4pt}
+%
+\renewcommand{\familydefault}{\sfdefault}
+%
+% Marginpars shall always be right
+\makeatletter
+   \def\marginparright{\@mparswitchfalse}
+   \def\marginparoutside{\@mparswitchtrue}
+\makeatother
+\marginparright
+%
+%
+\raggedbottom
+%
+
+
+\usepackage{makeidx}
+\makeindex
+
+%
+%\renewcommand{Befehl der Gliederungsebene z.B. \chapter}{\@startsection{Name z.B. chapter}{Ebene z.B. 0}{Einrückung z.B. 0pt}{Abstand zum vorigen Text z.B. 3.5ex plus 1ex minus 0pt\relax}{Abstand zum nachfolgenden Text z.B. 2.5ex plus 0.5ex minus 0pt\relax}{Schrift z.B. \normalfont\Large\bfseries}}
+%
+% \makeatletter%
+% \renewcommand{\chapter}{\@startsection{chapter}{0}{0pt}{3.5ex plus 1ex minus 0pt\relax}{2.5ex plus 0.5ex minus 0pt\relax}{\normalfont\Large\bfseries}}%
+% \makeatother%
+%
+%
+% Wortsammler extensions end here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+
+\clearpage
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{1}
+\tableofcontents
+\newpage
+}
+
+\section{Introduction}
+
+Zupfnoter is an attempt to implemente a tool to create music sheets for
+``Table Harp'' (http://Table Harp-harfen.de) respectively
+``Zauberharfe'' (http://www.musik-im-spiel.de).
+
+Basic approach in for these instruments is, that the music sheet is
+placed on the instrument such that the particular note and the string
+are visually connected.
+
+The following piece
+
+\includegraphics{../RS_Requirements/example_notation.pdf}~
+
+This document describes the initial requirements for ``Zupfpnoter'';
+Basic approach is
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  use as commandline tool
+\item
+  apply ``abc-Notation and convert it to Table Harp Noten''
+\end{itemize}
+
+Details on abc see
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \url{http://normanschmidt.net/abc/index.php}
+\item
+  abcnotation.com
+\end{itemize}
+
+Interesting details how to apply Table Harp see
+\url{http://homepage.bnv-bamberg.de/flg-blw-partnerschaft/musik-facharbeit-eva-klein.pdf}
+
+\section{Objectives}
+
+The following objectives are valid for Zupfnoter
+
+\begin{itemize}
+\item
+  {[}RS\_MG\_001{]} \textbf{\hypertarget{RS-MG-001}{}Easily create Table
+  Harp Music sheets} \{ Zupfnoter shall be an easy tool to create music
+  sheets for Table Harp. But it shall provide all the possibilites of
+  the Table Harp - Notation. \}()
+\item
+  {[}RS\_MG\_002{]} \textbf{\hypertarget{RS-MG-002}{}Apply for private
+  use} \{ The primary focus of Zupfnoter is the private use. It is not
+  intended for professional use. \}()
+\item
+  {[}RS\_MG\_003{]} \textbf{\hypertarget{RS-MG-003}{}Open Source} \{
+  Zufpnoter shall be free and open source in order to help utilizatio of
+  Table Harp. \}()
+\item
+  {[}RS\_MG\_004{]} \textbf{\hypertarget{RS-MG-004}{}Utilize existing
+  Software and Tunes} \{ There is a lot of music material which can be
+  found e.g.~in the internet. Such meterial shall be easily be used with
+  Zupfnoter.
+
+  Also there are many Typesetting Tools for music. Zufpnoter shall be
+  utilized with such programs as well. \}()
+\item
+  {[}RS\_MG\_005{]} \textbf{\hypertarget{RS-MG-005}{}Applicable on
+  various platforms} \{ Shall be applicable on common platforms. \}()
+\end{itemize}
+
+\section{Requirements}
+
+\subsection{System Requirements}
+
+\begin{itemize}
+\item
+  {[}RS\_SYS\_001{]} \textbf{\hypertarget{RS-SYS-001}{}Shall be
+  portable} \{ Shall run on OSX, Linux and Windows. It should be
+  implemented in a portable language.
+
+  Example is java, python, ruby or javascript.
+  \}(\hyperlink{RS-MG-002}{RS\_MG\_002},
+  \hyperlink{RS-MG-003}{RS\_MG\_003},
+  \hyperlink{RS-MG-004}{RS\_MG\_004},
+  \hyperlink{RS-MG-005}{RS\_MG\_005})
+\item
+  {[}RS\_SYS\_002{]} \textbf{\hypertarget{RS-SYS-002}{}Shall be a
+  framework easy to integrate} \{ Shall be a framework which can even be
+  integrated in music editors
+
+  As an eample see:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    http://code.google.com/p/jspdf/
+  \end{itemize}
+
+  \}(\hyperlink{RS-MG-002}{RS\_MG\_002},
+  \hyperlink{RS-MG-003}{RS\_MG\_003},
+  \hyperlink{RS-MG-004}{RS\_MG\_004})
+\item
+  {[}RS\_SYS\_003{]} \textbf{\hypertarget{RS-SYS-003}{}Shall apply
+  popular frameworks} \{ Example for applicable Frameworks:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    \href{http://bytescout.com/products/developer/pdfgeneratorsdkjs/create_pdf_invoice_javascript.html}{BytescoutPDF}
+  \item
+    \href{http://code.google.com/p/jspdf/}{jspdf}
+  \item
+    \href{http://code.google.com/p/abcjs/}{abcjs}
+  \item
+    \href{http://www.drawthedots.com/}{drawthedots}
+  \item
+    \href{http://prawnpdf.org}{prawnpdf}
+  \item
+    \href{http://midijs.net/}{midjs}
+  \item
+    \url{https://github.com/mudcube/MIDI.js}
+  \end{itemize}
+
+  \}(\hyperlink{RS-MG-004}{RS\_MG\_004})
+\item
+  {[}RS\_SYS\_004{]} \textbf{\hypertarget{RS-SYS-004}{}Interactive
+  Operation} \{ Zupfnoter shall be operated as interactive tool.
+  \}(\hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_SYS\_005{]} \textbf{\hypertarget{RS-SYS-005}{}Batch Operation}
+  \{ Zupfnoter shall be operational as batch tool
+  \}(\hyperlink{RS-MG-002}{RS\_MG\_002})
+\end{itemize}
+
+\subsection{Input}
+
+\begin{itemize}
+\item
+  {[}RS\_IN\_001{]} \textbf{\hypertarget{RS-IN-001}{}Shall be able to
+  process various input formatc} \{ Zupfnoter shall be able to process
+  various input formats. Primarily such as
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    abc
+  \item
+    MusicXml
+  \item
+    Lilypond
+  \end{itemize}
+
+  This might be implemented by predrive converters.
+  \}(\hyperlink{RS-MG-004}{RS\_MG\_004})
+\end{itemize}
+
+\subsubsection{interactive editor}
+
+\begin{itemize}
+\item
+  {[}RS\_IN\_002{]} \textbf{\hypertarget{RS-IN-002}{}interactive editor}
+  \{ Zupfnoter shall be available as interactive editor such that one of
+  the formats in {[}\hyperlink{RS-IN-001}{RS\_IN\_001}{]} can be
+  editied. Thereby an audible and visual feedback shall be provided.
+
+  The kind of audible / visual feedback shall be selectable
+  ({[}\hyperlink{RS-IN-003}{RS\_IN\_003}{]},
+  {[}\hyperlink{RS-IN-005}{RS\_IN\_005}{]},
+  {[}\hyperlink{RS-IN-005}{RS\_IN\_005}{]})
+
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
+  \hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_IN\_003{]} \textbf{\hypertarget{RS-IN-003}{}audible Feedback of
+  curent note} \{ The current note shall be played after it is entered /
+  changed / selected.
+
+  ``Selected'' means
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    that the cursor is moved around in the editor
+  \item
+    A sequence of notes is selected in the editor
+  \item
+    a note is clicked in one of the other visualizations
+  \end{itemize}
+
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
+  \hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_IN\_004{]} \textbf{\hypertarget{RS-IN-004}{}Feedback to the
+  entire tune} \{ The entire tune shall be played upon
+  requrest\}(\hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_IN\_005{]} \textbf{\hypertarget{RS-IN-005}{}Visual Feedback as
+  Music Sheet} \{ As the tune is entered / changed in the input field, a
+  music sheet shall be displayed and updated.
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
+  \hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_IN\_006{]} \textbf{\hypertarget{RS-IN-006}{}Visual Feedback as
+  Table Harp Notes} \{ As the tune is entered / changed in the input
+  field, a preview of th Table Harp Notes sheet shall be displayed and
+  updated.
+
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
+  \hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_IN\_007{]} \textbf{\hypertarget{RS-IN-007}{}Synchronized
+  feedback} \{ The various representations shall be synchronized:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    highlight the object in note sheet and ``veen notes'' when cursor is
+    moved in input
+  \item
+    highlight the the object in input upon click on a note in note sheet
+    or ``Table Harp notes'' \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
+    \hyperlink{RS-MG-002}{RS\_MG\_002})
+  \end{itemize}
+\end{itemize}
+
+\subsection{Output}
+
+\begin{itemize}
+\item
+  {[}RS\_OUT\_001{]} \textbf{\hypertarget{RS-OUT-001}{}Shall produce PDF
+  output} \{ Zupfnoter shall produce an out in PDF format
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
+  \hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_OUT\_002{]} \textbf{\hypertarget{RS-OUT-002}{}Shall handle A4
+  pages} \{ A Table Harp notes are larger than A4 pages, Zupfnoter shall
+  provide a print which can easily be combined.
+
+  This is in paricular to support the fact that private userd usually do
+  not have A3 printers {[}\hyperlink{RS-MG-002}{RS\_MG\_002}{]}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    divide the sheet on a4 pages
+  \item
+    print proper marks where and how to glue the pages
+  \item
+    print some overlap
+  \item
+    print cut marks to indicate where to cut the second page
+  \item
+    avoid cutting in between a note
+  \end{itemize}
+
+  Note that smaller songs might fit on an A4 page in landscape.
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
+  \hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_OUT\_003{]} \textbf{\hypertarget{RS-OUT-003}{}Should support A3
+  printers} \{ There may be users with an A3 Printer, so it should
+  support printing on a full A3 Page.
+  \}(\hyperlink{RS-MG-002}{RS\_MG\_002})
+\item
+  {[}RS\_OUT\_004{]} \textbf{\hypertarget{RS-OUT-004}{}Optimize page
+  layout} \{ Page layout shall be optimized depending on user request:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    compact, the vertical distance is constant and selectable by the
+    user in grid measueres. One grid measure is the size of the smallest
+    note
+  \item
+    automatically, the vertical distance depends on the amount of notes
+    which need to be rendered such that the entire scheet is
+    filled.\}(\hyperlink{RS-MG-002}{RS\_MG\_002})
+  \end{itemize}
+\end{itemize}
+
+\subsection{Support of Table Harp notation}
+
+\begin{itemize}
+\item
+  {[}RS\_VN\_001{]}\textbf{\hypertarget{RS-VN-001}{}Shall Support the
+  Header annotation}\{ Zupfnoter shall be able to denote the
+  Meta-Information about the piece. It is a text block on the top left
+  of the page.\}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\item
+  {[}RS\_VN\_002{]}\textbf{\hypertarget{RS-VN-002}{}May Support the
+  lyrics}\{ Zupfnoter may be able to print the lyrics on the right
+  margin of the page.\}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\item
+  {[}RS\_VN\_003{]}\textbf{\hypertarget{RS-VN-003}{}Shall Basic Table
+  Harp notation}\{ Zupfnoter shall support the basic Table Harp
+  notation:
+
+  \begin{itemize}
+  \item
+    Repreesentation of note length
+
+    \begin{longtable}[c]{@{}ll@{}}
+    \hline\noalign{\medskip}
+    \begin{minipage}[b]{0.40\columnwidth}\raggedright
+    note
+    \end{minipage} & \begin{minipage}[b]{0.60\columnwidth}\raggedright
+    representation
+    \end{minipage}
+    \\\noalign{\medskip}
+    \hline\noalign{\medskip}
+    \begin{minipage}[t]{0.40\columnwidth}\raggedright
+    full
+    \end{minipage} & \begin{minipage}[t]{0.60\columnwidth}\raggedright
+    big empty circle
+    \end{minipage}
+    \\\noalign{\medskip}
+    \begin{minipage}[t]{0.40\columnwidth}\raggedright
+    half
+    \end{minipage} & \begin{minipage}[t]{0.60\columnwidth}\raggedright
+    empty circle
+    \end{minipage}
+    \\\noalign{\medskip}
+    \begin{minipage}[t]{0.40\columnwidth}\raggedright
+    quarter
+    \end{minipage} & \begin{minipage}[t]{0.60\columnwidth}\raggedright
+    filled circle
+    \end{minipage}
+    \\\noalign{\medskip}
+    \begin{minipage}[t]{0.40\columnwidth}\raggedright
+    eights
+    \end{minipage} & \begin{minipage}[t]{0.60\columnwidth}\raggedright
+    small filled circle
+    \end{minipage}
+    \\\noalign{\medskip}
+    \begin{minipage}[t]{0.40\columnwidth}\raggedright
+    sixteenth
+    \end{minipage} & \begin{minipage}[t]{0.60\columnwidth}\raggedright
+    smaller filled circle or cross
+    \end{minipage}
+    \\\noalign{\medskip}
+    \hline
+    \end{longtable}
+  \item
+    The notes of one particular tune are connected by a solid line
+  \end{itemize}
+
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\item
+  {[}RS\_VN\_004{]}\textbf{\hypertarget{RS-VN-004}{}Shall Suport
+  chords}\{ Zupfnoter shall support notes which are played
+  simultaneously. This is indicated by dotted lines connecting the
+  particular notes of the chord.\}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\item
+  {[}RS\_VN\_005{]}\textbf{\hypertarget{RS-VN-005}{}Shall repetitions}\{
+  Zupfnoter shall be able to denote repetitions by drawing a rectangular
+  line backwards.\}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\item
+  {[}RS\_VN\_006{]}\textbf{\hypertarget{RS-VN-006}{}Shall Support
+  arbitrary annotations}\{ Zupfnoter shall be able to denote short
+  annotations embedded in the tunes. These notes shall be placed on the
+  right part of the page vertically aligned to the respective
+  note\}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\end{itemize}
+
+\end{document}

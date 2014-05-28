@@ -1,0 +1,37 @@
+-
+    :name:  komplett
+    :outdir: ../ZGEN_Documents
+    :outname: DD_Zupfnoter
+    :format:
+        - latex
+        - docx
+        - html
+        - pdf
+
+    :vars: 
+        :lang: german
+        :fontsize: 12pt
+        :mainfont: Calibri
+        :sansfont: Calibri
+        :geometry: a4paper 
+        :logofile: ../ZSUPP_Styles/logo.jpg
+
+    :stylefiles:
+      :latex: ../ZSUPP_Styles/default.wortsammler.latex
+      :docx:  ../ZSUPP_Styles/default.wortsammler.docx
+      :html:  ../ZSUPP_Styles/default.wortsammler.css
+
+    :input: 
+        - ../RS_Requirements/DD_zupfnoter.md
+
+    :downstream_tracefile: ../ZGEN_RequirementsTracing/DD_zupfnoter.traces.md
+
+    :reqtracefile_base: ../ZGEN_RequirementsTracing/ZGEN_Reqtrace
+
+    :traceSortOrder:
+        - RS_MG
+        - RS_TEC
+
+    :snippets:
+        - ../900_snippets/snippets.xlsx
+

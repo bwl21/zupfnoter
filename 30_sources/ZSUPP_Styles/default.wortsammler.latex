@@ -1,0 +1,321 @@
+\documentclass[twoside,a4paper,$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$]{$documentclass$}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+$if(euro)$
+  \usepackage{eurosym}
+$endif$
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+$if(mainfont)$
+    \setmainfont{$mainfont$}
+$endif$
+$if(sansfont)$
+    \setsansfont{$sansfont$}
+$endif$
+$if(monofont)$
+    \setmonofont{$monofont$}
+$endif$
+$if(mathfont)$
+    \setmathfont{$mathfont$}
+$endif$
+\fi
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$endif$
+$if(natbib)$
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+$endif$
+$if(biblatex)$
+\usepackage{biblatex}
+$if(biblio-files)$
+\bibliography{$biblio-files$}
+$endif$
+$endif$
+$if(listings)$
+\usepackage{listings}
+$endif$
+$if(lhs)$
+\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
+$endif$
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+$if(verbatim-in-note)$
+\usepackage{fancyvrb}
+$endif$
+$if(fancy-enums)$
+% Redefine labelwidth for lists; otherwise, the enumerate package will cause
+% markers to extend beyond the left margin.
+\makeatletter\AtBeginDocument{%
+  \renewcommand{\@listi}
+    {\setlength{\labelwidth}{4em}}
+}\makeatother
+\usepackage{enumerate}
+$endif$
+\usepackage{longtable}
+\usepackage{float} % provides the H option for float placement
+\usepackage{graphicx}
+% We will generate all images so they have a width \maxwidth. This means
+% that they will get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+\else\Gin@nat@width\fi}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+\else\Gin@nat@width\fi}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+%\renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=\maxwidth]{#1}}
+% Determine if the image is too wide for the page.
+%
+{%
+ \catcode`\@=11\relax%
+ \gdef\includegraphics{\@ifnextchar[{\Oldincludegraphics}{\Oldincludegraphics[width=\maxwidth]}}%
+}%
+%
+
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              bookmarksdepth=3, %
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={$author-meta$},
+            pdftitle={$title-meta$},
+            colorlinks=true,
+            urlcolor=$if(urlcolor)$$urlcolor$$else$blue$endif$,
+            linkcolor=$if(linkcolor)$$linkcolor$$else$magenta$endif$,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+$if(links-as-notes)$
+% Make links footnotes instead of hotlinks:
+\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
+$endif$
+$if(strikeout)$
+\usepackage[normalem]{ulem}
+% avoid problems with \sout in headers with hyperref:
+\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
+$endif$
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+$if(numbersections)$
+\setcounter{secnumdepth}{5}
+$else$
+\setcounter{secnumdepth}{0}
+$endif$
+$if(verbatim-in-note)$
+\VerbatimFootnotes % allows verbatim text in footnotes
+$endif$
+$if(lang)$
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{$mainlang$}
+\else
+  \usepackage[$lang$]{babel}
+\fi
+$endif$
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+$if(title)$
+\title{$title$}
+$endif$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+\date{$date$}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Wortsammler specific settings
+%
+%list environment by reinhard Jahraus
+{\catcode`\@=11\relax%
+\gdef\itemize{%
+  \ifnum \@itemdepth >\thr@@\@toodeep\else
+    \advance\@itemdepth\@ne
+    \edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
+    \expandafter
+    \list
+      \csname\@itemitem\endcsname
+      {\def\makelabel##1{\hss\llap{##1}}%
+       \addtolength{\leftmargin}{-10pt}% 29.37pt
+       \addtolength{\rightmargin}{0.0pt}% 0.0pt
+       \addtolength{\labelsep}{0pt}% 23.50pt
+       \addtolength{\itemsep}{-3.0pt}% 5.0pt
+       \addtolength{\parsep}{-1pt}% 5.0pt
+       \addtolength{\topsep}{-5pt}% 10.0pt
+       \addtolength{\partopsep}{0pt}% 3.0pt
+      }%
+  \fi}
+}%
+
+%
+% improve nesting of lists
+% %http://stackoverflow.com/questions/1935952/maximum-nesting-level-of-lists-in-latex
+%
+\usepackage{enumitem}
+\setlistdepth{9}
+\setlist[itemize,1]{label=$$\bullet$$}
+\setlist[itemize,2]{label=$$\bullet$$}
+\setlist[itemize,3]{label=$$\bullet$$}
+\setlist[itemize,4]{label=$$\bullet$$}
+\setlist[itemize,5]{label=$$\bullet$$}
+\setlist[itemize,6]{label=$$\bullet$$}
+\setlist[itemize,7]{label=$$\bullet$$}
+\setlist[itemize,8]{label=$$\bullet$$}
+\setlist[itemize,9]{label=$$\bullet$$}
+\renewlist{itemize}{itemize}{9}
+%
+% multicol
+%
+\usepackage{multicol}
+$if(linenumbers)$
+\newcommand{\wsbegintwocol}{}
+\newcommand{\wsendtwocol}{}
+$else$
+\newcommand{\wsbegintwocol}{\begin{multicols}{2}}
+\newcommand{\wsendtwocol}{\end{multicols}}
+$endif$
+
+%
+% embed an image in the text
+%
+% usage: \wsembedimage{file}{r|l}{width}{height}
+\usepackage{wrapfig}
+\usepackage{needspace}
+\newcommand{\wsembedimage}[4]{\needspace{#4}\begin{wrapfigure}{#2}{#3}\centering%
+\vspace{-5mm}\includegraphics{#1}\vspace{-1cm}\end{wrapfigure}}
+%
+% adjust page layout
+%
+\setlength{\oddsidemargin}{-0.5cm}
+\setlength{\evensidemargin}{-0.5cm}
+\setlength{\textwidth}{17cm}
+\setlength{\topmargin}{-2.0cm}
+\setlength{\headheight}{1cm}
+\setlength{\headsep}{1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\footskip}{1cm}
+
+% adjust the toc layout
+\makeatletter
+% \renewcommand*\l@section{\@dottedtocline{2}{1.8em}{4em}}
+ \renewcommand*\l@subsection{\@dottedtocline{2}{1.5em}{4em}}
+ \renewcommand*\l@subsubsection{\@dottedtocline{2}{5.5em}{4em}}
+\makeatother
+
+\usepackage{pdfpages}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\chead{\begin{center}\textbf{$title$} $edition$\end{center}}
+$if(logofile)$
+\lhead{\includegraphics{$logofile$}}
+$endif$
+\rhead{\leftmark}
+\lfoot{$author$}
+\rfoot{\today~$date$}
+\renewcommand{\footrulewidth}{0.4pt}
+%
+\renewcommand{\familydefault}{\sfdefault}
+%
+% Marginpars shall always be right
+\makeatletter
+   \def\marginparright{\@mparswitchfalse}
+   \def\marginparoutside{\@mparswitchtrue}
+\makeatother
+\marginparright
+%
+%
+\raggedbottom
+%
+
+$if(linenumbers)$
+\usepackage[pagewise]{lineno}
+\setlength\linenumbersep{1mm}
+\modulolinenumbers[5]
+$endif$
+
+\usepackage{makeidx}
+\makeindex
+
+%
+%\renewcommand{Befehl der Gliederungsebene z.B. \chapter}{\@startsection{Name z.B. chapter}{Ebene z.B. 0}{Einrückung z.B. 0pt}{Abstand zum vorigen Text z.B. 3.5ex plus 1ex minus 0pt\relax}{Abstand zum nachfolgenden Text z.B. 2.5ex plus 0.5ex minus 0pt\relax}{Schrift z.B. \normalfont\Large\bfseries}}
+%
+% \makeatletter%
+% \renewcommand{\chapter}{\@startsection{chapter}{0}{0pt}{3.5ex plus 1ex minus 0pt\relax}{2.5ex plus 0.5ex minus 0pt\relax}{\normalfont\Large\bfseries}}%
+% \makeatother%
+%
+%
+% Wortsammler extensions end here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+$if(title)$
+\maketitle
+$endif$
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(title)$
+\clearpage
+$endif$
+
+$if(toc)$
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{1}
+\tableofcontents
+\newpage
+}
+$endif$
+$if(linenumbers)$
+\linenumbers
+$endif$
+
+$body$
+
+$if(natbib)$
+$if(biblio-files)$
+$if(biblio-title)$
+$if(book-class)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\bibliography{$biblio-files$}
+
+$endif$
+$endif$
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+
+$endif$
+$for(include-after)$
+$include-after$
+
+$endfor$
+\end{document}
