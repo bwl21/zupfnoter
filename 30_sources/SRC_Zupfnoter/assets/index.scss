@@ -1,0 +1,96 @@
+@import "reset";
+
+$toolbarHeight: 30px;
+$titleHeight: 2em;
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.container {
+  overflow: hidden;
+  position: absolute;
+
+  .title {
+    width: 100%;
+    height: $titleHeight;
+    line-height: $titleHeight;
+    text-align: right;
+    border-top: 1px solid black;
+
+    .head {
+      position: absolute;
+      left: 1em;
+      font-size: 80%;
+      font-weight: bold;
+    }
+    .button {
+      border-left: 1px solid black;
+      padding: 0em 1em 0em 1em;
+    }
+  }
+
+  .body {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    top: $titleHeight;
+  }
+}
+
+#toolbar {
+  height: $toolbarHeight;
+  width: 100%;
+  line-height: $toolbarHeight;
+  text-align: right;
+  font-size: 80%;
+  border-bottom: 1px solid black;
+
+  span {
+    display: inline-block;
+  }
+
+  .head {
+    position: absolute;
+    left: 1em;
+    font-weight: bold;
+  }
+  .button {
+    padding: 0em 1em 0em 1em;
+    border-left: 1px solid black;
+    cursor: pointer;
+  }
+
+}
+
+#abcEditorContainer {
+  top: $toolbarHeight + 1px;
+  left: 0px;
+  right: 0px;
+  bottom: 60%;
+
+  .body {
+    top: 0px;
+  }
+  .editor {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+}
+
+#tunePreviewContainer {
+  top: 40%;
+  bottom: 0px;
+  left: 0px;
+  right: 51%;
+}
+
+#harpPreviewContainer {
+  top: 40%;
+  bottom: 0px;
+  left: 51%;
+  right: 0px;
+}

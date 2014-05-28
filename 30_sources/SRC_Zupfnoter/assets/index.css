@@ -1,0 +1,115 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+ * v2.0 | 20110126
+ * License: none (public domain) */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: "";
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+body {
+  font-family: Helvetica, Arial, sans-serif; }
+
+.container {
+  overflow: hidden;
+  position: absolute; }
+  .container .title {
+    width: 100%;
+    height: 2em;
+    line-height: 2em;
+    text-align: right;
+    border-top: 1px solid black; }
+    .container .title .head {
+      position: absolute;
+      left: 1em;
+      font-size: 80%;
+      font-weight: bold; }
+    .container .title .button {
+      border-left: 1px solid black;
+      padding: 0em 1em 0em 1em; }
+  .container .body {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    top: 2em; }
+
+#toolbar {
+  height: 30px;
+  width: 100%;
+  line-height: 30px;
+  text-align: right;
+  font-size: 80%;
+  border-bottom: 1px solid black; }
+  #toolbar span {
+    display: inline-block; }
+  #toolbar .head {
+    position: absolute;
+    left: 1em;
+    font-weight: bold; }
+  #toolbar .button {
+    padding: 0em 1em 0em 1em;
+    border-left: 1px solid black;
+    cursor: pointer; }
+
+#abcEditorContainer {
+  top: 31px;
+  left: 0px;
+  right: 0px;
+  bottom: 60%; }
+  #abcEditorContainer .body {
+    top: 0px; }
+  #abcEditorContainer .editor {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px; }
+
+#tunePreviewContainer {
+  top: 40%;
+  bottom: 0px;
+  left: 0px;
+  right: 51%; }
+
+#harpPreviewContainer {
+  top: 40%;
+  bottom: 0px;
+  left: 51%;
+  right: 0px; }

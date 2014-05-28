@@ -1,0 +1,98 @@
+require 'opal-raphael'
+require 'harpnotes'
+
+module Harpnotes
+
+  class RaphaelEngine
+    include Harpnotes::Drawing
+    attr_reader :paper
+
+    PADDING = 20
+    ARROW_SIZE = 10
+    JUMPLINE_INDENT = 10
+    DOTTED_SIZE = 2
+
+    def initialize(element_id)
+      @paper = Raphael::Paper.new(element_id)
+    end
+
+    def draw(sheet)
+      @paper.clear
+
+      sheet.children.each do |child|
+        if child.is_a? Ellipse
+          draw_ellipse(child)
+        elsif child.is_a? FlowLine
+          draw_flowline(child)
+        elsif child.is_a? JumpLine
+          draw_jumpline(child)
+        end
+      end
+    end
+
+    private
+
+    def draw_ellipse(root)
+      e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last)
+      e["fill"] = root.fill == :filled ? "black" : "white"
+      if root.dotted?
+        x = root.center.first + (root.size.first * 1.2)
+        y = root.center.last + (root.size.last * 1.2)
+        @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)["fill"] = "black"
+      end
+
+      e.on_click do
+        origin = root.origin
+        unless origin.nil?
+          origin = origin.origin
+
+          unless origin.nil?
+            %x{
+              var indexToPosition = function(index) {
+                var lines  = editor.session.getDocument().$lines;
+                var newLineChar = editor.session.doc.getNewLineCharacter();
+                var currentIndex = 0;
+                for (var row = 0; row < lines.length; row ++) {
+                  var length = editor.session.getLine(row).length;
+                  if (currentIndex + length >= index) {
+                    return {
+                      row: row,
+                      column: index - currentIndex
+                    }
+                  }
+                  currentIndex += length + newLineChar.length;
+                }
+              }
+
+              editor.moveCursorToPosition(indexToPosition(origin.native.startChar));
+            }
+          end
+        end
+      end
+    end
+
+    def draw_flowline(root)
+      l = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1])
+      l["stroke-dasharray"] = "-" if root.style == :dashed
+    end
+
+    def draw_jumpline(root)
+      startpoint = root.from.center
+      startpoint[0] += PADDING
+
+      endpoint   = root.to.center
+      endpoint[0] += PADDING
+
+      depth      = @paper.size[1] - (root.level * JUMPLINE_INDENT)
+
+      path  = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
+      @paper.path(path)
+
+      arrow = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0")
+      arrow["fill"] = "red"
+      arrow.translate(startpoint[0], startpoint[1])
+    end
+
+  end
+
+end

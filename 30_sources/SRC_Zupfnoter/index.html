@@ -2,9 +2,89 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Untitled Document</title>
+        <title>Zupfnoter</title>
+        <link rel="stylesheet" type="text/css" href="assets/index.css" />
+
+        <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
+        <script src="vendor/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="vendor/abcjs_plugin_nojquery_1.9-min.js" type="application/javascript"></script>
+
+        <script src="vendor/musical.min.js" type="application/javascript"></script>
+
+        <script src="vendor/opal.min.js" type="application/javascript"></script>
+        <script src="src/build.js" type="application/javascript"></script>
     </head>
     
     <body>
+        <div id="toolbar">
+            <span class="head">Zupfnoter</span>
+            <span class="button" id="tbRender">render</span>
+            <span class="button" id="tbPlay">play</span>
+        </div>
+        <div id="abcEditorContainer" class="container">
+            <div class="body">
+<div id="abcEditor" class="editor">X: 1
+T: Cooley's
+M: 4/4
+L: 1/8
+K: Emin
+|:D2|[EG] B{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
+EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
+|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
+eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|</div>
+            </div>
+        </div>
+        <div id="tunePreviewContainer" class="container">
+            <div class="title">
+                <span class="head">Notes</span>
+                <span class="button">min</span>
+            </div>
+            <div class="body" id="tunePreview">
+
+            </div>
+        </div>
+        <div id="harpPreviewContainer" class="container">
+            <div class="title">
+                <span class="head">Harp</span>
+                <span class="button">min</span>
+            </div>
+            <div class="body" id="harpPreview">
+
+            </div>
+        </div>
+
+        <script type="application/javascript">
+            var editor = ace.edit("abcEditor");
+            editor.setTheme("ace/theme/chrome");
+
+            function renderABC() {
+                var abc = editor.getSession().getValue();
+                ABCJS.renderAbc($("#tunePreview")[0], abc, {}, {}, {});
+            }
+
+            editor.on("change", function(e) {
+                renderABC();
+            });
+            $(renderABC);
+
+            var inst = new Instrument();
+            function playABC() {
+                var abc = editor.getSession().getValue();
+                /*
+                var book = new ABCJS.TuneBook(abc);
+                var parser = new ABCJS.parse.Parse();
+                parser.parse(book.tunes[0].abc);
+                var tune = parser.getTune();
+
+                console.log(tune);
+                */
+                //inst.play({tempo:200}, abc);
+
+                ABCJS.renderMidi($("#tbPlay")[0], abc, {}, { 'java' : false }, {});
+            }
+            $('#tbPlay').on("click", function() {
+                playABC();
+            });
+        </script>
     </body>
 </html>

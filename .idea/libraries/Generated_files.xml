@@ -1,0 +1,25 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.js" />
+        <item url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.js" />
+        <item url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.js" />
+        <item url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile.js" />
+        <item url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.js" />
+        <item url="file://$PROJECT_DIR$/30_sources/SRC_RubySources/spec/pagelayout_spec.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/foobar.js" />
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/foobar.js" />
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.js" />
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.js" />
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile.js" />
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.js" />
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_RubySources/spec/pagelayout_spec.js" />
+      <root url="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>
