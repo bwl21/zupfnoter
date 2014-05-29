@@ -14279,7 +14279,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         $opal.cdecl($scope, 'ELLIPSE_SIZE', [3, 2]);
 
-        $opal.cdecl($scope, 'X_SPACING', (205.0)['$/'](10.0));
+        $opal.cdecl($scope, 'X_SPACING', (139)['$/'](12.0));
 
         $opal.cdecl($scope, 'BEAT_SPACING', 4);
 

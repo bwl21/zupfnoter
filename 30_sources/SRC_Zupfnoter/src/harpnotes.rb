@@ -342,7 +342,7 @@ module Harpnotes
 
       # x-size of one step in a pitch. It is the horizontal
       # distance between two strings of the harp
-      X_SPACING    = 205.0 / 10.0
+      X_SPACING    = 139 / 12.0
 
       # Spacing between beats
       BEAT_SPACING = 4
