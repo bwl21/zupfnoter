@@ -14379,7 +14379,7 @@ if (bm == null) bm = nil;
             return bm['$[]'](beat)}, TMP_29._s = self, TMP_29), $a).call($b).$flatten().$compact()['$empty?']();
             if (has_no_notes_on_beat !== false && has_no_notes_on_beat !== nil) {
               } else {
-              current_beat = beat
+              current_beat = current_beat['$+'](1)
             };
             return [beat, current_beat];}, TMP_28._s = self, TMP_28), $a).call($c));
         };
@@ -14726,8 +14726,19 @@ if (pitch == null) pitch = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass;
 
-  $opal.add_stubs(['$==', '$nil?']);
+  $opal.add_stubs(['$nil?', '$==']);
   ;
+  
+jsPDF.API.setLineDash = function(dashArray, dashPhase) {
+  if(dashArray == undefined) {
+    this.internal.write('[] 0 d')
+  } else {
+    this.internal.write('[' + dashArray + '] ' + dashPhase + ' d')
+  }
+
+  return this;
+};
+
   return (function($base, $super) {
     function $JsPDF(){};
     var self = $JsPDF = $klass($base, $super, 'JsPDF', $JsPDF);
@@ -14786,6 +14797,23 @@ if (pitch == null) pitch = nil;
       var self = this;
 
       return self.native.setTetColor(rgb[0], rgb[1], rgb[2]);
+    };
+
+    def.$use_solid_lines = function() {
+      var self = this;
+
+      return self.native.setLineDash('', 0);
+    };
+
+    def['$line_dash='] = function(dist) {
+      var $a, self = this;
+
+      if (dist == null) {
+        dist = 3
+      }
+      if ((($a = dist['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
+        dist = undefined};
+      return self.native.setLineDash(dist, dist);
     };
 
     def.$text = function(text, position, flags) {
@@ -14952,7 +14980,7 @@ if (child == null) child = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$children', '$private', '$filled?', '$fill=', '$map', '$ellipse', '$center', '$size', '$dotted?', '$+', '$*', '$zip', '$draw=', '$dashed?', '$line', '$from', '$to', '$[]=', '$[]', '$-', '$level']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$children', '$private', '$filled?', '$fill=', '$map', '$ellipse', '$center', '$size', '$dotted?', '$+', '$*', '$zip', '$dashed?', '$line_dash=', '$line', '$from', '$to', '$use_solid_lines', '$[]=', '$[]', '$-', '$level', '$draw=']);
   ;
   ;
   return (function($base) {
@@ -15034,29 +15062,29 @@ if (s == null) s = nil;
       };
 
       def.$draw_flowline = function(root) {
-        var $a, $b, TMP_5, self = this;
-
-        self.pdf['$draw='](($a = ($b = ($range(0, 3, true))).$map, $a._p = (TMP_5 = function(){var self = TMP_5._s || this, $a;
+        var $a, self = this;
 
         if ((($a = root['$dashed?']()) !== nil && (!$a._isBoolean || $a == true))) {
-            return 128
-            } else {
-            return 0
-          }}, TMP_5._s = self, TMP_5), $a).call($b));
-        return self.pdf.$line(root.$from().$center(), root.$to().$center());
+          self.pdf['$line_dash='](3)};
+        self.pdf.$line(root.$from().$center(), root.$to().$center());
+        if ((($a = root['$dashed?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          return self.pdf.$use_solid_lines()
+          } else {
+          return nil
+        };
       };
 
       return (def.$draw_jumpline = function(root) {
-        var $a, $b, $c, TMP_6, self = this, startpoint = nil, endpoint = nil, depth = nil;
+        var $a, $b, $c, TMP_5, self = this, startpoint = nil, endpoint = nil, depth = nil;
 
         startpoint = root.$from().$center();
         ($a = 0, $b = startpoint, $b['$[]=']($a, $b['$[]']($a)['$+']((($c = $scope.PADDING) == null ? $opal.cm('PADDING') : $c))));
         endpoint = root.$to().$center();
         ($a = 0, $b = endpoint, $b['$[]=']($a, $b['$[]']($a)['$+']((($c = $scope.PADDING) == null ? $opal.cm('PADDING') : $c))));
         depth = (297)['$-']((root.$level()['$*']((($a = $scope.JUMPLINE_INDENT) == null ? $opal.cm('JUMPLINE_INDENT') : $a))));
-        self.pdf['$draw='](($a = ($b = ($range(0, 3, true))).$map, $a._p = (TMP_6 = function(){var self = TMP_6._s || this;
+        self.pdf['$draw='](($a = ($b = ($range(0, 3, true))).$map, $a._p = (TMP_5 = function(){var self = TMP_5._s || this;
 
-        return 0}, TMP_6._s = self, TMP_6), $a).call($b));
+        return 0}, TMP_5._s = self, TMP_5), $a).call($b));
         self.pdf.$line(endpoint, [depth, endpoint['$[]'](1)]);
         self.pdf.$line([depth, endpoint['$[]'](1)], [depth, startpoint['$[]'](1)]);
         return self.pdf.$line([depth, startpoint['$[]'](1)], startpoint);

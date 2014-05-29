@@ -1,5 +1,17 @@
 require 'native'
 
+%x{
+jsPDF.API.setLineDash = function(dashArray, dashPhase) {
+  if(dashArray == undefined) {
+    this.internal.write('[] 0 d')
+  } else {
+    this.internal.write('[' + dashArray + '] ' + dashPhase + ' d')
+  }
+
+  return this;
+};
+}
+
 class JsPDF
 
   # @param orientation Symbol the page orientation, :p for portrait, :l for landscape
@@ -32,6 +44,15 @@ class JsPDF
 
   def text_color=(rgb)
     `self.native.setTetColor(rgb[0], rgb[1], rgb[2])`
+  end
+
+  def use_solid_lines
+    `self.native.setLineDash('', 0)`
+  end
+
+  def line_dash=(dist = 3)
+    dist = `undefined` if dist.nil?
+    `self.native.setLineDash(#{dist}, #{dist})`
   end
 
   def text(text, position, flags)

@@ -445,7 +445,7 @@ module Harpnotes
         current_beat = 0
         Hash[(0..max_beat).map do |beat|
           has_no_notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact.empty?
-          current_beat = beat unless has_no_notes_on_beat
+          current_beat += 1 unless has_no_notes_on_beat
           [ beat, current_beat ]
         end]
       end
