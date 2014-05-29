@@ -71,11 +71,24 @@ module Harpnotes
       end
     end
 
+
+    # 
+    # Draw a Flowline to indicate the flow of the music. It indicates
+    # the sequence in which the notes are played
+    # 
+    # @param root [type] [description]
+    # 
+    # @return [type] [description]
     def draw_flowline(root)
       l = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1])
       l["stroke-dasharray"] = "-" if root.style == :dashed
     end
 
+    # 
+    # Draw a Jump line to indicate that the music is to be continued at another beat
+    # @param root [Drawing::Jumpline] The jumpline to be drawn
+    # 
+    # @return [nil] nothing
     def draw_jumpline(root)
       startpoint = root.from.center
       startpoint[0] += PADDING
@@ -92,7 +105,6 @@ module Harpnotes
       arrow["fill"] = "red"
       arrow.translate(startpoint[0], startpoint[1])
     end
-
   end
 
 end

@@ -2,22 +2,49 @@
 module Harpnotes
 
   # The music model that is transformed (layouted) to something drawable
+
+  #
+  # [module description]
+  #
+  # @author [beweiche]
+  #
   module Music
 
     # Marks classes in this model
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class MusicEntity
       attr_accessor :origin
     end
 
     # Marks playable Music entities
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class Playable < MusicEntity
       attr_accessor :beat
     end
 
     # A single note
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class Note < Playable
       attr_reader :pitch, :duration
 
+      #
+      # [initialize description]
+      # @param pitch [type] [description]
+      # @param duration [type] [description]
+      #
+      # @return [type] [description]
       def initialize(pitch, duration)
         @pitch = pitch
         @duration = duration
@@ -30,16 +57,30 @@ module Harpnotes
       attr_reader :notes
 
       # @param notes Array the notes of comprising the coord.
+      #
+      # [initialize description]
+      # @param notes [type] [description]
+      #
+      # @return [type] [description]
       def initialize(notes)
         raise "Notes must be an array" unless notes.is_a? Array
 
         @notes = notes
       end
 
+      #
+      # [duration description]
+      #
+      # @return [type] [description]
       def duration
         @notes.first.duration
       end
 
+      #
+      # [beat= description]
+      # @param value [type] [description]
+      #
+      # @return [type] [description]
       def beat=(value)
         @beat = value
         @notes.each {|n| n.beat = value }
@@ -47,9 +88,19 @@ module Harpnotes
     end
 
     # A pause in the song
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class Pause < Playable
       attr_reader :duration
 
+      #
+      # [initialize description]
+      # @param duration [type] [description]
+      #
+      # @return [type] [description]
       def initialize(duration)
         @duration = duration
       end
@@ -58,6 +109,11 @@ module Harpnotes
     class MeasureStart < MusicEntity
       attr_reader :companion
 
+      #
+      # [initialize description]
+      # @param companion [type] [description]
+      #
+      # @return [type] [description]
       def initialize(companion)
         raise "Companion must be playable" unless companion.is_a? Harpnotes::Music::Playable
 
@@ -68,6 +124,13 @@ module Harpnotes
     class Dacapo < MusicEntity
       attr_reader :from, :to, :level
 
+      #
+      # [initialize description]
+      # @param from [type] [description]
+      # @param to [type] [description]
+      # @param level [type] [description]
+      #
+      # @return [type] [description]
       def initialize(from, to, level)
         raise "From must be a Playable" unless from.is_a? Harpnotes::Music::Playable
         raise "To must be a Playable" unless to.is_a? Harpnotes::Music::Playable
@@ -81,17 +144,32 @@ module Harpnotes
     class Song
       attr_reader :voices
 
+      #
+      # [initialize description]
+      # @param voices = [] [type] [description]
+      # @param note_length_in_beats = 8 [type] [description]
+      #
+      # @return [type] [description]
       def initialize(voices = [], note_length_in_beats = 8)
         @voices = voices
         @note_length_in_beats = note_length_in_beats
         update_beats
       end
 
+      #
+      # [<< description]
+      # @param voice [type] [description]
+      #
+      # @return [type] [description]
       def <<(voice)
         @voices << voice
         update_beats
       end
 
+      #
+      # [build_synch_points description]
+      #
+      # @return [type] [description]
       def build_synch_points
         max_beat = @beat_maps.map {|map| map.keys.max }.max
         (0..max_beat).map do |beat|
@@ -104,6 +182,10 @@ module Harpnotes
 
       private
 
+      #
+      # [update_beats description]
+      #
+      # @return [type] [description]
       def update_beats
         @beat_maps = @voices.map do |voice|
           current_beat = 0
@@ -126,6 +208,11 @@ module Harpnotes
   # The drawing model
   module Drawing
 
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class Sheet
       attr_reader :children, :vertical_scale
 
@@ -135,6 +222,11 @@ module Harpnotes
       end
     end
 
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class FlowLine
       attr_reader :from, :to, :style, :origin
 
@@ -150,6 +242,11 @@ module Harpnotes
 
     end
 
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class JumpLine
       attr_reader :from, :to, :level
 
@@ -163,6 +260,11 @@ module Harpnotes
       end
     end
 
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class Ellipse
       attr_reader :center, :size, :fill, :dotted, :origin
 
@@ -189,6 +291,11 @@ module Harpnotes
 
     end
 
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class Text
       attr_reader :position, :text, :style
 
@@ -207,34 +314,56 @@ module Harpnotes
 
 
   # The layout algorithms transforming a music model into a drawing model
+  #
+  # [module description]
+  #
+  # @author [beweiche]
+  #
   module Layout
     include Harpnotes::Music
     include Harpnotes::Drawing
 
+    #
+    # [class description]
+    #
+    # @author [beweiche]
+    #
     class Default
       # all numbers in mm
-      ELLIPSE_SIZE = [ 10, 7 ]
+      ELLIPSE_SIZE = [ 10, 7 ]           # size of the largest Ellipse
+
+      # x-size of one step in a pitch. It is the horizontal
+      # distance between two strings of the harp
       X_SPACING    = 205.0 / 10.0
+
+      # note names (currently not in use, left in for debug purposes)
       NOTE_X_OFFSETS = Hash[["",
                              "G", "G#", "A", "A#", "H",
                              "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "h",
                              "c'", "c'#", "d'", "d'#", "e'", "f'", "f'#", "g'", "g'#", "a'", "a'#", "h'",
                              "c''", "c''#", "d''", "d'#", "e''", "f''", "f''#", "g''", "g''#", "a''", "a''#", "h''"
-                            ].each_with_index.map { |value, index| [value, index] }]
+                             ].each_with_index.map { |value, index| [value, index] }]
 
+      # This is a lookup table to map durations to graphical represenations
       DURATION_TO_STYLE = {
-          :d1  => [ 1,     :empty,       FALSE],
-          :d2  => [ 0.7,   :empty,       FALSE],
-          :d3  => [ 0.7,   :empty,       TRUE],
-          :d4  => [ 0.7,   :filled,      FALSE],
-          :d6  => [ 0.7,   :filled,      TRUE],
-          :d8  => [ 0.5,   :filled,      FALSE],
-          :d12 => [ 0.5,   :filled,      TRUE],
-          :d16 => [ 0.3,   :filled,      FALSE],
-          :d24 => [ 0.3,   :filled,      TRUE],
-          :d32 => [ 0.1,   :filled,      FALSE],
+        #key      size   fill          dot
+        :d1  => [ 1,     :empty,       FALSE],
+        :d2  => [ 0.7,   :empty,       FALSE],
+        :d3  => [ 0.7,   :empty,       TRUE],
+        :d4  => [ 0.7,   :filled,      FALSE],
+        :d6  => [ 0.7,   :filled,      TRUE],
+        :d8  => [ 0.5,   :filled,      FALSE],
+        :d12 => [ 0.5,   :filled,      TRUE],
+        :d16 => [ 0.3,   :filled,      FALSE],
+        :d24 => [ 0.3,   :filled,      TRUE],
+        :d32 => [ 0.1,   :filled,      FALSE],
       }
 
+      #
+      # [compute_beat_layout description]
+      # @param music [type] [description]
+      #
+      # @return [type] [description]
       def compute_beat_layout(music)
         Proc.new do |beat|
           beat * 10 + 10
@@ -242,6 +371,12 @@ module Harpnotes
       end
 
       # @param music Harpnotes::Music::Document the document to transform
+      #
+      # [layout description]
+      # @param music [type] [description]
+      # @param beat_layout = nil [type] [description]
+      #
+      # @return [type] [description]
       def layout(music, beat_layout = nil)
         beat_layout = beat_layout || compute_beat_layout(music)
 
@@ -255,6 +390,12 @@ module Harpnotes
         Harpnotes::Drawing::Sheet.new(sheet_elements)
       end
 
+      #
+      # [layout_voice description]
+      # @param voice [type] [description]
+      # @param beat_layout [type] [description]
+      #
+      # @return [type] [description]
       def layout_voice(voice, beat_layout)
         res_playables = voice.select {|c| c.is_a? Playable }.map do |playable|
           layout_playables(playable, beat_layout)
@@ -282,6 +423,12 @@ module Harpnotes
 
       private
 
+      #
+      # [layout_playables description]
+      # @param root [type] [description]
+      # @param beat_layout Lambda [description]
+      #
+      # @return [type] [description]
       def layout_playables(root, beat_layout)
         if root.is_a? Note
           layout_note(root, beat_layout)
@@ -294,6 +441,12 @@ module Harpnotes
         end
       end
 
+      #
+      # [layout_note description]
+      # @param root [type] [description]
+      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
+      #
+      # @return [type] [description]
       def layout_note(root, beat_layout)
         x_offset     = root.pitch * X_SPACING
         y_offset     = beat_layout.call(root.beat)
@@ -304,18 +457,35 @@ module Harpnotes
         res
       end
 
+      #
+      # [layout_accord description]
+      # @param root [type] [description]
+      # @param beat_layout [type] [description]
+      #
+      # @return [type] [description]
       def layout_accord(root, beat_layout)
         res = root.notes.map([]) {|c| layout_note(c, beat_layout) }[0..1]
         res << FlowLine.new(res.first, res.last, :dashed, root)
         res
       end
 
+      #
+      # [layout_pause description]
+      # @param root [type] [description]
+      # @param y_offset [type] [description]
+      #
+      # @return [type] [description]
       def layout_pause(root, y_offset)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         []
       end
 
 
+      #
+      # [duration_to_id description]
+      # @param duration [type] [description]
+      #
+      # @return [type] [description]
       def duration_to_id(duration)
         "d#{duration}".to_sym
       end
