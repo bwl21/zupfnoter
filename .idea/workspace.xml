@@ -32,16 +32,16 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="28" selection-start="2572" selection-end="2572" vertical-scroll-proportion="-14.923077" vertical-offset="734" max-vertical-offset="1649">
+            <state line="21" column="44" selection-start="1108" selection-end="1115" vertical-scroll-proportion="-1.7843137" vertical-offset="266" max-vertical-offset="1666">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="opal-jspdf.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="opal-jspdf.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="24" selection-start="1119" selection-end="1119" vertical-scroll-proportion="0.6849817" vertical-offset="255" max-vertical-offset="867">
+            <state line="35" column="0" selection-start="1037" selection-end="1037" vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="952">
               <folding />
             </state>
           </provider>
@@ -56,10 +56,19 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="harpnotes.rb" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="395" column="62" selection-start="9792" selection-end="9792" vertical-scroll-proportion="0.3958724" vertical-offset="6504" max-vertical-offset="9027">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="playground.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="31" selection-start="320" selection-end="320" vertical-scroll-proportion="0.0" vertical-offset="238" max-vertical-offset="493">
+            <state line="30" column="31" selection-start="808" selection-end="808" vertical-scroll-proportion="0.0" vertical-offset="185" max-vertical-offset="765">
               <folding />
             </state>
           </provider>
@@ -83,19 +92,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="raphael_engine.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
+      <file leaf-file-name="opal-raphael.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="19" selection-start="220" selection-end="220" vertical-scroll-proportion="0.0" vertical-offset="663" max-vertical-offset="1751">
+            <state line="25" column="10" selection-start="391" selection-end="391" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="1190">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="opal-raphael.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb">
+      <file leaf-file-name="pdf_engine.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="10" selection-start="391" selection-end="391" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1190">
+            <state line="54" column="56" selection-start="1249" selection-end="1249" vertical-scroll-proportion="0.0" vertical-offset="712" max-vertical-offset="1445">
               <folding />
             </state>
           </provider>
@@ -141,13 +150,14 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/foobar.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
       </list>
     </option>
   </component>
@@ -256,6 +266,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -370,7 +381,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -382,6 +392,7 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="SearchEverywhereHistory" value="pla" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -562,7 +573,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2746365" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2786753" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26655897" sideWeight="0.5012531" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -594,6 +605,79 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="66" column="28" selection-start="2572" selection-end="2572" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1649">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="24" selection-start="1119" selection-end="1119" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="867">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="323">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="31" selection-start="320" selection-end="320" vertical-scroll-proportion="0.0" vertical-offset="238" max-vertical-offset="493">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="84" selection-start="700" selection-end="700" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="2261">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="19" selection-start="132" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="255">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="19" selection-start="220" selection-end="220" vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1955">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="10" selection-start="391" selection-end="391" vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="1190">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="66" column="27" selection-start="1040" selection-end="1040" vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1734">
+          <folding>
+            <marker date="1401270651600" expanded="true" signature="323:420" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="433:508" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="621:989" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="776:808" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="818:885" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="896:986" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="1093:1112" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="1123:1214" placeholder="{...}" />
+            <marker date="1401270651600" expanded="true" signature="1321:1378" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="100" selection-start="642" selection-end="642" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1632">
@@ -802,23 +886,16 @@
         <state line="16" column="62" selection-start="485" selection-end="538" vertical-scroll-proportion="0.42045453" vertical-offset="124" max-vertical-offset="1139" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="31" selection-start="320" selection-end="320" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="186" column="14" selection-start="4566" selection-end="4566" vertical-scroll-proportion="6.2536874" vertical-offset="1042" max-vertical-offset="5678">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="27" column="84" selection-start="700" selection-end="700" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2261">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="7" selection-start="0" selection-end="3183" vertical-scroll-proportion="0.51031893" vertical-offset="0" max-vertical-offset="1955">
           <folding />
         </state>
       </provider>
@@ -830,9 +907,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="19" selection-start="220" selection-end="220" vertical-scroll-proportion="0.0" vertical-offset="918" max-vertical-offset="1751">
+        <state line="21" column="44" selection-start="1108" selection-end="1115" vertical-scroll-proportion="-1.7843137" vertical-offset="266" max-vertical-offset="1666">
           <folding />
         </state>
       </provider>
@@ -844,6 +921,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="31" selection-start="808" selection-end="808" vertical-scroll-proportion="0.0" vertical-offset="185" max-vertical-offset="765">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile">
       <provider selected="true" editor-type-id="text-editor">
         <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
@@ -851,16 +935,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="28" selection-start="2572" selection-end="2572" vertical-scroll-proportion="-14.923077" vertical-offset="734" max-vertical-offset="1649">
+        <state line="35" column="0" selection-start="1037" selection-end="1037" vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="952">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="24" selection-start="1119" selection-end="1119" vertical-scroll-proportion="0.6849817" vertical-offset="255" max-vertical-offset="867">
+        <state line="54" column="56" selection-start="1249" selection-end="1249" vertical-scroll-proportion="0.0" vertical-offset="712" max-vertical-offset="1445">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="395" column="62" selection-start="9792" selection-end="9792" vertical-scroll-proportion="0.3958724" vertical-offset="6504" max-vertical-offset="9027">
           <folding />
         </state>
       </provider>

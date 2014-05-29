@@ -19,6 +19,7 @@
     <body>
         <div id="toolbar">
             <span class="head">Zupfnoter</span>
+            <span class="button" id="tbPrint">download PDF</span>
             <span class="button" id="tbRender">render</span>
             <span class="button" id="tbPlay">play</span>
         </div>
@@ -60,7 +61,7 @@ eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|</div>
 
             function renderABC() {
                 var abc = editor.getSession().getValue();
-                ABCJS.renderAbc($("#tunePreview")[0], abc, {}, {}, {});
+
             }
 
             editor.on("change", function(e) {

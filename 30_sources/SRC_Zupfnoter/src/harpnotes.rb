@@ -142,7 +142,7 @@ module Harpnotes
     end
 
     class Song
-      attr_reader :voices
+      attr_reader :voices, :beat_maps
 
       #
       # [initialize description]
@@ -240,6 +240,10 @@ module Harpnotes
         @origin = origin
       end
 
+      def dashed?
+        @style == :dashed
+      end
+
     end
 
     #
@@ -289,6 +293,10 @@ module Harpnotes
         dotted
       end
 
+      def filled?
+        @fill == :filled
+      end
+
     end
 
     #
@@ -330,11 +338,16 @@ module Harpnotes
     #
     class Default
       # all numbers in mm
-      ELLIPSE_SIZE = [ 10, 7 ]           # size of the largest Ellipse
+      ELLIPSE_SIZE = [ 3, 2 ]   # radii of the largest Ellipse
 
       # x-size of one step in a pitch. It is the horizontal
       # distance between two strings of the harp
       X_SPACING    = 205.0 / 10.0
+
+      # Spacing between beats
+      BEAT_SPACING = 4
+      # Y coordinate of the very first beat
+      BEAT_OFFSET  = 5
 
       # note names (currently not in use, left in for debug purposes)
       NOTE_X_OFFSETS = Hash[["",
@@ -366,7 +379,7 @@ module Harpnotes
       # @return [type] [description]
       def compute_beat_layout(music)
         Proc.new do |beat|
-          beat * 10 + 10
+          beat * BEAT_SPACING + BEAT_OFFSET
         end
       end
 
@@ -380,7 +393,10 @@ module Harpnotes
       def layout(music, beat_layout = nil)
         beat_layout = beat_layout || compute_beat_layout(music)
 
-        sheet_elements  = music.voices.map {|v| layout_voice(v, beat_layout) }.flatten
+        beat_compression_map = compute_beat_compression(music)
+        compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
+
+        sheet_elements  = music.voices.map {|v| layout_voice(v, compressed_beat_layout) }.flatten
         note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
         synch_lines = music.build_synch_points.map do |sp|
           FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
@@ -422,6 +438,17 @@ module Harpnotes
 
 
       private
+
+      def compute_beat_compression(music)
+        max_beat = music.beat_maps.map {|map| map.keys.max }.max
+
+        current_beat = 0
+        Hash[(0..max_beat).map do |beat|
+          has_no_notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact.empty?
+          current_beat = beat unless has_no_notes_on_beat
+          [ beat, current_beat ]
+        end]
+      end
 
       #
       # [layout_playables description]

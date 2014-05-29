@@ -10,23 +10,28 @@ class JsPDF
   end
 
   def line(from, to)
-    `self.native.lines(to, from[0], from[1])`
+    `self.native.lines([ [ to[0] - from[0], to[1] - from[1] ] ], from[0], from[1])`
   end
 
-  def ellipse(center, size, style)
+  def line_cap=(value)
+    `self.native.setLineCap(value)`
+  end
+
+  # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
+  def ellipse(center, size, style = `undefined`)
     `self.native.ellipse(center[0], center[1], size[0], size[1], style)`
   end
 
-  def fill=(rgba)
-    `self.native.setFillColor(rgba[0], rgba[1], rgba[2], rgba[3])`
+  def fill=(rgb)
+    `self.native.setFillColor(rgb[0], rgb[1], rgb[2])`
   end
 
-  def draw=(rgba)
-    `self.native.setDrawColor(rgba[0], rgba[1], rgba[2], rgba[3])`
+  def draw=(rgb)
+    `self.native.setDrawColor(rgb[0], rgb[1], rgb[2])`
   end
 
   def text_color=(rgb)
-    `self.native.setTetColor(rgba[0], rgba[1], rgba[2])`
+    `self.native.setTetColor(rgb[0], rgb[1], rgb[2])`
   end
 
   def text(text, position, flags)
