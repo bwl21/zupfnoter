@@ -32,7 +32,7 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="44" selection-start="1108" selection-end="1115" vertical-scroll-proportion="-1.7843137" vertical-offset="266" max-vertical-offset="1666">
+            <state line="21" column="44" selection-start="1108" selection-end="1115" vertical-scroll-proportion="-7.0" vertical-offset="0" max-vertical-offset="1666">
               <folding />
             </state>
           </provider>
@@ -56,10 +56,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="harpnotes.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="harpnotes.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="344" column="31" selection-start="7793" selection-end="7793" vertical-scroll-proportion="0.6054159" vertical-offset="5535" max-vertical-offset="9027">
+            <state line="344" column="31" selection-start="7793" selection-end="7793" vertical-scroll-proportion="0.0" vertical-offset="5535" max-vertical-offset="9027">
               <folding />
             </state>
           </provider>
@@ -110,21 +110,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.scss" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="index.scss" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="27" selection-start="1040" selection-end="1040" vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1734">
-              <folding>
-                <marker date="1401270651600" expanded="true" signature="323:420" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="433:508" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="621:989" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="776:808" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="818:885" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="896:986" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="1093:1112" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="1123:1214" placeholder="{...}" />
-                <marker date="1401270651600" expanded="true" signature="1321:1378" placeholder="{...}" />
-              </folding>
+            <state line="18" column="31" selection-start="345" selection-end="345" vertical-scroll-proportion="0.30357143" vertical-offset="153" max-vertical-offset="1870">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -144,7 +134,6 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/sass/index.sass" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/sass/index.scss" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/reset.sass" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/music.min.js" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.js" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile" />
@@ -158,6 +147,7 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss" />
       </list>
     </option>
   </component>
@@ -356,6 +346,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="200_zupfnoter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="zupfnoter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="30_sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SRC_Zupfnoter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -662,17 +674,7 @@
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state line="66" column="27" selection-start="1040" selection-end="1040" vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1734">
-          <folding>
-            <marker date="1401270651600" expanded="true" signature="323:420" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="433:508" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="621:989" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="776:808" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="818:885" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="896:986" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1093:1112" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1123:1214" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1321:1378" placeholder="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -728,17 +730,7 @@
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state line="66" column="27" selection-start="1040" selection-end="1040" vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1734">
-          <folding>
-            <marker date="1401270651600" expanded="true" signature="323:420" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="433:508" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="621:989" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="776:808" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="818:885" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="896:986" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1093:1112" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1123:1214" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1321:1378" placeholder="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -794,17 +786,7 @@
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state line="66" column="27" selection-start="1040" selection-end="1040" vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1734">
-          <folding>
-            <marker date="1401270651600" expanded="true" signature="323:420" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="433:508" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="621:989" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="776:808" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="818:885" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="896:986" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1093:1112" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1123:1214" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1321:1378" placeholder="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -818,17 +800,7 @@
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="23" selection-start="207" selection-end="207" vertical-scroll-proportion="0.0" vertical-offset="340" max-vertical-offset="620">
-          <folding>
-            <marker date="1401270651600" expanded="true" signature="323:420" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="433:508" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="621:989" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="776:808" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="818:885" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="896:986" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1093:1112" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1123:1214" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1321:1378" placeholder="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -855,23 +827,6 @@
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/musical.min.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="17175" selection-start="17175" selection-end="17175" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="967" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="27" selection-start="1040" selection-end="1040" vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1734">
-          <folding>
-            <marker date="1401270651600" expanded="true" signature="323:420" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="433:508" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="621:989" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="776:808" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="818:885" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="896:986" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1093:1112" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1123:1214" placeholder="{...}" />
-            <marker date="1401270651600" expanded="true" signature="1321:1378" placeholder="{...}" />
-          </folding>
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_RubySources/spec/pagelayout_spec.js">
@@ -901,13 +856,6 @@
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="10" selection-start="391" selection-end="391" vertical-scroll-proportion="0.0" vertical-offset="56" max-vertical-offset="1190">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="44" selection-start="1108" selection-end="1115" vertical-scroll-proportion="-1.7843137" vertical-offset="266" max-vertical-offset="1666">
           <folding />
         </state>
       </provider>
@@ -949,7 +897,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="344" column="31" selection-start="7793" selection-end="7793" vertical-scroll-proportion="0.6054159" vertical-offset="5535" max-vertical-offset="9027">
+        <state line="344" column="31" selection-start="7793" selection-end="7793" vertical-scroll-proportion="0.0" vertical-offset="5535" max-vertical-offset="9027">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="44" selection-start="1108" selection-end="1115" vertical-scroll-proportion="-7.0" vertical-offset="0" max-vertical-offset="1666">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="31" selection-start="345" selection-end="345" vertical-scroll-proportion="0.30357143" vertical-offset="153" max-vertical-offset="1870">
           <folding />
         </state>
       </provider>

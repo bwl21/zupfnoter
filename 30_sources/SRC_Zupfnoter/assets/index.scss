@@ -3,20 +3,28 @@
 $toolbarHeight: 30px;
 $titleHeight: 2em;
 
+$backgoundColor: #2D3E50;
+$titleColor: #1BBC9B;
+
 body {
   font-family: Helvetica, Arial, sans-serif;
+  background-color: $backgoundColor;
+  color: white;
 }
 
 .container {
   overflow: hidden;
   position: absolute;
+  border-left: 1px solid $backgoundColor;
+  background-color: $titleColor;
 
   .title {
+    background-color: $backgoundColor;
     width: 100%;
     height: $titleHeight;
     line-height: $titleHeight;
     text-align: right;
-    border-top: 1px solid black;
+    border: 1px solid $titleColor;
 
     .head {
       position: absolute;
@@ -85,12 +93,12 @@ body {
   top: 40%;
   bottom: 0px;
   left: 0px;
-  right: 51%;
+  right: 50%;
 }
 
 #harpPreviewContainer {
   top: 40%;
   bottom: 0px;
-  left: 51%;
+  left: 50%;
   right: 0px;
 }
