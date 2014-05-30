@@ -25,15 +25,27 @@
         </div>
         <div id="abcEditorContainer" class="container">
             <div class="body">
-<div id="abcEditor" class="editor">X: 1
-T: Cooley's
-M: 4/4
-L: 1/8
-K: Emin
-|:D2|[EG] B{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
-EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
-|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
-eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|</div>
+<div id="abcEditor" class="editor">X:1
+T:Zupfnoter test
+C:Bernhard Weichel
+M:4/4
+L:1/4
+Q:1/4=76
+%%score (T1 T2) (B1 B2)
+V:T1           clef=treble-8  name="v1"   snm="v1"
+V:T2           clef=treble-8  name="v2"   snm="v2"
+V:B1  middle=D, clef=bass      name="Basso I"    snm="B.I"  transpose=-24
+V:B2  middle=D, clef=bass      name="Basso II"   snm="B.II" transpose=-24
+K:C
+%            End of header, start of tune body:
+% 1
+[V:T1]  cdef            | g  abc'     | z (cde)       |
+[V:T2]  C3E            | G  ABc      | z1   D3        |
+%[V:B1]  z4              | C,D,E,F,    | z4           |
+%[V:B2]  C,,D,,E,,F,,    | G,,A,,B,,C  | z4          |
+[V:T1]  cdef            | g  abc'     | z (cde)       |
+[V:T2]  C3E            | G  ABc      | z1   D3        |
+</div>
             </div>
         </div>
         <div id="tunePreviewContainer" class="container">
