@@ -1,20 +1,48 @@
 
+# the top level namespace
+
 module Harpnotes
 
   # The music model that is transformed (layouted) to something drawable
-
   #
-  # [module description]
+  # =Terminology
   #
-  # @author [beweiche]
+  # - *beat*: denotes the start time of a note. So the entire song
+  #   is divided into beats (as the musician counts). Beats are mainly
+  #   used to determine the vertical position of a Playable in the harp sheet
+  #
+  # - *beat_map*: a mapping of playables to the beats of the the music.
+  #
+  # - *beat_layout*: a mapping between the bats of the music and the beats shown in the sheet.
+  #   basically it is an approach to vertically compress the sheet.
+  #
+  # - *Flowline*: a representation of the flow of the music. Flowlines connect notes
+  #
+  # - *Jumpline*: an indicator of jumps within the piece. The music continues at then end
+  #   of the jumpline
+  #
+  # - *Syncline*: an indicator for notes to be played simultaneously. They synchronize
+  #   two voices
+  #
+  #
+  #
+  # =Basic concept
+  #
+  #  Song -> Staff* -> Voice* -> MusicEntity*
+  #
+  # 1. Music is denoted as Song
+  # 2. Staff: Song consists of Staffs. Staffs may be printed on the same sheet with synchronized beats
+  #    but without Synclines
+  # 3. Voice: A Staff consists of multiple voices. Voices are printed with synclines
+  # 4. MusicEntity: A Voice is represented as a squence (Array) of MusicEntities. This can be Plaaybles
+  #    but also other entis required to specify the music
+  # 5. Playable < MusicEntitiy - an entity which is actually played
+  #
+  # 6. Note: Measures are not modelled as containers ...
   #
   module Music
 
     # Marks classes in this model
-    #
-    # [class description]
-    #
-    # @author [beweiche]
     #
     class MusicEntity
       attr_accessor :origin
@@ -22,29 +50,25 @@ module Harpnotes
 
     # Marks playable Music entities
     #
-    # [class description]
-    #
-    # @author [beweiche]
-    #
+    # duration is represented reciproke value of duration: 1: whole; 2: half, 4:quarter
+    # playable shall provide duration
     class Playable < MusicEntity
       attr_accessor :beat
     end
 
     # A single note
     #
-    # [class description]
-    #
-    # @author [beweiche]
-    #
     class Note < Playable
       attr_reader :pitch, :duration
 
       #
-      # [initialize description]
-      # @param pitch [type] [description]
-      # @param duration [type] [description]
+      # Constructor
+
+      # @param pitch [Interger] A designator of the note (http://computermusicresource.com/midikeys.html)
+      # @param duration [Integer] see Playable
       #
       # @return [type] [description]
+      #
       def initialize(pitch, duration)
         @pitch = pitch
         @duration = duration
@@ -52,16 +76,21 @@ module Harpnotes
 
     end
 
-    # An accord: multiple notes played at the same time
+    # An accord: multiple notes played simultaneously
+    # note that we bacsically use an interval as
+    # on table harps accords are difficult (but not impossible)
+    # to play.
+    #
+    # It is called SynchPoint since it is represented by a horizontal
+    # line connecting the involved notes
     class SynchPoint < Playable
       attr_reader :notes
 
-      # @param notes Array the notes of comprising the coord.
       #
-      # [initialize description]
-      # @param notes [type] [description]
+      # Constructor
       #
-      # @return [type] [description]
+      # @param notes [Array of Note] The particular notes of the chord
+      #
       def initialize(notes)
         raise "Notes must be an array" unless notes.is_a? Array
 
@@ -69,16 +98,21 @@ module Harpnotes
       end
 
       #
-      # [duration description]
+      # Yield the duration of the SyncPoint
+      # Accords are always played the same length
+      # (otherwise it is not an Accord). Therefore
+      # we can provide the duration as the duration
+      # of the first note.
       #
-      # @return [type] [description]
+      # @return [Integer] see Playable
       def duration
         @notes.first.duration
       end
 
       #
-      # [beat= description]
-      # @param value [type] [description]
+      # This sets the actual beat
+      #
+      # @param value [Integer] id of hte beat
       #
       # @return [type] [description]
       def beat=(value)
@@ -87,31 +121,42 @@ module Harpnotes
       end
     end
 
-    # A pause in the song
+    # A pause also called 'rest'. It is not really
+    # 'played' but has a duration
     #
-    # [class description]
-    #
-    # @author [beweiche]
     #
     class Pause < Playable
       attr_reader :duration
 
       #
-      # [initialize description]
-      # @param duration [type] [description]
+      # Constructor
+      # @param duration [Integer] duration - see Playable
+
       #
-      # @return [type] [description]
+      # @return [Type] [description]
       def initialize(duration)
         @duration = duration
       end
     end
 
+
+
+    #
+    # This class denotes the start of a Measure
+    # It has a companion to associate it with a
+    # beat. The companion is the note played after
+    # the Measure. But Measures are not played and
+    # do not change the vertical position in the
+    # sheet.
+    #
+    # But they implicitly revoke accidents
+    #
     class MeasureStart < MusicEntity
       attr_reader :companion
 
       #
-      # [initialize description]
-      # @param companion [type] [description]
+      # Constructor
+      # @param companion [Note] The first playable in the new measure
       #
       # @return [type] [description]
       def initialize(companion)
@@ -121,16 +166,27 @@ module Harpnotes
       end
     end
 
+
+
+    #
+    # This denotes a situation where the playing of the
+    # music shall be continued somewhere elase. It is represented
+    # as an arrow in the sheet.
+    #
+    # Yes, the name is not really good, sinc ca capo in fact means
+    # to continue from the beginning.
+    #
+    # The most prominent application is a repetition
+    #
     class Dacapo < MusicEntity
       attr_reader :from, :to, :level
 
       #
-      # [initialize description]
-      # @param from [type] [description]
-      # @param to [type] [description]
-      # @param level [type] [description]
+      # construtor
+      # @param from [Playable] the start point
+      # @param to [Playable] the end point
+      # @param level [Integer] A nesting level, used to optimize the graphical representation.
       #
-      # @return [type] [description]
       def initialize(from, to, level)
         raise "From must be a Playable" unless from.is_a? Harpnotes::Music::Playable
         raise "To must be a Playable" unless to.is_a? Harpnotes::Music::Playable
@@ -141,15 +197,19 @@ module Harpnotes
       end
     end
 
+
+
+    #
+    # This represents the actual song / music piece
+    #
     class Song
       attr_reader :voices, :beat_maps
 
       #
-      # [initialize description]
-      # @param voices = [] [type] [description]
-      # @param note_length_in_beats = 8 [type] [description]
+      # Constructor
+      # @param voices [Array of Array of MusicEntity] The voices in the song
+      # @param note_length_in_beats [Integer] the shortest note todo: not used?
       #
-      # @return [type] [description]
       def initialize(voices = [], note_length_in_beats = 8)
         @voices = voices
         @note_length_in_beats = note_length_in_beats
@@ -157,8 +217,8 @@ module Harpnotes
       end
 
       #
-      # [<< description]
-      # @param voice [type] [description]
+      # Append a voice to the song
+      # @param voice [Array of MusicEntity] The voice to be added
       #
       # @return [type] [description]
       def <<(voice)
@@ -167,9 +227,9 @@ module Harpnotes
       end
 
       #
-      # [build_synch_points description]
+      # This builds the Syncpoints within the song
       #
-      # @return [type] [description]
+      # @return [Array] The syncpoints which wer found in the song
       def build_synch_points
         max_beat = @beat_maps.map {|map| map.keys.max }.max
         (0..max_beat).map do |beat|
@@ -183,9 +243,11 @@ module Harpnotes
       private
 
       #
-      # [update_beats description]
+      # Updates the beat map of the song.
+      # A beat map of a voice is a hash (current_beat => playable).
+      # this method also updates the beat in the considered playable
       #
-      # @return [type] [description]
+      # @return [Array of Hash] Array of beat maps corresponding ot array of voices
       def update_beats
         @beat_maps = @voices.map do |voice|
           current_beat = 0
@@ -209,13 +271,19 @@ module Harpnotes
   module Drawing
 
     #
-    # [class description]
+    # This is the drawing model of a tableharp sheet.
+    # Note that this model is still independent from the renderien engine.
+    # It comprises the drawing semantical drawing prmitives
     #
-    # @author [beweiche]
     #
     class Sheet
       attr_reader :children, :vertical_scale
 
+      # Constructor
+      # @param children [Array of primitives]  the primitives which are drawn
+      # @param vertical_scale = 1.0 [Numeric]  A factor to map the beats to vertical positions. todo: maybe superfluous
+      #
+      # @return [type] [description]
       def initialize(children = [], vertical_scale = 1.0)
         @children = children
         @vertical_scale = vertical_scale
@@ -223,16 +291,17 @@ module Harpnotes
     end
 
     #
-    # [class description]
-    #
-    # @author [beweiche]
+    # This represents a flowline
     #
     class FlowLine
       attr_reader :from, :to, :style, :origin
 
-      # @param from Ellipse the origin of the flow
-      # @param to   Ellipse the target of the flow
-      # @param style Symbol either :dashed or :solid
+      # @param from [Ellipse] the origin of the flow
+      # @param to   [Ellipse] the target of the flow
+      # @param style [Symbol] either :dashed or :solid
+      # @param origin [Object] An object to support bactrace, drill down etc.
+      #
+      # @return [type] [description]
       def initialize(from, to, style = :solid, origin = nil)
         @from   = from
         @to     = to
@@ -240,23 +309,26 @@ module Harpnotes
         @origin = origin
       end
 
+
+      # 
+      # Indicates of the flowline shall be drawn as dashed
+      # Syntactic sugar for the attr_reader
+      # 
+      # @return [type] [description]
       def dashed?
         @style == :dashed
       end
-
     end
 
     #
-    # [class description]
-    #
-    # @author [beweiche]
+    # This represents a JumpLine
     #
     class JumpLine
       attr_reader :from, :to, :level
 
-      # @param from Ellipse the origin of the flow
-      # @param to   Ellipse the target of the flow
-      # @param level Numeric the indentation level of the line
+      # @param from [Ellipse] the origin of the flow
+      # @param to   [Ellipse] the target of the flow
+      # @param level [Numeric] the indentation level of the line
       def initialize(from, to, level = 0)
         @from  = from
         @to    = to
@@ -265,18 +337,19 @@ module Harpnotes
     end
 
     #
-    # [class description]
-    #
-    # @author [beweiche]
+    # This represents a note in the shape of an ellipsis
     #
     class Ellipse
       attr_reader :center, :size, :fill, :dotted, :origin
 
-      # @param from Array the center of the ellipse as [x, y]
-      # @param size Array the size of the ellipse as [width, height]
-      # @param fill Symbol the fill style, either :filled or :empty
-      # @param dotted TRUE if the ellipse has a small companion dot, FALSE otherwise
-      # @param origin The source object of the original model
+      #
+      # Constructor
+      # 
+      # @param size [Array] the size of the ellipse as [width, height]
+      # @param fill [Symbol] the fill style, either :filled or :empty
+      # @param dotted [Boolean] TRUE if the ellipse has a small companion dot, FALSE otherwise
+      # @param origin [Object] The source object of the upstream model
+      #  
       def initialize(center, size, fill = :filled, dotted = TRUE, origin = nil)
         @center = center
         @size   = size
@@ -285,14 +358,28 @@ module Harpnotes
         @origin = origin
       end
 
+
+      # 
+      # Return the height of the Ellipse
+      # 
+      # @return [Numeric] The height of the ellipse
       def height
         @size.last
       end
 
+
+      # 
+      # Indicate if the Ellipse shall have a Punctuation dot
+      # 
+      # @return [Boolean] TRUE if ther shall be a punctuation dot
       def dotted?
         dotted
       end
 
+      # Indicate if the Ellipse shall be filled
+      # 
+      # @return [Boolean] TRUE if ther shall be filled
+      # 
       def filled?
         @fill == :filled
       end
@@ -300,10 +387,9 @@ module Harpnotes
     end
 
     #
-    # [class description]
+    # Represent a text on the sheet
     #
-    # @author [beweiche]
-    #
+    # 
     class Text
       attr_reader :position, :text, :style
 
@@ -323,18 +409,13 @@ module Harpnotes
 
   # The layout algorithms transforming a music model into a drawing model
   #
-  # [module description]
-  #
-  # @author [beweiche]
-  #
   module Layout
     include Harpnotes::Music
     include Harpnotes::Drawing
 
     #
-    # [class description]
-    #
-    # @author [beweiche]
+    # the default layout engine representing vanilla table harp sheets
+    # This might be the only one at all ...
     #
     class Default
       # all numbers in mm
@@ -383,10 +464,9 @@ module Harpnotes
         end
       end
 
-      # @param music Harpnotes::Music::Document the document to transform
       #
       # [layout description]
-      # @param music [type] [description]
+      # @param music Harpnotes::Music::Document the document to transform
       # @param beat_layout = nil [type] [description]
       #
       # @return [type] [description]
@@ -407,11 +487,15 @@ module Harpnotes
       end
 
       #
-      # [layout_voice description]
-      # @param voice [type] [description]
-      # @param beat_layout [type] [description]
+      # compute the layout of a particular voice. It places flowlines playables and jumplines.
+      # The vertical arrangement is goverend by the beat_layout, which actually maps the
+      # beat in the timing domain to the beat in the sheet.
       #
-      # @return [type] [description]
+      # @param voice [Array of MusicEntity] the Voice to be layouted
+      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
+      #
+      # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playbles and jumplines.
+      #                            note that these shall be rendered in the given order.
       def layout_voice(voice, beat_layout)
         res_playables = voice.select {|c| c.is_a? Playable }.map do |playable|
           layout_playables(playable, beat_layout)
@@ -439,21 +523,28 @@ module Harpnotes
 
       private
 
+
+      # compress  beat layout of a music sheet
+      # @param music Harpnotes::Music::Document the document to optimize the beat layout
+      #
+      # @return [Hash] a beat map {10 => 5} beat 10 is placed at vertical position 5
+      #
       def compute_beat_compression(music)
         max_beat = music.beat_maps.map {|map| map.keys.max }.max
 
         current_beat = 0
         Hash[(0..max_beat).map do |beat|
-          has_no_notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact.empty?
-          current_beat += 1 unless has_no_notes_on_beat
-          [ beat, current_beat ]
+               has_no_notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact.empty?
+               current_beat += 1 unless has_no_notes_on_beat
+               [ beat, current_beat ]
         end]
       end
 
       #
-      # [layout_playables description]
-      # @param root [type] [description]
-      # @param beat_layout Lambda [description]
+      # layout the one Playable on the sheet
+      #
+      # @param root [Playable] the entity to be drawn on the sheet
+      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
       # @return [type] [description]
       def layout_playables(root, beat_layout)
@@ -469,11 +560,12 @@ module Harpnotes
       end
 
       #
-      # [layout_note description]
-      # @param root [type] [description]
+      # Place a Note on the sheet
+      #
+      # @param root [Note] The note
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
-      # @return [type] [description]
+      # @return [Object] The generated drawing primitive
       def layout_note(root, beat_layout)
         x_offset     = root.pitch * X_SPACING
         y_offset     = beat_layout.call(root.beat)
@@ -485,11 +577,11 @@ module Harpnotes
       end
 
       #
-      # [layout_accord description]
-      # @param root [type] [description]
-      # @param beat_layout [type] [description]
+      # Place a SynchPoint on the Sheet
+      # @param root [SynchPoint] The SynchPoint to be placed
+      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
-      # @return [type] [description]
+      # @return [Object] The generated drawing primitive
       def layout_accord(root, beat_layout)
         res = root.notes.map([]) {|c| layout_note(c, beat_layout) }[0..1]
         res << FlowLine.new(res.first, res.last, :dashed, root)
@@ -497,11 +589,11 @@ module Harpnotes
       end
 
       #
-      # [layout_pause description]
-      # @param root [type] [description]
-      # @param y_offset [type] [description]
+      # Draw a Pause on the Sheet
+      # @param root [Pause] The Pause to be drawn
+      # @param y_offset [Numeric] [description]  todo: superflous
       #
-      # @return [type] [description]
+      # @return [Object] The generated drawing primitive
       def layout_pause(root, y_offset)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         []
@@ -509,10 +601,11 @@ module Harpnotes
 
 
       #
-      # [duration_to_id description]
+      # Convert a duration to a symbol todo: move DURATION_TO_STYLE in here
+      #
       # @param duration [type] [description]
       #
-      # @return [type] [description]
+      # @return [Object] The generated drawing primitive
       def duration_to_id(duration)
         "d#{duration}".to_sym
       end

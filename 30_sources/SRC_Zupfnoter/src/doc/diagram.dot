@@ -1,0 +1,122 @@
+digraph yard {
+  graph [rankdir=BT rank=sink outputMode=nodesfirst packMode="graph" splines=true];
+  node [shape=record rank=sink rankType=sink];
+  Root [label="{root root||}" rank=sink];
+  JsPDF [label="{class JsPDF||}" rank=sink];
+  subgraph cluster_JsPDF {
+    label = "JsPDF"; labelloc=b;
+  }
+  subgraph cluster_ {
+    label = ""; labelloc=b;
+    Harpnotes [label="{module Harpnotes||}" rank=sink];
+    Harpnotes_PDFEngine [label="{class PDFEngine|+ \#pdf [R]\l|- \#draw_ellipse\l- \#draw_flowline\ \:\ type\l- \#draw_jumpline\ \:\ nil\l}" rank=sink];
+    subgraph cluster_Harpnotes_PDFEngine {
+      label = "PDFEngine"; labelloc=b;
+    }
+    Harpnotes_PDFEngine -> Harpnotes_Drawing [style=dotted arrowType=none];
+    Harpnotes_RaphaelEngine [label="{class RaphaelEngine|+ \#paper [R]\l|- \#draw_ellipse\l- \#draw_flowline\ \:\ type\l- \#draw_jumpline\ \:\ nil\l}" rank=sink];
+    subgraph cluster_Harpnotes_RaphaelEngine {
+      label = "RaphaelEngine"; labelloc=b;
+    }
+    Harpnotes_RaphaelEngine -> Harpnotes_Drawing [style=dotted arrowType=none];
+    subgraph cluster_Harpnotes {
+      label = "Harpnotes"; labelloc=b;
+      Harpnotes_Music [label="{module Music||}" rank=sink];
+      Harpnotes_Music_MusicEntity [label="{class MusicEntity|+ \#origin [RW]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_MusicEntity {
+        label = "MusicEntity"; labelloc=b;
+      }
+      Harpnotes_Music_Playable [label="{class Playable|+ \#beat [RW]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_Playable {
+        label = "Playable"; labelloc=b;
+      }
+      Harpnotes_Music_Playable -> Harpnotes_Music_MusicEntity;
+      Harpnotes_Music_Note [label="{class Note|+ \#duration [R]\l+ \#pitch [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_Note {
+        label = "Note"; labelloc=b;
+      }
+      Harpnotes_Music_Note -> Harpnotes_Music_Playable;
+      Harpnotes_Music_SynchPoint [label="{class SynchPoint|+ \#notes [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_SynchPoint {
+        label = "SynchPoint"; labelloc=b;
+      }
+      Harpnotes_Music_SynchPoint -> Harpnotes_Music_Playable;
+      Harpnotes_Music_Pause [label="{class Pause|+ \#duration [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_Pause {
+        label = "Pause"; labelloc=b;
+      }
+      Harpnotes_Music_Pause -> Harpnotes_Music_Playable;
+      Harpnotes_Music_MeasureStart [label="{class MeasureStart|+ \#companion [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_MeasureStart {
+        label = "MeasureStart"; labelloc=b;
+      }
+      Harpnotes_Music_MeasureStart -> Harpnotes_Music_MusicEntity;
+      Harpnotes_Music_Dacapo [label="{class Dacapo|+ \#from [R]\l+ \#level [R]\l+ \#to [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_Dacapo {
+        label = "Dacapo"; labelloc=b;
+      }
+      Harpnotes_Music_Dacapo -> Harpnotes_Music_MusicEntity;
+      Harpnotes_Music_Song [label="{class Song|+ \#beat_maps [R]\l+ \#voices [R]\l|- \#update_beats\ \:\ Array\ of\ Hash\l}" rank=sink];
+      subgraph cluster_Harpnotes_Music_Song {
+        label = "Song"; labelloc=b;
+      }
+      subgraph cluster_Harpnotes_Music {
+        label = "Music"; labelloc=b;
+      }
+      Harpnotes_Drawing [label="{module Drawing||}" rank=sink];
+      Harpnotes_Drawing_Sheet [label="{class Sheet|+ \#children [R]\l+ \#vertical_scale [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_Sheet {
+        label = "Sheet"; labelloc=b;
+      }
+      Harpnotes_Drawing_FlowLine [label="{class FlowLine|+ \#from [R]\l+ \#origin [R]\l+ \#style [R]\l+ \#to [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_FlowLine {
+        label = "FlowLine"; labelloc=b;
+      }
+      Harpnotes_Drawing_JumpLine [label="{class JumpLine|+ \#from [R]\l+ \#level [R]\l+ \#to [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_JumpLine {
+        label = "JumpLine"; labelloc=b;
+      }
+      Harpnotes_Drawing_Ellipse [label="{class Ellipse|+ \#center [R]\l+ \#dotted [R]\l+ \#fill [R]\l+ \#origin [R]\l+ \#size [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_Ellipse {
+        label = "Ellipse"; labelloc=b;
+      }
+      Harpnotes_Drawing_Text [label="{class Text|+ \#position [R]\l+ \#style [R]\l+ \#text [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_Text {
+        label = "Text"; labelloc=b;
+      }
+      subgraph cluster_Harpnotes_Drawing {
+        label = "Drawing"; labelloc=b;
+      }
+      Harpnotes_Layout [label="{module Layout||}" rank=sink];
+      Harpnotes_Layout_Default [label="{class Default||- \#compute_beat_compression\ \:\ Hash\l- \#duration_to_id\ \:\ Object\l- \#layout_accord\ \:\ Object\l- \#layout_note\ \:\ Object\l- \#layout_pause\ \:\ Object\l- \#layout_playables\ \:\ type\l}" rank=sink];
+      subgraph cluster_Harpnotes_Layout_Default {
+        label = "Default"; labelloc=b;
+      }
+      subgraph cluster_Harpnotes_Layout {
+        label = "Layout"; labelloc=b;
+      }
+      Harpnotes_Layout -> Harpnotes_Drawing [style=dotted arrowType=none];
+      Harpnotes_Layout -> Harpnotes_Music [style=dotted arrowType=none];
+      Harpnotes_Input [label="{module Input||}" rank=sink];
+      Harpnotes_Input_ABCToHarpnotes [label="{class ABCToHarpnotes||}" rank=sink];
+      subgraph cluster_Harpnotes_Input_ABCToHarpnotes {
+        label = "ABCToHarpnotes"; labelloc=b;
+      }
+      subgraph cluster_Harpnotes_Input {
+        label = "Input"; labelloc=b;
+      }
+    }
+    Raphael [label="{module Raphael||}" rank=sink];
+    Raphael_Element [label="{class Element||}" rank=sink];
+    subgraph cluster_Raphael_Element {
+      label = "Element"; labelloc=b;
+    }
+    Raphael_Paper [label="{class Paper||}" rank=sink];
+    subgraph cluster_Raphael_Paper {
+      label = "Paper"; labelloc=b;
+    }
+    subgraph cluster_Raphael {
+      label = "Raphael"; labelloc=b;
+    }
+  }
+}

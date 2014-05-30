@@ -14488,6 +14488,7 @@ if (c == null) c = nil;
         var parser = new ABCJS.parse.Parse();
         parser.parse(book.tunes[0].abc);
         var tune = parser.getTune();
+        console.log(tune)
         
           note_length_rows = ($a = ($b = abc_code.$split("\n")).$select, $a._p = (TMP_1 = function(row){var self = TMP_1._s || this;
 if (row == null) row = nil;

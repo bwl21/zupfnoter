@@ -11,3 +11,10 @@ task :build do
     out << env["application"].to_s
   end
 end
+
+desc "Build the documentation"
+task :doc do
+	sh "yard doc . --verbose --backtrace --protected --private"
+	sh "yard graph -f doc/diagram.dot -d --verbose --backtrace --full --protected --private"
+
+end

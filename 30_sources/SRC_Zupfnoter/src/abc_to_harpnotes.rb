@@ -2,6 +2,8 @@ require "native"
 
 module Harpnotes
 
+  # the input faciities, basically the ABCinput stuff.
+
   module Input
 
     class ABCToHarpnotes
@@ -23,6 +25,7 @@ module Harpnotes
         var parser = new ABCJS.parse.Parse();
         parser.parse(book.tunes[0].abc);
         var tune = parser.getTune();
+        console.log(tune)
         }
         note_length_rows = abc_code.split("\n").select {|row| row[0..1] == "L:" }
         raise "ABC code does not contain a unit note length (L)" if note_length_rows.empty?
@@ -30,7 +33,7 @@ module Harpnotes
         note_length = note_length.last / note_length.first
 
         tune = Native(`tune`)
-        lines = tune[:lines].map {|l| Native(l)[:staff] }.flatten
+        lines = tune[:lines].map {|l| Native(l)[:staff] }.flatten # todo a line can have more than one staff
         voices = lines.inject([]) do |m, l|
           Native(l)[:voices].each_with_index do |v, idx|
             m[idx] ||= []
