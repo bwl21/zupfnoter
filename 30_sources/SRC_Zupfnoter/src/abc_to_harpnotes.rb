@@ -6,10 +6,33 @@ module Harpnotes
 
   module Input
 
+    class ABCPitchToMidipitch
+
+      def initialize
+        @pitchmap = []
+      end
+      def get_midipitch(note)
+        abc_pitch = Native(note)[:pitch]
+        scale = [0,2,4,5,7,9,11]
+
+        octave = (abc_pitch / 7).floor
+
+        note_in_octave = abc_pitch % 7
+        note_in_octave += 7 if note_in_octave < 0
+
+        result = 0 + 12 * octave + scale[note_in_octave]
+
+        result
+      end
+    end
+
+
+    # The transformer
     class ABCToHarpnotes
 
       def initialize
         reset_state
+        @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
       end
 
       def reset_state
@@ -59,6 +82,7 @@ module Harpnotes
         end
 
         Harpnotes::Music::Song.new(voices_transformed, note_length)
+
       end
 
       def transform_note(note)
@@ -77,7 +101,8 @@ module Harpnotes
 
       def transform_real_note(note, duration)
         notes = Native(note[:pitches]).map do |pitch|
-          note = Harpnotes::Music::Note.new(Native(pitch)[:pitch], duration)
+          midipitch = @pitch_transformer.get_midipitch(pitch)
+          note = Harpnotes::Music::Note.new(midipitch, duration)
           note.origin = note
           note
         end

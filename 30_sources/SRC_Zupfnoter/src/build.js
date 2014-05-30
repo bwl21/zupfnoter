@@ -14278,7 +14278,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         $opal.cdecl($scope, 'ELLIPSE_SIZE', [3, 2]);
 
-        $opal.cdecl($scope, 'X_SPACING', (139)['$/'](12.0));
+        $opal.cdecl($scope, 'X_SPACING', (115)['$/'](10));
 
         $opal.cdecl($scope, 'BEAT_SPACING', 4);
 
@@ -14445,7 +14445,7 @@ if (c == null) c = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range;
 
-  $opal.add_stubs(['$reset_state', '$select', '$==', '$[]', '$split', '$empty?', '$raise', '$map', '$to_i', '$strip', '$last', '$first', '$/', '$Native', '$flatten', '$inject', '$each_with_index', '$[]=', '$<<', '$flatten!', '$compact', '$send', '$nil?', '$each', '$origin=', '$new', '$round', '$*', '$!', '$transform_rest', '$transform_real_note', '$length', '$gsub', '$pop']);
+  $opal.add_stubs(['$[]', '$Native', '$floor', '$/', '$%', '$<', '$+', '$*', '$reset_state', '$new', '$select', '$==', '$split', '$empty?', '$raise', '$map', '$to_i', '$strip', '$last', '$first', '$flatten', '$inject', '$each_with_index', '$[]=', '$<<', '$flatten!', '$compact', '$send', '$nil?', '$each', '$origin=', '$round', '$!', '$transform_rest', '$transform_real_note', '$get_midipitch', '$length', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -14458,6 +14458,32 @@ if (c == null) c = nil;
       var def = self._proto, $scope = self._scope;
 
       (function($base, $super) {
+        function $ABCPitchToMidipitch(){};
+        var self = $ABCPitchToMidipitch = $klass($base, $super, 'ABCPitchToMidipitch', $ABCPitchToMidipitch);
+
+        var def = self._proto, $scope = self._scope;
+
+        def.$initialize = function() {
+          var self = this;
+
+          return self.pitchmap = [];
+        };
+
+        return (def.$get_midipitch = function(note) {
+          var self = this, abc_pitch = nil, scale = nil, octave = nil, note_in_octave = nil, result = nil;
+
+          abc_pitch = self.$Native(note)['$[]']("pitch");
+          scale = [0, 2, 4, 5, 7, 9, 11];
+          octave = (abc_pitch['$/'](7)).$floor();
+          note_in_octave = abc_pitch['$%'](7);
+          if (note_in_octave['$<'](0)) {
+            note_in_octave = note_in_octave['$+'](7)};
+          result = (0)['$+']((12)['$*'](octave))['$+'](scale['$[]'](note_in_octave));
+          return result;
+        }, nil) && 'get_midipitch';
+      })(self, null);
+
+      (function($base, $super) {
         function $ABCToHarpnotes(){};
         var self = $ABCToHarpnotes = $klass($base, $super, 'ABCToHarpnotes', $ABCToHarpnotes);
 
@@ -14465,9 +14491,10 @@ if (c == null) c = nil;
 
         def.next_note_marks_measure = def.next_note_marks_repeat_start = def.repetition_stack = def.previous_note = nil;
         def.$initialize = function() {
-          var self = this;
+          var $a, $b, $c, self = this;
 
-          return self.$reset_state();
+          self.$reset_state();
+          return self.pitch_transformer = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Input == null ? $b.cm('Input') : $b.Input))._scope).ABCPitchToMidipitch == null ? $a.cm('ABCPitchToMidipitch') : $a.ABCPitchToMidipitch).$new();
         };
 
         def.$reset_state = function() {
@@ -14551,9 +14578,11 @@ if (e == null) e = nil;
         def.$transform_real_note = function(note, duration) {
           var $a, $b, TMP_10, $c, $d, self = this, notes = nil, res = nil;
 
-          notes = ($a = ($b = self.$Native(note['$[]']("pitches"))).$map, $a._p = (TMP_10 = function(pitch){var self = TMP_10._s || this, $a, $b, $c;
+          notes = ($a = ($b = self.$Native(note['$[]']("pitches"))).$map, $a._p = (TMP_10 = function(pitch){var self = TMP_10._s || this, $a, $b, $c, midipitch = nil;
+            if (self.pitch_transformer == null) self.pitch_transformer = nil;
 if (pitch == null) pitch = nil;
-          note = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Note == null ? $a.cm('Note') : $a.Note).$new(self.$Native(pitch)['$[]']("pitch"), duration);
+          midipitch = self.pitch_transformer.$get_midipitch(pitch);
+            note = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Note == null ? $a.cm('Note') : $a.Note).$new(midipitch, duration);
             note['$origin='](note);
             return note;}, TMP_10._s = self, TMP_10), $a).call($b);
           res = [];
@@ -14606,7 +14635,7 @@ if (pitch == null) pitch = nil;
           console.log('Missing transformation rule: ' + name);
           return nil;
         }, nil) && 'method_missing';
-      })(self, null)
+      })(self, null);
       
     })(self)
     
