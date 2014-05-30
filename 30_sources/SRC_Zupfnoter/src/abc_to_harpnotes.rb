@@ -62,7 +62,7 @@ module Harpnotes
       end
 
       def transform_note(note)
-        duration = (1.0 / note[:duration]).round
+        duration = (64 * note[:duration]).round
 
         if not note[:rest].nil?
           transform_rest(duration)

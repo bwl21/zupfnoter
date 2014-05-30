@@ -252,7 +252,7 @@ module Harpnotes
         @beat_maps = @voices.map do |voice|
           current_beat = 0
           voice.select {|e| e.is_a? Playable }.inject({}) do |map, playable|
-            beats = ((1.0 / playable.duration) * @note_length_in_beats).round.to_i
+            beats = playable.duration
             map[current_beat] = playable
             playable.beat = current_beat
 
@@ -438,20 +438,23 @@ module Harpnotes
                              "c''", "c''#", "d''", "d'#", "e''", "f''", "f''#", "g''", "g''#", "a''", "a''#", "h''"
                              ].each_with_index.map { |value, index| [value, index] }]
 
-      # This is a lookup table to map durations to graphical represenations
+      # This is a lookup table to map durations to graphical representation
       DURATION_TO_STYLE = {
-        #key      size   fill          dot
-        :d1  => [ 1,     :empty,       FALSE],
-        :d2  => [ 0.7,   :empty,       FALSE],
-        :d3  => [ 0.7,   :empty,       TRUE],
-        :d4  => [ 0.7,   :filled,      FALSE],
-        :d6  => [ 0.7,   :filled,      TRUE],
-        :d8  => [ 0.5,   :filled,      FALSE],
-        :d12 => [ 0.5,   :filled,      TRUE],
-        :d16 => [ 0.3,   :filled,      FALSE],
-        :d24 => [ 0.3,   :filled,      TRUE],
-        :d32 => [ 0.1,   :filled,      FALSE],
+          #key      size   fill          dot                  abc duration
+          :d64 => [ 1,     :empty,       FALSE],    # 1      1
+          :d48 => [ 0.7,   :empty,       TRUE],     # 1/2 *
+          :d32 => [ 0.7,   :empty,       FALSE],    # 1/2
+          :d24 => [ 0.7,   :filled,      TRUE],     # 1/4 *
+          :d16 => [ 0.7,   :filled,      FALSE],    # 1/4
+          :d12 => [ 0.5,   :filled,      TRUE],     # 1/8 *
+          :d8  => [ 0.5,   :filled,      FALSE],    # 1/8
+          :d6  => [ 0.3,   :filled,      TRUE],     # 1/16 *
+          :d4  => [ 0.3,   :filled,      FALSE],    # 1/16
+          :d3  => [ 0.1,   :filled,      TRUE],     # 1/32 *
+          :d2  => [ 0.1,   :filled,      FALSE],    # 1/32
+          :d1  => [ 0.05,   :filled,     FALSE],    # 1/64
       }
+
 
       #
       # [compute_beat_layout description]

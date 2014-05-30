@@ -13899,7 +13899,7 @@ if (a == null) a = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$attr_accessor', '$attr_reader', '$is_a?', '$raise', '$duration', '$first', '$each', '$beat=', '$update_beats', '$<<', '$max', '$map', '$keys', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$[]', '$>', '$length', '$new', '$private', '$inject', '$to_i', '$round', '$*', '$/', '$[]=', '$+', '$==', '$last', '$dotted', '$include', '$each_with_index', '$compute_beat_layout', '$compute_beat_compression', '$call', '$layout_voice', '$voices', '$origin', '$build_synch_points', '$layout_playables', '$to', '$nil?', '$from', '$level', '$beat_maps', '$layout_note', '$layout_accord', '$layout_pause', '$pitch', '$beat', '$duration_to_id', '$to_sym']);
+  $opal.add_stubs(['$attr_accessor', '$attr_reader', '$is_a?', '$raise', '$duration', '$first', '$each', '$beat=', '$update_beats', '$<<', '$max', '$map', '$keys', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$[]', '$>', '$length', '$new', '$private', '$inject', '$[]=', '$+', '$==', '$last', '$dotted', '$include', '$/', '$each_with_index', '$*', '$compute_beat_layout', '$compute_beat_compression', '$call', '$layout_voice', '$voices', '$origin', '$build_synch_points', '$layout_playables', '$to', '$nil?', '$from', '$level', '$beat_maps', '$layout_note', '$layout_accord', '$layout_pause', '$pitch', '$beat', '$duration_to_id', '$to_sym']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -14102,9 +14102,8 @@ if (voice == null) voice = nil;
             return ($a = ($b = ($c = ($d = voice).$select, $c._p = (TMP_9 = function(e){var self = TMP_9._s || this, $a;
 if (e == null) e = nil;
             return e['$is_a?']((($a = $scope.Playable) == null ? $opal.cm('Playable') : $a))}, TMP_9._s = self, TMP_9), $c).call($d)).$inject, $a._p = (TMP_8 = function(map, playable){var self = TMP_8._s || this, beats = nil;
-              if (self.note_length_in_beats == null) self.note_length_in_beats = nil;
 if (map == null) map = nil;if (playable == null) playable = nil;
-            beats = (((1.0)['$/'](playable.$duration()))['$*'](self.note_length_in_beats)).$round().$to_i();
+            beats = playable.$duration();
               map['$[]='](current_beat, playable);
               playable['$beat='](current_beat);
               current_beat = current_beat['$+'](beats);
@@ -14289,7 +14288,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 if (value == null) value = nil;if (index == null) index = nil;
         return [value, index]}, TMP_10._s = self, TMP_10), $a).call($b)));
 
-        $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d1", "d2", "d3", "d4", "d6", "d8", "d12", "d16", "d24", "d32"], {"d1": [1, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d2": [0.7, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.7, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
+        $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [1, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [0.7, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.7, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.1, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [0.05, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
 
         def.$compute_beat_layout = function(music) {
           var $a, $b, TMP_11, $c, self = this;
@@ -14446,7 +14445,7 @@ if (c == null) c = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range;
 
-  $opal.add_stubs(['$reset_state', '$select', '$==', '$[]', '$split', '$empty?', '$raise', '$map', '$to_i', '$strip', '$last', '$first', '$/', '$Native', '$flatten', '$inject', '$each_with_index', '$[]=', '$<<', '$flatten!', '$compact', '$send', '$nil?', '$each', '$origin=', '$new', '$round', '$!', '$transform_rest', '$transform_real_note', '$length', '$gsub', '$pop']);
+  $opal.add_stubs(['$reset_state', '$select', '$==', '$[]', '$split', '$empty?', '$raise', '$map', '$to_i', '$strip', '$last', '$first', '$/', '$Native', '$flatten', '$inject', '$each_with_index', '$[]=', '$<<', '$flatten!', '$compact', '$send', '$nil?', '$each', '$origin=', '$new', '$round', '$*', '$!', '$transform_rest', '$transform_real_note', '$length', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -14535,7 +14534,7 @@ if (e == null) e = nil;
         def.$transform_note = function(note) {
           var $a, self = this, duration = nil;
 
-          duration = ((1.0)['$/'](note['$[]']("duration"))).$round();
+          duration = ((64)['$*'](note['$[]']("duration"))).$round();
           if ((($a = note['$[]']("rest")['$nil?']()['$!']()) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$transform_rest(duration)
             } else {
