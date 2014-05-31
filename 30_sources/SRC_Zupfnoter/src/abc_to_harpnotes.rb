@@ -9,22 +9,51 @@ module Harpnotes
     class ABCPitchToMidipitch
 
       def initialize
-        @pitchmap = []
+        #the tones within an octave
+        @tonemap = {'c' => 0,
+                    'd' => 1,
+                    'e' => 2,
+                    'f' => 3,
+                    'g' => 4,
+                    'a' => 5,
+                    'b' => 6}
+
+        @pitchmap = (0..11).map{|f| 0}
+
+        @pitchnames = {'sharp' => 1, 'flat' => -1, 'neutral' => 0}
       end
 
-      #http://computermusicresource.com/midikeys.html
+      # set the key of the Sheet
+      # http://computermusicresource.com/midikeys.html
+      # @param key [key as provided by ABCjs]
+      # @return self
+      def set_key(key)
+        @pitchmap = (0..6).map{|f| 0}
+        nkey = Native(key)
+        accidentals = Native(key)[:accidentals]
+        accidentals.each do |accidental|
+          a = Native(accidental)
+          @pitchmap[@tonemap[a[:note].downcase]] = @pitchnames[a[:acc].downcase]
+          puts @pitchmap
+          self
+        end
+
+        self
+      end
 
       def get_midipitch(note)
         abc_pitch = Native(note)[:pitch]
-        scale = [0,2,4,5,7,9,11]
+        scale = [0, 2, 4, 5, 7, 9, 11]
 
         octave = (abc_pitch / 7).floor
 
         note_in_octave = abc_pitch % 7
         note_in_octave += 7 if note_in_octave < 0
 
+        acc_by_key = @pitchmap[note_in_octave]
+
         # 60 is the C in 3rd Octave
-        result = 60 + 12 * octave + scale[note_in_octave]
+        result = 60 + 12 * octave + scale[note_in_octave] + acc_by_key
 
         result
       end
@@ -61,6 +90,11 @@ module Harpnotes
 
         tune = Native(`tune`)
         lines = tune[:lines].map {|l| Native(l)[:staff] }.flatten # todo a line can have more than one staff
+
+        first_staff = Native(tune[:lines].first)[:staff].first
+        key = Native(first_staff)[:key]
+        @pitch_transformer.set_key(key)
+
         voices = lines.inject([]) do |m, l|
           Native(l)[:voices].each_with_index do |v, idx|
             m[idx] ||= []
