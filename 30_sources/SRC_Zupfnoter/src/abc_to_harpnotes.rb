@@ -11,6 +11,9 @@ module Harpnotes
       def initialize
         @pitchmap = []
       end
+
+      #http://computermusicresource.com/midikeys.html
+
       def get_midipitch(note)
         abc_pitch = Native(note)[:pitch]
         scale = [0,2,4,5,7,9,11]
@@ -20,7 +23,8 @@ module Harpnotes
         note_in_octave = abc_pitch % 7
         note_in_octave += 7 if note_in_octave < 0
 
-        result = 0 + 12 * octave + scale[note_in_octave]
+        # 60 is the C in 3rd Octave
+        result = 60 + 12 * octave + scale[note_in_octave]
 
         result
       end
@@ -86,6 +90,9 @@ module Harpnotes
       end
 
       def transform_note(note)
+        # 1/64 is the shortest note being handled
+        # note that this scaling also has an effect
+        # on the layout (DURATION_TO_STYLE). So, don't change this.
         duration = (64 * note[:duration]).round
 
         if not note[:rest].nil?
@@ -102,9 +109,9 @@ module Harpnotes
       def transform_real_note(note, duration)
         notes = Native(note[:pitches]).map do |pitch|
           midipitch = @pitch_transformer.get_midipitch(pitch)
-          note = Harpnotes::Music::Note.new(midipitch, duration)
-          note.origin = note
-          note
+          thenote = Harpnotes::Music::Note.new(midipitch, duration)
+          thenote.origin = note
+          thenote
         end
 
         res = []

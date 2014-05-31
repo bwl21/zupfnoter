@@ -419,7 +419,7 @@ module Harpnotes
     #
     class Default
       # all numbers in mm
-      ELLIPSE_SIZE = [ 3, 2 ]   # radii of the largest Ellipse
+      ELLIPSE_SIZE = [ 2.8, 1.7 ]   # radii of the largest Ellipse
 
       # x-size of one step in a pitch. It is the horizontal
       # distance between two strings of the harp
@@ -427,21 +427,20 @@ module Harpnotes
 
       # Spacing between beats
       BEAT_SPACING = 4
-      # Y coordinate of the very first beat
-      BEAT_OFFSET  = 5
 
-      # note names (currently not in use, left in for debug purposes)
-      NOTE_X_OFFSETS = Hash[["",
-                             "G", "G#", "A", "A#", "H",
-                             "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "h",
-                             "c'", "c'#", "d'", "d'#", "e'", "f'", "f'#", "g'", "g'#", "a'", "a'#", "h'",
-                             "c''", "c''#", "d''", "d'#", "e''", "f''", "f''#", "g''", "g''#", "a''", "a''#", "h''"
-                             ].each_with_index.map { |value, index| [value, index] }]
+      # Y coordinate of the very first beat
+      Y_OFFSET  = BEAT_SPACING
+      X_OFFSET  = ELLIPSE_SIZE.first
+
+      # this is the negative of midi-pitch of the lowest playble note
+      # see http://computermusicresource.com/midikeys.html
+      PITCH_OFFSET = -43
+
 
       # This is a lookup table to map durations to graphical representation
       DURATION_TO_STYLE = {
           #key      size   fill          dot                  abc duration
-          :d64 => [ 1,     :empty,       FALSE],    # 1      1
+          :d64 => [ 0.9,   :empty,       FALSE],    # 1      1
           :d48 => [ 0.7,   :empty,       TRUE],     # 1/2 *
           :d32 => [ 0.7,   :empty,       FALSE],    # 1/2
           :d24 => [ 0.7,   :filled,      TRUE],     # 1/4 *
@@ -452,27 +451,29 @@ module Harpnotes
           :d4  => [ 0.3,   :filled,      FALSE],    # 1/16
           :d3  => [ 0.1,   :filled,      TRUE],     # 1/32 *
           :d2  => [ 0.1,   :filled,      FALSE],    # 1/32
-          :d1  => [ 0.05,   :filled,     FALSE],    # 1/64
+          :d1  => [ 0.05,  :filled,      FALSE],    # 1/64
       }
 
 
       #
-      # [compute_beat_layout description]
-      # @param music [type] [description]
+      # get the vertical layout policy
       #
-      # @return [type] [description]
+      # @param music Harpnotes::Music::Document the document to transform
+      #
+      # @return [Lambda] Proecdure, to compute the vertical distance of a particular beat
       def compute_beat_layout(music)
         Proc.new do |beat|
-          beat * BEAT_SPACING + BEAT_OFFSET
+          (beat -1 ) * BEAT_SPACING + Y_OFFSET
         end
       end
 
       #
-      # [layout description]
-      # @param music Harpnotes::Music::Document the document to transform
-      # @param beat_layout = nil [type] [description]
+      # compute the layout of the Harnote sheet
       #
-      # @return [type] [description]
+      # @param music Harpnotes::Music::Document the document to transform
+      # @param beat_layout = nil [Lambda] Policy procedure to compute the vertical layout
+      #
+      # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil)
         beat_layout = beat_layout || compute_beat_layout(music)
 
@@ -481,6 +482,7 @@ module Harpnotes
 
         sheet_elements  = music.voices.map {|v| layout_voice(v, compressed_beat_layout) }.flatten
         note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
+
         synch_lines = music.build_synch_points.map do |sp|
           FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
         end
@@ -537,7 +539,10 @@ module Harpnotes
 
         current_beat = 0
         Hash[(0..max_beat).map do |beat|
-               has_no_notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact.empty?
+               notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact
+               max_duration = notes_on_beat.map{|n| n.duration}.max
+
+               has_no_notes_on_beat = notes_on_beat.empty?
                current_beat += 1 unless has_no_notes_on_beat
                [ beat, current_beat ]
         end]
@@ -570,7 +575,8 @@ module Harpnotes
       #
       # @return [Object] The generated drawing primitive
       def layout_note(root, beat_layout)
-        x_offset     = root.pitch * X_SPACING
+        #               shift to left   pitch          space     stay away from border
+        x_offset     = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset     = beat_layout.call(root.beat)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
@@ -586,7 +592,8 @@ module Harpnotes
       #
       # @return [Object] The generated drawing primitive
       def layout_accord(root, beat_layout)
-        res = root.notes.map([]) {|c| layout_note(c, beat_layout) }[0..1]
+        notes = root.notes.sort_by{|a|a.pitch}
+        res = notes.map{|c| layout_note(c, beat_layout) }
         res << FlowLine.new(res.first, res.last, :dashed, root)
         res
       end
@@ -606,7 +613,7 @@ module Harpnotes
       #
       # Convert a duration to a symbol todo: move DURATION_TO_STYLE in here
       #
-      # @param duration [type] [description]
+      # @param duration [Integer] Duration as multiples of min note see DURATION_TO_STYLE
       #
       # @return [Object] The generated drawing primitive
       def duration_to_id(duration)

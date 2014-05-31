@@ -42,8 +42,9 @@ class JsPDF
     `self.native.setDrawColor(rgb[0], rgb[1], rgb[2])`
   end
 
+  # @param rgb [Array] R G B values 0..255
   def text_color=(rgb)
-    `self.native.setTetColor(rgb[0], rgb[1], rgb[2])`
+    `self.native.setTextColor(rgb[0], rgb[1], rgb[2])`
   end
 
   def use_solid_lines
@@ -55,8 +56,12 @@ class JsPDF
     `self.native.setLineDash(#{dist}, #{dist})`
   end
 
-  def text(text, position, flags)
-    `self.native.text(text, position[0], position[1], flags)`
+  def text(x, y, text, flags=nil)
+    `self.native.text(x, y, text, flags)`
+  end
+
+  def rect(x1, y1, x2, y2)
+    `self.native.rect(x1, y1, x2, y2)`
   end
 
   # @param type Symbol the output type as :datauristring, :datauri, :raw

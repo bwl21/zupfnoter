@@ -14,6 +14,9 @@ module Harpnotes
 
     def initialize()
       @pdf = JsPDF.new(:l, :mm, :a3)
+      @pdf.rect(1, 1, 418, 295)
+      @pdf.text_color=[200,200,200]
+      @pdf.text(10, 10, 'powered by Zupfnoter')
     end
 
     def draw(sheet)
