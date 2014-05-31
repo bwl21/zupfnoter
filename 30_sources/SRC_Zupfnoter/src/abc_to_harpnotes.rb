@@ -18,31 +18,40 @@ module Harpnotes
                     'a' => 5,
                     'b' => 6}
 
-        @pitchmap = (0..11).map{|f| 0}
+        @voice_accidentals = (0..6).map{|f| 0}
+        @measure_accidentals = (0..6).map{|f| 0}
 
-        @pitchnames = {'sharp' => 1, 'flat' => -1, 'neutral' => 0}
+        @accidental_pitches = {'sharp' => 1, 'flat' => -1, 'natural' => 0}
       end
 
       # set the key of the Sheet
-      # http://computermusicresource.com/midikeys.html
       # @param key [key as provided by ABCjs]
       # @return self
       def set_key(key)
-        @pitchmap = (0..6).map{|f| 0}
+        @voice_accidentals = (0..6).map{|f| 0}
         nkey = Native(key)
         accidentals = Native(key)[:accidentals]
         accidentals.each do |accidental|
           a = Native(accidental)
-          @pitchmap[@tonemap[a[:note].downcase]] = @pitchnames[a[:acc].downcase]
-          puts @pitchmap
+          @voice_accidentals[@tonemap[a[:note].downcase]] = @accidental_pitches[a[:acc].downcase]
           self
         end
 
         self
       end
 
+
+      def reset_measure_accidentals
+        @measure_accidentals = @measure_accidentals.map{|f| 0}
+      end
+
+      #@param note [Object] Note as provided by abc_parser
+      #@return [Integer] midi pitch of the note
+      # http://computermusicresource.com/midikeys.html
       def get_midipitch(note)
-        abc_pitch = Native(note)[:pitch]
+
+        native_note = Native(note)
+        abc_pitch = native_note[:pitch]
         scale = [0, 2, 4, 5, 7, 9, 11]
 
         octave = (abc_pitch / 7).floor
@@ -50,10 +59,26 @@ module Harpnotes
         note_in_octave = abc_pitch % 7
         note_in_octave += 7 if note_in_octave < 0
 
-        acc_by_key = @pitchmap[note_in_octave]
+        # add accidentals by key
+        acc_by_key = @voice_accidentals[note_in_octave]
+
+        # handle accidentals in measure
+        note_accidental = native_note[:accidental]
+        if (note_accidental) then
+          pitch_delta = @accidental_pitches[note_accidental]
+          if pitch_delta == 0 then
+            if @measure_accidentals[note_in_octave] != 0
+              pitch_delta = 0
+            else
+              pitch_delta = -1 * @voice_accidentals[note_in_octave]
+            end
+          end
+          @measure_accidentals[note_in_octave] = pitch_delta
+        end
+        acc_by_measure = @measure_accidentals[note_in_octave]
 
         # 60 is the C in 3rd Octave
-        result = 60 + 12 * octave + scale[note_in_octave] + acc_by_key
+        result = 60 + 12 * octave + scale[note_in_octave] + acc_by_key + acc_by_measure
 
         result
       end
@@ -64,15 +89,17 @@ module Harpnotes
     class ABCToHarpnotes
 
       def initialize
-        reset_state
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
+        reset_state
       end
 
       def reset_state
-        @next_note_marks_measure = true
+        @next_note_marks_measure = false
         @next_note_marks_repeat_start = false
         @previous_note = nil
         @repetition_stack = []
+        @pitch_transformer.reset_measure_accidentals
+        nil
       end
 
       def transform(abc_code)
@@ -167,6 +194,7 @@ module Harpnotes
 
       def transform_bar(bar)
         type = bar[:type]
+        @pitch_transformer.reset_measure_accidentals
         send("transform_#{type.gsub(" ", "_")}", bar)
       end
 

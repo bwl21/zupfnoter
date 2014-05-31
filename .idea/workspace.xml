@@ -29,10 +29,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="48" column="54" selection-start="2339" selection-end="2339" vertical-scroll-proportion="-30.0" vertical-offset="0" max-vertical-offset="1680">
+            <state line="34" column="23" selection-start="1478" selection-end="1478" vertical-scroll-proportion="0.57954544" vertical-offset="0" max-vertical-offset="1680">
               <folding />
             </state>
           </provider>
@@ -74,10 +74,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="abc_to_harpnotes.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="abc_to_harpnotes.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="59" selection-start="499" selection-end="506" vertical-scroll-proportion="0.4182156" vertical-offset="105" max-vertical-offset="3030">
+            <state line="70" column="29" selection-start="2005" selection-end="2005" vertical-scroll-proportion="-7.647059" vertical-offset="660" max-vertical-offset="3450">
               <folding />
             </state>
           </provider>
@@ -145,9 +145,9 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html" />
       </list>
     </option>
   </component>
@@ -565,8 +565,8 @@
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32715008" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32984293" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32715008" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32984293" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32670158" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24984501" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28146312" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
@@ -924,13 +924,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="54" selection-start="2339" selection-end="2339" vertical-scroll-proportion="-30.0" vertical-offset="0" max-vertical-offset="1680">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="615" column="89" selection-start="18982" selection-end="18982" vertical-scroll-proportion="-11.137255" vertical-offset="8657" max-vertical-offset="9510">
@@ -940,7 +933,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="59" selection-start="499" selection-end="506" vertical-scroll-proportion="0.4182156" vertical-offset="105" max-vertical-offset="3030">
+        <state line="70" column="29" selection-start="2005" selection-end="2005" vertical-scroll-proportion="-7.647059" vertical-offset="660" max-vertical-offset="3450">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="23" selection-start="1478" selection-end="1478" vertical-scroll-proportion="0.57954544" vertical-offset="0" max-vertical-offset="1680">
           <folding />
         </state>
       </provider>

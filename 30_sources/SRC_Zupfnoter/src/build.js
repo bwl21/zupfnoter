@@ -14452,7 +14452,7 @@ if (c == null) c = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range;
 
-  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$puts', '$floor', '$/', '$%', '$<', '$+', '$*', '$reset_state', '$new', '$select', '$==', '$split', '$empty?', '$raise', '$to_i', '$strip', '$last', '$first', '$flatten', '$set_key', '$inject', '$each_with_index', '$<<', '$flatten!', '$compact', '$send', '$nil?', '$origin=', '$round', '$!', '$transform_rest', '$transform_real_note', '$get_midipitch', '$length', '$gsub', '$pop']);
+  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$select', '$split', '$empty?', '$raise', '$to_i', '$strip', '$last', '$first', '$flatten', '$set_key', '$inject', '$each_with_index', '$<<', '$flatten!', '$compact', '$send', '$nil?', '$origin=', '$round', '$transform_rest', '$transform_real_note', '$get_midipitch', '$length', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -14470,48 +14470,70 @@ if (c == null) c = nil;
 
         var def = self._proto, $scope = self._scope;
 
-        def.pitchmap = nil;
+        def.measure_accidentals = def.voice_accidentals = def.accidental_pitches = nil;
         def.$initialize = function() {
-          var $a, $b, TMP_1, self = this;
+          var $a, $b, TMP_1, $c, TMP_2, self = this;
 
           self.tonemap = $hash2(["c", "d", "e", "f", "g", "a", "b"], {"c": 0, "d": 1, "e": 2, "f": 3, "g": 4, "a": 5, "b": 6});
-          self.pitchmap = ($a = ($b = ($range(0, 11, false))).$map, $a._p = (TMP_1 = function(f){var self = TMP_1._s || this;
+          self.voice_accidentals = ($a = ($b = ($range(0, 6, false))).$map, $a._p = (TMP_1 = function(f){var self = TMP_1._s || this;
 if (f == null) f = nil;
           return 0}, TMP_1._s = self, TMP_1), $a).call($b);
-          return self.pitchnames = $hash2(["sharp", "flat", "neutral"], {"sharp": 1, "flat": -1, "neutral": 0});
+          self.measure_accidentals = ($a = ($c = ($range(0, 6, false))).$map, $a._p = (TMP_2 = function(f){var self = TMP_2._s || this;
+if (f == null) f = nil;
+          return 0}, TMP_2._s = self, TMP_2), $a).call($c);
+          return self.accidental_pitches = $hash2(["sharp", "flat", "natural"], {"sharp": 1, "flat": -1, "natural": 0});
         };
 
         def.$set_key = function(key) {
-          var $a, $b, TMP_2, $c, TMP_3, self = this, nkey = nil, accidentals = nil;
+          var $a, $b, TMP_3, $c, TMP_4, self = this, nkey = nil, accidentals = nil;
 
-          self.pitchmap = ($a = ($b = ($range(0, 6, false))).$map, $a._p = (TMP_2 = function(f){var self = TMP_2._s || this;
+          self.voice_accidentals = ($a = ($b = ($range(0, 6, false))).$map, $a._p = (TMP_3 = function(f){var self = TMP_3._s || this;
 if (f == null) f = nil;
-          return 0}, TMP_2._s = self, TMP_2), $a).call($b);
+          return 0}, TMP_3._s = self, TMP_3), $a).call($b);
           nkey = self.$Native(key);
           accidentals = self.$Native(key)['$[]']("accidentals");
-          ($a = ($c = accidentals).$each, $a._p = (TMP_3 = function(accidental){var self = TMP_3._s || this, a = nil;
-            if (self.pitchmap == null) self.pitchmap = nil;
+          ($a = ($c = accidentals).$each, $a._p = (TMP_4 = function(accidental){var self = TMP_4._s || this, a = nil;
+            if (self.voice_accidentals == null) self.voice_accidentals = nil;
             if (self.tonemap == null) self.tonemap = nil;
-            if (self.pitchnames == null) self.pitchnames = nil;
+            if (self.accidental_pitches == null) self.accidental_pitches = nil;
 if (accidental == null) accidental = nil;
           a = self.$Native(accidental);
-            self.pitchmap['$[]='](self.tonemap['$[]'](a['$[]']("note").$downcase()), self.pitchnames['$[]'](a['$[]']("acc").$downcase()));
-            self.$puts(self.pitchmap);
-            return self;}, TMP_3._s = self, TMP_3), $a).call($c);
+            self.voice_accidentals['$[]='](self.tonemap['$[]'](a['$[]']("note").$downcase()), self.accidental_pitches['$[]'](a['$[]']("acc").$downcase()));
+            return self;}, TMP_4._s = self, TMP_4), $a).call($c);
           return self;
         };
 
-        return (def.$get_midipitch = function(note) {
-          var self = this, abc_pitch = nil, scale = nil, octave = nil, note_in_octave = nil, acc_by_key = nil, result = nil;
+        def.$reset_measure_accidentals = function() {
+          var $a, $b, TMP_5, self = this;
 
-          abc_pitch = self.$Native(note)['$[]']("pitch");
+          return self.measure_accidentals = ($a = ($b = self.measure_accidentals).$map, $a._p = (TMP_5 = function(f){var self = TMP_5._s || this;
+if (f == null) f = nil;
+          return 0}, TMP_5._s = self, TMP_5), $a).call($b);
+        };
+
+        return (def.$get_midipitch = function(note) {
+          var $a, self = this, native_note = nil, abc_pitch = nil, scale = nil, octave = nil, note_in_octave = nil, acc_by_key = nil, note_accidental = nil, pitch_delta = nil, acc_by_measure = nil, result = nil;
+
+          native_note = self.$Native(note);
+          abc_pitch = native_note['$[]']("pitch");
           scale = [0, 2, 4, 5, 7, 9, 11];
           octave = (abc_pitch['$/'](7)).$floor();
           note_in_octave = abc_pitch['$%'](7);
           if (note_in_octave['$<'](0)) {
             note_in_octave = note_in_octave['$+'](7)};
-          acc_by_key = self.pitchmap['$[]'](note_in_octave);
-          result = (60)['$+']((12)['$*'](octave))['$+'](scale['$[]'](note_in_octave))['$+'](acc_by_key);
+          acc_by_key = self.voice_accidentals['$[]'](note_in_octave);
+          note_accidental = native_note['$[]']("accidental");
+          if ((($a = (note_accidental)) !== nil && (!$a._isBoolean || $a == true))) {
+            pitch_delta = self.accidental_pitches['$[]'](note_accidental);
+            if (pitch_delta['$=='](0)) {
+              if ((($a = self.measure_accidentals['$[]'](note_in_octave)['$=='](0)['$!']()) !== nil && (!$a._isBoolean || $a == true))) {
+                pitch_delta = 0
+                } else {
+                pitch_delta = (-1)['$*'](self.voice_accidentals['$[]'](note_in_octave))
+              }};
+            self.measure_accidentals['$[]='](note_in_octave, pitch_delta);};
+          acc_by_measure = self.measure_accidentals['$[]'](note_in_octave);
+          result = (60)['$+']((12)['$*'](octave))['$+'](scale['$[]'](note_in_octave))['$+'](acc_by_key)['$+'](acc_by_measure);
           return result;
         }, nil) && 'get_midipitch';
       })(self, null);
@@ -14526,21 +14548,23 @@ if (accidental == null) accidental = nil;
         def.$initialize = function() {
           var $a, $b, $c, self = this;
 
-          self.$reset_state();
-          return self.pitch_transformer = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Input == null ? $b.cm('Input') : $b.Input))._scope).ABCPitchToMidipitch == null ? $a.cm('ABCPitchToMidipitch') : $a.ABCPitchToMidipitch).$new();
+          self.pitch_transformer = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Input == null ? $b.cm('Input') : $b.Input))._scope).ABCPitchToMidipitch == null ? $a.cm('ABCPitchToMidipitch') : $a.ABCPitchToMidipitch).$new();
+          return self.$reset_state();
         };
 
         def.$reset_state = function() {
           var self = this;
 
-          self.next_note_marks_measure = true;
+          self.next_note_marks_measure = false;
           self.next_note_marks_repeat_start = false;
           self.previous_note = nil;
-          return self.repetition_stack = [];
+          self.repetition_stack = [];
+          self.pitch_transformer.$reset_measure_accidentals();
+          return nil;
         };
 
         def.$transform = function(abc_code) {
-          var $a, $b, TMP_4, $c, TMP_5, $d, TMP_6, $e, TMP_7, $f, TMP_10, $g, $h, self = this, note_length_rows = nil, note_length = nil, tune = nil, lines = nil, first_staff = nil, key = nil, voices = nil, voices_transformed = nil;
+          var $a, $b, TMP_6, $c, TMP_7, $d, TMP_8, $e, TMP_9, $f, TMP_12, $g, $h, self = this, note_length_rows = nil, note_length = nil, tune = nil, lines = nil, first_staff = nil, key = nil, voices = nil, voices_transformed = nil;
 
           
         var book = new ABCJS.TuneBook(abc_code);
@@ -14549,48 +14573,48 @@ if (accidental == null) accidental = nil;
         var tune = parser.getTune();
         console.log(tune)
         
-          note_length_rows = ($a = ($b = abc_code.$split("\n")).$select, $a._p = (TMP_4 = function(row){var self = TMP_4._s || this;
+          note_length_rows = ($a = ($b = abc_code.$split("\n")).$select, $a._p = (TMP_6 = function(row){var self = TMP_6._s || this;
 if (row == null) row = nil;
-          return row['$[]']($range(0, 1, false))['$==']("L:")}, TMP_4._s = self, TMP_4), $a).call($b);
+          return row['$[]']($range(0, 1, false))['$==']("L:")}, TMP_6._s = self, TMP_6), $a).call($b);
           if ((($a = note_length_rows['$empty?']()) !== nil && (!$a._isBoolean || $a == true))) {
             self.$raise("ABC code does not contain a unit note length (L)")};
-          note_length = ($a = ($c = note_length_rows.$first().$strip().$split(":").$last().$split("/")).$map, $a._p = (TMP_5 = function(s){var self = TMP_5._s || this;
+          note_length = ($a = ($c = note_length_rows.$first().$strip().$split(":").$last().$split("/")).$map, $a._p = (TMP_7 = function(s){var self = TMP_7._s || this;
 if (s == null) s = nil;
-          return s.$strip().$to_i()}, TMP_5._s = self, TMP_5), $a).call($c);
+          return s.$strip().$to_i()}, TMP_7._s = self, TMP_7), $a).call($c);
           note_length = note_length.$last()['$/'](note_length.$first());
           tune = self.$Native(tune);
-          lines = ($a = ($d = tune['$[]']("lines")).$map, $a._p = (TMP_6 = function(l){var self = TMP_6._s || this;
+          lines = ($a = ($d = tune['$[]']("lines")).$map, $a._p = (TMP_8 = function(l){var self = TMP_8._s || this;
 if (l == null) l = nil;
-          return self.$Native(l)['$[]']("staff")}, TMP_6._s = self, TMP_6), $a).call($d).$flatten();
+          return self.$Native(l)['$[]']("staff")}, TMP_8._s = self, TMP_8), $a).call($d).$flatten();
           first_staff = self.$Native(tune['$[]']("lines").$first())['$[]']("staff").$first();
           key = self.$Native(first_staff)['$[]']("key");
           self.pitch_transformer.$set_key(key);
-          voices = ($a = ($e = lines).$inject, $a._p = (TMP_7 = function(m, l){var self = TMP_7._s || this, $a, $b, TMP_8;
+          voices = ($a = ($e = lines).$inject, $a._p = (TMP_9 = function(m, l){var self = TMP_9._s || this, $a, $b, TMP_10;
 if (m == null) m = nil;if (l == null) l = nil;
-          ($a = ($b = self.$Native(l)['$[]']("voices")).$each_with_index, $a._p = (TMP_8 = function(v, idx){var self = TMP_8._s || this, $a, $b, $c, TMP_9;
+          ($a = ($b = self.$Native(l)['$[]']("voices")).$each_with_index, $a._p = (TMP_10 = function(v, idx){var self = TMP_10._s || this, $a, $b, $c, TMP_11;
 if (v == null) v = nil;if (idx == null) idx = nil;
             ($a = idx, $b = m, ((($c = $b['$[]']($a)) !== false && $c !== nil) ? $c : $b['$[]=']($a, [])));
-              m['$[]'](idx)['$<<'](($a = ($b = v).$map, $a._p = (TMP_9 = function(x){var self = TMP_9._s || this;
+              m['$[]'](idx)['$<<'](($a = ($b = v).$map, $a._p = (TMP_11 = function(x){var self = TMP_11._s || this;
 if (x == null) x = nil;
-              return self.$Native(x)}, TMP_9._s = self, TMP_9), $a).call($b));
-              return m['$[]'](idx)['$flatten!']();}, TMP_8._s = self, TMP_8), $a).call($b);
-            return m;}, TMP_7._s = self, TMP_7), $a).call($e, []);
-          voices_transformed = ($a = ($f = voices.$each_with_index()).$map, $a._p = (TMP_10 = function(voice, voice_idx){var self = TMP_10._s || this, $a, $b, TMP_11, res = nil;
+              return self.$Native(x)}, TMP_11._s = self, TMP_11), $a).call($b));
+              return m['$[]'](idx)['$flatten!']();}, TMP_10._s = self, TMP_10), $a).call($b);
+            return m;}, TMP_9._s = self, TMP_9), $a).call($e, []);
+          voices_transformed = ($a = ($f = voices.$each_with_index()).$map, $a._p = (TMP_12 = function(voice, voice_idx){var self = TMP_12._s || this, $a, $b, TMP_13, res = nil;
 if (voice == null) voice = nil;if (voice_idx == null) voice_idx = nil;
           self.$reset_state();
-            res = ($a = ($b = voice).$map, $a._p = (TMP_11 = function(el){var self = TMP_11._s || this, $a, $b, TMP_12, type = nil;
+            res = ($a = ($b = voice).$map, $a._p = (TMP_13 = function(el){var self = TMP_13._s || this, $a, $b, TMP_14, type = nil;
 if (el == null) el = nil;
             type = el['$[]']("el_type");
               res = self.$send("transform_" + (type), el);
               if ((($a = ((($b = res['$nil?']()) !== false && $b !== nil) ? $b : res['$empty?']())) !== nil && (!$a._isBoolean || $a == true))) {
                 } else {
                 self.previous_note = res.$last();
-                ($a = ($b = res).$each, $a._p = (TMP_12 = function(e){var self = TMP_12._s || this;
+                ($a = ($b = res).$each, $a._p = (TMP_14 = function(e){var self = TMP_14._s || this;
 if (e == null) e = nil;
-                return e['$origin='](el)}, TMP_12._s = self, TMP_12), $a).call($b);
+                return e['$origin='](el)}, TMP_14._s = self, TMP_14), $a).call($b);
               };
-              return res;}, TMP_11._s = self, TMP_11), $a).call($b).$flatten().$compact();
-            return res;}, TMP_10._s = self, TMP_10), $a).call($f);
+              return res;}, TMP_13._s = self, TMP_13), $a).call($b).$flatten().$compact();
+            return res;}, TMP_12._s = self, TMP_12), $a).call($f);
           return (($a = ((($g = ((($h = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $h))._scope).Music == null ? $g.cm('Music') : $g.Music))._scope).Song == null ? $a.cm('Song') : $a.Song).$new(voices_transformed, note_length);
         };
 
@@ -14612,15 +14636,15 @@ if (e == null) e = nil;
         };
 
         def.$transform_real_note = function(note, duration) {
-          var $a, $b, TMP_13, $c, $d, self = this, notes = nil, res = nil;
+          var $a, $b, TMP_15, $c, $d, self = this, notes = nil, res = nil;
 
-          notes = ($a = ($b = self.$Native(note['$[]']("pitches"))).$map, $a._p = (TMP_13 = function(pitch){var self = TMP_13._s || this, $a, $b, $c, midipitch = nil, thenote = nil;
+          notes = ($a = ($b = self.$Native(note['$[]']("pitches"))).$map, $a._p = (TMP_15 = function(pitch){var self = TMP_15._s || this, $a, $b, $c, midipitch = nil, thenote = nil;
             if (self.pitch_transformer == null) self.pitch_transformer = nil;
 if (pitch == null) pitch = nil;
           midipitch = self.pitch_transformer.$get_midipitch(pitch);
             thenote = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Note == null ? $a.cm('Note') : $a.Note).$new(midipitch, duration);
             thenote['$origin='](note);
-            return thenote;}, TMP_13._s = self, TMP_13), $a).call($b);
+            return thenote;}, TMP_15._s = self, TMP_15), $a).call($b);
           res = [];
           if (notes.$length()['$=='](1)) {
             res['$<<'](notes.$first())
@@ -14640,6 +14664,7 @@ if (pitch == null) pitch = nil;
           var self = this, type = nil;
 
           type = bar['$[]']("type");
+          self.pitch_transformer.$reset_measure_accidentals();
           return self.$send("transform_" + (type.$gsub(" ", "_")), bar);
         };
 
