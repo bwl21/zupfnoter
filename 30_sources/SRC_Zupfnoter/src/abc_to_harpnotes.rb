@@ -164,7 +164,7 @@ module Harpnotes
       end
 
       def transform_rest(duration)
-        [ Pause.new(duration) ]
+        [ Harpnotes::Music::Pause.new(duration) ]
       end
 
       def transform_real_note(note, duration)
@@ -182,7 +182,7 @@ module Harpnotes
           res << Harpnotes::Music::SynchPoint.new(notes)
         end
         if @next_note_marks_measure
-          res << MeasureStart.new(notes.last)
+          res << Harpnotes::Music::MeasureStart.new(notes.last)
           @next_note_marks_measure = false
         end
         if @next_note_marks_repeat_start

@@ -19,6 +19,7 @@ class Controller
 
   def render_to_canvas
     Harpnotes::RaphaelEngine.new("harpPreview").draw(layout_harpnotes)
+    `ABCJS.renderAbc($("#tunePreview")[0], #{get_abc_code}, {}, {}, {})`
   end
 
   def save_file
@@ -57,6 +58,7 @@ class Controller
       if `evt.keyCode == 13 && evt.shiftKey`
         evt.prevent_default
         render_to_canvas
+        `evt.preventDefault()`
       elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
         evt.prevent_default
         save_file

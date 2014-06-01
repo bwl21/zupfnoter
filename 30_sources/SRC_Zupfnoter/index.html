@@ -13,6 +13,8 @@
 
         <script src="vendor/opal.min.js" type="application/javascript"></script>
         <script src="vendor/jspdf.min.js" type="application/javascript"></script>
+        <script type="application/javascript" src="vendor/filesaver.js"></script>
+        <script type="application/javascript" src="vendor/jszip.min.js"></script>
         <script src="src/build.js" type="application/javascript"></script>
     </head>
     
@@ -68,39 +70,5 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
 
             </div>
         </div>
-
-        <script type="application/javascript">
-            var editor = ace.edit("abcEditor");
-            editor.setTheme("ace/theme/chrome");
-
-            function renderABC() {
-                var abc = editor.getSession().getValue();
-
-            }
-
-            editor.on("change", function(e) {
-                renderABC();
-            });
-            $(renderABC);
-
-            var inst = new Instrument();
-            function playABC() {
-                var abc = editor.getSession().getValue();
-                /*
-                var book = new ABCJS.TuneBook(abc);
-                var parser = new ABCJS.parse.Parse();
-                parser.parse(book.tunes[0].abc);
-                var tune = parser.getTune();
-
-                console.log(tune);
-                */
-                //inst.play({tempo:200}, abc);
-
-                ABCJS.renderMidi($("#tbPlay")[0], abc, {}, { 'java' : false }, {});
-            }
-            $('#tbPlay').on("click", function() {
-                playABC();
-            });
-        </script>
     </body>
 </html>
