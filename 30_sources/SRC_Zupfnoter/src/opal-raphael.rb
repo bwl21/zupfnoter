@@ -82,13 +82,13 @@ module Raphael
   class Paper
 
     
-        # 
-        # Construlctor
-        # @param element [String] The indentifier of the canvas element
-        # @param width [Numeric] Width of the canvas
-        # @param height [Numeric] Height of the canvas
-        # 
-        # @return [type] [description]
+    #
+    # Construtctor
+    # @param element [String] The indentifier of the canvas element
+    # @param width [Numeric] Width of the canvas
+    # @param height [Numeric] Height of the canvas
+    #
+    # @return [type] [description]
     def initialize(element, width, height)
       @r = `Raphael(element, width, height)`
     end
@@ -162,6 +162,10 @@ module Raphael
     # of the canvas
     def size
       [ `self.r.canvas.offsetWidth`, `self.r.canvas.offsetHeight` ]
+    end
+
+    def enable_pan_zoom
+      `self.r.panzoom().enable()` if `self.r.panzoom != undefined`
     end
 
   end

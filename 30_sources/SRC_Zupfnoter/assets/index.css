@@ -46,21 +46,20 @@ table {
 
 body {
   font-family: Helvetica, Arial, sans-serif;
-  background-color: #2d3e50;
+  background-color: #0a425c;
   color: white; }
 
 .container {
   overflow: hidden;
   position: absolute;
-  border-left: 1px solid #2d3e50;
-  background-color: #1bbc9b; }
+  background-color: #f0efcf;
+  border-right: 1px solid #1ba5a5; }
   .container .title {
-    background-color: #2d3e50;
+    background-color: #1ba5a5;
     width: 100%;
     height: 2em;
     line-height: 2em;
-    text-align: right;
-    border: 1px solid #1bbc9b; }
+    text-align: right; }
     .container .title .head {
       position: absolute;
       left: 1em;
@@ -69,6 +68,8 @@ body {
     .container .title .button {
       border-left: 1px solid black;
       padding: 0em 1em 0em 1em; }
+  .container .resize {
+    cursor: row-resize; }
   .container .body {
     width: 100%;
     position: absolute;
@@ -93,11 +94,25 @@ body {
     border-left: 1px solid black;
     cursor: pointer; }
 
+#leftColumn {
+  position: absolute;
+  left: 0px;
+  top: 30px;
+  bottom: 0px;
+  right: 50%; }
+
+#rightColumn {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  bottom: 0px;
+  right: 0px; }
+
 #abcEditorContainer {
-  top: 31px;
+  top: 0px;
   left: 0px;
   right: 0px;
-  bottom: 60%; }
+  bottom: 30%; }
   #abcEditorContainer .body {
     top: 0px; }
   #abcEditorContainer .editor {
@@ -108,13 +123,29 @@ body {
     bottom: 0px; }
 
 #tunePreviewContainer {
-  top: 40%;
-  bottom: 0px;
-  left: 0px;
-  right: 50%; }
+  top: 0px;
+  bottom: 50%;
+  left: 0%;
+  right: 0%; }
 
 #harpPreviewContainer {
-  top: 40%;
+  top: 50%;
   bottom: 0px;
-  left: 50%;
+  left: 0%;
   right: 0px; }
+
+#consoleLog {
+  top: 70%;
+  left: 0px;
+  right: 0%;
+  bottom: 0px; }
+
+#dragbar {
+  cursor: col-resize;
+  color: #1ba5a5;
+  width: 5px;
+  position: absolute;
+  top: 31px;
+  bottom: 0px;
+  right: 50%;
+  z-index: 999; }

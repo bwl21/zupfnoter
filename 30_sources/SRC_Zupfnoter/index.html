@@ -8,7 +8,7 @@
         <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
         <script src="vendor/ace/ace.js" type="text/javascript" charset="utf-8"></script>
         <script src="vendor/abcjs_plugin_nojquery_1.9-min.js" type="application/javascript"></script>
-
+        <script type="application/javascript" src="vendor/raphael.pan-zoom.min.js"></script>
         <script src="vendor/musical.min.js" type="application/javascript"></script>
 
         <script src="vendor/opal.min.js" type="application/javascript"></script>
@@ -25,9 +25,10 @@
             <span class="button" id="tbRender">render</span>
             <span class="button" id="tbPlay">play</span>
         </div>
-        <div id="abcEditorContainer" class="container">
-            <div class="body">
-<div id="abcEditor" class="editor">X:1
+        <div id="leftColumn">
+            <div id="abcEditorContainer" class="container">
+                <div class="body">
+                    <div id="abcEditor" class="editor">X:1
 T:Zupfnoter test
 C:Bernhard Weichel
 M:4/4
@@ -48,27 +49,42 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
 [V:T1]  d12 d4                          | e16                             |
 [V:T2]  D D D D D D D D D D D D D D D D | D D D D D D D D D D D D D D D D |
 %[V:B1]  z4              | C,D,E,F,    | z4           |
-%[V:B2]  C,,D,,E,,F,,    | G,,A,,B,,C  | z4          |
-</div>
+%[V:B2]  C,,D,,E,,F,,    | G,,A,,B,,C  | z4          |</div>
+                </div>
             </div>
-        </div>
-        <div id="tunePreviewContainer" class="container">
-            <div class="title">
-                <span class="head">Notes</span>
-                <span class="button">min</span>
-            </div>
-            <div class="body" id="tunePreview">
+            <div id="consoleLog" class="container">
+                <div class="title rsh">
+                    <span class="head">Console</span>
+                    <span class="button">min</span>
+                </div>
+                <div class="body" id="console">
 
+                </div>
             </div>
         </div>
-        <div id="harpPreviewContainer" class="container">
-            <div class="title">
-                <span class="head">Harp</span>
-                <span class="button">min</span>
-            </div>
-            <div class="body" id="harpPreview">
 
+        <div id="rightColumn">
+            <div id="tunePreviewContainer" class="container">
+                <div class="title">
+                    <span class="head">Notes</span>
+                    <span class="button">min</span>
+                </div>
+                <div class="body" id="tunePreview">
+
+                </div>
+            </div>
+            <div id="harpPreviewContainer" class="container">
+                <div class="title rsh">
+                    <span class="head">Harp</span>
+                    <span class="button">min</span>
+                </div>
+                <div class="body" id="harpPreview">
+
+                </div>
             </div>
         </div>
+
+        <div id="dragbar">&nbsp;</div>
+
     </body>
 </html>

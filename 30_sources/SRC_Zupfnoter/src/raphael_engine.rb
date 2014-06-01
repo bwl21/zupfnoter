@@ -14,6 +14,7 @@ module Harpnotes
 
     def initialize(element_id)
       @paper = Raphael::Paper.new(element_id)
+      @paper.enable_pan_zoom
       @on_select = nil
     end
 

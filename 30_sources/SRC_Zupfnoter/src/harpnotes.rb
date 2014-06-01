@@ -231,13 +231,28 @@ module Harpnotes
       #
       # @return [Array] The syncpoints which wer found in the song
       def build_synch_points
-        max_beat = @beat_maps.map {|map| map.keys.max }.max
-        (0..max_beat).map do |beat|
-          playables = @beat_maps.map {|map| map[beat] }.compact
-          if playables.length > 1
-            SynchPoint.new(playables)
-          end
+        expanded_beat_maps.map do |playables|
+          playables.compact!
+          SynchPoint.new(playables) if playables.length > 1
         end.flatten.compact.select {|sp| sp.notes.reject {|e| e.is_a? Note }.empty? }
+      end
+
+      #
+      # Computes the last beat in this song
+      #
+      # @return Numeric the last beat of this song
+      def last_beat
+        max_beat = @beat_maps.map {|map| map.keys.max }.max
+      end
+
+      #
+      # Computes an expanded beat_map with an element for each beat.
+      #
+      # @return [Array] an array of playables. The index is the beat. Playables are ordered by the song voice order.
+      def expanded_beat_maps
+        (0..last_beat).map do |beat|
+          @beat_maps.map {|map| map[beat] }
+        end
       end
 
       private

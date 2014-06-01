@@ -51,7 +51,7 @@ class Controller
   def setup_editor
     %x{
       var editor = ace.edit("abcEditor");
-      editor.setTheme("ace/theme/chrome");
+      editor.setTheme("ace/theme/tomorrow_night");
     }
     @editor = `editor`
   end
@@ -76,6 +76,18 @@ class Controller
         evt.prevent_default
         save_file
         `evt.preventDefault()`
+      end
+    end
+
+    Element.find("#dragbar").on(:mousedown) do |re|
+      re.prevent
+      Element.find(`document`).on(:mousemove) do |e|
+        Element.find("#leftColumn").css(:right, "#{`window.innerWidth` - e.page_x}px")
+        Element.find("#rightColumn").css(:left, "#{e.page_x}px")
+        Element.find("#dragbar").css(:left, "#{e.page_x}px")
+      end
+      Element.find(`document`).on(:mouseup) do
+        `$(document).unbind('mousemove')`
       end
     end
   end

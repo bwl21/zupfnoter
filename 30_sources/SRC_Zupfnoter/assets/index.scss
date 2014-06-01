@@ -2,9 +2,11 @@
 
 $toolbarHeight: 30px;
 $titleHeight: 2em;
+$cnosoleHeight: 30%;
 
-$backgoundColor: #2D3E50;
-$titleColor: #1BBC9B;
+$backgoundColor: #0A425C;
+$titleColor: #1BA5A5;
+$containerColor: #F0EFCF;
 
 body {
   font-family: Helvetica, Arial, sans-serif;
@@ -15,16 +17,15 @@ body {
 .container {
   overflow: hidden;
   position: absolute;
-  border-left: 1px solid $backgoundColor;
-  background-color: $titleColor;
+  background-color: $containerColor;
+  border-right: 1px solid $titleColor;
 
   .title {
-    background-color: $backgoundColor;
+    background-color: $titleColor;
     width: 100%;
     height: $titleHeight;
     line-height: $titleHeight;
     text-align: right;
-    border: 1px solid $titleColor;
 
     .head {
       position: absolute;
@@ -36,6 +37,9 @@ body {
       border-left: 1px solid black;
       padding: 0em 1em 0em 1em;
     }
+  }
+  .resize {
+    cursor: row-resize;
   }
 
   .body {
@@ -71,11 +75,26 @@ body {
 
 }
 
+#leftColumn {
+  position: absolute;
+  left: 0px;
+  top: $toolbarHeight;
+  bottom: 0px;
+  right: 50%;
+}
+#rightColumn {
+  position: absolute;
+  left: 50%;
+  top: $toolbarHeight;
+  bottom: 0px;
+  right: 0px;
+}
+
 #abcEditorContainer {
-  top: $toolbarHeight + 1px;
+  top: 0px;
   left: 0px;
   right: 0px;
-  bottom: 60%;
+  bottom: $cnosoleHeight;
 
   .body {
     top: 0px;
@@ -90,15 +109,33 @@ body {
 }
 
 #tunePreviewContainer {
-  top: 40%;
-  bottom: 0px;
-  left: 0px;
-  right: 50%;
+  top: 0px;
+  bottom: 50%;
+  left: 0%;
+  right: 0%;
 }
 
 #harpPreviewContainer {
-  top: 40%;
+  top: 50%;
   bottom: 0px;
-  left: 50%;
+  left: 0%;
   right: 0px;
+}
+
+#consoleLog {
+  top: 100% - $cnosoleHeight;
+  left: 0px;
+  right: 0%;
+  bottom: 0px;
+}
+
+#dragbar {
+  cursor: col-resize;
+  color: $titleColor;
+  width: 5px;
+  position: absolute;
+  top: $toolbarHeight +1px;
+  bottom: 0px;
+  right: 50%;
+  z-index: 999;
 }
