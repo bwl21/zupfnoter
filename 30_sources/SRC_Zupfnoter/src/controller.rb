@@ -10,6 +10,7 @@ class Controller
 
   def initialize
     setup_editor
+    setup_ui
     setup_ui_listener
   end
 
@@ -18,7 +19,7 @@ class Controller
   end
 
   def render_to_canvas
-    Harpnotes::RaphaelEngine.new("harpPreview").draw(layout_harpnotes)
+    @raphael_engine.draw(layout_harpnotes)
     `ABCJS.renderAbc($("#tunePreview")[0], #{get_abc_code}, {}, {}, {})`
   end
 
@@ -40,6 +41,11 @@ class Controller
     Harpnotes::Layout::Default.new.layout(song)
   end
 
+  def select_note(note, origin)
+    `console.log(note)`
+    alert "Selection from #{origin}"
+  end
+
   private
 
   def setup_editor
@@ -48,6 +54,13 @@ class Controller
       editor.setTheme("ace/theme/chrome");
     }
     @editor = `editor`
+  end
+
+  def setup_ui
+    @raphael_engine = Harpnotes::RaphaelEngine.new("harpPreview")
+    @raphael_engine.on_select do |origin|
+      select_note(origin, :harpnotes)
+    end
   end
 
   def setup_ui_listener

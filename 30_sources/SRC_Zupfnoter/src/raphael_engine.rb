@@ -14,6 +14,7 @@ module Harpnotes
 
     def initialize(element_id)
       @paper = Raphael::Paper.new(element_id)
+      @on_select = nil
     end
 
     def draw(sheet)
@@ -30,6 +31,10 @@ module Harpnotes
       end
     end
 
+    def on_select(&block)
+      @on_select = block
+    end
+
     private
 
     def draw_ellipse(root)
@@ -43,31 +48,7 @@ module Harpnotes
 
       e.on_click do
         origin = root.origin
-        unless origin.nil?
-          origin = origin.origin
-
-          unless origin.nil?
-            %x{
-              var indexToPosition = function(index) {
-                var lines  = editor.session.getDocument().$lines;
-                var newLineChar = editor.session.doc.getNewLineCharacter();
-                var currentIndex = 0;
-                for (var row = 0; row < lines.length; row ++) {
-                  var length = editor.session.getLine(row).length;
-                  if (currentIndex + length >= index) {
-                    return {
-                      row: row,
-                      column: index - currentIndex
-                    }
-                  }
-                  currentIndex += length + newLineChar.length;
-                }
-              }
-
-              editor.moveCursorToPosition(indexToPosition(origin.native.startChar));
-            }
-          end
-        end
+        @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
     end
 

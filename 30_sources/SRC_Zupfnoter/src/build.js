@@ -15023,7 +15023,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$children', '$private', '$ellipse', '$first', '$center', '$last', '$size', '$[]=', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$origin', '$nil?', '$line', '$[]', '$from', '$to', '$style', '$-', '$level', '$path', '$translate']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$children', '$private', '$ellipse', '$first', '$center', '$last', '$size', '$[]=', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$origin', '$nil?', '$call', '$line', '$[]', '$from', '$to', '$style', '$-', '$level', '$path', '$translate']);
   ;
   ;
   return (function($base) {
@@ -15035,7 +15035,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
       function $RaphaelEngine(){};
       var self = $RaphaelEngine = $klass($base, $super, 'RaphaelEngine', $RaphaelEngine);
 
-      var def = self._proto, $scope = self._scope, $a, $b;
+      var def = self._proto, $scope = self._scope, $a, $b, TMP_2;
 
       def.paper = nil;
       self.$include((($a = ((($b = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $b))._scope).Drawing == null ? $a.cm('Drawing') : $a.Drawing));
@@ -15053,7 +15053,8 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
       def.$initialize = function(element_id) {
         var $a, $b, self = this;
 
-        return self.paper = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Paper == null ? $a.cm('Paper') : $a.Paper).$new(element_id);
+        self.paper = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Paper == null ? $a.cm('Paper') : $a.Paper).$new(element_id);
+        return self.on_select = nil;
       };
 
       def.$draw = function(sheet) {
@@ -15073,10 +15074,17 @@ if (child == null) child = nil;
           }}, TMP_1._s = self, TMP_1), $a).call($b);
       };
 
+      def.$on_select = TMP_2 = function() {
+        var self = this, $iter = TMP_2._p, block = $iter || nil;
+
+        TMP_2._p = null;
+        return self.on_select = block;
+      };
+
       self.$private();
 
       def.$draw_ellipse = function(root) {
-        var $a, $b, TMP_2, self = this, e = nil, x = nil, y = nil;
+        var $a, $b, TMP_3, self = this, e = nil, x = nil, y = nil;
 
         e = self.paper.$ellipse(root.$center().$first(), root.$center().$last(), root.$size().$first(), root.$size().$last());
         e['$[]=']("fill", (function() {if (root.$fill()['$==']("filled")) {
@@ -15088,37 +15096,15 @@ if (child == null) child = nil;
           x = root.$center().$first()['$+']((root.$size().$first()['$*'](1.2)));
           y = root.$center().$last()['$+']((root.$size().$last()['$*'](1.2)));
           self.paper.$ellipse(x, y, (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a))['$[]=']("fill", "black");};
-        return ($a = ($b = e).$on_click, $a._p = (TMP_2 = function(){var self = TMP_2._s || this, $a, origin = nil;
+        return ($a = ($b = e).$on_click, $a._p = (TMP_3 = function(){var self = TMP_3._s || this, $a, $b, origin = nil;
+          if (self.on_select == null) self.on_select = nil;
 
         origin = root.$origin();
-          if ((($a = origin['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          if ((($a = ((($b = origin['$nil?']()) !== false && $b !== nil) ? $b : self.on_select['$nil?']())) !== nil && (!$a._isBoolean || $a == true))) {
             return nil
             } else {
-            origin = origin.$origin();
-            if ((($a = origin['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
-              return nil
-              } else {
-              
-              var indexToPosition = function(index) {
-                var lines  = editor.session.getDocument().$lines;
-                var newLineChar = editor.session.doc.getNewLineCharacter();
-                var currentIndex = 0;
-                for (var row = 0; row < lines.length; row ++) {
-                  var length = editor.session.getLine(row).length;
-                  if (currentIndex + length >= index) {
-                    return {
-                      row: row,
-                      column: index - currentIndex
-                    }
-                  }
-                  currentIndex += length + newLineChar.length;
-                }
-              }
-
-              editor.moveCursorToPosition(indexToPosition(origin.native.startChar));
-            
-            };
-          };}, TMP_2._s = self, TMP_2), $a).call($b);
+            return self.on_select.$call(origin)
+          };}, TMP_3._s = self, TMP_3), $a).call($b);
       };
 
       def.$draw_flowline = function(root) {
@@ -15278,9 +15264,9 @@ if (s == null) s = nil;
 ;
 /* Generated by Opal 0.6.2 */
 (function($opal) {
-  var $a, $b, TMP_4, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass;
+  var $a, $b, TMP_5, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass;
 
-  $opal.add_stubs(['$setup_editor', '$setup_ui_listener', '$draw', '$new', '$layout_harpnotes', '$get_abc_code', '$file', '$output', '$render_pdf', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$private', '$on', '$render_to_canvas', '$find', '$prevent_default', '$save_file', '$ready?']);
+  $opal.add_stubs(['$setup_editor', '$setup_ui', '$setup_ui_listener', '$draw', '$new', '$layout_harpnotes', '$get_abc_code', '$file', '$output', '$render_pdf', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$alert', '$private', '$on_select', '$select_note', '$on', '$render_to_canvas', '$find', '$prevent_default', '$save_file', '$ready?']);
   ;
   ;
   ;
@@ -15294,10 +15280,12 @@ if (s == null) s = nil;
 
     var def = self._proto, $scope = self._scope;
 
+    def.raphael_engine = nil;
     def.$initialize = function() {
       var self = this;
 
       self.$setup_editor();
+      self.$setup_ui();
       return self.$setup_ui_listener();
     };
 
@@ -15308,9 +15296,9 @@ if (s == null) s = nil;
     };
 
     def.$render_to_canvas = function() {
-      var $a, $b, self = this;
+      var self = this;
 
-      (($a = ((($b = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $b))._scope).RaphaelEngine == null ? $a.cm('RaphaelEngine') : $a.RaphaelEngine).$new("harpPreview").$draw(self.$layout_harpnotes());
+      self.raphael_engine.$draw(self.$layout_harpnotes());
       return ABCJS.renderAbc($("#tunePreview")[0], self.$get_abc_code(), {}, {}, {});
     };
 
@@ -15338,6 +15326,13 @@ if (s == null) s = nil;
       return (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Layout == null ? $b.cm('Layout') : $b.Layout))._scope).Default == null ? $a.cm('Default') : $a.Default).$new().$layout(song);
     };
 
+    def.$select_note = function(note, origin) {
+      var self = this;
+
+      console.log(note);
+      return self.$alert("Selection from " + (origin));
+    };
+
     self.$private();
 
     def.$setup_editor = function() {
@@ -15350,17 +15345,26 @@ if (s == null) s = nil;
       return self.editor = editor;
     };
 
+    def.$setup_ui = function() {
+      var $a, $b, TMP_1, self = this;
+
+      self.raphael_engine = (($a = ((($b = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $b))._scope).RaphaelEngine == null ? $a.cm('RaphaelEngine') : $a.RaphaelEngine).$new("harpPreview");
+      return ($a = ($b = self.raphael_engine).$on_select, $a._p = (TMP_1 = function(origin){var self = TMP_1._s || this;
+if (origin == null) origin = nil;
+      return self.$select_note(origin, "harpnotes")}, TMP_1._s = self, TMP_1), $a).call($b);
+    };
+
     return (def.$setup_ui_listener = function() {
-      var $a, $b, TMP_1, $c, TMP_2, $d, TMP_3, $e, self = this;
+      var $a, $b, TMP_2, $c, TMP_3, $d, TMP_4, $e, self = this;
 
-      ($a = ($b = (($c = $scope.Element) == null ? $opal.cm('Element') : $c).$find("#tbRender")).$on, $a._p = (TMP_1 = function(){var self = TMP_1._s || this;
+      ($a = ($b = (($c = $scope.Element) == null ? $opal.cm('Element') : $c).$find("#tbRender")).$on, $a._p = (TMP_2 = function(){var self = TMP_2._s || this;
 
-      return self.$render_to_canvas()}, TMP_1._s = self, TMP_1), $a).call($b, "click");
-      ($a = ($c = (($d = $scope.Element) == null ? $opal.cm('Element') : $d).$find("#tbPrint")).$on, $a._p = (TMP_2 = function(){var self = TMP_2._s || this, url = nil;
+      return self.$render_to_canvas()}, TMP_2._s = self, TMP_2), $a).call($b, "click");
+      ($a = ($c = (($d = $scope.Element) == null ? $opal.cm('Element') : $d).$find("#tbPrint")).$on, $a._p = (TMP_3 = function(){var self = TMP_3._s || this, url = nil;
 
       url = self.$render_pdf().$output("datauristring");
-        return window.open(url);}, TMP_2._s = self, TMP_2), $a).call($c, "click");
-      return ($a = ($d = (($e = $scope.Element) == null ? $opal.cm('Element') : $e).$find(window)).$on, $a._p = (TMP_3 = function(evt){var self = TMP_3._s || this, $a;
+        return window.open(url);}, TMP_3._s = self, TMP_3), $a).call($c, "click");
+      return ($a = ($d = (($e = $scope.Element) == null ? $opal.cm('Element') : $e).$find(window)).$on, $a._p = (TMP_4 = function(evt){var self = TMP_4._s || this, $a;
 if (evt == null) evt = nil;
       if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();
@@ -15372,12 +15376,12 @@ if (evt == null) evt = nil;
           return evt.preventDefault();
           } else {
           return nil
-        }}, TMP_3._s = self, TMP_3), $a).call($d, "keydown");
+        }}, TMP_4._s = self, TMP_4), $a).call($d, "keydown");
     }, nil) && 'setup_ui_listener';
   })(self, null);
-  return ($a = ($b = (($c = $scope.Document) == null ? $opal.cm('Document') : $c))['$ready?'], $a._p = (TMP_4 = function(){var self = TMP_4._s || this, $a;
+  return ($a = ($b = (($c = $scope.Document) == null ? $opal.cm('Document') : $c))['$ready?'], $a._p = (TMP_5 = function(){var self = TMP_5._s || this, $a;
 
-  return (($a = $scope.Controller) == null ? $opal.cm('Controller') : $a).$new()}, TMP_4._s = self, TMP_4), $a).call($b);
+  return (($a = $scope.Controller) == null ? $opal.cm('Controller') : $a).$new()}, TMP_5._s = self, TMP_5), $a).call($b);
 })(Opal);
 
 //# sourceMappingURL=/__opal_source_maps__/controller.js.map
