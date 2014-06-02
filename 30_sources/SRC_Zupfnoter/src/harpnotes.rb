@@ -287,8 +287,8 @@ module Harpnotes
 
     #
     # This is the drawing model of a tableharp sheet.
-    # Note that this model is still independent from the renderien engine.
-    # It comprises the drawing semantical drawing prmitives
+    # Note that this model is still independent from the rendering engine.
+    # It comprises the drawing semantic drawing prmitives
     #
     #
     class Sheet
@@ -311,8 +311,8 @@ module Harpnotes
     class FlowLine
       attr_reader :from, :to, :style, :origin
 
-      # @param from [Ellipse] the origin of the flow
-      # @param to   [Ellipse] the target of the flow
+      # @param from [Drawable] the origin of the flow
+      # @param to   [Drawable] the target of the flow
       # @param style [Symbol] either :dashed or :solid
       # @param origin [Object] An object to support bactrace, drill down etc.
       #
@@ -323,7 +323,6 @@ module Harpnotes
         @style  = style
         @origin = origin
       end
-
 
       # 
       # Indicates of the flowline shall be drawn as dashed
@@ -341,8 +340,8 @@ module Harpnotes
     class JumpLine
       attr_reader :from, :to, :level
 
-      # @param from [Ellipse] the origin of the flow
-      # @param to   [Ellipse] the target of the flow
+      # @param from [Drawable] the origin of the flow
+      # @param to   [Drawable] the target of the flow
       # @param level [Numeric] the indentation level of the line
       def initialize(from, to, level = 0)
         @from  = from
@@ -351,10 +350,26 @@ module Harpnotes
       end
     end
 
+    class Drawable
+      def center
+        raise "Not implemented"
+      end
+    end
+
+    class Glyph < Drawable
+      attr_reader :center, :name
+
+      def initialize(center, name)
+        @center = center
+        @name = name
+      end
+
+    end
+
     #
     # This represents a note in the shape of an ellipsis
     #
-    class Ellipse
+    class Ellipse < Drawable
       attr_reader :center, :size, :fill, :dotted, :origin
 
       #
@@ -373,7 +388,6 @@ module Harpnotes
         @origin = origin
       end
 
-
       # 
       # Return the height of the Ellipse
       # 
@@ -381,7 +395,6 @@ module Harpnotes
       def height
         @size.last
       end
-
 
       # 
       # Indicate if the Ellipse shall have a Punctuation dot
@@ -405,14 +418,14 @@ module Harpnotes
     # Represent a text on the sheet
     #
     # 
-    class Text
-      attr_reader :position, :text, :style
+    class Text < Drawable
+      attr_reader :center, :text, :style
 
       # @param position Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :bold, :framed
-      def initialize(position, text, style = :regular)
-        @position = position
+      def initialize(center, text, style = :regular)
+        @center = center
         @text = text
         @style = style
       end

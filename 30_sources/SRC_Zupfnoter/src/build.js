@@ -14130,7 +14130,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
     (function($base) {
       var self = $module($base, 'Drawing');
 
-      var def = self._proto, $scope = self._scope;
+      var def = self._proto, $scope = self._scope, $a;
 
       (function($base, $super) {
         function $Sheet(){};
@@ -14206,6 +14206,35 @@ if (map == null) map = nil;if (playable == null) playable = nil;
       })(self, null);
 
       (function($base, $super) {
+        function $Drawable(){};
+        var self = $Drawable = $klass($base, $super, 'Drawable', $Drawable);
+
+        var def = self._proto, $scope = self._scope;
+
+        return (def.$center = function() {
+          var self = this;
+
+          return self.$raise("Not implemented");
+        }, nil) && 'center'
+      })(self, null);
+
+      (function($base, $super) {
+        function $Glyph(){};
+        var self = $Glyph = $klass($base, $super, 'Glyph', $Glyph);
+
+        var def = self._proto, $scope = self._scope;
+
+        self.$attr_reader("center", "name");
+
+        return (def.$initialize = function(center, name) {
+          var self = this;
+
+          self.center = center;
+          return self.name = name;
+        }, nil) && 'initialize';
+      })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
+
+      (function($base, $super) {
         function $Ellipse(){};
         var self = $Ellipse = $klass($base, $super, 'Ellipse', $Ellipse);
 
@@ -14250,7 +14279,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
           return self.fill['$==']("filled");
         }, nil) && 'filled?';
-      })(self, null);
+      })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
 
       (function($base, $super) {
         function $Text(){};
@@ -14258,19 +14287,19 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         var def = self._proto, $scope = self._scope;
 
-        self.$attr_reader("position", "text", "style");
+        self.$attr_reader("center", "text", "style");
 
-        return (def.$initialize = function(position, text, style) {
+        return (def.$initialize = function(center, text, style) {
           var self = this;
 
           if (style == null) {
             style = "regular"
           }
-          self.position = position;
+          self.center = center;
           self.text = text;
           return self.style = style;
         }, nil) && 'initialize';
-      })(self, null);
+      })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
       
     })(self);
 
