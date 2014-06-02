@@ -126,7 +126,8 @@ module Harpnotes
     #
     #
     class Pause < Playable
-      attr_reader :duration
+      # note that the pitch is used to support layout ...
+      attr_reader :duration, :pitch
 
       #
       # Constructor
@@ -134,7 +135,8 @@ module Harpnotes
 
       #
       # @return [Type] [description]
-      def initialize(duration)
+      def initialize(pitch, duration)
+        @pitch = pitch
         @duration = duration
       end
     end
@@ -164,6 +166,10 @@ module Harpnotes
 
         @companion = companion
       end
+
+      def pitch
+        @companion.pitch
+      end
     end
 
 
@@ -183,13 +189,13 @@ module Harpnotes
 
       #
       # construtor
-      # @param from [Playable] the start point
-      # @param to [Playable] the end point
+      # @param from [Playable] the end point of jump (repeat from)
+      # @param to [Playable] the Start point of jump (repeat to )
       # @param level [Integer] A nesting level, used to optimize the graphical representation.
       #
       def initialize(from, to, level)
-        raise "From must be a Playable" unless from.is_a? Harpnotes::Music::Playable
-        raise "To must be a Playable" unless to.is_a? Harpnotes::Music::Playable
+        raise "End point of Jump (#{from.class}) must be a Playable" unless from.is_a? Harpnotes::Music::Playable
+        raise "Start point of Jump (#{to.class}) must be a Playable" unless to.is_a? Harpnotes::Music::Playable
 
         @from = from
         @to = to
@@ -431,6 +437,15 @@ module Harpnotes
       end
     end
 
+    class GlyphPause
+      attr_reader :center, :origin
+
+      def initialize(position, size)
+        @center = position
+        @size = size
+      end
+    end
+
   end
 
 
@@ -535,6 +550,7 @@ module Harpnotes
         end.flatten
 
         note_to_ellipse = Hash[res_playables.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
+        note_to_ellipse = Hash[res_playables.map {|e| [e.origin, e] }]
         res_playables.select {|e| e.is_a? FlowLine }.each {|f| note_to_ellipse[f.origin] = f.to }
 
         previous_note = nil
@@ -629,12 +645,17 @@ module Harpnotes
       #
       # Draw a Pause on the Sheet
       # @param root [Pause] The Pause to be drawn
-      # @param y_offset [Numeric] [description]  todo: superflous
+      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
       # @return [Object] The generated drawing primitive
-      def layout_pause(root, y_offset)
+      def layout_pause(root, beat_layout)
+        x_offset     = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
+        y_offset     = beat_layout.call(root.beat)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
-        []
+        size         = ELLIPSE_SIZE.map {|e| e * scale }
+
+        res = Ellipse.new([ x_offset, y_offset ], [1, 1], fill, dotted, root)
+        res
       end
 
 

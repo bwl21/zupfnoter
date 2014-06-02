@@ -138,7 +138,6 @@ module Harpnotes
             type = el[:el_type]
             res = self.send("transform_#{type}", el)
             unless res.nil? or res.empty?
-              @previous_note = res.last
               res.each {|e| e.origin = el }
             end
             res
@@ -147,7 +146,6 @@ module Harpnotes
         end
 
         Harpnotes::Music::Song.new(voices_transformed, note_length)
-
       end
 
       def transform_note(note)
@@ -157,14 +155,38 @@ module Harpnotes
         duration = (64 * note[:duration]).round
 
         if not note[:rest].nil?
-          transform_rest(duration)
+          if note[:rest][:type] == 'spacerx'  # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
+            result = nil
+          else
+            result = transform_rest(duration)
+          end
         else
-          transform_real_note(note, duration)
+          result = transform_real_note(note, duration)
         end
+
+        if not result.nil?
+
+          # support the case of repetitions from the very beginning
+
+          if @repetition_stack.empty?
+            @repetition_stack << result.last
+          end
+        end
+
+        result
       end
 
       def transform_rest(duration)
-        [ Harpnotes::Music::Pause.new(duration) ]
+        if @previous_note
+          pitch = @previous_note.pitch
+        else
+          pitch = 60   # todo:choose a better value? 60 is c in 3rd octave
+        end
+
+        res = Harpnotes::Music::Pause.new(pitch, duration)
+        @previous_note = res
+
+        [ Harpnotes::Music::Pause.new(pitch, duration) ]
       end
 
       def transform_real_note(note, duration)
@@ -181,10 +203,14 @@ module Harpnotes
         else
           res << Harpnotes::Music::SynchPoint.new(notes)
         end
+
+        @previous_note = res.last
+
         if @next_note_marks_measure
           res << Harpnotes::Music::MeasureStart.new(notes.last)
           @next_note_marks_measure = false
         end
+
         if @next_note_marks_repeat_start
           @repetition_stack << notes.last
           @next_note_marks_repeat_start = false
@@ -209,8 +235,12 @@ module Harpnotes
       end
 
       def transform_bar_right_repeat(bar)
-        start = @repetition_stack.pop
-        [ Dacapo.new(start, @previous_note, @repetition_stack.length) ]
+        if @repetition_stack.length == 1
+          start = @repetition_stack.last
+        else
+          start = @repetition_stack.pop
+        end
+        [ Harpnotes::Music::Dacapo.new(start, @previous_note, @repetition_stack.length) ]
       end
 
       def method_missing(name, *args)

@@ -69,11 +69,13 @@ module Harpnotes
     def draw_jumpline(root)
       startpoint = root.from.center
       startpoint[0] += PADDING
+      startpoint[1] -= PADDING/4
 
       endpoint   = root.to.center
       endpoint[0] += PADDING
+      endpoint[1] += PADDING/4
 
-      depth      = 297 - (root.level * JUMPLINE_INDENT)
+      depth      = 418 - (root.level * JUMPLINE_INDENT)
 
       @pdf.draw = (0...3).map { 0 }
       @pdf.line(endpoint, [depth, endpoint[1]])
