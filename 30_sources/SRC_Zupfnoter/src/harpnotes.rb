@@ -523,7 +523,10 @@ module Harpnotes
         beat_compression_map = compute_beat_compression(music)
         compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
 
-        sheet_elements  = music.voices.map {|v| layout_voice(v, compressed_beat_layout) }.flatten
+        sheet_elements  = music.voices.map {|v|
+          layout_voice(v, compressed_beat_layout)
+        }.flatten
+
         note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
 
         synch_lines = music.build_synch_points.map do |sp|
@@ -549,10 +552,11 @@ module Harpnotes
           layout_playables(playable, beat_layout)
         end.flatten
 
-        note_to_ellipse = Hash[res_playables.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
+        # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
         note_to_ellipse = Hash[res_playables.map {|e| [e.origin, e] }]
         res_playables.select {|e| e.is_a? FlowLine }.each {|f| note_to_ellipse[f.origin] = f.to }
 
+        # draw the flowlines
         previous_note = nil
         res_flow = voice.select {|c| c.is_a? Note or c.is_a? SynchPoint }.map do |playable|
           res = nil
@@ -562,10 +566,12 @@ module Harpnotes
           res
         end.compact
 
+        # draw the jumplines
         res_dacapo = voice.select {|c| c.is_a? Dacapo }.map do |dacapo|
           JumpLine.new(note_to_ellipse[dacapo.from], note_to_ellipse[dacapo.to], dacapo.level)
         end
 
+        # return all drawing primitives
         res_flow + res_playables + res_dacapo
       end
 

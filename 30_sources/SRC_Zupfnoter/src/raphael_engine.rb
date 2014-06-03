@@ -28,6 +28,9 @@ module Harpnotes
           draw_flowline(child)
         elsif child.is_a? JumpLine
           draw_jumpline(child)
+        else
+          puts "don't know how to draw #{child.class}"
+          nil
         end
       end
     end

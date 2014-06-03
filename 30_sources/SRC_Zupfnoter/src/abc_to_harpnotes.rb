@@ -155,10 +155,10 @@ module Harpnotes
         duration = (64 * note[:duration]).round
 
         if not note[:rest].nil?
-          if note[:rest][:type] == 'spacerx'  # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
+          if note[:rest][:type] == 'spacer'  # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
             result = nil
           else
-            result = transform_rest(duration)
+            result = transform_rest(note, duration)
           end
         else
           result = transform_real_note(note, duration)
@@ -176,7 +176,7 @@ module Harpnotes
         result
       end
 
-      def transform_rest(duration)
+      def transform_rest(note, duration)
         if @previous_note
           pitch = @previous_note.pitch
         else
@@ -184,9 +184,10 @@ module Harpnotes
         end
 
         res = Harpnotes::Music::Pause.new(pitch, duration)
+        res.origin = note
         @previous_note = res
 
-        [ Harpnotes::Music::Pause.new(pitch, duration) ]
+        [ res ]
       end
 
       def transform_real_note(note, duration)
@@ -207,7 +208,7 @@ module Harpnotes
         @previous_note = res.last
 
         if @next_note_marks_measure
-          res << Harpnotes::Music::MeasureStart.new(notes.last)
+ #todo: handle bars properly         res << Harpnotes::Music::MeasureStart.new(notes.last)
           @next_note_marks_measure = false
         end
 
@@ -240,6 +241,7 @@ module Harpnotes
         else
           start = @repetition_stack.pop
         end
+        
         [ Harpnotes::Music::Dacapo.new(start, @previous_note, @repetition_stack.length) ]
       end
 

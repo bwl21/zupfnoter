@@ -14391,30 +14391,25 @@ if (sp == null) sp = nil;
         };
 
         def.$layout_voice = function(voice, beat_layout) {
-          var $a, $b, TMP_17, $c, $d, TMP_18, TMP_19, $e, $f, TMP_20, TMP_21, $g, TMP_22, $h, $i, TMP_23, TMP_24, $j, $k, TMP_25, TMP_26, $l, $m, TMP_27, self = this, res_playables = nil, note_to_ellipse = nil, previous_note = nil, res_flow = nil, res_dacapo = nil;
+          var $a, $b, TMP_17, $c, $d, TMP_18, TMP_19, $e, TMP_20, $f, $g, TMP_21, TMP_22, $h, $i, TMP_23, TMP_24, $j, $k, TMP_25, self = this, res_playables = nil, note_to_ellipse = nil, previous_note = nil, res_flow = nil, res_dacapo = nil;
 
           res_playables = ($a = ($b = ($c = ($d = voice).$select, $c._p = (TMP_18 = function(c){var self = TMP_18._s || this, $a;
 if (c == null) c = nil;
           return c['$is_a?']((($a = $scope.Playable) == null ? $opal.cm('Playable') : $a))}, TMP_18._s = self, TMP_18), $c).call($d)).$map, $a._p = (TMP_17 = function(playable){var self = TMP_17._s || this;
 if (playable == null) playable = nil;
           return self.$layout_playables(playable, beat_layout)}, TMP_17._s = self, TMP_17), $a).call($b).$flatten();
-          note_to_ellipse = (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a)['$[]'](($a = ($c = ($e = ($f = res_playables).$select, $e._p = (TMP_20 = function(e){var self = TMP_20._s || this, $a;
-if (e == null) e = nil;
-          return e['$is_a?']((($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a))}, TMP_20._s = self, TMP_20), $e).call($f)).$map, $a._p = (TMP_19 = function(e){var self = TMP_19._s || this;
+          note_to_ellipse = (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a)['$[]'](($a = ($c = res_playables).$map, $a._p = (TMP_19 = function(e){var self = TMP_19._s || this;
 if (e == null) e = nil;
           return [e.$origin(), e]}, TMP_19._s = self, TMP_19), $a).call($c));
-          note_to_ellipse = (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a)['$[]'](($a = ($e = res_playables).$map, $a._p = (TMP_21 = function(e){var self = TMP_21._s || this;
+          ($a = ($e = ($f = ($g = res_playables).$select, $f._p = (TMP_21 = function(e){var self = TMP_21._s || this, $a;
 if (e == null) e = nil;
-          return [e.$origin(), e]}, TMP_21._s = self, TMP_21), $a).call($e));
-          ($a = ($g = ($h = ($i = res_playables).$select, $h._p = (TMP_23 = function(e){var self = TMP_23._s || this, $a;
-if (e == null) e = nil;
-          return e['$is_a?']((($a = $scope.FlowLine) == null ? $opal.cm('FlowLine') : $a))}, TMP_23._s = self, TMP_23), $h).call($i)).$each, $a._p = (TMP_22 = function(f){var self = TMP_22._s || this;
+          return e['$is_a?']((($a = $scope.FlowLine) == null ? $opal.cm('FlowLine') : $a))}, TMP_21._s = self, TMP_21), $f).call($g)).$each, $a._p = (TMP_20 = function(f){var self = TMP_20._s || this;
 if (f == null) f = nil;
-          return note_to_ellipse['$[]='](f.$origin(), f.$to())}, TMP_22._s = self, TMP_22), $a).call($g);
+          return note_to_ellipse['$[]='](f.$origin(), f.$to())}, TMP_20._s = self, TMP_20), $a).call($e);
           previous_note = nil;
-          res_flow = ($a = ($h = ($j = ($k = voice).$select, $j._p = (TMP_25 = function(c){var self = TMP_25._s || this, $a, $b;
+          res_flow = ($a = ($f = ($h = ($i = voice).$select, $h._p = (TMP_23 = function(c){var self = TMP_23._s || this, $a, $b;
 if (c == null) c = nil;
-          return ((($a = c['$is_a?']((($b = $scope.Note) == null ? $opal.cm('Note') : $b))) !== false && $a !== nil) ? $a : c['$is_a?']((($b = $scope.SynchPoint) == null ? $opal.cm('SynchPoint') : $b)))}, TMP_25._s = self, TMP_25), $j).call($k)).$map, $a._p = (TMP_24 = function(playable){var self = TMP_24._s || this, $a, res = nil;
+          return ((($a = c['$is_a?']((($b = $scope.Note) == null ? $opal.cm('Note') : $b))) !== false && $a !== nil) ? $a : c['$is_a?']((($b = $scope.SynchPoint) == null ? $opal.cm('SynchPoint') : $b)))}, TMP_23._s = self, TMP_23), $h).call($i)).$map, $a._p = (TMP_22 = function(playable){var self = TMP_22._s || this, $a, res = nil;
 if (playable == null) playable = nil;
           res = nil;
             if ((($a = previous_note['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
@@ -14422,38 +14417,38 @@ if (playable == null) playable = nil;
               res = (($a = $scope.FlowLine) == null ? $opal.cm('FlowLine') : $a).$new(note_to_ellipse['$[]'](previous_note), note_to_ellipse['$[]'](playable))
             };
             previous_note = playable;
-            return res;}, TMP_24._s = self, TMP_24), $a).call($h).$compact();
-          res_dacapo = ($a = ($j = ($l = ($m = voice).$select, $l._p = (TMP_27 = function(c){var self = TMP_27._s || this, $a;
+            return res;}, TMP_22._s = self, TMP_22), $a).call($f).$compact();
+          res_dacapo = ($a = ($h = ($j = ($k = voice).$select, $j._p = (TMP_25 = function(c){var self = TMP_25._s || this, $a;
 if (c == null) c = nil;
-          return c['$is_a?']((($a = $scope.Dacapo) == null ? $opal.cm('Dacapo') : $a))}, TMP_27._s = self, TMP_27), $l).call($m)).$map, $a._p = (TMP_26 = function(dacapo){var self = TMP_26._s || this, $a;
+          return c['$is_a?']((($a = $scope.Dacapo) == null ? $opal.cm('Dacapo') : $a))}, TMP_25._s = self, TMP_25), $j).call($k)).$map, $a._p = (TMP_24 = function(dacapo){var self = TMP_24._s || this, $a;
 if (dacapo == null) dacapo = nil;
-          return (($a = $scope.JumpLine) == null ? $opal.cm('JumpLine') : $a).$new(note_to_ellipse['$[]'](dacapo.$from()), note_to_ellipse['$[]'](dacapo.$to()), dacapo.$level())}, TMP_26._s = self, TMP_26), $a).call($j);
+          return (($a = $scope.JumpLine) == null ? $opal.cm('JumpLine') : $a).$new(note_to_ellipse['$[]'](dacapo.$from()), note_to_ellipse['$[]'](dacapo.$to()), dacapo.$level())}, TMP_24._s = self, TMP_24), $a).call($h);
           return res_flow['$+'](res_playables)['$+'](res_dacapo);
         };
 
         self.$private();
 
         def.$compute_beat_compression = function(music) {
-          var $a, $b, TMP_28, $c, TMP_29, self = this, max_beat = nil, current_beat = nil;
+          var $a, $b, TMP_26, $c, TMP_27, self = this, max_beat = nil, current_beat = nil;
 
-          max_beat = ($a = ($b = music.$beat_maps()).$map, $a._p = (TMP_28 = function(map){var self = TMP_28._s || this;
+          max_beat = ($a = ($b = music.$beat_maps()).$map, $a._p = (TMP_26 = function(map){var self = TMP_26._s || this;
 if (map == null) map = nil;
-          return map.$keys().$max()}, TMP_28._s = self, TMP_28), $a).call($b).$max();
+          return map.$keys().$max()}, TMP_26._s = self, TMP_26), $a).call($b).$max();
           current_beat = 0;
-          return (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a)['$[]'](($a = ($c = ($range(0, max_beat, false))).$map, $a._p = (TMP_29 = function(beat){var self = TMP_29._s || this, $a, $b, TMP_30, $c, TMP_31, notes_on_beat = nil, max_duration = nil, has_no_notes_on_beat = nil;
+          return (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a)['$[]'](($a = ($c = ($range(0, max_beat, false))).$map, $a._p = (TMP_27 = function(beat){var self = TMP_27._s || this, $a, $b, TMP_28, $c, TMP_29, notes_on_beat = nil, max_duration = nil, has_no_notes_on_beat = nil;
 if (beat == null) beat = nil;
-          notes_on_beat = ($a = ($b = music.$beat_maps()).$map, $a._p = (TMP_30 = function(bm){var self = TMP_30._s || this;
+          notes_on_beat = ($a = ($b = music.$beat_maps()).$map, $a._p = (TMP_28 = function(bm){var self = TMP_28._s || this;
 if (bm == null) bm = nil;
-            return bm['$[]'](beat)}, TMP_30._s = self, TMP_30), $a).call($b).$flatten().$compact();
-            max_duration = ($a = ($c = notes_on_beat).$map, $a._p = (TMP_31 = function(n){var self = TMP_31._s || this;
+            return bm['$[]'](beat)}, TMP_28._s = self, TMP_28), $a).call($b).$flatten().$compact();
+            max_duration = ($a = ($c = notes_on_beat).$map, $a._p = (TMP_29 = function(n){var self = TMP_29._s || this;
 if (n == null) n = nil;
-            return n.$duration()}, TMP_31._s = self, TMP_31), $a).call($c).$max();
+            return n.$duration()}, TMP_29._s = self, TMP_29), $a).call($c).$max();
             has_no_notes_on_beat = notes_on_beat['$empty?']();
             if (has_no_notes_on_beat !== false && has_no_notes_on_beat !== nil) {
               } else {
               current_beat = current_beat['$+'](1)
             };
-            return [beat, current_beat];}, TMP_29._s = self, TMP_29), $a).call($c));
+            return [beat, current_beat];}, TMP_27._s = self, TMP_27), $a).call($c));
         };
 
         def.$layout_playables = function(root, beat_layout) {
@@ -14471,40 +14466,40 @@ if (n == null) n = nil;
         };
 
         def.$layout_note = function(root, beat_layout) {
-          var $a, $b, TMP_32, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
+          var $a, $b, TMP_30, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
 
           x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch()))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
           y_offset = beat_layout.$call(root.$beat());
           $a = $opal.to_ary((($b = $scope.DURATION_TO_STYLE) == null ? $opal.cm('DURATION_TO_STYLE') : $b)['$[]'](self.$duration_to_id(root.$duration()))), scale = ($a[0] == null ? nil : $a[0]), fill = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
-          size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_32 = function(e){var self = TMP_32._s || this;
+          size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_30 = function(e){var self = TMP_30._s || this;
 if (e == null) e = nil;
-          return e['$*'](scale)}, TMP_32._s = self, TMP_32), $a).call($b);
+          return e['$*'](scale)}, TMP_30._s = self, TMP_30), $a).call($b);
           res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset], size, fill, dotted, root);
           return res;
         };
 
         def.$layout_accord = function(root, beat_layout) {
-          var $a, $b, TMP_33, $c, TMP_34, self = this, notes = nil, res = nil;
+          var $a, $b, TMP_31, $c, TMP_32, self = this, notes = nil, res = nil;
 
-          notes = ($a = ($b = root.$notes()).$sort_by, $a._p = (TMP_33 = function(a){var self = TMP_33._s || this;
+          notes = ($a = ($b = root.$notes()).$sort_by, $a._p = (TMP_31 = function(a){var self = TMP_31._s || this;
 if (a == null) a = nil;
-          return a.$pitch()}, TMP_33._s = self, TMP_33), $a).call($b);
-          res = ($a = ($c = notes).$map, $a._p = (TMP_34 = function(c){var self = TMP_34._s || this;
+          return a.$pitch()}, TMP_31._s = self, TMP_31), $a).call($b);
+          res = ($a = ($c = notes).$map, $a._p = (TMP_32 = function(c){var self = TMP_32._s || this;
 if (c == null) c = nil;
-          return self.$layout_note(c, beat_layout)}, TMP_34._s = self, TMP_34), $a).call($c);
+          return self.$layout_note(c, beat_layout)}, TMP_32._s = self, TMP_32), $a).call($c);
           res['$<<']((($a = $scope.FlowLine) == null ? $opal.cm('FlowLine') : $a).$new(res.$first(), res.$last(), "dashed", root));
           return res;
         };
 
         def.$layout_pause = function(root, beat_layout) {
-          var $a, $b, TMP_35, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
+          var $a, $b, TMP_33, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
 
           x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch()))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
           y_offset = beat_layout.$call(root.$beat());
           $a = $opal.to_ary((($b = $scope.DURATION_TO_STYLE) == null ? $opal.cm('DURATION_TO_STYLE') : $b)['$[]'](self.$duration_to_id(root.$duration()))), scale = ($a[0] == null ? nil : $a[0]), fill = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
-          size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_35 = function(e){var self = TMP_35._s || this;
+          size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_33 = function(e){var self = TMP_33._s || this;
 if (e == null) e = nil;
-          return e['$*'](scale)}, TMP_35._s = self, TMP_35), $a).call($b);
+          return e['$*'](scale)}, TMP_33._s = self, TMP_33), $a).call($b);
           res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset], [1, 1], fill, dotted, root);
           return res;
         };
@@ -14697,10 +14692,10 @@ if (e == null) e = nil;
 
           duration = ((64)['$*'](note['$[]']("duration"))).$round();
           if ((($a = note['$[]']("rest")['$nil?']()['$!']()) !== nil && (!$a._isBoolean || $a == true))) {
-            if (note['$[]']("rest")['$[]']("type")['$==']("spacerx")) {
+            if (note['$[]']("rest")['$[]']("type")['$==']("spacer")) {
               result = nil
               } else {
-              result = self.$transform_rest(duration)
+              result = self.$transform_rest(note, duration)
             }
             } else {
             result = self.$transform_real_note(note, duration)
@@ -14711,7 +14706,7 @@ if (e == null) e = nil;
           return result;
         };
 
-        def.$transform_rest = function(duration) {
+        def.$transform_rest = function(note, duration) {
           var $a, $b, $c, self = this, pitch = nil, res = nil;
 
           if ((($a = self.previous_note) !== nil && (!$a._isBoolean || $a == true))) {
@@ -14720,8 +14715,9 @@ if (e == null) e = nil;
             pitch = 60
           };
           res = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Pause == null ? $a.cm('Pause') : $a.Pause).$new(pitch, duration);
+          res['$origin='](note);
           self.previous_note = res;
-          return [(($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Pause == null ? $a.cm('Pause') : $a.Pause).$new(pitch, duration)];
+          return [res];
         };
 
         def.$transform_real_note = function(note, duration) {
@@ -14742,8 +14738,7 @@ if (pitch == null) pitch = nil;
           };
           self.previous_note = res.$last();
           if ((($a = self.next_note_marks_measure) !== nil && (!$a._isBoolean || $a == true))) {
-            res['$<<']((($a = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Music == null ? $c.cm('Music') : $c.Music))._scope).MeasureStart == null ? $a.cm('MeasureStart') : $a.MeasureStart).$new(notes.$last()));
-            self.next_note_marks_measure = false;};
+            self.next_note_marks_measure = false};
           if ((($a = self.next_note_marks_repeat_start) !== nil && (!$a._isBoolean || $a == true))) {
             self.repetition_stack['$<<'](notes.$last());
             self.next_note_marks_repeat_start = false;};
@@ -14773,13 +14768,15 @@ if (pitch == null) pitch = nil;
         };
 
         def.$transform_bar_right_repeat = function(bar) {
-          var $a, $b, $c, self = this, start = nil;
+          var $a, $b, $c, self = this, start = nil, dcfrom = nil, dcto = nil;
 
           if (self.repetition_stack.$length()['$=='](1)) {
             start = self.repetition_stack.$last()
             } else {
             start = self.repetition_stack.$pop()
           };
+          dcfrom = start;
+          dcto = self.previous_note;
           return [(($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Dacapo == null ? $a.cm('Dacapo') : $a.Dacapo).$new(start, self.previous_note, self.repetition_stack.$length())];
         };
 
@@ -15127,7 +15124,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$children', '$private', '$ellipse', '$first', '$center', '$last', '$size', '$[]=', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$origin', '$nil?', '$call', '$line', '$[]', '$from', '$to', '$style', '$-', '$level', '$path', '$translate']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$puts', '$class', '$children', '$private', '$ellipse', '$first', '$center', '$last', '$size', '$[]=', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$origin', '$nil?', '$call', '$line', '$[]', '$from', '$to', '$style', '$-', '$level', '$path', '$translate']);
   ;
   ;
   return (function($base) {
@@ -15175,7 +15172,8 @@ if (child == null) child = nil;
           } else if ((($a = child['$is_a?']((($b = $scope.JumpLine) == null ? $opal.cm('JumpLine') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_jumpline(child)
             } else {
-            return nil
+            self.$puts("don't know how to draw " + (child.$class()));
+            return nil;
           }}, TMP_1._s = self, TMP_1), $a).call($b);
       };
 
