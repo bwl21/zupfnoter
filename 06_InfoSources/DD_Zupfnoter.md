@@ -40,3 +40,6 @@ http://raphaeljs.com/ - JS vector library
 
 http://www.renediem.ch/20512/65620.html Zither noten programm
 
+http://penzeng.de/Geige/Abc.htm - sehr verständliche deutsche Anleitung zu ABC
+
+
