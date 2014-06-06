@@ -28,6 +28,7 @@ module Harpnotes
   #
   # =Basic concept
   #
+  
   #  Song -> Staff* -> Voice* -> MusicEntity*
   #
   # 1. Music is denoted as Song
@@ -40,6 +41,53 @@ module Harpnotes
   #
   # 6. Note: Measures are not modelled as containers ...
   #
+  
+  # =the Transformation chain
+  # 
+  # ABC --abcjs--> tune --transform-->
+  #            Harpnotes (Song) --layout--> 
+  #                                          Drawing (Sheet) --RaphaelEngine--> 
+  #                                                                          SVG
+  #                                                          --PdfEngine-->
+  #                                                                          PDF
+  #                                            
+  # == Output of abcjs
+  #    tune *(staff = (lines = (voices = (note | ....)))
+  #
+  #    note
+  #    stem
+  #    bar
+  #    starttriplet
+  #    annotation
+  #    chord
+  # 
+  # == Harpnotes
+  #
+  # is a representation of music targeting to Harpnote representation but independent
+  # of the particular Layout
+  #
+  # we have 
+  #
+  # Song
+  # Note
+  # Pause
+  # Jumpline
+  # Flowline
+  #
+  # Annnotation
+  # ...
+  #
+  
+  # 
+  # == Layout 
+  # 
+  # Ellipse
+  # Flowline
+  # Jumpline
+  # Annotation
+  # Bar
+  
+  
   module Music
 
     # Marks classes in this model
@@ -424,7 +472,7 @@ module Harpnotes
     # Represent a text on the sheet
     #
     # 
-    class Text < Drawable
+    class Annotation < Drawable
       attr_reader :center, :text, :style
 
       # @param position Array the position of the text as [x, y]
@@ -437,7 +485,7 @@ module Harpnotes
       end
     end
 
-    class GlyphPause
+    class GlyphPause < Drawable
       attr_reader :center, :origin
 
       def initialize(position, size)
@@ -445,6 +493,9 @@ module Harpnotes
         @size = size
       end
     end
+
+	class Legend < Drawable
+	end
 
   end
 
