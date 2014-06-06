@@ -13899,7 +13899,7 @@ if (a == null) a = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$attr_accessor', '$attr_reader', '$is_a?', '$raise', '$duration', '$first', '$each', '$beat=', '$pitch', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$[]', '$last_beat', '$private', '$inject', '$[]=', '$+', '$==', '$last', '$dotted', '$include', '$/', '$*', '$-', '$compute_beat_layout', '$compute_beat_compression', '$call', '$layout_voice', '$voices', '$origin', '$build_synch_points', '$layout_playables', '$to', '$nil?', '$from', '$level', '$beat_maps', '$layout_note', '$layout_accord', '$layout_pause', '$beat', '$duration_to_id', '$sort_by', '$to_sym']);
+  $opal.add_stubs(['$attr_accessor', '$attr_reader', '$is_a?', '$raise', '$duration', '$first', '$each', '$beat=', '$pitch', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$[]', '$last_beat', '$private', '$inject', '$[]=', '$+', '$==', '$last', '$dotted', '$include', '$/', '$*', '$-', '$compute_beat_layout', '$compute_beat_compression', '$call', '$layout_voice', '$voices', '$origin', '$build_synch_points', '$layout_playables', '$to', '$nil?', '$from', '$level', '$beat_maps', '$duration_to_id', '$layout_note', '$layout_accord', '$layout_pause', '$beat', '$sort_by', '$to_sym']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -14290,8 +14290,8 @@ if (map == null) map = nil;if (playable == null) playable = nil;
       })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
 
       (function($base, $super) {
-        function $Text(){};
-        var self = $Text = $klass($base, $super, 'Text', $Text);
+        function $Annotation(){};
+        var self = $Annotation = $klass($base, $super, 'Annotation', $Annotation);
 
         var def = self._proto, $scope = self._scope;
 
@@ -14310,20 +14310,60 @@ if (map == null) map = nil;if (playable == null) playable = nil;
       })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
 
       (function($base, $super) {
-        function $GlyphPause(){};
-        var self = $GlyphPause = $klass($base, $super, 'GlyphPause', $GlyphPause);
+        function $Rest(){};
+        var self = $Rest = $klass($base, $super, 'Rest', $Rest);
 
         var def = self._proto, $scope = self._scope;
 
-        self.$attr_reader("center", "origin");
+        def.size = def.fill = nil;
+        self.$attr_reader("center", "size", "fill", "dotted", "origin");
 
-        return (def.$initialize = function(position, size) {
+        def.$initialize = function(center, size, fill, dotted, origin) {
+          var self = this, $a;
+
+          if (fill == null) {
+            fill = "filled"
+          }
+          if (dotted == null) {
+            dotted = (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)
+          }
+          if (origin == null) {
+            origin = nil
+          }
+          self.center = center;
+          self.size = size;
+          self.fill = fill;
+          self.dotted = dotted;
+          return self.origin = origin;
+        };
+
+        def.$height = function() {
           var self = this;
 
-          self.center = position;
-          return self.size = size;
-        }, nil) && 'initialize';
-      })(self, null);
+          return self.size.$last();
+        };
+
+        def['$dotted?'] = function() {
+          var self = this;
+
+          return self.$dotted();
+        };
+
+        return (def['$filled?'] = function() {
+          var self = this;
+
+          return self.fill['$==']("filled");
+        }, nil) && 'filled?';
+      })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
+
+      (function($base, $super) {
+        function $Legend(){};
+        var self = $Legend = $klass($base, $super, 'Legend', $Legend);
+
+        var def = self._proto, $scope = self._scope;
+
+        return nil;
+      })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
       
     })(self);
 
@@ -14346,7 +14386,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         $opal.cdecl($scope, 'X_SPACING', (115)['$/'](10));
 
-        $opal.cdecl($scope, 'BEAT_SPACING', 4);
+        $opal.cdecl($scope, 'BEAT_SPACING', (4)['$*'](1.0)['$/'](64.0));
 
         $opal.cdecl($scope, 'Y_OFFSET', (($a = $scope.BEAT_SPACING) == null ? $opal.cm('BEAT_SPACING') : $a));
 
@@ -14429,13 +14469,14 @@ if (dacapo == null) dacapo = nil;
         self.$private();
 
         def.$compute_beat_compression = function(music) {
-          var $a, $b, TMP_26, $c, TMP_27, self = this, max_beat = nil, current_beat = nil;
+          var $a, $b, TMP_26, $c, TMP_27, self = this, max_beat = nil, current_beat = nil, last_size = nil;
 
           max_beat = ($a = ($b = music.$beat_maps()).$map, $a._p = (TMP_26 = function(map){var self = TMP_26._s || this;
 if (map == null) map = nil;
           return map.$keys().$max()}, TMP_26._s = self, TMP_26), $a).call($b).$max();
           current_beat = 0;
-          return (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a)['$[]'](($a = ($c = ($range(0, max_beat, false))).$map, $a._p = (TMP_27 = function(beat){var self = TMP_27._s || this, $a, $b, TMP_28, $c, TMP_29, notes_on_beat = nil, max_duration = nil, has_no_notes_on_beat = nil;
+          last_size = 32;
+          return (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a)['$[]'](($a = ($c = ($range(0, max_beat, false))).$map, $a._p = (TMP_27 = function(beat){var self = TMP_27._s || this, $a, $b, TMP_28, $c, TMP_29, notes_on_beat = nil, max_duration = nil, has_no_notes_on_beat = nil, size = nil, increment = nil;
 if (beat == null) beat = nil;
           notes_on_beat = ($a = ($b = music.$beat_maps()).$map, $a._p = (TMP_28 = function(bm){var self = TMP_28._s || this;
 if (bm == null) bm = nil;
@@ -14446,7 +14487,13 @@ if (n == null) n = nil;
             has_no_notes_on_beat = notes_on_beat['$empty?']();
             if (has_no_notes_on_beat !== false && has_no_notes_on_beat !== nil) {
               } else {
-              current_beat = current_beat['$+'](1)
+              size = (32)['$*']((($a = $scope.DURATION_TO_STYLE) == null ? $opal.cm('DURATION_TO_STYLE') : $a)['$[]'](self.$duration_to_id(max_duration)).$first());
+              increment = (size['$+'](last_size));
+              last_size = size;
+              if (has_no_notes_on_beat !== false && has_no_notes_on_beat !== nil) {
+                } else {
+                current_beat = current_beat['$+'](increment)
+              };
             };
             return [beat, current_beat];}, TMP_27._s = self, TMP_27), $a).call($c));
         };
@@ -14479,20 +14526,22 @@ if (e == null) e = nil;
         };
 
         def.$layout_accord = function(root, beat_layout) {
-          var $a, $b, TMP_31, $c, TMP_32, self = this, notes = nil, res = nil;
+          var $a, $b, TMP_31, $c, TMP_32, self = this, notes = nil, resnotes = nil, res = nil;
 
           notes = ($a = ($b = root.$notes()).$sort_by, $a._p = (TMP_31 = function(a){var self = TMP_31._s || this;
 if (a == null) a = nil;
           return a.$pitch()}, TMP_31._s = self, TMP_31), $a).call($b);
-          res = ($a = ($c = notes).$map, $a._p = (TMP_32 = function(c){var self = TMP_32._s || this;
+          resnotes = ($a = ($c = notes).$map, $a._p = (TMP_32 = function(c){var self = TMP_32._s || this;
 if (c == null) c = nil;
           return self.$layout_note(c, beat_layout)}, TMP_32._s = self, TMP_32), $a).call($c);
-          res['$<<']((($a = $scope.FlowLine) == null ? $opal.cm('FlowLine') : $a).$new(res.$first(), res.$last(), "dashed", root));
+          res = [];
+          res['$<<']((($a = $scope.FlowLine) == null ? $opal.cm('FlowLine') : $a).$new(resnotes.$first(), resnotes.$last(), "dashed", root));
+          res['$<<'](resnotes);
           return res;
         };
 
         def.$layout_pause = function(root, beat_layout) {
-          var $a, $b, TMP_33, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
+          var $a, $b, TMP_33, $c, $d, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
 
           x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch()))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
           y_offset = beat_layout.$call(root.$beat());
@@ -14500,7 +14549,7 @@ if (c == null) c = nil;
           size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_33 = function(e){var self = TMP_33._s || this;
 if (e == null) e = nil;
           return e['$*'](scale)}, TMP_33._s = self, TMP_33), $a).call($b);
-          res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset], [1, 1], fill, dotted, root);
+          res = (($a = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Rest == null ? $a.cm('Rest') : $a.Rest).$new([x_offset, y_offset], size, fill, dotted, root);
           return res;
         };
 
@@ -14768,15 +14817,13 @@ if (pitch == null) pitch = nil;
         };
 
         def.$transform_bar_right_repeat = function(bar) {
-          var $a, $b, $c, self = this, start = nil, dcfrom = nil, dcto = nil;
+          var $a, $b, $c, self = this, start = nil;
 
           if (self.repetition_stack.$length()['$=='](1)) {
             start = self.repetition_stack.$last()
             } else {
             start = self.repetition_stack.$pop()
           };
-          dcfrom = start;
-          dcto = self.previous_note;
           return [(($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Dacapo == null ? $a.cm('Dacapo') : $a.Dacapo).$new(start, self.previous_note, self.repetition_stack.$length())];
         };
 
@@ -14877,6 +14924,15 @@ if (pitch == null) pitch = nil;
         var $a, $b, self = this;
 
         return (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.path(spec));
+      };
+
+      def.$rect = function(x, y, rx, ry, radius) {
+        var $a, $b, self = this;
+
+        if (radius == null) {
+          radius = 0
+        }
+        return (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.rect(x, y, rx, ry, radius));
       };
 
       def.$line = function(x1, y1, x2, y2) {
@@ -15016,10 +15072,22 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
       return self.native.text(x, y, text, flags);
     };
 
-    def.$rect = function(x1, y1, x2, y2) {
+    def.$rect_like_ellipse = function(center, size, style) {
       var self = this;
 
-      return self.native.rect(x1, y1, x2, y2);
+      if (style == null) {
+        style = "undefined"
+      }
+      return self.native.rect(center[0], center[1], size[0], size[1], style);
+    };
+
+    def.$rect = function(x1, y1, x2, y2, style) {
+      var self = this;
+
+      if (style == null) {
+        style = "undefined"
+      }
+      return self.native.rect(x1, y1, x2, y2, style);
     };
 
     return (def.$output = function(type, options) {
@@ -15124,7 +15192,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$puts', '$class', '$children', '$private', '$ellipse', '$first', '$center', '$last', '$size', '$[]=', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$origin', '$nil?', '$call', '$line', '$[]', '$from', '$to', '$style', '$-', '$level', '$path', '$translate']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$puts', '$class', '$children', '$private', '$ellipse', '$first', '$center', '$last', '$size', '$[]=', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$origin', '$nil?', '$call', '$-', '$map', '$rect', '$line', '$[]', '$from', '$to', '$style', '$level', '$path', '$translate']);
   ;
   ;
   return (function($base) {
@@ -15149,7 +15217,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 
       $opal.cdecl($scope, 'JUMPLINE_INDENT', 10);
 
-      $opal.cdecl($scope, 'DOTTED_SIZE', 2);
+      $opal.cdecl($scope, 'DOTTED_SIZE', 0.3);
 
       def.$initialize = function(element_id) {
         var $a, $b, self = this;
@@ -15163,7 +15231,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         var $a, $b, TMP_1, self = this;
 
         self.paper.$clear();
-        return ($a = ($b = sheet.$children()).$each, $a._p = (TMP_1 = function(child){var self = TMP_1._s || this, $a, $b;
+        return ($a = ($b = sheet.$children()).$each, $a._p = (TMP_1 = function(child){var self = TMP_1._s || this, $a, $b, $c, $d;
 if (child == null) child = nil;
         if ((($a = child['$is_a?']((($b = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_ellipse(child)
@@ -15171,6 +15239,8 @@ if (child == null) child = nil;
             return self.$draw_flowline(child)
           } else if ((($a = child['$is_a?']((($b = $scope.JumpLine) == null ? $opal.cm('JumpLine') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_jumpline(child)
+          } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Rest == null ? $b.cm('Rest') : $b.Rest))) !== nil && (!$a._isBoolean || $a == true))) {
+            return self.$draw_rest(child)
             } else {
             self.$puts("don't know how to draw " + (child.$class()));
             return nil;
@@ -15210,6 +15280,34 @@ if (child == null) child = nil;
           };}, TMP_3._s = self, TMP_3), $a).call($b);
       };
 
+      def.$draw_rest = function(root) {
+        var $a, $b, TMP_4, $c, TMP_5, self = this, center = nil, size = nil, e = nil, x = nil, y = nil;
+
+        center = [root.$center().$first()['$-'](root.$size().$first()), root.$center().$last()['$+'](root.$size().$last())];
+        size = ($a = ($b = root.$size()).$map, $a._p = (TMP_4 = function(s){var self = TMP_4._s || this;
+if (s == null) s = nil;
+        return (2)['$*'](s)}, TMP_4._s = self, TMP_4), $a).call($b);
+        e = self.paper.$rect(center.$first(), center.$last(), size.$first(), size.$last());
+        e['$[]=']("fill", (function() {if (root.$fill()['$==']("filled")) {
+          return "black"
+          } else {
+          return "white"
+        }; return nil; })());
+        if ((($a = root['$dotted?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          x = root.$center().$first()['$+']((root.$size().$first()['$*'](1.2)));
+          y = root.$center().$last()['$+']((root.$size().$last()['$*'](1.2)));
+          self.paper.$ellipse(x, y, (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a))['$[]=']("fill", "black");};
+        return ($a = ($c = e).$on_click, $a._p = (TMP_5 = function(){var self = TMP_5._s || this, $a, $b, origin = nil;
+          if (self.on_select == null) self.on_select = nil;
+
+        origin = root.$origin();
+          if ((($a = ((($b = origin['$nil?']()) !== false && $b !== nil) ? $b : self.on_select['$nil?']())) !== nil && (!$a._isBoolean || $a == true))) {
+            return nil
+            } else {
+            return self.on_select.$call(origin)
+          };}, TMP_5._s = self, TMP_5), $a).call($c);
+      };
+
       def.$draw_flowline = function(root) {
         var self = this, l = nil;
 
@@ -15246,7 +15344,7 @@ if (child == null) child = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$rect', '$text_color=', '$text', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$children', '$private', '$filled?', '$fill=', '$map', '$ellipse', '$center', '$size', '$dotted?', '$+', '$*', '$zip', '$dashed?', '$line_dash=', '$line', '$from', '$to', '$use_solid_lines', '$[]=', '$[]', '$-', '$/', '$level', '$draw=']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$rect', '$text_color=', '$text', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$puts', '$class', '$children', '$private', '$filled?', '$fill=', '$map', '$ellipse', '$center', '$size', '$dotted?', '$+', '$*', '$zip', '$-', '$first', '$last', '$rect_like_ellipse', '$dashed?', '$line_dash=', '$line', '$from', '$to', '$use_solid_lines', '$[]=', '$[]', '$/', '$level', '$draw=']);
   ;
   ;
   return (function($base) {
@@ -15271,7 +15369,7 @@ if (child == null) child = nil;
 
       $opal.cdecl($scope, 'JUMPLINE_INDENT', 10);
 
-      $opal.cdecl($scope, 'DOTTED_SIZE', 0.5);
+      $opal.cdecl($scope, 'DOTTED_SIZE', 0.3);
 
       def.$initialize = function() {
         var $a, self = this;
@@ -15285,7 +15383,7 @@ if (child == null) child = nil;
       def.$draw = function(sheet) {
         var $a, $b, TMP_1, self = this;
 
-        ($a = ($b = sheet.$children()).$each, $a._p = (TMP_1 = function(child){var self = TMP_1._s || this, $a, $b;
+        ($a = ($b = sheet.$children()).$each, $a._p = (TMP_1 = function(child){var self = TMP_1._s || this, $a, $b, $c, $d;
 if (child == null) child = nil;
         if ((($a = child['$is_a?']((($b = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_ellipse(child)
@@ -15293,8 +15391,11 @@ if (child == null) child = nil;
             return self.$draw_flowline(child)
           } else if ((($a = child['$is_a?']((($b = $scope.JumpLine) == null ? $opal.cm('JumpLine') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_jumpline(child)
+          } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Rest == null ? $b.cm('Rest') : $b.Rest))) !== nil && (!$a._isBoolean || $a == true))) {
+            return self.$draw_rest(child)
             } else {
-            return nil
+            self.$puts("don't know how to draw " + (child.$class()));
+            return nil;
           }}, TMP_1._s = self, TMP_1), $a).call($b);
         return self.pdf;
       };
@@ -15330,6 +15431,39 @@ if (s == null) s = nil;
         };
       };
 
+      def.$draw_rest = function(root) {
+        var $a, $b, TMP_5, $c, TMP_6, $d, TMP_7, $e, TMP_8, self = this, style = nil, center = nil, size = nil;
+
+        style = (function() {if ((($a = root['$filled?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          return "F"
+          } else {
+          return "FD"
+        }; return nil; })();
+        self.pdf['$fill='](($a = ($b = ($range(0, 3, true))).$map, $a._p = (TMP_5 = function(){var self = TMP_5._s || this, $a;
+
+        if ((($a = root['$filled?']()) !== nil && (!$a._isBoolean || $a == true))) {
+            return 0
+            } else {
+            return 255
+          }}, TMP_5._s = self, TMP_5), $a).call($b));
+        center = [root.$center().$first()['$-'](root.$size().$first()), root.$center().$last()['$-'](root.$size().$last())];
+        size = ($a = ($c = root.$size()).$map, $a._p = (TMP_6 = function(s){var self = TMP_6._s || this;
+if (s == null) s = nil;
+        return (2.0)['$*'](s)}, TMP_6._s = self, TMP_6), $a).call($c);
+        self.pdf.$rect_like_ellipse(center, size, style);
+        if ((($a = root['$dotted?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          self.pdf['$fill='](($a = ($d = ($range(0, 3, true))).$map, $a._p = (TMP_7 = function(){var self = TMP_7._s || this;
+
+          return 0}, TMP_7._s = self, TMP_7), $a).call($d));
+          return self.pdf.$ellipse(($a = ($e = root.$center().$zip(root.$size())).$map, $a._p = (TMP_8 = function(s){var self = TMP_8._s || this, $a, a = nil, b = nil;
+if (s == null) s = nil;
+          $a = $opal.to_ary(s), a = ($a[0] == null ? nil : $a[0]), b = ($a[1] == null ? nil : $a[1]);
+            return a['$+'](b['$*'](1.5));}, TMP_8._s = self, TMP_8), $a).call($e), [(($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a)], "F");
+          } else {
+          return nil
+        };
+      };
+
       def.$draw_flowline = function(root) {
         var $a, self = this;
 
@@ -15344,7 +15478,7 @@ if (s == null) s = nil;
       };
 
       return (def.$draw_jumpline = function(root) {
-        var $a, $b, $c, TMP_5, self = this, startpoint = nil, endpoint = nil, depth = nil;
+        var $a, $b, $c, TMP_9, self = this, startpoint = nil, endpoint = nil, depth = nil;
 
         startpoint = root.$from().$center();
         ($a = 0, $b = startpoint, $b['$[]=']($a, $b['$[]']($a)['$+']((($c = $scope.PADDING) == null ? $opal.cm('PADDING') : $c))));
@@ -15353,9 +15487,9 @@ if (s == null) s = nil;
         ($a = 0, $b = endpoint, $b['$[]=']($a, $b['$[]']($a)['$+']((($c = $scope.PADDING) == null ? $opal.cm('PADDING') : $c))));
         ($a = 1, $b = endpoint, $b['$[]=']($a, $b['$[]']($a)['$+']((($c = $scope.PADDING) == null ? $opal.cm('PADDING') : $c)['$/'](4))));
         depth = (418)['$-']((root.$level()['$*']((($a = $scope.JUMPLINE_INDENT) == null ? $opal.cm('JUMPLINE_INDENT') : $a))));
-        self.pdf['$draw='](($a = ($b = ($range(0, 3, true))).$map, $a._p = (TMP_5 = function(){var self = TMP_5._s || this;
+        self.pdf['$draw='](($a = ($b = ($range(0, 3, true))).$map, $a._p = (TMP_9 = function(){var self = TMP_9._s || this;
 
-        return 0}, TMP_5._s = self, TMP_5), $a).call($b));
+        return 0}, TMP_9._s = self, TMP_9), $a).call($b));
         self.pdf.$line(endpoint, [depth, endpoint['$[]'](1)]);
         self.pdf.$line([depth, endpoint['$[]'](1)], [depth, startpoint['$[]'](1)]);
         return self.pdf.$line([depth, startpoint['$[]'](1)], startpoint);

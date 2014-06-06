@@ -10,7 +10,7 @@ module Harpnotes
     PADDING = 20
     ARROW_SIZE = 10
     JUMPLINE_INDENT = 10
-    DOTTED_SIZE = 2
+    DOTTED_SIZE = 0.3
 
     def initialize(element_id)
       @paper = Raphael::Paper.new(element_id)
@@ -28,6 +28,8 @@ module Harpnotes
           draw_flowline(child)
         elsif child.is_a? JumpLine
           draw_jumpline(child)
+        elsif child.is_a? Harpnotes::Drawing::Rest
+          draw_rest(child)
         else
           puts "don't know how to draw #{child.class}"
           nil
@@ -43,6 +45,23 @@ module Harpnotes
 
     def draw_ellipse(root)
       e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last)
+      e["fill"] = root.fill == :filled ? "black" : "white"
+      if root.dotted?
+        x = root.center.first + (root.size.first * 1.2)
+        y = root.center.last + (root.size.last * 1.2)
+        @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)["fill"] = "black"
+      end
+
+      e.on_click do
+        origin = root.origin
+        @on_select.call(origin) unless origin.nil? or @on_select.nil?
+      end
+    end
+
+    def draw_rest(root)
+      center = [root.center.first - root.size.first, root.center.last + root.size.last]
+      size = root.size.map{|s| 2*s}
+      e = @paper.rect(center.first, center.last, size.first, size.last)
       e["fill"] = root.fill == :filled ? "black" : "white"
       if root.dotted?
         x = root.center.first + (root.size.first * 1.2)

@@ -485,13 +485,53 @@ module Harpnotes
       end
     end
 
-    class GlyphPause < Drawable
-      attr_reader :center, :origin
+    #
+    # This represents a Rest 
+    #
+    class Rest < Drawable
+      attr_reader :center, :size, :fill, :dotted, :origin
 
-      def initialize(position, size)
-        @center = position
-        @size = size
+      #
+      # Constructor
+      # 
+      # @param size [Array] the size of the ellipse as [width, height]
+      # @param fill [Symbol] the fill style, either :filled or :empty
+      # @param dotted [Boolean] TRUE if the ellipse has a small companion dot, FALSE otherwise
+      # @param origin [Object] The source object of the upstream model
+      #  
+      def initialize(center, size, fill = :filled, dotted = TRUE, origin = nil)
+        @center = center
+        @size   = size
+        @fill   = fill
+        @dotted = dotted
+        @origin = origin
       end
+
+      # 
+      # Return the height of the Rest to support representation w.o. glyphs
+      # 
+      # @return [Numeric] The height of the ellipse
+      def height
+        @size.last
+      end
+
+      # 
+      # Indicate if the Rest shall have a Punctuation dot
+      # 
+      # @return [Boolean] TRUE if ther shall be a punctuation dot
+      def dotted?
+        dotted
+      end
+
+      # Provided for compatibility with Ellipse (the representation of a note)
+      # used  to support representation w.o. glyphs
+      # 
+      # @return [Boolean] TRUE if ther shall be filled
+      # 
+      def filled?
+        @fill == :filled
+      end
+
     end
 
 	class Legend < Drawable
@@ -701,8 +741,10 @@ module Harpnotes
       # @return [Object] The generated drawing primitive
       def layout_accord(root, beat_layout)
         notes = root.notes.sort_by{|a|a.pitch}
-        res = notes.map{|c| layout_note(c, beat_layout) }
-        res << FlowLine.new(res.first, res.last, :dashed, root)
+        resnotes = notes.map{|c| layout_note(c, beat_layout) }
+        res = []
+        res << FlowLine.new(resnotes.first, resnotes.last, :dashed, root)
+        res << resnotes
         res
       end
 
@@ -718,7 +760,7 @@ module Harpnotes
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
 
-        res = Ellipse.new([ x_offset, y_offset ], [1, 1], fill, dotted, root)
+        res = Harpnotes::Drawing::Rest.new([ x_offset, y_offset ], size, fill, dotted, root)
         res
       end
 

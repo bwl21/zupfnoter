@@ -10,7 +10,7 @@ module Harpnotes
     PADDING = 4
     ARROW_SIZE = 10
     JUMPLINE_INDENT = 10
-    DOTTED_SIZE = 0.5
+    DOTTED_SIZE = 0.3
 
     def initialize()
       @pdf = JsPDF.new(:l, :mm, :a3)
@@ -27,6 +27,11 @@ module Harpnotes
           draw_flowline(child)
         elsif child.is_a? JumpLine
           draw_jumpline(child)
+        elsif child.is_a? Harpnotes::Drawing::Rest
+          draw_rest(child)
+        else
+          puts "don't know how to draw #{child.class}"
+          nil
         end
       end
 
@@ -45,6 +50,20 @@ module Harpnotes
         @pdf.ellipse(root.center.zip(root.size).map {|s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE,DOTTED_SIZE], :F)
       end
     end
+
+    def draw_rest(root)
+      style = root.filled? ? :F : :FD
+      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+      center = [root.center.first - root.size.first, root.center.last - root.size.last]
+      size = root.size.map{|s| 2.0 * s}
+      @pdf.rect_like_ellipse(center, size, style)
+
+      if root.dotted?
+        @pdf.fill = (0...3).map { 0 }
+        @pdf.ellipse(root.center.zip(root.size).map {|s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE,DOTTED_SIZE], :F)
+      end
+    end
+
 
 
     #

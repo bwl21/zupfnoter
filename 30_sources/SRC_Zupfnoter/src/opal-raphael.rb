@@ -126,6 +126,18 @@ module Raphael
       Raphael::Element.new(`self.r.path(spec)`)
     end
 
+    # Draw an Rectangle
+    # 
+    # @param x [Numeric] x - of topleft corner
+    # @param y [Numeric] y - of topleft corner
+    # @param rx [Numeric] rx - width
+    # @param ry [Numeric] ry - height
+    # @param radius [Numeric] radius for rounded corners, default is 0
+    # 
+    # @return [element] The generated Element
+    def rect(x, y, rx, ry, radius = 0)
+      Raphael::Element.new(`self.r.rect(x, y, rx, ry, radius)`)
+    end
 
 
     # 

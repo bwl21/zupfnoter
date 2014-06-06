@@ -60,8 +60,13 @@ class JsPDF
     `self.native.text(x, y, text, flags)`
   end
 
-  def rect(x1, y1, x2, y2)
-    `self.native.rect(x1, y1, x2, y2)`
+  # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
+  def rect_like_ellipse(center, size, style = 'undefined')
+    `self.native.rect(center[0], center[1], size[0], size[1], style)`
+  end
+
+  def rect(x1, y1, x2, y2, style = 'undefined')
+    `self.native.rect(x1, y1, x2, y2, style)`
   end
 
   # @param type Symbol the output type as :datauristring, :datauri, :raw
