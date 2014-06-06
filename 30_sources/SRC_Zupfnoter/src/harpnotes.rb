@@ -469,7 +469,7 @@ module Harpnotes
       X_SPACING    = 115 / 10
 
       # Spacing between beats
-      BEAT_SPACING = 4
+      BEAT_SPACING = 4 * 1.0/64.0
 
       # Y coordinate of the very first beat
       Y_OFFSET  = BEAT_SPACING
@@ -588,12 +588,19 @@ module Harpnotes
         max_beat = music.beat_maps.map {|map| map.keys.max }.max
 
         current_beat = 0
+        last_size = 32
         Hash[(0..max_beat).map do |beat|
                notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact
                max_duration = notes_on_beat.map{|n| n.duration}.max
-
                has_no_notes_on_beat = notes_on_beat.empty?
-               current_beat += 1 unless has_no_notes_on_beat
+
+               unless has_no_notes_on_beat
+                 size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first
+                 increment = (size + last_size)
+                 last_size = size
+
+                 current_beat += increment unless has_no_notes_on_beat
+               end
                [ beat, current_beat ]
         end]
       end
