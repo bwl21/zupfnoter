@@ -10,6 +10,11 @@ task :build do
   File.open("build.js", "w+") do |out|
     out << env["application"].to_s
   end
+
+  Dir.glob "../assets/*.scss" do |f|
+    cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
+    puts sh cmd
+  end
 end
 
 desc "Build the documentation"
