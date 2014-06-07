@@ -37,3 +37,7 @@ https://github.com/mudcube/MIDI.js - wie man midi im browser spielen kann
 http://threejs.org/ - webgl library
 
 http://raphaeljs.com/ - JS vector library
+
+https://github.com/dr-skot/abc  # ruby/treetop parser
+
+https://github.com/PencilCode/musical.js  # javascript player for ABC

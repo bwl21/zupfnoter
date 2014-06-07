@@ -125,7 +125,7 @@ module Harpnotes
     end
 
     # An accord: multiple notes played simultaneously
-    # note that we bacsically use an interval as
+    # note that we basically use an interval as
     # on table harps accords are difficult (but not impossible)
     # to play.
     #
@@ -166,6 +166,11 @@ module Harpnotes
       def beat=(value)
         @beat = value
         @notes.each {|n| n.beat = value }
+      end
+
+
+      def pitch
+        @notes.last.pitch
       end
     end
 
@@ -695,7 +700,7 @@ module Harpnotes
 
         # draw the flowlines
         previous_note = nil
-        res_flow = voice.select {|c| c.is_a? Note or c.is_a? SynchPoint }.map do |playable|
+        res_flow = voice.select {|c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
           res = nil
           res = FlowLine.new(note_to_ellipse[previous_note], note_to_ellipse[playable]) unless previous_note.nil?
 
@@ -810,7 +815,7 @@ module Harpnotes
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
 
-        res = Harpnotes::Drawing::Rest.new([ x_offset, y_offset ], size, true, false, root)
+        res = Harpnotes::Drawing::Rest.new([ x_offset, y_offset ], size, fill, dotted, root)
         res
       end
 
@@ -820,7 +825,7 @@ module Harpnotes
         y_offset     = beat_layout.call(root.beat)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
-        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, dotted, root)
+        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, false, root)
       end
 
       #

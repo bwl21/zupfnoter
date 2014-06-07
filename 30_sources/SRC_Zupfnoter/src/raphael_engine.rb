@@ -59,7 +59,8 @@ module Harpnotes
     end
 
     def draw_rest(root)
-      center = [root.center.first - root.size.first, root.center.last + root.size.last]
+      center = [root.center.first - root.size.first, root.center.last - root.size.last]
+
       size = root.size.map{|s| 2*s}
       e = @paper.rect(center.first, center.last, size.first, size.last)
       e["fill"] = root.fill == :filled ? "black" : "white"
