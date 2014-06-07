@@ -104,11 +104,11 @@ module Harpnotes
 
       def transform(abc_code)
         %x{
-        var book = new ABCJS.TuneBook(abc_code);
-        var parser = new ABCJS.parse.Parse();
-        parser.parse(book.tunes[0].abc);
-        var tune = parser.getTune();
-        console.log(tune)
+          var book = new ABCJS.TuneBook(abc_code);
+          var parser = new ABCJS.parse.Parse();
+          parser.parse(book.tunes[0].abc);
+          var tune = parser.getTune();
+          console.log(tune)
         }
         note_length_rows = abc_code.split("\n").select {|row| row[0..1] == "L:" }
         raise "ABC code does not contain a unit note length (L)" if note_length_rows.empty?
@@ -122,32 +122,12 @@ module Harpnotes
         key = Native(first_staff)[:key]
         @pitch_transformer.set_key(key)
 
-        # voices = lines.inject([]) do |m, l|
-        #   Native(l)[:voices].each_with_index do |v, idx|
-        #     m[idx] ||= []
-        #     m[idx] << v.map {|x| Native(x) }
-        #     m[idx].flatten!
-        #   end
-        #   m
-        # end
-
-        # voices = lines.map{|l|
-        #   m = []
-        #   Native(l)[:voices].each_with_index do |v, idx|
-        #     m[idx] ||= []
-        #     m[idx] << v.map {|x| Native(x) }
-        #     m[idx].flatten!
-        #   end
-        #   m     
-        # }.flatten(1)
-
         voices_in_staff = [[1,2], [3,4]]
         voices = []
         tune[:lines].each do |line|
           Native(line)[:staff].each_with_index do |staff, staff_index|
             Native(staff)[:voices].each_with_index do |voice, voice_index|
               idx = voices_in_staff[staff_index][voice_index]
-              puts idx
               voices[idx] ||= []
               voices[idx] << voice.map {|x| Native(x) }
               voices[idx].flatten!
@@ -161,6 +141,7 @@ module Harpnotes
         voices_transformed = voices.each_with_index.map do |voice, voice_idx|
           reset_state
 
+          # this is the transformation loop
           res = voice.map do |el|
             type = el[:el_type]
             res = self.send("transform_#{type}", el)
@@ -214,7 +195,14 @@ module Harpnotes
         res.origin = note
         @previous_note = res
 
-        [ res ]
+        result = [res] 
+        if @next_note_marks_measure
+          result << Harpnotes::Music::MeasureStart.new(res)
+          @next_note_marks_measure = false
+        end
+
+
+        result
       end
 
       def transform_real_note(note, duration)
@@ -235,7 +223,7 @@ module Harpnotes
         @previous_note = res.last
 
         if @next_note_marks_measure
- #todo: handle bars properly         res << Harpnotes::Music::MeasureStart.new(notes.last)
+          res << Harpnotes::Music::MeasureStart.new(notes.last)
           @next_note_marks_measure = false
         end
 
@@ -248,6 +236,7 @@ module Harpnotes
 
       def transform_bar(bar)
         type = bar[:type]
+        @next_note_marks_measure = true
         @pitch_transformer.reset_measure_accidentals
         send("transform_#{type.gsub(" ", "_")}", bar)
       end
@@ -268,7 +257,7 @@ module Harpnotes
         else
           start = @repetition_stack.pop
         end
-        
+
         [ Harpnotes::Music::Dacapo.new(start, @previous_note, @repetition_stack.length) ]
       end
 

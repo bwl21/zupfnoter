@@ -218,6 +218,14 @@ module Harpnotes
       def pitch
         @companion.pitch
       end
+
+      def beat
+        @companion.beat 
+      end
+
+      def duration
+        @companion.duration
+      end
     end
 
 
@@ -435,6 +443,7 @@ module Harpnotes
 
     end
 
+
     #
     # This represents a note in the shape of an ellipsis
     #
@@ -578,7 +587,7 @@ module Harpnotes
       BEAT_SPACING = 4 * 1.0/64.0
 
       # Y coordinate of the very first beat
-      Y_OFFSET  = BEAT_SPACING
+      Y_OFFSET  = 5
       X_OFFSET  = ELLIPSE_SIZE.first
 
       # this is the negative of midi-pitch of the lowest playble note
@@ -668,9 +677,17 @@ module Harpnotes
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playbles and jumplines.
       #                            note that these shall be rendered in the given order.
       def layout_voice(voice, beat_layout, show_flowline = true)
+
+        # draw the playables
         res_playables = voice.select {|c| c.is_a? Playable }.map do |playable|
           layout_playables(playable, beat_layout)
         end.flatten
+
+        # layout the measures
+        
+        res_measures = voice.select{|c| c.is_a? MeasureStart}.map do |measure|
+          layout_playables(measure, beat_layout)
+        end
 
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
         note_to_ellipse = Hash[res_playables.map {|e| [e.origin, e] }]
@@ -694,7 +711,7 @@ module Harpnotes
         end
 
         # return all drawing primitives
-        res_flow + res_playables + res_dacapo
+        res_flow + res_playables + res_dacapo + res_measures
       end
 
 
@@ -737,6 +754,8 @@ module Harpnotes
       def layout_playables(root, beat_layout)
         if root.is_a? Note
           layout_note(root, beat_layout)
+        elsif root.is_a? MeasureStart
+          layout_measure_start(root, beat_layout)
         elsif root.is_a? SynchPoint
           layout_accord(root, beat_layout)
         elsif root.is_a? Pause
@@ -791,10 +810,18 @@ module Harpnotes
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
 
-        res = Harpnotes::Drawing::Rest.new([ x_offset, y_offset ], size, fill, dotted, root)
+        res = Harpnotes::Drawing::Rest.new([ x_offset, y_offset ], size, true, false, root)
         res
       end
 
+
+      def layout_measure_start(root, beat_layout)
+        x_offset     = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
+        y_offset     = beat_layout.call(root.beat)
+        scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
+        size         = ELLIPSE_SIZE.map {|e| e * scale }
+        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, dotted, root)
+      end
 
       #
       # Convert a duration to a symbol todo: move DURATION_TO_STYLE in here

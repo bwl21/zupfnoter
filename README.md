@@ -36,7 +36,7 @@ notation
 
 ## Harpnotes
 
-401. indicating measures
+401. indicating measures *done*
 402. vertical layout optimization (optimize the visual distance between
     two beats)  *done*
 403. annotations
