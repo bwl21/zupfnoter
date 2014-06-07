@@ -24,17 +24,24 @@ notation
 
 ## More support for ABC
 
-301. multiple staff / Voices to (support Bass harp)
+301. multiple staff / Voices to (support Bass harp)  *started*
+
+	better control about bass tenor alto soprano - requires certain refactoring
 302. annotations
 303. trioles
+405. ties and slurs
+406. improved line handling: line break different between the voices ...
+406. voice properties octave=...
+
 
 ## Harpnotes
 
 401. indicating measures
 402. vertical layout optimization (optimize the visual distance between
-    two beats)
+    two beats)  *done*
 403. annotations
 404. Debugging (writing the notenames in light grey )
+405. draw extra flow line in unsynched notes
 
 ## technology
 

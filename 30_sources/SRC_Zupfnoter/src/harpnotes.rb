@@ -28,7 +28,7 @@ module Harpnotes
   #
   # =Basic concept
   #
-  
+
   #  Song -> Staff* -> Voice* -> MusicEntity*
   #
   # 1. Music is denoted as Song
@@ -41,16 +41,16 @@ module Harpnotes
   #
   # 6. Note: Measures are not modelled as containers ...
   #
-  
+
   # =the Transformation chain
-  # 
+  #
   # ABC --abcjs--> tune --transform-->
-  #            Harpnotes (Song) --layout--> 
-  #                                          Drawing (Sheet) --RaphaelEngine--> 
+  #            Harpnotes (Song) --layout-->
+  #                                          Drawing (Sheet) --RaphaelEngine-->
   #                                                                          SVG
   #                                                          --PdfEngine-->
   #                                                                          PDF
-  #                                            
+  #
   # == Output of abcjs
   #    tune *(staff = (lines = (voices = (note | ....)))
   #
@@ -60,13 +60,13 @@ module Harpnotes
   #    starttriplet
   #    annotation
   #    chord
-  # 
+  #
   # == Harpnotes
   #
   # is a representation of music targeting to Harpnote representation but independent
   # of the particular Layout
   #
-  # we have 
+  # we have
   #
   # Song
   # Note
@@ -77,17 +77,17 @@ module Harpnotes
   # Annnotation
   # ...
   #
-  
-  # 
-  # == Layout 
-  # 
+
+  #
+  # == Layout
+  #
   # Ellipse
   # Flowline
   # Jumpline
   # Annotation
   # Bar
-  
-  
+
+
   module Music
 
     # Marks classes in this model
@@ -252,6 +252,18 @@ module Harpnotes
     end
 
 
+    # this represents a BeatMap which is basically a keyed access to playables
+    # where the key is the beat of the playable
+    #
+    # additionally it has an index to indicate the index of the corresponding voice
+    #
+    class BeatMap < Hash
+      attr_accessor :index
+
+      def initialize(index)
+        @index = index
+      end
+    end
 
     #
     # This represents the actual song / music piece
@@ -261,7 +273,7 @@ module Harpnotes
 
       #
       # Constructor
-      # @param voices [Array of Array of MusicEntity] The voices in the song
+      # @param voices [Array of ABCVoice] The voices in the song
       # @param note_length_in_beats [Integer] the shortest note todo: not used?
       #
       def initialize(voices = [], note_length_in_beats = 8)
@@ -283,9 +295,11 @@ module Harpnotes
       #
       # This builds the Syncpoints within the song
       #
-      # @return [Array] The syncpoints which wer found in the song
-      def build_synch_points
+      # @param selector [Array] index of the two voices to be synchend
+      # @return [Array] The syncpoints which were found in the song
+      def build_synch_points(selector = nil)
         expanded_beat_maps.map do |playables|
+          playables = [playables[selector.first], playables[selector.last]] if selector
           playables.compact!
           SynchPoint.new(playables) if playables.length > 1
         end.flatten.compact.select {|sp| sp.notes.reject {|e| e.is_a? Note }.empty? }
@@ -320,12 +334,13 @@ module Harpnotes
       def update_beats
         @beat_maps = @voices.map do |voice|
           current_beat = 0
-          voice.select {|e| e.is_a? Playable }.inject({}) do |map, playable|
+          voice.select {|e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
             beats = playable.duration
             map[current_beat] = playable
             playable.beat = current_beat
 
             current_beat += beats
+            map.index = voice.index
             map
           end
         end
@@ -378,10 +393,10 @@ module Harpnotes
         @origin = origin
       end
 
-      # 
+      #
       # Indicates of the flowline shall be drawn as dashed
       # Syntactic sugar for the attr_reader
-      # 
+      #
       # @return [type] [description]
       def dashed?
         @style == :dashed
@@ -428,12 +443,12 @@ module Harpnotes
 
       #
       # Constructor
-      # 
+      #
       # @param size [Array] the size of the ellipse as [width, height]
       # @param fill [Symbol] the fill style, either :filled or :empty
       # @param dotted [Boolean] TRUE if the ellipse has a small companion dot, FALSE otherwise
       # @param origin [Object] The source object of the upstream model
-      #  
+      #
       def initialize(center, size, fill = :filled, dotted = TRUE, origin = nil)
         @center = center
         @size   = size
@@ -442,26 +457,26 @@ module Harpnotes
         @origin = origin
       end
 
-      # 
+      #
       # Return the height of the Ellipse
-      # 
+      #
       # @return [Numeric] The height of the ellipse
       def height
         @size.last
       end
 
-      # 
+      #
       # Indicate if the Ellipse shall have a Punctuation dot
-      # 
+      #
       # @return [Boolean] TRUE if ther shall be a punctuation dot
       def dotted?
         dotted
       end
 
       # Indicate if the Ellipse shall be filled
-      # 
+      #
       # @return [Boolean] TRUE if ther shall be filled
-      # 
+      #
       def filled?
         @fill == :filled
       end
@@ -471,7 +486,7 @@ module Harpnotes
     #
     # Represent a text on the sheet
     #
-    # 
+    #
     class Annotation < Drawable
       attr_reader :center, :text, :style
 
@@ -486,19 +501,19 @@ module Harpnotes
     end
 
     #
-    # This represents a Rest 
+    # This represents a Rest
     #
     class Rest < Drawable
       attr_reader :center, :size, :fill, :dotted, :origin
 
       #
       # Constructor
-      # 
+      #
       # @param size [Array] the size of the ellipse as [width, height]
       # @param fill [Symbol] the fill style, either :filled or :empty
       # @param dotted [Boolean] TRUE if the ellipse has a small companion dot, FALSE otherwise
       # @param origin [Object] The source object of the upstream model
-      #  
+      #
       def initialize(center, size, fill = :filled, dotted = TRUE, origin = nil)
         @center = center
         @size   = size
@@ -507,17 +522,17 @@ module Harpnotes
         @origin = origin
       end
 
-      # 
+      #
       # Return the height of the Rest to support representation w.o. glyphs
-      # 
+      #
       # @return [Numeric] The height of the ellipse
       def height
         @size.last
       end
 
-      # 
+      #
       # Indicate if the Rest shall have a Punctuation dot
-      # 
+      #
       # @return [Boolean] TRUE if ther shall be a punctuation dot
       def dotted?
         dotted
@@ -525,17 +540,17 @@ module Harpnotes
 
       # Provided for compatibility with Ellipse (the representation of a note)
       # used  to support representation w.o. glyphs
-      # 
+      #
       # @return [Boolean] TRUE if ther shall be filled
-      # 
+      #
       def filled?
         @fill == :filled
       end
 
     end
 
-	class Legend < Drawable
-	end
+    class Legend < Drawable
+    end
 
   end
 
@@ -573,19 +588,19 @@ module Harpnotes
 
       # This is a lookup table to map durations to graphical representation
       DURATION_TO_STYLE = {
-          #key      size   fill          dot                  abc duration
-          :d64 => [ 0.9,   :empty,       FALSE],    # 1      1
-          :d48 => [ 0.7,   :empty,       TRUE],     # 1/2 *
-          :d32 => [ 0.7,   :empty,       FALSE],    # 1/2
-          :d24 => [ 0.7,   :filled,      TRUE],     # 1/4 *
-          :d16 => [ 0.7,   :filled,      FALSE],    # 1/4
-          :d12 => [ 0.5,   :filled,      TRUE],     # 1/8 *
-          :d8  => [ 0.5,   :filled,      FALSE],    # 1/8
-          :d6  => [ 0.3,   :filled,      TRUE],     # 1/16 *
-          :d4  => [ 0.3,   :filled,      FALSE],    # 1/16
-          :d3  => [ 0.1,   :filled,      TRUE],     # 1/32 *
-          :d2  => [ 0.1,   :filled,      FALSE],    # 1/32
-          :d1  => [ 0.05,  :filled,      FALSE],    # 1/64
+        #key      size   fill          dot                  abc duration
+        :d64 => [ 0.9,   :empty,       FALSE],    # 1      1
+        :d48 => [ 0.7,   :empty,       TRUE],     # 1/2 *
+        :d32 => [ 0.7,   :empty,       FALSE],    # 1/2
+        :d24 => [ 0.7,   :filled,      TRUE],     # 1/4 *
+        :d16 => [ 0.7,   :filled,      FALSE],    # 1/4
+        :d12 => [ 0.5,   :filled,      TRUE],     # 1/8 *
+        :d8  => [ 0.5,   :filled,      FALSE],    # 1/8
+        :d6  => [ 0.3,   :filled,      TRUE],     # 1/16 *
+        :d4  => [ 0.3,   :filled,      FALSE],    # 1/16
+        :d3  => [ 0.1,   :filled,      TRUE],     # 1/32 *
+        :d2  => [ 0.1,   :filled,      FALSE],    # 1/32
+        :d1  => [ 0.05,  :filled,      FALSE],    # 1/64
       }
 
 
@@ -614,15 +629,29 @@ module Harpnotes
         beat_compression_map = compute_beat_compression(music)
         compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
 
-        sheet_elements  = music.voices.map {|v|
-          layout_voice(v, compressed_beat_layout)
+        sheet_elements  = music.voices.each_with_index.map {|v, index|
+          layout_voice(v, compressed_beat_layout, index.even?)
         }.flatten
 
         note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
 
-        synch_lines = music.build_synch_points.map do |sp|
-          FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
-        end
+        # configure which synclines are required from-voice to-voice
+        # todo Maybe we provide required_synchlines as property of the Sheet
+        required_synchline_table = [[],              # 0 voices
+                                    [],              # 1 voice
+                                    [[0,1]],          # 2 voices
+                                    [[0,1]],          # 3 voices
+                                    [[0,1],[2,3]]     # 4 voices
+                                    ]
+        required_synchlines = required_synchline_table[music.voices.count]
+
+        synch_lines = required_synchlines.map do |selector|
+          synch_points_to_show = music.build_synch_points(selector)
+          synch_points_to_show.map do |sp|
+            FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes[1]], :dashed, sp)
+          end
+        end.flatten
+
         sheet_elements = synch_lines + sheet_elements
 
         Harpnotes::Drawing::Sheet.new(sheet_elements)
@@ -638,7 +667,7 @@ module Harpnotes
       #
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playbles and jumplines.
       #                            note that these shall be rendered in the given order.
-      def layout_voice(voice, beat_layout)
+      def layout_voice(voice, beat_layout, show_flowline = true)
         res_playables = voice.select {|c| c.is_a? Playable }.map do |playable|
           layout_playables(playable, beat_layout)
         end.flatten
@@ -656,6 +685,8 @@ module Harpnotes
           previous_note = playable
           res
         end.compact
+
+        res_flow = [] unless show_flowline
 
         # draw the jumplines
         res_dacapo = voice.select {|c| c.is_a? Dacapo }.map do |dacapo|

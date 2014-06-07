@@ -122,14 +122,41 @@ module Harpnotes
         key = Native(first_staff)[:key]
         @pitch_transformer.set_key(key)
 
-        voices = lines.inject([]) do |m, l|
-          Native(l)[:voices].each_with_index do |v, idx|
-            m[idx] ||= []
-            m[idx] << v.map {|x| Native(x) }
-            m[idx].flatten!
+        # voices = lines.inject([]) do |m, l|
+        #   Native(l)[:voices].each_with_index do |v, idx|
+        #     m[idx] ||= []
+        #     m[idx] << v.map {|x| Native(x) }
+        #     m[idx].flatten!
+        #   end
+        #   m
+        # end
+
+        # voices = lines.map{|l|
+        #   m = []
+        #   Native(l)[:voices].each_with_index do |v, idx|
+        #     m[idx] ||= []
+        #     m[idx] << v.map {|x| Native(x) }
+        #     m[idx].flatten!
+        #   end
+        #   m     
+        # }.flatten(1)
+
+        voices_in_staff = [[1,2], [3,4]]
+        voices = []
+        tune[:lines].each do |line|
+          Native(line)[:staff].each_with_index do |staff, staff_index|
+            Native(staff)[:voices].each_with_index do |voice, voice_index|
+              idx = voices_in_staff[staff_index][voice_index]
+              puts idx
+              voices[idx] ||= []
+              voices[idx] << voice.map {|x| Native(x) }
+              voices[idx].flatten!
+            end
           end
-          m
         end
+
+        voices.compact!
+
 
         voices_transformed = voices.each_with_index.map do |voice, voice_idx|
           reset_state
