@@ -18,6 +18,16 @@ class Controller
     Harpnotes::PDFEngine.new.draw(layout_harpnotes)
   end
 
+
+  def play_abc
+    %x{
+        var inst = new Instrument('piano');
+        setTimeout(function(){
+        inst.play({tempo:200}, #{get_abc_code});
+        }, 10);
+      }
+  end
+
   def render_to_canvas
     @raphael_engine.draw(layout_harpnotes)
     `ABCJS.renderAbc($("#tunePreview")[0], #{get_abc_code}, {}, {}, {})`
@@ -64,6 +74,8 @@ class Controller
   end
 
   def setup_ui_listener
+
+    Element.find("#tbPlay").on(:click) { play_abc }
     Element.find("#tbRender").on(:click) { render_to_canvas }
     Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
 
