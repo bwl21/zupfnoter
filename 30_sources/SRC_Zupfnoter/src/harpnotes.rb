@@ -622,6 +622,7 @@ module Harpnotes
       # get the vertical layout policy
       #
       # @param music Harpnotes::Music::Document the document to transform
+      #             don't be confused it is just to make inject music in the scope of the returned procedure
       #
       # @return [Lambda] Proecdure, to compute the vertical distance of a particular beat
       def compute_beat_layout(music)
@@ -638,11 +639,16 @@ module Harpnotes
       #
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil)
+
+
+        # first optimize the vertical arrangement of the notes
+        # by analyzing the beat layout
         beat_layout = beat_layout || compute_beat_layout(music)
 
         beat_compression_map = compute_beat_compression(music)
         compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
 
+        # sheet_elements derived from the voices
         sheet_elements  = music.voices.each_with_index.map {|v, index|
           layout_voice(v, compressed_beat_layout, index.even?)
         }.flatten
@@ -659,6 +665,7 @@ module Harpnotes
                                     ]
         required_synchlines = required_synchline_table[music.voices.count]
 
+        # build synchlines
         synch_lines = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
@@ -666,7 +673,19 @@ module Harpnotes
           end
         end.flatten
 
-        sheet_elements = synch_lines + sheet_elements
+
+        # now generate sheet_marks
+        sheet_marks = []
+        rightmark = Harpnotes::Music::Note.new(79, 2)
+        leftmark = Harpnotes::Music::Note.new(43, 2)
+        (1..3).each do |i|
+          rightmark.beat = i * 16
+          leftmark.beat = i * 8
+          sheet_marks << layout_note(rightmark, compute_beat_layout(music))
+          sheet_marks << layout_note(leftmark, compute_beat_layout(music))
+        end
+
+        sheet_elements = synch_lines + sheet_elements + sheet_marks
 
         Harpnotes::Drawing::Sheet.new(sheet_elements)
       end
