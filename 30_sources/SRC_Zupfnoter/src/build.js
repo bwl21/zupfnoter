@@ -15586,7 +15586,7 @@ if (s == null) s = nil;
 (function($opal) {
   var $a, $b, TMP_9, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass;
 
-  $opal.add_stubs(['$setup_editor', '$setup_ui', '$setup_ui_listener', '$draw', '$new', '$layout_harpnotes', '$get_abc_code', '$file', '$output', '$render_pdf', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$alert', '$private', '$on_select', '$select_note', '$on', '$play_abc', '$find', '$render_to_canvas', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
+  $opal.add_stubs(['$setup_editor', '$setup_ui', '$setup_ui_listener', '$draw', '$new', '$layout_harpnotes', '$html', '$find', '$get_abc_code', '$file', '$output', '$render_pdf', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$alert', '$private', '$on_select', '$select_note', '$on', '$play_abc', '$render_to_canvas', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
   ;
   ;
   ;
@@ -15600,7 +15600,7 @@ if (s == null) s = nil;
 
     var def = self._proto, $scope = self._scope;
 
-    def.raphael_engine = nil;
+    def.inst = def.raphael_engine = nil;
     def.$initialize = function() {
       var self = this;
 
@@ -15616,14 +15616,17 @@ if (s == null) s = nil;
     };
 
     def.$play_abc = function() {
-      var self = this;
+      var $a, self = this;
 
-      
-        var inst = new Instrument('piano');
-        setTimeout(function(){
-        inst.play({tempo:200}, self.$get_abc_code());
-        }, 10);
-      
+      if ((($a = self.inst) !== nil && (!$a._isBoolean || $a == true))) {
+        (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tbPlay").$html("play");
+        self.inst.silence();
+        return self.inst = nil;
+        } else {
+        (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tbPlay").$html("stop");
+        self.inst = new Instrument('piano');
+        return self.inst.play({tempo:200}, self.$get_abc_code());;
+      };
     };
 
     def.$render_to_canvas = function() {

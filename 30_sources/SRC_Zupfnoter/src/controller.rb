@@ -20,12 +20,15 @@ class Controller
 
 
   def play_abc
-    %x{
-        var inst = new Instrument('piano');
-        setTimeout(function(){
-        inst.play({tempo:200}, #{get_abc_code});
-        }, 10);
-      }
+    if @inst
+      Element.find('#tbPlay').html('play')
+      `self.inst.silence();`
+      @inst = nil;
+    else
+      Element.find('#tbPlay').html('stop')
+      @inst = `new Instrument('piano')`
+      `self.inst.play({tempo:200}, #{get_abc_code});`
+    end
   end
 
   def render_to_canvas
