@@ -1,4 +1,5 @@
 @import "reset";
+@import "icons/fontello.css";
 
 $toolbarHeight: 30px;
 $titleHeight: 2em;
@@ -6,7 +7,7 @@ $cnosoleHeight: 30%;
 
 $backgoundColor: #0A425C;
 $titleColor: #1BA5A5;
-$containerColor: #F0EFCF;
+$containerColor: white;
 
 body {
   font-family: Helvetica, Arial, sans-serif;
@@ -72,7 +73,36 @@ body {
     border-left: 1px solid black;
     cursor: pointer;
   }
+}
 
+#console {
+  ul {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    list-style-type: none;
+    color: #000000;
+  }
+  li {
+    border-bottom: 1px solid black;
+    line-height: 2em;
+    padding-left: 1em;
+  }
+  .error {
+    color: #ff0035;
+  }
+  .warning {
+    color: #e8d300;
+  }
+  .time {
+    padding-left: 1em;
+    width: 10%;
+    display: inline-block;
+  }
+  .msg {
+    display: inline-block;
+  }
 }
 
 #leftColumn {
