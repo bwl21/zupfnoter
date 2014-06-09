@@ -29,19 +29,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="88" selection-start="541" selection-end="541" vertical-scroll-proportion="-5.0" vertical-offset="0" max-vertical-offset="1440">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Rakefile" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="150" max-vertical-offset="465">
+            <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="465">
               <folding />
             </state>
           </provider>
@@ -50,19 +41,19 @@
       <file leaf-file-name="harpnotes.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="687" column="0" selection-start="19549" selection-end="19549" vertical-scroll-proportion="17.352942" vertical-offset="11190" max-vertical-offset="13065">
+            <state line="590" column="39" selection-start="15639" selection-end="15639" vertical-scroll-proportion="-1.4509804" vertical-offset="8776" max-vertical-offset="13155">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider editor-type-id="MarkdownPreviewEditor">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="53" selection-start="1230" selection-end="1230" vertical-scroll-proportion="-24.444445" vertical-offset="0" max-vertical-offset="855">
+            <state line="57" column="10" selection-start="1455" selection-end="1455" vertical-scroll-proportion="0.8289624" vertical-offset="128" max-vertical-offset="1005">
               <folding />
             </state>
           </provider>
@@ -107,19 +98,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="abc_to_harpnotes.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="abc_to_harpnotes.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="168" column="76" selection-start="5067" selection-end="5067" vertical-scroll-proportion="0.6154748" vertical-offset="1995" max-vertical-offset="4395">
+            <state line="83" column="9" selection-start="2406" selection-end="2406" vertical-scroll-proportion="102.84" vertical-offset="3816" max-vertical-offset="4695">
               <folding />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.log" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.log">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="17550">
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+            <state />
           </provider>
         </entry>
       </file>
       <file leaf-file-name="raphael_engine.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="74" column="13" selection-start="1988" selection-end="1989" vertical-scroll-proportion="-21.764706" vertical-offset="0" max-vertical-offset="1800">
+            <state line="15" column="45" selection-start="300" selection-end="300" vertical-scroll-proportion="-4.4117646" vertical-offset="0" max-vertical-offset="1800">
               <folding />
             </state>
           </provider>
@@ -145,19 +148,19 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/foobar.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/playground.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb" />
         <option value="$PROJECT_DIR$/30_sources/RS_Requirements/DD_Zupfnoter.md" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal_musicaljs.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -598,11 +601,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="19" selection-start="132" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="225" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="0" selection-start="420" selection-end="420" vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="2625">
@@ -828,13 +826,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="62" column="0" selection-start="1579" selection-end="1579" vertical-scroll-proportion="0.0" vertical-offset="930" max-vertical-offset="1305">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-xquery.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="1310759" selection-start="1310756" selection-end="1310756" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="639" />
@@ -862,13 +853,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="74" column="13" selection-start="1988" selection-end="1989" vertical-scroll-proportion="-21.764706" vertical-offset="0" max-vertical-offset="1800">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="179" column="43" selection-start="4051" selection-end="4051" vertical-scroll-proportion="-107.4" vertical-offset="0" max-vertical-offset="2865">
@@ -890,30 +874,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="0" selection-start="1349" selection-end="1526" vertical-scroll-proportion="-35.4" vertical-offset="0" max-vertical-offset="1665">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="687" column="0" selection-start="19549" selection-end="19549" vertical-scroll-proportion="17.352942" vertical-offset="11190" max-vertical-offset="13065">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="53" selection-start="1230" selection-end="1230" vertical-scroll-proportion="-24.444445" vertical-offset="0" max-vertical-offset="855">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="88" selection-start="541" selection-end="541" vertical-scroll-proportion="-5.0" vertical-offset="0" max-vertical-offset="1440">
@@ -928,9 +888,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="45" selection-start="300" selection-end="300" vertical-scroll-proportion="-4.4117646" vertical-offset="0" max-vertical-offset="1800">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="50" column="33" selection-start="1368" selection-end="1368" vertical-scroll-proportion="-23.16" vertical-offset="171" max-vertical-offset="1365">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="26" selection-start="967" selection-end="967" vertical-scroll-proportion="-26.4" vertical-offset="0" max-vertical-offset="1755">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="590" column="39" selection-start="15639" selection-end="15639" vertical-scroll-proportion="-1.4509804" vertical-offset="8776" max-vertical-offset="13155">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="168" column="76" selection-start="5067" selection-end="5067" vertical-scroll-proportion="0.6154748" vertical-offset="1995" max-vertical-offset="4395">
+        <state line="83" column="9" selection-start="2406" selection-end="2406" vertical-scroll-proportion="102.84" vertical-offset="3816" max-vertical-offset="4695">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="17550">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="10" selection-start="1455" selection-end="1455" vertical-scroll-proportion="0.8289624" vertical-offset="128" max-vertical-offset="1005">
           <folding />
         </state>
       </provider>

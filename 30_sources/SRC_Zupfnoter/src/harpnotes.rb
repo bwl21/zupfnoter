@@ -283,15 +283,17 @@ module Harpnotes
     #
     class Song
       attr_reader :voices, :beat_maps
+      attr_accessor :meta_data
 
       #
       # Constructor
       # @param voices [Array of ABCVoice] The voices in the song
       # @param note_length_in_beats [Integer] the shortest note todo: not used?
       #
-      def initialize(voices = [], note_length_in_beats = 8)
+      def initialize(voices = [], note_length_in_beats = 8, metadata={})
         @voices = voices
         @note_length_in_beats = note_length_in_beats
+        @meta_data = metadata
         update_beats
       end
 
@@ -563,9 +565,6 @@ module Harpnotes
 
     end
 
-    class Legend < Drawable
-    end
-
   end
 
 
@@ -589,7 +588,7 @@ module Harpnotes
       X_SPACING    = 115 / 10
 
       # Spacing between beats
-      BEAT_SPACING = 4 * 1.0/64.0
+      BEAT_SPACING = 4 * 1.0/64.0 * 1.5
 
       # Y coordinate of the very first beat
       Y_OFFSET  = 5
@@ -634,7 +633,7 @@ module Harpnotes
       #
       # compute the layout of the Harnote sheet
       #
-      # @param music Harpnotes::Music::Document the document to transform
+      # @param music Harpnotes::Music::Song the Sont to transform
       # @param beat_layout = nil [Lambda] Policy procedure to compute the vertical layout
       #
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
@@ -685,7 +684,14 @@ module Harpnotes
           sheet_marks << layout_note(leftmark, compute_beat_layout(music))
         end
 
-        sheet_elements = synch_lines + sheet_elements + sheet_marks
+
+        # now generate legend
+
+        annotations = []
+        legend = music.meta_data.map{|k, v| "#{k}: #{v}"}.join("\n")
+        annotations << Harpnotes::Drawing::Annotation.new([10, 10], legend, :regular)
+
+        sheet_elements = synch_lines + sheet_elements + sheet_marks + annotations
 
         Harpnotes::Drawing::Sheet.new(sheet_elements)
       end

@@ -129,9 +129,21 @@ module Harpnotes
 
 
         # get the key
-        first_staff = Native(lines.first)[:staff].first
-        key = Native(first_staff)[:key]
+        first_staff = Native(Native(lines.first)[:staff].first)
+        key = first_staff[:key]
         @pitch_transformer.set_key(key)
+
+        #get the meter
+        meter = {
+        :den => Native(first_staff[:meter][:value].first)[:den],
+        :num => Native(first_staff[:meter][:value].first)[:num],
+        :type => first_staff[:meter][:type]
+        }
+        if meter[:type] == "specified"
+          meter[:display] = "#{meter[:num]}/#{meter[:den]}"
+        elsif
+          meter[:display] = meter[:type]
+        end
 
         # get voice layout
         voices_in_staff = [[1,2], [3,4]] # get this from %%score instruction
@@ -167,6 +179,14 @@ module Harpnotes
         end
 
         result = Harpnotes::Music::Song.new(voices_transformed, note_length)
+        meta_data = {:compile_time => Time.now(),
+                     :meter => meter[:display],
+                     :key => key
+                    }
+        meta_data_from_tune = Hash.new(tune[:metaText].to_n)
+        meta_data_from_tune.keys.each {|k| meta_data[k] = meta_data_from_tune[k]} # todo could not get Hash(object) and use merge
+        result.meta_data = meta_data
+
         result
       end
 

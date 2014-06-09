@@ -15,8 +15,6 @@ module Harpnotes
     def initialize()
       @pdf = JsPDF.new(:l, :mm, :a3)
       @pdf.rect(1, 1, 418, 295)
-      @pdf.text_color=[200,200,200]
-      @pdf.text(10, 10, 'powered by Zupfnoter')
     end
 
     def draw(sheet)
@@ -29,6 +27,8 @@ module Harpnotes
           draw_jumpline(child)
         elsif child.is_a? Harpnotes::Drawing::Rest
           draw_rest(child)
+        elsif child.is_a? Harpnotes::Drawing::Annotation
+          draw_annotation(child)
         else
           puts "don't know how to draw #{child.class}"
           nil
@@ -39,6 +39,12 @@ module Harpnotes
     end
 
     private
+
+    def draw_annotation(root)
+      @pdf.text_color = 0 #[200,200,200]
+      @pdf.font_size  = 10
+      @pdf.text(root.center.first, root.center.last, root.text)
+    end
 
     def draw_ellipse(root)
       style = root.filled? ? :F : :FD

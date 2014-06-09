@@ -49,3 +49,13 @@ notation
 501. MusicXml interface
 502. Visualize the internal model for debugging purposes
 503. Improved error handling
+
+
+
+# Result of initial application
+
+601. it is good to enter the stuff with two persons
+602. good Visual feedback is essential
+603. should be able to turn of some voices in oder to focus on the one currently entered
+604. play from particular position onwards.
+
