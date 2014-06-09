@@ -102,29 +102,43 @@ module Harpnotes
         nil
       end
 
+
       def transform(abc_code)
         %x{
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
           parser.parse(book.tunes[0].abc);
           var tune = parser.getTune();
-          console.log(tune)
+          // todo handle parser warnings
+          console.log(tune);
+          console.log(JSON.stringify(tune));
         }
+
+        #
+        # pull out the headlines
+        # todo:factor out to a generic method parse_abc_header()
+        #
         note_length_rows = abc_code.split("\n").select {|row| row[0..1] == "L:" }
         raise "ABC code does not contain a unit note length (L)" if note_length_rows.empty?
         note_length = note_length_rows.first.strip.split(":").last.split("/").map {|s| s.strip.to_i }
         note_length = note_length.last / note_length.first
 
+        # extract the lines
         tune = Native(`tune`)
-        lines = tune[:lines].map {|l| Native(l)[:staff] }.flatten # todo a line can have more than one staff
+        lines = tune[:lines].select {|l| Native(l)[:staff] } # filter out subtitles
 
-        first_staff = Native(tune[:lines].first)[:staff].first
+
+        # get the key
+        first_staff = Native(lines.first)[:staff].first
         key = Native(first_staff)[:key]
         @pitch_transformer.set_key(key)
 
-        voices_in_staff = [[1,2], [3,4]]
+        # get voice layout
+        voices_in_staff = [[1,2], [3,4]] # get this from %%score instruction
+
+        # extract the voices
         voices = []
-        tune[:lines].each do |line|
+        lines.each do |line|
           Native(line)[:staff].each_with_index do |staff, staff_index|
             Native(staff)[:voices].each_with_index do |voice, voice_index|
               idx = voices_in_staff[staff_index][voice_index]
@@ -134,14 +148,13 @@ module Harpnotes
             end
           end
         end
-
         voices.compact!
 
-
+        # transform the voices
         voices_transformed = voices.each_with_index.map do |voice, voice_idx|
           reset_state
 
-          # this is the transformation loop
+          # ttransform the voice content
           res = voice.map do |el|
             type = el[:el_type]
             res = self.send("transform_#{type}", el)
@@ -153,7 +166,8 @@ module Harpnotes
           res
         end
 
-        Harpnotes::Music::Song.new(voices_transformed, note_length)
+        result = Harpnotes::Music::Song.new(voices_transformed, note_length)
+        result
       end
 
       def transform_note(note)
