@@ -33,7 +33,15 @@ class Controller
 
   def render_to_canvas
     @raphael_engine.draw(layout_harpnotes)
-    `ABCJS.renderAbc($("#tunePreview")[0], #{get_abc_code}, {}, {}, {})`
+    %x{
+    var top = $("#tunePreview").scrollTop();
+    var width = $("#tunePreview").width();
+    ABCJS.renderAbc($("#tunePreview")[0], #{get_abc_code}, {}, {}, {})
+    $("#tunePreview").scrollTop(top);
+    $("#tunePreview").width(width);
+
+    }
+    nil
   end
 
   def save_file
@@ -80,6 +88,7 @@ class Controller
 
     Element.find("#tbPlay").on(:click) { play_abc }
     Element.find("#tbRender").on(:click) { render_to_canvas }
+    Native(@editor).on(:change){render_to_canvas}
     Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
 
     Element.find(`window`).on(:keydown) do |evt|
