@@ -11,7 +11,7 @@ task :build do
     out << env["application"].to_s
   end
 
-  Dir.glob "../assets/*.scss" do |f|
+  Dir.glob "../public/*.scss" do |f|
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
     puts sh cmd
   end

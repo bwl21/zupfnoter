@@ -75,25 +75,37 @@ body {
   }
 }
 
+
+
 #console {
+
+  overflow: auto;
+  height:100%;
+  font-size: 80%;
+
   ul {
     width: 100%;
     height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
     list-style-type: none;
     color: #000000;
   }
+
   li {
     border-bottom: 1px solid black;
     line-height: 2em;
     padding-left: 1em;
   }
+
   .error {
     color: #ff0035;
   }
+
+  .info {
+       color: #000000;
+     }
+
   .warning {
-    color: #e8d300;
+    color: #e8661d;
   }
   .time {
     padding-left: 1em;

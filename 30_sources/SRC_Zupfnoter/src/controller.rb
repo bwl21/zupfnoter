@@ -5,10 +5,14 @@ require 'harpnotes'
 require 'abc_to_harpnotes'
 require 'raphael_engine'
 require 'pdf_engine'
+require 'consolelogger'
+
 
 class Controller
 
   def initialize
+    $log = ConsoleLogger.new("consoleEntries")
+
     setup_editor
     setup_ui
     setup_ui_listener
@@ -32,14 +36,16 @@ class Controller
   end
 
   def render_to_canvas
+    $log.info("rendering")
     @raphael_engine.draw(layout_harpnotes)
+
+
     %x{
     var top = $("#tunePreview").scrollTop();
     var width = $("#tunePreview").width();
     ABCJS.renderAbc($("#tunePreview")[0], #{get_abc_code}, {}, {}, {})
     $("#tunePreview").scrollTop(top);
     $("#tunePreview").width(width);
-
     }
     nil
   end
@@ -88,7 +94,7 @@ class Controller
 
     Element.find("#tbPlay").on(:click) { play_abc }
     Element.find("#tbRender").on(:click) { render_to_canvas }
-    Native(@editor).on(:change){render_to_canvas}
+    #Native(@editor).on(:change){render_to_canvas}
     Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
 
     Element.find(`window`).on(:keydown) do |evt|
