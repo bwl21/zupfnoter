@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Zupfnoter</title>
-        <link rel="stylesheet" type="text/css" href="assets/index.css" />
+        <link rel="stylesheet" type="text/css" href="public/index.css" />
 
         <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
         <script src="vendor/ace/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -15,15 +15,16 @@
         <script src="vendor/jspdf.min.js" type="application/javascript"></script>
         <script type="application/javascript" src="vendor/filesaver.js"></script>
         <script type="application/javascript" src="vendor/jszip.min.js"></script>
-        <script src="src/build.js" type="application/javascript"></script>
+
+        <script type="application/javascript" src="src/build.js"></script>
     </head>
     
     <body>
         <div id="toolbar">
             <span class="head">Zupfnoter</span>
-            <span class="button" id="tbPrint">download PDF</span>
-            <span class="button" id="tbRender">render</span>
-            <span class="button" id="tbPlay">play</span>
+            <span class="button" id="tbPrint"><i class="icon-print"></i> </span>
+            <span class="button" id="tbRender"><i class="icon-brush-alt"></i></span>
+            <span class="button" id="tbPlay"><i class="icon-play"></i></span>
         </div>
         <div id="leftColumn">
             <div id="abcEditorContainer" class="container">
@@ -55,10 +56,14 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
             <div id="consoleLog" class="container">
                 <div class="title rsh">
                     <span class="head">Console</span>
-                    <span class="button">min</span>
+                    <span class="button"><i class="icon-down-open-mini"></i></span>
                 </div>
                 <div class="body" id="console">
-
+                    <ul>
+                        <li class="error"><i class="icon-error-alt"></i><span class="time">now</span><span class="msg">This is a test, foobar.</span></li>
+                        <li class="warning"><i class="icon-attention"></i><span class="time">now</span><span class="msg">This is a test, foobar.</span></li>
+                        <li class="info"><i class="icon-info-circled"></i><span class="time">now</span><span class="msg">This is a test, foobar.</span></li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -67,7 +72,7 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
             <div id="tunePreviewContainer" class="container">
                 <div class="title">
                     <span class="head">Notes</span>
-                    <span class="button">min</span>
+                    <span class="button"><i class="icon-down-open-mini"></i></span>
                 </div>
                 <div class="body" id="tunePreview">
 
@@ -76,7 +81,7 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
             <div id="harpPreviewContainer" class="container">
                 <div class="title rsh">
                     <span class="head">Harp</span>
-                    <span class="button">min</span>
+                    <span class="button"><i class="icon-down-open-mini"></i></span>
                 </div>
                 <div class="body" id="harpPreview">
 

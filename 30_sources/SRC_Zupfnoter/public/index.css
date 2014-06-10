@@ -1,6 +1,7 @@
 /* http://meyerweb.com/eric/tools/css/reset/
  * v2.0 | 20110126
  * License: none (public domain) */
+@import url(icons/fontello.css);
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -52,7 +53,7 @@ body {
 .container {
   overflow: hidden;
   position: absolute;
-  background-color: #f0efcf;
+  background-color: white;
   border-right: 1px solid #1ba5a5; }
   .container .title {
     background-color: #1ba5a5;
@@ -93,6 +94,28 @@ body {
     padding: 0em 1em 0em 1em;
     border-left: 1px solid black;
     cursor: pointer; }
+
+#console ul {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  list-style-type: none;
+  color: #000000; }
+#console li {
+  border-bottom: 1px solid black;
+  line-height: 2em;
+  padding-left: 1em; }
+#console .error {
+  color: #ff0035; }
+#console .warning {
+  color: #e8d300; }
+#console .time {
+  padding-left: 1em;
+  width: 10%;
+  display: inline-block; }
+#console .msg {
+  display: inline-block; }
 
 #leftColumn {
   position: absolute;

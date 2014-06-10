@@ -2,6 +2,7 @@ require 'math'
 require 'opal'
 require 'opal-jquery'
 
+require 'consolelogger'
 require 'harpnotes'
 require 'abc_to_harpnotes'
 require 'opal-raphael'
