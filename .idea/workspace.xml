@@ -65,10 +65,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="controller.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="controller.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="96" column="5" selection-start="2111" selection-end="2111" vertical-scroll-proportion="0.0" vertical-offset="1435" max-vertical-offset="2025">
+            <state line="101" column="78" selection-start="2351" selection-end="2351" vertical-scroll-proportion="0.70989764" vertical-offset="891" max-vertical-offset="2145">
               <folding />
             </state>
           </provider>
@@ -83,10 +83,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.scss" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="index.scss" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="111" column="12" selection-start="1697" selection-end="1697" vertical-scroll-proportion="0.52840906" vertical-offset="1200" max-vertical-offset="2880">
+            <state line="111" column="12" selection-start="1697" selection-end="1697" vertical-scroll-proportion="-19.375" vertical-offset="1200" max-vertical-offset="2880">
               <folding />
             </state>
           </provider>
@@ -155,10 +155,10 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.css" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/consolelogger.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
       </list>
     </option>
   </component>
@@ -687,7 +687,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="323" />
+        <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="323">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
@@ -830,7 +832,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323" />
+        <state line="10" column="0" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-xquery.js">
@@ -932,13 +936,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="96" column="5" selection-start="2111" selection-end="2111" vertical-scroll-proportion="0.0" vertical-offset="1435" max-vertical-offset="2025">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="119" column="22" selection-start="3328" selection-end="3328" vertical-scroll-proportion="0.0" vertical-offset="1377" max-vertical-offset="4785">
@@ -955,7 +952,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="111" column="12" selection-start="1697" selection-end="1697" vertical-scroll-proportion="0.52840906" vertical-offset="1200" max-vertical-offset="2880">
+        <state line="111" column="12" selection-start="1697" selection-end="1697" vertical-scroll-proportion="-19.375" vertical-offset="1200" max-vertical-offset="2880">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="101" column="78" selection-start="2351" selection-end="2351" vertical-scroll-proportion="0.70989764" vertical-offset="891" max-vertical-offset="2145">
           <folding />
         </state>
       </provider>

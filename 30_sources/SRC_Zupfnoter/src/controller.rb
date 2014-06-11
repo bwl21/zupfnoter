@@ -39,7 +39,6 @@ class Controller
     $log.info("rendering")
     @raphael_engine.draw(layout_harpnotes)
 
-
     %x{
     var top = $("#tunePreview").scrollTop();
     var width = $("#tunePreview").width();
@@ -47,6 +46,7 @@ class Controller
     $("#tunePreview").scrollTop(top);
     $("#tunePreview").width(width);
     }
+
     nil
   end
 
@@ -94,7 +94,15 @@ class Controller
 
     Element.find("#tbPlay").on(:click) { play_abc }
     Element.find("#tbRender").on(:click) { render_to_canvas }
-    #Native(@editor).on(:change){render_to_canvas}
+    Native(Native(@editor).getSession).on(:change){
+      if @refresh_timer
+        `clearTimeout(self.refresh_timer)`
+       # `alert("refresh cancelled")`
+      end
+        @refresh_timer = `setTimeout(function(){self.$render_to_canvas()}, 300)`
+        nil
+    }
+
     Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
 
     Element.find(`window`).on(:keydown) do |evt|
