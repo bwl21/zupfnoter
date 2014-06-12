@@ -93,9 +93,13 @@ module Raphael
       @r = `Raphael(element, width, height)`
     end
 
+    # @return the native raphael object
+    def raw
+      @r
+    end
 
     # 
-    # Clar the area
+    # Clear the area
     # 
     # @return [type] [description]
     def clear

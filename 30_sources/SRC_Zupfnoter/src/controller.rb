@@ -22,7 +22,6 @@ class Controller
     Harpnotes::PDFEngine.new.draw(layout_harpnotes)
   end
 
-
   def play_abc
     if @inst
       Element.find('#tbPlay').html('play')
@@ -31,14 +30,16 @@ class Controller
     else
       Element.find('#tbPlay').html('stop')
       @inst = `new Instrument('piano')`
-      `self.inst.play({tempo:200}, #{get_abc_code});`
+      `self.inst.play({tempo:200}, #{get_abc_code});`  # todo get parameter from ABC
     end
   end
 
-  def render_to_canvas
+  def render_previews
     $log.info("rendering")
-    @raphael_engine.draw(layout_harpnotes)
+    @harpnote_preview_printer.draw(layout_harpnotes)
 
+    @tune_preview_printer.draw(get_abc_code)
+=begin
     %x{
     var top = $("#tunePreview").scrollTop();
     var width = $("#tunePreview").width();
@@ -46,6 +47,7 @@ class Controller
     $("#tunePreview").scrollTop(top);
     $("#tunePreview").width(width);
     }
+=end
 
     nil
   end
@@ -84,31 +86,37 @@ class Controller
   end
 
   def setup_ui
-    @raphael_engine = Harpnotes::RaphaelEngine.new("harpPreview")
-    @raphael_engine.on_select do |origin|
+    # setup the harpnote prviewer
+    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview")
+    @harpnote_preview_printer.on_select do |origin|
       select_note(origin, :harpnotes)
     end
+
+
+    printerparams = {}
+    @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview")
   end
 
   def setup_ui_listener
 
     Element.find("#tbPlay").on(:click) { play_abc }
-    Element.find("#tbRender").on(:click) { render_to_canvas }
+    Element.find("#tbRender").on(:click) { render_previews }
+    Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
+
     Native(Native(@editor).getSession).on(:change){
       if @refresh_timer
         `clearTimeout(self.refresh_timer)`
        # `alert("refresh cancelled")`
       end
-        @refresh_timer = `setTimeout(function(){self.$render_to_canvas()}, 300)`
+        @refresh_timer = `setTimeout(function(){self.$render_previews()}, 300)`
         nil
     }
 
-    Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
 
     Element.find(`window`).on(:keydown) do |evt|
       if `evt.keyCode == 13 && evt.shiftKey`
         evt.prevent_default
-        render_to_canvas
+        render_previews
         `evt.preventDefault()`
       elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
         evt.prevent_default
