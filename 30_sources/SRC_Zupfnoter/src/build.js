@@ -14472,7 +14472,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         $opal.cdecl($scope, 'X_SPACING', (115)['$/'](10));
 
-        $opal.cdecl($scope, 'BEAT_SPACING', (4)['$*'](1.0)['$/'](64.0)['$*'](1.5));
+        $opal.cdecl($scope, 'BEAT_SPACING', (4)['$*'](1.0)['$/'](64.0)['$*'](1));
 
         $opal.cdecl($scope, 'Y_OFFSET', 5);
 
@@ -15762,7 +15762,7 @@ if (s == null) s = nil;
 (function($opal) {
   var $a, $b, TMP_10, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$new', '$setup_editor', '$setup_ui', '$setup_ui_listener', '$draw', '$layout_harpnotes', '$html', '$find', '$get_abc_code', '$info', '$file', '$output', '$render_pdf', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$alert', '$private', '$on_select', '$select_note', '$on', '$play_abc', '$render_previews', '$Native', '$getSession', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
+  $opal.add_stubs(['$new', '$setup_editor', '$setup_ui', '$setup_ui_listener', '$draw', '$layout_harpnotes', '$html', '$find', '$get_abc_code', '$info', '$error', '$message', '$file', '$output', '$render_pdf', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$alert', '$private', '$on_select', '$select_note', '$on', '$play_abc', '$render_previews', '$Native', '$getSession', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
   ;
   ;
   ;
@@ -15803,17 +15803,34 @@ if (s == null) s = nil;
         } else {
         (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tbPlay").$html("stop");
         self.inst = new Instrument('piano');
-        return self.inst.play({tempo:200}, self.$get_abc_code());;
+        return self.inst.play({tempo:200}, self.$get_abc_code(), function(){self.$play_abc()} );
       };
     };
 
-    def.$render_previews = function() {
+    def.$play_abc_part = function(string) {
       var self = this;
+
+      self.inst = new Instrument('piano');
+      return self.inst.play({tempo:200}, string);;
+    };
+
+    def.$render_previews = function() {
+      var $a, self = this, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       $gvars.log.$info("rendering");
-      self.harpnote_preview_printer.$draw(self.$layout_harpnotes());
-      self.tune_preview_printer.$draw(self.$get_abc_code());
+      try {
+      self.harpnote_preview_printer.$draw(self.$layout_harpnotes())
+      } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
+        $gvars.log.$error(e.$message())
+        }else { throw $err; }
+      };
+      try {
+      self.tune_preview_printer.$draw(self.$get_abc_code())
+      } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
+        $gvars.log.$error(e.$message())
+        }else { throw $err; }
+      };
       return nil;
     };
 
@@ -15884,12 +15901,16 @@ if (origin == null) origin = nil;
 
       url = self.$render_pdf().$output("datauristring");
         return window.open(url);}, TMP_4._s = self, TMP_4), $a).call($d, "click");
-      ($a = ($e = self.$Native(self.$Native(self.editor).$getSession())).$on, $a._p = (TMP_5 = function(){var self = TMP_5._s || this, $a;
+      ($a = ($e = self.$Native(self.$Native(self.editor).$getSession())).$on, $a._p = (TMP_5 = function(e){var self = TMP_5._s || this, $a;
         if (self.refresh_timer == null) self.refresh_timer = nil;
-
+        if (self.playtimer_timer == null) self.playtimer_timer = nil;
+if (e == null) e = nil;
       if ((($a = self.refresh_timer) !== nil && (!$a._isBoolean || $a == true))) {
           clearTimeout(self.refresh_timer);};
-        self.refresh_timer = setTimeout(function(){self.$render_previews()}, 300);
+        if ((($a = self.playtimer_timer) !== nil && (!$a._isBoolean || $a == true))) {
+          clearTimeout(self.playtimer_timer);};
+        self.playtimer_timer = setTimeout(function(){self.$play_abc_part(e.data.text), 10});
+        self.refresh_timer = setTimeout(function(){self.$render_previews()}, 1000);
         return nil;}, TMP_5._s = self, TMP_5), $a).call($e, "change");
       ($a = ($f = (($g = $scope.Element) == null ? $opal.cm('Element') : $g).$find(window)).$on, $a._p = (TMP_6 = function(evt){var self = TMP_6._s || this, $a;
 if (evt == null) evt = nil;

@@ -588,7 +588,7 @@ module Harpnotes
       X_SPACING    = 115 / 10
 
       # Spacing between beats
-      BEAT_SPACING = 4 * 1.0/64.0 * 1.5
+      BEAT_SPACING = 4 * 1.0/64.0 * 1
 
       # Y coordinate of the very first beat
       Y_OFFSET  = 5

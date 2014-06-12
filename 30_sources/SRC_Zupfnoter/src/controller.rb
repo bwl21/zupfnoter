@@ -30,15 +30,28 @@ class Controller
     else
       Element.find('#tbPlay').html('stop')
       @inst = `new Instrument('piano')`
-      `self.inst.play({tempo:200}, #{get_abc_code});`  # todo get parameter from ABC
+      `self.inst.play({tempo:200}, #{get_abc_code}, function(){self.$play_abc()} )`  # todo get parameter from ABC
     end
+  end
+
+
+  def play_abc_part(string)
+      @inst = `new Instrument('piano')`
+      `self.inst.play({tempo:200}, #{string});`  # todo get parameter from ABC
   end
 
   def render_previews
     $log.info("rendering")
-    @harpnote_preview_printer.draw(layout_harpnotes)
-
-    @tune_preview_printer.draw(get_abc_code)
+    begin
+      @harpnote_preview_printer.draw(layout_harpnotes)
+    rescue Exception =>e
+      $log.error(e.message)
+    end
+    begin
+      @tune_preview_printer.draw(get_abc_code)
+    rescue Exception =>e
+      $log.error(e.message)
+    end
 =begin
     %x{
     var top = $("#tunePreview").scrollTop();
@@ -103,14 +116,22 @@ class Controller
     Element.find("#tbRender").on(:click) { render_previews }
     Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
 
-    Native(Native(@editor).getSession).on(:change){
+    Native(Native(@editor).getSession).on(:change){|e|
       if @refresh_timer
         `clearTimeout(self.refresh_timer)`
        # `alert("refresh cancelled")`
       end
-        @refresh_timer = `setTimeout(function(){self.$render_previews()}, 300)`
+
+      if @playtimer_timer
+        `clearTimeout(self.playtimer_timer)`
+        # `alert("refresh cancelled")`
+      end
+
+      @playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
+      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 1000)`
         nil
     }
+
 
 
     Element.find(`window`).on(:keydown) do |evt|
