@@ -7,17 +7,39 @@ module Harpnotes
     include Harpnotes::Drawing
     attr_reader :pdf
 
-    PADDING = 4
-    ARROW_SIZE = 10
-    JUMPLINE_INDENT = 10
+    PADDING = 4.0
+    ARROW_SIZE = 10.0
+    JUMPLINE_INDENT = 10.0
     DOTTED_SIZE = 0.3
+
+    X_SPACING = 115.0/10.0
 
     def initialize()
       @pdf = JsPDF.new(:l, :mm, :a3)
-      @pdf.rect(1, 1, 418, 295)
+      @pdf.x_offset = 0.0
+    end
+
+
+    def draw_in_segments(sheet)
+      delta = -12.0 * X_SPACING
+      @pdf = JsPDF.new(:p, :mm, :a4)
+
+      addpage = false
+      (0..2).each do |i|
+        draw_segment(30 + i * delta , sheet, addpage)
+        addpage = true
+      end
+      @pdf
     end
 
     def draw(sheet)
+      @pdf.rect(1.0, 1.0, 418, 295)
+      @pdf.rect(0.0, 0.0, 420.0, 297.0)
+      delta = 12.0 * X_SPACING
+      (1..2).each do |i|
+        [:top, :bottom].each{|border| draw_cropmark(i, delta, border)}
+      end
+
       sheet.children.each do |child|
         if child.is_a? Ellipse
           draw_ellipse(child)
@@ -46,6 +68,16 @@ module Harpnotes
       @pdf.text(root.center.first, root.center.last, root.text)
     end
 
+    def draw_cropmark(i, delta, border)
+      v = {:top => [0,7,9], :bottom => [297, 290, 288]}[border]
+      hpos = X_SPACING/2.0 + delta * i
+      hdiff = X_SPACING/2.0
+
+      $log.info([[hpos, v.first],  [hpos, v.last]])
+      @pdf.line([hpos, v.first],  [hpos, v.last])
+      @pdf.line([hpos - hdiff, v[1]],  [hpos + hdiff, v[1]])
+    end
+
     def draw_ellipse(root)
       style = root.filled? ? :F : :FD
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
@@ -71,6 +103,11 @@ module Harpnotes
     end
 
 
+    def draw_segment(x_offset, sheet, newpage = false )
+      @pdf.x_offset = x_offset
+      @pdf.addPage if newpage
+      draw(sheet)
+    end
 
     #
     # Draw a Flowline to indicate the flow of the music. It indicates
@@ -92,15 +129,15 @@ module Harpnotes
     #
     # @return [nil] nothing
     def draw_jumpline(root)
-      startpoint = root.from.center
+      startpoint = root.from.center.clone
       startpoint[0] += PADDING
-      startpoint[1] -= PADDING/4
+      startpoint[1] -= PADDING/4.0
 
-      endpoint   = root.to.center
+      endpoint   = root.to.center.clone
       endpoint[0] += PADDING
-      endpoint[1] += PADDING/4
+      endpoint[1] += PADDING/4.0
 
-      depth      = 418 - (root.level * JUMPLINE_INDENT)
+      depth      = 418.0 - (root.level * JUMPLINE_INDENT)
 
       @pdf.draw = (0...3).map { 0 }
       @pdf.line(endpoint, [depth, endpoint[1]])

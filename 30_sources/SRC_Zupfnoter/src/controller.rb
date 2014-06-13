@@ -18,8 +18,12 @@ class Controller
     setup_ui_listener
   end
 
-  def render_pdf
+  def render_a3
     Harpnotes::PDFEngine.new.draw(layout_harpnotes)
+  end
+
+  def render_a4
+    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes)
   end
 
   def play_abc
@@ -52,15 +56,6 @@ class Controller
     rescue Exception =>e
       $log.error(e.message)
     end
-=begin
-    %x{
-    var top = $("#tunePreview").scrollTop();
-    var width = $("#tunePreview").width();
-    ABCJS.renderAbc($("#tunePreview")[0], #{get_abc_code}, {}, {}, {})
-    $("#tunePreview").scrollTop(top);
-    $("#tunePreview").width(width);
-    }
-=end
 
     nil
   end
@@ -114,7 +109,8 @@ class Controller
 
     Element.find("#tbPlay").on(:click) { play_abc }
     Element.find("#tbRender").on(:click) { render_previews }
-    Element.find("#tbPrint").on(:click) { url = render_pdf.output(:datauristring); `window.open(url)` }
+    Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
+    Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
 
     Native(Native(@editor).getSession).on(:change){|e|
       if @refresh_timer

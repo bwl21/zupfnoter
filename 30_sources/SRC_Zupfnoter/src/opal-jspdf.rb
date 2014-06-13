@@ -14,15 +14,20 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 
 class JsPDF
 
+  attr_accessor :x_offset
+
   # @param orientation Symbol the page orientation, :p for portrait, :l for landscape
   # @param unit Symbol the unit of measurement, :mm (default), :pt, :cm, :in
   # @param format Symbol page format, :a3, :a4 (default), :a5, :letter, :legal
   def initialize(orientation = :p, unit = :mm, format = :a4)
+    @x_offset = 0
     @native = `new jsPDF(orientation, unit, format)`
   end
 
   def line(from, to)
-    `self.native.lines([ [ to[0] - from[0], to[1] - from[1] ] ], from[0], from[1])`
+    nfrom = apply_offset_to_point(from)
+    nto = apply_offset_to_point(to)
+    `self.native.lines([ [ nto[0] - nfrom[0], nto[1] - nfrom[1] ] ], nfrom[0], nfrom[1])`
   end
 
   def line_cap=(value)
@@ -31,7 +36,8 @@ class JsPDF
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
   def ellipse(center, size, style = `undefined`)
-    `self.native.ellipse(center[0], center[1], size[0], size[1], style)`
+    ncenter = apply_offset_to_point(center)
+    `self.native.ellipse(ncenter[0], ncenter[1], size[0], size[1], style)`
   end
 
   def fill=(rgb)
@@ -61,16 +67,19 @@ class JsPDF
   end
 
   def text(x, y, text, flags=nil)
-    `self.native.text(x, y, text, flags)`
+    nx = apply_offset_to_x(x)
+    `self.native.text(nx, y, text, flags)`
   end
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
   def rect_like_ellipse(center, size, style = 'undefined')
-    `self.native.rect(center[0], center[1], size[0], size[1], style)`
+    ncenter =apply_offset_to_point(center)
+    `self.native.rect(ncenter[0], ncenter[1], size[0], size[1], style)`
   end
 
   def rect(x1, y1, x2, y2, style = 'undefined')
-    `self.native.rect(x1, y1, x2, y2, style)`
+    nx1 = apply_offset_to_x(x1)
+    `self.native.rect(nx1, y1, x2, y2, style)`
   end
 
   # @param type Symbol the output type as :datauristring, :datauri, :raw
@@ -82,4 +91,17 @@ class JsPDF
     `self.native.output(type, options)`
   end
 
+  def addPage()
+    `self.native.addPage()`
+  end
+
+  private
+
+  def apply_offset_to_point(point)
+    [point.first + @x_offset, point.last]
+  end
+
+  def apply_offset_to_x(x)
+    x + @x_offset
+  end
 end
