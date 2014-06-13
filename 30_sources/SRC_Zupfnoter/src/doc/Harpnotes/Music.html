@@ -88,66 +88,13 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    
-<p>The music model that is transformed (layouted) to something drawable</p>
-
-<h1>Terminology</h1>
-<ul><li>
-<p><b>beat</b>: denotes the start time of a note. So the entire song is
-divided into beats (as the musician counts). Beats are mainly used to
-determine the vertical position of a Playable in the harp sheet</p>
-</li><li>
-<p><b>beat_map</b>: a mapping of playables to the beats of the the music.</p>
-</li><li>
-<p><b>beat_layout</b>: a mapping between the bats of the music and the beats
-shown in the sheet. basically it is an approach to vertically compress the
-sheet.</p>
-</li><li>
-<p><b>Flowline</b>: a representation of the flow of the music. Flowlines
-connect notes</p>
-</li><li>
-<p><b>Jumpline</b>: an indicator of jumps within the piece. The music
-continues at then end of the jumpline</p>
-</li><li>
-<p><b>Syncline</b>: an indicator for notes to be played simultaneously. They
-synchronize two voices</p>
-</li></ul>
-
-<h1>Basic concept</h1>
-
-<pre class="code ruby"><code class="ruby">Song -&gt; Staff* -&gt; Voice* -&gt; MusicEntity*</code></pre>
-<ol><li>
-<p>Music is denoted as Song</p>
-</li><li>
-<p>Staff: Song consists of Staffs. Staffs may be printed on the same sheet
-with synchronized beats but without Synclines</p>
-</li><li>
-<p>Voice: A Staff consists of multiple voices. Voices are printed with
-synclines</p>
-</li><li>
-<p>MusicEntity: A Voice is represented as a squence (Array) of MusicEntities.
-This can be Plaaybles but also other entis required to specify the music</p>
-</li><li>
-<p>Playable &lt; MusicEntitiy - an entity which is actually played</p>
-</li><li>
-<p>Note: Measures are not modelled as containers ...</p>
-</li></ol>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><h2>Defined Under Namespace</h2>
+<h2>Defined Under Namespace</h2>
 <p class="children">
   
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Music/Dacapo.html" title="Harpnotes::Music::Dacapo (class)">Dacapo</a></span>, <span class='object_link'><a href="Music/MeasureStart.html" title="Harpnotes::Music::MeasureStart (class)">MeasureStart</a></span>, <span class='object_link'><a href="Music/MusicEntity.html" title="Harpnotes::Music::MusicEntity (class)">MusicEntity</a></span>, <span class='object_link'><a href="Music/Note.html" title="Harpnotes::Music::Note (class)">Note</a></span>, <span class='object_link'><a href="Music/Pause.html" title="Harpnotes::Music::Pause (class)">Pause</a></span>, <span class='object_link'><a href="Music/Playable.html" title="Harpnotes::Music::Playable (class)">Playable</a></span>, <span class='object_link'><a href="Music/Song.html" title="Harpnotes::Music::Song (class)">Song</a></span>, <span class='object_link'><a href="Music/SynchPoint.html" title="Harpnotes::Music::SynchPoint (class)">SynchPoint</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Music/BeatMap.html" title="Harpnotes::Music::BeatMap (class)">BeatMap</a></span>, <span class='object_link'><a href="Music/Dacapo.html" title="Harpnotes::Music::Dacapo (class)">Dacapo</a></span>, <span class='object_link'><a href="Music/MeasureStart.html" title="Harpnotes::Music::MeasureStart (class)">MeasureStart</a></span>, <span class='object_link'><a href="Music/MusicEntity.html" title="Harpnotes::Music::MusicEntity (class)">MusicEntity</a></span>, <span class='object_link'><a href="Music/Note.html" title="Harpnotes::Music::Note (class)">Note</a></span>, <span class='object_link'><a href="Music/Pause.html" title="Harpnotes::Music::Pause (class)">Pause</a></span>, <span class='object_link'><a href="Music/Playable.html" title="Harpnotes::Music::Playable (class)">Playable</a></span>, <span class='object_link'><a href="Music/Song.html" title="Harpnotes::Music::Song (class)">Song</a></span>, <span class='object_link'><a href="Music/SynchPoint.html" title="Harpnotes::Music::SynchPoint (class)">SynchPoint</a></span>
     
   
 </p>
@@ -163,7 +110,7 @@ This can be Plaaybles but also other entis required to specify the music</p>
 </div>
 
     <div id="footer">
-  Generated on Fri May 30 15:25:03 2014 by
+  Generated on Thu Jun 12 22:24:55 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.5.2 (ruby-1.9.3).
 </div>

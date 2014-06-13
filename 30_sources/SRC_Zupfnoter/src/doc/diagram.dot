@@ -2,19 +2,27 @@ digraph yard {
   graph [rankdir=BT rank=sink outputMode=nodesfirst packMode="graph" splines=true];
   node [shape=record rank=sink rankType=sink];
   Root [label="{root root||}" rank=sink];
+  Controller [label="{class Controller||- \#setup_editor\l- \#setup_ui\l- \#setup_ui_listener\l}" rank=sink];
+  subgraph cluster_Controller {
+    label = "Controller"; labelloc=b;
+  }
   JsPDF [label="{class JsPDF||}" rank=sink];
   subgraph cluster_JsPDF {
     label = "JsPDF"; labelloc=b;
   }
+  ConsoleLogger [label="{class ConsoleLogger||}" rank=sink];
+  subgraph cluster_ConsoleLogger {
+    label = "ConsoleLogger"; labelloc=b;
+  }
   subgraph cluster_ {
     label = ""; labelloc=b;
     Harpnotes [label="{module Harpnotes||}" rank=sink];
-    Harpnotes_PDFEngine [label="{class PDFEngine|+ \#pdf [R]\l|- \#draw_ellipse\l- \#draw_flowline\ \:\ type\l- \#draw_jumpline\ \:\ nil\l}" rank=sink];
+    Harpnotes_PDFEngine [label="{class PDFEngine|+ \#pdf [R]\l|- \#draw_annotation\l- \#draw_ellipse\l- \#draw_flowline\ \:\ type\l- \#draw_jumpline\ \:\ nil\l- \#draw_rest\l}" rank=sink];
     subgraph cluster_Harpnotes_PDFEngine {
       label = "PDFEngine"; labelloc=b;
     }
     Harpnotes_PDFEngine -> Harpnotes_Drawing [style=dotted arrowType=none];
-    Harpnotes_RaphaelEngine [label="{class RaphaelEngine|+ \#paper [R]\l|- \#draw_ellipse\l- \#draw_flowline\ \:\ type\l- \#draw_jumpline\ \:\ nil\l}" rank=sink];
+    Harpnotes_RaphaelEngine [label="{class RaphaelEngine|+ \#paper [R]\l|- \#draw_ellipse\l- \#draw_flowline\ \:\ type\l- \#draw_jumpline\ \:\ nil\l- \#draw_rest\l}" rank=sink];
     subgraph cluster_Harpnotes_RaphaelEngine {
       label = "RaphaelEngine"; labelloc=b;
     }
@@ -41,7 +49,7 @@ digraph yard {
         label = "SynchPoint"; labelloc=b;
       }
       Harpnotes_Music_SynchPoint -> Harpnotes_Music_Playable;
-      Harpnotes_Music_Pause [label="{class Pause|+ \#duration [R]\l|}" rank=sink];
+      Harpnotes_Music_Pause [label="{class Pause|+ \#duration [R]\l+ \#pitch [R]\l|}" rank=sink];
       subgraph cluster_Harpnotes_Music_Pause {
         label = "Pause"; labelloc=b;
       }
@@ -56,7 +64,12 @@ digraph yard {
         label = "Dacapo"; labelloc=b;
       }
       Harpnotes_Music_Dacapo -> Harpnotes_Music_MusicEntity;
-      Harpnotes_Music_Song [label="{class Song|+ \#beat_maps [R]\l+ \#voices [R]\l|- \#update_beats\ \:\ Array\ of\ Hash\l}" rank=sink];
+      Harpnotes_Music_BeatMap [label="{class BeatMap|+ \#index [RW]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Music_BeatMap {
+        label = "BeatMap"; labelloc=b;
+      }
+      Harpnotes_Music_BeatMap -> Hash;
+      Harpnotes_Music_Song [label="{class Song|+ \#beat_maps [R]\l+ \#meta_data [RW]\l+ \#voices [R]\l|- \#update_beats\ \:\ Array\ of\ Hash\l}" rank=sink];
       subgraph cluster_Harpnotes_Music_Song {
         label = "Song"; labelloc=b;
       }
@@ -76,19 +89,35 @@ digraph yard {
       subgraph cluster_Harpnotes_Drawing_JumpLine {
         label = "JumpLine"; labelloc=b;
       }
+      Harpnotes_Drawing_Drawable [label="{class Drawable||}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_Drawable {
+        label = "Drawable"; labelloc=b;
+      }
+      Harpnotes_Drawing_Glyph [label="{class Glyph|+ \#center [R]\l+ \#name [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_Glyph {
+        label = "Glyph"; labelloc=b;
+      }
+      Harpnotes_Drawing_Glyph -> Harpnotes_Drawing_Drawable;
       Harpnotes_Drawing_Ellipse [label="{class Ellipse|+ \#center [R]\l+ \#dotted [R]\l+ \#fill [R]\l+ \#origin [R]\l+ \#size [R]\l|}" rank=sink];
       subgraph cluster_Harpnotes_Drawing_Ellipse {
         label = "Ellipse"; labelloc=b;
       }
-      Harpnotes_Drawing_Text [label="{class Text|+ \#position [R]\l+ \#style [R]\l+ \#text [R]\l|}" rank=sink];
-      subgraph cluster_Harpnotes_Drawing_Text {
-        label = "Text"; labelloc=b;
+      Harpnotes_Drawing_Ellipse -> Harpnotes_Drawing_Drawable;
+      Harpnotes_Drawing_Annotation [label="{class Annotation|+ \#center [R]\l+ \#style [R]\l+ \#text [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_Annotation {
+        label = "Annotation"; labelloc=b;
       }
+      Harpnotes_Drawing_Annotation -> Harpnotes_Drawing_Drawable;
+      Harpnotes_Drawing_Rest [label="{class Rest|+ \#center [R]\l+ \#dotted [R]\l+ \#fill [R]\l+ \#origin [R]\l+ \#size [R]\l|}" rank=sink];
+      subgraph cluster_Harpnotes_Drawing_Rest {
+        label = "Rest"; labelloc=b;
+      }
+      Harpnotes_Drawing_Rest -> Harpnotes_Drawing_Drawable;
       subgraph cluster_Harpnotes_Drawing {
         label = "Drawing"; labelloc=b;
       }
       Harpnotes_Layout [label="{module Layout||}" rank=sink];
-      Harpnotes_Layout_Default [label="{class Default||- \#compute_beat_compression\ \:\ Hash\l- \#duration_to_id\ \:\ Object\l- \#layout_accord\ \:\ Object\l- \#layout_note\ \:\ Object\l- \#layout_pause\ \:\ Object\l- \#layout_playables\ \:\ type\l}" rank=sink];
+      Harpnotes_Layout_Default [label="{class Default||- \#compute_beat_compression\ \:\ Hash\l- \#duration_to_id\ \:\ Object\l- \#layout_accord\ \:\ Object\l- \#layout_measure_start\l- \#layout_note\ \:\ Object\l- \#layout_pause\ \:\ Object\l- \#layout_playables\ \:\ type\l}" rank=sink];
       subgraph cluster_Harpnotes_Layout_Default {
         label = "Default"; labelloc=b;
       }
@@ -98,12 +127,40 @@ digraph yard {
       Harpnotes_Layout -> Harpnotes_Drawing [style=dotted arrowType=none];
       Harpnotes_Layout -> Harpnotes_Music [style=dotted arrowType=none];
       Harpnotes_Input [label="{module Input||}" rank=sink];
+      Harpnotes_Input_ABCPitchToMidipitch [label="{class ABCPitchToMidipitch||}" rank=sink];
+      subgraph cluster_Harpnotes_Input_ABCPitchToMidipitch {
+        label = "ABCPitchToMidipitch"; labelloc=b;
+      }
       Harpnotes_Input_ABCToHarpnotes [label="{class ABCToHarpnotes||}" rank=sink];
       subgraph cluster_Harpnotes_Input_ABCToHarpnotes {
         label = "ABCToHarpnotes"; labelloc=b;
       }
       subgraph cluster_Harpnotes_Input {
         label = "Input"; labelloc=b;
+      }
+    }
+    JSZip [label="{module JSZip||}" rank=sink];
+    JSZip_ZipFile [label="{class ZipFile||}" rank=sink];
+    subgraph cluster_JSZip_ZipFile {
+      label = "ZipFile"; labelloc=b;
+    }
+    JSZip_Folder [label="{class Folder||}" rank=sink];
+    subgraph cluster_JSZip_Folder {
+      label = "Folder"; labelloc=b;
+    }
+    subgraph cluster_JSZip {
+      label = "JSZip"; labelloc=b;
+    }
+    ABCJS [label="{module ABCJS||}" rank=sink];
+    subgraph cluster_ABCJS {
+      label = "ABCJS"; labelloc=b;
+      ABCJS_Write [label="{module Write||}" rank=sink];
+      ABCJS_Write_Printer [label="{class Printer||}" rank=sink];
+      subgraph cluster_ABCJS_Write_Printer {
+        label = "Printer"; labelloc=b;
+      }
+      subgraph cluster_ABCJS_Write {
+        label = "Write"; labelloc=b;
       }
     }
     Raphael [label="{module Raphael||}" rank=sink];
@@ -117,6 +174,14 @@ digraph yard {
     }
     subgraph cluster_Raphael {
       label = "Raphael"; labelloc=b;
+    }
+    Musicaljs [label="{module Musicaljs||}" rank=sink];
+    Musicaljs_Instrument [label="{class Instrument||}" rank=sink];
+    subgraph cluster_Musicaljs_Instrument {
+      label = "Instrument"; labelloc=b;
+    }
+    subgraph cluster_Musicaljs {
+      label = "Musicaljs"; labelloc=b;
     }
   }
 }

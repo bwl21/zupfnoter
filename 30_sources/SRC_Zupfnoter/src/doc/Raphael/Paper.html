@@ -143,7 +143,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Clar the area.</p>
+<p>Clear the area.</p>
 </div></span>
   
 </li>
@@ -176,6 +176,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#enable_pan_zoom-instance_method" title="#enable_pan_zoom (instance method)">- (Object) <strong>enable_pan_zoom</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (type) <strong>initialize</strong>(element, width, height) </a>
     
 
@@ -193,7 +215,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Construlctor.</p>
+<p>Construtctor.</p>
 </div></span>
   
 </li>
@@ -242,6 +264,54 @@
   
     <span class="summary_desc"><div class='inline'>
 <p>Draw a path.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#raw-instance_method" title="#raw (instance method)">- (Object) <strong>raw</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>The native raphael object.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rect-instance_method" title="#rect (instance method)">- (element) <strong>rect</strong>(x, y, rx, ry, radius = 0) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Draw an Rectangle.</p>
 </div></span>
   
 </li>
@@ -313,7 +383,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Construlctor</p>
+<p>Construtctor</p>
 
 
   </div>
@@ -413,7 +483,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Clar the area</p>
+<p>Clear the area</p>
 
 
   </div>
@@ -445,12 +515,12 @@
       <pre class="lines">
 
 
-101
-102
-103</pre>
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 105</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear'>clear</span>
   <span class='backtick'>`</span><span class='tstring_content'>self.r.clear()</span><span class='tstring_end'>`</span></span>
@@ -572,15 +642,45 @@
       <pre class="lines">
 
 
-113
-114
-115</pre>
+117
+118
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ellipse'>ellipse</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='id identifier rubyid_rx'>rx</span><span class='comma'>,</span> <span class='id identifier rubyid_ry'>ry</span><span class='rparen'>)</span>
   <span class='const'>Raphael</span><span class='op'>::</span><span class='const'>Element</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='backtick'>`</span><span class='tstring_content'>self.r.ellipse(x, y, rx, ry)</span><span class='tstring_end'>`</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="enable_pan_zoom-instance_method">
+  
+    - (<tt>Object</tt>) <strong>enable_pan_zoom</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+183
+184
+185</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 183</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_enable_pan_zoom'>enable_pan_zoom</span>
+  <span class='backtick'>`</span><span class='tstring_content'>self.r.panzoom().enable()</span><span class='tstring_end'>`</span></span> <span class='kw'>if</span> <span class='backtick'>`</span><span class='tstring_content'>self.r.panzoom != undefined</span><span class='tstring_end'>`</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -699,12 +799,12 @@
       <pre class="lines">
 
 
-140
-141
-142</pre>
+156
+157
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 156</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_line'>line</span><span class='lparen'>(</span><span class='id identifier rubyid_x1'>x1</span><span class='comma'>,</span> <span class='id identifier rubyid_y1'>y1</span><span class='comma'>,</span> <span class='id identifier rubyid_x2'>x2</span><span class='comma'>,</span> <span class='id identifier rubyid_y2'>y2</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>M</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_x1'>x1</span><span class='rbrace'>}</span><span class='tstring_content'>,</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_y1'>y1</span><span class='rbrace'>}</span><span class='tstring_content'>L</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_x2'>x2</span><span class='rbrace'>}</span><span class='tstring_content'>,</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_y2'>y2</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -781,15 +881,219 @@ href="http://raphaeljs.com/reference.html#Paper.path">raphaeljs.com/reference.ht
       <pre class="lines">
 
 
-125
-126
-127</pre>
+129
+130
+131</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path'>path</span><span class='lparen'>(</span><span class='id identifier rubyid_spec'>spec</span><span class='rparen'>)</span>
   <span class='const'>Raphael</span><span class='op'>::</span><span class='const'>Element</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='backtick'>`</span><span class='tstring_content'>self.r.path(spec)</span><span class='tstring_end'>`</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="raw-instance_method">
+  
+    - (<tt>Object</tt>) <strong>raw</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The native raphael object</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        
+        <div class='inline'>
+<p>the native raphael object</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_raw'>raw</span>
+  <span class='ivar'>@r</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rect-instance_method">
+  
+    - (<tt>element</tt>) <strong>rect</strong>(x, y, rx, ry, radius = 0) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Draw an Rectangle</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>x</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>x - of topleft corner</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>y</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>y - of topleft corner</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rx</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>rx - width</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ry</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>ry - height</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>radius</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>radius for rounded corners, default is 0</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>element</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The generated Element</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+142
+143
+144</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 142</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_rect'>rect</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='id identifier rubyid_rx'>rx</span><span class='comma'>,</span> <span class='id identifier rubyid_ry'>ry</span><span class='comma'>,</span> <span class='id identifier rubyid_radius'>radius</span> <span class='op'>=</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='const'>Raphael</span><span class='op'>::</span><span class='const'>Element</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='backtick'>`</span><span class='tstring_content'>self.r.rect(x, y, rx, ry, radius)</span><span class='tstring_end'>`</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -842,12 +1146,12 @@ href="http://raphaeljs.com/reference.html#Paper.path">raphaeljs.com/reference.ht
       <pre class="lines">
 
 
-163
-164
-165</pre>
+179
+180
+181</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 179</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
   <span class='lbracket'>[</span> <span class='backtick'>`</span><span class='tstring_content'>self.r.canvas.offsetWidth</span><span class='tstring_end'>`</span></span><span class='comma'>,</span> <span class='backtick'>`</span><span class='tstring_content'>self.r.canvas.offsetHeight</span><span class='tstring_end'>`</span></span> <span class='rbracket'>]</span>
@@ -953,12 +1257,12 @@ href="http://raphaeljs.com/reference.html#Paper.path">raphaeljs.com/reference.ht
       <pre class="lines">
 
 
-152
-153
-154</pre>
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 152</span>
+      <pre class="code"><span class="info file"># File 'opal-raphael.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_text'>text</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='id identifier rubyid_text'>text</span><span class='rparen'>)</span>
   <span class='const'>Raphael</span><span class='op'>::</span><span class='const'>Element</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='backtick'>`</span><span class='tstring_content'>self.r.text(x, y, text)</span><span class='tstring_end'>`</span></span><span class='rparen'>)</span>
@@ -973,7 +1277,7 @@ href="http://raphaeljs.com/reference.html#Paper.path">raphaeljs.com/reference.ht
 </div>
 
     <div id="footer">
-  Generated on Fri May 30 15:25:04 2014 by
+  Generated on Thu Jun 12 22:24:56 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.5.2 (ruby-1.9.3).
 </div>

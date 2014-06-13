@@ -183,6 +183,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#font_size%3D-instance_method" title="#font_size= (instance method)">- (Object) <strong>font_size=</strong>(size) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (JsPDF) <strong>initialize</strong>(orientation = :p, unit = :mm, format = :a4) </a>
     
 
@@ -297,7 +319,51 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#text-instance_method" title="#text (instance method)">- (Object) <strong>text</strong>(text, position, flags) </a>
+      <a href="#rect-instance_method" title="#rect (instance method)">- (Object) <strong>rect</strong>(x1, y1, x2, y2, style = 'undefined') </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rect_like_ellipse-instance_method" title="#rect_like_ellipse (instance method)">- (Object) <strong>rect_like_ellipse</strong>(center, size, style = 'undefined') </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#text-instance_method" title="#text (instance method)">- (Object) <strong>text</strong>(x, y, text, flags = nil) </a>
     
 
     
@@ -595,6 +661,36 @@ both</p>
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="font_size=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>font_size=</strong>(size) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+50
+51
+52</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 50</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_font_size='>font_size=</span><span class='lparen'>(</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
+  <span class='backtick'>`</span><span class='tstring_content'>self.native.setFontSize(size)</span><span class='tstring_end'>`</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="line-instance_method">
   
     - (<tt>Object</tt>) <strong>line</strong>(from, to) 
@@ -669,13 +765,13 @@ both</p>
       <pre class="lines">
 
 
-53
-54
-55
-56</pre>
+58
+59
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_line_dash='>line_dash=</span><span class='lparen'>(</span><span class='id identifier rubyid_dist'>dist</span> <span class='op'>=</span> <span class='int'>3</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dist'>dist</span> <span class='op'>=</span> <span class='backtick'>`</span><span class='tstring_content'>undefined</span><span class='tstring_end'>`</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_dist'>dist</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -750,15 +846,15 @@ both</p>
       <pre class="lines">
 
 
-64
-65
-66
-67
-68
-69</pre>
+78
+79
+80
+81
+82
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_output'>output</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:raw</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='backtick'>`</span><span class='tstring_content'>undefined</span><span class='tstring_end'>`</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='symbol'>:raw</span>
@@ -772,9 +868,9 @@ both</p>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="text-instance_method">
+  <h3 class="signature " id="rect-instance_method">
   
-    - (<tt>Object</tt>) <strong>text</strong>(text, position, flags) 
+    - (<tt>Object</tt>) <strong>rect</strong>(x1, y1, x2, y2, style = 'undefined') 
   
 
   
@@ -786,15 +882,107 @@ both</p>
       <pre class="lines">
 
 
-58
-59
-60</pre>
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 72</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_text'>text</span><span class='lparen'>(</span><span class='id identifier rubyid_text'>text</span><span class='comma'>,</span> <span class='id identifier rubyid_position'>position</span><span class='comma'>,</span> <span class='id identifier rubyid_flags'>flags</span><span class='rparen'>)</span>
-  <span class='backtick'>`</span><span class='tstring_content'>self.native.text(text, position[0], position[1], flags)</span><span class='tstring_end'>`</span></span>
+<span class='kw'>def</span> <span class='id identifier rubyid_rect'>rect</span><span class='lparen'>(</span><span class='id identifier rubyid_x1'>x1</span><span class='comma'>,</span> <span class='id identifier rubyid_y1'>y1</span><span class='comma'>,</span> <span class='id identifier rubyid_x2'>x2</span><span class='comma'>,</span> <span class='id identifier rubyid_y2'>y2</span><span class='comma'>,</span> <span class='id identifier rubyid_style'>style</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>undefined</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='backtick'>`</span><span class='tstring_content'>self.native.rect(x1, y1, x2, y2, style)</span><span class='tstring_end'>`</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rect_like_ellipse-instance_method">
+  
+    - (<tt>Object</tt>) <strong>rect_like_ellipse</strong>(center, size, style = 'undefined') 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>style</span>
+      
+      
+        <span class='type'></span>
+      
+      
+        <em class="default">(defaults to: <tt>'undefined'</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for
+both</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+68
+69
+70</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 68</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_rect_like_ellipse'>rect_like_ellipse</span><span class='lparen'>(</span><span class='id identifier rubyid_center'>center</span><span class='comma'>,</span> <span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='id identifier rubyid_style'>style</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>undefined</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='backtick'>`</span><span class='tstring_content'>self.native.rect(center[0], center[1], size[0], size[1], style)</span><span class='tstring_end'>`</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="text-instance_method">
+  
+    - (<tt>Object</tt>) <strong>text</strong>(x, y, text, flags = nil) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 63</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_text'>text</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='id identifier rubyid_text'>text</span><span class='comma'>,</span> <span class='id identifier rubyid_flags'>flags</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='backtick'>`</span><span class='tstring_content'>self.native.text(x, y, text, flags)</span><span class='tstring_end'>`</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -810,21 +998,50 @@ both</p>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>rgb</span>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>R G B values 0..255</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-45
 46
-47</pre>
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_text_color='>text_color=</span><span class='lparen'>(</span><span class='id identifier rubyid_rgb'>rgb</span><span class='rparen'>)</span>
-  <span class='backtick'>`</span><span class='tstring_content'>self.native.setTetColor(rgb[0], rgb[1], rgb[2])</span><span class='tstring_end'>`</span></span>
+  <span class='backtick'>`</span><span class='tstring_content'>self.native.setTextColor(rgb[0], rgb[1], rgb[2])</span><span class='tstring_end'>`</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -846,12 +1063,12 @@ both</p>
       <pre class="lines">
 
 
-49
-50
-51</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'opal-jspdf.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_use_solid_lines'>use_solid_lines</span>
   <span class='backtick'>`</span><span class='tstring_content'>self.native.setLineDash('', 0)</span><span class='tstring_end'>`</span></span>
@@ -866,7 +1083,7 @@ both</p>
 </div>
 
     <div id="footer">
-  Generated on Fri May 30 15:25:04 2014 by
+  Generated on Thu Jun 12 22:24:56 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.5.2 (ruby-1.9.3).
 </div>

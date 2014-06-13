@@ -144,7 +144,36 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute duration.</p>
+<p>note that the pitch is used to support layout ...</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#pitch-instance_method" title="#pitch (instance method)">- (Object) <strong>pitch</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>note that the pitch is used to support layout ...</p>
 </div></span>
   
 </li>
@@ -176,7 +205,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Type) <strong>initialize</strong>(duration) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Type) <strong>initialize</strong>(pitch, duration) </a>
     
 
     
@@ -220,7 +249,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt>Type</tt>) <strong>initialize</strong>(duration) 
+    - (<tt>Type</tt>) <strong>initialize</strong>(pitch, duration) 
   
 
   
@@ -243,14 +272,16 @@
       <pre class="lines">
 
 
-137
-138
-139</pre>
+191
+192
+193
+194</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'harpnotes.rb', line 137</span>
+      <pre class="code"><span class="info file"># File 'harpnotes.rb', line 191</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_duration'>duration</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_pitch'>pitch</span><span class='comma'>,</span> <span class='id identifier rubyid_duration'>duration</span><span class='rparen'>)</span>
+  <span class='ivar'>@pitch</span> <span class='op'>=</span> <span class='id identifier rubyid_pitch'>pitch</span>
   <span class='ivar'>@duration</span> <span class='op'>=</span> <span class='id identifier rubyid_duration'>duration</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -277,7 +308,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute duration</p>
+<p>note that the pitch is used to support layout ...</p>
 
 
   </div>
@@ -291,15 +322,58 @@
       <pre class="lines">
 
 
-129
-130
-131</pre>
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'harpnotes.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'harpnotes.rb', line 183</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_duration'>duration</span>
   <span class='ivar'>@duration</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="pitch-instance_method">
+  
+    - (<tt>Object</tt>) <strong>pitch</strong>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>note that the pitch is used to support layout ...</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+183
+184
+185</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'harpnotes.rb', line 183</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_pitch'>pitch</span>
+  <span class='ivar'>@pitch</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -312,7 +386,7 @@
 </div>
 
     <div id="footer">
-  Generated on Fri May 30 15:25:03 2014 by
+  Generated on Thu Jun 12 22:24:55 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.5.2 (ruby-1.9.3).
 </div>
