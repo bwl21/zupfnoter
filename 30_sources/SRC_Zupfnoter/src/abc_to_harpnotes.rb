@@ -141,24 +141,25 @@ module Harpnotes
 
         #get the meter
         meter = {
-        :den => Native(first_staff[:meter][:value].first)[:den],
-        :num => Native(first_staff[:meter][:value].first)[:num],
-        :type => first_staff[:meter][:type]
+          :type => first_staff[:meter][:type]
         }
         if meter[:type] == "specified"
+          meter[:den] = Native(first_staff[:meter][:value].first)[:den],
+          meter[:num] = Native(first_staff[:meter][:value].first)[:num],
           meter[:display] = "#{meter[:num]}/#{meter[:den]}"
         elsif
           meter[:display] = meter[:type]
         end
 
         # get voice layout
-        voices_in_staff = [[1,2], [3,4]] # get this from %%score instruction
+        voices_in_staff = [[1,2], [3,4], [3], [4]] # get this from %%score instruction
 
         # extract the voices
         voices = []
         lines.each do |line|
           Native(line)[:staff].each_with_index do |staff, staff_index|
             Native(staff)[:voices].each_with_index do |voice, voice_index|
+              $log.info("reading staff.voice: #{staff_index}.#{voice_index}")
               idx = voices_in_staff[staff_index][voice_index]
               voices[idx] ||= []
               voices[idx] << voice.map {|x| Native(x) }
