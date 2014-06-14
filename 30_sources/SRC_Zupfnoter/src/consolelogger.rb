@@ -28,6 +28,8 @@ class ConsoleLogger
     @console << "<li class='#{type}'><i class=\"#{icons[type]}\"><span class='time'>#{time}</span><span class='msg'>#{msg}</span></li>"
     #Native(@console.parent).scrollTop(9999999) -- whyever this does not work :-)
     `self.console.parent().scrollTop(999999)`
+
+    puts msg
   end
 
 end
