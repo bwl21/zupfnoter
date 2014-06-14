@@ -49,12 +49,12 @@ class Controller
     begin
       @harpnote_preview_printer.draw(layout_harpnotes)
     rescue Exception =>e
-      $log.error(e.message)
+      $log.error([e.message, e.backtrace])
     end
     begin
       @tune_preview_printer.draw(get_abc_code)
     rescue Exception =>e
-      $log.error(e.message)
+      $log.error([e.message, e.backtrace])
     end
 
     nil

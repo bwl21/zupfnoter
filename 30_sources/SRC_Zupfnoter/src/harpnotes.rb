@@ -764,7 +764,11 @@ module Harpnotes
                has_no_notes_on_beat = notes_on_beat.empty?
 
                unless has_no_notes_on_beat
-                 size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first
+                 begin
+                   size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first
+                 rescue Exception => e
+                   $log.error("unsupported duration: #{max_duration} on beat #{beat},  #{notes_on_beat.to_json}")
+                 end
                  increment = (size + last_size)
                  last_size = size
 
