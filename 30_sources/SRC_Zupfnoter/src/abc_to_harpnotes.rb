@@ -86,6 +86,7 @@ module Harpnotes
 
 
     # The transformer
+    # todo:@next_not_marks ...
     class ABCToHarpnotes
 
       def initialize
@@ -96,6 +97,7 @@ module Harpnotes
       def reset_state
         @next_note_marks_measure = false
         @next_note_marks_repeat_start = false
+        @previous_new_part = []
         @previous_note = nil
         @repetition_stack = []
         @pitch_transformer.reset_measure_accidentals
@@ -173,7 +175,7 @@ module Harpnotes
         voices_transformed = voices.each_with_index.map do |voice, voice_idx|
           reset_state
 
-          # ttransform the voice content
+          # transform the voice content
           res = voice.map do |el|
             type = el[:el_type]
             res = self.send("transform_#{type}", el)
@@ -225,6 +227,8 @@ module Harpnotes
         result
       end
 
+
+      #todol factor out handling of measures and newparts
       def transform_rest(note, duration)
         if @previous_note
           pitch = @previous_note.pitch
@@ -241,8 +245,6 @@ module Harpnotes
           result << Harpnotes::Music::MeasureStart.new(res)
           @next_note_marks_measure = false
         end
-
-
         result
       end
 
@@ -272,6 +274,13 @@ module Harpnotes
           @repetition_stack << notes.last
           @next_note_marks_repeat_start = false
         end
+
+        @previous_new_part.each{|part|
+          part.companion = notes.last
+          notes.last.first_in_part=true
+        }
+        @previous_new_part.clear
+
         res
       end
 
@@ -300,6 +309,12 @@ module Harpnotes
         end
 
         [ Harpnotes::Music::Dacapo.new(start, @previous_note, @repetition_stack.length) ]
+      end
+
+      def transform_part(part)
+        new_part = Harpnotes::Music::NewPart.new(part[:title])
+        @previous_new_part << new_part
+        [ new_part ]
       end
 
       def method_missing(name, *args)

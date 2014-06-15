@@ -93,15 +93,50 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin
+      attr_accessor :origin, :beat
     end
+
+    # Non playable entities are not audible but still
+    # be part of the harpnote sheet
+    # pitch and beat are delegated to its companion
+    class NonPlayable < MusicEntity
+      attr_accessor :companion
+
+      #
+      # Constructor
+      # @param companion [Note] The related playable to which
+      # the non playable shall be bound, e.g. the first note in a measure
+      #
+      def companion=(companion)
+        raise "Companion must be playable" unless companion.is_a? Harpnotes::Music::Playable
+        @companion = companion
+      end
+
+      def pitch
+        @companion.pitch
+      end
+
+      def beat
+        @companion.beat
+      end
+
+      def duration
+        @companion.duration
+      end
+
+    end
+
 
     # Marks playable Music entities
     #
     # duration is represented reciproke value of duration: 1: whole; 2: half, 4:quarter
     # playable shall provide duration
     class Playable < MusicEntity
-      attr_accessor :beat
+      attr_accessor :first_in_part
+
+      def first_in_part?
+        first_in_part
+      end
     end
 
     # A single note
@@ -204,32 +239,21 @@ module Harpnotes
     # do not change the vertical position in the
     # sheet.
     #
-    # But they implicitly revoke accidents
+    # But they implicitly revoke accidents!
     #
-    class MeasureStart < MusicEntity
-      attr_reader :companion
-
-      #
-      # Constructor
-      # @param companion [Note] The first playable in the new measure
-      #
-      # @return [type] [description]
+    class MeasureStart < NonPlayable
       def initialize(companion)
-        raise "Companion must be playable" unless companion.is_a? Harpnotes::Music::Playable
-
-        @companion = companion
+        self.companion = companion
       end
+    end
 
-      def pitch
-        @companion.pitch
-      end
-
-      def beat
-        @companion.beat 
-      end
-
-      def duration
-        @companion.duration
+    #
+    # this represents the beginning of a new part
+    #
+    class NewPart < NonPlayable
+      attr_reader :name
+      def initialize(title)
+        @name = title
       end
     end
 
@@ -263,6 +287,7 @@ module Harpnotes
         @level = level
       end
     end
+
 
 
     # this represents a BeatMap which is basically a keyed access to playables
@@ -345,11 +370,11 @@ module Harpnotes
       # A beat map of a voice is a hash (current_beat => playable).
       # this method also updates the beat in the considered playable
       #
-      # @return [Array of Hash] Array of beat maps corresponding ot array of voices
+      # @return nil
       def update_beats
         @beat_maps = @voices.map do |voice|
           current_beat = 0
-          voice.select {|e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
+          voice_map = voice.select {|e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
             beats = playable.duration
             map[current_beat] = playable
             playable.beat = current_beat
@@ -358,8 +383,10 @@ module Harpnotes
             map.index = voice.index
             map
           end
+          voice_map
         end
-        @beat_maps
+
+        nil
       end
 
     end
@@ -504,12 +531,12 @@ module Harpnotes
     #
     #
     class Annotation < Drawable
-      attr_reader :center, :text, :style
+      attr_reader :center, :text, :style, :origin
 
       # @param position Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :bold, :framed
-      def initialize(center, text, style = :regular)
+      def initialize(center, text, style = :regular, origin = nil)
         @center = center
         @text = text
         @style = style
@@ -719,6 +746,10 @@ module Harpnotes
           layout_playables(measure, beat_layout)
         end
 
+        res_newparts = voice.select{|c| c.is_a? NewPart}.map do |newpart|
+          layout_newpart(newpart, beat_layout)
+        end
+
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
         note_to_ellipse = Hash[res_playables.map {|e| [e.origin, e] }]
         res_playables.select {|e| e.is_a? FlowLine }.each {|f| note_to_ellipse[f.origin] = f.to }
@@ -728,6 +759,7 @@ module Harpnotes
         res_flow = voice.select {|c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
           res = nil
           res = FlowLine.new(note_to_ellipse[previous_note], note_to_ellipse[playable]) unless previous_note.nil?
+          res = nil if playable.first_in_part?
 
           previous_note = playable
           res
@@ -741,7 +773,7 @@ module Harpnotes
         end
 
         # return all drawing primitives
-        res_flow + res_playables + res_dacapo + res_measures
+        res_flow + res_playables + res_dacapo + res_measures + res_newparts
       end
 
 
@@ -762,6 +794,7 @@ module Harpnotes
                notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact
                max_duration = notes_on_beat.map{|n| n.duration}.max
                has_no_notes_on_beat = notes_on_beat.empty?
+               is_new_part = notes_on_beat.select{|n| n.first_in_part? }
 
                unless has_no_notes_on_beat
                  begin
@@ -772,7 +805,8 @@ module Harpnotes
                  increment = (size + last_size)
                  last_size = size
 
-                 current_beat += increment unless has_no_notes_on_beat
+                 increment = [64,increment].max unless is_new_part.empty?
+                 current_beat += increment
                end
                [ beat, current_beat ]
         end]
@@ -794,6 +828,8 @@ module Harpnotes
           layout_accord(root, beat_layout)
         elsif root.is_a? Pause
           layout_pause(root, beat_layout)
+        elsif root.is_a? NewPart
+          layout_newpart(root, beat_layout)
         else
           `console.log("Missing Music -> Sheet transform: " + root)`
         end
@@ -855,6 +891,22 @@ module Harpnotes
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
         res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, false, root)
+      end
+
+
+      def layout_newpart(root, beat_layout)
+        #               shift to left   pitch          space     stay away from border
+        if root.beat
+          # todo decide if part starts on a new line, then x_offset should be 0
+          x_offset     = (PITCH_OFFSET + root.pitch + 0.5) * X_SPACING + X_OFFSET  # todo:remove literal here
+          y_offset     = beat_layout.call(root.beat)
+          res = Annotation.new([ x_offset, y_offset ], root.name, nil, root)
+        else
+          $log.warn("Part without content")
+          res = nil
+        end
+
+        res
       end
 
       #

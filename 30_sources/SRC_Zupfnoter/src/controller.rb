@@ -10,6 +10,8 @@ require 'consolelogger'
 
 class Controller
 
+  attr :editor, :harpnote_preview_printer, :tune_preview_printer
+
   def initialize
     $log = ConsoleLogger.new("consoleEntries")
 
@@ -88,7 +90,8 @@ class Controller
   def setup_editor
     %x{
       var editor = ace.edit("abcEditor");
-      editor.setTheme("ace/theme/tomorrow_night");
+      // editor.setTheme("ace/theme/tomorrow_night");
+
     }
     @editor = `editor`
   end
