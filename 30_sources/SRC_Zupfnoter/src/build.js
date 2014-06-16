@@ -15928,7 +15928,7 @@ if (s == null) s = nil;
 (function($opal) {
   var $a, $b, TMP_11, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$attr', '$new', '$setup_editor', '$setup_ui', '$setup_ui_listener', '$draw', '$layout_harpnotes', '$draw_in_segments', '$html', '$find', '$get_abc_code', '$info', '$error', '$message', '$backtrace', '$file', '$output', '$render_pdf', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$alert', '$private', '$on_select', '$select_note', '$on', '$play_abc', '$render_previews', '$render_a3', '$render_a4', '$Native', '$getSession', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
+  $opal.add_stubs(['$attr', '$new', '$setup_editor', '$setup_ui', '$setup_ui_listener', '$draw', '$layout_harpnotes', '$draw_in_segments', '$html', '$find', '$get_abc_code', '$info', '$error', '$message', '$backtrace', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$alert', '$private', '$on_select', '$select_note', '$on', '$play_abc', '$render_previews', '$Native', '$getSession', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
   ;
   ;
   ;
@@ -16013,7 +16013,8 @@ if (s == null) s = nil;
 
       zip = (($a = ((($b = $scope.JSZip) == null ? $opal.cm('JSZip') : $b))._scope).ZipFile == null ? $a.cm('ZipFile') : $a.ZipFile).$new();
       zip.$file("song.abc", self.$get_abc_code());
-      zip.$file("harpnotes.pdf", self.$render_pdf().$output("raw"));
+      zip.$file("harpnotes_a4.pdf", self.$render_a4().$output("raw"));
+      zip.$file("harpnotes_a3.pdf", self.$render_a3().$output("raw"));
       blob = zip.$to_blob();
       filename = "song" + ((($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now().$strftime("%d%m%Y%H%M%S")) + ".zip";
       return window.saveAs(blob, filename);

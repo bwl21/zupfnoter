@@ -65,7 +65,8 @@ class Controller
   def save_file
     zip = JSZip::ZipFile.new
     zip.file("song.abc", get_abc_code)
-    zip.file("harpnotes.pdf", render_pdf.output(:raw))
+    zip.file("harpnotes_a4.pdf", render_a4.output(:raw))
+    zip.file("harpnotes_a3.pdf", render_a3.output(:raw))
     blob = zip.to_blob
     filename = "song#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
     `window.saveAs(blob, filename)`
