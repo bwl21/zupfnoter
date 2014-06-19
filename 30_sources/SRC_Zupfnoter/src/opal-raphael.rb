@@ -13,7 +13,7 @@ module Raphael
   # This represents a Raphael element
   #
   class Element
-
+    attr_accessor :unhighlight_color
     #
     # Constructor
     #

@@ -16,10 +16,14 @@ module Harpnotes
       @paper = Raphael::Paper.new(element_id)
       @paper.enable_pan_zoom
       @on_select = nil
+      @elements = {}   # record all elements being on the sheet, using upstream object as key
     end
 
     def draw(sheet)
       @paper.clear
+      @elements = {}   # record all elements being on the sheet, using upstream object as key
+      @highlighted = []
+
 
       sheet.children.each do |child|
         if child.is_a? Ellipse
@@ -41,15 +45,54 @@ module Harpnotes
       @on_select = block
     end
 
+    # hightlights the drawn elements driven by the selection range in the abc text
+    def range_highlight(from, to)
+      @highlighted.each{|e| unhighlight(e)}
+      @highlighted = []
+
+      @elements.each_key { |k|
+        el_start = Native(k.origin)[:startChar]
+        el_end = Native(k.origin)[:endChar]
+
+        if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
+          @elements[k].each do |e|
+            highlight(e)
+            @highlighted << e
+          end
+        end
+      }
+    end
+
     private
+
+    def highlight(element)
+      element.unhighlight_color = element[:fill]
+      element[:fill]="#ff0000"
+      nil
+    end
+
+    def unhighlight(element)
+      element[:fill]=element.unhighlight_color
+      nil
+    end
+
+
+    def push_element(root, element)
+      @elements[root] ||= []
+      @elements[root] << element
+    end
 
     def draw_ellipse(root)
       e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last)
+      push_element(root.origin, e)
+
       e["fill"] = root.fill == :filled ? "black" : "white"
       if root.dotted?
         x = root.center.first + (root.size.first * 1.2)
         y = root.center.last + (root.size.last * 1.2)
-        @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)["fill"] = "black"
+        e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
+        e_dot["fill"] = "black"
+        push_element(root.origin, e_dot)
       end
 
       e.on_click do
@@ -63,11 +106,14 @@ module Harpnotes
 
       size = root.size.map{|s| 2*s}
       e = @paper.rect(center.first, center.last, size.first, size.last)
+      push_element(root.origin, e)
       e["fill"] = root.fill == :filled ? "black" : "white"
       if root.dotted?
         x = root.center.first + (root.size.first * 1.2)
         y = root.center.last + (root.size.last * 1.2)
-        @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)["fill"] = "black"
+        e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
+        e_dot["fill"] = "black"
+        push_element(root.origin, e_dot)
       end
 
       e.on_click do

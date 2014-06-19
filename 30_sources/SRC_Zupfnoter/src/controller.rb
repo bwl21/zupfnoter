@@ -14,7 +14,7 @@ class Controller
 
   def initialize
     $log = ConsoleLogger.new("consoleEntries")
-
+    @auto_selection = true
     setup_editor
     setup_ui
     setup_ui_listener
@@ -81,9 +81,36 @@ class Controller
     Harpnotes::Layout::Default.new.layout(song)
   end
 
-  def select_note(note, origin)
-    `console.log(note)`
-    alert "Selection from #{origin}"
+  #@param selection_start [Numeric] Start position
+  def select_range_by_position(selection_start, selection_end)
+    %x{
+      doc = self.editor.selection.doc
+      startrange = doc.indexToPosition(selection_start);
+      endrange = doc.indexToPosition(selection_end);
+      range = new Range(startrange.row, startrange.column, endrange.row, endrange.column);
+      myrange = {start:startrange, end:endrange}
+      self.editor.selection.setSelectionRange(myrange, false);
+     }
+  end
+
+  def get_selection_positions
+    %x{
+      doc = self.editor.selection.doc;
+      range = self.editor.selection.getRange();
+      range_start = doc.positionToIndex(range.start, 0);
+      range_end = doc.positionToIndex(range.end, 0);
+     }
+    [`range_start`, `range_end`]
+  end
+
+  # select a particular abc elemnt in all views
+  def select_abc_object(abcelement)
+    a=Native(abcelement)
+    if true #@auto_selection
+      select_range_by_position(a[:startChar], a[:endChar])
+      @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
+      @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
+    end
   end
 
   private
@@ -100,13 +127,18 @@ class Controller
   def setup_ui
     # setup the harpnote prviewer
     @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview")
-    @harpnote_preview_printer.on_select do |origin|
-      select_note(origin, :harpnotes)
+    @harpnote_preview_printer.on_select do |harpnote|
+      select_abc_object(harpnote.origin)
     end
 
 
+    # setup tune preview
     printerparams = {}
     @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview")
+    @tune_preview_printer.on_select do |abcelement|
+      a=Native(abcelement)
+      select_abc_object(abcelement)
+    end
   end
 
   def setup_ui_listener
@@ -116,6 +148,8 @@ class Controller
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
 
+
+    # changes in the editor
     Native(Native(@editor).getSession).on(:change){|e|
       if @refresh_timer
         `clearTimeout(self.refresh_timer)`
@@ -132,8 +166,19 @@ class Controller
         nil
     }
 
+    # Seletion change in the editor
+    Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
+      a = get_selection_positions()
+      $log.debug("selection changed #{a}")
+      @auto_selection=false
+      @tune_preview_printer.range_highlight(a.first, a.last);
+      @harpnote_preview_printer.range_highlight(a.first, a.last);
+      @auto_selection=true
+    end
 
 
+
+    # key events in editor
     Element.find(`window`).on(:keydown) do |evt|
       if `evt.keyCode == 13 && evt.shiftKey`
         evt.prevent_default
@@ -146,6 +191,7 @@ class Controller
       end
     end
 
+    # dragbars
     Element.find("#dragbar").on(:mousedown) do |re|
       re.prevent
       Element.find(`document`).on(:mousemove) do |e|
