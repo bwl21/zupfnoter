@@ -143,6 +143,8 @@ module Harpnotes
       @pdf.line(endpoint, [depth, endpoint[1]])
       @pdf.line([depth, endpoint[1]], [depth, startpoint[1]])
       @pdf.line([depth, startpoint[1]], startpoint)
+
+      @pdf.left_arrowhead(startpoint[0], startpoint[1])
     end
   end
 

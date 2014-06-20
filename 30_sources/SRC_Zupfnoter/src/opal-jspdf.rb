@@ -73,7 +73,7 @@ class JsPDF
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
   def rect_like_ellipse(center, size, style = 'undefined')
-    ncenter =apply_offset_to_point(center)
+    ncenter = apply_offset_to_point(center)
     `self.native.rect(ncenter[0], ncenter[1], size[0], size[1], style)`
   end
 
@@ -89,6 +89,16 @@ class JsPDF
     options = `undefined` if options.nil?
 
     `self.native.output(type, options)`
+  end
+
+  def left_arrowhead(x, y)
+    delta = 1.0
+    x0       = apply_offset_to_x(x)
+    x1       = apply_offset_to_x(x + delta)
+    y_top    = y + delta/2.0
+    y_bottom = y - delta/2.0
+
+    `self.native.triangle(x0, y, x1, y_top, x1, y_bottom, x0, y, 'FD')`
   end
 
   def addPage()

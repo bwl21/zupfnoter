@@ -15238,7 +15238,7 @@ if (part == null) part = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass;
 
-  $opal.add_stubs(['$attr_accessor', '$apply_offset_to_point', '$nil?', '$apply_offset_to_x', '$==', '$private', '$+', '$first', '$last']);
+  $opal.add_stubs(['$attr_accessor', '$apply_offset_to_point', '$nil?', '$apply_offset_to_x', '$==', '$+', '$/', '$-', '$private', '$first', '$last']);
   ;
   
 jsPDF.API.setLineDash = function(dashArray, dashPhase) {
@@ -15385,6 +15385,17 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
       if ((($a = options['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
         options = undefined};
       return self.native.output(type, options);
+    };
+
+    def.$left_arrowhead = function(x, y) {
+      var self = this, delta = nil, x0 = nil, x1 = nil, y_top = nil, y_bottom = nil;
+
+      delta = 1.0;
+      x0 = self.$apply_offset_to_x(x);
+      x1 = self.$apply_offset_to_x(x['$+'](delta));
+      y_top = y['$+'](delta['$/'](2.0));
+      y_bottom = y['$-'](delta['$/'](2.0));
+      return self.native.triangle(x0, y, x1, y_top, x1, y_bottom, x0, y, 'FD');
     };
 
     def.$addPage = function() {
@@ -15786,7 +15797,7 @@ if (s == null) s = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range, $hash2 = $opal.hash2, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_annotation', '$puts', '$class', '$children', '$private', '$text_color=', '$font_size=', '$text', '$first', '$center', '$last', '$[]', '$info', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$level', '$draw=']);
+  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_annotation', '$puts', '$class', '$children', '$private', '$text_color=', '$font_size=', '$text', '$first', '$center', '$last', '$[]', '$info', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$level', '$draw=', '$left_arrowhead']);
   ;
   ;
   return (function($base) {
@@ -15989,7 +16000,8 @@ if (s == null) s = nil;
         return 0}, TMP_12._s = self, TMP_12), $a).call($b));
         self.pdf.$line(endpoint, [depth, endpoint['$[]'](1)]);
         self.pdf.$line([depth, endpoint['$[]'](1)], [depth, startpoint['$[]'](1)]);
-        return self.pdf.$line([depth, startpoint['$[]'](1)], startpoint);
+        self.pdf.$line([depth, startpoint['$[]'](1)], startpoint);
+        return self.pdf.$left_arrowhead(startpoint['$[]'](0), startpoint['$[]'](1));
       }, nil) && 'draw_jumpline';
     })(self, null)
     
