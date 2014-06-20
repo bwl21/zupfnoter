@@ -1,11 +1,4 @@
-require 'opal-jquery'
-require 'opal-jszip'
-require 'opal-jspdf'
-require 'harpnotes'
-require 'abc_to_harpnotes'
-require 'raphael_engine'
-require 'pdf_engine'
-require 'consolelogger'
+
 
 
 class Controller
@@ -14,7 +7,6 @@ class Controller
 
   def initialize
     $log = ConsoleLogger.new("consoleEntries")
-    @auto_selection = true
     setup_editor
     setup_ui
     setup_ui_listener
@@ -83,6 +75,9 @@ class Controller
 
   #@param selection_start [Numeric] Start position
   def select_range_by_position(selection_start, selection_end)
+    $log.debug("set editor selection to #{selection_start}, #{selection_end}")
+    disable_editor_seletion_change_event
+
     %x{
       doc = self.editor.selection.doc
       startrange = doc.indexToPosition(selection_start);
@@ -91,6 +86,8 @@ class Controller
       myrange = {start:startrange, end:endrange}
       self.editor.selection.setSelectionRange(myrange, false);
      }
+
+    enable_editor_selection_change_event
   end
 
   def get_selection_positions
@@ -106,11 +103,10 @@ class Controller
   # select a particular abc elemnt in all views
   def select_abc_object(abcelement)
     a=Native(abcelement)
-    if true #@auto_selection
-      select_range_by_position(a[:startChar], a[:endChar])
-      @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
-      @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
-    end
+    $log.debug("select_abc_element")
+    select_range_by_position(a[:startChar], a[:endChar])
+    @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
+    @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
   end
 
   private
@@ -119,7 +115,6 @@ class Controller
     %x{
       var editor = ace.edit("abcEditor");
       // editor.setTheme("ace/theme/tomorrow_night");
-
     }
     @editor = `editor`
   end
@@ -139,6 +134,28 @@ class Controller
       a=Native(abcelement)
       select_abc_object(abcelement)
     end
+  end
+
+
+  def enable_editor_selection_change_event
+    # Seletion change in the editor
+    $log.debug("seclectionChange enabled")
+
+    Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
+      a = get_selection_positions()
+      $log.debug("editor selection changed #{a}")
+
+      unless a.first == a.last
+        @tune_preview_printer.range_highlight(a.first, a.last);
+        @harpnote_preview_printer.range_highlight(a.first, a.last);
+      end
+      nil
+    end
+  end
+
+  def disable_editor_seletion_change_event
+    $log.debug("seclectionChange disabled")
+    `self.editor.getSession().removeAllListeners('changeSelection')`
   end
 
   def setup_ui_listener
@@ -166,16 +183,8 @@ class Controller
         nil
     }
 
-    # Seletion change in the editor
-    Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
-      a = get_selection_positions()
-      $log.debug("selection changed #{a}")
-      @auto_selection=false
-      @tune_preview_printer.range_highlight(a.first, a.last);
-      @harpnote_preview_printer.range_highlight(a.first, a.last);
-      @auto_selection=true
-    end
 
+    enable_editor_selection_change_event
 
 
     # key events in editor
