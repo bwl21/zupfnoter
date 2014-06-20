@@ -630,9 +630,6 @@ module Harpnotes
       # distance between two strings of the harp
       X_SPACING    = 115.0 / 10.0
 
-      # Spacing between beats
-      BEAT_SPACING = 4 * 1.0/64.0 * 1
-
       # Y coordinate of the very first beat
       Y_OFFSET  = 5
       X_OFFSET  = ELLIPSE_SIZE.first
@@ -659,6 +656,10 @@ module Harpnotes
         :d1  => [ 0.05,  :filled,      FALSE],    # 1/64
       }
 
+      def initialize
+        # Spacing between beats
+        @beat_spacing = 4 * 1.0/64.0 * 1
+      end
 
       #
       # get the vertical layout policy
@@ -669,7 +670,7 @@ module Harpnotes
       # @return [Lambda] Proecdure, to compute the vertical distance of a particular beat
       def compute_beat_layout(music)
         Proc.new do |beat|
-          (beat -1 ) * BEAT_SPACING + Y_OFFSET
+          (beat -1 ) * @beat_spacing + Y_OFFSET
         end
       end
 
@@ -688,6 +689,15 @@ module Harpnotes
         beat_layout = beat_layout || compute_beat_layout(music)
 
         beat_compression_map = compute_beat_compression(music)
+        maximal_beat = beat_compression_map.values.max
+        full_beat_spacing = 285 / maximal_beat
+
+        if full_beat_spacing < @beat_spacing
+          factor = (@beat_spacing / full_beat_spacing).round(2)
+          $log.warning("note distance too small (factor #{factor})")
+        end
+        @beat_spacing = full_beat_spacing
+
         compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
 
         # sheet_elements derived from the voices

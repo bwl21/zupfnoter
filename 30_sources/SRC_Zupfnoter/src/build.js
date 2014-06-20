@@ -13956,7 +13956,7 @@ if (a == null) a = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$include', '$/', '$*', '$-', '$compute_beat_layout', '$compute_beat_compression', '$call', '$layout_voice', '$even?', '$each_with_index', '$voices', '$origin', '$count', '$build_synch_points', '$layout_note', '$join', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$from', '$level', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$name', '$warn', '$to_sym']);
+  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$include', '$/', '$*', '$-', '$compute_beat_layout', '$compute_beat_compression', '$values', '$<', '$round', '$warning', '$call', '$layout_voice', '$even?', '$each_with_index', '$voices', '$origin', '$count', '$build_synch_points', '$layout_note', '$join', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$from', '$level', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$name', '$warn', '$to_sym']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -14513,11 +14513,10 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         var def = self._proto, $scope = self._scope, $a;
 
+        def.beat_spacing = nil;
         $opal.cdecl($scope, 'ELLIPSE_SIZE', [2.8, 1.7]);
 
         $opal.cdecl($scope, 'X_SPACING', (115.0)['$/'](10.0));
-
-        $opal.cdecl($scope, 'BEAT_SPACING', (4)['$*'](1.0)['$/'](64.0)['$*'](1));
 
         $opal.cdecl($scope, 'Y_OFFSET', 5);
 
@@ -14527,22 +14526,36 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [0.9, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [0.7, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.7, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.1, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [0.05, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
 
+        def.$initialize = function() {
+          var self = this;
+
+          return self.beat_spacing = (4)['$*'](1.0)['$/'](64.0)['$*'](1);
+        };
+
         def.$compute_beat_layout = function(music) {
           var $a, $b, TMP_11, $c, self = this;
 
           return ($a = ($b = (($c = $scope.Proc) == null ? $opal.cm('Proc') : $c)).$new, $a._p = (TMP_11 = function(beat){var self = TMP_11._s || this, $a;
+            if (self.beat_spacing == null) self.beat_spacing = nil;
 if (beat == null) beat = nil;
-          return (beat['$-'](1))['$*']((($a = $scope.BEAT_SPACING) == null ? $opal.cm('BEAT_SPACING') : $a))['$+']((($a = $scope.Y_OFFSET) == null ? $opal.cm('Y_OFFSET') : $a))}, TMP_11._s = self, TMP_11), $a).call($b);
+          return (beat['$-'](1))['$*'](self.beat_spacing)['$+']((($a = $scope.Y_OFFSET) == null ? $opal.cm('Y_OFFSET') : $a))}, TMP_11._s = self, TMP_11), $a).call($b);
         };
 
         def.$layout = function(music, beat_layout) {
-          var $a, $b, TMP_12, $c, TMP_13, $d, TMP_14, $e, $f, TMP_15, TMP_16, $g, $h, TMP_18, TMP_19, $i, $j, self = this, beat_compression_map = nil, compressed_beat_layout = nil, sheet_elements = nil, note_to_ellipse = nil, required_synchline_table = nil, required_synchlines = nil, synch_lines = nil, sheet_marks = nil, rightmark = nil, leftmark = nil, annotations = nil, legend = nil;
+          var $a, $b, TMP_12, $c, TMP_13, $d, TMP_14, $e, $f, TMP_15, TMP_16, $g, $h, TMP_18, TMP_19, $i, $j, self = this, beat_compression_map = nil, maximal_beat = nil, full_beat_spacing = nil, factor = nil, compressed_beat_layout = nil, sheet_elements = nil, note_to_ellipse = nil, required_synchline_table = nil, required_synchlines = nil, synch_lines = nil, sheet_marks = nil, rightmark = nil, leftmark = nil, annotations = nil, legend = nil;
+          if ($gvars.log == null) $gvars.log = nil;
 
           if (beat_layout == null) {
             beat_layout = nil
           }
           beat_layout = ((($a = beat_layout) !== false && $a !== nil) ? $a : self.$compute_beat_layout(music));
           beat_compression_map = self.$compute_beat_compression(music);
+          maximal_beat = beat_compression_map.$values().$max();
+          full_beat_spacing = (285)['$/'](maximal_beat);
+          if (full_beat_spacing['$<'](self.beat_spacing)) {
+            factor = (self.beat_spacing['$/'](full_beat_spacing)).$round(2);
+            $gvars.log.$warning("note distance too small (factor " + (factor) + ")");};
+          self.beat_spacing = full_beat_spacing;
           compressed_beat_layout = ($a = ($b = (($c = $scope.Proc) == null ? $opal.cm('Proc') : $c)).$new, $a._p = (TMP_12 = function(beat){var self = TMP_12._s || this;
 if (beat == null) beat = nil;
           return beat_layout.$call(beat_compression_map['$[]'](beat))}, TMP_12._s = self, TMP_12), $a).call($b);
