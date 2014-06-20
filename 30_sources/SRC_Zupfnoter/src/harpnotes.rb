@@ -112,14 +112,29 @@ module Harpnotes
         @companion = companion
       end
 
+
+      #
+      # Return the associated pitch
+      #
+      # @return [Numeric] The pitch of the companion
       def pitch
         @companion.pitch
       end
 
+
+      #
+      # Return the associated beat
+      #
+      # @return [Numeric] Beat of the companion
       def beat
         @companion.beat
       end
 
+
+      #
+      # Return associated Duration
+      #
+      # @return [Numeric] Duration of the companion
       def duration
         @companion.duration
       end
@@ -533,9 +548,10 @@ module Harpnotes
     class Annotation < Drawable
       attr_reader :center, :text, :style, :origin
 
-      # @param position Array the position of the text as [x, y]
+      # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :bold, :framed
+      # 
       def initialize(center, text, style = :regular, origin = nil)
         @center = center
         @text = text
@@ -741,7 +757,7 @@ module Harpnotes
         end.flatten
 
         # layout the measures
-        
+
         res_measures = voice.select{|c| c.is_a? MeasureStart}.map do |measure|
           layout_playables(measure, beat_layout)
         end

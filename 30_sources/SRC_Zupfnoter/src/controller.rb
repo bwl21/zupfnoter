@@ -1,13 +1,10 @@
-
-
-
 class Controller
 
   attr :editor, :harpnote_preview_printer, :tune_preview_printer
 
   def initialize
     $log = ConsoleLogger.new("consoleEntries")
-    setup_editor
+    @editor = Harpnotes::TextPane.new("abcEditor")
     setup_ui
     setup_ui_listener
   end
@@ -28,26 +25,26 @@ class Controller
     else
       Element.find('#tbPlay').html('stop')
       @inst = `new Instrument('piano')`
-      `self.inst.play({tempo:200}, #{get_abc_code}, function(){self.$play_abc()} )`  # todo get parameter from ABC
+      `self.inst.play({tempo:200}, #{@editor.get_text}, function(){self.$play_abc()} )` # todo get parameter from ABC
     end
   end
 
 
   def play_abc_part(string)
-      @inst = `new Instrument('piano')`
-      `self.inst.play({tempo:200}, #{string});`  # todo get parameter from ABC
+    @inst = `new Instrument('piano')`
+    `self.inst.play({tempo:200}, #{string});` # todo get parameter from ABC
   end
 
   def render_previews
     $log.info("rendering")
     begin
       @harpnote_preview_printer.draw(layout_harpnotes)
-    rescue Exception =>e
+    rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
     begin
-      @tune_preview_printer.draw(get_abc_code)
-    rescue Exception =>e
+      @tune_preview_printer.draw(@editor.get_text)
+    rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
 
@@ -64,60 +61,22 @@ class Controller
     `window.saveAs(blob, filename)`
   end
 
-  def get_abc_code
-    `self.editor.getSession().getValue()`
-  end
-
   def layout_harpnotes
-    song = Harpnotes::Input::ABCToHarpnotes.new.transform(get_abc_code)
+    song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
     Harpnotes::Layout::Default.new.layout(song)
-  end
-
-  #@param selection_start [Numeric] Start position
-  def select_range_by_position(selection_start, selection_end)
-    $log.debug("set editor selection to #{selection_start}, #{selection_end}")
-    disable_editor_seletion_change_event
-
-    %x{
-      doc = self.editor.selection.doc
-      startrange = doc.indexToPosition(selection_start);
-      endrange = doc.indexToPosition(selection_end);
-      range = new Range(startrange.row, startrange.column, endrange.row, endrange.column);
-      myrange = {start:startrange, end:endrange}
-      self.editor.selection.setSelectionRange(myrange, false);
-     }
-
-    enable_editor_selection_change_event
-  end
-
-  def get_selection_positions
-    %x{
-      doc = self.editor.selection.doc;
-      range = self.editor.selection.getRange();
-      range_start = doc.positionToIndex(range.start, 0);
-      range_end = doc.positionToIndex(range.end, 0);
-     }
-    [`range_start`, `range_end`]
   end
 
   # select a particular abc elemnt in all views
   def select_abc_object(abcelement)
     a=Native(abcelement)
     $log.debug("select_abc_element")
-    select_range_by_position(a[:startChar], a[:endChar])
+    @editor.select_range_by_position(a[:startChar], a[:endChar])
     @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
     @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
   end
 
   private
 
-  def setup_editor
-    %x{
-      var editor = ace.edit("abcEditor");
-      // editor.setTheme("ace/theme/tomorrow_night");
-    }
-    @editor = `editor`
-  end
 
   def setup_ui
     # setup the harpnote prviewer
@@ -137,27 +96,6 @@ class Controller
   end
 
 
-  def enable_editor_selection_change_event
-    # Seletion change in the editor
-    $log.debug("seclectionChange enabled")
-
-    Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
-      a = get_selection_positions()
-      $log.debug("editor selection changed #{a}")
-
-      unless a.first == a.last
-        @tune_preview_printer.range_highlight(a.first, a.last);
-        @harpnote_preview_printer.range_highlight(a.first, a.last);
-      end
-      nil
-    end
-  end
-
-  def disable_editor_seletion_change_event
-    $log.debug("seclectionChange disabled")
-    `self.editor.getSession().removeAllListeners('changeSelection')`
-  end
-
   def setup_ui_listener
 
     Element.find("#tbPlay").on(:click) { play_abc }
@@ -167,10 +105,10 @@ class Controller
 
 
     # changes in the editor
-    Native(Native(@editor).getSession).on(:change){|e|
+    @editor.on_change do |e|
       if @refresh_timer
         `clearTimeout(self.refresh_timer)`
-       # `alert("refresh cancelled")`
+        # `alert("refresh cancelled")`
       end
 
       if @playtimer_timer
@@ -180,11 +118,17 @@ class Controller
 
       @playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
       @refresh_timer = `setTimeout(function(){self.$render_previews()}, 1000)`
-        nil
-    }
+      nil
+    end
 
 
-    enable_editor_selection_change_event
+    @editor.on_selection_change do |e|
+      a = @editor.get_selection_positions
+      unless a.first == a.last
+        @tune_preview_printer.range_highlight(a.first, a.last);
+        @harpnote_preview_printer.range_highlight(a.first, a.last);
+      end
+    end
 
 
     # key events in editor

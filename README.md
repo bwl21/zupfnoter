@@ -9,14 +9,14 @@ notation
 
 101. drop down menu with proper links to informative sites
 102. midi - play the generated harpnotes
-103. write messages to the console pane
+103. write messages to the console pane *done*
 104. vertical resize of panes
-105. zoom pan scroll in Notes pane
+105. zoom pan scroll in Notes pane *done*
 
 ## User interface
 
 201. zoom full screen of pane
-202. cross-highlighting bewtween ABC - Notes - Harpnotes - Midi
+202. cross-highlighting bewtween ABC (*done*) - Notes *done* - Harpnotes *done* - Midi
 203. add a local description for ABC
 204. add ABC-Syntax-Support to the Editor
 205. minimize the panes
