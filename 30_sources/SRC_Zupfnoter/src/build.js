@@ -14781,7 +14781,7 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$compact', '$warning', '$select', '$split', '$empty?', '$raise', '$to_i', '$strip', '$last', '$first', '$set_key', '$each_with_index', '$info', '$<<', '$flatten!', '$compact!', '$flatten', '$send', '$nil?', '$origin=', '$now', '$to_n', '$keys', '$meta_data=', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$get_midipitch', '$length', '$companion=', '$first_in_part=', '$clear', '$gsub', '$pop']);
+  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$compact', '$warning', '$select', '$split', '$empty?', '$to_i', '$strip', '$last', '$first', '$set_key', '$each_with_index', '$info', '$<<', '$flatten!', '$compact!', '$flatten', '$send', '$nil?', '$origin=', '$now', '$to_n', '$keys', '$meta_data=', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$get_midipitch', '$length', '$companion=', '$first_in_part=', '$clear', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -14915,7 +14915,7 @@ if (w == null) w = nil;
 if (row == null) row = nil;
           return row['$[]']($range(0, 1, false))['$==']("L:")}, TMP_7._s = self, TMP_7), $a).call($c);
           if ((($a = note_length_rows['$empty?']()) !== nil && (!$a._isBoolean || $a == true))) {
-            self.$raise("ABC code does not contain a unit note length (L)")};
+            note_length_rows = ["L:1/4"]};
           note_length = ($a = ($d = note_length_rows.$first().$strip().$split(":").$last().$split("/")).$map, $a._p = (TMP_8 = function(s){var self = TMP_8._s || this;
 if (s == null) s = nil;
           return s.$strip().$to_i()}, TMP_8._s = self, TMP_8), $a).call($d);

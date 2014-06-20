@@ -127,7 +127,7 @@ module Harpnotes
         # todo:factor out to a generic method parse_abc_header()
         #
         note_length_rows = abc_code.split("\n").select {|row| row[0..1] == "L:" }
-        raise "ABC code does not contain a unit note length (L)" if note_length_rows.empty?
+        note_length_rows = ["L:1/4"] if note_length_rows.empty?
         note_length = note_length_rows.first.strip.split(":").last.split("/").map {|s| s.strip.to_i }
         note_length = note_length.last / note_length.first
 
