@@ -67,7 +67,7 @@ module Harpnotes
     #
     # @return [type] [description]
     def select_range_by_position(selection_start, selection_end)
-      $log.debug("set editor selection to #{selection_start}, #{selection_end}")
+      $log.debug("set editor selection to #{selection_start}, #{selection_end} (#{__FILE__} #{__LINE__}) ")
 
       %x{
         doc = self.editor.selection.doc

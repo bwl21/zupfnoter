@@ -73,7 +73,6 @@ module Harpnotes
       hpos = X_SPACING/2.0 + delta * i
       hdiff = X_SPACING/2.0
 
-      $log.info([[hpos, v.first],  [hpos, v.last]])
       @pdf.line([hpos, v.first],  [hpos, v.last])
       @pdf.line([hpos - hdiff, v[1]],  [hpos + hdiff, v[1]])
     end

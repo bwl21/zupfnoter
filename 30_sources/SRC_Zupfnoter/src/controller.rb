@@ -69,7 +69,7 @@ class Controller
   # select a particular abc elemnt in all views
   def select_abc_object(abcelement)
     a=Native(abcelement)
-    $log.debug("select_abc_element")
+    $log.debug("select_abc_element (#{__FILE__} #{__LINE__})")
     @editor.select_range_by_position(a[:startChar], a[:endChar])
     @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
     @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);

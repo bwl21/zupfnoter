@@ -161,7 +161,7 @@ module Harpnotes
         lines.each do |line|
           Native(line)[:staff].each_with_index do |staff, staff_index|
             Native(staff)[:voices].each_with_index do |voice, voice_index|
-              $log.info("reading staff.voice: #{staff_index}.#{voice_index}")
+              $log.debug("reading staff.voice: #{staff_index}.#{voice_index} (#{__FILE__} #{__LINE__})")
               idx = voices_in_staff[staff_index][voice_index]
               voices[idx] ||= []
               voices[idx] << voice.map {|x| Native(x) }
