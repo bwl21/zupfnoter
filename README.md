@@ -43,6 +43,7 @@ notation
 404. Debugging (writing the notenames in light grey )
 405. draw extra flow line in unsynched notes (*cancelled*) 406
 406. add marks to adjust the sheet in the harp *done*
+407. parts *done*
 
 ## technology
 
