@@ -39,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="harpnotes.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="harpnotes.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-16.333334" vertical-offset="9412" max-vertical-offset="14385">
-              <caret line="683" column="10" selection-start-line="683" selection-start-column="10" selection-end-line="683" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.49052632" vertical-offset="13687" max-vertical-offset="14400">
+              <caret line="928" column="59" selection-start-line="928" selection-start-column="59" selection-end-line="928" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -59,10 +59,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="raphael_engine.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="raphael_engine.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.30339321" vertical-offset="553" max-vertical-offset="2535">
+            <state vertical-scroll-proportion="-6.08" vertical-offset="553" max-vertical-offset="2535">
               <caret line="47" column="48" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
               <folding />
             </state>
@@ -82,8 +82,8 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.125" vertical-offset="456" max-vertical-offset="1530">
-              <caret line="53" column="55" selection-start-line="33" selection-start-column="0" selection-end-line="53" selection-end-column="55" />
+            <state vertical-scroll-proportion="-1.25" vertical-offset="0" max-vertical-offset="1530">
+              <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -102,8 +102,8 @@
       <file leaf-file-name="build.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/build.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="245475">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="245475">
+              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -122,8 +122,8 @@
       <file leaf-file-name="abc_to_harpnotes.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.2028985" vertical-offset="1963" max-vertical-offset="5025">
-              <caret line="141" column="19" selection-start-line="141" selection-start-column="16" selection-end-line="141" selection-end-column="19" />
+            <state vertical-scroll-proportion="-4.347826" vertical-offset="3870" max-vertical-offset="5025">
+              <caret line="278" column="14" selection-start-line="278" selection-start-column="14" selection-end-line="278" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -164,10 +164,10 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
       </list>
     </option>
   </component>
@@ -975,8 +975,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/build.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="90">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="245475">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1005,34 +1005,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.125" vertical-offset="456" max-vertical-offset="1530">
-          <caret line="53" column="55" selection-start-line="33" selection-start-column="0" selection-end-line="53" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.333334" vertical-offset="9412" max-vertical-offset="14385">
-          <caret line="683" column="10" selection-start-line="683" selection-start-column="10" selection-end-line="683" selection-end-column="10" />
+        <state vertical-scroll-proportion="-6.08" vertical-offset="553" max-vertical-offset="2535">
+          <caret line="47" column="48" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.2028985" vertical-offset="1963" max-vertical-offset="5025">
-          <caret line="141" column="19" selection-start-line="141" selection-start-column="16" selection-end-line="141" selection-end-column="19" />
+        <state vertical-scroll-proportion="-4.347826" vertical-offset="3870" max-vertical-offset="5025">
+          <caret line="278" column="14" selection-start-line="278" selection-start-column="14" selection-end-line="278" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30339321" vertical-offset="553" max-vertical-offset="2535">
-          <caret line="47" column="48" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
+        <state vertical-scroll-proportion="-1.25" vertical-offset="0" max-vertical-offset="1530">
+          <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.49052632" vertical-offset="13687" max-vertical-offset="14400">
+          <caret line="928" column="59" selection-start-line="928" selection-start-column="59" selection-end-line="928" selection-end-column="59" />
           <folding />
         </state>
       </provider>

@@ -815,7 +815,7 @@ module Harpnotes
         max_beat = music.beat_maps.map {|map| map.keys.max }.max
 
         current_beat = 0
-        last_size = 32
+        last_size = 32  #todo:replace literal
         Hash[(0..max_beat).map do |beat|
                notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact
                max_duration = notes_on_beat.map{|n| n.duration}.max
@@ -824,14 +824,15 @@ module Harpnotes
 
                unless has_no_notes_on_beat
                  begin
-                   size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first
+                   size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first  #todo:replace literal
                  rescue Exception => e
                    $log.error("unsupported duration: #{max_duration} on beat #{beat},  #{notes_on_beat.to_json}")
                  end
                  increment = (size + last_size)
                  last_size = size
 
-                 increment = [64,increment].max unless is_new_part.empty?
+                 # if a new part starts on this beat, make space for a full note
+                 increment = [64, increment].max unless is_new_part.empty? #todo: replace literal
                  current_beat += increment
                end
                [ beat, current_beat ]
@@ -924,8 +925,8 @@ module Harpnotes
         #               shift to left   pitch          space     stay away from border
         if root.beat
           # todo decide if part starts on a new line, then x_offset should be 0
-          x_offset     = (PITCH_OFFSET + root.pitch + 0.5) * X_SPACING + X_OFFSET  # todo:remove literal here
-          y_offset     = beat_layout.call(root.beat)
+          x_offset     = (PITCH_OFFSET + root.pitch + (-0.5)) * X_SPACING + X_OFFSET  # todo:remove literal here
+          y_offset     = beat_layout.call(root.beat()) -(24 * @beat_spacing) # todo:remove literal here
           res = Annotation.new([ x_offset, y_offset ], root.name, nil, root)
         else
           $log.warn("Part without content")

@@ -14766,8 +14766,8 @@ if (e == null) e = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           if ((($a = root.$beat()) !== nil && (!$a._isBoolean || $a == true))) {
-            x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch())['$+'](0.5))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
-            y_offset = beat_layout.$call(root.$beat());
+            x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch())['$+']((-0.5)))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
+            y_offset = beat_layout.$call(root.$beat())['$-'](((24)['$*'](self.beat_spacing)));
             res = (($a = $scope.Annotation) == null ? $opal.cm('Annotation') : $a).$new([x_offset, y_offset], root.$name(), nil, root);
             } else {
             $gvars.log.$warn("Part without content");
