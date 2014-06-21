@@ -88,6 +88,10 @@ module Harpnotes
       `self.editor.getSession().getValue()`
     end
 
+    def set_text(text)
+      `self.editor.getSession().setValue(text)`
+    end
+
   end
 
 end

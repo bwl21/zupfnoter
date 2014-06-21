@@ -7,6 +7,17 @@ class Controller
     @editor = Harpnotes::TextPane.new("abcEditor")
     setup_ui
     setup_ui_listener
+    load_from_loacalstorage
+  end
+
+  def save_to_localstorage
+    abc = @editor.get_text
+    `localStorage.setItem('abc_data', abc);`
+  end
+
+  def load_from_loacalstorage
+    abc = `localStorage.getItem('abc_data');`
+    @editor.set_text(abc) unless abc.nil?
   end
 
   def render_a3
@@ -37,6 +48,7 @@ class Controller
 
   def render_previews
     $log.info("rendering")
+    save_to_localstorage
     begin
       @harpnote_preview_printer.draw(layout_harpnotes)
     rescue Exception => e

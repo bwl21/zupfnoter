@@ -16025,14 +16025,14 @@ if (s == null) s = nil;
 (function($opal) {
   var $a, $b, TMP_13, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$attr', '$new', '$setup_ui', '$setup_ui_listener', '$draw', '$layout_harpnotes', '$draw_in_segments', '$html', '$find', '$get_text', '$info', '$error', '$message', '$backtrace', '$file', '$get_abc_code', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$Native', '$debug', '$select_range_by_position', '$[]', '$range_highlight', '$private', '$on_select', '$select_abc_object', '$origin', '$on', '$play_abc', '$render_previews', '$on_change', '$on_selection_change', '$get_selection_positions', '$==', '$first', '$last', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
+  $opal.add_stubs(['$attr', '$new', '$setup_ui', '$setup_ui_listener', '$load_from_loacalstorage', '$get_text', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$html', '$find', '$info', '$save_to_localstorage', '$error', '$message', '$backtrace', '$file', '$get_abc_code', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$Native', '$debug', '$select_range_by_position', '$[]', '$range_highlight', '$private', '$on_select', '$select_abc_object', '$origin', '$on', '$play_abc', '$render_previews', '$on_change', '$on_selection_change', '$get_selection_positions', '$==', '$first', '$last', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
   (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
 
     var def = self._proto, $scope = self._scope;
 
-    def.inst = def.editor = def.harpnote_preview_printer = def.tune_preview_printer = nil;
+    def.editor = def.inst = def.harpnote_preview_printer = def.tune_preview_printer = nil;
     self.$attr("editor", "harpnote_preview_printer", "tune_preview_printer");
 
     def.$initialize = function() {
@@ -16041,7 +16041,26 @@ if (s == null) s = nil;
       $gvars.log = (($a = $scope.ConsoleLogger) == null ? $opal.cm('ConsoleLogger') : $a).$new("consoleEntries");
       self.editor = (($a = ((($b = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $b))._scope).TextPane == null ? $a.cm('TextPane') : $a.TextPane).$new("abcEditor");
       self.$setup_ui();
-      return self.$setup_ui_listener();
+      self.$setup_ui_listener();
+      return self.$load_from_loacalstorage();
+    };
+
+    def.$save_to_localstorage = function() {
+      var self = this, abc = nil;
+
+      abc = self.editor.$get_text();
+      localStorage.setItem('abc_data', abc);
+    };
+
+    def.$load_from_loacalstorage = function() {
+      var $a, self = this, abc = nil;
+
+      abc = localStorage.getItem('abc_data');;
+      if ((($a = abc['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
+        return nil
+        } else {
+        return self.editor.$set_text(abc)
+      };
     };
 
     def.$render_a3 = function() {
@@ -16082,6 +16101,7 @@ if (s == null) s = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       $gvars.log.$info("rendering");
+      self.$save_to_localstorage();
       try {
       self.harpnote_preview_printer.$draw(self.$layout_harpnotes())
       } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
@@ -16121,7 +16141,7 @@ if (s == null) s = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       a = self.$Native(abcelement);
-      $gvars.log.$debug("select_abc_element (" + ("controller") + " " + (72) + ")");
+      $gvars.log.$debug("select_abc_element (" + ("controller") + " " + (84) + ")");
       self.editor.$select_range_by_position(a['$[]']("startChar"), a['$[]']("endChar"));
       self.tune_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
       return self.harpnote_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
@@ -16291,11 +16311,17 @@ if (e == null) e = nil;
       
       };
 
-      return (def.$get_text = function() {
+      def.$get_text = function() {
         var self = this;
 
         return self.editor.getSession().getValue();
-      }, nil) && 'get_text';
+      };
+
+      return (def.$set_text = function(text) {
+        var self = this;
+
+        return self.editor.getSession().setValue(text);
+      }, nil) && 'set_text';
     })(self, null)
     
   })(self)
