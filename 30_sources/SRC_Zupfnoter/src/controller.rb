@@ -10,24 +10,30 @@ class Controller
     load_from_loacalstorage
   end
 
+  # Save session to local store
   def save_to_localstorage
     abc = @editor.get_text
     `localStorage.setItem('abc_data', abc);`
   end
 
+  # load session from loaclstore
   def load_from_loacalstorage
     abc = `localStorage.getItem('abc_data');`
     @editor.set_text(abc) unless abc.nil?
   end
 
+  # render the harpnotes to a3
   def render_a3
     Harpnotes::PDFEngine.new.draw(layout_harpnotes)
   end
 
+
+  # render the harpnotes splitted on a4 pages
   def render_a4
     Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes)
   end
 
+  # play the abc tune
   def play_abc
     if @inst
       Element.find('#tbPlay').html('play')
@@ -41,11 +47,15 @@ class Controller
   end
 
 
+  # play an abc fragment
+  # todo prepend the abc header
   def play_abc_part(string)
     @inst = `new Instrument('piano')`
     `self.inst.play({tempo:200}, #{string});` # todo get parameter from ABC
   end
 
+  # render the previews
+  # also saves abc in localstore
   def render_previews
     $log.info("rendering")
     save_to_localstorage
@@ -63,6 +73,8 @@ class Controller
     nil
   end
 
+  # download abc + pdfs as a zip archive
+  # todo: determine filename from abc header
   def save_file
     zip = JSZip::ZipFile.new
     zip.file("song.abc", get_abc_code)
@@ -73,6 +85,8 @@ class Controller
     `window.saveAs(blob, filename)`
   end
 
+  # compute the layout of the harpnotes
+  # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes
     song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
     Harpnotes::Layout::Default.new.layout(song)

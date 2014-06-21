@@ -88,6 +88,8 @@ module Harpnotes
       `self.editor.getSession().getValue()`
     end
 
+    # add new text to the editor
+    # @param text the text to be set to the editor
     def set_text(text)
       `self.editor.getSession().setValue(text)`
     end

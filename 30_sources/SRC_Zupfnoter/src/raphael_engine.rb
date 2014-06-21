@@ -51,13 +51,16 @@ module Harpnotes
       @highlighted = []
 
       @elements.each_key { |k|
-        el_start = Native(k.origin)[:startChar]
-        el_end = Native(k.origin)[:endChar]
+        origin = Native(k.origin)
+        unless origin.nil?
+          el_start = Native(k.origin)[:startChar]
+          el_end = Native(k.origin)[:endChar]
 
-        if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
-          @elements[k].each do |e|
-            highlight(e)
-            @highlighted << e
+          if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
+            @elements[k].each do |e|
+              highlight(e)
+              @highlighted << e
+            end
           end
         end
       }

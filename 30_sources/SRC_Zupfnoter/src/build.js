@@ -15604,7 +15604,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$puts', '$class', '$children', '$unhighlight', '$each_key', '$[]', '$Native', '$origin', '$>', '$<', '$===', '$highlight', '$<<', '$private', '$unhighlight_color=', '$[]=', '$unhighlight_color', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$nil?', '$call', '$-', '$map', '$rect', '$line', '$from', '$to', '$style', '$level', '$path', '$translate']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$puts', '$class', '$children', '$unhighlight', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$highlight', '$<<', '$private', '$unhighlight_color=', '$[]=', '$unhighlight_color', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$-', '$map', '$rect', '$line', '$from', '$to', '$style', '$level', '$path', '$translate']);
   ;
   ;
   return (function($base) {
@@ -15676,19 +15676,24 @@ if (child == null) child = nil;
 if (e == null) e = nil;
         return self.$unhighlight(e)}, TMP_3._s = self, TMP_3), $a).call($b);
         self.highlighted = [];
-        return ($a = ($c = self.elements).$each_key, $a._p = (TMP_4 = function(k){var self = TMP_4._s || this, $a, $b, $c, TMP_5, el_start = nil, el_end = nil;
+        return ($a = ($c = self.elements).$each_key, $a._p = (TMP_4 = function(k){var self = TMP_4._s || this, $a, $b, $c, TMP_5, origin = nil, el_start = nil, el_end = nil;
           if (self.elements == null) self.elements = nil;
 if (k == null) k = nil;
-        el_start = self.$Native(k.$origin())['$[]']("startChar");
-          el_end = self.$Native(k.$origin())['$[]']("endChar");
-          if ((($a = (((($b = ((($c = to['$>'](el_start)) ? from['$<'](el_end) : $c))) !== false && $b !== nil) ? $b : (($c = (to['$==='](from)), $c !== false && $c !== nil ?to['$==='](el_end) : $c))))) !== nil && (!$a._isBoolean || $a == true))) {
-            return ($a = ($b = self.elements['$[]'](k)).$each, $a._p = (TMP_5 = function(e){var self = TMP_5._s || this;
-              if (self.highlighted == null) self.highlighted = nil;
-if (e == null) e = nil;
-            self.$highlight(e);
-              return self.highlighted['$<<'](e);}, TMP_5._s = self, TMP_5), $a).call($b)
-            } else {
+        origin = self.$Native(k.$origin());
+          if ((($a = origin['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
             return nil
+            } else {
+            el_start = self.$Native(k.$origin())['$[]']("startChar");
+            el_end = self.$Native(k.$origin())['$[]']("endChar");
+            if ((($a = (((($b = ((($c = to['$>'](el_start)) ? from['$<'](el_end) : $c))) !== false && $b !== nil) ? $b : (($c = (to['$==='](from)), $c !== false && $c !== nil ?to['$==='](el_end) : $c))))) !== nil && (!$a._isBoolean || $a == true))) {
+              return ($a = ($b = self.elements['$[]'](k)).$each, $a._p = (TMP_5 = function(e){var self = TMP_5._s || this;
+                if (self.highlighted == null) self.highlighted = nil;
+if (e == null) e = nil;
+              self.$highlight(e);
+                return self.highlighted['$<<'](e);}, TMP_5._s = self, TMP_5), $a).call($b)
+              } else {
+              return nil
+            };
           };}, TMP_4._s = self, TMP_4), $a).call($c);
       };
 
@@ -16141,7 +16146,7 @@ if (s == null) s = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       a = self.$Native(abcelement);
-      $gvars.log.$debug("select_abc_element (" + ("controller") + " " + (84) + ")");
+      $gvars.log.$debug("select_abc_element (" + ("controller") + " " + (98) + ")");
       self.editor.$select_range_by_position(a['$[]']("startChar"), a['$[]']("endChar"));
       self.tune_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
       return self.harpnote_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
