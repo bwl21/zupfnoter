@@ -63,8 +63,8 @@ module Harpnotes
     private
 
     def draw_annotation(root)
-      @pdf.text_color = 0 #[200,200,200]
-      @pdf.font_size  = 10
+      @pdf.text_color = [0,0,0]
+      @pdf.font_size  = 12
       @pdf.text(root.center.first, root.center.last, root.text)
     end
 
@@ -136,9 +136,14 @@ module Harpnotes
       endpoint[0] += PADDING
       endpoint[1] += PADDING/4.0
 
-      depth      = 418.0 - (root.level * JUMPLINE_INDENT)
+      distance = root.distance
+      unless distance.nil?
+        depth = endpoint[0] + distance
+      else
+        depth      = 418.0 - (root.level * JUMPLINE_INDENT)  #todo:replace literal
+      end
 
-      @pdf.draw = (0...3).map { 0 }
+      @pdf.draw = (0...3).map { 0 }  # set the rgb color
       @pdf.line(endpoint, [depth, endpoint[1]])
       @pdf.line([depth, endpoint[1]], [depth, startpoint[1]])
       @pdf.line([depth, startpoint[1]], startpoint)

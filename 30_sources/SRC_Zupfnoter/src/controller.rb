@@ -106,7 +106,7 @@ class Controller
 
   def setup_ui
     # setup the harpnote prviewer
-    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview")
+    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview",1100, 700)
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end

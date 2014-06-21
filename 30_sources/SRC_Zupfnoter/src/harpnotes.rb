@@ -285,21 +285,21 @@ module Harpnotes
     # The most prominent application is a repetition
     #
     class Dacapo < MusicEntity
-      attr_reader :from, :to, :level
+      attr_reader :from, :to, :policy
 
       #
       # construtor
       # @param from [Playable] the end point of jump (repeat from)
       # @param to [Playable] the Start point of jump (repeat to )
-      # @param level [Integer] A nesting level, used to optimize the graphical representation.
+      # @param policy [Hash] {level:, distance:} A policy, used to optimize the graphical representation.
       #
-      def initialize(from, to, level)
+      def initialize(from, to, policy)
         raise "End point of Jump (#{from.class}) must be a Playable" unless from.is_a? Harpnotes::Music::Playable
         raise "Start point of Jump (#{to.class}) must be a Playable" unless to.is_a? Harpnotes::Music::Playable
 
         @from = from
         @to = to
-        @level = level
+        @policy = policy
       end
     end
 
@@ -464,15 +464,23 @@ module Harpnotes
     # This represents a JumpLine
     #
     class JumpLine
-      attr_reader :from, :to, :level
+      attr_reader :from, :to
 
       # @param from [Drawable] the origin of the flow
       # @param to   [Drawable] the target of the flow
-      # @param level [Numeric] the indentation level of the line
-      def initialize(from, to, level = 0)
+      # @param policy [Hash] the policy for vertical line
+      def initialize(from, to, policy  = {level: 0 })
         @from  = from
         @to    = to
-        @level = level
+        @policy = policy
+      end
+
+      def level
+        @policy[:level] || 0
+      end
+
+      def distance
+        @policy[:distance]
       end
     end
 
@@ -556,6 +564,7 @@ module Harpnotes
         @center = center
         @text = text
         @style = style
+        @origin = origin
       end
     end
 
@@ -795,7 +804,12 @@ module Harpnotes
 
         # draw the jumplines
         res_dacapo = voice.select {|c| c.is_a? Dacapo }.map do |dacapo|
-          JumpLine.new(note_to_ellipse[dacapo.from], note_to_ellipse[dacapo.to], dacapo.level)
+          if distance = dacapo.policy[:distance]
+            vertical = {distance: (distance + 0.5) * X_SPACING}
+          else
+            vertical = {level: dacapo.policy[:level]}
+          end
+          JumpLine.new(note_to_ellipse[dacapo.from], note_to_ellipse[dacapo.to], vertical)
         end
 
         # return all drawing primitives
@@ -927,7 +941,7 @@ module Harpnotes
           # todo decide if part starts on a new line, then x_offset should be 0
           x_offset     = (PITCH_OFFSET + root.pitch + (-0.5)) * X_SPACING + X_OFFSET  # todo:remove literal here
           y_offset     = beat_layout.call(root.beat()) -(24 * @beat_spacing) # todo:remove literal here
-          res = Annotation.new([ x_offset, y_offset ], root.name, nil, root)
+          res = Annotation.new([ x_offset, y_offset ], root.name, :regular, nil)
         else
           $log.warn("Part without content")
           res = nil

@@ -91,6 +91,8 @@ module Harpnotes
 
       def initialize
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
+        @jumptargets = {}
+
         reset_state
       end
 
@@ -154,7 +156,7 @@ module Harpnotes
         end
 
         # get voice layout
-        voices_in_staff = [[1,2], [3,4], [3], [4]] # get this from %%score instruction
+        voices_in_staff = [[1,2], [3,4], [3], [4]] # todo:get this from %%score instruction
 
         # extract the voices
         voices = []
@@ -179,11 +181,23 @@ module Harpnotes
           res = voice.map do |el|
             type = el[:el_type]
             res = self.send("transform_#{type}", el)
+
             unless res.nil? or res.empty?
               res.each {|e| e.origin = el }
             end
+
             res
           end.flatten.compact
+
+          # compute the explicit jumplines
+          jumplines = []
+          res.each do |e|
+            jumplines << make_jumplines(e)
+          end
+
+          res += jumplines.flatten.compact
+         # res.flatten.compact
+
           res
         end
 
@@ -199,6 +213,34 @@ module Harpnotes
         result
       end
 
+      private
+
+      #@param entity []
+      def make_jumplines(entity)
+        result = []
+        if entity.is_a? Harpnotes::Music::Playable
+          chords = entity.origin[:chord] || []
+          chords.each do |chord|
+            name = Native(chord)[:name]
+            if name[0] == '@'
+              nameparts = name[1..-1].split("@")
+              target = @jumptargets[nameparts.first]
+              argument = nameparts.last.to_i || 1
+              if target.nil?
+                $log.error("missing target #{name[1..-1]}")
+              else
+                result  << Harpnotes::Music::Dacapo.new(target, entity, distance: argument)  #todo: better algorithm
+              end
+            else
+              #result << Harpnotes::Music::Annotation.new(name, )
+            end
+          end
+        end
+        `//foobar`
+
+        result
+      end
+
       def transform_note(note)
         # 1/64 is the shortest note being handled
         # note that this scaling also has an effect
@@ -207,7 +249,7 @@ module Harpnotes
 
         if not note[:rest].nil?
           if note[:rest][:type] == 'spacer'  # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
-            result = nil
+            result = []
           else
             result = transform_rest(note, duration)
           end
@@ -215,12 +257,22 @@ module Harpnotes
           result = transform_real_note(note, duration)
         end
 
-        if not result.nil?
+        if not result.empty?
 
           # support the case of repetitions from the very beginning
 
           if @repetition_stack.empty?
             @repetition_stack << result.last
+          end
+
+          # collect chord based target
+          unless note[:chord].nil?
+            note[:chord].each do |chord|
+              name = Native(chord)[:name]
+              if name[0] == ':'
+                @jumptargets[name[1..-1]] = result.select{|n|n.is_a? Harpnotes::Music::Playable}.last
+              end
+            end
           end
         end
 
@@ -308,7 +360,7 @@ module Harpnotes
           start = @repetition_stack.pop
         end
 
-        [ Harpnotes::Music::Dacapo.new(start, @previous_note, @repetition_stack.length) ]
+        [ Harpnotes::Music::Dacapo.new(start, @previous_note, level: @repetition_stack.length) ]
       end
 
       def transform_part(part)

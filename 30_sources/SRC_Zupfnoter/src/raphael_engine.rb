@@ -7,13 +7,13 @@ module Harpnotes
     include Harpnotes::Drawing
     attr_reader :paper
 
-    PADDING = 20
+    PADDING = 5
     ARROW_SIZE = 10
     JUMPLINE_INDENT = 10
     DOTTED_SIZE = 0.3
 
-    def initialize(element_id)
-      @paper = Raphael::Paper.new(element_id)
+    def initialize(element_id, width, height)
+      @paper = Raphael::Paper.new(element_id, width, height)
       @paper.enable_pan_zoom
       @on_select = nil
       @elements = {}   # record all elements being on the sheet, using upstream object as key
@@ -150,7 +150,12 @@ module Harpnotes
       endpoint   = root.to.center
       endpoint[0] += PADDING
 
-      depth      = @paper.size[1] - (root.level * JUMPLINE_INDENT)
+      distance = root.distance
+      unless distance.nil?
+        depth = endpoint[0] + distance
+      else
+        depth = @paper.size[1] - (root.level * JUMPLINE_INDENT)
+      end
 
       path  = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
       @paper.path(path)
