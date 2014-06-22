@@ -148,8 +148,8 @@ module Harpnotes
           :type => first_staff[:meter][:type]
         }
         if meter[:type] == "specified"
-          meter[:den] = Native(first_staff[:meter][:value].first)[:den],
-          meter[:num] = Native(first_staff[:meter][:value].first)[:num],
+          meter[:den] = Native(first_staff[:meter][:value].first)[:den]
+          meter[:num] = Native(first_staff[:meter][:value].first)[:num]
           meter[:display] = "#{meter[:num]}/#{meter[:den]}"
         elsif
           meter[:display] = meter[:type]
@@ -204,7 +204,7 @@ module Harpnotes
         result = Harpnotes::Music::Song.new(voices_transformed, note_length)
         meta_data = {:compile_time => Time.now(),
                      :meter => meter[:display],
-                     :key => key
+                     :key => Native(key)[:root]
                     }
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each {|k| meta_data[k] = meta_data_from_tune[k]} # todo could not get Hash(object) and use merge

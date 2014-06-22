@@ -558,7 +558,7 @@ module Harpnotes
 
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
-      # @param style Symbol the text style, can be :regular, :bold, :framed
+      # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
       # 
       def initialize(center, text, style = :regular, origin = nil)
         @center = center
@@ -750,8 +750,18 @@ module Harpnotes
         # now generate legend
 
         annotations = []
-        legend = music.meta_data.map{|k, v| "#{k}: #{v}"}.join("\n")
-        annotations << Harpnotes::Drawing::Annotation.new([10, 10], legend, :regular)
+
+        title_pos  = [20, 20]
+        legend_pos = [20, 30]
+
+        title    = music.meta_data[:title]
+        meter    = music.meta_data[:meter]
+        key      = music.meta_data[:key]
+        composer = music.meta_data[:composer]
+        legend = "#{composer}\nTakt: #{meter} / Tonart: #{key}"
+        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
+
 
         sheet_elements = synch_lines + sheet_elements + sheet_marks + annotations
 

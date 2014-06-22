@@ -57,6 +57,11 @@ class JsPDF
     `self.native.setFontSize(size)`
   end
 
+
+  def font_style=(style)
+    `self.native.setFontStyle(style)`
+  end
+
   def use_solid_lines
     `self.native.setLineDash('', 0)`
   end
