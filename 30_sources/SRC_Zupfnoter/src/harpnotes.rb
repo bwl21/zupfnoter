@@ -754,11 +754,12 @@ module Harpnotes
         title_pos  = [20, 20]
         legend_pos = [20, 30]
 
-        title    = music.meta_data[:title]
+        title    = music.meta_data[:title] || "untitled"
         meter    = music.meta_data[:meter]
         key      = music.meta_data[:key]
         composer = music.meta_data[:composer]
-        legend = "#{composer}\nTakt: #{meter} / Tonart: #{key}"
+        tempo    = music.meta_data[:tempo_display]
+        legend = "#{composer}\nTakt: #{meter}\ Tonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
 

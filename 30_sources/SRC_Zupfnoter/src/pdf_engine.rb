@@ -63,8 +63,16 @@ module Harpnotes
     private
 
     def draw_annotation(root)
-      @pdf.text_color = [0,0,0]
-      @pdf.font_size  = 12
+
+      style_def = {regular: {text_color: [0,0,0], font_size: 12, font_style: "normal"},
+                   large:   {text_color: [0,0,0], font_size: 20, font_style: "bold"}
+              }
+
+      style = style_def[root.style] || style_def[:regular]
+
+      @pdf.text_color = style[:text_color]
+      @pdf.font_size  = style[:font_size]
+      @pdf.font_style = style[:font_style]
       @pdf.text(root.center.first, root.center.last, root.text)
     end
 
