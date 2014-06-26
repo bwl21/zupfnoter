@@ -106,8 +106,37 @@ module Harpnotes
         nil
       end
 
+      #
+      # todo refine the parsing of the options
+      def parse_harpnote_config(abc_code)
+        # extract harpnoter specific commands
+
+        hn_config_from_song = {}
+        line_no = 1
+        abc_code.split("\n").each do |line|
+          entry = line.match(/^%%%%hn\.(print|legend|note) (.*)/){ |m| [m[1], m[2]] }
+          if entry
+            begin
+              parsed_entry = JSON.parse(entry.last)
+              hn_config_from_song[entry.first] ||= []
+              hn_config_from_song[entry.first] << parsed_entry
+            rescue Exception => e
+              $log.error("#{e.message} in line #{line_no} while parsing: #{entry}")
+            end
+          end
+          line_no +=1
+        end
+        $log.debug(hn_config_from_song)
+        hn_config_from_song
+      end
+
 
       def transform(abc_code)
+
+        harpnote_options = parse_harpnote_config(abc_code)
+        $log.debug(harpnote_options)
+
+        # now parse the abc_code by abcjs
         %x{
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
@@ -155,60 +184,79 @@ module Harpnotes
           meter[:display] = meter[:type]
         end
 
-        # get voice layout
-        voices_in_staff = [[1,2], [3,4], [3], [4]] # todo:get this from %%score instruction
-
         # extract the voices
         voices = []
-        lines.each do |line|
+        lines.each_with_index do |line, line_index|
+          voice_no = 1
           Native(line)[:staff].each_with_index do |staff, staff_index|
             Native(staff)[:voices].each_with_index do |voice, voice_index|
-              $log.debug("reading staff.voice: #{staff_index}.#{voice_index} (#{__FILE__} #{__LINE__})")
-              idx = voices_in_staff[staff_index][voice_index]
-              voices[idx] ||= []
-              voices[idx] << voice.map {|x| Native(x) }
-              voices[idx].flatten!
+              $log.debug("reading line.staff.voice #{voice_no}:#{line_index} #{staff_index}.#{voice_index} (#{__FILE__} #{__LINE__})")
+              voices[voice_no] ||= Harpnotes::Music::Voice.new()
+              voices[voice_no] << voice.map {|x| Native(x) }
+              voices[voice_no].index = voice_no
+              voices[voice_no].flatten!
+              voice_no += 1
             end
           end
         end
         voices.compact!
 
         # transform the voices
-        voices_transformed = voices.each_with_index.map do |voice, voice_idx|
+        hn_voices = voices.each_with_index.map do |voice, voice_idx|
           reset_state
 
           # transform the voice content
-          res = voice.map do |el|
+          hn_voice = voice.map do |el|
             type = el[:el_type]
-            res = self.send("transform_#{type}", el)
+            hn_voice_element = self.send("transform_#{type}", el)
 
-            unless res.nil? or res.empty?
-              res.each {|e| e.origin = el }
+            unless hn_voice_element.nil? or hn_voice_element.empty?
+              hn_voice_element.each {|e| e.origin = el }
             end
 
-            res
+            hn_voice_element
           end.flatten.compact
 
           # compute the explicit jumplines
           jumplines = []
-          res.each do |e|
+          hn_voice.each do |e|
             jumplines << make_jumplines(e)
           end
 
-          res += jumplines.flatten.compact
-         # res.flatten.compact
+          hn_voice += jumplines.flatten.compact
+         # hn_voice.flatten.compact
 
-          res
+          hn_voice
         end
 
-        result = Harpnotes::Music::Song.new(voices_transformed, note_length)
+        # now construct the song
+        result = Harpnotes::Music::Song.new(hn_voices, note_length)
         meta_data = {:compile_time => Time.now(),
                      :meter => meter[:display],
                      :key => Native(key)[:root]
                     }
+        if tune[:metaText][:tempo]
+          meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],
+                                       tune[:metaText][:tempo][:duration], "=", tune[:metaText][:tempo][:bpm],
+                                       tune[:metaText][:tempo][:postString],
+                                      ].join(" ")
+        end
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each {|k| meta_data[k] = meta_data_from_tune[k]} # todo could not get Hash(object) and use merge
+
         result.meta_data = meta_data
+
+        result.harpnote_options = {}
+        result.harpnote_options[:print] = harpnote_options[:print].map{|o|
+         {title:       o[:t],
+          voices:      o[:v].map{|i| i-1},
+          synchlines: o[:s].map{|i| i.map{|j| j-1}},
+          flowlines:   o[:f].map{|i| i-1},
+          jumplines:   o[:j].map{|i| i-1},
+          legend:      o[:legend],
+          note:        o[:note]
+         }
+        }
 
         result
       end

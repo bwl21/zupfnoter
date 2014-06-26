@@ -24,7 +24,8 @@ class Controller
 
   # render the harpnotes to a3
   def render_a3
-    Harpnotes::PDFEngine.new.draw(layout_harpnotes)
+    printer = Harpnotes::PDFEngine.new
+    printer.draw(layout_harpnotes)
   end
 
 
@@ -42,7 +43,7 @@ class Controller
     else
       Element.find('#tbPlay').html('stop')
       @inst = `new Instrument('piano')`
-      `self.inst.play({tempo:200}, #{@editor.get_text}, function(){self.$play_abc()} )` # todo get parameter from ABC
+      `self.inst.play(nil, #{@editor.get_text}, function(){self.$play_abc()} )` # todo get parameter from ABC
     end
   end
 
@@ -51,7 +52,7 @@ class Controller
   # todo prepend the abc header
   def play_abc_part(string)
     @inst = `new Instrument('piano')`
-    `self.inst.play({tempo:200}, #{string});` # todo get parameter from ABC
+    `self.inst.play(nil, #{string});` # todo get parameter from ABC
   end
 
   # render the previews
@@ -87,9 +88,9 @@ class Controller
 
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
-  def layout_harpnotes
+  def layout_harpnotes(print_variant = 0)
     song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
-    Harpnotes::Layout::Default.new.layout(song)
+    Harpnotes::Layout::Default.new.layout(song, nil, print_variant)
   end
 
   # select a particular abc elemnt in all views
@@ -100,6 +101,8 @@ class Controller
     @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
     @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
   end
+
+
 
   private
 
@@ -159,6 +162,8 @@ class Controller
 
     # key events in editor
     Element.find(`window`).on(:keydown) do |evt|
+      $log.debug("key pressed")
+      `console.log(event)`
       if `evt.keyCode == 13 && evt.shiftKey`
         evt.prevent_default
         render_previews
