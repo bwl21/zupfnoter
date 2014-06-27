@@ -236,7 +236,7 @@ module Harpnotes
         result = Harpnotes::Music::Song.new(hn_voices, note_length)
         meta_data = {:compile_time => Time.now(),
                      :meter => meter[:display],
-                     :key => Native(key)[:root]
+                     :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
                     }
         if tune[:metaText][:tempo]
           meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],

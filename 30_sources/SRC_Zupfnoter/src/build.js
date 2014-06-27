@@ -15093,7 +15093,7 @@ if (e == null) e = nil;
             hn_voice = hn_voice['$+'](jumplines.$flatten().$compact());
             return hn_voice;}, TMP_16._s = self, TMP_16), $a).call($g);
           result = (($a = ((($h = ((($i = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $i))._scope).Music == null ? $h.cm('Music') : $h.Music))._scope).Song == null ? $a.cm('Song') : $a.Song).$new(hn_voices, note_length);
-          meta_data = $hash2(["compile_time", "meter", "key"], {"compile_time": (($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now(), "meter": meter['$[]']("display"), "key": self.$Native(key)['$[]']("root")});
+          meta_data = $hash2(["compile_time", "meter", "key"], {"compile_time": (($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now(), "meter": meter['$[]']("display"), "key": self.$Native(key)['$[]']("root")['$+'](self.$Native(key)['$[]']("acc"))['$+'](self.$Native(key)['$[]']("mode"))});
           if ((($a = tune['$[]']("metaText")['$[]']("tempo")) !== nil && (!$a._isBoolean || $a == true))) {
             meta_data['$[]=']("tempo_display", [tune['$[]']("metaText")['$[]']("tempo")['$[]']("preString"), tune['$[]']("metaText")['$[]']("tempo")['$[]']("duration"), "=", tune['$[]']("metaText")['$[]']("tempo")['$[]']("bpm"), tune['$[]']("metaText")['$[]']("tempo")['$[]']("postString")].$join(" "))};
           meta_data_from_tune = (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a).$new(tune['$[]']("metaText").$to_n());
