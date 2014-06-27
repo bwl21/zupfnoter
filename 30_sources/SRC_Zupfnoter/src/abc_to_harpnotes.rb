@@ -127,6 +127,9 @@ module Harpnotes
           line_no +=1
         end
         $log.debug(hn_config_from_song)
+        unless hn_config_from_song[:print]
+          hn_config_from_song[:print] =  [{t: "all", v:[1,2,3,4], s: [[1,2],[3,4]], f:[1,3], j:[1,3]}]
+        end
         hn_config_from_song
       end
 
@@ -250,7 +253,7 @@ module Harpnotes
         result.harpnote_options[:print] = harpnote_options[:print].map{|o|
          {title:       o[:t],
           voices:      o[:v].map{|i| i-1},
-          synchlines: o[:s].map{|i| i.map{|j| j-1}},
+          synchlines:  o[:s].map{|i| i.map{|j| j-1}},
           flowlines:   o[:f].map{|i| i-1},
           jumplines:   o[:j].map{|i| i-1},
           legend:      o[:legend],

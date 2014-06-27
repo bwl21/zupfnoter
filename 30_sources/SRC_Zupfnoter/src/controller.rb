@@ -25,7 +25,7 @@ class Controller
   # render the harpnotes to a3
   def render_a3
     printer = Harpnotes::PDFEngine.new
-    printer.draw(layout_harpnotes)
+    printer.draw(layout_harpnotes(0))
   end
 
 

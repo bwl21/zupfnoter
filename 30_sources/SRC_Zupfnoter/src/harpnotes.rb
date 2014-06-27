@@ -677,8 +677,8 @@ module Harpnotes
       DURATION_TO_STYLE = {
         #key      size   fill          dot                  abc duration
         :d64 => [ 0.9,   :empty,       FALSE],    # 1      1
-        :d48 => [ 0.7,   :empty,       TRUE],     # 1/2 *
-        :d32 => [ 0.7,   :empty,       FALSE],    # 1/2
+        :d48 => [ 0.5,   :empty,       TRUE],     # 1/2 *
+        :d32 => [ 0.5,   :empty,       FALSE],    # 1/2
         :d24 => [ 0.7,   :filled,      TRUE],     # 1/4 *
         :d16 => [ 0.7,   :filled,      FALSE],    # 1/4
         :d12 => [ 0.5,   :filled,      TRUE],     # 1/8 *
@@ -749,7 +749,10 @@ module Harpnotes
         note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
 
         # configure which synclines are required from-voice to-voice
-        required_synchlines = print_options[:synchlines]
+        # also filter such synchlines which have points in the displayed voices
+        required_synchlines = print_options[:synchlines].select{|sl|
+          print_options[:voices].include?(sl.first) && print_options[:voices].include?(sl.last)
+        }
 
         # build synchlines
         synch_lines = required_synchlines.map do |selector|
@@ -784,7 +787,8 @@ module Harpnotes
         key      = music.meta_data[:key]
         composer = music.meta_data[:composer]
         tempo    = music.meta_data[:tempo_display]
-        legend = "#{composer}\nTakt: #{meter}\ Tonart: #{key}"
+        print_variant = print_options[:title]
+        legend = "#{print_variant}\n#{composer}\nTakt: #{meter}\ Tonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
 
