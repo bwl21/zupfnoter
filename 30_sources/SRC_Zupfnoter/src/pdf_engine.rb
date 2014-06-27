@@ -63,8 +63,16 @@ module Harpnotes
     private
 
     def draw_annotation(root)
-      @pdf.text_color = 0 #[200,200,200]
-      @pdf.font_size  = 10
+
+      style_def = {regular: {text_color: [0,0,0], font_size: 12, font_style: "normal"},
+                   large:   {text_color: [0,0,0], font_size: 20, font_style: "bold"}
+              }
+
+      style = style_def[root.style] || style_def[:regular]
+
+      @pdf.text_color = style[:text_color]
+      @pdf.font_size  = style[:font_size]
+      @pdf.font_style = style[:font_style]
       @pdf.text(root.center.first, root.center.last, root.text)
     end
 
@@ -73,7 +81,6 @@ module Harpnotes
       hpos = X_SPACING/2.0 + delta * i
       hdiff = X_SPACING/2.0
 
-      $log.info([[hpos, v.first],  [hpos, v.last]])
       @pdf.line([hpos, v.first],  [hpos, v.last])
       @pdf.line([hpos - hdiff, v[1]],  [hpos + hdiff, v[1]])
     end
@@ -137,12 +144,19 @@ module Harpnotes
       endpoint[0] += PADDING
       endpoint[1] += PADDING/4.0
 
-      depth      = 418.0 - (root.level * JUMPLINE_INDENT)
+      distance = root.distance
+      unless distance.nil?
+        depth = endpoint[0] + distance
+      else
+        depth      = 418.0 - (root.level * JUMPLINE_INDENT)  #todo:replace literal
+      end
 
-      @pdf.draw = (0...3).map { 0 }
+      @pdf.draw = (0...3).map { 0 }  # set the rgb color
       @pdf.line(endpoint, [depth, endpoint[1]])
       @pdf.line([depth, endpoint[1]], [depth, startpoint[1]])
       @pdf.line([depth, startpoint[1]], startpoint)
+
+      @pdf.left_arrowhead(startpoint[0], startpoint[1])
     end
   end
 

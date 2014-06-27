@@ -85,8 +85,8 @@ module Raphael
     #
     # Construtctor
     # @param element [String] The indentifier of the canvas element
-    # @param width [Numeric] Width of the canvas
-    # @param height [Numeric] Height of the canvas
+    # @param width [Numeric] Width of the canvas in pixels
+    # @param height [Numeric] Height of the canvas in pixels
     #
     # @return [type] [description]
     def initialize(element, width, height)

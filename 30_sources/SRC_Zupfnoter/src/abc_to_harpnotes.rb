@@ -91,6 +91,8 @@ module Harpnotes
 
       def initialize
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
+        @jumptargets = {}
+
         reset_state
       end
 
@@ -104,8 +106,40 @@ module Harpnotes
         nil
       end
 
+      #
+      # todo refine the parsing of the options
+      def parse_harpnote_config(abc_code)
+        # extract harpnoter specific commands
+
+        hn_config_from_song = {}
+        line_no = 1
+        abc_code.split("\n").each do |line|
+          entry = line.match(/^%%%%hn\.(print|legend|note) (.*)/){ |m| [m[1], m[2]] }
+          if entry
+            begin
+              parsed_entry = JSON.parse(entry.last)
+              hn_config_from_song[entry.first] ||= []
+              hn_config_from_song[entry.first] << parsed_entry
+            rescue Exception => e
+              $log.error("#{e.message} in line #{line_no} while parsing: #{entry}")
+            end
+          end
+          line_no +=1
+        end
+        $log.debug(hn_config_from_song)
+        unless hn_config_from_song[:print]
+          hn_config_from_song[:print] =  [{t: "all", v:[1,2,3,4], s: [[1,2],[3,4]], f:[1,3], j:[1,3]}]
+        end
+        hn_config_from_song
+      end
+
 
       def transform(abc_code)
+
+        harpnote_options = parse_harpnote_config(abc_code)
+        $log.debug(harpnote_options)
+
+        # now parse the abc_code by abcjs
         %x{
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
@@ -127,7 +161,7 @@ module Harpnotes
         # todo:factor out to a generic method parse_abc_header()
         #
         note_length_rows = abc_code.split("\n").select {|row| row[0..1] == "L:" }
-        raise "ABC code does not contain a unit note length (L)" if note_length_rows.empty?
+        note_length_rows = ["L:1/4"] if note_length_rows.empty?
         note_length = note_length_rows.first.strip.split(":").last.split("/").map {|s| s.strip.to_i }
         note_length = note_length.last / note_length.first
 
@@ -146,55 +180,114 @@ module Harpnotes
           :type => first_staff[:meter][:type]
         }
         if meter[:type] == "specified"
-          meter[:den] = Native(first_staff[:meter][:value].first)[:den],
-          meter[:num] = Native(first_staff[:meter][:value].first)[:num],
+          meter[:den] = Native(first_staff[:meter][:value].first)[:den]
+          meter[:num] = Native(first_staff[:meter][:value].first)[:num]
           meter[:display] = "#{meter[:num]}/#{meter[:den]}"
         elsif
           meter[:display] = meter[:type]
         end
 
-        # get voice layout
-        voices_in_staff = [[1,2], [3,4], [3], [4]] # get this from %%score instruction
-
         # extract the voices
         voices = []
-        lines.each do |line|
+        lines.each_with_index do |line, line_index|
+          voice_no = 1
           Native(line)[:staff].each_with_index do |staff, staff_index|
             Native(staff)[:voices].each_with_index do |voice, voice_index|
-              $log.info("reading staff.voice: #{staff_index}.#{voice_index}")
-              idx = voices_in_staff[staff_index][voice_index]
-              voices[idx] ||= []
-              voices[idx] << voice.map {|x| Native(x) }
-              voices[idx].flatten!
+              $log.debug("reading line.staff.voice #{voice_no}:#{line_index} #{staff_index}.#{voice_index} (#{__FILE__} #{__LINE__})")
+              voices[voice_no] ||= Harpnotes::Music::Voice.new()
+              voices[voice_no] << voice.map {|x| Native(x) }
+              voices[voice_no].index = voice_no
+              voices[voice_no].flatten!
+              voice_no += 1
             end
           end
         end
         voices.compact!
 
         # transform the voices
-        voices_transformed = voices.each_with_index.map do |voice, voice_idx|
+        hn_voices = voices.each_with_index.map do |voice, voice_idx|
           reset_state
 
           # transform the voice content
-          res = voice.map do |el|
+          hn_voice = voice.map do |el|
             type = el[:el_type]
-            res = self.send("transform_#{type}", el)
-            unless res.nil? or res.empty?
-              res.each {|e| e.origin = el }
+            hn_voice_element = self.send("transform_#{type}", el)
+
+            unless hn_voice_element.nil? or hn_voice_element.empty?
+              hn_voice_element.each {|e| e.origin = el }
             end
-            res
+
+            hn_voice_element
           end.flatten.compact
-          res
+
+          # compute the explicit jumplines
+          jumplines = []
+          hn_voice.each do |e|
+            jumplines << make_jumplines(e)
+          end
+
+          hn_voice += jumplines.flatten.compact
+         # hn_voice.flatten.compact
+
+          hn_voice
         end
 
-        result = Harpnotes::Music::Song.new(voices_transformed, note_length)
+        # now construct the song
+        result = Harpnotes::Music::Song.new(hn_voices, note_length)
         meta_data = {:compile_time => Time.now(),
                      :meter => meter[:display],
-                     :key => key
+                     :key => Native(key)[:root]
                     }
+        if tune[:metaText][:tempo]
+          meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],
+                                       tune[:metaText][:tempo][:duration], "=", tune[:metaText][:tempo][:bpm],
+                                       tune[:metaText][:tempo][:postString],
+                                      ].join(" ")
+        end
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each {|k| meta_data[k] = meta_data_from_tune[k]} # todo could not get Hash(object) and use merge
+
         result.meta_data = meta_data
+
+        result.harpnote_options = {}
+        result.harpnote_options[:print] = harpnote_options[:print].map{|o|
+         {title:       o[:t],
+          voices:      o[:v].map{|i| i-1},
+          synchlines:  o[:s].map{|i| i.map{|j| j-1}},
+          flowlines:   o[:f].map{|i| i-1},
+          jumplines:   o[:j].map{|i| i-1},
+          legend:      o[:legend],
+          note:        o[:note]
+         }
+        }
+
+        result
+      end
+
+      private
+
+      #@param entity []
+      def make_jumplines(entity)
+        result = []
+        if entity.is_a? Harpnotes::Music::Playable
+          chords = entity.origin[:chord] || []
+          chords.each do |chord|
+            name = Native(chord)[:name]
+            if name[0] == '@'
+              nameparts = name[1..-1].split("@")
+              target = @jumptargets[nameparts.first]
+              argument = nameparts.last.to_i || 1
+              if target.nil?
+                $log.error("missing target #{name[1..-1]}")
+              else
+                result  << Harpnotes::Music::Dacapo.new(target, entity, distance: argument)  #todo: better algorithm
+              end
+            else
+              #result << Harpnotes::Music::Annotation.new(name, )
+            end
+          end
+        end
+        `//foobar`
 
         result
       end
@@ -207,7 +300,7 @@ module Harpnotes
 
         if not note[:rest].nil?
           if note[:rest][:type] == 'spacer'  # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
-            result = nil
+            result = []
           else
             result = transform_rest(note, duration)
           end
@@ -215,12 +308,22 @@ module Harpnotes
           result = transform_real_note(note, duration)
         end
 
-        if not result.nil?
+        if not result.empty?
 
           # support the case of repetitions from the very beginning
 
           if @repetition_stack.empty?
             @repetition_stack << result.last
+          end
+
+          # collect chord based target
+          unless note[:chord].nil?
+            note[:chord].each do |chord|
+              name = Native(chord)[:name]
+              if name[0] == ':'
+                @jumptargets[name[1..-1]] = result.select{|n|n.is_a? Harpnotes::Music::Playable}.last
+              end
+            end
           end
         end
 
@@ -308,7 +411,7 @@ module Harpnotes
           start = @repetition_stack.pop
         end
 
-        [ Harpnotes::Music::Dacapo.new(start, @previous_note, @repetition_stack.length) ]
+        [ Harpnotes::Music::Dacapo.new(start, @previous_note, level: @repetition_stack.length) ]
       end
 
       def transform_part(part)

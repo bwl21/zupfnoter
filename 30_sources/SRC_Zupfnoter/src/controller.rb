@@ -1,33 +1,40 @@
-require 'opal-jquery'
-require 'opal-jszip'
-require 'opal-jspdf'
-require 'harpnotes'
-require 'abc_to_harpnotes'
-require 'raphael_engine'
-require 'pdf_engine'
-require 'consolelogger'
-
-
 class Controller
 
   attr :editor, :harpnote_preview_printer, :tune_preview_printer
 
   def initialize
     $log = ConsoleLogger.new("consoleEntries")
-    @auto_selection = true
-    setup_editor
+    @editor = Harpnotes::TextPane.new("abcEditor")
     setup_ui
     setup_ui_listener
+    load_from_loacalstorage
   end
 
+  # Save session to local store
+  def save_to_localstorage
+    abc = @editor.get_text
+    `localStorage.setItem('abc_data', abc);`
+  end
+
+  # load session from loaclstore
+  def load_from_loacalstorage
+    abc = `localStorage.getItem('abc_data');`
+    @editor.set_text(abc) unless abc.nil?
+  end
+
+  # render the harpnotes to a3
   def render_a3
-    Harpnotes::PDFEngine.new.draw(layout_harpnotes)
+    printer = Harpnotes::PDFEngine.new
+    printer.draw(layout_harpnotes(0))
   end
 
+
+  # render the harpnotes splitted on a4 pages
   def render_a4
     Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes)
   end
 
+  # play the abc tune
   def play_abc
     if @inst
       Element.find('#tbPlay').html('play')
@@ -36,32 +43,39 @@ class Controller
     else
       Element.find('#tbPlay').html('stop')
       @inst = `new Instrument('piano')`
-      `self.inst.play({tempo:200}, #{get_abc_code}, function(){self.$play_abc()} )`  # todo get parameter from ABC
+      `self.inst.play(nil, #{@editor.get_text}, function(){self.$play_abc()} )` # todo get parameter from ABC
     end
   end
 
 
+  # play an abc fragment
+  # todo prepend the abc header
   def play_abc_part(string)
-      @inst = `new Instrument('piano')`
-      `self.inst.play({tempo:200}, #{string});`  # todo get parameter from ABC
+    @inst = `new Instrument('piano')`
+    `self.inst.play(nil, #{string});` # todo get parameter from ABC
   end
 
+  # render the previews
+  # also saves abc in localstore
   def render_previews
     $log.info("rendering")
+    save_to_localstorage
     begin
       @harpnote_preview_printer.draw(layout_harpnotes)
-    rescue Exception =>e
+    rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
     begin
-      @tune_preview_printer.draw(get_abc_code)
-    rescue Exception =>e
+      @tune_preview_printer.draw(@editor.get_text)
+    rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
 
     nil
   end
 
+  # download abc + pdfs as a zip archive
+  # todo: determine filename from abc header
   def save_file
     zip = JSZip::ZipFile.new
     zip.file("song.abc", get_abc_code)
@@ -72,61 +86,30 @@ class Controller
     `window.saveAs(blob, filename)`
   end
 
-  def get_abc_code
-    `self.editor.getSession().getValue()`
-  end
-
-  def layout_harpnotes
-    song = Harpnotes::Input::ABCToHarpnotes.new.transform(get_abc_code)
-    Harpnotes::Layout::Default.new.layout(song)
-  end
-
-  #@param selection_start [Numeric] Start position
-  def select_range_by_position(selection_start, selection_end)
-    %x{
-      doc = self.editor.selection.doc
-      startrange = doc.indexToPosition(selection_start);
-      endrange = doc.indexToPosition(selection_end);
-      range = new Range(startrange.row, startrange.column, endrange.row, endrange.column);
-      myrange = {start:startrange, end:endrange}
-      self.editor.selection.setSelectionRange(myrange, false);
-     }
-  end
-
-  def get_selection_positions
-    %x{
-      doc = self.editor.selection.doc;
-      range = self.editor.selection.getRange();
-      range_start = doc.positionToIndex(range.start, 0);
-      range_end = doc.positionToIndex(range.end, 0);
-     }
-    [`range_start`, `range_end`]
+  # compute the layout of the harpnotes
+  # @return [Happnotes::Layout] to be passed to one of the engines for output
+  def layout_harpnotes(print_variant = 0)
+    song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
+    Harpnotes::Layout::Default.new.layout(song, nil, print_variant)
   end
 
   # select a particular abc elemnt in all views
   def select_abc_object(abcelement)
     a=Native(abcelement)
-    if true #@auto_selection
-      select_range_by_position(a[:startChar], a[:endChar])
-      @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
-      @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
-    end
+    $log.debug("select_abc_element (#{__FILE__} #{__LINE__})")
+    @editor.select_range_by_position(a[:startChar], a[:endChar])
+    @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
+    @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
   end
+
+
 
   private
 
-  def setup_editor
-    %x{
-      var editor = ace.edit("abcEditor");
-      // editor.setTheme("ace/theme/tomorrow_night");
-
-    }
-    @editor = `editor`
-  end
 
   def setup_ui
     # setup the harpnote prviewer
-    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview")
+    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview",1100, 700)
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end
@@ -141,6 +124,7 @@ class Controller
     end
   end
 
+
   def setup_ui_listener
 
     Element.find("#tbPlay").on(:click) { play_abc }
@@ -150,10 +134,10 @@ class Controller
 
 
     # changes in the editor
-    Native(Native(@editor).getSession).on(:change){|e|
+    @editor.on_change do |e|
       if @refresh_timer
         `clearTimeout(self.refresh_timer)`
-       # `alert("refresh cancelled")`
+        # `alert("refresh cancelled")`
       end
 
       if @playtimer_timer
@@ -163,23 +147,23 @@ class Controller
 
       @playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
       @refresh_timer = `setTimeout(function(){self.$render_previews()}, 1000)`
-        nil
-    }
-
-    # Seletion change in the editor
-    Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
-      a = get_selection_positions()
-      $log.debug("selection changed #{a}")
-      @auto_selection=false
-      @tune_preview_printer.range_highlight(a.first, a.last);
-      @harpnote_preview_printer.range_highlight(a.first, a.last);
-      @auto_selection=true
+      nil
     end
 
+
+    @editor.on_selection_change do |e|
+      a = @editor.get_selection_positions
+      unless a.first == a.last
+        @tune_preview_printer.range_highlight(a.first, a.last);
+        @harpnote_preview_printer.range_highlight(a.first, a.last);
+      end
+    end
 
 
     # key events in editor
     Element.find(`window`).on(:keydown) do |evt|
+      $log.debug("key pressed")
+      `console.log(event)`
       if `evt.keyCode == 13 && evt.shiftKey`
         evt.prevent_default
         render_previews

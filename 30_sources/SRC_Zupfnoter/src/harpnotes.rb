@@ -112,14 +112,29 @@ module Harpnotes
         @companion = companion
       end
 
+
+      #
+      # Return the associated pitch
+      #
+      # @return [Numeric] The pitch of the companion
       def pitch
         @companion.pitch
       end
 
+
+      #
+      # Return the associated beat
+      #
+      # @return [Numeric] Beat of the companion
       def beat
         @companion.beat
       end
 
+
+      #
+      # Return associated Duration
+      #
+      # @return [Numeric] Duration of the companion
       def duration
         @companion.duration
       end
@@ -270,21 +285,21 @@ module Harpnotes
     # The most prominent application is a repetition
     #
     class Dacapo < MusicEntity
-      attr_reader :from, :to, :level
+      attr_reader :from, :to, :policy
 
       #
       # construtor
       # @param from [Playable] the end point of jump (repeat from)
       # @param to [Playable] the Start point of jump (repeat to )
-      # @param level [Integer] A nesting level, used to optimize the graphical representation.
+      # @param policy [Hash] {level:, distance:} A policy, used to optimize the graphical representation.
       #
-      def initialize(from, to, level)
+      def initialize(from, to, policy)
         raise "End point of Jump (#{from.class}) must be a Playable" unless from.is_a? Harpnotes::Music::Playable
         raise "Start point of Jump (#{to.class}) must be a Playable" unless to.is_a? Harpnotes::Music::Playable
 
         @from = from
         @to = to
-        @level = level
+        @policy = policy
       end
     end
 
@@ -308,7 +323,7 @@ module Harpnotes
     #
     class Song
       attr_reader :voices, :beat_maps
-      attr_accessor :meta_data
+      attr_accessor :meta_data, :harpnote_options
 
       #
       # Constructor
@@ -391,6 +406,31 @@ module Harpnotes
 
     end
 
+    # this represents a voice and its properties
+    # as it is derived from an array, it can represent voices in ABCas well as in Harpnote domain
+
+    class Voice < Array
+      attr_accessor :index, :name, :show_voice, :show_flowline, :show_jumpline
+
+      def initialize()
+        @show_voice=true
+        @show_flowline = true
+        @show_jumpline = true
+        super
+      end
+
+      def show_voice?()
+         @show_voice == true
+      end
+
+      def show_flowline?()
+        @show_flowline == true
+      end
+
+      def show_jumpline?()
+        @show_jumpline == true
+      end
+    end
   end
 
   # The drawing model
@@ -449,15 +489,23 @@ module Harpnotes
     # This represents a JumpLine
     #
     class JumpLine
-      attr_reader :from, :to, :level
+      attr_reader :from, :to
 
       # @param from [Drawable] the origin of the flow
       # @param to   [Drawable] the target of the flow
-      # @param level [Numeric] the indentation level of the line
-      def initialize(from, to, level = 0)
+      # @param policy [Hash] the policy for vertical line
+      def initialize(from, to, policy  = {level: 0 })
         @from  = from
         @to    = to
-        @level = level
+        @policy = policy
+      end
+
+      def level
+        @policy[:level] || 0
+      end
+
+      def distance
+        @policy[:distance]
       end
     end
 
@@ -533,13 +581,15 @@ module Harpnotes
     class Annotation < Drawable
       attr_reader :center, :text, :style, :origin
 
-      # @param position Array the position of the text as [x, y]
+      # @param center Array the position of the text as [x, y]
       # @param text String the text itself
-      # @param style Symbol the text style, can be :regular, :bold, :framed
+      # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
+      # 
       def initialize(center, text, style = :regular, origin = nil)
         @center = center
         @text = text
         @style = style
+        @origin = origin
       end
     end
 
@@ -614,9 +664,6 @@ module Harpnotes
       # distance between two strings of the harp
       X_SPACING    = 115.0 / 10.0
 
-      # Spacing between beats
-      BEAT_SPACING = 4 * 1.0/64.0 * 1
-
       # Y coordinate of the very first beat
       Y_OFFSET  = 5
       X_OFFSET  = ELLIPSE_SIZE.first
@@ -630,8 +677,8 @@ module Harpnotes
       DURATION_TO_STYLE = {
         #key      size   fill          dot                  abc duration
         :d64 => [ 0.9,   :empty,       FALSE],    # 1      1
-        :d48 => [ 0.7,   :empty,       TRUE],     # 1/2 *
-        :d32 => [ 0.7,   :empty,       FALSE],    # 1/2
+        :d48 => [ 0.5,   :empty,       TRUE],     # 1/2 *
+        :d32 => [ 0.5,   :empty,       FALSE],    # 1/2
         :d24 => [ 0.7,   :filled,      TRUE],     # 1/4 *
         :d16 => [ 0.7,   :filled,      FALSE],    # 1/4
         :d12 => [ 0.5,   :filled,      TRUE],     # 1/8 *
@@ -643,6 +690,10 @@ module Harpnotes
         :d1  => [ 0.05,  :filled,      FALSE],    # 1/64
       }
 
+      def initialize
+        # Spacing between beats
+        @beat_spacing = 4 * 1.0/64.0 * 1
+      end
 
       #
       # get the vertical layout policy
@@ -651,45 +702,57 @@ module Harpnotes
       #             don't be confused it is just to make inject music in the scope of the returned procedure
       #
       # @return [Lambda] Proecdure, to compute the vertical distance of a particular beat
-      def compute_beat_layout(music)
+      def beat_layout_policy(music)
         Proc.new do |beat|
-          (beat -1 ) * BEAT_SPACING + Y_OFFSET
+          (beat -1 ) * @beat_spacing + Y_OFFSET
         end
       end
 
       #
       # compute the layout of the Harnote sheet
       #
-      # @param music Harpnotes::Music::Song the Sont to transform
+      # @param music Harpnotes::Music::Song the Song to transform
       # @param beat_layout = nil [Lambda] Policy procedure to compute the vertical layout
+      # @print_variant = 0 [Integer] If a song has multiple print_variants, this is the index of the one to be shown
       #
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
-      def layout(music, beat_layout = nil)
+      def layout(music, beat_layout = nil, print_variant = 0)
 
+        print_options = music.harpnote_options[:print][print_variant]
 
         # first optimize the vertical arrangement of the notes
         # by analyzing the beat layout
-        beat_layout = beat_layout || compute_beat_layout(music)
+        beat_layout = beat_layout || beat_layout_policy(music)
 
         beat_compression_map = compute_beat_compression(music)
+        maximal_beat = beat_compression_map.values.max
+        full_beat_spacing = 285 / maximal_beat
+
+        if full_beat_spacing < @beat_spacing
+          factor = (@beat_spacing / full_beat_spacing).round(2)
+          $log.warning("note distance too small (factor #{factor})")
+        end
+        @beat_spacing = full_beat_spacing
+
         compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
 
         # sheet_elements derived from the voices
         sheet_elements  = music.voices.each_with_index.map {|v, index|
-          layout_voice(v, compressed_beat_layout, index.even?)
+          if print_options[:voices].include?(index)
+            layout_voice(v, compressed_beat_layout,
+                         flowline: print_options[:flowlines].include?(index),
+                         jumpline: print_options[:jumplines].include?(index))
+          end
         }.flatten
 
+        # this is a lookup table to find the drawing symbol by a note
         note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
 
         # configure which synclines are required from-voice to-voice
-        # todo Maybe we provide required_synchlines as property of the Sheet
-        required_synchline_table = [[],              # 0 voices
-                                    [],              # 1 voice
-                                    [[0,1]],          # 2 voices
-                                    [[0,1]],          # 3 voices
-                                    [[0,1],[2,3]]     # 4 voices
-                                    ]
-        required_synchlines = required_synchline_table[music.voices.count]
+        # also filter such synchlines which have points in the displayed voices
+        required_synchlines = print_options[:synchlines].select{|sl|
+          print_options[:voices].include?(sl.first) && print_options[:voices].include?(sl.last)
+        }
 
         # build synchlines
         synch_lines = required_synchlines.map do |selector|
@@ -707,16 +770,28 @@ module Harpnotes
         (1..3).each do |i|
           rightmark.beat = i * 16
           leftmark.beat = i * 8
-          sheet_marks << layout_note(rightmark, compute_beat_layout(music))
-          sheet_marks << layout_note(leftmark, compute_beat_layout(music))
+          sheet_marks << layout_note(rightmark, beat_layout_policy(music))
+          sheet_marks << layout_note(leftmark, beat_layout_policy(music))
         end
 
 
         # now generate legend
 
         annotations = []
-        legend = music.meta_data.map{|k, v| "#{k}: #{v}"}.join("\n")
-        annotations << Harpnotes::Drawing::Annotation.new([10, 10], legend, :regular)
+
+        title_pos  = [20, 20]
+        legend_pos = [20, 30]
+
+        title    = music.meta_data[:title] || "untitled"
+        meter    = music.meta_data[:meter]
+        key      = music.meta_data[:key]
+        composer = music.meta_data[:composer]
+        tempo    = music.meta_data[:tempo_display]
+        print_variant = print_options[:title]
+        legend = "#{print_variant}\n#{composer}\nTakt: #{meter}\ Tonart: #{key}"
+        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
+
 
         sheet_elements = synch_lines + sheet_elements + sheet_marks + annotations
 
@@ -730,10 +805,11 @@ module Harpnotes
       #
       # @param voice [Array of MusicEntity] the Voice to be layouted
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
+      # @param show_options [Hash] {flowlines: true, jumplines:true}
       #
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playbles and jumplines.
       #                            note that these shall be rendered in the given order.
-      def layout_voice(voice, beat_layout, show_flowline = true)
+      def layout_voice(voice, beat_layout, show_options)
 
         # draw the playables
         res_playables = voice.select {|c| c.is_a? Playable }.map do |playable|
@@ -741,7 +817,7 @@ module Harpnotes
         end.flatten
 
         # layout the measures
-        
+
         res_measures = voice.select{|c| c.is_a? MeasureStart}.map do |measure|
           layout_playables(measure, beat_layout)
         end
@@ -765,12 +841,21 @@ module Harpnotes
           res
         end.compact
 
-        res_flow = [] unless show_flowline
+        # kill the flowlines if they shall not be shown
+        res_flow = [] unless show_options[:flowline]
 
         # draw the jumplines
         res_dacapo = voice.select {|c| c.is_a? Dacapo }.map do |dacapo|
-          JumpLine.new(note_to_ellipse[dacapo.from], note_to_ellipse[dacapo.to], dacapo.level)
+          if distance = dacapo.policy[:distance]
+            vertical = {distance: (distance + 0.5) * X_SPACING}
+          else
+            vertical = {level: dacapo.policy[:level]}
+          end
+          JumpLine.new(note_to_ellipse[dacapo.from], note_to_ellipse[dacapo.to], vertical)
         end
+
+        # kill the jumplines if they shallnot be shown
+        res_dacapo = [] unless show_options[:jumpline]
 
         # return all drawing primitives
         res_flow + res_playables + res_dacapo + res_measures + res_newparts
@@ -789,7 +874,7 @@ module Harpnotes
         max_beat = music.beat_maps.map {|map| map.keys.max }.max
 
         current_beat = 0
-        last_size = 32
+        last_size = 32  #todo:replace literal
         Hash[(0..max_beat).map do |beat|
                notes_on_beat = music.beat_maps.map {|bm| bm[beat] }.flatten.compact
                max_duration = notes_on_beat.map{|n| n.duration}.max
@@ -798,14 +883,15 @@ module Harpnotes
 
                unless has_no_notes_on_beat
                  begin
-                   size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first
+                   size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first  #todo:replace literal
                  rescue Exception => e
                    $log.error("unsupported duration: #{max_duration} on beat #{beat},  #{notes_on_beat.to_json}")
                  end
                  increment = (size + last_size)
                  last_size = size
 
-                 increment = [64,increment].max unless is_new_part.empty?
+                 # if a new part starts on this beat, make space for a full note
+                 increment = [64, increment].max unless is_new_part.empty? #todo: replace literal
                  current_beat += increment
                end
                [ beat, current_beat ]
@@ -898,9 +984,9 @@ module Harpnotes
         #               shift to left   pitch          space     stay away from border
         if root.beat
           # todo decide if part starts on a new line, then x_offset should be 0
-          x_offset     = (PITCH_OFFSET + root.pitch + 0.5) * X_SPACING + X_OFFSET  # todo:remove literal here
-          y_offset     = beat_layout.call(root.beat)
-          res = Annotation.new([ x_offset, y_offset ], root.name, nil, root)
+          x_offset     = (PITCH_OFFSET + root.pitch + (-0.5)) * X_SPACING + X_OFFSET  # todo:remove literal here
+          y_offset     = beat_layout.call(root.beat()) -(24 * @beat_spacing) # todo:remove literal here
+          res = Annotation.new([ x_offset, y_offset ], root.name, :regular, nil)
         else
           $log.warn("Part without content")
           res = nil
