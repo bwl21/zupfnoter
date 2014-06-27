@@ -130,6 +130,7 @@ module Harpnotes
         unless hn_config_from_song[:print]
           hn_config_from_song[:print] =  [{t: "all", v:[1,2,3,4], s: [[1,2],[3,4]], f:[1,3], j:[1,3]}]
         end
+        hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
         hn_config_from_song
       end
 
@@ -255,11 +256,12 @@ module Harpnotes
           voices:      o[:v].map{|i| i-1},
           synchlines:  o[:s].map{|i| i.map{|j| j-1}},
           flowlines:   o[:f].map{|i| i-1},
-          jumplines:   o[:j].map{|i| i-1},
-          legend:      o[:legend],
-          note:        o[:note]
+          jumplines:   o[:j].map{|i| i-1}
          }
         }
+        result.harpnote_options[:legend] = harpnote_options[:legend]
+        result.harpnote_options[:notes]  = harpnote_options[:note]
+
 
         result
       end

@@ -771,7 +771,7 @@ module Harpnotes
           rightmark.beat = i * 16
           leftmark.beat = i * 8
           sheet_marks << layout_note(rightmark, beat_layout_policy(music))
-          sheet_marks << layout_note(leftmark, beat_layout_policy(music))
+          sheet_marks << layout_note(leftmark,  beat_layout_policy(music))
         end
 
 
@@ -788,9 +788,14 @@ module Harpnotes
         composer = music.meta_data[:composer]
         tempo    = music.meta_data[:tempo_display]
         print_variant = print_options[:title]
+        title_pos = music.harpnote_options[:legend] || [20,20]
+        legend_pos = [title_pos.first, title_pos.last + 7]
         legend = "#{print_variant}\n#{composer}\nTakt: #{meter}\ Tonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
+        music.harpnote_options[:notes].each do |note|
+          annotations << Harpnotes::Drawing::Annotation.new(note[0], note[1], note[2])
+        end
 
 
         sheet_elements = synch_lines + sheet_elements + sheet_marks + annotations

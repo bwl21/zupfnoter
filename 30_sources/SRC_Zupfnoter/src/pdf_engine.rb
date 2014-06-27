@@ -33,8 +33,11 @@ module Harpnotes
     end
 
     def draw(sheet)
+      # todo: move this to the layouter
       @pdf.rect(1.0, 1.0, 418, 295)
       @pdf.rect(0.0, 0.0, 420.0, 297.0)
+
+      # the dropmarks are drawn in octave distance
       delta = 12.0 * X_SPACING
       (1..2).each do |i|
         [:top, :bottom].each{|border| draw_cropmark(i, delta, border)}
@@ -52,7 +55,7 @@ module Harpnotes
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child)
         else
-          puts "don't know how to draw #{child.class}"
+          $log.warn "don't know how to draw #{child.class}"
           nil
         end
       end

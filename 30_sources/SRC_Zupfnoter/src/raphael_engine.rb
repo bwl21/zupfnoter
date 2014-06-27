@@ -35,7 +35,7 @@ module Harpnotes
         elsif child.is_a? Harpnotes::Drawing::Rest
           draw_rest(child)
         else
-          puts "don't know how to draw #{child.class}"
+          $log.warn "don't know how to draw #{child.class}"
           nil
         end
       end
