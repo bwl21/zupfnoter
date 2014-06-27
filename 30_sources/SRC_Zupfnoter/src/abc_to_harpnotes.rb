@@ -321,7 +321,7 @@ module Harpnotes
             note[:chord].each do |chord|
               name = Native(chord)[:name]
               if name[0] == ':'
-                @jumptargets[name[1..-1]] = result.select{|n|n.is_a? Harpnotes::Music::Playable}.last
+                @jumptargets[name[1 .. -1]] = result.select{|n|n.is_a? Harpnotes::Music::Playable}.last
               end
             end
           end
@@ -348,6 +348,12 @@ module Harpnotes
           result << Harpnotes::Music::MeasureStart.new(res)
           @next_note_marks_measure = false
         end
+
+        if @next_note_marks_repeat_start
+          @repetition_stack << res
+          @next_note_marks_repeat_start = false
+        end
+
         result
       end
 

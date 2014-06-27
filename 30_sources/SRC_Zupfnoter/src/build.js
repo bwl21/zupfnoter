@@ -15195,6 +15195,9 @@ if (n == null) n = nil;
           if ((($a = self.next_note_marks_measure) !== nil && (!$a._isBoolean || $a == true))) {
             result['$<<']((($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).MeasureStart == null ? $a.cm('MeasureStart') : $a.MeasureStart).$new(res));
             self.next_note_marks_measure = false;};
+          if ((($a = self.next_note_marks_repeat_start) !== nil && (!$a._isBoolean || $a == true))) {
+            self.repetition_stack['$<<'](res);
+            self.next_note_marks_repeat_start = false;};
           return result;
         };
 
