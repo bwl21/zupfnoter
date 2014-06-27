@@ -14832,7 +14832,7 @@ if (e == null) e = nil;
           size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_43 = function(e){var self = TMP_43._s || this;
 if (e == null) e = nil;
           return e['$*'](scale)}, TMP_43._s = self, TMP_43), $a).call($b);
-          return res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset['$-'](size.$last())['$-'](0.5)], [size.$first(), 0.1], fill, false, root);
+          return res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset['$-'](size.$last())['$-'](0.5)], [size.$first(), 0.0], fill, false, root);
         };
 
         def.$layout_newpart = function(root, beat_layout) {

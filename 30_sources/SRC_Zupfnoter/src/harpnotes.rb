@@ -976,7 +976,7 @@ module Harpnotes
         y_offset     = beat_layout.call(root.beat)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
-        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, false, root)
+        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.0], fill, false, root)
       end
 
 
