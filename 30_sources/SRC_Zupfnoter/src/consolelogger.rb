@@ -26,7 +26,8 @@ class ConsoleLogger
     icons = {
         :error => :"icon-error-alt",
         :warning => :"icon-attention",
-        :info => :"icon-info-circled"
+        :info => :"icon-info-circled",
+        :debug => :"icon-minus-squared"
     }
     time = Time.now.strftime("%H:%M:%S")
     @console << "<li class='#{type}'><i class=\"#{icons[type]}\"><span class='time'>#{time}</span><span class='msg'>#{msg}</span></li>"

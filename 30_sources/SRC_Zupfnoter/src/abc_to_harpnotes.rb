@@ -126,7 +126,7 @@ module Harpnotes
           end
           line_no +=1
         end
-        $log.debug(hn_config_from_song)
+        #$log.debug("#{hn_config_from_song} (#{__FILE__} #{__LINE__})")
         unless hn_config_from_song[:print]
           hn_config_from_song[:print] =  [{t: "all", v:[1,2,3,4], s: [[1,2],[3,4]], f:[1,3], j:[1,3]}]
         end
@@ -138,7 +138,7 @@ module Harpnotes
       def transform(abc_code)
 
         harpnote_options = parse_harpnote_config(abc_code)
-        $log.debug(harpnote_options)
+        #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         # now parse the abc_code by abcjs
         %x{
@@ -261,7 +261,6 @@ module Harpnotes
         }
         result.harpnote_options[:legend] = harpnote_options[:legend]
         result.harpnote_options[:notes]  = harpnote_options[:note]
-
 
         result
       end
@@ -429,7 +428,7 @@ module Harpnotes
       end
 
       def method_missing(name, *args)
-        `console.log('Missing transformation rule: ' + name)`
+        $log.debug("Missing transformation rule: #{name} (#{__FILE__} #{__LINE__})")
         nil
       end
 

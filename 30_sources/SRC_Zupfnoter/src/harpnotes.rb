@@ -993,7 +993,7 @@ module Harpnotes
           y_offset     = beat_layout.call(root.beat()) -(24 * @beat_spacing) # todo:remove literal here
           res = Annotation.new([ x_offset, y_offset ], root.name, :regular, nil)
         else
-          $log.warn("Part without content")
+          $log.warning("Part without content")
           res = nil
         end
 

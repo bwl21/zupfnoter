@@ -114,6 +114,8 @@ body {
     color: #000000; }
   #console .warning {
     color: #e8661d; }
+  #console .debug {
+    color: #120ee8; }
   #console .time {
     padding-left: 1em;
     width: 10%;

@@ -29,51 +29,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="opal-jspdf.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1344" max-vertical-offset="1920">
-              <caret line="46" column="16" selection-start-line="46" selection-start-column="16" selection-end-line="46" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="harpnotes.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.980392" vertical-offset="11254" max-vertical-offset="15360">
-              <caret line="791" column="57" selection-start-line="791" selection-start-column="57" selection-end-line="791" selection-end-column="57" />
+            <state vertical-scroll-proportion="-7.0" vertical-offset="14750" max-vertical-offset="15360">
+              <caret line="995" column="22" selection-start-line="995" selection-start-column="22" selection-end-line="995" selection-end-column="22" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.ru" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/config.ru">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="285">
-              <caret line="8" column="21" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="raphael_engine.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="raphael_engine.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.52283657" vertical-offset="120" max-vertical-offset="2610">
-              <caret line="37" column="19" selection-start-line="37" selection-start-column="19" selection-end-line="37" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index_opal.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="1545">
-              <caret line="19" column="72" selection-start-line="19" selection-start-column="72" selection-end-line="19" selection-end-column="72" />
+            <state vertical-scroll-proportion="-6.64" vertical-offset="389" max-vertical-offset="2610">
+              <caret line="37" column="85" selection-start-line="37" selection-start-column="85" selection-end-line="37" selection-end-column="85" />
               <folding />
             </state>
           </provider>
@@ -82,18 +52,8 @@
       <file leaf-file-name="controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="3030">
-              <caret line="27" column="35" selection-start-line="27" selection-start-column="35" selection-end-line="27" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="1545">
-              <caret line="6" column="64" selection-start-line="6" selection-start-column="64" selection-end-line="6" selection-end-column="64" />
+            <state vertical-scroll-proportion="-7.0" vertical-offset="2285" max-vertical-offset="3030">
+              <caret line="164" column="55" selection-start-line="164" selection-start-column="55" selection-end-line="164" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -102,8 +62,8 @@
       <file leaf-file-name="pdf_engine.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-18.08" vertical-offset="298" max-vertical-offset="2565">
-              <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
+            <state vertical-scroll-proportion="-6.64" vertical-offset="689" max-vertical-offset="2565">
+              <caret line="57" column="85" selection-start-line="57" selection-start-column="85" selection-end-line="57" selection-end-column="85" />
               <folding />
             </state>
           </provider>
@@ -112,7 +72,7 @@
       <file leaf-file-name="text_pane.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="1575">
+            <state vertical-scroll-proportion="0.0" vertical-offset="743" max-vertical-offset="1575">
               <caret line="83" column="40" selection-start-line="83" selection-start-column="40" selection-end-line="83" selection-end-column="40" />
               <folding />
             </state>
@@ -122,9 +82,102 @@
       <file leaf-file-name="abc_to_harpnotes.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="66.0" vertical-offset="3630" max-vertical-offset="6690">
-              <caret line="132" column="130" selection-start-line="132" selection-start-column="130" selection-end-line="132" selection-end-column="130" />
+            <state vertical-scroll-proportion="15.705882" vertical-offset="2871" max-vertical-offset="6675">
+              <caret line="138" column="0" selection-start-line="138" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="consolelogger.rb" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/consolelogger.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.5099648" vertical-offset="0" max-vertical-offset="853">
+              <caret line="29" column="38" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fontello.css" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/icons/fontello.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="570" max-vertical-offset="1095">
+              <caret line="58" column="1" selection-start-line="58" selection-start-column="1" selection-end-line="58" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.scss" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.16" vertical-offset="1432" max-vertical-offset="2970">
+              <caret line="106" column="7" selection-start-line="106" selection-start-column="3" selection-end-line="106" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/build.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="241135" max-vertical-offset="248655">
+              <caret line="16087" column="31" selection-start-line="16087" selection-start-column="31" selection-end-line="16087" selection-end-column="31" />
+              <folding>
+                <marker date="1403946981000" expanded="true" signature="442681:470511" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="442808:470501" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="443834:470485" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="443962:447842" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="444140:444744" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="444372:444414" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="444495:444596" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="444991:445934" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="445420:445812" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="446214:446327" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="446558:447826" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="446909:446977" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="447126:447729" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="447184:447509" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="447355:447508" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="448145:470458" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="448307:448637" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="448973:449209" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="449368:451238" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="449612:450696" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="449666:449878" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="449906:450470" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="449904:450203" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="450217:450469" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="450248:450330" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="450836:450934" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="451138:451145" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="451514:460938" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="452393:452575" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="452662:452835" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="452897:452945" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="453141:453251" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="453481:453598" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="453905:454240" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="454540:456241" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="454828:456198" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="455032:456156" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="455594:455973" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="456451:457802" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="456725:457434" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="457001:457327" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="457232:457329" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="457586:457706" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="458252:458746" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="458943:459167" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="459413:460657" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="459637:460655" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="459734:459819" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="459938:460207" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="460078:460165" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="460325:460410" placeholder="{...}" />
+                <marker date="1403946981000" expanded="true" signature="460528:460613" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -153,9 +206,7 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.css" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/assets/index.scss" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.css" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abcjs.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/consolelogger.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal_musicaljs.rb" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb" />
@@ -164,18 +215,20 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jspdf.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/configurator.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/config.ru" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/consolelogger.rb" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="y" value="22" />
     <option name="width" value="1613" />
     <option name="height" value="1024" />
   </component>
@@ -278,6 +331,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -400,7 +454,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -606,15 +659,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1613" height="1024" extended-state="0" />
+    <frame x="0" y="22" width="1613" height="1024" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32819384" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32715008" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.04845815" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3642384" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28771484" sideWeight="0.49835527" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23615532" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23870146" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2495226" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
@@ -622,20 +676,19 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36453745" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.6008359" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.6008359" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32984293" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32819384" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32715008" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36453745" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3642384" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2495226" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -644,9 +697,9 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.04845815" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28771484" sideWeight="0.49835527" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23106302" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23870146" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.6008359" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32703778" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32984293" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
@@ -680,24 +733,11 @@
           <line>43</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="ruby-line">
-          <url>file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb</url>
-          <line>8</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="12" />
+      <option name="time" value="13" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="495" max-vertical-offset="6570">
-          <caret line="255" column="23" selection-start-line="255" selection-start-column="23" selection-end-line="255" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="225" max-vertical-offset="315">
@@ -878,23 +918,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/RS_Requirements/DD_Zupfnoter.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="630" max-vertical-offset="720">
           <caret line="42" column="69" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.log">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="17550">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-jszip.rb">
@@ -933,21 +973,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1200" max-vertical-offset="2880">
-          <caret line="111" column="12" selection-start-line="111" selection-start-column="12" selection-end-line="111" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/npm-debug.log">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="660.85187" vertical-offset="17843" max-vertical-offset="18660">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
       </provider>
     </entry>
     <entry file="uml://Ruby/Controller">
@@ -970,13 +1003,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-10.0" vertical-offset="0" max-vertical-offset="1005">
           <caret line="18" column="79" selection-start-line="18" selection-start-column="79" selection-end-line="18" selection-end-column="79" />
         </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-raphael.rb">
@@ -987,25 +1020,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/consolelogger.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.6" vertical-offset="0" max-vertical-offset="675">
-          <caret line="31" column="12" selection-start-line="31" selection-start-column="12" selection-end-line="31" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/configurator.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.8" vertical-offset="0" max-vertical-offset="210">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/build.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24561404" vertical-offset="243624" max-vertical-offset="246930">
-          <caret line="16250" column="8" selection-start-line="16250" selection-start-column="8" selection-end-line="16250" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -1041,26 +1060,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="1575">
-          <caret line="83" column="40" selection-start-line="83" selection-start-column="40" selection-end-line="83" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="1545">
           <caret line="6" column="64" selection-start-line="6" selection-start-column="64" selection-end-line="6" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="3030">
-          <caret line="27" column="35" selection-start-line="27" selection-start-column="35" selection-end-line="27" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -1081,34 +1084,135 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="66.0" vertical-offset="3630" max-vertical-offset="6690">
-          <caret line="132" column="130" selection-start-line="132" selection-start-column="130" selection-end-line="132" selection-end-column="130" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="743" max-vertical-offset="1575">
+          <caret line="83" column="40" selection-start-line="83" selection-start-column="40" selection-end-line="83" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.980392" vertical-offset="11254" max-vertical-offset="15360">
-          <caret line="791" column="57" selection-start-line="791" selection-start-column="57" selection-end-line="791" selection-end-column="57" />
+        <state vertical-scroll-proportion="-7.0" vertical-offset="14750" max-vertical-offset="15360">
+          <caret line="995" column="22" selection-start-line="995" selection-start-column="22" selection-end-line="995" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/build.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="241135" max-vertical-offset="248655">
+          <caret line="16087" column="31" selection-start-line="16087" selection-start-column="31" selection-end-line="16087" selection-end-column="31" />
+          <folding>
+            <marker date="1403946981000" expanded="true" signature="442681:470511" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="442808:470501" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="443834:470485" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="443962:447842" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="444140:444744" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="444372:444414" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="444495:444596" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="444991:445934" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="445420:445812" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="446214:446327" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="446558:447826" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="446909:446977" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="447126:447729" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="447184:447509" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="447355:447508" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="448145:470458" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="448307:448637" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="448973:449209" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="449368:451238" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="449612:450696" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="449666:449878" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="449906:450470" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="449904:450203" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="450217:450469" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="450248:450330" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="450836:450934" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="451138:451145" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="451514:460938" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="452393:452575" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="452662:452835" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="452897:452945" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="453141:453251" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="453481:453598" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="453905:454240" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="454540:456241" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="454828:456198" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="455032:456156" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="455594:455973" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="456451:457802" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="456725:457434" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="457001:457327" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="457232:457329" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="457586:457706" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="458252:458746" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="458943:459167" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="459413:460657" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="459637:460655" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="459734:459819" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="459938:460207" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="460078:460165" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="460325:460410" placeholder="{...}" />
+            <marker date="1403946981000" expanded="true" signature="460528:460613" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.0" vertical-offset="2285" max-vertical-offset="3030">
+          <caret line="164" column="55" selection-start-line="164" selection-start-column="55" selection-end-line="164" selection-end-column="55" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/pdf_engine.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.08" vertical-offset="298" max-vertical-offset="2565">
-          <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
+        <state vertical-scroll-proportion="-6.64" vertical-offset="689" max-vertical-offset="2565">
+          <caret line="57" column="85" selection-start-line="57" selection-start-column="85" selection-end-line="57" selection-end-column="85" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/raphael_engine.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.52283657" vertical-offset="120" max-vertical-offset="2610">
-          <caret line="37" column="19" selection-start-line="37" selection-start-column="19" selection-end-line="37" selection-end-column="19" />
+        <state vertical-scroll-proportion="-6.64" vertical-offset="389" max-vertical-offset="2610">
+          <caret line="37" column="85" selection-start-line="37" selection-start-column="85" selection-end-line="37" selection-end-column="85" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="15.705882" vertical-offset="2871" max-vertical-offset="6675">
+          <caret line="138" column="0" selection-start-line="138" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.16" vertical-offset="1432" max-vertical-offset="2970">
+          <caret line="106" column="7" selection-start-line="106" selection-start-column="3" selection-end-line="106" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/icons/fontello.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="570" max-vertical-offset="1095">
+          <caret line="58" column="1" selection-start-line="58" selection-start-column="1" selection-end-line="58" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/consolelogger.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5099648" vertical-offset="0" max-vertical-offset="853">
+          <caret line="29" column="38" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
           <folding />
         </state>
       </provider>

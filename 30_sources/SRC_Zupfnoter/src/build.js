@@ -13941,7 +13941,7 @@ if (a == null) a = nil;
     return (def.$write = function(type, msg) {
       var $a, self = this, icons = nil, time = nil;
 
-      icons = $hash2(["error", "warning", "info"], {"error": "icon-error-alt", "warning": "icon-attention", "info": "icon-info-circled"});
+      icons = $hash2(["error", "warning", "info", "debug"], {"error": "icon-error-alt", "warning": "icon-attention", "info": "icon-info-circled", "debug": "icon-minus-squared"});
       time = (($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now().$strftime("%H:%M:%S");
       self.console['$<<']("<li class='" + (type) + "'><i class=\"" + (icons['$[]'](type)) + "\"><span class='time'>" + (time) + "</span><span class='msg'>" + (msg) + "</span></li>");
       self.console.parent().scrollTop(999999);
@@ -13956,7 +13956,7 @@ if (a == null) a = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$include', '$/', '$*', '$-', '$harpnote_options', '$beat_layout_policy', '$compute_beat_compression', '$values', '$<', '$round', '$warning', '$call', '$include?', '$layout_voice', '$each_with_index', '$voices', '$origin', '$build_synch_points', '$layout_note', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$policy', '$from', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$name', '$warn', '$to_sym']);
+  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$include', '$/', '$*', '$-', '$harpnote_options', '$beat_layout_policy', '$compute_beat_compression', '$values', '$<', '$round', '$warning', '$call', '$include?', '$layout_voice', '$each_with_index', '$voices', '$origin', '$build_synch_points', '$layout_note', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$policy', '$from', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$name', '$to_sym']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -14849,7 +14849,7 @@ if (e == null) e = nil;
             y_offset = beat_layout.$call(root.$beat())['$-'](((24)['$*'](self.beat_spacing)));
             res = (($a = $scope.Annotation) == null ? $opal.cm('Annotation') : $a).$new([x_offset, y_offset], root.$name(), "regular", nil);
             } else {
-            $gvars.log.$warn("Part without content");
+            $gvars.log.$warning("Part without content");
             res = nil;
           };
           return res;
@@ -14873,7 +14873,7 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$debug', '$parse_harpnote_config', '$compact', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$index=', '$flatten!', '$compact!', '$flatten', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$get_midipitch', '$length', '$companion=', '$first_in_part=', '$clear', '$gsub', '$pop']);
+  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$parse_harpnote_config', '$compact', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$debug', '$index=', '$flatten!', '$compact!', '$flatten', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$get_midipitch', '$length', '$companion=', '$first_in_part=', '$clear', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -14988,7 +14988,6 @@ if (f == null) f = nil;
 
         def.$parse_harpnote_config = function(abc_code) {
           var $a, $b, TMP_6, self = this, hn_config_from_song = nil, line_no = nil;
-          if ($gvars.log == null) $gvars.log = nil;
 
           hn_config_from_song = $hash2([], {});
           line_no = 1;
@@ -15008,7 +15007,6 @@ if (m == null) m = nil;
                 }else { throw $err; }
               }};
             return line_no = line_no['$+'](1);}, TMP_6._s = self, TMP_6), $a).call($b);
-          $gvars.log.$debug(hn_config_from_song);
           if ((($a = hn_config_from_song['$[]']("print")) !== nil && (!$a._isBoolean || $a == true))) {
             } else {
             hn_config_from_song['$[]=']("print", [$hash2(["t", "v", "s", "f", "j"], {"t": "all", "v": [1, 2, 3, 4], "s": [[1, 2], [3, 4]], "f": [1, 3], "j": [1, 3]})])
@@ -15020,10 +15018,8 @@ if (m == null) m = nil;
 
         def.$transform = function(abc_code) {
           var $a, $b, TMP_8, $c, TMP_9, $d, TMP_10, $e, TMP_11, $f, TMP_12, $g, TMP_16, $h, $i, TMP_20, TMP_21, self = this, harpnote_options = nil, warnings = nil, note_length_rows = nil, note_length = nil, tune = nil, lines = nil, first_staff = nil, key = nil, meter = nil, voices = nil, hn_voices = nil, result = nil, meta_data = nil, meta_data_from_tune = nil;
-          if ($gvars.log == null) $gvars.log = nil;
 
           harpnote_options = self.$parse_harpnote_config(abc_code);
-          $gvars.log.$debug(harpnote_options);
           
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
@@ -15285,9 +15281,10 @@ if (part == null) part = nil;
 
         return (def.$method_missing = function(name, args) {
           var self = this;
+          if ($gvars.log == null) $gvars.log = nil;
 
           args = $slice.call(arguments, 1);
-          console.log('Missing transformation rule: ' + name);
+          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (433) + ")");
           return nil;
         }, nil) && 'method_missing';
       })(self, null);
@@ -15797,7 +15794,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$warn', '$class', '$children', '$unhighlight', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$highlight', '$<<', '$private', '$unhighlight_color=', '$[]=', '$unhighlight_color', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$-', '$map', '$rect', '$line', '$from', '$to', '$style', '$distance', '$level', '$path', '$translate']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$debug', '$class', '$children', '$unhighlight', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$highlight', '$<<', '$private', '$unhighlight_color=', '$[]=', '$unhighlight_color', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$-', '$map', '$rect', '$line', '$from', '$to', '$style', '$distance', '$level', '$path', '$translate']);
   ;
   ;
   return (function($base) {
@@ -15851,7 +15848,7 @@ if (child == null) child = nil;
           } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Rest == null ? $b.cm('Rest') : $b.Rest))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_rest(child)
             } else {
-            $gvars.log.$warn("don't know how to draw " + (child.$class()));
+            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("raphael_engine") + " " + (38) + ")");
             return nil;
           }}, TMP_1._s = self, TMP_1), $a).call($b);
       };
@@ -16014,7 +16011,7 @@ if (s == null) s = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_annotation', '$warn', '$class', '$children', '$private', '$[]', '$style', '$text_color=', '$font_size=', '$font_style=', '$text', '$first', '$center', '$last', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$distance', '$nil?', '$level', '$draw=', '$left_arrowhead']);
+  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_annotation', '$debug', '$class', '$children', '$private', '$[]', '$style', '$text_color=', '$font_size=', '$font_style=', '$text', '$first', '$center', '$last', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$distance', '$nil?', '$level', '$draw=', '$left_arrowhead']);
   ;
   ;
   return (function($base) {
@@ -16088,7 +16085,7 @@ if (child == null) child = nil;
           } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Annotation == null ? $b.cm('Annotation') : $b.Annotation))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_annotation(child)
             } else {
-            $gvars.log.$warn("don't know how to draw " + (child.$class()));
+            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("pdf_engine") + " " + (58) + ")");
             return nil;
           }}, TMP_4._s = self, TMP_4), $a).call($c);
         return self.pdf;
@@ -16424,7 +16421,7 @@ if (e == null) e = nil;
       ($a = ($h = (($i = $scope.Element) == null ? $opal.cm('Element') : $i).$find(window)).$on, $a._p = (TMP_9 = function(evt){var self = TMP_9._s || this, $a;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
-      $gvars.log.$debug("key pressed");
+      $gvars.log.$debug("key pressed (" + ("controller") + " " + (165) + ")");
         console.log(event);
         if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();

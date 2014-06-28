@@ -162,7 +162,7 @@ class Controller
 
     # key events in editor
     Element.find(`window`).on(:keydown) do |evt|
-      $log.debug("key pressed")
+      $log.debug("key pressed (#{__FILE__} #{__LINE__})")
       `console.log(event)`
       if `evt.keyCode == 13 && evt.shiftKey`
         evt.prevent_default
