@@ -355,6 +355,12 @@ module Harpnotes
           @next_note_marks_repeat_start = false
         end
 
+        @previous_new_part.each{|part|
+          part.companion = res
+          res.first_in_part=true
+        }
+        @previous_new_part.clear
+
         result
       end
 

@@ -8,7 +8,7 @@ module Harpnotes
     attr_reader :pdf
 
     PADDING = 4.0
-    ARROW_SIZE = 10.0
+    ARROW_SIZE = 1.0
     JUMPLINE_INDENT = 10.0
     DOTTED_SIZE = 0.3
 

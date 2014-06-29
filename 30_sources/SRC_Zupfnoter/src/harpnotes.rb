@@ -162,7 +162,7 @@ module Harpnotes
       #
       # Constructor
 
-      # @param pitch [Interger] A designator of the note (http://computermusicresource.com/midikeys.html)
+      # @param pitch [Integer] A designator of the note (http://computermusicresource.com/midikeys.html)
       # @param duration [Integer] see Playable
       #
       # @return [type] [description]
@@ -737,16 +737,16 @@ module Harpnotes
         compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
 
         # sheet_elements derived from the voices
-        sheet_elements  = music.voices.each_with_index.map {|v, index|
+        voice_elements  = music.voices.each_with_index.map {|v, index|
           if print_options[:voices].include?(index)
             layout_voice(v, compressed_beat_layout,
                          flowline: print_options[:flowlines].include?(index),
                          jumpline: print_options[:jumplines].include?(index))
           end
-        }.flatten
+        }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
         # this is a lookup table to find the drawing symbol by a note
-        note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
+        note_to_ellipse = Hash[voice_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
 
         # configure which synclines are required from-voice to-voice
         # also filter such synchlines which have points in the displayed voices
@@ -798,8 +798,8 @@ module Harpnotes
         end
 
 
-        sheet_elements = synch_lines + sheet_elements + sheet_marks + annotations
-
+        sheet_elements = synch_lines + voice_elements + sheet_marks + annotations
+        hugo=1
         Harpnotes::Drawing::Sheet.new(sheet_elements)
       end
 
@@ -863,7 +863,7 @@ module Harpnotes
         res_dacapo = [] unless show_options[:jumpline]
 
         # return all drawing primitives
-        res_flow + res_playables + res_dacapo + res_measures + res_newparts
+        retval = (res_flow + res_playables + res_dacapo + res_measures + res_newparts).compact
       end
 
 

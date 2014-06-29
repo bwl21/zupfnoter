@@ -8,7 +8,7 @@ module Harpnotes
     attr_reader :paper
 
     PADDING = 5
-    ARROW_SIZE = 10
+    ARROW_SIZE = 1.0
     JUMPLINE_INDENT = 10
     DOTTED_SIZE = 0.3
 
@@ -23,6 +23,8 @@ module Harpnotes
       @paper.clear
       @elements = {}   # record all elements being on the sheet, using upstream object as key
       @highlighted = []
+      @paper.rect(1.0, 1.0, 418, 295)
+      @paper.rect(0.0, 0.0, 420.0, 297.0)
 
 
       sheet.children.each do |child|
@@ -156,7 +158,7 @@ module Harpnotes
       unless distance.nil?
         depth = endpoint[0] + distance
       else
-        depth = @paper.size[1] - (root.level * JUMPLINE_INDENT)
+        depth = 420 - (root.level * JUMPLINE_INDENT)  # todo replace literal
       end
 
       path  = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
