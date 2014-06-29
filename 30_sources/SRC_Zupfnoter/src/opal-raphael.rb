@@ -56,6 +56,13 @@ module Raphael
       `self.r.translate(x, y)`
     end
 
+    #
+    # the the size of an object
+    # @return [Native Javascript object] see http://raphaeljs.com/reference.html#Element.getBBox
+    #
+    def get_bbox()
+      Native(`self.r.getBBox()`)
+    end
 
 
     #
@@ -165,8 +172,8 @@ module Raphael
     # @param text [String] The text to be rendered
     # 
     # @return [Element] The generated Element
-    def text(x, y, text)
-      Raphael::Element.new(`self.r.text(x, y, text)`)
+    def text(x, y, text, attributes={})
+      x = Raphael::Element.new(`self.r.text(x, y, text)`)
     end
 
 

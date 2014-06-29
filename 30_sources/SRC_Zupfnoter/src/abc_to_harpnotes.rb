@@ -126,10 +126,11 @@ module Harpnotes
           end
           line_no +=1
         end
-        $log.debug(hn_config_from_song)
+        #$log.debug("#{hn_config_from_song} (#{__FILE__} #{__LINE__})")
         unless hn_config_from_song[:print]
           hn_config_from_song[:print] =  [{t: "all", v:[1,2,3,4], s: [[1,2],[3,4]], f:[1,3], j:[1,3]}]
         end
+        hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
         hn_config_from_song
       end
 
@@ -137,7 +138,7 @@ module Harpnotes
       def transform(abc_code)
 
         harpnote_options = parse_harpnote_config(abc_code)
-        $log.debug(harpnote_options)
+        #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         # now parse the abc_code by abcjs
         %x{
@@ -236,7 +237,7 @@ module Harpnotes
         result = Harpnotes::Music::Song.new(hn_voices, note_length)
         meta_data = {:compile_time => Time.now(),
                      :meter => meter[:display],
-                     :key => Native(key)[:root]
+                     :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
                     }
         if tune[:metaText][:tempo]
           meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],
@@ -255,11 +256,11 @@ module Harpnotes
           voices:      o[:v].map{|i| i-1},
           synchlines:  o[:s].map{|i| i.map{|j| j-1}},
           flowlines:   o[:f].map{|i| i-1},
-          jumplines:   o[:j].map{|i| i-1},
-          legend:      o[:legend],
-          note:        o[:note]
+          jumplines:   o[:j].map{|i| i-1}
          }
         }
+        result.harpnote_options[:legend] = harpnote_options[:legend]
+        result.harpnote_options[:notes]  = harpnote_options[:note]
 
         result
       end
@@ -321,7 +322,7 @@ module Harpnotes
             note[:chord].each do |chord|
               name = Native(chord)[:name]
               if name[0] == ':'
-                @jumptargets[name[1..-1]] = result.select{|n|n.is_a? Harpnotes::Music::Playable}.last
+                @jumptargets[name[1 .. -1]] = result.select{|n|n.is_a? Harpnotes::Music::Playable}.last
               end
             end
           end
@@ -348,6 +349,18 @@ module Harpnotes
           result << Harpnotes::Music::MeasureStart.new(res)
           @next_note_marks_measure = false
         end
+
+        if @next_note_marks_repeat_start
+          @repetition_stack << res
+          @next_note_marks_repeat_start = false
+        end
+
+        @previous_new_part.each{|part|
+          part.companion = res
+          res.first_in_part=true
+        }
+        @previous_new_part.clear
+
         result
       end
 
@@ -421,7 +434,7 @@ module Harpnotes
       end
 
       def method_missing(name, *args)
-        `console.log('Missing transformation rule: ' + name)`
+        $log.debug("Missing transformation rule: #{name} (#{__FILE__} #{__LINE__})")
         nil
       end
 

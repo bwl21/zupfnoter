@@ -8,7 +8,7 @@ module Harpnotes
     attr_reader :pdf
 
     PADDING = 4.0
-    ARROW_SIZE = 10.0
+    ARROW_SIZE = 1.0
     JUMPLINE_INDENT = 10.0
     DOTTED_SIZE = 0.3
 
@@ -33,8 +33,11 @@ module Harpnotes
     end
 
     def draw(sheet)
+      # todo: move this to the layouter
       @pdf.rect(1.0, 1.0, 418, 295)
       @pdf.rect(0.0, 0.0, 420.0, 297.0)
+
+      # the dropmarks are drawn in octave distance
       delta = 12.0 * X_SPACING
       (1..2).each do |i|
         [:top, :bottom].each{|border| draw_cropmark(i, delta, border)}
@@ -52,7 +55,7 @@ module Harpnotes
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child)
         else
-          puts "don't know how to draw #{child.class}"
+          $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
         end
       end

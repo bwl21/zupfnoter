@@ -8,7 +8,7 @@ module Harpnotes
     attr_reader :paper
 
     PADDING = 5
-    ARROW_SIZE = 10
+    ARROW_SIZE = 1.0
     JUMPLINE_INDENT = 10
     DOTTED_SIZE = 0.3
 
@@ -23,6 +23,8 @@ module Harpnotes
       @paper.clear
       @elements = {}   # record all elements being on the sheet, using upstream object as key
       @highlighted = []
+      @paper.rect(1.0, 1.0, 418, 295)
+      @paper.rect(0.0, 0.0, 420.0, 297.0)
 
 
       sheet.children.each do |child|
@@ -34,8 +36,10 @@ module Harpnotes
           draw_jumpline(child)
         elsif child.is_a? Harpnotes::Drawing::Rest
           draw_rest(child)
+        elsif child.is_a? Harpnotes::Drawing::Annotation
+          draw_annotation(child)
         else
-          puts "don't know how to draw #{child.class}"
+          $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
         end
       end
@@ -154,7 +158,7 @@ module Harpnotes
       unless distance.nil?
         depth = endpoint[0] + distance
       else
-        depth = @paper.size[1] - (root.level * JUMPLINE_INDENT)
+        depth = 420 - (root.level * JUMPLINE_INDENT)  # todo replace literal
       end
 
       path  = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
@@ -163,6 +167,31 @@ module Harpnotes
       arrow = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0")
       arrow["fill"] = "red"
       arrow.translate(startpoint[0], startpoint[1])
+    end
+
+    # Draw an an annotation
+    def draw_annotation(root)
+
+      # todo move this style definition to the layout section.
+      # Font size is provided in mm while in jspdf it is in point ... We need to keep these definitions in sync
+      style_def = {regular: {text_color: [0,0,0], font_size: 4.2, font_style: "normal"},
+          large:   {text_color: [0,0,0], font_size: 7.03, font_style: "bold"}
+      }
+
+      style = style_def[root.style] || style_def[:regular]
+
+      element = @paper.text(root.center.first, root.center.last, root.text)
+      element[:"font-size"] = style[:font_size]
+      element[:"font-weight"] = style[:font_size]
+      element[:"text-anchor"] = "start"
+
+      # getting the same adjustment as in postscript
+      # the center of the  text is vertically is a the anchor point, so we need to shift it up by half of the size
+      # then achorpoint in ps is the baseline of the text, so we need to shift it up again by font size
+      # todo this is a dependency to jspdf which I don't relly like
+      #
+      element.translate(0 , element.get_bbox()[:height]/2 - style[:font_size])
+
     end
   end
 

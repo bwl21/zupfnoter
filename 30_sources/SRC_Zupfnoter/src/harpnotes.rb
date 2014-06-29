@@ -162,7 +162,7 @@ module Harpnotes
       #
       # Constructor
 
-      # @param pitch [Interger] A designator of the note (http://computermusicresource.com/midikeys.html)
+      # @param pitch [Integer] A designator of the note (http://computermusicresource.com/midikeys.html)
       # @param duration [Integer] see Playable
       #
       # @return [type] [description]
@@ -737,16 +737,16 @@ module Harpnotes
         compressed_beat_layout = Proc.new {|beat| beat_layout.call(beat_compression_map[beat]) }
 
         # sheet_elements derived from the voices
-        sheet_elements  = music.voices.each_with_index.map {|v, index|
+        voice_elements  = music.voices.each_with_index.map {|v, index|
           if print_options[:voices].include?(index)
             layout_voice(v, compressed_beat_layout,
                          flowline: print_options[:flowlines].include?(index),
                          jumpline: print_options[:jumplines].include?(index))
           end
-        }.flatten
+        }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
         # this is a lookup table to find the drawing symbol by a note
-        note_to_ellipse = Hash[sheet_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
+        note_to_ellipse = Hash[voice_elements.select {|e| e.is_a? Ellipse }.map {|e| [e.origin, e] }]
 
         # configure which synclines are required from-voice to-voice
         # also filter such synchlines which have points in the displayed voices
@@ -771,7 +771,7 @@ module Harpnotes
           rightmark.beat = i * 16
           leftmark.beat = i * 8
           sheet_marks << layout_note(rightmark, beat_layout_policy(music))
-          sheet_marks << layout_note(leftmark, beat_layout_policy(music))
+          sheet_marks << layout_note(leftmark,  beat_layout_policy(music))
         end
 
 
@@ -788,13 +788,18 @@ module Harpnotes
         composer = music.meta_data[:composer]
         tempo    = music.meta_data[:tempo_display]
         print_variant = print_options[:title]
+        title_pos = music.harpnote_options[:legend] || [20,20]
+        legend_pos = [title_pos.first, title_pos.last + 7]
         legend = "#{print_variant}\n#{composer}\nTakt: #{meter}\ Tonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
+        music.harpnote_options[:notes].each do |note|
+          annotations << Harpnotes::Drawing::Annotation.new(note[0], note[1], note[2])
+        end
 
 
-        sheet_elements = synch_lines + sheet_elements + sheet_marks + annotations
-
+        sheet_elements = synch_lines + voice_elements + sheet_marks + annotations
+        hugo=1
         Harpnotes::Drawing::Sheet.new(sheet_elements)
       end
 
@@ -858,7 +863,7 @@ module Harpnotes
         res_dacapo = [] unless show_options[:jumpline]
 
         # return all drawing primitives
-        res_flow + res_playables + res_dacapo + res_measures + res_newparts
+        retval = (res_flow + res_playables + res_dacapo + res_measures + res_newparts).compact
       end
 
 
@@ -976,7 +981,7 @@ module Harpnotes
         y_offset     = beat_layout.call(root.beat)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
-        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, false, root)
+        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.0], fill, false, root)
       end
 
 
@@ -988,7 +993,7 @@ module Harpnotes
           y_offset     = beat_layout.call(root.beat()) -(24 * @beat_spacing) # todo:remove literal here
           res = Annotation.new([ x_offset, y_offset ], root.name, :regular, nil)
         else
-          $log.warn("Part without content")
+          $log.warning("Part without content")
           res = nil
         end
 
