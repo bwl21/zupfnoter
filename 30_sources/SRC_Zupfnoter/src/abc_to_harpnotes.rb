@@ -260,7 +260,7 @@ module Harpnotes
          }
         }
         result.harpnote_options[:legend] = harpnote_options[:legend]
-        result.harpnote_options[:notes]  = harpnote_options[:note]
+        result.harpnote_options[:notes]  = harpnote_options[:note] || []
 
         result
       end
