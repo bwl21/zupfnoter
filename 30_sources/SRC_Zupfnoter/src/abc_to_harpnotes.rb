@@ -135,6 +135,18 @@ module Harpnotes
       end
 
 
+
+      # get the metadata of the current song from the editor
+      #
+      def get_metadata(abc_code)
+        retval = abc_code.split("\n").inject({}) do |result, line|
+          entry = line.match(/^(X|T):\s*(.*)/){ |m| [m[1], m[2]] }
+          result[entry.first] = entry.last if entry
+          result
+        end
+        retval
+      end
+
       def transform(abc_code)
 
         harpnote_options = parse_harpnote_config(abc_code)
