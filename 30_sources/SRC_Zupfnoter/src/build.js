@@ -15120,7 +15120,7 @@ if (i == null) i = nil;
 if (i == null) i = nil;
             return i['$-'](1)}, TMP_26._s = self, TMP_26), $a).call($e)})}, TMP_21._s = self, TMP_21), $a).call($i));
           result.$harpnote_options()['$[]=']("legend", harpnote_options['$[]']("legend"));
-          result.$harpnote_options()['$[]=']("notes", harpnote_options['$[]']("note"));
+          result.$harpnote_options()['$[]=']("notes", ((($a = harpnote_options['$[]']("note")) !== false && $a !== nil) ? $a : []));
           return result;
         };
 
