@@ -128,7 +128,7 @@ module Harpnotes
         end
         #$log.debug("#{hn_config_from_song} (#{__FILE__} #{__LINE__})")
         unless hn_config_from_song[:print]
-          hn_config_from_song[:print] =  [{t: "all", v:[1,2,3,4], s: [[1,2],[3,4]], f:[1,3], j:[1,3]}]
+          hn_config_from_song[:print] =  [{t: "all by default", v:[1,2,3,4], s: [[1,2],[3,4]], f:[1,3], j:[1,3]}]
         end
         hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
         hn_config_from_song
@@ -414,6 +414,11 @@ module Harpnotes
 
       def transform_bar_left_repeat(bar)
         @next_note_marks_repeat_start = true
+        nil
+      end
+
+      def transform_bar_thin_thick(bar)
+        @next_note_marks_measure = true
         nil
       end
 

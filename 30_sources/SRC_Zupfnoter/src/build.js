@@ -14838,7 +14838,7 @@ if (e == null) e = nil;
           size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_44 = function(e){var self = TMP_44._s || this;
 if (e == null) e = nil;
           return e['$*'](scale)}, TMP_44._s = self, TMP_44), $a).call($b);
-          return res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset['$-'](size.$last())['$-'](0.5)], [size.$first(), 0.0], fill, false, root);
+          return res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset['$-'](size.$last())['$-'](0.5)], [size.$first(), 0.1], fill, false, root);
         };
 
         def.$layout_newpart = function(root, beat_layout) {
@@ -15010,7 +15010,7 @@ if (m == null) m = nil;
             return line_no = line_no['$+'](1);}, TMP_6._s = self, TMP_6), $a).call($b);
           if ((($a = hn_config_from_song['$[]']("print")) !== nil && (!$a._isBoolean || $a == true))) {
             } else {
-            hn_config_from_song['$[]=']("print", [$hash2(["t", "v", "s", "f", "j"], {"t": "all", "v": [1, 2, 3, 4], "s": [[1, 2], [3, 4]], "f": [1, 3], "j": [1, 3]})])
+            hn_config_from_song['$[]=']("print", [$hash2(["t", "v", "s", "f", "j"], {"t": "all by default", "v": [1, 2, 3, 4], "s": [[1, 2], [3, 4]], "f": [1, 3], "j": [1, 3]})])
           };
           if ((($a = hn_config_from_song['$[]']("legend")) !== nil && (!$a._isBoolean || $a == true))) {
             hn_config_from_song['$[]=']("legend", hn_config_from_song['$[]']("legend").$first())};
@@ -15266,6 +15266,13 @@ if (part == null) part = nil;
           return nil;
         };
 
+        def.$transform_bar_thin_thick = function(bar) {
+          var self = this;
+
+          self.next_note_marks_measure = true;
+          return nil;
+        };
+
         def.$transform_bar_right_repeat = function(bar) {
           var $a, $b, $c, self = this, start = nil;
 
@@ -15290,7 +15297,7 @@ if (part == null) part = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           args = $slice.call(arguments, 1);
-          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (439) + ")");
+          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (444) + ")");
           return nil;
         }, nil) && 'method_missing';
       })(self, null);
