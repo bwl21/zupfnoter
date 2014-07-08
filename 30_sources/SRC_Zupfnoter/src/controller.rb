@@ -1,3 +1,79 @@
+
+# This is a wrapper class for local store
+
+class LocalStore
+
+  def initialize(name)
+    @name = name
+    load_dir
+
+    unless @directory
+      @directory = {}
+      save_dir
+    end
+  end
+
+
+  def create(key, item, title = nil)
+    if @directory[key]
+      $log.warning("local storage: key '#{key}' already exists")
+    else
+      update(key, item, title, true)
+    end
+  end
+
+
+  def update(key, item, title = nil, create = false)
+    envelope = {p: item, title: title}.to_json
+    if @directory[key] || create
+      `localStorage.setItem(self.$mangle_key(key), envelope)`
+      @directory[key] = title
+      save_dir
+    else
+      $log.warning("local storage update: key '#{key}' does not exist")
+    end
+  end
+
+  def retrieve(key)
+    envelope = JSON.parse(`localStorage.getItem(self.$mangle_key(key))`)
+    envelope[:p]
+  end
+
+  def delete(key)
+    if @directory[key]
+      $log.warn("local storage: key '#{key}' does not exist")
+    else
+      `localStorage.deleteItem(self.$mangle_key(key))`
+      @directory[key] = nil
+      save_dir
+    end
+  end
+
+  def list
+     @directory.clone
+  end
+
+  private
+
+
+  def mangle_key(key)
+    "#{@name}.#{key}"
+  end
+
+  def load_dir
+    dirkey =  "#{@name}__dir"
+    @directory  = JSON.parse(`localStorage.getItem(dirkey)`)
+  end
+
+  def save_dir
+    dir_json = @directory.to_json
+    dirkey =  "#{@name}__dir"
+    `localStorage.setItem(dirkey, dir_json)`
+  end
+
+end
+
+
 class Controller
 
   attr :editor, :harpnote_preview_printer, :tune_preview_printer
@@ -5,18 +81,60 @@ class Controller
   def initialize
     $log = ConsoleLogger.new("consoleEntries")
     @editor = Harpnotes::TextPane.new("abcEditor")
+    @songbook = LocalStore.new("songbook")
+    @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
+
     setup_ui
     setup_ui_listener
     load_from_loacalstorage
   end
 
+
+  # this handles a command
+  # todo: this is a temporary hack until we have a proper ui
+  def handle_command(command)
+    c = command.split(" ")
+    case c.first
+      when "s"
+        abc_code = @editor.get_text
+        metadata = @abc_transformer.get_metadata(abc_code)
+        @songbook.update(metadata[:X], abc_code,  metadata[:T])
+        $log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
+
+      when "r"
+        if c.last
+          payload = @songbook.retrieve(c.last)
+          if payload
+            @editor.set_text(payload)
+          else
+            $log.error("song #{c.last} not found")
+          end
+        else
+          $log.error("plase add a song number")
+        end
+
+      when "n"
+        if c.last
+          @songbook.create(c.last, "X:#{c.last}\n", "not yet saved")
+        else
+          $log.error("plase add a song number")
+        end
+
+      when "l"
+        $log.info(@songbook.list)
+
+    else
+      $log.error("wrong commnad: #{command}")
+    end
+  end
+
   # Save session to local store
   def save_to_localstorage
     abc = @editor.get_text
-    `localStorage.setItem('abc_data', abc);`
+    abc = `localStorage.setItem('abc_data', abc);`
   end
 
-  # load session from loaclstore
+  # load session from localstore
   def load_from_loacalstorage
     abc = `localStorage.getItem('abc_data');`
     @editor.set_text(abc) unless abc.nil?
@@ -73,6 +191,7 @@ class Controller
 
     nil
   end
+
 
   # download abc + pdfs as a zip archive
   # todo: determine filename from abc header
@@ -131,6 +250,10 @@ class Controller
     Element.find("#tbRender").on(:click) { render_previews }
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
+    Element.find("#tbCommand").on(:change) {|event|
+      handle_command(Native(event[:target])[:value])
+      Native(event[:target])[:value] = ""
+      }
 
 
     # changes in the editor
@@ -145,7 +268,7 @@ class Controller
         # `alert("refresh cancelled")`
       end
 
-      @playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
+      #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
       @refresh_timer = `setTimeout(function(){self.$render_previews()}, 1000)`
       nil
     end
