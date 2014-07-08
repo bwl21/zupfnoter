@@ -36,7 +36,8 @@ class LocalStore
 
   def retrieve(key)
     envelope = JSON.parse(`localStorage.getItem(self.$mangle_key(key))`)
-    envelope[:p]
+    result = envelope[:p] if envelope
+    result
   end
 
   def delete(key)
@@ -95,15 +96,19 @@ class Controller
   def handle_command(command)
     c = command.split(" ")
     case c.first
+
+      # save current song
+      # todo check the title
       when "s"
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         @songbook.update(metadata[:X], abc_code,  metadata[:T])
         $log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
 
+      # retrieve a song
       when "r"
-        if c.last
-          payload = @songbook.retrieve(c.last)
+        if c[1]
+          payload = @songbook.retrieve(c[1])
           if payload
             @editor.set_text(payload)
           else
@@ -113,16 +118,45 @@ class Controller
           $log.error("plase add a song number")
         end
 
+      # create a new song
+      # todo retrive the title
       when "n"
-        if c.last
-          @songbook.create(c.last, "X:#{c.last}\n", "not yet saved")
+        song_id = c[1]
+        song_title = c[2 .. - 1].join(" ")
+        if song_id && song_title
+          template = %Q{X:#{song_id}
+T:#{song_title}
+C:{copyright}
+R:{rhythm}
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+% %%%hn.print {"t":"alle Stimmen",         "v":[1,2,3,4], "s": [[1,2],[3,4]], "f":[1,3], "j":[1]}
+% %%%hn.print {"t":"sopran, alt", "v":[1,2],     "s":[[1,2]],       "f":[1],   "j":[1]}
+%%%%hn.print {"t":"tenor, bass", "v":[3, 4],     "s":[[1, 2], [3,4]],       "f":[3  ],   "j":[1, 3]}
+%%%%hn.legend [10,10]
+%%%%hn.note [[5, 50], "Folge: A A B B C A", "regular"]
+%%%%hn.note [[360, 280], "Erstellt mit Zupfnoter 0.7", "regular"]
+%%score T1 T2  B1 B2
+V:T1 clef=treble-8 octave=-1 name="Sopran" snm="S"
+V:T2 clef=treble-8 octave=-1 name="Alt" snm="A"
+V:B1 clef=bass transpose=-24 name="Tenor" middle=D, snm="T"
+V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
+[V:T1] c'
+[V:T2] c
+[V:B1] c,
+[V:B2] C
+%
+          }
+          @songbook.create(song_id, template, song_title)
         else
-          $log.error("plase add a song number")
+          $log.error("plase add a song number AND a Title")
         end
 
+      # list the songbook
       when "l"
         $log.info(@songbook.list)
-
     else
       $log.error("wrong commnad: #{command}")
     end
