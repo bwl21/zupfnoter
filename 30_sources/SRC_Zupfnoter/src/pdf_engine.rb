@@ -50,8 +50,8 @@ module Harpnotes
           draw_flowline(child)
         elsif child.is_a? JumpLine
           draw_jumpline(child)
-        elsif child.is_a? Harpnotes::Drawing::Rest
-          draw_rest(child)
+        elsif child.is_a? Harpnotes::Drawing::Glyph
+          draw_glyph(child)
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child)
         else
@@ -99,7 +99,7 @@ module Harpnotes
       end
     end
 
-    def draw_rest(root)
+    def draw_glyph1(root)
       style = root.filled? ? :F : :FD
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
       center = [root.center.first - root.size.first, root.center.last - root.size.last]
@@ -111,6 +111,65 @@ module Harpnotes
         @pdf.ellipse(root.center.zip(root.size).map {|s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE,DOTTED_SIZE], :F)
       end
     end
+
+
+
+    def draw_glyph(root)
+
+      style = root.filled?  :FD, :FD
+      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+
+      center = [root.center.first - root.size.first, root.center.last - root.size.last]
+      size = root.size.map{|s| 2.0 * s}
+
+      # draw a white background
+      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+
+      @pdf.fill = [255, 255, 255]
+      @pdf.stroke = [255,255,255]
+      @pdf.rect_like_ellipse(center, size, :FD)
+
+      # draw th path
+      #e = @pdf.lines(...)
+
+      @pdf.fill = [0, 0, 0]
+      @pdf.stroke = [0, 0, 0]
+
+      scalefactor = size.last / root.glyph[:h]
+
+
+      scale = [scalefactor, scalefactor]
+      lines = []
+      start = []
+      root.glyph[:d].each do |element|
+         case element.first
+           when "M"
+             @pdf.lines(lines, start.first, start.last, scale, "FD", false) unless lines.empty?
+              lines = []
+              start = [center.first + (element[1] + root.glyph[:w]/2) * scale.first,
+                      center.last   - (element[2] + root.glyph[:h]/2) * scale.last]
+           when "l"
+              lines.push element[1 .. -1]
+           when "c"
+              lines.push element[1 .. -1]
+           when "z"
+             @pdf.lines(lines, start.first, start.last, scale, "FD", true) unless lines.empty?
+             lines = []
+           else
+             $log.error("unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
+         end
+      end
+      @pdf.stroke = [0, 0, 0]
+
+      # add the dot if needed
+      if root.dotted?
+        @pdf.fill = (0...3).map { 0 }
+        @pdf.ellipse(root.center.zip(root.size).map {|s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+      end
+
+
+    end
+
 
 
     def draw_segment(x_offset, sheet, newpage = false )
@@ -154,7 +213,7 @@ module Harpnotes
         depth      = 418.0 - (root.level * JUMPLINE_INDENT)  #todo:replace literal
       end
 
-      @pdf.draw = (0...3).map { 0 }  # set the rgb color
+      @pdf.stroke = (0...3).map { 0 }  # set the rgb color
       @pdf.line(endpoint, [depth, endpoint[1]])
       @pdf.line([depth, endpoint[1]], [depth, startpoint[1]])
       @pdf.line([depth, startpoint[1]], startpoint)

@@ -44,7 +44,7 @@ class JsPDF
     `self.native.setFillColor(rgb[0], rgb[1], rgb[2])`
   end
 
-  def draw=(rgb)
+  def stroke=(rgb)
     `self.native.setDrawColor(rgb[0], rgb[1], rgb[2])`
   end
 
@@ -85,6 +85,11 @@ class JsPDF
   def rect(x1, y1, x2, y2, style = 'undefined')
     nx1 = apply_offset_to_x(x1)
     `self.native.rect(nx1, y1, x2, y2, style)`
+  end
+
+  def lines(lines, x, y, scale, style, close)
+    nx = apply_offset_to_x(x)
+    `self.native.lines(lines, nx, y, scale, style, close)`
   end
 
   # @param type Symbol the output type as :datauristring, :datauri, :raw

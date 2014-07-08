@@ -74,16 +74,6 @@ module Harpnotes
 
     private
 
-
-    def glyph_to_path_spec(glyph)
-      result = ""
-      glyph[:d].each do  |part|
-        result += part.first
-        result += part[1 .. -1].join(" ")
-      end
-      result
-    end
-
     def highlight(element)
       element.unhighlight_color = element[:fill]
       element[:fill]="#ff0000"
@@ -131,16 +121,27 @@ module Harpnotes
 
 
     def draw_glyph(root)
+
+      def glyph_to_path_spec(glyph)
+        result = ""
+        glyph[:d].each do  |part|
+          result += part.first
+          result += part[1 .. -1].join(" ")
+        end
+        result
+      end
+
       center = [root.center.first, root.center.last]
+      size = [root.size.first, root.size.last]           # size to be treated as radius
 
       #path_spec = "M#{center.first} #{center.last}"
       path_spec = self.glyph_to_path_spec(root.glyph)
 
       # draw a white background
-      e = @paper.rect(root.center.first, root.center.last - root.size.last, root.size.first, root.size.last)
+      e = @paper.rect(root.center.first, root.center.last - size.last, size.first, size.last)
       e[:fill] = "white"
       e[:stroke] = "white"
-      e.transform("t-#{root.size.first/2} #{root.size.last/2}")
+      e.transform("t-#{size.first/2} #{size.last/2}")
 
       # draw th path
       e = @paper.path(path_spec)
@@ -156,7 +157,7 @@ module Harpnotes
       # scale and move the glyph
       bbox = e.get_bbox()
       glyph_center = [(bbox[:x] + bbox[:x2])/2, (bbox[:y] + bbox[:y2])/2]
-      scalefactor = root.size.last / bbox[:height]
+      scalefactor = size.last / bbox[:height]
       e.transform("t#{(center.first)} #{(center.last)}t#{(- glyph_center.first)} #{(- glyph_center.last)}s#{scalefactor}")
 
       # add the dot if needed
@@ -173,8 +174,6 @@ module Harpnotes
           @on_select.call(origin) unless origin.nil? or @on_select.nil?
         end
       end
-
-
     end
 
 
