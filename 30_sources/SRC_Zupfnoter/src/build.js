@@ -14415,22 +14415,6 @@ if (map == null) map = nil;if (playable == null) playable = nil;
       })(self, null);
 
       (function($base, $super) {
-        function $Glyph(){};
-        var self = $Glyph = $klass($base, $super, 'Glyph', $Glyph);
-
-        var def = self._proto, $scope = self._scope;
-
-        self.$attr_reader("center", "name");
-
-        return (def.$initialize = function(center, name) {
-          var self = this;
-
-          self.center = center;
-          return self.name = name;
-        }, nil) && 'initialize';
-      })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
-
-      (function($base, $super) {
         function $Ellipse(){};
         var self = $Ellipse = $klass($base, $super, 'Ellipse', $Ellipse);
 
@@ -14547,6 +14531,53 @@ if (map == null) map = nil;if (playable == null) playable = nil;
           return self.fill['$==']("filled");
         }, nil) && 'filled?';
       })(self, (($a = $scope.Drawable) == null ? $opal.cm('Drawable') : $a));
+
+      (function($base, $super) {
+        function $Glyph(){};
+        var self = $Glyph = $klass($base, $super, 'Glyph', $Glyph);
+
+        var def = self._proto, $scope = self._scope;
+
+        def.size = def.fill = nil;
+        self.$attr_reader("center", "size", "glyph", "dotted", "origin");
+
+        $opal.cdecl($scope, 'GLYPHS', $hash2(["rest_1", "rest_2", "rest_4", "rest_8", "rest_16", "rest_32", "rest_64", "rest_128"], {"rest_1": $hash2(["d", "w", "h"], {"d": [["M", 0.06, 0.03], ["l", 0.09, -0.06], ["l", 5.46, 0], ["l", 5.49, 0], ["l", 0.09, 0.06], ["l", 0.06, 0.09], ["l", 0, 2.19], ["l", 0, 2.19], ["l", -0.06, 0.09], ["l", -0.09, 0.06], ["l", -5.49, 0], ["l", -5.46, 0], ["l", -0.09, -0.06], ["l", -0.06, -0.09], ["l", 0, -2.19], ["l", 0, -2.19], ["z"]], "w": 11.25, "h": 4.68}), "rest_2": $hash2(["d", "w", "h"], {"d": [["m", 0.06, -4.62], ["l", 0.09, -0.06], ["l", 5.46, 0], ["l", 5.49, 0], ["l", 0.09, 0.06], ["l", 0.06, 0.09], ["l", 0, 2.19], ["l", 0, 2.19], ["l", -0.06, 0.09], ["l", -0.09, 0.06], ["l", -5.49, 0], ["l", -5.46, 0], ["l", -0.09, -0.06], ["l", -0.06, -0.09], ["l", 0, -2.19], ["l", 0, -2.19], ["z"]], "w": 11.25, "h": 4.68}), "rest_4": $hash2(["d", "w", "h"], {"d": [["M", 1.89, -11.82], ["c", 0.12, -0.06, 0.24, -0.06, 0.36, -0.03], ["c", 0.09, 0.06, 4.74, 5.58, 4.86, 5.82], ["c", 0.21, 0.39, 0.15, 0.78, -0.15, 1.26], ["c", -0.24, 0.33, -0.72, 0.81, -1.62, 1.56], ["c", -0.45, 0.36, -0.87, 0.75, -0.96, 0.84], ["c", -0.93, 0.99, -1.14, 2.49, -0.6, 3.63], ["c", 0.18, 0.39, 0.27, 0.48, 1.32, 1.68], ["c", 1.92, 2.25, 1.83, 2.16, 1.83, 2.34], ["c", 0, 0.18, -0.18, 0.36, -0.36, 0.39], ["c", -0.15, 0, -0.27, -0.06, -0.48, -0.27], ["c", -0.75, -0.75, -2.46, -1.29, -3.39, -1.08], ["c", -0.45, 0.09, -0.69, 0.27, -0.9, 0.69], ["c", -0.12, 0.3, -0.21, 0.66, -0.24, 1.14], ["c", -0.03, 0.66, 0.09, 1.35, 0.3, 2.01], ["c", 0.15, 0.42, 0.24, 0.66, 0.45, 0.96], ["c", 0.18, 0.24, 0.18, 0.33, 0.03, 0.42], ["c", -0.12, 0.06, -0.18, 0.03, -0.45, -0.3], ["c", -1.08, -1.38, -2.07, -3.36, -2.4, -4.83], ["c", -0.27, -1.05, -0.15, -1.77, 0.27, -2.07], ["c", 0.21, -0.12, 0.42, -0.15, 0.87, -0.15], ["c", 0.87, 0.06, 2.1, 0.39, 3.3, 0.9], ["l", 0.39, 0.18], ["l", -1.65, -1.95], ["c", -2.52, -2.97, -2.61, -3.09, -2.7, -3.27], ["c", -0.09, -0.24, -0.12, -0.48, -0.03, -0.75], ["c", 0.15, -0.48, 0.57, -0.96, 1.83, -2.01], ["c", 0.45, -0.36, 0.84, -0.72, 0.93, -0.78], ["c", 0.69, -0.75, 1.02, -1.8, 0.9, -2.79], ["c", -0.06, -0.33, -0.21, -0.84, -0.39, -1.11], ["c", -0.09, -0.15, -0.45, -0.6, -0.81, -1.05], ["c", -0.36, -0.42, -0.69, -0.81, -0.72, -0.87], ["c", -0.09, -0.18, 0, -0.42, 0.21, -0.51], ["z"]], "w": 7.888, "h": 21.435}), "rest_8": $hash2(["d", "w", "h"], {"d": [["M", 1.68, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.39, -0.18, 1.32, -1.29, 1.68, -1.98], ["c", 0.09, -0.21, 0.24, -0.3, 0.39, -0.3], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.27, 1.11, -1.86, 6.42], ["c", -1.02, 3.48, -1.89, 6.39, -1.92, 6.42], ["c", 0, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.15, -0.57, 1.68, -4.92], ["c", 0.96, -2.67, 1.74, -4.89, 1.71, -4.89], ["l", -0.51, 0.15], ["c", -1.08, 0.36, -1.74, 0.48, -2.55, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 7.534, "h": 13.883}), "rest_16": $hash2(["d", "w", "h"], {"d": [["M", 3.33, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.87, 0.42], ["c", 0.39, -0.18, 1.2, -1.23, 1.62, -2.07], ["c", 0.06, -0.15, 0.24, -0.24, 0.36, -0.24], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.45, 1.86, -2.67, 10.17], ["c", -1.5, 5.55, -2.73, 10.14, -2.76, 10.17], ["c", -0.03, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.12, -0.57, 1.44, -4.92], ["c", 0.81, -2.67, 1.47, -4.86, 1.47, -4.89], ["c", -0.03, 0, -0.27, 0.06, -0.54, 0.15], ["c", -1.08, 0.36, -1.77, 0.48, -2.58, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.33, -0.15, 1.02, -0.93, 1.41, -1.59], ["c", 0.12, -0.21, 0.18, -0.39, 0.39, -1.08], ["c", 0.66, -2.1, 1.17, -3.84, 1.17, -3.87], ["c", 0, 0, -0.21, 0.06, -0.42, 0.15], ["c", -0.51, 0.15, -1.2, 0.33, -1.68, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 9.724, "h": 21.383}), "rest_32": $hash2(["d", "w", "h"], {"d": [["M", 4.23, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.27, -0.06], ["c", 0.33, -0.21, 0.99, -1.11, 1.44, -1.98], ["c", 0.09, -0.24, 0.21, -0.33, 0.39, -0.33], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.57, 2.67, -3.21, 13.89], ["c", -1.8, 7.62, -3.3, 13.89, -3.3, 13.92], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.09, -0.57, 1.23, -4.92], ["c", 0.69, -2.67, 1.26, -4.86, 1.29, -4.89], ["c", 0, -0.03, -0.12, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.12, 0.09, 0.3, 0.18, 0.48, 0.21], ["c", 0.12, 0, 0.18, 0, 0.3, -0.09], ["c", 0.42, -0.21, 1.29, -1.29, 1.56, -1.89], ["c", 0.03, -0.12, 1.23, -4.59, 1.23, -4.65], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -0.63, 0.18, -1.2, 0.36, -1.74, 0.45], ["c", -0.39, 0.06, -0.54, 0.06, -1.02, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.18, 0.18, 0.51, 0.27, 0.72, 0.15], ["c", 0.3, -0.12, 0.69, -0.57, 1.08, -1.17], ["c", 0.42, -0.6, 0.39, -0.51, 1.05, -3.03], ["c", 0.33, -1.26, 0.6, -2.31, 0.6, -2.34], ["c", 0, 0, -0.21, 0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.14, 0.33, -1.62, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 11.373, "h": 28.883}), "rest_64": $hash2(["d", "w", "h"], {"d": [["M", 5.13, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.24, -0.12, 0.63, -0.66, 1.08, -1.56], ["c", 0.33, -0.66, 0.39, -0.72, 0.6, -0.72], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.69, 3.66, -3.54, 17.64], ["c", -1.95, 9.66, -3.57, 17.61, -3.57, 17.64], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.06, -0.57, 1.05, -4.95], ["c", 0.6, -2.7, 1.08, -4.89, 1.08, -4.92], ["c", 0, 0, -0.24, 0.06, -0.51, 0.15], ["c", -0.66, 0.24, -1.2, 0.36, -1.77, 0.48], ["c", -0.42, 0.06, -0.57, 0.06, -1.05, 0.06], ["c", -0.69, 0, -0.87, -0.03, -1.35, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.21, 0.03, 0.39, -0.09, 0.72, -0.42], ["c", 0.45, -0.45, 1.02, -1.26, 1.17, -1.65], ["c", 0.03, -0.09, 0.27, -1.14, 0.54, -2.34], ["c", 0.27, -1.2, 0.48, -2.19, 0.51, -2.22], ["c", 0, -0.03, -0.09, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.9, 0.42], ["c", 0.36, -0.18, 1.2, -1.26, 1.47, -1.89], ["c", 0.03, -0.09, 0.3, -1.2, 0.57, -2.43], ["l", 0.51, -2.28], ["l", -0.54, 0.18], ["c", -1.11, 0.36, -1.8, 0.48, -2.61, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.21, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.36, -0.18, 0.93, -0.93, 1.29, -1.68], ["c", 0.12, -0.24, 0.18, -0.48, 0.63, -2.55], ["l", 0.51, -2.31], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -1.14, 0.36, -2.1, 0.54, -2.82, 0.51], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 12.453, "h": 36.383}), "rest_128": $hash2(["d", "w", "h"], {"d": [["M", 6.03, -21.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.21, 0, 0.33, -0.06, 0.54, -0.36], ["c", 0.15, -0.21, 0.54, -0.93, 0.78, -1.47], ["c", 0.15, -0.33, 0.18, -0.39, 0.3, -0.48], ["c", 0.18, -0.09, 0.45, 0, 0.51, 0.15], ["c", 0.03, 0.09, -7.11, 42.75, -7.17, 42.84], ["c", -0.03, 0.03, -0.15, 0.09, -0.24, 0.15], ["c", -0.18, 0.06, -0.24, 0.06, -0.45, 0.06], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.03, -0.57, 0.84, -4.98], ["c", 0.51, -2.7, 0.93, -4.92, 0.9, -4.92], ["c", 0, 0, -0.15, 0.06, -0.36, 0.12], ["c", -0.78, 0.27, -1.62, 0.48, -2.31, 0.57], ["c", -0.15, 0.03, -0.54, 0.03, -0.81, 0.03], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.63, 0.48], ["c", 0.12, 0, 0.18, 0, 0.3, -0.09], ["c", 0.42, -0.21, 1.14, -1.11, 1.5, -1.83], ["c", 0.12, -0.27, 0.12, -0.27, 0.54, -2.52], ["c", 0.24, -1.23, 0.42, -2.25, 0.39, -2.25], ["c", 0, 0, -0.24, 0.06, -0.51, 0.18], ["c", -1.26, 0.39, -2.25, 0.57, -3.06, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.51, 0.3, 0.75, 0.18], ["c", 0.36, -0.15, 1.05, -0.99, 1.41, -1.77], ["l", 0.15, -0.3], ["l", 0.42, -2.25], ["c", 0.21, -1.26, 0.42, -2.28, 0.39, -2.28], ["l", -0.51, 0.15], ["c", -1.11, 0.39, -1.89, 0.51, -2.7, 0.51], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.18, 0.48, 0.27, 0.72, 0.21], ["c", 0.33, -0.12, 1.14, -1.26, 1.41, -1.95], ["c", 0, -0.09, 0.21, -1.11, 0.45, -2.34], ["c", 0.21, -1.2, 0.39, -2.22, 0.39, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.2, 0.33, -1.71, 0.42], ["c", -0.3, 0.06, -0.51, 0.06, -0.93, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.18, 0, 0.36, -0.09, 0.57, -0.33], ["c", 0.33, -0.36, 0.78, -1.14, 0.93, -1.56], ["c", 0.03, -0.12, 0.24, -1.2, 0.45, -2.4], ["c", 0.24, -1.2, 0.42, -2.22, 0.42, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.39, 0.09], ["c", -1.05, 0.36, -1.8, 0.48, -2.58, 0.48], ["c", -0.63, 0, -0.84, -0.03, -1.29, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 12.992, "h": 43.883})}));
+
+        def.$initialize = function(center, size, glyph_name, dotted, origin) {
+          var $a, self = this;
+
+          if (dotted == null) {
+            dotted = (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)
+          }
+          if (origin == null) {
+            origin = nil
+          }
+          self.center = center;
+          self.glyph_name = glyph_name;
+          self.glyph = (($a = $scope.GLYPHS) == null ? $opal.cm('GLYPHS') : $a)['$[]'](glyph_name);
+          self.size = size;
+          self.dotted = dotted;
+          return self.origin = origin;
+        };
+
+        def.$height = function() {
+          var self = this;
+
+          return self.size.$last();
+        };
+
+        def['$dotted?'] = function() {
+          var self = this;
+
+          return self.$dotted();
+        };
+
+        return (def['$filled?'] = function() {
+          var self = this;
+
+          return self.fill['$==']("filled");
+        }, nil) && 'filled?';
+      })(self, null);
       
     })(self);
 
@@ -14568,6 +14599,8 @@ if (map == null) map = nil;if (playable == null) playable = nil;
         def.beat_spacing = nil;
         $opal.cdecl($scope, 'ELLIPSE_SIZE', [2.8, 1.7]);
 
+        $opal.cdecl($scope, 'REST_SIZE', [2.8, 2.8]);
+
         $opal.cdecl($scope, 'X_SPACING', (115.0)['$/'](10.0));
 
         $opal.cdecl($scope, 'Y_OFFSET', 5);
@@ -14577,6 +14610,8 @@ if (map == null) map = nil;if (playable == null) playable = nil;
         $opal.cdecl($scope, 'PITCH_OFFSET', -43);
 
         $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [0.9, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [0.5, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.5, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.1, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [0.05, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
+
+        $opal.cdecl($scope, 'REST_TO_GLYPH', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [[0.9, 0.9], "rest_1", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [[0.5, 0.5], "rest_2", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [[0.5, 0.5], "rest_2", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [[0.9, 0.6], "rest_4", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [[0.9, 0.6], "rest_4", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [[0.7, 0.5], "rest_8", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [[0.7, 0.5], "rest_8", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [[0.7, 0.5], "rest_16", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [[0.7, 0.5], "rest_16", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [[0.5, 0.3], "rest_32", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [[0.5, 0.3], "rest_32", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [[0.5, 0.3], "rest_64", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
 
         def.$initialize = function() {
           var self = this;
@@ -14817,7 +14852,18 @@ if (c == null) c = nil;
         };
 
         def.$layout_pause = function(root, beat_layout) {
-          var $a, $b, TMP_43, $c, $d, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
+          var $a, $b, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, glyph = nil, dotted = nil, size = nil, res = nil;
+
+          x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch()))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
+          y_offset = beat_layout.$call(root.$beat());
+          $a = $opal.to_ary((($b = $scope.REST_TO_GLYPH) == null ? $opal.cm('REST_TO_GLYPH') : $b)['$[]'](self.$duration_to_id(root.$duration()))), scale = ($a[0] == null ? nil : $a[0]), glyph = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
+          size = [(($a = $scope.REST_SIZE) == null ? $opal.cm('REST_SIZE') : $a).$first()['$*'](scale.$first()), (($a = $scope.REST_SIZE) == null ? $opal.cm('REST_SIZE') : $a).$last()['$*'](scale.$last())];
+          res = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Drawing == null ? $b.cm('Drawing') : $b.Drawing))._scope).Glyph == null ? $a.cm('Glyph') : $a.Glyph).$new([x_offset, y_offset], size, glyph, dotted, root);
+          return res;
+        };
+
+        def.$layout_measure_start = function(root, beat_layout) {
+          var $a, $b, TMP_43, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
 
           x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch()))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
           y_offset = beat_layout.$call(root.$beat());
@@ -14825,19 +14871,6 @@ if (c == null) c = nil;
           size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_43 = function(e){var self = TMP_43._s || this;
 if (e == null) e = nil;
           return e['$*'](scale)}, TMP_43._s = self, TMP_43), $a).call($b);
-          res = (($a = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Rest == null ? $a.cm('Rest') : $a.Rest).$new([x_offset, y_offset], size, fill, dotted, root);
-          return res;
-        };
-
-        def.$layout_measure_start = function(root, beat_layout) {
-          var $a, $b, TMP_44, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
-
-          x_offset = ((($a = $scope.PITCH_OFFSET) == null ? $opal.cm('PITCH_OFFSET') : $a)['$+'](root.$pitch()))['$*']((($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a))['$+']((($a = $scope.X_OFFSET) == null ? $opal.cm('X_OFFSET') : $a));
-          y_offset = beat_layout.$call(root.$beat());
-          $a = $opal.to_ary((($b = $scope.DURATION_TO_STYLE) == null ? $opal.cm('DURATION_TO_STYLE') : $b)['$[]'](self.$duration_to_id(root.$duration()))), scale = ($a[0] == null ? nil : $a[0]), fill = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
-          size = ($a = ($b = (($c = $scope.ELLIPSE_SIZE) == null ? $opal.cm('ELLIPSE_SIZE') : $c)).$map, $a._p = (TMP_44 = function(e){var self = TMP_44._s || this;
-if (e == null) e = nil;
-          return e['$*'](scale)}, TMP_44._s = self, TMP_44), $a).call($b);
           return res = (($a = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $a).$new([x_offset, y_offset['$-'](size.$last())['$-'](0.5)], [size.$first(), 0.1], fill, false, root);
         };
 
@@ -15351,6 +15384,12 @@ if (part == null) part = nil;
         return self.r.translate(x, y);
       };
 
+      def.$transform = function(cmd) {
+        var self = this;
+
+        return self.r.transform(cmd);
+      };
+
       def.$get_bbox = function() {
         var self = this;
 
@@ -15814,9 +15853,9 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 ;
 /* Generated by Opal 0.6.2 */
 (function($opal) {
-  var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars;
+  var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars, $range = $opal.range;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$rect', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_annotation', '$debug', '$class', '$children', '$unhighlight', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$highlight', '$<<', '$private', '$unhighlight_color=', '$[]=', '$unhighlight_color', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$-', '$map', '$line', '$from', '$to', '$style', '$distance', '$level', '$path', '$translate', '$text', '$/', '$get_bbox']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$rect', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$unhighlight', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$highlight', '$<<', '$private', '$+', '$first', '$join', '$unhighlight_color=', '$[]=', '$unhighlight_color', '$ellipse', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$*', '$on_click', '$call', '$glyph_to_path_spec', '$glyph', '$-', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$text']);
   ;
   ;
   return (function($base) {
@@ -15871,10 +15910,12 @@ if (child == null) child = nil;
             return self.$draw_jumpline(child)
           } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Rest == null ? $b.cm('Rest') : $b.Rest))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_rest(child)
+          } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Glyph == null ? $b.cm('Glyph') : $b.Glyph))) !== nil && (!$a._isBoolean || $a == true))) {
+            return self.$draw_glyph(child)
           } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Annotation == null ? $b.cm('Annotation') : $b.Annotation))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_annotation(child)
             } else {
-            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("raphael_engine") + " " + (42) + ")");
+            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("raphael_engine") + " " + (44) + ")");
             return nil;
           }}, TMP_1._s = self, TMP_1), $a).call($b);
       };
@@ -15916,11 +15957,23 @@ if (e == null) e = nil;
 
       self.$private();
 
+      def.$glyph_to_path_spec = function(glyph) {
+        var $a, $b, TMP_6, self = this, result = nil;
+
+        result = "";
+        ($a = ($b = glyph['$[]']("d")).$each, $a._p = (TMP_6 = function(part){var self = TMP_6._s || this;
+if (part == null) part = nil;
+        result = result['$+'](part.$first());
+          return result = result['$+'](part['$[]']($range(1, -1, false)).$join(" "));}, TMP_6._s = self, TMP_6), $a).call($b);
+        return result;
+      };
+
       def.$highlight = function(element) {
         var self = this;
 
         element['$unhighlight_color='](element['$[]']("fill"));
         element['$[]=']("fill", "#ff0000");
+        element['$[]=']("stroke", "#ff0000");
         return nil;
       };
 
@@ -15928,6 +15981,7 @@ if (e == null) e = nil;
         var self = this;
 
         element['$[]=']("fill", element.$unhighlight_color());
+        element['$[]=']("stroke", element.$unhighlight_color());
         return nil;
       };
 
@@ -15939,7 +15993,7 @@ if (e == null) e = nil;
       };
 
       def.$draw_ellipse = function(root) {
-        var $a, $b, TMP_6, self = this, e = nil, x = nil, y = nil, e_dot = nil;
+        var $a, $b, TMP_7, $c, TMP_8, self = this, e = nil, x = nil, y = nil, e_dot = nil;
 
         e = self.paper.$ellipse(root.$center().$first(), root.$center().$last(), root.$size().$first(), root.$size().$last());
         self.$push_element(root.$origin(), e);
@@ -15953,38 +16007,16 @@ if (e == null) e = nil;
           y = root.$center().$last()['$+']((root.$size().$last()['$*'](1.2)));
           e_dot = self.paper.$ellipse(x, y, (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a));
           e_dot['$[]=']("fill", "black");
-          self.$push_element(root.$origin(), e_dot);};
-        return ($a = ($b = e).$on_click, $a._p = (TMP_6 = function(){var self = TMP_6._s || this, $a, $b, origin = nil;
-          if (self.on_select == null) self.on_select = nil;
+          self.$push_element(root.$origin(), e_dot);
+          ($a = ($b = e_dot).$on_click, $a._p = (TMP_7 = function(){var self = TMP_7._s || this, $a, $b, origin = nil;
+            if (self.on_select == null) self.on_select = nil;
 
-        origin = root.$origin();
-          if ((($a = ((($b = origin['$nil?']()) !== false && $b !== nil) ? $b : self.on_select['$nil?']())) !== nil && (!$a._isBoolean || $a == true))) {
-            return nil
-            } else {
-            return self.on_select.$call(origin)
-          };}, TMP_6._s = self, TMP_6), $a).call($b);
-      };
-
-      def.$draw_rest = function(root) {
-        var $a, $b, TMP_7, $c, TMP_8, self = this, center = nil, size = nil, e = nil, x = nil, y = nil, e_dot = nil;
-
-        center = [root.$center().$first()['$-'](root.$size().$first()), root.$center().$last()['$-'](root.$size().$last())];
-        size = ($a = ($b = root.$size()).$map, $a._p = (TMP_7 = function(s){var self = TMP_7._s || this;
-if (s == null) s = nil;
-        return (2)['$*'](s)}, TMP_7._s = self, TMP_7), $a).call($b);
-        e = self.paper.$rect(center.$first(), center.$last(), size.$first(), size.$last());
-        self.$push_element(root.$origin(), e);
-        e['$[]=']("fill", (function() {if (root.$fill()['$==']("filled")) {
-          return "black"
-          } else {
-          return "white"
-        }; return nil; })());
-        if ((($a = root['$dotted?']()) !== nil && (!$a._isBoolean || $a == true))) {
-          x = root.$center().$first()['$+']((root.$size().$first()['$*'](1.2)));
-          y = root.$center().$last()['$+']((root.$size().$last()['$*'](1.2)));
-          e_dot = self.paper.$ellipse(x, y, (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a));
-          e_dot['$[]=']("fill", "black");
-          self.$push_element(root.$origin(), e_dot);};
+          origin = root.$origin();
+            if ((($a = ((($b = origin['$nil?']()) !== false && $b !== nil) ? $b : self.on_select['$nil?']())) !== nil && (!$a._isBoolean || $a == true))) {
+              return nil
+              } else {
+              return self.on_select.$call(origin)
+            };}, TMP_7._s = self, TMP_7), $a).call($b);};
         return ($a = ($c = e).$on_click, $a._p = (TMP_8 = function(){var self = TMP_8._s || this, $a, $b, origin = nil;
           if (self.on_select == null) self.on_select = nil;
 
@@ -15994,6 +16026,52 @@ if (s == null) s = nil;
             } else {
             return self.on_select.$call(origin)
           };}, TMP_8._s = self, TMP_8), $a).call($c);
+      };
+
+      def.$draw_glyph = function(root) {
+        var $a, $b, TMP_9, $c, TMP_10, self = this, center = nil, path_spec = nil, e = nil, bbox = nil, glyph_center = nil, scalefactor = nil, x = nil, y = nil, e_dot = nil;
+
+        center = [root.$center().$first(), root.$center().$last()];
+        path_spec = self.$glyph_to_path_spec(root.$glyph());
+        e = self.paper.$rect(root.$center().$first(), root.$center().$last()['$-'](root.$size().$last()), root.$size().$first(), root.$size().$last());
+        e['$[]=']("fill", "white");
+        e['$[]=']("stroke", "white");
+        e.$transform("t-" + (root.$size().$first()['$/'](2)) + " " + (root.$size().$last()['$/'](2)));
+        e = self.paper.$path(path_spec);
+        e['$[]=']("fill", "black");
+        self.$push_element(root.$origin(), e);
+        ($a = ($b = e).$on_click, $a._p = (TMP_9 = function(){var self = TMP_9._s || this, $a, $b, origin = nil;
+          if (self.on_select == null) self.on_select = nil;
+
+        origin = root.$origin();
+          if ((($a = ((($b = origin['$nil?']()) !== false && $b !== nil) ? $b : self.on_select['$nil?']())) !== nil && (!$a._isBoolean || $a == true))) {
+            return nil
+            } else {
+            return self.on_select.$call(origin)
+          };}, TMP_9._s = self, TMP_9), $a).call($b);
+        bbox = e.$get_bbox();
+        glyph_center = [(bbox['$[]']("x")['$+'](bbox['$[]']("x2")))['$/'](2), (bbox['$[]']("y")['$+'](bbox['$[]']("y2")))['$/'](2)];
+        scalefactor = root.$size().$last()['$/'](bbox['$[]']("height"));
+        e.$transform("t" + ((center.$first())) + " " + ((center.$last())) + "t" + ((glyph_center.$first()['$-@']())) + " " + ((glyph_center.$last()['$-@']())) + "s" + (scalefactor));
+        if ((($a = root['$dotted?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          bbox = e.$get_bbox();
+          x = bbox['$[]']("x2")['$+'](0.5);
+          y = bbox['$[]']("y2")['$+'](0.5);
+          e_dot = self.paper.$ellipse(x, y, (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a));
+          e_dot['$[]=']("fill", "black");
+          self.$push_element(root.$origin(), e_dot);
+          return ($a = ($c = e_dot).$on_click, $a._p = (TMP_10 = function(){var self = TMP_10._s || this, $a, $b, origin = nil;
+            if (self.on_select == null) self.on_select = nil;
+
+          origin = root.$origin();
+            if ((($a = ((($b = origin['$nil?']()) !== false && $b !== nil) ? $b : self.on_select['$nil?']())) !== nil && (!$a._isBoolean || $a == true))) {
+              return nil
+              } else {
+              return self.on_select.$call(origin)
+            };}, TMP_10._s = self, TMP_10), $a).call($c);
+          } else {
+          return nil
+        };
       };
 
       def.$draw_flowline = function(root) {

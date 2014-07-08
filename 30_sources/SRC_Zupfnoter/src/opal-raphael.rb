@@ -57,6 +57,17 @@ module Raphael
     end
 
     #
+    # Wrap transform
+    # @param x [Numeric] horizontal distance
+    # @param y [Numeric] vertical distance
+    #
+    # @return [type] [description]
+    def transform(cmd)
+      `self.r.transform(cmd)`
+    end
+
+
+    #
     # the the size of an object
     # @return [Native Javascript object] see http://raphaeljs.com/reference.html#Element.getBBox
     #

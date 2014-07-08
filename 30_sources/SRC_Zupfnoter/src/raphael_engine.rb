@@ -36,6 +36,8 @@ module Harpnotes
           draw_jumpline(child)
         elsif child.is_a? Harpnotes::Drawing::Rest
           draw_rest(child)
+        elsif child.is_a? Harpnotes::Drawing::Glyph
+          draw_glyph(child)
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child)
         else
@@ -72,14 +74,26 @@ module Harpnotes
 
     private
 
+
+    def glyph_to_path_spec(glyph)
+      result = ""
+      glyph[:d].each do  |part|
+        result += part.first
+        result += part[1 .. -1].join(" ")
+      end
+      result
+    end
+
     def highlight(element)
       element.unhighlight_color = element[:fill]
       element[:fill]="#ff0000"
+      element[:stroke]="#ff0000"
       nil
     end
 
     def unhighlight(element)
       element[:fill]=element.unhighlight_color
+      element[:stroke]=element.unhighlight_color
       nil
     end
 
@@ -100,33 +114,67 @@ module Harpnotes
         e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
         e_dot["fill"] = "black"
         push_element(root.origin, e_dot)
+
+        e_dot.on_click do
+          origin = root.origin
+          @on_select.call(origin) unless origin.nil? or @on_select.nil?
+        end
       end
 
       e.on_click do
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
+
+
     end
 
-    def draw_rest(root)
-      center = [root.center.first - root.size.first, root.center.last - root.size.last]
 
-      size = root.size.map{|s| 2*s}
-      e = @paper.rect(center.first, center.last, size.first, size.last)
+    def draw_glyph(root)
+      center = [root.center.first, root.center.last]
+
+      #path_spec = "M#{center.first} #{center.last}"
+      path_spec = self.glyph_to_path_spec(root.glyph)
+
+      # draw a white background
+      e = @paper.rect(root.center.first, root.center.last - root.size.last, root.size.first, root.size.last)
+      e[:fill] = "white"
+      e[:stroke] = "white"
+      e.transform("t-#{root.size.first/2} #{root.size.last/2}")
+
+      # draw th path
+      e = @paper.path(path_spec)
+      e[:fill] = "black"
       push_element(root.origin, e)
-      e["fill"] = root.fill == :filled ? "black" : "white"
+
+      e.on_click do
+        origin = root.origin
+        @on_select.call(origin) unless origin.nil? or @on_select.nil?
+      end
+
+
+      # scale and move the glyph
+      bbox = e.get_bbox()
+      glyph_center = [(bbox[:x] + bbox[:x2])/2, (bbox[:y] + bbox[:y2])/2]
+      scalefactor = root.size.last / bbox[:height]
+      e.transform("t#{(center.first)} #{(center.last)}t#{(- glyph_center.first)} #{(- glyph_center.last)}s#{scalefactor}")
+
+      # add the dot if needed
       if root.dotted?
-        x = root.center.first + (root.size.first * 1.2)
-        y = root.center.last + (root.size.last * 1.2)
+        bbox = e.get_bbox()
+        x = bbox[:x2] + 0.5
+        y = bbox[:y2] + 0.5
         e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
         e_dot["fill"] = "black"
         push_element(root.origin, e_dot)
+
+        e_dot.on_click do
+          origin = root.origin
+          @on_select.call(origin) unless origin.nil? or @on_select.nil?
+        end
       end
 
-      e.on_click do
-        origin = root.origin
-        @on_select.call(origin) unless origin.nil? or @on_select.nil?
-      end
+
     end
 
 
