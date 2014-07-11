@@ -11,5 +11,9 @@ module Musicaljs
     def play(options, abc_text)
       `self.instrument.play(options, abc_text)`
     end
+
+    def tone(pitch, velocity, duration, delay, timbre)
+      `self.instrument.tone(pitch, velocity, duration, delay, timbre)`
+    end
   end
 end
