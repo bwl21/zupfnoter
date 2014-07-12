@@ -5,7 +5,7 @@ module Musicaljs
 
     def initialize(options)
       @instrument = `new Instrument(options)`
-      @playing = false
+      @isplaying = false
     end
 
     def play(options, abc_text)

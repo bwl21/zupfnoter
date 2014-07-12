@@ -36,6 +36,21 @@ module ABCJS
         nil
       end
 
+      def range_highlight_more(from, to)
+        %x{
+        self.printer.rangeHighlightMore(from, to);
+        }
+        nil
+      end
+
+      def range_unhighlight_more(from, to)
+        %x{
+        self.printer.rangeUnhighlightMore(from, to);
+        }
+        nil
+      end
+
+
       def draw(abc_code)
         %x{
 

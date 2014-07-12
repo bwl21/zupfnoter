@@ -252,9 +252,10 @@ module Harpnotes
                      :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
                     }
         if tune[:metaText][:tempo]
+          meta_data[:tempo] = {duration: tune[:metaText][:tempo][:duration], bpm:tune[:metaText][:tempo][:bpm] }
           meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],
                                        tune[:metaText][:tempo][:duration], "=", tune[:metaText][:tempo][:bpm],
-                                       tune[:metaText][:tempo][:postString],
+                                       tune[:metaText][:tempo][:postString]
                                       ].join(" ")
         end
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)

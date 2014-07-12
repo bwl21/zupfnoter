@@ -202,7 +202,13 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
 
   def play_abc
-    @harpnote_player.play_song(0)
+    if @harpnote_player.is_playing?
+      @harpnote_player.stop()
+      Element.find('#tbPlay').html('play')
+    else
+      Element.find('#tbPlay').html('stop')
+      @harpnote_player.play_song(0)
+    end
   end
 
   # play an abc fragment
@@ -217,6 +223,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   def render_previews
     $log.info("rendering")
     save_to_localstorage
+
     begin
       @song_harpnotes = layout_harpnotes(0)
       @harpnote_player.load_song(@song)
@@ -224,6 +231,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
+
     begin
       @tune_preview_printer.draw(@editor.get_text)
     rescue Exception => e
@@ -257,11 +265,11 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   # note that previous selections are still maintained.
   def highlight_abc_object(abcelement)
     a=Native(abcelement)
-    $log.debug("select_abc_element (#{__FILE__} #{__LINE__})")
+    $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
-    #@editor.select_range_by_position(a[:startChar], a[:endChar])
+    @editor.select_range_by_position(a[:startChar], a[:endChar])
 
-    @tune_preview_printer.range_highlight(a[:startChar], a[:endChar])
+    @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
 
     @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar])
   end
@@ -269,6 +277,8 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
   def unhighlight_abc_object(abcelement)
     a=Native(abcelement)
+    @tune_preview_printer.range_unhighlight_more(a[:startChar], a[:endChar])
+
     @harpnote_preview_printer.range_unhighlight(a[:startChar], a[:endChar])
   end
 
@@ -340,12 +350,12 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
 
     @harpnote_player.on_noteon do |e|
-      $log.debug("noteon FROM CONTORLLER")
+      $log.debug("noteon #{Native(e)[:startChar]}")
       highlight_abc_object(e)
     end
 
     @harpnote_player.on_noteoff do |e|
-      $log.debug("noteoff FROM CONTORLLER")
+      $log.debug("noteoff #{Native(e)[:startChar]}")
       unhighlight_abc_object(e)
     end
 
