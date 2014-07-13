@@ -76,10 +76,19 @@ This software is licensed under dual license MIT and Commercial
 
 # Open issues
 
+## known bugs
+
+001 Hightlighting in ace is turned off, since ace is throwing too many selection changed events
+002 Play cannot be stopped
+003 some refactoring necessary (see todo)
+004 highlighting in tunepreview while playing does not work properly; tunepreview removes previous highlights
+005 Q: tag is not considered while playing
+
+
 ## current work items
 
 101. drop down menu with proper links to informative sites
-102. midi - play the generated harpnotes
+102. midi - play the generated harpnotes *done*
 103. write messages to the console pane *done*
 104. vertical resize of panes
 105. zoom pan scroll in Notes pane *done*
@@ -88,11 +97,12 @@ This software is licensed under dual license MIT and Commercial
 
 201. zoom full screen of pane
 202. cross-highlighting bewtween ABC (*done*) - Notes *done* - Harpnotes
-    *done* - Midi
+    *done* - Player *done*
 203. add a local description for ABC
 204. add ABC-Syntax-Support to the Editor
 205. minimize the panes
 206. multilingual
+207. incorporate bootstrap
 
 ## More support for ABC
 
@@ -111,13 +121,13 @@ This software is licensed under dual license MIT and Commercial
 401. indicating measures *done*
 402. vertical layout optimization (optimize the visual distance between
     two beats) *done*
-403. annotations
+403. annotations *done*
 404. Debugging (writing the notenames in light grey ) *cancelled*
 405. draw extra flow line in unsynched notes (*cancelled*)
 406. add marks to adjust the sheet in the harp *done*
 407. print extracts *done*
 408. configure vertical layout (fixed, optimized)
-409. configure a transformation
+409. configure a transformation *done*
 410. denote parts *done*
 
 ## technology
@@ -126,10 +136,21 @@ This software is licensed under dual license MIT and Commercial
 502. Visualize the internal model for debugging purposes
 503. Improved error handling
 
-# Result of initial application
+## Player
+
+701. Emulate harpplayer *in progress*
+702. Metronome
+
+
+
+
+# Result of initial evaluation
 
 601. it is good to enter the stuff with two persons
 602. good Visual feedback is essential
 603. should be able to turn of some voices in oder to focus on the one
     currently entered
 604. play from particular position onwards.
+
+
+#
