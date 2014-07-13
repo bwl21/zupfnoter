@@ -14908,7 +14908,7 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$inject', '$parse_harpnote_config', '$compact', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$debug', '$index=', '$flatten!', '$compact!', '$flatten', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$companion=', '$first_in_part=', '$clear', '$get_midipitch', '$length', '$gsub', '$pop']);
+  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$inject', '$parse_harpnote_config', '$compact', '$flatten', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$debug', '$index=', '$flatten!', '$compact!', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$companion=', '$first_in_part=', '$clear', '$get_midipitch', '$length', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -15073,17 +15073,18 @@ if (m == null) m = nil;
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
           parser.parse(book.tunes[0].abc);
-          var warnings = parser.getWarnings();
+          var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
           console.log(tune);
           console.log(JSON.stringify(tune));
         
-          warnings = [self.$Native(warnings)].$compact();
-          ($a = ($b = warnings).$each, $a._p = (TMP_10 = function(w){var self = TMP_10._s || this;
+          warnings = [self.$Native(warnings)].$flatten().$compact();
+          ($a = ($b = warnings).$each, $a._p = (TMP_10 = function(w){var self = TMP_10._s || this, wn = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (w == null) w = nil;
-          return $gvars.log.$warning(w)}, TMP_10._s = self, TMP_10), $a).call($b);
+          wn = self.$Native(w);
+            return $gvars.log.$warning("" + (wn['$[]'](self.$message())) + " at line " + (wn['$[]']("line")) + " position " + (wn['$[]']("startChar")));}, TMP_10._s = self, TMP_10), $a).call($b);
           note_length_rows = ($a = ($c = abc_code.$split("\n")).$select, $a._p = (TMP_11 = function(row){var self = TMP_11._s || this;
 if (row == null) row = nil;
           return row['$[]']($range(0, 1, false))['$==']("L:")}, TMP_11._s = self, TMP_11), $a).call($c);
@@ -15115,7 +15116,7 @@ if (staff == null) staff = nil;if (staff_index == null) staff_index = nil;
             return ($a = ($b = self.$Native(staff)['$[]']("voices")).$each_with_index, $a._p = (TMP_16 = function(voice, voice_index){var self = TMP_16._s || this, $a, $b, $c, $d, $e, $f, TMP_17;
                 if ($gvars.log == null) $gvars.log = nil;
 if (voice == null) voice = nil;if (voice_index == null) voice_index = nil;
-              $gvars.log.$debug("reading line.staff.voice " + (voice_no) + ":" + (line_index) + " " + (staff_index) + "." + (voice_index) + " (" + ("abc_to_harpnotes") + " " + (212) + ")");
+              $gvars.log.$debug("reading line.staff.voice " + (voice_no) + ":" + (line_index) + " " + (staff_index) + "." + (voice_index) + " (" + ("abc_to_harpnotes") + " " + (213) + ")");
                 ($a = voice_no, $b = voices, ((($c = $b['$[]']($a)) !== false && $c !== nil) ? $c : $b['$[]=']($a, (($d = ((($e = ((($f = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $f))._scope).Music == null ? $e.cm('Music') : $e.Music))._scope).Voice == null ? $d.cm('Voice') : $d.Voice).$new())));
                 voices['$[]'](voice_no)['$<<'](($a = ($b = voice).$map, $a._p = (TMP_17 = function(x){var self = TMP_17._s || this;
 if (x == null) x = nil;
@@ -15346,7 +15347,7 @@ if (part == null) part = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           args = $slice.call(arguments, 1);
-          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (458) + ")");
+          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (459) + ")");
           return nil;
         }, nil) && 'method_missing';
       })(self, null);
@@ -16782,12 +16783,15 @@ if (s == null) s = nil;
     };
 
     def.$highlight_abc_object = function(abcelement) {
-      var self = this, a = nil;
+      var $a, self = this, a = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       a = self.$Native(abcelement);
       $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (268) + ")");
-      self.editor.$select_range_by_position(a['$[]']("startChar"), a['$[]']("endChar"));
+      if ((($a = self.harpnote_player['$is_playing?']()) !== nil && (!$a._isBoolean || $a == true))) {
+        } else {
+        self.editor.$select_range_by_position(a['$[]']("startChar"), a['$[]']("endChar"))
+      };
       self.tune_preview_printer.$range_highlight_more(a['$[]']("startChar"), a['$[]']("endChar"));
       return self.harpnote_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
     };
@@ -16880,7 +16884,7 @@ if (e == null) e = nil;
       ($a = ($k = (($l = $scope.Element) == null ? $opal.cm('Element') : $l).$find(window)).$on, $a._p = (TMP_12 = function(evt){var self = TMP_12._s || this, $a;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
-      $gvars.log.$debug("key pressed (" + ("controller") + " " + (364) + ")");
+      $gvars.log.$debug("key pressed (" + ("controller") + " " + (366) + ")");
         console.log(event);
         if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();

@@ -267,7 +267,9 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     a=Native(abcelement)
     $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
-    @editor.select_range_by_position(a[:startChar], a[:endChar])
+    unless @harpnote_player.is_playing?
+      @editor.select_range_by_position(a[:startChar], a[:endChar])
+    end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
 

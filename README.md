@@ -97,11 +97,12 @@ This software is licensed under dual license MIT and Commercial
 
 201. zoom full screen of pane
 202. cross-highlighting bewtween ABC (*done*) - Notes *done* - Harpnotes
-    *done* - Midi
+    *done* - Player *done*
 203. add a local description for ABC
 204. add ABC-Syntax-Support to the Editor
 205. minimize the panes
 206. multilingual
+207. incorporate bootstrap
 
 ## More support for ABC
 
@@ -135,6 +136,14 @@ This software is licensed under dual license MIT and Commercial
 502. Visualize the internal model for debugging purposes
 503. Improved error handling
 
+## Player
+
+701. Emulate harpplayer *in progress*
+702. Metronome
+
+
+
+
 # Result of initial evaluation
 
 601. it is good to enter the stuff with two persons
@@ -142,3 +151,6 @@ This software is licensed under dual license MIT and Commercial
 603. should be able to turn of some voices in oder to focus on the one
     currently entered
 604. play from particular position onwards.
+
+
+#

@@ -157,16 +157,17 @@ module Harpnotes
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
           parser.parse(book.tunes[0].abc);
-          var warnings = parser.getWarnings();
+          var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
           console.log(tune);
           console.log(JSON.stringify(tune));
         }
 
-        warnings = [Native(`warnings`)].compact
+        warnings = [Native(`warnings`)].flatten.compact
         warnings.each{|w|
-          $log.warning(w)
+          wn = Native(w)
+          $log.warning("#{wn[message]} at line #{wn[:line]} position #{wn[:startChar]}")
         }
 
         #
