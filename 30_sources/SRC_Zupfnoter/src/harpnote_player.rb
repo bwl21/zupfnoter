@@ -40,7 +40,10 @@ module Harpnotes
         @voice_elements.each{|the_note|
          #@inst.tone(note)
           note = the_note.to_n
-          `self.inst.tone(note)`
+          %x{
+            self.inst.tone(note);
+            self.inst.schedule(note.delay + note.duration, function(){self.inst._trigger("noteoff", note);});
+           }
         }
         @isplaying = true
       end
@@ -71,8 +74,8 @@ module Harpnotes
             delay  = root.beat * timefactor
             pitch = - root.pitch
             duration = root.duration * timefactor
-            velocity = 100
-            velocity = 1 if root.is_a? Pause # pause is highlighted but not to be heard
+            velocity = 1
+            velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
 
             {pitch: pitch,
              velocity: velocity,
