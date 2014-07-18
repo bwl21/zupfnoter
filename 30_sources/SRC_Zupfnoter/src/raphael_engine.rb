@@ -14,10 +14,14 @@ module Harpnotes
 
     def initialize(element_id, width, height)
       @paper = Raphael::Paper.new(element_id, width, height)
-      @paper.enable_pan_zoom
+      #@paper.enable_pan_zoom
       @on_select = nil
       @elements = {}   # record all elements being on the sheet, using upstream object as key
       @highlighted = []
+    end
+
+    def set_view_box(x, y, width, height)
+      @paper.set_view_box(x, y, width, height, true)
     end
 
     def draw(sheet)

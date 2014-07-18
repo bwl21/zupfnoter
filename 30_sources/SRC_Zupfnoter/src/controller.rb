@@ -265,7 +265,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   # note that previous selections are still maintained.
   def highlight_abc_object(abcelement)
     a=Native(abcelement)
-    $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
+   # $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(a[:startChar], a[:endChar])
@@ -280,6 +280,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   def unhighlight_abc_object(abcelement)
     a=Native(abcelement)
     @tune_preview_printer.range_unhighlight_more(a[:startChar], a[:endChar])
+    #$log.debug("unselect_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     @harpnote_preview_printer.range_unhighlight(a[:startChar], a[:endChar])
   end
@@ -297,14 +298,15 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
   def setup_ui
     # setup the harpnote prviewer
-    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 1100, 700)
+    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 1100, 700) # size of canvas in pixels
+    @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end
 
     # setup tune preview
-    printerparams = {}
-    @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview")
+    printerparams = {staffwidth: 750} #todo compute the staffidth
+    @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview", printerparams)
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement)
       select_abc_object(abcelement)
