@@ -80,8 +80,8 @@ module Harpnotes
     end
 
     def draw_cropmark(i, delta, border)
-      v = {:top => [0,7,9], :bottom => [297, 290, 288]}[border]
-      hpos = X_SPACING/2.0 + delta * i
+      v = {:top => [0,7,9], :bottom => [297, 290, 288]}[border] # [start_y, center_y, end_y]
+      hpos = X_SPACING/2.0 + delta * i + 3 #todo: 3 is the size Default::Layout::ELLIPSE_SIZE[0]
       hdiff = X_SPACING/2.0
 
       @pdf.line([hpos, v.first],  [hpos, v.last])
@@ -99,7 +99,7 @@ module Harpnotes
       end
     end
 
-    def draw_glyph1(root)
+    def draw_glyph_outdated(root)
       style = root.filled? ? :F : :FD
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
       center = [root.center.first - root.size.first, root.center.last - root.size.last]
@@ -113,8 +113,11 @@ module Harpnotes
     end
 
 
-
     def draw_glyph(root)
+      draw_glyph_visible(root) if root.visible?
+    end
+
+    def draw_glyph_visible(root)
 
       style = root.filled?  :FD, :FD
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }

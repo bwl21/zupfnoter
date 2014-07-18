@@ -356,6 +356,7 @@ module Harpnotes
 
         res = Harpnotes::Music::Pause.new(pitch, duration)
         res.origin = note
+        res.visible = false if note[:rest][:type] == 'invisible'
         @previous_note = res
 
         result = [res] 

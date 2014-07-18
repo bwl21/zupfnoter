@@ -145,6 +145,10 @@ module Harpnotes
 
 
     def draw_glyph(root)
+      draw_glyph_visible() if root.visible?
+    end
+
+    def draw_glyph_visible(root)
 
       def glyph_to_path_spec(glyph)
         result = ""

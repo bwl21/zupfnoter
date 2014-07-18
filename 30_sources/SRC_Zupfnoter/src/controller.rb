@@ -305,7 +305,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     end
 
     # setup tune preview
-    printerparams = {staffwidth: 750} #todo compute the staffidth
+    printerparams = {staffwidth: 750} #todo compute the staffwidth
     @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview", printerparams)
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement)

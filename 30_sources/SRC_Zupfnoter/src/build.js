@@ -13956,7 +13956,7 @@ if (a == null) a = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$-', '$/', '$*', '$include', '$harpnote_options', '$beat_layout_policy', '$compute_beat_compression', '$values', '$<', '$round', '$warning', '$call', '$include?', '$layout_voice', '$each_with_index', '$voices', '$origin', '$build_synch_points', '$layout_note', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$policy', '$from', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$name', '$to_sym']);
+  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$-', '$/', '$*', '$include', '$harpnote_options', '$beat_layout_policy', '$compute_beat_compression', '$values', '$<', '$round', '$warning', '$call', '$include?', '$layout_voice', '$each_with_index', '$voices', '$origin', '$build_synch_points', '$layout_note', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$policy', '$from', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$visible?', '$visible=', '$name', '$to_sym']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -13973,7 +13973,13 @@ if (a == null) a = nil;
 
         var def = self._proto, $scope = self._scope;
 
-        return self.$attr_accessor("origin", "beat")
+        self.$attr_accessor("origin", "beat", "visible");
+
+        return (def.$initialize = function() {
+          var self = this;
+
+          return self.visible = true;
+        }, nil) && 'initialize';
       })(self, null);
 
       (function($base, $super) {
@@ -14092,14 +14098,28 @@ if (n == null) n = nil;
 
         var def = self._proto, $scope = self._scope;
 
+        def.visible = nil;
         self.$attr_reader("duration", "pitch");
 
-        return (def.$initialize = function(pitch, duration) {
+        def.$initialize = function(pitch, duration) {
           var self = this;
 
           self.pitch = pitch;
-          return self.duration = duration;
-        }, nil) && 'initialize';
+          self.duration = duration;
+          return self.visible = true;
+        };
+
+        def['$visible='] = function(visible) {
+          var self = this;
+
+          return self.visible = visible;
+        };
+
+        return (def['$visible?'] = function() {
+          var self = this;
+
+          return self.visible;
+        }, nil) && 'visible?';
       })(self, (($a = $scope.Playable) == null ? $opal.cm('Playable') : $a));
 
       (function($base, $super) {
@@ -14538,7 +14558,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         var def = self._proto, $scope = self._scope;
 
-        def.size = def.fill = nil;
+        def.size = def.fill = def.visible = nil;
         self.$attr_reader("center", "size", "glyph", "dotted", "origin");
 
         $opal.cdecl($scope, 'GLYPHS', $hash2(["rest_1", "rest_4", "rest_8", "rest_16", "rest_32", "rest_64", "rest_128"], {"rest_1": $hash2(["d", "w", "h"], {"d": [["M", (0.06)['$-'](0.06)['$-']((11.25)['$/'](2)), (0.03)['$-']((1.7)['$*'](4.68))], ["l", 0.09, -0.06], ["l", 5.46, 0], ["l", 5.49, 0], ["l", 0.09, 0.06], ["l", 0.06, 0.09], ["l", 0, 2.19], ["l", 0, 2.19], ["l", -0.06, 0.09], ["l", -0.09, 0.06], ["l", -5.49, 0], ["l", -5.46, 0], ["l", -0.09, -0.06], ["l", -0.06, -0.09], ["l", 0, -2.19], ["l", 0, -2.19], ["z"]], "w": 11.25, "h": (2.2)['$*'](4.68)}), "rest_4": $hash2(["d", "w", "h"], {"d": [["M", 1.89, -11.82], ["c", 0.12, -0.06, 0.24, -0.06, 0.36, -0.03], ["c", 0.09, 0.06, 4.74, 5.58, 4.86, 5.82], ["c", 0.21, 0.39, 0.15, 0.78, -0.15, 1.26], ["c", -0.24, 0.33, -0.72, 0.81, -1.62, 1.56], ["c", -0.45, 0.36, -0.87, 0.75, -0.96, 0.84], ["c", -0.93, 0.99, -1.14, 2.49, -0.6, 3.63], ["c", 0.18, 0.39, 0.27, 0.48, 1.32, 1.68], ["c", 1.92, 2.25, 1.83, 2.16, 1.83, 2.34], ["c", 0, 0.18, -0.18, 0.36, -0.36, 0.39], ["c", -0.15, 0, -0.27, -0.06, -0.48, -0.27], ["c", -0.75, -0.75, -2.46, -1.29, -3.39, -1.08], ["c", -0.45, 0.09, -0.69, 0.27, -0.9, 0.69], ["c", -0.12, 0.3, -0.21, 0.66, -0.24, 1.14], ["c", -0.03, 0.66, 0.09, 1.35, 0.3, 2.01], ["c", 0.15, 0.42, 0.24, 0.66, 0.45, 0.96], ["c", 0.18, 0.24, 0.18, 0.33, 0.03, 0.42], ["c", -0.12, 0.06, -0.18, 0.03, -0.45, -0.3], ["c", -1.08, -1.38, -2.07, -3.36, -2.4, -4.83], ["c", -0.27, -1.05, -0.15, -1.77, 0.27, -2.07], ["c", 0.21, -0.12, 0.42, -0.15, 0.87, -0.15], ["c", 0.87, 0.06, 2.1, 0.39, 3.3, 0.9], ["l", 0.39, 0.18], ["l", -1.65, -1.95], ["c", -2.52, -2.97, -2.61, -3.09, -2.7, -3.27], ["c", -0.09, -0.24, -0.12, -0.48, -0.03, -0.75], ["c", 0.15, -0.48, 0.57, -0.96, 1.83, -2.01], ["c", 0.45, -0.36, 0.84, -0.72, 0.93, -0.78], ["c", 0.69, -0.75, 1.02, -1.8, 0.9, -2.79], ["c", -0.06, -0.33, -0.21, -0.84, -0.39, -1.11], ["c", -0.09, -0.15, -0.45, -0.6, -0.81, -1.05], ["c", -0.36, -0.42, -0.69, -0.81, -0.72, -0.87], ["c", -0.09, -0.18, 0, -0.42, 0.21, -0.51], ["z"]], "w": 7.888, "h": 21.435}), "rest_8": $hash2(["d", "w", "h"], {"d": [["M", 1.68, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.39, -0.18, 1.32, -1.29, 1.68, -1.98], ["c", 0.09, -0.21, 0.24, -0.3, 0.39, -0.3], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.27, 1.11, -1.86, 6.42], ["c", -1.02, 3.48, -1.89, 6.39, -1.92, 6.42], ["c", 0, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.15, -0.57, 1.68, -4.92], ["c", 0.96, -2.67, 1.74, -4.89, 1.71, -4.89], ["l", -0.51, 0.15], ["c", -1.08, 0.36, -1.74, 0.48, -2.55, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 7.534, "h": 13.883}), "rest_16": $hash2(["d", "w", "h"], {"d": [["M", 3.33, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.87, 0.42], ["c", 0.39, -0.18, 1.2, -1.23, 1.62, -2.07], ["c", 0.06, -0.15, 0.24, -0.24, 0.36, -0.24], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.45, 1.86, -2.67, 10.17], ["c", -1.5, 5.55, -2.73, 10.14, -2.76, 10.17], ["c", -0.03, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.12, -0.57, 1.44, -4.92], ["c", 0.81, -2.67, 1.47, -4.86, 1.47, -4.89], ["c", -0.03, 0, -0.27, 0.06, -0.54, 0.15], ["c", -1.08, 0.36, -1.77, 0.48, -2.58, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.33, -0.15, 1.02, -0.93, 1.41, -1.59], ["c", 0.12, -0.21, 0.18, -0.39, 0.39, -1.08], ["c", 0.66, -2.1, 1.17, -3.84, 1.17, -3.87], ["c", 0, 0, -0.21, 0.06, -0.42, 0.15], ["c", -0.51, 0.15, -1.2, 0.33, -1.68, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 9.724, "h": 21.383}), "rest_32": $hash2(["d", "w", "h"], {"d": [["M", 4.23, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.27, -0.06], ["c", 0.33, -0.21, 0.99, -1.11, 1.44, -1.98], ["c", 0.09, -0.24, 0.21, -0.33, 0.39, -0.33], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.57, 2.67, -3.21, 13.89], ["c", -1.8, 7.62, -3.3, 13.89, -3.3, 13.92], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.09, -0.57, 1.23, -4.92], ["c", 0.69, -2.67, 1.26, -4.86, 1.29, -4.89], ["c", 0, -0.03, -0.12, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.12, 0.09, 0.3, 0.18, 0.48, 0.21], ["c", 0.12, 0, 0.18, 0, 0.3, -0.09], ["c", 0.42, -0.21, 1.29, -1.29, 1.56, -1.89], ["c", 0.03, -0.12, 1.23, -4.59, 1.23, -4.65], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -0.63, 0.18, -1.2, 0.36, -1.74, 0.45], ["c", -0.39, 0.06, -0.54, 0.06, -1.02, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.18, 0.18, 0.51, 0.27, 0.72, 0.15], ["c", 0.3, -0.12, 0.69, -0.57, 1.08, -1.17], ["c", 0.42, -0.6, 0.39, -0.51, 1.05, -3.03], ["c", 0.33, -1.26, 0.6, -2.31, 0.6, -2.34], ["c", 0, 0, -0.21, 0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.14, 0.33, -1.62, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 11.373, "h": 28.883}), "rest_64": $hash2(["d", "w", "h"], {"d": [["M", 5.13, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.24, -0.12, 0.63, -0.66, 1.08, -1.56], ["c", 0.33, -0.66, 0.39, -0.72, 0.6, -0.72], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.69, 3.66, -3.54, 17.64], ["c", -1.95, 9.66, -3.57, 17.61, -3.57, 17.64], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.06, -0.57, 1.05, -4.95], ["c", 0.6, -2.7, 1.08, -4.89, 1.08, -4.92], ["c", 0, 0, -0.24, 0.06, -0.51, 0.15], ["c", -0.66, 0.24, -1.2, 0.36, -1.77, 0.48], ["c", -0.42, 0.06, -0.57, 0.06, -1.05, 0.06], ["c", -0.69, 0, -0.87, -0.03, -1.35, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.21, 0.03, 0.39, -0.09, 0.72, -0.42], ["c", 0.45, -0.45, 1.02, -1.26, 1.17, -1.65], ["c", 0.03, -0.09, 0.27, -1.14, 0.54, -2.34], ["c", 0.27, -1.2, 0.48, -2.19, 0.51, -2.22], ["c", 0, -0.03, -0.09, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.9, 0.42], ["c", 0.36, -0.18, 1.2, -1.26, 1.47, -1.89], ["c", 0.03, -0.09, 0.3, -1.2, 0.57, -2.43], ["l", 0.51, -2.28], ["l", -0.54, 0.18], ["c", -1.11, 0.36, -1.8, 0.48, -2.61, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.21, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.36, -0.18, 0.93, -0.93, 1.29, -1.68], ["c", 0.12, -0.24, 0.18, -0.48, 0.63, -2.55], ["l", 0.51, -2.31], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -1.14, 0.36, -2.1, 0.54, -2.82, 0.51], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 12.453, "h": 36.383}), "rest_128": $hash2(["d", "w", "h"], {"d": [["M", 6.03, -21.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.21, 0, 0.33, -0.06, 0.54, -0.36], ["c", 0.15, -0.21, 0.54, -0.93, 0.78, -1.47], ["c", 0.15, -0.33, 0.18, -0.39, 0.3, -0.48], ["c", 0.18, -0.09, 0.45, 0, 0.51, 0.15], ["c", 0.03, 0.09, -7.11, 42.75, -7.17, 42.84], ["c", -0.03, 0.03, -0.15, 0.09, -0.24, 0.15], ["c", -0.18, 0.06, -0.24, 0.06, -0.45, 0.06], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.03, -0.57, 0.84, -4.98], ["c", 0.51, -2.7, 0.93, -4.92, 0.9, -4.92], ["c", 0, 0, -0.15, 0.06, -0.36, 0.12], ["c", -0.78, 0.27, -1.62, 0.48, -2.31, 0.57], ["c", -0.15, 0.03, -0.54, 0.03, -0.81, 0.03], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.63, 0.48], ["c", 0.12, 0, 0.18, 0, 0.3, -0.09], ["c", 0.42, -0.21, 1.14, -1.11, 1.5, -1.83], ["c", 0.12, -0.27, 0.12, -0.27, 0.54, -2.52], ["c", 0.24, -1.23, 0.42, -2.25, 0.39, -2.25], ["c", 0, 0, -0.24, 0.06, -0.51, 0.18], ["c", -1.26, 0.39, -2.25, 0.57, -3.06, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.51, 0.3, 0.75, 0.18], ["c", 0.36, -0.15, 1.05, -0.99, 1.41, -1.77], ["l", 0.15, -0.3], ["l", 0.42, -2.25], ["c", 0.21, -1.26, 0.42, -2.28, 0.39, -2.28], ["l", -0.51, 0.15], ["c", -1.11, 0.39, -1.89, 0.51, -2.7, 0.51], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.18, 0.48, 0.27, 0.72, 0.21], ["c", 0.33, -0.12, 1.14, -1.26, 1.41, -1.95], ["c", 0, -0.09, 0.21, -1.11, 0.45, -2.34], ["c", 0.21, -1.2, 0.39, -2.22, 0.39, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.2, 0.33, -1.71, 0.42], ["c", -0.3, 0.06, -0.51, 0.06, -0.93, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.18, 0, 0.36, -0.09, 0.57, -0.33], ["c", 0.33, -0.36, 0.78, -1.14, 0.93, -1.56], ["c", 0.03, -0.12, 0.24, -1.2, 0.45, -2.4], ["c", 0.24, -1.2, 0.42, -2.22, 0.42, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.39, 0.09], ["c", -1.05, 0.36, -1.8, 0.48, -2.58, 0.48], ["c", -0.63, 0, -0.84, -0.03, -1.29, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 12.992, "h": 43.883})}));
@@ -14558,7 +14578,8 @@ if (map == null) map = nil;if (playable == null) playable = nil;
           self.size = size;
           self.dotted = dotted;
           self.origin = origin;
-          return self.filled = true;
+          self.filled = true;
+          return self.visible = true;
         };
 
         def.$height = function() {
@@ -14573,11 +14594,23 @@ if (map == null) map = nil;if (playable == null) playable = nil;
           return self.$dotted();
         };
 
-        return (def['$filled?'] = function() {
+        def['$filled?'] = function() {
           var self = this;
 
           return self.fill['$==']("filled");
-        }, nil) && 'filled?';
+        };
+
+        def['$visible?'] = function() {
+          var self = this;
+
+          return self.visible;
+        };
+
+        return (def['$visible='] = function(v) {
+          var self = this;
+
+          return self.visible = v;
+        }, nil) && 'visible=';
       })(self, null);
       
     })(self);
@@ -14610,7 +14643,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         $opal.cdecl($scope, 'PITCH_OFFSET', -43);
 
-        $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [0.9, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [0.5, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.5, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.1, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [0.05, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
+        $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [0.9, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [0.7, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.7, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.1, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [0.05, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
 
         $opal.cdecl($scope, 'REST_TO_GLYPH', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [[0.9, 0.9], "rest_1", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [[0.5, 0.5], "rest_1", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [[0.5, 0.5], "rest_1", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [[0.4, 0.7], "rest_4", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [[0.4, 0.7], "rest_4", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [[0.3, 0.5], "rest_8", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [[0.3, 0.5], "rest_8", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [[0.3, 0.4], "rest_16", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [[0.3, 0.5], "rest_16", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [[0.3, 0.5], "rest_32", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [[0.3, 0.5], "rest_32", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [[0.3, 0.5], "rest_64", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
 
@@ -14860,6 +14893,10 @@ if (c == null) c = nil;
           $a = $opal.to_ary((($b = $scope.REST_TO_GLYPH) == null ? $opal.cm('REST_TO_GLYPH') : $b)['$[]'](self.$duration_to_id(root.$duration()))), scale = ($a[0] == null ? nil : $a[0]), glyph = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
           size = [(($a = $scope.REST_SIZE) == null ? $opal.cm('REST_SIZE') : $a).$first()['$*'](scale.$first()), (($a = $scope.REST_SIZE) == null ? $opal.cm('REST_SIZE') : $a).$last()['$*'](scale.$last())];
           res = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Drawing == null ? $b.cm('Drawing') : $b.Drawing))._scope).Glyph == null ? $a.cm('Glyph') : $a.Glyph).$new([x_offset, y_offset], size, glyph, dotted, root);
+          if ((($a = root['$visible?']()) !== nil && (!$a._isBoolean || $a == true))) {
+            } else {
+            res['$visible='](false)
+          };
           return res;
         };
 
@@ -14908,7 +14945,7 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$inject', '$parse_harpnote_config', '$compact', '$flatten', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$debug', '$index=', '$flatten!', '$compact!', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$companion=', '$first_in_part=', '$clear', '$get_midipitch', '$length', '$gsub', '$pop']);
+  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$inject', '$parse_harpnote_config', '$compact', '$flatten', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$debug', '$index=', '$flatten!', '$compact!', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$visible=', '$companion=', '$first_in_part=', '$clear', '$get_midipitch', '$length', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -15246,6 +15283,8 @@ if (n == null) n = nil;
           };
           res = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Pause == null ? $a.cm('Pause') : $a.Pause).$new(pitch, duration);
           res['$origin='](note);
+          if (note['$[]']("rest")['$[]']("type")['$==']("invisible")) {
+            res['$visible='](false)};
           self.previous_note = res;
           result = [res];
           if ((($a = self.next_note_marks_measure) !== nil && (!$a._isBoolean || $a == true))) {
@@ -15347,7 +15386,7 @@ if (part == null) part = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           args = $slice.call(arguments, 1);
-          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (459) + ")");
+          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (460) + ")");
           return nil;
         }, nil) && 'method_missing';
       })(self, null);
@@ -15950,7 +15989,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars, $range = $opal.range;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$set_view_box', '$clear', '$rect', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$unhighlight_element', '$highlight_element', '$get_elements_by_range', '$private', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$push', '$unhighlight_color=', '$[]=', '$include?', '$-', '$unhighlight_color', '$<<', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$join', '$glyph_to_path_spec', '$glyph', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$text']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$set_view_box', '$clear', '$rect', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$unhighlight_element', '$highlight_element', '$get_elements_by_range', '$private', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$push', '$unhighlight_color=', '$[]=', '$include?', '$-', '$unhighlight_color', '$<<', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$visible?', '$draw_glyph_visible', '$join', '$glyph_to_path_spec', '$glyph', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$text']);
   ;
   ;
   return (function($base) {
@@ -16143,6 +16182,16 @@ if (e == null) e = nil;
       };
 
       def.$draw_glyph = function(root) {
+        var $a, self = this;
+
+        if ((($a = root['$visible?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          return self.$draw_glyph_visible()
+          } else {
+          return nil
+        };
+      };
+
+      def.$draw_glyph_visible = function(root) {
         var $a, $b, TMP_11, $c, TMP_12, self = this, center = nil, size = nil, path_spec = nil, e = nil, bbox = nil, glyph_center = nil, scalefactor = nil, x = nil, y = nil, e_dot = nil;
 
         def.$glyph_to_path_spec = function(glyph) {
@@ -16252,7 +16301,7 @@ if (part == null) part = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$private', '$[]', '$style', '$text_color=', '$font_size=', '$font_style=', '$text', '$first', '$center', '$last', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$stroke=', '$glyph', '$===', '$empty?', '$lines', '$push', '$error', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$distance', '$nil?', '$level', '$left_arrowhead']);
+  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$private', '$[]', '$style', '$text_color=', '$font_size=', '$font_style=', '$text', '$first', '$center', '$last', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$visible?', '$draw_glyph_visible', '$stroke=', '$glyph', '$===', '$empty?', '$lines', '$push', '$error', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$distance', '$nil?', '$level', '$left_arrowhead']);
   ;
   ;
   return (function($base) {
@@ -16349,7 +16398,7 @@ if (child == null) child = nil;
         var $a, self = this, v = nil, hpos = nil, hdiff = nil;
 
         v = $hash2(["top", "bottom"], {"top": [0, 7, 9], "bottom": [297, 290, 288]})['$[]'](border);
-        hpos = (($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a)['$/'](2.0)['$+'](delta['$*'](i));
+        hpos = (($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a)['$/'](2.0)['$+'](delta['$*'](i))['$+'](3);
         hdiff = (($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a)['$/'](2.0);
         self.pdf.$line([hpos, v.$first()], [hpos, v.$last()]);
         return self.pdf.$line([hpos['$-'](hdiff), v['$[]'](1)], [hpos['$+'](hdiff), v['$[]'](1)]);
@@ -16384,7 +16433,7 @@ if (s == null) s = nil;
         };
       };
 
-      def.$draw_glyph1 = function(root) {
+      def.$draw_glyph_outdated = function(root) {
         var $a, $b, TMP_8, $c, TMP_9, $d, TMP_10, $e, TMP_11, self = this, style = nil, center = nil, size = nil;
 
         style = (function() {if ((($a = root['$filled?']()) !== nil && (!$a._isBoolean || $a == true))) {
@@ -16418,6 +16467,16 @@ if (s == null) s = nil;
       };
 
       def.$draw_glyph = function(root) {
+        var $a, self = this;
+
+        if ((($a = root['$visible?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          return self.$draw_glyph_visible(root)
+          } else {
+          return nil
+        };
+      };
+
+      def.$draw_glyph_visible = function(root) {
         var $a, $b, TMP_12, $c, TMP_13, $d, TMP_14, $e, TMP_15, $f, TMP_16, $g, TMP_17, self = this, style = nil, center = nil, size = nil, scalefactor = nil, scale = nil, lines = nil, start = nil;
 
         style = root['$filled?']("FD", "FD");
@@ -16461,7 +16520,7 @@ if (element == null) element = nil;
             } else {
             self.pdf.$lines(lines, start.$first(), start.$last(), scale, "FD", true)
           };
-          return lines = [];}else {return $gvars.log.$error("unsupported command '" + (element.$first()) + "' in glyph (" + ("pdf_engine") + " " + (159) + ")")}})()}, TMP_15._s = self, TMP_15), $a).call($e);
+          return lines = [];}else {return $gvars.log.$error("unsupported command '" + (element.$first()) + "' in glyph (" + ("pdf_engine") + " " + (162) + ")")}})()}, TMP_15._s = self, TMP_15), $a).call($e);
         self.pdf['$stroke=']([0, 0, 0]);
         if ((($a = root['$dotted?']()) !== nil && (!$a._isBoolean || $a == true))) {
           self.pdf['$fill='](($a = ($f = ($range(0, 3, true))).$map, $a._p = (TMP_16 = function(){var self = TMP_16._s || this;

@@ -93,7 +93,11 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin, :beat
+      attr_accessor :origin, :beat, :visible
+
+      def initialize
+        @visible = true
+      end
     end
 
     # Non playable entities are not audible but still
@@ -222,6 +226,7 @@ module Harpnotes
       def pitch
         @notes.last.pitch
       end
+
     end
 
     # A pause also called 'rest'. It is not really
@@ -241,7 +246,18 @@ module Harpnotes
       def initialize(pitch, duration)
         @pitch = pitch
         @duration = duration
+        @visible = true
       end
+
+
+      def visible=(visible)
+        @visible = visible
+      end
+
+      def visible?
+        @visible
+      end
+
     end
 
 
@@ -660,6 +676,7 @@ module Harpnotes
         @dotted = dotted
         @origin = origin
         @filled = true
+        @visible = true
       end
 
       #
@@ -685,6 +702,14 @@ module Harpnotes
       #
       def filled?
         @fill == :filled
+      end
+
+      def visible?
+        @visible
+      end
+
+      def visible=(v)
+        @visible=v
       end
 
     end
@@ -726,8 +751,8 @@ module Harpnotes
       DURATION_TO_STYLE = {
         #key      size   fill          dot                  abc duration
         :d64 => [ 0.9,   :empty,       FALSE],    # 1      1
-        :d48 => [ 0.5,   :empty,       TRUE],     # 1/2 *
-        :d32 => [ 0.5,   :empty,       FALSE],    # 1/2
+        :d48 => [ 0.7,   :empty,       TRUE],     # 1/2 *
+        :d32 => [ 0.7,   :empty,       FALSE],    # 1/2
         :d24 => [ 0.7,   :filled,      TRUE],     # 1/4 *
         :d16 => [ 0.7,   :filled,      FALSE],    # 1/4
         :d12 => [ 0.5,   :filled,      TRUE],     # 1/8 *
@@ -1036,6 +1061,7 @@ module Harpnotes
         size         = [REST_SIZE.first * scale.first, REST_SIZE.last * scale.last]
 
         res = Harpnotes::Drawing::Glyph.new([ x_offset, y_offset ], size, glyph, dotted, root)
+        res.visible = false unless root.visible?
         res
       end
 
