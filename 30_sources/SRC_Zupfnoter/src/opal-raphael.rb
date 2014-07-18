@@ -22,6 +22,7 @@ module Raphael
     # @return [type] [description]
     def initialize(r)
       @r = r
+      self["stroke-width"]=0.5
     end
 
 
@@ -161,6 +162,11 @@ module Raphael
       Raphael::Element.new(`self.r.rect(x, y, rx, ry, radius)`)
     end
 
+
+    def set_view_box(x, y, width, height, fit)
+      `self.r.setViewBox(x, y, width, height, fit)`
+      `self.r.setViewBox(x, y, width, height, fit)`
+    end
 
     # 
     # Draw a line
