@@ -879,7 +879,8 @@ module Harpnotes
         print_variant = print_options[:title]
         title_pos = music.harpnote_options[:legend] || [20,20]
         legend_pos = [title_pos.first, title_pos.last + 7]
-        legend = "#{print_variant}\n#{composer}\nTakt: #{meter}\ Tonart: #{key}"
+
+        legend = "#{print_variant}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         music.harpnote_options[:notes].each do |note|

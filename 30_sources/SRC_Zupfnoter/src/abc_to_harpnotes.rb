@@ -252,13 +252,23 @@ module Harpnotes
                      :meter => meter[:display],
                      :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
                     }
+
+        # handling tempo
+        # tempo is marked as duration, ... duration = bpm
+        duration = 0.25; bpm =120   # default speed settings
+        meta_data[:tempo] = {duration: [duration], bpm:bpm} # setting the default speed
+        meta_data[:tempo_display] = "1/#{1/duration} = #{bpm}"
         if tune[:metaText][:tempo]
-          meta_data[:tempo] = {duration: tune[:metaText][:tempo][:duration], bpm:tune[:metaText][:tempo][:bpm] }
+          duration = tune[:metaText][:tempo][:duration] rescue meta_data[:tempo][:duration]
+          bpm = tune[:metaText][:tempo][:bpm] rescue meta_data[:tempo][:bpm]
+          meta_data[:tempo] = {duration: duration, bpm: bpm }
+          duration_display = duration.map{|d| "1/#{1/d}"}
           meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],
-                                       tune[:metaText][:tempo][:duration], "=", tune[:metaText][:tempo][:bpm],
+                                       duration_display, "=", bpm,
                                        tune[:metaText][:tempo][:postString]
                                       ].join(" ")
         end
+
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each {|k| meta_data[k] = meta_data_from_tune[k]} # todo could not get Hash(object) and use merge
 
