@@ -165,7 +165,6 @@ module Raphael
 
     def set_view_box(x, y, width, height, fit)
       `self.r.setViewBox(x, y, width, height, fit)`
-      `self.r.setViewBox(x, y, width, height, fit)`
     end
 
     # 
