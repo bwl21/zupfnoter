@@ -145,7 +145,7 @@ module Harpnotes
 
 
     def draw_glyph(root)
-      draw_glyph_visible() if root.visible?
+      draw_glyph_visible(root) if root.visible?
     end
 
     def draw_glyph_visible(root)
