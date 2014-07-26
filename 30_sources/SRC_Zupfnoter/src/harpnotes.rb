@@ -815,7 +815,7 @@ module Harpnotes
 
         beat_compression_map = compute_beat_compression(music)
         maximal_beat = beat_compression_map.values.max
-        full_beat_spacing = 285 / maximal_beat
+        full_beat_spacing = 285 / maximal_beat #todo: remove literal
 
         if full_beat_spacing < @beat_spacing
           factor = (@beat_spacing / full_beat_spacing).round(2)

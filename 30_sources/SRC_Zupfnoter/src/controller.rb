@@ -334,12 +334,14 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
       end
 
       if @playtimer_timer
+        `setTimeout(function(){$('#tbPlay').html('play')}, 0)`
         `clearTimeout(self.playtimer_timer)`
         # `alert("refresh cancelled")`
       end
 
       #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
-      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 1000)`
+
+      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 5000)`
       nil
     end
 
@@ -365,6 +367,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
     # key events in editor
     Element.find(`window`).on(:keydown) do |evt|
+
       $log.debug("key pressed (#{__FILE__} #{__LINE__})")
       `console.log(event)`
       if `evt.keyCode == 13 && evt.shiftKey`
