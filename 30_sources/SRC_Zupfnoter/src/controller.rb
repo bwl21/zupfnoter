@@ -211,6 +211,11 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     end
   end
 
+  def stop_play_abc
+    @harpnote_player.stop()
+    Element.find('#tbPlay').html('play')
+  end
+
   # play an abc fragment
   # todo prepend the abc header
   def play_abc_part(string)
@@ -341,7 +346,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
       #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
 
-      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 5000)`
+      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
       nil
     end
 
@@ -363,6 +368,10 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     @harpnote_player.on_noteoff do |e|
       $log.debug("noteoff #{Native(e)[:startChar]}")
       unhighlight_abc_object(e)
+    end
+
+    @harpnote_player.on_songoff do
+      stop_play_abc()
     end
 
     # key events in editor

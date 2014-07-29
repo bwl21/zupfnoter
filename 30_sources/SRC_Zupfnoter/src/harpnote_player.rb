@@ -34,9 +34,22 @@ module Harpnotes
         end
       end
 
+      def on_songoff(&block)
+        @songoff_callback = block
+      end
+
 
       def play_song()
         self.stop()
+
+        #note schedule in secc, SetTimout in msec; finsh after last measure
+        `clearTimeout(self.song_off_timer)` if @song_off_timer
+        lastnote = @voice_elements.last
+        stop = (lastnote[:delay] + 128 * @timefactor)*1000   
+        `setTimeout(function(){self.songoff_callback.$call()}, stop )`
+        stop = (lastnote[:delay] + 64 * @timefactor)*1000
+        @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop )`
+
         @voice_elements.each{|the_note|
          #@inst.tone(note)
           note = the_note.to_n
@@ -65,15 +78,15 @@ module Harpnotes
 
         # 1/4 = 120 bpm shall be  32 ticks per quarter: convert to 1/4 <-> 128:
         tf =  spectf * (128/120)
-        timefactor = 1/tf
+        @timefactor = 1/tf
 
         $log.debug("playing with tempo: #{tf} ticks per quarter #{__FILE__} #{__LINE__}")
         @voice_elements  = music.voices.each_with_index.map {|voice, index|
           voice.select {|c| c.is_a? Playable }.map{|root|
 
-            delay  = root.beat * timefactor
+            delay  = root.beat * @timefactor
             pitch = - root.pitch
-            duration = root.duration * timefactor
+            duration = root.duration * @timefactor
             velocity = 1
             velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
 
