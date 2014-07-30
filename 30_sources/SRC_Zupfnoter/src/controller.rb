@@ -211,6 +211,11 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     end
   end
 
+  def stop_play_abc
+    @harpnote_player.stop()
+    Element.find('#tbPlay').html('play')
+  end
+
   # play an abc fragment
   # todo prepend the abc header
   def play_abc_part(string)
@@ -220,10 +225,21 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
   # render the previews
   # also saves abc in localstore()
-  def render_previews
-    $log.info("rendering")
-    save_to_localstorage
+  def render_tunepreview_callback
+    begin
+      @tune_preview_printer.draw(@editor.get_text)
+    rescue Exception => e
+      $log.error([e.message, e.backtrace])
+    end
+    $log.info("#finished Tune")
+    set_inactive("#tunePreview")
 
+    nil
+  end
+
+  # render the previews
+  # also saves abc in localstore()
+  def render_harpnotepreview_callback
     begin
       @song_harpnotes = layout_harpnotes(0)
       @harpnote_player.load_song(@song)
@@ -232,13 +248,23 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
       $log.error([e.message, e.backtrace])
     end
 
-    begin
-      @tune_preview_printer.draw(@editor.get_text)
-    rescue Exception => e
-      $log.error([e.message, e.backtrace])
-    end
+    $log.info("finished Haprnotes")
+    set_inactive("#harpPreview")
 
     nil
+  end
+
+
+  def render_previews
+    $log.info("rendering")
+    save_to_localstorage
+
+    set_active("#tunePreview")
+    `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
+
+    set_active("#harpPreview")
+    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+
   end
 
 
@@ -341,7 +367,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
       #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
 
-      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 5000)`
+      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
       nil
     end
 
@@ -363,6 +389,10 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     @harpnote_player.on_noteoff do |e|
       $log.debug("noteoff #{Native(e)[:startChar]}")
       unhighlight_abc_object(e)
+    end
+
+    @harpnote_player.on_songoff do
+      stop_play_abc()
     end
 
     # key events in editor
@@ -393,6 +423,15 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         `$(document).unbind('mousemove')`
       end
     end
+  end
+
+  def set_active(ui_element)
+    Element.find(ui_element).css('background-color', 'red')
+    
+  end
+
+  def set_inactive(ui_element)
+    Element.find(ui_element).css('background-color', 'white')
   end
 
 end
