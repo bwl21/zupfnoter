@@ -82,6 +82,7 @@ class Controller
   def initialize
     $log = ConsoleLogger.new("consoleEntries")
     @editor = Harpnotes::TextPane.new("abcEditor")
+    @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
     @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
 
@@ -187,7 +188,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   end
 
   # play the abc tune
-  def play_abc
+  def play_abc_outdated
     if @inst
       Element.find('#tbPlay').html('play')
       `self.inst.silence();`
@@ -200,6 +201,21 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   end
 
 
+  def play_abc
+    if @harpnote_player.is_playing?
+      @harpnote_player.stop()
+      Element.find('#tbPlay').html('play')
+    else
+      Element.find('#tbPlay').html('stop')
+      @harpnote_player.play_song(0)
+    end
+  end
+
+  def stop_play_abc
+    @harpnote_player.stop()
+    Element.find('#tbPlay').html('play')
+  end
+
   # play an abc fragment
   # todo prepend the abc header
   def play_abc_part(string)
@@ -208,22 +224,47 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   end
 
   # render the previews
-  # also saves abc in localstore
-  def render_previews
-    $log.info("rendering")
-    save_to_localstorage
-    begin
-      @harpnote_preview_printer.draw(layout_harpnotes)
-    rescue Exception => e
-      $log.error([e.message, e.backtrace])
-    end
+  # also saves abc in localstore()
+  def render_tunepreview_callback
     begin
       @tune_preview_printer.draw(@editor.get_text)
     rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
+    $log.info("#finished Tune")
+    set_inactive("#tunePreview")
 
     nil
+  end
+
+  # render the previews
+  # also saves abc in localstore()
+  def render_harpnotepreview_callback
+    begin
+      @song_harpnotes = layout_harpnotes(0)
+      @harpnote_player.load_song(@song)
+      @harpnote_preview_printer.draw(@song_harpnotes)
+    rescue Exception => e
+      $log.error([e.message, e.backtrace])
+    end
+
+    $log.info("finished Haprnotes")
+    set_inactive("#harpPreview")
+
+    nil
+  end
+
+
+  def render_previews
+    $log.info("rendering")
+    save_to_localstorage
+
+    set_active("#tunePreview")
+    `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
+
+    set_active("#harpPreview")
+    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+
   end
 
 
@@ -242,35 +283,56 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
-    song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
-    Harpnotes::Layout::Default.new.layout(song, nil, print_variant)
+    @song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
+    Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
   end
 
-  # select a particular abc elemnt in all views
-  def select_abc_object(abcelement)
+  # highlight a particular abc element in all views
+  # note that previous selections are still maintained.
+  def highlight_abc_object(abcelement)
     a=Native(abcelement)
-    $log.debug("select_abc_element (#{__FILE__} #{__LINE__})")
-    @editor.select_range_by_position(a[:startChar], a[:endChar])
-    @tune_preview_printer.range_highlight(a[:startChar], a[:endChar]);
-    @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar]);
+   # $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
+
+    unless @harpnote_player.is_playing?
+      @editor.select_range_by_position(a[:startChar], a[:endChar])
+    end
+
+    @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
+
+    @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar])
   end
 
 
+  def unhighlight_abc_object(abcelement)
+    a=Native(abcelement)
+    @tune_preview_printer.range_unhighlight_more(a[:startChar], a[:endChar])
+    #$log.debug("unselect_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
+
+    @harpnote_preview_printer.range_unhighlight(a[:startChar], a[:endChar])
+  end
+
+  # select a particular abcelement in all views
+  # previous selections are removed
+  def select_abc_object(abcelement)
+    @harpnote_preview_printer.unhighlight_all();
+
+    highlight_abc_object(abcelement)
+  end
 
   private
 
 
   def setup_ui
     # setup the harpnote prviewer
-    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview",1100, 700)
+    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 1100, 700) # size of canvas in pixels
+    @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end
 
-
     # setup tune preview
-    printerparams = {}
-    @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview")
+    printerparams = {staffwidth: 750} #todo compute the staffwidth
+    @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview", printerparams)
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement)
       select_abc_object(abcelement)
@@ -298,12 +360,14 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
       end
 
       if @playtimer_timer
+        `setTimeout(function(){$('#tbPlay').html('play')}, 0)`
         `clearTimeout(self.playtimer_timer)`
         # `alert("refresh cancelled")`
       end
 
       #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
-      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 1000)`
+
+      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
       nil
     end
 
@@ -317,8 +381,23 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     end
 
 
+    @harpnote_player.on_noteon do |e|
+      $log.debug("noteon #{Native(e)[:startChar]}")
+      highlight_abc_object(e)
+    end
+
+    @harpnote_player.on_noteoff do |e|
+      $log.debug("noteoff #{Native(e)[:startChar]}")
+      unhighlight_abc_object(e)
+    end
+
+    @harpnote_player.on_songoff do
+      stop_play_abc()
+    end
+
     # key events in editor
     Element.find(`window`).on(:keydown) do |evt|
+
       $log.debug("key pressed (#{__FILE__} #{__LINE__})")
       `console.log(event)`
       if `evt.keyCode == 13 && evt.shiftKey`
@@ -344,6 +423,15 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         `$(document).unbind('mousemove')`
       end
     end
+  end
+
+  def set_active(ui_element)
+    Element.find(ui_element).css('background-color', 'red')
+    
+  end
+
+  def set_inactive(ui_element)
+    Element.find(ui_element).css('background-color', 'white')
   end
 
 end

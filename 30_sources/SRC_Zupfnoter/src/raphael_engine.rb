@@ -14,9 +14,14 @@ module Harpnotes
 
     def initialize(element_id, width, height)
       @paper = Raphael::Paper.new(element_id, width, height)
-      @paper.enable_pan_zoom
+      #@paper.enable_pan_zoom
       @on_select = nil
       @elements = {}   # record all elements being on the sheet, using upstream object as key
+      @highlighted = []
+    end
+
+    def set_view_box(x, y, width, height)
+      @paper.set_view_box(x, y, width, height, true)
     end
 
     def draw(sheet)
@@ -51,11 +56,27 @@ module Harpnotes
       @on_select = block
     end
 
+
+    # remove all hightlights
+    def unhighlight_all()
+      @highlighted.each{|e| unhighlight_element(e)}
+    end
+
     # hightlights the drawn elements driven by the selection range in the abc text
     def range_highlight(from, to)
-      @highlighted.each{|e| unhighlight(e)}
-      @highlighted = []
+      get_elements_by_range(from, to).each{|element| highlight_element(element)}
+    end
 
+    # hightlights the drawn elements driven by the selection range in the abc text
+    def range_unhighlight(from, to)
+      get_elements_by_range(from, to).each{|element| unhighlight_element(element)}
+    end
+
+
+    private
+
+    def get_elements_by_range(from, to)
+      result = []
       @elements.each_key { |k|
         origin = Native(k.origin)
         unless origin.nil?
@@ -64,26 +85,29 @@ module Harpnotes
 
           if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
             @elements[k].each do |e|
-              highlight(e)
-              @highlighted << e
+              result.push(e)
             end
           end
         end
       }
+      result
     end
 
-    private
-
-    def highlight(element)
+    def highlight_element(element)
+      unhighlight_element(element)
+      @highlighted.push(element)
       element.unhighlight_color = element[:fill]
       element[:fill]="#ff0000"
       element[:stroke]="#ff0000"
       nil
     end
 
-    def unhighlight(element)
-      element[:fill]=element.unhighlight_color
-      element[:stroke]=element.unhighlight_color
+    def unhighlight_element(element)
+      if @highlighted.include?(element)
+        @highlighted -= [element]
+        element[:fill]   = element.unhighlight_color
+        element[:stroke] = "#000000"
+      end
       nil
     end
 
@@ -121,6 +145,10 @@ module Harpnotes
 
 
     def draw_glyph(root)
+      draw_glyph_visible(root) if root.visible?
+    end
+
+    def draw_glyph_visible(root)
 
       def glyph_to_path_spec(glyph)
         result = ""

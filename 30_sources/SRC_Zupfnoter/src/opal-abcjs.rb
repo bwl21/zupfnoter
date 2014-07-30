@@ -2,12 +2,15 @@ module ABCJS
   module Write
     class Printer
 
-      def initialize(div, printerparams)
+      def initialize(div, printerparams={})
         # setup the tune previewer
         @parent = Native(Element.find("##{div}"))
         paper =  Raphael::Paper.new(div, 1100, 700) # don't know why it is 700 width #Raphael(this.div, 1100, 700);
+                                                    # note that this value is overridden by printerparam staffwidth
+                                                    # which has a default of 700
         @paper = paper.raw
-        @printer = `new ABCJS.write.Printer(self.paper, printerparams)`; # Todo handle printerparams
+        pp = printerparams.to_n
+        @printer = `new ABCJS.write.Printer(self.paper, pp)`; # Todo handle printerparams
       end
 
       #
@@ -35,6 +38,21 @@ module ABCJS
         }
         nil
       end
+
+      def range_highlight_more(from, to)
+        %x{
+        self.printer.rangeHighlightMore(from, to);
+        }
+        nil
+      end
+
+      def range_unhighlight_more(from, to)
+        %x{
+        self.printer.rangeUnhighlightMore(from, to);
+        }
+        nil
+      end
+
 
       def draw(abc_code)
         %x{

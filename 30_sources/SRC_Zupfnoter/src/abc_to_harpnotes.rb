@@ -157,16 +157,17 @@ module Harpnotes
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
           parser.parse(book.tunes[0].abc);
-          var warnings = parser.getWarnings();
+          var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
           console.log(tune);
           console.log(JSON.stringify(tune));
         }
 
-        warnings = [Native(`warnings`)].compact
+        warnings = [Native(`warnings`)].flatten.compact
         warnings.each{|w|
-          $log.warning(w)
+          wn = Native(w)
+          $log.warning("#{wn[message]} at line #{wn[:line]} position #{wn[:startChar]}")
         }
 
         #
@@ -251,12 +252,23 @@ module Harpnotes
                      :meter => meter[:display],
                      :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
                     }
+
+        # handling tempo
+        # tempo is marked as duration, ... duration = bpm
+        duration = 0.25; bpm =120   # default speed settings
+        meta_data[:tempo] = {duration: [duration], bpm:bpm} # setting the default speed
+        meta_data[:tempo_display] = "1/#{1/duration} = #{bpm}"
         if tune[:metaText][:tempo]
+          duration = tune[:metaText][:tempo][:duration] rescue meta_data[:tempo][:duration]
+          bpm = tune[:metaText][:tempo][:bpm] rescue meta_data[:tempo][:bpm]
+          meta_data[:tempo] = {duration: duration, bpm: bpm }
+          duration_display = duration.map{|d| "1/#{1/d}"}
           meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],
-                                       tune[:metaText][:tempo][:duration], "=", tune[:metaText][:tempo][:bpm],
-                                       tune[:metaText][:tempo][:postString],
+                                       duration_display, "=", bpm,
+                                       tune[:metaText][:tempo][:postString]
                                       ].join(" ")
         end
+
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each {|k| meta_data[k] = meta_data_from_tune[k]} # todo could not get Hash(object) and use merge
 
@@ -354,6 +366,7 @@ module Harpnotes
 
         res = Harpnotes::Music::Pause.new(pitch, duration)
         res.origin = note
+        res.visible = false if note[:rest][:type] == 'invisible'
         @previous_note = res
 
         result = [res] 

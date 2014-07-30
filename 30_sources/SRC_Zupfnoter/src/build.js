@@ -13956,7 +13956,7 @@ if (a == null) a = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$-', '$/', '$*', '$include', '$harpnote_options', '$beat_layout_policy', '$compute_beat_compression', '$values', '$<', '$round', '$warning', '$call', '$include?', '$layout_voice', '$each_with_index', '$voices', '$origin', '$build_synch_points', '$layout_note', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$policy', '$from', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$name', '$to_sym']);
+  $opal.add_stubs(['$attr_accessor', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$first', '$each', '$beat=', '$last', '$companion=', '$class', '$update_beats', '$<<', '$select', '$empty?', '$reject', '$notes', '$compact', '$flatten', '$map', '$[]', '$compact!', '$>', '$length', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$[]=', '$+', '$index=', '$index', '$==', '$dotted', '$-', '$/', '$*', '$include', '$harpnote_options', '$beat_layout_policy', '$compute_beat_compression', '$values', '$<', '$round', '$warning', '$call', '$include?', '$layout_voice', '$each_with_index', '$voices', '$origin', '$build_synch_points', '$layout_note', '$meta_data', '$layout_playables', '$layout_newpart', '$to', '$nil?', '$first_in_part?', '$policy', '$from', '$beat_maps', '$duration_to_id', '$error', '$to_json', '$layout_measure_start', '$layout_accord', '$layout_pause', '$sort_by', '$visible?', '$visible=', '$name', '$to_sym']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -13973,7 +13973,13 @@ if (a == null) a = nil;
 
         var def = self._proto, $scope = self._scope;
 
-        return self.$attr_accessor("origin", "beat")
+        self.$attr_accessor("origin", "beat", "visible");
+
+        return (def.$initialize = function() {
+          var self = this;
+
+          return self.visible = true;
+        }, nil) && 'initialize';
       })(self, null);
 
       (function($base, $super) {
@@ -14092,14 +14098,28 @@ if (n == null) n = nil;
 
         var def = self._proto, $scope = self._scope;
 
+        def.visible = nil;
         self.$attr_reader("duration", "pitch");
 
-        return (def.$initialize = function(pitch, duration) {
+        def.$initialize = function(pitch, duration) {
           var self = this;
 
           self.pitch = pitch;
-          return self.duration = duration;
-        }, nil) && 'initialize';
+          self.duration = duration;
+          return self.visible = true;
+        };
+
+        def['$visible='] = function(visible) {
+          var self = this;
+
+          return self.visible = visible;
+        };
+
+        return (def['$visible?'] = function() {
+          var self = this;
+
+          return self.visible;
+        }, nil) && 'visible?';
       })(self, (($a = $scope.Playable) == null ? $opal.cm('Playable') : $a));
 
       (function($base, $super) {
@@ -14538,7 +14558,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         var def = self._proto, $scope = self._scope;
 
-        def.size = def.fill = nil;
+        def.size = def.fill = def.visible = nil;
         self.$attr_reader("center", "size", "glyph", "dotted", "origin");
 
         $opal.cdecl($scope, 'GLYPHS', $hash2(["rest_1", "rest_4", "rest_8", "rest_16", "rest_32", "rest_64", "rest_128"], {"rest_1": $hash2(["d", "w", "h"], {"d": [["M", (0.06)['$-'](0.06)['$-']((11.25)['$/'](2)), (0.03)['$-']((1.7)['$*'](4.68))], ["l", 0.09, -0.06], ["l", 5.46, 0], ["l", 5.49, 0], ["l", 0.09, 0.06], ["l", 0.06, 0.09], ["l", 0, 2.19], ["l", 0, 2.19], ["l", -0.06, 0.09], ["l", -0.09, 0.06], ["l", -5.49, 0], ["l", -5.46, 0], ["l", -0.09, -0.06], ["l", -0.06, -0.09], ["l", 0, -2.19], ["l", 0, -2.19], ["z"]], "w": 11.25, "h": (2.2)['$*'](4.68)}), "rest_4": $hash2(["d", "w", "h"], {"d": [["M", 1.89, -11.82], ["c", 0.12, -0.06, 0.24, -0.06, 0.36, -0.03], ["c", 0.09, 0.06, 4.74, 5.58, 4.86, 5.82], ["c", 0.21, 0.39, 0.15, 0.78, -0.15, 1.26], ["c", -0.24, 0.33, -0.72, 0.81, -1.62, 1.56], ["c", -0.45, 0.36, -0.87, 0.75, -0.96, 0.84], ["c", -0.93, 0.99, -1.14, 2.49, -0.6, 3.63], ["c", 0.18, 0.39, 0.27, 0.48, 1.32, 1.68], ["c", 1.92, 2.25, 1.83, 2.16, 1.83, 2.34], ["c", 0, 0.18, -0.18, 0.36, -0.36, 0.39], ["c", -0.15, 0, -0.27, -0.06, -0.48, -0.27], ["c", -0.75, -0.75, -2.46, -1.29, -3.39, -1.08], ["c", -0.45, 0.09, -0.69, 0.27, -0.9, 0.69], ["c", -0.12, 0.3, -0.21, 0.66, -0.24, 1.14], ["c", -0.03, 0.66, 0.09, 1.35, 0.3, 2.01], ["c", 0.15, 0.42, 0.24, 0.66, 0.45, 0.96], ["c", 0.18, 0.24, 0.18, 0.33, 0.03, 0.42], ["c", -0.12, 0.06, -0.18, 0.03, -0.45, -0.3], ["c", -1.08, -1.38, -2.07, -3.36, -2.4, -4.83], ["c", -0.27, -1.05, -0.15, -1.77, 0.27, -2.07], ["c", 0.21, -0.12, 0.42, -0.15, 0.87, -0.15], ["c", 0.87, 0.06, 2.1, 0.39, 3.3, 0.9], ["l", 0.39, 0.18], ["l", -1.65, -1.95], ["c", -2.52, -2.97, -2.61, -3.09, -2.7, -3.27], ["c", -0.09, -0.24, -0.12, -0.48, -0.03, -0.75], ["c", 0.15, -0.48, 0.57, -0.96, 1.83, -2.01], ["c", 0.45, -0.36, 0.84, -0.72, 0.93, -0.78], ["c", 0.69, -0.75, 1.02, -1.8, 0.9, -2.79], ["c", -0.06, -0.33, -0.21, -0.84, -0.39, -1.11], ["c", -0.09, -0.15, -0.45, -0.6, -0.81, -1.05], ["c", -0.36, -0.42, -0.69, -0.81, -0.72, -0.87], ["c", -0.09, -0.18, 0, -0.42, 0.21, -0.51], ["z"]], "w": 7.888, "h": 21.435}), "rest_8": $hash2(["d", "w", "h"], {"d": [["M", 1.68, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.39, -0.18, 1.32, -1.29, 1.68, -1.98], ["c", 0.09, -0.21, 0.24, -0.3, 0.39, -0.3], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.27, 1.11, -1.86, 6.42], ["c", -1.02, 3.48, -1.89, 6.39, -1.92, 6.42], ["c", 0, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.15, -0.57, 1.68, -4.92], ["c", 0.96, -2.67, 1.74, -4.89, 1.71, -4.89], ["l", -0.51, 0.15], ["c", -1.08, 0.36, -1.74, 0.48, -2.55, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 7.534, "h": 13.883}), "rest_16": $hash2(["d", "w", "h"], {"d": [["M", 3.33, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.87, 0.42], ["c", 0.39, -0.18, 1.2, -1.23, 1.62, -2.07], ["c", 0.06, -0.15, 0.24, -0.24, 0.36, -0.24], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.45, 1.86, -2.67, 10.17], ["c", -1.5, 5.55, -2.73, 10.14, -2.76, 10.17], ["c", -0.03, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.12, -0.57, 1.44, -4.92], ["c", 0.81, -2.67, 1.47, -4.86, 1.47, -4.89], ["c", -0.03, 0, -0.27, 0.06, -0.54, 0.15], ["c", -1.08, 0.36, -1.77, 0.48, -2.58, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.33, -0.15, 1.02, -0.93, 1.41, -1.59], ["c", 0.12, -0.21, 0.18, -0.39, 0.39, -1.08], ["c", 0.66, -2.1, 1.17, -3.84, 1.17, -3.87], ["c", 0, 0, -0.21, 0.06, -0.42, 0.15], ["c", -0.51, 0.15, -1.2, 0.33, -1.68, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 9.724, "h": 21.383}), "rest_32": $hash2(["d", "w", "h"], {"d": [["M", 4.23, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.27, -0.06], ["c", 0.33, -0.21, 0.99, -1.11, 1.44, -1.98], ["c", 0.09, -0.24, 0.21, -0.33, 0.39, -0.33], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.57, 2.67, -3.21, 13.89], ["c", -1.8, 7.62, -3.3, 13.89, -3.3, 13.92], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.09, -0.57, 1.23, -4.92], ["c", 0.69, -2.67, 1.26, -4.86, 1.29, -4.89], ["c", 0, -0.03, -0.12, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.12, 0.09, 0.3, 0.18, 0.48, 0.21], ["c", 0.12, 0, 0.18, 0, 0.3, -0.09], ["c", 0.42, -0.21, 1.29, -1.29, 1.56, -1.89], ["c", 0.03, -0.12, 1.23, -4.59, 1.23, -4.65], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -0.63, 0.18, -1.2, 0.36, -1.74, 0.45], ["c", -0.39, 0.06, -0.54, 0.06, -1.02, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.18, 0.18, 0.51, 0.27, 0.72, 0.15], ["c", 0.3, -0.12, 0.69, -0.57, 1.08, -1.17], ["c", 0.42, -0.6, 0.39, -0.51, 1.05, -3.03], ["c", 0.33, -1.26, 0.6, -2.31, 0.6, -2.34], ["c", 0, 0, -0.21, 0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.14, 0.33, -1.62, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 11.373, "h": 28.883}), "rest_64": $hash2(["d", "w", "h"], {"d": [["M", 5.13, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.24, -0.12, 0.63, -0.66, 1.08, -1.56], ["c", 0.33, -0.66, 0.39, -0.72, 0.6, -0.72], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.69, 3.66, -3.54, 17.64], ["c", -1.95, 9.66, -3.57, 17.61, -3.57, 17.64], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.06, -0.57, 1.05, -4.95], ["c", 0.6, -2.7, 1.08, -4.89, 1.08, -4.92], ["c", 0, 0, -0.24, 0.06, -0.51, 0.15], ["c", -0.66, 0.24, -1.2, 0.36, -1.77, 0.48], ["c", -0.42, 0.06, -0.57, 0.06, -1.05, 0.06], ["c", -0.69, 0, -0.87, -0.03, -1.35, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.21, 0.03, 0.39, -0.09, 0.72, -0.42], ["c", 0.45, -0.45, 1.02, -1.26, 1.17, -1.65], ["c", 0.03, -0.09, 0.27, -1.14, 0.54, -2.34], ["c", 0.27, -1.2, 0.48, -2.19, 0.51, -2.22], ["c", 0, -0.03, -0.09, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.9, 0.42], ["c", 0.36, -0.18, 1.2, -1.26, 1.47, -1.89], ["c", 0.03, -0.09, 0.3, -1.2, 0.57, -2.43], ["l", 0.51, -2.28], ["l", -0.54, 0.18], ["c", -1.11, 0.36, -1.8, 0.48, -2.61, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.21, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.36, -0.18, 0.93, -0.93, 1.29, -1.68], ["c", 0.12, -0.24, 0.18, -0.48, 0.63, -2.55], ["l", 0.51, -2.31], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -1.14, 0.36, -2.1, 0.54, -2.82, 0.51], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 12.453, "h": 36.383}), "rest_128": $hash2(["d", "w", "h"], {"d": [["M", 6.03, -21.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.21, 0, 0.33, -0.06, 0.54, -0.36], ["c", 0.15, -0.21, 0.54, -0.93, 0.78, -1.47], ["c", 0.15, -0.33, 0.18, -0.39, 0.3, -0.48], ["c", 0.18, -0.09, 0.45, 0, 0.51, 0.15], ["c", 0.03, 0.09, -7.11, 42.75, -7.17, 42.84], ["c", -0.03, 0.03, -0.15, 0.09, -0.24, 0.15], ["c", -0.18, 0.06, -0.24, 0.06, -0.45, 0.06], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.03, -0.57, 0.84, -4.98], ["c", 0.51, -2.7, 0.93, -4.92, 0.9, -4.92], ["c", 0, 0, -0.15, 0.06, -0.36, 0.12], ["c", -0.78, 0.27, -1.62, 0.48, -2.31, 0.57], ["c", -0.15, 0.03, -0.54, 0.03, -0.81, 0.03], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.63, 0.48], ["c", 0.12, 0, 0.18, 0, 0.3, -0.09], ["c", 0.42, -0.21, 1.14, -1.11, 1.5, -1.83], ["c", 0.12, -0.27, 0.12, -0.27, 0.54, -2.52], ["c", 0.24, -1.23, 0.42, -2.25, 0.39, -2.25], ["c", 0, 0, -0.24, 0.06, -0.51, 0.18], ["c", -1.26, 0.39, -2.25, 0.57, -3.06, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.51, 0.3, 0.75, 0.18], ["c", 0.36, -0.15, 1.05, -0.99, 1.41, -1.77], ["l", 0.15, -0.3], ["l", 0.42, -2.25], ["c", 0.21, -1.26, 0.42, -2.28, 0.39, -2.28], ["l", -0.51, 0.15], ["c", -1.11, 0.39, -1.89, 0.51, -2.7, 0.51], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.18, 0.48, 0.27, 0.72, 0.21], ["c", 0.33, -0.12, 1.14, -1.26, 1.41, -1.95], ["c", 0, -0.09, 0.21, -1.11, 0.45, -2.34], ["c", 0.21, -1.2, 0.39, -2.22, 0.39, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.2, 0.33, -1.71, 0.42], ["c", -0.3, 0.06, -0.51, 0.06, -0.93, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.18, 0, 0.36, -0.09, 0.57, -0.33], ["c", 0.33, -0.36, 0.78, -1.14, 0.93, -1.56], ["c", 0.03, -0.12, 0.24, -1.2, 0.45, -2.4], ["c", 0.24, -1.2, 0.42, -2.22, 0.42, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.39, 0.09], ["c", -1.05, 0.36, -1.8, 0.48, -2.58, 0.48], ["c", -0.63, 0, -0.84, -0.03, -1.29, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 12.992, "h": 43.883})}));
@@ -14558,7 +14578,8 @@ if (map == null) map = nil;if (playable == null) playable = nil;
           self.size = size;
           self.dotted = dotted;
           self.origin = origin;
-          return self.filled = true;
+          self.filled = true;
+          return self.visible = true;
         };
 
         def.$height = function() {
@@ -14573,11 +14594,23 @@ if (map == null) map = nil;if (playable == null) playable = nil;
           return self.$dotted();
         };
 
-        return (def['$filled?'] = function() {
+        def['$filled?'] = function() {
           var self = this;
 
           return self.fill['$==']("filled");
-        }, nil) && 'filled?';
+        };
+
+        def['$visible?'] = function() {
+          var self = this;
+
+          return self.visible;
+        };
+
+        return (def['$visible='] = function(v) {
+          var self = this;
+
+          return self.visible = v;
+        }, nil) && 'visible=';
       })(self, null);
       
     })(self);
@@ -14610,7 +14643,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
 
         $opal.cdecl($scope, 'PITCH_OFFSET', -43);
 
-        $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [0.9, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [0.5, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.5, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.1, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [0.05, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
+        $opal.cdecl($scope, 'DURATION_TO_STYLE', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [0.9, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [0.7, "empty", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [0.7, "empty", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [0.7, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [0.7, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [0.5, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [0.5, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [0.3, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [0.3, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [0.1, "filled", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [0.1, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [0.05, "filled", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
 
         $opal.cdecl($scope, 'REST_TO_GLYPH', $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [[0.9, 0.9], "rest_1", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d48": [[0.5, 0.5], "rest_1", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d32": [[0.5, 0.5], "rest_1", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d24": [[0.4, 0.7], "rest_4", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d16": [[0.4, 0.7], "rest_4", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d12": [[0.3, 0.5], "rest_8", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d8": [[0.3, 0.5], "rest_8", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d6": [[0.3, 0.4], "rest_16", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d4": [[0.3, 0.5], "rest_16", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d3": [[0.3, 0.5], "rest_32", (($a = $scope.TRUE) == null ? $opal.cm('TRUE') : $a)], "d2": [[0.3, 0.5], "rest_32", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)], "d1": [[0.3, 0.5], "rest_64", (($a = $scope.FALSE) == null ? $opal.cm('FALSE') : $a)]}));
 
@@ -14692,7 +14725,7 @@ if (i == null) i = nil;
           print_variant = print_options['$[]']("title");
           title_pos = ((($a = music.$harpnote_options()['$[]']("legend")) !== false && $a !== nil) ? $a : [20, 20]);
           legend_pos = [title_pos.$first(), title_pos.$last()['$+'](7)];
-          legend = "" + (print_variant) + "\n" + (composer) + "\nTakt: " + (meter) + " Tonart: " + (key);
+          legend = "" + (print_variant) + "\n" + (composer) + "\nTakt: " + (meter) + " (" + (tempo) + ")\nTonart: " + (key);
           annotations['$<<']((($a = ((($i = ((($j = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $j))._scope).Drawing == null ? $i.cm('Drawing') : $i.Drawing))._scope).Annotation == null ? $a.cm('Annotation') : $a.Annotation).$new(title_pos, title, "large"));
           annotations['$<<']((($a = ((($i = ((($j = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $j))._scope).Drawing == null ? $i.cm('Drawing') : $i.Drawing))._scope).Annotation == null ? $a.cm('Annotation') : $a.Annotation).$new(legend_pos, legend, "regular"));
           ($a = ($i = music.$harpnote_options()['$[]']("notes")).$each, $a._p = (TMP_21 = function(note){var self = TMP_21._s || this, $a, $b, $c;
@@ -14860,6 +14893,10 @@ if (c == null) c = nil;
           $a = $opal.to_ary((($b = $scope.REST_TO_GLYPH) == null ? $opal.cm('REST_TO_GLYPH') : $b)['$[]'](self.$duration_to_id(root.$duration()))), scale = ($a[0] == null ? nil : $a[0]), glyph = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
           size = [(($a = $scope.REST_SIZE) == null ? $opal.cm('REST_SIZE') : $a).$first()['$*'](scale.$first()), (($a = $scope.REST_SIZE) == null ? $opal.cm('REST_SIZE') : $a).$last()['$*'](scale.$last())];
           res = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Drawing == null ? $b.cm('Drawing') : $b.Drawing))._scope).Glyph == null ? $a.cm('Glyph') : $a.Glyph).$new([x_offset, y_offset], size, glyph, dotted, root);
+          if ((($a = root['$visible?']()) !== nil && (!$a._isBoolean || $a == true))) {
+            } else {
+            res['$visible='](false)
+          };
           return res;
         };
 
@@ -14908,7 +14945,7 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$inject', '$parse_harpnote_config', '$compact', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$debug', '$index=', '$flatten!', '$compact!', '$flatten', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$companion=', '$first_in_part=', '$clear', '$get_midipitch', '$length', '$gsub', '$pop']);
+  $opal.add_stubs(['$map', '$Native', '$[]', '$each', '$[]=', '$downcase', '$floor', '$/', '$%', '$<', '$+', '$==', '$!', '$*', '$new', '$reset_state', '$reset_measure_accidentals', '$match', '$parse', '$last', '$first', '$<<', '$error', '$message', '$split', '$inject', '$parse_harpnote_config', '$compact', '$flatten', '$warning', '$select', '$empty?', '$to_i', '$strip', '$set_key', '$each_with_index', '$debug', '$index=', '$flatten!', '$compact!', '$send', '$nil?', '$origin=', '$make_jumplines', '$now', '$join', '$to_n', '$keys', '$meta_data=', '$harpnote_options=', '$harpnote_options', '$-', '$private', '$is_a?', '$origin', '$round', '$transform_rest', '$transform_real_note', '$pitch', '$visible=', '$companion=', '$first_in_part=', '$clear', '$get_midipitch', '$length', '$gsub', '$pop']);
   ;
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -15066,24 +15103,25 @@ if (m == null) m = nil;
         };
 
         def.$transform = function(abc_code) {
-          var $a, $b, TMP_10, $c, TMP_11, $d, TMP_12, $e, TMP_13, $f, TMP_14, $g, TMP_18, $h, $i, TMP_22, TMP_23, self = this, harpnote_options = nil, warnings = nil, note_length_rows = nil, note_length = nil, tune = nil, lines = nil, first_staff = nil, key = nil, meter = nil, voices = nil, hn_voices = nil, result = nil, meta_data = nil, meta_data_from_tune = nil;
+          var $a, $b, TMP_10, $c, TMP_11, $d, TMP_12, $e, TMP_13, $f, TMP_14, $g, TMP_18, $h, $i, TMP_22, TMP_23, $j, TMP_24, self = this, harpnote_options = nil, warnings = nil, note_length_rows = nil, note_length = nil, tune = nil, lines = nil, first_staff = nil, key = nil, meter = nil, voices = nil, hn_voices = nil, result = nil, meta_data = nil, duration = nil, bpm = nil, duration_display = nil, meta_data_from_tune = nil;
 
           harpnote_options = self.$parse_harpnote_config(abc_code);
           
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
           parser.parse(book.tunes[0].abc);
-          var warnings = parser.getWarnings();
+          var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
           console.log(tune);
           console.log(JSON.stringify(tune));
         
-          warnings = [self.$Native(warnings)].$compact();
-          ($a = ($b = warnings).$each, $a._p = (TMP_10 = function(w){var self = TMP_10._s || this;
+          warnings = [self.$Native(warnings)].$flatten().$compact();
+          ($a = ($b = warnings).$each, $a._p = (TMP_10 = function(w){var self = TMP_10._s || this, wn = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (w == null) w = nil;
-          return $gvars.log.$warning(w)}, TMP_10._s = self, TMP_10), $a).call($b);
+          wn = self.$Native(w);
+            return $gvars.log.$warning("" + (wn['$[]'](self.$message())) + " at line " + (wn['$[]']("line")) + " position " + (wn['$[]']("startChar")));}, TMP_10._s = self, TMP_10), $a).call($b);
           note_length_rows = ($a = ($c = abc_code.$split("\n")).$select, $a._p = (TMP_11 = function(row){var self = TMP_11._s || this;
 if (row == null) row = nil;
           return row['$[]']($range(0, 1, false))['$==']("L:")}, TMP_11._s = self, TMP_11), $a).call($c);
@@ -15115,7 +15153,7 @@ if (staff == null) staff = nil;if (staff_index == null) staff_index = nil;
             return ($a = ($b = self.$Native(staff)['$[]']("voices")).$each_with_index, $a._p = (TMP_16 = function(voice, voice_index){var self = TMP_16._s || this, $a, $b, $c, $d, $e, $f, TMP_17;
                 if ($gvars.log == null) $gvars.log = nil;
 if (voice == null) voice = nil;if (voice_index == null) voice_index = nil;
-              $gvars.log.$debug("reading line.staff.voice " + (voice_no) + ":" + (line_index) + " " + (staff_index) + "." + (voice_index) + " (" + ("abc_to_harpnotes") + " " + (212) + ")");
+              $gvars.log.$debug("reading line.staff.voice " + (voice_no) + ":" + (line_index) + " " + (staff_index) + "." + (voice_index) + " (" + ("abc_to_harpnotes") + " " + (213) + ")");
                 ($a = voice_no, $b = voices, ((($c = $b['$[]']($a)) !== false && $c !== nil) ? $c : $b['$[]=']($a, (($d = ((($e = ((($f = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $f))._scope).Music == null ? $e.cm('Music') : $e.Music))._scope).Voice == null ? $d.cm('Voice') : $d.Voice).$new())));
                 voices['$[]'](voice_no)['$<<'](($a = ($b = voice).$map, $a._p = (TMP_17 = function(x){var self = TMP_17._s || this;
 if (x == null) x = nil;
@@ -15146,27 +15184,37 @@ if (e == null) e = nil;
             return hn_voice;}, TMP_18._s = self, TMP_18), $a).call($g);
           result = (($a = ((($h = ((($i = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $i))._scope).Music == null ? $h.cm('Music') : $h.Music))._scope).Song == null ? $a.cm('Song') : $a.Song).$new(hn_voices, note_length);
           meta_data = $hash2(["compile_time", "meter", "key"], {"compile_time": (($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now(), "meter": meter['$[]']("display"), "key": self.$Native(key)['$[]']("root")['$+'](self.$Native(key)['$[]']("acc"))['$+'](self.$Native(key)['$[]']("mode"))});
+          duration = 0.25;
+          bpm = 120;
+          meta_data['$[]=']("tempo", $hash2(["duration", "bpm"], {"duration": [duration], "bpm": bpm}));
+          meta_data['$[]=']("tempo_display", "1/" + ((1)['$/'](duration)) + " = " + (bpm));
           if ((($a = tune['$[]']("metaText")['$[]']("tempo")) !== nil && (!$a._isBoolean || $a == true))) {
-            meta_data['$[]=']("tempo_display", [tune['$[]']("metaText")['$[]']("tempo")['$[]']("preString"), tune['$[]']("metaText")['$[]']("tempo")['$[]']("duration"), "=", tune['$[]']("metaText")['$[]']("tempo")['$[]']("bpm"), tune['$[]']("metaText")['$[]']("tempo")['$[]']("postString")].$join(" "))};
+            duration = (function() {try {return tune['$[]']("metaText")['$[]']("tempo")['$[]']("duration") } catch ($err) { return meta_data['$[]']("tempo")['$[]']("duration") }})();
+            bpm = (function() {try {return tune['$[]']("metaText")['$[]']("tempo")['$[]']("bpm") } catch ($err) { return meta_data['$[]']("tempo")['$[]']("bpm") }})();
+            meta_data['$[]=']("tempo", $hash2(["duration", "bpm"], {"duration": duration, "bpm": bpm}));
+            duration_display = ($a = ($h = duration).$map, $a._p = (TMP_22 = function(d){var self = TMP_22._s || this;
+if (d == null) d = nil;
+            return "1/" + ((1)['$/'](d))}, TMP_22._s = self, TMP_22), $a).call($h);
+            meta_data['$[]=']("tempo_display", [tune['$[]']("metaText")['$[]']("tempo")['$[]']("preString"), duration_display, "=", bpm, tune['$[]']("metaText")['$[]']("tempo")['$[]']("postString")].$join(" "));};
           meta_data_from_tune = (($a = $scope.Hash) == null ? $opal.cm('Hash') : $a).$new(tune['$[]']("metaText").$to_n());
-          ($a = ($h = meta_data_from_tune.$keys()).$each, $a._p = (TMP_22 = function(k){var self = TMP_22._s || this;
+          ($a = ($i = meta_data_from_tune.$keys()).$each, $a._p = (TMP_23 = function(k){var self = TMP_23._s || this;
 if (k == null) k = nil;
-          return meta_data['$[]='](k, meta_data_from_tune['$[]'](k))}, TMP_22._s = self, TMP_22), $a).call($h);
+          return meta_data['$[]='](k, meta_data_from_tune['$[]'](k))}, TMP_23._s = self, TMP_23), $a).call($i);
           result['$meta_data='](meta_data);
           result['$harpnote_options=']($hash2([], {}));
-          result.$harpnote_options()['$[]=']("print", ($a = ($i = harpnote_options['$[]']("print")).$map, $a._p = (TMP_23 = function(o){var self = TMP_23._s || this, $a, $b, TMP_24, $c, TMP_25, $d, TMP_27, $e, TMP_28;
+          result.$harpnote_options()['$[]=']("print", ($a = ($j = harpnote_options['$[]']("print")).$map, $a._p = (TMP_24 = function(o){var self = TMP_24._s || this, $a, $b, TMP_25, $c, TMP_26, $d, TMP_28, $e, TMP_29;
 if (o == null) o = nil;
-          return $hash2(["title", "voices", "synchlines", "flowlines", "jumplines"], {"title": o['$[]']("t"), "voices": ($a = ($b = o['$[]']("v")).$map, $a._p = (TMP_24 = function(i){var self = TMP_24._s || this;
+          return $hash2(["title", "voices", "synchlines", "flowlines", "jumplines"], {"title": o['$[]']("t"), "voices": ($a = ($b = o['$[]']("v")).$map, $a._p = (TMP_25 = function(i){var self = TMP_25._s || this;
 if (i == null) i = nil;
-            return i['$-'](1)}, TMP_24._s = self, TMP_24), $a).call($b), "synchlines": ($a = ($c = o['$[]']("s")).$map, $a._p = (TMP_25 = function(i){var self = TMP_25._s || this, $a, $b, TMP_26;
+            return i['$-'](1)}, TMP_25._s = self, TMP_25), $a).call($b), "synchlines": ($a = ($c = o['$[]']("s")).$map, $a._p = (TMP_26 = function(i){var self = TMP_26._s || this, $a, $b, TMP_27;
 if (i == null) i = nil;
-            return ($a = ($b = i).$map, $a._p = (TMP_26 = function(j){var self = TMP_26._s || this;
+            return ($a = ($b = i).$map, $a._p = (TMP_27 = function(j){var self = TMP_27._s || this;
 if (j == null) j = nil;
-              return j['$-'](1)}, TMP_26._s = self, TMP_26), $a).call($b)}, TMP_25._s = self, TMP_25), $a).call($c), "flowlines": ($a = ($d = o['$[]']("f")).$map, $a._p = (TMP_27 = function(i){var self = TMP_27._s || this;
+              return j['$-'](1)}, TMP_27._s = self, TMP_27), $a).call($b)}, TMP_26._s = self, TMP_26), $a).call($c), "flowlines": ($a = ($d = o['$[]']("f")).$map, $a._p = (TMP_28 = function(i){var self = TMP_28._s || this;
 if (i == null) i = nil;
-            return i['$-'](1)}, TMP_27._s = self, TMP_27), $a).call($d), "jumplines": ($a = ($e = o['$[]']("j")).$map, $a._p = (TMP_28 = function(i){var self = TMP_28._s || this;
+            return i['$-'](1)}, TMP_28._s = self, TMP_28), $a).call($d), "jumplines": ($a = ($e = o['$[]']("j")).$map, $a._p = (TMP_29 = function(i){var self = TMP_29._s || this;
 if (i == null) i = nil;
-            return i['$-'](1)}, TMP_28._s = self, TMP_28), $a).call($e)})}, TMP_23._s = self, TMP_23), $a).call($i));
+            return i['$-'](1)}, TMP_29._s = self, TMP_29), $a).call($e)})}, TMP_24._s = self, TMP_24), $a).call($j));
           result.$harpnote_options()['$[]=']("legend", harpnote_options['$[]']("legend"));
           result.$harpnote_options()['$[]=']("notes", ((($a = harpnote_options['$[]']("note")) !== false && $a !== nil) ? $a : []));
           return result;
@@ -15175,12 +15223,12 @@ if (i == null) i = nil;
         self.$private();
 
         def.$make_jumplines = function(entity) {
-          var $a, $b, $c, $d, TMP_29, self = this, result = nil, chords = nil;
+          var $a, $b, $c, $d, TMP_30, self = this, result = nil, chords = nil;
 
           result = [];
           if ((($a = entity['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Music == null ? $c.cm('Music') : $c.Music))._scope).Playable == null ? $b.cm('Playable') : $b.Playable))) !== nil && (!$a._isBoolean || $a == true))) {
             chords = ((($a = entity.$origin()['$[]']("chord")) !== false && $a !== nil) ? $a : []);
-            ($a = ($b = chords).$each, $a._p = (TMP_29 = function(chord){var self = TMP_29._s || this, $a, $b, $c, name = nil, nameparts = nil, target = nil, argument = nil;
+            ($a = ($b = chords).$each, $a._p = (TMP_30 = function(chord){var self = TMP_30._s || this, $a, $b, $c, name = nil, nameparts = nil, target = nil, argument = nil;
               if (self.jumptargets == null) self.jumptargets = nil;
               if ($gvars.log == null) $gvars.log = nil;
 if (chord == null) chord = nil;
@@ -15196,13 +15244,13 @@ if (chord == null) chord = nil;
                 };
                 } else {
                 return nil
-              };}, TMP_29._s = self, TMP_29), $a).call($b);};
+              };}, TMP_30._s = self, TMP_30), $a).call($b);};
           //foobar;
           return result;
         };
 
         def.$transform_note = function(note) {
-          var $a, $b, TMP_30, self = this, duration = nil, result = nil;
+          var $a, $b, TMP_31, self = this, duration = nil, result = nil;
 
           duration = ((64)['$*'](note['$[]']("duration"))).$round();
           if ((($a = note['$[]']("rest")['$nil?']()['$!']()) !== nil && (!$a._isBoolean || $a == true))) {
@@ -15219,23 +15267,23 @@ if (chord == null) chord = nil;
               self.repetition_stack['$<<'](result.$last())};
             if ((($a = note['$[]']("chord")['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
               } else {
-              ($a = ($b = note['$[]']("chord")).$each, $a._p = (TMP_30 = function(chord){var self = TMP_30._s || this, $a, $b, TMP_31, name = nil;
+              ($a = ($b = note['$[]']("chord")).$each, $a._p = (TMP_31 = function(chord){var self = TMP_31._s || this, $a, $b, TMP_32, name = nil;
                 if (self.jumptargets == null) self.jumptargets = nil;
 if (chord == null) chord = nil;
               name = self.$Native(chord)['$[]']("name");
                 if (name['$[]'](0)['$=='](":")) {
-                  return self.jumptargets['$[]='](name['$[]']($range(1, -1, false)), ($a = ($b = result).$select, $a._p = (TMP_31 = function(n){var self = TMP_31._s || this, $a, $b, $c;
+                  return self.jumptargets['$[]='](name['$[]']($range(1, -1, false)), ($a = ($b = result).$select, $a._p = (TMP_32 = function(n){var self = TMP_32._s || this, $a, $b, $c;
 if (n == null) n = nil;
-                  return n['$is_a?']((($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Playable == null ? $a.cm('Playable') : $a.Playable))}, TMP_31._s = self, TMP_31), $a).call($b).$last())
+                  return n['$is_a?']((($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Playable == null ? $a.cm('Playable') : $a.Playable))}, TMP_32._s = self, TMP_32), $a).call($b).$last())
                   } else {
                   return nil
-                };}, TMP_30._s = self, TMP_30), $a).call($b)
+                };}, TMP_31._s = self, TMP_31), $a).call($b)
             };};
           return result;
         };
 
         def.$transform_rest = function(note, duration) {
-          var $a, $b, $c, TMP_32, self = this, pitch = nil, res = nil, result = nil;
+          var $a, $b, $c, TMP_33, self = this, pitch = nil, res = nil, result = nil;
 
           if ((($a = self.previous_note) !== nil && (!$a._isBoolean || $a == true))) {
             pitch = self.previous_note.$pitch()
@@ -15244,6 +15292,8 @@ if (n == null) n = nil;
           };
           res = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Pause == null ? $a.cm('Pause') : $a.Pause).$new(pitch, duration);
           res['$origin='](note);
+          if (note['$[]']("rest")['$[]']("type")['$==']("invisible")) {
+            res['$visible='](false)};
           self.previous_note = res;
           result = [res];
           if ((($a = self.next_note_marks_measure) !== nil && (!$a._isBoolean || $a == true))) {
@@ -15252,24 +15302,24 @@ if (n == null) n = nil;
           if ((($a = self.next_note_marks_repeat_start) !== nil && (!$a._isBoolean || $a == true))) {
             self.repetition_stack['$<<'](res);
             self.next_note_marks_repeat_start = false;};
-          ($a = ($b = self.previous_new_part).$each, $a._p = (TMP_32 = function(part){var self = TMP_32._s || this;
+          ($a = ($b = self.previous_new_part).$each, $a._p = (TMP_33 = function(part){var self = TMP_33._s || this;
 if (part == null) part = nil;
           part['$companion='](res);
-            return res['$first_in_part='](true);}, TMP_32._s = self, TMP_32), $a).call($b);
+            return res['$first_in_part='](true);}, TMP_33._s = self, TMP_33), $a).call($b);
           self.previous_new_part.$clear();
           return result;
         };
 
         def.$transform_real_note = function(note, duration) {
-          var $a, $b, TMP_33, $c, $d, TMP_34, self = this, notes = nil, res = nil;
+          var $a, $b, TMP_34, $c, $d, TMP_35, self = this, notes = nil, res = nil;
 
-          notes = ($a = ($b = self.$Native(note['$[]']("pitches"))).$map, $a._p = (TMP_33 = function(pitch){var self = TMP_33._s || this, $a, $b, $c, midipitch = nil, thenote = nil;
+          notes = ($a = ($b = self.$Native(note['$[]']("pitches"))).$map, $a._p = (TMP_34 = function(pitch){var self = TMP_34._s || this, $a, $b, $c, midipitch = nil, thenote = nil;
             if (self.pitch_transformer == null) self.pitch_transformer = nil;
 if (pitch == null) pitch = nil;
           midipitch = self.pitch_transformer.$get_midipitch(pitch);
             thenote = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).Note == null ? $a.cm('Note') : $a.Note).$new(midipitch, duration);
             thenote['$origin='](note);
-            return thenote;}, TMP_33._s = self, TMP_33), $a).call($b);
+            return thenote;}, TMP_34._s = self, TMP_34), $a).call($b);
           res = [];
           if (notes.$length()['$=='](1)) {
             res['$<<'](notes.$first())
@@ -15283,10 +15333,10 @@ if (pitch == null) pitch = nil;
           if ((($a = self.next_note_marks_repeat_start) !== nil && (!$a._isBoolean || $a == true))) {
             self.repetition_stack['$<<'](notes.$last());
             self.next_note_marks_repeat_start = false;};
-          ($a = ($c = self.previous_new_part).$each, $a._p = (TMP_34 = function(part){var self = TMP_34._s || this;
+          ($a = ($c = self.previous_new_part).$each, $a._p = (TMP_35 = function(part){var self = TMP_35._s || this;
 if (part == null) part = nil;
           part['$companion='](notes.$last());
-            return notes.$last()['$first_in_part='](true);}, TMP_34._s = self, TMP_34), $a).call($c);
+            return notes.$last()['$first_in_part='](true);}, TMP_35._s = self, TMP_35), $a).call($c);
           self.previous_new_part.$clear();
           return res;
         };
@@ -15345,7 +15395,7 @@ if (part == null) part = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           args = $slice.call(arguments, 1);
-          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (457) + ")");
+          $gvars.log.$debug("Missing transformation rule: " + (name) + " (" + ("abc_to_harpnotes") + " " + (470) + ")");
           return nil;
         }, nil) && 'method_missing';
       })(self, null);
@@ -15361,7 +15411,7 @@ if (part == null) part = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$attr_accessor', '$Native', '$new', '$path']);
+  $opal.add_stubs(['$attr_accessor', '$[]=', '$Native', '$new', '$path']);
   return (function($base) {
     var self = $module($base, 'Raphael');
 
@@ -15378,7 +15428,8 @@ if (part == null) part = nil;
       def.$initialize = function(r) {
         var self = this;
 
-        return self.r = r;
+        self.r = r;
+        return self['$[]=']("stroke-width", 0.5);
       };
 
       def['$[]'] = function(name) {
@@ -15468,6 +15519,12 @@ if (part == null) part = nil;
           radius = 0
         }
         return (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.rect(x, y, rx, ry, radius));
+      };
+
+      def.$set_view_box = function(x, y, width, height, fit) {
+        var self = this;
+
+        return self.r.setViewBox(x, y, width, height, fit);
       };
 
       def.$line = function(x1, y1, x2, y2) {
@@ -15788,9 +15845,9 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 ;
 /* Generated by Opal 0.6.2 */
 (function($opal) {
-  var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass;
+  var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$Native', '$find', '$new', '$raw']);
+  $opal.add_stubs(['$Native', '$find', '$new', '$raw', '$to_n']);
   return (function($base) {
     var self = $module($base, 'ABCJS');
 
@@ -15808,12 +15865,16 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         var def = self._proto, $scope = self._scope, TMP_1;
 
         def.$initialize = function(div, printerparams) {
-          var $a, $b, self = this, paper = nil;
+          var $a, $b, self = this, paper = nil, pp = nil;
 
+          if (printerparams == null) {
+            printerparams = $hash2([], {})
+          }
           self.parent = self.$Native((($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#" + (div)));
           paper = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Paper == null ? $a.cm('Paper') : $a.Paper).$new(div, 1100, 700);
           self.paper = paper.$raw();
-          return self.printer = new ABCJS.write.Printer(self.paper, printerparams);
+          pp = printerparams.$to_n();
+          return self.printer = new ABCJS.write.Printer(self.paper, pp);
         };
 
         def.$on_select = TMP_1 = function() {
@@ -15836,6 +15897,24 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 
           
         self.printer.rangeHighlight(from, to);
+        
+          return nil;
+        };
+
+        def.$range_highlight_more = function(from, to) {
+          var self = this;
+
+          
+        self.printer.rangeHighlightMore(from, to);
+        
+          return nil;
+        };
+
+        def.$range_unhighlight_more = function(from, to) {
+          var self = this;
+
+          
+        self.printer.rangeUnhighlightMore(from, to);
         
           return nil;
         };
@@ -15875,9 +15954,50 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 ;
 /* Generated by Opal 0.6.2 */
 (function($opal) {
+  var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass;
+
+  $opal.add_stubs([]);
+  return (function($base) {
+    var self = $module($base, 'Musicaljs');
+
+    var def = self._proto, $scope = self._scope;
+
+    (function($base, $super) {
+      function $Instrument(){};
+      var self = $Instrument = $klass($base, $super, 'Instrument', $Instrument);
+
+      var def = self._proto, $scope = self._scope;
+
+      def.$initialize = function(options) {
+        var self = this;
+
+        self.instrument = new Instrument(options);
+        return self.isplaying = false;
+      };
+
+      def.$play = function(options, abc_text) {
+        var self = this;
+
+        return self.instrument.play(options, abc_text);
+      };
+
+      return (def.$tone = function(pitch, velocity, duration, delay, timbre) {
+        var self = this;
+
+        return self.instrument.tone(pitch, velocity, duration, delay, timbre);
+      }, nil) && 'tone';
+    })(self, null)
+    
+  })(self)
+})(Opal);
+
+//# sourceMappingURL=/__opal_source_maps__/opal-musicaljs.js.map
+;
+/* Generated by Opal 0.6.2 */
+(function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars, $range = $opal.range;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$enable_pan_zoom', '$clear', '$rect', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$unhighlight', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$highlight', '$<<', '$private', '$unhighlight_color=', '$[]=', '$unhighlight_color', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$join', '$glyph_to_path_spec', '$glyph', '$-', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$text']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$set_view_box', '$clear', '$rect', '$each', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_rest', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$unhighlight_element', '$highlight_element', '$get_elements_by_range', '$private', '$each_key', '$Native', '$origin', '$nil?', '$[]', '$>', '$<', '$===', '$push', '$unhighlight_color=', '$[]=', '$include?', '$-', '$unhighlight_color', '$<<', '$ellipse', '$first', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$+', '$*', '$on_click', '$call', '$visible?', '$draw_glyph_visible', '$join', '$glyph_to_path_spec', '$glyph', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$text']);
   ;
   ;
   return (function($base) {
@@ -15908,9 +16028,15 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         var $a, $b, self = this;
 
         self.paper = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Paper == null ? $a.cm('Paper') : $a.Paper).$new(element_id, width, height);
-        self.paper.$enable_pan_zoom();
         self.on_select = nil;
-        return self.elements = $hash2([], {});
+        self.elements = $hash2([], {});
+        return self.highlighted = [];
+      };
+
+      def.$set_view_box = function(x, y, width, height) {
+        var self = this;
+
+        return self.paper.$set_view_box(x, y, width, height, true);
       };
 
       def.$draw = function(sheet) {
@@ -15937,7 +16063,7 @@ if (child == null) child = nil;
           } else if ((($a = child['$is_a?']((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Drawing == null ? $c.cm('Drawing') : $c.Drawing))._scope).Annotation == null ? $b.cm('Annotation') : $b.Annotation))) !== nil && (!$a._isBoolean || $a == true))) {
             return self.$draw_annotation(child)
             } else {
-            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("raphael_engine") + " " + (44) + ")");
+            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("raphael_engine") + " " + (49) + ")");
             return nil;
           }}, TMP_1._s = self, TMP_1), $a).call($b);
       };
@@ -15949,14 +16075,37 @@ if (child == null) child = nil;
         return self.on_select = block;
       };
 
-      def.$range_highlight = function(from, to) {
-        var $a, $b, TMP_3, $c, TMP_4, self = this;
+      def.$unhighlight_all = function() {
+        var $a, $b, TMP_3, self = this;
 
-        ($a = ($b = self.highlighted).$each, $a._p = (TMP_3 = function(e){var self = TMP_3._s || this;
+        return ($a = ($b = self.highlighted).$each, $a._p = (TMP_3 = function(e){var self = TMP_3._s || this;
 if (e == null) e = nil;
-        return self.$unhighlight(e)}, TMP_3._s = self, TMP_3), $a).call($b);
-        self.highlighted = [];
-        return ($a = ($c = self.elements).$each_key, $a._p = (TMP_4 = function(k){var self = TMP_4._s || this, $a, $b, $c, TMP_5, origin = nil, el_start = nil, el_end = nil;
+        return self.$unhighlight_element(e)}, TMP_3._s = self, TMP_3), $a).call($b);
+      };
+
+      def.$range_highlight = function(from, to) {
+        var $a, $b, TMP_4, self = this;
+
+        return ($a = ($b = self.$get_elements_by_range(from, to)).$each, $a._p = (TMP_4 = function(element){var self = TMP_4._s || this;
+if (element == null) element = nil;
+        return self.$highlight_element(element)}, TMP_4._s = self, TMP_4), $a).call($b);
+      };
+
+      def.$range_unhighlight = function(from, to) {
+        var $a, $b, TMP_5, self = this;
+
+        return ($a = ($b = self.$get_elements_by_range(from, to)).$each, $a._p = (TMP_5 = function(element){var self = TMP_5._s || this;
+if (element == null) element = nil;
+        return self.$unhighlight_element(element)}, TMP_5._s = self, TMP_5), $a).call($b);
+      };
+
+      self.$private();
+
+      def.$get_elements_by_range = function(from, to) {
+        var $a, $b, TMP_6, self = this, result = nil;
+
+        result = [];
+        ($a = ($b = self.elements).$each_key, $a._p = (TMP_6 = function(k){var self = TMP_6._s || this, $a, $b, $c, TMP_7, origin = nil, el_start = nil, el_end = nil;
           if (self.elements == null) self.elements = nil;
 if (k == null) k = nil;
         origin = self.$Native(k.$origin());
@@ -15966,33 +16115,34 @@ if (k == null) k = nil;
             el_start = self.$Native(k.$origin())['$[]']("startChar");
             el_end = self.$Native(k.$origin())['$[]']("endChar");
             if ((($a = (((($b = ((($c = to['$>'](el_start)) ? from['$<'](el_end) : $c))) !== false && $b !== nil) ? $b : (($c = (to['$==='](from)), $c !== false && $c !== nil ?to['$==='](el_end) : $c))))) !== nil && (!$a._isBoolean || $a == true))) {
-              return ($a = ($b = self.elements['$[]'](k)).$each, $a._p = (TMP_5 = function(e){var self = TMP_5._s || this;
-                if (self.highlighted == null) self.highlighted = nil;
+              return ($a = ($b = self.elements['$[]'](k)).$each, $a._p = (TMP_7 = function(e){var self = TMP_7._s || this;
 if (e == null) e = nil;
-              self.$highlight(e);
-                return self.highlighted['$<<'](e);}, TMP_5._s = self, TMP_5), $a).call($b)
+              return result.$push(e)}, TMP_7._s = self, TMP_7), $a).call($b)
               } else {
               return nil
             };
-          };}, TMP_4._s = self, TMP_4), $a).call($c);
+          };}, TMP_6._s = self, TMP_6), $a).call($b);
+        return result;
       };
 
-      self.$private();
-
-      def.$highlight = function(element) {
+      def.$highlight_element = function(element) {
         var self = this;
 
+        self.$unhighlight_element(element);
+        self.highlighted.$push(element);
         element['$unhighlight_color='](element['$[]']("fill"));
         element['$[]=']("fill", "#ff0000");
         element['$[]=']("stroke", "#ff0000");
         return nil;
       };
 
-      def.$unhighlight = function(element) {
-        var self = this;
+      def.$unhighlight_element = function(element) {
+        var $a, self = this;
 
-        element['$[]=']("fill", element.$unhighlight_color());
-        element['$[]=']("stroke", element.$unhighlight_color());
+        if ((($a = self.highlighted['$include?'](element)) !== nil && (!$a._isBoolean || $a == true))) {
+          self.highlighted = self.highlighted['$-']([element]);
+          element['$[]=']("fill", element.$unhighlight_color());
+          element['$[]=']("stroke", "#000000");};
         return nil;
       };
 
@@ -16004,7 +16154,7 @@ if (e == null) e = nil;
       };
 
       def.$draw_ellipse = function(root) {
-        var $a, $b, TMP_6, $c, TMP_7, self = this, e = nil, x = nil, y = nil, e_dot = nil;
+        var $a, $b, TMP_8, $c, TMP_9, self = this, e = nil, x = nil, y = nil, e_dot = nil;
 
         e = self.paper.$ellipse(root.$center().$first(), root.$center().$last(), root.$size().$first(), root.$size().$last());
         self.$push_element(root.$origin(), e);
@@ -16019,7 +16169,7 @@ if (e == null) e = nil;
           e_dot = self.paper.$ellipse(x, y, (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a));
           e_dot['$[]=']("fill", "black");
           self.$push_element(root.$origin(), e_dot);
-          ($a = ($b = e_dot).$on_click, $a._p = (TMP_6 = function(){var self = TMP_6._s || this, $a, $b, origin = nil;
+          ($a = ($b = e_dot).$on_click, $a._p = (TMP_8 = function(){var self = TMP_8._s || this, $a, $b, origin = nil;
             if (self.on_select == null) self.on_select = nil;
 
           origin = root.$origin();
@@ -16027,8 +16177,8 @@ if (e == null) e = nil;
               return nil
               } else {
               return self.on_select.$call(origin)
-            };}, TMP_6._s = self, TMP_6), $a).call($b);};
-        return ($a = ($c = e).$on_click, $a._p = (TMP_7 = function(){var self = TMP_7._s || this, $a, $b, origin = nil;
+            };}, TMP_8._s = self, TMP_8), $a).call($b);};
+        return ($a = ($c = e).$on_click, $a._p = (TMP_9 = function(){var self = TMP_9._s || this, $a, $b, origin = nil;
           if (self.on_select == null) self.on_select = nil;
 
         origin = root.$origin();
@@ -16036,20 +16186,30 @@ if (e == null) e = nil;
             return nil
             } else {
             return self.on_select.$call(origin)
-          };}, TMP_7._s = self, TMP_7), $a).call($c);
+          };}, TMP_9._s = self, TMP_9), $a).call($c);
       };
 
       def.$draw_glyph = function(root) {
-        var $a, $b, TMP_9, $c, TMP_10, self = this, center = nil, size = nil, path_spec = nil, e = nil, bbox = nil, glyph_center = nil, scalefactor = nil, x = nil, y = nil, e_dot = nil;
+        var $a, self = this;
+
+        if ((($a = root['$visible?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          return self.$draw_glyph_visible(root)
+          } else {
+          return nil
+        };
+      };
+
+      def.$draw_glyph_visible = function(root) {
+        var $a, $b, TMP_11, $c, TMP_12, self = this, center = nil, size = nil, path_spec = nil, e = nil, bbox = nil, glyph_center = nil, scalefactor = nil, x = nil, y = nil, e_dot = nil;
 
         def.$glyph_to_path_spec = function(glyph) {
-          var $a, $b, TMP_8, self = this, result = nil;
+          var $a, $b, TMP_10, self = this, result = nil;
 
           result = "";
-          ($a = ($b = glyph['$[]']("d")).$each, $a._p = (TMP_8 = function(part){var self = TMP_8._s || this;
+          ($a = ($b = glyph['$[]']("d")).$each, $a._p = (TMP_10 = function(part){var self = TMP_10._s || this;
 if (part == null) part = nil;
           result = result['$+'](part.$first());
-            return result = result['$+'](part['$[]']($range(1, -1, false)).$join(" "));}, TMP_8._s = self, TMP_8), $a).call($b);
+            return result = result['$+'](part['$[]']($range(1, -1, false)).$join(" "));}, TMP_10._s = self, TMP_10), $a).call($b);
           return result;
         };
         center = [root.$center().$first(), root.$center().$last()];
@@ -16062,7 +16222,7 @@ if (part == null) part = nil;
         e = self.paper.$path(path_spec);
         e['$[]=']("fill", "black");
         self.$push_element(root.$origin(), e);
-        ($a = ($b = e).$on_click, $a._p = (TMP_9 = function(){var self = TMP_9._s || this, $a, $b, origin = nil;
+        ($a = ($b = e).$on_click, $a._p = (TMP_11 = function(){var self = TMP_11._s || this, $a, $b, origin = nil;
           if (self.on_select == null) self.on_select = nil;
 
         origin = root.$origin();
@@ -16070,7 +16230,7 @@ if (part == null) part = nil;
             return nil
             } else {
             return self.on_select.$call(origin)
-          };}, TMP_9._s = self, TMP_9), $a).call($b);
+          };}, TMP_11._s = self, TMP_11), $a).call($b);
         bbox = e.$get_bbox();
         glyph_center = [(bbox['$[]']("x")['$+'](bbox['$[]']("x2")))['$/'](2), (bbox['$[]']("y")['$+'](bbox['$[]']("y2")))['$/'](2)];
         scalefactor = size.$last()['$/'](bbox['$[]']("height"));
@@ -16082,7 +16242,7 @@ if (part == null) part = nil;
           e_dot = self.paper.$ellipse(x, y, (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a), (($a = $scope.DOTTED_SIZE) == null ? $opal.cm('DOTTED_SIZE') : $a));
           e_dot['$[]=']("fill", "black");
           self.$push_element(root.$origin(), e_dot);
-          return ($a = ($c = e_dot).$on_click, $a._p = (TMP_10 = function(){var self = TMP_10._s || this, $a, $b, origin = nil;
+          return ($a = ($c = e_dot).$on_click, $a._p = (TMP_12 = function(){var self = TMP_12._s || this, $a, $b, origin = nil;
             if (self.on_select == null) self.on_select = nil;
 
           origin = root.$origin();
@@ -16090,7 +16250,7 @@ if (part == null) part = nil;
               return nil
               } else {
               return self.on_select.$call(origin)
-            };}, TMP_10._s = self, TMP_10), $a).call($c);
+            };}, TMP_12._s = self, TMP_12), $a).call($c);
           } else {
           return nil
         };
@@ -16149,7 +16309,7 @@ if (part == null) part = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $range = $opal.range, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$private', '$[]', '$style', '$text_color=', '$font_size=', '$font_style=', '$text', '$first', '$center', '$last', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$stroke=', '$glyph', '$===', '$empty?', '$lines', '$push', '$error', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$distance', '$nil?', '$level', '$left_arrowhead']);
+  $opal.add_stubs(['$include', '$attr_reader', '$/', '$new', '$x_offset=', '$*', '$each', '$draw_segment', '$+', '$rect', '$draw_cropmark', '$is_a?', '$draw_ellipse', '$draw_flowline', '$draw_jumpline', '$draw_glyph', '$draw_annotation', '$debug', '$class', '$children', '$private', '$[]', '$style', '$text_color=', '$font_size=', '$font_style=', '$text', '$first', '$center', '$last', '$line', '$-', '$filled?', '$fill=', '$map', '$ellipse', '$size', '$dotted?', '$zip', '$rect_like_ellipse', '$visible?', '$draw_glyph_visible', '$stroke=', '$glyph', '$===', '$empty?', '$lines', '$push', '$error', '$addPage', '$draw', '$dashed?', '$line_dash=', '$from', '$to', '$use_solid_lines', '$clone', '$[]=', '$distance', '$nil?', '$level', '$left_arrowhead']);
   ;
   ;
   return (function($base) {
@@ -16246,7 +16406,7 @@ if (child == null) child = nil;
         var $a, self = this, v = nil, hpos = nil, hdiff = nil;
 
         v = $hash2(["top", "bottom"], {"top": [0, 7, 9], "bottom": [297, 290, 288]})['$[]'](border);
-        hpos = (($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a)['$/'](2.0)['$+'](delta['$*'](i));
+        hpos = (($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a)['$/'](2.0)['$+'](delta['$*'](i))['$+'](3);
         hdiff = (($a = $scope.X_SPACING) == null ? $opal.cm('X_SPACING') : $a)['$/'](2.0);
         self.pdf.$line([hpos, v.$first()], [hpos, v.$last()]);
         return self.pdf.$line([hpos['$-'](hdiff), v['$[]'](1)], [hpos['$+'](hdiff), v['$[]'](1)]);
@@ -16281,7 +16441,7 @@ if (s == null) s = nil;
         };
       };
 
-      def.$draw_glyph1 = function(root) {
+      def.$draw_glyph_outdated = function(root) {
         var $a, $b, TMP_8, $c, TMP_9, $d, TMP_10, $e, TMP_11, self = this, style = nil, center = nil, size = nil;
 
         style = (function() {if ((($a = root['$filled?']()) !== nil && (!$a._isBoolean || $a == true))) {
@@ -16315,6 +16475,16 @@ if (s == null) s = nil;
       };
 
       def.$draw_glyph = function(root) {
+        var $a, self = this;
+
+        if ((($a = root['$visible?']()) !== nil && (!$a._isBoolean || $a == true))) {
+          return self.$draw_glyph_visible(root)
+          } else {
+          return nil
+        };
+      };
+
+      def.$draw_glyph_visible = function(root) {
         var $a, $b, TMP_12, $c, TMP_13, $d, TMP_14, $e, TMP_15, $f, TMP_16, $g, TMP_17, self = this, style = nil, center = nil, size = nil, scalefactor = nil, scale = nil, lines = nil, start = nil;
 
         style = root['$filled?']("FD", "FD");
@@ -16358,7 +16528,7 @@ if (element == null) element = nil;
             } else {
             self.pdf.$lines(lines, start.$first(), start.$last(), scale, "FD", true)
           };
-          return lines = [];}else {return $gvars.log.$error("unsupported command '" + (element.$first()) + "' in glyph (" + ("pdf_engine") + " " + (159) + ")")}})()}, TMP_15._s = self, TMP_15), $a).call($e);
+          return lines = [];}else {return $gvars.log.$error("unsupported command '" + (element.$first()) + "' in glyph (" + ("pdf_engine") + " " + (162) + ")")}})()}, TMP_15._s = self, TMP_15), $a).call($e);
         self.pdf['$stroke=']([0, 0, 0]);
         if ((($a = root['$dotted?']()) !== nil && (!$a._isBoolean || $a == true))) {
           self.pdf['$fill='](($a = ($f = ($range(0, 3, true))).$map, $a._p = (TMP_16 = function(){var self = TMP_16._s || this;
@@ -16430,9 +16600,9 @@ if (s == null) s = nil;
 ;
 /* Generated by Opal 0.6.2 */
 (function($opal) {
-  var $a, $b, TMP_14, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars, $range = $opal.range;
+  var $a, $b, TMP_16, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars, $range = $opal.range;
 
-  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$new', '$setup_ui', '$setup_ui_listener', '$load_from_loacalstorage', '$split', '$first', '$===', '$get_text', '$get_metadata', '$info', '$retrieve', '$set_text', '$error', '$last', '$join', '$create', '$list', '$nil?', '$draw', '$layout_harpnotes', '$draw_in_segments', '$html', '$find', '$save_to_localstorage', '$message', '$backtrace', '$file', '$get_abc_code', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$Native', '$debug', '$select_range_by_position', '$range_highlight', '$on_select', '$select_abc_object', '$origin', '$on', '$play_abc', '$render_previews', '$handle_command', '$on_change', '$on_selection_change', '$get_selection_positions', '$==', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
+  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$new', '$setup_ui', '$setup_ui_listener', '$load_from_loacalstorage', '$split', '$first', '$===', '$get_text', '$get_metadata', '$info', '$retrieve', '$set_text', '$error', '$last', '$join', '$create', '$list', '$nil?', '$draw', '$layout_harpnotes', '$draw_in_segments', '$html', '$find', '$is_playing?', '$stop', '$play_song', '$save_to_localstorage', '$load_song', '$message', '$backtrace', '$file', '$get_abc_code', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$Native', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$on', '$play_abc', '$render_previews', '$handle_command', '$on_change', '$on_selection_change', '$get_selection_positions', '$==', '$on_noteon', '$debug', '$on_noteoff', '$unhighlight_abc_object', '$prevent_default', '$save_file', '$prevent', '$css', '$-', '$page_x', '$ready?']);
   (function($base, $super) {
     function $LocalStore(){};
     var self = $LocalStore = $klass($base, $super, 'LocalStore', $LocalStore);
@@ -16544,7 +16714,7 @@ if (s == null) s = nil;
 
     var def = self._proto, $scope = self._scope;
 
-    def.editor = def.abc_transformer = def.songbook = def.inst = def.harpnote_preview_printer = def.tune_preview_printer = nil;
+    def.editor = def.abc_transformer = def.songbook = def.inst = def.harpnote_player = def.song = def.harpnote_preview_printer = def.song_harpnotes = def.tune_preview_printer = nil;
     self.$attr("editor", "harpnote_preview_printer", "tune_preview_printer");
 
     def.$initialize = function() {
@@ -16552,6 +16722,7 @@ if (s == null) s = nil;
 
       $gvars.log = (($a = $scope.ConsoleLogger) == null ? $opal.cm('ConsoleLogger') : $a).$new("consoleEntries");
       self.editor = (($a = ((($b = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $b))._scope).TextPane == null ? $a.cm('TextPane') : $a.TextPane).$new("abcEditor");
+      self.harpnote_player = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Music == null ? $b.cm('Music') : $b.Music))._scope).HarpnotePlayer == null ? $a.cm('HarpnotePlayer') : $a.HarpnotePlayer).$new();
       self.songbook = (($a = $scope.LocalStore) == null ? $opal.cm('LocalStore') : $a).$new("songbook");
       self.abc_transformer = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Input == null ? $b.cm('Input') : $b.Input))._scope).ABCToHarpnotes == null ? $a.cm('ABCToHarpnotes') : $a.ABCToHarpnotes).$new();
       self.$setup_ui();
@@ -16617,7 +16788,7 @@ if (s == null) s = nil;
       return (($a = ((($b = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $b))._scope).PDFEngine == null ? $a.cm('PDFEngine') : $a.PDFEngine).$new().$draw_in_segments(self.$layout_harpnotes());
     };
 
-    def.$play_abc = function() {
+    def.$play_abc_outdated = function() {
       var $a, self = this;
 
       if ((($a = self.inst) !== nil && (!$a._isBoolean || $a == true))) {
@@ -16628,6 +16799,18 @@ if (s == null) s = nil;
         (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tbPlay").$html("stop");
         self.inst = new Instrument('piano');
         return self.inst.play(nil, self.editor.$get_text(), function(){self.$play_abc()} );
+      };
+    };
+
+    def.$play_abc = function() {
+      var $a, self = this;
+
+      if ((($a = self.harpnote_player['$is_playing?']()) !== nil && (!$a._isBoolean || $a == true))) {
+        self.harpnote_player.$stop();
+        return (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tbPlay").$html("play");
+        } else {
+        (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tbPlay").$html("stop");
+        return self.harpnote_player.$play_song(0);
       };
     };
 
@@ -16645,7 +16828,9 @@ if (s == null) s = nil;
       $gvars.log.$info("rendering");
       self.$save_to_localstorage();
       try {
-      self.harpnote_preview_printer.$draw(self.$layout_harpnotes())
+      self.song_harpnotes = self.$layout_harpnotes(0);
+        self.harpnote_player.$load_song(self.song);
+        self.harpnote_preview_printer.$draw(self.song_harpnotes);
       } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
         $gvars.log.$error([e.$message(), e.$backtrace()])
         }else { throw $err; }
@@ -16672,24 +16857,40 @@ if (s == null) s = nil;
     };
 
     def.$layout_harpnotes = function(print_variant) {
-      var $a, $b, $c, self = this, song = nil;
+      var $a, $b, $c, self = this;
 
       if (print_variant == null) {
         print_variant = 0
       }
-      song = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Input == null ? $b.cm('Input') : $b.Input))._scope).ABCToHarpnotes == null ? $a.cm('ABCToHarpnotes') : $a.ABCToHarpnotes).$new().$transform(self.editor.$get_text());
-      return (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Layout == null ? $b.cm('Layout') : $b.Layout))._scope).Default == null ? $a.cm('Default') : $a.Default).$new().$layout(song, nil, print_variant);
+      self.song = (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Input == null ? $b.cm('Input') : $b.Input))._scope).ABCToHarpnotes == null ? $a.cm('ABCToHarpnotes') : $a.ABCToHarpnotes).$new().$transform(self.editor.$get_text());
+      return (($a = ((($b = ((($c = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $c))._scope).Layout == null ? $b.cm('Layout') : $b.Layout))._scope).Default == null ? $a.cm('Default') : $a.Default).$new().$layout(self.song, nil, print_variant);
+    };
+
+    def.$highlight_abc_object = function(abcelement) {
+      var $a, self = this, a = nil;
+
+      a = self.$Native(abcelement);
+      if ((($a = self.harpnote_player['$is_playing?']()) !== nil && (!$a._isBoolean || $a == true))) {
+        } else {
+        self.editor.$select_range_by_position(a['$[]']("startChar"), a['$[]']("endChar"))
+      };
+      self.tune_preview_printer.$range_highlight_more(a['$[]']("startChar"), a['$[]']("endChar"));
+      return self.harpnote_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
+    };
+
+    def.$unhighlight_abc_object = function(abcelement) {
+      var self = this, a = nil;
+
+      a = self.$Native(abcelement);
+      self.tune_preview_printer.$range_unhighlight_more(a['$[]']("startChar"), a['$[]']("endChar"));
+      return self.harpnote_preview_printer.$range_unhighlight(a['$[]']("startChar"), a['$[]']("endChar"));
     };
 
     def.$select_abc_object = function(abcelement) {
-      var self = this, a = nil;
-      if ($gvars.log == null) $gvars.log = nil;
+      var self = this;
 
-      a = self.$Native(abcelement);
-      $gvars.log.$debug("select_abc_element (" + ("controller") + " " + (252) + ")");
-      self.editor.$select_range_by_position(a['$[]']("startChar"), a['$[]']("endChar"));
-      self.tune_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
-      return self.harpnote_preview_printer.$range_highlight(a['$[]']("startChar"), a['$[]']("endChar"));
+      self.harpnote_preview_printer.$unhighlight_all();
+      return self.$highlight_abc_object(abcelement);
     };
 
     self.$private();
@@ -16698,11 +16899,12 @@ if (s == null) s = nil;
       var $a, $b, TMP_1, $c, $d, TMP_2, self = this, printerparams = nil;
 
       self.harpnote_preview_printer = (($a = ((($b = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $b))._scope).RaphaelEngine == null ? $a.cm('RaphaelEngine') : $a.RaphaelEngine).$new("harpPreview", 1100, 700);
+      self.harpnote_preview_printer.$set_view_box(0, 0, 440, 297);
       ($a = ($b = self.harpnote_preview_printer).$on_select, $a._p = (TMP_1 = function(harpnote){var self = TMP_1._s || this;
 if (harpnote == null) harpnote = nil;
       return self.$select_abc_object(harpnote.$origin())}, TMP_1._s = self, TMP_1), $a).call($b);
-      printerparams = $hash2([], {});
-      self.tune_preview_printer = (($a = ((($c = ((($d = $scope.ABCJS) == null ? $opal.cm('ABCJS') : $d))._scope).Write == null ? $c.cm('Write') : $c.Write))._scope).Printer == null ? $a.cm('Printer') : $a.Printer).$new("tunePreview");
+      printerparams = $hash2(["staffwidth"], {"staffwidth": 750});
+      self.tune_preview_printer = (($a = ((($c = ((($d = $scope.ABCJS) == null ? $opal.cm('ABCJS') : $d))._scope).Write == null ? $c.cm('Write') : $c.Write))._scope).Printer == null ? $a.cm('Printer') : $a.Printer).$new("tunePreview", printerparams);
       return ($a = ($c = self.tune_preview_printer).$on_select, $a._p = (TMP_2 = function(abcelement){var self = TMP_2._s || this, a = nil;
 if (abcelement == null) abcelement = nil;
       a = self.$Native(abcelement);
@@ -16710,7 +16912,7 @@ if (abcelement == null) abcelement = nil;
     };
 
     return (def.$setup_ui_listener = function() {
-      var $a, $b, TMP_3, $c, TMP_4, $d, TMP_5, $e, TMP_6, $f, TMP_7, $g, TMP_8, $h, TMP_9, $i, TMP_10, $j, TMP_11, $k, self = this;
+      var $a, $b, TMP_3, $c, TMP_4, $d, TMP_5, $e, TMP_6, $f, TMP_7, $g, TMP_8, $h, TMP_9, $i, TMP_10, $j, TMP_11, $k, TMP_12, $l, TMP_13, $m, self = this;
 
       ($a = ($b = (($c = $scope.Element) == null ? $opal.cm('Element') : $c).$find("#tbPlay")).$on, $a._p = (TMP_3 = function(){var self = TMP_3._s || this;
 
@@ -16737,8 +16939,9 @@ if (e == null) e = nil;
       if ((($a = self.refresh_timer) !== nil && (!$a._isBoolean || $a == true))) {
           clearTimeout(self.refresh_timer);};
         if ((($a = self.playtimer_timer) !== nil && (!$a._isBoolean || $a == true))) {
+          setTimeout(function(){$('#tbPlay').html('play')}, 0);
           clearTimeout(self.playtimer_timer);};
-        self.refresh_timer = setTimeout(function(){self.$render_previews()}, 1000);
+        self.refresh_timer = setTimeout(function(){self.$render_previews()}, 5000);
         return nil;}, TMP_8._s = self, TMP_8), $a).call($g);
       ($a = ($h = self.editor).$on_selection_change, $a._p = (TMP_9 = function(e){var self = TMP_9._s || this, a = nil;
         if (self.editor == null) self.editor = nil;
@@ -16752,10 +16955,20 @@ if (e == null) e = nil;
           self.tune_preview_printer.$range_highlight(a.$first(), a.$last());
           return self.harpnote_preview_printer.$range_highlight(a.$first(), a.$last());
         };}, TMP_9._s = self, TMP_9), $a).call($h);
-      ($a = ($i = (($j = $scope.Element) == null ? $opal.cm('Element') : $j).$find(window)).$on, $a._p = (TMP_10 = function(evt){var self = TMP_10._s || this, $a;
+      ($a = ($i = self.harpnote_player).$on_noteon, $a._p = (TMP_10 = function(e){var self = TMP_10._s || this;
+        if ($gvars.log == null) $gvars.log = nil;
+if (e == null) e = nil;
+      $gvars.log.$debug("noteon " + (self.$Native(e)['$[]']("startChar")));
+        return self.$highlight_abc_object(e);}, TMP_10._s = self, TMP_10), $a).call($i);
+      ($a = ($j = self.harpnote_player).$on_noteoff, $a._p = (TMP_11 = function(e){var self = TMP_11._s || this;
+        if ($gvars.log == null) $gvars.log = nil;
+if (e == null) e = nil;
+      $gvars.log.$debug("noteoff " + (self.$Native(e)['$[]']("startChar")));
+        return self.$unhighlight_abc_object(e);}, TMP_11._s = self, TMP_11), $a).call($j);
+      ($a = ($k = (($l = $scope.Element) == null ? $opal.cm('Element') : $l).$find(window)).$on, $a._p = (TMP_12 = function(evt){var self = TMP_12._s || this, $a;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
-      $gvars.log.$debug("key pressed (" + ("controller") + " " + (322) + ")");
+      $gvars.log.$debug("key pressed (" + ("controller") + " " + (371) + ")");
         console.log(event);
         if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();
@@ -16767,26 +16980,143 @@ if (evt == null) evt = nil;
           return evt.preventDefault();
           } else {
           return nil
-        };}, TMP_10._s = self, TMP_10), $a).call($i, "keydown");
-      return ($a = ($j = (($k = $scope.Element) == null ? $opal.cm('Element') : $k).$find("#dragbar")).$on, $a._p = (TMP_11 = function(re){var self = TMP_11._s || this, $a, $b, TMP_12, $c, TMP_13, $d;
+        };}, TMP_12._s = self, TMP_12), $a).call($k, "keydown");
+      return ($a = ($l = (($m = $scope.Element) == null ? $opal.cm('Element') : $m).$find("#dragbar")).$on, $a._p = (TMP_13 = function(re){var self = TMP_13._s || this, $a, $b, TMP_14, $c, TMP_15, $d;
 if (re == null) re = nil;
       re.$prevent();
-        ($a = ($b = (($c = $scope.Element) == null ? $opal.cm('Element') : $c).$find(document)).$on, $a._p = (TMP_12 = function(e){var self = TMP_12._s || this, $a;
+        ($a = ($b = (($c = $scope.Element) == null ? $opal.cm('Element') : $c).$find(document)).$on, $a._p = (TMP_14 = function(e){var self = TMP_14._s || this, $a;
 if (e == null) e = nil;
         (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#leftColumn").$css("right", "" + ((window.innerWidth)['$-'](e.$page_x())) + "px");
           (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#rightColumn").$css("left", "" + (e.$page_x()) + "px");
-          return (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#dragbar").$css("left", "" + (e.$page_x()) + "px");}, TMP_12._s = self, TMP_12), $a).call($b, "mousemove");
-        return ($a = ($c = (($d = $scope.Element) == null ? $opal.cm('Element') : $d).$find(document)).$on, $a._p = (TMP_13 = function(){var self = TMP_13._s || this;
+          return (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#dragbar").$css("left", "" + (e.$page_x()) + "px");}, TMP_14._s = self, TMP_14), $a).call($b, "mousemove");
+        return ($a = ($c = (($d = $scope.Element) == null ? $opal.cm('Element') : $d).$find(document)).$on, $a._p = (TMP_15 = function(){var self = TMP_15._s || this;
 
-        return $(document).unbind('mousemove');}, TMP_13._s = self, TMP_13), $a).call($c, "mouseup");}, TMP_11._s = self, TMP_11), $a).call($j, "mousedown");
+        return $(document).unbind('mousemove');}, TMP_15._s = self, TMP_15), $a).call($c, "mouseup");}, TMP_13._s = self, TMP_13), $a).call($l, "mousedown");
     }, nil) && 'setup_ui_listener';
   })(self, null);
-  return ($a = ($b = (($c = $scope.Document) == null ? $opal.cm('Document') : $c))['$ready?'], $a._p = (TMP_14 = function(){var self = TMP_14._s || this, $a;
+  return ($a = ($b = (($c = $scope.Document) == null ? $opal.cm('Document') : $c))['$ready?'], $a._p = (TMP_16 = function(){var self = TMP_16._s || this, $a;
 
-  return (($a = $scope.Controller) == null ? $opal.cm('Controller') : $a).$new()}, TMP_14._s = self, TMP_14), $a).call($b);
+  return (($a = $scope.Controller) == null ? $opal.cm('Controller') : $a).$new()}, TMP_16._s = self, TMP_16), $a).call($b);
 })(Opal);
 
 //# sourceMappingURL=/__opal_source_maps__/controller.js.map
+;
+/* Generated by Opal 0.6.2 */
+(function($opal) {
+  var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
+
+  $opal.add_stubs(['$on', '$[]', '$Native', '$call', '$stop', '$each', '$to_n', '$reduce', '$meta_data', '$*', '$/', '$debug', '$compact', '$flatten', '$map', '$beat', '$-@', '$pitch', '$duration', '$is_a?', '$origin', '$select', '$each_with_index', '$voices']);
+  return (function($base) {
+    var self = $module($base, 'Harpnotes');
+
+    var def = self._proto, $scope = self._scope;
+
+    (function($base) {
+      var self = $module($base, 'Music');
+
+      var def = self._proto, $scope = self._scope;
+
+      (function($base, $super) {
+        function $HarpnotePlayer(){};
+        var self = $HarpnotePlayer = $klass($base, $super, 'HarpnotePlayer', $HarpnotePlayer);
+
+        var def = self._proto, $scope = self._scope, TMP_1, TMP_3;
+
+        def.isplaying = def.inst = def.voice_elements = nil;
+        def.$initialize = function() {
+          var self = this;
+
+          self.inst = new Instrument("piano");
+          return self.isplaying = false;
+        };
+
+        def['$is_playing?'] = function() {
+          var self = this;
+
+          return self.isplaying;
+        };
+
+        def.$on_noteon = TMP_1 = function() {
+          var $a, $b, TMP_2, self = this, $iter = TMP_1._p, block = $iter || nil;
+
+          TMP_1._p = null;
+          return ($a = ($b = self.$Native(self.inst)).$on, $a._p = (TMP_2 = function(element){var self = TMP_2._s || this, abc_element = nil;
+if (element == null) element = nil;
+          abc_element = self.$Native(element)['$[]']("origin");
+            block.$call(abc_element);
+            return nil;}, TMP_2._s = self, TMP_2), $a).call($b, "noteon");
+        };
+
+        def.$on_noteoff = TMP_3 = function() {
+          var $a, $b, TMP_4, self = this, $iter = TMP_3._p, block = $iter || nil;
+
+          TMP_3._p = null;
+          return ($a = ($b = self.$Native(self.inst)).$on, $a._p = (TMP_4 = function(element){var self = TMP_4._s || this, abc_element = nil;
+if (element == null) element = nil;
+          abc_element = self.$Native(element)['$[]']("origin");
+            block.$call(abc_element);
+            return nil;}, TMP_4._s = self, TMP_4), $a).call($b, "noteoff");
+        };
+
+        def.$play_song = function() {
+          var $a, $b, TMP_5, self = this;
+
+          self.$stop();
+          ($a = ($b = self.voice_elements).$each, $a._p = (TMP_5 = function(the_note){var self = TMP_5._s || this, note = nil;
+if (the_note == null) the_note = nil;
+          note = the_note.$to_n();
+            
+            self.inst.tone(note);
+            self.inst.schedule(note.delay + note.duration, function(){self.inst._trigger("noteoff", note);});
+           }, TMP_5._s = self, TMP_5), $a).call($b);
+          return self.isplaying = true;
+        };
+
+        def.$stop = function() {
+          var self = this;
+
+          self.inst.silence();
+          return self.isplaying = false;
+        };
+
+        def.$play_selected = function() {
+          var self = this;
+
+          return nil;
+        };
+
+        return (def.$load_song = function(music) {
+          var $a, $b, TMP_6, self = this, specduration = nil, specbpm = nil, spectf = nil, tf = nil, timefactor = nil;
+          if ($gvars.log == null) $gvars.log = nil;
+
+          specduration = music.$meta_data()['$[]']("tempo")['$[]']("duration").$reduce("+");
+          specbpm = music.$meta_data()['$[]']("tempo")['$[]']("bpm");
+          spectf = (specduration['$*'](specbpm));
+          tf = spectf['$*'](((128)['$/'](120)));
+          timefactor = (1)['$/'](tf);
+          $gvars.log.$debug("playing with tempo: " + (tf) + " ticks per quarter " + ("harpnote_player") + " " + (70));
+          return self.voice_elements = ($a = ($b = music.$voices().$each_with_index()).$map, $a._p = (TMP_6 = function(voice, index){var self = TMP_6._s || this, $a, $b, TMP_7, $c, $d, TMP_8;
+if (voice == null) voice = nil;if (index == null) index = nil;
+          return ($a = ($b = ($c = ($d = voice).$select, $c._p = (TMP_8 = function(c){var self = TMP_8._s || this, $a;
+if (c == null) c = nil;
+            return c['$is_a?']((($a = $scope.Playable) == null ? $opal.cm('Playable') : $a))}, TMP_8._s = self, TMP_8), $c).call($d)).$map, $a._p = (TMP_7 = function(root){var self = TMP_7._s || this, $a, $b, delay = nil, pitch = nil, duration = nil, velocity = nil;
+if (root == null) root = nil;
+            delay = root.$beat()['$*'](timefactor);
+              pitch = root.$pitch()['$-@']();
+              duration = root.$duration()['$*'](timefactor);
+              velocity = 1;
+              if ((($a = root['$is_a?']((($b = $scope.Pause) == null ? $opal.cm('Pause') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
+                velocity = 1.1e-05};
+              return $hash2(["pitch", "velocity", "duration", "delay", "origin"], {"pitch": pitch, "velocity": velocity, "duration": duration, "delay": delay, "origin": root.$origin()});}, TMP_7._s = self, TMP_7), $a).call($b)}, TMP_6._s = self, TMP_6), $a).call($b).$flatten().$compact();
+        }, nil) && 'load_song';
+      })(self, null)
+      
+    })(self)
+    
+  })(self)
+})(Opal);
+
+//# sourceMappingURL=/__opal_source_maps__/harpnote_player.js.map
 ;
 /* Generated by Opal 0.6.2 */
 (function($opal) {
@@ -16885,6 +17215,8 @@ if (e == null) e = nil;
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice;
 
   $opal.add_stubs([]);
+  ;
+  ;
   ;
   ;
   ;
