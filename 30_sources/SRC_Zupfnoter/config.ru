@@ -8,8 +8,9 @@ run Opal::Server.new { |s|
   s.append_path 'src'
   s.debug = true
   s.source_map = true
+  s.debug = true
 
   s.main = 'application'
 
-  s.index_path = 'index_opal.html'
+  s.index_path = 'index_opal.html.erb'
 }
