@@ -6,6 +6,7 @@ run Opal::Server.new { |s|
 
   s.append_path 'public'
   s.append_path 'src'
+  s.debug = true
   s.source_map = true
 
   s.main = 'application'

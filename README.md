@@ -141,7 +141,10 @@ This software is licensed under dual license MIT and Commercial
 701. Emulate harpplayer *in progress*
 702. Metronome
 
+# Brainstorming
 
+* using shoes and atom_shell to make a standalone application
+    https://github.com/wasnotrice/shoes-atom
 
 
 # Result of initial evaluation
