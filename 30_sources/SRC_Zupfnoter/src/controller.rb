@@ -374,9 +374,12 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
     @editor.on_selection_change do |e|
       a = @editor.get_selection_positions
+      #$log.debug("editor selecti #{a.first} to #{a.last9}")
+      `debugger`
       unless a.first == a.last
-        @tune_preview_printer.range_highlight(a.first, a.last);
-        @harpnote_preview_printer.range_highlight(a.first, a.last);
+        @tune_preview_printer.range_highlight(a.first, a.last)
+        @harpnote_preview_printer.unhighlight_all
+        @harpnote_preview_printer.range_highlight(a.first, a.last)
       end
     end
 
