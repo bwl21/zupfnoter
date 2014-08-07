@@ -106,6 +106,9 @@ class Controller
         @songbook.update(metadata[:X], abc_code,  metadata[:T])
         $log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
 
+      when "ps"
+        play_abc(:selection)
+
       # retrieve a song
       when "r"
         if c[1]
@@ -187,27 +190,14 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes)
   end
 
-  # play the abc tune
-  def play_abc_outdated
-    if @inst
-      Element.find('#tbPlay').html('play')
-      `self.inst.silence();`
-      @inst = nil;
-    else
-      Element.find('#tbPlay').html('stop')
-      @inst = `new Instrument('piano')`
-      `self.inst.play(nil, #{@editor.get_text}, function(){self.$play_abc()} )` # todo get parameter from ABC
-    end
-  end
-
-
-  def play_abc
+  def play_abc(mode = :song)
     if @harpnote_player.is_playing?
       @harpnote_player.stop()
       Element.find('#tbPlay').html('play')
     else
       Element.find('#tbPlay').html('stop')
-      @harpnote_player.play_song(0)
+      @harpnote_player.play_song(0) if mode == :song
+      @harpnote_player.play_selection(0) if mode == :selection
     end
   end
 
@@ -375,11 +365,11 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     @editor.on_selection_change do |e|
       a = @editor.get_selection_positions
       #$log.debug("editor selecti #{a.first} to #{a.last9}")
-      `debugger`
       unless a.first == a.last
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
+        @harpnote_player.range_highlight(a.first, a.last)
       end
     end
 

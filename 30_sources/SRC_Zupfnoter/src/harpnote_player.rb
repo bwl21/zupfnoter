@@ -11,6 +11,7 @@ module Harpnotes
       def initialize()
         @inst = `new Instrument("piano")`
         @isplaying = false
+        @selection = []
       end
 
       def is_playing?
@@ -39,20 +40,32 @@ module Harpnotes
       end
 
 
-      def play_song()
+      def play_selection
+        play_notes(@selection)
+      end
+
+      def play_song
+        play_notes(@voice_elements)
+      end
+
+      def play_notes( the_notes )
         self.stop()
 
         #note schedule in secc, SetTimout in msec; finsh after last measure
         `clearTimeout(self.song_off_timer)` if @song_off_timer
-        lastnote = @voice_elements.last
-        stop = (lastnote[:delay] + 128 * @timefactor)*1000   
-        `setTimeout(function(){self.songoff_callback.$call()}, stop )`
-        stop = (lastnote[:delay] + 64 * @timefactor)*1000
-        @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop )`
 
-        @voice_elements.each{|the_note|
-         #@inst.tone(note)
-          note = the_note.to_n
+        firstnote = the_notes.first
+        lastnote = the_notes.last
+
+        stop_time = (lastnote[:delay] - firstnote[:delay] + 64 * @timefactor) * 1000
+        @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop_time )`
+
+
+        the_notes.each{|the_note|
+          the_note_to_play = the_note.clone
+          the_note_to_play[:delay] -= firstnote[:delay]
+
+          note = the_note_to_play.to_n
           %x{
             self.inst.tone(note);
             self.inst.schedule(note.delay + note.duration, function(){self.inst._trigger("noteoff", note);});
@@ -61,14 +74,32 @@ module Harpnotes
         @isplaying = true
       end
 
+
       def stop()
         `self.inst.silence()`
         @isplaying = false
       end
 
-      def play_selected
-
+      def unhighlight_all()
+        @selection = []
       end
+
+
+      def range_highlight(from, to)
+        @selection = []
+        @voice_elements.each do |element|
+          origin = Native(element[:origin])
+          unless origin.nil?
+            el_start = origin[:startChar]
+            el_end   = origin[:endChar]
+
+            if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
+              @selection.push(element)
+            end
+          end
+        end
+      end
+
 
       def load_song(music)
         specduration = music.meta_data[:tempo][:duration].reduce(:+)
