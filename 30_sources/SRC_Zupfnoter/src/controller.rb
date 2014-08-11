@@ -109,6 +109,9 @@ class Controller
       when "ps"
         play_abc(:selection)
 
+      when "pr"
+        play_abc(:selection_ff)
+
       # retrieve a song
       when "r"
         if c[1]
@@ -198,20 +201,16 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
       Element.find('#tbPlay').html('stop')
       @harpnote_player.play_song(0) if mode == :song
       @harpnote_player.play_selection(0) if mode == :selection
+      @harpnote_player.play_from_selection if mode == :selection_ff
     end
   end
 
   def stop_play_abc
     @harpnote_player.stop()
     Element.find('#tbPlay').html('play')
+
   end
 
-  # play an abc fragment
-  # todo prepend the abc header
-  def play_abc_part(string)
-    @inst = `new Instrument('piano')`
-    `self.inst.play(nil, #{string});` # todo get parameter from ABC
-  end
 
   # render the previews
   # also saves abc in localstore()
@@ -332,7 +331,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
   def setup_ui_listener
 
-    Element.find("#tbPlay").on(:click) { play_abc }
+    Element.find("#tbPlay").on(:click) { play_abc(:selection_ff) }
     Element.find("#tbRender").on(:click) { render_previews }
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }

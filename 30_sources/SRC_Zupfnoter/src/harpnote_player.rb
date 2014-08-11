@@ -40,6 +40,13 @@ module Harpnotes
       end
 
 
+      def play_from_selection
+        notes_to_play = @voice_elements.select{|n|
+          n[:delay] >= @selection.first[:delay]
+        }
+        play_notes(notes_to_play)
+      end
+
       def play_selection
         play_notes(@selection)
       end
@@ -87,7 +94,7 @@ module Harpnotes
 
       def range_highlight(from, to)
         @selection = []
-        @voice_elements.each do |element|
+        @voice_elements.sort{|e| e[:delay]}.each do |element|
           origin = Native(element[:origin])
           unless origin.nil?
             el_start = origin[:startChar]
