@@ -45,15 +45,15 @@ module Harpnotes
 
       sheet.children.each do |child|
         if child.is_a? Ellipse
-          draw_ellipse(child)
+          draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
-          draw_flowline(child)
+          draw_flowline(child) if child.visible?
         elsif child.is_a? JumpLine
-          draw_jumpline(child)
+          draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
-          draw_glyph(child)
+          draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
-          draw_annotation(child)
+          draw_annotation(child) if child.visible?
         else
           $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -99,25 +99,8 @@ module Harpnotes
       end
     end
 
-    def draw_glyph_outdated(root)
-      style = root.filled? ? :F : :FD
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
-      center = [root.center.first - root.size.first, root.center.last - root.size.last]
-      size = root.size.map{|s| 2.0 * s}
-      @pdf.rect_like_ellipse(center, size, style)
-
-      if root.dotted?
-        @pdf.fill = (0...3).map { 0 }
-        @pdf.ellipse(root.center.zip(root.size).map {|s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE,DOTTED_SIZE], :F)
-      end
-    end
-
 
     def draw_glyph(root)
-      draw_glyph_visible(root) if root.visible?
-    end
-
-    def draw_glyph_visible(root)
 
       style = root.filled?  :FD, :FD
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }

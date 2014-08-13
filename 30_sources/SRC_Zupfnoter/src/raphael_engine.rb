@@ -34,17 +34,15 @@ module Harpnotes
 
       sheet.children.each do |child|
         if child.is_a? Ellipse
-          draw_ellipse(child)
+          draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
-          draw_flowline(child)
+          draw_flowline(child) if child.visible?
         elsif child.is_a? JumpLine
-          draw_jumpline(child)
-        elsif child.is_a? Harpnotes::Drawing::Rest
-          draw_rest(child)
+          draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
-          draw_glyph(child)
+          draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
-          draw_annotation(child)
+          draw_annotation(child) if child.visible?
         else
           $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -143,12 +141,7 @@ module Harpnotes
 
     end
 
-
     def draw_glyph(root)
-      draw_glyph_visible(root) if root.visible?
-    end
-
-    def draw_glyph_visible(root)
 
       def glyph_to_path_spec(glyph)
         result = ""

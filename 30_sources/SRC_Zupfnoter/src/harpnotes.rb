@@ -98,6 +98,10 @@ module Harpnotes
       def initialize
         @visible = true
       end
+
+      def visible?
+        @visible
+      end
     end
 
     # Non playable entities are not audible but still
@@ -172,6 +176,7 @@ module Harpnotes
       # @return [type] [description]
       #
       def initialize(pitch, duration)
+        super
         @pitch = pitch
         @duration = duration
       end
@@ -194,6 +199,7 @@ module Harpnotes
       # @param notes [Array of Note] The particular notes of the chord
       #
       def initialize(notes)
+        super
         raise "Notes must be an array" unless notes.is_a? Array
 
         @notes = notes
@@ -244,9 +250,9 @@ module Harpnotes
       #
       # @return [Type] [description]
       def initialize(pitch, duration)
+        super
         @pitch = pitch
         @duration = duration
-        @visible = true
       end
 
 
@@ -274,7 +280,9 @@ module Harpnotes
     #
     class MeasureStart < NonPlayable
       def initialize(companion)
+        super
         self.companion = companion
+        @visible = companion.visible?
       end
     end
 
@@ -284,6 +292,7 @@ module Harpnotes
     class NewPart < NonPlayable
       attr_reader :name
       def initialize(title)
+        super
         @name = title
       end
     end
@@ -310,6 +319,7 @@ module Harpnotes
       # @param policy [Hash] {level:, distance:} A policy, used to optimize the graphical representation.
       #
       def initialize(from, to, policy)
+        super
         raise "End point of Jump (#{from.class}) must be a Playable" unless from.is_a? Harpnotes::Music::Playable
         raise "Start point of Jump (#{to.class}) must be a Playable" unless to.is_a? Harpnotes::Music::Playable
 
@@ -472,10 +482,31 @@ module Harpnotes
       end
     end
 
+    # this represetns objects which can be visible
+    class Drawable
+      def initialize
+        @visible = true
+      end
+
+      def center
+        raise "Not implemented"
+      end
+
+      def visible?
+        @visible
+      end
+
+      def visible=(v)
+        @visible=v
+      end
+    end
+
+
+
     #
     # This represents a flowline
     #
-    class FlowLine
+    class FlowLine < Drawable
       attr_reader :from, :to, :style, :origin
 
       # @param from [Drawable] the origin of the flow
@@ -485,6 +516,7 @@ module Harpnotes
       #
       # @return [type] [description]
       def initialize(from, to, style = :solid, origin = nil)
+        super
         @from   = from
         @to     = to
         @style  = style
@@ -504,13 +536,14 @@ module Harpnotes
     #
     # This represents a JumpLine
     #
-    class JumpLine
+    class JumpLine < Drawable
       attr_reader :from, :to
 
       # @param from [Drawable] the origin of the flow
       # @param to   [Drawable] the target of the flow
       # @param policy [Hash] the policy for vertical line
       def initialize(from, to, policy  = {level: 0 })
+        super
         @from  = from
         @to    = to
         @policy = policy
@@ -525,11 +558,7 @@ module Harpnotes
       end
     end
 
-    class Drawable
-      def center
-        raise "Not implemented"
-      end
-    end
+
 
 
     #
@@ -547,6 +576,7 @@ module Harpnotes
       # @param origin [Object] The source object of the upstream model
       #
       def initialize(center, size, fill = :filled, dotted = TRUE, origin = nil)
+        super
         @center = center
         @size   = size
         @fill   = fill
@@ -592,6 +622,7 @@ module Harpnotes
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
       # 
       def initialize(center, text, style = :regular, origin = nil)
+        super
         @center = center
         @text = text
         @style = style
@@ -599,59 +630,12 @@ module Harpnotes
       end
     end
 
-    #
-    # This represents a Rest
-    #
-    class Rest < Drawable
-      attr_reader :center, :size, :fill, :dotted, :origin
-
-      #
-      # Constructor
-      #
-      # @param size [Array] the size of the ellipse as [width, height]
-      # @param fill [Symbol] the fill style, either :filled or :empty
-      # @param dotted [Boolean] TRUE if the ellipse has a small companion dot, FALSE otherwise
-      # @param origin [Object] The source object of the upstream model
-      #
-      def initialize(center, size, fill = :filled, dotted = TRUE, origin = nil)
-        @center = center
-        @size   = size
-        @fill   = fill
-        @dotted = dotted
-        @origin = origin
-      end
-
-      #
-      # Return the height of the Rest to support representation w.o. glyphs
-      #
-      # @return [Numeric] The height of the ellipse
-      def height
-        @size.last
-      end
-
-      #
-      # Indicate if the Rest shall have a Punctuation dot
-      #
-      # @return [Boolean] TRUE if ther shall be a punctuation dot
-      def dotted?
-        dotted
-      end
-
-      # Provided for compatibility with Ellipse (the representation of a note)
-      # used  to support representation w.o. glyphs
-      #
-      # @return [Boolean] TRUE if ther shall be filled
-      #
-      def filled?
-        @fill == :filled
-      end
-    end
 
     #
     # represent a glyph on the sheet
     #
 
-    class Glyph
+    class Glyph < Drawable
       attr_reader :center, :size, :glyph, :dotted, :origin
 
       GLYPHS = {
@@ -669,6 +653,7 @@ module Harpnotes
 
       # @param
       def initialize(center,  size, glyph_name, dotted = FALSE, origin = nil)
+        super
         @center = center
         @glyph_name  = glyph_name
         @glyph = GLYPHS[glyph_name]
@@ -676,7 +661,6 @@ module Harpnotes
         @dotted = dotted
         @origin = origin
         @filled = true
-        @visible = true
       end
 
       #
@@ -702,14 +686,6 @@ module Harpnotes
       #
       def filled?
         @fill == :filled
-      end
-
-      def visible?
-        @visible
-      end
-
-      def visible=(v)
-        @visible=v
       end
 
     end
@@ -1071,7 +1047,9 @@ module Harpnotes
         y_offset     = beat_layout.call(root.beat)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size         = ELLIPSE_SIZE.map {|e| e * scale }
-        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, false, root)
+        res = Ellipse.new([ x_offset, y_offset - size.last - 0.5 ], [size.first, 0.1], fill, false, root) # todo draw a line
+        res.visible = false unless root.visible?
+        res
       end
 
 
