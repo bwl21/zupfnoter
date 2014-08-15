@@ -106,11 +106,27 @@ class Controller
         @songbook.update(metadata[:X], abc_code,  metadata[:T])
         $log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
 
+      when "lw"
+        $log.debug ("listing webdav")
+        HTTP.get("https://cloud.weichel21.de:61670/remote.php/webdav/xx/",
+                 {
+                  username:"zupfnoter",
+                  password:"zupfnoter"
+                 }
+        ) do |response|
+          $log.debug "returned #{response.status_code}"
+          $log.debug response.body
+
+        end
+
       when "ps"
         play_abc(:selection)
 
-      when "pr"
+      when "pf"
         play_abc(:selection_ff)
+
+      when "pa"
+        play_abc
 
       # retrieve a song
       when "r"
@@ -164,6 +180,40 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
       # list the songbook
       when "l"
         $log.info(@songbook.list)
+
+      when "drop"
+        $log.info("saving to Dropbox")
+
+        abc_code = @editor.get_text
+        metadata = @abc_transformer.get_metadata(abc_code)
+        filebase = "#{metadata[:X]}_#{metadata[:T]}"
+        print_variant = @song.harpnote_options[:print][0][:title]
+
+        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+        @dropboxclient.authenticate() {|m| $log.debug(m)}
+        @dropboxclient.write_file("#{filebase}.abc", @editor.get_text){|m| $log.info(m[:versionTag])}
+        @dropboxclient.write_file("#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)){|m| $log.info(m[:versionTag])}
+        @dropboxclient.write_file("#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw)){|m| $log.info(m[:versionTag])}
+
+    when "getdrop"
+        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+        @dropboxclient.authenticate() {|m| $log.debug(m)}
+        @dropboxclient.read_file("2_Highland Cathedral.abc") {|abc_text| @editor.set_text(abc_text)}
+
+    when "lsdrop"
+        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+        @dropboxclient.authenticate() {|m| $log.debug(m)}
+        @dropboxclient.read_dir("/") {|entries| $log.info(entries.select{|entry| entry =~ /\.abc$/ }.to_s)}
+
+    when "rdrop"
+        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+        @dropboxclient.authenticate() {|m| $log.debug(m)}
+        x = c[1]
+        @dropboxclient.read_dir("/") do |entries|
+          file = entries.select{|entry| entry =~ /#{x}_.*\.abc$/ }.first
+          @dropboxclient.read_file(file) {|abc_text| @editor.set_text(abc_text)}
+        end
+
     else
       $log.error("wrong commnad: #{command}")
     end
@@ -255,7 +305,6 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
 
   end
-
 
   # download abc + pdfs as a zip archive
   # todo: determine filename from abc header
