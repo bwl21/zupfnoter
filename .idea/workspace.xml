@@ -29,21 +29,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="controller.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="controller.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.607843" vertical-offset="2774" max-vertical-offset="7320">
-              <caret line="204" column="23" selection-start-line="204" selection-start-column="23" selection-end-line="204" selection-end-column="23" />
+            <state vertical-scroll-proportion="1.331058" vertical-offset="2655" max-vertical-offset="7590">
+              <caret line="229" column="21" selection-start-line="229" selection-start-column="21" selection-end-line="229" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="opal-dropboxjs.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="opal-dropboxjs.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-dropboxjs.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.6911764" vertical-offset="0" max-vertical-offset="1290">
-              <caret line="69" column="15" selection-start-line="69" selection-start-column="15" selection-end-line="69" selection-end-column="15" />
+            <state vertical-scroll-proportion="-6.7843137" vertical-offset="719" max-vertical-offset="1530">
+              <caret line="71" column="45" selection-start-line="71" selection-start-column="45" selection-end-line="71" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -174,8 +174,8 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index.html" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-dropboxjs.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
       </list>
     </option>
   </component>
@@ -651,7 +651,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="ruby-line">
           <url>file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb</url>
-          <line>269</line>
+          <line>287</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="ruby-line">
@@ -660,7 +660,7 @@
           <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="18" />
+      <option name="time" value="19" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -1087,18 +1087,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-dropboxjs.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.607843" vertical-offset="2774" max-vertical-offset="7320">
-          <caret line="204" column="23" selection-start-line="204" selection-start-column="23" selection-end-line="204" selection-end-column="23" />
+        <state vertical-scroll-proportion="-6.7843137" vertical-offset="719" max-vertical-offset="1530">
+          <caret line="71" column="45" selection-start-line="71" selection-start-column="45" selection-end-line="71" selection-end-column="45" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-dropboxjs.rb">
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.6911764" vertical-offset="0" max-vertical-offset="1290">
-          <caret line="69" column="15" selection-start-line="69" selection-start-column="15" selection-end-line="69" selection-end-column="15" />
+        <state vertical-scroll-proportion="1.331058" vertical-offset="2655" max-vertical-offset="7590">
+          <caret line="229" column="21" selection-start-line="229" selection-start-column="21" selection-end-line="229" selection-end-column="21" />
           <folding />
         </state>
       </provider>
