@@ -19,74 +19,59 @@ module Opal
       end
 
 
-      # this method supports to execute a block (invocation_block)
-      # according the pattern
+      # this method supports to execute a block in a promise
       #
-      #     invocation_block.call(args){|error, data| application_callback}
-      #
-      # to invoke the invocationblock, one writes
-      #
-      # with_promise(arg1, arg2, arg3) do invocation_block
-      #|args, iblock|
+      # with_promise(arg1, arg2, arg3) do |args, iblock|
       #    # the payload code handle argument
-      #    # args = [arg1, arg2, arg2, invocation_block]
-      #    # iblock is either the promise-handler or the application_callback
+      #    # args = [arg1, arg2, arg3] to be processed in the block
+      #    # iblock = the block provided to the underlying API.
+      #    #          note that the argumeents of the same depend
+      #    #          on the underlying API
       # end
       #
-      # if no application_callback is provided, then a Promise is created
-      # which allows to provide the application_callback in a then-clause
+      # @param [Array] *args to be passed to the payload
+      # @yieldparam [Block] payload the block with the job to do
+      # @return [Promise]
       #
-      # by this we provide an API which either uses callback (hell) or Promises
-      #
-      # note that argument handling is a bit tricky here:
-      # 1. all arguments for the invocation_block are
-      #
-      # @param [Array] *args to be passed to the application_block
-      # @yield_param [Block] invocation_block the is the job to do
-      # @return [Promise] or [Nil]
-      #
-      def with_promise(*args, &invocation_block)
-        application_callback = args.last
-        unless application_callback
-          promise = Promise::new
-          application_callback = lambda do |error, data|
-            if (error)
+      def with_promise(*args, &block)
+        Promise.new.tap do |promise|
+          block.call(args, lambda{|error, data|
+            if error
               promise.reject(error)
             else
               promise.resolve(data)
             end
-          end
+            }
+          )
         end
-        invocation_block.call(args, application_callback)
-        promise || nil
       end
 
-      def authenticate(&block)
-        with_promise(nil, block) do |args, iblock|
+      def authenticate()
+        with_promise() do |args, iblock|
           %x(self.root.authenticate(iblock))
         end
       end
 
-      def get_account_info(&block)
-        with_promise(nil, block) do |args, iblock|
+      def get_account_info()
+        with_promise(nil) do |args, iblock|
           %x{self.root.getAccountInfo(iblock)}
         end
       end
 
-      def write_file(filename, data, &block)
-        with_promise(filename, data, block) do |args, iblock|
+      def write_file(filename, data)
+        with_promise(filename, data) do |args, iblock|
           %x{self.root.writeFile(args[0], args[1], iblock)}
         end
       end
 
-      def read_file(filename, &block)
-        with_promise(filename, block) do |args, iblock|
+      def read_file(filename)
+        with_promise(filename) do |args, iblock|
           %x{self.root.readFile(args[0], iblock)}
         end
       end
 
-      def read_dir(dirname = "/", &block)
-        with_promise(dirname, block) do |args, iblock|
+      def read_dir(dirname = "/")
+        with_promise(dirname) do |args, iblock|
           %x{self.root.readdir(args[0], iblock)}
           nil
         end

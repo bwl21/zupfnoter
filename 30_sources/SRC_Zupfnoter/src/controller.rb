@@ -203,11 +203,17 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         print_variant = @song.harpnote_options[:print][0][:title]
 
         @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
-        @dropboxclient.authenticate() {|error, result | $log.debug("login: error = #{error} result = #{result}")}
-        @dropboxclient.write_file("#{filebase}.abc", @editor.get_text){|m| $log.info(m[:versionTag])}
-        @dropboxclient.write_file("#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)){|m| $log.info(m[:versionTag])}
-        @dropboxclient.write_file("#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw)){|m| $log.info(m[:versionTag])}
-
+        @dropboxclient.authenticate().then do
+          Promise.when(
+            @dropboxclient.write_file("#{filebase}.abc", @editor.get_text),
+            @dropboxclient.write_file("#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)),
+            @dropboxclient.write_file("#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw))
+          )
+        end.then do
+            $log.info("all files saved")
+        end.fail do |err|
+            $log.error("there was an error saving files #{err}")
+        end
 
     when "lsdrop"
         @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
