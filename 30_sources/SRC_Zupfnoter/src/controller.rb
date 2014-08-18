@@ -95,31 +95,60 @@ class Controller
   # this handles a command
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
-    c = command.split(" ")
-    case c.first
+    command_tokens = command.split(" ")
+    case command_tokens.first
 
       # save current song
       # todo check the title
+
+      when "help"
+        $log.info(%q(<pre>
+        ps - play selected
+        pf - play from here
+        pa - play all
+        n nr title - create new song
+        r nr retrieve song <nr>
+        ls - list songs
+        drop - save to dropbox
+        lsdrop - list dropbox
+        rdrop - retrive from dropbox
+        </pre>          ))
       when "s"
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         @songbook.update(metadata[:X], abc_code,  metadata[:T])
         $log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
 
+      when "lw"
+        $log.debug ("listing webdav")
+        HTTP.get("https://cloud.weichel21.de:61670/remote.php/webdav/xx/",
+                 {
+                  username:"zupfnoter",
+                  password:"zupfnoter"
+                 }
+        ) do |response|
+          $log.debug "returned #{response.status_code}"
+          $log.debug response.body
+
+        end
+
       when "ps"
         play_abc(:selection)
 
-      when "pr"
+      when "pf"
         play_abc(:selection_ff)
+
+      when "pa"
+        play_abc
 
       # retrieve a song
       when "r"
-        if c[1]
-          payload = @songbook.retrieve(c[1])
+        if command_tokens[1]
+          payload = @songbook.retrieve(command_tokens[1])
           if payload
             @editor.set_text(payload)
           else
-            $log.error("song #{c.last} not found")
+            $log.error("song #{command_tokens.last} not found")
           end
         else
           $log.error("plase add a song number")
@@ -128,8 +157,8 @@ class Controller
       # create a new song
       # todo retrive the title
       when "n"
-        song_id = c[1]
-        song_title = c[2 .. - 1].join(" ")
+        song_id = command_tokens[1]
+        song_title = command_tokens[2 .. - 1].join(" ")
         if song_id && song_title
           template = %Q{X:#{song_id}
 T:#{song_title}
@@ -162,8 +191,53 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         end
 
       # list the songbook
-      when "l"
-        $log.info(@songbook.list)
+      when "ls"
+        $log.info("<pre>" + @songbook.list.map{|k, v| "#{k}_#{v}"}.join("\n") + "</pre>")
+
+      when "drop"
+        $log.info("saving to Dropbox")
+
+        abc_code = @editor.get_text
+        metadata = @abc_transformer.get_metadata(abc_code)
+        filebase = "#{metadata[:X]}_#{metadata[:T]}"
+        print_variant = @song.harpnote_options[:print][0][:title]
+
+        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+        @dropboxclient.authenticate().then do
+          Promise.when(
+            @dropboxclient.write_file("#{filebase}.abc", @editor.get_text),
+            @dropboxclient.write_file("#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)),
+            @dropboxclient.write_file("#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw))
+          )
+        end.then do
+            $log.info("all files saved")
+        end.fail do |err|
+            $log.error("there was an error saving files #{err}")
+        end
+
+    when "lsdrop"
+        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+        promis = nil
+        @dropboxclient.authenticate().then do
+          @dropboxclient.read_dir("/")
+        end.then do |entries|
+          $log.info("<pre>" + entries.select{|entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
+        end
+
+    when "rdrop"
+        fileid = command_tokens[1]
+        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+        @dropboxclient.authenticate().then do |error, data|
+          @dropboxclient.read_dir("/")
+        end.then do |entries|
+          $log.puts entries
+          file = entries.select{|entry| entry =~ /#{fileid}_.*\.abc$/ }.first
+          @dropboxclient.read_file(file)
+        end.then do |abc_text|
+            $log.puts "got it"
+            @editor.set_text(abc_text)
+        end
+
     else
       $log.error("wrong commnad: #{command}")
     end
@@ -177,7 +251,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
   # load session from localstore
   def load_from_loacalstorage
-    abc = `localStorage.getItem('abc_data');`
+    abc = Native(`localStorage.getItem('abc_data')`)
     @editor.set_text(abc) unless abc.nil?
   end
 
@@ -255,7 +329,6 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
 
   end
-
 
   # download abc + pdfs as a zip archive
   # todo: determine filename from abc header
@@ -419,7 +492,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
   def set_active(ui_element)
     Element.find(ui_element).css('background-color', 'red')
-    
+
   end
 
   def set_inactive(ui_element)
