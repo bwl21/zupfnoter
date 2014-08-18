@@ -3,6 +3,9 @@ require 'promise'
 
 module Opal
   module DropboxJs
+    # This class wraps the dropbox-js client
+    # http://coffeedoc.info/github/dropbox/dropbox-js/master/class_index.html
+
     class Client
       attr_accessor :root
 
@@ -33,9 +36,9 @@ module Opal
       # @yieldparam [Block] payload the block with the job to do
       # @return [Promise]
       #
-      def with_promise(*args, &block)
+      def with_promise(&block)
         Promise.new.tap do |promise|
-          block.call(args, lambda{|error, data|
+          block.call(lambda{|error, data|
             if error
               promise.reject(error)
             else
@@ -47,35 +50,37 @@ module Opal
       end
 
       def authenticate()
-        with_promise() do |args, iblock|
-          %x(self.root.authenticate(iblock))
+        with_promise() do |iblock|
+          %x(#@root.authenticate(iblock))
         end
       end
 
       def get_account_info()
-        with_promise(nil) do |args, iblock|
-          %x{self.root.getAccountInfo(iblock)}
+        with_promise() do | iblock|
+          %x{#@root.getAccountInfo(iblock)}
         end
       end
 
       def write_file(filename, data)
-        with_promise(filename, data) do |args, iblock|
-          %x{self.root.writeFile(args[0], args[1], iblock)}
+        with_promise(filename, data) do |iblock|
+          %x{#@root.writeFile(#{filename}, #{data}, iblock)}
         end
       end
 
       def read_file(filename)
-        with_promise(filename) do |args, iblock|
-          %x{self.root.readFile(args[0], iblock)}
+        with_promise() do |iblock|
+          %x{#@root.readFile(#{filename}, iblock)}
         end
       end
 
       def read_dir(dirname = "/")
-        with_promise(dirname) do |args, iblock|
-          %x{self.root.readdir(args[0], iblock)}
+        with_promise() do |iblock|
+          %x{#@root.readdir(#{dirname}, iblock)}
           nil
         end
       end
+
+
     end
 
   end
