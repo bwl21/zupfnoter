@@ -21,5 +21,17 @@ desc "Build the documentation"
 task :doc do
 	sh "yard doc . --verbose --backtrace --protected --private"
 	sh "yard graph -f doc/diagram.dot -d --verbose --backtrace --full --protected --private"
+end
+
+desc "start the development server"
+task :server do
+  cd "../" do
+    sh "bundle exec rackup"
+  end
+end
+
+
+desc "Build a distribution for the server"
+task :deploy => [:build] do
 
 end

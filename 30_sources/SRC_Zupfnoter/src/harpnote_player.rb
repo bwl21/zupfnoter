@@ -125,7 +125,7 @@ module Harpnotes
             delay  = root.beat * @timefactor
             pitch = - root.pitch
             duration = root.duration * @timefactor
-            velocity = 1
+            velocity = 0.2
             velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
 
             {pitch: pitch,

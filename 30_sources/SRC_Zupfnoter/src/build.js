@@ -17231,7 +17231,7 @@ if (root == null) root = nil;
             delay = root.$beat()['$*'](self.timefactor);
               pitch = root.$pitch()['$-@']();
               duration = root.$duration()['$*'](self.timefactor);
-              velocity = 1;
+              velocity = 0.2;
               if ((($a = root['$is_a?']((($b = $scope.Pause) == null ? $opal.cm('Pause') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
                 velocity = 1.1e-05};
               return $hash2(["pitch", "velocity", "duration", "delay", "origin"], {"pitch": pitch, "velocity": velocity, "duration": duration, "delay": delay, "origin": root.$origin()});}, TMP_11._s = self, TMP_11), $a).call($b)}, TMP_10._s = self, TMP_10), $a).call($b).$flatten().$compact();
