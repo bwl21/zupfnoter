@@ -62,7 +62,7 @@ module Opal
       end
 
       def write_file(filename, data)
-        with_promise(filename, data) do |iblock|
+        with_promise() do |iblock|
           %x{#@root.writeFile(#{filename}, #{data}, iblock)}
         end
       end
