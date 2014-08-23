@@ -7,7 +7,7 @@ module Opal
     # http://coffeedoc.info/github/dropbox/dropbox-js/master/class_index.html
 
     class Client
-      attr_accessor :root
+      attr_accessor :root_in_dropbox
 
 
       def initialize(key)

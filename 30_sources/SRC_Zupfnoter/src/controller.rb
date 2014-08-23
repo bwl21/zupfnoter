@@ -1,4 +1,3 @@
-
 # This is a wrapper class for local store
 
 class LocalStore
@@ -51,7 +50,7 @@ class LocalStore
   end
 
   def list
-     @directory.clone
+    @directory.clone
   end
 
   private
@@ -62,13 +61,13 @@ class LocalStore
   end
 
   def load_dir
-    dirkey =  "#{@name}__dir"
-    @directory  = JSON.parse(`localStorage.getItem(dirkey)`)
+    dirkey = "#{@name}__dir"
+    @directory = JSON.parse(`localStorage.getItem(dirkey)`)
   end
 
   def save_dir
     dir_json = @directory.to_json
-    dirkey =  "#{@name}__dir"
+    dirkey = "#{@name}__dir"
     `localStorage.setItem(dirkey, dir_json)`
   end
 
@@ -86,39 +85,39 @@ class Controller
     @songbook = LocalStore.new("songbook")
     @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
 
+
+    @commands = CommandController::CommandStack.new
+    $log.debug self.methods
+    self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) }
+
     setup_ui
     setup_ui_listener
     load_from_loacalstorage
+
   end
 
 
   # this handles a command
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
+
+    begin
+      @commands.run_string(command)
+    rescue Exception => e
+      $log.error(e.message)
+    end
+    return
+
     command_tokens = command.split(" ")
     case command_tokens.first
 
       # save current song
       # todo check the title
 
-      when "help"
-        $log.info(%q(<pre>
-        ps - play selected
-        pf - play from here
-        pa - play all
-        n nr title - create new song
-        r nr retrieve song <nr>
-        ls - list songs
-        logindrop - login to dropbox
-        logindropfull - login to dropbox with full access
-        drop [path] - save to dropbox
-        lsdrop [path]- list dropbox
-        rdrop prefix [path]- retrive from dropbox
-        </pre>          ))
       when "s"
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
-        @songbook.update(metadata[:X], abc_code,  metadata[:T])
+        @songbook.update(metadata[:X], abc_code, metadata[:T])
         $log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
 
       when "lw"
@@ -129,70 +128,9 @@ class Controller
 
         end
 
-      when "ps"
-        play_abc(:selection)
-
-      when "pf"
-        play_abc(:selection_ff)
-
-      when "pa"
-        play_abc
-
-      # retrieve a song
-      when "r"
-        if command_tokens[1]
-          payload = @songbook.retrieve(command_tokens[1])
-          if payload
-            @editor.set_text(payload)
-          else
-            $log.error("song #{command_tokens.last} not found")
-          end
-        else
-          $log.error("plase add a song number")
-        end
-
-      # create a new song
-      # todo retrive the title
-      when "n"
-        song_id = command_tokens[1]
-        song_title = command_tokens[2 .. - 1].join(" ")
-        if song_id && song_title
-          template = %Q{X:#{song_id}
-T:#{song_title}
-C:{copyright}
-R:{rhythm}
-M:4/4
-L:1/4
-Q:1/4=120
-K:C
-% %%%hn.print {"t":"alle Stimmen",         "v":[1,2,3,4], "s": [[1,2],[3,4]], "f":[1,3], "j":[1]}
-% %%%hn.print {"t":"sopran, alt", "v":[1,2],     "s":[[1,2]],       "f":[1],   "j":[1]}
-%%%%hn.print {"t":"tenor, bass", "v":[3, 4],     "s":[[1, 2], [3,4]],       "f":[3  ],   "j":[1, 3]}
-%%%%hn.legend [10,10]
-%%%%hn.note [[5, 50], "Folge: A A B B C A", "regular"]
-%%%%hn.note [[360, 280], "Erstellt mit Zupfnoter 0.7", "regular"]
-%%score T1 T2  B1 B2
-V:T1 clef=treble-8 octave=-1 name="Sopran" snm="S"
-V:T2 clef=treble-8 octave=-1 name="Alt" snm="A"
-V:B1 clef=bass transpose=-24 name="Tenor" middle=D, snm="T"
-V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
-[V:T1] c'
-[V:T2] c
-[V:B1] c,
-[V:B2] C
-%
-          }
-          @songbook.create(song_id, template, song_title)
-        else
-          $log.error("plase add a song number AND a Title")
-        end
-
-      # list the songbook
-      when "ls"
-        $log.info("<pre>" + @songbook.list.map{|k, v| "#{k}_#{v}"}.join("\n") + "</pre>")
-
       when "logindropfull"
-        @dropboxclient = Opal::DropboxJs::Client.new('14ezuf8dtur5uoz')
+        @dropboxclient = Opal::DropboxJs::Client.new('14ezuf8dtur5uoz') # ol56zaikdq4kxjx
+        #@dropboxclient = Opal::DropboxJs::Client.new('ol56zaikdq4kxjx') # ol56zaikdq4kxjx
         @dropboxpath = "/"
         @dropboxclient.authenticate().then do
           $log.info("logged in at dropbox with full access")
@@ -202,7 +140,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
         @dropboxpath = "/"
         @dropboxclient.authenticate().then do
-           $log.info("logged in at dropbox with App access")
+          $log.info("logged in at dropbox with App access")
         end
 
       when "cddrop"
@@ -224,14 +162,14 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         @dropboxclient.authenticate().then do
 
           Promise.when(
-            @dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text),
-            @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)),
-            @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw))
+              @dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text),
+              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)),
+              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw))
           )
         end.then do
-            $log.info("all files saved")
+          $log.info("all files saved")
         end.fail do |err|
-            $log.error("there was an error saving files #{err}")
+          $log.error("there was an error saving files #{err}")
         end
 
       when "lsdrop"
@@ -242,10 +180,10 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         @dropboxclient.authenticate().then do
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
-          $log.info("<pre>" + entries.select{|entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
+          $log.info("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
         end
 
-    when "rdrop"
+      when "rdrop"
         fileid = command_tokens[1]
         rootpath = command_tokens[2] || @dropboxpath || "/"
         $log.info("get from Dropbox path #{rootpath}#{fileid}_ ...:")
@@ -254,15 +192,15 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.puts entries
-          file = entries.select{|entry| entry =~ /#{fileid}_.*\.abc$/ }.first
+          file = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
           @dropboxclient.read_file("#{rootpath}#{file}")
         end.then do |abc_text|
-            $log.puts "got it"
-            @editor.set_text(abc_text)
+          $log.puts "got it"
+          @editor.set_text(abc_text)
         end
 
-    else
-      $log.error("wrong commnad: #{command}")
+      else
+        $log.error("wrong commnad: #{command}")
     end
   end
 
@@ -376,7 +314,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
   # note that previous selections are still maintained.
   def highlight_abc_object(abcelement)
     a=Native(abcelement)
-   # $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
+    # $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(a[:startChar], a[:endChar])
@@ -431,10 +369,10 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     Element.find("#tbRender").on(:click) { render_previews }
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
-    Element.find("#tbCommand").on(:change) {|event|
+    Element.find("#tbCommand").on(:change) { |event|
       handle_command(Native(event[:target])[:value])
       Native(event[:target])[:value] = ""
-      }
+    }
 
 
     # changes in the editor
