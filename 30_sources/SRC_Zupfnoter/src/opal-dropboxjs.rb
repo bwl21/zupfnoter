@@ -3,11 +3,22 @@ require 'promise'
 
 module Opal
   module DropboxJs
+
+
+    # this is a dummy client to register before login
+    class NilClient
+      attr_accessor :root_in_dropbox, :app_name
+      def authenticate()
+        raise "not logged in to dropbox"
+      end
+    end
+
     # This class wraps the dropbox-js client
     # http://coffeedoc.info/github/dropbox/dropbox-js/master/class_index.html
 
+
     class Client
-      attr_accessor :root
+      attr_accessor :root_in_dropbox, :app_name
 
 
       def initialize(key)
