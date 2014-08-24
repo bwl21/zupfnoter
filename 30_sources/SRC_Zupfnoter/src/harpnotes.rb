@@ -772,15 +772,15 @@ module Harpnotes
       # @print_variant = 0 [Integer] If a song has multiple print_variants, this is the index of the one to be shown
       #
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
-      def layout(music, beat_layout = nil, print_variant = 0)
+      def layout(music, beat_layout = nil, print_variant_nr = 0)
 
-        print_options = music.harpnote_options[:print][print_variant]
+        print_options = music.harpnote_options[:print][print_variant_nr]
 
         # first optimize the vertical arrangement of the notes
         # by analyzing the beat layout
         beat_layout = beat_layout || beat_layout_policy(music)
 
-        beat_compression_map = compute_beat_compression(music)
+        beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
         maximal_beat = beat_compression_map.values.max
         full_beat_spacing = 282.0 / maximal_beat #todo: remove literal  # the maximum height to draw notes
 
@@ -794,7 +794,7 @@ module Harpnotes
 
         # sheet_elements derived from the voices
         voice_elements = music.voices.each_with_index.map { |v, index|
-          if print_options[:voices].include?(index)
+          if print_options[:voices].include?(index) ## todo add control for jumpline right border
             layout_voice(v, compressed_beat_layout,
                          flowline: print_options[:flowlines].include?(index),
                          jumpline: print_options[:jumplines].include?(index))
@@ -843,11 +843,11 @@ module Harpnotes
         key = music.meta_data[:key]
         composer = music.meta_data[:composer]
         tempo = music.meta_data[:tempo_display]
-        print_variant = print_options[:title]
+        print_variant_title = print_options[:title]
         title_pos = music.harpnote_options[:legend] || [20, 20]
         legend_pos = [title_pos.first, title_pos.last + 7]
 
-        legend = "#{print_variant}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
+        legend = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
@@ -934,13 +934,16 @@ module Harpnotes
       #
       # @return [Hash] a beat map {10 => 5} beat 10 is placed at vertical position 5
       #
-      def compute_beat_compression(music)
+      def compute_beat_compression(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
         current_beat = 0
         last_size = 32 #todo:replace literal
+
+        relevant_beat_maps = layout_lines.inject([]){|r, i| r.push(music.beat_maps[i])}.compact
+
         Hash[(0..max_beat).map do |beat|
-          notes_on_beat = music.beat_maps[0..8].map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
+          notes_on_beat = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
           max_duration = notes_on_beat.map { |n| n.duration }.max
           has_no_notes_on_beat = notes_on_beat.empty?
           is_new_part = notes_on_beat.select { |n| n.first_in_part? }
