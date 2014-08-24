@@ -84,6 +84,8 @@ class Controller
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
     @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
+    @dropboxclient = Opal::DropboxJs::NilClient.new()
+
 
 
     @commands = CommandController::CommandStack.new
@@ -93,7 +95,6 @@ class Controller
     setup_ui
     setup_ui_listener
     load_from_loacalstorage
-
   end
 
 
@@ -114,89 +115,12 @@ class Controller
       # save current song
       # todo check the title
 
-      when "s"
-        abc_code = @editor.get_text
-        metadata = @abc_transformer.get_metadata(abc_code)
-        @songbook.update(metadata[:X], abc_code, metadata[:T])
-        $log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
-
       when "lw"
         $log.debug ("listing webdav")
         Browser.HTTP.get("http://www.weichel21.de/months.js").then do |response|
           $log.debug "returned #{response.status_code}"
           $log.debug response.body
 
-        end
-
-      when "logindropfull"
-        @dropboxclient = Opal::DropboxJs::Client.new('14ezuf8dtur5uoz') # ol56zaikdq4kxjx
-        #@dropboxclient = Opal::DropboxJs::Client.new('ol56zaikdq4kxjx') # ol56zaikdq4kxjx
-        @dropboxpath = "/"
-        @dropboxclient.authenticate().then do
-          $log.info("logged in at dropbox with full access")
-        end
-
-      when "logindrop"
-        @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
-        @dropboxpath = "/"
-        @dropboxclient.authenticate().then do
-          $log.info("logged in at dropbox with App access")
-        end
-
-      when "cddrop"
-        @dropboxpath = command_tokens[1] || "/"
-
-      when "pwddrop"
-        $log.info(@dropboxpath)
-
-      when "drop"
-        $log.info("saving to Dropbox #{@dropboxpath}")
-
-        abc_code = @editor.get_text
-        metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = "#{metadata[:X]}_#{metadata[:T]}"
-        print_variant = @song.harpnote_options[:print][0][:title]
-
-        rootpath = command_tokens[1] || @dropboxpath || "/" # todo ensure that the path has a /
-
-        @dropboxclient.authenticate().then do
-
-          Promise.when(
-              @dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text),
-              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)),
-              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw))
-          )
-        end.then do
-          $log.info("all files saved")
-        end.fail do |err|
-          $log.error("there was an error saving files #{err}")
-        end
-
-      when "lsdrop"
-        rootpath = command_tokens[1] || @dropboxpath || "/"
-        $log.info("files in Dropbox path #{@dropboxpath}:")
-
-
-        @dropboxclient.authenticate().then do
-          @dropboxclient.read_dir(rootpath)
-        end.then do |entries|
-          $log.info("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
-        end
-
-      when "rdrop"
-        fileid = command_tokens[1]
-        rootpath = command_tokens[2] || @dropboxpath || "/"
-        $log.info("get from Dropbox path #{rootpath}#{fileid}_ ...:")
-
-        @dropboxclient.authenticate().then do |error, data|
-          @dropboxclient.read_dir(rootpath)
-        end.then do |entries|
-          $log.puts entries
-          file = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
-          @dropboxclient.read_file("#{rootpath}#{file}")
-        end.then do |abc_text|
-          $log.puts "got it"
-          @editor.set_text(abc_text)
         end
 
       else

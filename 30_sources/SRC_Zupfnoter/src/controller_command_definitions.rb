@@ -39,6 +39,25 @@ class Controller
         $log.info("<pre>#{history.join("\n")}</pre>")
       end
     end
+
+
+    @commands.add_command(:showundo) do |c|
+      c.undoable = false
+      c.set_help { "show undo stack" }
+      c.as_action do |a|
+        history = @commands.undostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
+        $log.info("<pre>#{history.join("\n")}</pre>")
+      end
+    end
+
+    @commands.add_command(:showredo) do |c|
+      c.undoable = false
+      c.set_help { "show redo stack" }
+      c.as_action do |a|
+        history = @commands.redostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
+        $log.info("<pre>#{history.join("\n")}</pre>")
+      end
+    end
   end
 
   def __ic_02_play_commands
@@ -47,7 +66,7 @@ class Controller
       c.set_help { "play song #{c.parameter_help(0)}" }
       c.add_parameter(:range, :string) do |parameter|
         parameter.set_default { "ff" }
-        parameter.set_help { "range: [all | ff | sel]" }
+        parameter.set_help { "r(all | ff | sel): range to play" }
       end
 
       c.as_action do |argument|
@@ -78,14 +97,13 @@ class Controller
 
   def __ic_03_create_commands
     @commands.add_command(:c) do |c|
-      c.set_help { "create song #{c.parameter_help(0)}" }
+      c.set_help { "create song #{c.parameter_help(0)} #{c.parameter_help(1)}" }
       c.add_parameter(:id, :string) do |parameter|
-        parameter.set_default { nil }
-        parameter.set_help { "unique id, value for X: line" }
+        parameter.set_help { "value for X: line, a unique id" }
       end
 
       c.add_parameter(:title, :string) do |parameter|
-        parameter.set_default { nil }
+        parameter.set_default { "untitled" }
         parameter.set_help { "Title of the song" }
       end
 
@@ -96,6 +114,7 @@ class Controller
         raise "no id specified" unless song_id
         raise "no title specified" unless song_title
 
+        ## todo use erb for this
         template = %Q{X:#{song_id}
 T:#{song_title}
 C:{copyright}
@@ -160,7 +179,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
     @commands.add_command(:lopen) do |c|
       c.undoable = true
-      c.add_parameter(:id, :string){ |parameter|
+      c.add_parameter(:id, :string) { |parameter|
         parameter.set_help { "id of the song to be loaded" }
       }
 
@@ -187,43 +206,163 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     end
   end
 
-end
+  def __ic_05_dropbox_commands
+    @commands.add_command(:dlogin) do |command|
+      command.add_parameter(:scope, :string) do |parameter|
+        parameter.set_default { "app" }
+        parameter.set_help { "(app | full) app: app only | full: full dropbox" }
+      end
 
+      command.set_help { "dropbox login for #{command.parameter_help(0)}" }
 
-=begin
+      command.as_action do |args|
+        case args[:scope]
+          when "full"
+            @dropboxclient = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
+            @dropboxclient.app_name = "full Dropbox"
+            @dropboxpath = "/zupfnoter/"
 
-when "s"
-abc_code = @editor.get_text
-metadata = @abc_transformer.get_metadata(abc_code)
-@songbook.update(metadata[:X], abc_code, metadata[:T])
-$log.info("saved #{metadata[:X]}, '#{metadata[:T]}'")
+          when "app"
+            @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+            @dropboxclient.app_name = "App folder only"
+            @dropboxpath = "/"
 
-when "lw"
-$log.debug ("listing webdav")
-Browser.HTTP.get("http://www.weichel21.de/months.js").then do |response|
-  $log.debug "returned #{response.status_code}"
-  $log.debug response.body
+          else
+            $log.error("select app | full")
+        end
 
-end
+        @dropboxclient.authenticate().then do
+          $log.info("logged in at dropbox with #{args[:app]} access")
+        end
+      end
 
-# retrieve a song
-when "r"
-if command_tokens[1]
-  payload = @songbook.retrieve(command_tokens[1])
-  if payload
-    @editor.set_text(payload)
-  else
-    $log.error("song #{command_tokens.last} not found")
+      command.as_inverse do |args|
+        $log.info("logged out from dropbox")
+        @dropboxclient = nil
+      end
+    end
+
+    @commands.add_command(:dls) do |command|
+      command.undoable = false
+
+      command.add_parameter(:path, :string) do |parameter|
+        parameter.set_default { @dropboxpath || "/" }
+        parameter.set_help { "path in dropbox #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "list files in #{command.parameter_help(0)}" } # todo factor out to comman class
+
+      command.as_action do |args|
+        rootpath = args[:path]
+        $log.info("#{@dropboxclient.app_name}: #{args[:path]}:")
+
+        @dropboxclient.authenticate().then do
+          @dropboxclient.read_dir(rootpath)
+        end.then do |entries|
+          $log.info("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
+        end
+      end
+    end
+
+    @commands.add_command(:dcd) do |command|
+      command.add_parameter(:path, :string) do |parameter|
+        parameter.set_default { @dropboxpath }
+        parameter.set_help { "path in dropbox #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "dropbox change dir to #{command.parameter_help(0)}" }
+
+      command.as_action do |args|
+        rootpath = args[:path]
+        args[:oldval] = @dropboxpath
+        @dropboxpath = rootpath
+        $log.info("dropbox path changed to #{@dropboxpath}")
+      end
+
+      command.as_inverse do |args|
+        @dropboxpath = args[:oldval]
+        $log.info("dropbox path changed back to #{@dropboxpath}")
+      end
+    end
+
+    @commands.add_command(:dpwd) do |command|
+      command.undoable = false
+
+      command.set_help { "show drobox path" }
+
+      command.as_action do |args|
+        $log.info("#{@dropboxclient.app_name}: #{@dropboxpath}")
+      end
+    end
+
+    @commands.add_command(:dsave) do |command|
+
+      command.add_parameter(:path, :string) do |parameter|
+        parameter.set_default { @dropboxpath }
+        parameter.set_help { "path to save in #{@dropboxclient.app_name}" }
+      end
+
+      command.undoable = false ## todo make this undoable
+
+      command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
+
+      command.as_action do |args|
+        abc_code = @editor.get_text
+        metadata = @abc_transformer.get_metadata(abc_code)
+        filebase = "#{metadata[:X]}_#{metadata[:T]}"
+        print_variant = @song.harpnote_options[:print][0][:title]
+
+        rootpath = args[:path]
+
+        @dropboxclient.authenticate().then do
+
+          Promise.when(
+              @dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text),
+              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)),
+              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw))
+          )
+        end.then do
+          $log.info("all files saved")
+        end.fail do |err|
+          $log.error("there was an error saving files #{err}")
+        end
+      end
+    end
+
+    @commands.add_command(:dopen) do |command|
+
+      command.add_parameter(:fileid, :string, "file id")
+      command.add_parameter(:path, :string) do |p|
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        fileid = args[:fileid]
+        rootpath = args[:path] # command_tokens[2] || @dropboxpath || "/"
+        $log.info("get from Dropbox path #{rootpath}#{fileid}_ ...:")
+
+        @dropboxclient.authenticate().then do |error, data|
+          @dropboxclient.read_dir(rootpath)
+        end.then do |entries|
+          $log.puts entries
+          file = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
+          @dropboxclient.read_file("#{rootpath}#{file}")
+        end.then do |abc_text|
+          $log.puts "got it"
+          @editor.set_text(abc_text)
+        end
+      end
+
+      command.as_inverse do |args|
+        @editor.set_text(args[:oldval])
+      end
+
+    end
+
   end
-else
-  $log.error("plase add a song number")
 end
 
-# list the songbook
-when "ls"
-$log.info("<pre>" + @songbook.list.map { |k, v| "#{k}_#{v}" }.join("\n") + "</pre>")
-
-
-
-
-=end

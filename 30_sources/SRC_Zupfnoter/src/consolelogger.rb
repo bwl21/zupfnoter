@@ -15,7 +15,7 @@ class ConsoleLogger
   end
 
   def info(msg)
-    write(:info,  msg)
+    write(:info, msg)
   end
 
   def debug(msg)

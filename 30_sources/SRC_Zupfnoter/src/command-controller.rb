@@ -29,7 +29,9 @@ module CommandController
 
     # get the help string for the parameter
     def get_help
-      @help_action.call
+      default = @default_action.call
+      default = "[#{default}]" if default
+      "{#{@name}}#{default} = #{@help_action.call}"
     end
 
     # geht the default value for the parameter
@@ -205,7 +207,7 @@ module CommandController
     STRING_COMMAND_REGEX = /([^ \\\^"{]+)|"(([^\\"]|\\["n\\])*)"|(\{.+\})/
 
     def parse_string(command)
-      r = command.scan(STRING_COMMAND_REGEX).map { |s| s.select{|x| x.is_a? Object }.first }
+      r = command.scan(STRING_COMMAND_REGEX).map { |s| s.select { |x| x.is_a? Object }.first }
 
     end
 
@@ -226,7 +228,15 @@ module CommandController
     end
 
     def history
-      @history_stack
+      @history_stack.clone
+    end
+
+    def undostack
+      @undo_stack.map { |c| c.clone.unshift("undo") }
+    end
+
+    def redostack
+      @redo_stack.map { |c| c.clone.unshift("redo") }
     end
 
     def help_string_style()
