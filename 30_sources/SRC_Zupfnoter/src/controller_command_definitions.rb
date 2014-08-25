@@ -310,17 +310,26 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         filebase = "#{metadata[:X]}_#{metadata[:T]}"
-        print_variant = @song.harpnote_options[:print][0][:title]
+        print_variants = @song.harpnote_options[:print]
 
         rootpath = args[:path]
 
         @dropboxclient.authenticate().then do
 
-          Promise.when(
-              @dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text),
-              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a3.pdf", render_a3(0).output(:raw)),
-              @dropboxclient.write_file("#{rootpath}#{filebase}_#{print_variant}_a4.pdf", render_a4(0).output(:raw))
-          )
+          save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
+          pdfs = {}
+          print_variants.each_with_index.map do |print_variant, index|
+            filename = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a3.pdf"] = render_a3(index).output(:blob)
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a4.pdf"] = render_a4(index).output(:blob)
+          end
+
+          pdfs.each do |name, pdfdata|
+            save_promises.push(@dropboxclient.write_file(name, pdfdata))
+          end
+          save_promises.push(@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text))
+
+          Promise.when(save_promises)
         end.then do
           $log.info("all files saved")
         end.fail do |err|

@@ -141,15 +141,15 @@ class Controller
   end
 
   # render the harpnotes to a3
-  def render_a3
+  def render_a3(index = 0)
     printer = Harpnotes::PDFEngine.new
-    printer.draw(layout_harpnotes(0))
+    printer.draw(layout_harpnotes(index))
   end
 
 
   # render the harpnotes splitted on a4 pages
-  def render_a4
-    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes)
+  def render_a4(index = 0)
+    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index))
   end
 
   def play_abc(mode = :song)
@@ -219,10 +219,10 @@ class Controller
   # todo: determine filename from abc header
   def save_file
     zip = JSZip::ZipFile.new
-    zip.file("song.abc", get_abc_code)
-    zip.file("harpnotes_a4.pdf", render_a4.output(:raw))
-    zip.file("harpnotes_a3.pdf", render_a3.output(:raw))
-    blob = zip.to_blob
+    zip.file("song.abc", @editor.get_text)
+    zip.file("harpnotes_a4.pdf", render_a4.output(:blob))
+    zip.file("harpnotes_a3.pdf", render_a3.output(:bob))
+    blob =zip.to_blob
     filename = "song#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
     `window.saveAs(blob, filename)`
   end
