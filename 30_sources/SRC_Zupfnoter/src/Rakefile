@@ -1,13 +1,20 @@
 # Rakefile
 require 'opal'
 require 'opal-jquery'
+require 'erb'
 
-desc "Build our app to build.js"
+HTMLTEMPLATE = "../index_opal.html.erb"
+ZUPFNOTER_JS = "build.js"
+OUTFOLDER    = "../deploy_files"
+INDEXFILE    = "index.html"
+
+
+desc "Build our app to #{ZUPFNOTER_JS}"
 task :build do
   env = Opal::Environment.new
   env.append_path "."
 
-  File.open("build.js", "w+") do |out|
+  File.open(ZUPFNOTER_JS, "w+") do |out|
     out << env["application"].to_s
   end
 
@@ -19,8 +26,8 @@ end
 
 desc "Build the documentation"
 task :doc do
-	sh "yard doc . --verbose --backtrace --protected --private"
-	sh "yard graph -f doc/diagram.dot -d --verbose --backtrace --full --protected --private"
+  sh "yard doc . --verbose --backtrace --protected --private"
+  sh "yard graph -f doc/diagram.dot -d --verbose --backtrace --full --protected --private"
 end
 
 desc "start the development server"
@@ -34,4 +41,25 @@ end
 desc "Build a distribution for the server"
 task :deploy => [:build] do
 
+
+  mkdir_p "#{OUTFOLDER}/vendor/ace"
+  mkdir_p "#{OUTFOLDER}/public/icons"
+  Dir["../vendor/*.*"].each { |f|
+    cp f, "#{OUTFOLDER}/vendor/#{f}"
+  }
+
+  cp ZUPFNOTER_JS, "#{OUTFOLDER}/public/#{ZUPFNOTER_JS}"
+
+  cp "../public/index.css", "#{OUTFOLDER}/public/index.css"
+  cp "../vendor/ace/ace.js", "#{OUTFOLDER}/vendor/ace/ace.js"
+  cp "../public/icons/favicon.gif", "#{OUTFOLDER}/public/icons/favicon.gif"
+
+  def javascript_include_tag(filename)
+    "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
+  end
+
+  File.open("#{OUTFOLDER}/#{INDEXFILE}", "w") do |f|
+    a = File.open(HTMLTEMPLATE).read
+    f.puts ERB.new(a).result
+  end
 end

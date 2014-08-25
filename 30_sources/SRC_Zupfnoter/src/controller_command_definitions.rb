@@ -232,7 +232,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         end
 
         @dropboxclient.authenticate().then do
-          $log.info("logged in at dropbox with #{args[:app]} access")
+          $log.info("logged in at dropbox with #{args[:scope]} access")
         end
       end
 
