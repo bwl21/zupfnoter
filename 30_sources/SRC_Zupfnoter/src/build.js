@@ -15596,7 +15596,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 
     var def = self._proto, $scope = self._scope;
 
-    def.x_offset = nil;
+    def.native_jspdf = def.x_offset = nil;
     self.$attr_accessor("x_offset");
 
     def.$initialize = function(orientation, unit, format) {
@@ -15612,7 +15612,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         format = "a4"
       }
       self.x_offset = 0;
-      return self["native"] = new jsPDF(orientation, unit, format);
+      return self.native_jspdf = new jsPDF(orientation, unit, format);
     };
 
     def.$line = function(from, to) {
@@ -15620,13 +15620,13 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 
       nfrom = self.$apply_offset_to_point(from);
       nto = self.$apply_offset_to_point(to);
-      return self.native.lines([ [ nto[0] - nfrom[0], nto[1] - nfrom[1] ] ], nfrom[0], nfrom[1]);
+      return self.native_jspdf.lines([ [ nto[0] - nfrom[0], nto[1] - nfrom[1] ] ], nfrom[0], nfrom[1]);
     };
 
     def['$line_cap='] = function(value) {
       var self = this;
 
-      return self.native.setLineCap(value);
+      return self.native_jspdf.setLineCap(value);
     };
 
     def.$ellipse = function(center, size, style) {
@@ -15636,43 +15636,43 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         style = undefined
       }
       ncenter = self.$apply_offset_to_point(center);
-      return self.native.ellipse(ncenter[0], ncenter[1], size[0], size[1], style);
+      return self.native_jspdf.ellipse(ncenter[0], ncenter[1], size[0], size[1], style);
     };
 
     def['$fill='] = function(rgb) {
       var self = this;
 
-      return self.native.setFillColor(rgb[0], rgb[1], rgb[2]);
+      return self.native_jspdf.setFillColor(rgb[0], rgb[1], rgb[2]);
     };
 
     def['$stroke='] = function(rgb) {
       var self = this;
 
-      return self.native.setDrawColor(rgb[0], rgb[1], rgb[2]);
+      return self.native_jspdf.setDrawColor(rgb[0], rgb[1], rgb[2]);
     };
 
     def['$text_color='] = function(rgb) {
       var self = this;
 
-      return self.native.setTextColor(rgb[0], rgb[1], rgb[2]);
+      return self.native_jspdf.setTextColor(rgb[0], rgb[1], rgb[2]);
     };
 
     def['$font_size='] = function(size) {
       var self = this;
 
-      return self.native.setFontSize(size);
+      return self.native_jspdf.setFontSize(size);
     };
 
     def['$font_style='] = function(style) {
       var self = this;
 
-      return self.native.setFontStyle(style);
+      return self.native_jspdf.setFontStyle(style);
     };
 
     def.$use_solid_lines = function() {
       var self = this;
 
-      return self.native.setLineDash('', 0);
+      return self.native_jspdf.setLineDash('', 0);
     };
 
     def['$line_dash='] = function(dist) {
@@ -15683,7 +15683,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
       }
       if ((($a = dist['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
         dist = undefined};
-      return self.native.setLineDash(dist, dist);
+      return self.native_jspdf.setLineDash(dist, dist);
     };
 
     def.$text = function(x, y, text, flags) {
@@ -15693,7 +15693,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         flags = nil
       }
       nx = self.$apply_offset_to_x(x);
-      return self.native.text(nx, y, text, flags);
+      return self.native_jspdf.text(nx, y, text, flags);
     };
 
     def.$rect_like_ellipse = function(center, size, style) {
@@ -15703,7 +15703,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         style = "undefined"
       }
       ncenter = self.$apply_offset_to_point(center);
-      return self.native.rect(ncenter[0], ncenter[1], size[0], size[1], style);
+      return self.native_jspdf.rect(ncenter[0], ncenter[1], size[0], size[1], style);
     };
 
     def.$rect = function(x1, y1, x2, y2, style) {
@@ -15713,14 +15713,14 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         style = "undefined"
       }
       nx1 = self.$apply_offset_to_x(x1);
-      return self.native.rect(nx1, y1, x2, y2, style);
+      return self.native_jspdf.rect(nx1, y1, x2, y2, style);
     };
 
     def.$lines = function(lines, x, y, scale, style, close) {
       var self = this, nx = nil;
 
       nx = self.$apply_offset_to_x(x);
-      return self.native.lines(lines, nx, y, scale, style, close);
+      return self.native_jspdf.lines(lines, nx, y, scale, style, close);
     };
 
     def.$output = function(type, options) {
@@ -15736,7 +15736,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         type = undefined};
       if ((($a = options['$nil?']()) !== nil && (!$a._isBoolean || $a == true))) {
         options = undefined};
-      return self.native.output(type, options);
+      return self.native_jspdf.output(type, options);
     };
 
     def.$left_arrowhead = function(x, y) {
@@ -15747,13 +15747,13 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
       x1 = self.$apply_offset_to_x(x['$+'](delta));
       y_top = y['$+'](delta['$/'](2.0));
       y_bottom = y['$-'](delta['$/'](2.0));
-      return self.native.triangle(x0, y, x1, y_top, x1, y_bottom, x0, y, 'FD');
+      return self.native_jspdf.triangle(x0, y, x1, y_top, x1, y_bottom, x0, y, 'FD');
     };
 
     def.$addPage = function() {
       var self = this;
 
-      return self.native.addPage();
+      return self.native_jspdf.addPage();
     };
 
     self.$private();
@@ -17630,7 +17630,7 @@ if (args == null) args = nil;
           return ($a = ($b = self.dropboxclient.$authenticate()).$then, $a._p = (TMP_59 = function(){var self = TMP_59._s || this;
             if ($gvars.log == null) $gvars.log = nil;
 
-          return $gvars.log.$info("logged in at dropbox with " + (args['$[]']("app")) + " access")}, TMP_59._s = self, TMP_59), $a).call($b);}, TMP_58._s = self, TMP_58), $a).call($d);
+          return $gvars.log.$info("logged in at dropbox with " + (args['$[]']("scope")) + " access")}, TMP_59._s = self, TMP_59), $a).call($b);}, TMP_58._s = self, TMP_58), $a).call($d);
         return ($a = ($e = command).$as_inverse, $a._p = (TMP_60 = function(args){var self = TMP_60._s || this;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
@@ -18601,7 +18601,7 @@ if (iblock == null) iblock = nil;
   var $a, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice;
 
   $opal.add_stubs(['$year', '$now']);
-  $opal.cdecl($scope, 'VERSION', "0.7.5");
+  $opal.cdecl($scope, 'VERSION', "0.7.6");
   return $opal.cdecl($scope, 'COPYRIGHT', "©" + ((($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now().$year()) + " https://www.bernhard-weichel.de");
 })(Opal);
 
