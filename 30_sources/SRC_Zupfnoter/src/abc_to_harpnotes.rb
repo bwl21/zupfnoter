@@ -166,7 +166,10 @@ module Harpnotes
         warnings = [Native(`warnings`)].flatten.compact
         warnings.each { |w|
           wn = Native(w)
-          $log.warning("#{wn[message]} at line #{wn[:line]} position #{wn[:startChar]}")
+          lines = abc_code[1, wn[:startChar]].split("\n")
+          line_no = lines.count
+          char_pos = lines.last.length()
+          $log.warning("#{wn[:message]} at line #{wn[:line]} position #{line_no}:#{char_pos}")
         }
 
         #
