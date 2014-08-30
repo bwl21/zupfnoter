@@ -13,6 +13,7 @@ desc "Build our app to #{ZUPFNOTER_JS}"
 task :build do
   env = Opal::Environment.new
   env.append_path "."
+  env.use_gem "vector2d"
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
     out << env["application"].to_s

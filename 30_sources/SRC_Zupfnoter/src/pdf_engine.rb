@@ -52,6 +52,8 @@ module Harpnotes
           draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
           draw_glyph(child) if child.visible?
+        elsif child.is_a? Harpnotes::Drawing::Path
+          draw_path(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child) if child.visible?
         else
@@ -159,6 +161,7 @@ module Harpnotes
     end
 
 
+    # this draws a page setment
     def draw_segment(x_offset, sheet, newpage = false)
       @pdf.x_offset = x_offset
       @pdf.addPage if newpage
@@ -206,6 +209,35 @@ module Harpnotes
       @pdf.line([depth, startpoint[1]], startpoint)
 
       @pdf.left_arrowhead(startpoint[0], startpoint[1])
+    end
+
+
+    # draw a path
+    def draw_path(root)
+      lines = []
+      scale = [1, 1]
+      start = []
+      style = root.filled? :FD, :FD
+      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+
+      root.path.each do |element|
+        case element.first
+          when "M"
+            @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
+            lines = []
+            start = element[1 .. 2]
+          when "l"
+            lines.push element[1 .. -1]
+          when "c"
+            lines.push element[1 .. -1]
+          when "z"
+            @pdf.lines(lines, start.first, start.last, scale, style, true) unless lines.empty?
+            lines = []
+          else
+            $log.error("unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
+        end
+      end
+      @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
     end
   end
 

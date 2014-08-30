@@ -1,6 +1,7 @@
-    require 'math'
     require 'opal'
     require 'opal-jquery'
+    require 'vector2d'
+    require 'math'
 
     require 'consolelogger'
     require 'harpnotes'

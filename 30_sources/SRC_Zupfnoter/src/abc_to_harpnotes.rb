@@ -232,12 +232,6 @@ module Harpnotes
 
           hn_voice += jumplines.flatten.compact
 
-          # compute the slurs
-          slurs=[]
-          hn_voice.each do |e|
-            slurs << make_slurs(e)
-          end
-
           hn_voice
         end
 
@@ -316,15 +310,6 @@ module Harpnotes
         result
       end
 
-      # generate the slurs
-      def make_slurs(entity)
-        return nil unless entity.is_a? Harpnotes::Music::Playable
-        startslur = entity.origin[:startSlur]
-        endslur = entity.origin[:endSlur]
-        $log.debug(startslur.class) if startslur
-        nil
-      end
-
       def transform_note(note)
         # 1/64 is the shortest note being handled
         # note that this scaling also has an effect
@@ -342,9 +327,6 @@ module Harpnotes
         end
 
         if not result.empty?
-
-          # collect slur information
-
 
           # support the case of repetitions from the very beginning
 
@@ -427,78 +409,80 @@ module Harpnotes
           synchpoint = Harpnotes::Music::SynchPoint.new(notes) # note that notes are alreday Playables
           synchpoint.slur_starts = (note[:startSlur] || []).map { |s| Native(s)[:label] }
           synchpoint.slur_ends = note[:endSlur] || []
-          synchpoint.tie_start = (not note[:startTie].nil?)
-          synchpoint.tie_end = (not note[:endTie].nil?)
+          # note that we pull the tie starts from the inner notes
+          # todo: do we need this for the slurs as well
+          synchpoint.tie_start = (not note[:startTie].nil?)  || (not notes.select { |n| n.tie_start? }.empty?)
+          synchpoint.tie_end = (not note[:endTie].nil?)  || (not notes.select { |n| n.tie_end? }.empty?)
 
           res << synchpoint
-        end
+          end
 
-        @previous_note = res.last
+          @previous_note = res.last
 
-        if @next_note_marks_measure
-          res << Harpnotes::Music::MeasureStart.new(notes.last)
-          @next_note_marks_measure = false
-        end
+          if @next_note_marks_measure
+            res << Harpnotes::Music::MeasureStart.new(notes.last)
+            @next_note_marks_measure = false
+          end
 
-        if @next_note_marks_repeat_start
-          @repetition_stack << notes.last
-          @next_note_marks_repeat_start = false
-        end
+          if @next_note_marks_repeat_start
+            @repetition_stack << notes.last
+            @next_note_marks_repeat_start = false
+          end
 
-        @previous_new_part.each { |part|
-          part.companion = notes.last
-          notes.last.first_in_part=true
-        }
-        @previous_new_part.clear
+          @previous_new_part.each { |part|
+            part.companion = notes.last
+            notes.last.first_in_part=true
+          }
+          @previous_new_part.clear
 
-        res
-      end
+          res
+          end
 
-      def transform_bar(bar)
-        type = bar[:type]
-        @next_note_marks_measure = true
-        @pitch_transformer.reset_measure_accidentals
-        send("transform_#{type.gsub(" ", "_")}", bar)
-      end
+          def transform_bar(bar)
+            type = bar[:type]
+            @next_note_marks_measure = true
+            @pitch_transformer.reset_measure_accidentals
+            send("transform_#{type.gsub(" ", "_")}", bar)
+          end
 
-      def transform_bar_thin(bar)
-        @next_note_marks_measure = true
-        nil
-      end
+          def transform_bar_thin(bar)
+            @next_note_marks_measure = true
+            nil
+          end
 
-      def transform_bar_left_repeat(bar)
-        @next_note_marks_repeat_start = true
-        nil
-      end
+          def transform_bar_left_repeat(bar)
+            @next_note_marks_repeat_start = true
+            nil
+          end
 
-      def transform_bar_thin_thick(bar)
-        @next_note_marks_measure = true
-        nil
-      end
+          def transform_bar_thin_thick(bar)
+            @next_note_marks_measure = true
+            nil
+          end
 
-      def transform_bar_right_repeat(bar)
-        if @repetition_stack.length == 1
-          start = @repetition_stack.last
-        else
-          start = @repetition_stack.pop
-        end
+          def transform_bar_right_repeat(bar)
+            if @repetition_stack.length == 1
+              start = @repetition_stack.last
+            else
+              start = @repetition_stack.pop
+            end
 
-        [Harpnotes::Music::Dacapo.new(start, @previous_note, level: @repetition_stack.length)]
-      end
+            [Harpnotes::Music::Dacapo.new(start, @previous_note, level: @repetition_stack.length)]
+          end
 
-      def transform_part(part)
-        new_part = Harpnotes::Music::NewPart.new(part[:title])
-        @previous_new_part << new_part
-        [new_part]
-      end
+          def transform_part(part)
+            new_part = Harpnotes::Music::NewPart.new(part[:title])
+            @previous_new_part << new_part
+            [new_part]
+          end
 
-      def method_missing(name, *args)
-        $log.debug("Missing transformation rule: #{name} (#{__FILE__} #{__LINE__})")
-        nil
-      end
+          def method_missing(name, *args)
+            $log.debug("Missing transformation rule: #{name} (#{__FILE__} #{__LINE__})")
+            nil
+          end
 
-    end
+          end
 
-  end
+          end
 
-end
+          end
