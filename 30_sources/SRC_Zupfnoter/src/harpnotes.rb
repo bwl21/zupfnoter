@@ -151,13 +151,35 @@ module Harpnotes
 
     # Marks playable Music entities
     #
-    # duration is represented reciproke value of duration: 1: whole; 2: half, 4:quarter
-    # playable shall provide duration
+    # todo: playable shall provide duration
     class Playable < MusicEntity
-      attr_accessor :first_in_part
+      attr_accessor :first_in_part, # boolean
+                    :jump_starts, # Array of labels for jumpstarts defined by this playables
+                    :jump_ends, # Array of labels for jumpends defined by this playble
+                    :slur_starts, # Array of labels for slur starts defined by this playable
+                    :slur_ends, # Array of labels for slur ends defined by this playable
+                    :tie_start, # Boolean: this is the start of a tie
+                    :tie_end # Boolean: this is the end of a tie
+
+      def initialize
+        # initialize slur and ties to the safe side ...
+        super
+        @slur_starts = []
+        @slur_ends = []
+        @tie_start = false
+        @tie_end = false
+      end
 
       def first_in_part?
         first_in_part
+      end
+
+      def tie_end?
+        @tie_end
+      end
+
+      def tie_start?
+        @tie_start
       end
     end
 
@@ -555,6 +577,30 @@ module Harpnotes
     end
 
 
+    # this represents a path to be rendered. The path is noted as an array of path commands:
+    # ["l", {x}, {y}] or
+    # ["c" {x}, {y}, {cp1x}, {cp1y}, {cp2x}, {cp2x}]
+    # ["M", {x}, {y}]
+    class Path < Drawable
+      attr_reader :path, :style
+
+
+      # @param [Arraa] path see class description for details
+      # @param [Symbol] fill :filled makes the path to be filled
+      # @param [Object] origin Reference to the origin object for tracing purposes
+      def initialize(path, fill = nil, origin = nil)
+        super
+        @path = path
+        @fill = fill
+        @origin = origin
+      end
+
+      def filled?
+        @fill == :filled
+      end
+    end
+
+
     #
     # This represents a note in the shape of an ellipsis
     #
@@ -709,7 +755,12 @@ module Harpnotes
       Y_OFFSET = 5
       X_OFFSET = ELLIPSE_SIZE.first
 
-      # this is the negative of midi-pitch of the lowest playble note
+      Y_SCALE = 4 # 4 mm per minimal
+      DRAWING_AREA_SIZE = [400, 282] # Area in which Drawables can be placed
+
+      BEAT_RESOULUTION = 64
+
+      # this is the negative of midi-pitch of the lowest plaayble note
       # see http://computermusicresource.com/midikeys.html
       PITCH_OFFSET = -43
 
@@ -747,8 +798,11 @@ module Harpnotes
       }
 
       def initialize
-        # Spacing between beats
-        @beat_spacing = 4 * 1.0/64.0 * 1 # 1/64 is distributed on 4 steps
+        # Spacing between two BeatTable increments
+        # 1.0 = dureation of a whole note
+        #
+        @beat_spacing = Y_SCALE * 1.0/BEAT_RESOULUTION # initial value for beat_spacing (also the optimum spacing)
+        @slur_index = {}
       end
 
       #
@@ -782,13 +836,13 @@ module Harpnotes
 
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
         maximal_beat = beat_compression_map.values.max
-        full_beat_spacing = 282.0 / maximal_beat #todo: remove literal  # the maximum height to draw notes
+        full_beat_spacing = DRAWING_AREA_SIZE.last / maximal_beat
 
         if full_beat_spacing < @beat_spacing
           factor = (@beat_spacing / full_beat_spacing)
           $log.warning("note distance too small (factor #{factor})")
         end
-        @beat_spacing = [full_beat_spacing, 2 * @beat_spacing].min
+        @beat_spacing = [full_beat_spacing, 2 * @beat_spacing].min # limit beat spacing to twice of optimal spacing
 
         compressed_beat_layout = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
 
@@ -876,14 +930,19 @@ module Harpnotes
       def layout_voice(voice, beat_layout, show_options)
 
         # draw the playables
-        res_playables = voice.select { |c| c.is_a? Playable }.map do |playable|
-          layout_playables(playable, beat_layout)
+        # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
+        playables = voice.select { |c| c.is_a? Playable }
+
+
+        res_playables = playables.map do |playable|
+          layout_playable(playable, beat_layout)
         end.flatten
+
 
         # layout the measures
 
         res_measures = voice.select { |c| c.is_a? MeasureStart }.map do |measure|
-          layout_playables(measure, beat_layout)
+          layout_playable(measure, beat_layout)
         end
 
         res_newparts = voice.select { |c| c.is_a? NewPart }.map do |newpart|
@@ -891,19 +950,63 @@ module Harpnotes
         end
 
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
-        note_to_ellipse = Hash[res_playables.map { |e| [e.origin, e] }]
-        res_playables.select { |e| e.is_a? FlowLine }.each { |f| note_to_ellipse[f.origin] = f.to }
+        lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }]
+        res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.to }
 
         # draw the flowlines
         previous_note = nil
         res_flow = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
           res = nil
-          res = FlowLine.new(note_to_ellipse[previous_note], note_to_ellipse[playable]) unless previous_note.nil?
+          res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable]) unless previous_note.nil?
           res = nil if playable.first_in_part?
 
           previous_note = playable
           res
         end.compact
+
+        # layout the slurs and ties
+        @slur_index[:first_playable] = playables.first
+        tie_start = playables.first
+        res_slurs = playables.inject([]) do |result, playable|
+          # note that there is a semantic difference between tie and slur
+          # so first we pick the ties
+
+          if playable.tie_end?
+            p1 = Vector2d(lookuptable_drawing_by_playable[tie_start].center) + [3, 0]
+            p2 = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
+            tiepath = make_slur_path(p1, p2)
+            result.push(Harpnotes::Drawing::Path.new(tiepath))
+            if playable.is_a? Harpnotes::Music::SynchPoint
+              playable.notes.each_with_index do |n, index|
+                begin
+                  p1 = tie_start.notes[index]
+                  p1 = Vector2d(lookuptable_drawing_by_playable[p1].center) + [3, 0]
+                  p2 = Vector2d(lookuptable_drawing_by_playable[n].center) + [3, 0]
+                  tiepath = make_slur_path(p1, p2)
+                  result.push(Harpnotes::Drawing::Path.new(tiepath))
+                rescue Exception => e
+                  $log.error("tied chords which doesn't have same number of notes")
+                end
+              end
+            end
+          end
+          tie_start = playable if playable.tie_start?
+
+          # then we pick the slurs
+          playable.slur_starts.each { |s| @slur_index[s] = playable }
+          @slur_index[playable.slur_starts.first] = playable
+
+          playable.slur_ends.each do |id|
+            begin_slur = @slur_index[id] || @slur_index[:first_playable]
+
+            p1 = Vector2d(lookuptable_drawing_by_playable[begin_slur].center) + [3, 0]
+            p2 = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
+            slurpath = make_slur_path(p1, p2)
+            result.push(Harpnotes::Drawing::Path.new(slurpath))
+          end
+
+          result
+        end
 
         # kill the flowlines if they shall not be shown
         res_flow = [] unless show_options[:flowline]
@@ -915,14 +1018,15 @@ module Harpnotes
           else
             vertical = {level: dacapo.policy[:level]}
           end
-          JumpLine.new(note_to_ellipse[dacapo.from], note_to_ellipse[dacapo.to], vertical)
+          JumpLine.new(lookuptable_drawing_by_playable[dacapo.from], lookuptable_drawing_by_playable[dacapo.to], vertical)
         end
+
 
         # kill the jumplines if they shallnot be shown
         res_dacapo = [] unless show_options[:jumpline]
 
         # return all drawing primitives
-        retval = (res_flow + res_playables + res_dacapo + res_measures + res_newparts).compact
+        retval = (res_flow + res_playables + res_dacapo + res_measures + res_newparts + res_slurs).compact
       end
 
 
@@ -930,17 +1034,30 @@ module Harpnotes
 
 
       # compress  beat layout of a music sheet
+      #
+      # This algorithm considers the number of notes and the particular size of the notes
+      # when a beat (layout beat, not to mess up with song beat) has a note
+      # the the
+      #
+      # returns a beat-map {beat => vertical_position_indicator}
+      # vertical_position_indicator scales like beats but can be fractions
+      # the need to be scaled to the aboslute position on the sheet later.
+      # this scaling cannot be done here since it depends on the relative size
+      # of the musig on the sheet.
+      #
+      # we need to increment the position by the (size[i] + size[i-1])/2
+      #
       # @param music Harpnotes::Music::Document the document to optimize the beat layout
       #
-      # @return [Hash] a beat map {10 => 5} beat 10 is placed at vertical position 5
+      # @return [Hash] a beat map {10 => 5} beat 10 is placed at vertical position 5 (* beat_spacing)
       #
       def compute_beat_compression(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
         current_beat = 0
-        last_size = 32 #todo:replace literal
+        last_size = (BEAT_RESOULUTION)
 
-        relevant_beat_maps = layout_lines.inject([]){|r, i| r.push(music.beat_maps[i])}.compact
+        relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
 
         Hash[(0..max_beat).map do |beat|
           notes_on_beat = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
@@ -950,15 +1067,17 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = 32 * DURATION_TO_STYLE[duration_to_id(max_duration)].first #todo:replace literal
+              size = (BEAT_RESOULUTION) * DURATION_TO_STYLE[duration_to_id(max_duration)].first #todo:replace literal
             rescue Exception => e
               $log.error("unsupported duration: #{max_duration} on beat #{beat},  #{notes_on_beat.to_json}")
             end
-            increment = (size + last_size)
+
+            # we need to increment the position by the (size[i] + size[i-1])/2
+            increment = (size + last_size)/2
             last_size = size
 
             # if a new part starts on this beat, make space for a full note
-            increment = [64, increment].max unless is_new_part.empty? #todo: replace literal
+            increment += BEAT_RESOULUTION unless is_new_part.empty?
             current_beat += increment
           end
           [beat, current_beat]
@@ -972,7 +1091,7 @@ module Harpnotes
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
       # @return [type] [description]
-      def layout_playables(root, beat_layout)
+      def layout_playable(root, beat_layout)
         if root.is_a? Note
           layout_note(root, beat_layout)
         elsif root.is_a? MeasureStart
@@ -984,7 +1103,7 @@ module Harpnotes
         elsif root.is_a? NewPart
           layout_newpart(root, beat_layout)
         else
-          `console.log("Missing Music -> Sheet transform: " + root)`
+          $log.error("Missing Music -> Sheet transform: #{root}")
         end
       end
 
@@ -1073,6 +1192,25 @@ module Harpnotes
       def duration_to_id(duration)
         "d#{duration}".to_sym
       end
+
+      #
+      # create a path to represent a slur from p1 to p2
+      #
+      # @param [Vector2d] the Start point of the slur
+      # @param [Vector2d] the End point of the slur
+      # @return [Array] to be passed to Path
+      def make_slur_path(p1, p2)
+        deltap = p2 - p1
+
+        # distance = deltap.length
+        cp_template = Vector2d(-0.3 * deltap.length, 0).rotate(deltap.angle).reverse
+        cp1 = cp_template.rotate(-0.4)
+        cp2 = deltap + cp_template.reverse.rotate(0.4)
+
+        # todo make the drawing more fancy
+        slurpath = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]
+      end
+
 
     end
 

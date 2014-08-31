@@ -43,6 +43,8 @@ module Harpnotes
           draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child) if child.visible?
+        elsif child.is_a? Harpnotes::Drawing::Path
+          draw_path(child) if child.visible?
         else
           $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -72,6 +74,14 @@ module Harpnotes
 
 
     private
+
+    def path_to_raphael(path)
+      result = path.inject("") do |result, element|
+        result += element.first
+        result += element[1 .. -1].join(" ")
+      end
+      result
+    end
 
     def get_elements_by_range(from, to)
       result = []
@@ -156,7 +166,8 @@ module Harpnotes
       size = [root.size.first, root.size.last] # size to be treated as radius
 
       #path_spec = "M#{center.first} #{center.last}"
-      path_spec = self.glyph_to_path_spec(root.glyph)
+      path_spec = path_to_raphael(root.glyph[:d])
+      #path_spec = self.glyph_to_path_spec(root.glyph)
 
       # draw a white background
       e = @paper.rect(root.center.first, root.center.last - size.last, size.first, size.last)
@@ -262,6 +273,12 @@ module Harpnotes
       #
       element.translate(0, element.get_bbox()[:height]/2 - style[:font_size])
 
+    end
+
+    # draw a path
+    def draw_path(root)
+      path_spec = path_to_raphael(root.path)
+      @paper.path(path_spec)
     end
   end
 

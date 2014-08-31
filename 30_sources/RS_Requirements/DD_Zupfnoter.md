@@ -41,3 +41,43 @@ http://raphaeljs.com/ - JS vector library
 https://github.com/dr-skot/abc  # ruby/treetop parser
 
 https://github.com/PencilCode/musical.js  # javascript player for ABC
+
+## choosing a vector-gem
+
+In order to compute the l   ayout slurs and triplets we need a 2d vector library with :
+
+* add, subtract
+* rotate
+* angle
+* create from array
+* to_a
+
+nice to have
+
+* various constructors
+* inspect
+
+special
+
+.to_path
+
+
+
+* vector2d
+
+    * big
+    * well documented
+    * actively maintained
+    
+    The library of choice. Maybe I strip it down if it is too big.
+
+* vector2d-ruby
+
+    * small
+    * not documented
+    * acively maintained
+    
+* uzi-vector
+
+    * not actively maintained
+    
