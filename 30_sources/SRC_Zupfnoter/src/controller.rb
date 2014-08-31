@@ -321,7 +321,7 @@ class Controller
 
     @editor.on_selection_change do |e|
       a = @editor.get_selection_positions
-      #$log.debug("editor selecti #{a.first} to #{a.last9}")
+      $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
       unless a.first == a.last
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_preview_printer.unhighlight_all

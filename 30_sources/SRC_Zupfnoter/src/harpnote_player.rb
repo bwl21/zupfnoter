@@ -64,7 +64,7 @@ module Harpnotes
         firstnote = the_notes.first
         lastnote = the_notes.last
 
-        stop_time = (lastnote[:delay] - firstnote[:delay] + 64 * @timefactor) * 1000
+        stop_time = (lastnote[:delay] - firstnote[:delay] + 64 * @timefactor) * 1000  # todo factor out the literals
         @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop_time )`
 
 
@@ -94,7 +94,7 @@ module Harpnotes
 
       def range_highlight(from, to)
         @selection = []
-        @voice_elements.sort{|e| e[:delay]}.each do |element|
+        @voice_elements.sort{|a,b| a[:delay] <=> b[:delay]}.each do |element|
           origin = Native(element[:origin])
           unless origin.nil?
             el_start = origin[:startChar]
@@ -103,6 +103,8 @@ module Harpnotes
             if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
               @selection.push(element)
             end
+          else
+            $log.error("BUG: note without origin #{element.class}")
           end
         end
       end
