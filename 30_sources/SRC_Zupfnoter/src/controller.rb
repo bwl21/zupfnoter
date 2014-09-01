@@ -89,7 +89,6 @@ class Controller
 
 
     @commands = CommandController::CommandStack.new
-    $log.debug self.methods
     self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) }
 
     setup_ui
