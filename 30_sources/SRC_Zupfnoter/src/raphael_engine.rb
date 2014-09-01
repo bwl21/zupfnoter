@@ -254,7 +254,8 @@ module Harpnotes
       # todo move this style definition to the layout section.
       # Font size is provided in mm while in jspdf it is in point ... We need to keep these definitions in sync
       style_def = {
-          small: {text_color: [0, 0, 0], font_size: 2.1, font_style: "normal"},
+          smaller: {text_color: [0, 0, 0], font_size: 2.1, font_style: "normal"},
+          small: {text_color: [0, 0, 0], font_size: 3.1, font_style: "normal"},
           regular: {text_color: [0, 0, 0], font_size: 4.2, font_style: "normal"},
           large: {text_color: [0, 0, 0], font_size: 7.03, font_style: "bold"}
       }

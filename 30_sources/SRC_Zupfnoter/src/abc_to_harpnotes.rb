@@ -103,6 +103,8 @@ module Harpnotes
         @previous_note = nil
         @repetition_stack = []
         @pitch_transformer.reset_measure_accidentals
+        @current_tuplet = 0
+        @tuplet_downcount = 0
         nil
       end
 
@@ -135,12 +137,24 @@ module Harpnotes
       end
 
 
+      # get the metadata of the current song from the editor
+      #
+      def get_metadata(abc_code)
+        retval = abc_code.split("\n").inject({}) do |result, line|
+          entry = line.match(/^(X|T):\s*(.*)/) { |m| [m[1], m[2]] }
+          result[entry.first] = entry.last if entry
+          result
+        end
+        retval
+      end
+
       def transform(abc_code)
 
         harpnote_options = parse_harpnote_config(abc_code)
         #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         # now parse the abc_code by abcjs
+        # todo move this to opal-abcjs
         %x{
           var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
@@ -208,6 +222,7 @@ module Harpnotes
         end
         voices.compact!
 
+        ##################################################################
         # transform the voices
         hn_voices = voices.each_with_index.map do |voice, voice_idx|
           reset_state
@@ -244,7 +259,7 @@ module Harpnotes
 
         # handling tempo
         # tempo is marked as duration, ... duration = bpm
-        duration = 0.25; bpm =120 # default speed settings
+        duration = 0.25; bpm = 120 # default speed settings
         meta_data[:tempo] = {duration: [duration], bpm: bpm} # setting the default speed
         meta_data[:tempo_display] = "1/#{1/duration} = #{bpm}"
         if tune[:metaText][:tempo]
@@ -258,6 +273,7 @@ module Harpnotes
           ].join(" ")
         end
 
+        # handle meta data
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each { |k| meta_data[k] = meta_data_from_tune[k] } # todo could not get Hash(object) and use merge
 
@@ -314,7 +330,18 @@ module Harpnotes
         # 1/64 is the shortest note being handled
         # note that this scaling also has an effect
         # on the layout (DURATION_TO_STYLE). So, don't change this.
-        duration = (64 * note[:duration]).round
+        # todo: we need to separate duration from the layout
+
+        duration = (Harpnotes::Layout::Default::SHORTEST_NOTE * note[:duration]).round
+
+        start_tuplet = true if note[:startTriplet]
+        end_tuplet = true if note[:endTriplet]
+        if @tuplet_downcount > 1
+          @tuplet_downcount -= 1
+        else
+          @tuplet_downcount = note[:startTriplet] || 1
+          @current_tuplet = @tuplet_downcount
+        end
 
         if not note[:rest].nil?
           if note[:rest][:type] == 'spacer' # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
@@ -327,6 +354,10 @@ module Harpnotes
         end
 
         if not result.empty?
+
+          result.first.tuplet = @current_tuplet
+          result.first.tuplet_start = start_tuplet
+          result.first.tuplet_end = end_tuplet
 
           # support the case of repetitions from the very beginning
 
@@ -411,78 +442,79 @@ module Harpnotes
           synchpoint.slur_ends = note[:endSlur] || []
           # note that we pull the tie starts from the inner notes
           # todo: do we need this for the slurs as well
-          synchpoint.tie_start = (not note[:startTie].nil?)  || (not notes.select { |n| n.tie_start? }.empty?)
-          synchpoint.tie_end = (not note[:endTie].nil?)  || (not notes.select { |n| n.tie_end? }.empty?)
+          synchpoint.tie_start = (not note[:startTie].nil?) || (not notes.select { |n| n.tie_start? }.empty?)
+          synchpoint.tie_end = (not note[:endTie].nil?) || (not notes.select { |n| n.tie_end? }.empty?)
 
           res << synchpoint
-          end
+        end
 
-          @previous_note = res.last
 
-          if @next_note_marks_measure
-            res << Harpnotes::Music::MeasureStart.new(notes.last)
-            @next_note_marks_measure = false
-          end
+        @previous_note = res.last
 
-          if @next_note_marks_repeat_start
-            @repetition_stack << notes.last
-            @next_note_marks_repeat_start = false
-          end
+        if @next_note_marks_measure
+          res << Harpnotes::Music::MeasureStart.new(notes.last)
+          @next_note_marks_measure = false
+        end
 
-          @previous_new_part.each { |part|
-            part.companion = notes.last
-            notes.last.first_in_part=true
-          }
-          @previous_new_part.clear
+        if @next_note_marks_repeat_start
+          @repetition_stack << notes.last
+          @next_note_marks_repeat_start = false
+        end
 
-          res
-          end
+        @previous_new_part.each { |part|
+          part.companion = notes.last
+          notes.last.first_in_part=true
+        }
+        @previous_new_part.clear
 
-          def transform_bar(bar)
-            type = bar[:type]
-            @next_note_marks_measure = true
-            @pitch_transformer.reset_measure_accidentals
-            send("transform_#{type.gsub(" ", "_")}", bar)
-          end
+        res
+      end
 
-          def transform_bar_thin(bar)
-            @next_note_marks_measure = true
-            nil
-          end
+      def transform_bar(bar)
+        type = bar[:type]
+        @next_note_marks_measure = true
+        @pitch_transformer.reset_measure_accidentals
+        send("transform_#{type.gsub(" ", "_")}", bar)
+      end
 
-          def transform_bar_left_repeat(bar)
-            @next_note_marks_repeat_start = true
-            nil
-          end
+      def transform_bar_thin(bar)
+        @next_note_marks_measure = true
+        nil
+      end
 
-          def transform_bar_thin_thick(bar)
-            @next_note_marks_measure = true
-            nil
-          end
+      def transform_bar_left_repeat(bar)
+        @next_note_marks_repeat_start = true
+        nil
+      end
 
-          def transform_bar_right_repeat(bar)
-            if @repetition_stack.length == 1
-              start = @repetition_stack.last
-            else
-              start = @repetition_stack.pop
-            end
+      def transform_bar_thin_thick(bar)
+        @next_note_marks_measure = true
+        nil
+      end
 
-            [Harpnotes::Music::Dacapo.new(start, @previous_note, level: @repetition_stack.length)]
-          end
+      def transform_bar_right_repeat(bar)
+        if @repetition_stack.length == 1
+          start = @repetition_stack.last
+        else
+          start = @repetition_stack.pop
+        end
 
-          def transform_part(part)
-            new_part = Harpnotes::Music::NewPart.new(part[:title])
-            @previous_new_part << new_part
-            [new_part]
-          end
+        [Harpnotes::Music::Dacapo.new(start, @previous_note, level: @repetition_stack.length)]
+      end
 
-          def method_missing(name, *args)
-            $log.debug("Missing transformation rule: #{name} (#{__FILE__} #{__LINE__})")
-            nil
-          end
+      def transform_part(part)
+        new_part = Harpnotes::Music::NewPart.new(part[:title])
+        @previous_new_part << new_part
+        [new_part]
+      end
 
-          end
+      def method_missing(name, *args)
+        $log.debug("Missing transformation rule: #{name} (#{__FILE__} #{__LINE__})")
+        nil
+      end
 
-          end
+    end
 
-          end
+  end
+
+end

@@ -63,7 +63,8 @@ module Harpnotes
         firstnote = the_notes.first
         lastnote = the_notes.last
 
-        stop_time = (lastnote[:delay] - firstnote[:delay] + 64 * @timefactor) * 1000 # todo factor out the literals
+        # stoptime comes in msec
+        stop_time = (lastnote[:delay] - firstnote[:delay] + Harpnotes::Layout::Default::SHORTEST_NOTE * @duration_timefactor) * 1000 # todo factor out the literals
         @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop_time )`
 
 
@@ -118,7 +119,10 @@ module Harpnotes
 
         # 1/4 = 120 bpm shall be  32 ticks per quarter: convert to 1/4 <-> 128:
         tf = spectf * (128/120)
-        @timefactor = 1/tf
+        @duration_timefactor = 1/tf  # convert music duration to musicaljs duration
+        @beat_timefactor = 1/(tf * Harpnotes::Layout::Default::BEAT_PER_DURATION) # convert music beat to musicaljs delay
+
+        #todo duration_time_factor, beat_time_factor
 
         $log.debug("playing with tempo: #{tf} ticks per quarter #{__FILE__} #{__LINE__}")
         @voice_elements = music.voices.each_with_index.map do |voice, index|
@@ -127,9 +131,9 @@ module Harpnotes
 
             velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
             to_play = {
-                delay: root.beat * @timefactor,
+                delay: root.beat * @beat_timefactor,
                 pitch: -root.pitch,
-                duration: root.duration * @timefactor,
+                duration: root.duration * @duration_timefactor, # todo: do we need to adjust triplets?
                 velocity: 0.2,
                 velocity: velocity,
                 origin: root.origin

@@ -70,7 +70,8 @@ module Harpnotes
     def draw_annotation(root)
 
       style_def = {
-          small: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
+          smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
+          small: {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
           regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
           large: {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
       }

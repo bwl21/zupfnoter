@@ -155,11 +155,15 @@ module Harpnotes
     class Playable < MusicEntity
       attr_accessor :first_in_part, # boolean
                     :jump_starts, # Array of labels for jumpstarts defined by this playables
-                    :jump_ends, # Array of labels for jumpends defined by this playble
+                    :jump_ends, # Array of labels for jumpends defined by this playable
                     :slur_starts, # Array of labels for slur starts defined by this playable
                     :slur_ends, # Array of labels for slur ends defined by this playable
                     :tie_start, # Boolean: this is the start of a tie
-                    :tie_end # Boolean: this is the end of a tie
+                    :tie_end, # Boolean: this is the end of a tie
+                    :duration, # the duration of the playable
+                    :tuplet, # number of notes in tuplet if it is in a tuplet
+                    :tuplet_start, # first note of a tuplet
+                    :tuplet_end # last note of a tuplet
 
       def initialize
         # initialize slur and ties to the safe side ...
@@ -168,6 +172,9 @@ module Harpnotes
         @slur_ends = []
         @tie_start = false
         @tie_end = false
+        @tuplet = 1
+        @tuplet_start = false
+        @tuplet_end = false
       end
 
       def first_in_part?
@@ -180,6 +187,14 @@ module Harpnotes
 
       def tie_start?
         @tie_start
+      end
+
+      def tuplet_start?
+        @tuplet_start
+      end
+
+      def tuplet_end?
+        @tuplet_end
       end
     end
 
@@ -432,10 +447,35 @@ module Harpnotes
       #
       # @return nil
       def update_beats
+        tupletmap = {
+            1 => 1,
+            2 => 3/2,
+            3 => 2/3,
+            4 => 3/4,
+            5 => 2/5, # todo 3/5 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
+            6 => 2/6,
+            7 => 2/7, # todo 3/7 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
+            8 => 3/8,
+            9 => 2/9 # todo 3/9 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
+
+        }
         @beat_maps = @voices.map do |voice|
           current_beat = 0
           voice_map = voice.select { |e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
-            beats = playable.duration
+            beats = playable.duration * Harpnotes::Layout::Default::BEAT_PER_DURATION # todo:handle triplets
+            # Timefactor of player
+            # BEAT_RESOLUTOIN
+            if playable.tuplet == 3
+              #beats = beats * 2/3
+            end
+
+            beats = beats * tupletmap[playable.tuplet]
+            beat_error = beats - beats.floor(0)
+            if beat_error > 0
+              $log.error("unsupported tuplet #{playable.tuplet}") # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
+              beats = beats.floor(0)
+            end
+
             map[current_beat] = playable
             playable.beat = current_beat
 
@@ -452,7 +492,7 @@ module Harpnotes
     end
 
     # this represents a voice and its properties
-    # as it is derived from an array, it can represent voices in ABCas well as in Harpnote domain
+    # as it is derived from an array, it can represent voices in ABC as well as in Harpnote domain
 
     class Voice < Array
       attr_accessor :index, :name, :show_voice, :show_flowline, :show_jumpline
@@ -758,7 +798,16 @@ module Harpnotes
       Y_SCALE = 4 # 4 mm per minimal
       DRAWING_AREA_SIZE = [400, 282] # Area in which Drawables can be placed
 
-      BEAT_RESOULUTION = 64
+      # this affects the performance of the harpnote renderer
+      # it also specifies the resolution of note starts
+      # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
+      # in order to at least being able to handle triplets, we need to scale this up by 3
+      # todo:see if we can speed it up by using 16 ...
+      BEAT_RESOULUTION = 32 * 3 ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+      SHORTEST_NOTE = 64 # shortest possible note (1/64) do not change this
+      # in particular specifies the range of DURATION_TO_STYLE etc.
+
+      BEAT_PER_DURATION = BEAT_RESOULUTION / SHORTEST_NOTE
 
       # this is the negative of midi-pitch of the lowest plaayble note
       # see http://computermusicresource.com/midikeys.html
@@ -905,7 +954,7 @@ module Harpnotes
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
-        annotations << Harpnotes::Drawing::Annotation.new([150, 292], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :small)
+        annotations << Harpnotes::Drawing::Annotation.new([150, 292], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
         music.harpnote_options[:notes].each do |note|
           annotations << Harpnotes::Drawing::Annotation.new(note[0], note[1], note[2])
         end
@@ -925,7 +974,7 @@ module Harpnotes
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       # @param show_options [Hash] {flowlines: true, jumplines:true}
       #
-      # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playbles and jumplines.
+      # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
       def layout_voice(voice, beat_layout, show_options)
 
@@ -963,6 +1012,26 @@ module Harpnotes
           previous_note = playable
           res
         end.compact
+
+        # layout tuplets
+
+        tuplet_start = playables.first
+
+        res_tuplets = playables.inject([]) do |result, playable|
+          tuplet_start = playable if playable.tuplet_start?
+
+          if playable.tuplet_end?
+            p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
+            p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
+            tiepath, anchor = make_annotated_bezier_path([p1, p2])
+            $log.debug([tiepath, anchor])
+            result.push(Harpnotes::Drawing::Path.new(tiepath))
+            result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
+
+            # compute the position
+          end
+          result
+        end
 
         # layout the slurs and ties
         @slur_index[:first_playable] = playables.first
@@ -1026,7 +1095,7 @@ module Harpnotes
         res_dacapo = [] unless show_options[:jumpline]
 
         # return all drawing primitives
-        retval = (res_flow + res_playables + res_dacapo + res_measures + res_newparts + res_slurs).compact
+        retval = (res_flow + res_playables + res_dacapo + res_measures + res_newparts + res_slurs + res_tuplets).compact
       end
 
 
@@ -1203,7 +1272,7 @@ module Harpnotes
         deltap = p2 - p1
 
         # distance = deltap.length
-        cp_template = Vector2d(-0.3 * deltap.length, 0).rotate(deltap.angle).reverse
+        cp_template = Vector2d(0.3 * deltap.length, 0).rotate(deltap.angle)
         cp1 = cp_template.rotate(-0.4)
         cp2 = deltap + cp_template.reverse.rotate(0.4)
 
@@ -1211,6 +1280,37 @@ module Harpnotes
         slurpath = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]
       end
 
+      #
+      # create a path to represent a slur from p1 to p2
+      #
+      # @param [Vector2d] the Start point of the slur
+      # @param [Vector2d] the End point of the slur
+      # @return [Array] to be passed to Path
+      def   make_annotated_bezier_path(points)
+        p1 = points.first
+        p2 = points.last
+        deltap = p2 - p1
+
+        # distance = deltap.length
+        #cp_template = Vector2d(2 * deltap.length, 0).rotate(deltap.angle)
+        cp_template = Vector2d(5, 0).rotate(deltap.angle)
+        rotate_by = Math::PI/2
+        cp1 = cp_template.rotate(-rotate_by)
+        cp2 = deltap + cp_template.reverse.rotate(rotate_by)
+
+        cpa1 = p1 + cp1
+        cpa2 = p1 + cp2
+        cpm1 = (p1 + cpa1)/2
+        cpm2 = (p2 + cpa2)/2
+        cpmm = (cpa1 + cpa2)/2
+        cpmm1 = (cpm1 + cpmm)/2
+        cpmm2 = (cpm2 + cpmm)/2
+        annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
+
+        # todo make the drawing more fancy
+        slurpath = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]
+        [slurpath, annotation_anchor]
+      end
 
     end
 
