@@ -472,7 +472,7 @@ module Harpnotes
             beats = beats * tupletmap[playable.tuplet]
             beat_error = beats - beats.floor(0)
             if beat_error > 0
-              $log.error("unsupported tuplet #{playable.tuplet}") # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
+              $log.error("unsupported tuplet #{playable.tuplet} #{beat_error}") # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
               beats = beats.floor(0)
             end
 
@@ -803,7 +803,7 @@ module Harpnotes
       # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
       # in order to at least being able to handle triplets, we need to scale this up by 3
       # todo:see if we can speed it up by using 16 ...
-      BEAT_RESOULUTION = 32 * 3 ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+      BEAT_RESOULUTION = 64 * 3 ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
       SHORTEST_NOTE = 64 # shortest possible note (1/64) do not change this
       # in particular specifies the range of DURATION_TO_STYLE etc.
 
@@ -817,6 +817,8 @@ module Harpnotes
       # This is a lookup table to map durations to graphical representation
       DURATION_TO_STYLE = {
           #key      size   fill          dot                  abc duration
+
+          :err => [2 , :filled, FALSE], # 1      1
           :d64 => [0.9, :empty, FALSE], # 1      1
           :d48 => [0.7, :empty, TRUE], # 1/2 *
           :d32 => [0.7, :empty, FALSE], # 1/2
@@ -832,6 +834,7 @@ module Harpnotes
       }
 
       REST_TO_GLYPH = {# this basically determines the white background rectangel
+                       :err => [[2 , 2 ],   :rest_1, FALSE], # 1      1
                        :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
                        :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
                        :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
@@ -1259,7 +1262,12 @@ module Harpnotes
       #
       # @return [Object] The generated drawing primitive
       def duration_to_id(duration)
-        "d#{duration}".to_sym
+        result = "d#{duration}".to_sym
+        if DURATION_TO_STYLE[result].nil?
+          $log.error("unsupported duration #{result} replaced by error note")
+          result = "err"
+        end
+        result
       end
 
       #
