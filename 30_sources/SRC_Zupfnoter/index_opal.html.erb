@@ -7,26 +7,28 @@
         <link rel="shortcut icon" href="public/icons/favicon.gif" />
 
         <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
-        <script src="vendor/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script src="vendor/abcjs_basic_1.10-min.js" type="application/javascript"></script>
-        <script type="application/javascript" src="vendor/raphael.pan-zoom.min.js"></script>
+        <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
+        <script src="vendor/abcjs_basic_1.11.zupfnoter-min.js" type="application/javascript"></script>
+        <script src="vendor/raphael.pan-zoom.min.js" type="application/javascript"></script>
         <script src="vendor/musical.min.js" type="application/javascript"></script>
 
-        <script src="vendor/opal.min.js" type="application/javascript"></script>
-        <script src="vendor/jspdf.min.js" type="application/javascript"></script>
-        <script type="application/javascript" src="vendor/filesaver.js"></script>
-        <script type="application/javascript" src="vendor/jszip.min.js"></script>
-
-        <script type="application/javascript" src="assets/application.js"></script>
+        <script src="vendor/opal.min.js"    type="application/javascript"></script>
+        <script src="vendor/jspdf.min.js"   type="application/javascript"></script>
+        <script src="vendor/filesaver.js"   type="application/javascript"></script>
+        <script src="vendor/jszip.min.js"   type="application/javascript"></script>
+        <script src="vendor/dropbox.min.js" type="application/javascript"></script>
+        <%= javascript_include_tag 'application' %>
     </head>
     
     <body>
         <div id="toolbar">
-            <span class="head">Zupfnoter</span>
+            <span class="head" id="lbZupfnoter">Zupfnoter</span>
+            <span class="text" id = "tbStatus"></span>
+            <input type="text" id="tbCommand" style = 'width = "30em"' value="">
             <span class="button" id="tbPrintA4">print A4</i> </span>
             <span class="button" id="tbPrintA3">print A3</i> </span>
-            <span class="button" id="tbRender"><i class="icon-brush-alt"></i></span>
-            <span class="button" id="tbPlay"><i class="icon-play"></i></span>
+            <span class="button" id="tbRender"><i class="icon-brush-alt">render</i></span>
+            <span class="button" id="tbPlay"><i class="icon-play">play</i></span>
         </div>
         <div id="leftColumn">
             <div id="abcEditorContainer" class="container">

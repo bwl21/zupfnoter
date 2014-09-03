@@ -1,9 +1,9 @@
 @import "reset";
-@import "icons/fontello.css";
+//@import "icons/fontello.css";
 
 $toolbarHeight: 30px;
 $titleHeight: 2em;
-$cnosoleHeight: 30%;
+$consoleHeight: 30%;
 
 $backgoundColor: #0A425C;
 $titleColor: #1BA5A5;
@@ -142,7 +142,7 @@ body {
   top: 0px;
   left: 0px;
   right: 0px;
-  bottom: $cnosoleHeight;
+  bottom: $consoleHeight;
 
   .body {
     top: 0px;
@@ -179,7 +179,7 @@ body {
 }
 
 #consoleLog {
-  top: 100% - $cnosoleHeight;
+  top: 100% - $consoleHeight;
   left: 0px;
   right: 0%;
   bottom: 0px;

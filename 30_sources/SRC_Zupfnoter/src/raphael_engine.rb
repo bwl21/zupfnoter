@@ -16,7 +16,7 @@ module Harpnotes
       @paper = Raphael::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select = nil
-      @elements = {}   # record all elements being on the sheet, using upstream object as key
+      @elements = {} # record all elements being on the sheet, using upstream object as key
       @highlighted = []
     end
 
@@ -26,7 +26,7 @@ module Harpnotes
 
     def draw(sheet)
       @paper.clear
-      @elements = {}   # record all elements being on the sheet, using upstream object as key
+      @elements = {} # record all elements being on the sheet, using upstream object as key
       @highlighted = []
       @paper.rect(1.0, 1.0, 418, 295)
       @paper.rect(0.0, 0.0, 420.0, 297.0)
@@ -34,17 +34,17 @@ module Harpnotes
 
       sheet.children.each do |child|
         if child.is_a? Ellipse
-          draw_ellipse(child)
+          draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
-          draw_flowline(child)
+          draw_flowline(child) if child.visible?
         elsif child.is_a? JumpLine
-          draw_jumpline(child)
-        elsif child.is_a? Harpnotes::Drawing::Rest
-          draw_rest(child)
+          draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
-          draw_glyph(child)
+          draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
-          draw_annotation(child)
+          draw_annotation(child) if child.visible?
+        elsif child.is_a? Harpnotes::Drawing::Path
+          draw_path(child) if child.visible?
         else
           $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -59,21 +59,29 @@ module Harpnotes
 
     # remove all hightlights
     def unhighlight_all()
-      @highlighted.each{|e| unhighlight_element(e)}
+      @highlighted.each { |e| unhighlight_element(e) }
     end
 
     # hightlights the drawn elements driven by the selection range in the abc text
     def range_highlight(from, to)
-      get_elements_by_range(from, to).each{|element| highlight_element(element)}
+      get_elements_by_range(from, to).each { |element| highlight_element(element) }
     end
 
     # hightlights the drawn elements driven by the selection range in the abc text
     def range_unhighlight(from, to)
-      get_elements_by_range(from, to).each{|element| unhighlight_element(element)}
+      get_elements_by_range(from, to).each { |element| unhighlight_element(element) }
     end
 
 
     private
+
+    def path_to_raphael(path)
+      result = path.inject("") do |result, element|
+        result += element.first
+        result += element[1 .. -1].join(" ")
+      end
+      result
+    end
 
     def get_elements_by_range(from, to)
       result = []
@@ -105,7 +113,7 @@ module Harpnotes
     def unhighlight_element(element)
       if @highlighted.include?(element)
         @highlighted -= [element]
-        element[:fill]   = element.unhighlight_color
+        element[:fill] = element.unhighlight_color
         element[:stroke] = "#000000"
       end
       nil
@@ -143,16 +151,11 @@ module Harpnotes
 
     end
 
-
     def draw_glyph(root)
-      draw_glyph_visible(root) if root.visible?
-    end
-
-    def draw_glyph_visible(root)
 
       def glyph_to_path_spec(glyph)
         result = ""
-        glyph[:d].each do  |part|
+        glyph[:d].each do |part|
           result += part.first
           result += part[1 .. -1].join(" ")
         end
@@ -160,10 +163,11 @@ module Harpnotes
       end
 
       center = [root.center.first, root.center.last]
-      size = [root.size.first, root.size.last]           # size to be treated as radius
+      size = [root.size.first, root.size.last] # size to be treated as radius
 
       #path_spec = "M#{center.first} #{center.last}"
-      path_spec = self.glyph_to_path_spec(root.glyph)
+      path_spec = path_to_raphael(root.glyph[:d])
+      #path_spec = self.glyph_to_path_spec(root.glyph)
 
       # draw a white background
       e = @paper.rect(root.center.first, root.center.last - size.last, size.first, size.last)
@@ -186,7 +190,7 @@ module Harpnotes
       bbox = e.get_bbox()
       glyph_center = [(bbox[:x] + bbox[:x2])/2, (bbox[:y] + bbox[:y2])/2]
       scalefactor = size.last / bbox[:height]
-      e.transform("t#{(center.first)} #{(center.last)}t#{(- glyph_center.first)} #{(- glyph_center.last)}s#{scalefactor}")
+      e.transform("t#{(center.first)} #{(center.last)}t#{(-glyph_center.first)} #{(-glyph_center.last)}s#{scalefactor}")
 
       # add the dot if needed
       if root.dotted?
@@ -226,17 +230,17 @@ module Harpnotes
       startpoint = root.from.center
       startpoint[0] += PADDING
 
-      endpoint   = root.to.center
+      endpoint = root.to.center
       endpoint[0] += PADDING
 
       distance = root.distance
       unless distance.nil?
         depth = endpoint[0] + distance
       else
-        depth = 420 - (root.level * JUMPLINE_INDENT)  # todo replace literal
+        depth = 420 - (root.level * JUMPLINE_INDENT) # todo replace literal
       end
 
-      path  = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
+      path = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
       @paper.path(path)
 
       arrow = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0")
@@ -249,8 +253,11 @@ module Harpnotes
 
       # todo move this style definition to the layout section.
       # Font size is provided in mm while in jspdf it is in point ... We need to keep these definitions in sync
-      style_def = {regular: {text_color: [0,0,0], font_size: 4.2, font_style: "normal"},
-          large:   {text_color: [0,0,0], font_size: 7.03, font_style: "bold"}
+      style_def = {
+          smaller: {text_color: [0, 0, 0], font_size: 2.1, font_style: "normal"},
+          small: {text_color: [0, 0, 0], font_size: 3.1, font_style: "normal"},
+          regular: {text_color: [0, 0, 0], font_size: 4.2, font_style: "normal"},
+          large: {text_color: [0, 0, 0], font_size: 7.03, font_style: "bold"}
       }
 
       style = style_def[root.style] || style_def[:regular]
@@ -265,8 +272,14 @@ module Harpnotes
       # then achorpoint in ps is the baseline of the text, so we need to shift it up again by font size
       # todo this is a dependency to jspdf which I don't relly like
       #
-      element.translate(0 , element.get_bbox()[:height]/2 - style[:font_size])
+      element.translate(0, element.get_bbox()[:height]/2 - style[:font_size])
 
+    end
+
+    # draw a path
+    def draw_path(root)
+      path_spec = path_to_raphael(root.path)
+      @paper.path(path_spec)
     end
   end
 

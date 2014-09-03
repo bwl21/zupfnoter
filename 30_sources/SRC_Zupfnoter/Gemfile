@@ -3,3 +3,4 @@ source 'https://rubygems.org'
 
 gem 'opal', '>= 0.6.0'
 gem 'opal-jquery'
+gem 'vector2d', "~> 2.1.0"
