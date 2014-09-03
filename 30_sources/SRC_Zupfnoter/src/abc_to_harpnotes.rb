@@ -156,9 +156,8 @@ module Harpnotes
         # now parse the abc_code by abcjs
         # todo move this to opal-abcjs
         %x{
-          var book = new ABCJS.TuneBook(abc_code);
           var parser = new ABCJS.parse.Parse();
-          parser.parse(book.tunes[0].abc);
+          parser.parse(abc_code);
           var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
