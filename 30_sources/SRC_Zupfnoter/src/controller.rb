@@ -76,16 +76,18 @@ end
 
 class Controller
 
-  attr :editor, :harpnote_preview_printer, :tune_preview_printer
+  attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
 
   def initialize
+    Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
+
     $log = ConsoleLogger.new("consoleEntries")
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
     @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
     @dropboxclient = Opal::DropboxJs::NilClient.new()
-
+    @systemstatus={}
 
 
     @commands = CommandController::CommandStack.new
@@ -94,6 +96,8 @@ class Controller
     setup_ui
     setup_ui_listener
     load_from_loacalstorage
+    set_status(dropbox: "not connected", song: "unchanged", loglevel: $log.loglevel, autorefresh: true)
+
   end
 
 
@@ -166,7 +170,6 @@ class Controller
   def stop_play_abc
     @harpnote_player.stop()
     Element.find('#tbPlay').html('play')
-
   end
 
 
@@ -178,9 +181,8 @@ class Controller
     rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
-    $log.info("#finished Tune")
+    $log.debug("finished render tune #{__FILE__} #{__LINE__}")
     set_inactive("#tunePreview")
-
     nil
   end
 
@@ -195,7 +197,7 @@ class Controller
       $log.error([e.message, e.backtrace])
     end
 
-    $log.info("finished Haprnotes")
+    $log.debug("finished rendering Haprnotes #{__FILE__} #{__LINE__}")
     set_inactive("#harpPreview")
 
     nil
@@ -211,7 +213,6 @@ class Controller
 
     set_active("#harpPreview")
     `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
-
   end
 
   # download abc + pdfs as a zip archive
@@ -220,7 +221,7 @@ class Controller
     zip = JSZip::ZipFile.new
     zip.file("song.abc", @editor.get_text)
     zip.file("harpnotes_a4.pdf", render_a4.output(:blob))
-    zip.file("harpnotes_a3.pdf", render_a3.output(:bob))
+    zip.file("harpnotes_a3.pdf", render_a3.output(:blob))
     blob =zip.to_blob
     filename = "song#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
     `window.saveAs(blob, filename)`
@@ -265,6 +266,13 @@ class Controller
     highlight_abc_object(abcelement)
   end
 
+
+  def set_status(status)
+    @systemstatus.merge!(status)
+    statusmessage = @systemstatus.inject([]) { |r, v| r.push "#{v.first}: #{v.last}  "; r }.join(" | ")
+    Element.find("#tbStatus").html(statusmessage)
+  end
+
   private
 
 
@@ -300,6 +308,7 @@ class Controller
 
     # changes in the editor
     @editor.on_change do |e|
+      set_status(song: "changed")
       if @refresh_timer
         `clearTimeout(self.refresh_timer)`
         # `alert("refresh cancelled")`
@@ -313,7 +322,9 @@ class Controller
 
       #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
 
-      @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
+      if @systemstatus[:autorefresh]
+        @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
+      end
       nil
     end
 

@@ -15,6 +15,32 @@ class Controller
       end
     end
 
+    @commands.add_command(:loglevel) do |c|
+      c.undoable = false
+      c.set_help { "set log level" }
+      c.add_parameter(:level, :string) do |parameter|
+        parameter.set_default { "warning" }
+        parameter.set_help { "info | warning | error | debug " }
+      end
+      c.as_action do |args|
+        $log.loglevel=args[:level]
+        set_status(loglevel: $log.loglevel)
+      end
+    end
+
+    @commands.add_command(:autorefresh) do |c|
+      c.undoable = false
+      c.set_help { "turnon autorefresh" }
+      c.add_parameter(:value, :boolean) do |parameter|
+        parameter.set_default { "true" }
+        parameter.set_help { "true | false " }
+      end
+      c.as_action do |args|
+        result = (args[:value] == "true") || false
+        set_status(autorefresh: result)
+      end
+    end
+
     @commands.add_command(:undo) do |c|
       c.undoable = false
       c.set_help { "undo last command" }
@@ -142,6 +168,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 }
         args[:oldval] = @editor.get_text
         @editor.set_text(template)
+        set_status(song: "new")
       end
 
       c.as_inverse do |args|
@@ -164,6 +191,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         metadata = @abc_transformer.get_metadata(abc_code)
         filename = "#{metadata[:X]}_#{metadata[:T]}"
         @songbook.update(metadata[:X], abc_code, metadata[:T], true)
+        set_status(song: "saved to localstore")
         $log.info("saved to '#{filename}'")
       end
     end
@@ -213,6 +241,12 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         parameter.set_help { "(app | full) app: app only | full: full dropbox" }
       end
 
+      command.add_parameter(:path, :string) do |parameter|
+        parameter.set_default { "/" }
+        parameter.set_help { "path to set in dropbox" }
+      end
+
+
       command.set_help { "dropbox login for #{command.parameter_help(0)}" }
 
       command.as_action do |args|
@@ -220,23 +254,25 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
           when "full"
             @dropboxclient = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
             @dropboxclient.app_name = "full Dropbox"
-            @dropboxpath = "/zupfnoter/"
+            @dropboxpath = args[:path]
 
           when "app"
             @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
             @dropboxclient.app_name = "App folder only"
-            @dropboxpath = "/"
+            @dropboxpath = args[:path]
 
           else
             $log.error("select app | full")
         end
 
         @dropboxclient.authenticate().then do
+          set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
           $log.info("logged in at dropbox with #{args[:scope]} access")
         end
       end
-
       command.as_inverse do |args|
+        set_status(dropbox: "logged out")
+
         $log.info("logged out from dropbox")
         @dropboxclient = nil
       end
@@ -276,11 +312,14 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         rootpath = args[:path]
         args[:oldval] = @dropboxpath
         @dropboxpath = rootpath
+
+        set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
         $log.info("dropbox path changed to #{@dropboxpath}")
       end
 
       command.as_inverse do |args|
         @dropboxpath = args[:oldval]
+        set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
         $log.info("dropbox path changed back to #{@dropboxpath}")
       end
     end
@@ -331,6 +370,7 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 
           Promise.when(save_promises)
         end.then do
+          set_status(song: "saved to dropbox")
           $log.info("all files saved")
         end.fail do |err|
           $log.error("there was an error saving files #{err}")
@@ -357,16 +397,19 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
         @dropboxclient.authenticate().then do |error, data|
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
-          $log.puts entries
+          $log.debug entries
           file = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
           @dropboxclient.read_file("#{rootpath}#{file}")
         end.then do |abc_text|
-          $log.puts "got it"
+          $log.debug "got it"
           @editor.set_text(abc_text)
+          set_status(song: "loaded")
+
         end
       end
 
       command.as_inverse do |args|
+        # todo maintain editor status
         @editor.set_text(args[:oldval])
       end
 
