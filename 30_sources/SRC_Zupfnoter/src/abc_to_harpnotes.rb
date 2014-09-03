@@ -141,11 +141,19 @@ module Harpnotes
       #
       def get_metadata(abc_code)
         retval = abc_code.split("\n").inject({}) do |result, line|
-          entry = line.match(/^(X|T):\s*(.*)/) { |m| [m[1], m[2]] }
+          entry = line.match(/^(X|T|F):\s*(.*)/) { |m| [m[1], m[2]] }
           result[entry.first] = entry.last if entry
           result
         end
         retval
+      end
+
+      # add missing metadata
+      #
+      def add_metadata(abc_code, new_metadata)
+        old_metadata = get_metadata(abc_code)
+        more_metadata = new_metadata.select{|k, v| old_metadata[k].nil?}.map{|k,v| "#{k}:#{v}"}
+        [more_metadata, abc_code].flatten.compact.join("\n")
       end
 
       def transform(abc_code)

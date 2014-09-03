@@ -207,7 +207,7 @@ module CommandController
     STRING_COMMAND_REGEX = /([^ \\\^"{]+)|"(([^\\"]|\\["n\\])*)"|(\{.+\})/
 
     def parse_string(command)
-      r = command.scan(STRING_COMMAND_REGEX).map { |s| s.select { |x| x.is_a? Object }.first }
+      r = command.scan(STRING_COMMAND_REGEX).map { |s| s.select { |x| not x.nil? }.first }
 
     end
 

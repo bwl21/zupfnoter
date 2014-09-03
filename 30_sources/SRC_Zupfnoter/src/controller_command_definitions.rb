@@ -137,14 +137,16 @@ class Controller
 
         song_id = args[:id]
         song_title = args[:title]
+        filename = song_title.gsub(/[^a-zA-Z0-9\-\_]/, "_")
         raise "no id specified" unless song_id
         raise "no title specified" unless song_title
 
         ## todo use erb for this
         template = %Q{X:#{song_id}
+F:#{song_id}_#{filename}
 T:#{song_title}
-C:{copyright}
-R:{rhythm}
+C:
+S:
 M:4/4
 L:1/4
 Q:1/4=120
@@ -156,14 +158,12 @@ K:C
 %%%%hn.note [[5, 50], "Folge: A A B B C A", "regular"]
 %%%%hn.note [[360, 280], "Erstellt mit Zupfnoter 0.7", "regular"]
 %%score T1 T2  B1 B2
-V:T1 clef=treble-8 octave=-1 name="Sopran" snm="S"
-V:T2 clef=treble-8 octave=-1 name="Alt" snm="A"
-V:B1 clef=bass transpose=-24 name="Tenor" middle=D, snm="T"
-V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
+V:T1 clef=treble-8 name="Sopran" snm="S"
+V:T2 clef=treble-8  name="Alt" snm="A"
+%V:B1 clef=bass transpose=-24 name="Tenor" middle=D, snm="T"
+%V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
 [V:T1] c'
 [V:T2] c
-[V:B1] c,
-[V:B2] C
 %
 }
         args[:oldval] = @editor.get_text
@@ -335,7 +335,6 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
     end
 
     @commands.add_command(:dsave) do |command|
-
       command.add_parameter(:path, :string) do |parameter|
         parameter.set_default { @dropboxpath }
         parameter.set_help { "path to save in #{@dropboxclient.app_name}" }
@@ -348,7 +347,17 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
       command.as_action do |args|
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = "#{metadata[:X]}_#{metadata[:T]}"
+        filebase = metadata[:F]
+        $log.debug(metadata.to_s)
+        if filebase
+          filebase = filebase.split("\n").first
+        else
+          raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
+        end
+
+        layout_harpnotes
+        render_previews
+
         print_variants = @song.harpnote_options[:print]
 
         rootpath = args[:path]
@@ -398,13 +407,17 @@ V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.debug entries
-          file = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
-          @dropboxclient.read_file("#{rootpath}#{file}")
+          fileid = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
+          @dropboxclient.read_file("#{rootpath}#{fileid}")
         end.then do |abc_text|
-          $log.debug "got it"
+          $log.debug "loaded #{fileid}"
+          filebase = fileid.split(".abc")[0 .. -1].join(".abc")
+          abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
+
           @editor.set_text(abc_text)
           set_status(song: "loaded")
-
+        end.fail do |err|
+          $log.error("could not load file #{err}")
         end
       end
 
