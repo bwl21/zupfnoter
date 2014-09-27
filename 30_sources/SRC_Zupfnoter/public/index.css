@@ -94,33 +94,62 @@ body {
     border-left: 1px solid black;
     cursor: pointer; }
 
-#console {
+#commandconsole {
   overflow: auto;
   height: 100%;
-  font-size: 80%; }
-  #console ul {
+  font-size: 80%;
+  color: black;
+  font-family: monospace; }
+  #commandconsole ul {
     width: 100%;
     height: 100%;
     list-style-type: none;
     color: #000000; }
-  #console li {
+  #commandconsole li {
     border-bottom: 1px solid black;
-    line-height: 2em;
-    padding-left: 1em; }
-  #console .error {
+    line-height: 1.2em;
+    padding-left: 1em;
+    list-style: none; }
+  #commandconsole .error {
     color: #ff0035; }
-  #console .info {
+  #commandconsole .info {
     color: #000000; }
-  #console .warning {
+  #commandconsole .warning {
     color: #e8661d; }
-  #console .debug {
+  #commandconsole .debug {
     color: #120ee8; }
-  #console .time {
+  #commandconsole .time {
     padding-left: 1em;
     width: 10%;
     display: inline-block; }
-  #console .msg {
+  #commandconsole .msg {
     display: inline-block; }
+  #commandconsole .jqconsole {
+    padding: 10px;
+    padding-bottom: 10px; }
+  #commandconsole .jqconsole-cursor {
+    background-color: #999999; }
+  #commandconsole .jqconsole-blurred .jqconsole-cursor {
+    background-color: #ffffff; }
+  #commandconsole .jqconsole-prompt {
+    color: #000;
+    font-weight: bold; }
+  #commandconsole .jqconsole-old-prompt {
+    color: #000;
+    font-weight: bold; }
+  #commandconsole .jqconsole-input {
+    color: #dd0; }
+  #commandconsole .jqconsole-old-input {
+    color: #bb0;
+    font-weight: normal; }
+  #commandconsole .brace {
+    color: #00FFFF; }
+  #commandconsole .paran {
+    color: #FF00FF; }
+  #commandconsole .bracket {
+    color: #FFFF00; }
+  #commandconsole .jqconsole-composition {
+    background-color: red; }
 
 #leftColumn {
   position: absolute;
@@ -140,7 +169,7 @@ body {
   top: 0px;
   left: 0px;
   right: 0px;
-  bottom: 30%; }
+  bottom: 50%; }
   #abcEditorContainer .body {
     top: 0px; }
   #abcEditorContainer .editor {
@@ -169,7 +198,7 @@ body {
   right: 0px; }
 
 #consoleLog {
-  top: 70%;
+  top: 50%;
   left: 0px;
   right: 0%;
   bottom: 0px; }

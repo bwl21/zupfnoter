@@ -16,7 +16,7 @@ class ConsoleLogger
 
 
   def initialize(element_id)
-    @console = Element.find("##{element_id}")
+    @console = element_id # Element.find("##{element_id}")
     @loglevel = LOGLEVELS[:info]
   end
 
@@ -52,10 +52,7 @@ class ConsoleLogger
     current_level = LOGLEVELS[type] || LOGLEVELS[:warning]
     if (current_level <= @loglevel)
       time = Time.now.strftime("%H:%M:%S")
-      @console << "<li class='#{type}'><i class=\"#{LOGICONS[type]}\"><span class='time'>#{time}</span><span class='msg'>#{msg}</span></li>"
-      #Native(@console.parent).scrollTop(9999999) -- whyever this does not work :-)
-      `self.console.parent().scrollTop(999999)`
-
+      @console.write_html "<li class='#{type}'><i class=\"#{LOGICONS[type]}\"><span class='time'>#{time}</span><span class='msg'>#{msg}</span></li>"
       puts msg
     end
   end

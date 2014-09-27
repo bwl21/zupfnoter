@@ -81,12 +81,21 @@ class Controller
   def initialize
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
-    $log = ConsoleLogger.new("consoleEntries")
+    @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
+    @console.load_from_loacalstorage
+    @console.on_command do |cmd|
+      @console.save_to_localstorage
+      handle_command(cmd)
+    end
+
+    $log = ConsoleLogger.new(@console)
+    $log.info ("Welcome to Zupfnoter #{VERSION}")
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
     @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
     @dropboxclient = Opal::DropboxJs::NilClient.new()
+
     @systemstatus={}
 
 
@@ -109,25 +118,6 @@ class Controller
       @commands.run_string(command)
     rescue Exception => e
       $log.error(e.message)
-    end
-    return
-
-    command_tokens = command.split(" ")
-    case command_tokens.first
-
-      # save current song
-      # todo check the title
-
-      when "lw"
-        $log.debug ("listing webdav")
-        Browser.HTTP.get("http://www.weichel21.de/months.js").then do |response|
-          $log.debug "returned #{response.status_code}"
-          $log.debug response.body
-
-        end
-
-      else
-        $log.error("wrong commnad: #{command}")
     end
   end
 
