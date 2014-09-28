@@ -1,2 +1,2 @@
-VERSION = "0.8.0"
+VERSION = "0.9.1"
 COPYRIGHT = "©#{Time.now.year} https://www.bernhard-weichel.de"

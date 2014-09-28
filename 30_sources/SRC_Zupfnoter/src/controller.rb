@@ -81,12 +81,21 @@ class Controller
   def initialize
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
-    $log = ConsoleLogger.new("consoleEntries")
+    @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
+    @console.load_from_loacalstorage
+    @console.on_command do |cmd|
+      @console.save_to_localstorage
+      handle_command(cmd)
+    end
+
+    $log = ConsoleLogger.new(@console)
+    $log.info ("Welcome to Zupfnoter #{VERSION}")
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
     @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
     @dropboxclient = Opal::DropboxJs::NilClient.new()
+
     @systemstatus={}
 
 
@@ -109,25 +118,6 @@ class Controller
       @commands.run_string(command)
     rescue Exception => e
       $log.error(e.message)
-    end
-    return
-
-    command_tokens = command.split(" ")
-    case command_tokens.first
-
-      # save current song
-      # todo check the title
-
-      when "lw"
-        $log.debug ("listing webdav")
-        Browser.HTTP.get("http://www.weichel21.de/months.js").then do |response|
-          $log.debug "returned #{response.status_code}"
-          $log.debug response.body
-
-        end
-
-      else
-        $log.error("wrong commnad: #{command}")
     end
   end
 
@@ -207,6 +197,7 @@ class Controller
   def render_previews
     $log.info("rendering")
     save_to_localstorage
+    setup_tune_preview
 
     set_active("#tunePreview")
     `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
@@ -285,7 +276,12 @@ class Controller
     end
 
     # setup tune preview
-    printerparams = {staffwidth: 750} #todo compute the staffwidth
+    #setup_tune_preview
+  end
+
+  def setup_tune_preview
+    width = Native(Element.find("#tunePreviewContainer").width) - 70 # todo: 50 determined by experiement
+    printerparams = {staffwidth: width} #todo compute the staffwidth
     @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview", printerparams)
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement)
@@ -293,17 +289,12 @@ class Controller
     end
   end
 
-
   def setup_ui_listener
 
     Element.find("#tbPlay").on(:click) { play_abc(:selection_ff) }
     Element.find("#tbRender").on(:click) { render_previews }
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
-    Element.find("#tbCommand").on(:change) { |event|
-      handle_command(Native(event[:target])[:value])
-      Native(event[:target])[:value] = ""
-    }
 
 
     # changes in the editor

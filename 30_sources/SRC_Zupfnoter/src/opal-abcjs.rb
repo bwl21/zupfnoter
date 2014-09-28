@@ -5,7 +5,8 @@ module ABCJS
       def initialize(div, printerparams={})
         # setup the tune previewer
         @parent = Native(Element.find("##{div}"))
-        paper =  Raphael::Paper.new(div, 1100, 700) # don't know why it is 700 width #Raphael(this.div, 1100, 700);
+        @parent.find('svg').remove()
+        paper =  Raphael::Paper.new(div, 1100, 900) # don't know why it is 700 width #Raphael(this.div, 1100, 700);
                                                     # note that this value is overridden by printerparam staffwidth
                                                     # which has a default of 700
         @paper = paper.raw
