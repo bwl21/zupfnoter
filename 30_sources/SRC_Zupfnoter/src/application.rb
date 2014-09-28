@@ -19,6 +19,7 @@
     require 'harpnote_player'
     require 'text_pane'
     require 'opal-dropboxjs'
+    require 'opal-jqconsole'
     require 'version'
 
     puts "now starting zupfnoter"

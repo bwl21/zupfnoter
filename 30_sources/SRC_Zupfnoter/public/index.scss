@@ -1,9 +1,10 @@
 @import "reset";
+
 //@import "icons/fontello.css";
 
 $toolbarHeight: 30px;
 $titleHeight: 2em;
-$consoleHeight: 30%;
+$consoleHeight: 50%;
 
 $backgoundColor: #0A425C;
 $titleColor: #1BA5A5;
@@ -75,13 +76,13 @@ body {
   }
 }
 
-
-
-#console {
+#commandconsole {
 
   overflow: auto;
-  height:100%;
+  height: 100%;
   font-size: 80%;
+  color: black;
+  font-family: monospace;
 
   ul {
     width: 100%;
@@ -92,8 +93,9 @@ body {
 
   li {
     border-bottom: 1px solid black;
-    line-height: 2em;
+    line-height: 1.2em;
     padding-left: 1em;
+    list-style: none;
   }
 
   .error {
@@ -101,17 +103,16 @@ body {
   }
 
   .info {
-       color: #000000;
-     }
+    color: #000000;
+  }
 
   .warning {
     color: #e8661d;
   }
 
   .debug {
-       color: #120ee8;
-     }
-
+    color: #120ee8;
+  }
 
   .time {
     padding-left: 1em;
@@ -121,6 +122,50 @@ body {
   .msg {
     display: inline-block;
   }
+
+
+  // this stuff is mainly copied from opal-irb
+
+  .jqconsole {
+    padding: 10px;
+    padding-bottom: 10px;
+  }
+  .jqconsole-cursor {
+    background-color: #999999;
+  }
+  .jqconsole-blurred .jqconsole-cursor {
+    background-color: #ffffff;
+  }
+  .jqconsole-prompt {
+    color: #000;
+    font-weight: bold;
+
+  }
+  .jqconsole-old-prompt {
+    color: #000;
+    font-weight: bold;
+  }
+  .jqconsole-input {
+    color: #dd0;
+  }
+  .jqconsole-old-input {
+    color: #bb0;
+    font-weight: normal;
+  }
+  .brace {
+    color: #00FFFF;
+  }
+  .paran {
+    color: #FF00FF;
+  }
+  .bracket {
+    color: #FFFF00;
+  }
+  .jqconsole-composition {
+    background-color: red;
+  }
+
+
 }
 
 #leftColumn {
@@ -130,6 +175,7 @@ body {
   bottom: 0px;
   right: 50%;
 }
+
 #rightColumn {
   position: absolute;
   left: 50%;
@@ -168,7 +214,7 @@ body {
 }
 
 #harpPreview {
-  overflow:auto;
+  overflow: auto;
 }
 
 #harpPreviewContainer {

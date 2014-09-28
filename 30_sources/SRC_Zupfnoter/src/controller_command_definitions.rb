@@ -119,6 +119,14 @@ class Controller
       end
     end
 
+    @commands.add_command(:render) do |c|
+      c.undoable = false
+      c.set_help { "refresh" }
+      c.as_action do |a|
+        render_previews
+      end
+    end
+
   end
 
   def __ic_03_create_commands
