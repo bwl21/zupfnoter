@@ -197,6 +197,7 @@ class Controller
   def render_previews
     $log.info("rendering")
     save_to_localstorage
+    setup_tune_preview
 
     set_active("#tunePreview")
     `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
@@ -275,7 +276,12 @@ class Controller
     end
 
     # setup tune preview
-    printerparams = {staffwidth: 750} #todo compute the staffwidth
+    #setup_tune_preview
+  end
+
+  def setup_tune_preview
+    width = Native(Element.find("#tunePreviewContainer").width) - 70 # todo: 50 determined by experiement
+    printerparams = {staffwidth: width} #todo compute the staffwidth
     @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview", printerparams)
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement)
@@ -283,17 +289,12 @@ class Controller
     end
   end
 
-
   def setup_ui_listener
 
     Element.find("#tbPlay").on(:click) { play_abc(:selection_ff) }
     Element.find("#tbRender").on(:click) { render_previews }
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
-    Element.find("#tbCommand").on(:change) { |event|
-      handle_command(Native(event[:target])[:value])
-      Native(event[:target])[:value] = ""
-    }
 
 
     # changes in the editor
