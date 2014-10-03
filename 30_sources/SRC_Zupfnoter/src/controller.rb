@@ -107,7 +107,7 @@ class Controller
     load_demo_tune
     load_from_loacalstorage
     render_previews
-    set_status(dropbox: "not connected", song: "unchanged", loglevel: $log.loglevel, autorefresh: true)
+    set_status(dropbox: "not connected", song: "unchanged", loglevel: $log.loglevel, autorefresh: :on)
 
   end
 
@@ -216,7 +216,10 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
   def render_previews
     $log.info("rendering")
-    save_to_localstorage
+    unless @systemstatus[:autorefresh] == :remote
+      save_to_localstorage
+      send_remote_command('render')
+    end
     setup_tune_preview
 
     set_active("#tunePreview")
@@ -224,6 +227,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     set_active("#harpPreview")
     `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+  end
+
+  def render_remote
+    save_to_localstorage
+    send_remote_command('render')
   end
 
   # download abc + pdfs as a zip archive
@@ -296,11 +304,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     end
 
     # setup tune preview
-    #setup_tune_preview
   end
 
   def setup_tune_preview
-    width = Native(Element.find("#tunePreviewContainer").width) - 70 # todo: 50 determined by experiement
+    width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
+    $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     printerparams = {staffwidth: width} #todo compute the staffwidth
     @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview", printerparams)
     @tune_preview_printer.on_select do |abcelement|
@@ -333,8 +341,13 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
       #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
 
-      if @systemstatus[:autorefresh]
-        @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
+      case @systemstatus[:autorefresh]
+        when :on
+          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
+        when :off
+          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 0)`
+        when :remote
+          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
       end
       nil
     end
@@ -382,6 +395,16 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       end
     end
 
+    Element.find(`window`).on(:storage) do |evt|
+      key = Native(evt[:originalEvent]).key
+      value = Native(evt[:originalEvent]).newValue
+
+      $log.debug("got storage event #{key}: #{value}")
+      if systemstatus[:autorefresh] == :remote && key == :command && value == 'render'
+        load_from_loacalstorage
+      end
+    end
+
     # dragbars
     Element.find("#dragbar").on(:mousedown) do |re|
       re.prevent
@@ -394,6 +417,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
         `$(document).unbind('mousemove')`
       end
     end
+  end
+
+  def send_remote_command(command)
+    `localStorage.setItem('command', '');`
+    `localStorage.setItem('command', #{command});`
   end
 
   def set_active(ui_element)
