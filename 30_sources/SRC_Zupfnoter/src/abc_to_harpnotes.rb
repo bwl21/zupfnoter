@@ -500,7 +500,7 @@ module Harpnotes
       end
 
       def transform_bar_right_repeat(bar)
-        if @repetition_stack.length == 1
+        if  @repetition_stack.length == 1
           start = @repetition_stack.last
         else
           start = @repetition_stack.pop

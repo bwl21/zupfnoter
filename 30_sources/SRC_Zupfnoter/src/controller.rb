@@ -104,7 +104,9 @@ class Controller
 
     setup_ui
     setup_ui_listener
+    load_demo_tune
     load_from_loacalstorage
+    render_previews
     set_status(dropbox: "not connected", song: "unchanged", loglevel: $log.loglevel, autorefresh: true)
 
   end
@@ -117,7 +119,7 @@ class Controller
     begin
       @commands.run_string(command)
     rescue Exception => e
-      $log.error(e.message)
+      $log.error("#{e.message} in #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
     end
   end
 
@@ -131,6 +133,24 @@ class Controller
   def load_from_loacalstorage
     abc = Native(`localStorage.getItem('abc_data')`)
     @editor.set_text(abc) unless abc.nil?
+  end
+
+  # this loads a demo song
+  def load_demo_tune
+    abc =%Q{C: Generated more or less automatically
+C: by swtoabc by Erich Rickheit KSC
+X:1
+T:Zupfnoter Demo Tune
+T:do you recognize it?
+M:6/8
+L:1/4
+K:G
+Q:1/4=120
+z4 z E| G2 A B3/2- c/2 B| A2 F D3/2- E/2 F| G2 E E3/2- ^D/2 E| F2 ^D B,2 E |
+G2 A B3/2- c/2 B| A2 F D3/2- E/2 F| G3/2- F/2 E ^D3/2- ^C/2 D| E3 E2 z|
+d3 d3/2- ^c/2 B| A2 F D3/2- E/2- F| G2- E E3/2- ^D/2 E| F2 ^D B,3|
+d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
+    @editor.set_text(abc)
   end
 
   # render the harpnotes to a3

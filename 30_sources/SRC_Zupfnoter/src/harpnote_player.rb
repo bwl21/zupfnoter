@@ -40,9 +40,17 @@ module Harpnotes
 
 
       def play_from_selection
-        notes_to_play = @voice_elements.select { |n|
-          n[:delay] >= @selection.first[:delay]
-        }
+        $log.debug(@selection.to_s)
+
+        if @selection.first
+          notes_to_play = @voice_elements.select do |n|
+            n[:delay] >= @selection.first[:delay]
+          end
+        else
+          $log.error("please select at least one note")
+          notes_to_play = []
+        end
+
         play_notes(notes_to_play)
       end
 
@@ -57,28 +65,32 @@ module Harpnotes
       def play_notes(the_notes)
         self.stop()
 
-        #note schedule in secc, SetTimout in msec; finsh after last measure
-        `clearTimeout(self.song_off_timer)` if @song_off_timer
+        unless the_notes.empty?
+          #note schedule in secc, SetTimout in msec; finsh after last measure
+          `clearTimeout(self.song_off_timer)` if @song_off_timer
 
-        firstnote = the_notes.first
-        lastnote = the_notes.last
+          firstnote = the_notes.first
+          lastnote = the_notes.last
 
-        # stoptime comes in msec
-        stop_time = (lastnote[:delay] - firstnote[:delay] + Harpnotes::Layout::Default::SHORTEST_NOTE * @duration_timefactor) * 1000 # todo factor out the literals
-        @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop_time )`
+          # stoptime comes in msec
+          stop_time = (lastnote[:delay] - firstnote[:delay] + Harpnotes::Layout::Default::SHORTEST_NOTE * @duration_timefactor) * 1000 # todo factor out the literals
+          @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop_time )`
 
 
-        the_notes.each { |the_note|
-          the_note_to_play = the_note.clone
-          the_note_to_play[:delay] -= firstnote[:delay]
+          the_notes.each do |the_note|
+            the_note_to_play = the_note.clone
+            the_note_to_play[:delay] -= firstnote[:delay]
 
-          note = the_note_to_play.to_n
-          %x{
+            note = the_note_to_play.to_n
+            %x{
             self.inst.tone(note);
             self.inst.schedule(note.delay + note.duration, function(){self.inst._trigger("noteoff", note);});
            }
-        }
-        @isplaying = true
+          end
+          @isplaying = true
+        else
+          $log.warn("nothing selected to play")
+        end
       end
 
 
@@ -119,7 +131,7 @@ module Harpnotes
 
         # 1/4 = 120 bpm shall be  32 ticks per quarter: convert to 1/4 <-> 128:
         tf = spectf * (128/120)
-        @duration_timefactor = 1/tf  # convert music duration to musicaljs duration
+        @duration_timefactor = 1/tf # convert music duration to musicaljs duration
         @beat_timefactor = 1/(tf * Harpnotes::Layout::Default::BEAT_PER_DURATION) # convert music beat to musicaljs delay
 
         #todo duration_time_factor, beat_time_factor
