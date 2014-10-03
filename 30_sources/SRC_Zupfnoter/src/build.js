@@ -17746,7 +17746,7 @@ if (p == null) p = nil;
 (function($opal) {
   var $a, $b, TMP_20, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$setup_ui_listener', '$set_status', '$loglevel', '$run_string', '$error', '$message', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$backtrace', '$debug', '$set_inactive', '$load_song', '$setup_tune_preview', '$set_active', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$join', '$inject', '$push', '$first', '$last', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$-', '$width', '$on', '$play_abc', '$render_previews', '$on_change', '$on_selection_change', '$get_selection_positions', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$prevent_default', '$save_file', '$prevent', '$css', '$page_x', '$ready?']);
+  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$setup_ui_listener', '$load_demo_tune', '$render_previews', '$set_status', '$loglevel', '$run_string', '$error', '$message', '$caller', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$backtrace', '$debug', '$set_inactive', '$load_song', '$setup_tune_preview', '$set_active', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$join', '$inject', '$push', '$first', '$last', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$-', '$width', '$on', '$play_abc', '$on_change', '$on_selection_change', '$get_selection_positions', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$prevent_default', '$save_file', '$prevent', '$css', '$page_x', '$ready?']);
   (function($base, $super) {
     function $LocalStore(){};
     var self = $LocalStore = $klass($base, $super, 'LocalStore', $LocalStore);
@@ -17889,7 +17889,9 @@ if (m == null) m = nil;
       return self.$send(m)}, TMP_2._s = self, TMP_2), $a).call($c);
       self.$setup_ui();
       self.$setup_ui_listener();
+      self.$load_demo_tune();
       self.$load_from_loacalstorage();
+      self.$render_previews();
       return self.$set_status($hash2(["dropbox", "song", "loglevel", "autorefresh"], {"dropbox": "not connected", "song": "unchanged", "loglevel": $gvars.log.$loglevel(), "autorefresh": true}));
     };
 
@@ -17900,7 +17902,7 @@ if (m == null) m = nil;
       try {
       return self.commands.$run_string(command)
       } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
-        return $gvars.log.$error(e.$message())
+        return $gvars.log.$error("" + (e.$message()) + " in " + (command) + " " + (e.$caller()) + " " + ("controller") + ":" + (122))
         }else { throw $err; }
       };
     };
@@ -17921,6 +17923,13 @@ if (m == null) m = nil;
         } else {
         return self.editor.$set_text(abc)
       };
+    };
+
+    def.$load_demo_tune = function() {
+      var self = this, abc = nil;
+
+      abc = "C: Generated more or less automatically\nC: by swtoabc by Erich Rickheit KSC\nX:1\nT:Zupfnoter Demo Tune\nT:do you recognize it?\nM:6/8\nL:1/4\nK:G\nQ:1/4=120\nz4 z E| G2 A B3/2- c/2 B| A2 F D3/2- E/2 F| G2 E E3/2- ^D/2 E| F2 ^D B,2 E |\nG2 A B3/2- c/2 B| A2 F D3/2- E/2 F| G3/2- F/2 E ^D3/2- ^C/2 D| E3 E2 z|\nd3 d3/2- ^c/2 B| A2 F D3/2- E/2- F| G2- E E3/2- ^D/2 E| F2 ^D B,3|\nd3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| ";
+      return self.editor.$set_text(abc);
     };
 
     def.$render_a3 = function(index) {
@@ -17982,7 +17991,7 @@ if (m == null) m = nil;
         $gvars.log.$error([e.$message(), e.$backtrace()])
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished render tune " + ("controller") + " " + (174));
+      $gvars.log.$debug("finished render tune " + ("controller") + " " + (194));
       self.$set_inactive("#tunePreview");
       return nil;
     };
@@ -17999,7 +18008,7 @@ if (m == null) m = nil;
         $gvars.log.$error([e.$message(), e.$backtrace()])
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (190));
+      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (210));
       self.$set_inactive("#harpPreview");
       return nil;
     };
@@ -18140,7 +18149,7 @@ if (e == null) e = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (e == null) e = nil;
       a = self.editor.$get_selection_positions();
-        $gvars.log.$debug("editor selecton " + (a.$first()) + " to " + (a.$last()) + " (" + ("controller") + ":" + (325) + ")");
+        $gvars.log.$debug("editor selecton " + (a.$first()) + " to " + (a.$last()) + " (" + ("controller") + ":" + (345) + ")");
         if (a.$first()['$=='](a.$last())) {
           return nil
           } else {
@@ -18165,7 +18174,7 @@ if (e == null) e = nil;
       ($a = ($k = (($l = $scope.Element) == null ? $opal.cm('Element') : $l).$find(window)).$on, $a._p = (TMP_16 = function(evt){var self = TMP_16._s || this, $a;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
-      $gvars.log.$debug("key pressed (" + ("controller") + " " + (352) + ")");
+      $gvars.log.$debug("key pressed (" + ("controller") + " " + (372) + ")");
         console.log(event);
         if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();
@@ -18739,7 +18748,7 @@ if (args == null) args = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$on', '$[]', '$Native', '$call', '$select', '$>=', '$first', '$play_notes', '$stop', '$last', '$*', '$+', '$-', '$each', '$clone', '$[]=', '$to_n', '$nil?', '$error', '$class', '$>', '$<', '$===', '$push', '$sort', '$<=>', '$reduce', '$meta_data', '$/', '$debug', '$compact', '$flatten', '$map', '$is_a?', '$beat', '$-@', '$pitch', '$duration', '$origin', '$tie_end?', '$==', '$tie_start?', '$each_with_index', '$voices']);
+  $opal.add_stubs(['$on', '$[]', '$Native', '$call', '$debug', '$to_s', '$first', '$select', '$>=', '$error', '$play_notes', '$stop', '$empty?', '$warn', '$last', '$*', '$+', '$-', '$each', '$clone', '$[]=', '$to_n', '$nil?', '$class', '$>', '$<', '$===', '$push', '$sort', '$<=>', '$reduce', '$meta_data', '$/', '$compact', '$flatten', '$map', '$is_a?', '$beat', '$-@', '$pitch', '$duration', '$origin', '$tie_end?', '$==', '$tie_start?', '$each_with_index', '$voices']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -18756,7 +18765,7 @@ if (args == null) args = nil;
 
         var def = self._proto, $scope = self._scope, TMP_1, TMP_3, TMP_5;
 
-        def.isplaying = def.inst = def.voice_elements = def.selection = def.song_off_timer = def.duration_timefactor = nil;
+        def.isplaying = def.inst = def.selection = def.voice_elements = def.song_off_timer = def.duration_timefactor = nil;
         def.$initialize = function() {
           var self = this;
 
@@ -18802,11 +18811,18 @@ if (element == null) element = nil;
 
         def.$play_from_selection = function() {
           var $a, $b, TMP_6, self = this, notes_to_play = nil;
+          if ($gvars.log == null) $gvars.log = nil;
 
-          notes_to_play = ($a = ($b = self.voice_elements).$select, $a._p = (TMP_6 = function(n){var self = TMP_6._s || this;
-            if (self.selection == null) self.selection = nil;
+          $gvars.log.$debug(self.selection.$to_s());
+          if ((($a = self.selection.$first()) !== nil && (!$a._isBoolean || $a == true))) {
+            notes_to_play = ($a = ($b = self.voice_elements).$select, $a._p = (TMP_6 = function(n){var self = TMP_6._s || this;
+              if (self.selection == null) self.selection = nil;
 if (n == null) n = nil;
-          return n['$[]']("delay")['$>='](self.selection.$first()['$[]']("delay"))}, TMP_6._s = self, TMP_6), $a).call($b);
+            return n['$[]']("delay")['$>='](self.selection.$first()['$[]']("delay"))}, TMP_6._s = self, TMP_6), $a).call($b)
+            } else {
+            $gvars.log.$error("please select at least one note");
+            notes_to_play = [];
+          };
           return self.$play_notes(notes_to_play);
         };
 
@@ -18824,24 +18840,29 @@ if (n == null) n = nil;
 
         def.$play_notes = function(the_notes) {
           var $a, $b, $c, $d, TMP_7, self = this, firstnote = nil, lastnote = nil, stop_time = nil;
+          if ($gvars.log == null) $gvars.log = nil;
 
           self.$stop();
-          if ((($a = self.song_off_timer) !== nil && (!$a._isBoolean || $a == true))) {
-            clearTimeout(self.song_off_timer);};
-          firstnote = the_notes.$first();
-          lastnote = the_notes.$last();
-          stop_time = (lastnote['$[]']("delay")['$-'](firstnote['$[]']("delay"))['$+']((($a = ((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Layout == null ? $c.cm('Layout') : $c.Layout))._scope).Default == null ? $b.cm('Default') : $b.Default))._scope).SHORTEST_NOTE == null ? $a.cm('SHORTEST_NOTE') : $a.SHORTEST_NOTE)['$*'](self.duration_timefactor)))['$*'](1000);
-          self.song_off_timer = setTimeout(function(){self.songoff_callback.$call()}, stop_time );
-          ($a = ($b = the_notes).$each, $a._p = (TMP_7 = function(the_note){var self = TMP_7._s || this, $a, $b, the_note_to_play = nil, note = nil;
+          if ((($a = the_notes['$empty?']()) !== nil && (!$a._isBoolean || $a == true))) {
+            return $gvars.log.$warn("nothing selected to play")
+            } else {
+            if ((($a = self.song_off_timer) !== nil && (!$a._isBoolean || $a == true))) {
+              clearTimeout(self.song_off_timer);};
+            firstnote = the_notes.$first();
+            lastnote = the_notes.$last();
+            stop_time = (lastnote['$[]']("delay")['$-'](firstnote['$[]']("delay"))['$+']((($a = ((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Layout == null ? $c.cm('Layout') : $c.Layout))._scope).Default == null ? $b.cm('Default') : $b.Default))._scope).SHORTEST_NOTE == null ? $a.cm('SHORTEST_NOTE') : $a.SHORTEST_NOTE)['$*'](self.duration_timefactor)))['$*'](1000);
+            self.song_off_timer = setTimeout(function(){self.songoff_callback.$call()}, stop_time );
+            ($a = ($b = the_notes).$each, $a._p = (TMP_7 = function(the_note){var self = TMP_7._s || this, $a, $b, the_note_to_play = nil, note = nil;
 if (the_note == null) the_note = nil;
-          the_note_to_play = the_note.$clone();
-            ($a = "delay", $b = the_note_to_play, $b['$[]=']($a, $b['$[]']($a)['$-'](firstnote['$[]']("delay"))));
-            note = the_note_to_play.$to_n();
-            
+            the_note_to_play = the_note.$clone();
+              ($a = "delay", $b = the_note_to_play, $b['$[]=']($a, $b['$[]']($a)['$-'](firstnote['$[]']("delay"))));
+              note = the_note_to_play.$to_n();
+              
             self.inst.tone(note);
             self.inst.schedule(note.delay + note.duration, function(){self.inst._trigger("noteoff", note);});
            }, TMP_7._s = self, TMP_7), $a).call($b);
-          return self.isplaying = true;
+            return self.isplaying = true;
+          };
         };
 
         def.$stop = function() {
@@ -18891,7 +18912,7 @@ if (element == null) element = nil;
           tf = spectf['$*'](((128)['$/'](120)));
           self.duration_timefactor = (1)['$/'](tf);
           self.beat_timefactor = (1)['$/']((tf['$*']((($a = ((($b = ((($c = ((($d = $scope.Harpnotes) == null ? $opal.cm('Harpnotes') : $d))._scope).Layout == null ? $c.cm('Layout') : $c.Layout))._scope).Default == null ? $b.cm('Default') : $b.Default))._scope).BEAT_PER_DURATION == null ? $a.cm('BEAT_PER_DURATION') : $a.BEAT_PER_DURATION))));
-          $gvars.log.$debug("playing with tempo: " + (tf) + " ticks per quarter " + ("harpnote_player") + " " + (127));
+          $gvars.log.$debug("playing with tempo: " + (tf) + " ticks per quarter " + ("harpnote_player") + " " + (139));
           return self.voice_elements = ($a = ($b = music.$voices().$each_with_index()).$map, $a._p = (TMP_10 = function(voice, index){var self = TMP_10._s || this, $a, $b, TMP_11, $c, $d, TMP_12, tie_start = nil;
 if (voice == null) voice = nil;if (index == null) index = nil;
           tie_start = $hash2([], {});
@@ -19651,7 +19672,7 @@ if (c == null) c = nil;
   var $a, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice;
 
   $opal.add_stubs(['$year', '$now']);
-  $opal.cdecl($scope, 'VERSION', "0.9.1");
+  $opal.cdecl($scope, 'VERSION', "0.9.2");
   return $opal.cdecl($scope, 'COPYRIGHT', "©" + ((($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now().$year()) + " https://www.bernhard-weichel.de");
 })(Opal);
 
