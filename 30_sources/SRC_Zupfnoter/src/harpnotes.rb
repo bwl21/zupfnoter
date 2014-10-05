@@ -344,7 +344,7 @@ module Harpnotes
     #
     # The most prominent application is a repetition
     #
-    class Dacapo < MusicEntity
+    class Goto < MusicEntity
       attr_reader :from, :to, :policy
 
       #
@@ -1084,21 +1084,21 @@ module Harpnotes
         res_flow = [] unless show_options[:flowline]
 
         # draw the jumplines
-        res_dacapo = voice.select { |c| c.is_a? Dacapo }.map do |dacapo|
-          if distance = dacapo.policy[:distance]
+        res_gotos = voice.select { |c| c.is_a? Goto }.map do |goto|
+          if distance = goto.policy[:distance]
             vertical = {distance: (distance + 0.5) * X_SPACING}
           else
-            vertical = {level: dacapo.policy[:level]}
+            vertical = {level: goto.policy[:level]}
           end
-          JumpLine.new(lookuptable_drawing_by_playable[dacapo.from], lookuptable_drawing_by_playable[dacapo.to], vertical)
+          JumpLine.new(lookuptable_drawing_by_playable[goto.from], lookuptable_drawing_by_playable[goto.to], vertical)
         end
 
 
         # kill the jumplines if they shallnot be shown
-        res_dacapo = [] unless show_options[:jumpline]
+        res_gotos = [] unless show_options[:jumpline]
 
         # return all drawing primitives
-        retval = (res_flow + res_playables + res_dacapo + res_measures + res_newparts + res_slurs + res_tuplets).compact
+        retval = (res_flow + res_playables + res_gotos + res_measures + res_newparts + res_slurs + res_tuplets).compact
       end
 
 
