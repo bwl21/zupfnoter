@@ -413,11 +413,29 @@ module Harpnotes
       # @param selector [Array] index of the two voices to be synchend
       # @return [Array] The syncpoints which were found in the song
       def build_synch_points(selector = nil)
-        expanded_beat_maps.map do |playables|
+        syncpoints =expanded_beat_maps.map do |playables|
           playables = [playables[selector.first], playables[selector.last]] if selector
+
+          #
+          # replace syncpoints with the first note of a syncpoint
+          # this might lead to double printing of the
+          # inner synchline.
+          # todo: investigate if this is a problem
+          playables = playables.map{|p|
+            if p.is_a? SynchPoint
+              r = p.notes.first
+            else
+              r = p
+            end
+            r
+          }
           playables.compact!
           SynchPoint.new(playables) if playables.length > 1
-        end.flatten.compact.select { |sp| sp.notes.reject { |e| e.is_a? Note }.empty? }
+        end.flatten.compact
+
+        # this drops synchpoints which contain other playables than notes
+        # todo: investigate if we still need this.
+        syncpoints = syncpoints.select { |sp| sp.notes.reject { |e| e.is_a? Note }.empty? }
       end
 
       #
@@ -920,7 +938,7 @@ module Harpnotes
         synch_lines = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
-            FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes[1]], :dashed, sp)
+            FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
           end
         end.flatten
 

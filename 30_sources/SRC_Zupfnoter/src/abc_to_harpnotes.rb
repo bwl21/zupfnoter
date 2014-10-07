@@ -482,6 +482,8 @@ module Harpnotes
         @next_note_marks_measure = true
         @pitch_transformer.reset_measure_accidentals
         send("transform_#{type.gsub(" ", "_")}", bar)
+        # todo handle bar_invisible
+        # todo handle variant endings
       end
 
       def transform_bar_thin(bar)
