@@ -421,7 +421,7 @@ module Harpnotes
           # this might lead to double printing of the
           # inner synchline.
           # todo: investigate if this is a problem
-          playables = playables.map{|p|
+          playables = playables.map { |p|
             if p.is_a? SynchPoint
               r = p.notes.first
             else
@@ -609,30 +609,6 @@ module Harpnotes
       end
     end
 
-    #
-    # This represents a JumpLine
-    #
-    class JumpLine < Drawable
-      attr_reader :from, :to
-
-      # @param from [Drawable] the origin of the flow
-      # @param to   [Drawable] the target of the flow
-      # @param policy [Hash] the policy for vertical line
-      def initialize(from, to, policy = {level: 0})
-        super
-        @from = from
-        @to = to
-        @policy = policy
-      end
-
-      def level
-        @policy[:level] || 0
-      end
-
-      def distance
-        @policy[:distance]
-      end
-    end
 
 
     # this represents a path to be rendered. The path is noted as an array of path commands:
@@ -836,7 +812,7 @@ module Harpnotes
       DURATION_TO_STYLE = {
           #key      size   fill          dot                  abc duration
 
-          :err => [2 , :filled, FALSE], # 1      1
+          :err => [2, :filled, FALSE], # 1      1
           :d64 => [0.9, :empty, FALSE], # 1      1
           :d48 => [0.7, :empty, TRUE], # 1/2 *
           :d32 => [0.7, :empty, FALSE], # 1/2
@@ -852,7 +828,7 @@ module Harpnotes
       }
 
       REST_TO_GLYPH = {# this basically determines the white background rectangel
-                       :err => [[2 , 2 ],   :rest_1, FALSE], # 1      1
+                       :err => [[2, 2], :rest_1, FALSE], # 1      1
                        :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
                        :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
                        :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
@@ -934,7 +910,7 @@ module Harpnotes
           print_options[:voices].include?(sl.first) && print_options[:voices].include?(sl.last)
         }
 
-        # build synchlines
+        # build synchlines between voices
         synch_lines = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
@@ -1103,16 +1079,21 @@ module Harpnotes
 
         # draw the jumplines
         res_gotos = voice.select { |c| c.is_a? Goto }.map do |goto|
-          if distance = goto.policy[:distance]
-            vertical = {distance: (distance + 0.5) * X_SPACING}
+          distance = goto.policy[:distance]
+          distance = distance - 1 if distance > 0
+          if distance
+           # vertical = {distance: (distance + 0.5) * X_SPACING}
+            vertical = (distance + 0.5) * X_SPACING
           else
-            vertical = {level: goto.policy[:level]}
+            vertical = 0.5 * X_SPACING # {level: goto.policy[:level]}
           end
-          JumpLine.new(lookuptable_drawing_by_playable[goto.from], lookuptable_drawing_by_playable[goto.to], vertical)
+          path = layout_jumpline(Vector2d(lookuptable_drawing_by_playable[goto.from].center),
+                                 Vector2d(lookuptable_drawing_by_playable[goto.to].center),
+                                 Vector2d(2.5, 2.5),
+                                 vertical)
+          Harpnotes::Drawing::Path.new(path)
+          #JumpLine.new(lookuptable_drawing_by_playable[goto.from], lookuptable_drawing_by_playable[goto.to], vertical)
         end
-
-
-        # kill the jumplines if they shallnot be shown
         res_gotos = [] unless show_options[:jumpline]
 
         # return all drawing primitives
@@ -1257,6 +1238,62 @@ module Harpnotes
         res
       end
 
+      #
+      # @param [Vector2d] from
+      # @param [Vector2d] to
+      # @param [Numeric] policy horizontal of the jumpline related to startpoint
+      # @param [Vector2d] north_east_offset - vector to determine the startpoint
+      #
+      # general appraoch
+      # * music jumps from below start to above end
+      # * arrow is on end part
+      # * policy determines the vertical position of the jumpline
+      # * the center of the vertical position determines start or ed (either west or east).
+      # *
+      def layout_jumpline(from, to, north_east_offset, policy)
+        start_of_vertical = Vector2d(from.x + policy, from.y)
+        end_of_vertical =   Vector2d(from.x + policy, to.y)
+
+        start_orientation = Vector2d((((start_of_vertical - from) * [1, 0]).normalize).x, 0)
+        end_orientation = Vector2d((((end_of_vertical - to) * [1, 0]).normalize).x, 0)
+
+        start_offset = north_east_offset * [start_orientation.x, 1]
+        end_offset = north_east_offset * [end_orientation.x, -1]
+
+        start_of_vertical = start_of_vertical + start_offset * [0,1]
+        end_of_vertical = end_of_vertical + end_offset * [0,1]
+
+        start_of_jumpline = from + [start_offset.x * north_east_offset.x, +north_east_offset.y]
+        end_of_jumpline = to + [end_offset.x * north_east_offset.x, -north_east_offset.y]
+
+        p1 = from + start_offset
+        p2 = start_of_vertical
+        p3 = end_of_vertical
+        p4 = to + end_offset
+        a1 = p4 + end_orientation * 2.5 + [0,1]
+        a2 = p4 + end_orientation * 2.5 - [0,1]
+        a3 = p4
+
+        # covert path to relative
+        rp2 = p2 - p1
+        rp3 = p3 - p2
+        rp4 = p4 - p3
+        ra1 = a1 - p4
+        ra2 = a2 - a1
+        ra3 = p4 - a2
+
+        path = [["M", p1.x, p1.y],
+                ['l', rp2.x, rp2.y],
+                ['l', rp3.x, rp3.y],
+                ['l', rp4.x, rp4.y],
+                ['M', p4.x, p4.y],
+                ['l', ra1.x, ra1.y],
+                ['l', ra2.x, ra2.y],
+                ['l', ra3.x, ra3.y],
+                ['z']
+        ]
+        path
+      end
 
       def layout_newpart(root, beat_layout)
         #               shift to left   pitch          space     stay away from border
@@ -1309,10 +1346,9 @@ module Harpnotes
       #
       # create a path to represent a slur from p1 to p2
       #
-      # @param [Vector2d] the Start point of the slur
-      # @param [Vector2d] the End point of the slur
-      # @return [Array] to be passed to Path
-      def   make_annotated_bezier_path(points)
+      # @param [Array of Vector2d] the start and endpoint of the beziers pfad
+      # @return [Array]  [Path, annotation-position]
+      def make_annotated_bezier_path(points)
         p1 = points.first
         p2 = points.last
         deltap = p2 - p1
@@ -1324,6 +1360,7 @@ module Harpnotes
         cp1 = cp_template.rotate(-rotate_by)
         cp2 = deltap + cp_template.reverse.rotate(rotate_by)
 
+        # compute the position of the annotation
         cpa1 = p1 + cp1
         cpa2 = p1 + cp2
         cpm1 = (p1 + cpa1)/2

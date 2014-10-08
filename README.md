@@ -26,6 +26,9 @@ syntax but applies to some conventions:
     a note. The target of the "jump" is denoted as "\^:target", while
     the "jump" is dentoed as "\^@target". Of course the same target can
     be part of multple jumps.
+    
+    You can control the position of the goto-line by adding a distance in 
+    halftones, e.g. "\^@target@3", "\^@target@-3"
 
 2.  Control appearence of Voice Synchlines, Jumplines, Flowlines
 

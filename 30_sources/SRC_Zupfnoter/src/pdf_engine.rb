@@ -48,8 +48,6 @@ module Harpnotes
           draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
           draw_flowline(child) if child.visible?
-        elsif child.is_a? JumpLine
-          draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
           draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Path
@@ -214,6 +212,8 @@ module Harpnotes
 
 
     # draw a path
+    # documentation see raphaeljs
+    # todo: fully support absolute and relative commands
     def draw_path(root)
       lines = []
       scale = [1, 1]
@@ -224,6 +224,10 @@ module Harpnotes
       root.path.each do |element|
         case element.first
           when "M"
+            @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
+            lines = []
+            start = element[1 .. 2]
+          when "L"
             @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
             lines = []
             start = element[1 .. 2]

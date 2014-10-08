@@ -322,7 +322,7 @@ module Harpnotes
               if target.nil?
                 $log.error("missing target #{name[1..-1]}")
               else
-                result << Harpnotes::Music::Goto.new(target, entity, distance: argument) #todo: better algorithm
+                result << Harpnotes::Music::Goto.new(entity, target,  distance: argument) #todo: better algorithm
               end
             else
               #result << Harpnotes::Music::Annotation.new(name, )
@@ -508,7 +508,7 @@ module Harpnotes
           start = @repetition_stack.pop
         end
 
-        [Harpnotes::Music::Goto.new(start, @previous_note, level: @repetition_stack.length)]
+        [Harpnotes::Music::Goto.new(@previous_note, start, distance: 2)]
       end
 
       def transform_part(part)

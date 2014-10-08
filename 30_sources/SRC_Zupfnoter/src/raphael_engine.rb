@@ -37,8 +37,6 @@ module Harpnotes
           draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
           draw_flowline(child) if child.visible?
-        elsif child.is_a? JumpLine
-          draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
           draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
