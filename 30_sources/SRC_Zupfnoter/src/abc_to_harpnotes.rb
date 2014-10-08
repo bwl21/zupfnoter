@@ -152,7 +152,7 @@ module Harpnotes
       #
       def add_metadata(abc_code, new_metadata)
         old_metadata = get_metadata(abc_code)
-        more_metadata = new_metadata.select{|k, v| old_metadata[k].nil?}.map{|k,v| "#{k}:#{v}"}
+        more_metadata = new_metadata.select { |k, v| old_metadata[k].nil? }.map { |k, v| "#{k}:#{v}" }
         [more_metadata, abc_code].flatten.compact.join("\n")
       end
 
@@ -311,18 +311,20 @@ module Harpnotes
       #@param entity []
       def make_jumplines(entity)
         result = []
-        if entity.is_a? Harpnotes::Music::Playable ## todo handle jumplines by Note attribures only without referring to
+        if entity.is_a? Harpnotes::Music::Playable ## todo handle jumplines by Note attributes only without referring to
           chords = entity.origin[:chord] || []
           chords.each do |chord|
             name = Native(chord)[:name]
             if name[0] == '@'
               nameparts = name[1..-1].split("@")
-              target = @jumptargets[nameparts.first]
-              argument = nameparts.last.to_i || 1
+              targetname = nameparts[0]
+              target = @jumptargets[targetname]
+              argument = nameparts[1] || 1
+              argument = argument.to_i
               if target.nil?
-                $log.error("missing target #{name[1..-1]}")
+                $log.error("missing target #{targetname}")
               else
-                result << Harpnotes::Music::Goto.new(entity, target,  distance: argument) #todo: better algorithm
+                result << Harpnotes::Music::Goto.new(entity, target, distance: argument) #todo: better algorithm
               end
             else
               #result << Harpnotes::Music::Annotation.new(name, )
@@ -508,7 +510,19 @@ module Harpnotes
           start = @repetition_stack.pop
         end
 
-        [Harpnotes::Music::Goto.new(@previous_note, start, distance: 2)]
+        distance = 2
+        unless bar[:chord].nil?
+          bar[:chord].each do |chord|
+            level = Native(chord)[:name]
+            level = level.split('@')
+            level = level[2]
+            $log.debug("bar repeat level #{level} #{__FILE__}:#{__LINE__}")
+            distance = level.to_i unless level.nil?
+          end
+        end
+
+
+        [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance)]
       end
 
       def transform_part(part)

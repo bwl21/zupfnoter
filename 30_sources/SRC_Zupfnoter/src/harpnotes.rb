@@ -1080,6 +1080,8 @@ module Harpnotes
         # draw the jumplines
         res_gotos = voice.select { |c| c.is_a? Goto }.map do |goto|
           distance = goto.policy[:distance]
+          $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
+
           distance = distance - 1 if distance > 0
           if distance
            # vertical = {distance: (distance + 0.5) * X_SPACING}
@@ -1091,7 +1093,7 @@ module Harpnotes
                                  Vector2d(lookuptable_drawing_by_playable[goto.to].center),
                                  Vector2d(2.5, 2.5),
                                  vertical)
-          Harpnotes::Drawing::Path.new(path)
+          Harpnotes::Drawing::Path.new(path, true, goto.from)
           #JumpLine.new(lookuptable_drawing_by_playable[goto.from], lookuptable_drawing_by_playable[goto.to], vertical)
         end
         res_gotos = [] unless show_options[:jumpline]

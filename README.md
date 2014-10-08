@@ -29,6 +29,13 @@ syntax but applies to some conventions:
     
     You can control the position of the goto-line by adding a distance in 
     halftones, e.g. "\^@target@3", "\^@target@-3"
+    
+3.  Repetitions can also be controlled by chords on the right repeat bar.
+    e.g. 
+    
+        "^@@-3" :| 
+    
+    places the repetition line 3 halftones left of the end of the repetition.
 
 2.  Control appearence of Voice Synchlines, Jumplines, Flowlines
 
