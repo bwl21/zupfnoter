@@ -335,6 +335,25 @@ module Harpnotes
 
 
     #
+    class NoteBoundAnnotation < NonPlayable
+      # @param [Object] origin the note which is annotated
+      # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
+      def initialize(companion, annotation)
+        super
+        self.companion = companion
+        @annotation = annotation
+      end
+
+      def text
+        @annotation[:text]
+      end
+
+      def position
+        @annotation[:pos]
+      end
+    end
+
+    #
     # This denotes a situation where the playing of the
     # music shall be continued somewhere elase. It is represented
     # as an arrow in the sheet.
@@ -897,7 +916,8 @@ module Harpnotes
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
             layout_voice(v, compressed_beat_layout,
                          flowline: print_options[:flowlines].include?(index),
-                         jumpline: print_options[:jumplines].include?(index))
+                         jumpline: print_options[:jumplines].include?(index),
+                         annotations: print_options[:annotations])
           end
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
@@ -1031,8 +1051,8 @@ module Harpnotes
         end
 
         # layout the slurs and ties
-        @slur_index[:first_playable] = playables.first
-        tie_start = playables.first
+        @slur_index[:first_playable] = playables.first  # prepare default
+        tie_start = playables.first                     # prepare default
         res_slurs = playables.inject([]) do |result, playable|
           # note that there is a semantic difference between tie and slur
           # so first we pick the ties
@@ -1082,7 +1102,7 @@ module Harpnotes
           distance = goto.policy[:distance]
           $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
 
-          distance = distance - 1 if distance > 0
+          distance = distance - 1 if distance > 0 # make distancebeh  syymetric  -1 0 1
           if distance
            # vertical = {distance: (distance + 0.5) * X_SPACING}
             vertical = (distance + 0.5) * X_SPACING
@@ -1098,8 +1118,18 @@ module Harpnotes
         end
         res_gotos = [] unless show_options[:jumpline]
 
+
+        ###
+        # draw note bound annotations
+
+        res_annotations = voice.select {|c| c.is_a? NoteBoundAnnotation}.map do |annotation|
+          position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
+          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text)
+        end
+
+
         # return all drawing primitives
-        retval = (res_flow + res_playables + res_gotos + res_measures + res_newparts + res_slurs + res_tuplets).compact
+        retval = (res_flow + res_playables + res_gotos + res_measures + res_newparts + res_slurs + res_tuplets + res_annotations).compact
       end
 
 

@@ -97,8 +97,9 @@ module Harpnotes
       end
 
       def reset_state
-        @next_note_marks_measure = false
-        @next_note_marks_repeat_start = false
+        @next_note_marks = {measure:false,
+                            repeat_start:false,
+                            variant_ending: nil}
         @previous_new_part = []
         @previous_note = nil
         @repetition_stack = []
@@ -116,14 +117,14 @@ module Harpnotes
         hn_config_from_song = {}
         line_no = 1
         abc_code.split("\n").each do |line|
-          entry = line.match(/^%%%%hn\.(print|legend|note) (.*)/) { |m| [m[1], m[2]] }
+          entry = line.match(/^%%%%hn\.(print|legend|note|annotation) (.*)/) { |m| [m[1], m[2]] }
           if entry
             begin
               parsed_entry = JSON.parse(entry.last)
               hn_config_from_song[entry.first] ||= []
               hn_config_from_song[entry.first] << parsed_entry
             rescue Exception => e
-              $log.error("#{e.message} in line #{line_no} while parsing: #{entry}")
+              $log.error("error in harpnote commands: #{e.message} in line #{line_no} : #{entry}")
             end
           end
           line_no +=1
@@ -137,7 +138,7 @@ module Harpnotes
       end
 
 
-      # get the metadata of the current song from the editor
+      # get the abc-specified metadata of the current song from the editor
       #
       def get_metadata(abc_code)
         retval = abc_code.split("\n").inject({}) do |result, line|
@@ -148,7 +149,7 @@ module Harpnotes
         retval
       end
 
-      # add missing metadata
+      # add missing abc-metadata
       #
       def add_metadata(abc_code, new_metadata)
         old_metadata = get_metadata(abc_code)
@@ -157,9 +158,6 @@ module Harpnotes
       end
 
       def transform(abc_code)
-
-        harpnote_options = parse_harpnote_config(abc_code)
-        #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         # now parse the abc_code by abcjs
         # todo move this to opal-abcjs
@@ -283,8 +281,12 @@ module Harpnotes
         # handle meta data
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each { |k| meta_data[k] = meta_data_from_tune[k] } # todo could not get Hash(object) and use merge
-
         result.meta_data = meta_data
+
+
+        # handlle harpnote options (the %%%%hn.xxxx - coments)
+        harpnote_options = parse_harpnote_config(abc_code)
+        #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         result.harpnote_options = {}
         result.harpnote_options[:print] = harpnote_options[:print].map { |o|
@@ -302,11 +304,42 @@ module Harpnotes
 
         result.harpnote_options[:legend] = harpnote_options[:legend]
         result.harpnote_options[:notes] = harpnote_options[:note] || []
+        result.harpnote_options[:annotations] = harpnote_options[:anntoations] || []
 
         result
       end
 
       private
+
+      # extract chords from an entity
+      # chords might have multiple lines
+      # so we split the lines as well
+      #
+      # @param [Object] entity the note  from abcjs
+      # @return [Array of String] an array of chord entries
+      def _extract_chord_lines(entity)
+        result = []
+        unless entity[:chord].nil?
+          entity[:chord].each do |chord|
+            text = Native(chord)[:name]
+            text.split("\n").each do |line|
+              result << line
+            end
+          end
+        end
+        result
+      end
+
+      # extract variant endings
+      # @param [Object] entity the music entity from which we extract the variant
+      # @return [String] the label of the variant ending
+      def _extract_variant_ending(entity)
+        result = nil
+        if entity[:startEnding]
+          result = entity[:startEnding]
+        end
+        result
+      end
 
       #@param entity []
       def make_jumplines(entity)
@@ -333,6 +366,16 @@ module Harpnotes
         end
 
         result
+      end
+
+      def make_notebound_annotations(entity)
+        result = []
+        if entity.is_a? Harpnotes::Music::Playable
+          chords = entity.origin[:chord] || []
+          chords.each do |chord|
+          end
+
+        end
       end
 
       def transform_note(note)
@@ -403,25 +446,30 @@ module Harpnotes
           pitch = 60 # todo:choose a better value? 60 is c in 3rd octave
         end
 
-        res = Harpnotes::Music::Pause.new(pitch, duration)
-        res.origin = note
-        res.visible = false if note[:rest][:type] == 'invisible'
-        @previous_note = res
+        rest = Harpnotes::Music::Pause.new(pitch, duration)
+        rest.origin = note
+        rest.visible = false if note[:rest][:type] == 'invisible'
+        @previous_note = rest
 
-        result = [res]
-        if @next_note_marks_measure
-          result << Harpnotes::Music::MeasureStart.new(res)
-          @next_note_marks_measure = false
+        result = [rest]
+        if @next_note_marks[:measure]
+          result << Harpnotes::Music::MeasureStart.new(rest)
+          @next_note_marks[:measure] = false
         end
 
-        if @next_note_marks_repeat_start
-          @repetition_stack << res
-          @next_note_marks_repeat_start = false
+        if @next_note_marks[:repeat_start]
+          @repetition_stack << rest
+          @next_note_marks[:repeat_start] = false
+        end
+
+        if @next_note_marks[:variant_ending]
+          result << Harpnotes::Music::NoteBoundAnnotation.new("hugo2", {pos: [0,0], text: @next_note_marks[:variant_ending]})
+          @next_note_marks[:variant_ending]
         end
 
         @previous_new_part.each { |part|
-          part.companion = res
-          res.first_in_part=true
+          part.companion = rest
+          rest.first_in_part=true
         }
         @previous_new_part.clear
 
@@ -442,9 +490,9 @@ module Harpnotes
           thenote
         end
 
-        res = []
+        result = []
         if notes.length == 1
-          res << notes.first
+          result << notes.first
         else
           synchpoint = Harpnotes::Music::SynchPoint.new(notes) # note that notes are alreday Playables
           synchpoint.slur_starts = (note[:startSlur] || []).map { |s| Native(s)[:label] }
@@ -454,20 +502,25 @@ module Harpnotes
           synchpoint.tie_start = (not note[:startTie].nil?) || (not notes.select { |n| n.tie_start? }.empty?)
           synchpoint.tie_end = (not note[:endTie].nil?) || (not notes.select { |n| n.tie_end? }.empty?)
 
-          res << synchpoint
+          result << synchpoint
         end
 
 
-        @previous_note = res.last
+        @previous_note = result.last
 
-        if @next_note_marks_measure
-          res << Harpnotes::Music::MeasureStart.new(notes.last)
-          @next_note_marks_measure = false
+        if @next_note_marks[:measure]
+          result << Harpnotes::Music::MeasureStart.new(notes.last)
+          @next_note_marks[:measure] = false
         end
 
-        if @next_note_marks_repeat_start
+        if @next_note_marks[:repeat_start]
           @repetition_stack << notes.last
-          @next_note_marks_repeat_start = false
+          @next_note_marks[:repeat_start] = false
+        end
+
+        if @next_note_marks[:variant_ending]
+          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [4,2], text: @next_note_marks[:variant_ending]})
+          @next_note_marks[:variant_ending] = nil
         end
 
         @previous_new_part.each { |part|
@@ -476,30 +529,33 @@ module Harpnotes
         }
         @previous_new_part.clear
 
-        res
+        result
       end
 
       def transform_bar(bar)
         type = bar[:type]
-        @next_note_marks_measure = true
+        @next_note_marks[:measure] = true
+        @next_note_marks[:variant_ending] = _extract_variant_ending(bar)
         @pitch_transformer.reset_measure_accidentals
         send("transform_#{type.gsub(" ", "_")}", bar)
-        # todo handle bar_invisible
         # todo handle variant endings
       end
 
+      def transform_bar_invisible(bar)
+        @next_note_marks[:measure] = false
+        nil
+      end
+
       def transform_bar_thin(bar)
-        @next_note_marks_measure = true
         nil
       end
 
       def transform_bar_left_repeat(bar)
-        @next_note_marks_repeat_start = true
+        @next_note_marks[:repeat_start] = true
         nil
       end
 
       def transform_bar_thin_thick(bar)
-        @next_note_marks_measure = true
         nil
       end
 
@@ -511,16 +567,14 @@ module Harpnotes
         end
 
         distance = 2
-        unless bar[:chord].nil?
-          bar[:chord].each do |chord|
-            level = Native(chord)[:name]
-            level = level.split('@')
-            level = level[2]
+        _extract_chord_lines(bar).each do |line|
+          level = line.split('@')
+          if level[2]
+            level = level[2] # note that "^@@distance"
             $log.debug("bar repeat level #{level} #{__FILE__}:#{__LINE__}")
             distance = level.to_i unless level.nil?
           end
         end
-
 
         [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance)]
       end
