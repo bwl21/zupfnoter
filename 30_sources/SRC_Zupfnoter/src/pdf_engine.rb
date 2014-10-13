@@ -218,8 +218,8 @@ module Harpnotes
       lines = []
       scale = [1, 1]
       start = []
-      style = root.filled? :FD, :FD
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+      style = root.filled? ? :FD : ""
+      @pdf.fill = (1..3).map { root.filled? ? 0 : 255 }
 
       root.path.each do |element|
         case element.first
@@ -236,7 +236,7 @@ module Harpnotes
           when "c"
             lines.push element[1 .. -1]
           when "z"
-            @pdf.lines(lines, start.first, start.last, scale, style, true) unless lines.empty?
+            @pdf.lines(lines, start.first, start.last, scale, "FD", true) unless lines.empty?
             lines = []
           else
             $log.error("unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")

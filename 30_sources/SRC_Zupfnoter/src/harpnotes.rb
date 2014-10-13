@@ -629,7 +629,6 @@ module Harpnotes
     end
 
 
-
     # this represents a path to be rendered. The path is noted as an array of path commands:
     # ["l", {x}, {y}] or
     # ["c" {x}, {y}, {cp1x}, {cp1y}, {cp2x}, {cp2x}]
@@ -962,7 +961,7 @@ module Harpnotes
         title = music.meta_data[:title] || "untitled"
         meter = music.meta_data[:meter]
         key = music.meta_data[:key] +
-        composer = music.meta_data[:composer]
+            composer = music.meta_data[:composer]
         tempo = music.meta_data[:tempo_display]
         print_variant_title = print_options[:title]
         title_pos = music.harpnote_options[:legend] || [20, 20]
@@ -1055,8 +1054,8 @@ module Harpnotes
         end
 
         # layout the slurs and ties
-        @slur_index[:first_playable] = playables.first  # prepare default
-        tie_start = playables.first                     # prepare default
+        @slur_index[:first_playable] = playables.first # prepare default
+        tie_start = playables.first # prepare default
         res_slurs = playables.inject([]) do |result, playable|
           # note that there is a semantic difference between tie and slur
           # so first we pick the ties
@@ -1108,25 +1107,25 @@ module Harpnotes
 
           distance = distance - 1 if distance > 0 # make distancebeh  syymetric  -1 0 1
           if distance
-           # vertical = {distance: (distance + 0.5) * X_SPACING}
+            # vertical = {distance: (distance + 0.5) * X_SPACING}
             vertical = (distance + 0.5) * X_SPACING
           else
             vertical = 0.5 * X_SPACING # {level: goto.policy[:level]}
           end
-          path = layout_jumpline(Vector2d(lookuptable_drawing_by_playable[goto.from].center),
-                                 Vector2d(lookuptable_drawing_by_playable[goto.to].center),
-                                 Vector2d(2.5, 2.5),
-                                 vertical)
-          Harpnotes::Drawing::Path.new(path, true, goto.from)
-          #JumpLine.new(lookuptable_drawing_by_playable[goto.from], lookuptable_drawing_by_playable[goto.to], vertical)
-        end
+          path = make_path_from_jumpline(Vector2d(lookuptable_drawing_by_playable[goto.from].center),
+                                         Vector2d(lookuptable_drawing_by_playable[goto.to].center),
+                                         Vector2d(2.5, 2.5),
+                                         vertical)
+          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from),
+          Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
+        end.flatten
         res_gotos = [] unless show_options[:jumpline]
 
 
         ###
         # draw note bound annotations
 
-        res_annotations = voice.select {|c| c.is_a? NoteBoundAnnotation}.map do |annotation|
+        res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
           Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text)
         end
@@ -1286,9 +1285,9 @@ module Harpnotes
       # * policy determines the vertical position of the jumpline
       # * the center of the vertical position determines start or ed (either west or east).
       # *
-      def layout_jumpline(from, to, north_east_offset, policy)
+      def make_path_from_jumpline(from, to, north_east_offset, policy)
         start_of_vertical = Vector2d(from.x + policy, from.y)
-        end_of_vertical =   Vector2d(from.x + policy, to.y)
+        end_of_vertical = Vector2d(from.x + policy, to.y)
 
         start_orientation = Vector2d((((start_of_vertical - from) * [1, 0]).normalize).x, 0)
         end_orientation = Vector2d((((end_of_vertical - to) * [1, 0]).normalize).x, 0)
@@ -1296,8 +1295,8 @@ module Harpnotes
         start_offset = north_east_offset * [start_orientation.x, 1]
         end_offset = north_east_offset * [end_orientation.x, -1]
 
-        start_of_vertical = start_of_vertical + start_offset * [0,1]
-        end_of_vertical = end_of_vertical + end_offset * [0,1]
+        start_of_vertical = start_of_vertical + start_offset * [0, 1]
+        end_of_vertical = end_of_vertical + end_offset * [0, 1]
 
         start_of_jumpline = from + [start_offset.x * north_east_offset.x, +north_east_offset.y]
         end_of_jumpline = to + [end_offset.x * north_east_offset.x, -north_east_offset.y]
@@ -1306,8 +1305,8 @@ module Harpnotes
         p2 = start_of_vertical
         p3 = end_of_vertical
         p4 = to + end_offset
-        a1 = p4 + end_orientation * 2.5 + [0,1]
-        a2 = p4 + end_orientation * 2.5 - [0,1]
+        a1 = p4 + end_orientation * 2.5 + [0, 1]
+        a2 = p4 + end_orientation * 2.5 - [0, 1]
         a3 = p4
 
         # covert path to relative
@@ -1318,15 +1317,16 @@ module Harpnotes
         ra2 = a2 - a1
         ra3 = p4 - a2
 
-        path = [["M", p1.x, p1.y],
-                ['l', rp2.x, rp2.y],
-                ['l', rp3.x, rp3.y],
-                ['l', rp4.x, rp4.y],
-                ['M', p4.x, p4.y],
-                ['l', ra1.x, ra1.y],
-                ['l', ra2.x, ra2.y],
-                ['l', ra3.x, ra3.y],
-                ['z']
+        path = [
+            [["M", p1.x, p1.y],
+             ['l', rp2.x, rp2.y],
+             ['l', rp3.x, rp3.y],
+             ['l', rp4.x, rp4.y]],
+            [['M', p4.x, p4.y],
+             ['l', ra1.x, ra1.y],
+             ['l', ra2.x, ra2.y],
+             ['l', ra3.x, ra3.y],
+             ['z']]
         ]
         path
       end

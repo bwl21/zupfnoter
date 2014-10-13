@@ -277,7 +277,9 @@ module Harpnotes
     # draw a path
     def draw_path(root)
       path_spec = path_to_raphael(root.path)
-      @paper.path(path_spec)
+      #@paper.path(path_spec)
+      e=@paper.path(path_spec)
+      e[:fill] = "#000000" if root.filled?
     end
   end
 
