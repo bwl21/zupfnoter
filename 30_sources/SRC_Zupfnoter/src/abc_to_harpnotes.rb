@@ -91,14 +91,14 @@ module Harpnotes
 
       def initialize
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
-        @jumptargets = {}
-
+        @jumptargets = {} # the lookup table for jumps
+        @annotations = {} # the lookup table for note bound anotations
         reset_state
       end
 
       def reset_state
-        @next_note_marks = {measure:false,
-                            repeat_start:false,
+        @next_note_marks = {measure: false,
+                            repeat_start: false,
                             variant_ending: nil}
         @previous_new_part = []
         @previous_note = nil
@@ -158,6 +158,15 @@ module Harpnotes
       end
 
       def transform(abc_code)
+
+        # get harpnote_options from abc_code
+        harpnote_options = parse_harpnote_config(abc_code)
+        # note that harpnot_options uses singular names
+        @annotations = (harpnote_options[:annotation] || []).inject({}) do |hash, entry|
+          hash[entry[:id]] = entry
+          hash
+        end
+
 
         # now parse the abc_code by abcjs
         # todo move this to opal-abcjs
@@ -249,8 +258,18 @@ module Harpnotes
           hn_voice.each do |e|
             jumplines << make_jumplines(e)
           end
-
           hn_voice += jumplines.flatten.compact
+
+
+          # note bound annotations
+
+          notebound_annotations = []
+          hn_voice.each do |e|
+            notebound_annotations << make_notebound_annotations(e)
+          end
+
+          hn_voice += notebound_annotations.flatten.compact
+
 
           hn_voice
         end
@@ -261,6 +280,12 @@ module Harpnotes
                      :meter => meter[:display],
                      :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
         }
+
+        {key: "K:"}.each do |k, v|
+          if @annotations[v]
+            meta_data[k] = meta_data[k] + (@annotations[v][:text] || "")
+          end
+        end
 
         # handling tempo
         # tempo is marked as duration, ... duration = bpm
@@ -285,7 +310,6 @@ module Harpnotes
 
 
         # handlle harpnote options (the %%%%hn.xxxx - coments)
-        harpnote_options = parse_harpnote_config(abc_code)
         #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         result.harpnote_options = {}
@@ -304,8 +328,6 @@ module Harpnotes
 
         result.harpnote_options[:legend] = harpnote_options[:legend]
         result.harpnote_options[:notes] = harpnote_options[:note] || []
-        result.harpnote_options[:annotations] = harpnote_options[:anntoations] || []
-
         result
       end
 
@@ -345,9 +367,8 @@ module Harpnotes
       def make_jumplines(entity)
         result = []
         if entity.is_a? Harpnotes::Music::Playable ## todo handle jumplines by Note attributes only without referring to
-          chords = entity.origin[:chord] || []
-          chords.each do |chord|
-            name = Native(chord)[:name]
+          chords =_extract_chord_lines(entity.origin)
+          chords.each do |name|
             if name[0] == '@'
               nameparts = name[1..-1].split("@")
               targetname = nameparts[0]
@@ -371,11 +392,30 @@ module Harpnotes
       def make_notebound_annotations(entity)
         result = []
         if entity.is_a? Harpnotes::Music::Playable
-          chords = entity.origin[:chord] || []
-          chords.each do |chord|
-          end
+          chords =_extract_chord_lines(entity.origin)
+          chords.each do |name|
 
+            match = name.match(/^([!#])([^\@]+)(\@([0-9]+),([0-9]+))?$/)
+            if match
+              case match[1]
+                when "#"
+                  annotation = @annotations[match[2]]
+                  $log.error("could not find annotation #{match[2]}") unless annotation
+                when "!"
+                  annotation = {text: match[2]}
+                else
+                  annotation = nil # it is not an annotation
+              end
+
+              if annotation
+                notepos = [match[4], match[5]].map { |p| p.to_i } if match[3]
+                position = notepos || annotation[:pos] || [4, 0]
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
+              end
+            end
+          end
         end
+        result
       end
 
       def transform_note(note)
@@ -417,19 +457,17 @@ module Harpnotes
             @repetition_stack << result.last
           end
 
-          # collect chord based target
-          unless note[:chord].nil?
-            jumpstarts = []
-            jumpends = []
-            note[:chord].each do |chord|
-              name = Native(chord)[:name]
-              if name[0] == ':'
-                jumpends.push name[1 .. -1]
-                @jumptargets[name[1 .. -1]] = result.select { |n| n.is_a? Harpnotes::Music::Playable }.last
-              end
-              if name[0] =="@"
-                jumpstarts.push name[1 .. -1]
-              end
+          # collect chord based targets
+          chords = _extract_chord_lines(note)
+          #jumpstarts = []
+          jumpends = []
+          chords.each do |name|
+            if name[0] == ':'
+              jumpends.push name[1 .. -1]
+              @jumptargets[name[1 .. -1]] = result.select { |n| n.is_a? Harpnotes::Music::Playable }.last
+            end
+            if name[0] =="@"
+              #jumpstarts.push name[1 .. -1]
             end
           end
         end
@@ -463,7 +501,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new("hugo2", {pos: [0,0], text: @next_note_marks[:variant_ending]})
+          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [0, 0], text: @next_note_marks[:variant_ending]})
           @next_note_marks[:variant_ending]
         end
 
@@ -519,7 +557,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [4,2], text: @next_note_marks[:variant_ending]})
+          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [4, 2], text: @next_note_marks[:variant_ending]})
           @next_note_marks[:variant_ending] = nil
         end
 

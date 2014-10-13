@@ -341,15 +341,15 @@ module Harpnotes
       def initialize(companion, annotation)
         super
         self.companion = companion
-        @annotation = annotation
+        @annotations = annotation
       end
 
       def text
-        @annotation[:text]
+        @annotations[:text]
       end
 
       def position
-        @annotation[:pos]
+        @annotations[:pos]
       end
     end
 
@@ -917,7 +917,7 @@ module Harpnotes
             layout_voice(v, compressed_beat_layout,
                          flowline: print_options[:flowlines].include?(index),
                          jumpline: print_options[:jumplines].include?(index),
-                         annotations: print_options[:annotations])
+                         annotations: music.harpnote_options[:annotations])
           end
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
@@ -940,6 +940,7 @@ module Harpnotes
 
 
         # now generate sheet_marks
+        # todo: use a path for sheet marks
         sheet_marks = []
         rightmark = Harpnotes::Music::Note.new(79, 2)
         leftmark = Harpnotes::Music::Note.new(43, 2)
@@ -960,7 +961,7 @@ module Harpnotes
 
         title = music.meta_data[:title] || "untitled"
         meter = music.meta_data[:meter]
-        key = music.meta_data[:key]
+        key = music.meta_data[:key] +
         composer = music.meta_data[:composer]
         tempo = music.meta_data[:tempo_display]
         print_variant_title = print_options[:title]
@@ -972,7 +973,10 @@ module Harpnotes
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 292], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
+
+        #sheet based annotations
         music.harpnote_options[:notes].each do |note|
+          #note is an array [center, text, style] todo: refactor this
           annotations << Harpnotes::Drawing::Annotation.new(note[0], note[1], note[2])
         end
 
