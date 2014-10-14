@@ -937,19 +937,12 @@ module Harpnotes
           end
         end.flatten
 
-
-        # now generate sheet_marks
-        # todo: use a path for sheet marks
-        sheet_marks = []
-        rightmark = Harpnotes::Music::Note.new(79, 2)
-        leftmark = Harpnotes::Music::Note.new(43, 2)
-        (1..3).each do |i|
-          rightmark.beat = i * 16
-          leftmark.beat = i * 8
-          sheet_marks << layout_note(rightmark, beat_layout_policy(music))
-          sheet_marks << layout_note(leftmark, beat_layout_policy(music))
+        # build sheet_marks
+        sheet_marks = [79, 43].inject([]) do |result, pitch|
+          markpath = make_sheetmark_path([(PITCH_OFFSET + pitch) * X_SPACING + X_OFFSET, 15])
+          result << Harpnotes::Drawing::Path.new(markpath, :filled)
+          result
         end
-
 
         # now generate legend
 
@@ -1117,7 +1110,7 @@ module Harpnotes
                                          Vector2d(2.5, 2.5),
                                          vertical)
           [Harpnotes::Drawing::Path.new(path[0], nil, goto.from),
-          Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
+           Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
         end.flatten
         res_gotos = [] unless show_options[:jumpline]
 
@@ -1359,6 +1352,23 @@ module Harpnotes
           result = "err"
         end
         result
+      end
+
+
+      # @param [Note] Array [x,y] coordinates of center of sheetmark
+      # @return [Array] array of path command
+      def make_sheetmark_path(note)
+        base = Vector2d(note) - [1,5]
+        vpath = [Vector2d(1, -1), Vector2d(1, 1),
+                 Vector2d(0, 10),
+                 Vector2d(-1, 1), Vector2d(-1, -1),
+                 Vector2d(0, -10)]
+
+        path = [["M", base.x, base.y]]
+        vpath.each do |p|
+          path << ["l", p.x, p.y]
+        end
+        path
       end
 
       #
