@@ -196,6 +196,11 @@ module Harpnotes
       def tuplet_end?
         @tuplet_end
       end
+
+      # this yields a proxy note for the playable
+      def proxy_note
+        self
+      end
     end
 
     # A single note
@@ -266,7 +271,13 @@ module Harpnotes
 
 
       def pitch
+        # todo: why last?
         @notes.last.pitch
+      end
+
+
+      def proxy_note
+        @notes.first
       end
 
     end
@@ -440,12 +451,9 @@ module Harpnotes
           # this might lead to double printing of the
           # inner synchline.
           # todo: investigate if this is a problem
+          # todo: it is a problem!!
           playables = playables.map { |p|
-            if p.is_a? SynchPoint
-              r = p.notes.first
-            else
-              r = p
-            end
+            r = p.proxy_note if p.is_a? Playable
             r
           }
           playables.compact!
@@ -454,7 +462,8 @@ module Harpnotes
 
         # this drops synchpoints which contain other playables than notes
         # todo: investigate if we still need this.
-        syncpoints = syncpoints.select { |sp| sp.notes.reject { |e| e.is_a? Note }.empty? }
+        syncpoints = syncpoints.select { |sp| sp.notes.reject { |e| e.is_a?(Playable)}.empty? }
+        syncpoints
       end
 
       #
@@ -598,6 +607,14 @@ module Harpnotes
     end
 
 
+    class Symbol < Drawable
+
+      def iniitalize
+        super
+      end
+
+    end
+
     #
     # This represents a flowline
     #
@@ -666,7 +683,7 @@ module Harpnotes
     #
     # This represents a note in the shape of an ellipsis
     #
-    class Ellipse < Drawable
+    class Ellipse < Symbol
       attr_reader :center, :size, :fill, :dotted, :origin
 
       #
@@ -737,7 +754,7 @@ module Harpnotes
     # represent a glyph on the sheet
     #
 
-    class Glyph < Drawable
+    class Glyph < Symbol
       attr_reader :center, :size, :glyph, :dotted, :origin
 
       GLYPHS = {
@@ -920,6 +937,20 @@ module Harpnotes
 
         compressed_beat_layout = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
 
+
+        # configure which synclines are required from-voice to-voice
+        # also filter such synchlines which have points in the displayed voices
+        required_synchlines = print_options[:synchlines].select { |sl|
+          print_options[:voices].include?(sl.first) && print_options[:voices].include?(sl.last)
+        }
+
+        synched_notes = required_synchlines.map do |selector|
+          synch_points_to_show = music.build_synch_points(selector)
+          synch_points_to_show.map do |sp|
+            [sp.notes.first, sp.notes.last]
+          end
+        end.flatten
+
         # sheet_elements derived from the voices
         voice_elements = music.voices.each_with_index.map { |v, index|
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
@@ -927,18 +958,13 @@ module Harpnotes
                          flowline: print_options[:flowlines].include?(index),
                          subflowline: print_options[:subflowlines].include?(index),
                          jumpline: print_options[:jumplines].include?(index),
-                         annotations: music.harpnote_options[:annotations])
+                         annotations: music.harpnote_options[:annotations],
+                         synched_notes: synched_notes)
           end
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
         # this is a lookup table to find the drawing symbol by a note
-        note_to_ellipse = Hash[voice_elements.select { |e| e.is_a? Ellipse }.map { |e| [e.origin, e] }]
-
-        # configure which synclines are required from-voice to-voice
-        # also filter such synchlines which have points in the displayed voices
-        required_synchlines = print_options[:synchlines].select { |sl|
-          print_options[:voices].include?(sl.first) && print_options[:voices].include?(sl.last)
-        }
+        note_to_ellipse = Hash[voice_elements.select { |e| e.is_a?(Symbol)}.map { |e| [e.origin, e] }]
 
         # build synchlines between voices
         synch_lines = required_synchlines.map do |selector|
@@ -964,14 +990,15 @@ module Harpnotes
 
         title = music.meta_data[:title] || "untitled"
         meter = music.meta_data[:meter]
-        key = music.meta_data[:key] +
-            composer = music.meta_data[:composer]
+        key = music.meta_data[:key]
+        composer = music.meta_data[:composer]
         tempo = music.meta_data[:tempo_display]
         print_variant_title = print_options[:title]
+
         title_pos = music.harpnote_options[:legend] || [20, 20]
         legend_pos = [title_pos.first, title_pos.last + 7]
-
         legend = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
+
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
@@ -1023,12 +1050,13 @@ module Harpnotes
         end
 
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
+        # todo make it a class variable, it is used in layout again
         lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }]
         res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.to }
 
         # draw the flowlines
         previous_note = nil
-        res_flow = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
+        res_flow = voice.select { |c| c.is_a? Playable}.map do |playable|
           res = nil
           res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable]) unless previous_note.nil?
           res = nil if playable.first_in_part?
@@ -1037,22 +1065,23 @@ module Harpnotes
           res
         end.compact
 
-        # kill the flowlines if they shall not be shown
-        res_flow = [] unless show_options[:flowline]
 
         # draw the subflowlines
         previous_note = nil
         res_sub_flow = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
-          res = nil
-          res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
-          res = nil if playable.first_in_part?
+          unless show_options[:synched_notes].include?(playable.proxy_note)
+            res = nil
+            res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
+            res = nil if playable.first_in_part?
+          end
 
           previous_note = playable
           res
         end.compact
 
-        # kill the flowlines if they shall not be shown
+        # kill the flowlines / subflowlines if they shall not be shown
         res_sub_flow = [] unless show_options[:subflowline]
+        res_flow = [] unless show_options[:flowline]
 
 
         # layout tuplets
@@ -1384,7 +1413,7 @@ module Harpnotes
       # @param [Note] Array [x,y] coordinates of center of sheetmark
       # @return [Array] array of path command
       def make_sheetmark_path(note)
-        base = Vector2d(note) - [1,5]
+        base = Vector2d(note) - [1, 5]
         vpath = [Vector2d(1, -1), Vector2d(1, 1),
                  Vector2d(0, 10),
                  Vector2d(-1, 1), Vector2d(-1, -1),

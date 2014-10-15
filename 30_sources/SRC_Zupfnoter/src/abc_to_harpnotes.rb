@@ -106,6 +106,7 @@ module Harpnotes
         @pitch_transformer.reset_measure_accidentals
         @current_tuplet = 0
         @tuplet_downcount = 0
+        @pitch_providers = []  # lookuptable for pitches (used by rest)
         nil
       end
 
@@ -241,10 +242,16 @@ module Harpnotes
         hn_voices = voices.each_with_index.map do |voice, voice_idx|
           reset_state
 
+          @pitch_providers = voice.map do |el|
+            result = nil
+            result = el if el[:pitches]
+          end
+
           # transform the voice content
-          hn_voice = voice.map do |el|
+          hn_voice = voice.each_with_index.map do |el, i|
+
             type = el[:el_type]
-            hn_voice_element = self.send("transform_#{type}", el)
+            hn_voice_element = self.send("transform_#{type}", el, i)
 
             unless hn_voice_element.nil? or hn_voice_element.empty?
               hn_voice_element.each { |e| e.origin = el }
@@ -314,13 +321,13 @@ module Harpnotes
 
         result.harpnote_options = {}
         result.harpnote_options[:print] = harpnote_options[:print].map { |o|
-          ro = {title: o[:t],
-                voices: o[:v].map { |i| i-1 },
-                synchlines: o[:s].map { |i| i.map { |j| j-1 } },
-                flowlines: o[:f].map { |i| i-1 },
-                subflowlines: o[:sf].map { |i| i-1 },
-                jumplines: o[:j].map { |i| i-1 },
-                layoutlines: (o[:l] || o[:v]).map { |i| i-1 } # the lines for layout optimization
+          ro = {title: o[:t] || "",
+                voices: (o[:v] || []).map { |i| i-1 },
+                synchlines: (o[:s] || []).map { |i| i.map { |j| j-1 } },
+                flowlines: (o[:f] || []).map { |i| i-1 },
+                subflowlines: (o[:sf] || []).map { |i| i-1 },
+                jumplines: (o[:j] || []).map { |i| i-1 },
+                layoutlines: (o[:l] || o[:v] || []).map { |i| i-1 } # the lines for layout optimization
           }
           missing_voices = (ro[:voices] - ro[:layoutlines]).map { |i| i + 1 }
           $log.error("hn.print '#{ro[:title]}' l: missing voices #{missing_voices.to_s}") unless missing_voices.empty?
@@ -419,7 +426,7 @@ module Harpnotes
         result
       end
 
-      def transform_note(note)
+      def transform_note(note, index=0)
         # 1/64 is the shortest note being handled
         # note that this scaling also has an effect
         # on the layout (DURATION_TO_STYLE). So, don't change this.
@@ -440,7 +447,8 @@ module Harpnotes
           if note[:rest][:type] == 'spacer' # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
             result = []
           else
-            result = transform_rest(note, duration)
+            pitch_note = @pitch_providers[index .. -1].compact.first
+            result = transform_rest(note, duration, pitch_note)
           end
         else
           result = transform_real_note(note, duration)
@@ -478,12 +486,11 @@ module Harpnotes
 
 
       #todol factor out handling of measures and newparts
-      def transform_rest(note, duration)
-        if @previous_note
-          pitch = @previous_note.pitch
-        else
-          pitch = 60 # todo:choose a better value? 60 is c in 3rd octave
-        end
+      def transform_rest(note, duration, pitch_note=nil)
+
+        pitch = 60
+        pitch = @previous_note.pitch if @previous_note
+        pitch = @pitch_transformer.get_midipitch(Native(pitch_note[:pitches]).first) unless pitch_note.nil?
 
         rest = Harpnotes::Music::Pause.new(pitch, duration)
         rest.origin = note
