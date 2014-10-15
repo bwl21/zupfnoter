@@ -177,8 +177,9 @@ module Harpnotes
     def draw_flowline(root)
       #@pdf.draw = (0...3).map { root.dashed? ? 128 : 0 }
       @pdf.line_dash = 3 if root.dashed?
+      @pdf.line_dash = 6 if root.dotted?
       @pdf.line(root.from.center, root.to.center)
-      @pdf.use_solid_lines if root.dashed?
+      @pdf.use_solid_lines #if root.dashed? # reset dashing
     end
 
     #

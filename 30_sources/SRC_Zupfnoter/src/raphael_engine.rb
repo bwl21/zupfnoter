@@ -216,7 +216,9 @@ module Harpnotes
     # @return [type] [description]
     def draw_flowline(root)
       l = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1])
+      # see http://stackoverflow.com/questions/10940316/how-to-use-attrs-stroke-dasharray-stroke-linecap-stroke-linejoin-in-raphaeljs
       l["stroke-dasharray"] = "-" if root.style == :dashed
+      l["stroke-dasharray"] = ". " if root.style == :dotted
     end
 
     # 

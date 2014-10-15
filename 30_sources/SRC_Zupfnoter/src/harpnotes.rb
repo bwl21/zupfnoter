@@ -626,6 +626,16 @@ module Harpnotes
       def dashed?
         @style == :dashed
       end
+
+
+      #
+      # Indicates of the flowline shall be drawn as dotted
+      # Syntactic sugar for the attr_reader
+      #
+      # @return [type] [description]
+      def dotted?
+        @style == :dotted
+      end
     end
 
 
@@ -915,6 +925,7 @@ module Harpnotes
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
             layout_voice(v, compressed_beat_layout,
                          flowline: print_options[:flowlines].include?(index),
+                         subflowline: print_options[:subflowlines].include?(index),
                          jumpline: print_options[:jumplines].include?(index),
                          annotations: music.harpnote_options[:annotations])
           end
@@ -1026,6 +1037,24 @@ module Harpnotes
           res
         end.compact
 
+        # kill the flowlines if they shall not be shown
+        res_flow = [] unless show_options[:flowline]
+
+        # draw the subflowlines
+        previous_note = nil
+        res_sub_flow = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
+          res = nil
+          res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
+          res = nil if playable.first_in_part?
+
+          previous_note = playable
+          res
+        end.compact
+
+        # kill the flowlines if they shall not be shown
+        res_sub_flow = [] unless show_options[:subflowline]
+
+
         # layout tuplets
 
         tuplet_start = playables.first
@@ -1090,9 +1119,6 @@ module Harpnotes
           result
         end
 
-        # kill the flowlines if they shall not be shown
-        res_flow = [] unless show_options[:flowline]
-
         # draw the jumplines
         res_gotos = voice.select { |c| c.is_a? Goto }.map do |goto|
           distance = goto.policy[:distance]
@@ -1125,7 +1151,7 @@ module Harpnotes
 
 
         # return all drawing primitives
-        retval = (res_flow + res_playables + res_gotos + res_measures + res_newparts + res_slurs + res_tuplets + res_annotations).compact
+        retval = (res_flow + res_sub_flow + res_playables + res_gotos + res_measures + res_newparts + res_slurs + res_tuplets + res_annotations).compact
       end
 
 
