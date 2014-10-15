@@ -271,8 +271,7 @@ module Harpnotes
 
 
       def pitch
-        # todo: why last?
-        @notes.last.pitch
+        @notes.first.pitch
       end
 
 
@@ -347,7 +346,7 @@ module Harpnotes
 
     #
     class NoteBoundAnnotation < NonPlayable
-      # @param [Object] origin the note which is annotated
+      # @param [Object] companion the note which is annotated
       # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
       def initialize(companion, annotation)
         super
@@ -443,7 +442,7 @@ module Harpnotes
       # @param selector [Array] index of the two voices to be synchend
       # @return [Array] The syncpoints which were found in the song
       def build_synch_points(selector = nil)
-        syncpoints =expanded_beat_maps.map do |playables|
+        syncpoints = expanded_beat_maps.map do |playables|
           playables = [playables[selector.first], playables[selector.last]] if selector
 
           #
@@ -452,17 +451,32 @@ module Harpnotes
           # inner synchline.
           # todo: investigate if this is a problem
           # todo: it is a problem!!
-          playables = playables.map { |p|
+          the_playables = playables.map { |p|
             r = p.proxy_note if p.is_a? Playable
             r
           }
-          playables.compact!
-          SynchPoint.new(playables) if playables.length > 1
+
+          # n_playables = playables.map {|p|
+          #   r = [p] if p.is_a? Note
+          #   r = p.notes if  p.is_a? SynchPoint
+          #   r
+          # }
+
+          # if n_playables.compact.length >1
+          #   #a = n_playables.product(n_playables).map{|p| [p.first.first, p.last.first]}
+          #   b = n_playables.map{|a1| n_playables.map{|a2| [a1.first, a2.first]} }
+          #   `debugger`
+          #   a = b.sort_by{|p| (p.last.pitch - p.first.pitch).abs }.first
+          #   SynchPoint.new(a)
+          # end
+
+          #the_playables.compact!
+          SynchPoint.new(the_playables) if the_playables.length > 1
         end.flatten.compact
 
         # this drops synchpoints which contain other playables than notes
         # todo: investigate if we still need this.
-        syncpoints = syncpoints.select { |sp| sp.notes.reject { |e| e.is_a?(Playable)}.empty? }
+        syncpoints = syncpoints.select { |sp| sp.notes.reject { |e| e.is_a?(Playable) }.empty? }
         syncpoints
       end
 
@@ -594,7 +608,7 @@ module Harpnotes
       end
 
       def center
-        raise "Not implemented"
+        raise "center not implemented for #{self.class}"
       end
 
       def visible?
@@ -619,7 +633,7 @@ module Harpnotes
     # This represents a flowline
     #
     class FlowLine < Drawable
-      attr_reader :from, :to, :style, :origin
+      attr_reader :from, :to, :style, :origin, :center
 
       # @param from [Drawable] the origin of the flow
       # @param to   [Drawable] the target of the flow
@@ -627,12 +641,14 @@ module Harpnotes
       # @param origin [Object] An object to support bactrace, drill down etc.
       #
       # @return [type] [description]
-      def initialize(from, to, style = :solid, origin = nil)
+      def initialize(from, to, style = :solid, origin = nil, center = nil)
         super
         @from = from
         @to = to
         @style = style
         @origin = origin
+        @center = center || to.center # todo: Don't think we need that
+        # just to avoid runtime messages
       end
 
       #
@@ -964,7 +980,7 @@ module Harpnotes
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
         # this is a lookup table to find the drawing symbol by a note
-        note_to_ellipse = Hash[voice_elements.select { |e| e.is_a?(Symbol)}.map { |e| [e.origin, e] }]
+        note_to_ellipse = Hash[voice_elements.select { |e| e.is_a?(Symbol) }.map { |e| [e.origin, e] }]
 
         # build synchlines between voices
         synch_lines = required_synchlines.map do |selector|
@@ -1051,12 +1067,17 @@ module Harpnotes
 
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
         # todo make it a class variable, it is used in layout again
-        lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }]
-        res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.to }
+        # need to reverse such that Unisons (SyncPoints) are bound to the first note
+        # as Syncpoints are renderd from first to last, the last note is the remaining
+        # one inthe Hash unless we revert.
+        res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
+        lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }.reverse]
+
+        #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
 
         # draw the flowlines
         previous_note = nil
-        res_flow = voice.select { |c| c.is_a? Playable}.map do |playable|
+        res_flow = voice.select { |c| c.is_a? Playable }.map do |playable|
           res = nil
           res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable]) unless previous_note.nil?
           res = nil if playable.first_in_part?
@@ -1286,10 +1307,13 @@ module Harpnotes
       #
       # @return [Object] The generated drawing primitive
       def layout_accord(root, beat_layout)
-        notes = root.notes.sort_by { |a| a.pitch }
-        resnotes = notes.map { |c| layout_note(c, beat_layout) }
+        # draw the notes in the order of the notes in the Unison
+        resnotes = root.notes.map { |c| layout_note(c, beat_layout) }
+
+        # then we ensure that we draw the line from lowest to highest in order to cover all
+        resnotes_sorted = resnotes.sort_by { |n| n.origin.pitch }
         res = []
-        res << FlowLine.new(resnotes.first, resnotes.last, :dashed, root)
+        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, resnotes.first.center)
         res << resnotes
         res
       end

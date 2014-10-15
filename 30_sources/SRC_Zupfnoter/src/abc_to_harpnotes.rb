@@ -403,7 +403,7 @@ module Harpnotes
           chords =_extract_chord_lines(entity.origin)
           chords.each do |name|
 
-            match = name.match(/^([!#])([^\@]+)(\@([0-9]+),([0-9]+))?$/)
+            match = name.match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
               case match[1]
                 when "#"
@@ -416,7 +416,7 @@ module Harpnotes
               end
 
               if annotation
-                notepos = [match[4], match[5]].map { |p| p.to_i } if match[3]
+                notepos = [match[4], match[5]].map { |p| p.to_f } if match[3]
                 position = notepos || annotation[:pos] || [4, 0]
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
               end
