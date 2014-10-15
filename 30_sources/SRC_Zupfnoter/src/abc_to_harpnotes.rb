@@ -334,6 +334,7 @@ module Harpnotes
           ro
         }
 
+        result.harpnote_options[:lyrics_pos] = harpnote_options[:lyrics_pos]
         result.harpnote_options[:legend] = harpnote_options[:legend]
         result.harpnote_options[:notes] = harpnote_options[:note] || []
         result
