@@ -993,6 +993,7 @@ module Harpnotes
         # build sheet_marks
         sheet_marks = [79,55, 43].inject([]) do |result, pitch|
           markpath = make_sheetmark_path([(PITCH_OFFSET + pitch) * X_SPACING + X_OFFSET, 15])
+          markpath = make_sheetmark_path([(PITCH_OFFSET + pitch) * X_SPACING + X_OFFSET, 10])
           result << Harpnotes::Drawing::Path.new(markpath, :filled)
           result
         end
@@ -1443,11 +1444,12 @@ module Harpnotes
       # @param [Note] Array [x,y] coordinates of center of sheetmark
       # @return [Array] array of path command
       def make_sheetmark_path(note)
-        base = Vector2d(note) - [1, 5]
-        vpath = [Vector2d(1, -1), Vector2d(1, 1),
-                 Vector2d(0, 10),
-                 Vector2d(-1, 1), Vector2d(-1, -1),
-                 Vector2d(0, -10)]
+        w = 0.5;h=5
+        base = Vector2d(note) - [w, h/2]
+        vpath = [Vector2d(w, -(w)), Vector2d(w, 2*w),
+                 Vector2d(0, h),
+                 Vector2d(-(w), 2*w), Vector2d(-(w), -2*(w)),
+                 Vector2d(0, -h)]
 
         path = [["M", base.x, base.y]]
         vpath.each do |p|
