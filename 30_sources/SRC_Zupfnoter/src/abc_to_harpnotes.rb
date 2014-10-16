@@ -131,9 +131,8 @@ module Harpnotes
           line_no +=1
         end
         #$log.debug("#{hn_config_from_song} (#{__FILE__} #{__LINE__})")
-        unless hn_config_from_song[:print]
-          hn_config_from_song[:print] = [{t: "full sheet", v: [1, 2, 3, 4], s: [[1, 2], [3, 4]], sf: [2, 4], f: [1, 3], j: [1, 3], l: [1, 2, 3, 4]}]
-        end
+        hn_config_from_song[:print] = [{}] unless hn_config_from_song[:print]
+
         hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
         hn_config_from_song
       end
@@ -320,18 +319,23 @@ module Harpnotes
         #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         result.harpnote_options = {}
-        result.harpnote_options[:print] = harpnote_options[:print].map { |o|
-          ro = {title: o[:t] || "",
-                voices: (o[:v] || []).map { |i| i-1 },
-                synchlines: (o[:s] || []).map { |i| i.map { |j| j-1 } },
-                flowlines: (o[:f] || []).map { |i| i-1 },
-                subflowlines: (o[:sf] || []).map { |i| i-1 },
-                jumplines: (o[:j] || []).map { |i| i-1 },
-                layoutlines: (o[:l] || o[:v] || []).map { |i| i-1 } # the lines for layout optimization
+        result.harpnote_options[:print] = harpnote_options[:print].map { |specified_option|
+          # todo:do a proper default handling here
+          resulting_options = {
+              title: specified_option[:t] || "",
+              startpos: specified_option[:startpos] || 5,
+              voices: (specified_option[:v] || [1, 2, 3, 4]).map { |i| i-1 },
+              synchlines: (specified_option[:s] || [[1, 2], [2, 3]]).map { |i| i.map { |j| j-1 } },
+              flowlines: (specified_option[:f] || [1, 3]).map { |i| i-1 },
+              subflowlines: (specified_option[:sf] || [2, 4]).map { |i| i-1 },
+              jumplines: (specified_option[:j] || [1, 3]).map { |i| i-1 },
+              layoutlines: (specified_option[:l] ||
+                  specified_option[:v] ||
+                  [1, 2, 3, 4]).map { |i| i-1 } # the lines for layout optimization
           }
-          missing_voices = (ro[:voices] - ro[:layoutlines]).map { |i| i + 1 }
-          $log.error("hn.print '#{ro[:title]}' l: missing voices #{missing_voices.to_s}") unless missing_voices.empty?
-          ro
+          missing_voices = (resulting_options[:voices] - resulting_options[:layoutlines]).map { |i| i + 1 }
+          $log.error("hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}") unless missing_voices.empty?
+          resulting_options
         }
 
         result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 10] # todo take default from config
@@ -342,7 +346,6 @@ module Harpnotes
 
         result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords]
         result.harpnote_options[:lyrics][:pos] = lyrics[:pos] || [result.harpnote_options[:legend].first, result.harpnote_options[:legend].last + 40]
-
 
         result
       end

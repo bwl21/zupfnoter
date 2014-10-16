@@ -847,7 +847,6 @@ module Harpnotes
       X_SPACING = 115.0 / 10.0
 
       # Y coordinate of the very first beat
-      Y_OFFSET = 5
       X_OFFSET = ELLIPSE_SIZE.first
 
       Y_SCALE = 4 # 4 mm per minimal
@@ -910,6 +909,7 @@ module Harpnotes
         #
         @beat_spacing = Y_SCALE * 1.0/BEAT_RESOULUTION # initial value for beat_spacing (also the optimum spacing)
         @slur_index = {}
+        @y_offset = 5
       end
 
       #
@@ -921,7 +921,7 @@ module Harpnotes
       # @return [Lambda] Proecdure, to compute the vertical distance of a particular beat
       def beat_layout_policy(music)
         Proc.new do |beat|
-          (beat -1) * @beat_spacing + Y_OFFSET
+          (beat -1) * @beat_spacing + @y_offset
         end
       end
 
@@ -937,13 +937,15 @@ module Harpnotes
 
         print_options = music.harpnote_options[:print][print_variant_nr]
 
+        @y_offset = print_options[:startpos]
+
         # first optimize the vertical arrangement of the notes
         # by analyzing the beat layout
         beat_layout = beat_layout || beat_layout_policy(music)
 
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
         maximal_beat = beat_compression_map.values.max
-        full_beat_spacing = DRAWING_AREA_SIZE.last / maximal_beat
+        full_beat_spacing = (DRAWING_AREA_SIZE.last - @y_offset) / maximal_beat
 
         if full_beat_spacing < @beat_spacing
           factor = (@beat_spacing / full_beat_spacing)

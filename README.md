@@ -73,6 +73,13 @@ The specific conventions in detail are as follows:
         denoting the voice pairs for which synchlines shall be drawn.
     f
     :   List of flowlines to be shown. It is an array of integers
+    sf  
+    :   List of subflowlins to be shown. It is an array of intenters.
+        Subflowlines are flowlines connecting notes which otherwise
+        have no corresponding note in other displayed voices and therefore
+        would appear as single notes lost in space (without anny connection).
+    startpos
+    :   the vertical position to start with the first note. It is an integer.
     j
     :   List of jumplines to be shown. It is an array of integers
     l
