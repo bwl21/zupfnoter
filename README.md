@@ -124,6 +124,14 @@ The specific conventions in detail are as follows:
 
         `"^#@10,10"` adds the content of hn.annotation with id: "10"
         (see 1.) at position specified there (-50,3) from note.
+        
+7.  Lyrics
+
+    Zupfnoter supports placement of lyrics by `w: lyrics` lines in ABC. You can control the position of lyrics by
+    
+        %%%%hn.lyrics {"pos": [50,50]}
+        
+        
 
 # Licencse
 

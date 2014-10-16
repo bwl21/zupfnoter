@@ -991,8 +991,7 @@ module Harpnotes
         end.flatten
 
         # build sheet_marks
-        sheet_marks = [79,55, 43].inject([]) do |result, pitch|
-          markpath = make_sheetmark_path([(PITCH_OFFSET + pitch) * X_SPACING + X_OFFSET, 15])
+        sheet_marks = [79, 55, 43].inject([]) do |result, pitch|
           markpath = make_sheetmark_path([(PITCH_OFFSET + pitch) * X_SPACING + X_OFFSET, 10])
           result << Harpnotes::Drawing::Path.new(markpath, :filled)
           result
@@ -1021,10 +1020,11 @@ module Harpnotes
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 292], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
 
-        $log.debug(music.meta_data[:unalignedWords].to_s)
-
-        if music.meta_data[:unalignedWords]
-          annotations << Harpnotes::Drawing::Annotation.new([10, 60], music.meta_data[:unalignedWords].join("\n"))
+        lyrics = music.harpnote_options[:lyrics]
+        if lyrics
+          text = lyrics[:text].join("\n")
+          pos = lyrics[:pos]
+          annotations << Harpnotes::Drawing::Annotation.new(pos, text)
         end
 
         #sheet based annotations

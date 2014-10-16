@@ -106,7 +106,7 @@ module Harpnotes
         @pitch_transformer.reset_measure_accidentals
         @current_tuplet = 0
         @tuplet_downcount = 0
-        @pitch_providers = []  # lookuptable for pitches (used by rest)
+        @pitch_providers = [] # lookuptable for pitches (used by rest)
         nil
       end
 
@@ -118,7 +118,7 @@ module Harpnotes
         hn_config_from_song = {}
         line_no = 1
         abc_code.split("\n").each do |line|
-          entry = line.match(/^%%%%hn\.(print|legend|note|annotation) (.*)/) { |m| [m[1], m[2]] }
+          entry = line.match(/^%%%%hn\.(print|legend|note|annotation|lyrics) (.*)/) { |m| [m[1], m[2]] }
           if entry
             begin
               parsed_entry = JSON.parse(entry.last)
@@ -139,7 +139,7 @@ module Harpnotes
       end
 
 
-      # get the abc-specified metadata of the current song from the editor
+      # get the abc-specified metadata of the current song from the editor_f
       #
       def get_metadata(abc_code)
         retval = abc_code.split("\n").inject({}) do |result, line|
@@ -334,9 +334,16 @@ module Harpnotes
           ro
         }
 
-        result.harpnote_options[:lyrics_pos] = harpnote_options[:lyrics_pos]
-        result.harpnote_options[:legend] = harpnote_options[:legend]
+        result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 10] # todo take default from config
         result.harpnote_options[:notes] = harpnote_options[:note] || []
+
+        lyrics = (harpnote_options[:lyrics]|| [{}]).first
+        result.harpnote_options[:lyrics] = {}
+
+        result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords]
+        result.harpnote_options[:lyrics][:pos] = lyrics[:pos] || [result.harpnote_options[:legend].first, result.harpnote_options[:legend].last + 40]
+
+
         result
       end
 
