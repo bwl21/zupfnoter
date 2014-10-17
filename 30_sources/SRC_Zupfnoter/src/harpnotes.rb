@@ -919,8 +919,9 @@ module Harpnotes
       #             don't be confused it is just to make inject music in the scope of the returned procedure
       #
       # @return [Lambda] Proecdure, to compute the vertical distance of a particular beat
-      def beat_layout_policy(music)
+      def beat_layout_policy()
         Proc.new do |beat|
+          # todo: why -1
           (beat -1) * @beat_spacing + @y_offset
         end
       end
@@ -941,7 +942,7 @@ module Harpnotes
 
         # first optimize the vertical arrangement of the notes
         # by analyzing the beat layout
-        beat_layout = beat_layout || beat_layout_policy(music)
+        beat_layout = beat_layout || beat_layout_policy()
 
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
         maximal_beat = beat_compression_map.values.max
@@ -1238,12 +1239,12 @@ module Harpnotes
       def compute_beat_compression(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        current_beat = 0
+        current_beat = - BEAT_RESOULUTION # ensure that first beat is on 0
         last_size = (BEAT_RESOULUTION)
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
 
-        Hash[(0..max_beat).map do |beat|
+        result = Hash[(0..max_beat).map do |beat|
           notes_on_beat = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
           max_duration = notes_on_beat.map { |n| n.duration }.max
           has_no_notes_on_beat = notes_on_beat.empty?
@@ -1266,6 +1267,7 @@ module Harpnotes
           end
           [beat, current_beat]
         end]
+        result
       end
 
       #
@@ -1302,6 +1304,7 @@ module Harpnotes
         #               shift to left   pitch          space     stay away from border
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
+        $log.debug("processing note on beat #{root.beat} -> #{y_offset} #{__FILE__}:#{__LINE__}")
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size = ELLIPSE_SIZE.map { |e| e * scale }
 

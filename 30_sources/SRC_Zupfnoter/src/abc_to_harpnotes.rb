@@ -323,7 +323,7 @@ module Harpnotes
           # todo:do a proper default handling here
           resulting_options = {
               title: specified_option[:t] || "",
-              startpos: specified_option[:startpos] || 5,
+              startpos: specified_option[:startpos] || 15,
               voices: (specified_option[:v] || [1, 2, 3, 4]).map { |i| i-1 },
               synchlines: (specified_option[:s] || [[1, 2], [2, 3]]).map { |i| i.map { |j| j-1 } },
               flowlines: (specified_option[:f] || [1, 3]).map { |i| i-1 },
@@ -338,13 +338,13 @@ module Harpnotes
           resulting_options
         }
 
-        result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 10] # todo take default from config
+        result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 15] # todo take default from config
         result.harpnote_options[:notes] = harpnote_options[:note] || []
 
         lyrics = (harpnote_options[:lyrics]|| [{}]).first
         result.harpnote_options[:lyrics] = {}
 
-        result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords]
+        result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
         result.harpnote_options[:lyrics][:pos] = lyrics[:pos] || [result.harpnote_options[:legend].first, result.harpnote_options[:legend].last + 40]
 
         result

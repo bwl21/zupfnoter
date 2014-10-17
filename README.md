@@ -49,8 +49,6 @@ The specific conventions in detail are as follows:
     places the repetition line 3 halftones left of the end of the
     repetition.
 
-3.
-
 2.  Control visualization of Voices Synchlines, Jumplines, Flowlines
 
     This is done using specific comments with JSON syntax
