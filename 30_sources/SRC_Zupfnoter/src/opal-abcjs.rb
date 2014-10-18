@@ -5,8 +5,14 @@ module ABCJS
       def initialize(div, printerparams={})
         # setup the tune previewer
         @parent = Native(Element.find("##{div}"))
+
+        # todo: someone is setting the width of the surrounding div (abwrite.js line 520)
+        # this inverts the setting of abcjs
+        # todo: approach does not work on Firefos
+        @parent.css(:width, printerparams[:staffwidth]+50)  # 50 found out experimental
+
         @parent.find('svg').remove()
-        paper =  Raphael::Paper.new(div, 1100, 900) # don't know why it is 700 width #Raphael(this.div, 1100, 700);
+        paper =  Raphael::Paper.new(div, printerparams[:staffwidth], 900) # don't know why it is 700 width #Raphael(this.div, 1100, 700);
                                                     # note that this value is overridden by printerparam staffwidth
                                                     # which has a default of 700
         @paper = paper.raw

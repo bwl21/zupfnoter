@@ -37,8 +37,6 @@ module Harpnotes
           draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
           draw_flowline(child) if child.visible?
-        elsif child.is_a? JumpLine
-          draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
           draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
@@ -218,7 +216,9 @@ module Harpnotes
     # @return [type] [description]
     def draw_flowline(root)
       l = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1])
+      # see http://stackoverflow.com/questions/10940316/how-to-use-attrs-stroke-dasharray-stroke-linecap-stroke-linejoin-in-raphaeljs
       l["stroke-dasharray"] = "-" if root.style == :dashed
+      l["stroke-dasharray"] = ". " if root.style == :dotted
     end
 
     # 
@@ -279,7 +279,9 @@ module Harpnotes
     # draw a path
     def draw_path(root)
       path_spec = path_to_raphael(root.path)
-      @paper.path(path_spec)
+      #@paper.path(path_spec)
+      e=@paper.path(path_spec)
+      e[:fill] = "#000000" if root.filled?
     end
   end
 

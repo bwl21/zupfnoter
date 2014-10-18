@@ -31,13 +31,19 @@ class Controller
     @commands.add_command(:autorefresh) do |c|
       c.undoable = false
       c.set_help { "turnon autorefresh" }
-      c.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_default { "true" }
-        parameter.set_help { "true | false " }
+      values = {on: :on, off: :off, remote: :remote}
+      c.add_parameter(:value, :string) do |parameter|
+        parameter.set_default { :true }
+        parameter.set_help { "#{values.keys.join(" | ")}" }
       end
       c.as_action do |args|
-        result = (args[:value] == "true") || false
-        set_status(autorefresh: result)
+
+        result = values[args[:value]]
+        if result
+          set_status(autorefresh: result)
+        else
+          $log.error("wrong parameter #{args[:value]}, #{c.parameter_help(0)}")
+        end
       end
     end
 
