@@ -257,10 +257,13 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # note that previous selections are still maintained.
   def highlight_abc_object(abcelement)
     a=Native(abcelement)
-    # $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
+    $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
+    startchar = a[:startChar]
+    endchar = a[:endChar]
+    endchar = endchar - 5  if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
-      @editor.select_range_by_position(a[:startChar], a[:endChar])
+      @editor.select_range_by_position(startchar, endchar)
     end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
@@ -355,7 +358,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     @editor.on_selection_change do |e|
       a = @editor.get_selection_positions
-      $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
+      # $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
       unless a.first == a.last
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_preview_printer.unhighlight_all
