@@ -18,16 +18,38 @@ as of now the whole thing is far from being ready to use out of the box.
 # Zupfnoter conventions in abc code
 
 Zupfnoter tries to use ABC as close as possible. It does not add new
-syntax but applies to some conventions:
+syntax but applies to some conventions. These conventions reflect to
 
-1.  Adding "goto" lines.
+1.  comments
 
-    This is done using annotations which is text in double quotes before
+    comments starting with `%%%%hn.` have a specific interpetation
+
+2.  annotations
+
+    Annotations starting with one of `:`, `@`, `!`, `#` have a specific
+    interpretation
+
+The specific conventions in detail are as follows:
+
+1.  Jumps and repetitions
+
+    This is done using anotations which is text in double quotes before
     a note. The target of the "jump" is denoted as "\^:target", while
     the "jump" is dentoed as "\^@target". Of course the same target can
     be part of multple jumps.
 
-2.  Control appearence of Voice Synchlines, Jumplines, Flowlines
+    You can control the position of the goto-line by adding a distance
+    in halftones, e.g. "\^@target@3", "\^@target@-3"
+
+2.  Repetitions can also be controlled by chords on the right repeat
+    bar. In this case target is left empty. For example
+
+        "^@@-3" :| 
+
+    places the repetition line 3 halftones left of the end of the
+    repetition.
+
+2.  Control visualization of Voices Synchlines, Jumplines, Flowlines
 
     This is done using specific comments with JSON syntax
 
@@ -49,12 +71,37 @@ syntax but applies to some conventions:
         denoting the voice pairs for which synchlines shall be drawn.
     f
     :   List of flowlines to be shown. It is an array of integers
+    sf  
+    :   List of subflowlins to be shown. It is an array of intenters.
+        Subflowlines are flowlines connecting notes which otherwise
+        have no corresponding note in other displayed voices and therefore
+        would appear as single notes lost in space (without anny connection).
+    startpos
+    :   the vertical position to start with the first note. It is an integer.
     j
     :   List of jumplines to be shown. It is an array of integers
     l
-    :   List of voices to consider for vertical layout optimization. Defaults to the List specified by v
+    :   List of voices to consider for vertical layout optimization.
+        Defaults to the List specified by v
 
-3.  control the legend position and annotations
+3.  control the position of the legend
+
+        %%%%hn.legend [10,10] 
+
+    where parameter is the legend position in mm from top left
+
+4.  augment the content of the legend
+
+    The content of the legend is derived from the ABC metadata. You can
+    append content to the particular lines by defineing an annotation
+    with the same key. For example
+
+        %%%%hn.annotation {"id": "K:", "pos": [-50,3], "text": "Original in F"}
+
+    adds a note to the legend entry for "K:" which is the key of the
+    music
+
+5.  sheet based annotations
 
     %%%%hn.note ["foobar", [10, 10], "large"]
 
@@ -64,13 +111,32 @@ syntax but applies to some conventions:
     2.  position in mm from top left
     3.  Textstyle "regular" | "large"
 
-    %%%%hn.legend [10,10]
+6.  Note bound annotations
 
-    Parameters
+    1.  you can define referrable annotations as
 
-    1.  Position in mm from top left
+            %%%%hn.annotation {"id": "10", "pos": [-50,3], "text": "referenced annotation 10"}
+            %%%%hn.annotation {"id": "11", "pos": [3,0], "text": "referenced annotation 11"}
 
-    2.
+    2.  Note bound annotations are also entered as annotations, for
+        example:
+
+        `"^!Fine@10,10"` adds the word "Fine" at 10,10 mm from the note.
+        Default position is 3,0
+
+        `"^#@10,10"` adds the content of hn.annotation with id: "10"
+        (see 1.) at position 10,10 from note.
+
+        `"^#@10,10"` adds the content of hn.annotation with id: "10"
+        (see 1.) at position specified there (-50,3) from note.
+        
+7.  Lyrics
+
+    Zupfnoter supports placement of lyrics by `w: lyrics` lines in ABC. You can control the position of lyrics by
+    
+        %%%%hn.lyrics {"pos": [50,50]}
+        
+        
 
 # Licencse
 
@@ -80,12 +146,11 @@ This software is licensed under dual license MIT and Commercial
 
 ## known bugs
 
-001 Hightlighting in ace is turned off, since ace is throwing too many selection changed events
-002 Play cannot be stopped
-003 some refactoring necessary (see todo)
-004 highlighting in tunepreview while playing does not work properly; tunepreview removes previous highlights
-005 Q: tag is not considered while playing
-
+001 Hightlighting in ace is turned off, since ace is throwing too many
+selection changed events 002 Play cannot be stopped 003 some refactoring
+necessary (see todo) 004 highlighting in tunepreview while playing does
+not work properly; tunepreview removes previous highlights 005 Q: tag is
+not considered while playing
 
 ## current work items
 
@@ -145,9 +210,8 @@ This software is licensed under dual license MIT and Commercial
 
 # Brainstorming
 
-* using shoes and atom_shell to make a standalone application
+-   using shoes and atom_shell to make a standalone application
     https://github.com/wasnotrice/shoes-atom
-
 
 # Result of initial evaluation
 
@@ -157,5 +221,4 @@ This software is licensed under dual license MIT and Commercial
     currently entered
 604. play from particular position onwards.
 
-
-#
+# 

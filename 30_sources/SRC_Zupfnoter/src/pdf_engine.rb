@@ -37,10 +37,10 @@ module Harpnotes
       @pdf.rect(1.0, 1.0, 418, 295)
       @pdf.rect(0.0, 0.0, 420.0, 297.0)
 
-      # the dropmarks are drawn in octave distance
+      # the cutmarks are drawn in octave distance
       delta = 12.0 * X_SPACING
       (1..2).each do |i|
-        [:top, :bottom].each { |border| draw_cropmark(i, delta, border) }
+        [:top, :bottom].each { |border| draw_cutmarks(i, delta, border) }
       end
 
       sheet.children.each do |child|
@@ -48,8 +48,6 @@ module Harpnotes
           draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
           draw_flowline(child) if child.visible?
-        elsif child.is_a? JumpLine
-          draw_jumpline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
           draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Path
@@ -84,13 +82,16 @@ module Harpnotes
       @pdf.text(root.center.first, root.center.last, root.text)
     end
 
-    def draw_cropmark(i, delta, border)
-      v = {:top => [0, 7, 9], :bottom => [297, 290, 288]}[border] # [start_y, center_y, end_y]
+    def draw_cutmarks(i, delta, border)
+      vertical_pos = {:top => 7, :bottom => 290}[border] # [start_y, center_y, end_y]
       hpos = X_SPACING/2.0 + delta * i + 3 #todo: 3 is the size Default::Layout::ELLIPSE_SIZE[0]
       hdiff = X_SPACING/2.0
 
-      @pdf.line([hpos, v.first], [hpos, v.last])
-      @pdf.line([hpos - hdiff, v[1]], [hpos + hdiff, v[1]])
+      center = Vector2d(X_SPACING/2.0 + delta * i, vertical_pos)
+      size = 1
+
+      @pdf.line((center + [-size,- size]).to_a, (center + [size,size]).to_a)
+      @pdf.line((center + [-size, size]).to_a, (center + [size,-size]).to_a)
     end
 
     def draw_ellipse(root)
@@ -179,8 +180,9 @@ module Harpnotes
     def draw_flowline(root)
       #@pdf.draw = (0...3).map { root.dashed? ? 128 : 0 }
       @pdf.line_dash = 3 if root.dashed?
+      @pdf.line_dash = 6 if root.dotted?
       @pdf.line(root.from.center, root.to.center)
-      @pdf.use_solid_lines if root.dashed?
+      @pdf.use_solid_lines #if root.dashed? # reset dashing
     end
 
     #
@@ -214,16 +216,22 @@ module Harpnotes
 
 
     # draw a path
+    # documentation see raphaeljs
+    # todo: fully support absolute and relative commands
     def draw_path(root)
       lines = []
       scale = [1, 1]
       start = []
-      style = root.filled? :FD, :FD
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+      style = root.filled? ? :FD : ""
+      @pdf.fill = (1..3).map { root.filled? ? 0 : 255 }
 
       root.path.each do |element|
         case element.first
           when "M"
+            @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
+            lines = []
+            start = element[1 .. 2]
+          when "L"
             @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
             lines = []
             start = element[1 .. 2]
@@ -232,7 +240,7 @@ module Harpnotes
           when "c"
             lines.push element[1 .. -1]
           when "z"
-            @pdf.lines(lines, start.first, start.last, scale, style, true) unless lines.empty?
+            @pdf.lines(lines, start.first, start.last, scale, "FD", true) unless lines.empty?
             lines = []
           else
             $log.error("unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
