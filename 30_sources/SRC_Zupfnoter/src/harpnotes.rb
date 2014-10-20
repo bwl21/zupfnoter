@@ -1262,7 +1262,7 @@ module Harpnotes
             last_size = size
 
             # if a new part starts on this beat, make space for a full note
-            increment += BEAT_RESOULUTION unless is_new_part.empty?
+            increment += BEAT_RESOULUTION  unless is_new_part.empty?
             current_beat += increment
           end
           [beat, current_beat]
@@ -1420,7 +1420,7 @@ module Harpnotes
         if root.beat
           # todo decide if part starts on a new line, then x_offset should be 0
           x_offset = (PITCH_OFFSET + root.pitch + (-0.5)) * X_SPACING + X_OFFSET # todo:remove literal here
-          y_offset = beat_layout.call(root.beat()) -(24 * @beat_spacing) # todo:remove literal here
+          y_offset = beat_layout.call(root.beat()) -(Harpnotes::Layout::Default::SHORTEST_NOTE * @beat_spacing) # todo:remove literal here
           res = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
         else
           $log.warning("Part without content")
