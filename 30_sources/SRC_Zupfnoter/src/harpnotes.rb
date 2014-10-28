@@ -377,10 +377,10 @@ module Harpnotes
       attr_reader :from, :to, :policy
 
       #
-      # construtor
-      # @param from [Playable] the end point of jump (repeat from)
-      # @param to [Playable] the Start point of jump (repeat to )
-      # @param policy [Hash] {level:, distance:} A policy, used to optimize the graphical representation.
+      # constrcutor
+      # @param  [Playable] from -  the end point of jump (repeat from)
+      # @param  [Playable] to - the Start point of jump (repeat to )
+      # @param  [Hash] policy - { level:, distance:} A policy, used to optimize the graphical representation.
       #
       def initialize(from, to, policy)
         super
@@ -673,14 +673,14 @@ module Harpnotes
 
 
     # this represents a path to be rendered. The path is noted as an array of path commands:
-    # ["l", {x}, {y}] or
-    # ["c" {x}, {y}, {cp1x}, {cp1y}, {cp2x}, {cp2x}]
-    # ["M", {x}, {y}]
+    # ["l", x, y ] or
+    # ["c", x, y, cp1x, cp1y, cp2x, cp2y}]
+    # ["M", x, y]
     class Path < Drawable
       attr_reader :path, :style
 
 
-      # @param [Arraa] path see class description for details
+      # @param [Array] path see class description for details
       # @param [Symbol] fill :filled makes the path to be filled
       # @param [Object] origin Reference to the origin object for tracing purposes
       def initialize(path, fill = nil, origin = nil)
@@ -786,7 +786,11 @@ module Harpnotes
           rest_128: {d: [["M", 6.03, -21.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.21, 0, 0.33, -0.06, 0.54, -0.36], ["c", 0.15, -0.21, 0.54, -0.93, 0.78, -1.47], ["c", 0.15, -0.33, 0.18, -0.39, 0.3, -0.48], ["c", 0.18, -0.09, 0.45, 0, 0.51, 0.15], ["c", 0.03, 0.09, -7.11, 42.75, -7.17, 42.84], ["c", -0.03, 0.03, -0.15, 0.09, -0.24, 0.15], ["c", -0.18, 0.06, -0.24, 0.06, -0.45, 0.06], ["c", -0.24, -0, -0.3, -0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.03, -0.57, 0.84, -4.98], ["c", 0.51, -2.7, 0.93, -4.92, 0.9, -4.92], ["c", 0, -0, -0.15, 0.06, -0.36, 0.12], ["c", -0.78, 0.27, -1.62, 0.48, -2.31, 0.57], ["c", -0.15, 0.03, -0.54, 0.03, -0.81, 0.03], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.63, 0.48], ["c", 0.12, -0, 0.18, -0, 0.3, -0.09], ["c", 0.42, -0.21, 1.14, -1.11, 1.5, -1.83], ["c", 0.12, -0.27, 0.12, -0.27, 0.54, -2.52], ["c", 0.24, -1.23, 0.42, -2.25, 0.39, -2.25], ["c", 0, -0, -0.24, 0.06, -0.51, 0.18], ["c", -1.26, 0.39, -2.25, 0.57, -3.06, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.51, 0.3, 0.75, 0.18], ["c", 0.36, -0.15, 1.05, -0.99, 1.41, -1.77], ["l", 0.15, -0.3], ["l", 0.42, -2.25], ["c", 0.21, -1.26, 0.42, -2.28, 0.39, -2.28], ["l", -0.51, 0.15], ["c", -1.11, 0.39, -1.89, 0.51, -2.7, 0.51], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.18, 0.48, 0.27, 0.72, 0.21], ["c", 0.33, -0.12, 1.14, -1.26, 1.41, -1.95], ["c", 0, -0.09, 0.21, -1.11, 0.45, -2.34], ["c", 0.21, -1.2, 0.39, -2.22, 0.39, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.2, 0.33, -1.71, 0.42], ["c", -0.3, 0.06, -0.51, 0.06, -0.93, 0.06], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.18, -0, 0.36, -0.09, 0.57, -0.33], ["c", 0.33, -0.36, 0.78, -1.14, 0.93, -1.56], ["c", 0.03, -0.12, 0.24, -1.2, 0.45, -2.4], ["c", 0.24, -1.2, 0.42, -2.22, 0.42, -2.28], ["c", 0.03, -0.03, 0, -0.03, -0.39, 0.09], ["c", -1.05, 0.36, -1.8, 0.48, -2.58, 0.48], ["c", -0.63, -0, -0.84, -0.03, -1.29, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 12.992, h: 43.883}
       }
 
-      # @param
+      # @param [Array of Numeric] center of the glyph
+      # @param [Numeric] size of the glyph
+      # @param [String] glyph_name name of the glyph
+      # @param [Boolean] dotted
+      # @param [Object] origin the origin of the glyph for backtracking
       def initialize(center, size, glyph_name, dotted = FALSE, origin = nil)
         super
         @center = center
@@ -929,9 +933,9 @@ module Harpnotes
       #
       # compute the layout of the Harnote sheet
       #
-      # @param music Harpnotes::Music::Song the Song to transform
-      # @param beat_layout = nil [Lambda] Policy procedure to compute the vertical layout
-      # @print_variant = 0 [Integer] If a song has multiple print_variants, this is the index of the one to be shown
+      # @param [Harpnotes::Music::Song] music the Song to transform
+      # @param [Lambda] beat_layout = nil Policy procedure to compute the vertical layout
+      # @param [Integer] print_variant_nr = 0  If a song has multiple print_variants, this is the index of the one to be shown
       #
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0)
@@ -1049,7 +1053,7 @@ module Harpnotes
       #
       # @param voice [Array of MusicEntity] the Voice to be layouted
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
-      # @param show_options [Hash] {flowlines: true, jumplines:true}
+      # @param show_options [Hash] { flowlines: true, jumplines:true }
       #
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
@@ -1224,7 +1228,7 @@ module Harpnotes
       # when a beat (layout beat, not to mess up with song beat) has a note
       # the the
       #
-      # returns a beat-map {beat => vertical_position_indicator}
+      # returns a beat-map { beat => vertical_position_indicator }
       # vertical_position_indicator scales like beats but can be fractions
       # the need to be scaled to the aboslute position on the sheet later.
       # this scaling cannot be done here since it depends on the relative size
@@ -1234,7 +1238,7 @@ module Harpnotes
       #
       # @param music Harpnotes::Music::Document the document to optimize the beat layout
       #
-      # @return [Hash] a beat map {10 => 5} beat 10 is placed at vertical position 5 (* beat_spacing)
+      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
       #
       def compute_beat_compression(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
@@ -1347,6 +1351,12 @@ module Harpnotes
         res
       end
 
+      #
+      # Draw a Measurement start on the Sheet
+      # @param root [Playable] the playable to be augmented with the measurement
+      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
+      #
+      # @return [Object] The generated drawing primitive
       def layout_measure_start(root, beat_layout)
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
@@ -1415,6 +1425,12 @@ module Harpnotes
         path
       end
 
+      #
+      # Draw a Newpart on the Sheet
+      # @param root [Playable] The first playable of the new part
+      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
+      #
+      # @return [Object] The generated drawing primitive
       def layout_newpart(root, beat_layout)
         #               shift to left   pitch          space     stay away from border
         if root.beat
@@ -1446,8 +1462,11 @@ module Harpnotes
       end
 
 
-      # @param [Note] Array [x,y] coordinates of center of sheetmark
-      # @return [Array] array of path command
+      #
+      # draw a sheetmark to
+      # @param [Array] note Array [x,y] coordinates of center of sheetmark
+      #
+      # @return [Array] of Path command arrays
       def make_sheetmark_path(note)
         w = 0.5;h=5
         base = Vector2d(note) - [w, h/2]
@@ -1466,8 +1485,8 @@ module Harpnotes
       #
       # create a path to represent a slur from p1 to p2
       #
-      # @param [Vector2d] the Start point of the slur
-      # @param [Vector2d] the End point of the slur
+      # @param [Vector2d] p1 the Start point of the slur
+      # @param [Vector2d] p2 the End point of the slur
       # @return [Array] to be passed to Path
       def make_slur_path(p1, p2)
         deltap = p2 - p1
@@ -1484,7 +1503,7 @@ module Harpnotes
       #
       # create a path to represent a slur from p1 to p2
       #
-      # @param [Array of Vector2d] the start and endpoint of the beziers pfad
+      # @param [Array of Vector2d] points the start and endpoint of the beziers pfad
       # @return [Array]  [Path, annotation-position]
       def make_annotated_bezier_path(points)
         p1 = points.first

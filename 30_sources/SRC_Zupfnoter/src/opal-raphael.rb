@@ -59,10 +59,8 @@ module Raphael
 
     #
     # Wrap transform
-    # @param x [Numeric] horizontal distance
-    # @param y [Numeric] vertical distance
     #
-    # @return [type] [description]
+    # @param [Object] cmd - http://raphaeljs.com/reference.html#Element.transform
     def transform(cmd)
       `self.r.transform(cmd)`
     end

@@ -15,16 +15,16 @@ module Opal
 
     # This class wraps the dropbox-js client
     # http://coffeedoc.info/github/dropbox/dropbox-js/master/class_index.html
-
-
+    # all methods yield a promise (see http://opalrb.org/blog/2014/05/07/promises-in-opal/)
     class Client
       attr_accessor :root_in_dropbox, :app_name
 
 
+      # @param [String] key - the Dropbox API key
       def initialize(key)
         @errorlogger = lambda { |error| $log.error(error) }
 
-        @root = `new Dropbox.Client({ key: key });`
+        @root = `new Dropbox.Client({ key: #{key} });`
         %x{
            self.root.onError.addListener(function(error) {
                                    self.errorlogger(error)
@@ -35,16 +35,12 @@ module Opal
 
       # this method supports to execute a block in a promise
       #
-      # with_promise(arg1, arg2, arg3) do |args, iblock|
+      # with_promise() do |iblock|
       #    # the payload code handle argument
-      #    # args = [arg1, arg2, arg3] to be processed in the block
       #    # iblock = the block provided to the underlying API.
-      #    #          note that the argumeents of the same depend
-      #    #          on the underlying API
       # end
       #
-      # @param [Array] *args to be passed to the payload
-      # @yieldparam [Block] payload the block with the job to do
+      # @yieldparam [Lambda] block payload the block with the job to do
       # @return [Promise]
       #
       def with_promise(&block)
@@ -60,33 +56,52 @@ module Opal
         end
       end
 
+      # authenticate on dropbox
+      # @return [Promise]
       def authenticate()
         with_promise() do |iblock|
-          %x(#@root.authenticate(iblock))
+          %x(#@root.authenticate(#{iblock}))
         end
       end
 
+
+      # get information about the dropbox account
+      # @return [Promise]
       def get_account_info()
         with_promise() do | iblock|
-          %x{#@root.getAccountInfo(iblock)}
+          %x{#@root.getAccountInfo(#{iblock})}
         end
       end
+
+      # write a file to dropbox
+
+      # @param [String] filename of the file to be written to
+      # @param [String] data data to be written to the file
+      # @return [Promise]
 
       def write_file(filename, data)
         with_promise() do |iblock|
-          %x{#@root.writeFile(#{filename}, #{data}, iblock)}
+          %x{#@root.writeFile(#{filename}, #{data}, #{iblock})}
         end
       end
+
+
+      # @param [String] filename name of the file to be read
+      # @return [Promise]
 
       def read_file(filename)
         with_promise() do |iblock|
-          %x{#@root.readFile(#{filename}, iblock)}
+          %x{#@root.readFile(#{filename}, #{iblock})}
         end
       end
 
+
+      # @param [String] dirname - name of the directory to be read
+      # @return [Promise]
+
       def read_dir(dirname = "/")
         with_promise() do |iblock|
-          %x{#@root.readdir(#{dirname}, iblock)}
+          %x{#@root.readdir(#{dirname}, #{iblock})}
           nil
         end
       end
