@@ -157,6 +157,10 @@ module Harpnotes
         [more_metadata, abc_code].flatten.compact.join("\n")
       end
 
+
+      # @param [String] abc_code to be transformed
+      #
+      # @return [Harpnotes::Music::Song] the Song
       def transform(abc_code)
 
         # get harpnote_options from abc_code
@@ -172,7 +176,7 @@ module Harpnotes
         # todo move this to opal-abcjs
         %x{
           var parser = new ABCJS.parse.Parse();
-          parser.parse(abc_code);
+          parser.parse(#{abc_code});
           var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
@@ -282,11 +286,16 @@ module Harpnotes
 
         # now construct the song
         result = Harpnotes::Music::Song.new(hn_voices, note_length)
+
+        # contruct the meta data
         meta_data = {:compile_time => Time.now(),
                      :meter => meter[:display],
                      :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
         }
 
+        # augment metadata by appending annotations with
+        # the abc-key. This is supported only for dedicated
+        # information fields
         {key: "K:"}.each do |k, v|
           if @annotations[v]
             meta_data[k] = meta_data[k] + (@annotations[v][:text] || "")
@@ -295,7 +304,8 @@ module Harpnotes
 
         # handling tempo
         # tempo is marked as duration, ... duration = bpm
-        duration = 0.25; bpm = 120 # default speed settings
+        duration = 0.25; bpm = 120 # default speed settings #todo make this configurable
+        # note that duration from metadata is an array, so the default needs to be an array too.
         meta_data[:tempo] = {duration: [duration], bpm: bpm} # setting the default speed
         meta_data[:tempo_display] = "1/#{1/duration} = #{bpm}"
         if tune[:metaText][:tempo]
@@ -309,13 +319,13 @@ module Harpnotes
           ].join(" ")
         end
 
-        # handle meta data
+        # handle meta data from tune as parsed by abcjs
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each { |k| meta_data[k] = meta_data_from_tune[k] } # todo could not get Hash(object) and use merge
         result.meta_data = meta_data
 
 
-        # handlle harpnote options (the %%%%hn.xxxx - coments)
+        # handle harpnote options (the %%%%hn.xxxx - coments)
         #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
 
         result.harpnote_options = {}
