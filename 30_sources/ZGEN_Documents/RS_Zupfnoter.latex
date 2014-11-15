@@ -396,9 +396,19 @@ The following objectives are valid for Zupfnoter
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001},
   \hyperlink{RS-MG-002}{RS\_MG\_002})
 \item
-  {[}RS\_IN\_004{]} \textbf{\hypertarget{RS-IN-004}{}Feedback to the
-  entire tune} \{ The entire tune shall be played upon
-  requrest\}(\hyperlink{RS-MG-002}{RS\_MG\_002})
+  {[}RS\_IN\_004{]} \textbf{\hypertarget{RS-IN-004}{}Audible feedback to
+  the entire tune} \{ The tune shall be played upon request:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    entire tune
+  \item
+    entire selection
+  \item
+    entire tune starting at beginning of selection
+    \}(\hyperlink{RS-MG-002}{RS\_MG\_002})
+  \end{itemize}
 \item
   {[}RS\_IN\_005{]} \textbf{\hypertarget{RS-IN-005}{}Visual Feedback as
   Music Sheet} \{ As the tune is entered / changed in the input field, a
@@ -547,21 +557,20 @@ The following objectives are valid for Zupfnoter
 
 \begin{itemize}
 \item
-  {[}RS\_VN\_001{]} \textbf{\hypertarget{RS-VN-001}{}Shall Support the
+  {[}RS\_HN\_001{]} \textbf{\hypertarget{RS-HN-001}{}Shall Support the
   Header annotation}\{ Zupfnoter shall be able to denote the
   Meta-Information about the piece. It is a text block on the top left
   of the page.\}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_002{]} \textbf{\hypertarget{RS-VN-002}{}May Support the
-  lyrics}\{ Zupfnoter may be able to print the lyrics on the right
-  margin of the page.
+  {[}RS\_HN\_002{]} \textbf{\hypertarget{RS-HN-002}{}May Support the
+  lyrics}\{ Zupfnoter may be able to print the lyrics.
 
   Position of lyrics shall be under control of the user.
 
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_003{]} \textbf{\hypertarget{RS-VN-003}{}Shall Basic Table
-  Harp notation}\{ Zupfnoter shall support the basic Table Harp
+  {[}RS\_HN\_003{]} \textbf{\hypertarget{RS-HN-003}{}Shall support Basic
+  Table Harp notation}\{ Zupfnoter shall support the basic Table Harp
   notation:
 
   \begin{itemize}
@@ -610,12 +619,15 @@ The following objectives are valid for Zupfnoter
     \hline
     \end{longtable}
   \item
-    The notes of one particular tune are connected by a solid line
+    The notes of one particular voice are connected by a solid line
+    -{[}RS\_VH\_013{]}
+  \item
+    Representation of rests
   \end{itemize}
 
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_004{]}\textbf{\hypertarget{RS-VN-004}{}Shall Support chords
+  {[}RS\_HN\_004{]}\textbf{\hypertarget{RS-HN-004}{}Shall Support chords
   and polyphones}\{ Zupfnoter shall support notes which are played
   simultaneously. This is indicated by dotted lines connecting the
   particular notes of the chord.
@@ -634,7 +646,7 @@ The following objectives are valid for Zupfnoter
 
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_005{]} \textbf{\hypertarget{RS-VN-005}{}Shall support
+  {[}RS\_HN\_005{]} \textbf{\hypertarget{RS-HN-005}{}Shall support
   repetitions}\{ Zupfnoter shall be able to denote repetitions by
   drawing a rectangular line backwards.
 
@@ -642,7 +654,7 @@ The following objectives are valid for Zupfnoter
 
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_006{]} \textbf{\hypertarget{RS-VN-006}{}Shall support
+  {[}RS\_HN\_006{]} \textbf{\hypertarget{RS-HN-006}{}Shall support
   variant endings} \{
 
   Variant endings shall be supported such that
@@ -656,7 +668,7 @@ The following objectives are valid for Zupfnoter
     \}\{RS\_MG\_001\}
   \end{itemize}
 \item
-  {[}RS\_VN\_007{]} \textbf{\hypertarget{RS-VN-007}{}Shall support
+  {[}RS\_HN\_007{]} \textbf{\hypertarget{RS-HN-007}{}Shall support
   arbitrary continuations} \{
 
   It shall be possible to draw abrirary goto (also known as
@@ -667,7 +679,7 @@ The following objectives are valid for Zupfnoter
   This annotation shall be done using conventions in ABC code.
   \}\{RS\_MG\_001\}
 \item
-  {[}RS\_VN\_008{]} \textbf{\hypertarget{RS-VN-008}{}Shall optimize the
+  {[}RS\_HN\_008{]} \textbf{\hypertarget{RS-HN-008}{}Shall optimize the
   goto-lines} \{
 
   goto-lines are rendered as
@@ -687,13 +699,13 @@ The following objectives are valid for Zupfnoter
 
   \}\{RS\_MG\_001\}
 \item
-  {[}RS\_VN\_009{]} \textbf{\hypertarget{RS-VN-009}{}Shall Support
+  {[}RS\_HN\_009{]} \textbf{\hypertarget{RS-HN-009}{}Shall Support
   arbitrary annotations}\{ Zupfnoter shall be able to denote short
   annotations embedded in the tunes. These notes shall be placed on the
   right part of the page vertically aligned to the respective
   note\}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_010{]} \textbf{\hypertarget{RS-VN-010}{}Shall support ties}
+  {[}RS\_HN\_010{]} \textbf{\hypertarget{RS-HN-010}{}Shall support ties}
   \{
 
   Ties are notes of the same pitch which are played legato. This is used
@@ -715,7 +727,7 @@ The following objectives are valid for Zupfnoter
 
   \}\{RS\_MG\_001\}
 \item
-  {[}RS\_VN\_011{]} \textbf{\hypertarget{RS-VN-011}{}Shall support
+  {[}RS\_HN\_011{]} \textbf{\hypertarget{RS-HN-011}{}Shall support
   slurs} \{
 
   In opposite to ties, slurs may connect notes of different pitch. Slurs
@@ -726,25 +738,34 @@ The following objectives are valid for Zupfnoter
   involved in the slur. Maybe an extra annotation can be capplied to
   manually optimize the layout of the slur. \}\{RS\_MG\_001\}
 \item
-  {[}RS\_VN\_012{]} \textbf{\hypertarget{RS-VN-012}{}Shall support
+  {[}RS\_HN\_012{]} \textbf{\hypertarget{RS-HN-012}{}Shall support
   tuplets} \{
 
   \}\{RS\_MG\_001\}
 \item
-  {[}RS\_VN\_013{]} \textbf{\hypertarget{RS-VN-013}{}Shall draw melody
+  {[}RS\_HN\_013{]} \textbf{\hypertarget{RS-HN-013}{}Shall draw melody
   lines} \{
 
   Zupfnoter shall connect notes of the same voice as they represent a
   melody.
 
-  It shall be configurable which voice represents the main meloy.
+  It shall be configurable which voice represents the main melody.
+
+  In particular, we see three kinds of melody lines
+
+  \begin{description}
+  \item[primary melody]
+  The main melody of the piece, usually ``soprano'', Voice 1
+  \item[secondary melody]
+  The second melody, e.g. ``tenor'', voice 2
+  \end{description}
 
   Melody lines shall be not drawn to the beginnig of a new part. see
-  {[}\hyperlink{RS-VN-016}{RS\_VN\_016}{]}
+  {[}\hyperlink{RS-HN-016}{RS\_HN\_016}{]}
 
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_015{]} \textbf{\hypertarget{RS-VN-015}{}Shall draw orphaned
+  {[}RS\_HN\_015{]} \textbf{\hypertarget{RS-HN-015}{}Shall draw orphaned
   melody lines} \{ Notes of a ``non melody'' voice which have no
   counterparts in an other voice (therefore not being connecte with a
   synchronization line) shall be conntected to its predecessor using a
@@ -753,12 +774,35 @@ The following objectives are valid for Zupfnoter
 
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \item
-  {[}RS\_VN\_016{]} \textbf{\hypertarget{RS-VN-016}{}shall support
+  {[}RS\_HN\_016{]} \textbf{\hypertarget{RS-HN-016}{}shall support
   parts} \{
 
   It shall be possible to divide the music in parts. Parts shall be
   easily identified on the harpnote sheet. Parts may have a name which
   shall be shown.in the harpnote sheet.
+
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\item
+  {[}RS\_HN\_017{]} \textbf{\hypertarget{RS-HN-017}{}denote measure
+  starts} \{ Measure starts shall be denoted by a small ellipse above
+  the first note/rest of a measure.
+  \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
+\item
+  {[}RS\_HN\_018{]} \textbf{\hypertarget{RS-HN-018}{}use particular line
+  width}\{ Lines shall be drawn as follows:
+
+  \begin{description}
+  \item[Notes]
+  Thick
+  \item[Melody lines]
+  Medium
+  \item[Secondary Melody line]
+  Thin
+  \item[Jump lines]
+  Thick
+  \item[Default]
+  Thin
+  \end{description}
 
   \}(\hyperlink{RS-MG-001}{RS\_MG\_001})
 \end{itemize}

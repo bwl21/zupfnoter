@@ -25,6 +25,50 @@
 
 
 
+[RS_HN_001] **Shall Support the Header annotation** { }()
+
+
+
+[RS_HN_002] **May Support the lyrics** { }()
+
+
+
+[RS_HN_003] **Shall support Basic Table Harp notation** { }()
+
+
+
+[RS_HN_004] **Shall Support chords and polyphones** { }()
+
+
+
+[RS_HN_005] **Shall support repetitions** { }()
+
+
+
+[RS_HN_009] **Shall Support arbitrary annotations** { }()
+
+
+
+[RS_HN_013] **Shall draw melody lines** { }()
+
+
+
+[RS_HN_015] **Shall draw orphaned melody lines** { }()
+
+
+
+[RS_HN_016] **shall support parts** { }()
+
+
+
+[RS_HN_017] **denote measure starts** { }()
+
+
+
+[RS_HN_018] **use particular line width** { }()
+
+
+
 [RS_IN_001] **Shall be able to process various input formats** { }()
 
 
@@ -37,7 +81,7 @@
 
 
 
-[RS_IN_004] **Feedback to the entire tune** { }()
+[RS_IN_004] **Audible feedback to the entire tune** { }()
 
 
 
@@ -103,39 +147,3 @@
 
 
 [RS_SYS_005] **Batch Operation** { }()
-
-
-
-[RS_VN_001] **Shall Support the Header annotation** { }()
-
-
-
-[RS_VN_002] **May Support the lyrics** { }()
-
-
-
-[RS_VN_003] **Shall Basic Table Harp notation** { }()
-
-
-
-[RS_VN_004] **Shall Support chords and polyphones** { }()
-
-
-
-[RS_VN_005] **Shall support repetitions** { }()
-
-
-
-[RS_VN_009] **Shall Support arbitrary annotations** { }()
-
-
-
-[RS_VN_013] **Shall draw melody lines** { }()
-
-
-
-[RS_VN_015] **Shall draw orphaned melody lines** { }()
-
-
-
-[RS_VN_016] **shall support parts** { }()

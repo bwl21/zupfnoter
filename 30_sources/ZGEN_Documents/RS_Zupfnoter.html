@@ -103,7 +103,12 @@ As an eample see:
 <li>a note is clicked in one of the other visualizations</li>
 </ul>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
-<li><p><a id="RS-IN-004">[RS_IN_004]</a> <strong>Feedback to the entire tune</strong> { The entire tune shall be played upon requrest}(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-IN-004">[RS_IN_004]</a> <strong>Audible feedback to the entire tune</strong> { The tune shall be played upon request:</p>
+<ul>
+<li>entire tune</li>
+<li>entire selection</li>
+<li>entire tune starting at beginning of selection }(<a href="#RS-MG-002">RS_MG_002</a>)</li>
+</ul></li>
 <li><p><a id="RS-IN-005">[RS_IN_005]</a> <strong>Visual Feedback as Music Sheet</strong> { As the tune is entered / changed in the input field, a music sheet shall be displayed and updated. }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 <li><p><a id="RS-IN-006">[RS_IN_006]</a> <strong>Visual Feedback as Table Harp Notes</strong> { As the tune is entered / changed in the input field, a preview of th Table Harp Notes sheet shall be displayed and updated.</p>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
@@ -163,11 +168,11 @@ This is in particular to support the fact that private users usually do not have
 </ul>
 <h2 id="support-of-table-harp-notation"><a href="#support-of-table-harp-notation"><span class="header-section-number">3.4</span> Support of Table Harp notation</a></h2>
 <ul>
-<li><p><a id="RS-VN-001">[RS_VN_001]</a> <strong>Shall Support the Header annotation</strong>{ Zupfnoter shall be able to denote the Meta-Information about the piece. It is a text block on the top left of the page.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-002">[RS_VN_002]</a> <strong>May Support the lyrics</strong>{ Zupfnoter may be able to print the lyrics on the right margin of the page.</p>
+<li><p><a id="RS-HN-001">[RS_HN_001]</a> <strong>Shall Support the Header annotation</strong>{ Zupfnoter shall be able to denote the Meta-Information about the piece. It is a text block on the top left of the page.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-HN-002">[RS_HN_002]</a> <strong>May Support the lyrics</strong>{ Zupfnoter may be able to print the lyrics.</p>
 <p>Position of lyrics shall be under control of the user.</p>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-003">[RS_VN_003]</a> <strong>Shall Basic Table Harp notation</strong>{ Zupfnoter shall support the basic Table Harp notation:</p>
+<li><p><a id="RS-HN-003">[RS_HN_003]</a> <strong>Shall support Basic Table Harp notation</strong>{ Zupfnoter shall support the basic Table Harp notation:</p>
 <ul>
 <li><p>Repreesentation of note length</p>
 <table>
@@ -202,10 +207,11 @@ This is in particular to support the fact that private users usually do not have
 </tr>
 </tbody>
 </table></li>
-<li><p>The notes of one particular tune are connected by a solid line</p></li>
+<li>The notes of one particular voice are connected by a solid line -[RS_VH_013]</li>
+<li><p>Representation of rests</p></li>
 </ul>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-004">[RS_VN_004]</a><strong>Shall Support chords and polyphones</strong>{ Zupfnoter shall support notes which are played simultaneously. This is indicated by dotted lines connecting the particular notes of the chord.</p>
+<li><p><a id="RS-HN-004">[RS_HN_004]</a><strong>Shall Support chords and polyphones</strong>{ Zupfnoter shall support notes which are played simultaneously. This is indicated by dotted lines connecting the particular notes of the chord.</p>
 <p>Note that these polyphones might come from two different use cases:</p>
 <dl>
 <dt>in Voice</dt>
@@ -216,19 +222,19 @@ This is in particular to support the fact that private users usually do not have
 </dd>
 </dl>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-005">[RS_VN_005]</a> <strong>Shall support repetitions</strong>{ Zupfnoter shall be able to denote repetitions by drawing a rectangular line backwards.</p>
+<li><p><a id="RS-HN-005">[RS_HN_005]</a> <strong>Shall support repetitions</strong>{ Zupfnoter shall be able to denote repetitions by drawing a rectangular line backwards.</p>
 <p>Also take care of nested repetitions</p>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-006">[RS_VN_006]</a> <strong>Shall support variant endings</strong> {</p>
+<li><p><a id="RS-HN-006">[RS_HN_006]</a> <strong>Shall support variant endings</strong> {</p>
 Variant endings shall be supported such that
 <ul>
 <li>The beginnig of the variant ending is marked by an annotation</li>
 <li>The end of the variant ending is handled like a repetition }{RS_MG_001}</li>
 </ul></li>
-<li><p><a id="RS-VN-007">[RS_VN_007]</a> <strong>Shall support arbitrary continuations</strong> {</p>
+<li><p><a id="RS-HN-007">[RS_HN_007]</a> <strong>Shall support arbitrary continuations</strong> {</p>
 <p>It shall be possible to draw abrirary goto (also known as continuation, jump) lines e.g.&#160;for &#8220;ca capo al Fine&#8221;. For this purpose, it is necessary to markup the point where to leave the dentoed sequence as well as the point where to continue.</p>
 <p>This annotation shall be done using conventions in ABC code. }{RS_MG_001}</p></li>
-<li><p><a id="RS-VN-008">[RS_VN_008]</a> <strong>Shall optimize the goto-lines</strong> {</p>
+<li><p><a id="RS-HN-008">[RS_HN_008]</a> <strong>Shall optimize the goto-lines</strong> {</p>
 <p>goto-lines are rendered as</p>
 <ul>
 <li>rectangular lines</li>
@@ -236,8 +242,8 @@ Variant endings shall be supported such that
 <li>vertical part of the line shall be controlled by the user</li>
 </ul>
 <p>}{RS_MG_001}</p></li>
-<li><p><a id="RS-VN-009">[RS_VN_009]</a> <strong>Shall Support arbitrary annotations</strong>{ Zupfnoter shall be able to denote short annotations embedded in the tunes. These notes shall be placed on the right part of the page vertically aligned to the respective note}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-010">[RS_VN_010]</a> <strong>Shall support ties</strong> {</p>
+<li><p><a id="RS-HN-009">[RS_HN_009]</a> <strong>Shall Support arbitrary annotations</strong>{ Zupfnoter shall be able to denote short annotations embedded in the tunes. These notes shall be placed on the right part of the page vertically aligned to the respective note}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-HN-010">[RS_HN_010]</a> <strong>Shall support ties</strong> {</p>
 <p>Ties are notes of the same pitch which are played legato. This is used if one wants to denote a sound which plays longer than the longest notifiable note. It also is used if e.g.&#160;a four beat sound is across measure boundaries.</p>
 <p>Support of ties means</p>
 <ul>
@@ -246,20 +252,49 @@ Variant endings shall be supported such that
 </ul>
 <p>Ties are easy to draw since all involved notes have the same pitch.</p>
 <p>}{RS_MG_001}</p></li>
-<li><p><a id="RS-VN-011">[RS_VN_011]</a> <strong>Shall support slurs</strong> {</p>
+<li><p><a id="RS-HN-011">[RS_HN_011]</a> <strong>Shall support slurs</strong> {</p>
 <p>In opposite to ties, slurs may connect notes of different pitch. Slurs are played &#8220;legato&#8221;. In fact on a table harp this not really a difference.</p>
 <p>When drawing a slur layout might be optimized according to the notes involved in the slur. Maybe an extra annotation can be capplied to manually optimize the layout of the slur. }{RS_MG_001}</p></li>
-<li><p><a id="RS-VN-012">[RS_VN_012]</a> <strong>Shall support tuplets</strong> {</p>
+<li><p><a id="RS-HN-012">[RS_HN_012]</a> <strong>Shall support tuplets</strong> {</p>
 <p>}{RS_MG_001}</p></li>
-<li><p><a id="RS-VN-013">[RS_VN_013]</a> <strong>Shall draw melody lines</strong> {</p>
+<li><p><a id="RS-HN-013">[RS_HN_013]</a> <strong>Shall draw melody lines</strong> {</p>
 <p>Zupfnoter shall connect notes of the same voice as they represent a melody.</p>
-<p>It shall be configurable which voice represents the main meloy.</p>
-<p>Melody lines shall be not drawn to the beginnig of a new part. see [<a href="#RS-VN-016">RS_VN_016</a>]</p>
+<p>It shall be configurable which voice represents the main melody.</p>
+<p>In particular, we see three kinds of melody lines</p>
+<dl>
+<dt>primary melody</dt>
+<dd><p>The main melody of the piece, usually &#8220;soprano&#8221;, Voice 1</p>
+</dd>
+<dt>secondary melody</dt>
+<dd><p>The second melody, e.g. &#8220;tenor&#8221;, voice 2</p>
+</dd>
+</dl>
+<p>Melody lines shall be not drawn to the beginnig of a new part. see [<a href="#RS-HN-016">RS_HN_016</a>]</p>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-015">[RS_VN_015]</a> <strong>Shall draw orphaned melody lines</strong> { Notes of a &#8220;non melody&#8221; voice which have no counterparts in an other voice (therefore not being connecte with a synchronization line) shall be conntected to its predecessor using a light dotted line. Based on this approach no &#8220;orphan notes&#8221; appear on the harpsheet.</p>
+<li><p><a id="RS-HN-015">[RS_HN_015]</a> <strong>Shall draw orphaned melody lines</strong> { Notes of a &#8220;non melody&#8221; voice which have no counterparts in an other voice (therefore not being connecte with a synchronization line) shall be conntected to its predecessor using a light dotted line. Based on this approach no &#8220;orphan notes&#8221; appear on the harpsheet.</p>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-016">[RS_VN_016]</a> <strong>shall support parts</strong> {</p>
+<li><p><a id="RS-HN-016">[RS_HN_016]</a> <strong>shall support parts</strong> {</p>
 <p>It shall be possible to divide the music in parts. Parts shall be easily identified on the harpnote sheet. Parts may have a name which shall be shown.in the harpnote sheet.</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-HN-017">[RS_HN_017]</a> <strong>denote measure starts</strong> { Measure starts shall be denoted by a small ellipse above the first note/rest of a measure. }(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-HN-018">[RS_HN_018]</a> <strong>use particular line width</strong>{ Lines shall be drawn as follows:</p>
+<dl>
+<dt>Notes</dt>
+<dd><p>Thick</p>
+</dd>
+<dt>Melody lines</dt>
+<dd><p>Medium</p>
+</dd>
+<dt>Secondary Melody line</dt>
+<dd><p>Thin</p>
+</dd>
+<dt>Jump lines</dt>
+<dd><p>Thick</p>
+</dd>
+<dt>Default</dt>
+<dd><p>Thin</p>
+</dd>
+</dl>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
 </ul>
 </body>

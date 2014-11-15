@@ -1,5 +1,49 @@
 
 
+[RS_HN_001]
+[RS_HN_001] **Shall Support the Header annotation**{ Zupfnoter shall be able to denote the Meta-Information about the piece. It is a text block on the top left of the page.}(RS_MG_001)
+
+
+[RS_HN_002]
+[RS_HN_002] **May Support the lyrics**{ Zupfnoter may be able to print the lyrics. Position of lyrics shall be under control of the user. }(RS_MG_001)
+
+
+[RS_HN_003]
+[RS_HN_003] **Shall support Basic Table Harp notation**{ Zupfnoter shall support the basic Table Harp notation: - Repreesentation of note length +------------------------------+---------------------------------------------+ | note | representation | +==============================+=============================================+ | full | big empty circle | +------------------------------+---------------------------------------------+ | half | empty circle | +------------------------------+---------------------------------------------+ | quarter | filled circle | +------------------------------+---------------------------------------------+ | eights | small filled circle | +------------------------------+---------------------------------------------+ | sixteenth | smaller filled circle or cross | +------------------------------+---------------------------------------------+ - The notes of one particular voice are connected by a solid line -[RS_VH_013] - Representation of rests }(RS_MG_001)
+
+
+[RS_HN_004]
+[RS_HN_004]**Shall Support chords and polyphones**{ Zupfnoter shall support notes which are played simultaneously. This is indicated by dotted lines connecting the particular notes of the chord. Note that these polyphones might come from two different use cases: in Voice : polyphones are part of one voice. Even if it is difficult to play there are use cases for this. These usually are played with two fingers of the same hand. cross voice : in this case, multiple voices have a note start on the same beat. This might even happen in combination of "in Voice" polyphonse. }(RS_MG_001)
+
+
+[RS_HN_005]
+[RS_HN_005] **Shall support repetitions**{ Zupfnoter shall be able to denote repetitions by drawing a rectangular line backwards. Also take care of nested repetitions }(RS_MG_001)
+
+
+[RS_HN_009]
+[RS_HN_009] **Shall Support arbitrary annotations**{ Zupfnoter shall be able to denote short annotations embedded in the tunes. These notes shall be placed on the right part of the page vertically aligned to the respective note}(RS_MG_001)
+
+
+[RS_HN_013]
+[RS_HN_013] **Shall draw melody lines** { Zupfnoter shall connect notes of the same voice as they represent a melody. It shall be configurable which voice represents the main melody. In particular, we see three kinds of melody lines primary melody : The main melody of the piece, usually "soprano", Voice 1 secondary melody : The second melody, e.g. "tenor", voice 2 Melody lines shall be not drawn to the beginnig of a new part. see ->[RS_HN_016] }(RS_MG_001)
+
+
+[RS_HN_015]
+[RS_HN_015] **Shall draw orphaned melody lines** { Notes of a "non melody" voice which have no counterparts in an other voice (therefore not being connecte with a synchronization line) shall be conntected to its predecessor using a light dotted line. Based on this approach no "orphan notes" appear on the harpsheet. }(RS_MG_001)
+
+
+[RS_HN_016]
+[RS_HN_016] **shall support parts** { It shall be possible to divide the music in parts. Parts shall be easily identified on the harpnote sheet. Parts may have a name which shall be shown.in the harpnote sheet. }(RS_MG_001)
+
+
+[RS_HN_017]
+[RS_HN_017] **denote measure starts** { Measure starts shall be denoted by a small ellipse above the first note/rest of a measure. }(RS_MG_001)
+
+
+[RS_HN_018]
+[RS_HN_018] **use particular line width**{ Lines shall be drawn as follows: Notes : Thick Melody lines : Medium Secondary Melody line : Thin Jump lines : Thick Default : Thin }(RS_MG_001)
+
+
 [RS_IN_001]
 [RS_IN_001] **Shall be able to process various input formats** { Zupfnoter shall be able to process various input formats. Primarily such as - abc - MusicXml - Lilypond This might be implemented by predrive converters. }(RS_MG_004)
 
@@ -13,7 +57,7 @@
 
 
 [RS_IN_004]
-[RS_IN_004] **Feedback to the entire tune** { The entire tune shall be played upon requrest}(RS_MG_002)
+[RS_IN_004] **Audible feedback to the entire tune** { The tune shall be played upon request: - entire tune - entire selection - entire tune starting at beginning of selection }(RS_MG_002)
 
 
 [RS_IN_005]
@@ -98,39 +142,3 @@
 
 [RS_SYS_005]
 [RS_SYS_005] **Batch Operation** { Zupfnoter shall be operational as batch tool }(RS_MG_002)
-
-
-[RS_VN_001]
-[RS_VN_001] **Shall Support the Header annotation**{ Zupfnoter shall be able to denote the Meta-Information about the piece. It is a text block on the top left of the page.}(RS_MG_001)
-
-
-[RS_VN_002]
-[RS_VN_002] **May Support the lyrics**{ Zupfnoter may be able to print the lyrics on the right margin of the page. Position of lyrics shall be under control of the user. }(RS_MG_001)
-
-
-[RS_VN_003]
-[RS_VN_003] **Shall Basic Table Harp notation**{ Zupfnoter shall support the basic Table Harp notation: - Repreesentation of note length +------------------------------+---------------------------------------------+ | note | representation | +==============================+=============================================+ | full | big empty circle | +------------------------------+---------------------------------------------+ | half | empty circle | +------------------------------+---------------------------------------------+ | quarter | filled circle | +------------------------------+---------------------------------------------+ | eights | small filled circle | +------------------------------+---------------------------------------------+ | sixteenth | smaller filled circle or cross | +------------------------------+---------------------------------------------+ - The notes of one particular tune are connected by a solid line }(RS_MG_001)
-
-
-[RS_VN_004]
-[RS_VN_004]**Shall Support chords and polyphones**{ Zupfnoter shall support notes which are played simultaneously. This is indicated by dotted lines connecting the particular notes of the chord. Note that these polyphones might come from two different use cases: in Voice : polyphones are part of one voice. Even if it is difficult to play there are use cases for this. These usually are played with two fingers of the same hand. cross voice : in this case, multiple voices have a note start on the same beat. This might even happen in combination of "in Voice" polyphonse. }(RS_MG_001)
-
-
-[RS_VN_005]
-[RS_VN_005] **Shall support repetitions**{ Zupfnoter shall be able to denote repetitions by drawing a rectangular line backwards. Also take care of nested repetitions }(RS_MG_001)
-
-
-[RS_VN_009]
-[RS_VN_009] **Shall Support arbitrary annotations**{ Zupfnoter shall be able to denote short annotations embedded in the tunes. These notes shall be placed on the right part of the page vertically aligned to the respective note}(RS_MG_001)
-
-
-[RS_VN_013]
-[RS_VN_013] **Shall draw melody lines** { Zupfnoter shall connect notes of the same voice as they represent a melody. It shall be configurable which voice represents the main meloy. Melody lines shall be not drawn to the beginnig of a new part. see ->[RS_VN_016] }(RS_MG_001)
-
-
-[RS_VN_015]
-[RS_VN_015] **Shall draw orphaned melody lines** { Notes of a "non melody" voice which have no counterparts in an other voice (therefore not being connecte with a synchronization line) shall be conntected to its predecessor using a light dotted line. Based on this approach no "orphan notes" appear on the harpsheet. }(RS_MG_001)
-
-
-[RS_VN_016]
-[RS_VN_016] **shall support parts** { It shall be possible to divide the music in parts. Parts shall be easily identified on the harpnote sheet. Parts may have a name which shall be shown.in the harpnote sheet. }(RS_MG_001)

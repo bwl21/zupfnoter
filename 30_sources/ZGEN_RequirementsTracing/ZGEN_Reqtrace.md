@@ -5,6 +5,17 @@
 
 - ->[RS_MG_001] <!-- --> <a id="RT-RS-MG-001"/>**Easily create Table Harp Music sheets**  ()
 
+    - <a href="#RT-RS-HN-001">[RS_HN_001]</a> Shall Support the Header annotation
+    - <a href="#RT-RS-HN-002">[RS_HN_002]</a> May Support the lyrics
+    - <a href="#RT-RS-HN-003">[RS_HN_003]</a> Shall support Basic Table Harp notation
+    - <a href="#RT-RS-HN-004">[RS_HN_004]</a> Shall Support chords and polyphones
+    - <a href="#RT-RS-HN-005">[RS_HN_005]</a> Shall support repetitions
+    - <a href="#RT-RS-HN-009">[RS_HN_009]</a> Shall Support arbitrary annotations
+    - <a href="#RT-RS-HN-013">[RS_HN_013]</a> Shall draw melody lines
+    - <a href="#RT-RS-HN-015">[RS_HN_015]</a> Shall draw orphaned melody lines
+    - <a href="#RT-RS-HN-016">[RS_HN_016]</a> shall support parts
+    - <a href="#RT-RS-HN-017">[RS_HN_017]</a> denote measure starts
+    - <a href="#RT-RS-HN-018">[RS_HN_018]</a> use particular line width
     - <a href="#RT-RS-IN-002">[RS_IN_002]</a> interactive editor
     - <a href="#RT-RS-IN-003">[RS_IN_003]</a> audible Feedback of current note
     - <a href="#RT-RS-IN-005">[RS_IN_005]</a> Visual Feedback as Music Sheet
@@ -16,21 +27,12 @@
     - <a href="#RT-RS-OUT-006">[RS_OUT_006]</a> Shall allow to create excerpts
     - <a href="#RT-RS-OUT-007">[RS_OUT_007]</a> Shall allow page annotations legend and production
     notes
-    - <a href="#RT-RS-VN-001">[RS_VN_001]</a> Shall Support the Header annotation
-    - <a href="#RT-RS-VN-002">[RS_VN_002]</a> May Support the lyrics
-    - <a href="#RT-RS-VN-003">[RS_VN_003]</a> Shall Basic Table Harp notation
-    - <a href="#RT-RS-VN-004">[RS_VN_004]</a> Shall Support chords and polyphones
-    - <a href="#RT-RS-VN-005">[RS_VN_005]</a> Shall support repetitions
-    - <a href="#RT-RS-VN-009">[RS_VN_009]</a> Shall Support arbitrary annotations
-    - <a href="#RT-RS-VN-013">[RS_VN_013]</a> Shall draw melody lines
-    - <a href="#RT-RS-VN-015">[RS_VN_015]</a> Shall draw orphaned melody lines
-    - <a href="#RT-RS-VN-016">[RS_VN_016]</a> shall support parts
 
 - ->[RS_MG_002] <!-- --> <a id="RT-RS-MG-002"/>**Apply for private use**  ()
 
     - <a href="#RT-RS-IN-002">[RS_IN_002]</a> interactive editor
     - <a href="#RT-RS-IN-003">[RS_IN_003]</a> audible Feedback of current note
-    - <a href="#RT-RS-IN-004">[RS_IN_004]</a> Feedback to the entire tune
+    - <a href="#RT-RS-IN-004">[RS_IN_004]</a> Audible feedback to the entire tune
     - <a href="#RT-RS-IN-005">[RS_IN_005]</a> Visual Feedback as Music Sheet
     - <a href="#RT-RS-IN-006">[RS_IN_006]</a> Visual Feedback as Table Harp Notes
     - <a href="#RT-RS-IN-007">[RS_IN_007]</a> Synchronized feedback
@@ -65,6 +67,39 @@
 
     - <a href="#RT-RS-SYS-001">[RS_SYS_001]</a> Shall be portable
 
+- ->[RS_HN_001] <!-- --> <a id="RT-RS-HN-001"/>**Shall Support the Header annotation**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_002] <!-- --> <a id="RT-RS-HN-002"/>**May Support the lyrics**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_003] <!-- --> <a id="RT-RS-HN-003"/>**Shall support Basic Table Harp notation**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_004] <!-- --> <a id="RT-RS-HN-004"/>**Shall Support chords and polyphones**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_005] <!-- --> <a id="RT-RS-HN-005"/>**Shall support repetitions**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_009] <!-- --> <a id="RT-RS-HN-009"/>**Shall Support arbitrary annotations**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_013] <!-- --> <a id="RT-RS-HN-013"/>**Shall draw melody lines**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_015] <!-- --> <a id="RT-RS-HN-015"/>**Shall draw orphaned melody lines**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_016] <!-- --> <a id="RT-RS-HN-016"/>**shall support parts**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_017] <!-- --> <a id="RT-RS-HN-017"/>**denote measure starts**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
+- ->[RS_HN_018] <!-- --> <a id="RT-RS-HN-018"/>**use particular line width**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
+
+
 - ->[RS_IN_001] <!-- --> <a id="RT-RS-IN-001"/>**Shall be able to process various input formats**  (<a href="#RT-RS-MG-004">[RS_MG_004]</a>)
 
 
@@ -74,7 +109,7 @@
 - ->[RS_IN_003] <!-- --> <a id="RT-RS-IN-003"/>**audible Feedback of current note**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>, <a href="#RT-RS-MG-002">[RS_MG_002]</a>)
 
 
-- ->[RS_IN_004] <!-- --> <a id="RT-RS-IN-004"/>**Feedback to the entire tune**  (<a href="#RT-RS-MG-002">[RS_MG_002]</a>)
+- ->[RS_IN_004] <!-- --> <a id="RT-RS-IN-004"/>**Audible feedback to the entire tune**  (<a href="#RT-RS-MG-002">[RS_MG_002]</a>)
 
 
 - ->[RS_IN_005] <!-- --> <a id="RT-RS-IN-005"/>**Visual Feedback as Music Sheet**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>, <a href="#RT-RS-MG-002">[RS_MG_002]</a>)
@@ -124,30 +159,3 @@
 
 
 - ->[RS_SYS_005] <!-- --> <a id="RT-RS-SYS-005"/>**Batch Operation**  (<a href="#RT-RS-MG-002">[RS_MG_002]</a>)
-
-
-- ->[RS_VN_001] <!-- --> <a id="RT-RS-VN-001"/>**Shall Support the Header annotation**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_002] <!-- --> <a id="RT-RS-VN-002"/>**May Support the lyrics**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_003] <!-- --> <a id="RT-RS-VN-003"/>**Shall Basic Table Harp notation**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_004] <!-- --> <a id="RT-RS-VN-004"/>**Shall Support chords and polyphones**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_005] <!-- --> <a id="RT-RS-VN-005"/>**Shall support repetitions**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_009] <!-- --> <a id="RT-RS-VN-009"/>**Shall Support arbitrary annotations**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_013] <!-- --> <a id="RT-RS-VN-013"/>**Shall draw melody lines**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_015] <!-- --> <a id="RT-RS-VN-015"/>**Shall draw orphaned melody lines**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)
-
-
-- ->[RS_VN_016] <!-- --> <a id="RT-RS-VN-016"/>**shall support parts**  (<a href="#RT-RS-MG-001">[RS_MG_001]</a>)

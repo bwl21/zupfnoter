@@ -13,6 +13,94 @@
   <key attr.name="description" attr.type="string" for="edge" id="d9"/>
   <key for="edge" id="d10" yfiles.type="edgegraphics"/>
   <graph edgedefault="directed" id="G">
+    <node id="RS_HN_001">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_001] Shall Support the Header annotation</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_001" target="RS_MG_001" id="RS_MG_001_RS_HN_001"/>
+    <node id="RS_HN_002">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_002] May Support the lyrics</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_002" target="RS_MG_001" id="RS_MG_001_RS_HN_002"/>
+    <node id="RS_HN_003">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_003] Shall support Basic Table Harp notation</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_003" target="RS_MG_001" id="RS_MG_001_RS_HN_003"/>
+    <node id="RS_HN_004">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_004] Shall Support chords and polyphones</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_004" target="RS_MG_001" id="RS_MG_001_RS_HN_004"/>
+    <node id="RS_HN_005">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_005] Shall support repetitions</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_005" target="RS_MG_001" id="RS_MG_001_RS_HN_005"/>
+    <node id="RS_HN_009">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_009] Shall Support arbitrary annotations</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_009" target="RS_MG_001" id="RS_MG_001_RS_HN_009"/>
+    <node id="RS_HN_013">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_013] Shall draw melody lines</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_013" target="RS_MG_001" id="RS_MG_001_RS_HN_013"/>
+    <node id="RS_HN_015">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_015] Shall draw orphaned melody lines</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_015" target="RS_MG_001" id="RS_MG_001_RS_HN_015"/>
+    <node id="RS_HN_016">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_016] shall support parts</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_016" target="RS_MG_001" id="RS_MG_001_RS_HN_016"/>
+    <node id="RS_HN_017">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_017] denote measure starts</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_017" target="RS_MG_001" id="RS_MG_001_RS_HN_017"/>
+    <node id="RS_HN_018">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_HN_018] use particular line width</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_HN_018" target="RS_MG_001" id="RS_MG_001_RS_HN_018"/>
     <node id="RS_IN_001">
       <data key="d6">
         <y:ShapeNode>
@@ -42,7 +130,7 @@
     <node id="RS_IN_004">
       <data key="d6">
         <y:ShapeNode>
-          <y:NodeLabel>[RS_IN_004] Feedback to the entire tune</y:NodeLabel>
+          <y:NodeLabel>[RS_IN_004] Audible feedback to the entire tune</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
@@ -224,77 +312,5 @@
       </data>
     </node>
     <edge source="RS_SYS_005" target="RS_MG_002" id="RS_MG_002_RS_SYS_005"/>
-    <node id="RS_VN_001">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_001] Shall Support the Header annotation</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_001" target="RS_MG_001" id="RS_MG_001_RS_VN_001"/>
-    <node id="RS_VN_002">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_002] May Support the lyrics</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_002" target="RS_MG_001" id="RS_MG_001_RS_VN_002"/>
-    <node id="RS_VN_003">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_003] Shall Basic Table Harp notation</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_003" target="RS_MG_001" id="RS_MG_001_RS_VN_003"/>
-    <node id="RS_VN_004">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_004] Shall Support chords and polyphones</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_004" target="RS_MG_001" id="RS_MG_001_RS_VN_004"/>
-    <node id="RS_VN_005">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_005] Shall support repetitions</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_005" target="RS_MG_001" id="RS_MG_001_RS_VN_005"/>
-    <node id="RS_VN_009">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_009] Shall Support arbitrary annotations</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_009" target="RS_MG_001" id="RS_MG_001_RS_VN_009"/>
-    <node id="RS_VN_013">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_013] Shall draw melody lines</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_013" target="RS_MG_001" id="RS_MG_001_RS_VN_013"/>
-    <node id="RS_VN_015">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_015] Shall draw orphaned melody lines</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_015" target="RS_MG_001" id="RS_MG_001_RS_VN_015"/>
-    <node id="RS_VN_016">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_016] shall support parts</y:NodeLabel>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge source="RS_VN_016" target="RS_MG_001" id="RS_MG_001_RS_VN_016"/>
   </graph>
 </graphml>

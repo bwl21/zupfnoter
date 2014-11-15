@@ -131,13 +131,12 @@ The following objectives are valid for Zupfnoter
 
     }(RS_MG_001, RS_MG_002)
 
--   [RS_IN_004] **Audible feedback to the entire tune** { The tune shall be 
-    played upon request:
-    
+-   [RS_IN_004] **Audible feedback to the entire tune** { The tune
+    shall be played upon request:
+
     -   entire tune
     -   entire selection
-    -   entire tune starting at beginning of selection
-    }(RS_MG_002)
+    -   entire tune starting at beginning of selection }(RS_MG_002)
 
 -   [RS_IN_005] **Visual Feedback as Music Sheet** { As the tune is
     entered / changed in the input field, a music sheet shall be
@@ -234,19 +233,19 @@ The following objectives are valid for Zupfnoter
 
 ## Support of Table Harp notation
 
--   [RS_VN_001] **Shall Support the Header annotation**{ Zupfnoter
+-   [RS_HN_001] **Shall Support the Header annotation**{ Zupfnoter
     shall be able to denote the Meta-Information about the piece. It is
     a text block on the top left of the page.}(RS_MG_001)
 
--   [RS_VN_002] **May Support the lyrics**{ Zupfnoter may be able to
-    print the lyrics on the right margin of the page.
+-   [RS_HN_002] **May Support the lyrics**{ Zupfnoter may be able to
+    print the lyrics.
 
     Position of lyrics shall be under control of the user.
 
     }(RS_MG_001)
 
--   [RS_VN_003] **Shall support Basic Table Harp notation**{ Zupfnoter shall
-    support the basic Table Harp notation:
+-   [RS_HN_003] **Shall support Basic Table Harp notation**{ Zupfnoter
+    shall support the basic Table Harp notation:
 
     -   Repreesentation of note length
 
@@ -264,12 +263,13 @@ The following objectives are valid for Zupfnoter
         | sixteenth                    | smaller filled circle or cross              |
         +------------------------------+---------------------------------------------+
 
-    -   The notes of one particular voice are connected by a solid line -[RS_VH_013]
+    -   The notes of one particular voice are connected by a solid line
+        -[RS_VH_013]
     -   Representation of rests
 
     }(RS_MG_001)
 
--   [RS_VN_004]**Shall Support chords and polyphones**{ Zupfnoter
+-   [RS_HN_004]**Shall Support chords and polyphones**{ Zupfnoter
     shall support notes which are played simultaneously. This is
     indicated by dotted lines connecting the particular notes of the
     chord.
@@ -288,21 +288,21 @@ The following objectives are valid for Zupfnoter
 
     }(RS_MG_001)
 
--   [RS_VN_005] **Shall support repetitions**{ Zupfnoter shall be able
+-   [RS_HN_005] **Shall support repetitions**{ Zupfnoter shall be able
     to denote repetitions by drawing a rectangular line backwards.
 
     Also take care of nested repetitions
 
     }(RS_MG_001)
 
--   [RS_VN_006] **Shall support variant endings** {
+-   [RS_HN_006] **Shall support variant endings** {
 
     Variant endings shall be supported such that
     -   The beginnig of the variant ending is marked by an annotation
     -   The end of the variant ending is handled like a repetition
         }{RS_MG_001}
 
--   [RS_VN_007] **Shall support arbitrary continuations** {
+-   [RS_HN_007] **Shall support arbitrary continuations** {
 
     It shall be possible to draw abrirary goto (also known as
     continuation, jump) lines e.g. for "ca capo al Fine". For this
@@ -312,7 +312,7 @@ The following objectives are valid for Zupfnoter
     This annotation shall be done using conventions in ABC code.
     }{RS_MG_001}
 
--   [RS_VN_008] **Shall optimize the goto-lines** {
+-   [RS_HN_008] **Shall optimize the goto-lines** {
 
     goto-lines are rendered as
 
@@ -326,12 +326,12 @@ The following objectives are valid for Zupfnoter
 
     }{RS_MG_001}
 
--   [RS_VN_009] **Shall Support arbitrary annotations**{ Zupfnoter
+-   [RS_HN_009] **Shall Support arbitrary annotations**{ Zupfnoter
     shall be able to denote short annotations embedded in the tunes.
     These notes shall be placed on the right part of the page vertically
     aligned to the respective note}(RS_MG_001)
 
--   [RS_VN_010] **Shall support ties** {
+-   [RS_HN_010] **Shall support ties** {
 
     Ties are notes of the same pitch which are played legato. This is
     used if one wants to denote a sound which plays longer than the
@@ -347,7 +347,7 @@ The following objectives are valid for Zupfnoter
 
     }{RS_MG_001}
 
--   [RS_VN_011] **Shall support slurs** {
+-   [RS_HN_011] **Shall support slurs** {
 
     In opposite to ties, slurs may connect notes of different pitch.
     Slurs are played "legato". In fact on a table harp this not really a
@@ -357,23 +357,31 @@ The following objectives are valid for Zupfnoter
     involved in the slur. Maybe an extra annotation can be capplied to
     manually optimize the layout of the slur. }{RS_MG_001}
 
--   [RS_VN_012] **Shall support tuplets** {
+-   [RS_HN_012] **Shall support tuplets** {
 
     }{RS_MG_001}
 
--   [RS_VN_013] **Shall draw melody lines** {
+-   [RS_HN_013] **Shall draw melody lines** {
 
     Zupfnoter shall connect notes of the same voice as they represent a
     melody.
 
-    It shall be configurable which voice represents the main meloy.
+    It shall be configurable which voice represents the main melody.
+
+    In particular, we see three kinds of melody lines
+
+    primary melody
+    :   The main melody of the piece, usually "soprano", Voice 1
+
+    secondary melody
+    :   The second melody, e.g. "tenor", voice 2
 
     Melody lines shall be not drawn to the beginnig of a new part. see
-    ->[RS_VN_016]
+    ->[RS_HN_016]
 
     }(RS_MG_001)
 
--   [RS_VN_015] **Shall draw orphaned melody lines** { Notes of a "non
+-   [RS_HN_015] **Shall draw orphaned melody lines** { Notes of a "non
     melody" voice which have no counterparts in an other voice
     (therefore not being connecte with a synchronization line) shall be
     conntected to its predecessor using a light dotted line. Based on
@@ -381,17 +389,36 @@ The following objectives are valid for Zupfnoter
 
     }(RS_MG_001)
 
--   [RS_VN_016] **shall support parts** {
+-   [RS_HN_016] **shall support parts** {
 
     It shall be possible to divide the music in parts. Parts shall be
     easily identified on the harpnote sheet. Parts may have a name which
     shall be shown.in the harpnote sheet.
 
     }(RS_MG_001)
-    
--   [RS_VN_017] **denote measure starts** {
-    Measure starts shall be denoted by a small ellipse above the first
-    note/rest of a measure.
+
+-   [RS_HN_017] **denote measure starts** { Measure starts shall be
+    denoted by a small ellipse above the first note/rest of a measure.
+    }(RS_MG_001)
+
+-   [RS_HN_018] **use particular line width**{ Lines shall be drawn as
+    follows:
+
+    Notes
+    :   Thick
+
+    Melody lines
+    :   Medium
+
+    Secondary Melody line
+    :   Thin
+
+    Jump lines
+    :   Thick
+
+    Default
+    :   Thin
+
     }(RS_MG_001)
 
   [Example Notation]: ../RS_Requirements/example_notation.pdf
