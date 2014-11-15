@@ -16,7 +16,7 @@
     <node id="RS_IN_001">
       <data key="d6">
         <y:ShapeNode>
-          <y:NodeLabel>[RS_IN_001] Shall be able to process various input formatc</y:NodeLabel>
+          <y:NodeLabel>[RS_IN_001] Shall be able to process various input formats</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
@@ -33,7 +33,7 @@
     <node id="RS_IN_003">
       <data key="d6">
         <y:ShapeNode>
-          <y:NodeLabel>[RS_IN_003] audible Feedback of curent note</y:NodeLabel>
+          <y:NodeLabel>[RS_IN_003] audible Feedback of current note</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
@@ -74,6 +74,14 @@
     </node>
     <edge source="RS_IN_007" target="RS_MG_001" id="RS_MG_001_RS_IN_007"/>
     <edge source="RS_IN_007" target="RS_MG_002" id="RS_MG_002_RS_IN_007"/>
+    <node id="RS_IN_008">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_IN_008] Automatic save and restore</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_IN_008" target="RS_MG_002" id="RS_MG_002_RS_IN_008"/>
     <node id="RS_MG_001">
       <data key="d6">
         <y:ShapeNode>
@@ -143,6 +151,34 @@
       </data>
     </node>
     <edge source="RS_OUT_004" target="RS_MG_002" id="RS_MG_002_RS_OUT_004"/>
+    <node id="RS_OUT_005">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_OUT_005] Shall allow to fine tune positions</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_OUT_005" target="RS_MG_001" id="RS_MG_001_RS_OUT_005"/>
+    <edge source="RS_OUT_005" target="RS_MG_002" id="RS_MG_002_RS_OUT_005"/>
+    <node id="RS_OUT_006">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_OUT_006] Shall allow to create excerpts</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_OUT_006" target="RS_MG_001" id="RS_MG_001_RS_OUT_006"/>
+    <edge source="RS_OUT_006" target="RS_MG_002" id="RS_MG_002_RS_OUT_006"/>
+    <node id="RS_OUT_007">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_OUT_007] Shall allow page annotations legend and production
+    notes</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_OUT_007" target="RS_MG_001" id="RS_MG_001_RS_OUT_007"/>
+    <edge source="RS_OUT_007" target="RS_MG_002" id="RS_MG_002_RS_OUT_007"/>
     <node id="RS_SYS_001">
       <data key="d6">
         <y:ShapeNode>
@@ -215,7 +251,7 @@
     <node id="RS_VN_004">
       <data key="d6">
         <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_004] Shall Suport chords</y:NodeLabel>
+          <y:NodeLabel>[RS_VN_004] Shall Support chords and polyphones</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
@@ -223,18 +259,42 @@
     <node id="RS_VN_005">
       <data key="d6">
         <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_005] Shall repetitions</y:NodeLabel>
+          <y:NodeLabel>[RS_VN_005] Shall support repetitions</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
     <edge source="RS_VN_005" target="RS_MG_001" id="RS_MG_001_RS_VN_005"/>
-    <node id="RS_VN_006">
+    <node id="RS_VN_009">
       <data key="d6">
         <y:ShapeNode>
-          <y:NodeLabel>[RS_VN_006] Shall Support arbitrary annotations</y:NodeLabel>
+          <y:NodeLabel>[RS_VN_009] Shall Support arbitrary annotations</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
-    <edge source="RS_VN_006" target="RS_MG_001" id="RS_MG_001_RS_VN_006"/>
+    <edge source="RS_VN_009" target="RS_MG_001" id="RS_MG_001_RS_VN_009"/>
+    <node id="RS_VN_013">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_VN_013] Shall draw melody lines</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_VN_013" target="RS_MG_001" id="RS_MG_001_RS_VN_013"/>
+    <node id="RS_VN_015">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_VN_015] Shall draw orphaned melody lines</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_VN_015" target="RS_MG_001" id="RS_MG_001_RS_VN_015"/>
+    <node id="RS_VN_016">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:NodeLabel>[RS_VN_016] shall support parts</y:NodeLabel>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge source="RS_VN_016" target="RS_MG_001" id="RS_MG_001_RS_VN_016"/>
   </graph>
 </graphml>

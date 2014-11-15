@@ -25,7 +25,7 @@
 
 
 
-[RS_IN_001] **Shall be able to process various input formatc** { }()
+[RS_IN_001] **Shall be able to process various input formats** { }()
 
 
 
@@ -33,7 +33,7 @@
 
 
 
-[RS_IN_003] **audible Feedback of curent note** { }()
+[RS_IN_003] **audible Feedback of current note** { }()
 
 
 
@@ -53,6 +53,10 @@
 
 
 
+[RS_IN_008] **Automatic save and restore** { }()
+
+
+
 [RS_OUT_001] **Shall produce PDF output** { }()
 
 
@@ -66,6 +70,19 @@
 
 
 [RS_OUT_004] **Optimize page layout** { }()
+
+
+
+[RS_OUT_005] **Shall allow to fine tune positions** { }()
+
+
+
+[RS_OUT_006] **Shall allow to create excerpts** { }()
+
+
+
+[RS_OUT_007] **Shall allow page annotations legend and production
+    notes** { }()
 
 
 
@@ -101,12 +118,24 @@
 
 
 
-[RS_VN_004] **Shall Suport chords** { }()
+[RS_VN_004] **Shall Support chords and polyphones** { }()
 
 
 
-[RS_VN_005] **Shall repetitions** { }()
+[RS_VN_005] **Shall support repetitions** { }()
 
 
 
-[RS_VN_006] **Shall Support arbitrary annotations** { }()
+[RS_VN_009] **Shall Support arbitrary annotations** { }()
+
+
+
+[RS_VN_013] **Shall draw melody lines** { }()
+
+
+
+[RS_VN_015] **Shall draw orphaned melody lines** { }()
+
+
+
+[RS_VN_016] **shall support parts** { }()

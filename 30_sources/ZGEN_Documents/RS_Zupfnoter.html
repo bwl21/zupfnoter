@@ -23,7 +23,7 @@
 <li><a href="#input"><span class="toc-section-number">3.2</span> Input</a><ul>
 <li><a href="#interactive-editor"><span class="toc-section-number">3.2.1</span> interactive editor</a></li>
 </ul></li>
-<li><a href="#output"><span class="toc-section-number">3.3</span> Output</a></li>
+<li><a href="#output-of-harpnotes"><span class="toc-section-number">3.3</span> Output of Harpnotes</a></li>
 <li><a href="#support-of-table-harp-notation"><span class="toc-section-number">3.4</span> Support of Table Harp notation</a></li>
 </ul></li>
 </ul>
@@ -31,7 +31,7 @@
 <h1 id="introduction"><a href="#introduction"><span class="header-section-number">1</span> Introduction</a></h1>
 <p>Zupfnoter is an attempt to implemente a tool to create music sheets for &#8220;Table Harp&#8221; (http://Table Harp-harfen.de) respectively &#8220;Zauberharfe&#8221; (http://www.musik-im-spiel.de).</p>
 <p>Basic approach in for these instruments is, that the music sheet is placed on the instrument such that the particular note and the string are visually connected.</p>
-<p>The following piece</p>
+<p>The following example illustrates the approach.</p>
 <p><embed src="../RS_Requirements/example_notation.pdf"></embed>&#160;</p>
 <p>This document describes the initial requirements for &#8220;Zupfpnoter&#8221;; Basic approach is</p>
 <ul>
@@ -78,10 +78,11 @@ As an eample see:
 <p>}(<a href="#RS-MG-004">RS_MG_004</a>)</p></li>
 <li><p><a id="RS-SYS-004">[RS_SYS_004]</a> <strong>Interactive Operation</strong> { Zupfnoter shall be operated as interactive tool. }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 <li><p><a id="RS-SYS-005">[RS_SYS_005]</a> <strong>Batch Operation</strong> { Zupfnoter shall be operational as batch tool }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-SYS-005">[RS_SYS_005]</a> <strong>Cloud storage</strong> { Zupfnoter shall be able to communicate with cloud storage such as Dropbox, Owncloud }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 </ul>
 <h2 id="input"><a href="#input"><span class="header-section-number">3.2</span> Input</a></h2>
 <ul>
-<li><p><a id="RS-IN-001">[RS_IN_001]</a> <strong>Shall be able to process various input formatc</strong> { Zupfnoter shall be able to process various input formats. Primarily such as</p>
+<li><p><a id="RS-IN-001">[RS_IN_001]</a> <strong>Shall be able to process various input formats</strong> { Zupfnoter shall be able to process various input formats. Primarily such as</p>
 <ul>
 <li>abc</li>
 <li>MusicXml</li>
@@ -94,7 +95,7 @@ As an eample see:
 <li><p><a id="RS-IN-002">[RS_IN_002]</a> <strong>interactive editor</strong> { Zupfnoter shall be available as interactive editor such that one of the formats in [<a href="#RS-IN-001">RS_IN_001</a>] can be editied. Thereby an audible and visual feedback shall be provided.</p>
 <p>The kind of audible / visual feedback shall be selectable ([<a href="#RS-IN-003">RS_IN_003</a>], [<a href="#RS-IN-005">RS_IN_005</a>], [<a href="#RS-IN-005">RS_IN_005</a>])</p>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
-<li><p><a id="RS-IN-003">[RS_IN_003]</a> <strong>audible Feedback of curent note</strong> { The current note shall be played after it is entered / changed / selected.</p>
+<li><p><a id="RS-IN-003">[RS_IN_003]</a> <strong>audible Feedback of current note</strong> { The current note shall be played after it is entered / changed / selected.</p>
 <p>&#8220;Selected&#8221; means</p>
 <ul>
 <li>that the cursor is moved around in the editor</li>
@@ -111,12 +112,13 @@ As an eample see:
 <li>highlight the object in note sheet and &#8220;veen notes&#8221; when cursor is moved in input</li>
 <li>highlight the the object in input upon click on a note in note sheet or &#8220;Table Harp notes&#8221; }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</li>
 </ul></li>
+<li><p><a id="RS-IN-008">[RS_IN_008]</a> <strong>Automatic save and restore</strong> { Zupfnoter shall be able to automatically save current changes in order to prevent from data loss. }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 </ul>
-<h2 id="output"><a href="#output"><span class="header-section-number">3.3</span> Output</a></h2>
+<h2 id="output-of-harpnotes"><a href="#output-of-harpnotes"><span class="header-section-number">3.3</span> Output of Harpnotes</a></h2>
 <ul>
 <li><p><a id="RS-OUT-001">[RS_OUT_001]</a> <strong>Shall produce PDF output</strong> { Zupfnoter shall produce an out in PDF format }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 <li><p><a id="RS-OUT-002">[RS_OUT_002]</a> <strong>Shall handle A4 pages</strong> { A Table Harp notes are larger than A4 pages, Zupfnoter shall provide a print which can easily be combined.</p>
-This is in paricular to support the fact that private userd usually do not have A3 printers [<a href="#RS-MG-002">RS_MG_002</a>]
+This is in particular to support the fact that private users usually do not have A3 printers [<a href="#RS-MG-002">RS_MG_002</a>]
 <ul>
 <li>divide the sheet on a4 pages</li>
 <li>print proper marks where and how to glue the pages</li>
@@ -127,16 +129,45 @@ This is in paricular to support the fact that private userd usually do not have 
 <p>Note that smaller songs might fit on an A4 page in landscape. }(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 <li><p><a id="RS-OUT-003">[RS_OUT_003]</a> <strong>Should support A3 printers</strong> { There may be users with an A3 Printer, so it should support printing on a full A3 Page. }(<a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 <li><p><a id="RS-OUT-004">[RS_OUT_004]</a> <strong>Optimize page layout</strong> { Page layout shall be optimized depending on user request:</p>
+<dl>
+<dt>compact</dt>
+<dd>the vertical distance is constant and selectable by the user in grid measueres. One grid measure is the size of the smallest note
+</dd>
+<dt>automatically</dt>
+<dd><p>the vertical distance depends on the amount of notes which need to be rendered such that the entire sheet is filled.</p>
+<p>In this mode, it shall be possible to select the voices to be considered during optimization. By this on can create excerpts where all voices share the same vertical positions.</p>
+<p>On the other hand, if only the printed voices are considered for optimization, it is likely that more music fits on the page.</p>
+</dd>
+</dl>
 <ul>
-<li>compact, the vertical distance is constant and selectable by the user in grid measueres. One grid measure is the size of the smallest note</li>
-<li>automatically, the vertical distance depends on the amount of notes which need to be rendered such that the entire scheet is filled.}(<a href="#RS-MG-002">RS_MG_002</a>)</li>
+<li>}(<a href="#RS-MG-002">RS_MG_002</a>)</li>
 </ul></li>
+<li><p><a id="RS-OUT-005">[RS_OUT_005]</a> <strong>Shall allow to fine tune positions</strong> { It shall be possible to control the position of</p>
+<ul>
+<li>legend</li>
+<li>annotations</li>
+<li>harpnotes (beginning of the notes)</li>
+</ul>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-OUT-006">[RS_OUT_006]</a> <strong>Shall allow to create excerpts</strong> {</p>
+<p>for music with many voices it shall possible to print excepts e.g.&#160;soprano + alto</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
+<li><p><a id="RS-OUT-007">[RS_OUT_007]</a> <strong>Shall allow page annotations legend and production notes</strong> {</p>
+<p>It shall be possible to place</p>
+<ul>
+<li>a page legend derived from the abc meta-data such as Key, Author etc</li>
+<li>a production note indicating the version and host of Zupfnoter</li>
+<li>arbitrary notes bound on page coordinates</li>
+</ul>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>, <a href="#RS-MG-002">RS_MG_002</a>)</p></li>
 </ul>
 <h2 id="support-of-table-harp-notation"><a href="#support-of-table-harp-notation"><span class="header-section-number">3.4</span> Support of Table Harp notation</a></h2>
 <ul>
-<li><p><a id="RS-VN-001">[RS_VN_001]</a><strong>Shall Support the Header annotation</strong>{ Zupfnoter shall be able to denote the Meta-Information about the piece. It is a text block on the top left of the page.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-002">[RS_VN_002]</a><strong>May Support the lyrics</strong>{ Zupfnoter may be able to print the lyrics on the right margin of the page.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-003">[RS_VN_003]</a><strong>Shall Basic Table Harp notation</strong>{ Zupfnoter shall support the basic Table Harp notation:</p>
+<li><p><a id="RS-VN-001">[RS_VN_001]</a> <strong>Shall Support the Header annotation</strong>{ Zupfnoter shall be able to denote the Meta-Information about the piece. It is a text block on the top left of the page.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-002">[RS_VN_002]</a> <strong>May Support the lyrics</strong>{ Zupfnoter may be able to print the lyrics on the right margin of the page.</p>
+<p>Position of lyrics shall be under control of the user.</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-003">[RS_VN_003]</a> <strong>Shall Basic Table Harp notation</strong>{ Zupfnoter shall support the basic Table Harp notation:</p>
 <ul>
 <li><p>Repreesentation of note length</p>
 <table>
@@ -174,9 +205,62 @@ This is in paricular to support the fact that private userd usually do not have 
 <li><p>The notes of one particular tune are connected by a solid line</p></li>
 </ul>
 <p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-004">[RS_VN_004]</a><strong>Shall Suport chords</strong>{ Zupfnoter shall support notes which are played simultaneously. This is indicated by dotted lines connecting the particular notes of the chord.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-005">[RS_VN_005]</a><strong>Shall repetitions</strong>{ Zupfnoter shall be able to denote repetitions by drawing a rectangular line backwards.}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
-<li><p><a id="RS-VN-006">[RS_VN_006]</a><strong>Shall Support arbitrary annotations</strong>{ Zupfnoter shall be able to denote short annotations embedded in the tunes. These notes shall be placed on the right part of the page vertically aligned to the respective note}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-004">[RS_VN_004]</a><strong>Shall Support chords and polyphones</strong>{ Zupfnoter shall support notes which are played simultaneously. This is indicated by dotted lines connecting the particular notes of the chord.</p>
+<p>Note that these polyphones might come from two different use cases:</p>
+<dl>
+<dt>in Voice</dt>
+<dd><p>polyphones are part of one voice. Even if it is difficult to play there are use cases for this. These usually are played with two fingers of the same hand.</p>
+</dd>
+<dt>cross voice</dt>
+<dd><p>in this case, multiple voices have a note start on the same beat. This might even happen in combination of &#8220;in Voice&#8221; polyphonse.</p>
+</dd>
+</dl>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-005">[RS_VN_005]</a> <strong>Shall support repetitions</strong>{ Zupfnoter shall be able to denote repetitions by drawing a rectangular line backwards.</p>
+<p>Also take care of nested repetitions</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-006">[RS_VN_006]</a> <strong>Shall support variant endings</strong> {</p>
+Variant endings shall be supported such that
+<ul>
+<li>The beginnig of the variant ending is marked by an annotation</li>
+<li>The end of the variant ending is handled like a repetition }{RS_MG_001}</li>
+</ul></li>
+<li><p><a id="RS-VN-007">[RS_VN_007]</a> <strong>Shall support arbitrary continuations</strong> {</p>
+<p>It shall be possible to draw abrirary goto (also known as continuation, jump) lines e.g.&#160;for &#8220;ca capo al Fine&#8221;. For this purpose, it is necessary to markup the point where to leave the dentoed sequence as well as the point where to continue.</p>
+<p>This annotation shall be done using conventions in ABC code. }{RS_MG_001}</p></li>
+<li><p><a id="RS-VN-008">[RS_VN_008]</a> <strong>Shall optimize the goto-lines</strong> {</p>
+<p>goto-lines are rendered as</p>
+<ul>
+<li>rectangular lines</li>
+<li>start at after the note and end before the note. Therby the best side of the note shall be choosen.. E.g. if the target is northwest of the start, the line shall start at lower left corner of the start note and end at the top right corhner of the target.</li>
+<li>vertical part of the line shall be controlled by the user</li>
+</ul>
+<p>}{RS_MG_001}</p></li>
+<li><p><a id="RS-VN-009">[RS_VN_009]</a> <strong>Shall Support arbitrary annotations</strong>{ Zupfnoter shall be able to denote short annotations embedded in the tunes. These notes shall be placed on the right part of the page vertically aligned to the respective note}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-010">[RS_VN_010]</a> <strong>Shall support ties</strong> {</p>
+<p>Ties are notes of the same pitch which are played legato. This is used if one wants to denote a sound which plays longer than the longest notifiable note. It also is used if e.g.&#160;a four beat sound is across measure boundaries.</p>
+<p>Support of ties means</p>
+<ul>
+<li>respect tie when playing</li>
+<li>mark the tie as a bow between the relevant notes.</li>
+</ul>
+<p>Ties are easy to draw since all involved notes have the same pitch.</p>
+<p>}{RS_MG_001}</p></li>
+<li><p><a id="RS-VN-011">[RS_VN_011]</a> <strong>Shall support slurs</strong> {</p>
+<p>In opposite to ties, slurs may connect notes of different pitch. Slurs are played &#8220;legato&#8221;. In fact on a table harp this not really a difference.</p>
+<p>When drawing a slur layout might be optimized according to the notes involved in the slur. Maybe an extra annotation can be capplied to manually optimize the layout of the slur. }{RS_MG_001}</p></li>
+<li><p><a id="RS-VN-012">[RS_VN_012]</a> <strong>Shall support tuplets</strong> {</p>
+<p>}{RS_MG_001}</p></li>
+<li><p><a id="RS-VN-013">[RS_VN_013]</a> <strong>Shall draw melody lines</strong> {</p>
+<p>Zupfnoter shall connect notes of the same voice as they represent a melody.</p>
+<p>It shall be configurable which voice represents the main meloy.</p>
+<p>Melody lines shall be not drawn to the beginnig of a new part. see [<a href="#RS-VN-016">RS_VN_016</a>]</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-015">[RS_VN_015]</a> <strong>Shall draw orphaned melody lines</strong> { Notes of a &#8220;non melody&#8221; voice which have no counterparts in an other voice (therefore not being connecte with a synchronization line) shall be conntected to its predecessor using a light dotted line. Based on this approach no &#8220;orphan notes&#8221; appear on the harpsheet.</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
+<li><p><a id="RS-VN-016">[RS_VN_016]</a> <strong>shall support parts</strong> {</p>
+<p>It shall be possible to divide the music in parts. Parts shall be easily identified on the harpnote sheet. Parts may have a name which shall be shown.in the harpnote sheet.</p>
+<p>}(<a href="#RS-MG-001">RS_MG_001</a>)</p></li>
 </ul>
 </body>
 </html>
