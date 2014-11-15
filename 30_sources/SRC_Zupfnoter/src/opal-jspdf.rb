@@ -48,6 +48,17 @@ class JsPDF
     `#{@native_jspdf}.setDrawColor(rgb[0], rgb[1], rgb[2])`
   end
 
+  # @param [interger] width of line
+  def line_width=(width)
+    `#{@native_jspdf}.setLineWidth(#{width})`
+  end
+
+  def line_dash=(dist = 3)
+    dist = `undefined` if dist.nil?
+    `#{@native_jspdf}.setLineDash(#{dist}, #{dist})`
+  end
+
+
   # @param rgb [Array] R G B values 0..255
   def text_color=(rgb)
     `#{@native_jspdf}.setTextColor(rgb[0], rgb[1], rgb[2])`
@@ -64,11 +75,6 @@ class JsPDF
 
   def use_solid_lines
     `#{@native_jspdf}.setLineDash('', 0)`
-  end
-
-  def line_dash=(dist = 3)
-    dist = `undefined` if dist.nil?
-    `#{@native_jspdf}.setLineDash(#{dist}, #{dist})`
   end
 
   def text(x, y, text, flags=nil)

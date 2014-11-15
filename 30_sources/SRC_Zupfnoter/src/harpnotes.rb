@@ -603,8 +603,10 @@ module Harpnotes
 
     # this represetns objects which can be visible
     class Drawable
+
       def initialize
         @visible = true
+        @line_width = Harpnotes::Layout::Default::LINE_THIN
       end
 
       def center
@@ -617,6 +619,14 @@ module Harpnotes
 
       def visible=(v)
         @visible=v
+      end
+
+      def line_width=(v)
+        @line_width=v
+      end
+
+      def line_width
+        @line_width
       end
     end
 
@@ -842,6 +852,10 @@ module Harpnotes
     # This might be the only one at all ...
     #
     class Default
+
+      LINE_THIN = 0.1
+      LINE_MEDIUM = 0.3
+      LINE_THICK = 0.5
       # all numbers in mm
       ELLIPSE_SIZE = [2.8, 1.7] # radii of the largest Ellipse
       REST_SIZE = [2.8, 2.8] # radii of the largest Rest Glyph
@@ -1093,7 +1107,10 @@ module Harpnotes
         previous_note = nil
         res_flow = voice.select { |c| c.is_a? Playable }.map do |playable|
           res = nil
-          res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable]) unless previous_note.nil?
+          unless previous_note.nil?
+            res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
+            res.line_width = LINE_MEDIUM
+          end
           res = nil if playable.first_in_part?
 
           previous_note = playable
@@ -1191,15 +1208,18 @@ module Harpnotes
           distance = distance - 1 if distance > 0 # make distancebeh  syymetric  -1 0 1
           if distance
             # vertical = {distance: (distance + 0.5) * X_SPACING}
+            # vertical path shoudl be between two strings -> 0.5
             vertical = (distance + 0.5) * X_SPACING
           else
             vertical = 0.5 * X_SPACING # {level: goto.policy[:level]}
           end
+
           path = make_path_from_jumpline(Vector2d(lookuptable_drawing_by_playable[goto.from].center),
                                          Vector2d(lookuptable_drawing_by_playable[goto.to].center),
                                          Vector2d(2.5, 2.5),
                                          vertical)
-          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from),
+
+          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap{|s|s.line_width=Harpnotes::Layout::Default::LINE_THICK},
            Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
         end.flatten
         res_gotos = [] unless show_options[:jumpline]
@@ -1215,7 +1235,7 @@ module Harpnotes
 
 
         # return all drawing primitives
-        retval = (res_flow + res_sub_flow + res_playables + res_gotos + res_measures + res_newparts + res_slurs + res_tuplets + res_annotations).compact
+        retval = (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures + res_newparts + res_annotations).compact
       end
 
 
@@ -1243,7 +1263,7 @@ module Harpnotes
       def compute_beat_compression(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        current_beat = - BEAT_RESOULUTION # ensure that first beat is on 0
+        current_beat = -BEAT_RESOULUTION # ensure that first beat is on 0
         last_size = (BEAT_RESOULUTION)
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
@@ -1266,7 +1286,7 @@ module Harpnotes
             last_size = size
 
             # if a new part starts on this beat, make space for a full note
-            increment += BEAT_RESOULUTION  unless is_new_part.empty?
+            increment += BEAT_RESOULUTION unless is_new_part.empty?
             current_beat += increment
           end
           [beat, current_beat]
@@ -1313,6 +1333,7 @@ module Harpnotes
         size = ELLIPSE_SIZE.map { |e| e * scale }
 
         res = Ellipse.new([x_offset, y_offset], size, fill, dotted, root)
+        res.line_width = LINE_THICK
         res
       end
 
@@ -1361,6 +1382,7 @@ module Harpnotes
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
+        #todo:layout this with a path
         size = ELLIPSE_SIZE.map { |e| e * scale }
         res = Ellipse.new([x_offset, y_offset - size.last - 0.5], [size.first, 0.1], fill, false, root) # todo draw a line
         res.visible = false unless root.visible?
@@ -1372,6 +1394,7 @@ module Harpnotes
       # @param [Vector2d] to
       # @param [Numeric] policy horizontal of the jumpline related to startpoint
       # @param [Vector2d] north_east_offset - vector to determine the startpoint
+      # @return [Array of Path] the jumpline and the arrow
       #
       # general appraoch
       # * music jumps from below start to above end
@@ -1387,7 +1410,11 @@ module Harpnotes
         end_orientation = Vector2d((((end_of_vertical - to) * [1, 0]).normalize).x, 0)
 
         start_offset = north_east_offset * [start_orientation.x, 1]
+        # offset of array top
         end_offset = north_east_offset * [end_orientation.x, -1]
+        # offset of line such that it ends inside of the array
+        end_offset_of_line = north_east_offset * [end_orientation.x, -1] * [1.5,1]
+
 
         start_of_vertical = start_of_vertical + start_offset * [0, 1]
         end_of_vertical = end_of_vertical + end_offset * [0, 1]
@@ -1395,18 +1422,25 @@ module Harpnotes
         start_of_jumpline = from + [start_offset.x * north_east_offset.x, +north_east_offset.y]
         end_of_jumpline = to + [end_offset.x * north_east_offset.x, -north_east_offset.y]
 
+        # line points
         p1 = from + start_offset
         p2 = start_of_vertical
         p3 = end_of_vertical
         p4 = to + end_offset
+        p4_line = to + end_offset_of_line
+
+        # arrow points
         a1 = p4 + end_orientation * 2.5 + [0, 1]
         a2 = p4 + end_orientation * 2.5 - [0, 1]
         a3 = p4
 
         # covert path to relative
+        # relative line points
         rp2 = p2 - p1
         rp3 = p3 - p2
-        rp4 = p4 - p3
+        rp4 = p4_line - p3
+
+        # relative array points
         ra1 = a1 - p4
         ra2 = a2 - a1
         ra3 = p4 - a2
@@ -1468,7 +1502,7 @@ module Harpnotes
       #
       # @return [Array] of Path command arrays
       def make_sheetmark_path(note)
-        w = 0.5;h=5
+        w = 0.5; h=5
         base = Vector2d(note) - [w, h/2]
         vpath = [Vector2d(w, -(w)), Vector2d(w, 2*w),
                  Vector2d(0, h),
