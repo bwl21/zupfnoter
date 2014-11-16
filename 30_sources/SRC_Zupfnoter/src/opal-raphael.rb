@@ -1,4 +1,3 @@
-
 #
 # This module wraps the API for Raphael
 # as long as we need it to render harpnotes
@@ -46,6 +45,11 @@ module Raphael
       `self.r.attr(name, value)`
     end
 
+    # adjust the line width of the current Raphael element
+    # @param [Numerical] width with of the elment in mm
+    def line_width=(width)
+      self["stroke-width"]=width
+    end
 
     #
     # Wrap translate
@@ -92,13 +96,12 @@ module Raphael
   end
 
 
-
   #
   # Wraps Raphael drawing area
   #
   class Paper
 
-    
+
     #
     # Construtctor
     # @param element [String] The indentifier of the canvas element
@@ -108,6 +111,7 @@ module Raphael
     # @return [type] [description]
     def initialize(element, width, height)
       @r = `Raphael(element, width, height)`
+      @line_width = 0.2 # todo:clarify value
     end
 
     # @return the native raphael object
@@ -115,49 +119,60 @@ module Raphael
       @r
     end
 
-    # 
+    # @param [Numerical] width of line from now on
+    def line_width=(width)
+      @line_width = width
+    end
+
+    #
     # Clear the area
-    # 
+    #
     # @return [type] [description]
     def clear
       `self.r.clear()`
     end
 
     # Draw an ellipse
-    # 
+    #
     # @param x [Numeric] x - horizontal coordinate of center
     # @param y [Numeric] y - vertical coordinate of center
     # @param rx [Numeric] rx - horizontal radius
     # @param ry [Numeric] ry - vertical radius
-    # 
+    #
     # @return [element] The generated Element
     def ellipse(x, y, rx, ry)
-      Raphael::Element.new(`self.r.ellipse(x, y, rx, ry)`)
+      result = Raphael::Element.new(`self.r.ellipse(x, y, rx, ry)`)
+      result.line_width = @line_width
+      result
     end
 
-    # 
+    #
     # Draw a path
-    # 
+    #
     # @param spec [String] The path to be drawn
     # see http://raphaeljs.com/reference.html#Paper.path
-    # 
-    # 
+    #
+    #
     # @return [Element] The generated Element
     def path(spec)
-      Raphael::Element.new(`self.r.path(spec)`)
+      result = Raphael::Element.new(`self.r.path(spec)`)
+      result.line_width = @line_width
+      result
     end
 
     # Draw an Rectangle
-    # 
+    #
     # @param x [Numeric] x - of topleft corner
     # @param y [Numeric] y - of topleft corner
     # @param rx [Numeric] rx - width
     # @param ry [Numeric] ry - height
     # @param radius [Numeric] radius for rounded corners, default is 0
-    # 
+    #
     # @return [element] The generated Element
     def rect(x, y, rx, ry, radius = 0)
-      Raphael::Element.new(`self.r.rect(x, y, rx, ry, radius)`)
+      result = Raphael::Element.new(`self.r.rect(x, y, rx, ry, radius)`)
+      result.line_width = @line_width
+      result
     end
 
 
@@ -165,40 +180,39 @@ module Raphael
       `self.r.setViewBox(x, y, width, height, fit)`
     end
 
-    # 
+    #
     # Draw a line
-    # 
+    #
     # @param x1 [Numeric] horiozontal startpoint coordinate
     # @param y1 [Numeric] vertical startpoint coordinate
     # @param x2 [Numeric] horiozontal endpoint coordinate
     # @param y2 [Numeric] vertical endpoint coordinate
-    # 
+    #
     # @return [Element] The generated Element
     def line(x1, y1, x2, y2)
       path("M#{x1},#{y1}L#{x2},#{y2}")
     end
 
-    # 
+    #
     # Draw a text
-    # 
+    #
     # @param x [Numeric] horiozontal startpoint coordinate
     # @param y [Numeric] horiozontal startpoint coordinate
     # @param text [String] The text to be rendered
-    # 
+    #
     # @return [Element] The generated Element
     def text(x, y, text, attributes={})
-      x = Raphael::Element.new(`self.r.text(x, y, text)`)
+      Raphael::Element.new(`self.r.text(x, y, text)`)
     end
 
 
-
-    # 
+    #
     # Determine the size of the canvas
-    # 
+    #
     # @return [Array of Numeric] The horizontal, vertical dimensions
     # of the canvas
     def size
-      [ `self.r.canvas.offsetWidth`, `self.r.canvas.offsetHeight` ]
+      [`self.r.canvas.offsetWidth`, `self.r.canvas.offsetHeight`]
     end
 
     def enable_pan_zoom
