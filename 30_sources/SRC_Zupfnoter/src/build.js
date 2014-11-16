@@ -16447,7 +16447,7 @@ if (line == null) line = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$attr_accessor', '$[]=', '$Native', '$new', '$path']);
+  $opal.add_stubs(['$attr_accessor', '$[]=', '$Native', '$new', '$line_width=', '$path']);
   return (function($base) {
     var self = $module($base, 'Raphael');
 
@@ -16478,6 +16478,12 @@ if (line == null) line = nil;
         var self = this;
 
         return self.r.attr(name, value);
+      };
+
+      def['$line_width='] = function(width) {
+        var self = this;
+
+        return self['$[]=']("stroke-width", width);
       };
 
       def.$translate = function(x, y) {
@@ -16517,17 +16523,24 @@ if (line == null) line = nil;
 
       var def = self._proto, $scope = self._scope;
 
-      def.r = nil;
+      def.r = def.line_width = nil;
       def.$initialize = function(element, width, height) {
         var self = this;
 
-        return self.r = Raphael(element, width, height);
+        self.r = Raphael(element, width, height);
+        return self.line_width = 0.2;
       };
 
       def.$raw = function() {
         var self = this;
 
         return self.r;
+      };
+
+      def['$line_width='] = function(width) {
+        var self = this;
+
+        return self.line_width = width;
       };
 
       def.$clear = function() {
@@ -16537,24 +16550,30 @@ if (line == null) line = nil;
       };
 
       def.$ellipse = function(x, y, rx, ry) {
-        var $a, $b, self = this;
+        var $a, $b, self = this, result = nil;
 
-        return (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.ellipse(x, y, rx, ry));
+        result = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.ellipse(x, y, rx, ry));
+        result['$line_width='](self.line_width);
+        return result;
       };
 
       def.$path = function(spec) {
-        var $a, $b, self = this;
+        var $a, $b, self = this, result = nil;
 
-        return (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.path(spec));
+        result = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.path(spec));
+        result['$line_width='](self.line_width);
+        return result;
       };
 
       def.$rect = function(x, y, rx, ry, radius) {
-        var $a, $b, self = this;
+        var $a, $b, self = this, result = nil;
 
         if (radius == null) {
           radius = 0
         }
-        return (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.rect(x, y, rx, ry, radius));
+        result = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.rect(x, y, rx, ry, radius));
+        result['$line_width='](self.line_width);
+        return result;
       };
 
       def.$set_view_box = function(x, y, width, height, fit) {
@@ -16575,7 +16594,7 @@ if (line == null) line = nil;
         if (attributes == null) {
           attributes = $hash2([], {})
         }
-        return x = (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.text(x, y, text));
+        return (($a = ((($b = $scope.Raphael) == null ? $opal.cm('Raphael') : $b))._scope).Element == null ? $a.cm('Element') : $a.Element).$new(self.r.text(x, y, text));
       };
 
       def.$size = function() {
@@ -17042,7 +17061,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars, $range = $opal.range;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$set_view_box', '$clear', '$rect', '$each', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$debug', '$class', '$children', '$unhighlight_element', '$highlight_element', '$get_elements_by_range', '$private', '$inject', '$+', '$first', '$join', '$[]', '$each_key', '$Native', '$origin', '$nil?', '$>', '$<', '$===', '$push', '$unhighlight_color=', '$[]=', '$include?', '$-', '$unhighlight_color', '$<<', '$ellipse', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$*', '$on_click', '$call', '$path_to_raphael', '$glyph', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$text', '$filled?']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$set_view_box', '$clear', '$rect', '$each', '$line_width=', '$line_width', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$debug', '$class', '$children', '$unhighlight_element', '$highlight_element', '$get_elements_by_range', '$private', '$inject', '$+', '$first', '$join', '$[]', '$each_key', '$Native', '$origin', '$nil?', '$>', '$<', '$===', '$push', '$unhighlight_color=', '$[]=', '$include?', '$-', '$unhighlight_color', '$<<', '$ellipse', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$*', '$on_click', '$call', '$path_to_raphael', '$glyph', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$text', '$filled?']);
   ;
   ;
   return (function($base) {
@@ -17093,9 +17112,11 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
         self.paper.$rect(1.0, 1.0, 418, 295);
         self.paper.$rect(0.0, 0.0, 420.0, 297.0);
         return ($a = ($b = sheet.$children()).$each, $a._p = (TMP_1 = function(child){var self = TMP_1._s || this, $a, $b, $c, $d;
+          if (self.paper == null) self.paper = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (child == null) child = nil;
-        if ((($a = child['$is_a?']((($b = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
+        self.paper['$line_width='](child.$line_width());
+          if ((($a = child['$is_a?']((($b = $scope.Ellipse) == null ? $opal.cm('Ellipse') : $b))) !== nil && (!$a._isBoolean || $a == true))) {
             if ((($a = child['$visible?']()) !== nil && (!$a._isBoolean || $a == true))) {
               return self.$draw_ellipse(child)
               } else {
@@ -17126,9 +17147,9 @@ if (child == null) child = nil;
               return nil
             }
             } else {
-            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("raphael_engine") + " " + (47) + ")");
+            $gvars.log.$debug("don't know how to draw " + (child.$class()) + " (" + ("raphael_engine") + " " + (48) + ")");
             return nil;
-          }}, TMP_1._s = self, TMP_1), $a).call($b);
+          };}, TMP_1._s = self, TMP_1), $a).call($b);
       };
 
       def.$on_select = TMP_2 = function() {
