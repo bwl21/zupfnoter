@@ -33,6 +33,7 @@ module Harpnotes
 
 
       sheet.children.each do |child|
+        @paper.line_width = child.line_width
         if child.is_a? Ellipse
           draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine

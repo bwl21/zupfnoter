@@ -10,14 +10,14 @@ module CommandController
     attr_reader :name
 
     # create the parameter
-    # @name [Symbol] the name of the parameter
-    # @type [Symbol] the type of the parameter intendend for help
+    # @param [Symbol] name - the name of the parameter
+    # @param [Symbol] type - the type of the parameter intendend for help
     def initialize(name, type)
       @name = name
       @type = type
     end
 
-    # @params[Block] block - the block to compute the help string for the parameter
+    # @param [Block] block - the block to compute the help string for the parameter
     def set_help(&block)
       @help_action = block
     end
