@@ -369,7 +369,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
           raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
         end
 
-        layout_harpnotes
+        layout_harpnotes # todo: this uses a side-effect to get the @song populated
         render_previews
 
         print_variants = @song.harpnote_options[:print]
@@ -441,6 +441,24 @@ V:T2 clef=treble-8  name="Alt" snm="A"
       end
 
     end
+
+    @commands.add_command(:view) do |command|
+
+      command.add_parameter(:view, :integer) do |p|
+        p.set_default { @systemstatus[:view] }
+        p.set_help { "id of the view to be used for preview [#{@systemstatus[:view]}]" }
+      end
+
+      command.set_help { "set current view  #{command.parameter_help(0)} and redisplay" }
+
+      command.undoable = false
+
+      command.as_action do |args|
+        set_status(view: args[:view].to_i)
+        render_previews
+      end
+    end
+
 
   end
 end
