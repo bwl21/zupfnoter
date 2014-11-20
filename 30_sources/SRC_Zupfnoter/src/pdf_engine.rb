@@ -8,7 +8,6 @@ module Harpnotes
     attr_reader :pdf
 
     PADDING = 4.0
-    ARROW_SIZE = 1.0
     JUMPLINE_INDENT = 10.0
     DOTTED_SIZE = 0.3
 
@@ -21,12 +20,12 @@ module Harpnotes
 
 
     def draw_in_segments(sheet)
-      delta = -12.0 * X_SPACING
+      delta = -12.0 * X_SPACING # todo: 12.0 = number of strings per page
       @pdf = JsPDF.new(:p, :mm, :a4)
 
       addpage = false
       (0..2).each do |i|
-        draw_segment(30 + i * delta, sheet, addpage)
+        draw_segment(30 + i * delta, sheet, addpage) # todo: 30 = initial offset
         addpage = true
       end
       @pdf
@@ -68,19 +67,15 @@ module Harpnotes
 
     def draw_annotation(root)
 
-      style_def = {
-          smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
-          small: {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
-          regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
-          large: {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
-      }
-
-      style = style_def[root.style] || style_def[:regular]
+      #todo: reference to FONT_STYLE_DEF is not ok here.
+      style = Harpnotes::Layout::Default::FONT_STYLE_DEF[root.style] || Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular]
+      mm_per_point = Harpnotes::Layout::Default::MM_PER_POINT
 
       @pdf.text_color = style[:text_color]
       @pdf.font_size = style[:font_size]
       @pdf.font_style = style[:font_style]
-      @pdf.text(root.center.first, root.center.last, root.text)
+      # + style ... we shift it up by the fontsize converted from point to mm by mm_per_point
+      @pdf.text(root.center.first, root.center.last + style[:font_size] * mm_per_point, root.text)
     end
 
     def draw_cutmarks(i, delta, border)
