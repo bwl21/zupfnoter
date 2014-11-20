@@ -124,11 +124,8 @@ The specific conventions in detail are as follows:
         `"^!Fine@10,10"` adds the word "Fine" at 10,10 mm from the note.
         Default position is 3,0
 
-        `"^#@10,10"` adds the content of hn.annotation with id: "10"
+        `"^#10@10,10"` adds the content of hn.annotation with id: "10"
         (see 1.) at position 10,10 from note.
-
-        `"^#@10,10"` adds the content of hn.annotation with id: "10"
-        (see 1.) at position specified there (-50,3) from note.
         
 7.  Lyrics
 
