@@ -1561,6 +1561,8 @@ module Harpnotes
         cpmm1 = (cpm1 + cpmm)/2
         cpmm2 = (cpm2 + cpmm)/2
         annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
+        annotation_anchor = annotation_anchor + [0,-4] # literal corection since now reference point is top of line
+                                                       # todo: make position configurable
 
         # todo make the drawing more fancy
         slurpath = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]
