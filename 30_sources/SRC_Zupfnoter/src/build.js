@@ -14397,7 +14397,7 @@ if (a == null) a = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$[]', '$write', '$to_sym', '$info', '$invert', '$private', '$<=', '$strftime', '$now', '$write_html', '$puts']);
+  $opal.add_stubs(['$[]', '$write', '$to_sym', '$message', '$invert', '$private', '$<=', '$strftime', '$now', '$write_html', '$puts']);
   ;
   return (function($base, $super) {
     function $ConsoleLogger(){};
@@ -14406,9 +14406,9 @@ if (a == null) a = nil;
     var def = self._proto, $scope = self._scope;
 
     def.loglevel = def.console = nil;
-    $opal.cdecl($scope, 'LOGLEVELS', $hash2(["error", "warning", "info", "debug"], {"error": 0, "warning": 1, "info": 2, "debug": 3}));
+    $opal.cdecl($scope, 'LOGLEVELS', $hash2(["message", "error", "warning", "info", "debug"], {"message": 0, "error": 1, "warning": 2, "info": 3, "debug": 4}));
 
-    $opal.cdecl($scope, 'LOGICONS', $hash2(["error", "warning", "info", "debug"], {"error": "icon-error-alt", "warning": "icon-attention", "info": "icon-info-circled", "debug": "icon-minus-squared"}));
+    $opal.cdecl($scope, 'LOGICONS', $hash2(["message", "error", "warning", "info", "debug"], {"message": "icon-info-circled", "error": "icon-error-alt", "warning": "icon-attention", "info": "icon-info-circled", "debug": "icon-minus-squared"}));
 
     def.$initialize = function(element_id) {
       var $a, self = this;
@@ -14441,12 +14441,18 @@ if (a == null) a = nil;
       return self.$write("debug", msg);
     };
 
+    def.$message = function(msg) {
+      var self = this;
+
+      return self.$write("message", msg);
+    };
+
     def['$loglevel='] = function(level) {
       var $a, $b, self = this;
       if ($gvars.log == null) $gvars.log = nil;
 
       self.loglevel = ((($a = (($b = $scope.LOGLEVELS) == null ? $opal.cm('LOGLEVELS') : $b)['$[]'](level.$to_sym())) !== false && $a !== nil) ? $a : (($b = $scope.LOGLEVELS) == null ? $opal.cm('LOGLEVELS') : $b)['$[]']("debug"));
-      return $gvars.log.$info("logging messages up to " + ((($a = $scope.LOGLEVELS) == null ? $opal.cm('LOGLEVELS') : $a).$invert()['$[]'](self.loglevel)));
+      return $gvars.log.$message("logging messages up to " + ((($a = $scope.LOGLEVELS) == null ? $opal.cm('LOGLEVELS') : $a).$invert()['$[]'](self.loglevel)));
     };
 
     def.$loglevel = function() {
@@ -17066,7 +17072,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars, $range = $opal.range;
 
-  $opal.add_stubs(['$include', '$attr_reader', '$new', '$set_view_box', '$clear', '$rect', '$each', '$line_width=', '$line_width', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$debug', '$class', '$children', '$unhighlight_element', '$highlight_element', '$get_elements_by_range', '$private', '$inject', '$+', '$first', '$join', '$[]', '$each_key', '$Native', '$origin', '$nil?', '$>', '$<', '$===', '$push', '$unhighlight_color=', '$[]=', '$include?', '$-', '$unhighlight_color', '$<<', '$ellipse', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$*', '$on_click', '$call', '$path_to_raphael', '$glyph', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$gsub', '$text', '$info', '$filled?']);
+  $opal.add_stubs(['$include', '$attr_reader', '$new', '$set_view_box', '$clear', '$rect', '$each', '$line_width=', '$line_width', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$debug', '$class', '$children', '$unhighlight_element', '$highlight_element', '$get_elements_by_range', '$private', '$inject', '$+', '$first', '$join', '$[]', '$each_key', '$Native', '$origin', '$nil?', '$>', '$<', '$===', '$push', '$unhighlight_color=', '$[]=', '$include?', '$-', '$unhighlight_color', '$<<', '$ellipse', '$center', '$last', '$size', '$push_element', '$==', '$fill', '$dotted?', '$*', '$on_click', '$call', '$path_to_raphael', '$glyph', '$transform', '$/', '$path', '$get_bbox', '$-@', '$line', '$from', '$to', '$style', '$distance', '$level', '$translate', '$gsub', '$text', '$filled?']);
   ;
   ;
   return (function($base) {
@@ -17393,7 +17399,7 @@ if (part == null) part = nil;
         scalex = scaley['$*'](45)['$/'](42.5);
         element.$transform("s" + (scalex) + "," + (scaley));
         bbox = element.$get_bbox();
-        $gvars.log.$info("" + (root.$center().$first()) + ", " + (root.$center().$last()) + " ”" + (text) + "” " + (bbox['$[]']("width")) + ", " + (bbox['$[]']("height")));
+        $gvars.log.$debug("" + (root.$center().$first()) + ", " + (root.$center().$last()) + " ”" + (text) + "” " + (bbox['$[]']("width")) + ", " + (bbox['$[]']("height")));
         dx = root.$center().$first()['$-'](bbox['$[]']("x"));
         dy = root.$center().$last()['$-'](bbox['$[]']("y"));
         translation = "s" + (scalex) + "," + (scaley) + "T" + (dx) + "," + (dy);
@@ -18428,9 +18434,11 @@ if (key == null) key = nil;if (_ == null) _ = nil;
 if (r == null) r = nil;if (v == null) v = nil;
       r.$push("" + (v.$first()) + ": " + (v.$last()) + "  ");
         return r;}, TMP_5._s = self, TMP_5), $a).call($b, []).$join(" | ");
-      $gvars.log.$info("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (307));
-      if ((($a = self.systemstatus['$[]']("loglevel")) !== nil && (!$a._isBoolean || $a == true))) {
-        $gvars.log['$loglevel=']((self.systemstatus['$[]']("loglevel")))};
+      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (307));
+      if (self.systemstatus['$[]']("loglevel")['$==']($gvars.log.$loglevel())) {
+        } else {
+        $gvars.log['$loglevel=']((self.systemstatus['$[]']("loglevel")))
+      };
       return (($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tbStatus").$html(statusmessage);
     };
 
@@ -18588,7 +18596,7 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2, $range = $opal.range;
 
-  $opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$join', '$help_string_style', '$add_parameter', '$set_default', '$loglevel=', '$[]', '$set_status', '$loglevel', '$keys', '$error', '$parameter_help', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$render_previews', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$fail', '$write_file', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$push', '$when', '$add_metadata', '$read_file', '$to_i']);
+  $opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$parameter_help', '$add_parameter', '$set_default', '$loglevel=', '$[]', '$set_status', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$render_previews', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$fail', '$write_file', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$push', '$when', '$add_metadata', '$read_file', '$to_i']);
   return (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
@@ -18613,13 +18621,13 @@ if (c == null) c = nil;
           if (self.commands == null) self.commands = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
-        return $gvars.log.$info("<pre>" + (self.commands.$help_string_style().$join("\n")) + "</pre>")}, TMP_3._s = self, TMP_3), $a).call($c);}, TMP_1._s = self, TMP_1), $a).call($b, "help");
+        return $gvars.log.$message("<pre>" + (self.commands.$help_string_style().$join("\n")) + "</pre>")}, TMP_3._s = self, TMP_3), $a).call($c);}, TMP_1._s = self, TMP_1), $a).call($b, "help");
       ($a = ($c = self.commands).$add_command, $a._p = (TMP_4 = function(c){var self = TMP_4._s || this, $a, $b, TMP_5, $c, TMP_6, $d, TMP_9;
 if (c == null) c = nil;
       c['$undoable='](false);
         ($a = ($b = c).$set_help, $a._p = (TMP_5 = function(){var self = TMP_5._s || this;
 
-        return "set log level"}, TMP_5._s = self, TMP_5), $a).call($b);
+        return "set log level to " + (c.$parameter_help(0))}, TMP_5._s = self, TMP_5), $a).call($b);
         ($a = ($c = c).$add_parameter, $a._p = (TMP_6 = function(parameter){var self = TMP_6._s || this, $a, $b, TMP_7, $c, TMP_8;
 if (parameter == null) parameter = nil;
         ($a = ($b = parameter).$set_default, $a._p = (TMP_7 = function(){var self = TMP_7._s || this;
@@ -18627,7 +18635,7 @@ if (parameter == null) parameter = nil;
           return "warning"}, TMP_7._s = self, TMP_7), $a).call($b);
           return ($a = ($c = parameter).$set_help, $a._p = (TMP_8 = function(){var self = TMP_8._s || this;
 
-          return "info | warning | error | debug "}, TMP_8._s = self, TMP_8), $a).call($c);}, TMP_6._s = self, TMP_6), $a).call($c, "level", "string");
+          return "error | warning | info | debug"}, TMP_8._s = self, TMP_8), $a).call($c);}, TMP_6._s = self, TMP_6), $a).call($c, "level", "string");
         return ($a = ($d = c).$as_action, $a._p = (TMP_9 = function(args){var self = TMP_9._s || this;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
@@ -18690,7 +18698,7 @@ if (a == null) a = nil;
         history = ($a = ($b = self.commands.$history()).$map, $a._p = (TMP_25 = function(c){var self = TMP_25._s || this;
 if (c == null) c = nil;
           return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_25._s = self, TMP_25), $a).call($b);
-          return $gvars.log.$info("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_24._s = self, TMP_24), $a).call($c);}, TMP_22._s = self, TMP_22), $a).call($g, "history");
+          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_24._s = self, TMP_24), $a).call($c);}, TMP_22._s = self, TMP_22), $a).call($g, "history");
       ($a = ($h = self.commands).$add_command, $a._p = (TMP_26 = function(c){var self = TMP_26._s || this, $a, $b, TMP_27, $c, TMP_28;
 if (c == null) c = nil;
       c['$undoable='](false);
@@ -18704,7 +18712,7 @@ if (a == null) a = nil;
         history = ($a = ($b = self.commands.$undostack()).$map, $a._p = (TMP_29 = function(c){var self = TMP_29._s || this;
 if (c == null) c = nil;
           return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_29._s = self, TMP_29), $a).call($b);
-          return $gvars.log.$info("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_28._s = self, TMP_28), $a).call($c);}, TMP_26._s = self, TMP_26), $a).call($h, "showundo");
+          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_28._s = self, TMP_28), $a).call($c);}, TMP_26._s = self, TMP_26), $a).call($h, "showundo");
       return ($a = ($i = self.commands).$add_command, $a._p = (TMP_30 = function(c){var self = TMP_30._s || this, $a, $b, TMP_31, $c, TMP_32;
 if (c == null) c = nil;
       c['$undoable='](false);
@@ -18718,7 +18726,7 @@ if (a == null) a = nil;
         history = ($a = ($b = self.commands.$redostack()).$map, $a._p = (TMP_33 = function(c){var self = TMP_33._s || this;
 if (c == null) c = nil;
           return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_33._s = self, TMP_33), $a).call($b);
-          return $gvars.log.$info("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_32._s = self, TMP_32), $a).call($c);}, TMP_30._s = self, TMP_30), $a).call($i, "showredo");
+          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_32._s = self, TMP_32), $a).call($c);}, TMP_30._s = self, TMP_30), $a).call($i, "showredo");
     };
 
     def.$__ic_02_play_commands = function() {
@@ -18827,7 +18835,7 @@ if (c == null) c = nil;
           filename = "" + (metadata['$[]']("X")) + "_" + (metadata['$[]']("T"));
           self.songbook.$update(metadata['$[]']("X"), abc_code, metadata['$[]']("T"), true);
           self.$set_status($hash2(["song"], {"song": "saved to localstore"}));
-          return $gvars.log.$info("saved to '" + (filename) + "'");}, TMP_57._s = self, TMP_57), $a).call($c);}, TMP_55._s = self, TMP_55), $a).call($b, "lsave");
+          return $gvars.log.$message("saved to '" + (filename) + "'");}, TMP_57._s = self, TMP_57), $a).call($c);}, TMP_55._s = self, TMP_55), $a).call($b, "lsave");
       ($a = ($c = self.commands).$add_command, $a._p = (TMP_58 = function(c){var self = TMP_58._s || this, $a, $b, TMP_59, $c, TMP_60;
 if (c == null) c = nil;
       c['$undoable='](false);
@@ -18838,7 +18846,7 @@ if (c == null) c = nil;
           if (self.songbook == null) self.songbook = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (a == null) a = nil;
-        return $gvars.log.$info("<pre>"['$+'](($a = ($b = self.songbook.$list()).$map, $a._p = (TMP_61 = function(k, v){var self = TMP_61._s || this;
+        return $gvars.log.$message("<pre>"['$+'](($a = ($b = self.songbook.$list()).$map, $a._p = (TMP_61 = function(k, v){var self = TMP_61._s || this;
 if (k == null) k = nil;if (v == null) v = nil;
           return "" + (k) + "_" + (v)}, TMP_61._s = self, TMP_61), $a).call($b).$join("\n"))['$+']("</pre>"))}, TMP_60._s = self, TMP_60), $a).call($c);}, TMP_58._s = self, TMP_58), $a).call($c, "lls");
       return ($a = ($d = self.commands).$add_command, $a._p = (TMP_62 = function(c){var self = TMP_62._s || this, $a, $b, TMP_63, $c, TMP_65, $d, TMP_66, $e, TMP_67;
@@ -18913,12 +18921,12 @@ if (args == null) args = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
           self.$set_status($hash2(["dropbox"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath)}));
-            return $gvars.log.$info("logged in at dropbox with " + (args['$[]']("scope")) + " access");}, TMP_77._s = self, TMP_77), $a).call($b);}, TMP_76._s = self, TMP_76), $a).call($e);
+            return $gvars.log.$message("logged in at dropbox with " + (args['$[]']("scope")) + " access");}, TMP_77._s = self, TMP_77), $a).call($b);}, TMP_76._s = self, TMP_76), $a).call($e);
         return ($a = ($f = command).$as_inverse, $a._p = (TMP_78 = function(args){var self = TMP_78._s || this;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
         self.$set_status($hash2(["dropbox"], {"dropbox": "logged out"}));
-          $gvars.log.$info("logged out from dropbox");
+          $gvars.log.$message("logged out from dropbox");
           return self.dropboxclient = nil;}, TMP_78._s = self, TMP_78), $a).call($f);}, TMP_68._s = self, TMP_68), $a).call($b, "dlogin");
       ($a = ($c = self.commands).$add_command, $a._p = (TMP_79 = function(command){var self = TMP_79._s || this, $a, $b, TMP_80, $c, TMP_83, $d, TMP_84;
 if (command == null) command = nil;
@@ -18941,14 +18949,14 @@ if (parameter == null) parameter = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
         rootpath = args['$[]']("path");
-          $gvars.log.$info("" + (self.dropboxclient.$app_name()) + ": " + (args['$[]']("path")) + ":");
+          $gvars.log.$message("" + (self.dropboxclient.$app_name()) + ": " + (args['$[]']("path")) + ":");
           return ($a = ($b = ($c = ($d = self.dropboxclient.$authenticate()).$then, $c._p = (TMP_87 = function(){var self = TMP_87._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 
           return self.dropboxclient.$read_dir(rootpath)}, TMP_87._s = self, TMP_87), $c).call($d)).$then, $a._p = (TMP_85 = function(entries){var self = TMP_85._s || this, $a, $b, TMP_86;
             if ($gvars.log == null) $gvars.log = nil;
 if (entries == null) entries = nil;
-          return $gvars.log.$info("<pre>"['$+'](($a = ($b = entries).$select, $a._p = (TMP_86 = function(entry){var self = TMP_86._s || this;
+          return $gvars.log.$message("<pre>"['$+'](($a = ($b = entries).$select, $a._p = (TMP_86 = function(entry){var self = TMP_86._s || this;
 if (entry == null) entry = nil;
             return entry['$=~'](/\.abc$/)}, TMP_86._s = self, TMP_86), $a).call($b).$join("\n").$to_s())['$+']("</pre>"))}, TMP_85._s = self, TMP_85), $a).call($b);}, TMP_84._s = self, TMP_84), $a).call($d);}, TMP_79._s = self, TMP_79), $a).call($c, "dls");
       ($a = ($d = self.commands).$add_command, $a._p = (TMP_88 = function(command){var self = TMP_88._s || this, $a, $b, TMP_89, $c, TMP_92, $d, TMP_93, $e, TMP_94;
@@ -18975,7 +18983,7 @@ if (args == null) args = nil;
           args['$[]=']("oldval", self.dropboxpath);
           self.dropboxpath = rootpath;
           self.$set_status($hash2(["dropbox"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath)}));
-          return $gvars.log.$info("dropbox path changed to " + (self.dropboxpath));}, TMP_93._s = self, TMP_93), $a).call($d);
+          return $gvars.log.$message("dropbox path changed to " + (self.dropboxpath));}, TMP_93._s = self, TMP_93), $a).call($d);
         return ($a = ($e = command).$as_inverse, $a._p = (TMP_94 = function(args){var self = TMP_94._s || this;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if (self.dropboxpath == null) self.dropboxpath = nil;
@@ -18983,7 +18991,7 @@ if (args == null) args = nil;
 if (args == null) args = nil;
         self.dropboxpath = args['$[]']("oldval");
           self.$set_status($hash2(["dropbox"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath)}));
-          return $gvars.log.$info("dropbox path changed back to " + (self.dropboxpath));}, TMP_94._s = self, TMP_94), $a).call($e);}, TMP_88._s = self, TMP_88), $a).call($d, "dcd");
+          return $gvars.log.$message("dropbox path changed back to " + (self.dropboxpath));}, TMP_94._s = self, TMP_94), $a).call($e);}, TMP_88._s = self, TMP_88), $a).call($d, "dcd");
       ($a = ($e = self.commands).$add_command, $a._p = (TMP_95 = function(command){var self = TMP_95._s || this, $a, $b, TMP_96, $c, TMP_97;
 if (command == null) command = nil;
       command['$undoable='](false);
@@ -18995,7 +19003,7 @@ if (command == null) command = nil;
           if (self.dropboxpath == null) self.dropboxpath = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
-        return $gvars.log.$info("" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath))}, TMP_97._s = self, TMP_97), $a).call($c);}, TMP_95._s = self, TMP_95), $a).call($e, "dpwd");
+        return $gvars.log.$message("" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath))}, TMP_97._s = self, TMP_97), $a).call($c);}, TMP_95._s = self, TMP_95), $a).call($e, "dpwd");
       ($a = ($f = self.commands).$add_command, $a._p = (TMP_98 = function(command){var self = TMP_98._s || this, $a, $b, TMP_99, $c, TMP_102, $d, TMP_103;
 if (command == null) command = nil;
       ($a = ($b = command).$add_parameter, $a._p = (TMP_99 = function(parameter){var self = TMP_99._s || this, $a, $b, TMP_100, $c, TMP_101;
@@ -19052,7 +19060,7 @@ if (name == null) name = nil;if (pdfdata == null) pdfdata = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
           self.$set_status($hash2(["song"], {"song": "saved to dropbox"}));
-            return $gvars.log.$info("all files saved");}, TMP_105._s = self, TMP_105), $c).call($d)).$fail, $a._p = (TMP_104 = function(err){var self = TMP_104._s || this;
+            return $gvars.log.$message("all files saved");}, TMP_105._s = self, TMP_105), $c).call($d)).$fail, $a._p = (TMP_104 = function(err){var self = TMP_104._s || this;
             if ($gvars.log == null) $gvars.log = nil;
 if (err == null) err = nil;
           return $gvars.log.$error("there was an error saving files " + (err))}, TMP_104._s = self, TMP_104), $a).call($b);}, TMP_103._s = self, TMP_103), $a).call($d);}, TMP_98._s = self, TMP_98), $a).call($f, "dsave");
@@ -19080,7 +19088,7 @@ if (args == null) args = nil;
         args['$[]=']("oldval", self.editor.$get_text());
           fileid = args['$[]']("fileid");
           rootpath = args['$[]']("path");
-          $gvars.log.$info("get from Dropbox path " + (rootpath) + (fileid) + "_ ...:");
+          $gvars.log.$message("get from Dropbox path " + (rootpath) + (fileid) + "_ ...:");
           return ($a = ($b = ($c = ($d = ($e = ($f = ($g = ($h = self.dropboxclient.$authenticate()).$then, $g._p = (TMP_119 = function(error, data){var self = TMP_119._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 if (error == null) error = nil;if (data == null) data = nil;
