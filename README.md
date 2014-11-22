@@ -12,8 +12,12 @@ as of now the whole thing is far from being ready to use out of the box.
 -   goto 30_Sources/SRC_Zupfnoter
 -   run "bundle install"
 -   goto 30_sources/SRC_Zupfnoter/src
--   run rake build
--   open 30_sourcs/SRC_Zupfnoter/index.html in your webbrowser
+-   to run from local filesystems
+    -   run `rake build`
+    -   open `30_sourcs/SRC_Zupfnoter/index.html` in your webbrowser
+-   to run from a local webserver
+    -   run rake server`
+    -   goto http://localhost:9292
 
 # Zupfnoter conventions in abc code
 
