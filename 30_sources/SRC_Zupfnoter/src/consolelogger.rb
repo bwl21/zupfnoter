@@ -2,12 +2,14 @@ require 'opal-jquery'
 
 class ConsoleLogger
 
-  LOGLEVELS = {error: 0,
-               warning: 1,
-               info: 2,
-               debug: 3
+  LOGLEVELS = {message: 0,
+               error: 1,
+               warning: 2,
+               info: 3,
+               debug: 4
   }
   LOGICONS = {
+      :message => :"icon-info-circled",
       :error => :"icon-error-alt",
       :warning => :"icon-attention",
       :info => :"icon-info-circled",
@@ -36,9 +38,13 @@ class ConsoleLogger
     write(:debug, msg)
   end
 
+  def message(msg)
+    write(:message, msg)
+  end
+
   def loglevel=(level)
     @loglevel = LOGLEVELS[level.to_sym] || LOGLEVELS[:debug]
-    $log.info("logging messages up to #{LOGLEVELS.invert[@loglevel]}")
+    $log.message("logging messages up to #{LOGLEVELS.invert[@loglevel]}")
   end
 
   def loglevel

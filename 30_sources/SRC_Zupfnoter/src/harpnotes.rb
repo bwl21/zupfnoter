@@ -885,6 +885,14 @@ module Harpnotes
       # see http://computermusicresource.com/midikeys.html
       PITCH_OFFSET = -43
 
+      FONT_STYLE_DEF = {
+          smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
+          small: {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+          regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
+          large: {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
+      }
+
+      MM_PER_POINT = 0.3
 
       # This is a lookup table to map durations to graphical representation
       DURATION_TO_STYLE = {
@@ -930,19 +938,6 @@ module Harpnotes
         @y_offset = 5
       end
 
-      #
-      # get the vertical layout policy
-      #
-      # @param music Harpnotes::Music::Document the document to transform
-      #             don't be confused it is just to make inject music in the scope of the returned procedure
-      #
-      # @return [Lambda] Proecdure, to compute the vertical distance of a particular beat
-      def beat_layout_policy()
-        Proc.new do |beat|
-          # todo: why -1
-          (beat -1) * @beat_spacing + @y_offset
-        end
-      end
 
       #
       # compute the layout of the Harnote sheet
@@ -958,10 +953,6 @@ module Harpnotes
 
         @y_offset = print_options[:startpos]
 
-        # first optimize the vertical arrangement of the notes
-        # by analyzing the beat layout
-        beat_layout = beat_layout || beat_layout_policy()
-
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
         maximal_beat = beat_compression_map.values.max
         full_beat_spacing = (DRAWING_AREA_SIZE.last - @y_offset) / maximal_beat
@@ -972,7 +963,15 @@ module Harpnotes
         end
         @beat_spacing = [full_beat_spacing, 2 * @beat_spacing].min # limit beat spacing to twice of optimal spacing
 
-        compressed_beat_layout = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
+        # first optimize the vertical arrangement of the notes
+        # by analyzing the beat layout
+        beat_layout = beat_layout || Proc.new do |beat|
+          # todo: why -1
+          $log.debug("using default layout policy #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
+          beat * @beat_spacing + @y_offset
+        end
+
+        compressed_beat_layout_proc = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
 
 
         # configure which synclines are required from-voice to-voice
@@ -991,7 +990,7 @@ module Harpnotes
         # sheet_elements derived from the voices
         voice_elements = music.voices.each_with_index.map { |v, index|
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
-            layout_voice(v, compressed_beat_layout,
+            layout_voice(v, compressed_beat_layout_proc,
                          flowline: print_options[:flowlines].include?(index),
                          subflowline: print_options[:subflowlines].include?(index),
                          jumpline: print_options[:jumplines].include?(index),
@@ -1039,7 +1038,7 @@ module Harpnotes
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
-        annotations << Harpnotes::Drawing::Annotation.new([150, 292], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([150, 288], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
 
         lyrics = music.harpnote_options[:lyrics]
         if lyrics
@@ -1219,7 +1218,7 @@ module Harpnotes
                                          Vector2d(2.5, 2.5),
                                          vertical)
 
-          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap{|s|s.line_width=Harpnotes::Layout::Default::LINE_THICK},
+          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width=Harpnotes::Layout::Default::LINE_THICK },
            Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
         end.flatten
         res_gotos = [] unless show_options[:jumpline]
@@ -1263,30 +1262,33 @@ module Harpnotes
       def compute_beat_compression(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        current_beat = -BEAT_RESOULUTION # ensure that first beat is on 0
-        last_size = (BEAT_RESOULUTION)
+        # todo:clarify the initialization
+        current_beat = 0
+        last_size = 0
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
 
         result = Hash[(0..max_beat).map do |beat|
           notes_on_beat = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
-          max_duration = notes_on_beat.map { |n| n.duration }.max
+          max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
           has_no_notes_on_beat = notes_on_beat.empty?
           is_new_part = notes_on_beat.select { |n| n.first_in_part? }
 
           unless has_no_notes_on_beat
             begin
-              size = (BEAT_RESOULUTION) * DURATION_TO_STYLE[duration_to_id(max_duration)].first #todo:replace literal
+              size = BEAT_RESOULUTION * DURATION_TO_STYLE[duration_to_id(max_duration_on_beat)].first
             rescue Exception => e
-              $log.error("unsupported duration: #{max_duration} on beat #{beat},  #{notes_on_beat.to_json}")
+              $log.error("unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
 
             # we need to increment the position by the (size[i] + size[i-1])/2
             increment = (size + last_size)/2
             last_size = size
 
-            # if a new part starts on this beat, make space for a full note
-            increment += BEAT_RESOULUTION unless is_new_part.empty?
+            # if a new part starts on this beat, double the increment
+            unless is_new_part.empty?
+              increment += increment
+            end
             current_beat += increment
           end
           [beat, current_beat]
@@ -1328,7 +1330,6 @@ module Harpnotes
         #               shift to left   pitch          space     stay away from border
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
-        $log.debug("processing note on beat #{root.beat} -> #{y_offset} #{__FILE__}:#{__LINE__}")
         scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
         size = ELLIPSE_SIZE.map { |e| e * scale }
 
@@ -1413,7 +1414,7 @@ module Harpnotes
         # offset of array top
         end_offset = north_east_offset * [end_orientation.x, -1]
         # offset of line such that it ends inside of the array
-        end_offset_of_line = north_east_offset * [end_orientation.x, -1] * [1.5,1]
+        end_offset_of_line = north_east_offset * [end_orientation.x, -1] * [1.5, 1]
 
 
         start_of_vertical = start_of_vertical + start_offset * [0, 1]
@@ -1470,7 +1471,7 @@ module Harpnotes
         if root.beat
           # todo decide if part starts on a new line, then x_offset should be 0
           x_offset = (PITCH_OFFSET + root.pitch + (-0.5)) * X_SPACING + X_OFFSET # todo:remove literal here
-          y_offset = beat_layout.call(root.beat()) -(Harpnotes::Layout::Default::SHORTEST_NOTE * @beat_spacing) # todo:remove literal here
+          y_offset = beat_layout.call(root.beat()) - Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular][:font_size] * 2/3 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
           res = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
         else
           $log.warning("Part without content")
@@ -1560,6 +1561,8 @@ module Harpnotes
         cpmm1 = (cpm1 + cpmm)/2
         cpmm2 = (cpm2 + cpmm)/2
         annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
+        annotation_anchor = annotation_anchor + [0,-4] # literal corection since now reference point is top of line
+                                                       # todo: make position configurable
 
         # todo make the drawing more fancy
         slurpath = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]

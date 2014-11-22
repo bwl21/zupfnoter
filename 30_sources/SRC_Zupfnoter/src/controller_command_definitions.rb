@@ -11,16 +11,16 @@ class Controller
       end
 
       c.as_action do
-        $log.info("<pre>#{@commands.help_string_style.join("\n")}</pre>")
+        $log.message("<pre>#{@commands.help_string_style.join("\n")}</pre>")
       end
     end
 
     @commands.add_command(:loglevel) do |c|
       c.undoable = false
-      c.set_help { "set log level" }
+      c.set_help { "set log level to #{c.parameter_help(0)}" }
       c.add_parameter(:level, :string) do |parameter|
         parameter.set_default { "warning" }
-        parameter.set_help { "info | warning | error | debug " }
+        parameter.set_help { "error | warning | info | debug" }
       end
       c.as_action do |args|
         $log.loglevel=args[:level]
@@ -68,7 +68,7 @@ class Controller
       c.set_help { "show history" }
       c.as_action do |a|
         history = @commands.history.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
-        $log.info("<pre>#{history.join("\n")}</pre>")
+        $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
 
@@ -78,7 +78,7 @@ class Controller
       c.set_help { "show undo stack" }
       c.as_action do |a|
         history = @commands.undostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
-        $log.info("<pre>#{history.join("\n")}</pre>")
+        $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
 
@@ -87,7 +87,7 @@ class Controller
       c.set_help { "show redo stack" }
       c.as_action do |a|
         history = @commands.redostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
-        $log.info("<pre>#{history.join("\n")}</pre>")
+        $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
   end
@@ -206,7 +206,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
         filename = "#{metadata[:X]}_#{metadata[:T]}"
         @songbook.update(metadata[:X], abc_code, metadata[:T], true)
         set_status(song: "saved to localstore")
-        $log.info("saved to '#{filename}'")
+        $log.message("saved to '#{filename}'")
       end
     end
 
@@ -215,7 +215,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
       c.set_help { "list files in localstore" }
       c.as_action do |a|
         # list the songbook
-        $log.info("<pre>" + @songbook.list.map { |k, v| "#{k}_#{v}" }.join("\n") + "</pre>")
+        $log.message("<pre>" + @songbook.list.map { |k, v| "#{k}_#{v}" }.join("\n") + "</pre>")
       end
     end
 
@@ -281,13 +281,13 @@ V:T2 clef=treble-8  name="Alt" snm="A"
 
         @dropboxclient.authenticate().then do
           set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
-          $log.info("logged in at dropbox with #{args[:scope]} access")
+          $log.message("logged in at dropbox with #{args[:scope]} access")
         end
       end
       command.as_inverse do |args|
         set_status(dropbox: "logged out")
 
-        $log.info("logged out from dropbox")
+        $log.message("logged out from dropbox")
         @dropboxclient = nil
       end
     end
@@ -304,12 +304,12 @@ V:T2 clef=treble-8  name="Alt" snm="A"
 
       command.as_action do |args|
         rootpath = args[:path]
-        $log.info("#{@dropboxclient.app_name}: #{args[:path]}:")
+        $log.message("#{@dropboxclient.app_name}: #{args[:path]}:")
 
         @dropboxclient.authenticate().then do
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
-          $log.info("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
+          $log.message("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
         end
       end
     end
@@ -328,13 +328,13 @@ V:T2 clef=treble-8  name="Alt" snm="A"
         @dropboxpath = rootpath
 
         set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
-        $log.info("dropbox path changed to #{@dropboxpath}")
+        $log.message("dropbox path changed to #{@dropboxpath}")
       end
 
       command.as_inverse do |args|
         @dropboxpath = args[:oldval]
         set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
-        $log.info("dropbox path changed back to #{@dropboxpath}")
+        $log.message("dropbox path changed back to #{@dropboxpath}")
       end
     end
 
@@ -344,7 +344,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
       command.set_help { "show drobox path" }
 
       command.as_action do |args|
-        $log.info("#{@dropboxclient.app_name}: #{@dropboxpath}")
+        $log.message("#{@dropboxclient.app_name}: #{@dropboxpath}")
       end
     end
 
@@ -369,7 +369,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
           raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
         end
 
-        layout_harpnotes
+        layout_harpnotes # todo: this uses a side-effect to get the @song populated
         render_previews
 
         print_variants = @song.harpnote_options[:print]
@@ -394,7 +394,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
           Promise.when(save_promises)
         end.then do
           set_status(song: "saved to dropbox")
-          $log.info("all files saved")
+          $log.message("all files saved")
         end.fail do |err|
           $log.error("there was an error saving files #{err}")
         end
@@ -415,7 +415,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
         args[:oldval] = @editor.get_text
         fileid = args[:fileid]
         rootpath = args[:path] # command_tokens[2] || @dropboxpath || "/"
-        $log.info("get from Dropbox path #{rootpath}#{fileid}_ ...:")
+        $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
 
         @dropboxclient.authenticate().then do |error, data|
           @dropboxclient.read_dir(rootpath)
@@ -441,6 +441,24 @@ V:T2 clef=treble-8  name="Alt" snm="A"
       end
 
     end
+
+    @commands.add_command(:view) do |command|
+
+      command.add_parameter(:view, :integer) do |p|
+        p.set_default { @systemstatus[:view] }
+        p.set_help { "id of the view to be used for preview [#{@systemstatus[:view]}]" }
+      end
+
+      command.set_help { "set current view  #{command.parameter_help(0)} and redisplay" }
+
+      command.undoable = false
+
+      command.as_action do |args|
+        set_status(view: args[:view].to_i)
+        render_previews
+      end
+    end
+
 
   end
 end

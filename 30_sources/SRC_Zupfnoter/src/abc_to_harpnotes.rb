@@ -426,21 +426,27 @@ module Harpnotes
 
             match = name.match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
-              case match[1]
+              semantic = match[1]
+              text = match[2]
+              pos_x = match[4] if match[4]
+              pos_y = match[5] if match[5]
+              case semantic
                 when "#"
-                  annotation = @annotations[match[2]]
-                  $log.error("could not find annotation #{match[2]}") unless annotation
+                  annotation = @annotations[text]
+                  $log.error("could not find annotation #{text}") unless annotation
                 when "!"
-                  annotation = {text: match[2]}
+                  annotation = {text: text}
                 else
                   annotation = nil # it is not an annotation
               end
 
               if annotation
-                notepos = [match[4], match[5]].map { |p| p.to_f } if match[3]
-                position = notepos || annotation[:pos] || [4, 0]
+                notepos = [pos_x, pos_y].map { |p| p.to_f } if pos_x
+                position = notepos || annotation[:pos] || [2, -5] #todo: make default position configurable
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
               end
+            else
+              $log.error("syntax error in annotation: #{name}")
             end
           end
         end
@@ -586,7 +592,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [4, 2], text: @next_note_marks[:variant_ending]})
+          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [4, -2], text: @next_note_marks[:variant_ending]})
           @next_note_marks[:variant_ending] = nil
         end
 

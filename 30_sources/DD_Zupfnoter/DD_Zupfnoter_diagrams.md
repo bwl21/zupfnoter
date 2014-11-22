@@ -1,3 +1,53 @@
+~~~~ {.plantuml}
+
+@startuml "../ZGEN_uml/model_flow.png"
+
+actor Benutzer
+
+database abc
+
+database noten as "Notensystem: 
+Takt 
+Note 
+Akkord"
+
+database harpnotes as "Harfennoten:
+Noten
+Melodie
+Sprung
+Anmerkung"
+
+
+database layout as "Layout:
+Ellipse
+Linie
+Zeichen
+Text"
+
+database player as "Player:
+Zeit
+Tonhoehe
+Dauer"
+
+entity musicxml
+entity pdf as "Druck"
+entity screen as "Bildschirm"
+entity sound as "Abspielen"
+
+
+Benutzer --> abc: Noten eingeben
+abc -> noten: umwandeln
+musicxml --> abc: importieren
+noten -> harpnotes: umwandeln
+harpnotes --> layout :umwandeln
+layout --> pdf : Druck A3
+layout --> pdf : Druck A4
+layout --> screen
+harpnotes --> player
+player --> sound
+@enduml
+~~~~
+
 
 ~~~~ {.plantuml}
 @startuml ../ZGEN_uml/zn_komponenten.png

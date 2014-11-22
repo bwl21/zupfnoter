@@ -103,12 +103,18 @@ class Controller
     self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) }
 
     setup_ui
-    setup_ui_listener
+
+
+    # initialize virgin zupfnoter
     load_demo_tune
+    set_status(dropbox: "not connected", song: "unchanged", loglevel: $log.loglevel, autorefresh: :on, view: 0)
+
+    # load from previous session
     load_from_loacalstorage
     render_previews
-    set_status(dropbox: "not connected", song: "unchanged", loglevel: $log.loglevel, autorefresh: :on)
 
+    # now trigger the interactive UI
+    setup_ui_listener
   end
 
 
@@ -125,6 +131,8 @@ class Controller
 
   # Save session to local store
   def save_to_localstorage
+    systemstatus = @systemstatus.select { |key, _| [:song, :view, :autorefresh, :loglevel].include?(key) }.to_json
+    abc = `localStorage.setItem('systemstatus', #{systemstatus});`
     abc = @editor.get_text
     abc = `localStorage.setItem('abc_data', abc);`
   end
@@ -133,6 +141,9 @@ class Controller
   def load_from_loacalstorage
     abc = Native(`localStorage.getItem('abc_data')`)
     @editor.set_text(abc) unless abc.nil?
+    envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
+    set_status(envelope) if envelope
+    nil
   end
 
   # this loads a demo song
@@ -154,14 +165,14 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   end
 
   # render the harpnotes to a3
-  def render_a3(index = 0)
+  def render_a3(index = @systemstatus[:view])
     printer = Harpnotes::PDFEngine.new
     printer.draw(layout_harpnotes(index))
   end
 
 
   # render the harpnotes splitted on a4 pages
-  def render_a4(index = 0)
+  def render_a4(index = @systemstatus[:view])
     Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index))
   end
 
@@ -200,7 +211,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # also saves abc in localstore()
   def render_harpnotepreview_callback
     begin
-      @song_harpnotes = layout_harpnotes(0)
+      $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
+      @song_harpnotes = layout_harpnotes(@systemstatus[:view])
       @harpnote_player.load_song(@song)
       @harpnote_preview_printer.draw(@song_harpnotes)
     rescue Exception => e
@@ -261,7 +273,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     startchar = a[:startChar]
     endchar = a[:endChar]
-    endchar = endchar - 5  if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
+    endchar = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(startchar, endchar)
     end
@@ -292,6 +304,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   def set_status(status)
     @systemstatus.merge!(status)
     statusmessage = @systemstatus.inject([]) { |r, v| r.push "#{v.first}: #{v.last}  "; r }.join(" | ")
+    $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
+    $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
     Element.find("#tbStatus").html(statusmessage)
   end
 

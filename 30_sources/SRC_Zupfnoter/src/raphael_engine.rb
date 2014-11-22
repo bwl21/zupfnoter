@@ -252,28 +252,36 @@ module Harpnotes
     # Draw an an annotation
     def draw_annotation(root)
 
-      # todo move this style definition to the layout section.
-      # Font size is provided in mm while in jspdf it is in point ... We need to keep these definitions in sync
-      style_def = {
-          smaller: {text_color: [0, 0, 0], font_size: 2.1, font_style: "normal"},
-          small: {text_color: [0, 0, 0], font_size: 3.1, font_style: "normal"},
-          regular: {text_color: [0, 0, 0], font_size: 4.2, font_style: "normal"},
-          large: {text_color: [0, 0, 0], font_size: 7.03, font_style: "bold"}
-      }
+      style = Harpnotes::Layout::Default::FONT_STYLE_DEF[root.style] || Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular]
+      mm_per_point = Harpnotes::Layout::Default::MM_PER_POINT
 
-      style = style_def[root.style] || style_def[:regular]
-
-      element = @paper.text(root.center.first, root.center.last, root.text)
-      element[:"font-size"] = style[:font_size]
-      element[:"font-weight"] = style[:font_size]
+      text = root.text.gsub("\n\n", "\n \n")
+      element = @paper.text(root.center.first, root.center.last, text)
+      element[:"font-size"] = 1 #; style[:font_size]
+      element[:"font-weight"] = style[:font_style]
       element[:"text-anchor"] = "start"
 
       # getting the same adjustment as in postscript
-      # the center of the  text is vertically is a the anchor point, so we need to shift it up by half of the size
-      # then achorpoint in ps is the baseline of the text, so we need to shift it up again by font size
-      # todo this is a dependency to jspdf which I don't relly like
-      #
-      element.translate(0, element.get_bbox()[:height]/2 - style[:font_size])
+      # in raphael, the center of the  text is vertically the anchor point, so we need to shift it up by half of the size
+      # we fix this by computing the bounding box
+
+      # first we scale the text
+      scaley = style[:font_size] / 3 #* should be mm_per_point; but i had to figure it out by try and error
+      scalex = scaley * 45/42.5      # figured out by try and error - adjust the differnt horitzontal font spacing
+      element.transform("s#{scalex},#{scaley}")
+
+      # then we measure the result
+      bbox = element.get_bbox()
+      $log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]}))
+
+      dx = root.center.first - bbox[:x]
+      dy = root.center.last - bbox[:y]
+
+      # finally we transform the result
+      translation ="s#{scalex},#{scaley}T#{dx},#{dy}"
+      element.transform(translation)
+      element
+      #element.translate(0, element.get_bbox()[:height]/2 - style[:font_size])
 
     end
 
