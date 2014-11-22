@@ -2,11 +2,13 @@
 require 'opal'
 require 'opal-jquery'
 require 'erb'
+require 'zip'
 
 HTMLTEMPLATE = "../index_opal.html.erb"
+PACKAGE_JSON = "../package.json"
 ZUPFNOTER_JS = "build.js"
-OUTFOLDER    = "../deploy_files"
-INDEXFILE    = "index.html"
+OUTFOLDER = "../deploy_files"
+INDEXFILE = "index.html"
 
 
 desc "Build our app to #{ZUPFNOTER_JS}"
@@ -43,27 +45,81 @@ desc "Build a distribution for the server"
 task :deploy => [:build] do
 
 
-  mkdir_p "#{OUTFOLDER}/vendor/ace"
-  mkdir_p "#{OUTFOLDER}/public/icons"
+  mkdir_p "#{OUTFOLDER}/webserver/vendor/ace"
+  mkdir_p "#{OUTFOLDER}/webserver/public/icons"
   Dir["../vendor/*.*"].each { |f|
-    cp f, "#{OUTFOLDER}/vendor/#{f}"
+    cp f, "#{OUTFOLDER}/webserver/vendor/#{f}"
   }
 
-  sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{OUTFOLDER}/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
+  sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
 
 
   #p ZUPFNOTER_JS, "#{OUTFOLDER}/public/#{ZUPFNOTER_JS}"
 
-  cp "../public/index.css", "#{OUTFOLDER}/public/index.css"
-  cp "../vendor/ace/ace.js", "#{OUTFOLDER}/vendor/ace/ace.js"
-  cp "../public/icons/favicon.gif", "#{OUTFOLDER}/public/icons/favicon.gif"
+  cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
+  cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
+  cp "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
 
   def javascript_include_tag(filename)
     "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
   end
 
-  File.open("#{OUTFOLDER}/#{INDEXFILE}", "w") do |f|
+  File.open("#{OUTFOLDER}/webserver/#{INDEXFILE}", "w") do |f|
     a = File.open(HTMLTEMPLATE).read
     f.puts ERB.new(a).result
   end
+end
+
+
+desc "build the desktop application"
+task :buildDesktop => [:build] do
+  desktop_folder = "#{OUTFOLDER}/desktop"
+  nodewebkit_app = "#{OUTFOLDER}/node-webkit.app"
+  zupfnoter_app = "#{desktop_folder}/zupfnoter.app"
+  desktop_stage = "#{desktop_folder}/zupfnoter.nw.stage"
+
+  rm_rf(desktop_folder)
+  mkdir_p("#{desktop_stage}/public")
+  mkdir_p("#{desktop_stage}/vendor")
+  mkdir_p("#{desktop_stage}/vendor/ace")
+
+  nw_filename = "#{desktop_folder}/zupfnoter.nw"
+  index_filename = "#{desktop_stage}/index.html"
+  zupfnoter_compressedjs_filename = "#{desktop_stage}/public/#{ZUPFNOTER_JS}"
+
+  def javascript_include_tag(filename)
+    "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
+  end
+
+  File.open(index_filename, "w") do |f|
+    a = File.open(HTMLTEMPLATE).read
+    f.puts ERB.new(a).result
+  end
+
+  sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
+
+  Dir["../vendor/*.*"].each { |f|
+    copy(f, "#{desktop_stage}/vendor/#{f}")
+  }
+
+  cp("../public/index.css", "#{desktop_stage}/public/index.css")
+  cp("../vendor/ace/ace.js", "#{desktop_stage}/vendor/ace/ace.js")
+  cp("package.json", "#{desktop_stage}/package.json")
+  cp(PACKAGE_JSON, "package.json")
+
+  cd desktop_stage do
+    sh "zip -r ../zupfnoter.nw *"
+  end
+
+  cp_r(nodewebkit_app, zupfnoter_app)
+  cp("#{desktop_folder}/zupfnoter.nw", "#{zupfnoter_app}/Contents/Resources/App.nw")
+
+  cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-ia32" do
+     sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
+  end
+
+  cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-x64" do
+     sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
+  end
+  #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
 end
