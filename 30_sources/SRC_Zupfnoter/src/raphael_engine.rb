@@ -272,7 +272,7 @@ module Harpnotes
 
       # then we measure the result
       bbox = element.get_bbox()
-      $log.info(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]}))
+      $log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]}))
 
       dx = root.center.first - bbox[:x]
       dy = root.center.last - bbox[:y]
