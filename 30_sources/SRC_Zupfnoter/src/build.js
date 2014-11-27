@@ -15341,7 +15341,7 @@ if (map == null) map = nil;if (playable == null) playable = nil;
             if (self.beat_spacing == null) self.beat_spacing = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (beat == null) beat = nil;
-          $gvars.log.$debug("using default layout policy " + (beat) + ":" + (self.y_offset) + " " + ("harpnotes") + " " + (970));
+          $gvars.log.$debug("using default layout policy " + (beat) + ":" + (self.y_offset) + " " + ("harpnotes") + " " + (971));
             return beat['$*'](self.beat_spacing)['$+'](self.y_offset);}, TMP_27._s = self, TMP_27), $b).call($c));
           compressed_beat_layout_proc = ($a = ($b = (($d = $scope.Proc) == null ? $opal.cm('Proc') : $d)).$new, $a._p = (TMP_28 = function(beat){var self = TMP_28._s || this;
 if (beat == null) beat = nil;
@@ -15532,7 +15532,7 @@ if (c == null) c = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (goto$ == null) goto$ = nil;
           distance = goto$.$policy()['$[]']("distance");
-            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (1209));
+            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (1210));
             if (distance['$>'](0)) {
               distance = distance['$-'](1)};
             if (distance !== false && distance !== nil) {
@@ -17743,7 +17743,7 @@ if (element == null) element = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $hash2 = $opal.hash2, $range = $opal.range;
 
-  $opal.add_stubs(['$attr_reader', '$call', '$lambda', '$raise', '$new', '$set_help', '$set_default', '$push', '$each', '$[]=', '$name', '$[]', '$get_default', '$get_help', '$!', '$empty?', '$get_clean_argument_values', '$perform', '$undoable?', '$clear', '$can_undo?', '$pop', '$invert', '$can_redo?', '$map', '$first', '$select', '$nil?', '$scan', '$parse_string', '$to_sym', '$each_with_index', '$parameter_name', '$clone', '$unshift', '$join', '$parameters', '$to_a']);
+  $opal.add_stubs(['$attr_reader', '$call', '$lambda', '$raise', '$new', '$set_help', '$set_default', '$push', '$!', '$start_with?', '$to_s', '$each', '$[]=', '$name', '$[]', '$get_default', '$get_help', '$empty?', '$get_clean_argument_values', '$perform', '$undoable?', '$clear', '$can_undo?', '$pop', '$invert', '$can_redo?', '$map', '$first', '$select', '$nil?', '$scan', '$parse_string', '$gsub', '$to_sym', '$each_with_index', '$parameter_name', '$clone', '$unshift', '$join', '$parameters', '$is_public?', '$last', '$to_a']);
   return (function($base) {
     var self = $module($base, 'CommandController');
 
@@ -17801,7 +17801,7 @@ if (element == null) element = nil;
 
       var def = self._proto, $scope = self._scope, TMP_6, TMP_9, TMP_10, TMP_11;
 
-      def.parameters = def.action = def.inverse_action = def.help_action = def.undoable = nil;
+      def.parameters = def.name = def.action = def.inverse_action = def.help_action = def.undoable = nil;
       self.$attr_reader("name", "parameters");
 
       def.$initialize = function(name) {
@@ -17855,6 +17855,12 @@ if (p == null) p = nil;
 
         TMP_10._p = null;
         return self.inverse_action = block;
+      };
+
+      def['$is_public?'] = function() {
+        var self = this;
+
+        return (self.name.$to_s()['$start_with?']("_"))['$!']();
       };
 
       def.$set_help = TMP_11 = function() {
@@ -18008,23 +18014,26 @@ if (x == null) x = nil;
       };
 
       def.$run_string = function(command) {
-        var $a, $b, TMP_16, self = this, arguments$ = nil, parts = nil, the_command = nil;
+        var $a, $b, TMP_16, $c, TMP_17, self = this, arguments$ = nil, parts = nil, the_command = nil;
 
         arguments$ = $hash2([], {});
         parts = self.$parse_string(command);
+        parts = ($a = ($b = parts).$map, $a._p = (TMP_16 = function(p){var self = TMP_16._s || this;
+if (p == null) p = nil;
+        return p.$gsub("\\\\", "\\")}, TMP_16._s = self, TMP_16), $a).call($b);
         the_command = self.commands['$[]'](parts.$first().$to_sym());
         if (the_command !== false && the_command !== nil) {
           } else {
           self.$raise("wrong command: " + (command))
         };
-        ($a = ($b = parts['$[]']($range(1, -1, false))).$each_with_index, $a._p = (TMP_16 = function(argument, index){var self = TMP_16._s || this;
+        ($a = ($c = parts['$[]']($range(1, -1, false))).$each_with_index, $a._p = (TMP_17 = function(argument, index){var self = TMP_17._s || this;
 if (argument == null) argument = nil;if (index == null) index = nil;
         try {
           return arguments$['$[]='](the_command.$parameter_name(index), argument)
           } catch ($err) {if (true) {
             return self.$raise("too many arguments in '" + (command) + "'")
             }else { throw $err; }
-          }}, TMP_16._s = self, TMP_16), $a).call($b);
+          }}, TMP_17._s = self, TMP_17), $a).call($c);
         return self.$perform(the_command, arguments$);
       };
 
@@ -18035,30 +18044,32 @@ if (argument == null) argument = nil;if (index == null) index = nil;
       };
 
       def.$undostack = function() {
-        var $a, $b, TMP_17, self = this;
+        var $a, $b, TMP_18, self = this;
 
-        return ($a = ($b = self.undo_stack).$map, $a._p = (TMP_17 = function(c){var self = TMP_17._s || this;
+        return ($a = ($b = self.undo_stack).$map, $a._p = (TMP_18 = function(c){var self = TMP_18._s || this;
 if (c == null) c = nil;
-        return c.$clone().$unshift("undo")}, TMP_17._s = self, TMP_17), $a).call($b);
+        return c.$clone().$unshift("undo")}, TMP_18._s = self, TMP_18), $a).call($b);
       };
 
       def.$redostack = function() {
-        var $a, $b, TMP_18, self = this;
+        var $a, $b, TMP_19, self = this;
 
-        return ($a = ($b = self.redo_stack).$map, $a._p = (TMP_18 = function(c){var self = TMP_18._s || this;
+        return ($a = ($b = self.redo_stack).$map, $a._p = (TMP_19 = function(c){var self = TMP_19._s || this;
 if (c == null) c = nil;
-        return c.$clone().$unshift("redo")}, TMP_18._s = self, TMP_18), $a).call($b);
+        return c.$clone().$unshift("redo")}, TMP_19._s = self, TMP_19), $a).call($b);
       };
 
       return (def.$help_string_style = function() {
-        var $a, $b, TMP_19, self = this;
+        var $a, $b, TMP_20, $c, $d, TMP_22, self = this;
 
-        return ($a = ($b = self.commands.$to_a()).$map, $a._p = (TMP_19 = function(k, c){var self = TMP_19._s || this, $a, $b, TMP_20, parameter_names = nil;
+        return ($a = ($b = ($c = ($d = self.commands.$to_a()).$select, $c._p = (TMP_22 = function(c){var self = TMP_22._s || this;
+if (c == null) c = nil;
+        return c.$last()['$is_public?']()}, TMP_22._s = self, TMP_22), $c).call($d)).$map, $a._p = (TMP_20 = function(k, c){var self = TMP_20._s || this, $a, $b, TMP_21, parameter_names = nil;
 if (k == null) k = nil;if (c == null) c = nil;
-        parameter_names = ($a = ($b = c.$parameters()).$map, $a._p = (TMP_20 = function(p){var self = TMP_20._s || this;
+        parameter_names = ($a = ($b = c.$parameters()).$map, $a._p = (TMP_21 = function(p){var self = TMP_21._s || this;
 if (p == null) p = nil;
-          return "{" + (p.$name()) + "}"}, TMP_20._s = self, TMP_20), $a).call($b).$join(" ");
-          return "" + (c.$name()) + " " + (parameter_names) + " : " + (c.$get_help());}, TMP_19._s = self, TMP_19), $a).call($b);
+          return "{" + (p.$name()) + "}"}, TMP_21._s = self, TMP_21), $a).call($b).$join(" ");
+          return "" + (c.$name()) + " " + (parameter_names) + " : " + (c.$get_help());}, TMP_20._s = self, TMP_20), $a).call($b);
       }, nil) && 'help_string_style';
     })(self, null);
     
@@ -18071,7 +18082,7 @@ if (p == null) p = nil;
 (function($opal) {
   var $a, $b, TMP_22, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$backtrace', '$debug', '$set_inactive', '$load_song', '$send_remote_command', '$setup_tune_preview', '$set_active', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$-', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$join', '$inject', '$push', '$first', '$last', '$to_s', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$width', '$on', '$play_abc', '$on_change', '$===', '$on_selection_change', '$get_selection_positions', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$prevent_default', '$save_file', '$key', '$newValue', '$systemstatus', '$prevent', '$css', '$page_x', '$ready?']);
+  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_nodewebkit', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$backtrace', '$debug', '$set_inactive', '$load_song', '$send_remote_command', '$setup_tune_preview', '$set_active', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$-', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$join', '$inject', '$push', '$first', '$last', '$to_s', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$width', '$on', '$play_abc', '$on_change', '$===', '$on_selection_change', '$get_selection_positions', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$prevent_default', '$save_file', '$key', '$newValue', '$systemstatus', '$prevent', '$css', '$page_x', '$ready?']);
   (function($base, $super) {
     function $LocalStore(){};
     var self = $LocalStore = $klass($base, $super, 'LocalStore', $LocalStore);
@@ -18217,6 +18228,7 @@ if (m == null) m = nil;
       self.$set_status($hash2(["dropbox", "song", "loglevel", "autorefresh", "view"], {"dropbox": "not connected", "song": "unchanged", "loglevel": $gvars.log.$loglevel(), "autorefresh": "on", "view": 0}));
       self.$load_from_loacalstorage();
       self.$render_previews();
+      self.$setup_nodewebkit();
       return self.$setup_ui_listener();
     };
 
@@ -18227,7 +18239,7 @@ if (m == null) m = nil;
       try {
       return self.commands.$run_string(command)
       } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
-        return $gvars.log.$error("" + (e.$message()) + " in " + (command) + " " + (e.$caller()) + " " + ("controller") + ":" + (128))
+        return $gvars.log.$error("" + (e.$message()) + " in " + (command) + " " + (e.$caller()) + " " + ("controller") + ":" + (129))
         }else { throw $err; }
       };
     };
@@ -18323,7 +18335,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
         $gvars.log.$error([e.$message(), e.$backtrace()])
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished render tune " + ("controller") + " " + (205));
+      $gvars.log.$debug("finished render tune " + ("controller") + " " + (206));
       self.$set_inactive("#tunePreview");
       return nil;
     };
@@ -18333,7 +18345,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       try {
-      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (214));
+      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (215));
         self.song_harpnotes = self.$layout_harpnotes(self.systemstatus['$[]']("view"));
         self.harpnote_player.$load_song(self.song);
         self.harpnote_preview_printer.$draw(self.song_harpnotes);
@@ -18341,7 +18353,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
         $gvars.log.$error([e.$message(), e.$backtrace()])
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (222));
+      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (223));
       self.$set_inactive("#harpPreview");
       return nil;
     };
@@ -18397,7 +18409,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       a = self.$Native(abcelement);
-      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (272) + ")");
+      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (273) + ")");
       startchar = a['$[]']("startChar");
       endchar = a['$[]']("endChar");
       if (endchar['$=='](startchar)) {
@@ -18434,7 +18446,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
 if (r == null) r = nil;if (v == null) v = nil;
       r.$push("" + (v.$first()) + ": " + (v.$last()) + "  ");
         return r;}, TMP_5._s = self, TMP_5), $a).call($b, []).$join(" | ");
-      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (307));
+      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (308));
       if (self.systemstatus['$[]']("loglevel")['$==']($gvars.log.$loglevel())) {
         } else {
         $gvars.log['$loglevel=']((self.systemstatus['$[]']("loglevel")))
@@ -18459,7 +18471,7 @@ if (harpnote == null) harpnote = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       width = self.$Native((($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tunePreviewContainer").$width())['$-'](50);
-      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (328));
+      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (329));
       printerparams = $hash2(["staffwidth"], {"staffwidth": width});
       self.tune_preview_printer = (($a = ((($b = ((($c = $scope.ABCJS) == null ? $opal.cm('ABCJS') : $c))._scope).Write == null ? $b.cm('Write') : $b.Write))._scope).Printer == null ? $a.cm('Printer') : $a.Printer).$new("tunePreview", printerparams);
       return ($a = ($b = self.tune_preview_printer).$on_select, $a._p = (TMP_7 = function(abcelement){var self = TMP_7._s || this, a = nil;
@@ -18529,7 +18541,7 @@ if (e == null) e = nil;
       ($a = ($k = (($l = $scope.Element) == null ? $opal.cm('Element') : $l).$find(window)).$on, $a._p = (TMP_17 = function(evt){var self = TMP_17._s || this, $a;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
-      $gvars.log.$debug("key pressed (" + ("controller") + " " + (402) + ")");
+      $gvars.log.$debug("key pressed (" + ("controller") + " " + (404) + ")");
         console.log(event);
         if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();
@@ -18594,9 +18606,271 @@ if (e == null) e = nil;
 ;
 /* Generated by Opal 0.6.2 */
 (function($opal) {
+  var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
+
+  $opal.add_stubs(['$info', '$gsub', '$run_string', '$render_previews', '$__ic_06_node_fs_commands', '$debug', '$message', '$join', '$backtrace', '$private', '$add_command', '$add_parameter', '$set_default', '$undoable=', '$set_help', '$parameter_help', '$as_action', '$get_text', '$get_metadata', '$[]', '$to_s', '$first', '$split', '$raise', '$layout_harpnotes', '$harpnote_options', '$map', '$[]=', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$set_text', '$error', '$as_inverse']);
+  return (function($base, $super) {
+    function $Controller(){};
+    var self = $Controller = $klass($base, $super, 'Controller', $Controller);
+
+    var def = self._proto, $scope = self._scope;
+
+    def.commands = nil;
+    def.$setup_nodewebkit = function() {
+      var $a, self = this, arg = nil, f = nil, e = nil;
+      if ($gvars.log == null) $gvars.log = nil;
+
+      try {
+      
+
+        var gui = require('nw.gui');
+        var fs = require('fs')
+
+        var menu = new gui.Menu({ type: 'menubar', label: 'foobar'});
+
+        menu.append(new gui.MenuItem({
+          label: 'Zupfnoter',
+          submenu: new gui.Menu()
+        }));
+
+        menu.items[0].submenu.append(new gui.MenuItem({
+          label: 'About Zupfnoter',
+          click: function () {
+            alert("Zupfnoter version "+ (($a = $scope.VERSION) == null ? $opal.cm('VERSION') : $a) + "\n" + (($a = $scope.COPYRIGHT) == null ? $opal.cm('COPYRIGHT') : $a));
+          }
+        }))
+
+        menu.items[0].submenu.append(new gui.MenuItem({
+          label: 'swho arguments',
+          click: function () {
+            arg = nil
+              arg = gui.App.argv;
+            $gvars.log.$info(arg);
+          }
+        }))
+
+
+        menu.items[0].submenu.append(new gui.MenuItem({
+          label: 'Quit Zupfnoter',
+          click: function () {
+            gui.App.quit();
+          }
+        }));
+
+        menu.append(new gui.MenuItem({
+          label: 'File',
+          submenu: new gui.Menu()
+        }));
+
+
+        var chooser = $("#fileDialog");
+
+        chooser.change(function(evt) {
+
+          var filename = $(this).val();
+          f = (filename).$gsub("\\", "\\\\")
+        self.commands.$run_string("_fopen \"" + (f) + "\"")
+          // Reset the selected value to empty ('')
+          $(this).val('');
+        });
+
+        menu.items[1].submenu.append(new gui.MenuItem({
+          label: 'open',
+          click: function () {
+            chooser.trigger('click');
+          }
+        }));
+
+
+        var savechooser = $("#folderDialog");
+
+        savechooser.change(function(evt) {
+          var filename = $(this).val();
+
+          f = (filename).$gsub("\\", "\\\\")
+        self.commands.$run_string("_fsave \"" + (f) + "\"")
+
+          // Reset the selected value to empty ('')
+          $(this).val('');
+        });
+
+        menu.items[1].submenu.append(new gui.MenuItem({
+          label: 'save',
+          click: function () {
+            savechooser.trigger('click');
+          }
+        }));
+
+        menu.append(new gui.MenuItem({
+          label: 'View',
+          submenu: new gui.Menu()
+        }));
+
+
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'refresh',
+          click: function () {
+            self.$render_previews()
+          }
+        }));
+
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'play all',
+          click: function () {
+            self.commands.$run_string("p all")
+          }
+        }));
+
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'play from here',
+          click: function () {
+            self.commands.$run_string("p ff")
+          }
+        }));
+
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'play selection',
+          click: function () {
+            self.commands.$run_string("p sel")
+          }
+        }));
+
+
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'set extract 0',
+          click: function () {
+            self.commands.$run_string("view 0")
+          }
+        }));
+
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'set extract 1',
+          click: function () {
+            self.commands.$run_string("view 1")
+          }
+        }));
+
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'set extract 2',
+          click: function () {
+            self.commands.$run_string("view 2")
+          }
+        }));
+        menu.items[2].submenu.append(new gui.MenuItem({
+          label: 'set extract 3',
+          click: function () {
+            self.commands.$run_string("view 3")
+          }
+        }));
+
+
+
+        gui.Window.get().menu = menu;
+        gui.Window.title = "zupfnoter";
+        gui.Window.get().show();
+
+      ;
+        return self.$__ic_06_node_fs_commands();
+      } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
+        return $gvars.log.$debug("error with node webkit: " + (e.$message()) + " " + (e.$backtrace().$join("\\n")))
+        }else { throw $err; }
+      };
+    };
+
+    self.$private();
+
+    return (def.$__ic_06_node_fs_commands = function() {
+      var $a, $b, TMP_1, $c, TMP_8, self = this;
+
+      ($a = ($b = self.commands).$add_command, $a._p = (TMP_1 = function(command){var self = TMP_1._s || this, $a, $b, TMP_2, $c, TMP_4, $d, TMP_5;
+if (command == null) command = nil;
+      ($a = ($b = command).$add_parameter, $a._p = (TMP_2 = function(parameter){var self = TMP_2._s || this, $a, $b, TMP_3;
+if (parameter == null) parameter = nil;
+        return ($a = ($b = parameter).$set_default, $a._p = (TMP_3 = function(){var self = TMP_3._s || this;
+            if (self.node_fs_path == null) self.node_fs_path = nil;
+
+          return self.node_fs_path}, TMP_3._s = self, TMP_3), $a).call($b)}, TMP_2._s = self, TMP_2), $a).call($b, "path", "string");
+        command['$undoable='](false);
+        ($a = ($c = command).$set_help, $a._p = (TMP_4 = function(){var self = TMP_4._s || this;
+
+        return "save to local file system {" + (command.$parameter_help(0)) + "}"}, TMP_4._s = self, TMP_4), $a).call($c);
+        return ($a = ($d = command).$as_action, $a._p = (TMP_5 = function(args){var self = TMP_5._s || this, $a, $b, TMP_6, $c, TMP_7, abc_code = nil, metadata = nil, filebase = nil, rootpath = nil, print_variants = nil, pdfs = nil;
+          if (self.editor == null) self.editor = nil;
+          if (self.abc_transformer == null) self.abc_transformer = nil;
+          if (self.song == null) self.song = nil;
+          if ($gvars.log == null) $gvars.log = nil;
+if (args == null) args = nil;
+        abc_code = self.editor.$get_text();
+          metadata = self.abc_transformer.$get_metadata(abc_code);
+          filebase = metadata['$[]']("F");
+          $gvars.log.$debug(metadata.$to_s());
+          if (filebase !== false && filebase !== nil) {
+            filebase = filebase.$split("\n").$first()
+            } else {
+            self.$raise("Filename not specified in song add an F: instruction")
+          };
+          rootpath = args['$[]']("path");
+          $gvars.log.$info("saving to " + (rootpath));
+          self.$layout_harpnotes();
+          self.$render_previews();
+          print_variants = self.song.$harpnote_options()['$[]']("print");
+          pdfs = $hash2([], {});
+          ($a = ($b = print_variants.$each_with_index()).$map, $a._p = (TMP_6 = function(print_variant, index){var self = TMP_6._s || this, filename = nil;
+if (print_variant == null) print_variant = nil;if (index == null) index = nil;
+          filename = print_variant['$[]']("title").$gsub(/[^a-zA-Z0-9\-\_]/, "_");
+            pdfs['$[]=']("" + (rootpath) + "/" + (filebase) + "_" + (print_variant['$[]']("title")) + "_a3.pdf", self.$render_a3(index).$output("blob"));
+            return pdfs['$[]=']("" + (rootpath) + "/" + (filebase) + "_" + (print_variant['$[]']("title")) + "_a4.pdf", self.$render_a4(index).$output("blob"));}, TMP_6._s = self, TMP_6), $a).call($b);
+          var fs = require('fs');
+          ($a = ($c = pdfs).$each, $a._p = (TMP_7 = function(name, pdfdata){var self = TMP_7._s || this;
+            if ($gvars.log == null) $gvars.log = nil;
+if (name == null) name = nil;if (pdfdata == null) pdfdata = nil;
+          
+            fs.writeFileSync(name, pdfdata)
+          ;
+            return $gvars.log.$info(name);}, TMP_7._s = self, TMP_7), $a).call($c);
+          name = "" + (rootpath) + "/" + (filebase) + ".abc";
+          fs.writeFileSync(name, self.editor.$get_text())  ;
+          return $gvars.log.$info("save abco to " + (name));}, TMP_5._s = self, TMP_5), $a).call($d);}, TMP_1._s = self, TMP_1), $a).call($b, "_fsave");
+      return ($a = ($c = self.commands).$add_command, $a._p = (TMP_8 = function(command){var self = TMP_8._s || this, $a, $b, TMP_9, $c, TMP_11, $d, TMP_12, $e, TMP_13;
+if (command == null) command = nil;
+      ($a = ($b = command).$add_parameter, $a._p = (TMP_9 = function(p){var self = TMP_9._s || this, $a, $b, TMP_10;
+if (p == null) p = nil;
+        return ($a = ($b = p).$set_help, $a._p = (TMP_10 = function(){var self = TMP_10._s || this;
+
+          return "path to open"}, TMP_10._s = self, TMP_10), $a).call($b)}, TMP_9._s = self, TMP_9), $a).call($b, "path", "string");
+        ($a = ($c = command).$set_help, $a._p = (TMP_11 = function(){var self = TMP_11._s || this;
+
+        return "read file from local filesystem " + (command.$parameter_help(0))}, TMP_11._s = self, TMP_11), $a).call($c);
+        ($a = ($d = command).$as_action, $a._p = (TMP_12 = function(args){var self = TMP_12._s || this, $a, rootpath = nil, text = nil, e = nil;
+          if (self.editor == null) self.editor = nil;
+          if ($gvars.log == null) $gvars.log = nil;
+if (args == null) args = nil;
+        args['$[]=']("oldval", self.editor.$get_text());
+          rootpath = args['$[]']("path");
+          try {
+          var fs = require('fs');
+            text = fs.readFileSync(rootpath).toString();;
+            $gvars.log.$info("opened " + (rootpath));
+            return self.editor.$set_text(text);
+          } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
+            return $gvars.log.$error(e.$message())
+            }else { throw $err; }
+          };}, TMP_12._s = self, TMP_12), $a).call($d);
+        return ($a = ($e = command).$as_inverse, $a._p = (TMP_13 = function(args){var self = TMP_13._s || this;
+          if (self.editor == null) self.editor = nil;
+if (args == null) args = nil;
+        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_13._s = self, TMP_13), $a).call($e);}, TMP_8._s = self, TMP_8), $a).call($c, "_fopen");
+    }, nil) && '__ic_06_node_fs_commands';
+  })(self, null)
+})(Opal);
+
+//# sourceMappingURL=/__opal_source_maps__/controller-nw.js.map
+;
+/* Generated by Opal 0.6.2 */
+(function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2, $range = $opal.range;
 
-  $opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$parameter_help', '$add_parameter', '$set_default', '$loglevel=', '$[]', '$set_status', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$render_previews', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$fail', '$write_file', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$push', '$when', '$add_metadata', '$read_file', '$to_i']);
+  $opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$add_parameter', '$set_default', '$[]', '$parameter_help', '$set_status', '$to_i', '$render_previews', '$loglevel=', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$fail', '$write_file', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$push', '$when', '$add_metadata', '$read_file']);
   return (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
@@ -18607,7 +18881,7 @@ if (e == null) e = nil;
     self.$private();
 
     def.$__ic_01_internal_commands = function() {
-      var $a, $b, TMP_1, $c, TMP_4, $d, TMP_10, $e, TMP_16, $f, TMP_19, $g, TMP_22, $h, TMP_26, $i, TMP_30, self = this;
+      var $a, $b, TMP_1, $c, TMP_4, $d, TMP_10, $e, TMP_16, $f, TMP_22, $g, TMP_25, $h, TMP_28, $i, TMP_32, $j, TMP_36, self = this;
       if ($gvars.log == null) $gvars.log = nil;
 
       $gvars.log.$info("registering commands");
@@ -18622,41 +18896,61 @@ if (c == null) c = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
         return $gvars.log.$message("<pre>" + (self.commands.$help_string_style().$join("\n")) + "</pre>")}, TMP_3._s = self, TMP_3), $a).call($c);}, TMP_1._s = self, TMP_1), $a).call($b, "help");
-      ($a = ($c = self.commands).$add_command, $a._p = (TMP_4 = function(c){var self = TMP_4._s || this, $a, $b, TMP_5, $c, TMP_6, $d, TMP_9;
-if (c == null) c = nil;
-      c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_5 = function(){var self = TMP_5._s || this;
+      ($a = ($c = self.commands).$add_command, $a._p = (TMP_4 = function(command){var self = TMP_4._s || this, $a, $b, TMP_5, $c, TMP_8, $d, TMP_9;
+if (command == null) command = nil;
+      ($a = ($b = command).$add_parameter, $a._p = (TMP_5 = function(p){var self = TMP_5._s || this, $a, $b, TMP_6, $c, TMP_7;
+if (p == null) p = nil;
+        ($a = ($b = p).$set_default, $a._p = (TMP_6 = function(){var self = TMP_6._s || this;
+            if (self.systemstatus == null) self.systemstatus = nil;
 
-        return "set log level to " + (c.$parameter_help(0))}, TMP_5._s = self, TMP_5), $a).call($b);
-        ($a = ($c = c).$add_parameter, $a._p = (TMP_6 = function(parameter){var self = TMP_6._s || this, $a, $b, TMP_7, $c, TMP_8;
-if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_7 = function(){var self = TMP_7._s || this;
+          return self.systemstatus['$[]']("view")}, TMP_6._s = self, TMP_6), $a).call($b);
+          return ($a = ($c = p).$set_help, $a._p = (TMP_7 = function(){var self = TMP_7._s || this;
+            if (self.systemstatus == null) self.systemstatus = nil;
 
-          return "warning"}, TMP_7._s = self, TMP_7), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_8 = function(){var self = TMP_8._s || this;
+          return "id of the view to be used for preview [" + (self.systemstatus['$[]']("view")) + "]"}, TMP_7._s = self, TMP_7), $a).call($c);}, TMP_5._s = self, TMP_5), $a).call($b, "view", "integer");
+        ($a = ($c = command).$set_help, $a._p = (TMP_8 = function(){var self = TMP_8._s || this;
 
-          return "error | warning | info | debug"}, TMP_8._s = self, TMP_8), $a).call($c);}, TMP_6._s = self, TMP_6), $a).call($c, "level", "string");
-        return ($a = ($d = c).$as_action, $a._p = (TMP_9 = function(args){var self = TMP_9._s || this;
-          if ($gvars.log == null) $gvars.log = nil;
+        return "set current view  " + (command.$parameter_help(0)) + " and redisplay"}, TMP_8._s = self, TMP_8), $a).call($c);
+        command['$undoable='](false);
+        return ($a = ($d = command).$as_action, $a._p = (TMP_9 = function(args){var self = TMP_9._s || this;
 if (args == null) args = nil;
-        $gvars.log['$loglevel='](args['$[]']("level"));
-          return self.$set_status($hash2(["loglevel"], {"loglevel": $gvars.log.$loglevel()}));}, TMP_9._s = self, TMP_9), $a).call($d);}, TMP_4._s = self, TMP_4), $a).call($c, "loglevel");
-      ($a = ($d = self.commands).$add_command, $a._p = (TMP_10 = function(c){var self = TMP_10._s || this, $a, $b, TMP_11, $c, TMP_12, $d, TMP_15, values = nil;
+        self.$set_status($hash2(["view"], {"view": args['$[]']("view").$to_i()}));
+          return self.$render_previews();}, TMP_9._s = self, TMP_9), $a).call($d);}, TMP_4._s = self, TMP_4), $a).call($c, "view");
+      ($a = ($d = self.commands).$add_command, $a._p = (TMP_10 = function(c){var self = TMP_10._s || this, $a, $b, TMP_11, $c, TMP_12, $d, TMP_15;
 if (c == null) c = nil;
       c['$undoable='](false);
         ($a = ($b = c).$set_help, $a._p = (TMP_11 = function(){var self = TMP_11._s || this;
 
-        return "turnon autorefresh"}, TMP_11._s = self, TMP_11), $a).call($b);
-        values = $hash2(["on", "off", "remote"], {"on": "on", "off": "off", "remote": "remote"});
+        return "set log level to " + (c.$parameter_help(0))}, TMP_11._s = self, TMP_11), $a).call($b);
         ($a = ($c = c).$add_parameter, $a._p = (TMP_12 = function(parameter){var self = TMP_12._s || this, $a, $b, TMP_13, $c, TMP_14;
 if (parameter == null) parameter = nil;
         ($a = ($b = parameter).$set_default, $a._p = (TMP_13 = function(){var self = TMP_13._s || this;
 
-          return "true"}, TMP_13._s = self, TMP_13), $a).call($b);
+          return "warning"}, TMP_13._s = self, TMP_13), $a).call($b);
           return ($a = ($c = parameter).$set_help, $a._p = (TMP_14 = function(){var self = TMP_14._s || this;
 
-          return "" + (values.$keys().$join(" | "))}, TMP_14._s = self, TMP_14), $a).call($c);}, TMP_12._s = self, TMP_12), $a).call($c, "value", "string");
-        return ($a = ($d = c).$as_action, $a._p = (TMP_15 = function(args){var self = TMP_15._s || this, result = nil;
+          return "error | warning | info | debug"}, TMP_14._s = self, TMP_14), $a).call($c);}, TMP_12._s = self, TMP_12), $a).call($c, "level", "string");
+        return ($a = ($d = c).$as_action, $a._p = (TMP_15 = function(args){var self = TMP_15._s || this;
+          if ($gvars.log == null) $gvars.log = nil;
+if (args == null) args = nil;
+        $gvars.log['$loglevel='](args['$[]']("level"));
+          return self.$set_status($hash2(["loglevel"], {"loglevel": $gvars.log.$loglevel()}));}, TMP_15._s = self, TMP_15), $a).call($d);}, TMP_10._s = self, TMP_10), $a).call($d, "loglevel");
+      ($a = ($e = self.commands).$add_command, $a._p = (TMP_16 = function(c){var self = TMP_16._s || this, $a, $b, TMP_17, $c, TMP_18, $d, TMP_21, values = nil;
+if (c == null) c = nil;
+      c['$undoable='](false);
+        ($a = ($b = c).$set_help, $a._p = (TMP_17 = function(){var self = TMP_17._s || this;
+
+        return "turnon autorefresh"}, TMP_17._s = self, TMP_17), $a).call($b);
+        values = $hash2(["on", "off", "remote"], {"on": "on", "off": "off", "remote": "remote"});
+        ($a = ($c = c).$add_parameter, $a._p = (TMP_18 = function(parameter){var self = TMP_18._s || this, $a, $b, TMP_19, $c, TMP_20;
+if (parameter == null) parameter = nil;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_19 = function(){var self = TMP_19._s || this;
+
+          return "true"}, TMP_19._s = self, TMP_19), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_20 = function(){var self = TMP_20._s || this;
+
+          return "" + (values.$keys().$join(" | "))}, TMP_20._s = self, TMP_20), $a).call($c);}, TMP_18._s = self, TMP_18), $a).call($c, "value", "string");
+        return ($a = ($d = c).$as_action, $a._p = (TMP_21 = function(args){var self = TMP_21._s || this, result = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
         result = values['$[]'](args['$[]']("value"));
@@ -18664,134 +18958,134 @@ if (args == null) args = nil;
             return self.$set_status($hash2(["autorefresh"], {"autorefresh": result}))
             } else {
             return $gvars.log.$error("wrong parameter " + (args['$[]']("value")) + ", " + (c.$parameter_help(0)))
-          };}, TMP_15._s = self, TMP_15), $a).call($d);}, TMP_10._s = self, TMP_10), $a).call($d, "autorefresh");
-      ($a = ($e = self.commands).$add_command, $a._p = (TMP_16 = function(c){var self = TMP_16._s || this, $a, $b, TMP_17, $c, TMP_18;
-if (c == null) c = nil;
-      c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_17 = function(){var self = TMP_17._s || this;
-
-        return "undo last command"}, TMP_17._s = self, TMP_17), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_18 = function(a){var self = TMP_18._s || this;
-          if (self.commands == null) self.commands = nil;
-if (a == null) a = nil;
-        return self.commands.$undo()}, TMP_18._s = self, TMP_18), $a).call($c);}, TMP_16._s = self, TMP_16), $a).call($e, "undo");
-      ($a = ($f = self.commands).$add_command, $a._p = (TMP_19 = function(c){var self = TMP_19._s || this, $a, $b, TMP_20, $c, TMP_21;
-if (c == null) c = nil;
-      c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_20 = function(){var self = TMP_20._s || this;
-
-        return "redo last command"}, TMP_20._s = self, TMP_20), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_21 = function(a){var self = TMP_21._s || this;
-          if (self.commands == null) self.commands = nil;
-if (a == null) a = nil;
-        return self.commands.$redo()}, TMP_21._s = self, TMP_21), $a).call($c);}, TMP_19._s = self, TMP_19), $a).call($f, "redo");
-      ($a = ($g = self.commands).$add_command, $a._p = (TMP_22 = function(c){var self = TMP_22._s || this, $a, $b, TMP_23, $c, TMP_24;
+          };}, TMP_21._s = self, TMP_21), $a).call($d);}, TMP_16._s = self, TMP_16), $a).call($e, "autorefresh");
+      ($a = ($f = self.commands).$add_command, $a._p = (TMP_22 = function(c){var self = TMP_22._s || this, $a, $b, TMP_23, $c, TMP_24;
 if (c == null) c = nil;
       c['$undoable='](false);
         ($a = ($b = c).$set_help, $a._p = (TMP_23 = function(){var self = TMP_23._s || this;
 
-        return "show history"}, TMP_23._s = self, TMP_23), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_24 = function(a){var self = TMP_24._s || this, $a, $b, TMP_25, history = nil;
+        return "undo last command"}, TMP_23._s = self, TMP_23), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_24 = function(a){var self = TMP_24._s || this;
           if (self.commands == null) self.commands = nil;
-          if ($gvars.log == null) $gvars.log = nil;
 if (a == null) a = nil;
-        history = ($a = ($b = self.commands.$history()).$map, $a._p = (TMP_25 = function(c){var self = TMP_25._s || this;
-if (c == null) c = nil;
-          return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_25._s = self, TMP_25), $a).call($b);
-          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_24._s = self, TMP_24), $a).call($c);}, TMP_22._s = self, TMP_22), $a).call($g, "history");
-      ($a = ($h = self.commands).$add_command, $a._p = (TMP_26 = function(c){var self = TMP_26._s || this, $a, $b, TMP_27, $c, TMP_28;
+        return self.commands.$undo()}, TMP_24._s = self, TMP_24), $a).call($c);}, TMP_22._s = self, TMP_22), $a).call($f, "undo");
+      ($a = ($g = self.commands).$add_command, $a._p = (TMP_25 = function(c){var self = TMP_25._s || this, $a, $b, TMP_26, $c, TMP_27;
 if (c == null) c = nil;
       c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_27 = function(){var self = TMP_27._s || this;
+        ($a = ($b = c).$set_help, $a._p = (TMP_26 = function(){var self = TMP_26._s || this;
 
-        return "show undo stack"}, TMP_27._s = self, TMP_27), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_28 = function(a){var self = TMP_28._s || this, $a, $b, TMP_29, history = nil;
+        return "redo last command"}, TMP_26._s = self, TMP_26), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_27 = function(a){var self = TMP_27._s || this;
           if (self.commands == null) self.commands = nil;
-          if ($gvars.log == null) $gvars.log = nil;
 if (a == null) a = nil;
-        history = ($a = ($b = self.commands.$undostack()).$map, $a._p = (TMP_29 = function(c){var self = TMP_29._s || this;
-if (c == null) c = nil;
-          return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_29._s = self, TMP_29), $a).call($b);
-          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_28._s = self, TMP_28), $a).call($c);}, TMP_26._s = self, TMP_26), $a).call($h, "showundo");
-      return ($a = ($i = self.commands).$add_command, $a._p = (TMP_30 = function(c){var self = TMP_30._s || this, $a, $b, TMP_31, $c, TMP_32;
+        return self.commands.$redo()}, TMP_27._s = self, TMP_27), $a).call($c);}, TMP_25._s = self, TMP_25), $a).call($g, "redo");
+      ($a = ($h = self.commands).$add_command, $a._p = (TMP_28 = function(c){var self = TMP_28._s || this, $a, $b, TMP_29, $c, TMP_30;
 if (c == null) c = nil;
       c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_31 = function(){var self = TMP_31._s || this;
+        ($a = ($b = c).$set_help, $a._p = (TMP_29 = function(){var self = TMP_29._s || this;
 
-        return "show redo stack"}, TMP_31._s = self, TMP_31), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_32 = function(a){var self = TMP_32._s || this, $a, $b, TMP_33, history = nil;
+        return "show history"}, TMP_29._s = self, TMP_29), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_30 = function(a){var self = TMP_30._s || this, $a, $b, TMP_31, history = nil;
           if (self.commands == null) self.commands = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (a == null) a = nil;
-        history = ($a = ($b = self.commands.$redostack()).$map, $a._p = (TMP_33 = function(c){var self = TMP_33._s || this;
+        history = ($a = ($b = self.commands.$history()).$map, $a._p = (TMP_31 = function(c){var self = TMP_31._s || this;
 if (c == null) c = nil;
-          return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_33._s = self, TMP_33), $a).call($b);
-          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_32._s = self, TMP_32), $a).call($c);}, TMP_30._s = self, TMP_30), $a).call($i, "showredo");
+          return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_31._s = self, TMP_31), $a).call($b);
+          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_30._s = self, TMP_30), $a).call($c);}, TMP_28._s = self, TMP_28), $a).call($h, "history");
+      ($a = ($i = self.commands).$add_command, $a._p = (TMP_32 = function(c){var self = TMP_32._s || this, $a, $b, TMP_33, $c, TMP_34;
+if (c == null) c = nil;
+      c['$undoable='](false);
+        ($a = ($b = c).$set_help, $a._p = (TMP_33 = function(){var self = TMP_33._s || this;
+
+        return "show undo stack"}, TMP_33._s = self, TMP_33), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_34 = function(a){var self = TMP_34._s || this, $a, $b, TMP_35, history = nil;
+          if (self.commands == null) self.commands = nil;
+          if ($gvars.log == null) $gvars.log = nil;
+if (a == null) a = nil;
+        history = ($a = ($b = self.commands.$undostack()).$map, $a._p = (TMP_35 = function(c){var self = TMP_35._s || this;
+if (c == null) c = nil;
+          return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_35._s = self, TMP_35), $a).call($b);
+          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_34._s = self, TMP_34), $a).call($c);}, TMP_32._s = self, TMP_32), $a).call($i, "showundo");
+      return ($a = ($j = self.commands).$add_command, $a._p = (TMP_36 = function(c){var self = TMP_36._s || this, $a, $b, TMP_37, $c, TMP_38;
+if (c == null) c = nil;
+      c['$undoable='](false);
+        ($a = ($b = c).$set_help, $a._p = (TMP_37 = function(){var self = TMP_37._s || this;
+
+        return "show redo stack"}, TMP_37._s = self, TMP_37), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_38 = function(a){var self = TMP_38._s || this, $a, $b, TMP_39, history = nil;
+          if (self.commands == null) self.commands = nil;
+          if ($gvars.log == null) $gvars.log = nil;
+if (a == null) a = nil;
+        history = ($a = ($b = self.commands.$redostack()).$map, $a._p = (TMP_39 = function(c){var self = TMP_39._s || this;
+if (c == null) c = nil;
+          return "" + (c.$first()) + ": " + (c['$[]'](1).$name()) + "(" + (c.$last()) + ")"}, TMP_39._s = self, TMP_39), $a).call($b);
+          return $gvars.log.$message("<pre>" + (history.$join("\n")) + "</pre>");}, TMP_38._s = self, TMP_38), $a).call($c);}, TMP_36._s = self, TMP_36), $a).call($j, "showredo");
     };
 
     def.$__ic_02_play_commands = function() {
-      var $a, $b, TMP_34, $c, TMP_40, $d, TMP_43, self = this;
+      var $a, $b, TMP_40, $c, TMP_46, $d, TMP_49, self = this;
 
-      ($a = ($b = self.commands).$add_command, $a._p = (TMP_34 = function(c){var self = TMP_34._s || this, $a, $b, TMP_35, $c, TMP_36, $d, TMP_39;
-if (c == null) c = nil;
-      c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_35 = function(){var self = TMP_35._s || this;
-
-        return "play song " + (c.$parameter_help(0))}, TMP_35._s = self, TMP_35), $a).call($b);
-        ($a = ($c = c).$add_parameter, $a._p = (TMP_36 = function(parameter){var self = TMP_36._s || this, $a, $b, TMP_37, $c, TMP_38;
-if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_37 = function(){var self = TMP_37._s || this;
-
-          return "ff"}, TMP_37._s = self, TMP_37), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_38 = function(){var self = TMP_38._s || this;
-
-          return "r(all | ff | sel): range to play"}, TMP_38._s = self, TMP_38), $a).call($c);}, TMP_36._s = self, TMP_36), $a).call($c, "range", "string");
-        return ($a = ($d = c).$as_action, $a._p = (TMP_39 = function(argument){var self = TMP_39._s || this, $case = nil;
-          if ($gvars.log == null) $gvars.log = nil;
-if (argument == null) argument = nil;
-        return (function() {$case = argument['$[]']("range");if ("sel"['$===']($case)) {return self.$play_abc("selection")}else if ("ff"['$===']($case)) {return self.$play_abc("selection_ff")}else if ("all"['$===']($case)) {return self.$play_abc()}else {return $gvars.log.$error("wrong range to play")}})()}, TMP_39._s = self, TMP_39), $a).call($d);}, TMP_34._s = self, TMP_34), $a).call($b, "p");
-      ($a = ($c = self.commands).$add_command, $a._p = (TMP_40 = function(c){var self = TMP_40._s || this, $a, $b, TMP_41, $c, TMP_42;
+      ($a = ($b = self.commands).$add_command, $a._p = (TMP_40 = function(c){var self = TMP_40._s || this, $a, $b, TMP_41, $c, TMP_42, $d, TMP_45;
 if (c == null) c = nil;
       c['$undoable='](false);
         ($a = ($b = c).$set_help, $a._p = (TMP_41 = function(){var self = TMP_41._s || this;
 
-        return "stop playing"}, TMP_41._s = self, TMP_41), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_42 = function(a){var self = TMP_42._s || this;
-if (a == null) a = nil;
-        return self.$stop_play_abc()}, TMP_42._s = self, TMP_42), $a).call($c);}, TMP_40._s = self, TMP_40), $a).call($c, "stop");
-      return ($a = ($d = self.commands).$add_command, $a._p = (TMP_43 = function(c){var self = TMP_43._s || this, $a, $b, TMP_44, $c, TMP_45;
+        return "play song " + (c.$parameter_help(0))}, TMP_41._s = self, TMP_41), $a).call($b);
+        ($a = ($c = c).$add_parameter, $a._p = (TMP_42 = function(parameter){var self = TMP_42._s || this, $a, $b, TMP_43, $c, TMP_44;
+if (parameter == null) parameter = nil;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_43 = function(){var self = TMP_43._s || this;
+
+          return "ff"}, TMP_43._s = self, TMP_43), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_44 = function(){var self = TMP_44._s || this;
+
+          return "r(all | ff | sel): range to play"}, TMP_44._s = self, TMP_44), $a).call($c);}, TMP_42._s = self, TMP_42), $a).call($c, "range", "string");
+        return ($a = ($d = c).$as_action, $a._p = (TMP_45 = function(argument){var self = TMP_45._s || this, $case = nil;
+          if ($gvars.log == null) $gvars.log = nil;
+if (argument == null) argument = nil;
+        return (function() {$case = argument['$[]']("range");if ("sel"['$===']($case)) {return self.$play_abc("selection")}else if ("ff"['$===']($case)) {return self.$play_abc("selection_ff")}else if ("all"['$===']($case)) {return self.$play_abc()}else {return $gvars.log.$error("wrong range to play")}})()}, TMP_45._s = self, TMP_45), $a).call($d);}, TMP_40._s = self, TMP_40), $a).call($b, "p");
+      ($a = ($c = self.commands).$add_command, $a._p = (TMP_46 = function(c){var self = TMP_46._s || this, $a, $b, TMP_47, $c, TMP_48;
 if (c == null) c = nil;
       c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_44 = function(){var self = TMP_44._s || this;
+        ($a = ($b = c).$set_help, $a._p = (TMP_47 = function(){var self = TMP_47._s || this;
 
-        return "refresh"}, TMP_44._s = self, TMP_44), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_45 = function(a){var self = TMP_45._s || this;
+        return "stop playing"}, TMP_47._s = self, TMP_47), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_48 = function(a){var self = TMP_48._s || this;
 if (a == null) a = nil;
-        return self.$render_previews()}, TMP_45._s = self, TMP_45), $a).call($c);}, TMP_43._s = self, TMP_43), $a).call($d, "render");
+        return self.$stop_play_abc()}, TMP_48._s = self, TMP_48), $a).call($c);}, TMP_46._s = self, TMP_46), $a).call($c, "stop");
+      return ($a = ($d = self.commands).$add_command, $a._p = (TMP_49 = function(c){var self = TMP_49._s || this, $a, $b, TMP_50, $c, TMP_51;
+if (c == null) c = nil;
+      c['$undoable='](false);
+        ($a = ($b = c).$set_help, $a._p = (TMP_50 = function(){var self = TMP_50._s || this;
+
+        return "refresh"}, TMP_50._s = self, TMP_50), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_51 = function(a){var self = TMP_51._s || this;
+if (a == null) a = nil;
+        return self.$render_previews()}, TMP_51._s = self, TMP_51), $a).call($c);}, TMP_49._s = self, TMP_49), $a).call($d, "render");
     };
 
     def.$__ic_03_create_commands = function() {
-      var $a, $b, TMP_46, self = this;
+      var $a, $b, TMP_52, self = this;
 
-      return ($a = ($b = self.commands).$add_command, $a._p = (TMP_46 = function(c){var self = TMP_46._s || this, $a, $b, TMP_47, $c, TMP_48, $d, TMP_50, $e, TMP_53, $f, TMP_54;
+      return ($a = ($b = self.commands).$add_command, $a._p = (TMP_52 = function(c){var self = TMP_52._s || this, $a, $b, TMP_53, $c, TMP_54, $d, TMP_56, $e, TMP_59, $f, TMP_60;
 if (c == null) c = nil;
-      ($a = ($b = c).$set_help, $a._p = (TMP_47 = function(){var self = TMP_47._s || this;
+      ($a = ($b = c).$set_help, $a._p = (TMP_53 = function(){var self = TMP_53._s || this;
 
-        return "create song " + (c.$parameter_help(0)) + " " + (c.$parameter_help(1))}, TMP_47._s = self, TMP_47), $a).call($b);
-        ($a = ($c = c).$add_parameter, $a._p = (TMP_48 = function(parameter){var self = TMP_48._s || this, $a, $b, TMP_49;
+        return "create song " + (c.$parameter_help(0)) + " " + (c.$parameter_help(1))}, TMP_53._s = self, TMP_53), $a).call($b);
+        ($a = ($c = c).$add_parameter, $a._p = (TMP_54 = function(parameter){var self = TMP_54._s || this, $a, $b, TMP_55;
 if (parameter == null) parameter = nil;
-        return ($a = ($b = parameter).$set_help, $a._p = (TMP_49 = function(){var self = TMP_49._s || this;
+        return ($a = ($b = parameter).$set_help, $a._p = (TMP_55 = function(){var self = TMP_55._s || this;
 
-          return "value for X: line, a unique id"}, TMP_49._s = self, TMP_49), $a).call($b)}, TMP_48._s = self, TMP_48), $a).call($c, "id", "string");
-        ($a = ($d = c).$add_parameter, $a._p = (TMP_50 = function(parameter){var self = TMP_50._s || this, $a, $b, TMP_51, $c, TMP_52;
+          return "value for X: line, a unique id"}, TMP_55._s = self, TMP_55), $a).call($b)}, TMP_54._s = self, TMP_54), $a).call($c, "id", "string");
+        ($a = ($d = c).$add_parameter, $a._p = (TMP_56 = function(parameter){var self = TMP_56._s || this, $a, $b, TMP_57, $c, TMP_58;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_51 = function(){var self = TMP_51._s || this;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_57 = function(){var self = TMP_57._s || this;
 
-          return "untitled"}, TMP_51._s = self, TMP_51), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_52 = function(){var self = TMP_52._s || this;
+          return "untitled"}, TMP_57._s = self, TMP_57), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_58 = function(){var self = TMP_58._s || this;
 
-          return "Title of the song"}, TMP_52._s = self, TMP_52), $a).call($c);}, TMP_50._s = self, TMP_50), $a).call($d, "title", "string");
-        ($a = ($e = c).$as_action, $a._p = (TMP_53 = function(args){var self = TMP_53._s || this, song_id = nil, song_title = nil, filename = nil, template = nil;
+          return "Title of the song"}, TMP_58._s = self, TMP_58), $a).call($c);}, TMP_56._s = self, TMP_56), $a).call($d, "title", "string");
+        ($a = ($e = c).$as_action, $a._p = (TMP_59 = function(args){var self = TMP_59._s || this, song_id = nil, song_title = nil, filename = nil, template = nil;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
         song_id = args['$[]']("id");
@@ -18808,23 +19102,23 @@ if (args == null) args = nil;
           template = "X:" + (song_id) + "\nF:" + (song_id) + "_" + (filename) + "\nT:" + (song_title) + "\nC:\nS:\nM:4/4\nL:1/4\nQ:1/4=120\nK:C\n% %%%hn.print {\"t\":\"alle Stimmen\",         \"v\":[1,2,3,4], \"s\": [[1,2],[3,4]], \"f\":[1,3], \"j\":[1]}\n% %%%hn.print {\"t\":\"sopran, alt\", \"v\":[1,2],     \"s\":[[1,2]],       \"f\":[1],   \"j\":[1]}\n%%%%hn.print {\"t\":\"tenor, bass\", \"v\":[3, 4],     \"s\":[[1, 2], [3,4]],       \"f\":[3  ],   \"j\":[1, 3]}\n%%%%hn.legend [10,10]\n%%%%hn.note [[5, 50], \"Folge: A A B B C A\", \"regular\"]\n%%%%hn.note [[360, 280], \"Erstellt mit Zupfnoter 0.7\", \"regular\"]\n%%score T1 T2  B1 B2\nV:T1 clef=treble-8 name=\"Sopran\" snm=\"S\"\nV:T2 clef=treble-8  name=\"Alt\" snm=\"A\"\n%V:B1 clef=bass transpose=-24 name=\"Tenor\" middle=D, snm=\"T\"\n%V:B2 clef=bass transpose=-24 name=\"Bass\" middle=D, snm=\"B\"\n[V:T1] c'\n[V:T2] c\n%\n";
           args['$[]=']("oldval", self.editor.$get_text());
           self.editor.$set_text(template);
-          return self.$set_status($hash2(["song"], {"song": "new"}));}, TMP_53._s = self, TMP_53), $a).call($e);
-        return ($a = ($f = c).$as_inverse, $a._p = (TMP_54 = function(args){var self = TMP_54._s || this;
+          return self.$set_status($hash2(["song"], {"song": "new"}));}, TMP_59._s = self, TMP_59), $a).call($e);
+        return ($a = ($f = c).$as_inverse, $a._p = (TMP_60 = function(args){var self = TMP_60._s || this;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
-        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_54._s = self, TMP_54), $a).call($f);}, TMP_46._s = self, TMP_46), $a).call($b, "c");
+        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_60._s = self, TMP_60), $a).call($f);}, TMP_52._s = self, TMP_52), $a).call($b, "c");
     };
 
     def.$__ic_04_localstore_commands = function() {
-      var $a, $b, TMP_55, $c, TMP_58, $d, TMP_62, self = this;
+      var $a, $b, TMP_61, $c, TMP_64, $d, TMP_68, self = this;
 
-      ($a = ($b = self.commands).$add_command, $a._p = (TMP_55 = function(c){var self = TMP_55._s || this, $a, $b, TMP_56, $c, TMP_57;
+      ($a = ($b = self.commands).$add_command, $a._p = (TMP_61 = function(c){var self = TMP_61._s || this, $a, $b, TMP_62, $c, TMP_63;
 if (c == null) c = nil;
       c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_56 = function(){var self = TMP_56._s || this;
+        ($a = ($b = c).$set_help, $a._p = (TMP_62 = function(){var self = TMP_62._s || this;
 
-        return "save to localstore"}, TMP_56._s = self, TMP_56), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_57 = function(){var self = TMP_57._s || this, abc_code = nil, metadata = nil, filename = nil;
+        return "save to localstore"}, TMP_62._s = self, TMP_62), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_63 = function(){var self = TMP_63._s || this, abc_code = nil, metadata = nil, filename = nil;
           if (self.editor == null) self.editor = nil;
           if (self.abc_transformer == null) self.abc_transformer = nil;
           if (self.songbook == null) self.songbook = nil;
@@ -18835,32 +19129,32 @@ if (c == null) c = nil;
           filename = "" + (metadata['$[]']("X")) + "_" + (metadata['$[]']("T"));
           self.songbook.$update(metadata['$[]']("X"), abc_code, metadata['$[]']("T"), true);
           self.$set_status($hash2(["song"], {"song": "saved to localstore"}));
-          return $gvars.log.$message("saved to '" + (filename) + "'");}, TMP_57._s = self, TMP_57), $a).call($c);}, TMP_55._s = self, TMP_55), $a).call($b, "lsave");
-      ($a = ($c = self.commands).$add_command, $a._p = (TMP_58 = function(c){var self = TMP_58._s || this, $a, $b, TMP_59, $c, TMP_60;
+          return $gvars.log.$message("saved to '" + (filename) + "'");}, TMP_63._s = self, TMP_63), $a).call($c);}, TMP_61._s = self, TMP_61), $a).call($b, "lsave");
+      ($a = ($c = self.commands).$add_command, $a._p = (TMP_64 = function(c){var self = TMP_64._s || this, $a, $b, TMP_65, $c, TMP_66;
 if (c == null) c = nil;
       c['$undoable='](false);
-        ($a = ($b = c).$set_help, $a._p = (TMP_59 = function(){var self = TMP_59._s || this;
+        ($a = ($b = c).$set_help, $a._p = (TMP_65 = function(){var self = TMP_65._s || this;
 
-        return "list files in localstore"}, TMP_59._s = self, TMP_59), $a).call($b);
-        return ($a = ($c = c).$as_action, $a._p = (TMP_60 = function(a){var self = TMP_60._s || this, $a, $b, TMP_61;
+        return "list files in localstore"}, TMP_65._s = self, TMP_65), $a).call($b);
+        return ($a = ($c = c).$as_action, $a._p = (TMP_66 = function(a){var self = TMP_66._s || this, $a, $b, TMP_67;
           if (self.songbook == null) self.songbook = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (a == null) a = nil;
-        return $gvars.log.$message("<pre>"['$+'](($a = ($b = self.songbook.$list()).$map, $a._p = (TMP_61 = function(k, v){var self = TMP_61._s || this;
+        return $gvars.log.$message("<pre>"['$+'](($a = ($b = self.songbook.$list()).$map, $a._p = (TMP_67 = function(k, v){var self = TMP_67._s || this;
 if (k == null) k = nil;if (v == null) v = nil;
-          return "" + (k) + "_" + (v)}, TMP_61._s = self, TMP_61), $a).call($b).$join("\n"))['$+']("</pre>"))}, TMP_60._s = self, TMP_60), $a).call($c);}, TMP_58._s = self, TMP_58), $a).call($c, "lls");
-      return ($a = ($d = self.commands).$add_command, $a._p = (TMP_62 = function(c){var self = TMP_62._s || this, $a, $b, TMP_63, $c, TMP_65, $d, TMP_66, $e, TMP_67;
+          return "" + (k) + "_" + (v)}, TMP_67._s = self, TMP_67), $a).call($b).$join("\n"))['$+']("</pre>"))}, TMP_66._s = self, TMP_66), $a).call($c);}, TMP_64._s = self, TMP_64), $a).call($c, "lls");
+      return ($a = ($d = self.commands).$add_command, $a._p = (TMP_68 = function(c){var self = TMP_68._s || this, $a, $b, TMP_69, $c, TMP_71, $d, TMP_72, $e, TMP_73;
 if (c == null) c = nil;
       c['$undoable='](true);
-        ($a = ($b = c).$add_parameter, $a._p = (TMP_63 = function(parameter){var self = TMP_63._s || this, $a, $b, TMP_64;
+        ($a = ($b = c).$add_parameter, $a._p = (TMP_69 = function(parameter){var self = TMP_69._s || this, $a, $b, TMP_70;
 if (parameter == null) parameter = nil;
-        return ($a = ($b = parameter).$set_help, $a._p = (TMP_64 = function(){var self = TMP_64._s || this;
+        return ($a = ($b = parameter).$set_help, $a._p = (TMP_70 = function(){var self = TMP_70._s || this;
 
-          return "id of the song to be loaded"}, TMP_64._s = self, TMP_64), $a).call($b)}, TMP_63._s = self, TMP_63), $a).call($b, "id", "string");
-        ($a = ($c = c).$set_help, $a._p = (TMP_65 = function(){var self = TMP_65._s || this;
+          return "id of the song to be loaded"}, TMP_70._s = self, TMP_70), $a).call($b)}, TMP_69._s = self, TMP_69), $a).call($b, "id", "string");
+        ($a = ($c = c).$set_help, $a._p = (TMP_71 = function(){var self = TMP_71._s || this;
 
-        return "open song from local store  " + (c.$parameter_help(0))}, TMP_65._s = self, TMP_65), $a).call($c);
-        ($a = ($d = c).$as_action, $a._p = (TMP_66 = function(args){var self = TMP_66._s || this, $a, payload = nil;
+        return "open song from local store  " + (c.$parameter_help(0))}, TMP_71._s = self, TMP_71), $a).call($c);
+        ($a = ($d = c).$as_action, $a._p = (TMP_72 = function(args){var self = TMP_72._s || this, $a, payload = nil;
           if (self.songbook == null) self.songbook = nil;
           if (self.editor == null) self.editor = nil;
           if ($gvars.log == null) $gvars.log = nil;
@@ -18875,38 +19169,38 @@ if (args == null) args = nil;
             };
             } else {
             return $gvars.log.$error("plase add a song number")
-          }}, TMP_66._s = self, TMP_66), $a).call($d);
-        return ($a = ($e = c).$as_inverse, $a._p = (TMP_67 = function(args){var self = TMP_67._s || this;
+          }}, TMP_72._s = self, TMP_72), $a).call($d);
+        return ($a = ($e = c).$as_inverse, $a._p = (TMP_73 = function(args){var self = TMP_73._s || this;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
-        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_67._s = self, TMP_67), $a).call($e);}, TMP_62._s = self, TMP_62), $a).call($d, "lopen");
+        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_73._s = self, TMP_73), $a).call($e);}, TMP_68._s = self, TMP_68), $a).call($d, "lopen");
     };
 
     return (def.$__ic_05_dropbox_commands = function() {
-      var $a, $b, TMP_68, $c, TMP_79, $d, TMP_88, $e, TMP_95, $f, TMP_98, $g, TMP_109, $h, TMP_121, self = this;
+      var $a, $b, TMP_74, $c, TMP_85, $d, TMP_94, $e, TMP_101, $f, TMP_104, $g, TMP_115, self = this;
 
-      ($a = ($b = self.commands).$add_command, $a._p = (TMP_68 = function(command){var self = TMP_68._s || this, $a, $b, TMP_69, $c, TMP_72, $d, TMP_75, $e, TMP_76, $f, TMP_78;
+      ($a = ($b = self.commands).$add_command, $a._p = (TMP_74 = function(command){var self = TMP_74._s || this, $a, $b, TMP_75, $c, TMP_78, $d, TMP_81, $e, TMP_82, $f, TMP_84;
 if (command == null) command = nil;
-      ($a = ($b = command).$add_parameter, $a._p = (TMP_69 = function(parameter){var self = TMP_69._s || this, $a, $b, TMP_70, $c, TMP_71;
+      ($a = ($b = command).$add_parameter, $a._p = (TMP_75 = function(parameter){var self = TMP_75._s || this, $a, $b, TMP_76, $c, TMP_77;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_70 = function(){var self = TMP_70._s || this;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_76 = function(){var self = TMP_76._s || this;
 
-          return "app"}, TMP_70._s = self, TMP_70), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_71 = function(){var self = TMP_71._s || this;
+          return "app"}, TMP_76._s = self, TMP_76), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_77 = function(){var self = TMP_77._s || this;
 
-          return "(app | full) app: app only | full: full dropbox"}, TMP_71._s = self, TMP_71), $a).call($c);}, TMP_69._s = self, TMP_69), $a).call($b, "scope", "string");
-        ($a = ($c = command).$add_parameter, $a._p = (TMP_72 = function(parameter){var self = TMP_72._s || this, $a, $b, TMP_73, $c, TMP_74;
+          return "(app | full) app: app only | full: full dropbox"}, TMP_77._s = self, TMP_77), $a).call($c);}, TMP_75._s = self, TMP_75), $a).call($b, "scope", "string");
+        ($a = ($c = command).$add_parameter, $a._p = (TMP_78 = function(parameter){var self = TMP_78._s || this, $a, $b, TMP_79, $c, TMP_80;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_73 = function(){var self = TMP_73._s || this;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_79 = function(){var self = TMP_79._s || this;
 
-          return "/"}, TMP_73._s = self, TMP_73), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_74 = function(){var self = TMP_74._s || this;
+          return "/"}, TMP_79._s = self, TMP_79), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_80 = function(){var self = TMP_80._s || this;
 
-          return "path to set in dropbox"}, TMP_74._s = self, TMP_74), $a).call($c);}, TMP_72._s = self, TMP_72), $a).call($c, "path", "string");
-        ($a = ($d = command).$set_help, $a._p = (TMP_75 = function(){var self = TMP_75._s || this;
+          return "path to set in dropbox"}, TMP_80._s = self, TMP_80), $a).call($c);}, TMP_78._s = self, TMP_78), $a).call($c, "path", "string");
+        ($a = ($d = command).$set_help, $a._p = (TMP_81 = function(){var self = TMP_81._s || this;
 
-        return "dropbox login for " + (command.$parameter_help(0))}, TMP_75._s = self, TMP_75), $a).call($d);
-        ($a = ($e = command).$as_action, $a._p = (TMP_76 = function(args){var self = TMP_76._s || this, $a, $b, $c, TMP_77, $case = nil;
+        return "dropbox login for " + (command.$parameter_help(0))}, TMP_81._s = self, TMP_81), $a).call($d);
+        ($a = ($e = command).$as_action, $a._p = (TMP_82 = function(args){var self = TMP_82._s || this, $a, $b, $c, TMP_83, $case = nil;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
@@ -18915,66 +19209,66 @@ if (args == null) args = nil;
           self.dropboxpath = args['$[]']("path");}else if ("app"['$===']($case)) {self.dropboxclient = (($a = ((($b = ((($c = $scope.Opal) == null ? $opal.cm('Opal') : $c))._scope).DropboxJs == null ? $b.cm('DropboxJs') : $b.DropboxJs))._scope).Client == null ? $a.cm('Client') : $a.Client).$new("xr3zna7wrp75zax");
           self.dropboxclient['$app_name=']("App folder only");
           self.dropboxpath = args['$[]']("path");}else {$gvars.log.$error("select app | full")};
-          return ($a = ($b = self.dropboxclient.$authenticate()).$then, $a._p = (TMP_77 = function(){var self = TMP_77._s || this;
+          return ($a = ($b = self.dropboxclient.$authenticate()).$then, $a._p = (TMP_83 = function(){var self = TMP_83._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
             if (self.dropboxpath == null) self.dropboxpath = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
           self.$set_status($hash2(["dropbox"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath)}));
-            return $gvars.log.$message("logged in at dropbox with " + (args['$[]']("scope")) + " access");}, TMP_77._s = self, TMP_77), $a).call($b);}, TMP_76._s = self, TMP_76), $a).call($e);
-        return ($a = ($f = command).$as_inverse, $a._p = (TMP_78 = function(args){var self = TMP_78._s || this;
+            return $gvars.log.$message("logged in at dropbox with " + (args['$[]']("scope")) + " access");}, TMP_83._s = self, TMP_83), $a).call($b);}, TMP_82._s = self, TMP_82), $a).call($e);
+        return ($a = ($f = command).$as_inverse, $a._p = (TMP_84 = function(args){var self = TMP_84._s || this;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
         self.$set_status($hash2(["dropbox"], {"dropbox": "logged out"}));
           $gvars.log.$message("logged out from dropbox");
-          return self.dropboxclient = nil;}, TMP_78._s = self, TMP_78), $a).call($f);}, TMP_68._s = self, TMP_68), $a).call($b, "dlogin");
-      ($a = ($c = self.commands).$add_command, $a._p = (TMP_79 = function(command){var self = TMP_79._s || this, $a, $b, TMP_80, $c, TMP_83, $d, TMP_84;
+          return self.dropboxclient = nil;}, TMP_84._s = self, TMP_84), $a).call($f);}, TMP_74._s = self, TMP_74), $a).call($b, "dlogin");
+      ($a = ($c = self.commands).$add_command, $a._p = (TMP_85 = function(command){var self = TMP_85._s || this, $a, $b, TMP_86, $c, TMP_89, $d, TMP_90;
 if (command == null) command = nil;
       command['$undoable='](false);
-        ($a = ($b = command).$add_parameter, $a._p = (TMP_80 = function(parameter){var self = TMP_80._s || this, $a, $b, TMP_81, $c, TMP_82;
+        ($a = ($b = command).$add_parameter, $a._p = (TMP_86 = function(parameter){var self = TMP_86._s || this, $a, $b, TMP_87, $c, TMP_88;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_81 = function(){var self = TMP_81._s || this, $a;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_87 = function(){var self = TMP_87._s || this, $a;
             if (self.dropboxpath == null) self.dropboxpath = nil;
 
-          return ((($a = self.dropboxpath) !== false && $a !== nil) ? $a : "/")}, TMP_81._s = self, TMP_81), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_82 = function(){var self = TMP_82._s || this;
+          return ((($a = self.dropboxpath) !== false && $a !== nil) ? $a : "/")}, TMP_87._s = self, TMP_87), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_88 = function(){var self = TMP_88._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 
-          return "path in dropbox " + (self.dropboxclient.$app_name())}, TMP_82._s = self, TMP_82), $a).call($c);}, TMP_80._s = self, TMP_80), $a).call($b, "path", "string");
-        ($a = ($c = command).$set_help, $a._p = (TMP_83 = function(){var self = TMP_83._s || this;
+          return "path in dropbox " + (self.dropboxclient.$app_name())}, TMP_88._s = self, TMP_88), $a).call($c);}, TMP_86._s = self, TMP_86), $a).call($b, "path", "string");
+        ($a = ($c = command).$set_help, $a._p = (TMP_89 = function(){var self = TMP_89._s || this;
 
-        return "list files in " + (command.$parameter_help(0))}, TMP_83._s = self, TMP_83), $a).call($c);
-        return ($a = ($d = command).$as_action, $a._p = (TMP_84 = function(args){var self = TMP_84._s || this, $a, $b, TMP_85, $c, $d, TMP_87, rootpath = nil;
+        return "list files in " + (command.$parameter_help(0))}, TMP_89._s = self, TMP_89), $a).call($c);
+        return ($a = ($d = command).$as_action, $a._p = (TMP_90 = function(args){var self = TMP_90._s || this, $a, $b, TMP_91, $c, $d, TMP_93, rootpath = nil;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
         rootpath = args['$[]']("path");
           $gvars.log.$message("" + (self.dropboxclient.$app_name()) + ": " + (args['$[]']("path")) + ":");
-          return ($a = ($b = ($c = ($d = self.dropboxclient.$authenticate()).$then, $c._p = (TMP_87 = function(){var self = TMP_87._s || this;
+          return ($a = ($b = ($c = ($d = self.dropboxclient.$authenticate()).$then, $c._p = (TMP_93 = function(){var self = TMP_93._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 
-          return self.dropboxclient.$read_dir(rootpath)}, TMP_87._s = self, TMP_87), $c).call($d)).$then, $a._p = (TMP_85 = function(entries){var self = TMP_85._s || this, $a, $b, TMP_86;
+          return self.dropboxclient.$read_dir(rootpath)}, TMP_93._s = self, TMP_93), $c).call($d)).$then, $a._p = (TMP_91 = function(entries){var self = TMP_91._s || this, $a, $b, TMP_92;
             if ($gvars.log == null) $gvars.log = nil;
 if (entries == null) entries = nil;
-          return $gvars.log.$message("<pre>"['$+'](($a = ($b = entries).$select, $a._p = (TMP_86 = function(entry){var self = TMP_86._s || this;
+          return $gvars.log.$message("<pre>"['$+'](($a = ($b = entries).$select, $a._p = (TMP_92 = function(entry){var self = TMP_92._s || this;
 if (entry == null) entry = nil;
-            return entry['$=~'](/\.abc$/)}, TMP_86._s = self, TMP_86), $a).call($b).$join("\n").$to_s())['$+']("</pre>"))}, TMP_85._s = self, TMP_85), $a).call($b);}, TMP_84._s = self, TMP_84), $a).call($d);}, TMP_79._s = self, TMP_79), $a).call($c, "dls");
-      ($a = ($d = self.commands).$add_command, $a._p = (TMP_88 = function(command){var self = TMP_88._s || this, $a, $b, TMP_89, $c, TMP_92, $d, TMP_93, $e, TMP_94;
+            return entry['$=~'](/\.abc$/)}, TMP_92._s = self, TMP_92), $a).call($b).$join("\n").$to_s())['$+']("</pre>"))}, TMP_91._s = self, TMP_91), $a).call($b);}, TMP_90._s = self, TMP_90), $a).call($d);}, TMP_85._s = self, TMP_85), $a).call($c, "dls");
+      ($a = ($d = self.commands).$add_command, $a._p = (TMP_94 = function(command){var self = TMP_94._s || this, $a, $b, TMP_95, $c, TMP_98, $d, TMP_99, $e, TMP_100;
 if (command == null) command = nil;
-      ($a = ($b = command).$add_parameter, $a._p = (TMP_89 = function(parameter){var self = TMP_89._s || this, $a, $b, TMP_90, $c, TMP_91;
+      ($a = ($b = command).$add_parameter, $a._p = (TMP_95 = function(parameter){var self = TMP_95._s || this, $a, $b, TMP_96, $c, TMP_97;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_90 = function(){var self = TMP_90._s || this;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_96 = function(){var self = TMP_96._s || this;
             if (self.dropboxpath == null) self.dropboxpath = nil;
 
-          return self.dropboxpath}, TMP_90._s = self, TMP_90), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_91 = function(){var self = TMP_91._s || this;
+          return self.dropboxpath}, TMP_96._s = self, TMP_96), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_97 = function(){var self = TMP_97._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 
-          return "path in dropbox " + (self.dropboxclient.$app_name())}, TMP_91._s = self, TMP_91), $a).call($c);}, TMP_89._s = self, TMP_89), $a).call($b, "path", "string");
-        ($a = ($c = command).$set_help, $a._p = (TMP_92 = function(){var self = TMP_92._s || this;
+          return "path in dropbox " + (self.dropboxclient.$app_name())}, TMP_97._s = self, TMP_97), $a).call($c);}, TMP_95._s = self, TMP_95), $a).call($b, "path", "string");
+        ($a = ($c = command).$set_help, $a._p = (TMP_98 = function(){var self = TMP_98._s || this;
 
-        return "dropbox change dir to " + (command.$parameter_help(0))}, TMP_92._s = self, TMP_92), $a).call($c);
-        ($a = ($d = command).$as_action, $a._p = (TMP_93 = function(args){var self = TMP_93._s || this, rootpath = nil;
+        return "dropbox change dir to " + (command.$parameter_help(0))}, TMP_98._s = self, TMP_98), $a).call($c);
+        ($a = ($d = command).$as_action, $a._p = (TMP_99 = function(args){var self = TMP_99._s || this, rootpath = nil;
           if (self.dropboxpath == null) self.dropboxpath = nil;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if ($gvars.log == null) $gvars.log = nil;
@@ -18983,44 +19277,44 @@ if (args == null) args = nil;
           args['$[]=']("oldval", self.dropboxpath);
           self.dropboxpath = rootpath;
           self.$set_status($hash2(["dropbox"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath)}));
-          return $gvars.log.$message("dropbox path changed to " + (self.dropboxpath));}, TMP_93._s = self, TMP_93), $a).call($d);
-        return ($a = ($e = command).$as_inverse, $a._p = (TMP_94 = function(args){var self = TMP_94._s || this;
+          return $gvars.log.$message("dropbox path changed to " + (self.dropboxpath));}, TMP_99._s = self, TMP_99), $a).call($d);
+        return ($a = ($e = command).$as_inverse, $a._p = (TMP_100 = function(args){var self = TMP_100._s || this;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if (self.dropboxpath == null) self.dropboxpath = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
         self.dropboxpath = args['$[]']("oldval");
           self.$set_status($hash2(["dropbox"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath)}));
-          return $gvars.log.$message("dropbox path changed back to " + (self.dropboxpath));}, TMP_94._s = self, TMP_94), $a).call($e);}, TMP_88._s = self, TMP_88), $a).call($d, "dcd");
-      ($a = ($e = self.commands).$add_command, $a._p = (TMP_95 = function(command){var self = TMP_95._s || this, $a, $b, TMP_96, $c, TMP_97;
+          return $gvars.log.$message("dropbox path changed back to " + (self.dropboxpath));}, TMP_100._s = self, TMP_100), $a).call($e);}, TMP_94._s = self, TMP_94), $a).call($d, "dcd");
+      ($a = ($e = self.commands).$add_command, $a._p = (TMP_101 = function(command){var self = TMP_101._s || this, $a, $b, TMP_102, $c, TMP_103;
 if (command == null) command = nil;
       command['$undoable='](false);
-        ($a = ($b = command).$set_help, $a._p = (TMP_96 = function(){var self = TMP_96._s || this;
+        ($a = ($b = command).$set_help, $a._p = (TMP_102 = function(){var self = TMP_102._s || this;
 
-        return "show drobox path"}, TMP_96._s = self, TMP_96), $a).call($b);
-        return ($a = ($c = command).$as_action, $a._p = (TMP_97 = function(args){var self = TMP_97._s || this;
+        return "show drobox path"}, TMP_102._s = self, TMP_102), $a).call($b);
+        return ($a = ($c = command).$as_action, $a._p = (TMP_103 = function(args){var self = TMP_103._s || this;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if (self.dropboxpath == null) self.dropboxpath = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
-        return $gvars.log.$message("" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath))}, TMP_97._s = self, TMP_97), $a).call($c);}, TMP_95._s = self, TMP_95), $a).call($e, "dpwd");
-      ($a = ($f = self.commands).$add_command, $a._p = (TMP_98 = function(command){var self = TMP_98._s || this, $a, $b, TMP_99, $c, TMP_102, $d, TMP_103;
+        return $gvars.log.$message("" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath))}, TMP_103._s = self, TMP_103), $a).call($c);}, TMP_101._s = self, TMP_101), $a).call($e, "dpwd");
+      ($a = ($f = self.commands).$add_command, $a._p = (TMP_104 = function(command){var self = TMP_104._s || this, $a, $b, TMP_105, $c, TMP_108, $d, TMP_109;
 if (command == null) command = nil;
-      ($a = ($b = command).$add_parameter, $a._p = (TMP_99 = function(parameter){var self = TMP_99._s || this, $a, $b, TMP_100, $c, TMP_101;
+      ($a = ($b = command).$add_parameter, $a._p = (TMP_105 = function(parameter){var self = TMP_105._s || this, $a, $b, TMP_106, $c, TMP_107;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a._p = (TMP_100 = function(){var self = TMP_100._s || this;
+        ($a = ($b = parameter).$set_default, $a._p = (TMP_106 = function(){var self = TMP_106._s || this;
             if (self.dropboxpath == null) self.dropboxpath = nil;
 
-          return self.dropboxpath}, TMP_100._s = self, TMP_100), $a).call($b);
-          return ($a = ($c = parameter).$set_help, $a._p = (TMP_101 = function(){var self = TMP_101._s || this;
+          return self.dropboxpath}, TMP_106._s = self, TMP_106), $a).call($b);
+          return ($a = ($c = parameter).$set_help, $a._p = (TMP_107 = function(){var self = TMP_107._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 
-          return "path to save in " + (self.dropboxclient.$app_name())}, TMP_101._s = self, TMP_101), $a).call($c);}, TMP_99._s = self, TMP_99), $a).call($b, "path", "string");
+          return "path to save in " + (self.dropboxclient.$app_name())}, TMP_107._s = self, TMP_107), $a).call($c);}, TMP_105._s = self, TMP_105), $a).call($b, "path", "string");
         command['$undoable='](false);
-        ($a = ($c = command).$set_help, $a._p = (TMP_102 = function(){var self = TMP_102._s || this;
+        ($a = ($c = command).$set_help, $a._p = (TMP_108 = function(){var self = TMP_108._s || this;
 
-        return "save to dropbox {" + (command.$parameter_help(0)) + "}"}, TMP_102._s = self, TMP_102), $a).call($c);
-        return ($a = ($d = command).$as_action, $a._p = (TMP_103 = function(args){var self = TMP_103._s || this, $a, $b, TMP_104, $c, $d, TMP_105, $e, $f, TMP_106, abc_code = nil, metadata = nil, filebase = nil, print_variants = nil, rootpath = nil;
+        return "save to dropbox {" + (command.$parameter_help(0)) + "}"}, TMP_108._s = self, TMP_108), $a).call($c);
+        return ($a = ($d = command).$as_action, $a._p = (TMP_109 = function(args){var self = TMP_109._s || this, $a, $b, TMP_110, $c, $d, TMP_111, $e, $f, TMP_112, abc_code = nil, metadata = nil, filebase = nil, print_variants = nil, rootpath = nil;
           if (self.editor == null) self.editor = nil;
           if (self.abc_transformer == null) self.abc_transformer = nil;
           if (self.song == null) self.song = nil;
@@ -19040,47 +19334,47 @@ if (args == null) args = nil;
           self.$render_previews();
           print_variants = self.song.$harpnote_options()['$[]']("print");
           rootpath = args['$[]']("path");
-          return ($a = ($b = ($c = ($d = ($e = ($f = self.dropboxclient.$authenticate()).$then, $e._p = (TMP_106 = function(){var self = TMP_106._s || this, $a, $b, TMP_107, $c, TMP_108, save_promises = nil, pdfs = nil;
+          return ($a = ($b = ($c = ($d = ($e = ($f = self.dropboxclient.$authenticate()).$then, $e._p = (TMP_112 = function(){var self = TMP_112._s || this, $a, $b, TMP_113, $c, TMP_114, save_promises = nil, pdfs = nil;
             if (self.dropboxclient == null) self.dropboxclient = nil;
             if (self.editor == null) self.editor = nil;
 
           save_promises = [self.dropboxclient.$write_file("" + (rootpath) + (filebase) + ".abc", self.editor.$get_text())];
             pdfs = $hash2([], {});
-            ($a = ($b = print_variants.$each_with_index()).$map, $a._p = (TMP_107 = function(print_variant, index){var self = TMP_107._s || this, filename = nil;
+            ($a = ($b = print_variants.$each_with_index()).$map, $a._p = (TMP_113 = function(print_variant, index){var self = TMP_113._s || this, filename = nil;
 if (print_variant == null) print_variant = nil;if (index == null) index = nil;
             filename = print_variant['$[]']("title").$gsub(/[^a-zA-Z0-9\-\_]/, "_");
               pdfs['$[]=']("" + (rootpath) + (filebase) + "_" + (print_variant['$[]']("title")) + "_a3.pdf", self.$render_a3(index).$output("blob"));
-              return pdfs['$[]=']("" + (rootpath) + (filebase) + "_" + (print_variant['$[]']("title")) + "_a4.pdf", self.$render_a4(index).$output("blob"));}, TMP_107._s = self, TMP_107), $a).call($b);
-            ($a = ($c = pdfs).$each, $a._p = (TMP_108 = function(name, pdfdata){var self = TMP_108._s || this;
+              return pdfs['$[]=']("" + (rootpath) + (filebase) + "_" + (print_variant['$[]']("title")) + "_a4.pdf", self.$render_a4(index).$output("blob"));}, TMP_113._s = self, TMP_113), $a).call($b);
+            ($a = ($c = pdfs).$each, $a._p = (TMP_114 = function(name, pdfdata){var self = TMP_114._s || this;
               if (self.dropboxclient == null) self.dropboxclient = nil;
 if (name == null) name = nil;if (pdfdata == null) pdfdata = nil;
-            return save_promises.$push(self.dropboxclient.$write_file(name, pdfdata))}, TMP_108._s = self, TMP_108), $a).call($c);
+            return save_promises.$push(self.dropboxclient.$write_file(name, pdfdata))}, TMP_114._s = self, TMP_114), $a).call($c);
             save_promises.$push(self.dropboxclient.$write_file("" + (rootpath) + (filebase) + ".abc", self.editor.$get_text()));
-            return (($a = $scope.Promise) == null ? $opal.cm('Promise') : $a).$when(save_promises);}, TMP_106._s = self, TMP_106), $e).call($f)).$then, $c._p = (TMP_105 = function(){var self = TMP_105._s || this;
+            return (($a = $scope.Promise) == null ? $opal.cm('Promise') : $a).$when(save_promises);}, TMP_112._s = self, TMP_112), $e).call($f)).$then, $c._p = (TMP_111 = function(){var self = TMP_111._s || this;
             if ($gvars.log == null) $gvars.log = nil;
 
           self.$set_status($hash2(["song"], {"song": "saved to dropbox"}));
-            return $gvars.log.$message("all files saved");}, TMP_105._s = self, TMP_105), $c).call($d)).$fail, $a._p = (TMP_104 = function(err){var self = TMP_104._s || this;
+            return $gvars.log.$message("all files saved");}, TMP_111._s = self, TMP_111), $c).call($d)).$fail, $a._p = (TMP_110 = function(err){var self = TMP_110._s || this;
             if ($gvars.log == null) $gvars.log = nil;
 if (err == null) err = nil;
-          return $gvars.log.$error("there was an error saving files " + (err))}, TMP_104._s = self, TMP_104), $a).call($b);}, TMP_103._s = self, TMP_103), $a).call($d);}, TMP_98._s = self, TMP_98), $a).call($f, "dsave");
-      ($a = ($g = self.commands).$add_command, $a._p = (TMP_109 = function(command){var self = TMP_109._s || this, $a, $b, TMP_110, $c, TMP_113, $d, TMP_114, $e, TMP_120;
+          return $gvars.log.$error("there was an error saving files " + (err))}, TMP_110._s = self, TMP_110), $a).call($b);}, TMP_109._s = self, TMP_109), $a).call($d);}, TMP_104._s = self, TMP_104), $a).call($f, "dsave");
+      return ($a = ($g = self.commands).$add_command, $a._p = (TMP_115 = function(command){var self = TMP_115._s || this, $a, $b, TMP_116, $c, TMP_119, $d, TMP_120, $e, TMP_126;
 if (command == null) command = nil;
       command.$add_parameter("fileid", "string", "file id");
-        ($a = ($b = command).$add_parameter, $a._p = (TMP_110 = function(p){var self = TMP_110._s || this, $a, $b, TMP_111, $c, TMP_112;
+        ($a = ($b = command).$add_parameter, $a._p = (TMP_116 = function(p){var self = TMP_116._s || this, $a, $b, TMP_117, $c, TMP_118;
 if (p == null) p = nil;
-        ($a = ($b = p).$set_default, $a._p = (TMP_111 = function(){var self = TMP_111._s || this;
+        ($a = ($b = p).$set_default, $a._p = (TMP_117 = function(){var self = TMP_117._s || this;
             if (self.dropboxpath == null) self.dropboxpath = nil;
 
-          return self.dropboxpath}, TMP_111._s = self, TMP_111), $a).call($b);
-          return ($a = ($c = p).$set_help, $a._p = (TMP_112 = function(){var self = TMP_112._s || this;
+          return self.dropboxpath}, TMP_117._s = self, TMP_117), $a).call($b);
+          return ($a = ($c = p).$set_help, $a._p = (TMP_118 = function(){var self = TMP_118._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 
-          return "path to save in " + (self.dropboxclient.$app_name())}, TMP_112._s = self, TMP_112), $a).call($c);}, TMP_110._s = self, TMP_110), $a).call($b, "path", "string");
-        ($a = ($c = command).$set_help, $a._p = (TMP_113 = function(){var self = TMP_113._s || this;
+          return "path to save in " + (self.dropboxclient.$app_name())}, TMP_118._s = self, TMP_118), $a).call($c);}, TMP_116._s = self, TMP_116), $a).call($b, "path", "string");
+        ($a = ($c = command).$set_help, $a._p = (TMP_119 = function(){var self = TMP_119._s || this;
 
-        return "read file with " + (command.$parameter_help(0)) + ", from dropbox " + (command.$parameter_help(1))}, TMP_113._s = self, TMP_113), $a).call($c);
-        ($a = ($d = command).$as_action, $a._p = (TMP_114 = function(args){var self = TMP_114._s || this, $a, $b, TMP_115, $c, $d, TMP_116, $e, $f, TMP_117, $g, $h, TMP_119, fileid = nil, rootpath = nil;
+        return "read file with " + (command.$parameter_help(0)) + ", from dropbox " + (command.$parameter_help(1))}, TMP_119._s = self, TMP_119), $a).call($c);
+        ($a = ($d = command).$as_action, $a._p = (TMP_120 = function(args){var self = TMP_120._s || this, $a, $b, TMP_121, $c, $d, TMP_122, $e, $f, TMP_123, $g, $h, TMP_125, fileid = nil, rootpath = nil;
           if (self.editor == null) self.editor = nil;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if ($gvars.log == null) $gvars.log = nil;
@@ -19089,18 +19383,18 @@ if (args == null) args = nil;
           fileid = args['$[]']("fileid");
           rootpath = args['$[]']("path");
           $gvars.log.$message("get from Dropbox path " + (rootpath) + (fileid) + "_ ...:");
-          return ($a = ($b = ($c = ($d = ($e = ($f = ($g = ($h = self.dropboxclient.$authenticate()).$then, $g._p = (TMP_119 = function(error, data){var self = TMP_119._s || this;
+          return ($a = ($b = ($c = ($d = ($e = ($f = ($g = ($h = self.dropboxclient.$authenticate()).$then, $g._p = (TMP_125 = function(error, data){var self = TMP_125._s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
 if (error == null) error = nil;if (data == null) data = nil;
-          return self.dropboxclient.$read_dir(rootpath)}, TMP_119._s = self, TMP_119), $g).call($h)).$then, $e._p = (TMP_117 = function(entries){var self = TMP_117._s || this, $a, $b, TMP_118;
+          return self.dropboxclient.$read_dir(rootpath)}, TMP_125._s = self, TMP_125), $g).call($h)).$then, $e._p = (TMP_123 = function(entries){var self = TMP_123._s || this, $a, $b, TMP_124;
             if (self.dropboxclient == null) self.dropboxclient = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (entries == null) entries = nil;
           $gvars.log.$debug(entries);
-            fileid = ($a = ($b = entries).$select, $a._p = (TMP_118 = function(entry){var self = TMP_118._s || this;
+            fileid = ($a = ($b = entries).$select, $a._p = (TMP_124 = function(entry){var self = TMP_124._s || this;
 if (entry == null) entry = nil;
-            return entry['$=~']((new RegExp("" + fileid + "_.*\\.abc$")))}, TMP_118._s = self, TMP_118), $a).call($b).$first();
-            return self.dropboxclient.$read_file("" + (rootpath) + (fileid));}, TMP_117._s = self, TMP_117), $e).call($f)).$then, $c._p = (TMP_116 = function(abc_text){var self = TMP_116._s || this, filebase = nil;
+            return entry['$=~']((new RegExp("" + fileid + "_.*\\.abc$")))}, TMP_124._s = self, TMP_124), $a).call($b).$first();
+            return self.dropboxclient.$read_file("" + (rootpath) + (fileid));}, TMP_123._s = self, TMP_123), $e).call($f)).$then, $c._p = (TMP_122 = function(abc_text){var self = TMP_122._s || this, filebase = nil;
             if (self.abc_transformer == null) self.abc_transformer = nil;
             if (self.editor == null) self.editor = nil;
             if ($gvars.log == null) $gvars.log = nil;
@@ -19109,34 +19403,14 @@ if (abc_text == null) abc_text = nil;
             filebase = fileid.$split(".abc")['$[]']($range(0, -1, false)).$join(".abc");
             abc_text = self.abc_transformer.$add_metadata(abc_text, $hash2(["F"], {"F": filebase}));
             self.editor.$set_text(abc_text);
-            return self.$set_status($hash2(["song"], {"song": "loaded"}));}, TMP_116._s = self, TMP_116), $c).call($d)).$fail, $a._p = (TMP_115 = function(err){var self = TMP_115._s || this;
+            return self.$set_status($hash2(["song"], {"song": "loaded"}));}, TMP_122._s = self, TMP_122), $c).call($d)).$fail, $a._p = (TMP_121 = function(err){var self = TMP_121._s || this;
             if ($gvars.log == null) $gvars.log = nil;
 if (err == null) err = nil;
-          return $gvars.log.$error("could not load file " + (err))}, TMP_115._s = self, TMP_115), $a).call($b);}, TMP_114._s = self, TMP_114), $a).call($d);
-        return ($a = ($e = command).$as_inverse, $a._p = (TMP_120 = function(args){var self = TMP_120._s || this;
+          return $gvars.log.$error("could not load file " + (err))}, TMP_121._s = self, TMP_121), $a).call($b);}, TMP_120._s = self, TMP_120), $a).call($d);
+        return ($a = ($e = command).$as_inverse, $a._p = (TMP_126 = function(args){var self = TMP_126._s || this;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
-        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_120._s = self, TMP_120), $a).call($e);}, TMP_109._s = self, TMP_109), $a).call($g, "dopen");
-      return ($a = ($h = self.commands).$add_command, $a._p = (TMP_121 = function(command){var self = TMP_121._s || this, $a, $b, TMP_122, $c, TMP_125, $d, TMP_126;
-if (command == null) command = nil;
-      ($a = ($b = command).$add_parameter, $a._p = (TMP_122 = function(p){var self = TMP_122._s || this, $a, $b, TMP_123, $c, TMP_124;
-if (p == null) p = nil;
-        ($a = ($b = p).$set_default, $a._p = (TMP_123 = function(){var self = TMP_123._s || this;
-            if (self.systemstatus == null) self.systemstatus = nil;
-
-          return self.systemstatus['$[]']("view")}, TMP_123._s = self, TMP_123), $a).call($b);
-          return ($a = ($c = p).$set_help, $a._p = (TMP_124 = function(){var self = TMP_124._s || this;
-            if (self.systemstatus == null) self.systemstatus = nil;
-
-          return "id of the view to be used for preview [" + (self.systemstatus['$[]']("view")) + "]"}, TMP_124._s = self, TMP_124), $a).call($c);}, TMP_122._s = self, TMP_122), $a).call($b, "view", "integer");
-        ($a = ($c = command).$set_help, $a._p = (TMP_125 = function(){var self = TMP_125._s || this;
-
-        return "set current view  " + (command.$parameter_help(0)) + " and redisplay"}, TMP_125._s = self, TMP_125), $a).call($c);
-        command['$undoable='](false);
-        return ($a = ($d = command).$as_action, $a._p = (TMP_126 = function(args){var self = TMP_126._s || this;
-if (args == null) args = nil;
-        self.$set_status($hash2(["view"], {"view": args['$[]']("view").$to_i()}));
-          return self.$render_previews();}, TMP_126._s = self, TMP_126), $a).call($d);}, TMP_121._s = self, TMP_121), $a).call($h, "view");
+        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_126._s = self, TMP_126), $a).call($e);}, TMP_115._s = self, TMP_115), $a).call($g, "dopen");
     }, nil) && '__ic_05_dropbox_commands';
   })(self, null)
 })(Opal);
@@ -20082,6 +20356,7 @@ if (c == null) c = nil;
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice;
 
   $opal.add_stubs(['$puts']);
+  ;
   ;
   ;
   ;

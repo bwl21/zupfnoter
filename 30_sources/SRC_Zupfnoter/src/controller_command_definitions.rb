@@ -15,6 +15,24 @@ class Controller
       end
     end
 
+    @commands.add_command(:view) do |command|
+
+      command.add_parameter(:view, :integer) do |p|
+        p.set_default { @systemstatus[:view] }
+        p.set_help { "id of the view to be used for preview [#{@systemstatus[:view]}]" }
+      end
+
+      command.set_help { "set current view  #{command.parameter_help(0)} and redisplay" }
+
+      command.undoable = false
+
+      command.as_action do |args|
+        set_status(view: args[:view].to_i)
+        render_previews
+      end
+    end
+
+
     @commands.add_command(:loglevel) do |c|
       c.undoable = false
       c.set_help { "set log level to #{c.parameter_help(0)}" }
@@ -440,23 +458,6 @@ V:T2 clef=treble-8  name="Alt" snm="A"
         @editor.set_text(args[:oldval])
       end
 
-    end
-
-    @commands.add_command(:view) do |command|
-
-      command.add_parameter(:view, :integer) do |p|
-        p.set_default { @systemstatus[:view] }
-        p.set_help { "id of the view to be used for preview [#{@systemstatus[:view]}]" }
-      end
-
-      command.set_help { "set current view  #{command.parameter_help(0)} and redisplay" }
-
-      command.undoable = false
-
-      command.as_action do |args|
-        set_status(view: args[:view].to_i)
-        render_previews
-      end
     end
 
 

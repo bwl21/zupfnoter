@@ -864,7 +864,7 @@ module Harpnotes
       # distance between two strings of the harp
       X_SPACING = 115.0 / 10.0
 
-      # Y coordinate of the very first beat
+      # X coordinate of the very first beat
       X_OFFSET = ELLIPSE_SIZE.first
 
       Y_SCALE = 4 # 4 mm per minimal
@@ -913,20 +913,21 @@ module Harpnotes
           :d1 => [0.05, :filled, FALSE], # 1/64
       }
 
-      REST_TO_GLYPH = {# this basically determines the white background rectangel
-                       :err => [[2, 2], :rest_1, FALSE], # 1      1
-                       :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
-                       :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
-                       :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
-                       :d24 => [[0.4, 0.7], :rest_4, TRUE], # 1/4 *
-                       :d16 => [[0.4, 0.7], :rest_4, FALSE], # 1/4
-                       :d12 => [[0.3, 0.5], :rest_8, TRUE], # 1/8 *
-                       :d8 => [[0.3, 0.5], :rest_8, FALSE], # 1/8
-                       :d6 => [[0.3, 0.4], :rest_16, TRUE], # 1/16 *
-                       :d4 => [[0.3, 0.5], :rest_16, FALSE], # 1/16
-                       :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
-                       :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
-                       :d1 => [[0.3, 0.5], :rest_64, FALSE], # 1/64
+      REST_TO_GLYPH = {
+          # this basically determines the white background rectangel
+          :err => [[2, 2], :rest_1, FALSE], # 1      1
+          :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
+          :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
+          :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
+          :d24 => [[0.4, 0.7], :rest_4, TRUE], # 1/4 *
+          :d16 => [[0.4, 0.7], :rest_4, FALSE], # 1/4
+          :d12 => [[0.3, 0.5], :rest_8, TRUE], # 1/8 *
+          :d8 => [[0.3, 0.5], :rest_8, FALSE], # 1/8
+          :d6 => [[0.3, 0.4], :rest_16, TRUE], # 1/16 *
+          :d4 => [[0.3, 0.5], :rest_16, FALSE], # 1/16
+          :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
+          :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
+          :d1 => [[0.3, 0.5], :rest_64, FALSE], # 1/64
       }
 
       def initialize
@@ -1561,8 +1562,8 @@ module Harpnotes
         cpmm1 = (cpm1 + cpmm)/2
         cpmm2 = (cpm2 + cpmm)/2
         annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
-        annotation_anchor = annotation_anchor + [0,-4] # literal corection since now reference point is top of line
-                                                       # todo: make position configurable
+        annotation_anchor = annotation_anchor + [0, -4] # literal corection since now reference point is top of line
+        # todo: make position configurable
 
         # todo make the drawing more fancy
         slurpath = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]

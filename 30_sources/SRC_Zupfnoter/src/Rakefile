@@ -98,14 +98,14 @@ task :buildDesktop => [:build] do
 
   sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
 
+  copy(ZUPFNOTER_JS, zupfnoter_compressedjs_filename)
   Dir["../vendor/*.*"].each { |f|
     copy(f, "#{desktop_stage}/vendor/#{f}")
   }
 
   cp("../public/index.css", "#{desktop_stage}/public/index.css")
   cp("../vendor/ace/ace.js", "#{desktop_stage}/vendor/ace/ace.js")
-  cp("package.json", "#{desktop_stage}/package.json")
-  cp(PACKAGE_JSON, "package.json")
+  cp(PACKAGE_JSON, "#{desktop_stage}/package.json")
 
   cd desktop_stage do
     sh "zip -r ../zupfnoter.nw *"

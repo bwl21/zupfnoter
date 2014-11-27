@@ -15,6 +15,7 @@
     require 'pdf_engine'
     require 'command-controller'
     require 'controller'
+    require 'controller-nw'
     require 'controller_command_definitions'
     require 'harpnote_player'
     require 'text_pane'

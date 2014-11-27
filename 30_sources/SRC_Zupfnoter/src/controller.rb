@@ -113,6 +113,7 @@ class Controller
     load_from_loacalstorage
     render_previews
 
+    setup_nodewebkit
     # now trigger the interactive UI
     setup_ui_listener
   end
@@ -333,6 +334,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       select_abc_object(abcelement)
     end
   end
+
 
   def setup_ui_listener
 

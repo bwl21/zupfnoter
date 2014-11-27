@@ -87,7 +87,7 @@ module Harpnotes
             self.inst.schedule(note.delay + note.duration, function(){self.inst._trigger("noteoff", note);});
            }
           end
-          @isplaying = true
+            @isplaying = true
         else
           $log.warn("nothing selected to play")
         end
@@ -144,7 +144,7 @@ module Harpnotes
             velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
             to_play = {
                 delay: root.beat * @beat_timefactor,
-                pitch: -root.pitch,   # todo: why -
+                pitch: -root.pitch, # todo: why -
                 duration: root.duration * @duration_timefactor, # todo: do we need to adjust triplets?
                 velocity: 0.2,
                 velocity: velocity,
