@@ -141,7 +141,7 @@ The specific conventions in detail are as follows:
 
 # Licencse
 
-This software is licensed under dual license MIT and Commercial
+This software is licensed under dual license GPL and Commercial
 
 # Open issues
 
