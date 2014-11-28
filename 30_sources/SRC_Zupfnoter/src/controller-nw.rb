@@ -56,7 +56,7 @@ class Controller
 
           var filename = $(this).val();
           #{f = `filename`.gsub("\\", "\\\\")
-            @commands.run_string(%Q{_fopen "#{f}"}) }
+            handle_command(%Q{_fopen "#{f}"}) }
           // Reset the selected value to empty ('')
           $(this).val('');
         });
@@ -78,7 +78,7 @@ class Controller
           #{f = `filename`
             set_status({nwworkingdir: f})
             f = f.gsub("\\", "\\\\")
-            @commands.run_string(%Q{_fsave "#{f}"})
+            handle_command(%Q{_fsave "#{f}"})
            }
 
           // Reset the selected value to empty ('')
@@ -114,7 +114,7 @@ class Controller
           icon: 'public/menuicons/play-26.png',
 
           click: function () {
-            #{@commands.run_string('p all')}
+            #{handle_command('p all')}
           }
         }));
 
@@ -122,7 +122,7 @@ class Controller
           label: 'play from here',
           icon: 'public/menuicons/last-26.png',
           click: function () {
-            #{@commands.run_string('p ff')}
+            #{handle_command('p ff')}
           }
         }));
 
@@ -130,7 +130,7 @@ class Controller
           label: 'play selection',
           icon: 'public/menuicons/music_transcripts-26.png',
           click: function () {
-            #{@commands.run_string('p sel')}
+            #{handle_command('p sel')}
           }
         }));
 
@@ -140,7 +140,7 @@ class Controller
           icon: 'public/menuicons/0-26.png',
 
           click: function () {
-            #{@commands.run_string('view 0')}
+            #{handle_command('view 0')}
           }
         }));
 
@@ -148,7 +148,7 @@ class Controller
           label: 'set extract 1',
           icon: 'public/menuicons/1-26.png',
           click: function () {
-            #{@commands.run_string('view 1')}
+            #{handle_command('view 1')}
           }
         }));
 
@@ -156,14 +156,14 @@ class Controller
           label: 'set extract 2',
           icon: 'public/menuicons/2-26.png',
           click: function () {
-            #{@commands.run_string('view 2')}
+            #{handle_command('view 2')}
           }
         }));
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 3',
           icon: 'public/menuicons/3-26.png',
           click: function () {
-            #{@commands.run_string('view 3')}
+            #{handle_command('view 3')}
           }
         }));
 
@@ -253,11 +253,13 @@ class Controller
 
       command.as_action do |args|
 
-        args[:oldval] = @editor.get_text
+        args[:oldval] = {text: @editor.get_text, nwworkdir: @systemstatus[:nwworkingdir]}
         rootpath = args[:path] # command_tokens[2] || @dropboxpath || "/"
         begin
           `var fs = require('fs')`
           text = `fs.readFileSync(#{rootpath}).toString();`
+          nwdir = rootpath.match(/(.*)([\/\\].+)/)[1]
+          set_status({nwworkingdir: nwdir})
           $log.info("opened #{rootpath}")
           #{$log.info(`text`)};
           @editor.set_text(text)
@@ -269,7 +271,8 @@ class Controller
 
       command.as_inverse do |args|
         # todo maintain editor status
-        @editor.set_text(args[:oldval])
+        set_status({nwworkdir: args[:oldval][:nwworkingdir]})
+        @editor.set_text(args[:oldval][:text])
       end
 
     end

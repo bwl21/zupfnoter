@@ -305,7 +305,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
   def set_status(status)
     @systemstatus.merge!(status)
-    statusmessage = @systemstatus.inject([]) { |r, v| r.push "#{v.first}: #{v.last}  "; r }.join(" | ")
+    to_hide = [:nwworkingdir]
+    statusmessage = @systemstatus.inject([]) { |r, v|
+      r.push "#{v.first}: #{v.last}  " unless to_hide.include?(v.first)
+      r
+    }.join(" | ")
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
     Element.find("#tbStatus").html(statusmessage)

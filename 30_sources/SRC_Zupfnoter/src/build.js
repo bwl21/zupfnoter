@@ -18082,7 +18082,7 @@ if (p == null) p = nil;
 (function($opal) {
   var $a, $b, TMP_22, $c, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $hash2 = $opal.hash2, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_nodewebkit', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$backtrace', '$debug', '$set_inactive', '$load_song', '$send_remote_command', '$setup_tune_preview', '$set_active', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$-', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$join', '$inject', '$push', '$first', '$last', '$to_s', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$width', '$on', '$play_abc', '$on_change', '$===', '$on_selection_change', '$get_selection_positions', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$prevent_default', '$save_file', '$key', '$newValue', '$systemstatus', '$prevent', '$css', '$page_x', '$ready?']);
+  $opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_nodewebkit', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$backtrace', '$debug', '$set_inactive', '$load_song', '$send_remote_command', '$setup_tune_preview', '$set_active', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$transform', '$layout', '$-', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$join', '$inject', '$first', '$push', '$last', '$to_s', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$width', '$on', '$play_abc', '$on_change', '$===', '$on_selection_change', '$get_selection_positions', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$prevent_default', '$save_file', '$key', '$newValue', '$systemstatus', '$prevent', '$css', '$page_x', '$ready?']);
   (function($base, $super) {
     function $LocalStore(){};
     var self = $LocalStore = $klass($base, $super, 'LocalStore', $LocalStore);
@@ -18438,15 +18438,19 @@ if (key == null) key = nil;if (_ == null) _ = nil;
     };
 
     def.$set_status = function(status) {
-      var $a, $b, TMP_5, self = this, statusmessage = nil;
+      var $a, $b, TMP_5, self = this, to_hide = nil, statusmessage = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       self.systemstatus['$merge!'](status);
-      statusmessage = ($a = ($b = self.systemstatus).$inject, $a._p = (TMP_5 = function(r, v){var self = TMP_5._s || this;
+      to_hide = ["nwworkingdir"];
+      statusmessage = ($a = ($b = self.systemstatus).$inject, $a._p = (TMP_5 = function(r, v){var self = TMP_5._s || this, $a;
 if (r == null) r = nil;if (v == null) v = nil;
-      r.$push("" + (v.$first()) + ": " + (v.$last()) + "  ");
+      if ((($a = to_hide['$include?'](v.$first())) !== nil && (!$a._isBoolean || $a == true))) {
+          } else {
+          r.$push("" + (v.$first()) + ": " + (v.$last()) + "  ")
+        };
         return r;}, TMP_5._s = self, TMP_5), $a).call($b, []).$join(" | ");
-      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (309));
+      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (313));
       if (self.systemstatus['$[]']("loglevel")['$==']($gvars.log.$loglevel())) {
         } else {
         $gvars.log['$loglevel=']((self.systemstatus['$[]']("loglevel")))
@@ -18471,7 +18475,7 @@ if (harpnote == null) harpnote = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       width = self.$Native((($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tunePreviewContainer").$width())['$-'](50);
-      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (330));
+      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (334));
       printerparams = $hash2(["staffwidth"], {"staffwidth": width});
       self.tune_preview_printer = (($a = ((($b = ((($c = $scope.ABCJS) == null ? $opal.cm('ABCJS') : $c))._scope).Write == null ? $b.cm('Write') : $b.Write))._scope).Printer == null ? $a.cm('Printer') : $a.Printer).$new("tunePreview", printerparams);
       return ($a = ($b = self.tune_preview_printer).$on_select, $a._p = (TMP_7 = function(abcelement){var self = TMP_7._s || this, a = nil;
@@ -18541,7 +18545,7 @@ if (e == null) e = nil;
       ($a = ($k = (($l = $scope.Element) == null ? $opal.cm('Element') : $l).$find(window)).$on, $a._p = (TMP_17 = function(evt){var self = TMP_17._s || this, $a;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
-      $gvars.log.$debug("key pressed (" + ("controller") + " " + (405) + ")");
+      $gvars.log.$debug("key pressed (" + ("controller") + " " + (409) + ")");
         console.log(event);
         if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();
@@ -18608,14 +18612,14 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$info', '$gsub', '$run_string', '$set_status', '$[]', '$render_previews', '$__ic_06_node_fs_commands', '$debug', '$message', '$join', '$backtrace', '$private', '$add_command', '$add_parameter', '$set_default', '$undoable=', '$set_help', '$parameter_help', '$as_action', '$get_text', '$get_metadata', '$to_s', '$first', '$split', '$raise', '$layout_harpnotes', '$harpnote_options', '$map', '$[]=', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$set_text', '$error', '$as_inverse']);
+  $opal.add_stubs(['$info', '$gsub', '$handle_command', '$set_status', '$[]', '$render_previews', '$__ic_06_node_fs_commands', '$debug', '$message', '$join', '$backtrace', '$private', '$add_command', '$add_parameter', '$set_default', '$undoable=', '$set_help', '$parameter_help', '$as_action', '$get_text', '$get_metadata', '$to_s', '$first', '$split', '$raise', '$layout_harpnotes', '$harpnote_options', '$map', '$[]=', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$match', '$set_text', '$error', '$as_inverse']);
   return (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
 
     var def = self._proto, $scope = self._scope;
 
-    def.commands = def.systemstatus = nil;
+    def.systemstatus = def.commands = nil;
     def.$setup_nodewebkit = function() {
       var $a, self = this, arg = nil, f = nil, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
@@ -18673,7 +18677,7 @@ if (e == null) e = nil;
 
           var filename = $(this).val();
           f = (filename).$gsub("\\", "\\\\")
-        self.commands.$run_string("_fopen \"" + (f) + "\"")
+        self.$handle_command("_fopen \"" + (f) + "\"")
           // Reset the selected value to empty ('')
           $(this).val('');
         });
@@ -18695,7 +18699,7 @@ if (e == null) e = nil;
           f = filename
         self.$set_status($hash2(["nwworkingdir"], {"nwworkingdir": f}))
         f = f.$gsub("\\", "\\\\")
-        self.commands.$run_string("_fsave \"" + (f) + "\"")
+        self.$handle_command("_fsave \"" + (f) + "\"")
 
           // Reset the selected value to empty ('')
           $(this).val('');
@@ -18705,7 +18709,6 @@ if (e == null) e = nil;
           label: 'save',
           icon: 'public/menuicons/save-26.png',
           click: function () {
-            alert(self.systemstatus['$[]']("nwworkingdir"));
             savechooser.attr("nwworkingdir", self.systemstatus['$[]']("nwworkingdir"));
             savechooser.trigger('click');
           }
@@ -18731,7 +18734,7 @@ if (e == null) e = nil;
           icon: 'public/menuicons/play-26.png',
 
           click: function () {
-            self.commands.$run_string("p all")
+            self.$handle_command("p all")
           }
         }));
 
@@ -18739,7 +18742,7 @@ if (e == null) e = nil;
           label: 'play from here',
           icon: 'public/menuicons/last-26.png',
           click: function () {
-            self.commands.$run_string("p ff")
+            self.$handle_command("p ff")
           }
         }));
 
@@ -18747,7 +18750,7 @@ if (e == null) e = nil;
           label: 'play selection',
           icon: 'public/menuicons/music_transcripts-26.png',
           click: function () {
-            self.commands.$run_string("p sel")
+            self.$handle_command("p sel")
           }
         }));
 
@@ -18757,7 +18760,7 @@ if (e == null) e = nil;
           icon: 'public/menuicons/0-26.png',
 
           click: function () {
-            self.commands.$run_string("view 0")
+            self.$handle_command("view 0")
           }
         }));
 
@@ -18765,7 +18768,7 @@ if (e == null) e = nil;
           label: 'set extract 1',
           icon: 'public/menuicons/1-26.png',
           click: function () {
-            self.commands.$run_string("view 1")
+            self.$handle_command("view 1")
           }
         }));
 
@@ -18773,14 +18776,14 @@ if (e == null) e = nil;
           label: 'set extract 2',
           icon: 'public/menuicons/2-26.png',
           click: function () {
-            self.commands.$run_string("view 2")
+            self.$handle_command("view 2")
           }
         }));
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 3',
           icon: 'public/menuicons/3-26.png',
           click: function () {
-            self.commands.$run_string("view 3")
+            self.$handle_command("view 3")
           }
         }));
 
@@ -18862,15 +18865,18 @@ if (p == null) p = nil;
         ($a = ($c = command).$set_help, $a._p = (TMP_11 = function(){var self = TMP_11._s || this;
 
         return "read file from local filesystem " + (command.$parameter_help(0))}, TMP_11._s = self, TMP_11), $a).call($c);
-        ($a = ($d = command).$as_action, $a._p = (TMP_12 = function(args){var self = TMP_12._s || this, $a, rootpath = nil, text = nil, e = nil;
+        ($a = ($d = command).$as_action, $a._p = (TMP_12 = function(args){var self = TMP_12._s || this, $a, rootpath = nil, text = nil, nwdir = nil, e = nil;
           if (self.editor == null) self.editor = nil;
+          if (self.systemstatus == null) self.systemstatus = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
-        args['$[]=']("oldval", self.editor.$get_text());
+        args['$[]=']("oldval", $hash2(["text", "nwworkdir"], {"text": self.editor.$get_text(), "nwworkdir": self.systemstatus['$[]']("nwworkingdir")}));
           rootpath = args['$[]']("path");
           try {
           var fs = require('fs');
             text = fs.readFileSync(rootpath).toString();;
+            nwdir = rootpath.$match(/(.*)([\/\\].+)/)['$[]'](1);
+            self.$set_status($hash2(["nwworkingdir"], {"nwworkingdir": nwdir}));
             $gvars.log.$info("opened " + (rootpath));
             return self.editor.$set_text(text);
           } catch ($err) {if ($opal.$rescue($err, [(($a = $scope.Exception) == null ? $opal.cm('Exception') : $a)])) {e = $err;
@@ -18880,7 +18886,8 @@ if (args == null) args = nil;
         return ($a = ($e = command).$as_inverse, $a._p = (TMP_13 = function(args){var self = TMP_13._s || this;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
-        return self.editor.$set_text(args['$[]']("oldval"))}, TMP_13._s = self, TMP_13), $a).call($e);}, TMP_8._s = self, TMP_8), $a).call($c, "_fopen");
+        self.$set_status($hash2(["nwworkdir"], {"nwworkdir": args['$[]']("oldval")['$[]']("nwworkingdir")}));
+          return self.editor.$set_text(args['$[]']("oldval")['$[]']("text"));}, TMP_13._s = self, TMP_13), $a).call($e);}, TMP_8._s = self, TMP_8), $a).call($c, "_fopen");
     }, nil) && '__ic_06_node_fs_commands';
   })(self, null)
 })(Opal);
