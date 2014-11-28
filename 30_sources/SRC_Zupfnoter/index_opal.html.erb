@@ -23,8 +23,8 @@
 
 <body>
 <div id="toolbar">
-  <input style="display:none;" id="fileDialog" type="file"  accept=".abc"></input>
-  <input style="display:none;" id="folderDialog" type="file" nwdirectory />
+  <input style="display:none;" id="fileDialog" type="file" accept=".abc"></input>
+  <input style="display:none;" id="folderDialog" type="file" nwdirectory/>
   <span class="head" id="lbZupfnoter">Zupfnoter</span>
   <span class="text" id="tbStatus"></span>
   <span class="button" id="tbPrintA4">print A4</i> </span>
@@ -71,5 +71,12 @@
 
 <div id="dragbar">&nbsp;</div>
 
+<%= begin
+      result = javascript_include_analytics()
+    rescue
+      result = "<!-- running in rackup server, no analytics -->"
+    end
+    result
+%>
 </body>
 </html>

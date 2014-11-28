@@ -1,3 +1,9 @@
+# Handling google analytics
+
+* Analytics ia applied for webserver-installation only, not for localhost nor desktop
+* this is done by the method `javascript_include_analytics` which is defined in the related rake tasks.
+* for localhost, the method is not defined, and therefore the template does not include the script
+
 # build environments
 
 ## project documentation

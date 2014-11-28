@@ -64,6 +64,15 @@ task :deploy => [:build] do
     "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
   end
 
+  def javascript_include_analytics()
+    if File.exist?("_analytics.inc.html")
+      result = File.open("_analytics.inc.html").read
+    else
+      result = "<!-- no analytics included -->"
+    end
+    result
+  end
+
   File.open("#{OUTFOLDER}/webserver/#{INDEXFILE}", "w") do |f|
     a = File.open(HTMLTEMPLATE).read
     f.puts ERB.new(a).result
@@ -90,6 +99,11 @@ task :buildDesktop => [:build] do
 
   def javascript_include_tag(filename)
     "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
+  end
+
+  def javascript_include_analytics()
+    result = "<!-- no analytics included -->"
+    result
   end
 
   File.open(index_filename, "w") do |f|
@@ -121,11 +135,11 @@ task :buildDesktop => [:build] do
   cp("#{desktop_folder}/zupfnoter.nw", "#{zupfnoter_app}/Contents/Resources/App.nw")
 
   cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-ia32" do
-     sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
+    sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
   end
 
   cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-x64" do
-     sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
+    sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
   end
   #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
 end
