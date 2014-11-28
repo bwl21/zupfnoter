@@ -132,7 +132,8 @@ class Controller
 
   # Save session to local store
   def save_to_localstorage
-    systemstatus = @systemstatus.select { |key, _| [:song, :view, :autorefresh, :loglevel].include?(key) }.to_json
+    # todo. better maintenance of persistent keys
+    systemstatus = @systemstatus.select { |key, _| [:song, :view, :autorefresh, :loglevel, :nwworkingdir].include?(key) }.to_json
     abc = `localStorage.setItem('systemstatus', #{systemstatus});`
     abc = @editor.get_text
     abc = `localStorage.setItem('abc_data', abc);`

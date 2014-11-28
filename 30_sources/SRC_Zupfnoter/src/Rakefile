@@ -46,7 +46,7 @@ task :deploy => [:build] do
 
 
   mkdir_p "#{OUTFOLDER}/webserver/vendor/ace"
-  mkdir_p "#{OUTFOLDER}/webserver/public/icons"
+  mkdir_p "#{OUTFOLDER}/webserver/public/menuicons"
   Dir["../vendor/*.*"].each { |f|
     cp f, "#{OUTFOLDER}/webserver/vendor/#{f}"
   }
@@ -80,6 +80,7 @@ task :buildDesktop => [:build] do
 
   rm_rf(desktop_folder)
   mkdir_p("#{desktop_stage}/public")
+  mkdir_p("#{desktop_stage}/public/menuicons")
   mkdir_p("#{desktop_stage}/vendor")
   mkdir_p("#{desktop_stage}/vendor/ace")
 
@@ -102,6 +103,11 @@ task :buildDesktop => [:build] do
   Dir["../vendor/*.*"].each { |f|
     copy(f, "#{desktop_stage}/vendor/#{f}")
   }
+
+  Dir["../public/menuicons/*.*"].each { |f|
+    copy(f, "#{desktop_stage}/public/menuicons/")
+  }
+
 
   cp("../public/index.css", "#{desktop_stage}/public/index.css")
   cp("../vendor/ace/ace.js", "#{desktop_stage}/vendor/ace/ace.js")

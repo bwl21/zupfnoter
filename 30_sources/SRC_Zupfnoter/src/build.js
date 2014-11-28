@@ -18249,7 +18249,7 @@ if (m == null) m = nil;
 
       systemstatus = ($a = ($b = self.systemstatus).$select, $a._p = (TMP_4 = function(key, _){var self = TMP_4._s || this;
 if (key == null) key = nil;if (_ == null) _ = nil;
-      return ["song", "view", "autorefresh", "loglevel"]['$include?'](key)}, TMP_4._s = self, TMP_4), $a).call($b).$to_json();
+      return ["song", "view", "autorefresh", "loglevel", "nwworkingdir"]['$include?'](key)}, TMP_4._s = self, TMP_4), $a).call($b).$to_json();
       abc = localStorage.setItem('systemstatus', systemstatus);;
       abc = self.editor.$get_text();
       return abc = localStorage.setItem('abc_data', abc);;
@@ -18335,7 +18335,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
         $gvars.log.$error([e.$message(), e.$backtrace()])
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished render tune " + ("controller") + " " + (206));
+      $gvars.log.$debug("finished render tune " + ("controller") + " " + (207));
       self.$set_inactive("#tunePreview");
       return nil;
     };
@@ -18345,7 +18345,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       try {
-      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (215));
+      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (216));
         self.song_harpnotes = self.$layout_harpnotes(self.systemstatus['$[]']("view"));
         self.harpnote_player.$load_song(self.song);
         self.harpnote_preview_printer.$draw(self.song_harpnotes);
@@ -18353,7 +18353,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
         $gvars.log.$error([e.$message(), e.$backtrace()])
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (223));
+      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (224));
       self.$set_inactive("#harpPreview");
       return nil;
     };
@@ -18409,7 +18409,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       a = self.$Native(abcelement);
-      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (273) + ")");
+      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (274) + ")");
       startchar = a['$[]']("startChar");
       endchar = a['$[]']("endChar");
       if (endchar['$=='](startchar)) {
@@ -18446,7 +18446,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
 if (r == null) r = nil;if (v == null) v = nil;
       r.$push("" + (v.$first()) + ": " + (v.$last()) + "  ");
         return r;}, TMP_5._s = self, TMP_5), $a).call($b, []).$join(" | ");
-      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (308));
+      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (309));
       if (self.systemstatus['$[]']("loglevel")['$==']($gvars.log.$loglevel())) {
         } else {
         $gvars.log['$loglevel=']((self.systemstatus['$[]']("loglevel")))
@@ -18471,7 +18471,7 @@ if (harpnote == null) harpnote = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       width = self.$Native((($a = $scope.Element) == null ? $opal.cm('Element') : $a).$find("#tunePreviewContainer").$width())['$-'](50);
-      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (329));
+      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (330));
       printerparams = $hash2(["staffwidth"], {"staffwidth": width});
       self.tune_preview_printer = (($a = ((($b = ((($c = $scope.ABCJS) == null ? $opal.cm('ABCJS') : $c))._scope).Write == null ? $b.cm('Write') : $b.Write))._scope).Printer == null ? $a.cm('Printer') : $a.Printer).$new("tunePreview", printerparams);
       return ($a = ($b = self.tune_preview_printer).$on_select, $a._p = (TMP_7 = function(abcelement){var self = TMP_7._s || this, a = nil;
@@ -18541,7 +18541,7 @@ if (e == null) e = nil;
       ($a = ($k = (($l = $scope.Element) == null ? $opal.cm('Element') : $l).$find(window)).$on, $a._p = (TMP_17 = function(evt){var self = TMP_17._s || this, $a;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
-      $gvars.log.$debug("key pressed (" + ("controller") + " " + (404) + ")");
+      $gvars.log.$debug("key pressed (" + ("controller") + " " + (405) + ")");
         console.log(event);
         if ((($a = evt.keyCode == 13 && evt.shiftKey) !== nil && (!$a._isBoolean || $a == true))) {
           evt.$prevent_default();
@@ -18608,14 +18608,14 @@ if (e == null) e = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2;
 
-  $opal.add_stubs(['$info', '$gsub', '$run_string', '$render_previews', '$__ic_06_node_fs_commands', '$debug', '$message', '$join', '$backtrace', '$private', '$add_command', '$add_parameter', '$set_default', '$undoable=', '$set_help', '$parameter_help', '$as_action', '$get_text', '$get_metadata', '$[]', '$to_s', '$first', '$split', '$raise', '$layout_harpnotes', '$harpnote_options', '$map', '$[]=', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$set_text', '$error', '$as_inverse']);
+  $opal.add_stubs(['$info', '$gsub', '$run_string', '$set_status', '$[]', '$render_previews', '$__ic_06_node_fs_commands', '$debug', '$message', '$join', '$backtrace', '$private', '$add_command', '$add_parameter', '$set_default', '$undoable=', '$set_help', '$parameter_help', '$as_action', '$get_text', '$get_metadata', '$to_s', '$first', '$split', '$raise', '$layout_harpnotes', '$harpnote_options', '$map', '$[]=', '$output', '$render_a3', '$render_a4', '$each_with_index', '$each', '$set_text', '$error', '$as_inverse']);
   return (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
 
     var def = self._proto, $scope = self._scope;
 
-    def.commands = nil;
+    def.commands = def.systemstatus = nil;
     def.$setup_nodewebkit = function() {
       var $a, self = this, arg = nil, f = nil, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
@@ -18635,13 +18635,15 @@ if (e == null) e = nil;
 
         menu.items[0].submenu.append(new gui.MenuItem({
           label: 'About Zupfnoter',
+          icon: 'public/menuicons/about-26.png',
+
           click: function () {
             alert("Zupfnoter version "+ (($a = $scope.VERSION) == null ? $opal.cm('VERSION') : $a) + "\n" + (($a = $scope.COPYRIGHT) == null ? $opal.cm('COPYRIGHT') : $a));
           }
         }))
 
         menu.items[0].submenu.append(new gui.MenuItem({
-          label: 'swho arguments',
+          label: 'show arguments',
           click: function () {
             arg = nil
               arg = gui.App.argv;
@@ -18652,6 +18654,8 @@ if (e == null) e = nil;
 
         menu.items[0].submenu.append(new gui.MenuItem({
           label: 'Quit Zupfnoter',
+          icon: 'public/menuicons/exit-26.png',
+
           click: function () {
             gui.App.quit();
           }
@@ -18676,6 +18680,7 @@ if (e == null) e = nil;
 
         menu.items[1].submenu.append(new gui.MenuItem({
           label: 'open',
+          icon: 'public/menuicons/view_file-26.png',
           click: function () {
             chooser.trigger('click');
           }
@@ -18687,7 +18692,9 @@ if (e == null) e = nil;
         savechooser.change(function(evt) {
           var filename = $(this).val();
 
-          f = (filename).$gsub("\\", "\\\\")
+          f = filename
+        self.$set_status($hash2(["nwworkingdir"], {"nwworkingdir": f}))
+        f = f.$gsub("\\", "\\\\")
         self.commands.$run_string("_fsave \"" + (f) + "\"")
 
           // Reset the selected value to empty ('')
@@ -18696,7 +18703,10 @@ if (e == null) e = nil;
 
         menu.items[1].submenu.append(new gui.MenuItem({
           label: 'save',
+          icon: 'public/menuicons/save-26.png',
           click: function () {
+            alert(self.systemstatus['$[]']("nwworkingdir"));
+            savechooser.attr("nwworkingdir", self.systemstatus['$[]']("nwworkingdir"));
             savechooser.trigger('click');
           }
         }));
@@ -18709,6 +18719,8 @@ if (e == null) e = nil;
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'refresh',
+          icon: 'public/menuicons/refresh-26.png',
+
           click: function () {
             self.$render_previews()
           }
@@ -18716,6 +18728,8 @@ if (e == null) e = nil;
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'play all',
+          icon: 'public/menuicons/play-26.png',
+
           click: function () {
             self.commands.$run_string("p all")
           }
@@ -18723,6 +18737,7 @@ if (e == null) e = nil;
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'play from here',
+          icon: 'public/menuicons/last-26.png',
           click: function () {
             self.commands.$run_string("p ff")
           }
@@ -18730,6 +18745,7 @@ if (e == null) e = nil;
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'play selection',
+          icon: 'public/menuicons/music_transcripts-26.png',
           click: function () {
             self.commands.$run_string("p sel")
           }
@@ -18738,6 +18754,8 @@ if (e == null) e = nil;
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 0',
+          icon: 'public/menuicons/0-26.png',
+
           click: function () {
             self.commands.$run_string("view 0")
           }
@@ -18745,6 +18763,7 @@ if (e == null) e = nil;
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 1',
+          icon: 'public/menuicons/1-26.png',
           click: function () {
             self.commands.$run_string("view 1")
           }
@@ -18752,12 +18771,14 @@ if (e == null) e = nil;
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 2',
+          icon: 'public/menuicons/2-26.png',
           click: function () {
             self.commands.$run_string("view 2")
           }
         }));
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 3',
+          icon: 'public/menuicons/3-26.png',
           click: function () {
             self.commands.$run_string("view 3")
           }

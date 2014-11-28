@@ -1,6 +1,7 @@
 class Controller
 
 
+
   def setup_nodewebkit
     begin
       %x{
@@ -17,13 +18,15 @@ class Controller
 
         menu.items[0].submenu.append(new gui.MenuItem({
           label: 'About Zupfnoter',
+          icon: 'public/menuicons/about-26.png',
+
           click: function () {
             alert("Zupfnoter version "+ #{VERSION} + "\n" + #{COPYRIGHT});
           }
         }))
 
         menu.items[0].submenu.append(new gui.MenuItem({
-          label: 'swho arguments',
+          label: 'show arguments',
           click: function () {
             #{arg=nil}
               #{arg} = gui.App.argv;
@@ -34,6 +37,8 @@ class Controller
 
         menu.items[0].submenu.append(new gui.MenuItem({
           label: 'Quit Zupfnoter',
+          icon: 'public/menuicons/exit-26.png',
+
           click: function () {
             gui.App.quit();
           }
@@ -58,6 +63,7 @@ class Controller
 
         menu.items[1].submenu.append(new gui.MenuItem({
           label: 'open',
+          icon: 'public/menuicons/view_file-26.png',
           click: function () {
             chooser.trigger('click');
           }
@@ -69,7 +75,9 @@ class Controller
         savechooser.change(function(evt) {
           var filename = $(this).val();
 
-          #{f = `filename`.gsub("\\", "\\\\")
+          #{f = `filename`
+            set_status({nwworkingdir: f})
+            f = f.gsub("\\", "\\\\")
             @commands.run_string(%Q{_fsave "#{f}"})
            }
 
@@ -79,7 +87,9 @@ class Controller
 
         menu.items[1].submenu.append(new gui.MenuItem({
           label: 'save',
+          icon: 'public/menuicons/save-26.png',
           click: function () {
+            savechooser.attr("nwworkingdir", #{@systemstatus[:nwworkingdir]});
             savechooser.trigger('click');
           }
         }));
@@ -92,6 +102,8 @@ class Controller
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'refresh',
+          icon: 'public/menuicons/refresh-26.png',
+
           click: function () {
             #{render_previews}
           }
@@ -99,6 +111,8 @@ class Controller
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'play all',
+          icon: 'public/menuicons/play-26.png',
+
           click: function () {
             #{@commands.run_string('p all')}
           }
@@ -106,6 +120,7 @@ class Controller
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'play from here',
+          icon: 'public/menuicons/last-26.png',
           click: function () {
             #{@commands.run_string('p ff')}
           }
@@ -113,6 +128,7 @@ class Controller
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'play selection',
+          icon: 'public/menuicons/music_transcripts-26.png',
           click: function () {
             #{@commands.run_string('p sel')}
           }
@@ -121,6 +137,8 @@ class Controller
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 0',
+          icon: 'public/menuicons/0-26.png',
+
           click: function () {
             #{@commands.run_string('view 0')}
           }
@@ -128,6 +146,7 @@ class Controller
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 1',
+          icon: 'public/menuicons/1-26.png',
           click: function () {
             #{@commands.run_string('view 1')}
           }
@@ -135,12 +154,14 @@ class Controller
 
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 2',
+          icon: 'public/menuicons/2-26.png',
           click: function () {
             #{@commands.run_string('view 2')}
           }
         }));
         menu.items[2].submenu.append(new gui.MenuItem({
           label: 'set extract 3',
+          icon: 'public/menuicons/3-26.png',
           click: function () {
             #{@commands.run_string('view 3')}
           }

@@ -2,8 +2,10 @@
     "name": "Zupfnoter",
     "main": "index.html",
     "window": {
-        "toolbar": true,
+        "toolbar": false ,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "width": 1400,
+        "height": 800
     }
 }
