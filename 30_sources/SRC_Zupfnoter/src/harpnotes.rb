@@ -952,6 +952,11 @@ module Harpnotes
 
         print_options = music.harpnote_options[:print][print_variant_nr]
 
+        unless print_options
+          print_options = music.harpnote_options[:print][0]
+          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options[:title]}'")
+        end
+
         @y_offset = print_options[:startpos]
 
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
