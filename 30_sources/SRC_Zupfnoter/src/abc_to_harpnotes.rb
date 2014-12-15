@@ -91,12 +91,14 @@ module Harpnotes
 
       def initialize
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
-        @jumptargets = {} # the lookup table for jumps
-        @annotations = {} # the lookup table for note bound anotations
+        @abc_code=nil
         reset_state
       end
 
       def reset_state
+        @jumptargets = {} # the lookup table for jumps
+        @annotations = {} # the lookup table for note bound annotations
+
         @next_note_marks = {measure: false,
                             repeat_start: false,
                             variant_ending: nil}
@@ -162,6 +164,7 @@ module Harpnotes
       #
       # @return [Harpnotes::Music::Song] the Song
       def transform(abc_code)
+        @abc_code = abc_code
 
         # get harpnote_options from abc_code
         harpnote_options = parse_harpnote_config(abc_code)
@@ -187,10 +190,8 @@ module Harpnotes
         warnings = [Native(`warnings`)].flatten.compact
         warnings.each { |w|
           wn = Native(w)
-          lines = abc_code[1, wn[:startChar]].split("\n")
-          line_no = lines.count
-          char_pos = lines.last.length()
-          $log.warning("#{wn[:message]} at line #{wn[:line]} position #{line_no}:#{char_pos}")
+          char_pos, line_no = charpos_to_line_column(wn[:startChar])
+          $log.warning("#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]")
         }
 
         #
@@ -360,6 +361,18 @@ module Harpnotes
         result
       end
 
+      # get column und line number of abc_code
+      # based on the character position
+      #
+      # @param [Numeric] charpos character position in abc code
+      # @return [Numeric] charpos, line_no
+      def charpos_to_line_column(charpos)
+        lines = @abc_code[1, charpos].split("\n")
+        line_no = lines.count
+        char_pos = lines.last.length()
+        return char_pos, line_no
+      end
+
       private
 
       # extract chords from an entity
@@ -405,7 +418,8 @@ module Harpnotes
               argument = nameparts[1] || 1
               argument = argument.to_i
               if target.nil?
-                $log.error("missing target #{targetname}")
+                  col, line = charpos_to_line_column(entity.origin[:startChar])
+                  $log.error("target '#{targetname}' not found in voice at [#{line}:#{col}]")  #
               else
                 result << Harpnotes::Music::Goto.new(entity, target, distance: argument) #todo: better algorithm
               end
