@@ -5,277 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1198b915-53f5-4365-a9c7-229af71d2c59" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/abc notation.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-html_completions.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-mushcode_high_rules.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/html_completions.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/mushcode_high_rules.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-kr.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/200_zupfnoter.iml" afterPath="$PROJECT_DIR$/.idea/200_zupfnoter.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/DD_Zupfnoter/DD_zupfnoter.md" afterPath="$PROJECT_DIR$/30_sources/DD_Zupfnoter/DD_zupfnoter.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/abap.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/abap.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ace.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ace.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/actionscript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/actionscript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ada.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ada.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/apache_conf.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/apache_conf.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/asciidoc.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/asciidoc.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/assembly_x86.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/assembly_x86.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/autohotkey.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/autohotkey.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/batchfile.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/batchfile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/c9search.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/c9search.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/c_cpp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/c_cpp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/cirru.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/cirru.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/clojure.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/clojure.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/cobol.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/cobol.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/coffee.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/coffee.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/coldfusion.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/coldfusion.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/csharp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/csharp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/css.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/css.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/curly.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/curly.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/d.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/d.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/dart.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/dart.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/diff.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/diff.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/django.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/django.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/dot.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/dot.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ejs.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ejs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/erlang.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/erlang.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-beautify.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-beautify.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-chromevox.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-chromevox.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-elastic_tabstops_lite.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-elastic_tabstops_lite.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-emmet.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-emmet.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-error_marker.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-error_marker.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-keybinding_menu.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-keybinding_menu.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-language_tools.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-language_tools.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-modelist.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-modelist.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-old_ie.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-old_ie.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-searchbox.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-searchbox.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-settings_menu.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-settings_menu.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-spellcheck.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-spellcheck.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-split.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-split.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-static_highlight.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-static_highlight.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-statusbar.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-statusbar.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-textarea.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-textarea.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-themelist.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-themelist.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-whitespace.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ext-whitespace.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/forth.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/forth.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ftl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ftl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/gherkin.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/gherkin.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/glsl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/glsl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/golang.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/golang.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/groovy.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/groovy.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/haml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/haml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/handlebars.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/handlebars.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/haskell.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/haskell.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/haxe.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/haxe.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/html.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/html.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/html_ruby.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/html_ruby.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ini.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ini.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jack.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jack.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jade.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jade.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/java.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/java.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/javascript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/javascript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/json.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/json.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jsoniq.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jsoniq.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jsp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jsp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jsx.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/jsx.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/julia.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/julia.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/keybinding-emacs.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/keybinding-emacs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/keybinding-vim.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/keybinding-vim.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/latex.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/latex.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/less.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/less.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/liquid.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/liquid.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lisp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lisp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/livescript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/livescript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/logiql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/logiql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lsl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lsl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lua.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lua.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/luapage.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/luapage.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lucene.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/lucene.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/makefile.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/makefile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/markdown.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/markdown.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/matlab.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/matlab.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/mel.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/mel.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-abap.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-abap.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-actionscript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-actionscript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ada.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ada.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-apache_conf.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-apache_conf.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-asciidoc.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-asciidoc.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-assembly_x86.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-assembly_x86.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-autohotkey.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-autohotkey.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-batchfile.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-batchfile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-c9search.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-c9search.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-c_cpp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-c_cpp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-cirru.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-cirru.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-clojure.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-clojure.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-cobol.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-cobol.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-coffee.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-coffee.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-coldfusion.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-coldfusion.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-csharp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-csharp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-css.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-css.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-curly.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-curly.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-d.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-d.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-dart.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-dart.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-diff.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-diff.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-django.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-django.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-dot.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-dot.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ejs.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ejs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-erlang.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-erlang.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-forth.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-forth.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ftl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ftl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-gherkin.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-gherkin.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-glsl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-glsl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-golang.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-golang.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-groovy.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-groovy.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-haml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-haml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-handlebars.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-handlebars.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-haskell.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-haskell.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-haxe.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-haxe.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-html.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-html.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-html_ruby.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-html_ruby.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ini.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ini.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jack.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jack.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jade.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jade.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-java.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-java.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-javascript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-javascript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-json.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-json.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jsoniq.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jsoniq.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jsp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jsp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jsx.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-jsx.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-julia.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-julia.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-latex.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-latex.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-less.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-less.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-liquid.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-liquid.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lisp.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lisp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-livescript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-livescript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-logiql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-logiql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lsl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lsl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lua.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lua.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-luapage.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-luapage.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lucene.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-lucene.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-makefile.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-makefile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-markdown.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-markdown.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-matlab.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-matlab.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-mel.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-mel.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-mushcode.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-mushcode.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-mysql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-mysql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-nix.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-nix.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-objectivec.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-objectivec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ocaml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ocaml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-pascal.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-pascal.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-perl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-perl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-pgsql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-pgsql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-php.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-php.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-plain_text.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-plain_text.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-powershell.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-powershell.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-prolog.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-prolog.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-properties.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-properties.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-protobuf.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-protobuf.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-python.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-python.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-r.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-r.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-rdoc.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-rdoc.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-rhtml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-rhtml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ruby.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-ruby.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-rust.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-rust.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sass.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sass.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scad.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scad.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scala.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scala.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scheme.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scheme.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scss.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-scss.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sh.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sh.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sjs.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sjs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-smarty.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-smarty.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-snippets.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-snippets.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-soy_template.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-soy_template.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-space.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-space.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-sql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-stylus.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-stylus.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-svg.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-svg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-tcl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-tcl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-tex.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-tex.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-textile.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-textile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-toml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-toml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-twig.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-twig.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-typescript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-typescript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-vbscript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-vbscript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-velocity.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-velocity.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-verilog.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-verilog.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-vhdl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-vhdl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-xml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-xml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-xquery.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-xquery.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-yaml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/mode-yaml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/mushcode.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/mushcode.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/mysql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/mysql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/nix.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/nix.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/objectivec.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/objectivec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ocaml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ocaml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/pascal.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/pascal.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/perl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/perl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/pgsql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/pgsql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/php.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/php.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/plain_text.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/plain_text.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/powershell.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/powershell.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/prolog.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/prolog.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/properties.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/properties.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/protobuf.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/protobuf.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/python.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/python.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/r.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/r.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/rdoc.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/rdoc.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/rhtml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/rhtml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ruby.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/ruby.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/rust.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/rust.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sass.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sass.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scad.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scad.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scala.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scala.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scheme.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scheme.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scss.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/scss.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sh.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sh.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sjs.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sjs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/smarty.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/smarty.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/snippets.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/snippets.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/soy_template.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/soy_template.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/space.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/space.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sql.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/sql.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/stylus.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/stylus.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/svg.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/svg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/tcl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/tcl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/tex.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/tex.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/text.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/text.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/textile.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/textile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-ambiance.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-ambiance.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-chaos.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-chaos.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-cobalt.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-cobalt.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-dreamweaver.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-dreamweaver.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-eclipse.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-eclipse.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-github.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-github.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-idle_fingers.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-idle_fingers.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-katzenmilch.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-katzenmilch.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-kuroir.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-kuroir.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-textmate.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-textmate.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-tomorrow_night_bright.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-tomorrow_night_bright.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-xcode.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/theme-xcode.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/toml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/toml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/twig.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/twig.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/typescript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/typescript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/vbscript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/vbscript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/velocity.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/velocity.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/verilog.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/verilog.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/vhdl.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/vhdl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-coffee.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-coffee.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-css.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-css.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-html.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-html.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-javascript.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-javascript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-json.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-json.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-lua.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-lua.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-php.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-php.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-xquery.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/worker-xquery.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/xml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/xml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/xquery.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/xquery.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/yaml.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/snippets/yaml.js" />
     </list>
     <ignored path="200_zupfnoter.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -307,21 +37,21 @@
     <leaf>
       <file leaf-file-name="DD_zupfnoter.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/DD_Zupfnoter/DD_zupfnoter.md">
-          <provider editor-type-id="MarkdownPreviewEditor">
-            <state />
-          </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.0" vertical-offset="300" max-vertical-offset="945">
+            <state vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="945">
               <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding />
             </state>
+          </provider>
+          <provider editor-type-id="MarkdownPreviewEditor">
+            <state />
           </provider>
         </entry>
       </file>
       <file leaf-file-name="text_pane.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1800">
+            <state vertical-scroll-proportion="0.0" vertical-offset="675" max-vertical-offset="1800">
               <caret line="45" column="7" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
               <folding />
             </state>
@@ -331,7 +61,7 @@
       <file leaf-file-name="ABCToHarpnotes.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/doc/Harpnotes/Input/ABCToHarpnotes.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.9166665" vertical-offset="17375" max-vertical-offset="36570">
+            <state vertical-scroll-proportion="0.0" vertical-offset="17375" max-vertical-offset="36570">
               <caret line="1171" column="240" selection-start-line="1171" selection-start-column="240" selection-end-line="1171" selection-end-column="240" />
               <folding />
             </state>
@@ -341,7 +71,7 @@
       <file leaf-file-name="abc_to_harpnotes.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/abc_to_harpnotes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="6237" max-vertical-offset="10140">
+            <state vertical-scroll-proportion="0.0" vertical-offset="6720" max-vertical-offset="10350">
               <caret line="448" column="14" selection-start-line="448" selection-start-column="14" selection-end-line="448" selection-end-column="14" />
               <folding />
             </state>
@@ -351,7 +81,7 @@
       <file leaf-file-name="controller.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33275864" vertical-offset="5642" max-vertical-offset="7035">
+            <state vertical-scroll-proportion="0.22679201" vertical-offset="5642" max-vertical-offset="7035">
               <caret line="389" column="4" selection-start-line="389" selection-start-column="4" selection-end-line="389" selection-end-column="4" />
               <folding />
             </state>
@@ -967,28 +697,28 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="5" y="22" width="1675" height="995" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.327252" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32715008" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27594072" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28536436" sideWeight="0.5005701" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18586089" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30985916" sideWeight="0.49828961" order="1" side_tool="false" content_ui="tabs" x="76" y="155" width="500" height="877" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31659523" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32611173" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32394367" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28536436" sideWeight="0.5005701" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27594072" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.60022026" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32611173" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32984293" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -1009,9 +739,9 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31659523" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32611173" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.60022026" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.60022026" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32611173" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32984293" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
@@ -1165,13 +895,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="3465">
           <caret line="16" column="38" selection-start-line="16" selection-start-column="38" selection-end-line="16" selection-end-column="38" />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/_analytics.inc.html">
@@ -1189,21 +919,19 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/RS_Requirements/DD_Zupfnoter.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1320">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/ace/ace.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="836">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1218,7 +946,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2220">
           <caret line="0" column="68" selection-start-line="0" selection-start-column="68" selection-end-line="0" selection-end-column="68" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1226,7 +953,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="849">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1234,7 +960,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="849">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1242,7 +967,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="836">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1250,7 +974,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="836">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1258,7 +981,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="836">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1266,7 +988,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="836">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1274,7 +995,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="90">
           <caret line="0" column="6" selection-start-line="0" selection-start-column="6" selection-end-line="0" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1282,7 +1002,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1575">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1290,7 +1009,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="836">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1298,7 +1016,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="55.037037" vertical-offset="193201" max-vertical-offset="306315">
           <caret line="12781" column="24" selection-start-line="12781" selection-start-column="18" selection-end-line="12781" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1306,7 +1023,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2265">
           <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1314,7 +1030,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-5.625" vertical-offset="0" max-vertical-offset="1335">
           <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1322,7 +1037,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="482">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1330,7 +1044,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="207">
           <caret line="0" column="7667" selection-start-line="0" selection-start-column="7667" selection-end-line="0" selection-end-column="7667" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1375,19 +1088,19 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/DD_Zupfnoter/DD_zupfnoter.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.0" vertical-offset="300" max-vertical-offset="945">
+        <state vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="945">
           <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding />
         </state>
       </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/doc/Harpnotes/Input/ABCToHarpnotes.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.9166665" vertical-offset="17375" max-vertical-offset="36570">
+        <state vertical-scroll-proportion="0.0" vertical-offset="17375" max-vertical-offset="36570">
           <caret line="1171" column="240" selection-start-line="1171" selection-start-column="240" selection-end-line="1171" selection-end-column="240" />
           <folding />
         </state>
@@ -1411,7 +1124,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33275864" vertical-offset="5642" max-vertical-offset="7035">
+        <state vertical-scroll-proportion="0.22679201" vertical-offset="5642" max-vertical-offset="7035">
           <caret line="389" column="4" selection-start-line="389" selection-start-column="4" selection-end-line="389" selection-end-column="4" />
           <folding />
         </state>
