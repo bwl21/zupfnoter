@@ -16,6 +16,17 @@
 * goto `30_source/SRC_Zupfnoter/src`
 * `rake`
 
+## updating syntax highlighting
+
+* goto your clone of the ace reporitory (../200_zupfnoter_external_components/ace)
+* update the files as described in <http://ace.c9.io/#nav=higlighter>
+* perform 
+
+	node Makefile.dryice.js -nc -m fiull
+
+* copy the contents of `200_zupfnoter_external_components/ace/build/src-min-noconflict` to 
+`30_sources/SRC_Zupfnoter/vendor/ace`
+
 # preparing a release
 
 Zupfnoter uses gitflow http://nvie.com/posts/a-successful-git-branching-model/

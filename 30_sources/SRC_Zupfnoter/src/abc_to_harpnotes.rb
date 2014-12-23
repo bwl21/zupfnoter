@@ -460,7 +460,7 @@ module Harpnotes
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
               end
             else
-              $log.error("syntax error in annotation: #{name}")
+             # $log.error("syntax error in annotation: #{name}")
             end
           end
         end
@@ -647,7 +647,7 @@ module Harpnotes
       end
 
       def transform_bar_right_repeat(bar)
-        if  @repetition_stack.length == 1
+        if @repetition_stack.length == 1
           start = @repetition_stack.last
         else
           start = @repetition_stack.pop

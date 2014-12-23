@@ -387,8 +387,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
         @harpnote_player.range_highlight(a.first, a.last)
       end
     end
-
-
+    
     @harpnote_player.on_noteon do |e|
       $log.debug("noteon #{Native(e)[:startChar]}")
       highlight_abc_object(e)
@@ -403,21 +402,21 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       stop_play_abc()
     end
 
-    # key events in editor
-    Element.find(`window`).on(:keydown) do |evt|
-
-      $log.debug("key pressed (#{__FILE__} #{__LINE__})")
-      `console.log(event)`
-      if `evt.keyCode == 13 && evt.shiftKey`
-        evt.prevent_default
-        render_previews
-        `evt.preventDefault()`
-      elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
-        evt.prevent_default
-        save_file
-        `evt.preventDefault()`
-      end
-    end
+    # # key events in editor
+    # Element.find(`window`).on(:keydown) do |evt|
+    #
+    #   $log.debug("key pressed (#{__FILE__} #{__LINE__})")
+    #   `console.log(event)`
+    #   if `evt.keyCode == 13 && evt.shiftKey`
+    #     evt.prevent_default
+    #     render_previews
+    #     `evt.preventDefault()`
+    #   elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
+    #     evt.prevent_default
+    #     save_file
+    #     `evt.preventDefault()`
+    #   end
+    # end
 
     Element.find(`window`).on(:storage) do |evt|
       key = Native(evt[:originalEvent]).key
@@ -460,5 +459,5 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 end
 
 Document.ready? do
-  Controller.new
+    Controller.new
 end
