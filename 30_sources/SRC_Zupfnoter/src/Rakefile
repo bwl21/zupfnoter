@@ -55,10 +55,16 @@ task :deploy => [:build] do
 
 
   #p ZUPFNOTER_JS, "#{OUTFOLDER}/public/#{ZUPFNOTER_JS}"
-
+  # todo:this is not dry - see buildDesktop
+  ["vendor/ace", "vendor/ace/snippets", "public/icons"].each do |d|
+    mkdir_p("#{OUTFOLDER}/webserver/#{d}")
+  end
   cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
-  cp "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
+  cp "../vendor/ace/mode-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-abc.js"
+  cp "../vendor/ace/ext-language_tools.js", "#{OUTFOLDER}/webserver/vendor/ace/ext-language_tools.js"
+  cp("../vendor/ace/snippets/abc.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/abc.js")
+  cp("../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif")
 
   def javascript_include_tag(filename)
     "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
@@ -123,8 +129,16 @@ task :buildDesktop => [:build] do
   }
 
 
+  ["vendor/ace", "vendor/ace/snippets", "public/icons"].each do |d|
+    mkdir_p("#{desktop_stage}/#{d}")
+  end
   cp("../public/index.css", "#{desktop_stage}/public/index.css")
   cp("../vendor/ace/ace.js", "#{desktop_stage}/vendor/ace/ace.js")
+  cp("../vendor/ace/mode-abc.js", "#{desktop_stage}/vendor/ace/mode-abc.js")
+  cp("../vendor/ace/ext-language_tools.js", "#{desktop_stage}/vendor/ace/ext-language_tools.js")
+  cp("../vendor/ace/snippets/abc.js", "#{desktop_stage}/vendor/ace/snippets/abc.js")
+  cp("../public/icons/favicon.gif", "#{desktop_stage}/public/icons/favicon.gif")
+
   cp(PACKAGE_JSON, "#{desktop_stage}/package.json")
 
   cd desktop_stage do

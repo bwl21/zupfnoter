@@ -22,7 +22,7 @@
 * update the files as described in <http://ace.c9.io/#nav=higlighter>
 * perform 
 
-	node Makefile.dryice.js -nc -m fiull
+	node Makefile.dryice.js -nc -m full
 
 * copy the contents of `200_zupfnoter_external_components/ace/build/src-min-noconflict` to 
 `30_sources/SRC_Zupfnoter/vendor/ace`
