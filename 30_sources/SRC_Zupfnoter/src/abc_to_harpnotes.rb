@@ -97,7 +97,6 @@ module Harpnotes
 
       def reset_state
         @jumptargets = {} # the lookup table for jumps
-        @annotations = {} # the lookup table for note bound annotations
 
         @next_note_marks = {measure: false,
                             repeat_start: false,
