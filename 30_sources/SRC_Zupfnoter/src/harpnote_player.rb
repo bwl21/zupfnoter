@@ -7,8 +7,9 @@ module Harpnotes
 
     class HarpnotePlayer
 
+
       def initialize()
-        @inst = `new Instrument("piano")`
+        @inst = []
         @isplaying = false
         @selection = []
       end
@@ -17,21 +18,31 @@ module Harpnotes
         @isplaying
       end
 
-      def on_noteon(&block)
-        Native(@inst).on(:noteon) do |element|
-          abc_element = Native(element)[:origin]
-          block.call(abc_element)
-          nil
+      # This creates an instrument upon request
+      def create_inst(instrument_id)
+        unless @inst[instrument_id]
+          @inst[instrument_id] = %x{new Instrument("piano")}
+          Native(@inst[instrument_id]).on(:noteon) do |element|
+            abc_element = Native(element)[:origin]
+            @noteon_callback.call(abc_element)
+            nil
+          end
+          Native(@inst[instrument_id]).on(:noteoff) do |element|
+            abc_element = Native(element)[:origin]
+            @noteoff_callback.call(abc_element)
+            nil
+          end
         end
+        @inst[instrument_id]
+      end
+
+      def on_noteon(&block)
+        @noteon_callback = block
       end
 
 
       def on_noteoff(&block)
-        Native(@inst).on(:noteoff) do |element|
-          abc_element = Native(element)[:origin]
-          block.call(abc_element)
-          nil
-        end
+        @noteoff_callback = block
       end
 
       def on_songoff(&block)
@@ -67,14 +78,14 @@ module Harpnotes
 
         unless the_notes.empty?
           #note schedule in secc, SetTimout in msec; finsh after last measure
-          `clearTimeout(self.song_off_timer)` if @song_off_timer
+          `clearTimeout(#{@song_off_timer})` if @song_off_timer
 
           firstnote = the_notes.first
           lastnote = the_notes.last
 
           # stoptime comes in msec
           stop_time = (lastnote[:delay] - firstnote[:delay] + Harpnotes::Layout::Default::SHORTEST_NOTE * @duration_timefactor) * 1000 # todo factor out the literals
-          @song_off_timer = `setTimeout(function(){self.songoff_callback.$call()}, stop_time )`
+          @song_off_timer = `setTimeout(function(){#{@songoff_callback}.$call()}, #{stop_time} )`
 
 
           the_notes.each do |the_note|
@@ -82,12 +93,14 @@ module Harpnotes
             the_note_to_play[:delay] -= firstnote[:delay]
 
             note = the_note_to_play.to_n
+            index = the_note_to_play[:index]
+            inst = create_inst(index)
             %x{
-            self.inst.tone(note);
-            self.inst.schedule(note.delay + note.duration, function(){self.inst._trigger("noteoff", note);});
+            #{inst}.tone(#{note});
+            #{inst}.schedule(#{note}.delay + #{note}.duration, function(){#{inst}._trigger("noteoff", #{note});});
            }
           end
-            @isplaying = true
+          @isplaying = true
         else
           $log.warn("nothing selected to play")
         end
@@ -95,7 +108,13 @@ module Harpnotes
 
 
       def stop()
-        `self.inst.silence()`
+        @inst.each_with_index { |inst, index|
+          begin
+            `#{inst}.silence()`
+          rescue Exception => e
+            $log.info(e.backtrace)
+          end
+        }
         @isplaying = false
       end
 
@@ -141,18 +160,19 @@ module Harpnotes
           tie_start = {}
           voice.select { |c| c.is_a? Playable }.map do |root|
 
+            velocity = 0.5
             velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
-            to_play = {
-                delay: root.beat * @beat_timefactor,
-                pitch: -root.pitch, # todo: why -
-                duration: root.duration * @duration_timefactor, # todo: do we need to adjust triplets?
-                velocity: 0.2,
-                velocity: velocity,
-                origin: root.origin
-            }
+
+            to_play = mk_to_play(root, velocity, index)
 
             # todo Handle synchpoints
 
+            more_to_play = []
+            if root.is_a? SynchPoint
+              more_to_play = root.notes.each.map do |note|
+                mk_to_play(note, velocity, index) unless note.pitch === root.pitch
+              end
+            end
             # handle ties and slurs
 
             if root.tie_end?
@@ -170,10 +190,26 @@ module Harpnotes
               result = nil
             end
 
-            to_play
+            [to_play] + [more_to_play]
           end
         end.flatten.compact # note that we get three nil objects bcause of the voice filter
 
+      end
+
+
+      # @param [Note] note - the note to play
+      # @param [Numerical] velocity - velocity to play the note
+      # @param [Numericcal] index - the number of the voice
+      # @return [Hash] information for the player to play the note
+      def mk_to_play(note, velocity, index)
+        {
+            delay: note.beat * @beat_timefactor,
+            pitch: -note.pitch, # todo: why -
+            duration: note.duration * @duration_timefactor, # todo: do we need to adjust triplets?
+            velocity: velocity,
+            origin: note.origin,
+            index: index
+        }
       end
     end
 
