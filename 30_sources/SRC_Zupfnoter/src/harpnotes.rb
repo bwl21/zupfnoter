@@ -125,7 +125,7 @@ module Harpnotes
       #
       # @return [Numeric] The pitch of the companion
       def pitch
-        @companion.pitch
+        @companion.pitch rescue nil
       end
 
 
@@ -134,7 +134,7 @@ module Harpnotes
       #
       # @return [Numeric] Beat of the companion
       def beat
-        @companion.beat
+        @companion.beat rescue nil
       end
 
 
@@ -143,7 +143,7 @@ module Harpnotes
       #
       # @return [Numeric] Duration of the companion
       def duration
-        @companion.duration
+        @companion.duration rescue nil
       end
 
     end

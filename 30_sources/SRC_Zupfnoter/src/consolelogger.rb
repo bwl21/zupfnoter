@@ -16,29 +16,40 @@ class ConsoleLogger
       :debug => :"icon-minus-squared"
   }
 
+  attr_reader :annotations
 
   def initialize(element_id)
     @console = element_id # Element.find("##{element_id}")
     @loglevel = LOGLEVELS[:info]
+    clear_annotations
   end
 
-  def error(msg)
+  def clear_annotations
+    @annotations = []
+  end
+
+  def error(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :error)
     write(:error, msg)
   end
 
-  def warning(msg)
+  def warning(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :warning)
     write(:warning, msg)
   end
 
-  def info(msg)
+  def info(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :info)
     write(:info, msg)
   end
 
-  def debug(msg)
+  def debug(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :debug)
     write(:debug, msg)
   end
 
-  def message(msg)
+  def message(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :message)
     write(:message, msg)
   end
 
@@ -52,6 +63,10 @@ class ConsoleLogger
   end
 
   private
+
+  def add_annotation(msg, start_pos, end_pos, type)
+    @annotations << {row: start_pos.first, col: start_pos.last, text: msg, type: type} if start_pos
+  end
 
   def write(type, msg)
 

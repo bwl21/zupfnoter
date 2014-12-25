@@ -20,8 +20,13 @@ module Harpnotes
 
         @voice_accidentals = (0..6).map { |f| 0 }
         @measure_accidentals = (0..6).map { |f| 0 }
+        @on_error = lambda { |line, message|}
 
         @accidental_pitches = {'sharp' => 1, 'flat' => -1, 'natural' => 0}
+      end
+
+      def on_error(&block)
+        @on_error = block
       end
 
       # set the key of the Sheet
@@ -92,10 +97,12 @@ module Harpnotes
       def initialize
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
         @abc_code=nil
+        @previous_new_part = []
         reset_state
       end
 
       def reset_state
+
         @jumptargets = {} # the lookup table for jumps
 
         @next_note_marks = {measure: false,
@@ -123,18 +130,25 @@ module Harpnotes
           if entry
             begin
               parsed_entry = JSON.parse(entry.last)
+              parsed_entry[:line_no] = line_no
               hn_config_from_song[entry.first] ||= []
               hn_config_from_song[entry.first] << parsed_entry
             rescue Exception => e
-              $log.error("error in harpnote commands: #{e.message} in line #{line_no} : #{entry}")
+              message = ("error in harpnote commands: #{e.message} in line #{line_no} : #{entry}")
+              $log.error(message, [line_no, 1])
             end
           end
           line_no +=1
         end
-        #$log.debug("#{hn_config_from_song} (#{__FILE__} #{__LINE__})")
-        hn_config_from_song[:print] = [{}] unless hn_config_from_song[:print]
 
-        hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
+        # cleanups
+        hn_config_from_song[:print] = [{}] unless hn_config_from_song[:print]
+        if hn_config_from_song[:legend]
+          legend = hn_config_from_song[:legend].last
+          hn_config_from_song[:legend] = legend[:pos] if legend[:pos]
+        end
+
+        # now resturn
         hn_config_from_song
       end
 
@@ -184,13 +198,15 @@ module Harpnotes
           // todo handle parser warnings
           console.log(tune);
           console.log(JSON.stringify(tune));
+          console.log(JSON.stringify(tune));
         }
 
         warnings = [Native(`warnings`)].flatten.compact
         warnings.each { |w|
           wn = Native(w)
-          char_pos, line_no = charpos_to_line_column(wn[:startChar])
-          $log.warning("#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]")
+          line_no, char_pos = charpos_to_line_column(wn[:startChar])
+          msg = "#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]"
+          $log.warning(msg, [line_no, char_pos])
         }
 
         #
@@ -324,14 +340,11 @@ module Harpnotes
         meta_data_from_tune.keys.each { |k| meta_data[k] = meta_data_from_tune[k] } # todo could not get Hash(object) and use merge
         result.meta_data = meta_data
 
-
-        # handle harpnote options (the %%%%hn.xxxx - coments)
-        #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
-
         result.harpnote_options = {}
         result.harpnote_options[:print] = harpnote_options[:print].map { |specified_option|
           # todo:do a proper default handling here
           resulting_options = {
+              line_no: 1,
               title: specified_option[:t] || "",
               startpos: specified_option[:startpos] || 15,
               voices: (specified_option[:v] || [1, 2, 3, 4]).map { |i| i-1 },
@@ -344,9 +357,18 @@ module Harpnotes
                   [1, 2, 3, 4]).map { |i| i-1 } # the lines for layout optimization
           }
           missing_voices = (resulting_options[:voices] - resulting_options[:layoutlines]).map { |i| i + 1 }
-          $log.error("hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}") unless missing_voices.empty?
+          msg = "hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}"
+          $log.error(msg, [line_no, 1]) unless missing_voices.empty?
           resulting_options
         }
+
+# todo:fix me
+#         unless @previous_new_part.empty?
+#           $log.info(Native(@previous_new_part.last.origin)[:startChar])
+#           line, col = charpos_to_line_column(@previous_new_part.last.origin[:startChar])
+#           $log.warn("found empty part", [line, col])
+#         end
+
 
         result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 15] # todo take default from config
         result.harpnote_options[:notes] = harpnote_options[:note] || []
@@ -369,7 +391,7 @@ module Harpnotes
         lines = @abc_code[1, charpos].split("\n")
         line_no = lines.count
         char_pos = lines.last.length()
-        return char_pos, line_no
+        return line_no, char_pos
       end
 
       private
@@ -417,8 +439,8 @@ module Harpnotes
               argument = nameparts[1] || 1
               argument = argument.to_i
               if target.nil?
-                  col, line = charpos_to_line_column(entity.origin[:startChar])
-                  $log.error("target '#{targetname}' not found in voice at [#{line}:#{col}]")  #
+                line, col = charpos_to_line_column(entity.origin[:startChar])
+                $log.error("target '#{targetname}' not found in voice at [#{line}:#{col}]", [line, col]) #
               else
                 result << Harpnotes::Music::Goto.new(entity, target, distance: argument) #todo: better algorithm
               end
@@ -446,7 +468,8 @@ module Harpnotes
               case semantic
                 when "#"
                   annotation = @annotations[text]
-                  $log.error("could not find annotation #{text}") unless annotation
+                  line, col = charpos_to_line_column(entity.origin[:startChar])
+                  $log.error("could not find annotation #{text}", [line, col]) unless annotation
                 when "!"
                   annotation = {text: text}
                 else
@@ -459,7 +482,7 @@ module Harpnotes
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
               end
             else
-             # $log.error("syntax error in annotation: #{name}")
+              # $log.error("syntax error in annotation: #{name}")
             end
           end
         end
@@ -667,6 +690,7 @@ module Harpnotes
 
       def transform_part(part)
         new_part = Harpnotes::Music::NewPart.new(part[:title])
+        new_part.origin = part
         @previous_new_part << new_part
         [new_part]
       end

@@ -30,6 +30,8 @@ module Harpnotes
           enableLiveAutocompletion: false        });
       }
       @editor = `editor`
+      @range = `ace.require('ace/range').Range`
+      @markers = []
     end
 
 
@@ -41,6 +43,7 @@ module Harpnotes
     def on_change(&block)
       # changes in the editor
       Native(Native(@editor).getSession).on(:change) { |e|
+        clear_markers  #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
         block.call(e)
       }
     end
@@ -107,6 +110,45 @@ module Harpnotes
     # @param text the text to be set to the editor
     def set_text(text)
       `self.editor.getSession().setValue(text)`
+    end
+
+    #
+
+    # @param [Array] annotations  array of {row: 1, text: "", type: "error" | "warning" | "info"}
+    #                aguments defined by ace
+    def set_annotations(annotations)
+      annotations.each { |annotation|
+        annotation[:row] = annotation[:row] -1  # annotations count on row 0
+      }
+      set_markers(annotations)
+      %x{#{@editor}.getSession().setAnnotations(#{annotations.to_n})}
+    end
+
+
+    # here I started routines to maintain markers
+    # maybe it is better to go back to https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
+    # for the time bi
+
+    def set_markers(annotations)
+      annotations.each do |annotation|
+        add_marker(annotation)
+      end
+    end
+
+    def add_marker(annotation, to = nil)
+      marker_end = to || {row: annotation[:row], col: annotation[:col]} # this is for eas of maintainability
+      @markers << {
+          from: [annotation[:row], annotation[:col]],
+          to: [marker_end[:row], marker_end[:col]],
+          id: %x{#{@editor}.getSession().addMarker(new #{@range}(#{annotation[:row]}, #{annotation[:col] - 1}, #{marker_end[:row]}, #{marker_end[:col]}), "marked", "line", true)}
+      }
+    end
+
+    def clear_markers
+      @markers.each do |marker|
+        %x{#{@editor}.session.removeMarker(#{marker[:id]})}
+      end
+      @markers.clear
     end
 
   end

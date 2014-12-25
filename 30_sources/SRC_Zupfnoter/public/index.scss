@@ -16,6 +16,12 @@ body {
   color: white;
 }
 
+.marked {
+  background-color: rgba(255, 0, 0, 0.5);
+  text-underline-mode: true;
+  position: absolute;
+}
+
 .container {
   overflow: hidden;
   position: absolute;

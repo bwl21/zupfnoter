@@ -263,8 +263,12 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
+    $log.clear_annotations
     @song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
-    Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
+    result = Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
+    @editor.set_annotations($log.annotations)
+    `debugger`
+    result
   end
 
   # highlight a particular abc element in all views
