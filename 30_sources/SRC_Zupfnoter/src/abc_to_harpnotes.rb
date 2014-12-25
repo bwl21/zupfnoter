@@ -134,8 +134,8 @@ module Harpnotes
               hn_config_from_song[entry.first] ||= []
               hn_config_from_song[entry.first] << parsed_entry
             rescue Exception => e
-              message = ("error in harpnote commands: #{e.message} in line #{line_no} : #{entry}")
-              $log.error(message, [line_no, 1])
+              message = ("error in harpnote commands: #{e.message} [#{line_no}:#{entry}]")
+              $log.error(message, [line_no, 1], [line_no, 2])
             end
           end
           line_no +=1
@@ -206,7 +206,7 @@ module Harpnotes
           wn = Native(w)
           line_no, char_pos = charpos_to_line_column(wn[:startChar])
           msg = "#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]"
-          $log.warning(msg, [line_no, char_pos])
+          $log.warning(msg, [line_no, char_pos], [line_no, char_pos + 1])
         }
 
         #
@@ -273,7 +273,13 @@ module Harpnotes
             hn_voice_element = self.send("transform_#{type}", el, i)
 
             unless hn_voice_element.nil? or hn_voice_element.empty?
-              hn_voice_element.each { |e| e.origin = el }
+              hn_voice_element.each do |e|
+                e.origin = el
+                start_char = el[:startChar]
+                end_char = el[:endChar]
+                e.start_pos = charpos_to_line_column(start_char) if start_char > 0
+                e.end_pos = charpos_to_line_column(end_char) if end_char > 0
+              end
             end
 
             hn_voice_element
@@ -362,12 +368,12 @@ module Harpnotes
           resulting_options
         }
 
-# todo:fix me
-#         unless @previous_new_part.empty?
-#           $log.info(Native(@previous_new_part.last.origin)[:startChar])
-#           line, col = charpos_to_line_column(@previous_new_part.last.origin[:startChar])
-#           $log.warn("found empty part", [line, col])
-#         end
+        # todo:fix me illustrate empty parts
+        #         unless @previous_new_part.empty?
+        #           $log.info(Native(@previous_new_part.last.origin)[:startChar])
+        #           line, col = charpos_to_line_column(@previous_new_part.last.origin[:startChar])
+        #           $log.warn("found empty part", [line, col])
+        #         end
 
 
         result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 15] # todo take default from config
@@ -439,8 +445,7 @@ module Harpnotes
               argument = nameparts[1] || 1
               argument = argument.to_i
               if target.nil?
-                line, col = charpos_to_line_column(entity.origin[:startChar])
-                $log.error("target '#{targetname}' not found in voice at [#{line}:#{col}]", [line, col]) #
+                $log.error("target '#{targetname}' not found in voice at #{entity.start_pos_to_s}", entity.start_pos, entity.end_pos)
               else
                 result << Harpnotes::Music::Goto.new(entity, target, distance: argument) #todo: better algorithm
               end
@@ -468,8 +473,7 @@ module Harpnotes
               case semantic
                 when "#"
                   annotation = @annotations[text]
-                  line, col = charpos_to_line_column(entity.origin[:startChar])
-                  $log.error("could not find annotation #{text}", [line, col]) unless annotation
+                  $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
                   annotation = {text: text}
                 else

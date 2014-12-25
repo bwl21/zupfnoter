@@ -50,7 +50,7 @@ body {
   color: white; }
 
 .marked {
-  background-color: rgba(255, 0, 0, 0.5);
+  background: url(icons/underline.gif) bottom repeat-x;
   text-underline-mode: true;
   position: absolute; }
 

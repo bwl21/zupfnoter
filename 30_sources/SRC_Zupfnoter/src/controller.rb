@@ -267,7 +267,6 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     @song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
     result = Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
     @editor.set_annotations($log.annotations)
-    `debugger`
     result
   end
 

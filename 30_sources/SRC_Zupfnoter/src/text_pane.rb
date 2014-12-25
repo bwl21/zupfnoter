@@ -43,7 +43,7 @@ module Harpnotes
     def on_change(&block)
       # changes in the editor
       Native(Native(@editor).getSession).on(:change) { |e|
-        clear_markers  #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
+        clear_markers #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
         block.call(e)
       }
     end
@@ -117,11 +117,14 @@ module Harpnotes
     # @param [Array] annotations  array of {row: 1, text: "", type: "error" | "warning" | "info"}
     #                aguments defined by ace
     def set_annotations(annotations)
-      annotations.each { |annotation|
-        annotation[:row] = annotation[:row] -1  # annotations count on row 0
-      }
+      editor_annotations = annotations.map do |annotation|
+        {row: annotation[:start_pos].first - 1, # annotations count on row 0
+         text: annotation[:text],
+         type: annotation[:type]
+        }
+      end
       set_markers(annotations)
-      %x{#{@editor}.getSession().setAnnotations(#{annotations.to_n})}
+      %x{#{@editor}.getSession().setAnnotations(#{editor_annotations.to_n})}
     end
 
 
@@ -130,18 +133,27 @@ module Harpnotes
     # for the time bi
 
     def set_markers(annotations)
+      clear_markers
       annotations.each do |annotation|
         add_marker(annotation)
       end
     end
 
-    def add_marker(annotation, to = nil)
-      marker_end = to || {row: annotation[:row], col: annotation[:col]} # this is for eas of maintainability
+    def add_marker(annotation)
+      marker_start = {row: annotation[:start_pos].first, col: annotation[:start_pos].last} # this is for eas of maintainability
+      marker_end = {row: annotation[:end_pos].first, col: annotation[:end_pos].last} # this is for eas of maintainability
+      id = %x{#{@editor}.getSession().addMarker(new #{@range}(#{marker_start[:row] - 1}, #{marker_start[:col] - 1},
+                                                              #{marker_end[:row] - 1}, #{marker_end[:col] - 1}),
+                                               "marked", "line", true)}
+      # id = %x{#{@editor}.getSession().addMarker(new #{@range}(23, 3,
+      #                                                         23, 5),
+      #                                          "marked", "line", true)}
       @markers << {
-          from: [annotation[:row], annotation[:col]],
+          from: [marker_start[:row], marker_start[:col]],
           to: [marker_end[:row], marker_end[:col]],
-          id: %x{#{@editor}.getSession().addMarker(new #{@range}(#{annotation[:row]}, #{annotation[:col] - 1}, #{marker_end[:row]}, #{marker_end[:col]}), "marked", "line", true)}
+          id: id
       }
+      nil
     end
 
     def clear_markers

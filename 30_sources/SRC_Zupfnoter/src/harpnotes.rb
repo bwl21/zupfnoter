@@ -92,7 +92,7 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin, :beat, :visible
+      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos
 
       def initialize
         @visible = true
@@ -100,6 +100,11 @@ module Harpnotes
 
       def visible?
         @visible
+      end
+
+
+      def start_pos_to_s
+        "[#{start_pos.first}:#{start_pos.last}]"
       end
     end
 
@@ -465,7 +470,6 @@ module Harpnotes
           # if n_playables.compact.length >1
           #   #a = n_playables.product(n_playables).map{|p| [p.first.first, p.last.first]}
           #   b = n_playables.map{|a1| n_playables.map{|a2| [a1.first, a2.first]} }
-          #   `debugger`
           #   a = b.sort_by{|p| (p.last.pitch - p.first.pitch).abs }.first
           #   SynchPoint.new(a)
           # end
@@ -532,7 +536,8 @@ module Harpnotes
             beats = beats * tupletmap[playable.tuplet]
             beat_error = beats - beats.floor(0)
             if beat_error > 0
-              $log.error("unsupported tuplet #{playable.tuplet} #{beat_error}") # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
+              pos = playable.start_pos
+              $log.error("unsupported tuplet #{playable.tuplet} #{beat_error}", pos) # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
               beats = beats.floor(0)
             end
 
@@ -1182,7 +1187,7 @@ module Harpnotes
                   tiepath = make_slur_path(p1, p2)
                   result.push(Harpnotes::Drawing::Path.new(tiepath))
                 rescue Exception => e
-                  $log.error("tied chords which doesn't have same number of notes")
+                  $log.error("tied chords which doesn't have same number of notes", n.start_pos)
                 end
               end
             end
@@ -1284,7 +1289,7 @@ module Harpnotes
             begin
               size = BEAT_RESOULUTION * DURATION_TO_STYLE[duration_to_id(max_duration_on_beat)].first
             rescue Exception => e
-              $log.error("unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
 
             # we need to increment the position by the (size[i] + size[i-1])/2
@@ -1336,7 +1341,8 @@ module Harpnotes
         #               shift to left   pitch          space     stay away from border
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
-        scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
+
+        scale, fill, dotted = DURATION_TO_STYLE[check_duration(root)]
         size = ELLIPSE_SIZE.map { |e| e * scale }
 
         res = Ellipse.new([x_offset, y_offset], size, fill, dotted, root)
@@ -1371,7 +1377,8 @@ module Harpnotes
       def layout_pause(root, beat_layout)
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
-        scale, glyph, dotted = REST_TO_GLYPH[duration_to_id(root.duration)]
+        check_duration(root)
+        scale, glyph, dotted = REST_TO_GLYPH[check_duration(root)]
         size = [REST_SIZE.first * scale.first, REST_SIZE.last * scale.last]
 
         res = Harpnotes::Drawing::Glyph.new([x_offset, y_offset], size, glyph, dotted, root)
@@ -1496,12 +1503,18 @@ module Harpnotes
       def duration_to_id(duration)
         result = "d#{duration}".to_sym
         if DURATION_TO_STYLE[result].nil?
-          $log.error("unsupported duration #{result} replaced by error note")
           result = "err"
         end
         result
       end
 
+      def check_duration(root)
+        result = duration_to_id(root.duration)
+        if result === 'err'
+          $log.error("unsupported duration at #{root.start_pos_to_s}", root.start_pos, root.end_pos)
+        end
+        result
+      end
 
       #
       # draw a sheetmark to
