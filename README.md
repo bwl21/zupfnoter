@@ -15,6 +15,7 @@ as of now the whole thing is far from being ready to use out of the box.
 -   to run from local filesystems
     -   run `rake build`
     -   open `30_sourcs/SRC_Zupfnoter/index.html` in your webbrowser
+
 -   to run from a local webserver
     -   run `rake server`
     -   goto http://localhost:9292
@@ -53,7 +54,7 @@ The specific conventions in detail are as follows:
     places the repetition line 3 halftones left of the end of the
     repetition.
 
-2.  Control visualization of Voices Synchlines, Jumplines, Flowlines
+3.  Control visualization of Voices Synchlines, Jumplines, Flowlines
 
     This is done using specific comments with JSON syntax
 
@@ -65,36 +66,45 @@ The specific conventions in detail are as follows:
 
     t
     :   The title of the print
+
     v
     :   List of voices to be shown (it is an array of integer) from 1 to
         n denoting the voice index. Note that the voice index is
         basically the sequence of voices in the note preview. Therefore
         the %%score directive also influcnces the voice index.
+
     s
     :   List of synclines to be shown. It is an array of array integers
         denoting the voice pairs for which synchlines shall be drawn.
+
     f
     :   List of flowlines to be shown. It is an array of integers
-    sf  
+
+    sf
     :   List of subflowlins to be shown. It is an array of intenters.
-        Subflowlines are flowlines connecting notes which otherwise
-        have no corresponding note in other displayed voices and therefore
-        would appear as single notes lost in space (without anny connection).
+        Subflowlines are flowlines connecting notes which otherwise have
+        no corresponding note in other displayed voices and therefore
+        would appear as single notes lost in space (without anny
+        connection).
+
     startpos
-    :   the vertical position to start with the first note. It is an integer.
+    :   the vertical position to start with the first note. It is an
+        integer.
+
     j
     :   List of jumplines to be shown. It is an array of integers
+
     l
     :   List of voices to consider for vertical layout optimization.
         Defaults to the List specified by v
 
-3.  control the position of the legend
+4.  control the position of the legend
 
-        %%%%hn.legend [10,10] 
+        %%%%hn.legend {"pos": [10,10]}
 
     where parameter is the legend position in mm from top left
 
-4.  augment the content of the legend
+5.  augment the content of the legend
 
     The content of the legend is derived from the ABC metadata. You can
     append content to the particular lines by defineing an annotation
@@ -105,17 +115,22 @@ The specific conventions in detail are as follows:
     adds a note to the legend entry for "K:" which is the key of the
     music
 
-5.  sheet based annotations
+6.  sheet based annotations
 
-    %%%%hn.note ["foobar", [10, 10], "large"]
+    %%%%hn.note {"pos": [10,10]. "text": "foobar", "style": "large"]
 
     Parameters:
 
-    1.  Text
-    2.  position in mm from top left
-    3.  Textstyle "regular" | "large"
+    pos
+    :   Position im mm from top left
 
-6.  Note bound annotations
+    text
+    :   The content of the note
+
+    style
+    :   Textstyle: "regular" | "large"
+
+7.  Note bound annotations
 
     1.  you can define referrable annotations as
 
@@ -130,14 +145,13 @@ The specific conventions in detail are as follows:
 
         `"^#10@10,10"` adds the content of hn.annotation with id: "10"
         (see 1.) at position 10,10 from note.
-        
-7.  Lyrics
 
-    Zupfnoter supports placement of lyrics by `w: lyrics` lines in ABC. You can control the position of lyrics by
-    
+8.  Lyrics
+
+    Zupfnoter supports placement of lyrics by `w: lyrics` lines in ABC.
+    You can control the position of lyrics by
+
         %%%%hn.lyrics {"pos": [50,50]}
-        
-        
 
 # Licencse
 
