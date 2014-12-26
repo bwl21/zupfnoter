@@ -10,12 +10,27 @@ module Harpnotes
     # @return [object] The javascript object for Ace
     def initialize(div)
       %x{
+        // see http://stackoverflow.com/questions/13545433/autocompletion-in-ace-editor
+        //     http://stackoverflow.com/questions/26991288/ace-editor-autocompletion-remove-local-variables
+        var langTools = ace.require("ace/ext/language_tools");
+        langTools.setCompleters([langTools.snippetCompleter])
+
         var editor = ace.edit(div);
-        // editor.setTheme("ace/theme/tomorrow_night");
+        editor.$blockScrolling = Infinity;
+
+        editor.setTheme("ace/theme/chrome");
+        editor.getSession().setMode("ace/mode/abc");
+
+        editor.setTheme("ace/theme/xcode");
+
+        editor.setOptions({
+          highlightActiveLine: true,
+          enableBasicAutocompletion: true,
+          enableSnippets: true,
+          enableLiveAutocompletion: false        });
       }
       @editor = `editor`
     end
-
 
 
     #
@@ -25,11 +40,10 @@ module Harpnotes
     # @return [type] [description]
     def on_change(&block)
       # changes in the editor
-      Native(Native(@editor).getSession).on(:change){|e|
+      Native(Native(@editor).getSession).on(:change) { |e|
         block.call(e)
       }
     end
-
 
     #
     # Install a handler for "selectionChange" event
@@ -75,7 +89,8 @@ module Harpnotes
         endrange = doc.indexToPosition(selection_end);
         range = new Range(startrange.row, startrange.column, endrange.row, endrange.column);
         myrange = {start:startrange, end:endrange}
-        self.editor.selection.setSelectionRange(myrange, false);
+        #{@editor}.focus();
+        #{@editor}.selection.setSelectionRange(myrange, false);
       }
     end
 

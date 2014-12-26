@@ -1,0 +1,348 @@
+X:1
+T:Zupfnoter test - Twostaff.abc
+C:Bernhard Weichel
+M:4/8
+L:1/16
+Q:1/4
+K:G
+%%score T1 T2 (B1 B2)
+V:T1           clef=treble-8  name="v1"   snm="v1"
+V:T2           clef=treble-8  name="v2"   snm="v2"
+%V:B1  middle=D, clef=bass      name="Basso I"    snm="B.I"  transpose=-24
+%V:B2  middle=D, clef=bass      name="Basso II"   snm="B.II" transpose=-24
+%            End of header, start of tune body:
+% 1
+[V:T1]  cde2 | gab2 |
+[V:T2]  CDEF | GABc  |
+[V:B1]  C2,E,F, | G,2B,C |
+[V:B2]  C,,D,,E,,F,, | G,,A,,B,,C, |
+
+
+X:1
+T:Zupfnoter test parts
+C:Bernhard Weichel
+M:4/4
+L:1/16
+Q:1/4
+K:G
+%%score (T1 T2) (B1 B2)
+V:T1           clef=treble-8  name="v1"   snm="v1"
+V:T2           clef=treble-8  name="v2"   snm="v2"
+%V:B1  middle=D, clef=bass      name="Basso I"    snm="B.I"  transpose=-24
+%V:B2  middle=D, clef=bass      name="Basso II"   snm="B.II" transpose=-24
+%            End of header, start of tune body:
+% 1
+[V:T1]  [P:Part 1] [G,,16g16] | [G,,16g16] |[g G,, G, G] C D E F G A B c d e f g a b c'|
+[V:T2]  z16 | z16 | D            F F F =F F F D D D D D D D D D |
+[V:T1]  EE F2 (G3G1) (A4A4)                  |(B6B2) c8                    |
+[V:T2]  D D D D D D D D D D D D D D D D | D ^D D D D D D D =D D D D _D D D D |
+P: Part2
+[V:T1]  d12 d4                          | e16                             |
+[V:T2]  D D D D D D D D D D D D D D D D | D D D D D D D D D D D D D D D D |
+%[V:B1]  z4              | C,D,E,F,    | z4           |
+%[V:B2]  C,,D,,E,,F,,    | G,,A,,B,,C  | z4           |
+X:1
+T:Zupfnoter test pausen
+C:Bernhard Weichel
+M:4/4
+L:1/16
+Q:1/4
+K:G
+Cz1 D2z2 E3z3 F4z4 G6 z6 A8 z8 B12 z12 c16 z16 
+
+X:74
+T:O Haupt voll Blut und Wunden
+C:BWV 244-54
+M:C
+L:1/4
+K:F
+V:1
+A|d c B A|G2 HA e|f f e/d/ e|Hd3:|f|e/d/ c d e|f2 Hf c|d c B/A/ B|HA3 f|e/f/ g f e|d2 He A|B A G c|HA3|]
+V:4 clef=bass 
+D/C/|B,"6"A,G,F,|"6;5"B,,C,HF,"6"^C,|"2"D,/E,/ "6"F,/G,/"4"A,"#"A,,|HD,3:|D,|"6"G,"7"A,"2"B,/A,/"6"G,|"6;4"F,2HF,F,|B,"4+"^F,G,G,,|"#"HD,3"4+"=B,,|C,C/B,/"6"A,"6;4"G,|"6;5"F,"#"G,HC,F,|G,"6"A,/B,/"4"CC,|HF,3|]
+
+
+X:330
+T:Nun danket alle Gott
+C:BWV 252
+L:1/8
+M:4/4
+K:Gmaj
+V:1
+d2|d2 d2 e2 e2|Hd6 B2|c2 B2 A2 Bc|A4 HG2:|
+A2|A2 A2 B2 B2|HA6 A2|B^c d2 d2 c2|Hd6 d2|
+e2 d2 c2 B2|Hc6 B2|A2 Bc A2- AG|HG6|]
+V:4 clef=bass
+G,2|"6"F,2 G,2 C,D, "6"E,C,|HG,6 G,2|"2"G,F, G,2 D,C, "6"B,,E,|"6"C,B,,/2C,/2 D,2 HG,,2:|
+D,E,|"6"F,E, "-5"F,D, G,,A,, "6"B,,C,|HD,6 D,2|G,2"6"F,B, G,E, "#"A,A,,|HD,6 G,2|
+C,2 G,=F, "6""5"E,F, "b"D,E,|HA,,6"6"B,,G,,|D,F, G,C, D,2"7"D,,2|HG,,6|]
+
+X:235
+T:Heilig, heilig
+C:BWV 325
+L:1/8
+M:4/4
+K:Fmaj
+V:1
+c2 A2 G4|HF4 c2 d2|Hc4 f2 f2|e2 e2 d3 c|
+Hc4 c2 d2|c2 B2 HA4|z2 G2 A=B c2|c2 =B2 Hc4|
+c2 d2 B2 B2|A2 B2 A2 G2|HF4 z2 A2|G4 HF2 c2|c2 =B2 Hc2 f2|
+f2 e2 d4|Hc4 c2 dc|B2 B2 A2 BA|G4 HF4|]
+V:4 clef=bass
+F,G, "6"A,B,"4"C4|HF,4"6"EC GG,|HC4 DC "4+"=B,G,|"2"CE AG "6""5"FD "#"GG,|
+HC4 F2 B,2|C2"6"DE HF4|z2 CE FG AG|"6""5"FD "#"GG, HC4|
+FE DF GF "4+"EC|"2"FE "6"DB,"6""4"C2 C,2|HF,4 z2 F2|"4"C4 HD2"6"E2|"6""5"F2"#"G2 HA2"6"A2|
+"4+"=B2"2"c2"6""5"F2"#"G2|HC4 FE DF|GF "4+"EC FE "6"DC|"6""5"B,G, C2 HF,4|]
+
+
+
+
+
+
+
+X: 463
+T: Green Fields of France
+H: Created 2013-02-19 /  Modified 2013-12-08
+P: B1-S-B1-S-B1-S(Solo)-S-B2-B1                % play the parts in this order
+%%score (M1) (M2)
+V:M1  clef=treble  
+V:M2  clef=treble    
+M: 3/4
+R: song
+L: 1/8
+K: Fmaj
+%            End of header, start of tune body:
+P:Intro, Bridge 1 (B1) 
+[V:M1] "F"!5!A4 G2| "dm"!3!F4 E2 | "B" !1!D6 | -!2!D2-DCD!3!F|"C"!4!G6| -G4 FE| "F"F6| -F2 z4|
+[V:M2] !3!!5![F4A] [E2G] | !1!!3![D4F] !1!!3![C2E] | !1!!2![B,6D] | -[B,6D]|  !1!!4![C6F] | !1!!3!-[C6E] | !1!!4![C6F]| -[C2F] z4 |
+P:Song (S) 
+[V:M1] !1!A,!2!B,|"F"!3!C4 !2!C2| "dm"!5!F4 E2|"gm"!3!D4 B,2|!1!G,4 !4!F2|"C"!2!E4 F2|!4!G2A2G2|"B"!3!F2 !1!B,2 !3!D2|"F"!2!C4 !1!A,!2!B,|
+[V:M2] z2 |[A,6C]| !3!!5![D4F] !2!!4![C2E] | !1!!3![B,6D] | -[B,6D] | [C6E] | -[C6E] | [B,6D] | [A,6C] |
+[V:M1] "F"!3!C4 !2!C2| "dm"!5!F4 E2|"gm"!3!D4 B,2|!1!G,4 !4!F2|"C"!2!E4 F2|!4!G2A2G2|"B"F2 F2 G2|"F"F4 AB|
+[V:M2] [A,6C]| [D4F] [C2E] | [B,6D] | -[B,6D] | [C6E] | -[C6E]  |[D6F]| [C6F] |
+[V:M1]"F"!5!c4 c2 | "dm"c2 B2 A2|"gm"!2!G2 G2 A2|!4!B6|"C"!2!G4 A2|B2 A2 G2|"dm"F2 G2 A2|"C"G6| -G6 |
+[V:M2] [F4A] [E2G] | [D4F] [C2E] | [B,6D] | -[B,6D] | [C6F] |  -[C6E] | [D6F] | [C6G]| -[C6G]|
+[V:M1]"F"c4c2|"dm"c2 B2 A2|"gm"G2 G2 F2|"B"D4 F2|"C"[E4G] [F2A]|[G4B] AG|1 "Verse 1-3""B"F2 F2 G2|"F"F4 EF|2 "Verse 4""B"F4FF |F4FF| F2z4|
+[V:M2] [F4A] [E2G] | [D4F] [C2E] | [B,6D] | -[B,6D] | [C6F] |  -[C6E] |1 [B,6F] | [A,6F] |2"B"[B,6F] -|[B,6F]| -[B,6F]|
+[V:M1]"C"G4 G2|G2 A2 B2|"B,"B3c B2|"F"A2 F4|"C"G4 G2|G2 z2B2|"B"B3c B2|"C"G6| -G6|
+[V:M2] !1!!3![C6G] |  !1!!2!-[C6G] |  !2!!4![F6B] |  !1!!4![C2A] !1!!2!-[C4F] | !1!!3![C6G] |  -[C2G] z4 | !2!!4![F6B]| !1!!3![C6G] |  -[C6G] |
+[V:M1]"B"!4!B4 B2|B3 c B2|"F"!3!A6|"dm"-A4G2| !1!F2 G2A2|A2 B2 A2|"C"!2!G3G !1!F!2!E|"F"!3!F6|-F2 z4|
+[V:M2] !2!!4![F6B] | -[F6B] | !1!!4![C6A] | !1!!4!-[D6A] | !1!!2![D6F] | -[D6F]|!1!!4![C6G]| [C6F]  |  -[C2F] z4 |
+P: Bridge 2 (B2) 
+[V:M1] |:"C"z6| z6 | "B" z6|"F" z6| "C"z6| z6 | "B" z6|"F" z6 :|
+[V:M2] |:!1!!5![C6G] | -[C6G] | !1!!4![B,6F] | !1!!3![C6F] |!1!!5![C6G] | -[C6G] | !1!!4![B,6F] | !1!!3![C6F] :|
+
+
+X:1
+T:Nothing else Matters
+C:MetallicA
+Z:arae69
+M:6/8
+L:1/8
+Q:1/4=90
+K:G
+E,G,B, EB,G,:|E,G,B, EB,B|
+E,B,G, B/2E/2B,G,|E,G,B cBA|BA/2F/2E A,CE|F/2E/2EC A,CE|
+EA,A, C,C,/2C/2E/2C/2|G/2E/2E/2C/2C, D,D,/2D/2F/2D/2|E/2A/2F/2B,/2B,/2E/2 E,GB|eB,G, E,G,B,|
+EB,G, E,G,B,|EB,G, E,G,B,|EB,G, E,3/2E,/2B,/2E/2|G3 D,A,F|
+C,G,C E,3/2E,/2B,/2E/2|B3 D,A,F|C,G,C E,3/2E,/2B,/2E/2|G3 D,A,F|
+C,G,E G,G,D|B,F,^D E,G,B,|EB,G, E,G,B,|EB,G, E,G,B,|
+GG,/2E/2B,/2G,/2 D,D,/2G/2=D/2G,/2|C,D/2G,/2G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 FD,/2D/2A,/2G,/2|C,G,/2D/2G,/2F,/2 E,G,B,|
+GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,DG, G,G,G|B,B,/2F/2B, E,G,B,|EB,G, E,G,B,|
+EB,G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,D/2G,/2G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2D/2A,/2G,/2|
+DG,/2D/2G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,DG, G,G,D|B,B,/2F/2B, E,G,B,|
+EB,G, E,G,B,|EB,G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,D/2G,/2G,/2F,/2 E,G,B,|
+GG,/2E/2B,/2G,/2 D,D,/2D/2A,/2G,/2|C,G,/2D/2G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,DG, G,G,G|
+B,B,/2F/2B, E,G,B,|EB,G, C,3|A,3/2z3/2 F3/2F/2F/2F/2|G/2FGF/2 E3|
+^C3 F3/2F/2F/2F/2|G/2FGF/2 E3|^C3 FF/2F/2F|E,G,B, EB,G,|
+E,G,B, EB,G,|E,G,B, GG,/2E/2B,/2G,/2|D,D,/2G/2D/2G,/2 C,D/2G,/2G,/2F,/2|E,G,B, GG,/2E/2B,/2G,/2|
+D,D,/2D/2A,/2G,/2 C,G,/2D/2G,/2F,/2|E,G,B, GG,/2E/2B,/2G,/2|D,D,/2G/2D/2G,/2 C,DG,|G,G,G A,A,/2F/2B,|
+E,G,B, EB,G,|C,3 zB,2|F3/2F/2F/2F/2 G/2FGF/2|E3 ^C3|
+F3/2F/2F/2F/2 G/2FGF/2|E3 ^C3|FF/2F/2F E,G,B,|EB,G, E,G,B,|
+EB,G, eB2|fB2 gB2|aB2 cE=C|cEC zCE|
+cEC ECG,-|G,EC EDA,-|A,ED E/2B/2B,G,|B/2E/2B,G, E,G,B,|
+E3 eB2|fB2 gB2|aB2 cEC|cEC zCE|
+cEC ECG,-|G,EC EDA,-|A,ED E/2B/2B,G,|B/2E/2B,G, E,G,B,|
+EB,G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,D/2G,/2G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2D/2A,/2G,/2|
+C,G,/2D/2G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,DG, G,G,G|B,B,/2F/2B, E,G,B,|
+EB,G, E,G,B,|EB,G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,D/2G,/2G,/2F,/2 E,G,B,|
+GG,/2E/2B,/2G,/2 D,D,/2D/2A,/2G,/2|C,G,/2D/2G,/2F,/2 E,G,B,|GG,/2E/2B,/2G,/2 D,D,/2G/2D/2G,/2|C,DG, G,G,G|
+B,B,/2F/2B, E,G,B,|EB,G, C,3|A,3/2z3/2 F3/2F/2F/2F/2|G/2FGF/2 E3|
+^C3 F3/2F/2F/2F/2|G/2FGF/2 E3|^C3 F3/2F/2F/2F/2|G/2FGF/2 E3|
+^C3 F3/2F/2F/2F/2|G/2FGF/2 E3|^C3 FF/2F/2F|E,G,B, EB,G,|
+E,G,B, EB,G,|d2A G2A/2G/2|F/2G/2F/2E/2F/2D/2 E3/2G/2A/2G/2|A/2B/2e/2A/2B/2e/2 d/2B/2^A/2B/2^A/2=A/2|
+G3/2EA/2 ^G/2=G2-G/2|gfB gfa|g/2g/2e/2B/2g/2f/2 B3/2G/2A/2G/2|AE/2G/2A/2B/2 ed/2d3/2|
+E,G,B, EB,G,|E,G,B, EB,G,|E,G,B, EB,G,|E,G,B, EB,G,|
+E,G,B, GG,/2E/2B,/2G,/2|D,D,/2G/2D/2G,/2 C,D/2G,/2G,/2F,/2|E,G,B, GG,/2E/2B,/2G,/2|D,D,/2D/2A,/2G,/2 C,G,/2D/2G,/2F,/2|
+E,G,B, GG,/2E/2B,/2G,/2|D,D,/2G/2D/2G,/2 C,DG,|G,G,G B,2B,|E,G,B, EB,G,|
+E,G,B, EB,B|E,B,G, B/2E/2B,G,|E,G,B cB/2c/2A/2B/2-|B/2A/2G/2EE,G,B,E/2-|
+E/2B,G,E,G,B,E/2-|E/2B,BE,B,G,B/2|E/2B,G,E,G,Bc/2-|c/2B/2c/2A/2B A/2G/2EE,|
+G,B,E B,G,E,|G,B,E B,BE,|B,G,B/2E/2 B,G,E,|G,Bc B/2c/2A/2BA/2|
+G/2EE,G,B,EB,/2-|B,/2G,E,G,B,EB,/2-|B,/2B
+
+
+X: 2
+T: Highland Cathedral
+R: strathspey
+M: 4/4
+L: 1/8
+K: Gmaj
+|:G2 GA/B/ AG DG | A2 AB B2 B2 | B2 Bc/d/ cB AG | A2 AB D4 |
+E2 EF/G/ GD FG | d2 dc B4 | A2 AB/c/ BG DG | A2 AG G4 ||
+|:F2 FD A2 AF/A/ | B2 BF F2 FE | D2 D/E/F E4| F2 FG/A/ E4 |
+F2 FD A2 AF/A/ | B2 BF F2 FE | D2 D/E/F E2>D2| D8 |]
+
+
+X: 2
+T: Highland Cathedral (Bernhard)
+R: strathspey
+M: 4/4
+L: 1/8
+K: Gmaj
+|:G3 A/B/ AG DG | A3 B B4 | B3 c/d/ cB AG | A3 B D4 |
+  E3 F/G/ GD FG | d3 c B4 | A3 B/c/ BG DG | A3 G G4 :||
+|:F3 D/F/  A3 F/A/ | B3 F F3 E | D3 E/F/ E3| F2 FG/A/ E4 :|
+  F3 D/F/  A3 F/A/ | B3 F F2 FE | D2 D/E/F E2>D2| D8 |]
+
+
+X:2
+T:Highland Cathedral (Bernhard)
+R:strathspey
+M:4/2
+L:1/4
+K:Ebmaj
+%%score T1 T2 B1 B2
+V:T1           clef=treble-8  name="v1"   snm="v1"
+V:T2           clef=treble-8  name="v2"   snm="v2"
+V:B1  middle=D, clef=bass      name="Basso I"    snm="B.I"  transpose=-24
+V:B2  middle=D, clef=bass      name="Basso II"   snm="B.II" transpose=-24
+[V:T1] |: E3      F/2G/2 FE B,E   | F3      G G4            | G3     A/2B/2 AG FE    | F3       G B,4               |
+          C3      D/2E/2 EB, DE   | B3      A G4            | F3     G/2A/2 GE B,E   | F3       E E4               :|
+       |: D3      B, F3 D/2F/2    | G3      D D3 C          | B,3    C/2D/2 C4       | D3       E/2F/2 C4          :|
+          D3      B, F3 D/2F/2    | G3      D D3C           | B,2    B,/2C/2D C2>B,2 | (B,4B,4)                     |]
+[V:T2] |: B,2     B,2 B,4         | D2      D2 E4           | E4     E4              | F4       F4                  |
+          E4      E4              | F2      F2 E4           | F4     E4              | D4       B,4                :|
+       |: B,4     C4              | B,4     B,4             | G,4    F2F2            | F4       F2 F2              :|
+          B,4     C4              | B,4     B,4             | G,4    F4              | [EB]2    [EB]2 [EB]2 [EB]2   |]
+[V:B1] |  [B,G,]2 [B,G,]2 [B,G,]4 | [G,B,]2 [G,B,]2 [E,B,]4 | [G,C]4 [G,e,]4         | [=A,C]4  [F,D]4              |
+[A,C]4
+  
+X:2
+T:Highland Cathedral
+C:Harpnotes by Bernhard Weichel
+R:strathspey
+M:4/2
+L:1/4
+%Q:1/4=120
+K:Gmaj
+%%%%hnc {"jumplines": ["T1", "B1"]}
+%%%%hnc {"flowlines": ["T1", "B1"]}
+%%%%hnc {"synchlines": [["T1", "T2"], ["B1", "B2"]]}
+%%%%hnc {"print": { ["T1", "T2"], ["B1", "B2"]}}
+%%%%hnc {"legendpos": [10,10]}
+%%%%hna {"das ist ein titel", [30,30]}
+%%%%hna {"das ist ein titel", [270,30]}
+%%score (T1 T2)  (B1 B2)
+V:T1 clef=treble-8 octave=-1 name="v1" " " snm="v1" 
+V:T2 clef=treble-8 octave=-1 name="v2" " " snm="v2" 
+V:B1 clef=bass transpose=-24 name="Basso I" middle=D, " " snm="B.I" 
+V:B2 clef=bass transpose=-24 name="Basso II" middle=D, " " snm="B.II" 
+P:Teil 1
+[V:T1] |: "^:Teil 1"G3 A/2B/2 AG DG | A3 B B4 | B3 c/2d/2 cB AG | A3 B D4 |
+E3 F/2G/2 GD FG | d3 c B4 | A3 B/2c/2 BG DG | A3 G G4 !fine!:|
+P:Teil 2
+|: F3 D A3 F/2A/2 | B3 F F3 E | D3 E/2F/2 E4 | F3 G/2 A/2 E4 :|
+F3 D A3 F/2A/2 | B3 F F3E | D2 D/2E/2F E3D | D4 "^@Teil 1"D4 |]
+%
+[V:T2] |: "^:Teil 1"D2 D2 D4 | F2 F2 G4 | G4 G4 | A4 A4 |
+G4 G4 | A2 A2 G4 | A4 G4 | F4 D4 :|
+|: D4 E4 | D4 D4 | B,4 A2A2 | A4 A2 A2 :|
+P:Teil 2
+D4 E4 | D4 D4 | B,4 A4 | [Ad]2 [Ad]2 [Ad]2 "^@Teil 1"[Ad]2 |]
+[V:B1] |: D2 D2 D4 | D2 D2 D4 | E4 G4 | E4 F4 |
+E4 D4 | F4 E4 | E4 D4 | D4 D4 :|
+z D/2F/2 A2 z ^C/2E/2 A2 | z B,/2D/2 F2 z D/2F/2 F2 | G2 G2 E2 E2 | D2 D2 E2 E2 :|
+z D/2F/2 A2 z ^C/2E/2 A2 | z B,/2D/2 F2 z D/2F/2 F2 | G2 G2 E2 E2 | F2 F2 F2 F2 |]
+%
+%
+[V:B2] |: G,,4 G,,4 | D,4 G,2 G, F, | E,4 D,4 | A,,2 ^C,2 D,4 |
+C,4 B,,4 | D,3 ^D, E,3 =D, | C,4 G,4 | D,4 G,4 :|
+|: D,4 A,,4 | B,,4 A,4 | G,4 A,4 | D,4 A,4 :|
+D,4 A,,4 | B,,4 A,4 | G,4 A,4 | D,4 A,4 |]
+
+
+
+X:1
+T:Stern auf den ich schaue
+C:Notensatz: Bernhard Weichel
+M:4/4
+L:1/4
+Q:1/4
+K:F
+%%score (T1 T2) (B1 B2)
+V:T1           clef=treble-8  name="v1"   snm="v1"
+V:T2           clef=treble-8  name="v2"   snm="v2"
+%V:B1  middle=D, clef=bass      name="Basso I"    snm="B.I"  transpose=-24
+%V:B2  middle=D, clef=bass      name="Basso II"   snm="B.II" transpose=-24
+%            End of header, start of tune body:
+% 
+[V:T1]   A3/2 B/ G E | F2 C z | B3/2 c/ A F | G3 z | A3/2 A/ =B B | c2 A F | 
+[V:T1]   E3/2 E/ F D | C3 z | B3/2 c/ A F | A2 G z | d3/2 c/ c/B/ B/A/ | G3 z |
+[V:T1]  |: c3/2 c/ f e | e d B G  | F3/2 F/ A G | F3/2 z :|
+%
+[V:T2]   F3/2 G/ E C      | A,2 C z | G3/2  E/ F C | C3 z | C3/2 C/ F F | E2 C2 |
+[V;T2]  C3/2 C/ =B, B,  |  C3 z   |  G3/2 E/ F C | C2 C z | F3/2 F/ G G/F/ | E3  z|
+[V:T2]  |: C3/2 F/ A G | F2 D2  | C3/2 C/ E E | F3/2 z:|
+
+
+X:1
+T:Für den König
+C:Albert Frey
+M:4/4
+L:1/8
+K:Amaj
+%%score (T1 T2) (B1 B2)
+V:T1           clef=treble-8  name="v1"   snm="v1"
+%V:T2           clef=treble-8  name="v2"   snm="v2"
+%V:B1  middle=D, clef=bass      name="Basso I"    snm="B.I"  transpose=-24
+%V:B2  middle=D, clef=bass      name="Basso II"   snm="B.II" transpose=-24
+%            End of header, start of tune body:
+[V:T1]  C3/2E/ | F2F4 B,3/2C/ | C6 C3/2E/ |
+[V:T1]  F2 F4 B,3/2C/ | C4 C3/2E/ F2 F4 G3/2E/ |
+[V:T1]  A6 A3/2G/ | F2 F3/2E/ D2 D3/2C/ | B,6 C3/2E/ |
+[V:T1]  F2 F4 B,3/2C/ | C6 C3/2E/ | F2 F4 B,3/2C/
+[V:T1]  C6 C3/2E/ | F2 F4 G3/2E/ | A6 A3/2G/ |
+[V:T1]  F2 F3/2E/ D2 D3/2C/ | B,6 E3/2G/ || A2A4 G3/2E/ |
+[V:T1]  A2 A4 A3/2G/ F2 F3/2E/ D2 D3/2C/ | C6 C3/2G/ |
+[V:T1]  A2A4 B3/2E/ | c2 c4 c3/2B/ | A2 A3/2G/ F2 F3/2 E/ | E6 :|]
+[V:T1]  C3/2 E/ | F2 F4 B,3/2A,/ | A,6 |]
+
+
+X:1
+%%score  (v1) (v2 v3) (v4)
+%%%%hn.print {"t":"all",         "v":[1,2,3,4], "s":[[1,2],[3,4]], "f":[1,3], "j":[1]}
+%%%%hn.print {"t":"sopran, alt", "v":[1,2],     "s":[[1,2]],       "f":[1],   "j":[1,2]}
+%%%%hn.print {"t":"tenor, bass", "v":[3,4],     "s":[[3,4]],       "f":[3],   "j":[3,4]}
+%%%%hn.legend [10,10]
+%%%%hn.note ["foobar", [10, 10], "bold"]
+%
+%V:v1 name="hugo1" snm="shugo1"
+%V:v2 name="hugo2" snm="shugo2"
+%V:v3 name="hugo3" snm="shugo3"
+%[V:v1]c'd'1
+[V:v1]cc1
+[V:v2]c2c2
+[V:v3]C3C3
+[V:v4]C,4C,4
+%
+[V:v2]dc2
+[V:v3]ec3
+[V:v4]ec4
+[V:v1]cccc
+%
+[V:v4]DDD
+[V:v1]DDD
+[V:v2]DDD
+[V:v3]DDD
+
+

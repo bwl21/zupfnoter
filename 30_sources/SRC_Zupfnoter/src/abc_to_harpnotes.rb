@@ -91,12 +91,13 @@ module Harpnotes
 
       def initialize
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
-        @jumptargets = {} # the lookup table for jumps
-        @annotations = {} # the lookup table for note bound anotations
+        @abc_code=nil
         reset_state
       end
 
       def reset_state
+        @jumptargets = {} # the lookup table for jumps
+
         @next_note_marks = {measure: false,
                             repeat_start: false,
                             variant_ending: nil}
@@ -133,7 +134,7 @@ module Harpnotes
         #$log.debug("#{hn_config_from_song} (#{__FILE__} #{__LINE__})")
         hn_config_from_song[:print] = [{}] unless hn_config_from_song[:print]
 
-        hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
+        #hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
         hn_config_from_song
       end
 
@@ -162,6 +163,7 @@ module Harpnotes
       #
       # @return [Harpnotes::Music::Song] the Song
       def transform(abc_code)
+        @abc_code = abc_code
 
         # get harpnote_options from abc_code
         harpnote_options = parse_harpnote_config(abc_code)
@@ -187,10 +189,8 @@ module Harpnotes
         warnings = [Native(`warnings`)].flatten.compact
         warnings.each { |w|
           wn = Native(w)
-          lines = abc_code[1, wn[:startChar]].split("\n")
-          line_no = lines.count
-          char_pos = lines.last.length()
-          $log.warning("#{wn[:message]} at line #{wn[:line]} position #{line_no}:#{char_pos}")
+          char_pos, line_no = charpos_to_line_column(wn[:startChar])
+          $log.warning("#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]")
         }
 
         #
@@ -348,16 +348,35 @@ module Harpnotes
           resulting_options
         }
 
-        result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 15] # todo take default from config
+        legend = harpnote_options[:legend] || []
+        if legend
+          result.harpnote_options[:legend] = legend.first || {pos: [20,20]} # todo take default from config
+        end
         result.harpnote_options[:notes] = harpnote_options[:note] || []
 
-        lyrics = (harpnote_options[:lyrics]|| [{}]).first
-        result.harpnote_options[:lyrics] = {}
+        lyrics = harpnote_options[:lyrics]
+        if lyrics
+        result.harpnote_options[:lyrics] = lyrics.first
+        else
+          result.harpnote_options[:lyrics] = {}
+        end
 
         result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
-        result.harpnote_options[:lyrics][:pos] = lyrics[:pos] || [result.harpnote_options[:legend].first, result.harpnote_options[:legend].last + 40]
+        result.harpnote_options[:lyrics][:pos] = result.harpnote_options[:lyrics][:pos] || [result.harpnote_options[:legend][:pos].first, result.harpnote_options[:legend][:pos].last + 40]
 
         result
+      end
+
+      # get column und line number of abc_code
+      # based on the character position
+      #
+      # @param [Numeric] charpos character position in abc code
+      # @return [Numeric] charpos, line_no
+      def charpos_to_line_column(charpos)
+        lines = @abc_code[1, charpos].split("\n")
+        line_no = lines.count
+        char_pos = lines.last.length()
+        return char_pos, line_no
       end
 
       private
@@ -405,7 +424,8 @@ module Harpnotes
               argument = nameparts[1] || 1
               argument = argument.to_i
               if target.nil?
-                $log.error("missing target #{targetname}")
+                  col, line = charpos_to_line_column(entity.origin[:startChar])
+                  $log.error("target '#{targetname}' not found in voice at [#{line}:#{col}]")  #
               else
                 result << Harpnotes::Music::Goto.new(entity, target, distance: argument) #todo: better algorithm
               end
@@ -446,7 +466,7 @@ module Harpnotes
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
               end
             else
-              $log.error("syntax error in annotation: #{name}")
+             # $log.error("syntax error in annotation: #{name}")
             end
           end
         end
@@ -633,7 +653,7 @@ module Harpnotes
       end
 
       def transform_bar_right_repeat(bar)
-        if  @repetition_stack.length == 1
+        if @repetition_stack.length == 1
           start = @repetition_stack.last
         else
           start = @repetition_stack.pop
