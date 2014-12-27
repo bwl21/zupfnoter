@@ -1042,7 +1042,7 @@ module Harpnotes
         tempo = music.meta_data[:tempo_display]
         print_variant_title = print_options[:title]
 
-        title_pos = music.harpnote_options[:legend] || [20, 20]
+        title_pos = music.harpnote_options[:legend][:pos]
         legend_pos = [title_pos.first, title_pos.last + 7]
         legend = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
 
@@ -1061,7 +1061,7 @@ module Harpnotes
         #sheet based annotations
         music.harpnote_options[:notes].each do |note|
           #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[0], note[1], note[2])
+          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style])
         end
 
 

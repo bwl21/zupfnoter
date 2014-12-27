@@ -148,7 +148,7 @@ module Harpnotes
           hn_config_from_song[:legend] = legend[:pos] if legend[:pos]
         end
 
-        # now resturn
+        hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
         hn_config_from_song
       end
 
@@ -197,7 +197,6 @@ module Harpnotes
           var tune = parser.getTune();
           // todo handle parser warnings
           console.log(tune);
-          console.log(JSON.stringify(tune));
           console.log(JSON.stringify(tune));
         }
 
@@ -377,13 +376,21 @@ module Harpnotes
 
 
         result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 15] # todo take default from config
+        legend = harpnote_options[:legend] || []
+        if legend
+          result.harpnote_options[:legend] = legend.first || {pos: [20,20]} # todo take default from config
+        end
         result.harpnote_options[:notes] = harpnote_options[:note] || []
 
-        lyrics = (harpnote_options[:lyrics]|| [{}]).first
-        result.harpnote_options[:lyrics] = {}
+        lyrics = harpnote_options[:lyrics]
+        if lyrics
+        result.harpnote_options[:lyrics] = lyrics.first
+        else
+          result.harpnote_options[:lyrics] = {}
+        end
 
         result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
-        result.harpnote_options[:lyrics][:pos] = lyrics[:pos] || [result.harpnote_options[:legend].first, result.harpnote_options[:legend].last + 40]
+        result.harpnote_options[:lyrics][:pos] = result.harpnote_options[:lyrics][:pos] || [result.harpnote_options[:legend][:pos].first, result.harpnote_options[:legend][:pos].last + 40]
 
         result
       end
