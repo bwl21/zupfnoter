@@ -7,3 +7,5 @@ gem 'opal', '>= 0.6.0'
 gem 'opal-jquery'
 gem 'vector2d', "~> 2.1.0"
 gem 'confstruct'
+gem 'debugger'
+gem 'ruby-debug-ide19'

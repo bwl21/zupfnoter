@@ -363,7 +363,10 @@ module Harpnotes
 
         result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
         result.harpnote_options[:lyrics][:pos] = result.harpnote_options[:lyrics][:pos] || [result.harpnote_options[:legend][:pos].first, result.harpnote_options[:legend][:pos].last + 40]
-
+        config = Confstruct::Configuration.new
+        #config.push!(result.harpnote_options)
+        #$log.info(config)
+        $log.info(result.harpnote_options)
         result
       end
 
