@@ -23,7 +23,7 @@ class Confstack
   # @param [Hash] hash push a hash to the confstace
   # @return [Confstack] self
   def push(hash)
-    @confstack.push(hash)
+    @confstack.push(hash) if hash.is_a? Hash
     _flatten
     self
   end

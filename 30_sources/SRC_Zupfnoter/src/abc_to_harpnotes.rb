@@ -167,7 +167,7 @@ module Harpnotes
 
         # get harpnote_options from abc_code
         harpnote_options = parse_harpnote_config(abc_code)
-        # note that harpnot_options uses singular names
+        # note that harpnote_options uses singular names
         @annotations = (harpnote_options[:annotation] || []).inject({}) do |hash, entry|
           hash[entry[:id]] = entry
           hash
@@ -326,47 +326,49 @@ module Harpnotes
 
 
         # handle harpnote options (the %%%%hn.xxxx - coments)
-        #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
-
         result.harpnote_options = {}
+        print_options = Confstack.new
+        print_options.push($conf.get("defaults.print"))
+
+        # handle print options
         result.harpnote_options[:print] = harpnote_options[:print].map { |specified_option|
-          # todo:do a proper default handling here
+          print_options.push(specified_option)
+
           resulting_options = {
-              title: specified_option[:t] || "",
-              startpos: specified_option[:startpos] || 15,
-              voices: (specified_option[:v] || [1, 2, 3, 4]).map { |i| i-1 },
-              synchlines: (specified_option[:s] || [[1, 2], [2, 3]]).map { |i| i.map { |j| j-1 } },
-              flowlines: (specified_option[:f] || [1, 3]).map { |i| i-1 },
-              subflowlines: (specified_option[:sf] || [2, 4]).map { |i| i-1 },
-              jumplines: (specified_option[:j] || [1, 3]).map { |i| i-1 },
-              layoutlines: (specified_option[:l] ||
-                  specified_option[:v] ||
-                  [1, 2, 3, 4]).map { |i| i-1 } # the lines for layout optimization
+              title: print_options.get('t'),
+              startpos: print_options.get('startpos'),
+              voices: (print_options.get('v')).map { |i| i-1 },
+              synchlines: (print_options.get('s')).map { |i| i.map { |j| j-1 } },
+              flowlines: (print_options.get('f')).map { |i| i-1 },
+              subflowlines: (print_options.get('sf')).map { |i| i-1 },
+              jumplines: (print_options.get('j')).map { |i| i-1 },
+              layoutlines: (print_options.get('l') || print_options.get('v') ).map { |i| i-1 } # these voices are considered in layoutoptimization
           }
+
+          # checking missing voices
           missing_voices = (resulting_options[:voices] - resulting_options[:layoutlines]).map { |i| i + 1 }
           $log.error("hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}") unless missing_voices.empty?
+
+          print_options.pop
           resulting_options
         }
 
-        legend = harpnote_options[:legend] || []
-        if legend
-          result.harpnote_options[:legend] = legend.first || {pos: [20,20]} # todo take default from config
-        end
+        # legend
+        print_options = Confstack.new
+        print_options.push($conf.get('defaults.legend'))
+        print_options.push(harpnote_options[:legend])  if harpnote_options[:legend]
+        result.harpnote_options[:legend] = print_options.get
+
+        # lyrics
+        print_options = Confstack.new
+        print_options.push($conf.get('defaults.lyrics'))
+        print_options.push(harpnote_options[:lyrics])  if harpnote_options[:lyrics]
+        result.harpnote_options[:lyrics] = print_options.get
+        result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
+
+        # notes
         result.harpnote_options[:notes] = harpnote_options[:note] || []
 
-        lyrics = harpnote_options[:lyrics]
-        if lyrics
-        result.harpnote_options[:lyrics] = lyrics.first
-        else
-          result.harpnote_options[:lyrics] = {}
-        end
-
-        result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
-        result.harpnote_options[:lyrics][:pos] = result.harpnote_options[:lyrics][:pos] || [result.harpnote_options[:legend][:pos].first, result.harpnote_options[:legend][:pos].last + 40]
-        config = Confstruct::Configuration.new
-        #config.push!(result.harpnote_options)
-        #$log.info(config)
-        $log.info(result.harpnote_options)
         result
       end
 

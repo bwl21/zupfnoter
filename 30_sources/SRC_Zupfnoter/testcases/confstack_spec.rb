@@ -90,6 +90,15 @@ describe 'Confstack' do
 
   end
 
+  it "survives to push nil" do
+    conf = Confstack.new
+    source = {a: {b: {c: "c", d: "d"}}}
+    conf.push(source)
+    conf.push(nil)
+    expect(conf.get).to eq source
+
+  end
+
   it 'loads from yaml file' do
     conf = Confstack.new
     conf_yaml = File.open("../src/default_profile.yaml").read

@@ -2,7 +2,6 @@ require 'opal'
 require 'opal-jquery'
 require 'vector2d'
 require 'math'
-require 'confstruct'
 
 require 'consolelogger'
 require 'harpnotes'
@@ -22,6 +21,7 @@ require 'harpnote_player'
 require 'text_pane'
 require 'opal-dropboxjs'
 require 'opal-jqconsole'
+require 'confstack'
 require 'version'
 
 puts "now starting zupfnoter"
