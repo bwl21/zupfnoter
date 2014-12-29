@@ -46,16 +46,21 @@ table {
 
 body {
   font-family: Helvetica, Arial, sans-serif;
-  background-color: #0a425c;
+  background-color: #0A425C;
   color: white; }
+
+.marked {
+  background: url(icons/underline.gif) bottom repeat-x;
+  text-underline-mode: true;
+  position: absolute; }
 
 .container {
   overflow: hidden;
   position: absolute;
   background-color: white;
-  border-right: 1px solid #1ba5a5; }
+  border-right: 1px solid #1BA5A5; }
   .container .title {
-    background-color: #1ba5a5;
+    background-color: #1BA5A5;
     width: 100%;
     height: 2em;
     line-height: 2em;
@@ -205,7 +210,7 @@ body {
 
 #dragbar {
   cursor: col-resize;
-  color: #1ba5a5;
+  color: #1BA5A5;
   width: 5px;
   position: absolute;
   top: 31px;
