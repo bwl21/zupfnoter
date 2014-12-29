@@ -45,7 +45,7 @@ module Harpnotes
         elsif child.is_a? Harpnotes::Drawing::Path
           draw_path(child) if child.visible?
         else
-          $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
+          $log.debug "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
         end
       end

@@ -16,42 +16,80 @@ class ConsoleLogger
       :debug => :"icon-minus-squared"
   }
 
+  attr_reader :annotations
 
   def initialize(element_id)
     @console = element_id # Element.find("##{element_id}")
     @loglevel = LOGLEVELS[:info]
+    clear_annotations
   end
 
-  def error(msg)
+  def clear_annotations
+    @annotations = []
+  end
+
+
+  # emit an error message and record an annoation to mark the error position
+  # in a source text
+  #
+  # @param [String] msg the message
+  # @param [Array] start_pos start position in the source text as [row, col]
+  # @param [Array] end_pos  end position in the source text as [row, col]
+  #                             derived from start_pos if left out
+  #
+  # @return [Object] undefined
+  def error(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :error)
     write(:error, msg)
   end
 
-  def warning(msg)
+  # for documentation see : error
+  def warning(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :warning)
     write(:warning, msg)
   end
 
-  def info(msg)
+  # for documentation see : error
+  def info(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :info)
     write(:info, msg)
   end
 
-  def debug(msg)
+  # for documentation see : error
+  def debug(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :debug)
     write(:debug, msg)
   end
 
-  def message(msg)
+  # for documentation see : error
+  def message(msg, start_pos = nil, end_pos = nil)
+    add_annotation(msg, start_pos, end_pos, :message)
     write(:message, msg)
   end
 
+  # adjust the level to filter the messages
+  # @param [String] level messages below this level will be reported
+  #                 e.g. "warning" will report errors and warning only
   def loglevel=(level)
     @loglevel = LOGLEVELS[level.to_sym] || LOGLEVELS[:debug]
     $log.message("logging messages up to #{LOGLEVELS.invert[@loglevel]}")
   end
 
+  # return the loglevel
   def loglevel
     LOGLEVELS.invert[@loglevel]
   end
 
   private
+
+  def add_annotation(msg, start_pos, end_pos, type)
+    if start_pos
+      the_start = start_pos
+      the_end = end_pos || [the_start.first, the_start.last + 1]
+      @annotations << {start_pos: the_start, end_pos: the_end, text: msg, type: type}
+    end
+    nil
+  end
 
   def write(type, msg)
 

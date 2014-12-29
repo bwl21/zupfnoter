@@ -144,7 +144,7 @@ module Harpnotes
             @pdf.lines(lines, start.first, start.last, scale, "FD", true) unless lines.empty?
             lines = []
           else
-            $log.error("unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
+            $log.error("BUG: unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
         end
       end
       @pdf.stroke = [0, 0, 0]
@@ -239,7 +239,7 @@ module Harpnotes
             @pdf.lines(lines, start.first, start.last, scale, "FD", true) unless lines.empty?
             lines = []
           else
-            $log.error("unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
+            $log.error("BUG: unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
         end
       end
       @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
