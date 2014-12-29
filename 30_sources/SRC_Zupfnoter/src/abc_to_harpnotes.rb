@@ -348,7 +348,7 @@ module Harpnotes
         print_options.push($conf.get("defaults.print"))
 
         # handle print options
-        result.harpnote_options[:print] = harpnote_options[:print].map { |specified_option|
+        result.harpnote_options[:print] = (harpnote_options[:print] || [{}]).map { |specified_option|
           print_options.push(specified_option)
 
           resulting_options = {
