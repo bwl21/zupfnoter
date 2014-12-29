@@ -1152,7 +1152,7 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
             tiepath, anchor = make_annotated_bezier_path([p1, p2])
-            $log.debug([tiepath, anchor])
+            $log.debug("#{[tiepath, anchor]} (#{__FILE__} #{__LINE__})")
             result.push(Harpnotes::Drawing::Path.new(tiepath))
             result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
 

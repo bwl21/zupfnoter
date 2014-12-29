@@ -394,12 +394,12 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     end
 
     @harpnote_player.on_noteon do |e|
-      $log.debug("noteon #{Native(e)[:startChar]}")
+      $log.debug("noteon #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       highlight_abc_object(e)
     end
 
     @harpnote_player.on_noteoff do |e|
-      $log.debug("noteoff #{Native(e)[:startChar]}")
+      $log.debug("noteoff #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       unhighlight_abc_object(e)
     end
 
@@ -427,7 +427,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       key = Native(evt[:originalEvent]).key
       value = Native(evt[:originalEvent]).newValue
 
-      $log.debug("got storage event #{key}: #{value}")
+      $log.debug("got storage event #{key}: #{value} (#{__FILE__} #{__LINE__})")
       if systemstatus[:autorefresh] == :remote && key == :command && value == 'render'
         load_from_loacalstorage
       end
