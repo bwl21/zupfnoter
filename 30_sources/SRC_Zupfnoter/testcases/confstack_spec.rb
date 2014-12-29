@@ -1,5 +1,7 @@
 require 'rspec'
 require '../src/confstack'
+require 'yaml'
+require 'json'
 
 describe 'Confstack' do
 
@@ -73,18 +75,26 @@ describe 'Confstack' do
 
     conf.push({a1: "hugo", a2: {b1: {c: "ci"}}})
     mainkey = conf.keys
-    conf_flat = conf.flatten
+    conf_flat = conf.get()
+
     expect(conf_flat).to eq(
-                                {
-                                    a: {b: {c: 'cx', d: 'd'}},
-                                    a1: 'hugo',
-                                    a2: {b1: {c: 'ci'}}
-                                })
+                             {
+                                 a: {b: {c: 'cx', d: 'd'}},
+                                 a1: 'hugo',
+                                 a2: {b1: {c: 'ci'}}
+                             })
 
     conf2 = Confstack.new
     conf2.push(conf_flat)
     expect(mainkey).to eq conf2.keys
 
-    end
-
   end
+
+  it 'loads from yaml file' do
+    conf = Confstack.new
+    conf_yaml = File.open("../src/default_profile.yaml").read
+    source = YAML.load(conf_yaml)
+    conf.push(source)
+    expect(source.to_json).to eq conf.get().to_json
+  end
+end
