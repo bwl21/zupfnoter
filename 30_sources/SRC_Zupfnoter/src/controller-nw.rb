@@ -185,7 +185,7 @@ class Controller
 
       __ic_06_node_fs_commands
     rescue Exception => e
-      $log.debug "error with node webkit: #{e.message} #{e.backtrace.join('\n')}"
+      $log.debug "error with node webkit: #{e.message} #{e.backtrace.join('\n')} (#{__FILE__} #{__LINE__})"
     end
   end
 
@@ -207,7 +207,7 @@ class Controller
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         filebase = metadata[:F]
-        $log.debug(metadata.to_s)
+        $log.debug("#{metadata.to_s} (#{__FILE__} #{__LINE__})")
         if filebase
           filebase = filebase.split("\n").first
         else

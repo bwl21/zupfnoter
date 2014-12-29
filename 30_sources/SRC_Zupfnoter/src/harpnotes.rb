@@ -978,7 +978,7 @@ module Harpnotes
         # by analyzing the beat layout
         beat_layout = beat_layout || Proc.new do |beat|
           # todo: why -1
-          $log.debug("using default layout policy #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
+          # $log.debug("using default layout policy #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
           beat * @beat_spacing + @y_offset
         end
 
@@ -1108,7 +1108,7 @@ module Harpnotes
         # need to reverse such that Unisons (SyncPoints) are bound to the first note
         # as Syncpoints are renderd from first to last, the last note is the remaining
         # one inthe Hash unless we revert.
-        res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
+        # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
         lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }.reverse]
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
@@ -1157,7 +1157,7 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
             tiepath, anchor = make_annotated_bezier_path([p1, p2])
-            $log.debug([tiepath, anchor])
+            $log.debug("#{[tiepath, anchor]} (#{__FILE__} #{__LINE__})")
             result.push(Harpnotes::Drawing::Path.new(tiepath))
             result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
 

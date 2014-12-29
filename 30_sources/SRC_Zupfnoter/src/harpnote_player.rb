@@ -51,7 +51,7 @@ module Harpnotes
 
 
       def play_from_selection
-        $log.debug(@selection.to_s)
+        $log.debug("#{@selection.to_s} (#{__FILE__} #{__LINE__})")
 
         if @selection.first
           notes_to_play = @voice_elements.select do |n|

@@ -380,7 +380,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         filebase = metadata[:F]
-        $log.debug(metadata.to_s)
+        $log.debug("#{metadata.to_s} (#{__FILE__} #{__LINE__})")
         if filebase
           filebase = filebase.split("\n").first
         else
@@ -438,11 +438,11 @@ V:T2 clef=treble-8  name="Alt" snm="A"
         @dropboxclient.authenticate().then do |error, data|
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
-          $log.debug entries
+          $log.debug("#{entries} (#{__FILE__} #{__LINE__})")
           fileid = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
           @dropboxclient.read_file("#{rootpath}#{fileid}")
         end.then do |abc_text|
-          $log.debug "loaded #{fileid}"
+          $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
           filebase = fileid.split(".abc")[0 .. -1].join(".abc")
           abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
 
