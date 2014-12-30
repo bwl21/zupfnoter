@@ -92,7 +92,7 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin, :beat, :visible
+      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos
 
       def initialize
         @visible = true
@@ -100,6 +100,11 @@ module Harpnotes
 
       def visible?
         @visible
+      end
+
+
+      def start_pos_to_s
+        "[#{start_pos.first}:#{start_pos.last}]"
       end
     end
 
@@ -125,7 +130,7 @@ module Harpnotes
       #
       # @return [Numeric] The pitch of the companion
       def pitch
-        @companion.pitch
+        @companion.pitch rescue nil
       end
 
 
@@ -134,7 +139,7 @@ module Harpnotes
       #
       # @return [Numeric] Beat of the companion
       def beat
-        @companion.beat
+        @companion.beat rescue nil
       end
 
 
@@ -143,7 +148,7 @@ module Harpnotes
       #
       # @return [Numeric] Duration of the companion
       def duration
-        @companion.duration
+        @companion.duration rescue nil
       end
 
     end
@@ -465,7 +470,6 @@ module Harpnotes
           # if n_playables.compact.length >1
           #   #a = n_playables.product(n_playables).map{|p| [p.first.first, p.last.first]}
           #   b = n_playables.map{|a1| n_playables.map{|a2| [a1.first, a2.first]} }
-          #   `debugger`
           #   a = b.sort_by{|p| (p.last.pitch - p.first.pitch).abs }.first
           #   SynchPoint.new(a)
           # end
@@ -532,7 +536,8 @@ module Harpnotes
             beats = beats * tupletmap[playable.tuplet]
             beat_error = beats - beats.floor(0)
             if beat_error > 0
-              $log.error("unsupported tuplet #{playable.tuplet} #{beat_error}") # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
+              pos = playable.start_pos
+              $log.error("unsupported tuplet #{playable.tuplet} #{beat_error}", pos) # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
               beats = beats.floor(0)
             end
 
@@ -864,7 +869,7 @@ module Harpnotes
       # distance between two strings of the harp
       X_SPACING = 115.0 / 10.0
 
-      # Y coordinate of the very first beat
+      # X coordinate of the very first beat
       X_OFFSET = ELLIPSE_SIZE.first
 
       Y_SCALE = 4 # 4 mm per minimal
@@ -913,20 +918,21 @@ module Harpnotes
           :d1 => [0.05, :filled, FALSE], # 1/64
       }
 
-      REST_TO_GLYPH = {# this basically determines the white background rectangel
-                       :err => [[2, 2], :rest_1, FALSE], # 1      1
-                       :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
-                       :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
-                       :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
-                       :d24 => [[0.4, 0.7], :rest_4, TRUE], # 1/4 *
-                       :d16 => [[0.4, 0.7], :rest_4, FALSE], # 1/4
-                       :d12 => [[0.3, 0.5], :rest_8, TRUE], # 1/8 *
-                       :d8 => [[0.3, 0.5], :rest_8, FALSE], # 1/8
-                       :d6 => [[0.3, 0.4], :rest_16, TRUE], # 1/16 *
-                       :d4 => [[0.3, 0.5], :rest_16, FALSE], # 1/16
-                       :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
-                       :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
-                       :d1 => [[0.3, 0.5], :rest_64, FALSE], # 1/64
+      REST_TO_GLYPH = {
+          # this basically determines the white background rectangel
+          :err => [[2, 2], :rest_1, FALSE], # 1      1
+          :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
+          :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
+          :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
+          :d24 => [[0.4, 0.7], :rest_4, TRUE], # 1/4 *
+          :d16 => [[0.4, 0.7], :rest_4, FALSE], # 1/4
+          :d12 => [[0.3, 0.5], :rest_8, TRUE], # 1/8 *
+          :d8 => [[0.3, 0.5], :rest_8, FALSE], # 1/8
+          :d6 => [[0.3, 0.4], :rest_16, TRUE], # 1/16 *
+          :d4 => [[0.3, 0.5], :rest_16, FALSE], # 1/16
+          :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
+          :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
+          :d1 => [[0.3, 0.5], :rest_64, FALSE], # 1/64
       }
 
       def initialize
@@ -951,6 +957,11 @@ module Harpnotes
 
         print_options = music.harpnote_options[:print][print_variant_nr]
 
+        unless print_options
+          print_options = music.harpnote_options[:print][0]
+          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options[:title]}'")
+        end
+
         @y_offset = print_options[:startpos]
 
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
@@ -967,7 +978,7 @@ module Harpnotes
         # by analyzing the beat layout
         beat_layout = beat_layout || Proc.new do |beat|
           # todo: why -1
-          $log.debug("using default layout policy #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
+          # $log.debug("using default layout policy #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
           beat * @beat_spacing + @y_offset
         end
 
@@ -1031,7 +1042,7 @@ module Harpnotes
         tempo = music.meta_data[:tempo_display]
         print_variant_title = print_options[:title]
 
-        title_pos = music.harpnote_options[:legend] || [20, 20]
+        title_pos = music.harpnote_options[:legend][:pos]
         legend_pos = [title_pos.first, title_pos.last + 7]
         legend = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
 
@@ -1043,14 +1054,25 @@ module Harpnotes
         lyrics = music.harpnote_options[:lyrics]
         if lyrics
           text = lyrics[:text].join("\n")
-          pos = lyrics[:pos]
-          annotations << Harpnotes::Drawing::Annotation.new(pos, text)
+
+          if lyrics[:versepos]
+            verses = text.split("\n\n")
+            lyrics[:versepos].each do |key, value|
+              the_text =  key.scan(/\d+/).map{|i| verses[i.to_i - 1]}.join("\n\n")
+              annotations << Harpnotes::Drawing::Annotation.new(value, the_text)
+            end
+
+          else
+            pos = lyrics[:pos]
+            annotations << Harpnotes::Drawing::Annotation.new(pos, text)
+          end
+
         end
 
         #sheet based annotations
         music.harpnote_options[:notes].each do |note|
           #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[0], note[1], note[2])
+          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style])
         end
 
 
@@ -1097,7 +1119,7 @@ module Harpnotes
         # need to reverse such that Unisons (SyncPoints) are bound to the first note
         # as Syncpoints are renderd from first to last, the last note is the remaining
         # one inthe Hash unless we revert.
-        res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
+        # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
         lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }.reverse]
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
@@ -1146,7 +1168,7 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
             tiepath, anchor = make_annotated_bezier_path([p1, p2])
-            $log.debug([tiepath, anchor])
+            $log.debug("#{[tiepath, anchor]} (#{__FILE__} #{__LINE__})")
             result.push(Harpnotes::Drawing::Path.new(tiepath))
             result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
 
@@ -1176,7 +1198,7 @@ module Harpnotes
                   tiepath = make_slur_path(p1, p2)
                   result.push(Harpnotes::Drawing::Path.new(tiepath))
                 rescue Exception => e
-                  $log.error("tied chords which doesn't have same number of notes")
+                  $log.error("tied chords which doesn't have same number of notes", n.start_pos)
                 end
               end
             end
@@ -1278,7 +1300,7 @@ module Harpnotes
             begin
               size = BEAT_RESOULUTION * DURATION_TO_STYLE[duration_to_id(max_duration_on_beat)].first
             rescue Exception => e
-              $log.error("unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
 
             # we need to increment the position by the (size[i] + size[i-1])/2
@@ -1330,7 +1352,8 @@ module Harpnotes
         #               shift to left   pitch          space     stay away from border
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
-        scale, fill, dotted = DURATION_TO_STYLE[duration_to_id(root.duration)]
+
+        scale, fill, dotted = DURATION_TO_STYLE[check_duration(root)]
         size = ELLIPSE_SIZE.map { |e| e * scale }
 
         res = Ellipse.new([x_offset, y_offset], size, fill, dotted, root)
@@ -1365,7 +1388,8 @@ module Harpnotes
       def layout_pause(root, beat_layout)
         x_offset = (PITCH_OFFSET + root.pitch) * X_SPACING + X_OFFSET
         y_offset = beat_layout.call(root.beat)
-        scale, glyph, dotted = REST_TO_GLYPH[duration_to_id(root.duration)]
+        check_duration(root)
+        scale, glyph, dotted = REST_TO_GLYPH[check_duration(root)]
         size = [REST_SIZE.first * scale.first, REST_SIZE.last * scale.last]
 
         res = Harpnotes::Drawing::Glyph.new([x_offset, y_offset], size, glyph, dotted, root)
@@ -1490,12 +1514,18 @@ module Harpnotes
       def duration_to_id(duration)
         result = "d#{duration}".to_sym
         if DURATION_TO_STYLE[result].nil?
-          $log.error("unsupported duration #{result} replaced by error note")
           result = "err"
         end
         result
       end
 
+      def check_duration(root)
+        result = duration_to_id(root.duration)
+        if result === 'err'
+          $log.error("unsupported duration at #{root.start_pos_to_s}", root.start_pos, root.end_pos)
+        end
+        result
+      end
 
       #
       # draw a sheetmark to
@@ -1561,8 +1591,8 @@ module Harpnotes
         cpmm1 = (cpm1 + cpmm)/2
         cpmm2 = (cpm2 + cpmm)/2
         annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
-        annotation_anchor = annotation_anchor + [0,-4] # literal corection since now reference point is top of line
-                                                       # todo: make position configurable
+        annotation_anchor = annotation_anchor + [0, -4] # literal corection since now reference point is top of line
+        # todo: make position configurable
 
         # todo make the drawing more fancy
         slurpath = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]

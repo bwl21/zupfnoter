@@ -90,6 +90,11 @@ class Controller
 
     $log = ConsoleLogger.new(@console)
     $log.info ("Welcome to Zupfnoter #{VERSION}")
+
+    $conf = Confstack.new
+    $conf.push(_init_conf)
+
+
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
@@ -113,6 +118,7 @@ class Controller
     load_from_loacalstorage
     render_previews
 
+    setup_nodewebkit
     # now trigger the interactive UI
     setup_ui_listener
   end
@@ -131,7 +137,8 @@ class Controller
 
   # Save session to local store
   def save_to_localstorage
-    systemstatus = @systemstatus.select { |key, _| [:song, :view, :autorefresh, :loglevel].include?(key) }.to_json
+    # todo. better maintenance of persistent keys
+    systemstatus = @systemstatus.select { |key, _| [:song, :view, :autorefresh, :loglevel, :nwworkingdir].include?(key) }.to_json
     abc = `localStorage.setItem('systemstatus', #{systemstatus});`
     abc = @editor.get_text
     abc = `localStorage.setItem('abc_data', abc);`
@@ -261,8 +268,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
+    $log.clear_annotations
     @song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
-    Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
+    result = Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
+    @editor.set_annotations($log.annotations)
+    result
   end
 
   # highlight a particular abc element in all views
@@ -303,7 +313,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
   def set_status(status)
     @systemstatus.merge!(status)
-    statusmessage = @systemstatus.inject([]) { |r, v| r.push "#{v.first}: #{v.last}  "; r }.join(" | ")
+    to_hide = [:nwworkingdir]
+    statusmessage = @systemstatus.inject([]) { |r, v|
+      r.push "#{v.first}: #{v.last}  " unless to_hide.include?(v.first)
+      r
+    }.join(" | ")
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
     Element.find("#tbStatus").html(statusmessage)
@@ -333,6 +347,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       select_abc_object(abcelement)
     end
   end
+
 
   def setup_ui_listener
 
@@ -381,14 +396,13 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       end
     end
 
-
     @harpnote_player.on_noteon do |e|
-      $log.debug("noteon #{Native(e)[:startChar]}")
+      $log.debug("noteon #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       highlight_abc_object(e)
     end
 
     @harpnote_player.on_noteoff do |e|
-      $log.debug("noteoff #{Native(e)[:startChar]}")
+      $log.debug("noteoff #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       unhighlight_abc_object(e)
     end
 
@@ -396,27 +410,27 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       stop_play_abc()
     end
 
-    # key events in editor
-    Element.find(`window`).on(:keydown) do |evt|
-
-      $log.debug("key pressed (#{__FILE__} #{__LINE__})")
-      `console.log(event)`
-      if `evt.keyCode == 13 && evt.shiftKey`
-        evt.prevent_default
-        render_previews
-        `evt.preventDefault()`
-      elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
-        evt.prevent_default
-        save_file
-        `evt.preventDefault()`
-      end
-    end
+    # # key events in editor
+    # Element.find(`window`).on(:keydown) do |evt|
+    #
+    #   $log.debug("key pressed (#{__FILE__} #{__LINE__})")
+    #   `console.log(event)`
+    #   if `evt.keyCode == 13 && evt.shiftKey`
+    #     evt.prevent_default
+    #     render_previews
+    #     `evt.preventDefault()`
+    #   elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
+    #     evt.prevent_default
+    #     save_file
+    #     `evt.preventDefault()`
+    #   end
+    # end
 
     Element.find(`window`).on(:storage) do |evt|
       key = Native(evt[:originalEvent]).key
       value = Native(evt[:originalEvent]).newValue
 
-      $log.debug("got storage event #{key}: #{value}")
+      $log.debug("got storage event #{key}: #{value} (#{__FILE__} #{__LINE__})")
       if systemstatus[:autorefresh] == :remote && key == :command && value == 'render'
         load_from_loacalstorage
       end
@@ -448,6 +462,108 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
   def set_inactive(ui_element)
     Element.find(ui_element).css('background-color', 'white')
+  end
+
+  private
+
+  # returns a hash with the default values of configuration
+  def _init_conf()
+
+    {defaults: {
+        print: {t: "",                # title of the extract
+                v: [1, 2, 3, 4],      # voices to show
+                startpos: 15,         # start position of the harpnotes
+                s: [[1, 2], [2, 3]],  # synchlines
+                f: [1, 3],            # flowlines
+                sf: [2, 4],           # subflowlines
+                j: [1, 3],            # jumplines
+                l: [1, 2, 3, 4]       # lyoutlies
+        },
+        legend: {pos: [20, 20]},      # legend defaults
+        lyrics: {pos: [20, 60]}       # lyrics defaults
+    },
+     active:
+         {
+             LINE_THIN: 0.1,
+             LINE_MEDIUM: 0.3,
+             LINE_THICK: 0.5,
+             # all numbers in mm
+             ELLIPSE_SIZE: [2.8, 1.7], # radii of the largest Ellipse
+             REST_SIZE: [2.8, 2.8], # radii of the largest Rest Glyph
+
+             # x-size of one step in a pitch. It is the horizontal
+             # distance between two strings of the harp
+
+             X_SPACING: 11.5, # Distance of strings
+
+             # X coordinate of the very first beat
+             X_OFFSET: 2.8, #ELLIPSE_SIZE.first,
+
+             Y_SCALE: 4, # 4 mm per minimal
+             DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
+
+             # this affects the performance of the harpnote renderer
+             # it also specifies the resolution of note starts
+             # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
+             # in order to at least being able to handle triplets, we need to scale this up by 3
+             # todo:see if we can speed it up by using 16 ...
+             BEAT_RESOULUTION: 192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+             SHORTEST_NOTE: 64, # shortest possible note (1/64) do not change this
+             # in particular specifies the range of DURATION_TO_STYLE etc.
+
+             BEAT_PER_DURATION: 3, # BEAT_RESOULUTION / SHORTEST_NOTE,
+
+             # this is the negative of midi-pitch of the lowest plaayble note
+             # see http://computermusicresource.com/midikeys.html
+             PITCH_OFFSET: -43,
+
+             FONT_STYLE_DEF: {
+                 smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
+                 small: {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                 regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
+                 large: {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
+             },
+
+             MM_PER_POINT: 0.3,
+
+             # This is a lookup table to map durations to graphical representation
+             DURATION_TO_STYLE: {
+                 #key      size   fill          dot                  abc duration
+
+                 :err => [2, :filled, FALSE], # 1      1
+                 :d64 => [0.9, :empty, FALSE], # 1      1
+                 :d48 => [0.7, :empty, TRUE], # 1/2 *
+                 :d32 => [0.7, :empty, FALSE], # 1/2
+                 :d24 => [0.7, :filled, TRUE], # 1/4 *
+                 :d16 => [0.7, :filled, FALSE], # 1/4
+                 :d12 => [0.5, :filled, TRUE], # 1/8 *
+                 :d8 => [0.5, :filled, FALSE], # 1/8
+                 :d6 => [0.3, :filled, TRUE], # 1/16 *
+                 :d4 => [0.3, :filled, FALSE], # 1/16
+                 :d3 => [0.1, :filled, TRUE], # 1/32 *
+                 :d2 => [0.1, :filled, FALSE], # 1/32
+                 :d1 => [0.05, :filled, FALSE] # 1/64
+             },
+
+             REST_TO_GLYPH: {
+                 # this basically determines the white background rectangel
+                 :err => [[2, 2], :rest_1, FALSE], # 1      1
+                 :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
+                 :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
+                 :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
+                 :d24 => [[0.4, 0.7], :rest_4, TRUE], # 1/4 *
+                 :d16 => [[0.4, 0.7], :rest_4, FALSE], # 1/4
+                 :d12 => [[0.3, 0.5], :rest_8, TRUE], # 1/8 *
+                 :d8 => [[0.3, 0.5], :rest_8, FALSE], # 1/8
+                 :d6 => [[0.3, 0.4], :rest_16, TRUE], # 1/16 *
+                 :d4 => [[0.3, 0.5], :rest_16, FALSE], # 1/16
+                 :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
+                 :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
+                 :d1 => [[0.3, 0.5], :rest_64, FALSE] # 1/64
+             }
+         }
+    }
+
   end
 
 end

@@ -1,0 +1,11 @@
+{
+    "name": "Zupfnoter",
+    "main": "index.html",
+    "window": {
+        "toolbar": false ,
+        "resizable": true,
+        "fullscreen": false,
+        "width": 1400,
+        "height": 800
+    }
+}

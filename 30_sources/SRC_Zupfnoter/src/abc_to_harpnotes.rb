@@ -20,8 +20,13 @@ module Harpnotes
 
         @voice_accidentals = (0..6).map { |f| 0 }
         @measure_accidentals = (0..6).map { |f| 0 }
+        @on_error = lambda { |line, message|}
 
         @accidental_pitches = {'sharp' => 1, 'flat' => -1, 'natural' => 0}
+      end
+
+      def on_error(&block)
+        @on_error = block
       end
 
       # set the key of the Sheet
@@ -91,12 +96,15 @@ module Harpnotes
 
       def initialize
         @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
-        @jumptargets = {} # the lookup table for jumps
-        @annotations = {} # the lookup table for note bound anotations
+        @abc_code=nil
+        @previous_new_part = []
         reset_state
       end
 
       def reset_state
+
+        @jumptargets = {} # the lookup table for jumps
+
         @next_note_marks = {measure: false,
                             repeat_start: false,
                             variant_ending: nil}
@@ -122,18 +130,21 @@ module Harpnotes
           if entry
             begin
               parsed_entry = JSON.parse(entry.last)
+              parsed_entry[:line_no] = line_no
               hn_config_from_song[entry.first] ||= []
               hn_config_from_song[entry.first] << parsed_entry
             rescue Exception => e
-              $log.error("error in harpnote commands: #{e.message} in line #{line_no} : #{entry}")
+              message = ("error in harpnote commands: #{e.message} [#{line_no}:#{entry}]")
+              $log.error(message, [line_no, 1], [line_no, 2])
             end
           end
           line_no +=1
         end
-        #$log.debug("#{hn_config_from_song} (#{__FILE__} #{__LINE__})")
-        hn_config_from_song[:print] = [{}] unless hn_config_from_song[:print]
+
+        # cleanups
 
         hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
+        hn_config_from_song[:lyrics] = hn_config_from_song[:lyrics].first if hn_config_from_song[:lyrics] # lyrics is not an array
         hn_config_from_song
       end
 
@@ -162,10 +173,11 @@ module Harpnotes
       #
       # @return [Harpnotes::Music::Song] the Song
       def transform(abc_code)
+        @abc_code = abc_code
 
         # get harpnote_options from abc_code
         harpnote_options = parse_harpnote_config(abc_code)
-        # note that harpnot_options uses singular names
+        # note that harpnote_options uses singular names
         @annotations = (harpnote_options[:annotation] || []).inject({}) do |hash, entry|
           hash[entry[:id]] = entry
           hash
@@ -187,10 +199,9 @@ module Harpnotes
         warnings = [Native(`warnings`)].flatten.compact
         warnings.each { |w|
           wn = Native(w)
-          lines = abc_code[1, wn[:startChar]].split("\n")
-          line_no = lines.count
-          char_pos = lines.last.length()
-          $log.warning("#{wn[:message]} at line #{wn[:line]} position #{line_no}:#{char_pos}")
+          line_no, char_pos = charpos_to_line_column(wn[:startChar])
+          msg = "#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]"
+          $log.warning(msg, [line_no, char_pos], [line_no, char_pos + 1])
         }
 
         #
@@ -257,7 +268,13 @@ module Harpnotes
             hn_voice_element = self.send("transform_#{type}", el, i)
 
             unless hn_voice_element.nil? or hn_voice_element.empty?
-              hn_voice_element.each { |e| e.origin = el }
+              hn_voice_element.each do |e|
+                e.origin = el
+                start_char = el[:startChar]
+                end_char = el[:endChar]
+                e.start_pos = charpos_to_line_column(start_char) if start_char > 0
+                e.end_pos = charpos_to_line_column(end_char) if end_char > 0
+              end
             end
 
             hn_voice_element
@@ -326,38 +343,65 @@ module Harpnotes
 
 
         # handle harpnote options (the %%%%hn.xxxx - coments)
-        #$log.debug("#{harpnote_options} (#{__FILE__} #{__LINE__})")
-
         result.harpnote_options = {}
-        result.harpnote_options[:print] = harpnote_options[:print].map { |specified_option|
-          # todo:do a proper default handling here
+        print_options = Confstack.new
+        print_options.push($conf.get("defaults.print"))
+
+        # handle print options
+        result.harpnote_options[:print] = (harpnote_options[:print] || [{}]).map { |specified_option|
+          print_options.push(specified_option)
+
           resulting_options = {
-              title: specified_option[:t] || "",
-              startpos: specified_option[:startpos] || 15,
-              voices: (specified_option[:v] || [1, 2, 3, 4]).map { |i| i-1 },
-              synchlines: (specified_option[:s] || [[1, 2], [2, 3]]).map { |i| i.map { |j| j-1 } },
-              flowlines: (specified_option[:f] || [1, 3]).map { |i| i-1 },
-              subflowlines: (specified_option[:sf] || [2, 4]).map { |i| i-1 },
-              jumplines: (specified_option[:j] || [1, 3]).map { |i| i-1 },
-              layoutlines: (specified_option[:l] ||
-                  specified_option[:v] ||
-                  [1, 2, 3, 4]).map { |i| i-1 } # the lines for layout optimization
+              line_no: 1,
+              title: print_options.get('t'),
+              startpos: print_options.get('startpos'),
+              voices: (print_options.get('v')).map { |i| i-1 },
+              synchlines: (print_options.get('s')).map { |i| i.map { |j| j-1 } },
+              flowlines: (print_options.get('f')).map { |i| i-1 },
+              subflowlines: (print_options.get('sf')).map { |i| i-1 },
+              jumplines: (print_options.get('j')).map { |i| i-1 },
+              layoutlines: (print_options.get('l') || print_options.get('v') ).map { |i| i-1 } # these voices are considered in layoutoptimization
           }
+
+          # checking missing voices
           missing_voices = (resulting_options[:voices] - resulting_options[:layoutlines]).map { |i| i + 1 }
           $log.error("hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}") unless missing_voices.empty?
+
+          print_options.pop
+          msg = "hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}"
+          $log.error(msg, [line_no, 1]) unless missing_voices.empty?
           resulting_options
         }
 
-        result.harpnote_options[:legend] = harpnote_options[:legend] || [10, 15] # todo take default from config
+        # legend
+        print_options = Confstack.new
+        print_options.push($conf.get('defaults.legend'))
+        print_options.push(harpnote_options[:legend])  if harpnote_options[:legend]
+        result.harpnote_options[:legend] = print_options.get
+
+        # lyrics
+        print_options = Confstack.new
+        print_options.push($conf.get('defaults.lyrics'))
+        print_options.push(harpnote_options[:lyrics])  if harpnote_options[:lyrics]
+        result.harpnote_options[:lyrics] = print_options.get
+        result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
+
+        # notes
         result.harpnote_options[:notes] = harpnote_options[:note] || []
 
-        lyrics = (harpnote_options[:lyrics]|| [{}]).first
-        result.harpnote_options[:lyrics] = {}
-
-        result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
-        result.harpnote_options[:lyrics][:pos] = lyrics[:pos] || [result.harpnote_options[:legend].first, result.harpnote_options[:legend].last + 40]
-
         result
+      end
+
+      # get column und line number of abc_code
+      # based on the character position
+      #
+      # @param [Numeric] charpos character position in abc code
+      # @return [Numeric] charpos, line_no
+      def charpos_to_line_column(charpos)
+        lines = @abc_code[1, charpos].split("\n")
+        line_no = lines.count
+        char_pos = lines.last.length()
+        return line_no, char_pos
       end
 
       private
@@ -405,7 +449,7 @@ module Harpnotes
               argument = nameparts[1] || 1
               argument = argument.to_i
               if target.nil?
-                $log.error("missing target #{targetname}")
+                $log.error("target '#{targetname}' not found in voice at #{entity.start_pos_to_s}", entity.start_pos, entity.end_pos)
               else
                 result << Harpnotes::Music::Goto.new(entity, target, distance: argument) #todo: better algorithm
               end
@@ -433,7 +477,7 @@ module Harpnotes
               case semantic
                 when "#"
                   annotation = @annotations[text]
-                  $log.error("could not find annotation #{text}") unless annotation
+                  $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
                   annotation = {text: text}
                 else
@@ -446,7 +490,7 @@ module Harpnotes
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
               end
             else
-              $log.error("syntax error in annotation: #{name}")
+              # $log.error("syntax error in annotation: #{name}")
             end
           end
         end
@@ -633,7 +677,7 @@ module Harpnotes
       end
 
       def transform_bar_right_repeat(bar)
-        if  @repetition_stack.length == 1
+        if @repetition_stack.length == 1
           start = @repetition_stack.last
         else
           start = @repetition_stack.pop
@@ -654,6 +698,7 @@ module Harpnotes
 
       def transform_part(part)
         new_part = Harpnotes::Music::NewPart.new(part[:title])
+        new_part.origin = part
         @previous_new_part << new_part
         [new_part]
       end

@@ -83,6 +83,10 @@ module CommandController
       @inverse_action = block
     end
 
+    def is_public?
+      not (@name.to_s.start_with?('_'))
+    end
+
     # this defines the action to be done by the command
     # @param [block] block the action to be performed. Does not take arguments.
     def set_help(&block)
@@ -208,12 +212,13 @@ module CommandController
 
     def parse_string(command)
       r = command.scan(STRING_COMMAND_REGEX).map { |s| s.select { |x| not x.nil? }.first }
-
     end
 
     def run_string(command)
+
       arguments = {}
       parts = parse_string(command)
+      parts = parts.map{|p|p.gsub("\\\\", "\\")}
       the_command = @commands[parts.first.to_sym]
       raise "wrong command: #{command}" unless the_command
 
@@ -240,7 +245,7 @@ module CommandController
     end
 
     def help_string_style()
-      @commands.to_a.map { |k, c|
+      @commands.to_a.select{ |c| c.last.is_public?}.map { |k, c|
         parameter_names = c.parameters.map { |p| "{#{p.name}}" }.join(" ")
         "#{c.name} #{parameter_names} : #{c.get_help}"
       }

@@ -15,8 +15,9 @@ as of now the whole thing is far from being ready to use out of the box.
 -   to run from local filesystems
     -   run `rake build`
     -   open `30_sourcs/SRC_Zupfnoter/index.html` in your webbrowser
+
 -   to run from a local webserver
-    -   run rake server`
+    -   run `rake server`
     -   goto http://localhost:9292
 
 # Zupfnoter conventions in abc code
@@ -53,7 +54,7 @@ The specific conventions in detail are as follows:
     places the repetition line 3 halftones left of the end of the
     repetition.
 
-2.  Control visualization of Voices Synchlines, Jumplines, Flowlines
+3.  Control visualization of Voices Synchlines, Jumplines, Flowlines
 
     This is done using specific comments with JSON syntax
 
@@ -65,36 +66,45 @@ The specific conventions in detail are as follows:
 
     t
     :   The title of the print
+
     v
     :   List of voices to be shown (it is an array of integer) from 1 to
         n denoting the voice index. Note that the voice index is
         basically the sequence of voices in the note preview. Therefore
         the %%score directive also influcnces the voice index.
+
     s
     :   List of synclines to be shown. It is an array of array integers
         denoting the voice pairs for which synchlines shall be drawn.
+
     f
     :   List of flowlines to be shown. It is an array of integers
-    sf  
+
+    sf
     :   List of subflowlins to be shown. It is an array of intenters.
-        Subflowlines are flowlines connecting notes which otherwise
-        have no corresponding note in other displayed voices and therefore
-        would appear as single notes lost in space (without anny connection).
+        Subflowlines are flowlines connecting notes which otherwise have
+        no corresponding note in other displayed voices and therefore
+        would appear as single notes lost in space (without anny
+        connection).
+
     startpos
-    :   the vertical position to start with the first note. It is an integer.
+    :   the vertical position to start with the first note. It is an
+        integer.
+
     j
     :   List of jumplines to be shown. It is an array of integers
+
     l
     :   List of voices to consider for vertical layout optimization.
         Defaults to the List specified by v
 
-3.  control the position of the legend
+4.  control the position of the legend
 
-        %%%%hn.legend [10,10] 
+        %%%%hn.legend {"pos": [10,10]}
 
     where parameter is the legend position in mm from top left
 
-4.  augment the content of the legend
+5.  augment the content of the legend
 
     The content of the legend is derived from the ABC metadata. You can
     append content to the particular lines by defineing an annotation
@@ -105,17 +115,22 @@ The specific conventions in detail are as follows:
     adds a note to the legend entry for "K:" which is the key of the
     music
 
-5.  sheet based annotations
+6.  sheet based annotations
 
-    %%%%hn.note ["foobar", [10, 10], "large"]
+    %%%%hn.note {"pos": [10,10]. "text": "foobar", "style": "large"]
 
     Parameters:
 
-    1.  Text
-    2.  position in mm from top left
-    3.  Textstyle "regular" | "large"
+    pos
+    :   Position im mm from top left
 
-6.  Note bound annotations
+    text
+    :   The content of the note
+
+    style
+    :   Textstyle: "regular" | "large"
+
+7.  Note bound annotations
 
     1.  you can define referrable annotations as
 
@@ -130,18 +145,21 @@ The specific conventions in detail are as follows:
 
         `"^#10@10,10"` adds the content of hn.annotation with id: "10"
         (see 1.) at position 10,10 from note.
-        
-7.  Lyrics
 
-    Zupfnoter supports placement of lyrics by `w: lyrics` lines in ABC. You can control the position of lyrics by
-    
+8.  Lyrics
+
+    Zupfnoter supports placement of lyrics by `w: lyrics` lines in ABC.
+    You can control the position of lyrics at all by
+
         %%%%hn.lyrics {"pos": [50,50]}
-        
-        
+
+    You can also controll the position of individual verses e.g. by
+
+        %%%%hn.lyrics {"versepos": {"1,2":[40,50], "3": [140,50], "4": [90,10], "5,6":[330,10]}}
 
 # Licencse
 
-This software is licensed under dual license MIT and Commercial
+This software is licensed under dual license GPL and Commercial
 
 # Open issues
 
@@ -167,7 +185,7 @@ not considered while playing
 202. cross-highlighting bewtween ABC (*done*) - Notes *done* - Harpnotes
     *done* - Player *done*
 203. add a local description for ABC
-204. add ABC-Syntax-Support to the Editor
+204. add ABC-Syntax-Support to the Editor *done*
 205. minimize the panes
 206. multilingual
 207. incorporate bootstrap
@@ -178,9 +196,9 @@ not considered while playing
 
     better control about bass tenor alto soprano - requires certain
     refactoring *done*
-302. annotations
-303. trioles
-304. ties and slurs
+302. annotations *done*
+303. trioles *done*
+304. ties and slurs *done*
 305. improved line handling: line break different between the voices ...
 306. voice properties octave=...
 
@@ -191,10 +209,10 @@ not considered while playing
     two beats) *done*
 403. annotations *done*
 404. Debugging (writing the notenames in light grey ) *cancelled*
-405. draw extra flow line in unsynched notes (*cancelled*)
+405. draw extra flow line in unsynched notes, aka subflowlines} (*done*)
 406. add marks to adjust the sheet in the harp *done*
 407. print extracts *done*
-408. configure vertical layout (fixed, optimized)
+408. configure vertical layout (*done*, optimized)
 409. configure a transformation *done*
 410. denote parts *done*
 
@@ -202,7 +220,7 @@ not considered while playing
 
 501. MusicXml interface
 502. Visualize the internal model for debugging purposes
-503. Improved error handling
+503. Improved error handling *done*
 
 ## Player
 
@@ -213,6 +231,8 @@ not considered while playing
 
 -   using shoes and atom_shell to make a standalone application
     https://github.com/wasnotrice/shoes-atom
+
+    started with node-webkit
 
 # Result of initial evaluation
 

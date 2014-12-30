@@ -45,7 +45,7 @@ module Harpnotes
         elsif child.is_a? Harpnotes::Drawing::Path
           draw_path(child) if child.visible?
         else
-          $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
+          $log.debug "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
         end
       end
@@ -272,7 +272,7 @@ module Harpnotes
 
       # then we measure the result
       bbox = element.get_bbox()
-      $log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]}))
+      $log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]} (#{__FILE__} #{__LINE__})))
 
       dx = root.center.first - bbox[:x]
       dy = root.center.last - bbox[:y]
