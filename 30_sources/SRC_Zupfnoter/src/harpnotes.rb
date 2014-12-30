@@ -1054,8 +1054,19 @@ module Harpnotes
         lyrics = music.harpnote_options[:lyrics]
         if lyrics
           text = lyrics[:text].join("\n")
-          pos = lyrics[:pos]
-          annotations << Harpnotes::Drawing::Annotation.new(pos, text)
+
+          if lyrics[:versepos]
+            verses = text.split("\n\n")
+            lyrics[:versepos].each do |key, value|
+              the_text =  key.scan(/\d+/).map{|i| verses[i.to_i - 1]}.join("\n\n")
+              annotations << Harpnotes::Drawing::Annotation.new(value, the_text)
+            end
+
+          else
+            pos = lyrics[:pos]
+            annotations << Harpnotes::Drawing::Annotation.new(pos, text)
+          end
+
         end
 
         #sheet based annotations
