@@ -171,7 +171,7 @@ module Harpnotes
             if root.is_a? SynchPoint
               more_to_play = root.notes.each.map do |note|
                 mk_to_play(note, velocity, index) unless note.pitch === root.pitch
-              end
+              end.compact
             end
             # handle ties and slurs
 
@@ -179,15 +179,17 @@ module Harpnotes
               if tie_start[:pitch] == to_play[:pitch]
                 to_play[:duration] += tie_start[:duration]
                 to_play[:delay] = tie_start[:delay]
-                result = to_play
-              else
-                result = [tie_start, to_play]
+                $log.debug("#{more_to_play} #{__FILE__} #{__LINE__}")
+
+                more_to_play.each do |p|
+                  p[:duration] += tie_start[:duration]
+                  p[:delay] = tie_start[:delay]
+                end
               end
             end
 
             if root.tie_start?
               tie_start = to_play
-              result = nil
             end
 
             [to_play] + [more_to_play]
