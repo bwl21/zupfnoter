@@ -178,19 +178,12 @@
     </content>
     <orderEntry type="jdk" jdkName="RVM: ruby-1.9.3-p448 [global]" jdkType="RUBY_SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="archive-tar-minitar (v0.5.2, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bundler (v1.3.5, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="columnize (v0.9.0, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="confstruct (v0.2.7, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="debugger (v1.6.8, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="debugger-linecache (v1.2.0, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="debugger-ruby_core_source (v1.3.7, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="diff-lcs (v1.2.2, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="hike (v1.2.3, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="linecache19 (v0.5.12, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json (v1.8.1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="multi_json (v1.10.1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="opal (v0.7.0.beta3, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="opal-jquery (v0.3.0.beta1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="opal (v0.6.3, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="pdf-core (v0.2.5, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="prawn (v1.0.0, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack (v1.6.0, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
@@ -198,12 +191,9 @@
     <orderEntry type="library" scope="PROVIDED" name="rspec-core (v2.13.1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-expectations (v2.13.0, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v2.13.0, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ruby-debug-base19 (v0.11.25, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ruby-debug-ide19 (v0.4.12, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ruby_core_source (v0.1.5, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubyzip (v1.1.6, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sass (v3.4.9, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="sourcemap (v0.1.1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="source_map (v3.0.1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sprockets (v2.12.3, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tilt (v1.4.1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ttfunk (v1.1.1, RVM: ruby-1.9.3-p448 [global]) [gem]" level="application" />

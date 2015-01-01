@@ -348,7 +348,7 @@ module Harpnotes
         print_options.push($conf.get("defaults.print"))
 
         # handle print options
-        result.harpnote_options[:print] = harpnote_options[:print].map { |specified_option|
+        result.harpnote_options[:print] = (harpnote_options[:print] || [{}]).map { |specified_option|
           print_options.push(specified_option)
 
           resulting_options = {
@@ -622,16 +622,21 @@ module Harpnotes
           result << synchpoint
         end
 
+        @previous_new_part.each { |part|
+          result.last.first_in_part = true
+          part.companion = notes.first
+        }
+        @previous_new_part.clear
 
         @previous_note = result.last
 
         if @next_note_marks[:measure]
-          result << Harpnotes::Music::MeasureStart.new(notes.last)
+          notes.each{|note| result << Harpnotes::Music::MeasureStart.new(note)}
           @next_note_marks[:measure] = false
         end
 
         if @next_note_marks[:repeat_start]
-          @repetition_stack << notes.last
+          @repetition_stack << notes.first
           @next_note_marks[:repeat_start] = false
         end
 
@@ -639,12 +644,6 @@ module Harpnotes
           result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [4, -2], text: @next_note_marks[:variant_ending]})
           @next_note_marks[:variant_ending] = nil
         end
-
-        @previous_new_part.each { |part|
-          part.companion = notes.last
-          notes.last.first_in_part=true
-        }
-        @previous_new_part.clear
 
         result
       end

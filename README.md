@@ -149,9 +149,13 @@ The specific conventions in detail are as follows:
 8.  Lyrics
 
     Zupfnoter supports placement of lyrics by `w: lyrics` lines in ABC.
-    You can control the position of lyrics by
+    You can control the position of lyrics at all by
 
         %%%%hn.lyrics {"pos": [50,50]}
+
+    You can also controll the position of individual verses e.g. by
+
+        %%%%hn.lyrics {"versepos": {"1,2":[40,50], "3": [140,50], "4": [90,10], "5,6":[330,10]}}
 
 # Licencse
 
@@ -181,7 +185,7 @@ not considered while playing
 202. cross-highlighting bewtween ABC (*done*) - Notes *done* - Harpnotes
     *done* - Player *done*
 203. add a local description for ABC
-204. add ABC-Syntax-Support to the Editor
+204. add ABC-Syntax-Support to the Editor *done*
 205. minimize the panes
 206. multilingual
 207. incorporate bootstrap
@@ -192,9 +196,9 @@ not considered while playing
 
     better control about bass tenor alto soprano - requires certain
     refactoring *done*
-302. annotations
-303. trioles
-304. ties and slurs
+302. annotations *done*
+303. trioles *done*
+304. ties and slurs *done*
 305. improved line handling: line break different between the voices ...
 306. voice properties octave=...
 
@@ -205,10 +209,10 @@ not considered while playing
     two beats) *done*
 403. annotations *done*
 404. Debugging (writing the notenames in light grey ) *cancelled*
-405. draw extra flow line in unsynched notes (*cancelled*)
+405. draw extra flow line in unsynched notes, aka subflowlines} (*done*)
 406. add marks to adjust the sheet in the harp *done*
 407. print extracts *done*
-408. configure vertical layout (fixed, optimized)
+408. configure vertical layout (*done*, optimized)
 409. configure a transformation *done*
 410. denote parts *done*
 
@@ -216,7 +220,7 @@ not considered while playing
 
 501. MusicXml interface
 502. Visualize the internal model for debugging purposes
-503. Improved error handling
+503. Improved error handling *done*
 
 ## Player
 
@@ -227,6 +231,8 @@ not considered while playing
 
 -   using shoes and atom_shell to make a standalone application
     https://github.com/wasnotrice/shoes-atom
+
+    started with node-webkit
 
 # Result of initial evaluation
 

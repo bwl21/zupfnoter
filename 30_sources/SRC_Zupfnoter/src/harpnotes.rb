@@ -1054,8 +1054,19 @@ module Harpnotes
         lyrics = music.harpnote_options[:lyrics]
         if lyrics
           text = lyrics[:text].join("\n")
-          pos = lyrics[:pos]
-          annotations << Harpnotes::Drawing::Annotation.new(pos, text)
+
+          if lyrics[:versepos]
+            verses = text.split("\n\n")
+            lyrics[:versepos].each do |key, value|
+              the_text =  key.scan(/\d+/).map{|i| verses[i.to_i - 1]}.join("\n\n")
+              annotations << Harpnotes::Drawing::Annotation.new(value, the_text)
+            end
+
+          else
+            pos = lyrics[:pos]
+            annotations << Harpnotes::Drawing::Annotation.new(pos, text)
+          end
+
         end
 
         #sheet based annotations
@@ -1107,7 +1118,7 @@ module Harpnotes
         # todo make it a class variable, it is used in layout again
         # need to reverse such that Unisons (SyncPoints) are bound to the first note
         # as Syncpoints are renderd from first to last, the last note is the remaining
-        # one inthe Hash unless we revert.
+        # one in the Hash unless we revert.
         # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
         lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }.reverse]
 
@@ -1484,7 +1495,7 @@ module Harpnotes
         if root.beat
           # todo decide if part starts on a new line, then x_offset should be 0
           x_offset = (PITCH_OFFSET + root.pitch + (-0.5)) * X_SPACING + X_OFFSET # todo:remove literal here
-          y_offset = beat_layout.call(root.beat()) - Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular][:font_size] * 2/3 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
+          y_offset = beat_layout.call(root.beat()) - Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular][:font_size] * 0.5 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
           res = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
         else
           $log.warning("Part without content")

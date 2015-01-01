@@ -49,12 +49,23 @@ module Harpnotes
     end
 
     #
-    # Install a handler for "selectionChange" event
+    # Install a handler for "selection change" event
     # @param block [Lambda] Procedure to be executed
     #
     # @return [type] [description]
     def on_selection_change(&block)
       Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
+        block.call(e)
+      end
+    end
+
+    #
+    # Install a handler for "cursor change" event
+    # @param block [Lambda] Procedure to be executed
+    #
+    # @return [type] [description]
+    def on_cursor_change(&block)
+      Native(Native(@editor)[:selection]).on(:changeCursor) do |e|
         block.call(e)
       end
     end

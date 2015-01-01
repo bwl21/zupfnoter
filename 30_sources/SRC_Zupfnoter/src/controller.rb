@@ -226,6 +226,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       $log.error([e.message, e.backtrace])
     end
 
+    set_status(refresh: false)
+
     $log.debug("finished rendering Haprnotes #{__FILE__} #{__LINE__}")
     set_inactive("#harpPreview")
 
@@ -239,6 +241,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       save_to_localstorage
       send_remote_command('render')
     end
+
     setup_tune_preview
 
     set_active("#tunePreview")
@@ -360,27 +363,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     # changes in the editor
     @editor.on_change do |e|
       set_status(song: "changed")
-      if @refresh_timer
-        `clearTimeout(self.refresh_timer)`
-        # `alert("refresh cancelled")`
-      end
-
-      if @playtimer_timer
-        `setTimeout(function(){$('#tbPlay').html('play')}, 0)`
-        `clearTimeout(self.playtimer_timer)`
-        # `alert("refresh cancelled")`
-      end
-
-      #@playtimer_timer = `setTimeout(function(){self.$play_abc_part(e.data.text), 10})`
-
-      case @systemstatus[:autorefresh]
-        when :on
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
-        when :off
-          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 0)`
-        when :remote
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
-      end
+      request_refresh(true)
       nil
     end
 
@@ -394,6 +377,10 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
       end
+    end
+
+    @editor.on_cursor_change do |e|
+      request_refresh(false)
     end
 
     @harpnote_player.on_noteon do |e|
@@ -431,7 +418,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       value = Native(evt[:originalEvent]).newValue
 
       $log.debug("got storage event #{key}: #{value} (#{__FILE__} #{__LINE__})")
-      if systemstatus[:autorefresh] == :remote && key == :command && value == 'render'
+      if @systemstatus[:autorefresh] == :remote && key == :command && value == 'render'
         load_from_loacalstorage
       end
     end
@@ -446,6 +433,29 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       end
       Element.find(`document`).on(:mouseup) do
         `$(document).unbind('mousemove')`
+      end
+    end
+  end
+
+  # @param [Boolean] init if true triggers a new refresh request; if false restarts a running request
+  def request_refresh(init)
+    set_status({refresh: true}) if init
+
+    $log.debug("request refresh #{@systemstatus[:refresh]} #{init} #{__FILE__} #{__LINE__}")
+    if @refresh_timer
+      `clearTimeout(self.refresh_timer)`
+    end
+
+    if @systemstatus[:refresh]
+      handle_command('stop')  # stop player as the Song is changed
+
+      case @systemstatus[:autorefresh]
+        when :on
+          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
+        when :off
+          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 0)`
+        when :remote
+          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
       end
     end
   end
@@ -470,17 +480,17 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   def _init_conf()
 
     {defaults: {
-        print: {t: "",                # title of the extract
-                v: [1, 2, 3, 4],      # voices to show
-                startpos: 15,         # start position of the harpnotes
-                s: [[1, 2], [2, 3]],  # synchlines
-                f: [1, 3],            # flowlines
-                sf: [2, 4],           # subflowlines
-                j: [1, 3],            # jumplines
-                l: [1, 2, 3, 4]       # lyoutlies
+        print: {t: "", # title of the extract
+                v: [1, 2, 3, 4], # voices to show
+                startpos: 15, # start position of the harpnotes
+                s: [[1, 2], [2, 3]], # synchlines
+                f: [1, 3], # flowlines
+                sf: [2, 4], # subflowlines
+                j: [1, 3], # jumplines
+                l: [1, 2, 3, 4] # lyoutlies
         },
-        legend: {pos: [20, 20]},      # legend defaults
-        lyrics: {pos: [20, 60]}       # lyrics defaults
+        legend: {pos: [20, 20]}, # legend defaults
+        lyrics: {pos: [20, 60]} # lyrics defaults
     },
      active:
          {
@@ -569,5 +579,6 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 end
 
 Document.ready? do
-  Controller.new
+  controller = Controller.new
+  Controller.set_instance(controller)
 end
