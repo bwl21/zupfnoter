@@ -169,26 +169,27 @@ module Harpnotes
       end
 
 
-      # @param [String] abc_code to be transformed
+      # @param [String] zupfnoter_abc to be transformed
       #
       # @return [Harpnotes::Music::Song] the Song
-      def transform(abc_code)
-        @abc_code = abc_code
+      def transform(zupfnoter_abc)
+        @abc_code = zupfnoter_abc
 
         # get harpnote_options from abc_code
-        harpnote_options = parse_harpnote_config(abc_code)
+        harpnote_options = parse_harpnote_config(zupfnoter_abc)
         # note that harpnote_options uses singular names
         @annotations = (harpnote_options[:annotation] || []).inject({}) do |hash, entry|
           hash[entry[:id]] = entry
           hash
         end
 
+        abc_text = zupfnoter_abc.split("%%%%hn.config").first
 
         # now parse the abc_code by abcjs
         # todo move this to opal-abcjs
         %x{
           var parser = new ABCJS.parse.Parse();
-          parser.parse(#{abc_code});
+          parser.parse(#{abc_text});
           var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
@@ -208,7 +209,7 @@ module Harpnotes
         # pull out the headlines
         # todo:factor out to a generic method parse_abc_header()
         #
-        note_length_rows = abc_code.split("\n").select { |row| row[0..1] == "L:" }
+        note_length_rows = zupfnoter_abc.split("\n").select { |row| row[0..1] == "L:" }
         note_length_rows = ["L:1/4"] if note_length_rows.empty?
         note_length = note_length_rows.first.strip.split(":").last.split("/").map { |s| s.strip.to_i }
         note_length = note_length.last / note_length.first
@@ -503,7 +504,7 @@ module Harpnotes
         # on the layout (DURATION_TO_STYLE). So, don't change this.
         # todo: we need to separate duration from the layout
 
-        duration = (Harpnotes::Layout::Default::SHORTEST_NOTE * note[:duration]).round
+        duration = ($conf.get('active.SHORTEST_NOTE') * note[:duration]).round
 
         start_tuplet = true if note[:startTriplet]
         end_tuplet = true if note[:endTriplet]

@@ -252,8 +252,8 @@ module Harpnotes
     # Draw an an annotation
     def draw_annotation(root)
 
-      style = Harpnotes::Layout::Default::FONT_STYLE_DEF[root.style] || Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular]
-      mm_per_point = Harpnotes::Layout::Default::MM_PER_POINT
+      style = $conf.get('active.FONT_STYLE_DEF')[root.style] || $conf.get('active.FONT_STYLE_DEF')[:regular]
+      mm_per_point = $conf.get('active.MM_PER_POINT')
 
       text = root.text.gsub("\n\n", "\n \n")
       element = @paper.text(root.center.first, root.center.last, text)

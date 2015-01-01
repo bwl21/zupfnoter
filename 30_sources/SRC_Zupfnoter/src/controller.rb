@@ -94,7 +94,6 @@ class Controller
     $conf = Confstack.new
     $conf.push(_init_conf)
 
-
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
@@ -205,7 +204,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # also saves abc in localstore()
   def render_tunepreview_callback
     begin
-      @tune_preview_printer.draw(@editor.get_text)
+      abc_text = @editor.get_text.split("%%%%hn.config").first   # todo: remove code duiplication here
+      @tune_preview_printer.draw(abc_text)
     rescue Exception => e
       $log.error([e.message, e.backtrace])
     end
@@ -272,9 +272,13 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
+    config = @editor.get_text.split("%%%%hn.config")[1] || '{}'
+    config = JSON.parse(config)
+    $conf.push(config)
     @song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
     result = Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
     @editor.set_annotations($log.annotations)
+    $conf.pop
     result
   end
 
@@ -517,11 +521,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
              # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
              # in order to at least being able to handle triplets, we need to scale this up by 3
              # todo:see if we can speed it up by using 16 ...
-             BEAT_RESOULUTION: 192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+             BEAT_RESOLUTION: 192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
              SHORTEST_NOTE: 64, # shortest possible note (1/64) do not change this
              # in particular specifies the range of DURATION_TO_STYLE etc.
 
-             BEAT_PER_DURATION: 3, # BEAT_RESOULUTION / SHORTEST_NOTE,
+             BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
 
              # this is the negative of midi-pitch of the lowest plaayble note
              # see http://computermusicresource.com/midikeys.html
