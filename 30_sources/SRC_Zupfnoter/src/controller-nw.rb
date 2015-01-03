@@ -220,7 +220,7 @@ class Controller
         layout_harpnotes # todo: this uses a side-effect to get the @song populated
         render_previews
 
-        print_variants = @song.harpnote_options[:print]
+        print_variants = @music_model.harpnote_options[:print]
         pdfs={}
         print_variants.each_with_index.map do |print_variant, index|
           filename = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")

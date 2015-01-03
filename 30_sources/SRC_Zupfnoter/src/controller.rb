@@ -111,7 +111,7 @@ class Controller
 
     # initialize virgin zupfnoter
     load_demo_tune
-    set_status(dropbox: "not connected", song: "unchanged", loglevel: $log.loglevel, autorefresh: :on, view: 0)
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :on, view: 0)
 
     # load from previous session
     load_from_loacalstorage
@@ -137,7 +137,7 @@ class Controller
   # Save session to local store
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:song, :view, :autorefresh, :loglevel, :nwworkingdir].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir].include?(key) }.to_json
     abc = `localStorage.setItem('systemstatus', #{systemstatus});`
     abc = @editor.get_text
     abc = `localStorage.setItem('abc_data', abc);`
@@ -182,13 +182,13 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index))
   end
 
-  def play_abc(mode = :song)
+  def play_abc(mode = :music_model)
     if @harpnote_player.is_playing?
       @harpnote_player.stop()
       Element.find('#tbPlay').html('play')
     else
       Element.find('#tbPlay').html('stop')
-      @harpnote_player.play_song(0) if mode == :song
+      @harpnote_player.play_song(0) if mode == :music_model
       @harpnote_player.play_selection(0) if mode == :selection
       @harpnote_player.play_from_selection if mode == :selection_ff
     end
@@ -220,7 +220,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
       @song_harpnotes = layout_harpnotes(@systemstatus[:view])
-      @harpnote_player.load_song(@song)
+      @harpnote_player.load_song(@music_model)
       @harpnote_preview_printer.draw(@song_harpnotes)
     rescue Exception => e
       $log.error([e.message, e.backtrace])
@@ -275,8 +275,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     config = @editor.get_text.split("%%%%hn.config")[1] || '{}'
     config = JSON.parse(config)
     $conf.push(config)
-    @song = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
-    result = Harpnotes::Layout::Default.new.layout(@song, nil, print_variant)
+    @music_model = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_text)
+    result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
     @editor.set_annotations($log.annotations)
     $conf.pop
     result
@@ -366,7 +366,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     # changes in the editor
     @editor.on_change do |e|
-      set_status(song: "changed")
+      set_status(music_model: "changed")
       request_refresh(true)
       nil
     end
