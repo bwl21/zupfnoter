@@ -183,13 +183,12 @@ module Harpnotes
           hash
         end
 
-        abc_text = zupfnoter_abc.split("%%%%hn.config").first
 
         # now parse the abc_code by abcjs
         # todo move this to opal-abcjs
         %x{
           var parser = new ABCJS.parse.Parse();
-          parser.parse(#{abc_text});
+          parser.parse(#{@abc_code});
           var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
@@ -504,7 +503,7 @@ module Harpnotes
         # on the layout (DURATION_TO_STYLE). So, don't change this.
         # todo: we need to separate duration from the layout
 
-        duration = ($conf.get('active.SHORTEST_NOTE') * note[:duration]).round
+        duration = ($conf.get('layout.SHORTEST_NOTE') * note[:duration]).round
 
         start_tuplet = true if note[:startTriplet]
         end_tuplet = true if note[:endTriplet]

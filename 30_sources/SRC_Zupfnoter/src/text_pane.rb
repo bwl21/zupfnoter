@@ -174,6 +174,29 @@ module Harpnotes
       @markers.clear
     end
 
+
+    # get the abc part of the stuff
+    CONFIG_SEPARATOR = "%%%%hn.config"
+
+    def get_abc_part
+      get_text.split(CONFIG_SEPARATOR).first
+    end
+
+    # get the config part of the music
+    def get_config_part
+      get_text.split(CONFIG_SEPARATOR)[1] || {}
+    end
+
+    # get the line and column of an error in the config part
+    # @param [Numerical] charpos the position in the config part
+    def get_config_position(charpos)
+      cp = charpos + (get_abc_part + CONFIG_SEPARATOR).length
+      lines = get_text[0, cp].split("\n")
+      line_no = lines.count
+      char_pos = lines.last.length()
+      return line_no, char_pos
+    end
+
   end
 
 end

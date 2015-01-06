@@ -526,7 +526,7 @@ module Harpnotes
         @beat_maps = @voices.map do |voice|
           current_beat = 0
           voice_map = voice.select { |e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
-            beats = playable.duration * $conf.get('active.BEAT_PER_DURATION') # todo:handle triplets
+            beats = playable.duration * $conf.get('layout.BEAT_PER_DURATION') # todo:handle triplets
             # Timefactor of player
             # BEAT_RESOLUTOIN
             if playable.tuplet == 3
@@ -611,7 +611,7 @@ module Harpnotes
 
       def initialize
         @visible = true
-        @line_width = $conf.get('active.LINE_THIN')
+        @line_width = $conf.get('layout.LINE_THIN')
       end
 
       def center
@@ -945,7 +945,7 @@ module Harpnotes
         # Spacing between two BeatTable increments
         # 1.0 = dureation of a whole note
         #
-        @beat_spacing = $conf.get('active.Y_SCALE') * 1.0/$conf.get('active.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
+        @beat_spacing = $conf.get('layout.Y_SCALE') * 1.0/$conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
         @slur_index = {}
         @y_offset = 5
       end
@@ -972,7 +972,7 @@ module Harpnotes
 
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
         maximal_beat = beat_compression_map.values.max
-        full_beat_spacing = ($conf.get('active.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
+        full_beat_spacing = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
 
         if full_beat_spacing < @beat_spacing
           factor = (@beat_spacing / full_beat_spacing)
@@ -1029,7 +1029,7 @@ module Harpnotes
 
         # build sheet_marks
         sheet_marks = [79, 55, 43].inject([]) do |result, pitch|
-          markpath = make_sheetmark_path([($conf.get('active.PITCH_OFFSET') + pitch) * $conf.get('active.X_SPACING') + $conf.get('active.X_OFFSET'), 10])
+          markpath = make_sheetmark_path([($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET'), 10])
           result << Harpnotes::Drawing::Path.new(markpath, :filled)
           result
         end
@@ -1136,7 +1136,7 @@ module Harpnotes
           res = nil
           unless previous_note.nil?
             res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
-            res.line_width = $conf.get('active.LINE_MEDIUM');
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
           end
           res = nil if playable.first_in_part?
 
@@ -1236,9 +1236,9 @@ module Harpnotes
           if distance
             # vertical = {distance: (distance + 0.5) * X_SPACING}
             # vertical path shoudl be between two strings -> 0.5
-            vertical = (distance + 0.5) * $conf.get('active.X_SPACING')
+            vertical = (distance + 0.5) * $conf.get('layout.X_SPACING')
           else
-            vertical = 0.5 * $conf.get('active.X_SPACING') # {level: goto.policy[:level]}
+            vertical = 0.5 * $conf.get('layout.X_SPACING') # {level: goto.policy[:level]}
           end
 
           path = make_path_from_jumpline(Vector2d(lookuptable_drawing_by_playable[goto.from].center),
@@ -1246,7 +1246,7 @@ module Harpnotes
                                          Vector2d(2.5, 2.5),
                                          vertical)
 
-          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width = $conf.get('active.LINE_THICK') },
+          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width = $conf.get('layout.LINE_THICK') },
            Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
         end.flatten
         res_gotos = [] unless show_options[:jumpline]
@@ -1290,7 +1290,7 @@ module Harpnotes
       def compute_beat_compression(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_beat_resolution = $conf.get('active.BEAT_RESOLUTION')
+        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
 
         # todo:clarify the initialization
         current_beat = 0
@@ -1306,7 +1306,7 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = conf_beat_resolution * $conf.get('active.DURATION_TO_STYLE')[duration_to_id(max_duration_on_beat)].first
+              size = conf_beat_resolution * $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(max_duration_on_beat)].first
             rescue Exception => e
               $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
@@ -1358,14 +1358,14 @@ module Harpnotes
       # @return [Object] The generated drawing primitive
       def layout_note(root, beat_layout)
         #               shift to left   pitch          space     stay away from border
-        x_offset = ($conf.get('active.PITCH_OFFSET') + root.pitch) * $conf.get('active.X_SPACING') + $conf.get('active.X_OFFSET')
+        x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
         y_offset = beat_layout.call(root.beat)
 
-        scale, fill, dotted = $conf.get('active.DURATION_TO_STYLE')[check_duration(root)]
-        size = $conf.get('active.ELLIPSE_SIZE').map { |e| e * scale }
+        scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
+        size = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
 
         res = Ellipse.new([x_offset, y_offset], size, fill, dotted, root)
-        res.line_width = $conf.get('active.LINE_THICK')
+        res.line_width = $conf.get('layout.LINE_THICK')
         res
       end
 
@@ -1394,11 +1394,11 @@ module Harpnotes
       #
       # @return [Object] The generated drawing primitive
       def layout_pause(root, beat_layout)
-        x_offset = ($conf.get('active.PITCH_OFFSET') + root.pitch) * $conf.get('active.X_SPACING') + $conf.get('active.X_OFFSET')
+        x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
         y_offset = beat_layout.call(root.beat)
         check_duration(root)
-        scale, glyph, dotted = $conf.get('active.REST_TO_GLYPH')[check_duration(root)]
-        rest_size = $conf.get('active.REST_SIZE')
+        scale, glyph, dotted = $conf.get('layout.REST_TO_GLYPH')[check_duration(root)]
+        rest_size = $conf.get('layout.REST_SIZE')
         size = [rest_size.first * scale.first, rest_size.last * scale.last]
 
         res = Harpnotes::Drawing::Glyph.new([x_offset, y_offset], size, glyph, dotted, root)
@@ -1413,11 +1413,11 @@ module Harpnotes
       #
       # @return [Object] The generated drawing primitive
       def layout_measure_start(root, beat_layout)
-        x_offset = ($conf.get('active.PITCH_OFFSET') + root.pitch) * $conf.get('active.X_SPACING') + $conf.get('active.X_OFFSET')
+        x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
         y_offset = beat_layout.call(root.beat)
-        scale, fill, dotted = $conf.get('active.DURATION_TO_STYLE')[duration_to_id(root.duration)]
+        scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(root.duration)]
         #todo:layout this with a path
-        size = $conf.get('active.ELLIPSE_SIZE').map { |e| e * scale }
+        size = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
         res = Ellipse.new([x_offset, y_offset - size.last - 0.5], [size.first, 0.1], fill, false, root) # todo draw a line
         res.visible = false unless root.visible?
         res
@@ -1503,9 +1503,9 @@ module Harpnotes
         #               shift to left   pitch          space     stay away from border
         if root.beat
           # todo decide if part starts on a new line, then x_offset should be 0
-          x_offset = ($conf.get('active.PITCH_OFFSET') + root.pitch + (-0.5)) * $conf.get('active.X_SPACING') + $conf.get('active.X_OFFSET')
+          x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch + (-0.5)) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
            # todo:remove literal here
-          y_offset = beat_layout.call(root.beat()) - $conf.get('active.FONT_STYLE_DEF')[:regular][:font_size] * 0.5 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
+          y_offset = beat_layout.call(root.beat()) - $conf.get('layout.FONT_STYLE_DEF')[:regular][:font_size] * 0.5 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
           res = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
         else
           $log.warning("Part without content")
@@ -1523,7 +1523,7 @@ module Harpnotes
       # @return [Object] The generated drawing primitive
       def duration_to_id(duration)
         result = "d#{duration}".to_sym
-        if $conf.get('active.DURATION_TO_STYLE')[result].nil?
+        if $conf.get('layout.DURATION_TO_STYLE')[result].nil?
           result = "err"
         end
         result
