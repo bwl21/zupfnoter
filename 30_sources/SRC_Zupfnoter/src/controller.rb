@@ -272,18 +272,21 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
-    config = @editor.get_config_part
+    config_part = @editor.get_config_part
     begin
-      config = %x{json_parse(#{config})}
-      config = Hash.new(config)
+      config = %x{json_parse(#{config_part})}
+      config = JSON.parse(config_part)
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
       $log.error("#{error.first} at #{line_col}", line_col)
       config = {}
     end
+
+    config[:location] = "song" if config.keys.count > 0
     $conf.push(config)
     @music_model = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_abc_part)
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+
     @editor.set_annotations($log.annotations)
     $conf.pop
     result
@@ -517,7 +520,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                  jumplines: [1, 3],
                  layoutlines: [1, 2, 3, 4],
                  legend: {pos: [10, 20]},
-                 lyrics: {pos: [10, 30]}
+                 lyrics: {pos: [10, 30]},
+                 notes: []
              },
              "1" => {
                  line_no: 2,
@@ -530,7 +534,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                  jumplines: [1, 3],
                  layoutlines: [1, 2],
                  legend: {pos: [10, 20]},
-                 lyrics: {pos: [10, 30]}
+                 lyrics: {pos: [10, 30]},
+                 notes: []
              },
              "2" => {
                  line_no: 1,
@@ -543,7 +548,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                  jumplines: [1, 3],
                  layoutlines: [3, 4],
                  legend: {pos: [10, 20]},
-                 lyrics: {pos: [10, 30]}
+                 lyrics: {pos: [10, 30]},
+                 notes: []
              }
          },
 

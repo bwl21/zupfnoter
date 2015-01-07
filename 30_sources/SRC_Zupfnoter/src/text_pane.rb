@@ -184,7 +184,7 @@ module Harpnotes
 
     # get the config part of the music
     def get_config_part
-      get_text.split(CONFIG_SEPARATOR)[1] || {}
+      get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
     # get the line and column of an error in the config part

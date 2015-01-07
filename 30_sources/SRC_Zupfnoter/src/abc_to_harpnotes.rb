@@ -302,6 +302,7 @@ module Harpnotes
         end
 
         # now construct the song
+        hn_voices.unshift(hn_voices.first)  # let voice-index start with 1 -> duplicate voice 0
         result = Harpnotes::Music::Song.new(hn_voices, note_length)
 
         # contruct the meta data
@@ -355,12 +356,12 @@ module Harpnotes
               line_no: 1,
               title: print_options.get('t'),
               startpos: print_options.get('startpos'),
-              voices: (print_options.get('v')).map { |i| i-1 },
-              synchlines: (print_options.get('s')).map { |i| i.map { |j| j-1 } },
-              flowlines: (print_options.get('f')).map { |i| i-1 },
-              subflowlines: (print_options.get('sf')).map { |i| i-1 },
-              jumplines: (print_options.get('j')).map { |i| i-1 },
-              layoutlines: (print_options.get('l') || print_options.get('v') ).map { |i| i-1 } # these voices are considered in layoutoptimization
+              voices: (print_options.get('v')),#.map { |i| i-1 },
+              synchlines: (print_options.get('s')),#.map { |i| i.map { |j| j-1 } },
+              flowlines: (print_options.get('f')),#.map { |i| i-1 },
+              subflowlines: (print_options.get('sf')),#.map { |i| i-1 },
+              jumplines: (print_options.get('j')),# .map { |i| i-1 },
+              layoutlines: (print_options.get('l') || print_options.get('v') ) # .map { |i| i-1 } # these voices are considered in layoutoptimization
           }
 
           # checking missing voices

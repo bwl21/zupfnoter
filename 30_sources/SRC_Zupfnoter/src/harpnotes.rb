@@ -961,10 +961,19 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0)
 
-        print_options = music.harpnote_options[:print][print_variant_nr]
+        # todo: remove this appraoch after migration
+        if $conf.get("location") == "song"
+          print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
+        else # todo: remove this appraoch after migration
+          print_options = music.harpnote_options[:print][print_variant_nr]
+          print_options[:legend] = music.harpnote_options[:legend] # todo: compatibility code
+          print_options[:lyrics] = music.harpnote_options[:lyrics] # todo: compatibility code
+          print_options[:notes] = music.harpnote_options[:notes] # todo: compatibility code
+        end
+
 
         unless print_options
-          print_options = music.harpnote_options[:print][0]
+          print_options = $conf.get("extract.0") # music.harpnote_options[:print][0]
           $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options[:title]}'")
         end
 
@@ -1038,9 +1047,6 @@ module Harpnotes
 
         annotations = []
 
-        title_pos = [20, 20]
-        legend_pos = [20, 30]
-
         title = music.meta_data[:title] || "untitled"
         meter = music.meta_data[:meter]
         key = music.meta_data[:key]
@@ -1048,7 +1054,7 @@ module Harpnotes
         tempo = music.meta_data[:tempo_display]
         print_variant_title = print_options[:title]
 
-        title_pos = music.harpnote_options[:legend][:pos]
+        title_pos = print_options[:legend][:pos]
         legend_pos = [title_pos.first, title_pos.last + 7]
         legend = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
 
@@ -1057,14 +1063,15 @@ module Harpnotes
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 288], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
 
-        lyrics = music.harpnote_options[:lyrics]
-        if lyrics
-          text = lyrics[:text].join("\n")
+        lyrics = print_options[:lyrics]
+        lyric_text = music.harpnote_options[:lyrics][:text]
+        if lyric_text
+          text = lyric_text.join("\n")
 
           if lyrics[:versepos]
             verses = text.split("\n\n")
             lyrics[:versepos].each do |key, value|
-              the_text =  key.scan(/\d+/).map{|i| verses[i.to_i - 1]}.join("\n\n")
+              the_text = key.scan(/\d+/).map { |i| verses[i.to_i - 1] }.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(value, the_text)
             end
 
@@ -1076,7 +1083,7 @@ module Harpnotes
         end
 
         #sheet based annotations
-        music.harpnote_options[:notes].each do |note|
+        print_options[:notes].each do |note|
           #note is an array [center, text, style] todo: refactor this
           annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style])
         end
@@ -1299,30 +1306,30 @@ module Harpnotes
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
 
         result = Hash[(0..max_beat).map do |beat|
-          notes_on_beat = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
-          max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
-          has_no_notes_on_beat = notes_on_beat.empty?
-          is_new_part = notes_on_beat.select { |n| n.first_in_part? }
+                        notes_on_beat = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
+                        max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
+                        has_no_notes_on_beat = notes_on_beat.empty?
+                        is_new_part = notes_on_beat.select { |n| n.first_in_part? }
 
-          unless has_no_notes_on_beat
-            begin
-              size = conf_beat_resolution * $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(max_duration_on_beat)].first
-            rescue Exception => e
-              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
-            end
+                        unless has_no_notes_on_beat
+                          begin
+                            size = conf_beat_resolution * $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(max_duration_on_beat)].first
+                          rescue Exception => e
+                            $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+                          end
 
-            # we need to increment the position by the (size[i] + size[i-1])/2
-            increment = (size + last_size)/2
-            last_size = size
+                          # we need to increment the position by the (size[i] + size[i-1])/2
+                          increment = (size + last_size)/2
+                          last_size = size
 
-            # if a new part starts on this beat, double the increment
-            unless is_new_part.empty?
-              increment += increment
-            end
-            current_beat += increment
-          end
-          [beat, current_beat]
-        end]
+                          # if a new part starts on this beat, double the increment
+                          unless is_new_part.empty?
+                            increment += increment
+                          end
+                          current_beat += increment
+                        end
+                        [beat, current_beat]
+                      end]
         result
       end
 
@@ -1504,7 +1511,7 @@ module Harpnotes
         if root.beat
           # todo decide if part starts on a new line, then x_offset should be 0
           x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch + (-0.5)) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
-           # todo:remove literal here
+          # todo:remove literal here
           y_offset = beat_layout.call(root.beat()) - $conf.get('layout.FONT_STYLE_DEF')[:regular][:font_size] * 0.5 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
           res = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
         else

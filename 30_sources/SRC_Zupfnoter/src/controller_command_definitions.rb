@@ -382,7 +382,7 @@ c
           raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
         end
 
-        layout_harpnotes # todo: this uses a side-effect to get the @song populated
+        layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
         render_previews
 
         print_variants = @music_model.harpnote_options[:print]
