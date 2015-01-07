@@ -37,7 +37,7 @@ task :build_ace do
     sh "node Makefile.dryice.js -nc -m full"
     sh "node Makefile.dryice.js full"
   end
-  cp_r("#{ACE_REPO}/build/src-min-noconflict", "#{VENDORFOLDER}/ace")
+  cp_r("#{ACE_REPO}/build/src-min-noconflict/.", "#{VENDORFOLDER}/ace")
 end
 
 desc "Build the documentation"
