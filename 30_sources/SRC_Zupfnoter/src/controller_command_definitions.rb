@@ -393,7 +393,8 @@ c
 
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
           pdfs = {}
-          print_variants.each_with_index.map do |print_variant, index|
+          print_variants.map do |print_variant|
+            index = print_variant[:view_id]
             filename = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
             pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a3.pdf"] = render_a3(index).output(:blob)
             pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a4.pdf"] = render_a4(index).output(:blob)

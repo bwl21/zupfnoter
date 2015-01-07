@@ -428,6 +428,7 @@ module Harpnotes
         @voices = voices
         @note_length_in_beats = note_length_in_beats
         @meta_data = metadata
+        @views = []
         update_beats
       end
 
@@ -977,6 +978,10 @@ module Harpnotes
           $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options[:title]}'")
         end
 
+        # push view specific configuration
+        layout_options = print_options[:layout] || {}
+        $conf.push({layout: layout_options})
+
         @y_offset = print_options[:startpos]
 
         beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
@@ -998,7 +1003,6 @@ module Harpnotes
         end
 
         compressed_beat_layout_proc = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
-
 
         # configure which synclines are required from-voice to-voice
         # also filter such synchlines which have points in the displayed voices
@@ -1090,6 +1094,8 @@ module Harpnotes
 
 
         sheet_elements = synch_lines + voice_elements + sheet_marks + annotations
+
+        $conf.pop  # remove view specific configuration
 
         Harpnotes::Drawing::Sheet.new(sheet_elements)
       end

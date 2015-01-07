@@ -190,7 +190,6 @@ module Harpnotes
         end
 
 
-
         # now parse the abc_code by abcjs
         # todo move this to opal-abcjs
         %x{
@@ -308,6 +307,7 @@ module Harpnotes
           hn_voice
         end
 
+        #############################
         # now construct the song
         hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         result = Harpnotes::Music::Song.new(hn_voices, note_length)
@@ -356,11 +356,11 @@ module Harpnotes
         print_options.push($conf.get("defaults.print"))
 
         # handle print options
-        result.harpnote_options[:print] = (harpnote_options[:print] || [{}]).map { |specified_option|
+        result.harpnote_options[:print] = (harpnote_options[:print] || [{}]).each_with_index.map do |specified_option, index|
           print_options.push(specified_option)
 
           resulting_options = {
-              line_no: 1,
+              view_id: index,
               title: print_options.get('t'),
               startpos: print_options.get('startpos'),
               voices: (print_options.get('v')), #.map { |i| i-1 },
@@ -379,7 +379,20 @@ module Harpnotes
           msg = "hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}"
           $log.error(msg, [line_no, 1]) unless missing_voices.empty?
           resulting_options
-        }
+        end
+
+        #todo:this is a compatibility code - remove after conversion to the new configuration
+        if $conf.get("location") == "song"
+          result.harpnote_options[:print] = $conf.get("produce").map do |i|
+            title = $conf.get("extract.#{i}.title")
+            if title
+              {title: title, view_id: i}
+            else
+              $log.error("could not find extract number #{i}", [1, 1])
+              nil
+            end
+          end.compact
+        end
 
         # legend
         print_options = Confstack.new
