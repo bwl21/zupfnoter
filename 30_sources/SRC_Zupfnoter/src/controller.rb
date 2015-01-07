@@ -207,10 +207,13 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       abc_text = @editor.get_abc_part
       @tune_preview_printer.draw(abc_text)
     rescue Exception => e
-      $log.error([e.message, e.backtrace])
+      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1,1], [10,1000])
     end
     $log.debug("finished render tune #{__FILE__} #{__LINE__}")
     set_inactive("#tunePreview")
+
+    @editor.set_annotations($log.annotations)
+
     nil
   end
 
@@ -223,13 +226,14 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       @harpnote_player.load_song(@music_model)
       @harpnote_preview_printer.draw(@song_harpnotes)
     rescue Exception => e
-      $log.error([e.message, e.backtrace])
+      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1,1], [10,1000])
     end
 
     set_status(refresh: false)
 
     $log.debug("finished rendering Haprnotes #{__FILE__} #{__LINE__}")
     set_inactive("#harpPreview")
+    @editor.set_annotations($log.annotations)
 
     nil
   end
