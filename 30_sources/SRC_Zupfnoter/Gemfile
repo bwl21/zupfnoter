@@ -4,5 +4,5 @@ source 'https://rubygems.org'
 gem 'sass'
 gem 'zip'
 gem 'opal', '~> 0.6.0'
-gem 'opal-jquery'
+gem 'opal-jquery', '~> 0.2.0'
 gem 'vector2d', "~> 2.1.0"
