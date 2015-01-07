@@ -176,18 +176,21 @@ module Harpnotes
         @abc_code = zupfnoter_abc
 
         # get harpnote_options from abc_code
+        # todo remove this compatibility mode
         harpnote_options = parse_harpnote_config(zupfnoter_abc)
+
         # note that harpnote_options uses singular names
         if $conf.get("location") == "song"
           @annotations = $conf.get("annotations")
-        else
+        else   #todo compatibility code
+
           @annotations = (harpnote_options[:annotation] || [])
+          @annotations = @annotations.inject({}) do |hash, entry|
+            hash[entry[:id]] = entry
+            hash
+          end
         end
 
-        @annotations = @annotations.inject({}) do |hash, entry|
-          hash[entry[:id]] = entry
-          hash
-        end
 
 
         # now parse the abc_code by abcjs

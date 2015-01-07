@@ -183,15 +183,17 @@ M:4/4
 L:1/4
 Q:1/4=120
 K:C
-%%%%hn.print {"t":"alle Stimmen",         "v":[1,2,3,4], "s": [[1,2],[3,4]], "f":[1,3], "j":[1]}
-% %%%hn.print {"t":"sopran, alt", "v":[1,2],     "s":[[1,2]],       "f":[1],   "j":[1]}
-%%%%hn.print {"t":"tenor, bass", "v":[3, 4],     "s":[[1, 2], [3,4]],       "f":[3  ],   "j":[1, 3]}
-%%%%hn.legend {"pos": [10,10]}
 %%score T1 T2  B1 B2
 V:T1 clef=treble-8 name="Sopran" snm="S"
-c'
+C
 V:T2 clef=treble-8  name="Alt" snm="A"
-c
+C,
+
+%%%%hn.config
+
+{
+  "produce": ["1", "2"]
+}
 }
         args[:oldval] = @editor.get_text
         @editor.set_text(template)

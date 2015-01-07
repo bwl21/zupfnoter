@@ -5,6 +5,8 @@ notation
 
 # getting started
 
+## local installation
+
 as of now the whole thing is far from being ready to use out of the box.
 
 -   install Ruby 1.9.3 or higher with bundler
@@ -20,7 +22,14 @@ as of now the whole thing is far from being ready to use out of the box.
     -   run `rake server`
     -   goto http://localhost:9292
 
+## run from website
+
+https://zupfnoter.weichel21.de
+
+
 # Zupfnoter conventions in abc code
+
+## current conventions
 
 Zupfnoter tries to use ABC as close as possible. It does not add new
 syntax but applies to some conventions. These conventions reflect to
@@ -53,6 +62,256 @@ The specific conventions in detail are as follows:
 
     places the repetition line 3 halftones left of the end of the
     repetition.
+
+## multi level configuration profiles
+
+Zupfnoter uses a sophisticated configuration system to control any adjustable item in the produced harpnote sheets such as
+
+* sheet dimensions
+* line style
+* size of notes
+* annotations
+* position of legend and lyrics
+
+The configuration is represented as a hierarchy of key/value entities (Hiearchy of hashes). These entities
+can be defined / redefined on various levels:
+
+* the builtin defaults
+* user level (planned for a desktop version)
+* music level
+* extract level
+
+on each level, the level specific values are specified including their parent. An example of simple configurtion is:
+
+
+```JSON
+{
+ "produce": ["1", "2"]
+}
+```
+
+This indicates that extract "1" and extract "2" schall be produced. The details of these views are taken from the default.
+
+An complex example is as follows:
+
+```JSON
+
+{
+
+ "produce": ["1", "2"],
+
+ "annotations": {
+                "1":   {"pos": [0,10], "text": "hallo"},
+                "refn":  {"text": "referenced note", "pos": [20,10]}
+                },
+
+ "extract":{
+
+             "2": {"voices": [1,2],
+                   "flowlines": [1,2],
+                   "layoutlines" : [1],
+                   "lyrics": {"versepos": {"1": [300,40], "2,3":  [320, 60]},"pos": [300,40]},
+                   "legend": {"pos": [300,10]},
+                   "notes":[
+                    {"pos": [30,30], "text": "note at 10,30", "style": "regular"},
+                    {"pos": [30,60], "text": "note at 10,60", "style": "regular"},
+                    {"pos": [5, 50], "text": "Folge: A A B B C A", "style": "regular"}
+                   ],
+                    "layout": {
+                               "ELLIPSE_SIZE": [1.4, 0.5],
+                               "REST_SIZE": [2.8, 1.7]
+                              }
+                   }
+          },
+
+}
+
+```
+
+In this case we specifiy
+
+* produce extract 1 and 2
+* define two annotations to be referenced from note based annotations
+* redefine extract 2
+    * optimize layout only by voice 1
+    * particluar positioning of lyrics and legend
+    * add further notes on the sheet
+    * change the size of notes in extract 2
+
+Note that '"layout" can be specified on extract level as well as on sheet level.
+
+### configuration of an extract
+
+the following fields apply to an extract:
+
+title -> string
+:   The title of the print
+
+voices -> array of numbers
+:   List of voices to be shown (it is an array of integer) from 1 to
+    n denoting the voice index. Note that the voice index is
+    basically the sequence of voices in the note preview. Therefore
+    the %%score directive also influcnces the voice index.
+
+synchlines -> array of array of numbers
+:   List of synchlines to be shown. It is an array of array integers
+    denoting the voice pairs for which synchlines shall be drawn.
+
+    example
+
+    ```JSON
+        "synchlines": [[1, 2], [3, 4]]
+    ```
+
+flowlines - >array of numbers
+:   List of flowlines to be shown. It is an array of integers
+
+subflowlines -> array of numbers
+:   List of subflowlins to be shown. It is an array of intenters.
+    Subflowlines are flowlines connecting notes which otherwise have
+    no corresponding note in other displayed voices and therefore
+    would appear as single notes lost in space (without anny
+    connection).
+
+startpos -> array of numbers
+:   the vertical position to start with the first note. It is an
+    integer.
+
+jumplines -> array of numbers
+:   List of jumplines to be shown. It is an array of integers
+
+layoutlines -> array of numbers
+:   List of voices to consider for vertical layout optimization.
+    Defaults to the List specified by v
+
+notes -> array of hashes (placeable text)
+:   Array of notes to be drawn on the output. Each note is a placeable text
+
+    ```JSON
+     "annotations": {
+                    "1":   {"pos": [0,10], "text": "hallo"},
+                    "refn":  {"text": "referenced note", "pos": [20,10]}
+                    },
+    ```
+
+**todo**
+
+
+
+### the default configuration
+
+```JSON
+{
+  "produce": [0],
+
+  "annotations": {
+    "vt" : {"text": "v", "pos": [-1, -6]},
+    "vr" : {"text": "v", "pos": [2, -3]}
+  },
+
+  "extract": {
+    "0": {
+      "title": "alle Stimmen",
+      "startpos": 15, "voices": [1, 2, 3, 4],
+      "synchlines": [[1, 2], [3, 4]],
+      "flowlines": [1, 3],
+      "subflowlines": [2, 4],
+      "jumplines": [1, 3],
+      "layoutlines": [1, 2, 3, 4],
+      "legend": {"pos": [320, 20]},
+      "lyrics": {"pos": [320, 60]},
+      "notes": []
+    },
+
+    "1": {
+      "title": "Sopran, Alt",
+      "startpos": 15,
+      "voices": [1, 2],
+      "synchlines": [[1, 2], [3, 4]],
+      "flowlines": [1, 3],
+      "subflowlines": [2, 4],
+      "jumplines": [1, 3],
+      "layoutlines": [1, 2],
+      "legend": {"pos": [320, 20]},
+      "lyrics": {"pos": [320, 60]},
+      "notes": []
+    },
+
+    "2": {
+      "title": "Tenor, Bass",
+      "startpos": 15,
+      "voices": [3, 4],
+      "synchlines": [[1, 2], [3, 4]],
+      "flowlines": [3],
+      "subflowlines": [4],
+      "jumplines": [1, 3],
+      "layoutlines": [3, 4],
+      "legend": {"pos": [320, 20]},
+      "lyrics": {"pos": [320, 60]},
+      "notes": []
+    }
+  },
+
+  "layout": {
+    "LINE_THIN": 0.1,
+    "LINE_MEDIUM": 0.3,
+    "LINE_THICK": 0.5,
+    "ELLIPSE_SIZE": [2.8, 1.7],
+    "REST_SIZE": [2.8, 1.5],
+    "X_SPACING": 11.5,
+    "X_OFFSET": 2.8, "Y_SCALE": 4,
+    "DRAWING_AREA_SIZE": [400, 282],
+    "BEAT_RESOLUTION": 192,
+    "SHORTEST_NOTE": 64,
+    "BEAT_PER_DURATION": 3,
+    "PITCH_OFFSET": -43,
+    "FONT_STYLE_DEF": {
+      "smaller": {"text_color": [0, 0, 0], "font_size": 6, "font_style": "normal"},
+      "small": {"text_color": [0, 0, 0], "font_size": 9, "font_style": "normal"},
+      "regular": {"text_color": [0, 0, 0], "font_size": 12, "font_style": "normal"},
+      "large": {"text_color": [0, 0, 0], "font_size": 20, "font_style": "bold"}
+    },
+
+    "MM_PER_POINT": 0.3,
+    "DURATION_TO_STYLE": {
+      "err": [2, "filled", false],
+      "d64": [0.9, "empty", false],
+      "d48": [0.7, "empty", true],
+      "d32": [0.7, "empty", false],
+      "d24": [0.7, "filled", true],
+      "d16": [0.7, "filled", false],
+      "d12": [0.5, "filled", true],
+      "d8": [0.5, "filled", false],
+      "d6": [0.3, "filled", true],
+      "d4": [0.3, "filled", false],
+      "d3": [0.1, "filled", true],
+      "d2": [0.1, "filled", false],
+      "d1": [0.05, "filled", false]
+    },
+
+    "REST_TO_GLYPH": {
+      "err": [[2, 2], "rest_1", false],
+      "d64": [[0.9, 0.9], "rest_1", false],
+      "d48": [[0.5, 0.5], "rest_1", true],
+      "d32": [[0.5, 0.5], "rest_1", false],
+      "d24": [[0.4, 0.7], "rest_4", true],
+      "d16": [[0.4, 0.7], "rest_4", false],
+      "d12": [[0.3, 0.5], "rest_8", true],
+      "d8": [[0.3, 0.5], "rest_8", false],
+      "d6": [[0.3, 0.4], "rest_16", true],
+      "d4": [[0.3, 0.5], "rest_16", false],
+      "d3": [[0.3, 0.5], "rest_32", true],
+      "d2": [[0.3, 0.5], "rest_32", false],
+      "d1": [[0.3, 0.5], "rest_64", false]
+    }
+  }
+}
+
+```
+
+
+
+## outdated and deprecated conventions
 
 3.  Control visualization of Voices Synchlines, Jumplines, Flowlines
 
@@ -165,11 +424,13 @@ This software is licensed under dual license GPL and Commercial
 
 ## known bugs
 
-001 Hightlighting in ace is turned off, since ace is throwing too many
-selection changed events 002 Play cannot be stopped 003 some refactoring
-necessary (see todo) 004 highlighting in tunepreview while playing does
-not work properly; tunepreview removes previous highlights 005 Q: tag is
-not considered while playing
+001. Hightlighting in ace is turned off, since ace is throwing too many
+selection changed events **done**
+002. Play cannot be stopped **done**
+003. some refactoring necessary (see todo)
+004. highlighting in tunepreview while playing does
+not work properly; tunepreview removes previous highlights
+005. Q: tag is not considered while playing **done**
 
 ## current work items
 

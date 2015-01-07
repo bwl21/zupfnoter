@@ -207,7 +207,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       abc_text = @editor.get_abc_part
       @tune_preview_printer.draw(abc_text)
     rescue Exception => e
-      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1,1], [10,1000])
+      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1, 1], [10, 1000])
     end
     $log.debug("finished render tune #{__FILE__} #{__LINE__}")
     set_inactive("#tunePreview")
@@ -226,7 +226,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       @harpnote_player.load_song(@music_model)
       @harpnote_preview_printer.draw(@song_harpnotes)
     rescue Exception => e
-      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1,1], [10,1000])
+      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1, 1], [10, 1000])
     end
 
     set_status(refresh: false)
@@ -497,7 +497,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # returns a hash with the default values of configuration
   def _init_conf()
     result =
-        {defaults:
+        {produce: [0],
+         defaults:
              {
                  print: {t: "", # title of the extract
                          v: [1, 2, 3, 4], # voices to show
@@ -512,7 +513,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                  lyrics: {pos: [20, 60]} # lyrics defaults
              },
 
-         annotations: [],    # default for note based annotations
+         annotations: {
+             vt: {text: "v", pos: [-1, -6]},
+             vr: {text: "v", pos: [2, -3]}
+
+         }, # default for note based annotations
 
          extract: {
              "0" => {
@@ -525,8 +530,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                  subflowlines: [2, 4],
                  jumplines: [1, 3],
                  layoutlines: [1, 2, 3, 4],
-                 legend: {pos: [10, 20]},
-                 lyrics: {pos: [10, 30]},
+                 legend: {pos: [320, 20]},
+                 lyrics: {pos: [320, 50]},
                  notes: []
              },
              "1" => {
@@ -545,7 +550,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
              },
              "2" => {
                  line_no: 1,
-                 title: "Tenor Bass",
+                 title: "Tenor, Bass",
                  startpos: 15,
                  voices: [3, 4],
                  synchlines: [[1, 2], [3, 4]],
@@ -553,8 +558,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                  subflowlines: [4],
                  jumplines: [1, 3],
                  layoutlines: [3, 4],
-                 legend: {pos: [10, 20]},
-                 lyrics: {pos: [10, 30]},
+                 legend: {pos: [320, 20]},
+                 lyrics: {pos: [320, 50]},
                  notes: []
              }
          },
