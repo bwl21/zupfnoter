@@ -512,6 +512,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                  lyrics: {pos: [20, 60]} # lyrics defaults
              },
 
+         annotations: [],    # default for note based annotations
+
          extract: {
              "0" => {
                  line_no: 1,

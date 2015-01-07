@@ -178,10 +178,17 @@ module Harpnotes
         # get harpnote_options from abc_code
         harpnote_options = parse_harpnote_config(zupfnoter_abc)
         # note that harpnote_options uses singular names
-        @annotations = (harpnote_options[:annotation] || []).inject({}) do |hash, entry|
+        if $conf.get("location") == "song"
+          @annotations = $conf.get("annotations")
+        else
+          @annotations = (harpnote_options[:annotation] || [])
+        end
+
+        @annotations = @annotations.inject({}) do |hash, entry|
           hash[entry[:id]] = entry
           hash
         end
+
 
 
         # now parse the abc_code by abcjs
@@ -302,7 +309,7 @@ module Harpnotes
         end
 
         # now construct the song
-        hn_voices.unshift(hn_voices.first)  # let voice-index start with 1 -> duplicate voice 0
+        hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         result = Harpnotes::Music::Song.new(hn_voices, note_length)
 
         # contruct the meta data
@@ -356,12 +363,12 @@ module Harpnotes
               line_no: 1,
               title: print_options.get('t'),
               startpos: print_options.get('startpos'),
-              voices: (print_options.get('v')),#.map { |i| i-1 },
-              synchlines: (print_options.get('s')),#.map { |i| i.map { |j| j-1 } },
-              flowlines: (print_options.get('f')),#.map { |i| i-1 },
-              subflowlines: (print_options.get('sf')),#.map { |i| i-1 },
-              jumplines: (print_options.get('j')),# .map { |i| i-1 },
-              layoutlines: (print_options.get('l') || print_options.get('v') ) # .map { |i| i-1 } # these voices are considered in layoutoptimization
+              voices: (print_options.get('v')), #.map { |i| i-1 },
+              synchlines: (print_options.get('s')), #.map { |i| i.map { |j| j-1 } },
+              flowlines: (print_options.get('f')), #.map { |i| i-1 },
+              subflowlines: (print_options.get('sf')), #.map { |i| i-1 },
+              jumplines: (print_options.get('j')), # .map { |i| i-1 },
+              layoutlines: (print_options.get('l') || print_options.get('v')) # .map { |i| i-1 } # these voices are considered in layoutoptimization
           }
 
           # checking missing voices
@@ -377,13 +384,13 @@ module Harpnotes
         # legend
         print_options = Confstack.new
         print_options.push($conf.get('defaults.legend'))
-        print_options.push(harpnote_options[:legend])  if harpnote_options[:legend]
+        print_options.push(harpnote_options[:legend]) if harpnote_options[:legend]
         result.harpnote_options[:legend] = print_options.get
 
         # lyrics
         print_options = Confstack.new
         print_options.push($conf.get('defaults.lyrics'))
-        print_options.push(harpnote_options[:lyrics])  if harpnote_options[:lyrics]
+        print_options.push(harpnote_options[:lyrics]) if harpnote_options[:lyrics]
         result.harpnote_options[:lyrics] = print_options.get
         result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
 
@@ -632,7 +639,7 @@ module Harpnotes
         @previous_note = result.last
 
         if @next_note_marks[:measure]
-          notes.each{|note| result << Harpnotes::Music::MeasureStart.new(note)}
+          notes.each { |note| result << Harpnotes::Music::MeasureStart.new(note) }
           @next_note_marks[:measure] = false
         end
 
