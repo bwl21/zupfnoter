@@ -286,7 +286,11 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
       config = {}
     end
 
-    config[:location] = "song" if config.keys.count > 0
+    # todo: remove this compatibility code
+    outdated_configs = @editor.get_text.split("%%%%hn.").count
+    config[:location] = "song" if config.keys.count > 0 || outdated_configs == 1
+    # todo: end of compatiblility code
+
     $conf.push(config)
     @music_model = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_abc_part)
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)

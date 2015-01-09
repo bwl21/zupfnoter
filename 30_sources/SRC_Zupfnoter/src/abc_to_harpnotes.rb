@@ -391,7 +391,7 @@ module Harpnotes
             if title
               {title: title, view_id: i}
             else
-              $log.error("could not find extract number #{i}", [1, 1])
+              $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
               nil
             end
           end.compact

@@ -18,16 +18,20 @@ module Harpnotes
         var editor = ace.edit(div);
         editor.$blockScrolling = Infinity;
 
-        editor.setTheme("ace/theme/xcode");
+        editor.setTheme("ace/theme/chrome");
         editor.getSession().setMode("ace/mode/abc");
 
-        editor.setTheme("ace/theme/xcode");
+        editor.setTheme("ace/theme/abc");
 
         editor.setOptions({
           highlightActiveLine: true,
           enableBasicAutocompletion: true,
           enableSnippets: true,
           enableLiveAutocompletion: false        });
+
+        // todo: refine autocompletion according to http://plnkr.co/edit/6MVntVmXYUbjR0DI82Cr?p=preview
+        //                                          https://github.com/ajaxorg/ace/wiki/How-to-enable-Autocomplete-in-the-Ace-editor
+
       }
       @editor = `editor`
       @range = `ace.require('ace/range').Range`
@@ -176,7 +180,7 @@ module Harpnotes
 
 
     # get the abc part of the stuff
-    CONFIG_SEPARATOR = "%%%%hn.config"
+    CONFIG_SEPARATOR = "%%%%zupfnoter.config"
 
     def get_abc_part
       get_text.split(CONFIG_SEPARATOR).first

@@ -81,16 +81,24 @@ can be defined / redefined on various levels:
 * music level
 * extract level
 
-on each level, the level specific values are specified including their parent. An example of simple configurtion is:
+Configurations are appended to the abc - code separated by
 
+```
+%%%%zupfnoter.config
+```
 
-```JSON
+on each level, the level specific values are specified including their parent. An example of simple configuration is:
+
+```JSON`
+
+%%%%zupfnoter.config
+
 {
  "produce": ["1", "2"]
 }
 ```
 
-This indicates that extract "1" and extract "2" schall be produced. The details of these views are taken from the default.
+This indicates that extract "1" and extract "2" shall be produced. The details of these views are taken from the default.
 
 An complex example is as follows:
 

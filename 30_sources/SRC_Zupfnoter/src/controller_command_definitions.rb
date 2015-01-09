@@ -189,7 +189,7 @@ C
 V:T2 clef=treble-8  name="Alt" snm="A"
 C,
 
-%%%%hn.config
+%%%%zupfnoter.config
 
 {
   "produce": ["1", "2"]
