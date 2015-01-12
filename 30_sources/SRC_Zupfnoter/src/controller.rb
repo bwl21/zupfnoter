@@ -514,7 +514,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
                          l: [1, 2, 3, 4] # lyoutlies
                  },
                  legend: {pos: [20, 20]}, # legend defaults
-                 lyrics: {pos: [20, 60]} # lyrics defaults
+                 lyrics: {pos: [20, 60]}, # lyrics defaults
+                 annotation: {pos: [2, -5]} # position of notebound annotation
              },
 
          annotations: {
