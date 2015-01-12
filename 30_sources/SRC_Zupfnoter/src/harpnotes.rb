@@ -923,7 +923,7 @@ module Harpnotes
           :d2 => [0.1, :filled, FALSE], # 1/32
           :d1 => [0.05, :filled, FALSE], # 1/64
       }
-=end
+
 
       REST_TO_GLYPH = {
           # this basically determines the white background rectangel
@@ -941,6 +941,8 @@ module Harpnotes
           :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
           :d1 => [[0.3, 0.5], :rest_64, FALSE], # 1/64
       }
+
+=end
 
       def initialize
         # Spacing between two BeatTable increments
@@ -1095,7 +1097,7 @@ module Harpnotes
 
         sheet_elements = synch_lines + voice_elements + sheet_marks + annotations
 
-        $conf.pop  # remove view specific configuration
+        $conf.pop # remove view specific configuration
 
         Harpnotes::Drawing::Sheet.new(sheet_elements)
       end
@@ -1188,7 +1190,7 @@ module Harpnotes
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
             tiepath, anchor = make_annotated_bezier_path([p1, p2])
             $log.debug("#{[tiepath, anchor]} (#{__FILE__} #{__LINE__})")
-            result.push(Harpnotes::Drawing::Path.new(tiepath))
+            result.push(Harpnotes::Drawing::Path.new(tiepath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM')})
             result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
 
             # compute the position
@@ -1207,7 +1209,7 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[tie_start].center) + [3, 0]
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
             tiepath = make_slur_path(p1, p2)
-            result.push(Harpnotes::Drawing::Path.new(tiepath))
+            result.push(Harpnotes::Drawing::Path.new(tiepath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM')} )
             if playable.is_a? Harpnotes::Music::SynchPoint
               playable.notes.each_with_index do |n, index|
                 begin
@@ -1215,7 +1217,7 @@ module Harpnotes
                   p1 = Vector2d(lookuptable_drawing_by_playable[p1].center) + [3, 0]
                   p2 = Vector2d(lookuptable_drawing_by_playable[n].center) + [3, 0]
                   tiepath = make_slur_path(p1, p2)
-                  result.push(Harpnotes::Drawing::Path.new(tiepath))
+                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
                 rescue Exception => e
                   $log.error("tied chords which doesn't have same number of notes", n.start_pos)
                 end
@@ -1234,7 +1236,7 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[begin_slur].center) + [3, 0]
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
             slurpath = make_slur_path(p1, p2)
-            result.push(Harpnotes::Drawing::Path.new(slurpath))
+            result.push(Harpnotes::Drawing::Path.new(slurpath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
           end
 
           result
