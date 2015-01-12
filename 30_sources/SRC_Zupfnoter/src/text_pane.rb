@@ -18,7 +18,7 @@ module Harpnotes
         var editor = ace.edit(div);
         editor.$blockScrolling = Infinity;
 
-        editor.setTheme("ace/theme/chrome");
+        editor.setTheme("ace/theme/abc");
         editor.getSession().setMode("ace/mode/abc");
 
         editor.setTheme("ace/theme/abc");
