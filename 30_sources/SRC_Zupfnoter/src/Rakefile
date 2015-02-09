@@ -16,9 +16,11 @@ ACE_REPO = "../../../../200_zupfnoter_external_components/ace"
 
 desc "Build our app to #{ZUPFNOTER_JS}"
 task :build do
-  env = Opal::Environment.new
-  env.append_path "."
-  env.use_gem "vector2d"
+  env = Sprockets::Environment.new
+  Opal.append_path "."
+  Opal.use_gem "vector2d"
+
+  Opal.paths.each { |p| env.append_path(p) }
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
     out << env["application"].to_s

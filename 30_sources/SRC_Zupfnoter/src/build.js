@@ -19073,7 +19073,7 @@ if (args == null) args = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $klass = $opal.klass, $gvars = $opal.gvars, $hash2 = $opal.hash2, $range = $opal.range;
 
-  $opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$add_parameter', '$set_default', '$[]', '$parameter_help', '$set_status', '$to_i', '$render_previews', '$loglevel=', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$fail', '$write_file', '$output', '$render_a3', '$render_a4', '$each', '$push', '$when', '$add_metadata', '$read_file']);
+  $opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$add_parameter', '$set_default', '$[]', '$parameter_help', '$set_status', '$to_i', '$render_previews', '$loglevel=', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$write_file', '$output', '$render_a3', '$render_a4', '$each', '$push', '$fail', '$when', '$add_metadata', '$read_file']);
   return (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
@@ -19517,7 +19517,7 @@ if (parameter == null) parameter = nil;
         ($a = ($c = command).$set_help, $a._p = (TMP_108 = function(){var self = TMP_108._s || this;
 
         return "save to dropbox {" + (command.$parameter_help(0)) + "}"}, TMP_108._s = self, TMP_108), $a).call($c);
-        return ($a = ($d = command).$as_action, $a._p = (TMP_109 = function(args){var self = TMP_109._s || this, $a, $b, TMP_110, $c, $d, TMP_111, $e, $f, TMP_112, abc_code = nil, metadata = nil, filebase = nil, print_variants = nil, rootpath = nil;
+        return ($a = ($d = command).$as_action, $a._p = (TMP_109 = function(args){var self = TMP_109._s || this, $a, $b, TMP_110, $c, TMP_113, $d, $e, TMP_114, $f, $g, abc_code = nil, metadata = nil, filebase = nil, print_variants = nil, rootpath = nil, save_promises = nil;
           if (self.editor == null) self.editor = nil;
           if (self.abc_transformer == null) self.abc_transformer = nil;
           if (self.music_model == null) self.music_model = nil;
@@ -19537,31 +19537,31 @@ if (args == null) args = nil;
           self.$render_previews();
           print_variants = self.music_model.$harpnote_options()['$[]']("print");
           rootpath = args['$[]']("path");
-          return ($a = ($b = ($c = ($d = ($e = ($f = self.dropboxclient.$authenticate()).$then, $e._p = (TMP_112 = function(){var self = TMP_112._s || this, $a, $b, TMP_113, $c, TMP_114, save_promises = nil, pdfs = nil;
+          save_promises = [];
+          ($a = ($b = self.dropboxclient.$authenticate()).$then, $a._p = (TMP_110 = function(){var self = TMP_110._s || this, $a, $b, TMP_111, $c, TMP_112, pdfs = nil;
             if (self.dropboxclient == null) self.dropboxclient = nil;
             if (self.editor == null) self.editor = nil;
 
           save_promises = [self.dropboxclient.$write_file("" + (rootpath) + (filebase) + ".abc", self.editor.$get_text())];
             pdfs = $hash2([], {});
-            ($a = ($b = print_variants).$map, $a._p = (TMP_113 = function(print_variant){var self = TMP_113._s || this, index = nil, filename = nil;
+            ($a = ($b = print_variants).$map, $a._p = (TMP_111 = function(print_variant){var self = TMP_111._s || this, index = nil, filename = nil;
 if (print_variant == null) print_variant = nil;
             index = print_variant['$[]']("view_id");
               filename = print_variant['$[]']("title").$gsub(/[^a-zA-Z0-9\-\_]/, "_");
               pdfs['$[]=']("" + (rootpath) + (filebase) + "_" + (print_variant['$[]']("title")) + "_a3.pdf", self.$render_a3(index).$output("blob"));
-              return pdfs['$[]=']("" + (rootpath) + (filebase) + "_" + (print_variant['$[]']("title")) + "_a4.pdf", self.$render_a4(index).$output("blob"));}, TMP_113._s = self, TMP_113), $a).call($b);
-            ($a = ($c = pdfs).$each, $a._p = (TMP_114 = function(name, pdfdata){var self = TMP_114._s || this;
+              return pdfs['$[]=']("" + (rootpath) + (filebase) + "_" + (print_variant['$[]']("title")) + "_a4.pdf", self.$render_a4(index).$output("blob"));}, TMP_111._s = self, TMP_111), $a).call($b);
+            return ($a = ($c = pdfs).$each, $a._p = (TMP_112 = function(name, pdfdata){var self = TMP_112._s || this;
               if (self.dropboxclient == null) self.dropboxclient = nil;
 if (name == null) name = nil;if (pdfdata == null) pdfdata = nil;
-            return save_promises.$push(self.dropboxclient.$write_file(name, pdfdata))}, TMP_114._s = self, TMP_114), $a).call($c);
-            save_promises.$push(self.dropboxclient.$write_file("" + (rootpath) + (filebase) + ".abc", self.editor.$get_text()));
-            return (($a = $scope.Promise) == null ? $opal.cm('Promise') : $a).$when(save_promises);}, TMP_112._s = self, TMP_112), $e).call($f)).$then, $c._p = (TMP_111 = function(){var self = TMP_111._s || this;
+            return save_promises.$push(self.dropboxclient.$write_file(name, pdfdata))}, TMP_112._s = self, TMP_112), $a).call($c);}, TMP_110._s = self, TMP_110), $a).call($b);
+          return ($a = ($c = ($d = ($e = ($f = (($g = $scope.Promise) == null ? $opal.cm('Promise') : $g)).$when.apply($f, [].concat(save_promises))).$then, $d._p = (TMP_114 = function(){var self = TMP_114._s || this;
             if ($gvars.log == null) $gvars.log = nil;
 
           self.$set_status($hash2(["music_model"], {"music_model": "saved to dropbox"}));
-            return $gvars.log.$message("all files saved");}, TMP_111._s = self, TMP_111), $c).call($d)).$fail, $a._p = (TMP_110 = function(err){var self = TMP_110._s || this;
+            return $gvars.log.$message("all files saved");}, TMP_114._s = self, TMP_114), $d).call($e)).$fail, $a._p = (TMP_113 = function(err){var self = TMP_113._s || this;
             if ($gvars.log == null) $gvars.log = nil;
 if (err == null) err = nil;
-          return $gvars.log.$error("there was an error saving files " + (err))}, TMP_110._s = self, TMP_110), $a).call($b);}, TMP_109._s = self, TMP_109), $a).call($d);}, TMP_104._s = self, TMP_104), $a).call($f, "dsave");
+          return $gvars.log.$error("there was an error saving files " + (err))}, TMP_113._s = self, TMP_113), $a).call($c);}, TMP_109._s = self, TMP_109), $a).call($d);}, TMP_104._s = self, TMP_104), $a).call($f, "dsave");
       return ($a = ($g = self.commands).$add_command, $a._p = (TMP_115 = function(command){var self = TMP_115._s || this, $a, $b, TMP_116, $c, TMP_119, $d, TMP_120, $e, TMP_126;
 if (command == null) command = nil;
       command.$add_parameter("fileid", "string", "file id");
@@ -19594,7 +19594,7 @@ if (error == null) error = nil;if (data == null) data = nil;
             if (self.dropboxclient == null) self.dropboxclient = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (entries == null) entries = nil;
-          $gvars.log.$debug("" + (entries) + " (" + ("controller_command_definitions") + " " + (446) + ")");
+          $gvars.log.$debug("" + (entries) + " (" + ("controller_command_definitions") + " " + (444) + ")");
             fileid = ($a = ($b = entries).$select, $a._p = (TMP_124 = function(entry){var self = TMP_124._s || this;
 if (entry == null) entry = nil;
             return entry['$=~']((new RegExp("" + fileid + "_.*\\.abc$")))}, TMP_124._s = self, TMP_124), $a).call($b).$first();
@@ -19603,7 +19603,7 @@ if (entry == null) entry = nil;
             if (self.editor == null) self.editor = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (abc_text == null) abc_text = nil;
-          $gvars.log.$debug("loaded " + (fileid) + " (" + ("controller_command_definitions") + " " + (450) + ")");
+          $gvars.log.$debug("loaded " + (fileid) + " (" + ("controller_command_definitions") + " " + (448) + ")");
             filebase = fileid.$split(".abc")['$[]']($range(0, -1, false)).$join(".abc");
             abc_text = self.abc_transformer.$add_metadata(abc_text, $hash2(["F"], {"F": filebase}));
             self.editor.$set_text(abc_text);
@@ -19712,7 +19712,7 @@ if (n == null) n = nil;
             return n['$[]']("delay")['$>='](self.selection.$first()['$[]']("delay"))}, TMP_6._s = self, TMP_6), $a).call($b)
             } else {
             $gvars.log.$error("please select at least one note");
-            notes_to_play = [];
+            notes_to_play = self.voice_elements;
           };
           return self.$play_notes(notes_to_play);
         };
@@ -20448,7 +20448,7 @@ if (values == null) values = nil;
 (function($opal) {
   var self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice, $module = $opal.module, $klass = $opal.klass, $gvars = $opal.gvars;
 
-  $opal.add_stubs(['$attr_accessor', '$raise', '$lambda', '$error', '$tap', '$call', '$reject', '$resolve', '$new', '$with_promise']);
+  $opal.add_stubs(['$attr_accessor', '$raise', '$lambda', '$error', '$tap', '$call', '$reject', '$resolve', '$new', '$-', '$>=', '$info', '$with_promise', '$debug', '$with_promise_retry']);
   ;
   return (function($base) {
     var self = $module($base, 'Opal');
@@ -20479,7 +20479,7 @@ if (values == null) values = nil;
         function $Client(){};
         var self = $Client = $klass($base, $super, 'Client', $Client);
 
-        var def = self._proto, $scope = self._scope, TMP_2;
+        var def = self._proto, $scope = self._scope, TMP_2, TMP_5;
 
         self.$attr_accessor("root_in_dropbox", "app_name");
 
@@ -20490,12 +20490,7 @@ if (values == null) values = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (error == null) error = nil;
           return $gvars.log.$error(error)}, TMP_1._s = self, TMP_1), $a).call($b);
-          self.root = new Dropbox.Client({ key: key });;
-          
-           self.root.onError.addListener(function(error) {
-                                   self.errorlogger(error)
-           });
-        
+          return self.root = new Dropbox.Client({ key: key });;
         };
 
         def.$with_promise = TMP_2 = function() {
@@ -20513,53 +20508,87 @@ if (error == null) error = nil;if (data == null) data = nil;
               }}, TMP_4._s = self, TMP_4), $a).call($b))}, TMP_3._s = self, TMP_3), $a).call($b);
         };
 
+        def.$with_promise_retry = TMP_5 = function(info, retries) {
+          var $a, $b, TMP_6, $c, self = this, $iter = TMP_5._p, block = $iter || nil;
+
+          if (info == null) {
+            info = ""
+          }
+          if (retries == null) {
+            retries = 2
+          }
+          TMP_5._p = null;
+          return ($a = ($b = (($c = $scope.Promise) == null ? $opal.cm('Promise') : $c).$new()).$tap, $a._p = (TMP_6 = function(promise){var self = TMP_6._s || this, $a, $b, TMP_7, remaining = nil, handler = nil;
+if (promise == null) promise = nil;
+          remaining = retries;
+            handler = ($a = ($b = self).$lambda, $a._p = (TMP_7 = function(error, data){var self = TMP_7._s || this;
+              if ($gvars.log == null) $gvars.log = nil;
+if (error == null) error = nil;if (data == null) data = nil;
+            if (error !== false && error !== nil) {
+                remaining = remaining['$-'](1);
+                if (remaining['$>='](0)) {
+                  $gvars.log.$info("" + (remaining) + " remaining retries " + (info));
+                  return block.$call(handler);
+                  } else {
+                  $gvars.log.$error(error);
+                  return promise.$reject(error);
+                };
+                } else {
+                $gvars.log.$info("successs " + (info));
+                return promise.$resolve(data);
+              }}, TMP_7._s = self, TMP_7), $a).call($b);
+            return block.$call(handler);}, TMP_6._s = self, TMP_6), $a).call($b);
+        };
+
         def.$authenticate = function() {
-          var $a, $b, TMP_5, self = this;
-
-          return ($a = ($b = self).$with_promise, $a._p = (TMP_5 = function(iblock){var self = TMP_5._s || this;
-            if (self.root == null) self.root = nil;
-if (iblock == null) iblock = nil;
-          return self.root.authenticate(iblock);}, TMP_5._s = self, TMP_5), $a).call($b);
-        };
-
-        def.$get_account_info = function() {
-          var $a, $b, TMP_6, self = this;
-
-          return ($a = ($b = self).$with_promise, $a._p = (TMP_6 = function(iblock){var self = TMP_6._s || this;
-            if (self.root == null) self.root = nil;
-if (iblock == null) iblock = nil;
-          return self.root.getAccountInfo(iblock);}, TMP_6._s = self, TMP_6), $a).call($b);
-        };
-
-        def.$write_file = function(filename, data) {
-          var $a, $b, TMP_7, self = this;
-
-          return ($a = ($b = self).$with_promise, $a._p = (TMP_7 = function(iblock){var self = TMP_7._s || this;
-            if (self.root == null) self.root = nil;
-if (iblock == null) iblock = nil;
-          return self.root.writeFile(filename, data, iblock);}, TMP_7._s = self, TMP_7), $a).call($b);
-        };
-
-        def.$read_file = function(filename) {
           var $a, $b, TMP_8, self = this;
 
           return ($a = ($b = self).$with_promise, $a._p = (TMP_8 = function(iblock){var self = TMP_8._s || this;
             if (self.root == null) self.root = nil;
 if (iblock == null) iblock = nil;
-          return self.root.readFile(filename, iblock);}, TMP_8._s = self, TMP_8), $a).call($b);
+          return self.root.authenticate(iblock);}, TMP_8._s = self, TMP_8), $a).call($b);
+        };
+
+        def.$get_account_info = function() {
+          var $a, $b, TMP_9, self = this;
+
+          return ($a = ($b = self).$with_promise, $a._p = (TMP_9 = function(iblock){var self = TMP_9._s || this;
+            if (self.root == null) self.root = nil;
+if (iblock == null) iblock = nil;
+          return self.root.getAccountInfo(iblock);}, TMP_9._s = self, TMP_9), $a).call($b);
+        };
+
+        def.$write_file = function(filename, data) {
+          var $a, $b, TMP_10, self = this;
+          if ($gvars.log == null) $gvars.log = nil;
+
+          $gvars.log.$debug("waiting");
+          return ($a = ($b = self).$with_promise_retry, $a._p = (TMP_10 = function(iblock){var self = TMP_10._s || this;
+            if (self.root == null) self.root = nil;
+if (iblock == null) iblock = nil;
+          return self.root.writeFile(filename, data, iblock);}, TMP_10._s = self, TMP_10), $a).call($b, filename, 2);
+        };
+
+        def.$read_file = function(filename) {
+          var $a, $b, TMP_11, self = this;
+
+          return ($a = ($b = self).$with_promise, $a._p = (TMP_11 = function(iblock){var self = TMP_11._s || this;
+            if (self.root == null) self.root = nil;
+if (iblock == null) iblock = nil;
+          return self.root.readFile(filename, iblock);}, TMP_11._s = self, TMP_11), $a).call($b);
         };
 
         return (def.$read_dir = function(dirname) {
-          var $a, $b, TMP_9, self = this;
+          var $a, $b, TMP_12, self = this;
 
           if (dirname == null) {
             dirname = "/"
           }
-          return ($a = ($b = self).$with_promise, $a._p = (TMP_9 = function(iblock){var self = TMP_9._s || this;
+          return ($a = ($b = self).$with_promise, $a._p = (TMP_12 = function(iblock){var self = TMP_12._s || this;
             if (self.root == null) self.root = nil;
 if (iblock == null) iblock = nil;
           self.root.readdir(dirname, iblock);
-            return nil;}, TMP_9._s = self, TMP_9), $a).call($b);
+            return nil;}, TMP_12._s = self, TMP_12), $a).call($b);
         }, nil) && 'read_dir';
       })(self, null);
       
@@ -20821,7 +20850,7 @@ if (result == null) result = nil;if (key == null) key = nil;
   var $a, self = $opal.top, $scope = $opal, nil = $opal.nil, $breaker = $opal.breaker, $slice = $opal.slice;
 
   $opal.add_stubs(['$year', '$now']);
-  $opal.cdecl($scope, 'VERSION', "0.9.7-dev");
+  $opal.cdecl($scope, 'VERSION', "0.9.7-beta1");
   return $opal.cdecl($scope, 'COPYRIGHT', "©" + ((($a = $scope.Time) == null ? $opal.cm('Time') : $a).$now().$year()) + " https://www.bernhard-weichel.de");
 })(Opal);
 
