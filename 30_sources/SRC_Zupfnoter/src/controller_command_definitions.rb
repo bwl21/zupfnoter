@@ -391,8 +391,8 @@ C,
 
         rootpath = args[:path]
 
+        save_promises=[]
         @dropboxclient.authenticate().then do
-
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
           pdfs = {}
           print_variants.map do |print_variant|
@@ -405,10 +405,8 @@ C,
           pdfs.each do |name, pdfdata|
             save_promises.push(@dropboxclient.write_file(name, pdfdata))
           end
-          save_promises.push(@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text))
-
-          Promise.when(save_promises)
-        end.then do
+        end
+        Promise.when(*save_promises).then do
           set_status(music_model: "saved to dropbox")
           $log.message("all files saved")
         end.fail do |err|

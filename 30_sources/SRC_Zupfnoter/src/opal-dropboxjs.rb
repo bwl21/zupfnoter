@@ -8,6 +8,7 @@ module Opal
     # this is a dummy client to register before login
     class NilClient
       attr_accessor :root_in_dropbox, :app_name
+
       def authenticate()
         raise "not logged in to dropbox"
       end
@@ -25,11 +26,11 @@ module Opal
         @errorlogger = lambda { |error| $log.error(error) }
 
         @root = `new Dropbox.Client({ key: #{key} });`
-        %x{
-           self.root.onError.addListener(function(error) {
-                                   self.errorlogger(error)
-           });
-        }
+        # %x{
+        #    self.root.onError.addListener(function(error) {
+        #                            self.errorlogger(error)
+        #    });
+        # }
       end
 
 
@@ -45,16 +46,39 @@ module Opal
       #
       def with_promise(&block)
         Promise.new.tap do |promise|
-          block.call(lambda{|error, data|
-            if error
-              promise.reject(error)
-            else
-              promise.resolve(data)
-            end
-            }
+          block.call(lambda { |error, data|
+                       if error
+                         promise.reject(error)
+                       else
+                         promise.resolve(data)
+                       end
+                     }
           )
         end
       end
+
+      def with_promise_retry(info= "", retries = 2, &block)
+        Promise.new.tap do |promise|
+          remaining = retries
+          handler = lambda { |error, data|
+            if error
+              remaining -= 1
+              if remaining >= 0
+                $log.info("#{remaining} remaining retries #{info}")
+                block.call(handler)
+              else
+                $log.error(error)
+                promise.reject(error)
+              end
+            else
+              $log.info("successs #{info}")
+              promise.resolve(data)
+            end
+          }
+          block.call(handler)
+        end
+      end
+
 
       # authenticate on dropbox
       # @return [Promise]
@@ -68,7 +92,7 @@ module Opal
       # get information about the dropbox account
       # @return [Promise]
       def get_account_info()
-        with_promise() do | iblock|
+        with_promise() do |iblock|
           %x{#@root.getAccountInfo(#{iblock})}
         end
       end
@@ -80,7 +104,8 @@ module Opal
       # @return [Promise]
 
       def write_file(filename, data)
-        with_promise() do |iblock|
+        $log.debug("waiting")
+        with_promise_retry(filename, 2) do |iblock|
           %x{#@root.writeFile(#{filename}, #{data}, #{iblock})}
         end
       end
