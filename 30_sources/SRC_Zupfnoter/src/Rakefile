@@ -1,6 +1,6 @@
 # Rakefile
 require 'opal'
-#require 'opal-jquery'
+require 'opal-jquery'
 require 'erb'
 require 'zip'
 

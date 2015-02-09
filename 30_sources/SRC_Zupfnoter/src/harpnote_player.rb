@@ -59,7 +59,7 @@ module Harpnotes
           end
         else
           $log.error("please select at least one note")
-          notes_to_play = []
+          notes_to_play = @voice_elements
         end
 
         play_notes(notes_to_play)
