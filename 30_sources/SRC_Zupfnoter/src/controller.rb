@@ -542,30 +542,12 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
              "1" => {
                  line_no: 2,
                  title: "Sopran, Alt",
-                 startpos: 15,
-                 voices: [1, 2],
-                 synchlines: [[1, 2], [3, 4]],
-                 flowlines: [1, 3],
-                 subflowlines: [2, 4],
-                 jumplines: [1, 3],
-                 layoutlines: [1, 2],
-                 legend: {pos: [10, 20]},
-                 lyrics: {pos: [10, 30]},
-                 notes: []
+                 voices: [1, 2]
              },
              "2" => {
                  line_no: 1,
                  title: "Tenor, Bass",
-                 startpos: 15,
-                 voices: [3, 4],
-                 synchlines: [[1, 2], [3, 4]],
-                 flowlines: [3],
-                 subflowlines: [4],
-                 jumplines: [1, 3],
-                 layoutlines: [3, 4],
-                 legend: {pos: [320, 20]},
-                 lyrics: {pos: [320, 50]},
-                 notes: []
+                 voices: [3, 4]
              }
          },
 

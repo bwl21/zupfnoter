@@ -964,21 +964,28 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0)
 
+
+        print_options = Confstack.new()
+        print_options.push($conf.get("extract.0"))
+
         # todo: remove this appraoch after migration
         if $conf.get("location") == "song"
-          print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
+          song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
         else # todo: remove this appraoch after migration
-          print_options = music.harpnote_options[:print][print_variant_nr]
-          print_options[:legend] = music.harpnote_options[:legend] # todo: compatibility code
-          print_options[:lyrics] = music.harpnote_options[:lyrics] # todo: compatibility code
-          print_options[:notes] = music.harpnote_options[:notes] # todo: compatibility code
+          song_print_options = music.harpnote_options[:print][print_variant_nr]
+          song_print_options[:legend] = music.harpnote_options[:legend] # todo: compatibility code
+          song_print_options[:lyrics] = music.harpnote_options[:lyrics] # todo: compatibility code
+          song_print_options[:notes] = music.harpnote_options[:notes] # todo: compatibility code
         end
 
 
-        unless print_options
-          print_options = $conf.get("extract.0") # music.harpnote_options[:print][0]
-          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options[:title]}'")
+        unless song_print_options
+          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options.get('title')}'")
+        else
+          print_options.push(song_print_options)
         end
+
+        print_options = print_options.get
 
         # push view specific configuration
         layout_options = print_options[:layout] || {}
@@ -1190,7 +1197,7 @@ module Harpnotes
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
             tiepath, anchor = make_annotated_bezier_path([p1, p2])
             $log.debug("#{[tiepath, anchor]} (#{__FILE__} #{__LINE__})")
-            result.push(Harpnotes::Drawing::Path.new(tiepath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM')})
+            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
             result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
 
             # compute the position
@@ -1209,7 +1216,7 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[tie_start].center) + [3, 0]
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
             tiepath = make_slur_path(p1, p2)
-            result.push(Harpnotes::Drawing::Path.new(tiepath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM')} )
+            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
             if playable.is_a? Harpnotes::Music::SynchPoint
               playable.notes.each_with_index do |n, index|
                 begin
@@ -1217,7 +1224,7 @@ module Harpnotes
                   p1 = Vector2d(lookuptable_drawing_by_playable[p1].center) + [3, 0]
                   p2 = Vector2d(lookuptable_drawing_by_playable[n].center) + [3, 0]
                   tiepath = make_slur_path(p1, p2)
-                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
+                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
                 rescue Exception => e
                   $log.error("tied chords which doesn't have same number of notes", n.start_pos)
                 end
@@ -1236,7 +1243,7 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[begin_slur].center) + [3, 0]
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
             slurpath = make_slur_path(p1, p2)
-            result.push(Harpnotes::Drawing::Path.new(slurpath).tap {  |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
+            result.push(Harpnotes::Drawing::Path.new(slurpath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
           end
 
           result

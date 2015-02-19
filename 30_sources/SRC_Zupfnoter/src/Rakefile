@@ -132,9 +132,10 @@ task :buildDesktop => [:build] do
     f.puts ERB.new(a).result
   end
 
-  sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
+  #sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
 
   copy(ZUPFNOTER_JS, zupfnoter_compressedjs_filename)
+
   Dir["../vendor/*.*"].each { |f|
     copy(f, "#{desktop_stage}/vendor/#{f}")
   }
