@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1198b915-53f5-4365-a9c7-229af71d2c59" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/abc2svg.0.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/200_zupfnoter.iml" afterPath="$PROJECT_DIR$/.idea/200_zupfnoter.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller_command_definitions.rb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller_command_definitions.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/build.js" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/build.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.css" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb" afterPath="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb" />
     </list>
     <ignored path="200_zupfnoter.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,8 +45,8 @@
       <file leaf-file-name="index_opal.html.erb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.5" vertical-offset="270" max-vertical-offset="1365">
-              <caret line="22" column="68" selection-start-line="22" selection-start-column="68" selection-end-line="22" selection-end-column="68" />
+            <state vertical-scroll-proportion="-17.5" vertical-offset="480" max-vertical-offset="1365">
+              <caret line="60" column="37" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -57,8 +55,8 @@
       <file leaf-file-name="controller_command_definitions.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller_command_definitions.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="6292" max-vertical-offset="7125">
-              <caret line="459" column="17" selection-start-line="459" selection-start-column="17" selection-end-line="459" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="6185" max-vertical-offset="7140">
+              <caret line="468" column="3" selection-start-line="468" selection-start-column="3" selection-end-line="468" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -94,21 +92,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="harpnotes.rb" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
+      <file leaf-file-name="controller.rb" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="14393" max-vertical-offset="24675">
-              <caret line="982" column="121" selection-start-line="982" selection-start-column="121" selection-end-line="982" selection-end-column="121" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="version.rb" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/version.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="105">
-              <caret line="0" column="22" selection-start-line="0" selection-start-column="22" selection-end-line="0" selection-end-column="22" />
+            <state vertical-scroll-proportion="45.555557" vertical-offset="8430" max-vertical-offset="9840">
+              <caret line="480" column="77" selection-start-line="480" selection-start-column="77" selection-end-line="480" selection-end-column="77" />
               <folding />
             </state>
           </provider>
@@ -117,8 +105,28 @@
       <file leaf-file-name="opal-abc2svg.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.5" vertical-offset="0" max-vertical-offset="630">
-              <caret line="20" column="37" selection-start-line="20" selection-start-column="37" selection-end-line="20" selection-end-column="37" />
+            <state vertical-scroll-proportion="-5.625" vertical-offset="0" max-vertical-offset="675">
+              <caret line="9" column="23" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="reset.sass" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/reset.sass">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="765">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.scss" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-15.916667" vertical-offset="3368" max-vertical-offset="3870">
+              <caret line="250" column="0" selection-start-line="250" selection-start-column="0" selection-end-line="250" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -127,26 +135,47 @@
       <file leaf-file-name="abc2svg.0.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/abc2svg.0.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7407407" vertical-offset="196245" max-vertical-offset="196665">
-              <caret line="13103" column="12" selection-start-line="13103" selection-start-column="12" selection-end-line="13103" selection-end-column="12" />
+            <state vertical-scroll-proportion="0.8206278" vertical-offset="181386" max-vertical-offset="182055">
+              <caret line="13110" column="24" selection-start-line="13110" selection-start-column="24" selection-end-line="13110" selection-end-column="24" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <marker date="1424609649000" expanded="true" signature="376554:376570" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="377273:377289" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="377421:377437" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="379384:379398" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="381917:381932" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="382524:382540" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="382775:382791" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="383799:383815" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="383911:383927" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="384334:384349" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="384706:384744" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="385967:385983" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="386050:386066" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="386149:386165" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="386238:386254" placeholder="..." />
-                <marker date="1424609649000" expanded="true" signature="386327:386343" placeholder="..." />
+                <element signature="n#!!block;n#sym_link#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#sym_add#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#mrest_expand#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#sort_all#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#compr_voice#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#dupl_voice#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#new_system#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#go_global_time#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#do_clip#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#set_bar_num#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#generate#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#key_transpose#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#set_acc#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#acc_same_pitch#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#note_transpose#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#get_staves#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#get_vover#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#is_tune_sig#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#get_clef#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#set_voice_param#0;n#!!block;n#Abc#0" expanded="false" />
+                <element signature="n#!!block;n#get_key_clef#0;n#!!block;n#Abc#0" expanded="false" />
+                <marker date="1424612830000" expanded="true" signature="376559:376575" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="377278:377294" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="377426:377442" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="379389:379403" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="381922:381937" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="382529:382545" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="382780:382796" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="383804:383820" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="383916:383932" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="384339:384354" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="384711:384749" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="385972:385988" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="386055:386071" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="386154:386170" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="386243:386259" placeholder="..." />
+                <marker date="1424612830000" expanded="true" signature="386332:386348" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -186,14 +215,15 @@
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/Rakefile" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/dropbox.min.js" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/config.ru" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/version.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/application.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller_command_definitions.rb" />
-        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb" />
         <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/abc2svg.0.js" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller_command_definitions.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb" />
+        <option value="$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss" />
       </list>
     </option>
   </component>
@@ -375,7 +405,29 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
+              <option name="myItemId" value="vendor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="200_zupfnoter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="200_zupfnoter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="30_sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SRC_Zupfnoter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -815,16 +867,16 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.327252" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32611173" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.42068157" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.110458285" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.65217394" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3990878" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28536436" sideWeight="0.5005701" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18586089" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30964467" sideWeight="0.49828961" order="1" side_tool="false" content_ui="tabs" x="76" y="155" width="500" height="877" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30964467" sideWeight="0.49828961" order="1" side_tool="false" content_ui="tabs" x="76" y="155" width="500" height="877" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28643945" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28643945" sideWeight="0.49874687" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32611173" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -860,21 +912,11 @@
           <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="36" />
+      <option name="time" value="38" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/menuicons/0-26.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/menuicons/1-26.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/menuicons/2-26.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -1137,14 +1179,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7757" max-vertical-offset="9765">
-          <caret line="549" column="31" selection-start-line="549" selection-start-column="31" selection-end-line="549" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/harpnotes.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="14393" max-vertical-offset="24675">
@@ -1169,14 +1203,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.5" vertical-offset="270" max-vertical-offset="1365">
-          <caret line="22" column="68" selection-start-line="22" selection-start-column="68" selection-end-line="22" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/text_pane.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="300" max-vertical-offset="3165">
@@ -1193,22 +1219,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller_command_definitions.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6292" max-vertical-offset="7125">
-          <caret line="459" column="17" selection-start-line="459" selection-start-column="17" selection-end-line="459" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.5" vertical-offset="0" max-vertical-offset="630">
-          <caret line="20" column="37" selection-start-line="20" selection-start-column="37" selection-end-line="20" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/DHTML.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.09339975" vertical-offset="0" max-vertical-offset="72015">
@@ -1217,28 +1227,97 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/index_opal.html.erb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-17.5" vertical-offset="480" max-vertical-offset="1365">
+          <caret line="60" column="37" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller_command_definitions.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6185" max-vertical-offset="7140">
+          <caret line="468" column="3" selection-start-line="468" selection-start-column="3" selection-end-line="468" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="45.555557" vertical-offset="8430" max-vertical-offset="9840">
+          <caret line="480" column="77" selection-start-line="480" selection-start-column="77" selection-end-line="480" selection-end-column="77" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/reset.sass">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="765">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/public/index.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-15.916667" vertical-offset="3368" max-vertical-offset="3870">
+          <caret line="250" column="0" selection-start-line="250" selection-start-column="0" selection-end-line="250" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/src/opal-abc2svg.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.625" vertical-offset="0" max-vertical-offset="675">
+          <caret line="9" column="23" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/30_sources/SRC_Zupfnoter/vendor/abc2svg.0.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7407407" vertical-offset="196245" max-vertical-offset="196665">
-          <caret line="13103" column="12" selection-start-line="13103" selection-start-column="12" selection-end-line="13103" selection-end-column="12" />
+        <state vertical-scroll-proportion="0.8206278" vertical-offset="181386" max-vertical-offset="182055">
+          <caret line="13110" column="24" selection-start-line="13110" selection-start-column="24" selection-end-line="13110" selection-end-column="24" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1424609649000" expanded="true" signature="376554:376570" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="377273:377289" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="377421:377437" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="379384:379398" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="381917:381932" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="382524:382540" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="382775:382791" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="383799:383815" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="383911:383927" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="384334:384349" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="384706:384744" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="385967:385983" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="386050:386066" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="386149:386165" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="386238:386254" placeholder="..." />
-            <marker date="1424609649000" expanded="true" signature="386327:386343" placeholder="..." />
+            <element signature="n#!!block;n#sym_link#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#sym_add#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#mrest_expand#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#sort_all#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#compr_voice#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#dupl_voice#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#new_system#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#go_global_time#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#do_clip#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#set_bar_num#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#generate#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#key_transpose#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#set_acc#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#acc_same_pitch#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#note_transpose#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#get_staves#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#get_vover#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#is_tune_sig#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#get_clef#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#set_voice_param#0;n#!!block;n#Abc#0" expanded="false" />
+            <element signature="n#!!block;n#get_key_clef#0;n#!!block;n#Abc#0" expanded="false" />
+            <marker date="1424612830000" expanded="true" signature="376559:376575" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="377278:377294" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="377426:377442" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="379389:379403" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="381922:381937" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="382529:382545" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="382780:382796" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="383804:383820" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="383916:383932" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="384339:384354" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="384711:384749" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="385972:385988" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="386055:386071" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="386154:386170" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="386243:386259" placeholder="..." />
+            <marker date="1424612830000" expanded="true" signature="386332:386348" placeholder="..." />
           </folding>
         </state>
       </provider>

@@ -248,11 +248,16 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     setup_tune_preview
 
+    handle_command('svg')
+
+=begin
     set_active("#tunePreview")
     `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
 
     set_active("#harpPreview")
     `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+=end
+
   end
 
   def render_remote
@@ -473,7 +478,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
       case @systemstatus[:autorefresh]
         when :on
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 2000)`
+          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 0000)`
         when :off
           @refresh_timer = `setTimeout(function(){self.$render_remote()}, 0)`
         when :remote

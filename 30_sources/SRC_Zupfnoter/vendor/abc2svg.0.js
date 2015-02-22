@@ -4,8 +4,9 @@
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
 var abc2svg_version = "0.10.0", abc2svg_vdate = "2015-02-21"
-var abcobj, wpsobj, svgobj;
 function Abc(user) {
+    var abcobj, wpsobj, svgobj;
+
     var output, style;
     this.user = user;
     var BAR = 0, CLEF = 1, CUSTOS = 2, FORMAT = 3, GRACE = 4, KEY = 5, METER = 6, MREST = 7, NOTE = 8, PART = 9, REST = 10, SPACE = 11, STAVES = 12, STBRK = 13, TEMPO = 14, TUPLET = 15, SL_ABOVE = 1, SL_BELOW = 2, SL_AUTO = 3, SL_HIDDEN = 3, SL_DOTTED = 4, OPEN_BRACE = 1, CLOSE_BRACE = 2, OPEN_BRACKET = 4, CLOSE_BRACKET = 8, OPEN_PARENTH = 16, CLOSE_PARENTH = 32, STOP_BAR = 64, FL_VOICE = 128, OPEN_BRACE2 = 256, CLOSE_BRACE2 = 512, OPEN_BRACKET2 = 1024, CLOSE_BRACKET2 = 2048, MASTER_VOICE = 4096, BASE_LEN = 1536, CM = 28.346, IN = 72, YSTEP = 128;
@@ -11089,7 +11090,12 @@ function Abc(user) {
     }
 
     var block_started;
-    this.buffer_eob = function () {
+
+    this.bufffer_eob = function () {
+        buffer_eob()
+    }
+
+    function buffer_eob() {
         if (multicol || !output)return;
         if (user.page_format && !block.started) {
             block.started = true;
@@ -11103,11 +11109,15 @@ function Abc(user) {
         svg_flush()
     };
     this.abc_flush = function () {
+        abc_flush()
+    }
+    function abc_flush() {
         if (block.started) {
             block.started = false;
             user.img_out("</div>")
         }
     };
+
     var par_sy, cur_sy, voice_tb, curvoice, staves_found, vover, tsfirst;
     var weight_tb = [2, 1, 6, 0, 3, 4, 5, 9, 9, 0, 9, 3, 0, 6, 0, 7];
 
@@ -13091,16 +13101,12 @@ function Abc(user) {
     abc2svg_init();
     return this
 }
-function abc2svg_init(user) {
-    abcobj = new Abc(user)
-}
-function abc2svg_translate(fname, file) {
-    abcobj.abc_fe(fname, file)
-}
-function abc_flush() {
-    abcobj.abc_flush()
-}
-function buffer_eob() {
-    debugger
-    abcobj.buffer_eob()
-}
+//function abc2svg_init(user) {
+//    abcobj = new Abc(user)
+//}
+//function abc2svg_translate(fname, file) {
+//    abcobj.abc_fe(fname, file)
+//}
+//function abc_flush() {
+//    abcobj.abc_flush()
+//}

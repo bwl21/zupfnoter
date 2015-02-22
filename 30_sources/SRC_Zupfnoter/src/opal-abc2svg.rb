@@ -3,26 +3,29 @@ module ABC2SVG
 
 
     def initialize()
+      @svgbuf = []
       @user = {img_out: nil,
                errmsg: nil,
                read_file: nil,
-               annoate: true,
+               annotate: true,
                page_format: true
       }
 
       set_errmsg() do |message, line_number, column_number|
-        %{alert(#{message})}
+        $log.error(message)
       end
 
       set_img_out() do |svg|
-        %{alert(#{svg})}
+        @svgbuf.push svg
       end
 
       @root = %x{new Abc(#{@user.to_n})}
     end
 
+    def get_svg
+      @svgbuf.join("\n")
+    end
     def translate(file_name, abc_source)
-      `debugger`
       %x{#{@root}.abc_fe(#{file_name}, #{abc_source})}
     end
 

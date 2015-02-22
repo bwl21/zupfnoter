@@ -460,6 +460,7 @@ C,
         `debugger`
         abc2svg = ABC2SVG::Abc2Svg.new()
         abc2svg.translate("abc", @editor.get_abc_part)
+        Element.find("#tunePreview").html(abc2svg.get_svg)
       end
     end
 
