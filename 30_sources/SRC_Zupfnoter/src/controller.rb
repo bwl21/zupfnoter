@@ -248,15 +248,14 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     setup_tune_preview
 
-    handle_command('svg')
 
 =begin
     set_active("#tunePreview")
     `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
+=end
 
     set_active("#harpPreview")
     `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
-=end
 
   end
 
@@ -475,6 +474,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     if @systemstatus[:refresh]
       handle_command('stop') # stop player as the Song is changed
+      handle_command('svg')
 
       case @systemstatus[:autorefresh]
         when :on
