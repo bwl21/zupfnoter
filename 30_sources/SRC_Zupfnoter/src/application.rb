@@ -22,6 +22,7 @@ require 'text_pane'
 require 'opal-dropboxjs'
 require 'opal-jqconsole'
 require 'confstack'
+require 'opal-abc2svg'
 require 'version'
 
 puts "now starting zupfnoter"
