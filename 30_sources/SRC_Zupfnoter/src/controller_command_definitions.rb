@@ -457,13 +457,13 @@ C,
 
     @commands.add_command(:svg) do |command|
       command.as_action do |args|
-        `debugger`
-        abc2svg = ABC2SVG::Abc2Svg.new()
-        abc2svg.translate("abc", @editor.get_abc_part)
-        Element.find("#tunePreview").html(abc2svg.get_svg)
+        abc2svg = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
+        abc2svg.on_select do |id|
+           $log.info(id)
+        end
+        abc2svg.draw(@editor.get_abc_part)
       end
     end
-
 
   end
 end

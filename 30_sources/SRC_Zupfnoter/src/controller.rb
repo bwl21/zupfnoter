@@ -249,13 +249,12 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     setup_tune_preview
 
 
-=begin
     set_active("#tunePreview")
     `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
-=end
+
 
     set_active("#harpPreview")
-    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+   # `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
 
   end
 
@@ -306,8 +305,9 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
   # highlight a particular abc element in all views
   # note that previous selections are still maintained.
+  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
-    a=Native(abcelement)
+    a=Native(abcelement) # todo: remove me
     $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     startchar = a[:startChar]
@@ -323,8 +323,9 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   end
 
 
+  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def unhighlight_abc_object(abcelement)
-    a=Native(abcelement)
+    a=Native(abcelement) # remove me
     @tune_preview_printer.range_unhighlight_more(a[:startChar], a[:endChar])
     #$log.debug("unselect_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
@@ -333,6 +334,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
   # select a particular abcelement in all views
   # previous selections are removed
+  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
     @harpnote_preview_printer.unhighlight_all();
 
@@ -370,9 +372,9 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
     $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     printerparams = {staffwidth: width} #todo compute the staffwidth
-    @tune_preview_printer = ABCJS::Write::Printer.new("tunePreview", printerparams)
+    @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
     @tune_preview_printer.on_select do |abcelement|
-      a=Native(abcelement)
+      a=Native(abcelement) # todo remove me
       select_abc_object(abcelement)
     end
   end
@@ -474,7 +476,6 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     if @systemstatus[:refresh]
       handle_command('stop') # stop player as the Song is changed
-      handle_command('svg')
 
       case @systemstatus[:autorefresh]
         when :on
