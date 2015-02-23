@@ -11046,8 +11046,11 @@ function Abc(user) {
     function reset_svg() {
         defined_glyph = {};
         defined_font = {};
-        style = "\npath {stroke-width: .7}\n.fill {fill: currentColor}\n.stroke {stroke: currentColor; fill: none}"
+        style = "\n.stroke {stroke-width: .7}\n.fill {fill: currentColor}\n.stroke {stroke: currentColor; fill: none}"
     }
+
+
+    this.reset_svg = function(){reset_svg();}
 
     function init_svg() {
         output = [];

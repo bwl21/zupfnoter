@@ -25,23 +25,31 @@ module ABC2SVG
       @root = %x{new Abc(#{@user.to_n})}
     end
 
-    def on_select(&block)
-      @on_select = block
-      set_on_select()
+    def range_highlight(from, to)
+      $log.error("missing range_highlight #{from}, #{to}")
+      nil
     end
 
-    def set_on_select()
-      Element.find('.abcref').on(:click) do |evt|
-        evt.stop_propagation
-        @on_select.call(_id_to_abcelement(evt.current_target.id))
-        nil
-      end
+    def range_highlight_more(from, to)
+      $log.error("missing range_highlight_more #{from}, #{to}")
+      nil
+    end
+
+    def range_unhighlight_more(from, to)
+      $log.error("missing range_un_highlight #{from}, #{to}")
+      nil
+    end
+
+
+    def on_select(&block)
+      @on_select = block
+      _set_on_select()
     end
 
     def draw(abc_code)
       _translate("abc", abc_code)
       @printer.html(get_svg)
-      set_on_select();
+      _set_on_select();
       _build_charpos_map();
     end
 
@@ -116,9 +124,21 @@ module ABC2SVG
     end
 
 
+    def _set_on_select()
+      Element.find('.abcref').on(:click) do |evt|
+        evt.stop_propagation
+        @on_select.call(_id_to_abcelement(evt.current_target.id))
+        nil
+      end
+    end
+
+
     def _translate(file_name, abc_source)
       @abc_source = abc_source
-      %x{#{@root}.abc_fe(#{file_name}, #{abc_source})}
+      @svgbuf = []
+      %x{
+         #{@root}.abc_fe(#{file_name}, #{abc_source});
+      }
     end
   end
 end

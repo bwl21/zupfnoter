@@ -203,6 +203,8 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   # render the previews
   # also saves abc in localstore()
   def render_tunepreview_callback
+    setup_tune_preview
+
     begin
       abc_text = @editor.get_abc_part
       @tune_preview_printer.draw(abc_text)
@@ -239,7 +241,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
   end
 
 
-  def render_previews
+  def render_previews()
     $log.info("rendering")
     unless @systemstatus[:autorefresh] == :remote
       save_to_localstorage
@@ -254,12 +256,13 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
 
     set_active("#harpPreview")
-   # `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
 
   end
 
   def render_remote
     save_to_localstorage
+    render_tunepreview_callback()
     send_remote_command('render')
   end
 
@@ -373,6 +376,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
     $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     printerparams = {staffwidth: width} #todo compute the staffwidth
     @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
+
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement) # todo remove me
       select_abc_object(abcelement)
@@ -479,7 +483,7 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
       case @systemstatus[:autorefresh]
         when :on
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 0000)`
+          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
         when :off
           @refresh_timer = `setTimeout(function(){self.$render_remote()}, 0)`
         when :remote
