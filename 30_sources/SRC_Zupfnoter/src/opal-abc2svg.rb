@@ -26,18 +26,30 @@ module ABC2SVG
     end
 
     def range_highlight(from, to)
-      $log.error("missing range_highlight #{from}, #{to}")
+      unhighlight_all()
+      range_highlight_more(from, to)
       nil
     end
 
     def range_highlight_more(from, to)
-      $log.error("missing range_highlight_more #{from}, #{to}")
+      get_elements_by_range(from, to).each do |id|
+        foo = Element.find("##{id}")
+        classes = [foo.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
+        foo.attr('class', classes)
+      end
       nil
     end
 
     def range_unhighlight_more(from, to)
-      $log.error("missing range_un_highlight #{from}, #{to}")
-      nil
+      get_elements_by_range(from, to).each do |id|
+        foo = Element.find("##{id}")
+        classes = foo.attr('class').gsub("highlight", '')
+        foo.attr('class', classes)
+      end
+    end
+
+    def unhighlight_all()
+      Element.find('.highlight').attr('class', 'abcref')
     end
 
 
@@ -51,6 +63,7 @@ module ABC2SVG
       @printer.html(get_svg)
       _set_on_select();
       _build_charpos_map();
+      nil
     end
 
     def get_svg
@@ -69,15 +82,12 @@ module ABC2SVG
 
     def get_elements_by_range(from, to)
       result = []
-      @elements_to_position.each_key { |k, value|
-        origin = Native(k.origin)
-        unless origin.nil?
-          el_start = value.first
-          el_end = value.last
+      @element_to_position.each { |k, value|
+        el_start = value[:startChar]
+        el_end = value[:endChar]
 
-          if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
-            result.push(key)
-          end
+        if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
+          result.push(k)
         end
       }
       result
@@ -137,7 +147,7 @@ module ABC2SVG
       @abc_source = abc_source
       @svgbuf = []
       %x{
-         #{@root}.abc_fe(#{file_name}, #{abc_source});
+      #{@root}.abc_fe(#{file_name}, #{abc_source});
       }
     end
   end

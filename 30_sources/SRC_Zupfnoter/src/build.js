@@ -20136,7 +20136,7 @@ Opal.modules["controller"] = function(Opal) {
   Opal.dynamic_require_severity = "error";
   var $a, $b, TMP_22, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$push', '$_init_conf', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_nodewebkit', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$get_abc_part', '$join', '$backtrace', '$debug', '$set_inactive', '$set_annotations', '$annotations', '$load_song', '$send_remote_command', '$setup_tune_preview', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$clear_annotations', '$get_config_part', '$get_config_position', '$last', '$first', '$count', '$split', '$>', '$keys', '$transform', '$layout', '$pop', '$-', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$inject', '$to_s', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$width', '$on', '$play_abc', '$on_change', '$request_refresh', '$on_selection_change', '$get_selection_positions', '$on_cursor_change', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$key', '$newValue', '$prevent', '$css', '$page_x', '$===', '$puts', '$ready?']);
+  Opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$warn', '$clone', '$private', '$attr', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$push', '$_init_conf', '$each', '$send', '$select', '$=~', '$methods', '$setup_ui', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_nodewebkit', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$is_playing?', '$stop', '$==', '$play_song', '$play_selection', '$play_from_selection', '$setup_tune_preview', '$get_abc_part', '$join', '$backtrace', '$debug', '$set_inactive', '$set_annotations', '$annotations', '$load_song', '$send_remote_command', '$set_active', '$render_tunepreview_callback', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$now', '$clear_annotations', '$get_config_part', '$get_config_position', '$last', '$first', '$count', '$split', '$>', '$keys', '$transform', '$layout', '$pop', '$-', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$inject', '$to_s', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$width', '$on', '$play_abc', '$on_change', '$request_refresh', '$on_selection_change', '$get_selection_positions', '$on_cursor_change', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$key', '$newValue', '$prevent', '$css', '$page_x', '$===', '$puts', '$ready?']);
   (function($base, $super) {
     function $LocalStore(){};
     var self = $LocalStore = $klass($base, $super, 'LocalStore', $LocalStore);
@@ -20386,6 +20386,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
       var self = this, abc_text = nil, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
+      self.$setup_tune_preview();
       try {
       abc_text = self.editor.$get_abc_part();
         self.tune_preview_printer.$draw(abc_text);
@@ -20393,7 +20394,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
         $gvars.log.$error(["Bug", e.$message(), e.$backtrace()].$join("\n"), [1, 1], [10, 1000])
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished render tune " + ("controller") + " " + (213));
+      $gvars.log.$debug("finished render tune " + ("controller") + " " + (215));
       self.$set_inactive("#tunePreview");
       self.editor.$set_annotations($gvars.log.$annotations());
       return nil;
@@ -20404,7 +20405,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       try {
-      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (225));
+      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (227));
         self.song_harpnotes = self.$layout_harpnotes(self.systemstatus['$[]']("view"));
         self.harpnote_player.$load_song(self.music_model);
         self.harpnote_preview_printer.$draw(self.song_harpnotes);
@@ -20413,7 +20414,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
         }else { throw $err; }
       };
       self.$set_status($hash2(["refresh"], {"refresh": false}));
-      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (236));
+      $gvars.log.$debug("finished rendering Haprnotes " + ("controller") + " " + (238));
       self.$set_inactive("#harpPreview");
       self.editor.$set_annotations($gvars.log.$annotations());
       return nil;
@@ -20430,13 +20431,17 @@ if (key == null) key = nil;if (_ == null) _ = nil;
         self.$send_remote_command("render");
       };
       self.$setup_tune_preview();
-      return self.$handle_command("svg");
+      self.$set_active("#tunePreview");
+      setTimeout(function(){self.$render_tunepreview_callback()}, 0);
+      self.$set_active("#harpPreview");
+      return setTimeout(function(){self.$render_harpnotepreview_callback()}, 0);
     };
 
     def.$render_remote = function() {
       var self = this;
 
       self.$save_to_localstorage();
+      self.$render_tunepreview_callback();
       return self.$send_remote_command("render");
     };
 
@@ -20487,7 +20492,7 @@ if (key == null) key = nil;if (_ == null) _ = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       a = self.$Native(abcelement);
-      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (314) + ")");
+      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (316) + ")");
       startchar = a['$[]']("startChar");
       endchar = a['$[]']("endChar");
       if (endchar['$=='](startchar)) {
@@ -20528,7 +20533,7 @@ if (r == null) r = nil;if (v == null) v = nil;
           r.$push("" + (v.$first()) + ": " + (v.$last()) + "  ")
         };
         return r;}, TMP_5.$$s = self, TMP_5), $a).call($b, []).$join(" | ");
-      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (353));
+      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (357));
       if (self.systemstatus['$[]']("loglevel")['$==']($gvars.log.$loglevel())) {
         } else {
         (($a = [(self.systemstatus['$[]']("loglevel"))]), $c = $gvars.log, $c['$loglevel='].apply($c, $a), $a[$a.length-1])
@@ -20553,9 +20558,9 @@ if (harpnote == null) harpnote = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       width = self.$Native($scope.get('Element').$find("#tunePreviewContainer").$width())['$-'](50);
-      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (374));
+      $gvars.log.$debug("tune preview-width " + (width) + " " + ("controller") + ":" + (378));
       printerparams = $hash2(["staffwidth"], {"staffwidth": width});
-      self.tune_preview_printer = (((($scope.get('ABCJS')).$$scope.get('Write'))).$$scope.get('Printer')).$new("tunePreview", printerparams);
+      self.tune_preview_printer = (($scope.get('ABC2SVG')).$$scope.get('Abc2Svg')).$new($scope.get('Element').$find("#tunePreview"));
       return ($a = ($b = self.tune_preview_printer).$on_select, $a.$$p = (TMP_7 = function(abcelement){var self = TMP_7.$$s || this, a = nil;
 if (abcelement == null) abcelement = nil;
       a = self.$Native(abcelement);
@@ -20605,12 +20610,12 @@ if (e == null) e = nil;
       ($a = ($i = self.harpnote_player).$on_noteon, $a.$$p = (TMP_15 = function(e){var self = TMP_15.$$s || this;
         if ($gvars.log == null) $gvars.log = nil;
 if (e == null) e = nil;
-      $gvars.log.$debug("noteon " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (416) + ")");
+      $gvars.log.$debug("noteon " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (421) + ")");
         return self.$highlight_abc_object(e);}, TMP_15.$$s = self, TMP_15), $a).call($i);
       ($a = ($j = self.harpnote_player).$on_noteoff, $a.$$p = (TMP_16 = function(e){var self = TMP_16.$$s || this;
         if ($gvars.log == null) $gvars.log = nil;
 if (e == null) e = nil;
-      $gvars.log.$debug("noteoff " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (421) + ")");
+      $gvars.log.$debug("noteoff " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (426) + ")");
         return self.$unhighlight_abc_object(e);}, TMP_16.$$s = self, TMP_16), $a).call($j);
       ($a = ($k = self.harpnote_player).$on_songoff, $a.$$p = (TMP_17 = function(){var self = TMP_17.$$s || this;
 
@@ -20621,7 +20626,7 @@ if (e == null) e = nil;
 if (evt == null) evt = nil;
       key = self.$Native(evt['$[]']("originalEvent")).$key();
         value = self.$Native(evt['$[]']("originalEvent")).$newValue();
-        $gvars.log.$debug("got storage event " + (key) + ": " + (value) + " (" + ("controller") + " " + (449) + ")");
+        $gvars.log.$debug("got storage event " + (key) + ": " + (value) + " (" + ("controller") + " " + (454) + ")");
         if ((($a = ($b = (($c = self.systemstatus['$[]']("autorefresh")['$==']("remote")) ? key['$==']("command") : $c), $b !== false && $b !== nil ?value['$==']("render") : $b)) !== nil && (!$a.$$is_boolean || $a == true))) {
           return self.$load_from_loacalstorage()
           } else {
@@ -20646,12 +20651,12 @@ if (e == null) e = nil;
 
       if (init !== false && init !== nil) {
         self.$set_status($hash2(["refresh"], {"refresh": true}))};
-      $gvars.log.$debug("request refresh " + (self.systemstatus['$[]']("refresh")) + " " + (init) + " " + ("controller") + " " + (473));
+      $gvars.log.$debug("request refresh " + (self.systemstatus['$[]']("refresh")) + " " + (init) + " " + ("controller") + " " + (478));
       if ((($a = self.refresh_timer) !== nil && (!$a.$$is_boolean || $a == true))) {
         clearTimeout(self.refresh_timer);};
       if ((($a = self.systemstatus['$[]']("refresh")) !== nil && (!$a.$$is_boolean || $a == true))) {
         self.$handle_command("stop");
-        return (function() {$case = self.systemstatus['$[]']("autorefresh");if ("on"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_previews()}, 0000)}else if ("off"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_remote()}, 0)}else if ("remote"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_previews()}, 500)}else { return nil }})();
+        return (function() {$case = self.systemstatus['$[]']("autorefresh");if ("on"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_previews()}, 100)}else if ("off"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_remote()}, 0)}else if ("remote"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_previews()}, 500)}else { return nil }})();
         } else {
         return nil
       };
@@ -20981,7 +20986,7 @@ Opal.modules["controller_command_definitions"] = function(Opal) {
   Opal.dynamic_require_severity = "error";
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $gvars = Opal.gvars, $hash2 = Opal.hash2, $range = Opal.range;
 
-  Opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$add_parameter', '$set_default', '$[]', '$parameter_help', '$set_status', '$to_i', '$render_previews', '$loglevel=', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$write_file', '$output', '$render_a3', '$render_a4', '$each', '$push', '$fail', '$when', '$add_metadata', '$read_file', '$translate', '$get_abc_part', '$html', '$find', '$get_svg']);
+  Opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$add_parameter', '$set_default', '$[]', '$parameter_help', '$set_status', '$to_i', '$render_previews', '$loglevel=', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$then', '$app_name', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$debug', '$split', '$layout_harpnotes', '$harpnote_options', '$write_file', '$output', '$render_a3', '$render_a4', '$each', '$push', '$fail', '$when', '$add_metadata', '$read_file', '$find', '$on_select', '$draw', '$get_abc_part']);
   return (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
@@ -21525,13 +21530,15 @@ if (args == null) args = nil;
         return self.editor.$set_text(args['$[]']("oldval"))}, TMP_126.$$s = self, TMP_126), $a).call($e);}, TMP_115.$$s = self, TMP_115), $a).call($g, "dopen");
       return ($a = ($h = self.commands).$add_command, $a.$$p = (TMP_127 = function(command){var self = TMP_127.$$s || this, $a, $b, TMP_128;
 if (command == null) command = nil;
-      return ($a = ($b = command).$as_action, $a.$$p = (TMP_128 = function(args){var self = TMP_128.$$s || this, abc2svg = nil;
+      return ($a = ($b = command).$as_action, $a.$$p = (TMP_128 = function(args){var self = TMP_128.$$s || this, $a, $b, TMP_129, abc2svg = nil;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
-        debugger;
-          abc2svg = (($scope.get('ABC2SVG')).$$scope.get('Abc2Svg')).$new();
-          abc2svg.$translate("abc", self.editor.$get_abc_part());
-          return $scope.get('Element').$find("#tunePreview").$html(abc2svg.$get_svg());}, TMP_128.$$s = self, TMP_128), $a).call($b)}, TMP_127.$$s = self, TMP_127), $a).call($h, "svg");
+        abc2svg = (($scope.get('ABC2SVG')).$$scope.get('Abc2Svg')).$new($scope.get('Element').$find("#tunePreview"));
+          ($a = ($b = abc2svg).$on_select, $a.$$p = (TMP_129 = function(id){var self = TMP_129.$$s || this;
+            if ($gvars.log == null) $gvars.log = nil;
+if (id == null) id = nil;
+          return $gvars.log.$info(id)}, TMP_129.$$s = self, TMP_129), $a).call($b);
+          return abc2svg.$draw(self.editor.$get_abc_part());}, TMP_128.$$s = self, TMP_128), $a).call($b)}, TMP_127.$$s = self, TMP_127), $a).call($h, "svg");
     }, nil) && '__ic_05_dropbox_commands';
   })(self, null)
 };
@@ -22365,7 +22372,7 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
   Opal.dynamic_require_severity = "error";
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$set_errmsg', '$error', '$set_img_out', '$push', '$to_n', '$join', '$[]=']);
+  Opal.add_stubs(['$lambda', '$set_errmsg', '$error', '$set_img_out', '$push', '$to_n', '$range_highlight_more', '$each', '$add_class', '$find', '$get_elements_by_range', '$_set_on_select', '$_translate', '$html', '$get_svg', '$_build_charpos_map', '$join', '$[]=', '$[]', '$>', '$<', '$===', '$private', '$match', '$+', '$to_i', '$_line_column_to_charpos', '$_id_to_abcelement', '$id', '$split', '$count', '$length', '$last', '$-', '$inject', '$on', '$stop_propagation', '$call', '$current_target']);
   return (function($base) {
     var self = $module($base, 'ABC2SVG');
 
@@ -22375,23 +22382,73 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
       function $Abc2Svg(){};
       var self = $Abc2Svg = $klass($base, $super, 'Abc2Svg', $Abc2Svg);
 
-      var def = self.$$proto, $scope = self.$$scope, TMP_3, TMP_4;
+      var def = self.$$proto, $scope = self.$$scope, TMP_5, TMP_6, TMP_7;
 
-      def.user = def.svgbuf = def.root = nil;
-      def.$initialize = function() {
-        var $a, $b, TMP_1, $c, TMP_2, self = this;
+      def.user = def.printer = def.svgbuf = def.element_to_position = def.abc_source = def.root = nil;
+      def.$initialize = function(div, options) {
+        var $a, $b, TMP_1, $c, TMP_2, $d, TMP_3, self = this;
 
+        if (options == null) {
+          options = $hash2([], {})
+        }
+        self.on_select = ($a = ($b = self).$lambda, $a.$$p = (TMP_1 = function(element){var self = TMP_1.$$s || this;
+if (element == null) element = nil;
+        return nil}, TMP_1.$$s = self, TMP_1), $a).call($b);
+        self.printer = div;
         self.svgbuf = [];
+        self.abc_source = "";
         self.user = $hash2(["img_out", "errmsg", "read_file", "annotate", "page_format"], {"img_out": nil, "errmsg": nil, "read_file": nil, "annotate": true, "page_format": true});
-        ($a = ($b = self).$set_errmsg, $a.$$p = (TMP_1 = function(message, line_number, column_number){var self = TMP_1.$$s || this;
+        ($a = ($c = self).$set_errmsg, $a.$$p = (TMP_2 = function(message, line_number, column_number){var self = TMP_2.$$s || this;
           if ($gvars.log == null) $gvars.log = nil;
 if (message == null) message = nil;if (line_number == null) line_number = nil;if (column_number == null) column_number = nil;
-        return $gvars.log.$error(message)}, TMP_1.$$s = self, TMP_1), $a).call($b);
-        ($a = ($c = self).$set_img_out, $a.$$p = (TMP_2 = function(svg){var self = TMP_2.$$s || this;
+        return $gvars.log.$error(message)}, TMP_2.$$s = self, TMP_2), $a).call($c);
+        ($a = ($d = self).$set_img_out, $a.$$p = (TMP_3 = function(svg){var self = TMP_3.$$s || this;
           if (self.svgbuf == null) self.svgbuf = nil;
 if (svg == null) svg = nil;
-        return self.svgbuf.$push(svg)}, TMP_2.$$s = self, TMP_2), $a).call($c);
+        return self.svgbuf.$push(svg)}, TMP_3.$$s = self, TMP_3), $a).call($d);
         return self.root = new Abc(self.user.$to_n());
+      };
+
+      def.$range_highlight = function(from, to) {
+        var self = this;
+
+        self.$range_highlight_more(from, to);
+        return nil;
+      };
+
+      def.$range_highlight_more = function(from, to) {
+        var $a, $b, TMP_4, self = this;
+
+        ($a = ($b = self.$get_elements_by_range(from, to)).$each, $a.$$p = (TMP_4 = function(id){var self = TMP_4.$$s || this;
+if (id == null) id = nil;
+        return $scope.get('Element').$find("#" + (id)).$add_class("highlight")}, TMP_4.$$s = self, TMP_4), $a).call($b);
+        return nil;
+      };
+
+      def.$range_unhighlight_more = function(from, to) {
+        var self = this;
+        if ($gvars.log == null) $gvars.log = nil;
+
+        $gvars.log.$error("missing range_un_highlight " + (from) + ", " + (to));
+        return nil;
+      };
+
+      def.$on_select = TMP_5 = function() {
+        var self = this, $iter = TMP_5.$$p, block = $iter || nil;
+
+        TMP_5.$$p = null;
+        self.on_select = block;
+        return self.$_set_on_select();
+      };
+
+      def.$draw = function(abc_code) {
+        var self = this;
+
+        self.$_translate("abc", abc_code);
+        self.printer.$html(self.$get_svg());
+        self.$_set_on_select();
+        self.$_build_charpos_map();
+        return nil;
       };
 
       def.$get_svg = function() {
@@ -22400,25 +22457,103 @@ if (svg == null) svg = nil;
         return self.svgbuf.$join("\n");
       };
 
-      def.$translate = function(file_name, abc_source) {
-        var self = this;
+      def.$set_errmsg = TMP_6 = function() {
+        var self = this, $iter = TMP_6.$$p, block = $iter || nil;
 
-        return self.root.abc_fe(file_name, abc_source);
-      };
-
-      def.$set_errmsg = TMP_3 = function() {
-        var self = this, $iter = TMP_3.$$p, block = $iter || nil;
-
-        TMP_3.$$p = null;
+        TMP_6.$$p = null;
         return self.user['$[]=']("errmsg", block);
       };
 
-      return (def.$set_img_out = TMP_4 = function() {
-        var self = this, $iter = TMP_4.$$p, block = $iter || nil;
+      def.$set_img_out = TMP_7 = function() {
+        var self = this, $iter = TMP_7.$$p, block = $iter || nil;
 
-        TMP_4.$$p = null;
+        TMP_7.$$p = null;
         return self.user['$[]=']("img_out", block);
-      }, nil) && 'set_img_out';
+      };
+
+      def.$get_elements_by_range = function(from, to) {
+        var $a, $b, TMP_8, self = this, result = nil;
+
+        result = [];
+        ($a = ($b = self.element_to_position).$each, $a.$$p = (TMP_8 = function(k, value){var self = TMP_8.$$s || this, $a, $b, $c, el_start = nil, el_end = nil;
+if (k == null) k = nil;if (value == null) value = nil;
+        el_start = value['$[]']("startChar");
+          el_end = value['$[]']("endChar");
+          if ((($a = (((($b = ((($c = to['$>'](el_start)) ? from['$<'](el_end) : $c))) !== false && $b !== nil) ? $b : (($c = (to['$==='](from)), $c !== false && $c !== nil ?to['$==='](el_end) : $c))))) !== nil && (!$a.$$is_boolean || $a == true))) {
+            return result.$push(k)
+            } else {
+            return nil
+          };}, TMP_8.$$s = self, TMP_8), $a).call($b);
+        return result;
+      };
+
+      self.$private();
+
+      def.$_id_to_abcelement = function(id) {
+        var $a, $b, TMP_9, self = this, result = nil;
+
+        result = $hash2([], {});
+        ($a = ($b = id).$match, $a.$$p = (TMP_9 = function(matchdata){var self = TMP_9.$$s || this, line = nil, startcol = nil, endcol = nil, start_pos = nil, end_pos = nil;
+if (matchdata == null) matchdata = nil;
+        line = matchdata['$[]'](2).$to_i()['$+'](1);
+          startcol = matchdata['$[]'](3).$to_i();
+          endcol = matchdata['$[]'](4).$to_i();
+          start_pos = self.$_line_column_to_charpos(line, startcol);
+          end_pos = self.$_line_column_to_charpos(line, endcol);
+          return result = $hash2(["startChar", "endChar"], {"startChar": start_pos, "endChar": end_pos});}, TMP_9.$$s = self, TMP_9), $a).call($b, /(\w+)[ _](\d+)[ _](\d+)[ _](\d+)/);
+        return result;
+      };
+
+      def.$_build_charpos_map = function() {
+        var $a, $b, TMP_10, self = this;
+
+        self.element_to_position = $hash2([], {});
+        return ($a = ($b = $scope.get('Element').$find(".abcref")).$each, $a.$$p = (TMP_10 = function(element){var self = TMP_10.$$s || this, position = nil;
+          if (self.element_to_position == null) self.element_to_position = nil;
+if (element == null) element = nil;
+        position = self.$_id_to_abcelement(element.$id());
+          return self.element_to_position['$[]='](element.$id(), position);}, TMP_10.$$s = self, TMP_10), $a).call($b);
+      };
+
+      def.$_charpos_to_line_column = function(charpos) {
+        var self = this, lines = nil, line_no = nil, char_pos = nil;
+
+        lines = self.abc_source['$[]'](1, charpos).$split("\n");
+        line_no = lines.$count();
+        char_pos = lines.$last().$length();
+        return [line_no, char_pos];
+      };
+
+      def.$_line_column_to_charpos = function(line, column) {
+        var $a, $b, TMP_11, self = this, lines = nil, result = nil;
+
+        lines = self.abc_source.$split("\n")['$[]'](0, line['$-'](1));
+        result = ($a = ($b = lines).$inject, $a.$$p = (TMP_11 = function(result, increment){var self = TMP_11.$$s || this;
+if (result == null) result = nil;if (increment == null) increment = nil;
+        return result['$+'](increment.$length())['$+'](1)}, TMP_11.$$s = self, TMP_11), $a).call($b, 0)['$+'](column);
+        return result;
+      };
+
+      def.$_set_on_select = function() {
+        var $a, $b, TMP_12, self = this;
+
+        return ($a = ($b = $scope.get('Element').$find(".abcref")).$on, $a.$$p = (TMP_12 = function(evt){var self = TMP_12.$$s || this;
+          if (self.on_select == null) self.on_select = nil;
+if (evt == null) evt = nil;
+        evt.$stop_propagation();
+          self.on_select.$call(self.$_id_to_abcelement(evt.$current_target().$id()));
+          return nil;}, TMP_12.$$s = self, TMP_12), $a).call($b, "click");
+      };
+
+      return (def.$_translate = function(file_name, abc_source) {
+        var self = this;
+
+        self.abc_source = abc_source;
+        self.svgbuf = [];
+        
+      self.root.abc_fe(file_name, abc_source);
+      ;
+      }, nil) && '_translate';
     })(self, null)
   })(self)
 };

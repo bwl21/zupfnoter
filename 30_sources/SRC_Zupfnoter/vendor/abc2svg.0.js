@@ -1348,7 +1348,7 @@ function Abc(user) {
         if (s.linenum == undefined)return;
         w = s.wl + s.wr + 4;
         h = s.ymx - s.ymn + 4;
-        output.push('<rect class="abcref" id="' + type + " " + s.linenum + " " + s.colnum + " " + s.colend + '" x="');
+        output.push('<rect class="abcref" id="' + type + "_" + s.linenum + "_" + s.colnum + "_" + s.colend + '" x="');
         out_sxsy(s.x - s.wl - 2, '" y="', staff_tb[s.st].y + s.ymn + h + 2);
         output.push('" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '"/>\n')
     }
