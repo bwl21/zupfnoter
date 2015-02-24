@@ -217,3 +217,14 @@ body {
   bottom: 0px;
   right: 50%;
   z-index: 999; }
+
+rect.abcref {
+  fill: grey;
+  fill-opacity: 0.01; }
+
+rect.abcref:hover {
+  fill-opacity: 0.5; }
+
+rect.highlight {
+  fill: red;
+  fill-opacity: 0.2; }

@@ -453,9 +453,17 @@ C,
         # todo maintain editor status
         @editor.set_text(args[:oldval])
       end
-
     end
 
+    @commands.add_command(:svg) do |command|
+      command.as_action do |args|
+        abc2svg = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
+        abc2svg.on_select do |id|
+           $log.info(id)
+        end
+        abc2svg.draw(@editor.get_abc_part)
+      end
+    end
 
   end
 end
