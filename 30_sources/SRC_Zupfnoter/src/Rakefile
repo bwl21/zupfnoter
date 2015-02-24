@@ -10,12 +10,17 @@ ZUPFNOTER_JS = "build.js"
 OUTFOLDER = "../deploy_files"
 INDEXFILE = "index.html"
 
+VENDORFOLDER ="../vendor"
+ACE_REPO = "../../../../200_zupfnoter_external_components/ace"
+
 
 desc "Build our app to #{ZUPFNOTER_JS}"
 task :build do
-  env = Opal::Environment.new
-  env.append_path "."
-  env.use_gem "vector2d"
+  env = Sprockets::Environment.new
+  Opal.append_path "."
+  Opal.use_gem "vector2d"
+
+  Opal.paths.each { |p| env.append_path(p) }
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
     out << env["application"].to_s
@@ -25,6 +30,16 @@ task :build do
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
     puts sh cmd
   end
+end
+
+
+desc "Rebuuild Ace configuration to #{VENDORFOLDER}/ace"
+task :build_ace do
+  cd ACE_REPO do
+    sh "node Makefile.dryice.js -nc -m full"
+    sh "node Makefile.dryice.js full"
+  end
+  cp_r("#{ACE_REPO}/build/src-min-noconflict/.", "#{VENDORFOLDER}/ace")
 end
 
 desc "Build the documentation"
@@ -117,9 +132,10 @@ task :buildDesktop => [:build] do
     f.puts ERB.new(a).result
   end
 
-  sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
+  #sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
 
   copy(ZUPFNOTER_JS, zupfnoter_compressedjs_filename)
+
   Dir["../vendor/*.*"].each { |f|
     copy(f, "#{desktop_stage}/vendor/#{f}")
   }

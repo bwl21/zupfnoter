@@ -183,24 +183,21 @@ M:4/4
 L:1/4
 Q:1/4=120
 K:C
-% %%%hn.print {"t":"alle Stimmen",         "v":[1,2,3,4], "s": [[1,2],[3,4]], "f":[1,3], "j":[1]}
-% %%%hn.print {"t":"sopran, alt", "v":[1,2],     "s":[[1,2]],       "f":[1],   "j":[1]}
-%%%%hn.print {"t":"tenor, bass", "v":[3, 4],     "s":[[1, 2], [3,4]],       "f":[3  ],   "j":[1, 3]}
-%%%%hn.legend [10,10]
-%%%%hn.note [[5, 50], "Folge: A A B B C A", "regular"]
-%%%%hn.note [[360, 280], "Erstellt mit Zupfnoter 0.7", "regular"]
 %%score T1 T2  B1 B2
 V:T1 clef=treble-8 name="Sopran" snm="S"
+C
 V:T2 clef=treble-8  name="Alt" snm="A"
-%V:B1 clef=bass transpose=-24 name="Tenor" middle=D, snm="T"
-%V:B2 clef=bass transpose=-24 name="Bass" middle=D, snm="B"
-[V:T1] c'
-[V:T2] c
-%
+C,
+
+%%%%zupfnoter.config
+
+{
+  "produce": ["1", "2"]
+}
 }
         args[:oldval] = @editor.get_text
         @editor.set_text(template)
-        set_status(song: "new")
+        set_status(music_model: "new")
       end
 
       c.as_inverse do |args|
@@ -223,7 +220,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
         metadata = @abc_transformer.get_metadata(abc_code)
         filename = "#{metadata[:X]}_#{metadata[:T]}"
         @songbook.update(metadata[:X], abc_code, metadata[:T], true)
-        set_status(song: "saved to localstore")
+        set_status(music_model: "saved to localstore")
         $log.message("saved to '#{filename}'")
       end
     end
@@ -387,18 +384,19 @@ V:T2 clef=treble-8  name="Alt" snm="A"
           raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
         end
 
-        layout_harpnotes # todo: this uses a side-effect to get the @song populated
+        layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
         render_previews
 
-        print_variants = @song.harpnote_options[:print]
+        print_variants = @music_model.harpnote_options[:print]
 
         rootpath = args[:path]
 
+        save_promises=[]
         @dropboxclient.authenticate().then do
-
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
           pdfs = {}
-          print_variants.each_with_index.map do |print_variant, index|
+          print_variants.map do |print_variant|
+            index = print_variant[:view_id]
             filename = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
             pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a3.pdf"] = render_a3(index).output(:blob)
             pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a4.pdf"] = render_a4(index).output(:blob)
@@ -407,11 +405,9 @@ V:T2 clef=treble-8  name="Alt" snm="A"
           pdfs.each do |name, pdfdata|
             save_promises.push(@dropboxclient.write_file(name, pdfdata))
           end
-          save_promises.push(@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text))
-
-          Promise.when(save_promises)
-        end.then do
-          set_status(song: "saved to dropbox")
+        end
+        Promise.when(*save_promises).then do
+          set_status(music_model: "saved to dropbox")
           $log.message("all files saved")
         end.fail do |err|
           $log.error("there was an error saving files #{err}")
@@ -447,7 +443,7 @@ V:T2 clef=treble-8  name="Alt" snm="A"
           abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
 
           @editor.set_text(abc_text)
-          set_status(song: "loaded")
+          set_status(music_model: "loaded")
         end.fail do |err|
           $log.error("could not load file #{err}")
         end

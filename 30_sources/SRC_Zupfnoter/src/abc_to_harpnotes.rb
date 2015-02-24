@@ -169,26 +169,35 @@ module Harpnotes
       end
 
 
-      # @param [String] abc_code to be transformed
+      # @param [String] zupfnoter_abc to be transformed
       #
       # @return [Harpnotes::Music::Song] the Song
-      def transform(abc_code)
-        @abc_code = abc_code
+      def transform(zupfnoter_abc)
+        @abc_code = zupfnoter_abc
 
         # get harpnote_options from abc_code
-        harpnote_options = parse_harpnote_config(abc_code)
+        # todo remove this compatibility mode
+        harpnote_options = parse_harpnote_config(zupfnoter_abc)
+
         # note that harpnote_options uses singular names
-        @annotations = (harpnote_options[:annotation] || []).inject({}) do |hash, entry|
-          hash[entry[:id]] = entry
-          hash
+        if $conf.get("location") == "song"
+          @annotations = $conf.get("annotations")
+        else   #todo compatibility code
+
+          @annotations = (harpnote_options[:annotation] || [])
+          @annotations = @annotations.inject({}) do |hash, entry|
+            hash[entry[:id]] = entry
+            hash
+          end
         end
+
 
 
         # now parse the abc_code by abcjs
         # todo move this to opal-abcjs
         %x{
           var parser = new ABCJS.parse.Parse();
-          parser.parse(#{abc_code});
+          parser.parse(#{@abc_code});
           var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
@@ -208,7 +217,7 @@ module Harpnotes
         # pull out the headlines
         # todo:factor out to a generic method parse_abc_header()
         #
-        note_length_rows = abc_code.split("\n").select { |row| row[0..1] == "L:" }
+        note_length_rows = zupfnoter_abc.split("\n").select { |row| row[0..1] == "L:" }
         note_length_rows = ["L:1/4"] if note_length_rows.empty?
         note_length = note_length_rows.first.strip.split(":").last.split("/").map { |s| s.strip.to_i }
         note_length = note_length.last / note_length.first
@@ -301,7 +310,9 @@ module Harpnotes
           hn_voice
         end
 
+        #############################
         # now construct the song
+        hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         result = Harpnotes::Music::Song.new(hn_voices, note_length)
 
         # contruct the meta data
@@ -348,19 +359,19 @@ module Harpnotes
         print_options.push($conf.get("defaults.print"))
 
         # handle print options
-        result.harpnote_options[:print] = (harpnote_options[:print] || [{}]).map { |specified_option|
+        result.harpnote_options[:print] = (harpnote_options[:print] || [{}]).each_with_index.map do |specified_option, index|
           print_options.push(specified_option)
 
           resulting_options = {
-              line_no: 1,
+              view_id: index,
               title: print_options.get('t'),
               startpos: print_options.get('startpos'),
-              voices: (print_options.get('v')).map { |i| i-1 },
-              synchlines: (print_options.get('s')).map { |i| i.map { |j| j-1 } },
-              flowlines: (print_options.get('f')).map { |i| i-1 },
-              subflowlines: (print_options.get('sf')).map { |i| i-1 },
-              jumplines: (print_options.get('j')).map { |i| i-1 },
-              layoutlines: (print_options.get('l') || print_options.get('v') ).map { |i| i-1 } # these voices are considered in layoutoptimization
+              voices: (print_options.get('v')), #.map { |i| i-1 },
+              synchlines: (print_options.get('s')), #.map { |i| i.map { |j| j-1 } },
+              flowlines: (print_options.get('f')), #.map { |i| i-1 },
+              subflowlines: (print_options.get('sf')), #.map { |i| i-1 },
+              jumplines: (print_options.get('j')), # .map { |i| i-1 },
+              layoutlines: (print_options.get('l') || print_options.get('v')) # .map { |i| i-1 } # these voices are considered in layoutoptimization
           }
 
           # checking missing voices
@@ -371,18 +382,31 @@ module Harpnotes
           msg = "hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}"
           $log.error(msg, [line_no, 1]) unless missing_voices.empty?
           resulting_options
-        }
+        end
+
+        #todo:this is a compatibility code - remove after conversion to the new configuration
+        if $conf.get("location") == "song"
+          result.harpnote_options[:print] = $conf.get("produce").map do |i|
+            title = $conf.get("extract.#{i}.title")
+            if title
+              {title: title, view_id: i}
+            else
+              $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
+              nil
+            end
+          end.compact
+        end
 
         # legend
         print_options = Confstack.new
         print_options.push($conf.get('defaults.legend'))
-        print_options.push(harpnote_options[:legend])  if harpnote_options[:legend]
+        print_options.push(harpnote_options[:legend]) if harpnote_options[:legend]
         result.harpnote_options[:legend] = print_options.get
 
         # lyrics
         print_options = Confstack.new
         print_options.push($conf.get('defaults.lyrics'))
-        print_options.push(harpnote_options[:lyrics])  if harpnote_options[:lyrics]
+        print_options.push(harpnote_options[:lyrics]) if harpnote_options[:lyrics]
         result.harpnote_options[:lyrics] = print_options.get
         result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
 
@@ -503,7 +527,7 @@ module Harpnotes
         # on the layout (DURATION_TO_STYLE). So, don't change this.
         # todo: we need to separate duration from the layout
 
-        duration = (Harpnotes::Layout::Default::SHORTEST_NOTE * note[:duration]).round
+        duration = ($conf.get('layout.SHORTEST_NOTE') * note[:duration]).round
 
         start_tuplet = true if note[:startTriplet]
         end_tuplet = true if note[:endTriplet]
@@ -631,7 +655,7 @@ module Harpnotes
         @previous_note = result.last
 
         if @next_note_marks[:measure]
-          notes.each{|note| result << Harpnotes::Music::MeasureStart.new(note)}
+          notes.each { |note| result << Harpnotes::Music::MeasureStart.new(note) }
           @next_note_marks[:measure] = false
         end
 
