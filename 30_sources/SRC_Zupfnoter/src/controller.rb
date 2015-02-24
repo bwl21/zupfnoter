@@ -402,13 +402,14 @@ d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
 
     @editor.on_selection_change do |e|
       a = @editor.get_selection_positions
-      # $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
-      unless a.first == a.last
+      $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
+      unless # a.first == a.last
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
       end
+
     end
 
     @editor.on_cursor_change do |e|
