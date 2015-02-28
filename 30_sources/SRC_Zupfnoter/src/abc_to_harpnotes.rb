@@ -182,7 +182,7 @@ module Harpnotes
         # note that harpnote_options uses singular names
         if $conf.get("location") == "song"
           @annotations = $conf.get("annotations")
-        else   #todo compatibility code
+        else #todo compatibility code
 
           @annotations = (harpnote_options[:annotation] || [])
           @annotations = @annotations.inject({}) do |hash, entry|
@@ -190,7 +190,6 @@ module Harpnotes
             hash
           end
         end
-
 
 
         # now parse the abc_code by abcjs
@@ -276,13 +275,22 @@ module Harpnotes
             type = el[:el_type]
             hn_voice_element = self.send("transform_#{type}", el, i)
 
-            unless hn_voice_element.nil? or hn_voice_element.empty?
-              hn_voice_element.each do |e|
-                e.origin = el
-                start_char = el[:startChar]
-                end_char = el[:endChar]
-                e.start_pos = charpos_to_line_column(start_char) if start_char > 0
-                e.end_pos = charpos_to_line_column(end_char) if end_char > 0
+            if el[:startChar]
+              # fix character position in abc
+              el[:startChar] -= 3 if el[:startChar] == el[:endChar] # fix ananomaly of abc2js chords have no range
+
+              end_char = el[:endChar]
+              start_char = el[:startChar]
+              start_pos = charpos_to_line_column(start_char) if start_char > 0
+              end_pos = charpos_to_line_column(end_char) if end_char > 0
+
+              # apply uptracing information to the harpnote elements
+              unless hn_voice_element.nil? or hn_voice_element.empty?
+                hn_voice_element.each do |e|
+                  e.origin = el # todo: pass a hash only {}
+                  e.start_pos = start_pos # necessary for error reporting in editor
+                  e.end_pos = end_pos
+                end
               end
             end
 
