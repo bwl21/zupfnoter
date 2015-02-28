@@ -13,6 +13,7 @@ module Harpnotes
     DOTTED_SIZE = 0.3
 
     def initialize(element_id, width, height)
+      @container_id = element_id
       @paper = Raphael::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select = nil
@@ -84,13 +85,12 @@ module Harpnotes
 
     def get_elements_by_range(from, to)
       result = []
+      range = [from, to].sort()
       @elements.each_key { |k|
         origin = Native(k.origin)
         unless origin.nil?
-          el_start = Native(k.origin)[:startChar]
-          el_end = Native(k.origin)[:endChar]
-
-          if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
+          noterange = [:startChar, :endChar].map{|c| Native(k.origin)[c]}.sort  # todo: this should be done in abc2harpnotes
+          if (range.first - noterange.last) * (noterange.first - range.last) > 0
             @elements[k].each do |e|
               result.push(e)
             end
@@ -103,6 +103,17 @@ module Harpnotes
     def highlight_element(element)
       unhighlight_element(element)
       @highlighted.push(element)
+      %x{
+          try {
+            height = #{element}.r.getBBox().y
+            height = height + #{element}.r.getBBox().y2
+            height = 50 * Math.floor(height/50)
+            $("#"+#{@container_id}).get(0).scrollTop=height
+          }
+            catch (exception){
+            #{$log.error("Bug: #{`exception`} #{__FILE__}:#{__LINE__}")}
+          }
+      }
       element.unhighlight_color = element[:fill]
       element[:fill]="#ff0000"
       element[:stroke]="#ff0000"
@@ -252,8 +263,8 @@ module Harpnotes
     # Draw an an annotation
     def draw_annotation(root)
 
-      style = Harpnotes::Layout::Default::FONT_STYLE_DEF[root.style] || Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular]
-      mm_per_point = Harpnotes::Layout::Default::MM_PER_POINT
+      style = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
+      mm_per_point = $conf.get('layout.MM_PER_POINT')
 
       text = root.text.gsub("\n\n", "\n \n")
       element = @paper.text(root.center.first, root.center.last, text)

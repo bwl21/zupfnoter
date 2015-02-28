@@ -59,7 +59,7 @@ module Harpnotes
           end
         else
           $log.error("please select at least one note")
-          notes_to_play = []
+          notes_to_play = @voice_elements
         end
 
         play_notes(notes_to_play)
@@ -84,7 +84,7 @@ module Harpnotes
           lastnote = the_notes.last
 
           # stoptime comes in msec
-          stop_time = (lastnote[:delay] - firstnote[:delay] + Harpnotes::Layout::Default::SHORTEST_NOTE * @duration_timefactor) * 1000 # todo factor out the literals
+          stop_time = (lastnote[:delay] - firstnote[:delay] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
           @song_off_timer = `setTimeout(function(){#{@songoff_callback}.$call()}, #{stop_time} )`
 
 
@@ -151,7 +151,7 @@ module Harpnotes
         # 1/4 = 120 bpm shall be  32 ticks per quarter: convert to 1/4 <-> 128:
         tf = spectf * (128/120)
         @duration_timefactor = 1/tf # convert music duration to musicaljs duration
-        @beat_timefactor = 1/(tf * Harpnotes::Layout::Default::BEAT_PER_DURATION) # convert music beat to musicaljs delay
+        @beat_timefactor = 1/(tf * $conf.get('layout.BEAT_PER_DURATION')) # convert music beat to musicaljs delay
 
         #todo duration_time_factor, beat_time_factor
 
@@ -171,7 +171,7 @@ module Harpnotes
             if root.is_a? SynchPoint
               more_to_play = root.notes.each.map do |note|
                 mk_to_play(note, velocity, index) unless note.pitch === root.pitch
-              end
+              end.compact
             end
             # handle ties and slurs
 
@@ -179,15 +179,17 @@ module Harpnotes
               if tie_start[:pitch] == to_play[:pitch]
                 to_play[:duration] += tie_start[:duration]
                 to_play[:delay] = tie_start[:delay]
-                result = to_play
-              else
-                result = [tie_start, to_play]
+                $log.debug("#{more_to_play} #{__FILE__} #{__LINE__}")
+
+                more_to_play.each do |p|
+                  p[:duration] += tie_start[:duration]
+                  p[:delay] = tie_start[:delay]
+                end
               end
             end
 
             if root.tie_start?
               tie_start = to_play
-              result = nil
             end
 
             [to_play] + [more_to_play]

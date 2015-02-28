@@ -1,18 +1,24 @@
-# config.ru
-require 'bundler'
-Bundler.require
+  # config.ru
+  require 'bundler'
+  Bundler.require
 
-run Opal::Server.new { |s|
+  #Opal::Processor.inline_operators_enabled = true
+  run Opal::Server.new { |s|
 
-  s.append_path 'public'
-  s.append_path 'src'
-  s.use_gem 'vector2d'
-  s.use_gem 'confstruct'
+    s.append_path 'public'
+    s.append_path 'src'
 
-  s.debug = true
-  s.source_map = true
+    Opal.use_gem "vector2d"
 
-  s.main = 'application'
+    Opal.paths.each { |p| s.append_path(p) }
 
-  s.index_path = 'index_opal.html.erb'
-}
+
+    #s.use_gem 'vector2d'
+
+   # s.debug = true
+    s.source_map = true
+
+    s.main = 'application'
+
+    s.index_path = 'index_opal.html.erb'
+  }

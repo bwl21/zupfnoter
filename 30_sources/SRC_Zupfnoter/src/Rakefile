@@ -10,12 +10,17 @@ ZUPFNOTER_JS = "build.js"
 OUTFOLDER = "../deploy_files"
 INDEXFILE = "index.html"
 
+VENDORFOLDER ="../vendor"
+ACE_REPO = "../../../../200_zupfnoter_external_components/ace"
+
 
 desc "Build our app to #{ZUPFNOTER_JS}"
 task :build do
-  env = Opal::Environment.new
-  env.append_path "."
-  env.use_gem "vector2d"
+  env = Sprockets::Environment.new
+  Opal.append_path "."
+  Opal.use_gem "vector2d"
+
+  Opal.paths.each { |p| env.append_path(p) }
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
     out << env["application"].to_s
@@ -25,6 +30,16 @@ task :build do
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
     puts sh cmd
   end
+end
+
+
+desc "Rebuuild Ace configuration to #{VENDORFOLDER}/ace"
+task :build_ace do
+  cd ACE_REPO do
+    sh "node Makefile.dryice.js -nc -m full"
+    sh "node Makefile.dryice.js full"
+  end
+  cp_r("#{ACE_REPO}/build/src-min-noconflict/.", "#{VENDORFOLDER}/ace")
 end
 
 desc "Build the documentation"
@@ -51,7 +66,7 @@ task :deploy => [:build] do
     cp f, "#{OUTFOLDER}/webserver/vendor/#{f}"
   }
 
-  sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
+  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
 
 
   #p ZUPFNOTER_JS, "#{OUTFOLDER}/public/#{ZUPFNOTER_JS}"
@@ -117,9 +132,9 @@ task :buildDesktop => [:build] do
     f.puts ERB.new(a).result
   end
 
-  sh "java -jar ../tools/yuicompressor-2.4.2.jar  --line-break 7000 -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
+  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
+  #copy(ZUPFNOTER_JS, zupfnoter_compressedjs_filename)
 
-  copy(ZUPFNOTER_JS, zupfnoter_compressedjs_filename)
   Dir["../vendor/*.*"].each { |f|
     copy(f, "#{desktop_stage}/vendor/#{f}")
   }
@@ -132,6 +147,8 @@ task :buildDesktop => [:build] do
   ["vendor/ace", "vendor/ace/snippets", "public/icons"].each do |d|
     mkdir_p("#{desktop_stage}/#{d}")
   end
+
+  #todo improve handling of files
   cp("../public/index.css", "#{desktop_stage}/public/index.css")
   cp("../vendor/ace/ace.js", "#{desktop_stage}/vendor/ace/ace.js")
   cp("../vendor/ace/mode-abc.js", "#{desktop_stage}/vendor/ace/mode-abc.js")
@@ -155,5 +172,5 @@ task :buildDesktop => [:build] do
   cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-x64" do
     sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
   end
-  #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
+  nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
 end

@@ -68,8 +68,8 @@ module Harpnotes
     def draw_annotation(root)
 
       #todo: reference to FONT_STYLE_DEF is not ok here.
-      style = Harpnotes::Layout::Default::FONT_STYLE_DEF[root.style] || Harpnotes::Layout::Default::FONT_STYLE_DEF[:regular]
-      mm_per_point = Harpnotes::Layout::Default::MM_PER_POINT
+      style = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
+      mm_per_point = $conf.get('layout.MM_PER_POINT')
 
       @pdf.text_color = style[:text_color]
       @pdf.font_size = style[:font_size]

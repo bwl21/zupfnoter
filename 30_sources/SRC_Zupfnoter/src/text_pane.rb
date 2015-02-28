@@ -18,16 +18,20 @@ module Harpnotes
         var editor = ace.edit(div);
         editor.$blockScrolling = Infinity;
 
-        editor.setTheme("ace/theme/chrome");
+        editor.setTheme("ace/theme/abc");
         editor.getSession().setMode("ace/mode/abc");
 
-        editor.setTheme("ace/theme/xcode");
+        editor.setTheme("ace/theme/abc");
 
         editor.setOptions({
           highlightActiveLine: true,
           enableBasicAutocompletion: true,
           enableSnippets: true,
           enableLiveAutocompletion: false        });
+
+        // todo: refine autocompletion according to http://plnkr.co/edit/6MVntVmXYUbjR0DI82Cr?p=preview
+        //                                          https://github.com/ajaxorg/ace/wiki/How-to-enable-Autocomplete-in-the-Ace-editor
+
       }
       @editor = `editor`
       @range = `ace.require('ace/range').Range`
@@ -49,12 +53,23 @@ module Harpnotes
     end
 
     #
-    # Install a handler for "selectionChange" event
+    # Install a handler for "selection change" event
     # @param block [Lambda] Procedure to be executed
     #
     # @return [type] [description]
     def on_selection_change(&block)
       Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
+        block.call(e)
+      end
+    end
+
+    #
+    # Install a handler for "cursor change" event
+    # @param block [Lambda] Procedure to be executed
+    #
+    # @return [type] [description]
+    def on_cursor_change(&block)
+      Native(Native(@editor)[:selection]).on(:changeCursor) do |e|
         block.call(e)
       end
     end
@@ -161,6 +176,29 @@ module Harpnotes
         %x{#{@editor}.session.removeMarker(#{marker[:id]})}
       end
       @markers.clear
+    end
+
+
+    # get the abc part of the stuff
+    CONFIG_SEPARATOR = "%%%%zupfnoter.config"
+
+    def get_abc_part
+      get_text.split(CONFIG_SEPARATOR).first
+    end
+
+    # get the config part of the music
+    def get_config_part
+      get_text.split(CONFIG_SEPARATOR)[1] || "{}"
+    end
+
+    # get the line and column of an error in the config part
+    # @param [Numerical] charpos the position in the config part
+    def get_config_position(charpos)
+      cp = charpos + (get_abc_part + CONFIG_SEPARATOR).length
+      lines = get_text[0, cp].split("\n")
+      line_no = lines.count
+      char_pos = lines.last.length()
+      return line_no, char_pos
     end
 
   end
