@@ -42,9 +42,10 @@ module ABC2SVG
 
     def range_highlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
-        foo = Element.find("##{id}")
-        classes = [foo.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
-        foo.attr('class', classes)
+        element = Element.find("##{id}")
+        %x{#{element}.parents('svg').get(0).scrollIntoView()}
+        classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
+        element.attr('class', classes)
       end
       nil
     end

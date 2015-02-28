@@ -13,6 +13,7 @@ module Harpnotes
     DOTTED_SIZE = 0.3
 
     def initialize(element_id, width, height)
+      @container_id = element_id
       @paper = Raphael::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select = nil
@@ -102,6 +103,17 @@ module Harpnotes
     def highlight_element(element)
       unhighlight_element(element)
       @highlighted.push(element)
+      %x{
+          try {
+            height = #{element}.r.getBBox().y
+            height = height + #{element}.r.getBBox().y2
+            height = 50 * Math.floor(height/50)
+            $("#"+#{@container_id}).get(0).scrollTop=height
+          }
+            catch (exception){
+            #{$log.error("Bug: #{`exception`} #{__FILE__}:#{__LINE__}")}
+          }
+      }
       element.unhighlight_color = element[:fill]
       element[:fill]="#ff0000"
       element[:stroke]="#ff0000"
