@@ -104,7 +104,7 @@ module Harpnotes
 
 
       def start_pos_to_s
-        "[#{start_pos.first}:#{start_pos.last}]"
+        "[#{@start_pos.first}:#{@start_pos.last}]"
       end
     end
 
