@@ -111,7 +111,7 @@ class Controller
 
     # initialize virgin zupfnoter
     load_demo_tune
-    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :on, view: 0)
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0)
 
     # load from previous session
     load_from_loacalstorage
@@ -154,19 +154,63 @@ class Controller
 
   # this loads a demo song
   def load_demo_tune
-    abc =%Q{C: Generated more or less automatically
-C: by swtoabc by Erich Rickheit KSC
-X:1
-T:Zupfnoter Demo Tune
-T:do you recognize it?
-M:6/8
+    abc =%Q{X:21
+F:21_Ich_steh_an_deiner_krippen_hier
+T:Ich steh an deiner Krippen hier
+C:Nr. 59 aus dem Weihnachtsoratorium
+C:Joh. Seb. Bach
+C:Kirchenchor Mattighofen
+%%score ( 1 2 ) ( 3 4 )
 L:1/4
+Q:1/4=80.00
+M:4/4
+I:linebreak $
 K:G
-Q:1/4=120
-z4 z E| G2 A B3/2- c/2 B| A2 F D3/2- E/2 F| G2 E E3/2- ^D/2 E| F2 ^D B,2 E |
-G2 A B3/2- c/2 B| A2 F D3/2- E/2 F| G3/2- F/2 E ^D3/2- ^C/2 D| E3 E2 z|
-d3 d3/2- ^c/2 B| A2 F D3/2- E/2- F| G2- E E3/2- ^D/2 E| F2 ^D B,3|
-d3 d3/2 ^c/2 B| A2 F D3/2- E/2 F| G3/2 F/2 E ^D3/2- ^C/2 D| E3 E2 z| }
+V:1 treble nm="Sopran Alt"
+V:2 treble
+V:3 bass nm="Tenor Bass"
+V:4 bass
+V:1
+G | G/A/ B A G | A A !fermata!B G/A/ |
+B c d c/B/ | A/G/ A !fermata!G :| B | B A G F |
+G/A/ B !fermata!A A | G F G D | G A !fermata!B G/A/ |
+B c d c/B/ | A/G/ A !fermata!G z |]
+V:2
+D | E/F/ G G/F/ G | G F G E/F/ |
+G/ B A/4G/4 F G | G F D :| z | G3/2 F/ F/E/ E/^D/ |
+E D D D | D/C/ D D/C/ B, | B, E ^D B, |
+E E D/E/2 G | G F D z |]
+V:3
+B, | B, E E/D/ D | E/C/ A,/D/ !fermata!D E |
+D G,/A,/ B,/C/ D | D C/B,/ !fermata!B, :| D | D D/C/ B,/C/ F,/B,/ |
+B,/A,/ A,/G,/ !fermata!F, F, | G,/A,/ B,/C/ B,/A,/ G, | G, F,/E,/ !fermata!F, E,/F,/ |
+G,3/2 A,/ B,/C/ D | D C/B,/ !fermata!B, z |]
+V:4
+G,/F,/ | E,3/2 D,/ C,3/2 B,,/ | C,/A,,/ D, G,, C, |
+G,/F,/ E, B,/A,/ G, | D D, G, :| z | B,/C/ D/2-D/2 G,/A,/ B, |
+E,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |
+E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
+
+%%%%zupfnoter.config
+{
+ "produce":[1],
+ "annotations": {
+                  "refn": {"id": "refn", "text": "referenced note", "pos": [20,10]}
+                },
+ "extract": {
+  "0": {
+       "voices": [1,2,3,4],
+       "flowlines": [1,3],
+       "layoutlines": [1,2,3,4],
+       "lyrics": {"versepos": {"1,2,3,4,5,6" :[10,100]}},
+       "legend": {"pos": [310,175]},
+       "notes":[
+         {"pos": [340,10], "text": "Ich steh an deiner Krippen hier", "style": "strong"}
+         ]
+      }
+       }
+}
+}
     @editor.set_text(abc)
   end
 
