@@ -103,16 +103,13 @@ module Harpnotes
     def highlight_element(element)
       unhighlight_element(element)
       @highlighted.push(element)
+      @x = 0 unless @x
       %x{
-          try {
-            height = #{element}.r.getBBox().y
-            height = height + #{element}.r.getBBox().y2
-            height = 50 * Math.floor(height/50)
-            $("#"+#{@container_id}).get(0).scrollTop=height
-          }
-            catch (exception){
-            #{$log.error("Bug: #{`exception`} #{__FILE__}:#{__LINE__}")}
-          }
+            var node = #{element}.r;
+            var bbox = node.getBBox();
+            var top = bbox.y + bbox.y2;
+            top = 100 * Math.floor(top/100);
+            $("#"+#{@container_id}).get(0).scrollTop=top;
       }
       element.unhighlight_color = element[:fill]
       element[:fill]="#ff0000"
@@ -157,8 +154,6 @@ module Harpnotes
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
-
-
     end
 
     def draw_glyph(root)
