@@ -7,6 +7,7 @@ module ABC2SVG
       @printer = div
       @svgbuf = []
       @abc_source = ''
+      @element_to_position = {}
       @user = {img_out: nil,
                errmsg: nil,
                read_file: nil,
@@ -14,12 +15,20 @@ module ABC2SVG
                page_format: true
       }
 
-      set_errmsg() do |message, line_number, column_number|
+      set_callback(:errmsg) do |message, line_number, column_number|
         $log.error(message)
       end
 
-      set_img_out() do |svg|
+      set_callback(:img_out) do |svg|
         @svgbuf.push svg
+      end
+
+      set_callback(:anno_start) do |type, start, stop, x, y, w, h|
+         _anno_start(type, start, stop, x, y, w, h)
+      end
+
+      set_callback(:anno_stop) do |type, start, stop, x, y, w, h|
+        _anno_stop(type, start, stop, x, y, w, h)
       end
 
       @root = %x{new Abc(#{@user.to_n})}
@@ -33,9 +42,10 @@ module ABC2SVG
 
     def range_highlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
-        foo = Element.find("##{id}")
-        classes = [foo.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
-        foo.attr('class', classes)
+        element = Element.find("##{id}")
+        %x{#{element}.parents('svg').get(0).scrollIntoView()}
+        classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
+        element.attr('class', classes)
       end
       nil
     end
@@ -60,9 +70,8 @@ module ABC2SVG
 
     def draw(abc_code)
       _translate("abc", abc_code)
-      @printer.html(get_svg)
+      @printer.html(get_svg())
       _set_on_select();
-      _build_charpos_map();
       nil
     end
 
@@ -71,22 +80,18 @@ module ABC2SVG
     end
 
 
-    def set_errmsg(&block)
-      @user[:errmsg] = block;
-    end
-
-    def set_img_out(&block)
-      @user[:img_out] = block;
+    def set_callback(event, &block)
+      @user[event] = block;
     end
 
 
     def get_elements_by_range(from, to)
+      range = [from,to].sort
       result = []
       @element_to_position.each { |k, value|
-        el_start = value[:startChar]
-        el_end = value[:endChar]
+        noterange = [:startChar, :endChar].map{|c| value[c]}.sort
 
-        if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
+        if (range.first - noterange.last) * (noterange.first - range.last) > 0
           result.push(k)
         end
       }
@@ -95,49 +100,39 @@ module ABC2SVG
 
     private
 
-    #
-    # @return [Hash] [startChar: xx, endChar: xx]
-    def _id_to_abcelement(id)
-      result = {}
-      id.match(/(\w+)[ _](\d+)[ _](\d+)[ _](\d+)/) do |matchdata|
-        line = matchdata[2].to_i + 1
-        startcol = matchdata[3].to_i
-        endcol = matchdata[4].to_i
-        start_pos = _line_column_to_charpos(line, startcol)
-        end_pos = _line_column_to_charpos(line, endcol)
-        result = {startChar: start_pos, endChar: end_pos} # todo: refactor to AbcObject
-      end
 
-      result
+    def _anno_start(music_type, start_offset, stop_offset, x, y, w, h)
+      id = _mk_id(music_type, start_offset, stop_offset)
+      %x{
+      #{@root}.out_svg('<g class="' + #{id} +'">\n')
+      }
     end
 
-    def _build_charpos_map
-      @element_to_position = {}
-      Element.find('.abcref').each do |element|
-        position = _id_to_abcelement(element.id)
-        @element_to_position[element.id] = position
-      end
+    def _anno_stop(music_type, start_offset, stop_offset, x, y, w, h)
+      id = _mk_id(music_type, start_offset, stop_offset)
+      %x{
+          // close the container
+          #{@root}.out_svg('</g>\n');
+          // create a rectangle
+          #{@root}.out_svg('<rect class="abcref" id="' + #{id} +'" x="');
+          #{@root}.out_sxsy(#{x}, '" y="', #{y});
+          #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
+            '" height="' + #{h}.toFixed(2) + '"/>\n')
+        }
+      @element_to_position[id] = {startChar: start_offset, endChar: stop_offset}
+
     end
 
-    def _charpos_to_line_column(charpos)
-      lines = @abc_source[1, charpos].split("\n")
-      line_no = lines.count
-      char_pos = lines.last.length()
-      return line_no, char_pos
-    end
 
-    def _line_column_to_charpos(line, column)
-      lines =@abc_source.split("\n")[0, line - 1]
-      result = lines.inject(0) { |result, increment| result + increment.length() +1 } + column ## 1 for cr
-
-      result
+    def _mk_id(music_type, start_offset, end_offset)
+      "_#{music_type}_#{start_offset}_#{end_offset}_"
     end
 
 
     def _set_on_select()
       Element.find('.abcref').on(:click) do |evt|
         evt.stop_propagation
-        @on_select.call(_id_to_abcelement(evt.current_target.id))
+        @on_select.call(@element_to_position[evt.current_target.id])
         nil
       end
     end
@@ -145,9 +140,10 @@ module ABC2SVG
 
     def _translate(file_name, abc_source)
       @abc_source = abc_source
+      @element_to_position = {}
       @svgbuf = []
       %x{
-      #{@root}.abc_fe(#{file_name}, #{abc_source});
+      #{@root}.tosvg(#{file_name}, #{abc_source});
       }
     end
   end

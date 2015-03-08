@@ -13,6 +13,7 @@ module Harpnotes
     DOTTED_SIZE = 0.3
 
     def initialize(element_id, width, height)
+      @container_id = element_id
       @paper = Raphael::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select = nil
@@ -84,13 +85,12 @@ module Harpnotes
 
     def get_elements_by_range(from, to)
       result = []
+      range = [from, to].sort()
       @elements.each_key { |k|
         origin = Native(k.origin)
         unless origin.nil?
-          el_start = Native(k.origin)[:startChar]
-          el_end = Native(k.origin)[:endChar]
-
-          if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
+          noterange = [:startChar, :endChar].map{|c| Native(k.origin)[c]}.sort  # todo: this should be done in abc2harpnotes
+          if (range.first - noterange.last) * (noterange.first - range.last) > 0
             @elements[k].each do |e|
               result.push(e)
             end
@@ -103,6 +103,14 @@ module Harpnotes
     def highlight_element(element)
       unhighlight_element(element)
       @highlighted.push(element)
+      @x = 0 unless @x
+      %x{
+            var node = #{element}.r;
+            var bbox = node.getBBox();
+            var top = bbox.y + bbox.y2;
+            top = 100 * Math.floor(top/100);
+            $("#"+#{@container_id}).get(0).scrollTop=top;
+      }
       element.unhighlight_color = element[:fill]
       element[:fill]="#ff0000"
       element[:stroke]="#ff0000"
@@ -146,8 +154,6 @@ module Harpnotes
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
-
-
     end
 
     def draw_glyph(root)

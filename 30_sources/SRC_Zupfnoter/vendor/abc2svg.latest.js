@@ -3,20 +3,17 @@
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
-var abc2svg_version = "0.10.0", abc2svg_vdate = "2015-02-21"
 function Abc(user) {
-    var abcobj, wpsobj, svgobj;
-
-    var output, style;
+    var wpsobj, svgobj;
     this.user = user;
+    this.version = "1.0.0", this.vdate = "2015-02-27";
     var BAR = 0, CLEF = 1, CUSTOS = 2, FORMAT = 3, GRACE = 4, KEY = 5, METER = 6, MREST = 7, NOTE = 8, PART = 9, REST = 10, SPACE = 11, STAVES = 12, STBRK = 13, TEMPO = 14, TUPLET = 15, SL_ABOVE = 1, SL_BELOW = 2, SL_AUTO = 3, SL_HIDDEN = 3, SL_DOTTED = 4, OPEN_BRACE = 1, CLOSE_BRACE = 2, OPEN_BRACKET = 4, CLOSE_BRACKET = 8, OPEN_PARENTH = 16, CLOSE_PARENTH = 32, STOP_BAR = 64, FL_VOICE = 128, OPEN_BRACE2 = 256, CLOSE_BRACE2 = 512, OPEN_BRACKET2 = 1024, CLOSE_BRACKET2 = 2048, MASTER_VOICE = 4096, BASE_LEN = 1536, CM = 28.346, IN = 72, YSTEP = 128;
     var glovar = {
         clef: {type: CLEF, clef_auto: true, clef_type: "a"},
         key: {type: "key", key_sf: 0, key_old_sf: 0},
         meter: {type: "meter", wmeasure: BASE_LEN, a_meter: [{top: "4", bot: "4"}]}
     };
-    var parse = {prefix: "%", state: 0};
-    var info = {};
+    var info = {}, parse = {ctx: {}, prefix: "%", state: 0};
 
     function clone(obj) {
         if (!obj)return obj;
@@ -25,11 +22,43 @@ function Abc(user) {
         return tmp
     }
 
-    function errbld(sev, txt, fn, l, c) {
-        var h = "";
+    function errbld(sev, txt, fn, idx) {
+        var i, j, l, c, h;
+        if (user.errbld) {
+            switch (sev) {
+                case 0:
+                    sev = "warn";
+                    break;
+                case 1:
+                    sev = "error";
+                    break;
+                default:
+                    sev = "fatal";
+                    break
+            }
+            user.errbld(sev, txt, fn, idx);
+            return
+        }
+        if (idx != undefined && idx >= 0) {
+            l = 0;
+            i = -1;
+            c = 0;
+            while (1) {
+                j = parse.file.indexOf("\n", i + 1);
+                if (j < 0) {
+                    i = parse.file.length - 1;
+                    break
+                }
+                if (j > idx)break;
+                l++;
+                i = j
+            }
+            c = idx - i
+        }
+        h = "";
         if (fn) {
-            h += fn;
-            if (l)h += ":" + l + ":" + c;
+            h = fn;
+            if (l)h += ":" + (l + 1) + ":" + (c + 1);
             h += " "
         }
         switch (sev) {
@@ -50,7 +79,7 @@ function Abc(user) {
     }
 
     function error(sev, s, msg) {
-        if (s)errbld(sev, msg, s.ctx.fname, s.linenum + 1, s.colnum); else errbld(sev, msg)
+        if (s)errbld(sev, msg, s.ctx.fname, s.istart); else errbld(sev, msg)
     }
 
     function scanBuf() {
@@ -85,16 +114,16 @@ function Abc(user) {
             return parseFloat(txt)
         };
         this.error = function (txt) {
-            errbld(1, txt, this.ctx.fname, this.ln + 1, this.index)
+            errbld(1, txt, parse.ctx.fname, this.index + parse.bol - 1)
         }
     }
 
+    function syntax(sev, txt) {
+        errbld(sev, txt, parse.ctx.fname, parse.istart)
+    }
+
     function abc2svg_init() {
-        reset_deco();
-        cfmt = clone(cfmt_init);
-        cfmt.posit = clone(posit_init);
         font_init();
-        init_svg();
         init_tune()
     }
 
@@ -1291,15 +1320,16 @@ function Abc(user) {
                 g = s.extra;
                 for (; g; g = g.next)if (g.type == TEMPO)break;
                 if (!g)continue;
-                write_tempo(g, s.x - 5, dosh & 1 ? h : y, beat, 1);
-                if (user.annotate) {
+                if (user.anno_start || user.anno_stop) {
                     g.x = s.x;
-                    g.wl = 0;
-                    g.wr = 30;
+                    g.wl = 5;
+                    g.wr = 40;
                     g.ymn = dosh & 1 ? h : y;
                     g.ymx = g.ymn + 14;
-                    anno_out(g, "Q")
+                    if (user.anno_start)anno_start(g)
                 }
+                write_tempo(g, s.x - 5, dosh & 1 ? h : y, beat, 1);
+                if (user.anno_stop)anno_stop(g);
                 dosh >>= 1
             }
         }
@@ -1325,32 +1355,41 @@ function Abc(user) {
                 if (!g)continue;
                 for (; g; g = g.next)if (g.type == PART)break;
                 if (!g)continue;
+                if (user.anno_start || user.anno_stop) {
+                    g.x = s.x - 10;
+                    w = strw(g.text);
+                    g.wl = 0;
+                    g.wr = w;
+                    g.ymn = 2 - ht - h;
+                    g.ymx = g.ymn + h;
+                    if (user.anno_start)anno_start(g)
+                }
                 xy_str(s.x - 10, 2 - ht - h, g.text);
                 if (cfmt.partsbox) {
                     w = strw(g.text) + 4;
                     xybox(s.x - 10 - 2, 2 - ht - 4, w, h)
                 }
+                if (user.anno_stop)anno_stop(g)
             }
         }
         return dy
     }
 
-    function reset_deco() {
-        char_tb["~".charCodeAt(0)] = "!gmark!";
-        char_tb["J".charCodeAt(0)] = "!slide!";
-        char_tb["R".charCodeAt(0)] = "!roll!"
+    var STEM_MIN = 16, STEM_MIN2 = 14, STEM_MIN3 = 12, STEM_MIN4 = 10, STEM_CH_MIN = 14, STEM_CH_MIN2 = 10, STEM_CH_MIN3 = 9, STEM_CH_MIN4 = 9, BEAM_DEPTH = 3.2, BEAM_OFFSET = .25, BEAM_SHIFT = 5, BEAM_FLATFAC = .6, BEAM_THRESH = .06, BEAM_SLOPE = .5, BEAM_STUB = 6, SLUR_SLOPE = 1, GSTEM = 14, GSTEM_XOFF = 1.6;
+    var anno_type = ["bar", "clef", "custos", "format", "grace", "key", "meter", "Zrest", "note", "part", "rest", "yspace", "staves", "Break", "tempo", "tuplet"];
+
+    function anno_start(s) {
+        if (s.istart == undefined)return;
+        var type = s.type, h = s.ymx - s.ymn + 4;
+        if (s.grace)type = GRACE;
+        user.anno_start(anno_type[s.type], s.istart, s.iend, s.x - s.wl - 2, staff_tb[s.st].y + s.ymn + h - 2, s.wl + s.wr + 4, s.ymx - s.ymn + 4)
     }
 
-    var STEM_MIN = 16, STEM_MIN2 = 14, STEM_MIN3 = 12, STEM_MIN4 = 10, STEM_CH_MIN = 14, STEM_CH_MIN2 = 10, STEM_CH_MIN3 = 9, STEM_CH_MIN4 = 9, BEAM_DEPTH = 3.2, BEAM_OFFSET = .25, BEAM_SHIFT = 5, BEAM_FLATFAC = .6, BEAM_THRESH = .06, BEAM_SLOPE = .5, BEAM_STUB = 6, SLUR_SLOPE = 1, GSTEM = 14, GSTEM_XOFF = 1.6;
-
-    function anno_out(s, type) {
-        var w, h;
-        if (s.linenum == undefined)return;
-        w = s.wl + s.wr + 4;
-        h = s.ymx - s.ymn + 4;
-        output.push('<rect class="abcref" id="' + type + "_" + s.linenum + "_" + s.colnum + "_" + s.colend + '" x="');
-        out_sxsy(s.x - s.wl - 2, '" y="', staff_tb[s.st].y + s.ymn + h + 2);
-        output.push('" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '"/>\n')
+    function anno_stop(s) {
+        if (s.istart == undefined)return;
+        var type = s.type, h = s.ymx - s.ymn + 4;
+        if (s.grace)type = GRACE;
+        user.anno_stop(anno_type[s.type], s.istart, s.iend, s.x - s.wl - 2, staff_tb[s.st].y + s.ymn + h - 2, s.wl + s.wr + 4, s.ymx - s.ymn + 4)
     }
 
     function b_pos(grace, stem, nflags, b) {
@@ -2115,11 +2154,11 @@ function Abc(user) {
         var yy, x0, y0, x1, y1, x2, y2, x3, y3, bet1, bet2, dy1, dy2, g, last, bm = {};
         for (g = s.extra; g; g = g.next) {
             if (g.type != NOTE)continue;
+            if (user.anno_start)anno_start(s);
             if (g.beam_st && !g.beam_end) {
                 if (calculate_beam(bm, g))draw_beams(bm)
             }
             draw_note(g.x, g, !bm.s2);
-            if (user.annotate)anno_out(s, "g");
             if (g == bm.s2)bm.s2 = undefined;
             if (g.sappo) {
                 if (!g.next) {
@@ -2132,6 +2171,7 @@ function Abc(user) {
                 }
                 out_acciac(x1, y1, g.stem > 0)
             }
+            if (user.anno_stop)anno_stop(s);
             if (!g.next)break
         }
         if (voice_tb[s.v].key.bagpipe || !cfmt.graceslurs || s.slur_start || !s.next || s.next.type != NOTE)return;
@@ -2453,7 +2493,7 @@ function Abc(user) {
         dz = .2 + .001 * (x2 - x1);
         if (dz > .6)dz = .6;
         dz *= dir;
-        var scale_y = stv_g.voice ? stv_g.scale : 1;
+        var scale_y = stv_g.v ? stv_g.scale : 1;
         if (!dotted)output.push('<path class="fill" d="M'); else output.push('<path class="stroke" stroke-dasharray="5,5" d="M');
         out_sxsy(x1, " ", y1);
         output.push("c" + ((xx1 - x1) / stv_g.scale).toFixed(2) + " " + ((y1 - yy1) / scale_y).toFixed(2) + " " + ((xx2 - x1) / stv_g.scale).toFixed(2) + " " + ((y1 - yy2) / scale_y).toFixed(2) + " " + ((x2 - x1) / stv_g.scale).toFixed(2) + " " + ((y1 - y2) / scale_y).toFixed(2));
@@ -3716,8 +3756,9 @@ function Abc(user) {
                 case BAR:
                     if (s.second || cur_sy.staves[st].empty)s.invisible = true;
                     if (s.invisible)break;
+                    if (user.anno_start)anno_start(s);
                     draw_bar(s, bar_bot[st], bar_height[st]);
-                    if (user.annotate)anno_out(s, "b");
+                    if (user.anno_stop)anno_stop(s);
                     break;
                 case STBRK:
                     if (cur_sy.voices[s.v].range == 0) {
@@ -3776,18 +3817,18 @@ function Abc(user) {
                     set_scale(s);
                     if (s.beam_st && !s.beam_end || first_note && !s.beam_st) {
                         first_note = false;
-                        if (calculate_beam(bm, s)) {
-                            draw_beams(bm)
-                        }
+                        if (calculate_beam(bm, s))draw_beams(bm)
                     }
+                    if (user.anno_start)anno_start(s);
                     draw_note(x, s, !bm.s2);
-                    if (user.annotate)anno_out(s, "n");
+                    if (user.anno_stop)anno_stop(s);
                     if (s == bm.s2)bm.s2 = null;
                     break;
                 case REST:
                     set_scale(s);
+                    if (user.anno_start)anno_start(s);
                     draw_rest(s);
-                    if (user.annotate)anno_out(s, "r");
+                    if (user.anno_stop)anno_stop(s);
                     break;
                 case BAR:
                     break;
@@ -3796,6 +3837,7 @@ function Abc(user) {
                     if (s.second)break;
                     if (s.invisible || staff_tb[st].empty)break;
                     set_sscale(st);
+                    if (user.anno_start)anno_start(s);
                     y = staff_tb[st].y;
                     x -= 10;
                     if (s.clef_name)xygl(x, y + s.y, s.clef_name); else if (!s.clef_small)xygl(x, y + s.y, s.clef_type + "clef"); else xygl(x, y + s.y, "s" + s.clef_type + "clef");
@@ -3803,19 +3845,24 @@ function Abc(user) {
                         if (s.clef_octave > 0)y += s.ymx - 11; else y += s.ymn - 1;
                         xygl(x - 3, y, "oct")
                     }
+                    if (user.anno_stop)anno_stop(s);
                     break;
                 case METER:
                     p_voice.meter = s;
                     if (s.second || staff_tb[s.st].empty)break;
                     if (cfmt.alignbars && s.st != 0)break;
                     set_sscale(s.st);
+                    if (user.anno_start)anno_start(s);
                     draw_meter(x, s);
+                    if (user.anno_stop)anno_stop(s);
                     break;
                 case KEY:
                     p_voice.key = s;
                     if (s.second || staff_tb[s.st].empty)break;
                     set_sscale(s.st);
+                    if (user.anno_start)anno_start(s);
                     draw_keysig(p_voice, x, s);
+                    if (user.anno_stop)anno_stop(s);
                     break;
                 case MREST:
                     set_scale(s);
@@ -3974,7 +4021,7 @@ function Abc(user) {
         }
     }
 
-    var defined_font, font_tb = {}, fid = 1, font_scale_tb = {
+    var defined_font = {}, font_tb = {}, fid = 1, font_scale_tb = {
         serif: 1.05,
         serifBold: 1.05,
         "sans-serif": 1.1,
@@ -3982,7 +4029,7 @@ function Abc(user) {
         Palatino: 1.1,
         Mono: 1.35
     }, lock = {};
-    var cfmt_init = {
+    var cfmt = {
         aligncomposer: 1,
         breaklimit: .7,
         breakoneoln: true,
@@ -4009,6 +4056,7 @@ function Abc(user) {
         parskipfac: .4,
         partsspace: .3 * CM,
         pagewidth: 21 * CM,
+        posit: {dyn: 0, gch: 0, gsd: 0, orn: 0, std: 0, voc: 0, vol: 0},
         rightmargin: .7 * IN,
         scale: .75,
         slurheight: 1,
@@ -4029,7 +4077,6 @@ function Abc(user) {
         writefields: "CMOPQTWw",
         wordsspace: 5
     };
-    var posit_init = {dyn: 0, gch: 0, gsd: 0, orn: 0, std: 0, voc: 0, vol: 0};
 
     function get_bool(param) {
         return !param.match(/^(0|n|f)/i)
@@ -4442,206 +4489,191 @@ function Abc(user) {
         return font
     }
 
-    function tune_selected(lines) {
-        var ln = parse.line.ln, line;
-        while (ln < lines.length) {
-            line = lines[ln];
-            if (parse.select.test(line))return true;
-            if (line.slice(0, 2) == "K:")break;
-            ln++
-        }
-        for (ln++; ln < lines.length; ln++) {
-            if (!lines[ln])break
-        }
-        parse.line.ln = ln;
-        return false
-    }
-
     var abc_utf = {
-        "`A": "Ã€",
-        "`E": "Ãˆ",
-        "`I": "ÃŒ",
-        "`O": "Ã’",
-        "`U": "Ã™",
-        "`a": "Ã ",
-        "`e": "Ã¨",
-        "`i": "Ã¬",
-        "`o": "Ã²",
-        "`u": "Ã¹",
-        "'A": "Ã",
-        "'E": "Ã‰",
-        "'I": "Ã",
-        "'O": "Ã“",
-        "'U": "Ãš",
-        "'Y": "Ã",
-        "'a": "Ã¡",
-        "'e": "Ã©",
-        "'i": "Ã­",
-        "'o": "Ã³",
-        "'u": "Ãº",
-        "'y": "Ã½",
-        "'S": "Åš",
-        "'Z": "Å¹",
-        "'s": "Å›",
-        "'z": "Åº",
-        "'R": "Å”",
-        "'L": "Ä¹",
-        "'C": "Ä†",
-        "'N": "Åƒ",
-        "'r": "Å•",
-        "'l": "Äº",
-        "'c": "Ä‡",
-        "'n": "Å„",
-        "^A": "Ã‚",
-        "^E": "ÃŠ",
-        "^I": "ÃŽ",
-        "^O": "Ã”",
-        "^U": "Ã›",
-        "^a": "Ã¢",
-        "^e": "Ãª",
-        "^i": "Ã®",
-        "^o": "Ã´",
-        "^u": "Ã»",
-        "^H": "Ä¤",
-        "^J": "Ä´",
-        "^h": "Ä¥",
-        "^j": "Äµ",
-        "^C": "Äˆ",
-        "^G": "Äœ",
-        "^S": "Åœ",
-        "^c": "Ä‰",
-        "^g": "Ä",
-        "^s": "Å",
-        ",C": "Ã‡",
-        ",c": "Ã§",
-        ",S": "Åž",
-        ",s": "ÅŸ",
-        ",T": "Å¢",
-        ",t": "Å£",
-        ",R": "Å–",
-        ",L": "Ä»",
-        ",G": "Ä¢",
-        ",r": "Å—",
-        ",l": "Ä¼",
-        ",g": "Ä£",
-        ",N": "Å…",
-        ",K": "Ä¶",
-        ",n": "Å†",
-        ",k": "Ä·",
-        '"A': "Ã„",
-        '"E': "Ã‹",
-        '"I': "Ã",
-        '"O': "Ã–",
-        '"U': "Ãœ",
-        '"Y': "Å¸",
-        '"a': "Ã¤",
-        '"e': "Ã«",
-        '"i': "Ã¯",
-        '"o': "Ã¶",
-        '"u': "Ã¼",
-        '"y': "Ã¿",
-        "~A": "Ãƒ",
-        "~N": "Ã‘",
-        "~O": "Ã•",
-        "~a": "Ã£",
-        "~n": "Ã±",
-        "~o": "Ãµ",
-        "~I": "Ä¨",
-        "~i": "Ä©",
-        "~U": "Å¨",
-        "~u": "Å©",
-        oA: "Ã…",
-        oa: "Ã¥",
-        oU: "Å®",
-        ou: "Å¯",
-        "=A": "Ä€",
-        "=D": "Ä",
-        "=E": "Ä’",
-        "=H": "Ä¦",
-        "=I": "Äª",
-        "=O": "ÅŒ",
-        "=T": "Å¦",
-        "=U": "Åª",
-        "=a": "Ä",
-        "=d": "Ä‘",
-        "=e": "Ä“",
-        "=h": "Ä§",
-        "=i": "Ä«",
-        "=o": "Å",
-        "=t": "Å§",
-        "=u": "Å«",
-        "/O": "Ã˜",
-        "/o": "Ã¸",
-        "/D": "Ä",
-        "/d": "Ä‘",
-        "/L": "Å",
-        "/l": "Å‚",
-        ";A": "Ä„",
-        ";E": "Ä˜",
-        ";I": "Ä®",
-        ";U": "Å²",
-        ";a": "Ä…",
-        ";e": "Ä™",
-        ";i": "Ä¯",
-        ";u": "Å³",
-        vL: "Ä½",
-        vS: "Å ",
-        vT: "Å¤",
-        vZ: "Å½",
-        vl: "Ä¾",
-        vs: "Å¡",
-        vt: "Å¥",
-        vz: "Å¾",
-        vC: "ÄŒ",
-        vE: "Äš",
-        vD: "ÄŽ",
-        vN: "Å‡",
-        vR: "Å˜",
-        vc: "Ä",
-        ve: "Ä›",
-        vd: "Ä",
-        vn: "Åˆ",
-        vr: "Å™",
-        uA: "Ä‚",
-        ua: "Äƒ",
-        uE: "Ä”",
-        ue: "Ä•",
-        uG: "Äž",
-        ug: "ÄŸ",
-        uI: "Ä¬",
-        ui: "Ä­",
-        uO: "ÅŽ",
-        uo: "Å",
-        uU: "Å¬",
-        uu: "Å­",
-        ":O": "Å",
-        ":U": "Å°",
-        ":o": "Å‘",
-        ":u": "Å±",
-        ".Z": "Å»",
-        ".z": "Å¼",
-        ".I": "Ä°",
-        ".i": "Ä±",
-        ".C": "ÄŠ",
-        ".c": "Ä‹",
-        ".G": "Ä ",
-        ".g": "Ä¡",
-        ".E": "Ä–",
-        ".e": "Ä—",
-        AA: "Ã…",
-        aa: "Ã¥",
-        AE: "Ã†",
-        ae: "Ã¦",
-        cc: "Ã§",
-        cC: "Ã‡",
-        DH: "Ã",
-        dh: "Ã°",
-        ng: "Å‹",
-        OE: "Å’",
-        oe: "Å“",
-        ss: "ÃŸ",
-        TH: "Ãž",
-        th: "Ã¾"
+        "`A": "À",
+        "`E": "È",
+        "`I": "Ì",
+        "`O": "Ò",
+        "`U": "Ù",
+        "`a": "à",
+        "`e": "è",
+        "`i": "ì",
+        "`o": "ò",
+        "`u": "ù",
+        "'A": "Á",
+        "'E": "É",
+        "'I": "Í",
+        "'O": "Ó",
+        "'U": "Ú",
+        "'Y": "Ý",
+        "'a": "á",
+        "'e": "é",
+        "'i": "í",
+        "'o": "ó",
+        "'u": "ú",
+        "'y": "ý",
+        "'S": "Ś",
+        "'Z": "Ź",
+        "'s": "ś",
+        "'z": "ź",
+        "'R": "Ŕ",
+        "'L": "Ĺ",
+        "'C": "Ć",
+        "'N": "Ń",
+        "'r": "ŕ",
+        "'l": "ĺ",
+        "'c": "ć",
+        "'n": "ń",
+        "^A": "Â",
+        "^E": "Ê",
+        "^I": "Î",
+        "^O": "Ô",
+        "^U": "Û",
+        "^a": "â",
+        "^e": "ê",
+        "^i": "î",
+        "^o": "ô",
+        "^u": "û",
+        "^H": "Ĥ",
+        "^J": "Ĵ",
+        "^h": "ĥ",
+        "^j": "ĵ",
+        "^C": "Ĉ",
+        "^G": "Ĝ",
+        "^S": "Ŝ",
+        "^c": "ĉ",
+        "^g": "ĝ",
+        "^s": "ŝ",
+        ",C": "Ç",
+        ",c": "ç",
+        ",S": "Ş",
+        ",s": "ş",
+        ",T": "Ţ",
+        ",t": "ţ",
+        ",R": "Ŗ",
+        ",L": "Ļ",
+        ",G": "Ģ",
+        ",r": "ŗ",
+        ",l": "ļ",
+        ",g": "ģ",
+        ",N": "Ņ",
+        ",K": "Ķ",
+        ",n": "ņ",
+        ",k": "ķ",
+        '"A': "Ä",
+        '"E': "Ë",
+        '"I': "Ï",
+        '"O': "Ö",
+        '"U': "Ü",
+        '"Y': "Ÿ",
+        '"a': "ä",
+        '"e': "ë",
+        '"i': "ï",
+        '"o': "ö",
+        '"u': "ü",
+        '"y': "ÿ",
+        "~A": "Ã",
+        "~N": "Ñ",
+        "~O": "Õ",
+        "~a": "ã",
+        "~n": "ñ",
+        "~o": "õ",
+        "~I": "Ĩ",
+        "~i": "ĩ",
+        "~U": "Ũ",
+        "~u": "ũ",
+        oA: "Å",
+        oa: "å",
+        oU: "Ů",
+        ou: "ů",
+        "=A": "Ā",
+        "=D": "Đ",
+        "=E": "Ē",
+        "=H": "Ħ",
+        "=I": "Ī",
+        "=O": "Ō",
+        "=T": "Ŧ",
+        "=U": "Ū",
+        "=a": "ā",
+        "=d": "đ",
+        "=e": "ē",
+        "=h": "ħ",
+        "=i": "ī",
+        "=o": "ō",
+        "=t": "ŧ",
+        "=u": "ū",
+        "/O": "Ø",
+        "/o": "ø",
+        "/D": "Đ",
+        "/d": "đ",
+        "/L": "Ł",
+        "/l": "ł",
+        ";A": "Ą",
+        ";E": "Ę",
+        ";I": "Į",
+        ";U": "Ų",
+        ";a": "ą",
+        ";e": "ę",
+        ";i": "į",
+        ";u": "ų",
+        vL: "Ľ",
+        vS: "Š",
+        vT: "Ť",
+        vZ: "Ž",
+        vl: "ľ",
+        vs: "š",
+        vt: "ť",
+        vz: "ž",
+        vC: "Č",
+        vE: "Ě",
+        vD: "Ď",
+        vN: "Ň",
+        vR: "Ř",
+        vc: "č",
+        ve: "ě",
+        vd: "ď",
+        vn: "ň",
+        vr: "ř",
+        uA: "Ă",
+        ua: "ă",
+        uE: "Ĕ",
+        ue: "ĕ",
+        uG: "Ğ",
+        ug: "ğ",
+        uI: "Ĭ",
+        ui: "ĭ",
+        uO: "Ŏ",
+        uo: "ŏ",
+        uU: "Ŭ",
+        uu: "ŭ",
+        ":O": "Ő",
+        ":U": "Ű",
+        ":o": "ő",
+        ":u": "ű",
+        ".Z": "Ż",
+        ".z": "ż",
+        ".I": "İ",
+        ".i": "ı",
+        ".C": "Ċ",
+        ".c": "ċ",
+        ".G": "Ġ",
+        ".g": "ġ",
+        ".E": "Ė",
+        ".e": "ė",
+        AA: "Å",
+        aa: "å",
+        AE: "Æ",
+        ae: "æ",
+        cc: "ç",
+        cC: "Ç",
+        DH: "Ð",
+        dh: "ð",
+        ng: "ŋ",
+        OE: "Œ",
+        oe: "œ",
+        ss: "ß",
+        TH: "Þ",
+        th: "þ"
     };
 
     function cnv_escape(src) {
@@ -4658,15 +4690,15 @@ function Abc(user) {
                     if (src[i + 1] == "0") {
                         switch (src[i + 2]) {
                             case"1":
-                                dst += "â™¯";
+                                dst += "♯";
                                 j = i + 3;
                                 continue;
                             case"2":
-                                dst += "â™­";
+                                dst += "♭";
                                 j = i + 3;
                                 continue;
                             case"3":
-                                dst += "â™®";
+                                dst += "♮";
                                 j = i + 3;
                                 continue;
                             case"4":
@@ -4718,69 +4750,105 @@ function Abc(user) {
         return dst + src.slice(j)
     }
 
-    function uncomment(src, do_escape) {
-        var i, j, c, l;
-        if (do_escape && src.indexOf("\\") >= 0)src = cnv_escape(src);
-        l = src.length;
-        for (i = 0; i < l; i++) {
-            c = src[i];
-            switch (c) {
-                case"\\":
-                    i++;
-                    continue;
-                case"%":
-                    return src.slice(0, i).replace(/\s+$/, "");
-                case'"':
-                    break;
-                default:
-                    continue
-            }
-            j = i + 1;
-            for (; ;) {
-                j = src.indexOf('"', j);
-                if (j < 0)break;
-                if (src[j - 1] != "\\")break
-            }
-            if (j < 0)break;
-            i = j
-        }
-        src = src.replace(/\s+$/, "");
-        return src.replace(/\\%/g, "%")
-    }
+    var include = 2;
 
-    var include;
-
-    function abc_include(fname) {
+    function do_include(fname) {
         var file, parse_sav;
         if (!user.read_file) {
-            parse.line.error("No read_file support");
+            syntax(1, "No read_file support");
             return
         }
-        if (include) {
-            parse.line.error("Too many include levels");
+        if (include <= 0) {
+            syntax(1, "Too many include levels");
             return
         }
-        include = true;
+        include--;
         file = user.read_file(fname);
         if (!file) {
             error(1, undefined, "Cannot read file '" + fname + "'");
             return
         }
         parse_sav = clone(parse);
-        abc_fe(fname, file);
+        tosvg(fname, file);
         parse = parse_sav;
-        include = false
+        include++
     }
 
-    function abc_fe(fname, file) {
-        var cfmt_sav, info_sav, char_tb_sav, glovar_sav, last_info, line_2c, c, opt, text, a, end, txt_add = "\n", lines = file.split("\n"), nlines = lines.length, line = new scanBuf, pscom;
-        parse.line = line;
-        line.ctx = {fname: fname};
+    function tosvg(in_fname, file) {
+        var i, c, bol, eol, boc, eoc, end, line0, line1, eof = file.length, cfmt_sav, info_sav, char_tb_sav, glovar_sav, last_info, opt, text, a, b, txt_add = "\n", pscom;
+
+        function set_boc() {
+            boc = bol;
+            while (boc < eol) {
+                c = file[boc];
+                if (c != " " && c != "	")break;
+                boc++
+            }
+        }
+
+        function set_eoc() {
+            eoc = eol - 1;
+            while (eoc > bol) {
+                c = file[eoc];
+                if (c != " " && c != "	")break;
+                eoc--
+            }
+            eoc++
+        }
+
+        function tune_selected() {
+            while (1) {
+                if (parse.select.test(file.slice(bol, eol)))return true;
+                if (file[bol] == "K" && file[bol + 1] == ":")break;
+                bol = eol + 1;
+                eol = file.indexOf("\n", bol);
+                if (eol < 0) {
+                    eol = file.length - 1;
+                    parse.istart = bol;
+                    syntax(1, "No K: in tune");
+                    return false
+                }
+            }
+            eol = file.indexOf("\n\n", bol);
+            if (eol < 0)eol = file.length - 1; else eol++;
+            return false
+        }
+
+        function uncomment(src, do_escape) {
+            var i, j, c, l;
+            if (do_escape && src.indexOf("\\") >= 0)src = cnv_escape(src);
+            l = src.length;
+            for (i = 0; i < l; i++) {
+                c = src[i];
+                switch (c) {
+                    case"\\":
+                        i++;
+                        continue;
+                    case"%":
+                        return src.slice(0, i).replace(/\s+$/, "");
+                    case'"':
+                        break;
+                    default:
+                        continue
+                }
+                j = i + 1;
+                for (; ;) {
+                    j = src.indexOf('"', j);
+                    if (j < 0)break;
+                    if (src[j - 1] != "\\")break
+                }
+                if (j < 0)break;
+                i = j
+            }
+            src = src.replace(/\s+$/, "");
+            return src.replace(/\\%/g, "%")
+        }
+
         function end_tune() {
             gen_ly(false);
             put_history();
-            buffer_eob();
-            abc_flush();
+            blk_out();
+            blk_flush();
             parse.state = 0;
             cfmt = cfmt_sav;
             info = info_sav;
@@ -4789,33 +4857,46 @@ function Abc(user) {
             init_tune()
         }
 
-        for (line.ln = 0; line.ln < nlines; line.ln++) {
-            line.buffer = lines[line.ln];
-            line.index = 0;
-            if (!line.buffer) {
+        parse.file = file;
+        parse.ctx = {fname: in_fname};
+        line = new scanBuf;
+        parse.line = line;
+        line.buffer = file;
+        line.index = 0;
+        bol = 0;
+        for (bol = 0; ; bol = eol + 1) {
+            if (bol >= eof)break;
+            eol = file.indexOf("\n", bol);
+            if (eol < 0)eol = eof;
+            if (eol == bol) {
                 if (parse.state == 1) {
-                    line.error("Empty line in tune header - ignored")
+                    parse.istart = bol;
+                    syntax(1, "Empty line in tune header - ignored")
                 } else if (parse.state >= 2)end_tune();
                 continue
             }
-            line_2c = line.buffer.slice(0, 2);
-            c = line_2c[0];
-            if (c == "%") {
-                if (parse.prefix.indexOf(line_2c[1]) < 0)continue;
-                if (line.buffer.slice(2, 6) == "abc ") {
-                    line.buffer = line.buffer.slice(6);
-                    line_2c = line.buffer.slice(0, 2);
-                    c = line_2c[0]
+            parse.istart = parse.bol = bol;
+            parse.iend = parse.eol = eol;
+            line0 = file[bol];
+            line1 = file[bol + 1];
+            if (line0 == "%") {
+                if (parse.prefix.indexOf(line1) < 0)continue;
+                if (file[bol + 2] == "a" && file[bol + 3] == "b" && file[bol + 4] == "c" && file[bol + 5] == " ") {
+                    bol += 6;
+                    line0 = file[bol];
+                    line1 = file[bol + 1]
                 } else {
                     pscom = true
                 }
-            } else if (line_2c == "I:") {
+            } else if (line0 == "I" && line1 == ":") {
                 pscom = true
             }
             if (pscom) {
                 pscom = false;
-                text = line.buffer.slice(2).trim();
-                text = text.trim();
+                bol += 2;
+                set_boc();
+                set_eoc();
+                text = file.slice(boc, eoc);
                 if (!text || text[0] == "%")continue;
                 a = text.split(/\s+/, 2);
                 if (!a[0])a.shift();
@@ -4828,36 +4909,42 @@ function Abc(user) {
                         if (!ext)continue;
                         switch (ext[1]) {
                             case"abc":
-                                abc_include(a[1]);
-                                continue
+                                do_include(a[1]);
+                                break
                         }
                         continue
                 }
-                if (a[0].slice(0, 5) == "begin") {
-                    end = line_2c + "end" + a[0].slice(5);
-                    while (1) {
-                        if (++line.ln >= lines.length)break;
-                        if (lines[line.ln].indexOf(end) == 0)break;
-                        text += "\n";
-                        line_2c = lines[line.ln].slice(0, 2);
-                        if (line_2c[0] == "%" && parse.prefix.indexOf(line_2c[1]) >= 0)text += lines[line.ln].slice(2); else text += lines[line.ln]
+                b = a[0].match(/begin(.*)/);
+                if (b) {
+                    end = "\n" + line0 + line1 + "end" + b[1];
+                    i = file.indexOf(end, eol);
+                    if (i < 0) {
+                        syntax(1, "No %%" + end.splice(1) + " after %%" + b[0]);
+                        eol = file.length - 1;
+                        continue
+                    } else {
+                        do_begin_end(b[1], a[1], eol + 1, i);
+                        eol = file.indexOf("\n", i + 6)
                     }
-                    if (line.ln == lines.length)line.error("No %%end after %%begin"); else do_begin_end(text);
+                    if (eol < 0)eol = file.length - 1;
                     continue
                 }
                 switch (a[0]) {
                     case"select":
                         if (parse.state != 0) {
-                            line.error("%%voice ignored");
+                            syntax(1, "%%voice ignored");
                             continue
                         }
                         var select = uncomment(text.slice(7).trim(), false);
                         if (select[0] == '"')select = select.slice(1, -1);
                         parse.select = new RegExp(select);
                         continue;
+                    case"tune":
+                        syntax(1, "%%tune not treated yet");
+                        continue;
                     case"voice":
                         if (parse.state != 0) {
-                            line.error("%%voice ignored");
+                            syntax(1, "%%voice ignored");
                             continue
                         }
                         text = uncomment(text.slice(6).trim(), false);
@@ -4866,6 +4953,27 @@ function Abc(user) {
                             continue
                         }
                         if (text == "end")continue;
+                        bol = ++eol;
+                        while (1) {
+                            eol = file.indexOf("\n", eol);
+                            if (eol < 0) {
+                                eol = file.length - 1;
+                                break
+                            }
+                            if (file[eol + 1] != "%" || file[eol + 2] != line1)break;
+                            a = file.slice(eol + 3, eol + 3 + 5);
+                            switch (a[0]) {
+                                case"score":
+                                case"stave":
+                                case"tune ":
+                                case"voice":
+                                    break;
+                                default:
+                                    eol++;
+                                    continue
+                            }
+                            break
+                        }
                         if (parse.cur_tune_opts) {
                             if (!parse.cur_tune_opts.voice_opts)parse.cur_tune_opts.voice_opts = {};
                             opt = parse.cur_tune_opts.voice_opts
@@ -4873,44 +4981,38 @@ function Abc(user) {
                             if (!parse.voice_opts)parse.voice_opts = {};
                             opt = parse.voice_opts
                         }
-                        opt[text] = [];
-                        for (line.ln++; line.ln < lines.length; line.ln++) {
-                            if (lines[line.ln].slice(0, 2) != line_2c || lines[line.ln].slice(2, 8) == "score " || lines[line.ln].slice(2, 9) == "staves " || lines[line.ln].slice(2, 7) == "tune " || lines[line.ln].slice(2, 8) == "voice ")break;
-                            opt[text].push(uncomment(lines[line.ln].slice(2), true))
-                        }
+                        opt[text] = file.slice(bol, eol);
                         continue
                 }
                 do_pscom(uncomment(text.trim(), true));
                 continue
             }
-            if (line_2c[1] != ":") {
+            if (line1 != ":") {
                 last_info = undefined;
                 if (parse.state != 3) {
                     if (parse.state != 2)continue;
                     goto_tune()
                 }
-                line.buffer = uncomment(line.buffer, true);
-                if (line.buffer)parse_music_line();
+                parse_music_line();
                 continue
             }
-            text = line.buffer.slice(2);
+            text = file.slice(bol + 2, eol);
             text = uncomment(text.trim(), true);
-            if (line_2c == "+:") {
+            if (line0 == "+" && line1 == ":") {
                 if (!last_info) {
-                    line.error("No previous info field");
+                    syntax(1, "No previous info field");
                     continue
                 }
                 txt_add = " ";
-                line_2c = last_info;
-                c = line_2c[0]
+                line0 = last_info
             }
-            switch (c) {
+            switch (line0) {
                 case"X":
                     if (parse.state != 0) {
-                        line.error("X: found in tune - ignored");
+                        syntax(1, "X: found in tune - ignored");
                         continue
                     }
-                    if (parse.select && !tune_selected(lines))continue;
+                    if (parse.select && !tune_selected())continue;
                     cfmt_sav = clone(cfmt);
                     cfmt.posit = clone(cfmt.posit);
                     info_sav = clone(info);
@@ -4926,14 +5028,15 @@ function Abc(user) {
                         continue
                     }
                     gen_ly(true);
-                    write_title(text, true);
                     reset_gen();
                     parse.state = 2;
                     continue;
                 case"K":
                     if (parse.state == 0)continue;
                     if (parse.state == 1)info.K = text; else if (parse.state == 2)goto_tune();
-                    do_info(c, text);
+                    parse.line.buffer = text;
+                    parse.line.index = 0;
+                    do_info(line0, text);
                     if (parse.state != 1)continue;
                     parse.state = 2;
                     if (!glovar.ulen)glovar.ulen = BASE_LEN / 8;
@@ -4950,7 +5053,7 @@ function Abc(user) {
                     get_lyrics(text, txt_add == " ");
                     if (text[text.length - 1] == "\\") {
                         txt_add = " ";
-                        last_info = line_2c;
+                        last_info = line0;
                         continue
                     }
                     break;
@@ -4959,30 +5062,31 @@ function Abc(user) {
                         if (parse.state != 2)continue;
                         goto_tune()
                     }
-                    line.buffer = uncomment(line.buffer, true);
                     parse_music_line();
                     continue;
                 default:
-                    if ("ABCDFGHOSZ".indexOf(c) >= 0) {
+                    if ("ABCDFGHOSZ".indexOf(line0) >= 0) {
                         if (parse.state >= 2) {
-                            line.error(line_2c + " in tune - ignored");
+                            syntax(1, line0 + ": in tune - ignored");
                             continue
                         }
-                        if (!info[c])info[c] = text; else info[c] += txt_add + text;
+                        if (!info[line0])info[line0] = text; else info[line0] += txt_add + text;
                         break
                     }
-                    do_info(c, text);
+                    parse.line.buffer = text;
+                    parse.line.index = 0;
+                    do_info(line0, text);
                     continue
             }
             txt_add = "\n";
-            last_info = line_2c
+            last_info = line0
         }
         if (parse.state >= 2)end_tune();
-        abc_flush();
+        blk_flush();
         parse.state = 0
     }
 
-    Abc.prototype.abc_fe = abc_fe;
+    Abc.prototype.tosvg = tosvg;
     var gene, staff_tb, tsnext, realwidth, insert_meter, beta_last;
     var space_tb = [7, 10, 14.15, 20, 28.3, 40, 56.6, 80, 113, 150], smallest_duration;
     var dx_tb = {full: 9, empty: 10, oval: 12, square: 15.3};
@@ -6351,8 +6455,7 @@ function Abc(user) {
                 if (sy.voices[v].sep)sy.staves[st].sep = sy.voices[v].sep;
                 if (sy.voices[v].maxsep)sy.staves[st].maxsep = sy.voices[v].maxsep
             }
-            s = p_voice.clef;
-            if (!sy.voices[v].second && !s.clef_auto)staff_clef[st].autoclef = false
+            if (!sy.voices[v].second && !p_voice.clef.clef_auto)staff_clef[st].autoclef = false
         }
         for (v = 0; v < voice_tb.length; v++) {
             p_voice = voice_tb[v];
@@ -6710,17 +6813,7 @@ function Abc(user) {
     }
 
     function new_sym(type, p_voice, last_s) {
-        s = {
-            type: type,
-            ctx: last_s.ctx,
-            linenum: last_s.linenum,
-            colnum: last_s.colnum,
-            colend: last_s.colend,
-            v: p_voice.v,
-            st: p_voice.st,
-            time: last_s.time,
-            next: p_voice.last_sym.next
-        };
+        s = {type: type, ctx: last_s.ctx, v: p_voice.v, st: p_voice.st, time: last_s.time, next: p_voice.last_sym.next};
         if (s.next)s.next.prev = s;
         p_voice.last_sym.next = s;
         s.prev = p_voice.last_sym;
@@ -6800,6 +6893,8 @@ function Abc(user) {
                 s.key_sf = p_voice.key.key_sf;
                 s.key_old_sf = p_voice.key.key_old_sf;
                 s.key_a_acc = p_voice.key.key_a_acc;
+                s.istart = p_voice.key.istart;
+                s.iend = p_voice.key.iend;
                 if (p_voice.key.bagpipe) {
                     s.bagpipe = p_voice.key.bagpipe;
                     if (s.bagpipe == "p")s.key_old_sf = 3
@@ -6816,6 +6911,8 @@ function Abc(user) {
                     continue
                 }
                 s = new_sym(METER, p_voice, last_s);
+                s.istart = p_voice.meter.istart;
+                s.iend = p_voice.meter.iend;
                 s.wmeasure = p_voice.meter.wmeasure;
                 s.a_meter = p_voice.meter.a_meter
             }
@@ -6839,6 +6936,8 @@ function Abc(user) {
             }
             if (i >= 0) {
                 s = new_sym(BAR, p_voice, last_s);
+                s.istart = p_voice.bar_start.istart;
+                s.iend = p_voice.bar_start.iend;
                 s.bar_type = p_voice.bar_start.bar_type;
                 if (p_voice.bar_start.invisible)s.invisible = true;
                 if (p_voice.bar_start.norepbra)s.norepbra = true;
@@ -7920,7 +8019,7 @@ function Abc(user) {
             tsfirst = tsnext;
             gen_init();
             if (!tsfirst)break;
-            buffer_eob();
+            blk_out();
             new_music_line()
         }
     }
@@ -7932,7 +8031,14 @@ function Abc(user) {
     var gchord, a_dcn, multicol, not_ascii = "Not an ASCII character";
 
     function new_clef(clef_def) {
-        var s = {type: CLEF, colnum: parse.line.index, clef_line: 2, clef_type: "t"}, i = 1;
+        var s = {
+            type: CLEF,
+            ctx: parse.ctx,
+            istart: parse.istart,
+            iend: parse.iend,
+            clef_line: 2,
+            clef_type: "t"
+        }, i = 1;
         switch (clef_def[0]) {
             case'"':
                 i = clef_def.indexOf('"');
@@ -8034,8 +8140,7 @@ function Abc(user) {
         tmp = new scanBuf;
         tmp.buffer = param;
         tmp.index = 0;
-        tmp.ctx = parse.line.ctx;
-        tmp.ln = parse.line.ln;
+        tmp.ctx = parse.ctx;
         for (i = 0; i < 2; i++) {
             note = parse_basic_note(tmp, BASE_LEN);
             if (!note) {
@@ -8176,7 +8281,7 @@ function Abc(user) {
                 return;
             case"center":
                 if (parse.state >= 2)gen_ly(true);
-                write_text(param, "c");
+                write_text(cnv_escape(param), "c");
                 return;
             case"clef":
                 if (parse.state >= 2) {
@@ -8205,7 +8310,7 @@ function Abc(user) {
                 generate();
                 switch (param) {
                     case"start":
-                        buffer_eob();
+                        blk_out();
                         multicol = {
                             posy: posy,
                             maxy: posy,
@@ -8235,7 +8340,7 @@ function Abc(user) {
                         cfmt.rightmargin = multicol.rmarg;
                         if (posy < multicol.maxy)posy = multicol.maxy;
                         multicol = undefined;
-                        buffer_eob();
+                        blk_out();
                         break;
                     default:
                         parse.line.error("Unknown keyword '" + param + "' in %%multicol");
@@ -8300,7 +8405,7 @@ function Abc(user) {
                 out_sxsy((lwidth - len) / 2 / cfmt.scale, " ", 0);
                 output.push("h" + (len / cfmt.scale).toFixed(2) + '"/>\n');
                 vskip(h2);
-                buffer_eob();
+                blk_out();
                 return;
             case"setbarnb":
                 val = parseInt(param);
@@ -8381,7 +8486,7 @@ function Abc(user) {
                 break;
             case"text":
                 if (parse.state >= 2)gen_ly(true);
-                write_text(param, cfmt.textoption);
+                write_text(cnv_escape(param), cfmt.textoption);
                 return;
             case"tablature":
                 return;
@@ -8449,7 +8554,7 @@ function Abc(user) {
                     return
                 }
                 vskip(val);
-                buffer_eob();
+                blk_out();
                 return;
             case"newpage":
             case"leftmargin":
@@ -8458,7 +8563,7 @@ function Abc(user) {
                 if (parse.state == 2)goto_tune();
                 if (parse.state == 3) {
                     generate();
-                    buffer_eob()
+                    blk_out()
                 }
                 if (cmd == "newpage") {
                     block.newpage = true;
@@ -8471,21 +8576,21 @@ function Abc(user) {
         set_format(cmd, param, lock)
     }
 
-    function do_begin_end(text) {
-        var action, i = text.indexOf("\n"), j, a = text.slice(0, i).split(/\s+/, 3);
-        switch (a[0]) {
+    function do_begin_end(type, opt, istart, iend) {
+        var i, j, action, text, file = parse.file;
+        switch (type) {
             default:
-            case"beginps":
+            case"ps":
                 if (wpsobj) {
-                    wpsobj.parse(text.slice(i + 1));
+                    wpsobj.parse(file.slice(istart, iend));
                     output.push(svgbuf)
                 }
                 break;
-            case"beginjs":
-                eval(text.slice(i + 1));
+            case"js":
+                eval(file.slice(istart, iend));
                 break;
-            case"beginsvg":
-                text = text.slice(i + 1);
+            case"svg":
+                text = file.slice(istart, iend);
                 while (1) {
                     i = text.indexOf('<style type="text/css">\n');
                     if (i >= 0) {
@@ -8504,10 +8609,10 @@ function Abc(user) {
                     if (i < 0)break
                 }
                 break;
-            case"begintext":
-                action = get_textoption(a[1]);
+            case"text":
+                action = get_textoption(opt);
                 gen_ly(true);
-                write_text(text.slice(i + 1), action);
+                write_text(file.slice(istart, iend), action);
                 break
         }
     }
@@ -8557,7 +8662,7 @@ function Abc(user) {
     }
 
     function new_key(param) {
-        var i, clef, key_end, c, tmp, s = {type: KEY, colnum: parse.line.index};
+        var i, clef, key_end, c, tmp, s = {type: KEY, ctx: parse.ctx, istart: parse.istart, iend: parse.iend};
         if (!param.length)return [s, null];
         i = 1;
         switch (param[0]) {
@@ -8673,8 +8778,7 @@ function Abc(user) {
                 tmp = new scanBuf;
                 tmp.buffer = param;
                 tmp.index = 0;
-                tmp.ctx = parse.line.ctx;
-                tmp.ln = parse.line.ln;
+                tmp.ctx = parse.ctx;
                 do {
                     var note = parse_basic_note(tmp, BASE_LEN);
                     if (!note)return [s, null];
@@ -8690,14 +8794,15 @@ function Abc(user) {
             }
         }
         if (!param)return [s, null];
-        var clef = parse_kv_args(info_split(param));
-        return [s, clef]
+        return [s, parse_kv_args(info_split(param))]
     }
 
     function new_meter(text) {
         var s = {
             type: METER,
-            colnum: parse.line.index,
+            ctx: parse.ctx,
+            istart: parse.istart,
+            iend: parse.iend,
             a_meter: []
         }, meter = {}, value, v, m1 = 0, m2, i = 0, j, wmeasure = 0, p = text, in_parenth = false;
         if (p.indexOf("none") == 0) {
@@ -8809,7 +8914,7 @@ function Abc(user) {
             }
         } else {
             curvoice.wmeasure = wmeasure;
-            if (is_tune_sig()) {
+            if (is_voice_sig()) {
                 curvoice.meter = s;
                 reset_gen()
             } else {
@@ -8819,7 +8924,7 @@ function Abc(user) {
     }
 
     function new_tempo(text) {
-        var i = 0, j, c, nd, tmp, s = {type: TEMPO, colnum: parse.line.index};
+        var i = 0, j, c, nd, tmp, s = {type: TEMPO, ctx: parse.ctx, istart: parse.istrt, iend: parse.iend};
         if (cfmt.writefields.indexOf("Q") < 0)return;
         if (text[0] == '"') {
             i = text.indexOf('"', 1);
@@ -8878,7 +8983,6 @@ function Abc(user) {
     }
 
     function do_info(info_type, text) {
-        var line = parse.line;
         switch (info_type) {
             case"I":
                 do_pscom(text);
@@ -8909,7 +9013,7 @@ function Abc(user) {
                 }
                 if (parse.state == 2)goto_tune();
                 if (cfmt.writefields.indexOf("P") < 0)break;
-                var s = {type: PART, text: text};
+                var s = {type: PART, ctx: parse.ctx, istart: parse.istart, iend: parse.iend, text: text};
                 var p_voice = voice_tb[par_sy.top_voice];
                 if (curvoice.v != p_voice.v) {
                     var curvoice_sav = curvoice;
@@ -8978,14 +9082,14 @@ function Abc(user) {
     }
 
     function new_bar() {
-        var line = parse.line, s = {type: BAR, colnum: line.index, multi: 0}, s2, c, bar_type;
+        var line = parse.line, s = {type: BAR, ctx: parse.ctx, multi: 0}, s2, c, bar_type;
+        s.istart = parse.bol + line.index;
         if (vover && vover.bar)get_vover("|");
         if (glovar.new_nbar) {
             s.bar_num = glovar.new_nbar;
             delete glovar.new_nbar
         }
-        c = line.char();
-        bar_type = c;
+        bar_type = line.char();
         while (1) {
             c = line.next_char();
             switch (c) {
@@ -9003,6 +9107,7 @@ function Abc(user) {
             line.index--;
             c = "["
         }
+        s.iend = parse.bol + line.index;
         if (gchord) {
             gch_build(s);
             gchord = null
@@ -9033,6 +9138,7 @@ function Abc(user) {
                 if (c == "\\")c = line.next_char();
                 s.text += c
             }
+            s.text = cnv_escape(s.text)
         }
         if (curvoice.norepbra && s.text)s.norepbra = true;
         if (curvoice.ulen < 0)adjust_dur(s);
@@ -9062,26 +9168,22 @@ function Abc(user) {
         }
         s.bar_type = bar_type;
         if (!curvoice.lyric_restart)curvoice.lyric_restart = s;
-        s2 = null;
+        sym_link(s);
+        s.st = curvoice.st;
         if (s.text && !curvoice.norepbra && curvoice.st > 0 && !(par_sy.staves[curvoice.st - 1].flags & STOP_BAR)) {
             s2 = {
                 type: BAR,
                 ctx: s.ctx,
-                linenum: s.linenum,
-                colnum: s.colnum,
-                colend: s.colend,
+                istart: s.istart,
+                iend: s.iend,
                 bar_type: "[",
                 multi: 0,
                 invisible: true,
                 text: s.text
             };
-            delete s.text
-        }
-        sym_link(s);
-        s.st = curvoice.st;
-        if (s2) {
             sym_link(s2);
-            s2.st = curvoice.st
+            s2.st = curvoice.st;
+            delete s.text
         }
     }
 
@@ -9427,19 +9529,20 @@ function Abc(user) {
         return ti1
     }
 
-    function pitch_compare(n1, n2) {
-        return n1.pit - n2.pit
-    }
-
     function sort_pitch(s) {
+        function pitch_compare(n1, n2) {
+            return n1.pit - n2.pit
+        }
+
         s.notes = s.notes.sort(pitch_compare)
     }
 
-    function parse_note(grace, tuplet_fact) {
+    function new_note(grace, tuplet_fact) {
         var line = parse.line, note, s, in_chord, c, dcn, i, n, s2, sl1 = 0, a_dcn_sav = a_dcn;
         a_dcn = undefined;
         parse.stemless = false;
-        s = {type: NOTE, colnum: line.index, stem: 0, multi: 0, nhd: 0, xmx: 0};
+        s = {type: NOTE, ctx: parse.ctx, stem: 0, multi: 0, nhd: 0, xmx: 0};
+        s.istart = parse.bol + line.index;
         if (grace) {
             s.grace = true
         } else {
@@ -9459,7 +9562,7 @@ function Abc(user) {
                 s.dur = curvoice.wmeasure * s.nmes;
                 if (curvoice.second) {
                     curvoice.time += s.dur;
-                    return s
+                    return null
                 }
                 break;
             case"y":
@@ -9656,17 +9759,21 @@ function Abc(user) {
         if (curvoice.clef.clef_type == "p")s.perc = true;
         if (a_dcn_sav)deco_cnv(a_dcn_sav, s, s.prev);
         if (parse.stemless)s.stemless = true;
+        s.iend = parse.bol + line.index;
         return s
     }
 
     var nil = "0";
-    var char_tb = [nil, nil, nil, nil, nil, nil, nil, nil, nil, " ", "\n", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, " ", "!", '"', nil, "\n", nil, "&", nil, "(", ")", nil, nil, nil, "-", "!dot!", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, "|", nil, "<", "n", "<", nil, nil, "n", "n", "n", "n", "n", "n", "n", "!fermata!", "d", "d", "d", "!emphasis!", "!lowermordent!", "d", "!coda!", "!uppermordent!", "d", "d", "!segno!", "!trill!", "d", "d", "d", "n", "d", "n", "[", "\\", "|", "n", "n", "i", "n", "n", "n", "n", "n", "n", "n", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "!upbow!", "!downbow!", "d", "n", "n", "n", "{", "|", "}", "d", nil];
+    var char_tb = [nil, nil, nil, nil, nil, nil, nil, nil, nil, " ", "\n", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, " ", "!", '"', nil, "\n", nil, "&", nil, "(", ")", nil, nil, nil, "-", "!dot!", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, "|", nil, "<", "n", "<", nil, nil, "n", "n", "n", "n", "n", "n", "n", "!fermata!", "d", "d", "d", "!emphasis!", "!lowermordent!", "d", "!coda!", "!uppermordent!", "d", "d", "!segno!", "!trill!", "d", "d", "d", "n", "d", "n", "[", "\\", "|", "n", "n", "i", "n", "n", "n", "n", "n", "n", "n", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "d", "!upbow!", "!downbow!", "d", "n", "n", "n", "{", "|", "}", "!roll!", nil];
 
     function parse_music_line() {
-        var line = parse.line, slur_start = 0, s, grace, sappo, dcn, i, c, idx, type, last_note_sav, a_dcn_sav, s_tuplet, s_tuplet_up, tuplet_fact = 1, tuplet_fact_up;
+        var slur_start = 0, s, grace, sappo, dcn, i, c, idx, type, last_note_sav, a_dcn_sav, s_tuplet, s_tuplet_up, tuplet_fact = 1, tuplet_fact_up;
+        var line = parse.line;
+        line.buffer = parse.file.slice(parse.bol, parse.eol);
+        line.index = 0;
         while (1) {
             c = line.char();
-            if (!c)break;
+            if (!c || c == "%")break;
             if (c == ".") {
                 switch (line.buffer[line.index + 1]) {
                     case"(":
@@ -9813,6 +9920,7 @@ function Abc(user) {
                         continue
                     }
                     if (line.buffer[line.index + 2] == ":") {
+                        parse.istart = parse.bol + line.index;
                         line.index++;
                         i = line.buffer.indexOf("]", line.index);
                         if (i < 0) {
@@ -9820,13 +9928,14 @@ function Abc(user) {
                             break
                         }
                         var text = line.buffer.slice(line.index + 2, i).trim();
+                        line.index = i + 1;
+                        parse.iend = parse.bol + line.index;
                         var err = do_info(c_next, text);
                         if (err)line.error(err);
-                        line.index = i + 1;
                         continue
                     }
                 case"n":
-                    s = parse_note(grace, tuplet_fact);
+                    s = new_note(grace, tuplet_fact);
                     if (!s)continue;
                     if (s.type == NOTE) {
                         s.slur_start = slur_start;
@@ -9919,6 +10028,11 @@ function Abc(user) {
                     break;
                 case"\\":
                     if (line.index == line.buffer.length - 1)return;
+                    for (i = line.index + 1; ; i++) {
+                        c = line.buffer[i];
+                        if (!c || c == "%")return;
+                        if (c != " " && c != "	")break
+                    }
                 default:
                     line.error("Bad character '" + c + "'");
                     break
@@ -9939,8 +10053,8 @@ function Abc(user) {
     }
 
     function strw(str) {
-        var swfac = gene.curfont.swfac, w = 0, i, c, bin;
-        for (i = 0; i < str.length; i++) {
+        var swfac = gene.curfont.swfac, w = 0, i, c, n = str.length;
+        for (i = 0; i < n; i++) {
             c = str[i];
             if (c == "$") {
                 c = str[++i];
@@ -10090,7 +10204,7 @@ function Abc(user) {
                     }
                     if (i == j) {
                         vskip(parskip);
-                        buffer_eob();
+                        blk_out();
                         while (text[i + 1] == "\n") {
                             vskip(lineskip);
                             i++
@@ -10103,7 +10217,7 @@ function Abc(user) {
                     j = i + 1
                 }
                 vskip(parskip);
-                buffer_eob();
+                blk_out();
                 break;
             case"f":
             case"j":
@@ -10128,7 +10242,7 @@ function Abc(user) {
                         xy_str(0, 0, words.slice(k).join(" "))
                     }
                     vskip(parskip);
-                    buffer_eob();
+                    blk_out();
                     if (i < 0)break;
                     while (text[i + 2] == "\n") {
                         vskip(lineskip);
@@ -10162,7 +10276,7 @@ function Abc(user) {
 
     function put_words(words) {
         var p, i, j, n, nw, i2, i_end, have_text;
-        buffer_eob();
+        blk_out();
         set_font("words");
         var middle = .5 * (cfmt.pagewidth - cfmt.leftmargin - cfmt.rightmargin) / cfmt.scale;
         var max2col = (middle - 45) / (cwid("a") * gene.curfont.swfac);
@@ -10207,7 +10321,7 @@ function Abc(user) {
         vskip(cfmt.wordsspace);
         for (i = 0; i < i_end || i2 < nw; i++) {
             var desc = gene.curfont.size * .2;
-            if (i < i_end && words[i].length == 0)buffer_eob();
+            if (i < i_end && words[i].length == 0)blk_out();
             vskip(cfmt.lineskipfac * gene.curfont.size - desc);
             if (i < i_end)put_wline(words[i], 45, 0);
             if (i2 < nw) {
@@ -10251,7 +10365,7 @@ function Abc(user) {
                 xy_str(w, 0, str[j])
             }
             vskip(h * .3);
-            buffer_eob()
+            blk_out()
         }
     }
 
@@ -10488,7 +10602,12 @@ function Abc(user) {
         vskip(down2 + cfmt.musicspace)
     }
 
-    var posy, posx, defined_glyph, defs = "", stv_g = {scale: 1, dy: 0, st: -1, v: 0}, block = {};
+    var output = [], style = "\n.fill {fill: currentColor}\n.stroke {stroke: currentColor; fill: none; stroke-width: .7}", font_style = "", posy = 0, posx = cfmt.leftmargin / cfmt.scale, defined_glyph = {}, defs = "", stv_g = {
+        scale: 1,
+        dy: 0,
+        st: -1,
+        v: 0
+    }, block = {};
     var glyphs = {
         brace: '<path id="brace" class="fill" d="m-2.5 101\n	c-4.5 -4.6 -7.5 -12.2 -4.4 -26.8\n	3.5 -14.3 3.2 -21.7 -2.1 -24.2\n	7.4 2.4 7.3 14.2 3.5 29.5\n	-2.7 9.5 -1.5 16.2 3 21.5\n	M-2.5 1c-4.5 4.6 -7.5 12.2 -4.4 26.8\n	c3.5 14.3 3.2 21.7 -2.1 24.2\n	7.4 -2.4 7.3 -14.2 3.5 -29.5\n	-2.7 -9.5 -1.5 -16.2 3 -21.5"/>',
         utclef: '<path id="utclef" class="fill" d="m-50 -90\n	c-72 -41 -72 -158 52 -188\n	150 -10 220 188 90 256\n	-114 52 -275 0 -293 -136\n	-15 -181 93 -229 220 -334\n	88 -87 79 -133 62 -210\n	-51 33 -94 105 -89 186\n	17 267 36 374 49 574\n	6 96 -19 134 -77 135\n	-80 1 -126 -93 -61 -133\n	85 -41 133 101 31 105\n	23 17 92 37 90 -92\n	-10 -223 -39 -342 -50 -617\n	0 -90 0 -162 96 -232\n	56 72 63 230 22 289\n	-74 106 -257 168 -255 316\n	9 153 148 185 252 133\n	86 -65 29 -192 -80 -176\n	-71 12 -105 67 -59 124"/>',
@@ -10716,6 +10835,9 @@ function Abc(user) {
         }
     }
 
+    this.out_svg = function (str) {
+        output.push(str)
+    };
     function out_sx(x) {
         x = (x + posx) / stv_g.scale;
         output.push(x.toFixed(2))
@@ -10740,6 +10862,7 @@ function Abc(user) {
         output.push(x.toFixed(2) + sep + y.toFixed(2))
     }
 
+    Abc.prototype.out_sxsy = out_sxsy;
     function xypath(x, y, fill) {
         if (fill)output.push('<path class="fill" d="M'); else output.push('<path class="stroke" d="M');
         out_sxsy(x, " ", y);
@@ -11043,22 +11166,6 @@ function Abc(user) {
         posy += h
     }
 
-    function reset_svg() {
-        defined_glyph = {};
-        defined_font = {};
-        style = "\n.stroke {stroke-width: .7}\n.fill {fill: currentColor}\n.stroke {stroke: currentColor; fill: none}"
-    }
-
-
-    this.reset_svg = function(){reset_svg();}
-
-    function init_svg() {
-        output = [];
-        posy = 0;
-        posx = cfmt.leftmargin / cfmt.scale;
-        reset_svg()
-    }
-
     function svg_flush() {
         if (multicol || !output)return;
         var img_title;
@@ -11073,7 +11180,7 @@ function Abc(user) {
         }
         posy *= cfmt.scale;
         user.img_out('<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n	xmlns:xlink="http://www.w3.org/1999/xlink"\n	xml:space="preserve" color="black"\n	width="' + (cfmt.pagewidth / 72).toFixed(2) + 'in" height="' + (posy / 72).toFixed(2) + 'in" viewBox="0 0 ' + cfmt.pagewidth.toFixed(0) + " " + posy.toFixed(0) + '">\n<title>abc2svg - ' + img_title + "</title>");
-        if (style)user.img_out('<style type="text/css">' + style + "\n</style>");
+        if (style || font_style)user.img_out('<style type="text/css">' + style + font_style + "\n</style>");
         if (defs)user.img_out("<defs>" + defs + "\n</defs>");
         if (cfmt.bgcolor)user.img_out('<rect width="100%" height="100%" fill="' + cfmt.bgcolor + '"/>');
         if (cfmt.scale != 1)user.img_out('<g transform="scale(' + cfmt.scale.toFixed(2) + ')">');
@@ -11086,19 +11193,20 @@ function Abc(user) {
         output = [];
         if (cfmt.scale != 1)user.img_out("</g>");
         user.img_out("</svg>");
-        style = "";
-        defs = "";
-        if (cfmt.fullsvg)reset_svg();
+        font_style = "";
+        if (cfmt.fullsvg) {
+            defined_glyph = {};
+            defined_font = {}
+        } else {
+            style = "";
+            defs = ""
+        }
         posy = 0
     }
 
     var block_started;
 
-    this.bufffer_eob = function () {
-        buffer_eob()
-    }
-
-    function buffer_eob() {
+    function blk_out() {
         if (multicol || !output)return;
         if (user.page_format && !block.started) {
             block.started = true;
@@ -11110,17 +11218,17 @@ function Abc(user) {
             }
         }
         svg_flush()
-    };
-    this.abc_flush = function () {
-        abc_flush()
     }
-    function abc_flush() {
+
+    Abc.prototype.blk_out = blk_out;
+    function blk_flush() {
         if (block.started) {
             block.started = false;
             user.img_out("</div>")
         }
-    };
+    }
 
+    Abc.prototype.blk_flush = blk_flush;
     var par_sy, cur_sy, voice_tb, curvoice, staves_found, vover, tsfirst;
     var weight_tb = [2, 1, 6, 0, 3, 4, 5, 9, 9, 0, 9, 3, 0, 6, 0, 7];
 
@@ -11136,9 +11244,6 @@ function Abc(user) {
 
     function sym_link(s) {
         if (!curvoice.ignore) {
-            s.ctx = parse.line.ctx;
-            s.linenum = parse.line.ln;
-            s.colend = parse.line.index;
             parse.last_sym = s;
             if (!curvoice.last_sym && parse.voice_opts)voice_filter();
             s.prev = curvoice.last_sym;
@@ -11163,9 +11268,8 @@ function Abc(user) {
         if (!s2)s2 = s.next;
         if (s2) {
             s.ctx = s2.ctx;
-            s.linenum = s2.linenum;
-            s.colnum = s2.colnum;
-            s.colend = s2.colend
+            s.istart = s2.istart;
+            s.iend = s2.iend
         }
         return s
     }
@@ -11525,13 +11629,13 @@ function Abc(user) {
                 if (s2.new_sy)sy = sy.next;
                 switch (s2.type) {
                     case CLEF:
-                        voice_tb[s2.voice].clef = s2;
+                        voice_tb[s2.v].clef = s2;
                         break;
                     case KEY:
-                        voice_tb[s2.voice].key = clone(s2.as.u.key);
+                        voice_tb[s2.v].key = clone(s2.as.u.key);
                         break;
                     case METER:
-                        voice_tb[s2.voice].meter = clone(s2.as.u.meter);
+                        voice_tb[s2.v].meter = clone(s2.as.u.meter);
                         break
                 }
             }
@@ -11558,7 +11662,7 @@ function Abc(user) {
         for (v = 0; v < voice_tb.length; v++) {
             p_voice = voice_tb[v];
             for (s2 = s.ts_prev; s2; s2 = s2.ts_prev) {
-                if (s2.voice == v) {
+                if (s2.v == v) {
                     delete s2.next;
                     break
                 }
@@ -11695,6 +11799,7 @@ function Abc(user) {
         if (!tsfirst)return;
         set_bar_num();
         if (!tsfirst)return;
+        if (user.get_schema)user.get_schema(tsfirst, voice_tb, anno_type);
         output_music();
         for (v = 0; v < voice_tb.length; v++) {
             p_voice = voice_tb[v];
@@ -11719,7 +11824,7 @@ function Abc(user) {
             put_words(info.W);
             delete info.W
         }
-        if (eob)buffer_eob()
+        if (eob)blk_out()
     }
 
     function key_transpose(s_key, transpose) {
@@ -12081,7 +12186,7 @@ function Abc(user) {
         curvoice = p_voice2
     }
 
-    function is_tune_sig() {
+    function is_voice_sig() {
         if (!curvoice.sym)return true;
         if (curvoice.time != 0)return false;
         for (s = curvoice.sym; s; s = s.next) {
@@ -12098,7 +12203,7 @@ function Abc(user) {
     }
 
     function get_clef(s) {
-        if (is_tune_sig()) {
+        if (is_voice_sig()) {
             curvoice.clef = s
         } else {
             sym_link(s);
@@ -12137,7 +12242,13 @@ function Abc(user) {
             }
             parse.okey = o_key;
             parse.ckey = s_key;
-            if (s_clef)glovar.clef = s_clef;
+            if (s_clef) {
+                glovar.clef = s_clef
+            } else {
+                glovar.clef.ctx = s_key.ctx;
+                glovar.clef.istart = s_key.istart;
+                glovar.clef.iend = s_key.iend
+            }
             vskip(cfmt.topspace);
             write_heading();
             reset_gen();
@@ -12146,7 +12257,7 @@ function Abc(user) {
         }
         if (curvoice.transpose)key_transpose(s_key, curvoice.transpose);
         if (s_clef)get_clef(s_clef);
-        if (is_tune_sig()) {
+        if (is_voice_sig()) {
             if (s_key.key_sf != undefined || s_key.key_a_acc)curvoice.key = curvoice.ckey = s_key;
             curvoice.okey = o_key;
             return
@@ -12242,6 +12353,8 @@ function Abc(user) {
         var v, p_voice;
         if (voice_tb.length == 0) {
             curvoice = new_voice("1");
+            curvoice.clef.istart = curvoice.key.istart;
+            curvoice.clef.iend = curvoice.key.iend;
             nstaff = 0;
             curvoice.time = 0;
             curvoice.default = true
@@ -12689,7 +12802,7 @@ function Abc(user) {
                 text += c
             }
         }
-        if (!gchord)gchord = text; else gchord += "\n" + text
+        if (!gchord)gchord = cnv_escape(text); else gchord += "\n" + cnv_escape(text)
     }
 
     function gch_acc(str, c_gch, acc) {
@@ -12711,7 +12824,7 @@ function Abc(user) {
         return str
     }
 
-    var note_names = "CDEFGAB", latin_names = ["Do", "RÃ©", "Mi", "Fa", "Sol", "La", "Si"], acc_name = ["bb", "b", "", "#", "##"];
+    var note_names = "CDEFGAB", latin_names = ["Do", "Ré", "Mi", "Fa", "Sol", "La", "Si"], acc_name = ["bb", "b", "", "#", "##"];
 
     function gch_transpose(s) {
         var p, q, new_txt, l, latin, n, i1, i2, i3, i4, gch, ix, a, ip, ip2;
@@ -12913,9 +13026,9 @@ function Abc(user) {
         for (ix = 0; ix < s.a_gch.length; ix++) {
             gch = s.a_gch[ix];
             if (gch.type == "g") {
-                if (gch.text.indexOf("#"))gch.text = gch_acc(gch.text, "#", "â™¯");
-                if (gch.text.indexOf("b"))gch.text = gch_acc(gch.text, "b", "â™­");
-                if (gch.text.indexOf("="))gch.text = gch_acc(gch.text, "=", "â™®")
+                if (gch.text.indexOf("#"))gch.text = gch_acc(gch.text, "#", "♯");
+                if (gch.text.indexOf("b"))gch.text = gch_acc(gch.text, "b", "♭");
+                if (gch.text.indexOf("="))gch.text = gch_acc(gch.text, "=", "♮")
             }
             if (gch.type == "@")continue;
             gene.curfont = gch.font;
@@ -13104,12 +13217,3 @@ function Abc(user) {
     abc2svg_init();
     return this
 }
-//function abc2svg_init(user) {
-//    abcobj = new Abc(user)
-//}
-//function abc2svg_translate(fname, file) {
-//    abcobj.abc_fe(fname, file)
-//}
-//function abc_flush() {
-//    abcobj.abc_flush()
-//}
