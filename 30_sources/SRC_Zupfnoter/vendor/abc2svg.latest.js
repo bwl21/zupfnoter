@@ -3,11 +3,12 @@
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
+var abc2svg = {version: "1.0.0", vdate: "2015-03-08"}
 function Abc(user) {
     var wpsobj, svgobj;
     this.user = user;
-    this.version = "1.0.0", this.vdate = "2015-02-27";
-    var BAR = 0, CLEF = 1, CUSTOS = 2, FORMAT = 3, GRACE = 4, KEY = 5, METER = 6, MREST = 7, NOTE = 8, PART = 9, REST = 10, SPACE = 11, STAVES = 12, STBRK = 13, TEMPO = 14, TUPLET = 15, SL_ABOVE = 1, SL_BELOW = 2, SL_AUTO = 3, SL_HIDDEN = 3, SL_DOTTED = 4, OPEN_BRACE = 1, CLOSE_BRACE = 2, OPEN_BRACKET = 4, CLOSE_BRACKET = 8, OPEN_PARENTH = 16, CLOSE_PARENTH = 32, STOP_BAR = 64, FL_VOICE = 128, OPEN_BRACE2 = 256, CLOSE_BRACE2 = 512, OPEN_BRACKET2 = 1024, CLOSE_BRACKET2 = 2048, MASTER_VOICE = 4096, BASE_LEN = 1536, CM = 28.346, IN = 72, YSTEP = 128;
+    this.version = "1.0.0", this.vdate = "2015-03-08";
+    const BAR = 0, CLEF = 1, CUSTOS = 2, FORMAT = 3, GRACE = 4, KEY = 5, METER = 6, MREST = 7, NOTE = 8, PART = 9, REST = 10, SPACE = 11, STAVES = 12, STBRK = 13, TEMPO = 14, TUPLET = 15, SL_ABOVE = 1, SL_BELOW = 2, SL_AUTO = 3, SL_HIDDEN = 3, SL_DOTTED = 4, OPEN_BRACE = 1, CLOSE_BRACE = 2, OPEN_BRACKET = 4, CLOSE_BRACKET = 8, OPEN_PARENTH = 16, CLOSE_PARENTH = 32, STOP_BAR = 64, FL_VOICE = 128, OPEN_BRACE2 = 256, CLOSE_BRACE2 = 512, OPEN_BRACKET2 = 1024, CLOSE_BRACKET2 = 2048, MASTER_VOICE = 4096, BASE_LEN = 1536, CM = 28.346, IN = 72, YSTEP = 128;
     var glovar = {
         clef: {type: CLEF, clef_auto: true, clef_type: "a"},
         key: {type: "key", key_sf: 0, key_old_sf: 0},
@@ -128,9 +129,8 @@ function Abc(user) {
     }
 
     var dd_tb = {}, a_de = [];
-    var std_deco_tb = ["dot 0 stc 5 1 1", "tenuto 0 emb 5 2 2", "slide 1 sld 3 7 0", "arpeggio 2 arp 12 10 0", "roll 3 cpu 7 6 6", "fermata 3 hld 12 7 7", "emphasis 3 accent 7 4 4", "lowermordent 3 lmrd 10 2 2", "coda 3 coda 24 10 10", "uppermordent 3 umrd 10 2 2", "segno 3 sgno 20 4 4", "trill 3 trl 11 4 4", "upbow 3 upb 10 5 5", "downbow 3 dnb 9 5 5", "gmark 3 grm 6 5 5", "wedge 3 wedge 8 1 1", "turnx 3 turnx 10 0 5", "breath 3 brth 0 1 20", "longphrase 3 lphr 0 1 1", "mediumphrase 3 mphr 0 1 1", "shortphrase 3 sphr 0 1 1", "invertedfermata 3 hld 12 7 7", "invertedturn 3 turn 10 0 5", "invertedturnx 3 turnx 10 0 5", "0 3 fng 8 3 3 0", "1 3 fng 8 3 3 1", "2 3 fng 8 3 3 2", "3 3 fng 8 3 3 3", "4 3 fng 8 3 3 4", "5 3 fng 8 3 3 5", "plus 3 dplus 7 3 3", "+ 3 dplus 7 3 3", "accent 3 accent 6 4 4", "> 3 accent 6 4 4", "marcato 3 marcato 9 3 3", "^ 3 marcato 9 3 3", "mordent 3 lmrd 10 2 2", "open 3 opend 10 2 2", "snap 3 snap 14 3 3", "thumb 3 thumb 14 2 2", "D.C. 3 dacs 16 10 10 D.C.", "D.S. 3 dacs 16 10 10 D.S.", "fine 3 dacs 16 10 10 FINE", "f 6 pf 18 1 7", "ff 6 pf 18 2 10", "fff 6 pf 18 4 13", "ffff 6 pf 18 6 16", "mf 6 pf 18 6 13", "mp 6 pf 18 6 16", "p 6 pf 18 2 8", "pp 6 pf 18 5 14", "ppp 6 pf 18 8 20", "pppp 6 pf 18 10 25", "pralltriller 3 umrd 10 2 2", 'sfz 6 sfz 18 4 10 ""', "turn 3 turn 10 0 5", "trill( 5 ltr 8 0 0", "trill) 5 ltr 8 0 0", "crescendo( 7 cresc 18 0 0", "crescendo) 7 cresc 18 0 0", "<( 7 cresc 18 0 0", "<) 7 cresc 18 0 0", "diminuendo( 7 dim 18 0 0", "diminuendo) 7 dim 18 0 0", ">( 7 dim 18 0 0", ">) 7 dim 18 0 0", "invisible 32 0 0 0 0", "beamon 33 0 0 0 0", "trem1 34 0 0 0 0", "trem2 34 0 0 0 0", "trem3 34 0 0 0 0", "trem4 34 0 0 0 0", "xstem 35 0 0 0 0", "beambr1 36 0 0 0 0", "beambr2 36 0 0 0 0", "rbstop 37 0 0 0 0", "/ 38 0 0 6 6", "// 38 0 0 6 6", "/// 38 0 0 6 6", "beam-accel 39 0 0 0 0", "beam-rall 39 0 0 0 0", "stemless 40 0 0 0 0"];
-    var user_deco_tb;
-    var first_note;
+    const std_deco_tb = ["dot 0 stc 5 1 1", "tenuto 0 emb 5 2 2", "slide 1 sld 3 7 0", "arpeggio 2 arp 12 10 0", "roll 3 cpu 7 6 6", "fermata 3 hld 12 7 7", "emphasis 3 accent 7 4 4", "lowermordent 3 lmrd 10 2 2", "coda 3 coda 24 10 10", "uppermordent 3 umrd 10 2 2", "segno 3 sgno 20 4 4", "trill 3 trl 11 4 4", "upbow 3 upb 10 5 5", "downbow 3 dnb 9 5 5", "gmark 3 grm 6 5 5", "wedge 3 wedge 8 1 1", "turnx 3 turnx 10 0 5", "breath 3 brth 0 1 20", "longphrase 3 lphr 0 1 1", "mediumphrase 3 mphr 0 1 1", "shortphrase 3 sphr 0 1 1", "invertedfermata 3 hld 12 7 7", "invertedturn 3 turn 10 0 5", "invertedturnx 3 turnx 10 0 5", "0 3 fng 8 3 3 0", "1 3 fng 8 3 3 1", "2 3 fng 8 3 3 2", "3 3 fng 8 3 3 3", "4 3 fng 8 3 3 4", "5 3 fng 8 3 3 5", "plus 3 dplus 7 3 3", "+ 3 dplus 7 3 3", "accent 3 accent 6 4 4", "> 3 accent 6 4 4", "marcato 3 marcato 9 3 3", "^ 3 marcato 9 3 3", "mordent 3 lmrd 10 2 2", "open 3 opend 10 2 2", "snap 3 snap 14 3 3", "thumb 3 thumb 14 2 2", "D.C. 3 dacs 16 10 10 D.C.", "D.S. 3 dacs 16 10 10 D.S.", "fine 3 dacs 16 10 10 FINE", "f 6 pf 18 1 7", "ff 6 pf 18 2 10", "fff 6 pf 18 4 13", "ffff 6 pf 18 6 16", "mf 6 pf 18 6 13", "mp 6 pf 18 6 16", "p 6 pf 18 2 8", "pp 6 pf 18 5 14", "ppp 6 pf 18 8 20", "pppp 6 pf 18 10 25", "pralltriller 3 umrd 10 2 2", 'sfz 6 sfz 18 4 10 ""', "turn 3 turn 10 0 5", "trill( 5 ltr 8 0 0", "trill) 5 ltr 8 0 0", "crescendo( 7 cresc 18 0 0", "crescendo) 7 cresc 18 0 0", "<( 7 cresc 18 0 0", "<) 7 cresc 18 0 0", "diminuendo( 7 dim 18 0 0", "diminuendo) 7 dim 18 0 0", ">( 7 dim 18 0 0", ">) 7 dim 18 0 0", "invisible 32 0 0 0 0", "beamon 33 0 0 0 0", "trem1 34 0 0 0 0", "trem2 34 0 0 0 0", "trem3 34 0 0 0 0", "trem4 34 0 0 0 0", "xstem 35 0 0 0 0", "beambr1 36 0 0 0 0", "beambr2 36 0 0 0 0", "rbstop 37 0 0 0 0", "/ 38 0 0 6 6", "// 38 0 0 6 6", "/// 38 0 0 6 6", "beam-accel 39 0 0 0 0", "beam-rall 39 0 0 0 0", "stemless 40 0 0 0 0"];
+    var user_deco_tb, first_note;
 
     function y_get(st, up, x, w) {
         var y, p_staff = staff_tb[st], i = Math.floor(x / realwidth * YSTEP);
@@ -184,7 +184,8 @@ function Abc(user) {
             de.dy = Number(a[2]);
             de.str = str.replace(a[0], "")
         } else {
-            de.str = str
+            de.str = str;
+            de.dy = 0
         }
     }
 
@@ -277,6 +278,12 @@ function Abc(user) {
 
     function d_near(de) {
         var y, up, s = de.s, dd = de.dd;
+        if (dd.str) {
+            de.x = s.x;
+            de.y = s.y;
+            set_str(de, dd.str);
+            return
+        }
         if (s.multi)up = s.multi > 0; else up = s.stem < 0;
         if (up)y = Math.floor(s.ymx); else y = Math.floor(s.ymn - dd.h);
         if (y > -6 && y < 24) {
@@ -386,21 +393,26 @@ function Abc(user) {
     }
 
     function d_upstaff(de) {
-        var yc, inv, s = de.s, dd = de.dd, x = s.x;
+        var yc, down, inv, s = de.s, dd = de.dd, x = s.x;
         if (s.nhd)x += s.notes[s.stem >= 0 ? 0 : s.nhd].shhd;
         var w = dd.wl + dd.wr, stafft = staff_tb[s.st].topbar + 2, staffb = staff_tb[s.st].botbar - 2;
-        switch (s.posit.orn) {
-            case SL_ABOVE:
-                de.flags.below = undefined;
-                break;
-            case SL_BELOW:
-                de.flags.below = true;
-                break
+        if (dd.func == 4) {
+            down = true
+        } else {
+            down = s.multi < 0 || !s.multi && s.stem > 0;
+            switch (s.posit.orn) {
+                case SL_ABOVE:
+                    down = false;
+                    break;
+                case SL_BELOW:
+                    down = true;
+                    break
+            }
         }
         switch (dd.ps_func) {
             case"accent":
             case"cpu":
-                if (s.multi < 0 || s.multi == 0 && s.stem > 0) {
+                if (down) {
                     yc = y_get(s.st, false, s.x - dd.wl, w);
                     if (yc > staffb)yc = staffb;
                     yc -= dd.h;
@@ -424,7 +436,7 @@ function Abc(user) {
                 break;
             default:
                 if (dd.name.indexOf("invert") == 0)inv = true;
-                if (s.multi >= 0 && dd.name != "invertedfermata" && !de.flags.below) {
+                if (s.multi >= 0 && dd.name != "invertedfermata" && !down) {
                     yc = y_get(s.st, true, s.x - dd.wl, w);
                     if (yc < stafft)yc = stafft;
                     y_set(s.st, true, s.x - dd.wl, w, yc + dd.h);
@@ -732,7 +744,7 @@ function Abc(user) {
     }
 
     function draw_deco_head(dcn, x, y, stem) {
-        var f, str, uf, dd = dd_tb[dcn];
+        var f, str, uf, dd = dd_tb[dcn], de;
         if (!dd) {
             dd = deco_def(dcn);
             if (!dd) {
@@ -742,25 +754,25 @@ function Abc(user) {
         }
         f = dd.ps_func;
         if (pshdeco(f, x, y, dd))return dd.name.indexOf("head-") == 0;
-        switch (dd.func) {
-            default:
-                xygl(x, y, f);
-                break;
-            case 2:
-            case 5:
-            case 7:
-                error(1, null, "Cannot have !" + dd.name + "! on a head");
-                break;
-            case 3:
-            case 4:
-                if (!dd.str) {
+        if (dd.str) {
+            de = {x: x};
+            set_str(de, dd.str);
+            out_deco_str(de.x, y + de.dy, f, de.str)
+        } else {
+            switch (dd.func) {
+                default:
+                    xygl(x, y, f);
+                    break;
+                case 2:
+                case 5:
+                case 7:
+                    error(1, null, "Cannot have !" + dd.name + "! on a head");
+                    break;
+                case 3:
+                case 4:
                     xygl(x, y, f);
                     break
-                }
-            case 6:
-                str = dd.str ? dd.str : dd.name;
-                out_deco_str(x, y, f, str);
-                break
+            }
         }
         return dd.name.indexOf("head-") == 0
     }
@@ -842,8 +854,8 @@ function Abc(user) {
     }
 
     function draw_deco_note() {
-        var i, j, n, de, de2, dd, dd2, f, t, st, v;
-        var n_de = a_de.length;
+        var i, j, n_dede, de2, dd, dd2, f, t, st, v;
+        n_de = a_de.length;
         for (i = 0; i < n_de; i++) {
             de = a_de[i];
             if (!de.flags.ldst)continue;
@@ -854,19 +866,18 @@ function Abc(user) {
                 dd.ld_en_dd = dd2
             }
             v = de.s.v;
-            n = a_de.length;
-            for (j = i + 1; j < n; j++) {
+            for (j = i + 1; j < n_de; j++) {
                 de2 = a_de[j];
                 if (de2.dd == dd2 && de2.s.v == v)break
             }
             if (j == n_de) {
                 st = de.s.st;
-                for (j = i + 1; j < n; j++) {
+                for (j = i + 1; j < n_de; j++) {
                     de2 = a_de[j];
                     if (de2.dd == dd2 && de2.s.st == st)break
                 }
             }
-            if (j == n) {
+            if (j == n_de) {
                 de2 = {
                     s: de.s,
                     st: de.st,
@@ -882,13 +893,11 @@ function Abc(user) {
             de2.start = de;
             delete de2.defl.nost
         }
-        n = a_de.length;
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n_de; i++) {
             de = a_de[i];
             dd = de.dd;
             f = dd.func;
             if (f < 3 || f >= 6)continue;
-            if (f == 4)de.flags.below = true;
             func_tb[f](de)
         }
     }
@@ -949,6 +958,7 @@ function Abc(user) {
             p_voice = voice_tb[v];
             if (p_voice.second || !p_voice.sym)continue;
             y = staff_tb[p_voice.st].topbar + 6 + 20;
+            first_repeat = undefined;
             for (s = p_voice.sym; s; s = s.next) {
                 if (s.type != BAR || !s.text || s.norepbra)continue;
                 if (!s.next)break;
@@ -1178,20 +1188,6 @@ function Abc(user) {
         gene.curfont.size = font_size
     }
 
-    function get_beat(a_meter) {
-        var top, bot;
-        if (a_meter.length == 0)return BASE_LEN / 4;
-        if (a_meter[0].top[0] == "C") {
-            if (a_meter[0].top[0] == "|")return BASE_LEN / 2;
-            return BASE_LEN / 4
-        }
-        if (!a_meter[0].bot)return BASE_LEN / 4;
-        top = Number(a_meter[0].top);
-        bot = Number(a_meter[0].bot);
-        if (bot >= 8 && top >= 6 && top % 3 == 0)return BASE_LEN * 3 / 8;
-        return BASE_LEN / bot
-    }
-
     function draw_notempo(s, x, y, dur, sc) {
         var dx, p, elts = identify_note(s, dur), head = elts[0], dots = elts[1], nflags = elts[2];
         output.push('<g transform="translate(');
@@ -1260,7 +1256,7 @@ function Abc(user) {
         return w
     }
 
-    function write_tempo(s, x, y, beat, sc) {
+    function write_tempo(s, x, y, sc) {
         var j, n, top, bot, dx, res;
         set_font("tempo");
         if (s.tempo_str1) {
@@ -1291,7 +1287,7 @@ function Abc(user) {
     }
 
     function draw_partempo(st, top) {
-        var s, g, beat, some_part, some_tempo, h, w, y, dy = 0, ht = 0;
+        var s, g, some_part, some_tempo, h, w, y, dy = 0, ht = 0;
         var ymin = staff_tb[st].topbar + 12, dosh = 0, shift = 1, x = 0;
         for (s = tsfirst; s; s = s.ts_next) {
             g = s.extra;
@@ -1313,10 +1309,8 @@ function Abc(user) {
             h = y - ht;
             if (dosh != 0)ht *= 2;
             if (top < ymin + ht)dy = ymin + ht - top;
-            beat = 0;
             for (s = tsfirst; s; s = s.ts_next) {
                 if (!s.seqst)continue;
-                if (s.type == METER)beat = get_beat(s.a_meter);
                 g = s.extra;
                 for (; g; g = g.next)if (g.type == TEMPO)break;
                 if (!g)continue;
@@ -1328,7 +1322,7 @@ function Abc(user) {
                     g.ymx = g.ymn + 14;
                     if (user.anno_start)anno_start(g)
                 }
-                write_tempo(g, s.x - 5, dosh & 1 ? h : y, beat, 1);
+                write_tempo(g, s.x - 5, dosh & 1 ? h : y, 1);
                 if (user.anno_stop)anno_stop(g);
                 dosh >>= 1
             }
@@ -1375,7 +1369,7 @@ function Abc(user) {
         return dy
     }
 
-    var STEM_MIN = 16, STEM_MIN2 = 14, STEM_MIN3 = 12, STEM_MIN4 = 10, STEM_CH_MIN = 14, STEM_CH_MIN2 = 10, STEM_CH_MIN3 = 9, STEM_CH_MIN4 = 9, BEAM_DEPTH = 3.2, BEAM_OFFSET = .25, BEAM_SHIFT = 5, BEAM_FLATFAC = .6, BEAM_THRESH = .06, BEAM_SLOPE = .5, BEAM_STUB = 6, SLUR_SLOPE = 1, GSTEM = 14, GSTEM_XOFF = 1.6;
+    const STEM_MIN = 16, STEM_MIN2 = 14, STEM_MIN3 = 12, STEM_MIN4 = 10, STEM_CH_MIN = 14, STEM_CH_MIN2 = 10, STEM_CH_MIN3 = 9, STEM_CH_MIN4 = 9, BEAM_DEPTH = 3.2, BEAM_OFFSET = .25, BEAM_SHIFT = 5, BEAM_FLATFAC = .6, BEAM_THRESH = .06, BEAM_SLOPE = .5, BEAM_STUB = 6, SLUR_SLOPE = 1, GSTEM = 14, GSTEM_XOFF = 1.6;
     var anno_type = ["bar", "clef", "custos", "format", "grace", "key", "meter", "Zrest", "note", "part", "rest", "yspace", "staves", "Break", "tempo", "tuplet"];
 
     function anno_start(s) {
@@ -1688,7 +1682,7 @@ function Abc(user) {
     }
 
     function draw_beams(bm) {
-        var s, i, beam_dir, shift, bshift, bstub, bh, da, s1 = bm.s1, s2 = bm.s2;
+        var s, i, beam_dir, shift, bshift, bstub, bh, da, k, k1, k2, x1, s1 = bm.s1, s2 = bm.s2;
 
         function draw_beam(x1, x2, dy, h, bm, n) {
             var y1, dy2, s = bm.s1, nflags = s.nflags;
@@ -1745,13 +1739,12 @@ function Abc(user) {
             shift += bshift;
             if (da != 0)bm.a += da;
             for (s = s1; ; s = s.next) {
-                var k1, k2, x1;
                 if (s.type != NOTE || s.nflags < i) {
                     if (s == s2)break;
                     continue
                 }
                 if (s.trem1 && i > s.nflags - s.ntrem) {
-                    if (s.head == "oval" || s.head == "square")x1 = s.x; else x1 = s.xs;
+                    if (s.dur >= BASE_LEN / 2)x1 = s.x; else x1 = s.xs;
                     draw_beam(x1 - 5, x1 + 5, (shift + 2.5) * beam_dir, bh, bm, i);
                     if (s == s2)break;
                     continue
@@ -1759,8 +1752,16 @@ function Abc(user) {
                 k1 = s;
                 while (1) {
                     if (s == s2)break;
-                    if ((s.next.type == NOTE || s.next.type == REST) && s.next.nflags < i || s.next.beam_br1 || s.next.beam_br2 && i > 2)break;
-                    s = s.next
+                    k = s.next;
+                    if (k.type == NOTE || k.type == REST) {
+                        if (k.trem1) {
+                            if (k.nflags - k.ntrem < i)break
+                        } else if (k.nflags < i) {
+                            break
+                        }
+                    }
+                    if (k.beam_br1 || k.beam_br2 && i > 2)break;
+                    s = k
                 }
                 k2 = s;
                 while (k2.type != NOTE)k2 = k2.prev;
@@ -1773,7 +1774,7 @@ function Abc(user) {
                     } else if (k1.beam_br1 || k1.beam_br2 && i > 2) {
                         x1 += bstub
                     } else {
-                        var k = k1.next;
+                        k = k1.next;
                         while (k.type != NOTE)k = k.next;
                         if (k.beam_br1 || k.beam_br2 && i > 2) {
                             x1 -= bstub
@@ -3184,7 +3185,7 @@ function Abc(user) {
     }
 
     function draw_ties(k1, k2, job) {
-        var k3, i, m1, pit, tie2, mhead1 = [], mhead2 = [], mhead3 = [], nh1 = k1.nhd, time = k1.time + k1.dur;
+        var k3, i, j, m1, pit, tie2, mhead1 = [], mhead2 = [], mhead3 = [], nh1 = k1.nhd, time = k1.time + k1.dur;
         if (k1.type == GRACE) {
             k3 = k1.extra;
             while (k3) {
@@ -3245,13 +3246,12 @@ function Abc(user) {
             }
             mhead1.length = 0;
             mhead2.length = 0;
-            var i2;
             for (i = mhead3.length; --i >= 0;) {
-                i2 = mhead3[i];
-                pit = k1.notes[i2].apit;
+                j = mhead3[i];
+                pit = k1.notes[j].apit;
                 for (m1 = k3.nhd; m1 >= 0; m1--) {
                     if (k3.notes[m1].apit == pit) {
-                        mhead1.push(i2);
+                        mhead1.push(j);
                         mhead2.push(m1);
                         mhead3[i] = mhead3.pop();
                         break
@@ -4084,7 +4084,7 @@ function Abc(user) {
 
     function get_int(param) {
         var v = parseInt(param);
-        if (v == NaN) {
+        if (isNaN(v)) {
             parse.line.error("Bad integer value\n");
             v = 1
         }
@@ -4095,7 +4095,7 @@ function Abc(user) {
         var a = param.split(/\s+/);
         if (a.length <= 1)return;
         var scale = parseFloat(a[a.length - 1]);
-        if (scale == NaN || a <= 0) {
+        if (isNaN(scale) || a <= 0) {
             parse.line.error("Bad scale value in %%font");
             return
         }
@@ -4207,29 +4207,39 @@ function Abc(user) {
     }
 
     function set_posit(k, a) {
-        var val;
+        var val, posit;
         if (a[0] >= "0" && a[0] <= "9")val = parseInt(a); else val = get_posit(a);
+        switch (parse.state) {
+            case 0:
+            case 1:
+            case 2:
+                posit = cfmt.posit;
+                break;
+            default:
+                posit = curvoice.posit;
+                break
+        }
         switch (k) {
             case"dynamic":
-                cfmt.posit.dyn = val;
+                posit.dyn = val;
                 break;
             case"gchord":
-                cfmt.posit.gch = val;
+                posit.gch = val;
                 break;
             case"gstemdir":
-                cfmt.posit.gsd = val;
+                posit.gsd = val;
                 break;
             case"ornament":
-                cfmt.posit.orn = val;
+                posit.orn = val;
                 break;
             case"stemdir":
-                cfmt.posit.std = val;
+                posit.std = val;
                 break;
             case"vocal":
-                cfmt.posit.voc = val;
+                posit.voc = val;
                 break;
             case"volume":
-                cfmt.posit.vol = val;
+                posit.vol = val;
                 break
         }
         switch (parse.state) {
@@ -4237,10 +4247,10 @@ function Abc(user) {
                 break;
             case 1:
             case 2:
-                for (var v = 0; v < voice_tb.length; v++)voice_tb[v].posit = clone(cfmt.posit);
+                for (var v = 0; v < voice_tb.length; v++)voice_tb[v].posit = clone(posit);
                 break;
             default:
-                curvoice.posit = clone(cfmt.posit);
+                curvoice.posit = clone(posit);
                 break
         }
     }
@@ -4490,190 +4500,190 @@ function Abc(user) {
     }
 
     var abc_utf = {
-        "`A": "À",
-        "`E": "È",
-        "`I": "Ì",
-        "`O": "Ò",
-        "`U": "Ù",
-        "`a": "à",
-        "`e": "è",
-        "`i": "ì",
-        "`o": "ò",
-        "`u": "ù",
-        "'A": "Á",
-        "'E": "É",
-        "'I": "Í",
-        "'O": "Ó",
-        "'U": "Ú",
-        "'Y": "Ý",
-        "'a": "á",
-        "'e": "é",
-        "'i": "í",
-        "'o": "ó",
-        "'u": "ú",
-        "'y": "ý",
-        "'S": "Ś",
-        "'Z": "Ź",
-        "'s": "ś",
-        "'z": "ź",
-        "'R": "Ŕ",
-        "'L": "Ĺ",
-        "'C": "Ć",
-        "'N": "Ń",
-        "'r": "ŕ",
-        "'l": "ĺ",
-        "'c": "ć",
-        "'n": "ń",
-        "^A": "Â",
-        "^E": "Ê",
-        "^I": "Î",
-        "^O": "Ô",
-        "^U": "Û",
-        "^a": "â",
-        "^e": "ê",
-        "^i": "î",
-        "^o": "ô",
-        "^u": "û",
-        "^H": "Ĥ",
-        "^J": "Ĵ",
-        "^h": "ĥ",
-        "^j": "ĵ",
-        "^C": "Ĉ",
-        "^G": "Ĝ",
-        "^S": "Ŝ",
-        "^c": "ĉ",
-        "^g": "ĝ",
-        "^s": "ŝ",
-        ",C": "Ç",
-        ",c": "ç",
-        ",S": "Ş",
-        ",s": "ş",
-        ",T": "Ţ",
-        ",t": "ţ",
-        ",R": "Ŗ",
-        ",L": "Ļ",
-        ",G": "Ģ",
-        ",r": "ŗ",
-        ",l": "ļ",
-        ",g": "ģ",
-        ",N": "Ņ",
-        ",K": "Ķ",
-        ",n": "ņ",
-        ",k": "ķ",
-        '"A': "Ä",
-        '"E': "Ë",
-        '"I': "Ï",
-        '"O': "Ö",
-        '"U': "Ü",
-        '"Y': "Ÿ",
-        '"a': "ä",
-        '"e': "ë",
-        '"i': "ï",
-        '"o': "ö",
-        '"u': "ü",
-        '"y': "ÿ",
-        "~A": "Ã",
-        "~N": "Ñ",
-        "~O": "Õ",
-        "~a": "ã",
-        "~n": "ñ",
-        "~o": "õ",
-        "~I": "Ĩ",
-        "~i": "ĩ",
-        "~U": "Ũ",
-        "~u": "ũ",
-        oA: "Å",
-        oa: "å",
-        oU: "Ů",
-        ou: "ů",
-        "=A": "Ā",
-        "=D": "Đ",
-        "=E": "Ē",
-        "=H": "Ħ",
-        "=I": "Ī",
-        "=O": "Ō",
-        "=T": "Ŧ",
-        "=U": "Ū",
-        "=a": "ā",
-        "=d": "đ",
-        "=e": "ē",
-        "=h": "ħ",
-        "=i": "ī",
-        "=o": "ō",
-        "=t": "ŧ",
-        "=u": "ū",
-        "/O": "Ø",
-        "/o": "ø",
-        "/D": "Đ",
-        "/d": "đ",
-        "/L": "Ł",
-        "/l": "ł",
-        ";A": "Ą",
-        ";E": "Ę",
-        ";I": "Į",
-        ";U": "Ų",
-        ";a": "ą",
-        ";e": "ę",
-        ";i": "į",
-        ";u": "ų",
-        vL: "Ľ",
-        vS: "Š",
-        vT: "Ť",
-        vZ: "Ž",
-        vl: "ľ",
-        vs: "š",
-        vt: "ť",
-        vz: "ž",
-        vC: "Č",
-        vE: "Ě",
-        vD: "Ď",
-        vN: "Ň",
-        vR: "Ř",
-        vc: "č",
-        ve: "ě",
-        vd: "ď",
-        vn: "ň",
-        vr: "ř",
-        uA: "Ă",
-        ua: "ă",
-        uE: "Ĕ",
-        ue: "ĕ",
-        uG: "Ğ",
-        ug: "ğ",
-        uI: "Ĭ",
-        ui: "ĭ",
-        uO: "Ŏ",
-        uo: "ŏ",
-        uU: "Ŭ",
-        uu: "ŭ",
-        ":O": "Ő",
-        ":U": "Ű",
-        ":o": "ő",
-        ":u": "ű",
-        ".Z": "Ż",
-        ".z": "ż",
-        ".I": "İ",
-        ".i": "ı",
-        ".C": "Ċ",
-        ".c": "ċ",
-        ".G": "Ġ",
-        ".g": "ġ",
-        ".E": "Ė",
-        ".e": "ė",
-        AA: "Å",
-        aa: "å",
-        AE: "Æ",
-        ae: "æ",
-        cc: "ç",
-        cC: "Ç",
-        DH: "Ð",
-        dh: "ð",
-        ng: "ŋ",
-        OE: "Œ",
-        oe: "œ",
-        ss: "ß",
-        TH: "Þ",
-        th: "þ"
+        "`A": "Ã€",
+        "`E": "Ãˆ",
+        "`I": "ÃŒ",
+        "`O": "Ã’",
+        "`U": "Ã™",
+        "`a": "Ã ",
+        "`e": "Ã¨",
+        "`i": "Ã¬",
+        "`o": "Ã²",
+        "`u": "Ã¹",
+        "'A": "Ã",
+        "'E": "Ã‰",
+        "'I": "Ã",
+        "'O": "Ã“",
+        "'U": "Ãš",
+        "'Y": "Ã",
+        "'a": "Ã¡",
+        "'e": "Ã©",
+        "'i": "Ã­",
+        "'o": "Ã³",
+        "'u": "Ãº",
+        "'y": "Ã½",
+        "'S": "Åš",
+        "'Z": "Å¹",
+        "'s": "Å›",
+        "'z": "Åº",
+        "'R": "Å”",
+        "'L": "Ä¹",
+        "'C": "Ä†",
+        "'N": "Åƒ",
+        "'r": "Å•",
+        "'l": "Äº",
+        "'c": "Ä‡",
+        "'n": "Å„",
+        "^A": "Ã‚",
+        "^E": "ÃŠ",
+        "^I": "ÃŽ",
+        "^O": "Ã”",
+        "^U": "Ã›",
+        "^a": "Ã¢",
+        "^e": "Ãª",
+        "^i": "Ã®",
+        "^o": "Ã´",
+        "^u": "Ã»",
+        "^H": "Ä¤",
+        "^J": "Ä´",
+        "^h": "Ä¥",
+        "^j": "Äµ",
+        "^C": "Äˆ",
+        "^G": "Äœ",
+        "^S": "Åœ",
+        "^c": "Ä‰",
+        "^g": "Ä",
+        "^s": "Å",
+        ",C": "Ã‡",
+        ",c": "Ã§",
+        ",S": "Åž",
+        ",s": "ÅŸ",
+        ",T": "Å¢",
+        ",t": "Å£",
+        ",R": "Å–",
+        ",L": "Ä»",
+        ",G": "Ä¢",
+        ",r": "Å—",
+        ",l": "Ä¼",
+        ",g": "Ä£",
+        ",N": "Å…",
+        ",K": "Ä¶",
+        ",n": "Å†",
+        ",k": "Ä·",
+        '"A': "Ã„",
+        '"E': "Ã‹",
+        '"I': "Ã",
+        '"O': "Ã–",
+        '"U': "Ãœ",
+        '"Y': "Å¸",
+        '"a': "Ã¤",
+        '"e': "Ã«",
+        '"i': "Ã¯",
+        '"o': "Ã¶",
+        '"u': "Ã¼",
+        '"y': "Ã¿",
+        "~A": "Ãƒ",
+        "~N": "Ã‘",
+        "~O": "Ã•",
+        "~a": "Ã£",
+        "~n": "Ã±",
+        "~o": "Ãµ",
+        "~I": "Ä¨",
+        "~i": "Ä©",
+        "~U": "Å¨",
+        "~u": "Å©",
+        oA: "Ã…",
+        oa: "Ã¥",
+        oU: "Å®",
+        ou: "Å¯",
+        "=A": "Ä€",
+        "=D": "Ä",
+        "=E": "Ä’",
+        "=H": "Ä¦",
+        "=I": "Äª",
+        "=O": "ÅŒ",
+        "=T": "Å¦",
+        "=U": "Åª",
+        "=a": "Ä",
+        "=d": "Ä‘",
+        "=e": "Ä“",
+        "=h": "Ä§",
+        "=i": "Ä«",
+        "=o": "Å",
+        "=t": "Å§",
+        "=u": "Å«",
+        "/O": "Ã˜",
+        "/o": "Ã¸",
+        "/D": "Ä",
+        "/d": "Ä‘",
+        "/L": "Å",
+        "/l": "Å‚",
+        ";A": "Ä„",
+        ";E": "Ä˜",
+        ";I": "Ä®",
+        ";U": "Å²",
+        ";a": "Ä…",
+        ";e": "Ä™",
+        ";i": "Ä¯",
+        ";u": "Å³",
+        vL: "Ä½",
+        vS: "Å ",
+        vT: "Å¤",
+        vZ: "Å½",
+        vl: "Ä¾",
+        vs: "Å¡",
+        vt: "Å¥",
+        vz: "Å¾",
+        vC: "ÄŒ",
+        vE: "Äš",
+        vD: "ÄŽ",
+        vN: "Å‡",
+        vR: "Å˜",
+        vc: "Ä",
+        ve: "Ä›",
+        vd: "Ä",
+        vn: "Åˆ",
+        vr: "Å™",
+        uA: "Ä‚",
+        ua: "Äƒ",
+        uE: "Ä”",
+        ue: "Ä•",
+        uG: "Äž",
+        ug: "ÄŸ",
+        uI: "Ä¬",
+        ui: "Ä­",
+        uO: "ÅŽ",
+        uo: "Å",
+        uU: "Å¬",
+        uu: "Å­",
+        ":O": "Å",
+        ":U": "Å°",
+        ":o": "Å‘",
+        ":u": "Å±",
+        ".Z": "Å»",
+        ".z": "Å¼",
+        ".I": "Ä°",
+        ".i": "Ä±",
+        ".C": "ÄŠ",
+        ".c": "Ä‹",
+        ".G": "Ä ",
+        ".g": "Ä¡",
+        ".E": "Ä–",
+        ".e": "Ä—",
+        AA: "Ã…",
+        aa: "Ã¥",
+        AE: "Ã†",
+        ae: "Ã¦",
+        cc: "Ã§",
+        cC: "Ã‡",
+        DH: "Ã",
+        dh: "Ã°",
+        ng: "Å‹",
+        OE: "Å’",
+        oe: "Å“",
+        ss: "ÃŸ",
+        TH: "Ãž",
+        th: "Ã¾"
     };
 
     function cnv_escape(src) {
@@ -4690,15 +4700,15 @@ function Abc(user) {
                     if (src[i + 1] == "0") {
                         switch (src[i + 2]) {
                             case"1":
-                                dst += "♯";
+                                dst += "â™¯";
                                 j = i + 3;
                                 continue;
                             case"2":
-                                dst += "♭";
+                                dst += "â™­";
                                 j = i + 3;
                                 continue;
                             case"3":
-                                dst += "♮";
+                                dst += "â™®";
                                 j = i + 3;
                                 continue;
                             case"4":
@@ -4919,7 +4929,7 @@ function Abc(user) {
                     end = "\n" + line0 + line1 + "end" + b[1];
                     i = file.indexOf(end, eol);
                     if (i < 0) {
-                        syntax(1, "No %%" + end.splice(1) + " after %%" + b[0]);
+                        syntax(1, "No %%" + end.slice(1) + " after %%" + b[0]);
                         eol = file.length - 1;
                         continue
                     } else {
@@ -6032,16 +6042,14 @@ function Abc(user) {
     }
 
     function custos_add(s) {
-        var p_voice, new_s, i;
-        var s2 = s;
+        var p_voice, new_s, i, s2 = s;
         while (1) {
-            if (!s2)return;
             if (s2.type == NOTE)break;
-            s2 = s2.next
+            s2 = s2.next;
+            if (!s2)return
         }
         p_voice = voice_tb[s.v];
         p_voice.last_sym = s.prev;
-        if (!p_voice.last_sym)p_voice.sym = null;
         p_voice.time = s.time;
         new_s = sym_add(p_voice);
         new_s.type = CUSTOS;
@@ -7413,7 +7421,7 @@ function Abc(user) {
                             t = -1;
                             break
                         }
-                        t = 1;
+                        if (s1.dots && s2.dots && s1.notes[i1].pit & 1)t = 1;
                         break;
                     case-1:
                         if (s1.dots && s2.dots) {
@@ -8120,7 +8128,7 @@ function Abc(user) {
         var val, tmp, note, pit = [];
         if ("123456789-".indexOf(param[0]) >= 0) {
             val = parseInt(param) * 3;
-            if (val == NaN || val < -108 || val > 108) {
+            if (isNaN(val) || val < -108 || val > 108) {
                 parse.line.error("Bad %%transpose value");
                 return
             }
@@ -8367,11 +8375,11 @@ function Abc(user) {
                     k = 1
                 } else {
                     var b = param.split(/\s+/), n = parseInt(b[0]), k = parseInt(b[1]);
-                    if (n == NaN || n < 1 || curvoice.last_sym.type == BAR && n > 2) {
+                    if (isNaN(n) || n < 1 || curvoice.last_sym.type == BAR && n > 2) {
                         parse.line.error("Incorrect 1st value in %%repeat");
                         return
                     }
-                    if (k == NaN) {
+                    if (isNaN(k)) {
                         k = 1
                     } else {
                         if (k < 1) {
@@ -8409,7 +8417,7 @@ function Abc(user) {
                 return;
             case"setbarnb":
                 val = parseInt(param);
-                if (val == NaN) {
+                if (isNaN(val)) {
                     parse.line.error("Bad %%setbarnb value");
                     return
                 }
@@ -8421,7 +8429,7 @@ function Abc(user) {
                     goto_tune()
                 }
                 val = parseInt(param);
-                if (val == NaN) {
+                if (isNaN(val)) {
                     parse.line.error("Bad %%staff value '" + param + "'");
                     return
                 }
@@ -8451,7 +8459,7 @@ function Abc(user) {
                 return;
             case"stafflines":
                 val = parseInt(param);
-                if (val == NaN || val < 0 || val > 12) {
+                if (isNaN(val) || val < 0 || val > 12) {
                     parse.line.error("Bad %%stafflines value");
                     return
                 }
@@ -8463,7 +8471,7 @@ function Abc(user) {
                 return;
             case"staffscale":
                 val = parseFloat(param);
-                if (val == NaN || val < .3 || val > 2) {
+                if (isNaN(val) || val < .3 || val > 2) {
                     parse.line.error("Bad %%staffscale value");
                     return
                 }
@@ -8540,7 +8548,7 @@ function Abc(user) {
             case"voicescale":
                 if (!curvoice)return;
                 val = parseFloat(param);
-                if (val == NaN || val < .6 || val > 1.5) {
+                if (isNaN(val) || val < .6 || val > 1.5) {
                     parse.line.error("Bad %%voicescale value");
                     return
                 }
@@ -9016,6 +9024,8 @@ function Abc(user) {
                 var s = {type: PART, ctx: parse.ctx, istart: parse.istart, iend: parse.iend, text: text};
                 var p_voice = voice_tb[par_sy.top_voice];
                 if (curvoice.v != p_voice.v) {
+                    if (curvoice.time != p_voice.time)break;
+                    if (p_voice.last_sym && p_voice.last_sym.type == PART)break;
                     var curvoice_sav = curvoice;
                     curvoice = p_voice;
                     sym_link(s);
@@ -9118,16 +9128,16 @@ function Abc(user) {
         }
         if (c > "0" && c <= "9") {
             s.text = c;
-            for (; ;) {
+            while (1) {
                 c = line.next_char();
                 if ("0123456789,.-".indexOf(c) < 0)break;
                 s.text += c
             }
         } else if (c == '"' && bar_type == "[") {
             s.text = "";
-            for (; ;) {
+            while (1) {
                 c = line.next_char();
-                if (c == undefined) {
+                if (!c) {
                     line.error("No end of repeat string");
                     return
                 }
@@ -10486,7 +10496,7 @@ function Abc(user) {
                         if (align == "c")w *= .5;
                         x -= w
                     }
-                    write_tempo(glovar.tempo, x, -y, 0, .75);
+                    write_tempo(glovar.tempo, x, -y, .75);
                     info.Q = null;
                     glovar.tempo = null
                 } else if (str) {
@@ -10852,6 +10862,14 @@ function Abc(user) {
         output.push(y.toFixed(2))
     }
 
+    this.sx = function (x) {
+        return (x + posx) / stv_g.scale
+    };
+    this.sy = function (y) {
+        if (stv_g.scale == 1)return posy - y;
+        if (stv_g.st < 0)return (posy - y) / stv_g.scale;
+        return stv_g.dy - y
+    };
     function out_sxsy(x, sep, y) {
         x = (posx + x) / stv_g.scale;
         if (stv_g.scale != 1) {
@@ -11179,7 +11197,11 @@ function Abc(user) {
             img_title = "noname"
         }
         posy *= cfmt.scale;
-        user.img_out('<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n	xmlns:xlink="http://www.w3.org/1999/xlink"\n	xml:space="preserve" color="black"\n	width="' + (cfmt.pagewidth / 72).toFixed(2) + 'in" height="' + (posy / 72).toFixed(2) + 'in" viewBox="0 0 ' + cfmt.pagewidth.toFixed(0) + " " + posy.toFixed(0) + '">\n<title>abc2svg - ' + img_title + "</title>");
+        if (user.imagesize) {
+            user.img_out('<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n	xmlns:xlink="http://www.w3.org/1999/xlink"\n	xml:space="preserve" color="black"\n' + user.imagesize + ' viewBox="0 0 ' + cfmt.pagewidth.toFixed(0) + " " + posy.toFixed(0) + '">\n<title>abc2svg - ' + img_title + "</title>")
+        } else {
+            user.img_out('<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n	xmlns:xlink="http://www.w3.org/1999/xlink"\n	xml:space="preserve" color="black"\n	width="' + (cfmt.pagewidth / 72).toFixed(2) + 'in" height="' + (posy / 72).toFixed(2) + 'in" viewBox="0 0 ' + cfmt.pagewidth.toFixed(0) + " " + posy.toFixed(0) + '">\n<title>abc2svg - ' + img_title + "</title>")
+        }
         if (style || font_style)user.img_out('<style type="text/css">' + style + font_style + "\n</style>");
         if (defs)user.img_out("<defs>" + defs + "\n</defs>");
         if (cfmt.bgcolor)user.img_out('<rect width="100%" height="100%" fill="' + cfmt.bgcolor + '"/>');
@@ -12103,7 +12125,7 @@ function Abc(user) {
             p_voice = voice_tb[v];
             par_sy.voices[v].second = p_voice.second;
             st = p_voice.st;
-            if (st > 0)p_voice.norepbra = !(par_sy.staves[st - 1].flags & STOP_BAR)
+            if (st > 0 && !p_voice.norepbra && !(par_sy.staves[st - 1].flags & STOP_BAR))p_voice.norepbra = true
         }
         curvoice = voice_tb[par_sy.top_voice]
     }
@@ -12236,9 +12258,7 @@ function Abc(user) {
                 p_voice = voice_tb[v];
                 p_voice.key = p_voice.ckey = s_key;
                 p_voice.okey = o_key;
-                if (s_clef) {
-                    p_voice.clef = s_clef
-                }
+                p_voice.clef = s_clef || clone(glovar.clef)
             }
             parse.okey = o_key;
             parse.ckey = s_key;
@@ -12323,6 +12343,8 @@ function Abc(user) {
         p_voice.id = id;
         posit = clone(curvoice.posit);
         p_voice.sym = p_voice.last_sym = null;
+        p_voice.nm = null;
+        p_voice.snm = null;
         voice_tb.push(p_voice);
         return p_voice
     }
@@ -12499,7 +12521,7 @@ function Abc(user) {
             w = ly.w;
             swfac = ly.font.swfac;
             xx = w + 2 * cwid(" ") * swfac;
-            if (p[0] >= "0" && p[0] <= "9" || p[1] == ":" || p[0] == "(" || p[0] == ")") {
+            if (p[0] >= "0" && p[0] <= "9" && p.length > 2 || p[1] == ":" || p[0] == "(" || p[0] == ")") {
                 var sz, j;
                 if (p[0] == "(") {
                     sz = cwid("(") * swfac
@@ -12824,7 +12846,7 @@ function Abc(user) {
         return str
     }
 
-    var note_names = "CDEFGAB", latin_names = ["Do", "Ré", "Mi", "Fa", "Sol", "La", "Si"], acc_name = ["bb", "b", "", "#", "##"];
+    var note_names = "CDEFGAB", latin_names = ["Do", "RÃ©", "Mi", "Fa", "Sol", "La", "Si"], acc_name = ["bb", "b", "", "#", "##"];
 
     function gch_transpose(s) {
         var p, q, new_txt, l, latin, n, i1, i2, i3, i4, gch, ix, a, ip, ip2;
@@ -13026,9 +13048,9 @@ function Abc(user) {
         for (ix = 0; ix < s.a_gch.length; ix++) {
             gch = s.a_gch[ix];
             if (gch.type == "g") {
-                if (gch.text.indexOf("#"))gch.text = gch_acc(gch.text, "#", "♯");
-                if (gch.text.indexOf("b"))gch.text = gch_acc(gch.text, "b", "♭");
-                if (gch.text.indexOf("="))gch.text = gch_acc(gch.text, "=", "♮")
+                if (gch.text.indexOf("#"))gch.text = gch_acc(gch.text, "#", "â™¯");
+                if (gch.text.indexOf("b"))gch.text = gch_acc(gch.text, "b", "â™­");
+                if (gch.text.indexOf("="))gch.text = gch_acc(gch.text, "=", "â™®")
             }
             if (gch.type == "@")continue;
             gene.curfont = gch.font;
@@ -13084,9 +13106,9 @@ function Abc(user) {
     }
 
     function draw_gchord(s, gchy_min, gchy_max) {
-        var gch, gch2, text, ix, box, x, y, n, i, j, hbox, xboxl, xboxr, yboxh, yboxl;
-        var w = s.a_gch[0].w, y_above = y_get(s.st, 1, s.x - 2, w), y_below = y_get(s.st, 0, s.x - 2, w);
-        for (ix = 0; ix < s.a_gch.length; ix++) {
+        var gch, gch2, text, ix, x, y, i, j, box, hbox, xboxl, xboxr, yboxh, yboxl;
+        var w = s.a_gch[0].w, y_above = y_get(s.st, 1, s.x - 2, w), y_below = y_get(s.st, 0, s.x - 2, w), n = s.a_gch.length, yav = s.yav || 0;
+        for (ix = 0; ix < n; ix++) {
             gch = s.a_gch[ix];
             if (gch.type != "g")continue;
             gch2 = gch;
@@ -13105,7 +13127,7 @@ function Abc(user) {
         yboxh = -100;
         yboxl = 100;
         box = 0;
-        for (ix = 0; ix < s.a_gch.length; ix++) {
+        for (ix = 0; ix < n; ix++) {
             gch = s.a_gch[ix];
             use_font(gch.font);
             gene.curfont = gene.deffont = gch.font;
@@ -13154,16 +13176,17 @@ function Abc(user) {
                             }
                             break
                         }
-                        n = 2;
+                        j = 2;
                         for (; ;) {
                             i = text.indexOf("	", i + 1);
                             if (i < 0)break;
-                            n++
+                            j++
                         }
-                        var expdx = (x - s.x) / n;
+                        var expdx = (x - s.x) / j;
+                        x = s.x;
+                        if (user.anno_start)user.anno_start("gchord", s.istart, s.iend, x - 2, y + h + 2, w + 4, h + 4);
                         i = 0;
                         j = i;
-                        x = s.x;
                         for (; ;) {
                             i = text.indexOf("	", j);
                             if (i < 0)break;
@@ -13172,27 +13195,28 @@ function Abc(user) {
                             j = i + 1
                         }
                         xy_str(x, y + h * .2, text.slice(j), "c");
+                        if (user.anno_stop)user.anno_stop("annot", s.istart, s.iend, s.x - 2, y + h + 2, w + 4, h + 4);
                         continue
                     }
                     break;
                 case"<":
                     if (s.notes[0].acc)x -= s.notes[0].shac;
-                    y = gch.y;
-                    if (s.yav)y += s.yav;
+                    y = gch.y + yav;
                     break;
                 case">":
                     x += s.xmx;
                     if (s.dots > 0)x += 1.5 + 3.5 * s.dots;
-                    y = gch.y;
-                    if (s.yav)y += s.yav;
+                    y = gch.y + yav;
                     break;
                 case"@":
-                    y = gch.y;
-                    if (s.yav)y += s.yav;
+                    y = gch.y + yav;
                     if (y > 0)y_set(s.st, 1, x, 1, y + h * .8 + 2); else y_set(s.st, 0, x, 1, y - h * .2 - 2);
+                    w = strw(gch.text);
                     break
             }
-            xy_str(x, y + h * .2, text)
+            if (user.anno_start)user.anno_start("annot", s.istart, s.iend, x - 2, y + h + 2, w + 4, h + 4);
+            xy_str(x, y + h * .2, text);
+            if (user.anno_stop)user.anno_stop("annot", s.istart, s.iend, x - 2, y + h + 2, w + 4, h + 4)
         }
         if (xboxr != xboxl) {
             xboxl -= 2;
