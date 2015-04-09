@@ -31,6 +31,10 @@ module ABC2SVG
         _anno_stop(type, start, stop, x, y, w, h)
       end
 
+      set_callback(:get_schema) do |tsfirst, voice_tb, anno_type|
+        _get_schema(tsfirst, voice_tb, anno_type)
+      end
+
       @root = %x{new Abc(#{@user.to_n})}
     end
 
@@ -100,6 +104,11 @@ module ABC2SVG
 
     private
 
+
+    def _get_schema(tsfirst, voice_tb, anno_type)
+    #  `debugger`
+      false
+    end
 
     def _anno_start(music_type, start_offset, stop_offset, x, y, w, h)
       id = _mk_id(music_type, start_offset, stop_offset)
