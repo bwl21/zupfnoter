@@ -9,7 +9,7 @@ module Harpnotes
 
 
       def initialize()
-        @inst = []
+        @inst      = []
         @isplaying = false
         @selection = []
       end
@@ -21,6 +21,7 @@ module Harpnotes
       # This creates an instrument upon request
       def create_inst(instrument_id)
         unless @inst[instrument_id]
+          $log.debug "creating instrument #{instrument_id} "
           @inst[instrument_id] = %x{new Instrument("piano")}
           Native(@inst[instrument_id]).on(:noteon) do |element|
             abc_element = Native(element)[:origin]
@@ -80,21 +81,22 @@ module Harpnotes
           #note schedule in secc, SetTimout in msec; finsh after last measure
           `clearTimeout(#{@song_off_timer})` if @song_off_timer
 
-          firstnote = the_notes.first
-          lastnote = the_notes.last
+          firstnote       = the_notes.first
+          lastnote        = the_notes.last
 
           # stoptime comes in msec
-          stop_time = (lastnote[:delay] - firstnote[:delay] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
+          stop_time       = (lastnote[:delay] - firstnote[:delay] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
           @song_off_timer = `setTimeout(function(){#{@songoff_callback}.$call()}, #{stop_time} )`
 
-
+          idx = 0
           the_notes.each do |the_note|
-            the_note_to_play = the_note.clone
+            the_note_to_play         = the_note.clone
             the_note_to_play[:delay] -= firstnote[:delay]
 
-            note = the_note_to_play.to_n
+            note  = the_note_to_play.to_n
             index = the_note_to_play[:index]
-            inst = create_inst(index)
+            inst  = create_inst(index)
+
             %x{
             #{inst}.tone(#{note});
             #{inst}.schedule(#{note}.delay + #{note}.duration, function(){#{inst}._trigger("noteoff", #{note});});
@@ -130,7 +132,7 @@ module Harpnotes
           origin = Native(element[:origin])
           unless origin.nil?
             el_start = origin[:startChar]
-            el_end = origin[:endChar]
+            el_end   = origin[:endChar]
 
             if ((to > el_start && from < el_end) || ((to === from) && to === el_end))
               @selection.push(element)
@@ -144,14 +146,14 @@ module Harpnotes
 
       def load_song(music)
         specduration = music.meta_data[:tempo][:duration].reduce(:+)
-        specbpm = music.meta_data[:tempo][:bpm]
+        specbpm      = music.meta_data[:tempo][:bpm]
 
-        spectf = (specduration * specbpm)
+        spectf               = (specduration * specbpm)
 
         # 1/4 = 120 bpm shall be  32 ticks per quarter: convert to 1/4 <-> 128:
-        tf = spectf * (128/120)
+        tf                   = spectf * (128/120)
         @duration_timefactor = 1/tf # convert music duration to musicaljs duration
-        @beat_timefactor = 1/(tf * $conf.get('layout.BEAT_PER_DURATION')) # convert music beat to musicaljs delay
+        @beat_timefactor     = 1/(tf * $conf.get('layout.BEAT_PER_DURATION')) # convert music beat to musicaljs delay
 
         #todo duration_time_factor, beat_time_factor
 
@@ -163,7 +165,7 @@ module Harpnotes
             velocity = 0.5
             velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
 
-            to_play = mk_to_play(root, velocity, index)
+            to_play      = mk_to_play(root, velocity, index)
 
             # todo Handle synchpoints
 
@@ -178,12 +180,12 @@ module Harpnotes
             if root.tie_end?
               if tie_start[:pitch] == to_play[:pitch]
                 to_play[:duration] += tie_start[:duration]
-                to_play[:delay] = tie_start[:delay]
+                to_play[:delay]    = tie_start[:delay]
                 $log.debug("#{more_to_play} #{__FILE__} #{__LINE__}")
 
                 more_to_play.each do |p|
                   p[:duration] += tie_start[:duration]
-                  p[:delay] = tie_start[:delay]
+                  p[:delay]    = tie_start[:delay]
                 end
               end
             end
@@ -205,12 +207,12 @@ module Harpnotes
       # @return [Hash] information for the player to play the note
       def mk_to_play(note, velocity, index)
         {
-            delay: note.beat * @beat_timefactor,
-            pitch: -note.pitch, # todo: why -
+            delay:    note.beat * @beat_timefactor,
+            pitch:    -note.pitch, # todo: why -
             duration: note.duration * @duration_timefactor, # todo: do we need to adjust triplets?
             velocity: velocity,
-            origin: note.origin,
-            index: index
+            origin:   note.origin,
+            index:    index
         }
       end
     end

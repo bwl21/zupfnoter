@@ -3,16 +3,16 @@ module ABC2SVG
 
 
     def initialize(div, options={})
-      @on_select = lambda { |element|}
-      @printer = div
-      @svgbuf = []
-      @abc_source = ''
+      @on_select           = lambda { |element| }
+      @printer             = div
+      @svgbuf              = []
+      @abc_source          = ''
       @element_to_position = {}
-      @user = {img_out: nil,
-               errmsg: nil,
-               read_file: nil,
-               annotate: true,
-               page_format: true
+      @user                = { img_out:     nil,
+                               errmsg:      nil,
+                               read_file:   nil,
+                               annotate:    true,
+                               page_format: true
       }
 
       set_callback(:errmsg) do |message, line_number, column_number|
@@ -24,15 +24,15 @@ module ABC2SVG
       end
 
       set_callback(:anno_start) do |type, start, stop, x, y, w, h|
-         _anno_start(type, start, stop, x, y, w, h)
+        _anno_start(type, start, stop, x, y, w, h)
       end
 
       set_callback(:anno_stop) do |type, start, stop, x, y, w, h|
         _anno_stop(type, start, stop, x, y, w, h)
       end
 
-      set_callback(:get_schema) do |tsfirst, voice_tb, anno_type|
-        _get_schema(tsfirst, voice_tb, anno_type)
+      set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
+        # _get_abcmodel(tsfirst, voice_tb, anno_type)
       end
 
       @root = %x{new Abc(#{@user.to_n})}
@@ -47,6 +47,7 @@ module ABC2SVG
     def range_highlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
         element = Element.find("##{id}")
+
         %x{#{element}.parents('svg').get(0).scrollIntoView()}
         classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
         element.attr('class', classes)
@@ -56,7 +57,7 @@ module ABC2SVG
 
     def range_unhighlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
-        foo = Element.find("##{id}")
+        foo     = Element.find("##{id}")
         classes = foo.attr('class').gsub("highlight", '')
         foo.attr('class', classes)
       end
@@ -90,10 +91,10 @@ module ABC2SVG
 
 
     def get_elements_by_range(from, to)
-      range = [from,to].sort
+      range  = [from, to].sort
       result = []
       @element_to_position.each { |k, value|
-        noterange = [:startChar, :endChar].map{|c| value[c]}.sort
+        noterange = [:startChar, :endChar].map { |c| value[c] }.sort
 
         if (range.first - noterange.last) * (noterange.first - range.last) > 0
           result.push(k)
@@ -105,9 +106,25 @@ module ABC2SVG
     private
 
 
-    def _get_schema(tsfirst, voice_tb, anno_type)
-    #  `debugger`
-      false
+    def _get_abcmodel(tsfirst, voice_tb, anno_type)
+
+      tune          = { voices: [] }
+      tune[:voices] = Native(voice_tb).map { |v|
+        curnote = Native(Native(v)[:sym])
+        result  = []
+        while curnote do
+          nextnote         = curnote[:next]
+          curnote[:next]   =nil
+          curnote[:prev]   =nil
+          curnote[:ts_next]=nil
+          curnote[:ts_prev]=nil
+          result << curnote.to_n;
+          curnote = nextnote
+        end
+        puts result.to_json
+        result
+      }
+
     end
 
     def _anno_start(music_type, start_offset, stop_offset, x, y, w, h)
@@ -128,7 +145,7 @@ module ABC2SVG
           #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
             '" height="' + #{h}.toFixed(2) + '"/>\n')
         }
-      @element_to_position[id] = {startChar: start_offset, endChar: stop_offset}
+      @element_to_position[id] = { startChar: start_offset, endChar: stop_offset }
 
     end
 
@@ -148,9 +165,9 @@ module ABC2SVG
 
 
     def _translate(file_name, abc_source)
-      @abc_source = abc_source
+      @abc_source          = abc_source
       @element_to_position = {}
-      @svgbuf = []
+      @svgbuf              = []
       %x{
       #{@root}.tosvg(#{file_name}, #{abc_source});
       }
