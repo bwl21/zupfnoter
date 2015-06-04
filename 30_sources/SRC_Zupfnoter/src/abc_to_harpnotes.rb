@@ -53,7 +53,12 @@ module Harpnotes
       #@param note [Object] Note as provided by abc_parser
       #@return [Integer] midi pitch of the note
       # http://computermusicresource.com/midikeys.html
-      def get_midipitch(note)
+      # @param [Object] persist_accidentals if set to false, accidentals are considered for the current note only but
+      # but not persisted in the measure. This is used, in case of rests, which get their pitch from the subsequent note
+      # which invokes its pitch again on its own. In case of a "neutral" accidental persisting the same would make
+      # apply the neutral too early!.
+      # this covers a but which is in the get_midipitch algorithm
+      def get_midipitch(note, persist_accidentals = true)
 
         native_note = Native(note)
         abc_pitch = native_note[:pitch]
@@ -69,18 +74,20 @@ module Harpnotes
 
         # handle accidentals in measure
         note_accidental = native_note[:accidental]
+        measure_accidentals = @measure_accidentals.clone
         if (note_accidental) then
           pitch_delta = @accidental_pitches[note_accidental]
           if pitch_delta == 0 then
-            if @measure_accidentals[note_in_octave] != 0
+            if measure_accidentals[note_in_octave] != 0
               pitch_delta = 0
             else
               pitch_delta = -1 * @voice_accidentals[note_in_octave]
             end
           end
-          @measure_accidentals[note_in_octave] = pitch_delta
+          measure_accidentals[note_in_octave] = pitch_delta
         end
-        acc_by_measure = @measure_accidentals[note_in_octave]
+        acc_by_measure = measure_accidentals[note_in_octave]
+        @measure_accidentals = measure_accidentals.clone if persist_accidentals
 
         # 60 is the C in 3rd Octave
         result = 60 + 12 * octave + scale[note_in_octave] + acc_by_key + acc_by_measure
@@ -593,7 +600,7 @@ module Harpnotes
 
         pitch = 60
         pitch = @previous_note.pitch if @previous_note
-        pitch = @pitch_transformer.get_midipitch(Native(pitch_note[:pitches]).first) unless pitch_note.nil?
+        pitch = @pitch_transformer.get_midipitch(Native(pitch_note[:pitches]).first, false) unless pitch_note.nil?
 
         rest = Harpnotes::Music::Pause.new(pitch, duration)
         rest.origin = note
