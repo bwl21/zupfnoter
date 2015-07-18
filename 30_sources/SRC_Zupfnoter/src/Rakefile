@@ -35,6 +35,7 @@ task :build do
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
     out << env["application"].to_s
+    out << Opal::Processor.load_asset_code(env, 'application')
   end
 
   Dir.glob "../public/*.scss" do |f|
