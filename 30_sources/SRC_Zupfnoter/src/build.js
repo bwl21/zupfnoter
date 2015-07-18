@@ -22387,7 +22387,7 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
   Opal.dynamic_require_severity = "error";
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$lambda', '$set_callback', '$error', '$push', '$_anno_start', '$_anno_stop', '$to_n', '$unhighlight_all', '$range_highlight_more', '$each', '$find', '$join', '$uniq', '$flatten', '$split', '$attr', '$get_elements_by_range', '$gsub', '$_set_on_select', '$_translate', '$html', '$get_svg', '$[]=', '$sort', '$map', '$[]', '$>', '$*', '$-', '$first', '$last', '$private', '$_mk_id', '$on', '$stop_propagation', '$call', '$id', '$current_target']);
+  Opal.add_stubs(['$lambda', '$set_callback', '$error', '$push', '$_anno_start', '$_anno_stop', '$_get_schema', '$to_n', '$unhighlight_all', '$range_highlight_more', '$each', '$find', '$join', '$uniq', '$flatten', '$split', '$attr', '$get_elements_by_range', '$gsub', '$_set_on_select', '$_translate', '$html', '$get_svg', '$[]=', '$sort', '$map', '$[]', '$>', '$*', '$-', '$first', '$last', '$private', '$_mk_id', '$on', '$stop_propagation', '$call', '$id', '$current_target']);
   return (function($base) {
     var self = $module($base, 'ABC2SVG');
 
@@ -22397,11 +22397,11 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
       function $Abc2Svg(){};
       var self = $Abc2Svg = $klass($base, $super, 'Abc2Svg', $Abc2Svg);
 
-      var def = self.$$proto, $scope = self.$$scope, TMP_8, TMP_9;
+      var def = self.$$proto, $scope = self.$$scope, TMP_9, TMP_10;
 
       def.user = def.printer = def.svgbuf = def.element_to_position = def.root = nil;
       def.$initialize = function(div, options) {
-        var $a, $b, TMP_1, $c, TMP_2, $d, TMP_3, $e, TMP_4, $f, TMP_5, self = this;
+        var $a, $b, TMP_1, $c, TMP_2, $d, TMP_3, $e, TMP_4, $f, TMP_5, $g, TMP_6, self = this;
 
         if (options == null) {
           options = $hash2([], {})
@@ -22428,6 +22428,9 @@ if (type == null) type = nil;if (start == null) start = nil;if (stop == null) st
         ($a = ($f = self).$set_callback, $a.$$p = (TMP_5 = function(type, start, stop, x, y, w, h){var self = TMP_5.$$s || this;
 if (type == null) type = nil;if (start == null) start = nil;if (stop == null) stop = nil;if (x == null) x = nil;if (y == null) y = nil;if (w == null) w = nil;if (h == null) h = nil;
         return self.$_anno_stop(type, start, stop, x, y, w, h)}, TMP_5.$$s = self, TMP_5), $a).call($f, "anno_stop");
+        ($a = ($g = self).$set_callback, $a.$$p = (TMP_6 = function(tsfirst, voice_tb, anno_type){var self = TMP_6.$$s || this;
+if (tsfirst == null) tsfirst = nil;if (voice_tb == null) voice_tb = nil;if (anno_type == null) anno_type = nil;
+        return self.$_get_schema(tsfirst, voice_tb, anno_type)}, TMP_6.$$s = self, TMP_6), $a).call($g, "get_schema");
         return self.root = new Abc(self.user.$to_n());
       };
 
@@ -22440,25 +22443,25 @@ if (type == null) type = nil;if (start == null) start = nil;if (stop == null) st
       };
 
       def.$range_highlight_more = function(from, to) {
-        var $a, $b, TMP_6, self = this;
+        var $a, $b, TMP_7, self = this;
 
-        ($a = ($b = self.$get_elements_by_range(from, to)).$each, $a.$$p = (TMP_6 = function(id){var self = TMP_6.$$s || this, element = nil, classes = nil;
+        ($a = ($b = self.$get_elements_by_range(from, to)).$each, $a.$$p = (TMP_7 = function(id){var self = TMP_7.$$s || this, element = nil, classes = nil;
 if (id == null) id = nil;
         element = $scope.get('Element').$find("#" + (id));
           element.parents('svg').get(0).scrollIntoView();
           classes = [element.$attr("class").$split(" "), "highlight"].$flatten().$uniq().$join(" ");
-          return element.$attr("class", classes);}, TMP_6.$$s = self, TMP_6), $a).call($b);
+          return element.$attr("class", classes);}, TMP_7.$$s = self, TMP_7), $a).call($b);
         return nil;
       };
 
       def.$range_unhighlight_more = function(from, to) {
-        var $a, $b, TMP_7, self = this;
+        var $a, $b, TMP_8, self = this;
 
-        return ($a = ($b = self.$get_elements_by_range(from, to)).$each, $a.$$p = (TMP_7 = function(id){var self = TMP_7.$$s || this, foo = nil, classes = nil;
+        return ($a = ($b = self.$get_elements_by_range(from, to)).$each, $a.$$p = (TMP_8 = function(id){var self = TMP_8.$$s || this, foo = nil, classes = nil;
 if (id == null) id = nil;
         foo = $scope.get('Element').$find("#" + (id));
           classes = foo.$attr("class").$gsub("highlight", "");
-          return foo.$attr("class", classes);}, TMP_7.$$s = self, TMP_7), $a).call($b);
+          return foo.$attr("class", classes);}, TMP_8.$$s = self, TMP_8), $a).call($b);
       };
 
       def.$unhighlight_all = function() {
@@ -22467,10 +22470,10 @@ if (id == null) id = nil;
         return $scope.get('Element').$find(".highlight").$attr("class", "abcref");
       };
 
-      def.$on_select = TMP_8 = function() {
-        var self = this, $iter = TMP_8.$$p, block = $iter || nil;
+      def.$on_select = TMP_9 = function() {
+        var self = this, $iter = TMP_9.$$p, block = $iter || nil;
 
-        TMP_8.$$p = null;
+        TMP_9.$$p = null;
         self.on_select = block;
         return self.$_set_on_select();
       };
@@ -22490,32 +22493,38 @@ if (id == null) id = nil;
         return self.svgbuf.$join("\n");
       };
 
-      def.$set_callback = TMP_9 = function(event) {
-        var self = this, $iter = TMP_9.$$p, block = $iter || nil;
+      def.$set_callback = TMP_10 = function(event) {
+        var self = this, $iter = TMP_10.$$p, block = $iter || nil;
 
-        TMP_9.$$p = null;
+        TMP_10.$$p = null;
         return self.user['$[]='](event, block);
       };
 
       def.$get_elements_by_range = function(from, to) {
-        var $a, $b, TMP_10, self = this, range = nil, result = nil;
+        var $a, $b, TMP_11, self = this, range = nil, result = nil;
 
         range = [from, to].$sort();
         result = [];
-        ($a = ($b = self.element_to_position).$each, $a.$$p = (TMP_10 = function(k, value){var self = TMP_10.$$s || this, $a, $b, TMP_11, noterange = nil;
+        ($a = ($b = self.element_to_position).$each, $a.$$p = (TMP_11 = function(k, value){var self = TMP_11.$$s || this, $a, $b, TMP_12, noterange = nil;
 if (k == null) k = nil;if (value == null) value = nil;
-        noterange = ($a = ($b = ["startChar", "endChar"]).$map, $a.$$p = (TMP_11 = function(c){var self = TMP_11.$$s || this;
+        noterange = ($a = ($b = ["startChar", "endChar"]).$map, $a.$$p = (TMP_12 = function(c){var self = TMP_12.$$s || this;
 if (c == null) c = nil;
-          return value['$[]'](c)}, TMP_11.$$s = self, TMP_11), $a).call($b).$sort();
+          return value['$[]'](c)}, TMP_12.$$s = self, TMP_12), $a).call($b).$sort();
           if ((range.$first()['$-'](noterange.$last()))['$*']((noterange.$first()['$-'](range.$last())))['$>'](0)) {
             return result.$push(k)
             } else {
             return nil
-          };}, TMP_10.$$s = self, TMP_10), $a).call($b);
+          };}, TMP_11.$$s = self, TMP_11), $a).call($b);
         return result;
       };
 
       self.$private();
+
+      def.$_get_schema = function(tsfirst, voice_tb, anno_type) {
+        var self = this;
+
+        return nil;
+      };
 
       def.$_anno_start = function(music_type, start_offset, stop_offset, x, y, w, h) {
         var self = this, id = nil;
@@ -22549,15 +22558,15 @@ if (c == null) c = nil;
       };
 
       def.$_set_on_select = function() {
-        var $a, $b, TMP_12, self = this;
+        var $a, $b, TMP_13, self = this;
 
-        return ($a = ($b = $scope.get('Element').$find(".abcref")).$on, $a.$$p = (TMP_12 = function(evt){var self = TMP_12.$$s || this;
+        return ($a = ($b = $scope.get('Element').$find(".abcref")).$on, $a.$$p = (TMP_13 = function(evt){var self = TMP_13.$$s || this;
           if (self.on_select == null) self.on_select = nil;
           if (self.element_to_position == null) self.element_to_position = nil;
 if (evt == null) evt = nil;
         evt.$stop_propagation();
           self.on_select.$call(self.element_to_position['$[]'](evt.$current_target().$id()));
-          return nil;}, TMP_12.$$s = self, TMP_12), $a).call($b, "click");
+          return nil;}, TMP_13.$$s = self, TMP_13), $a).call($b, "click");
       };
 
       return (def.$_translate = function(file_name, abc_source) {

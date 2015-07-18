@@ -990,6 +990,7 @@ module Harpnotes
         # push view specific configuration
         layout_options = print_options[:layout] || {}
         $conf.push({layout: layout_options})
+        initialize
 
         @y_offset = print_options[:startpos]
 
