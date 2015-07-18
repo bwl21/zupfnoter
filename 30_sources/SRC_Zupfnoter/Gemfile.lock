@@ -1,0 +1,45 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    coderay (1.1.0)
+    erubis (2.7.0)
+    hike (1.2.3)
+    json_schema (0.6.0)
+    method_source (0.8.2)
+    opal (0.8.0)
+      hike (~> 1.2)
+      sourcemap (~> 0.1.0)
+      sprockets (~> 3.1)
+      tilt (>= 1.4)
+    opal-jquery (0.4.0)
+      opal (>= 0.7.0, < 0.9.0)
+    prmd (0.7.0)
+      erubis (~> 2.7)
+      json_schema (~> 0.3, >= 0.3.1)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    rack (1.6.4)
+    rake (10.4.2)
+    sass (3.4.13)
+    slop (3.6.0)
+    sourcemap (0.1.1)
+    sprockets (3.2.0)
+      rack (~> 1.0)
+    tilt (2.0.1)
+    vector2d (2.1.0)
+    zip (2.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  opal (~> 0.8.0)
+  opal-jquery (~> 0.4.0)
+  prmd
+  pry
+  rake
+  sass
+  vector2d (~> 2.1.0)
+  zip
