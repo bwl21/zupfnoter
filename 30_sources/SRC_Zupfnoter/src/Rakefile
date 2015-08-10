@@ -27,15 +27,16 @@ end
 
 desc "Build our app to #{ZUPFNOTER_JS}"
 task :build do
-  env = Sprockets::Environment.new
+  #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.use_gem "vector2d"
 
-  Opal.paths.each { |p| env.append_path(p) }
+  #Opal.paths.each { |p| env.append_path(p) }
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
-    out << env["application"].to_s
-    out << Opal::Processor.load_asset_code(env, 'application')
+  #   out << env["application"].to_s
+  #   out << Opal::Processor.load_asset_code(env, 'application')
+     out.puts( Opal::Builder::build("application").to_s)
   end
 
   Dir.glob "../public/*.scss" do |f|
