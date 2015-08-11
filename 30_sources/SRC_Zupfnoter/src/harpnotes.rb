@@ -96,6 +96,7 @@ module Harpnotes
 
       def initialize
         @visible = true
+        @origin = nil
       end
 
       def visible?
@@ -105,6 +106,13 @@ module Harpnotes
 
       def start_pos_to_s
         "[#{@start_pos.first}:#{@start_pos.last}]"
+      end
+
+
+      def to_json
+        Hash[[['class', self.class]] + (instance_variables - ['@constructor', '@toString']).map{|v|
+               [v, instance_variable_get(v)]
+             }].to_json
       end
     end
 
@@ -419,6 +427,9 @@ module Harpnotes
       attr_reader :voices, :beat_maps
       attr_accessor :meta_data, :harpnote_options
 
+      def to_json
+        {voices: @voices, beat_maps:@beat_maps}.to_json
+      end
       #
       # Constructor
       # @param voices [Array of ABCVoice] The voices in the song
@@ -530,9 +541,6 @@ module Harpnotes
             beats = playable.duration * $conf.get('layout.BEAT_PER_DURATION') # todo:handle triplets
             # Timefactor of player
             # BEAT_RESOLUTOIN
-            if playable.tuplet == 3
-              #beats = beats * 2/3
-            end
 
             beats = beats * tupletmap[playable.tuplet]
             beat_error = beats - beats.floor(0)

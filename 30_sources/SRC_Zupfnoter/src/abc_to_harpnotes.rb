@@ -125,6 +125,16 @@ module Harpnotes
         nil
       end
 
+      # This creates a mockup of an ABC-Object providing the informaiton required for bactracing
+      # and cross highlighting
+      #
+      # @param [Object] this is an abc object
+      #
+      # @return [Hash] with startChar, endChar
+      def mk_origin(origin)
+        {startChar: origin[:startChar], endChar:origin[:endChar]}
+      end
+
       #
       # todo refine the parsing of the options
       def parse_harpnote_config(abc_code)
@@ -207,8 +217,8 @@ module Harpnotes
           var warnings = parser.getWarningObjects();
           var tune = parser.getTune();
           // todo handle parser warnings
-          console.log(tune);
-          console.log(JSON.stringify(tune));
+          //console.log(tune);
+          //console.log(JSON.stringify(tune));
         }
 
         warnings = [Native(`warnings`)].flatten.compact
@@ -294,7 +304,7 @@ module Harpnotes
               # apply uptracing information to the harpnote elements
               unless hn_voice_element.nil? or hn_voice_element.empty?
                 hn_voice_element.each do |e|
-                  e.origin = el # todo: pass a hash only {}
+                  e.origin = mk_origin(el) # el # todo: pass a hash only {}
                   e.start_pos = start_pos # necessary for error reporting in editor
                   e.end_pos = end_pos
                 end
@@ -603,7 +613,7 @@ module Harpnotes
         pitch = @pitch_transformer.get_midipitch(Native(pitch_note[:pitches]).first, false) unless pitch_note.nil?
 
         rest = Harpnotes::Music::Pause.new(pitch, duration)
-        rest.origin = note
+        rest.origin = mk_origin(note)
         rest.visible = false if note[:rest][:type] == 'invisible'
         @previous_note = rest
 
@@ -637,7 +647,7 @@ module Harpnotes
           midipitch = @pitch_transformer.get_midipitch(pitch)
           native_pitch = Native(pitch)
           thenote = Harpnotes::Music::Note.new(midipitch, duration)
-          thenote.origin = note
+          thenote.origin = mk_origin(note)
           # we always deliver arrays; this avoids if statements in layouter
           thenote.slur_starts = (native_pitch[:startSlur] || []).map { |s| Native(s)[:label] }
           thenote.slur_ends = native_pitch[:endSlur] || []
@@ -736,7 +746,7 @@ module Harpnotes
 
       def transform_part(part)
         new_part = Harpnotes::Music::NewPart.new(part[:title])
-        new_part.origin = part
+        new_part.origin = mk_origin(part)
         @previous_new_part << new_part
         [new_part]
       end
