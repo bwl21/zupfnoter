@@ -6,183 +6,106 @@ module Harpnotes
 
   module Input
 
-    class ABCPitchToMidipitch
+    # The transformer
+    # todo:@next_not_marks ...
+    class AbcjsToHarpnotes < AbstractAbcToHarpnotes
 
-      def initialize
-        #the tones within an octave
-        @tonemap = {'c' => 0,
-                    'd' => 1,
-                    'e' => 2,
-                    'f' => 3,
-                    'g' => 4,
-                    'a' => 5,
-                    'b' => 6}
+      class ABCPitchToMidipitch
 
-        @voice_accidentals = (0..6).map { |f| 0 }
-        @measure_accidentals = (0..6).map { |f| 0 }
-        @on_error = lambda { |line, message|}
+        def initialize
+          #the tones within an octave
+          @tonemap = { 'c' => 0,
+                       'd' => 1,
+                       'e' => 2,
+                       'f' => 3,
+                       'g' => 4,
+                       'a' => 5,
+                       'b' => 6 }
 
-        @accidental_pitches = {'sharp' => 1, 'flat' => -1, 'natural' => 0}
-      end
+          @voice_accidentals   = (0..6).map { |f| 0 }
+          @measure_accidentals = (0..6).map { |f| 0 }
+          @on_error            = lambda { |line, message| }
 
-      def on_error(&block)
-        @on_error = block
-      end
+          @accidental_pitches = { 'sharp' => 1, 'flat' => -1, 'natural' => 0 }
+        end
 
-      # set the key of the Sheet
-      # @param key [key as provided by ABCjs]
-      # @return self
-      def set_key(key)
-        @voice_accidentals = (0..6).map { |f| 0 }
-        nkey = Native(key)
-        accidentals = Native(key)[:accidentals]
-        accidentals.each do |accidental|
-          a = Native(accidental)
-          @voice_accidentals[@tonemap[a[:note].downcase]] = @accidental_pitches[a[:acc].downcase]
+        def on_error(&block)
+          @on_error = block
+        end
+
+        # set the key of the Sheet
+        # @param key [key as provided by ABCjs]
+        # @return self
+        def set_key(key)
+          @voice_accidentals = (0..6).map { |f| 0 }
+          nkey               = Native(key)
+          accidentals        = Native(key)[:accidentals]
+          accidentals.each do |accidental|
+            a                                               = Native(accidental)
+            @voice_accidentals[@tonemap[a[:note].downcase]] = @accidental_pitches[a[:acc].downcase]
+            self
+          end
+
           self
         end
 
-        self
-      end
 
-
-      def reset_measure_accidentals
-        @measure_accidentals = @measure_accidentals.map { |f| 0 }
-      end
-
-      #@param note [Object] Note as provided by abc_parser
-      #@return [Integer] midi pitch of the note
-      # http://computermusicresource.com/midikeys.html
-      # @param [Object] persist_accidentals if set to false, accidentals are considered for the current note only but
-      # but not persisted in the measure. This is used, in case of rests, which get their pitch from the subsequent note
-      # which invokes its pitch again on its own. In case of a "neutral" accidental persisting the same would make
-      # apply the neutral too early!.
-      # this covers a but which is in the get_midipitch algorithm
-      def get_midipitch(note, persist_accidentals = true)
-
-        native_note = Native(note)
-        abc_pitch = native_note[:pitch]
-        scale = [0, 2, 4, 5, 7, 9, 11]
-
-        octave = (abc_pitch / 7).floor
-
-        note_in_octave = abc_pitch % 7
-        note_in_octave += 7 if note_in_octave < 0
-
-        # add accidentals by key
-        acc_by_key = @voice_accidentals[note_in_octave]
-
-        # handle accidentals in measure
-        note_accidental = native_note[:accidental]
-        measure_accidentals = @measure_accidentals.clone
-        if (note_accidental) then
-          pitch_delta = @accidental_pitches[note_accidental]
-          if pitch_delta == 0 then
-            if measure_accidentals[note_in_octave] != 0
-              pitch_delta = 0
-            else
-              pitch_delta = -1 * @voice_accidentals[note_in_octave]
-            end
-          end
-          measure_accidentals[note_in_octave] = pitch_delta
-        end
-        acc_by_measure = measure_accidentals[note_in_octave]
-        @measure_accidentals = measure_accidentals.clone if persist_accidentals
-
-        # 60 is the C in 3rd Octave
-        result = 60 + 12 * octave + scale[note_in_octave] + acc_by_key + acc_by_measure
-
-        result
-      end
-    end
-
-
-    # The transformer
-    # todo:@next_not_marks ...
-    class ABCToHarpnotes
-
-      def initialize
-        @pitch_transformer = Harpnotes::Input::ABCPitchToMidipitch.new()
-        @abc_code=nil
-        @previous_new_part = []
-        reset_state
-      end
-
-      def reset_state
-
-        @jumptargets = {} # the lookup table for jumps
-
-        @next_note_marks = {measure: false,
-                            repeat_start: false,
-                            variant_ending: nil}
-        @previous_new_part = []
-        @previous_note = nil
-        @repetition_stack = []
-        @pitch_transformer.reset_measure_accidentals
-        @current_tuplet = 0
-        @tuplet_downcount = 0
-        @pitch_providers = [] # lookuptable for pitches (used by rest)
-        nil
-      end
-
-      # This creates a mockup of an ABC-Object providing the informaiton required for bactracing
-      # and cross highlighting
-      #
-      # @param [Object] this is an abc object
-      #
-      # @return [Hash] with startChar, endChar
-      def mk_origin(origin)
-        {startChar: origin[:startChar], endChar:origin[:endChar]}
-      end
-
-      #
-      # todo refine the parsing of the options
-      def parse_harpnote_config(abc_code)
-        # extract harpnoter specific commands
-
-        hn_config_from_song = {}
-        line_no = 1
-        abc_code.split("\n").each do |line|
-          entry = line.match(/^%%%%hn\.(print|legend|note|annotation|lyrics) (.*)/) { |m| [m[1], m[2]] }
-          if entry
-            begin
-              parsed_entry = JSON.parse(entry.last)
-              parsed_entry[:line_no] = line_no
-              hn_config_from_song[entry.first] ||= []
-              hn_config_from_song[entry.first] << parsed_entry
-            rescue Exception => e
-              message = ("error in harpnote commands: #{e.message} [#{line_no}:#{entry}]")
-              $log.error(message, [line_no, 1], [line_no, 2])
-            end
-          end
-          line_no +=1
+        def reset_measure_accidentals
+          @measure_accidentals = @measure_accidentals.map { |f| 0 }
         end
 
-        # cleanups
+        #@param note [Object] Note as provided by abc_parser
+        #@return [Integer] midi pitch of the note
+        # http://computermusicresource.com/midikeys.html
+        # @param [Object] persist_accidentals if set to false, accidentals are considered for the current note only but
+        # but not persisted in the measure. This is used, in case of rests, which get their pitch from the subsequent note
+        # which invokes its pitch again on its own. In case of a "neutral" accidental persisting the same would make
+        # apply the neutral too early!.
+        # this covers a but which is in the get_midipitch algorithm
+        def get_midipitch(note, persist_accidentals = true)
 
-        hn_config_from_song[:legend] = hn_config_from_song[:legend].first if hn_config_from_song[:legend] # legend is not an array
-        hn_config_from_song[:lyrics] = hn_config_from_song[:lyrics].first if hn_config_from_song[:lyrics] # lyrics is not an array
-        hn_config_from_song
-      end
+          native_note = Native(note)
+          abc_pitch   = native_note[:pitch]
+          scale       = [0, 2, 4, 5, 7, 9, 11]
 
+          octave = (abc_pitch / 7).floor
 
-      # get the abc-specified metadata of the current song from the editor_f
-      #
-      def get_metadata(abc_code)
-        retval = abc_code.split("\n").inject({}) do |result, line|
-          entry = line.match(/^(X|T|F):\s*(.*)/) { |m| [m[1], m[2]] }
-          result[entry.first] = entry.last if entry
+          note_in_octave      = abc_pitch % 7
+          note_in_octave      += 7 if note_in_octave < 0
+
+          # add accidentals by key
+          acc_by_key          = @voice_accidentals[note_in_octave]
+
+          # handle accidentals in measure
+          note_accidental     = native_note[:accidental]
+          measure_accidentals = @measure_accidentals.clone
+          if (note_accidental) then
+            pitch_delta = @accidental_pitches[note_accidental]
+            if pitch_delta == 0 then
+              if measure_accidentals[note_in_octave] != 0
+                pitch_delta = 0
+              else
+                pitch_delta = -1 * @voice_accidentals[note_in_octave]
+              end
+            end
+            measure_accidentals[note_in_octave] = pitch_delta
+          end
+          acc_by_measure       = measure_accidentals[note_in_octave]
+          @measure_accidentals = measure_accidentals.clone if persist_accidentals
+
+          # 60 is the C in 3rd Octave
+          result               = 60 + 12 * octave + scale[note_in_octave] + acc_by_key + acc_by_measure
+
           result
         end
-        retval
       end
 
-      # add missing abc-metadata
-      #
-      def add_metadata(abc_code, new_metadata)
-        old_metadata = get_metadata(abc_code)
-        more_metadata = new_metadata.select { |k, v| old_metadata[k].nil? }.map { |k, v| "#{k}:#{v}" }
-        [more_metadata, abc_code].flatten.compact.join("\n")
+      def initialize
+        super
+        @pitch_transformer = ABCPitchToMidipitch.new()
+        @abc_code          = nil
+        @previous_new_part = []
+        reset_state
       end
 
 
@@ -190,7 +113,7 @@ module Harpnotes
       #
       # @return [Harpnotes::Music::Song] the Song
       def transform(zupfnoter_abc)
-        @abc_code = zupfnoter_abc
+        @abc_code        = zupfnoter_abc
 
         # get harpnote_options from abc_code
         # todo remove this compatibility mode
@@ -223,9 +146,9 @@ module Harpnotes
 
         warnings = [Native(`warnings`)].flatten.compact
         warnings.each { |w|
-          wn = Native(w)
+          wn                = Native(w)
           line_no, char_pos = charpos_to_line_column(wn[:startChar])
-          msg = "#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]"
+          msg               = "#{wn[:message]} at line #{wn[:line]} at [#{line_no}:#{char_pos}]"
           $log.warning(msg, [line_no, char_pos], [line_no, char_pos + 1])
         }
 
@@ -233,19 +156,31 @@ module Harpnotes
         # pull out the headlines
         # todo:factor out to a generic method parse_abc_header()
         #
+
+        # note_length = get_metadata(zupfnoter_abc)[:L]
+        # note_length = '1/4' unless note_length
+        # note_length = note_length.split('/').map{|s| s.strip.to_i} #|| '1/4').split.map { |s| s.strip.to_i }
+        #
+        # puts note_length
+        # `debugger`
+
+        #note_length = note_length.last / note_length.first
+
+
         note_length_rows = zupfnoter_abc.split("\n").select { |row| row[0..1] == "L:" }
         note_length_rows = ["L:1/4"] if note_length_rows.empty?
-        note_length = note_length_rows.first.strip.split(":").last.split("/").map { |s| s.strip.to_i }
-        note_length = note_length.last / note_length.first
+        note_length      = note_length_rows.first.strip.split(":").last.split("/").map { |s| s.strip.to_i }
+        note_length      = note_length.last / note_length.first
+
 
         # extract the lines
-        tune = Native(`tune`)
-        lines = tune[:lines].select { |l| Native(l)[:staff] } # filter out subtitles
+        tune             = Native(`tune`)
+        lines            = tune[:lines].select { |l| Native(l)[:staff] } # filter out subtitles
 
 
         # get the key
-        first_staff = Native(Native(lines.first)[:staff].first)
-        key = first_staff[:key]
+        first_staff      = Native(Native(lines.first)[:staff].first)
+        key              = first_staff[:key]
         @pitch_transformer.set_key(key)
 
         #get the meter
@@ -253,8 +188,8 @@ module Harpnotes
             :type => first_staff[:meter][:type]
         }
         if meter[:type] == "specified"
-          meter[:den] = Native(first_staff[:meter][:value].first)[:den]
-          meter[:num] = Native(first_staff[:meter][:value].first)[:num]
+          meter[:den]     = Native(first_staff[:meter][:value].first)[:den]
+          meter[:num]     = Native(first_staff[:meter][:value].first)[:num]
           meter[:display] = "#{meter[:num]}/#{meter[:den]}"
         elsif meter[:display] = meter[:type]
         end
@@ -287,27 +222,35 @@ module Harpnotes
           end
 
           # transform the voice content
-          hn_voice = voice.each_with_index.map do |el, i|
+          hn_voice         = voice.each_with_index.map do |el, i|
 
-            type = el[:el_type]
+            type             = el[:el_type]
             hn_voice_element = self.send("transform_#{type}", el, i)
 
             if el[:startChar]
               # fix character position in abc
               el[:startChar] -= 3 if el[:startChar] == el[:endChar] # fix ananomaly of abc2js chords have no range
 
-              end_char = el[:endChar]
+              end_char   = el[:endChar]
               start_char = el[:startChar]
-              start_pos = charpos_to_line_column(start_char) if start_char > 0
-              end_pos = charpos_to_line_column(end_char) if end_char > 0
+              start_pos  = charpos_to_line_column(start_char) if start_char > 0
+              end_pos    = charpos_to_line_column(end_char) if end_char > 0
 
               # apply uptracing information to the harpnote elements
               unless hn_voice_element.nil? or hn_voice_element.empty?
                 hn_voice_element.each do |e|
-                  e.origin = mk_origin(el) # el # todo: pass a hash only {}
+                  e.origin    = mk_origin(el) # el # todo: pass a hash only {}
                   e.start_pos = start_pos # necessary for error reporting in editor
-                  e.end_pos = end_pos
+                  e.end_pos   = end_pos
+
+                  if e.is_a?(Harpnotes::Music::SynchPoint)
+                    e.notes.each do |synchpoint_note|
+                      synchpoint_note.start_pos = start_pos
+                      synchpoint_note.end_pos   = end_pos
+                    end
+                  end
                 end
+
               end
             end
 
@@ -315,11 +258,11 @@ module Harpnotes
           end.flatten.compact
 
           # compute the explicit jumplines
-          jumplines = []
+          jumplines        = []
           hn_voice.each do |e|
             jumplines << make_jumplines(e)
           end
-          hn_voice += jumplines.flatten.compact
+          hn_voice              += jumplines.flatten.compact
 
 
           # note bound annotations
@@ -338,18 +281,18 @@ module Harpnotes
         #############################
         # now construct the song
         hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
-        result = Harpnotes::Music::Song.new(hn_voices, note_length)
+        result    = Harpnotes::Music::Song.new(hn_voices, note_length)
 
         # contruct the meta data
-        meta_data = {:compile_time => Time.now(),
-                     :meter => meter[:display],
-                     :key => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
+        meta_data = { :compile_time => Time.now(),
+                      :meter        => meter[:display],
+                      :key          => Native(key)[:root] + Native(key)[:acc] + Native(key)[:mode]
         }
 
         # augment metadata by appending annotations with
         # the abc-key. This is supported only for dedicated
         # information fields
-        {key: "K:"}.each do |k, v|
+        { key: "K:" }.each do |k, v|
           if @annotations[v]
             meta_data[k] = meta_data[k] + (@annotations[v][:text] || "")
           end
@@ -357,15 +300,15 @@ module Harpnotes
 
         # handling tempo
         # tempo is marked as duration, ... duration = bpm
-        duration = 0.25; bpm = 120 # default speed settings #todo make this configurable
+        duration                  = 0.25; bpm = 120 # default speed settings #todo make this configurable
         # note that duration from metadata is an array, so the default needs to be an array too.
-        meta_data[:tempo] = {duration: [duration], bpm: bpm} # setting the default speed
+        meta_data[:tempo]         = { duration: [duration], bpm: bpm } # setting the default speed
         meta_data[:tempo_display] = "1/#{1/duration} = #{bpm}"
         if tune[:metaText][:tempo]
           duration = tune[:metaText][:tempo][:duration] rescue meta_data[:tempo][:duration]
           bpm = tune[:metaText][:tempo][:bpm] rescue meta_data[:tempo][:bpm]
-          meta_data[:tempo] = {duration: duration, bpm: bpm}
-          duration_display = duration.map { |d| "1/#{1/d}" }
+          meta_data[:tempo]         = { duration: duration, bpm: bpm }
+          duration_display          = duration.map { |d| "1/#{1/d}" }
           meta_data[:tempo_display] = [tune[:metaText][:tempo][:preString],
                                        duration_display, "=", bpm,
                                        tune[:metaText][:tempo][:postString]
@@ -375,12 +318,12 @@ module Harpnotes
         # handle meta data from tune as parsed by abcjs
         meta_data_from_tune = Hash.new(tune[:metaText].to_n)
         meta_data_from_tune.keys.each { |k| meta_data[k] = meta_data_from_tune[k] } # todo could not get Hash(object) and use merge
-        result.meta_data = meta_data
+        result.meta_data        = meta_data
 
 
         # handle harpnote options (the %%%%hn.xxxx - coments)
         result.harpnote_options = {}
-        print_options = Confstack.new
+        print_options           = Confstack.new
         print_options.push($conf.get("defaults.print"))
 
         # handle print options
@@ -388,19 +331,19 @@ module Harpnotes
           print_options.push(specified_option)
 
           resulting_options = {
-              view_id: index,
-              title: print_options.get('t'),
-              startpos: print_options.get('startpos'),
-              voices: (print_options.get('v')), #.map { |i| i-1 },
-              synchlines: (print_options.get('s')), #.map { |i| i.map { |j| j-1 } },
-              flowlines: (print_options.get('f')), #.map { |i| i-1 },
+              view_id:      index,
+              title:        print_options.get('t'),
+              startpos:     print_options.get('startpos'),
+              voices:       (print_options.get('v')), #.map { |i| i-1 },
+              synchlines:   (print_options.get('s')), #.map { |i| i.map { |j| j-1 } },
+              flowlines:    (print_options.get('f')), #.map { |i| i-1 },
               subflowlines: (print_options.get('sf')), #.map { |i| i-1 },
-              jumplines: (print_options.get('j')), # .map { |i| i-1 },
-              layoutlines: (print_options.get('l') || print_options.get('v')) # .map { |i| i-1 } # these voices are considered in layoutoptimization
+              jumplines:    (print_options.get('j')), # .map { |i| i-1 },
+              layoutlines:  (print_options.get('l') || print_options.get('v')) # .map { |i| i-1 } # these voices are considered in layoutoptimization
           }
 
           # checking missing voices
-          missing_voices = (resulting_options[:voices] - resulting_options[:layoutlines]).map { |i| i + 1 }
+          missing_voices    = (resulting_options[:voices] - resulting_options[:layoutlines]).map { |i| i + 1 }
           $log.error("hn.print '#{resulting_options[:title]}' l: missing voices #{missing_voices.to_s}") unless missing_voices.empty?
 
           print_options.pop
@@ -414,7 +357,7 @@ module Harpnotes
           result.harpnote_options[:print] = $conf.get("produce").map do |i|
             title = $conf.get("extract.#{i}.title")
             if title
-              {title: title, view_id: i}
+              { title: title, view_id: i }
             else
               $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
               nil
@@ -429,14 +372,14 @@ module Harpnotes
         result.harpnote_options[:legend] = print_options.get
 
         # lyrics
-        print_options = Confstack.new
+        print_options                    = Confstack.new
         print_options.push($conf.get('defaults.lyrics'))
         print_options.push(harpnote_options[:lyrics]) if harpnote_options[:lyrics]
-        result.harpnote_options[:lyrics] = print_options.get
+        result.harpnote_options[:lyrics]        = print_options.get
         result.harpnote_options[:lyrics][:text] = meta_data[:unalignedWords] || []
 
         # notes
-        result.harpnote_options[:notes] = harpnote_options[:note] || []
+        result.harpnote_options[:notes]         = harpnote_options[:note] || []
 
         result
       end
@@ -447,8 +390,8 @@ module Harpnotes
       # @param [Numeric] charpos character position in abc code
       # @return [Numeric] charpos, line_no
       def charpos_to_line_column(charpos)
-        lines = @abc_code[1, charpos].split("\n")
-        line_no = lines.count
+        lines    = @abc_code[1, charpos].split("\n")
+        line_no  = lines.count
         char_pos = lines.last.length()
         return line_no, char_pos
       end
@@ -492,11 +435,11 @@ module Harpnotes
           chords =_extract_chord_lines(entity.origin)
           chords.each do |name|
             if name[0] == '@'
-              nameparts = name[1..-1].split("@")
+              nameparts  = name[1..-1].split("@")
               targetname = nameparts[0]
-              target = @jumptargets[targetname]
-              argument = nameparts[1] || 1
-              argument = argument.to_i
+              target     = @jumptargets[targetname]
+              argument   = nameparts[1] || 1
+              argument   = argument.to_i
               if target.nil?
                 $log.error("target '#{targetname}' not found in voice at #{entity.start_pos_to_s}", entity.start_pos, entity.end_pos)
               else
@@ -520,23 +463,23 @@ module Harpnotes
             match = name.match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
               semantic = match[1]
-              text = match[2]
-              pos_x = match[4] if match[4]
-              pos_y = match[5] if match[5]
+              text     = match[2]
+              pos_x    = match[4] if match[4]
+              pos_y    = match[5] if match[5]
               case semantic
                 when "#"
                   annotation = @annotations[text]
                   $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
-                  annotation = {text: text}
+                  annotation = { text: text }
                 else
                   annotation = nil # it is not an annotation
               end
 
               if annotation
-                notepos = [pos_x, pos_y].map { |p| p.to_f } if pos_x
+                notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || [2, -5] #todo: make default position configurable
-                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, { pos: position, text: annotation[:text] })
               end
             else
               # $log.error("syntax error in annotation: #{name}")
@@ -552,15 +495,15 @@ module Harpnotes
         # on the layout (DURATION_TO_STYLE). So, don't change this.
         # todo: we need to separate duration from the layout
 
-        duration = ($conf.get('layout.SHORTEST_NOTE') * note[:duration]).round
+        duration     = ($conf.get('layout.SHORTEST_NOTE') * note[:duration]).round
 
         start_tuplet = true if note[:startTriplet]
-        end_tuplet = true if note[:endTriplet]
+        end_tuplet   = true if note[:endTriplet]
         if @tuplet_downcount > 1
           @tuplet_downcount -= 1
         else
           @tuplet_downcount = note[:startTriplet] || 1
-          @current_tuplet = @tuplet_downcount
+          @current_tuplet   = @tuplet_downcount
         end
 
         if not note[:rest].nil?
@@ -568,7 +511,7 @@ module Harpnotes
             result = []
           else
             pitch_note = @pitch_providers[index .. -1].compact.first
-            result = transform_rest(note, duration, pitch_note)
+            result     = transform_rest(note, duration, pitch_note)
           end
         else
           result = transform_real_note(note, duration)
@@ -576,9 +519,9 @@ module Harpnotes
 
         if not result.empty?
 
-          result.first.tuplet = @current_tuplet
+          result.first.tuplet       = @current_tuplet
           result.first.tuplet_start = start_tuplet
-          result.first.tuplet_end = end_tuplet
+          result.first.tuplet_end   = end_tuplet
 
           # support the case of repetitions from the very beginning
 
@@ -587,7 +530,7 @@ module Harpnotes
           end
 
           # collect chord based targets
-          chords = _extract_chord_lines(note)
+          chords   = _extract_chord_lines(note)
           #jumpstarts = []
           jumpends = []
           chords.each do |name|
@@ -612,9 +555,9 @@ module Harpnotes
         pitch = @previous_note.pitch if @previous_note
         pitch = @pitch_transformer.get_midipitch(Native(pitch_note[:pitches]).first, false) unless pitch_note.nil?
 
-        rest = Harpnotes::Music::Pause.new(pitch, duration)
-        rest.origin = mk_origin(note)
-        rest.visible = false if note[:rest][:type] == 'invisible'
+        rest           = Harpnotes::Music::Pause.new(pitch, duration)
+        rest.origin    = mk_origin(note)
+        rest.visible   = false if note[:rest][:type] == 'invisible'
         @previous_note = rest
 
         result = [rest]
@@ -629,12 +572,12 @@ module Harpnotes
         end
 
         if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [0, 0], text: @next_note_marks[:variant_ending]})
+          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, { pos: [0, 0], text: @next_note_marks[:variant_ending] })
           @next_note_marks[:variant_ending]
         end
 
         @previous_new_part.each { |part|
-          part.companion = rest
+          part.companion    = rest
           rest.first_in_part=true
         }
         @previous_new_part.clear
@@ -644,15 +587,15 @@ module Harpnotes
 
       def transform_real_note(note, duration)
         notes = Native(note[:pitches]).map do |pitch|
-          midipitch = @pitch_transformer.get_midipitch(pitch)
-          native_pitch = Native(pitch)
-          thenote = Harpnotes::Music::Note.new(midipitch, duration)
-          thenote.origin = mk_origin(note)
+          midipitch           = @pitch_transformer.get_midipitch(pitch)
+          native_pitch        = Native(pitch)
+          thenote             = Harpnotes::Music::Note.new(midipitch, duration)
+          thenote.origin      = mk_origin(note)
           # we always deliver arrays; this avoids if statements in layouter
           thenote.slur_starts = (native_pitch[:startSlur] || []).map { |s| Native(s)[:label] }
-          thenote.slur_ends = native_pitch[:endSlur] || []
-          thenote.tie_start = (not native_pitch[:startTie].nil?)
-          thenote.tie_end = (not native_pitch[:endTie].nil?)
+          thenote.slur_ends   = native_pitch[:endSlur] || []
+          thenote.tie_start   = (not native_pitch[:startTie].nil?)
+          thenote.tie_end     = (not native_pitch[:endTie].nil?)
           thenote
         end
 
@@ -660,20 +603,20 @@ module Harpnotes
         if notes.length == 1
           result << notes.first
         else
-          synchpoint = Harpnotes::Music::SynchPoint.new(notes) # note that notes are alreday Playables
+          synchpoint             = Harpnotes::Music::SynchPoint.new(notes) # note that notes are alreday Playables
           synchpoint.slur_starts = (note[:startSlur] || []).map { |s| Native(s)[:label] }
-          synchpoint.slur_ends = note[:endSlur] || []
+          synchpoint.slur_ends   = note[:endSlur] || []
           # note that we pull the tie starts from the inner notes
           # todo: do we need this for the slurs as well
-          synchpoint.tie_start = (not note[:startTie].nil?) || (not notes.select { |n| n.tie_start? }.empty?)
-          synchpoint.tie_end = (not note[:endTie].nil?) || (not notes.select { |n| n.tie_end? }.empty?)
+          synchpoint.tie_start   = (not note[:startTie].nil?) || (not notes.select { |n| n.tie_start? }.empty?)
+          synchpoint.tie_end     = (not note[:endTie].nil?) || (not notes.select { |n| n.tie_end? }.empty?)
 
           result << synchpoint
         end
 
         @previous_new_part.each { |part|
           result.last.first_in_part = true
-          part.companion = notes.first
+          part.companion            = notes.first
         }
         @previous_new_part.clear
 
@@ -690,7 +633,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, {pos: [4, -2], text: @next_note_marks[:variant_ending]})
+          result << Harpnotes::Music::NoteBoundAnnotation.new(@previous_note, { pos: [4, -2], text: @next_note_marks[:variant_ending] })
           @next_note_marks[:variant_ending] = nil
         end
 
@@ -698,8 +641,8 @@ module Harpnotes
       end
 
       def transform_bar(bar)
-        type = bar[:type]
-        @next_note_marks[:measure] = true
+        type                              = bar[:type]
+        @next_note_marks[:measure]        = true
         @next_note_marks[:variant_ending] = _extract_variant_ending(bar)
         @pitch_transformer.reset_measure_accidentals
         send("transform_#{type.gsub(" ", "_")}", bar)
@@ -745,7 +688,7 @@ module Harpnotes
       end
 
       def transform_part(part)
-        new_part = Harpnotes::Music::NewPart.new(part[:title])
+        new_part        = Harpnotes::Music::NewPart.new(part[:title])
         new_part.origin = mk_origin(part)
         @previous_new_part << new_part
         [new_part]

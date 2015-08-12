@@ -2,7 +2,7 @@ module ABC2SVG
   class Abc2Svg
 
 
-    def initialize(div, options={})
+    def initialize(div, options={ mode: :svg })
       @on_select           = lambda { |element| }
       @printer             = div
       @svgbuf              = []
@@ -16,7 +16,8 @@ module ABC2SVG
       }
 
       set_callback(:errmsg) do |message, line_number, column_number|
-        $log.error(message)
+        #todo handle produce startpos / endpos
+        $log.error(message,  [line_number+1, column_number+1])
       end
 
       set_callback(:img_out) do |svg|
@@ -106,8 +107,7 @@ module ABC2SVG
     private
 
 
-    def _get_abcmodel(tsfirst, voice_tb, anno_type)
-
+    def _get_abcmodel(tsfirst, voice_tb, music_types)
       tune          = { voices: [] }
       tune[:voices] = Native(voice_tb).map { |v|
         curnote = Native(Native(v)[:sym])
@@ -124,7 +124,13 @@ module ABC2SVG
         puts result.to_json
         result
       }
+    end
 
+
+    def _get_charpos(abc_source, line, column)
+      lines = @abc_source.split("\n")
+      result = lines[0 .. line].inject(0) { |r, v| r += v.length }
+      result + column
     end
 
     def _anno_start(music_type, start_offset, stop_offset, x, y, w, h)
@@ -169,7 +175,7 @@ module ABC2SVG
       @element_to_position = {}
       @svgbuf              = []
       %x{
-      #{@root}.tosvg(#{file_name}, #{abc_source});
+      #{@root}.tosvg(#{file_name}, #{@abc_source});
       }
     end
   end

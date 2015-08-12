@@ -97,7 +97,7 @@ class Controller
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
-    @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
+    @abc_transformer = Harpnotes::Input::AbcjsToHarpnotes.new
     @dropboxclient = Opal::DropboxJs::NilClient.new()
 
     @systemstatus={}
@@ -343,9 +343,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # todo: end of compatiblility code
 
     $conf.push(config)
-    @music_model = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_abc_part)
+    abc_parser = $conf.get('abc_parser')
+    @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-
+    puts(@music_model.to_json)
     @editor.set_annotations($log.annotations)
     $conf.pop
     result
@@ -558,6 +559,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def _init_conf()
     result =
         {produce: [0],
+         abc_parser: 'ABCJS',
          defaults:
              {
                  print: {t: "", # title of the extract
