@@ -562,6 +562,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          abc_parser: 'ABCJS',
          defaults:
              {
+                 note_length: "1/4",
                  print: {t: "", # title of the extract
                          v: [1, 2, 3, 4], # voices to show
                          startpos: 15, # start position of the harpnotes

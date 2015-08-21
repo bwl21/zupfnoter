@@ -157,20 +157,8 @@ module Harpnotes
         # todo:factor out to a generic method parse_abc_header()
         #
 
-        # note_length = get_metadata(zupfnoter_abc)[:L]
-        # note_length = '1/4' unless note_length
-        # note_length = note_length.split('/').map{|s| s.strip.to_i} #|| '1/4').split.map { |s| s.strip.to_i }
-        #
-        # puts note_length
-        # `debugger`
-
-        #note_length = note_length.last / note_length.first
-
-
-        note_length_rows = zupfnoter_abc.split("\n").select { |row| row[0..1] == "L:" }
-        note_length_rows = ["L:1/4"] if note_length_rows.empty?
-        note_length      = note_length_rows.first.strip.split(":").last.split("/").map { |s| s.strip.to_i }
-        note_length      = note_length.last / note_length.first
+        note_length = get_metadata(zupfnoter_abc)[:L] || $conf.get("defaults.note_length")
+        note_length = note_length.split('/').map{|s| s.strip.to_i} #|| '1/4').split.map { |s| s.strip.to_i }
 
 
         # extract the lines

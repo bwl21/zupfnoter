@@ -1,4 +1,14 @@
 module ABC2SVG
+
+
+  # this class wraps abc2svg for zupfnoter
+  # it has two modes
+  #    :svg - render an svg image
+  #    :model - do not render but update the abc-model
+  #
+  #    these two modes are for preparation of performance issues
+  #    in case the model extractor is too slow
+  #
   class Abc2Svg
 
 
@@ -7,7 +17,8 @@ module ABC2SVG
       @printer             = div
       @svgbuf              = []
       @abc_source          = ''
-      @element_to_position = {}
+      @element_to_position = {}   # mapping svg elements to position
+      @abc_model           = nil
       @user                = { img_out:     nil,
                                errmsg:      nil,
                                read_file:   nil,
@@ -15,30 +26,50 @@ module ABC2SVG
                                page_format: true
       }
 
+
       set_callback(:errmsg) do |message, line_number, column_number|
         #todo handle produce startpos / endpos
-        $log.error(message,  [line_number+1, column_number+1])
+        $log.error(message, [line_number+1, column_number+1])
       end
 
-      set_callback(:img_out) do |svg|
-        @svgbuf.push svg
+
+      case options[:mode]
+
+        when :svg
+
+          set_callback(:anno_start) do |type, start, stop, x, y, w, h|
+            _anno_start(type, start, stop, x, y, w, h)
+          end
+
+          set_callback(:anno_stop) do |type, start, stop, x, y, w, h|
+            _anno_stop(type, start, stop, x, y, w, h)
+          end
+
+          set_callback(:img_out) do |svg|
+            @svgbuf.push svg
+          end
+
+          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
+            _get_abcmodel(tsfirst, voice_tb, anno_type)
+          end
+
+        when :model
+          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
+            _get_abcmodel(tsfirst, voice_tb, anno_type)
+          end
+
+        else
+          $log.error("BUG: unsupported mode for abc2svg")
       end
 
-      set_callback(:anno_start) do |type, start, stop, x, y, w, h|
-        _anno_start(type, start, stop, x, y, w, h)
-      end
-
-      set_callback(:anno_stop) do |type, start, stop, x, y, w, h|
-        _anno_stop(type, start, stop, x, y, w, h)
-      end
-
-      set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
-        # _get_abcmodel(tsfirst, voice_tb, anno_type)
-      end
 
       @root = %x{new Abc(#{@user.to_n})}
     end
 
+    # Highligh routines.
+
+    # highlight a renge in the SVG
+    # todo: we might need to
     def range_highlight(from, to)
       unhighlight_all()
       range_highlight_more(from, to)
@@ -81,11 +112,18 @@ module ABC2SVG
       nil
     end
 
+    def get_abcmodel(abc_code)
+      %x{#{@root}.tosvg("abc", #{abc_code})};
+      @abc_model
+    end
+
+    # todo: mke private or even remove?
     def get_svg
       @svgbuf.join("\n")
     end
 
 
+    # todo: make private
     def set_callback(event, &block)
       @user[event] = block;
     end
@@ -107,38 +145,83 @@ module ABC2SVG
     private
 
 
-    def _get_abcmodel(tsfirst, voice_tb, music_types)
-      tune          = { voices: [] }
-      tune[:voices] = Native(voice_tb).map { |v|
-        curnote = Native(Native(v)[:sym])
-        result  = []
-        while curnote do
-          nextnote         = curnote[:next]
-          curnote[:next]   =nil
-          curnote[:prev]   =nil
-          curnote[:ts_next]=nil
-          curnote[:ts_prev]=nil
-          result << curnote.to_n;
-          curnote = nextnote
+    # This clones an abc2svg object such that we no longer need to deal with Native etc.
+    # it removes some keys which are provided by abc2svg but not used in Zupfnoter
+    def _clone_abc2svg_object(object)
+      keys = %x{Object.keys(#{object.to_n})} - [:next, :prev, :ts_next, :ts_prev] # avoid recursions
+
+      result = keys.inject({}) do |r, key|
+        content = Native(object[key])
+
+        case content.class.to_s
+          when "NilClass"
+            cloned_content = nil
+
+          when "Object"
+            cloned_content = _clone_abc2svg_object(content)
+
+          when "Array"
+            cloned_content = content.map { |element| _clone_abc2svg_object(Native(element)) }
+
+          else
+            cloned_content = content
         end
-        puts result.to_json
-        result
-      }
+
+        r[key] = cloned_content
+        r
+      end
+
+      result
     end
 
 
+    # This is the business logic to copy the abc-model in the callbac
+    def _get_abcmodel(tsfirst, voice_tb, music_types)
+
+      tune               = {}
+      tune[:music_types] = Native(music_types).clone
+      tune[:voices]      = Native(voice_tb).map { |v|
+        result  = {
+            voice_properties: _clone_abc2svg_object(Native(v)), # todo: copy the properties
+            symbols:          []
+        }
+        #Native(v)[:lastnote] = "hidden"
+        curnote = Native(Native(v)[:sym])
+        while curnote do
+          nextnote    = curnote[:next] # todo: copy the properties
+          cloned_note = _clone_abc2svg_object(curnote)
+
+          result[:symbols] << cloned_note
+          curnote = nextnote
+        end
+        result
+      }
+      @abc_model         = { music_types: music_types, tunes: tune[:voices] }
+      if $log.loglevel == "debug"
+        x                  = @abc_model.to_json
+        $log.debug(x)
+      end
+      @abc_model
+    end
+
+
+    # this is a backconvert from line / colun - info provided
+    # by abc2svg in case of errors
     def _get_charpos(abc_source, line, column)
-      lines = @abc_source.split("\n")
+      lines  = @abc_source.split("\n")
       result = lines[0 .. line].inject(0) { |r, v| r += v.length }
       result + column
     end
 
+    ## here we have the business logic of annotations
+    # such that is fulfils the needs of zupfnoter cross - highlighting
     def _anno_start(music_type, start_offset, stop_offset, x, y, w, h)
       id = _mk_id(music_type, start_offset, stop_offset)
       %x{
       #{@root}.out_svg('<g class="' + #{id} +'">\n')
       }
     end
+
 
     def _anno_stop(music_type, start_offset, stop_offset, x, y, w, h)
       id = _mk_id(music_type, start_offset, stop_offset)
