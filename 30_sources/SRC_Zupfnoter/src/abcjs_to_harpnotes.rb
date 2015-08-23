@@ -201,75 +201,7 @@ module Harpnotes
 
         ##################################################################
         # transform the voices
-        hn_voices = voices.each_with_index.map do |voice, voice_idx|
-          reset_state
-
-          @pitch_providers = voice.map do |el|
-            result = nil
-            result = el if el[:pitches]
-          end
-
-          # transform the voice content
-          hn_voice         = voice.each_with_index.map do |el, i|
-
-            type             = el[:el_type]
-            hn_voice_element = self.send("transform_#{type}", el, i)
-
-            if el[:startChar]
-              # fix character position in abc
-              el[:startChar] -= 3 if el[:startChar] == el[:endChar] # fix ananomaly of abc2js chords have no range
-
-              end_char   = el[:endChar]
-              start_char = el[:startChar]
-              start_pos  = charpos_to_line_column(start_char) if start_char > 0
-              end_pos    = charpos_to_line_column(end_char) if end_char > 0
-
-              # apply uptracing information to the harpnote elements
-              unless hn_voice_element.nil? or hn_voice_element.empty?
-                hn_voice_element.each do |e|
-                  e.origin    = mk_origin(el) # el # todo: pass a hash only {}
-                  e.start_pos = start_pos # necessary for error reporting in editor
-                  e.end_pos   = end_pos
-
-                  if e.is_a?(Harpnotes::Music::SynchPoint)
-                    e.notes.each do |synchpoint_note|
-                      synchpoint_note.start_pos = start_pos
-                      synchpoint_note.end_pos   = end_pos
-                    end
-                  end
-                end
-
-              end
-            end
-
-            hn_voice_element
-          end.flatten.compact
-
-          # compute the explicit jumplines
-          jumplines        = []
-          hn_voice.each do |e|
-            jumplines << make_jumplines(e)
-          end
-          hn_voice              += jumplines.flatten.compact
-
-
-          # note bound annotations
-
-          notebound_annotations = []
-          hn_voice.each do |e|
-            notebound_annotations << make_notebound_annotations(e)
-          end
-
-          hn_voice += notebound_annotations.flatten.compact
-
-
-          hn_voice
-        end
-
-        #############################
-        # now construct the song
-        hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
-        result    = Harpnotes::Music::Song.new(hn_voices, note_length)
+        result = _transform_voices(note_length, voices)
 
         # contruct the meta data
         meta_data = { :compile_time => Time.now(),
@@ -372,17 +304,79 @@ module Harpnotes
         result
       end
 
-      # get column und line number of abc_code
-      # based on the character position
-      #
-      # @param [Numeric] charpos character position in abc code
-      # @return [Numeric] charpos, line_no
-      def charpos_to_line_column(charpos)
-        lines    = @abc_code[1, charpos].split("\n")
-        line_no  = lines.count
-        char_pos = lines.last.length()
-        return line_no, char_pos
+      def _transform_voices(note_length, voices)
+        hn_voices = voices.each_with_index.map do |voice, voice_idx|
+          reset_state
+
+          @pitch_providers = voice.map do |el|  # collect notes to provide a pitch for next rest
+            result = nil
+            result = el if el[:pitches]
+          end
+
+          # transform the voice content
+          hn_voice         = voice.each_with_index.map do |el, i|
+
+            type             = el[:el_type]
+            hn_voice_element = self.send("transform_#{type}", el, i) # this is the transformer
+
+            if el[:startChar]
+              # fix character position in abc
+              el[:startChar] -= 3 if el[:startChar] == el[:endChar] # fix ananomaly of abc2js chords have no range
+
+              end_char   = el[:endChar]
+              start_char = el[:startChar]
+              start_pos  = charpos_to_line_column(start_char) if start_char > 0
+              end_pos    = charpos_to_line_column(end_char) if end_char > 0
+
+              # apply uptracing information to the harpnote elements
+              unless hn_voice_element.nil? or hn_voice_element.empty?
+                hn_voice_element.each do |e|
+                  e.origin    = mk_origin(el) # el # todo: pass a hash only {}
+                  e.start_pos = start_pos # necessary for error reporting in editor
+                  e.end_pos   = end_pos
+
+                  if e.is_a?(Harpnotes::Music::SynchPoint)
+                    e.notes.each do |synchpoint_note|
+                      synchpoint_note.start_pos = start_pos
+                      synchpoint_note.end_pos   = end_pos
+                    end
+                  end
+                end
+
+              end
+            end
+
+            hn_voice_element
+          end.flatten.compact
+
+          # compute the explicit jumplines
+          jumplines        = []
+          hn_voice.each do |e|
+            jumplines << make_jumplines(e)
+          end
+          hn_voice              += jumplines.flatten.compact
+
+
+          # note bound annotations
+
+          notebound_annotations = []
+          hn_voice.each do |e|
+            notebound_annotations << make_notebound_annotations(e)
+          end
+
+          hn_voice += notebound_annotations.flatten.compact
+
+
+          hn_voice
+        end
+
+        #############################
+        # now construct the song
+        hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
+        result = Harpnotes::Music::Song.new(hn_voices, note_length)
       end
+
+
 
       private
 
@@ -498,7 +492,8 @@ module Harpnotes
           if note[:rest][:type] == 'spacer' # 'spacers' are not played: http://abcnotation.com/wiki/abc:standard:v2.1#typesetting_extra_space
             result = []
           else
-            pitch_note = @pitch_providers[index .. -1].compact.first
+            pitch_note = @pitch_providers[index .. -1].compact.first   # find the next playing note to provide the pitch for the rest
+                                                                       # this is a kind of lookahead
             result     = transform_rest(note, duration, pitch_note)
           end
         else

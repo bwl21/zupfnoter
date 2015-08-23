@@ -30,6 +30,19 @@ module Harpnotes
         @previous_new_part = []
       end
 
+
+      # get column und line number of abc_code
+      # based on the character position
+      #
+      # @param [Numeric] charpos character position in abc code
+      # @return [Numeric] charpos, line_no
+      def charpos_to_line_column(charpos)
+        lines    = @abc_code[1, charpos].split("\n")
+        line_no  = lines.count
+        char_pos = lines.last.length()
+        return line_no, char_pos
+      end
+
       def reset_state
 
         @jumptargets = {} # the lookup table for jumps

@@ -346,7 +346,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     abc_parser = $conf.get('abc_parser')
     @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-    puts(@music_model.to_json)
+    $log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
     result
@@ -693,7 +693,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
              }
         }
 
-    puts result.to_json
     result
   end
 

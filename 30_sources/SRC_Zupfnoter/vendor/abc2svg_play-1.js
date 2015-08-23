@@ -3,9 +3,9 @@
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
-// play.js for abc2svg-1.1.5 (2015-04-05)
+// abc2svg_play-1.js for abc2svg-1.2.6 (2015-07-13)
 function AbcPlay(i_onend) {
-    var onend = i_onend, ac, gain, a_e;
+    var onend = i_onend, ac, gain, a_e, o_vol = .2;
     var evt_idx, iend, ctime, a_g = [];
 
     function o_end(o, g) {
@@ -20,7 +20,7 @@ function AbcPlay(i_onend) {
             var o = ac.createOscillator(), g = a_g.pop();
             if (!g) {
                 g = ac.createGain();
-                g.gain.value = .2;
+                g.gain.value = o_vol;
                 g.connect(gain)
             }
             o.frequency.value = f;
@@ -67,13 +67,20 @@ function AbcPlay(i_onend) {
     this.stop = function () {
         iend = 0
     };
-    var dtime, play_factor;
+    this.set_g_vol = function (v) {
+        gain.gain.value = v
+    };
+    this.set_o_vol = function (v) {
+        o_vol = v;
+        for (var i = 0; i < a_g.length; i++)a_g[i].gain.value = v
+    };
+    var p_time, abc_time, play_factor;
     this.clear = function () {
         a_e = null
     };
     this.add = function (s, k) {
-        const BAR = 0, GRACE = 4, KEY = 5, NOTE = 8, TEMPO = 14, BASE_LEN = 1536;
-        var bmap = [], map = [], scale = [0, 2, 4, 5, 7, 9, 11], o_pit = {}, i, n, t, d, g, pit, pit_time, rep_st_s, rep_st_map = [], rep_en_s, rep_en_map = [];
+        const BAR = 0, GRACE = 4, KEY = 5, NOTE = 8, TEMPO = 14, BASE_LEN = 1536, scale = [0, 2, 4, 5, 7, 9, 11];
+        var bmap = [], map = [], o_pit = {}, i, n, dt, d, g, pit, pit_time, rep_st_i, rep_st_t, rep_en_i, rep_en_map = [];
 
         function key_map(s) {
             for (var i = 0; i < 7; i++)bmap[i] = 0;
@@ -118,12 +125,25 @@ function AbcPlay(i_onend) {
 
         function pit2f(s, i) {
             var p = s.notes[i].pit + 19, a = s.notes[i].acc;
-            if (a)map[p] = a == 4 ? 0 : a;
+            if (a)map[p] = a == 3 ? 0 : a;
             p = Math.floor(p / 7) * 12 + scale[p % 7] + map[p];
-            return 440 * Math.pow(2, (p - 69) / 12)
+            //return 440 * Math.pow(2, (p - 69) / 12)
+            return p
         }
 
-        function tie(s, i, d) {
+        function play_dup(s) {
+            var i, n, dt, e;
+            n = rep_en_i;
+            if (n == 0)n = a_e.length;
+            dt = (s.time - rep_st_t) / play_factor;
+            for (i = rep_st_i; i < n; i++) {
+                e = a_e[i];
+                a_e.push([e[0], e[1] + dt, e[2], e[3]])
+            }
+            p_time += dt
+        }
+
+        function do_tie(s, i, d) {
             var j, n, s2, note, pit, str_tie, note = s.notes[i], tie = note.ti1, end_time;
             if (!tie)return d;
             pit = note.pit;
@@ -138,7 +158,7 @@ function AbcPlay(i_onend) {
                 if (note.pit == pit) {
                     d += s2.dur / play_factor;
                     o_pit["_" + s2.st + pit] = s2.time;
-                    return s2.ti1 ? tie(s2, j, d) : d
+                    return s2.ti1 ? do_tie(s2, j, d) : d
                 }
             }
             return d
@@ -147,11 +167,13 @@ function AbcPlay(i_onend) {
         key_map(k);
         if (!a_e) {
             a_e = [];
-            dtime = 0;
+            abc_time = rep_st_t = 0;
+            p_time = 0;
+            rep_st_i = rep_en_i = 0;
             play_factor = BASE_LEN / 4 * 80 / 60
+        } else if (s.time < abc_time) {
+            abc_time = rep_st_t = s.time
         }
-        rep_st_s = rep_en_s = {ts_next: s, time: dtime};
-        for (i = 0; i < 7; i++)rep_st_map[i] = bmap[i];
         while (1) {
             for (g = s.extra; g; g = g.next) {
                 if (g.type == TEMPO) {
@@ -161,44 +183,36 @@ function AbcPlay(i_onend) {
                     play_factor = d * g.tempo_value / 60
                 }
             }
+            dt = s.time - abc_time;
+            if (dt > 0) {
+                p_time += dt / play_factor;
+                abc_time = s.time
+            }
             switch (s.type) {
                 case BAR:
                     if (s.st != 0)break;
-                    bar_map();
-                    if (s.bar_type[0] == ":") {
-                        if (s.time > rep_en_s.time) {
-                            rep_en_s = s;
-                            for (i = 0; i < 7; i++)rep_en_map[i] = bmap[i];
-                            dtime += s.time - rep_st_s.time;
-                            s = rep_st_s;
-                            for (i = 0; i < 7; i++)bmap[i] = rep_st_map[i];
-                            break
-                        }
-                        for (i = 0; i < 7; i++)bmap[i] = rep_en_map[i]
-                    }
                     if (s.bar_type[s.bar_type.length - 1] == ":") {
-                        rep_st_s = rep_en_st = s;
-                        for (i = 0; i < 7; i++)rep_st_map[i] = bmap[i];
+                        rep_st_i = a_e.length;
+                        rep_st_t = s.time;
+                        rep_en_i = 0
+                    } else if (s.text && s.text[0] == "1") {
+                        rep_en_i = a_e.length;
+                        bar_map();
+                        for (i = 0; i < 7; i++)rep_en_map[i] = bmap[i];
                         break
-                    }
-                    if (s.text && s.text[0] == "1") {
-                        if (s.time == 0)break;
-                        if (s.time > rep_en_s.time) {
-                            rep_en_s = s;
-                            break
+                    } else if (s.bar_type[0] == ":") {
+                        play_dup(s);
+                        if (rep_en_i) {
+                            for (i = 0; i < 7; i++)bmap[i] = rep_en_map[i]
                         }
-                        dtime += s.time - rep_en_s.time;
-                        s = rep_en_s;
-                        for (i = 0; i < 7; i++)bmap[i] = rep_en_map[i];
-                        break
                     }
+                    bar_map();
                     break;
                 case KEY:
                     if (s.st != 0)break;
                     key_map(s);
                     break;
                 case NOTE:
-                    t = (s.time + dtime) / play_factor;
                     d = s.dur / play_factor;
                     for (i = 0; i <= s.nhd; i++) {
                         pit = s.notes[i].pit;
@@ -206,30 +220,28 @@ function AbcPlay(i_onend) {
                         pit_time = o_pit[str_tie];
                         if (pit_time) {
                             if (pit_time <= s.time)delete o_pit[str_tie];
-                            continue
+                            //continue
                         }
-                        a_e.push([s.istart, t, pit2f(s, i), s.notes[i].ti1 ? tie(s, i, d) : d])
+                        midi_pitch = pit2f(s, i)
+                        s.notes[i].midi_pitch = midi_pitch
+                        a_e.push([s.istart, p_time, midi_pitch, s.notes[i].ti1 ? do_tie(s, i, d) : d])
                     }
                     break
             }
-            if (!s.ts_next) {
-                dtime = s.time;
-                if (s.dur)dtime += s.dur;
-                break
-            }
+            if (!s.ts_next)break;
             s = s.ts_next
         }
     };
-    if (window.AudioContext)ac = new window.AudioContext; else if (window.webkitAudioContext)ac = new window.webkitAudioContext; else return {};
-    gain = ac.createGain();
-    gain.gain.value = .7;
-    if (1) {
-        gain.connect(ac.destination)
-    } else {
-        comp = ac.createDynamicsCompressor();
-        comp.ratio = 16;
-        comp.attack = 5e-4;
-        comp.connect(ac.destination);
-        gain.connect(comp)
-    }
+    //if (window.AudioContext)ac = new window.AudioContext; else if (window.webkitAudioContext)ac = new window.webkitAudioContext; else return {};
+    //gain = ac.createGain();
+    //gain.gain.value = .7;
+    //if (1) {
+    //    gain.connect(ac.destination)
+    //} else {
+    //    comp = ac.createDynamicsCompressor();
+    //    comp.ratio = 16;
+    //    comp.attack = 5e-4;
+    //    comp.connect(ac.destination);
+    //    gain.connect(comp)
+    //}
 }

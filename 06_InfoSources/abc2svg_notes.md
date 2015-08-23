@@ -36,9 +36,9 @@ pitches.
 The internal pitches are rather the note offsets in the staves. With a
 treble clef, the middle C is 16, D is 17, E is 18...
 The translation to MIDI pitch depends on the key signature and on the
-previous accidentals. This is done in play.js, function pit2f().
+previous accidentals. This is done in abc2svg_play-1.js, function pit2f().
 
-I understand that. It was the same with abcjs. For this, I had created a call "AbcPitchProvider" which had a method get_midi_pitch!(note) was called note by note and handled all these things. My intention was a method [for example annotate_pitches(voice_tb)] which iterates through the voice and computes the midi-pitches. By this iteration it can consider the key signature and the previous accidentials also the reset of the same on a bar. There are some tricky issues which you have already solved in the player - but to be honest I have big problems to understand that code (my JS - Skills are close to zero;  and the code is very compact :-). I indeed tried to extract some code from play.js but totally failed.
+I understand that. It was the same with abcjs. For this, I had created a call "AbcPitchProvider" which had a method get_midi_pitch!(note) was called note by note and handled all these things. My intention was a method [for example annotate_pitches(voice_tb)] which iterates through the voice and computes the midi-pitches. By this iteration it can consider the key signature and the previous accidentials also the reset of the same on a bar. There are some tricky issues which you have already solved in the player - but to be honest I have big problems to understand that code (my JS - Skills are close to zero;  and the code is very compact :-). I indeed tried to extract some code from abc2svg_play-1.js but totally failed.
 
 The play method add() does all the job to convert a sequence of notes
 into a MIDI sequence. You may duplicate this function and replace the

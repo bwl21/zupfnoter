@@ -9,6 +9,8 @@ module ABC2SVG
   #    these two modes are for preparation of performance issues
   #    in case the model extractor is too slow
   #
+  #    todo: remove dependency on DOM
+  #
   class Abc2Svg
 
 
@@ -61,7 +63,6 @@ module ABC2SVG
         else
           $log.error("BUG: unsupported mode for abc2svg")
       end
-
 
       @root = %x{new Abc(#{@user.to_n})}
     end
@@ -178,17 +179,22 @@ module ABC2SVG
     # This is the business logic to copy the abc-model in the callbac
     def _get_abcmodel(tsfirst, voice_tb, music_types)
 
+      %x{
+          abcmidi = new AbcMIDI();
+          abcmidi.add(#{tsfirst}, #{voice_tb}[0].key)
+      }
+
       tune               = {}
       tune[:music_types] = Native(music_types).clone
       tune[:voices]      = Native(voice_tb).map { |v|
         result  = {
-            voice_properties: _clone_abc2svg_object(Native(v)), # todo: copy the properties
+            voice_properties: _clone_abc2svg_object(Native(v)),
             symbols:          []
         }
         #Native(v)[:lastnote] = "hidden"
         curnote = Native(Native(v)[:sym])
         while curnote do
-          nextnote    = curnote[:next] # todo: copy the properties
+          nextnote    = curnote[:next]
           cloned_note = _clone_abc2svg_object(curnote)
 
           result[:symbols] << cloned_note
@@ -196,7 +202,7 @@ module ABC2SVG
         end
         result
       }
-      @abc_model         = { music_types: music_types, tunes: tune[:voices] }
+      @abc_model         = { music_types: music_types, voices: tune[:voices] }
       if $log.loglevel == "debug"
         x                  = @abc_model.to_json
         $log.debug(x)
