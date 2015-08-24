@@ -1,0 +1,3174 @@
+{
+  "voices": [
+    [
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 129,
+          "endChar": 135
+        },
+        "@slur_starts": [
+          101,
+          102,
+          103,
+          104
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          1
+        ],
+        "@end_pos": [
+          9,
+          7
+        ],
+        "@beat": 0,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 135,
+          "endChar": 138
+        },
+        "@slur_starts": [
+          105
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 74,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          7
+        ],
+        "@end_pos": [
+          9,
+          10
+        ],
+        "@beat": 48,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 138,
+          "endChar": 141
+        },
+        "@slur_starts": [
+          106
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 76,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          10
+        ],
+        "@end_pos": [
+          9,
+          13
+        ],
+        "@beat": 96,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 141,
+          "endChar": 145
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          106,
+          105
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 77,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          13
+        ],
+        "@end_pos": [
+          9,
+          17
+        ],
+        "@beat": 144,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 145,
+          "endChar": 148
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          104
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 79,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          17
+        ],
+        "@end_pos": [
+          9,
+          20
+        ],
+        "@beat": 192,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 148,
+          "endChar": 151
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          103
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          20
+        ],
+        "@end_pos": [
+          9,
+          23
+        ],
+        "@beat": 240,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": true,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": 432,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 164,
+            "endChar": 164
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": true,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 61,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            33
+          ],
+          "@end_pos": [
+            9,
+            36
+          ],
+          "@beat": 432,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 164,
+            "endChar": 164
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 62,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            33
+          ],
+          "@end_pos": [
+            9,
+            36
+          ],
+          "@beat": 432,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": null
+      },
+      {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": true,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": 624,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 172,
+            "endChar": 172
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": true,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 61,
+          "@duration": 16,
+          "@start_pos": [
+            9,
+            41
+          ],
+          "@end_pos": [
+            9,
+            44
+          ],
+          "@beat": 624,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 172,
+            "endChar": 172
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 62,
+          "@duration": 16,
+          "@start_pos": [
+            9,
+            41
+          ],
+          "@end_pos": [
+            9,
+            44
+          ],
+          "@beat": 624,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 172,
+          "endChar": 174
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          44
+        ],
+        "@end_pos": [
+          9,
+          46
+        ],
+        "@beat": 672,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 174,
+          "endChar": 176
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          46
+        ],
+        "@end_pos": [
+          9,
+          48
+        ],
+        "@beat": 720,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 176,
+          "endChar": 178
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          48
+        ],
+        "@end_pos": [
+          9,
+          50
+        ],
+        "@beat": 768,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 179,
+          "endChar": 183
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          51
+        ],
+        "@end_pos": [
+          9,
+          55
+        ],
+        "@beat": 816,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 179,
+          "endChar": 183
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 179,
+            "endChar": 183
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 72,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            51
+          ],
+          "@end_pos": [
+            9,
+            55
+          ],
+          "@beat": 816,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          51
+        ],
+        "@end_pos": [
+          9,
+          55
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 184,
+          "endChar": 192
+        },
+        "@slur_starts": [
+          102
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          56
+        ],
+        "@end_pos": [
+          9,
+          64
+        ],
+        "@beat": 1008,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 184,
+          "endChar": 192
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 184,
+            "endChar": 192
+          },
+          "@slur_starts": [
+            102
+          ],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 61,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            56
+          ],
+          "@end_pos": [
+            9,
+            64
+          ],
+          "@beat": 1008,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          56
+        ],
+        "@end_pos": [
+          9,
+          64
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 193,
+          "endChar": 199
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          65
+        ],
+        "@end_pos": [
+          9,
+          71
+        ],
+        "@beat": 1200,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 193,
+          "endChar": 199
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 193,
+            "endChar": 199
+          },
+          "@slur_starts": [],
+          "@slur_ends": [
+            102
+          ],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 60,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            65
+          ],
+          "@end_pos": [
+            9,
+            71
+          ],
+          "@beat": 1200,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          65
+        ],
+        "@end_pos": [
+          9,
+          71
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 200,
+          "endChar": 204
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          72
+        ],
+        "@end_pos": [
+          9,
+          76
+        ],
+        "@beat": 1392,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 200,
+          "endChar": 204
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 200,
+            "endChar": 204
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": true,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 66,
+          "@duration": 16,
+          "@start_pos": [
+            9,
+            72
+          ],
+          "@end_pos": [
+            9,
+            76
+          ],
+          "@beat": 1392,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          72
+        ],
+        "@end_pos": [
+          9,
+          76
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 204,
+          "endChar": 206
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          76
+        ],
+        "@end_pos": [
+          9,
+          77
+        ],
+        "@beat": 1440,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      }
+    ],
+    [
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 129,
+          "endChar": 135
+        },
+        "@slur_starts": [
+          101,
+          102,
+          103,
+          104
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          1
+        ],
+        "@end_pos": [
+          9,
+          7
+        ],
+        "@beat": 0,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 135,
+          "endChar": 138
+        },
+        "@slur_starts": [
+          105
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 74,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          7
+        ],
+        "@end_pos": [
+          9,
+          10
+        ],
+        "@beat": 48,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 138,
+          "endChar": 141
+        },
+        "@slur_starts": [
+          106
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 76,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          10
+        ],
+        "@end_pos": [
+          9,
+          13
+        ],
+        "@beat": 96,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 141,
+          "endChar": 145
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          106,
+          105
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 77,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          13
+        ],
+        "@end_pos": [
+          9,
+          17
+        ],
+        "@beat": 144,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 145,
+          "endChar": 148
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          104
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 79,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          17
+        ],
+        "@end_pos": [
+          9,
+          20
+        ],
+        "@beat": 192,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 148,
+          "endChar": 151
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          103
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          20
+        ],
+        "@end_pos": [
+          9,
+          23
+        ],
+        "@beat": 240,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": true,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": 432,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 164,
+            "endChar": 164
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": true,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 61,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            33
+          ],
+          "@end_pos": [
+            9,
+            36
+          ],
+          "@beat": 432,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 164,
+            "endChar": 164
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 62,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            33
+          ],
+          "@end_pos": [
+            9,
+            36
+          ],
+          "@beat": 432,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": null
+      },
+      {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": true,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": 624,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 172,
+            "endChar": 172
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": true,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 61,
+          "@duration": 16,
+          "@start_pos": [
+            9,
+            41
+          ],
+          "@end_pos": [
+            9,
+            44
+          ],
+          "@beat": 624,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 172,
+            "endChar": 172
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": false,
+          "@tuplet_end": false,
+          "@pitch": 62,
+          "@duration": 16,
+          "@start_pos": [
+            9,
+            41
+          ],
+          "@end_pos": [
+            9,
+            44
+          ],
+          "@beat": 624,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 172,
+          "endChar": 174
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          44
+        ],
+        "@end_pos": [
+          9,
+          46
+        ],
+        "@beat": 672,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 174,
+          "endChar": 176
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          46
+        ],
+        "@end_pos": [
+          9,
+          48
+        ],
+        "@beat": 720,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 176,
+          "endChar": 178
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          48
+        ],
+        "@end_pos": [
+          9,
+          50
+        ],
+        "@beat": 768,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 179,
+          "endChar": 183
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          51
+        ],
+        "@end_pos": [
+          9,
+          55
+        ],
+        "@beat": 816,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 179,
+          "endChar": 183
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 179,
+            "endChar": 183
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 72,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            51
+          ],
+          "@end_pos": [
+            9,
+            55
+          ],
+          "@beat": 816,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          51
+        ],
+        "@end_pos": [
+          9,
+          55
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 184,
+          "endChar": 192
+        },
+        "@slur_starts": [
+          102
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          56
+        ],
+        "@end_pos": [
+          9,
+          64
+        ],
+        "@beat": 1008,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 184,
+          "endChar": 192
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 184,
+            "endChar": 192
+          },
+          "@slur_starts": [
+            102
+          ],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 61,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            56
+          ],
+          "@end_pos": [
+            9,
+            64
+          ],
+          "@beat": 1008,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          56
+        ],
+        "@end_pos": [
+          9,
+          64
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 193,
+          "endChar": 199
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          65
+        ],
+        "@end_pos": [
+          9,
+          71
+        ],
+        "@beat": 1200,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 193,
+          "endChar": 199
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 193,
+            "endChar": 199
+          },
+          "@slur_starts": [],
+          "@slur_ends": [
+            102
+          ],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 60,
+          "@duration": 64,
+          "@start_pos": [
+            9,
+            65
+          ],
+          "@end_pos": [
+            9,
+            71
+          ],
+          "@beat": 1200,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          65
+        ],
+        "@end_pos": [
+          9,
+          71
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 200,
+          "endChar": 204
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          72
+        ],
+        "@end_pos": [
+          9,
+          76
+        ],
+        "@beat": 1392,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      {
+        "class": "MeasureStart",
+        "@visible": true,
+        "@origin": {
+          "startChar": 200,
+          "endChar": 204
+        },
+        "@companion": {
+          "class": "Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 200,
+            "endChar": 204
+          },
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": true,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@pitch": 66,
+          "@duration": 16,
+          "@start_pos": [
+            9,
+            72
+          ],
+          "@end_pos": [
+            9,
+            76
+          ],
+          "@beat": 1392,
+          "@jump_ends": null,
+          "@jump_starts": null,
+          "@first_in_part": null
+        },
+        "@start_pos": [
+          9,
+          72
+        ],
+        "@end_pos": [
+          9,
+          76
+        ],
+        "@beat": null
+      },
+      {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 204,
+          "endChar": 206
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          76
+        ],
+        "@end_pos": [
+          9,
+          77
+        ],
+        "@beat": 1440,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      }
+    ]
+  ],
+  "beat_maps": [
+    {
+      "0": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 129,
+          "endChar": 135
+        },
+        "@slur_starts": [
+          101,
+          102,
+          103,
+          104
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          1
+        ],
+        "@end_pos": [
+          9,
+          7
+        ],
+        "@beat": 0,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "48": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 135,
+          "endChar": 138
+        },
+        "@slur_starts": [
+          105
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 74,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          7
+        ],
+        "@end_pos": [
+          9,
+          10
+        ],
+        "@beat": 48,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "96": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 138,
+          "endChar": 141
+        },
+        "@slur_starts": [
+          106
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 76,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          10
+        ],
+        "@end_pos": [
+          9,
+          13
+        ],
+        "@beat": 96,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "144": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 141,
+          "endChar": 145
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          106,
+          105
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 77,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          13
+        ],
+        "@end_pos": [
+          9,
+          17
+        ],
+        "@beat": 144,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "192": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 145,
+          "endChar": 148
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          104
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 79,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          17
+        ],
+        "@end_pos": [
+          9,
+          20
+        ],
+        "@beat": 192,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "240": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 148,
+          "endChar": 151
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          103
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          20
+        ],
+        "@end_pos": [
+          9,
+          23
+        ],
+        "@beat": 240,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "432": {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": true,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": 432,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "624": {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": true,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": 624,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "672": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 172,
+          "endChar": 174
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          44
+        ],
+        "@end_pos": [
+          9,
+          46
+        ],
+        "@beat": 672,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "720": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 174,
+          "endChar": 176
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          46
+        ],
+        "@end_pos": [
+          9,
+          48
+        ],
+        "@beat": 720,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "768": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 176,
+          "endChar": 178
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          48
+        ],
+        "@end_pos": [
+          9,
+          50
+        ],
+        "@beat": 768,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "816": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 179,
+          "endChar": 183
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          51
+        ],
+        "@end_pos": [
+          9,
+          55
+        ],
+        "@beat": 816,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1008": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 184,
+          "endChar": 192
+        },
+        "@slur_starts": [
+          102
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          56
+        ],
+        "@end_pos": [
+          9,
+          64
+        ],
+        "@beat": 1008,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1200": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 193,
+          "endChar": 199
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          65
+        ],
+        "@end_pos": [
+          9,
+          71
+        ],
+        "@beat": 1200,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1392": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 200,
+          "endChar": 204
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          72
+        ],
+        "@end_pos": [
+          9,
+          76
+        ],
+        "@beat": 1392,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1440": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 204,
+          "endChar": 206
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          76
+        ],
+        "@end_pos": [
+          9,
+          77
+        ],
+        "@beat": 1440,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      }
+    },
+    {
+      "0": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 129,
+          "endChar": 135
+        },
+        "@slur_starts": [
+          101,
+          102,
+          103,
+          104
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          1
+        ],
+        "@end_pos": [
+          9,
+          7
+        ],
+        "@beat": 0,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "48": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 135,
+          "endChar": 138
+        },
+        "@slur_starts": [
+          105
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 74,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          7
+        ],
+        "@end_pos": [
+          9,
+          10
+        ],
+        "@beat": 48,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "96": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 138,
+          "endChar": 141
+        },
+        "@slur_starts": [
+          106
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 76,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          10
+        ],
+        "@end_pos": [
+          9,
+          13
+        ],
+        "@beat": 96,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "144": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 141,
+          "endChar": 145
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          106,
+          105
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 77,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          13
+        ],
+        "@end_pos": [
+          9,
+          17
+        ],
+        "@beat": 144,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "192": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 145,
+          "endChar": 148
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          104
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 79,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          17
+        ],
+        "@end_pos": [
+          9,
+          20
+        ],
+        "@beat": 192,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "240": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 148,
+          "endChar": 151
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          103
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          20
+        ],
+        "@end_pos": [
+          9,
+          23
+        ],
+        "@beat": 240,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "432": {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 161,
+          "endChar": 164
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": true,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 164,
+              "endChar": 164
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 64,
+            "@start_pos": [
+              9,
+              33
+            ],
+            "@end_pos": [
+              9,
+              36
+            ],
+            "@beat": 432,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          33
+        ],
+        "@end_pos": [
+          9,
+          36
+        ],
+        "@beat": 432,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "624": {
+        "class": "SynchPoint",
+        "@visible": true,
+        "@origin": {
+          "startChar": 169,
+          "endChar": 172
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@notes": [
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": true,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 61,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          },
+          {
+            "class": "Note",
+            "@visible": true,
+            "@origin": {
+              "startChar": 172,
+              "endChar": 172
+            },
+            "@slur_starts": [],
+            "@slur_ends": [],
+            "@tie_start": false,
+            "@tie_end": false,
+            "@tuplet": 1,
+            "@tuplet_start": false,
+            "@tuplet_end": false,
+            "@pitch": 62,
+            "@duration": 16,
+            "@start_pos": [
+              9,
+              41
+            ],
+            "@end_pos": [
+              9,
+              44
+            ],
+            "@beat": 624,
+            "@jump_ends": null,
+            "@jump_starts": null,
+            "@first_in_part": null
+          }
+        ],
+        "@start_pos": [
+          9,
+          41
+        ],
+        "@end_pos": [
+          9,
+          44
+        ],
+        "@beat": 624,
+        "@duration": null,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "672": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 172,
+          "endChar": 174
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          44
+        ],
+        "@end_pos": [
+          9,
+          46
+        ],
+        "@beat": 672,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "720": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 174,
+          "endChar": 176
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          46
+        ],
+        "@end_pos": [
+          9,
+          48
+        ],
+        "@beat": 720,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "768": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 176,
+          "endChar": 178
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          48
+        ],
+        "@end_pos": [
+          9,
+          50
+        ],
+        "@beat": 768,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "816": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 179,
+          "endChar": 183
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 72,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          51
+        ],
+        "@end_pos": [
+          9,
+          55
+        ],
+        "@beat": 816,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1008": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 184,
+          "endChar": 192
+        },
+        "@slur_starts": [
+          102
+        ],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 61,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          56
+        ],
+        "@end_pos": [
+          9,
+          64
+        ],
+        "@beat": 1008,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1200": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 193,
+          "endChar": 199
+        },
+        "@slur_starts": [],
+        "@slur_ends": [
+          102
+        ],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 60,
+        "@duration": 64,
+        "@start_pos": [
+          9,
+          65
+        ],
+        "@end_pos": [
+          9,
+          71
+        ],
+        "@beat": 1200,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1392": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 200,
+          "endChar": 204
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": true,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          72
+        ],
+        "@end_pos": [
+          9,
+          76
+        ],
+        "@beat": 1392,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      },
+      "1440": {
+        "class": "Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 204,
+          "endChar": 206
+        },
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": true,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@pitch": 66,
+        "@duration": 16,
+        "@start_pos": [
+          9,
+          76
+        ],
+        "@end_pos": [
+          9,
+          77
+        ],
+        "@beat": 1440,
+        "@jump_ends": null,
+        "@jump_starts": null,
+        "@first_in_part": null
+      }
+    }
+  ]
+}

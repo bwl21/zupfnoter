@@ -11,6 +11,11 @@ module Harpnotes
         super
         @abc_code          = nil
         @previous_new_part = []
+
+        # this is local state memory
+
+        @tie_started = false
+        @slurstack = 0
       end
 
       # @param [String] zupfnoter_abc to be transformed
@@ -40,8 +45,8 @@ module Harpnotes
             type = @abc_model[:music_types][voice_model_element[:type]]
             begin
               result = self.send("_transform_#{type}", voice_model_element)
-            rescue
-              $log.error("BUG: symbol type #{type} not implemented", charpos_to_line_column(voice_model_element[:istart]))
+            rescue Exception => e
+              $log.error("BUG: #{e}", charpos_to_line_column(voice_model_element[:istart]))
               nil
             end
             result
@@ -67,23 +72,62 @@ module Harpnotes
         end_pos   = voice_element[:iend]
 
         notes = voice_element[:notes].map do |the_note|
-          midi_pitch = the_note[:midi_pitch] # + 49
+
           duration   = ((the_note[:dur]/abc2svg_duration_factor) * $conf.get('layout.SHORTEST_NOTE')).round
 
-          result           = Harpnotes::Music::Note.new(midi_pitch, duration)
+          result           = Harpnotes::Music::Note.new(the_note[:midi], duration)
           result.origin    = { startChar: start_pos, endChar: end_pos }
           result.start_pos = charpos_to_line_column(start_pos) # get column und line number of abc_code
           result.end_pos   = charpos_to_line_column(end_pos)
 
+          #result.tie_start = true #(the_note.ti1 > 0)
+          #result.tie_end = true # (the_note.ti1 == 0)
+
           result
         end
 
+        # handle duration and orign
         result          = Harpnotes::Music::SynchPoint.new(notes)
         result.duration = notes.first.duration
         result.origin   = notes.first.origin
+
+        # handle ties
+        # note that abc2svg only indicates tie start by  voice_element[:ti1] but has no tie end
+        result.tie_end = @tie_started
+        @tie_started = ! voice_element[:ti1].nil?
+        result.tie_start = @tie_started
+
+        # handle slurs
+        result.slur_starts = _parse_slur(voice_element[:slur_start]).map{ |i| _push_slur()}
+        amount_of_slur_ends = (voice_element[:slur_end] or 0)
+        result.slur_ends = (1 .. amount_of_slur_ends ).map{ _pop_slur}  # pop_slur delivers an id.
+
         result
       end
 
+      def _push_slur
+        @slurstack += 1
+      end
+
+      def _pop_slur
+        result = @slurstack
+        @slurstack -= 1
+        @slurstack = 0 if @slurstack < 0
+        result
+      end
+
+      # this parses the slur information from abc2svg
+      # every slur has 4 bits
+      # so the slurs are parsed by shifting by 4 and masking 4 bits
+      def _parse_slur(slurstart)
+        startvalue = slurstart
+        result = []
+        while startvalue > 0 do
+          result.push startvalue & 0xf
+          startvalue >>= 4
+        end
+        result
+      end
 
     end
   end
