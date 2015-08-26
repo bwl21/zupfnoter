@@ -1,3 +1,24 @@
+
+# todo: remove redefinintion of Native
+module Kernel
+  def Native(obj)
+    if `#{obj} == null`
+      nil
+    elsif native?(obj)
+      result = Native::Object.new(obj)
+      if `typeof(#{obj}.__id__) !== 'undefined'` #{obj}.__id__ || 0` > 0
+        puts "reusing object #{`#{obj}.__id__`}"
+      else
+        `#{obj}.__id__ = #{result.__id__}`
+      end
+      result
+    else
+      obj
+    end
+  end
+end
+
+
 module ABC2SVG
 
 
@@ -19,13 +40,15 @@ module ABC2SVG
       @printer             = div
       @svgbuf              = []
       @abc_source          = ''
-      @element_to_position = {}   # mapping svg elements to position
+      @element_to_position = {} # mapping svg elements to position
       @abc_model           = nil
-      @user                = { img_out:     nil,
-                               errmsg:      nil,
-                               read_file:   nil,
-                               annotate:    true,
-                               page_format: true
+      @object_map          = {} # mapping objects to their Id
+
+      @user = { img_out:     nil,
+                errmsg:      nil,
+                read_file:   nil,
+                annotate:    true,
+                page_format: true
       }
 
 
@@ -149,32 +172,37 @@ module ABC2SVG
     # This clones an abc2svg object such that we no longer need to deal with Native etc.
     # it removes some keys which are provided by abc2svg but not used in Zupfnoter
     def _clone_abc2svg_object(object)
-      keys = %x{Object.keys(#{object.to_n})} - [:next, :prev, :ts_next, :ts_prev] # avoid recursions
 
-      result = keys.inject({}) do |r, key|
-        content = Native(object[key])
+      dropkeys = [:next, :prev, :ts_next, :ts_prev, :extra]
 
-        case content.class.to_s
-          when "NilClass"
-            cloned_content = nil
+      case object.class.to_s
+        when "Object"
+          keys           = %x{Object.keys(#{object.to_n})} - dropkeys # avoid recursions
+          result         = keys.inject({}) do |r1, key|
+            r1[key] = _clone_abc2svg_object(Native(object[key]))
+            r1
+          end
+          result[:extra] = _get_extra(object) if object[:extra]## todo if object.has_key extra
+          @object_map[object[:__id__]] = result  ## todo: remove with redefinition of Native
+        when "Array"
+          result = object.map { |element| _clone_abc2svg_object(Native(element)) }
 
-          when "Object"
-            cloned_content = _clone_abc2svg_object(content)
-
-          when "Array"
-            cloned_content = content.map { |element| _clone_abc2svg_object(Native(element)) }
-
-          else
-            cloned_content = content
-        end
-
-        r[key] = cloned_content
-        r
+        else
+          result = object
       end
-
       result
     end
 
+    def _get_extra(object)
+      result      = {}
+      next_object = object[:extra]
+      while next_object
+        cloned_extra                     = _clone_abc2svg_object(next_object)
+        result[cloned_extra[:type].to_s] = cloned_extra
+        next_object                      = next_object[:next]
+      end
+      result
+    end
 
     # This is the business logic to copy the abc-model in the callbac
     def _get_abcmodel(tsfirst, voice_tb, music_types)
@@ -202,10 +230,9 @@ module ABC2SVG
         end
         result
       }
-      @abc_model         = { music_types: music_types, voices: tune[:voices] }
+      @abc_model         = { music_types: music_types, voices: tune[:voices], object_map: @object_map}
       if $log.loglevel == "debug"
-        x                  = @abc_model.to_json
-        $log.debug(x)
+        $log.debug(@abc_model.to_json)
       end
       @abc_model
     end
