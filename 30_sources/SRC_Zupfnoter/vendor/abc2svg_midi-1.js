@@ -1,5 +1,5 @@
 //#javascript
-// Set the MIDI pitches in the music symblos
+// Set the MIDI pitches in the music symbols
 //
 // Copyright (C) 2015 Jean-Francois Moine
 // This program is free software; you can redistribute it and/or modify
