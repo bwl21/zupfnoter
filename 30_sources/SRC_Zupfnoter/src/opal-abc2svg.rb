@@ -7,7 +7,7 @@ module Kernel
     elsif native?(obj)
       result = Native::Object.new(obj)
       if `typeof(#{obj}.__id__) !== 'undefined'` #{obj}.__id__ || 0` > 0
-        puts "reusing object #{`#{obj}.__id__`}"
+        #puts "reusing object #{`#{obj}.__id__`}"
       else
         `#{obj}.__id__ = #{result.__id__}`
       end
