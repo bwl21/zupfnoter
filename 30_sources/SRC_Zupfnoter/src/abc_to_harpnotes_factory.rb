@@ -43,32 +43,6 @@ module Harpnotes
         return line_no, char_pos
       end
 
-      def reset_state
-
-        @jumptargets = {} # the lookup table for jumps
-
-        @next_note_marks   = { measure:        false,
-                               repeat_start:   false,
-                               variant_ending: nil }
-        @previous_new_part = []
-        @previous_note     = nil
-        @repetition_stack  = []
-        @pitch_transformer.reset_measure_accidentals
-        @current_tuplet   = 0
-        @tuplet_downcount = 0
-        @pitch_providers  = [] # lookuptable for pitches (used by rest)
-        nil
-      end
-
-      # This creates a mockup of an ABC-Object providing the informaiton required for bactracing
-      # and cross highlighting
-      #
-      # @param [Object] this is an abc object
-      #
-      # @return [Hash] with startChar, endChar
-      def mk_origin(origin)
-        { startChar: origin[:startChar], endChar: origin[:endChar] }
-      end
 
       #
       # todo refine the parsing of the options

@@ -15,23 +15,16 @@ module Harpnotes
         @abc_code          = nil
         @previous_new_part = []
 
-        # this is local state memory
-
-        @tie_started       = false
-        @slurstack         = 0
-        @tuplet_count      = 1
-        @tuplet_down_count = 1
-
-        @next_note_marks = {}
-
-        @repetition_stack = []
+        _reset_state
       end
 
       # @param [String] zupfnoter_abc to be transformed
       #
       # @return [Harpnotes::Music::Song] the Song
       def transform(zupfnoter_abc)
-        @abc_code   = zupfnoter_abc
+        @abc_code    = zupfnoter_abc
+        @annotations = $conf.get("annotations")
+
         transformer = ABC2SVG::Abc2Svg.new(nil, { mode: :model }) # first argument is the container for SVG
         @abc_model  = transformer.get_abcmodel(zupfnoter_abc)
 
@@ -47,15 +40,38 @@ module Harpnotes
       private
 
 
+      # This resets the converter
+      # to be called when beginning a new voice
+      def _reset_state
+
+        @jumptargets = {} # the lookup table for jumps
+
+        @next_note_marks   = { measure:        false,
+                               repeat_start:   false,
+                               variant_ending: nil }
+        @previous_new_part = []
+        @previous_note     = nil
+        @repetition_stack  = []
+
+        @tie_started       = false
+        @slurstack         = 0
+        @tuplet_count      = 1
+        @tuplet_down_count = 1
+
+        nil
+      end
+
+
       def _transform_voices
         hn_voices = @abc_model[:voices].map do |voice_model|
 
+          _reset_state
           @pitch_providers = voice_model[:symbols].map do |voice_model_element|
             nil
             voice_model_element if voice_model_element[:type] == 8 #todo remove literal
           end
 
-          result = voice_model[:symbols].each_with_index.map do |voice_model_element, index|
+          result                = voice_model[:symbols].each_with_index.map do |voice_model_element, index|
             type = @abc_model[:music_types][voice_model_element[:type]]
             begin
               result = self.send("_transform_#{type}", voice_model_element, index)
@@ -65,6 +81,22 @@ module Harpnotes
             end
             result
           end
+
+          # handle the jumplines
+          result                = result.flatten
+          jumplines             = result.inject([]) do |jumplines, element|
+            jumplines << _make_jumplines(element)
+            jumplines
+          end
+
+          #handle notebound annotations
+
+          notebound_annotations = result.inject([]) do |notebound_annotations, element|
+            notebound_annotations << _make_notebound_annotations(element)
+          end
+
+          result += (jumplines + notebound_annotations)
+
 
           result.flatten.compact
         end
@@ -119,6 +151,7 @@ module Harpnotes
           result
         end
 
+        # the postprocessing
         # support the case of repetitions from the very beginning
 
         if @repetition_stack.empty?
@@ -126,26 +159,28 @@ module Harpnotes
         end
 
         # handle duration and orign
-        result                           = Harpnotes::Music::SynchPoint.new(notes)
-        result.duration                  = notes.first.duration
-        result.origin                    = origin
+        result              = Harpnotes::Music::SynchPoint.new(notes)
+        result.duration     = notes.first.duration
+        result.origin       = origin
+        result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
+        result.end_pos      = charpos_to_line_column(end_pos)
 
         # handle ties
         # note that abc2svg only indicates tie start by  voice_element[:ti1] but has no tie end
-        result.tie_end                   = @tie_started
-        @tie_started                     = !voice_element[:ti1].nil?
-        result.tie_start                 = @tie_started
+        result.tie_end      = @tie_started
+        @tie_started        = !voice_element[:ti1].nil?
+        result.tie_start    = @tie_started
 
         # handle slurs
-        result.slur_starts               = _parse_slur(voice_element[:slur_start]).map { |i| _push_slur() }
-        amount_of_slur_ends              = (voice_element[:slur_end] or 0)
-        result.slur_ends                 = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
+        result.slur_starts  = _parse_slur(voice_element[:slur_start]).map { |i| _push_slur() }
+        amount_of_slur_ends = (voice_element[:slur_end] or 0)
+        result.slur_ends    = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
 
 
         #handle tuplets of synchpoint
-        result.tuplet                    = tuplet
-        result.tuplet_start              = tuplet_start
-        result.tuplet_end                = tuplet_end
+        result.tuplet       = tuplet
+        result.tuplet_start = tuplet_start
+        result.tuplet_end   = tuplet_end
 
         result = [result]
 
@@ -164,6 +199,12 @@ module Harpnotes
         if @next_note_marks[:variant_ending]
           result << Harpnotes::Music::NoteBoundAnnotation.new(notes.first, { pos: [4, -2], text: @next_note_marks[:variant_ending] })
           @next_note_marks[:variant_ending] = nil
+        end
+
+        # collect chord based targets
+        chords = _extract_chord_lines(voice_element)
+        chords.select { |chord| chord[0] == ":" }.each do |name|
+          @jumptargets[name[1 .. -1]] = result.select { |n| n.is_a? Harpnotes::Music::Playable }.last
         end
 
         result
@@ -191,6 +232,8 @@ module Harpnotes
         result.tuplet_end   = tuplet_end
 
 
+        # the post processing
+
         # support the case of repetitions from the very beginning
 
         if @repetition_stack.empty?
@@ -216,6 +259,13 @@ module Harpnotes
           @next_note_marks[:variant_ending] = nil
         end
 
+        # collect chord based targets
+        chords = _extract_chord_lines(voice_element)
+        chords.select { |chord| chord[0] == ":" }.each do |name|
+          @jumptargets[name[1 .. -1]] = result.select { |n| n.is_a? Harpnotes::Music::Playable }.last
+        end
+
+
         result
       end
 
@@ -228,7 +278,7 @@ module Harpnotes
         end
 
         distance = 2
-        _parse_chordlines(bar).each do |line|
+        _extract_chord_lines(bar).each do |line|
           level = line.split('@')
           if level[2]
             level = level[2] # note that "^@@distance"
@@ -244,6 +294,66 @@ module Harpnotes
         nil
       end
 
+      # make the jumplilnes
+      # @param [Playable] element - an element of the converted voice
+      def _make_jumplines(element)
+        if element.is_a?(Harpnotes::Music::Playable)
+          chords = _extract_chord_lines(element.origin[:raw])
+          chords.select { |c| c[0] == '@' }.inject([]) do |result, chord|
+            nameparts = chord.split('@')
+
+            targetname = nameparts[1]
+            target     = @jumptargets[targetname]
+
+            argument = nameparts[2] || 1
+            argument = argument.to_i
+            if target.nil?
+              $log.error("target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
+            else
+              result << Harpnotes::Music::Goto.new(element, target, distance: argument) #todo: better algorithm
+            end
+
+            result
+          end
+        else
+          nil
+        end
+      end
+
+      def _make_notebound_annotations(entity)
+        result = []
+        if entity.is_a? Harpnotes::Music::Playable
+          chords =_extract_chord_lines(entity.origin[:raw])
+          chords.each do |name|
+
+            match = name.match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
+            if match
+              semantic = match[1]
+              text     = match[2]
+              pos_x    = match[4] if match[4]
+              pos_y    = match[5] if match[5]
+              case semantic
+                when "#"
+                  annotation = @annotations[text]
+                  $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
+                when "!"
+                  annotation = { text: text }
+                else
+                  annotation = nil # it is not an annotation
+              end
+
+              if annotation
+                notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
+                position = notepos || annotation[:pos] || [2, -5] #todo: make default position configurable
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, { pos: position, text: annotation[:text] })
+              end
+            else
+              # $log.error("syntax error in annotation: #{name}")
+            end
+          end
+        end
+        result
+      end
 
       def _push_slur
         @slurstack += 1
@@ -256,7 +366,7 @@ module Harpnotes
         result
       end
 
-      def _parse_chordlines(voice_element)
+      def _extract_chord_lines(voice_element)
         chords = voice_element[:a_gch]
         if chords
           result = chords.select { |e| e[:type] = '^' }.map { |e| e[:text] }
@@ -268,7 +378,7 @@ module Harpnotes
       end
 
       def _parse_origin(voice_element)
-        { startChar: voice_element[:istart], endChar: voice_element[:iend] }
+        { startChar: voice_element[:istart], endChar: voice_element[:iend], raw: voice_element }
       end
 
       # this parses the slur information from abc2svg
