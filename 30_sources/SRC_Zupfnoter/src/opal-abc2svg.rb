@@ -75,7 +75,7 @@ module ABC2SVG
           end
 
           set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
-            _get_abcmodel(tsfirst, voice_tb, anno_type)
+           # _get_abcmodel(tsfirst, voice_tb, anno_type)
           end
 
         when :model

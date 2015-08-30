@@ -1539,7 +1539,7 @@ module Harpnotes
           y_offset = beat_layout.call(root.beat()) - $conf.get('layout.FONT_STYLE_DEF')[:regular][:font_size] * 0.5 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
           res = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
         else
-          $log.warning("Part without content")
+          $log.error("BUG Part without content")
           res = nil
         end
 

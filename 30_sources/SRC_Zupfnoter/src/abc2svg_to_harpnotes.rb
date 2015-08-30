@@ -326,6 +326,14 @@ module Harpnotes
       def _make_repeats_jumps_annotations(result, voice_element)
         @previous_note = result.first # notes.first # save this for repeat lines etc.
 
+        if voice_element[:extra] and voice_element[:extra][:"9"]
+          part = Harpnotes::Music::NewPart.new(voice_element[:extra]["9"][:text])
+          part.origin = _parse_origin(voice_element)
+          part.companion = result.first
+          result.first.first_in_part = true
+          result << part
+        end
+
         if @next_note_marks[:repeat_start]
           @repetition_stack << result.first
           @next_note_marks[:repeat_start] = false
