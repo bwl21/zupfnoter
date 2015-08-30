@@ -25,8 +25,8 @@ module Harpnotes
         @abc_code    = zupfnoter_abc
         @annotations = $conf.get("annotations")
 
-        transformer = ABC2SVG::Abc2Svg.new(nil, { mode: :model }) # first argument is the container for SVG
-        @abc_model  = transformer.get_abcmodel(zupfnoter_abc)
+        abc_parser = ABC2SVG::Abc2Svg.new(nil, { mode: :model }) # first argument is the container for SVG
+        @abc_model  = abc_parser.get_abcmodel(zupfnoter_abc)
 
         result = _transform_voices
 
@@ -106,15 +106,6 @@ module Harpnotes
       end
 
       def _transform_bar(voice_element)
-        bar_types = {
-            '|'  => 'thin',
-            '['  => 'variant_ending',
-            '|:' => 'repeat_start',
-            ':|' => 'repeat_end',
-            '::' => 'repeat_end_start',
-            '|]' => 'big_bar'
-        }
-
         result = []
         type   = voice_element[:bar_type]
 
@@ -160,10 +151,11 @@ module Harpnotes
 
         # handle duration and orign
         result              = Harpnotes::Music::SynchPoint.new(notes)
-        result.duration     = notes.first.duration
-        result.origin       = origin
-        result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
-        result.end_pos      = charpos_to_line_column(end_pos)
+        first_note          = notes.first
+        result.duration     = first_note.duration
+        result.origin       = first_note.origin
+        result.start_pos    = first_note.start_pos
+        result.end_pos      = first_note.end_pos
 
         # handle ties
         # note that abc2svg only indicates tie start by  voice_element[:ti1] but has no tie end
@@ -171,45 +163,36 @@ module Harpnotes
         @tie_started        = !voice_element[:ti1].nil?
         result.tie_start    = @tie_started
 
+
+        #handle tuplets of synchpoint
+        result.tuplet       = first_note.tuplet
+        result.tuplet_start = first_note.tuplet_start
+        result.tuplet_end   = first_note.tuplet_end
+
+
         # handle slurs
+        # note that rests do not have slurs in practise
         result.slur_starts  = _parse_slur(voice_element[:slur_start]).map { |i| _push_slur() }
         amount_of_slur_ends = (voice_element[:slur_end] or 0)
         result.slur_ends    = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
 
 
-        #handle tuplets of synchpoint
-        result.tuplet       = tuplet
-        result.tuplet_start = tuplet_start
-        result.tuplet_end   = tuplet_end
-
-        result = [result]
-
-        @previous_note = notes.first # save this for repeat lines etc.
+        result = [result]  # make it an array such that we can append further elements
 
         if @next_note_marks[:measure]
           notes.each { |note| result << Harpnotes::Music::MeasureStart.new(note) }
           @next_note_marks[:measure] = false
         end
 
-        if @next_note_marks[:repeat_start]
-          @repetition_stack << notes.first
-          @next_note_marks[:repeat_start] = false
-        end
-
-        if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(notes.first, { pos: [4, -2], text: @next_note_marks[:variant_ending] })
-          @next_note_marks[:variant_ending] = nil
-        end
-
-        # collect chord based targets
-        chords = _extract_chord_lines(voice_element)
-        chords.select { |chord| chord[0] == ":" }.each do |name|
-          @jumptargets[name[1 .. -1]] = result.select { |n| n.is_a? Harpnotes::Music::Playable }.last
-        end
+        _make_repeats_jumps_annotations(result, voice_element)
 
         result
       end
 
+
+
+
+      # @param [Integer] index  - this is required to determine the pitch of the rest
       def _transform_rest(voice_element, index)
 
         pitch_note = (@pitch_providers[index .. -1].compact.first or @pitch_providers[0..index-1].compact.last)
@@ -240,8 +223,6 @@ module Harpnotes
           @repetition_stack << result
         end
 
-        @previous_note = result # save this for repeat lines etc.
-
         result = [result]
 
         if @next_note_marks[:measure]
@@ -249,22 +230,8 @@ module Harpnotes
           @next_note_marks[:measure] = false
         end
 
-        if @next_note_marks[:repeat_start]
-          @repetition_stack << result.first
-          @next_note_marks[:repeat_start] = false
-        end
 
-        if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(result.first, { pos: [4, -2], text: @next_note_marks[:variant_ending] })
-          @next_note_marks[:variant_ending] = nil
-        end
-
-        # collect chord based targets
-        chords = _extract_chord_lines(voice_element)
-        chords.select { |chord| chord[0] == ":" }.each do |name|
-          @jumptargets[name[1 .. -1]] = result.select { |n| n.is_a? Harpnotes::Music::Playable }.last
-        end
-
+        _make_repeats_jumps_annotations(result, voice_element)
 
         result
       end
@@ -355,6 +322,27 @@ module Harpnotes
         result
       end
 
+      # this appends repeates, jumplines, annotations to the resultl
+      def _make_repeats_jumps_annotations(result, voice_element)
+        @previous_note = result.first # notes.first # save this for repeat lines etc.
+
+        if @next_note_marks[:repeat_start]
+          @repetition_stack << result.first
+          @next_note_marks[:repeat_start] = false
+        end
+
+        if @next_note_marks[:variant_ending]
+          result << Harpnotes::Music::NoteBoundAnnotation.new(result.first, { pos: [4, -2], text: @next_note_marks[:variant_ending] })
+          @next_note_marks[:variant_ending] = nil
+        end
+
+        # collect chord based targets
+        chords = _extract_chord_lines(voice_element)
+        chords.select { |chord| chord[0] == ":" }.each do |name|
+          @jumptargets[name[1 .. -1]] = result.select { |n| n.is_a? Harpnotes::Music::Playable }.last
+        end
+      end
+
       def _push_slur
         @slurstack += 1
       end
@@ -425,6 +413,6 @@ module Harpnotes
 
 
     end
-  end
+  end # module Input
 
-end
+end   # module Harpnotes
