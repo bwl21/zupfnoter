@@ -15,6 +15,8 @@ module Harpnotes
         @abc_code          = nil
         @previous_new_part = []
 
+        @part_table = {}
+
         _reset_state
       end
 
@@ -26,7 +28,7 @@ module Harpnotes
         @annotations = $conf.get("annotations")
 
         abc_parser = ABC2SVG::Abc2Svg.new(nil, { mode: :model }) # first argument is the container for SVG
-        @abc_model  = abc_parser.get_abcmodel(zupfnoter_abc)
+        @abc_model = abc_parser.get_abcmodel(zupfnoter_abc)
 
         result = _transform_voices
 
@@ -63,6 +65,10 @@ module Harpnotes
 
 
       def _transform_voices
+
+
+        _extract_part_table
+
         hn_voices = @abc_model[:voices].map do |voice_model|
 
           _reset_state
@@ -103,6 +109,13 @@ module Harpnotes
 
         hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         Harpnotes::Music::Song.new(hn_voices)
+      end
+
+      def _extract_part_table
+        @abc_model[:voices].first[:symbols].each do |voice_model_element|
+          part                                         = ((voice_model_element[:extra] or {})['9'] or {})[:text]
+          @part_table[voice_model_element[:time].to_s] = part if part
+        end
       end
 
       def _transform_bar(voice_element)
@@ -177,7 +190,7 @@ module Harpnotes
         result.slur_ends    = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
 
 
-        result = [result]  # make it an array such that we can append further elements
+        result = [result] # make it an array such that we can append further elements
 
         if @next_note_marks[:measure]
           notes.each { |note| result << Harpnotes::Music::MeasureStart.new(note) }
@@ -188,8 +201,6 @@ module Harpnotes
 
         result
       end
-
-
 
 
       # @param [Integer] index  - this is required to determine the pitch of the rest
@@ -326,10 +337,11 @@ module Harpnotes
       def _make_repeats_jumps_annotations(result, voice_element)
         @previous_note = result.first # notes.first # save this for repeat lines etc.
 
-        if voice_element[:extra] and voice_element[:extra][:"9"]
-          part = Harpnotes::Music::NewPart.new(voice_element[:extra]["9"][:text])
-          part.origin = _parse_origin(voice_element)
-          part.companion = result.first
+
+        if part_label = @part_table[voice_element[:time].to_s]
+          part                       = Harpnotes::Music::NewPart.new(part_label)
+          part.origin                = _parse_origin(voice_element)
+          part.companion             = result.first
           result.first.first_in_part = true
           result << part
         end
@@ -423,4 +435,4 @@ module Harpnotes
     end
   end # module Input
 
-end   # module Harpnotes
+end # module Harpnotes

@@ -230,7 +230,7 @@ module ABC2SVG
         end
         result
       }
-      @abc_model         = { music_types: music_types, voices: tune[:voices], object_map: @object_map}
+      @abc_model         = { music_types: music_types, voices: tune[:voices]}
       if $log.loglevel == "debug"
         $log.debug(@abc_model.to_json)
       end
