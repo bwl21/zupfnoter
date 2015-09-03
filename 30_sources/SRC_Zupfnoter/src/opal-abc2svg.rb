@@ -1,22 +1,6 @@
 
 # todo: remove redefinintion of Native
-module Kernel
-  def Native(obj)
-    if `#{obj} == null`
-      nil
-    elsif native?(obj)
-      result = Native::Object.new(obj)
-      if `typeof(#{obj}.__id__) !== 'undefined'` #{obj}.__id__ || 0` > 0
-        #puts "reusing object #{`#{obj}.__id__`}"
-      else
-        `#{obj}.__id__ = #{result.__id__}`
-      end
-      result
-    else
-      obj
-    end
-  end
-end
+
 
 
 module ABC2SVG

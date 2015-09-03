@@ -428,7 +428,7 @@ module Harpnotes
       attr_accessor :meta_data, :harpnote_options
 
       def to_json
-        {voices: @voices, beat_maps:@beat_maps}.to_json
+        {voices: @voices, beat_maps:@beat_maps, meta_data:@meta_data, harpnote_options: @harpnote_options}.to_json
       end
       #
       # Constructor

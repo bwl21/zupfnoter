@@ -376,7 +376,7 @@ C,
       command.as_action do |args|
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = metadata[:F]
+        filebase = metadata[:F].first
         $log.debug("#{metadata.to_s} (#{__FILE__} #{__LINE__})")
         if filebase
           filebase = filebase.split("\n").first

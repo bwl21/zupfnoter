@@ -32,11 +32,65 @@ module Harpnotes
 
         result = _transform_voices
 
-        result.meta_data         = {}
-        result.meta_data[:tempo] = { duration: [0.25], bpm: 120 }
-        result.harpnote_options  = { lyrics: {} }
+        @info_fields = get_metadata(@abc_code)
+
+        result.meta_data        = _make_metadata
+        result.harpnote_options = _make_harpnote_options
 
         result
+      end
+
+      def _make_harpnote_options
+        { lyrics: { text: @info_fields[:W] } }
+      end
+
+      def _get_key_by_accidentals(accidentals)
+        {
+        7 =>	'C#',#,	A#m	G#Mix	D#Dor	E#Phr	F#Lyd	B#Loc
+        6 =>	'F#',#	D#m	C#Mix	G#Dor	A#Phr	BLyd	E#Loc
+        5 =>	'B', #	G#m	F#Mix	C#Dor	D#Phr	ELyd	A#Loc
+        4 =>	'E',	#'C#m	BMix	F#Dor	G#Phr	ALyd	D#Loc
+        3 =>	'A', #	F#m	EMix	BDor	C#Phr	DLyd	G#Loc
+        2 =>	'D', #	Bm	AMix	EDor	F#Phr	GLyd	C#Loc
+        1 =>	'G', #	Em	DMix	ADor	BPhr	CLyd	F#Loc
+        0 =>	'C', #	Am	GMix	DDor	EPhr	FLyd	BLoc
+        -1 =>	'F', #	Dm	CMix	GDor	APhr	BbLyd	ELoc
+        -2 =>	'Bb', #	Gm	FMix	CDor	DPhr	EbLyd	ALoc
+        -3 =>	'Eb', #	Cm	BbMix	FDor	GPhr	AbLyd	DLoc
+        -4 =>	'Ab', #	Fm	EbMix	BbDor	CPhr	DbLyd	GLoc
+        -5 =>	'Db', #	Bbm	AbMix	EbDor	FPhr	GbLyd	CLoc
+        -6 =>	'Gb', #	Ebm	DbMix	AbDor	BbPhr	CbLyd	FLoc
+        -7 =>	'Cb' #	Abm	GbMix	DbDor	EbPhr	FbLyd	BbLoc
+        }[accidentals]
+      end
+
+      def _make_metadata
+        key   = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key][:k_sf])
+        o_key = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey][:k_sf])
+        o_key_display =""
+        o_key_display = "(Original in #{o_key})" unless key == o_key
+
+
+        tempo_note = @abc_model[:voices].first[:voice_properties][:sym][:extra][:'14'] rescue nil
+        if tempo_note
+          duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
+          duration_display = duration.map { |d| "1/#{1/d}" }
+          bpm              = tempo_note[:tempo_value].to_i
+          tempo            = { duration: duration, bpm: bpm }
+        else
+          duration         = [0.25]
+          duration_display = duration.map { |d| "1/#{1/d}" }
+          bpm              = 120
+          tempo            = { duration: duration, bpm: bpm }
+        end
+
+        { composer:      (@info_fields[:C] or []).join("\n"),
+          title:         (@info_fields[:T] or []).join("\n"),
+          tempo:         { duration: duration, bpm: bpm },
+          tempo_display: [duration_display, "=", bpm].join(' '),
+          meter:         @info_fields[:M],
+          key:           "#{key} #{o_key_display}"
+        }
       end
 
       private
@@ -66,8 +120,11 @@ module Harpnotes
 
       def _transform_voices
 
+        @abc_model[:voices].first[:symbols].each do |voice_model_element|
 
-        _extract_part_table
+          part                                         = ((voice_model_element[:extra] or {})['9'] or {})[:text]
+          @part_table[voice_model_element[:time].to_s] = part if part
+        end
 
         hn_voices = @abc_model[:voices].map do |voice_model|
 
@@ -81,7 +138,7 @@ module Harpnotes
             type = @abc_model[:music_types][voice_model_element[:type]]
             begin
               result = self.send("_transform_#{type}", voice_model_element, index)
-            rescue Exception => e
+            rescue String => e
               $log.error("BUG: #{e}", charpos_to_line_column(voice_model_element[:istart]))
               nil
             end
@@ -109,13 +166,6 @@ module Harpnotes
 
         hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         Harpnotes::Music::Song.new(hn_voices)
-      end
-
-      def _extract_part_table
-        @abc_model[:voices].first[:symbols].each do |voice_model_element|
-          part                                         = ((voice_model_element[:extra] or {})['9'] or {})[:text]
-          @part_table[voice_model_element[:time].to_s] = part if part
-        end
       end
 
       def _transform_bar(voice_element)
@@ -206,6 +256,9 @@ module Harpnotes
       # @param [Integer] index  - this is required to determine the pitch of the rest
       def _transform_rest(voice_element, index)
 
+        origin             = _parse_origin(voice_element)
+        start_pos, end_pos = origin[:startChar], origin[:endChar]
+
         pitch_note = (@pitch_providers[index .. -1].compact.first or @pitch_providers[0..index-1].compact.last)
         if pitch_note
           pitch = pitch_note[:notes].first[:midi]
@@ -219,6 +272,9 @@ module Harpnotes
 
         result              = Harpnotes::Music::Pause.new(pitch, duration)
         result.origin       = _parse_origin(voice_element)
+        result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
+        result.end_pos      = charpos_to_line_column(end_pos)
+
 
         #handle tuplets of synchpoint
         result.tuplet       = tuplet
@@ -269,7 +325,7 @@ module Harpnotes
       end
 
       def _transform_format(voice_element)
-        nil
+        nil #`debugger`
       end
 
       # make the jumplilnes

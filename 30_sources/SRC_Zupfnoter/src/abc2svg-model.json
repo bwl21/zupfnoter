@@ -30,8 +30,7 @@
           "orn": 0,
           "std": 0,
           "voc": 0,
-          "vol": 0,
-          "__id__": 1156
+          "vol": 0
         },
         "scale": 1,
         "combine": 0,
@@ -39,99 +38,86 @@
         "key": {
           "type": 5,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
-          "istart": 80,
-          "iend": 83,
+          "istart": 143,
+          "iend": 146,
           "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1158
-        },
-        "ckey": {
-          "type": 5,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 80,
-          "iend": 83,
-          "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1162
+          "k_sf": -5
         },
         "okey": {
           "type": 5,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
-          "istart": 80,
-          "iend": 83,
+          "istart": 143,
+          "iend": 146,
           "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1166
+          "k_sf": 0
         },
         "meter": {
           "type": 6,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
-          "istart": 58,
-          "iend": 63,
+          "istart": 73,
+          "iend": 78,
           "a_meter": [
             {
               "top": "4",
-              "bot": "4",
-              "__id__": 1174
+              "bot": "4"
             }
           ],
-          "wmeasure": 1536,
-          "__id__": 1170
+          "wmeasure": 1536
         },
         "clef": {
           "type": 1,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
-          "istart": 101,
-          "iend": 141,
+          "istart": 147,
+          "iend": 185,
           "clef_line": 2,
-          "clef_type": "t",
-          "clef_octave": -7,
-          "__id__": 1176
+          "clef_type": "t"
         },
         "hy_st": 0,
-        "time": 3072,
+        "ckey": {
+          "type": 5,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 143,
+          "iend": 146,
+          "k_delta": 0,
+          "k_sf": -5
+        },
+        "time": 10368,
         "cst": 0,
         "st": 0,
+        "transpose": 3,
         "wmeasure": 1536,
         "nm": "Sopran",
         "new_name": true,
         "snm": "S",
-        "sym": {
+        "last_note": {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 148,
+          "istart": 243,
           "notes": [
             {
-              "pit": 16,
+              "pit": 17,
               "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
               "dur": 384,
-              "midi": 60,
-              "__id__": 1184
+              "midi": 60
             }
           ],
           "dur_orig": 384,
@@ -142,6 +128,63 @@
           "nflags": 0,
           "v": 0,
           "st": 0,
+          "time": 9984,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 244,
+          "slur_start": 0,
+          "beam_end": true,
+          "a_ly": [
+            {
+              "t": "see",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 17.43105
+            }
+          ],
+          "seqst": true
+        },
+        "sym": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 186,
+          "notes": [
+            {
+              "pit": 17,
+              "apit": 16,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 1536,
+              "midi": 60
+            }
+          ],
+          "dur_orig": 1536,
+          "dur": 1536,
+          "combine": 0,
+          "head": "oval",
+          "dots": 0,
+          "nflags": -2,
+          "stemless": true,
+          "v": 0,
+          "st": 0,
           "time": 0,
           "posit": {
             "dyn": 0,
@@ -150,89 +193,46 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1186
+            "vol": 0
           },
-          "iend": 149,
+          "iend": 188,
           "slur_start": 0,
+          "beam_end": true,
+          "a_ly": [
+            {
+              "t": "alle",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 19.7106
+            }
+          ],
           "seqst": true,
-          "__id__": 1180,
           "extra": {
             "14": {
               "type": 14,
               "ctx": {
-                "fname": "abc",
-                "__id__": 1160
+                "fname": "abc"
               },
               "istart": null,
-              "iend": 79,
+              "iend": 94,
               "tempo_notes": [
-                384
+                1536
               ],
               "tempo_value": "120",
               "v": 0,
               "st": 0,
-              "time": 0,
-              "__id__": 1188
-            },
-            "9": {
-              "type": 9,
-              "ctx": {
-                "fname": "abc",
-                "__id__": 1160
-              },
-              "istart": 142,
-              "iend": 147,
-              "text": "A",
-              "v": 0,
-              "st": 0,
-              "time": 0,
-              "posit": {
-                "dyn": 0,
-                "gch": 0,
-                "gsd": 0,
-                "orn": 0,
-                "std": 0,
-                "voc": 0,
-                "vol": 0,
-                "__id__": 1198
-              },
-              "__id__": 1194
+              "time": 0
             }
           }
         },
         "last_sym": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 164,
-          "notes": [
-            {
-              "pit": 23,
-              "apit": 23,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 72,
-              "__id__": 1204
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
           "v": 0,
           "st": 0,
-          "time": 2688,
+          "time": 10368,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -240,92 +240,46 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1206
+            "vol": 0
           },
-          "iend": 165,
-          "slur_start": 0,
-          "beam_end": true,
-          "seqst": true,
-          "__id__": 1200
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 243,
+          "iend": 244,
+          "type": 3,
+          "seqst": true
         },
-        "last_note": {
+        "lyric_restart": null,
+        "have_ly": true,
+        "lyric_start": {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 164,
+          "istart": 186,
           "notes": [
             {
-              "pit": 23,
-              "apit": 23,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 72,
-              "__id__": 1204
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 2688,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1206
-          },
-          "iend": 165,
-          "slur_start": 0,
-          "beam_end": true,
-          "seqst": true,
-          "__id__": 1200
-        },
-        "lyric_restart": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 148,
-          "notes": [
-            {
-              "pit": 16,
+              "pit": 17,
               "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
-              "dur": 384,
-              "midi": 60,
-              "__id__": 1184
+              "dur": 1536,
+              "midi": 60
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
+          "dur_orig": 1536,
+          "dur": 1536,
           "combine": 0,
-          "head": "full",
+          "head": "oval",
           "dots": 0,
-          "nflags": 0,
+          "nflags": -2,
+          "stemless": true,
           "v": 0,
           "st": 0,
           "time": 0,
@@ -336,89 +290,74 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1186
+            "vol": 0
           },
-          "iend": 149,
+          "iend": 188,
           "slur_start": 0,
+          "beam_end": true,
+          "a_ly": [
+            {
+              "t": "alle",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 19.7106
+            }
+          ],
           "seqst": true,
-          "__id__": 1180,
           "extra": {
             "14": {
               "type": 14,
               "ctx": {
-                "fname": "abc",
-                "__id__": 1160
+                "fname": "abc"
               },
               "istart": null,
-              "iend": 79,
+              "iend": 94,
               "tempo_notes": [
-                384
+                1536
               ],
               "tempo_value": "120",
               "v": 0,
               "st": 0,
-              "time": 0,
-              "__id__": 1188
-            },
-            "9": {
-              "type": 9,
-              "ctx": {
-                "fname": "abc",
-                "__id__": 1160
-              },
-              "istart": 142,
-              "iend": 147,
-              "text": "A",
-              "v": 0,
-              "st": 0,
-              "time": 0,
-              "posit": {
-                "dyn": 0,
-                "gch": 0,
-                "gsd": 0,
-                "orn": 0,
-                "std": 0,
-                "voc": 0,
-                "vol": 0,
-                "__id__": 1198
-              },
-              "__id__": 1194
+              "time": 0
             }
           }
         },
-        "__id__": 1154
+        "lyric_line": 0,
+        "lyric_cont": null
       },
       "symbols": [
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 148,
+          "istart": 186,
           "notes": [
             {
-              "pit": 16,
+              "pit": 17,
               "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
-              "dur": 384,
-              "midi": 60,
-              "__id__": 1184
+              "dur": 1536,
+              "midi": 60
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
+          "dur_orig": 1536,
+          "dur": 1536,
           "combine": 0,
-          "head": "full",
+          "head": "oval",
           "dots": 0,
-          "nflags": 0,
+          "nflags": -2,
+          "stemless": true,
           "v": 0,
           "st": 0,
           "time": 0,
@@ -429,208 +368,50 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1186
+            "vol": 0
           },
-          "iend": 149,
+          "iend": 188,
           "slur_start": 0,
+          "beam_end": true,
+          "a_ly": [
+            {
+              "t": "alle",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 19.7106
+            }
+          ],
           "seqst": true,
-          "__id__": 1180,
           "extra": {
             "14": {
               "type": 14,
               "ctx": {
-                "fname": "abc",
-                "__id__": 1160
+                "fname": "abc"
               },
               "istart": null,
-              "iend": 79,
+              "iend": 94,
               "tempo_notes": [
-                384
+                1536
               ],
               "tempo_value": "120",
               "v": 0,
               "st": 0,
-              "time": 0,
-              "__id__": 1188
-            },
-            "9": {
-              "type": 9,
-              "ctx": {
-                "fname": "abc",
-                "__id__": 1160
-              },
-              "istart": 142,
-              "iend": 147,
-              "text": "A",
-              "v": 0,
-              "st": 0,
-              "time": 0,
-              "posit": {
-                "dyn": 0,
-                "gch": 0,
-                "gsd": 0,
-                "orn": 0,
-                "std": 0,
-                "voc": 0,
-                "vol": 0,
-                "__id__": 1198
-              },
-              "__id__": 1194
+              "time": 0
             }
           }
         },
         {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 149,
-          "notes": [
-            {
-              "pit": 17,
-              "apit": 17,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 62,
-              "__id__": 1264
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 384,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1266
-          },
-          "iend": 150,
-          "slur_start": 0,
-          "seqst": true,
-          "__id__": 1240
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 150,
-          "notes": [
-            {
-              "pit": 18,
-              "apit": 18,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 64,
-              "__id__": 1272
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 768,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1274
-          },
-          "iend": 151,
-          "slur_start": 0,
-          "seqst": true,
-          "__id__": 1260
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 151,
-          "notes": [
-            {
-              "pit": 19,
-              "apit": 19,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 65,
-              "__id__": 1280
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 1152,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1282
-          },
-          "iend": 152,
-          "slur_start": 0,
-          "beam_end": true,
-          "seqst": true,
-          "__id__": 1268
-        },
-        {
           "type": 0,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "multi": 0,
-          "istart": 153,
-          "iend": 154,
+          "istart": 188,
+          "iend": 189,
           "bar_type": "|",
           "v": 0,
           "st": 0,
@@ -642,42 +423,50 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1288
+            "vol": 0
           },
           "seqst": true,
-          "bar_num": 2,
-          "__id__": 1276
+          "bar_num": 2
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
-          "nhd": 0,
+          "nhd": 1,
           "xmx": 0,
-          "istart": 161,
+          "istart": 190,
           "notes": [
             {
-              "pit": 20,
-              "apit": 20,
+              "pit": 17,
+              "apit": 16,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 3,
+              "acc": 3,
+              "dur": 1536,
+              "midi": 60
+            },
+            {
+              "pit": 18,
+              "apit": 17,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
-              "dur": 384,
-              "midi": 67,
-              "__id__": 1294
+              "dur": 1536,
+              "midi": 61
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
+          "ti1": true,
+          "dur_orig": 1536,
+          "dur": 1536,
           "combine": 0,
-          "head": "full",
+          "head": "oval",
           "dots": 0,
-          "nflags": 0,
+          "nflags": -2,
+          "stemless": true,
           "v": 0,
           "st": 0,
           "time": 1536,
@@ -688,61 +477,135 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1296
+            "vol": 0
           },
-          "iend": 162,
+          "iend": 198,
           "slur_start": 0,
-          "seqst": true,
-          "__id__": 1284,
-          "extra": {
-            "9": {
-              "type": 9,
-              "ctx": {
-                "fname": "abc",
-                "__id__": 1160
+          "beam_end": true,
+          "slur_end": 1,
+          "a_ly": [
+            {
+              "t": "meine",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
               },
-              "istart": 155,
-              "iend": 160,
-              "text": "B",
-              "v": 0,
-              "st": 0,
-              "time": 1536,
-              "posit": {
-                "dyn": 0,
-                "gch": 0,
-                "gsd": 0,
-                "orn": 0,
-                "std": 0,
-                "voc": 0,
-                "vol": 0,
-                "__id__": 1304
+              "w": 33.3606
+            }
+          ],
+          "seqst": true
+        },
+        {
+          "type": 0,
+          "ctx": {
+            "fname": "abc"
+          },
+          "multi": 0,
+          "istart": 201,
+          "iend": 202,
+          "bar_type": "|",
+          "v": 0,
+          "st": 0,
+          "time": 3072,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "seqst": true,
+          "bar_num": 3
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 1,
+          "xmx": 0,
+          "istart": 203,
+          "notes": [
+            {
+              "pit": 17,
+              "apit": 16,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "acc": 3,
+              "dur": 384,
+              "midi": 60
+            },
+            {
+              "pit": 18,
+              "apit": 17,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 61
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 3072,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 208,
+          "slur_start": 0,
+          "beam_end": true,
+          "a_ly": [
+            {
+              "t": "ent\n",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
               },
-              "__id__": 1298
+              "w": 23.505300000000002
             }
-          }
+          ],
+          "seqst": true
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 162,
+          "istart": 209,
           "notes": [
             {
-              "pit": 21,
-              "apit": 21,
+              "pit": 17,
+              "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
               "dur": 384,
-              "midi": 69,
-              "__id__": 1310
+              "midi": 60
             }
           ],
           "dur_orig": 384,
@@ -753,7 +616,7 @@
           "nflags": 0,
           "v": 0,
           "st": 0,
-          "time": 1920,
+          "time": 3456,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -761,35 +624,44 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1312
+            "vol": 0
           },
-          "iend": 163,
+          "iend": 210,
           "slur_start": 0,
-          "seqst": true,
-          "__id__": 1290
+          "a_ly": [
+            {
+              "t": "chen\n",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 32.5962
+            }
+          ],
+          "seqst": true
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 163,
+          "istart": 210,
           "notes": [
             {
-              "pit": 22,
-              "apit": 22,
+              "pit": 17,
+              "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
+              "acc": 3,
               "dur": 384,
-              "midi": 71,
-              "__id__": 1318
+              "midi": 60
             }
           ],
           "dur_orig": 384,
@@ -800,7 +672,7 @@
           "nflags": 0,
           "v": 0,
           "st": 0,
-          "time": 2304,
+          "time": 3840,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -808,396 +680,28 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1320
+            "vol": 0
           },
-          "iend": 164,
+          "iend": 212,
           "slur_start": 0,
-          "seqst": true,
-          "__id__": 1306
+          "a_ly": [
+            {
+              "t": "schim\n",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 39.434850000000004
+            }
+          ],
+          "seqst": true
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 164,
-          "notes": [
-            {
-              "pit": 23,
-              "apit": 23,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 72,
-              "__id__": 1204
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 2688,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1206
-          },
-          "iend": 165,
-          "slur_start": 0,
-          "beam_end": true,
-          "seqst": true,
-          "__id__": 1200
-        }
-      ]
-    },
-    {
-      "voice_properties": {
-        "v": 1,
-        "id": "T2",
-        "posit": {
-          "dyn": 0,
-          "gch": 0,
-          "gsd": 0,
-          "orn": 0,
-          "std": 0,
-          "voc": 0,
-          "vol": 0,
-          "__id__": 1330
-        },
-        "scale": 1,
-        "combine": 0,
-        "ulen": 384,
-        "key": {
-          "type": 5,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 80,
-          "iend": 83,
-          "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1332
-        },
-        "ckey": {
-          "type": 5,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 80,
-          "iend": 83,
-          "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1336
-        },
-        "okey": {
-          "type": 5,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 80,
-          "iend": 83,
-          "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1340
-        },
-        "meter": {
-          "type": 6,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 58,
-          "iend": 63,
-          "a_meter": [
-            {
-              "top": "4",
-              "bot": "4",
-              "__id__": 1174
-            }
-          ],
-          "wmeasure": 1536,
-          "__id__": 1344
-        },
-        "clef": {
-          "type": 1,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 166,
-          "iend": 204,
-          "clef_line": 2,
-          "clef_type": "t",
-          "clef_octave": -7,
-          "__id__": 1350
-        },
-        "hy_st": 0,
-        "time": 3072,
-        "cst": 1,
-        "st": 1,
-        "wmeasure": 1536,
-        "nm": "Alt",
-        "new_name": true,
-        "snm": "A",
-        "last_note": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 230,
-          "notes": [
-            {
-              "pit": 20,
-              "apit": 20,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 67,
-              "__id__": 1358
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 2688,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1360
-          },
-          "iend": 231,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1354
-        },
-        "sym": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 210,
-          "notes": [
-            {
-              "pit": 13,
-              "apit": 13,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 55,
-              "__id__": 1366
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 0,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1368
-          },
-          "iend": 212,
-          "slur_start": 0,
-          "__id__": 1362
-        },
-        "last_sym": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 230,
-          "notes": [
-            {
-              "pit": 20,
-              "apit": 20,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 67,
-              "__id__": 1358
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 2688,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1360
-          },
-          "iend": 231,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1354
-        },
-        "lyric_restart": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 210,
-          "notes": [
-            {
-              "pit": 13,
-              "apit": 13,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 55,
-              "__id__": 1366
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 0,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1368
-          },
-          "iend": 212,
-          "slur_start": 0,
-          "__id__": 1362
-        },
-        "__id__": 1328
-      },
-      "symbols": [
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 210,
-          "notes": [
-            {
-              "pit": 13,
-              "apit": 13,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 55,
-              "__id__": 1366
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 0,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1368
-          },
-          "iend": 212,
-          "slur_start": 0,
-          "__id__": 1362
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
@@ -1206,108 +710,13 @@
           "istart": 212,
           "notes": [
             {
-              "pit": 14,
-              "apit": 14,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 57,
-              "__id__": 1402
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 384,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1404
-          },
-          "iend": 214,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1390
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 215,
-          "notes": [
-            {
-              "pit": 15,
-              "apit": 15,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 59,
-              "__id__": 1410
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 768,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1412
-          },
-          "iend": 217,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1398
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 218,
-          "notes": [
-            {
-              "pit": 16,
+              "pit": 17,
               "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
               "dur": 384,
-              "midi": 60,
-              "__id__": 1418
+              "midi": 60
             }
           ],
           "dur_orig": 384,
@@ -1316,9 +725,9 @@
           "head": "full",
           "dots": 0,
           "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 1152,
+          "v": 0,
+          "st": 0,
+          "time": 4224,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -1326,27 +735,37 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1420
+            "vol": 0
           },
-          "iend": 219,
+          "iend": 213,
           "slur_start": 0,
           "beam_end": true,
-          "__id__": 1406
+          "a_ly": [
+            {
+              "t": "men",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 23.5053
+            }
+          ],
+          "seqst": true
         },
         {
           "type": 0,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "multi": 0,
-          "istart": 220,
-          "iend": 221,
+          "istart": 214,
+          "iend": 215,
           "bar_type": "|",
-          "v": 1,
-          "st": 1,
-          "time": 1536,
+          "v": 0,
+          "st": 0,
+          "time": 4608,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -1354,43 +773,124 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1426
+            "vol": 0
           },
-          "__id__": 1414
+          "seqst": true,
+          "bar_num": 4
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 227,
+          "istart": 216,
+          "notes": [
+            {
+              "pit": 24,
+              "apit": 23,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 1536,
+              "midi": 72
+            }
+          ],
+          "dur_orig": 1536,
+          "dur": 1536,
+          "combine": 0,
+          "head": "oval",
+          "dots": 0,
+          "nflags": -2,
+          "stemless": true,
+          "v": 0,
+          "st": 0,
+          "time": 4608,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 218,
+          "slur_start": 0,
+          "beam_end": true,
+          "a_ly": [
+            {
+              "t": "in",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 10.619700000000002
+            }
+          ],
+          "seqst": true
+        },
+        {
+          "type": 0,
+          "ctx": {
+            "fname": "abc"
+          },
+          "multi": 0,
+          "istart": 219,
+          "iend": 220,
+          "bar_type": "|",
+          "v": 0,
+          "st": 0,
+          "time": 6144,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "seqst": true,
+          "bar_num": 5
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 224,
           "notes": [
             {
               "pit": 17,
-              "apit": 17,
+              "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
-              "dur": 384,
-              "midi": 62,
-              "__id__": 1432
+              "acc": 3,
+              "dur": 1536,
+              "midi": 60
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
+          "dur_orig": 1536,
+          "dur": 1536,
           "combine": 0,
-          "head": "full",
+          "head": "oval",
           "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 1536,
+          "nflags": -2,
+          "stemless": true,
+          "v": 0,
+          "st": 0,
+          "time": 6144,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -1398,91 +898,37 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1434
+            "vol": 0
           },
-          "iend": 228,
-          "slur_start": 0,
-          "__id__": 1422
+          "iend": 227,
+          "slur_start": 3,
+          "beam_end": true,
+          "a_ly": [
+            {
+              "t": "dem",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 23.5053
+            }
+          ],
+          "seqst": true
         },
         {
-          "type": 8,
+          "type": 0,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
-          "stem": 0,
           "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
           "istart": 228,
-          "notes": [
-            {
-              "pit": 18,
-              "apit": 18,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 64,
-              "__id__": 1440
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 1920,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1442
-          },
           "iend": 229,
-          "slur_start": 0,
-          "__id__": 1428
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 229,
-          "notes": [
-            {
-              "pit": 19,
-              "apit": 19,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 65,
-              "__id__": 1448
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 2304,
+          "bar_type": "|",
+          "v": 0,
+          "st": 0,
+          "time": 7680,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -1490,18 +936,15 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1450
+            "vol": 0
           },
-          "iend": 230,
-          "slur_start": 0,
-          "__id__": 1436
+          "seqst": true,
+          "bar_num": 6
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
@@ -1510,162 +953,25 @@
           "istart": 230,
           "notes": [
             {
-              "pit": 20,
-              "apit": 20,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 67,
-              "__id__": 1358
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 1,
-          "st": 1,
-          "time": 2688,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1360
-          },
-          "iend": 231,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1354
-        }
-      ]
-    },
-    {
-      "voice_properties": {
-        "v": 2,
-        "id": "T3",
-        "posit": {
-          "dyn": 0,
-          "gch": 0,
-          "gsd": 0,
-          "orn": 0,
-          "std": 0,
-          "voc": 0,
-          "vol": 0,
-          "__id__": 1460
-        },
-        "scale": 1,
-        "combine": 0,
-        "ulen": 384,
-        "key": {
-          "type": 5,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 80,
-          "iend": 83,
-          "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1462
-        },
-        "ckey": {
-          "type": 5,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 80,
-          "iend": 83,
-          "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1466
-        },
-        "okey": {
-          "type": 5,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 80,
-          "iend": 83,
-          "k_delta": 0,
-          "k_sf": 0,
-          "__id__": 1470
-        },
-        "meter": {
-          "type": 6,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 58,
-          "iend": 63,
-          "a_meter": [
-            {
-              "top": "4",
-              "bot": "4",
-              "__id__": 1174
-            }
-          ],
-          "wmeasure": 1536,
-          "__id__": 1474
-        },
-        "clef": {
-          "type": 1,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 232,
-          "iend": 248,
-          "clef_line": 2,
-          "clef_type": "t",
-          "__id__": 1480
-        },
-        "hy_st": 0,
-        "time": 3072,
-        "cst": 2,
-        "st": 2,
-        "wmeasure": 1536,
-        "last_note": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 293,
-          "notes": [
-            {
-              "pit": 16,
+              "pit": 17,
               "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
-              "dur": 384,
-              "midi": 60,
-              "__id__": 1488
+              "dur": 1536,
+              "midi": 60
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
+          "dur_orig": 1536,
+          "dur": 1536,
           "combine": 0,
-          "head": "full",
+          "head": "oval",
           "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 2688,
+          "nflags": -2,
+          "stemless": true,
+          "v": 0,
+          "st": 0,
+          "time": 7680,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -1673,333 +979,38 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1490
+            "vol": 0
           },
-          "iend": 294,
+          "iend": 232,
           "slur_start": 0,
           "beam_end": true,
-          "__id__": 1484
-        },
-        "sym": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 255,
-          "notes": [
+          "slur_end": 1,
+          "a_ly": [
             {
-              "pit": 9,
-              "apit": 9,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 48,
-              "__id__": 1496
+              "t": "see",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 17.43105
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 0,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1498
-          },
-          "iend": 257,
-          "slur_start": 0,
-          "__id__": 1492
-        },
-        "last_sym": {
-          "v": 2,
-          "st": 2,
-          "time": 3072,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1502
-          },
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "istart": 293,
-          "iend": 294,
-          "type": 3,
-          "seqst": true,
-          "__id__": 1500
-        },
-        "lyric_restart": {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 255,
-          "notes": [
-            {
-              "pit": 9,
-              "apit": 9,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 48,
-              "__id__": 1496
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 0,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1498
-          },
-          "iend": 257,
-          "slur_start": 0,
-          "__id__": 1492
-        },
-        "__id__": 1458
-      },
-      "symbols": [
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 255,
-          "notes": [
-            {
-              "pit": 9,
-              "apit": 9,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 48,
-              "__id__": 1496
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 0,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1498
-          },
-          "iend": 257,
-          "slur_start": 0,
-          "__id__": 1492
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 257,
-          "notes": [
-            {
-              "pit": 10,
-              "apit": 10,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 50,
-              "__id__": 1530
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 384,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1532
-          },
-          "iend": 259,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1518
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 260,
-          "notes": [
-            {
-              "pit": 11,
-              "apit": 11,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 52,
-              "__id__": 1538
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 768,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1540
-          },
-          "iend": 262,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1526
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 263,
-          "notes": [
-            {
-              "pit": 12,
-              "apit": 12,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 53,
-              "__id__": 1546
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 1152,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1548
-          },
-          "iend": 265,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1534
+          "seqst": true
         },
         {
           "type": 0,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "multi": 0,
-          "istart": 266,
-          "iend": 267,
+          "istart": 235,
+          "iend": 236,
           "bar_type": "|",
-          "v": 2,
-          "st": 2,
-          "time": 1536,
+          "v": 0,
+          "st": 0,
+          "time": 9216,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -2007,50 +1018,88 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1554
+            "vol": 0
           },
-          "__id__": 1542
+          "seqst": true,
+          "bar_num": 7
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 284,
-          "a_gch": [
+          "istart": 237,
+          "notes": [
             {
+              "pit": 20,
+              "apit": 19,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 3,
+              "acc": 3,
+              "dur": 384,
+              "midi": 65
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 9216,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 239,
+          "slur_start": 0,
+          "ti1": true,
+          "a_ly": [
+            {
+              "t": "in",
               "font": {
-                "name": "sans-serif",
-                "size": 12,
-                "swfac": 13.200000000000001,
-                "fid": 3,
-                "__id__": 1562
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
               },
-              "box": null,
-              "type": "g",
-              "text": "!Part B",
-              "w": 37.76520000000001,
-              "x": -8,
-              "y": 0,
-              "__id__": 1560
+              "w": 10.619700000000002
             }
           ],
+          "seqst": true
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 240,
           "notes": [
             {
-              "pit": 13,
-              "apit": 13,
+              "pit": 21,
+              "apit": 20,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
+              "acc": -2,
               "dur": 384,
-              "midi": 55,
-              "__id__": 1564
+              "midi": 65
             }
           ],
           "dur_orig": 384,
@@ -2059,9 +1108,9 @@
           "head": "full",
           "dots": 0,
           "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 1536,
+          "v": 0,
+          "st": 0,
+          "time": 9600,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -2069,129 +1118,44 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1566
+            "vol": 0
           },
-          "iend": 286,
+          "iend": 242,
           "slur_start": 0,
           "beam_end": true,
-          "__id__": 1550
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 287,
-          "notes": [
+          "a_ly": [
             {
-              "pit": 14,
-              "apit": 14,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 57,
-              "__id__": 1572
+              "t": "dem",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 23.5053
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 1920,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1574
-          },
-          "iend": 289,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1556
+          "seqst": true
         },
         {
           "type": 8,
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
           "stem": 0,
           "multi": 0,
           "nhd": 0,
           "xmx": 0,
-          "istart": 290,
+          "istart": 243,
           "notes": [
             {
-              "pit": 15,
-              "apit": 15,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 59,
-              "__id__": 1580
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "combine": 0,
-          "head": "full",
-          "dots": 0,
-          "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 2304,
-          "posit": {
-            "dyn": 0,
-            "gch": 0,
-            "gsd": 0,
-            "orn": 0,
-            "std": 0,
-            "voc": 0,
-            "vol": 0,
-            "__id__": 1582
-          },
-          "iend": 292,
-          "slur_start": 0,
-          "beam_end": true,
-          "__id__": 1568
-        },
-        {
-          "type": 8,
-          "ctx": {
-            "fname": "abc",
-            "__id__": 1160
-          },
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 293,
-          "notes": [
-            {
-              "pit": 16,
+              "pit": 17,
               "apit": 16,
               "shhd": 0,
               "shac": 0,
               "ti1": 0,
               "dur": 384,
-              "midi": 60,
-              "__id__": 1488
+              "midi": 60
             }
           ],
           "dur_orig": 384,
@@ -2200,9 +1164,9 @@
           "head": "full",
           "dots": 0,
           "nflags": 0,
-          "v": 2,
-          "st": 2,
-          "time": 2688,
+          "v": 0,
+          "st": 0,
+          "time": 9984,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -2210,18 +1174,29 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1490
+            "vol": 0
           },
-          "iend": 294,
+          "iend": 244,
           "slur_start": 0,
           "beam_end": true,
-          "__id__": 1484
+          "a_ly": [
+            {
+              "t": "see",
+              "font": {
+                "name": "serifBold",
+                "size": 13,
+                "swfac": 13.65,
+                "fid": 3
+              },
+              "w": 17.43105
+            }
+          ],
+          "seqst": true
         },
         {
-          "v": 2,
-          "st": 2,
-          "time": 3072,
+          "v": 0,
+          "st": 0,
+          "time": 10368,
           "posit": {
             "dyn": 0,
             "gch": 0,
@@ -2229,18 +1204,15 @@
             "orn": 0,
             "std": 0,
             "voc": 0,
-            "vol": 0,
-            "__id__": 1502
+            "vol": 0
           },
           "ctx": {
-            "fname": "abc",
-            "__id__": 1160
+            "fname": "abc"
           },
-          "istart": 293,
-          "iend": 294,
+          "istart": 243,
+          "iend": 244,
           "type": 3,
-          "seqst": true,
-          "__id__": 1500
+          "seqst": true
         }
       ]
     }

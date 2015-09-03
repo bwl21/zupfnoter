@@ -176,7 +176,7 @@ module Harpnotes
         # todo:factor out to a generic method parse_abc_header()
         #
 
-        note_length = get_metadata(zupfnoter_abc)[:L] || $conf.get("defaults.note_length")
+        note_length = ((get_metadata(zupfnoter_abc)[:L] or []).last or $conf.get("defaults.note_length"))
         note_length = note_length.split('/').map{|s| s.strip.to_i} #|| '1/4').split.map { |s| s.strip.to_i }
 
 

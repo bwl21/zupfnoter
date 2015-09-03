@@ -80,7 +80,14 @@ module Harpnotes
       def get_metadata(abc_code)
         retval = abc_code.split("\n").inject({}) do |result, line|
           entry               = line.match(/^([A-Z]):\s*(.*)/) { |m| [m[1], m[2]] }
-          result[entry.first] = entry.last if entry
+          if entry
+            key = entry.first
+            if result[key]
+              result[key] << entry.last
+            else
+              result[key] = [entry.last]
+            end
+          end
           result
         end
         retval
