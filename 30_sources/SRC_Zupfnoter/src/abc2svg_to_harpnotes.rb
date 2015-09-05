@@ -17,6 +17,7 @@ module Harpnotes
 
         @part_table = {}
 
+        @_shortest_note = $conf.get('layout.SHORTEST_NOTE')
         _reset_state
       end
 
@@ -41,32 +42,43 @@ module Harpnotes
       end
 
       def _make_harpnote_options
-        { lyrics: { text: @info_fields[:W] } }
+        result                          = { lyrics: { text: @info_fields[:W] } }
+
+        result[:print] = $conf.get("produce").map do |i|
+          title = $conf.get("extract.#{i}.title")
+          if title
+            { title: title, view_id: i }
+          else
+            $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
+            nil
+          end
+        end.compact
+        result
       end
 
       def _get_key_by_accidentals(accidentals)
         {
-        7 =>	'C#',#,	A#m	G#Mix	D#Dor	E#Phr	F#Lyd	B#Loc
-        6 =>	'F#',#	D#m	C#Mix	G#Dor	A#Phr	BLyd	E#Loc
-        5 =>	'B', #	G#m	F#Mix	C#Dor	D#Phr	ELyd	A#Loc
-        4 =>	'E',	#'C#m	BMix	F#Dor	G#Phr	ALyd	D#Loc
-        3 =>	'A', #	F#m	EMix	BDor	C#Phr	DLyd	G#Loc
-        2 =>	'D', #	Bm	AMix	EDor	F#Phr	GLyd	C#Loc
-        1 =>	'G', #	Em	DMix	ADor	BPhr	CLyd	F#Loc
-        0 =>	'C', #	Am	GMix	DDor	EPhr	FLyd	BLoc
-        -1 =>	'F', #	Dm	CMix	GDor	APhr	BbLyd	ELoc
-        -2 =>	'Bb', #	Gm	FMix	CDor	DPhr	EbLyd	ALoc
-        -3 =>	'Eb', #	Cm	BbMix	FDor	GPhr	AbLyd	DLoc
-        -4 =>	'Ab', #	Fm	EbMix	BbDor	CPhr	DbLyd	GLoc
-        -5 =>	'Db', #	Bbm	AbMix	EbDor	FPhr	GbLyd	CLoc
-        -6 =>	'Gb', #	Ebm	DbMix	AbDor	BbPhr	CbLyd	FLoc
-        -7 =>	'Cb' #	Abm	GbMix	DbDor	EbPhr	FbLyd	BbLoc
+            7  => 'C#', #,	A#m	G#Mix	D#Dor	E#Phr	F#Lyd	B#Loc
+            6  => 'F#', #	D#m	C#Mix	G#Dor	A#Phr	BLyd	E#Loc
+            5  => 'B', #	G#m	F#Mix	C#Dor	D#Phr	ELyd	A#Loc
+            4  => 'E', #'C#m	BMix	F#Dor	G#Phr	ALyd	D#Loc
+            3  => 'A', #	F#m	EMix	BDor	C#Phr	DLyd	G#Loc
+            2  => 'D', #	Bm	AMix	EDor	F#Phr	GLyd	C#Loc
+            1  => 'G', #	Em	DMix	ADor	BPhr	CLyd	F#Loc
+            0  => 'C', #	Am	GMix	DDor	EPhr	FLyd	BLoc
+            -1 => 'F', #	Dm	CMix	GDor	APhr	BbLyd	ELoc
+            -2 => 'Bb', #	Gm	FMix	CDor	DPhr	EbLyd	ALoc
+            -3 => 'Eb', #	Cm	BbMix	FDor	GPhr	AbLyd	DLoc
+            -4 => 'Ab', #	Fm	EbMix	BbDor	CPhr	DbLyd	GLoc
+            -5 => 'Db', #	Bbm	AbMix	EbDor	FPhr	GbLyd	CLoc
+            -6 => 'Gb', #	Ebm	DbMix	AbDor	BbPhr	CbLyd	FLoc
+            -7 => 'Cb' #	Abm	GbMix	DbDor	EbPhr	FbLyd	BbLoc
         }[accidentals]
       end
 
       def _make_metadata
-        key   = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key][:k_sf])
-        o_key = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey][:k_sf])
+        key           = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key][:k_sf])
+        o_key         = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey][:k_sf])
         o_key_display =""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
@@ -138,7 +150,7 @@ module Harpnotes
             type = @abc_model[:music_types][voice_model_element[:type]]
             begin
               result = self.send("_transform_#{type}", voice_model_element, index)
-            rescue String => e
+            rescue Exception => e
               $log.error("BUG: #{e}", charpos_to_line_column(voice_model_element[:istart]))
               nil
             end
@@ -180,7 +192,6 @@ module Harpnotes
       end
 
       def _transform_note(voice_element)
-
         origin                           = _parse_origin(voice_element)
         start_pos, end_pos               = origin[:startChar], origin[:endChar]
 
@@ -191,7 +202,7 @@ module Harpnotes
 
         # transform the individual notes
         notes                            = voice_element[:notes].map do |the_note|
-          duration = ((the_note[:dur]/ABC2SVG_DURATION_FACTOR) * $conf.get('layout.SHORTEST_NOTE')).round
+          duration = ((the_note[:dur]/ABC2SVG_DURATION_FACTOR) * @_shortest_note).round
 
           result           = Harpnotes::Music::Note.new(the_note[:midi], duration)
           result.origin    = origin
@@ -212,35 +223,41 @@ module Harpnotes
           @repetition_stack << notes.last
         end
 
-        # handle duration and orign
-        result              = Harpnotes::Music::SynchPoint.new(notes)
-        first_note          = notes.first
-        result.duration     = first_note.duration
-        result.origin       = first_note.origin
-        result.start_pos    = first_note.start_pos
-        result.end_pos      = first_note.end_pos
+        result = []
+        if notes.count == 1
+          result << notes.first
+        else
+          # handle duration and orign
+          synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
+          first_note              = notes.first
+          synchpoint.duration     = first_note.duration
+          synchpoint.origin       = first_note.origin
+          synchpoint.start_pos    = first_note.start_pos
+          synchpoint.end_pos      = first_note.end_pos
+
+          #handle tuplets of synchpoint
+          synchpoint.tuplet       = first_note.tuplet
+          synchpoint.tuplet_start = first_note.tuplet_start
+          synchpoint.tuplet_end   = first_note.tuplet_end
+
+          result << synchpoint
+        end
 
         # handle ties
         # note that abc2svg only indicates tie start by  voice_element[:ti1] but has no tie end
-        result.tie_end      = @tie_started
-        @tie_started        = !voice_element[:ti1].nil?
-        result.tie_start    = @tie_started
-
-
-        #handle tuplets of synchpoint
-        result.tuplet       = first_note.tuplet
-        result.tuplet_start = first_note.tuplet_start
-        result.tuplet_end   = first_note.tuplet_end
+        result.first.tie_end     = @tie_started
+        @tie_started             = !voice_element[:ti1].nil?
+        result.first.tie_start   = @tie_started
 
 
         # handle slurs
         # note that rests do not have slurs in practise
-        result.slur_starts  = _parse_slur(voice_element[:slur_start]).map { |i| _push_slur() }
-        amount_of_slur_ends = (voice_element[:slur_end] or 0)
-        result.slur_ends    = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
+        result.first.slur_starts = _parse_slur(voice_element[:slur_start]).map { |i| _push_slur() }
+        amount_of_slur_ends      = (voice_element[:slur_end] or 0)
+        result.first.slur_ends   = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
 
 
-        result = [result] # make it an array such that we can append further elements
+        #result = [result] # make it an array such that we can append further elements
 
         if @next_note_marks[:measure]
           notes.each { |note| result << Harpnotes::Music::MeasureStart.new(note) }

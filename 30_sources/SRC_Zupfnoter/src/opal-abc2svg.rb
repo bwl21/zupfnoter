@@ -63,8 +63,8 @@ module ABC2SVG
           end
 
         when :model
-          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
-            _get_abcmodel(tsfirst, voice_tb, anno_type)
+          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type, info|
+            _get_abcmodel(tsfirst, voice_tb, anno_type, info)
           end
 
         else
@@ -189,7 +189,7 @@ module ABC2SVG
     end
 
     # This is the business logic to copy the abc-model in the callbac
-    def _get_abcmodel(tsfirst, voice_tb, music_types)
+    def _get_abcmodel(tsfirst, voice_tb, music_types, info)
 
       %x{
           abcmidi = new AbcMIDI();
@@ -214,7 +214,8 @@ module ABC2SVG
         end
         result
       }
-      @abc_model         = { music_types: music_types, voices: tune[:voices]}
+      info_clone = _clone_abc2svg_object(Native(info))
+      @abc_model         = { music_types: music_types, info: info_clone, voices: tune[:voices]}
       if $log.loglevel == "debug"
         $log.debug(@abc_model.to_json)
       end

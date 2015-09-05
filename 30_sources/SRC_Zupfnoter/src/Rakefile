@@ -187,5 +187,5 @@ task :buildDesktop => [:build] do
   cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-x64" do
     sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
   end
-  nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
+  #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
 end

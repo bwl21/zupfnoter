@@ -559,11 +559,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def _init_conf()
     result =
         {produce: [0],
-         abc_parser: 'ABCJS',
+         abc_parser: 'ABC2SVG',
          defaults:
              {
                  note_length: "1/4",
-                 print: {t: "", # title of the extract
+                 print: {t: "", # title of the extract   # todo: remove these print defaults - no longer needed
                          v: [1, 2, 3, 4], # voices to show
                          startpos: 15, # start position of the harpnotes
                          s: [[1, 2], [2, 3]], # synchlines
@@ -579,7 +579,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
          annotations: {
              vt: {text: "v", pos: [-1, -6]},
-             vr: {text: "v", pos: [2, -3]}
+             vr: {text: "v", pos: [2, -3]},
+             vl: {text: "v", pos: [-4, -3]}
 
          }, # default for note based annotations
 

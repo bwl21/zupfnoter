@@ -14,7 +14,7 @@ module Harpnotes
             result = Harpnotes::Input::AbcjsToHarpnotes.new
           else
             $log.error("Undefined abc parser: #{engine}")
-            result = Harpnotes::Input::AbcjsToHarpnotes.new
+            result = Harpnotes::Input::Abc2svgToHarpnotes.new
         end
 
         result
