@@ -204,6 +204,39 @@ C,
         @editor.set_text(args[:oldval])
       end
     end
+
+    @commands.add_command(:demo) do |command|
+
+      command.set_help { "Load demo tune" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        load_demo_tune
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+
+    end
+
+    @commands.add_command(:drop) do |command|
+
+      command.set_help { "Load demo tune" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        @editor.set_text(@dropped_abc)
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+
+    end
+
   end
 
 
@@ -452,16 +485,6 @@ C,
       command.as_inverse do |args|
         # todo maintain editor status
         @editor.set_text(args[:oldval])
-      end
-    end
-
-
-    @commands.add_command(:demo) do |command|
-
-      command.set_help { "Load demo tune" }
-      
-      command.as_action do |args|
-        load_demo_tune
       end
     end
 

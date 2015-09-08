@@ -28,12 +28,14 @@ module Harpnotes
         @abc_code    = zupfnoter_abc
         @annotations = $conf.get("annotations")
 
+
+        @info_fields = get_metadata(@abc_code)
+
         abc_parser = ABC2SVG::Abc2Svg.new(nil, { mode: :model }) # first argument is the container for SVG
         @abc_model = abc_parser.get_abcmodel(zupfnoter_abc)
 
         result = _transform_voices
 
-        @info_fields = get_metadata(@abc_code)
 
         result.meta_data        = _make_metadata
         result.harpnote_options = _make_harpnote_options
@@ -42,7 +44,7 @@ module Harpnotes
       end
 
       def _make_harpnote_options
-        result                          = { lyrics: { text: @info_fields[:W] } }
+        result = { lyrics: { text: @info_fields[:W] } }
 
         result[:print] = $conf.get("produce").map do |i|
           title = $conf.get("extract.#{i}.title")
@@ -83,7 +85,7 @@ module Harpnotes
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
 
-        tempo_note = @abc_model[:voices].first[:voice_properties][:sym][:extra][:'14'] rescue nil
+        tempo_note = @abc_model[:voices].first[:voice_properties][:sym][:extra][:'14'] rescue nil ## todo: remove literal
         if tempo_note
           duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           duration_display = duration.map { |d| "1/#{1/d}" }
@@ -133,12 +135,11 @@ module Harpnotes
       def _transform_voices
 
         @abc_model[:voices].first[:symbols].each do |voice_model_element|
-
-          part                                         = ((voice_model_element[:extra] or {})['9'] or {})[:text]
+          part                                         = ((voice_model_element[:extra] or {})['9'] or {})[:text] # todo:remove literals
           @part_table[voice_model_element[:time].to_s] = part if part
         end
 
-        hn_voices = @abc_model[:voices].map do |voice_model|
+        hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
 
           _reset_state
           @pitch_providers = voice_model[:symbols].map do |voice_model_element|
@@ -172,9 +173,13 @@ module Harpnotes
 
           result += (jumplines + notebound_annotations)
 
-
           result.flatten.compact
-        end
+          if (result.count == 0)
+            $log.error("Corrupt voice #{voice_index}")
+            result = nil
+          end
+          result
+        end.compact
 
         hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         Harpnotes::Music::Song.new(hn_voices)
@@ -195,14 +200,13 @@ module Harpnotes
         origin                           = _parse_origin(voice_element)
         start_pos, end_pos               = origin[:startChar], origin[:endChar]
 
-
         #handle tuplets
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
-
         # transform the individual notes
         notes                            = voice_element[:notes].map do |the_note|
-          duration = ((the_note[:dur]/ABC2SVG_DURATION_FACTOR) * @_shortest_note).round
+          duration = _convert_duration(the_note[:dur])
+
 
           result           = Harpnotes::Music::Note.new(the_note[:midi], duration)
           result.origin    = origin
@@ -269,6 +273,10 @@ module Harpnotes
         result
       end
 
+      def _convert_duration(raw_duration)
+        duration = [128, ((raw_duration/ABC2SVG_DURATION_FACTOR) * @_shortest_note).round].min
+      end
+
 
       # @param [Integer] index  - this is required to determine the pitch of the rest
       def _transform_rest(voice_element, index)
@@ -283,15 +291,19 @@ module Harpnotes
           pitch = 60
         end
 
+        if (pitch.nil?)
+          raise("undefined pitch")
+          pitch = 60
+        end
+
         the_note                         = voice_element[:notes].first
-        duration                         = ((the_note[:dur]/ABC2SVG_DURATION_FACTOR) * $conf.get('layout.SHORTEST_NOTE')).round
+        duration                         = _convert_duration(the_note[:dur])
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result              = Harpnotes::Music::Pause.new(pitch, duration)
         result.origin       = _parse_origin(voice_element)
         result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
         result.end_pos      = charpos_to_line_column(end_pos)
-
 
         #handle tuplets of synchpoint
         result.tuplet       = tuplet
