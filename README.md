@@ -41,7 +41,19 @@ syntax but applies to some conventions. These conventions reflect to
 2.  annotations
 
     Annotations starting with one of `:`, `@`, `!`, `#` have a specific
-    interpretation
+    interpretation:
+    
+    `:`
+    :   Target of a jump
+    
+    `@`
+    :   Jump
+    
+    `!`
+    :   Regular annotation
+    
+    `#`
+    :   referenced annotation
 
 The specific conventions in detail are as follows:
 

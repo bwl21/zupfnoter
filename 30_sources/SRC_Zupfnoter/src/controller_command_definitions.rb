@@ -204,6 +204,39 @@ C,
         @editor.set_text(args[:oldval])
       end
     end
+
+    @commands.add_command(:demo) do |command|
+
+      command.set_help { "Load demo tune" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        load_demo_tune
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+
+    end
+
+    @commands.add_command(:drop) do |command|
+
+      command.set_help { "Load demo tune" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        @editor.set_text(@dropped_abc)
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+
+    end
+
   end
 
 
@@ -376,7 +409,7 @@ C,
       command.as_action do |args|
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = metadata[:F]
+        filebase = metadata[:F].first
         $log.debug("#{metadata.to_s} (#{__FILE__} #{__LINE__})")
         if filebase
           filebase = filebase.split("\n").first
@@ -452,16 +485,6 @@ C,
       command.as_inverse do |args|
         # todo maintain editor status
         @editor.set_text(args[:oldval])
-      end
-    end
-
-    @commands.add_command(:svg) do |command|
-      command.as_action do |args|
-        abc2svg = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
-        abc2svg.on_select do |id|
-           $log.info(id)
-        end
-        abc2svg.draw(@editor.get_abc_part)
       end
     end
 

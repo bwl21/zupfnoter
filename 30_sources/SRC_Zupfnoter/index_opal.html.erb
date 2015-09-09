@@ -1,75 +1,82 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>Zupfnoter</title>
-  <link rel="stylesheet" type="text/css" href="public/index.css"/>
-  <link rel="shortcut icon" href="public/icons/favicon.gif"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Zupfnoter</title>
+    <link rel="stylesheet" type="text/css" href="public/index.css"/>
+    <link rel="shortcut icon" href="public/icons/favicon.gif"/>
 
-  <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
-  <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
-  <script src="vendor/ace/ext-language_tools.js" type="application/javascript" charset="utf-8"></script>
-  <script src="vendor/abcjs_basic_1.11.zupfnoter-min.js" type="application/javascript"></script>
-  <script src="vendor/raphael.pan-zoom.min.js" type="application/javascript"></script>
-  <script src="vendor/musical.min.js" type="application/javascript"></script>
-  <script src="vendor/jqconsole.min.js" type="application/javascript"></script>
-  <script src="vendor/json_parse.js" type="application/javascript"></script>
+    <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
+    <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
+    <script src="vendor/ace/ext-language_tools.js" type="application/javascript" charset="utf-8"></script>
+    <script src="vendor/abcjs_basic_1.11.zupfnoter-min.js" type="application/javascript"></script>
+    <script src="vendor/raphael.pan-zoom.min.js" type="application/javascript"></script>
+    <script src="vendor/musical.min.js" type="application/javascript"></script>
+    <script src="vendor/jqconsole.min.js" type="application/javascript"></script>
+    <script src="vendor/json_parse.js" type="application/javascript"></script>
 
-  <!-- <script src="vendor/opal.min.js" type="application/javascript"></script>-->
-  <script src="vendor/jspdf.min.js" type="application/javascript"></script>
-  <script src="vendor/filesaver.js" type="application/javascript"></script>
-  <script src="vendor/jszip.min.js" type="application/javascript"></script>
-  <script src="vendor/dropbox.min.js" type="application/javascript"></script>
-    <script src="vendor/abc2svg.latest.js" type="application/javascript"></script>
-  <%= javascript_include_tag 'application' %>
+    <!-- <script src="vendor/opal.min.js" type="application/javascript"></script>-->
+    <script src="vendor/jspdf.min.js" type="application/javascript"></script>
+    <script src="vendor/filesaver.js" type="application/javascript"></script>
+    <script src="vendor/jszip.min.js" type="application/javascript"></script>
+    <script src="vendor/dropbox.min.js" type="application/javascript"></script>
+
+    <script src="vendor/abc2svg-1.js" type="application/javascript"></script>
+    <script src="vendor/abc2svg_play-1.js" type="application/javascript"></script>
+    <script src="vendor/abc2svg_midi-1.js" type="application/javascript"></script>
+    <script src="vendor/xml2abc-bw.js" type="application/javascript"></script>
+
+    <%= javascript_include_tag 'application' %>
 </head>
 
 <body>
 <div id="toolbar">
-  <input style="display:none;" id="fileDialog" type="file" accept=".abc"></input>
-  <input style="display:none;" id="folderDialog" type="file" nwdirectory/>
-  <span class="head" id="lbZupfnoter">Zupfnoter</span>
-  <span class="text" id="tbStatus"></span>
-  <span class="button" id="tbPrintA4">print A4</i> </span>
-  <span class="button" id="tbPrintA3">print A3</i> </span>
-  <span class="button" id="tbRender"><i class="icon-brush-alt">render</i></span>
-  <span class="button" id="tbPlay"><i class="icon-play">play</i></span>
+    <input style="display:none;" id="fileDialog" type="file" accept=".abc"></input>
+    <input style="display:none;" id="folderDialog" type="file" nwdirectory/>
+    <span class="head" id="lbZupfnoter">Zupfnoter</span>
+    <span class="text" id="tbStatus"></span>
+    <span class="button" id="tbPrintA4">print A4</i> </span>
+    <span class="button" id="tbPrintA3">print A3</i> </span>
+    <span class="button" id="tbRender"><i class="icon-brush-alt">render</i></span>
+    <span class="button" id="tbPlay"><i class="icon-play">play</i></span>
 </div>
 <div id="leftColumn">
-  <div id="abcEditorContainer" class="container">
-    <div class="body">
-      <div id="abcEditor" class="editor"></div>
+    <div id="abcEditorContainer" class="container">
+        <div class="body">
+            <div id="abcEditor" class="editor"></div>
+        </div>
     </div>
-  </div>
-  <div id="consoleLog" class="container">
-    <div class="title rsh">
-      <span class="head">Console</span>
-      <span class="button"><i class="icon-down-open-mini"></i></span>
+    <div id="consoleLog" class="container">
+        <div class="title rsh">
+            <span class="head">Console</span>
+
+            <span class="button"><i class="icon-down-open-mini"></i></span>
+        </div>
+        <div class="body">
+            <div id="commandconsole"></div>
+        </div>
     </div>
-    <div class="body">
-      <div id="commandconsole"></div>
-    </div>
-  </div>
+
 </div>
 
 <div id="rightColumn">
-  <div id="tunePreviewContainer" class="container">
-    <div class="title">
-      <span class="head">Notes</span>
-      <span class="button"><i class="icon-down-open-mini"></i></span>
+    <div id="tunePreviewContainer" class="container">
+        <div class="title">
+            <span class="head">Notes</span>
+            <span class="button"><i class="icon-down-open-mini"></i></span>
+        </div>
+        <div class="body" id="tunePreview">
+        </div>
     </div>
-    <div class="body" id="tunePreview">
-    </div>
-  </div>
-  <div id="harpPreviewContainer" class="container">
-    <div class="title rsh">
-      <span class="head">Harp</span>
-      <span class="button"><i class="icon-down-open-mini"></i></span>
-    </div>
-    <div class="body" id="harpPreview">
+    <div id="harpPreviewContainer" class="container">
+        <div class="title rsh">
+            <span class="head">Harp</span>
+            <span class="button"><i class="icon-down-open-mini"></i></span>
+        </div>
+        <div class="body" id="harpPreview">
 
+        </div>
     </div>
-  </div>
 </div>
 
 <div id="dragbar">&nbsp;</div>

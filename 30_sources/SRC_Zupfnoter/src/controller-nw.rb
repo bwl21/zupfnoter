@@ -206,8 +206,7 @@ class Controller
 
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = metadata[:F]
-        $log.debug("#{metadata.to_s} (#{__FILE__} #{__LINE__})")
+        filebase = metadata[:F].first
         if filebase
           filebase = filebase.split("\n").first
         else
