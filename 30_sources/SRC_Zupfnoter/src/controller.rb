@@ -450,7 +450,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                             'p': 'f'
                           };              // page format: scale (1.0), width, left- and right margin in cm
 
-                          result = xml2abc.vertaal(xmldata, options);
+                          result = vertaal(xmldata, options);
                           #{
                             $log.info(`result[1]`)
                             @dropped_abc = `result[0]`
@@ -468,7 +468,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     function initializeAbc2svg(element) {
 
-               xml2abc = new ZnXml2Abc();
+               //xml2abc = new ZnXml2Abc();
 
                function handleDrop(event) {
                           event.stopPropagation();
