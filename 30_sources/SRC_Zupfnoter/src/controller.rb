@@ -88,6 +88,8 @@ class Controller
       handle_command(cmd)
     end
 
+    @dropped_abc = "T: notihing droped yet"
+
     $log = ConsoleLogger.new(@console)
     $log.info ("Welcome to Zupfnoter #{VERSION}")
 
@@ -97,7 +99,7 @@ class Controller
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
-    @abc_transformer = Harpnotes::Input::ABCToHarpnotes.new
+    @abc_transformer = Harpnotes::Input::AbcjsToHarpnotes.new
     @dropboxclient = Opal::DropboxJs::NilClient.new()
 
     @systemstatus={}
@@ -209,7 +211,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          ]
       }
        }
-}
+    }
 }
     @editor.set_text(abc)
   end
@@ -232,8 +234,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       Element.find('#tbPlay').html('play')
     else
       Element.find('#tbPlay').html('stop')
-      @harpnote_player.play_song(0) if mode == :music_model
-      @harpnote_player.play_selection(0) if mode == :selection
+      @harpnote_player.play_song() if mode == :music_model
+      @harpnote_player.play_selection() if mode == :selection
       @harpnote_player.play_from_selection if mode == :selection_ff
     end
   end
@@ -343,9 +345,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # todo: end of compatiblility code
 
     $conf.push(config)
-    @music_model = Harpnotes::Input::ABCToHarpnotes.new.transform(@editor.get_abc_part)
+    abc_parser = $conf.get('abc_parser')
+    @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-
+    $log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
     result
@@ -402,6 +405,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Element.find("#tbStatus").html(statusmessage)
   end
 
+
   private
 
 
@@ -428,6 +432,79 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
   end
 
+  def setupFileImport(dropzone)
+    %x{
+
+    function pasteXml(text){
+                            try{
+                              var xmldata = $.parseXML(text);
+                             }
+                            catch(ex){
+                              #{$log.error(`ex.message`)}
+                            }
+
+                            var options = {
+                                    'u': 0, 'b': 0, 'n': 0,    // unfold repeats (1), bars per line, chars per line
+                            'c': 0, 'v': 0, 'd': 0,    // credit text filter level (0-6), no volta on higher voice numbers (1), denominator unit length (L:)
+                            'm': 0, 'x': 0,           // with midi volume and panning (1), no line breaks (1)
+                            'p': 'f'
+                          };              // page format: scale (1.0), width, left- and right margin in cm
+
+                          result = xml2abc.vertaal(xmldata, options);
+                          #{
+                            $log.info(`result[1]`)
+                            @dropped_abc = `result[0]`
+                            handle_command('drop')
+                           }
+    }
+
+    function pasteAbc(text){
+       #{
+         @dropped_abc=`text`
+         handle_command('drop')
+        }
+    }
+
+
+    function initializeAbc2svg(element) {
+
+               xml2abc = new ZnXml2Abc();
+
+               function handleDrop(event) {
+                          event.stopPropagation();
+                          event.preventDefault();
+                          files = event.dataTransfer.files;
+                          reader = new FileReader();
+                          reader.onload = function (e) {
+                             text = e.target.result;
+                             if (text[0] == '<'){
+                               pasteXml(text);
+                               }
+                             else
+                               {
+                                pasteAbc(text);
+                               }
+                            }
+
+               reader.readAsText(files[0]);
+             }
+
+    function handleDragover(event) {
+               event.stopPropagation();
+               event.preventDefault();
+               event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+             }
+
+    a = document.getElementById(element);
+    a.addEventListener('dragover', handleDragover, false);
+    a.addEventListener('drop', handleDrop);
+    }
+
+    initializeAbc2svg(#{dropzone});
+    }
+
+  end
+
 
   def setup_ui_listener
 
@@ -435,6 +512,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Element.find("#tbRender").on(:click) { render_previews }
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
+
+    setupFileImport('leftColumn');
 
 
     # changes in the editor
@@ -558,9 +637,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def _init_conf()
     result =
         {produce: [0],
+         abc_parser: 'ABC2SVG',
          defaults:
              {
-                 print: {t: "", # title of the extract
+                 note_length: "1/4",
+                 print: {t: "", # title of the extract   # todo: remove these print defaults - no longer needed
                          v: [1, 2, 3, 4], # voices to show
                          startpos: 15, # start position of the harpnotes
                          s: [[1, 2], [2, 3]], # synchlines
@@ -576,7 +657,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
          annotations: {
              vt: {text: "v", pos: [-1, -6]},
-             vr: {text: "v", pos: [2, -3]}
+             vr: {text: "v", pos: [2, -3]},
+             vl: {text: "v", pos: [-4, -3]}
 
          }, # default for note based annotations
 
@@ -690,7 +772,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
              }
         }
 
-    puts result.to_json
     result
   end
 
@@ -699,3 +780,4 @@ end
 Document.ready? do
   Controller.new
 end
+

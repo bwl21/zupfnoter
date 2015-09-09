@@ -1,0 +1,1279 @@
+{
+  "music_types": [
+    "bar",
+    "clef",
+    "custos",
+    "format",
+    "grace",
+    "key",
+    "meter",
+    "Zrest",
+    "note",
+    "part",
+    "rest",
+    "yspace",
+    "staves",
+    "Break",
+    "tempo",
+    "tuplet",
+    "block"
+  ],
+  "info": {
+    "X": "3005",
+    "F": "3005_Transpostions",
+    "T": "Transpositions",
+    "C": "Bernhard\nWeichel",
+    "S": "",
+    "M": "4/4",
+    "Q": "1/4=120",
+    "K": "C",
+    "W": "das ist Strophe 1\ndas ist Strophe 1\ndas ist Strophe 1\n\ndas ist Strophe 2\ndas ist Strophe 2\ndas ist Strophe 2\ndas ist Strophe 2"
+  },
+  "voices": [
+    {
+      "voice_properties": {
+        "v": 0,
+        "id": "T2",
+        "posit": {
+          "dyn": 0,
+          "gch": 0,
+          "gsd": 0,
+          "orn": 0,
+          "std": 0,
+          "voc": 0,
+          "vol": 0
+        },
+        "scale": 1,
+        "combine": 0,
+        "ulen": 384,
+        "key": {
+          "type": 5,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 129,
+          "iend": 132,
+          "k_delta": 0,
+          "k_sf": 0
+        },
+        "ckey": {
+          "type": 5,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 129,
+          "iend": 132,
+          "k_delta": 0,
+          "k_sf": 0
+        },
+        "okey": {
+          "type": 5,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 129,
+          "iend": 132,
+          "k_delta": 0,
+          "k_sf": 0
+        },
+        "meter": {
+          "type": 6,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 92,
+          "iend": 97,
+          "a_meter": [
+            {
+              "top": "4",
+              "bot": "4"
+            }
+          ],
+          "wmeasure": 1536
+        },
+        "clef": {
+          "type": 1,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 204,
+          "iend": 249,
+          "clef_line": 2,
+          "clef_type": "t"
+        },
+        "hy_st": 0,
+        "time": 3072,
+        "cst": 0,
+        "st": 0,
+        "transpose": -36,
+        "wmeasure": 1536,
+        "nm": "v2",
+        "new_name": true,
+        "snm": "v2",
+        "octave": -1,
+        "last_note": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 264,
+          "notes": [
+            {
+              "pit": 9,
+              "apit": 9,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 48
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 2688,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 265,
+          "slur_start": 0,
+          "beam_end": true,
+          "seqst": true
+        },
+        "sym": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 257,
+          "notes": [
+            {
+              "pit": 2,
+              "apit": 2,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 36
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 0,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 258,
+          "slur_start": 0,
+          "seqst": true,
+          "extra": {
+            "14": {
+              "type": 14,
+              "ctx": {
+                "fname": "abc"
+              },
+              "istart": null,
+              "iend": 113,
+              "tempo_notes": [
+                384
+              ],
+              "tempo_value": "120",
+              "v": 0,
+              "st": 0,
+              "time": 0
+            }
+          }
+        },
+        "last_sym": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 264,
+          "notes": [
+            {
+              "pit": 9,
+              "apit": 9,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 48
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 2688,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 265,
+          "slur_start": 0,
+          "beam_end": true,
+          "seqst": true
+        },
+        "lyric_restart": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 257,
+          "notes": [
+            {
+              "pit": 2,
+              "apit": 2,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 36
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 0,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 258,
+          "slur_start": 0,
+          "seqst": true,
+          "extra": {
+            "14": {
+              "type": 14,
+              "ctx": {
+                "fname": "abc"
+              },
+              "istart": null,
+              "iend": 113,
+              "tempo_notes": [
+                384
+              ],
+              "tempo_value": "120",
+              "v": 0,
+              "st": 0,
+              "time": 0
+            }
+          }
+        }
+      },
+      "symbols": [
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 257,
+          "notes": [
+            {
+              "pit": 2,
+              "apit": 2,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 36
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 0,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 258,
+          "slur_start": 0,
+          "seqst": true,
+          "extra": {
+            "14": {
+              "type": 14,
+              "ctx": {
+                "fname": "abc"
+              },
+              "istart": null,
+              "iend": 113,
+              "tempo_notes": [
+                384
+              ],
+              "tempo_value": "120",
+              "v": 0,
+              "st": 0,
+              "time": 0
+            }
+          }
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 258,
+          "notes": [
+            {
+              "pit": 3,
+              "apit": 3,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 38
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 384,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 259,
+          "slur_start": 0,
+          "seqst": true
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 259,
+          "notes": [
+            {
+              "pit": 4,
+              "apit": 4,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 40
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 768,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 260,
+          "slur_start": 0,
+          "seqst": true
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 260,
+          "notes": [
+            {
+              "pit": 5,
+              "apit": 5,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 41
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 1152,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 261,
+          "slur_start": 0,
+          "seqst": true
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 261,
+          "notes": [
+            {
+              "pit": 6,
+              "apit": 6,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 43
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 1536,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 262,
+          "slur_start": 0,
+          "seqst": true
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 262,
+          "notes": [
+            {
+              "pit": 7,
+              "apit": 7,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 45
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 1920,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 263,
+          "slur_start": 0,
+          "seqst": true
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 263,
+          "notes": [
+            {
+              "pit": 8,
+              "apit": 8,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 47
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 2304,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 264,
+          "slur_start": 0,
+          "seqst": true
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 264,
+          "notes": [
+            {
+              "pit": 9,
+              "apit": 9,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 48
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 0,
+          "st": 0,
+          "time": 2688,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 265,
+          "slur_start": 0,
+          "beam_end": true,
+          "seqst": true
+        }
+      ]
+    },
+    {
+      "voice_properties": {
+        "v": 1,
+        "id": "T1",
+        "posit": {
+          "dyn": 0,
+          "gch": 0,
+          "gsd": 0,
+          "orn": 0,
+          "std": 0,
+          "voc": 0,
+          "vol": 0
+        },
+        "scale": 1,
+        "combine": 0,
+        "ulen": 384,
+        "key": {
+          "type": 5,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 129,
+          "iend": 132,
+          "k_delta": 0,
+          "k_sf": 0
+        },
+        "ckey": {
+          "type": 5,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 129,
+          "iend": 132,
+          "k_delta": 0,
+          "k_sf": 0
+        },
+        "okey": {
+          "type": 5,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 129,
+          "iend": 132,
+          "k_delta": 0,
+          "k_sf": 0
+        },
+        "meter": {
+          "type": 6,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 92,
+          "iend": 97,
+          "a_meter": [
+            {
+              "top": "4",
+              "bot": "4"
+            }
+          ],
+          "wmeasure": 1536
+        },
+        "clef": {
+          "type": 1,
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 149,
+          "iend": 187,
+          "clef_line": 2,
+          "clef_type": "t"
+        },
+        "hy_st": 0,
+        "time": 3072,
+        "cst": 1,
+        "st": 1,
+        "transpose": -36,
+        "wmeasure": 1536,
+        "nm": "Sopran",
+        "new_name": true,
+        "snm": "S",
+        "last_note": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 202,
+          "notes": [
+            {
+              "pit": 16,
+              "apit": 16,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 60
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 2688,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 203,
+          "slur_start": 0,
+          "beam_end": true
+        },
+        "sym": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 195,
+          "notes": [
+            {
+              "pit": 9,
+              "apit": 9,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 48
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 0,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 196,
+          "slur_start": 0
+        },
+        "last_sym": {
+          "v": 1,
+          "st": 1,
+          "time": 3072,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 202,
+          "iend": 203,
+          "type": 3,
+          "seqst": true
+        },
+        "lyric_restart": {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 195,
+          "notes": [
+            {
+              "pit": 9,
+              "apit": 9,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 48
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 0,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 196,
+          "slur_start": 0
+        }
+      },
+      "symbols": [
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 195,
+          "notes": [
+            {
+              "pit": 9,
+              "apit": 9,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 48
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 0,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 196,
+          "slur_start": 0
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 196,
+          "notes": [
+            {
+              "pit": 10,
+              "apit": 10,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 50
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 384,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 197,
+          "slur_start": 0
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 197,
+          "notes": [
+            {
+              "pit": 11,
+              "apit": 11,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 52
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 768,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 198,
+          "slur_start": 0
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 198,
+          "notes": [
+            {
+              "pit": 12,
+              "apit": 12,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 53
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 1152,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 199,
+          "slur_start": 0
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 199,
+          "notes": [
+            {
+              "pit": 13,
+              "apit": 13,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 55
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 1536,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 200,
+          "slur_start": 0
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 200,
+          "notes": [
+            {
+              "pit": 14,
+              "apit": 14,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 1920,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 201,
+          "slur_start": 0
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 201,
+          "notes": [
+            {
+              "pit": 15,
+              "apit": 15,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 59
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 2304,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 202,
+          "slur_start": 0
+        },
+        {
+          "type": 8,
+          "ctx": {
+            "fname": "abc"
+          },
+          "stem": 0,
+          "multi": 0,
+          "nhd": 0,
+          "xmx": 0,
+          "istart": 202,
+          "notes": [
+            {
+              "pit": 16,
+              "apit": 16,
+              "shhd": 0,
+              "shac": 0,
+              "ti1": 0,
+              "dur": 384,
+              "midi": 60
+            }
+          ],
+          "dur_orig": 384,
+          "dur": 384,
+          "combine": 0,
+          "head": "full",
+          "dots": 0,
+          "nflags": 0,
+          "v": 1,
+          "st": 1,
+          "time": 2688,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "iend": 203,
+          "slur_start": 0,
+          "beam_end": true
+        },
+        {
+          "v": 1,
+          "st": 1,
+          "time": 3072,
+          "posit": {
+            "dyn": 0,
+            "gch": 0,
+            "gsd": 0,
+            "orn": 0,
+            "std": 0,
+            "voc": 0,
+            "vol": 0
+          },
+          "ctx": {
+            "fname": "abc"
+          },
+          "istart": 202,
+          "iend": 203,
+          "type": 3,
+          "seqst": true
+        }
+      ]
+    }
+  ]
+}
