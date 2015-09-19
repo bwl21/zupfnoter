@@ -357,6 +357,15 @@ module Harpnotes
         nil #`debugger`
       end
 
+
+      def _transform_meter(voice_element)
+        nil #`debugger`
+      end
+
+      def _transform_clef(voice_element)
+        nil #`debugger`
+      end
+
       # make the jumplilnes
       # @param [Playable] element - an element of the converted voice
       def _make_jumplines(element)
