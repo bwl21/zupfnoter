@@ -231,7 +231,7 @@ module Harpnotes
       #
       def initialize(pitch, duration)
         super
-          raise("trying to create a note with undefined pitch") if pitch.nil?
+        raise("trying to create a note with undefined pitch") if pitch.nil?
         @pitch    = pitch
         @duration = duration
       end
@@ -1256,7 +1256,7 @@ module Harpnotes
             p1       = Vector2d(lookuptable_drawing_by_playable[begin_slur].center) + [3, 0]
             p2       = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
             slurpath = make_slur_path(p1, p2)
-            result.push(Harpnotes::Drawing::Path.new(slurpath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
+            result.push(Harpnotes::Drawing::Path.new(slurpath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') }) if $conf.get('layout.SHOW_SLUR')
           end
 
           result
@@ -1608,6 +1608,7 @@ module Harpnotes
 
         # todo make the drawing more fancy
         slurpath    = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]
+        slurpath
       end
 
       #

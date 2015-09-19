@@ -692,6 +692,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
          layout:
              {
+                 SHOW_SLUR: false,
                  LINE_THIN: 0.1,
                  LINE_MEDIUM: 0.3,
                  LINE_THICK: 0.5,
