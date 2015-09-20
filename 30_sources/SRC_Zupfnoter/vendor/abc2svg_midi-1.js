@@ -141,8 +141,8 @@ function AbcMIDI() {
 						continue
 					}
 					s.notes[i].midi = pit2midi(s, i)
-					if (s.notes[i].ti1)
-						do_tie(s, i)
+					//if (s.notes[i].ti1)
+					//	do_tie(s, i)
 				}
 				break
 			}
