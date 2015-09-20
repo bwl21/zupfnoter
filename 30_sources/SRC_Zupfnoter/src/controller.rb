@@ -432,7 +432,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
   end
 
-  def setupFileImport(dropzone)
+  def set_file_drop(dropzone)
     %x{
 
     function pasteXml(text){
@@ -458,6 +458,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                            }
     }
 
+    function pasteMxl(text){
+       zip = new JSZip(text);
+       text = zip.file(/^lg.*xml$/)[0].asText();
+       pasteXml(text);
+    }
+
     function pasteAbc(text){
        #{
          @dropped_abc=`text`
@@ -480,13 +486,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                              if (text[0] == '<'){
                                pasteXml(text);
                                }
+                             else if (files[0].name.endsWith(".mxl")) {
+                                pasteMxl(text)
+                               }
                              else
                                {
                                 pasteAbc(text);
                                }
                             }
 
-               reader.readAsText(files[0]);
+               reader.readAsBinaryString(files[0]);
              }
 
     function handleDragover(event) {
@@ -513,7 +522,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
 
-    setupFileImport('leftColumn');
+    set_file_drop('leftColumn');
 
 
     # changes in the editor
