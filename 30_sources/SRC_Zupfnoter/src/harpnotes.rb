@@ -1021,7 +1021,7 @@ module Harpnotes
         beat_layout   = beat_layout || Proc.new do |beat|
           # todo: why -1
           # $log.debug("using default layout policy #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-          beat * @beat_spacing + @y_offset
+          %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
         end
 
         compressed_beat_layout_proc = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
@@ -1333,6 +1333,7 @@ module Harpnotes
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
 
+        duration_to_style = $conf.get('layout.DURATION_TO_STYLE')
         result = Hash[(0..max_beat).map do |beat|
                         notes_on_beat        = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
                         max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
@@ -1341,7 +1342,7 @@ module Harpnotes
 
                         unless has_no_notes_on_beat
                           begin
-                            size = conf_beat_resolution * $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(max_duration_on_beat)].first
+                            size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
                           rescue Exception => e
                             $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
                           end
