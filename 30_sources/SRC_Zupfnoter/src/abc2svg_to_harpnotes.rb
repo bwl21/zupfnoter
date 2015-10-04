@@ -173,9 +173,10 @@ module Harpnotes
 
           result += (jumplines + notebound_annotations)
 
-          result.flatten.compact
+          result = result.flatten.compact
+
           if (result.count == 0)
-            $log.error("Corrupt voice #{voice_index}")
+            $log.error("Empty voice #{voice_index}")
             result = nil
           end
           result
