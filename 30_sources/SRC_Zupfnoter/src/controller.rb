@@ -268,6 +268,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the previews
   # also saves abc in localstore()
   def render_harpnotepreview_callback
+    s = Time. now
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
       @song_harpnotes = layout_harpnotes(@systemstatus[:view])
@@ -279,7 +280,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     set_status(refresh: false)
 
-    $log.debug("finished rendering Haprnotes #{__FILE__} #{__LINE__}")
+    $log.debug("finished rendering Haprnotes inn #{Time.now() -s} seconds #{__FILE__} #{__LINE__}")
     set_inactive("#harpPreview")
     @editor.set_annotations($log.annotations)
 
@@ -346,8 +347,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     $conf.push(config)
     abc_parser = $conf.get('abc_parser')
+    start = Time.now()
     @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+    $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+    $log.info("duration transform + layout #{Time.now - start}")
     $log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
