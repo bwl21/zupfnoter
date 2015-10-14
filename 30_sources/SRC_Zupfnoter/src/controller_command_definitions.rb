@@ -468,7 +468,7 @@ C,
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.debug("#{entries} (#{__FILE__} #{__LINE__})")
-          fileid = entries.select { |entry| entry =~ /#{fileid}_.*\.abc$/ }.first
+          fileid = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }.first
           @dropboxclient.read_file("#{rootpath}#{fileid}")
         end.then do |abc_text|
           $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
