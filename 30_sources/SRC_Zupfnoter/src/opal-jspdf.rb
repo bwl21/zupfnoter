@@ -20,13 +20,13 @@ class JsPDF
   # @param unit Symbol the unit of measurement, :mm (default), :pt, :cm, :in
   # @param format Symbol page format, :a3, :a4 (default), :a5, :letter, :legal
   def initialize(orientation = :p, unit = :mm, format = :a4)
-    @x_offset = 0
+    @x_offset     = 0
     @native_jspdf = `new jsPDF(orientation, unit, format)`
   end
 
   def line(from, to)
     nfrom = apply_offset_to_point(from)
-    nto = apply_offset_to_point(to)
+    nto   = apply_offset_to_point(to)
     `#{@native_jspdf}.lines([ [ nto[0] - nfrom[0], nto[1] - nfrom[1] ] ], nfrom[0], nfrom[1])`
   end
 
@@ -35,9 +35,10 @@ class JsPDF
   end
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
-  def ellipse(center, size, style = `undefined`)
+  # @param [Array] size radii
+  def ellipse(center, radii, style = `undefined`)
     ncenter = apply_offset_to_point(center)
-    `#{@native_jspdf}.ellipse(ncenter[0], ncenter[1], size[0], size[1], style)`
+    `#{@native_jspdf}.ellipse(#{ncenter[0]}, #{ncenter[1]}, #{radii[0]}, #{radii[1]}, #{style})`
   end
 
   def fill=(rgb)
@@ -65,7 +66,7 @@ class JsPDF
   end
 
   def font_size=(size)
-    `#{@native_jspdf}.setFontSize(size)`
+    `#{@native_jspdf}.setFontSize(#{size})`
   end
 
 
@@ -83,14 +84,20 @@ class JsPDF
   end
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
-  def rect_like_ellipse(center, size, style = 'undefined')
+  def rect_like_ellipse(center, radii, style = 'undefined')
     ncenter = apply_offset_to_point(center)
-    `#{@native_jspdf}.rect(ncenter[0], ncenter[1], size[0], size[1], style)`
+    rsize   = radii.map { |s| 2.0 * s } # real size
+    `#{@native_jspdf}.rect(#{ncenter[0] - radii[0]}, #{ncenter[1] - radii[1]}, #{rsize[0]}, #{rsize[1]}, style)`
   end
 
+
+  # @param [Numerical] x1 x of upper left corner
+  # @param [Numerical] y1 y of upper left corner
+  # @param [Numerical] x2 width
+  # @param [Numerical] y2 height
   def rect(x1, y1, x2, y2, style = 'undefined')
     nx1 = apply_offset_to_x(x1)
-    `#{@native_jspdf}.rect(nx1, y1, x2, y2, style)`
+    `#{@native_jspdf}.rect(#{nx1}, #{y1}, #{x2}, #{y2}, #{style})`
   end
 
   def lines(lines, x, y, scale, style, close)
@@ -101,14 +108,14 @@ class JsPDF
   # @param type Symbol the output type as :datauristring, :datauri, :raw
   # @param options String options forwarded to the PDF generator
   def output(type = :raw, options = nil)
-    type = `undefined` if type == :raw
+    type    = `undefined` if type == :raw
     options = `undefined` if options.nil?
 
     `#{@native_jspdf}.output(type, options)`
   end
 
   def left_arrowhead(x, y)
-    delta = 1.0
+    delta    = 1.0
     x0       = apply_offset_to_x(x)
     x1       = apply_offset_to_x(x + delta)
     y_top    = y + delta/2.0

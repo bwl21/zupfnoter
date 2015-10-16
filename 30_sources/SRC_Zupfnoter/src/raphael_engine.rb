@@ -157,16 +157,6 @@ module Harpnotes
     end
 
     def draw_glyph(root)
-
-      def glyph_to_path_spec(glyph)
-        result = ""
-        glyph[:d].each do |part|
-          result += part.first
-          result += part[1 .. -1].join(" ")
-        end
-        result
-      end
-
       center = [root.center.first, root.center.last]
       size = [root.size.first, root.size.last] # size to be treated as radius
 
