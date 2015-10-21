@@ -311,6 +311,7 @@ module Harpnotes
         result.tuplet_start = tuplet_start
         result.tuplet_end   = tuplet_end
 
+        result.visible = false if voice_element[:invisible]
 
         # the post processing
 

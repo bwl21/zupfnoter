@@ -104,7 +104,7 @@ module Harpnotes
           end
           @isplaying = true
         else
-          $log.warn("nothing selected to play")
+          $log.warning("nothing selected to play")
         end
       end
 

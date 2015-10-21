@@ -41,7 +41,7 @@ class LocalStore
 
   def delete(key)
     if @directory[key]
-      $log.warn("local storage: key '#{key}' does not exist")
+      $log.warning("local storage: key '#{key}' does not exist")
     else
       `localStorage.deleteItem(self.$mangle_key(key))`
       @directory[key] = nil
