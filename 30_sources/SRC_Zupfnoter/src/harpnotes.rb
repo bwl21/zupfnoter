@@ -1105,6 +1105,7 @@ module Harpnotes
         annotations     = []
 
         title               = music.meta_data[:title] || "untitled"
+        filename            = music.meta_data[:filename]
         meter               = music.meta_data[:meter]
         key                 = music.meta_data[:key]
         composer            = music.meta_data[:composer]
@@ -1118,7 +1119,8 @@ module Harpnotes
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
-        annotations << Harpnotes::Drawing::Annotation.new([150, 288], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
 
         lyrics     = print_options[:lyrics]
         lyric_text = music.harpnote_options[:lyrics][:text]
@@ -1224,7 +1226,7 @@ module Harpnotes
           end
 
           unless playable.visible?
-            $log.warning("invisible pause in subflowline", playable.start_pos)
+            res = nil #$log.warning("invisible pause in subflowline", playable.start_pos)
           end
 
           previous_note = playable

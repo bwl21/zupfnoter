@@ -100,6 +100,7 @@ module Harpnotes
 
         { composer:      (@info_fields[:C] or []).join("\n"),
           title:         (@info_fields[:T] or []).join("\n"),
+          filename:          (@info_fields[:F] or []).join("\n"),
           tempo:         { duration: duration, bpm: bpm },
           tempo_display: [duration_display, "=", bpm].join(' '),
           meter:         @info_fields[:M],
