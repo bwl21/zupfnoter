@@ -3,6 +3,7 @@ GEM
   specs:
     coderay (1.1.0)
     erubis (2.7.0)
+    graphviz (0.1.0)
     hike (1.2.3)
     json_schema (0.6.0)
     method_source (0.8.2)
@@ -35,6 +36,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler
+  graphviz
   opal (~> 0.8.0)
   opal-jquery (~> 0.4.0)
   prmd
@@ -43,3 +46,6 @@ DEPENDENCIES
   sass
   vector2d (~> 2.1.0)
   zip
+
+BUNDLED WITH
+   1.10.6
