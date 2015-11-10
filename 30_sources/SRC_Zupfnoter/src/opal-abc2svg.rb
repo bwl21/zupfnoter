@@ -180,7 +180,7 @@ module ABC2SVG
       next_object = object[:extra]
       while next_object
         cloned_extra                     = _clone_abc2svg_object(next_object)
-        result[cloned_extra[:type].to_s] = cloned_extra
+        result[cloned_extra[:type]] = cloned_extra
         next_object                      = next_object[:next]
       end
       result

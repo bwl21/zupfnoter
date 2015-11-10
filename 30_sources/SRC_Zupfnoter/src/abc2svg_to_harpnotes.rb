@@ -137,6 +137,7 @@ module Harpnotes
         part_id = @abc_model[:music_type_ids][:part] # performance ...
         note_id = @abc_model[:music_type_ids][:note]
 
+        # get parts
         @abc_model[:voices].first[:symbols].each do |voice_model_element|
           part                                         = ((voice_model_element[:extra] or {})[part_id] or {})[:text]
           @part_table[voice_model_element[:time].to_s] = part if part
