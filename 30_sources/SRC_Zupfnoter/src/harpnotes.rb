@@ -176,7 +176,8 @@ module Harpnotes
                     :duration, # the duration of the playable
                     :tuplet, # number of notes in tuplet if it is in a tuplet
                     :tuplet_start, # first note of a tuplet
-                    :tuplet_end # last note of a tuplet
+                    :tuplet_end, # last note of a tuplet
+                    :shift # {dir: :left | :right}
 
       def initialize
         # initialize slur and ties to the safe side ...
@@ -1440,7 +1441,16 @@ module Harpnotes
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
         size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
 
-        res            = Ellipse.new([x_offset, y_offset], size, fill, dotted, root)
+        shift = 0
+        if root.shift
+          if root.shift[:dir] == :left
+            shift = -size.first
+          else
+            shift = size.first
+          end
+        end
+
+        res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
         res.line_width = $conf.get('layout.LINE_THICK')
         res
       end

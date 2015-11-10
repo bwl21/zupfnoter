@@ -406,7 +406,7 @@ module Harpnotes
           chords =_extract_chord_lines(entity.origin[:raw])
           chords.each do |name|
 
-            match = name.match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
+            match = name.match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
               semantic = match[1]
               text     = match[2]
@@ -418,6 +418,10 @@ module Harpnotes
                   $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
                   annotation = { text: text }
+                when "<"
+                  entity.shift = { dir: :left, size: text }
+                when ">"
+                  entity.shift = { dir: :right, size: text }
                 else
                   annotation = nil # it is not an annotation
               end
@@ -428,7 +432,7 @@ module Harpnotes
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, { pos: position, text: annotation[:text] })
               end
             else
-              # $log.error("syntax error in annotation: #{name}")
+               $log.error("syntax error in annotation: #{name}")
             end
           end
         end
