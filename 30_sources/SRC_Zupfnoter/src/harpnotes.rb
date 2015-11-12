@@ -1487,8 +1487,17 @@ module Harpnotes
         rest_size            = $conf.get('layout.REST_SIZE')
         size                 = [rest_size.first * scale.first, rest_size.last * scale.last]
 
+        shift = 0
+        if root.shift
+          if root.shift[:dir] == :left
+            shift = -size.first
+          else
+            shift = size.first
+          end
+        end
+
         res         = nil
-        res         = Harpnotes::Drawing::Glyph.new([x_offset, y_offset], size, glyph, dotted, root)
+        res         = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
         res.visible = false unless root.visible?
         res
       end

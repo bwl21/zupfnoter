@@ -513,8 +513,8 @@ module Harpnotes
       def _parse_tuplet_info(voice_element)
         if voice_element[:in_tuplet]
 
-          if voice_element[:extra] and voice_element[:extra][:"15"]
-            @tuplet_count      = (voice_element[:extra][:"15"][:tuplet_p])
+          if voice_element[:extra] and voice_element[:extra][15]   # todo: attr_reader :
+            @tuplet_count      = (voice_element[:extra][15][:tuplet_p])
             @tuplet_down_count = @tuplet_count
             tuplet_start       = true
           else
