@@ -3,10 +3,8 @@ GEM
   specs:
     coderay (1.1.0)
     concurrent-ruby (1.0.0)
-    erubis (2.7.0)
     graphviz (0.1.0)
     hike (1.2.3)
-    json_schema (0.6.0)
     method_source (0.8.2)
     opal (0.9.0)
       hike (~> 1.2)
@@ -15,9 +13,6 @@ GEM
       tilt (>= 1.4)
     opal-jquery (0.4.1)
       opal (>= 0.7.0, < 0.10.0)
-    prmd (0.8.0)
-      erubis (~> 2.7)
-      json_schema (~> 0.3, >= 0.3.1)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -42,7 +37,6 @@ DEPENDENCIES
   graphviz
   opal (~> 0.9.0)
   opal-jquery (~> 0.4.0)
-  prmd
   pry
   rake
   sass
