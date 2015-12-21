@@ -137,6 +137,7 @@ module Harpnotes
         part_id = @abc_model[:music_type_ids][:part] # performance ...
         note_id = @abc_model[:music_type_ids][:note]
 
+        # get parts
         @abc_model[:voices].first[:symbols].each do |voice_model_element|
           part                                         = ((voice_model_element[:extra] or {})[part_id] or {})[:text]
           @part_table[voice_model_element[:time].to_s] = part if part
@@ -406,7 +407,7 @@ module Harpnotes
           chords =_extract_chord_lines(entity.origin[:raw])
           chords.each do |name|
 
-            match = name.match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
+            match = name.match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
               semantic = match[1]
               text     = match[2]
@@ -418,6 +419,10 @@ module Harpnotes
                   $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
                   annotation = { text: text }
+                when "<"
+                  entity.shift = { dir: :left, size: text }
+                when ">"
+                  entity.shift = { dir: :right, size: text }
                 else
                   annotation = nil # it is not an annotation
               end
@@ -508,8 +513,8 @@ module Harpnotes
       def _parse_tuplet_info(voice_element)
         if voice_element[:in_tuplet]
 
-          if voice_element[:extra] and voice_element[:extra][:"15"]
-            @tuplet_count      = (voice_element[:extra][:"15"][:tuplet_p])
+          if voice_element[:extra] and voice_element[:extra][15]   # todo: attr_reader :
+            @tuplet_count      = (voice_element[:extra][15][:tuplet_p])
             @tuplet_down_count = @tuplet_count
             tuplet_start       = true
           else

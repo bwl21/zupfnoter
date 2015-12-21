@@ -18463,7 +18463,7 @@ Opal.modules["harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $range = Opal.range, $hash = Opal.hash, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$class', '$map', '$instance_variable_get', '$instance_variables', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$each', '$beat=', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$flatten', '$proxy_note', '$length', '$select', '$new', '$expanded_beat_maps', '$empty?', '$reject', '$notes', '$max', '$keys', '$last_beat', '$private', '$inject', '$get', '$tuplet', '$floor', '$start_pos', '$error', '$[]=', '$index=', '$index', '$==', '$center', '$dotted', '$include', '$push', '$harpnote_options', '$warning', '$initialize', '$compute_beat_compression', '$values', '$min', '$call', '$include?', '$build_synch_points', '$layout_voice', '$each_with_index', '$voices', '$origin', '$make_sheetmark_path', '$meta_data', '$strftime', '$now', '$join', '$split', '$to_i', '$scan', '$pop', '$layout_playable', '$layout_newpart', '$reverse', '$line_width=', '$first_in_part?', '$tuplet_start?', '$tuplet_end?', '$Vector2d', '$make_annotated_bezier_path', '$debug', '$tap', '$to_a', '$to_s', '$tie_end?', '$make_slur_path', '$tie_start?', '$slur_starts', '$slur_ends', '$policy', '$make_path_from_jumpline', '$from', '$to', '$companion', '$position', '$text', '$beat_maps', '$duration_to_id', '$layout_note', '$layout_measure_start', '$layout_accord', '$layout_pause', '$check_duration', '$sort_by', '$visible=', '$x', '$y', '$normalize', '$+@', '$-@', '$name', '$to_sym', '$===', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular']);
+  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$class', '$map', '$instance_variable_get', '$instance_variables', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$each', '$beat=', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$flatten', '$proxy_note', '$length', '$select', '$new', '$expanded_beat_maps', '$empty?', '$reject', '$notes', '$max', '$keys', '$last_beat', '$private', '$inject', '$get', '$tuplet', '$floor', '$start_pos', '$error', '$[]=', '$index=', '$index', '$==', '$center', '$dotted', '$include', '$push', '$harpnote_options', '$warning', '$initialize', '$compute_beat_compression', '$values', '$min', '$call', '$include?', '$build_synch_points', '$layout_voice', '$each_with_index', '$voices', '$origin', '$make_sheetmark_path', '$meta_data', '$strftime', '$now', '$join', '$split', '$to_i', '$scan', '$pop', '$layout_playable', '$layout_newpart', '$reverse', '$line_width=', '$first_in_part?', '$tuplet_start?', '$tuplet_end?', '$Vector2d', '$make_annotated_bezier_path', '$debug', '$tap', '$to_a', '$to_s', '$tie_end?', '$make_slur_path', '$tie_start?', '$slur_starts', '$slur_ends', '$policy', '$make_path_from_jumpline', '$from', '$to', '$companion', '$position', '$text', '$beat_maps', '$duration_to_id', '$layout_note', '$layout_measure_start', '$layout_accord', '$layout_pause', '$check_duration', '$shift', '$-@', '$sort_by', '$visible=', '$x', '$y', '$normalize', '$+@', '$name', '$to_sym', '$===', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular']);
   return (function($base) {
     var self = $module($base, 'Harpnotes');
 
@@ -18556,7 +18556,7 @@ if (v == null) v = nil;
         var def = self.$$proto, $scope = self.$$scope, TMP_2;
 
         def.tie_end = def.tie_start = def.tuplet_start = def.tuplet_end = nil;
-        self.$attr_accessor("first_in_part", "jump_starts", "jump_ends", "slur_starts", "slur_ends", "tie_start", "tie_end", "duration", "tuplet", "tuplet_start", "tuplet_end");
+        self.$attr_accessor("first_in_part", "jump_starts", "jump_ends", "slur_starts", "slur_ends", "tie_start", "tie_end", "duration", "tuplet", "tuplet_start", "tuplet_end", "shift");
 
         def.$initialize = TMP_2 = function() {var $zuper = $slice.call(arguments, 0);
           var self = this, $iter = TMP_2.$$p, $yield = $iter || nil;
@@ -19506,7 +19506,7 @@ if (result == null) result = nil;if (playable == null) playable = nil;
               p1 = self.$Vector2d(lookuptable_drawing_by_playable['$[]'](tuplet_start).$center());
               p2 = self.$Vector2d(lookuptable_drawing_by_playable['$[]'](playable).$center());
               $a = Opal.to_ary(self.$make_annotated_bezier_path([p1, p2])), tiepath = ($a[0] == null ? nil : $a[0]), anchor = ($a[1] == null ? nil : $a[1]);
-              $gvars.log.$debug("" + ([tiepath, anchor]) + " (" + ("harpnotes") + " " + (1260) + ")");
+              $gvars.log.$debug("" + ([tiepath, anchor]) + " (" + ("harpnotes") + " " + (1261) + ")");
               result.$push(($a = ($b = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Path')).$new(tiepath)).$tap, $a.$$p = (TMP_55 = function(d){var self = TMP_55.$$s || this, $a, $b;
                 if ($gvars.conf == null) $gvars.conf = nil;
 if (d == null) d = nil;
@@ -19574,7 +19574,7 @@ if (c == null) c = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 if (goto$ == null) goto$ = nil;
           distance = goto$.$policy()['$[]']("distance");
-            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (1316));
+            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (1317));
             if ($rb_gt(distance, 0)) {
               distance = $rb_minus(distance, 1)};
             if (distance !== false && distance !== nil) {
@@ -19669,7 +19669,7 @@ if (n == null) n = nil;
         };
 
         def.$layout_note = function(root, beat_layout) {
-          var $a, $b, TMP_74, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, res = nil;
+          var $a, $b, TMP_74, $c, self = this, x_offset = nil, y_offset = nil, scale = nil, fill = nil, dotted = nil, size = nil, shift = nil, res = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           x_offset = $rb_plus($rb_times(($rb_plus($gvars.conf.$get("layout.PITCH_OFFSET"), root.$pitch())), $gvars.conf.$get("layout.X_SPACING")), $gvars.conf.$get("layout.X_OFFSET"));
@@ -19678,7 +19678,14 @@ if (n == null) n = nil;
           size = ($a = ($b = $gvars.conf.$get("layout.ELLIPSE_SIZE")).$map, $a.$$p = (TMP_74 = function(e){var self = TMP_74.$$s || this;
 if (e == null) e = nil;
           return $rb_times(e, scale)}, TMP_74.$$s = self, TMP_74), $a).call($b);
-          res = $scope.get('Ellipse').$new([x_offset, y_offset], size, fill, dotted, root);
+          shift = 0;
+          if ((($a = root.$shift()) !== nil && (!$a.$$is_boolean || $a == true))) {
+            if (root.$shift()['$[]']("dir")['$==']("left")) {
+              shift = size.$first()['$-@']()
+              } else {
+              shift = size.$first()
+            }};
+          res = $scope.get('Ellipse').$new([$rb_plus(x_offset, shift), y_offset], size, fill, dotted, root);
           (($a = [$gvars.conf.$get("layout.LINE_THICK")]), $c = res, $c['$line_width='].apply($c, $a), $a[$a.length-1]);
           return res;
         };
@@ -19699,7 +19706,7 @@ if (n == null) n = nil;
         };
 
         def.$layout_pause = function(root, beat_layout) {
-          var $a, $b, self = this, x_offset = nil, y_offset = nil, scale = nil, glyph = nil, dotted = nil, rest_size = nil, size = nil, res = nil;
+          var $a, $b, self = this, x_offset = nil, y_offset = nil, scale = nil, glyph = nil, dotted = nil, rest_size = nil, size = nil, shift = nil, res = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           x_offset = $rb_plus($rb_times(($rb_plus($gvars.conf.$get("layout.PITCH_OFFSET"), root.$pitch())), $gvars.conf.$get("layout.X_SPACING")), $gvars.conf.$get("layout.X_OFFSET"));
@@ -19708,8 +19715,15 @@ if (n == null) n = nil;
           $a = Opal.to_ary($gvars.conf.$get("layout.REST_TO_GLYPH")['$[]'](self.$check_duration(root))), scale = ($a[0] == null ? nil : $a[0]), glyph = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
           rest_size = $gvars.conf.$get("layout.REST_SIZE");
           size = [$rb_times(rest_size.$first(), scale.$first()), $rb_times(rest_size.$last(), scale.$last())];
+          shift = 0;
+          if ((($a = root.$shift()) !== nil && (!$a.$$is_boolean || $a == true))) {
+            if (root.$shift()['$[]']("dir")['$==']("left")) {
+              shift = size.$first()['$-@']()
+              } else {
+              shift = size.$first()
+            }};
           res = nil;
-          res = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Glyph')).$new([x_offset, y_offset], size, glyph, dotted, root);
+          res = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Glyph')).$new([$rb_plus(x_offset, shift), y_offset], size, glyph, dotted, root);
           if ((($a = root['$visible?']()) !== nil && (!$a.$$is_boolean || $a == true))) {
             } else {
             (($a = [false]), $b = res, $b['$visible='].apply($b, $a), $a[$a.length-1])
@@ -20687,7 +20701,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars, $hash = Opal.hash, $range = Opal.range;
 
-  Opal.add_stubs(['$require', '$get', '$_reset_state', '$get_metadata', '$new', '$get_abcmodel', '$_transform_voices', '$meta_data=', '$_make_metadata', '$harpnote_options=', '$_make_harpnote_options', '$[]', '$[]=', '$compact', '$map', '$error', '$_get_key_by_accidentals', '$first', '$==', '$to_i', '$join', '$private', '$each', '$to_s', '$send', '$charpos_to_line_column', '$each_with_index', '$flatten', '$inject', '$<<', '$_make_jumplines', '$_make_notebound_annotations', '$count', '$unshift', '$include?', '$_transform_bar_repeat_end', '$_parse_origin', '$_parse_tuplet_info', '$_convert_duration', '$origin=', '$start_pos=', '$end_pos=', '$tuplet=', '$tuplet_start=', '$tuplet_end=', '$empty?', '$last', '$duration=', '$duration', '$origin', '$start_pos', '$end_pos', '$tuplet', '$tuplet_start', '$tuplet_end', '$tie_end=', '$!', '$nil?', '$tie_start=', '$slur_starts=', '$_push_slur', '$_parse_slur', '$slur_ends=', '$_pop_slur', '$_make_repeats_jumps_annotations', '$min', '$round', '$raise', '$visible=', '$length', '$pop', '$split', '$debug', '$_extract_chord_lines', '$is_a?', '$start_pos_to_s', '$select', '$match', '$===', '$to_f', '$companion=', '$first_in_part=', '$push', '$&', '$>>']);
+  Opal.add_stubs(['$require', '$get', '$_reset_state', '$get_metadata', '$new', '$get_abcmodel', '$_transform_voices', '$meta_data=', '$_make_metadata', '$harpnote_options=', '$_make_harpnote_options', '$[]', '$[]=', '$compact', '$map', '$error', '$_get_key_by_accidentals', '$first', '$==', '$to_i', '$join', '$private', '$each', '$to_s', '$send', '$charpos_to_line_column', '$each_with_index', '$flatten', '$inject', '$<<', '$_make_jumplines', '$_make_notebound_annotations', '$count', '$unshift', '$include?', '$_transform_bar_repeat_end', '$_parse_origin', '$_parse_tuplet_info', '$_convert_duration', '$origin=', '$start_pos=', '$end_pos=', '$tuplet=', '$tuplet_start=', '$tuplet_end=', '$empty?', '$last', '$duration=', '$duration', '$origin', '$start_pos', '$end_pos', '$tuplet', '$tuplet_start', '$tuplet_end', '$tie_end=', '$!', '$nil?', '$tie_start=', '$slur_starts=', '$_push_slur', '$_parse_slur', '$slur_ends=', '$_pop_slur', '$_make_repeats_jumps_annotations', '$min', '$round', '$raise', '$visible=', '$length', '$pop', '$split', '$debug', '$_extract_chord_lines', '$is_a?', '$start_pos_to_s', '$select', '$match', '$===', '$shift=', '$to_f', '$companion=', '$first_in_part=', '$push', '$&', '$>>']);
   self.$require("native");
   return (function($base) {
     var self = $module($base, 'Harpnotes');
@@ -20999,7 +21013,7 @@ if (line == null) line = nil;
           level = line.$split("@");
             if ((($a = level['$[]'](2)) !== nil && (!$a.$$is_boolean || $a == true))) {
               level = level['$[]'](2);
-              $gvars.log.$debug("bar repeat level " + (level) + " " + ("abc2svg_to_harpnotes") + ":" + (359));
+              $gvars.log.$debug("bar repeat level " + (level) + " " + ("abc2svg_to_harpnotes") + ":" + (360));
               if ((($a = level['$nil?']()) !== nil && (!$a.$$is_boolean || $a == true))) {
                 return nil
                 } else {
@@ -21066,7 +21080,7 @@ if (result == null) result = nil;if (chord == null) chord = nil;
               if (self.annotations == null) self.annotations = nil;
               if ($gvars.log == null) $gvars.log = nil;
 if (name == null) name = nil;
-            match = name.$match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/);
+            match = name.$match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/);
               if (match !== false && match !== nil) {
                 semantic = match['$[]'](1);
                 text = match['$[]'](2);
@@ -21078,7 +21092,7 @@ if (name == null) name = nil;
                 if (annotation !== false && annotation !== nil) {
                   } else {
                   $gvars.log.$error("could not find annotation " + (text), entity.$start_pos(), entity.$end_pos())
-                };}else if ("!"['$===']($case)) {annotation = $hash2(["text"], {"text": text})}else {annotation = nil};
+                };}else if ("!"['$===']($case)) {annotation = $hash2(["text"], {"text": text})}else if ("<"['$===']($case)) {(($a = [$hash2(["dir", "size"], {"dir": "left", "size": text})]), $b = entity, $b['$shift='].apply($b, $a), $a[$a.length-1])}else if (">"['$===']($case)) {(($a = [$hash2(["dir", "size"], {"dir": "right", "size": text})]), $b = entity, $b['$shift='].apply($b, $a), $a[$a.length-1])}else {annotation = nil};
                 if (annotation !== false && annotation !== nil) {
                   if (pos_x !== false && pos_x !== nil) {
                     notepos = ($a = ($b = [pos_x, pos_y]).$map, $a.$$p = (TMP_20 = function(p){var self = TMP_20.$$s || this;
@@ -21090,7 +21104,7 @@ if (p == null) p = nil;
                   return nil
                 };
                 } else {
-                return nil
+                return $gvars.log.$error("syntax error in annotation: " + (name))
               };}, TMP_19.$$s = self, TMP_19), $a).call($b);};
           return result;
         };
@@ -21175,8 +21189,8 @@ if (e == null) e = nil;
           var $a, $b, self = this, tuplet_start = nil, tuplet = nil, tuplet_end = nil;
 
           if ((($a = voice_element['$[]']("in_tuplet")) !== nil && (!$a.$$is_boolean || $a == true))) {
-            if ((($a = ($b = voice_element['$[]']("extra"), $b !== false && $b !== nil ?voice_element['$[]']("extra")['$[]']("15") : $b)) !== nil && (!$a.$$is_boolean || $a == true))) {
-              self.tuplet_count = (voice_element['$[]']("extra")['$[]']("15")['$[]']("tuplet_p"));
+            if ((($a = ($b = voice_element['$[]']("extra"), $b !== false && $b !== nil ?voice_element['$[]']("extra")['$[]'](15) : $b)) !== nil && (!$a.$$is_boolean || $a == true))) {
+              self.tuplet_count = (voice_element['$[]']("extra")['$[]'](15)['$[]']("tuplet_p"));
               self.tuplet_down_count = self.tuplet_count;
               tuplet_start = true;
               } else {
@@ -25522,7 +25536,7 @@ if (element == null) element = nil;
         next_object = object['$[]']("extra");
         while (next_object !== false && next_object !== nil) {
         cloned_extra = self.$_clone_abc2svg_object(next_object);
-        result['$[]='](cloned_extra['$[]']("type").$to_s(), cloned_extra);
+        result['$[]='](cloned_extra['$[]']("type"), cloned_extra);
         next_object = next_object['$[]']("next");};
         return result;
       };
@@ -25627,7 +25641,7 @@ Opal.modules["version"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice;
 
   Opal.add_stubs(['$year', '$now']);
-  Opal.cdecl($scope, 'VERSION', "0.10.5");
+  Opal.cdecl($scope, 'VERSION', "0.10.6");
   return Opal.cdecl($scope, 'COPYRIGHT', "©" + ($scope.get('Time').$now().$year()) + " http://www.bernhard-weichel.de/zupfnoterpage");
 };
 
