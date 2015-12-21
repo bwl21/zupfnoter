@@ -1,2 +1,2 @@
-VERSION = "0.10.3"
-COPYRIGHT = "©#{Time.now.year} https://www.bernhard-weichel.de"
+VERSION = "0.10.6"
+COPYRIGHT = "©#{Time.now.year} http://www.bernhard-weichel.de/zupfnoterpage"

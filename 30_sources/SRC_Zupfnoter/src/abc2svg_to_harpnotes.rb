@@ -28,14 +28,12 @@ module Harpnotes
         @abc_code    = zupfnoter_abc
         @annotations = $conf.get("annotations")
 
-
         @info_fields = get_metadata(@abc_code)
 
         abc_parser = ABC2SVG::Abc2Svg.new(nil, { mode: :model }) # first argument is the container for SVG
         @abc_model = abc_parser.get_abcmodel(zupfnoter_abc)
 
         result = _transform_voices
-
 
         result.meta_data        = _make_metadata
         result.harpnote_options = _make_harpnote_options
@@ -84,8 +82,9 @@ module Harpnotes
         o_key_display =""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
+        tempo_id = @abc_model[:music_type_ids][:tempo]
+        tempo_note = @abc_model[:voices].first[:voice_properties][:sym][:extra][tempo_id] rescue nil
 
-        tempo_note = @abc_model[:voices].first[:voice_properties][:sym][:extra][:'14'] rescue nil ## todo: remove literal
         if tempo_note
           duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           duration_display = duration.map { |d| "1/#{1/d}" }
@@ -100,6 +99,7 @@ module Harpnotes
 
         { composer:      (@info_fields[:C] or []).join("\n"),
           title:         (@info_fields[:T] or []).join("\n"),
+          filename:      (@info_fields[:F] or []).join("\n"),
           tempo:         { duration: duration, bpm: bpm },
           tempo_display: [duration_display, "=", bpm].join(' '),
           meter:         @info_fields[:M],
@@ -134,8 +134,12 @@ module Harpnotes
 
       def _transform_voices
 
+        part_id = @abc_model[:music_type_ids][:part] # performance ...
+        note_id = @abc_model[:music_type_ids][:note]
+
+        # get parts
         @abc_model[:voices].first[:symbols].each do |voice_model_element|
-          part                                         = ((voice_model_element[:extra] or {})['9'] or {})[:text] # todo:remove literals
+          part                                         = ((voice_model_element[:extra] or {})[part_id] or {})[:text]
           @part_table[voice_model_element[:time].to_s] = part if part
         end
 
@@ -144,7 +148,7 @@ module Harpnotes
           _reset_state
           @pitch_providers = voice_model[:symbols].map do |voice_model_element|
             nil
-            voice_model_element if voice_model_element[:type] == 8 #todo remove literal
+            voice_model_element if voice_model_element[:type] == note_id
           end
 
           result                = voice_model[:symbols].each_with_index.map do |voice_model_element, index|
@@ -173,9 +177,10 @@ module Harpnotes
 
           result += (jumplines + notebound_annotations)
 
-          result.flatten.compact
+          result = result.flatten.compact
+
           if (result.count == 0)
-            $log.error("Corrupt voice #{voice_index}")
+            $log.error("Empty voice #{voice_index}")
             result = nil
           end
           result
@@ -310,6 +315,7 @@ module Harpnotes
         result.tuplet_start = tuplet_start
         result.tuplet_end   = tuplet_end
 
+        result.visible      = false if voice_element[:invisible]
 
         # the post processing
 
@@ -332,6 +338,9 @@ module Harpnotes
         result
       end
 
+      def _transform_yspace(voice_element, index)
+        #  This is a stub for future expansion
+      end
 
       def _transform_bar_repeat_end(bar)
         if @repetition_stack.length == 1
@@ -354,6 +363,15 @@ module Harpnotes
       end
 
       def _transform_format(voice_element)
+        nil #`debugger`
+      end
+
+
+      def _transform_meter(voice_element)
+        nil #`debugger`
+      end
+
+      def _transform_clef(voice_element)
         nil #`debugger`
       end
 
@@ -389,7 +407,7 @@ module Harpnotes
           chords =_extract_chord_lines(entity.origin[:raw])
           chords.each do |name|
 
-            match = name.match(/^([!#])([^\@]+)(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
+            match = name.match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
               semantic = match[1]
               text     = match[2]
@@ -401,6 +419,10 @@ module Harpnotes
                   $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
                   annotation = { text: text }
+                when "<"
+                  entity.shift = { dir: :left, size: text }
+                when ">"
+                  entity.shift = { dir: :right, size: text }
                 else
                   annotation = nil # it is not an annotation
               end
@@ -491,8 +513,8 @@ module Harpnotes
       def _parse_tuplet_info(voice_element)
         if voice_element[:in_tuplet]
 
-          if voice_element[:extra] and voice_element[:extra][:"15"]
-            @tuplet_count      = (voice_element[:extra][:"15"][:tuplet_p])
+          if voice_element[:extra] and voice_element[:extra][15]   # todo: attr_reader :
+            @tuplet_count      = (voice_element[:extra][15][:tuplet_p])
             @tuplet_down_count = @tuplet_count
             tuplet_start       = true
           else

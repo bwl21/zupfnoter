@@ -1,6 +1,4 @@
-
 # todo: remove redefinintion of Native
-
 
 
 module ABC2SVG
@@ -59,7 +57,7 @@ module ABC2SVG
           end
 
           set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
-           # _get_abcmodel(tsfirst, voice_tb, anno_type)
+            # _get_abcmodel(tsfirst, voice_tb, anno_type)
           end
 
         when :model
@@ -161,13 +159,13 @@ module ABC2SVG
 
       case object.class.to_s
         when "Object"
-          keys           = %x{Object.keys(#{object.to_n})} - dropkeys # avoid recursions
-          result         = keys.inject({}) do |r1, key|
+          keys                         = %x{Object.keys(#{object.to_n})} - dropkeys # avoid recursions
+          result                       = keys.inject({}) do |r1, key|
             r1[key] = _clone_abc2svg_object(Native(object[key]))
             r1
           end
-          result[:extra] = _get_extra(object) if object[:extra]## todo if object.has_key extra
-          @object_map[object[:__id__]] = result  ## todo: remove with redefinition of Native
+          result[:extra]               = _get_extra(object) if object[:extra] ## todo if object.has_key extra
+          @object_map[object[:__id__]] = result ## todo: remove with redefinition of Native
         when "Array"
           result = object.map { |element| _clone_abc2svg_object(Native(element)) }
 
@@ -182,7 +180,7 @@ module ABC2SVG
       next_object = object[:extra]
       while next_object
         cloned_extra                     = _clone_abc2svg_object(next_object)
-        result[cloned_extra[:type].to_s] = cloned_extra
+        result[cloned_extra[:type]] = cloned_extra
         next_object                      = next_object[:next]
       end
       result
@@ -214,8 +212,13 @@ module ABC2SVG
         end
         result
       }
-      info_clone = _clone_abc2svg_object(Native(info))
-      @abc_model         = { music_types: music_types, info: info_clone, voices: tune[:voices]}
+      info_clone         = _clone_abc2svg_object(Native(info))
+      @abc_model         = { music_types:    music_types,
+                             music_type_ids: Hash[music_types.each_with_index.to_a],
+                             info:           info_clone,
+                             voices:         tune[:voices]
+      }
+
       if $log.loglevel == "debug"
         $log.debug(@abc_model.to_json)
       end
