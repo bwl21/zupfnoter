@@ -433,7 +433,7 @@ module Harpnotes
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, { pos: position, text: annotation[:text] })
               end
             else
-               $log.error("syntax error in annotation: #{name}")
+              # $log.error("syntax error in annotation: #{name}")
             end
           end
         end

@@ -19706,7 +19706,7 @@ if (n == null) n = nil;
         };
 
         def.$layout_pause = function(root, beat_layout) {
-          var $a, $b, self = this, x_offset = nil, y_offset = nil, scale = nil, glyph = nil, dotted = nil, rest_size = nil, size = nil, res = nil;
+          var $a, $b, self = this, x_offset = nil, y_offset = nil, scale = nil, glyph = nil, dotted = nil, rest_size = nil, size = nil, shift = nil, res = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           x_offset = $rb_plus($rb_times(($rb_plus($gvars.conf.$get("layout.PITCH_OFFSET"), root.$pitch())), $gvars.conf.$get("layout.X_SPACING")), $gvars.conf.$get("layout.X_OFFSET"));
@@ -19715,8 +19715,15 @@ if (n == null) n = nil;
           $a = Opal.to_ary($gvars.conf.$get("layout.REST_TO_GLYPH")['$[]'](self.$check_duration(root))), scale = ($a[0] == null ? nil : $a[0]), glyph = ($a[1] == null ? nil : $a[1]), dotted = ($a[2] == null ? nil : $a[2]);
           rest_size = $gvars.conf.$get("layout.REST_SIZE");
           size = [$rb_times(rest_size.$first(), scale.$first()), $rb_times(rest_size.$last(), scale.$last())];
+          shift = 0;
+          if ((($a = root.$shift()) !== nil && (!$a.$$is_boolean || $a == true))) {
+            if (root.$shift()['$[]']("dir")['$==']("left")) {
+              shift = size.$first()['$-@']()
+              } else {
+              shift = size.$first()
+            }};
           res = nil;
-          res = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Glyph')).$new([x_offset, y_offset], size, glyph, dotted, root);
+          res = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Glyph')).$new([$rb_plus(x_offset, shift), y_offset], size, glyph, dotted, root);
           if ((($a = root['$visible?']()) !== nil && (!$a.$$is_boolean || $a == true))) {
             } else {
             (($a = [false]), $b = res, $b['$visible='].apply($b, $a), $a[$a.length-1])
