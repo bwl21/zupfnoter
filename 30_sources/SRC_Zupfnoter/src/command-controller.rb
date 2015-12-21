@@ -47,12 +47,12 @@ module CommandController
 
     # the initialization
     def initialize(name)
-      @name = name
-      @help_action = lambda { "no help defined for #{name}" }
-      @parameters = []
-      @action = lambda { |p| raise "No action defined for #{name}" } #do nothing by default
+      @name           = name
+      @help_action    = lambda { "no help defined for #{name}" }
+      @parameters     = []
+      @action         = lambda { |p| raise "No action defined for #{name}" } #do nothing by default
       @inverse_action = lambda { |p| raise "No  undo defined fore #{name}" } #do nothing by default
-      @undoable = true
+      @undoable       = true
     end
 
     # Add a parameter
@@ -142,23 +142,23 @@ module CommandController
     end
   end
 
-# this class implements a command stack for the controller of e.g. an MVC appication.
-# Its main purpose is to handle the user interaction, which can be provided either as interactions on the
-# GUO or as commands provided by a console or even by a macro file.
-#
-# The approach is such that the command stack can register commands with is basically a named obuect
-# with arguments. For command and menu driven systems, help and parameter defaulting is provided.
-#
-# So Command basically provides methods to
-# 1. define commands
-# 2. execute commands
-# 3. undo / redo commands
+  # this class implements a command stack for the controller of e.g. an MVC appication.
+  # Its main purpose is to handle the user interaction, which can be provided either as interactions on the
+  # GUO or as commands provided by a console or even by a macro file.
+  #
+  # The approach is such that the command stack can register commands with is basically a named obuect
+  # with arguments. For command and menu driven systems, help and parameter defaulting is provided.
+  #
+  # So Command basically provides methods to
+  # 1. define commands
+  # 2. execute commands
+  # 3. undo / redo commands
 
   class CommandStack
     def initialize()
-      @commands = {}
-      @undo_stack = []
-      @redo_stack = []
+      @commands      = {}
+      @undo_stack    = []
+      @redo_stack    = []
       @history_stack = []
     end
 
@@ -215,10 +215,10 @@ module CommandController
     end
 
     def run_string(command)
-
-      arguments = {}
-      parts = parse_string(command)
-      parts = parts.map{|p|p.gsub("\\\\", "\\")}
+      arguments   = {}
+      parts       = parse_string(command)
+      parts       = ['help'] if parts.empty?
+      parts       = parts.map { |p| p.gsub("\\\\", "\\") }
       the_command = @commands[parts.first.to_sym]
       raise "wrong command: #{command}" unless the_command
 
@@ -245,7 +245,7 @@ module CommandController
     end
 
     def help_string_style()
-      @commands.to_a.select{ |c| c.last.is_public?}.map { |k, c|
+      @commands.to_a.select { |c| c.last.is_public? }.map { |k, c|
         parameter_names = c.parameters.map { |p| "{#{p.name}}" }.join(" ")
         "#{c.name} #{parameter_names} : #{c.get_help}"
       }

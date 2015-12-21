@@ -41,7 +41,7 @@ class LocalStore
 
   def delete(key)
     if @directory[key]
-      $log.warn("local storage: key '#{key}' does not exist")
+      $log.warning("local storage: key '#{key}' does not exist")
     else
       `localStorage.deleteItem(self.$mangle_key(key))`
       @directory[key] = nil
@@ -268,6 +268,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the previews
   # also saves abc in localstore()
   def render_harpnotepreview_callback
+    s = Time. now
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
       @song_harpnotes = layout_harpnotes(@systemstatus[:view])
@@ -279,7 +280,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     set_status(refresh: false)
 
-    $log.debug("finished rendering Haprnotes #{__FILE__} #{__LINE__}")
+    $log.debug("finished rendering Haprnotes inn #{Time.now() -s} seconds #{__FILE__} #{__LINE__}")
     set_inactive("#harpPreview")
     @editor.set_annotations($log.annotations)
 
@@ -346,8 +347,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     $conf.push(config)
     abc_parser = $conf.get('abc_parser')
+    start = Time.now()
     @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+    $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+    $log.info("duration transform + layout #{Time.now - start}")
     $log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
@@ -706,8 +710,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  LINE_MEDIUM: 0.3,
                  LINE_THICK: 0.5,
                  # all numbers in mm
-                 ELLIPSE_SIZE: [2.8, 1.7], # radii of the largest Ellipse
-                 REST_SIZE: [2.8, 1.5], # radii of the largest Rest Glyph
+                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
+                 REST_SIZE: [4, 2], # radii of the largest Rest Glyph
 
                  # x-size of one step in a pitch. It is the horizontal
                  # distance between two strings of the harp
@@ -749,11 +753,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                      #key      size   fill          dot                  abc duration
 
                      :err => [2, :filled, FALSE], # 1      1
-                     :d64 => [0.9, :empty, FALSE], # 1      1
-                     :d48 => [0.7, :empty, TRUE], # 1/2 *
-                     :d32 => [0.7, :empty, FALSE], # 1/2
-                     :d24 => [0.7, :filled, TRUE], # 1/4 *
-                     :d16 => [0.7, :filled, FALSE], # 1/4
+                     :d64 => [1, :empty, FALSE], # 1      1
+                     :d48 => [0.75, :empty, TRUE], # 1/2 *
+                     :d32 => [0.75, :empty, FALSE], # 1/2
+                     :d24 => [0.75, :filled, TRUE], # 1/4 *
+                     :d16 => [0.75, :filled, FALSE], # 1/4
                      :d12 => [0.5, :filled, TRUE], # 1/8 *
                      :d8 => [0.5, :filled, FALSE], # 1/8
                      :d6 => [0.3, :filled, TRUE], # 1/16 *
@@ -766,15 +770,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  REST_TO_GLYPH: {
                      # this basically determines the white background rectangel
                      :err => [[2, 2], :rest_1, FALSE], # 1      1
-                     :d64 => [[0.9, 0.9], :rest_1, FALSE], # 1      1
+                     :d64 => [[1, 1], :rest_1, FALSE], # 1      1
                      :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
                      :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
-                     :d24 => [[0.4, 0.7], :rest_4, TRUE], # 1/4 *
-                     :d16 => [[0.4, 0.7], :rest_4, FALSE], # 1/4
-                     :d12 => [[0.3, 0.5], :rest_8, TRUE], # 1/8 *
-                     :d8 => [[0.3, 0.5], :rest_8, FALSE], # 1/8
-                     :d6 => [[0.3, 0.4], :rest_16, TRUE], # 1/16 *
-                     :d4 => [[0.3, 0.5], :rest_16, FALSE], # 1/16
+                     :d24 => [[0.4, 1], :rest_4, TRUE], # 1/4 *
+                     :d16 => [[0.4, 1], :rest_4, FALSE], # 1/4
+                     :d12 => [[0.4, 1], :rest_8, TRUE], # 1/8 *
+                     :d8 => [[0.4, 1], :rest_8, FALSE], # 1/8
+                     :d6 => [[0.4, 1], :rest_16, TRUE], # 1/16 *
+                     :d4 => [[0.3, 1], :rest_16, FALSE], # 1/16
                      :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
                      :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
                      :d1 => [[0.3, 0.5], :rest_64, FALSE] # 1/64

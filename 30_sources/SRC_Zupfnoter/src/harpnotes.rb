@@ -20,7 +20,7 @@ module Harpnotes
   # - *Jumpline*: an indicator of jumps within the piece. The music continues at then end
   #   of the jumpline
   #
-  # - *Syncline*: an indicator for notes to be played simultaneously. They synchronize
+  # - *Synchline*: an indicator for notes to be played simultaneously. They synchronize
   #   two voices
   #
   #
@@ -176,7 +176,8 @@ module Harpnotes
                     :duration, # the duration of the playable
                     :tuplet, # number of notes in tuplet if it is in a tuplet
                     :tuplet_start, # first note of a tuplet
-                    :tuplet_end # last note of a tuplet
+                    :tuplet_end, # last note of a tuplet
+                    :shift # {dir: :left | :right}
 
       def initialize
         # initialize slur and ties to the safe side ...
@@ -491,7 +492,11 @@ module Harpnotes
           # end
 
           #the_playables.compact!
-          SynchPoint.new(the_playables) if the_playables.length > 1
+          result        = nil
+          if the_playables.compact.select { |p| p.visible? }.length > 1
+            result = SynchPoint.new(the_playables)
+          end
+          result
         end.flatten.compact
 
         # this drops synchpoints which contain other playables than notes
@@ -733,17 +738,19 @@ module Harpnotes
       #
       # Constructor
       #
-      # @param size [Array] the size of the ellipse as [width, height]
+      # @param radii [Array] the radii of the ellipse as [width, height]
       # @param fill [Symbol] the fill style, either :filled or :empty
-      # @param dotted [Boolean] TRUE if the ellipse has a small companion dot, FALSE otherwise
+      # @param dotted [Boolean] true if the ellipse has a small companion dot, FALSE otherwise
       # @param origin [Object] The source object of the upstream model
+      # @param rect [Boolean] true if the ellipse is in fact a rectangle
       #
-      def initialize(center, size, fill = :filled, dotted = TRUE, origin = nil)
+      def initialize(center, radii, fill = :filled, dotted = false, origin = nil, rect = false)
         super
         @center = center
-        @size   = size
+        @size   = radii
         @fill   = fill
         @dotted = dotted
+        @rect   = rect
         @origin = origin
       end
 
@@ -769,6 +776,10 @@ module Harpnotes
       #
       def filled?
         @fill == :filled
+      end
+
+      def rect?
+        @rect == true
       end
 
     end
@@ -805,9 +816,30 @@ module Harpnotes
           # todo: apply a proper approach for the glyphs: Specify a bounding box here
           # we trim the intial move somehow - don't really konw what i am doing
           # ["M", 0.06, 0.03]
-          rest_1:   { d: [["M", 0.06 -0.06 - 11.25/2, 0.03-1.7*4.68], ["l", 0.09, -0.06], ["l", 5.46, 0], ["l", 5.49, 0], ["l", 0.09, 0.06], ["l", 0.06, 0.09], ["l", 0, 2.19], ["l", 0, 2.19], ["l", -0.06, 0.09], ["l", -0.09, 0.06], ["l", -5.49, 0], ["l", -5.46, 0], ["l", -0.09, -0.06], ["l", -0.06, -0.09], ["l", 0, -2.19], ["l", 0, -2.19], ["z"]], w: 11.25, h: 2.2*4.68 },
-          rest_4:   { d: [["M", 1.89, -11.82], ["c", 0.12, -0.06, 0.24, -0.06, 0.36, -0.03], ["c", 0.09, 0.06, 4.74, 5.58, 4.86, 5.82], ["c", 0.21, 0.39, 0.15, 0.78, -0.15, 1.26], ["c", -0.24, 0.33, -0.72, 0.81, -1.62, 1.56], ["c", -0.45, 0.36, -0.87, 0.75, -0.96, 0.84], ["c", -0.93, 0.99, -1.14, 2.49, -0.6, 3.63], ["c", 0.18, 0.39, 0.27, 0.48, 1.32, 1.68], ["c", 1.92, 2.25, 1.83, 2.16, 1.83, 2.34], ["c", -0, 0.18, -0.18, 0.36, -0.36, 0.39], ["c", -0.15, -0, -0.27, -0.06, -0.48, -0.27], ["c", -0.75, -0.75, -2.46, -1.29, -3.39, -1.08], ["c", -0.45, 0.09, -0.69, 0.27, -0.9, 0.69], ["c", -0.12, 0.3, -0.21, 0.66, -0.24, 1.14], ["c", -0.03, 0.66, 0.09, 1.35, 0.3, 2.01], ["c", 0.15, 0.42, 0.24, 0.66, 0.45, 0.96], ["c", 0.18, 0.24, 0.18, 0.33, 0.03, 0.42], ["c", -0.12, 0.06, -0.18, 0.03, -0.45, -0.3], ["c", -1.08, -1.38, -2.07, -3.36, -2.4, -4.83], ["c", -0.27, -1.05, -0.15, -1.77, 0.27, -2.07], ["c", 0.21, -0.12, 0.42, -0.15, 0.87, -0.15], ["c", 0.87, 0.06, 2.1, 0.39, 3.3, 0.9], ["l", 0.39, 0.18], ["l", -1.65, -1.95], ["c", -2.52, -2.97, -2.61, -3.09, -2.7, -3.27], ["c", -0.09, -0.24, -0.12, -0.48, -0.03, -0.75], ["c", 0.15, -0.48, 0.57, -0.96, 1.83, -2.01], ["c", 0.45, -0.36, 0.84, -0.72, 0.93, -0.78], ["c", 0.69, -0.75, 1.02, -1.8, 0.9, -2.79], ["c", -0.06, -0.33, -0.21, -0.84, -0.39, -1.11], ["c", -0.09, -0.15, -0.45, -0.6, -0.81, -1.05], ["c", -0.36, -0.42, -0.69, -0.81, -0.72, -0.87], ["c", -0.09, -0.18, -0, -0.42, 0.21, -0.51], ["z"]], w: 7.888, h: 21.435 },
-          rest_8:   { d: [["M", 1.68, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.39, -0.18, 1.32, -1.29, 1.68, -1.98], ["c", 0.09, -0.21, 0.24, -0.3, 0.39, -0.3], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.27, 1.11, -1.86, 6.42], ["c", -1.02, 3.48, -1.89, 6.39, -1.92, 6.42], ["c", 0, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.15, -0.57, 1.68, -4.92], ["c", 0.96, -2.67, 1.74, -4.89, 1.71, -4.89], ["l", -0.51, 0.15], ["c", -1.08, 0.36, -1.74, 0.48, -2.55, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 7.534, h: 13.883 },
+          rest_0:   { d: [["M", 0.06 -0.06 - 11.25/2, 0.03-1.7*4.68], ["l", 0.09, -0.06], ["l", 5.46, 0], ["l", 5.49, 0], ["l", 0.09, 0.06], ["l", 0.06, 0.09], ["l", 0, 2.19], ["l", 0, 2.19], ["l", -0.06, 0.09], ["l", -0.09, 0.06], ["l", -5.49, 0], ["l", -5.46, 0], ["l", -0.09, -0.06], ["l", -0.06, -0.09], ["l", 0, -2.19], ["l", 0, -2.19], ["z"]], w: 2* 11.25, h: 2.2*4.68 },
+          rest_1:   { d: [["M", -10, -5], ['l', 20, 0], ['l', 0, 10], ['l', -20, 0], ['l', 0, -10], ['z']], w: 20, h: 10 },
+          # optimized by try and error: orginal: ["M", 1.89, -11.82]
+          rest_4:   { d: [["M", 5.0, -15], ["c", 0.12, -0.06, 0.24, -0.06, 0.36, -0.03], ["c", 0.09, 0.06, 4.74, 5.58, 4.86, 5.82], ["c", 0.21, 0.39, 0.15, 0.78, -0.15, 1.26],
+                          ["c", -0.24, 0.33, -0.72, 0.81, -1.62, 1.56], ["c", -0.45, 0.36, -0.87, 0.75, -0.96, 0.84], ["c", -0.93, 0.99, -1.14, 2.49, -0.6, 3.63],
+                          ["c", 0.18, 0.39, 0.27, 0.48, 1.32, 1.68], ["c", 1.92, 2.25, 1.83, 2.16, 1.83, 2.34], ["c", -0, 0.18, -0.18, 0.36, -0.36, 0.39],
+                          ["c", -0.15, -0, -0.27, -0.06, -0.48, -0.27], ["c", -0.75, -0.75, -2.46, -1.29, -3.39, -1.08], ["c", -0.45, 0.09, -0.69, 0.27, -0.9, 0.69],
+                          ["c", -0.12, 0.3, -0.21, 0.66, -0.24, 1.14], ["c", -0.03, 0.66, 0.09, 1.35, 0.3, 2.01], ["c", 0.15, 0.42, 0.24, 0.66, 0.45, 0.96],
+                          ["c", 0.18, 0.24, 0.18, 0.33, 0.03, 0.42], ["c", -0.12, 0.06, -0.18, 0.03, -0.45, -0.3], ["c", -1.08, -1.38, -2.07, -3.36, -2.4, -4.83],
+                          ["c", -0.27, -1.05, -0.15, -1.77, 0.27, -2.07], ["c", 0.21, -0.12, 0.42, -0.15, 0.87, -0.15], ["c", 0.87, 0.06, 2.1, 0.39, 3.3, 0.9],
+                          ["l", 0.39, 0.18], ["l", -1.65, -1.95], ["c", -2.52, -2.97, -2.61, -3.09, -2.7, -3.27], ["c", -0.09, -0.24, -0.12, -0.48, -0.03, -0.75],
+                          ["c", 0.15, -0.48, 0.57, -0.96, 1.83, -2.01], ["c", 0.45, -0.36, 0.84, -0.72, 0.93, -0.78], ["c", 0.69, -0.75, 1.02, -1.8, 0.9, -2.79],
+                          ["c", -0.06, -0.33, -0.21, -0.84, -0.39, -1.11], ["c", -0.09, -0.15, -0.45, -0.6, -0.81, -1.05], ["c", -0.36, -0.42, -0.69, -0.81, -0.72, -0.87],
+                          ["c", -0.09, -0.18, -0, -0.42, 0.21, -0.51], ["z"]],
+                      w: 7.9, h: 25.5 }, #w: 7.888, h: 21.435 },
+          # optimized by try and error: orginal: ["M", 1.68, -6.12]
+          rest_8:   { d: [["M", 5, -20], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72],
+                          ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.39, -0.18, 1.32, -1.29, 1.68, -1.98],
+                          ["c", 0.09, -0.21, 0.24, -0.3, 0.39, -0.3], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.27, 1.11, -1.86, 6.42],
+                          ["c", -1.02, 3.48, -1.89, 6.39, -1.92, 6.42], ["c", 0, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09],
+                          ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.15, -0.57, 1.68, -4.92],
+                          ["c", 0.96, -2.67, 1.74, -4.89, 1.71, -4.89], ["l", -0.51, 0.15], ["c", -1.08, 0.36, -1.74, 0.48, -2.55, 0.48],
+                          ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]],
+                      w: 7.9, h: 25.5 }, #w: 7.534, h: 13.883 },
           rest_16:  { d: [["M", 3.33, -6.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.87, 0.42], ["c", 0.39, -0.18, 1.2, -1.23, 1.62, -2.07], ["c", 0.06, -0.15, 0.24, -0.24, 0.36, -0.24], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.45, 1.86, -2.67, 10.17], ["c", -1.5, 5.55, -2.73, 10.14, -2.76, 10.17], ["c", -0.03, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.12, -0.57, 1.44, -4.92], ["c", 0.81, -2.67, 1.47, -4.86, 1.47, -4.89], ["c", -0.03, 0, -0.27, 0.06, -0.54, 0.15], ["c", -1.08, 0.36, -1.77, 0.48, -2.58, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.33, -0.15, 1.02, -0.93, 1.41, -1.59], ["c", 0.12, -0.21, 0.18, -0.39, 0.39, -1.08], ["c", 0.66, -2.1, 1.17, -3.84, 1.17, -3.87], ["c", 0, 0, -0.21, 0.06, -0.42, 0.15], ["c", -0.51, 0.15, -1.2, 0.33, -1.68, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 9.724, h: 21.383 },
           rest_32:  { d: [["M", 4.23, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.27, -0.06], ["c", 0.33, -0.21, 0.99, -1.11, 1.44, -1.98], ["c", 0.09, -0.24, 0.21, -0.33, 0.39, -0.33], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.57, 2.67, -3.21, 13.89], ["c", -1.8, 7.62, -3.3, 13.89, -3.3, 13.92], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, -0, -0.3, -0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.09, -0.57, 1.23, -4.92], ["c", 0.69, -2.67, 1.26, -4.86, 1.29, -4.89], ["c", 0, -0.03, -0.12, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.12, 0.09, 0.3, 0.18, 0.48, 0.21], ["c", 0.12, -0, 0.18, -0, 0.3, -0.09], ["c", 0.42, -0.21, 1.29, -1.29, 1.56, -1.89], ["c", 0.03, -0.12, 1.23, -4.59, 1.23, -4.65], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -0.63, 0.18, -1.2, 0.36, -1.74, 0.45], ["c", -0.39, 0.06, -0.54, 0.06, -1.02, 0.06], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.18, 0.18, 0.51, 0.27, 0.72, 0.15], ["c", 0.3, -0.12, 0.69, -0.57, 1.08, -1.17], ["c", 0.42, -0.6, 0.39, -0.51, 1.05, -3.03], ["c", 0.33, -1.26, 0.6, -2.31, 0.6, -2.34], ["c", 0, -0, -0.21, 0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.14, 0.33, -1.62, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 11.373, h: 28.883 },
           rest_64:  { d: [["M", 5.13, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.24, -0.12, 0.63, -0.66, 1.08, -1.56], ["c", 0.33, -0.66, 0.39, -0.72, 0.6, -0.72], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.69, 3.66, -3.54, 17.64], ["c", -1.95, 9.66, -3.57, 17.61, -3.57, 17.64], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.06, -0.57, 1.05, -4.95], ["c", 0.6, -2.7, 1.08, -4.89, 1.08, -4.92], ["c", 0, 0, -0.24, 0.06, -0.51, 0.15], ["c", -0.66, 0.24, -1.2, 0.36, -1.77, 0.48], ["c", -0.42, 0.06, -0.57, 0.06, -1.05, 0.06], ["c", -0.69, 0, -0.87, -0.03, -1.35, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.21, 0.03, 0.39, -0.09, 0.72, -0.42], ["c", 0.45, -0.45, 1.02, -1.26, 1.17, -1.65], ["c", 0.03, -0.09, 0.27, -1.14, 0.54, -2.34], ["c", 0.27, -1.2, 0.48, -2.19, 0.51, -2.22], ["c", 0, -0.03, -0.09, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.9, 0.42], ["c", 0.36, -0.18, 1.2, -1.26, 1.47, -1.89], ["c", 0.03, -0.09, 0.3, -1.2, 0.57, -2.43], ["l", 0.51, -2.28], ["l", -0.54, 0.18], ["c", -1.11, 0.36, -1.8, 0.48, -2.61, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.21, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.36, -0.18, 0.93, -0.93, 1.29, -1.68], ["c", 0.12, -0.24, 0.18, -0.48, 0.63, -2.55], ["l", 0.51, -2.31], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -1.14, 0.36, -2.1, 0.54, -2.82, 0.51], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 12.453, h: 36.383 },
@@ -881,7 +913,7 @@ module Harpnotes
       ELLIPSE_SIZE = [2.8, 1.7] # radii of the largest Ellipse
       REST_SIZE = [2.8, 2.8] # radii of the largest Rest Glyph
 
-      # x-size of one step in a pitch. It is the horizontal
+      # x-radii of one step in a pitch. It is the horizontal
       # distance between two strings of the harp
       X_SPACING = 115.0 / 10.0
 
@@ -919,7 +951,7 @@ module Harpnotes
 
       # This is a lookup table to map durations to graphical representation
       DURATION_TO_STYLE = {
-          #key      size   fill          dot                  abc duration
+          #key      radii   fill          dot                  abc duration
 
           :err => [2, :filled, FALSE], # 1      1
           :d64 => [0.9, :empty, FALSE], # 1      1
@@ -1021,7 +1053,7 @@ module Harpnotes
         beat_layout   = beat_layout || Proc.new do |beat|
           # todo: why -1
           # $log.debug("using default layout policy #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-          beat * @beat_spacing + @y_offset
+          %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
         end
 
         compressed_beat_layout_proc = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
@@ -1074,6 +1106,7 @@ module Harpnotes
         annotations     = []
 
         title               = music.meta_data[:title] || "untitled"
+        filename            = music.meta_data[:filename]
         meter               = music.meta_data[:meter]
         key                 = music.meta_data[:key]
         composer            = music.meta_data[:composer]
@@ -1087,7 +1120,8 @@ module Harpnotes
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
-        annotations << Harpnotes::Drawing::Annotation.new([150, 288], "rendered #{datestring} by Zupfnoter #{VERSION} #{COPYRIGHT} (Host #{`window.location`})", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
 
         lyrics     = print_options[:lyrics]
         lyric_text = music.harpnote_options[:lyrics][:text]
@@ -1172,8 +1206,10 @@ module Harpnotes
           unless previous_note.nil?
             res            = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
             res.line_width = $conf.get('layout.LINE_MEDIUM');
+            res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
           end
-          res = nil if playable.first_in_part?
+          res = nil if playable.first_in_part? # interrupt flowline at begin of a part
+          res = nil unless playable.visible? # interupt flowing if one of the ends is not visible
 
           previous_note = playable
           res
@@ -1181,12 +1217,17 @@ module Harpnotes
 
 
         # draw the subflowlines
+        # note that invisible rests make no sense and therefore do not interruppt subflowlines
         previous_note                   = nil
         res_sub_flow                    = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
           unless show_options[:synched_notes].include?(playable.proxy_note)
             res = nil
             res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
             res = nil if playable.first_in_part?
+          end
+
+          unless playable.visible?
+            res = nil #$log.warning("invisible pause in subflowline", playable.start_pos)
           end
 
           previous_note = playable
@@ -1306,17 +1347,17 @@ module Harpnotes
 
       # compress  beat layout of a music sheet
       #
-      # This algorithm considers the number of notes and the particular size of the notes
+      # This algorithm considers the number of notes and the particular radii of the notes
       # when a beat (layout beat, not to mess up with song beat) has a note
       # the the
       #
       # returns a beat-map { beat => vertical_position_indicator }
       # vertical_position_indicator scales like beats but can be fractions
       # the need to be scaled to the aboslute position on the sheet later.
-      # this scaling cannot be done here since it depends on the relative size
+      # this scaling cannot be done here since it depends on the relative radii
       # of the musig on the sheet.
       #
-      # we need to increment the position by the (size[i] + size[i-1])/2
+      # we need to increment the position by the (radii[i] + radii[i-1])/2
       #
       # @param music Harpnotes::Music::Document the document to optimize the beat layout
       #
@@ -1333,31 +1374,32 @@ module Harpnotes
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
 
-        result = Hash[(0..max_beat).map do |beat|
-                        notes_on_beat        = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
-                        max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
-                        has_no_notes_on_beat = notes_on_beat.empty?
-                        is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
+        duration_to_style = $conf.get('layout.DURATION_TO_STYLE')
+        result            = Hash[(0..max_beat).map do |beat|
+                                   notes_on_beat        = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
+                                   max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
+                                   has_no_notes_on_beat = notes_on_beat.empty?
+                                   is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
 
-                        unless has_no_notes_on_beat
-                          begin
-                            size = conf_beat_resolution * $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(max_duration_on_beat)].first
-                          rescue Exception => e
-                            $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
-                          end
+                                   unless has_no_notes_on_beat
+                                     begin
+                                       size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+                                     rescue Exception => e
+                                       $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+                                     end
 
-                          # we need to increment the position by the (size[i] + size[i-1])/2
-                          increment = (size + last_size)/2
-                          last_size = size
+                                     # we need to increment the position by the (radii[i] + radii[i-1])/2
+                                     increment = (size + last_size)/2
+                                     last_size = size
 
-                          # if a new part starts on this beat, double the increment
-                          unless is_new_part.empty?
-                            increment += increment
-                          end
-                          current_beat += increment
-                        end
-                        [beat, current_beat]
-                      end]
+                                     # if a new part starts on this beat, double the increment
+                                     unless is_new_part.empty?
+                                       increment += increment
+                                     end
+                                     current_beat += increment
+                                   end
+                                   [beat, current_beat]
+                                 end]
         result
       end
 
@@ -1399,7 +1441,16 @@ module Harpnotes
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
         size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
 
-        res            = Ellipse.new([x_offset, y_offset], size, fill, dotted, root)
+        shift = 0
+        if root.shift
+          if root.shift[:dir] == :left
+            shift = -size.first
+          else
+            shift = size.first
+          end
+        end
+
+        res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
         res.line_width = $conf.get('layout.LINE_THICK')
         res
       end
@@ -1436,7 +1487,17 @@ module Harpnotes
         rest_size            = $conf.get('layout.REST_SIZE')
         size                 = [rest_size.first * scale.first, rest_size.last * scale.last]
 
-        res         = Harpnotes::Drawing::Glyph.new([x_offset, y_offset], size, glyph, dotted, root)
+        shift = 0
+        if root.shift
+          if root.shift[:dir] == :left
+            shift = -size.first
+          else
+            shift = size.first
+          end
+        end
+
+        res         = nil
+        res         = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
         res.visible = false unless root.visible?
         res
       end
@@ -1452,8 +1513,8 @@ module Harpnotes
         y_offset            = beat_layout.call(root.beat)
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(root.duration)]
         #todo:layout this with a path
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
-        res                 = Ellipse.new([x_offset, y_offset - size.last - 0.5], [size.first, 0.1], fill, false, root) # todo draw a line
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale * 1.2 } # todo: the scale is experimental
+        res                 = Ellipse.new([x_offset, y_offset - size.last - 0.5], [size.first, 0.1], :filled, false, root, true) # todo draw a line
         res.visible         = false unless root.visible?
         res
       end

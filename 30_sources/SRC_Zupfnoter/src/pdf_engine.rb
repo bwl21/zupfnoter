@@ -80,7 +80,7 @@ module Harpnotes
 
     def draw_cutmarks(i, delta, border)
       vertical_pos = {:top => 7, :bottom => 290}[border] # [start_y, center_y, end_y]
-      hpos = X_SPACING/2.0 + delta * i + 3 #todo: 3 is the size Default::Layout::ELLIPSE_SIZE[0]
+      hpos = X_SPACING/2.0 + delta * i + 3 #todo: 3 is the background_size Default::Layout::ELLIPSE_SIZE[0]
       hdiff = X_SPACING/2.0
 
       center = Vector2d(X_SPACING/2.0 + delta * i, vertical_pos)
@@ -93,11 +93,15 @@ module Harpnotes
     def draw_ellipse(root)
       style = root.filled? ? :F : :FD
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
-      @pdf.ellipse(root.center, root.size, style)
+      if root.rect?
+        @pdf.rect_like_ellipse(root.center, root.size, style)
+      else
+        @pdf.ellipse(root.center, root.size, style)
+      end
 
       if root.dotted?
         @pdf.fill = (0...3).map { 0 }
-        @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+        @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
       end
     end
 
@@ -108,14 +112,15 @@ module Harpnotes
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
 
       center = [root.center.first - root.size.first, root.center.last - root.size.last]
-      size = root.size.map { |s| 2.0 * s }
+      #center = [root.center.first, root.center.last]
+      background_size = root.size.map { |s| 2.0 * s }  # root.size is specified as radii for eclipse
 
       # draw a white background
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
 
       @pdf.fill = [255, 255, 255]
       @pdf.stroke = [255, 255, 255]
-      @pdf.rect_like_ellipse(center, size, :FD)
+      @pdf.rect_like_ellipse(root.center, root.size, :FD)
 
       # draw th path
       #e = @pdf.lines(...)
@@ -123,7 +128,7 @@ module Harpnotes
       @pdf.fill = [0, 0, 0]
       @pdf.stroke = [0, 0, 0]
 
-      scalefactor = size.last / root.glyph[:h]
+      scalefactor = background_size.last / root.glyph[:h]
 
 
       scale = [scalefactor, scalefactor]
