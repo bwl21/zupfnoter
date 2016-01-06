@@ -158,7 +158,7 @@ module ABC2SVG
       dropkeys = [:next, :prev, :ts_next, :ts_prev, :extra]
 
       case object.class.to_s
-        when "Object"
+        when "Native::Object"
           keys                         = %x{Object.keys(#{object.to_n})} - dropkeys # avoid recursions
           result                       = keys.inject({}) do |r1, key|
             r1[key] = _clone_abc2svg_object(Native(object[key]))
@@ -168,7 +168,6 @@ module ABC2SVG
           @object_map[object[:__id__]] = result ## todo: remove with redefinition of Native
         when "Array"
           result = object.map { |element| _clone_abc2svg_object(Native(element)) }
-
         else
           result = object
       end
