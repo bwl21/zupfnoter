@@ -196,9 +196,9 @@ module Harpnotes
 
         @next_note_marks[:measure]        = true
         @next_note_marks[:variant_ending] = voice_element[:text]
-        @next_note_marks[:repeat_start]   = true if ['|:', '::'].include?(type)
+        @next_note_marks[:repeat_start]   = true if type =~/^.*:$/
 
-        result << _transform_bar_repeat_end(voice_element) if [':|', '::'].include?(type)
+        result << _transform_bar_repeat_end(voice_element) if type =~/^:.*$/
       end
 
       def _transform_note(voice_element)
