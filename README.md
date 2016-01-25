@@ -5,6 +5,16 @@ notation
 
 # getting started
 
+## running online version
+
+-  https://zupfnoter.weichel21.de - **Hint:** uses a self signed certificate (sorry)
+-  enter `demo` followed by return on the lower left pane
+-  watch tunes showing up
+-  click on `render` to update harp notes
+-  click on `play` to listen to the tune
+-  feel free to ask if there are questions (too many features to describe here)
+
+
 ## local installation
 
 as of now the whole thing is far from being ready to use out of the box.
@@ -40,7 +50,7 @@ syntax but applies to some conventions. These conventions reflect to
 
 2.  annotations
 
-    Annotations starting with one of `:`, `@`, `!`, `#` have a specific
+    Annotations starting with one of `:`, `@`, `!`, `#`, `<`, `>` have a specific
     interpretation:
     
     `:`
@@ -54,6 +64,12 @@ syntax but applies to some conventions. These conventions reflect to
     
     `#`
     :   referenced annotation
+    
+    `>'
+    :   shift note symbol right by half string distance
+    
+    `<'
+    :   shift note symbol left by half string distance
 
 The specific conventions in detail are as follows:
 
@@ -335,7 +351,7 @@ notes -> array of hashes (placeable text)
 
 3.  Control visualization of Voices Synchlines, Jumplines, Flowlines
 
-    This is done using specific comments with JSON syntax
+    This is done using specific comments with JSON syntax (
 
         %%%%hn.print {"t":"all",         "v":[1,2,3,4], "s": [[1,2],[3,4]], "f":[1,3], "j":[1]}
         %%%%hn.print {"t":"all",         "v":[1], "s": [[1,2],[3,4]], "f":[1,3], "j":[1]}
