@@ -95,6 +95,7 @@ class Controller
 
     $conf = Confstack.new
     $conf.push(_init_conf)
+    $log.debug($conf.get.to_json)
 
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
