@@ -1,35 +1,117 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" style="height: 100%">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Zupfnoter</title>
-    <link rel="stylesheet" type="text/css" href="public/index.css"/>
-    <link rel="shortcut icon" href="public/icons/favicon.gif"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Zupfnoter</title>
+  <link rel="stylesheet" type="text/css" href="public/index.css"/>
+  <link rel="shortcut icon" href="public/icons/favicon.gif"/>
 
-    <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
-    <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
-    <script src="vendor/ace/ext-language_tools.js" type="application/javascript" charset="utf-8"></script>
-    <script src="vendor/abcjs_basic_1.11.zupfnoter-min.js" type="application/javascript"></script>
-    <script src="vendor/raphael.pan-zoom.min.js" type="application/javascript"></script>
-    <script src="vendor/musical.min.js" type="application/javascript"></script>
-    <script src="vendor/jqconsole.min.js" type="application/javascript"></script>
-    <script src="vendor/json_parse.js" type="application/javascript"></script>
+  <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
+  <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
+  <script src="vendor/ace/ext-language_tools.js" type="application/javascript" charset="utf-8"></script>
 
-    <!-- <script src="vendor/opal.min.js" type="application/javascript"></script>-->
-    <script src="vendor/jspdf.min.js" type="application/javascript"></script>
-    <script src="vendor/filesaver.js" type="application/javascript"></script>
-    <script src="vendor/jszip.min.js" type="application/javascript"></script>
-    <script src="vendor/dropbox.min.js" type="application/javascript"></script>
+  <script src="vendor/raphael-min.js" type="application/javascript"></script>
+  <script src="vendor/raphael.pan-zoom.min.js" type="application/javascript"></script>
 
-    <script src="vendor/abc2svg-1.js" type="application/javascript"></script>
-    <script src="vendor/abc2svg_play-1.js" type="application/javascript"></script>
-    <script src="vendor/abc2svg_midi-1.js" type="application/javascript"></script>
-    <script src="vendor/xml2abc-bw.js" type="application/javascript"></script>
+  <script src="vendor/musical.min.js" type="application/javascript"></script>
 
-    <%= javascript_include_tag 'application' %>
+  <script src="vendor/jqconsole.min.js" type="application/javascript"></script>
+  <script src="vendor/json_parse.js" type="application/javascript"></script><!-- to get better error messages -->
+
+  <!-- <script src="vendor/opal.min.js" type="application/javascript"></script>-->
+  <script src="vendor/jspdf.min.js" type="application/javascript"></script>
+  <script src="vendor/filesaver.js" type="application/javascript"></script>
+  <script src="vendor/jszip.min.js" type="application/javascript"></script>
+  <script src="vendor/dropbox.min.js" type="application/javascript"></script>
+
+  <script src="vendor/abc2svg-1.js" type="application/javascript"></script>
+  <script src="vendor/abc2svg_play-1.js" type="application/javascript"></script>
+  <script src="vendor/abc2svg_midi-1.js" type="application/javascript"></script>
+  <script src="vendor/xml2abc-bw.js" type="application/javascript"></script>
+
+  <!--
+    <link rel="stylesheet" type="text/css" media="screen" href="vendor/w2ui/dist/w2ui.min.css" id="mainCSS" />
+    <script src="vendor/w2ui/dist/w2ui.min.js" type="text/javascript"></script>
+  -->
+
+
+  <link rel="stylesheet" type="text/css" href="vendor/w2ui/dist/w2ui.css"/>
+  <script type="text/javascript" src="vendor/w2ui/dist/w2ui.js"></script>
+
+  <%= javascript_include_tag 'application' %>
 </head>
 
-<body>
+<body style="height: 100%;">
+
+<div id="layout" style="height: 100%"></div>
+<script type="text/javascript">
+  function init_w2ui() {
+
+    var toolbar = {
+      id: 'toolbar',
+      items: [
+        {type: 'html', html: '<p id="lbZupfnoter">Zupfnoter</p>'},
+        {type: 'spacer'},
+        {
+          type: 'menu', id: 'tb_perspective', caption: 'Perspektive', img: '', items: [
+          {text: 'Eingabe', icon: 'icon-page'},
+          {text: 'Noten', icon: 'icon-page'},
+          {text: 'Harfe', value: 'Item Three', icon: 'icon-page'}
+        ]
+        },
+        {type: 'break', id: 'break0'},
+        {
+          type: 'menu', id: 'tb_view', caption: 'Auszug', img: '', items: [
+          {text: '1', icon: 'icon-page'},
+          {text: '2', icon: 'icon-page'},
+          {text: '3', value: 'Item Three', icon: 'icon-page'}
+        ]
+        },
+        {type: 'break'},
+        {type: 'button', id: 'play', caption: 'Play', icon: 'fa-beaker', hint: 'spielt ab Auswahl'}
+      ]
+      //onClick: function (event) {
+      //this.owner.content('bottom', event);
+      //}
+    }
+    //var consoleLogHtml = '<div id="consoleLog" class="container"> <div class="title rsh"> <span class="head">Console</span> <span class="button"><i class="icon-down-open-mini"></i></span> </div> <div class="body"> <div id="commandconsole"></div> </div> </div>';
+    var consoleLogHtml = '<div id="commandconsole"></div>';
+
+    var pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 5px;';
+    $('#layout').w2layout({
+      name: 'layout',
+      panels: [
+        {type: 'top', id: 'foobar', size: 30, resizable: true, style: pstyle, content: '', toolbar: toolbar,},  // Toolbar
+        {type: 'left', size: '50%', hidden: false, resizable: true, style: pstyle, content: '<div id="abcEditor" style="height:100%" class="editor"></div>'},                   // file liste
+        {type: 'main', style: 'background-color: white;', style: pstyle, overflow: 'hidden', content: '<div id="tunePreview"  style="height:100%; width: 100%;" ></div>'},                   // main
+        {type: 'preview', size: '50%', resizable: true, hidden: false, style: pstyle, content: '<div id="harpPreview" style="height:100%"></div>'},
+        //{type: 'right', size: 200, resizable: true, style: pstyle, content: 'right'},
+        {type: 'bottom', size: '10%', resizable: true, hidden: false, content: consoleLogHtml}
+      ],
+
+
+    });
+    var pstyle = 'background-color: #F0F0C1; border: 1px solid #dfdfdf; padding: 5px;';
+    $().w2layout({
+      name: 'layout2',
+      panels: [
+        // {type: 'top', size: 40, resizable: true, style: pstyle, content: 'top'},
+        {
+          type: 'left', size: '50%', resizable: true, style: pstyle,
+          content: '<div id="abcEditor" class="editor"></div>'
+        },
+        {type: 'main', style: pstyle, content: ' <div class="body" id="tunePreview">'},
+        {type: 'preview', size: '50%', resizable: true, hidden: false, style: pstyle, content: '<div class="body" id="harpPreviewx">'},
+        //{type: 'right', size: 80, resizable: true, style: pstyle, content: 'right'},
+        //{type: 'bottom', size: 40, resizable: true, hidden: true, style: pstyle, content: 'bottom'}
+      ]
+    });
+
+
+    w2ui['layout'].refresh();
+  }
+</script>
+<!--
 <div id="toolbar">
     <input style="display:none;" id="fileDialog" type="file" accept=".abc"></input>
     <input style="display:none;" id="folderDialog" type="file" nwdirectory/>
@@ -80,13 +162,8 @@
 </div>
 
 <div id="dragbar">&nbsp;</div>
+-->
 
-<%= begin
-      result = javascript_include_analytics()
-    rescue
-      result = "<!-- running in rackup server, no analytics -->"
-    end
-    result
-%>
+
 </body>
 </html>

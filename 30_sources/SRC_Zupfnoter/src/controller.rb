@@ -35,7 +35,7 @@ class LocalStore
 
   def retrieve(key)
     envelope = JSON.parse(`localStorage.getItem(self.$mangle_key(key))`)
-    result = envelope[:p] if envelope
+    result   = envelope[:p] if envelope
     result
   end
 
@@ -61,13 +61,13 @@ class LocalStore
   end
 
   def load_dir
-    dirkey = "#{@name}__dir"
+    dirkey     = "#{@name}__dir"
     @directory = JSON.parse(`localStorage.getItem(dirkey)`)
   end
 
   def save_dir
     dir_json = @directory.to_json
-    dirkey = "#{@name}__dir"
+    dirkey   = "#{@name}__dir"
     `localStorage.setItem(dirkey, dir_json)`
   end
 
@@ -79,8 +79,10 @@ class Controller
   attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
 
   def initialize
-    Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
+    `init_w2ui();`
+    Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
+    #
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
     @console.on_command do |cmd|
@@ -98,8 +100,9 @@ class Controller
     $log.debug($conf.get.to_json)
 
     @editor = Harpnotes::TextPane.new("abcEditor")
+
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
-    @songbook = LocalStore.new("songbook")
+    @songbook        = LocalStore.new("songbook")
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
@@ -107,23 +110,24 @@ class Controller
 
     @systemstatus={}
 
-
+    # initialize the commandstack
+    # note that CommandController has methods __ic_01 etc. to register the commands
+    # these methods are invoked here.
     @commands = CommandController::CommandStack.new
-    self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) }
+    self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
 
     setup_ui
-
 
     # initialize virgin zupfnoter
     load_demo_tune
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0)
-
+    #
     # load from previous session
     load_from_loacalstorage
     render_previews
-
+    #
     setup_nodewebkit
-    # now trigger the interactive UI
+    # # now trigger the interactive UI
     setup_ui_listener
   end
 
@@ -143,9 +147,9 @@ class Controller
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir].include?(key) }.to_json
-    abc = `localStorage.setItem('systemstatus', #{systemstatus});`
-    abc = @editor.get_text
-    abc = `localStorage.setItem('abc_data', abc);`
+    abc          = `localStorage.setItem('systemstatus', #{systemstatus});`
+    abc          = @editor.get_text
+    abc          = `localStorage.setItem('abc_data', abc);`
   end
 
   # load session from localstore
@@ -271,11 +275,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the previews
   # also saves abc in localstore()
   def render_harpnotepreview_callback
-    s = Time. now
+    s = Time.now
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
       @song_harpnotes = layout_harpnotes(@systemstatus[:view])
       @harpnote_player.load_song(@music_model)
+
       @harpnote_preview_printer.draw(@song_harpnotes)
     rescue Exception => e
       $log.error(["Bug", e.message, e.backtrace].join("\n"), [1, 1], [10, 1000])
@@ -300,13 +305,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     setup_tune_preview
 
-
     set_active("#tunePreview")
     `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
 
 
     set_active("#harpPreview")
-    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+      `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
 
   end
 
@@ -324,7 +328,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     zip.file("song.abc", @editor.get_text)
     zip.file("harpnotes_a4.pdf", render_a4.output(:blob))
     zip.file("harpnotes_a3.pdf", render_a3.output(:blob))
-    blob =zip.to_blob
+    blob     =zip.to_blob
     filename = "song#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
     `window.saveAs(blob, filename)`
   end
@@ -344,13 +348,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     # todo: remove this compatibility code
-    outdated_configs = @editor.get_text.split("%%%%hn.").count
+    outdated_configs  = @editor.get_text.split("%%%%hn.").count
     config[:location] = "song" if config.keys.count > 0 || outdated_configs == 1
     # todo: end of compatiblility code
 
     $conf.push(config)
-    abc_parser = $conf.get('abc_parser')
-    start = Time.now()
+    abc_parser   = $conf.get('abc_parser')
+    start        = Time.now()
     @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
@@ -369,8 +373,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     startchar = a[:startChar]
-    endchar = a[:endChar]
-    endchar = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
+    endchar   = a[:endChar]
+    endchar   = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(startchar, endchar)
     end
@@ -402,7 +406,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def set_status(status)
     @systemstatus.merge!(status)
-    to_hide = [:nwworkingdir]
+    to_hide       = [:nwworkingdir]
     statusmessage = @systemstatus.inject([]) { |r, v|
       r.push "#{v.first}: #{v.last}  " unless to_hide.include?(v.first)
       r
@@ -418,6 +422,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def setup_ui
     # setup the harpnote prviewer
+    `debugger`
     @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 1100, 700) # size of canvas in pixels
     @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing
     @harpnote_preview_printer.on_select do |harpnote|
@@ -428,9 +433,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def setup_tune_preview
-    width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
-    $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
-    printerparams = {staffwidth: width} #todo compute the staffwidth
+    # todo: remove
+    # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
+    # $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
+    # printerparams = {staffwidth: width} #todo compute the staffwidth
     @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
 
     @tune_preview_printer.on_select do |abcelement|
@@ -459,10 +465,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
                           result = vertaal(xmldata, options);
                           #{
-                            $log.info(`result[1]`)
-                            @dropped_abc = `result[0]`
-                            handle_command('drop')
-                           }
+    $log.info(`result[1]`)
+    @dropped_abc = `result[0]`
+    handle_command('drop')
+    }
     }
 
     function pasteMxl(text){
@@ -473,9 +479,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     function pasteAbc(text){
        #{
-         @dropped_abc=`text`
-         handle_command('drop')
-        }
+    @dropped_abc=`text`
+    handle_command('drop')
+    }
     }
 
 
@@ -529,7 +535,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
 
-    set_file_drop('leftColumn');
+    set_file_drop('layout');
 
 
     # changes in the editor
@@ -544,7 +550,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       a = @editor.get_selection_positions
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
       unless # a.first == a.last
-        @tune_preview_printer.range_highlight(a.first, a.last)
+      @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
@@ -587,7 +593,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # end
 
     Element.find(`window`).on(:storage) do |evt|
-      key = Native(evt[:originalEvent]).key
+      key   = Native(evt[:originalEvent]).key
       value = Native(evt[:originalEvent]).newValue
 
       $log.debug("got storage event #{key}: #{value} (#{__FILE__} #{__LINE__})")
@@ -596,18 +602,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
     end
 
-    # dragbars
-    Element.find("#dragbar").on(:mousedown) do |re|
-      re.prevent
-      Element.find(`document`).on(:mousemove) do |e|
-        Element.find("#leftColumn").css(:right, "#{`window.innerWidth` - e.page_x}px")
-        Element.find("#rightColumn").css(:left, "#{e.page_x}px")
-        Element.find("#dragbar").css(:left, "#{e.page_x}px")
-      end
-      Element.find(`document`).on(:mouseup) do
-        `$(document).unbind('mousemove')`
-      end
-    end
+
   end
 
   # @param [Boolean] init if true triggers a new refresh request; if false restarts a running request
@@ -652,24 +647,24 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # returns a hash with the default values of configuration
   def _init_conf()
     result =
-        {produce: [0],
-         abc_parser: 'ABC2SVG',
+        {produce:     [0],
+         abc_parser:  'ABC2SVG',
          defaults:
-             {
-                 note_length: "1/4",
-                 print: {t: "", # title of the extract   # todo: remove these print defaults - no longer needed
-                         v: [1, 2, 3, 4], # voices to show
-                         startpos: 15, # start position of the harpnotes
-                         s: [[1, 2], [2, 3]], # synchlines
-                         f: [1, 3], # flowlines
-                         sf: [2, 4], # subflowlines
-                         j: [1, 3], # jumplines
-                         l: [1, 2, 3, 4] # lyoutlies
-                 },
-                 legend: {pos: [20, 20]}, # legend defaults
-                 lyrics: {pos: [20, 60]}, # lyrics defaults
-                 annotation: {pos: [2, -5]} # position of notebound annotation
-             },
+                      {
+                          note_length: "1/4",
+                          print:       {t:        "", # title of the extract   # todo: remove these print defaults - no longer needed
+                                        v:        [1, 2, 3, 4], # voices to show
+                                        startpos: 15, # start position of the harpnotes
+                                        s:        [[1, 2], [2, 3]], # synchlines
+                                        f:        [1, 3], # flowlines
+                                        sf:       [2, 4], # subflowlines
+                                        j:        [1, 3], # jumplines
+                                        l:        [1, 2, 3, 4] # lyoutlies
+                          },
+                          legend:      {pos: [20, 20]}, # legend defaults
+                          lyrics:      {pos: [20, 60]}, # lyrics defaults
+                          annotation:  {pos: [2, -5]} # position of notebound annotation
+                      },
 
          annotations: {
              vt: {text: "v", pos: [-1, -6]},
@@ -678,115 +673,115 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
          }, # default for note based annotations
 
-         extract: {
+         extract:     {
              "0" => {
-                 line_no: 1,
-                 title: "alle Stimmen",
-                 startpos: 15,
-                 voices: [1, 2, 3, 4],
-                 synchlines: [[1, 2], [3, 4]],
-                 flowlines: [1, 3],
+                 line_no:      1,
+                 title:        "alle Stimmen",
+                 startpos:     15,
+                 voices:       [1, 2, 3, 4],
+                 synchlines:   [[1, 2], [3, 4]],
+                 flowlines:    [1, 3],
                  subflowlines: [2, 4],
-                 jumplines: [1, 3],
-                 layoutlines: [1, 2, 3, 4],
-                 legend: {pos: [320, 20]},
-                 lyrics: {pos: [320, 50]},
-                 notes: []
+                 jumplines:    [1, 3],
+                 layoutlines:  [1, 2, 3, 4],
+                 legend:       {pos: [320, 20]},
+                 lyrics:       {pos: [320, 50]},
+                 notes:        []
              },
              "1" => {
                  line_no: 2,
-                 title: "Sopran, Alt",
-                 voices: [1, 2]
+                 title:   "Sopran, Alt",
+                 voices:  [1, 2]
              },
              "2" => {
                  line_no: 1,
-                 title: "Tenor, Bass",
-                 voices: [3, 4]
+                 title:   "Tenor, Bass",
+                 voices:  [3, 4]
              }
          },
 
 
          layout:
-             {
-                 SHOW_SLUR: false,
-                 LINE_THIN: 0.1,
-                 LINE_MEDIUM: 0.3,
-                 LINE_THICK: 0.5,
-                 # all numbers in mm
-                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                 REST_SIZE: [4, 2], # radii of the largest Rest Glyph
+                      {
+                          SHOW_SLUR:         false,
+                          LINE_THIN:         0.1,
+                          LINE_MEDIUM:       0.3,
+                          LINE_THICK:        0.5,
+                          # all numbers in mm
+                          ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
+                          REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
 
-                 # x-size of one step in a pitch. It is the horizontal
-                 # distance between two strings of the harp
+                          # x-size of one step in a pitch. It is the horizontal
+                          # distance between two strings of the harp
 
-                 X_SPACING: 11.5, # Distance of strings
+                          X_SPACING:         11.5, # Distance of strings
 
-                 # X coordinate of the very first beat
-                 X_OFFSET: 2.8, #ELLIPSE_SIZE.first,
+                          # X coordinate of the very first beat
+                          X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
 
-                 Y_SCALE: 4, # 4 mm per minimal
-                 DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
+                          Y_SCALE:           4, # 4 mm per minimal
+                          DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
 
-                 # this affects the performance of the harpnote renderer
-                 # it also specifies the resolution of note starts
-                 # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
-                 # in order to at least being able to handle triplets, we need to scale this up by 3
-                 # todo:see if we can speed it up by using 16 ...
-                 BEAT_RESOLUTION: 192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
-                 SHORTEST_NOTE: 64, # shortest possible note (1/64) do not change this
-                 # in particular specifies the range of DURATION_TO_STYLE etc.
+                          # this affects the performance of the harpnote renderer
+                          # it also specifies the resolution of note starts
+                          # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
+                          # in order to at least being able to handle triplets, we need to scale this up by 3
+                          # todo:see if we can speed it up by using 16 ...
+                          BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+                          SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
+                          # in particular specifies the range of DURATION_TO_STYLE etc.
 
-                 BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
+                          BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
 
-                 # this is the negative of midi-pitch of the lowest plaayble note
-                 # see http://computermusicresource.com/midikeys.html
-                 PITCH_OFFSET: -43,
+                          # this is the negative of midi-pitch of the lowest plaayble note
+                          # see http://computermusicresource.com/midikeys.html
+                          PITCH_OFFSET:      -43,
 
-                 FONT_STYLE_DEF: {
-                     smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
-                     small: {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
-                     regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
-                     large: {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
-                 },
+                          FONT_STYLE_DEF:    {
+                              smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
+                              small:   {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                              regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
+                              large:   {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
+                          },
 
-                 MM_PER_POINT: 0.3,
+                          MM_PER_POINT:      0.3,
 
-                 # This is a lookup table to map durations to graphical representation
-                 DURATION_TO_STYLE: {
-                     #key      size   fill          dot                  abc duration
+                          # This is a lookup table to map durations to graphical representation
+                          DURATION_TO_STYLE: {
+                              #key      size   fill          dot                  abc duration
 
-                     :err => [2, :filled, FALSE], # 1      1
-                     :d64 => [1, :empty, FALSE], # 1      1
-                     :d48 => [0.75, :empty, TRUE], # 1/2 *
-                     :d32 => [0.75, :empty, FALSE], # 1/2
-                     :d24 => [0.75, :filled, TRUE], # 1/4 *
-                     :d16 => [0.75, :filled, FALSE], # 1/4
-                     :d12 => [0.5, :filled, TRUE], # 1/8 *
-                     :d8 => [0.5, :filled, FALSE], # 1/8
-                     :d6 => [0.3, :filled, TRUE], # 1/16 *
-                     :d4 => [0.3, :filled, FALSE], # 1/16
-                     :d3 => [0.1, :filled, TRUE], # 1/32 *
-                     :d2 => [0.1, :filled, FALSE], # 1/32
-                     :d1 => [0.05, :filled, FALSE] # 1/64
-                 },
+                              :err => [2, :filled, FALSE], # 1      1
+                              :d64 => [1, :empty, FALSE], # 1      1
+                              :d48 => [0.75, :empty, TRUE], # 1/2 *
+                              :d32 => [0.75, :empty, FALSE], # 1/2
+                              :d24 => [0.75, :filled, TRUE], # 1/4 *
+                              :d16 => [0.75, :filled, FALSE], # 1/4
+                              :d12 => [0.5, :filled, TRUE], # 1/8 *
+                              :d8  => [0.5, :filled, FALSE], # 1/8
+                              :d6  => [0.3, :filled, TRUE], # 1/16 *
+                              :d4  => [0.3, :filled, FALSE], # 1/16
+                              :d3  => [0.1, :filled, TRUE], # 1/32 *
+                              :d2  => [0.1, :filled, FALSE], # 1/32
+                              :d1  => [0.05, :filled, FALSE] # 1/64
+                          },
 
-                 REST_TO_GLYPH: {
-                     # this basically determines the white background rectangel
-                     :err => [[2, 2], :rest_1, FALSE], # 1      1
-                     :d64 => [[1, 1], :rest_1, FALSE], # 1      1
-                     :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
-                     :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
-                     :d24 => [[0.4, 1], :rest_4, TRUE], # 1/4 *
-                     :d16 => [[0.4, 1], :rest_4, FALSE], # 1/4
-                     :d12 => [[0.4, 1], :rest_8, TRUE], # 1/8 *
-                     :d8 => [[0.4, 1], :rest_8, FALSE], # 1/8
-                     :d6 => [[0.4, 1], :rest_16, TRUE], # 1/16 *
-                     :d4 => [[0.3, 1], :rest_16, FALSE], # 1/16
-                     :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
-                     :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
-                     :d1 => [[0.3, 0.5], :rest_64, FALSE] # 1/64
-                 }
-             }
+                          REST_TO_GLYPH:     {
+                              # this basically determines the white background rectangel
+                              :err => [[2, 2], :rest_1, FALSE], # 1      1
+                              :d64 => [[1, 1], :rest_1, FALSE], # 1      1
+                              :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
+                              :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
+                              :d24 => [[0.4, 1], :rest_4, TRUE], # 1/4 *
+                              :d16 => [[0.4, 1], :rest_4, FALSE], # 1/4
+                              :d12 => [[0.4, 1], :rest_8, TRUE], # 1/8 *
+                              :d8  => [[0.4, 1], :rest_8, FALSE], # 1/8
+                              :d6  => [[0.4, 1], :rest_16, TRUE], # 1/16 *
+                              :d4  => [[0.3, 1], :rest_16, FALSE], # 1/16
+                              :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
+                              :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
+                              :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
+                          }
+                      }
         }
 
     result
