@@ -100,7 +100,9 @@ class Controller
     @editor = Harpnotes::TextPane.new("abcEditor")
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook = LocalStore.new("songbook")
-    @abc_transformer = Harpnotes::Input::AbcjsToHarpnotes.new
+
+    @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
+
     @dropboxclient = Opal::DropboxJs::NilClient.new()
 
     @systemstatus={}
