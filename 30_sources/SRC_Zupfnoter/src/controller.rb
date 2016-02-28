@@ -113,7 +113,7 @@ class Controller
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
     # these methods are invoked here.
-    @commands = CommandController::CommandStack.new
+    @commands    = CommandController::CommandStack.new
     self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
 
     setup_ui
@@ -310,7 +310,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     set_active("#harpPreview")
-      `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
+    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
 
   end
 
@@ -411,9 +411,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       r.push "#{v.first}: #{v.last}  " unless to_hide.include?(v.first)
       r
     }.join(" | ")
+
+    if @systemstatus['music_model'] == 'changed'
+      Element.find("#tb_layout_top_toolbar_item_tb_save").css("background-color", "red")
+    else
+      Element.find("#tb_layout_top_toolbar_item_tb_save").css("background-color", "")
+    end
+
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    Element.find("#tbStatus").html(statusmessage)
+    #Element.find("#tbStatus").html(statusmessage)
   end
 
 
@@ -422,9 +429,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def setup_ui
     # setup the harpnote prviewer
-    `debugger`
-    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 1100, 700) # size of canvas in pixels
-    @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing
+
+    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
+    @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing such that we can draw in mm
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end
@@ -530,13 +537,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def setup_ui_listener
 
-    Element.find("#tbPlay").on(:click) { play_abc(:selection_ff) }
-    Element.find("#tbRender").on(:click) { render_previews }
+    # toolbar events
+    Element.find('#tb_layout_top_toolbar_item_tbRender').on(:click) { render_previews }
+    Element.find("#tb_layout_top_toolbar_item_tbPlay").on(:click) { play_abc(:selection_ff) }
+    #Element.find('#tb_harppreviewscale').on(:change){|event|`debugger`; nil}
+
+    %x{w2ui['toolbar'].on('*', function (target, event) {
+       console.log(target);
+       console.log(event);
+      });
+    }
+
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
 
+    # activate drop of files
     set_file_drop('layout');
-
 
     # changes in the editor
     @editor.on_change do |e|
@@ -790,6 +806,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 end
 
 Document.ready? do
-  Controller.new
+  a = Controller.new
+  `uicontroller = a`
+  nil
 end
 
