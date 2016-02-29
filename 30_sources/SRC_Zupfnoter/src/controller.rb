@@ -412,6 +412,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       r
     }.join(" | ")
 
+    statusmessage=@systemstatus[:dropbox]
     if @systemstatus['music_model'] == 'changed'
       Element.find("#tb_layout_top_toolbar_item_tb_save").css("background-color", "red")
     else
@@ -420,7 +421,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    #Element.find("#tbStatus").html(statusmessage)
+    Element.find("#tbStatus").html(statusmessage)
   end
 
 

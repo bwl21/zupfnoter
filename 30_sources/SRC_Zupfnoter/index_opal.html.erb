@@ -29,6 +29,9 @@
   <script src="vendor/abc2svg_midi-1.js" type="application/javascript"></script>
   <script src="vendor/xml2abc-bw.js" type="application/javascript"></script>
 
+
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="us2s6tq6bubk6xh"></script>
+
   <!--
     <link rel="stylesheet" type="text/css" media="screen" href="vendor/w2ui/dist/w2ui.min.css" id="mainCSS" />
     <script src="vendor/w2ui/dist/w2ui.min.js" type="text/javascript"></script>
@@ -91,6 +94,7 @@
       'tb_scale:klein' : function(){$("#harpPreview svg").attr('height', 300)},
 
       'tb_toggle_console': function(){w2ui['layout'].toggle('bottom', window.instant)},
+      'tb_choose': function(){uicontroller.$handle_command("dlogin");uicontroller.$handle_command("dchoose")},
       'tb_save': function(){uicontroller.$handle_command("dsave")}
     }
 
@@ -101,10 +105,11 @@
       id: 'toolbar',
       name: 'toolbar',
       items: [
-        {type: 'html', html: '<p id="lbZupfnoter">Zupfnoter</p>'},
-        {type: 'spacer'},
-        {type: 'html', html: '<div id="tbStatus"><div>'},
+        {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span><br/><span id="tbStatus" style="margin-top: 5px;"></span>'},
+        {type: 'html', html: '<div style="width:200px"/>'},
+        {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'icon-folder', hint: 'Open in dropboxx'},
         {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'icon-folder', hint: 'Save in dropbox'},
+        {type: 'spacer'},
         {type: 'button', id: 'tb_toggle_console', caption: 'Console', icon: 'w2ui-icon-check', hint: 'Toggelt console'},
 
         {type: 'spacer'},
