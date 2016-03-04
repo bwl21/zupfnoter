@@ -32,14 +32,8 @@
 
   <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="us2s6tq6bubk6xh"></script>
 
-  <!--
-    <link rel="stylesheet" type="text/css" media="screen" href="vendor/w2ui/dist/w2ui.min.css" id="mainCSS" />
-    <script src="vendor/w2ui/dist/w2ui.min.js" type="text/javascript"></script>
-  -->
-
-
-  <link rel="stylesheet" type="text/css" href="vendor/w2ui/dist/w2ui.css"/>
-  <script type="text/javascript" src="vendor/w2ui/dist/w2ui.js"></script>
+  <link rel="stylesheet" type="text/css" href="vendor/w2ui/dist/w2ui.min.css"/>
+  <script type="text/javascript" src="vendor/w2ui/dist/w2ui.min.js"></script>
 
   <%= javascript_include_tag 'application' %>
 </head>
@@ -52,7 +46,7 @@
     perspectives = {
       'tb_perspective:Alle': function () {
         w2ui['layout'].show('left', window.instant);
-        w2ui['layout'].show('bottom', window.instant);
+        w2ui['layout'].hide('bottom', window.instant);
         w2ui['layout'].show('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
         w2ui['layout'].sizeTo('preview',"50%");
@@ -94,7 +88,7 @@
       'tb_scale:klein' : function(){$("#harpPreview svg").attr('height', 300)},
 
       'tb_toggle_console': function(){w2ui['layout'].toggle('bottom', window.instant)},
-      'tb_choose': function(){uicontroller.$handle_command("dlogin");uicontroller.$handle_command("dchoose")},
+      'tb_choose': function(){uicontroller.$handle_command("dlogin full /");uicontroller.$handle_command("dchoose")},
       'tb_save': function(){uicontroller.$handle_command("dsave")}
     }
 
@@ -105,10 +99,11 @@
       id: 'toolbar',
       name: 'toolbar',
       items: [
-        {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span><br/><span id="tbStatus" style="margin-top: 5px;"></span>'},
+        {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span>'},
         {type: 'html', html: '<div style="width:200px"/>'},
-        {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'icon-folder', hint: 'Open in dropboxx'},
-        {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'icon-folder', hint: 'Save in dropbox'},
+        {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'w2ui-icon-columns', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'w2ui-icon-plus', hint: 'Save in dropbox'},
+        {type: 'html', html:'<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'},
         {type: 'spacer'},
         {type: 'button', id: 'tb_toggle_console', caption: 'Console', icon: 'w2ui-icon-check', hint: 'Toggelt console'},
 
@@ -139,8 +134,8 @@
         ]
         },
         {type: 'break'},
-        {type: 'button', id: 'tbRender', caption: 'Render', icon: 'fa-beaker', hint: 'aktualisiert Ausgabe'},
-        {type: 'button', id: 'tbPlay', caption: 'Play', icon: 'fa-beaker', hint: 'spielt ab Auswahl'}
+        {type: 'button', id: 'tbRender', caption: 'Render', icon: 'w2ui-icon-reload', hint: 'aktualisiert Ausgabe'},
+        {type: 'button', id: 'tbPlay', caption: 'Play', icon: 'w2ui-icon-info', hint: 'spielt ab Auswahl'}
       ],
 
       onClick: function (event) {
@@ -157,7 +152,7 @@
     $('#layout').w2layout({
       name: 'layout',
       panels: [
-        {type: 'top', id: 'foobar', size: 50, resizable: false, content: '', toolbar: toolbar,},  // Toolbar
+        {type: 'top', id: 'foobar', size: 40, resizable: false, content: '', toolbar: toolbar, hidden:false},  // Toolbar
         {
           type: 'left',
           size: '50%',
@@ -192,7 +187,7 @@
           type: 'bottom',
           size: '10%',
           resizable: true,
-          hidden: false,
+          hidden: true,
           style: pstyle,
           content: '<div id="commandconsole"></div>'
         }
