@@ -10,8 +10,6 @@ module Harpnotes
         case engine
           when 'ABC2SVG'
             result = Harpnotes::Input::Abc2svgToHarpnotes.new
-          when 'ABCJS'
-            result = Harpnotes::Input::AbcjsToHarpnotes.new
           else
             $log.error("Undefined abc parser: #{engine}")
             result = Harpnotes::Input::Abc2svgToHarpnotes.new

@@ -37,8 +37,10 @@ module Opal
       # this method supports to execute a block in a promise
       #
       # with_promise() do |iblock|
-      #    # the payload code handle argument
-      #    # iblock = the block provided to the underlying API.
+      #     the payload code handle argument
+      #     iblock = the block provided to the underlying API.
+      #              its signature is derived from the the underlying library.
+      #              in this case it is defined by the callbacks of drobox-js which has two paramteres (error, data)
       # end
       #
       # @yieldparam [Lambda] block payload the block with the job to do
@@ -47,20 +49,47 @@ module Opal
       def with_promise(&block)
         Promise.new.tap do |promise|
           block.call(lambda { |error, data|
-                       if error
-                         promise.reject(error)
-                       else
-                         promise.resolve(data)
-                       end
-                     }
+            if error
+              promise.reject(error)
+            else
+              promise.resolve(data)
+            end
+          }
           )
         end
       end
 
+      # this method supports to invoke the dropbox_chooser
+      #
+      # with_promise() do |iblock|
+      #     the payload code handle argument
+      #     iblock = the block provided to the underlying API.
+      #              its signature is derived from the the underlying library.
+      #              in this case it is defined by the callbacks of
+      #              dropbox chooser which has one parameter (and no error handling)
+      #
+      # @yieldparam [Lambda] block payload the block with the job to do
+      # @return [Promise]
+      #
+      def with_promise_chooser(&block)
+        Promise.new.tap do |promise|
+          block.call(lambda { |data|
+            if false
+              promise.reject(error)
+            else
+              promise.resolve(Native(data))
+            end
+            }
+          )
+        end
+      end
+
+      # this is like with_promie, but
+      # does a bunch of retries
       def with_promise_retry(info= "", retries = 2, &block)
         Promise.new.tap do |promise|
           remaining = retries
-          handler = lambda { |error, data|
+          handler   = lambda { |error, data|
             if error
               remaining -= 1
               if remaining >= 0
@@ -128,6 +157,36 @@ module Opal
         with_promise() do |iblock|
           %x{#@root.readdir(#{dirname}, #{iblock})}
           nil
+        end
+      end
+
+
+      def choose_file(options)
+
+        with_promise_chooser() do |iblock|
+          %x{
+              dropbox_options = {
+
+                  // Required. Called when a user selects an item in the Chooser.
+                      success: #{iblock},
+
+                  // Optional. Called when the user closes the dialog without selecting a file
+                  // and does not include any parameters.
+                          cancel: function() {
+
+                                  },
+
+                       linkType: "direct", // or "direct"
+
+                  // Optional. This is a list of file extensions. If specified, the user will
+                  // only be able to select files with these extensions. You may also specify
+                  // file types, such as "video" or "images" in the list. For more information,
+                  // see File types below. By default, all extensions are allowed.
+                      extensions: ['.abc'],
+                  };
+
+                  Dropbox.choose(dropbox_options);
+          }
         end
       end
 

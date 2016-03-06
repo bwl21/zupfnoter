@@ -396,6 +396,28 @@ C,
       end
     end
 
+
+    @commands.add_command(:dchoose) do |command|
+      command.undoable = false
+
+      command.set_help { "choose File from Dropbox" }
+
+      command.as_action do |args|
+         @dropboxclient.choose_file({}).then do |files|
+           chosenfile = files.first[:link]
+           fileparts = chosenfile.match(/.*\/view\/[^\/]*\/(.*)\/(.*)/).to_a
+           path=fileparts[1]
+           filename=fileparts[2]
+
+           handle_command("dlogin full /#{path}/")
+           $log.message("found #{path} / #{filename}")
+           handle_command("dopen #{filename.split("_").first}")
+           $log.message("opened #{path} / #{filename}")
+         end
+      end
+    end
+
+
     @commands.add_command(:dsave) do |command|
       command.add_parameter(:path, :string) do |parameter|
         parameter.set_default { @dropboxpath }

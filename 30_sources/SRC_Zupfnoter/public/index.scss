@@ -2,6 +2,11 @@
 
 //@import "icons/fontello.css";
 
+
+.w2ui-tb-caption{
+  vertical-align: middle;
+}
+
 $toolbarHeight: 30px;
 $titleHeight: 2em;
 $consoleHeight: 50%;
@@ -13,7 +18,8 @@ $containerColor: white;
 body {
   font-family: Helvetica, Arial, sans-serif;
   background-color: $backgoundColor;
-  color: white;
+  color: green;
+  vertical-align: center;
 }
 
 .marked {

@@ -79,14 +79,18 @@ task :deploy => [:build] do
     cp f, "#{OUTFOLDER}/webserver/vendor/#{f}"
   }
 
-  #sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
+  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
 
 
   cp ZUPFNOTER_JS, "#{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS}"
   # todo:this is not dry - see buildDesktop
-  ["vendor/ace", "vendor/ace/snippets", "public/icons"].each do |d|
+  ["vendor/ace", "vendor/ace/snippets", "public/icons", "vendor/w2ui", "vendor/w2ui/dist"].each do |d|
     mkdir_p("#{OUTFOLDER}/webserver/#{d}")
   end
+
+  ['w2ui.min.css', 'w2ui.min.js'].each{|f| cp "../vendor/w2ui/dist/#{f}", "#{OUTFOLDER}/webserver/vendor/w2ui/dist/#{f}"  }
+
+
   cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
   cp "../vendor/ace/mode-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-abc.js"
