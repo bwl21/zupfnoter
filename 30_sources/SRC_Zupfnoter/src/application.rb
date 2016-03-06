@@ -1,12 +1,11 @@
 require 'opal'
 require 'opal-jquery'
 require 'vector2d'
-require 'math'
+#require 'math'
 
 require 'consolelogger'
 require 'harpnotes'
 require 'abc_to_harpnotes_factory'
-require 'abcjs_to_harpnotes'
 require 'abc2svg_to_harpnotes'
 
 require 'opal-raphael'

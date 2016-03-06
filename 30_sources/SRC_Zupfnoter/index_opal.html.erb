@@ -1,92 +1,203 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" style="height: 100%">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Zupfnoter</title>
-    <link rel="stylesheet" type="text/css" href="public/index.css"/>
-    <link rel="shortcut icon" href="public/icons/favicon.gif"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Zupfnoter</title>
+  <link rel="stylesheet" type="text/css" href="public/index.css"/>
+  <link rel="shortcut icon" href="public/icons/favicon.gif"/>
 
-    <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
-    <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
-    <script src="vendor/ace/ext-language_tools.js" type="application/javascript" charset="utf-8"></script>
-    <script src="vendor/abcjs_basic_1.11.zupfnoter-min.js" type="application/javascript"></script>
-    <script src="vendor/raphael.pan-zoom.min.js" type="application/javascript"></script>
-    <script src="vendor/musical.min.js" type="application/javascript"></script>
-    <script src="vendor/jqconsole.min.js" type="application/javascript"></script>
-    <script src="vendor/json_parse.js" type="application/javascript"></script>
+  <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
+  <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
+  <script src="vendor/ace/ext-language_tools.js" type="application/javascript" charset="utf-8"></script>
 
-    <!-- <script src="vendor/opal.min.js" type="application/javascript"></script>-->
-    <script src="vendor/jspdf.min.js" type="application/javascript"></script>
-    <script src="vendor/filesaver.js" type="application/javascript"></script>
-    <script src="vendor/jszip.min.js" type="application/javascript"></script>
-    <script src="vendor/dropbox.min.js" type="application/javascript"></script>
+  <script src="vendor/raphael-min.js" type="application/javascript"></script>
+  <script src="vendor/raphael.pan-zoom.min.js" type="application/javascript"></script>
 
-    <script src="vendor/abc2svg-1.js" type="application/javascript"></script>
-    <script src="vendor/abc2svg_play-1.js" type="application/javascript"></script>
-    <script src="vendor/abc2svg_midi-1.js" type="application/javascript"></script>
-    <script src="vendor/xml2abc-bw.js" type="application/javascript"></script>
+  <script src="vendor/musical.min.js" type="application/javascript"></script>
 
-    <%= javascript_include_tag 'application' %>
+  <script src="vendor/jqconsole.min.js" type="application/javascript"></script>
+  <script src="vendor/json_parse.js" type="application/javascript"></script><!-- to get better error messages -->
+
+  <!-- <script src="vendor/opal.min.js" type="application/javascript"></script>-->
+  <script src="vendor/jspdf.min.js" type="application/javascript"></script>
+  <script src="vendor/filesaver.js" type="application/javascript"></script>
+  <script src="vendor/jszip.min.js" type="application/javascript"></script>
+  <script src="vendor/dropbox.min.js" type="application/javascript"></script>
+
+  <script src="vendor/abc2svg-1.js" type="application/javascript"></script>
+  <script src="vendor/abc2svg_play-1.js" type="application/javascript"></script>
+  <script src="vendor/abc2svg_midi-1.js" type="application/javascript"></script>
+  <script src="vendor/xml2abc-bw.js" type="application/javascript"></script>
+
+
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="us2s6tq6bubk6xh"></script>
+
+  <link rel="stylesheet" type="text/css" href="vendor/w2ui/dist/w2ui.min.css"/>
+  <script type="text/javascript" src="vendor/w2ui/dist/w2ui.min.js"></script>
+
+  <%= javascript_include_tag 'application' %>
 </head>
 
-<body>
-<div id="toolbar">
-    <input style="display:none;" id="fileDialog" type="file" accept=".abc"></input>
-    <input style="display:none;" id="folderDialog" type="file" nwdirectory/>
-    <span class="head" id="lbZupfnoter">Zupfnoter</span>
-    <span class="text" id="tbStatus"></span>
-    <span class="button" id="tbPrintA4">print A4</i> </span>
-    <span class="button" id="tbPrintA3">print A3</i> </span>
-    <span class="button" id="tbRender"><i class="icon-brush-alt">render</i></span>
-    <span class="button" id="tbPlay"><i class="icon-play">play</i></span>
-</div>
-<div id="leftColumn">
-    <div id="abcEditorContainer" class="container">
-        <div class="body">
-            <div id="abcEditor" class="editor"></div>
-        </div>
-    </div>
-    <div id="consoleLog" class="container">
-        <div class="title rsh">
-            <span class="head">Console</span>
+<body style="height: 100%;">
+<div id="layout" style="height: 100%"></div>
+<script type="text/javascript">
+  function init_w2ui() {
 
-            <span class="button"><i class="icon-down-open-mini"></i></span>
-        </div>
-        <div class="body">
-            <div id="commandconsole"></div>
-        </div>
-    </div>
+    perspectives = {
+      'tb_perspective:Alle': function () {
+        w2ui['layout'].show('left', window.instant);
+        w2ui['layout'].hide('bottom', window.instant);
+        w2ui['layout'].show('main', window.instant);
+        w2ui['layout'].show('preview', window.instant);
+        w2ui['layout'].sizeTo('preview',"50%");
+      },
+      'tb_perspective:NotenEingabe': function () {
+        w2ui['layout'].show('left', window.instant);
+        w2ui['layout'].hide('bottom', window.instant);
+        w2ui['layout'].show('main', window.instant);
+        w2ui['layout'].hide('preview', window.instant);
+        w2ui['layout'].sizeTo('preview',"50%");
+      },
+      'tb_perspective:HarfenEingabe': function () {
+        w2ui['layout'].show('left', window.instant);
+        w2ui['layout'].hide('bottom', window.instant);
+        w2ui['layout'].hide('main', window.instant);
+        w2ui['layout'].show('preview', window.instant);
+        w2ui['layout'].sizeTo('preview',"100%");
+      },
+      'tb_perspective:Noten': function () {
+        w2ui['layout'].hide('left', window.instant);
+        w2ui['layout'].hide('bottom', window.instant);
+        w2ui['layout'].show('main', window.instant);
+        w2ui['layout'].hide('preview', window.instant);
+      },
+      'tb_perspective:Harfe': function () {
+        w2ui['layout'].hide('left', window.instant);
+        w2ui['layout'].hide('bottom', window.instant);
+        w2ui['layout'].hide('main', window.instant);
+        w2ui['layout'].show('preview', window.instant);
+        w2ui['layout'].sizeTo('preview',"100%");
+      },
+      'tb_view:0' : function(){uicontroller.$handle_command("view 0")},
+      'tb_view:1' : function(){uicontroller.$handle_command("view 1")},
+      'tb_view:2' : function(){uicontroller.$handle_command("view 2")},
+      'tb_view:3' : function(){uicontroller.$handle_command("view 3")},
 
-</div>
+      'tb_scale:groß' : function(){$("#harpPreview svg").attr('height', 1400)},
+      'tb_scale:mittel' : function(){$("#harpPreview svg").attr('height', 700)},
+      'tb_scale:klein' : function(){$("#harpPreview svg").attr('height', 300)},
 
-<div id="rightColumn">
-    <div id="tunePreviewContainer" class="container">
-        <div class="title">
-            <span class="head">Notes</span>
-            <span class="button"><i class="icon-down-open-mini"></i></span>
-        </div>
-        <div class="body" id="tunePreview">
-        </div>
-    </div>
-    <div id="harpPreviewContainer" class="container">
-        <div class="title rsh">
-            <span class="head">Harp</span>
-            <span class="button"><i class="icon-down-open-mini"></i></span>
-        </div>
-        <div class="body" id="harpPreview">
+      'tb_toggle_console': function(){w2ui['layout'].toggle('bottom', window.instant)},
+      'tb_choose': function(){uicontroller.$handle_command("dlogin full /");uicontroller.$handle_command("dchoose")},
+      'tb_save': function(){uicontroller.$handle_command("dsave")}
+    }
 
-        </div>
-    </div>
-</div>
+    $('#tb_harppreviewscale').change(function(event){debugger})
+    // $("#harpPreview svg").attr('height', 300)
 
-<div id="dragbar">&nbsp;</div>
+    var toolbar = {
+      id: 'toolbar',
+      name: 'toolbar',
+      items: [
+        {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span>'},
+        {type: 'html', html: '<div style="width:200px"/>'},
+        {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'w2ui-icon-columns', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'w2ui-icon-plus', hint: 'Save in dropbox'},
+        {type: 'html', html:'<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'},
+        {type: 'spacer'},
+        {type: 'button', id: 'tb_toggle_console', caption: 'Console', icon: 'w2ui-icon-check', hint: 'Toggelt console'},
 
-<%= begin
-      result = javascript_include_analytics()
-    rescue
-      result = "<!-- running in rackup server, no analytics -->"
-    end
-    result
-%>
+        {type: 'spacer'},
+        {
+          type: 'menu', id: 'tb_scale', caption: 'Skalierung', img: '', items: [
+          {text: 'groß'},
+          {text: 'mittel'},
+          {text: 'klein'}
+        ]
+        },
+        {
+          type: 'menu', id: 'tb_perspective', caption: 'Perspektive', img: '', items: [
+          {text: 'Alle', icon: 'icon-page'},
+          {text: 'NotenEingabe', icon: 'icon-page'},
+          {text: 'HarfenEingabe', icon: 'icon-page'},
+          {text: 'Noten', icon: 'icon-page'},
+          {text: 'Harfe', value: 'Item Three', icon: 'icon-page'}
+        ]
+        },
+        {type: 'break', id: 'break0'},
+        {
+          type: 'menu', id: 'tb_view', caption: 'Auszug', img: '', items: [
+          {text: '0', icon: 'icon-page'},
+          {text: '1', icon: 'icon-page'},
+          {text: '2', icon: 'icon-page'},
+          {text: '3', icon: 'icon-page'}
+        ]
+        },
+        {type: 'break'},
+        {type: 'button', id: 'tbRender', caption: 'Render', icon: 'w2ui-icon-reload', hint: 'aktualisiert Ausgabe'},
+        {type: 'button', id: 'tbPlay', caption: 'Play', icon: 'w2ui-icon-info', hint: 'spielt ab Auswahl'}
+      ],
+
+      onClick: function (event) {
+        if (perspectives[event.target]) {
+          perspectives[event.target]();
+        }
+        event.item.text = event.target;
+      }
+    }
+
+    $('#toolbar').w2toolbar(toolbar);
+
+    var pstyle = 'background-color: #F5F6F7; padding: 5px;';
+    $('#layout').w2layout({
+      name: 'layout',
+      panels: [
+        {type: 'top', id: 'foobar', size: 40, resizable: false, content: '', toolbar: toolbar, hidden:false},  // Toolbar
+        {
+          type: 'left',
+          size: '50%',
+          hidden: false,
+          resizable: true,
+          style: pstyle,
+          content: '<div id="abcEditor" style="height:100%;" ></div>'
+        },
+        {
+          type: 'main',
+          style: pstyle,
+          overflow: 'hidden',
+          content: '<div id="tunePreview"  style="height:100%;" ></div>'
+        },
+        {
+          type: 'preview',
+          size: '50%',
+          resizable: true,
+          hidden: false,
+          style: pstyle,
+          content: '<div id="harpPreview" style="height:100%"></div>'
+        },
+        {
+          type: 'right',
+          size: 200,
+          resizable: true,
+          hidden: true,
+          style: pstyle,
+          content: '<div id="configEditor"></div>'
+        },
+        {
+          type: 'bottom',
+          size: '10%',
+          resizable: true,
+          hidden: true,
+          style: pstyle,
+          content: '<div id="commandconsole"></div>'
+        }
+      ]
+
+    });
+    w2ui['layout'].refresh();
+  }
+</script>
+
+
 </body>
 </html>
