@@ -29267,7 +29267,7 @@ Opal.modules["version"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice;
 
   Opal.add_stubs(['$year', '$now']);
-  Opal.cdecl($scope, 'VERSION', "0.10.8.dev");
+  Opal.cdecl($scope, 'VERSION', "0.10.8");
   return Opal.cdecl($scope, 'COPYRIGHT', "©" + ($scope.get('Time').$now().$year()) + " http://www.bernhard-weichel.de/zupfnoterpage");
 };
 
