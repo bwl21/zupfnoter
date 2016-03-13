@@ -95,7 +95,7 @@ class Controller
     $log = ConsoleLogger.new(@console)
     $log.info ("Welcome to Zupfnoter #{VERSION}")
 
-    $conf = Confstack.new
+    $conf = Confstack.new(false)
     $conf.push(_init_conf)
     $log.debug($conf.get.to_json)
 
@@ -720,6 +720,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
          layout:
                       {
+                          grid:              false,
                           SHOW_SLUR:         false,
                           LINE_THIN:         0.1,
                           LINE_MEDIUM:       0.3,
@@ -784,10 +785,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
                           REST_TO_GLYPH:     {
                               # this basically determines the white background rectangel
+                              # [sizex, sizey], glyph, dot # note that sizex has no effect.
                               :err => [[2, 2], :rest_1, FALSE], # 1      1
-                              :d64 => [[1, 1], :rest_1, FALSE], # 1      1
-                              :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
-                              :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
+                              :d64 => [[0.5, 0.5], :rest_1, FALSE], # 1      1
+                              :d48 => [[0.3, 0.3], :rest_1, TRUE], # 1/2 *
+                              :d32 => [[0.3, 0.3], :rest_1, FALSE], # 1/2
                               :d24 => [[0.4, 1], :rest_4, TRUE], # 1/4 *
                               :d16 => [[0.4, 1], :rest_4, FALSE], # 1/4
                               :d12 => [[0.4, 1], :rest_8, TRUE], # 1/8 *
