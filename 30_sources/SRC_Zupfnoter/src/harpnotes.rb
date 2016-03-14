@@ -255,7 +255,7 @@ module Harpnotes
       # @param notes [Array of Note] The particular notes of the chord
       #
       def initialize(notes)
-        super
+        super()
         raise "Notes must be an array" unless notes.is_a? Array
 
         @notes = notes
@@ -311,7 +311,7 @@ module Harpnotes
       #
       # @return [Type] [description]
       def initialize(pitch, duration)
-        super
+        super()
         raise("trying to create a rest with undefined pitch") if pitch.nil?
 
         @pitch    = pitch
@@ -342,7 +342,7 @@ module Harpnotes
     #
     class MeasureStart < NonPlayable
       def initialize(companion)
-        super
+        super()
         self.companion = companion
         @visible       = companion.visible?
       end
@@ -355,7 +355,7 @@ module Harpnotes
       attr_reader :name
 
       def initialize(title)
-        super
+        super()
         @name = title
       end
     end
@@ -366,7 +366,7 @@ module Harpnotes
       # @param [Object] companion the note which is annotated
       # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
       def initialize(companion, annotation)
-        super
+        super()
         self.companion = companion
         @annotations   = annotation
       end
@@ -627,9 +627,12 @@ module Harpnotes
     # this represetns objects which can be visible
     class Drawable
 
+      attr_accessor :conf_key
+
       def initialize
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
+        @conf_key   = nil
       end
 
       def center
@@ -798,18 +801,19 @@ module Harpnotes
     #
     #
     class Annotation < Drawable
-      attr_reader :center, :text, :style, :origin
+      attr_reader :center, :text, :style, :origin, :conf_key
 
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
       # 
-      def initialize(center, text, style = :regular, origin = nil)
-        super
-        @center = center
-        @text   = text
-        @style  = style
-        @origin = origin
+      def initialize(center, text, style = :regular, origin = nil, conf_key=nil)
+        super()
+        @center   = center
+        @text     = text
+        @style    = style
+        @origin   = origin
+        @conf_key = conf_key
       end
     end
 
@@ -1168,8 +1172,8 @@ module Harpnotes
         legend_pos = [title_pos.first, title_pos.last + 7]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
 
-        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
-        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
+        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil, "extract.0.legend.pos")
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.0.legend.pos")
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
@@ -1183,12 +1187,12 @@ module Harpnotes
             verses = text.split("\n\n")
             lyrics[:versepos].each do |key, value|
               the_text = key.scan(/\d+/).map { |i| verses[i.to_i - 1] }.join("\n\n")
-              annotations << Harpnotes::Drawing::Annotation.new(value, the_text)
+              annotations << Harpnotes::Drawing::Annotation.new(value, the_text, nil, nil, "lyrics.versepos.#{key}")
             end
 
           else
             pos = lyrics[:pos]
-            annotations << Harpnotes::Drawing::Annotation.new(pos, text)
+            annotations << Harpnotes::Drawing::Annotation.new(pos, text, nil, nil, 'lyrics.pos')
           end
 
         end
@@ -1384,7 +1388,8 @@ module Harpnotes
 
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
-          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text)
+          # todo: add traceback for drag of notebound annoations
+          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, "notebound.annotation")
         end
 
 
