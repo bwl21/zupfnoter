@@ -437,6 +437,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       select_abc_object(harpnote.origin)
     end
 
+    @harpnote_preview_printer.on_drop do |info|
+       newcoords = info[:origin].zip(info[:delta]).map{|i| i.first + i.last}
+       report = "#{info[:config]}: #{newcoords}"
+       Element.find("#tbCoords").html(report)
+       $log.info(report)
+    end
     # setup tune preview
   end
 

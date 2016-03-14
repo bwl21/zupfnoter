@@ -56,6 +56,12 @@ module Harpnotes
       @on_select = block
     end
 
+    def on_drop(&block)
+      @paper.on_drop do |info|
+        block.call(Native(info))
+      end
+    end
+
 
     # remove all hightlights
     def unhighlight_all()
@@ -268,7 +274,7 @@ module Harpnotes
 
       # then we measure the result
       bbox = element.get_bbox()
-      $log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]} (#{__FILE__} #{__LINE__})))
+      #$log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]} (#{__FILE__} #{__LINE__})))
 
       dx = root.center.first - bbox[:x]
       dy = root.center.last - bbox[:y]
@@ -276,8 +282,10 @@ module Harpnotes
       # finally we transform the result
       translation ="s#{scalex},#{scaley}T#{dx},#{dy}"
       element.transform(translation)
+      @paper.draggable(element);
+      element.conf_key = root.conf_key
+      element.startpos = root.center
       element
-      #element.translate(0, element.get_bbox()[:height]/2 - style[:font_size])
 
     end
 
