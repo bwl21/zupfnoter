@@ -167,14 +167,14 @@ class Controller
 
       c.as_action do |args|
 
-        song_id = args[:id]
+        song_id    = args[:id]
         song_title = args[:title]
-        filename = song_title.gsub(/[^a-zA-Z0-9\-\_]/, "_")
+        filename   = song_title.gsub(/[^a-zA-Z0-9\-\_]/, "_")
         raise "no id specified" unless song_id
         raise "no title specified" unless song_title
 
         ## todo use erb for this
-        template = %Q{X:#{song_id}
+        template      = %Q{X:#{song_id}
 F:#{song_id}_#{filename}
 T:#{song_title}
 C:
@@ -221,18 +221,32 @@ C,
 
     end
 
-    @commands.add_command(:drop) do |command|
+    @commands.add_command(:conf) do |command|
+      command.undoable = false
 
-      command.set_help { "Load demo tune" }
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.add_parameter(:value, :boolean) do |parameter|
+        parameter.set_help { "parameter value (true | false" }
+      end
+
+
+      command.set_help { "set configuration parameter" }
 
       command.as_action do |args|
-        args[:oldval] = @editor.get_text
-        @editor.set_text(@dropped_abc)
+        value = {'true' => true, 'false' => false}[args[:value]]
+
+        raise "invalid key #{args[:key]}" unless $conf.keys.include?(args[:key])
+        raise "value must be true or false" if value.nil?
+        $conf[args[:key]] = value
+
+        nil
       end
 
       command.as_inverse do |args|
-        # todo maintain editor status
-        @editor.set_text(args[:oldval])
+        $conf.pop # todo: this is a bit risky
       end
 
     end
@@ -314,14 +328,14 @@ C,
       command.as_action do |args|
         case args[:scope]
           when "full"
-            @dropboxclient = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
+            @dropboxclient          = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
             @dropboxclient.app_name = "full Dropbox"
-            @dropboxpath = args[:path]
+            @dropboxpath            = args[:path]
 
           when "app"
-            @dropboxclient = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+            @dropboxclient          = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
             @dropboxclient.app_name = "App folder only"
-            @dropboxpath = args[:path]
+            @dropboxpath            = args[:path]
 
           else
             $log.error("select app | full")
@@ -371,9 +385,9 @@ C,
       command.set_help { "dropbox change dir to #{command.parameter_help(0)}" }
 
       command.as_action do |args|
-        rootpath = args[:path]
+        rootpath      = args[:path]
         args[:oldval] = @dropboxpath
-        @dropboxpath = rootpath
+        @dropboxpath  = rootpath
 
         set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
         $log.message("dropbox path changed to #{@dropboxpath}")
@@ -403,17 +417,17 @@ C,
       command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
-         @dropboxclient.choose_file({}).then do |files|
-           chosenfile = files.first[:link]
-           fileparts = chosenfile.match(/.*\/view\/[^\/]*\/(.*)\/(.*)/).to_a
-           path=fileparts[1]
-           filename=fileparts[2]
+        @dropboxclient.choose_file({}).then do |files|
+          chosenfile = files.first[:link]
+          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.*)\/(.*)/).to_a
+          path       =fileparts[1]
+          filename   =fileparts[2]
 
-           handle_command("dlogin full /#{path}/")
-           $log.message("found #{path} / #{filename}")
-           handle_command("dopen #{filename.split("_").first}")
-           $log.message("opened #{path} / #{filename}")
-         end
+          handle_command("dlogin full /#{path}/")
+          $log.message("found #{path} / #{filename}")
+          handle_command("dopen #{filename.split("_").first}")
+          $log.message("opened #{path} / #{filename}")
+        end
       end
     end
 
@@ -449,12 +463,13 @@ C,
         save_promises=[]
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
-          pdfs = {}
+          pdfs          = {}
           print_variants.map do |print_variant|
-            index = print_variant[:view_id]
-            filename = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
+            index                                                          = print_variant[:view_id]
+            filename                                                       = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
             pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a3.pdf"] = render_a3(index).output(:blob)
             pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a4.pdf"] = render_a4(index).output(:blob)
+            nil
           end
 
           pdfs.each do |name, pdfdata|
@@ -482,8 +497,8 @@ C,
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
-        fileid = args[:fileid]
-        rootpath = args[:path] # command_tokens[2] || @dropboxpath || "/"
+        fileid        = args[:fileid]
+        rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
         $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
 
         @dropboxclient.authenticate().then do |error, data|
