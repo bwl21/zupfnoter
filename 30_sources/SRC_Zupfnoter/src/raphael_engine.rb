@@ -133,7 +133,11 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
-      e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last)
+      if root.rect?
+        e = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last, 2 * root.size.first, 2 * root.size.last)
+      else
+        e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last)
+      end
       push_element(root.origin, e)
 
       e["fill"] = root.fill == :filled ? "black" : "white"
@@ -158,7 +162,7 @@ module Harpnotes
 
     def draw_glyph(root)
       center = [root.center.first, root.center.last]
-      size = [root.size.first, root.size.last] # size to be treated as radius
+      size = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
 
       #path_spec = "M#{center.first} #{center.last}"
       path_spec = path_to_raphael(root.glyph[:d])
