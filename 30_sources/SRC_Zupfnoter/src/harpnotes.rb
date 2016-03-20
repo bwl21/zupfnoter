@@ -1228,15 +1228,17 @@ module Harpnotes
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
         playables = voice.select { |c| c.is_a? Playable }
 
+        # uncomemnt this if you want to hide rests in voices without flowlines
+        playables.each{|c| c.visible=false if c.is_a? Pause and not show_options[:flowline]}
 
         res_playables = playables.map do |playable|
-          layout_playable(playable, beat_layout)
-        end.flatten
+           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
+        end.flatten.compact
 
 
         # layout the measures
 
-        res_measures  = voice.select { |c| c.is_a? MeasureStart }.map do |measure|
+        res_measures  = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
           layout_playable(measure, beat_layout)
         end
 

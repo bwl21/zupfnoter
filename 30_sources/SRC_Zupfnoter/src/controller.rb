@@ -211,7 +211,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
        "voices": [1,2,3,4],
        "flowlines": [1,3],
        "layoutlines": [1,2,3,4],
-       "lyrics": {"versepos": {"1,2,3,4,5,6" :[10,100]}},
+       "lyrics": {"versepos": {"1,2,3,4,5,6,7,8" :[10,100]}},
        "legend": {"pos": [310,175]},
        "notes":[
          {"pos": [340,10], "text": "Ich steh an deiner Krippen hier", "style": "strong"}

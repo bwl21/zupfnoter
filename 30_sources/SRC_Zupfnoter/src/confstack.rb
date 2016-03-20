@@ -133,7 +133,7 @@ class Confstack
     else
       result =_get_one(@confresult_flat, key)
       unless result
-        raise "confstack: key not available: #{key}" if result.nil? and not self.keys.include=(key)
+        raise "confstack: key not available: #{key}" if result.nil? and not self.keys.include?(key)
       end
     end
 
