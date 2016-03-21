@@ -341,6 +341,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       config = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
+      @editor.set_config_part(config)
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
       $log.error("#{error.first} at #{line_col}", line_col)
