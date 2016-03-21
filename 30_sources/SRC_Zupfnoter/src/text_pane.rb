@@ -33,8 +33,8 @@ module Harpnotes
         //                                          https://github.com/ajaxorg/ace/wiki/How-to-enable-Autocomplete-in-the-Ace-editor
 
       }
-      @editor = `editor`
-      @range = `ace.require('ace/range').Range`
+      @editor  = `editor`
+      @range   = `ace.require('ace/range').Range`
       @markers = []
     end
 
@@ -124,16 +124,24 @@ module Harpnotes
     # add new text to the editor
     # @param text the text to be set to the editor
     def set_text(text)
-      `self.editor.getSession().setValue(text)`
+      %x{
+         self.editor.getSession().setValue(text);
+      }
     end
 
-    #
+    # replace a text in the editor
+    # this is to maintain undo stack
+    # @param oldtext the text to be removed
+    # œparam newtext  the new tet to be entered
+    def replace_text(oldtext, newtext)
+      %x{self.editor.replace(#{newtext}, {needle: #{oldtext}}) }
+    end
 
     # @param [Array] annotations  array of {row: 1, text: "", type: "error" | "warning" | "info"}
     #                aguments defined by ace
     def set_annotations(annotations)
       editor_annotations = annotations.map do |annotation|
-        {row: annotation[:start_pos].first - 1, # annotations count on row 0
+        {row:  annotation[:start_pos].first - 1, # annotations count on row 0
          text: annotation[:text],
          type: annotation[:type]
         }
@@ -156,8 +164,8 @@ module Harpnotes
 
     def add_marker(annotation)
       marker_start = {row: annotation[:start_pos].first, col: annotation[:start_pos].last} # this is for eas of maintainability
-      marker_end = {row: annotation[:end_pos].first, col: annotation[:end_pos].last} # this is for eas of maintainability
-      id = %x{#{@editor}.getSession().addMarker(new #{@range}(#{marker_start[:row] - 1}, #{marker_start[:col] - 1},
+      marker_end   = {row: annotation[:end_pos].first, col: annotation[:end_pos].last} # this is for eas of maintainability
+      id           = %x{#{@editor}.getSession().addMarker(new #{@range}(#{marker_start[:row] - 1}, #{marker_start[:col] - 1},
                                                               #{marker_end[:row] - 1}, #{marker_end[:col] - 1}),
                                                "marked", "line", true)}
       # id = %x{#{@editor}.getSession().addMarker(new #{@range}(23, 3,
@@ -165,8 +173,8 @@ module Harpnotes
       #                                          "marked", "line", true)}
       @markers << {
           from: [marker_start[:row], marker_start[:col]],
-          to: [marker_end[:row], marker_end[:col]],
-          id: id
+          to:   [marker_end[:row], marker_end[:col]],
+          id:   id
       }
       nil
     end
@@ -192,19 +200,23 @@ module Harpnotes
     end
 
     def set_config_part(object)
-      options = { wrap:81, aligned:true, after_comma:1, after_colon_1:1, after_colon_n:1, before_colon_n:1 }
-      configjson = JSON.neat_generate(object, options)
-      newtext = %Q{#{get_abc_part}#{CONFIG_SEPARATOR}\n\n#{configjson}}
-      set_text(newtext)
+      options       = {wrap: 81, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1}
+      configjson    = JSON.neat_generate(object, options)
+      oldconfigpart = get_config_part
+      unless oldconfigpart.strip == configjson.strip
+        replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}" )
+        #newtext = %Q{#{get_abc_part}#{CONFIG_SEPARATOR}\n\n#{configjson}}
+        set_text(newtext)
+      end
     end
 
 
     # get the line and column of an error in the config part
     # @param [Numerical] charpos the position in the config part
     def get_config_position(charpos)
-      cp = charpos + (get_abc_part + CONFIG_SEPARATOR).length
-      lines = get_text[0, cp].split("\n")
-      line_no = lines.count
+      cp       = charpos + (get_abc_part + CONFIG_SEPARATOR).length
+      lines    = get_text[0, cp].split("\n")
+      line_no  = lines.count
       char_pos = lines.last.length()
       return line_no, char_pos
     end
