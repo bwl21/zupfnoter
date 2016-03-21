@@ -191,6 +191,14 @@ module Harpnotes
       get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
+    def set_config_part(object)
+      options = { wrap:81, aligned:true, after_comma:1, after_colon_1:1, after_colon_n:1, before_colon_n:1 }
+      configjson = JSON.neat_generate(object, options)
+      newtext = %Q{#{get_abc_part}#{CONFIG_SEPARATOR}\n\n#{configjson}}
+      set_text(newtext)
+    end
+
+
     # get the line and column of an error in the config part
     # @param [Numerical] charpos the position in the config part
     def get_config_position(charpos)
