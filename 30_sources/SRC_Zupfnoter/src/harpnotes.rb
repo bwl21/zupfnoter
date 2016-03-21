@@ -1017,17 +1017,17 @@ module Harpnotes
       #     emphasize: 5
       # }
       def layout_debug_grid()
-          the_options = {
-              size: 1,
-              emphasis: 10,
-              line: 0.02,
-              emphline: 0.2
-          }
+        the_options = {
+            size:     1,
+            emphasis: 10,
+            line:     0.02,
+            emphline: 0.2
+        }
 
         # we store this for performance reasons
-        gridsize = the_options[:size]
-        emphasis = the_options[:emphasis] * gridsize
-        sheetsize = [440, 330]
+        gridsize    = the_options[:size]
+        emphasis    = the_options[:emphasis] * gridsize
+        sheetsize   = [440, 330]
 
         result = [];
 
@@ -1062,7 +1062,7 @@ module Harpnotes
 
 
         debug_grid = [];
-        debug_grid = layout_debug_grid()  if $conf['layout.grid']
+        debug_grid = layout_debug_grid() if $conf['layout.grid']
 
         print_options = Confstack.new(false)
         print_options.push($conf.get("extract.0"))
@@ -1130,6 +1130,7 @@ module Harpnotes
         voice_elements  = music.voices.each_with_index.map { |v, index|
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
             layout_voice(v, compressed_beat_layout_proc,
+                         nonflowrest:   print_options[:nonflowrest],
                          flowline:      print_options[:flowlines].include?(index),
                          subflowline:   print_options[:subflowlines].include?(index),
                          jumpline:      print_options[:jumplines].include?(index),
@@ -1229,10 +1230,12 @@ module Harpnotes
         playables = voice.select { |c| c.is_a? Playable }
 
         # uncomemnt this if you want to hide rests in voices without flowlines
-        playables.each{|c| c.visible=false if c.is_a? Pause and not show_options[:flowline]}
+        unless show_options[:nonflowrest]
+          playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
+        end
 
         res_playables = playables.map do |playable|
-           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
+          layout_playable(playable, beat_layout) # unless playable.is_a? Pause
         end.flatten.compact
 
 

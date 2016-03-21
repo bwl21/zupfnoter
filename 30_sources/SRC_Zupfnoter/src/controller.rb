@@ -710,6 +710,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {pos: [320, 20]},
                  lyrics:       {pos: [320, 50]},
+                 nonflowrest:  false,
                  notes:        []
              },
              "1" => {
