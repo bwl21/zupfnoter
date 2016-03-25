@@ -141,6 +141,7 @@ module Raphael
     end
 
     def draggable(element)
+      #inspired by http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
       %x{
          var otransform = element.r.transform();
          var me = element.r,
@@ -150,7 +151,7 @@ module Raphael
           oy = 0,
           moveFnc = function(dx, dy) {
             scale = this.paper._viewBox[2] / this.paper.width ;
-            scale = 0.2; //0.025;
+         //   scale = 0.2; //0.025; don't know where this factor comes from
             lx = Math.round(scale * dx) + ox;
             ly = Math.round(scale * dy) + oy;
 
