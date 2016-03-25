@@ -255,7 +255,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_config_lyrics(config)
     new_lyrics = config['extract'].inject({}) do |r, element|
       lyrics = element.last['lyrics']
-      lyrics = lyrics['versepos'] if lyrics
+      lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
       if lyrics
         result           = lyrics.inject({}) do |ir, element|
           verses                = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
@@ -273,12 +273,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_notes(config)
     sheetnotes = config['extract'].inject({}) do |r, element|
       notes = element.last['notes']
-      if notes
+      if notes.is_a? Array ## in the old version notes was an array
         result           = notes.inject({}) do |ir, element|
           ir[(ir.count+1).to_s] = element
           ir
         end
-        r[element.first] = {'sheetnotes' => result}
+        r[element.first] = {'notes' => result}
       end
       r
     end
@@ -763,7 +763,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  legend:       {pos: [320, 20]},
                  lyrics:       {'1'=> {verses: [1], pos: [350,70]}},
                  nonflowrest:  false,
-                 sheetnotes:   {"1" => {"pos" => [320, 0], "text" => "", "style"=> "large"}},
+                 notes:   {"1" => {"pos" => [320, 0], "text" => "", "style"=> "large"}},
              },
              "1" => {
                  line_no: 2,

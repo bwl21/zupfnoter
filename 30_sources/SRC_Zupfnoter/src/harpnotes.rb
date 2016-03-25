@@ -1196,7 +1196,7 @@ module Harpnotes
         end
 
         #sheet based annotations
-        print_options[:sheetnotes].each do |k, note|
+        print_options[:notes].each do |k, note|
           #note is an array [center, text, style] todo: refactor this
           annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil, "extract.#{print_variant_nr}.sheetnotes.#{k}.pos")
         end

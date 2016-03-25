@@ -205,8 +205,6 @@ module Harpnotes
       oldconfigpart = get_config_part
       unless oldconfigpart.strip == configjson.strip
         replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}" )
-        #newtext = %Q{#{get_abc_part}#{CONFIG_SEPARATOR}\n\n#{configjson}}
-        set_text(newtext)
       end
     end
 
