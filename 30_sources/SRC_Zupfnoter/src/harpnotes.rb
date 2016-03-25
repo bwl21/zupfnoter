@@ -1173,8 +1173,8 @@ module Harpnotes
         legend_pos = [title_pos.first, title_pos.last + 7]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
 
-        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil, "extract.0.legend.pos")
-        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.0.legend.pos")
+        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil, "extract.#{print_variant_nr}.legend.pos")
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.#{print_variant_nr}.legend.pos")
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
@@ -1184,24 +1184,21 @@ module Harpnotes
         if lyric_text
           text = lyric_text.join("\n")
 
-          if lyrics[:versepos]
+          if lyrics
             verses = text.split("\n\n")
-            lyrics[:versepos].each do |key, value|
-              the_text = key.scan(/\d+/).map { |i| verses[i.to_i - 1] }.join("\n\n")
-              annotations << Harpnotes::Drawing::Annotation.new(value, the_text, nil, nil, "lyrics.versepos.#{key}")
+            lyrics.delete("versepos")
+            lyrics.each do |key, entry|
+              pos = entry[:pos]
+              the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
+              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil, "extract.#{print_variant_nr}.lyrics.#{key}.pos")
             end
-
-          else
-            pos = lyrics[:pos]
-            annotations << Harpnotes::Drawing::Annotation.new(pos, text, nil, nil, 'lyrics.pos')
           end
-
         end
 
         #sheet based annotations
-        print_options[:notes].each do |note|
+        print_options[:sheetnotes].each do |k, note|
           #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style])
+          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil, "extract.#{print_variant_nr}.sheetnotes.#{k}.pos")
         end
 
 

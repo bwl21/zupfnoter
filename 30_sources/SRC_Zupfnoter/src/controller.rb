@@ -95,7 +95,7 @@ class Controller
     $log = ConsoleLogger.new(@console)
     $log.info ("Welcome to Zupfnoter #{VERSION}")
 
-    $conf = Confstack.new(false)
+    $conf = Confstack.new()
     $conf.push(_init_conf)
     $log.debug($conf.get.to_json)
 
@@ -235,6 +235,57 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index))
   end
 
+
+  # migrate the configuration which is provided from textox
+  # this method is necesary to upgrade existing sheets
+  def migrate_config(config)
+    result=Confstack.new()
+    result.strict=false
+    result.push(config)
+
+    new_lyrics = migrate_config_lyrics(result)
+    result.push(new_lyrics)
+
+    sheetnotes = migrate_notes(result)
+    result.push(sheetnotes)
+
+    result.get()
+  end
+
+  def migrate_config_lyrics(config)
+    new_lyrics = config['extract'].inject({}) do |r, element|
+      lyrics = element.last['lyrics']
+      lyrics = lyrics['versepos'] if lyrics
+      if lyrics
+        result           = lyrics.inject({}) do |ir, element|
+          verses                = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
+          ir[(ir.count+1).to_s] = {"verses" => verses, "pos" => element.last}
+          ir
+        end
+        r[element.first] = {"lyrics" => result}
+      end
+      r
+    end
+
+    {"extract" => new_lyrics}
+  end
+
+  def migrate_notes(config)
+    sheetnotes = config['extract'].inject({}) do |r, element|
+      notes = element.last['notes']
+      if notes
+        result           = notes.inject({}) do |ir, element|
+          ir[(ir.count+1).to_s] = element
+          ir
+        end
+        r[element.first] = {'sheetnotes' => result}
+      end
+      r
+    end
+    {'extract' => sheetnotes}
+  end
+
+
   def play_abc(mode = :music_model)
     if @harpnote_player.is_playing?
       @harpnote_player.stop()
@@ -341,6 +392,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       config = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
+      config = migrate_config(config)
       @editor.set_config_part(config)
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
@@ -439,10 +491,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @harpnote_preview_printer.on_drop do |info|
-       newcoords = info[:origin].zip(info[:delta]).map{|i| i.first + i.last}
-       report = "#{info[:config]}: #{newcoords}"
-       Element.find("#tbCoords").html(report)
-       $log.info(report)
+      newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
+      report    = "#{info[:config]}: #{newcoords}"
+      Element.find("#tbCoords").html(report)
+      $log.info(report)
     end
     # setup tune preview
   end
@@ -709,9 +761,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  jumplines:    [1, 3],
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {pos: [320, 20]},
-                 lyrics:       {pos: [320, 50]},
+                 lyrics:       {'1'=> {verses: [1], pos: [350,70]}},
                  nonflowrest:  false,
-                 notes:        []
+                 sheetnotes:   {"1" => {"pos" => [320, 0], "text" => "", "style"=> "large"}},
              },
              "1" => {
                  line_no: 2,
