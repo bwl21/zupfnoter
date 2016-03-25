@@ -28,6 +28,7 @@ require 'json'
 
 class Confstack
 
+  attr_accessor :strict
   # @return [Confstack]
   def initialize(name = 'default')
     @callstack        = [] # to detect circular references
@@ -35,10 +36,11 @@ class Confstack
     @confresult_flat  = {} # the flattened stack (not the flattend parateres :-)
     @confresult_cache = {} # a cache for get to speedup lated binding
     @sourcestack      = [] # to store traceback information for pushes
+    @strict           = true # raise error on wrong key
     if name
-      @confstack_name   = "confstack__" + name
-      push({ 'confstack' => { 'env' => @confstack_name } })
-      push_from_env  # this is supports the case that the upper envrionmet has redefined confstac.env
+      @confstack_name = "confstack__" + name
+      push({'confstack' => {'env' => @confstack_name}})
+      push_from_env # this is supports the case that the upper envrionmet has redefined confstac.env
     end
     self
   end
@@ -74,10 +76,10 @@ class Confstack
   #
   # @param [Object] hash
   def push_to_env(hash={})
-    localstack = Confstack.new(false)  # false does not create an environment for local stack and avoids infinite loop
+    localstack = Confstack.new(false) # false does not create an environment for local stack and avoids infinite loop
     localstack.push(get_from_env)
     localstack.push(hash)
-    newpush   = localstack[]
+    newpush = localstack[]
 
     hash_json = newpush.to_json
 
@@ -127,12 +129,12 @@ class Confstack
   # it recursivly resolves lambdas in this for late bound dependendies
   # @param [String] key for example "a.b.c"
   # @param [Hash] options default: resolve => true
-  def get(key=nil, options={ :resolve => true })
+  def get(key=nil, options={:resolve => true})
     if key.nil?
       result = @confresult_flat
     else
       result =_get_one(@confresult_flat, key)
-      unless result
+      unless result && @strict
         raise "confstack: key not available: #{key}" if result.nil? and not self.keys.include?(key)
       end
     end
