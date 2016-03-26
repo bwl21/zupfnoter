@@ -1064,7 +1064,8 @@ module Harpnotes
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
 
-        print_options = Confstack.new(false)
+        print_options        = Confstack.new()
+        print_options.strict = false
         print_options.push($conf.get("extract.0"))
 
         # todo: remove this appraoch after migration
@@ -1188,7 +1189,7 @@ module Harpnotes
             verses = text.split("\n\n")
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
-              pos = entry[:pos]
+              pos      = entry[:pos]
               the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil, "extract.#{print_variant_nr}.lyrics.#{key}.pos")
             end
