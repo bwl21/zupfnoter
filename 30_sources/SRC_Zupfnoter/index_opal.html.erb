@@ -49,21 +49,21 @@
         w2ui['layout'].hide('bottom', window.instant);
         w2ui['layout'].show('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
-        w2ui['layout'].sizeTo('preview',"50%");
+        w2ui['layout'].sizeTo('preview', "50%");
       },
       'tb_perspective:NotenEingabe': function () {
         w2ui['layout'].show('left', window.instant);
         w2ui['layout'].hide('bottom', window.instant);
         w2ui['layout'].show('main', window.instant);
         w2ui['layout'].hide('preview', window.instant);
-        w2ui['layout'].sizeTo('preview',"50%");
+        w2ui['layout'].sizeTo('preview', "50%");
       },
       'tb_perspective:HarfenEingabe': function () {
         w2ui['layout'].show('left', window.instant);
         w2ui['layout'].hide('bottom', window.instant);
         w2ui['layout'].hide('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
-        w2ui['layout'].sizeTo('preview',"100%");
+        w2ui['layout'].sizeTo('preview', "100%");
       },
       'tb_perspective:Noten': function () {
         w2ui['layout'].hide('left', window.instant);
@@ -76,23 +76,55 @@
         w2ui['layout'].hide('bottom', window.instant);
         w2ui['layout'].hide('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
-        w2ui['layout'].sizeTo('preview',"100%");
+        w2ui['layout'].sizeTo('preview', "100%");
       },
-      'tb_view:0' : function(){uicontroller.$handle_command("view 0")},
-      'tb_view:1' : function(){uicontroller.$handle_command("view 1")},
-      'tb_view:2' : function(){uicontroller.$handle_command("view 2")},
-      'tb_view:3' : function(){uicontroller.$handle_command("view 3")},
+      'tb_view:0': function () {
+        uicontroller.$handle_command("view 0")
+      },
+      'tb_view:1': function () {
+        uicontroller.$handle_command("view 1")
+      },
+      'tb_view:2': function () {
+        uicontroller.$handle_command("view 2")
+      },
+      'tb_view:3': function () {
+        uicontroller.$handle_command("view 3")
+      },
 
-      'tb_scale:groß' : function(){$("#harpPreview svg").attr('height', 1400)},
-      'tb_scale:mittel' : function(){$("#harpPreview svg").attr('height', 700)},
-      'tb_scale:klein' : function(){$("#harpPreview svg").attr('height', 300)},
+      'tb_scale:groß': function () {
+        $("#harpPreview svg").attr('height', 1400)
+      },
+      'tb_scale:mittel': function () {
+        $("#harpPreview svg").attr('height', 700)
+      },
+      'tb_scale:klein': function () {
+        $("#harpPreview svg").attr('height', 300)
+      },
 
-      'tb_toggle_console': function(){w2ui['layout'].toggle('bottom', window.instant)},
-      'tb_choose': function(){uicontroller.$handle_command("dlogin full /");uicontroller.$handle_command("dchoose")},
-      'tb_save': function(){uicontroller.$handle_command("dsave")}
+      'tbPrintA3': function () {
+        url = uicontroller.$render_a3().$output('datauristring')
+        window.open(url)
+      },
+      'tbPrintA4': function () {
+        url = uicontroller.$render_a4().$output('datauristring')
+        window.open(url)
+      },
+
+      'tb_toggle_console': function () {
+        w2ui['layout'].toggle('bottom', window.instant)
+      },
+      'tb_choose': function () {
+        uicontroller.$handle_command("dlogin full /");
+        uicontroller.$handle_command("dchoose")
+      },
+      'tb_save': function () {
+        uicontroller.$handle_command("dsave")
+      }
     }
 
-    $('#tb_harppreviewscale').change(function(event){debugger})
+    $('#tb_harppreviewscale').change(function (event) {
+      debugger
+    })
     // $("#harpPreview svg").attr('height', 300)
 
     var toolbar = {
@@ -103,12 +135,22 @@
         {type: 'html', html: '<div style="width:200px"/>'},
         {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'w2ui-icon-columns', hint: 'Open in dropboxx'},
         {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'w2ui-icon-plus', hint: 'Save in dropbox'},
-        {type: 'html', html:'<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'},
-        {type: 'html', html:'<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbCoords" style="margin-top: 5px;"></span></div>'},
+        {
+          type: 'html',
+          html: '<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'
+        },
+        {
+          type: 'html',
+          html: '<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbCoords" style="margin-top: 5px;"></span></div>'
+        },
         {type: 'spacer'},
+        {type: 'break'},
+        {type: 'button', id: 'tbPrintA3', caption: 'A3', icon: 'w2ui-icon-columns', hint: 'Print PDF A3'},
+        {type: 'button', id: 'tbPrintA4', caption: 'A4', icon: 'w2ui-icon-columns', hint: 'Print PDF A4'},
+        {type: 'break'},
         {type: 'button', id: 'tb_toggle_console', caption: 'Console', icon: 'w2ui-icon-check', hint: 'Toggelt console'},
 
-        {type: 'spacer'},
+        {type: 'break'},
         {
           type: 'menu', id: 'tb_scale', caption: 'Skalierung', img: '', items: [
           {text: 'groß'},
@@ -153,7 +195,7 @@
     $('#layout').w2layout({
       name: 'layout',
       panels: [
-        {type: 'top', id: 'foobar', size: 40, resizable: false, content: '', toolbar: toolbar, hidden:false},  // Toolbar
+        {type: 'top', id: 'foobar', size: 40, resizable: false, content: '', toolbar: toolbar, hidden: false},  // Toolbar
         {
           type: 'left',
           size: '50%',
