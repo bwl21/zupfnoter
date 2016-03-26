@@ -95,7 +95,8 @@ class Controller
     $log = ConsoleLogger.new(@console)
     $log.info ("Welcome to Zupfnoter #{VERSION}")
 
-    $conf = Confstack.new()
+    $conf        = Confstack.new()
+    $conf.strict = false
     $conf.push(_init_conf)
     $log.debug($conf.get.to_json)
 
@@ -239,17 +240,30 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # migrate the configuration which is provided from textox
   # this method is necesary to upgrade existing sheets
   def migrate_config(config)
-    result=Confstack.new()
-    result.strict=false
+    result       = Confstack.new(false)
+    result.strict= false
     result.push(config)
 
-    new_lyrics = migrate_config_lyrics(result)
-    result.push(new_lyrics)
+    if config['extract']
+      new_lyrics = migrate_config_lyrics(result)
+      result.push(new_lyrics)
 
-    sheetnotes = migrate_notes(result)
-    result.push(sheetnotes)
+      sheetnotes = migrate_notes(result)
+      result.push(sheetnotes)
+    end
 
-    result.get()
+    migrate_config_cleanup(result.get)
+    #result.get
+  end
+
+  def migrate_config_cleanup(config)
+    if config['extract']
+      config['extract'].each do |k, element|
+        lyrics =  element['lyrics']
+        lyrics.delete('versepos') if lyrics
+      end
+    end
+    config
   end
 
   def migrate_config_lyrics(config)
@@ -761,9 +775,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  jumplines:    [1, 3],
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {pos: [320, 20]},
-                 lyrics:       {'1'=> {verses: [1], pos: [350,70]}},
+                 lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
-                 notes:   {"1" => {"pos" => [320, 0], "text" => "", "style"=> "large"}},
+                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
              },
              "1" => {
                  line_no: 2,
