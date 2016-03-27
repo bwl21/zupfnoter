@@ -111,8 +111,10 @@
       },
 
       'tb_toggle_console': function () {
-        w2ui['layout'].toggle('bottom', window.instant)
+        w2ui['layout'].toggle('bottom', window.instant);
+        uicontroller.editor.$resize();
       },
+
       'tb_choose': function () {
         uicontroller.$handle_command("dlogin full /");
         uicontroller.$handle_command("dchoose")
@@ -238,6 +240,9 @@
 
     });
     w2ui['layout'].refresh();
+    w2ui['layout'].onResize= function(event) {
+      uicontroller.editor.$resize();
+    };
   }
 </script>
 

@@ -199,6 +199,11 @@ module Harpnotes
       get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
+
+    def resize
+      `#{@editor}.resize()`
+    end
+
     def set_config_part(object)
       options       = {wrap: 81, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1}
       configjson    = JSON.neat_generate(object, options)
