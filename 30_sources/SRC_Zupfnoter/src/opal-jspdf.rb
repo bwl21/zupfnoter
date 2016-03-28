@@ -14,13 +14,14 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
 
 class JsPDF
 
-  attr_accessor :x_offset
+  attr_accessor :x_offset, :y_offset
 
   # @param orientation Symbol the page orientation, :p for portrait, :l for landscape
   # @param unit Symbol the unit of measurement, :mm (default), :pt, :cm, :in
   # @param format Symbol page format, :a3, :a4 (default), :a5, :letter, :legal
   def initialize(orientation = :p, unit = :mm, format = :a4)
     @x_offset     = 0
+    @y_offset     = 0
     @native_jspdf = `new jsPDF(orientation, unit, format)`
   end
 
@@ -79,8 +80,8 @@ class JsPDF
   end
 
   def text(x, y, text, flags=nil)
-    nx = apply_offset_to_x(x)
-    `#{@native_jspdf}.text(nx, y, text, flags)`
+    nx, ny = apply_offset_to_point([x, y])
+    `#{@native_jspdf}.text(#{nx}, #{ny}, #{text}, #{flags})`
   end
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
@@ -96,13 +97,13 @@ class JsPDF
   # @param [Numerical] x2 width
   # @param [Numerical] y2 height
   def rect(x1, y1, x2, y2, style = 'undefined')
-    nx1 = apply_offset_to_x(x1)
-    `#{@native_jspdf}.rect(#{nx1}, #{y1}, #{x2}, #{y2}, #{style})`
+    nx1, ny1 = apply_offset_to_point([x1, y1])
+    `#{@native_jspdf}.rect(#{nx1}, #{ny1}, #{x2}, #{y2}, #{style})`
   end
 
   def lines(lines, x, y, scale, style, close)
-    nx = apply_offset_to_x(x)
-    `#{@native_jspdf}.lines(lines, nx, y, scale, style, close)`
+    nx, ny = apply_offset_to_point([x, y])
+    `#{@native_jspdf}.lines(lines, #{nx}, #{ny}, scale, style, close)`
   end
 
   # @param type Symbol the output type as :datauristring, :datauri, :raw
@@ -116,12 +117,13 @@ class JsPDF
 
   def left_arrowhead(x, y)
     delta    = 1.0
-    x0       = apply_offset_to_x(x)
-    x1       = apply_offset_to_x(x + delta)
-    y_top    = y + delta/2.0
-    y_bottom = y - delta/2.0
+    nx, ny   = apply_offset_to_point([x, y])
+    x0       = nx
+    x1       = nx + delta
+    y_top    = ny + delta/2.0
+    y_bottom = ny - delta/2.0
 
-    `#{@native_jspdf}.triangle(x0, y, x1, y_top, x1, y_bottom, x0, y, 'FD')`
+    `#{@native_jspdf}.triangle(#{x0}, #{ny}, #{x1}, #{y_top}, #{x1}, #{y_bottom}, #{x0}, #{ny}, 'FD')`
   end
 
   def addPage()
@@ -131,10 +133,7 @@ class JsPDF
   private
 
   def apply_offset_to_point(point)
-    [point.first + @x_offset, point.last]
+    [point.first + @x_offset, point.last + @y_offset]
   end
 
-  def apply_offset_to_x(x)
-    x + @x_offset
-  end
 end
