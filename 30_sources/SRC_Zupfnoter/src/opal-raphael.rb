@@ -136,7 +136,7 @@ module Raphael
       `self.r.clear()`
     end
 
-    def on_drop(&block)
+    def on_annotation_drag_end(&block)
       @on_drop = block
     end
 

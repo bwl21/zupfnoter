@@ -209,7 +209,23 @@ module Harpnotes
       configjson    = JSON.neat_generate(object, options)
       oldconfigpart = get_config_part
       unless oldconfigpart.strip == configjson.strip
-        replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}" )
+        replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
+      end
+    end
+
+    def patch_config_part(key, object)
+      pconfig     = Confstack::Confstack.new(false)
+      config_part = get_config_part
+      begin
+        config      = %x{json_parse(#{config_part})}
+        config      = JSON.parse(config_part)
+        pconfig.push(config)
+        pconfig[key] = object
+        set_config_part(pconfig.get)
+      rescue Object => error
+        line_col = get_config_position(error.last)
+        $log.error("#{error.first} at #{line_col}", line_col)
+        set_annotations($log.annotations)
       end
     end
 

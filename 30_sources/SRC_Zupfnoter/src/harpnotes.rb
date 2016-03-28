@@ -1199,7 +1199,7 @@ module Harpnotes
         #sheet based annotations
         print_options[:notes].each do |k, note|
           #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil, "extract.#{print_variant_nr}.sheetnotes.#{k}.pos")
+          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil, "extract.#{print_variant_nr}.notes.#{k}.pos")
         end
 
 
@@ -1392,7 +1392,7 @@ module Harpnotes
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
           # todo: add traceback for drag of notebound annoations
-          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, "notebound.annotation")
+          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, nil)
         end
 
 

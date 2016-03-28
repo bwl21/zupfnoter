@@ -117,7 +117,7 @@ class Controller
     @commands    = CommandController::CommandStack.new
     self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
 
-    setup_ui
+    setup_harpnote_preview
 
     # initialize virgin zupfnoter
     load_demo_tune
@@ -259,7 +259,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_config_cleanup(config)
     if config['extract']
       config['extract'].each do |k, element|
-        lyrics =  element['lyrics']
+        lyrics = element['lyrics']
         lyrics.delete('versepos') if lyrics
       end
     end
@@ -495,8 +495,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   private
 
 
-  def setup_ui
-    # setup the harpnote prviewer
+  # setup the harpnote prviewer
+  def setup_harpnote_preview
 
     @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
     @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing such that we can draw in mm
@@ -504,15 +504,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       select_abc_object(harpnote.origin)
     end
 
-    @harpnote_preview_printer.on_drop do |info|
+    ## register handler for dragging annotations
+    @harpnote_preview_printer.on_annotation_drag_end do |info|
       newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
       report    = "#{info[:config]}: #{newcoords}"
+      if info[:config]
+        @editor.patch_config_part(info[:config], newcoords)
+      end
       Element.find("#tbCoords").html(report)
       $log.info(report)
     end
-    # setup tune preview
   end
 
+
+  # setup tune preview
   def setup_tune_preview
     # todo: remove
     # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement

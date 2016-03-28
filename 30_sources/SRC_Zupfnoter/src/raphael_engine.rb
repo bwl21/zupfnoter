@@ -56,8 +56,8 @@ module Harpnotes
       @on_select = block
     end
 
-    def on_drop(&block)
-      @paper.on_drop do |info|
+    def on_annotation_drag_end(&block)
+      @paper.on_annotation_drag_end do |info|
         block.call(Native(info))
       end
     end

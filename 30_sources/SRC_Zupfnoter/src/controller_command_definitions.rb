@@ -221,6 +221,20 @@ C,
 
     end
 
+    @commands.add_command(:drop) do |command|
+      command.set_help { "Handle a dropped _abc" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        @editor.set_text(@dropped_abc)
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+    end
+
     @commands.add_command(:conf) do |command|
       command.undoable = false
 
@@ -233,7 +247,7 @@ C,
       end
 
 
-      command.set_help { "set configuration parameter" }
+      command.set_help { "set configuration parameter true/false" }
 
       command.as_action do |args|
         value = {'true' => true, 'false' => false}[args[:value]]
@@ -248,7 +262,34 @@ C,
       command.as_inverse do |args|
         $conf.pop # todo: this is a bit risky
       end
+    end
 
+
+    @commands.add_command(:cconf) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.add_parameter(:value, :string) do |parameter|
+        parameter.set_help { "parameter value as JSON" }
+      end
+
+
+      command.set_help { "set configuration parameter" }
+
+      command.as_action do |args|
+        value = JSON.parse(args[:value])
+
+        @editor.patch_config_part(args[:key], value)
+
+        nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
     end
 
   end
