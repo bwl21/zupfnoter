@@ -75,6 +75,13 @@ module Harpnotes
     end
 
 
+    def clear_selection
+      %x{
+      #{@editor}.selection.clearSelection()
+      }
+    end
+
+
     #
     # Get the border of the current selection
     # todo: this might be not enough in case of multiple selectios.
@@ -204,12 +211,18 @@ module Harpnotes
       `#{@editor}.resize()`
     end
 
+
     def set_config_part(object)
-      options       = {wrap: 81, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1}
+      the_selection = get_selection_positions
+      options       = {wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
+                       explicit_sort: [[:produce, :layout, :annotations, :extract,
+                                        :title, :voices, :flowlines, :subflowliens, :synchlines, :jumplines, :layoutlines, :legend, :notes, :lyrics, :nonflowrest,
+                                        "0", "1", "2", "3", "4", "5", "6", :pos, :text, :style], []]}
       configjson    = JSON.neat_generate(object, options)
       oldconfigpart = get_config_part
       unless oldconfigpart.strip == configjson.strip
         replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
+        select_range_by_position(the_selection.first, the_selection.last)
       end
     end
 
@@ -217,8 +230,8 @@ module Harpnotes
       pconfig     = Confstack::Confstack.new(false)
       config_part = get_config_part
       begin
-        config      = %x{json_parse(#{config_part})}
-        config      = JSON.parse(config_part)
+        config = %x{json_parse(#{config_part})}
+        config = JSON.parse(config_part)
         pconfig.push(config)
         pconfig[key] = object
         set_config_part(pconfig.get)
