@@ -21,8 +21,8 @@ module Harpnotes
 
     def draw_in_segments(sheet)
       delta = -12.0 * X_SPACING # todo: 12.0 = number of strings per page
-      @pdf = JsPDF.new(:p, :mm, :a4)
-
+      @pdf = JsPDF.new(:p, :mm, [210, 287])
+      @pdf.y_offset = -5
       addpage = false
       (0..2).each do |i|
         draw_segment(30 + i * delta, sheet, addpage) # todo: 30 = initial offset
