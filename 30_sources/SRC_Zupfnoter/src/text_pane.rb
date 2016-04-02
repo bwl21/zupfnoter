@@ -169,6 +169,14 @@ module Harpnotes
       end
     end
 
+
+    def append_text(text)
+      %x{
+      #{@editor}.selection.moveCursorFileEnd();
+      #{@editor}.insert(#{text});
+      }
+    end
+
     def add_marker(annotation)
       marker_start = {row: annotation[:start_pos].first, col: annotation[:start_pos].last} # this is for eas of maintainability
       marker_end   = {row: annotation[:end_pos].first, col: annotation[:end_pos].last} # this is for eas of maintainability
@@ -219,6 +227,11 @@ module Harpnotes
                                         :title, :voices, :flowlines, :subflowliens, :synchlines, :jumplines, :layoutlines, :legend, :notes, :lyrics, :nonflowrest,
                                         "0", "1", "2", "3", "4", "5", "6", :pos, :text, :style], []]}
       configjson    = JSON.neat_generate(object, options)
+
+      unless  get_text.split(CONFIG_SEPARATOR)[1]
+        append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
+      end
+
       oldconfigpart = get_config_part
       unless oldconfigpart.strip == configjson.strip
         replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
