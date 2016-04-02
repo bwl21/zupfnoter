@@ -80,9 +80,14 @@ class Controller
 
   def initialize
 
+
     `init_w2ui();`
+    @update_sytemstatus_consumers = [
+        lambda{`update_sytemstatus_w2ui(#{@systemstatus.to_n})`}
+    ]
+
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
-    #
+
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
     @console.on_command do |cmd|
@@ -90,7 +95,7 @@ class Controller
       handle_command(cmd)
     end
 
-    @dropped_abc = "T: notihing droped yet"
+    @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
     $log.info ("Welcome to Zupfnoter #{VERSION}")
@@ -136,7 +141,6 @@ class Controller
   # this handles a command
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
-
     begin
       @commands.run_string(command)
     rescue Exception => e
@@ -147,7 +151,7 @@ class Controller
   # Save session to local store
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath].include?(key) }.to_json
     abc          = `localStorage.setItem('systemstatus', #{systemstatus});`
     abc          = @editor.get_text
     abc          = `localStorage.setItem('abc_data', abc);`
@@ -159,6 +163,9 @@ class Controller
     @editor.set_text(abc) unless abc.nil?
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
+    if @systemstatus[:dropboxapp]
+      handle_command("dlogin #{@systemstatus[:dropboxapp]} #{@systemstatus[:dropboxpath]}")
+    end
     nil
   end
 
@@ -481,14 +488,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     statusmessage=@systemstatus[:dropbox]
     if @systemstatus['music_model'] == 'changed'
-      Element.find("#tb_layout_top_toolbar_item_tb_save").css("background-color", "red")
+      Element.find("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
     else
-      Element.find("#tb_layout_top_toolbar_item_tb_save").css("background-color", "")
+      Element.find("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "")
     end
 
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    Element.find("#tbStatus").html(statusmessage)
+    @update_sytemstatus_consumers.each{|c|c.call(@sytemstatus)}
+    nil
   end
 
 
@@ -619,13 +627,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # toolbar events
     Element.find('#tb_layout_top_toolbar_item_tbRender').on(:click) { render_previews }
     Element.find("#tb_layout_top_toolbar_item_tbPlay").on(:click) { play_abc(:selection_ff) }
-    #Element.find('#tb_harppreviewscale').on(:change){|event|`debugger`; nil}
-
-    %x{w2ui['toolbar'].on('*', function (target, event) {
-       console.log(target);
-       console.log(event);
-      });
-    }
 
     Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
     Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
@@ -889,7 +890,7 @@ end
 
 Document.ready? do
   a = Controller.new
-  `uicontroller = a`
+  `uicontroller = #{a}`
   nil
 end
 

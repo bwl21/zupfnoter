@@ -371,11 +371,13 @@ C,
           when "full"
             @dropboxclient          = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
             @dropboxclient.app_name = "full Dropbox"
+            @dropboxclient.app_id   = "full"
             @dropboxpath            = args[:path]
 
           when "app"
             @dropboxclient          = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
             @dropboxclient.app_name = "App folder only"
+            @dropboxclient.app_id   = "app"
             @dropboxpath            = args[:path]
 
           else
@@ -383,7 +385,7 @@ C,
         end
 
         @dropboxclient.authenticate().then do
-          set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
+          set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
           $log.message("logged in at dropbox with #{args[:scope]} access")
         end
       end
@@ -555,6 +557,8 @@ C,
 
           @editor.set_text(abc_text)
           set_status(music_model: "loaded")
+          handle_command("render")
+
         end.fail do |err|
           $log.error("could not load file #{err}")
         end

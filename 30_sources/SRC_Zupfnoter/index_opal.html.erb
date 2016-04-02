@@ -33,14 +33,19 @@
   <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="us2s6tq6bubk6xh"></script>
 
   <link rel="stylesheet" type="text/css" href="vendor/w2ui/dist/w2ui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="vendor/font-awesome-4.5.0/css/font-awesome.min.css"/>
   <script type="text/javascript" src="vendor/w2ui/dist/w2ui.min.js"></script>
 
   <%= javascript_include_tag 'application' %>
 </head>
 
-<body style="height: 100%;">
+<body style="height: 100%;" onunload="check_undload()">
 <div id="layout" style="height: 100%"></div>
 <script type="text/javascript">
+
+  function check_unload(){
+    alert("hugo");
+  }
   function init_w2ui() {
 
     perspectives = {
@@ -124,19 +129,14 @@
       }
     }
 
-    $('#tb_harppreviewscale').change(function (event) {
-      debugger
-    })
-    // $("#harpPreview svg").attr('height', 300)
-
     var toolbar = {
       id: 'toolbar',
       name: 'toolbar',
       items: [
         {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span>'},
         {type: 'html', html: '<div style="width:200px"/>'},
-        {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'w2ui-icon-columns', hint: 'Open in dropboxx'},
-        {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'w2ui-icon-plus', hint: 'Save in dropbox'},
+        {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'fa fa-folder', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'fa fa-dropbox', hint: 'Save in dropbox'},
         {
           type: 'html',
           html: '<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'
@@ -147,21 +147,21 @@
         },
         {type: 'spacer'},
         {type: 'break'},
-        {type: 'button', id: 'tbPrintA3', caption: 'A3', icon: 'w2ui-icon-columns', hint: 'Print PDF A3'},
-        {type: 'button', id: 'tbPrintA4', caption: 'A4', icon: 'w2ui-icon-columns', hint: 'Print PDF A4'},
+        {type: 'button', id: 'tbPrintA3', caption: 'A3', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A3'},
+        {type: 'button', id: 'tbPrintA4', caption: 'A4', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A4'},
         {type: 'break'},
-        {type: 'button', id: 'tb_toggle_console', caption: 'Console', icon: 'w2ui-icon-check', hint: 'Toggelt console'},
+        {type: 'button', id: 'tb_toggle_console', caption: 'Console', icon: 'fa fa-terminal', hint: 'Toggelt console'},
 
         {type: 'break'},
         {
-          type: 'menu', id: 'tb_scale', caption: 'Skalierung', img: '', items: [
+          type: 'menu', id: 'tb_scale', caption: 'Skalierung', icon: 'fa fa-search-plus', items: [
           {text: 'groß'},
           {text: 'mittel'},
           {text: 'klein'}
         ]
         },
         {
-          type: 'menu', id: 'tb_perspective', caption: 'Perspektive', img: '', items: [
+          type: 'menu', id: 'tb_perspective', caption: 'Perspektive', icon: 'fa fa-binoculars', items: [
           {text: 'Alle', icon: 'icon-page'},
           {text: 'NotenEingabe', icon: 'icon-page'},
           {text: 'HarfenEingabe', icon: 'icon-page'},
@@ -171,7 +171,7 @@
         },
         {type: 'break', id: 'break0'},
         {
-          type: 'menu', id: 'tb_view', caption: 'Auszug', img: '', items: [
+          type: 'menu', id: 'tb_view', caption: 'Auszug', icon: 'fa fa-shopping-basket', items: [
           {text: '0', icon: 'icon-page'},
           {text: '1', icon: 'icon-page'},
           {text: '2', icon: 'icon-page'},
@@ -179,15 +179,15 @@
         ]
         },
         {type: 'break'},
-        {type: 'button', id: 'tbRender', caption: 'Render', icon: 'w2ui-icon-reload', hint: 'aktualisiert Ausgabe'},
-        {type: 'button', id: 'tbPlay', caption: 'Play', icon: 'w2ui-icon-info', hint: 'spielt ab Auswahl'}
+        {type: 'button', id: 'tbRender', caption: 'Render', icon: 'fa fa-refresh', hint: 'aktualisiert Ausgabe'},
+        {type: 'button', id: 'tbPlay', caption: 'Play', icon: 'fa fa-play-circle-o', hint: 'spielt ab Auswahl'}
       ],
 
       onClick: function (event) {
         if (perspectives[event.target]) {
           perspectives[event.target]();
+          event.item.text = event.target.split(":")[1]
         }
-        event.item.text = event.target;
       }
     }
 
@@ -243,7 +243,23 @@
     w2ui['layout'].onResize= function(event) {
       uicontroller.editor.$resize();
     };
+  };
+
+
+  function set_tbitem_caption(item, caption)
+  {
+    $("#tb_layout_top_toolbar_item_"+ item + " .w2ui-tb-caption").html(caption)
+    // w2ui['toolbar'].set('tb_view', {caption: "Hugo"})
+    // w2ui['toolbar'].refresh();
+
   }
+
+  function update_sytemstatus_w2ui(systemstatus){
+    $("#tbStatus").html(systemstatus.dropbox);
+    set_tbitem_caption('tb_view', systemstatus.view);
+  }
+
+
 </script>
 
 

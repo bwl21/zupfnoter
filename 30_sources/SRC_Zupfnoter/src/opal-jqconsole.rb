@@ -27,6 +27,10 @@ module JqConsole
     end
 
 
+    def set_focus
+      @jqconsole.Focus();
+    end
+
     # Save session to local store
     def save_to_localstorage
       history = Native(@jqconsole.GetHistory).last(15).to_json
