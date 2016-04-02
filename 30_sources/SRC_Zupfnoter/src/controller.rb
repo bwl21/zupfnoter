@@ -1,5 +1,4 @@
 # This is a wrapper class for local store
-
 class LocalStore
 
   def initialize(name)
@@ -71,6 +70,89 @@ class LocalStore
     `localStorage.setItem(dirkey, dir_json)`
   end
 
+end
+
+
+# migrate the configuration which is provided from textox
+class MigrateConfig
+  # this method is necesary to upgrade existing sheets
+  def migrate_config(config)
+    result       = Confstack.new(false)
+    result.strict= false
+    result.push(config)
+
+    if config['extract']
+      new_lyrics = migrate_config_lyrics(result)
+      result.push(new_lyrics)
+
+      sheetnotes = migrate_notes(result)
+      result.push(sheetnotes)
+
+      new_legend = migrate_config_legend(result)
+      result.push(new_legend)
+    end
+
+    migrate_config_cleanup(result.get)
+    #result.get
+  end
+
+  def migrate_config_cleanup(config)
+    if config['extract']
+      config['extract'].each do |k, element|
+        lyrics = element['lyrics']
+        lyrics.delete('versepos') if lyrics
+      end
+    end
+    config
+  end
+
+  def migrate_config_legend(config)
+    new_legend = config['extract'].inject({}) do |result, element|
+      legend = element.last['legend']
+      unless legend['spos'] # prevewnt loop
+        opos = legend["pos"]
+
+        result           = {"spos" => [opos.first, opos.last + 7], "pos" => opos}
+        result[element.first] = {"legend" => result}
+      end
+      result
+    end
+
+    {"extract" => new_legend}
+  end
+
+  def migrate_config_lyrics(config)
+    new_lyrics = config['extract'].inject({}) do |result, element|
+      lyrics = element.last['lyrics']
+      lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
+      if lyrics
+        result           = lyrics.inject({}) do |ir, element|
+          verses                = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
+          ir[(ir.count+1).to_s] = {"verses" => verses, "pos" => element.last}
+          ir
+        end
+        result[element.first] = {"lyrics" => result}
+      end
+      result
+    end
+
+    {"extract" => new_lyrics}
+  end
+
+  def migrate_notes(config)
+    sheetnotes = config['extract'].inject({}) do |result, element|
+      notes = element.last['notes']
+      if notes.is_a? Array ## in the old version notes was an array
+        result           = notes.inject({}) do |ir, element|
+          ir[(ir.count+1).to_s] = element
+          ir
+        end
+        result[element.first] = {'notes' => result}
+      end
+      result
+    end
+    {'extract' => sheetnotes}
+  end
 end
 
 
@@ -246,87 +328,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # migrate the configuration which is provided from textox
-  # this method is necesary to upgrade existing sheets
-  def migrate_config(config)
-    result       = Confstack.new(false)
-    result.strict= false
-    result.push(config)
-
-    if config['extract']
-      new_lyrics = migrate_config_lyrics(result)
-      result.push(new_lyrics)
-
-      sheetnotes = migrate_notes(result)
-      result.push(sheetnotes)
-
-      new_legend = migrate_config_legend(result)
-      result.push(new_legend)
-    end
-
-    migrate_config_cleanup(result.get)
-    #result.get
-  end
-
-  def migrate_config_cleanup(config)
-    if config['extract']
-      config['extract'].each do |k, element|
-        lyrics = element['lyrics']
-        lyrics.delete('versepos') if lyrics
-      end
-    end
-    config
-  end
-
-  def migrate_config_legend(config)
-    new_legend = config['extract'].inject({}) do |r, element|
-      legend = element.last['legend']
-      unless legend['spos'] # prevewnt loop
-        opos = legend["pos"]
-
-        result           = {"spos" => [opos.first, opos.last + 7], "pos" => opos}
-        r[element.first] = {"legend" => result}
-      end
-      r
-    end
-
-    {"extract" => new_legend}
-  end
-
-  def migrate_config_lyrics(config)
-    new_lyrics = config['extract'].inject({}) do |r, element|
-      lyrics = element.last['lyrics']
-      lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
-      if lyrics
-        result           = lyrics.inject({}) do |ir, element|
-          verses                = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
-          ir[(ir.count+1).to_s] = {"verses" => verses, "pos" => element.last}
-          ir
-        end
-        r[element.first] = {"lyrics" => result}
-      end
-      r
-    end
-
-    {"extract" => new_lyrics}
-  end
-
-  def migrate_notes(config)
-    sheetnotes = config['extract'].inject({}) do |r, element|
-      notes = element.last['notes']
-      if notes.is_a? Array ## in the old version notes was an array
-        result           = notes.inject({}) do |ir, element|
-          ir[(ir.count+1).to_s] = element
-          ir
-        end
-        r[element.first] = {'notes' => result}
-      end
-      r
-    end
-    {'extract' => sheetnotes}
-  end
-
-
   def play_abc(mode = :music_model)
     if @harpnote_player.is_playing?
       @harpnote_player.stop()
@@ -433,7 +434,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       config = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
-      config = migrate_config(config)
+      config = MigrateConfig.new.migrate_config(config)
       @editor.set_config_part(config)
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
