@@ -83,7 +83,7 @@ class Controller
 
     `init_w2ui();`
     @update_sytemstatus_consumers = [
-        lambda{`update_sytemstatus_w2ui(#{@systemstatus.to_n})`}
+        lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
     ]
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
@@ -257,6 +257,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       sheetnotes = migrate_notes(result)
       result.push(sheetnotes)
+
+      new_legend = migrate_config_legend(result)
+      result.push(new_legend)
     end
 
     migrate_config_cleanup(result.get)
@@ -271,6 +274,21 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
     end
     config
+  end
+
+  def migrate_config_legend(config)
+    new_legend = config['extract'].inject({}) do |r, element|
+      legend = element.last['legend']
+      unless legend['spos'] # prevewnt loop
+        opos = legend["pos"]
+
+        result           = {"spos" => [opos.first, opos.last + 7], "pos" => opos}
+        r[element.first] = {"legend" => result}
+      end
+      r
+    end
+
+    {"extract" => new_legend}
   end
 
   def migrate_config_lyrics(config)
@@ -495,7 +513,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    @update_sytemstatus_consumers.each{|c|c.call(@sytemstatus)}
+    @update_sytemstatus_consumers.each { |c| c.call(@sytemstatus) }
     nil
   end
 
@@ -780,7 +798,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  subflowlines: [2, 4],
                  jumplines:    [1, 3],
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {pos: [320, 20]},
+                 legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},

@@ -1171,11 +1171,11 @@ module Harpnotes
         print_variant_title = print_options[:title]
 
         title_pos  = print_options[:legend][:pos]
-        legend_pos = [title_pos.first, title_pos.last + 7]
+        legend_pos = print_options[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
-
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil, "extract.#{print_variant_nr}.legend.pos")
-        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.#{print_variant_nr}.legend.pos")
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.#{print_variant_nr}.legend.spos")
+
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
