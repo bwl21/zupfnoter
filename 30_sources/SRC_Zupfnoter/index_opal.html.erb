@@ -155,7 +155,7 @@
         {type: 'break'},
         {
           type: 'menu', id: 'tb_scale', caption: 'Skalierung', icon: 'fa fa-search-plus', items: [
-          {text: 'groß'},
+          {text: 'groß', icon: 'fa fa-search-plus'},
           {text: 'mittel'},
           {text: 'klein'}
         ]
@@ -249,7 +249,7 @@
   function set_tbitem_caption(item, caption)
   {
     $("#tb_layout_top_toolbar_item_"+ item + " .w2ui-tb-caption").html(caption)
-    // w2ui['toolbar'].set('tb_view', {caption: "Hugo"})
+    // w2ui['toolbar'].set(item, {text: caption});
     // w2ui['toolbar'].refresh();
 
   }
