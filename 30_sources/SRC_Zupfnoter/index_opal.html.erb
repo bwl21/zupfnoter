@@ -43,7 +43,7 @@
 <div id="layout" style="height: 100%"></div>
 <script type="text/javascript">
 
-  function check_unload(){
+  function check_unload() {
     alert("hugo");
   }
   function init_w2ui() {
@@ -135,8 +135,8 @@
       items: [
         {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span>'},
         {type: 'html', html: '<div style="width:200px"/>'},
-        {type: 'button', id: 'tb_choose', caption: 'Laden', icon: 'fa fa-folder', hint: 'Open in dropboxx'},
-        {type: 'button', id: 'tb_save', caption: 'speichern', icon: 'fa fa-dropbox', hint: 'Save in dropbox'},
+        {type: 'button', id: 'tb_choose', text: 'open', icon: 'fa fa-folder', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_save', text: 'save', icon: 'fa fa-dropbox', hint: 'Save in dropbox'},
         {
           type: 'html',
           html: '<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'
@@ -154,28 +154,28 @@
 
         {type: 'break'},
         {
-          type: 'menu', id: 'tb_scale', caption: 'Skalierung', icon: 'fa fa-search-plus', items: [
-          {text: 'groß', icon: 'fa fa-search-plus'},
-          {text: 'mittel'},
-          {text: 'klein'}
+          type: 'menu', id: 'tb_scale', text: 'Zoom', icon: 'fa fa-search-plus', items: [
+          {text: 'large', id: 'groß'},
+          {text: 'medium', id: 'mittel'},
+          {text: 'small', id: 'klein'}
         ]
         },
         {
-          type: 'menu', id: 'tb_perspective', caption: 'Perspektive', icon: 'fa fa-binoculars', items: [
-          {text: 'Alle', icon: 'icon-page'},
-          {text: 'NotenEingabe', icon: 'icon-page'},
-          {text: 'HarfenEingabe', icon: 'icon-page'},
-          {text: 'Noten', icon: 'icon-page'},
-          {text: 'Harfe', value: 'Item Three', icon: 'icon-page'}
+          type: 'menu', id: 'tb_perspective', text: 'Perspective', icon: 'fa fa-binoculars', items: [
+          {text: 'All', icon: 'fa fa-th', id: 'Alle'},
+          {text: 'Enter Notes', icon: 'fa fa-music', id: 'NotenEingabe'},
+          {text: 'Enter Harp', icon: 'fa fa-file-picture-o', id: 'HarfenEingabe'},
+          {text: 'Notes', icon: 'fa fa-music', id: 'Noten'},
+          {text: 'Harp', icon: 'fa fa-file-picture-o', id: 'Harfe'}
         ]
         },
         {type: 'break', id: 'break0'},
         {
-          type: 'menu', id: 'tb_view', caption: 'Auszug', icon: 'fa fa-shopping-basket', items: [
-          {text: '0', icon: 'icon-page'},
-          {text: '1', icon: 'icon-page'},
-          {text: '2', icon: 'icon-page'},
-          {text: '3', icon: 'icon-page'}
+          type: 'menu', id: 'tb_view', caption: 'Extract', icon: 'fa fa-shopping-basket', items: [
+          {text: 'Extract 0', icon: 'fa fa-tags', id: "0"},
+          {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
+          {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
+          {text: 'Extract 3', icon: 'fa fa-tags', id: "3"}
         ]
         },
         {type: 'break'},
@@ -184,9 +184,13 @@
       ],
 
       onClick: function (event) {
+        debugger;
         if (perspectives[event.target]) {
           perspectives[event.target]();
-          event.item.text = event.target.split(":")[1]
+          if (event.subItem) {
+            event.item.text = event.subItem.text
+          }
+
         }
       }
     }
@@ -240,21 +244,21 @@
 
     });
     w2ui['layout'].refresh();
-    w2ui['layout'].onResize= function(event) {
+    w2ui['layout'].onResize = function (event) {
       uicontroller.editor.$resize();
     };
-  };
+  }
+  ;
 
 
-  function set_tbitem_caption(item, caption)
-  {
-    $("#tb_layout_top_toolbar_item_"+ item + " .w2ui-tb-caption").html(caption)
+  function set_tbitem_caption(item, caption) {
+    $("#tb_layout_top_toolbar_item_" + item + " .w2ui-tb-caption").html(caption)
     // w2ui['toolbar'].set(item, {text: caption});
     // w2ui['toolbar'].refresh();
 
   }
 
-  function update_sytemstatus_w2ui(systemstatus){
+  function update_sytemstatus_w2ui(systemstatus) {
     $("#tbStatus").html(systemstatus.dropbox);
     set_tbitem_caption('tb_view', systemstatus.view);
   }
