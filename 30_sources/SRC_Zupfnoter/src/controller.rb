@@ -85,8 +85,8 @@ class Controller
     @update_sytemstatus_consumers = {systemstatus: [
                                                        lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
                                                    ],
-                                     play_start:   [ lambda {`update_play_w2ui('start')`}],
-                                     play_stop:    [ lambda {`update_play_w2ui('stop')`}]
+                                     play_start:   [lambda { `update_play_w2ui('start')` }],
+                                     play_stop:    [lambda { `update_play_w2ui('stop')` }]
     }
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
@@ -154,7 +154,7 @@ class Controller
   # Save session to local store
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
     abc          = `localStorage.setItem('systemstatus', #{systemstatus});`
     abc          = @editor.get_text
     abc          = `localStorage.setItem('abc_data', abc);`
@@ -335,9 +335,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def play_abc(mode = :music_model)
     if @harpnote_player.is_playing?
       @harpnote_player.stop()
-      @update_sytemstatus_consumers[:play_stop].each{|i| i.call()}
+      @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
     else
-      @update_sytemstatus_consumers[:play_start].each{|i| i.call()}
+      @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
       @harpnote_player.play_song() if mode == :music_model
       @harpnote_player.play_selection() if mode == :selection
       @harpnote_player.play_from_selection if mode == :selection_ff
@@ -346,7 +346,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    @update_sytemstatus_consumers[:play_stop].each{|i| i.call()}
+    @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
   end
 
 
@@ -502,23 +502,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     highlight_abc_object(abcelement)
   end
 
-
   def set_status(status)
     @systemstatus.merge!(status)
-    to_hide       = [:nwworkingdir]
-    statusmessage = @systemstatus.inject([]) { |r, v|
-      r.push "#{v.first}: #{v.last}  " unless to_hide.include?(v.first)
-      r
-    }.join(" | ")
-
-    # todo: move this to update_systemstatus ...
-    statusmessage = @systemstatus[:dropbox]
-    if @systemstatus['music_model'] == 'changed'
-      Element.find("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
-    else
-      Element.find("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "")
-    end
-
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
     @update_sytemstatus_consumers[:systemstatus].each { |c| c.call(@sytemstatus) }
@@ -650,13 +635,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # this registers the listeners to ui-elements.
   def setup_ui_listener
-
-    # toolbar events
-    Element.find('#tb_layout_top_toolbar_item_tbRender').on(:click) { render_previews }
-    Element.find("#tb_layout_top_toolbar_item_tbPlay").on(:click) { play_abc(:selection_ff) }
-
-    Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
-    Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
 
     # activate drop of files
     set_file_drop('layout');

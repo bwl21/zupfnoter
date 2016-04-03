@@ -94,13 +94,13 @@
       },
 
       'tb_scale:groß': function () {
-        $("#harpPreview svg").attr('height', 1400)
+        $("#harpPreview svg").attr('height', 1400);
       },
       'tb_scale:mittel': function () {
-        $("#harpPreview svg").attr('height', 700)
+        $("#harpPreview svg").attr('height', 700);
       },
       'tb_scale:klein': function () {
-        $("#harpPreview svg").attr('height', 300)
+        $("#harpPreview svg").attr('height', 300);
       },
 
       'tbPrintA3': function () {
@@ -110,6 +110,14 @@
       'tbPrintA4': function () {
         url = uicontroller.$render_a4().$output('datauristring')
         window.open(url)
+      },
+
+      'tbPlay': function () {
+        uicontroller.$play_abc('selection_ff');
+      },
+
+      'tbRender': function () {
+        uicontroller.$render_previews();
       },
 
       'tb_toggle_console': function () {
@@ -246,17 +254,22 @@
 
 
   function set_tbitem_caption(item, caption) {
-    w2ui.layout_top_toolbar.set('tb_view', {text: caption});
+    w2ui.layout_top_toolbar.set(item, {text: caption});
   }
 
   function update_sytemstatus_w2ui(systemstatus) {
     $("#tbStatus").html(systemstatus.dropbox);
     set_tbitem_caption('tb_view', systemstatus.view);
+    if (systemstatus.music_model == 'changed') {
+      $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
+    } else {
+      $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "")
+    }
   }
 
   function update_play_w2ui(status) {
     if (status == "start") {
-      w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon:  "fa fa-stop"})
+      w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon: "fa fa-stop"})
     }
     else {
       w2ui.layout_top_toolbar.set('tbPlay', {text: "Play", icon: "fa fa-play"})
