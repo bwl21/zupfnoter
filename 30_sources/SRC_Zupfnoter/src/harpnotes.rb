@@ -255,7 +255,7 @@ module Harpnotes
       # @param notes [Array of Note] The particular notes of the chord
       #
       def initialize(notes)
-        super
+        super()
         raise "Notes must be an array" unless notes.is_a? Array
 
         @notes = notes
@@ -311,7 +311,7 @@ module Harpnotes
       #
       # @return [Type] [description]
       def initialize(pitch, duration)
-        super
+        super()
         raise("trying to create a rest with undefined pitch") if pitch.nil?
 
         @pitch    = pitch
@@ -342,7 +342,7 @@ module Harpnotes
     #
     class MeasureStart < NonPlayable
       def initialize(companion)
-        super
+        super()
         self.companion = companion
         @visible       = companion.visible?
       end
@@ -355,7 +355,7 @@ module Harpnotes
       attr_reader :name
 
       def initialize(title)
-        super
+        super()
         @name = title
       end
     end
@@ -366,7 +366,7 @@ module Harpnotes
       # @param [Object] companion the note which is annotated
       # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
       def initialize(companion, annotation)
-        super
+        super()
         self.companion = companion
         @annotations   = annotation
       end
@@ -627,9 +627,12 @@ module Harpnotes
     # this represetns objects which can be visible
     class Drawable
 
+      attr_accessor :conf_key
+
       def initialize
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
+        @conf_key   = nil
       end
 
       def center
@@ -798,18 +801,19 @@ module Harpnotes
     #
     #
     class Annotation < Drawable
-      attr_reader :center, :text, :style, :origin
+      attr_reader :center, :text, :style, :origin, :conf_key
 
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
       # 
-      def initialize(center, text, style = :regular, origin = nil)
-        super
-        @center = center
-        @text   = text
-        @style  = style
-        @origin = origin
+      def initialize(center, text, style = :regular, origin = nil, conf_key=nil)
+        super()
+        @center   = center
+        @text     = text
+        @style    = style
+        @origin   = origin
+        @conf_key = conf_key
       end
     end
 
@@ -1013,17 +1017,17 @@ module Harpnotes
       #     emphasize: 5
       # }
       def layout_debug_grid()
-          the_options = {
-              size: 1,
-              emphasis: 10,
-              line: 0.02,
-              emphline: 0.2
-          }
+        the_options = {
+            size:     1,
+            emphasis: 10,
+            line:     0.02,
+            emphline: 0.2
+        }
 
         # we store this for performance reasons
-        gridsize = the_options[:size]
-        emphasis = the_options[:emphasis] * gridsize
-        sheetsize = [440, 330]
+        gridsize    = the_options[:size]
+        emphasis    = the_options[:emphasis] * gridsize
+        sheetsize   = [440, 330]
 
         result = [];
 
@@ -1058,9 +1062,10 @@ module Harpnotes
 
 
         debug_grid = [];
-        debug_grid = layout_debug_grid()  if $conf['layout.grid']
+        debug_grid = layout_debug_grid() if $conf['layout.grid']
 
-        print_options = Confstack.new(false)
+        print_options        = Confstack.new()
+        print_options.strict = false
         print_options.push($conf.get("extract.0"))
 
         # todo: remove this appraoch after migration
@@ -1126,6 +1131,7 @@ module Harpnotes
         voice_elements  = music.voices.each_with_index.map { |v, index|
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
             layout_voice(v, compressed_beat_layout_proc,
+                         nonflowrest:   print_options[:nonflowrest],
                          flowline:      print_options[:flowlines].include?(index),
                          subflowline:   print_options[:subflowlines].include?(index),
                          jumpline:      print_options[:jumplines].include?(index),
@@ -1165,11 +1171,11 @@ module Harpnotes
         print_variant_title = print_options[:title]
 
         title_pos  = print_options[:legend][:pos]
-        legend_pos = [title_pos.first, title_pos.last + 7]
+        legend_pos = print_options[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
+        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil, "extract.#{print_variant_nr}.legend.pos")
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.#{print_variant_nr}.legend.spos")
 
-        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large)
-        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular)
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
@@ -1179,24 +1185,21 @@ module Harpnotes
         if lyric_text
           text = lyric_text.join("\n")
 
-          if lyrics[:versepos]
+          if lyrics
             verses = text.split("\n\n")
-            lyrics[:versepos].each do |key, value|
-              the_text = key.scan(/\d+/).map { |i| verses[i.to_i - 1] }.join("\n\n")
-              annotations << Harpnotes::Drawing::Annotation.new(value, the_text)
+            lyrics.delete("versepos")
+            lyrics.each do |key, entry|
+              pos      = entry[:pos]
+              the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
+              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil, "extract.#{print_variant_nr}.lyrics.#{key}.pos")
             end
-
-          else
-            pos = lyrics[:pos]
-            annotations << Harpnotes::Drawing::Annotation.new(pos, text)
           end
-
         end
 
         #sheet based annotations
-        print_options[:notes].each do |note|
+        print_options[:notes].each do |k, note|
           #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style])
+          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil, "extract.#{print_variant_nr}.notes.#{k}.pos")
         end
 
 
@@ -1224,15 +1227,19 @@ module Harpnotes
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
         playables = voice.select { |c| c.is_a? Playable }
 
+        # uncomemnt this if you want to hide rests in voices without flowlines
+        unless show_options[:nonflowrest]
+          playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
+        end
 
         res_playables = playables.map do |playable|
-          layout_playable(playable, beat_layout)
-        end.flatten
+          layout_playable(playable, beat_layout) # unless playable.is_a? Pause
+        end.flatten.compact
 
 
         # layout the measures
 
-        res_measures  = voice.select { |c| c.is_a? MeasureStart }.map do |measure|
+        res_measures  = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
           layout_playable(measure, beat_layout)
         end
 
@@ -1384,7 +1391,8 @@ module Harpnotes
 
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
-          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text)
+          # todo: add traceback for drag of notebound annoations
+          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, nil)
         end
 
 

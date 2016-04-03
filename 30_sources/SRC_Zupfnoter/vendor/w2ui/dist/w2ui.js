@@ -29,6 +29,8 @@ var w2obj = w2obj || {}; // expose object to be able to overwrite default functi
 *   - $().w2date(), $().w2dateTime()
 * == 1.5
 *   - added message
+*   - w2utils.keyboard is removed
+*   - w2tag can be positioned with an array of valid values
 *
 ************************************************/
 
@@ -40,6 +42,7 @@ var w2utils = (function ($) {
             "locale"            : "en-us",
             "dateFormat"        : "m/d/yyyy",
             "timeFormat"        : "hh:mi pm",
+            "datetimeFormat"    : "m/d/yyyy|hh:mi pm",
             "currencyPrefix"    : "$",
             "currencySuffix"    : "",
             "currencyPrecision" : 2,
@@ -247,7 +250,7 @@ var w2utils = (function ($) {
     }
 
     function isDateTime (val, format, retDate) {
-        if (format == null) format = w2utils.settings.dateFormat + '|' + w2utils.settings.timeFormat;
+        if (format == null) format = w2utils.settings.datetimeFormat;
         var formats = format.split('|');
         if (typeof val.getUTCFullYear === 'function') { // date object
             if (retDate !== true) return true;
@@ -1241,6 +1244,8 @@ var w2utils = (function ($) {
         var pWidth  = parseInt($(where.box).width());
         var pHeight = parseInt($(where.box).height());
         var titleHeight = parseInt($(where.box).find(where.title).css('height') || 0);
+        if (options.width > pWidth) options.width = pWidth - 10;
+        if (options.height > pHeight - titleHeight) options.height = pHeight - 10 - titleHeight;
         options.originalWidth  = options.width;
         options.originalHeight = options.height;
         if (parseInt(options.width) < 0)   options.width  = pWidth + options.width;
@@ -1263,6 +1268,7 @@ var w2utils = (function ($) {
         var msgCount = $(where.box).find('.w2ui-message').length;
         // remove message
         if ($.trim(options.html) == '' && $.trim(options.body) == '' && $.trim(options.buttons) == '') {
+            if (msgCount == 0) return; // no messages at all
             var $msg = $(where.box).find('#w2ui-message'+ (msgCount-1));
             var options = $msg.data('options') || {};
             // before event
@@ -1274,7 +1280,9 @@ var w2utils = (function ($) {
                 'transform': 'translateY(-' + options.height + 'px)'
             }));
             if (msgCount == 1) {
-                if (this.unlock) this.unlock(150);
+                if (this.unlock) {
+                    if (where.param) this.unlock(where.param, 150); else this.unlock(150);
+                }
             } else {
                 $(where.box).find('#w2ui-message'+ (msgCount-2)).css('z-index', 1500);
             }
@@ -1309,7 +1317,11 @@ var w2utils = (function ($) {
                             (options.width  != null ? 'width: ' + options.width + 'px; left: ' + ((pWidth - options.width) / 2) + 'px;' : 'left: 10px; right: 10px;') +
                             (options.height != null ? 'height: ' + options.height + 'px;' : 'bottom: 6px;') +
                             w2utils.cssPrefix('transition', '.3s', true) + '"' +
-                            (options.hideOnClick === true ? 'onclick="'+ where.path +'.message();"' : '') + '>' +
+                            (options.hideOnClick === true
+                                ? where.param
+                                    ? 'onclick="'+ where.path +'.message(\''+ where.param +'\');"'
+                                    : 'onclick="'+ where.path +'.message();"'
+                                : '') + '>' +
                         '</div>');
             $(where.box).find('#w2ui-message'+ msgCount).data('options', options).data('prev_focus', $(':focus'));
             var display = $(where.box).find('#w2ui-message'+ msgCount).css('display');
@@ -1333,7 +1345,9 @@ var w2utils = (function ($) {
                     }));
                 }, 1);
                 // timer for lock
-                if (msgCount == 0 && this.lock) this.lock();
+                if (msgCount == 0 && this.lock) {
+                    if (where.param) this.lock(where.param); else this.lock();
+                }
                 setTimeout(function() {
                     // has to be on top of lock
                     $(where.box).find('#w2ui-message'+ msgCount).css(w2utils.cssPrefix({ 'transition': '0s' }));
@@ -1434,7 +1448,6 @@ var w2utils = (function ($) {
         if (String(navigator.userAgent).indexOf('MSIE') >= 0) tmp.scrollBarSize  = tmp.scrollBarSize / 2; // need this for IE9+
         return tmp.scrollBarSize;
     }
-
 
     function checkName (params, component) { // was w2checkNameParam
         if (!params || params.name == null) {
@@ -1628,7 +1641,7 @@ w2utils.formatters = {
     },
 
     'datetime': function (value, params) {
-        if (params == '') params = w2utils.settings.dateFormat + '|' + w2utils.settings.timeFormat;
+        if (params == '') params = w2utils.settings.datetimeFormat;
         if (value == null || value == 0) return '';
         var dt = w2utils.isDateTime(value, params, true);
         if (dt == '') dt = w2utils.isDate(value, params, true);
@@ -1646,7 +1659,7 @@ w2utils.formatters = {
     },
 
     'timestamp': function (value, params) {
-        if (params == '') params = w2utils.settings.dateFormat + '|' + w2utils.settings.timeFormat;
+        if (params == '') params = w2utils.settings.datetimeFormat;
         if (value == null || value == 0) return '';
         var dt = w2utils.isDateTime(value, params, true);
         if (dt == '') dt = w2utils.isDate(value, params, true);
@@ -1654,7 +1667,7 @@ w2utils.formatters = {
     },
 
     'gmt': function (value, params) {
-        if (params == '') params = w2utils.settings.dateFormat + '|' + w2utils.settings.timeFormat;
+        if (params == '') params = w2utils.settings.datetimeFormat;
         if (value == null || value == 0) return '';
         var dt = w2utils.isDateTime(value, params, true);
         if (dt == '') dt = w2utils.isDate(value, params, true);
@@ -1675,6 +1688,14 @@ w2utils.formatters = {
 
     'toggle': function (value, params) {
         return (value ? 'Yes' : '');
+    },
+
+	'password': function (value, params) {
+    	var ret = "";
+		for (var i=0; i < value.length; i++) {
+			ret += "*";
+		}
+		return ret;
     }
 };
 
@@ -1862,7 +1883,7 @@ w2utils.event = {
 
         function clearMarkedText(index, el) {
             while (el.innerHTML.indexOf('<span class="w2ui-marker">') != -1) {
-                el.innerHTML = el.innerHTML.replace(/\<span class=\"w2ui\-marker\"\>(.*)\<\/span\>/ig, '$1'); // unmark
+                el.innerHTML = el.innerHTML.replace(/\<span class=\"w2ui\-marker\"\>((.|\n|\r)*)\<\/span\>/ig, '$1'); // unmark
             }
         }
     };
@@ -2000,25 +2021,63 @@ w2utils.event = {
                 setTimeout(checkIfMoved, 100);
                 // monitor if moved
                 var posClass = 'w2ui-tag-right';
-                var posLeft  = parseInt($(el).offset().left + el.offsetWidth + (options.left ? options.left : 0));
-                var posTop   = parseInt($(el).offset().top + (options.top ? options.top : 0));
+                var posLeft  = parseInt(offset.left + el.offsetWidth + (options.left ? options.left : 0));
+                var posTop   = parseInt(offset.top + (options.top ? options.top : 0));
                 var tagBody  = $tags.find('.w2ui-tag-body');
                 var width    = tagBody[0].offsetWidth;
                 var height   = tagBody[0].offsetHeight;
                 if (options.position == 'top') {
                     posClass  = 'w2ui-tag-top';
-                    posLeft   = parseInt($(el).offset().left + (options.left ? options.left : 0)) - 14;
-                    posTop    = parseInt($(el).offset().top + (options.top ? options.top : 0)) - height - 10;
+                    posLeft   = parseInt(offset.left + (options.left ? options.left : 0)) - 14;
+                    posTop    = parseInt(offset.top + (options.top ? options.top : 0)) - height - 10;
                 }
-                if (options.position == 'bottom') {
+                else if (options.position == 'bottom') {
                     posClass  = 'w2ui-tag-bottom';
-                    posLeft   = parseInt($(el).offset().left + (options.left ? options.left : 0)) - 14;
-                    posTop    = parseInt($(el).offset().top + el.offsetHeight + (options.top ? options.top : 0)) + 10;
+                    posLeft   = parseInt(offset.left + (options.left ? options.left : 0)) - 14;
+                    posTop    = parseInt(offset.top + el.offsetHeight + (options.top ? options.top : 0)) + 10;
                 }
-                if (options.position == 'left') {
+                else if (options.position == 'left') {
                     posClass  = 'w2ui-tag-left';
-                    posLeft   = parseInt($(el).offset().left + (options.left ? options.left : 0)) - width - 20;
-                    posTop    = parseInt($(el).offset().top + (options.top ? options.top : 0));
+                    posLeft   = parseInt(offset.left + (options.left ? options.left : 0)) - width - 20;
+                    posTop    = parseInt(offset.top + (options.top ? options.top : 0));
+                }
+                else if (Array.isArray(options.position)) {
+                    // try to fit the tag on screen in the order defined in the array
+                    var maxWidth  = window.innerWidth;
+                    var maxHeight = window.innerHeight
+                    for( var i=0; i<options.position.length; i++ ){
+                        var pos = options.position[i];
+                        if(pos == 'right'){
+                            posClass = 'w2ui-tag-right';
+                            posLeft  = parseInt(offset.left + el.offsetWidth + (options.left ? options.left : 0));
+                            posTop   = parseInt(offset.top + (options.top ? options.top : 0));
+                            if(posLeft+width <= maxWidth) break;
+                        }
+                        else if(pos == 'left'){
+                            posClass  = 'w2ui-tag-left';
+                            posLeft   = parseInt(offset.left + (options.left ? options.left : 0)) - width - 20;
+                            posTop    = parseInt(offset.top + (options.top ? options.top : 0));
+                            if(posLeft >= 0) break;
+                        }
+                        else if(pos == 'top'){
+                            posClass  = 'w2ui-tag-top';
+                            posLeft   = parseInt(offset.left + (options.left ? options.left : 0)) - 14;
+                            posTop    = parseInt(offset.top + (options.top ? options.top : 0)) - height - 10;
+                            // check if tag fits on screen
+                            if(posLeft+width <= maxWidth && posTop >= 0) break;
+                        }
+                        else if(pos == 'bottom'){
+                            posClass  = 'w2ui-tag-bottom';
+                            posLeft   = parseInt(offset.left + (options.left ? options.left : 0)) - 14;
+                            posTop    = parseInt(offset.top + el.offsetHeight + (options.top ? options.top : 0)) + 10;
+                            if(posLeft+width <= maxWidth && posTop+height <= maxHeight) break;
+                        }
+                    }
+                    if (tagBody.data('posClass') !== posClass && skipTransition !== true) {
+                        tagBody.removeClass('w2ui-tag-right w2ui-tag-left w2ui-tag-top w2ui-tag-bottom')
+                            .addClass(posClass)
+                            .data('posClass', posClass);
+                    }
                 }
                 if ($tags.data('position') !== posLeft + 'x' + posTop && skipTransition !== true) {
                     $tags.css(w2utils.cssPrefix({ 'transition': '.2s' })).css({
@@ -2201,7 +2260,7 @@ w2utils.event = {
                         if ($div.css('overflow-y') != 'auto') $div.css('overflow-y', 'auto');
                     }, 10);
                 }
-                if (options.tmp.contentWidth) {
+                if (options.tmp.contentWidth && options.align != 'both') {
                     w = parseInt(options.tmp.contentWidth);
                     div2.width(w);
                     setTimeout(function () {
@@ -2214,26 +2273,27 @@ w2utils.event = {
                     }, 10);
                 }
                 // adjust position
-                var tmp = (w - 17) / 2;
                 var boxLeft  = options.left;
                 var boxWidth = options.width;
                 var tipLeft  = options.tipLeft;
                 // alignment
                 switch (options.align) {
                     case 'both':
-                        boxLeft = 17 + parseInt(options.left);
+                        boxLeft = 17;
                         if (options.width === 0) options.width = w2utils.getSize($(obj), 'width');
                         if (options.maxWidth && options.width > options.maxWidth) options.width = options.maxWidth;
                         break;
                     case 'left':
-                        boxLeft = 17 + parseInt(options.left);
+                        boxLeft = 17;
                         break;
                     case 'right':
-                        boxLeft = w2utils.getSize($(obj), 'width') - w + 14 + parseInt(options.left);
+                        boxLeft = w2utils.getSize($(obj), 'width') - w + 10;
                         tipLeft = w - 40;
                         break;
                 }
                 if (w === 30 && !boxWidth) boxWidth = 30; else boxWidth = (options.width ? options.width : 'auto');
+                var tmp = (w - 17) / 2;
+                if (boxWidth != 'auto') tmp = (boxWidth - 17) / 2;
                 if (tmp < 25) {
                     boxLeft = 25 - tmp;
                     tipLeft = Math.floor(tmp);
@@ -2414,17 +2474,19 @@ w2utils.event = {
             $.fn.w2menuDown = function (event, index) {
                 var $el  = $(event.target).parents('tr');
                 var tmp  = $el.find('.w2ui-icon');
-                var item = options.items[index];
-                item.checked = !item.checked;
-                if (item.checked) {
-                    if (options.type == 'radio') {
-                        tmp.parents('table').find('.w2ui-icon')
-                            .removeClass('w2ui-icon-check')
-                            .addClass('w2ui-icon-empty');
-                    }
-                    tmp.removeClass('w2ui-icon-empty').addClass('w2ui-icon-check');
-                } else if (options.type == 'check') {
-                    tmp.removeClass('w2ui-icon-check').addClass('w2ui-icon-empty');
+                if ((options.type == 'check') || (options.type == 'radio')) {
+                   var item = options.items[index];
+                   item.checked = !item.checked;
+                   if (item.checked) {
+                       if (options.type == 'radio') {
+                           tmp.parents('table').find('.w2ui-icon')
+                               .removeClass('w2ui-icon-check')
+                               .addClass('w2ui-icon-empty');
+                       }
+                       tmp.removeClass('w2ui-icon-empty').addClass('w2ui-icon-check');
+                   } else if (options.type == 'check') {
+                       tmp.removeClass('w2ui-icon-check').addClass('w2ui-icon-empty');
+                   }
                 }
                 // highlight record
                 $el.parent().find('tr').removeClass('w2ui-selected');
@@ -2569,7 +2631,7 @@ w2utils.event = {
                     if (img  == null) img  = null; // img might be undefined
                     if (icon == null) icon = null; // icon might be undefined
                 }
-                if (['radio', 'check'].indexOf(options.type) != -1 && icon == null) {
+                if (['radio', 'check'].indexOf(options.type) != -1) {
                     if (mitem.checked === true) icon = 'w2ui-icon-check'; else icon = 'w2ui-icon-empty';
                 }
                 if (mitem.hidden !== true) {
@@ -2864,6 +2926,10 @@ w2utils.event = {
 *   - grid.message
 *   - added noReset option to localSort()
 *   - onColumnSelect
+*   - need to update PHP example
+*   - added scrollToColumn(field)
+*   - textSearch: 'begins' (default), 'contains', 'is', ...
+*   - added refreshBody
 *
 ************************************************************************/
 
@@ -2909,8 +2975,8 @@ w2utils.event = {
             statusRecordID  : true,
             statusSelection : true,
             statusResponse  : true,
-            statusSort      : true,
-            statusSearch    : true,
+            statusSort      : false,
+            statusSearch    : false,
             recordTitles    : true,
             selectionBorder : true,
             skipRecords     : true
@@ -2933,6 +2999,7 @@ w2utils.event = {
         this.markSearch      = true;
         this.columnTooltip   = 'normal'; // can be normal, top, bottom, left, right
         this.disableCVS      = false;    // disable Column Virtual Scroll
+        this.textSearch      = 'begins'; // default search type for text
 
         this.total   = 0;     // server total
         this.limit   = 100;
@@ -3072,17 +3139,42 @@ w2utils.event = {
         },
 
         operators: { // for search fields
-            "text"    : ['is', 'begins', 'contains', 'ends'],
-            "number"  : ['is', 'between', 'less:less than', 'more:more than'],
-            "date"    : ['is', 'between', 'less:before', 'more:after'],
-            "list"    : ['is'],
-            "enum"    : ['in', 'not in']
+            "text"    : [['is'], ['begins'], ['contains'], ['ends']],
+            "number"  : [['is'], ['between'], ['less', 'less than'], ['more', 'more than']],
+            "date"    : [['is'], ['between'], ['less', 'before'], ['more', 'after']],
+            "list"    : [['is']],
+            "hex"     : [['is'], ['between']],
+            "enum"    : [['in'], ['not in']]
             // -- all posible
             // "text"    : ['is', 'begins', 'contains', 'ends'],
             // "number"  : ['is', 'between', 'less:less than', 'more:more than', 'null:is null', 'not null:is not null'],
             // "list"    : ['is', 'null:is null', 'not null:is not null'],
             // "enum"    : ['in', 'not in', 'null:is null', 'not null:is not null']
         },
+
+        operatorsMap: {
+            "text"         : "text",
+            "int"          : "number",
+            "float"        : "number",
+            "money"        : "number",
+            "currency"     : "number",
+            "percent"      : "number",
+            "hex"          : "hex",
+            "alphanumeric" : "number",
+            "color"        : "list",
+            "date"         : "date",
+            "time"         : "date",
+            "datetime"     : "date",
+            "list"         : "list",
+            "combo"        : "text",
+            "enum"         : "enum",
+            "file"         : "enum",
+            "select"       : "list",
+            "radio"        : "list",
+            "checkbox"     : "list",
+            "toggle"       : "list"
+        },
+
         // events
         onAdd              : null,
         onEdit             : null,
@@ -3138,8 +3230,12 @@ w2utils.event = {
             var url = (typeof this.url != 'object' ? this.url : this.url.get);
             if (!url) {
                 this.total = this.records.length;
-                this.localSort(false, !first);
+                this.localSort(false, true);
                 this.localSearch();
+                // do not call this.refresh(), this is unnecessary, heavy, and messes with the toolbar.
+                this.refreshBody();
+                this.resizeRecords();
+                return added;
             }
             this.refresh(); // ??  should it be reload?
             return added;
@@ -3246,7 +3342,7 @@ w2utils.event = {
             }
             var url = (typeof this.url != 'object' ? this.url : this.url.get);
             if (!url) {
-                this.localSort();
+                this.localSort(false, true);
                 this.localSearch();
             }
             this.refresh();
@@ -3451,7 +3547,7 @@ w2utils.event = {
             return null;
         },
 
-        localSort: function (silent, noReset) {
+        localSort: function (silent, noResetRefresh) {
             var url = (typeof this.url != 'object' ? this.url : this.url.get);
             if (url) {
                 console.log('ERROR: grid.localSort can only be used on local data source, grid.url should be empty.');
@@ -3463,8 +3559,9 @@ w2utils.event = {
             // process date fields
             obj.selectionSave();
             obj.prepareData();
-            if (!noReset)
+            if (!noResetRefresh) {
                 obj.reset();
+            }
             // process sortData
             for (var i = 0; i < this.sortData.length; i++) {
                 var column = this.getColumn(this.sortData[i].field);
@@ -3487,7 +3584,7 @@ w2utils.event = {
             });
             cleanupPaths();
 
-            obj.selectionRestore();
+            obj.selectionRestore(noResetRefresh);
             time = (new Date()).getTime() - time;
             if (silent !== true && obj.show.statusSort) {
                 setTimeout(function () {
@@ -3679,18 +3776,22 @@ w2utils.event = {
                     switch (sdata.operator) {
                     case 'is':
                         if (obj.parseField(rec, search.field) == sdata.value) fl++; // do not hide record
-                        // only increment "fl" once -> use "else if"
                         else if (search.type == 'date') {
                             var tmp  = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
                             var val1 = w2utils.formatDate(tmp, 'yyyy-mm-dd');
-                            var val2 = w2utils.formatDate(w2utils.isDate(val2, w2utils.settings.dateFormat, true),  'yyyy-mm-dd');
+                            var val2 = w2utils.formatDate(w2utils.isDate(val2, w2utils.settings.dateFormat, true), 'yyyy-mm-dd');
                             if (val1 == val2) fl++;
                         }
-                        // only increment "fl" once -> use "else if"
                         else if (search.type == 'time') {
                             var tmp  = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
                             var val1 = w2utils.formatTime(tmp, 'hh24:mi');
                             var val2 = w2utils.formatTime(val2, 'hh24:mi');
+                            if (val1 == val2) fl++;
+                        }
+                        else if (search.type == 'datetime') {
+                            var tmp  = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
+                            var val1 = w2utils.formatDateTime(tmp, 'yyyy-mm-dd|hh24:mm:ss');
+                            var val2 = w2utils.formatDateTime(w2utils.isDateTime(val2, w2utils.settings.datetimeFormat, true), 'yyyy-mm-dd|hh24:mm:ss');
                             if (val1 == val2) fl++;
                         }
                         break;
@@ -3698,19 +3799,26 @@ w2utils.event = {
                         if (['int', 'float', 'money', 'currency', 'percent'].indexOf(search.type) != -1) {
                             if (parseFloat(obj.parseField(rec, search.field)) >= parseFloat(val2) && parseFloat(obj.parseField(rec, search.field)) <= parseFloat(val3)) fl++;
                         }
-                        if (search.type == 'date') {
+                        else if (search.type == 'date') {
                             var val1 = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
                             var val2 = w2utils.isDate(val2, w2utils.settings.dateFormat, true);
                             var val3 = w2utils.isDate(val3, w2utils.settings.dateFormat, true);
                             if (val3 != null) val3 = new Date(val3.getTime() + 86400000); // 1 day
                             if (val1 >= val2 && val1 < val3) fl++;
                         }
-                        if (search.type == 'time') {
+                        else if (search.type == 'time') {
                             var val1 = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
                             var val2 = w2utils.isTime(val2, true);
                             var val3 = w2utils.isTime(val3, true);
                             val2 = (new Date()).setHours(val2.hours, val2.minutes, val2.seconds ? val2.seconds : 0, 0);
                             val3 = (new Date()).setHours(val3.hours, val3.minutes, val3.seconds ? val3.seconds : 0, 0);
+                            if (val1 >= val2 && val1 < val3) fl++;
+                        }
+                        else if (search.type == 'datetime') {
+                            var val1 = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
+                            var val2 = w2utils.isDateTime(val2, w2utils.settings.datetimeFormat, true);
+                            var val3 = w2utils.isDateTime(val3, w2utils.settings.datetimeFormat, true);
+                            if (val3) val3 = new Date(val3.getTime() + 86400000); // 1 day
                             if (val1 >= val2 && val1 < val3) fl++;
                         }
                         break;
@@ -3721,7 +3829,7 @@ w2utils.event = {
                         else if (search.type == 'date') {
                             var tmp  = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
                             var val1 = w2utils.formatDate(tmp, 'yyyy-mm-dd');
-                            var val2 = w2utils.formatDate(w2utils.isDate(val2, w2utils.settings.dateFormat, true),  'yyyy-mm-dd');
+                            var val2 = w2utils.formatDate(w2utils.isDate(val2, w2utils.settings.dateFormat, true), 'yyyy-mm-dd');
                             if (val1 <= val2) fl++;
                         }
                         else if (search.type == 'time') {
@@ -3729,6 +3837,12 @@ w2utils.event = {
                             var val1 = w2utils.formatTime(tmp, 'hh24:mi');
                             var val2 = w2utils.formatTime(val2, 'hh24:mi');
                             if (val1 <= val2) fl++;
+                        }
+                        else if (search.type == 'datetime') {
+                            var tmp  = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
+                            var val1 = w2utils.formatDateTime(tmp, 'yyyy-mm-dd|hh24:mm:ss');
+                            var val2 = w2utils.formatDateTime(w2utils.isDateTime(val2, w2utils.settings.datetimeFormat, true), 'yyyy-mm-dd|hh24:mm:ss');
+                            if ( (val1.length == val2.length) && (val1 <= val2) ) fl++;
                         }
                         break;
                     case 'more':
@@ -3738,7 +3852,7 @@ w2utils.event = {
                         else if (search.type == 'date') {
                             var tmp  = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
                             var val1 = w2utils.formatDate(tmp, 'yyyy-mm-dd');
-                            var val2 = w2utils.formatDate(w2utils.isDate(val2, w2utils.settings.dateFormat, true),  'yyyy-mm-dd');
+                            var val2 = w2utils.formatDate(w2utils.isDate(val2, w2utils.settings.dateFormat, true), 'yyyy-mm-dd');
                             if (val1 >= val2) fl++;
                         }
                         else if (search.type == 'time') {
@@ -3746,6 +3860,12 @@ w2utils.event = {
                             var val1 = w2utils.formatTime(tmp, 'hh24:mi');
                             var val2 = w2utils.formatTime(val2, 'hh24:mi');
                             if (val1 >= val2) fl++;
+                        }
+                        else if (search.type == 'datetime') {
+                            var tmp  = (obj.parseField(rec, search.field + '_') instanceof Date ? obj.parseField(rec, search.field + '_') : obj.parseField(rec, search.field));
+                            var val1 = w2utils.formatDateTime(tmp, 'yyyy-mm-dd|hh24:mm:ss');
+                            var val2 = w2utils.formatDateTime(w2utils.isDateTime(val2, w2utils.settings.datetimeFormat, true), 'yyyy-mm-dd|hh24:mm:ss');
+                            if ( (val1.length == val2.length) && (val1 >= val2) ) fl++;
                         }
                         break;
                     case 'in':
@@ -4529,15 +4649,16 @@ w2utils.event = {
                         if (this.searches.length > 0) {
                             for (var i = 0; i < this.searches.length; i++) {
                                 var search = this.searches[i];
-                                if (search.type == 'text' || (search.type == 'alphanumeric' && w2utils.isAlphaNumeric(value))
+                                if (    search.type == 'text' || (search.type == 'alphanumeric' && w2utils.isAlphaNumeric(value))
                                         || (search.type == 'int' && w2utils.isInt(value)) || (search.type == 'float' && w2utils.isFloat(value))
                                         || (search.type == 'percent' && w2utils.isFloat(value)) || (search.type == 'hex' && w2utils.isHex(value))
                                         || (search.type == 'currency' && w2utils.isMoney(value)) || (search.type == 'money' && w2utils.isMoney(value))
-                                        || (search.type == 'date' && w2utils.isDate(value)) ) {
+                                        || (search.type == 'date' && w2utils.isDate(value)) || (search.type == 'datetime' && w2utils.isDateTime(value))
+                                    ) {
                                     var tmp = {
                                         field    : search.field,
                                         type     : search.type,
-                                        operator : (search.operator != null ? search.operator : (search.type == 'text' ? 'begins' : 'is')),
+                                        operator : (search.operator != null ? search.operator : (search.type == 'text' ? this.textSearch : 'is')),
                                         value    : value
                                     };
                                     if ($.trim(value) != '') searchData.push(tmp);
@@ -4581,7 +4702,7 @@ w2utils.event = {
                                 var tmp = {
                                     field    : this.columns[i].field,
                                     type     : 'text',
-                                    operator : 'begins',
+                                    operator : this.textSearch,
                                     value    : value
                                 };
                                 searchData.push(tmp);
@@ -4593,9 +4714,9 @@ w2utils.event = {
                         if (search == null) search = { field: field, type: 'text' };
                         if (search.field == field) this.last.caption = search.caption;
                         if (value !== '') {
-                            var op  = 'begins';
+                            var op  = this.textSearch;
                             var val = value;
-                            if (['date', 'time'].indexOf(search.type) != -1) op = 'is';
+                            if (['date', 'time', 'datetime'].indexOf(search.type) != -1) op = 'is';
                             if (['list', 'enum'].indexOf(search.type) != -1) {
                                 op = 'is';
                                 var tmp = el.data('selected');
@@ -4802,7 +4923,7 @@ w2utils.event = {
                 var st = search.type;
                 if (['enum', 'select'].indexOf(st) != -1) st = 'list';
                 el.w2field(st, $.extend({}, search.options, { suffix: '', autoFormat: false, selected: value }));
-                if (['list', 'enum', 'date', 'time'].indexOf(search.type) != -1) {
+                if (['list', 'enum', 'date', 'time', 'datetime'].indexOf(search.type) != -1) {
                     this.last.search = '';
                     this.last.item   = '';
                     el.val('');
@@ -6609,8 +6730,11 @@ w2utils.event = {
             // if local
             var url = (typeof this.url != 'object' ? this.url : this.url.get);
             if (!url) {
-                this.localSort();
+                this.localSort(true, true);
                 if (this.searchData.length > 0) this.localSearch(true);
+                // reset vertical scroll
+                this.last.scrollTop = 0;
+                $('#grid_'+ this.name +'_records').prop('scrollTop',  0);
                 // event after
                 this.trigger($.extend(edata, { phase: 'after' }));
                 this.refresh();
@@ -6932,43 +7056,9 @@ w2utils.event = {
                 el.val(val);
             }
 
-            // -- separate summary
-            var tmp = this.find({ 'w2ui.summary': true }, true);
-            if (tmp.length > 0) {
-                this.summary = [];
-                for (var t = 0; t < tmp.length; t++) this.summary.push(this.records[tmp[t]]);
-                for (var t = tmp.length-1; t >= 0; t--) this.records.splice(tmp[t], 1);
-            }
-
             // -- body
-            obj.scroll(); // need to calculate virtual scolling for columns
-            var recHTML  = this.getRecordsHTML();
-            var colHTML  = this.getColumnsHTML();
-            var bodyHTML =
-                '<div id="grid_'+ this.name +'_frecords" class="w2ui-grid-frecords" style="margin-bottom: '+ (w2utils.scrollBarSize() - 1) +'px;">'+
-                    recHTML[0] +
-                '</div>'+
-                '<div id="grid_'+ this.name +'_records" class="w2ui-grid-records" onscroll="w2ui[\''+ this.name +'\'].scroll(event);">' +
-                    recHTML[1] +
-                '</div>'+
-                '<div id="grid_'+ this.name +'_scroll1" class="w2ui-grid-scroll1" style="height: '+ w2utils.scrollBarSize() +'px"></div>'+
-                // Columns need to be after to be able to overlap
-                '<div id="grid_'+ this.name +'_fcolumns" class="w2ui-grid-fcolumns">'+
-                '    <table><tbody>'+ colHTML[0] +'</tbody></table>'+
-                '</div>'+
-                '<div id="grid_'+ this.name +'_columns" class="w2ui-grid-columns">'+
-                '    <table><tbody>'+ colHTML[1] +'</tbody></table>'+
-                '</div>';
-            $('#grid_'+ this.name +'_body').html(bodyHTML);
-            // show summary records
-            if (this.summary.length > 0) {
-                var sumHTML = this.getSummaryHTML();
-                $('#grid_'+ this.name +'_fsummary').html(sumHTML[0]).show();
-                $('#grid_'+ this.name +'_summary').html(sumHTML[1]).show();
-            } else {
-                $('#grid_'+ this.name +'_fsummary').hide();
-                $('#grid_'+ this.name +'_summary').hide();
-            }
+            obj.refreshBody();
+
             // -- footer
             if (this.show.footer) {
                 $('#grid_'+ this.name +'_footer').html(this.getFooterHTML()).show();
@@ -7033,6 +7123,46 @@ w2utils.event = {
                 obj.last.columnDrag.remove();
             }
             return (new Date()).getTime() - time;
+        },
+
+        refreshBody: function () {
+            // -- separate summary
+            var tmp = this.find({ 'w2ui.summary': true }, true);
+            if (tmp.length > 0) {
+                this.summary = [];
+                for (var t = 0; t < tmp.length; t++) this.summary.push(this.records[tmp[t]]);
+                for (var t = tmp.length-1; t >= 0; t--) this.records.splice(tmp[t], 1);
+            }
+
+            // -- body
+            this.scroll(); // need to calculate virtual scolling for columns
+            var recHTML  = this.getRecordsHTML();
+            var colHTML  = this.getColumnsHTML();
+            var bodyHTML =
+                '<div id="grid_'+ this.name +'_frecords" class="w2ui-grid-frecords" style="margin-bottom: '+ (w2utils.scrollBarSize() - 1) +'px;">'+
+                    recHTML[0] +
+                '</div>'+
+                '<div id="grid_'+ this.name +'_records" class="w2ui-grid-records" onscroll="w2ui[\''+ this.name +'\'].scroll(event);">' +
+                    recHTML[1] +
+                '</div>'+
+                '<div id="grid_'+ this.name +'_scroll1" class="w2ui-grid-scroll1" style="height: '+ w2utils.scrollBarSize() +'px"></div>'+
+                // Columns need to be after to be able to overlap
+                '<div id="grid_'+ this.name +'_fcolumns" class="w2ui-grid-fcolumns">'+
+                '    <table><tbody>'+ colHTML[0] +'</tbody></table>'+
+                '</div>'+
+                '<div id="grid_'+ this.name +'_columns" class="w2ui-grid-columns">'+
+                '    <table><tbody>'+ colHTML[1] +'</tbody></table>'+
+                '</div>';
+            $('#grid_'+ this.name +'_body').html(bodyHTML);
+            // show summary records
+            if (this.summary.length > 0) {
+                var sumHTML = this.getSummaryHTML();
+                $('#grid_'+ this.name +'_fsummary').html(sumHTML[0]).show();
+                $('#grid_'+ this.name +'_summary').html(sumHTML[1]).show();
+            } else {
+                $('#grid_'+ this.name +'_fsummary').hide();
+                $('#grid_'+ this.name +'_summary').hide();
+            }
         },
 
         render: function (box) {
@@ -7165,9 +7295,9 @@ w2utils.event = {
                     }
                     var tmps = false;
                     while (tmp) {
-                        if (tmp.classList.contains('w2ui-grid')) break;
-                        if (tmp.tagName.toUpperCase() == 'TD') tmps = true;
-                        if (tmp.tagName.toUpperCase() != 'TR' && tmps == true) {
+                        if (tmp.classList && tmp.classList.contains('w2ui-grid')) break;
+                        if (tmp.tagName && tmp.tagName.toUpperCase() == 'TD') tmps = true;
+                        if (tmp.tagName && tmp.tagName.toUpperCase() != 'TR' && tmps == true) {
                             pos.x += tmp.offsetLeft;
                             pos.y += tmp.offsetTop;
                         }
@@ -7809,6 +7939,28 @@ w2utils.event = {
             this.trigger($.extend(edata, { phase: 'after' }));
         },
 
+        scrollToColumn: function (field) {
+            if (field == null)
+                return;
+            var sWidth = 0;
+            var found = false;
+            for (var i = 0; i < this.columns.length; i++) {
+                var col = this.columns[i];
+                if (col.field == field) {
+                    found = true;
+                    break;
+                }
+                if (col.frozen || col.hidden)
+                    continue;
+                var cSize = parseInt(col.sizeCalculated ? col.sizeCalculated : col.size);
+                sWidth += cSize;
+            }
+            if (!found)
+                return;
+            this.last.scrollLeft = sWidth+1;
+            this.scroll();
+        },
+
         initToolbar: function () {
             var obj = this;
             // -- if toolbar is true
@@ -8324,8 +8476,8 @@ w2utils.event = {
                         if (ind == 'start') {
                             var width = 0;
                             for (var i = 0; i < obj.last.colStart; i++) {
-                                if (obj.columns[i].frozen || obj.columns[i].hidden) continue;
-                                width += obj.columns[i] ? parseInt(obj.columns[i].sizeCalculated) : 0;
+                                if (!obj.columns[i] || obj.columns[i].frozen || obj.columns[i].hidden) continue;
+                                width += parseInt(obj.columns[i].sizeCalculated);
                             }
                             $(el).css('width', width + 'px');
                         }
@@ -8336,8 +8488,8 @@ w2utils.event = {
                         if (obj.last.colEnd + 1 < obj.columns.length) {
                             var width = 0;
                             for (var i = obj.last.colEnd + 1; i < obj.columns.length; i++) {
-                                if (obj.columns[i].frozen || obj.columns[i].hidden) continue;
-                                width += obj.columns[i] ? parseInt(obj.columns[i].sizeCalculated) : 0;
+                                if (!obj.columns[i] || obj.columns[i].frozen || obj.columns[i].hidden) continue;
+                                width += parseInt(obj.columns[i].sizeCalculated);
                             }
                             $(el).css('width', width + 'px');
                         } else {
@@ -8370,8 +8522,8 @@ w2utils.event = {
                         if (ind == 'start') {
                             var width = 0;
                             for (var i = 0; i < obj.last.colStart; i++) {
-                                if (obj.columns[i].frozen || obj.columns[i].hidden) continue;
-                                width += obj.columns[i] ? parseInt(obj.columns[i].sizeCalculated) : 0;
+                                if (!obj.columns[i] || obj.columns[i].frozen || obj.columns[i].hidden) continue;
+                                width += parseInt(obj.columns[i].sizeCalculated);
                             }
                             $(el).css('width', width + 'px');
                         }
@@ -8382,8 +8534,8 @@ w2utils.event = {
                         if (obj.last.colEnd + 1 < obj.columns.length) {
                             var width = 0;
                             for (var i = obj.last.colEnd + 1; i < obj.columns.length; i++) {
-                                if (obj.columns[i].frozen || obj.columns[i].hidden) continue;
-                                width += obj.columns[i] ? parseInt(obj.columns[i].sizeCalculated) : 0;
+                                if (!obj.columns[i] || obj.columns[i].frozen || obj.columns[i].hidden) continue;
+                                width += parseInt(obj.columns[i].sizeCalculated);
                             }
                             $(el).css('width', width + 'px');
                         } else {
@@ -8405,8 +8557,8 @@ w2utils.event = {
                         if (ind == 'start') {
                             var width = 0;
                             for (var i = 0; i < obj.last.colStart; i++) {
-                                if (obj.columns[i].frozen || obj.columns[i].hidden) continue;
-                                width += obj.columns[i] ? parseInt(obj.columns[i].sizeCalculated) : 0;
+                                if (!obj.columns[i] || obj.columns[i].frozen || obj.columns[i].hidden) continue;
+                                width += parseInt(obj.columns[i].sizeCalculated);
                             }
                             $(el).css('width', width + 'px');
                         }
@@ -8445,34 +8597,12 @@ w2utils.event = {
                 if (s.style   == null) s.style = '';
                 if (s.type    == null) s.type   = 'text';
 
-                if (['text', 'alphanumeric', 'combo'].indexOf(s.type) != -1) {
-                    var operator =
-                        '<select id="grid_'+ this.name +'_operator_'+ i +'" class="w2ui-input" onclick="event.stopPropagation();"' +
-                        '   onchange="w2ui[\''+ this.name + '\'].initOperator(this, '+ i +')">' +
-                            getOpearators('text') +
-                        '</select>';
-                }
-                if (['int', 'float', 'money', 'currency', 'percent', 'date', 'time'].indexOf(s.type) != -1) {
-                    var operator =
-                        '<select id="grid_'+ this.name +'_operator_'+ i +'" class="w2ui-input" onclick="event.stopPropagation();"' +
-                        '   onchange="w2ui[\''+ this.name + '\'].initOperator(this, '+ i +')">' +
-                            (['date', 'time'].indexOf(s.type) != -1 ? getOpearators('date') : getOpearators('number')) +
-                        '</select>';
-                }
-                if (['select', 'list', 'hex'].indexOf(s.type) != -1) {
-                    var operator =
-                        '<select id="grid_'+ this.name +'_operator_'+ i +'" class="w2ui-input" onclick="event.stopPropagation();"'+
-                        '        onchange="w2ui[\''+ this.name + '\'].initOperator(this, '+ i +')">'+
-                            getOpearators('list') +
-                        '</select>';
-                }
-                if (['enum'].indexOf(s.type) != -1) {
-                    var operator =
-                        '<select id="grid_'+ this.name +'_operator_'+ i +'" class="w2ui-input" onclick="event.stopPropagation();"'+
-                        '   onchange="w2ui[\''+ this.name + '\'].initOperator(this, '+ i +')">'+
-                            getOpearators('enum') +
-                        '</select>';
-                }
+                var operator =
+                    '<select id="grid_'+ this.name +'_operator_'+ i +'" class="w2ui-input" onclick="event.stopPropagation();"' +
+                    '   onchange="w2ui[\''+ this.name + '\'].initOperator(this, '+ i +')">' +
+                        getOpearators(s.type, s.operators) +
+                    '</select>';
+
                 html += '<tr>'+
                         '    <td class="close-btn">'+ btn +'</td>' +
                         '    <td class="caption">'+ (s.caption || '') +'</td>' +
@@ -8496,6 +8626,7 @@ w2utils.event = {
                     case 'percent':
                     case 'date':
                     case 'time':
+                    case 'datetime':
                         html += '<input rel="search" type="text" size="12" class="w2ui-input" style="'+ s.style +'" id="grid_'+ this.name +'_field_'+ i +'" name="'+ s.field +'" '+ s.inTag +'/>'+
                                 '<span id="grid_'+ this.name +'_range_'+ i +'" style="display: none">'+
                                 '&#160;-&#160;&#160;<input rel="search" type="text" class="w2ui-input" style="width: 90px" id="grid_'+ this.name +'_field2_'+i+'" name="'+ s.field +'" '+ s.inTag +'/>'+
@@ -8522,16 +8653,14 @@ w2utils.event = {
                     '</tr></tbody></table>';
             return html;
 
-            function getOpearators(type) {
+            function getOpearators(type, fieldOperators) {
                 var html = '';
-                for (var i = 0; i < obj.operators[type].length; i++) {
-                    var oper = obj.operators[type][i];
+                var operators = obj.operators[obj.operatorsMap[type]];
+                if (fieldOperators != null) operators = fieldOperators;
+                for (var i = 0; i < operators.length; i++) {
+                    var oper = operators[i][0];
                     var text = oper;
-                    var tmp  = oper.split(':');
-                    if (tmp.length == 2) {
-                        oper = tmp[0];
-                        text = tmp[1];
-                    }
+                    if (operators[i][1]) text = operators[i][1];
                     html += '<option value="'+ oper +'">'+ w2utils.lang(text) +'</option>';
                 }
                 return html;
@@ -8548,10 +8677,10 @@ w2utils.event = {
             range.hide();
             // fld1.w2field(search.type);
             switch ($(el).val()) {
-                case 'in':
-                case 'not in':
-                    fld1.w2field('clear');
-                    break;
+//                case 'in':
+//                case 'not in':
+//                    fld1.w2field('clear');
+//                    break;
                 case 'between':
                     range.show();
                     fld2.w2field(search.type);
@@ -8571,30 +8700,31 @@ w2utils.event = {
             for (var s = 0; s < this.searches.length; s++) {
                 var search   = this.searches[s];
                 var sdata    = this.getSearchData(search.field);
-                var operator = null;
                 search.type = String(search.type).toLowerCase();
+                var operator = obj.operators[obj.operatorsMap[search.type]][0][0];
                 if (typeof search.options != 'object') search.options = {};
+                for (var i = 0; i < obj.operators[obj.operatorsMap[search.type]].length; i++) {
+                    if (search.operator == obj.operators[obj.operatorsMap[search.type]][i][0] || search.operator == 'null' ||  search.operator == 'not null') {
+                        operator = search.operator;
+                        break;
+                    }
+                }
                 // init types
                 switch (search.type) {
                     case 'text':
                     case 'alphanumeric':
-                        operator = 'begins';
-                        if (search.operator && ['is', 'begins', 'contains', 'ends'].indexOf(search.operator) != -1) operator = search.operator;
-                        if (['alphanumeric', 'hex'].indexOf(search.type) != -1) {
-                            $('#grid_'+ this.name +'_field_' + s).w2field(search.type, search.options);
-                        }
+                        $('#grid_'+ this.name +'_field_' + s).w2field(search.type, search.options);
                         break;
 
                     case 'int':
                     case 'float':
+                    case 'hex':
                     case 'money':
                     case 'currency':
                     case 'percent':
                     case 'date':
                     case 'time':
-                        if (sdata && sdata.type == 'int' && ['in', 'not in'].indexOf(sdata.operator) != -1) break;
-                        operator = 'is';
-                        if (search.operator && ['is', 'between', 'less', 'more'].indexOf(search.operator) != -1) operator = search.operator;
+                    case 'datetime':
                         $('#grid_'+ this.name +'_field_'+s).w2field(search.type, search.options);
                         $('#grid_'+ this.name +'_field2_'+s).w2field(search.type, search.options);
                         setTimeout(function () { // convert to date if it is number
@@ -8603,23 +8733,9 @@ w2utils.event = {
                         }, 1);
                         break;
 
-                    case 'hex':
-                        operator = 'is';
-                        if (search.operator && ['is', 'between'].indexOf(search.operator) != -1) operator = search.operator;
-                        break;
-
                     case 'list':
                     case 'combo':
                     case 'enum':
-                        if (search.type == 'list') operator = 'is';
-                        if (search.type == 'combo') {
-                            operator = 'begins';
-                            if (search.operator && ['is', 'begins', 'contains', 'ends'].indexOf(search.operator) != -1) operator = search.operator;
-                        }
-                        if (search.type == 'enum') {
-                            operator = 'in';
-                            if (search.operator && ['in', 'not in'].indexOf(search.operator) != -1) operator = search.operator;
-                        }
                         var options = search.options;
                         if (search.type == 'list') options.selected = {};
                         if (search.type == 'enum') options.selected = [];
@@ -8629,7 +8745,6 @@ w2utils.event = {
                         break;
 
                     case 'select':
-                        operator = 'is';
                         // build options
                         var options = '<option value="">--</option>';
                         for (var i = 0; i < search.options.items.length; i++) {
@@ -9986,7 +10101,7 @@ w2utils.event = {
             return this.last._selection;
         },
 
-        selectionRestore: function () {
+        selectionRestore: function (noRefresh) {
             var time = (new Date()).getTime();
             this.last.selection = { indexes: [], columns: {} };
             var sel = this.last.selection;
@@ -10007,7 +10122,7 @@ w2utils.event = {
                 }
             }
             delete this.last._selection;
-            this.refresh();
+            if (noRefresh !== true) this.refresh();
             return (new Date()).getTime() - time;
         },
 
@@ -10049,6 +10164,8 @@ w2utils.event = {
 *   - onResize for the panel
 *   - add more panel title positions (left=rotated, right=rotated, bottom)
 *   - bug: when you assign content before previous transition completed.
+* 1.5 changes
+*   - message method
 *
 ************************************************************************/
 
@@ -10239,6 +10356,44 @@ w2utils.event = {
             obj.resize();
             if (window.navigator.userAgent.indexOf('MSIE') != -1) setTimeout(function () { obj.resize(); }, 100);
             return true;
+        },
+
+        message: function(panel, options) {
+            var obj = this;
+            if (typeof options == 'string') {
+                options = {
+                    width   : (options.length < 300 ? 350 : 550),
+                    height  : (options.length < 300 ? 170: 250),
+                    body    : '<div class="w2ui-centered">' + options + '</div>',
+                    buttons : '<button class="w2ui-btn" onclick="w2ui[\''+ this.name +'\'].message(\''+ panel +'\')">Ok</button>',
+                    onOpen  : function (event) {
+                        setTimeout(function () {
+                            $(this.box).find('.w2ui-btn').focus();
+                        }, 25);
+                    }
+                };
+            }
+            var p   = this.get(panel);
+            var $el = $('#layout_'+ this.name + '_panel_'+ p.type);
+            var oldOverflow = $el.css('overflow');
+            var oldOnClose;
+            if (options) {
+                if (options.onClose) oldOnClose = options.onClose;
+                options.onClose = function (event) {
+                    if (typeof oldOnClose == 'function') oldOnClose(event);
+                    event.done(function () {
+                        $('#layout_'+ obj.name + '_panel_'+ p.type).css('overflow', oldOverflow);
+                    });
+                }
+            }
+            $('#layout_'+ this.name + '_panel_'+ p.type).css('overflow', 'hidden');
+            w2utils.message.call(this, {
+                box   : $('#layout_'+ this.name + '_panel_'+ p.type),
+                param : panel,
+                path  : 'w2ui.' + this.name,
+                title : '.w2ui-panel-title:visible',
+                body  : '.w2ui-panel-content'
+            }, options);
         },
 
         load: function (panel, url, transition, onLoad) {
@@ -11149,6 +11304,8 @@ w2utils.event = {
 *   - hide overlay on esc
 *   - make popup width/height in %
 *
+* == 1.5 changes
+*   - w2prompt
 ************************************************************************/
 
 var w2popup = {};
@@ -12130,6 +12287,115 @@ var w2confirm = function (msg, title, callBack) {
     };
 };
 
+var w2prompt = function (label, title, callBack) {
+    var $ = jQuery;
+        
+    var options  = {};
+    var defaults = {
+        label       : '',
+        value       : '',
+        title       : w2utils.lang('Notification'),
+        ok_text     : w2utils.lang('Ok'),
+        cancel_text : w2utils.lang('Cancel'),
+        width       : ($('#w2ui-popup').length > 0 ? 400 : 450),
+        height      : ($('#w2ui-popup').length > 0 ? 170 : 220),
+        callBack    : null
+    }
+    
+    if (arguments.length == 1 && typeof label == 'object') {
+        $.extend(options, defaults, label);
+    } else {
+        if (typeof title == 'function') {
+            $.extend(options, defaults, {
+                label   : label,
+                callBack: title
+            })
+        } else {
+            $.extend(options, defaults, {
+                label   : label,
+                title   : title,
+                callBack: callBack
+            })
+        }
+    }
+    
+    if ($('#w2ui-popup').length > 0 && w2popup.status != 'closing' && w2popup.get()) {
+        if (options.width > w2popup.get().width) options.width = w2popup.get().width;
+        if (options.height > (w2popup.get().height - 50)) options.height = w2popup.get().height - 50;
+          w2popup.message({
+            width   : options.width,
+            height  : options.height,
+            body    : '<div class="w2ui-centered" style="font-size: 13px;"><label style="margin-right: 10px;">' + options.label + ':</label><input id="w2prompt"></div>',
+            buttons : '<button id="Ok" class="w2ui-popup-btn w2ui-btn">' + options.ok_text + '</button><button id="Cancel" class="w2ui-popup-btn w2ui-btn">' + options.cancel_text + '</button>',
+            onOpen: function () {
+                $('#w2prompt').val(options.value);
+                $('#w2ui-popup .w2ui-message .w2ui-btn#Ok').on('click.w2prompt', function (event) {
+                    w2popup._prompt_value = $('#w2prompt').val();
+                    w2popup.message();
+                });
+                $('#w2ui-popup .w2ui-message .w2ui-btn#Cancel').on('click.w2prompt', function (event) {
+                    w2popup._prompt_value = null;
+                    w2popup.message();
+                });
+            },
+            onClose: function () {
+                // needed this because there might be other messages
+                $('#w2ui-popup .w2ui-message .w2ui-btn').off('click.w2prompt');
+                // need to wait for message to slide up
+                setTimeout(function () {
+                    if (typeof options.callBack == 'function') options.callBack(w2popup._prompt_value);
+                }, 300);
+            }
+            // onKeydown will not work here
+        });
+
+    } else {
+
+        if (!w2utils.isInt(options.height)) options.height = options.height + 50;
+        w2popup.open({
+            width      : options.width,
+            height     : options.height,
+            title      : options.title,
+            modal      : true,
+            showClose  : false,
+            body       : '<div class="w2ui-centered" style="font-size: 13px;"><label style="margin-right: 10px;">' + options.label + ':</label><input id="w2prompt"></div>',
+            buttons    : '<button id="Ok" class="w2ui-popup-btn w2ui-btn">' + options.ok_text + '</button><button id="Cancel" class="w2ui-popup-btn w2ui-btn">' + options.cancel_text + '</button>',
+            onOpen: function (event) {
+                // do not use onComplete as it is slower
+                setTimeout(function () {
+                    $('#w2prompt').val(options.value);
+                    $('#w2prompt').w2field('text');
+                    $('#w2ui-popup .w2ui-popup-btn#Ok').on('click', function (event) {
+                        w2popup._prompt_value = $('#w2prompt').val();
+                        w2popup.close();
+                        if (typeof options.callBack == 'function') options.callBack(w2popup._prompt_value);
+                    });
+                    $('#w2ui-popup .w2ui-popup-btn#Cancel').on('click', function (event) {
+                        w2popup._prompt_value = null;
+                        w2popup.close();
+                        if (typeof options.callBack == 'function') options.callBack(w2popup._prompt_value);
+                    });
+                    $('#w2ui-popup .w2ui-popup-btn#Ok').focus();
+                }, 1);
+            },
+            onKeydown: function (event) {
+                // if there are no messages
+                if ($('#w2ui-popup .w2ui-message').length == 0) {
+                    switch (event.originalEvent.keyCode) {
+                        case 13: // enter
+                            $('#w2ui-popup .w2ui-popup-btn#Ok').focus().addClass('clicked'); // no need fo click as enter will do click
+                            w2popup.close();
+                            break;
+                        case 27: // esc
+                            w2popup.close();
+                            break;
+                    }
+                }
+            }
+        });
+    }
+};
+
 /************************************************************************
 *   Library: Web 2.0 UI for jQuery (using prototypical inheritance)
 *   - Following objects defined
@@ -12877,7 +13143,7 @@ var w2confirm = function (msg, title, callBack) {
                 it.hidden = true;
                 tmp.push(String(arguments[a]).split(':')[0]);
             }
-            setTimeout(function () { for (var t=0; t<tmp.length; t++) obj.refresh(tmp[t]); obj.resize(); }, 15); // needs timeout
+            setTimeout(function () { for (var t=0; t<tmp.length; t++) { obj.refresh(tmp[t]); obj.tooltipHide(tmp[t]); } obj.resize(); }, 15); // needs timeout
             return items;
         },
 
@@ -12907,7 +13173,7 @@ var w2confirm = function (msg, title, callBack) {
                 it.disabled = true;
                 tmp.push(String(arguments[a]).split(':')[0]);
             }
-            setTimeout(function () { for (var t=0; t<tmp.length; t++) obj.refresh(tmp[t]); }, 15); // needs timeout
+            setTimeout(function () { for (var t=0; t<tmp.length; t++) { obj.refresh(tmp[t]); obj.tooltipHide(tmp[t]); } }, 15); // needs timeout
             return items;
         },
 
@@ -14993,17 +15259,19 @@ var w2confirm = function (msg, title, callBack) {
             }
             if (['enum', 'file'].indexOf(this.type) != -1) {
                 var html = '';
-                for (var s in selected) {
-                    var it  = selected[s];
-                    var ren = '';
-                    if (typeof options.renderItem == 'function') {
-                        ren = options.renderItem(it, s, '<div class="w2ui-list-remove" title="'+ w2utils.lang('Remove') +'" index="'+ s +'">&#160;&#160;</div>');
-                    } else {
-                        ren = '<div class="w2ui-list-remove" title="'+ w2utils.lang('Remove') +'" index="'+ s +'">&#160;&#160;</div>'+
-                              (obj.type == 'enum' ? it.text : it.name + '<span class="file-size"> - '+ w2utils.formatSize(it.size) +'</span>');
-                    }
-                    html += '<li index="'+ s +'" style="max-width: '+ parseInt(options.maxWidth) + 'px; '+ (it.style ? it.style : '') +'">'+
-                            ren +'</li>';
+                if (selected) {
+                   for (var s = 0; s < selected.length; s++) {
+                       var it  = selected[s];
+                       var ren = '';
+                       if (typeof options.renderItem == 'function') {
+                           ren = options.renderItem(it, s, '<div class="w2ui-list-remove" title="'+ w2utils.lang('Remove') +'" index="'+ s +'">&#160;&#160;</div>');
+                       } else {
+                           ren = '<div class="w2ui-list-remove" title="'+ w2utils.lang('Remove') +'" index="'+ s +'">&#160;&#160;</div>'+
+                                 (obj.type == 'enum' ? it.text : it.name + '<span class="file-size"> - '+ w2utils.formatSize(it.size) +'</span>');
+                       }
+                       html += '<li index="'+ s +'" style="max-width: '+ parseInt(options.maxWidth) + 'px; '+ (it.style ? it.style : '') +'">'+
+                               ren +'</li>';
+                   }
                 }
                 var div = obj.helpers.multi;
                 var ul  = div.find('ul');
@@ -15060,12 +15328,9 @@ var w2confirm = function (msg, title, callBack) {
                         var item   = selected[$(target).attr('index')];
                         if ($(target).hasClass('nomouse')) return;
                         event.stopPropagation();
-                        // trigger event
-                        var edata = obj.trigger({ phase: 'before', type: 'click', target: obj.el, originalEvent: event.originalEvent, item: item });
-                        if (edata.isCancelled === true) return;
                         // default behavior
                         if ($(event.target).hasClass('w2ui-list-remove')) {
-                            if ($(obj.el).attr('readonly') || $(obj.el).attr('disabled')) return;
+                            if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                             // trigger event
                             var edata = obj.trigger({ phase: 'before', type: 'remove', target: obj.el, originalEvent: event.originalEvent, item: item });
                             if (edata.isCancelled === true) return;
@@ -15079,37 +15344,41 @@ var w2confirm = function (msg, title, callBack) {
                                 // event after
                                 obj.trigger($.extend(edata, { phase: 'after' }));
                             }, 300);
-                        }
-                        if (obj.type == 'file' && !$(event.target).hasClass('w2ui-list-remove')) {
-                            var preview = '';
-                            if ((/image/i).test(item.type)) { // image
-                                preview = '<div style="padding: 3px;">'+
-                                    '    <img src="'+ (item.content ? 'data:'+ item.type +';base64,'+ item.content : '') +'" style="max-width: 300px;" '+
-                                    '        onload="var w = $(this).width(); var h = $(this).height(); '+
-                                    '            if (w < 300 & h < 300) return; '+
-                                    '            if (w >= h && w > 300) $(this).width(300);'+
-                                    '            if (w < h && h > 300) $(this).height(300);"'+
-                                    '        onerror="this.style.display = \'none\'"'+
-                                    '    >'+
+                        } else {
+                            // trigger event
+                            var edata = obj.trigger({ phase: 'before', type: 'click', target: obj.el, originalEvent: event.originalEvent, item: item });
+                            if (edata.isCancelled === true) return;
+                            // if file - show image preview
+                            if (obj.type == 'file') {
+                                var preview = '';
+                                if ((/image/i).test(item.type)) { // image
+                                    preview = '<div style="padding: 3px;">'+
+                                        '    <img src="'+ (item.content ? 'data:'+ item.type +';base64,'+ item.content : '') +'" style="max-width: 300px;" '+
+                                        '        onload="var w = jQuery(this).width(); var h = jQuery(this).height(); '+
+                                        '            if (w < 300 & h < 300) return; '+
+                                        '            if (w >= h && w > 300) jQuery(this).width(300);'+
+                                        '            if (w < h && h > 300) jQuery(this).height(300);"'+
+                                        '        onerror="this.style.display = \'none\'"'+
+                                        '    >'+
+                                        '</div>';
+                                }
+                                var td1 = 'style="padding: 3px; text-align: right; color: #777;"';
+                                var td2 = 'style="padding: 3px"';
+                                preview += '<div style="padding: 8px;">'+
+                                    '    <table cellpadding="2"><tbody>'+
+                                    '    <tr><td '+ td1 +'>'+ w2utils.lang('Name') +':</td><td '+ td2 +'>'+ item.name +'</td></tr>'+
+                                    '    <tr><td '+ td1 +'>'+ w2utils.lang('Size') +':</td><td '+ td2 +'>'+ w2utils.formatSize(item.size) +'</td></tr>'+
+                                    '    <tr><td '+ td1 +'>'+ w2utils.lang('Type') +':</td><td '+ td2 +'>' +
+                                    '        <span style="width: 200px; display: block-inline; overflow: hidden; text-overflow: ellipsis; white-space: nowrap="nowrap";">'+ item.type +'</span>'+
+                                    '    </td></tr>'+
+                                    '    <tr><td '+ td1 +'>'+ w2utils.lang('Modified') +':</td><td '+ td2 +'>'+ w2utils.date(item.modified) +'</td></tr>'+
+                                    '    </tbody></table>'+
                                     '</div>';
-                            }
-                            var td1 = 'style="padding: 3px; text-align: right; color: #777;"';
-                            var td2 = 'style="padding: 3px"';
-                            preview += '<div style="padding: 8px;">'+
-                                '    <table cellpadding="2"><tbody>'+
-                                '    <tr><td '+ td1 +'>'+ w2utils.lang('Name') +':</td><td '+ td2 +'>'+ item.name +'</td></tr>'+
-                                '    <tr><td '+ td1 +'>'+ w2utils.lang('Size') +':</td><td '+ td2 +'>'+ w2utils.formatSize(item.size) +'</td></tr>'+
-                                '    <tr><td '+ td1 +'>'+ w2utils.lang('Type') +':</td><td '+ td2 +'>' +
-                                '        <span style="width: 200px; display: block-inline; overflow: hidden; text-overflow: ellipsis; white-space: nowrap="nowrap";">'+ item.type +'</span>'+
-                                '    </td></tr>'+
-                                '    <tr><td '+ td1 +'>'+ w2utils.lang('Modified') +':</td><td '+ td2 +'>'+ w2utils.date(item.modified) +'</td></tr>'+
-                                '    </tbody></table>'+
-                                '</div>';
-                            $('#w2ui-overlay').remove();
-                            $(target).w2overlay(preview);
+                                $('#w2ui-overlay').remove();
+                                $(target).w2overlay(preview);
+                            }                            // event after
+                            obj.trigger($.extend(edata, { phase: 'after' }));
                         }
-                        // event after
-                        obj.trigger($.extend(edata, { phase: 'after' }));
                     })
                     .on('mouseover', function (event) {
                         var target = (event.target.tagName.toUpperCase() == 'LI' ? event.target : $(event.target).parents('LI'));
@@ -15309,13 +15578,13 @@ var w2confirm = function (msg, title, callBack) {
             var options = this.options;
             // color, date, time
             if (['color', 'date', 'time', 'datetime'].indexOf(obj.type) !== -1) {
-                if ($(obj.el).attr('readonly') || $(obj.el).attr('disabled')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 if ($("#w2ui-overlay").length > 0) $('#w2ui-overlay')[0].hide();
                 setTimeout(function () { obj.updateOverlay(); }, 150);
             }
             // menu
             if (['list', 'combo', 'enum'].indexOf(obj.type) != -1) {
-                if ($(obj.el).attr('readonly') || $(obj.el).attr('disabled')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 if ($("#w2ui-overlay").length > 0) $('#w2ui-overlay')[0].hide();
                 obj.resize();
                 setTimeout(function () {
@@ -15419,7 +15688,7 @@ var w2confirm = function (msg, title, callBack) {
             var key     = event.keyCode || (extra && extra.keyCode);
             // numeric
             if (['int', 'float', 'money', 'currency', 'percent'].indexOf(obj.type) != -1) {
-                if (!options.keyboard || $(obj.el).attr('readonly')) return;
+                if (!options.keyboard || $(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 var cancel = false;
                 var val = parseFloat($(obj.el).val().replace(options.moneyRE, '')) || 0;
                 var inc = options.step;
@@ -15446,7 +15715,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // date
             if (obj.type == 'date') {
-                if (!options.keyboard || $(obj.el).attr('readonly')) return;
+                if (!options.keyboard || $(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 var cancel  = false;
                 var daymil  = 24*60*60*1000;
                 var inc     = 1;
@@ -15480,7 +15749,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // time
             if (obj.type == 'time') {
-                if (!options.keyboard || $(obj.el).attr('readonly')) return;
+                if (!options.keyboard || $(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 var cancel  = false;
                 var inc     = (event.ctrlKey || event.metaKey ? 60 : 1);
                 var val     = $(obj.el).val();
@@ -15508,7 +15777,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // datetime
             if (obj.type == 'datetime') {
-                if (!options.keyboard || $(obj.el).attr('readonly')) return;
+                if (!options.keyboard || $(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 var cancel  = false;
                 var daymil  = 24*60*60*1000;
                 var inc     = 1;
@@ -15543,7 +15812,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // color
             if (obj.type == 'color') {
-                if ($(obj.el).attr('readonly')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 // paste
                 if (event.keyCode == 86 && (event.ctrlKey || event.metaKey)) {
                     $(obj.el).prop('maxlength', 7);
@@ -15580,7 +15849,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // list/select/combo
             if (['list', 'combo', 'enum'].indexOf(obj.type) != -1) {
-                if ($(obj.el).attr('readonly')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 var selected  = $(obj.el).data('selected');
                 var focus     = $(obj.el);
                 var indexOnly = false;
@@ -15744,6 +16013,7 @@ var w2confirm = function (msg, title, callBack) {
                 }
             }
             if (['list', 'combo', 'enum'].indexOf(this.type) != -1) {
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 // need to be here for ipad compa
                 if ([16, 17, 18, 20, 37, 39, 91].indexOf(event.keyCode) == -1) { // no refreah on crtl, shift, left/right arrows, etc
                     var input = $(this.helpers.focus).find('input');
@@ -15795,7 +16065,7 @@ var w2confirm = function (msg, title, callBack) {
             if (obj.tmp.xhr_search == null) obj.tmp.xhr_search = '';
             if (obj.tmp.xhr_total == null) obj.tmp.xhr_total = -1;
             // check if need to search
-            if (options.url && $(obj.el).prop('readonly') != true && (
+            if (options.url && $(obj.el).prop('readonly') != true && $(obj.el).prop('disabled') != true && (
                     (options.items.length === 0 && obj.tmp.xhr_total !== 0) ||
                     (obj.tmp.xhr_total == options.cacheMax && search.length > obj.tmp.xhr_search.length) ||
                     (search.length >= obj.tmp.xhr_search.length && search.substr(0, obj.tmp.xhr_search.length) != obj.tmp.xhr_search) ||
@@ -15964,7 +16234,7 @@ var w2confirm = function (msg, title, callBack) {
             var options = this.options;
             // color
             if (this.type == 'color') {
-                if ($(obj.el).attr('readonly')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 $(this.el).w2color({ color: $(this.el).val(), transparent: options.transparent }, function (color) {
                     if (color == null) return;
                     $(obj.el).val(color).change();
@@ -15972,7 +16242,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // date
             if (this.type == 'date') {
-                if ($(obj.el).attr('readonly')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 if ($('#w2ui-overlay').length == 0) {
                     $(obj.el).w2overlay('<div class="w2ui-reset w2ui-calendar" onclick="event.stopPropagation();"></div>', {
                         css: { "background-color": "#f5f5f5" }
@@ -16039,7 +16309,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // time
             if (this.type == 'time') {
-                if ($(obj.el).attr('readonly')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 if ($('#w2ui-overlay').length == 0) {
                     $(obj.el).w2overlay('<div class="w2ui-reset w2ui-calendar-time" onclick="event.stopPropagation();"></div>', {
                         css: { "background-color": "#fff" }
@@ -16079,7 +16349,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             // datetime
             if (this.type == 'datetime') {
-                if ($(obj.el).attr('readonly')) return;
+                if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                 // hide overlay if we are in the time selection
                 if ($("#w2ui-overlay .w2ui-time").length > 0) $('#w2ui-overlay')[0].hide();
                 if ($('#w2ui-overlay').length == 0) {
@@ -16477,7 +16747,7 @@ var w2confirm = function (msg, title, callBack) {
                 $(obj.el).data('tmp', tmp);
                 pr = parseInt($(obj.el).css('padding-right'), 10);
                 if (obj.options.arrows) {
-                    // remove if already displaed
+                    // remove if already displayed
                     if (obj.helpers.arrows) $(obj.helpers.arrows).remove();
                     // add fresh
                     $(obj.el).after(
@@ -16660,7 +16930,7 @@ var w2confirm = function (msg, title, callBack) {
                         '    <div style="padding: 0px; margin: 0px; display: inline-block" class="w2ui-multi-items">'+
                         '    <ul>'+
                         '        <li style="padding-left: 0px; padding-right: 0px" class="nomouse">'+
-                        '            <input type="text" style="width: 20px; margin: -3px 0 0; padding: 2px 0; border-color: white" autocomplete="off" '+ ($(obj.el).attr('readonly') ? 'readonly': '') + '/>'+
+                        '            <input type="text" style="width: 20px; margin: -3px 0 0; padding: 2px 0; border-color: white" autocomplete="off" '+ ($(obj.el).prop('readonly') ? 'readonly="readonly"': '') + '/>'+
                         '        </li>'+
                         '    </ul>'+
                         '    </div>'+
@@ -16719,22 +16989,22 @@ var w2confirm = function (msg, title, callBack) {
                 $(obj.el).css('outline', 'none');
                 div.on('click', function (event) {
                         $(obj.el).focus();
-                        if ($(obj.el).attr('readonly')) return;
+                        if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                         obj.blur(event);
                         obj.resize();
                         setTimeout(function () { div.find('input').click(); }, 10); // needed this when clicked on items div
                     })
                     .on('dragenter', function (event) {
-                        if ($(obj.el).attr('readonly')) return;
+                        if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                         $(div).addClass('w2ui-file-dragover');
                     })
                     .on('dragleave', function (event) {
-                        if ($(obj.el).attr('readonly')) return;
+                        if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                         var tmp = $(event.target).parents('.w2ui-field-helper');
                         if (tmp.length == 0) $(div).removeClass('w2ui-file-dragover');
                     })
                     .on('drop', function (event) {
-                        if ($(obj.el).attr('readonly')) return;
+                        if ($(obj.el).prop('readonly') || $(obj.el).prop('disabled')) return;
                         $(div).removeClass('w2ui-file-dragover');
                         var files = event.originalEvent.dataTransfer.files;
                         for (var i = 0, l = files.length; i < l; i++) obj.addFile.call(obj, files[i]);
@@ -16777,10 +17047,13 @@ var w2confirm = function (msg, title, callBack) {
             var size = 0;
             var cnt  = 0;
             var err;
-            for (var s in selected) {
-                // check for dups
-                if (selected[s].name == file.name && selected[s].size == file.size) return;
-                size += selected[s].size; cnt++;
+            if (selected) {
+                for (var s = 0; s < selected.length; s++) {
+                   // check for dups
+                   if (selected[s].name == file.name && selected[s].size == file.size) return;
+                   size += selected[s].size;
+                   cnt++;
+               }
             }
             // trigger event
             var edata = obj.trigger({ phase: 'before', type: 'add', target: obj.el, file: newItem, total: cnt, totalSize: size });
@@ -17004,7 +17277,7 @@ var w2confirm = function (msg, title, callBack) {
             }
             var html =
                 '<div class="w2ui-calendar">'+
-                '   <div class="w2ui-calendar-title">Select Minute</div>'+
+                '   <div class="w2ui-calendar-title">'+ w2utils.lang('Select Minute') +'</div>'+
                 '   <div class="w2ui-calendar-time"><table><tbody><tr>'+
                 '       <td>'+ tmp[0] +'</td>' +
                 '       <td>'+ tmp[1] +'</td>' +
@@ -17076,6 +17349,7 @@ var w2confirm = function (msg, title, callBack) {
 *   - added ability to generate radio and select html in generateHTML()
 *   - refresh(field) - would refresh only one field
 *   - form.message
+*   - added field.html.column
 *
 ************************************************************************/
 
@@ -17795,13 +18069,15 @@ var w2confirm = function (msg, title, callBack) {
             var pages = []; // array for each page
             var group = '';
             var page;
+            var column;
             for (var f = 0; f < this.fields.length; f++) {
                 var html = '';
                 var field = this.fields[f];
                 if (field.html == null) field.html = {};
                 if (field.options == null) field.options = {};
-                field.html = $.extend(true, { caption: '', span: 6, attr: '', text: '', style: '', page: 0 }, field.html);
+                field.html = $.extend(true, { caption: '', span: 6, attr: '', text: '', style: '', page: 0, column: 0 }, field.html);
                 if (page == null) page = field.html.page;
+                if (column == null) column = field.html.column;
                 if (field.html.caption == '') field.html.caption = field.name;
                 // input control
                 var input = '<input name="'+ field.name +'" class="w2ui-input" type="text" '+ field.html.attr +'/>';
@@ -17848,28 +18124,30 @@ var w2confirm = function (msg, title, callBack) {
                         input = '<input name="'+ field.name +'" type="checkbox" '+ field.html.attr +' class="w2ui-input w2ui-toggle"/><div><div></div></div>';
                         break;
                 }
-                if (field.html.group) {
-                    if (group != '') html += '\n   </div>';
+                if (group != ''){
+                    if(page != field.html.page || column != field.html.column || (field.html.group && (group != field.html.group))){
+                       pages[page][column]  += '\n   </div>';
+                       group = '';
+                    }
+                }
+                if (field.html.group && (group != field.html.group)) {
                     html += '\n   <div class="w2ui-group-title">'+ field.html.group + '</div>\n   <div class="w2ui-group">';
                     group = field.html.group;
-                }
-                if (field.html.page != page && group != '') {
-                    pages[pages.length-1] += '\n   </div>';
-                    group = '';
                 }
                 html += '\n      <div class="w2ui-field '+ (field.html.span != null ? 'w2ui-span'+ field.html.span : '') +'" style="'+ field.html.style +'">'+
                         '\n         <label>' + w2utils.lang(field.html.caption) +'</label>'+
                         '\n         <div>'+ input + w2utils.lang(field.html.text) + '</div>'+
-                        '\n      </div>';
-                if (pages[field.html.page] == null) pages[field.html.page] = '';
-                pages[field.html.page] += html;
+                        '\n      </div>'; 
+                if (pages[field.html.page] == null) pages[field.html.page] = [];
+                if (pages[field.html.page][field.html.column] == null) pages[field.html.page][field.html.column] = '';
+                pages[field.html.page][field.html.column] += html;
                 page = field.html.page;
+                column = field.html.column;
             }
-            if (group != '') pages[pages.length-1] += '\n   </div>';
+            if (group != '') pages[page][column] += '\n   </div>';
             if (this.tabs.tabs) {
-                for (var i = 0; i < this.tabs.tabs.length; i++) if (pages[i] == null) pages[i] = '';
+                for (var i = 0; i < this.tabs.tabs.length; i++) if (pages[i] == null) pages[i] = [];
             }
-            for (var p = 0; p < pages.length; p++) pages[p] = '<div class="w2ui-page page-'+ p +'">' + pages[p] + '\n</div>';
             // buttons if any
             var buttons = '';
             if (!$.isEmptyObject(this.actions)) {
@@ -17891,7 +18169,16 @@ var w2confirm = function (msg, title, callBack) {
                 }
                 buttons += '\n</div>';
             }
-            return pages.join('') + buttons;
+            html = '';
+            for (var p = 0; p < pages.length; p++){
+                html += '<div class="w2ui-page page-'+ p +'"><div class="w2ui-column-container" style="display: flex;">';
+                for (var c = 0; c < pages[p].length; c++){
+                    html += '<div class="w2ui-column col-'+ c +'">' + (pages[p][c] || '') + '\n</div>';
+                }
+                html += '\n</div></div>';
+            }
+            html += buttons;
+            return html;
         },
 
         action: function (action, event) {

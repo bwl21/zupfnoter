@@ -80,9 +80,17 @@ class Controller
 
   def initialize
 
+
     `init_w2ui();`
+    @update_sytemstatus_consumers = {systemstatus: [
+                                                       lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                   ],
+                                     play_start:   [lambda { `update_play_w2ui('start')` }],
+                                     play_stop:    [lambda { `update_play_w2ui('stop')` }]
+    }
+
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
-    #
+
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
     @console.on_command do |cmd|
@@ -90,12 +98,13 @@ class Controller
       handle_command(cmd)
     end
 
-    @dropped_abc = "T: notihing droped yet"
+    @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
     $log.info ("Welcome to Zupfnoter #{VERSION}")
 
-    $conf = Confstack.new(false)
+    $conf        = Confstack.new()
+    $conf.strict = false
     $conf.push(_init_conf)
     $log.debug($conf.get.to_json)
 
@@ -116,7 +125,7 @@ class Controller
     @commands    = CommandController::CommandStack.new
     self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
 
-    setup_ui
+    setup_harpnote_preview
 
     # initialize virgin zupfnoter
     load_demo_tune
@@ -135,7 +144,6 @@ class Controller
   # this handles a command
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
-
     begin
       @commands.run_string(command)
     rescue Exception => e
@@ -146,7 +154,7 @@ class Controller
   # Save session to local store
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
     abc          = `localStorage.setItem('systemstatus', #{systemstatus});`
     abc          = @editor.get_text
     abc          = `localStorage.setItem('abc_data', abc);`
@@ -158,6 +166,9 @@ class Controller
     @editor.set_text(abc) unless abc.nil?
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
+    if @systemstatus[:dropboxapp]
+      handle_command("dlogin #{@systemstatus[:dropboxapp]} #{@systemstatus[:dropboxpath]}")
+    end
     nil
   end
 
@@ -211,7 +222,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
        "voices": [1,2,3,4],
        "flowlines": [1,3],
        "layoutlines": [1,2,3,4],
-       "lyrics": {"versepos": {"1,2,3,4,5,6" :[10,100]}},
+       "lyrics": {"versepos": {"1,2,3,4,5,6,7,8" :[10,100]}},
        "legend": {"pos": [310,175]},
        "notes":[
          {"pos": [340,10], "text": "Ich steh an deiner Krippen hier", "style": "strong"}
@@ -235,12 +246,98 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index))
   end
 
+
+  # migrate the configuration which is provided from textox
+  # this method is necesary to upgrade existing sheets
+  def migrate_config(config)
+    result       = Confstack.new(false)
+    result.strict= false
+    result.push(config)
+
+    if config['extract']
+      new_lyrics = migrate_config_lyrics(result)
+      result.push(new_lyrics)
+
+      sheetnotes = migrate_notes(result)
+      result.push(sheetnotes)
+
+      new_legend = migrate_config_legend(result)
+      result.push(new_legend)
+    end
+    result['$schema'] = SCHEMA_VERSION
+    result['$version']= VERSION
+    result
+
+    migrate_config_cleanup(result.get)
+  end
+
+  def migrate_config_cleanup(config)
+    if config['extract']
+      config['extract'].each do |k, element|
+        lyrics = element['lyrics']
+        lyrics.delete('versepos') if lyrics
+      end
+    end
+    config
+  end
+
+  def migrate_config_legend(config)
+    new_legend = config['extract'].inject({}) do |r, element|
+      legend = element.last['legend']
+      if legend
+        unless legend['spos'] # prevewnt loop
+          opos = legend["pos"]
+
+          result           = {"spos" => [opos.first, opos.last + 7], "pos" => opos}
+          r[element.first] = {"legend" => result}
+        end
+      end
+      r
+    end
+
+    {"extract" => new_legend}
+  end
+
+  def migrate_config_lyrics(config)
+    new_lyrics = config['extract'].inject({}) do |r, element|
+      lyrics = element.last['lyrics']
+      lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
+      if lyrics
+        result           = lyrics.inject({}) do |ir, element|
+          verses                = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
+          ir[(ir.count+1).to_s] = {"verses" => verses, "pos" => element.last}
+          ir
+        end
+        r[element.first] = {"lyrics" => result}
+      end
+      r
+    end
+
+    {"extract" => new_lyrics}
+  end
+
+  def migrate_notes(config)
+    sheetnotes = config['extract'].inject({}) do |r, element|
+      notes = element.last['notes']
+      if notes.is_a? Array ## in the old version notes was an array
+        result           = notes.inject({}) do |ir, element|
+          ir[(ir.count+1).to_s] = element
+          ir
+        end
+        r[element.first] = {'notes' => result}
+      end
+      r
+    end
+    {'extract' => sheetnotes}
+  end
+
+
   def play_abc(mode = :music_model)
     if @harpnote_player.is_playing?
       @harpnote_player.stop()
-      Element.find('#tbPlay').html('play')
+      @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
     else
-      Element.find('#tbPlay').html('stop')
+      @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
       @harpnote_player.play_song() if mode == :music_model
       @harpnote_player.play_selection() if mode == :selection
       @harpnote_player.play_from_selection if mode == :selection_ff
@@ -249,7 +346,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    Element.find('#tbPlay').html('play')
+    @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
   end
 
 
@@ -341,6 +438,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       config = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
+      config = migrate_config(config)
+      @editor.set_config_part(config)
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
       $log.error("#{error.first} at #{line_col}", line_col)
@@ -403,33 +502,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     highlight_abc_object(abcelement)
   end
 
-
   def set_status(status)
     @systemstatus.merge!(status)
-    to_hide       = [:nwworkingdir]
-    statusmessage = @systemstatus.inject([]) { |r, v|
-      r.push "#{v.first}: #{v.last}  " unless to_hide.include?(v.first)
-      r
-    }.join(" | ")
-
-    statusmessage=@systemstatus[:dropbox]
-    if @systemstatus['music_model'] == 'changed'
-      Element.find("#tb_layout_top_toolbar_item_tb_save").css("background-color", "red")
-    else
-      Element.find("#tb_layout_top_toolbar_item_tb_save").css("background-color", "")
-    end
-
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    Element.find("#tbStatus").html(statusmessage)
+    @update_sytemstatus_consumers[:systemstatus].each { |c| c.call(@sytemstatus) }
+    nil
   end
 
 
   private
 
 
-  def setup_ui
-    # setup the harpnote prviewer
+  # setup the harpnote prviewer
+  def setup_harpnote_preview
 
     @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
     @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing such that we can draw in mm
@@ -437,9 +523,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       select_abc_object(harpnote.origin)
     end
 
-    # setup tune preview
+    ## register handler for dragging annotations
+    @harpnote_preview_printer.on_annotation_drag_end do |info|
+      newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
+      report    = "#{info[:config]}: #{newcoords}"
+      if info[:config]
+        @editor.patch_config_part(info[:config], newcoords)
+      end
+      Element.find("#tbCoords").html(report)
+      $log.info(report)
+    end
   end
 
+
+  # setup tune preview
   def setup_tune_preview
     # todo: remove
     # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
@@ -536,21 +633,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
+  # this registers the listeners to ui-elements.
   def setup_ui_listener
-
-    # toolbar events
-    Element.find('#tb_layout_top_toolbar_item_tbRender').on(:click) { render_previews }
-    Element.find("#tb_layout_top_toolbar_item_tbPlay").on(:click) { play_abc(:selection_ff) }
-    #Element.find('#tb_harppreviewscale').on(:change){|event|`debugger`; nil}
-
-    %x{w2ui['toolbar'].on('*', function (target, event) {
-       console.log(target);
-       console.log(event);
-      });
-    }
-
-    Element.find("#tbPrintA3").on(:click) { url = render_a3.output(:datauristring); `window.open(url)` }
-    Element.find("#tbPrintA4").on(:click) { url = render_a4.output(:datauristring); `window.open(url)` }
 
     # activate drop of files
     set_file_drop('layout');
@@ -572,7 +656,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
       end
-
     end
 
     @editor.on_cursor_change do |e|
@@ -666,6 +749,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result =
         {produce:     [0],
          abc_parser:  'ABC2SVG',
+         wrap:        60,
          defaults:
                       {
                           note_length: "1/4",
@@ -692,7 +776,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
          extract:     {
              "0" => {
-                 line_no:      1,
                  title:        "alle Stimmen",
                  startpos:     15,
                  voices:       [1, 2, 3, 4],
@@ -701,17 +784,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  subflowlines: [2, 4],
                  jumplines:    [1, 3],
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {pos: [320, 20]},
-                 lyrics:       {pos: [320, 50]},
-                 notes:        []
+                 legend:       {spos: [320, 27], pos: [320, 20]},
+                 lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
+                 nonflowrest:  false,
+                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
              },
              "1" => {
-                 line_no: 2,
                  title:   "Sopran, Alt",
                  voices:  [1, 2]
              },
              "2" => {
-                 line_no: 1,
                  title:   "Tenor, Bass",
                  voices:  [3, 4]
              }
@@ -810,7 +892,7 @@ end
 
 Document.ready? do
   a = Controller.new
-  `uicontroller = a`
+  `uicontroller = #{a}`
   nil
 end
 

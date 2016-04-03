@@ -229,6 +229,9 @@ notes -> array of hashes (placeable text)
                     "refn":  {"text": "referenced note", "pos": [20,10]}
                     },
     ```
+nonflowrest -> boolean
+:   if true: show rests in voices without flowlines
+
 
 **todo**
 
@@ -256,6 +259,7 @@ notes -> array of hashes (placeable text)
       "layoutlines": [1, 2, 3, 4],
       "legend": {"pos": [320, 20]},
       "lyrics": {"pos": [320, 60]},
+      "nonflowrest" : false,
       "notes": []
     },
 

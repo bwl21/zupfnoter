@@ -221,6 +221,20 @@ C,
 
     end
 
+    @commands.add_command(:drop) do |command|
+      command.set_help { "Handle a dropped _abc" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        @editor.set_text(@dropped_abc)
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+    end
+
     @commands.add_command(:conf) do |command|
       command.undoable = false
 
@@ -233,7 +247,7 @@ C,
       end
 
 
-      command.set_help { "set configuration parameter" }
+      command.set_help { "set configuration parameter true/false" }
 
       command.as_action do |args|
         value = {'true' => true, 'false' => false}[args[:value]]
@@ -248,8 +262,75 @@ C,
       command.as_inverse do |args|
         $conf.pop # todo: this is a bit risky
       end
-
     end
+
+
+    @commands.add_command(:addconf) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.set_help { "add configuration parameter" }
+
+      command.as_action do |args|
+
+        values = {
+            'title'        => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "extract #{@systemstatus[:view]}"} },
+            'voices'       => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
+            'flowlines'    => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
+            'layoutlines'  => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
+            'jumplines'    => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
+            'synchlines'   => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
+            'legend'       => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
+            'notes'        => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['extract.0.notes.1']} },
+            'lyrics'       => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['extract.0.lyrics.1']} },
+            'nonflowrest'  => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
+            'startpos'     => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
+            'subflowlines' => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
+            'produce'      => lambda { {key: "produce", value: $conf['produce']} },
+            'xx'           => lambda { {key: "xx", value: $conf[]} }
+        }
+
+        value = values[args[:key]]
+        if value
+          value = value.call
+          @editor.patch_config_part(value[:key], value[:value])
+        else
+          raise "unknown configuration parameter #{key}"
+          nil
+        end
+      end
+    end
+
+    @commands.add_command(:cconf) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.add_parameter(:value, :string) do |parameter|
+        parameter.set_help { "parameter value as JSON" }
+      end
+
+
+      command.set_help { "set configuration parameter" }
+
+      command.as_action do |args|
+        value = JSON.parse(args[:value])
+
+        @editor.patch_config_part(args[:key], value)
+
+        nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
+    end
+
 
   end
 
@@ -330,11 +411,13 @@ C,
           when "full"
             @dropboxclient          = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
             @dropboxclient.app_name = "full Dropbox"
+            @dropboxclient.app_id   = "full"
             @dropboxpath            = args[:path]
 
           when "app"
             @dropboxclient          = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
             @dropboxclient.app_name = "App folder only"
+            @dropboxclient.app_id   = "app"
             @dropboxpath            = args[:path]
 
           else
@@ -342,7 +425,7 @@ C,
         end
 
         @dropboxclient.authenticate().then do
-          set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
+          set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
           $log.message("logged in at dropbox with #{args[:scope]} access")
         end
       end
@@ -514,6 +597,8 @@ C,
 
           @editor.set_text(abc_text)
           set_status(music_model: "loaded")
+          handle_command("render")
+
         end.fail do |err|
           $log.error("could not load file #{err}")
         end

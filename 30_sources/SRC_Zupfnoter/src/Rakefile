@@ -34,9 +34,9 @@ task :build do
   #Opal.paths.each { |p| env.append_path(p) }
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
-  #   out << env["application"].to_s
-  #   out << Opal::Processor.load_asset_code(env, 'application')
-     out.puts( Opal::Builder::build("application").to_s)
+    #   out << env["application"].to_s
+    #   out << Opal::Processor.load_asset_code(env, 'application')
+    out.puts(Opal::Builder::build("application").to_s)
   end
 
   Dir.glob "../public/*.scss" do |f|
@@ -76,7 +76,7 @@ task :deploy => [:build] do
   mkdir_p "#{OUTFOLDER}/webserver/vendor/ace"
   mkdir_p "#{OUTFOLDER}/webserver/public/menuicons"
   Dir["../vendor/*.*"].each { |f|
-    cp f, "#{OUTFOLDER}/webserver/vendor/#{f}"
+    cp f, "#{OUTFOLDER}/webserver/vendor/#{f}" unless File.directory?(f)
   }
 
   sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
@@ -84,11 +84,15 @@ task :deploy => [:build] do
 
   cp ZUPFNOTER_JS, "#{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS}"
   # todo:this is not dry - see buildDesktop
-  ["vendor/ace", "vendor/ace/snippets", "public/icons", "vendor/w2ui", "vendor/w2ui/dist"].each do |d|
+  ["vendor/ace", "vendor/ace/snippets", "public/icons", "vendor/w2ui", "vendor/w2ui/dist",
+   "vendor/font-awesome/css", "vendor/font-awesome/fonts"
+  ].each do |d|
     mkdir_p("#{OUTFOLDER}/webserver/#{d}")
   end
 
-  ['w2ui.min.css', 'w2ui.min.js'].each{|f| cp "../vendor/w2ui/dist/#{f}", "#{OUTFOLDER}/webserver/vendor/w2ui/dist/#{f}"  }
+  Dir['../vendor/font-awesome/css/*.*', '../vendor/font-awesome/fonts/*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}"}
+
+  ['w2ui.min.css', 'w2ui.min.js'].each { |f| cp "../vendor/w2ui/dist/#{f}", "#{OUTFOLDER}/webserver/vendor/w2ui/dist/#{f}" }
 
 
   cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"

@@ -12,7 +12,7 @@ module Raphael
   # This represents a Raphael element
   #
   class Element
-    attr_accessor :unhighlight_color
+    attr_accessor :unhighlight_color, :r, :conf_key, :startpos
     #
     # Constructor
     #
@@ -20,7 +20,9 @@ module Raphael
     #
     # @return [type] [description]
     def initialize(r)
-      @r = r
+      @r                  = r
+      @conf_key           = "conf unknown"
+      @startpos           = [0, 0]
       self["stroke-width"]=0.5
     end
 
@@ -101,7 +103,6 @@ module Raphael
   #
   class Paper
 
-
     #
     # Construtctor
     # @param element [String] The indentifier of the canvas element
@@ -110,7 +111,10 @@ module Raphael
     #
     # @return [type] [description]
     def initialize(element, width, height)
-      @r = `Raphael(element, width, height)`
+      @on_drop    = lambda { |dropinfo| $log.info(dropinfo) }
+      @canvas     = [width, height]
+      @scale      = 1
+      @r          = `Raphael(element, width, height)`
       @line_width = 0.2 # todo:clarify value
     end
 
@@ -132,6 +136,39 @@ module Raphael
       `self.r.clear()`
     end
 
+    def on_annotation_drag_end(&block)
+      @on_drop = block
+    end
+
+    def draggable(element)
+      #inspired by http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
+      %x{
+         var otransform = element.r.transform();
+         var me = element.r,
+          lx = 0,
+          ly = 0,
+          ox = 0,
+          oy = 0,
+          moveFnc = function(dx, dy) {
+            scale = this.paper._viewBox[3] / this.paper.canvas.clientHeight ;
+            lx = Math.round(scale * dx) + ox;
+            ly = Math.round(scale * dy) + oy;
+
+            this.transform('t' + lx + ',' + ly + otransform);
+          },
+          startFnc = function() {},
+          endFnc = function() {
+            ox = lx;
+            oy = ly;
+            element.r.attr({fill: 'red'});
+            #{@on_drop}({element: element.r, "config": element.conf_key, "origin": element.startpos, "delta":  [ox, oy]} );
+          };
+
+      element.r.drag(moveFnc, startFnc, endFnc);
+      }
+    end
+
+
     # Draw an ellipse
     #
     # @param x [Numeric] x - horizontal coordinate of center
@@ -141,7 +178,7 @@ module Raphael
     #
     # @return [element] The generated Element
     def ellipse(x, y, rx, ry)
-      result = Raphael::Element.new(`self.r.ellipse(x, y, rx, ry)`)
+      result            = Raphael::Element.new(`self.r.ellipse(x, y, rx, ry)`)
       result.line_width = @line_width
       result
     end
@@ -155,7 +192,7 @@ module Raphael
     #
     # @return [Element] The generated Element
     def path(spec)
-      result = Raphael::Element.new(`self.r.path(spec)`)
+      result            = Raphael::Element.new(`self.r.path(spec)`)
       result.line_width = @line_width
       result
     end
@@ -170,13 +207,14 @@ module Raphael
     #
     # @return [element] The generated Element
     def rect(x, y, rx, ry, radius = 0)
-      result = Raphael::Element.new(`self.r.rect(x, y, rx, ry, radius)`)
+      result            = Raphael::Element.new(`self.r.rect(x, y, rx, ry, radius)`)
       result.line_width = @line_width
       result
     end
 
 
     def set_view_box(x, y, width, height, fit)
+      @scale = @canvas.last / height
       `self.r.setViewBox(x, y, width, height, fit)`
     end
 
@@ -202,9 +240,11 @@ module Raphael
     #
     # @return [Element] The generated Element
     def text(x, y, text, attributes={})
-      Raphael::Element.new(`self.r.text(x, y, text)`)
-    end
 
+      result = Raphael::Element.new(`self.r.text(x ,y, text)`)
+
+      result
+    end
 
     #
     # Determine the size of the canvas

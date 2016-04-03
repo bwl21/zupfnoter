@@ -18,7 +18,7 @@ module Opal
     # http://coffeedoc.info/github/dropbox/dropbox-js/master/class_index.html
     # all methods yield a promise (see http://opalrb.org/blog/2014/05/07/promises-in-opal/)
     class Client
-      attr_accessor :root_in_dropbox, :app_name
+      attr_accessor :root_in_dropbox, :app_name, :app_id
 
 
       # @param [String] key - the Dropbox API key
