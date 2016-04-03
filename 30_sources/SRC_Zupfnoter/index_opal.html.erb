@@ -177,7 +177,7 @@
         },
         {type: 'break'},
         {type: 'button', id: 'tbRender', text: 'Render', icon: 'fa fa-refresh', hint: 'aktualisiert Ausgabe'},
-        {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play-circle-o', hint: 'spielt ab Auswahl'}
+        {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'}
       ],
 
       onClick: function (event) {
@@ -253,6 +253,16 @@
     $("#tbStatus").html(systemstatus.dropbox);
     set_tbitem_caption('tb_view', systemstatus.view);
   }
+
+  function update_play_w2ui(status) {
+    if (status == "start") {
+      w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon:  "fa fa-stop"})
+    }
+    else {
+      w2ui.layout_top_toolbar.set('tbPlay', {text: "Play", icon: "fa fa-play"})
+    }
+  }
+  ;
 
 
 </script>

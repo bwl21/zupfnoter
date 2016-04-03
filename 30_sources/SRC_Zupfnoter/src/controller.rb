@@ -82,9 +82,12 @@ class Controller
 
 
     `init_w2ui();`
-    @update_sytemstatus_consumers = [
-        lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
-    ]
+    @update_sytemstatus_consumers = {systemstatus: [
+                                                       lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                   ],
+                                     play_start:   [ lambda {`update_play_w2ui('start')`}],
+                                     play_stop:    [ lambda {`update_play_w2ui('stop')`}]
+    }
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
@@ -260,13 +263,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       new_legend = migrate_config_legend(result)
       result.push(new_legend)
-
-      result['$schema']= SCHEMA_VERSION
-      result
     end
+    result['$schema'] = SCHEMA_VERSION
+    result['$version']= VERSION
+    result
 
     migrate_config_cleanup(result.get)
-    #result.get
   end
 
   def migrate_config_cleanup(config)
@@ -333,9 +335,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def play_abc(mode = :music_model)
     if @harpnote_player.is_playing?
       @harpnote_player.stop()
-      Element.find('#tbPlay').html('play')
+      @update_sytemstatus_consumers[:play_stop].each{|i| i.call()}
     else
-      Element.find('#tbPlay').html('stop')
+      @update_sytemstatus_consumers[:play_start].each{|i| i.call()}
       @harpnote_player.play_song() if mode == :music_model
       @harpnote_player.play_selection() if mode == :selection
       @harpnote_player.play_from_selection if mode == :selection_ff
@@ -344,7 +346,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    Element.find('#tbPlay').html('play')
+    @update_sytemstatus_consumers[:play_stop].each{|i| i.call()}
   end
 
 
@@ -519,7 +521,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    @update_sytemstatus_consumers.each { |c| c.call(@sytemstatus) }
+    @update_sytemstatus_consumers[:systemstatus].each { |c| c.call(@sytemstatus) }
     nil
   end
 
@@ -646,6 +648,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
+  # this registers the listeners to ui-elements.
   def setup_ui_listener
 
     # toolbar events
@@ -768,7 +771,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result =
         {produce:     [0],
          abc_parser:  'ABC2SVG',
-         wrap: 60,
+         wrap:        60,
          defaults:
                       {
                           note_length: "1/4",
