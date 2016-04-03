@@ -107,8 +107,6 @@ class Controller
 
     @editor = Harpnotes::TextPane.new("abcEditor")
 
-    @function_inhibit = {};
-
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook        = LocalStore.new("songbook")
 
@@ -262,6 +260,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       new_legend = migrate_config_legend(result)
       result.push(new_legend)
+
+      result['$schema']= SCHEMA_VERSION
+      result
     end
 
     migrate_config_cleanup(result.get)
@@ -510,7 +511,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     }.join(" | ")
 
     # todo: move this to update_systemstatus ...
-    statusmessage=@systemstatus[:dropbox]
+    statusmessage = @systemstatus[:dropbox]
     if @systemstatus['music_model'] == 'changed'
       Element.find("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
     else
@@ -541,9 +542,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
       report    = "#{info[:config]}: #{newcoords}"
       if info[:config]
-        @function_inhibit[:selection_change] = true
         @editor.patch_config_part(info[:config], newcoords)
-        @function_inhibit.delete(:selection_change)
       end
       Element.find("#tbCoords").html(report)
       $log.info(report)
@@ -669,17 +668,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     @editor.on_selection_change do |e|
-      unless @function_inhibit.has_key?(:selection_change)
-        a = @editor.get_selection_positions
-        $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
-        unless # a.first == a.last
-        @tune_preview_printer.range_highlight(a.first, a.last)
-          @harpnote_preview_printer.unhighlight_all
-          @harpnote_preview_printer.range_highlight(a.first, a.last)
-          @harpnote_player.range_highlight(a.first, a.last)
-        end
+      a = @editor.get_selection_positions
+      $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
+      unless # a.first == a.last
+      @tune_preview_printer.range_highlight(a.first, a.last)
+        @harpnote_preview_printer.unhighlight_all
+        @harpnote_preview_printer.range_highlight(a.first, a.last)
+        @harpnote_player.range_highlight(a.first, a.last)
       end
-
     end
 
     @editor.on_cursor_change do |e|

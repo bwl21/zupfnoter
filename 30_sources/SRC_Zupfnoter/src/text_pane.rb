@@ -35,6 +35,7 @@ module Harpnotes
       }
       @editor  = `editor`
       @range   = `ace.require('ace/range').Range`
+      @inhibit_callbacks = false;
       @markers = []
     end
 
@@ -48,7 +49,7 @@ module Harpnotes
       # changes in the editor
       Native(Native(@editor).getSession).on(:change) { |e|
         clear_markers #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
-        block.call(e)
+        block.call(e) unless @inhibit_callbacks
       }
     end
 
@@ -59,7 +60,7 @@ module Harpnotes
     # @return [type] [description]
     def on_selection_change(&block)
       Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
-        block.call(e)
+        block.call(e) unless @inhibit_callbacks
       end
     end
 
@@ -70,7 +71,7 @@ module Harpnotes
     # @return [type] [description]
     def on_cursor_change(&block)
       Native(Native(@editor)[:selection]).on(:changeCursor) do |e|
-        block.call(e)
+        block.call(e) unless @inhibit_callbacks
       end
     end
 
@@ -233,10 +234,12 @@ module Harpnotes
       end
 
       oldconfigpart = get_config_part
+      @inhibit_callbacks = true
       unless oldconfigpart.strip == configjson.strip
         replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
         select_range_by_position(the_selection.first, the_selection.last)
       end
+      @inhibit_callbacks = false
     end
 
     def patch_config_part(key, object)
