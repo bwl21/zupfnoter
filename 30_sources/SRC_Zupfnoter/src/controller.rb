@@ -776,7 +776,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
          extract:     {
              "0" => {
-                 line_no:      1,
                  title:        "alle Stimmen",
                  startpos:     15,
                  voices:       [1, 2, 3, 4],
@@ -791,12 +790,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
              },
              "1" => {
-                 line_no: 2,
                  title:   "Sopran, Alt",
                  voices:  [1, 2]
              },
              "2" => {
-                 line_no: 1,
                  title:   "Tenor, Bass",
                  voices:  [3, 4]
              }

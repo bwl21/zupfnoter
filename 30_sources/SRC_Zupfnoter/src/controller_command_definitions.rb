@@ -265,6 +265,45 @@ C,
     end
 
 
+    @commands.add_command(:addconf) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.set_help { "add configuration parameter" }
+
+      command.as_action do |args|
+
+        values = {
+            'title'        => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "extract #{@systemstatus[:view]}"} },
+            'voices'       => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
+            'flowlines'    => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
+            'layoutlines'  => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
+            'jumplines'    => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
+            'synchlines'   => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
+            'legend'       => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
+            'notes'        => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['extract.0.notes.1']} },
+            'lyrics'       => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['extract.0.lyrics.1']} },
+            'nonflowrest'  => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
+            'startpos'     => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
+            'subflowlines' => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
+            'produce'      => lambda { {key: "produce", value: $conf['produce']} },
+            'xx'           => lambda { {key: "xx", value: $conf[]} }
+        }
+
+        value = values[args[:key]]
+        if value
+          value = value.call
+          @editor.patch_config_part(value[:key], value[:value])
+        else
+          raise "unknown configuration parameter #{key}"
+          nil
+        end
+      end
+    end
+
     @commands.add_command(:cconf) do |command|
       command.undoable = false
 
@@ -291,6 +330,7 @@ C,
         $conf.pop # todo: this is a bit risky
       end
     end
+
 
   end
 

@@ -225,8 +225,8 @@ module Harpnotes
       the_selection = get_selection_positions
       options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
                        explicit_sort: [[:produce, :layout, :annotations, :extract,
-                                        :title, :voices, :flowlines, :subflowliens, :synchlines, :jumplines, :layoutlines, :legend, :notes, :lyrics, :nonflowrest,
-                                        "0", "1", "2", "3", "4", "5", "6", :pos, :text, :style], []]}
+                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :legend, :notes, :lyrics, :nonflowrest,
+                                        "0", "1", "2", "3", "4", "5", "6", :verses, :pos, :text, :style], []]}
       configjson    = JSON.neat_generate(object, options)
 
       unless get_text.split(CONFIG_SEPARATOR)[1]
