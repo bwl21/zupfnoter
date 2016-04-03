@@ -438,7 +438,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       config = JSON.parse(config_part)
       config = migrate_config(config)
       @editor.set_config_part(config)
-      @editor.set_config_part(config)
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
       $log.error("#{error.first} at #{line_col}", line_col)
@@ -769,6 +768,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result =
         {produce:     [0],
          abc_parser:  'ABC2SVG',
+         wrap: 60,
          defaults:
                       {
                           note_length: "1/4",

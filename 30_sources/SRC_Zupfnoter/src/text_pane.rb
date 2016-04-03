@@ -33,8 +33,8 @@ module Harpnotes
         //                                          https://github.com/ajaxorg/ace/wiki/How-to-enable-Autocomplete-in-the-Ace-editor
 
       }
-      @editor  = `editor`
-      @range   = `ace.require('ace/range').Range`
+      @editor            = `editor`
+      @range             = `ace.require('ace/range').Range`
       @inhibit_callbacks = false;
       @markers = []
     end
@@ -223,17 +223,17 @@ module Harpnotes
 
     def set_config_part(object)
       the_selection = get_selection_positions
-      options       = {wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
+      options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
                        explicit_sort: [[:produce, :layout, :annotations, :extract,
                                         :title, :voices, :flowlines, :subflowliens, :synchlines, :jumplines, :layoutlines, :legend, :notes, :lyrics, :nonflowrest,
                                         "0", "1", "2", "3", "4", "5", "6", :pos, :text, :style], []]}
       configjson    = JSON.neat_generate(object, options)
 
-      unless  get_text.split(CONFIG_SEPARATOR)[1]
+      unless get_text.split(CONFIG_SEPARATOR)[1]
         append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
       end
 
-      oldconfigpart = get_config_part
+      oldconfigpart      = get_config_part
       @inhibit_callbacks = true
       unless oldconfigpart.strip == configjson.strip
         replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
