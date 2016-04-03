@@ -43,9 +43,6 @@
 <div id="layout" style="height: 100%"></div>
 <script type="text/javascript">
 
-  function check_unload() {
-    alert("hugo");
-  }
   function init_w2ui() {
 
     perspectives = {
@@ -147,10 +144,10 @@
         },
         {type: 'spacer'},
         {type: 'break'},
-        {type: 'button', id: 'tbPrintA3', caption: 'A3', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A3'},
-        {type: 'button', id: 'tbPrintA4', caption: 'A4', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A4'},
+        {type: 'button', id: 'tbPrintA3', text: 'A3', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A3'},
+        {type: 'button', id: 'tbPrintA4', text: 'A4', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A4'},
         {type: 'break'},
-        {type: 'button', id: 'tb_toggle_console', caption: 'Console', icon: 'fa fa-terminal', hint: 'Toggelt console'},
+        {type: 'button', id: 'tb_toggle_console', text: 'Console', icon: 'fa fa-terminal', hint: 'Toggelt console'},
 
         {type: 'break'},
         {
@@ -171,7 +168,7 @@
         },
         {type: 'break', id: 'break0'},
         {
-          type: 'menu', id: 'tb_view', caption: 'Extract', icon: 'fa fa-shopping-basket', items: [
+          type: 'menu', id: 'tb_view', text: 'Extract', icon: 'fa fa-shopping-basket', items: [
           {text: 'Extract 0', icon: 'fa fa-tags', id: "0"},
           {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
           {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
@@ -179,12 +176,11 @@
         ]
         },
         {type: 'break'},
-        {type: 'button', id: 'tbRender', caption: 'Render', icon: 'fa fa-refresh', hint: 'aktualisiert Ausgabe'},
-        {type: 'button', id: 'tbPlay', caption: 'Play', icon: 'fa fa-play-circle-o', hint: 'spielt ab Auswahl'}
+        {type: 'button', id: 'tbRender', text: 'Render', icon: 'fa fa-refresh', hint: 'aktualisiert Ausgabe'},
+        {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play-circle-o', hint: 'spielt ab Auswahl'}
       ],
 
       onClick: function (event) {
-        debugger;
         if (perspectives[event.target]) {
           perspectives[event.target]();
           if (event.subItem) {
@@ -194,8 +190,6 @@
         }
       }
     }
-
-    $('#toolbar').w2toolbar(toolbar);
 
     var pstyle = 'background-color: #F5F6F7; padding: 5px;';
     $('#layout').w2layout({
@@ -252,10 +246,7 @@
 
 
   function set_tbitem_caption(item, caption) {
-    $("#tb_layout_top_toolbar_item_" + item + " .w2ui-tb-caption").html(caption)
-    // w2ui['toolbar'].set(item, {text: caption});
-    // w2ui['toolbar'].refresh();
-
+    w2ui.layout_top_toolbar.set('tb_view', {text: caption});
   }
 
   function update_sytemstatus_w2ui(systemstatus) {
