@@ -281,11 +281,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_config_legend(config)
     new_legend = config['extract'].inject({}) do |r, element|
       legend = element.last['legend']
-      unless legend['spos'] # prevewnt loop
-        opos = legend["pos"]
+      if legend
+        unless legend['spos'] # prevewnt loop
+          opos = legend["pos"]
 
-        result           = {"spos" => [opos.first, opos.last + 7], "pos" => opos}
-        r[element.first] = {"legend" => result}
+          result           = {"spos" => [opos.first, opos.last + 7], "pos" => opos}
+          r[element.first] = {"legend" => result}
+        end
       end
       r
     end
@@ -434,6 +436,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       config = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
       config = migrate_config(config)
+      @editor.set_config_part(config)
       @editor.set_config_part(config)
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
