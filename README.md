@@ -23,6 +23,48 @@ Web based editor for Tableharp notations based on abc notation
 -  feel free to ask if there are questions (too many features to describe here)
 
 
+## Credits
+
+This software would not exist without the great support (mentioned in sequence of contact)
+
+* My wife Ruth, she is an ardent plaer of Veeh® harp. This project started just to please her.
+* My son Christian, who helped me to define the initial architecture which proved to be stable
+* Sr. Christel Schröder, she answered all question about music notation
+* Flavio Vani (https://github.com/flvani) who helped me on the first steps
+* Elia Schito (https://github.com/elia) and the Opal project - what a great thing!
+* David Bau (https://github.com/PencilCode) for musicaljs
+* Paul Rosen (https://github.com/paulrosen) for abcjs (which was the abc parser in the beginning)
+* Jean Francois Moine (http://moinejf.free.fr/) for abc2svg.js and his outstandig support to fulfil my requests. 
+  abc2svg - blazing fast, full abc support
+* Willem de Vries (http://wim.vree.org/) for xml2abc.js - which enables music xml import
+* Dimitry Baranovskiy (https://github.com/DmitryBaranovskiy/raphael)
+* Vitali Malinouski (https://github.com/vitmalina/w2ui) for his great UI toolkit (w2ui)
+* James Hall (https://github.com/MrRio) for jspdf
+
+
+
+## Licencse
+
+This software is licensed under dual license GPL and Commercial
+
+## Contributing
+
+Your contributions are welcome. However, few things you need to know before contribution:
+
+* install Ruby 2.1.1 or higher with bundler
+* clone the repository
+* goto 30_Sources/SRC_Zupfnoter
+* run "bundle install"
+* goto 30_sources/SRC_Zupfnoter/src
+* run `rake server`
+* goto http://localhost:9292
+
+Please check out latest code before changing anything. Please use Gitflow to prepare PRs
+
+Contributors who need a Code of Conduct which goes beyond the basic social skills which usually 
+are taught by parents or kindergarden might consider to stay away from here.
+
+
 # Zupfnoter conventions in abc code
 
 ## Zupfnoter abc conventions
@@ -315,113 +357,3 @@ layout
   }
 
 ```
-
-
-
-# Open issues
-
-## known bugs
-
-## current work items
-
-101. drop down menu with proper links to informative sites
-
-## User interface
-
-
-203. add a local description for ABC
-206. multilingual
-207. incorporate bootstrap styling
-
-## More support for ABC
-
-301. multiple staff / Voices to (support Bass harp) *done*
-
-    better control about bass tenor alto soprano - requires certain
-    refactoring *done*
-302. annotations *done*
-303. trioles *done*
-304. ties and slurs *done*
-305. improved line handling: line break different between the voices ...
-306. voice properties octave=...
-
-## Harpnotes
-
-401. indicating measures *done*
-402. vertical layout optimization (optimize the visual distance between
-    two beats) *done*
-403. annotations *done*
-404. Debugging (writing the notenames in light grey ) *cancelled*
-405. draw extra flow line in unsynched notes, aka subflowlines} (*done*)
-406. add marks to adjust the sheet in the harp *done*
-407. print extracts *done*
-408. configure vertical layout (*done*, optimized)
-409. configure a transformation *done*
-410. denote parts *done*
-
-## technology
-
-501. MusicXml interface
-502. Visualize the internal model for debugging purposes
-503. Improved error handling *done*
-
-## Player
-
-701. Emulate harpplayer *in progress*
-702. Metronome * cancelled*
-
-# Brainstorming
-
--   using shoes and atom_shell to make a standalone application
-    https://github.com/wasnotrice/shoes-atom
-
-    started with node-webkit
-
-# Result of initial evaluation
-
-601. it is good to enter the stuff with two persons
-602. good Visual feedback is essential
-603. should be able to turn of some voices in oder to focus on the one
-    currently entered
-604. play from particular position onwards.
-
-# Credits
-
-This software would not exist without the great support (mentioned in sequence of contact)
-
-* My wife Ruth, she is an ardent plaer of Veeh® harp. This project started just to please her.
-* My son Christian, who helped me to define the initial architecture which proved to be stable
-* Sr. Christel Schröder, she answered all question about music notation
-* Flavio Vani (https://github.com/flvani) who helped me on the first steps
-* Elia Schito (https://github.com/elia) and the Opal project - what a great thing!
-* David Bau (https://github.com/PencilCode) for musicaljs
-* Paul Rosen (https://github.com/paulrosen) for abcjs (which was the abc parser in the beginning)
-* Jean Francois Moine (http://moinejf.free.fr/) for abc2svg.js and his outstandig support to fulfil my requests. 
-  abc2svg - blazing fast, full abc support
-* Willem de Vries (http://wim.vree.org/) for xml2abc.js - which enables music xml import
-* Dimitry Baranovskiy (https://github.com/DmitryBaranovskiy/raphael)
-* Vitali Malinouski (https://github.com/vitmalina/w2ui) for his great UI toolkit (w2ui)
-* James Hall (https://github.com/MrRio) for jspdf
-
-
-
-# Licencse
-
-This software is licensed under dual license GPL and Commercial
-
-# Contributing
-
-Your contributions are welcome. However, few things you need to know before contribution:
-
-* install Ruby 2.1.1 or higher with bundler
-* clone the repository
-* goto 30_Sources/SRC_Zupfnoter
-* run "bundle install"
-* goto 30_sources/SRC_Zupfnoter/src
-* run `rake server`
-* goto http://localhost:9292
-
-Please check out latest code before changing anything. Please use Gitflow to prepare PRs
-
-Contributors who need a Code of Conduct which goes beyond the basic social skills which usually 
-are taught by parents or kindergarden might consider to stay away from here.
