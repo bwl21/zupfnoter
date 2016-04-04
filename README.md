@@ -147,6 +147,8 @@ Configuration is appended to the abc - code separated by
 If the configuration section is missing, it is automatically inserted on first render. The configuration section 
 is reformatted on every render action.
 
+You can use the config menu to inject fragments of configuration. Note that the menu injects the fragment to the currently active extract.
+
 
 ```JSON`
 
@@ -197,17 +199,20 @@ In this case we specifiy
 
 the following fields apply to an extract:
 
-title -> string
-:   The title of the print, shown in the sublegend
+* title -> string
 
-voices -> array of numbers
-:   List of voices to be shown (it is an array of integer) from 1 to
+    The title of the print, shown in the sublegend
+
+* voices -> array of numbers
+
+    List of voices to be shown (it is an array of integer) from 1 to
     n denoting the voice index. Note that the voice index is
     basically the sequence of voices in the note preview. Therefore
     the %%score directive also influcnces the voice index.
 
-synchlines -> array of array of numbers
-:   List of synchlines to be shown. It is an array of array integers
+* synchlines -> array of array of numbers
+
+    List of synchlines to be shown. It is an array of array integers
     denoting the voice pairs for which synchlines shall be drawn.
 
     example
@@ -216,29 +221,35 @@ synchlines -> array of array of numbers
         "synchlines": [[1, 2], [3, 4]]
     ```
 
-flowlines - >array of numbers
-:   List of flowlines to be shown. It is an array of integers
+* flowlines - >array of numbers
 
-subflowlines -> array of numbers
-:   List of subflowlins to be shown. It is an array of intenters.
+    List of flowlines to be shown. It is an array of integers
+
+* subflowlines -> array of numbers
+
+    List of subflowlins to be shown. It is an array of intenters.
     Subflowlines are flowlines connecting notes which otherwise have
     no corresponding note in other displayed voices and therefore
     would appear as single notes lost in space (without anny
     connection).
 
-startpos -> number
-:   the vertical position to start with the first note. It is an
+* startpos -> number
+
+    the vertical position to start with the first note. It is an
     integer.
 
-jumplines -> array of numbers
-:   List of jumplines to be shown. It is an array of integers
+* jumplines -> array of numbers
 
-layoutlines -> array of numbers
-:   List of voices to consider for vertical layout optimization.
+    List of jumplines to be shown. It is an array of integers
+
+* layoutlines -> array of numbers
+
+    List of voices to consider for vertical layout optimization.
     Defaults to the List specified by `voices`
 
-notes -> array of hashes (placeable text)
-:   Hash of notes to be drawn on the output. Each note is a placeable text. the key is to be
+* notes -> array of hashes (placeable text)
+
+    Hash of notes to be drawn on the output. Each note is a placeable text. the key is to be
     mantained manually.
 
     ```JSON
@@ -246,11 +257,13 @@ notes -> array of hashes (placeable text)
           "1" : {"pos": [320, 0], "text": "", "style": "large"}
         },
     ```
-nonflowrest -> boolean
-:   if true: show rests in voices without flowlines
+*nonflowrest -> boolean
 
-layout
-:   This allows to change the layout parameters on the level of an extract
+    if true: show rests in voices without flowlines
+
+* layout
+
+    This allows to change the layout parameters on the level of an extract
 
 
 ### the default configuration
