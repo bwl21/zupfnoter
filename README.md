@@ -16,7 +16,7 @@ Web based editor for Tableharp notations based on abc notation
 ## getting started
 
 -  https://zupfnoter.weichel21.de
--  enter `demo` followed by return on the lower left pane
+-  enter `demo` followed by return on the lower left pane (click the Console button if the pane does not show up)
 -  watch tunes showing up
 -  click on `render` to update harp notes
 -  click on `play` to listen to the tune
