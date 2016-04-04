@@ -1060,23 +1060,13 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0)
 
-
-        debug_grid = [];
-        debug_grid = layout_debug_grid() if $conf['layout.grid']
-
         print_options        = Confstack.new()
         print_options.strict = false
         print_options.push($conf.get("extract.0"))
 
         # todo: remove this appraoch after migration
-        if $conf.get("location") == "song"
           song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
-        else # todo: remove this appraoch after migration
-          song_print_options          = music.harpnote_options[:print][print_variant_nr]
-          song_print_options[:legend] = music.harpnote_options[:legend] # todo: compatibility code
-          song_print_options[:lyrics] = music.harpnote_options[:lyrics] # todo: compatibility code
-          song_print_options[:notes]  = music.harpnote_options[:notes] # todo: compatibility code
-        end
+
 
 
         unless song_print_options
@@ -1090,6 +1080,11 @@ module Harpnotes
         # push view specific configuration
         layout_options = print_options[:layout] || {}
         $conf.push({layout: layout_options})
+        
+        debug_grid = [];
+        debug_grid = layout_debug_grid() if $conf['layout.grid']
+
+
         initialize
 
         @y_offset = print_options[:startpos]
