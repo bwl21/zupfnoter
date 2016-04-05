@@ -22746,7 +22746,7 @@ Opal.modules["harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $range = Opal.range, $hash = Opal.hash, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$instance_variable_get', '$-', '$instance_variables', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$each', '$beat=', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$flatten', '$proxy_note', '$>', '$length', '$select', '$new', '$expanded_beat_maps', '$empty?', '$reject', '$notes', '$max', '$keys', '$last_beat', '$private', '$/', '$inject', '$*', '$get', '$tuplet', '$floor', '$start_pos', '$error', '$[]=', '$index=', '$index', '$==', '$center', '$dotted', '$include', '$line_width=', '$%', '$layout_debug_grid', '$strict=', '$push', '$harpnote_options', '$warning', '$initialize', '$compute_beat_compression', '$values', '$<', '$min', '$call', '$include?', '$build_synch_points', '$layout_voice', '$each_with_index', '$voices', '$origin', '$make_sheetmark_path', '$meta_data', '$strftime', '$now', '$join', '$split', '$delete', '$to_i', '$pop', '$!', '$visible=', '$layout_playable', '$visible', '$companion', '$layout_newpart', '$reverse', '$first_in_part?', '$tuplet_start?', '$tuplet_end?', '$Vector2d', '$make_annotated_bezier_path', '$debug', '$tap', '$to_a', '$to_s', '$tie_end?', '$make_slur_path', '$tie_start?', '$slur_starts', '$slur_ends', '$policy', '$make_path_from_jumpline', '$from', '$to', '$position', '$text', '$beat_maps', '$duration_to_id', '$layout_note', '$layout_measure_start', '$layout_accord', '$layout_pause', '$check_duration', '$shift', '$-@', '$sort_by', '$x', '$y', '$normalize', '$+@', '$name', '$to_sym', '$===', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular']);
+  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$instance_variable_get', '$-', '$instance_variables', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$each', '$beat=', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$flatten', '$proxy_note', '$>', '$length', '$select', '$new', '$expanded_beat_maps', '$empty?', '$reject', '$notes', '$max', '$keys', '$last_beat', '$private', '$/', '$inject', '$*', '$get', '$tuplet', '$floor', '$start_pos', '$error', '$[]=', '$index=', '$index', '$==', '$center', '$dotted', '$include', '$line_width=', '$%', '$strict=', '$push', '$warning', '$layout_debug_grid', '$initialize', '$compute_beat_compression', '$values', '$<', '$min', '$call', '$include?', '$build_synch_points', '$layout_voice', '$harpnote_options', '$each_with_index', '$voices', '$origin', '$make_sheetmark_path', '$meta_data', '$strftime', '$now', '$join', '$split', '$delete', '$to_i', '$pop', '$!', '$visible=', '$layout_playable', '$visible', '$companion', '$layout_newpart', '$reverse', '$first_in_part?', '$tuplet_start?', '$tuplet_end?', '$Vector2d', '$make_annotated_bezier_path', '$debug', '$tap', '$to_a', '$to_s', '$tie_end?', '$make_slur_path', '$tie_start?', '$slur_starts', '$slur_ends', '$policy', '$make_path_from_jumpline', '$from', '$to', '$position', '$text', '$beat_maps', '$duration_to_id', '$layout_note', '$layout_measure_start', '$layout_accord', '$layout_pause', '$check_duration', '$shift', '$-@', '$sort_by', '$x', '$y', '$normalize', '$+@', '$name', '$to_sym', '$===', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular']);
   return (function($base) {
     var $Harpnotes, self = $Harpnotes = $module($base, 'Harpnotes');
 
@@ -23670,7 +23670,7 @@ if (g == null) g = nil;
         });
 
         Opal.defn(self, '$layout', function(music, beat_layout, print_variant_nr) {
-          var $a, $b, $c, TMP_33, TMP_34, $d, TMP_35, $e, TMP_36, $f, TMP_38, $g, TMP_39, $h, $i, TMP_40, TMP_41, $j, TMP_43, $k, TMP_44, $l, TMP_46, self = this, debug_grid = nil, print_options = nil, song_print_options = nil, layout_options = nil, beat_compression_map = nil, maximal_beat = nil, full_beat_spacing = nil, factor = nil, compressed_beat_layout_proc = nil, required_synchlines = nil, synched_notes = nil, voice_elements = nil, note_to_ellipse = nil, synch_lines = nil, sheet_marks = nil, annotations = nil, title = nil, filename = nil, meter = nil, key = nil, composer = nil, tempo = nil, print_variant_title = nil, title_pos = nil, legend_pos = nil, legend = nil, datestring = nil, lyrics = nil, lyric_text = nil, text = nil, verses = nil, sheet_elements = nil;
+          var $a, $b, $c, TMP_33, TMP_34, $d, TMP_35, $e, TMP_36, $f, TMP_38, $g, TMP_39, $h, $i, TMP_40, TMP_41, $j, TMP_43, $k, TMP_44, $l, TMP_46, self = this, print_options = nil, song_print_options = nil, layout_options = nil, debug_grid = nil, beat_compression_map = nil, maximal_beat = nil, full_beat_spacing = nil, factor = nil, compressed_beat_layout_proc = nil, required_synchlines = nil, synched_notes = nil, voice_elements = nil, note_to_ellipse = nil, synch_lines = nil, sheet_marks = nil, annotations = nil, title = nil, filename = nil, meter = nil, key = nil, composer = nil, tempo = nil, print_variant_title = nil, title_pos = nil, legend_pos = nil, legend = nil, datestring = nil, lyrics = nil, lyric_text = nil, text = nil, verses = nil, sheet_elements = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -23680,20 +23680,10 @@ if (g == null) g = nil;
           if (print_variant_nr == null) {
             print_variant_nr = 0
           }
-          debug_grid = [];
-          if ((($a = $gvars.conf['$[]']("layout.grid")) !== nil && (!$a.$$is_boolean || $a == true))) {
-            debug_grid = self.$layout_debug_grid()};
           print_options = $scope.get('Confstack').$new();
           (($a = [false]), $b = print_options, $b['$strict='].apply($b, $a), $a[$a.length-1]);
           print_options.$push($gvars.conf.$get("extract.0"));
-          if ($gvars.conf.$get("location")['$==']("song")) {
-            song_print_options = $gvars.conf.$get("extract." + (print_variant_nr))
-            } else {
-            song_print_options = music.$harpnote_options()['$[]']("print")['$[]'](print_variant_nr);
-            song_print_options['$[]=']("legend", music.$harpnote_options()['$[]']("legend"));
-            song_print_options['$[]=']("lyrics", music.$harpnote_options()['$[]']("lyrics"));
-            song_print_options['$[]=']("notes", music.$harpnote_options()['$[]']("notes"));
-          };
+          song_print_options = $gvars.conf.$get("extract." + (print_variant_nr));
           if (song_print_options !== false && song_print_options !== nil) {
             print_options.$push(song_print_options)
             } else {
@@ -23702,6 +23692,9 @@ if (g == null) g = nil;
           print_options = print_options.$get();
           layout_options = ((($a = print_options['$[]']("layout")) !== false && $a !== nil) ? $a : $hash2([], {}));
           $gvars.conf.$push($hash2(["layout"], {"layout": layout_options}));
+          debug_grid = [];
+          if ((($a = $gvars.conf['$[]']("layout.grid")) !== nil && (!$a.$$is_boolean || $a == true))) {
+            debug_grid = self.$layout_debug_grid()};
           self.$initialize();
           self.y_offset = print_options['$[]']("startpos");
           beat_compression_map = self.$compute_beat_compression(music, print_options['$[]']("layoutlines"));
@@ -23885,7 +23878,7 @@ if (result == null) result = nil;if (playable == null) playable = nil;
               p1 = self.$Vector2d(lookuptable_drawing_by_playable['$[]'](tuplet_start).$center());
               p2 = self.$Vector2d(lookuptable_drawing_by_playable['$[]'](playable).$center());
               $b = self.$make_annotated_bezier_path([p1, p2]), $a = Opal.to_ary($b), tiepath = ($a[0] == null ? nil : $a[0]), anchor = ($a[1] == null ? nil : $a[1]), $b;
-              $gvars.log.$debug("" + ([tiepath, anchor]) + " (" + ("harpnotes") + " " + (1319) + ")");
+              $gvars.log.$debug("" + ([tiepath, anchor]) + " (" + ("harpnotes") + " " + (1314) + ")");
               result.$push(($a = ($b = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Path')).$new(tiepath)).$tap, $a.$$p = (TMP_60 = function(d){var self = TMP_60.$$s || this, $a, $b;
                 if ($gvars.conf == null) $gvars.conf = nil;
 if (d == null) d = nil;
@@ -23957,7 +23950,7 @@ if (c == null) c = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 if (goto$ == null) goto$ = nil;
           distance = goto$.$policy()['$[]']("distance");
-            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (1375));
+            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (1370));
             if ($rb_gt(distance, 0)) {
               distance = $rb_minus(distance, 1)};
             if (distance !== false && distance !== nil) {
@@ -27237,8 +27230,8 @@ if (i == null) i = nil;
         report = "" + (info['$[]']("config")) + ": " + (newcoords);
         if ((($a = info['$[]']("config")) !== nil && (!$a.$$is_boolean || $a == true))) {
           self.editor.$patch_config_part(info['$[]']("config"), newcoords)};
-        $scope.get('Element').$find("#tbCoords").$html(report);
-        return $gvars.log.$info(report);}, TMP_20.$$s = self, TMP_20), $a).call($c);
+        $("#harpPreview").w2overlay(report);
+        return $gvars.log.$info("dragged to " + (report));}, TMP_20.$$s = self, TMP_20), $a).call($c);
     });
 
     Opal.defn(self, '$setup_tune_preview', function() {
@@ -27740,7 +27733,7 @@ Opal.modules["controller_command_definitions"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $gvars = Opal.gvars, $hash2 = Opal.hash2, $range = Opal.range;
 
-  Opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$add_parameter', '$set_default', '$[]', '$parameter_help', '$set_status', '$to_i', '$render_previews', '$loglevel=', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$load_demo_tune', '$include?', '$nil?', '$pop', '$lambda', '$call', '$patch_config_part', '$key', '$parse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$new', '$app_name=', '$app_id=', '$then', '$app_name', '$app_id', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$to_a', '$match', '$handle_command', '$split', '$choose_file', '$debug', '$layout_harpnotes', '$harpnote_options', '$write_file', '$output', '$render_a3', '$render_a4', '$each', '$push', '$fail', '$when', '$add_metadata', '$read_file']);
+  Opal.add_stubs(['$private', '$info', '$add_command', '$undoable=', '$set_help', '$as_action', '$message', '$join', '$help_string_style', '$add_parameter', '$set_default', '$[]', '$parameter_help', '$set_status', '$to_i', '$render_previews', '$loglevel=', '$loglevel', '$keys', '$error', '$undo', '$redo', '$map', '$first', '$name', '$last', '$history', '$undostack', '$redostack', '$===', '$play_abc', '$stop_play_abc', '$gsub', '$raise', '$[]=', '$get_text', '$set_text', '$as_inverse', '$load_demo_tune', '$include?', '$nil?', '$pop', '$lambda', '$call', '$patch_config_part', '$key', '$parse', '$get_metadata', '$update', '$+', '$list', '$retrieve', '$command_tokens', '$end_with?', '$new', '$app_name=', '$app_id=', '$then', '$app_name', '$app_id', '$authenticate', '$to_s', '$select', '$=~', '$read_dir', '$to_a', '$match', '$handle_command', '$split', '$choose_file', '$debug', '$layout_harpnotes', '$harpnote_options', '$write_file', '$output', '$render_a3', '$render_a4', '$each', '$push', '$fail', '$when', '$add_metadata', '$read_file']);
   return (function($base, $super) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
@@ -27969,10 +27962,11 @@ if (args == null) args = nil;
             } else {
             self.$raise("no title specified")
           };
-          template = "X:" + (song_id) + "\nF:" + (song_id) + "_" + (filename) + "\nT:" + (song_title) + "\nC:\nS:\nM:4/4\nL:1/4\nQ:1/4=120\nK:C\n%%score T1 T2  B1 B2\nV:T1 clef=treble-8 name=\"Sopran\" snm=\"S\"\nC\nV:T2 clef=treble-8  name=\"Alt\" snm=\"A\"\nC,\n\n%%%%zupfnoter.config\n\n{\n  \"produce\": [\"1\", \"2\"]\n}\n";
+          template = "X:" + (song_id) + "\nF:" + (song_id) + "_" + (filename) + "\nT:" + (song_title) + "\nC:\nS:\nM:4/4\nL:1/4\nQ:1/4=120\nK:C\n%%score 1 2 3 4\nV:1 clef=treble-8 name=\"Sopran\" snm=\"S\"\nC\nV:2 clef=treble-8  name=\"Alt\" snm=\"A\"\nC,\n\n%%%%zupfnoter.config\n\n{\n  \"produce\": [1]\n}\n";
           args['$[]=']("oldval", self.editor.$get_text());
           self.editor.$set_text(template);
-          return self.$set_status($hash2(["music_model"], {"music_model": "new"}));}, TMP_59.$$s = self, TMP_59), $a).call($e);
+          self.$set_status($hash2(["music_model"], {"music_model": "new"}));
+          return self.$render_previews();}, TMP_59.$$s = self, TMP_59), $a).call($e);
         return ($a = ($f = c).$as_inverse, $a.$$p = (TMP_60 = function(args){var self = TMP_60.$$s || this;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
@@ -27986,7 +27980,8 @@ if (command == null) command = nil;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
         args['$[]=']("oldval", self.editor.$get_text());
-          return self.$load_demo_tune();}, TMP_63.$$s = self, TMP_63), $a).call($c);
+          self.$load_demo_tune();
+          return self.$render_previews();}, TMP_63.$$s = self, TMP_63), $a).call($c);
         return ($a = ($d = command).$as_inverse, $a.$$p = (TMP_64 = function(args){var self = TMP_64.$$s || this;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
@@ -28001,7 +27996,8 @@ if (command == null) command = nil;
           if (self.dropped_abc == null) self.dropped_abc = nil;
 if (args == null) args = nil;
         args['$[]=']("oldval", self.editor.$get_text());
-          return self.editor.$set_text(self.dropped_abc);}, TMP_67.$$s = self, TMP_67), $a).call($c);
+          self.editor.$set_text(self.dropped_abc);
+          return self.$render_previews();}, TMP_67.$$s = self, TMP_67), $a).call($c);
         return ($a = ($d = command).$as_inverse, $a.$$p = (TMP_68 = function(args){var self = TMP_68.$$s || this;
           if (self.editor == null) self.editor = nil;
 if (args == null) args = nil;
@@ -28216,34 +28212,41 @@ if (args == null) args = nil;
 if (command == null) command = nil;
       ($a = ($b = command).$add_parameter, $a.$$p = (TMP_118 = function(parameter){var self = TMP_118.$$s || this, $a, $b, TMP_119, $c, TMP_120;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a.$$p = (TMP_119 = function(){var self = TMP_119.$$s || this;
+        ($a = ($b = parameter).$set_default, $a.$$p = (TMP_119 = function(){var self = TMP_119.$$s || this, $a;
+            if (self.systemstatus == null) self.systemstatus = nil;
 
-          return "app"}, TMP_119.$$s = self, TMP_119), $a).call($b);
+          return ((($a = self.systemstatus['$[]']("dropboxapp")) !== false && $a !== nil) ? $a : "full")}, TMP_119.$$s = self, TMP_119), $a).call($b);
           return ($a = ($c = parameter).$set_help, $a.$$p = (TMP_120 = function(){var self = TMP_120.$$s || this;
 
           return "(app | full) app: app only | full: full dropbox"}, TMP_120.$$s = self, TMP_120), $a).call($c);}, TMP_118.$$s = self, TMP_118), $a).call($b, "scope", "string");
         ($a = ($c = command).$add_parameter, $a.$$p = (TMP_121 = function(parameter){var self = TMP_121.$$s || this, $a, $b, TMP_122, $c, TMP_123;
 if (parameter == null) parameter = nil;
-        ($a = ($b = parameter).$set_default, $a.$$p = (TMP_122 = function(){var self = TMP_122.$$s || this;
+        ($a = ($b = parameter).$set_default, $a.$$p = (TMP_122 = function(){var self = TMP_122.$$s || this, $a;
+            if (self.systemstatus == null) self.systemstatus = nil;
 
-          return "/"}, TMP_122.$$s = self, TMP_122), $a).call($b);
+          return ((($a = self.systemstatus['$[]']("dropboxpath")) !== false && $a !== nil) ? $a : "/")}, TMP_122.$$s = self, TMP_122), $a).call($b);
           return ($a = ($c = parameter).$set_help, $a.$$p = (TMP_123 = function(){var self = TMP_123.$$s || this;
 
           return "path to set in dropbox"}, TMP_123.$$s = self, TMP_123), $a).call($c);}, TMP_121.$$s = self, TMP_121), $a).call($c, "path", "string");
         ($a = ($d = command).$set_help, $a.$$p = (TMP_124 = function(){var self = TMP_124.$$s || this;
 
         return "dropbox login for " + (command.$parameter_help(0))}, TMP_124.$$s = self, TMP_124), $a).call($d);
-        ($a = ($e = command).$as_action, $a.$$p = (TMP_125 = function(args){var self = TMP_125.$$s || this, $a, $b, TMP_126, $case = nil;
+        ($a = ($e = command).$as_action, $a.$$p = (TMP_125 = function(args){var self = TMP_125.$$s || this, $a, $b, TMP_126, path = nil, $case = nil;
           if (self.dropboxclient == null) self.dropboxclient = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (args == null) args = nil;
-        $case = args['$[]']("scope");if ("full"['$===']($case)) {self.dropboxclient = (((($scope.get('Opal')).$$scope.get('DropboxJs'))).$$scope.get('Client')).$new("us2s6tq6bubk6xh");
+        path = args['$[]']("path");
+          if ((($a = path['$end_with?']("/")) !== nil && (!$a.$$is_boolean || $a == true))) {
+            } else {
+            path = $rb_plus(path, "/")
+          };
+          $case = args['$[]']("scope");if ("full"['$===']($case)) {self.dropboxclient = (((($scope.get('Opal')).$$scope.get('DropboxJs'))).$$scope.get('Client')).$new("us2s6tq6bubk6xh");
           (($a = ["full Dropbox"]), $b = self.dropboxclient, $b['$app_name='].apply($b, $a), $a[$a.length-1]);
           (($a = ["full"]), $b = self.dropboxclient, $b['$app_id='].apply($b, $a), $a[$a.length-1]);
-          self.dropboxpath = args['$[]']("path");}else if ("app"['$===']($case)) {self.dropboxclient = (((($scope.get('Opal')).$$scope.get('DropboxJs'))).$$scope.get('Client')).$new("xr3zna7wrp75zax");
+          self.dropboxpath = path;}else if ("app"['$===']($case)) {self.dropboxclient = (((($scope.get('Opal')).$$scope.get('DropboxJs'))).$$scope.get('Client')).$new("xr3zna7wrp75zax");
           (($a = ["App folder only"]), $b = self.dropboxclient, $b['$app_name='].apply($b, $a), $a[$a.length-1]);
           (($a = ["app"]), $b = self.dropboxclient, $b['$app_id='].apply($b, $a), $a[$a.length-1]);
-          self.dropboxpath = args['$[]']("path");}else {$gvars.log.$error("select app | full")};
+          self.dropboxpath = path;}else {$gvars.log.$error("select app | full")};
           return ($a = ($b = self.dropboxclient.$authenticate()).$then, $a.$$p = (TMP_126 = function(){var self = TMP_126.$$s || this;
             if (self.dropboxclient == null) self.dropboxclient = nil;
             if (self.dropboxpath == null) self.dropboxpath = nil;
@@ -28379,7 +28382,7 @@ if (args == null) args = nil;
         abc_code = self.editor.$get_text();
           metadata = self.abc_transformer.$get_metadata(abc_code);
           filebase = metadata['$[]']("F").$first();
-          $gvars.log.$debug("" + (metadata.$to_s()) + " (" + ("controller_command_definitions") + " " + (538) + ")");
+          $gvars.log.$debug("" + (metadata.$to_s()) + " (" + ("controller_command_definitions") + " " + (545) + ")");
           if (filebase !== false && filebase !== nil) {
             filebase = filebase.$split("\n").$first()
             } else {
@@ -28447,7 +28450,7 @@ if (error == null) error = nil;if (data == null) data = nil;
             if (self.dropboxclient == null) self.dropboxclient = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (entries == null) entries = nil;
-          $gvars.log.$debug("" + (entries) + " (" + ("controller_command_definitions") + " " + (597) + ")");
+          $gvars.log.$debug("" + (entries) + " (" + ("controller_command_definitions") + " " + (604) + ")");
             fileid = ($a = ($b = entries).$select, $a.$$p = (TMP_171 = function(entry){var self = TMP_171.$$s || this;
 if (entry == null) entry = nil;
             return entry['$=~']((new RegExp("^" + fileid + "_.*\\.abc$")))}, TMP_171.$$s = self, TMP_171), $a).call($b).$first();
@@ -28456,7 +28459,7 @@ if (entry == null) entry = nil;
             if (self.editor == null) self.editor = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (abc_text == null) abc_text = nil;
-          $gvars.log.$debug("loaded " + (fileid) + " (" + ("controller_command_definitions") + " " + (601) + ")");
+          $gvars.log.$debug("loaded " + (fileid) + " (" + ("controller_command_definitions") + " " + (608) + ")");
             filebase = fileid.$split(".abc")['$[]']($range(0, -1, false)).$join(".abc");
             abc_text = self.abc_transformer.$add_metadata(abc_text, $hash2(["F"], {"F": filebase}));
             self.editor.$set_text(abc_text);
@@ -29987,7 +29990,7 @@ Opal.modules["version"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice;
 
   Opal.add_stubs(['$year', '$now']);
-  Opal.cdecl($scope, 'VERSION', "1.0.0");
+  Opal.cdecl($scope, 'VERSION', "1.1.0 dev");
   Opal.cdecl($scope, 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.cdecl($scope, 'COPYRIGHT', "©" + ($scope.get('Time').$now().$year()) + " http://www.bernhard-weichel.de/zupfnoterpage");
 };
