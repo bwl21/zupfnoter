@@ -154,6 +154,7 @@ class Controller
   end
 
   def __ic_03_create_commands
+
     @commands.add_command(:c) do |c|
       c.set_help { "create song #{c.parameter_help(0)} #{c.parameter_help(1)}" }
       c.add_parameter(:id, :string) do |parameter|
@@ -183,21 +184,22 @@ M:4/4
 L:1/4
 Q:1/4=120
 K:C
-%%score T1 T2  B1 B2
-V:T1 clef=treble-8 name="Sopran" snm="S"
+%%score 1 2 3 4
+V:1 clef=treble-8 name="Sopran" snm="S"
 C
-V:T2 clef=treble-8  name="Alt" snm="A"
+V:2 clef=treble-8  name="Alt" snm="A"
 C,
 
 %%%%zupfnoter.config
 
 {
-  "produce": ["1", "2"]
+  "produce": [1]
 }
 }
         args[:oldval] = @editor.get_text
         @editor.set_text(template)
         set_status(music_model: "new")
+        render_previews
       end
 
       c.as_inverse do |args|
@@ -212,6 +214,7 @@ C,
       command.as_action do |args|
         args[:oldval] = @editor.get_text
         load_demo_tune
+        render_previews
       end
 
       command.as_inverse do |args|
@@ -227,6 +230,7 @@ C,
       command.as_action do |args|
         args[:oldval] = @editor.get_text
         @editor.set_text(@dropped_abc)
+        render_previews
       end
 
       command.as_inverse do |args|
@@ -394,31 +398,34 @@ C,
   def __ic_05_dropbox_commands
     @commands.add_command(:dlogin) do |command|
       command.add_parameter(:scope, :string) do |parameter|
-        parameter.set_default { "app" }
+        parameter.set_default { @systemstatus[:dropboxapp] || 'full'}
         parameter.set_help { "(app | full) app: app only | full: full dropbox" }
       end
 
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default { "/" }
+        parameter.set_default { @systemstatus[:dropboxpath] || "/" }
         parameter.set_help { "path to set in dropbox" }
       end
-
 
       command.set_help { "dropbox login for #{command.parameter_help(0)}" }
 
       command.as_action do |args|
+
+        path =  args[:path]
+        path +=  '/' unless path.end_with? '/'
+
         case args[:scope]
           when "full"
             @dropboxclient          = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
             @dropboxclient.app_name = "full Dropbox"
             @dropboxclient.app_id   = "full"
-            @dropboxpath            = args[:path]
+            @dropboxpath            = path
 
           when "app"
             @dropboxclient          = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
             @dropboxclient.app_name = "App folder only"
             @dropboxclient.app_id   = "app"
-            @dropboxpath            = args[:path]
+            @dropboxpath            = path
 
           else
             $log.error("select app | full")

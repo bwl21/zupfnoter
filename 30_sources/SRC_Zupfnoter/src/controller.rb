@@ -530,8 +530,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       if info[:config]
         @editor.patch_config_part(info[:config], newcoords)
       end
-      Element.find("#tbCoords").html(report)
-      $log.info(report)
+      `$("#harpPreview").w2overlay(report);`
+      $log.info("dragged to #{report}")
     end
   end
 
