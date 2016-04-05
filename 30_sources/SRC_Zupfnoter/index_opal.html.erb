@@ -117,6 +117,7 @@
       },
 
       'tbRender': function () {
+        uicontroller.editor.$resize();
         uicontroller.$render_previews();
       },
 
@@ -125,12 +126,69 @@
         uicontroller.editor.$resize();
       },
 
-      'tb_choose': function () {
+
+      'tb_create': function () {
+        openPopup({
+          name: 'createNewSheetForm',
+          text: 'Create new Sheet',
+          style: 'border: 0px; background-color: transparent;',
+          fields: [
+            {field: 'id', text: "Id", type: 'float', required: true, html: {caption: 'Id'}},
+            {
+              field: 'title',
+              type: 'text',
+              required: true,
+              html: {caption: 'Title', attr: 'style="width: 300px"'}
+            },
+          ],
+          actions: {
+            "create": function () {
+              if (this.validate().length == 0) {
+                uicontroller.$handle_command("c " + this.record.id + '"' + this.record.title + '"');
+                w2popup.close();
+              }
+            },
+            "reset": function () {
+              this.clear();
+            }
+          }
+        })
+      },
+
+      'tb_open': function () {
         uicontroller.$handle_command("dlogin full /");
         uicontroller.$handle_command("dchoose")
       },
+
       'tb_save': function () {
         uicontroller.$handle_command("dsave")
+      },
+
+      'tb_login': function () {
+        openPopup({
+          name: 'loginForm',
+          text: 'Login',
+          style: 'border: 0px; background-color: transparent;',
+          fields: [
+            {
+              field: 'folder',
+              type: 'text',
+              required: true,
+              html: {caption: 'Folder in Dropbox', attr: 'style="width: 300px"'}
+            },
+          ],
+          actions: {
+            "login": function () {
+              if (this.validate().length == 0) {
+                uicontroller.$handle_command("dlogin full " + this.record.folder)
+                w2popup.close();
+              }
+            },
+            "reset": function () {
+              this.clear();
+            }
+          }
+        })
       }
     }
 
@@ -139,8 +197,10 @@
       name: 'toolbar',
       items: [
         {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span>'},
-        {type: 'html', html: '<div style="width:200px"/>'},
-        {type: 'button', id: 'tb_choose', text: 'open', icon: 'fa fa-folder', hint: 'Open in dropboxx'},
+        {type: 'html', html: '<div style="width:25px"/>'},
+        {type: 'button', id: 'tb_login', text: 'login', icon: 'fa fa-sign-in', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_create', text: 'create', icon: 'fa fa-plus-square-o', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_open', text: 'open', icon: 'fa fa-folder', hint: 'Open in dropboxx'},
         {type: 'button', id: 'tb_save', text: 'save', icon: 'fa fa-dropbox', hint: 'Save in dropbox'},
         {
           type: 'html',
@@ -288,6 +348,33 @@
   }
   ;
 
+  function openPopup(theForm) {
+
+    if (!w2ui[theForm.name]) {
+      $().w2form(theForm);
+    }
+    $().w2popup('open', {
+      title: theForm.text,
+      body: '<div id="form" style="width: 100%; height: 100%;"></div>',
+      style: 'padding: 15px 0px 0px 0px',
+      width: 500,
+      height: 300,
+      showMax: true,
+      onToggle: function (event) {
+        $(w2ui.foo.box).hide();
+        event.onComplete = function () {
+          $(w2ui.foo.box).show();
+          w2ui.foo.resize();
+        }
+      },
+      onOpen: function (event) {
+        event.onComplete = function () {
+          // specifying an onOpen handler instead is equivalent to specifying an onBeforeOpen handler, which would make this code execute too early and hence not deliver.
+          $('#w2ui-popup #form').w2render(theForm.name);
+        }
+      }
+    });
+  }
 
 </script>
 
