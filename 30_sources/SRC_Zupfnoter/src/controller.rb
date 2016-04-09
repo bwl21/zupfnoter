@@ -333,12 +333,17 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
   def play_abc(mode = :music_model)
-    if @systemstatus[:harpnotes_dirty]
-      render_previews
-    else
+    Promise.new.tap do |promise|
+      if @systemstatus[:harpnotes_dirty]
+        render_previews.then do
+          promise.resolve()
+        end
+      else
+        promise.resolve();
+      end
+    end.then do
       if @harpnote_player.is_playing?
-        @harpnote_player.stop()
-        @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
+        stop_play_abc
       else
         @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
         @harpnote_player.play_song() if mode == :music_model
@@ -398,6 +403,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
+  # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
     $log.info("rendering")
     unless @systemstatus[:autorefresh] == :remote
@@ -407,11 +413,21 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     setup_tune_preview
 
-    set_active("#tunePreview")
-    `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
+    Promise.new.tap do |promise|
+      set_active("#tunePreview")
+      `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`
+    end.then do
+      Promise.new.tap do |promise|
+        set_active("#harpPreview")
+        `setTimeout(function(){self.$render_harpnotepreview_callback();#{promise}.$resolve()}, 50)`
+      end
+    end
 
-    set_active("#harpPreview")
-    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 50)`
+    #set_active("#tunePreview")
+    #`setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
+
+    #set_active("#harpPreview")
+    #`setTimeout(function(){self.$render_harpnotepreview_callback()}, 50)`
   end
 
   def render_remote
@@ -677,7 +693,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @harpnote_player.on_songoff do
-      stop_play_abc()
+      stop_play_abc
     end
 
     # # key events in editor
