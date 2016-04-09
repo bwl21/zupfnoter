@@ -735,7 +735,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     if @systemstatus[:refresh]
-      handle_command('stop') # stop player as the Song is changed
+      stop_play_abc # stop player since the model has poentially changed
 
       case @systemstatus[:autorefresh]
         when :on
