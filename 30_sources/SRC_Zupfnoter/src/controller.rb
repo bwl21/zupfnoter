@@ -333,14 +333,18 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
   def play_abc(mode = :music_model)
-    if @harpnote_player.is_playing?
-      @harpnote_player.stop()
-      @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
+    if @systemstatus[:harpnotes_dirty]
+      render_previews
     else
-      @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
-      @harpnote_player.play_song() if mode == :music_model
-      @harpnote_player.play_selection() if mode == :selection
-      @harpnote_player.play_from_selection if mode == :selection_ff
+      if @harpnote_player.is_playing?
+        @harpnote_player.stop()
+        @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
+      else
+        @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
+        @harpnote_player.play_song() if mode == :music_model
+        @harpnote_player.play_selection() if mode == :selection
+        @harpnote_player.play_from_selection if mode == :selection_ff
+      end
     end
   end
 
@@ -388,6 +392,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.debug("finished rendering Haprnotes inn #{Time.now() -s} seconds #{__FILE__} #{__LINE__}")
     set_inactive("#harpPreview")
     @editor.set_annotations($log.annotations)
+    set_status(harpnotes_dirty: false)
 
     nil
   end
@@ -405,10 +410,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     set_active("#tunePreview")
     `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
 
-
     set_active("#harpPreview")
-    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
-
+    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 50)`
   end
 
   def render_remote
@@ -642,6 +645,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # changes in the editor
     @editor.on_change do |e|
       set_status(music_model: "changed")
+      set_status(harpnotes_dirty: true)
       request_refresh(true)
       nil
     end
@@ -734,12 +738,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def set_active(ui_element)
-    Element.find(ui_element).css('background-color', 'red')
-
+    Element.find(ui_element).add_class('spinner')
   end
 
   def set_inactive(ui_element)
-    Element.find(ui_element).css('background-color', 'white')
+    Element.find(ui_element).remove_class('spinner')
   end
 
   private
@@ -790,12 +793,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
              },
              "1" => {
-                 title:   "Sopran, Alt",
-                 voices:  [1, 2]
+                 title:  "Sopran, Alt",
+                 voices: [1, 2]
              },
              "2" => {
-                 title:   "Tenor, Bass",
-                 voices:  [3, 4]
+                 title:  "Tenor, Bass",
+                 voices: [3, 4]
              }
          },
 
