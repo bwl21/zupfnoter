@@ -155,7 +155,7 @@ module ABC2SVG
     # it removes some keys which are provided by abc2svg but not used in Zupfnoter
     def _clone_abc2svg_object(object)
 
-      dropkeys = [:next, :prev, :ts_next, :ts_prev, :extra]
+      dropkeys = [:next, :prev, :ts_next, :ts_prev, :extra, :p_v]
 
       case object.class.to_s
         when "Native::Object"
