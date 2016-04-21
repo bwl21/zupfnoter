@@ -36,11 +36,41 @@
   <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css"/>
   <script type="text/javascript" src="vendor/w2ui/dist/w2ui.min.js"></script>
 
+   <style>
+     .spinner {
+       background-color: #81cf81 ;
+
+       //margin: 100px auto;
+       -webkit-animation: sk-rotateplane 1s infinite ease-in-out;
+       animation: sk-rotateplane 1s infinite ease-in-out;
+     }
+
+     @-webkit-keyframes sk-rotateplane {
+       0% { -webkit-transform: perspective(120px) }
+       50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+       100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+     }
+
+     @keyframes sk-rotateplane {
+       0% {
+         transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+         -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+       } 50% {
+           transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+           -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+         } 100% {
+             transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+             -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+           }
+     }
+   </style>
+
   <%= javascript_include_tag 'application' %>
 </head>
 
 <body style="height: 100%;" onunload="check_undload()">
-<div id="layout" style="height: 100%"></div>
+<div id="layout" style="height: 100%">
+</div>
 <script type="text/javascript">
 
   function init_w2ui() {
@@ -377,6 +407,13 @@
   }
 
 </script>
+<%= begin
+      result = javascript_include_analytics()
+    rescue
+      result = "<!-- running in rackup server, no analytics -->"
+    end
+    result
+%>
 
 
 </body>

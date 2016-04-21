@@ -49,7 +49,7 @@ module Harpnotes
       # changes in the editor
       Native(Native(@editor).getSession).on(:change) { |e|
         clear_markers #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
-        block.call(e) unless @inhibit_callbacks
+        block.call(e) #unless @inhibit_callbacks
       }
     end
 

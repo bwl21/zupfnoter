@@ -333,14 +333,26 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
   def play_abc(mode = :music_model)
-    if @harpnote_player.is_playing?
-      @harpnote_player.stop()
-      @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
+    if @systemstatus[:harpnotes_dirty]
+      result = render_previews
     else
-      @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
-      @harpnote_player.play_song() if mode == :music_model
-      @harpnote_player.play_selection() if mode == :selection
-      @harpnote_player.play_from_selection if mode == :selection_ff
+      result = Promise.new.resolve()
+    end
+
+    result.then do
+      Promise.new.tap do |promise|
+        if @harpnote_player.is_playing?
+          stop_play_abc
+        else
+          @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
+          @harpnote_player.play_song() if mode == :music_model
+          @harpnote_player.play_selection() if mode == :selection
+          @harpnote_player.play_from_selection if mode == :selection_ff
+        end
+        promise.resolve()
+      end
+    end.fail do |message|
+      `alert(#{message})`
     end
   end
 
@@ -388,11 +400,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.debug("finished rendering Haprnotes inn #{Time.now() -s} seconds #{__FILE__} #{__LINE__}")
     set_inactive("#harpPreview")
     @editor.set_annotations($log.annotations)
+    set_status(harpnotes_dirty: false)
 
     nil
   end
 
 
+  # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
     $log.info("rendering")
     unless @systemstatus[:autorefresh] == :remote
@@ -402,13 +416,17 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     setup_tune_preview
 
-    set_active("#tunePreview")
-    `setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
+    result = Promise.new.tap do |promise|
+      set_active("#tunePreview")
+      `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`
+    end.then do
+      Promise.new.tap do |promise|
+        set_active("#harpPreview")
+        `setTimeout(function(){self.$render_harpnotepreview_callback();#{promise}.$resolve()}, 50)`
+      end
+    end
 
-
-    set_active("#harpPreview")
-    `setTimeout(function(){self.$render_harpnotepreview_callback()}, 0)`
-
+    result
   end
 
   def render_remote
@@ -642,6 +660,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # changes in the editor
     @editor.on_change do |e|
       set_status(music_model: "changed")
+      set_status(harpnotes_dirty: true)
       request_refresh(true)
       nil
     end
@@ -673,7 +692,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @harpnote_player.on_songoff do
-      stop_play_abc()
+      stop_play_abc
     end
 
     # # key events in editor
@@ -715,7 +734,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     if @systemstatus[:refresh]
-      handle_command('stop') # stop player as the Song is changed
+      stop_play_abc # stop player since the model has poentially changed
 
       case @systemstatus[:autorefresh]
         when :on
@@ -734,12 +753,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def set_active(ui_element)
-    Element.find(ui_element).css('background-color', 'red')
-
+    Element.find(ui_element).add_class('spinner')
   end
 
   def set_inactive(ui_element)
-    Element.find(ui_element).css('background-color', 'white')
+    Element.find(ui_element).remove_class('spinner')
   end
 
   private
@@ -790,12 +808,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
              },
              "1" => {
-                 title:   "Sopran, Alt",
-                 voices:  [1, 2]
+                 title:  "Sopran, Alt",
+                 voices: [1, 2]
              },
              "2" => {
-                 title:   "Tenor, Bass",
-                 voices:  [3, 4]
+                 title:  "Tenor, Bass",
+                 voices: [3, 4]
              }
          },
 
