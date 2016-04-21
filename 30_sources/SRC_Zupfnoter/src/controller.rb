@@ -333,23 +333,26 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
   def play_abc(mode = :music_model)
-    Promise.new.tap do |promise|
-      if @systemstatus[:harpnotes_dirty]
-        render_previews.then do
-          promise.resolve()
+    if @systemstatus[:harpnotes_dirty]
+      result = render_previews
+    else
+      result = Promise.new.resolve()
+    end
+
+    result.then do
+      Promise.new.tap do |promise|
+        if @harpnote_player.is_playing?
+          stop_play_abc
+        else
+          @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
+          @harpnote_player.play_song() if mode == :music_model
+          @harpnote_player.play_selection() if mode == :selection
+          @harpnote_player.play_from_selection if mode == :selection_ff
         end
-      else
-        promise.resolve();
+        promise.resolve()
       end
-    end.then do
-      if @harpnote_player.is_playing?
-        stop_play_abc
-      else
-        @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
-        @harpnote_player.play_song() if mode == :music_model
-        @harpnote_player.play_selection() if mode == :selection
-        @harpnote_player.play_from_selection if mode == :selection_ff
-      end
+    end.fail do |message|
+      `alert(#{message})`
     end
   end
 
@@ -413,7 +416,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     setup_tune_preview
 
-    Promise.new.tap do |promise|
+    result = Promise.new.tap do |promise|
       set_active("#tunePreview")
       `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`
     end.then do
@@ -423,11 +426,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
     end
 
-    #set_active("#tunePreview")
-    #`setTimeout(function(){self.$render_tunepreview_callback()}, 0)`
-
-    #set_active("#harpPreview")
-    #`setTimeout(function(){self.$render_harpnotepreview_callback()}, 50)`
+    result
   end
 
   def render_remote
