@@ -43,7 +43,7 @@ This software would not exist without the great support (mentioned in sequence o
 * Dimitry Baranovskiy (https://github.com/DmitryBaranovskiy/raphael)
 * Vitali Malinouski (https://github.com/vitmalina/w2ui) for his great UI toolkit (w2ui)
 * James Hall (https://github.com/MrRio) for jspdf
-* Chris Walshow for abc notation (abcnotation.com)
+* Chris Walshaw (http://abcnotation.com) for abc notation 
 
 
 
