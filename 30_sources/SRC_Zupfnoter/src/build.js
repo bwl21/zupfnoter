@@ -26673,9 +26673,9 @@ Opal.modules["controller"] = function(Opal) {
   function $rb_gt(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs > rhs : lhs['$>'](rhs);
   }
-  var $a, $b, TMP_30, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars;
+  var $a, $b, TMP_35, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$clone', '$private', '$attr', '$lambda', '$to_n', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$strict=', '$push', '$_init_conf', '$debug', '$get', '$each', '$send', '$select', '$=~', '$methods', '$setup_harpnote_preview', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_nodewebkit', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$migrate_config_lyrics', '$migrate_notes', '$migrate_config_legend', '$migrate_config_cleanup', '$delete', '$inject', '$last', '$first', '$+', '$map', '$to_i', '$split', '$gsub', '$to_s', '$count', '$is_a?', '$is_playing?', '$stop', '$call', '$==', '$play_song', '$play_selection', '$play_from_selection', '$setup_tune_preview', '$get_abc_part', '$join', '$backtrace', '$set_inactive', '$set_annotations', '$annotations', '$now', '$load_song', '$-', '$send_remote_command', '$set_active', '$render_tunepreview_callback', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$clear_annotations', '$get_config_part', '$migrate_config', '$set_config_part', '$get_config_position', '$>', '$keys', '$transform', '$create_engine', '$layout', '$pop', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$on_annotation_drag_end', '$zip', '$patch_config_part', '$set_file_drop', '$on_change', '$request_refresh', '$on_selection_change', '$get_selection_positions', '$on_cursor_change', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$stop_play_abc', '$on', '$key', '$newValue', '$===', '$css', '$ready?']);
+  Opal.add_stubs(['$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$clone', '$private', '$attr', '$lambda', '$to_n', '$html', '$find', '$new', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$strict=', '$push', '$_init_conf', '$debug', '$get', '$each', '$send', '$select', '$=~', '$methods', '$setup_harpnote_preview', '$load_demo_tune', '$set_status', '$loglevel', '$render_previews', '$setup_nodewebkit', '$setup_ui_listener', '$run_string', '$error', '$message', '$caller', '$include?', '$get_text', '$Native', '$nil?', '$set_text', '$draw', '$layout_harpnotes', '$draw_in_segments', '$migrate_config_lyrics', '$migrate_notes', '$migrate_config_legend', '$migrate_config_cleanup', '$delete', '$inject', '$last', '$first', '$+', '$map', '$to_i', '$split', '$gsub', '$to_s', '$count', '$is_a?', '$resolve', '$fail', '$then', '$tap', '$is_playing?', '$stop_play_abc', '$call', '$==', '$play_song', '$play_selection', '$play_from_selection', '$stop', '$setup_tune_preview', '$get_abc_part', '$join', '$backtrace', '$set_inactive', '$set_annotations', '$annotations', '$now', '$load_song', '$-', '$send_remote_command', '$set_active', '$render_tunepreview_callback', '$file', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$clear_annotations', '$get_config_part', '$migrate_config', '$set_config_part', '$get_config_position', '$>', '$keys', '$transform', '$create_engine', '$layout', '$pop', '$select_range_by_position', '$range_highlight_more', '$range_highlight', '$range_unhighlight_more', '$range_unhighlight', '$unhighlight_all', '$highlight_abc_object', '$merge!', '$loglevel=', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$on_annotation_drag_end', '$zip', '$patch_config_part', '$set_file_drop', '$on_change', '$request_refresh', '$on_selection_change', '$get_selection_positions', '$on_cursor_change', '$on_noteon', '$on_noteoff', '$unhighlight_abc_object', '$on_songoff', '$on', '$key', '$newValue', '$===', '$add_class', '$remove_class', '$ready?']);
   (function($base, $super) {
     function $LocalStore(){};
     var self = $LocalStore = $klass($base, $super, 'LocalStore', $LocalStore);
@@ -26998,39 +26998,47 @@ if (ir == null) ir = nil;if (element == null) element = nil;
     });
 
     Opal.defn(self, '$play_abc', function(mode) {
-      var $a, $b, TMP_15, $c, TMP_16, self = this;
+      var $a, $b, TMP_15, $c, $d, TMP_16, self = this, result = nil;
 
       if (mode == null) {
         mode = "music_model"
       }
-      if ((($a = self.harpnote_player['$is_playing?']()) !== nil && (!$a.$$is_boolean || $a == true))) {
-        self.harpnote_player.$stop();
-        return ($a = ($b = self.update_sytemstatus_consumers['$[]']("play_stop")).$each, $a.$$p = (TMP_15 = function(i){var self = TMP_15.$$s || this;
-if (i == null) i = nil;
-        return i.$call()}, TMP_15.$$s = self, TMP_15), $a).call($b);
+      if ((($a = self.systemstatus['$[]']("harpnotes_dirty")) !== nil && (!$a.$$is_boolean || $a == true))) {
+        result = self.$render_previews()
         } else {
-        ($a = ($c = self.update_sytemstatus_consumers['$[]']("play_start")).$each, $a.$$p = (TMP_16 = function(i){var self = TMP_16.$$s || this;
-if (i == null) i = nil;
-        return i.$call()}, TMP_16.$$s = self, TMP_16), $a).call($c);
-        if (mode['$==']("music_model")) {
-          self.harpnote_player.$play_song()};
-        if (mode['$==']("selection")) {
-          self.harpnote_player.$play_selection()};
-        if (mode['$==']("selection_ff")) {
-          return self.harpnote_player.$play_from_selection()
-          } else {
-          return nil
-        };
+        result = $scope.get('Promise').$new().$resolve()
       };
+      return ($a = ($b = ($c = ($d = result).$then, $c.$$p = (TMP_16 = function(){var self = TMP_16.$$s || this, $a, $b, TMP_17;
+
+      return ($a = ($b = $scope.get('Promise').$new()).$tap, $a.$$p = (TMP_17 = function(promise){var self = TMP_17.$$s || this, $a, $b, TMP_18;
+          if (self.harpnote_player == null) self.harpnote_player = nil;
+          if (self.update_sytemstatus_consumers == null) self.update_sytemstatus_consumers = nil;
+if (promise == null) promise = nil;
+        if ((($a = self.harpnote_player['$is_playing?']()) !== nil && (!$a.$$is_boolean || $a == true))) {
+            self.$stop_play_abc()
+            } else {
+            ($a = ($b = self.update_sytemstatus_consumers['$[]']("play_start")).$each, $a.$$p = (TMP_18 = function(i){var self = TMP_18.$$s || this;
+if (i == null) i = nil;
+            return i.$call()}, TMP_18.$$s = self, TMP_18), $a).call($b);
+            if (mode['$==']("music_model")) {
+              self.harpnote_player.$play_song()};
+            if (mode['$==']("selection")) {
+              self.harpnote_player.$play_selection()};
+            if (mode['$==']("selection_ff")) {
+              self.harpnote_player.$play_from_selection()};
+          };
+          return promise.$resolve();}, TMP_17.$$s = self, TMP_17), $a).call($b)}, TMP_16.$$s = self, TMP_16), $c).call($d)).$fail, $a.$$p = (TMP_15 = function(message){var self = TMP_15.$$s || this;
+if (message == null) message = nil;
+      return alert(message);}, TMP_15.$$s = self, TMP_15), $a).call($b);
     });
 
     Opal.defn(self, '$stop_play_abc', function() {
-      var $a, $b, TMP_17, self = this;
+      var $a, $b, TMP_19, self = this;
 
       self.harpnote_player.$stop();
-      return ($a = ($b = self.update_sytemstatus_consumers['$[]']("play_stop")).$each, $a.$$p = (TMP_17 = function(i){var self = TMP_17.$$s || this;
+      return ($a = ($b = self.update_sytemstatus_consumers['$[]']("play_stop")).$each, $a.$$p = (TMP_19 = function(i){var self = TMP_19.$$s || this;
 if (i == null) i = nil;
-      return i.$call()}, TMP_17.$$s = self, TMP_17), $a).call($b);
+      return i.$call()}, TMP_19.$$s = self, TMP_19), $a).call($b);
     });
 
     Opal.defn(self, '$render_tunepreview_callback', function() {
@@ -27049,7 +27057,7 @@ if (i == null) i = nil;
         }
         }else { throw $err; }
       };
-      $gvars.log.$debug("finished render tune " + ("controller") + " " + (365));
+      $gvars.log.$debug("finished render tune " + ("controller") + " " + (377));
       self.$set_inactive("#tunePreview");
       self.editor.$set_annotations($gvars.log.$annotations());
       return nil;
@@ -27061,7 +27069,7 @@ if (i == null) i = nil;
 
       s = $scope.get('Time').$now();
       try {
-      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (378));
+      $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (390));
         self.song_harpnotes = self.$layout_harpnotes(self.systemstatus['$[]']("view"));
         self.harpnote_player.$load_song(self.music_model);
         self.harpnote_preview_printer.$draw(self.song_harpnotes);
@@ -27074,14 +27082,15 @@ if (i == null) i = nil;
         }else { throw $err; }
       };
       self.$set_status($hash2(["refresh"], {"refresh": false}));
-      $gvars.log.$debug("finished rendering Haprnotes inn " + ($rb_minus($scope.get('Time').$now(), s)) + " seconds " + ("controller") + " " + (390));
+      $gvars.log.$debug("finished rendering Haprnotes inn " + ($rb_minus($scope.get('Time').$now(), s)) + " seconds " + ("controller") + " " + (402));
       self.$set_inactive("#harpPreview");
       self.editor.$set_annotations($gvars.log.$annotations());
+      self.$set_status($hash2(["harpnotes_dirty"], {"harpnotes_dirty": false}));
       return nil;
     });
 
     Opal.defn(self, '$render_previews', function() {
-      var self = this;
+      var $a, $b, TMP_20, $c, $d, TMP_22, self = this, result = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       $gvars.log.$info("rendering");
@@ -27091,10 +27100,16 @@ if (i == null) i = nil;
         self.$send_remote_command("render");
       };
       self.$setup_tune_preview();
+      result = ($a = ($b = ($c = ($d = $scope.get('Promise').$new()).$tap, $c.$$p = (TMP_22 = function(promise){var self = TMP_22.$$s || this;
+if (promise == null) promise = nil;
       self.$set_active("#tunePreview");
-      setTimeout(function(){self.$render_tunepreview_callback()}, 0);
-      self.$set_active("#harpPreview");
-      return setTimeout(function(){self.$render_harpnotepreview_callback()}, 0);
+        setTimeout(function(){self.$render_tunepreview_callback();promise.$resolve()}, 0);}, TMP_22.$$s = self, TMP_22), $c).call($d)).$then, $a.$$p = (TMP_20 = function(){var self = TMP_20.$$s || this, $a, $b, TMP_21;
+
+      return ($a = ($b = $scope.get('Promise').$new()).$tap, $a.$$p = (TMP_21 = function(promise){var self = TMP_21.$$s || this;
+if (promise == null) promise = nil;
+        self.$set_active("#harpPreview");
+          setTimeout(function(){self.$render_harpnotepreview_callback();promise.$resolve()}, 50);}, TMP_21.$$s = self, TMP_21), $a).call($b)}, TMP_20.$$s = self, TMP_20), $a).call($b);
+      return result;
     });
 
     Opal.defn(self, '$render_remote', function() {
@@ -27165,7 +27180,7 @@ if (i == null) i = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       a = self.$Native(abcelement);
-      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (474) + ")");
+      $gvars.log.$debug("select_abc_element " + (a['$[]']("startChar")) + " (" + ("controller") + " " + (492) + ")");
       startchar = a['$[]']("startChar");
       endchar = a['$[]']("endChar");
       if (endchar['$=='](startchar)) {
@@ -27194,54 +27209,54 @@ if (i == null) i = nil;
     });
 
     Opal.defn(self, '$set_status', function(status) {
-      var $a, $b, TMP_18, self = this;
+      var $a, $b, TMP_23, self = this;
       if ($gvars.log == null) $gvars.log = nil;
 
       self.systemstatus['$merge!'](status);
-      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (509));
+      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (527));
       if (self.systemstatus['$[]']("loglevel")['$==']($gvars.log.$loglevel())) {
         } else {
         (($a = [(self.systemstatus['$[]']("loglevel"))]), $b = $gvars.log, $b['$loglevel='].apply($b, $a), $a[$a.length-1])
       };
-      ($a = ($b = self.update_sytemstatus_consumers['$[]']("systemstatus")).$each, $a.$$p = (TMP_18 = function(c){var self = TMP_18.$$s || this;
+      ($a = ($b = self.update_sytemstatus_consumers['$[]']("systemstatus")).$each, $a.$$p = (TMP_23 = function(c){var self = TMP_23.$$s || this;
         if (self.sytemstatus == null) self.sytemstatus = nil;
 if (c == null) c = nil;
-      return c.$call(self.sytemstatus)}, TMP_18.$$s = self, TMP_18), $a).call($b);
+      return c.$call(self.sytemstatus)}, TMP_23.$$s = self, TMP_23), $a).call($b);
       return nil;
     });
 
     self.$private();
 
     Opal.defn(self, '$setup_harpnote_preview', function() {
-      var $a, $b, TMP_19, $c, TMP_20, self = this;
+      var $a, $b, TMP_24, $c, TMP_25, self = this;
 
       self.harpnote_preview_printer = (($scope.get('Harpnotes')).$$scope.get('RaphaelEngine')).$new("harpPreview", 2200, 1400);
       self.harpnote_preview_printer.$set_view_box(0, 0, 440, 297);
-      ($a = ($b = self.harpnote_preview_printer).$on_select, $a.$$p = (TMP_19 = function(harpnote){var self = TMP_19.$$s || this;
+      ($a = ($b = self.harpnote_preview_printer).$on_select, $a.$$p = (TMP_24 = function(harpnote){var self = TMP_24.$$s || this;
 if (harpnote == null) harpnote = nil;
-      return self.$select_abc_object(harpnote.$origin())}, TMP_19.$$s = self, TMP_19), $a).call($b);
-      return ($a = ($c = self.harpnote_preview_printer).$on_annotation_drag_end, $a.$$p = (TMP_20 = function(info){var self = TMP_20.$$s || this, $a, $b, TMP_21, newcoords = nil, report = nil;
+      return self.$select_abc_object(harpnote.$origin())}, TMP_24.$$s = self, TMP_24), $a).call($b);
+      return ($a = ($c = self.harpnote_preview_printer).$on_annotation_drag_end, $a.$$p = (TMP_25 = function(info){var self = TMP_25.$$s || this, $a, $b, TMP_26, newcoords = nil, report = nil;
         if (self.editor == null) self.editor = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (info == null) info = nil;
-      newcoords = ($a = ($b = info['$[]']("origin").$zip(info['$[]']("delta"))).$map, $a.$$p = (TMP_21 = function(i){var self = TMP_21.$$s || this;
+      newcoords = ($a = ($b = info['$[]']("origin").$zip(info['$[]']("delta"))).$map, $a.$$p = (TMP_26 = function(i){var self = TMP_26.$$s || this;
 if (i == null) i = nil;
-        return $rb_plus(i.$first(), i.$last())}, TMP_21.$$s = self, TMP_21), $a).call($b);
+        return $rb_plus(i.$first(), i.$last())}, TMP_26.$$s = self, TMP_26), $a).call($b);
         report = "" + (info['$[]']("config")) + ": " + (newcoords);
         if ((($a = info['$[]']("config")) !== nil && (!$a.$$is_boolean || $a == true))) {
           self.editor.$patch_config_part(info['$[]']("config"), newcoords)};
         $("#harpPreview").w2overlay(report);
-        return $gvars.log.$info("dragged to " + (report));}, TMP_20.$$s = self, TMP_20), $a).call($c);
+        return $gvars.log.$info("dragged to " + (report));}, TMP_25.$$s = self, TMP_25), $a).call($c);
     });
 
     Opal.defn(self, '$setup_tune_preview', function() {
-      var $a, $b, TMP_22, self = this;
+      var $a, $b, TMP_27, self = this;
 
       self.tune_preview_printer = (($scope.get('ABC2SVG')).$$scope.get('Abc2Svg')).$new($scope.get('Element').$find("#tunePreview"));
-      return ($a = ($b = self.tune_preview_printer).$on_select, $a.$$p = (TMP_22 = function(abcelement){var self = TMP_22.$$s || this, a = nil;
+      return ($a = ($b = self.tune_preview_printer).$on_select, $a.$$p = (TMP_27 = function(abcelement){var self = TMP_27.$$s || this, a = nil;
 if (abcelement == null) abcelement = nil;
       a = self.$Native(abcelement);
-        return self.$select_abc_object(abcelement);}, TMP_22.$$s = self, TMP_22), $a).call($b);
+        return self.$select_abc_object(abcelement);}, TMP_27.$$s = self, TMP_27), $a).call($b);
     });
 
     Opal.defn(self, '$set_file_drop', function(dropzone) {
@@ -27325,15 +27340,16 @@ if (abcelement == null) abcelement = nil;
     });
 
     Opal.defn(self, '$setup_ui_listener', function() {
-      var $a, $b, TMP_23, $c, TMP_24, $d, TMP_25, $e, TMP_26, $f, TMP_27, $g, TMP_28, $h, TMP_29, self = this;
+      var $a, $b, TMP_28, $c, TMP_29, $d, TMP_30, $e, TMP_31, $f, TMP_32, $g, TMP_33, $h, TMP_34, self = this;
 
       self.$set_file_drop("layout");
-      ($a = ($b = self.editor).$on_change, $a.$$p = (TMP_23 = function(e){var self = TMP_23.$$s || this;
+      ($a = ($b = self.editor).$on_change, $a.$$p = (TMP_28 = function(e){var self = TMP_28.$$s || this;
 if (e == null) e = nil;
       self.$set_status($hash2(["music_model"], {"music_model": "changed"}));
+        self.$set_status($hash2(["harpnotes_dirty"], {"harpnotes_dirty": true}));
         self.$request_refresh(true);
-        return nil;}, TMP_23.$$s = self, TMP_23), $a).call($b);
-      ($a = ($c = self.editor).$on_selection_change, $a.$$p = (TMP_24 = function(e){var self = TMP_24.$$s || this, $a, a = nil;
+        return nil;}, TMP_28.$$s = self, TMP_28), $a).call($b);
+      ($a = ($c = self.editor).$on_selection_change, $a.$$p = (TMP_29 = function(e){var self = TMP_29.$$s || this, $a, a = nil;
         if (self.editor == null) self.editor = nil;
         if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
         if (self.harpnote_preview_printer == null) self.harpnote_preview_printer = nil;
@@ -27341,42 +27357,42 @@ if (e == null) e = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (e == null) e = nil;
       a = self.editor.$get_selection_positions();
-        $gvars.log.$debug("editor selecton " + (a.$first()) + " to " + (a.$last()) + " (" + ("controller") + ":" + (654) + ")");
+        $gvars.log.$debug("editor selecton " + (a.$first()) + " to " + (a.$last()) + " (" + ("controller") + ":" + (673) + ")");
         if ((($a = self.tune_preview_printer.$range_highlight(a.$first(), a.$last())) !== nil && (!$a.$$is_boolean || $a == true))) {
           return nil
           } else {
           self.harpnote_preview_printer.$unhighlight_all();
           self.harpnote_preview_printer.$range_highlight(a.$first(), a.$last());
           return self.harpnote_player.$range_highlight(a.$first(), a.$last());
-        };}, TMP_24.$$s = self, TMP_24), $a).call($c);
-      ($a = ($d = self.editor).$on_cursor_change, $a.$$p = (TMP_25 = function(e){var self = TMP_25.$$s || this;
+        };}, TMP_29.$$s = self, TMP_29), $a).call($c);
+      ($a = ($d = self.editor).$on_cursor_change, $a.$$p = (TMP_30 = function(e){var self = TMP_30.$$s || this;
 if (e == null) e = nil;
-      return self.$request_refresh(false)}, TMP_25.$$s = self, TMP_25), $a).call($d);
-      ($a = ($e = self.harpnote_player).$on_noteon, $a.$$p = (TMP_26 = function(e){var self = TMP_26.$$s || this;
+      return self.$request_refresh(false)}, TMP_30.$$s = self, TMP_30), $a).call($d);
+      ($a = ($e = self.harpnote_player).$on_noteon, $a.$$p = (TMP_31 = function(e){var self = TMP_31.$$s || this;
         if ($gvars.log == null) $gvars.log = nil;
 if (e == null) e = nil;
-      $gvars.log.$debug("noteon " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (668) + ")");
-        return self.$highlight_abc_object(e);}, TMP_26.$$s = self, TMP_26), $a).call($e);
-      ($a = ($f = self.harpnote_player).$on_noteoff, $a.$$p = (TMP_27 = function(e){var self = TMP_27.$$s || this;
+      $gvars.log.$debug("noteon " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (687) + ")");
+        return self.$highlight_abc_object(e);}, TMP_31.$$s = self, TMP_31), $a).call($e);
+      ($a = ($f = self.harpnote_player).$on_noteoff, $a.$$p = (TMP_32 = function(e){var self = TMP_32.$$s || this;
         if ($gvars.log == null) $gvars.log = nil;
 if (e == null) e = nil;
-      $gvars.log.$debug("noteoff " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (673) + ")");
-        return self.$unhighlight_abc_object(e);}, TMP_27.$$s = self, TMP_27), $a).call($f);
-      ($a = ($g = self.harpnote_player).$on_songoff, $a.$$p = (TMP_28 = function(){var self = TMP_28.$$s || this;
+      $gvars.log.$debug("noteoff " + (self.$Native(e)['$[]']("startChar")) + " (" + ("controller") + " " + (692) + ")");
+        return self.$unhighlight_abc_object(e);}, TMP_32.$$s = self, TMP_32), $a).call($f);
+      ($a = ($g = self.harpnote_player).$on_songoff, $a.$$p = (TMP_33 = function(){var self = TMP_33.$$s || this;
 
-      return self.$stop_play_abc()}, TMP_28.$$s = self, TMP_28), $a).call($g);
-      return ($a = ($h = $scope.get('Element').$find(window)).$on, $a.$$p = (TMP_29 = function(evt){var self = TMP_29.$$s || this, $a, $b, $c, key = nil, value = nil;
+      return self.$stop_play_abc()}, TMP_33.$$s = self, TMP_33), $a).call($g);
+      return ($a = ($h = $scope.get('Element').$find(window)).$on, $a.$$p = (TMP_34 = function(evt){var self = TMP_34.$$s || this, $a, $b, $c, key = nil, value = nil;
         if (self.systemstatus == null) self.systemstatus = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
       key = self.$Native(evt['$[]']("originalEvent")).$key();
         value = self.$Native(evt['$[]']("originalEvent")).$newValue();
-        $gvars.log.$debug("got storage event " + (key) + ": " + (value) + " (" + ("controller") + " " + (701) + ")");
+        $gvars.log.$debug("got storage event " + (key) + ": " + (value) + " (" + ("controller") + " " + (720) + ")");
         if ((($a = ($b = (($c = self.systemstatus['$[]']("autorefresh")['$==']("remote")) ? key['$==']("command") : self.systemstatus['$[]']("autorefresh")['$==']("remote")), $b !== false && $b !== nil ?value['$==']("render") : $b)) !== nil && (!$a.$$is_boolean || $a == true))) {
           return self.$load_from_loacalstorage()
           } else {
           return nil
-        };}, TMP_29.$$s = self, TMP_29), $a).call($h, "storage");
+        };}, TMP_34.$$s = self, TMP_34), $a).call($h, "storage");
     });
 
     Opal.defn(self, '$request_refresh', function(init) {
@@ -27385,11 +27401,11 @@ if (evt == null) evt = nil;
 
       if (init !== false && init !== nil) {
         self.$set_status($hash2(["refresh"], {"refresh": true}))};
-      $gvars.log.$debug("request refresh " + (self.systemstatus['$[]']("refresh")) + " " + (init) + " " + ("controller") + " " + (714));
+      $gvars.log.$debug("request refresh " + (self.systemstatus['$[]']("refresh")) + " " + (init) + " " + ("controller") + " " + (733));
       if ((($a = self.refresh_timer) !== nil && (!$a.$$is_boolean || $a == true))) {
         clearTimeout(self.refresh_timer);};
       if ((($a = self.systemstatus['$[]']("refresh")) !== nil && (!$a.$$is_boolean || $a == true))) {
-        self.$handle_command("stop");
+        self.$stop_play_abc();
         return (function() {$case = self.systemstatus['$[]']("autorefresh");if ("on"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_previews()}, 100)}else if ("off"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_remote()}, 0)}else if ("remote"['$===']($case)) {return self.refresh_timer = setTimeout(function(){self.$render_previews()}, 500)}else { return nil }})();
         } else {
         return nil
@@ -27406,13 +27422,13 @@ if (evt == null) evt = nil;
     Opal.defn(self, '$set_active', function(ui_element) {
       var self = this;
 
-      return $scope.get('Element').$find(ui_element).$css("background-color", "red");
+      return $scope.get('Element').$find(ui_element).$add_class("spinner");
     });
 
     Opal.defn(self, '$set_inactive', function(ui_element) {
       var self = this;
 
-      return $scope.get('Element').$find(ui_element).$css("background-color", "white");
+      return $scope.get('Element').$find(ui_element).$remove_class("spinner");
     });
 
     self.$private();
@@ -27424,11 +27440,11 @@ if (evt == null) evt = nil;
       return result;
     }), nil) && '_init_conf';
   })($scope.base, null);
-  return ($a = ($b = $scope.get('Document'))['$ready?'], $a.$$p = (TMP_30 = function(){var self = TMP_30.$$s || this, a = nil;
+  return ($a = ($b = $scope.get('Document'))['$ready?'], $a.$$p = (TMP_35 = function(){var self = TMP_35.$$s || this, a = nil;
 
   a = $scope.get('Controller').$new();
     uicontroller = a;
-    return nil;}, TMP_30.$$s = self, TMP_30), $a).call($b);
+    return nil;}, TMP_35.$$s = self, TMP_35), $a).call($b);
 };
 
 /* Generated by Opal 0.9.0 */
@@ -28810,15 +28826,10 @@ Opal.modules["text_pane"] = function(Opal) {
         var $a, $b, TMP_2, self = this, $iter = TMP_1.$$p, block = $iter || nil;
 
         TMP_1.$$p = null;
-        return ($a = ($b = self.$Native(self.$Native(self.editor).$getSession())).$on, $a.$$p = (TMP_2 = function(e){var self = TMP_2.$$s || this, $a;
-          if (self.inhibit_callbacks == null) self.inhibit_callbacks = nil;
+        return ($a = ($b = self.$Native(self.$Native(self.editor).$getSession())).$on, $a.$$p = (TMP_2 = function(e){var self = TMP_2.$$s || this;
 if (e == null) e = nil;
         self.$clear_markers();
-          if ((($a = self.inhibit_callbacks) !== nil && (!$a.$$is_boolean || $a == true))) {
-            return nil
-            } else {
-            return block.$call(e)
-          };}, TMP_2.$$s = self, TMP_2), $a).call($b, "change");
+          return block.$call(e);}, TMP_2.$$s = self, TMP_2), $a).call($b, "change");
       });
 
       Opal.defn(self, '$on_selection_change', TMP_3 = function() {
@@ -29863,7 +29874,7 @@ if (c == null) c = nil;
       Opal.defn(self, '$_clone_abc2svg_object', function(object) {
         var $a, $b, TMP_14, $c, TMP_15, self = this, dropkeys = nil, $case = nil, keys = nil, result = nil;
 
-        dropkeys = ["next", "prev", "ts_next", "ts_prev", "extra"];
+        dropkeys = ["next", "prev", "ts_next", "ts_prev", "extra", "p_v"];
         $case = object.$class().$to_s();if ("Native::Object"['$===']($case)) {keys = $rb_minus(Object.keys(object.$to_n()), dropkeys);
         result = ($a = ($b = keys).$inject, $a.$$p = (TMP_14 = function(r1, key){var self = TMP_14.$$s || this;
 if (r1 == null) r1 = nil;if (key == null) key = nil;
@@ -29990,7 +30001,7 @@ Opal.modules["version"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice;
 
   Opal.add_stubs(['$year', '$now']);
-  Opal.cdecl($scope, 'VERSION', "1.1.1");
+  Opal.cdecl($scope, 'VERSION', "1.2.0");
   Opal.cdecl($scope, 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.cdecl($scope, 'COPYRIGHT', "©" + ($scope.get('Time').$now().$year()) + " http://www.bernhard-weichel.de/zupfnoterpage");
 };
