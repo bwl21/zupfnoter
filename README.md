@@ -22,6 +22,9 @@ Web based editor for Tableharp notations based on abc notation
 -  click on `play` to listen to the tune
 -  feel free to ask if there are questions (too many features to describe here)
 
+## further reading
+
+* 
 
 ## Credits
 
@@ -40,6 +43,7 @@ This software would not exist without the great support (mentioned in sequence o
 * Dimitry Baranovskiy (https://github.com/DmitryBaranovskiy/raphael)
 * Vitali Malinouski (https://github.com/vitmalina/w2ui) for his great UI toolkit (w2ui)
 * James Hall (https://github.com/MrRio) for jspdf
+* Chris Walshaw (http://abcnotation.com) for abc notation 
 
 
 
