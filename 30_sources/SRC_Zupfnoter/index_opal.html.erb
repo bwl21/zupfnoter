@@ -226,7 +226,7 @@
       id: 'toolbar',
       name: 'toolbar',
       items: [
-        {type: 'html', html: '<span id="lbZupfnoter">Zupfnoter</span>'},
+        {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: '<span id="lbZupfnoter">Zupfnoter</span>'},
         {type: 'html', html: '<div style="width:25px"/>'},
         {type: 'button', id: 'tb_login', text: 'login', icon: 'fa fa-sign-in', hint: 'Open in dropboxx'},
         {type: 'button', id: 'tb_create', text: 'create', icon: 'fa fa-plus-square-o', hint: 'Open in dropboxx'},
@@ -244,7 +244,7 @@
         {type: 'spacer'},
 
         {
-          type: 'menu', text: "config", id: 'config', icon: 'fa fa-gear', items: [
+          type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', items: [
           {text: 'title'}, {text: 'voices'}, {text: 'flowlines'},
           {text: 'layoutlines'}, {text: 'jumplines'}, {text: 'synchlines'}, {text: 'legend'}, {text: 'notes'}, {text: 'lyrics'},
           {text: 'nonflowrest'}, {text: 'startpos'}, {text: 'subflowlines'}, {text: 'produce'}]
@@ -284,7 +284,8 @@
         },
         {type: 'break'},
         {type: 'button', id: 'tbRender', text: 'Render', icon: 'fa fa-refresh', hint: 'aktualisiert Ausgabe'},
-        {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'}
+        {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'},
+        {type: 'button', id: 'tbHelp', text: 'Help', icon: 'fa fa-question', hint: 'Hilfe'}
       ],
 
       onClick: function (event) {
@@ -296,6 +297,12 @@
         }
         if (event.target.split(":")[0] == 'config') {
           uicontroller.$handle_command("addconf " + event.target.split(":")[1])
+        }
+        if (event.target=="tb_home"){
+          window.open("http://www.weichel21.de/zupfnoterpage")
+        }
+        if (event.target=="tbHelp"){
+          window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
         }
       }
     }
