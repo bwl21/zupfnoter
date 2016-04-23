@@ -1,72 +1,26 @@
 # zupfnoter
 
-Web based editor for Tableharp notations based on abc notation
-
-## Key features
-
-* creates sheets for table harps (Veeh-Harfe®, Zauberharfe etc.)
-* printing extracts
-* flowlines, subflowlines, synchlines, tuplets, annotations ...
-* print on A3, A4
-* full ABC support
-* MusicXml import
-* runs in Webbrowser
-* load and save to dropbox
+Free Web based editor for Tableharp notations based on abc notation. Please have a look on the credits below. Zupfnoter would not exist without inspiratio and help from others.
 
 ## getting started
 
--  https://zupfnoter.weichel21.de
+-  goto https://zupfnoter.weichel21.de
 -  enter `demo` followed by return on the lower left pane (click the Console button if the pane does not show up)
 -  watch tunes showing up
 -  click on `render` to update harp notes
 -  click on `play` to listen to the tune
 -  feel free to ask if there are questions (too many features to describe here)
+-  have a drobox-account if you want to save your work
 
-## further reading
+## Key features
 
-* 
-
-## Credits
-
-This software would not exist without the great support (mentioned in sequence of contact)
-
-* My wife Ruth, she is an ardent plaer of Veeh® harp. This project started just to please her.
-* My son Christian, who helped me to define the initial architecture which proved to be stable
-* Sr. Christel Schröder, she answered all question about music notation
-* Flavio Vani (https://github.com/flvani) who helped me on the first steps
-* Elia Schito (https://github.com/elia) and the Opal project - what a great thing!
-* David Bau (https://github.com/PencilCode) for musicaljs
-* Paul Rosen (https://github.com/paulrosen) for abcjs (which was the abc parser in the beginning)
-* Jean Francois Moine (http://moinejf.free.fr/) for abc2svg.js and his outstandig support to fulfil my requests. 
-  abc2svg - blazing fast, full abc support
-* Willem de Vries (http://wim.vree.org/) for xml2abc.js - which enables music xml import
-* Dimitry Baranovskiy (https://github.com/DmitryBaranovskiy/raphael)
-* Vitali Malinouski (https://github.com/vitmalina/w2ui) for his great UI toolkit (w2ui)
-* James Hall (https://github.com/MrRio) for jspdf
-* Chris Walshaw (http://abcnotation.com) for abc notation 
-
-
-
-## Licencse
-
-This software is licensed under dual license GPL and Commercial
-
-## Contributing
-
-Your contributions are welcome. However, few things you need to know before contribution:
-
-* install Ruby 2.1.1 or higher with bundler
-* clone the repository
-* goto 30_Sources/SRC_Zupfnoter
-* run "bundle install"
-* goto 30_sources/SRC_Zupfnoter/src
-* run `rake server`
-* goto http://localhost:9292
-
-Please check out latest code before changing anything. Please use Gitflow to prepare PRs
-
-Contributors who need a Code of Conduct which goes beyond the basic social skills which usually 
-are taught by parents or kindergarden might consider to stay away from here.
+* creates sheets for table harps (Veeh-Harfe®, Zauberharfe etc.)
+* draw notes, flowlines, subflowlines, synchlines, tuplets, annotations, lyrics ...
+* print flexible exctracts on A3, A4
+* full ABC support
+* MusicXml import
+* runs in Webbrowser
+* load and save to dropbox
 
 
 # Zupfnoter conventions in abc code
@@ -76,56 +30,68 @@ are taught by parents or kindergarden might consider to stay away from here.
 Zupfnoter tries to use ABC as close as possible. It does not add new
 syntax but applies to some conventions. These conventions reflect to
 
-1.  comments
+###  Basic structure
 
-    comments starting with `%%%%zupfnoter.` have a specific interpetation
+A Zupfnoter sheet basicall has two sections
 
-2.  annotations
+-  the abc section
+-  the configuration section. This is a JSON fragment separated from the abc sectio by
 
-    Annotations are entered as `"^..."`
+    ```
+    %%%%zupfnoter.config
+    ```
+        
+###  annotations
 
-    Annotations starting with one of `:`, `@`, `!`, `#`, `<`, `>` have a specific
-    interpretation (for example `"^>"` shifts the note symbol right)
+Annotations are entered as `"^..."`
+
+Annotations starting with one of `:`, `@`, `!`, `#`, `<`, `>` have a specific
+interpretation (for example `"^>"` shifts the note symbol right)
+
+`:`
+:   Target of a jump
+
+`@`
+:   Jump
+
+`!`
+:   Regular annotation which is printed immediately close to the note
+
+    Example:
     
-    `:`
-    :   Target of a jump
-    
-    `@`
-    :   Jump
-    
-    `!`
-    :   Regular annotation
-    
-    `#`
-    :   referenced annotation
-    
-    `>'
-    :   shift note symbol right by half string distance
-    
-    `<'
-    :   shift note symbol left by half string distance
+    `"^"this is my note@5,5"` yields an annotation 5 mm right, 5mm below the note
 
-The specific conventions in detail are as follows:
+`#`
+:   referenced annotation
 
-1.  Jumps and repetitions
+`>'
+:   shift note symbol right by half string distance. This supports the case that two voices have the same note.
 
-    This is done using anotations which is text in double quotes before
-    a note. The target of the "jump" is denoted as `"\^:target"`, while
-    the "jump" is dentoed as `"\^@target"`. Of course the same target can
-    be part of multple jumps.
+`<'
+:   shift note symbol left by half string distance. This supports the case that two voices have the same note.
 
-    You can control the position of the goto-line by adding a distance
-    in halftones, e.g. `"\^@target@3"`, `"\^@target@-3"`
 
-2.  Repetitions can also be controlled by chords on the right repeat
-    bar. In this case target is left empty. For example
+###  Jumps and repetitions
 
-        "^@@-3" :| 
+This is done using anotations which is text in double quotes before
+a note. The target of the "jump" is denoted as `"\^:target"`, while
+the "jump" is dentoed as `"\^@target"`. Of course the same target can
+be part of multple jumps.
 
-    places the repetition line 3 halftones left of the end of the
-    repetition.
+You can control the position of the goto-line by adding a distance
+in halftones, e.g. `"\^@target@3"`, `"\^@target@-3"`
 
-## multi level configuration profiles
+### Repeetitions
+
+Repetitions can also be controlled by chords on the right repeat
+bar. In this case target is left empty. For example
+
+    "^@@-3" :| 
+
+places the repetition line 3 halftones left of the end of the
+repetition.
+
+## Multi level configuration profiles
 
 Zupfnoter uses a sophisticated configuration system to control any adjustable item in the produced harpnote sheets such as
 
@@ -261,7 +227,7 @@ the following fields apply to an extract:
           "1" : {"pos": [320, 0], "text": "", "style": "large"}
         },
     ```
-*nonflowrest -> boolean
+* nonflowrest -> boolean
 
     if true: show rests in voices without flowlines
 
@@ -374,3 +340,46 @@ the following fields apply to an extract:
   }
 
 ```
+
+## Credits
+
+This software would not exist without the great support (mentioned in sequence of contact)
+
+* My wife Ruth, she is an ardent plaer of Veeh® harp. This project started just to please her.
+* My son Christian, who helped me to define the initial architecture which proved to be stable
+* Sr. Christel Schröder, she answered all question about music notation
+* Flavio Vani (https://github.com/flvani) who helped me on the first steps
+* Elia Schito (https://github.com/elia) and the Opal project - what a great thing!
+* David Bau (https://github.com/PencilCode) for musicaljs
+* Paul Rosen (https://github.com/paulrosen) for abcjs (which was the abc parser in the beginning)
+* Jean Francois Moine (http://moinejf.free.fr/) for abc2svg.js and his outstandig support to fulfil my requests. 
+  abc2svg - blazing fast, full abc support
+* Willem de Vries (http://wim.vree.org/) for xml2abc.js - which enables music xml import
+* Dimitry Baranovskiy (https://github.com/DmitryBaranovskiy/raphael)
+* Vitali Malinouski (https://github.com/vitmalina/w2ui) for his great UI toolkit (w2ui)
+* James Hall (https://github.com/MrRio) for jspdf
+* Chris Walshaw (http://abcnotation.com) for abc notation 
+
+
+
+## Licencse
+
+This software is licensed under dual license GPL and Commercial
+
+## Contributing
+
+Your contributions are welcome. However, few things you need to know before contribution:
+
+* install Ruby 2.1.1 or higher with bundler
+* clone the repository
+* goto 30_Sources/SRC_Zupfnoter
+* run "bundle install"
+* goto 30_sources/SRC_Zupfnoter/src
+* run `rake server`
+* goto http://localhost:9292
+
+Please check out latest code before changing anything. Please use Gitflow to prepare PRs
+
+Contributors who need a Code of Conduct which goes beyond the basic social skills which usually 
+are taught by parents or kindergarden might consider to stay away from here.
+
