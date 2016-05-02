@@ -1,3 +1,11 @@
+# V 1.2.2
+
+* slowed down activity animation
+
+
+
+# V 1.2.1
+
 
 # V 1.2.0 2016-04-21
 
