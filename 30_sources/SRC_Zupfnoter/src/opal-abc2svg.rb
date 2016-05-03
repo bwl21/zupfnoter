@@ -17,8 +17,8 @@ module ABC2SVG
   class Abc2Svg
 
 
-    def initialize(div, options={ mode: :svg })
-      @on_select           = lambda { |element| }
+    def initialize(div, options={mode: :svg})
+      @on_select           = lambda { |element|}
       @printer             = div
       @svgbuf              = []
       @abc_source          = ''
@@ -26,11 +26,11 @@ module ABC2SVG
       @abc_model           = nil
       @object_map          = {} # mapping objects to their Id
 
-      @user = { img_out:     nil,
-                errmsg:      nil,
-                read_file:   nil,
-                annotate:    true,
-                page_format: true
+      @user = {img_out:     nil,
+               errmsg:      nil,
+               read_file:   nil,
+               annotate:    true,
+               page_format: true
       }
 
 
@@ -56,13 +56,13 @@ module ABC2SVG
             @svgbuf.push svg
           end
 
-          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type|
+          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type, info|
             # _get_abcmodel(tsfirst, voice_tb, anno_type)
           end
 
         when :model
           set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type, info|
-            _get_abcmodel(tsfirst, voice_tb, anno_type, info)
+            _callback_get_abcmodel(tsfirst, voice_tb, anno_type, info)
           end
 
         else
@@ -112,7 +112,13 @@ module ABC2SVG
     end
 
     def draw(abc_code)
-      _translate("abc", abc_code)
+      @abc_source          = abc_code
+      @element_to_position = {}
+      @svgbuf              = []
+      %x{
+      #{@root}.tosvg(#{"abc"}, #{@abc_source});
+      }
+
       @printer.html(get_svg())
       _set_on_select();
       nil
@@ -149,74 +155,22 @@ module ABC2SVG
     end
 
     private
+    # This is the business logic to copy the abc-model
+    # This method is registered as callback to abc2svg
+    #
+    # we use gen_json in to prepare
+    #
+    def _callback_get_abcmodel(tsfirst, voice_tb, music_types, info)
 
-
-    # This clones an abc2svg object such that we no longer need to deal with Native etc.
-    # it removes some keys which are provided by abc2svg but not used in Zupfnoter
-    def _clone_abc2svg_object(object)
-
-      dropkeys = [:next, :prev, :ts_next, :ts_prev, :extra, :p_v]
-
-      case object.class.to_s
-        when "Native::Object"
-          keys                         = %x{Object.keys(#{object.to_n})} - dropkeys # avoid recursions
-          result                       = keys.inject({}) do |r1, key|
-            r1[key] = _clone_abc2svg_object(Native(object[key]))
-            r1
-          end
-          result[:extra]               = _get_extra(object) if object[:extra] ## todo if object.has_key extra
-          @object_map[object[:__id__]] = result ## todo: remove with redefinition of Native
-        when "Array"
-          result = object.map { |element| _clone_abc2svg_object(Native(element)) }
-        else
-          result = object
-      end
-      result
-    end
-
-    def _get_extra(object)
-      result      = {}
-      next_object = object[:extra]
-      while next_object
-        cloned_extra                     = _clone_abc2svg_object(next_object)
-        result[cloned_extra[:type]] = cloned_extra
-        next_object                      = next_object[:next]
-      end
-      result
-    end
-
-    # This is the business logic to copy the abc-model in the callbac
-    def _get_abcmodel(tsfirst, voice_tb, music_types, info)
-
+      json_model = ""
       %x{
           abcmidi = new AbcMIDI();
-          abcmidi.add(#{tsfirst}, #{voice_tb}[0].key)
+          abcmidi.add(#{tsfirst}, #{voice_tb}[0].key);
+          to_json = new AbcJSON();
+          #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
       }
 
-      tune               = {}
-      tune[:music_types] = Native(music_types).clone
-      tune[:voices]      = Native(voice_tb).map { |v|
-        result  = {
-            voice_properties: _clone_abc2svg_object(Native(v)),
-            symbols:          []
-        }
-        #Native(v)[:lastnote] = "hidden"
-        curnote = Native(Native(v)[:sym])
-        while curnote do
-          nextnote    = curnote[:next]
-          cloned_note = _clone_abc2svg_object(curnote)
-
-          result[:symbols] << cloned_note
-          curnote = nextnote
-        end
-        result
-      }
-      info_clone         = _clone_abc2svg_object(Native(info))
-      @abc_model         = { music_types:    music_types,
-                             music_type_ids: Hash[music_types.each_with_index.to_a],
-                             info:           info_clone,
-                             voices:         tune[:voices]
-      }
+      @abc_model = JSON.parse(json_model)
 
       if $log.loglevel == "debug"
         $log.debug(@abc_model.to_json)
@@ -254,7 +208,7 @@ module ABC2SVG
           #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
             '" height="' + #{h}.toFixed(2) + '"/>\n')
         }
-      @element_to_position[id] = { startChar: start_offset, endChar: stop_offset }
+      @element_to_position[id] = {startChar: start_offset, endChar: stop_offset}
 
     end
 
@@ -272,14 +226,5 @@ module ABC2SVG
       end
     end
 
-
-    def _translate(file_name, abc_source)
-      @abc_source          = abc_source
-      @element_to_position = {}
-      @svgbuf              = []
-      %x{
-      #{@root}.tosvg(#{file_name}, #{@abc_source});
-      }
-    end
   end
 end
