@@ -30,7 +30,7 @@ module Harpnotes
 
         @info_fields = get_metadata(@abc_code)
 
-        abc_parser = ABC2SVG::Abc2Svg.new(nil, { mode: :model }) # first argument is the container for SVG
+        abc_parser = ABC2SVG::Abc2Svg.new(nil, {mode: :model}) # first argument is the container for SVG
         @abc_model = abc_parser.get_abcmodel(zupfnoter_abc)
 
         result = _transform_voices
@@ -42,12 +42,12 @@ module Harpnotes
       end
 
       def _make_harpnote_options
-        result = { lyrics: { text: @info_fields[:W] } }
+        result = {lyrics: {text: @info_fields[:W]}}
 
         result[:print] = $conf.get("produce").map do |i|
           title = $conf.get("extract.#{i}.title")
           if title
-            { title: title, view_id: i }
+            {title: title, view_id: i}
           else
             $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
             nil
@@ -89,21 +89,21 @@ module Harpnotes
           duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           duration_display = duration.map { |d| "1/#{1/d}" }
           bpm              = tempo_note[:tempo_value].to_i
-          tempo            = { duration: duration, bpm: bpm }
+          tempo            = {duration: duration, bpm: bpm}
         else
           duration         = [0.25]
           duration_display = duration.map { |d| "1/#{1/d}" }
           bpm              = 120
-          tempo            = { duration: duration, bpm: bpm }
+          tempo            = {duration: duration, bpm: bpm}
         end
 
-        { composer:      (@info_fields[:C] or []).join("\n"),
-          title:         (@info_fields[:T] or []).join("\n"),
-          filename:      (@info_fields[:F] or []).join("\n"),
-          tempo:         { duration: duration, bpm: bpm },
-          tempo_display: [duration_display, "=", bpm].join(' '),
-          meter:         @info_fields[:M],
-          key:           "#{key} #{o_key_display}"
+        {composer:      (@info_fields[:C] or []).join("\n"),
+         title:         (@info_fields[:T] or []).join("\n"),
+         filename:      (@info_fields[:F] or []).join("\n"),
+         tempo:         {duration: duration, bpm: bpm},
+         tempo_display: [duration_display, "=", bpm].join(' '),
+         meter:         @info_fields[:M],
+         key:           "#{key} #{o_key_display}"
         }
       end
 
@@ -116,9 +116,9 @@ module Harpnotes
 
         @jumptargets = {} # the lookup table for jumps
 
-        @next_note_marks   = { measure:        false,
-                               repeat_start:   false,
-                               variant_ending: nil }
+        @next_note_marks   = {measure:        false,
+                              repeat_start:   false,
+                              variant_ending: nil}
         @previous_new_part = []
         @previous_note     = nil
         @repetition_stack  = []
@@ -214,6 +214,7 @@ module Harpnotes
 
 
           result           = Harpnotes::Music::Note.new(the_note[:midi], duration)
+          result.time      = voice_element[:time]
           result.origin    = origin
           result.start_pos = charpos_to_line_column(start_pos) # get column und line number of abc_code
           result.end_pos   = charpos_to_line_column(end_pos)
@@ -221,7 +222,6 @@ module Harpnotes
           result.tuplet       = tuplet
           result.tuplet_start = tuplet_start
           result.tuplet_end   = tuplet_end
-
           result
         end
 
@@ -239,6 +239,7 @@ module Harpnotes
           # handle duration and orign
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
           first_note              = notes.first
+          synchpoint.time         = first_note.time
           synchpoint.duration     = first_note.duration
           synchpoint.origin       = first_note.origin
           synchpoint.start_pos    = first_note.start_pos
@@ -306,6 +307,7 @@ module Harpnotes
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result              = Harpnotes::Music::Pause.new(pitch, duration)
+        result.time         = voice_element[:time]
         result.origin       = _parse_origin(voice_element)
         result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
         result.end_pos      = charpos_to_line_column(end_pos)
@@ -418,11 +420,11 @@ module Harpnotes
                   annotation = @annotations[text]
                   $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
-                  annotation = { text: text }
+                  annotation = {text: text}
                 when "<"
-                  entity.shift = { dir: :left, size: text }
+                  entity.shift = {dir: :left, size: text}
                 when ">"
-                  entity.shift = { dir: :right, size: text }
+                  entity.shift = {dir: :right, size: text}
                 else
                   annotation = nil # it is not an annotation
               end
@@ -430,7 +432,7 @@ module Harpnotes
               if annotation
                 notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || [2, -5] #todo: make default position configurable
-                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, { pos: position, text: annotation[:text] })
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
               end
             else
               # $log.error("syntax error in annotation: #{name}")
@@ -459,7 +461,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(result.first, { pos: [4, -2], text: @next_note_marks[:variant_ending] })
+          result << Harpnotes::Music::NoteBoundAnnotation.new(result.first, {pos: [4, -2], text: @next_note_marks[:variant_ending]})
           @next_note_marks[:variant_ending] = nil
         end
 
@@ -493,7 +495,7 @@ module Harpnotes
       end
 
       def _parse_origin(voice_element)
-        { startChar: voice_element[:istart], endChar: voice_element[:iend], raw: voice_element }
+        {startChar: voice_element[:istart], endChar: voice_element[:iend], raw: voice_element}
       end
 
       # this parses the slur information from abc2svg
@@ -513,7 +515,7 @@ module Harpnotes
       def _parse_tuplet_info(voice_element)
         if voice_element[:in_tuplet]
 
-          if voice_element[:extra] and voice_element[:extra][15]   # todo: attr_reader :
+          if voice_element[:extra] and voice_element[:extra][15] # todo: attr_reader :
             @tuplet_count      = (voice_element[:extra][15][:tuplet_p])
             @tuplet_down_count = @tuplet_count
             tuplet_start       = true

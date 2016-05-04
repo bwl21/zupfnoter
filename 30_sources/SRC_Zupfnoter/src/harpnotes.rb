@@ -92,7 +92,7 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos
+      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos, :time
 
       def initialize
         @visible = true
@@ -530,40 +530,30 @@ module Harpnotes
       # A beat map of a voice is a hash (current_beat => playable).
       # this method also updates the beat in the considered playable
       #
+      # note that it requires that the voice elements already have their
+      # time stamps
+      #
       # @return nil
       def update_beats
-        tupletmap  = {
-            1 => 1,
-            2 => 3/2,
-            3 => 2/3,
-            4 => 3/4,
-            5 => 2/5, # todo 3/5 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
-            6 => 2/6,
-            7 => 2/7, # todo 3/7 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
-            8 => 3/8,
-            9 => 2/9 # todo 3/9 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
 
-        }
-        @beat_maps = @voices.map do |voice|
+        @beat_maps= @voices.map do |voice|
           current_beat = 0
           voice_map    = voice.select { |e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
-            beats      = playable.duration * $conf.get('layout.BEAT_PER_DURATION') # todo:handle triplets
-            # Timefactor of player
-            # BEAT_RESOLUTOIN
+            current_beat      = playable.time/8
+            current_beat_floor = current_beat.floor(0)
 
-            beats      = beats * tupletmap[playable.tuplet]
-            beat_error = beats - beats.floor(0)
+            beat_error = current_beat - current_beat_floor
             if beat_error > 0
               pos = playable.start_pos
               $log.error("unsupported tuplet #{playable.tuplet} #{beat_error}", pos) # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
-              beats = beats.floor(0)
+              current_beat = current_beat_floor
             end
+
 
             map[current_beat] = playable
             playable.beat     = current_beat
 
-            current_beat += beats
-            map.index    = voice.index
+            map.index = voice.index
             map
           end
           voice_map
@@ -1065,8 +1055,7 @@ module Harpnotes
         print_options.push($conf.get("extract.0"))
 
         # todo: remove this appraoch after migration
-          song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
-
+        song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
 
 
         unless song_print_options
@@ -1080,7 +1069,7 @@ module Harpnotes
         # push view specific configuration
         layout_options = print_options[:layout] || {}
         $conf.push({layout: layout_options})
-        
+
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
 
