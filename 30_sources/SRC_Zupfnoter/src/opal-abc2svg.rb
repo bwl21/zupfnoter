@@ -30,7 +30,8 @@ module ABC2SVG
                errmsg:      nil,
                read_file:   nil,
                annotate:    true,
-               page_format: true
+               page_format: true,
+               keep_remark: true
       }
 
 
