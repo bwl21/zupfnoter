@@ -19,9 +19,12 @@ ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 desc "Update abc2svg from Jean-Francois' website"
 task :updateAbc2svg do
   abc2svg_file = "abc2svg-1.js"
+  sources      = [abc2svg_file, "json-1.js", "midi-1.js"]
   abc2svg_js   = Net::HTTP.get(URI("http://moinejf.free.fr/js/#{abc2svg_file}"))
   File.open("#{VENDORFOLDER}/#{abc2svg_file}", "w") do |f|
-    f.puts abc2svg_js
+    sources.each do |s|
+      f.puts Net::HTTP.get(URI("http://moinejf.free.fr/js/#{s}"))
+    end
   end
 end
 
@@ -90,7 +93,7 @@ task :deploy => [:build] do
     mkdir_p("#{OUTFOLDER}/webserver/#{d}")
   end
 
-  Dir['../vendor/font-awesome/css/*.*', '../vendor/font-awesome/fonts/*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}"}
+  Dir['../vendor/font-awesome/css/*.*', '../vendor/font-awesome/fonts/*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
   ['w2ui.min.css', 'w2ui.min.js'].each { |f| cp "../vendor/w2ui/dist/#{f}", "#{OUTFOLDER}/webserver/vendor/w2ui/dist/#{f}" }
 
