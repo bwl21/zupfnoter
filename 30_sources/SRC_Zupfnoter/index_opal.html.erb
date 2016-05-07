@@ -74,10 +74,14 @@
   <%= javascript_include_tag 'application' %>
 </head>
 
-<body style="height: 100%;" onunload="check_undload()">
+<body style="height: 100%;" onbeforeunload="return check_unload()">
 <div id="layout" style="height: 100%">
 </div>
 <script type="text/javascript">
+
+  function check_unload(){
+    return "Zupfnoter verlassen? echt jetzt ...?"
+  }
 
   function init_w2ui() {
 

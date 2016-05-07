@@ -1,6 +1,7 @@
 # V 1.3.1
 
 * initial support of voice overlays (bars do not always show up)
+* raise an alert before unloading Zupfnoter
 * no error message on [r:] - remarks
 * some refactorings (abc2svg-json
 * update to abc2svg 1.5.22
