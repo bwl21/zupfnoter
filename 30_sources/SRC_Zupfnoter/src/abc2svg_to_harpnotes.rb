@@ -214,6 +214,7 @@ module Harpnotes
 
 
           result           = Harpnotes::Music::Note.new(the_note[:midi], duration)
+          result.time      = voice_element[:time]
           result.origin    = origin
           result.start_pos = charpos_to_line_column(start_pos) # get column und line number of abc_code
           result.end_pos   = charpos_to_line_column(end_pos)
@@ -221,7 +222,6 @@ module Harpnotes
           result.tuplet       = tuplet
           result.tuplet_start = tuplet_start
           result.tuplet_end   = tuplet_end
-
           result
         end
 
@@ -239,6 +239,7 @@ module Harpnotes
           # handle duration and orign
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
           first_note              = notes.first
+          synchpoint.time         = first_note.time
           synchpoint.duration     = first_note.duration
           synchpoint.origin       = first_note.origin
           synchpoint.start_pos    = first_note.start_pos
@@ -306,6 +307,7 @@ module Harpnotes
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result              = Harpnotes::Music::Pause.new(pitch, duration)
+        result.time         = voice_element[:time]
         result.origin       = _parse_origin(voice_element)
         result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
         result.end_pos      = charpos_to_line_column(end_pos)
