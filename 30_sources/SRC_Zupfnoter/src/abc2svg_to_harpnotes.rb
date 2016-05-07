@@ -82,8 +82,8 @@ module Harpnotes
         o_key_display =""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
-        tempo_id = @abc_model[:music_type_ids][:tempo]
-        tempo_note = @abc_model[:voices].first[:voice_properties][:sym][:extra][tempo_id] rescue nil
+        tempo_id = @abc_model[:music_type_ids][:tempo].to_s
+        tempo_note = _get_extra(@abc_model[:voices].first[:voice_properties][:sym], tempo_id) rescue nil
 
         if tempo_note
           duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
@@ -134,12 +134,12 @@ module Harpnotes
 
       def _transform_voices
 
-        part_id = @abc_model[:music_type_ids][:part] # performance ...
-        note_id = @abc_model[:music_type_ids][:note]
+        part_id = @abc_model[:music_type_ids][:part].to_s # performance ...
+        note_id = @abc_model[:music_type_ids][:note].to_s
 
         # get parts
         @abc_model[:voices].first[:symbols].each do |voice_model_element|
-          part                                         = ((voice_model_element[:extra] or {})[part_id] or {})[:text]
+          part                                         = (_get_extra(voice_model_element, part_id) or {})[:text]
           @part_table[voice_model_element[:time].to_s] = part if part
         end
 
@@ -148,7 +148,7 @@ module Harpnotes
           _reset_state
           @pitch_providers = voice_model[:symbols].map do |voice_model_element|
             nil
-            voice_model_element if voice_model_element[:type] == note_id
+            voice_model_element if voice_model_element[:type].to_s == note_id
           end
 
           result                = voice_model[:symbols].each_with_index.map do |voice_model_element, index|
@@ -472,6 +472,11 @@ module Harpnotes
         end
       end
 
+      def _get_extra(voice_element, id)
+        r = (voice_element[:extra] and voice_element[:extra].select { |e| e[:type].to_s == id.to_s }.first) rescue nil
+        r
+      end
+
       def _push_slur
         @slurstack += 1
       end
@@ -515,8 +520,10 @@ module Harpnotes
       def _parse_tuplet_info(voice_element)
         if voice_element[:in_tuplet]
 
-          if voice_element[:extra] and voice_element[:extra][15] # todo: attr_reader :
-            @tuplet_count      = (voice_element[:extra][15][:tuplet_p])
+          #tuplet_id = @abc_model[:music_type_ids][:tuplet].to_s # todo: optimize performance here ...
+          tuplet_id = "15"
+          if _get_extra(voice_element, tuplet_id) # [:extra] and voice_element[:extra][tuplet_id]   # todo: attr_reader :
+            @tuplet_count      = (_get_extra(voice_element, tuplet_id)[:tuplet_p])
             @tuplet_down_count = @tuplet_count
             tuplet_start       = true
           else
