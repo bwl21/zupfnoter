@@ -1,7 +1,7 @@
 //#javascript
 // Set the MIDI pitches in the music symbols
 //
-// Copyright (C) 2015 Jean-Francois Moine
+// Copyright (C) 2015-2016 Jean-Francois Moine
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.");
@@ -144,5 +144,4 @@ function AbcMIDI() {
 			s = s.ts_next
 		}
 	}
-
 } // end AbcMidi
