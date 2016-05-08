@@ -294,6 +294,13 @@ C,
             'startpos'     => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
             'subflowlines' => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
             'produce'      => lambda { {key: "produce", value: $conf['produce']} },
+            'layout'      => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
+                                        value: {LINE_THIN:    0.1,
+                                                LINE_MEDIUM:  0.3,
+                                                LINE_THICK:   0.5,
+                                                # all numbers in mm
+                                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
+                                                REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
             'xx'           => lambda { {key: "xx", value: $conf[]} }
         }
 
@@ -398,7 +405,7 @@ C,
   def __ic_05_dropbox_commands
     @commands.add_command(:dlogin) do |command|
       command.add_parameter(:scope, :string) do |parameter|
-        parameter.set_default { @systemstatus[:dropboxapp] || 'full'}
+        parameter.set_default { @systemstatus[:dropboxapp] || 'full' }
         parameter.set_help { "(app | full) app: app only | full: full dropbox" }
       end
 
@@ -411,8 +418,8 @@ C,
 
       command.as_action do |args|
 
-        path =  args[:path]
-        path +=  '/' unless path.end_with? '/'
+        path = args[:path]
+        path += '/' unless path.end_with? '/'
 
         case args[:scope]
           when "full"
