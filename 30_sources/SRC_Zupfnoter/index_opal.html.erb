@@ -310,7 +310,8 @@
         {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'},
         {
           type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', hint: 'Hilfe', items: [
-          {text: 'Tutorials', icon: 'fa fa-tags', id: "tbTutorials"},
+          {text: 'Zn Tutorials', icon: 'fa fa-tags', id: "tbTutorials"},
+          {text: 'abc Tutorial', icon: 'fa fa-tags', id: "tbAbcTutorial"},
           {text: 'Manual', icon: 'fa fa-tags', id: "tbManual"},
           {text: 'Homepage', icon: 'fa fa-tags', id: "tbHomepage"},
         ]
@@ -332,6 +333,9 @@
         }
         if (event.target == "tbHelp:tbTutorials") {
           window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
+        }
+        if (event.target == "tbHelp:tbAbcTutorial") {
+          window.open("http://penzeng.de/Geige/Abc.htm")
         }
         if (event.target == "tbHelp:tbHomepage") {
           window.open("http://www.zupfnoter.de")
