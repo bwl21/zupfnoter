@@ -2,9 +2,10 @@
 
 * initial support of voice overlays (bars do not always show up)
 * raise an alert before unloading Zupfnoter
+* indicate draggable text by "pointer" cursors
 * config menu now injects some layout options
 * no error message on [r:] - remarks
-* some refactorings (abc2svg-json
+* some refactorings (abc2svg-json)
 * update to abc2svg 1.5.22
 
 # V 1.2.2

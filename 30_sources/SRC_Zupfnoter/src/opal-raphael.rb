@@ -143,8 +143,9 @@ module Raphael
     def draggable(element)
       #inspired by http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
       %x{
-         var otransform = element.r.transform();
-         var me = element.r,
+         #{element.r}.node.className.baseVal +=" zn_draggable"
+         var otransform = element.r.transform(); // save the orginal transformation
+         var me = #{element.r},
           lx = 0,
           ly = 0,
           ox = 0,

@@ -44,6 +44,9 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+.zn_draggable {
+  cursor: pointer; }
+
 .w2ui-tb-caption {
   vertical-align: middle; }
 
