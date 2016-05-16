@@ -110,6 +110,11 @@ module Harpnotes
       private
 
 
+      def _mkznid(voice_element)
+        result = voice_element[:extra].select{|e|e[:type] == 17}.last[:text] rescue nil
+        result
+      end
+
       # This resets the converter
       # to be called when beginning a new voice
       def _reset_state
@@ -118,7 +123,8 @@ module Harpnotes
 
         @next_note_marks   = {measure:        false,
                               repeat_start:   false,
-                              variant_ending: nil}
+                              variant_ending: nil
+        }
         @previous_new_part = []
         @previous_note     = nil
         @repetition_stack  = []
@@ -132,12 +138,13 @@ module Harpnotes
       end
 
 
+
       def _transform_voices
 
         part_id = @abc_model[:music_type_ids][:part].to_s # performance ...
         note_id = @abc_model[:music_type_ids][:note].to_s
 
-        # get parts
+        # get parts from the first voice.
         @abc_model[:voices].first[:symbols].each do |voice_model_element|
           part                                         = (_get_extra(voice_model_element, part_id) or {})[:text]
           @part_table[voice_model_element[:time].to_s] = part if part
@@ -215,6 +222,7 @@ module Harpnotes
 
           result           = Harpnotes::Music::Note.new(the_note[:midi], duration)
           result.time      = voice_element[:time]
+          result.znid      = _mkznid(voice_element)
           result.origin    = origin
           result.start_pos = charpos_to_line_column(start_pos) # get column und line number of abc_code
           result.end_pos   = charpos_to_line_column(end_pos)
@@ -239,6 +247,7 @@ module Harpnotes
           # handle duration and orign
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
           first_note              = notes.first
+          synchpoint.znid         = _mkznid(voice_element)
           synchpoint.time         = first_note.time
           synchpoint.duration     = first_note.duration
           synchpoint.origin       = first_note.origin
@@ -307,6 +316,7 @@ module Harpnotes
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result              = Harpnotes::Music::Pause.new(pitch, duration)
+        result.znid         = _mkznid(voice_element)
         result.time         = voice_element[:time]
         result.origin       = _parse_origin(voice_element)
         result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
@@ -432,7 +442,8 @@ module Harpnotes
               if annotation
                 notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || [2, -5] #todo: make default position configurable
-                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]})
+                conf_key = "notebound.#{entity.znid}.annotation.pos" if entity.znid
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]}, conf_key)
               end
             else
               # $log.error("syntax error in annotation: #{name}")
@@ -445,12 +456,13 @@ module Harpnotes
       # this appends repeates, jumplines, annotations to the resultl
       def _make_repeats_jumps_annotations(result, voice_element)
         @previous_note = result.first # notes.first # save this for repeat lines etc.
-
+        znid           = result.first.znid
 
         if part_label = @part_table[voice_element[:time].to_s]
           part                       = Harpnotes::Music::NewPart.new(part_label)
           part.origin                = _parse_origin(voice_element)
           part.companion             = result.first
+          part.conf_key              = "notebound.#{znid}.partname.pos" if znid
           result.first.first_in_part = true
           result << part
         end
@@ -461,7 +473,8 @@ module Harpnotes
         end
 
         if @next_note_marks[:variant_ending]
-          result << Harpnotes::Music::NoteBoundAnnotation.new(result.first, {pos: [4, -2], text: @next_note_marks[:variant_ending]})
+          conf_key = "notebound.#{znid}.variantend.pos" if znid
+          result << Harpnotes::Music::NoteBoundAnnotation.new(result.first, {pos: [4, -2], text: @next_note_marks[:variant_ending]}, conf_key )
           @next_note_marks[:variant_ending] = nil
         end
 

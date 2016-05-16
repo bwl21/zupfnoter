@@ -92,7 +92,7 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos, :time
+      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos, :time, :znid
 
       def initialize
         @visible = true
@@ -120,7 +120,7 @@ module Harpnotes
     # be part of the harpnote sheet
     # pitch and beat are delegated to its companion
     class NonPlayable < MusicEntity
-      attr_accessor :companion
+      attr_accessor :companion, :conf_key
 
       #
       # Constructor
@@ -354,9 +354,10 @@ module Harpnotes
     class NewPart < NonPlayable
       attr_reader :name
 
-      def initialize(title)
+      def initialize(title, conf_key = nil)
         super()
-        @name = title
+        @conf_key = conf_key
+        @name     = title
       end
     end
 
@@ -365,9 +366,10 @@ module Harpnotes
     class NoteBoundAnnotation < NonPlayable
       # @param [Object] companion the note which is annotated
       # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
-      def initialize(companion, annotation)
+      def initialize(companion, annotation, conf_key=nil)
         super()
-        self.companion = companion
+        self.companion = companion # self: use the method companion=
+        @conf_key      = conf_key
         @annotations   = annotation
       end
 
@@ -539,7 +541,7 @@ module Harpnotes
         @beat_maps= @voices.map do |voice|
           current_beat = 0
           voice_map    = voice.select { |e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
-            current_beat      = playable.time/8
+            current_beat       = playable.time/8
             current_beat_floor = current_beat.floor(0)
 
             beat_error = current_beat - current_beat_floor
@@ -1114,7 +1116,7 @@ module Harpnotes
         # sheet_elements derived from the voices
         voice_elements  = music.voices.each_with_index.map { |v, index|
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
-            layout_voice(v, compressed_beat_layout_proc,
+            layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
                          nonflowrest:   print_options[:nonflowrest],
                          flowline:      print_options[:flowlines].include?(index),
                          subflowline:   print_options[:subflowlines].include?(index),
@@ -1205,7 +1207,7 @@ module Harpnotes
       #
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
-      def layout_voice(voice, beat_layout, show_options)
+      def layout_voice(voice, beat_layout, print_variant_nr, show_options)
 
         # draw the playables
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
@@ -1216,20 +1218,17 @@ module Harpnotes
           playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
         end
 
-        res_playables = playables.map do |playable|
+        res_playables                   = playables.map do |playable|
           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
         end.flatten.compact
 
 
         # layout the measures
 
-        res_measures  = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
+        res_measures                    = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
           layout_playable(measure, beat_layout)
         end
 
-        res_newparts                    = voice.select { |c| c.is_a? NewPart }.map do |newpart|
-          layout_newpart(newpart, beat_layout)
-        end
 
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
         # todo make it a class variable, it is used in layout again
@@ -1240,6 +1239,18 @@ module Harpnotes
         lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }.reverse]
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
+
+
+        res_newparts                    = voice.select { |c| c.is_a? NewPart }.map do |newpart|
+          #layout_newpart(newpart, beat_layout)
+          position = Vector2d(lookuptable_drawing_by_playable[newpart.companion].center) + [-5, -7] #newpart.companion.position
+          # todo: add traceback for drag of notebound annoations
+          conf_key = nil
+          conf_key = "extract.#{print_variant_nr}.#{newpart.conf_key}" if newpart.conf_key
+          Harpnotes::Drawing::Annotation.new(position.to_a, newpart.name, nil, newpart.companion.origin, conf_key)
+
+        end
+
 
         # draw the flowlines
         previous_note                   = nil
@@ -1376,7 +1387,9 @@ module Harpnotes
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
           # todo: add traceback for drag of notebound annoations
-          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, nil)
+          conf_key = nil
+          conf_key = "extract.#{print_variant_nr}.#{annotation.conf_key}" if annotation.conf_key
+          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, conf_key)
         end
 
 
@@ -1463,6 +1476,7 @@ module Harpnotes
         elsif root.is_a? Pause
           layout_pause(root, beat_layout)
         elsif root.is_a? NewPart
+          `alert("this should not happen");`
           layout_newpart(root, beat_layout)
         else
           $log.error("Missing Music -> Sheet transform: #{root}")

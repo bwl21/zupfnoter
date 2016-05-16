@@ -443,7 +443,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     zip.file("song.abc", @editor.get_text)
     zip.file("harpnotes_a4.pdf", render_a4.output(:blob))
     zip.file("harpnotes_a3.pdf", render_a3.output(:blob))
-    blob     =zip.to_blob
+    blob     = zip.to_blob
     filename = "song#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
     `window.saveAs(blob, filename)`
   end
@@ -543,8 +543,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
-      newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
-      report    = "#{info[:config]}: #{newcoords}"
+      if info[:config].include? '.notebound.'
+        newcoords = info[:delta]
+      else
+        newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
+      end
+
+      report = "#{info[:config]}: #{newcoords}"
       if info[:config]
         @editor.patch_config_part(info[:config], newcoords)
       end
