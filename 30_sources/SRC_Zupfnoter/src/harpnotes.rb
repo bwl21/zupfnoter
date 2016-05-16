@@ -1241,17 +1241,6 @@ module Harpnotes
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
 
 
-        res_newparts                    = voice.select { |c| c.is_a? NewPart }.map do |newpart|
-          #layout_newpart(newpart, beat_layout)
-          position = Vector2d(lookuptable_drawing_by_playable[newpart.companion].center) + [-5, -7] #newpart.companion.position
-          # todo: add traceback for drag of notebound annoations
-          conf_key = nil
-          conf_key = "extract.#{print_variant_nr}.#{newpart.conf_key}" if newpart.conf_key
-          Harpnotes::Drawing::Annotation.new(position.to_a, newpart.name, nil, newpart.companion.origin, conf_key)
-
-        end
-
-
         # draw the flowlines
         previous_note                   = nil
         res_flow                        = voice.select { |c| c.is_a? Playable }.map do |playable|
@@ -1385,16 +1374,23 @@ module Harpnotes
         # draw note bound annotations
 
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
-          position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
-          # todo: add traceback for drag of notebound annoations
+
           conf_key = nil
           conf_key = "extract.#{print_variant_nr}.#{annotation.conf_key}" if annotation.conf_key
+          if conf_key
+            #annotationoffset = $conf.get(conf_key) rescue nil
+            annotationoffset = annotation.position unless annotationoffset
+          else
+            annotationoffset = annotation.position
+          end
+
+          position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
           Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, conf_key)
         end
 
 
         # return all drawing primitives
-        retval                       = (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures + res_newparts + res_annotations).compact
+        retval                       = (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures +  res_annotations).compact
       end
 
 
@@ -1475,11 +1471,9 @@ module Harpnotes
           layout_accord(root, beat_layout)
         elsif root.is_a? Pause
           layout_pause(root, beat_layout)
-        elsif root.is_a? NewPart
-          `alert("this should not happen");`
-          layout_newpart(root, beat_layout)
+          layout_pause(root, beat_layout)
         else
-          $log.error("Missing Music -> Sheet transform: #{root}")
+          $log.error("BUG: Missing Music -> Sheet transform: #{root}")
         end
       end
 
@@ -1644,28 +1638,6 @@ module Harpnotes
              ['z']]
         ]
         path
-      end
-
-      #
-      # Draw a Newpart on the Sheet
-      # @param root [Playable] The first playable of the new part
-      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
-      #
-      # @return [Object] The generated drawing primitive
-      def layout_newpart(root, beat_layout)
-        #               shift to left   pitch          space     stay away from border
-        if root.beat
-          # todo decide if part starts on a new line, then x_offset should be 0
-          x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch + (-0.5)) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
-          # todo:remove literal here
-          y_offset = beat_layout.call(root.beat()) - $conf.get('layout.FONT_STYLE_DEF')[:regular][:font_size] * 0.5 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
-          res      = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
-        else
-          $log.error("BUG Part without content")
-          res = nil
-        end
-
-        res
       end
 
       #

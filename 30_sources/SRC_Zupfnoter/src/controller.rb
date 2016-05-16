@@ -543,8 +543,17 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
+
       if info[:config].include? '.notebound.'
-        newcoords = info[:delta]
+
+        oldcoords = @editor.get_config_part_value(info[:config]) rescue nil
+
+        # todo: it is not ok, to geht the oldcoords from the defaults
+        # todo: it would be much better if the oldcoords would be provided by info
+        notebound_key_part = info[:config].split('.notebound.').last.split(".")[1..-1].join(".")
+        oldcoords = $conf[%Q{defaults.notebound.#{notebound_key_part}}] unless oldcoords
+
+        newcoords = oldcoords.zip(info[:delta]).map { |i| i.first + i.last }
       else
         newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
       end
@@ -773,7 +782,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         {produce:     [0],
          abc_parser:  'ABC2SVG',
          wrap:        60,
-         defaults:
+         defaultsxx:
                       {
                           note_length: "1/4",
                           print:       {t:        "", # title of the extract   # todo: remove these print defaults - no longer needed
@@ -789,6 +798,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                           lyrics:      {pos: [20, 60]}, # lyrics defaults
                           annotation:  {pos: [2, -5]} # position of notebound annotation
                       },
+
+         defaults:    {
+             notebound: {annotation: {pos: [5, -7]},
+                         partname:   {pos: [-4, -7]},
+                         variantend: {pos: [-4, -7]}
+             }
+         },
 
          annotations: {
              vt: {text: "v", pos: [-1, -6]},

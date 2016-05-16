@@ -259,6 +259,22 @@ module Harpnotes
     end
 
 
+    def get_config_part_value(key)
+      pconfig     = Confstack::Confstack.new(false)
+      config_part = get_config_part
+      begin
+        config = %x{json_parse(#{config_part})}
+        config = JSON.parse(config_part)
+        pconfig.push(config)
+        result = pconfig[key]
+      rescue Object => error
+        line_col = get_config_position(error.last)
+        $log.error("#{error.first} at #{line_col}", line_col)
+        set_annotations($log.annotations)
+      end
+      result
+    end
+
     # get the line and column of an error in the config part
     # @param [Numerical] charpos the position in the config part
     def get_config_position(charpos)
