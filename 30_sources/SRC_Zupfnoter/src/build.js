@@ -28844,7 +28844,7 @@ Opal.modules["text_pane"] = function(Opal) {
 
         editor.getSession().setMode("ace/mode/abc");
 
-        editor.setTheme("ace/theme/xcode");
+        editor.setTheme("ace/theme/abc");
 
         editor.setOptions({
           highlightActiveLine: true,
