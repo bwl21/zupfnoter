@@ -83,9 +83,8 @@ task :deploy => [:build] do
   }
 
   sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
+  #cp ZUPFNOTER_JS, "#{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS}"
 
-
-  cp ZUPFNOTER_JS, "#{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS}"
   # todo:this is not dry - see buildDesktop
   ["vendor/ace", "vendor/ace/snippets", "public/icons", "vendor/w2ui", "vendor/w2ui/dist",
    "vendor/font-awesome/css", "vendor/font-awesome/fonts"
