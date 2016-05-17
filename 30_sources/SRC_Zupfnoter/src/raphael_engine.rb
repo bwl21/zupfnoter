@@ -46,7 +46,7 @@ module Harpnotes
         elsif child.is_a? Harpnotes::Drawing::Path
           draw_path(child) if child.visible?
         else
-          $log.debug "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
+          $log.error "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
         end
       end
@@ -291,6 +291,7 @@ module Harpnotes
       if root.conf_key
         @paper.draggable(element)
         element.conf_key = root.conf_key
+        element.conf_value = root.conf_value
       end
       element.startpos = root.center
 

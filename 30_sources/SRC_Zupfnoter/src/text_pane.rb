@@ -18,10 +18,9 @@ module Harpnotes
         var editor = ace.edit(div);
         editor.$blockScrolling = Infinity;
 
-        editor.setTheme("ace/theme/abc");
         editor.getSession().setMode("ace/mode/abc");
 
-        editor.setTheme("ace/theme/abc");
+        editor.setTheme("ace/theme/xcode");
 
         editor.setOptions({
           highlightActiveLine: true,
@@ -107,7 +106,7 @@ module Harpnotes
     #
     # @return [type] [description]
     def select_range_by_position(selection_start, selection_end)
-      $log.debug("set editor selection to #{selection_start}, #{selection_end} (#{__FILE__} #{__LINE__}) ")
+      #$log.debug("set editor selection to #{selection_start}, #{selection_end} (#{__FILE__} #{__LINE__}) ")
 
       %x{
         doc = self.editor.selection.doc
@@ -226,6 +225,7 @@ module Harpnotes
       options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
                        explicit_sort: [[:produce,  :annotations, :extract,
                                         :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :legend, :notes, :lyrics, :nonflowrest, :layout,
+                                        :annotation, :partname, :variantend,
                                         "0", "1", "2", "3", "4", "5", "6", :verses, :pos, :text, :style], []]}
       configjson    = JSON.neat_generate(object, options)
 
@@ -258,6 +258,22 @@ module Harpnotes
       end
     end
 
+
+    def get_config_part_value(key)
+      pconfig     = Confstack::Confstack.new(false)
+      config_part = get_config_part
+      begin
+        config = %x{json_parse(#{config_part})}
+        config = JSON.parse(config_part)
+        pconfig.push(config)
+        result = pconfig[key]
+      rescue Object => error
+        line_col = get_config_position(error.last)
+        $log.error("#{error.first} at #{line_col}", line_col)
+        set_annotations($log.annotations)
+      end
+      result
+    end
 
     # get the line and column of an error in the config part
     # @param [Numerical] charpos the position in the config part
