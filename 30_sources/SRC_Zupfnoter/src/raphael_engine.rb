@@ -291,6 +291,7 @@ module Harpnotes
       if root.conf_key
         @paper.draggable(element)
         element.conf_key = root.conf_key
+        element.conf_value = root.conf_value
       end
       element.startpos = root.center
 

@@ -12,7 +12,7 @@ module Raphael
   # This represents a Raphael element
   #
   class Element
-    attr_accessor :unhighlight_color, :r, :conf_key, :startpos
+    attr_accessor :unhighlight_color, :r, :conf_key, :conf_value, :startpos
     #
     # Constructor
     #
@@ -162,7 +162,7 @@ module Raphael
             ox = lx;
             oy = ly;
             element.r.attr({fill: 'red'});
-            #{@on_drop}({element: element.r, "config": element.conf_key, "origin": element.startpos, "delta":  [ox, oy]} );
+            #{@on_drop}({element: element.r, "conf_key": element.conf_key, "conf_value": element.conf_value, "origin": element.startpos, "delta":  [ox, oy]} );
           };
 
       element.r.drag(moveFnc, startFnc, endFnc);

@@ -543,27 +543,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
+      conf_key = info[:conf_key]
 
-      if info[:config].include? '.notebound.'
+      newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+      @editor.patch_config_part(conf_key, newcoords)
 
-        oldcoords = @editor.get_config_part_value(info[:config]) rescue nil
-
-        # todo: it is not ok, to geht the oldcoords from the defaults
-        # todo: it would be much better if the oldcoords would be provided by info
-        notebound_key_part = info[:config].split('.notebound.').last.split(".")[1..-1].join(".")
-        oldcoords = $conf[%Q{defaults.notebound.#{notebound_key_part}}] unless oldcoords
-
-        newcoords = oldcoords.zip(info[:delta]).map { |i| i.first + i.last }
-      else
-        newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
-      end
-
-      report = "#{info[:config]}: #{newcoords}"
-      if info[:config]
-        @editor.patch_config_part(info[:config], newcoords)
-      end
-      `$("#harpPreview").w2overlay(report);`
-      $log.info("dragged to #{report}")
+      report    = "#{conf_key}: #{newcoords}"
+      `$("#harpPreview").w2overlay(#{report});`
     end
   end
 
@@ -807,9 +793,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          },
 
          annotations: {
-             vt: {text: "v", pos: [-1, -6]},
-             vr: {text: "v", pos: [2, -3]},
-             vl: {text: "v", pos: [-4, -3]}
+             vt: {text: "v", pos: [-5, -5]},
+             vr: {text: "v", pos: [2, -5]},
+             vl: {text: "v", pos: [-1, -5]}
 
          }, # default for note based annotations
 

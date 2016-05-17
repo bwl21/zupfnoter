@@ -793,19 +793,22 @@ module Harpnotes
     #
     #
     class Annotation < Drawable
-      attr_reader :center, :text, :style, :origin, :conf_key
+      attr_reader :center, :text, :style, :origin
+      attr_accessor :conf_key, :conf_value
 
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
-      # 
-      def initialize(center, text, style = :regular, origin = nil, conf_key=nil)
+      # @param [string] conf_key - the key for configuration (used for dragging annotation)
+      # @param [Object] conf_value - the value for configuration (used for dragging annotation)
+      def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
         super()
-        @center   = center
-        @text     = text
-        @style    = style
-        @origin   = origin
-        @conf_key = conf_key
+        @center     = center
+        @text       = text
+        @style      = style
+        @origin     = origin
+        @conf_key   = conf_key
+        @conf_value = conf_value
       end
     end
 
@@ -1159,8 +1162,10 @@ module Harpnotes
         title_pos  = print_options[:legend][:pos]
         legend_pos = print_options[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
-        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil, "extract.#{print_variant_nr}.legend.pos")
-        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.#{print_variant_nr}.legend.spos")
+        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
+                                                          "extract.#{print_variant_nr}.legend.pos", {pos: title_pos})
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
+                                                          "extract.#{print_variant_nr}.legend.spos", {pos:legend_pos})
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
@@ -1177,7 +1182,8 @@ module Harpnotes
             lyrics.each do |key, entry|
               pos      = entry[:pos]
               the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
-              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil, "extract.#{print_variant_nr}.lyrics.#{key}.pos")
+              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
+                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos})
             end
           end
         end
@@ -1185,7 +1191,8 @@ module Harpnotes
         #sheet based annotations
         print_options[:notes].each do |k, note|
           #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil, "extract.#{print_variant_nr}.notes.#{k}.pos")
+          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
+                                                            "extract.#{print_variant_nr}.notes.#{k}.pos", {pos: note[:pos]})
         end
 
 
@@ -1374,23 +1381,25 @@ module Harpnotes
         # draw note bound annotations
 
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
-
           conf_key = nil
           conf_key = "extract.#{print_variant_nr}.#{annotation.conf_key}" if annotation.conf_key
+
           if conf_key
-            #annotationoffset = $conf.get(conf_key) rescue nil
+            annotationoffset = $conf.get(conf_key) rescue nil
             annotationoffset = annotation.position unless annotationoffset
           else
             annotationoffset = annotation.position
           end
 
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
-          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, conf_key)
+          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin,
+                                                        conf_key, {pos: annotationoffset})
+          result
         end
 
 
         # return all drawing primitives
-        retval                       = (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures +  res_annotations).compact
+        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures + res_annotations).compact
       end
 
 
