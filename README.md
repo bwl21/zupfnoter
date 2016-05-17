@@ -81,7 +81,7 @@ be part of multple jumps.
 You can control the position of the goto-line by adding a distance
 in halftones, e.g. `"\^@target@3"`, `"\^@target@-3"`
 
-### Repeetitions
+### Repetitions
 
 Repetitions can also be controlled by chords on the right repeat
 bar. In this case target is left empty. For example
