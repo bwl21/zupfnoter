@@ -106,7 +106,6 @@ class Controller
     $conf        = Confstack.new()
     $conf.strict = false
     $conf.push(_init_conf)
-    $log.debug($conf.get.to_json)
 
     @editor = Harpnotes::TextPane.new("abcEditor")
 
@@ -476,7 +475,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
     $log.info("duration transform + layout #{Time.now - start}")
-    $log.debug(@music_model.to_json) if $log.loglevel == 'debug'
+    #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
     result

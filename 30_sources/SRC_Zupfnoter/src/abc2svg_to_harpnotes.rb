@@ -374,7 +374,6 @@ module Harpnotes
           level = line.split('@')
           if level[2]
             level = level[2] # note that "^@@distance"
-            $log.debug("bar repeat level #{level} #{__FILE__}:#{__LINE__}")
             distance = level.to_i unless level.nil?
           end
         end

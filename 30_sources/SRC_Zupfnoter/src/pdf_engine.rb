@@ -55,7 +55,7 @@ module Harpnotes
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child) if child.visible?
         else
-          $log.debug "don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
+          $log.error "BUG: don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
         end
       end
