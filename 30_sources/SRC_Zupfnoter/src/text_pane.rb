@@ -18,10 +18,9 @@ module Harpnotes
         var editor = ace.edit(div);
         editor.$blockScrolling = Infinity;
 
-        editor.setTheme("ace/theme/abc");
         editor.getSession().setMode("ace/mode/abc");
 
-        editor.setTheme("ace/theme/abc");
+        editor.setTheme("ace/theme/xcode");
 
         editor.setOptions({
           highlightActiveLine: true,
