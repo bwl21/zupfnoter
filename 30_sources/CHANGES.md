@@ -1,4 +1,4 @@
-# V 1.3.1
+# V 1.3.1 2016-05-17
 
 * initial support of voice overlays (bars do not always show up)
 * raise an alert before unloading Zupfnoter
