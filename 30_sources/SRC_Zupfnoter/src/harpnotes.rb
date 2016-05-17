@@ -92,7 +92,7 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos
+      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos, :time, :znid
 
       def initialize
         @visible = true
@@ -120,7 +120,7 @@ module Harpnotes
     # be part of the harpnote sheet
     # pitch and beat are delegated to its companion
     class NonPlayable < MusicEntity
-      attr_accessor :companion
+      attr_accessor :companion, :conf_key
 
       #
       # Constructor
@@ -354,9 +354,10 @@ module Harpnotes
     class NewPart < NonPlayable
       attr_reader :name
 
-      def initialize(title)
+      def initialize(title, conf_key = nil)
         super()
-        @name = title
+        @conf_key = conf_key
+        @name     = title
       end
     end
 
@@ -365,9 +366,10 @@ module Harpnotes
     class NoteBoundAnnotation < NonPlayable
       # @param [Object] companion the note which is annotated
       # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
-      def initialize(companion, annotation)
+      def initialize(companion, annotation, conf_key=nil)
         super()
-        self.companion = companion
+        self.companion = companion # self: use the method companion=
+        @conf_key      = conf_key
         @annotations   = annotation
       end
 
@@ -530,40 +532,30 @@ module Harpnotes
       # A beat map of a voice is a hash (current_beat => playable).
       # this method also updates the beat in the considered playable
       #
+      # note that it requires that the voice elements already have their
+      # time stamps
+      #
       # @return nil
       def update_beats
-        tupletmap  = {
-            1 => 1,
-            2 => 3/2,
-            3 => 2/3,
-            4 => 3/4,
-            5 => 2/5, # todo 3/5 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
-            6 => 2/6,
-            7 => 2/7, # todo 3/7 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
-            8 => 3/8,
-            9 => 2/9 # todo 3/9 depends on measure http://abcnotation.com/wiki/abc:standard:v2.1#duplets_triplets_quadruplets_etc
 
-        }
-        @beat_maps = @voices.map do |voice|
+        @beat_maps= @voices.map do |voice|
           current_beat = 0
           voice_map    = voice.select { |e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
-            beats      = playable.duration * $conf.get('layout.BEAT_PER_DURATION') # todo:handle triplets
-            # Timefactor of player
-            # BEAT_RESOLUTOIN
+            current_beat       = playable.time/8
+            current_beat_floor = current_beat.floor(0)
 
-            beats      = beats * tupletmap[playable.tuplet]
-            beat_error = beats - beats.floor(0)
+            beat_error = current_beat - current_beat_floor
             if beat_error > 0
               pos = playable.start_pos
               $log.error("unsupported tuplet #{playable.tuplet} #{beat_error}", pos) # to support more, adjust BEAT_RESOLUTION to be mulpple of triplet
-              beats = beats.floor(0)
+              current_beat = current_beat_floor
             end
+
 
             map[current_beat] = playable
             playable.beat     = current_beat
 
-            current_beat += beats
-            map.index    = voice.index
+            map.index = voice.index
             map
           end
           voice_map
@@ -801,19 +793,22 @@ module Harpnotes
     #
     #
     class Annotation < Drawable
-      attr_reader :center, :text, :style, :origin, :conf_key
+      attr_reader :center, :text, :style, :origin
+      attr_accessor :conf_key, :conf_value
 
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
-      # 
-      def initialize(center, text, style = :regular, origin = nil, conf_key=nil)
+      # @param [string] conf_key - the key for configuration (used for dragging annotation)
+      # @param [Object] conf_value - the value for configuration (used for dragging annotation)
+      def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
         super()
-        @center   = center
-        @text     = text
-        @style    = style
-        @origin   = origin
-        @conf_key = conf_key
+        @center     = center
+        @text       = text
+        @style      = style
+        @origin     = origin
+        @conf_key   = conf_key
+        @conf_value = conf_value
       end
     end
 
@@ -1065,8 +1060,7 @@ module Harpnotes
         print_options.push($conf.get("extract.0"))
 
         # todo: remove this appraoch after migration
-          song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
-
+        song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
 
 
         unless song_print_options
@@ -1080,7 +1074,7 @@ module Harpnotes
         # push view specific configuration
         layout_options = print_options[:layout] || {}
         $conf.push({layout: layout_options})
-        
+
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
 
@@ -1125,7 +1119,7 @@ module Harpnotes
         # sheet_elements derived from the voices
         voice_elements  = music.voices.each_with_index.map { |v, index|
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
-            layout_voice(v, compressed_beat_layout_proc,
+            layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
                          nonflowrest:   print_options[:nonflowrest],
                          flowline:      print_options[:flowlines].include?(index),
                          subflowline:   print_options[:subflowlines].include?(index),
@@ -1168,8 +1162,10 @@ module Harpnotes
         title_pos  = print_options[:legend][:pos]
         legend_pos = print_options[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
-        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil, "extract.#{print_variant_nr}.legend.pos")
-        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil, "extract.#{print_variant_nr}.legend.spos")
+        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
+                                                          "extract.#{print_variant_nr}.legend.pos", {pos: title_pos})
+        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
+                                                          "extract.#{print_variant_nr}.legend.spos", {pos:legend_pos})
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
@@ -1186,7 +1182,8 @@ module Harpnotes
             lyrics.each do |key, entry|
               pos      = entry[:pos]
               the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
-              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil, "extract.#{print_variant_nr}.lyrics.#{key}.pos")
+              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
+                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos})
             end
           end
         end
@@ -1194,7 +1191,8 @@ module Harpnotes
         #sheet based annotations
         print_options[:notes].each do |k, note|
           #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil, "extract.#{print_variant_nr}.notes.#{k}.pos")
+          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
+                                                            "extract.#{print_variant_nr}.notes.#{k}.pos", {pos: note[:pos]})
         end
 
 
@@ -1216,7 +1214,7 @@ module Harpnotes
       #
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
-      def layout_voice(voice, beat_layout, show_options)
+      def layout_voice(voice, beat_layout, print_variant_nr, show_options)
 
         # draw the playables
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
@@ -1227,20 +1225,17 @@ module Harpnotes
           playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
         end
 
-        res_playables = playables.map do |playable|
+        res_playables                   = playables.map do |playable|
           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
         end.flatten.compact
 
 
         # layout the measures
 
-        res_measures  = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
+        res_measures                    = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
           layout_playable(measure, beat_layout)
         end
 
-        res_newparts                    = voice.select { |c| c.is_a? NewPart }.map do |newpart|
-          layout_newpart(newpart, beat_layout)
-        end
 
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
         # todo make it a class variable, it is used in layout again
@@ -1251,6 +1246,7 @@ module Harpnotes
         lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }.reverse]
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
+
 
         # draw the flowlines
         previous_note                   = nil
@@ -1385,14 +1381,25 @@ module Harpnotes
         # draw note bound annotations
 
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
-          position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotation.position
-          # todo: add traceback for drag of notebound annoations
-          Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin, nil)
+          conf_key = nil
+          conf_key = "extract.#{print_variant_nr}.#{annotation.conf_key}" if annotation.conf_key
+
+          if conf_key
+            annotationoffset = $conf.get(conf_key) rescue nil
+            annotationoffset = annotation.position unless annotationoffset
+          else
+            annotationoffset = annotation.position
+          end
+
+          position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
+          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin,
+                                                        conf_key, {pos: annotationoffset})
+          result
         end
 
 
         # return all drawing primitives
-        retval                       = (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures + res_newparts + res_annotations).compact
+        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures + res_annotations).compact
       end
 
 
@@ -1473,10 +1480,9 @@ module Harpnotes
           layout_accord(root, beat_layout)
         elsif root.is_a? Pause
           layout_pause(root, beat_layout)
-        elsif root.is_a? NewPart
-          layout_newpart(root, beat_layout)
+          layout_pause(root, beat_layout)
         else
-          $log.error("Missing Music -> Sheet transform: #{root}")
+          $log.error("BUG: Missing Music -> Sheet transform: #{root}")
         end
       end
 
@@ -1641,28 +1647,6 @@ module Harpnotes
              ['z']]
         ]
         path
-      end
-
-      #
-      # Draw a Newpart on the Sheet
-      # @param root [Playable] The first playable of the new part
-      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
-      #
-      # @return [Object] The generated drawing primitive
-      def layout_newpart(root, beat_layout)
-        #               shift to left   pitch          space     stay away from border
-        if root.beat
-          # todo decide if part starts on a new line, then x_offset should be 0
-          x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch + (-0.5)) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
-          # todo:remove literal here
-          y_offset = beat_layout.call(root.beat()) - $conf.get('layout.FONT_STYLE_DEF')[:regular][:font_size] * 0.5 #(Harpnotes::Layout::Default::BEAT_RESOULUTION * @beat_spacing) # todo:remove literal here
-          res      = Annotation.new([x_offset, y_offset], root.name, :regular, nil)
-        else
-          $log.error("BUG Part without content")
-          res = nil
-        end
-
-        res
       end
 
       #

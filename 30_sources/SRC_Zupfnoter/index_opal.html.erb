@@ -25,8 +25,6 @@
   <script src="vendor/dropbox.min.js" type="application/javascript"></script>
 
   <script src="vendor/abc2svg-1.js" type="application/javascript"></script>
-  <script src="vendor/abc2svg_play-1.js" type="application/javascript"></script>
-  <script src="vendor/abc2svg_midi-1.js" type="application/javascript"></script>
   <script src="vendor/xml2abc-bw.js" type="application/javascript"></script>
 
 
@@ -36,42 +34,54 @@
   <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css"/>
   <script type="text/javascript" src="vendor/w2ui/dist/w2ui.min.js"></script>
 
-   <style>
-     .spinner {
-       background-color: #81cf81 ;
+  <style>
+    .spinner {
+      background-color: #81cf81;
 
-       //margin: 100px auto;
-       -webkit-animation: sk-rotateplane 1s infinite ease-in-out;
-       animation: sk-rotateplane 1s infinite ease-in-out;
-     }
+    / / margin: 100 px auto;
+      -webkit-animation: sk-rotateplane 2s infinite ease-in-out;
+      animation: sk-rotateplane 2s infinite ease-in-out;
+    }
 
-     @-webkit-keyframes sk-rotateplane {
-       0% { -webkit-transform: perspective(120px) }
-       50% { -webkit-transform: perspective(120px) rotateY(180deg) }
-       100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
-     }
+    @-webkit-keyframes sk-rotateplane {
+      0% {
+        -webkit-transform: perspective(120px)
+      }
+      50% {
+        -webkit-transform: perspective(120px) rotateY(180deg)
+      }
+      100% {
+        -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg)
+      }
+    }
 
-     @keyframes sk-rotateplane {
-       0% {
-         transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-         -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
-       } 50% {
-           transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-           -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
-         } 100% {
-             transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-             -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-           }
-     }
-   </style>
+    @keyframes sk-rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+        -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+      }
+      50% {
+        transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+        -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+      }
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+        -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+  </style>
 
   <%= javascript_include_tag 'application' %>
 </head>
 
-<body style="height: 100%;" onunload="check_undload()">
+<body style="height: 100%;" onbeforeunload="return check_unload()">
 <div id="layout" style="height: 100%">
 </div>
 <script type="text/javascript">
+
+  function check_unload() {
+    return "Zupfnoter verlassen? echt jetzt ...?"
+  }
 
   function init_w2ui() {
 
@@ -244,10 +254,23 @@
         {type: 'spacer'},
 
         {
-          type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', items: [
-          {text: 'title'}, {text: 'voices'}, {text: 'flowlines'},
-          {text: 'layoutlines'}, {text: 'jumplines'}, {text: 'synchlines'}, {text: 'legend'}, {text: 'notes'}, {text: 'lyrics'},
-          {text: 'nonflowrest'}, {text: 'startpos'}, {text: 'subflowlines'}, {text: 'produce'}]
+          type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear',
+          items: [
+            {text: 'title'}, {text: 'voices'},
+            {text: 'flowlines'},
+            {text: 'layoutlines'},
+            {text: 'jumplines'},
+            {text: 'synchlines'},
+            {text: 'legend'},
+            {text: 'notes'},
+            {text: 'lyrics'},
+            {text: 'nonflowrest'},
+            {text: 'startpos'},
+            {text: 'subflowlines'},
+            {text: 'produce'},
+            {text: 'layout'},
+            {text: 'xx'},
+          ]
         },
 
         {type: 'break'},
@@ -285,7 +308,14 @@
         {type: 'break'},
         {type: 'button', id: 'tbRender', text: 'Render', icon: 'fa fa-refresh', hint: 'aktualisiert Ausgabe'},
         {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'},
-        {type: 'button', id: 'tbHelp', text: 'Help', icon: 'fa fa-question', hint: 'Hilfe'}
+        {
+          type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', hint: 'Hilfe', items: [
+          {text: 'Zn Tutorials', icon: 'fa fa-tags', id: "tbTutorials"},
+          {text: 'abc Tutorial', icon: 'fa fa-tags', id: "tbAbcTutorial"},
+          {text: 'Manual', icon: 'fa fa-tags', id: "tbManual"},
+          {text: 'Homepage', icon: 'fa fa-tags', id: "tbHomepage"},
+        ]
+        }
       ],
 
       onClick: function (event) {
@@ -298,10 +328,19 @@
         if (event.target.split(":")[0] == 'config') {
           uicontroller.$handle_command("addconf " + event.target.split(":")[1])
         }
-        if (event.target=="tb_home"){
+        if (event.target == "tb_home") {
           window.open("http://www.weichel21.de/zupfnoterpage")
         }
-        if (event.target=="tbHelp"){
+        if (event.target == "tbHelp:tbTutorials") {
+          window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
+        }
+        if (event.target == "tbHelp:tbAbcTutorial") {
+          window.open("http://penzeng.de/Geige/Abc.htm")
+        }
+        if (event.target == "tbHelp:tbHomepage") {
+          window.open("http://www.zupfnoter.de")
+        }
+        if (event.target == "tbHelp:tbManual") {
           window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
         }
       }

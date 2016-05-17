@@ -1,3 +1,23 @@
+# V 1.3.1
+
+* initial support of voice overlays (bars do not always show up)
+* raise an alert before unloading Zupfnoter
+* indicate draggable text by "pointer" cursors
+* notebound annotations can be dragged if the note has an [r:] remark which serves as note-id.
+* config menu now injects some layout options
+
+* no error message on [r:] - remarks
+* some refactorings (abc2svg-json)
+* update to abc2svg 1.5.22
+
+# V 1.2.2
+
+* slowed down activity animation
+
+
+
+# V 1.2.1
+
 
 # V 1.2.0 2016-04-21
 

@@ -106,7 +106,6 @@ class Controller
     $conf        = Confstack.new()
     $conf.strict = false
     $conf.push(_init_conf)
-    $log.debug($conf.get.to_json)
 
     @editor = Harpnotes::TextPane.new("abcEditor")
 
@@ -443,7 +442,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     zip.file("song.abc", @editor.get_text)
     zip.file("harpnotes_a4.pdf", render_a4.output(:blob))
     zip.file("harpnotes_a3.pdf", render_a3.output(:blob))
-    blob     =zip.to_blob
+    blob     = zip.to_blob
     filename = "song#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
     `window.saveAs(blob, filename)`
   end
@@ -476,7 +475,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
     $log.info("duration transform + layout #{Time.now - start}")
-    $log.debug(@music_model.to_json) if $log.loglevel == 'debug'
+    #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
     result
@@ -543,13 +542,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
-      newcoords = info[:origin].zip(info[:delta]).map { |i| i.first + i.last }
-      report    = "#{info[:config]}: #{newcoords}"
-      if info[:config]
-        @editor.patch_config_part(info[:config], newcoords)
-      end
-      `$("#harpPreview").w2overlay(report);`
-      $log.info("dragged to #{report}")
+      conf_key = info[:conf_key]
+
+      newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+      @editor.patch_config_part(conf_key, newcoords)
+
+      report    = "#{conf_key}: #{newcoords}"
+      `$("#harpPreview").w2overlay(#{report});`
     end
   end
 
@@ -768,7 +767,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         {produce:     [0],
          abc_parser:  'ABC2SVG',
          wrap:        60,
-         defaults:
+         defaultsxx:
                       {
                           note_length: "1/4",
                           print:       {t:        "", # title of the extract   # todo: remove these print defaults - no longer needed
@@ -785,10 +784,17 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                           annotation:  {pos: [2, -5]} # position of notebound annotation
                       },
 
+         defaults:    {
+             notebound: {annotation: {pos: [5, -7]},
+                         partname:   {pos: [-4, -7]},
+                         variantend: {pos: [-4, -7]}
+             }
+         },
+
          annotations: {
-             vt: {text: "v", pos: [-1, -6]},
-             vr: {text: "v", pos: [2, -3]},
-             vl: {text: "v", pos: [-4, -3]}
+             vt: {text: "v", pos: [-5, -5]},
+             vr: {text: "v", pos: [2, -5]},
+             vl: {text: "v", pos: [-1, -5]}
 
          }, # default for note based annotations
 

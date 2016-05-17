@@ -12,7 +12,7 @@ module Raphael
   # This represents a Raphael element
   #
   class Element
-    attr_accessor :unhighlight_color, :r, :conf_key, :startpos
+    attr_accessor :unhighlight_color, :r, :conf_key, :conf_value, :startpos
     #
     # Constructor
     #
@@ -143,8 +143,9 @@ module Raphael
     def draggable(element)
       #inspired by http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
       %x{
-         var otransform = element.r.transform();
-         var me = element.r,
+         #{element.r}.node.className.baseVal +=" zn_draggable"
+         var otransform = element.r.transform(); // save the orginal transformation
+         var me = #{element.r},
           lx = 0,
           ly = 0,
           ox = 0,
@@ -161,7 +162,7 @@ module Raphael
             ox = lx;
             oy = ly;
             element.r.attr({fill: 'red'});
-            #{@on_drop}({element: element.r, "config": element.conf_key, "origin": element.startpos, "delta":  [ox, oy]} );
+            #{@on_drop}({element: element.r, "conf_key": element.conf_key, "conf_value": element.conf_value, "origin": element.startpos, "delta":  [ox, oy]} );
           };
 
       element.r.drag(moveFnc, startFnc, endFnc);
