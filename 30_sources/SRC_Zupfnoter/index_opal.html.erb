@@ -452,6 +452,14 @@
     });
   }
 
+  if (String.prototype.repeat == undefined) {
+    String.prototype.repeat = function (n) {
+      n = n || 1;
+      return Array(n + 1).join(this);
+    }
+  }
+
+
 </script>
 <%= begin
       result = javascript_include_analytics()
