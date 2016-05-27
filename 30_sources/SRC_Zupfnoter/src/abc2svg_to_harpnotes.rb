@@ -33,9 +33,10 @@ module Harpnotes
         abc_parser = ABC2SVG::Abc2Svg.new(nil, {mode: :model}) # first argument is the container for SVG
         @abc_model = abc_parser.get_abcmodel(zupfnoter_abc)
 
+        _make_metadata
         result = _transform_voices
 
-        result.meta_data        = _make_metadata
+        result.meta_data        = @meta_data
         result.harpnote_options = _make_harpnote_options
 
         result
@@ -97,13 +98,13 @@ module Harpnotes
           tempo            = {duration: duration, bpm: bpm}
         end
 
-        {composer:      (@info_fields[:C] or []).join("\n"),
-         title:         (@info_fields[:T] or []).join("\n"),
-         filename:      (@info_fields[:F] or []).join("\n"),
-         tempo:         {duration: duration, bpm: bpm},
-         tempo_display: [duration_display, "=", bpm].join(' '),
-         meter:         @info_fields[:M],
-         key:           "#{key} #{o_key_display}"
+        @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
+                      title:         (@info_fields[:T] or []).join("\n"),
+                      filename:      (@info_fields[:F] or []).join("\n"),
+                      tempo:         {duration: duration, bpm: bpm},
+                      tempo_display: [duration_display, "=", bpm].join(' '),
+                      meter:         @info_fields[:M],
+                      key:           "#{key} #{o_key_display}"
         }
       end
 
@@ -113,7 +114,7 @@ module Harpnotes
       def _mkznid(voice_element)
         result = _get_extra(voice_element, 17) #todo: get rid of literal constant:  @abc_model[:music_type_ids][:extra].to_s
         if result
-          result   = result[:text]
+          result = result[:text]
 
           if result.match(/[^a-zA-Z0-9_]+/)
             start_pos=charpos_to_line_column(voice_element[:istart])
@@ -138,8 +139,9 @@ module Harpnotes
         @previous_new_part = []
         @previous_note     = nil
         @repetition_stack  = []
+        @meter_dec         =
 
-        @tie_started       = false
+            @tie_started = false
         @slurstack         = 0
         @tuplet_count      = 1
         @tuplet_down_count = 1
@@ -162,8 +164,10 @@ module Harpnotes
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
 
           _reset_state
+
+          _investigate_first_bar(voice_model)
+
           @pitch_providers = voice_model[:symbols].map do |voice_model_element|
-            nil
             voice_model_element if voice_model_element[:type].to_s == note_id
           end
 
@@ -204,6 +208,19 @@ module Harpnotes
 
         hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         Harpnotes::Music::Song.new(hn_voices)
+      end
+
+      # investigate if we should draw a bar on the very first note
+      # algrithm: Compare time of first bar with the difference to the next bar
+      # todo: this can be improved to flag errors in case wrong measures
+      #
+      def _investigate_first_bar(voice_model)
+        symbol_bar_typeid = @abc_model[:music_type_ids][:bar].to_s
+
+        bars                       = voice_model[:symbols].select do |voice_model_element|
+          voice_model_element[:type].to_s == symbol_bar_typeid
+        end.compact
+        @next_note_marks[:measure] = true if bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
       end
 
       def _transform_bar(voice_element)
@@ -297,6 +314,7 @@ module Harpnotes
       end
 
       def _convert_duration(raw_duration)
+        # 128 to limit the maximum duration to the error note
         duration = [128, ((raw_duration/ABC2SVG_DURATION_FACTOR) * @_shortest_note).round].min
       end
 
@@ -373,7 +391,7 @@ module Harpnotes
         _extract_chord_lines(bar).each do |line|
           level = line.split('@')
           if level[2]
-            level = level[2] # note that "^@@distance"
+            level    = level[2] # note that "^@@distance"
             distance = level.to_i unless level.nil?
           end
         end
@@ -385,6 +403,9 @@ module Harpnotes
         nil #`debugger`
       end
 
+      def _transform_key(voice_element)
+        nil #`debugger`
+      end
 
       def _transform_meter(voice_element)
         nil #`debugger`
