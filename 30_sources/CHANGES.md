@@ -1,3 +1,8 @@
+# V 1.3.2 
+
+* fixed harpnote-player (no longer relies on last voice, no noise if song starts with rests)
+
+
 # V 1.3.1 2016-05-17
 
 * initial support of voice overlays (bars do not always show up)

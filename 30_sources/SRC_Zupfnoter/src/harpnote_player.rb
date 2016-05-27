@@ -81,8 +81,12 @@ module Harpnotes
           #note schedule in secc, SetTimout in msec; finsh after last measure
           `clearTimeout(#{@song_off_timer})` if @song_off_timer
 
+          the_notes = the_notes.sort_by{|the_note|  the_note[:delay] + the_note[:duration]}
+
+
           firstnote       = the_notes.first
           lastnote        = the_notes.last
+
 
           # stoptime comes in msec
           stop_time       = (lastnote[:delay] - firstnote[:delay] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
