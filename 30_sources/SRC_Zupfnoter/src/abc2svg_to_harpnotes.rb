@@ -139,16 +139,13 @@ module Harpnotes
         @previous_new_part = []
         @previous_note     = nil
         @repetition_stack  = []
-        @meter_dec         =
-
-            @tie_started = false
+        @tie_started       = false
         @slurstack         = 0
         @tuplet_count      = 1
         @tuplet_down_count = 1
+        @wmeasure          = 0  # length of a measure. Set to 0 unless measure is specified
 
-        nil
       end
-
 
       def _transform_voices
 
@@ -164,7 +161,7 @@ module Harpnotes
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
 
           _reset_state
-
+          @wmeasure = voice_model[:voice_properties][:meter][:wmeasure]
           _investigate_first_bar(voice_model)
 
           @pitch_providers = voice_model[:symbols].map do |voice_model_element|
@@ -220,7 +217,7 @@ module Harpnotes
         bars                       = voice_model[:symbols].select do |voice_model_element|
           voice_model_element[:type].to_s == symbol_bar_typeid
         end.compact
-        @next_note_marks[:measure] = true if bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
+        @next_note_marks[:measure] = true if bars.first[:time] == @wmeasure #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
       end
 
       def _transform_bar(voice_element)
@@ -408,7 +405,8 @@ module Harpnotes
       end
 
       def _transform_meter(voice_element)
-        nil #`debugger`
+        @wmeasure = voice_element[:wmeasure]
+        nil
       end
 
       def _transform_clef(voice_element)
