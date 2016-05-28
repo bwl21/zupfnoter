@@ -123,6 +123,10 @@ module Harpnotes
             result = nil
           end
         end
+
+        if $conf['countnotes']
+          result = voice_element[:time]
+        end
         result
       end
 
@@ -143,7 +147,7 @@ module Harpnotes
         @slurstack         = 0
         @tuplet_count      = 1
         @tuplet_down_count = 1
-        @count_hint        = 1
+        @countby           = 8
         @wmeasure          = 0 # length of a measure. Set to 0 unless measure is specified
 
       end
@@ -175,6 +179,7 @@ module Harpnotes
 
         _reset_state
         @wmeasure = voice_model[:voice_properties][:meter][:wmeasure]
+        @countby = voice_model[:voice_properties][:meter][:a_meter].first[:bot].to_i rescue nil
         _investigate_first_bar(voice_model)
 
         @pitch_providers = voice_model[:symbols].map do |voice_model_element|
@@ -250,7 +255,7 @@ module Harpnotes
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         if @next_note_marks[:measure]
-          @measure_start = voice_element[:time]  # for count_notes
+          @measure_start = voice_element[:time] # for count_notes
         end
 
         # transform the individual notes
@@ -260,7 +265,7 @@ module Harpnotes
           #duration = _convert_duration(the_note[:dur])
 
           result            = Harpnotes::Music::Note.new(the_note[:midi], duration)
-          result.count_note = _make_count_note(voice_element)
+          result.count_note = _transform_count_note(voice_element)
           result.time       = voice_element[:time]
           result.znid       = _mkznid(voice_element)
           result.origin     = origin
@@ -288,7 +293,7 @@ module Harpnotes
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
           first_note              = notes.first
           synchpoint.znid         = _mkznid(voice_element)
-          synchpoint.count_note   = _make_count_note(voice_element)
+          synchpoint.count_note   = _transform_count_note(voice_element)
           synchpoint.time         = first_note.time
           synchpoint.duration     = first_note.duration
           synchpoint.origin       = first_note.origin
@@ -329,16 +334,18 @@ module Harpnotes
         result
       end
 
-      def _make_count_note(voice_element)
-        countnames ={0.5 => "u", 0.25 => "e"}
+      def _transform_count_note(voice_element)
+        if @countby
+          countnames ={0.5 => "u", 0.25 => "e"}
 
-        count_base  = ABC2SVG_DURATION_FACTOR / 8
-        count_start = 1 + (voice_element[:time] - @measure_start) / count_base
-        count_end   = count_start + voice_element[:dur] / count_base - 1
-        count_range = (count_start.floor .. count_end.ceil).to_a.join("-")
-        count_range = (countnames[count_start % 1]) unless (count_start % 1) == 0
+          count_base  = ABC2SVG_DURATION_FACTOR / @countby
+          count_start = 1 + (voice_element[:time] - @measure_start) / count_base
+          count_end   = count_start + voice_element[:dur] / count_base - 1
+          count_range = (count_start.floor .. count_end.ceil).to_a.join("-")
+          count_range = (countnames[count_start % 1]) unless (count_start % 1) == 0
 
-        count_note = "#{count_range}"
+          count_range
+        end
       end
 
       def _convert_duration(raw_duration)
@@ -366,7 +373,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:measure]
-          @measure_start = voice_element[:time]  # for count_notes
+          @measure_start = voice_element[:time] # for count_notes
         end
 
 
@@ -375,7 +382,7 @@ module Harpnotes
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result              = Harpnotes::Music::Pause.new(pitch, duration)
-        result.count_note   = _make_count_note(voice_element)
+        result.count_note   = _transform_count_note(voice_element)
         result.znid         = _mkznid(voice_element)
         result.time         = voice_element[:time]
         result.origin       = _parse_origin(voice_element)
@@ -443,6 +450,7 @@ module Harpnotes
 
       def _transform_meter(voice_element)
         @wmeasure = voice_element[:wmeasure]
+        @countby = voice_element[:a_meter].first[:bot].to_i rescue nil
         nil
       end
 
@@ -478,11 +486,12 @@ module Harpnotes
 
 
       def _make_notebound_count_annotation(entity)
-        if entity.is_a? Harpnotes::Music::Playable
-          conf_key = "notebound.#{entity.znid}.countnote.pos" if entity.znid
-          note     = entity.count_note
-
-          [Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: [3, -2], text: note.to_s, style: :smaller}, conf_key)]
+        if $conf['countnotes']
+          if entity.is_a? Harpnotes::Music::Playable
+            conf_key = "notebound.#{entity.znid}.countnote.pos" if entity.znid
+            note     = entity.count_note
+            [Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: $conf['countnotes.pos'], text: note.to_s, style: :smaller}, conf_key)]
+          end
         end
       end
 

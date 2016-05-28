@@ -547,7 +547,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
       @editor.patch_config_part(conf_key, newcoords)
 
-      report    = "#{conf_key}: #{newcoords}"
+      report = "#{conf_key}: #{newcoords}"
       `$("#harpPreview").w2overlay(#{report});`
     end
   end
@@ -766,6 +766,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result =
         {produce:     [0],
          abc_parser:  'ABC2SVG',
+         countnotes:        {pos: [2, -2]},
          wrap:        60,
          defaultsxx:
                       {
@@ -811,7 +812,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
-                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
+                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}}
              },
              "1" => {
                  title:  "Sopran, Alt",
