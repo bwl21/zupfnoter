@@ -7,7 +7,7 @@ module Harpnotes
 
     class Abc2svgToHarpnotes < AbstractAbcToHarpnotes
 
-      ABC2SVG_DURATION_FACTOR = 1536
+      ABC2SVG_DURATION_FACTOR = 1536 # a whole note is 1536 in the time domain of abc2svg
 
 
       def initialize
@@ -143,14 +143,14 @@ module Harpnotes
         @slurstack         = 0
         @tuplet_count      = 1
         @tuplet_down_count = 1
-        @wmeasure          = 0  # length of a measure. Set to 0 unless measure is specified
+        @count_hint        = 1
+        @wmeasure          = 0 # length of a measure. Set to 0 unless measure is specified
 
       end
 
       def _transform_voices
 
         part_id = @abc_model[:music_type_ids][:part].to_s # performance ...
-        note_id = @abc_model[:music_type_ids][:note].to_s
 
         # get parts from the first voice.
         @abc_model[:voices].first[:symbols].each do |voice_model_element|
@@ -159,52 +159,62 @@ module Harpnotes
         end
 
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
-
-          _reset_state
-          @wmeasure = voice_model[:voice_properties][:meter][:wmeasure]
-          _investigate_first_bar(voice_model)
-
-          @pitch_providers = voice_model[:symbols].map do |voice_model_element|
-            voice_model_element if voice_model_element[:type].to_s == note_id
-          end
-
-          result                = voice_model[:symbols].each_with_index.map do |voice_model_element, index|
-            type = @abc_model[:music_types][voice_model_element[:type]]
-            begin
-              result = self.send("_transform_#{type}", voice_model_element, index)
-            rescue Exception => e
-              $log.error("BUG: #{e}", charpos_to_line_column(voice_model_element[:istart]))
-              nil
-            end
-            result
-          end
-
-          # handle the jumplines
-          result                = result.flatten
-          jumplines             = result.inject([]) do |jumplines, element|
-            jumplines << _make_jumplines(element)
-            jumplines
-          end
-
-          #handle notebound annotations
-
-          notebound_annotations = result.inject([]) do |notebound_annotations, element|
-            notebound_annotations << _make_notebound_annotations(element)
-          end
-
-          result += (jumplines + notebound_annotations)
-
-          result = result.flatten.compact
-
-          if (result.count == 0)
-            $log.error("Empty voice #{voice_index}")
-            result = nil
-          end
+          result = _transform_voice(voice_model, voice_index,)
           result
         end.compact
 
         hn_voices.unshift(hn_voices.first) # let voice-index start with 1 -> duplicate voice 0
         Harpnotes::Music::Song.new(hn_voices)
+      end
+
+      # this tansforms one particular voice
+      # @param [Integer] voice_index the index of the voice
+      # @param [Object] voice_model the voice model as provided by ABC2SVG
+      def _transform_voice(voice_model, voice_index)
+        note_id = @abc_model[:music_type_ids][:note].to_s
+
+        _reset_state
+        @wmeasure = voice_model[:voice_properties][:meter][:wmeasure]
+        _investigate_first_bar(voice_model)
+
+        @pitch_providers = voice_model[:symbols].map do |voice_model_element|
+          voice_model_element if voice_model_element[:type].to_s == note_id
+        end
+
+        result                = voice_model[:symbols].each_with_index.map do |voice_model_element, index|
+          type = @abc_model[:music_types][voice_model_element[:type]]
+          begin
+            result = self.send("_transform_#{type}", voice_model_element, index)
+          rescue Exception => e
+            $log.error("BUG: #{e}", charpos_to_line_column(voice_model_element[:istart]))
+            nil
+          end
+          result
+        end
+
+        # handle the jumplines
+        result                = result.flatten
+        jumplines             = result.inject([]) do |jumplines, element|
+          jumplines << _make_jumplines(element)
+          jumplines
+        end
+
+        #handle notebound annotations
+
+        notebound_annotations = result.inject([]) do |notebound_annotations, element|
+          notebound_annotations << _make_notebound_count_annotation(element)
+          notebound_annotations << _make_notebound_annotations(element)
+        end
+
+        result += (jumplines + notebound_annotations)
+
+        result = result.flatten.compact
+
+        if (result.count == 0)
+          $log.error("Empty voice #{voice_index}")
+          result = nil
+        end
+        result
       end
 
       # investigate if we should draw a bar on the very first note
@@ -217,7 +227,8 @@ module Harpnotes
         bars                       = voice_model[:symbols].select do |voice_model_element|
           voice_model_element[:type].to_s == symbol_bar_typeid
         end.compact
-        @next_note_marks[:measure] = true if bars.first[:time] == @wmeasure #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
+        @measure_start             = bars.first[:time] - @wmeasure # for count_notes
+        @next_note_marks[:measure] = true if bars.first and (bars.first[:time] == @wmeasure) #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
       end
 
       def _transform_bar(voice_element)
@@ -238,16 +249,23 @@ module Harpnotes
         #handle tuplets
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
-        # transform the individual notes
-        notes                            = voice_element[:notes].map do |the_note|
-          duration = _convert_duration(the_note[:dur])
+        if @next_note_marks[:measure]
+          @measure_start = voice_element[:time]  # for count_notes
+        end
 
-          result           = Harpnotes::Music::Note.new(the_note[:midi], duration)
-          result.time      = voice_element[:time]
-          result.znid      = _mkznid(voice_element)
-          result.origin    = origin
-          result.start_pos = charpos_to_line_column(start_pos) # get column und line number of abc_code
-          result.end_pos   = charpos_to_line_column(end_pos)
+        # transform the individual notes
+        duration = _convert_duration(voice_element[:notes].first[:dur])
+
+        notes = voice_element[:notes].map do |the_note|
+          #duration = _convert_duration(the_note[:dur])
+
+          result            = Harpnotes::Music::Note.new(the_note[:midi], duration)
+          result.count_note = _make_count_note(voice_element)
+          result.time       = voice_element[:time]
+          result.znid       = _mkznid(voice_element)
+          result.origin     = origin
+          result.start_pos  = charpos_to_line_column(start_pos) # get column und line number of abc_code
+          result.end_pos    = charpos_to_line_column(end_pos)
 
           result.tuplet       = tuplet
           result.tuplet_start = tuplet_start
@@ -270,6 +288,7 @@ module Harpnotes
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
           first_note              = notes.first
           synchpoint.znid         = _mkznid(voice_element)
+          synchpoint.count_note   = _make_count_note(voice_element)
           synchpoint.time         = first_note.time
           synchpoint.duration     = first_note.duration
           synchpoint.origin       = first_note.origin
@@ -310,6 +329,18 @@ module Harpnotes
         result
       end
 
+      def _make_count_note(voice_element)
+        countnames ={0.5 => "u", 0.25 => "e"}
+
+        count_base  = ABC2SVG_DURATION_FACTOR / 8
+        count_start = 1 + (voice_element[:time] - @measure_start) / count_base
+        count_end   = count_start + voice_element[:dur] / count_base - 1
+        count_range = (count_start.floor .. count_end.ceil).to_a.join("-")
+        count_range = (countnames[count_start % 1]) unless (count_start % 1) == 0
+
+        count_note = "#{count_range}"
+      end
+
       def _convert_duration(raw_duration)
         # 128 to limit the maximum duration to the error note
         duration = [128, ((raw_duration/ABC2SVG_DURATION_FACTOR) * @_shortest_note).round].min
@@ -334,11 +365,17 @@ module Harpnotes
           pitch = 60
         end
 
+        if @next_note_marks[:measure]
+          @measure_start = voice_element[:time]  # for count_notes
+        end
+
+
         the_note                         = voice_element[:notes].first
         duration                         = _convert_duration(the_note[:dur])
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result              = Harpnotes::Music::Pause.new(pitch, duration)
+        result.count_note   = _make_count_note(voice_element)
         result.znid         = _mkznid(voice_element)
         result.time         = voice_element[:time]
         result.origin       = _parse_origin(voice_element)
@@ -439,6 +476,18 @@ module Harpnotes
         end
       end
 
+
+      def _make_notebound_count_annotation(entity)
+        if entity.is_a? Harpnotes::Music::Playable
+          conf_key = "notebound.#{entity.znid}.countnote.pos" if entity.znid
+          note     = entity.count_note
+
+          [Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: [3, -2], text: note.to_s, style: :smaller}, conf_key)]
+        end
+      end
+
+      # this creates the notebound annotations for one particular entity
+      # @param [Harpnotes::Music::Entity] entity
       def _make_notebound_annotations(entity)
         result = []
         if entity.is_a? Harpnotes::Music::Playable

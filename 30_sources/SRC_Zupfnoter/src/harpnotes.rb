@@ -177,7 +177,8 @@ module Harpnotes
                     :tuplet, # number of notes in tuplet if it is in a tuplet
                     :tuplet_start, # first note of a tuplet
                     :tuplet_end, # last note of a tuplet
-                    :shift # {dir: :left | :right}
+                    :shift, # {dir: :left | :right}
+                    :count_note # string to support count_notes
 
       def initialize
         # initialize slur and ties to the safe side ...
@@ -189,6 +190,7 @@ module Harpnotes
         @tuplet       = 1
         @tuplet_start = false
         @tuplet_end   = false
+        @count_note   = nil
       end
 
       def first_in_part?
@@ -371,6 +373,10 @@ module Harpnotes
         self.companion = companion # self: use the method companion=
         @conf_key      = conf_key
         @annotations   = annotation
+      end
+
+      def style
+        @annotations[:style]
       end
 
       def text
@@ -1165,7 +1171,7 @@ module Harpnotes
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
                                                           "extract.#{print_variant_nr}.legend.pos", {pos: title_pos})
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
-                                                          "extract.#{print_variant_nr}.legend.spos", {pos:legend_pos})
+                                                          "extract.#{print_variant_nr}.legend.spos", {pos: legend_pos})
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
@@ -1392,7 +1398,7 @@ module Harpnotes
           end
 
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
-          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, nil, annotation.companion.origin,
+          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
                                                         conf_key, {pos: annotationoffset})
           result
         end
