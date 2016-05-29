@@ -812,7 +812,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
-                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}}
+                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
+                 countnotes:   {voices: [], pos:[3,-2]}
              },
              "1" => {
                  title:  "Sopran, Alt",

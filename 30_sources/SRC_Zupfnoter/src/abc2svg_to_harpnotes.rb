@@ -124,9 +124,6 @@ module Harpnotes
           end
         end
 
-        if $conf['countnotes']
-          result = voice_element[:time]
-        end
         result
       end
 
@@ -147,7 +144,7 @@ module Harpnotes
         @slurstack         = 0
         @tuplet_count      = 1
         @tuplet_down_count = 1
-        @countby           = 8
+        @countby           = nil # bount by part of a whole note: 8 => count 1/8
         @wmeasure          = 0 # length of a measure. Set to 0 unless measure is specified
 
       end
@@ -207,7 +204,6 @@ module Harpnotes
         #handle notebound annotations
 
         notebound_annotations = result.inject([]) do |notebound_annotations, element|
-          notebound_annotations << _make_notebound_count_annotation(element)
           notebound_annotations << _make_notebound_annotations(element)
         end
 
@@ -232,7 +228,7 @@ module Harpnotes
         bars                       = voice_model[:symbols].select do |voice_model_element|
           voice_model_element[:type].to_s == symbol_bar_typeid
         end.compact
-        @measure_start             = bars.first[:time] - @wmeasure # for count_notes
+        @measure_start_time        = bars.first[:time] - @wmeasure # for count_notes
         @next_note_marks[:measure] = true if bars.first and (bars.first[:time] == @wmeasure) #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
       end
 
@@ -255,7 +251,7 @@ module Harpnotes
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         if @next_note_marks[:measure]
-          @measure_start = voice_element[:time] # for count_notes
+          @measure_start_time = voice_element[:time] # for count_notes
         end
 
         # transform the individual notes
@@ -336,13 +332,14 @@ module Harpnotes
 
       def _transform_count_note(voice_element)
         if @countby
-          countnames ={0.5 => "u", 0.25 => "e"}
+          countnames ={0.5 => "u", 0.25 => "e", 0.75 => "e"}
 
           count_base  = ABC2SVG_DURATION_FACTOR / @countby
-          count_start = 1 + (voice_element[:time] - @measure_start) / count_base
+          count_start = 1 + (voice_element[:time] - @measure_start_time) / count_base
           count_end   = count_start + voice_element[:dur] / count_base - 1
           count_range = (count_start.floor .. count_end.ceil).to_a.join("-")
           count_range = (countnames[count_start % 1]) unless (count_start % 1) == 0
+          count_range = (count_start %1).to_s unless count_range
 
           count_range
         end
@@ -373,7 +370,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:measure]
-          @measure_start = voice_element[:time] # for count_notes
+          @measure_start_time = voice_element[:time] # for count_notes
         end
 
 
@@ -481,17 +478,6 @@ module Harpnotes
           end
         else
           nil
-        end
-      end
-
-
-      def _make_notebound_count_annotation(entity)
-        if $conf['countnotes']
-          if entity.is_a? Harpnotes::Music::Playable
-            conf_key = "notebound.#{entity.znid}.countnote.pos" if entity.znid
-            note     = entity.count_note
-            [Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: $conf['countnotes.pos'], text: note.to_s, style: :smaller}, conf_key)]
-          end
         end
       end
 

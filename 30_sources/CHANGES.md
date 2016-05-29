@@ -1,6 +1,8 @@
 # V 1.3.2 
 
 * fixed harpnote-player (no longer relies on last voice, no noise if song starts with rests)
+* countnotes: draw hints how to count close to the notes. Configure by `  "countnotes" : {"voices": [1], "pos": [3, -2]}`
+
 
 
 # V 1.3.1 2016-05-17

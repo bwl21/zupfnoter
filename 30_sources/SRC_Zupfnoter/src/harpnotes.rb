@@ -92,7 +92,15 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin, :beat, :visible, :start_pos, :end_pos, :time, :znid
+      attr_accessor :origin,
+                    :beat,
+                    :visible,
+                    :start_pos,
+                    :end_pos,
+                    :time,
+                    :znid,
+                    :count_note, # string to support count_notes need to be queried even for measuers ...
+                    :pos, :box
 
       def initialize
         @visible = true
@@ -178,7 +186,9 @@ module Harpnotes
                     :tuplet_start, # first note of a tuplet
                     :tuplet_end, # last note of a tuplet
                     :shift, # {dir: :left | :right}
-                    :count_note # string to support count_notes
+                    :count_note, # string to support count_notes
+                    :mesure_start # this playable starts a measure
+
 
       def initialize
         # initialize slur and ties to the safe side ...
@@ -278,14 +288,13 @@ module Harpnotes
       #
       # This sets the actual beat
       #
-      # @param value [Integer] id of hte beat
+      # @param value [Integer] id of the beat
       #
       # @return [type] [description]
       def beat=(value)
         @beat = value
         @notes.each { |n| n.beat = value }
       end
-
 
       def pitch
         @notes.first.pitch
@@ -805,6 +814,7 @@ module Harpnotes
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
+      # @param [Object] origin # reference to the origin
       # @param [string] conf_key - the key for configuration (used for dragging annotation)
       # @param [Object] conf_value - the value for configuration (used for dragging annotation)
       def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
@@ -1125,13 +1135,17 @@ module Harpnotes
         # sheet_elements derived from the voices
         voice_elements  = music.voices.each_with_index.map { |v, index|
           if print_options[:voices].include?(index) ## todo add control for jumpline right border
+            countnotes_options = print_options[:countnotes]
+            countnotes_options = nil unless countnotes_options[:voices].include?(index)
             layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
                          nonflowrest:   print_options[:nonflowrest],
                          flowline:      print_options[:flowlines].include?(index),
                          subflowline:   print_options[:subflowlines].include?(index),
                          jumpline:      print_options[:jumplines].include?(index),
                          annotations:   music.harpnote_options[:annotations],
-                         synched_notes: synched_notes)
+                         synched_notes: synched_notes,
+                         countnotes:    countnotes_options
+            )
           end
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
@@ -1235,7 +1249,6 @@ module Harpnotes
           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
         end.flatten.compact
 
-
         # layout the measures
 
         res_measures                    = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
@@ -1253,10 +1266,27 @@ module Harpnotes
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
 
+        # draw the countnotes
+        if show_options[:countnotes]
+          res_countnotes = playables.map do |playable|
+            conf_key = "extract.#{print_variant_nr}.notebound.countenote.v#{1}.at_#{playable.time}.pos"
+            note     = playable.count_note || ""
+
+            countnotes_options = show_options[:countnotes]
+
+            annotationoffset = $conf.get(conf_key) rescue nil
+            annotationoffset = countnotes_options[:pos] unless annotationoffset
+
+            position = Vector2d(lookuptable_drawing_by_playable[playable].center) + annotationoffset
+            result   = Harpnotes::Drawing::Annotation.new(position.to_a, note, :smaller, playable.origin,
+                                                          conf_key, {pos: annotationoffset})
+            result
+          end
+        end
 
         # draw the flowlines
-        previous_note                   = nil
-        res_flow                        = voice.select { |c| c.is_a? Playable }.map do |playable|
+        previous_note  = nil
+        res_flow       = voice.select { |c| c.is_a? Playable }.map do |playable|
           res = nil
           unless previous_note.nil?
             res            = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
@@ -1273,8 +1303,8 @@ module Harpnotes
 
         # draw the subflowlines
         # note that invisible rests make no sense and therefore do not interruppt subflowlines
-        previous_note                   = nil
-        res_sub_flow                    = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
+        previous_note  = nil
+        res_sub_flow   = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
           unless show_options[:synched_notes].include?(playable.proxy_note)
             res = nil
             res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
@@ -1290,13 +1320,14 @@ module Harpnotes
         end.compact
 
         # kill the flowlines / subflowlines if they shall not be shown
-        res_sub_flow                    = [] unless show_options[:subflowline]
-        res_flow                        = [] unless show_options[:flowline]
+        res_sub_flow   = [] unless show_options[:subflowline]
+        res_flow       = [] unless show_options[:flowline]
+        res_countnotes = [] unless show_options[:countnotes]
 
 
         # layout tuplets
 
-        tuplet_start                    = playables.first
+        tuplet_start   = playables.first
 
         res_tuplets                  = playables.inject([]) do |result, playable|
           tuplet_start = playable if playable.tuplet_start?
@@ -1405,7 +1436,7 @@ module Harpnotes
 
 
         # return all drawing primitives
-        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_gotos + res_measures + res_annotations).compact
+        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_gotos + res_measures + res_annotations).compact
       end
 
 
@@ -1485,7 +1516,6 @@ module Harpnotes
         elsif root.is_a? SynchPoint
           layout_accord(root, beat_layout)
         elsif root.is_a? Pause
-          layout_pause(root, beat_layout)
           layout_pause(root, beat_layout)
         else
           $log.error("BUG: Missing Music -> Sheet transform: #{root}")
