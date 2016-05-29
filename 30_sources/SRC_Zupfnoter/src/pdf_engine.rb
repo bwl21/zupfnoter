@@ -103,6 +103,15 @@ module Harpnotes
         @pdf.fill = (0...3).map { 0 }
         @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
       end
+
+      if root.hasbarover
+        @pdf.fill = (0...3).map { 0 }
+        new_center = [root.center.first, root.center.last - root.size.last - 2 * root.line_width]
+        new_size = [root.size.first, 0.2]
+        @pdf.rect_like_ellipse(new_center,new_size, :F)
+      end
+
+
     end
 
 
@@ -160,6 +169,12 @@ module Harpnotes
         @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
       end
 
+      if root.hasbarover
+        @pdf.fill = (0...3).map { 0 }
+        new_center = [root.center.first, root.center.last - root.size.last - 2 * root.line_width]
+        new_size = [root.size.first, 0.2]   # pdf shows rectangle of height 0
+        @pdf.rect_like_ellipse(new_center,new_size, :F)
+      end
 
     end
 

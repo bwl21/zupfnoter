@@ -187,7 +187,7 @@ module Harpnotes
                     :tuplet_end, # last note of a tuplet
                     :shift, # {dir: :left | :right}
                     :count_note, # string to support count_notes
-                    :mesure_start # this playable starts a measure
+                    :measure_start # this playable starts a measure
 
 
       def initialize
@@ -674,6 +674,7 @@ module Harpnotes
 
 
     class Symbol < Drawable
+      attr_accessor :dotted, :hasbarover
 
       def iniitalize
         super
@@ -752,7 +753,7 @@ module Harpnotes
     # This represents a note in the shape of an ellipsis
     #
     class Ellipse < Symbol
-      attr_reader :center, :size, :fill, :dotted, :origin
+      attr_reader :center, :size, :fill, :origin
 
       #
       # Constructor
@@ -834,7 +835,7 @@ module Harpnotes
     #
 
     class Glyph < Symbol
-      attr_reader :center, :size, :glyph, :dotted, :origin
+      attr_reader :center, :size, :glyph, :origin
 
       GLYPHS = {
           # todo: apply a proper approach for the glyphs: Specify a bounding box here
@@ -1249,13 +1250,6 @@ module Harpnotes
           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
         end.flatten.compact
 
-        # layout the measures
-
-        res_measures                    = voice.select { |c| c.is_a? MeasureStart and c.companion.visible }.map do |measure|
-          layout_playable(measure, beat_layout)
-        end
-
-
         # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
         # todo make it a class variable, it is used in layout again
         # need to reverse such that Unisons (SyncPoints) are bound to the first note
@@ -1436,7 +1430,7 @@ module Harpnotes
 
 
         # return all drawing primitives
-        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_gotos + res_measures + res_annotations).compact
+        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_gotos + res_annotations).compact
       end
 
 
@@ -1509,17 +1503,17 @@ module Harpnotes
       #
       # @return [type] [description]
       def layout_playable(root, beat_layout)
-        if root.is_a? Note
-          layout_note(root, beat_layout)
-        elsif root.is_a? MeasureStart
-          layout_measure_start(root, beat_layout)
-        elsif root.is_a? SynchPoint
-          layout_accord(root, beat_layout)
-        elsif root.is_a? Pause
-          layout_pause(root, beat_layout)
-        else
-          $log.error("BUG: Missing Music -> Sheet transform: #{root}")
-        end
+        result            = if root.is_a? Note
+                              layout_note(root, beat_layout)
+                            elsif root.is_a? SynchPoint
+                              layout_accord(root, beat_layout)
+                            elsif root.is_a? Pause
+                              layout_pause(root, beat_layout)
+                            else
+                              $log.error("BUG: Missing Music -> Sheet transform: #{root}")
+                            end
+        result.hasbarover = true if result and root.measure_start
+        result
       end
 
       #
@@ -1548,6 +1542,7 @@ module Harpnotes
 
         res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
         res.line_width = $conf.get('layout.LINE_THICK')
+        res.hasbarover = true if root.measure_start
         res
       end
 
@@ -1560,11 +1555,12 @@ module Harpnotes
       def layout_accord(root, beat_layout)
         # draw the notes in the order of the notes in the Unison
         resnotes        = root.notes.map { |c| layout_note(c, beat_layout) }
+        `debugger`
 
         # then we ensure that we draw the line from lowest to highest in order to cover all
         resnotes_sorted = resnotes.sort_by { |n| n.origin.pitch }
         res             = []
-        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, resnotes.first.center)
+        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, resnotes.first.center) # Flowline is in fact a line
         res << resnotes
         res
       end
@@ -1592,9 +1588,10 @@ module Harpnotes
           end
         end
 
-        res         = nil
-        res         = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
-        res.visible = false unless root.visible?
+        res            = nil
+        res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
+        res.line_width = $conf.get('layout.LINE_THICK')
+        res.visible    = false unless root.visible?
         res
       end
 

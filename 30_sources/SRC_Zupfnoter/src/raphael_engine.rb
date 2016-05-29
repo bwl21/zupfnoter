@@ -160,6 +160,15 @@ module Harpnotes
         end
       end
 
+      if root.hasbarover
+        e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 2*root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
+        e_bar.on_click do
+          origin = root.origin
+          @on_select.call(origin) unless origin.nil? or @on_select.nil?
+        end
+        push_element(root.origin, e_bar)
+      end
+
       e.on_click do
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
@@ -169,6 +178,9 @@ module Harpnotes
     def draw_glyph(root)
       center     = [root.center.first, root.center.last]
       size       = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
+
+      line_width = root.line_width
+      @paper.line_width = 0.1
 
       #path_spec = "M#{center.first} #{center.last}"
       path_spec  = path_to_raphael(root.glyph[:d])
@@ -197,6 +209,7 @@ module Harpnotes
       scalefactor  = size.last / bbox[:height]
       e.transform("t#{(center.first)} #{(center.last)}t#{(-glyph_center.first)} #{(-glyph_center.last)}s#{scalefactor}")
 
+      @paper.line_width = line_width
       # add the dot if needed
       if root.dotted?
         bbox          = e.get_bbox()
@@ -210,6 +223,16 @@ module Harpnotes
           origin = root.origin
           @on_select.call(origin) unless origin.nil? or @on_select.nil?
         end
+      end
+
+
+      if root.hasbarover
+        e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 2 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
+        e_bar.on_click do
+          origin = root.origin
+          @on_select.call(origin) unless origin.nil? or @on_select.nil?
+        end
+        push_element(root.origin, e_bar)
       end
     end
 
@@ -290,7 +313,7 @@ module Harpnotes
       # make annotation draggable
       if root.conf_key
         @paper.draggable(element)
-        element.conf_key = root.conf_key
+        element.conf_key   = root.conf_key
         element.conf_value = root.conf_value
       end
       element.startpos = root.center
