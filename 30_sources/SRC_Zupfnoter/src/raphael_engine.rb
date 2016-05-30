@@ -148,25 +148,11 @@ module Harpnotes
 
       e["fill"] = root.fill == :filled ? "black" : "white"
       if root.dotted?
-        x             = root.center.first + (root.size.first * 1.2)
-        y             = root.center.last + (root.size.last * 1.2)
-        e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
-        e_dot["fill"] = "black"
-        push_element(root.origin, e_dot)
-
-        e_dot.on_click do
-          origin = root.origin
-          @on_select.call(origin) unless origin.nil? or @on_select.nil?
-        end
+        draw_the_dot(root)
       end
 
-      if root.hasbarover
-        e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 2*root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
-        e_bar.on_click do
-          origin = root.origin
-          @on_select.call(origin) unless origin.nil? or @on_select.nil?
-        end
-        push_element(root.origin, e_bar)
+      if root.hasbarover?
+        draw_the_barover(root)
       end
 
       e.on_click do
@@ -210,29 +196,44 @@ module Harpnotes
       e.transform("t#{(center.first)} #{(center.last)}t#{(-glyph_center.first)} #{(-glyph_center.last)}s#{scalefactor}")
 
       @paper.line_width = line_width
+
       # add the dot if needed
       if root.dotted?
-        bbox          = e.get_bbox()
-        x             = bbox[:x2] + 0.5
-        y             = bbox[:y2] + 0.5
-        e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
-        e_dot["fill"] = "black"
-        push_element(root.origin, e_dot)
-
-        e_dot.on_click do
-          origin = root.origin
-          @on_select.call(origin) unless origin.nil? or @on_select.nil?
-        end
+        draw_the_dot(root)
       end
 
+      if root.hasbarover?
+        draw_the_barover(root)
+      end
+    end
 
-      if root.hasbarover
-        e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 2 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
-        e_bar.on_click do
-          origin = root.origin
-          @on_select.call(origin) unless origin.nil? or @on_select.nil?
-        end
-        push_element(root.origin, e_bar)
+    def draw_the_barover(root)
+      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 2 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
+      e_bar.on_click do
+        origin = root.origin
+        @on_select.call(origin) unless origin.nil? or @on_select.nil?
+      end
+      push_element(root.origin, e_bar)
+    end
+
+    # this draws the dot to an ellipse or glyph
+    def draw_the_dot(root)
+      ds1             = DOTTED_SIZE + root.line_width
+      ds2             = DOTTED_SIZE + root.line_width/2
+      x               = root.center.first + (root.size.first + ds1)
+      y               = root.center.last
+      e_dot           = @paper.ellipse(x, y, ds2, ds2)
+      e_dot["stroke"] = "white"
+      e_dot["fill"]   = "white"
+      push_element(root.origin, e_dot)
+
+      e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
+      e_dot["fill"] = "black"
+      push_element(root.origin, e_dot)
+
+      e_dot.on_click do
+        origin = root.origin
+        @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
     end
 

@@ -100,29 +100,28 @@ module Harpnotes
       end
 
       if root.dotted?
-        @pdf.fill = (0...3).map { 0 }
-        @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+        draw_the_dot(root)
       end
 
       if root.hasbarover
-        @pdf.fill = (0...3).map { 0 }
-        new_center = [root.center.first, root.center.last - root.size.last - 2 * root.line_width]
-        new_size = [root.size.first, 0.2]
-        @pdf.rect_like_ellipse(new_center,new_size, :F)
+        draw_the_barover(root)
       end
 
 
     end
 
-
     def draw_glyph(root)
 
       style = root.filled? :FD, :FD
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+      @pdf.fill = (0...3).map { root.filled? ? 0 : 128 }
 
       center = [root.center.first - root.size.first, root.center.last - root.size.last]
-      #center = [root.center.first, root.center.last]
-      background_size = root.size.map { |s| 2.0 * s }  # root.size is specified as radii for eclipse
+      center = [root.center.first, root.center.last]
+      size       = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
+      scalefactor = size.last / root.glyph[:h]       # drawing = glyph * scalefactor
+      boundingbox = [root.glyph[:w], root.glyph[:h]]
+      glyph_size = [root.glyph[:w], root.glyph[:h]].map{|e| e/2 * scalefactor}
+
 
       # draw a white background
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
@@ -131,25 +130,31 @@ module Harpnotes
       @pdf.stroke = [255, 255, 255]
       @pdf.rect_like_ellipse(root.center, root.size, :FD)
 
+
+      # turn this on to draw background
+      #@pdf.fill = [255, 0, 0]
+      #@pdf.stroke = [0, 0, 0]
+      #@pdf.rect_like_ellipse(root.center, glyph_size, '')
+
+
       # draw th path
-      #e = @pdf.lines(...)
 
       @pdf.fill = [0, 0, 0]
       @pdf.stroke = [0, 0, 0]
 
-      scalefactor = background_size.last / root.glyph[:h]
-
-
       scale = [scalefactor, scalefactor]
       lines = []
       start = []
+      @pdf.line_width = 0.0001 # todo: this was experimental ...
       root.glyph[:d].each do |element|
         case element.first
           when "M"
-            @pdf.lines(lines, start.first, start.last, scale, "FD", false) unless lines.empty?
             lines = []
-            start = [center.first + (element[1] + root.glyph[:w]/2) * scale.first,
-                     center.last - (element[2] + root.glyph[:h]/2) * scale.last]
+            `debugger`
+            start = [center.first + (element[1]  * scale.first),
+                     center.last + (element[2]  * scale.last)]
+            @pdf.lines(lines, start.first, start.last, scale, "FD", false) unless lines.empty?
+
           when "l"
             lines.push element[1 .. -1]
           when "c"
@@ -158,24 +163,47 @@ module Harpnotes
             @pdf.lines(lines, start.first, start.last, scale, "FD", true) unless lines.empty?
             lines = []
           else
-            $log.error("BUG: unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
+            $log.error("BUG: unsupported Pdf Path command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
         end
       end
       @pdf.stroke = [0, 0, 0]
 
       # add the dot if needed
       if root.dotted?
-        @pdf.fill = (0...3).map { 0 }
-        @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+        draw_the_dot(root)
       end
 
-      if root.hasbarover
-        @pdf.fill = (0...3).map { 0 }
-        new_center = [root.center.first, root.center.last - root.size.last - 2 * root.line_width]
-        new_size = [root.size.first, 0.2]   # pdf shows rectangle of height 0
-        @pdf.rect_like_ellipse(new_center,new_size, :F)
+      if root.hasbarover?
+        draw_the_barover(root)
       end
 
+    end
+
+    def draw_the_dot(root)
+      #@pdf.fill = (0...3).map { 0 }
+      #@pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+
+      ds1             = DOTTED_SIZE + root.line_width
+      ds2             = DOTTED_SIZE + root.line_width/2
+      x               = root.center.first + (root.size.first + ds1)
+      y               = root.center.last
+      @pdf.fill = [255, 255, 255]
+      @pdf.stroke = [255, 255, 255]
+      @pdf.ellipse([x, y], [ds2, ds2], :FD)
+
+      @pdf.fill = [0, 0, 0]
+      @pdf.stroke = [0, 0, 0]
+
+      @pdf.ellipse([x, y], [DOTTED_SIZE, DOTTED_SIZE], :FD)
+
+    end
+
+
+    def draw_the_barover(root)
+      @pdf.fill  = (0...3).map { 0 }
+      new_center = [root.center.first, root.center.last - root.size.last - 2 * root.line_width]
+      new_size   = [root.size.first, 0.2] # pdf shows rectangle of height 0
+      @pdf.rect_like_ellipse(new_center, new_size, :F)
     end
 
 

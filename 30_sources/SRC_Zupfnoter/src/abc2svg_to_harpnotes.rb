@@ -321,7 +321,7 @@ module Harpnotes
         #harpnote_elements = [harpnote_elements] # make it an array such that we can append further elements
 
         if @next_note_marks[:measure]
-          notes.each { |note| result << Harpnotes::Music::MeasureStart.new(note) }
+          notes.each { |note| note.measure_start = true}
           @next_note_marks[:measure] = false
         end
 
@@ -339,7 +339,7 @@ module Harpnotes
           count_end   = count_start + voice_element[:dur] / count_base - 1
           count_range = (count_start.floor .. count_end.ceil).to_a.join("-")
           count_range = (countnames[count_start % 1]) unless (count_start % 1) == 0
-          count_range = (count_start %1).to_s unless count_range
+          count_range = "?" unless count_range
 
           count_range
         end
@@ -404,7 +404,7 @@ module Harpnotes
         result = [result]
 
         if @next_note_marks[:measure]
-          result << Harpnotes::Music::MeasureStart.new(result.first)
+          result.first.measure_start = true
           @next_note_marks[:measure] = false
         end
 

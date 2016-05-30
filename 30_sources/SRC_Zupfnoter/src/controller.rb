@@ -895,15 +895,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                               # this basically determines the white background rectangel
                               # [sizex, sizey], glyph, dot # note that sizex has no effect.
                               :err => [[2, 2], :rest_1, FALSE], # 1      1
-                              :d64 => [[0.5, 0.5], :rest_1, FALSE], # 1      1
-                              :d48 => [[0.3, 0.3], :rest_1, TRUE], # 1/2 *
-                              :d32 => [[0.3, 0.3], :rest_1, FALSE], # 1/2
+                              :d64 => [[1, 1], :rest_1, FALSE], # 1      1
+                              :d48 => [[0.5, 0.5], :rest_1, TRUE], # 1/2 *
+                              :d32 => [[0.5, 0.5], :rest_1, FALSE], # 1/2
                               :d24 => [[0.4, 1], :rest_4, TRUE], # 1/4 *
                               :d16 => [[0.4, 1], :rest_4, FALSE], # 1/4
-                              :d12 => [[0.4, 1], :rest_8, TRUE], # 1/8 *
-                              :d8  => [[0.4, 1], :rest_8, FALSE], # 1/8
-                              :d6  => [[0.4, 1], :rest_16, TRUE], # 1/16 *
-                              :d4  => [[0.3, 1], :rest_16, FALSE], # 1/16
+                              :d12 => [[0.4, 0.8], :rest_8, TRUE], # 1/8 *
+                              :d8  => [[0.4, 0.8], :rest_8, FALSE], # 1/8
+                              :d6  => [[0.4, 0.8], :rest_16, TRUE], # 1/16 *
+                              :d4  => [[0.3, 0.8], :rest_16, FALSE], # 1/16
                               :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
                               :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
                               :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
