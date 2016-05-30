@@ -1,7 +1,7 @@
 # V 1.3.2 
 
 * fixed harpnote-player (no longer relies on last voice, no noise if song starts with rests) (#20)
-* countnotes: draw hints how to count close to the notes. Configure by `  "countnotes" : {"voices": [1], "pos": [3, -2]}`
+* countnotes: draw hints how to count close to the notes (#21). Configure by `  "countnotes" : {"voices": [1], "pos": [3, -2]}`
 * fixed position of bars (#16)
 * refined representation of rests (#16): full rest now has same size as full note
 * refined layout of jumplines: now considering size of symbol
