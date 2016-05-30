@@ -225,11 +225,15 @@ module Harpnotes
       def _investigate_first_bar(voice_model)
         symbol_bar_typeid = @abc_model[:music_type_ids][:bar].to_s
 
-        bars                       = voice_model[:symbols].select do |voice_model_element|
+        bars = voice_model[:symbols].select do |voice_model_element|
           voice_model_element[:type].to_s == symbol_bar_typeid
         end.compact
-        @measure_start_time        = bars.first[:time] - @wmeasure # for count_notes
-        @next_note_marks[:measure] = true if bars.first and (bars.first[:time] == @wmeasure) #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
+
+        @measure_start_time = 0  #
+        if bars.first
+          @measure_start_time        = bars.first[:time] - @wmeasure # for count_notes
+          @next_note_marks[:measure] = true if bars.first and (bars.first[:time] == @wmeasure) #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
+        end
       end
 
       def _transform_bar(voice_element)
@@ -321,7 +325,7 @@ module Harpnotes
         #harpnote_elements = [harpnote_elements] # make it an array such that we can append further elements
 
         if @next_note_marks[:measure]
-          notes.each { |note| note.measure_start = true}
+          notes.each { |note| note.measure_start = true }
           @next_note_marks[:measure] = false
         end
 
