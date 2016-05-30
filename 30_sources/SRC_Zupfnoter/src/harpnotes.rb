@@ -243,7 +243,7 @@ module Harpnotes
       # @return [type] [description]
       #
       def initialize(pitch, duration)
-        super
+        super()
         raise("trying to create a note with undefined pitch") if pitch.nil?
         @pitch    = pitch
         @duration = duration
@@ -417,7 +417,7 @@ module Harpnotes
       # @param  [Hash] verticalpos - { level:, distance:} A verticalpos, used to optimize the graphical representation.
       #
       def initialize(from, to, policy)
-        super
+        super()
         raise "End point of Jump (#{from.class}) must be a Playable" unless from.is_a? Harpnotes::Music::Playable
         raise "Start point of Jump (#{to.class}) must be a Playable" unless to.is_a? Harpnotes::Music::Playable
 
@@ -694,21 +694,25 @@ module Harpnotes
     # This represents a flowline
     #
     class FlowLine < Drawable
-      attr_reader :from, :to, :style, :origin, :center
+      attr_reader :from, :to, :style, :origin, :center, :size
 
       # @param from [Drawable] the origin of the flow
       # @param to   [Drawable] the target of the flow
       # @param style [Symbol] either :dashed or :solid
-      # @param origin [Object] An object to support bactrace, drill down etc.
+      # @param origin [Object] An object to support backtrace, drill down etc.
+      # @param [Object] center the center of the main Playable in that flowline - requrired for jumplines to Syncpoints
+      # @param [Object] size the size of the main Playable in that flowline - requrired for jumplines to Syncpoints
+      #
       #
       # @return [type] [description]
-      def initialize(from, to, style = :solid, origin = nil, center = nil)
-        super
+      def initialize(from, to, style = :solid, origin = nil, center = nil, size = nil)
+        super()
         @from   = from
         @to     = to
         @style  = style
         @origin = origin
-        @center = center || to.center # todo: Don't think we need that
+        @size = size
+        @center = center
         # just to avoid runtime messages
       end
 
@@ -745,7 +749,7 @@ module Harpnotes
       # @param [Symbol] fill :filled makes the path to be filled
       # @param [Object] origin Reference to the origin object for tracing purposes
       def initialize(path, fill = nil, origin = nil)
-        super
+        super()
         @path   = path
         @fill   = fill
         @origin = origin
@@ -773,7 +777,7 @@ module Harpnotes
       # @param rect [Boolean] true if the ellipse is in fact a rectangle
       #
       def initialize(center, radii, fill = :filled, dotted = false, origin = nil, rect = false)
-        super
+        super()
         @center = center
         @size   = radii
         @fill   = fill
@@ -885,7 +889,7 @@ module Harpnotes
       # @param [Boolean] dotted
       # @param [Object] origin the origin of the glyph for backtracking
       def initialize(center, size, glyph_name, dotted = FALSE, origin = nil)
-        super
+        super()
         @center     = center
         @glyph_name = glyph_name
         @glyph      = GLYPHS[glyph_name]
@@ -1264,7 +1268,8 @@ module Harpnotes
         # as Syncpoints are renderd from first to last, the last note is the remaining
         # one in the Hash unless we revert.
         # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
-        lookuptable_drawing_by_playable = Hash[res_playables.map { |e| [e.origin, e] }.reverse]
+        `debugger`
+        lookuptable_drawing_by_playable = Hash[res_playables.select{|e| e.origin.is_a? Harpnotes::Music::Playable}.map { |e| [e.origin, e] }.reverse]
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
 
@@ -1571,7 +1576,7 @@ module Harpnotes
         # then we ensure that we draw the line from lowest to highest in order to cover all
         resnotes_sorted = resnotes.sort_by { |n| n.origin.pitch }
         res             = []
-        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, resnotes.first.center) # Flowline is in fact a line
+        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, resnotes.first.center, resnotes.first.size) # Flowline is in fact a line
         res << resnotes
         res
       end
