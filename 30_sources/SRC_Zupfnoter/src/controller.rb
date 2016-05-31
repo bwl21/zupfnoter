@@ -829,6 +829,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          layout:
                       {
                           grid:              false,
+                          limit_a3:           true,
                           SHOW_SLUR:         false,
                           LINE_THIN:         0.1,
                           LINE_MEDIUM:       0.3,

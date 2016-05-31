@@ -6,6 +6,7 @@
 * refined representation of rests (#16): full rest now has same size as full note
 * refined layout of jumplines: now considering size of symbol
 * Draw a mesaure bar on the first note if the first measure is a complete one (#23)
+* notes are shifted left/right if on the border of A3 sheets. This supports printing on A3 sheets (#17)
 
 
 

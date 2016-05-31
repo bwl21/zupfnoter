@@ -711,7 +711,7 @@ module Harpnotes
         @to     = to
         @style  = style
         @origin = origin
-        @size = size
+        @size   = size
         @center = center
         # just to avoid runtime messages
       end
@@ -1258,7 +1258,7 @@ module Harpnotes
           playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
         end
 
-        res_playables                   = playables.map do |playable|
+        res_playables = playables.map do |playable|
           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
         end.flatten.compact
 
@@ -1269,7 +1269,7 @@ module Harpnotes
         # one in the Hash unless we revert.
         # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
         `debugger`
-        lookuptable_drawing_by_playable = Hash[res_playables.select{|e| e.origin.is_a? Harpnotes::Music::Playable}.map { |e| [e.origin, e] }.reverse]
+        lookuptable_drawing_by_playable = Hash[res_playables.select { |e| e.origin.is_a? Harpnotes::Music::Playable }.map { |e| [e.origin, e] }.reverse]
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
 
@@ -1548,19 +1548,40 @@ module Harpnotes
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
         size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
 
-        shift = 0
-        if root.shift
-          if root.shift[:dir] == :left
-            shift = -size.first
-          else
-            shift = size.first
-          end
-        end
+        shift = layout_note_shift(root, size, x_offset)
 
         res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.hasbarover = true if root.measure_start
         res
+      end
+
+      # layout the shift right/left of a note depending on
+      # shift attribute and A3 sheet boundaries
+      #
+      # @param [Object] root the object being layouted
+      # @param [Object] size the size of the object
+      # @param [Numerical] x_offset the unshifted horizontal position of the object
+      #
+      def layout_note_shift(root, size, x_offset)
+        shift = 0
+        if $conf.get('layout.limit_a3')
+          if x_offset < 5
+            shift += size.first
+          end
+          if x_offset > 415
+            shift +=  -size.first
+          end
+        end
+
+        if root.shift
+          if root.shift[:dir] == :left
+            shift += -size.first
+          else
+            shift += size.first
+          end
+        end
+        shift
       end
 
       #
@@ -1595,14 +1616,7 @@ module Harpnotes
         rest_size            = $conf.get('layout.REST_SIZE')
         size                 = [rest_size.first * scale.first, rest_size.last * scale.last]
 
-        shift = 0
-        if root.shift
-          if root.shift[:dir] == :left
-            shift = -size.first
-          else
-            shift = size.first
-          end
-        end
+        shift = layout_note_shift(root, size, x_offset)
 
         res            = nil
         res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
