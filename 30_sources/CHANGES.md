@@ -7,6 +7,7 @@
 * refined layout of jumplines: now considering size of symbol
 * Draw a mesaure bar on the first note if the first measure is a complete one (#23)
 * notes are shifted left/right if on the border of A3 sheets. This supports printing on A3 sheets (#17)
+* removed spinner, progress indicator is again only background-color (reuested by Karl)
 
 
 

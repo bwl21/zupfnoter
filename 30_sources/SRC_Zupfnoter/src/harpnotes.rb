@@ -1625,22 +1625,6 @@ module Harpnotes
         res
       end
 
-      #
-      # Draw a Measurement start on the Sheet
-      # @param root [Playable] the playable to be augmented with the measurement
-      # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
-      #
-      # @return [Object] The generated drawing primitive
-      def layout_measure_start(root, beat_layout)
-        x_offset            = ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
-        y_offset            = beat_layout.call(root.beat)
-        scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[duration_to_id(root.duration)]
-        #todo:layout this with a path
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale * 1.2 } # todo: the scale is experimental
-        res                 = Ellipse.new([x_offset, y_offset - size.last - 0.5], [size.first, 0.1], :filled, false, root, true) # todo draw a line
-        res.visible         = false unless root.visible?
-        res
-      end
 
       #
       #
