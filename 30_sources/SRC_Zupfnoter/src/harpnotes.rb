@@ -223,6 +223,10 @@ module Harpnotes
         @tuplet_end
       end
 
+      def measure_start?
+        @measure_start
+      end
+
       # this yields a proxy note for the playable
       def proxy_note
         self
@@ -1489,6 +1493,7 @@ module Harpnotes
           max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
           has_no_notes_on_beat = notes_on_beat.empty?
           is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
+          measure_start = notes_on_beat.select { |n| n.measure_start? }.first
 
           unless has_no_notes_on_beat
             begin
@@ -1500,6 +1505,10 @@ module Harpnotes
             # we need to increment the position by the (radii[i] + radii[i-1])/2
             increment = (size + last_size)/2
             last_size = size
+
+            if measure_start
+              increment += increment / 4
+            end
 
             # if a new part starts on this beat, double the increment
             unless is_new_part.empty?

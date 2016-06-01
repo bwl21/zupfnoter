@@ -208,7 +208,7 @@ module Harpnotes
     end
 
     def draw_the_barover(root)
-      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 2 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
+      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 1.3 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
       e_bar.on_click do
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
