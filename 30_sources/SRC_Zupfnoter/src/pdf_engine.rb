@@ -150,7 +150,7 @@ module Harpnotes
         case element.first
           when "M"
             lines = []
-            `debugger`
+
             start = [center.first + (element[1]  * scale.first),
                      center.last + (element[2]  * scale.last)]
             @pdf.lines(lines, start.first, start.last, scale, "FD", false) unless lines.empty?
