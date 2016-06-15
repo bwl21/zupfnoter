@@ -267,7 +267,7 @@ module Harpnotes
 
           #prepare a new variant_ending group if there is only an rbstop
           unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
-            @next_note_marks[:variant_followup] = true
+            @next_note_marks[:variant_followup] = {text: text, endline_distance: distance}
             @variant_endings.push([])
           end
         end
@@ -485,21 +485,32 @@ module Harpnotes
         result = []
         @variant_endings[0..-2].each do |variant_ending_group|
           # variant ending startlines
-          lastvariant        = variant_ending_group[-1][:is_followup] ? -2 : -1 # need to suppres startlines for the pseudo variatiion caused by followup notes
           startline_distance = variant_ending_group[0][:startline_distance]
           endline_distance   = variant_ending_group[1][:endline_distance]
+
+          if variant_ending_group[-1][:is_followup]
+            lastvariant           = -2 # need to suppres startlines for the pseudo variatiion caused by followup notes
+            followupline_distance = variant_ending_group[-1][:endline_distance]
+          else
+            lastvariant           = -1
+            followupline_distance = variant_ending_group[1][:endline_distance]
+          end
+
 
           variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
             result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], distance: startline_distance, from_anchor: :after, to_anchor: :before)
           end
 
           # variant ending endlines
-          variant_ending_group[1..-2].each_with_index do |variant_ending, index|
+          variant_ending_group[1..-3].each_with_index do |variant_ending, index|
             # note that the repeat line is drawn by the _transform_bar_repeat_end
             # so we do not have the variant end line in this case
             unless variant_ending[:repeat_end]
               result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], distance: endline_distance, from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
             end
+          end
+          if variant_ending_group[-1][:is_followup]
+            result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], distance: followupline_distance, from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
           end
         end
         result
@@ -613,9 +624,9 @@ module Harpnotes
         # the after jumplines should go the begining of this note
         # for this purpose add an unterminated variation
         if @next_note_marks[:variant_followup]
-          @next_note_marks[:variant_followup] = false
           @previous_note.first_in_part        = true
-          @variant_endings[-2].push({rbstart: @previous_note, is_followup: true})
+          @variant_endings[-2].push({rbstart: @previous_note, is_followup: true, endline_distance: @next_note_marks[:variant_followup][:endline_distance]})
+          @next_note_marks[:variant_followup] = false
         end
 
 
