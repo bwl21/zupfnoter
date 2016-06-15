@@ -261,7 +261,10 @@ module Harpnotes
           @variant_endings.last.last[:repeat_end] = true if true if type =~/^:.*$/
 
           #prepare a new variant_ending group if there is only an rbstop
-          @variant_endings.push([]) unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
+          unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
+            @next_note_marks[:variant_followup] = true
+            @variant_endings.push([])
+          end
         end
 
 
@@ -484,14 +487,17 @@ module Harpnotes
         result = []
         @variant_endings[0..-2].each do |variant_ending_group|
           # variant ending startlines
-          variant_ending_group[1..-1].each_with_index do |variant_ending, index|
+          lastvariant = variant_ending_group[-1][:is_followup] ? -2 : -1  # need to suppres startlines for the pseudo variatiion caused by followup notes
+          variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
             result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], distance: -4, from_anchor: :after, to_anchor: :before)
           end
 
           # variant ending endlines
           variant_ending_group[1..-2].each_with_index do |variant_ending, index|
+            # note that the repeat line is drawn by the _transform_bar_repeat_end
+            # so we do not have the variant end line in this case
             unless variant_ending[:repeat_end]
-              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstop], distance: 4, from_anchor: :after, to_anchor: :after, vertical_anchor: :to)
+              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], distance: 4, from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
             end
           end
         end
@@ -566,7 +572,7 @@ module Harpnotes
         result
       end
 
-      # this appends repeates, jumplines, annotations to the resultl
+      # this appends repeats, jumplines, annotations to the resultl
       # @param [Array of Harpnotes::Music:Entity:] harpnote_elements elements created by the current note/rest
       def _make_repeats_jumps_annotations(harpnote_elements, voice_element)
         @previous_note = harpnote_elements.first # notes.first # save this for repeat lines etc.
@@ -598,6 +604,16 @@ module Harpnotes
           @variant_endings.last.push({})
           @variant_endings.last.last[:rbstart] = @previous_note
         end
+
+        # if there is a note after a variant group,
+        # the after jumplines should go the begining of this note
+        # for this purpose add an unterminated variation
+        if @next_note_marks[:variant_followup]
+          @next_note_marks[:variant_followup] = false
+          @previous_note.first_in_part        = true
+          @variant_endings[-2].push({rbstart: @previous_note, is_followup:true})
+        end
+
 
         # collect chord based targets
         chords = _extract_chord_lines(voice_element)
