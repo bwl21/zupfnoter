@@ -133,9 +133,10 @@ module Harpnotes
 
         @jumptargets = {} # the lookup table for jumps
 
-        @next_note_marks   = {measure:        false,
-                              repeat_start:   false,
-                              variant_ending: nil
+        @next_note_marks   = {measure:          false,
+                              repeat_start:     false,
+                              variant_ending:   false,
+                              variant_followup: false
         }
         @previous_new_part = []
         @previous_note     = nil
@@ -531,15 +532,12 @@ module Harpnotes
       # @param [Playable] element - an element of the converted voice
       def _make_jumplines(element)
         if element.is_a?(Harpnotes::Music::Playable)
-          chords = _extract_chord_lines(element.origin[:raw])
-          chords.select { |c| c[0] == '@' }.inject([]) do |result, chord|
-            nameparts = chord.split('@')
-
-            targetname = nameparts[1]
+          goto_infos = _extract_goto_info_from_bar(element.origin[:raw])
+          goto_infos.inject([]) do |result, goto_info|
+            targetname = goto_info[:target]
             target     = @jumptargets[targetname]
 
-            argument = nameparts[2] || 1
-            argument = argument.to_i
+            argument = goto_info[:distance].first || 2
             if target.nil?
               $log.error("target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
             else
