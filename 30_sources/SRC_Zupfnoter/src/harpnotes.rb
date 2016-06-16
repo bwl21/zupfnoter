@@ -1272,7 +1272,7 @@ module Harpnotes
         # as Syncpoints are renderd from first to last, the last note is the remaining
         # one in the Hash unless we revert.
         # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
-        `debugger`
+
         lookuptable_drawing_by_playable = Hash[res_playables.select { |e| e.origin.is_a? Harpnotes::Music::Playable }.map { |e| [e.origin, e] }.reverse]
 
         #res_playables.select { |e| e.is_a? FlowLine }.each { |f| lookuptable_drawing_by_playable[f.origin] = f.from}
@@ -1403,6 +1403,10 @@ module Harpnotes
         # draw the jumplines
         res_gotos                    = voice.select { |c| c.is_a? Goto }.map do |goto|
           distance = goto.policy[:distance]
+          from_anchor = goto.policy[:from_anchor] || :after
+          to_anchor = goto.policy[:to_anchor] || :before
+          vertical_anchor = goto.policy[:vertical_anchor] || :from
+
           $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
 
           distance = distance - 1 if distance > 0 # make distancebeh  syymetric  -1 0 1
@@ -1418,9 +1422,9 @@ module Harpnotes
           to   = lookuptable_drawing_by_playable[goto.to]
 
           path = make_path_from_jumpline(
-              from:     {center: from.center, size: from.size, anchor: :after},
-              to:       {center: to.center, size: to.size, anchor: :before},
-              vertical: vertical
+              from:     {center: from.center, size: from.size, anchor: from_anchor},
+              to:       {center: to.center, size: to.size, anchor: to_anchor},
+              vertical: vertical, vertical_anchor: vertical_anchor
           )
 
           [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width = $conf.get('layout.LINE_THICK') },
@@ -1662,8 +1666,10 @@ module Harpnotes
         to_offset   = Vector2d(arg[:to][:size]) + [1, 1]
         verticalpos = arg[:vertical]
 
-        start_of_vertical = Vector2d(from.x + verticalpos, from.y)
-        end_of_vertical   = Vector2d(from.x + verticalpos, to.y)
+        vertical_anchor = from
+        vertical_anchor = to if arg[:vertical_anchor] == :to
+        start_of_vertical = Vector2d(vertical_anchor.x + verticalpos, from.y)
+        end_of_vertical   = Vector2d(vertical_anchor.x + verticalpos, to.y)
 
         start_orientation = Vector2d((((start_of_vertical - from) * [1, 0]).normalize).x, 0)
         end_orientation   = Vector2d((((end_of_vertical - to) * [1, 0]).normalize).x, 0)
