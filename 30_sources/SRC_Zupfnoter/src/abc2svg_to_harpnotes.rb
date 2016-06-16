@@ -242,12 +242,15 @@ module Harpnotes
         result = []
         type   = voice_element[:bar_type]
 
-        text                              = voice_element[:text]
-        distance                          = _extract_distance_info_from_bar(voice_element)
+        text = voice_element[:text]
+        distance = _extract_goto_info_from_bar(voice_element).last[:distance] rescue [-10, 10, 15]
 
-        @next_note_marks[:measure]        = true unless voice_element[:invisible]
-        @next_note_marks[:variant_ending] = {text: text, startline_distance: distance} if voice_element[:rbstart] == 2
-        @next_note_marks[:repeat_start]   = true if type =~/^.*:$/
+        @next_note_marks[:measure]      = true unless voice_element[:invisible]
+        @next_note_marks[:repeat_start] = true if type =~/^.*:$/
+
+        if voice_element[:rbstart] == 2
+          @next_note_marks[:variant_ending] = {text: text}
+        end
 
         # process end of variant ending
         # begin of variant ending needs to be preocessed
@@ -255,19 +258,23 @@ module Harpnotes
 
         #if we have the very first start in a group
         #we push the previous note to serve for proper startlines
-        if voice_element[:rbstart]== 2 and @variant_endings.last.empty?
-          @variant_endings.last.push({rbstop: @previous_note, startline_distance: distance})
+        if voice_element[:rbstart] == 2 and @variant_endings.last.empty?
+          if distance.length != 3
+            $log.error("you need to specify 3 values: #{distance}", charpos_to_line_column(voice_element[:istart]), charpos_to_line_column(voice_element[:iend]))
+
+            distance = [-10, 10, 15]
+          end
+          @variant_endings.last.push({rbstop: @previous_note, distance: distance})
         end
 
         # if variant stops and we are alraedy in a variant
         if (voice_element[:rbstop] == 2) and (!@variant_endings.last.last.nil?) and (@variant_endings.last.last[:rbstart])
-          @variant_endings.last.last[:rbstop]           = @previous_note
-          @variant_endings.last.last[:endline_distance] = distance
+          @variant_endings.last.last[:rbstop] = @previous_note
           @variant_endings.last.last[:repeat_end] = true if true if type =~/^:.*$/
 
           #prepare a new variant_ending group if there is only an rbstop
           unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
-            @next_note_marks[:variant_followup] = {text: text, endline_distance: distance}
+            @next_note_marks[:variant_followup] = true
             @variant_endings.push([])
           end
         end
@@ -458,7 +465,13 @@ module Harpnotes
           start = @repetition_stack.pop
         end
 
-        distance = _extract_distance_info_from_bar(bar)
+        goto_info = _extract_goto_info_from_bar(bar)
+        distance = goto_info.last[:distance] rescue [2]
+        if distance.count > 1
+          raise "too many distance values for repeat end. Need only one #{distance}"
+        end
+
+        distance=distance.first
 
         [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance)]
       end
@@ -485,20 +498,17 @@ module Harpnotes
         result = []
         @variant_endings[0..-2].each do |variant_ending_group|
           # variant ending startlines
-          startline_distance = variant_ending_group[0][:startline_distance]
-          endline_distance   = variant_ending_group[1][:endline_distance]
+          distance = variant_ending_group[0][:distance]
 
           if variant_ending_group[-1][:is_followup]
-            lastvariant           = -2 # need to suppres startlines for the pseudo variatiion caused by followup notes
-            followupline_distance = variant_ending_group[-1][:endline_distance]
+            lastvariant = -2 # need to suppres startlines for the pseudo variatiion caused by followup notes
           else
-            lastvariant           = -1
-            followupline_distance = variant_ending_group[1][:endline_distance]
+            lastvariant = -1
           end
 
 
           variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
-            result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], distance: startline_distance, from_anchor: :after, to_anchor: :before)
+            result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], distance: distance[0], from_anchor: :after, to_anchor: :before)
           end
 
           # variant ending endlines
@@ -506,11 +516,12 @@ module Harpnotes
             # note that the repeat line is drawn by the _transform_bar_repeat_end
             # so we do not have the variant end line in this case
             unless variant_ending[:repeat_end]
-              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], distance: endline_distance, from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
+              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], distance: distance[1], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
             end
           end
+
           if variant_ending_group[-1][:is_followup]
-            result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], distance: followupline_distance, from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
+            result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
           end
         end
         result
@@ -590,7 +601,6 @@ module Harpnotes
         @previous_note = harpnote_elements.first # notes.first # save this for repeat lines etc.
         znid           = harpnote_elements.first.znid
 
-
         # handle parts as annotation
         if part_label = @part_table[voice_element[:time].to_s]
           conf_key = "notebound.#{znid}.partname.pos" if znid #$conf['defaults.notebound.variantend.pos']
@@ -609,23 +619,21 @@ module Harpnotes
         # handle variant endings
         if @next_note_marks[:variant_ending]
           text                                  = @next_note_marks[:variant_ending][:text]
-          startline_distance                    = @next_note_marks[:variant_ending][:startline_distance]
           conf_key                              = "notebound.#{znid}.variantend.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position                              = $conf['defaults.notebound.variantend.pos']
           harpnote_elements.first.first_in_part = true
           harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text}, conf_key)
           @next_note_marks[:variant_ending] = nil
           @variant_endings.last.push({})
-          @variant_endings.last.last[:rbstart]            = @previous_note
-          @variant_endings.last.last[:startline_distance] = startline_distance # this handles the distance of startlines
+          @variant_endings.last.last[:rbstart] = @previous_note
         end
 
         # if there is a note after a variant group,
         # the after jumplines should go the begining of this note
         # for this purpose add an unterminated variation
         if @next_note_marks[:variant_followup]
-          @previous_note.first_in_part        = true
-          @variant_endings[-2].push({rbstart: @previous_note, is_followup: true, endline_distance: @next_note_marks[:variant_followup][:endline_distance]})
+          @previous_note.first_in_part = true
+          @variant_endings[-2].push({rbstart: @previous_note, is_followup: true})
           @next_note_marks[:variant_followup] = false
         end
 
@@ -670,23 +678,21 @@ module Harpnotes
       end
 
       def _extract_goto_info_from_bar(bar)
-        result = _extract_chord_lines(bar).inject([]) do |result, line|
-          level = line.match(/^@([^\@]*)@(\-?\d*$)/)
-          if level
-            target   = level[1]
-            distance = level[2].empty? ? 2 : level[2].to_i
-            result.push({target: target, distance: distance})
+        chordlines = _extract_chord_lines(bar)
+        result     = chordlines.inject([]) do |result, line|
+          if line.start_with?('@')
+            level = line.match(/^^@([^\@]*)@(\-?\d*)(,(\-?\d*),(\-?\d*))?$/)
+            if level
+              target   = level[1]
+              distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
+              result.push({target: target, distance: distance})
+            else
+              raise "Syntax-Error in Jump annotation: #{line}"
+            end
           end
           result
         end
         result
-      end
-
-      # this method extracts the vertical distance of a jumpline from a bar
-      # it takes the last one!
-      def _extract_distance_info_from_bar(bar)
-        result = _extract_goto_info_from_bar(bar)
-        result.empty? ? 4 : result.last[:distance]
       end
 
       def _parse_origin(voice_element)
