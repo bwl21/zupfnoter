@@ -9,6 +9,7 @@
 * notes are shifted left/right if on the border of A3 sheets. This supports printing on A3 sheets (#17)
 * removed spinner, progress indicator is again only background-color (reuqested by Karl)
 * advanced approach to represent variant endings (#10)
+* config menu no longer overrides existing entries with the default values (#25)
 
 
 
