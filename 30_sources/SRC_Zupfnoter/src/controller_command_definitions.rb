@@ -294,6 +294,7 @@ C,
             'startpos'     => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
             'subflowlines' => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
             'produce'      => lambda { {key: "produce", value: $conf['produce']} },
+            'annotations'  => lambda { {key: "annotations", value: $conf['annotations']} },
             'layout'       => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
                                         value: {limit_a3:     true,
                                                 LINE_THIN:    0.1,
@@ -302,16 +303,30 @@ C,
                                                 # all numbers in mm
                                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                                 REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
-            'countnotes'           => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
+            'countnotes'   => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
             'xx'           => lambda { {key: "xx", value: $conf[]} }
         }
 
-        value = values[args[:key]]
+
+        # here we handle the menu stuff
+        value  = values[args[:key]]
         if value
           value = value.call
-          @editor.patch_config_part(value[:key], value[:value])
+
+          localconf              = Confstack.new
+          localconf.strict       = false
+          localconf[value[:key]] = value[:value]
+
+          config_from_editor = get_config_from_editor
+          localconf.push(config_from_editor)
+
+          local_value = localconf[value[:key]]
+
+          patchvalue = local_value #|| value[:value]
+
+          @editor.patch_config_part(value[:key], patchvalue)
         else
-          raise "unknown configuration parameter #{key}"
+          raise "unknown configuration parameter #{value[:key]}"
           nil
         end
       end
@@ -347,6 +362,18 @@ C,
 
   end
 
+  def get_conf_value_from_editor_for_current_view(key)
+
+    localconf       = Confstack.new
+    localconf.strict=false
+
+    config_from_editor = get_config_from_editor
+    localconf.push(config_from_editor)
+
+    value = localconf[key]
+
+    value
+  end
 
   def __ic_04_localstore_commands
     @commands.add_command(:lsave) do |c|

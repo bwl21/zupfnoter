@@ -451,22 +451,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
-    config_part = @editor.get_config_part
-    begin
-      config = %x{json_parse(#{config_part})}
-      config = JSON.parse(config_part)
-      config = migrate_config(config)
-      @editor.set_config_part(config)
-    rescue Object => error
-      line_col = @editor.get_config_position(error.last)
-      $log.error("#{error.first} at #{line_col}", line_col)
-      config = {}
-    end
-
-    # todo: remove this compatibility code
-    outdated_configs  = @editor.get_text.split("%%%%hn.").count
-    config[:location] = "song" if config.keys.count > 0 || outdated_configs == 1
-    # todo: end of compatiblility code
+    config = get_config_from_editor
 
     $conf.push(config)
     abc_parser   = $conf.get('abc_parser')
@@ -479,6 +464,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @editor.set_annotations($log.annotations)
     $conf.pop
     result
+  end
+
+  # this retrieves the current config from the editor
+  def get_config_from_editor
+    config_part = @editor.get_config_part
+    begin
+      config = %x{json_parse(#{config_part})}
+      config = JSON.parse(config_part)
+      config = migrate_config(config)
+      @editor.set_config_part(config)
+    rescue Object => error
+      line_col = @editor.get_config_position(error.last)
+      $log.error("#{error.first} at #{line_col}", line_col)
+      config = {}
+    end
+    config
   end
 
   # highlight a particular abc element in all views
