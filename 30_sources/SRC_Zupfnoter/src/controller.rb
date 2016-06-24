@@ -695,21 +695,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       stop_play_abc
     end
 
-    # # key events in editor
-    # Element.find(`window`).on(:keydown) do |evt|
-    #
-    #   $log.debug("key pressed (#{__FILE__} #{__LINE__})")
-    #   `console.log(event)`
-    #   if `evt.keyCode == 13 && evt.shiftKey`
-    #     evt.prevent_default
-    #     render_previews
-    #     `evt.preventDefault()`
-    #   elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
-    #     evt.prevent_default
-    #     save_file
-    #     `evt.preventDefault()`
-    #   end
-    # end
+    # key events in editor
+    $window.on :keydown do |e|
+      if (e.meta_key || e.ctrl_key)  # Ctrl/Cmd
+        case (e.key_code)
+          when 'R'.ord #r
+            e.prevent
+            render_previews()
+          when 'S'.ord #s
+            e.prevent
+            handle_command("dsave")
+          when 'P'.ord #p
+            e.prevent
+            play_abc('selection_ff')
+        end
+      end
+    end
 
     Element.find(`window`).on(:storage) do |evt|
       key   = Native(evt[:originalEvent]).key
@@ -767,7 +768,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result =
         {produce:     [0],
          abc_parser:  'ABC2SVG',
-         countnotes:        {pos: [2, -2]},
+         countnotes:  {pos: [2, -2]},
          wrap:        60,
          defaultsxx:
                       {
@@ -814,7 +815,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
-                 countnotes:   {voices: [], pos:[3,-2]}
+                 countnotes:   {voices: [], pos: [3, -2]}
              },
              "1" => {
                  title:  "Sopran, Alt",
@@ -830,7 +831,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          layout:
                       {
                           grid:              false,
-                          limit_a3:           true,
+                          limit_a3:          true,
                           SHOW_SLUR:         false,
                           LINE_THIN:         0.1,
                           LINE_MEDIUM:       0.3,
