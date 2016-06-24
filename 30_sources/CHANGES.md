@@ -10,6 +10,7 @@
 * removed spinner, progress indicator is again only background-color (reuqested by Karl)
 * advanced approach to represent variant endings (#10)
 * config menu no longer overrides existing entries with the default values (#25)
+* now have a button to download the abc (#26) 
 
 
 

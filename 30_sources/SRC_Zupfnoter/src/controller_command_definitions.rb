@@ -558,6 +558,39 @@ C,
     end
 
 
+    @commands.add_command(:download_abc) do |command|
+      command.undoable = false ## todo make this undoable
+
+      command.set_help { "download as abc" }
+
+      command.as_action do |args|
+        abc_code = @editor.get_text
+        metadata = @abc_transformer.get_metadata(abc_code)
+        filebase = metadata[:F].first rescue nil
+        if filebase
+          filebase = filebase.split("\n").first
+        else
+          `w2alert("Filename not specified in song! Please add an F:<filename> instruction to your abc", "Error")`
+          raise "Filename not specified in song add an F:<filename> instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
+        end
+
+        %x{
+          var element = document.createElement('a');
+          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(#{abc_code}));
+          element.setAttribute('download', #{filebase + ".abc"});
+
+          element.style.display = 'none';
+          document.body.appendChild(element);
+
+          element.click();
+
+          document.body.removeChild(element);
+        }
+
+      end
+    end
+
+
     @commands.add_command(:dsave) do |command|
       command.add_parameter(:path, :string) do |parameter|
         parameter.set_default { @dropboxpath }
