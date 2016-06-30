@@ -1088,24 +1088,24 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0)
 
-        print_options        = Confstack.new()
-        print_options.strict = false
-        print_options.push($conf.get("extract.0"))
+        print_options_raw        = Confstack.new()
+        print_options_raw.strict = false
+        print_options_raw.push($conf.get("extract.0"))
 
         # todo: remove this appraoch after migration
         song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
 
 
         unless song_print_options
-          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options.get('title')}'")
+          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options_raw.get('title')}'")
         else
-          print_options.push(song_print_options)
+          print_options_raw.push(song_print_options)
         end
 
-        print_options  = print_options.get
+        print_options_hash = print_options_raw.get
 
         # push view specific configuration
-        layout_options = print_options[:layout] || {}
+        layout_options     = print_options_hash[:layout] || {}
         $conf.push({layout: layout_options})
 
         debug_grid = [];
@@ -1114,9 +1114,9 @@ module Harpnotes
 
         initialize
 
-        @y_offset = print_options[:startpos]
+        @y_offset = print_options_hash[:startpos]
 
-        beat_compression_map = compute_beat_compression(music, print_options[:layoutlines])
+        beat_compression_map = compute_beat_compression(music, print_options_hash[:layoutlines])
         maximal_beat         = beat_compression_map.values.max
         full_beat_spacing    = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
 
@@ -1138,8 +1138,8 @@ module Harpnotes
 
         # configure which synclines are required from-voice to-voice
         # also filter such synchlines which have points in the displayed voices
-        required_synchlines         = print_options[:synchlines].select { |sl|
-          print_options[:voices].include?(sl.first) && print_options[:voices].include?(sl.last)
+        required_synchlines         = print_options_hash[:synchlines].select { |sl|
+          print_options_hash[:voices].include?(sl.first) && print_options_hash[:voices].include?(sl.last)
         }
 
         synched_notes   = required_synchlines.map do |selector|
@@ -1151,17 +1151,18 @@ module Harpnotes
 
         # sheet_elements derived from the voices
         voice_elements  = music.voices.each_with_index.map { |v, index|
-          if print_options[:voices].include?(index) ## todo add control for jumpline right border
-            countnotes_options = print_options[:countnotes]
+          if print_options_hash[:voices].include?(index) ## todo add control for jumpline right border
+            countnotes_options = print_options_hash[:countnotes]
             countnotes_options = nil unless countnotes_options[:voices].include?(index)
             layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
-                         nonflowrest:   print_options[:nonflowrest],
-                         flowline:      print_options[:flowlines].include?(index),
-                         subflowline:   print_options[:subflowlines].include?(index),
-                         jumpline:      print_options[:jumplines].include?(index),
-                         annotations:   music.harpnote_options[:annotations],
-                         synched_notes: synched_notes,
-                         countnotes:    countnotes_options
+                         voice_nr:          index,
+                         nonflowrest:       print_options_hash[:nonflowrest],
+                         flowline:          print_options_hash[:flowlines].include?(index),
+                         subflowline:       print_options_hash[:subflowlines].include?(index),
+                         jumpline:          print_options_hash[:jumplines].include?(index),
+                         synched_notes:     synched_notes,
+                         countnotes:        countnotes_options,
+                         print_options_raw: print_options_raw
             )
           end
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
@@ -1194,10 +1195,10 @@ module Harpnotes
         key                 = music.meta_data[:key]
         composer            = music.meta_data[:composer]
         tempo               = music.meta_data[:tempo_display]
-        print_variant_title = print_options[:title]
+        print_variant_title = print_options_hash[:title]
 
-        title_pos  = print_options[:legend][:pos]
-        legend_pos = print_options[:legend][:spos]
+        title_pos  = print_options_hash[:legend][:pos]
+        legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
                                                           "extract.#{print_variant_nr}.legend.pos", {pos: title_pos})
@@ -1208,7 +1209,7 @@ module Harpnotes
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
 
-        lyrics     = print_options[:lyrics]
+        lyrics     = print_options_hash[:lyrics]
         lyric_text = music.harpnote_options[:lyrics][:text]
         if lyric_text
           text = lyric_text.join("\n")
@@ -1226,7 +1227,7 @@ module Harpnotes
         end
 
         #sheet based annotations
-        print_options[:notes].each do |k, note|
+        print_options_hash[:notes].each do |k, note|
           #note is an array [center, text, style] todo: refactor this
           annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
                                                             "extract.#{print_variant_nr}.notes.#{k}.pos", {pos: note[:pos]})
@@ -1255,6 +1256,7 @@ module Harpnotes
 
         # draw the playables
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
+        voice_nr = show_options[:voice_nr]
         playables = voice.select { |c| c.is_a? Playable }
 
         # uncomemnt this if you want to hide rests in voices without flowlines
@@ -1262,7 +1264,7 @@ module Harpnotes
           playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
         end
 
-        res_playables = playables.map do |playable|
+        res_playables                   = playables.map do |playable|
           layout_playable(playable, beat_layout) # unless playable.is_a? Pause
         end.flatten.compact
 
@@ -1280,16 +1282,17 @@ module Harpnotes
         # draw the countnotes
         if show_options[:countnotes]
           res_countnotes = playables.map do |playable|
-            conf_key = "extract.#{print_variant_nr}.notebound.countenote.v#{1}.at_#{playable.time}.pos"
-            note     = playable.count_note || ""
+            notebound_pos_key = "notebound.countnote.v#{voice_nr}.at_#{playable.time}.pos"
+            conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
+            count_note        = playable.count_note || ""
 
             countnotes_options = show_options[:countnotes]
 
-            annotationoffset = $conf.get(conf_key) rescue nil
+            annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
             annotationoffset = countnotes_options[:pos] unless annotationoffset
 
             position = Vector2d(lookuptable_drawing_by_playable[playable].center) + annotationoffset
-            result   = Harpnotes::Drawing::Annotation.new(position.to_a, note, :smaller, playable.origin,
+            result   = Harpnotes::Drawing::Annotation.new(position.to_a, count_note, :smaller, playable.origin,
                                                           conf_key, {pos: annotationoffset})
             result
           end
@@ -1402,9 +1405,9 @@ module Harpnotes
 
         # draw the jumplines
         res_gotos                    = voice.select { |c| c.is_a? Goto }.map do |goto|
-          distance = goto.policy[:distance]
-          from_anchor = goto.policy[:from_anchor] || :after
-          to_anchor = goto.policy[:to_anchor] || :before
+          distance        = goto.policy[:distance]
+          from_anchor     = goto.policy[:from_anchor] || :after
+          to_anchor       = goto.policy[:to_anchor] || :before
           vertical_anchor = goto.policy[:vertical_anchor] || :from
 
           $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
@@ -1437,14 +1440,14 @@ module Harpnotes
         # draw note bound annotations
 
         res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
-          conf_key = nil
-          conf_key = "extract.#{print_variant_nr}.#{annotation.conf_key}" if annotation.conf_key
-
-          if conf_key
-            annotationoffset = $conf.get(conf_key) rescue nil
+          notebound_pos_key = annotation.conf_key
+          if notebound_pos_key
+            conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
+            annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
             annotationoffset = annotation.position unless annotationoffset
           else
             annotationoffset = annotation.position
+            conf_key         = nil
           end
 
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
@@ -1497,7 +1500,7 @@ module Harpnotes
           max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
           has_no_notes_on_beat = notes_on_beat.empty?
           is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
-          measure_start = notes_on_beat.select { |n| n.measure_start? }.first
+          measure_start        = notes_on_beat.select { |n| n.measure_start? }.first
 
           unless has_no_notes_on_beat
             begin
@@ -1583,7 +1586,7 @@ module Harpnotes
             shift += size.first
           end
           if x_offset > 415
-            shift +=  -size.first
+            shift += -size.first
           end
         end
 
@@ -1666,8 +1669,8 @@ module Harpnotes
         to_offset   = Vector2d(arg[:to][:size]) + [1, 1]
         verticalpos = arg[:vertical]
 
-        vertical_anchor = from
-        vertical_anchor = to if arg[:vertical_anchor] == :to
+        vertical_anchor   = from
+        vertical_anchor   = to if arg[:vertical_anchor] == :to
         start_of_vertical = Vector2d(vertical_anchor.x + verticalpos, from.y)
         end_of_vertical   = Vector2d(vertical_anchor.x + verticalpos, to.y)
 
