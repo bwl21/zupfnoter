@@ -12,6 +12,7 @@
 * config menu no longer overrides existing entries with the default values (#25)
 * now have a button to download the abc (#26) 
 * how have keyboard shortcuts
+* unisons are nore connected to their last note (#32) BWC: This is an incompatible change
 
 
 

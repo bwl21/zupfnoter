@@ -1612,8 +1612,13 @@ module Harpnotes
 
         # then we ensure that we draw the line from lowest to highest in order to cover all
         resnotes_sorted = resnotes.sort_by { |n| n.origin.pitch }
+        #
+        # todo: make this configurable by chordProxy = first | last | highest | lowest
+        # todo: here we break bwc
+        proxy_note = resnotes.last
+
         res             = []
-        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, resnotes.first.center, resnotes.first.size) # Flowline is in fact a line
+        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, proxy_note.center, proxy_note.size) # Flowline is in fact a line
         res << resnotes
         res
       end
