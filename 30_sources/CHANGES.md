@@ -15,7 +15,7 @@
 * non BWC: unisons are nore connected to their last note (#32); migrate by inverting the unisons
 * non BWC: restructure of notebound annotations (#33); migrate by delete notebound configuration and reposition
   \[r:\] needs to start with lowercase letter, all now works per voice only;
-
+* update favorite icon to Zupfnoter logo
 
 
 # V 1.3.1 2016-05-17
