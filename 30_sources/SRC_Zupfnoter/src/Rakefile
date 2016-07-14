@@ -104,7 +104,7 @@ task :deploy => [:build] do
   cp "../vendor/ace/snippets/text.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/text.js"
   cp "../vendor/ace/ext-language_tools.js", "#{OUTFOLDER}/webserver/vendor/ace/ext-language_tools.js"
   cp("../vendor/ace/snippets/abc.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/abc.js")
-  cp("../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif")
+  cp("../public/icons/favicon.png", "#{OUTFOLDER}/webserver/public/icons/favicon.png")
   cp("../vendor/abc2svg-1.js", "#{OUTFOLDER}/vendor/abc2svg-1.js")
 
 
