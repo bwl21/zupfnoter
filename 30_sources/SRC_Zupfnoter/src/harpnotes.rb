@@ -1282,7 +1282,7 @@ module Harpnotes
         # draw the countnotes
         if show_options[:countnotes]
           res_countnotes = playables.map do |playable|
-            notebound_pos_key = "notebound.countnote.v#{voice_nr}.at_#{playable.time}.pos"
+            notebound_pos_key = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}.pos"
             conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
             count_note        = playable.count_note || ""
 
