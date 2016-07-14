@@ -332,7 +332,7 @@ module Harpnotes
         else
           # handle duration and orign
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
-          first_note              = notes.first # todo make this configurable
+          first_note              = notes.first # todo make choice of note configurable (#32)
           synchpoint.znid         = _mkznid(voice_element)
           synchpoint.count_note   = _transform_count_note(voice_element)
           synchpoint.time         = first_note.time
@@ -404,7 +404,7 @@ module Harpnotes
 
         pitch_note = (@pitch_providers[index .. -1].compact.first or @pitch_providers[0..index-1].compact.last)
         if pitch_note
-          pitch = pitch_note[:notes].first[:midi]
+          pitch = pitch_note[:notes].last[:midi]   # todo make choice of note configurable (#32)
         else
           pitch = 60
         end
