@@ -697,7 +697,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     # key events in editor
     $window.on :keydown do |e|
-      if (e.meta_key || e.ctrl_key)  # Ctrl/Cmd
+      if (e.meta_key || e.ctrl_key) # Ctrl/Cmd
         case (e.key_code)
           when 'R'.ord #r
             e.prevent
@@ -815,7 +815,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
-                 countnotes:   {voices: [], pos: [3, -2]}
+                 countnotes:   {voices: [], pos: [3, -2]},
+                 scalebar:     {
+                     text: "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+                     vpos: [],
+                     style: :small
+                 }
              },
              "1" => {
                  title:  "Sopran, Alt",

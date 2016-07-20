@@ -16,6 +16,7 @@
 * non BWC: restructure of notebound annotations (#33); migrate by delete notebound configuration and reposition
   \[r:\] needs to start with lowercase letter, all now works per voice only;
 * update favorite icon to Zupfnoter logo
+* now can print a scalebar with very flexible configuration #18
 
 
 # V 1.3.1 2016-05-17
