@@ -477,6 +477,7 @@ module Harpnotes
         end
 
         distance=distance.first
+        @next_note_marks[:first_in_part] = true
 
         [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true)]
       end
@@ -619,6 +620,11 @@ module Harpnotes
           @previous_note.first_in_part = true
           @repetition_stack << harpnote_elements.first
           @next_note_marks[:repeat_start] = false
+        end
+
+        if @next_note_marks[:first_in_part]
+          @previous_note.first_in_part = true
+          @next_note_marks[:first_in_part] = false
         end
 
         # handle variant endings
