@@ -502,6 +502,7 @@ module Harpnotes
       def _make_variant_ending_jumps
         result = []
         @variant_endings[0..-2].each do |variant_ending_group|
+        @variant_endings[0.. lastvariantgroup].each do |variant_ending_group|
           # variant ending startlines
           distance = variant_ending_group[0][:distance]
 
