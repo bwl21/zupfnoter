@@ -478,7 +478,7 @@ module Harpnotes
 
         distance=distance.first
 
-        [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance)]
+        [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true)]
       end
 
       def _transform_format(voice_element)
@@ -501,18 +501,19 @@ module Harpnotes
 
       def _make_variant_ending_jumps
         result = []
-        @variant_endings[0..-2].each do |variant_ending_group|
+        lastvariantgroup = (@variant_endings.last.empty? ? -2 : -1)
         @variant_endings[0.. lastvariantgroup].each do |variant_ending_group|
           # variant ending startlines
           distance = variant_ending_group[0][:distance]
 
           if variant_ending_group[-1][:is_followup]
-            lastvariant = -2 # need to suppres startlines for the pseudo variatiion caused by followup notes
+            lastvariant = -2 # need to suppres startlines for the pseudo variation caused by followup notes
           else
             lastvariant = -1
           end
 
 
+          # variant ending startlines
           variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
             result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], distance: distance[0], from_anchor: :after, to_anchor: :before)
           end
@@ -615,6 +616,7 @@ module Harpnotes
 
         # handle repeats
         if @next_note_marks[:repeat_start]
+          @previous_note.first_in_part = true
           @repetition_stack << harpnote_elements.first
           @next_note_marks[:repeat_start] = false
         end

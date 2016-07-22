@@ -816,9 +816,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  nonflowrest:  false,
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
                  countnotes:   {voices: [], pos: [3, -2]},
+                 repeatbars:   {voices: [],
+                                left:   {pos: [-7, -2], text: '|:', style: :bold},
+                                right:  {pos: [5, -2], text: ':|', style: :bold}
+                 },
                  scalebar:     {
-                     text: "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
-                     vpos: [],
+                     text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+                     vpos:  [],
                      style: :small
                  }
              },
@@ -874,6 +878,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                           FONT_STYLE_DEF:    {
                               smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
                               small:   {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                              bold:    {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
                               regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
                               large:   {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
                           },

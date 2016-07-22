@@ -1160,6 +1160,7 @@ module Harpnotes
                          flowline:          print_options_hash[:flowlines].include?(index),
                          subflowline:       print_options_hash[:subflowlines].include?(index),
                          jumpline:          print_options_hash[:jumplines].include?(index),
+                         repeatbars:        print_options_hash[:repeatbars],
                          synched_notes:     synched_notes,
                          countnotes:        countnotes_options,
                          print_options_raw: print_options_raw
@@ -1190,7 +1191,7 @@ module Harpnotes
 
         # now generate legend
 
-        annotations = []
+        annotations     = []
 
         title               = music.meta_data[:title] || "untitled"
         filename            = music.meta_data[:filename]
@@ -1433,8 +1434,8 @@ module Harpnotes
         # draw the jumplines
         res_gotos                    = voice.select { |c| c.is_a? Goto }.map do |goto|
           distance        = goto.policy[:distance]
-          from_anchor     = goto.policy[:from_anchor] || :after
-          to_anchor       = goto.policy[:to_anchor] || :before
+          from_anchor     = goto.policy[:from_anchor] || :after # after -> reight
+          to_anchor       = goto.policy[:to_anchor] || :before # before -> left
           vertical_anchor = goto.policy[:vertical_anchor] || :from
 
           $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
@@ -1457,16 +1458,32 @@ module Harpnotes
               vertical: vertical, vertical_anchor: vertical_anchor
           )
 
-          [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width = $conf.get('layout.LINE_THICK') },
-           Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
+          unless goto.policy[:is_repeat] and show_options[:repeatbars][:voices].include? show_options[:voice_nr]
+            [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width = $conf.get('layout.LINE_THICK') },
+             Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
+          end
         end.flatten
         res_gotos                    = [] unless show_options[:jumpline]
+
+
+        # draw the repeatmarks
+
+        res_repeatmarks              = []
+        if show_options[:repeatbars][:voices].include? show_options[:voice_nr]
+          res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
+
+            startbar = make_repeatbar_annotation(goto, lookuptable_drawing_by_playable, :begin, print_variant_nr, show_options, voice_nr)
+            endbar   = make_repeatbar_annotation(goto, lookuptable_drawing_by_playable, :end, print_variant_nr, show_options, voice_nr)
+
+            [endbar, startbar]
+          end.flatten
+        end
 
 
         ###
         # draw note bound annotations
 
-        res_annotations              = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
+        res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           notebound_pos_key = annotation.conf_key
           if notebound_pos_key
             conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
@@ -1485,7 +1502,31 @@ module Harpnotes
 
 
         # return all drawing primitives
-        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_gotos + res_annotations).compact
+        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_gotos + res_annotations + res_repeatmarks).compact
+      end
+
+      def make_repeatbar_annotation(goto, lookuptable_drawing_by_playable, point_role, print_variant_nr, show_options, voice_nr)
+        from_anchor = goto.policy[:from_anchor] || :after
+        to_anchor   = goto.policy[:to_anchor] || :before
+
+        if point_role==:end
+          point_note  = goto.from
+          attach_side = from_anchor == :after ? :right : :left
+        else
+          point_note  = goto.to
+          attach_side = to_anchor == :after ? :right : :left
+        end
+
+        pos_key  = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{point_note.znid}.pos"
+        conf_key = "extract.#{print_variant_nr}.#{pos_key}"
+
+        repeatbar_options = show_options[:repeatbars][attach_side]
+        annotationoffset = show_options[:print_options_raw][pos_key] rescue nil
+        annotationoffset = repeatbar_options[:pos] unless annotationoffset
+
+        position = Vector2d(lookuptable_drawing_by_playable[point_note].center) + annotationoffset
+        endbar   = Harpnotes::Drawing::Annotation.new(position.to_a, repeatbar_options[:text], repeatbar_options[:style],
+                                                      point_note.origin, conf_key, {pos: annotationoffset})
       end
 
 
@@ -1680,8 +1721,8 @@ module Harpnotes
       # general appraoch
       # * music jumps from below start to above end
       # * arrow is on end part
-      # * verticalpos determines the vertical position of the jumpline
-      # * the center of the vertical position determines start or ed (either west or east).
+      # * verticalpos determines position of the vertical part
+      # * the center of the vertical position determines start or end (either west or east).
       # *
       # @param [Object] arg has like :
       #                from:     {center: from.center, size: from.size, anchor: :after},
@@ -1693,16 +1734,19 @@ module Harpnotes
         #                from:     {center: from.center, size: from.size, anchor: :after},
         #                to:       {center: to.center, size: to.size, anchor: :before},
         #                vertical: vertical
-        from        = Vector2d(arg[:from][:center])
-        from_offset = Vector2d(arg[:from][:size]) + [1, 1]
-        from_anchor = arg[:from][:anchor] == :before ? -1 : 1
-        to_anchor   = arg[:to][:anchor] == :before ? -1 : 1
-        to          = Vector2d(arg[:to][:center])
-        to_offset   = Vector2d(arg[:to][:size]) + [1, 1]
+        from        = Vector2d(arg[:from][:center]) # the coordnates of the from - point
+        from_offset = Vector2d(arg[:from][:size]) + [1, 1] # the offest of the from - point
+        from_anchor = arg[:from][:anchor] == :before ? -1 : 1 # before: above; after: below
+
+        to        = Vector2d(arg[:to][:center])
+        to_offset = Vector2d(arg[:to][:size]) + [1, 1]
+        to_anchor = arg[:to][:anchor] == :before ? -1 : 1
+
         verticalpos = arg[:vertical]
 
-        vertical_anchor   = from
-        vertical_anchor   = to if arg[:vertical_anchor] == :to
+        vertical_anchor = from # the endpoint to which the varticalpos relates to
+        vertical_anchor = to if arg[:vertical_anchor] == :to
+
         start_of_vertical = Vector2d(vertical_anchor.x + verticalpos, from.y)
         end_of_vertical   = Vector2d(vertical_anchor.x + verticalpos, to.y)
 
@@ -1714,11 +1758,11 @@ module Harpnotes
         end_offset        = to_offset * [end_orientation.x, to_anchor] # 1 end after -1 end before
         # offset of line such that it ends inside of the array
 
-        start_of_vertical = start_of_vertical + start_offset * [0, 1]
-        end_of_vertical   = end_of_vertical + end_offset * [0, 1]
+        start_of_vertical = start_of_vertical + start_offset * [0, 1] # set x of offest to 0
+        end_of_vertical   = end_of_vertical + end_offset * [0, 1] # set x of offset to 0
 
-        start_of_jumpline = from + [start_offset.x * from_offset.x, +from_offset.y]
-        end_of_jumpline   = to + [end_offset.x * to_offset.x, -to_offset.y]
+        #start_of_jumpline = from + [start_offset.x * from_offset.x, +from_offset.y]
+        #end_of_jumpline   = to + [end_offset.x * to_offset.x, -to_offset.y]
 
         # line points
         p1                = from + start_offset
