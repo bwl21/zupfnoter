@@ -223,9 +223,9 @@ module Harpnotes
     def set_config_part(object)
       the_selection = get_selection_positions
       options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
-                       explicit_sort: [[:produce,  :annotations, :extract,
+                       explicit_sort: [[:produce, :annotations, :extract,
                                         :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatbars, :layoutlines, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :layout,
-                                        :annotation, :partname, :variantend, :countnote, :scalebar, # sort within notebound
+                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
                                         "0", "1", "2", "3", "4", "5", "6", :verses, :pos, :vpos, :text, :style], []]}
       configjson    = JSON.neat_generate(object, options)
 

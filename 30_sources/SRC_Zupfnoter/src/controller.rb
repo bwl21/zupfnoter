@@ -810,19 +810,19 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  flowlines:    [1, 3],
                  subflowlines: [2, 4],
                  jumplines:    [1, 3],
+                 repeatbars:   {voices: [],
+                                left:   {pos: [-7, -2], text: '|:', style: :bold},
+                                right:  {pos: [5, -2], text: ':|', style: :bold}
+                 },
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
                  countnotes:   {voices: [], pos: [3, -2]},
-                 repeatbars:   {voices: [],
-                                left:   {pos: [-7, -2], text: '|:', style: :bold},
-                                right:  {pos: [5, -2], text: ':|', style: :bold}
-                 },
-                 scalebar:     {
-                     text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
-                     vpos:  [],
+                 stringnames:     {
+                     text: "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+                     vpos: [],
                      style: :small
                  }
              },

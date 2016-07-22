@@ -306,8 +306,8 @@ C,
                                                      ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                                      REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
             'countnotes'        => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
-            'scalebar'          => lambda { {key: "extract.#{@systemstatus[:view]}.scalebar", value: $conf['extract.0.scalebar']} },
-            'scalebar.vpos'     => lambda { {key: "extract.#{@systemstatus[:view]}.scalebar.vpos", value: $conf['extract.0.scalebar.vpos']} },
+            'stringnames'       => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
+            'stringnames.vpos'  => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
             'xx'                => lambda { {key: "xx", value: $conf[]} }
         }
 
