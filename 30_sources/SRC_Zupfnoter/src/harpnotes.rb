@@ -1186,7 +1186,7 @@ module Harpnotes
         end
 
         # build Scalebar
-        scale_bar       = layout_scale_bar(print_options_hash)
+        scale_bar       = layout_stringnames(print_options_hash)
 
         # now generate legend
 
@@ -1246,18 +1246,18 @@ module Harpnotes
 
       # this creates a scale bar
       # todo: make it moveaeable by mouse
-      def layout_scale_bar(print_options_hash)
-        scale = print_options_hash[:scalebar][:text].split(' ')
+      def layout_stringnames(print_options_hash)
+        scale = print_options_hash[:stringnames][:text].split(' ')
         scale = scale * (37 / scale.length + 1)
 
         start_scale = -$conf.get('layout.PITCH_OFFSET')
         end_scale   = start_scale + 36
-        vpos        = print_options_hash[:scalebar][:vpos]
-        style       = print_options_hash[:scalebar][:style]
+        vpos        = print_options_hash[:stringnames][:vpos]
+        style       = print_options_hash[:stringnames][:style]
         x_spacing   = $conf.get('layout.X_SPACING')
         x_offset    = $conf.get('layout.X_OFFSET') - 1
 
-        scale_bar = (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
+        (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
           x = (-start_scale + pitch) * x_spacing + x_offset
           x += 1 if pitch == start_scale
           x -= 2 if pitch == end_scale

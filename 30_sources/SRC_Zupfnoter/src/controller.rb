@@ -816,7 +816,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  nonflowrest:  false,
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
                  countnotes:   {voices: [], pos: [3, -2]},
-                 scalebar:     {
+                 stringnames:     {
                      text: "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos: [],
                      style: :small
