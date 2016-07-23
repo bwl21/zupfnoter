@@ -176,7 +176,7 @@
         uicontroller.$handle_command("dsave")
       },
 
-      'tb_download': function() {
+      'tb_download': function () {
         uicontroller.$handle_command("download_abc")
       },
 
@@ -233,26 +233,37 @@
         {
           type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear',
           items: [
-            {text: 'title'}, {text: 'voices'},
-            {text: 'flowlines'},
-            {text: 'layoutlines'},
-            {text: 'jumplines'},
-            {text: 'repeatsigns'},
-            {text: 'repeatsigns.full'},
-            {text: 'synchlines'},
-            {text: 'legend'},
-            {text: 'notes'},
-            {text: 'lyrics'},
-            {text: 'nonflowrest'},
-            {text: 'startpos'},
-            {text: 'subflowlines'},
-            {text: 'produce'},
-            {text: 'annotations'},
-            {text: 'layout'},
-            {text: 'countnotes'},
-            {text: 'stringnames'},
-            {text: 'stringnames.full'},
-            {text: 'xx'},
+            {text: 'title', hint: "insert a title for the \ncurrent extract"},
+            {text: 'voices', hint: "specify voices to \nbe shown in current extract"},
+            {text: 'flowlines', hint: "specify for which voices \nwe show the flowline"},
+            {text: 'jumplines', hint: "specify for which voides \njumplines are shown"},
+            {text: 'repeatsigns', hint: "specify for which voices \nto use repeat signs instead of jumplines"},
+            {text: 'synchlines', hint: "specify which voices \nare connected by synchronization lines"},
+            {text: 'layoutlines', hint: "specify  which voides \nare considerd to compute \nvertical spacing"},
+            {text: 'subflowlines', hint: "specify for which voices \nwe show the subflowline"},
+            {text: ''},
+
+            {text: 'legend', hint: "specify details for legend"},
+            {text: 'lyrics', hint: "specify details for lyrics"},
+            {text: 'notes', hint: "enter a note bound to the entire page"},
+            {text: ''},
+
+            {text: 'nonflowrest', hint: "specify if rests are shown outsid of flowlines"},
+            {text: 'startpos', hint: "specify the vertical start position of the notes"},
+            {text: 'countnotes', hint: "specify appeareance of countnotes"},
+            {text: 'layout', hint: "specify laoyut details \n(e.g. size of symbols)"},
+            {text: 'stringnames', hint: "specify output of stringnames.\n Stringnames help to tune the instrument"},
+            {text: ''},
+            {text: 'produce', hint: "specify which extracts shall be saved as PDF"},
+            {
+              text: 'annotations',
+              hint: "specify predefined annotations\nAnnotations can be reused as note notebound anntoations"
+            },
+            {text: ''},
+            {text: 'stringnames.full', hint: "specify full details for stringnams"},
+            {text: 'repeatsigns.full', hint: "specify all details for repeat signs"},
+            {text: ''},
+            {text: 'xx', hint: "inject the default configuration (for development use only)"},
           ]
         },
 
