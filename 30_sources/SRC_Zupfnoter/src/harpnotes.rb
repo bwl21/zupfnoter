@@ -100,7 +100,10 @@ module Harpnotes
                     :time,
                     :znid,
                     :count_note, # string to support count_notes need to be queried even for measuers ...
-                    :pos, :box
+                    :pos,
+                    :box, # ??
+                    :prev_pitch,
+                    :next_pitch
 
       def initialize
         @visible = true
@@ -1472,8 +1475,8 @@ module Harpnotes
         if show_options[:repeatbars][:voices].include? show_options[:voice_nr]
           res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
 
-            startbar = make_repeatbar_annotation(goto, lookuptable_drawing_by_playable, :begin, print_variant_nr, show_options, voice_nr)
-            endbar   = make_repeatbar_annotation(goto, lookuptable_drawing_by_playable, :end, print_variant_nr, show_options, voice_nr)
+            startbar = make_repeatsign_annotation(goto, lookuptable_drawing_by_playable, :begin, print_variant_nr, show_options, voice_nr)
+            endbar   = make_repeatsign_annotation(goto, lookuptable_drawing_by_playable, :end, print_variant_nr, show_options, voice_nr)
 
             [endbar, startbar]
           end.flatten
@@ -1505,16 +1508,16 @@ module Harpnotes
         (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_gotos + res_annotations + res_repeatmarks).compact
       end
 
-      def make_repeatbar_annotation(goto, lookuptable_drawing_by_playable, point_role, print_variant_nr, show_options, voice_nr)
+      def make_repeatsign_annotation(goto, lookuptable_drawing_by_playable, point_role, print_variant_nr, show_options, voice_nr)
         from_anchor = goto.policy[:from_anchor] || :after
         to_anchor   = goto.policy[:to_anchor] || :before
 
         if point_role==:end
           point_note  = goto.from
-          attach_side = from_anchor == :after ? :right : :left
+          attach_side = point_note.prev_pitch > point_note.pitch ? :left : :right
         else
           point_note  = goto.to
-          attach_side = to_anchor == :after ? :right : :left
+          attach_side = point_note.next_pitch >= point_note.pitch ? :left : :right
         end
 
         pos_key  = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{point_note.znid}.pos"
@@ -1524,9 +1527,12 @@ module Harpnotes
         annotationoffset = show_options[:print_options_raw][pos_key] rescue nil
         annotationoffset = repeatbar_options[:pos] unless annotationoffset
 
+        text = repeatbar_options[:text]
+
         position = Vector2d(lookuptable_drawing_by_playable[point_note].center) + annotationoffset
-        endbar   = Harpnotes::Drawing::Annotation.new(position.to_a, repeatbar_options[:text], repeatbar_options[:style],
-                                                      point_note.origin, conf_key, {pos: annotationoffset})
+
+        Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatbar_options[:style],
+                                           point_note.origin, conf_key, {pos: annotationoffset})
       end
 
 

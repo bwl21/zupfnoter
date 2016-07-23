@@ -165,8 +165,8 @@ module Harpnotes
 
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
           voice_id = "v_#{voice_index + 1}"
-          result = _transform_voice(voice_model, voice_id)
-          result += _make_variant_ending_jumps if result
+          result   = _transform_voice(voice_model, voice_id)
+          result   += _make_variant_ending_jumps if result
           result
         end.compact
 
@@ -404,7 +404,7 @@ module Harpnotes
 
         pitch_note = (@pitch_providers[index .. -1].compact.first or @pitch_providers[0..index-1].compact.last)
         if pitch_note
-          pitch = pitch_note[:notes].last[:midi]   # todo make choice of note configurable (#32)
+          pitch = pitch_note[:notes].last[:midi] # todo make choice of note configurable (#32)
         else
           pitch = 60
         end
@@ -464,7 +464,8 @@ module Harpnotes
       end
 
       def _transform_bar_repeat_end(bar)
-        if @repetition_stack.length == 1
+        level = @repetition_stack.length
+        if level == 1
           start = @repetition_stack.last
         else
           start = @repetition_stack.pop
@@ -476,10 +477,10 @@ module Harpnotes
           raise "too many distance values for repeat end. Need only one #{distance}"
         end
 
-        distance=distance.first
+        distance                         =distance.first
         @next_note_marks[:first_in_part] = true
 
-        [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true)]
+        [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true, level: level)]
       end
 
       def _transform_format(voice_element)
@@ -501,7 +502,7 @@ module Harpnotes
       end
 
       def _make_variant_ending_jumps
-        result = []
+        result           = []
         lastvariantgroup = (@variant_endings.last.empty? ? -2 : -1)
         @variant_endings[0.. lastvariantgroup].each do |variant_ending_group|
           # variant ending startlines
@@ -601,10 +602,20 @@ module Harpnotes
       end
 
       # this appends repeats, jumplines, annotations to the resultl
+      # it also matainss @previous_note, prev_pitch, next_pitch
+      #
       # @param [Array of Harpnotes::Music:Entity:] harpnote_elements elements created by the current note/rest
+      # @param [Object] voice_element: voice element as provided by abc2svg
+      # @param [integer] voice_id the id of the voice according to the sequence sequence in the ABC-Code. First voice is 1
       def _make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id)
-        @previous_note = harpnote_elements.first # notes.first # save this for repeat lines etc.
-        znid           = harpnote_elements.first.znid
+        the_note = harpnote_elements.first
+        if @previous_note
+          @previous_note.next_pitch = the_note.pitch
+          the_note.prev_pitch       = @previous_note.pitch
+        end
+
+        @previous_note = the_note # notes.first # save this for repeat lines etc.
+        znid           = the_note.znid
 
         # handle parts as annotation
         if part_label = @part_table[voice_element[:time].to_s]
@@ -623,7 +634,7 @@ module Harpnotes
         end
 
         if @next_note_marks[:first_in_part]
-          @previous_note.first_in_part = true
+          @previous_note.first_in_part     = true
           @next_note_marks[:first_in_part] = false
         end
 
