@@ -272,6 +272,9 @@ module Harpnotes
         end
 
         # if variant stops and we are alraedy in a variant
+        # variant_edinngs.last -> the current variant ending group
+        # variant_endings.last.last - > the current variant ending within the current variant ending group
+        # [:rbstart] check if it is really started
         if (voice_element[:rbstop] == 2) and (!@variant_endings.last.last.nil?) and (@variant_endings.last.last[:rbstart])
           @variant_endings.last.last[:rbstop] = @previous_note
           @variant_endings.last.last[:repeat_end] = true if true if type =~/^:.*$/
