@@ -281,34 +281,34 @@ C,
       command.as_action do |args|
 
         values = {
-            'title'             => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "extract #{@systemstatus[:view]}"} },
-            'voices'            => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
-            'flowlines'         => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
-            'layoutlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
-            'jumplines'         => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
-            'repeatbars'        => lambda { {key: "extract.#{@systemstatus[:view]}.repeatbars", value: $conf['extract.0.repeatbars']} },
-            'repeatbars.voices' => lambda { {key: "extract.#{@systemstatus[:view]}.repeatbars.voices", value: $conf['extract.0.repeatbars.voices']} },
-            'synchlines'        => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
-            'legend'            => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
-            'notes'             => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['extract.0.notes.1']} },
-            'lyrics'            => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['extract.0.lyrics.1']} },
-            'nonflowrest'       => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
-            'startpos'          => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
-            'subflowlines'      => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
-            'produce'           => lambda { {key: "produce", value: $conf['produce']} },
-            'annotations'       => lambda { {key: "annotations", value: $conf['annotations']} },
-            'layout'            => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
-                                             value: {limit_a3:     true,
-                                                     LINE_THIN:    0.1,
-                                                     LINE_MEDIUM:  0.3,
-                                                     LINE_THICK:   0.5,
-                                                     # all numbers in mm
-                                                     ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                                     REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
-            'countnotes'        => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
-            'stringnames'       => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
-            'stringnames.vpos'  => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
-            'xx'                => lambda { {key: "xx", value: $conf[]} }
+            'title'            => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "extract #{@systemstatus[:view]}"} },
+            'voices'           => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
+            'flowlines'        => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
+            'layoutlines'      => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
+            'jumplines'        => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
+            'repeatsigns.full' => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns", value: $conf['extract.0.repeatsigns']} },
+            'repeatsigns'      => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']} },
+            'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
+            'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
+            'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['extract.0.notes.1']} },
+            'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['extract.0.lyrics.1']} },
+            'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
+            'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
+            'subflowlines'     => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
+            'produce'          => lambda { {key: "produce", value: $conf['produce']} },
+            'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
+            'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
+                                            value: {limit_a3:     true,
+                                                    LINE_THIN:    0.1,
+                                                    LINE_MEDIUM:  0.3,
+                                                    LINE_THICK:   0.5,
+                                                    # all numbers in mm
+                                                    ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
+                                                    REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
+            'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
+            'stringnames.full'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
+            'stringnames' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+            'xx'               => lambda { {key: "xx", value: $conf[]} }
         }
 
 

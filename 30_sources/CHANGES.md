@@ -17,7 +17,7 @@
   \[r:\] needs to start with lowercase letter, all now works per voice only;
 * update favorite icon to Zupfnoter logo
 * now can print a scalebar with very flexible configuration #18
-* now can print repeatbars as alternative to jumplines; flowline is now interrupted upon repeat start/end #36
+* now can print repeatsigns as alternative to jumplines; flowline is now interrupted upon repeat start/end #36
 
 
 # V 1.3.1 2016-05-17

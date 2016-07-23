@@ -1163,7 +1163,7 @@ module Harpnotes
                          flowline:          print_options_hash[:flowlines].include?(index),
                          subflowline:       print_options_hash[:subflowlines].include?(index),
                          jumpline:          print_options_hash[:jumplines].include?(index),
-                         repeatbars:        print_options_hash[:repeatbars],
+                         repeatsigns:       print_options_hash[:repeatsigns],
                          synched_notes:     synched_notes,
                          countnotes:        countnotes_options,
                          print_options_raw: print_options_raw
@@ -1461,7 +1461,7 @@ module Harpnotes
               vertical: vertical, vertical_anchor: vertical_anchor
           )
 
-          unless goto.policy[:is_repeat] and show_options[:repeatbars][:voices].include? show_options[:voice_nr]
+          unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
             [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width = $conf.get('layout.LINE_THICK') },
              Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
           end
@@ -1472,7 +1472,7 @@ module Harpnotes
         # draw the repeatmarks
 
         res_repeatmarks              = []
-        if show_options[:repeatbars][:voices].include? show_options[:voice_nr]
+        if show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
           res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
 
             startbar = make_repeatsign_annotation(goto, lookuptable_drawing_by_playable, :begin, print_variant_nr, show_options, voice_nr)
@@ -1523,15 +1523,15 @@ module Harpnotes
         pos_key  = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{point_note.znid}.pos"
         conf_key = "extract.#{print_variant_nr}.#{pos_key}"
 
-        repeatbar_options = show_options[:repeatbars][attach_side]
+        repeatsign_options = show_options[:repeatsigns][attach_side]
         annotationoffset = show_options[:print_options_raw][pos_key] rescue nil
-        annotationoffset = repeatbar_options[:pos] unless annotationoffset
+        annotationoffset = repeatsign_options[:pos] unless annotationoffset
 
-        text = repeatbar_options[:text]
+        text = repeatsign_options[:text]
 
         position = Vector2d(lookuptable_drawing_by_playable[point_note].center) + annotationoffset
 
-        Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatbar_options[:style],
+        Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
                                            point_note.origin, conf_key, {pos: annotationoffset})
       end
 

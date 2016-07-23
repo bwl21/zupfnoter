@@ -810,7 +810,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  flowlines:    [1, 3],
                  subflowlines: [2, 4],
                  jumplines:    [1, 3],
-                 repeatbars:   {voices: [],
+                 repeatsigns:   {voices: [],
                                 left:   {pos: [-7, -2], text: '|:', style: :bold},
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
