@@ -810,6 +810,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  flowlines:    [1, 3],
                  subflowlines: [2, 4],
                  jumplines:    [1, 3],
+                 repeatsigns:   {voices: [],
+                                left:   {pos: [-7, -2], text: '|:', style: :bold},
+                                right:  {pos: [5, -2], text: ':|', style: :bold}
+                 },
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
@@ -874,6 +878,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                           FONT_STYLE_DEF:    {
                               smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
                               small:   {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                              bold:    {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
                               regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
                               large:   {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
                           },

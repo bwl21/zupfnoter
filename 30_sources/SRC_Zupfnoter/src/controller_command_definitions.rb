@@ -286,6 +286,8 @@ C,
             'flowlines'        => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
             'layoutlines'      => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
             'jumplines'        => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
+            'repeatsigns.full' => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns", value: $conf['extract.0.repeatsigns']} },
+            'repeatsigns'      => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']} },
             'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
             'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
             'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['extract.0.notes.1']} },
@@ -304,8 +306,8 @@ C,
                                                     ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                                     REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
-            'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
-            'stringnames.vpos' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+            'stringnames.full'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
+            'stringnames' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
             'xx'               => lambda { {key: "xx", value: $conf[]} }
         }
 
