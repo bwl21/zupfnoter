@@ -19,6 +19,7 @@
 * now can print a scalebar with very flexible configuration #18
 * now can print repeatsigns as alternative to jumplines; flowline is now interrupted upon repeat start/end #3
 * rearranged config menu, added hints visble on hove #37
+* console is now on cmd-K - only #37
 
 
 # V 1.3.1 2016-05-17

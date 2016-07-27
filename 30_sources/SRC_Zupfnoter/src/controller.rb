@@ -651,6 +651,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
+  def toggle_console
+    %x{
+       w2ui['layout'].toggle('bottom', window.instant);
+       uicontroller.editor.$resize();
+      }
+  end
+
   # this registers the listeners to ui-elements.
   def setup_ui_listener
 
@@ -708,6 +715,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           when 'P'.ord #p
             e.prevent
             play_abc('selection_ff')
+          when 'K'.ord #k
+            e.prevent
+            toggle_console
         end
       end
     end
@@ -810,7 +820,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  flowlines:    [1, 3],
                  subflowlines: [2, 4],
                  jumplines:    [1, 3],
-                 repeatsigns:   {voices: [],
+                 repeatsigns:  {voices: [],
                                 left:   {pos: [-7, -2], text: '|:', style: :bold},
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
@@ -820,9 +830,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  nonflowrest:  false,
                  notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
                  countnotes:   {voices: [], pos: [3, -2]},
-                 stringnames:     {
-                     text: "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
-                     vpos: [],
+                 stringnames:  {
+                     text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+                     vpos:  [],
                      style: :small
                  }
              },

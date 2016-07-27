@@ -133,12 +133,6 @@
         uicontroller.$render_previews();
       },
 
-      'tb_toggle_console': function () {
-        w2ui['layout'].toggle('bottom', window.instant);
-        uicontroller.editor.$resize();
-      },
-
-
       'tb_create': function () {
         openPopup({
           name: 'createNewSheetForm',
@@ -270,8 +264,6 @@
         {type: 'break'},
         {type: 'button', id: 'tbPrintA3', text: 'A3', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A3'},
         {type: 'button', id: 'tbPrintA4', text: 'A4', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A4'},
-        {type: 'break'},
-        {type: 'button', id: 'tb_toggle_console', text: 'Console', icon: 'fa fa-terminal', hint: 'Toggelt console'},
 
         {type: 'break'},
         {
@@ -323,7 +315,7 @@
           uicontroller.$handle_command("addconf " + event.target.split(":")[1])
         }
         if (event.target == "tb_home") {
-          window.open("http://www.weichel21.de/zupfnoterpage")
+          window.open("https://www.zupfnoter.de")
         }
         if (event.target == "tbHelp:tbTutorials") {
           window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
