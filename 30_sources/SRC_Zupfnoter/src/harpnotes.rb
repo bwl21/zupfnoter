@@ -1393,7 +1393,7 @@ module Harpnotes
 
             tiepath, anchor = make_annotated_bezier_path([p1, p2], tuplet_options)
 
-            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
+            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THIN') })
             result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
 
             tuplet_notes = []
