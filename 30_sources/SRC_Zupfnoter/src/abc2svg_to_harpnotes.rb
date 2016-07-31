@@ -594,7 +594,7 @@ module Harpnotes
                 notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || $conf['defaults.notebound.annotation.pos']
                 conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid
-                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]}, conf_key)
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {style: :regular, pos: position, text: annotation[:text]}, conf_key)
               end
             else
               # $log.error("syntax error in annotation: #{name}")
