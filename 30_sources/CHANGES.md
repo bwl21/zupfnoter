@@ -20,6 +20,7 @@
 * now can print repeatsigns as alternative to jumplines; flowline is now interrupted upon repeat start/end #3
 * rearranged config menu, added hints visble on hove #37
 * console is now on cmd-K - only #37
+* shape of tuplet slur can now be configured #39 - this is an experimental implementation and subject of changing.
 
 
 # V 1.3.1 2016-05-17

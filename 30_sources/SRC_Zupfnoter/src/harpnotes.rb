@@ -1380,7 +1380,7 @@ module Harpnotes
           tuplet_notes.push playable.time if tuplet_start
 
           if playable.tuplet_end?
-            notebound_conf_key = "notebound.tuplet.v_#{voice_nr}.#{tuplet_start.znid}"
+            notebound_conf_key = "tuplet.#{tuplet_start.znid}"
             conf_key           = "extract.#{print_variant_nr}.#{notebound_conf_key}"
 
             tuplet_options = Confstack.new()
