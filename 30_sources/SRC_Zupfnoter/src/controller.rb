@@ -800,7 +800,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          defaults:    {
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
-                         variantend: {pos: [-4, -7]}
+                         variantend: {pos: [-4, -7]},
+                         tuplet: {
+                             cp1: [5, 5],               # first control point positive x: point is east of flowline, positive y: point is south of note
+                             cp2: [5, -5],              # second control point
+                             shape: ['c'] # 'c' | 'l' => curve | line
+                             }
              }
          },
 

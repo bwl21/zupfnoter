@@ -1373,18 +1373,31 @@ module Harpnotes
         # layout tuplets
 
         tuplet_start   = playables.first
+        tuplet_notes   = []
 
         res_tuplets                  = playables.inject([]) do |result, playable|
           tuplet_start = playable if playable.tuplet_start?
+          tuplet_notes.push playable.time if tuplet_start
 
           if playable.tuplet_end?
-            p1              = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
-            p2              = Vector2d(lookuptable_drawing_by_playable[playable].center)
-            tiepath, anchor = make_annotated_bezier_path([p1, p2])
-            $log.debug("#{[tiepath, anchor]} (#{__FILE__} #{__LINE__})")
-            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
+            notebound_conf_key = "tuplet.#{tuplet_start.znid}"
+            conf_key           = "extract.#{print_variant_nr}.#{notebound_conf_key}"
+
+            tuplet_options = Confstack.new()
+            tuplet_options.push($conf['defaults.notebound.tuplet'])
+            tuplet_options.push(show_options[:print_options_raw][notebound_conf_key]) rescue nil
+
+
+            p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
+            p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
+
+            tiepath, anchor = make_annotated_bezier_path([p1, p2], tuplet_options)
+
+            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THIN') })
             result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
 
+            tuplet_notes = []
+            tuplet_start = nil
             # compute the position
           end
           result
@@ -1873,17 +1886,35 @@ module Harpnotes
       #
       # @param [Array of Vector2d] points the start and endpoint of the beziers pfad
       # @return [Array]  [Path, annotation-position]
-      def make_annotated_bezier_path(points)
-        p1                = points.first
-        p2                = points.last
-        deltap            = p2 - p1
+      # @param [hash] tuplet_options
+      def make_annotated_bezier_path(points, tuplet_options)
+        p1           = points.first
+        p2           = points.last
+        deltap       = p2 - p1
 
         # distance = deltap.length
         #cp_template = Vector2d(2 * deltap.length, 0).rotate(deltap.angle)
-        cp_template       = Vector2d(5, 0).rotate(deltap.angle)
-        rotate_by         = Math::PI/2
-        cp1               = cp_template.rotate(-rotate_by)
-        cp2               = deltap + cp_template.reverse.rotate(rotate_by)
+
+        # template is the normaliezd control-point
+        #
+        # *
+        # | \
+        # |  *  [x,y] y positive downwards
+        # |  |
+        # |  |
+        # |  *
+        # | /
+        # *
+        cp_template1 = Vector2d(tuplet_options[:cp1]) #.rotate(deltap.angle) #rotate(Math::PI * 0.5)
+        cp_template2 = Vector2d(tuplet_options[:cp2]) #.rotate(deltap.angle) #rotate(Math::PI * 0.5)
+
+        rotate_by = Math::PI * -0.5
+        cp1       = cp_template1.rotate(deltap.angle).rotate(rotate_by) #.rotate(-rotate_by)
+        cp2       = cp_template2.rotate(deltap.angle).rotate(rotate_by) #.rotate(rotate_by)
+
+        cp2 = deltap + cp2
+
+        $log.debug(%Q{#{cp1.to_s} - #{cp2.to_s}})
 
         # compute the position of the annotation
         cpa1              = p1 + cp1
@@ -1894,11 +1925,18 @@ module Harpnotes
         cpmm1             = (cpm1 + cpmm)/2
         cpmm2             = (cpm2 + cpmm)/2
         annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
-        annotation_anchor = annotation_anchor + [0, -4] # literal corection since now reference point is top of line
+        annotation_anchor = annotation_anchor + [0, -2] # literal corection since now reference point is top of line
         # todo: make position configurable
 
         # todo make the drawing more fancy
-        slurpath          = [['M', p1.x, p1.y], ['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]
+        start             = [['M', p1.x, p1.y]]
+        curve             = [['c', cp1.x, cp1.y, cp2.x, cp2.y, deltap.x, deltap.y]]
+        line              = [["l", cp1.x, cp1.y], ['L', cpa2.x, cpa2.y], ['L', p2.x, p2.y]]
+
+        slurpath = []
+        slurpath += start + curve if tuplet_options[:shape].include? 'c'
+        slurpath += start + line if tuplet_options[:shape].include? 'l'
+
         [slurpath, annotation_anchor]
       end
 

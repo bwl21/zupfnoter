@@ -594,7 +594,7 @@ module Harpnotes
                 notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || $conf['defaults.notebound.annotation.pos']
                 conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid
-                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {pos: position, text: annotation[:text]}, conf_key)
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {style: :regular, pos: position, text: annotation[:text]}, conf_key)
               end
             else
               # $log.error("syntax error in annotation: #{name}")
@@ -744,14 +744,15 @@ module Harpnotes
           #tuplet_id = @abc_model[:music_type_ids][:tuplet].to_s # todo: optimize performance here ...
           tuplet_id = "15"
           if _get_extra(voice_element, tuplet_id) # [:extra] and voice_element[:extra][tuplet_id]   # todo: attr_reader :
-            @tuplet_count      = (_get_extra(voice_element, tuplet_id)[:tuplet_p])
+            @tuplet_count      = (_get_extra(voice_element, tuplet_id)[:tuplet_r])
+            @tuplet_p      = (_get_extra(voice_element, tuplet_id)[:tuplet_p])
             @tuplet_down_count = @tuplet_count
             tuplet_start       = true
           else
             tuplet_start = nil
           end
 
-          tuplet = @tuplet_count
+          tuplet = @tuplet_p
 
           if @tuplet_down_count == 1
             @tuplet_count = 1
