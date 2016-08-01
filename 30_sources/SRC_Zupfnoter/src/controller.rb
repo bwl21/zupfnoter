@@ -344,6 +344,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           stop_play_abc
         else
           @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
+          @harpnote_player.play_auto() if mode == :auto
           @harpnote_player.play_song() if mode == :music_model
           @harpnote_player.play_selection() if mode == :selection
           @harpnote_player.play_from_selection if mode == :selection_ff
@@ -714,7 +715,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
             handle_command("dsave")
           when 'P'.ord #p
             e.prevent
-            play_abc('selection_ff')
+            play_abc('auto')
           when 'K'.ord #k
             e.prevent
             toggle_console

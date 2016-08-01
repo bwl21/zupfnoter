@@ -121,6 +121,9 @@ class Controller
 
       c.as_action do |argument|
         case argument[:range]
+          when "auto"
+            play_abc(:auto)
+
           when "sel"
             play_abc(:selection)
 
@@ -306,8 +309,8 @@ C,
                                                     ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                                     REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
-            'stringnames.full'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
-            'stringnames' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+            'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
+            'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
             'xx'               => lambda { {key: "xx", value: $conf[]} }
         }
 
