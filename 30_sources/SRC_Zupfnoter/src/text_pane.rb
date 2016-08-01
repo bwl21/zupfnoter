@@ -114,7 +114,7 @@ module Harpnotes
         current_selection = [requested_selection_start, requested_selection_end]
       end
       selection_newstart = [current_selection.first, requested_selection_start].min
-      selection_end   = [current_selection.last, requested_selection_end].max
+      selection_end      = [current_selection.last, requested_selection_end].max
 
       %x{
         doc = self.editor.selection.doc
@@ -233,11 +233,11 @@ module Harpnotes
       options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
                        explicit_sort: [[:produce, :annotations, :extract,
                                         :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                        :annotation, :partname, :variantend, :countnote, :stringnames,  # sort within notebound
-                                        "0", "1", "2", "3", "4", "5", "6", :verses, :pos, :hpos, :vpos, :text, :style, :marks, # extracts
-                                        :cp1, :cp2, :shape
-                                       ],
-                                       []],
+                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
+                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
+                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
+                                      ],
+                       []],
       }
 
       configjson = JSON.neat_generate(object, options)

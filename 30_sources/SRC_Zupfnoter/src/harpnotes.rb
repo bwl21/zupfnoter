@@ -1393,21 +1393,29 @@ module Harpnotes
           tuplet_notes.push playable.time if tuplet_start
 
           if playable.tuplet_end?
-            notebound_conf_key = "tuplet.#{tuplet_start.znid}"
-            conf_key           = "extract.#{print_variant_nr}.#{notebound_conf_key}"
+            tuplet_conf_key = "tuplet.#{tuplet_start.znid}"
+            conf_key        = "extract.#{print_variant_nr}.#{tuplet_conf_key}"
+            conf_key_pos    = 'pos'
 
             tuplet_options = Confstack.new()
             tuplet_options.push($conf['defaults.notebound.tuplet'])
-            tuplet_options.push(show_options[:print_options_raw][notebound_conf_key]) rescue nil
+            tuplet_options.push(show_options[:print_options_raw][tuplet_conf_key]) rescue nil
 
 
             p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
 
-            tiepath, anchor = make_annotated_bezier_path([p1, p2], tuplet_options)
+            tiepath, bezier_anchor = make_annotated_bezier_path([p1, p2], tuplet_options)
+            pos_from_conf = tuplet_options['pos'] rescue [0, 0]
+            configured_anchor = (bezier_anchor + pos_from_conf)
+            conf_value        = (configured_anchor - bezier_anchor).to_a.map { |i| i.round(0) }
 
             result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THIN') })
-            result.push(Harpnotes::Drawing::Annotation.new(anchor.to_a, playable.tuplet.to_s, :small))
+            result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
+                                                           :small,
+                                                           tuplet_start,
+                                                           conf_key + ".#{conf_key_pos}",
+                                                           {conf_key_pos.to_s => conf_value.to_a}))
 
             tuplet_notes = []
             tuplet_start = nil
@@ -1930,16 +1938,20 @@ module Harpnotes
         $log.debug(%Q{#{cp1.to_s} - #{cp2.to_s}})
 
         # compute the position of the annotation
-        cpa1              = p1 + cp1
-        cpa2              = p1 + cp2
-        cpm1              = (p1 + cpa1)/2
-        cpm2              = (p2 + cpa2)/2
-        cpmm              = (cpa1 + cpa2)/2
-        cpmm1             = (cpm1 + cpmm)/2
-        cpmm2             = (cpm2 + cpmm)/2
-        annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
+        # see https://de.wikipedia.org/wiki/B%C3%A9zierkurve#Kubische_B.C3.A9zierkurven_.28n.3D3.29
+        cpa1  = p1 + cp1        # absolute control point 1
+        cpa2  = p1 + cp2        # absolute control point 2
+        cpm1  = (p1 + cpa1)/2   # middle of p1->cp1
+        cpm2  = (p2 + cpa2)/2   # middle of p2->cp2
+        cpmm  = (cpa1 + cpa2)/2 # middle between the control points
+        cpmm1 = (cpm1 + cpmm)/2 # start of tangent
+        cpmm2 = (cpm2 + cpmm)/2 # end of tangent
+        unless cpa1.x <= p1.x and p1.x <= p2.x
+          annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
+        else
+          annotation_anchor = (cpmm1 + cpmm2) / 2 + ((cpmm1 - cpmm2).perpendicular.normalize * -2) -2
+        end
         annotation_anchor = annotation_anchor + [0, -2] # literal corection since now reference point is top of line
-        # todo: make position configurable
 
         # todo make the drawing more fancy
         start             = [['M', p1.x, p1.y]]
