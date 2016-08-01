@@ -487,6 +487,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # note that previous selections are still maintained.
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
+    `debugger`
     a=Native(abcelement) # todo: remove me
     $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
@@ -494,7 +495,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     endchar   = a[:endChar]
     endchar   = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
-      @editor.select_range_by_position(startchar, endchar)
+      @editor.select_range_by_position(startchar, endchar, @shifted)
     end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
@@ -516,7 +517,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # previous selections are removed
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
-    @harpnote_preview_printer.unhighlight_all();
+
+    @harpnote_preview_printer.unhighlight_all()
 
     highlight_abc_object(abcelement)
   end
@@ -701,6 +703,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @harpnote_player.on_songoff do
       stop_play_abc
+    end
+
+    $window.on :mousedown do |e|
+      @shifted = e.shift_key
     end
 
     # key events in editor
