@@ -845,7 +845,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
-                     style: :small
+                     style: :small,
+                     marks: {vpos: [11], hpos: [43, 55, 79]}
                  }
              },
              "1" => {

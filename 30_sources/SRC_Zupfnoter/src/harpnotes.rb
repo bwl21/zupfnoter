@@ -1184,7 +1184,7 @@ module Harpnotes
 
 
         # build Scalebar
-        sheet_marks       = layout_stringnames(print_options_hash)
+        sheet_marks     = layout_stringnames(print_options_hash)
 
         # now generate legend
 
@@ -1245,26 +1245,34 @@ module Harpnotes
       # this creates a scale bar
       # todo: make it moveaeable by mouse
       def layout_stringnames(print_options_hash)
-        vpos = print_options_hash[:stringnames][:vpos]
+        vpos  = print_options_hash[:stringnames][:vpos]
+        marks = print_options_hash[:stringnames][:marks][:hpos]
 
-        if vpos.empty?
-          sheet_marks     = [79, 55, 43].inject([]) do |result, pitch|
-            markpath = make_sheetmark_path([($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET'), 10])
-            result << Harpnotes::Drawing::Path.new(markpath, :filled)
+        sheet_marks = []
+        unless marks.empty?
+          sheet_marks += marks.inject([]) do |result, pitch|
+
+            print_options_hash[:stringnames][:marks][:vpos].each do |mark_vpos|
+              markpath = make_sheetmark_path([($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET'), mark_vpos])
+              result << Harpnotes::Drawing::Path.new(markpath, :filled)
+            end
             result
           end
-        else
-          scale = print_options_hash[:stringnames][:text].split(' ')
-          scale = scale * (37 / scale.length + 1)
+        end
+
+        unless vpos.empty?
+          no_of_names = 37
+          scale       = print_options_hash[:stringnames][:text].split(' ')
+          scale       = scale * ((no_of_names) / scale.length + 1)
 
           start_scale = -$conf.get('layout.PITCH_OFFSET')
-          end_scale   = start_scale + 36
+          end_scale   = start_scale + no_of_names -1
           vpos        = print_options_hash[:stringnames][:vpos]
           style       = print_options_hash[:stringnames][:style]
           x_spacing   = $conf.get('layout.X_SPACING')
           x_offset    = $conf.get('layout.X_OFFSET') - 1
 
-          sheet_marks = (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
+          sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
             x = (-start_scale + pitch) * x_spacing + x_offset
             x += 1 if pitch == start_scale
             x -= 2 if pitch == end_scale
