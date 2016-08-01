@@ -133,6 +133,7 @@ class Controller
     # load from previous session
     load_from_loacalstorage
     render_previews
+
     #
     setup_nodewebkit
     # # now trigger the interactive UI
@@ -487,7 +488,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # note that previous selections are still maintained.
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
-    `debugger`
     a=Native(abcelement) # todo: remove me
     $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
@@ -707,6 +707,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     $window.on :mousedown do |e|
       @shifted = e.shift_key
+      true # meed this to continue processing of the mouse event
     end
 
     # key events in editor

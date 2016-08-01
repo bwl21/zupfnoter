@@ -51,7 +51,7 @@ module Harpnotes
       end
 
       def play_auto
-        if @selection.count>1
+        if @selection.count > 3
            play_selection
         else
           play_from_selection
