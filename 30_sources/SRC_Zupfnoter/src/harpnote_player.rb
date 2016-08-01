@@ -50,6 +50,13 @@ module Harpnotes
         @songoff_callback = block
       end
 
+      def play_auto
+        if @selection.count>1
+           play_selection
+        else
+          play_from_selection
+        end
+      end
 
       def play_from_selection
         $log.debug("#{@selection.to_s} (#{__FILE__} #{__LINE__})")

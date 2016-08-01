@@ -21,6 +21,9 @@
 * rearranged config menu, added hints visble on hove #37
 * console is now on cmd-K - only #37
 * shape of tuplet slur can now be configured #39 - this is an experimental implementation and subject of changing.
+* play button now plays selection if more than one note is selected #40
+* shift key now expands the selection #40
+
 
 
 # V 1.3.1 2016-05-17

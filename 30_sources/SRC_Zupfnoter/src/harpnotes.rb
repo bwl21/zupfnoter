@@ -1182,15 +1182,9 @@ module Harpnotes
           end
         end.flatten
 
-        # build sheet_marks
-        sheet_marks     = [79, 55, 43].inject([]) do |result, pitch|
-          markpath = make_sheetmark_path([($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET'), 10])
-          result << Harpnotes::Drawing::Path.new(markpath, :filled)
-          result
-        end
 
         # build Scalebar
-        scale_bar       = layout_stringnames(print_options_hash)
+        sheet_marks       = layout_stringnames(print_options_hash)
 
         # now generate legend
 
@@ -1241,7 +1235,7 @@ module Harpnotes
         end
 
 
-        sheet_elements = debug_grid + synch_lines + voice_elements + sheet_marks + annotations + scale_bar
+        sheet_elements = debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 
         $conf.pop # remove view specific configuration
 
@@ -1251,25 +1245,36 @@ module Harpnotes
       # this creates a scale bar
       # todo: make it moveaeable by mouse
       def layout_stringnames(print_options_hash)
-        scale = print_options_hash[:stringnames][:text].split(' ')
-        scale = scale * (37 / scale.length + 1)
+        vpos = print_options_hash[:stringnames][:vpos]
 
-        start_scale = -$conf.get('layout.PITCH_OFFSET')
-        end_scale   = start_scale + 36
-        vpos        = print_options_hash[:stringnames][:vpos]
-        style       = print_options_hash[:stringnames][:style]
-        x_spacing   = $conf.get('layout.X_SPACING')
-        x_offset    = $conf.get('layout.X_OFFSET') - 1
-
-        (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
-          x = (-start_scale + pitch) * x_spacing + x_offset
-          x += 1 if pitch == start_scale
-          x -= 2 if pitch == end_scale
-          vpos.each do |vpos|
-            result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style)
+        if vpos.empty?
+          sheet_marks     = [79, 55, 43].inject([]) do |result, pitch|
+            markpath = make_sheetmark_path([($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET'), 10])
+            result << Harpnotes::Drawing::Path.new(markpath, :filled)
+            result
           end
-          result
+        else
+          scale = print_options_hash[:stringnames][:text].split(' ')
+          scale = scale * (37 / scale.length + 1)
+
+          start_scale = -$conf.get('layout.PITCH_OFFSET')
+          end_scale   = start_scale + 36
+          vpos        = print_options_hash[:stringnames][:vpos]
+          style       = print_options_hash[:stringnames][:style]
+          x_spacing   = $conf.get('layout.X_SPACING')
+          x_offset    = $conf.get('layout.X_OFFSET') - 1
+
+          sheet_marks = (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
+            x = (-start_scale + pitch) * x_spacing + x_offset
+            x += 1 if pitch == start_scale
+            x -= 2 if pitch == end_scale
+            vpos.each do |vpos|
+              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style)
+            end
+            result
+          end
         end
+        sheet_marks
       end
 
       #
