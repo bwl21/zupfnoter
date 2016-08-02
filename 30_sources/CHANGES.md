@@ -1,4 +1,4 @@
-# V 1.3.2 
+# V 1.4.0
 
 * fixed harpnote-player (no longer relies on last voice, no noise if song starts with rests) (#20)
 * countnotes: draw hints how to count close to the notes (#21). Configure by `  "countnotes" : {"voices": [1], "pos": [3, -2]}`
@@ -11,7 +11,7 @@
 * advanced approach to represent variant endings (#10)
 * config menu no longer overrides existing entries with the default values (#25)
 * now have a button to download the abc (#26) 
-* how have keyboard shortcuts
+* how have keyboard shortcuts cmd-P, cmd-R, cmd-S #37
 * non BWC: unisons are nore connected to their last note (#32); migrate by inverting the unisons
 * non BWC: restructure of notebound annotations (#33); migrate by delete notebound configuration and reposition
   \[r:\] needs to start with lowercase letter, all now works per voice only;
@@ -21,9 +21,9 @@
 * rearranged config menu, added hints visble on hove #37
 * console is now on cmd-K - only #37
 * shape of tuplet slur can now be configured #39 - this is an experimental implementation and subject of changing.
-* play button now plays selection if more than one note is selected #40
+* play button now plays selection if more than three note are selected #40
 * shift key now expands the selection #40
-
+* now support !fermata! and !empphasis! decorations #30 
 
 
 # V 1.3.1 2016-05-17

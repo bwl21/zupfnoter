@@ -731,7 +731,7 @@ module Harpnotes
           result = dd[:name].to_sym
         end
 
-        result.flatten.select{|i| [:fermata].include? i}
+        result.flatten.select{|i| [:fermata, :emphasis].include? i}
         #[:fermata]
       end
 
