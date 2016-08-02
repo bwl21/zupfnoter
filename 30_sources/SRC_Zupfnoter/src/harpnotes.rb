@@ -1684,7 +1684,6 @@ module Harpnotes
 
         # todo: factor out to layout_decorations
         decorations       = nil
-        root.decorations  = [:fermata]
         unless root.decorations.empty?
           decoration_root     = [result].flatten.last # todo this is not DRY: see layout_accord which also selects the proxy note
           decoration_distance = (root.measure_start ? 2 : 1)
