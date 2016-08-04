@@ -51,7 +51,8 @@ module Harpnotes
       end
 
       def play_auto
-        if @selection.count > 3
+        
+        if @selection.count >= 0 and  (counts = @selection.map{|i|i[:delay]}.uniq.count) > 1
            play_selection
         else
           play_from_selection
