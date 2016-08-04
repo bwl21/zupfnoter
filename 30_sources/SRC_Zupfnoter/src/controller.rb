@@ -456,9 +456,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config = get_config_from_editor
 
     $conf.push(config)
-    abc_parser   = $conf.get('abc_parser')
-    start        = Time.now()
-    @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+    abc_parser            = $conf.get('abc_parser')
+    start                 = Time.now()
+    @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+    @music_model.checksum = @editor.get_checksum
     $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
     $log.info("duration transform + layout #{Time.now - start}")
@@ -809,11 +810,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
                          variantend: {pos: [-4, -7]},
-                         tuplet: {
-                             cp1: [5, 5],               # first control point positive x: point is east of flowline, positive y: point is south of note
-                             cp2: [5, -5],              # second control point
+                         tuplet:     {
+                             cp1:   [5, 5], # first control point positive x: point is east of flowline, positive y: point is south of note
+                             cp2:   [5, -5], # second control point
                              shape: ['c'] # 'c' | 'l' => curve | line
-                             }
+                         }
              }
          },
 

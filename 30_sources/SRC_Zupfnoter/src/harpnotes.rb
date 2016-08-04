@@ -455,7 +455,7 @@ module Harpnotes
     #
     class Song
       attr_reader :voices, :beat_maps
-      attr_accessor :meta_data, :harpnote_options
+      attr_accessor :meta_data, :harpnote_options, :checksum
 
       def to_json
         {voices: @voices, beat_maps: @beat_maps, meta_data: @meta_data, harpnote_options: @harpnote_options}.to_json
@@ -1253,6 +1253,7 @@ module Harpnotes
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([400, 289], music.checksum, :smaller)
 
         lyrics     = print_options_hash[:lyrics]
         lyric_text = music.harpnote_options[:lyrics][:text]

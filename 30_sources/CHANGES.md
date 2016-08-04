@@ -24,6 +24,7 @@
 * play button now plays selection if more than three note are selected #40
 * shift key now expands the selection #40
 * now support !fermata! and !empphasis! decorations #30 
+* now place a fingerprint of input on the sheet. Sheets with identical fingerprints stm from the same input. #22
 
 
 # V 1.3.1 2016-05-17

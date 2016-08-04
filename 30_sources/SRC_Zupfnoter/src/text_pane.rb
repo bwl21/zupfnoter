@@ -222,6 +222,19 @@ module Harpnotes
       get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
+    def get_checksum
+       s   = get_text
+        %x{
+            var i;
+            var chk = 0x12345678;
+
+            for (i = 0; i < #{s}.length; i++) {
+              chk += (#{s}.charCodeAt(i) * (i + 1));
+           }
+         }
+        `chk`.to_s.scan(/...?/).join(' ')
+    end
+
 
     def resize
       `#{@editor}.resize()`
@@ -236,8 +249,8 @@ module Harpnotes
                                         :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
                                         "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                                         :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                      ],
-                       []],
+                                       ],
+                                       []],
       }
 
       configjson = JSON.neat_generate(object, options)
