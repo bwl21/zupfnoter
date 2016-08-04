@@ -151,7 +151,7 @@ module Raphael
           ox = 0,
           oy = 0,
           moveFnc = function(dx, dy) {
-            scale = this.paper._viewBox[3] / this.paper.canvas.clientHeight ;
+            scale = this.paper._viewBox[3] / this.paper.canvas.height.baseVal.value ;
             lx = Math.round(scale * dx) + ox;
             ly = Math.round(scale * dy) + oy;
 

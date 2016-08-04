@@ -298,6 +298,8 @@ module Harpnotes
         #handle tuplets
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
+        decorations = _parse_decorations(voice_element)
+
         if @next_note_marks[:measure]
           @measure_start_time = voice_element[:time] # for count_notes
         end
@@ -308,13 +310,14 @@ module Harpnotes
         notes = voice_element[:notes].map do |the_note|
           #duration = _convert_duration(the_note[:dur])
 
-          result            = Harpnotes::Music::Note.new(the_note[:midi], duration)
-          result.count_note = _transform_count_note(voice_element)
-          result.time       = voice_element[:time]
-          result.znid       = _mkznid(voice_element)
-          result.origin     = origin
-          result.start_pos  = charpos_to_line_column(start_pos) # get column und line number of abc_code
-          result.end_pos    = charpos_to_line_column(end_pos)
+          result             = Harpnotes::Music::Note.new(the_note[:midi], duration)
+          result.decorations = decorations
+          result.count_note  = _transform_count_note(voice_element)
+          result.time        = voice_element[:time]
+          result.znid        = _mkznid(voice_element)
+          result.origin      = origin
+          result.start_pos   = charpos_to_line_column(start_pos) # get column und line number of abc_code
+          result.end_pos     = charpos_to_line_column(end_pos)
 
           result.tuplet       = tuplet
           result.tuplet_start = tuplet_start
@@ -337,6 +340,7 @@ module Harpnotes
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
           first_note              = notes.first # todo make choice of note configurable (#32)
           synchpoint.znid         = _mkznid(voice_element)
+          synchpoint.decorations  = decorations
           synchpoint.count_note   = _transform_count_note(voice_element)
           synchpoint.time         = first_note.time
           synchpoint.duration     = first_note.duration
@@ -720,6 +724,17 @@ module Harpnotes
         result
       end
 
+
+      def _parse_decorations(voice_element)
+        a_dd   = voice_element[:a_dd] || []
+        result = a_dd.map do |dd|
+          result = dd[:name].to_sym
+        end
+
+        result.flatten.select{|i| [:fermata, :emphasis].include? i}
+        #[:fermata]
+      end
+
       def _parse_origin(voice_element)
         {startChar: voice_element[:istart], endChar: voice_element[:iend], raw: voice_element}
       end
@@ -745,7 +760,7 @@ module Harpnotes
           tuplet_id = "15"
           if _get_extra(voice_element, tuplet_id) # [:extra] and voice_element[:extra][tuplet_id]   # todo: attr_reader :
             @tuplet_count      = (_get_extra(voice_element, tuplet_id)[:tuplet_r])
-            @tuplet_p      = (_get_extra(voice_element, tuplet_id)[:tuplet_p])
+            @tuplet_p          = (_get_extra(voice_element, tuplet_id)[:tuplet_p])
             @tuplet_down_count = @tuplet_count
             tuplet_start       = true
           else

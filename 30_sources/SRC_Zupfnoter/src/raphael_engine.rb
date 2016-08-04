@@ -205,6 +205,13 @@ module Harpnotes
       if root.hasbarover?
         draw_the_barover(root)
       end
+
+      # make annotation draggable
+      if root.conf_key
+        @paper.draggable(e)
+        e.conf_key   = root.conf_key
+        e.conf_value = root.conf_value
+      end
     end
 
     def draw_the_barover(root)

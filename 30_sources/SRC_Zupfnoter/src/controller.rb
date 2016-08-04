@@ -81,7 +81,7 @@ class Controller
   def initialize
 
 
-    `init_w2ui();`
+    `init_w2ui(#{self});`
     @update_sytemstatus_consumers = {systemstatus: [
                                                        lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
                                                    ],
@@ -955,7 +955,6 @@ end
 
 Document.ready? do
   a = Controller.new
-  `uicontroller = #{a}`
   nil
 end
 
