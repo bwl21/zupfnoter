@@ -268,7 +268,7 @@ C,
       command.as_action do |args|
 
         values = {
-            'title'            => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "extract #{@systemstatus[:view]}"} },
+            'title'            => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "ENTER_TITLE_EXTRACT_#{@systemstatus[:view]}"} },
             'voices'           => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
             'flowlines'        => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
             'layoutlines'      => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
@@ -302,6 +302,7 @@ C,
         # here we handle the menu stuff
         value  = values[args[:key]]
         if value
+
           value = value.call
 
           localconf              = Confstack.new
@@ -313,9 +314,17 @@ C,
 
           local_value = localconf[value[:key]]
 
+          the_key = value[:key]
+          if the_key.end_with?('.x')
+            parent_key = the_key.split('.')[0..-2].join(".")
+            next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
+            `debugger`
+            the_key = %Q{#{parent_key}.#{next_free}}
+          end
+
           patchvalue = local_value #|| value[:value]
 
-          @editor.patch_config_part(value[:key], patchvalue)
+          @editor.patch_config_part(the_key, patchvalue)
         else
           raise "unknown configuration parameter #{value[:key]}"
           nil

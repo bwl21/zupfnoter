@@ -133,7 +133,6 @@ class Controller
     mode = uri[:parsed_search][:mode].last rescue :work
 
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode)
-    `debugger`
     load_demo_tune
 
     #
@@ -844,7 +843,7 @@ class Controller
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
                  nonflowrest:  false,
-                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
+                 notes:        {"1" => {"pos" => [320, 0], "text" => "ENTER_NOTE", "style" => "large"}},
                  countnotes:   {voices: [], pos: [3, -2]},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
