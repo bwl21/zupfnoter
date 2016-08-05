@@ -296,10 +296,13 @@
         {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'},
         {
           type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', hint: 'Hilfe', items: [
-          {text: 'Zn Tutorials', icon: 'fa fa-tags', id: "tbTutorials"},
+          {text: 'Videos', icon: 'fa fa-tags', id: "tbTutorials"},
           {text: 'abc Tutorial', icon: 'fa fa-tags', id: "tbAbcTutorial"},
           {text: 'Manual', icon: 'fa fa-tags', id: "tbManual"},
           {text: 'Homepage', icon: 'fa fa-tags', id: "tbHomepage"},
+          {text: ''},
+          {text: 'Reference', icon: 'fa fa-tags', id: "tbReference"},
+          {text: 'Demo', icon: 'fa fa-tags', id: "tbDemo"},
         ]
         }
       ],
@@ -328,6 +331,12 @@
         }
         if (event.target == "tbHelp:tbManual") {
           window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
+        }
+        if (event.target == "tbHelp:tbReference") {
+          window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
+        }
+        if (event.target == "tbHelp:tbDemo") {
+          window.open("?mode=demo&load=public/demos/21_Ich_steh_an_deiner_krippen_hier.abc")
         }
       }
     }
@@ -390,7 +399,7 @@
     w2ui.layout_top_toolbar.set(item, {text: caption});
   }
 
-  function update_sytemstatus_w2ui(systemstatus) {
+  function update_systemstatus_w2ui(systemstatus) {
     $("#tbStatus").html(systemstatus.dropbox);
     set_tbitem_caption('tb_view', systemstatus.view);
     if (systemstatus.music_model == 'changed') {

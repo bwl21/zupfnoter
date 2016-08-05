@@ -210,22 +210,6 @@ C,
       end
     end
 
-    @commands.add_command(:demo) do |command|
-
-      command.set_help { "Load demo tune" }
-
-      command.as_action do |args|
-        args[:oldval] = @editor.get_text
-        load_demo_tune
-        render_previews
-      end
-
-      command.as_inverse do |args|
-        # todo maintain editor status
-        @editor.set_text(args[:oldval])
-      end
-
-    end
 
     @commands.add_command(:drop) do |command|
       command.set_help { "Handle a dropped _abc" }
@@ -609,6 +593,12 @@ C,
       command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
 
       command.as_action do |args|
+
+        unless @systemstatus[:mode] == :work
+          message = "Cannot save in  #{@systemstatus[:mode]} mode"
+          alert message
+          raise message
+        end
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         filebase = metadata[:F].first

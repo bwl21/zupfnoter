@@ -82,11 +82,11 @@ class Controller
 
 
     `init_w2ui(#{self});`
-    @update_sytemstatus_consumers = {systemstatus: [
-                                                       lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
-                                                   ],
-                                     play_start:   [lambda { `update_play_w2ui('start')` }],
-                                     play_stop:    [lambda { `update_play_w2ui('stop')` }]
+    @update_systemstatus_consumers = {systemstatus: [
+                                                        lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                    ],
+                                      play_start:   [lambda { `update_play_w2ui('start')` }],
+                                      play_stop:    [lambda { `update_play_w2ui('stop')` }]
     }
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
@@ -127,13 +127,28 @@ class Controller
     setup_harpnote_preview
 
     # initialize virgin zupfnoter
+    # todo: this should be optimized
+    # todo: loading is determined in the load_* Methids. Not sure if this is ok
+    uri = get_uri
+    mode = uri[:parsed_search][:mode].last rescue :work
+
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode)
+    `debugger`
     load_demo_tune
-    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0)
+
     #
     # load from previous session
     load_from_loacalstorage
-    render_previews
 
+    demo_uri = uri[:parsed_search][:load] rescue nil
+    load_from_uri(uri[:parsed_search][:load]) if demo_uri
+
+    if @systemstatus[:mode] == :demo
+      handle_command("view 0")
+
+    end
+
+    render_previews
     #
     setup_nodewebkit
     # # now trigger the interactive UI
@@ -152,12 +167,26 @@ class Controller
   end
 
   # Save session to local store
+  # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
-    abc          = `localStorage.setItem('systemstatus', #{systemstatus});`
-    abc          = @editor.get_text
-    abc          = `localStorage.setItem('abc_data', abc);`
+    if @systemstatus[:mode] == :work
+      abc = `localStorage.setItem('systemstatus', #{systemstatus});`
+      abc = @editor.get_text
+      abc = `localStorage.setItem('abc_data', abc);`
+    end
+  end
+
+
+  def load_from_uri(url)
+    HTTP.get(url).then do |response|
+      @editor.set_text(response.body)
+    end.fail do |response|
+      alert "could not load from URL: #{url}"
+    end.always do |response|
+    end
+
   end
 
   # load session from localstore
@@ -174,64 +203,7 @@ class Controller
 
   # this loads a demo song
   def load_demo_tune
-    abc =%Q{X:21
-F:21_Ich_steh_an_deiner_krippen_hier
-T:Ich steh an deiner Krippen hier
-C:Nr. 59 aus dem Weihnachtsoratorium
-C:Joh. Seb. Bach
-C:Kirchenchor Mattighofen
-%%score ( 1 2 ) ( 3 4 )
-L:1/4
-Q:1/4=80.00
-M:4/4
-I:linebreak $
-K:G
-V:1 treble nm="Sopran Alt"
-V:2 treble
-V:3 bass nm="Tenor Bass"
-V:4 bass
-V:1
-G | G/A/ B A G | A A !fermata!B G/A/ |
-B c d c/B/ | A/G/ A !fermata!G :| B | B A G F |
-G/A/ B !fermata!A A | G F G D | G A !fermata!B G/A/ |
-B c d c/B/ | A/G/ A !fermata!G z |]
-V:2
-D | E/F/ G G/F/ G | G F G E/F/ |
-G/ B A/4G/4 F G | G F D :| z | G3/2 F/ F/E/ E/^D/ |
-E D D D | D/C/ D D/C/ B, | B, E ^D B, |
-E E D/E/2 G | G F D z |]
-V:3
-B, | B, E E/D/ D | E/C/ A,/D/ !fermata!D E |
-D G,/A,/ B,/C/ D | D C/B,/ !fermata!B, :| D | D D/C/ B,/C/ F,/B,/ |
-B,/A,/ A,/G,/ !fermata!F, F, | G,/A,/ B,/C/ B,/A,/ G, | G, F,/E,/ !fermata!F, E,/F,/ |
-G,3/2 A,/ B,/C/ D | D C/B,/ !fermata!B, z |]
-V:4
-G,/F,/ | E,3/2 D,/ C,3/2 B,,/ | C,/A,,/ D, G,, C, |
-G,/F,/ E, B,/A,/ G, | D D, G, :| z | B,/C/ D/2-D/2 G,/A,/ B, |
-E,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |
-E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
-
-%%%%zupfnoter.config
-{
- "produce":[1],
- "annotations": {
-                  "refn": {"id": "refn", "text": "referenced note", "pos": [20,10]}
-                },
- "extract": {
-  "0": {
-       "voices": [1,2,3,4],
-       "flowlines": [1,3],
-       "layoutlines": [1,2,3,4],
-       "lyrics": {"versepos": {"1,2,3,4,5,6,7,8" :[10,100]}},
-       "legend": {"pos": [310,175]},
-       "notes":[
-         {"pos": [340,10], "text": "Ich steh an deiner Krippen hier", "style": "strong"}
-         ]
-      }
-       }
-    }
-}
-    @editor.set_text(abc)
+    load_from_uri('public/demos/21_Ich_steh_an_deiner_krippen_hier.abc')
   end
 
   # render the harpnotes to a3
@@ -344,7 +316,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         if @harpnote_player.is_playing?
           stop_play_abc
         else
-          @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
+          @update_systemstatus_consumers[:play_start].each { |i| i.call() }
           @harpnote_player.play_auto() if mode == :auto
           @harpnote_player.play_song() if mode == :music_model
           @harpnote_player.play_selection() if mode == :selection
@@ -359,7 +331,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
+    @update_systemstatus_consumers[:play_stop].each { |i| i.call() }
   end
 
 
@@ -485,11 +457,42 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config
   end
 
+  def get_uri()
+    parser = nil;
+    # got this from http://stackoverflow.com/a/21152762/2092206
+    # maybe we switch to https://github.com/medialize/URI.js
+    %x{
+    #{parser} = document.createElement('a');
+        parser.href = window.location.href;
+
+        var qd = {};
+        parser.search.substr(1).split("&").forEach(function(item) {
+            var s = item.split("="),
+                k = s[0],
+                v = s[1] && decodeURIComponent(s[1]);
+            //(k in qd) ? qd[k].push(v) : qd[k] = [v]
+            (qd[k] = qd[k] || []).push(v) //short-circuit
+            })
+         parser.parsed_search = qd
+      }
+
+    # parser.protocol; // => "http:"
+    # parser.host;     // => "example.com:3000"
+    # parser.hostname; // => "example.com"
+    # parser.port;     // => "3000"
+    # parser.pathname; // => "/pathname/"
+    # parser.hash;     // => "#hash"
+    # parser.search;   // => "?search=test"
+    # parser.origin;   // => "http://example.com:3000"
+    #     }
+    Native(parser)
+  end
+
   # highlight a particular abc element in all views
   # note that previous selections are still maintained.
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
-    a=Native(abcelement)
+    a         =Native(abcelement)
     #$log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     startchar = a[:startChar]
@@ -527,7 +530,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    @update_sytemstatus_consumers[:systemstatus].each { |c| c.call(@sytemstatus) }
+    @update_systemstatus_consumers[:systemstatus].each { |c| c.call() }
     nil
   end
 
