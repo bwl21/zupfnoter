@@ -32,7 +32,7 @@ module Harpnotes
 
         abc_parser = ABC2SVG::Abc2Svg.new(nil, {mode: :model}) # first argument is the container for SVG
         @abc_model = abc_parser.get_abcmodel(zupfnoter_abc)
-
+        raise "no ABC found" if @abc_model.nil?
         _make_metadata
         result = _transform_voices
 

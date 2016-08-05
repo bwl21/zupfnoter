@@ -127,13 +127,13 @@ class Controller
     setup_harpnote_preview
 
     # initialize virgin zupfnoter
+    load_demo_tune
+
     # todo: this should be optimized
     # todo: loading is determined in the load_* Methids. Not sure if this is ok
     uri = get_uri
     mode = uri[:parsed_search][:mode].last rescue :work
-
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode)
-    load_demo_tune
 
     #
     # load from previous session
@@ -144,7 +144,6 @@ class Controller
 
     if @systemstatus[:mode] == :demo
       handle_command("view 0")
-
     end
 
     render_previews
@@ -202,7 +201,80 @@ class Controller
 
   # this loads a demo song
   def load_demo_tune
-    load_from_uri('public/demos/21_Ich_steh_an_deiner_krippen_hier.abc')
+    abc = %Q{X:21
+F:21_Ich_steh_an_deiner_krippen_hier
+T:Ich steh an deiner Krippen hier
+C:Nr. 59 aus dem Weihnachtsoratorium
+C:Joh. Seb. Bach
+C:Kirchenchor Mattighofen
+%%score ( 1 2 ) ( 3 4 )
+L:1/4
+Q:1/4=80.00
+M:4/4
+I:linebreak $
+K:G
+V:1 treble nm="Sopran Alt"
+V:2 treble
+V:3 bass nm="Tenor Bass"
+V:4 bass
+V:1
+G | G/A/ B A G | A A !fermata!B G/A/ |
+B c d c/B/ | A/G/ A !fermata!G :| B | B A G F |
+G/A/ B !fermata!A A | G F G D | G A !fermata!B G/A/ |
+B c d c/B/ | A/G/ A !fermata!G z |]
+V:2
+D | E/F/ G G/F/ G | G F G E/F/ |
+G/ B A/4G/4 F G | G F D :| z | G3/2 F/ F/E/ E/^D/ |
+E D D D | D/C/ D D/C/ B, | B, E ^D B, |
+E E D/E/2 G | G F D z |]
+V:3
+B, | B, E E/D/ D | E/C/ A,/D/ !fermata!D E |
+D G,/A,/ B,/C/ D | D C/B,/ !fermata!B, :| D | D D/C/ B,/C/ F,/B,/ |
+B,/A,/ A,/G,/ !fermata!F, F, | G,/A,/ B,/C/ B,/A,/ G, | G, F,/E,/ !fermata!F, E,/F,/ |
+G,3/2 A,/ B,/C/ D | D C/B,/ !fermata!B, z |]
+V:4
+G,/F,/ | E,3/2 D,/ C,3/2 B,,/ | C,/A,,/ D, G,, C, |
+G,/F,/ E, B,/A,/ G, | D D, G, :| z | B,/C/ D/2-D/2 G,/A,/ B, |
+E,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |
+E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
+
+%%%%zupfnoter.config
+
+{
+  "produce"     : [1],
+  "annotations" : {
+    "refn" : {
+      "pos"  : [20, 10],
+      "text" : "referenced note",
+      "id"   : "refn"
+    }
+  },
+  "extract"     : {
+    "0" : {
+      "voices"      : [1, 2, 3, 4],
+      "flowlines"   : [1, 3],
+      "layoutlines" : [1, 2, 3, 4],
+      "legend"      : {"pos": [310, 175], "spos": [310, 182]},
+      "notes"       : {
+        "1" : {
+          "pos"   : [340, 10],
+          "text"  : "Ich steh an deiner Krippen hier",
+          "style" : "strong"
+        }
+      },
+      "lyrics"      : {
+        "1" : {
+          "verses" : [1, 2, 3, 4, 5, 6, 7, 8],
+          "pos"    : [10, 100]
+        }
+      }
+    }
+  },
+  "$schema"     : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version"    : "1.4.0 beta 2"
+}
+}
+    @editor.set_text(abc)
   end
 
   # render the harpnotes to a3
@@ -818,6 +890,10 @@ class Controller
                          }
              }
          },
+         templates:   {
+             notes:  {"pos" => [320, 0], "text" => "ENTER_NOTE", "style" => "large"},
+             lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]}
+         },
 
          annotations: {
              vt: {text: "v", pos: [-5, -5]},
@@ -841,9 +917,9 @@ class Controller
                  },
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 20]},
-                 lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
+                 lyrics:       {},
                  nonflowrest:  false,
-                 notes:        {"1" => {"pos" => [320, 0], "text" => "ENTER_NOTE", "style" => "large"}},
+                 notes:        {},
                  countnotes:   {voices: [], pos: [3, -2]},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",

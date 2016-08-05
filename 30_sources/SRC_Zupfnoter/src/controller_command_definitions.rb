@@ -277,8 +277,8 @@ C,
             'repeatsigns'      => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']} },
             'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
             'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
-            'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['extract.0.notes.1']} },
-            'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['extract.0.lyrics.1']} },
+            'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templats.notes']} },
+            'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']} },
             'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
             'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
             'subflowlines'     => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
@@ -318,7 +318,6 @@ C,
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0..-2].join(".")
             next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
-            `debugger`
             the_key = %Q{#{parent_key}.#{next_free}}
           end
 
