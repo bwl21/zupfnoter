@@ -891,7 +891,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
              }
          },
          templates:   {
-             notes:  {"pos" => [320, 0], "text" => "ENTER_NOTE", "style" => "large"},
+             notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
              lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]}
          },
 
