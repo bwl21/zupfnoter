@@ -21,7 +21,10 @@
 * rearranged config menu, added hints visble on hove #37
 * console is now on cmd-K - only #37
 * shape of tuplet slur can now be configured #39 - this is an experimental implementation and subject of changing.
-* play button now plays selection if more than three note are selected #40
+* play button now plays: #40
+  * if nothing is selected: the entire song in all voices
+  * if one note is selected: the song from selection, only voices of current extract 
+  * if more than one notes are selected: the selection only
 * shift key now expands the selection #40
 * now support !fermata! and !empphasis! decorations #30 
 * now place a fingerprint of input on the sheet. Sheets with identical fingerprints stm from the same input. #22

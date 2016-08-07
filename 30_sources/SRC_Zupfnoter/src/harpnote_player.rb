@@ -12,6 +12,7 @@ module Harpnotes
         @inst      = []
         @isplaying = false
         @selection = []
+        @voices_to_play = [1,2,3,4,5,6,7,8]
       end
 
       def is_playing?
@@ -66,6 +67,8 @@ module Harpnotes
           notes_to_play = @voice_elements.select do |n|
             n[:delay] >= @selection.first[:delay]
           end
+          notes_to_play = notes_to_play.select{|v| @active_voices.include? v[:index]}
+
         else
           $log.error("please select at least one note")
           notes_to_play = @voice_elements
@@ -156,9 +159,10 @@ module Harpnotes
       end
 
 
-      def load_song(music)
-        specduration = music.meta_data[:tempo][:duration].reduce(:+)
-        specbpm      = music.meta_data[:tempo][:bpm]
+      def load_song(music, active_voices)
+        @active_voices = active_voices
+        specduration   = music.meta_data[:tempo][:duration].reduce(:+)
+        specbpm        = music.meta_data[:tempo][:bpm]
 
         spectf               = (specduration * specbpm)
 

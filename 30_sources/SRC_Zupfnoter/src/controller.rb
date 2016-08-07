@@ -432,7 +432,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
       @song_harpnotes = layout_harpnotes(@systemstatus[:view])
-      @harpnote_player.load_song(@music_model)
+      # todo: not sure if it is good to pass active_voices via @song_harpnotes
+      # todo: refactor better moove that part of the code out here
+      @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
 
       @harpnote_preview_printer.draw(@song_harpnotes)
     rescue Exception => e
@@ -469,6 +471,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         `setTimeout(function(){self.$render_harpnotepreview_callback();#{promise}.$resolve()}, 50)`
       end
     end
+    @editor.resize();
 
     result
   end

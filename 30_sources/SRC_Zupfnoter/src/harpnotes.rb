@@ -627,16 +627,17 @@ module Harpnotes
     #
     #
     class Sheet
-      attr_reader :children, :vertical_scale
+      attr_reader :children, :active_voices
 
       # Constructor
       # @param children [Array of primitives]  the primitives which are drawn
       # @param vertical_scale = 1.0 [Numeric]  A factor to map the beats to vertical positions. todo: maybe superfluous
+      # @param [Object] active_voices the array provided by voices entry of configuration
       #
       # @return [type] [description]
-      def initialize(children = [], vertical_scale = 1.0)
-        @children       = children
-        @vertical_scale = vertical_scale
+      def initialize(children, active_voices)
+        @children      = children
+        @active_voices = active_voices
       end
     end
 
@@ -1135,19 +1136,7 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0)
 
-        print_options_raw        = Confstack.new()
-        print_options_raw.strict = false
-        print_options_raw.push($conf.get("extract.0"))
-
-        # todo: remove this appraoch after migration
-        song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
-
-
-        unless song_print_options
-          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options_raw.get('title')}'")
-        else
-          print_options_raw.push(song_print_options)
-        end
+        print_options_raw = get_print_options(print_variant_nr)
 
         print_options_hash = print_options_raw.get
 
@@ -1157,7 +1146,6 @@ module Harpnotes
 
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
-
 
         initialize
 
@@ -1197,8 +1185,9 @@ module Harpnotes
         end.flatten
 
         # sheet_elements derived from the voices
+        active_voices   = print_options_hash[:voices]
         voice_elements  = music.voices.each_with_index.map { |v, index|
-          if print_options_hash[:voices].include?(index) ## todo add control for jumpline right border
+          if active_voices.include?(index) ## todo add control for jumpline right border
             countnotes_options = print_options_hash[:countnotes]
             countnotes_options = nil unless countnotes_options[:voices].include?(index)
             layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
@@ -1284,7 +1273,22 @@ module Harpnotes
 
         $conf.pop # remove view specific configuration
 
-        Harpnotes::Drawing::Sheet.new(sheet_elements)
+        Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
+      end
+
+      def get_print_options(print_variant_nr)
+        print_options_raw        = Confstack.new()
+        print_options_raw.strict = false
+        print_options_raw.push($conf.get("extract.0"))
+
+        song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
+
+        unless song_print_options
+          $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options_raw.get('title')}'")
+        else
+          print_options_raw.push(song_print_options)
+        end
+        print_options_raw
       end
 
       # this creates a scale bar
@@ -1353,7 +1357,7 @@ module Harpnotes
           playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
         end
 
-        res_decorations = []
+        res_decorations                 = []
         res_playables                   = playables.map do |playable|
           result          = layout_playable(playable, beat_layout) # unless playable.is_a? Pause
 
