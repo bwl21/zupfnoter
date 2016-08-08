@@ -12,6 +12,7 @@ module Harpnotes
         @inst      = []
         @isplaying = false
         @selection = []
+        @voices_to_play = [1,2,3,4,5,6,7,8]
       end
 
       def is_playing?
@@ -50,6 +51,14 @@ module Harpnotes
         @songoff_callback = block
       end
 
+      def play_auto
+        
+        if @selection.count >= 0 and  (counts = @selection.map{|i|i[:delay]}.uniq.count) > 1
+           play_selection
+        else
+          play_from_selection
+        end
+      end
 
       def play_from_selection
         $log.debug("#{@selection.to_s} (#{__FILE__} #{__LINE__})")
@@ -58,6 +67,8 @@ module Harpnotes
           notes_to_play = @voice_elements.select do |n|
             n[:delay] >= @selection.first[:delay]
           end
+          notes_to_play = notes_to_play.select{|v| @active_voices.include? v[:index]}
+
         else
           $log.error("please select at least one note")
           notes_to_play = @voice_elements
@@ -81,8 +92,12 @@ module Harpnotes
           #note schedule in secc, SetTimout in msec; finsh after last measure
           `clearTimeout(#{@song_off_timer})` if @song_off_timer
 
+          the_notes = the_notes.sort_by{|the_note|  the_note[:delay] + the_note[:duration]}
+
+
           firstnote       = the_notes.first
           lastnote        = the_notes.last
+
 
           # stoptime comes in msec
           stop_time       = (lastnote[:delay] - firstnote[:delay] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
@@ -144,9 +159,10 @@ module Harpnotes
       end
 
 
-      def load_song(music)
-        specduration = music.meta_data[:tempo][:duration].reduce(:+)
-        specbpm      = music.meta_data[:tempo][:bpm]
+      def load_song(music, active_voices)
+        @active_voices = active_voices
+        specduration   = music.meta_data[:tempo][:duration].reduce(:+)
+        specbpm        = music.meta_data[:tempo][:bpm]
 
         spectf               = (specduration * specbpm)
 

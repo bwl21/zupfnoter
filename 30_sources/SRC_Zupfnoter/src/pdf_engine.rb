@@ -7,23 +7,23 @@ module Harpnotes
     include Harpnotes::Drawing
     attr_reader :pdf
 
-    PADDING = 4.0
+    PADDING         = 4.0
     JUMPLINE_INDENT = 10.0
-    DOTTED_SIZE = 0.3
+    DOTTED_SIZE     = 0.3
 
     X_SPACING = 115.0/10.0
 
     def initialize()
-      @pdf = JsPDF.new(:l, :mm, :a3)
+      @pdf          = JsPDF.new(:l, :mm, :a3)
       @pdf.x_offset = 0.0
     end
 
 
     def draw_in_segments(sheet)
-      delta = -12.0 * X_SPACING # todo: 12.0 = number of strings per page
-      @pdf = JsPDF.new(:p, :mm, [210, 287])
+      delta         = -12.0 * X_SPACING # todo: 12.0 = number of strings per page
+      @pdf          = JsPDF.new(:p, :mm, [210, 287])
       @pdf.y_offset = -5
-      addpage = false
+      addpage       = false
       (0..2).each do |i|
         draw_segment(30 + i * delta, sheet, addpage) # todo: 30 = initial offset
         addpage = true
@@ -68,11 +68,11 @@ module Harpnotes
     def draw_annotation(root)
 
       #todo: reference to FONT_STYLE_DEF is not ok here.
-      style = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
+      style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
       mm_per_point = $conf.get('layout.MM_PER_POINT')
 
       @pdf.text_color = style[:text_color]
-      @pdf.font_size = style[:font_size]
+      @pdf.font_size  = style[:font_size]
       @pdf.font_style = style[:font_style]
       # + style ... we shift it up by the fontsize converted from point to mm by mm_per_point
       @pdf.text(root.center.first, root.center.last + style[:font_size] * mm_per_point, root.text)
@@ -80,18 +80,18 @@ module Harpnotes
 
     def draw_cutmarks(i, delta, border)
       vertical_pos = {:top => 7, :bottom => 290}[border] # [start_y, center_y, end_y]
-      hpos = X_SPACING/2.0 + delta * i + 3 #todo: 3 is the background_size Default::Layout::ELLIPSE_SIZE[0]
-      hdiff = X_SPACING/2.0
+      hpos         = X_SPACING/2.0 + delta * i + 3 #todo: 3 is the background_size Default::Layout::ELLIPSE_SIZE[0]
+      hdiff        = X_SPACING/2.0
 
       center = Vector2d(X_SPACING/2.0 + delta * i, vertical_pos)
-      size = 1
+      size   = 1
 
-      @pdf.line((center + [-size,- size]).to_a, (center + [size,size]).to_a)
-      @pdf.line((center + [-size, size]).to_a, (center + [size,-size]).to_a)
+      @pdf.line((center + [-size, -size]).to_a, (center + [size, size]).to_a)
+      @pdf.line((center + [-size, size]).to_a, (center + [size, -size]).to_a)
     end
 
     def draw_ellipse(root)
-      style = root.filled? ? :F : :FD
+      style     = root.filled? ? :F : :FD
       @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
       if root.rect?
         @pdf.rect_like_ellipse(root.center, root.size, style)
@@ -100,48 +100,64 @@ module Harpnotes
       end
 
       if root.dotted?
-        @pdf.fill = (0...3).map { 0 }
-        @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+        draw_the_dot(root)
       end
-    end
 
+      if root.hasbarover
+        draw_the_barover(root)
+      end
+
+
+    end
 
     def draw_glyph(root)
 
-      style = root.filled? :FD, :FD
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+      style     = root.filled? :FD, :FD
+      @pdf.fill = (0...3).map { root.filled? ? 0 : 128 }
 
-      center = [root.center.first - root.size.first, root.center.last - root.size.last]
-      #center = [root.center.first, root.center.last]
-      background_size = root.size.map { |s| 2.0 * s }  # root.size is specified as radii for eclipse
+      center      = [root.center.first - root.size.first, root.center.last - root.size.last]
+      center      = [root.center.first, root.center.last]
+      size        = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
+      scalefactor = size.last / root.glyph[:h] # drawing = glyph * scalefactor
+      boundingbox = [root.glyph[:w], root.glyph[:h]]
+      glyph_size  = [root.glyph[:w], root.glyph[:h]].map { |e| e/2 * scalefactor }
+
 
       # draw a white background
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+      @pdf.fill   = (0...3).map { root.filled? ? 0 : 255 }
 
-      @pdf.fill = [255, 255, 255]
+      @pdf.fill   = [255, 255, 255]
       @pdf.stroke = [255, 255, 255]
       @pdf.rect_like_ellipse(root.center, root.size, :FD)
 
-      # draw th path
-      #e = @pdf.lines(...)
 
-      @pdf.fill = [0, 0, 0]
+      # turn this on to draw background
+      #@pdf.fill = [255, 0, 0]
+      #@pdf.stroke = [0, 0, 0]
+      #@pdf.rect_like_ellipse(root.center, glyph_size, '')
+
+
+      # draw th path
+
+      @pdf.fill   = [0, 0, 0]
       @pdf.stroke = [0, 0, 0]
 
-      scalefactor = background_size.last / root.glyph[:h]
-
-
-      scale = [scalefactor, scalefactor]
-      lines = []
-      start = []
+      scale           = [scalefactor, scalefactor]
+      lines           = []
+      start           = []
+      @pdf.line_width = 0.0001 # todo: this was experimental ...
       root.glyph[:d].each do |element|
         case element.first
           when "M"
-            @pdf.lines(lines, start.first, start.last, scale, "FD", false) unless lines.empty?
             lines = []
-            start = [center.first + (element[1] + root.glyph[:w]/2) * scale.first,
-                     center.last - (element[2] + root.glyph[:h]/2) * scale.last]
+
+            start = [center.first + (element[1] * scale.first),
+                     center.last + (element[2] * scale.last)]
+            @pdf.lines(lines, start.first, start.last, scale, "FD", false) unless lines.empty?
+
           when "l"
+            lines.push element[1 .. -1]
+          when "m"
             lines.push element[1 .. -1]
           when "c"
             lines.push element[1 .. -1]
@@ -149,18 +165,47 @@ module Harpnotes
             @pdf.lines(lines, start.first, start.last, scale, "FD", true) unless lines.empty?
             lines = []
           else
-            $log.error("BUG: unsupported command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
+            $log.error("BUG: unsupported Pdf Path command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
         end
       end
       @pdf.stroke = [0, 0, 0]
 
       # add the dot if needed
       if root.dotted?
-        @pdf.fill = (0...3).map { 0 }
-        @pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b * 1.5 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+        draw_the_dot(root)
       end
 
+      if root.hasbarover?
+        draw_the_barover(root)
+      end
 
+    end
+
+    def draw_the_dot(root)
+      #@pdf.fill = (0...3).map { 0 }
+      #@pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
+
+      ds1         = DOTTED_SIZE + root.line_width
+      ds2         = DOTTED_SIZE + root.line_width/2
+      x           = root.center.first + (root.size.first + ds1)
+      y           = root.center.last
+      @pdf.fill   = [255, 255, 255]
+      @pdf.stroke = [255, 255, 255]
+      @pdf.ellipse([x, y], [ds2, ds2], :FD)
+
+      @pdf.fill   = [0, 0, 0]
+      @pdf.stroke = [0, 0, 0]
+
+      @pdf.ellipse([x, y], [DOTTED_SIZE, DOTTED_SIZE], :FD)
+
+    end
+
+
+    def draw_the_barover(root)
+      @pdf.fill  = (0...3).map { 0 }
+      new_center = [root.center.first, root.center.last - root.size.last - 1.3 * root.line_width]
+      new_size   = [root.size.first, 0.2] # pdf shows rectangle of height 0
+      @pdf.rect_like_ellipse(new_center, new_size, :F)
     end
 
 
@@ -192,11 +237,11 @@ module Harpnotes
     #
     # @return [nil] nothing
     def draw_jumpline(root)
-      startpoint = root.from.center.clone
+      startpoint    = root.from.center.clone
       startpoint[0] += PADDING
       startpoint[1] -= PADDING/4.0
 
-      endpoint = root.to.center.clone
+      endpoint    = root.to.center.clone
       endpoint[0] += PADDING
       endpoint[1] += PADDING/4.0
 
@@ -220,10 +265,10 @@ module Harpnotes
     # documentation see raphaeljs
     # todo: fully support absolute and relative commands
     def draw_path(root)
-      lines = []
-      scale = [1, 1]
-      start = []
-      style = root.filled? ? :FD : ""
+      lines     = []
+      scale     = [1, 1]
+      start     = []
+      style     = root.filled? ? :FD : ""
       @pdf.fill = (1..3).map { root.filled? ? 0 : 255 }
 
       root.path.each do |element|

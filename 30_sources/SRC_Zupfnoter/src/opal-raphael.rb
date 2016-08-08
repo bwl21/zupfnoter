@@ -151,7 +151,7 @@ module Raphael
           ox = 0,
           oy = 0,
           moveFnc = function(dx, dy) {
-            scale = this.paper._viewBox[3] / this.paper.canvas.clientHeight ;
+            scale = this.paper._viewBox[3] / this.paper.canvas.height.baseVal.value ;
             lx = Math.round(scale * dx) + ox;
             ly = Math.round(scale * dy) + oy;
 
@@ -200,6 +200,21 @@ module Raphael
 
     # Draw an Rectangle
     #
+    # @param x [Numeric] x - of center
+    # @param y [Numeric] y - of center
+    # @param rx [Numeric] rx - horizontal radius
+    # @param ry [Numeric] ry - vertical radius
+    # @param radius [Numeric] radius for rounded corners, default is 0
+    #
+    # @return [element] The generated Element
+    def rect_like_ellipse(x, y, rx, ry, radius = 0)
+      result            = Raphael::Element.new(`self.r.rect(#{x}-#{rx}, #{y}-#{ry}, 2*#{rx}, 2*#{ry}, #{radius})`)
+      result.line_width = @line_width
+      result
+    end
+
+    # Draw an Rectangle like an ellipse
+    #
     # @param x [Numeric] x - of topleft corner
     # @param y [Numeric] y - of topleft corner
     # @param rx [Numeric] rx - width
@@ -212,6 +227,7 @@ module Raphael
       result.line_width = @line_width
       result
     end
+
 
 
     def set_view_box(x, y, width, height, fit)

@@ -121,6 +121,9 @@ class Controller
 
       c.as_action do |argument|
         case argument[:range]
+          when "auto"
+            play_abc(:auto)
+
           when "sel"
             play_abc(:selection)
 
@@ -207,22 +210,6 @@ C,
       end
     end
 
-    @commands.add_command(:demo) do |command|
-
-      command.set_help { "Load demo tune" }
-
-      command.as_action do |args|
-        args[:oldval] = @editor.get_text
-        load_demo_tune
-        render_previews
-      end
-
-      command.as_inverse do |args|
-        # todo maintain editor status
-        @editor.set_text(args[:oldval])
-      end
-
-    end
 
     @commands.add_command(:drop) do |command|
       command.set_help { "Handle a dropped _abc" }
@@ -281,35 +268,64 @@ C,
       command.as_action do |args|
 
         values = {
-            'title'        => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "extract #{@systemstatus[:view]}"} },
-            'voices'       => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
-            'flowlines'    => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
-            'layoutlines'  => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
-            'jumplines'    => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
-            'synchlines'   => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
-            'legend'       => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
-            'notes'        => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['extract.0.notes.1']} },
-            'lyrics'       => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['extract.0.lyrics.1']} },
-            'nonflowrest'  => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
-            'startpos'     => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
-            'subflowlines' => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
-            'produce'      => lambda { {key: "produce", value: $conf['produce']} },
-            'layout'      => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
-                                        value: {LINE_THIN:    0.1,
-                                                LINE_MEDIUM:  0.3,
-                                                LINE_THICK:   0.5,
-                                                # all numbers in mm
-                                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                                REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
-            'xx'           => lambda { {key: "xx", value: $conf[]} }
+            'title'            => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "ENTER_TITLE_EXTRACT_#{@systemstatus[:view]}"} },
+            'voices'           => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
+            'flowlines'        => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
+            'layoutlines'      => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
+            'jumplines'        => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
+            'repeatsigns.full' => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns", value: $conf['extract.0.repeatsigns']} },
+            'repeatsigns'      => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']} },
+            'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
+            'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
+            'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']} },
+            'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']} },
+            'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
+            'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
+            'subflowlines'     => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
+            'produce'          => lambda { {key: "produce", value: $conf['produce']} },
+            'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
+            'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
+                                            value: {limit_a3:     true,
+                                                    LINE_THIN:    0.1,
+                                                    LINE_MEDIUM:  0.3,
+                                                    LINE_THICK:   0.5,
+                                                    # all numbers in mm
+                                                    ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
+                                                    REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
+            'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
+            'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
+            'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+            'xx'               => lambda { {key: "xx", value: $conf[]} }
         }
 
-        value = values[args[:key]]
+
+        # here we handle the menu stuff
+        value  = values[args[:key]]
         if value
+
           value = value.call
-          @editor.patch_config_part(value[:key], value[:value])
+
+          localconf              = Confstack.new
+          localconf.strict       = false
+          localconf[value[:key]] = value[:value]
+
+          config_from_editor = get_config_from_editor
+          localconf.push(config_from_editor)
+
+          local_value = localconf[value[:key]]
+
+          the_key = value[:key]
+          if the_key.end_with?('.x')
+            parent_key = the_key.split('.')[0..-2].join(".")
+            next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
+            the_key = %Q{#{parent_key}.#{next_free}}
+          end
+
+          patchvalue = local_value #|| value[:value]
+
+          @editor.patch_config_part(the_key, patchvalue)
         else
-          raise "unknown configuration parameter #{key}"
+          raise "unknown configuration parameter #{value[:key]}"
           nil
         end
       end
@@ -345,6 +361,18 @@ C,
 
   end
 
+  def get_conf_value_from_editor_for_current_view(key)
+
+    localconf       = Confstack.new
+    localconf.strict=false
+
+    config_from_editor = get_config_from_editor
+    localconf.push(config_from_editor)
+
+    value = localconf[key]
+
+    value
+  end
 
   def __ic_04_localstore_commands
     @commands.add_command(:lsave) do |c|
@@ -529,6 +557,39 @@ C,
     end
 
 
+    @commands.add_command(:download_abc) do |command|
+      command.undoable = false ## todo make this undoable
+
+      command.set_help { "download as abc" }
+
+      command.as_action do |args|
+        abc_code = @editor.get_text
+        metadata = @abc_transformer.get_metadata(abc_code)
+        filebase = metadata[:F].first rescue nil
+        if filebase
+          filebase = filebase.split("\n").first
+        else
+          `w2alert("Filename not specified in song! Please add an F:<filename> instruction to your abc", "Error")`
+          raise "Filename not specified in song add an F:<filename> instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
+        end
+
+        %x{
+          var element = document.createElement('a');
+          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(#{abc_code}));
+          element.setAttribute('download', #{filebase + ".abc"});
+
+          element.style.display = 'none';
+          document.body.appendChild(element);
+
+          element.click();
+
+          document.body.removeChild(element);
+        }
+
+      end
+    end
+
+
     @commands.add_command(:dsave) do |command|
       command.add_parameter(:path, :string) do |parameter|
         parameter.set_default { @dropboxpath }
@@ -540,6 +601,12 @@ C,
       command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
 
       command.as_action do |args|
+
+        unless @systemstatus[:mode] == :work
+          message = "Cannot save in  #{@systemstatus[:mode]} mode"
+          alert message
+          raise message
+        end
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         filebase = metadata[:F].first

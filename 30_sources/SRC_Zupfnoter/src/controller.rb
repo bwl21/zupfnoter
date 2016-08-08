@@ -81,12 +81,12 @@ class Controller
   def initialize
 
 
-    `init_w2ui();`
-    @update_sytemstatus_consumers = {systemstatus: [
-                                                       lambda { `update_sytemstatus_w2ui(#{@systemstatus.to_n})` }
-                                                   ],
-                                     play_start:   [lambda { `update_play_w2ui('start')` }],
-                                     play_stop:    [lambda { `update_play_w2ui('stop')` }]
+    `init_w2ui(#{self});`
+    @update_systemstatus_consumers = {systemstatus: [
+                                                        lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                    ],
+                                      play_start:   [lambda { `update_play_w2ui('start')` }],
+                                      play_stop:    [lambda { `update_play_w2ui('stop')` }]
     }
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
@@ -128,10 +128,24 @@ class Controller
 
     # initialize virgin zupfnoter
     load_demo_tune
-    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0)
+
+    # todo: this should be optimized
+    # todo: loading is determined in the load_* Methids. Not sure if this is ok
+    uri = get_uri
+    mode = uri[:parsed_search][:mode].last rescue :work
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode)
+
     #
     # load from previous session
     load_from_loacalstorage
+
+    demo_uri = uri[:parsed_search][:load] rescue nil
+    load_from_uri(uri[:parsed_search][:load]) if demo_uri
+
+    if @systemstatus[:mode] == :demo
+      handle_command("view 0")
+    end
+
     render_previews
     #
     setup_nodewebkit
@@ -151,12 +165,26 @@ class Controller
   end
 
   # Save session to local store
+  # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
-    abc          = `localStorage.setItem('systemstatus', #{systemstatus});`
-    abc          = @editor.get_text
-    abc          = `localStorage.setItem('abc_data', abc);`
+    if @systemstatus[:mode] == :work
+      abc = `localStorage.setItem('systemstatus', #{systemstatus});`
+      abc = @editor.get_text
+      abc = `localStorage.setItem('abc_data', abc);`
+    end
+  end
+
+
+  def load_from_uri(url)
+    HTTP.get(url).then do |response|
+      @editor.set_text(response.body)
+    end.fail do |response|
+      alert "could not load from URL: #{url}"
+    end.always do |response|
+    end
+
   end
 
   # load session from localstore
@@ -173,7 +201,7 @@ class Controller
 
   # this loads a demo song
   def load_demo_tune
-    abc =%Q{X:21
+    abc = %Q{X:21
 F:21_Ich_steh_an_deiner_krippen_hier
 T:Ich steh an deiner Krippen hier
 C:Nr. 59 aus dem Weihnachtsoratorium
@@ -211,24 +239,40 @@ E,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |
 E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 %%%%zupfnoter.config
+
 {
- "produce":[1],
- "annotations": {
-                  "refn": {"id": "refn", "text": "referenced note", "pos": [20,10]}
-                },
- "extract": {
-  "0": {
-       "voices": [1,2,3,4],
-       "flowlines": [1,3],
-       "layoutlines": [1,2,3,4],
-       "lyrics": {"versepos": {"1,2,3,4,5,6,7,8" :[10,100]}},
-       "legend": {"pos": [310,175]},
-       "notes":[
-         {"pos": [340,10], "text": "Ich steh an deiner Krippen hier", "style": "strong"}
-         ]
-      }
-       }
+  "produce"     : [1],
+  "annotations" : {
+    "refn" : {
+      "pos"  : [20, 10],
+      "text" : "referenced note",
+      "id"   : "refn"
     }
+  },
+  "extract"     : {
+    "0" : {
+      "voices"      : [1, 2, 3, 4],
+      "flowlines"   : [1, 3],
+      "layoutlines" : [1, 2, 3, 4],
+      "legend"      : {"pos": [310, 175], "spos": [310, 182]},
+      "notes"       : {
+        "1" : {
+          "pos"   : [340, 10],
+          "text"  : "Ich steh an deiner Krippen hier",
+          "style" : "strong"
+        }
+      },
+      "lyrics"      : {
+        "1" : {
+          "verses" : [1, 2, 3, 4, 5, 6, 7, 8],
+          "pos"    : [10, 100]
+        }
+      }
+    }
+  },
+  "$schema"     : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version"    : "1.4.0 beta 2"
+}
 }
     @editor.set_text(abc)
   end
@@ -343,7 +387,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         if @harpnote_player.is_playing?
           stop_play_abc
         else
-          @update_sytemstatus_consumers[:play_start].each { |i| i.call() }
+          @update_systemstatus_consumers[:play_start].each { |i| i.call() }
+          @harpnote_player.play_auto() if mode == :auto
           @harpnote_player.play_song() if mode == :music_model
           @harpnote_player.play_selection() if mode == :selection
           @harpnote_player.play_from_selection if mode == :selection_ff
@@ -357,7 +402,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    @update_sytemstatus_consumers[:play_stop].each { |i| i.call() }
+    @update_systemstatus_consumers[:play_stop].each { |i| i.call() }
   end
 
 
@@ -387,7 +432,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
       @song_harpnotes = layout_harpnotes(@systemstatus[:view])
-      @harpnote_player.load_song(@music_model)
+      # todo: not sure if it is good to pass active_voices via @song_harpnotes
+      # todo: refactor better moove that part of the code out here
+      @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
 
       @harpnote_preview_printer.draw(@song_harpnotes)
     rescue Exception => e
@@ -424,6 +471,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         `setTimeout(function(){self.$render_harpnotepreview_callback();#{promise}.$resolve()}, 50)`
       end
     end
+    @editor.resize();
 
     result
   end
@@ -451,6 +499,24 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
+    config = get_config_from_editor
+
+    $conf.push(config)
+    abc_parser            = $conf.get('abc_parser')
+    start                 = Time.now()
+    @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+    @music_model.checksum = @editor.get_checksum
+    $log.info("duration transform #{Time.now - start}")
+    result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+    $log.info("duration transform + layout #{Time.now - start}")
+    #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
+    @editor.set_annotations($log.annotations)
+    $conf.pop
+    result
+  end
+
+  # this retrieves the current config from the editor
+  def get_config_from_editor
     config_part = @editor.get_config_part
     begin
       config = %x{json_parse(#{config_part})}
@@ -462,37 +528,52 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.error("#{error.first} at #{line_col}", line_col)
       config = {}
     end
+    config
+  end
 
-    # todo: remove this compatibility code
-    outdated_configs  = @editor.get_text.split("%%%%hn.").count
-    config[:location] = "song" if config.keys.count > 0 || outdated_configs == 1
-    # todo: end of compatiblility code
+  def get_uri()
+    parser = nil;
+    # got this from http://stackoverflow.com/a/21152762/2092206
+    # maybe we switch to https://github.com/medialize/URI.js
+    %x{
+    #{parser} = document.createElement('a');
+        parser.href = window.location.href;
 
-    $conf.push(config)
-    abc_parser   = $conf.get('abc_parser')
-    start        = Time.now()
-    @music_model = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
-    $log.info("duration transform #{Time.now - start}")
-    result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-    $log.info("duration transform + layout #{Time.now - start}")
-    #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
-    @editor.set_annotations($log.annotations)
-    $conf.pop
-    result
+        var qd = {};
+        parser.search.substr(1).split("&").forEach(function(item) {
+            var s = item.split("="),
+                k = s[0],
+                v = s[1] && decodeURIComponent(s[1]);
+            //(k in qd) ? qd[k].push(v) : qd[k] = [v]
+            (qd[k] = qd[k] || []).push(v) //short-circuit
+            })
+         parser.parsed_search = qd
+      }
+
+    # parser.protocol; // => "http:"
+    # parser.host;     // => "example.com:3000"
+    # parser.hostname; // => "example.com"
+    # parser.port;     // => "3000"
+    # parser.pathname; // => "/pathname/"
+    # parser.hash;     // => "#hash"
+    # parser.search;   // => "?search=test"
+    # parser.origin;   // => "http://example.com:3000"
+    #     }
+    Native(parser)
   end
 
   # highlight a particular abc element in all views
   # note that previous selections are still maintained.
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
-    a=Native(abcelement) # todo: remove me
-    $log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
+    a         =Native(abcelement)
+    #$log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     startchar = a[:startChar]
     endchar   = a[:endChar]
     endchar   = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
-      @editor.select_range_by_position(startchar, endchar)
+      @editor.select_range_by_position(startchar, endchar, @expand_selection)
     end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
@@ -514,7 +595,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # previous selections are removed
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
-    @harpnote_preview_printer.unhighlight_all();
+    @harpnote_preview_printer.unhighlight_all()
 
     highlight_abc_object(abcelement)
   end
@@ -523,7 +604,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    @update_sytemstatus_consumers[:systemstatus].each { |c| c.call(@sytemstatus) }
+    @update_systemstatus_consumers[:systemstatus].each { |c| c.call() }
     nil
   end
 
@@ -547,7 +628,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
       @editor.patch_config_part(conf_key, newcoords)
 
-      report    = "#{conf_key}: #{newcoords}"
+      report = "#{conf_key}: #{newcoords}"
       `$("#harpPreview").w2overlay(#{report});`
     end
   end
@@ -650,6 +731,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
+  def toggle_console
+    %x{
+       w2ui['layout'].toggle('bottom', window.instant);
+       uicontroller.editor.$resize();
+      }
+  end
+
   # this registers the listeners to ui-elements.
   def setup_ui_listener
 
@@ -694,21 +782,32 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       stop_play_abc
     end
 
-    # # key events in editor
-    # Element.find(`window`).on(:keydown) do |evt|
-    #
-    #   $log.debug("key pressed (#{__FILE__} #{__LINE__})")
-    #   `console.log(event)`
-    #   if `evt.keyCode == 13 && evt.shiftKey`
-    #     evt.prevent_default
-    #     render_previews
-    #     `evt.preventDefault()`
-    #   elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
-    #     evt.prevent_default
-    #     save_file
-    #     `evt.preventDefault()`
-    #   end
-    # end
+    $window.on :mousedown do |e|
+      @expand_selection = e.shift_key
+      true # meed this to continue processing of the mouse event
+    end
+
+    # key events in editor
+    $window.on :keydown do |e|
+      if (e.meta_key || e.ctrl_key) # Ctrl/Cmd
+        case (e.key_code)
+          when 'A'.ord
+            @editor.select_range_by_position(0, 10000)
+          when 'R'.ord #r
+            e.prevent
+            render_previews()
+          when 'S'.ord #s
+            e.prevent
+            handle_command("dsave")
+          when 'P'.ord #p
+            e.prevent
+            play_abc('auto')
+          when 'K'.ord #k
+            e.prevent
+            toggle_console
+        end
+      end
+    end
 
     Element.find(`window`).on(:storage) do |evt|
       key   = Native(evt[:originalEvent]).key
@@ -766,29 +865,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result =
         {produce:     [0],
          abc_parser:  'ABC2SVG',
+         countnotes:  {pos: [2, -2]},
          wrap:        60,
-         defaultsxx:
-                      {
-                          note_length: "1/4",
-                          print:       {t:        "", # title of the extract   # todo: remove these print defaults - no longer needed
-                                        v:        [1, 2, 3, 4], # voices to show
-                                        startpos: 15, # start position of the harpnotes
-                                        s:        [[1, 2], [2, 3]], # synchlines
-                                        f:        [1, 3], # flowlines
-                                        sf:       [2, 4], # subflowlines
-                                        j:        [1, 3], # jumplines
-                                        l:        [1, 2, 3, 4] # lyoutlies
-                          },
-                          legend:      {pos: [20, 20]}, # legend defaults
-                          lyrics:      {pos: [20, 60]}, # lyrics defaults
-                          annotation:  {pos: [2, -5]} # position of notebound annotation
-                      },
-
          defaults:    {
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
-                         variantend: {pos: [-4, -7]}
+                         variantend: {pos: [-4, -7]},
+                         tuplet:     {
+                             cp1:   [5, 5], # first control point positive x: point is east of flowline, positive y: point is south of note
+                             cp2:   [5, -5], # second control point
+                             shape: ['c'] # 'c' | 'l' => curve | line
+                         }
              }
+         },
+         templates:   {
+             notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
+             lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]}
          },
 
          annotations: {
@@ -807,11 +899,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  flowlines:    [1, 3],
                  subflowlines: [2, 4],
                  jumplines:    [1, 3],
+                 repeatsigns:  {voices: [],
+                                left:   {pos: [-7, -2], text: '|:', style: :bold},
+                                right:  {pos: [5, -2], text: ':|', style: :bold}
+                 },
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 20]},
-                 lyrics:       {'1' => {verses: [1], pos: [350, 70]}},
+                 lyrics:       {},
                  nonflowrest:  false,
-                 notes:        {"1" => {"pos" => [320, 0], "text" => "", "style" => "large"}},
+                 notes:        {},
+                 countnotes:   {voices: [], pos: [3, -2]},
+                 stringnames:  {
+                     text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+                     vpos:  [],
+                     style: :small,
+                     marks: {vpos: [11], hpos: [43, 55, 79]}
+                 }
              },
              "1" => {
                  title:  "Sopran, Alt",
@@ -827,6 +930,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          layout:
                       {
                           grid:              false,
+                          limit_a3:          true,
                           SHOW_SLUR:         false,
                           LINE_THIN:         0.1,
                           LINE_MEDIUM:       0.3,
@@ -864,6 +968,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                           FONT_STYLE_DEF:    {
                               smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
                               small:   {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                              bold:    {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
                               regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
                               large:   {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
                           },
@@ -893,15 +998,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                               # this basically determines the white background rectangel
                               # [sizex, sizey], glyph, dot # note that sizex has no effect.
                               :err => [[2, 2], :rest_1, FALSE], # 1      1
-                              :d64 => [[0.5, 0.5], :rest_1, FALSE], # 1      1
-                              :d48 => [[0.3, 0.3], :rest_1, TRUE], # 1/2 *
-                              :d32 => [[0.3, 0.3], :rest_1, FALSE], # 1/2
-                              :d24 => [[0.4, 1], :rest_4, TRUE], # 1/4 *
-                              :d16 => [[0.4, 1], :rest_4, FALSE], # 1/4
-                              :d12 => [[0.4, 1], :rest_8, TRUE], # 1/8 *
-                              :d8  => [[0.4, 1], :rest_8, FALSE], # 1/8
-                              :d6  => [[0.4, 1], :rest_16, TRUE], # 1/16 *
-                              :d4  => [[0.3, 1], :rest_16, FALSE], # 1/16
+                              :d64 => [[1, 0.8], :rest_1, FALSE], # 1      1   # make it a bit smaller than the note to improve visibility of barover
+                              :d48 => [[0.5, 0.4], :rest_1, TRUE], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
+                              :d32 => [[0.5, 0.4], :rest_1, FALSE], # 1/2      # make it a bit smaller than the note to improve visibility of barover
+                              :d24 => [[0.4, 0.75], :rest_4, TRUE], # 1/4 *
+                              :d16 => [[0.4, 0.75], :rest_4, FALSE], # 1/4
+                              :d12 => [[0.4, 0.5], :rest_8, TRUE], # 1/8 *
+                              :d8  => [[0.4, 0.5], :rest_8, FALSE], # 1/8
+                              :d6  => [[0.4, 0.3], :rest_16, TRUE], # 1/16 *
+                              :d4  => [[0.3, 0.3], :rest_16, FALSE], # 1/16
                               :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
                               :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
                               :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
@@ -916,7 +1021,6 @@ end
 
 Document.ready? do
   a = Controller.new
-  `uicontroller = #{a}`
   nil
 end
 

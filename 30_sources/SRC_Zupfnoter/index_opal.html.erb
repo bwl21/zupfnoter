@@ -4,9 +4,11 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Zupfnoter</title>
   <link rel="stylesheet" type="text/css" href="public/index.css"/>
-  <link rel="shortcut icon" href="public/icons/favicon.gif"/>
+  <link rel="shortcut icon" href="public/icons/favicon.png"/>
 
-  <script src="vendor/jquery-1.11.1.min.js" type="application/javascript"></script>
+  <script src="vendor/jquery-3.0.0.min.js" type="application/javascript"></script>
+  <script src="vendor/jquery-migrate-1.4.1.min.js" type="application/javascript"></script>
+
   <script src="vendor/ace/ace.js" type="application/javascript" charset="utf-8"></script>
   <script src="vendor/ace/ext-language_tools.js" type="application/javascript" charset="utf-8"></script>
 
@@ -37,38 +39,8 @@
   <style>
     .spinner {
       background-color: #81cf81;
-
-    / / margin: 100 px auto;
-      -webkit-animation: sk-rotateplane 2s infinite ease-in-out;
-      animation: sk-rotateplane 2s infinite ease-in-out;
     }
 
-    @-webkit-keyframes sk-rotateplane {
-      0% {
-        -webkit-transform: perspective(120px)
-      }
-      50% {
-        -webkit-transform: perspective(120px) rotateY(180deg)
-      }
-      100% {
-        -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg)
-      }
-    }
-
-    @keyframes sk-rotateplane {
-      0% {
-        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-        -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
-      }
-      50% {
-        transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-        -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
-      }
-      100% {
-        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-        -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-      }
-    }
   </style>
 
   <%= javascript_include_tag 'application' %>
@@ -83,7 +55,7 @@
     return "Zupfnoter verlassen? echt jetzt ...?"
   }
 
-  function init_w2ui() {
+  function init_w2ui(uicontroller) {
 
     perspectives = {
       'tb_perspective:Alle': function () {
@@ -153,19 +125,13 @@
       },
 
       'tbPlay': function () {
-        uicontroller.$play_abc('selection_ff');
+        uicontroller.$play_abc('auto');
       },
 
       'tbRender': function () {
         uicontroller.editor.$resize();
         uicontroller.$render_previews();
       },
-
-      'tb_toggle_console': function () {
-        w2ui['layout'].toggle('bottom', window.instant);
-        uicontroller.editor.$resize();
-      },
-
 
       'tb_create': function () {
         openPopup({
@@ -204,6 +170,10 @@
         uicontroller.$handle_command("dsave")
       },
 
+      'tb_download': function () {
+        uicontroller.$handle_command("download_abc")
+      },
+
       'tb_login': function () {
         openPopup({
           name: 'loginForm',
@@ -238,9 +208,10 @@
       items: [
         {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: '<span id="lbZupfnoter">Zupfnoter</span>'},
         {type: 'html', html: '<div style="width:25px"/>'},
-        {type: 'button', id: 'tb_login', text: 'login', icon: 'fa fa-sign-in', hint: 'Open in dropboxx'},
         {type: 'button', id: 'tb_create', text: 'create', icon: 'fa fa-plus-square-o', hint: 'Open in dropboxx'},
-        {type: 'button', id: 'tb_open', text: 'open', icon: 'fa fa-folder', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_download', text: 'dl abc', icon: 'fa fa-save', hint: 'Save in dropbox'},
+        {type: 'button', id: 'tb_login', text: 'login', icon: 'fa fa-dropbox', hint: 'Open in dropboxx'},
+        {type: 'button', id: 'tb_open', text: 'open', icon: 'fa fa-dropbox', hint: 'Open in dropboxx'},
         {type: 'button', id: 'tb_save', text: 'save', icon: 'fa fa-dropbox', hint: 'Save in dropbox'},
         {
           type: 'html',
@@ -256,28 +227,43 @@
         {
           type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear',
           items: [
-            {text: 'title'}, {text: 'voices'},
-            {text: 'flowlines'},
-            {text: 'layoutlines'},
-            {text: 'jumplines'},
-            {text: 'synchlines'},
-            {text: 'legend'},
-            {text: 'notes'},
-            {text: 'lyrics'},
-            {text: 'nonflowrest'},
-            {text: 'startpos'},
-            {text: 'subflowlines'},
-            {text: 'produce'},
-            {text: 'layout'},
-            {text: 'xx'},
+            {text: 'title', hint: "insert a title for the \ncurrent extract"},
+            {text: 'voices', hint: "specify voices to \nbe shown in current extract"},
+            {text: 'flowlines', hint: "specify for which voices \nwe show the flowline"},
+            {text: 'jumplines', hint: "specify for which voides \njumplines are shown"},
+            {text: 'repeatsigns', hint: "specify for which voices \nto use repeat signs instead of jumplines"},
+            {text: 'synchlines', hint: "specify which voices \nare connected by synchronization lines"},
+            {text: 'layoutlines', hint: "specify  which voides \nare considerd to compute \nvertical spacing"},
+            {text: 'subflowlines', hint: "specify for which voices \nwe show the subflowline"},
+            {text: ''},
+
+            {text: 'legend', hint: "specify details for legend"},
+            {text: 'lyrics', hint: "specify details for lyrics"},
+            {text: 'notes', hint: "enter a note bound to the entire page"},
+            {text: ''},
+
+            {text: 'nonflowrest', hint: "specify if rests are shown outsid of flowlines"},
+            {text: 'startpos', hint: "specify the vertical start position of the notes"},
+            {text: 'countnotes', hint: "specify appeareance of countnotes"},
+            {text: 'layout', hint: "specify laoyut details \n(e.g. size of symbols)"},
+            {text: 'stringnames', hint: "specify output of stringnames.\n Stringnames help to tune the instrument"},
+            {text: ''},
+            {text: 'produce', hint: "specify which extracts shall be saved as PDF"},
+            {
+              text: 'annotations',
+              hint: "specify predefined annotations\nAnnotations can be reused as note notebound anntoations"
+            },
+            {text: ''},
+            {text: 'stringnames.full', hint: "specify full details for stringnams"},
+            {text: 'repeatsigns.full', hint: "specify all details for repeat signs"},
+            {text: ''},
+            {text: 'xx', hint: "inject the default configuration (for development use only)"},
           ]
         },
 
         {type: 'break'},
         {type: 'button', id: 'tbPrintA3', text: 'A3', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A3'},
         {type: 'button', id: 'tbPrintA4', text: 'A4', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A4'},
-        {type: 'break'},
-        {type: 'button', id: 'tb_toggle_console', text: 'Console', icon: 'fa fa-terminal', hint: 'Toggelt console'},
 
         {type: 'break'},
         {
@@ -310,10 +296,13 @@
         {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'},
         {
           type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', hint: 'Hilfe', items: [
-          {text: 'Zn Tutorials', icon: 'fa fa-tags', id: "tbTutorials"},
+          {text: 'Videos', icon: 'fa fa-tags', id: "tbTutorials"},
           {text: 'abc Tutorial', icon: 'fa fa-tags', id: "tbAbcTutorial"},
           {text: 'Manual', icon: 'fa fa-tags', id: "tbManual"},
           {text: 'Homepage', icon: 'fa fa-tags', id: "tbHomepage"},
+          {text: ''},
+          {text: 'Reference', icon: 'fa fa-tags', id: "tbReference"},
+          {text: 'Demo', icon: 'fa fa-tags', id: "tbDemo"},
         ]
         }
       ],
@@ -329,7 +318,7 @@
           uicontroller.$handle_command("addconf " + event.target.split(":")[1])
         }
         if (event.target == "tb_home") {
-          window.open("http://www.weichel21.de/zupfnoterpage")
+          window.open("https://www.zupfnoter.de")
         }
         if (event.target == "tbHelp:tbTutorials") {
           window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
@@ -342,6 +331,12 @@
         }
         if (event.target == "tbHelp:tbManual") {
           window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
+        }
+        if (event.target == "tbHelp:tbReference") {
+          window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
+        }
+        if (event.target == "tbHelp:tbDemo") {
+          window.open("?mode=demo&load=public/demos/21_Ich_steh_an_deiner_krippen_hier.abc")
         }
       }
     }
@@ -404,7 +399,7 @@
     w2ui.layout_top_toolbar.set(item, {text: caption});
   }
 
-  function update_sytemstatus_w2ui(systemstatus) {
+  function update_systemstatus_w2ui(systemstatus) {
     $("#tbStatus").html(systemstatus.dropbox);
     set_tbitem_caption('tb_view', systemstatus.view);
     if (systemstatus.music_model == 'changed') {
@@ -437,10 +432,10 @@
       height: 300,
       showMax: true,
       onToggle: function (event) {
-        $(w2ui.foo.box).hide();
+        $(w2ui[theForm.name].box).hide();
         event.onComplete = function () {
-          $(w2ui.foo.box).show();
-          w2ui.foo.resize();
+          $(w2ui[theForm.name].box).show();
+          w2ui[theForm.name].resize();
         }
       },
       onOpen: function (event) {
@@ -451,6 +446,14 @@
       }
     });
   }
+
+  if (String.prototype.repeat == undefined) {
+    String.prototype.repeat = function (n) {
+      n = n || 1;
+      return Array(n + 1).join(this);
+    }
+  }
+
 
 </script>
 <%= begin

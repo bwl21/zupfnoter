@@ -148,16 +148,11 @@ module Harpnotes
 
       e["fill"] = root.fill == :filled ? "black" : "white"
       if root.dotted?
-        x             = root.center.first + (root.size.first * 1.2)
-        y             = root.center.last + (root.size.last * 1.2)
-        e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
-        e_dot["fill"] = "black"
-        push_element(root.origin, e_dot)
+        draw_the_dot(root)
+      end
 
-        e_dot.on_click do
-          origin = root.origin
-          @on_select.call(origin) unless origin.nil? or @on_select.nil?
-        end
+      if root.hasbarover?
+        draw_the_barover(root)
       end
 
       e.on_click do
@@ -169,6 +164,9 @@ module Harpnotes
     def draw_glyph(root)
       center     = [root.center.first, root.center.last]
       size       = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
+
+      line_width = root.line_width
+      @paper.line_width = 0.1
 
       #path_spec = "M#{center.first} #{center.last}"
       path_spec  = path_to_raphael(root.glyph[:d])
@@ -197,19 +195,52 @@ module Harpnotes
       scalefactor  = size.last / bbox[:height]
       e.transform("t#{(center.first)} #{(center.last)}t#{(-glyph_center.first)} #{(-glyph_center.last)}s#{scalefactor}")
 
+      @paper.line_width = line_width
+
       # add the dot if needed
       if root.dotted?
-        bbox          = e.get_bbox()
-        x             = bbox[:x2] + 0.5
-        y             = bbox[:y2] + 0.5
-        e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
-        e_dot["fill"] = "black"
-        push_element(root.origin, e_dot)
+        draw_the_dot(root)
+      end
 
-        e_dot.on_click do
-          origin = root.origin
-          @on_select.call(origin) unless origin.nil? or @on_select.nil?
-        end
+      if root.hasbarover?
+        draw_the_barover(root)
+      end
+
+      # make annotation draggable
+      if root.conf_key
+        @paper.draggable(e)
+        e.conf_key   = root.conf_key
+        e.conf_value = root.conf_value
+      end
+    end
+
+    def draw_the_barover(root)
+      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 1.3 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
+      e_bar.on_click do
+        origin = root.origin
+        @on_select.call(origin) unless origin.nil? or @on_select.nil?
+      end
+      push_element(root.origin, e_bar)
+    end
+
+    # this draws the dot to an ellipse or glyph
+    def draw_the_dot(root)
+      ds1             = DOTTED_SIZE + root.line_width
+      ds2             = DOTTED_SIZE + root.line_width/2
+      x               = root.center.first + (root.size.first + ds1)
+      y               = root.center.last
+      e_dot           = @paper.ellipse(x, y, ds2, ds2)
+      e_dot["stroke"] = "white"
+      e_dot["fill"]   = "white"
+      push_element(root.origin, e_dot)
+
+      e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
+      e_dot["fill"] = "black"
+      push_element(root.origin, e_dot)
+
+      e_dot.on_click do
+        origin = root.origin
+        @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
     end
 
@@ -290,7 +321,7 @@ module Harpnotes
       # make annotation draggable
       if root.conf_key
         @paper.draggable(element)
-        element.conf_key = root.conf_key
+        element.conf_key   = root.conf_key
         element.conf_value = root.conf_value
       end
       element.startpos = root.center

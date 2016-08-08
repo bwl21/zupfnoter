@@ -97,21 +97,29 @@ module Harpnotes
       [`range_start`, `range_end`]
     end
 
-    #@param selection_start [Numeric] Start position
 
     #
     # Select by position (in opposite to row/column pairs)
-    # @param selection_start [Numeric] Begin of the intended selection
-    # @param selection_end [Numeric] End of intended selection
+    # @param requested_selection_start [Numeric] Begin of the intended selection
+    # @param requested_selection_end [Numeric] End of intended selection
+    # @param [boolean] expand_selection - expand the selection if true
     #
     # @return [type] [description]
-    def select_range_by_position(selection_start, selection_end)
+    def select_range_by_position(requested_selection_start, requested_selection_end, expand_selection = false)
       #$log.debug("set editor selection to #{selection_start}, #{selection_end} (#{__FILE__} #{__LINE__}) ")
+
+      if expand_selection
+        current_selection = get_selection_positions
+      else
+        current_selection = [requested_selection_start, requested_selection_end]
+      end
+      selection_newstart = [current_selection.first, requested_selection_start].min
+      selection_end      = [current_selection.last, requested_selection_end].max
 
       %x{
         doc = self.editor.selection.doc
-        startrange = doc.indexToPosition(selection_start);
-        endrange = doc.indexToPosition(selection_end);
+        startrange = doc.indexToPosition(#{selection_newstart});
+        endrange = doc.indexToPosition(#{selection_end});
         range = new Range(startrange.row, startrange.column, endrange.row, endrange.column);
         myrange = {start:startrange, end:endrange}
         #{@editor}.focus();
@@ -214,6 +222,19 @@ module Harpnotes
       get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
+    def get_checksum
+       s   = get_text
+        %x{
+            var i;
+            var chk = 0x12345678;
+
+            for (i = 0; i < #{s}.length; i++) {
+              chk += (#{s}.charCodeAt(i) * (i + 1));
+           }
+         }
+        `chk`.to_s.scan(/...?/).join(' ')
+    end
+
 
     def resize
       `#{@editor}.resize()`
@@ -223,11 +244,16 @@ module Harpnotes
     def set_config_part(object)
       the_selection = get_selection_positions
       options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
-                       explicit_sort: [[:produce,  :annotations, :extract,
-                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :legend, :notes, :lyrics, :nonflowrest, :layout,
-                                        :annotation, :partname, :variantend,
-                                        "0", "1", "2", "3", "4", "5", "6", :verses, :pos, :text, :style], []]}
-      configjson    = JSON.neat_generate(object, options)
+                       explicit_sort: [[:produce, :annotations, :extract,
+                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
+                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
+                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
+                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
+                                       ],
+                                       []],
+      }
+
+      configjson = JSON.neat_generate(object, options)
 
       unless get_text.split(CONFIG_SEPARATOR)[1]
         append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
