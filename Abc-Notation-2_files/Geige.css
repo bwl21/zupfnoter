@@ -1,0 +1,105 @@
+/* globale Einstellungen */
+
+body 
+{
+  scrollbar-base-color:#F0D890;
+  scrollbar-arrow-color:#887038;
+  scrollbar-shadow-color:#E8C878;
+  background-color:#FFF0D0;
+}
+
+h1,h2,h3,h4,p,.wiep,table,ul,ol
+      { font-family:"Times New Roman";
+        font-size:4mm;
+	text-align:left;
+	font-weight:normal;
+	font-style:normal;
+        color:#383020;
+	margin-left:16mm;
+	margin-right:16mm;
+	margin-top:2mm;
+	margin-bottom:2mm;
+	line-height:1.25em; }
+
+ol,ul
+      { margin-left:24mm; }
+
+li
+      { margin-top:1mm;
+	margin-bottom:1mm; }
+
+hr    { background-color:#D0B850;
+	color:#D0B850;
+	border:0;
+	height:2px;
+	margin-left:8px;
+	margin-right:4mm; }
+
+table,tr,th,td
+      { border-color:#9CC474; }
+
+/* Links */
+
+a:link,a:visited,a:active,.navi,td,th
+      { font-family:"Times New Roman";
+        font-size:4mm;
+	text-align:left;
+	font-weight:normal;
+        color:#707840; }
+
+a:visited
+      { color:#A8B090; }
+
+/* Überschriften */
+
+h1    { font-size:8mm;
+	font-weight:bold;
+        color:#207000;
+	font-family:"Lucida Fax,Times New Roman";
+	margin-bottom:4mm;
+	margin-left:4mm; }
+
+h2    {	font-size:7mm;
+	font-weight:bold;
+	font-style:italic;
+        color:#409020;
+	font-family:"Lucida Fax,Times New Roman";
+	margin-top:4mm;
+	margin-left:6mm;  }
+
+h3    { font-size:6mm;
+	font-weight:bold;
+	font-style:italic;
+	color:#58B030;
+	font-family:"Times New Roman";
+	margin-top:4mm;
+	margin-left:8mm;  }
+
+h4,th { font-size:5mm;
+	font-weight:bold; 
+	margin-top:4mm; }
+
+/* Bilder zur Illustration */
+img.Illu { border:none; float:right; margin-left:10mm; margin-bottom:4mm; margin-right:10mm; margin-top:4mm; }
+img.IlluLeft { border:none; float:left; margin-left:0mm; margin-bottom:1mm; margin-right:10mm; margin-top:1mm; }
+
+/* Navigationsleisten */
+.navi
+      { margin-left:4mm; font-style:normal; }
+
+/* Enger Zeilenabstand */
+.eng
+      { margin-top:0mm;
+	margin-bottom:0mm; }
+.weit
+      { margin-top:4mm;
+	margin-bottom:4mm; }
+
+.hervor
+      { color:#000000;
+	font-weight:bold; }
+.symb
+      { font-family:"Arial";
+	font-weight:bold; }
+.Courier
+      { font-family:"Courier New" }
