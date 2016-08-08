@@ -7,8 +7,7 @@ without inspiratio and help from others.
 ## getting started
 
 -   goto https://zupfnoter.weichel21.de
--   enter `demo` followed by return on the lower left pane (click the
-    Console button if the pane does not show up)
+-   you should see the demo song
 -   watch tunes showing up
 -   click on `render` to update harp notes
 -   click on `play` to listen to the tune
@@ -49,7 +48,8 @@ to know:
 ## Keyboard shortcuts
 
 -   Ctrl / cmd - R : Render the tunes
--   ctrl / cmd - P : play selection
+-   ctrl / cmd - P : play (depending on the selection)
+-   ctrl / cmd - K : open the Zupfnoter console to see more messages
 -   ctrl / cmd - S : save
 
 ## saving your work
@@ -75,11 +75,11 @@ syntax but applies to some conventions. These conventions reflect to
 
 ### Basic structure
 
-A Zupfnoter sheet basicall has two sections
+A Zupfnoter sheet basically has two sections
 
 -   the abc section
 -   the configuration section. This is a JSON fragment separated from
-    the abc sectio by
+    the abc section by
 
         %%%%zupfnoter.config
 
@@ -108,11 +108,11 @@ right)
 `#`
 :   referenced annotation
 
-\`\>'
+`\>'
 :   shift note symbol right by half string distance. This supports the
     case that two voices have the same note.
 
-\`\<'
+`\<'
 :   shift note symbol left by half string distance. This supports the
     case that two voices have the same note.
 
@@ -120,9 +120,9 @@ If you want to move a note bound annotation with the mouse, you need to
 enter a `[r:`id]\` before the note with the annotation. This also
 applies to partnotes and Variation ids. For example
 
-    C,C,C,C, |"^@@-2,3,2"[1 [r:11]D,D,D,E, "^@@3":|2 [r:11]C,4 || D,4 | D,4 
+    C,C,C,C, |"^@@-2,3,2"[1 [r:n_11]D,D,D,E, "^@@3":|2 [r:11]C,4 || D,4 | D,4 
 
-Here you see the [r:11] which makes the variation ids draggable.
+Here you see the [r:n_11] which makes the variation ids draggable.
 
 note: in future we might implement this feature bound to the beat such
 that every note bound annotation is draggable. As an experiment this is
