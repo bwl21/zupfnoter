@@ -33,12 +33,13 @@ Zupfnoter uses gitflow http://nvie.com/posts/a-successful-git-branching-model/
 
 Before preparing a release, everything that should go to this release shall be committed to the develop branch.
 
-* start new release
-* remove ".dev" from version src/version.rb
+* Gitflow: Start new release
+* admus t version
 * perform all the builds
 	`rake build`
-* finish the release
-* switch back to the develpment branch
+	`rake deploy`
+* Gitflow: finish the release
+* switch back to the development branch
 * bump version in src/version.rb, add ".dev"
 
 # building the desktop app
