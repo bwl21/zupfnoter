@@ -791,6 +791,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $window.on :keydown do |e|
       if (e.meta_key || e.ctrl_key) # Ctrl/Cmd
         case (e.key_code)
+          when 'A'.ord
+            @editor.select_range_by_position(0, 10000)
           when 'R'.ord #r
             e.prevent
             render_previews()
@@ -865,23 +867,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          abc_parser:  'ABC2SVG',
          countnotes:  {pos: [2, -2]},
          wrap:        60,
-         defaultsxx:
-                      {
-                          note_length: "1/4",
-                          print:       {t:        "", # title of the extract   # todo: remove these print defaults - no longer needed
-                                        v:        [1, 2, 3, 4], # voices to show
-                                        startpos: 15, # start position of the harpnotes
-                                        s:        [[1, 2], [2, 3]], # synchlines
-                                        f:        [1, 3], # flowlines
-                                        sf:       [2, 4], # subflowlines
-                                        j:        [1, 3], # jumplines
-                                        l:        [1, 2, 3, 4] # lyoutlies
-                          },
-                          legend:      {pos: [20, 20]}, # legend defaults
-                          lyrics:      {pos: [20, 60]}, # lyrics defaults
-                          annotation:  {pos: [2, -5]} # position of notebound annotation
-                      },
-
          defaults:    {
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
