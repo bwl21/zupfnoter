@@ -291,7 +291,7 @@ module Harpnotes
       #
       # @return [Integer] see Playable
       def duration
-        @notes.first.duration
+        proxy_note.duration
       end
 
       #
@@ -306,12 +306,26 @@ module Harpnotes
       end
 
       def pitch
-        @notes.first.pitch
+        proxy_note.pitch
       end
 
-
       def proxy_note
-        @notes.first
+        get_proxy_object(@notes)
+      end
+
+      # a Synchpoint is made of multiple notes
+      # thse notes may be layouted
+      # nevertheless, a synchpoint needs to be represented
+      # by a proxy object for jumplines, geting centes, pitch etc.
+      # 
+      # this methods provides a single point of maintenance
+      # to determine if the first or the last note (or derivative of the same)
+      # shall represent the synchpoint
+      #
+      # @param [Array of Objects] objects representing the Syncpoint
+      # @return [Object]
+      def get_proxy_object(objects)
+        objects.last
       end
 
     end
@@ -1640,6 +1654,8 @@ module Harpnotes
         from_anchor = goto.policy[:from_anchor] || :after
         to_anchor   = goto.policy[:to_anchor] || :before
 
+        # note we work with pitches here
+        # otherwise we have to memize the previous drawing
         if point_role==:end
           point_note  = goto.from
           attach_side = point_note.prev_pitch > point_note.pitch ? :left : :right
@@ -1815,13 +1831,10 @@ module Harpnotes
       def layout_accord(root, beat_layout)
         # draw the notes in the order of the notes in the Unison
         resnotes        = root.notes.map { |c| layout_note(c, beat_layout) }
+        proxy_note      = root.get_proxy_object(resnotes) # layout_note(root.proxy_note, beat_layout)
 
-        # then we ensure that we draw the line from lowest to highest in order to cover all
-        resnotes_sorted = resnotes.sort_by { |n| n.origin.pitch }
-        #
-        # todo: make this configurable by chordProxy = first | last | highest | lowest
-        # todo: here we break bwc
-        proxy_note      = resnotes.last
+        # then we ensure that we draw the line from lowest to highest in order to cover all of them
+        resnotes_sorted = resnotes.sort_by { |n| n.center.first }
 
         res = []
         # todo: signature has center / size swapped
