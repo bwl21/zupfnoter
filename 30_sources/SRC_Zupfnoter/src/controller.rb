@@ -1,5 +1,16 @@
 # This is a wrapper class for local store
 
+
+module I18n
+  def self.t(text)
+    `w2utils.lang(#{text})`
+  end
+
+  def self.locale(language)
+    `w2utils.locale('public/locale/' + #{language} + '.json')`
+  end
+end
+
 class LocalStore
 
   def initialize(name)
@@ -80,6 +91,7 @@ class Controller
 
   def initialize
 
+    I18n.locale('de-de')
 
     `init_w2ui(#{self});`
     @update_systemstatus_consumers = {systemstatus: [
