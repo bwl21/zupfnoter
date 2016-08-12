@@ -34,7 +34,7 @@
 
   <link rel="stylesheet" type="text/css" href="vendor/w2ui/dist/w2ui.min.css"/>
   <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css"/>
-  <script type="text/javascript" src="vendor/w2ui/dist/w2ui.min.js"></script>
+  <script type="text/javascript" src="vendor/w2ui/dist/w2ui.js"></script>
 
   <style>
     .spinner {
@@ -52,10 +52,12 @@
 <script type="text/javascript">
 
   function check_unload() {
-    return "Zupfnoter verlassen? echt jetzt ...?"
+    return "Leave Zupfnoter?\nreally ...?"
   }
 
   function init_w2ui(uicontroller) {
+
+    debugger;
 
     perspectives = {
       'tb_perspective:Alle': function () {
@@ -64,6 +66,7 @@
         w2ui['layout'].show('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
         w2ui['layout'].sizeTo('preview', "50%");
+        $("#harpPreview svg").attr('height', 700).attr('width', '100%');
       },
       'tb_perspective:NotenEingabe': function () {
         w2ui['layout'].show('left', window.instant);
@@ -91,6 +94,7 @@
         w2ui['layout'].hide('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
         w2ui['layout'].sizeTo('preview', "100%");
+        $("#harpPreview svg").attr('height', 1200).attr('width', '100%');
       },
       'tb_view:0': function () {
         uicontroller.$handle_command("view 0")
@@ -106,13 +110,13 @@
       },
 
       'tb_scale:groß': function () {
-        $("#harpPreview svg").attr('height', 1400);
+        $("#harpPreview svg").attr('height', 1400).attr('width', 2200);
       },
       'tb_scale:mittel': function () {
-        $("#harpPreview svg").attr('height', 700);
+        $("#harpPreview svg").attr('height', 700).attr('width', 1100);
       },
       'tb_scale:klein': function () {
-        $("#harpPreview svg").attr('height', 300);
+        $("#harpPreview svg").attr('height', 300).attr('width', 500);
       },
 
       'tbPrintA3': function () {
@@ -136,26 +140,27 @@
       'tb_create': function () {
         openPopup({
           name: 'createNewSheetForm',
-          text: 'Create new Sheet',
+          text: w2utils.lang('Create new Sheet'),
           style: 'border: 0px; background-color: transparent;',
           fields: [
-            {field: 'id', text: "Id", type: 'float', required: true, html: {caption: 'Id'}},
+            {field: 'id', type: 'string', required: true, html: {caption: 'X:'}},
             {
               field: 'title',
               type: 'text',
               required: true,
-              html: {caption: 'Title', attr: 'style="width: 300px"'}
-            },
+              tooltip: "Enter the title of your sheet",
+              html: {caption: w2utils.lang('Title'), attr: 'style="width: 300px"'}
+            }
           ],
           actions: {
-            "create": function () {
+            "Ok": function () {
               if (this.validate().length == 0) {
                 uicontroller.$handle_command("c " + this.record.id + '"' + this.record.title + '"');
                 w2popup.close();
               }
             },
-            "reset": function () {
-              this.clear();
+            "Cancel": function () {
+              w2popup.close();
             }
           }
         })
@@ -208,11 +213,23 @@
       items: [
         {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: '<span id="lbZupfnoter">Zupfnoter</span>'},
         {type: 'html', html: '<div style="width:25px"/>'},
-        {type: 'button', id: 'tb_create', text: 'create', icon: 'fa fa-plus-square-o', hint: 'Open in dropboxx'},
-        {type: 'button', id: 'tb_download', text: 'dl abc', icon: 'fa fa-save', hint: 'Save in dropbox'},
-        {type: 'button', id: 'tb_login', text: 'login', icon: 'fa fa-dropbox', hint: 'Open in dropboxx'},
-        {type: 'button', id: 'tb_open', text: 'open', icon: 'fa fa-dropbox', hint: 'Open in dropboxx'},
-        {type: 'button', id: 'tb_save', text: 'save', icon: 'fa fa-dropbox', hint: 'Save in dropbox'},
+        {type: 'button', id: 'tb_create', text: 'New', icon: 'fa fa-file-o', tooltip: 'Create new sheet'},
+        {
+          type: 'button',
+          id: 'tb_download',
+          text: 'Dl abc',
+          icon: 'fa fa-download',
+          tooltip: 'download abc to local system'
+        },
+        {
+          type: 'button',
+          id: 'tb_login',
+          text: 'Login',
+          icon: 'fa fa-dropbox',
+          tooltip: 'Login in dropbox;\nchoose folder in Dropbox'
+        },
+        {type: 'button', id: 'tb_open', text: 'Open', icon: 'fa fa-dropbox', tooltip: 'Open ABC file in dropbox'},
+        {type: 'button', id: 'tb_save', text: 'Save', icon: 'fa fa-dropbox', tooltip: 'Save ABC file in dropbox'},
         {
           type: 'html',
           html: '<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'
@@ -225,84 +242,124 @@
         {type: 'spacer'},
 
         {
-          type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear',
+          type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
           items: [
-            {text: 'title', hint: "insert a title for the \ncurrent extract"},
-            {text: 'voices', hint: "specify voices to \nbe shown in current extract"},
-            {text: 'flowlines', hint: "specify for which voices \nwe show the flowline"},
-            {text: 'jumplines', hint: "specify for which voides \njumplines are shown"},
-            {text: 'repeatsigns', hint: "specify for which voices \nto use repeat signs instead of jumplines"},
-            {text: 'synchlines', hint: "specify which voices \nare connected by synchronization lines"},
-            {text: 'layoutlines', hint: "specify  which voides \nare considerd to compute \nvertical spacing"},
-            {text: 'subflowlines', hint: "specify for which voices \nwe show the subflowline"},
+            {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
+            {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
+            {text: 'flowlines', tooltip: "specify which voices \nshow the flowline"},
+            {text: 'jumplines', tooltip: "specify which voices \nshow the jumplines"},
+            {text: 'repeatsigns', tooltip: "specify which voices\nshow repeat signs instead of jumplines"},
+            {text: 'synchlines', tooltip: "specify which voices\nare connected by synchronization lines"},
+            {text: 'layoutlines', tooltip: "specify which voides\nare considered to compute \nvertical spacing"},
+            {text: 'subflowlines', tooltip: "specify which voices \nshow the subflowlines"},
+            {},
+
+            {text: 'legend', tooltip: "specify details for legend"},
+            {text: 'lyrics', tooltip: "specify details for lyrics"},
+            {id: 'notes', text: 'page annotation', tooltip: "enter a page bound annotation"},
             {text: ''},
 
-            {text: 'legend', hint: "specify details for legend"},
-            {text: 'lyrics', hint: "specify details for lyrics"},
-            {text: 'notes', hint: "enter a note bound to the entire page"},
+            {text: 'nonflowrest', tooltip: "specify if rests are shown outside of flowlines"},
+            {text: 'startpos', tooltip: "specify the vertical start position of the notes"},
+            {text: 'countnotes', tooltip: "specify which voices\n shwow countnotes\n and appeareance of the same"},
+            {text: 'layout', tooltip: "specify laoyut details \n(e.g. size of symbols)"},
+            {text: 'stringnames', tooltip: "specify output of stringnames.\n Stringnames help to tune the instrument"},
             {text: ''},
-
-            {text: 'nonflowrest', hint: "specify if rests are shown outsid of flowlines"},
-            {text: 'startpos', hint: "specify the vertical start position of the notes"},
-            {text: 'countnotes', hint: "specify appeareance of countnotes"},
-            {text: 'layout', hint: "specify laoyut details \n(e.g. size of symbols)"},
-            {text: 'stringnames', hint: "specify output of stringnames.\n Stringnames help to tune the instrument"},
-            {text: ''},
-            {text: 'produce', hint: "specify which extracts shall be saved as PDF"},
+            {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
             {
-              text: 'annotations',
-              hint: "specify predefined annotations\nAnnotations can be reused as note notebound anntoations"
+              text: 'annotation template',
+              tooltip: "specify temmplate for\n note bound annotations"
             },
             {text: ''},
-            {text: 'stringnames.full', hint: "specify full details for stringnams"},
-            {text: 'repeatsigns.full', hint: "specify all details for repeat signs"},
+            {text: 'stringnames.full', tooltip: "specify full details for stringnams"},
+            {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
             {text: ''},
-            {text: 'xx', hint: "inject the default configuration (for development use only)"},
+            {text: 'xx', tooltip: "inject the default configuration (for development use only)"},
           ]
         },
 
         {type: 'break'},
-        {type: 'button', id: 'tbPrintA3', text: 'A3', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A3'},
-        {type: 'button', id: 'tbPrintA4', text: 'A4', icon: 'fa fa-file-pdf-o', hint: 'Print PDF A4'},
+        {type: 'button', id: 'tbPrintA3', text: 'A3', icon: 'fa fa-file-pdf-o', tooltip: 'Print PDF A3'},
+        {type: 'button', id: 'tbPrintA4', text: 'A4', icon: 'fa fa-file-pdf-o', tooltip: 'Print PDF A4'},
 
         {type: 'break'},
         {
-          type: 'menu', id: 'tb_scale', text: 'Zoom', icon: 'fa fa-search-plus', items: [
-          {text: 'large', id: 'groß'},
-          {text: 'medium', id: 'mittel'},
-          {text: 'small', id: 'klein'}
-        ]
+          type: 'menu',
+          id: 'tb_scale',
+          text: 'Zoom',
+          icon: 'fa fa-search-plus',
+          tooltip: 'zoom harpnote preview',
+          items: [
+            {text: 'large', id: 'groß', tooltip: "large view\nto see all details"},
+            {text: 'medium', id: 'mittel', tooltip: "medium view\nmost commonly used\nautoscroll works"},
+            {text: 'small', id: 'klein', tooltip: "small view\nto get an overview"}
+          ]
         },
         {
-          type: 'menu', id: 'tb_perspective', text: 'Perspective', icon: 'fa fa-binoculars', items: [
-          {text: 'All', icon: 'fa fa-th', id: 'Alle'},
-          {text: 'Enter Notes', icon: 'fa fa-music', id: 'NotenEingabe'},
-          {text: 'Enter Harp', icon: 'fa fa-file-picture-o', id: 'HarfenEingabe'},
-          {text: 'Notes', icon: 'fa fa-music', id: 'Noten'},
-          {text: 'Harp', icon: 'fa fa-file-picture-o', id: 'Harfe'}
-        ]
+          type: 'menu',
+          id: 'tb_perspective',
+          text: 'Perspective',
+          icon: 'fa fa-binoculars',
+          tooltip: 'set screen perspective',
+          items: [
+            {text: 'All', icon: 'fa fa-th', id: 'Alle', tooltip: "show all panes"},
+            {
+              text: 'Enter Notes',
+              icon: 'fa fa-music',
+              id: 'NotenEingabe',
+              tooltip: "editor and notes\napplicable to enter notes"
+            },
+            {
+              text: 'Enter Harp',
+              icon: 'fa fa-file-picture-o',
+              id: 'HarfenEingabe',
+              tooltip: "editor and harpnotes\napplicaple to tweak the notes for harp"
+            },
+            {text: 'Notes', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
+            {
+              text: 'Harp',
+              icon: 'fa fa-file-picture-o',
+              id: 'Harfe',
+              tooltip: "harpnotes only\napplicable to proofread harpnotes"
+            }
+          ]
         },
         {type: 'break', id: 'break0'},
         {
-          type: 'menu', id: 'tb_view', text: 'Extract', icon: 'fa fa-shopping-basket', items: [
-          {text: 'Extract 0', icon: 'fa fa-tags', id: "0"},
-          {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
-          {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
-          {text: 'Extract 3', icon: 'fa fa-tags', id: "3"}
-        ]
+          type: 'menu',
+          id: 'tb_view',
+          text: 'Extract',
+          icon: 'fa fa-shopping-basket',
+          tooltip: "Choose extract",
+          items: [
+            {text: 'Extract 0', icon: 'fa fa-tags', id: "0"},
+            {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
+            {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
+            {text: 'Extract 3', icon: 'fa fa-tags', id: "3"}
+          ]
         },
         {type: 'break'},
-        {type: 'button', id: 'tbRender', text: 'Render', icon: 'fa fa-refresh', hint: 'aktualisiert Ausgabe'},
-        {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', hint: 'spielt ab Auswahl'},
+        {type: 'button', id: 'tbRender', text: 'Render', icon: 'fa fa-refresh', tooltip: 'Render previews'},
+        {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', tooltip: 'Play music'},
         {
-          type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', hint: 'Hilfe', items: [
-          {text: 'Videos', icon: 'fa fa-tags', id: "tbTutorials"},
-          {text: 'abc Tutorial', icon: 'fa fa-tags', id: "tbAbcTutorial"},
-          {text: 'Manual', icon: 'fa fa-tags', id: "tbManual"},
-          {text: 'Homepage', icon: 'fa fa-tags', id: "tbHomepage"},
+          type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', tooltip: 'Get help', items: [
+          {text: 'Videos', icon: 'fa fa-tags', id: "tbTutorials", tooltip: 'Open the video tutorials on youtube'},
+          {text: 'abc Tutorial', icon: 'fa fa-tags', id: "tbAbcTutorial", tooltip: 'Open an ABC tutorial (in German)'},
+          {text: 'Manual', icon: 'fa fa-tags', id: "tbManual", tooltip: 'Open the user manual'},
+          {text: 'Homepage', icon: 'fa fa-tags', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
           {text: ''},
-          {text: 'Reference', icon: 'fa fa-tags', id: "tbReference"},
-          {text: 'Demo', icon: 'fa fa-tags', id: "tbDemo"},
+          {
+            text: 'Reference',
+            icon: 'fa fa-tags',
+            id: "tbReference",
+            tooltip: 'Open a new Zupfnoter window\nwith the reference page'
+          },
+          {
+            text: 'Demo',
+            icon: 'fa fa-tags',
+            id: "tbDemo",
+            tooltip: 'Open a demo sheet\n(Ich steh an deiner Kripen hier)'
+          }
         ]
         }
       ],
@@ -341,7 +398,7 @@
       }
     }
 
-    var pstyle = 'background-color: #F5F6F7; padding: 5px;';
+    var pstyle = 'background-color: #fffff; padding: 5px;';
     $('#layout').w2layout({
       name: 'layout',
       panels: [
