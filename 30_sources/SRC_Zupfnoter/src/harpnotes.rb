@@ -336,7 +336,7 @@ module Harpnotes
     #
     class Pause < Playable
       # note that the pitch is used to support layout ...
-      attr_reader :duration, :pitch
+      attr_accessor :duration, :pitch
 
       #
       # Constructor

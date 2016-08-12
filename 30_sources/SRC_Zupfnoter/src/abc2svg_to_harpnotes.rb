@@ -488,6 +488,14 @@ module Harpnotes
           raise "too many distance values for repeat end. Need only one #{distance}"
         end
 
+
+        # handle the case that a repetition ends with a rest
+        # in this case the pitch of the rest shall be the pitch
+        # of the previous note
+        if @previous_note.is_a? Harpnotes::Music::Pause
+          @previous_note.pitch = @previous_note.prev_pitch
+        end
+
         distance                         = distance.first
         @next_note_marks[:first_in_part] = true
 
@@ -630,6 +638,7 @@ module Harpnotes
           @previous_note.next_pitch = the_note.pitch
           the_note.prev_pitch       = @previous_note.pitch
         end
+
 
         @previous_note = the_note # notes.first # save this for repeat lines etc.
         znid           = the_note.znid
