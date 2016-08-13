@@ -518,6 +518,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     start                 = Time.now()
     @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     @music_model.checksum = @editor.get_checksum
+    `document.title = #{@music_model.meta_data[:filename]}`
+
     $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
     $log.info("duration transform + layout #{Time.now - start}")
@@ -850,7 +852,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         when :on
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
         when :off
-          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 0)`
+          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 100)`
         when :remote
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
       end
