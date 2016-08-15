@@ -5,8 +5,7 @@
 * update favorite icon to Zupfnoter logo
 
     * nur zeigen
-        
-
+      
 * removed spinner, progress indicator is again only background-color (reuqested by Karl)
 
     nur erwähnen

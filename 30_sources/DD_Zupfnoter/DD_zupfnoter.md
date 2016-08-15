@@ -34,7 +34,8 @@ Zupfnoter uses gitflow http://nvie.com/posts/a-successful-git-branching-model/
 Before preparing a release, everything that should go to this release shall be committed to the develop branch.
 
 * Gitflow: Start new release
-* admus t version
+    Pattern: V_1.4.0_RC2
+* adjust version.rb
 * perform all the builds
 	`rake build`
 	`rake deploy`
