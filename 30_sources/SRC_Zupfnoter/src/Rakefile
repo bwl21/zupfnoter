@@ -5,16 +5,35 @@ require 'erb'
 require 'zip'
 require 'net/http'
 require 'pry'
+require './neatjson.rb'
 
 HTMLTEMPLATE = "../index_opal.html.erb"
 PACKAGE_JSON = "../package.json"
 ZUPFNOTER_JS = "build.js"
 OUTFOLDER    = "../deploy_files"
 INDEXFILE    = "index.html"
+LOCALEPATH   = "../public/locale/"
 
 VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
+
+desc "update public/locale"
+task :updateLocales do
+  locales = Dir["#{LOCALEPATH}*.json"].map { |f| f.split(LOCALEPATH).last }
+  locales.each do |locale|
+    w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
+    znlocalefile   = File.open("localization/zupfnoter_#{locale}")
+
+
+    w2uilocales = JSON.parse(w2uilocalefile.read)
+    znlocales   = JSON.parse(znlocalefile.read)
+
+
+    w2uilocales['phrases'].merge!(znlocales['phrases'])
+    File.open("#{LOCALEPATH}/#{locale}", "w") { |f| f.puts JSON.neat_generate(w2uilocales, {wrap: 180, after_colon: 1}) }
+  end
+end
 
 desc "Update abc2svg from Jean-Francois' website"
 task :updateAbc2svg do
@@ -78,7 +97,7 @@ task :deploy => [:build] do
 
   # prepare all requested folders
   # todo:this is not dry - see buildDesktop
-  ["public/icons", "public/menuicons", "public/demos",
+  ["public/icons", "public/demos", "public/locale",
    "vendor/ace", "vendor/ace/snippets", "vendor/w2ui", "vendor/w2ui/dist",
    "vendor/font-awesome/css", "vendor/font-awesome/fonts",
   ].each do |d|
@@ -101,9 +120,12 @@ task :deploy => [:build] do
   cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
   cp("../public/icons/favicon.png", "#{OUTFOLDER}/webserver/public/icons/favicon.png")
   Dir["../public/demos/*.abc"].each do |f|
-    cp f, "#{OUTFOLDER}/webserver/public/#{File.basename(f)}"
+    cp f, "#{OUTFOLDER}/webserver/public/demos/#{File.basename(f)}"
   end
 
+  Dir["../public/locale/*.json"].each do |f|
+    cp f, "#{OUTFOLDER}/webserver/public/locale/#{File.basename(f)}"
+  end
 
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
   cp "../vendor/ace/mode-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-abc.js"
@@ -112,7 +134,7 @@ task :deploy => [:build] do
   cp "../vendor/ace/ext-language_tools.js", "#{OUTFOLDER}/webserver/vendor/ace/ext-language_tools.js"
   cp("../vendor/ace/snippets/abc.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/abc.js")
   cp("../vendor/abc2svg-1.js", "#{OUTFOLDER}/vendor/abc2svg-1.js")
-
+  Dir['../vendor/ace/ext-*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
   def javascript_include_tag(filename)
     "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
@@ -143,7 +165,7 @@ task :buildDesktop => [:build] do
 
   rm_rf(desktop_folder)
   mkdir_p("#{desktop_stage}/public")
-  mkdir_p("#{desktop_stage}/public/menuicons")
+  mkdir_p("#{desktop_stage}/public/locale")
   mkdir_p("#{desktop_stage}/vendor")
   mkdir_p("#{desktop_stage}/vendor/ace")
   mkdir_p("#{desktop_stage}/vendor/w2ui/dist")
@@ -186,15 +208,9 @@ task :buildDesktop => [:build] do
 
   ['w2ui.min.css', 'w2ui.min.js'].each { |f| cp "../vendor/w2ui/dist/#{f}", "#{desktop_stage}/vendor/w2ui/dist/#{f}" }
 
-
-  Dir["../public/menuicons/*.*"].each { |f|
-    copy(f, "#{desktop_stage}/public/menuicons/")
+  Dir["../public/locale/*.*"].each { |f|
+    copy(f, "#{desktop_stage}/public/locale/")
   }
-
-  Dir["../public/menuicons/w2ui/*.*"].each { |f|
-    copy(f, "#{desktop_stage}/vendor/w2ui/")
-  }
-
 
   ["vendor/ace", "vendor/ace/snippets", "public/icons"].each do |d|
     mkdir_p("#{desktop_stage}/#{d}")

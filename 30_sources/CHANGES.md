@@ -30,6 +30,7 @@
 * now place a fingerprint of input on the sheet. Sheets with identical fingerprints stm from the same input. #22
 * improved demo mode #43
 * config menu now investigates the next free key for lyrics and note #44
+* initial version of localization #47
 
 
 # V 1.3.1 2016-05-17

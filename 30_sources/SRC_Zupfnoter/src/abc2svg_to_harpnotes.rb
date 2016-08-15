@@ -328,9 +328,7 @@ module Harpnotes
         # the postprocessing
         # support the case of repetitions from the very beginning
 
-        if @repetition_stack.empty?
-          @repetition_stack << notes.last
-        end
+
 
         result = []
         if notes.count == 1
@@ -338,7 +336,7 @@ module Harpnotes
         else
           # handle duration and orign
           synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
-          first_note              = notes.first # todo make choice of note configurable (#32)
+          first_note              = notes.first # note it does not matter if it is first or last
           synchpoint.znid         = _mkznid(voice_element)
           synchpoint.decorations  = decorations
           synchpoint.count_note   = _transform_count_note(voice_element)
@@ -354,6 +352,10 @@ module Harpnotes
           synchpoint.tuplet_end   = first_note.tuplet_end
 
           result << synchpoint
+        end
+
+        if @repetition_stack.empty?
+          @repetition_stack << result.last
         end
 
         # handle ties
@@ -377,6 +379,8 @@ module Harpnotes
           @next_note_marks[:measure] = false
         end
 
+        # note that this updates the reasult
+        # this is the reason that it is an array
         _make_repeats_jumps_annotations(result, voice_element, voice_index)
 
         result
@@ -484,7 +488,15 @@ module Harpnotes
           raise "too many distance values for repeat end. Need only one #{distance}"
         end
 
-        distance                         =distance.first
+
+        # handle the case that a repetition ends with a rest
+        # in this case the pitch of the rest shall be the pitch
+        # of the previous note
+        if @previous_note.is_a? Harpnotes::Music::Pause
+          @previous_note.pitch = @previous_note.prev_pitch
+        end
+
+        distance                         = distance.first
         @next_note_marks[:first_in_part] = true
 
         [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true, level: level)]
@@ -543,7 +555,7 @@ module Harpnotes
         result
       end
 
-      # make the jumplilnes
+      # make the jumplines if an explicit goto of an element
       # @param [Playable] element - an element of the converted voice
       def _make_jumplines(element)
         if element.is_a?(Harpnotes::Music::Playable)
@@ -614,12 +626,19 @@ module Harpnotes
       # @param [Array of Harpnotes::Music:Entity:] harpnote_elements elements created by the current note/rest
       # @param [Object] voice_element: voice element as provided by abc2svg
       # @param [integer] voice_id the id of the voice according to the sequence sequence in the ABC-Code. First voice is 1
+      #
+      # note that this method upddates its fist parameter
       def _make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id)
         the_note = harpnote_elements.first
+
+        # we maintain the prev_pitch/next_pitch
+        # for more detailed laoyut control of
+        # repeatmarks, tuplets etc.
         if @previous_note
           @previous_note.next_pitch = the_note.pitch
           the_note.prev_pitch       = @previous_note.pitch
         end
+
 
         @previous_note = the_note # notes.first # save this for repeat lines etc.
         znid           = the_note.znid
