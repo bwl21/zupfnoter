@@ -91,7 +91,17 @@ class Controller
 
   def initialize
 
-    I18n.locale('de-de')
+
+    # todo make this configurable by a preferences menu
+    languages = {'de' => 'de-de',
+                 'de-DE' => 'de-de',
+                  'en' => 'en-US',
+                  'en-US' => 'en-US'
+                 }
+    browser_language = `navigator.language`
+    I18n.locale(languages[browser_language]) if browser_language
+
+
 
     `init_w2ui(#{self});`
     @update_systemstatus_consumers = {systemstatus: [
@@ -852,7 +862,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         when :on
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
         when :off
-          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 100)`
+          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 300)`
         when :remote
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
       end
