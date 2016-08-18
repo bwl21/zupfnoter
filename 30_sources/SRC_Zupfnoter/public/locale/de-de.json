@@ -116,7 +116,7 @@
     "Choose extract": "Auszug wählen",
     "configure your sheet": "Blatt konfigureren",
     "countnotes": "Zählmarken",
-    "Create new sheet": "Neues Blatt erstellen",
+    "Create new Sheet": "Neues Blatt erstellen",
     "Demo": "Demonstration",
     "download abc to local system": "ABC - File herunterladen",
     "editor and harpnotes\napplicaple to tweak the notes for harp": "Zeige ABC und Harfennoten\ngeeignet zur Feinkorektur\nim Unterlegnotenblatt",
@@ -200,6 +200,7 @@
     "subflowlines": "Hilfsmelodielinien",
     "synchlines": "Synchroniationslinien",
     "title": "Titel",
+    "Title": "Titel",
     "Videos": "Videos",
     "voices": "Stimmen",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten"
