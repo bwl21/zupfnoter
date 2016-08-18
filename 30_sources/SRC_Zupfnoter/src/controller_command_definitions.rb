@@ -452,13 +452,13 @@ C,
         case args[:scope]
           when "full"
             @dropboxclient          = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
-            @dropboxclient.app_name = "full Dropbox"
+            @dropboxclient.app_name = "DrBx"
             @dropboxclient.app_id   = "full"
             @dropboxpath            = path
 
           when "app"
             @dropboxclient          = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
-            @dropboxclient.app_name = "App folder only"
+            @dropboxclient.app_name = "App"
             @dropboxclient.app_id   = "app"
             @dropboxpath            = path
 
