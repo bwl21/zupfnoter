@@ -295,6 +295,7 @@ C,
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
             'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
             'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+            'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'xx'               => lambda { {key: "xx", value: $conf[]} }
         }
 
@@ -318,7 +319,7 @@ C,
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0..-2].join(".")
             next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
-            the_key = %Q{#{parent_key}.#{next_free}}
+            the_key    = %Q{#{parent_key}.#{next_free}}
           end
 
           patchvalue = local_value #|| value[:value]

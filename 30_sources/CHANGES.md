@@ -31,6 +31,8 @@
 * improved demo mode #43
 * config menu now investigates the next free key for lyrics and note #44
 * initial version of localization #47
+* non BWC: algorithm for horizontal position of rests can now be configured. Default is different thatn in 1.3 #58
+  Configuration menu provides an entry to switch to 1.3 behavior.
 
 
 # V 1.3.1 2016-05-17

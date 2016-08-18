@@ -413,9 +413,15 @@ module Harpnotes
         origin             = _parse_origin(voice_element)
         start_pos, end_pos = origin[:startChar], origin[:endChar]
 
-        pitch_note = (@pitch_providers[index .. -1].compact.first or @pitch_providers[0..index-1].compact.last)
-        if pitch_note
-          pitch = pitch_note[:notes].last[:midi] # todo make choice of note configurable (#32)
+        pitch_notes = [@pitch_providers[0 .. index].compact.last, @pitch_providers[index .. -1].compact.first]
+
+        pitch_notes = [(pitch_notes.first or pitch_notes.last)] if $conf['restposition.default'] == :previous
+        pitch_notes = [(pitch_notes.last or pitch_notes.first)] if $conf['restposition.default'] == :next
+
+        pitch_notes = pitch_notes.compact
+        unless pitch_notes.empty?
+          pitch_notes = pitch_notes.map{|pitch_note| pitch_note[:notes].last[:midi]}
+          pitch = (average_pitch = pitch_notes.inject(:+) / pitch_notes.length).floor.to_i
         else
           pitch = 60
         end
@@ -493,7 +499,7 @@ module Harpnotes
         # in this case the pitch of the rest shall be the pitch
         # of the previous note
         if @previous_note.is_a? Harpnotes::Music::Pause
-          @previous_note.pitch = @previous_note.prev_pitch
+          @previous_note.pitch = @previous_note.prev_pitch if $conf['restposition.repeatend'] == :previous
         end
 
         distance                         = distance.first

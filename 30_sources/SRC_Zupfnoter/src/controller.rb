@@ -890,6 +890,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         {produce:     [0],
          abc_parser:  'ABC2SVG',
          countnotes:  {pos: [2, -2]},
+         restposition: {default: :center, repeatstart: :next, repeatend: :default},
          wrap:        60,
          defaults:    {
              notebound: {annotation: {pos: [5, -7]},
