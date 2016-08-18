@@ -2059,10 +2059,23 @@ module Harpnotes
         cpmm  = (cpa1 + cpa2)/2 # middle between the control points
         cpmm1 = (cpm1 + cpmm)/2 # start of tangent
         cpmm2 = (cpm2 + cpmm)/2 # end of tangent
-        unless cpa1.x <= p1.x and p1.x <= p2.x
-          annotation_anchor = (cpmm1 + cpmm2) / 2 + (cpmm1 - cpmm2).perpendicular.normalize * 2
+
+        unless cpmm1 == cpmm2 # see #57
+          annotation_normal = (cpmm1 - cpmm2).perpendicular.normalize
         else
-          annotation_anchor = (cpmm1 + cpmm2) / 2 + ((cpmm1 - cpmm2).perpendicular.normalize * -2) -2
+          annotation_normal = Vector2d([0, 0])
+        end
+
+        # todo this is a hack
+        # if curve goes south east, draw number on the right side
+        # othewise on the left side
+        # see 1025_Tuplet-patterns
+        unless cpa1.x <= p1.x and p1.x <= p2.x
+          # annotate eastwards
+          annotation_anchor = (cpmm1 + cpmm2) / 2 + annotation_normal * 2
+        else
+          # anotate westwards
+          annotation_anchor = (cpmm1 + cpmm2) / 2 + (annotation_normal * -2) - [2,0] # need to correct by x-size of number
         end
         annotation_anchor = annotation_anchor + [0, -2] # literal corection since now reference point is top of line
 
