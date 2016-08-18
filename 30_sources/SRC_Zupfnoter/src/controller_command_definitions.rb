@@ -608,6 +608,7 @@ C,
           alert message
           raise message
         end
+
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         filebase = metadata[:F].first
@@ -628,6 +629,7 @@ C,
         save_promises=[]
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
+          save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
           pdfs          = {}
           print_variants.map do |print_variant|
             index                                                          = print_variant[:view_id]

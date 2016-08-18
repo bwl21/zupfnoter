@@ -57,6 +57,23 @@
 
   function init_w2ui(uicontroller) {
 
+    previews = {
+      'tbPreview:tbPrintA3': function () {
+        url = uicontroller.$render_a3().$output('datauristring')
+        window.open(url)
+      },
+      'tbPreview:tbPrintA4': function () {
+        url = uicontroller.$render_a4().$output('datauristring')
+        window.open(url)
+      },
+      'tbPreview:tbPrintNotes': function(){
+        a=window.open();
+      //  a.document.write('<style type="text/css">rect.abcref {fill:grey;fill-opacity:0.01}</style>');
+        //a.document.write($('#tunePreview').html());
+        a.document.write(uicontroller.tune_preview_printer.$get_html())
+      }
+    }
+
     perspectives = {
       'tb_perspective:Alle': function () {
         w2ui['layout'].show('left', window.instant);
@@ -85,6 +102,7 @@
         w2ui['layout'].hide('bottom', window.instant);
         w2ui['layout'].show('main', window.instant);
         w2ui['layout'].hide('preview', window.instant);
+        $("#tunePreview").attr('width', '25cm');
       },
       'tb_perspective:Harfe': function () {
         w2ui['layout'].hide('left', window.instant);
@@ -117,14 +135,6 @@
         $("#harpPreview svg").attr('height', 400).attr('width', 1100);
       },
 
-      'tbPrintA3': function () {
-        url = uicontroller.$render_a3().$output('datauristring')
-        window.open(url)
-      },
-      'tbPrintA4': function () {
-        url = uicontroller.$render_a4().$output('datauristring')
-        window.open(url)
-      },
 
       'tbPlay': function () {
         uicontroller.$play_abc('auto');
@@ -278,8 +288,18 @@
         },
 
         {type: 'break'},
-        {type: 'button', id: 'tbPrintA3', text: 'A3', icon: 'fa fa-file-pdf-o', tooltip: 'Print PDF A3'},
-        {type: 'button', id: 'tbPrintA4', text: 'A4', icon: 'fa fa-file-pdf-o', tooltip: 'Print PDF A4'},
+        {
+          type: 'menu',
+          id: 'tbPreview',
+          text: 'Print',
+          icon: 'fa fa-print',
+          hint: 'Open a preview and printz window',
+          items: [
+            {type: 'button', id: 'tbPrintA3', text: 'A3', icon: 'fa fa-file-pdf-o', tooltip: 'Print A3 Harpnotes'},
+            {type: 'button', id: 'tbPrintA4', text: 'A4', icon: 'fa fa-file-pdf-o', tooltip: 'Print A4 Harpnotes'},
+            {type: 'button', id: 'tbPrintNotes', text: 'Tune', icon: 'fa fa-music', tooltip: 'Print Tune'}
+          ]
+        },
 
         {type: 'break'},
         {
@@ -364,12 +384,19 @@
       ],
 
       onClick: function (event) {
+        // handle perspectives
         if (  perspectives[event.target]) {
           perspectives[event.target]();
           if (event.subItem) {
             event.item.text = event.subItem.text
           }
         }
+
+        // handle previews
+        if (previews[event.target]){
+          previews[event.target]();
+        }
+
         if (event.target.split(":")[0] == 'config') {
           uicontroller.$handle_command("addconf " + event.target.split(":")[1])
         }

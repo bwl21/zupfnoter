@@ -482,8 +482,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       send_remote_command('render')
     end
 
-    setup_tune_preview
-
+    # note that render_tunepreview_callback also initializes the previewPrinter
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
       set_active("#tunePreview")
       `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`

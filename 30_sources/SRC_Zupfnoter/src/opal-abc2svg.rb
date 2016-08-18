@@ -135,6 +135,23 @@ module ABC2SVG
       @svgbuf.join("\n")
     end
 
+    # this produces html for printing
+    def get_html
+      %Q{
+      <html>
+      <head>
+        <style type="text/css">
+           rect.abcref {fill-opacity:0.0}
+          .nobrk s	{ white-space:nowrap; }
+          svg {display:block}
+        </style>
+      </head>
+      <body>
+         #{get_svg}
+      </body>
+      }
+    end
+
 
     # todo: make private
     def set_callback(event, &block)
