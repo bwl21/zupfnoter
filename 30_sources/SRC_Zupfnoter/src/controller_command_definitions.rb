@@ -295,6 +295,7 @@ C,
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
             'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
             'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+            'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'xx'               => lambda { {key: "xx", value: $conf[]} }
         }
 
@@ -318,7 +319,7 @@ C,
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0..-2].join(".")
             next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
-            the_key = %Q{#{parent_key}.#{next_free}}
+            the_key    = %Q{#{parent_key}.#{next_free}}
           end
 
           patchvalue = local_value #|| value[:value]
@@ -607,6 +608,7 @@ C,
           alert message
           raise message
         end
+
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
         filebase = metadata[:F].first
@@ -627,6 +629,7 @@ C,
         save_promises=[]
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
+          save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
           pdfs          = {}
           print_variants.map do |print_variant|
             index                                                          = print_variant[:view_id]

@@ -168,7 +168,7 @@ class Controller
       handle_command("view 0")
     end
 
-    render_previews
+    render_previews unless uri[:parsed_search][:debug]  # prevernt initial rendition in case of hangs caused by input
     #
     setup_nodewebkit
     # # now trigger the interactive UI
@@ -317,6 +317,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_config(config)
     result       = Confstack.new(false)
     result.strict= false
+    old_config = config.clone
     result.push(config)
 
     if config['extract']
@@ -333,7 +334,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result['$version']= VERSION
     result
 
-    migrate_config_cleanup(result.get)
+    new_config = migrate_config_cleanup(result.get)
+    alert(%Q{#{I18n.t("Please double check the generated sheets.\n\nYour inpout was automatically migrated \nto Zupfnoter version")} #{VERSION}}) unless old_config == new_config
+
+    new_config
   end
 
   def migrate_config_cleanup(config)
@@ -482,8 +486,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       send_remote_command('render')
     end
 
-    setup_tune_preview
-
+    # note that render_tunepreview_callback also initializes the previewPrinter
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
       set_active("#tunePreview")
       `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`
@@ -861,9 +866,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       case @systemstatus[:autorefresh]
         when :on
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
-        when :off
-          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 300)`
-        when :remote
+        when :off # off means it relies on remote rendering
+          @refresh_timer = `setTimeout(function(){#{render_remote()}}, 300)`
+        when :remote # this means that the current instance runs in remote mode
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
       end
     end
@@ -890,6 +895,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         {produce:     [0],
          abc_parser:  'ABC2SVG',
          countnotes:  {pos: [2, -2]},
+         restposition: {default: :center, repeatstart: :next, repeatend: :default},
          wrap:        60,
          defaults:    {
              notebound: {annotation: {pos: [5, -7]},

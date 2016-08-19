@@ -31,6 +31,10 @@
 * improved demo mode #43
 * config menu now investigates the next free key for lyrics and note #44
 * initial version of localization #47
+* non BWC: algorithm for horizontal position of rests can now be configured. Default is different thatn in 1.3 
+  Configuration menu provides an entry to switch to 1.3 behavior. #58
+* Now generate a HTML-Page with the music notes for tune preview - also saves the html in Dropbox #59
+* prevent automatic processing after initialization by adding ?debug to the url #61
 
 
 # V 1.3.1 2016-05-17
