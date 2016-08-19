@@ -245,7 +245,7 @@ module Harpnotes
       the_selection = get_selection_positions
       options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
                        explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
+                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
                                         :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
                                         "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                                         :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations

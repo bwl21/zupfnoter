@@ -35,7 +35,7 @@
   Configuration menu provides an entry to switch to 1.3 behavior. #58
 * Now generate a HTML-Page with the music notes for tune preview - also saves the html in Dropbox #59
 * prevent automatic processing after initialization by adding ?debug to the url #61
-
+* Now generate bar numers #60
 
 # V 1.3.1 2016-05-17
 

@@ -66,9 +66,9 @@
         url = uicontroller.$render_a4().$output('datauristring')
         window.open(url)
       },
-      'tbPreview:tbPrintNotes': function(){
-        a=window.open();
-      //  a.document.write('<style type="text/css">rect.abcref {fill:grey;fill-opacity:0.01}</style>');
+      'tbPreview:tbPrintNotes': function () {
+        a = window.open();
+        //  a.document.write('<style type="text/css">rect.abcref {fill:grey;fill-opacity:0.01}</style>');
         //a.document.write($('#tunePreview').html());
         a.document.write(uicontroller.tune_preview_printer.$get_html())
       }
@@ -270,6 +270,7 @@
             {text: 'nonflowrest', tooltip: "specify if rests are shown outside of flowlines"},
             {text: 'startpos', tooltip: "specify the vertical start position of the notes"},
             {text: 'countnotes', tooltip: "specify which voices\n shwow countnotes\n and appeareance of the same"},
+            {text: 'barnumbers', tooltip: "specify which voices\n shwow bar numbers\n and appeareance of the same"},
             {text: 'layout', tooltip: "specify laoyut details \n(e.g. size of symbols)"},
             {text: 'stringnames', tooltip: "specify output of stringnames.\n Stringnames help to tune the instrument"},
             {text: ''},
@@ -281,8 +282,13 @@
             {text: ''},
             {text: 'stringnames.full', tooltip: "specify full details for stringnams"},
             {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
+            {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
             {text: ''},
-            {id: 'restpos_1.3', text: 'rests as V 1.3', tooltip: "configure positioning of rests\ncompatible to version 1.3"},
+            {
+              id: 'restpos_1.3',
+              text: 'rests as V 1.3',
+              tooltip: "configure positioning of rests\ncompatible to version 1.3"
+            },
             {text: 'xx', tooltip: "inject the default configuration (for development use only)"},
           ]
         },
@@ -385,7 +391,7 @@
 
       onClick: function (event) {
         // handle perspectives
-        if (  perspectives[event.target]) {
+        if (perspectives[event.target]) {
           perspectives[event.target]();
           if (event.subItem) {
             event.item.text = event.subItem.text
@@ -393,12 +399,15 @@
         }
 
         // handle previews
-        if (previews[event.target]){
+        if (previews[event.target]) {
           previews[event.target]();
         }
 
-        if (event.target.split(":")[0] == 'config') {
-          uicontroller.$handle_command("addconf " + event.target.split(":")[1])
+        config_event = event.target.split(":")
+        if (config_event[0] == 'config') {
+          if (config_event[1]) {
+            uicontroller.$handle_command("addconf " + event.target.split(":")[1])
+          }
         }
         if (event.target == "tb_home") {
           window.open("https://www.zupfnoter.de")

@@ -135,6 +135,9 @@ module Harpnotes
 
         @jumptargets = {} # the lookup table for jumps
 
+        @measure_start_time = 0
+        @measure_count      = 0
+
         @next_note_marks   = {measure:          false,
                               repeat_start:     false,
                               variant_ending:   false,
@@ -300,24 +303,23 @@ module Harpnotes
 
         decorations = _parse_decorations(voice_element)
 
-        if @next_note_marks[:measure]
-          @measure_start_time = voice_element[:time] # for count_notes
-        end
+        _transform_measure_start(voice_element)
 
         # transform the individual notes
         duration = _convert_duration(voice_element[:notes].first[:dur])
 
-        notes = voice_element[:notes].map do |the_note|
+        notes  = voice_element[:notes].map do |the_note|
           #duration = _convert_duration(the_note[:dur])
 
-          result             = Harpnotes::Music::Note.new(the_note[:midi], duration)
-          result.decorations = decorations
-          result.count_note  = _transform_count_note(voice_element)
-          result.time        = voice_element[:time]
-          result.znid        = _mkznid(voice_element)
-          result.origin      = origin
-          result.start_pos   = charpos_to_line_column(start_pos) # get column und line number of abc_code
-          result.end_pos     = charpos_to_line_column(end_pos)
+          result               = Harpnotes::Music::Note.new(the_note[:midi], duration)
+          result.decorations   = decorations
+          result.measure_count = @measure_count
+          result.count_note    = _transform_count_note(voice_element)
+          result.time          = voice_element[:time]
+          result.znid          = _mkznid(voice_element)
+          result.origin        = origin
+          result.start_pos     = charpos_to_line_column(start_pos) # get column und line number of abc_code
+          result.end_pos       = charpos_to_line_column(end_pos)
 
           result.tuplet       = tuplet
           result.tuplet_start = tuplet_start
@@ -329,27 +331,27 @@ module Harpnotes
         # support the case of repetitions from the very beginning
 
 
-
         result = []
         if notes.count == 1
           result << notes.first
         else
           # handle duration and orign
-          synchpoint              = Harpnotes::Music::SynchPoint.new(notes)
-          first_note              = notes.first # note it does not matter if it is first or last
-          synchpoint.znid         = _mkznid(voice_element)
-          synchpoint.decorations  = decorations
-          synchpoint.count_note   = _transform_count_note(voice_element)
-          synchpoint.time         = first_note.time
-          synchpoint.duration     = first_note.duration
-          synchpoint.origin       = first_note.origin
-          synchpoint.start_pos    = first_note.start_pos
-          synchpoint.end_pos      = first_note.end_pos
+          synchpoint               = Harpnotes::Music::SynchPoint.new(notes)
+          first_note               = notes.first # note it does not matter if it is first or last
+          synchpoint.znid          = _mkznid(voice_element)
+          synchpoint.decorations   = decorations
+          synchpoint.measure_count = @measure_count
+          synchpoint.count_note    = _transform_count_note(voice_element)
+          synchpoint.time          = first_note.time
+          synchpoint.duration      = first_note.duration
+          synchpoint.origin        = first_note.origin
+          synchpoint.start_pos     = first_note.start_pos
+          synchpoint.end_pos       = first_note.end_pos
 
           #handle tuplets of synchpoint
-          synchpoint.tuplet       = first_note.tuplet
-          synchpoint.tuplet_start = first_note.tuplet_start
-          synchpoint.tuplet_end   = first_note.tuplet_end
+          synchpoint.tuplet        = first_note.tuplet
+          synchpoint.tuplet_start  = first_note.tuplet_start
+          synchpoint.tuplet_end    = first_note.tuplet_end
 
           result << synchpoint
         end
@@ -386,6 +388,13 @@ module Harpnotes
         result
       end
 
+      def _transform_measure_start(voice_element)
+        if @next_note_marks[:measure]
+          @measure_count      += 1
+          @measure_start_time = voice_element[:time] # for count_notes
+        end
+      end
+
       def _transform_count_note(voice_element)
         if @countby
           countnames ={0.5 => "u", 0.25 => "e", 0.75 => "e"}
@@ -420,8 +429,8 @@ module Harpnotes
 
         pitch_notes = pitch_notes.compact
         unless pitch_notes.empty?
-          pitch_notes = pitch_notes.map{|pitch_note| pitch_note[:notes].last[:midi]}
-          pitch = (average_pitch = pitch_notes.inject(:+) / pitch_notes.length).floor.to_i
+          pitch_notes = pitch_notes.map { |pitch_note| pitch_note[:notes].last[:midi] }
+          pitch       = (average_pitch = pitch_notes.inject(:+) / pitch_notes.length).floor.to_i
         else
           pitch = 60
         end
@@ -431,29 +440,27 @@ module Harpnotes
           pitch = 60
         end
 
-        if @next_note_marks[:measure]
-          @measure_start_time = voice_element[:time] # for count_notes
-        end
-
+        _transform_measure_start(voice_element)
 
         the_note                         = voice_element[:notes].first
         duration                         = _convert_duration(the_note[:dur])
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
-        result              = Harpnotes::Music::Pause.new(pitch, duration)
-        result.count_note   = _transform_count_note(voice_element)
-        result.znid         = _mkznid(voice_element)
-        result.time         = voice_element[:time]
-        result.origin       = _parse_origin(voice_element)
-        result.start_pos    = charpos_to_line_column(start_pos) # get column und line number of abc_code
-        result.end_pos      = charpos_to_line_column(end_pos)
+        result               = Harpnotes::Music::Pause.new(pitch, duration)
+        result.measure_count = @measure_count
+        result.count_note    = _transform_count_note(voice_element)
+        result.znid          = _mkznid(voice_element)
+        result.time          = voice_element[:time]
+        result.origin        = _parse_origin(voice_element)
+        result.start_pos     = charpos_to_line_column(start_pos) # get column und line number of abc_code
+        result.end_pos       = charpos_to_line_column(end_pos)
 
         #handle tuplets of synchpoint
-        result.tuplet       = tuplet
-        result.tuplet_start = tuplet_start
-        result.tuplet_end   = tuplet_end
+        result.tuplet        = tuplet
+        result.tuplet_start  = tuplet_start
+        result.tuplet_end    = tuplet_end
 
-        result.visible      = false if voice_element[:invisible]
+        result.visible       = false if voice_element[:invisible]
 
         # the post processing
 
@@ -506,6 +513,10 @@ module Harpnotes
         @next_note_marks[:first_in_part] = true
 
         [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true, level: level)]
+      end
+
+      def _transform_grace
+        nil # 'debugger'
       end
 
       def _transform_format(voice_element)
@@ -756,7 +767,7 @@ module Harpnotes
           result = dd[:name].to_sym
         end
 
-        result.flatten.select{|i| [:fermata, :emphasis].include? i}
+        result.flatten.select { |i| [:fermata, :emphasis].include? i }
         #[:fermata]
       end
 

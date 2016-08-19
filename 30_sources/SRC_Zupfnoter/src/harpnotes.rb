@@ -192,6 +192,7 @@ module Harpnotes
                     :tuplet_end, # last note of a tuplet
                     :shift, # {dir: :left | :right}
                     :count_note, # string to support count_notes
+                    :measure_count, # number of meausre for barnumbers
                     :measure_start # this playable starts a measure
 
 
@@ -1204,6 +1205,9 @@ module Harpnotes
           if active_voices.include?(index) ## todo add control for jumpline right border
             countnotes_options = print_options_hash[:countnotes]
             countnotes_options = nil unless countnotes_options[:voices].include?(index)
+            barnumbers_options = print_options_hash[:barnumbers]
+            barnumbers_options = nil unless barnumbers_options[:voices].include?(index)
+
             layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
                          voice_nr:          index,
                          nonflowrest:       print_options_hash[:nonflowrest],
@@ -1213,6 +1217,7 @@ module Harpnotes
                          repeatsigns:       print_options_hash[:repeatsigns],
                          synched_notes:     synched_notes,
                          countnotes:        countnotes_options,
+                         barnumbers:        barnumbers_options,
                          print_options_raw: print_options_raw
             )
           end
@@ -1416,6 +1421,27 @@ module Harpnotes
           end
         end
 
+        barnubmers_options = show_options[:barnumbers]
+        if barnubmers_options
+          res_barnumbers = playables.select { |p| p.measure_start }.map do |playable|
+            prefix = barnubmers_options[:prefix]
+
+            notebound_pos_key = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}.pos"
+            conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
+            barnumber        = %Q{#{prefix}#{playable.measure_count.to_s}} || ""
+
+            barnubmers_options = show_options[:barnumbers]
+
+            annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
+            annotationoffset = barnubmers_options[:pos] unless annotationoffset
+
+            position = Vector2d(lookuptable_drawing_by_playable[playable].center) + annotationoffset
+            result   = Harpnotes::Drawing::Annotation.new(position.to_a, barnumber, barnubmers_options[:style], playable.origin,
+                                                          conf_key, {pos: annotationoffset})
+            result
+          end
+        end
+
         # draw the flowlines
         previous_note  = nil
         res_flow       = voice.select { |c| c.is_a? Playable }.map do |playable|
@@ -1455,6 +1481,7 @@ module Harpnotes
         res_sub_flow   = [] unless show_options[:subflowline]
         res_flow       = [] unless show_options[:flowline]
         res_countnotes = [] unless show_options[:countnotes]
+        res_barnumbers = [] unless show_options[:barnumbers]
 
 
         # layout tuplets
@@ -1613,7 +1640,7 @@ module Harpnotes
 
 
         # return all drawing primitives
-        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_decorations + res_gotos + res_annotations + res_repeatmarks).compact
+        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_barnumbers + res_decorations + res_gotos + res_annotations + res_repeatmarks).compact
       end
 
 
@@ -2075,7 +2102,7 @@ module Harpnotes
           annotation_anchor = (cpmm1 + cpmm2) / 2 + annotation_normal * 2
         else
           # anotate westwards
-          annotation_anchor = (cpmm1 + cpmm2) / 2 + (annotation_normal * -2) - [2,0] # need to correct by x-size of number
+          annotation_anchor = (cpmm1 + cpmm2) / 2 + (annotation_normal * -2) - [2, 0] # need to correct by x-size of number
         end
         annotation_anchor = annotation_anchor + [0, -2] # literal corection since now reference point is top of line
 
