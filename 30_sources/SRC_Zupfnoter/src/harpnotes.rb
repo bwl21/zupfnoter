@@ -283,6 +283,11 @@ module Harpnotes
         @notes = notes
       end
 
+      def measure_start
+        proxy_note.measure_start
+      end
+      alias_method :measure_start?, :measure_start
+
       #
       # Yield the duration of the SyncPoint
       # Accords are always played the same length
@@ -1423,7 +1428,7 @@ module Harpnotes
 
         barnubmers_options = show_options[:barnumbers]
         if barnubmers_options
-          res_barnumbers = playables.select { |p| p.measure_start }.map do |playable|
+          res_barnumbers = playables.select { |p| p.measure_start? }.map do |playable|
             prefix = barnubmers_options[:prefix]
 
             notebound_pos_key = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}.pos"
@@ -1792,7 +1797,6 @@ module Harpnotes
                             end
 
 
-        result.hasbarover = true if result and root.measure_start
 
         result
       end
@@ -1890,6 +1894,7 @@ module Harpnotes
         res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.visible    = false unless root.visible?
+        res.hasbarover = true if root.measure_start
         res.is_note    = true
         res
       end
