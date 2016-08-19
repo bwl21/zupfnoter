@@ -515,6 +515,10 @@ module Harpnotes
         [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true, level: level)]
       end
 
+      def _transform_grace
+        nil # 'debugger'
+      end
+
       def _transform_format(voice_element)
         nil #`debugger`
       end
