@@ -317,6 +317,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_config(config)
     result       = Confstack.new(false)
     result.strict= false
+    old_config = config.clone
     result.push(config)
 
     if config['extract']
@@ -333,7 +334,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result['$version']= VERSION
     result
 
-    migrate_config_cleanup(result.get)
+    new_config = migrate_config_cleanup(result.get)
+    alert(%Q{#{I18n.t("Please double check the generated sheets.\n\nYour inpout was automatically migrated \nto Zupfnoter version")} #{VERSION}}) unless old_config == new_config
+
+    new_config
   end
 
   def migrate_config_cleanup(config)
