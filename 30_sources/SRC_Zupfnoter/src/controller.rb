@@ -168,7 +168,7 @@ class Controller
       handle_command("view 0")
     end
 
-    render_previews
+    render_previews unless uri[:parsed_search][:debug]  # prevernt initial rendition in case of hangs caused by input
     #
     setup_nodewebkit
     # # now trigger the interactive UI
@@ -862,9 +862,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       case @systemstatus[:autorefresh]
         when :on
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
-        when :off
-          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 300)`
-        when :remote
+        when :off # off means it relies on remote rendering
+          @refresh_timer = `setTimeout(function(){#{render_remote()}}, 300)`
+        when :remote # this means that the current instance runs in remote mode
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
       end
     end
