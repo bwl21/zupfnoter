@@ -293,6 +293,14 @@ C,
                                                     ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                                     REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
+
+            'barnumbers'        => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
+                                            value: {
+                                                voices: [],
+                                                pos:    [6, -4]
+                                            }} },
+            'barnumbers.full'   => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
+
             'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
             'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
@@ -630,7 +638,7 @@ C,
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
           save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
-          pdfs          = {}
+          pdfs = {}
           print_variants.map do |print_variant|
             index                                                          = print_variant[:view_id]
             filename                                                       = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
