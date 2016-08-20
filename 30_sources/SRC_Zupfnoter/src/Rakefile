@@ -20,6 +20,7 @@ ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
 desc "update public/locale"
 task :updateLocales do
+  puts "updating locales"
   locales = Dir["#{LOCALEPATH}*.json"].map { |f| f.split(LOCALEPATH).last }
   locales.each do |locale|
     w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
@@ -48,7 +49,7 @@ task :updateAbc2svg do
 end
 
 desc "Build our app to #{ZUPFNOTER_JS}"
-task :build do
+task :build => [:updateLocales] do
   #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.use_gem "vector2d"
