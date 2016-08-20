@@ -140,6 +140,7 @@ module ABC2SVG
       %Q{
       <html>
       <head>
+        <meta charset="utf-8"/>
         <style type="text/css">
            rect.abcref {fill-opacity:0.0}
           .nobrk s	{ white-space:nowrap; }
