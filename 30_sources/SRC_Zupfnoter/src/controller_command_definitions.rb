@@ -187,7 +187,7 @@ M:4/4
 L:1/4
 Q:1/4=120
 K:C
-%%score 1 2 3 4
+%%score 1 2
 V:1 clef=treble-8 name="Sopran" snm="S"
 C
 V:2 clef=treble-8  name="Alt" snm="A"
@@ -196,7 +196,10 @@ C,
 %%%%zupfnoter.config
 
 {
-  "produce": [1]
+  "produce": [1],
+  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version" : "#{VERSION}"
+
 }
 }
         args[:oldval] = @editor.get_text
