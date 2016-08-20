@@ -57,6 +57,12 @@
 
   function init_w2ui(uicontroller) {
 
+    function zoomHarpPreview(size){
+      $("#harpPreview svg").attr('height', size[0]).attr('width', size[1]);
+    };
+
+    var zoomlevel = [1400, 2200];
+
     previews = {
       'tbPreview:tbPrintA3': function () {
         url = uicontroller.$render_a3().$output('datauristring')
@@ -81,7 +87,7 @@
         w2ui['layout'].show('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
         w2ui['layout'].sizeTo('preview', "50%");
-        $("#harpPreview svg").attr('height', 700).attr('width', '100%');
+        zoomHarpPreview(zoomlevel);
       },
       'tb_perspective:NotenEingabe': function () {
         w2ui['layout'].show('left', window.instant);
@@ -96,6 +102,7 @@
         w2ui['layout'].hide('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
         w2ui['layout'].sizeTo('preview', "100%");
+        zoomHarpPreview(zoomlevel);
       },
       'tb_perspective:Noten': function () {
         w2ui['layout'].hide('left', window.instant);
@@ -110,7 +117,7 @@
         w2ui['layout'].hide('main', window.instant);
         w2ui['layout'].show('preview', window.instant);
         w2ui['layout'].sizeTo('preview', "100%");
-        $("#harpPreview svg").attr('height', 1200).attr('width', '100%');
+        zoomHarpPreview(['100%', '98%'])
       },
       'tb_view:0': function () {
         uicontroller.$handle_command("view 0")
@@ -124,15 +131,21 @@
       'tb_view:3': function () {
         uicontroller.$handle_command("view 3")
       },
-
       'tb_scale:groß': function () {
-        $("#harpPreview svg").attr('height', 1400).attr('width', 2200);
+        zoomlevel = [1400, 2200];
+        zoomHarpPreview(zoomlevel);
       },
       'tb_scale:mittel': function () {
-        $("#harpPreview svg").attr('height', 700).attr('width', 1100);
+        zoomlevel = [700,1500];
+        zoomHarpPreview(zoomlevel);
       },
       'tb_scale:klein': function () {
-        $("#harpPreview svg").attr('height', 400).attr('width', 1100);
+        zoomlevel = [400, 800];
+        zoomHarpPreview(zoomlevel);
+      },
+      'tb_scale:fit': function () {
+        zoomlevel = ['100%', '100%'];
+        zoomHarpPreview(zoomlevel);
       },
 
 
@@ -315,9 +328,10 @@
           icon: 'fa fa-search-plus',
           tooltip: 'zoom harpnote preview',
           items: [
-            {text: 'large', id: 'groß', tooltip: "large view\nto see all details"},
-            {text: 'medium', id: 'mittel', tooltip: "medium view\nmost commonly used\nautoscroll works"},
-            {text: 'small', id: 'klein', tooltip: "small view\nto get an overview"}
+            {text: 'large', id: 'groß', icon: 'fa fa-expand', tooltip: "large view\nto see all details"},
+            {text: 'medium', id: 'mittel', icon: 'fa fa-dot-circle-o', tooltip: "medium view\nmost commonly used\nautoscroll works"},
+            {text: 'small', id: 'klein', icon: 'fa fa-compress', tooltip: "small view\nto get an overview"},
+            {text: 'fit', id: 'fit', icon: 'fa fa-arrows-alt', tooltip: "fit to viewport"}
           ]
         },
         {
@@ -327,7 +341,7 @@
           icon: 'fa fa-binoculars',
           tooltip: 'set screen perspective',
           items: [
-            {text: 'All', icon: 'fa fa-th', id: 'Alle', tooltip: "show all panes"},
+            {text: 'All', icon: 'fa fa-th-large', id: 'Alle', tooltip: "show all panes"},
             {
               text: 'Enter Notes',
               icon: 'fa fa-music',

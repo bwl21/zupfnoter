@@ -36,6 +36,7 @@
 * Now generate a HTML-Page with the music notes for tune preview - also saves the html in Dropbox #59
 * prevent automatic processing after initialization by adding ?debug to the url #61
 * Now generate bar numers #60
+* improve adjustment of zoom levels #62
 
 # V 1.3.1 2016-05-17
 
