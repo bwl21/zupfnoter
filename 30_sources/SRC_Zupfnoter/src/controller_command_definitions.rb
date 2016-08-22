@@ -258,6 +258,60 @@ C,
       end
     end
 
+    @commands.add_command(:conf) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.add_parameter(:value, :boolean) do |parameter|
+        parameter.set_help { "parameter value (true | false" }
+      end
+
+
+      command.set_help { "set configuration parameter true/false" }
+
+      command.as_action do |args|
+        value = {'true' => true, 'false' => false}[args[:value]]
+
+        raise "invalid key #{args[:key]}" unless $conf.keys.include?(args[:key])
+        raise "value must be true or false" if value.nil?
+        $conf[args[:key]] = value
+
+        nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
+    end
+
+
+    @commands.add_command(:stdnotes) do |command|
+      command.undoable = false
+
+      command.set_help { "configure with template from localstore" }
+
+      command.as_action do |args|
+        handle_command("addconf standardnotes")
+      end
+    end
+
+
+    @commands.add_command(:setstdnotes) do |command|
+      command.undoable = false
+
+      command.set_help { "configure stdnotes in localstore" }
+
+      command.as_action do |args|
+        template = @editor.get_config_part_value('extract.0').to_json
+        `localStorage.setItem('standardnotes', #{template})`
+        nil
+      end
+    end
+
+
 
     @commands.add_command(:addconf) do |command|
       command.undoable = false
@@ -306,7 +360,9 @@ C,
 
             'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
             'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
+            'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
             'xx'               => lambda { {key: "xx", value: $conf[]} }
         }
 
