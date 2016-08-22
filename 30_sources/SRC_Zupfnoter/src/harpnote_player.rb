@@ -9,10 +9,10 @@ module Harpnotes
 
 
       def initialize()
-        @inst      = []
-        @isplaying = false
-        @selection = []
-        @voices_to_play = [1,2,3,4,5,6,7,8]
+        @inst           = []
+        @isplaying      = false
+        @selection      = []
+        @voices_to_play = [1, 2, 3, 4, 5, 6, 7, 8]
       end
 
       def is_playing?
@@ -52,9 +52,9 @@ module Harpnotes
       end
 
       def play_auto
-        
-        if @selection.count >= 0 and  (counts = @selection.map{|i|i[:delay]}.uniq.count) > 1
-           play_selection
+
+        if @selection.count >= 0 and (counts = @selection.map { |i| i[:delay] }.uniq.count) > 1
+          play_selection
         else
           play_from_selection
         end
@@ -67,7 +67,7 @@ module Harpnotes
           notes_to_play = @voice_elements.select do |n|
             n[:delay] >= @selection.first[:delay]
           end
-          notes_to_play = notes_to_play.select{|v| @active_voices.include? v[:index]}
+          notes_to_play = notes_to_play.select { |v| @active_voices.include? v[:index] }
 
         else
           $log.error("please select at least one note")
@@ -92,7 +92,7 @@ module Harpnotes
           #note schedule in secc, SetTimout in msec; finsh after last measure
           `clearTimeout(#{@song_off_timer})` if @song_off_timer
 
-          the_notes = the_notes.sort_by{|the_note|  the_note[:delay] + the_note[:duration]}
+          the_notes = the_notes.sort_by { |the_note| the_note[:delay] + the_note[:duration] }
 
 
           firstnote       = the_notes.first
@@ -196,6 +196,7 @@ module Harpnotes
             if root.tie_end?
               if tie_start[:pitch] == to_play[:pitch]
                 to_play[:duration] += tie_start[:duration]
+                to_play[:origin][:startChar] = tie_start[:origin][:startChar]
                 to_play[:delay]    = tie_start[:delay]
                 $log.debug("#{more_to_play} #{__FILE__} #{__LINE__}")
 
@@ -208,9 +209,11 @@ module Harpnotes
 
             if root.tie_start?
               tie_start = to_play
+             reault = nil# result = [to_play] + [more_to_play]
+            else
+              result = [to_play] + [more_to_play]
             end
-
-            [to_play] + [more_to_play]
+            result
           end
         end.flatten.compact # note that we get three nil objects bcause of the voice filter
 
@@ -225,7 +228,7 @@ module Harpnotes
         {
             delay:    note.beat * @beat_timefactor,
             pitch:    -note.pitch, # todo: why -
-            duration: note.duration * @duration_timefactor, # todo: do we need to adjust triplets?
+            duration: 1 * note.duration * @duration_timefactor, # todo: handle sustain of harp ...
             velocity: velocity,
             origin:   note.origin,
             index:    index
