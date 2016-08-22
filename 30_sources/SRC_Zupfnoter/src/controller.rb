@@ -93,14 +93,13 @@ class Controller
 
 
     # todo make this configurable by a preferences menu
-    languages = {'de' => 'de-de',
-                 'de-DE' => 'de-de',
-                  'en' => 'en-US',
-                  'en-US' => 'en-US'
-                 }
+    languages        = {'de'    => 'de-de',
+                        'de-DE' => 'de-de',
+                        'en'    => 'en-US',
+                        'en-US' => 'en-US'
+    }
     browser_language = `navigator.language`
     I18n.locale(languages[browser_language]) if browser_language
-
 
 
     `init_w2ui(#{self});`
@@ -168,7 +167,7 @@ class Controller
       handle_command("view 0")
     end
 
-    render_previews
+    render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
     #
     setup_nodewebkit
     # # now trigger the interactive UI
@@ -317,6 +316,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_config(config)
     result       = Confstack.new(false)
     result.strict= false
+    old_config   = config.clone
     result.push(config)
 
     if config['extract']
@@ -330,10 +330,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       result.push(new_legend)
     end
     result['$schema'] = SCHEMA_VERSION
-    result['$version']= VERSION
-    result
 
-    migrate_config_cleanup(result.get)
+    new_config = migrate_config_cleanup(result.get)
+
+    unless old_config == new_config
+      status = {
+          changed:    true,
+          message:    %Q{#{I18n.t(I18n.t("Please double check the generated sheets.\n\nYour abc file was automatically migrated\nto Zupfnoter version"))} #{VERSION}},
+          oldversion: old_config['$version']
+      }
+    else
+      status     = {changed: false, message: "", oldversion: old_config[$version]}
+    end
+
+    new_config['$version'] = VERSION
+
+    [new_config, status]
   end
 
   def migrate_config_cleanup(config)
@@ -482,8 +494,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       send_remote_command('render')
     end
 
-    setup_tune_preview
-
+    # note that render_tunepreview_callback also initializes the previewPrinter
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
       set_active("#tunePreview")
       `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`
@@ -545,8 +558,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       config = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
-      config = migrate_config(config)
+      config, status = migrate_config(config)
+
       @editor.set_config_part(config)
+
+      if status[:changed]
+        alert(status[:message])
+        @editor.prepend_comment(status[:message])
+      end
+
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
       $log.error("#{error.first} at #{line_col}", line_col)
@@ -861,9 +881,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       case @systemstatus[:autorefresh]
         when :on
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
-        when :off
-          @refresh_timer = `setTimeout(function(){self.$render_remote()}, 300)`
-        when :remote
+        when :off # off means it relies on remote rendering
+          @refresh_timer = `setTimeout(function(){#{render_remote()}}, 300)`
+        when :remote # this means that the current instance runs in remote mode
           @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
       end
     end
@@ -887,34 +907,34 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # returns a hash with the default values of configuration
   def _init_conf()
     result =
-        {produce:     [0],
-         abc_parser:  'ABC2SVG',
-         countnotes:  {pos: [2, -2]},
-         wrap:        60,
-         defaults:    {
+        {produce:      [0],
+         abc_parser:   'ABC2SVG',
+         restposition: {default: :center, repeatstart: :next, repeatend: :default},
+         wrap:         60,
+         defaults:     {
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
                          variantend: {pos: [-4, -7]},
                          tuplet:     {
-                             cp1:   [5, 5], # first control point positive x: point is east of flowline, positive y: point is south of note
-                             cp2:   [5, -5], # second control point
+                             cp1:   [5, 2], # first control point positive x: point is east of flowline, positive y: point is south of note
+                             cp2:   [5, -2], # second control point
                              shape: ['c'] # 'c' | 'l' => curve | line
                          }
              }
          },
-         templates:   {
+         templates:    {
              notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
              lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]}
          },
 
-         annotations: {
+         annotations:  {
              vt: {text: "v", pos: [-5, -5]},
              vr: {text: "v", pos: [2, -5]},
              vl: {text: "v", pos: [-1, -5]}
 
          }, # default for note based annotations
 
-         extract:     {
+         extract:      {
              "0" => {
                  title:        "alle Stimmen",
                  startpos:     15,
@@ -932,6 +952,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  lyrics:       {},
                  nonflowrest:  false,
                  notes:        {},
+                 barnumbers:   {
+                     voices: [],
+                     pos:    [6, -4],
+                     style:  "smallbold",
+                     prefix: ""
+                 },
                  countnotes:   {voices: [], pos: [3, -2]},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
@@ -952,90 +978,91 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
          layout:
-                      {
-                          grid:              false,
-                          limit_a3:          true,
-                          SHOW_SLUR:         false,
-                          LINE_THIN:         0.1,
-                          LINE_MEDIUM:       0.3,
-                          LINE_THICK:        0.5,
-                          # all numbers in mm
-                          ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
-                          REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
+                       {
+                           grid:              false,
+                           limit_a3:          true,
+                           SHOW_SLUR:         false,
+                           LINE_THIN:         0.1,
+                           LINE_MEDIUM:       0.3,
+                           LINE_THICK:        0.5,
+                           # all numbers in mm
+                           ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
+                           REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
 
-                          # x-size of one step in a pitch. It is the horizontal
-                          # distance between two strings of the harp
+                           # x-size of one step in a pitch. It is the horizontal
+                           # distance between two strings of the harp
 
-                          X_SPACING:         11.5, # Distance of strings
+                           X_SPACING:         11.5, # Distance of strings
 
-                          # X coordinate of the very first beat
-                          X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
+                           # X coordinate of the very first beat
+                           X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
 
-                          Y_SCALE:           4, # 4 mm per minimal
-                          DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
+                           Y_SCALE:           4, # 4 mm per minimal
+                           DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
 
-                          # this affects the performance of the harpnote renderer
-                          # it also specifies the resolution of note starts
-                          # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
-                          # in order to at least being able to handle triplets, we need to scale this up by 3
-                          # todo:see if we can speed it up by using 16 ...
-                          BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
-                          SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
-                          # in particular specifies the range of DURATION_TO_STYLE etc.
+                           # this affects the performance of the harpnote renderer
+                           # it also specifies the resolution of note starts
+                           # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
+                           # in order to at least being able to handle triplets, we need to scale this up by 3
+                           # todo:see if we can speed it up by using 16 ...
+                           BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+                           SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
+                           # in particular specifies the range of DURATION_TO_STYLE etc.
 
-                          BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
+                           BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
 
-                          # this is the negative of midi-pitch of the lowest plaayble note
-                          # see http://computermusicresource.com/midikeys.html
-                          PITCH_OFFSET:      -43,
+                           # this is the negative of midi-pitch of the lowest plaayble note
+                           # see http://computermusicresource.com/midikeys.html
+                           PITCH_OFFSET:      -43,
 
-                          FONT_STYLE_DEF:    {
-                              smaller: {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
-                              small:   {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
-                              bold:    {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
-                              regular: {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
-                              large:   {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
-                          },
+                           FONT_STYLE_DEF:    {
+                               smaller:   {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
+                               small:     {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                               smallbold: {text_color: [0, 0, 0], font_size: 9, font_style: "bold"},
+                               bold:      {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
+                               regular:   {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
+                               large:     {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
+                           },
 
-                          MM_PER_POINT:      0.3,
+                           MM_PER_POINT:      0.3,
 
-                          # This is a lookup table to map durations to graphical representation
-                          DURATION_TO_STYLE: {
-                              #key      size   fill          dot                  abc duration
+                           # This is a lookup table to map durations to graphical representation
+                           DURATION_TO_STYLE: {
+                               #key      size   fill          dot                  abc duration
 
-                              :err => [2, :filled, FALSE], # 1      1
-                              :d64 => [1, :empty, FALSE], # 1      1
-                              :d48 => [0.75, :empty, TRUE], # 1/2 *
-                              :d32 => [0.75, :empty, FALSE], # 1/2
-                              :d24 => [0.75, :filled, TRUE], # 1/4 *
-                              :d16 => [0.75, :filled, FALSE], # 1/4
-                              :d12 => [0.5, :filled, TRUE], # 1/8 *
-                              :d8  => [0.5, :filled, FALSE], # 1/8
-                              :d6  => [0.3, :filled, TRUE], # 1/16 *
-                              :d4  => [0.3, :filled, FALSE], # 1/16
-                              :d3  => [0.1, :filled, TRUE], # 1/32 *
-                              :d2  => [0.1, :filled, FALSE], # 1/32
-                              :d1  => [0.05, :filled, FALSE] # 1/64
-                          },
+                               :err => [2, :filled, FALSE], # 1      1
+                               :d64 => [1, :empty, FALSE], # 1      1
+                               :d48 => [0.75, :empty, TRUE], # 1/2 *
+                               :d32 => [0.75, :empty, FALSE], # 1/2
+                               :d24 => [0.75, :filled, TRUE], # 1/4 *
+                               :d16 => [0.75, :filled, FALSE], # 1/4
+                               :d12 => [0.5, :filled, TRUE], # 1/8 *
+                               :d8  => [0.5, :filled, FALSE], # 1/8
+                               :d6  => [0.3, :filled, TRUE], # 1/16 *
+                               :d4  => [0.3, :filled, FALSE], # 1/16
+                               :d3  => [0.1, :filled, TRUE], # 1/32 *
+                               :d2  => [0.1, :filled, FALSE], # 1/32
+                               :d1  => [0.05, :filled, FALSE] # 1/64
+                           },
 
-                          REST_TO_GLYPH:     {
-                              # this basically determines the white background rectangel
-                              # [sizex, sizey], glyph, dot # note that sizex has no effect.
-                              :err => [[2, 2], :rest_1, FALSE], # 1      1
-                              :d64 => [[1, 0.8], :rest_1, FALSE], # 1      1   # make it a bit smaller than the note to improve visibility of barover
-                              :d48 => [[0.5, 0.4], :rest_1, TRUE], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
-                              :d32 => [[0.5, 0.4], :rest_1, FALSE], # 1/2      # make it a bit smaller than the note to improve visibility of barover
-                              :d24 => [[0.4, 0.75], :rest_4, TRUE], # 1/4 *
-                              :d16 => [[0.4, 0.75], :rest_4, FALSE], # 1/4
-                              :d12 => [[0.4, 0.5], :rest_8, TRUE], # 1/8 *
-                              :d8  => [[0.4, 0.5], :rest_8, FALSE], # 1/8
-                              :d6  => [[0.4, 0.3], :rest_16, TRUE], # 1/16 *
-                              :d4  => [[0.3, 0.3], :rest_16, FALSE], # 1/16
-                              :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
-                              :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
-                              :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
-                          }
-                      }
+                           REST_TO_GLYPH:     {
+                               # this basically determines the white background rectangel
+                               # [sizex, sizey], glyph, dot # note that sizex has no effect.
+                               :err => [[2, 2], :rest_1, FALSE], # 1      1
+                               :d64 => [[1, 0.8], :rest_1, FALSE], # 1      1   # make it a bit smaller than the note to improve visibility of barover
+                               :d48 => [[0.5, 0.4], :rest_1, TRUE], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
+                               :d32 => [[0.5, 0.4], :rest_1, FALSE], # 1/2      # make it a bit smaller than the note to improve visibility of barover
+                               :d24 => [[0.4, 0.75], :rest_4, TRUE], # 1/4 *
+                               :d16 => [[0.4, 0.75], :rest_4, FALSE], # 1/4
+                               :d12 => [[0.4, 0.5], :rest_8, TRUE], # 1/8 *
+                               :d8  => [[0.4, 0.5], :rest_8, FALSE], # 1/8
+                               :d6  => [[0.4, 0.3], :rest_16, TRUE], # 1/16 *
+                               :d4  => [[0.3, 0.3], :rest_16, FALSE], # 1/16
+                               :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
+                               :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
+                               :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
+                           }
+                       }
         }
 
     result

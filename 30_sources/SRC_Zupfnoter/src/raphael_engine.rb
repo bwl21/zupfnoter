@@ -292,7 +292,7 @@ module Harpnotes
       style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
       mm_per_point = $conf.get('layout.MM_PER_POINT')
 
-      text                    = root.text.gsub("\n\n", "\n \n")
+      text                    = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n")
       element                 = @paper.text(root.center.first, root.center.last, text)
       element[:"font-size"]   = 1 #; style[:font_size]
       element[:"font-weight"] = style[:font_style]
