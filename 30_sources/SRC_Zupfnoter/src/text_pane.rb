@@ -164,7 +164,7 @@ module Harpnotes
       set_markers(annotations)
       %x{#{@editor}.getSession().setAnnotations(#{editor_annotations.to_n})}
     end
-
+    
 
     # here I started routines to maintain markers
     # maybe it is better to go back to https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
@@ -175,6 +175,16 @@ module Harpnotes
       annotations.each do |annotation|
         add_marker(annotation)
       end
+    end
+
+
+    def prepend_comment(message)
+      text =message.split(/\r?\n/).map { |l| "% #{l}" }.join("\n") + "\n%\n"
+      %x{
+      debugger;
+      #{@editor}.selection.moveCursorFileStart();
+      #{@editor}.insert(#{text});
+      }
     end
 
 
@@ -223,8 +233,8 @@ module Harpnotes
     end
 
     def get_checksum
-       s   = get_text
-        %x{
+      s = get_text
+      %x{
             var i;
             var chk = 0x12345678;
 
@@ -232,7 +242,7 @@ module Harpnotes
               chk += (#{s}.charCodeAt(i) * (i + 1));
            }
          }
-        `chk`.to_s.scan(/...?/).join(' ')
+      `chk`.to_s.scan(/...?/).join(' ')
     end
 
 

@@ -330,13 +330,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       result.push(new_legend)
     end
     result['$schema'] = SCHEMA_VERSION
-    result['$version']= VERSION
-    result
 
     new_config = migrate_config_cleanup(result.get)
-    alert(%Q{#{I18n.t("Please double check the generated sheets.\n\nYour inpout was automatically migrated \nto Zupfnoter version")} #{VERSION}}) unless old_config == new_config
 
-    new_config
+    unless old_config == new_config
+      status = {
+          changed:    true,
+          message:    %Q{#{I18n.t(I18n.t("Please double check the generated sheets.\n\nYour abc file was automatically migrated\nto Zupfnoter version"))} #{VERSION}},
+          oldversion: old_config['$version']
+      }
+    else
+      status     = {changed: false, message: "", oldversion: old_config[$version]}
+    end
+
+    new_config['$version'] = VERSION
+
+    [new_config, status]
   end
 
   def migrate_config_cleanup(config)
@@ -549,8 +558,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
       config = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
-      config = migrate_config(config)
+      config, status = migrate_config(config)
+
       @editor.set_config_part(config)
+
+      if status[:changed]
+        alert(status[:message])
+        @editor.prepend_comment(status[:message])
+      end
+
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
       $log.error("#{error.first} at #{line_col}", line_col)
@@ -936,7 +952,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  lyrics:       {},
                  nonflowrest:  false,
                  notes:        {},
-                 barnumbers:    {
+                 barnumbers:   {
                      voices: [],
                      pos:    [6, -4],
                      style:  "smallbold",
