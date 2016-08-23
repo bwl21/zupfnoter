@@ -27,6 +27,7 @@ require 'opal-jqconsole'
 require 'confstack'
 require 'opal-abc2svg'
 require 'version'
+require 'user-interface.js'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"
