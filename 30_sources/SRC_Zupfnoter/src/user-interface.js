@@ -1,7 +1,3 @@
-function check_unload() {
-    return "Leave Zupfnoter?\nreally ...?"
-}
-
 function init_w2ui(uicontroller) {
 
     function zoomHarpPreview(size) {
