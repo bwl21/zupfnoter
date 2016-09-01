@@ -87,7 +87,8 @@ end
 
 class Controller
 
-  attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
+  attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus,
+       attr_accessor: :zupfnoter_ui
 
   def initialize
 
@@ -102,7 +103,7 @@ class Controller
     I18n.locale(languages[browser_language]) if browser_language
 
 
-    `init_w2ui(#{self});`
+    @zupfnoter_ui                  = `window.hugo = new init_w2ui(#{self});`
     @update_systemstatus_consumers = {systemstatus: [
                                                         lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                                     ],
@@ -340,7 +341,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           oldversion: old_config['$version']
       }
     else
-      status     = {changed: false, message: "", oldversion: old_config[$version]}
+      status = {changed: false, message: "", oldversion: old_config[$version]}
     end
 
     new_config['$version'] = VERSION
@@ -556,8 +557,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def get_config_from_editor
     config_part = @editor.get_config_part
     begin
-      config = %x{json_parse(#{config_part})}
-      config = JSON.parse(config_part)
+      config         = %x{json_parse(#{config_part})}
+      config         = JSON.parse(config_part)
       config, status = migrate_config(config)
 
       @editor.set_config_part(config)
@@ -1072,6 +1073,5 @@ end
 
 Document.ready? do
   a = Controller.new
-  nil
 end
 

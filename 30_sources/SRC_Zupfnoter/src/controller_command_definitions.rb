@@ -312,7 +312,6 @@ C,
     end
 
 
-
     @commands.add_command(:addconf) do |command|
       command.undoable = false
 
@@ -351,19 +350,20 @@ C,
                                                     REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
-            'barnumbers'        => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
+            'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
                                             value: {
                                                 voices: [],
                                                 pos:    [6, -4]
                                             }} },
-            'barnumbers.full'   => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
+            'barnumbers.full'  => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
 
             'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
             'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
-            'xx'               => lambda { {key: "xx", value: $conf[]} }
+            'x1'               => lambda { {key: "xx", value: $conf[]} },
+            'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} }
         }
 
 
@@ -390,6 +390,8 @@ C,
           end
 
           patchvalue = local_value #|| value[:value]
+          editor     = ConfstackEditor.new(the_key, patchvalue)
+          editor.generate_form
 
           @editor.patch_config_part(the_key, patchvalue)
         else
