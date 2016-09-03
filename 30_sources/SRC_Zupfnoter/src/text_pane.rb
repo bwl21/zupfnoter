@@ -164,7 +164,7 @@ module Harpnotes
       set_markers(annotations)
       %x{#{@editor}.getSession().setAnnotations(#{editor_annotations.to_n})}
     end
-    
+
 
     # here I started routines to maintain markers
     # maybe it is better to go back to https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
@@ -279,13 +279,15 @@ module Harpnotes
     end
 
     def patch_config_part(key, object)
-      pconfig     = Confstack::Confstack.new(false)
-      config_part = get_config_part
+      pconfig       = Confstack::Confstack.new(false)
+      pconfig_patch = Confstack::Confstack.new(false)
+      config_part   = get_config_part
       begin
         config = %x{json_parse(#{config_part})}
         config = JSON.parse(config_part)
         pconfig.push(config)
-        pconfig[key] = object
+        pconfig_patch[key] = object
+        pconfig.push(pconfig_patch.get)
         set_config_part(pconfig.get)
       rescue Object => error
         line_col = get_config_position(error.last)
