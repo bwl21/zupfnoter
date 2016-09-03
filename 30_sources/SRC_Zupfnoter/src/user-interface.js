@@ -424,6 +424,130 @@ function init_w2ui(uicontroller) {
         }
     }
 
+    var editor_toolbar = {
+        id: 'toolbar',
+        name: 'editor-toolbar',
+        items: [
+            {
+                type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
+                items: [
+                    {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
+                    {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
+                    {text: 'flowlines', tooltip: "specify which voices \nshow the flowline"},
+                    {text: 'jumplines', tooltip: "specify which voices \nshow the jumplines"},
+                    {text: 'repeatsigns', tooltip: "specify which voices\nshow repeat signs instead of jumplines"},
+                    {text: 'synchlines', tooltip: "specify which voices\nare connected by synchronization lines"},
+                    {
+                        text: 'layoutlines',
+                        tooltip: "specify which voides\nare considered to compute \nvertical spacing"
+                    },
+                    {text: 'subflowlines', tooltip: "specify which voices \nshow the subflowlines"},
+                    {},
+
+                    {text: 'legend', tooltip: "specify details for legend"},
+                    {text: 'lyrics', tooltip: "specify details for lyrics"},
+                    {id: 'notes', text: 'page annotation', tooltip: "enter a page bound annotation"},
+                    {text: ''},
+
+                    {text: 'nonflowrest', tooltip: "specify if rests are shown outside of flowlines"},
+                    {text: 'startpos', tooltip: "specify the vertical start position of the notes"},
+                    {
+                        text: 'countnotes',
+                        tooltip: "specify which voices\n shwow countnotes\n and appeareance of the same"
+                    },
+                    {
+                        text: 'barnumbers',
+                        tooltip: "specify which voices\n shwow bar numbers\n and appeareance of the same"
+                    },
+                    {text: 'layout', tooltip: "specify laoyut details \n(e.g. size of symbols)"},
+                    {
+                        text: 'stringnames',
+                        tooltip: "specify output of stringnames.\n Stringnames help to tune the instrument"
+                    },
+                    {text: ''},
+                    {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
+                    {
+                        text: 'annotation template',
+                        tooltip: "specify temmplate for\n note bound annotations"
+                    },
+                    {text: ''},
+                    {text: 'stringnames.full', tooltip: "specify full details for stringnams"},
+                    {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
+                    {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
+                    {text: ''},
+                    {
+                        id: 'restpos_1.3',
+                        text: 'rests as V 1.3',
+                        tooltip: "configure positioning of rests\ncompatible to version 1.3"
+                    },
+                    {text: 'xx', tooltip: "inject the default configuration (for development use only)"},
+                ]
+            },
+            {
+                type: 'menu', text: "sheet config 2", id: 'config_2', icon: 'fa fa-gear', tooltip: "configure your sheet",
+                items: [
+                    {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
+                    {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
+                    {text: 'flowlines', tooltip: "specify which voices \nshow the flowline"},
+                    {text: 'jumplines', tooltip: "specify which voices \nshow the jumplines"},
+                    {text: 'repeatsigns', tooltip: "specify which voices\nshow repeat signs instead of jumplines"},
+                    {text: 'synchlines', tooltip: "specify which voices\nare connected by synchronization lines"},
+                    {
+                        text: 'layoutlines',
+                        tooltip: "specify which voides\nare considered to compute \nvertical spacing"
+                    },
+                    {text: 'subflowlines', tooltip: "specify which voices \nshow the subflowlines"},
+                    {},
+                ]
+            }
+
+        ],
+
+        onClick: function (event) {
+            // handle perspectives
+            if (perspectives[event.target]) {
+                perspectives[event.target]();
+                if (event.subItem) {
+                    event.item.text = event.subItem.text
+                }
+            }
+
+            // handle previews
+            if (previews[event.target]) {
+                previews[event.target]();
+            }
+
+            config_event = event.target.split(":")
+            if (['config', 'config_2'].includes(config_event[0])) {
+                if (config_event[1]) {
+                    uicontroller.$handle_command("addconf " + event.target.split(":")[1])
+                }
+            }
+            if (event.target == "tb_home") {
+                window.open("https://www.zupfnoter.de")
+            }
+            if (event.target == "tbHelp:tbTutorials") {
+                window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
+            }
+            if (event.target == "tbHelp:tbAbcTutorial") {
+                window.open("http://penzeng.de/Geige/Abc.htm")
+            }
+            if (event.target == "tbHelp:tbHomepage") {
+                window.open("http://www.zupfnoter.de")
+            }
+            if (event.target == "tbHelp:tbManual") {
+                window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
+            }
+            if (event.target == "tbHelp:tbReference") {
+                window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
+            }
+            if (event.target == "tbHelp:tbDemo") {
+                window.open("?mode=demo&load=public/demos/21_Ich_steh_an_deiner_krippen_hier.abc")
+            }
+        }
+
+    }
+
 
     var editortabshtml = '<div id="editortabspanel" style="height:100%">'
             + '<div id="abcEditor" class="tab" style="height:100%;"></div>'
@@ -483,6 +607,7 @@ function init_w2ui(uicontroller) {
                 size: '50%',
                 hidden: false,
                 resizable: true,
+                toolbar: editor_toolbar,
                 style: pstyle,
                 tabs: editortabsconfig,
                 content: editortabshtml

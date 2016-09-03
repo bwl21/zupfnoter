@@ -390,7 +390,7 @@ C,
           end
 
           patchvalue = local_value #|| value[:value]
-          editor     = ConfstackEditor.new(the_key, patchvalue)
+          editor     = ConfstackEditor.new(the_key, patchvalue, @editor)
           editor.generate_form
 
           @editor.patch_config_part(the_key, patchvalue)
