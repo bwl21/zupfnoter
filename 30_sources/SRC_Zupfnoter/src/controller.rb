@@ -779,7 +779,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def toggle_console
     %x{
        w2ui['layout'].toggle('bottom', window.instant);
-       uicontroller.editor.$resize();
+       #{@editor}.$resize();
       }
   end
 
