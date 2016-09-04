@@ -484,19 +484,13 @@ function init_w2ui(uicontroller) {
                 ]
             },
             {
-                type: 'menu', text: "sheet config 2", id: 'config_2', icon: 'fa fa-gear', tooltip: "configure your sheet",
+                type: 'menu', text: "Edit Config", id: 'edit_config', icon: 'fa fa-pencil', tooltip: "Edit configuration with forms",
                 items: [
-                    {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
-                    {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
-                    {text: 'flowlines', tooltip: "specify which voices \nshow the flowline"},
-                    {text: 'jumplines', tooltip: "specify which voices \nshow the jumplines"},
-                    {text: 'repeatsigns', tooltip: "specify which voices\nshow repeat signs instead of jumplines"},
-                    {text: 'synchlines', tooltip: "specify which voices\nare connected by synchronization lines"},
-                    {
-                        text: 'layoutlines',
-                        tooltip: "specify which voides\nare considered to compute \nvertical spacing"
-                    },
-                    {text: 'subflowlines', tooltip: "specify which voices \nshow the subflowlines"},
+                    {text: 'global', tooltip: "edit global settings for the current song"},
+                    {id: 'extract_primitives', text: 'primitives', tooltip: "Edit major settings of extract"},
+                    {id: 'legend', tooltip: "edit settings for legend\nin current extract"},
+                    {text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
+                    {id: 'notes', text: 'page annotation', tooltip: "edit settings for sheet annotations\nin current extract"},
                     {},
                 ]
             }
@@ -518,11 +512,20 @@ function init_w2ui(uicontroller) {
             }
 
             config_event = event.target.split(":")
-            if (['config', 'config_2'].includes(config_event[0])) {
+            if (['config'].includes(config_event[0])) {
                 if (config_event[1]) {
                     uicontroller.$handle_command("addconf " + event.target.split(":")[1])
                 }
             }
+
+            config_event2 = event.target.split(":")
+            if (['edit_config'].includes(config_event2[0])) {
+                if (config_event[1]) {
+                    w2ui.layout_left_tabs.click('configtab');
+                    uicontroller.$handle_command("editconf " + config_event2[1])
+                }
+            }
+
             if (event.target == "tb_home") {
                 window.open("https://www.zupfnoter.de")
             }

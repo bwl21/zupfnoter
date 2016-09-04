@@ -258,36 +258,6 @@ C,
       end
     end
 
-    @commands.add_command(:conf) do |command|
-      command.undoable = false
-
-      command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help { "parameter key" }
-      end
-
-      command.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_help { "parameter value (true | false" }
-      end
-
-
-      command.set_help { "set configuration parameter true/false" }
-
-      command.as_action do |args|
-        value = {'true' => true, 'false' => false}[args[:value]]
-
-        raise "invalid key #{args[:key]}" unless $conf.keys.include?(args[:key])
-        raise "value must be true or false" if value.nil?
-        $conf[args[:key]] = value
-
-        nil
-      end
-
-      command.as_inverse do |args|
-        $conf.pop # todo: this is a bit risky
-      end
-    end
-
-
     @commands.add_command(:stdnotes) do |command|
       command.undoable = false
 
@@ -363,7 +333,14 @@ C,
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
             'x1'               => lambda { {key: "xx", value: $conf[]} },
-            'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} }
+            'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} },
+            'hugo'             => lambda { {key: "extract.#{@systemstatus[:view]}",
+                                            value:
+                                                 [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
+                                                   r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
+                                                   r
+                                                 end
+            } }
         }
 
 
@@ -373,25 +350,23 @@ C,
 
           value = value.call
 
-          localconf              = Confstack.new
+          localconf              = Confstack.new(false)
           localconf.strict       = false
           localconf[value[:key]] = value[:value]
+          keys_from_value        = localconf.keys
 
           config_from_editor = get_config_from_editor
           localconf.push(config_from_editor)
 
-          local_value = localconf[value[:key]]
+          patchvalue = localconf[value[:key]]
 
           the_key = value[:key]
+          # this computes the next key number
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0..-2].join(".")
             next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
             the_key    = %Q{#{parent_key}.#{next_free}}
           end
-
-          patchvalue = local_value #|| value[:value]
-          editor     = ConfstackEditor.new(the_key, patchvalue, @editor)
-          editor.generate_form
 
           @editor.patch_config_part(the_key, patchvalue)
         else
@@ -400,6 +375,59 @@ C,
         end
       end
     end
+
+
+    @commands.add_command(:editconf) do |command|
+      command.undoable = false
+
+      command.add_parameter(:set, :string) do |parameter|
+        parameter.set_help { "name of the set to edit" }
+      end
+
+      command.set_help { "edit configuration parameters" }
+
+      command.as_action do |args|
+
+        def expand_extract_keys(keys)
+          keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
+        end
+
+        sets = {
+            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines])},
+            legend:             {keys: expand_extract_keys([:legend])},
+            notes:              {keys: expand_extract_keys([:notes])},
+            lyrics:             {keys: expand_extract_keys([:lyrics])},
+            global:             {keys: [:produce]}
+        }
+
+        editable_keys = sets[args[:set]][:keys]
+
+        get_configvalues = lambda do
+          localconf                = Confstack.new(false)
+          localconf.strict         = false
+          editable_values          = Confstack.new(false)
+          configvalues_from_editor = get_config_from_editor
+          localconf.push(configvalues_from_editor)
+          editable_keys.each { |k| editable_values[k] = localconf[k] }
+          editable_values.get
+        end
+
+        refresh_editor = lambda do
+          handle_command("editconf #{args[:set]}")
+        end
+
+        editor_title = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
+        config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
+        config_form_editor.generate_form
+
+        nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
+    end
+
 
     @commands.add_command(:cconf) do |command|
       command.undoable = false

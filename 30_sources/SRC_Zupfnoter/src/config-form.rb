@@ -5,7 +5,7 @@ class ConfstackEditor
       @typemap = {
           integerpairs: ['synchlines'],
           pos:          ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE'],
-          integerlist:  ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos'],
+          integerlist:  ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', :produce],
           integer:      ['startpos']
       }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
@@ -58,24 +58,18 @@ class ConfstackEditor
     end
   end
 
-  def initialize(key, value, editor)
+  def initialize(title, editor, value_handler, refresh_handler)
+    @title           = title
+    @editor          = editor
+    @refresh_handler = refresh_handler
 
-    @key    = key # the key to the root of the form
-    @value  = Confstack.new(false) # this gets the value
-    @editor = editor # the editor to patch
+    @value = Confstack.new(false)
+    @value.push(value_handler.call)
 
     @form   = nil # Form object to be passed to w2ui
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
     @record = {} # hash to prepare the record for the form
 
-    if value.is_a? Hash
-      @key = key
-      @value.push(value)
-    else
-      keyparts              = key.split('.')
-      @key                  = keyparts[0..-2].join('.')
-      @value[keyparts.last] = value
-    end
     @record = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
     nil
   end
@@ -92,10 +86,15 @@ class ConfstackEditor
     register_events
   end
 
-  def push_conig_to_editor
+  def push_config_to_editor
     patchvalue = Confstack.new(false)
-    @live_record.each { |k, v| patchvalue[k] = @helper.to_value(k, v) unless @record[k] == v }
-    @editor.patch_config_part(@key, patchvalue.get)
+    @live_record.each do |k, v|
+      patchvalue[k] = @helper.to_value(k, v) unless (@record[k] == v) #or v.nil?
+    end
+    patchvalue = patchvalue.get
+    patchvalue.keys.each do |k|
+      @editor.patch_config_part(k, patchvalue[k])
+    end
   end
 
 
@@ -118,25 +117,36 @@ class ConfstackEditor
 
   def generate_form
     @form = {
-        name:     "configform",
-        header:   I18n.t(@key),
-        style:    'border: 0px; background-color: transparent;',
-        fields:   @value.keys.map { |key| mk_field(key) }.flatten,
-        record:   @record,
-        onChange: lambda {`debugger`; push_conig_to_editor },
-        actions:  {
-            Ok: lambda { push_conig_to_editor }
+        name:       "configform",
+        #header:     I18n.t(@title),
+        style:      'border: 0px; background-color: transparent;',
+        fields:     @value.keys.map { |key| mk_field(key) }.flatten,
+        record:     @record,
+        onChange:   lambda { |event|
+          a=lambda { push_config_to_editor }
+          `event.onComplete=#{a}`
         },
-        formHTML: %Q{
+        toolbar:    {
+            items:   [
+                         {id: 'title', type: 'html', html: %Q{<div style="font-size:150%;vertical-align:middle;margin-bottom: 4px;">#{I18n.t(@title)}</div>}},
+                         {id: 'bt3', type: 'spacer'},
+                         {id: 'refresh', type: 'button', caption: 'Refresh', img: 'icon-page'},
+                     ],
+            onClick: lambda do |event|
+              refresh_form if (Native(event).target == 'refresh')
+            end
+        },
+        onValidate: lambda { alert("validate"); `debugger`; nil },
+        formHTML:   %Q{
                   #{@value.keys.map { |key| mk_fieldHTML(key) }.join('<br/>')}
-                  <div class="w2ui-buttonsx">
-                      <input type="button" value="Ok" name="Ok">#{I18n.t('Ok')}</button>
-                      <button class="w2ui-btn" name="Cancel">#{I18n.t('Cancel')}</button>
-                  </div>
-                  }
+                    }
     }
     show_form
     self
+  end
+
+  def refresh_form
+    @refresh_handler.call
   end
 
   def mk_field(key)
