@@ -28,6 +28,9 @@ require 'json'
 
 class Confstack
 
+  class DeleteMe
+  end
+
   attr_accessor :strict
   # @return [Confstack]
   def initialize(name = 'default')
@@ -227,6 +230,7 @@ class Confstack
     else
       if keys.count == 1
         hash[keys.first] = value
+        hash.delete(keys.first) if value==DeleteMe
       else
         hash[keys.first] = {} unless hash[keys.first].is_a? Hash
         _update_hash(hash[keys.first], keys[1..-1], value) #unless keys.empty?
