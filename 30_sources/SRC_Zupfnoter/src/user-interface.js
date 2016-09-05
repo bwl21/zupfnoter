@@ -488,6 +488,8 @@ function init_w2ui(uicontroller) {
                 items: [
                     {text: 'global', tooltip: "edit global settings for the current song"},
                     {id: 'extract_primitives', text: 'primitives', tooltip: "Edit major settings of extract"},
+                    {id: 'extract0', text: 'extract0', tooltip: "Edit Extract 0"},
+                    {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
                     {id: 'legend', tooltip: "edit settings for legend\nin current extract"},
                     {text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
                     {id: 'notes', text: 'page annotation', tooltip: "edit settings for sheet annotations\nin current extract"},

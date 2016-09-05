@@ -393,11 +393,13 @@ C,
         end
 
         sets = {
-            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines])},
+            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :startpos])},
             legend:             {keys: expand_extract_keys([:legend])},
             notes:              {keys: expand_extract_keys([:notes])},
             lyrics:             {keys: expand_extract_keys([:lyrics])},
-            global:             {keys: [:produce]}
+            layout:             {keys: expand_extract_keys([:layout])},
+            global:             {keys: [:produce]},
+            extract0:           {keys: ['extract.0']}
         }
 
         editable_keys = sets[args[:set]][:keys]
@@ -416,7 +418,7 @@ C,
           handle_command("editconf #{args[:set]}")
         end
 
-        editor_title = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
+        editor_title       = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
         config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
         config_form_editor.generate_form
 
