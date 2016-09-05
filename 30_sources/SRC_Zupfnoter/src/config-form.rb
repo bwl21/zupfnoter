@@ -1,12 +1,147 @@
 class ConfstackEditor
 
+  class IndicateToBeDeleted
+    def self.to_s
+      ''
+    end
+  end
+
   class ConfHelper
+    class ZnTypes
+      def self.to_value(key, string)
+        string
+      end
+
+      def self.to_string(key, value)
+        value.to_s
+      end
+
+      def self.get_help(key)
+        I18n.t(key)
+      end
+
+      def self.get_tooltip(key)
+        I18n.t(key)
+      end
+
+      def self.to_neutral(key)
+        nil
+      end
+    end
+
+    class IntegerPairs < ZnTypes
+      def self.to_value(key, string)
+        string.split(",").map { |i| i.split('-').map { |i| i.to_i } }
+      end
+
+      def self.to_string(key, value)
+        a = value.map { |v| %Q{#{v.first}-#{v.last}} }.join(", ")
+      end
+
+      def self.to_neutral(key)
+        []
+      end
+    end
+
+    class FloatPaair < ZnTypes
+      def self.to_value(key, string)
+        string.split(",").map { |i| i.to_f }
+      end
+
+      def self.to_string(key, value)
+        %Q{#{value.first}, #{value.last}}
+      end
+
+      def self.to_neutral(key)
+        [0, 0]
+      end
+    end
+
+    class Integer < ZnTypes
+      def self.to_value(key, string)
+        string.to_i
+      end
+
+      def self.to_string(key, value)
+        value.to_s
+      end
+
+      def self.to_neutral(key)
+        nil
+      end
+    end
+
+    class Boolean < ZnTypes
+      def self.to_value(key, string)
+        string.to_s.eql?('true') ? true : false
+      end
+
+      def self.to_string(key, value)
+        value.to_s
+      end
+
+      def self.to_neutral(key)
+        nil
+      end
+    end
+
+    class Float < ZnTypes
+      def self.to_value(key, string)
+        string.to_f
+      end
+
+      def self.to_string(key, value)
+        value.to_s
+      end
+
+      def self.to_neutral(key)
+        nil
+      end
+    end
+
+    class OneLineString < ZnTypes
+      def self.to_value(key, string)
+        string
+      end
+
+      def self.to_string(key, value)
+        value
+      end
+
+      def self.to_neutral(key)
+        ""
+      end
+    end
+
+    class MultiLineString < OneLineString
+    end
+
+    class IntegerList < ZnTypes
+      def self.to_value(key, string)
+        string.split(",").map { |i| i.to_i }
+      end
+
+      def self.to_string(key, value)
+        value.map { |i| i.to_s }.join(", ")
+      end
+
+      def self.to_neutral(key)
+        []
+      end
+
+    end
+
+
     def initialize
       @typemap = {
-          integerpairs: ['synchlines'],
-          pos:          ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE'],
-          integerlist:  ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', :produce],
-          integer:      ['startpos']
+          IntegerPairs    => ['synchlines'],
+          FloatPaair      => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE'],
+          IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', :produce],
+          Integer         => ['startpos'],
+          OneLineString   => ['title'],
+          MultiLineString => ['text'],
+          Boolean         => ['limit_a3'],
+          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK']
       }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil
@@ -21,40 +156,21 @@ class ConfstackEditor
     end
 
     def to_string(key, value)
-      type = _type(key)
-      if value.nil?
-        nil
-      elsif type == :integerpairs
-        value.map { |v| "#{v.first}-#{v.last}" }.join(", ")
-      elsif type == :pos
-        %Q{#{value.first}, #{value.last}}
-      elsif type == :integerlist
-        %Q{#{value.join(", ")}}
-      else
-        value.to_s
-      end
+      _type(key).to_string(key, value) unless value.nil?
     end
 
     def to_value(key, string)
-      type = _type(key)
-      if string.nil?
-        nil
-      elsif type == :integerpairs
-        string.split(",").map { |i| i.split('-').map { |i| i.to_i } }
-      elsif type == :pos
-        string.split(",").map { |i| i.to_f }
-      elsif type == :integerlist
-        string.split(",").map { |i| i.to_i }
-      elsif type == :integer
-        string.to_i
-      else
-        string
-      end
+      _type(key).to_value(key, string) unless string.nil?
     end
+
+    def to_neutral(key)
+      _type(key).to_neutral(key)
+    end
+
 
     def _type(key)
       lookupkey = key.split('.').last
-      @typemap[lookupkey]
+      @typemap[lookupkey] || ZnTypes
     end
   end
 
@@ -86,11 +202,36 @@ class ConfstackEditor
     register_events
   end
 
+# This performs the push to the editor
+# it is done field by field
+# distinguish the cases
+# record     liverecord
+#   nil         nil         don't do anything
+#   nil         notnil      set the value
+#   no nil      nil         set to no effect value
+#   no nil     delete       actively delete the value from the editor
+# field had no value and does not provide one - don't do anything
+# filed
   def push_config_to_editor
     patchvalue = Confstack.new(false)
     @live_record.each do |k, v|
-      patchvalue[k] = @helper.to_value(k, v) unless (@record[k] == v) #or v.nil?
+      if @record[k].nil?
+        patchvalue[k] = @helper.to_value(k, v) unless v.nil?
+      else
+        if v.nil?
+          patchvalue[k] = @helper.to_value(k, nil) # this will produce the 'empty value'
+        else
+          patchvalue[k] = @helper.to_value(k, v) unless (@record[k] == v) #or v.nil?
+        end
+      end
+
+      if v == IndicateToBeDeleted
+        `debugger`
+        patchvalue[k] = nil
+        @editor.delete_config_part(k)
+      end
     end
+
     patchvalue = patchvalue.get
     patchvalue.keys.each do |k|
       @editor.patch_config_part(k, patchvalue[k])
@@ -98,19 +239,30 @@ class ConfstackEditor
   end
 
 
+# this registers the events for fields
+# as of now it is only config button
   def register_events
     handler = lambda do |evt|
-      target   = Native(evt).target[:name].split(':')
-      newvalue = nil
-      newvalue = '' if target.last == 'delete'
-      newvalue = @value[target.first] if target.last == 'default'
-      if newvalue
-        %x{
-          w2ui['configform'].record[#{target.first}] = #{newvalue};
-          w2ui['configform'].refresh();
-        }
-        register_events
+      target = Native(evt).target[:name].split(':')
+      case target.last
+        when 'delete'
+          @editor.delete_config_part(target.first)
+        when 'neutral'
+          @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
+        when 'xxx'
+          newvalue = nil
+          newvalue = IndicateToBeDeleted if target.last == 'delete'
+          newvalue = @helper.to_string(target.first, @value[target.first]) if target.last == 'default'
+
+          if newvalue
+            %x{
+               w2ui['configform'].record[#{target.first}] = #{newvalue};
+               w2ui['configform'].refresh();
+              }
+            push_config_to_editor
+          end
       end
+      register_events
     end
     %x{$('.znconfig-button').click(#{handler})}
   end
@@ -138,7 +290,9 @@ class ConfstackEditor
         },
         onValidate: lambda { alert("validate"); `debugger`; nil },
         formHTML:   %Q{
-                  #{@value.keys.map { |key| mk_fieldHTML(key) }.join('<br/>')}
+                    <table>
+                    #{@value.keys.map { |key| mk_fieldHTML(key) }.join}
+                    </table>
                     }
     }
     show_form
@@ -146,6 +300,7 @@ class ConfstackEditor
   end
 
   def refresh_form
+    # todo handle focus
     @refresh_handler.call
   end
 
@@ -161,17 +316,27 @@ class ConfstackEditor
 
 
   def mk_fieldHTML(key)
-    if @value[key].is_a? Hash
-      %Q{<div><strong>#{ I18n.t("#{key}.caption")}</strong></div>}
+    if  @value[key].is_a? Hash
+
+      %Q{
+         <tr>
+           <td> <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
+           <td><div><strong>#{ I18n.t("#{key}.caption")}</strong></div></td>
+         </tr>
+        }
     else
       %Q{
-        <div class="w2ui-field">
-        <label>#{ I18n.t("#{key}.caption")}</label>
-        <input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>
-        <button class="znconfig-button fa fa-arrow-circle-left" name="#{key}:default"></button>
-        <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
-         #{@record[key]}
-        </div>
+        <tr>
+         <td> <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
+         <td>
+            <div class="w2ui-field">
+            <label>#{ I18n.t("#{key}.caption")}</label>
+            <input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>
+            <button class="znconfig-button fa fa-circle-o" name="#{key}:neutral"></button>
+             #{@record[key]}
+            </div>
+        </td>
+       </tr>
     }
     end
   end
