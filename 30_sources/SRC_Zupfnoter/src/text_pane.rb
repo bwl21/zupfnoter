@@ -257,6 +257,7 @@ module Harpnotes
                        explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                                         :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
                                         :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
+                                        :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
                                         "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                                         :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
                                        ],
@@ -279,16 +280,17 @@ module Harpnotes
     end
 
     def patch_config_part(key, object)
-      pconfig       = Confstack::Confstack.new(false)
-      pconfig_patch = Confstack::Confstack.new(false)
+      pconfig       = Confstack::Confstack.new(false) # what we get from editor
+      pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
       config_part   = get_config_part
       begin
-        config = %x{json_parse(#{config_part})}
         config = JSON.parse(config_part)
         pconfig.push(config)
+
         pconfig_patch[key] = object
         pconfig.push(pconfig_patch.get)
         set_config_part(pconfig.get)
+
       rescue Object => error
         line_col = get_config_position(error.last)
         $log.error("#{error.first} at #{line_col}", line_col)
@@ -296,6 +298,14 @@ module Harpnotes
       end
     end
 
+    def delete_config_part(key)
+      pconfig     = Confstack::Confstack.new(false) # what we get from editor
+      config_part = get_config_part
+      config      = JSON.parse(config_part)
+      pconfig.push(config)
+      pconfig[key] = Confstack::DeleteMe
+      set_config_part(pconfig.get)
+    end
 
     def get_config_part_value(key)
       pconfig     = Confstack::Confstack.new(false)
