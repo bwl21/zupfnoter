@@ -135,6 +135,7 @@ module Harpnotes
 
         @jumptargets = {} # the lookup table for jumps
 
+        @is_first_measure   = true # this is the first measure after a meter statement
         @measure_start_time = 0
         @measure_count      = 0
 
@@ -228,7 +229,7 @@ module Harpnotes
       end
 
       # investigate if we should draw a bar on the very first note
-      # algrithm: Compare time of first bar with the difference to the next bar
+      # algrithm: Compare time of first bar wmeasuere (the length of a measure)
       # todo: this can be improved to flag errors in case wrong measures
       #
       def _investigate_first_bar(voice_model)
@@ -241,7 +242,7 @@ module Harpnotes
         @measure_start_time = 0 #
         if bars.first
           @measure_start_time        = bars.first[:time] - @wmeasure # for count_notes
-          @next_note_marks[:measure] = true if bars.first and (bars.first[:time] == @wmeasure) #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
+          @next_note_marks[:measure] = true if bars.first and (@measure_start_time == 0) #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
         end
       end
 
@@ -291,6 +292,15 @@ module Harpnotes
 
 
         result << _transform_bar_repeat_end(voice_element) if type =~/^:.*$/
+
+        if type.include? ':'
+          unless @is_first_measure ## first measure after a meter statment cannot suppress bar
+            @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
+          end
+        end
+
+        @is_first_measure = false
+        result
       end
 
       # @param [Object] voice_index this is not used but keeps the inteface consistent with _transform_rest
@@ -528,7 +538,8 @@ module Harpnotes
       end
 
       def _transform_meter(voice_element)
-        @wmeasure = voice_element[:wmeasure]
+        @is_first_measure = true
+        @wmeasure         = voice_element[:wmeasure]
         @countby = voice_element[:a_meter].first[:bot].to_i rescue nil
         nil
       end

@@ -1,3 +1,14 @@
+# V 1.4.1
+
+## enhandment
+
+* suppress measure bar if repetition starts within measure #42
+
+## fixes
+
+* force reading dropped abc-files as utf-8 #66
+* annotation template now works
+
 # V 1.4.0
 
 * fixed harpnote-player (no longer relies on last voice, no noise if song starts with rests) (#20)

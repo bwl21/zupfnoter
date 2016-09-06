@@ -742,6 +742,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                           event.preventDefault();
                           files = event.dataTransfer.files;
                           reader = new FileReader();
+                          reader.readAsText(files[0], "UTF-8");
                           reader.onload = function (e) {
                              text = e.target.result;
                              if (text[0] == '<'){
