@@ -393,7 +393,7 @@ C,
         end
 
         sets = {
-            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :startpos, :repeatsigns])},
+            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :startpos ])},
             tuplet:             {keys: expand_extract_keys([:tuplet])},
             notes:              {keys: expand_extract_keys([:notes])},
             lyrics:             {keys: expand_extract_keys([:lyrics])},
