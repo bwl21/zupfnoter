@@ -43,7 +43,7 @@ class ConfstackEditor
       end
     end
 
-    class FloatPaair < ZnTypes
+    class FloatPair < ZnTypes
       def self.to_value(key, string)
         string.split(",").map { |i| i.to_f }
       end
@@ -128,20 +128,34 @@ class ConfstackEditor
       def self.to_neutral(key)
         []
       end
+    end
 
+    class TupletShape < ZnTypes
+      def self.to_value(key, string)
+        string.split(",").map{|s| s.strip}
+      end
+
+      def self.to_string(key, value)
+        value.join(', ')
+      end
+
+      def self.to_neutral(key)
+        "c"
+      end
     end
 
 
     def initialize
       @typemap = {
           IntegerPairs    => ['synchlines'],
-          FloatPaair      => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE'],
+          FloatPair       => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', 'cp1', 'cp2'],
           IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', :produce],
           Integer         => ['startpos'],
           OneLineString   => ['title'],
           MultiLineString => ['text'],
           Boolean         => ['limit_a3'],
-          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK']
+          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK'],
+          TupletShape     => ['shape']
       }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil
@@ -316,7 +330,7 @@ class ConfstackEditor
 
 
   def mk_fieldHTML(key)
-    if  @value[key].is_a? Hash
+    if @value[key].is_a? Hash
 
       %Q{
          <tr>
