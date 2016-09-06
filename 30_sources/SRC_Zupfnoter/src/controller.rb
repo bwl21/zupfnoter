@@ -801,9 +801,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @editor.on_selection_change do |e|
       a = @editor.get_selection_positions
+      selection_info = @editor.get_selection_info
+      ranges = selection_info[:selection]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
-      unless # a.first == a.last
-      @tune_preview_printer.range_highlight(a.first, a.last)
+
+
+      unless false # a.first == a.last
+        @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
@@ -812,6 +816,18 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @editor.on_cursor_change do |e|
       request_refresh(false)
+
+      selection_info = @editor.get_selection_info
+      ranges = selection_info[:selection]
+
+      position = "#{ranges.first.first}:#{ranges.first.last}"
+      position += " - #{ranges.last.first}:#{ranges.last.last}" unless ranges.first == ranges.last
+
+      editorstatus = {position: position,
+                      tokeninfo: "#{selection_info[:token][:type]} [#{selection_info[:token][:value]}]"}
+
+      `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
+
     end
 
     @harpnote_player.on_noteon do |e|

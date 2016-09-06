@@ -235,3 +235,19 @@ rect.abcref:hover {
 rect.highlight {
   fill: red;
   fill-opacity: 0.2; }
+
+.zn-nilfield {
+  border: 1px solid #b5b4b6 !important;
+  background-color: #b5b4b6 !important; }
+
+.zn-statusbar {
+  border: 1px solid #b5b4b6 !important; }
+
+#statusbar-layout .w2ui-tb-caption {
+  vertical-align: top; }
+
+#statusbar-layout table {
+  vertical-align: top; }
+
+#statusbar-layout * {
+  vertical-align: top; }

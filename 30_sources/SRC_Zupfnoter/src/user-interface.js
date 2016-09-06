@@ -171,9 +171,14 @@ function init_w2ui(uicontroller) {
         }
     }
 
+    var pstyle = 'background-color:  #f7f7f7; padding: 0px; overflow:hidden; '; // pajnel style
+    var tbstyle = 'background-color: #ffffff; padding: 0px; overflow:hidden; height:30px;'; // toolbar style
+    var sbstyle = 'background-color: #ffffff; padding: 0  px; overflow:hidden; height:30px;border-top:1px solid black !important;'; // statusbar style
+
     var toolbar = {
         id: 'toolbar',
         name: 'toolbar',
+        style: tbstyle,
         items: [
             {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: '<span id="lbZupfnoter">Zupfnoter</span>'},
             {type: 'html', html: '<div style="width:25px"/>'},
@@ -194,14 +199,7 @@ function init_w2ui(uicontroller) {
             },
             {type: 'button', id: 'tb_open', text: 'Open', icon: 'fa fa-dropbox', tooltip: 'Open ABC file in dropbox'},
             {type: 'button', id: 'tb_save', text: 'Save', icon: 'fa fa-dropbox', tooltip: 'Save ABC file in dropbox'},
-            {
-                type: 'html',
-                html: '<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbStatus" style="margin-top: 5px;"></span></div>'
-            },
-            {
-                type: 'html',
-                html: '<div style="padding: 5px; background-color: #f0f0f0;;"><span id="tbCoords" style="margin-top: 5px;"></span></div>'
-            },
+
 
             {type: 'spacer'},
 
@@ -427,6 +425,7 @@ function init_w2ui(uicontroller) {
     var editor_toolbar = {
         id: 'toolbar',
         name: 'editor-toolbar',
+        style: tbstyle,
         items: [
             {
                 type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
@@ -484,7 +483,11 @@ function init_w2ui(uicontroller) {
                 ]
             },
             {
-                type: 'menu', text: "Edit Config", id: 'edit_config', icon: 'fa fa-pencil', tooltip: "Edit configuration with forms",
+                type: 'menu',
+                text: "Edit Config",
+                id: 'edit_config',
+                icon: 'fa fa-pencil',
+                tooltip: "Edit configuration with forms",
                 items: [
                     {text: 'global', tooltip: "edit global settings for the current song"},
                     {id: 'extract_primitives', text: 'primitives', tooltip: "Edit major settings of extract"},
@@ -492,7 +495,11 @@ function init_w2ui(uicontroller) {
                     {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
                     {id: 'tuplet', tooltip: "edit settings for tuplets\nin current extract"},
                     {text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
-                    {id: 'notes', text: 'page annotation', tooltip: "edit settings for sheet annotations\nin current extract"},
+                    {
+                        id: 'notes',
+                        text: 'page annotation',
+                        tooltip: "edit settings for sheet annotations\nin current extract"
+                    },
                     {},
                 ]
             }
@@ -552,6 +559,46 @@ function init_w2ui(uicontroller) {
         }
 
     }
+    var statusbar = {
+        id: 'statusbarbar',
+        name: 'statusbar',
+        style: sbstyle,
+        items: [
+            {
+                type: 'button',
+                id: 'sb_cursorposition',
+                text: '<div style="padding: 0px !important;"><span class="editor-status-position" "></span></div>'
+            },
+            {
+                type: 'button',
+                id: 'sb_tokeninfo',
+                size: '50px',
+                text: '<div style="padding: 0px !important;"><span class="editor-status-tokeninfo" "></span></div>'
+            },
+            {
+                type: 'button',
+                id: 'sb_dropbox-status',
+                text: '<div style="padding: 0px !important;"><span class="dropbox-status" "></span></div>'
+            },
+            {
+                type: 'button',
+                id: 'sb_loglevel',
+                text: '<div style="padding: 0px !important;"><span class="sb-loglevel" "></span></div>'
+            },
+
+        ],
+
+        onClick: function (event) {
+
+
+            config_event = event.target.split(":")
+            if (['config'].includes(config_event[0])) {
+                if (config_event[1]) {
+                    uicontroller.$handle_command("addconf " + event.target.split(":")[1])
+                }
+            }
+        }
+    }
 
 
     var editortabshtml = '<div id="editortabspanel" style="height:100%">'
@@ -602,11 +649,29 @@ function init_w2ui(uicontroller) {
         }
     };
 
-    var pstyle = 'background-color: #fffff; padding: 5px;';
+
+    $('#statusbar-layout').w2layout(
+        {
+            name: 'statusbar-laoyut',
+            panels: [
+                //{type: 'main', id: 'statusbar', resizable: false, style: pstyle, content: '<div id="statusbar" style="overflow:hidden;border: 1pt solid #000000;" class="zn-statusbar" >statusbar</div>',  hidden: false}
+                {
+                    type: 'main',
+                    id: 'statusbar',
+                    resizable: false,
+                    style: pstyle,
+                    content: '',
+                    toolbar: statusbar,
+                    hidden: false
+                }
+            ]
+        }
+    );
+
     $('#layout').w2layout({
         name: 'layout',
         panels: [
-            {type: 'top', id: 'foobar', size: 40, resizable: false, content: '', toolbar: toolbar, hidden: false},  // Toolbar
+            {type: 'top', id: 'foobar', size: 30, resizable: false, content: '', toolbar: toolbar, hidden: false},  // Toolbar
             {
                 type: 'left',
                 size: '50%',
@@ -669,13 +734,25 @@ function set_tbitem_caption(item, caption) {
 }
 
 function update_systemstatus_w2ui(systemstatus) {
-    $("#tbStatus").html(systemstatus.dropbox);
+    $(".dropbox-status").html(systemstatus.dropbox);
+
     set_tbitem_caption('tb_view', systemstatus.view);
+
     if (systemstatus.music_model == 'changed') {
         $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
     } else {
         $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "")
     }
+    ;
+
+    $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
+}
+
+
+function update_editor_status_w2ui(editorstatus) {
+    $(".editor-status-position").html(editorstatus.position);
+    $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
+
 }
 
 function update_play_w2ui(status) {

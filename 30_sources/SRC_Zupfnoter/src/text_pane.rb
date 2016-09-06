@@ -97,6 +97,14 @@ module Harpnotes
       [`range_start`, `range_end`]
     end
 
+    def get_selection_info
+      %x{
+         doc = self.editor.selection.doc;
+         range = self.editor.selection.getRange();
+         token = self.editor.session.getTokenAt(range.start.row, range.start.column);
+        }
+      Native(`{selection: [[range.start.row+1, range.start.column+1], [range.end.row+1, range.end.column+1]], token: token}`)
+    end
 
     #
     # Select by position (in opposite to row/column pairs)
