@@ -74,6 +74,12 @@ module Harpnotes
       end
     end
 
+    def on_draggable_rightcklick(&block)
+      @paper.on_draggable_rightclick do |info|
+        block.call(Native(info))
+      end
+    end
+
 
     # remove all hightlights
     def unhighlight_all()

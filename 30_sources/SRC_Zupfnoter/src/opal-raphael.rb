@@ -111,13 +111,15 @@ module Raphael
     #
     # @return [type] [description]
     def initialize(element, width, height)
-      @on_drop              = lambda { |dropinfo| $log.info(dropinfo) }
-      @on_mouseover_handler = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
-      @on_mouseout_handler  = lambda { |dropinfo| }
-      @canvas               = [width, height]
-      @scale                = 1
-      @r                    = `Raphael(element, width, height)`
-      @line_width           = 0.2 # todo:clarify value
+      @on_drag_end                  = lambda { |dropinfo| $log.info(dropinfo) }
+      @on_mouseover_handler         = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
+      @on_mouseout_handler          = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
+      @draggable_rightclick_handler = lambda { |dropinfo|}
+
+      @canvas     = [width, height]
+      @scale      = 1
+      @r          = `Raphael(#{element}, #{width}, #{height})`    # this creates the raphael paper
+      @line_width = 0.2 # todo:clarify value
     end
 
     # @return the native raphael object
@@ -139,7 +141,7 @@ module Raphael
     end
 
     def on_mouseover(&block)
-     @on_mouseover_handler = block
+      @on_mouseover_handler = block
     end
 
     def on_mouseout(&block)
@@ -147,7 +149,11 @@ module Raphael
     end
 
     def on_annotation_drag_end(&block)
-      @on_drop = block
+      @on_drag_end = block
+    end
+
+    def on_draggable_rightclick(&block)
+      @draggable_rightclick_handler = block
     end
 
     def draggable(element)
@@ -165,26 +171,34 @@ module Raphael
             lx = Math.round(scale * dx) + ox;
             ly = Math.round(scale * dy) + oy;
 
-            this.transform('t' + lx + ',' + ly + otransform);
+              if (doDrag)this.transform('t' + lx + ',' + ly + otransform);
           },
-          startFnc = function() {},
+
+          startFnc = function() { (event.button == 0) ? doDrag=true: doDrag=false;},
+
           endFnc = function() {
-            ox = lx;
-            oy = ly;
-            element.r.attr({fill: 'red'});
-            #{@on_drop}({element: element.r, "conf_key": element.conf_key, "conf_value": element.conf_value, "origin": element.startpos, "delta":  [ox, oy]} );
+            if (doDrag){
+              ox = lx;
+              oy = ly;
+              element.r.attr({fill: 'red'});
+              #{@on_drag_end}({element: element.r, "conf_key": element.conf_key, "conf_value": element.conf_value, "origin": element.startpos, "delta":  [ox, oy]} );
+            }
           };
+
           mouseoverFnc = function(){
             #{@on_mouseover_handler}({element: element.r, conf_key: element.conf_key})
           }
+
           mouseoutFnc = function(){
             #{@on_mouseout_handler}({element: element.r, conf_key: element.conf_key})
           }
 
-     //  element.r.mouseover(function(){alert(element.conf_key)});
       element.r.drag(moveFnc, startFnc, endFnc);
       element.r.mouseover(mouseoverFnc);
       element.r.mouseout(mouseoutFnc);
+
+      element.r.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: element.r, conf_key: element.conf_key});};
+
       }
     end
 
