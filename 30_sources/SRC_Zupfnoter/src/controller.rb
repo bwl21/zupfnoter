@@ -6,6 +6,10 @@ module I18n
     `w2utils.lang(#{text})`
   end
 
+  def self.t_key(key)
+    key.split(".").last
+  end
+
   def self.locale(language)
     `w2utils.locale('public/locale/' + #{language} + '.json')`
   end
@@ -665,7 +669,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end
-    
+
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
       conf_key = info[:conf_key]
@@ -685,6 +689,21 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       `update_mouseover_status_w2ui('')`
     end
 
+    @harpnote_preview_printer.on_draggable_rightcklick do |info|
+      %x{
+          $(#{info.to_n}.element.node).w2menu({
+                                       items: [
+                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' },
+                                                  { id: 'template', text: 'Add template', icon: 'fa fa-gear' },
+                                              ],
+                                       onSelect: function (event) {
+                                           w2ui.layout_left_tabs.click('configtab');
+                                           #{handle_command(%Q{editconf #{info[:conf_key].gsub(/\.[^\.]+$/, '') }})}
+                                       }
+                                   });
+          return false ;
+        };
+    end
 
   end
 
@@ -816,9 +835,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     @editor.on_selection_change do |e|
-      a = @editor.get_selection_positions
+      a              = @editor.get_selection_positions
       selection_info = @editor.get_selection_info
-      ranges = selection_info[:selection]
+      ranges         = selection_info[:selection]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
 
@@ -834,12 +853,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       request_refresh(false)
 
       selection_info = @editor.get_selection_info
-      ranges = selection_info[:selection]
+      ranges         = selection_info[:selection]
 
       position = "#{ranges.first.first}:#{ranges.first.last}"
       position += " - #{ranges.last.first}:#{ranges.last.last}" unless ranges.first == ranges.last
 
-      editorstatus = {position: position,
+      editorstatus = {position:  position,
                       tokeninfo: "#{selection_info[:token][:type]} [#{selection_info[:token][:value]}]"}
 
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
@@ -956,9 +975,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                          }
              }
          },
-         templates:    {
+         templates:    { # this is used to update / create new objects
              notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
-             lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]}
+             lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]},
+             tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']}
          },
 
          annotations:  {
