@@ -665,7 +665,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end
-
+    
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
       conf_key = info[:conf_key]
@@ -676,6 +676,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       report = "#{conf_key}: #{newcoords}"
       `$("#harpPreview").w2overlay(#{report});`
     end
+
+    @harpnote_preview_printer.on_mouseover do |info|
+      `update_mouseover_status_w2ui(#{info.conf_key})`
+    end
+
+    @harpnote_preview_printer.on_mouseout do |info|
+      `update_mouseover_status_w2ui('')`
+    end
+
+
   end
 
 

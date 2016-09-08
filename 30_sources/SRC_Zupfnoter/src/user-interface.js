@@ -242,6 +242,7 @@ function init_w2ui(uicontroller) {
                     {text: ''},
                     {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
                     {
+                        id: 'annotations',
                         text: 'annotation template',
                         tooltip: "specify temmplate for\n note bound annotations"
                     },
@@ -466,6 +467,7 @@ function init_w2ui(uicontroller) {
                     {text: ''},
                     {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
                     {
+                        id: 'annotations',
                         text: 'annotation template',
                         tooltip: "specify temmplate for\n note bound annotations"
                     },
@@ -584,6 +586,12 @@ function init_w2ui(uicontroller) {
                 type: 'button',
                 id: 'sb_loglevel',
                 text: '<div style="padding: 0px !important;"><span class="sb-loglevel" "></span></div>'
+            },
+            {type: 'spacer'},
+            {
+                type: 'button',
+                id: 'sb_confkey',
+                text: '<div style="padding: 0px !important;"><span class="mouseover-conf-key"></span></div>'
             },
 
         ],
@@ -752,7 +760,10 @@ function update_systemstatus_w2ui(systemstatus) {
 function update_editor_status_w2ui(editorstatus) {
     $(".editor-status-position").html(editorstatus.position);
     $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
+}
 
+function update_mouseover_status_w2ui(element_info){
+    $(".mouseover-conf-key").html(element_info);
 }
 
 function update_play_w2ui(status) {
