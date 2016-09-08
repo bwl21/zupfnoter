@@ -27,6 +27,12 @@ class ConfstackEditor
       def self.to_neutral(key)
         nil
       end
+
+      def self.to_template(key)
+        template = key.split('.')[-2]
+        a        = $conf.get("templates.#{template}") if template
+        a
+      end
     end
 
     class IntegerPairs < ZnTypes
@@ -132,7 +138,7 @@ class ConfstackEditor
 
     class TupletShape < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map{|s| s.strip}
+        string.split(",").map { |s| s.strip }
       end
 
       def self.to_string(key, value)
@@ -181,6 +187,9 @@ class ConfstackEditor
       _type(key).to_neutral(key)
     end
 
+    def to_template(key)
+      _type(key).to_template(key)
+    end
 
     def _type(key)
       lookupkey = key.split('.').last
@@ -263,18 +272,8 @@ class ConfstackEditor
           @editor.delete_config_part(target.first)
         when 'neutral'
           @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
-        when 'xxx'
-          newvalue = nil
-          newvalue = IndicateToBeDeleted if target.last == 'delete'
-          newvalue = @helper.to_string(target.first, @value[target.first]) if target.last == 'default'
-
-          if newvalue
-            %x{
-               w2ui['configform'].record[#{target.first}] = #{newvalue};
-               w2ui['configform'].refresh();
-              }
-            push_config_to_editor
-          end
+        when 'fillup'
+          @editor.patch_config_part(target.first, @helper.to_template(target.first))
       end
       register_events
     end
@@ -330,12 +329,19 @@ class ConfstackEditor
 
 
   def mk_fieldHTML(key)
-    if @value[key].is_a? Hash
+
+    fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" name="#{key}:fillup">#{key}</button>} if @helper.to_template(key)
+
+    if @value[key].is_a? Hash # todo query type
 
       %Q{
          <tr>
-           <td> <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
-           <td><div><strong>#{ I18n.t("#{key}.caption")}</strong></div></td>
+           <td>
+            <hr/>
+            <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
+            #{fillupbutton}
+           </td>
+           <td><hr/><div><strong>#{ I18n.t_key("#{key}")}</strong></div></td>
          </tr>
         }
     else
@@ -343,10 +349,10 @@ class ConfstackEditor
         <tr>
          <td> <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
          <td>
+            <div><strong>#{ I18n.t_key("#{key}")}</strong></div>
             <div class="w2ui-field">
-            <label>#{ I18n.t("#{key}.caption")}</label>
             <input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>
-            <button class="znconfig-button fa fa-circle-o" name="#{key}:neutral"></button>
+            #{fillupbutton}
              #{@record[key]}
             </div>
         </td>
