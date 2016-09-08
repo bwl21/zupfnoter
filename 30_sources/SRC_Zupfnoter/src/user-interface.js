@@ -492,17 +492,18 @@ function init_w2ui(uicontroller) {
                 tooltip: "Edit configuration with forms",
                 items: [
                     {text: 'global', tooltip: "edit global settings for the current song"},
-                    {id: 'extract_primitives', text: 'primitives', tooltip: "Edit major settings of extract"},
-                    {id: 'extract0', text: 'extract0', tooltip: "Edit Extract 0"},
+                    {id: 'extract_primitives', text: 'basic settings', tooltip: "Edit basic settings of extract"},
                     {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
-                    {id: 'tuplet', tooltip: "edit settings for tuplets\nin current extract"},
                     {text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
                     {
                         id: 'notes',
                         text: 'page annotation',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
+                    {id: 'tuplet', tooltip: "edit settings for tuplets\nin current extract"},
                     {},
+                    {id: 'extract0', text: 'extract 0', tooltip: "Edit extract 0"},
+                    {id: 'extract_current', text: 'current extract', tooltip: "Edit current extract"}
                 ]
             }
 
@@ -535,28 +536,6 @@ function init_w2ui(uicontroller) {
                     w2ui.layout_left_tabs.click('configtab');
                     uicontroller.$handle_command("editconf " + config_event2[1])
                 }
-            }
-
-            if (event.target == "tb_home") {
-                window.open("https://www.zupfnoter.de")
-            }
-            if (event.target == "tbHelp:tbTutorials") {
-                window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
-            }
-            if (event.target == "tbHelp:tbAbcTutorial") {
-                window.open("http://penzeng.de/Geige/Abc.htm")
-            }
-            if (event.target == "tbHelp:tbHomepage") {
-                window.open("http://www.zupfnoter.de")
-            }
-            if (event.target == "tbHelp:tbManual") {
-                window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
-            }
-            if (event.target == "tbHelp:tbReference") {
-                window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
-            }
-            if (event.target == "tbHelp:tbDemo") {
-                window.open("?mode=demo&load=public/demos/21_Ich_steh_an_deiner_krippen_hier.abc")
             }
         }
 
@@ -762,7 +741,7 @@ function update_editor_status_w2ui(editorstatus) {
     $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
 }
 
-function update_mouseover_status_w2ui(element_info){
+function update_mouseover_status_w2ui(element_info) {
     $(".mouseover-conf-key").html(element_info);
 }
 

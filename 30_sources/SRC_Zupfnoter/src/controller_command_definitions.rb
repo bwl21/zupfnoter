@@ -378,31 +378,33 @@ C,
 
 
     @commands.add_command(:editconf) do |command|
+
+      def expand_extract_keys(keys)
+        keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
+      end
+
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
-        parameter.set_help { "name of the set to edit" }
+        parameter.set_help { "one of #{sets.keys.to_s}" }
       end
 
-      command.set_help { "edit configuration parameters" }
+      command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
 
       command.as_action do |args|
 
-        def expand_extract_keys(keys)
-          keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
-        end
-
         sets = {
-            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :startpos ])},
+            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :startpos])},
             tuplet:             {keys: expand_extract_keys([:tuplet])},
             notes:              {keys: expand_extract_keys([:notes])},
             lyrics:             {keys: expand_extract_keys([:lyrics])},
             layout:             {keys: expand_extract_keys([:layout])},
             global:             {keys: [:produce]},
-            extract0:           {keys: ['extract.0']}
+            extract0:           {keys: ['extract.0']},
+            extract_current:    {keys: expand_extract_keys([''])}
         }
 
-        editable_keys = sets[args[:set]][:keys]
+        editable_keys = (a=sets[args[:set]]) ? a[:keys] : [args[:set]]
 
         get_configvalues = lambda do
           localconf                = Confstack.new(false)
