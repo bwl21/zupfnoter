@@ -1,11 +1,5 @@
 class ConfstackEditor
 
-  class IndicateToBeDeleted
-    def self.to_s
-      ''
-    end
-  end
-
   class ConfHelper
     class ZnTypes
       def self.to_value(key, string)
@@ -198,23 +192,28 @@ class ConfstackEditor
   end
 
   def initialize(title, editor, value_handler, refresh_handler)
+    $log.timestamp("initialize Form")
     @title           = title
     @editor          = editor
     @refresh_handler = refresh_handler
 
     @value = Confstack.new(false)
-    @value.push(value_handler.call)
+    $log.benchmark('valuehandler') do
+      @value.push(value_handler.call)
+    end
 
     @form   = nil # Form object to be passed to w2ui
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
     @record = {} # hash to prepare the record for the form
 
     @record = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
+    $log.timestamp("end initialize Form")
     nil
   end
 
 
   def show_form
+    $log.timestamp("initialize Form")
     x=@form.to_n
     %x{
     if (w2ui[#{x}.name]){w2ui[#{x}.name].destroy()};
@@ -247,18 +246,14 @@ class ConfstackEditor
           patchvalue[k] = @helper.to_value(k, v) unless (@record[k] == v) #or v.nil?
         end
       end
-
-      if v == IndicateToBeDeleted
-        `debugger`
-        patchvalue[k] = nil
-        @editor.delete_config_part(k)
-      end
     end
 
     patchvalue = patchvalue.get
     patchvalue.keys.each do |k|
       @editor.patch_config_part(k, patchvalue[k])
     end
+
+    refresh_form
   end
 
 
@@ -273,7 +268,7 @@ class ConfstackEditor
         when 'neutral'
           @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
         when 'fillup'
-          @editor.patch_config_part(target.first, @helper.to_template(target.first))
+          @editor.extend_config_part(target.first, @helper.to_template(target.first))
       end
       register_events
     end
@@ -281,6 +276,7 @@ class ConfstackEditor
   end
 
   def generate_form
+    $log.timestamp("generate Form")
     @form = {
         name:       "configform",
         #header:     I18n.t(@title),
@@ -342,6 +338,7 @@ class ConfstackEditor
             #{fillupbutton}
            </td>
            <td><hr/><div><strong>#{ I18n.t_key("#{key}")}</strong></div></td>
+          <td/>
          </tr>
         }
     else
@@ -350,12 +347,13 @@ class ConfstackEditor
          <td> <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
          <td>
             <div><strong>#{ I18n.t_key("#{key}")}</strong></div>
-            <div class="w2ui-field">
+
+        </td>
+        <td> <div class="w2ui-field">
             <input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>
             #{fillupbutton}
-             #{@record[key]}
-            </div>
-        </td>
+      #{@record[key]}
+            </div>  </td>
        </tr>
     }
     end

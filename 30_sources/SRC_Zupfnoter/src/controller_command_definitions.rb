@@ -392,9 +392,10 @@ C,
       command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
 
       command.as_action do |args|
+        $log.timestamp("editconf #{args[:set]}")
 
         sets = {
-            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :startpos])},
+            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, 'repeatsigns.voices', :layoutlines, :startpos])},
             tuplet:             {keys: expand_extract_keys([:tuplet])},
             notes:              {keys: expand_extract_keys([:notes])},
             lyrics:             {keys: expand_extract_keys([:lyrics])},

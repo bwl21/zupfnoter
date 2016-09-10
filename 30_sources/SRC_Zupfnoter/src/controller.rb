@@ -184,6 +184,8 @@ class Controller
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
     begin
+      $log.timestamp_start
+      $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
       $log.error("#{e.message} in #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
@@ -504,11 +506,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
       set_active("#tunePreview")
-      `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`
+      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
     end.then do
       Promise.new.tap do |promise|
         set_active("#harpPreview")
-        `setTimeout(function(){self.$render_harpnotepreview_callback();#{promise}.$resolve()}, 50)`
+        `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
       end
     end
     @editor.resize();
@@ -543,14 +545,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     $conf.push(config)
     abc_parser            = $conf.get('abc_parser')
-    start                 = Time.now()
+    $log.timestamp_start
     @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     @music_model.checksum = @editor.get_checksum
     `document.title = #{@music_model.meta_data[:filename]}`
+    $log.timestamp("transform")
 
-    $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-    $log.info("duration transform + layout #{Time.now - start}")
+    $log.timestamp("   layout")
+
     #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
@@ -933,11 +936,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       case @systemstatus[:autorefresh]
         when :on
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
+          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 100)`
         when :off # off means it relies on remote rendering
           @refresh_timer = `setTimeout(function(){#{render_remote()}}, 300)`
         when :remote # this means that the current instance runs in remote mode
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
+          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 500)`
       end
     end
   end

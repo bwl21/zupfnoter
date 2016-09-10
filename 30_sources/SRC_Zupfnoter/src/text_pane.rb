@@ -259,6 +259,8 @@ module Harpnotes
     end
 
 
+    # this pushes the object to the config part of the editor
+    #
     def set_config_part(object)
       the_selection = get_selection_positions
       options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
@@ -287,6 +289,8 @@ module Harpnotes
       @inhibit_callbacks = false
     end
 
+    # this applies the object to the config
+    # values not in object are not changed in config
     def patch_config_part(key, object)
       pconfig       = Confstack::Confstack.new(false) # what we get from editor
       pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
@@ -306,6 +310,31 @@ module Harpnotes
       end
     end
 
+
+    # this adds the parts of object which are not yet in config
+    # it does not change the values of config
+    def extend_config_part(key, object)
+      pconfig       = Confstack::Confstack.new(false) # what we get from editor
+      pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
+      config_part   = get_config_part
+      begin
+        config = JSON.parse(config_part)
+        pconfig.push(config)
+
+        pconfig_patch[key] = object
+        pconfig.push(pconfig_patch.get)
+        pconfig.push(config)
+
+        set_config_part(pconfig.get)
+
+      rescue Object => error
+        line_col = get_config_position(error.last)
+        $log.error("#{error.first} at #{line_col}", line_col)
+        set_annotations($log.annotations)
+      end
+    end
+
+    # deletes the entry of key in the config part
     def delete_config_part(key)
       pconfig     = Confstack::Confstack.new(false) # what we get from editor
       config_part = get_config_part
@@ -315,6 +344,7 @@ module Harpnotes
       set_config_part(pconfig.get)
     end
 
+    # returns the value of key in in config part
     def get_config_part_value(key)
       pconfig     = Confstack::Confstack.new(false)
       config_part = get_config_part
