@@ -861,8 +861,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       position = "#{ranges.first.first}:#{ranges.first.last}"
       position += " - #{ranges.last.first}:#{ranges.last.last}" unless ranges.first == ranges.last
 
+      if selection_info[:token]
+        token = selection_info[:token]
+      else
+        token = {type:"", value:""}
+      end
+
       editorstatus = {position:  position,
-                      tokeninfo: "#{selection_info[:token][:type]} [#{selection_info[:token][:value]}]"}
+                      tokeninfo: "#{token[:type]} [#{token[:value]}]"}
 
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
 
