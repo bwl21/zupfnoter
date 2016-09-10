@@ -23,8 +23,10 @@ class ConfstackEditor
       end
 
       def self.to_template(key)
+        # handle the case notes.x
         template = key.split('.')[-2]
         a        = $conf.get("templates.#{template}") if template
+
         a
       end
     end
@@ -197,10 +199,16 @@ class ConfstackEditor
     @editor          = editor
     @refresh_handler = refresh_handler
 
-    @value = Confstack.new(false)
-    $log.benchmark('valuehandler') do
-      @value.push(value_handler.call)
-    end
+    value_handler_result = $log.benchmark("value handler") { value_handler.call }
+
+    @value                = Confstack.new(false)
+    @effective_value      = Confstack.new(false)
+    @default_value        = Confstack.new(false)
+    @default_value.strict = false
+
+    @value.push(value_handler_result[:current])
+    @effective_value.push(value_handler_result[:effective])
+    @default_value.push($log.benchmark('getvalues') { value_handler_result[:default] })
 
     @form   = nil # Form object to be passed to w2ui
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
@@ -268,7 +276,12 @@ class ConfstackEditor
         when 'neutral'
           @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
         when 'fillup'
-          @editor.extend_config_part(target.first, @helper.to_template(target.first))
+          `debugger`
+          if @default_value[target.first]
+            @editor.patch_config_part(target.first, @default_value[target.first])
+          else
+            @editor.extend_config_part(target.first, @helper.to_template(target.first))
+          end
       end
       register_events
     end
@@ -327,6 +340,9 @@ class ConfstackEditor
   def mk_fieldHTML(key)
 
     fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" name="#{key}:fillup">#{key}</button>} if @helper.to_template(key)
+    unless @default_value[key].is_a? Hash
+      fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" name="#{key}:fillup">#{@default_value[key]}</button>}
+    end
 
     if @value[key].is_a? Hash # todo query type
 
@@ -352,7 +368,7 @@ class ConfstackEditor
         <td> <div class="w2ui-field">
             <input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>
             #{fillupbutton}
-      #{@record[key]}
+      #{@effective_value[key]} / #{@default_value[key]}
             </div>  </td>
        </tr>
     }

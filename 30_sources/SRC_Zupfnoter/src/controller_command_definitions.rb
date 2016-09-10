@@ -402,19 +402,47 @@ C,
             layout:             {keys: expand_extract_keys([:layout])},
             global:             {keys: [:produce]},
             extract0:           {keys: ['extract.0']},
-            extract_current:    {keys: expand_extract_keys([''])}
+            extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]}
         }
 
-        editable_keys = (a=sets[args[:set]]) ? a[:keys] : [args[:set]]
+        editable_keys    = (a=sets[args[:set]]) ? a[:keys] : [args[:set]]
+
+
+        # this handler yields three value sets
+        # the current value
 
         get_configvalues = lambda do
-          localconf                = Confstack.new(false)
-          localconf.strict         = false
-          editable_values          = Confstack.new(false)
+          editor_conf        = Confstack.new(false)
+          editor_conf.strict = false
+
+          effective_conf        = Confstack.new(false)
+          effective_conf.strict = false
+
+          default_conf        = Confstack.new(false)
+          default_conf.strict = false
+
+          editable_values  = Confstack.new(false)
+          default_values   = Confstack.new(false)
+          effective_values = Confstack.new(false)
+
           configvalues_from_editor = get_config_from_editor
-          localconf.push(configvalues_from_editor)
-          editable_keys.each { |k| editable_values[k] = localconf[k] }
-          editable_values.get
+          editor_conf.push(configvalues_from_editor)
+
+          default_conf.push($conf.get) # start with defaults
+          default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
+          unless @systemstatus[:view] == 0
+            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
+            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
+          end
+          effective_conf.push (default_conf.get.clone)
+          effective_conf.push (editor_conf.get.clone)
+
+          editable_keys.each { |k|
+            editable_values[k]  = editor_conf[k]
+            default_values[k]   = default_conf[k]
+            effective_values[k] = effective_conf[k]
+          }
+          {current: editable_values.get, effective: effective_values.get, default: default_values.get}
         end
 
         refresh_editor = lambda do
