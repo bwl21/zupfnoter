@@ -2,6 +2,12 @@
 
 ## Fix
 
+* barnumbers are smaall_bold again #60
+
+# V 1.4.2
+
+## Fix
+
 * remove copyright note from sheet annotation #69
 
 ## enhancement

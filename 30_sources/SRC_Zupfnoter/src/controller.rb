@@ -962,7 +962,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  barnumbers:   {
                      voices: [],
                      pos:    [6, -4],
-                     style:  "smallbold",
+                     style:  "small_bold",
                      prefix: ""
                  },
                  countnotes:   {voices: [], pos: [3, -2]},
