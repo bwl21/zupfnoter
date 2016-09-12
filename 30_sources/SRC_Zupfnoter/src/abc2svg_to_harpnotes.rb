@@ -623,13 +623,14 @@ module Harpnotes
               case semantic
                 when "#"
                   annotation = @annotations[text]
+
                   $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
                 when "!"
-                  annotation = {text: text}
+                  annotation = {text: text, style: :regular}
                 when "<"
-                  entity.shift = {dir: :left, size: text}
+                  entity.shift = {dir: :left, size: text, style: :regular}
                 when ">"
-                  entity.shift = {dir: :right, size: text}
+                  entity.shift = {dir: :right, size: text, style: :regular}
                 else
                   annotation = nil # it is not an annotation
               end
@@ -638,7 +639,7 @@ module Harpnotes
                 notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || $conf['defaults.notebound.annotation.pos']
                 conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid
-                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {style: :regular, pos: position, text: annotation[:text]}, conf_key)
+                result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {style: annotation[:style], pos: position, text: annotation[:text]}, conf_key)
               end
             else
               # $log.error("syntax error in annotation: #{name}")
