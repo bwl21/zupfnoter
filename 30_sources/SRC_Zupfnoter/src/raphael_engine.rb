@@ -295,7 +295,8 @@ module Harpnotes
       text                    = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n")
       element                 = @paper.text(root.center.first, root.center.last, text)
       element[:"font-size"]   = 1 #; style[:font_size]
-      element[:"font-weight"] = style[:font_style]
+      element[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
+      element[:"font-style"] = "italic" if style[:font_style].to_s.include? "italic"
       element[:"text-anchor"] = "start"
 
       # getting the same adjustment as in postscript

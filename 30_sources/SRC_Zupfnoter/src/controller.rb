@@ -741,7 +741,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                           event.preventDefault();
                           files = event.dataTransfer.files;
                           reader = new FileReader();
-                          reader.readAsText(files[0], "UTF-8");
+
                           reader.onload = function (e) {
                              text = e.target.result;
                              if (text[0] == '<'){
@@ -755,8 +755,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                                 pasteAbc(text);
                                }
                             }
+                          if (files[0].name.endsWith('.mxl')){
+                              reader.readAsBinaryString(files[0]);
+                             }
+                           else
+                             {
+                              reader.readAsText(files[0], "UTF-8");
+                             }
 
-               reader.readAsBinaryString(files[0]);
              }
 
     function handleDragover(event) {
@@ -1017,17 +1023,19 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                            PITCH_OFFSET:      -43,
 
                            FONT_STYLE_DEF:    {
-                               smaller:   {text_color: [0, 0, 0], font_size: 6, font_style: "normal"},
-                               small:     {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
-                               smallbold: {text_color: [0, 0, 0], font_size: 9, font_style: "bold"},
                                bold:      {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
+                               italic:          {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
+                               large:           {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
                                regular:   {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
-                               large:     {text_color: [0, 0, 0], font_size: 20, font_style: "bold"}
+                               small_bold:   {text_color: [0, 0, 0], font_size: 9, font_style: "bold"},
+                               small_italic: {text_color: [0, 0, 0], font_size: 9, font_style: "italic"},
+                               small:           {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                               smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
                            },
 
                            MM_PER_POINT:      0.3,
 
-                           # This is a lookup table to map durations to graphical representation
+                           # This is a lookup table to map durations to giraphical representation
                            DURATION_TO_STYLE: {
                                #key      size   fill          dot                  abc duration
 

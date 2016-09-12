@@ -1264,8 +1264,8 @@ module Harpnotes
                                                           "extract.#{print_variant_nr}.legend.spos", {pos: legend_pos})
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
-        annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION}", :smaller)
-        annotations << Harpnotes::Drawing::Annotation.new([285, 289], "Zupfnoter #{COPYRIGHT}", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{LOCATION}]", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([325, 289], "Zupfnoter: https://www.zupfnoter.de", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([400, 289], music.checksum, :smaller)
 
         lyrics     = print_options_hash[:lyrics]
