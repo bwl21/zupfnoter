@@ -29,6 +29,10 @@ class ConfstackEditor
 
         a
       end
+
+      def self.to_html(key)
+        %Q{<input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>}
+      end
     end
 
     class IntegerPairs < ZnTypes
@@ -116,6 +120,9 @@ class ConfstackEditor
     end
 
     class MultiLineString < OneLineString
+      def self.to_html(key)
+        %Q{<textarea name="#{key}" title = "#{key}" cols="60"></textarea>}
+      end
     end
 
     class IntegerList < ZnTypes
@@ -173,6 +180,11 @@ class ConfstackEditor
 
     def to_string(key, value)
       _type(key).to_string(key, value) unless value.nil?
+    end
+
+    def to_html(key)
+      `debugger`
+      _type(key).to_html(key)
     end
 
     def to_value(key, string)
@@ -366,7 +378,7 @@ class ConfstackEditor
 
         </td>
         <td> <div class="w2ui-field">
-            <input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>
+            #{@helper.to_html(key)}
             #{fillupbutton}
       #{@effective_value[key]} / #{@default_value[key]}
             </div>  </td>
