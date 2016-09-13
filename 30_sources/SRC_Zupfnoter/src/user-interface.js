@@ -203,63 +203,6 @@ function init_w2ui(uicontroller) {
 
             {type: 'spacer'},
 
-            {
-                type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
-                items: [
-                    {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
-                    {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
-                    {text: 'flowlines', tooltip: "specify which voices \nshow the flowline"},
-                    {text: 'jumplines', tooltip: "specify which voices \nshow the jumplines"},
-                    {text: 'repeatsigns', tooltip: "specify which voices\nshow repeat signs instead of jumplines"},
-                    {text: 'synchlines', tooltip: "specify which voices\nare connected by synchronization lines"},
-                    {
-                        text: 'layoutlines',
-                        tooltip: "specify which voides\nare considered to compute \nvertical spacing"
-                    },
-                    {text: 'subflowlines', tooltip: "specify which voices \nshow the subflowlines"},
-                    {},
-
-                    {text: 'legend', tooltip: "specify details for legend"},
-                    {text: 'lyrics', tooltip: "specify details for lyrics"},
-                    {id: 'notes', text: 'page annotation', tooltip: "enter a page bound annotation"},
-                    {text: ''},
-
-                    {text: 'nonflowrest', tooltip: "specify if rests are shown outside of flowlines"},
-                    {text: 'startpos', tooltip: "specify the vertical start position of the notes"},
-                    {
-                        text: 'countnotes',
-                        tooltip: "specify which voices\n shwow countnotes\n and appeareance of the same"
-                    },
-                    {
-                        text: 'barnumbers',
-                        tooltip: "specify which voices\n shwow bar numbers\n and appeareance of the same"
-                    },
-                    {text: 'layout', tooltip: "specify laoyut details \n(e.g. size of symbols)"},
-                    {
-                        text: 'stringnames',
-                        tooltip: "specify output of stringnames.\n Stringnames help to tune the instrument"
-                    },
-                    {text: ''},
-                    {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
-                    {
-                        id: 'annotations',
-                        text: 'annotation template',
-                        tooltip: "specify temmplate for\n note bound annotations"
-                    },
-                    {text: ''},
-                    {text: 'stringnames.full', tooltip: "specify full details for stringnams"},
-                    {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
-                    {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
-                    {text: ''},
-                    {
-                        id: 'restpos_1.3',
-                        text: 'rests as V 1.3',
-                        tooltip: "configure positioning of rests\ncompatible to version 1.3"
-                    },
-                    {text: 'xx', tooltip: "inject the default configuration (for development use only)"},
-                ]
-            },
-
             {type: 'break'},
             {
                 type: 'menu',
@@ -287,24 +230,6 @@ function init_w2ui(uicontroller) {
             },
 
             {type: 'break'},
-            {
-                type: 'menu',
-                id: 'tb_scale',
-                text: 'Zoom',
-                icon: 'fa fa-search-plus',
-                tooltip: 'zoom harpnote preview',
-                items: [
-                    {text: 'large', id: 'groß', icon: 'fa fa-expand', tooltip: "large view\nto see all details"},
-                    {
-                        text: 'medium',
-                        id: 'mittel',
-                        icon: 'fa fa-dot-circle-o',
-                        tooltip: "medium view\nmost commonly used\nautoscroll works"
-                    },
-                    {text: 'small', id: 'klein', icon: 'fa fa-compress', tooltip: "small view\nto get an overview"},
-                    {text: 'fit', id: 'fit', icon: 'fa fa-arrows-alt', tooltip: "fit to viewport"}
-                ]
-            },
             {
                 type: 'menu',
                 id: 'tb_perspective',
