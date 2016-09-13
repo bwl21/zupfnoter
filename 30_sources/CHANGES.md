@@ -1,6 +1,22 @@
+# V 1.4.2
+
+## Fix
+
+* barnumbers are smaall_bold again #60
+
+# V 1.4.2
+
+## Fix
+
+* remove copyright note from sheet annotation #69
+
+## enhancement
+
+* add textstyles: italic, small_bold, small_italic
+
 # V 1.4.1
 
-## enhandment
+## enhancment
 
 * suppress measure bar if repetition starts within measure #42
 
