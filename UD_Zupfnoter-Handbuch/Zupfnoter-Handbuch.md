@@ -21,7 +21,7 @@ title: Zupfnoter Handbuch
 
 # Zupfnoter elemente
 
-![Zupfnoter elemente][]
+![Zupfnoter elemente](../ZAUX_images/3015_reference_sheet_a3.png)
 
 Dieses Bild zeigt die Elemente und Merkmale aus denen Zupfnoter ein
 Unterlegnotenblatt aufbaut:
@@ -64,7 +64,7 @@ Unterlegnotenblatt aufbaut:
     Takteingabe in der ABC-Notation (z.B. `| |]`).
 
 -   **(21) unison - Mehrklang**:\
-    Ein Mehrklang entsteht wenn in der ABC-Notation mehrere Noten in
+     Ein Mehrklang entsteht wenn in der ABC-Notation mehrere Noten in
     einerm eckigen Klammer eingegeeben werden (z.B. `[FA]`). Damit kann
     man innerhalb einer Stimme mehrere Noten spielen.
 
@@ -133,7 +133,7 @@ Entchen”, mit diesem Beispiel kann man in die Grundlagen des Zupfnoters
 einsteigen. Anhand der schriftlichen Anleitungen unter dem Hilfemenü und
 mit den mündlichen Unterweisung in den Tutorials (Selbstlerneinheiten)
 lassen sich gut die einzelnen Schritte für die Erstellung “Alle meine
-Entchen” nachvollziehen. Bernhard Tutorial für xml?
+Entchen” nachvollziehen. TODO Tutorial für xml?
 
 Will man dann seine eigenen ersten Schritte in Zupfnoter machen, muss
 man einmalig eine Dropbox zum Abspeichern von Stücken erstellen. Eine
@@ -168,7 +168,7 @@ Diese entsprechen 1 zu 1 der herkömmlichen Notenschrift im rechten
 oberen Abschnitt. Es gibt bei der Darstellung von Pausen in den
 Tisch-Harfen-Noten eine Besonderheit: Ganze und halbe Pausen werden
 nicht in der herkömmlichen Weise dargestellt, sondern als große oder
-kleine Rechtecke. Bernhard: Wie werden Viertel und Achtel als Pausen
+kleine Rechtecke. TODO: Wie werden Viertel und Achtel als Pausen
 dargestellt? Weiteres???
 
 Im linken Abschnitt werden die Abc Notation und die Zupfnoter-Kommandos
@@ -186,7 +186,7 @@ Zupfnoters wieder zur Verfügung. Zusätzlich kann man die Abc Notation
 inkl. der Zupfnoter-Kommandos als Datei auf seinem PC speichern, indem
 man ??????
 
-Bernhard Hardcopy des Bildschirmes hier einfügen???
+TODO Hardcopy des Bildschirmes hier einfügen???
 
 ## Linker Abschnitt ABC Notation
 
@@ -204,7 +204,7 @@ Abweichend von Standard der Abc Notation gibt es eine spezielle
 Zupfnoter ABC Notation, die nur im Zupfnoter ihre Anwendung findet. Mit
 dem Befehl I: transpose\* oktaviert man einzelne Stimmen. Der Stern wird
 durch die Anzahl der Oktaven ersetzt, die man höher oder niedriger gehen
-möchte. (Bernhard Position des Befehls ???) weitere ????
+möchte. (TODO Position des Befehls ???) weitere ????
 
 Veränderungen in der Abc Notation im linken Abschnitt führen sofort zu
 einer Änderungen des rechten oberen Abschnitts der herkömmlichen
@@ -261,9 +261,9 @@ benötigt. Durch Drücken der Schaltflächen führt der Computer bestimmte
 Aktivitäten aus. Die Menüs dienen dazu, die Tisch-Harfen-Noten zu
 gestalten.
 
--   Schaltfläche **Zupfnoter**: Bernhard – Sinn?
+-   Schaltfläche **Zupfnoter**: TODO – Sinn?
 
--   Schaltfläche **login** (anmelden): Bernhard - Sinn?
+-   Schaltfläche **login** (anmelden): TODO - Sinn?
 
 -   Schaltfläche **create** (erstellen): Es wird ein leerer Bildschirm
     ohne Inhalte erstellt und man kann ein neues Stück erstellen.
@@ -297,7 +297,7 @@ gestalten.
 -   Schaltfläche **Console** (Konsole): Mit der Schaltfläche console
     kann man einen Blick auf die Computersprache des Notenzupfers
     werfen. Dieser Befehl sollte nur von Programmierer genutzt werden.
-    Die Performance des Computers wird dadurch schlechter. Bernhard –
+    Die Performance des Computers wird dadurch schlechter. TODO –
     Vorschlag Button löschen und nur als Tastenkombination zulassen???.
 
 -   Schaltfläche **zoom** (Fernglas): Hiermit kann man die Inhalte der
@@ -434,7 +434,7 @@ gestalten.
 
     -   notes (Notizen)
 
-        Bernhard – doppelte Verwendung für unterschiedliche
+        TODO – doppelte Verwendung für unterschiedliche
 
         todo: Sachverhalte: steht für Noten und für Notizen im
         Zupfnoter. Vorschlag hier umbenennen in notice oder comment???.
@@ -524,8 +524,7 @@ bedeutet in Zeile 12 an Stelle 19 ist der F-Text nicht korrekt.
 Es müssen alle Fehler beseitigt werden, ansonsten können keine
 herkömmlichen Noten oder Tisch-Harfen-Noten generiert werden.
 
-Bernhard: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier
-einfügen???
+TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einfügen???
 
 ## Tastenkombinationen für Sonderzeichen
 
@@ -669,6 +668,4 @@ todo:
 
     * Fehlermeldung
 
-## Fehlermel
-
-  [Zupfnoter elemente]: images/3015_reference_sheet_a3.png
+## Fehlermeldungen

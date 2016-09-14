@@ -1,33 +1,19 @@
-[\<\< vorige](http://penzeng.de/Geige/Abc.htm) / [nächste
-Seite](http://penzeng.de/Musik) \>\>   ·  
-[Musik](http://penzeng.de/Musik) – Abc-Notation Teil 2
-
-------------------------------------------------------------------------
-
+[\<\< vorige][] / [nächste Seite][] \>\>   ·   [Musik][nächste Seite] –
 Abc-Notation Teil 2
--------------------
+
+* * * * *
+
+## Abc-Notation Teil 2
 
 Diese Seite beschreibt Teile der Abc-Musiknotation. Zur Einführung siehe
-[Teil 1](http://penzeng.de/Geige/Abc.htm).
+[Teil 1][\<\< vorige].
 
 ### Inhaltsverzeichnis
 
-Kopffelder: [K: Key](http://penzeng.de/Geige/Abc2.htm#K) · [L:
-Länge](http://penzeng.de/Geige/Abc2.htm#L) · [M:
-Metrum](http://penzeng.de/Geige/Abc2.htm#M) · [P:
-Parts](http://penzeng.de/Geige/Abc2.htm#P) · [Q:
-Tempo](http://penzeng.de/Geige/Abc2.htm#Q) · [T:
-Titel](http://penzeng.de/Geige/Abc2.htm#T) · [U:
-User](http://penzeng.de/Geige/Abc2.htm#U) · [V:
-Voice](http://penzeng.de/Geige/Abc2.htm#V) · [W:
-Text](http://penzeng.de/Geige/Abc2.htm#W) · [w: Text mit
-Noten](http://penzeng.de/Geige/Abc2.htm#ww) · [X:
-Index](http://penzeng.de/Geige/Abc2.htm#X) · [Weitere
-Kopffelder](http://penzeng.de/Geige/Abc2.htm#Weitere) ·
-[Verzierungen](http://penzeng.de/Geige/Abc2.htm#Verzierungen) · [Akzente
-und Symbole](http://penzeng.de/Geige/Abc2.htm#Akzente) ·
-[Vermerke](http://penzeng.de/Geige/Abc2.htm#Vermerke) ·
-[Weblinks](http://penzeng.de/Geige/Abc2.htm#Links)
+Kopffelder: [K: Key][] · [L: Länge][] · [M: Metrum][] · [P: Parts][] ·
+[Q: Tempo][] · [T: Titel][] · [U: User][] · [V: Voice][] · [W: Text][] ·
+[w: Text mit Noten][] · [X: Index][] · [Weitere Kopffelder][] ·
+[Verzierungen][] · [Akzente und Symbole][] · [Vermerke][] · [Weblinks][]
 
 ### Kopffelder
 
@@ -37,11 +23,11 @@ Kopffeldern. Jedes Kopffeld muss auf einer eigenen Zeile stehen.
 Leerzeilen sind nicht zulässig, weil Computerprogramme sonst annehmen,
 dass das Lied schon zu Ende ist. Die folgenden fünf Kopffelder sind
 obligatorisch, weitere sind optional:\
- [X: Indexnummer](http://penzeng.de/Geige/Abc2.htm#X)\
- [T: Titel](http://penzeng.de/Geige/Abc2.htm#T)\
- [M: Metrum](http://penzeng.de/Geige/Abc2.htm#M)\
- [L: Standard-Notenwert](http://penzeng.de/Geige/Abc2.htm#L)\
- [K: (Key) Tonart](http://penzeng.de/Geige/Abc2.htm#K)
+ [X: Indexnummer][X: Index]\
+ [T: Titel][]\
+ [M: Metrum][]\
+ [L: Standard-Notenwert][L: Länge]\
+ [K: (Key) Tonart][K: Key]
 
 #### X: Index
 
@@ -73,13 +59,11 @@ Taktwechsel anzuzeigen.
 
 #### L: Standard-Notenwert
 
-Im Feld „L:“ (Length) wird ein
-[Notenwert](http://de.wikipedia.org/wiki/Notenwert) als Standard
-festgelegt, z. B.:\
+Im Feld „L:“ (Length) wird ein [Notenwert][] als Standard festgelegt, z.
+B.:\
  <span class="symb">L:1/8</span> heißt: Standardmäßig werden für alle
 Töne Achtelnoten angenommen, sofern sie nicht durch besondere
-[Zeichen](http://penzeng.de/Geige/Abc.htm#Notenwerte) verlängert oder
-verkürzt werden.\
+[Zeichen][] verlängert oder verkürzt werden.\
  <span class="symb">L:1/4</span> heißt: Standardmäßig werden
 Viertelnoten angenommen, sofern sie nicht verlängert oder verkürzt
 werden.\
@@ -109,8 +93,8 @@ Schreibweise angegeben. Man schreibt also immer „B“ statt „H“! Wenn
 wirklich das deutsche „B“ gemeint ist (ein Halbton tiefer als H),
 schreibt man hier „Bb“.
 
-Auch [Kirchentonarten](http://de.wikipedia.org/wiki/Kirchentonart) sind
-möglich; man schreibt z. B. <span class="symb">K:C dor</span> oder <span
+Auch [Kirchentonarten][] sind möglich; man schreibt z. B.
+<span class="symb">K:C dor</span> oder <span
 class="symb">K:Cdor</span> oder <span class="symb">K:C dorian</span> für
 *C dorisch*.
 
@@ -131,15 +115,14 @@ man <span class="symb">C:Trad</span> (traditionell)\
 Wenn eine Zeile nicht reicht, kann man beliebig viele N:-Felder
 hinzufügen.\
  O: (Origin) Herkunft\
- [P: Parts, Teile](http://penzeng.de/Geige/Abc2.htm#P)\
- [Q: Tempo](http://penzeng.de/Geige/Abc2.htm#Q)\
+ [P: Parts, Teile][P: Parts]\
+ [Q: Tempo][]\
  R: Rhythmus – kann als beliebiger freier Text angegeben werden, z. B.
 *jig, reel, waltz*\
  S: (Source) Quellenangabe\
- [U: (User defined) Nutzerdefinierte
-Symbole](http://penzeng.de/Geige/Abc2.htm#U)\
- [V: (Voice) Mehrstimmige Partitur](http://penzeng.de/Geige/Abc2.htm#V)\
- [W: (Words) Liedtext](http://penzeng.de/Geige/Abc2.htm#W)\
+ [U: (User defined) Nutzerdefinierte Symbole][U: User]\
+ [V: (Voice) Mehrstimmige Partitur][V: Voice]\
+ [W: (Words) Liedtext][W: Text]\
  Z: Transskription – wer das Stück in Abc übertragen hat, oder woher die
 Abc-Notation stammt
 
@@ -169,9 +152,8 @@ Im Kopffeld Q: kann ein Tempo angegeben werden, z. B.:\
  <span class="symb">Q:1/4 = 120</span>, d. h. Viertelnoten mit 120
 Schlägen pro Minute.\
  Statt 1/4 kann auch 1/8 oder 1/2 oder irgendein anderer Notenwert
-stehen. Wenn es der
-[Standard-Notenwert](http://penzeng.de/Geige/Abc2.htm#L) ist, kann man
-ihn auch weglassen und schreiben: <span class="symb">Q:120</span>\
+stehen. Wenn es der [Standard-Notenwert][L: Länge] ist, kann man ihn
+auch weglassen und schreiben: <span class="symb">Q:120</span>\
  Eine Q:-Zeile kann auch zwischen Melodiezeilen stehen, um das Tempo zu
 ändern.
 
@@ -180,8 +162,7 @@ ihn auch weglassen und schreiben: <span class="symb">Q:120</span>\
 In Kopffeldern W: kann der Text eines Liedes erfasst werden. Solcher
 Text wird jedoch nicht an den Noten ausgerichtet. Er erscheint nur als
 zusammenhängender Block. Sollen Textzeilen Silbe für Silbe unter den
-Noten stehen, muss man sie [anders
-schreiben](http://penzeng.de/Geige/Abc2.htm#ww).
+Noten stehen, muss man sie [anders schreiben][w: Text mit Noten].
 
 ### Verzierungen
 
@@ -192,12 +173,10 @@ Standard-Abc bietet hier nur zwei Möglichkeiten: Man kann entweder eine
 Tilde voranstellen:\
  <span class="symb">\~G2</span>\
  um anzuzeigen, dass eine Note irgendwie verziert werden soll, oder
-[Vorschlagsnoten](http://de.wikipedia.org/wiki/Verzierung_(Musik)#Langer_Vorschlag)
-in geschweiften Klammern schreiben:\
+[Vorschlagsnoten][] in geschweiften Klammern schreiben:\
  <span class="symb">{FGFE}F2</span>\
  Solche Vorschlagsnoten haben keine bestimmte Länge; es ist also
-sinnlos, ihre [Länge mit /, \> oder Ziffern zu
-verändern](http://penzeng.de/Geige/Abc.htm#Notenwerte).
+sinnlos, ihre [Länge mit /, \> oder Ziffern zu verändern][Zeichen].
 
 Es gibt auch noch weitere Zeichen für Verzierungen und Spielanweisungen,
 die aber nicht allgemein anerkannter Abc-Standard sind:
@@ -296,16 +275,15 @@ X:1\
  V:3 name="Cello" snm="c" clef=bass\
  C,\>B,, C, G,, | D, E, G, C, |
 
-![Noten: Einigkeit und Recht und
-Freiheit](./Abc-Notation-2_files/Einigkeit.gif)
+![Noten: Einigkeit und Recht und Freiheit][]
 
 ### w: Liedtext an Noten ausgerichtet
 
-In Standard-Abc werden Liedtexte in den [Kopffeldern
-W:](http://penzeng.de/Geige/Abc2.htm#W) erfasst. Dort bilden sie jedoch
-nur einen kompakten Textblock ohne direkten Bezug zu den Noten. Text,
-der Silbe für Silbe singbar unter die Noten gedruckt wird kann eventuell
-mit folgender Erweiterung erfasst werden:
+In Standard-Abc werden Liedtexte in den [Kopffeldern W:][W: Text]
+erfasst. Dort bilden sie jedoch nur einen kompakten Textblock ohne
+direkten Bezug zu den Noten. Text, der Silbe für Silbe singbar unter die
+Noten gedruckt wird kann eventuell mit folgender Erweiterung erfasst
+werden:
 
 Abc-Notation
 
@@ -317,10 +295,9 @@ X:1\
  L:1/8\
  K:C\
  G4 | E C E G GF D2 |\
- w:Auf | ei-nem Baum ein Kuc\_kuck |
+ w:Auf | ei-nem Baum ein Kuc_kuck |
 
-![Noten: Auf einem Baum ein
-Kuckuck](./Abc-Notation-2_files/AufEinemBaumEinKuckuck.gif)
+![Noten: Auf einem Baum ein Kuckuck][]
 
 Man schreibt abwechselnd eine Zeile Melodie, dann eine w:-Zeile mit
 Text; oder mehrere w.:-Zeilen für verschiedene Strophen. Folgende
@@ -338,20 +315,46 @@ selben Zeile
 
 ### Verweise
 
-[Abc notation home page](http://abcnotation.com/) ·
-[Software](http://abcnotation.com/software) · [How to interpret abc
-music notation](http://www.lesession.co.uk/abc/abc_notation.htm) · [Abc
-converter at mandolintab.net](http://mandolintab.net/abcconverter.php)
+[Abc notation home page][] · [Software][] · [How to interpret abc music
+notation][] · [Abc converter at mandolintab.net][]
 
 <div
 style="text-align:left;margin-top:15px;margin-bottom:15px;margin-left:30px;">
 
 </div>
 
-------------------------------------------------------------------------
+* * * * *
 
-[\<\< vorige](http://penzeng.de/Geige/Abc.htm) / [nächste
-Seite](http://penzeng.de/Musik) \>\>   ·  
-[Musik](http://penzeng.de/Musik)   ·  
-[Impressum](http://penzeng.de/InEigenerSache.htm)   ·  
-[http://Penzeng.de](http://penzeng.de/)/[Musik](http://penzeng.de/Musik)
+[\<\< vorige][] / [nächste Seite][] \>\>   ·   [Musik][nächste Seite]  
+·   [Impressum][]   ·   [http://Penzeng.de][]/[Musik][nächste Seite]
+
+  [\<\< vorige]: http://penzeng.de/Geige/Abc.htm
+  [nächste Seite]: http://penzeng.de/Musik
+  [K: Key]: http://penzeng.de/Geige/Abc2.htm#K
+  [L: Länge]: http://penzeng.de/Geige/Abc2.htm#L
+  [M: Metrum]: http://penzeng.de/Geige/Abc2.htm#M
+  [P: Parts]: http://penzeng.de/Geige/Abc2.htm#P
+  [Q: Tempo]: http://penzeng.de/Geige/Abc2.htm#Q
+  [T: Titel]: http://penzeng.de/Geige/Abc2.htm#T
+  [U: User]: http://penzeng.de/Geige/Abc2.htm#U
+  [V: Voice]: http://penzeng.de/Geige/Abc2.htm#V
+  [W: Text]: http://penzeng.de/Geige/Abc2.htm#W
+  [w: Text mit Noten]: http://penzeng.de/Geige/Abc2.htm#ww
+  [X: Index]: http://penzeng.de/Geige/Abc2.htm#X
+  [Weitere Kopffelder]: http://penzeng.de/Geige/Abc2.htm#Weitere
+  [Verzierungen]: http://penzeng.de/Geige/Abc2.htm#Verzierungen
+  [Akzente und Symbole]: http://penzeng.de/Geige/Abc2.htm#Akzente
+  [Vermerke]: http://penzeng.de/Geige/Abc2.htm#Vermerke
+  [Weblinks]: http://penzeng.de/Geige/Abc2.htm#Links
+  [Notenwert]: http://de.wikipedia.org/wiki/Notenwert
+  [Zeichen]: http://penzeng.de/Geige/Abc.htm#Notenwerte
+  [Kirchentonarten]: http://de.wikipedia.org/wiki/Kirchentonart
+  [Vorschlagsnoten]: http://de.wikipedia.org/wiki/Verzierung_(Musik)#Langer_Vorschlag
+  [Noten: Einigkeit und Recht und Freiheit]: ./Abc-Notation-2_files/Einigkeit.gif
+  [Noten: Auf einem Baum ein Kuckuck]: ./Abc-Notation-2_files/AufEinemBaumEinKuckuck.gif
+  [Abc notation home page]: http://abcnotation.com/
+  [Software]: http://abcnotation.com/software
+  [How to interpret abc music notation]: http://www.lesession.co.uk/abc/abc_notation.htm
+  [Abc converter at mandolintab.net]: http://mandolintab.net/abcconverter.php
+  [Impressum]: http://penzeng.de/InEigenerSache.htm
+  [http://Penzeng.de]: http://penzeng.de/
