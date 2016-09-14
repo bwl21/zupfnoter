@@ -91,8 +91,8 @@ end
 
 class Controller
 
-  attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus,
-       attr_accessor: :zupfnoter_ui
+  attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
+  attr_accessor :zupfnoter_ui
 
   def initialize
 
@@ -544,7 +544,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config = get_config_from_editor
 
     $conf.push(config)
-    abc_parser            = $conf.get('abc_parser')
+    abc_parser = $conf.get('abc_parser')
     $log.timestamp_start
     @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     @music_model.checksum = @editor.get_checksum
@@ -864,7 +864,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       if selection_info[:token]
         token = selection_info[:token]
       else
-        token = {type:"", value:""}
+        token = {type: "", value: ""}
       end
 
       editorstatus = {position:  position,
@@ -966,8 +966,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   private
 
-  # returns a hash with the default values of configuration
-  def _init_conf()
+  def self.init_conf()
     result =
         {produce:      [0],
          abc_parser:   'ABC2SVG',
@@ -984,10 +983,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                          }
              }
          },
-         templates:    { # this is used to update / create new objects
-             notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
-             lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]},
-             tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']}
+         templates:    {# this is used to update / create new objects
+                        notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
+                        lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]},
+                        tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']}
          },
 
          annotations:  {
@@ -1079,13 +1078,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                            PITCH_OFFSET:      -43,
 
                            FONT_STYLE_DEF:    {
-                               bold:      {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
-                               italic:          {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
-                               large:           {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
-                               regular:   {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
+                               bold:         {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
+                               italic:       {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
+                               large:        {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
+                               regular:      {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
                                small_bold:   {text_color: [0, 0, 0], font_size: 9, font_style: "bold"},
                                small_italic: {text_color: [0, 0, 0], font_size: 9, font_style: "italic"},
-                               small:           {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                               small:        {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
                                smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
                            },
 
@@ -1131,6 +1130,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         }
 
     result
+  end
+
+
+  # returns a hash with the default values of configuration
+  def _init_conf()
+    self.class.init_conf()
   end
 
 end
