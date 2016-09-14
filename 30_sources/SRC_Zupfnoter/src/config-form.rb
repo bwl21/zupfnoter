@@ -33,6 +33,15 @@ class ConfstackEditor
       def self.to_html(key)
         %Q{<input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>}
       end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'string',
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         html:        {caption: I18n.t("#{key}.caption")}}
+      end
     end
 
     class IntegerPairs < ZnTypes
@@ -88,6 +97,16 @@ class ConfstackEditor
 
       def self.to_neutral(key)
         nil
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: [:true, :false]},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         html:        {caption: I18n.t("#{key}.caption")}}
       end
     end
 
@@ -154,6 +173,24 @@ class ConfstackEditor
     end
 
 
+    class TextStyle < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}"" title = "#{key}"" type="list" maxlength="100" size="60"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: $conf['layout.FONT_STYLE_DEF'].keys},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html:        {caption: I18n.t("#{key}.caption")}}
+      end
+    end
+
+
     def initialize
       @typemap = {
           IntegerPairs    => ['synchlines'],
@@ -164,7 +201,8 @@ class ConfstackEditor
           MultiLineString => ['text'],
           Boolean         => ['limit_a3'],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK'],
-          TupletShape     => ['shape']
+          TupletShape     => ['shape'],
+          TextStyle       => ['style']
       }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil
@@ -197,6 +235,10 @@ class ConfstackEditor
 
     def to_template(key)
       _type(key).to_template(key)
+    end
+
+    def to_w2uifield(key)
+      _type(key).to_w2uifield(key)
     end
 
     def _type(key)
@@ -306,7 +348,7 @@ class ConfstackEditor
         name:       "configform",
         #header:     I18n.t(@title),
         style:      'border: 0px; background-color: transparent;',
-        fields:     @value.keys.map { |key| mk_field(key) }.flatten,
+        fields:     @value.keys.map { |key| @helper.to_w2uifield(key) }.flatten,
         record:     @record,
         onChange:   lambda { |event|
           a=lambda { push_config_to_editor }
@@ -322,7 +364,7 @@ class ConfstackEditor
               refresh_form if (Native(event).target == 'refresh')
             end
         },
-        onValidate: lambda { alert("validate"); `debugger`; nil },
+        onValidate: lambda { alert("validate"); nil },
         formHTML:   %Q{
                     <table>
                     #{@value.keys.map { |key| mk_fieldHTML(key) }.join}
@@ -336,16 +378,6 @@ class ConfstackEditor
   def refresh_form
     # todo handle focus
     @refresh_handler.call
-  end
-
-  def mk_field(key)
-    {field:       key,
-     type:        'string',
-     required:    true,
-     text:        I18n.t("#{key}.text"),
-     tooltip:     I18n.t("#{key}.tooltip"),
-     placeholder: @value[key],
-     html:        {caption: I18n.t("#{key}.caption")}}
   end
 
 
@@ -379,7 +411,7 @@ class ConfstackEditor
         </td>
         <td> <div class="w2ui-field">
             #{@helper.to_html(key)}
-            #{fillupbutton}
+      #{fillupbutton}
       #{@effective_value[key]} / #{@default_value[key]}
             </div>  </td>
        </tr>
