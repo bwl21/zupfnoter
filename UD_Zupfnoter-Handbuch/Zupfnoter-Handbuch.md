@@ -168,8 +168,9 @@ Diese entsprechen 1 zu 1 der herkömmlichen Notenschrift im rechten
 oberen Abschnitt. Es gibt bei der Darstellung von Pausen in den
 Tisch-Harfen-Noten eine Besonderheit: Ganze und halbe Pausen werden
 nicht in der herkömmlichen Weise dargestellt, sondern als große oder
-kleine Rechtecke. TODO: Wie werden Viertel und Achtel als Pausen
-dargestellt? Weiteres???
+kleine Rechtecke.
+
+TODO: Wie werden Viertel und Achtel als Pausen dargestellt? Weiteres???
 
 Im linken Abschnitt werden die Abc Notation und die Zupfnoter-Kommandos
 angezeigt. Für die Abc Notation gibt es eine separate Anleitung. Mit
@@ -184,7 +185,7 @@ Dropbox speichern. Arbeitszwischenstände werden automatisch im Zupfnoter
 gespeichert. Diese Zwischenstände stehen bei einen späteren Aufruf des
 Zupfnoters wieder zur Verfügung. Zusätzlich kann man die Abc Notation
 inkl. der Zupfnoter-Kommandos als Datei auf seinem PC speichern, indem
-man ??????
+man TODO ??????
 
 TODO Hardcopy des Bildschirmes hier einfügen???
 
@@ -292,7 +293,8 @@ gestalten.
     werden. Die Kreuze auf dem A4 Papier kennzeichnen, an welcher Stelle
     die zwei A4-Blätter zusammen geklebt werden müssen. Entweder klebt
     man mit einem Prittstift oder mit Tesafilm die Blätter zusammen.
-    Vor-/Nachteile?
+
+    TODO: Vor-/Nachteile?
 
 -   Schaltfläche **Console** (Konsole): Mit der Schaltfläche console
     kann man einen Blick auf die Computersprache des Notenzupfers
@@ -354,11 +356,11 @@ gestalten.
     durchgespielt.
 
 -   Schaltfläche **style** (Stil oder Form): nur in der
-    Entrwicklungsumgebung????
+    Entrwicklungsumgebung???? TODO
 
-    small/regular/large von was ???
+    small/regular/large von was TODO ???
 
-    @verena: wo hast du das denn gefunden?
+    TODO: @verena: wo hast du das denn gefunden?
 
 -   Schaltfläche **help** (Hilfe): Hier findet man Anleitungen zum
     Andrucken, die einem helfen den Zupfnoter zu verstehen.
@@ -371,8 +373,10 @@ gestalten.
     Die Reihenfolge der Menüpunkte entspricht der Bearbeitungsabfolge,
     wobei Menüpunkte auch übersprungen werden dürfen. Die Erstellung der
     Abc Notation sollte abgeschlossen, bevor man mit der Gestaltung der
-    Tisch-Harfen-Noten beginnt. Die Menüpunkte müssen pro Auszug
-    ausgeführt werden. Hardcopy (snippet) des Menüs hier einfügen???
+    Tisch-Harfen-Noten beginnt.
+
+    TODO: Die Menüpunkte müssen pro Auszug ausgeführt werden. Hardcopy
+    (snippet) des Menüs hier einfügen???
 
     -   title (Titel)
 
@@ -426,7 +430,9 @@ gestalten.
         Dieses Zupfnoter-Kommando wird benötigt, wenn Querlinien zu
         Begleitnoten erscheinen sollen oder wenn zum Beispiel Noten der
         ersten Stimme mit Noten der zweiten Stimme durch eine Querlinie
-        verbunden werden sollen. Aufbau?
+        verbunden werden sollen.
+
+        TODO: Aufbau?
 
     -   legend (Legende)
 
@@ -471,7 +477,7 @@ gestalten.
 
     -   startpos (Startposition)
 
-        Sinn und Aufbau?
+        TODO: Sinn und Aufbau?
 
     -   subflowlines (Unterablauflinien oder Teilabschnittslinien)
 
@@ -499,19 +505,23 @@ gestalten.
         Es werden unter jeder Note, abhängig von der Taktart, Zahlen
         zugeordnet, die die Zählung des Taktes darstellen. Bei einem 4/4
         Takt kann das also (1 2 3 4) oder (1 und 2 und 3 und 4 und)
-        sein. Aufbau?
+        sein.
 
--   **dlabc** ?????
+        TODO: Aufbau?
+
+-   **dl_abc** ?????
+
+    TODO:
 
     dlabc ist eine Abkürzung für download Abc Notation (inkl.
     Zupfnoter-Kommandos)
 
     Hiermit kann man Zwischenstände oder fertige Stücke als Abc-Datei
     auf seinem PC unter dem Laufwerk desktop/eigene Dateien/downloads
-    bei Windows und Mac gleich??? ablegen. Abgelegte Dateien können mit
-    der Maus wieder in den Zupfnoter in den linken Abschnitt gezogen
-    werden und der Inhalt steht zur Bearbeitung im Zupfnoter wieder zur
-    Verfügung.
+    (TODO: bei Windows und Mac gleich???) ablegen. Abgelegte Dateien
+    können mit der Maus wieder in den Zupfnoter in den linken Abschnitt
+    gezogen werden und der Inhalt steht zur Bearbeitung im Zupfnoter
+    wieder zur Verfügung.
 
 ## Linker Abschnitt Fehlermeldungen
 
@@ -562,12 +572,12 @@ Ordner löschen, Dateien löschen, Dateitypen erklären, Ordner von anderen
 einsehen
 
 Zupfnoten speichern, löschen, ändern... eindeutiger Schlüssel pro Ordner
-? ist in der Abc Notation Nummer = X: Dateiname ist Abc Notation Nummer
-plus Name = F: Beim Runterladen in den Zupfnoter wird mit dem Inhalt von
-X: z.B. 99999 gesucht, damit erhält man alle F: Dateien , die mit 99999
-beginnen.
+(TOOD: ? )ist in der Abc Notation Nummer = X: Dateiname ist Abc Notation
+Nummer plus Name = F: Beim Runterladen in den Zupfnoter wird mit dem
+Inhalt von X: z.B. 99999 gesucht, damit erhält man alle F: Dateien , die
+mit 99999 beginnen.
 
-Was passiert bei doppeltem Schlüssel und doppeltem Dateiname?
+TODO: Was passiert bei doppeltem Schlüssel und doppeltem Dateiname?
 Datensicherung per download aus der Dropbox auf den eigenen PC
 
 # Der gute Ton für Unterlegnoten
