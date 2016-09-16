@@ -1,3 +1,9 @@
+# V 1.5
+
+## Changes
+
+* adjusted German language #47
+
 # V 1.4.2
 
 ## Fix
