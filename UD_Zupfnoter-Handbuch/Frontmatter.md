@@ -14,9 +14,14 @@ abstract: |
     -   Tastenkombinationen für Sonderzeichen Rund um die Dropbox
     -   Der gute Ton für Unterlegnoten
 author:
-- Verena Hinzmann
-- Bernhard Weichel xx
+- 'Verena Hinzmann, Bernhard Weichel'
 title: Zupfnoter Handbuch
 ...
 
+# Über dieses Handbuch
 
+-   Zielgruppen
+
+    -   Ersteller einfacher Unterlegnoten
+    -   Ersteller anspruchsvoller Unterlegnoten
+    -   Lektoren

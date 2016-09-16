@@ -1,11 +1,42 @@
-# Zupfnoter elemente
+Will man dann seine eigenen ersten Schritte in Zupfnoter machen, muss
+man einmalig eine Dropbox zum Abspeichern von Musikstücken erstellen.
+Eine Dropbox ist ein Speicher außerhalb ihres PC’s. Wie das geht erfährt
+man im Kapitel Rund um die Dropbox.
+
+Wenn eine persönliche Dropbox vorhanden ist, erstellt man anhand eines
+einfachen Kinderliedes über die Abc Notation Noten im herkömmlichen
+Notenbild. Für die Abc Notation gibt es eine separate Anleitung unter
+dem Hilfemenü. Alternativ sucht man sich auf Musikseiten ein Musikstück
+aus und lädt sich eine xml-Datei herunter, die man der Maus in den
+Zupfnoter zieht. Der Zupfnoter generiert aus der xml-Datei die Abc
+Notation.
+
+Danach generiert man die Tisch-Harfen-Noten und prüft, ob in der
+Darstellung der Tisch-Harfen-Noten noch Anpassungsbedarf besteht. Bei
+einfachen Musikstücken ist das nicht der Fall, bei Musikstücken mit
+Wiederholungen müssen entsprechende Zupfnoter-Kommandos ausgeführt
+werden, um die Darstellung der Tisch-Harfen-Noten zu optimieren.
+
+Wenn die Tisch-Harfen-Noten finalisiert wurden, kann man das Ergebnis in
+der Dropbox abspeichern. Anschließend können das herkömmlich Notenbild
+und die Tisch-Harfen-Noten ausgedruckt werden.
+
+# Zupfnoter - Referenzhandbuch
+
+TODO: Stay tuned
+
+## Erstellung von Auszügen
+
+TODO: Konzept der Auszüge beschreiben
+
+## Elemente der erzeugten Unterlegnoten
 
 ![Zupfnoter elemente](../ZAUX_images/3015_reference_sheet_a3.png)
 
 Dieses Bild zeigt die Elemente und Merkmale aus denen Zupfnoter ein
 Unterlegnotenblatt aufbaut:
 
-## Darstellung der Noten
+### Darstellung der Noten
 
 -   **(1) full note - ganze Note**
 
@@ -21,7 +52,7 @@ Unterlegnotenblatt aufbaut:
 
 -   **(7) punctuated quarter note - punktierte viertel**
 
-## Darstellung von Puausen
+### Darstellung von Puausen
 
 -   **(11) full rest**
 
@@ -37,7 +68,7 @@ Unterlegnotenblatt aufbaut:
 
 -   **(17) punctuated quarter rest**
 
-## Weitere Elemente
+### Weitere Elemente
 
 -   **(20) measure bar - Taktstrich**: Der Taktstrich entseht aus
     Takteingabe in der ABC-Notation (z.B. `| |]`).
@@ -83,7 +114,7 @@ Unterlegnotenblatt aufbaut:
 
 -   **(29) variant ending**
 
-## Elemente für das gesamte Blatt
+### Elemente für das gesamte Blatt
 
 -   **(31) flowline - Flusslinie oder Melodielinie**
 
@@ -99,48 +130,19 @@ Unterlegnotenblatt aufbaut:
 
 -   **(37) stringnames - Saitennamen**
 
-# Ablauf der Notenerstellung für Tischharfen
+## Genereller Bildschirmaufbau
 
-Mit dem Zupfnoter können für alle Tischharfen Unterlegnoten erstellt
-werden. Der Zupfnoter wird über die Homepage www.zupfnoter.de aufgerufen
-und kann ohne die Installation einer Software auf dem PC sofort
-angewendet werden. Er läuft unabhängig vom Betriebssystem des PC’s und
-ist für Windows, als auch für Mac geeignet.
-
-Beim ersten Aufruf des Zupfnoter erscheint das Lied “Alle meine
-Entchen”, mit diesem Beispiel kann man in die Grundlagen des Zupfnoters
-einsteigen. Anhand der schriftlichen Anleitungen unter dem Hilfemenü und
-mit den mündlichen Unterweisung in den Tutorials (Selbstlerneinheiten)
-lassen sich gut die einzelnen Schritte für die Erstellung “Alle meine
-Entchen” nachvollziehen. TODO Tutorial für xml?
-
-Will man dann seine eigenen ersten Schritte in Zupfnoter machen, muss
-man einmalig eine Dropbox zum Abspeichern von Stücken erstellen. Eine
-Dropbox ist ein Speicher außerhalb ihres PC’s. Wie das geht erfährt man
-im Kapitel Rund um die Dropbox.
-
-Wenn eine persönliche Dropbox vorhanden ist, erstellt man anhand eines
-einfachen Kinderliedes über die Abc Notation Noten im herkömmlichen
-Notenbild. Für die Abc Notation gibt es eine separate Anleitung unter
-dem Hilfemenü. Alternativ sucht man sich auf Musikseiten ein Stück aus
-und lädt sich eine xml-Datei herunter, die man der Maus in den Zupfnoter
-zieht. Der Zupfnoter generiert aus der xml-Datei die Abc Notation.
-
-Danach generiert man die Tisch-Harfen-Noten und prüft, ob in der
-Darstellung der Tisch-Harfen-Noten noch Anpassungsbedarf besteht. Bei
-einfachen Stücken ist das nicht der Fall, bei Stücken mit Wiederholungen
-müssen entsprechende Zupfnoter-Kommandos ausgeführt werden, um die
-Darstellung der Tisch-Harfen-Noten zu optimieren.
-
-Wenn die Tisch-Harfen-Noten finalisiert wurden, kann man das Ergebnis in
-der Dropbox abspeichern. Anschließend können das herkömmlich Notenbild
-und die Tisch-Harfen-Noten ausgedruckt werden.
-
-# Genereller Bildschirmaufbau
+-   Fenster
+    -   Reiter
+    -   Leiste für Schaltflächen und Menüse
+    -   Kontextmenüs (rechte Maustaste)
+-   Zupfnoter Werkzeugleiste / Toolbar / Leiste für Schaltflächen und
+    Menüs(deutsch ...) oben
+-   Zupfnoter Statusleiste (
 
 Im rechten oberen Abschnitt wird in der herkömmlichen Notenschrift das
-Stück oder das Lied angezeigt. Die Darstellung in herkömmlicher
-Notenschrift kann mehrstimmig erfolgen.
+Musikstück. Die Darstellung in herkömmlicher Notenschrift kann
+mehrstimmig erfolgen.
 
 Im rechten unteren Abschnitt werden die Tisch-Harfen-Noten angezeigt.
 Diese entsprechen 1 zu 1 der herkömmlichen Notenschrift im rechten
@@ -159,81 +161,16 @@ für die Tischharfen generiert.
 In der oberen Leiste, die über alle Abschnitte hinweg liegt, können
 einzelne Schaltflächen ausgeführt oder Menüs angezeigt werden.
 
-Wenn man mit der Erstellung eines Stückes fertig ist, kann man es in der
-Dropbox speichern. Arbeitszwischenstände werden automatisch im Zupfnoter
-gespeichert. Diese Zwischenstände stehen bei einen späteren Aufruf des
-Zupfnoters wieder zur Verfügung. Zusätzlich kann man die Abc Notation
-inkl. der Zupfnoter-Kommandos als Datei auf seinem PC speichern, indem
-man TODO ??????
+Wenn man mit der Erstellung eines Musikstückes fertig ist, kann man es
+in der Dropbox speichern. Arbeitszwischenstände werden automatisch im
+Zupfnoter gespeichert. Diese Zwischenstände stehen bei einen späteren
+Aufruf des Zupfnoters wieder zur Verfügung. Zusätzlich kann man die Abc
+Notation inkl. der Zupfnoter-Kommandos als Datei auf seinem PC
+speichern, indem man TODO ??????
 
 TODO Hardcopy des Bildschirmes hier einfügen???
 
-## Linker Abschnitt ABC Notation
-
-Die Abc Notation wurde erfunden, um Musik auf Computern verarbeiten zu
-können. Computer können die Abc Notation interpretieren, um daraus
-herkömmliche Musiknoten zu generieren oder auch Musik auf dem Computer
-abspielen zu können. Unter dem Hilfemenü des Zupfnoters findet man eine
-deutsche Anleitung für die Abc Notation.
-
-Als zusätzliche Information zu dieser Anleitung sei noch erwähnt, dass
-der Befehl X: (Liednummer) eine positive Ganzzahl sein muss. Es dürfen
-keine Buchstaben, Leerzeichen oder Unterstriche enthalten sein.
-
-Abweichend von Standard der Abc Notation gibt es eine spezielle
-Zupfnoter ABC Notation, die nur im Zupfnoter ihre Anwendung findet. Mit
-dem Befehl I: transpose\* oktaviert man einzelne Stimmen. Der Stern wird
-durch die Anzahl der Oktaven ersetzt, die man höher oder niedriger gehen
-möchte. (TODO Position des Befehls ???) weitere ????
-
-Veränderungen in der Abc Notation im linken Abschnitt führen sofort zu
-einer Änderungen des rechten oberen Abschnitts der herkömmlichen
-Notenschrift. Veränderungen in der Abc Notation führen nicht automatisch
-zu einer Veränderung der Tisch-Harfen-Noten im linken unteren Abschnitt.
-Um dies zu bewirken muss man in der Menüleiste auf render (ausführen)
-drücken. Nach dem Drücken von render (ausführen) wird die Abc Notation
-in das Design der Tisch-Harfen-Noten überführt.
-
-Das Ende der Abc Notation wird mit einer Leerzeile eingeleitet. Sollte
-nach einer Leerzeile noch Abc Notation folgen, wird dies vom Computer
-ignoriert. Die Zupfnoter-Kommandos fangen mit dem Kommentar
-%%%%zupfnoter.config an. Die Abc Notation und die Zupfnoter-Kommandos
-dürfen nicht gemischt werden.
-
-Wenn man mit der Maus eine Note in der Abc Notation anklickt, wechselt
-die Note in der herkömmlichen Notenschrift und in den Tisch-Harfen-Noten
-von schwarz auf Rot. Umgekehrt funktioniert es genauso. So findet man
-schnell zu einer Stelle, die man ändern möchte oder wo man was
-hinzufügen möchte.
-
-Die Abc Notation kann man anhand der Anleitung im Hilfemenü manuell
-eingeben oder man sucht das gewünschte Stück im Internet auf einer
-Musikseite raus und lädt sich das Stück im xml-Format herunter. Danach
-wird die xml-Datei per Maus in den Zupfnoter in den linken Abschnitt
-gezogen. Der Zupfnoter übersetzt das xml-Format in Abc Notation. Bei der
-Auswahl eines Stückes im xml-Format sollte man 30 Takte nicht
-überschreiten und den Schwerpunkt auf Klaviernoten legen. Ausserdem
-sollte man auf die Bandbreite der Noten achten, die Tisch-Harfen mit 25
-Saiten haben eine Bandbreite g bis g‘‘.
-
-## Linker Abschnitt Zupfnoter-Kommandos
-
-Über die Zupfnoter-Kommandos wird das Design der Tisch-Harfen-Noten
-verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
-besser positioniert werden oder string names (Saitennamen) eingefügt
-werden. Die Zupfnoter-Kommandos können manuell eingegeben werden oder
-über das Menü sheet config (Blattkonfiguration) erzeugt werden. Weitere
-Informationen zu den Zupfnoter-Kommandos stehen im nächsten Kapitel.
-
-Wichtig ist, immer daran zu denken nach einer Änderung in der Menüleiste
-auf render (ausführen) zu drücken, damit die Tisch-Harfen-Noten
-aktualisiert werden.
-
-Mit der Maus können in diesem Teil Textfelder optimal dem Stimmverlauf
-angepasst werden. Danach sind die Werte in dem entsprechenden
-Zupfnoter-Kommando bzgl. der Positionsparameter angepasst worden.
-
-## Leiste für Schaltflächen und Menüs
+### Leiste für Schaltflächen und Menüs
 
 In der oberen Leiste über den 3 Abschnitten befinden sich Schaltflächen
 und Menüs die man während der Erstellung von Tisch-Harfen-Noten
@@ -246,14 +183,14 @@ gestalten.
 -   Schaltfläche **login** (anmelden): TODO - Sinn?
 
 -   Schaltfläche **create** (erstellen): Es wird ein leerer Bildschirm
-    ohne Inhalte erstellt und man kann ein neues Stück erstellen.
+    ohne Inhalte erstellt und man kann ein neues Musikstück erstellen.
 
 -   Schaltfläche **open** (öffnen): Es öffnet sich die eigene Dropbox.
     Der grüne Hinweis not connect nach der Schaltfläche save bedeutet,
     dass die Dropbox nicht mit dem Zupfnoter verbunden ist.
 
 -   Schaltfläche **save** (sichern, speichern): Das fertig gestellte
-    Stück wird in die eigene Dropbox gespeichert. Es wird eine
+    Musikstück wird in die eigene Dropbox gespeichert. Es wird eine
     Abc-Datei, eine Datei mit Tisch-Harfen-Noten in A3 und eine Datei
     mit Tisch-Harfen-Noten in A4 gespeichert. Solange man noch nichts
     abgespeichert hat, erscheint das Wort save in roter Schrift.
@@ -344,149 +281,23 @@ gestalten.
 -   Schaltfläche **help** (Hilfe): Hier findet man Anleitungen zum
     Andrucken, die einem helfen den Zupfnoter zu verstehen.
 
--   Schaltfläche **sheet config** (Blattkonfiguration): Dieses Menü
-    dient der Gestaltung und dem Design der Tisch-Harfen-Noten. Jeder
-    Menüpunkt erzeugt eine Abc Notationszeile oder ein
-    Zupfnoter-Kommando für den linken Bildschirm-Abschnitt.
+-   Schaltfläche **sheet config** (Blattkonfiguration):
+
+    Dieses Menü dient der Gestaltung und dem Design der
+    Tisch-Harfen-Noten. Jeder Menüpunkt erzeugt eine Abc Notationszeile
+    oder ein Zupfnoter-Kommando für den linken Bildschirm-Abschnitt.
 
     Die Reihenfolge der Menüpunkte entspricht der Bearbeitungsabfolge,
     wobei Menüpunkte auch übersprungen werden dürfen. Die Erstellung der
     Abc Notation sollte abgeschlossen, bevor man mit der Gestaltung der
     Tisch-Harfen-Noten beginnt.
 
+    Die Menüounkte sind im Kapitel
+    [Grundlegende-Blatteinsteläungen](#grundlegende-blatteinstellungen)
+    beschrieben TODO: fix reference
+
     TODO: Die Menüpunkte müssen pro Auszug ausgeführt werden. Hardcopy
     (snippet) des Menüs hier einfügen???
-
-    -   title (Titel)
-
-        Es wird die Abc Notationszeile für den Titel (T:) des Stückes
-        generiert.
-
-        todo: Sinn: Auszug ungleich 0?
-
-    -   voices (Stimmen)
-
-        Es wird die Abc Notationszeile für die einzelne Stimme (V:) des
-        Stückes generiert.
-
-        todo: Sinn:Auszug ungleich 0? Oder 2 bis 4 Stimme?
-
-    -   flowlines (Melodielinie oder Hauptlinie)
-
-        Wenn der Auszug 0 mehrere Stimmen enthält und man einen Auszug 1
-        mit der Bass-Stimme und der ersten Stimme erstellt hat, möchte
-        man die Hauptlinie in der Bass-Stimme haben und die Noten der
-        ersten Stimme sollen dann die Begleittöne zur Bass-Stimme werden
-        und keine Melodielinie mehr enthalten. Für diesen Zweck wird ein
-        Zupfnoter-Kommando generiert.
-
-        todo: Aufbau?
-
-    -   layoutlines (Layout-Linien)
-
-        Dieses Zupfnoter-Kommando wird benötigt, wenn Tisch-Harfen-Noten
-        sich vertikal überlappen oder übereinander gelegt wurden. Mit
-        dem Zupfnoter-Kommando definiert man die Abstände zwischen zwei
-        Noten.
-
-        todo: Aufbau?
-
-    -   jumplines (Wiederholungslinien, Sprunglinien)
-
-        Wiederholungszeichen in den herkömmlichen Noten werden in den
-        Tisch-Harfen-Noten als Wiederholungslinie dargestellt. In der
-        Regel muss der vertikale Teil der Wiederholungslinie nach rechts
-        verschoben werden, damit er rechts von den Noten liegt und nicht
-        mitten durch das Notenbild der Tisch-Harfen-Noten geht. Dieses
-        Zupfnoter-Kommando wird benötigt, um den vertikalen Teil der
-        Wiederholungslinie horizontal (nach rechts oder links)
-        verschieben zu können.
-
-        todo: Aufbau?
-
-    -   synchlines (Synchronisationslinie, Querlinie zu Begleitnoten)
-
-        Dieses Zupfnoter-Kommando wird benötigt, wenn Querlinien zu
-        Begleitnoten erscheinen sollen oder wenn zum Beispiel Noten der
-        ersten Stimme mit Noten der zweiten Stimme durch eine Querlinie
-        verbunden werden sollen.
-
-        TODO: Aufbau?
-
-    -   legend (Legende)
-
-        todo: Sinn und Aufbau?
-
-    -   notes (Notizen)
-
-        TODO – doppelte Verwendung für unterschiedliche
-
-        todo: Sachverhalte: steht für Noten und für Notizen im
-        Zupfnoter. Vorschlag hier umbenennen in notice oder comment???.
-
-        todo: Sinn und Aufbau?
-
-    -   lyrics (Liedtexte)
-
-        In der Abc Notation werden Liedertexte im Kopffeld W:
-
-        erfasst und mit bestimmten Symbolen werden Wörter oder Silben
-        den herkömmlichen Noten zugeordnet. Diese Liedertexte können
-        nicht für die Tisch-Harfen-Noten genutzt werden. Deshalb muss
-        man die Liedertexte für die Tisch-Harfen-Noten über dieses
-        Tisch-Harfen-Noten erstellen. Es bietet sich an, pro Strophe ein
-        Zupfnoter-Kommando (durchnumerieren) zu erstellen, damit man die
-        verschiedenen Strophen besser auf dem Blatt der
-        Tisch-Harfen-Noten verteilen kann.
-
-        todo: unterschied zwischen `w:` und `W:`
-
-        Aufbau?
-
-    -   nonflowrest (Ablauf ohne Pausen)
-
-        Generell werden Pausen in den Begleitnoten der herkömmlichen
-        Noten und Tisch-Harfen-Noten unterdrückt. Wenn man einzelne
-        Pausen sehen möchte, erzeugt man diese über die Abc Notation mit
-        dem Buchstaben z. Wenn man alle Pausen sehen möchte, benutzt man
-        dieses Zupfnoter-Kommando um die Standardeinstellung zu
-        deaktivieren.
-
-        todo: Aufbau?
-
-    -   startpos (Startposition)
-
-        TODO: Sinn und Aufbau?
-
-    -   subflowlines (Unterablauflinien oder Teilabschnittslinien)
-
-        Dieses Zupfnoter-Kommando wird benötigt, wenn man einzelne Noten
-        ausserhalb der Stimmen mit Linien verbinden möchte. Dies kann
-        sinnvoll bei Begleitnoten sein, die in der Melodie keiner Note
-        zugeordnet werden können oder bei Verzierungsnoten.
-
-        todo: Aufbau?
-
-    -   produce (produzieren)
-
-        Nur bestimmte Auszüge erzeugen für einzelne
-
-        Stimmen (Auszug 0 beinhaltet 100 %)
-
-        todo: Aufbau?
-
-    -   layout (Gestaltung oder Anordnung)
-
-        todo: Sinn und Aufbau?
-
-    -   countnotes oder beat time (Takt zählen)
-
-        Es werden unter jeder Note, abhängig von der Taktart, Zahlen
-        zugeordnet, die die Zählung des Taktes darstellen. Bei einem 4/4
-        Takt kann das also (1 2 3 4) oder (1 und 2 und 3 und 4 und)
-        sein.
-
-        TODO: Aufbau?
 
 -   **dl_abc** ?????
 
@@ -495,14 +306,81 @@ gestalten.
     dlabc ist eine Abkürzung für download Abc Notation (inkl.
     Zupfnoter-Kommandos)
 
-    Hiermit kann man Zwischenstände oder fertige Stücke als Abc-Datei
-    auf seinem PC unter dem Laufwerk desktop/eigene Dateien/downloads
-    (TODO: bei Windows und Mac gleich???) ablegen. Abgelegte Dateien
-    können mit der Maus wieder in den Zupfnoter in den linken Abschnitt
-    gezogen werden und der Inhalt steht zur Bearbeitung im Zupfnoter
-    wieder zur Verfügung.
+    Hiermit kann man Zwischenstände oder fertige Musikstücke als
+    Abc-Datei auf seinem PC unter dem Laufwerk desktop/eigene
+    Dateien/downloads (TODO: bei Windows und Mac gleich???) ablegen.
+    Abgelegte Dateien können mit der Maus wieder in den Zupfnoter in den
+    linken Abschnitt gezogen werden und der Inhalt steht zur Bearbeitung
+    im Zupfnoter wieder zur Verfügung.
 
-## Linker Abschnitt Fehlermeldungen
+### Linkes Fenseter: Eingabe
+
+#### ABC Notation
+
+Die Abc Notation wurde erfunden, um Musikstücke auf Computern
+verarbeiten zu können. Computer können die Abc Notation interpretieren,
+um daraus herkömmliche Musiknoten zu generieren oder auch Musikstücke
+auf dem Computer abspielen zu können. Unter dem Hilfemenü des Zupfnoters
+findet man eine deutsche Anleitung für die Abc Notation.
+
+Als zusätzliche Information zu dieser Anleitung sei noch erwähnt, dass
+der Befehl X: (Liednummer) eine positive Ganzzahl sein muss. Es dürfen
+keine Buchstaben, Leerzeichen oder Unterstriche enthalten sein.
+
+Abweichend von Standard der Abc Notation gibt es eine spezielle
+Zupfnoter ABC Notation, die nur im Zupfnoter ihre Anwendung findet. Mit
+dem Befehl I: transpose\* oktaviert man einzelne Stimmen. Der Stern wird
+durch die Anzahl der Oktaven ersetzt, die man höher oder niedriger gehen
+möchte. (TODO Position des Befehls ???) weitere ????
+
+Veränderungen in der Abc Notation im linken Abschnitt führen sofort zu
+einer Änderungen des rechten oberen Abschnitts der herkömmlichen
+Notenschrift. Veränderungen in der Abc Notation führen nicht automatisch
+zu einer Veränderung der Tisch-Harfen-Noten im linken unteren Abschnitt.
+Um dies zu bewirken muss man in der Menüleiste auf render (ausführen)
+drücken. Nach dem Drücken von render (ausführen) wird die Abc Notation
+in das Design der Tisch-Harfen-Noten überführt.
+
+Das Ende der Abc Notation wird mit einer Leerzeile eingeleitet. Sollte
+nach einer Leerzeile noch Abc Notation folgen, wird dies vom Computer
+ignoriert. Die Zupfnoter-Kommandos fangen mit dem Kommentar
+%%%%zupfnoter.config an. Die Abc Notation und die Zupfnoter-Kommandos
+dürfen nicht gemischt werden.
+
+Wenn man mit der Maus eine Note in der Abc Notation anklickt, wechselt
+die Note in der herkömmlichen Notenschrift und in den Tisch-Harfen-Noten
+von schwarz auf Rot. Umgekehrt funktioniert es genauso. So findet man
+schnell zu einer Stelle, die man ändern möchte oder wo man was
+hinzufügen möchte.
+
+Die Abc Notation kann man anhand der Anleitung im Hilfemenü manuell
+eingeben oder man sucht das gewünschte Stück im Internet auf einer
+Musikseite raus und lädt sich das Musikstück im xml-Format herunter.
+Danach wird die xml-Datei per Maus in den Zupfnoter in den linken
+Abschnitt gezogen. Der Zupfnoter übersetzt das xml-Format in Abc
+Notation. Bei der Auswahl eines Musikstückes im xml-Format sollte man 30
+Takte nicht überschreiten und den Schwerpunkt auf Klaviernoten legen.
+Ausserdem sollte man auf die Bandbreite der Noten achten, die
+Tisch-Harfen mit 25 Saiten haben eine Bandbreite g bis g‘‘.
+
+#### Linker Abschnitt Zupfnoter-Einstellungen
+
+Über die Zupfnoter-Kommandos wird das Design der Tisch-Harfen-Noten
+verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
+besser positioniert werden oder string names (Saitennamen) eingefügt
+werden. Die Zupfnoter-Kommandos können manuell eingegeben werden oder
+über das Menü sheet config (Blattkonfiguration) erzeugt werden. Weitere
+Informationen zu den Zupfnoter-Kommandos stehen im nächsten Kapitel.
+
+Wichtig ist, immer daran zu denken nach einer Änderung in der Menüleiste
+auf render (ausführen) zu drücken, damit die Tisch-Harfen-Noten
+aktualisiert werden.
+
+Mit der Maus können in diesem Teil Textfelder optimal dem Stimmverlauf
+angepasst werden. Danach sind die Werte in dem entsprechenden
+Zupfnoter-Kommando bzgl. der Positionsparameter angepasst worden.
+
+#### Fehlermarkierung und Meldung
 
 Der Zupfnoter zeigt über ein rotes Quadrat mit Kreuz links vor den Abc
 Notationszeilen oder den Zupfnoter-Kommandos an, daß in der Zeile ein
@@ -515,13 +393,21 @@ herkömmlichen Noten oder Tisch-Harfen-Noten generiert werden.
 
 TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einfügen???
 
-## Tastenkombinationen für Sonderzeichen
+### Fenster rechts oben : Notenvorschau
+
+TODO
+
+### Fenster rechts untern : Harfenvorschau
+
+TODO
+
+### Tastenkombinationen für Sonderzeichen
 
 Um Taktstriche, Wiederholungszeichen und Schlussstriche darstellen zu
 können benötigt man folgende Tastenkombinationen zur erstellung des
 senkrechten Striches (vertical bar)
 
-### Windows
+#### Windows
 
 -   `|` erzeugt man mit der Taste AltGr und der Taste links vom Y
 
@@ -529,132 +415,10 @@ senkrechten Striches (vertical bar)
 
 -   `]` erzeugt man mit der Taste `AltGr` und der Taste `9`
 
-### Mac
+#### Mac
 
 -   `|` erzeugt man mit der Taste `Alt` und der Taste `7`
 
 -   `[` erzeugt man mit der Taste `Alt` und der Taste `5`
 
 -   `]` erzeugt man mit der Taste Alt und der Taste `6`
-
-# Rund um die Dropbox Cloud
-
-in welchem Land stehen die Server,
-
-Name des Eigentümers eigener Speicher, Kosten, Speicherplatzgröße
-
-einmalig einrichten - beschreiben wie Vorschlag Ordnerstruktur =
-Privatgebrauch (wg. Rechte), öffentlich (ohne Rechte), Rechte geklärt
-
-Ordner-Freigabe für lesen oder schreiben, Ordner von anderen einsehen,
-Ordner löschen, Dateien löschen, Dateitypen erklären, Ordner von anderen
-einsehen
-
-Zupfnoten speichern, löschen, ändern... eindeutiger Schlüssel pro Ordner
-(TOOD: ? )ist in der Abc Notation Nummer = X: Dateiname ist Abc Notation
-Nummer plus Name = F: Beim Runterladen in den Zupfnoter wird mit dem
-Inhalt von X: z.B. 99999 gesucht, damit erhält man alle F: Dateien , die
-mit 99999 beginnen.
-
-TODO: Was passiert bei doppeltem Schlüssel und doppeltem Dateiname?
-Datensicherung per download aus der Dropbox auf den eigenen PC
-
-# Der gute Ton für Unterlegnoten
-
-Bei der Erstellung von Noten sollte man einige wenige Regeln beherzigen.
-Wer seine Unterlegnoten nie aus der Hand gibt und nur zu Hause
-musiziert, braucht diese Formalitäten nicht. Allen anderen möchten wir
-nahe legen, zum Schutz Dritter, den guten Ton zu wahren.
-
--   Auf jeder Unterlegnote (auch den Auszügen) sollten folgende Inhalte
-    stehen:
-    -   Titel
-    -   Vorname und Nachname des Komponisten mit Angabe der Lebensdaten
-    -   Vorname und Nachname des Komponisten pro Stimme mit Angabe der
-        Lebensdaten
-    -   Vorname und Nachname des Liedertextautor mit Angabe der
-        Lebensdaten Name,
-    -   Adresse und Telefon des Erstellers der Tisch-Harfen-Noten /
-        herkömmlichen Noten
-    -   Eingeholte Abdruckrechte pro Stimme\
-    -   Eingeholte Abdruckrechte für Liedertexte
-    -   Wenn keine Abdruckrechte eingeholt wurden: deutliche
-        Kennzeichnung “Privatnutzung”
--   Wenn keine Lebensdaten angegeben werden, ist davon auszugehen, dass
-    die Person noch lebt und Leistungsansprüche geltend machen kann.
-    Stücke und Liedertexte die älter als 70 Jahre sind (Todesdatum plus
-    70 Jahre plus Zeitraum bis zum Jahresende 31.12) sind frei von
-    Leistungsansprüchen.
-
--   Für die kostenlose Bereitstellung und Nutzung des Zupfnoters würden
-    wir uns darüber freuen, wenn ein Hinweis auf den Tisch-Harfen-Noten
-    / herkömmlichen Noten in Form von www.zupfnoter.de erscheint.
-
--   Wer als Hersteller von Noten den guten Ton bewahrt, wird durch die
-    Angabe der eigenen Daten durch andere auf seine Fehler aufmerksam
-    gemacht und kann diese korrigieren. Es gehört dann auch zum guten
-    Ton (bzw. Reklamationsrecht), Notenblätter für die man Geld erhalten
-    hat, kostenlos inkl. Porto auszutauschen.
-
--   Die Angabe der Lebensdaten von Komponisten und Textern schützt den
-    Notenlaien bei öffentlichen Auftritten vor Fehlverhalten gegenüber
-    der Gema.
-
--   Sollte eine Person Noten anderer Personen in seinem Namen verkaufen,
-    bitten wir um eine kurzen Hinweis.
-
--   Notenlaien freuen sich besonders über Notenblätter, auf denen jede
-    erste Note eines jeden Taktes (Querstrich oder Querlinien)
-    gekennzeichnet ist. Einige Notenblätter am Markt enthalten nur den
-    Taktbeginn. Besonders hervorzuheben ist, dass der Zupfnoter die
-    Takte an die Noten schreiben kann, was für Notenlaien sehr hilfreich
-    sein kann.
-
--   In Deutschland gibt es viele Tischharfen-Gruppen. Es kommt immer
-    wieder vor, das Notenblätter korrigiert werden müssen und man in der
-    Gruppe mit verschiedenen Versionen eines Notenblattes spielt. Über
-    eine Versionsnummer könnte mal schnell identifizieren, wer ein neues
-    Notenblatt in welcher Version benötigt.
-
--   Für die Tischharfen-Gruppen, die nicht nur 25 saitige Tischharfen in
-    der Gruppe haben, sondern auch 21 saitige Tisch-Harfen, wäre es
-    besonders kundenfreundlich, wenn die Notenblätter oder auf
-    Notenübersichten bzw. Mappenübersichten gekennzeichnet wäre, ob die
-    Melodielinie sich zwischen a – f‘‘ befindet. So können alle in der
-    Gruppe die Melodie spielen und keiner wird ausgeschlossen.
-
-    Das soll aber im Umkehrschluss nicht heißen, dass alle Melodielinien
-    zwischen a – f‘‘ liegen müssen. In diesem Fall können die
-    GruppenleiterInnen evtl. Ersatznoten vorschlagen.
-
-# nicht in der Anleitung
-
-todo:
-
--   Menü snippets (Schnipsel) über die Tastenkombination `Strg` und
-    `Leerzeichentaste`
-    -   zupfnoter.dragable - ziehen
-    -   zupfnoter.annotation – Vermerk pro Note
-    -   zupfnoter.annotationref
-    -   zupfnoter.goto
-    -   zupfnoter.target
--   Zeichensatz für Notengröße plus individuelle Skalierung
-
--   unten links newscore
-
-# Offene Punkte im Handbuch
-
-## Kapitelstruktur
-
-    * Einführung
-    * Darstellung der Noten
-    * Ablauf der Erstellung
-    * Genereller Bildschirmaufbau
-        * Schaltflächenleiste (Toolbar)
-        * Eingeabepanel 2.1 ABC-Notation und Konfiguration
-        * Notenvorschau
-        * Harfenvorschau
-
-    * Fehlermeldung
-
-## Fehlermeldungen
