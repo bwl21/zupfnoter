@@ -30,7 +30,7 @@ mündlichen Unterweisung in den Tutorial-Videos (Selbstlerneinheiten)
 lassen sich gut die einzelnen Schritte für die Erstellung “Alle meine
 Entchen” nachvollziehen.
 
-## Dein erstes Musikstück eingebn
+## Dein erstes Musikstück eingeben
 
 1.  klicke auf Schaltfläche "Neu"
 
@@ -52,6 +52,22 @@ Entchen” nachvollziehen.
     Unterlegnoten.
 
     ![](../ZAUX_Images/einfuehrung-erste-schritte.jpg) 
+
+**Hinweis** Um Taktstriche, Wiederholungszeichen und Schlussstriche
+darstellen zu können benötigt man folgende Tastenkombinationen zur
+erstellung des senkrechten Striches (vertical bar)
+
+**Windows**
+
+-   `|` erzeugt man mit der Taste AltGr und der Taste links vom Y
+-   `[` erzeugt man mit der Taste `AltGr` und der Taste `8`
+-   `]` erzeugt man mit der Taste `AltGr` und der Taste `9`
+
+**Mac**
+
+-   `|` erzeugt man mit der Taste `Alt` und der Taste `7`
+-   `[` erzeugt man mit der Taste `Alt` und der Taste `5`
+-   `]` erzeugt man mit der Taste Alt und der Taste `6`
 
 **Herzlichen Glüchwunsch!** Du hast dein erstes Musikstück mit Zupfnoter
 erstellt.
@@ -130,7 +146,7 @@ Beispiel kannst zunächst einen Liedtext hinzufügen:
     liegenden Texten anzuzeigen, welcher Text verschoben wurde. Durch
     "Rendern" wird er wieder schwarz.
 
-## Das Musikstück drucken und speichern
+## Das Musikstück drucken
 
 Wenn das Musikstück fertig gestaltet ist, willst du es natürlich auch
 drucken:
@@ -153,13 +169,6 @@ drucken:
     die Blätter so zusammen, dass die Schnittmarken wieder genau ein "x"
     ergeben.
 
-Bei Bedarf kannst du die Unterlegnoten als PDF herunterladen:
-
-1.  klicke auf das Downloadsymbol oben rechts, wenn du die Unterlegnoten
-    als PDF speichern willst.
-
-2.  Wähle den Speicherort
-
 Wenn du dein Musikstück als herkömmliche Noten ausdrucken willst:
 
 1.  gehe zurück zum Zupfnoter und klicke erneut auf die Schaltfläche
@@ -170,3 +179,85 @@ Wenn du dein Musikstück als herkömmliche Noten ausdrucken willst:
     Es erscheint eine Vorschauseite der herkömmlichen Noten
 
 3.  Wähle in deinem Browser zum Drucken die Druckfunktion aus.
+
+## Dein Muskstück speichern
+
+### Speichern per Download
+
+Du hast vielleicht schon bemerkt, dass Zupfnoter bei einem Neustart
+immer das zuletzt bearbeitete Musikstück wieder geladen hat. Natürlich
+solltest du dein Musikstück auf deinem Rechner so abspeichern, damit du
+es später auch überarbeiten kannst.
+
+1.  klicke auf die Schaltfläche "Dl abc"
+2.  dein Musikstück wird in deinem Downloads - Ordner abgelegt.
+    Zupfnoter bildet den Dateinamen aus der Information in Zeile 2:
+
+    aus `F: 1_Alle-meine-Entchen` entsteht `1_Alle-meine-Entchen.abc`
+
+Bei Bedarf kannst du die Unterlegnoten als PDF herunterladen (z.B. um
+diese weiter zu geben):
+
+1.  klicke auf die Schaltfläche "Drucken"
+
+2.  klicke auf "A4" (oder auf "A3", wenn du einen Din-A3 Drucker hast)
+
+    Es erscheint eine Druckvorschau des Unterlegnotenblattes.
+
+3.  klicke auf das Downloadsymbol oben rechts
+
+4.  Wähle den Speicherort
+
+    Zupfnoter bildet auch hier den Dateinamen aus der Information in
+    Zeile 2:
+
+    aus `F: 1_Alle-meine-Entchen` entsteht
+    `1_Alle-meine-Entchen_alle-Stimmen.pdf`
+
+### Speichern in der Dropbox
+
+Wenn du regelmäßig mit Zupfnoter arbeiten willst, bietet es sich an, zum
+Speichern der Muskstücke die Dropbox zu benutzen. Eine Dropbox ist ein
+Speicher außerhalb deines Rechners. Mit der Dropbox hast du viele
+Vorteile bei Zupfbnoter:
+
+-   Zupfnoter speichert abc, pdf und Noten mit nur einem Klick
+-   du hast alle deine Musikstücke zentral abgelegt und kannst sie mit
+    einem Klick wieder in den Zupfnoter laden
+-   Dropbox speichert frühere Versionen, so dass du bei Problemen darauf
+    zurück greifen kannst
+-   Über die Dropbox kannst du deine Dateien mit anderen teilen, um
+    gemeinsam einem Musikstück zu arbeiten
+-   Selbst, wenn du nicht online bist, hast du ein Kopie aller deiner
+    Musikstücke (auch der PDFs) auf deiner lokalen Platte
+
+Zur Einrichtung einer Dropbox gehst du auf <https://www.dropbox.com/de>.
+Wenn du dich bei Dropbox angemeldet hast, findest du dort ein
+deutschsprachiges Benutzerhandbuch.
+
+Hinweis: Dropbox speichet seine Daten nicht in Deutschland.
+
+Wenn du ein Konto bei Dropbox hast, musst du Zupfnoter einmalig pro
+verwendetem Browser mit diesem Konto verbinden:
+
+-   klicke auf Schaltfläche "Einloggen"
+-   es erscheint das Anmeldefenster der Dropbox
+-   gib Email-Adresse und Kennwort ein
+-   Zupfnoter ist nun verbunden
+
+## Musikstück importieren
+
+Falls du schon ein anderes Musikprogramm verwendest (z.B. Musescore
+<https://www.musescore.com>) kannst deine Musikstücke in den Zupfnoter
+importieren, wenn dein Programm MusicXml
+(<https://www.musicxml.com/de/>) exportieren kann.
+
+Es gibt auch Webseiten, die frei zugängliche Musikstücke als MusicXML
+oder ABC Dateien zum Download anbieten.
+
+Um ABC oder MusiXML zu importieren kannst du einfach die Datei aus
+deinem Rechner (Explorer oder Finder) in den Zupfnoter ziehe.
+
+**Hinweis**: bitte achte darauf dass du die Zeile "F:" ggf. von Hand
+hinzufügst, damit Zupfnoter den Dateinamen kenn unter dem er das
+Musikstück speichern soll.

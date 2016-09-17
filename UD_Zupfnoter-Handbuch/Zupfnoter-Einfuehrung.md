@@ -23,7 +23,7 @@ Unterlegnoten:
 
 TODO: mit icons illustrieren
 
--   Noten eingeben
+-   **Noten eingeben**
 
     Zupfnoter erfasst die Musikstücke[^1] in der Standard-ABC-Notation.
     Diese kann man selbst eingeben oder vorhandene ABC-Dateien
@@ -33,7 +33,7 @@ TODO: mit icons illustrieren
     Musik-Programmen importiert werden (z.B. aus dem ebenfalls freien
     Programm Musescore).
 
--   Prüfen
+-   **Prüfen**
 
     Zupfnoter stellt die Musikstücke in ABC-Notation, regulären Noten
     und Harfennoten dar. Die gerade bearbeitete Stelle
@@ -42,7 +42,7 @@ TODO: mit icons illustrieren
     beiden Notenansichten an. Die eingegebenen Noten können so einfach
     überprüft und korrigiert werden.
 
--   Gestalten
+-   **Gestalten**
 
     Zupfnoter setzt die Noten für die Tischharfe automatisch. Man hat
     dabei sehr flexible Gestaltungsmöglichkeiten und kann ausgegebene
@@ -52,7 +52,7 @@ TODO: mit icons illustrieren
     Zählmarken, Synchronisationslinien. Sogar die Größe der Noten ist
     einstellbar.
 
--   Drucken
+-   \***Drucken**
 
     Zupfnoter erstellt PDF-Dateien im Format A3 oder A4, die direkt
     ausgedruckt werden können.
