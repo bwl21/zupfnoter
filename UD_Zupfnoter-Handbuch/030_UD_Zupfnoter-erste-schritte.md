@@ -16,7 +16,7 @@ Starte nun Zupfnoter in folgenden Schritten:
 
 3.  drücke auf die Schaltfläche "Zupfnoter Starten"
 
-    ![](../ZAUX_Images/einfuehrung-zupfnoter-starten.jpg) 
+    ![](../ZAUX_Images/030-010_einfuehrung-zupfnoter-starten.jpg) 
 
     Hinweis: Wer lieber erst die Einführungsvideos anschaut, kann
     natürlich auch auf die Schaltfläche "Tutorials" klicken :-).
@@ -48,10 +48,15 @@ Entchen” nachvollziehen.
 
 5.  klicke auf Schaltfläche "Rendern"
 
-6.  im Fenster links unten siehst du nun eine Vorschau der
+6.  im Fenster rechts unten siehst du nun eine Vorschau der
     Unterlegnoten.
 
-    ![](../ZAUX_Images/einfuehrung-erste-schritte.jpg) 
+    ![](../ZAUX_Images/030-020_einfuehrung-erste-schritte.jpg) 
+
+**Herzlichen Glückwunsch!** Du hast dein erstes Musikstück mit Zupfnoter
+erstellt.
+
+\needspace{5cm}
 
 **Hinweis** Um Taktstriche, Wiederholungszeichen und Schlussstriche
 darstellen zu können benötigt man folgende Tastenkombinationen zur
@@ -68,9 +73,6 @@ erstellung des senkrechten Striches (vertical bar)
 -   `|` erzeugt man mit der Taste `Alt` und der Taste `7`
 -   `[` erzeugt man mit der Taste `Alt` und der Taste `5`
 -   `]` erzeugt man mit der Taste Alt und der Taste `6`
-
-**Herzlichen Glüchwunsch!** Du hast dein erstes Musikstück mit Zupfnoter
-erstellt.
 
 ## Das Musikstück prüfen
 

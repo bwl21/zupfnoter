@@ -21,14 +21,14 @@
       :html:  ../ZSUPP_Styles/default.wortsammler.css
 
     :input: 
-        - ../UD_Zupfnoter-Handbuch/Frontmatter.md
-        - ../UD_Zupfnoter-Handbuch/Zupfnoter-Einfuehrung.md
-        - ../UD_Zupfnoter-Handbuch/Zupfnoter-starten.md
-        - ../UD_Zupfnoter-Handbuch/Zupfnoter-Handbuch.md
-        - ../UD_Zupfnoter-Handbuch/Zupfnoter-settings.md
-        - ../UD_Zupfnoter-Handbuch/Zupfnoter-best-practice.md
-        - ../UD_Zupfnoter-Handbuch/Zupfnoter-ABC-tutorial.md
-        - ../UD_Zupfnoter-Handbuch/Konfiguration.md
+        - ../UD_Zupfnoter-Handbuch/010_UD-Zupfnoter-Frontmatter.md
+        - ../UD_Zupfnoter-Handbuch/020_UD_Zupfnoter-Einfuehrung.md
+        - ../UD_Zupfnoter-Handbuch/030_UD_Zupfnoter-erste-schritte.md
+        - ../UD_Zupfnoter-Handbuch/040_UD-Zupfnoter-Referenz.md
+        - ../UD_Zupfnoter-Handbuch/050_UD_Zupfnoter-einstellungen.md
+        - ../UD_Zupfnoter-Handbuch/060_UD_Zupfnoter-best-practice.md
+        - ../UD_Zupfnoter-Handbuch/080_UD_Zupfnoter-ABC-tutorial.md
+        - ../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md
     :forget:
         - ../UD_Abc-Notation/abc-notation-1.md
         - ../UD_Abc-Notation/abc-notation-2.md

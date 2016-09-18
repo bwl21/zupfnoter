@@ -52,7 +52,7 @@ TODO: mit icons illustrieren
     Zählmarken, Synchronisationslinien. Sogar die Größe der Noten ist
     einstellbar.
 
--   \***Drucken**
+-   **Drucken**
 
     Zupfnoter erstellt PDF-Dateien im Format A3 oder A4, die direkt
     ausgedruckt werden können.
@@ -64,7 +64,7 @@ TODO: mit icons illustrieren
     Als Web-Anwendung speichert Zupfnoter die erstellten Muskstücke per
     Download auf dem lokalen Rechner oder in der Cloud (Dropbox).
 
-[^1]: In diesem Handbuch wird "Musikstück" also Oberbegriff zu Musik
-    bzw. Lied verwendet. Lied (aus mhd. liet, „Strophe“) ist der
+[^1]: In diesem Handbuch wird "Musikstück" als Oberbegriff zu Musik bzw.
+    Lied verwendet. Lied (aus mhd. liet, „Strophe“) ist der
     Sammelbegriff für kleinere, knapp gegliederte gesungene
     Kompositionen aus Musik und Liedtext.
