@@ -311,13 +311,7 @@ C,
             'produce'          => lambda { {key: "produce", value: $conf['produce']} },
             'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
             'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
-                                            value: {limit_a3:     true,
-                                                    LINE_THIN:    0.1,
-                                                    LINE_MEDIUM:  0.3,
-                                                    LINE_THICK:   0.5,
-                                                    # all numbers in mm
-                                                    ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                                    REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
+                                            value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
             'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
@@ -397,15 +391,21 @@ C,
         sets = {
             extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, 'repeatsigns.voices', :layoutlines, :startpos])},
             tuplet:             {keys: expand_extract_keys([:tuplet])},
-            notes:              {keys: expand_extract_keys([:notes])},
-            lyrics:             {keys: expand_extract_keys([:lyrics])},
-            layout:             {keys: expand_extract_keys([:layout])},
+            notes:              {keys: expand_extract_keys([:notes]), addconf: 'notes'},
+            lyrics:             {keys: expand_extract_keys([:lyrics]), addconf: 'lyrics'},
+            layout:             {keys: expand_extract_keys([:layout]), addconf: 'layout'},
             global:             {keys: [:produce]},
             extract0:           {keys: ['extract.0']},
             extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]}
         }
 
-        editable_keys    = (a=sets[args[:set]]) ? a[:keys] : [args[:set]]
+        a = sets[args[:set]]
+        if a
+          editable_keys = a[:keys]
+          addconf_set   = a[:addconf]
+        else
+          editable_keys = [args[:set]]
+        end
 
 
         # this handler yields three value sets
@@ -449,8 +449,20 @@ C,
           handle_command("editconf #{args[:set]}")
         end
 
+        add_entries_handler = lambda do
+          handle_command("addconf #{addconf_set}") if addconf
+        end
+
         editor_title       = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
-        config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
+        editorparams       = {
+            title:               editor_title,
+            editor:              @editor,
+            value_handler:       get_configvalues,
+            refresh_handler:     refresh_editor,
+            add_entries_handler: add_entries_handler
+        }
+        #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
+        config_form_editor = ConfstackEditor.new(editorparams)
         config_form_editor.generate_form
 
         nil
