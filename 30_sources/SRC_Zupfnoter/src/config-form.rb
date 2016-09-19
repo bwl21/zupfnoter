@@ -88,7 +88,8 @@ class ConfstackEditor
 
     class Boolean < ZnTypes
       def self.to_value(key, string)
-        string.to_s.eql?('true') ? true : false
+        r = string.to_s.eql?('true') ? true : false
+        r
       end
 
       def self.to_string(key, value)
@@ -107,6 +108,10 @@ class ConfstackEditor
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),
          html:        {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_html(key)
+        %Q{<input name="#{key}"" class="w2ui-input" title = "#{key}"" size="60"></input>}
       end
     end
 
@@ -175,7 +180,7 @@ class ConfstackEditor
 
     class TextStyle < ZnTypes
       def self.to_html(key)
-        %Q{<input name="#{key}"" title = "#{key}"" type="list" maxlength="100" size="60"></input>}
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
       end
 
       def self.to_w2uifield(key)
@@ -190,6 +195,8 @@ class ConfstackEditor
       end
     end
 
+
+    ## this is the 
 
     def initialize
       @typemap = {
@@ -221,7 +228,6 @@ class ConfstackEditor
     end
 
     def to_html(key)
-      `debugger`
       _type(key).to_html(key)
     end
 
@@ -299,13 +305,17 @@ class ConfstackEditor
   def push_config_to_editor
     patchvalue = Confstack.new(false)
     @live_record.each do |k, v|
+      value = Native(v)
       if @record[k].nil?
         patchvalue[k] = @helper.to_value(k, v) unless v.nil?
       else
-        if v.nil?
+        if value.nil?
           patchvalue[k] = @helper.to_value(k, nil) # this will produce the 'empty value'
-        else
-          patchvalue[k] = @helper.to_value(k, v) unless (@record[k] == v) #or v.nil?
+        elsif value.is_a? String
+          patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
+        else # return value is an object (e.g. selection list)
+          value = value[:id]
+          patchvalue[k] = @helper.to_value(k, value)
         end
       end
     end
