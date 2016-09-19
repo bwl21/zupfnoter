@@ -35,12 +35,12 @@ class ConfstackEditor
       end
 
       def self.to_w2uifield(key)
-        {field:       key,
-         type:        'string',
-         required:    true,
-         text:        I18n.t("#{key}.text"),
-         tooltip:     I18n.t("#{key}.tooltip"),
-         html:        {caption: I18n.t("#{key}.caption")}}
+        {field:    key,
+         type:     'string',
+         required: true,
+         text:     I18n.t("#{key}.text"),
+         tooltip:  I18n.t("#{key}.tooltip"),
+         html:     {caption: I18n.t("#{key}.caption")}}
       end
     end
 
@@ -101,13 +101,13 @@ class ConfstackEditor
       end
 
       def self.to_w2uifield(key)
-        {field:       key,
-         type:        'list',
-         options:     {items: [:true, :false]},
-         required:    true,
-         text:        I18n.t("#{key}.text"),
-         tooltip:     I18n.t("#{key}.tooltip"),
-         html:        {caption: I18n.t("#{key}.caption")}}
+        {field:    key,
+         type:     'list',
+         options:  {items: [:true, :false]},
+         required: true,
+         text:     I18n.t("#{key}.text"),
+         tooltip:  I18n.t("#{key}.tooltip"),
+         html:     {caption: I18n.t("#{key}.caption")}}
       end
 
       def self.to_html(key)
@@ -253,11 +253,16 @@ class ConfstackEditor
     end
   end
 
-  def initialize(title, editor, value_handler, refresh_handler)
+  #
+  #def initialize(title, editor, value_handler, refresh_handler)
+  def initialize(editorparams)
+    @title           = editorparams[:title]
+    @editor          = editorparams[:editor]
+    @refresh_handler = editorparams[:refresh_handler]
+
+    value_handler = editorparams[:value_handler]
+
     $log.timestamp("initialize Form")
-    @title           = title
-    @editor          = editor
-    @refresh_handler = refresh_handler
 
     value_handler_result = $log.benchmark("value handler") { value_handler.call }
 
@@ -292,16 +297,16 @@ class ConfstackEditor
     register_events
   end
 
-# This performs the push to the editor
-# it is done field by field
-# distinguish the cases
-# record     liverecord
-#   nil         nil         don't do anything
-#   nil         notnil      set the value
-#   no nil      nil         set to no effect value
-#   no nil     delete       actively delete the value from the editor
-# field had no value and does not provide one - don't do anything
-# filed
+  # This performs the push to the editor
+  # it is done field by field
+  # distinguish the cases
+  # record     liverecord
+  #   nil         nil         don't do anything
+  #   nil         notnil      set the value
+  #   no nil      nil         set to no effect value
+  #   no nil     delete       actively delete the value from the editor
+  # field had no value and does not provide one - don't do anything
+  # filed
   def push_config_to_editor
     patchvalue = Confstack.new(false)
     @live_record.each do |k, v|
@@ -329,8 +334,8 @@ class ConfstackEditor
   end
 
 
-# this registers the events for fields
-# as of now it is only config button
+  # this registers the events for fields
+  # as of now it is only config button
   def register_events
     handler = lambda do |evt|
       target = Native(evt).target[:name].split(':')
@@ -398,10 +403,14 @@ class ConfstackEditor
       fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" name="#{key}:fillup">#{@default_value[key]}</button>}
     end
 
+    first_indent = "<td>&nbsp;</td>" * (key.split(".").count + 2)
+    last_indent = "<td>&nbsp;</td>" * (15 - key.split(".").count)
+
     if @value[key].is_a? Hash # todo query type
 
       %Q{
          <tr>
+           #{first_indent}
            <td>
             <hr/>
             <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
@@ -409,16 +418,18 @@ class ConfstackEditor
            </td>
            <td><hr/><div><strong>#{ I18n.t_key("#{key}")}</strong></div></td>
           <td/>
+          #{last_indent}
          </tr>
         }
     else
       %Q{
         <tr>
-         <td> <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
+         #{first_indent}
+         <td><button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
          <td>
             <div><strong>#{ I18n.t_key("#{key}")}</strong></div>
-
         </td>
+        #{last_indent}
         <td> <div class="w2ui-field">
             #{@helper.to_html(key)}
       #{fillupbutton}
