@@ -171,7 +171,7 @@ class Controller
     if @systemstatus[:mode] == :demo
       handle_command("view 0")
     end
-
+    @editor.get_lyrics
     render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
     #
     setup_nodewebkit

@@ -36,8 +36,42 @@ module Harpnotes
       @range             = `ace.require('ace/range').Range`
       @inhibit_callbacks = false;
       @markers = []
+      create_lyrics_editor('abcLyrics')
     end
 
+    def create_lyrics_editor(div)
+      #
+      # Initializes the text pane
+      # @param div [String] The id of the div for the textpae
+      #
+      # @return [object] The javascript object for Ace
+      %x{
+        // see http://stackoverflow.com/questions/13545433/autocompletion-in-ace-editor
+        //     http://stackoverflow.com/questions/26991288/ace-editor-autocompletion-remove-local-variables
+        var langTools = ace.require("ace/ext/language_tools");
+        langTools.setCompleters([langTools.snippetCompleter])
+
+        var editor = ace.edit(div);
+        editor.$blockScrolling = Infinity;
+
+        editor.getSession().setMode("ace/mode/markdown");
+
+        editor.setTheme("ace/theme/abc");
+
+        editor.setOptions({
+          highlightActiveLine: true,
+          enableBasicAutocompletion: true,
+          enableSnippets: true,
+          enableLiveAutocompletion: false        });
+
+        // todo: refine autocompletion according to http://plnkr.co/edit/6MVntVmXYUbjR0DI82Cr?p=preview
+        //                                          https://github.com/ajaxorg/ace/wiki/How-to-enable-Autocomplete-in-the-Ace-editor
+      }
+      @lyrics_editor            = `editor`
+      @lyrics_range             = `ace.require('ace/range').Range`
+      @lyrics_inhibit_callbacks = false;
+      @lyrics_markers = []
+    end
 
     #
     # Install a handler for "change" event
@@ -150,6 +184,7 @@ module Harpnotes
       %x{
          self.editor.getSession().setValue(text);
       }
+      to_lyrics
     end
 
     # replace a text in the editor
@@ -369,6 +404,40 @@ module Harpnotes
       line_no  = lines.count
       char_pos = lines.last.length()
       return line_no, char_pos
+    end
+
+    def get_lyrics
+      retval = get_lyrics_raw
+      `debugger`
+      lyrics = retval.map { |r| r.first.gsub(/\nW\:[ \t]*/, "\n") }.join().strip
+      lyrics
+    end
+
+    def get_lyrics_raw
+      regex    = /((\n((W\:)([^\n]*)\n)+)+)/
+      abc_code = get_abc_part
+      retval   = abc_code.scan(regex)
+      if retval.count > 1
+        $log.error("you have more than one lyrics section in your abc code")
+      end
+      retval
+    end
+
+
+    # this copies the lyrics to the lyrics editor
+    def to_lyrics
+      %x{#{@lyrics_editor}.getSession().setValue(#{get_lyrics});}
+    end
+
+    def from_lyrics
+       lyrics_raw = get_lyrics_raw
+       oldtext = lyrics_raw.first.first  # this depends on the the pattern in get_lyrics_raw
+                                                # first match, first group
+       newtext = %x{#{@lyrics_editor}.getSession().getValue();}
+       newtext = newtext.split("\n").map{|l| "W:#{l}"}.join("\n")
+       newtext = %Q{\n#{newtext}\n}
+       `debugger`
+       replace_text(oldtext, newtext)
     end
 
   end
