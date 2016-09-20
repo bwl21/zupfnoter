@@ -35,18 +35,20 @@ TODO: mit icons illustrieren
 
 -   **Prüfen**
 
-    Zupfnoter stellt die Musikstücke in ABC-Notation, regulären Noten
-    und Harfennoten dar. Die gerade bearbeitete Stelle
+    Zupfnoter stellt die Musikstücke in ABC-Notation, in regulären Noten
+    und in Harfennoten auf dem Bildschirm dar.
 
     Zupfnoter spielt die Musikstücke auch ab und zeigt den Ablauf in den
     beiden Notenansichten an. Die eingegebenen Noten können so einfach
     überprüft und korrigiert werden.
 
+    Taktfehler können in den regulären Noten leicht erkannt werden.
+
 -   **Gestalten**
 
-    Zupfnoter setzt die Noten für die Tischharfe automatisch. Man hat
-    dabei sehr flexible Gestaltungsmöglichkeiten und kann ausgegebene
-    Stimmen beliebig zusammenstellen.
+    Zupfnoter setzt die Unterlegoten für die Tischharfe automatisch. Man
+    hat dabei sehr flexible Gestaltungsmöglichkeiten und kann einzelne
+    Stimmen beliebig für die Ausgabe zusammenstellen (Auszüge).
 
     Für die Stimmen gibt es wählbare Dekorationen wie Melodielinien,
     Zählmarken, Synchronisationslinien. Sogar die Größe der Noten ist
@@ -61,7 +63,7 @@ TODO: mit icons illustrieren
     Seiten auf. Anhand der aufgedruckten Schnittmarken kann anschließend
     das Notenblatt geschnitten und zusammengefügt werden.
 
-    Als Web-Anwendung speichert Zupfnoter die erstellten Muskstücke per
+    Als Web-Anwendung speichert Zupfnoter die erstellten Musikstücke per
     Download auf dem lokalen Rechner oder in der Cloud (Dropbox).
 
 [^1]: In diesem Handbuch wird "Musikstück" als Oberbegriff zu Musik bzw.

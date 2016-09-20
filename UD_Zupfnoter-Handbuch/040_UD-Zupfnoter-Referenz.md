@@ -1,3 +1,5 @@
+\cleardoublepage
+
 # Zupfnoter - Übersicht für Einsteiger und Experten
 
 Zum Verständnis von Zupfnoter ist es wichtig zu verstehen:
@@ -10,7 +12,8 @@ Zum Verständnis von Zupfnoter ist es wichtig zu verstehen:
 
 ## Elemente der von Zupfnoter erstellten Unterlegnoten
 
-![Zupfnoter elemente](../ZAUX_images/3015_reference_sheet_a3.png)
+![Zupfnoter
+elemente](../ZAUX_images/3015_reference_sheet_alle-Stimmen_a3.pdf)
 
 Dieses Bild zeigt die Elemente und Merkmale aus denen Zupfnoter ein
 Unterlegnotenblatt aufbaut:

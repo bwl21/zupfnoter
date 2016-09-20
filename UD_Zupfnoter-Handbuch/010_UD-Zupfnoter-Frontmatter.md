@@ -20,14 +20,14 @@ title: Zupfnoter Benutzerhandbuch
 
 # Über dieses Handbuch
 
-Du siehst dieses Handbuch und bist schockiert, dass es 50 Seiten hat.
-Aber wie sagte schon Xaver Beeblebrocks: "Keine Panik". Ersteller
+Du siehst dieses Handbuch und bist schockiert, dass es über 50 Seiten
+hat. Aber wie sagt man doch so schön: "keine Panik!". Ersteller
 einfacher Unterlegnoten kommen mit den ersten Kapiteln schon auf die
-Erfolgssraße.
+Erfolgsstraße.
 
 Dieses Handbuch richtet sich an alle, die Zupfnoter vewenden und sich
-selbst einarbeiten wollen. Dabei haben wir folgende Zielgruppen im
-Blick:
+selbst in den Zupfnoter einarbeiten wollen. Dabei haben wir folgende
+Zielgruppen im Blick:
 
 -   **Ersteller einfacher Unterlegnoten**: Der Einsteiger erstellt
     Musikstücke mit einer Stimme und ggf. Texten. Hierzu gehört auch der
@@ -46,4 +46,4 @@ Blick:
 TODO: markieren, für welche Zielgruppe welche Textabschnitte relevant
 sind.
 
-Dieses Handbuch wurde erstellt von Verena Hinzmann und Bernhard Weichel
+Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
