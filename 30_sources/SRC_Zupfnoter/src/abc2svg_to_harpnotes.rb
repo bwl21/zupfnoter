@@ -102,7 +102,7 @@ module Harpnotes
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
                       tempo:         {duration: duration, bpm: bpm},
-                      tempo_display: [duration_display, "=", bpm].join(' '),
+                      tempo_display: @info_fields[:Q],   #[duration_display, "=", bpm].join(' '),
                       meter:         @info_fields[:M],
                       key:           "#{key} #{o_key_display}"
         }
