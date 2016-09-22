@@ -30,7 +30,7 @@ mündlichen Unterweisung in den Tutorial-Videos (Selbstlerneinheiten)
 lassen sich gut die einzelnen Schritte für die Erstellung “Alle meine
 Entchen” nachvollziehen.
 
-## Dein erstes Musikstück eingeben
+## Dein erstes Musikstück eingeben {#dein-erstes-musikstueck-eingeben}
 
 1.  klicke auf Schaltfläche "Neu", es erscheint ein Eingabeformular
 
@@ -166,7 +166,7 @@ Beispiel kannst zunächst einen Liedtext hinzufügen:
     liegenden Texten anzuzeigen, welcher Text verschoben wurde. Durch
     klicken auf die Schaltfläche "Rendern" wird er wieder schwarz.
 
-## Das Musikstück drucken
+## Das Musikstück drucken {#musikstueck-drucken}
 
 Wenn das Musikstück fertig gestaltet ist, willst du es natürlich auch
 drucken:
@@ -300,8 +300,24 @@ Es gibt auch Webseiten, die frei zugängliche Musikstücke als MusicXML
 oder ABC Dateien zum Download anbieten.
 
 Um ABC oder MusicXML zu importieren, kannst du einfach die Datei aus
-deinem Rechner (Explorer oder Finder) in den Zupfnoter ziehen.
+deinem Rechner (Explorer oder Finder) in den Zupfnoter ziehen.\
+Zupfnoter übersetzt das xml-Format in Abc Notation.
+
+Bei der Auswahl eines Musikstückes im xml-Format sollte man 30 Takte
+nicht überschreiten. Am besten eignen sich Klaviernoten für den Import.
+Ausserdem sollte man auf die Bandbreite der Noten achten, die
+Tisch-Harfen mit 25 Saiten haben einn Tonumfang von zwei Oktaven (G bis
+g).
+
+In der Regel ist etwas Nacharbeit erforderlich, um das importierte
+Muskskstück für die Tischharfe anzupassen.
 
 **Hinweis**: bitte achte darauf, dass du die Zeile "F:" ggf. von Hand
 hinzufügst, damit Zupfnoter den Dateinamen kennt unter welchem er das
 Musikstück speichern soll.
+
+Die ABC-Notation kann man anhand der Anleitung im Hilfemenü manuell
+eingeben oder man sucht das gewünschte Stück im Internet auf einer
+Musikseite raus und lädt sich das Musikstück im xml-Format herunter.
+Danach wird die xml-Datei per Maus in den Zupfnoter in den linken
+Abschnitt gezogen.

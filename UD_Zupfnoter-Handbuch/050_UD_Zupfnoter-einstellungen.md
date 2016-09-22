@@ -1,6 +1,6 @@
 # Zupfnoter für Experten
 
-## Erstellung von Auszügen
+## Erstellung von Auszügen {#auszuege}
 
 TODO: Konzept der Auszüge beschreiben
 
@@ -14,58 +14,68 @@ see https://github.com/bwl21/zupfnoter/issues/71
 
 TODO: text überarbeiten
 
--   title (Titel) [extract.x.title]
+-   **Titel**: [extract.x.title]
 
-    Es wird die Abc Notationszeile für den Titel (T:) des Musikstückes
-    generiert.
+    Spezifizert den Titel des Auszugs
 
--   voices (Stimmen) [extract.x.voices]
+    **Hinweis:** Der Titel des Auszug ist nicht zu verwechseln mit dem
+    Titel des Musktistücks ( ABC-Kopfzeite "´T:\`")
 
-    Es wird die Abc Notationszeile für die einzelne Stimme (V:) des
-    Musikstückes generiert.
+-   "Stimmen": [extract.x.voices]
 
--   flowlines (Melodielinie oder Hauptlinie) [extract.x.flowlines]
+    Spezifiziert, welche Stimmen im dem Auszug dargestellt werden.
 
-    Wenn der Auszug 0 mehrere Stimmen enthält und man einen Auszug 1 mit
-    der Bass-Stimme und der ersten Stimme erstellt hat, möchte man die
-    Hauptlinie in der Bass-Stimme haben und die Noten der ersten Stimme
-    sollen dann die Begleittöne zur Bass-Stimme werden und keine
-    Melodielinie mehr enthalten. Für diesen Zweck wird ein
-    Zupfnoter-Kommando generiert.
+-   **Flusslinien** [extract.x.flowlines]
 
--   layoutlines (Layout-Linien) [extract.x.layoutlines]
+    Spezifizert, welche Stimmen eine Flusslinie erhalten sollen.
 
-    Dieses Zupfnoter-Kommando wird benötigt, wenn Tisch-Harfen-Noten
-    sich vertikal überlappen oder übereinander gelegt wurden. Mit dem
-    Zupfnoter-Kommando definiert man die Abstände zwischen zwei Noten.
+-   **Stimmen für layout**: [extract.x.layoutlines]
 
--   jumplines (Wiederholungslinien, Sprunglinien) [extract.x.jumplines]
+    Zupfnoter errechnet die vertkale Anordnung der Noten aus den
+    einzelnen Notenlängen. Über diese Einstellung wird bestimmt, welche
+    Stimmen in die Berechnung eingehen.
+
+    > **Hinweis:** man kann sogar eine eigene "Stimme" schreiben, welche
+    > nur zur Berechung des Layouts herangezogen, aber nicht auf den
+    > Unterlegnoten dargestellt wird. Auf diese Weise kann man man das
+    > layout vollständig manuell steuern.
+
+-   **Sprunglinien:** [extract.x.jumplines]
+
+    Diese Einstellung wird bestimmt, für welche Stimmen die Sprunglinien
+    dargestellt werden.
 
     Wiederholungszeichen in den herkömmlichen Noten werden in den
     Tisch-Harfen-Noten als Wiederholungslinie dargestellt. In der Regel
     muss der vertikale Teil der Wiederholungslinie nach rechts
     verschoben werden, damit er rechts von den Noten liegt und nicht
-    mitten durch das Notenbild der Tisch-Harfen-Noten geht. Dieses
-    Zupfnoter-Kommando wird benötigt, um den vertikalen Teil der
-    Wiederholungslinie horizontal (nach rechts oder links) verschieben
-    zu können.
+    mitten durch das Notenbild der Tisch-Harfen-Noten geht. Die
+    horizontale Position der Sprunglinie wird über die ABC-Notation
+    eingestellt. Dazu wird vor dem entsprechenden Taktstrich z.B.
+    eingegeben:
 
--   synchlines (Synchronisationslinie, Querlinie zu Begleitnoten)
-    [extract.x.synchlines]
+    "`^@5 :|`" - der Vertikale Teil der Sprunglinie liegt fünf
+    Halbtonschritte rechts von der letzten Note des Abschnittes
 
-    Dieses Zupfnoter-Kommando wird benötigt, wenn Querlinien zu
-    Begleitnoten erscheinen sollen oder wenn zum Beispiel Noten der
-    ersten Stimme mit Noten der zweiten Stimme durch eine Querlinie
-    verbunden werden sollen.
+-   **Synchnronisationslinien:** (Synchronisationslinie, Querlinie zu
+    Begleitnoten) [extract.x.synchlines]
 
--   legend (Legende) [extract.x.legend]
+    Diese Einstellung bestimmt, zwischen welchen Stimmen die
+    Synchronisiationslinien dargestellt werden.
 
--   notes (Blattbeschriftung) [extract.x.notes]
+    **Hinweise:** Synchronisationsliniem für Mehrklänge werden immer
+    dargestellt.
 
-    todo: Sachverhalte: steht für Noten und für Notizen im Zupfnoter.
-    Vorschlag hier umbenennen in notice oder comment???.
+-   **Legende**: [extract.x.legend]
 
--   lyrics (Liedtexte) [extract.x.lyrics]
+    Diese Einstellung bestimmt die Position der Legende. Dabei kann die
+    Überschrift des Musikstückes und der Informationsbloock separat
+    poitioniert werden.
+
+    **Hinweis:** durch Veschieben der Objekte mit der Maus wird diese
+    Einstellung automatisch eingefügt.
+
+-   **Liedtexte:** (Liedtexte) [extract.x.lyrics]
 
     In der Abc Notation werden Liedertexte im Kopffeld W:
 
@@ -80,33 +90,48 @@ TODO: text überarbeiten
 
     todo: unterschied zwischen `w:` und `W:`
 
--   nonflowrest (Ablauf ohne Pausen) [extact.x.nonflowrest]
+-   **Seitenbeschriftung:** [extract.x.notes]
 
-    Generell werden Pausen in den Begleitnoten der herkömmlichen Noten
-    und Tisch-Harfen-Noten unterdrückt. Wenn man einzelne Pausen sehen
-    möchte, erzeugt man diese über die Abc Notation mit dem Buchstaben
-    z.  Wenn man alle Pausen sehen möchte, benutzt man dieses
-        Zupfnoter-Kommando um die Standardeinstellung zu deaktivieren.
--   startpos (Startposition) [extract.x.startpos]
+    TODO Sachverhalte: steht für Noten und für Notizen im Zupfnoter.
+    Vorschlag hier umbenennen in notice oder comment???.
 
--   subflowlines (Unterablauflinien oder Teilabschnittslinien)
-    [extract.x.subflowlines]
+-   **Begleitpausen:** [extact.x.nonflowrest]
 
-    Dieses Zupfnoter-Kommando wird benötigt, wenn man einzelne Noten
-    ausserhalb der Stimmen mit Linien verbinden möchte. Dies kann
-    sinnvoll bei Begleitnoten sein, die in der Melodie keiner Note
-    zugeordnet werden können oder bei Verzierungsnoten.
+    Generell werden Pausen in den Begleitnoten (Stimmen ohne Flusslinie)
+    der herkömmlichen Noten und Tisch-Harfen-Noten unterdrückt. Wenn die
+    Pausen auch in den Begleitstimmen sehen möchte, kann msn sie mit
+    dier Einstellung einschalten.
 
--   produce (produzieren) [produce]
+-   **Startposition:** [extract.x.startpos]
 
-    Nur bestimmte Auszüge erzeugen für einzelne
+    Mit dieser Einstellung kann man die Startposition der Unterlegnoten
+    festlegen. Die Angabe erfolgt in mm und wird vom oberen Blattrand
+    gemessen.
+
+-   **Unterflusslinien**: [extract.x.subflowlines]
+
+    Diese Einstellung bestimmt, für welche Stimmen die Unterflusslinien
+    ausgegeben werden. Dies kann sinnvoll bei Begleitnoten sein, die in
+    der Melodie keiner Note zugeordnet werden können oder bei
+    Verzierungsnoten.
+
+-   **Ausgabe:** [produce]
+
+    Diese Einstellung bestimmt, welche Auszüge gedruckt werden sollen.
+    Oft wird z.B. der Auszug 0 nur zur Bearbeitung verwendet, aber nicht
+    gedruckt.
 
     Stimmen (Auszug 0 beinhaltet 100 %)
 
--   layout (Gestaltung oder Anordnung) [extract.x.layout]
+-   **Layout:** (Gestaltung oder Anordnung) [extract.x.layout]
 
--   countnotes oder beat time (Takt zählen)
+-   **Zählmarken:** [extraxt.x.coountnotes]
 
     Es werden unter jeder Note, abhängig von der Taktart, Zahlen
     zugeordnet, die die Zählung des Taktes darstellen. Bei einem 4/4
     Takt kann das also (1 2 3 4) oder (1 und 2 und 3 und 4 und) sein.
+
+-   **Taktnummern:** [extract.x.barnumbers]
+
+    Diese Einstellung bestimmt, an welchen Stimmen die Takte numeriert
+    werden. Ebenso wird Position und Darstellung bestimmt.

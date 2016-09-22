@@ -1,4 +1,4 @@
-# Konfiguration der Ausgabe
+# Konfiguration der Ausgabe(\#konfiguration)
 
 details zu layout ist [hier](#extract.0.layout)
 
