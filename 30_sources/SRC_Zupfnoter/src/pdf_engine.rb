@@ -36,12 +36,6 @@ module Harpnotes
       @pdf.rect(1.0, 1.0, 418, 295)
       @pdf.rect(0.0, 0.0, 420.0, 297.0)
 
-      # the cutmarks are drawn in octave distance
-      delta = 12.0 * X_SPACING
-      (1..2).each do |i|
-        [:top, :bottom].each { |border| draw_cutmarks(i, delta, border) }
-      end
-
       sheet.children.each do |child|
         @pdf.line_width = child.line_width
         if child.is_a? Ellipse
@@ -78,17 +72,6 @@ module Harpnotes
       @pdf.text(root.center.first, root.center.last + style[:font_size] * mm_per_point, root.text)
     end
 
-    def draw_cutmarks(i, delta, border)
-      vertical_pos = {:top => 7, :bottom => 290}[border] # [start_y, center_y, end_y]
-      hpos         = X_SPACING/2.0 + delta * i + 3 #todo: 3 is the background_size Default::Layout::ELLIPSE_SIZE[0]
-      hdiff        = X_SPACING/2.0
-
-      center = Vector2d(X_SPACING/2.0 + delta * i, vertical_pos)
-      size   = 1
-
-      @pdf.line((center + [-size, -size]).to_a, (center + [size, size]).to_a)
-      @pdf.line((center + [-size, size]).to_a, (center + [size, -size]).to_a)
-    end
 
     def draw_ellipse(root)
       style     = root.filled? ? :F : :FD

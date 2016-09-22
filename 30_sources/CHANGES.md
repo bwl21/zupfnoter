@@ -9,6 +9,7 @@
 ## Fix
 
 * barnumbers are smaall_bold again #60
+* optimized placement of cutmarks #74
 
 # V 1.4.2
 

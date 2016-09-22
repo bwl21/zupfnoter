@@ -286,6 +286,7 @@ module Harpnotes
       def measure_start
         proxy_note.measure_start
       end
+
       alias_method :measure_start?, :measure_start
 
       #
@@ -1243,9 +1244,19 @@ module Harpnotes
         # build Scalebar
         sheet_marks     = layout_stringnames(print_options_hash)
 
+        # build cutmarks
+
+        delta           = 12.0 * $conf.get('layout.X_SPACING') # cut in octaves
+        (1..2).each do |i|       # number rof cutmarks
+          [4, 288].each do |y|   # the y  Coordinates
+            # 0.25 Fragment of string distance to place the cutmark
+            sheet_marks << Harpnotes::Drawing::Annotation.new([0.25 * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') + delta * i, y], "x", :small , nil)
+          end
+        end
+
         # now generate legend
 
-        annotations     = []
+        annotations = []
 
         title               = music.meta_data[:title] || "untitled"
         filename            = music.meta_data[:filename]
@@ -1433,7 +1444,7 @@ module Harpnotes
 
             notebound_pos_key = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}.pos"
             conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
-            barnumber        = %Q{#{prefix}#{playable.measure_count.to_s}} || ""
+            barnumber         = %Q{#{prefix}#{playable.measure_count.to_s}} || ""
 
             barnubmers_options = show_options[:barnumbers]
 
@@ -1786,16 +1797,15 @@ module Harpnotes
       #
       # @return [type] [description]
       def layout_playable(root, beat_layout)
-        result            = if root.is_a? Note
-                              layout_note(root, beat_layout)
-                            elsif root.is_a? SynchPoint
-                              layout_accord(root, beat_layout)
-                            elsif root.is_a? Pause
-                              layout_pause(root, beat_layout)
-                            else
-                              $log.error("BUG: Missing Music -> Sheet transform: #{root}")
-                            end
-
+        result = if root.is_a? Note
+                   layout_note(root, beat_layout)
+                 elsif root.is_a? SynchPoint
+                   layout_accord(root, beat_layout)
+                 elsif root.is_a? Pause
+                   layout_pause(root, beat_layout)
+                 else
+                   $log.error("BUG: Missing Music -> Sheet transform: #{root}")
+                 end
 
 
         result
