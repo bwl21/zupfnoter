@@ -687,14 +687,19 @@ C,
       command.as_action do |args|
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
-          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.*)\/(.*)/).to_a
-          path       =fileparts[1]
-          filename   =fileparts[2]
+          # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          fileparts = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
+          path      = "/#{fileparts[1]}"
+          filename  = fileparts.last
 
-          handle_command("dlogin full /#{path}/")
-          $log.message("found #{path} / #{filename}")
+          newpath = "#{path}"
+          handle_command("dlogin full #{path}")
+          $log.message("found #{path}#{filename}")
           handle_command("dopen #{filename.split("_").first}")
-          $log.message("opened #{path} / #{filename}")
+          $log.message("opened #{path}#{filename}")
+        end.fail do |message|
+          $log.error message
         end
       end
     end
