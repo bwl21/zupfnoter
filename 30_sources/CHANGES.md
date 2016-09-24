@@ -3,6 +3,7 @@
 ## Changes
 
 * adjusted German language #47
+* improved auto positioning of barnubmers and count notes #81
 
 # V 1.4.2
 

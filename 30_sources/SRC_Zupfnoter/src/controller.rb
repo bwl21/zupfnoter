@@ -1024,10 +1024,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  barnumbers:   {
                      voices: [],
                      pos:    [6, -4],
+                     autopos: false,
                      style:  "small_bold",
                      prefix: ""
                  },
-                 countnotes:   {voices: [], pos: [3, -2]},
+                 countnotes:   {voices: [], pos: [3, -2], autopos: false, style: "smaller"},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
@@ -1140,7 +1141,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                                      :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
                                      :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
                                      "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
+                                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
                                     ],
                                     []],
     }
