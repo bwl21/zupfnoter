@@ -18,7 +18,93 @@ curvoice=p_voice2;for(;s;s=s.next){s2=clone(s);if(s.notes){s2.notes=[];for(i=0;i
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
 // json.js for abc2svg-1.6.1 (2016-08-16)
-function AbcJSON(nindent){var inb=Array((nindent||2)+1).join(" ");this.gen_json=function(tsfirst,voice_tb,anno_type,info){var json,i,j,l,v,s,h,ind2=inb+inb,ind3=ind2+inb,ind4=ind3+inb,links={next:true,prev:true,ts_next:true,ts_prev:true,p_v:true};function attr_gen(ind,attr,val){var i,e,indn=ind+inb;if(attr=="extra"){json+=h+ind+'"extra": [';h="\n";for(e=val;e;e=e.next)attr_gen(indn,null,e);json+="\n"+ind+"]";return}if(links[attr])return;json+=h+ind;if(attr)json+='"'+attr.toString()+'": ';switch(typeof val){case"undefined":json+="null";break;case"object":if(!val){json+="null";break}if(Array.isArray(val)){if(val.length==0){json+="[]";break}h="[\n";l=val.length;for(i=0;i<l;i++)attr_gen(indn,null,val[i]);json+="\n"+ind+"]"}else{h="{\n";for(i in val)attr_gen(indn,i,val[i]);json+="\n"+ind+"}"}break;default:json+=JSON.stringify(val);break}h=",\n"}json="";h="{\n";attr_gen(inb,"music_types",anno_type);h=",\n"+inb+'"music_type_ids": {\n';l=anno_type.length;for(i=0;i<l;i++){json+=h+ind2+'"'+anno_type[i]+'": '+i;h=",\n"}h="\n"+inb+"},\n";attr_gen(inb,"info",info);json+=",\n"+inb+'"voices": [';v=0;h="\n";while(1){h+=ind2+"{\n"+ind3+'"voice_properties": {\n';for(i in voice_tb[v])attr_gen(ind4,i,voice_tb[v][i]);json+="\n"+ind3+"},\n"+ind3+'"symbols": [';s=voice_tb[v].sym;if(!s){json+="]\n"+ind3+"}"}else{h="\n";for(;s;s=s.next)attr_gen(ind4,null,s);json+="\n"+ind3+"]\n"+ind2+"}"}h=",\n";if(!voice_tb[++v])break}return json+"\n"+inb+"]\n}\n"}}
+function AbcJSON(nindent) {
+    var inb = Array((nindent || 2) + 1).join(" ");
+    this.gen_json = function (tsfirst, voice_tb, anno_type, info) {
+        var json, i, j, l, v, s, h, ind2 = inb + inb, ind3 = ind2 + inb, ind4 = ind3 + inb, links = {
+            next: true,
+            prev: true,
+            ts_next: true,
+            ts_prev: true,
+            dd_st: true,
+            p_v: true
+        };
+
+        function attr_gen(ind, attr, val) {
+            var i, e, indn = ind + inb;
+            if (attr == "extra") {
+                json += h + ind + '"extra": [';
+                h = "\n";
+                for (e = val; e; e = e.next)attr_gen(indn, null, e);
+                json += "\n" + ind + "]";
+                return
+            }
+            if (links[attr])return;
+            json += h + ind;
+            if (attr)json += '"' + attr.toString() + '": ';
+            switch (typeof val) {
+                case"undefined":
+                    json += "null";
+                    break;
+                case"object":
+                    if (!val) {
+                        json += "null";
+                        break
+                    }
+                    if (Array.isArray(val)) {
+                        if (val.length == 0) {
+                            json += "[]";
+                            break
+                        }
+                        h = "[\n";
+                        l = val.length;
+                        for (i = 0; i < l; i++)attr_gen(indn, null, val[i]);
+                        json += "\n" + ind + "]"
+                    } else {
+                        h = "{\n";
+                        for (i in val)attr_gen(indn, i, val[i]);
+                        json += "\n" + ind + "}"
+                    }
+                    break;
+                default:
+                    json += JSON.stringify(val);
+                    break
+            }
+            h = ",\n"
+        }
+
+        json = "";
+        h = "{\n";
+        attr_gen(inb, "music_types", anno_type);
+        h = ",\n" + inb + '"music_type_ids": {\n';
+        l = anno_type.length;
+        for (i = 0; i < l; i++) {
+            json += h + ind2 + '"' + anno_type[i] + '": ' + i;
+            h = ",\n"
+        }
+        h = "\n" + inb + "},\n";
+        attr_gen(inb, "info", info);
+        json += ",\n" + inb + '"voices": [';
+        v = 0;
+        h = "\n";
+        while (1) {
+            h += ind2 + "{\n" + ind3 + '"voice_properties": {\n';
+            for (i in voice_tb[v])attr_gen(ind4, i, voice_tb[v][i]);
+            json += "\n" + ind3 + "},\n" + ind3 + '"symbols": [';
+            s = voice_tb[v].sym;
+            if (!s) {
+                json += "]\n" + ind3 + "}"
+            } else {
+                h = "\n";
+                for (; s; s = s.next)attr_gen(ind4, null, s);
+                json += "\n" + ind3 + "]\n" + ind2 + "}"
+            }
+            h = ",\n";
+            if (!voice_tb[++v])break
+        }
+        return json + "\n" + inb + "]\n}\n"
+    }
+}
 // abc2svg - ABC to SVG translator
 // Copyright (C) 2014-2015 Jean-Francois Moine
 // This program is free software; you can redistribute it and/or modify
