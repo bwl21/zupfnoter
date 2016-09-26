@@ -64,8 +64,8 @@ Entchen” nachvollziehen.
 
     ![](../ZAUX_Images/030-020_einfuehrung-erste-schritte.jpg) 
 
-**Herzlichen Glückx wunsch!** Du hast dein erstes Musikstück mit
-Zupfnoter erstellt.
+**Herzlichen Glückwunsch!** Du hast dein erstes Musikstück mit Zupfnoter
+erstellt.
 
 \needspace{5cm}
 
@@ -99,8 +99,8 @@ es einfach mal anhören:
     ein "G" sein). Diese wird dadurch ausgewählt und in allen Fenstern
     markiert.
 
-    **Hinweis**: Die Note ist nun auch im linken Fenster selektiert. Auf
-    diese Weise kann einfach in der ABC-Notation navigiert werden.
+    > **Hinweis**: Die Note ist nun auch im linken Fenster selektiert.
+    > Auf diese Weise kann einfach in der ABC-Notation navigiert werden.
 
 3.  klicke wieder auf die Schaltfläche "Play"
 
@@ -162,9 +162,9 @@ Beispiel kannst zunächst einen Liedtext hinzufügen:
     Unterlegnoten (Fenster rechts unten) an die Position, die dir
     gefällt.
 
-    **Hinweis:** Der Liedtext ist nun rot, um bei nahe an einander
-    liegenden Texten anzuzeigen, welcher Text verschoben wurde. Durch
-    klicken auf die Schaltfläche "Rendern" wird er wieder schwarz.
+    > **Hinweis:** Der Liedtext ist nun rot, um bei nahe an einander
+    > liegenden Texten anzuzeigen, welcher Text verschoben wurde. Durch
+    > klicken auf die Schaltfläche "Rendern" wird er wieder schwarz.
 
 ## Das Musikstück drucken {#musikstueck-drucken}
 
@@ -181,9 +181,9 @@ drucken:
 
     Es öffnet sich der Druckdialog deines Browsers.
 
-    **Hinweis**: bitte konfiguriere die Druckereinstellung so, dass der
-    Ausdruck **nicht vergößert oder verkleinert** wird (100%, 1:1, evtl.
-    'randlos' ...).
+    > **Hinweis**: bitte konfiguriere die Druckereinstellung so, dass
+    > der Ausdruck **nicht vergößert oder verkleinert** wird (100%, 1:1,
+    > evtl. 'randlos' ...).
 
     ![](../ZAUX_IMAGES/030-030_A4-schneiden.pdf) 
 
@@ -250,10 +250,11 @@ hast du viele Vorteile bei Zupfbnoter:
     einem Klick
 -   du hast alle deine Musikstücke zentral abgelegt und kannst sie mit
     einem Klick wieder in den Zupfnoter laden
--   **Hinweis**: Beim Laden von Muskstücken in Zupfnoter, und als
-    Suchbegriff wird der Anfang des Dateinamens bis zum ersten "\_"
-    herangezogen. Daher muss pro Dropbox-Ordner diese Nummer eindeutig
-    sein.
+
+    > **Hinweis**: Beim Laden von Muskstücken in Zupfnoter, wird der
+    > Anfang des Dateinamens bis zum ersten "\_" herangezogen. Daher
+    > muss pro Dropbox-Ordner diese Nummer eindeutig sein.
+
 -   Dropbox speichert frühere Versionen, so dass du bei Problemen darauf
     zurück greifen kannst und den Verlauf deiner Änderungen
     nachvollziehen kannst.
@@ -266,7 +267,7 @@ Zur Einrichtung einer Dropbox gehst du auf <https://www.dropbox.com/de>.
 Wenn du dich bei Dropbox angemeldet hast, findest du dort ein
 deutschsprachiges Benutzerhandbuch.
 
-**Hinweis**: Dropbox speichet seine Daten nicht in Deutschland.
+> **Hinweis**: Dropbox speichet seine Daten nicht in Deutschland.
 
 Wenn du ein Konto bei Dropbox hast, musst du Zupfnoter **einmalig pro
 verwendetem Browser** mit diesem Dropbox-Konto verbinden:
@@ -276,18 +277,18 @@ verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 -   gib Email-Adresse und Kennwort ein
 -   Zupfnoter ist nun verbunden
 
-> > **Hinweis** bei Verwendung öffentlicher Computer (z.B.
-> > Internet-Cafe) Solange du mit deinem Browser bei Dropbox angemeldet
-> > bist, hat der Browser Zugriff auf alle deine Dateien. Daher musst du
-> > dich **unbedingt bei Dropbox** abmelden, wenn du an einem
-> > öffentlichen Computer arbeitest. Besser ist es, gleich im
-> > "Inkognito"-Modus des Browsers zu arbeiten.
-> >
-> > Dropbox-Anwendungen speichern ein geheimes Token auf deinem lokalen
-> > Rechner. Wenn du vermutest, das dieses Token kompromittiert ist,
-> > kannst du auf der Website von Dropbox die Verbindung zu Zupfnoter
-> > löschen. Dadurch wird bei der nächsten Anmeldung ein neues Token
-> > erzeugt.
+> **Hinweis** bei Verwendung öffentlicher Computer (z.B. Internet-Cafe)
+> Solange du mit deinem Browser bei Dropbox angemeldet bist, hat der
+> Browser Zugriff auf alle deine Dateien. Daher musst du dich
+> **unbedingt bei Dropbox** abmelden, wenn du an einem öffentlichen
+> Computer arbeitest. Besser ist es, gleich im "Inkognito"-Modus des
+> Browsers zu arbeiten.
+>
+> Dropbox-Anwendungen speichern ein geheimes Token auf deinem lokalen
+> Rechner. Wenn du vermutest, das dieses Token kompromittiert ist,
+> kannst du auf der Website von Dropbox die Verbindung zu Zupfnoter
+> löschen. Dadurch wird bei der nächsten Anmeldung ein neues Token
+> erzeugt.
 
 ## Musikstück importieren
 
@@ -312,9 +313,9 @@ g).
 In der Regel ist etwas Nacharbeit erforderlich, um das importierte
 Muskskstück für die Tischharfe anzupassen.
 
-**Hinweis**: bitte achte darauf, dass du die Zeile "F:" ggf. von Hand
-hinzufügst, damit Zupfnoter den Dateinamen kennt unter welchem er das
-Musikstück speichern soll.
+> **Hinweis**: bitte achte darauf, dass du die Zeile "F:" ggf. von Hand
+> hinzufügst, damit Zupfnoter den Dateinamen kennt unter welchem er das
+> Musikstück speichern soll.
 
 Die ABC-Notation kann man anhand der Anleitung im Hilfemenü manuell
 eingeben oder man sucht das gewünschte Stück im Internet auf einer

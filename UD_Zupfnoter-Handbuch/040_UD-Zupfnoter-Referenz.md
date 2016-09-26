@@ -331,13 +331,13 @@ Bildschirmaufbau](../ZAUX_Images/040_030_Bildschirmaufbau.pdf)
 
     Über die Reiter können verschiedene Zoom-Stufen eingestellt werden.
 
-    > **Hinweis**: Da die Berechnugn der Unterlegnoten einige Sekunden
+    > **Hinweis**: Da die Berechnung der Unterlegnoten einige Sekunden
     > dauert, wird dieses Fenster nur durch "rendern" aktualisiert.
 
 -   Im **linken Fenster** wird die ABC-Notation sowie die
     Zupfnoter-Einstellungen angezeigt. Für die ABC-Notation gibt es eine
     separate Anleitung. Mit Hilfe der ABC-Notation und der
-    Zupfnoter-Kommandos wird das Notenbild für die Tischharfen
+    Zupfnoter-Einstellungen wird das Notenbild für die Tischharfen
     generiert.
 
     Über die Reiter kann auf die formularbasierte Konfiguration
@@ -345,10 +345,10 @@ Bildschirmaufbau](../ZAUX_Images/040_030_Bildschirmaufbau.pdf)
 
 ### WerkzeugleisteLeiste für Schaltflächen und Menüs
 
-In der oberen oberen Werkzeugleiste, die über alle Abschnitte hinweg
-liegt, befinden sich Schaltflächen und Menüs die man während der
-Erstellung von Unterlegnoten benötigt. Nach einem Klick auf die
-Schaltflächen führt der Zupfnoter bestimmte Aktivitäten aus.
+In der oberen Werkzeugleiste, die über alle Abschnitte hinweg liegt,
+befinden sich Schaltflächen und Menüs die man während der Erstellung von
+Unterlegnoten benötigt. Nach einem Klick auf die Schaltflächen führt der
+Zupfnoter bestimmte Aktivitäten aus.
 
 Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 \ref{shortcuts} [Shortcuts](#shortcuts)
@@ -381,8 +381,9 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 
     TODO: anpassen auf kommenden Dialog
 
-    **Hinweis**: in der Statuszeile wird der Verbindungszustand zur
-    Dropbox und auch das aktuelle Verzeichnis in der Dropbox angezeigt.
+    > **Hinweis**: in der Statuszeile wird der Verbindungszustand zur
+    > Dropbox und auch das aktuelle Verzeichnis in der Dropbox
+    > angezeigt.
 
 -   Schaltfläche **Speichern** (sichern, speichern): Das fertig
     gestellte Musikstück wird in deiner Dropbox gespeichert. Es wird
@@ -470,18 +471,6 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 
 -   Schaltfläche **Play** (Wiedergabe) spielt das Muskitsück ab. Damit
     kann man duch Anhören Fehler in den einegegebenen Noten erkennen.
-
-    > **Hinweis:** Bitte beachte:
-
-        -   Zupfnoter spielt keine Wiederholungen und Sprünge,
-            sondern nur die Noten von Anfang bis zum Ende.
-
-        -   Zur Wiedergabe simuliert Zupfnoter einen
-            Tischharfenspieler. Daher führt er bei Bedarf zunächst die Fuktion
-            "Rendern" aus um die Unterlegnoten zu aktualisieren.
-
-        -   Die Gesschwindidgkeit der Wiedergabe wird über die Kopfzheile "`Q:`" bestimmt.
-
     Die wiedergebenen Noten werden wie folgt bestimmt:
 
     -   wenn keine Noten selektiert sind, spielt Zupfnoter alle
@@ -497,6 +486,18 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
         die selektierten Noten. Damit kann man eine Detailkontrolle
         errreichen.
 
+    > **Hinweis:** Bitte beachte:
+    >
+    > -   Zupfnoter spielt keine Wiederholungen und Sprünge, sondern nur
+    >     die Noten von Anfang bis zum Ende.
+    >
+    > -   Zur Wiedergabe simuliert Zupfnoter einen Tischharfenspieler.
+    >     Daher führt er bei Bedarf zunächst die Fuktion "Rendern" aus
+    >     um die Unterlegnoten zu aktualisieren.
+    >
+    > -   Die Geschwindidgkeit der Wiedergabe wird über die Kopfzheile
+    >     "`Q:`" bestimmt.
+    >
 -   Menü **Hilfe** (Hilfe): Hier findet man hilfreiche Links und
     nleitungen
 
@@ -571,9 +572,9 @@ Noten in einer der Vorschauen klickt, wird diese im Eingabebereich
 selektiert. So findet man schnell zu einer Stelle, die man ändern möchte
 oder wo man was hinzufügen möchte.
 
-**Hinweis::** Wenn man zunächst eine Note, und dann mit gedrückter
-"Shift"-Taste eine zweite Note anklickt, dann werden die dazwischen
-liegenden Noten selektiert.
+> **Hinweis::** Wenn man zunächst eine Note, und dann mit gedrückter
+> "Shift"-Taste eine zweite Note anklickt, dann werden die dazwischen
+> liegenden Noten selektiert.
 
 Das Ende der ABC-Notation wird mit einer Leerzeile eingeleitet. Sollte
 nach einer Leerzeile noch ABC-Notation folgen, wird dies vom Computer
@@ -592,12 +593,13 @@ Zupfnoter-Einstellungen dürfen nicht gemischt werden.
 Die Zupfnoter-Einstellungen sind im sog. JSON-Format angegeben (siehe
 Kapitel \ref(konfiguration} [Konfiguration der Ausgabe](#konfiguration)
 
-Über die Zupfnoter-Kommandos wird das Design der Unterlegnoten
+Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
 verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
 besser positioniert werden oder string names (Saitennamen) eingefügt
-werden. Die Zupfnoter-Kommandos können manuell eingegeben werden oder
-über das Menü sheet config (Blattkonfiguration) erzeugt werden. Weitere
-Informationen zu den Zupfnoter-Kommandos stehen im nächsten Kapitel.
+werden. Die Zupfnoter-Einstellungen können manuell eingegeben werden
+oder über das Menü sheet config (Blattkonfiguration) erzeugt werden.
+Weitere Informationen zu den Zupfnoter-Einstellungen stehen im nächsten
+Kapitel.
 
 Wichtig ist, immer daran zu denken nach einer Änderung in der Menüleiste
 auf render (ausführen) zu drücken, damit die Unterlegnoten aktualisiert
@@ -618,11 +620,11 @@ bedeutet in Zeile 12 an Stelle 19 ist der F-Text nicht korrekt.
 Es müssen alle Fehler beseitigt werden, ansonsten können keine
 herkömmlichen Noten oder Unterlegnoten generiert werden.
 
-**Hinweis:** Die Position des Cursors (der Schreibmarke) wird als
-Zeile:Spalte ganz links in der Statusleiste angezeigt.
+> **Hinweis:** Die Position des Cursors (der Schreibmarke) wird als
+> Zeile:Spalte ganz links in der Statusleiste angezeigt.
 
-**Hinweis:** die letzten Fehlermeldungen kann man in der der Konsole
-(mit `ctrl/cmd-K` sehen.
+> **Hinweis:** die letzten Fehlermeldungen kann man in der der Konsole
+> (mit `ctrl/cmd-K` sehen.
 
 TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einfügen???
 
@@ -645,19 +647,20 @@ Mauszeiger zu einer "Hand".
 
 Über ein Kontextmenü kannst du erweiterte Einstellunge vornehmen.
 
-**Hinweis:** Die Einstellungen werden im Eingabebereich (Einstellungen)
-abgelegt. Der Name der Einstellung erscheint rechts unten in der
-Statuszeile, wenn man mit der Maus über ein Element fährt.
+> **Hinweis:** Die Einstellungen werden im Eingabebereich
+> (Einstellungen) abgelegt. Der Name der Einstellung erscheint rechts
+> unten in der Statuszeile, wenn man mit der Maus über ein Element
+> fährt.
 
 ## Shortcuts
 
 Für eine flüssige Bedienung stellt Zuüpfnoter folgende Shortcuts zur
-Verfüung:
+Verfügung:
 
 -   "cmd - S": Speichern
 -   "cmd - k": Konsole
 -   "cmd - R": Rendern
 -   "cmd - P": Play
 
-**Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
-"strg" - TAste
+> **Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
+> "strg" - Taste
