@@ -403,37 +403,35 @@ class ConfstackEditor
       fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" name="#{key}:fillup">#{@default_value[key]}</button>}
     end
 
-    first_indent = "<td>&nbsp;</td>" * (key.split(".").count + 2)
-    last_indent = "<td>&nbsp;</td>" * (15 - key.split(".").count)
+    padding =  1.5 * (key.split(".").count - 1)
+    first_indent = %Q{<span style="padding-left:#{padding}em;"><span>}# "<td>&nbsp;</td>" * (key.split(".").count + 2)
+    last_indent =  "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
     if @value[key].is_a? Hash # todo query type
 
       %Q{
-         <tr>
-           #{first_indent}
+         <tr style="border:1pt solid blue;">
+
            <td>
-            <hr/>
+            #{first_indent}
             <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
             #{fillupbutton}
+           <strong>#{ I18n.t_key("#{key}")}</strong>
            </td>
-           <td><hr/><div><strong>#{ I18n.t_key("#{key}")}</strong></div></td>
-          <td/>
-          #{last_indent}
+          <td >&nbsp;</td>
          </tr>
         }
     else
       %Q{
         <tr>
-         #{first_indent}
-         <td><button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button ></td>
-         <td>
-            <div><strong>#{ I18n.t_key("#{key}")}</strong></div>
+         <td>#{first_indent}
+         <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
+            <strong>#{ I18n.t_key("#{key}")}</strong>
         </td>
-        #{last_indent}
         <td> <div class="w2ui-field">
             #{@helper.to_html(key)}
-      #{fillupbutton}
-      #{@effective_value[key]} / #{@default_value[key]}
+            #{fillupbutton}
+            #{@effective_value[key]} / #{@default_value[key]}
             </div>  </td>
        </tr>
     }
