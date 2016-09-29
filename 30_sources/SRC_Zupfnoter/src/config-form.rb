@@ -342,6 +342,7 @@ class ConfstackEditor
       case target.last
         when 'delete'
           @editor.delete_config_part(target.first)
+          refresh_form
         when 'neutral'
           @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
         when 'fillup'
@@ -351,6 +352,7 @@ class ConfstackEditor
           else
             @editor.extend_config_part(target.first, @helper.to_template(target.first))
           end
+          refresh_form
       end
       register_events
     end
@@ -431,7 +433,7 @@ class ConfstackEditor
         <td> <div class="w2ui-field">
             #{@helper.to_html(key)}
             #{fillupbutton}
-            #{@effective_value[key]} / #{@default_value[key]}
+            #{@effective_value[key]}
             </div>  </td>
        </tr>
     }

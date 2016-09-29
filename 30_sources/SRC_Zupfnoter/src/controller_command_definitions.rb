@@ -363,6 +363,7 @@ C,
           end
 
           @editor.patch_config_part(the_key, patchvalue)
+          @config_form_editor.refresh_form if @config_form_editor
         else
           raise "unknown configuration parameter #{value[:key]}"
           nil
@@ -462,8 +463,8 @@ C,
             add_entries_handler: add_entries_handler
         }
         #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
-        config_form_editor = ConfstackEditor.new(editorparams)
-        config_form_editor.generate_form
+        @config_form_editor = ConfstackEditor.new(editorparams)
+        @config_form_editor.generate_form
 
         nil
       end
