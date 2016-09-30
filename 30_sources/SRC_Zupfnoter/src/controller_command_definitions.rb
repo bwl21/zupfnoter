@@ -381,7 +381,7 @@ C,
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
-        parameter.set_help { "one of #{sets.keys.to_s}" }
+        parameter.set_help { "one of the editable keys"} #"#{sets.keys.to_s}" }
       end
 
       command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
@@ -413,6 +413,8 @@ C,
         # the current value
 
         get_configvalues = lambda do
+          $log.timestamp(1)
+
           editor_conf        = Confstack.new(false)
           editor_conf.strict = false
 
@@ -422,12 +424,18 @@ C,
           default_conf        = Confstack.new(false)
           default_conf.strict = false
 
+          $log.timestamp(2)
+
           editable_values  = Confstack.new(false)
           default_values   = Confstack.new(false)
           effective_values = Confstack.new(false)
 
+          $log.timestamp(3)
+
           configvalues_from_editor = get_config_from_editor
           editor_conf.push(configvalues_from_editor)
+
+          $log.timestamp(4)
 
           default_conf.push($conf.get) # start with defaults
           default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
@@ -435,6 +443,8 @@ C,
             default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
             default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
           end
+          $log.timestamp(5)
+
           effective_conf.push (default_conf.get.clone)
           effective_conf.push (editor_conf.get.clone)
 
@@ -443,6 +453,8 @@ C,
             default_values[k]   = default_conf[k]
             effective_values[k] = effective_conf[k]
           }
+          $log.timestamp(6)
+
           {current: editable_values.get, effective: effective_values.get, default: default_values.get}
         end
 

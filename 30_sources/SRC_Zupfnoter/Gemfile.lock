@@ -19,6 +19,7 @@ GEM
       slop (~> 3.4)
     rack (1.6.4)
     rake (10.4.2)
+    redcarpet (2.2.2)
     sass (3.4.20)
     slop (3.6.0)
     sourcemap (0.1.1)
@@ -39,6 +40,7 @@ DEPENDENCIES
   opal-jquery (~> 0.4.0)
   pry
   rake
+  redcarpet
   sass
   vector2d (~> 2.1.0)
   zip

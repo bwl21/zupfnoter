@@ -10,7 +10,32 @@ module I18n
     key.split(".").last
   end
 
+  def self.t_help(key)
+
+    keyparts = key.split(".")
+    downwards = []; upwards =  []
+    (0 .. keyparts.length - 1 ).each do |i|
+      downwards.push(keyparts[0 .. i-1])
+      upwards.push(keyparts[i .. -1])
+    end
+    candidates = upwards + downwards.reverse
+    candidates = candidates.map{|c| $conf_helptext[c.join('.')]}
+
+    helptext = candidates.compact.first || "no help"
+    ##helptext = $conf_helptext[key] || "<p>no helpr for #{key}</p>"
+    %Q{<div style="padding:0.5em;width:30em;">#{helptext}</div>}
+  end
+
   def self.locale(language)
+
+    $conf_helptext = {}
+    HTTP.get("public/locale/conf-help_#{language}.json").then do |response|
+      $conf_helptext = Native(response.body)
+    end.fail do |response|
+      alert "could not loaad confhelp #{response}"
+    end.always do |response|
+    end
+
     `w2utils.locale('public/locale/' + #{language} + '.json')`
   end
 end
@@ -212,7 +237,6 @@ class Controller
       alert "could not load from URL: #{url}"
     end.always do |response|
     end
-
   end
 
   # load session from localstore
@@ -564,14 +588,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def get_config_from_editor
     config_part = @editor.get_config_part
     begin
-      config         = %x{json_parse(#{config_part})}
+      #config         = %x{json_parse(#{config_part})}
       config         = JSON.parse(config_part)
       config, status = migrate_config(config)
 
-      @editor.set_config_part(config)
 
       if status[:changed]
         alert(status[:message])
+        @editor.set_config_part(config)
         @editor.prepend_comment(status[:message])
       end
 
@@ -580,6 +604,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.error("#{error.first} at #{line_col}", line_col)
       config = {}
     end
+
     config
   end
 

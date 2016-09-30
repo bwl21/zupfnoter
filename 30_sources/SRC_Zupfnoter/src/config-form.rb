@@ -266,14 +266,16 @@ class ConfstackEditor
 
     value_handler_result = $log.benchmark("value handler") { value_handler.call }
 
-    @value                = Confstack.new(false)
-    @effective_value      = Confstack.new(false)
-    @default_value        = Confstack.new(false)
-    @default_value.strict = false
+    $log.benchmark("process value handler result") do
+      @value                = Confstack.new(false)
+      @effective_value      = Confstack.new(false)
+      @default_value        = Confstack.new(false)
+      @default_value.strict = false
 
-    @value.push(value_handler_result[:current])
-    @effective_value.push(value_handler_result[:effective])
-    @default_value.push($log.benchmark('getvalues') { value_handler_result[:default] })
+      @value.push(value_handler_result[:current])
+      @effective_value.push(value_handler_result[:effective])
+      @default_value.push($log.benchmark('getvalues') { value_handler_result[:default] })
+    end
 
     @form   = nil # Form object to be passed to w2ui
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
@@ -319,7 +321,7 @@ class ConfstackEditor
         elsif value.is_a? String
           patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
         else # return value is an object (e.g. selection list)
-          value = value[:id]
+          value         = value[:id]
           patchvalue[k] = @helper.to_value(k, value)
         end
       end
@@ -343,18 +345,21 @@ class ConfstackEditor
         when 'delete'
           @editor.delete_config_part(target.first)
           refresh_form
+          register_events
         when 'neutral'
           @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
+        when 'help'
+          helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
+          `$(#{evt}.target).w2overlay(#{helptext})`
         when 'fillup'
-          `debugger`
           if @default_value[target.first]
             @editor.patch_config_part(target.first, @default_value[target.first])
           else
             @editor.extend_config_part(target.first, @helper.to_template(target.first))
           end
           refresh_form
+          register_events
       end
-      register_events
     end
     %x{$('.znconfig-button').click(#{handler})}
   end
@@ -384,6 +389,8 @@ class ConfstackEditor
         onValidate: lambda { alert("validate"); nil },
         formHTML:   %Q{
                     <table>
+                    <tr><th style="width:20em;">#{I18n.t("Name")}</th>
+                    <th>#{I18n.t("Value")}</th><th/><th>#{I18n.t("Effective value")}</th></tr>
                     #{@value.keys.map { |key| mk_fieldHTML(key) }.join}
                     </table>
                     }
@@ -400,41 +407,46 @@ class ConfstackEditor
 
   def mk_fieldHTML(key)
 
-    fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" name="#{key}:fillup">#{key}</button>} if @helper.to_template(key)
+    fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o"  name="#{key}:fillup">#{key}</button>} if @helper.to_template(key)
     unless @default_value[key].is_a? Hash
-      fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" name="#{key}:fillup">#{@default_value[key]}</button>}
+      fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" title="#{@default_value[key]}" name="#{key}:fillup"></button>}
     end
 
-    padding =  1.5 * (key.split(".").count - 1)
-    first_indent = %Q{<span style="padding-left:#{padding}em;"><span>}# "<td>&nbsp;</td>" * (key.split(".").count + 2)
-    last_indent =  "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
+    help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button class="znconfig-button fa fa-question"  name="#{key}:help"></button></div>}
+    padding      = 1.5 * (key.split(".").count - 1)
+    first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
+    last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
     if @value[key].is_a? Hash # todo query type
 
       %Q{
          <tr style="border:1pt solid blue;">
 
-           <td>
+           <td  colspan="2" >
             #{first_indent}
             <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
             #{fillupbutton}
            <strong>#{ I18n.t_key("#{key}")}</strong>
            </td>
-          <td >&nbsp;</td>
+           <td style="vertical-align: top;">#{help_button}</td>
          </tr>
         }
     else
       %Q{
         <tr>
-         <td>#{first_indent}
+         <td style="vertical-align: top;">#{first_indent}
          <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
+         #{fillupbutton}
+
             <strong>#{ I18n.t_key("#{key}")}</strong>
         </td>
-        <td> <div class="w2ui-field">
+        <td style="vertical-align: top;">
+         <div class="w2ui-field" style="padding:1pt;">
             #{@helper.to_html(key)}
-            #{fillupbutton}
-            #{@effective_value[key]}
-            </div>  </td>
+         </div>
+        </td>
+        <td style="vertical-align: top;">#{help_button}</td>
+        <td style="vertical-align: top;">#{@effective_value[key]}</td>
        </tr>
     }
     end
