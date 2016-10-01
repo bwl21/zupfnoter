@@ -99,7 +99,7 @@ class ConfstackEditor
       end
 
       def self.to_string(key, value)
-        value.to_s
+        value
       end
 
       def self.to_neutral(key)
@@ -108,7 +108,7 @@ class ConfstackEditor
 
       def self.to_w2uifield(key)
         {field:    key,
-         type:     'list',
+         type:     'checkbox',
          options:  {items: [:true, :false]},
          required: true,
          text:     I18n.t("#{key}.text"),
@@ -117,7 +117,7 @@ class ConfstackEditor
       end
 
       def self.to_html(key)
-        %Q{<input name="#{key}"" class="w2ui-input" title = "#{key}"" size="60"></input>}
+        %Q{<input name="#{key}"" type="checkbox" class="w2ui-input" title = "#{key}" size="60">&nbsp;#{I18n.t(key)}</input>}
       end
     end
 
@@ -325,6 +325,8 @@ class ConfstackEditor
         if value.nil?
           patchvalue[k] = @helper.to_value(k, nil) # this will produce the 'empty value'
         elsif value.is_a? String
+          patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
+        elsif value.is_a? Boolean
           patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
         else # return value is an object (e.g. selection list)
           value         = value[:id]
