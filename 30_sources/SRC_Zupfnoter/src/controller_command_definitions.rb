@@ -390,11 +390,13 @@ C,
         $log.timestamp("editconf #{args[:set]}")
 
         sets = {
-            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, 'repeatsigns.voices', :layoutlines, :startpos])},
-            tuplet:             {keys: expand_extract_keys([:tuplet])},
-            notes:              {keys: expand_extract_keys([:notes]), addconf: 'notes'},
-            lyrics:             {keys: expand_extract_keys([:lyrics]), addconf: 'lyrics'},
-            layout:             {keys: expand_extract_keys([:layout]), addconf: 'layout'},
+            basic_settings: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+                                                        'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos])},
+            barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
+
+            notes:              {keys: expand_extract_keys([:notes])},
+            lyrics:             {keys: expand_extract_keys([:lyrics])},
+            layout:             {keys: expand_extract_keys([:layout])},
             global:             {keys: [:produce]},
             extract0:           {keys: ['extract.0']},
             extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]}

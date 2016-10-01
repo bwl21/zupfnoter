@@ -14,6 +14,7 @@
   "shortdays": ["Mo","Di","Mi","Do","Fr","Sa","So"],
   "fulldays": ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"],
   "phrases": {
+    "Add missing entries": "Fehlende Einträge hinzufügen",
     "Add new record": "Neues Element hinzufügen",
     "Add New": "Neu",
     "after": "nach",

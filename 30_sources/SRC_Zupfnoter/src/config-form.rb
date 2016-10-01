@@ -24,8 +24,14 @@ class ConfstackEditor
 
       def self.to_template(key)
         # handle the case notes.x
-        template = key.split('.')[-2]
+        template = key.split('.')[-2] # templates are for "extract.x.<template>"
         a        = $conf.get("templates.#{template}") if template
+
+        unless a
+          help_key = key
+          help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
+          a        = $conf.get(help_key)
+        end
 
         a
       end
@@ -351,16 +357,19 @@ class ConfstackEditor
         when 'help'
           helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
           `$(#{evt}.target).w2overlay(#{helptext})`
-        when 'fillup'
-          if @default_value[target.first]
-            @editor.patch_config_part(target.first, @default_value[target.first])
-          else
-            @editor.extend_config_part(target.first, @helper.to_template(target.first))
+        when 'default'
+          if a=@default_value[target.first]
+            @editor.patch_config_part(target.first, a)
+            refresh_form
+            register_events
           end
+        when 'fillup'
+          @editor.extend_config_part(target.first, @helper.to_template(target.first))
           refresh_form
           register_events
       end
     end
+
     %x{$('.znconfig-button').click(#{handler})}
   end
 
@@ -407,17 +416,13 @@ class ConfstackEditor
 
   def mk_fieldHTML(key)
 
-    fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o"  name="#{key}:fillup">#{key}</button>} if @helper.to_template(key)
-    unless @default_value[key].is_a? Hash
-      fillupbutton = %Q{<button class="znconfig-button fa fa-circle-o" title="#{@default_value[key]}" name="#{key}:fillup"></button>}
-    end
-
-    help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button class="znconfig-button fa fa-question"  name="#{key}:help"></button></div>}
+    help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
     padding      = 1.5 * (key.split(".").count - 1)
     first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
     last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
     if @value[key].is_a? Hash # todo query type
+      fillup_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
 
       %Q{
          <tr style="border:1pt solid blue;">
@@ -425,18 +430,20 @@ class ConfstackEditor
            <td  colspan="2" >
             #{first_indent}
             <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
-            #{fillupbutton}
+            #{fillup_button}
            <strong>#{ I18n.t_key("#{key}")}</strong>
            </td>
            <td style="vertical-align: top;">#{help_button}</td>
          </tr>
         }
     else
+      default_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{@default_value[key]}" name="#{key}:fillup"></button>}
+
       %Q{
         <tr>
          <td style="vertical-align: top;">#{first_indent}
          <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
-         #{fillupbutton}
+         #{default_button}
 
             <strong>#{ I18n.t_key("#{key}")}</strong>
         </td>

@@ -417,17 +417,16 @@ function init_w2ui(uicontroller) {
                 tooltip: "Edit configuration with forms",
                 items: [
                     {text: 'global', tooltip: "edit global settings for the current song"},
-                    {id: 'extract_primitives', text: 'basic settings', tooltip: "Edit basic settings of extract"},
+                    {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
                     {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
-                    {text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
+                    {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
+                    {id:  'barnumbers_countnotes', text: 'barnumbers and countnotes', tooltip: "edit barnumbers or countnotes"},
                     {
                         id: 'notes',
                         text: 'page annotation',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
-                    {id: 'tuplet', tooltip: "edit settings for tuplets\nin current extract"},
                     {},
-                    {id: 'extract0', text: 'extract 0', tooltip: "Edit extract 0"},
                     {id: 'extract_current', text: 'current extract', tooltip: "Edit current extract"}
                 ]
             }
