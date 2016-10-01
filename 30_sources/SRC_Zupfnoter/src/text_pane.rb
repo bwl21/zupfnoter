@@ -86,6 +86,9 @@ module Harpnotes
     # Get the border of the current selection
     # todo: this might be not enough in case of multiple selectios.
     #
+    # Note that it returnes [row, col] for start and end
+    # counting from "0"
+    #
     # @return [Array of Number] [start, end] position of selection
     def get_selection_positions
       %x{
@@ -97,12 +100,23 @@ module Harpnotes
       [`range_start`, `range_end`]
     end
 
+    # This method provides information about the current selection
+    # the results are intended to be shown in the statuslilne
+    # therefore, we add 1 to row and column
+    #
+    # note it also provides token information in which we
+    # do not increment startpos and endpos such that it can be
+    # used together with patchtoken
+    #
     def get_selection_info
       %x{
          doc = self.editor.selection.doc;
          range = self.editor.selection.getRange();
          token = self.editor.session.getTokenAt(range.start.row, range.start.column);
+         token.startpos = [range.start.row, token.start];
+         token.endpos = [range.start.row, token.start + token.value.length];
         }
+      # note that
       Native(`{selection: [[range.start.row+1, range.start.column+1], [range.end.row+1, range.end.column+1]], token: token}`)
     end
 
@@ -149,6 +163,19 @@ module Harpnotes
     def set_text(text)
       %x{
          self.editor.getSession().setValue(text);
+      }
+    end
+
+    # replaces the text of the range by
+    # range is a reange object
+    # s
+    # @param [Array] startpos [row, col] starting with 0
+    # @param [Array] endpos   [row, col] starting with 0
+    # @param [String] text
+    def replace_range(startpos, endpos, text)
+      %x{
+      therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
+      #{editor}.getSession().replace(therange, #{text})
       }
     end
 
@@ -301,6 +328,16 @@ module Harpnotes
       end
     end
 
+
+    # this methods patches a token
+    # @param [Array] endpos [row, col]
+    def patch_token(token, endpos, newvalue)
+      oldtoken = get_selection_info.token
+      raise "cannot patch token if there is a name mismatch '#{oldtoken.type}' - '#{token}'" unless oldtoken.type.to_s == token.to_s
+      #raise "cannot patch token if in wrong position" if oldtoken.endpos != endpos
+
+      replace_range(oldtoken.startpos, oldtoken.endpos , newvalue)
+    end
 
     # this adds the parts of object which are not yet in config
     # it does not change the values of config
