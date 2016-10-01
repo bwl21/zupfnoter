@@ -1,6 +1,22 @@
 class ConfstackEditor
 
+
+# this class acts as helper for the configuration editor
+  # its main purpose is to provide a conf editor based type sytem
+  # Subclasses of ZnType represent the ConfHelper Types.
+  # assication between config entry and ConfHelper Types
+  # is defined by the lookuptable at the bottom of this class
+  # todo: Implement a proper schema to derive the types
+  #
+  # note, we have types o various levels
+  #
+  # * the config Value type as it is in the JSON part
+  # * the type for the UI-Framework
+  # * the type for middleware betwenn conf and UI-Framework. this is represented by ZnTypes
+
   class ConfHelper
+
+    #s is the abstract ConfHelper Tpyp
     class ZnTypes
       def self.to_value(key, string)
         string
@@ -425,7 +441,7 @@ class ConfstackEditor
     padding      = 1.5 * (key.split(".").count - 1)
     first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
     last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
-    
+
     if @default_value[key].is_a? Hash # todo query type
       fillup_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
 
