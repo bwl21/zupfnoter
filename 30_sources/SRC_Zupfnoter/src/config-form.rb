@@ -212,7 +212,7 @@ class ConfstackEditor
           Integer         => ['startpos'],
           OneLineString   => ['title'],
           MultiLineString => ['text'],
-          Boolean         => ['limit_a3'],
+          Boolean         => ['limit_a3', 'autopos'],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK'],
           TupletShape     => ['shape'],
           TextStyle       => ['style']
@@ -253,6 +253,9 @@ class ConfstackEditor
       _type(key).to_w2uifield(key)
     end
 
+    def to_type(key)
+      _type(key)
+    end
     def _type(key)
       lookupkey = key.split('.').last
       @typemap[lookupkey] || ZnTypes
@@ -422,8 +425,8 @@ class ConfstackEditor
     padding      = 1.5 * (key.split(".").count - 1)
     first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
     last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
-
-    if @value[key].is_a? Hash # todo query type
+    
+    if @default_value[key].is_a? Hash # todo query type
       fillup_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
 
       %Q{
@@ -439,7 +442,7 @@ class ConfstackEditor
          </tr>
         }
     else
-      default_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{@default_value[key]}" name="#{key}:fillup"></button>}
+      default_button = %Q{<button class="foobar znconfig-button fa fa-circle-o" title="#{@default_value[key].to_s}" name="#{key}:fillup"></button>}
 
       %Q{
         <tr>
