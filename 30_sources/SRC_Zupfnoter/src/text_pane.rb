@@ -108,13 +108,20 @@ module Harpnotes
     # do not increment startpos and endpos such that it can be
     # used together with patchtoken
     #
+    # result: {selection: [], token: {type: <type>, value: <value>}}
     def get_selection_info
       %x{
          doc = self.editor.selection.doc;
          range = self.editor.selection.getRange();
          token = self.editor.session.getTokenAt(range.start.row, range.start.column);
-         token.startpos = [range.start.row, token.start];
-         token.endpos = [range.start.row, token.start + token.value.length];
+         if (token){
+           token.startpos = [range.start.row, token.start];
+           token.endpos = [range.start.row, token.start + token.value.length];
+         }
+         else
+         {
+          //todo handle missing token
+         }
         }
       # note that
       Native(`{selection: [[range.start.row+1, range.start.column+1], [range.end.row+1, range.end.column+1]], token: token}`)

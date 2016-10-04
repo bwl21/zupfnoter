@@ -1,18 +1,209 @@
+# This class implements the "Snippet - Editor"
+# the various kinds o snipets are represented
+# by subclasses of Form, and selected by Form.form_factory based on the thoken.
+
+class SnippetEditor
+
+  # This class handles the various types of snippets
+  # It is repsonsible for selecting form binding the fields
+  #
+  class Form
+    attr_accessor :on_change
+
+    # @param [String] token - the ace syntax token to be edited.
+    # @param [Lambda] saveblock - the process to save the edit result in the editor
+    def self.form_factory(token, saveblock)
+      a={'jumptarget'    => Target,
+         'draggable'     => Draggable,
+         'goto'          => Goto,
+         'annotation'    => Annotation,
+         'annotationref' => AnnotationRef,
+         'beforeBar'     => Goto,
+         'beforeNote'    => BeforeNote
+      }
+
+      result = a[token.split('.')[2]].new
+      result.on_save(saveblock)
+      result
+    end
+
+
+    # @param [Lambda] saveblock the lambda to handle the result
+    def on_save(saveblock)
+      @saveblock = saveblock
+    end
+
+
+    # transform the string represntation to the forms record
+    # @param [String] string transform the string representation to the forms record.
+    def to_record(string)
+      @fields = [
+          {field: 'value', type: 'text', required: true}
+      ]
+      @record = {value: string}
+    end
+
+    # transform the result record to string
+    # @param [Object] record to be converted to string
+    def to_string(record)
+      record[:value]
+    end
+
+    # load the form with the string
+    # note that we use to_record, to_fields, to_string
+    # to be able to specify snipper specifics in the subldasses
+    def to_form(string)
+      to_record(string)
+      @theForm = {
+          name:       "editsnippet",
+          text:       self.class.name,
+          fields:     @fields,
+          record:     @record,
+          onChange:   lambda { |event|
+            a = lambda { |event|
+            }
+            `event.onComplete=#{a}`
+          },
+          onValidate: lambda { alert("validate"); nil },
+          actions:    {
+              reset: lambda { `w2popup.close()` },
+              save:  lambda do
+                @saveblock.call(to_string(Native::Hash.new(`this.record`)))
+                `w2popup.close()`
+              end
+          }
+      }.to_n
+    end
+
+    def refresh_form
+      `w2ui[#{@theForm}.name].refresh()`
+    end
+
+    # show the form
+    # todo: maybe this is not that elegant, extract this to opal-w2ui
+    def show_form
+      %x{
+         if (w2ui[#{@theForm}.name]) {
+           w2ui[#{@theForm}.name].destroy()
+         }
+        $().w2form(#{@theForm});
+
+        w2popup.open( {
+            title: #{@theForm}.text,
+            body: '<div id="form" style="width: 100%; height: 100%;"></div>',
+            style: 'padding: 15px 0px 0px 0px',
+            width: 600,
+            height: 300,
+            showMax: true,
+            onToggle: function (event) {
+              $(w2ui[#{@theForm}.name].box).hide();
+              event.onComplete = function () {
+                $(w2ui[#{@theForm}.name].box).show();
+                w2ui[#{@theForm}.name].resize();
+              }
+            },
+            onOpen: function (event) {
+              event.onComplete = function () {
+                // specifying an onOpen handler instead is equivalent to specifying an onBeforeOpen handler, which would make this code execute too early and hence not deliver.
+                $('#w2ui-popup #form').w2render(#{@theForm}.name);
+              }
+            }
+        })
+
+      }
+    end
+  end
+
+  class Goto < Form
+    def to_string(record)
+      if record[:second]
+        %Q{"^@#{record[:target]}@#{record[:first]},#{record[:second]},#{record[:third]}"}
+      else
+        %Q{"^@#{record[:target]}@#{record[:first]}"}
+      end
+    end
+
+    def to_record(line)
+      if line
+        level = line.match(/\"\^@([^\@]*)@(\-?\d*)(,(\-?\d*),(\-?\d*))?\"$/)
+        if level
+          target   = level[1]
+          distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
+        else
+          level = [1,2,3] # just to fill all fields
+          target   = "ERROR"
+          distance = [0, 0, 0]
+        end
+      else
+        target   = ""
+        distance = [3, -3, -3]
+      end
+
+      @fields = [
+          {field: :target, type: 'text', required: false, html: {caption: I18n.t("jumptarget"), text: I18n.t('Name of jumptarget')}},
+          {field: :first, type: 'int', required: true, html: {caption: I18n.t("in distance"), text: I18n.t('Distance for first line from target')}},
+          {field: :second, type: 'int', required: false, html: {caption: I18n.t("out distance"), text: I18n.t('Distance for second line from target')}},
+          {field: :third, type: 'int', required: false, html: {caption: I18n.t("followuup distance"), text: I18n.t('Distance for followup line from followup note')}},
+      ]
+      if level[3]
+        @record = {target: target, first: distance[0].to_i, second: distance[1].to_i, third: distance[2].to_i}
+      else
+        @record = {target: target, first: distance[0].to_i, second: nil, third: nil}
+      end
+    end
+  end
+
+  class Target < Form
+
+  end
+
+  class Annotation < Form
+
+  end
+
+  class AnnotationRef < Form
+
+  end
+
+  class Draggable < Form
+
+  end
+
+  class BeforeNote < Form
+    def to_record(string)
+      super(string)
+      @fields = [
+          {field:   "selector", type: :list,
+           options: {items: [:draggable, :anntoation, :annotationref, :jumptarget]}}
+      ]
+    end
+  end
+
+
+  def setup(token, content, &block)
+    @form = Form.form_factory(token, block)
+    @form.to_form(content)
+    @form.show_form
+  end
+
+end
+
+
 class ConfstackEditor
 
 
 # this class acts as helper for the configuration editor
-  # its main purpose is to provide a conf editor based type sytem
-  # Subclasses of ZnType represent the ConfHelper Types.
-  # assication between config entry and ConfHelper Types
-  # is defined by the lookuptable at the bottom of this class
-  # todo: Implement a proper schema to derive the types
-  #
-  # note, we have types o various levels
-  #
-  # * the config Value type as it is in the JSON part
-  # * the type for the UI-Framework
-  # * the type for middleware betwenn conf and UI-Framework. this is represented by ZnTypes
+# its main purpose is to provide a conf editor based type sytem
+# Subclasses of ZnType represent the ConfHelper Types.
+# assication between config entry and ConfHelper Types
+# is defined by the lookuptable at the bottom of this class
+# todo: Implement a proper schema to derive the types
+#
+# note, we have types o various levels
+#
+# * the config Value type as it is in the JSON part
+# * the type for the UI-Framework
+# * the type for middleware betwenn conf and UI-Framework. this is represented by ZnTypes
 
   class ConfHelper
 
@@ -272,6 +463,7 @@ class ConfstackEditor
     def to_type(key)
       _type(key)
     end
+
     def _type(key)
       lookupkey = key.split('.').last
       @typemap[lookupkey] || ZnTypes

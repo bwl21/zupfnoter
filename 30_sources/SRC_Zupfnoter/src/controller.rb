@@ -898,7 +898,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
 
       editorstatus = {position:  position,
-                      tokeninfo: "#{token[:type]} [#{token[:value]}]"}
+                      tokeninfo: "#{token[:type]} [#{token[:value]}]",
+                      token: token
+      }
 
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
 
@@ -1191,5 +1193,8 @@ end
 
 Document.ready? do
   a = Controller.new
+  # provide access to  zupfnoter controller from browser console
+  # to suppert debuggeing
+  `window.zupfnoter=#{a}`
 end
 

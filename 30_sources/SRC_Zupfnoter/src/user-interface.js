@@ -420,7 +420,11 @@ function init_w2ui(uicontroller) {
                     {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
                     {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
                     {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
-                    {id:  'barnumbers_countnotes', text: 'barnumbers and countnotes', tooltip: "edit barnumbers or countnotes"},
+                    {
+                        id: 'barnumbers_countnotes',
+                        text: 'barnumbers and countnotes',
+                        tooltip: "edit barnumbers or countnotes"
+                    },
                     {
                         id: 'notes',
                         text: 'page annotation',
@@ -429,8 +433,14 @@ function init_w2ui(uicontroller) {
                     {},
                     {id: 'extract_current', text: 'current extract', tooltip: "Edit current extract"}
                 ]
+            },
+            {
+                type: 'button',
+                text: "Edit Snippet",
+                id: 'edit_snippet',
+                icon: 'fa fa-pencil',
+                tooltip: "Edit snippent under cursor",
             }
-
         ],
 
         onClick: function (event) {
@@ -456,10 +466,16 @@ function init_w2ui(uicontroller) {
 
             config_event2 = event.target.split(":")
             if (['edit_config'].includes(config_event2[0])) {
-                if (config_event[1]) {
+                if (config_event2[1]) {
                     w2ui.layout_left_tabs.click('configtab');
                     uicontroller.$handle_command("editconf " + config_event2[1])
                 }
+            }
+
+            config_event3 = event.target.split(":")
+            if (['edit_snippet'].includes(config_event3[0])) {
+                    w2ui.layout_left_tabs.click('abcEditor');
+                    uicontroller.$handle_command("editsnippet")
             }
         }
 
@@ -663,6 +679,13 @@ function update_systemstatus_w2ui(systemstatus) {
 function update_editor_status_w2ui(editorstatus) {
     $(".editor-status-position").html(editorstatus.position);
     $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
+    if (editorstatus.token.type.startsWith("zupfnoter.editable")) {
+        w2ui.layout_left_toolbar.enable('edit_snippet')
+    }
+    else {
+        w2ui.layout_left_toolbar.disable('edit_snippet')
+    }
+    w2ui.layout_left_toolbar.refresh()
 }
 
 function update_mouseover_status_w2ui(element_info) {

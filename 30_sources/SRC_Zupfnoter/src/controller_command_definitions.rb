@@ -488,6 +488,19 @@ C,
       end
     end
 
+    @commands.add_command(:editsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup(sel[:token][:type], sel[:token][:value]) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value[:value])
+        end
+        nil
+      end
+    end
+
 
     @commands.add_command(:cconf) do |command|
       command.undoable = false
