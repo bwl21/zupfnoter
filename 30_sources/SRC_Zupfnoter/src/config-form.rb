@@ -143,7 +143,7 @@ class SnippetEditor
           {field: :target, type: 'text', required: false, html: {caption: I18n.t("jumptarget"), text: I18n.t('Name of jumptarget')}},
           {field: :first, type: 'int', required: true, html: {caption: I18n.t("in distance"), text: I18n.t('Distance for first line from target')}},
           {field: :second, type: 'int', required: false, html: {caption: I18n.t("out distance"), text: I18n.t('Distance for second line from target')}},
-          {field: :third, type: 'int', required: false, html: {caption: I18n.t("followuup distance"), text: I18n.t('Distance for followup line from followup note')}},
+          {field: :third, type: 'int', required: false, html: {caption: I18n.t("followup distance"), text: I18n.t('Distance for followup line from followup note')}},
       ]
       if level[3]
         @record = {target: target, first: distance[0].to_i, second: distance[1].to_i, third: distance[2].to_i}
@@ -194,7 +194,39 @@ class SnippetEditor
   end
 
   class AnnotationRef < Form
+    def to_string(record)
+      if record[:X]
+        %Q{"^##{record[:text]}@#{record[:X]},#{record[:Y]}"}
+      else
+        %Q{"^##{record[:text]}"}
+      end
+    end
 
+    def to_record(line)
+      if line
+        match = line.match(/^\"\^(\#)([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?\"$/)
+        if match
+          text  = match[2]
+          pos_x = match[4] if match[4]
+          pos_y = match[5] if match[5]
+        else
+          text  = "ERROR"
+          pos_x = nil
+          pos_y = nil
+        end
+      else
+        text  = ""
+        pos_x = nil
+        pos_y = nil
+      end
+
+      @fields = [
+          {field: :text, type: 'label', required: false, html: {caption: I18n.t("label"), text: I18n.t('Name of annotation')}},
+          {field: :X, type: 'int', required: false, html: {caption: I18n.t("X-position"), text: I18n.t('horizontal position')}},
+          {field: :Y, type: 'int', required: false, html: {caption: I18n.t("Y-position"), text: I18n.t('vertical position (top->down)')}},
+      ]
+      @record = {text: text, X: pos_x, Y: pos_y}
+    end
   end
 
   class Draggable < Form
