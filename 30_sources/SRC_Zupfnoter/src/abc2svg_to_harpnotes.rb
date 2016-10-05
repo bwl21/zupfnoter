@@ -779,7 +779,10 @@ module Harpnotes
               distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
               result.push({target: target, distance: distance})
             else
-              raise "Syntax-Error in Jump annotation: #{line}"
+              start_pos=charpos_to_line_column(bar[:istart])
+              end_pos  = charpos_to_line_column(bar[:iend])
+              $log.error("Syntax-Error in Jump anotation", start_pos, end_pos )
+              #raise "Syntax-Error in Jump annotation: #{line}"
             end
           end
           result
