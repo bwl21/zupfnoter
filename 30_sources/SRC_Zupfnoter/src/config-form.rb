@@ -130,7 +130,7 @@ class SnippetEditor
           target   = level[1]
           distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
         else
-          level = [1,2,3] # just to fill all fields
+          level    = [1, 2, 3] # just to fill all fields
           target   = "ERROR"
           distance = [0, 0, 0]
         end
@@ -158,7 +158,39 @@ class SnippetEditor
   end
 
   class Annotation < Form
+    def to_string(record)
+      if record[:X]
+        %Q{"^!#{record[:text]}@#{record[:X]},#{record[:Y]}"}
+      else
+        %Q{"^!#{record[:text]}"}
+      end
+    end
 
+    def to_record(line)
+      if line
+        match = line.match(/^\"\^(\!)([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?\"$/)
+        if match
+          text  = match[2]
+          pos_x = match[4] if match[4]
+          pos_y = match[5] if match[5]
+        else
+          text  = "ERROR"
+          pos_x = nil
+          pos_y = nil
+        end
+      else
+        text  = ""
+        pos_x = nil
+        pos_y = nil
+      end
+
+      @fields = [
+          {field: :text, type: 'text', required: false, html: {caption: I18n.t("text"), text: I18n.t('Text of annotation')}},
+          {field: :X, type: 'int', required: false, html: {caption: I18n.t("X-position"), text: I18n.t('horizontal position')}},
+          {field: :Y, type: 'int', required: false, html: {caption: I18n.t("Y-position"), text: I18n.t('vertical position (top->down)')}},
+      ]
+      @record = {text: text, X: pos_x, Y: pos_y}
+    end
   end
 
   class AnnotationRef < Form
