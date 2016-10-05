@@ -495,7 +495,24 @@ C,
       command.as_action do |args|
         sel = @editor.get_selection_info
         SnippetEditor.new.setup(sel[:token][:type], sel[:token][:value]) do |value|
-          @editor.patch_token(sel[:token][:type], 0, value[:value])
+          @editor.patch_token(sel[:token][:type], 0, value)
+        end
+        nil
+      end
+    end
+
+    @commands.add_command(:addsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.add_parameter(:token, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup("zupfnoter.editable.#{args[:token]}", nil) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value)
         end
         nil
       end

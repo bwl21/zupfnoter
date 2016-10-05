@@ -435,11 +435,25 @@ function init_w2ui(uicontroller) {
                 ]
             },
             {
+                type: 'menu',
+                text: "Add Snippet",
+                id: 'add_snippet',
+                items: [
+                    {id: 'annotation', text: 'Annotation', tooltip: "Add an annotation"},
+                    {id: 'annotationref', text: 'Annotation Ref', tooltip: "Add a predefined annotation"},
+                    {id: 'draggable', text: 'Draggable', tooltip: "Add an draggable mark"},
+                    {id: 'jumptarget', text: 'Jumptarget', tooltip: "Add an Jumptarget"},
+                    {id: 'goto', text: 'Goto', tooltip: "Add an Jump"}
+                ],
+                icon: 'fa fa-gear',
+                tooltip: "Add snippent under cursor",
+            },
+            {
                 type: 'button',
                 text: "Edit Snippet",
                 id: 'edit_snippet',
                 icon: 'fa fa-pencil',
-                tooltip: "Edit snippent under cursor",
+                tooltip: "Edit snippent under cursor"
             }
         ],
 
@@ -474,8 +488,14 @@ function init_w2ui(uicontroller) {
 
             config_event3 = event.target.split(":")
             if (['edit_snippet'].includes(config_event3[0])) {
-                    w2ui.layout_left_tabs.click('abcEditor');
-                    uicontroller.$handle_command("editsnippet")
+                w2ui.layout_left_tabs.click('abcEditor');
+                uicontroller.$handle_command("editsnippet")
+            }
+
+            config_event4 = event.target.split(":")
+            if (['add_snippet'].includes(config_event4[0])) {
+                w2ui.layout_left_tabs.click('abcEditor');
+                uicontroller.$handle_command("addsnippet " + config_event4[1])
             }
         }
 
@@ -685,6 +705,23 @@ function update_editor_status_w2ui(editorstatus) {
     else {
         w2ui.layout_left_toolbar.disable('edit_snippet')
     }
+
+    // todo: implement a proper inhibit manager
+    if (editorstatus.token.type.startsWith("zupfnoter.editable.before")) {
+        w2ui.layout_left_toolbar.enable('add_snippet');
+        w2ui.layout_left_toolbar.enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable');
+
+        w2ui.layout_left_toolbar.disable('edit_snippet');
+    }
+    else {
+        w2ui.layout_left_toolbar.disable('add_snippet')
+    }
+
+    if (editorstatus.token.type.startsWith("zupfnoter.editable.beforeBar")) {
+        w2ui.layout_left_toolbar.disable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable');
+    }
+
+
     w2ui.layout_left_toolbar.refresh()
 }
 
