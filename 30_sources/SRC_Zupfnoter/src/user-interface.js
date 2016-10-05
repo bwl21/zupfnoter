@@ -441,9 +441,10 @@ function init_w2ui(uicontroller) {
                 items: [
                     {id: 'annotation', text: 'Annotation', tooltip: "Add an annotation"},
                     {id: 'annotationref', text: 'Annotation Ref', tooltip: "Add a predefined annotation"},
-                    {id: 'draggable', text: 'Draggable', tooltip: "Add an draggable mark"},
-                    {id: 'jumptarget', text: 'Jumptarget', tooltip: "Add an Jumptarget"},
-                    {id: 'goto', text: 'Goto', tooltip: "Add an Jump"}
+                    {id: 'draggable', text: 'Draggable', tooltip: "Add a draggable mark"},
+                    {id: 'jumptarget', text: 'Jumptarget', tooltip: "Add a Jumptarget"},
+                    {id: 'goto', text: 'Goto', tooltip: "Add a Jump"},
+                    {id: 'shifter', text: 'Shift', tooltip: "Add a shift"}
                 ],
                 icon: 'fa fa-gear',
                 tooltip: "Add snippent under cursor",

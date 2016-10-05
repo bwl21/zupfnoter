@@ -13,13 +13,14 @@ class SnippetEditor
     # @param [String] token - the ace syntax token to be edited.
     # @param [Lambda] saveblock - the process to save the edit result in the editor
     def self.form_factory(token, saveblock)
-      a={'jumptarget'    => Target,
+      a={'jumptarget'    => Jumptarget,
          'draggable'     => Draggable,
          'goto'          => Goto,
          'annotation'    => Annotation,
          'annotationref' => AnnotationRef,
          'beforeBar'     => Goto,
-         'beforeNote'    => BeforeNote
+         'beforeNote'    => BeforeNote,
+         'shifter'       => Shifter
       }
 
       result = a[token.split('.')[2]].new
@@ -46,7 +47,15 @@ class SnippetEditor
     # transform the result record to string
     # @param [Object] record to be converted to string
     def to_string(record)
-      record[:value]
+      wrapup_string(record[:value])
+    end
+
+    def wrapup_string(string)
+      if @is_new
+      %Q{ #{string} }
+      else
+        string
+      end
     end
 
     # load the form with the string
@@ -117,13 +126,14 @@ class SnippetEditor
   class Goto < Form
     def to_string(record)
       if record[:second]
-        %Q{"^@#{record[:target]}@#{record[:first]},#{record[:second]},#{record[:third]}"}
+        wrapup_string(%Q{"^@#{record[:target]}@#{record[:first]},#{record[:second]},#{record[:third]}"})
       else
-        %Q{"^@#{record[:target]}@#{record[:first]}"}
+        wrapup_string(%Q{"^@#{record[:target]}@#{record[:first]}"})
       end
     end
 
     def to_record(line)
+      `debugger`
       if line
         level = line.match(/\"\^@([^\@]*)@(\-?\d*)(,(\-?\d*),(\-?\d*))?\"$/)
         if level
@@ -135,12 +145,14 @@ class SnippetEditor
           distance = [0, 0, 0]
         end
       else
+        level    = [1, 2, 3] # just to fill all fields
+        @is_new = true
         target   = ""
         distance = [3, -3, -3]
       end
 
       @fields = [
-          {field: :target, type: 'text', required: false, html: {caption: I18n.t("jumptarget"), text: I18n.t('Name of jumptarget')}},
+          {field: :target, type: 'text', required: false, html: {caption: I18n.t("jumptarget"), text: I18n.t('target to jump to')}},
           {field: :first, type: 'int', required: true, html: {caption: I18n.t("in distance"), text: I18n.t('Distance for first line from target')}},
           {field: :second, type: 'int', required: false, html: {caption: I18n.t("out distance"), text: I18n.t('Distance for second line from target')}},
           {field: :third, type: 'int', required: false, html: {caption: I18n.t("followup distance"), text: I18n.t('Distance for followup line from followup note')}},
@@ -153,16 +165,64 @@ class SnippetEditor
     end
   end
 
-  class Target < Form
+  class Jumptarget < Form
+    def to_string(record)
+      wrapup_string(%Q{"^:#{record[:target]}"})
+    end
 
+    def to_record(line)
+      if line
+        match = line.match(/^\"\^(\:)([^\@]+)"$/)
+        if match
+          target = match[2]
+        else
+          target = "ERROR"
+        end
+      else
+        @is_new = true
+        target = ""
+      end
+
+      @fields = [
+          {field: :target, type: 'text', required: true, html: {caption: I18n.t("name of target"), text: I18n.t('the name for this target')}}
+      ]
+      @record = {target: target}
+    end
+  end
+
+  class Shifter < Form
+    def to_string(record)
+      result = @lookup.invert()[record[:target][:id]]
+      wrapup_string(%Q{"^#{result}"})
+    end
+
+    def to_record(line)
+      @lookup = {'<' => 'left', '>' => 'right', '?' => 'choose' }
+      if line
+        match = line.match(/^\"\^([<>])\"$/)
+        if match
+          target = @lookup[match[1]]
+        else
+          target = "ERROR"
+        end
+      else
+        @is_new = true
+        target = ""
+      end
+
+      @fields = [
+          {field: :target, type: 'list', options: {items: @lookup.values}, required: true, html: {caption: I18n.t("direction"), text: I18n.t('direction to shift the note')}}
+      ]
+      @record = {target: target}
+    end
   end
 
   class Annotation < Form
     def to_string(record)
       if record[:X]
-        %Q{"^!#{record[:text]}@#{record[:X]},#{record[:Y]}"}
+        wrapup_string(%Q{"^!#{record[:text]}@#{record[:X]},#{record[:Y]}"})
       else
-        %Q{"^!#{record[:text]}"}
+        wrapup_string(%Q{"^!#{record[:text]}"})
       end
     end
 
@@ -179,6 +239,7 @@ class SnippetEditor
           pos_y = nil
         end
       else
+        @is_new = true
         text  = ""
         pos_x = nil
         pos_y = nil
@@ -196,9 +257,9 @@ class SnippetEditor
   class AnnotationRef < Form
     def to_string(record)
       if record[:X]
-        %Q{"^##{record[:text]}@#{record[:X]},#{record[:Y]}"}
+        wrapup_string(%Q{"^##{record[:text]}@#{record[:X]},#{record[:Y]}"})
       else
-        %Q{"^##{record[:text]}"}
+        wrapup_string(%Q{"^##{record[:text]}"})
       end
     end
 
@@ -215,6 +276,7 @@ class SnippetEditor
           pos_y = nil
         end
       else
+        @is_new = true
         text  = ""
         pos_x = nil
         pos_y = nil
@@ -230,7 +292,28 @@ class SnippetEditor
   end
 
   class Draggable < Form
+    def to_string(record)
+      wrapup_string(%Q{[r: #{record[:target]}]})
+    end
 
+    def to_record(line)
+      if line
+        match = line.match(/^\[r:\s*([a-zA-Z_0-9)]+)\]$/)
+        if match
+          target = match[1]
+        else
+          target = "ERROR"
+        end
+      else
+        @is_new = true
+        target = ""
+      end
+
+      @fields = [
+          {field: :target, type: 'text', required: true, html: {caption: I18n.t("name of draggable"), text: I18n.t('the name for the dreaggables of theis note')}}
+      ]
+      @record = {target: target}
+    end
   end
 
   class BeforeNote < Form
