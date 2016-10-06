@@ -258,36 +258,6 @@ C,
       end
     end
 
-    @commands.add_command(:conf) do |command|
-      command.undoable = false
-
-      command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help { "parameter key" }
-      end
-
-      command.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_help { "parameter value (true | false" }
-      end
-
-
-      command.set_help { "set configuration parameter true/false" }
-
-      command.as_action do |args|
-        value = {'true' => true, 'false' => false}[args[:value]]
-
-        raise "invalid key #{args[:key]}" unless $conf.keys.include?(args[:key])
-        raise "value must be true or false" if value.nil?
-        $conf[args[:key]] = value
-
-        nil
-      end
-
-      command.as_inverse do |args|
-        $conf.pop # todo: this is a bit risky
-      end
-    end
-
-
     @commands.add_command(:stdnotes) do |command|
       command.undoable = false
 
@@ -310,7 +280,6 @@ C,
         nil
       end
     end
-
 
 
     @commands.add_command(:addconf) do |command|
@@ -342,28 +311,30 @@ C,
             'produce'          => lambda { {key: "produce", value: $conf['produce']} },
             'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
             'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
-                                            value: {limit_a3:     true,
-                                                    LINE_THIN:    0.1,
-                                                    LINE_MEDIUM:  0.3,
-                                                    LINE_THICK:   0.5,
-                                                    # all numbers in mm
-                                                    ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                                    REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
+                                            value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
-            'barnumbers'        => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
+            'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
                                             value: {
                                                 voices: [],
                                                 pos:    [6, -4]
                                             }} },
-            'barnumbers.full'   => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
+            'barnumbers.full'  => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
 
             'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
             'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
-            'xx'               => lambda { {key: "xx", value: $conf[]} }
+            'x1'               => lambda { {key: "xx", value: $conf[]} },
+            'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} },
+            'hugo'             => lambda { {key: "extract.#{@systemstatus[:view]}",
+                                            value:
+                                                 [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
+                                                   r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
+                                                   r
+                                                 end
+            } }
         }
 
 
@@ -373,31 +344,180 @@ C,
 
           value = value.call
 
-          localconf              = Confstack.new
+          localconf              = Confstack.new(false)
           localconf.strict       = false
           localconf[value[:key]] = value[:value]
+          keys_from_value        = localconf.keys
 
           config_from_editor = get_config_from_editor
           localconf.push(config_from_editor)
 
-          local_value = localconf[value[:key]]
+          patchvalue = localconf[value[:key]]
 
           the_key = value[:key]
+          # this computes the next key number
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0..-2].join(".")
             next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
             the_key    = %Q{#{parent_key}.#{next_free}}
           end
 
-          patchvalue = local_value #|| value[:value]
-
           @editor.patch_config_part(the_key, patchvalue)
+          @config_form_editor.refresh_form if @config_form_editor
         else
           raise "unknown configuration parameter #{value[:key]}"
           nil
         end
       end
     end
+
+
+    @commands.add_command(:editconf) do |command|
+
+      def expand_extract_keys(keys)
+        keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
+      end
+
+      command.undoable = false
+
+      command.add_parameter(:set, :string) do |parameter|
+        parameter.set_help { "one of the editable keys"} #"#{sets.keys.to_s}" }
+      end
+
+      command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
+
+      command.as_action do |args|
+        $log.timestamp("editconf #{args[:set]}")
+
+        sets = {
+            basic_settings: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+                                                        'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos])},
+            barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
+
+            notes:              {keys: expand_extract_keys([:notes])},
+            lyrics:             {keys: expand_extract_keys([:lyrics])},
+            layout:             {keys: expand_extract_keys([:layout])},
+            global:             {keys: [:produce]},
+            extract0:           {keys: ['extract.0']},
+            extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]}
+        }
+
+        a = sets[args[:set]]
+        if a
+          editable_keys = a[:keys]
+          addconf_set   = a[:addconf]
+        else
+          editable_keys = [args[:set]]
+        end
+
+
+        # this handler yields three value sets
+        # the current value
+
+        get_configvalues = lambda do
+          $log.timestamp(1)
+
+          editor_conf        = Confstack.new(false)
+          editor_conf.strict = false
+
+          effective_conf        = Confstack.new(false)
+          effective_conf.strict = false
+
+          default_conf        = Confstack.new(false)
+          default_conf.strict = false
+
+          $log.timestamp(2)
+
+          editable_values  = Confstack.new(false)
+          default_values   = Confstack.new(false)
+          effective_values = Confstack.new(false)
+
+          $log.timestamp(3)
+
+          configvalues_from_editor = get_config_from_editor
+          editor_conf.push(configvalues_from_editor)
+
+          $log.timestamp(4)
+
+          default_conf.push($conf.get) # start with defaults
+          default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
+          unless @systemstatus[:view] == 0
+            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
+            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
+          end
+          $log.timestamp(5)
+
+          effective_conf.push (default_conf.get.clone)
+          effective_conf.push (editor_conf.get.clone)
+
+          editable_keys.each { |k|
+            editable_values[k]  = editor_conf[k]
+            default_values[k]   = default_conf[k]
+            effective_values[k] = effective_conf[k]
+          }
+          $log.timestamp(6)
+
+          {current: editable_values.get, effective: effective_values.get, default: default_values.get}
+        end
+
+        refresh_editor = lambda do
+          handle_command("editconf #{args[:set]}")
+        end
+
+        add_entries_handler = lambda do
+          handle_command("addconf #{addconf_set}") if addconf
+        end
+
+        editor_title       = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
+        editorparams       = {
+            title:               editor_title,
+            editor:              @editor,
+            value_handler:       get_configvalues,
+            refresh_handler:     refresh_editor,
+            add_entries_handler: add_entries_handler
+        }
+        #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
+        @config_form_editor = ConfstackEditor.new(editorparams)
+        @config_form_editor.generate_form
+
+        nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
+    end
+
+    @commands.add_command(:editsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup(sel[:token][:type], sel[:token][:value]) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value)
+        end
+        nil
+      end
+    end
+
+    @commands.add_command(:addsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.add_parameter(:token, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup("zupfnoter.editable.#{args[:token]}", nil) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value)
+        end
+        nil
+      end
+    end
+
 
     @commands.add_command(:cconf) do |command|
       command.undoable = false
@@ -612,14 +732,19 @@ C,
       command.as_action do |args|
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
-          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.*)\/(.*)/).to_a
-          path       =fileparts[1]
-          filename   =fileparts[2]
+          # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          fileparts = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
+          path      = "/#{fileparts[1]}"
+          filename  = fileparts.last
 
-          handle_command("dlogin full /#{path}/")
-          $log.message("found #{path} / #{filename}")
+          newpath = "#{path}"
+          handle_command("dlogin full #{path}")
+          $log.message("found #{path}#{filename}")
           handle_command("dopen #{filename.split("_").first}")
-          $log.message("opened #{path} / #{filename}")
+          $log.message("opened #{path}#{filename}")
+        end.fail do |message|
+          $log.error message
         end
       end
     end

@@ -4742,7 +4742,7 @@ w2utils.event = {
                                         || (search.type == 'percent' && w2utils.isFloat(value)) || (search.type == 'hex' && w2utils.isHex(value))
                                         || (search.type == 'currency' && w2utils.isMoney(value)) || (search.type == 'money' && w2utils.isMoney(value))
                                         || (search.type == 'date' && w2utils.isDate(value)) || (search.type == 'time' && w2utils.isTime(value))
-                                        || (search.type == 'datetime' && w2utils.isDateTime(value)) || (search.type == 'enum' && w2utils.isAlphaNumeric(value)) 
+                                        || (search.type == 'datetime' && w2utils.isDateTime(value)) || (search.type == 'enum' && w2utils.isAlphaNumeric(value))
                                         || (search.type == 'list' && w2utils.isAlphaNumeric(value))
                                     ) {
                                     var tmp = {
@@ -12921,6 +12921,7 @@ var w2prompt = function (label, title, callBack) {
                 var text = tab.text;
                 if (typeof text == 'function') text = text.call(this, tab);
                 if (text == null) text = '';
+                text = w2utils.lang(text);
 
                 var jq_el    = $(this.box).find('#tabs_'+ this.name +'_tab_'+ w2utils.escapeId(tab.id));
                 var closable = '';

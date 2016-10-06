@@ -6,7 +6,41 @@ module I18n
     `w2utils.lang(#{text})`
   end
 
+  def self.t_key(key)
+    key.split(".").last
+  end
+
+  def self.t_help(key)
+
+    help_key  = key
+    help_key  = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
+    help_key  = help_key.gsub(/^(extract\.0\.lyrics\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
+    help_key  = help_key.gsub(/^(extract\.0\.notes\.)([a-zA-Z_0-9]+)(.*)$/) { "#{$1}0#{$3}" }
+    keyparts  = help_key.split(".")
+    downwards = []; upwards = []
+    (0 .. keyparts.length - 1).each do |i|
+      #downwards.push(keyparts[0 .. i-1])
+      upwards.push(keyparts[i .. -1])
+    end
+    candidate_keys = upwards + downwards.reverse
+    candidates     = candidate_keys.map { |c| $conf_helptext[c.join('.')] }
+    candidate_keys = candidate_keys.map { |c| c.join(".") }.to_s
+
+    helptext = candidates.compact.first || "no help"
+    ##helptext = $conf_helptext[key] || "<p>no helpr for #{key}</p>"
+    %Q{<div style="padding:0.5em;width:30em;">#{helptext}</div>}
+  end
+
   def self.locale(language)
+
+    $conf_helptext = {}
+    HTTP.get("public/locale/conf-help_#{language}.json").then do |response|
+      $conf_helptext = Native(response.body)
+    end.fail do |response|
+      alert "could not loaad confhelp #{response}"
+    end.always do |response|
+    end
+
     `w2utils.locale('public/locale/' + #{language} + '.json')`
   end
 end
@@ -88,6 +122,7 @@ end
 class Controller
 
   attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
+  attr_accessor :zupfnoter_ui
 
   def initialize
 
@@ -102,7 +137,7 @@ class Controller
     I18n.locale(languages[browser_language]) if browser_language
 
 
-    `init_w2ui(#{self});`
+    @zupfnoter_ui                  = `window.hugo = new init_w2ui(#{self});`
     @update_systemstatus_consumers = {systemstatus: [
                                                         lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                                     ],
@@ -179,9 +214,11 @@ class Controller
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
     begin
+      $log.timestamp_start
+      $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
-      $log.error("#{e.message} in #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
+      $log.error("#{e.message} in command #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
     end
   end
 
@@ -205,7 +242,6 @@ class Controller
       alert "could not load from URL: #{url}"
     end.always do |response|
     end
-
   end
 
   # load session from localstore
@@ -340,7 +376,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           oldversion: old_config['$version']
       }
     else
-      status     = {changed: false, message: "", oldversion: old_config[$version]}
+      status = {changed: false, message: "", oldversion: old_config[$version]}
     end
 
     new_config['$version'] = VERSION
@@ -499,11 +535,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
       set_active("#tunePreview")
-      `setTimeout(function(){self.$render_tunepreview_callback();#{promise}.$resolve()}, 0)`
+      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
     end.then do
       Promise.new.tap do |promise|
         set_active("#harpPreview")
-        `setTimeout(function(){self.$render_harpnotepreview_callback();#{promise}.$resolve()}, 50)`
+        `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
       end
     end
     @editor.resize();
@@ -537,15 +573,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config = get_config_from_editor
 
     $conf.push(config)
-    abc_parser            = $conf.get('abc_parser')
-    start                 = Time.now()
+    abc_parser = $conf.get('abc_parser')
+    $log.timestamp_start
     @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     @music_model.checksum = @editor.get_checksum
     `document.title = #{@music_model.meta_data[:filename]}`
+    $log.timestamp("transform")
 
-    $log.info("duration transform #{Time.now - start}")
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-    $log.info("duration transform + layout #{Time.now - start}")
+    $log.timestamp("   layout")
+
     #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
     $conf.pop
@@ -556,14 +593,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def get_config_from_editor
     config_part = @editor.get_config_part
     begin
-      config = %x{json_parse(#{config_part})}
-      config = JSON.parse(config_part)
+      #config         = %x{json_parse(#{config_part})}
+      config         = JSON.parse(config_part)
       config, status = migrate_config(config)
 
-      @editor.set_config_part(config)
 
       if status[:changed]
         alert(status[:message])
+        @editor.set_config_part(config)
         @editor.prepend_comment(status[:message])
       end
 
@@ -572,6 +609,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.error("#{error.first} at #{line_col}", line_col)
       config = {}
     end
+
     config
   end
 
@@ -675,6 +713,31 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       report = "#{conf_key}: #{newcoords}"
       `$("#harpPreview").w2overlay(#{report});`
     end
+
+    @harpnote_preview_printer.on_mouseover do |info|
+      `update_mouseover_status_w2ui(#{info.conf_key})`
+    end
+
+    @harpnote_preview_printer.on_mouseout do |info|
+      `update_mouseover_status_w2ui('')`
+    end
+
+    @harpnote_preview_printer.on_draggable_rightcklick do |info|
+      %x{
+          $(#{info.to_n}.element.node).w2menu({
+                                       items: [
+                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' },
+                                                  { id: 'template', text: 'Add template', icon: 'fa fa-gear' },
+                                              ],
+                                       onSelect: function (event) {
+                                           w2ui.layout_left_tabs.click('configtab');
+                                           #{handle_command(%Q{editconf #{info[:conf_key].gsub(/\.[^\.]+$/, '') }})}
+                                       }
+                                   });
+          return false ;
+        };
+    end
+
   end
 
 
@@ -785,7 +848,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def toggle_console
     %x{
        w2ui['layout'].toggle('bottom', window.instant);
-       uicontroller.editor.$resize();
+       #{@editor}.$resize();
       }
   end
 
@@ -805,10 +868,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     @editor.on_selection_change do |e|
-      a = @editor.get_selection_positions
+      a              = @editor.get_selection_positions
+      selection_info = @editor.get_selection_info
+      ranges         = selection_info[:selection]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
-      unless # a.first == a.last
-      @tune_preview_printer.range_highlight(a.first, a.last)
+
+
+      unless false # a.first == a.last
+        @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
@@ -817,6 +884,26 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @editor.on_cursor_change do |e|
       request_refresh(false)
+
+      selection_info = @editor.get_selection_info
+      ranges         = selection_info[:selection]
+
+      position = "#{ranges.first.first}:#{ranges.first.last}"
+      position += " - #{ranges.last.first}:#{ranges.last.last}" unless ranges.first == ranges.last
+
+      if selection_info[:token]
+        token = selection_info[:token]
+      else
+        token = {type: "", value: ""}
+      end
+
+      editorstatus = {position:  position,
+                      tokeninfo: "#{token[:type]} [#{token[:value]}]",
+                      token: token
+      }
+
+      `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
+
     end
 
     @harpnote_player.on_noteon do |e|
@@ -887,11 +974,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       case @systemstatus[:autorefresh]
         when :on
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 100)`
+          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 100)`
         when :off # off means it relies on remote rendering
           @refresh_timer = `setTimeout(function(){#{render_remote()}}, 300)`
         when :remote # this means that the current instance runs in remote mode
-          @refresh_timer = `setTimeout(function(){self.$render_previews()}, 500)`
+          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 500)`
       end
     end
   end
@@ -911,8 +998,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   private
 
-  # returns a hash with the default values of configuration
-  def _init_conf()
+  def self.init_conf()
     result =
         {produce:      [0],
          abc_parser:   'ABC2SVG',
@@ -929,9 +1015,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                          }
              }
          },
-         templates:    {
-             notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
-             lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]}
+         templates:    {# this is used to update / create new objects
+                        notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
+                        lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]},
+                        tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']}
          },
 
          annotations:  {
@@ -957,15 +1044,23 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {},
+                 layout:       {limit_a3:     true,
+                                LINE_THIN:    0.1,
+                                LINE_MEDIUM:  0.3,
+                                LINE_THICK:   0.5,
+                                # all numbers in mm
+                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
+                                REST_SIZE:    [4, 2]},
                  nonflowrest:  false,
                  notes:        {},
                  barnumbers:   {
-                     voices: [],
-                     pos:    [6, -4],
-                     style:  "small_bold",
-                     prefix: ""
+                     voices:  [],
+                     pos:     [6, -4],
+                     autopos: false,
+                     style:   "small_bold",
+                     prefix:  ""
                  },
-                 countnotes:   {voices: [], pos: [3, -2]},
+                 countnotes:   {voices: [], pos: [3, -2], autopos: false, style: "smaller"},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
@@ -984,103 +1079,122 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          },
 
 
-         layout:
-                       {
-                           grid:              false,
-                           limit_a3:          true,
-                           SHOW_SLUR:         false,
-                           LINE_THIN:         0.1,
-                           LINE_MEDIUM:       0.3,
-                           LINE_THICK:        0.5,
-                           # all numbers in mm
-                           ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
-                           REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
+         layout:       {
+             grid:              false,
+             limit_a3:          true,
+             SHOW_SLUR:         false,
+             LINE_THIN:         0.1,
+             LINE_MEDIUM:       0.3,
+             LINE_THICK:        0.5,
+             # all numbers in mm
+             ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
+             REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
 
-                           # x-size of one step in a pitch. It is the horizontal
-                           # distance between two strings of the harp
+             # x-size of one step in a pitch. It is the horizontal
+             # distance between two strings of the harp
 
-                           X_SPACING:         11.5, # Distance of strings
+             X_SPACING:         11.5, # Distance of strings
 
-                           # X coordinate of the very first beat
-                           X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
+             # X coordinate of the very first beat
+             X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
 
-                           Y_SCALE:           4, # 4 mm per minimal
-                           DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
+             Y_SCALE:           4, # 4 mm per minimal
+             DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
 
-                           # this affects the performance of the harpnote renderer
-                           # it also specifies the resolution of note starts
-                           # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
-                           # in order to at least being able to handle triplets, we need to scale this up by 3
-                           # todo:see if we can speed it up by using 16 ...
-                           BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
-                           SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
-                           # in particular specifies the range of DURATION_TO_STYLE etc.
+             # this affects the performance of the harpnote renderer
+             # it also specifies the resolution of note starts
+             # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
+             # in order to at least being able to handle triplets, we need to scale this up by 3
+             # todo:see if we can speed it up by using 16 ...
+             BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+             SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
+             # in particular specifies the range of DURATION_TO_STYLE etc.
 
-                           BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
+             BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
 
-                           # this is the negative of midi-pitch of the lowest plaayble note
-                           # see http://computermusicresource.com/midikeys.html
-                           PITCH_OFFSET:      -43,
+             # this is the negative of midi-pitch of the lowest plaayble note
+             # see http://computermusicresource.com/midikeys.html
+             PITCH_OFFSET:      -43,
 
-                           FONT_STYLE_DEF:    {
-                               bold:      {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
-                               italic:          {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
-                               large:           {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
-                               regular:   {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
-                               small_bold:   {text_color: [0, 0, 0], font_size: 9, font_style: "bold"},
-                               small_italic: {text_color: [0, 0, 0], font_size: 9, font_style: "italic"},
-                               small:           {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
-                               smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
-                           },
+             FONT_STYLE_DEF:    {
+                 bold:         {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
+                 italic:       {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
+                 large:        {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
+                 regular:      {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
+                 small_bold:   {text_color: [0, 0, 0], font_size: 9, font_style: "bold"},
+                 small_italic: {text_color: [0, 0, 0], font_size: 9, font_style: "italic"},
+                 small:        {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
+                 smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
+             },
 
-                           MM_PER_POINT:      0.3,
+             MM_PER_POINT:      0.3,
 
-                           # This is a lookup table to map durations to giraphical representation
-                           DURATION_TO_STYLE: {
-                               #key      size   fill          dot                  abc duration
+             # This is a lookup table to map durations to giraphical representation
+             DURATION_TO_STYLE: {
+                 #key      size   fill          dot                  abc duration
 
-                               :err => [2, :filled, FALSE], # 1      1
-                               :d64 => [1, :empty, FALSE], # 1      1
-                               :d48 => [0.75, :empty, TRUE], # 1/2 *
-                               :d32 => [0.75, :empty, FALSE], # 1/2
-                               :d24 => [0.75, :filled, TRUE], # 1/4 *
-                               :d16 => [0.75, :filled, FALSE], # 1/4
-                               :d12 => [0.5, :filled, TRUE], # 1/8 *
-                               :d8  => [0.5, :filled, FALSE], # 1/8
-                               :d6  => [0.3, :filled, TRUE], # 1/16 *
-                               :d4  => [0.3, :filled, FALSE], # 1/16
-                               :d3  => [0.1, :filled, TRUE], # 1/32 *
-                               :d2  => [0.1, :filled, FALSE], # 1/32
-                               :d1  => [0.05, :filled, FALSE] # 1/64
-                           },
+                 :err => [2, :filled, FALSE], # 1      1
+                 :d64 => [1, :empty, FALSE], # 1      1
+                 :d48 => [0.75, :empty, TRUE], # 1/2 *
+                 :d32 => [0.75, :empty, FALSE], # 1/2
+                 :d24 => [0.75, :filled, TRUE], # 1/4 *
+                 :d16 => [0.75, :filled, FALSE], # 1/4
+                 :d12 => [0.5, :filled, TRUE], # 1/8 *
+                 :d8  => [0.5, :filled, FALSE], # 1/8
+                 :d6  => [0.3, :filled, TRUE], # 1/16 *
+                 :d4  => [0.3, :filled, FALSE], # 1/16
+                 :d3  => [0.1, :filled, TRUE], # 1/32 *
+                 :d2  => [0.1, :filled, FALSE], # 1/32
+                 :d1  => [0.05, :filled, FALSE] # 1/64
+             },
 
-                           REST_TO_GLYPH:     {
-                               # this basically determines the white background rectangel
-                               # [sizex, sizey], glyph, dot # note that sizex has no effect.
-                               :err => [[2, 2], :rest_1, FALSE], # 1      1
-                               :d64 => [[1, 0.8], :rest_1, FALSE], # 1      1   # make it a bit smaller than the note to improve visibility of barover
-                               :d48 => [[0.5, 0.4], :rest_1, TRUE], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
-                               :d32 => [[0.5, 0.4], :rest_1, FALSE], # 1/2      # make it a bit smaller than the note to improve visibility of barover
-                               :d24 => [[0.4, 0.75], :rest_4, TRUE], # 1/4 *
-                               :d16 => [[0.4, 0.75], :rest_4, FALSE], # 1/4
-                               :d12 => [[0.4, 0.5], :rest_8, TRUE], # 1/8 *
-                               :d8  => [[0.4, 0.5], :rest_8, FALSE], # 1/8
-                               :d6  => [[0.4, 0.3], :rest_16, TRUE], # 1/16 *
-                               :d4  => [[0.3, 0.3], :rest_16, FALSE], # 1/16
-                               :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
-                               :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
-                               :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
-                           }
-                       }
+             REST_TO_GLYPH:     {
+                 # this basically determines the white background rectangel
+                 # [sizex, sizey], glyph, dot # note that sizex has no effect.
+                 :err => [[2, 2], :rest_1, FALSE], # 1      1
+                 :d64 => [[1, 0.8], :rest_1, FALSE], # 1      1   # make it a bit smaller than the note to improve visibility of barover
+                 :d48 => [[0.5, 0.4], :rest_1, TRUE], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
+                 :d32 => [[0.5, 0.4], :rest_1, FALSE], # 1/2      # make it a bit smaller than the note to improve visibility of barover
+                 :d24 => [[0.4, 0.75], :rest_4, TRUE], # 1/4 *
+                 :d16 => [[0.4, 0.75], :rest_4, FALSE], # 1/4
+                 :d12 => [[0.4, 0.5], :rest_8, TRUE], # 1/8 *
+                 :d8  => [[0.4, 0.5], :rest_8, FALSE], # 1/8
+                 :d6  => [[0.4, 0.3], :rest_16, TRUE], # 1/16 *
+                 :d4  => [[0.3, 0.3], :rest_16, FALSE], # 1/16
+                 :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
+                 :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
+                 :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
+             }
+         },
+
+         neatjson:     {
+             wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
+             explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
+                              :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
+                              :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
+                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
+                              "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
+                              :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
+                             ],
+                             []],
+         }
         }
 
     result
+  end
+
+
+  # returns a hash with the default values of configuration
+  def _init_conf()
+    self.class.init_conf()
   end
 
 end
 
 Document.ready? do
   a = Controller.new
-  nil
+  # provide access to  zupfnoter controller from browser console
+  # to suppert debuggeing
+  `window.zupfnoter=#{a}`
 end
 

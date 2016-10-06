@@ -102,7 +102,7 @@ module Harpnotes
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
                       tempo:         {duration: duration, bpm: bpm},
-                      tempo_display: [duration_display, "=", bpm].join(' '),
+                      tempo_display: @info_fields[:Q], #[duration_display, "=", bpm].join(' '),
                       meter:         @info_fields[:M],
                       key:           "#{key} #{o_key_display}"
         }
@@ -132,6 +132,8 @@ module Harpnotes
       # This resets the converter
       # to be called when beginning a new voice
       def _reset_state
+
+        @countnames = (1..32).to_a.map { |i| [i, 'e', 'u', 'e'] }.flatten
 
         @jumptargets = {} # the lookup table for jumps
 
@@ -407,15 +409,28 @@ module Harpnotes
 
       def _transform_count_note(voice_element)
         if @countby
-          countnames ={0.5 => "u", 0.25 => "e", 0.75 => "e"}
-
           count_base  = ABC2SVG_DURATION_FACTOR / @countby
-          count_start = 1 + (voice_element[:time] - @measure_start_time) / count_base
-          count_end   = count_start + voice_element[:dur] / count_base - 1
-          count_range = (count_start.floor .. count_end.ceil).to_a.join("-")
-          count_range = (countnames[count_start % 1]) unless (count_start % 1) == 0
-          count_range = "?" unless count_range
+          count_start = 4 * (voice_element[:time] - @measure_start_time) / count_base
+          count_end   = count_start + 4 * voice_element[:dur] / count_base
 
+          if (count_start % 1 == 0) and (count_end % 1) == 0
+            count_range = (count_start ... count_end).to_a.map { |i| @countnames[i] }.join('')
+          else
+            if (count_start % 1) == 0 # start of tuplet
+              count_range = (count_start ... count_end.ceil).to_a.map { |i| @countnames[i] }.join('')
+            else
+              count_range = '' #(count_start % 1).to_s[1..2]
+            end
+          end
+
+          # clenaup count_range
+
+          notes = count_range.split(/[eu\?]+/)
+          fracts = count_range.split(/[0-9]+/)
+
+          fracts.each_with_index { |v,i | fracts[i] = nil if i >= 1 }
+          count_range = fracts.zip(notes).flatten.compact.join(" ").strip.split.join("-")
+          count_range = count_range.gsub('ue', 'u')
           count_range
         end
       end
@@ -764,7 +779,10 @@ module Harpnotes
               distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
               result.push({target: target, distance: distance})
             else
-              raise "Syntax-Error in Jump annotation: #{line}"
+              start_pos=charpos_to_line_column(bar[:istart])
+              end_pos  = charpos_to_line_column(bar[:iend])
+              $log.error("Syntax-Error in Jump anotation", start_pos, end_pos )
+              #raise "Syntax-Error in Jump annotation: #{line}"
             end
           end
           result

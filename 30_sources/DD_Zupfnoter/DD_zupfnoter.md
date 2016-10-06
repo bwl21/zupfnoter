@@ -20,6 +20,9 @@
 
 * goto your clone of the ace reporitory (../200_zupfnoter_external_components/ace)
 * update the files as described in <http://ace.c9.io/#nav=higlighter>
+* run  `node static.js --allow-save` .
+* navigate to http://localhost:8888/tool/mode_creator.html
+* perform necessary changes
 * perform 
 
 	node Makefile.dryice.js -nc -m full

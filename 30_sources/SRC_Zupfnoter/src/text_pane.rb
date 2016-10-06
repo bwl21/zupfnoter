@@ -69,6 +69,7 @@ module Harpnotes
     #
     # @return [type] [description]
     def on_cursor_change(&block)
+      block.call(nil)
       Native(Native(@editor)[:selection]).on(:changeCursor) do |e|
         block.call(e) unless @inhibit_callbacks
       end
@@ -86,6 +87,9 @@ module Harpnotes
     # Get the border of the current selection
     # todo: this might be not enough in case of multiple selectios.
     #
+    # Note that it returnes [row, col] for start and end
+    # counting from "0"
+    #
     # @return [Array of Number] [start, end] position of selection
     def get_selection_positions
       %x{
@@ -97,6 +101,32 @@ module Harpnotes
       [`range_start`, `range_end`]
     end
 
+    # This method provides information about the current selection
+    # the results are intended to be shown in the statuslilne
+    # therefore, we add 1 to row and column
+    #
+    # note it also provides token information in which we
+    # do not increment startpos and endpos such that it can be
+    # used together with patchtoken
+    #
+    # result: {selection: [], token: {type: <type>, value: <value>}}
+    def get_selection_info
+      %x{
+         doc = self.editor.selection.doc;
+         range = self.editor.selection.getRange();
+         token = self.editor.session.getTokenAt(range.start.row, range.start.column);
+         if (token){
+           token.startpos = [range.start.row, token.start];
+           token.endpos = [range.start.row, token.start + token.value.length];
+         }
+         else
+         {
+          //todo handle missing token
+         }
+        }
+      # note that
+      Native(`{selection: [[range.start.row+1, range.start.column+1], [range.end.row+1, range.end.column+1]], token: token}`)
+    end
 
     #
     # Select by position (in opposite to row/column pairs)
@@ -144,6 +174,19 @@ module Harpnotes
       }
     end
 
+    # replaces the text of the range by
+    # range is a reange object
+    # s
+    # @param [Array] startpos [row, col] starting with 0
+    # @param [Array] endpos   [row, col] starting with 0
+    # @param [String] text
+    def replace_range(startpos, endpos, text)
+      %x{
+      therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
+      #{editor}.getSession().replace(therange, #{text})
+      }
+    end
+
     # replace a text in the editor
     # this is to maintain undo stack
     # @param oldtext the text to be removed
@@ -164,7 +207,7 @@ module Harpnotes
       set_markers(annotations)
       %x{#{@editor}.getSession().setAnnotations(#{editor_annotations.to_n})}
     end
-    
+
 
     # here I started routines to maintain markers
     # maybe it is better to go back to https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
@@ -251,17 +294,11 @@ module Harpnotes
     end
 
 
+    # this pushes the object to the config part of the editor
+    #
     def set_config_part(object)
       the_selection = get_selection_positions
-      options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sort: true,
-                       explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                       ],
-                                       []],
-      }
+      options       = $conf[:neatjson]
 
       configjson = JSON.neat_generate(object, options)
 
@@ -278,15 +315,20 @@ module Harpnotes
       @inhibit_callbacks = false
     end
 
+    # this applies the object to the config
+    # values not in object are not changed in config
     def patch_config_part(key, object)
-      pconfig     = Confstack::Confstack.new(false)
-      config_part = get_config_part
+      pconfig       = Confstack::Confstack.new(false) # what we get from editor
+      pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
+      config_part   = get_config_part
       begin
-        config = %x{json_parse(#{config_part})}
         config = JSON.parse(config_part)
         pconfig.push(config)
-        pconfig[key] = object
+
+        pconfig_patch[key] = object
+        pconfig.push(pconfig_patch.get)
         set_config_part(pconfig.get)
+
       rescue Object => error
         line_col = get_config_position(error.last)
         $log.error("#{error.first} at #{line_col}", line_col)
@@ -295,6 +337,50 @@ module Harpnotes
     end
 
 
+    # this methods patches a token
+    # @param [Array] endpos [row, col]
+    def patch_token(token, endpos, newvalue)
+      oldtoken = get_selection_info.token
+      raise "cannot patch token if there is a name mismatch '#{oldtoken.type}' - '#{token}'" unless oldtoken.type.to_s == token.to_s
+      #raise "cannot patch token if in wrong position" if oldtoken.endpos != endpos
+
+      replace_range(oldtoken.startpos, oldtoken.endpos , newvalue)
+    end
+
+    # this adds the parts of object which are not yet in config
+    # it does not change the values of config
+    def extend_config_part(key, object)
+      pconfig       = Confstack::Confstack.new(false) # what we get from editor
+      pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
+      config_part   = get_config_part
+      begin
+        config = JSON.parse(config_part)
+        pconfig.push(config)
+
+        pconfig_patch[key] = object
+        pconfig.push(pconfig_patch.get)
+        pconfig.push(config)
+
+        set_config_part(pconfig.get)
+
+      rescue Object => error
+        line_col = get_config_position(error.last)
+        $log.error("#{error.first} at #{line_col}", line_col)
+        set_annotations($log.annotations)
+      end
+    end
+
+    # deletes the entry of key in the config part
+    def delete_config_part(key)
+      pconfig     = Confstack::Confstack.new(false) # what we get from editor
+      config_part = get_config_part
+      config      = JSON.parse(config_part)
+      pconfig.push(config)
+      pconfig[key] = Confstack::DeleteMe
+      set_config_part(pconfig.get)
+    end
+
+    # returns the value of key in in config part
     def get_config_part_value(key)
       pconfig     = Confstack::Confstack.new(false)
       config_part = get_config_part

@@ -56,8 +56,26 @@ module Harpnotes
       @on_select = block
     end
 
+    def on_mouseover(&block)
+      @paper.on_mouseover do |info|
+        block.call(Native(info))
+      end
+    end
+
+    def on_mouseout(&block)
+      @paper.on_mouseout do |info|
+        block.call(Native(info))
+      end
+    end
+
     def on_annotation_drag_end(&block)
       @paper.on_annotation_drag_end do |info|
+        block.call(Native(info))
+      end
+    end
+
+    def on_draggable_rightcklick(&block)
+      @paper.on_draggable_rightclick do |info|
         block.call(Native(info))
       end
     end

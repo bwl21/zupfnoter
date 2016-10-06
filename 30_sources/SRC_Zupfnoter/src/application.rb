@@ -26,7 +26,10 @@ require 'opal-dropboxjs'
 require 'opal-jqconsole'
 require 'confstack'
 require 'opal-abc2svg'
+require 'opal-w2ui'
 require 'version'
+require 'user-interface.js'
+require 'config-form'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"

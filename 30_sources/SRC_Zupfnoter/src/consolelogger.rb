@@ -21,6 +21,7 @@ class ConsoleLogger
   def initialize(element_id)
     @console = element_id # Element.find("##{element_id}")
     @loglevel = LOGLEVELS[:info]
+    @timestamp = Time.now
     clear_annotations
   end
 
@@ -65,6 +66,25 @@ class ConsoleLogger
   def message(msg, start_pos = nil, end_pos = nil)
     add_annotation(msg, start_pos, end_pos, :message)
     write(:message, msg)
+  end
+
+  # outputs an info entry with the current timestamp
+  def timestamp(msg, start_pos = nil, end_pos = nil)
+    $log.info("Timestamp #{Time.now() - @timestamp} sec: #{msg} #{__FILE__} #{__LINE__}")
+  end
+
+  # resets the timestamp. subsequent calls to timestamp are based on this time
+  def timestamp_start()
+     @timestamp = Time.now
+  end
+
+  # executes the block and outputs n info entry with the duration
+  # returns the result of the block
+  def benchmark(msg, &block)
+    s = Time.now
+    result = block.call
+    $log.info("  elapsed #{Time.now() -s} sec for #{msg}  #{__FILE__} #{__LINE__}")
+    result
   end
 
   # adjust the level to filter the messages

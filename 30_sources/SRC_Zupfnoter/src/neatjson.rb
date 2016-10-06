@@ -57,7 +57,7 @@ module JSON
 			if opts[:explicit_sort] && o.is_a?(Hash)
 				pre = opts[:explicit_sort].first
 				post = opts[:explicit_sort].last
-				okeys = o.keys
+				opts[:sorted] ? okeys = o.keys.sort: o.keys
 				sortfields = (pre + (okeys - pre - post) + post).uniq.map{|i| i.to_s.inspect}
 			end
 
