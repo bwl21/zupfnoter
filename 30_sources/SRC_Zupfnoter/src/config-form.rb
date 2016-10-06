@@ -10,6 +10,11 @@ class SnippetEditor
   class Form
     attr_accessor :on_change
 
+
+    def initialize
+      @validate = nil;
+    end
+
     # @param [String] token - the ace syntax token to be edited.
     # @param [Lambda] saveblock - the process to save the edit result in the editor
     def self.form_factory(token, saveblock)
@@ -52,7 +57,7 @@ class SnippetEditor
 
     def wrapup_string(string)
       if @is_new
-      %Q{ #{string} }
+        %Q{ #{string} }
       else
         string
       end
@@ -70,15 +75,20 @@ class SnippetEditor
           record:     @record,
           onChange:   lambda { |event|
             a = lambda { |event|
+              puts 'change'
             }
             `event.onComplete=#{a}`
           },
-          onValidate: lambda { alert("validate"); nil },
+          onValidate: @validate,
           actions:    {
               reset: lambda { `w2popup.close()` },
               save:  lambda do
-                @saveblock.call(to_string(Native::Hash.new(`this.record`)))
-                `w2popup.close()`
+                if `this.validate()`.empty?
+                  @saveblock.call(to_string(Native::Hash.new(`this.record`)))
+                  `w2popup.close()`
+                else
+                  $log.error(I18n.t('Fehler in den eingegebenen Daten'))
+                end
               end
           }
       }.to_n
@@ -125,7 +135,7 @@ class SnippetEditor
 
   class Goto < Form
     def to_string(record)
-      if record[:second]
+      unless record[:second] === ''
         wrapup_string(%Q{"^@#{record[:target]}@#{record[:first]},#{record[:second]},#{record[:third]}"})
       else
         wrapup_string(%Q{"^@#{record[:target]}@#{record[:first]}"})
@@ -133,30 +143,35 @@ class SnippetEditor
     end
 
     def to_record(line)
-      `debugger`
       if line
-        level = line.match(/\"\^@([^\@]*)@(\-?\d*)(,(\-?\d*),(\-?\d*))?\"$/)
+        level = line.match(/\"\^@([^\@]*)@(\-?\d*)(,(\-?\d*)?,?(\-?\d*)?)?\"$/)
         if level
           target   = level[1]
           distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
         else
-          level    = [1, 2, 3] # just to fill all fields
+          level    = [1] # just to fill all fields
           target   = "ERROR"
-          distance = [0, 0, 0]
+          distance = [0]
         end
       else
         level    = [1, 2, 3] # just to fill all fields
-        @is_new = true
+        @is_new  = true
         target   = ""
         distance = [3, -3, -3]
       end
 
-      @fields = [
+      @fields   = [
           {field: :target, type: 'text', required: false, html: {caption: I18n.t("jumptarget"), text: I18n.t('target to jump to')}},
           {field: :first, type: 'int', required: true, html: {caption: I18n.t("in distance"), text: I18n.t('Distance for first line from target')}},
           {field: :second, type: 'int', required: false, html: {caption: I18n.t("out distance"), text: I18n.t('Distance for second line from target')}},
           {field: :third, type: 'int', required: false, html: {caption: I18n.t("followup distance"), text: I18n.t('Distance for followup line from followup note')}},
       ]
+
+      @validate = lambda do |event|
+        `#{event}.errors.push({ field: this.get('second'), error: w2utils.lang('Please provide also X ') });` if `this.record['second'] === ''` and not `this.record['third'] === ''`
+        `#{event}.errors.push({ field: this.get('third'), error: w2utils.lang('Please provide also Y') });`  if `this.record['third'] === ''` and not `this.record['second'] === ''`
+      end
+
       if level[3]
         @record = {target: target, first: distance[0].to_i, second: distance[1].to_i, third: distance[2].to_i}
       else
@@ -180,7 +195,7 @@ class SnippetEditor
         end
       else
         @is_new = true
-        target = ""
+        target  = ""
       end
 
       @fields = [
@@ -197,7 +212,7 @@ class SnippetEditor
     end
 
     def to_record(line)
-      @lookup = {'<' => 'left', '>' => 'right', '?' => 'choose' }
+      @lookup = {'<' => 'left', '>' => 'right', '?' => 'choose'}
       if line
         match = line.match(/^\"\^([<>])\"$/)
         if match
@@ -207,7 +222,7 @@ class SnippetEditor
         end
       else
         @is_new = true
-        target = ""
+        target  = ""
       end
 
       @fields = [
@@ -219,7 +234,7 @@ class SnippetEditor
 
   class Annotation < Form
     def to_string(record)
-      if record[:X]
+      unless record[:X] === ''
         wrapup_string(%Q{"^!#{record[:text]}@#{record[:X]},#{record[:Y]}"})
       else
         wrapup_string(%Q{"^!#{record[:text]}"})
@@ -240,9 +255,9 @@ class SnippetEditor
         end
       else
         @is_new = true
-        text  = ""
-        pos_x = nil
-        pos_y = nil
+        text    = ""
+        pos_x   = nil
+        pos_y   = nil
       end
 
       @fields = [
@@ -250,6 +265,12 @@ class SnippetEditor
           {field: :X, type: 'int', required: false, html: {caption: I18n.t("X-position"), text: I18n.t('horizontal position')}},
           {field: :Y, type: 'int', required: false, html: {caption: I18n.t("Y-position"), text: I18n.t('vertical position (top->down)')}},
       ]
+
+      @validate = lambda do |event|
+        `#{event}.errors.push({ field: this.get('X'), error: w2utils.lang('Please provide also X ') });` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
+        `#{event}.errors.push({ field: this.get('Y'), error: w2utils.lang('Please provide also Y') });`  if `this.record['Y'] === ''` and not `this.record['X'] === ''`
+      end
+
       @record = {text: text, X: pos_x, Y: pos_y}
     end
   end
@@ -277,9 +298,9 @@ class SnippetEditor
         end
       else
         @is_new = true
-        text  = ""
-        pos_x = nil
-        pos_y = nil
+        text    = ""
+        pos_x   = nil
+        pos_y   = nil
       end
 
       @fields = [
@@ -306,7 +327,7 @@ class SnippetEditor
         end
       else
         @is_new = true
-        target = ""
+        target  = ""
       end
 
       @fields = [
@@ -556,7 +577,7 @@ class ConfstackEditor
     end
 
 
-    ## this is the 
+    ## this is the
 
     def initialize
       @typemap = {
