@@ -218,7 +218,7 @@ class Controller
       $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
-      $log.error("#{e.message} in #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
+      $log.error("#{e.message} in command #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
     end
   end
 

@@ -69,6 +69,7 @@ module Harpnotes
     #
     # @return [type] [description]
     def on_cursor_change(&block)
+      block.call(nil)
       Native(Native(@editor)[:selection]).on(:changeCursor) do |e|
         block.call(e) unless @inhibit_callbacks
       end
