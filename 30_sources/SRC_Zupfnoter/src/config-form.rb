@@ -576,6 +576,14 @@ class ConfstackEditor
       end
     end
 
+    class ZnUnknown < ZnTypes
+      def self.to_html(key)
+      end
+
+      def self.to_w2uifield(key)
+      end
+    end
+
 
     ## this is the
 
@@ -634,7 +642,7 @@ class ConfstackEditor
 
     def _type(key)
       lookupkey = key.split('.').last
-      @typemap[lookupkey] || ZnTypes
+      @typemap[lookupkey] || ZnUnknown
     end
   end
 
@@ -796,14 +804,13 @@ class ConfstackEditor
 
 
   def mk_fieldHTML(key)
-
     help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
     padding      = 1.5 * (key.split(".").count - 1)
     first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
     last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
-    if @default_value[key].is_a? Hash # todo query type
-      fillup_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
+    if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
+      fillup_button =  %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
 
       %Q{
          <tr style="border:1pt solid blue;">
