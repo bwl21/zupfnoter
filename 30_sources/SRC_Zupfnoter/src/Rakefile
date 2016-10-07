@@ -21,7 +21,7 @@ ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 desc "update public/locale"
 task :updateLocales do
   puts "updating locales"
-  locales = Dir["#{LOCALEPATH}*.json"].map { |f| f.split(LOCALEPATH).last }
+  locales = Dir["#{LOCALEPATH}??-??.json"].map { |f| f.split(LOCALEPATH).last }
   locales.each do |locale|
     w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
     znlocalefile   = File.open("localization/zupfnoter_#{locale}")

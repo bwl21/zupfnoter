@@ -61,6 +61,18 @@ Hier kannst du die Parameter für das Layout eintsllen.
 Damit lässt das Notenbild gezielt optimieren.
 })
 
+a.insert('layout.limit_a3', %Q{
+Diese Funktion verschibt Noten am A3-Blattrand
+nach innen. Da das Unterlegnotenblatt etwas
+größer ist als A3 würde sonst die Note angeshnitten.
+})
+
+a.inset('layout.LINE_THIN', %Q{Stellt die Breite von dünnen Linien ein.})
+a.inset('laoyut.LINE_MEDIUM', %Q{Stellt die Breite von mittleren Linien ein (z.B. Flußline})
+a.inset('', %Q{})
+a.inset('', %Q{})
+a.inset('', %Q{})
+
 
 a.insert('lyrics', %Q{
 Hier wird die Positionierung der Liedtexte gesteuert.
@@ -92,6 +104,46 @@ Position (angeben als x,y) der Seitenbeschriftung
 
 a.insert('pos', %Q{
 Position (angeben als x,y)
+})
+
+
+a.insert('printer', %Q{
+Hier kannst du das Druckbild auf deine Umrebung anpassen.
+
+>**Hinweis** Durch Verwendung dieser Funktion passen die erstellten
+>PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte
+>verwende die Funktion also erst, wenn du keine geeigneten Einstellungen
+>in deinem Druckdialog findest.
+})
+
+a.insert('printer.a3_offset', %Q{
+Verschiebt das Druckbild beim Ausdruck auf A3-Papier.
+Angabe als x, y in mm.
+
+Dies ist sinnvoll, wenn ein Unterlegnotenblatt für
+eine 25 saitige Harfe auf ein A3-Blatt gedruckt wird.
+
+In diesem Fall kann es auch sinnvoll sein, "limit-A3" auzuschalten.
+})
+
+a.insert('printer.a4_offset', %Q{
+Verschiebt das Druckbild beim Ausdruck auf A4-Papier.
+Angabe als x, y in mm.
+})
+
+a.insert('printer.show_border', %Q{
+Steuert, ob die Blattbegrenzung gedruckt werden soll.
+Die Blattbegrenzung liegt eigntlich ausserhalb
+des Bereiches, den der Drucker auf dem Papier
+bedrucken kann. Wenn das Druckbild auf dem Papier
+zentriert wird, ist die Blattbegrenzung nicht sichtbar.
+
+Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem Papier.
+Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen
+unten ca. 10 mm.
+
+Versuche ob das Ausschalten der Blattbegrenzung die Situation
+verbessert.
 })
 
 a.insert('repeatsigns.voices', %Q{

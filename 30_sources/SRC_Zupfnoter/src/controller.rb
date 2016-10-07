@@ -26,7 +26,7 @@ module I18n
     candidates     = candidate_keys.map { |c| $conf_helptext[c.join('.')] }
     candidate_keys = candidate_keys.map { |c| c.join(".") }.to_s
 
-    helptext = candidates.compact.first || "no help"
+    helptext = candidates.compact.first || "no help for #{candidate_keys}"
     ##helptext = $conf_helptext[key] || "<p>no helpr for #{key}</p>"
     %Q{<div style="padding:0.5em;width:30em;">#{helptext}</div>}
   end
@@ -571,16 +571,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
     config = get_config_from_editor
-
     $conf.push(config)
     abc_parser = $conf.get('abc_parser')
     $log.timestamp_start
     @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     @music_model.checksum = @editor.get_checksum
-    `document.title = #{@music_model.meta_data[:filename]}`
+    `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
     $log.timestamp("transform")
 
-    result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+    result                = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+
     $log.timestamp("   layout")
 
     #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
@@ -899,7 +899,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       editorstatus = {position:  position,
                       tokeninfo: "#{token[:type]} [#{token[:value]}]",
-                      token: token
+                      token:     token
       }
 
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
@@ -998,6 +998,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   private
 
+
+  # how to add a new parameter
+  # 1. set the default eher
+  # 2. maintain neatjson options to get it sorted here as well
+  # 3. update controller_command_defnitions to provide the add / edit commands
+  # 4. update conf_doc_source.rb to provide the documentation and help
+  # 5. update config-form.rb to attach a type
+  # 6. update user-interface.js to add the menu entries
   def self.init_conf()
     result =
         {produce:      [0],
@@ -1050,7 +1058,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                                 LINE_THICK:   0.5,
                                 # all numbers in mm
                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                REST_SIZE:    [4, 2]},
+                                REST_SIZE:    [4, 2]
+                 },
                  nonflowrest:  false,
                  notes:        {},
                  barnumbers:   {
@@ -1066,6 +1075,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                      vpos:  [],
                      style: :small,
                      marks: {vpos: [11], hpos: [43, 55, 79]}
+                 },
+                 printer:      {
+                     a3_offset:   [0, 0],
+                     a4_offset:   [-5, 0],
+                     show_border: true
                  }
              },
              "1" => {
@@ -1170,9 +1184,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          neatjson:     {
              wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
              explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                              :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
+                              :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
+                              :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout, :printer,
+                              #
                               :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
+                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, :a3_offset, :a4_offset, # sort within laoyut
                               "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                               :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
                              ],

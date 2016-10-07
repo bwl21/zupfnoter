@@ -354,7 +354,7 @@ function init_w2ui(uicontroller) {
         style: tbstyle,
         items: [
             {
-                type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
+                type: 'menu', text: "Add Config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
                 items: [
                     {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
                     {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
@@ -401,6 +401,7 @@ function init_w2ui(uicontroller) {
                     {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
                     {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
                     {text: ''},
+                    {id: 'printer', text: 'Printer adapt', tooltip: "specify printer adaptations details \n(e.g. offsets)"},
                     {
                         id: 'restpos_1.3',
                         text: 'rests as V 1.3',
@@ -430,6 +431,7 @@ function init_w2ui(uicontroller) {
                         text: 'page annotation',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
+                    {id: 'printer', text: 'printer', tooltip: "Edit printer correction paerameters"},
                     {},
                     {id: 'extract_current', text: 'current extract', tooltip: "Edit current extract"}
                 ]

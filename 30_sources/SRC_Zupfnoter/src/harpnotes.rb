@@ -649,16 +649,18 @@ module Harpnotes
     #
     class Sheet
       attr_reader :children, :active_voices
+      attr_accessor :printer_config
 
       # Constructor
       # @param children [Array of primitives]  the primitives which are drawn
       # @param vertical_scale = 1.0 [Numeric]  A factor to map the beats to vertical positions. todo: maybe superfluous
-      # @param [Object] active_voices the array provided by voices entry of configuration
+      # @param [Object] active_voices the array provided by voices entry of configuration; required for player
       #
       # @return [type] [description]
       def initialize(children, active_voices)
         @children      = children
         @active_voices = active_voices
+        @printer_config = $conf['printer']
       end
     end
 
@@ -1173,6 +1175,7 @@ module Harpnotes
         # push view specific configuration
         layout_options     = print_options_hash[:layout] || {}
         $conf.push({layout: layout_options})
+        $conf.push({printer: print_options_hash[:printer] || {}})
 
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
@@ -1315,9 +1318,13 @@ module Harpnotes
 
         sheet_elements = debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 
-        $conf.pop # remove view specific configuration
+        result = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
+        result.printer_config = $conf[:printer]
 
-        Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
+        $conf.pop # remove view specific configuration printer
+        $conf.pop # remove view specific configuration layout
+
+        result
       end
 
       def get_print_options(print_variant_nr)

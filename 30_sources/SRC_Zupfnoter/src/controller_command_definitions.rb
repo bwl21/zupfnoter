@@ -312,6 +312,8 @@ C,
             'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
             'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
                                             value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
+            'printer'           => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
+                                            value: $conf['extract.0.printer']} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
             'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
@@ -396,7 +398,8 @@ C,
 
             notes:              {keys: expand_extract_keys([:notes])},
             lyrics:             {keys: expand_extract_keys([:lyrics])},
-            layout:             {keys: expand_extract_keys([:layout])},
+            layout:             {keys: expand_extract_keys([:layout, 'layout.limit_a3'])},
+            printer:            {keys: expand_extract_keys([:printer])},
             global:             {keys: [:produce]},
             extract0:           {keys: ['extract.0']},
             extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]}

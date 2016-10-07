@@ -11,30 +11,43 @@ module Harpnotes
     JUMPLINE_INDENT = 10.0
     DOTTED_SIZE     = 0.3
 
-    X_SPACING = 115.0/10.0
+    #X_SPACING = 115.0/10.0
 
     def initialize()
       @pdf          = JsPDF.new(:l, :mm, :a3)
-      @pdf.x_offset = 0.0
     end
 
 
     def draw_in_segments(sheet)
-      delta         = -12.0 * X_SPACING # todo: 12.0 = number of strings per page
-      @pdf          = JsPDF.new(:p, :mm, [210, 287])
-      @pdf.y_offset = -5
+      delta         = -12.0 * $conf['layout.X_SPACING'] # todo: 12.0 = number of strings per page
+      @pdf          = JsPDF.new(:p, :mm, :a4)
+      @pdf.y_offset = sheet.printer_config['a4_offset'].last # -5
       addpage       = false
       (0..2).each do |i|
-        draw_segment(30 + i * delta, sheet, addpage) # todo: 30 = initial offset
+        draw_segment(30 + sheet.printer_config['a4_offset'].first + i * delta, sheet, addpage) # todo: 30 = initial offset
         addpage = true
       end
       @pdf
     end
 
     def draw(sheet)
-      # todo: move this to the layouter
-      @pdf.rect(1.0, 1.0, 418, 295)
-      @pdf.rect(0.0, 0.0, 420.0, 297.0)
+      @pdf.x_offset, @pdf.y_offset = sheet.printer_config['a3_offset']
+      draw_sheet(sheet)
+    end
+
+    # this draws a page setment
+    def draw_segment(x_offset, sheet, newpage = false)
+      @pdf.x_offset = x_offset
+      @pdf.addPage if newpage
+      draw_sheet(sheet)
+    end
+
+
+    def draw_sheet(sheet)
+      if sheet.printer_config['show_border']
+        @pdf.rect(1.0, 1.0, 418, 295)
+        @pdf.rect(0.0, 0.0, 420.0, 297.0)
+      end
 
       sheet.children.each do |child|
         @pdf.line_width = child.line_width
@@ -191,13 +204,6 @@ module Harpnotes
       @pdf.rect_like_ellipse(new_center, new_size, :F)
     end
 
-
-    # this draws a page setment
-    def draw_segment(x_offset, sheet, newpage = false)
-      @pdf.x_offset = x_offset
-      @pdf.addPage if newpage
-      draw(sheet)
-    end
 
     #
     # Draw a Flowline to indicate the flow of the music. It indicates
