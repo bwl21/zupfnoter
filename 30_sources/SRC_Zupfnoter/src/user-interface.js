@@ -250,7 +250,7 @@ function init_w2ui(uicontroller) {
                         id: 'HarfenEingabe',
                         tooltip: "editor and harpnotes\napplicaple to tweak the notes for harp"
                     },
-                    {text: 'Notes', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
+                    {text: 'Tune"', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
                     {
                         text: 'Harp',
                         icon: 'fa fa-file-picture-o',
@@ -417,7 +417,7 @@ function init_w2ui(uicontroller) {
                 icon: 'fa fa-pencil',
                 tooltip: "Edit configuration with forms",
                 items: [
-                    {text: 'global', tooltip: "edit global settings for the current song"},
+                    {id: 'global', text: 'global settings', tooltip: "edit global settings for the current song"},
                     {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
                     {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
                     {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
@@ -431,14 +431,14 @@ function init_w2ui(uicontroller) {
                         text: 'page annotation',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
-                    {id: 'printer', text: 'printer', tooltip: "Edit printer correction paerameters"},
+                    {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
                     {},
                     {id: 'extract_current', text: 'current extract', tooltip: "Edit current extract"}
                 ]
             },
             {
                 type: 'menu',
-                text: "Add Snippet",
+                text: "Insert Addon",
                 id: 'add_snippet',
                 items: [
                     {id: 'goto', text: 'Goto', tooltip: "Add a Jump"},
@@ -452,14 +452,14 @@ function init_w2ui(uicontroller) {
                     {id: 'jumptarget', text: 'Jumptarget', tooltip: "Add a Jumptarget"}
                 ],
                 icon: 'fa fa-gear',
-                tooltip: "Add snippent under cursor",
+                tooltip: "Insert addon at cursor position",
             },
             {
                 type: 'button',
-                text: "Edit Snippet",
+                text: "Edit Addon",
                 id: 'edit_snippet',
                 icon: 'fa fa-pencil',
-                tooltip: "Edit snippent under cursor"
+                tooltip: "Edit addon on cursor position"
             }
         ],
 

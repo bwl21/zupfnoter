@@ -81,13 +81,13 @@ class SnippetEditor
           },
           onValidate: @validate,
           actions:    {
-              reset: lambda { `w2popup.close()` },
-              save:  lambda do
+              Cancel: lambda { `w2popup.close()` },
+              Save:   lambda do
                 if `this.validate()`.empty?
                   @saveblock.call(to_string(Native::Hash.new(`this.record`)))
                   `w2popup.close()`
                 else
-                  $log.error(I18n.t('Fehler in den eingegebenen Daten'))
+                  $log.error(I18n.t('There is an error in the data you have entered'))
                 end
               end
           }
@@ -160,16 +160,16 @@ class SnippetEditor
         distance = [3, -3, -3]
       end
 
-      @fields   = [
+      @fields = [
           {field: :target, type: 'text', required: false, html: {caption: I18n.t("jumptarget"), text: I18n.t('target to jump to')}},
-          {field: :first, type: 'int', required: true, html: {caption: I18n.t("in distance"), text: I18n.t('Distance for first line from target')}},
-          {field: :second, type: 'int', required: false, html: {caption: I18n.t("out distance"), text: I18n.t('Distance for second line from target')}},
-          {field: :third, type: 'int', required: false, html: {caption: I18n.t("followup distance"), text: I18n.t('Distance for followup line from followup note')}},
+          {field: :first, type: 'int', required: true, html: {caption: I18n.t("in distance"), text: I18n.t('Distance for in-line from last note before variation')}},
+          {field: :second, type: 'int', required: false, html: {caption: I18n.t("out distance"), text: I18n.t('Distance for out-line from firat note after variation')}},
+          {field: :third, type: 'int', required: false, html: {caption: I18n.t("followup distance"), text: I18n.t('Distance for followup-line from first note after variation')}},
       ]
 
       @validate = lambda do |event|
         `#{event}.errors.push({ field: this.get('second'), error: w2utils.lang('Please provide also X ') });` if `this.record['second'] === ''` and not `this.record['third'] === ''`
-        `#{event}.errors.push({ field: this.get('third'), error: w2utils.lang('Please provide also Y') });`  if `this.record['third'] === ''` and not `this.record['second'] === ''`
+        `#{event}.errors.push({ field: this.get('third'), error: w2utils.lang('Please provide also Y') });` if `this.record['third'] === ''` and not `this.record['second'] === ''`
       end
 
       if level[3]
@@ -199,7 +199,7 @@ class SnippetEditor
       end
 
       @fields = [
-          {field: :target, type: 'text', required: true, html: {caption: I18n.t("name of target"), text: I18n.t('the name for this target')}}
+          {field: :target, type: 'text', required: true, html: {caption: I18n.t("Name of target"), text: I18n.t('the name for this target')}}
       ]
       @record = {target: target}
     end
@@ -268,7 +268,7 @@ class SnippetEditor
 
       @validate = lambda do |event|
         `#{event}.errors.push({ field: this.get('X'), error: w2utils.lang('Please provide also X ') });` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
-        `#{event}.errors.push({ field: this.get('Y'), error: w2utils.lang('Please provide also Y') });`  if `this.record['Y'] === ''` and not `this.record['X'] === ''`
+        `#{event}.errors.push({ field: this.get('Y'), error: w2utils.lang('Please provide also Y') });` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
       end
 
       @record = {text: text, X: pos_x, Y: pos_y}
@@ -304,7 +304,7 @@ class SnippetEditor
       end
 
       @fields = [
-          {field: :text, type: 'label', required: false, html: {caption: I18n.t("label"), text: I18n.t('Name of annotation')}},
+          {field: :text, type: 'string', required: false, html: {caption: I18n.t("Name of annotation"), text: I18n.t('Name of annotation')}},
           {field: :X, type: 'int', required: false, html: {caption: I18n.t("X-position"), text: I18n.t('horizontal position')}},
           {field: :Y, type: 'int', required: false, html: {caption: I18n.t("Y-position"), text: I18n.t('vertical position (top->down)')}},
       ]
@@ -331,7 +331,7 @@ class SnippetEditor
       end
 
       @fields = [
-          {field: :target, type: 'text', required: true, html: {caption: I18n.t("name of draggable"), text: I18n.t('the name for the dreaggables of theis note')}}
+          {field: :target, type: 'text', required: true, html: {caption: I18n.t("Name of draggable"), text: I18n.t('the name for the dreaggables of this note')}}
       ]
       @record = {target: target}
     end
@@ -590,7 +590,7 @@ class ConfstackEditor
     def initialize
       @typemap = {
           IntegerPairs    => ['synchlines'],
-          FloatPair       => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', 'cp1', 'cp2', 'a3_offset', 'a4_offset' ],
+          FloatPair       => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', 'cp1', 'cp2', 'a3_offset', 'a4_offset'],
           IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', :produce],
           Integer         => ['startpos'],
           OneLineString   => ['title'],
@@ -810,7 +810,7 @@ class ConfstackEditor
     last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
-      fillup_button =  %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
+      fillup_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
 
       %Q{
          <tr style="border:1pt solid blue;">

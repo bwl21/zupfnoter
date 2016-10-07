@@ -17,6 +17,30 @@ LOCALEPATH   = "../public/locale/"
 VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
+desc "extract localization-Keys"
+task :extractLocales do
+
+  require 'json'
+  knownkeys = JSON.parse(File.read("../public/locale/de-de.json"))
+  keys = []
+  Dir['user-interface.js'].each do |file|
+    File.read(file).scan(/(caption|text|tooltip):\s*["']([^'"]*)["']/) do |clazz, key|
+      #binding.pry
+      keys.push(key) unless knownkeys['phrases'].has_key? key
+    end
+  end
+
+  Dir['*.rb'].each do |file|
+    File.read(file).scan(/(I18n\.t)\(['"]([^'"]+)['"]/) do |clazz, key|
+      puts key
+      binding.pry #if key.start_with?("c")
+      keys.push(key) unless knownkeys['phrases'].has_key? key
+    end
+  end
+
+  puts keys.to_a.map{|v| %Q{"#{v}": "**--#{v}"}}.join(",\n")
+
+end
 
 desc "update public/locale"
 task :updateLocales do
@@ -25,7 +49,6 @@ task :updateLocales do
   locales.each do |locale|
     w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
     znlocalefile   = File.open("localization/zupfnoter_#{locale}")
-
 
     w2uilocales = JSON.parse(w2uilocalefile.read)
     znlocales   = JSON.parse(znlocalefile.read)
@@ -259,23 +282,23 @@ task :buildConfigDoc do
 
   def get_example(conf, key)
     neatjson_options = {wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-                       explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                        :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
-                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                       ],
-                                       []],
+                        explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
+                                         :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
+                                         :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
+                                         :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
+                                         "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
+                                         :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
+                                        ],
+                                        []],
     }
-    k = key.split(".").last
+    k                = key.split(".").last
     %Q{
 "#{k}": #{JSON.neat_generate(conf[key], neatjson_options)}
-      }.split("\n").map { |l| "        #{l}" }.join("\n")
+    }.split("\n").map { |l| "        #{l}" }.join("\n")
   end
 
-  ignore_patterns = [/^neatjson/, /abc_parser^*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
-                     /^layout.*/
+  ignore_patterns  = [/^neatjson/, /abc_parser^*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
+                      /^layout.*/
   ]
   produce_patterns = [/annotations\.vl/, /^templates\.tuplets/]
 
@@ -290,15 +313,15 @@ task :buildConfigDoc do
   File.open("xxx.md", "w") do |f|
     f.puts "# Konfiguration der Ausgabe"
 
-    ignore_keys = b.keys.select{|k| ignore_patterns.select{|ik| k.match(ik)}.count > 0}
-    produce_keys = b.keys.select{|k|  produce_patterns.select{|ik| k.match(ik)}.count > 0}
-    show_keys = (b.keys - ignore_keys + produce_keys).uniq.sort
+    ignore_keys  = b.keys.select { |k| ignore_patterns.select { |ik| k.match(ik) }.count > 0 }
+    produce_keys = b.keys.select { |k| produce_patterns.select { |ik| k.match(ik) }.count > 0 }
+    show_keys    = (b.keys - ignore_keys + produce_keys).uniq.sort
 
     puts show_keys
     show_keys.each do |key|
       f.puts %Q{
 
-#{("#" * (key.split(".").count + 1))[0,3] }  `#{key}` {##{key}}
+             #{("#" * (key.split(".").count + 1))[0, 3] }  `#{key}` {##{key}}
 
 
 erklaerung_kommt_noch
@@ -310,7 +333,7 @@ erklaerung_kommt_noch
 
 #{get_example(b, key)}
 
-}
+             }
     end
   end
 end
