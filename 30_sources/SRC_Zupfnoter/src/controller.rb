@@ -36,6 +36,7 @@ module I18n
     $conf_helptext = {}
     HTTP.get("public/locale/conf-help_#{language}.json").then do |response|
       $conf_helptext = Native(response.body)
+      $conf_helptext = JSON.parse($conf_helptext) if $conf_helptext.is_a? String
     end.fail do |response|
       alert "could not loaad confhelp #{response}"
     end.always do |response|
@@ -580,7 +581,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
     $log.timestamp("transform")
 
-    result                = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+    result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
 
     $log.timestamp("   layout")
 
