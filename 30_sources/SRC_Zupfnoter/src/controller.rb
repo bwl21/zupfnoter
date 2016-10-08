@@ -571,6 +571,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
     config = get_config_from_editor
+    @editor.neat_config
     $conf.push(config)
     abc_parser = $conf.get('abc_parser')
     $log.timestamp_start
@@ -596,7 +597,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       #config         = %x{json_parse(#{config_part})}
       config         = JSON.parse(config_part)
       config, status = migrate_config(config)
-
 
       if status[:changed]
         alert(status[:message])

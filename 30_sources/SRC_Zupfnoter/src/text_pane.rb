@@ -275,6 +275,12 @@ module Harpnotes
       get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
+    def neat_config
+      config_part = get_config_part
+      config = JSON.parse(config_part)
+      set_config_part(config)
+    end
+
     def get_checksum
       s = get_text
       %x{
@@ -344,7 +350,7 @@ module Harpnotes
       raise "cannot patch token if there is a name mismatch '#{oldtoken.type}' - '#{token}'" unless oldtoken.type.to_s == token.to_s
       #raise "cannot patch token if in wrong position" if oldtoken.endpos != endpos
 
-      replace_range(oldtoken.startpos, oldtoken.endpos , newvalue)
+      replace_range(oldtoken.startpos, oldtoken.endpos, newvalue)
     end
 
     # this adds the parts of object which are not yet in config
