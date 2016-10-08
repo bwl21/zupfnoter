@@ -721,12 +721,10 @@ class ConfstackEditor
         end
       end
     end
-
     patchvalue = patchvalue.get
     patchvalue.keys.each do |k|
       @editor.patch_config_part(k, patchvalue[k])
     end
-
     refresh_form
   end
 
@@ -770,8 +768,12 @@ class ConfstackEditor
         style:      'border: 0px; background-color: transparent;',
         fields:     @value.keys.map { |key| @helper.to_w2uifield(key) }.flatten,
         record:     @record,
+        focus:      -1,
         onChange:   lambda { |event|
-          a=lambda { push_config_to_editor }
+          a=lambda { push_config_to_editor
+          `document.getElementById(#{event}.target).focus()`
+            #nil
+          }
           `event.onComplete=#{a}`
         },
         toolbar:    {
@@ -804,20 +806,20 @@ class ConfstackEditor
 
 
   def mk_fieldHTML(key)
-    help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
+    help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
     padding      = 1.5 * (key.split(".").count - 1)
     first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
     last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
-      fillup_button = %Q{<button class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
+      fillup_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
 
       %Q{
          <tr style="border:1pt solid blue;">
 
            <td  colspan="2" >
             #{first_indent}
-            <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
+            <button tabIndex="-1" class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
             #{fillup_button}
            <strong>#{ I18n.t_key("#{key}")}</strong>
            </td>
@@ -825,15 +827,13 @@ class ConfstackEditor
          </tr>
         }
     else
-      default_button = %Q{<button class="foobar znconfig-button fa fa-circle-o" title="#{@default_value[key].to_s}" name="#{key}:fillup"></button>}
-
+      default_button = %Q{<button tabIndex="-1" class="foobar znconfig-button fa fa-circle-o" title="#{@default_value[key].to_s}" name="#{key}:fillup"></button>}
       %Q{
         <tr>
          <td style="vertical-align: top;">#{first_indent}
-         <button class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
-         #{default_button}
-
-            <strong>#{ I18n.t_key("#{key}")}</strong>
+           <button tabIndex="-1" class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
+           #{default_button}
+           <strong>#{ I18n.t_key("#{key}")}</strong>
         </td>
         <td style="vertical-align: top;">
          <div class="w2ui-field" style="padding:1pt;">
