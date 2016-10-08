@@ -7,7 +7,7 @@ module I18n
   end
 
   def self.t_key(key)
-    key.split(".").last
+    self.t(key.split(".").last)
   end
 
   def self.t_help(key)

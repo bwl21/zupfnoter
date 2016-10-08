@@ -402,7 +402,8 @@ C,
             printer:            {keys: expand_extract_keys([:printer])},
             global:             {keys: [:produce]},
             extract0:           {keys: ['extract.0']},
-            extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]}
+            extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]},
+            xx:                 {keys: ['xx']}
         }
 
         a = sets[args[:set]]
@@ -438,6 +439,7 @@ C,
           $log.timestamp(3)
 
           configvalues_from_editor = get_config_from_editor
+          $log.timestamp(3.1)
           editor_conf.push(configvalues_from_editor)
 
           $log.timestamp(4)

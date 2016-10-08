@@ -18,27 +18,31 @@ VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
 desc "extract localization-Keys"
-task :extractLocales do
 
+def extract_locales
   require 'json'
   knownkeys = JSON.parse(File.read("../public/locale/de-de.json"))
-  keys = []
+  keys      = []
   Dir['user-interface.js'].each do |file|
     File.read(file).scan(/(caption|text|tooltip):\s*["']([^'"]*)["']/) do |clazz, key|
-      #binding.pry
-      keys.push(key) unless knownkeys['phrases'].has_key? key
+      key = key.gsub("\\n", "\n")
+     keys.push(key) unless knownkeys['phrases'].has_key? key
     end
   end
 
   Dir['*.rb'].each do |file|
     File.read(file).scan(/(I18n\.t)\(['"]([^'"]+)['"]/) do |clazz, key|
-      puts key
-      binding.pry #if key.start_with?("c")
+      key = key.gsub("\\n", "\n")
       keys.push(key) unless knownkeys['phrases'].has_key? key
     end
   end
+  keys
+end
 
-  puts keys.to_a.map{|v| %Q{"#{v}": "**--#{v}"}}.join(",\n")
+task :extractLocales do
+
+  keys = extract_locales
+
 
 end
 
@@ -72,7 +76,7 @@ task :updateAbc2svg do
 end
 
 desc "Build our app to #{ZUPFNOTER_JS}"
-task :build => [:updateLocales] do
+task :build => [:buildConfigDoc, :updateLocales] do
   #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.use_gem "vector2d"
@@ -273,6 +277,9 @@ end
 
 desc "generate a raw file for documentation of config"
 task :buildConfigDoc do
+
+  sh 'ruby conf_doc_source.rb'
+
   class Document
     def self.ready?
 
@@ -310,6 +317,33 @@ task :buildConfigDoc do
   a = Controller.init_conf
   b = Confstack.new(false)
   b.push(JSON.parse(a.to_json))
+
+  knownkeys = JSON.parse(File.read("../public/locale/de-de.json"))
+  keys      = []
+  Dir['user-interface.js'].each do |file|
+    File.read(file).scan(/(caption|text|tooltip):\s*["']([^'"]*)["']/) do |clazz, key|
+      key = key.gsub("\\n", "\n")
+      keys.push(key) unless knownkeys['phrases'].has_key? key
+    end
+  end
+
+  Dir['*.rb'].each do |file|
+    File.read(file).scan(/(I18n\.t)\(['"]([^'"]+)['"]/) do |clazz, key|
+      key = key.gsub("\\n", "\n")
+      keys.push(key) unless knownkeys['phrases'].has_key? key
+    end
+  end
+
+  b.keys.each do |key|
+    key.split(".").each do |key|
+      keys.push(key) unless knownkeys['phrases'].has_key? key
+    end
+  end
+
+  File.open("x.locales.template", "w") do |f|
+    f.puts keys.to_a.map { |v| %Q{"#{v}": "**--#{v}"} }.uniq.sort_by{|i|i.upcase}.join(",\n")
+  end
+
   File.open("xxx.md", "w") do |f|
     f.puts "# Konfiguration der Ausgabe"
 

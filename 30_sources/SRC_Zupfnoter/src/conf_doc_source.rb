@@ -25,23 +25,35 @@ end
 
 a=ConfDocProvider.new
 
+a.insert('ELLIPSE_SIZE', %Q{
+Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte sind [2-4, 1.2-2].
+
+>**Hinweis** Die Größe der anderen Noten werden ausgehend von diesem Wert berechnet.
+>
+>Da die Noten auch mit der dicken Linie umrandet werden, kann auch die "Linienstärke 'dick'" reeduziert werden,
+>um ein filigraneres Notenbild zu erhalten.
+})
+
 a.insert('extract', %Q{
 
-Spezifiziert Auszüge für deine Unterlegnoten Bitte beachte
+Hier kannst du Auszüge für dein Unterlegnoten definieren. Das ist besonders bei mehrstimmigen Sätzen sinnvoll.
 
-* Auszug 0 vererbt an folgende
-* Auszug hat Struktur:
-  *  bla fasel
-
+>**Hinweis**: Einstellungen im Auszug 0 wirken auf die anderen Auszüge, sofern sie dort nicht überschrieben werden.
 })
 
 a.insert('extract.0', %Q{
-
 Spezifiziert einen konkreten Auszug für deine Unterlegnoten
+
+>**Hinweis**: Einstellungen im Auszug 0 wirken auf die anderen Auszüge, sofern sie dort nicht überschrieben werden.
 
 })
 
+a.insert('extract.0.title', %Q{
+Spezifiziert den Titel des Auszuges.
 
+>**Hinweis**: der Titel des Auszuges wird an die Angabe in der Zeile "F:" angehängt, falls nicht noch ein 'extract.0.filename' spezifiziert ist.
+
+})
 
 a.insert('autopos', %Q{
 Schaltet die automatische positionierungn ein. Wenn ausgeschaltet, gelten die Werte von pos.
@@ -67,11 +79,11 @@ nach innen. Da das Unterlegnotenblatt etwas
 größer ist als A3 würde sonst die Note angeshnitten.
 })
 
-a.inset('layout.LINE_THIN', %Q{Stellt die Breite von dünnen Linien ein.})
-a.inset('laoyut.LINE_MEDIUM', %Q{Stellt die Breite von mittleren Linien ein (z.B. Flußline})
-a.inset('', %Q{})
-a.inset('', %Q{})
-a.inset('', %Q{})
+a.insert('layout.LINE_THIN', %Q{Stellt die Breite von dünnen Linien ein.})
+a.insert('laoyut.LINE_MEDIUM', %Q{Stellt die Breite von mittleren Linien ein (z.B. Flußline})
+a.insert('', %Q{})
+a.insert('', %Q{})
+a.insert('', %Q{})
 
 
 a.insert('lyrics', %Q{
@@ -146,9 +158,31 @@ Versuche ob das Ausschalten der Blattbegrenzung die Situation
 verbessert.
 })
 
+a.insert('repeatsigns', %Q{
+Hier kannst du die Darstellung der Wiederholungszeichen steuern.
+})
+
 a.insert('repeatsigns.voices', %Q{
 Liste der Stimmen für die Wiederholungszeichen anstelle von Sprunglinine ausgegeben werden.
+
+>Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine Sprunglinien mehr dar.
 })
+
+a.insert('repeatsigns.left.text', %Q{
+Text der als linkes Wiederholungszeichen ausgegeben werden soll.
+})
+
+a.insert('repeatsigns.right.text', %Q{
+Text der als rechtes Wiederholungszeichen ausgegeben werden soll.
+})
+
+a.insert('REST-SIZE', %Q{
+Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind [2-4, 1.2-2]
+
+>**Hinweis** Bitte beachte, dass im Grund nur die Angabe der Hähe von Bedeutung ist, da das Pausensymbol nicht verzert wird.
+})
+
+
 
 a.insert('stringnames.text', %Q{
 Liste der Saitennamen getrennt druch Leerzeichen.
@@ -164,7 +198,7 @@ In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
 
 
 a.insert('style', %Q{
-Formatstil für den Text.
+Hier kannst du den Stil für den Text einstellen. Du has die Auswahl aus vordefinierten Stilen.
 })
 
 

@@ -766,7 +766,7 @@ class ConfstackEditor
         name:       "configform",
         #header:     I18n.t(@title),
         style:      'border: 0px; background-color: transparent;',
-        fields:     @value.keys.map { |key| @helper.to_w2uifield(key) }.flatten,
+        fields:     @value.keys.map { |key| @helper.to_w2uifield(key) }.flatten.compact,
         record:     @record,
         focus:      -1,
         onChange:   lambda { |event|
@@ -813,7 +813,6 @@ class ConfstackEditor
 
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
       fillup_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
-
       %Q{
          <tr style="border:1pt solid blue;">
 
@@ -821,7 +820,7 @@ class ConfstackEditor
             #{first_indent}
             <button tabIndex="-1" class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
             #{fillup_button}
-           <strong>#{ I18n.t_key("#{key}")}</strong>
+           <strong>#{ I18n.t_key(key)}</strong>
            </td>
            <td style="vertical-align: top;">#{help_button}</td>
          </tr>
@@ -833,7 +832,7 @@ class ConfstackEditor
          <td style="vertical-align: top;">#{first_indent}
            <button tabIndex="-1" class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
            #{default_button}
-           <strong>#{ I18n.t_key("#{key}")}</strong>
+           <strong>#{ I18n.t_key(key)}</strong>
         </td>
         <td style="vertical-align: top;">
          <div class="w2ui-field" style="padding:1pt;">
