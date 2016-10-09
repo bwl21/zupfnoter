@@ -325,6 +325,10 @@ task :buildConfigDoc do
       key = key.gsub("\\n", "\n")
       keys.push(key) unless knownkeys['phrases'].has_key? key
     end
+    File.read(file).scan(/(w2utils\.lang\()["']([^'"]*)["']\)/) do |clazz, key|
+      key = key.gsub("\\n", "\n")
+      keys.push(key) unless knownkeys['phrases'].has_key? key
+    end
   end
 
   Dir['*.rb'].each do |file|

@@ -224,7 +224,6 @@ module Harpnotes
     def prepend_comment(message)
       text =message.split(/\r?\n/).map { |l| "% #{l}" }.join("\n") + "\n%\n"
       %x{
-      debugger;
       #{@editor}.selection.moveCursorFileStart();
       #{@editor}.insert(#{text});
       }

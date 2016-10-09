@@ -138,13 +138,7 @@ class Controller
     I18n.locale(languages[browser_language]) if browser_language
 
 
-    @zupfnoter_ui                  = `window.hugo = new init_w2ui(#{self});`
-    @update_systemstatus_consumers = {systemstatus: [
-                                                        lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
-                                                    ],
-                                      play_start:   [lambda { `update_play_w2ui('start')` }],
-                                      play_stop:    [lambda { `update_play_w2ui('stop')` }]
-    }
+    @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
@@ -211,9 +205,23 @@ class Controller
   end
 
 
+  # this method invokes the system conumers
+  def call_consumers(clazz)
+    @systemstatus_consumers = {systemstatus: [
+                                                lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                            ],
+                              statusline:   [],
+                              error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join})` if $log.has_errors? }],
+                              play_start:   [lambda { `update_play_w2ui('start')` }],
+                              play_stop:    [lambda { `update_play_w2ui('stop')` }]
+    }
+    @systemstatus_consumers[clazz].each { |c| c.call() }
+  end
+
   # this handles a command
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
+    $log.clear_errors
     begin
       $log.timestamp_start
       $log.timestamp(command)
@@ -221,6 +229,7 @@ class Controller
     rescue Exception => e
       $log.error("#{e.message} in command #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
     end
+    call_consumers(:error_alert)
   end
 
   # Save session to local store
@@ -458,7 +467,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         if @harpnote_player.is_playing?
           stop_play_abc
         else
-          @update_systemstatus_consumers[:play_start].each { |i| i.call() }
+          call_consumers(:play_start)
           @harpnote_player.play_auto() if mode == :auto
           @harpnote_player.play_song() if mode == :music_model
           @harpnote_player.play_selection() if mode == :selection
@@ -473,7 +482,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    @update_systemstatus_consumers[:play_stop].each { |i| i.call() }
+    call_consumers(:play_stop)
   end
 
 
@@ -499,6 +508,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the previews
   # also saves abc in localstore()
   def render_harpnotepreview_callback
+    $log.clear_errors
     s = Time.now
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
@@ -519,6 +529,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @editor.set_annotations($log.annotations)
     set_status(harpnotes_dirty: false)
 
+    call_consumers(:error_alert)
+
+
     nil
   end
 
@@ -526,6 +539,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
     $log.info("rendering")
+    $log.clear_errors
     unless @systemstatus[:autorefresh] == :remote
       save_to_localstorage
       send_remote_command('render')
@@ -595,15 +609,21 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def get_config_from_editor
     config_part = @editor.get_config_part
     begin
+      $log.timestamp("3.1.1")
       #config         = %x{json_parse(#{config_part})}
-      config         = JSON.parse(config_part)
+      config = JSON.parse(config_part)
+      $log.timestamp("3.1.2")
       config, status = migrate_config(config)
+      $log.timestamp("3.1.3")
+
 
       if status[:changed]
         alert(status[:message])
         @editor.set_config_part(config)
         @editor.prepend_comment(status[:message])
       end
+      $log.timestamp("3.1.4")
+
 
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
@@ -687,7 +707,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    @update_systemstatus_consumers[:systemstatus].each { |c| c.call() }
+    call_consumers(:systemstatus)
     nil
   end
 
@@ -1087,14 +1107,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  }
              },
              "1" => {
-                 title:    "Sopran, Alt",
-                 filename: nil,
-                 voices:   [1, 2]
+                 title:        "Sopran, Alt",
+                 filenamepart: nil,
+                 voices:       [1, 2]
              },
              "2" => {
-                 title:    "Tenor, Bass",
-                 filename: nil,
-                 voices:   [3, 4]
+                 title:        "Tenor, Bass",
+                 filenamepart: nil,
+                 voices:       [3, 4]
              }
          },
 

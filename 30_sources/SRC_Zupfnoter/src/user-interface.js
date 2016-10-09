@@ -544,14 +544,8 @@ function init_w2ui(uicontroller) {
         ],
 
         onClick: function (event) {
-
-
-            config_event = event.target.split(":")
-            if (['config'].includes(config_event[0])) {
-                if (config_event[1]) {
-                    uicontroller.$handle_command("addconf " + event.target.split(":")[1])
-                }
-            }
+            sb_event = event.target.split(":")
+            if (sb_event[0] == 'sb_loglevel') {uicontroller.$toggle_console()}
         }
     }
 
@@ -703,6 +697,9 @@ function update_systemstatus_w2ui(systemstatus) {
     $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
 }
 
+function update_error_status_w2ui(errors){
+    w2alert(errors, w2utils.lang("Errors occurred"))
+}
 
 function update_editor_status_w2ui(editorstatus) {
     $(".editor-status-position").html(editorstatus.position);
