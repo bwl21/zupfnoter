@@ -709,7 +709,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       conf_key = info[:conf_key]
 
       newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+
       @editor.patch_config_part(conf_key, newcoords)
+      @config_form_editor.refresh_form if @config_form_editor
 
       report = "#{conf_key}: #{newcoords}"
       `$("#harpPreview").w2overlay(#{report});`
