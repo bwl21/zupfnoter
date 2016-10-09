@@ -1040,6 +1040,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          extract:      {
              "0" => {
                  title:        "alle Stimmen",
+                 filename:     nil,
                  startpos:     15,
                  voices:       [1, 2, 3, 4],
                  synchlines:   [[1, 2], [3, 4]],
@@ -1084,12 +1085,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                  }
              },
              "1" => {
-                 title:  "Sopran, Alt",
-                 voices: [1, 2]
+                 title:    "Sopran, Alt",
+                 filename: nil,
+                 voices:   [1, 2]
              },
              "2" => {
-                 title:  "Tenor, Bass",
-                 voices: [3, 4]
+                 title:    "Tenor, Bass",
+                 filename: nil,
+                 voices:   [3, 4]
              }
          },
 
@@ -1185,8 +1188,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          neatjson:     {
              wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
              explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                              :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
-                              :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout, :printer,
+                              :title, :filename, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
+                              :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                               #
                               :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
                               :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, :a3_offset, :a4_offset, # sort within laoyut

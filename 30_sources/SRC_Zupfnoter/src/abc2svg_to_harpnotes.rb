@@ -47,8 +47,9 @@ module Harpnotes
 
         result[:print] = $conf.get("produce").map do |i|
           title = $conf.get("extract.#{i}.title")
+          filename = ($conf.get("extract.#{i}.filename") || title)
           if title
-            {title: title, view_id: i}
+            {title: title, view_id: i, filename: filename}
           else
             $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
             nil

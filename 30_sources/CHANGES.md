@@ -10,6 +10,7 @@
 * now have forms based configuration #67
 * now have foms based editing of snippets (now called addons) #83
 * more styles for annotations #70
+* now have a parameter "filename" per extrat to determine the filename addendum for the extract #72
 
 # V 1.4.2
 
