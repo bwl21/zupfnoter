@@ -392,7 +392,7 @@ C,
         $log.timestamp("editconf #{args[:set]}")
 
         sets = {
-            basic_settings: {keys: expand_extract_keys([:title, :filename, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+            basic_settings: {keys: expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
                                                         'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest])},
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 
@@ -830,9 +830,8 @@ C,
           pdfs = {}
           print_variants.map do |print_variant|
             index                                                          = print_variant[:view_id]
-            filename                                                       = print_variant[:filename].gsub(/[^a-zA-Z0-9\-\_]/, "_")
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:filename]}_a3.pdf"] = render_a3(index).output(:blob)
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenmae]}_a4.pdf"] = render_a4(index).output(:blob)
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenmaepaet]}_a4.pdf"] = render_a4(index).output(:blob)
             nil
           end
 

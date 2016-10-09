@@ -46,10 +46,10 @@ module Harpnotes
         result = {lyrics: {text: @info_fields[:W]}}
 
         result[:print] = $conf.get("produce").map do |i|
-          title = $conf.get("extract.#{i}.title")
-          filename = ($conf.get("extract.#{i}.filename") || title)
+          title        = $conf.get("extract.#{i}.title")
+          filenamepart = ($conf.get("extract.#{i}.filenamepart") || title)
           if title
-            {title: title, view_id: i, filename: filename}
+            {title: title, view_id: i, filenamepart: filenamepart}
           else
             $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
             nil
@@ -426,10 +426,10 @@ module Harpnotes
 
           # clenaup count_range
 
-          notes = count_range.split(/[eu\?]+/)
+          notes  = count_range.split(/[eu\?]+/)
           fracts = count_range.split(/[0-9]+/)
 
-          fracts.each_with_index { |v,i | fracts[i] = nil if i >= 1 }
+          fracts.each_with_index { |v, i| fracts[i] = nil if i >= 1 }
           count_range = fracts.zip(notes).flatten.compact.join(" ").strip.split.join("-")
           count_range = count_range.gsub('ue', 'u')
           count_range
@@ -782,7 +782,7 @@ module Harpnotes
             else
               start_pos=charpos_to_line_column(bar[:istart])
               end_pos  = charpos_to_line_column(bar[:iend])
-              $log.error("Syntax-Error in Jump anotation", start_pos, end_pos )
+              $log.error("Syntax-Error in Jump anotation", start_pos, end_pos)
               #raise "Syntax-Error in Jump annotation: #{line}"
             end
           end

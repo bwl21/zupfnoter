@@ -48,10 +48,19 @@ Spezifiziert einen konkreten Auszug für deine Unterlegnoten
 
 })
 
+a.insert('extract.0.filenamepart', %Q{
+Hier kannst du den Filename-Zusatz angeben, um welchen der Filename der PDF-Dateien für diesen Auszug ergänzt werden soll.
+Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von 'extract.0.title' gebildet.
+
+>**Hinweis**: Bitte achte darauf, daß jeder Auszug einen eindeutigen Filename-Zusatz oder Titel hat. Sonst
+>überschreiben sich die Auszüge ggf. in dieselbe Datei geschrieben.
+
+})
+
 a.insert('extract.0.title', %Q{
 Spezifiziert den Titel des Auszuges.
 
->**Hinweis**: der Titel des Auszuges wird an die Angabe in der Zeile "F:" angehängt, falls nicht noch ein 'extract.0.filename' spezifiziert ist.
+>**Hinweis**: der Titel des Auszuges wird an die Angabe in der Zeile "F:" angehängt, falls nicht noch ein 'extract.0.filenamepart' spezifiziert ist.
 
 })
 

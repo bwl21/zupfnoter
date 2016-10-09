@@ -1042,7 +1042,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          extract:      {
              "0" => {
                  title:        "alle Stimmen",
-                 filename:     nil,
+                 filenamepart: nil,
                  startpos:     15,
                  voices:       [1, 2, 3, 4],
                  synchlines:   [[1, 2], [3, 4]],
@@ -1190,7 +1190,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
          neatjson:     {
              wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
              explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                              :title, :filename, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
+                              :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
                               :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                               #
                               :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound

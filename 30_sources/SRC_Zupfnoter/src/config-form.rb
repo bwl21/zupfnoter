@@ -593,7 +593,7 @@ class ConfstackEditor
           FloatPair       => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', 'cp1', 'cp2', 'a3_offset', 'a4_offset'],
           IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', :produce],
           Integer         => ['startpos'],
-          OneLineString   => ['title', 'filename'],
+          OneLineString   => ['title', 'filenamepart'],
           MultiLineString => ['text'],
           Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest'],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK'],
