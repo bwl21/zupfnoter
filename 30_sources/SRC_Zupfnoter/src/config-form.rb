@@ -111,7 +111,7 @@ class SnippetEditor
             title: #{@theForm}.text,
             body: '<div id="form" style="width: 100%; height: 100%;"></div>',
             style: 'padding: 15px 0px 0px 0px',
-            width: 600,
+            width: 800,
             height: 300,
             showMax: true,
             onToggle: function (event) {
