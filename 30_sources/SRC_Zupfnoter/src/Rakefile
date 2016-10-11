@@ -17,35 +17,6 @@ LOCALEPATH   = "../public/locale/"
 VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
-desc "extract localization-Keys"
-
-def extract_locales
-  require 'json'
-  knownkeys = JSON.parse(File.read("../public/locale/de-de.json"))
-  keys      = []
-  Dir['user-interface.js'].each do |file|
-    File.read(file).scan(/(caption|text|tooltip):\s*["']([^'"]*)["']/) do |clazz, key|
-      key = key.gsub("\\n", "\n")
-     keys.push(key) unless knownkeys['phrases'].has_key? key
-    end
-  end
-
-  Dir['*.rb'].each do |file|
-    File.read(file).scan(/(I18n\.t)\(['"]([^'"]+)['"]/) do |clazz, key|
-      key = key.gsub("\\n", "\n")
-      keys.push(key) unless knownkeys['phrases'].has_key? key
-    end
-  end
-  keys
-end
-
-task :extractLocales do
-
-  keys = extract_locales
-
-
-end
-
 desc "update public/locale"
 task :updateLocales do
   puts "updating locales"
@@ -275,103 +246,8 @@ task :buildDesktop => [:build] do
 end
 
 
-desc "generate a raw file for documentation of config"
+desc "config doc and help"
 task :buildConfigDoc do
-
   sh 'ruby conf_doc_source.rb'
-
-  class Document
-    def self.ready?
-
-    end
-  end
-
-
-  def get_example(conf, key)
-    neatjson_options = {wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-                        explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                         :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                         :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                         :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
-                                         "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                         :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                        ],
-                                        []],
-    }
-    k                = key.split(".").last
-    %Q{
-"#{k}": #{JSON.neat_generate(conf[key], neatjson_options)}
-    }.split("\n").map { |l| "        #{l}" }.join("\n")
-  end
-
-  ignore_patterns  = [/^neatjson/, /abc_parser^*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
-                      /^layout.*/
-  ]
-  produce_patterns = [/annotations\.vl/, /^templates\.tuplets/]
-
-
-  require './controller.rb'
-  require './confstack.rb'
-  require './neatjson.rb'
-
-  a = Controller.init_conf
-  b = Confstack.new(false)
-  b.push(JSON.parse(a.to_json))
-
-  knownkeys = JSON.parse(File.read("../public/locale/de-de.json"))
-  keys      = []
-  Dir['user-interface.js'].each do |file|
-    File.read(file).scan(/(caption|text|tooltip):\s*["']([^'"]*)["']/) do |clazz, key|
-      key = key.gsub("\\n", "\n")
-      keys.push(key) unless knownkeys['phrases'].has_key? key
-    end
-    File.read(file).scan(/(w2utils\.lang\()["']([^'"]*)["']\)/) do |clazz, key|
-      key = key.gsub("\\n", "\n")
-      keys.push(key) unless knownkeys['phrases'].has_key? key
-    end
-  end
-
-  Dir['*.rb'].each do |file|
-    File.read(file).scan(/(I18n\.t)\(['"]([^'"]+)['"]/) do |clazz, key|
-      key = key.gsub("\\n", "\n")
-      keys.push(key) unless knownkeys['phrases'].has_key? key
-    end
-  end
-
-  b.keys.each do |key|
-    key.split(".").each do |key|
-      keys.push(key) unless knownkeys['phrases'].has_key? key
-    end
-  end
-
-  File.open("x.locales.template", "w") do |f|
-    f.puts keys.to_a.map { |v| %Q{"#{v}": "**--#{v}"} }.uniq.sort_by{|i|i.upcase}.join(",\n")
-  end
-
-  File.open("xxx.md", "w") do |f|
-    f.puts "# Konfiguration der Ausgabe"
-
-    ignore_keys  = b.keys.select { |k| ignore_patterns.select { |ik| k.match(ik) }.count > 0 }
-    produce_keys = b.keys.select { |k| produce_patterns.select { |ik| k.match(ik) }.count > 0 }
-    show_keys    = (b.keys - ignore_keys + produce_keys).uniq.sort
-
-    puts show_keys
-    show_keys.each do |key|
-      f.puts %Q{
-
-             #{("#" * (key.split(".").count + 1))[0, 3] }  `#{key}` {##{key}}
-
-
-erklaerung_kommt_noch
-
-
-* Struktur:
-
-* Beispiel:
-
-#{get_example(b, key)}
-
-             }
-    end
-  end
+  sh 'pandoc xxx.md -o xxx.html --standalone'
 end

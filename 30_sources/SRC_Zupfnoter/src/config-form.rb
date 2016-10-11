@@ -559,6 +559,23 @@ class ConfstackEditor
     end
 
 
+    class RestPosition < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['center', 'next', 'default']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html:        {caption: I18n.t("#{key}.caption")}}
+      end
+    end
+
     class TextStyle < ZnTypes
       def self.to_html(key)
         %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
@@ -598,7 +615,8 @@ class ConfstackEditor
           Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest'],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK'],
           TupletShape     => ['shape'],
-          TextStyle       => ['style']
+          TextStyle       => ['style'],
+          RestPosition    => ['default', 'repeatstart', 'repeatend'],
       }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil

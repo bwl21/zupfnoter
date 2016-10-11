@@ -401,7 +401,11 @@ function init_w2ui(uicontroller) {
                     {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
                     {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
                     {text: ''},
-                    {id: 'printer', text: 'Printer adapt', tooltip: "specify printer adaptations details \n(e.g. offsets)"},
+                    {
+                        id: 'printer',
+                        text: 'Printer adapt',
+                        tooltip: "specify printer adaptations details \n(e.g. offsets)"
+                    },
                     {
                         id: 'restpos_1.3',
                         text: 'rests as V 1.3',
@@ -417,7 +421,6 @@ function init_w2ui(uicontroller) {
                 icon: 'fa fa-pencil',
                 tooltip: "Edit configuration with forms",
                 items: [
-                    {id: 'global', text: 'global settings', tooltip: "edit global settings for the current song"},
                     {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
                     {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
                     {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
@@ -431,9 +434,12 @@ function init_w2ui(uicontroller) {
                         text: 'page annotation',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
-                    {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
-                    {},
-                    {id: 'extract_current', text: 'current extract', tooltip: "Edit current extract"}
+                    {
+                        id: 'annotations',
+                        text: 'notebound annotation',
+                        tooltip: "edit settings for sheet annotations\nin current extract"
+                    },
+                    {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"}
                 ]
             },
             {
@@ -545,7 +551,9 @@ function init_w2ui(uicontroller) {
 
         onClick: function (event) {
             sb_event = event.target.split(":")
-            if (sb_event[0] == 'sb_loglevel') {uicontroller.$toggle_console()}
+            if (sb_event[0] == 'sb_loglevel') {
+                uicontroller.$toggle_console()
+            }
         }
     }
 
@@ -697,7 +705,7 @@ function update_systemstatus_w2ui(systemstatus) {
     $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
 }
 
-function update_error_status_w2ui(errors){
+function update_error_status_w2ui(errors) {
     w2alert(errors, w2utils.lang("Errors occurred"))
 }
 

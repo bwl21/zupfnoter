@@ -312,7 +312,7 @@ C,
             'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
             'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
                                             value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
-            'printer'           => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
+            'printer'          => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
                                             value: $conf['extract.0.printer']} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
@@ -383,7 +383,7 @@ C,
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
-        parameter.set_help { "one of the editable keys"} #"#{sets.keys.to_s}" }
+        parameter.set_help { "one of the editable keys" } #"#{sets.keys.to_s}" }
       end
 
       command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
@@ -392,18 +392,19 @@ C,
         $log.timestamp("editconf #{args[:set]}")
 
         sets = {
-            basic_settings: {keys: expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
-                                                        'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest])},
+            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+                                                                            'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest,
+                                                                           ]) + [:restposition]},
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 
-            notes:              {keys: expand_extract_keys([:notes])},
-            lyrics:             {keys: expand_extract_keys([:lyrics])},
-            layout:             {keys: expand_extract_keys([:layout, 'layout.limit_a3'])},
-            printer:            {keys: expand_extract_keys([:printer])},
-            global:             {keys: [:produce]},
-            extract0:           {keys: ['extract.0']},
-            extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]},
-            xx:                 {keys: ['xx']}
+            notes:                 {keys: expand_extract_keys([:notes])},
+            lyrics:                {keys: expand_extract_keys([:lyrics])},
+            layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3'])},
+            printer:               {keys: expand_extract_keys([:printer])},
+            global:                {keys: [:produce]},
+            extract0:              {keys: ['extract.0']},
+            extract_current:       {keys: ["extract.#{@systemstatus[:view]}"]},
+            xx:                    {keys: ['xx']}
         }
 
         a = sets[args[:set]]
@@ -473,8 +474,8 @@ C,
           handle_command("addconf #{addconf_set}") if addconf
         end
 
-        editor_title       = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
-        editorparams       = {
+        editor_title        = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
+        editorparams        = {
             title:               editor_title,
             editor:              @editor,
             value_handler:       get_configvalues,
@@ -739,9 +740,9 @@ C,
           chosenfile = files.first[:link]
           # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
           # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
-          fileparts = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
-          path      = "/#{fileparts[1]}"
-          filename  = fileparts.last
+          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
+          path       = "/#{fileparts[1]}"
+          filename   = fileparts.last
 
           newpath = "#{path}"
           handle_command("dlogin full #{path}")
@@ -829,7 +830,7 @@ C,
           save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
           pdfs = {}
           print_variants.map do |print_variant|
-            index                                                          = print_variant[:view_id]
+            index                                                                 = print_variant[:view_id]
             pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
             pdfs["#{rootpath}#{filebase}_#{print_variant[:filenmaepaet]}_a4.pdf"] = render_a4(index).output(:blob)
             nil
