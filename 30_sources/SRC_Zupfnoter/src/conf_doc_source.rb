@@ -29,26 +29,6 @@ class ConfDocProvider
 end
 
 
-def get_example(conf, key)
-  neatjson_options = {wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-                      explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                       :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                       :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                       :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
-                                       "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                       :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                      ],
-                                      []],
-  }
-  k                = key.split(".").last
-  %Q{
-```
-"#{k}": #{JSON.neat_generate(conf[key], neatjson_options)}`
-```
-  }#.split("\n").map { |l| "        #{l}" }.join("\n")
-end
-
-
 class Document
   def self.ready?
 
@@ -98,7 +78,7 @@ Ablauf des Notenwertes abgedämpft werden soll.
 a.insert('ELLIPSE_SIZE', %Q{
 Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte sind [2-4, 1.2-2].
 
->**Hinweis**:Die Größe der anderen Noten werden ausgehend von diesem Wert berechnet.
+>**Hinweis**: Die Größe der anderen Noten werden ausgehend von diesem Wert berechnet.
 >
 >Da die Noten auch mit der dicken Linie umrandet werden, kann auch die "Linienstärke 'dick'" reeduziert werden,
 >um ein filigraneres Notenbild zu erhalten.
@@ -123,6 +103,37 @@ Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von 'extract.0.title'
 >**Hinweis**: Bitte achte darauf, daß jeder Auszug einen eindeutigen Filename-Zusatz oder Titel hat. Sonst
 >überschreiben sich die Auszüge ggf. in dieselbe Datei geschrieben.
 
+})
+
+a.insert('extract.0.layoutlines', %Q{
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, die zur die Berechnung
+des vertikalen Anordnugn der Noten (Layout) herangezogen werden sollen.
+
+Üblicherweise werden alle Stimmen für die Berechnung des Layouts herangezogen. Bei langen Stücken kann es aber sinnvoll
+sein, nur die dargstellten Stimmmen zur Berechnung des Layouts zu berücksichtigen, um ein ausgwogeneres Notenbild zu
+bekommen.
+
+>**Hineis**: Auch wenn der Parameter `layoutlines` heißt, bewirkt er nicht, dass irgendwelche Linien eingezeichnet werden.
+})
+
+a.insert('extract.0.legend', %Q{
+Hier kannst du die Darstellung der Legende konfigurieren. Dabei wird unterschieden zwischen
+* `pos` - Position des Titels des Musikstückes
+* 'spos' - Position der Sublegende, d.h. der weiteren Angaben zum Musikstück
+
+>**Hinewis**: Die Legende wird vorzugsweise durch Verschieben mit der Maus positioniert. Für eine genaue positionierung
+kann jedoch die Eingabe über die Bildschirmmaske sinnvol sein.
+
+})
+
+a.insert('extract.0.legend.pos', %Q{
+Hier kannst du die Darstellung des Titels des Musikstückes angeben. Die Angabe  erfolgt in mm als kommagetrennte Liste
+von horizontaler / vertikaler Position.
+})
+
+a.insert('extract.0.legend.spos', %Q{
+Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
+von horizontaler / vertikaler Position.
 })
 
 a.insert('extract.0.title', %Q{
@@ -155,19 +166,19 @@ der vorgegebenen Notenweret.
 })
 
 a.insert('extract.0.countnotes.voices', %Q{
-Hier gibst du - getrennt durch Komma - eine Liste der Stimmen an, die Zählmarken bekommen sollen.
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, die Zählmarken bekommen sollen.
 })
 
 a.insert('extract.0.flowlines', %Q{
-Hier kannst du angeben, für welche Stimmen die Flußlinien eingezeichnet werden sollen.
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, für die Flußlinien eingezeichnet werden sollen.
 })
 
 a.insert('extract.0.jumplines', %Q{
-Hier kannst du angeben, für welche Stimmen die Sprunglinien eingezeichnet werden sollen.
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, für die Sprunglinien eingezeichnet werden sollen.
 })
 
 a.insert('extract.0.subflowlines', %Q{
-Hier kannst du angeben, für welche Stimmen die Unterflußlinien eingezeichnet werden sollen.
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, für die Unterflußlinien eingezeichnet werden sollen.
 })
 
 a.insert('extract.0.synchlines', %Q{
@@ -190,7 +201,7 @@ Damit lässt das Notenbild gezielt optimieren.
 })
 
 a.insert('layout.limit_a3', %Q{
-Diese Funktion verschibt Noten am A3-Blattrand
+Diese Funktion verschiebt Noten am A3-Blattrand
 nach innen. Da das Unterlegnotenblatt etwas
 größer ist als A3 würde sonst die Note angeshnitten.
 })
@@ -215,14 +226,40 @@ Hier definierst du einen einzelner Block von Liedtexten.
 })
 
 a.insert('lyrics.0.pos', %Q{
-Hier gibst du die Position des Liedtextes an, an welcher der Liedtext-Block ausgegeben werden soll.
+Hier gibst du die Position an, an welcher der Liedtext-Block ausgegeben werden soll.
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.
+})
+
+a.insert('lyrics.pos', %Q{
+Dies ist die Vorgabe für Position, an welcher der Liedtext-Block ausgegeben werden soll.
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.
 })
 
 
 a.insert('lyrics.0.verses', %Q{
-Hier gibst du die Liste der Strophenan die im Liedtext-Block ausgegeben werden.
+Hier gibst du die Liste der Strophen an die im Liedtext-Block ausgegeben werden.
 })
+
+a.insert('lyrics.verses', %Q{
+Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block ausgegeben werden.
+})
+
+
+a.insert('nonflowrest', %Q{
+Hier kannst du einstellen, ob in den Begleitstimmen ebenfalls die Pausen dargestellt werden sollen. Eine Stimme
+wird dann Begleitstimme betrachtet, wenn sie keine Flußlinie hat.
+
+Normalerweise ist es nicht sinnvoll, in den Begleitstimmen Pausen darzustellen, da der Spieler sich ja an
+den Pausen in der Flußlinie orientiert.
+})
+
+a.insert('notes', %Q{
+Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer Seitenbeschriftung vergibt Zupfnoter
+eine Nummer anstelle der '.0'. Es kann aber auch sinnvoll sein eine sprechende Bezeichnung für die Beschriftung
+manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das
+ist allerdings nur in der Textansicht möglich.
+})
+
 
 a.insert('notes.0.pos', %Q{
 Hier gibst du die Position der Seitenbeschriftung an, an welcher der Liedtext-Block ausgegeben werden soll.
@@ -294,8 +331,12 @@ verbessert.
 
 a.insert('repeatsigns', %Q{
 Hier kannst du die Darstellung der Wiederholungszeichen steuern. Dabei wird angegeben,
-für welche Stimmen Wiederholgungszeichgen gedruckt werden, wie die Wiederholungszeichen gedruckt werden,
+für welche Stimmen Wiederholgungszeichen gedruckt werden, wie die Wiederholungszeichen gedruckt werden,
 und wie sie positioniert werden.
+})
+
+a.insert('repeatsigns.left', %Q{
+Hier kannst du die Darstellung des linken Wiederholungszeichen steuern.
 })
 
 a.insert('repeatsigns.voices', %Q{
@@ -307,6 +348,11 @@ Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, für welche Wied
 a.insert('repeatsigns.left.text', %Q{
 Hier gibst du den Text an, der als linkes Wiederholungszeichen ausgegeben werden soll.
 })
+
+a.insert('repeatsigns.right', %Q{
+Hier kannst du die Darstellung des rechten Wiederholungszeichen steuern.
+})
+
 
 a.insert('repeatsigns.right.text', %Q{
 Hier gibst du den Text an, der als rechtes Wiederholungszeichen ausgegeben werden soll.
@@ -337,7 +383,7 @@ a.insert('restposition.repeatend', %Q{
 Hier kannst du die Pausenposition nach einer Wiederholung einstellen.
 })
 
-a.insert('REST-SIZE', %Q{
+a.insert('REST_SIZE', %Q{
 Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind [2-4, 1.2-2]
 
 >**Hinweis**:Bitte beachte, dass im Grund nur die Angabe der Hähe von Bedeutung ist, da das Pausensymbol nicht verzert wird.
@@ -387,6 +433,40 @@ a.insert('style', %Q{
 Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.
 })
 
+a.insert('templates', %Q{
+Dieser Parameter kann nicht vom Benutzer gesetzt werden sondern liefert die Vorlagen beim Einfügugen
+neuer Liedtext-Blöcke bzw. Seitenbeschriftungen etc.
+
+Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
+})
+
+a.insert('tuplet', %Q{
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets) steuern.
+})
+
+
+a.insert('tuplet.0', %Q{
+Hier kannst du die Darstellung einer Triole (genauer gesagt, eines Tuplets) steuern.
+})
+
+a.insert('cp1', %Q{
+Hier gibst du den Kontrollpunkt für die erste Note an.
+})
+
+a.insert('cp2', %Q{
+Hier gibst du den Kontrollpunkt für die letzte Note an.
+})
+
+a.insert('shape', %Q{
+Hier gibst du eine Liste von Linienformen für das Tuplet an.
+
+* `c`: Kurve
+* `l`: Linie
+
+>**Hinweis**: Mit der Linienform `l` kann man die Lage der kontrollpunkte sehen.
+
+})
+
 
 a.insert('text', %Q{
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein
@@ -407,16 +487,22 @@ Das kann bei komplexen Konfigurationen sinnvoll sein, um die Übersichtlichkeit 
 })
 
 
+#-- generate helptexts
+
 File.open("../public/locale/conf-help_de-de.json", "w") do |f|
   f.puts a.to_json
 end
+
+
+
+#-- generate configuration doc
 
 $conf_helptext = a.entries_html
 
 ignore_patterns  = [/^neatjson.*/, /abc_parser.*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
                     /^layout.*/, /^extract\.0$/
 ]
-produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/ ]
+produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/,  /^templates/]
 
 
 
@@ -427,10 +513,12 @@ $conf.push(JSON.parse(InitConf.init_conf.to_json))
 
 ignore_keys  = $conf.keys.select { |k| ignore_patterns.select { |ik| k.match(ik) }.count > 0 }
 produce_keys = $conf.keys.select { |k| produce_patterns.select { |ik| k.match(ik) }.count > 0 }
-show_keys    = ($conf.keys - ignore_keys + produce_keys).uniq.sort
+show_keys    = ($conf.keys - ignore_keys + produce_keys).uniq.sort_by{|k| k.gsub('templates', 'extract.0')}
 
 mdhelp = []
-show_keys.sort.each do |key|
+show_keys.each do |key|
+  show_key = key#.gsub(/^templates\.([a-z]+)(\.)/){|m| "extract.0.#{$1}.0."}
+
   candidate_keys = I18n.get_candidate_keys(key)
   candidates     = candidate_keys.map { |c| a.entries_md[c.join('.')] }
 
@@ -438,7 +526,7 @@ show_keys.sort.each do |key|
 
   result = %Q{
 
-## `#{key}` - #{locale['phrases'][key.split(".").last]}
+## `#{show_key}` - #{locale['phrases'][key.split(".").last]}
 
   #{helptext}
 
@@ -449,12 +537,23 @@ end
 
 File.open("xxx.md", "w") do |f|
   f.puts "# Konfiguration der Ausgabe"
-  f.puts
+  f.puts  %Q{
+
+Dieses Kapitel beschreibt die Konfiguration der Erstellung der Unterlegnotenblätter. Das Kapitel ist als Referenz aufgebaut.
+Die einzelnen Konfigurationsparameter werden in alphabetischer Reihenfolge aufgeführt. Bei den einzelnen Parametern
+wird der Text der Online-Hilfe, sowie die Voreinstellungen des Systems dargestellt.
+
+>**Hinweis**: Auch wenn in den Bildschirmmasken die Namen der Konfigurationsparameter übersetzt sind, so basiert
+>diese Referenz den englischen Namen.
+
+>**Hinweis**: Manche Konfigurationsparameter treten können mehrfach auftreten (z.B. `extract`). In diesem Kapitel wird
+>dann immer die Instanz mit der Nr. 0 (z.B. `extract.0`) beschrieben.
+          }
   f.puts mdhelp
 end
 
 
-# ----
+# ---- generate missing locales
 
 
 require './controller.rb'

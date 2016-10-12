@@ -168,7 +168,7 @@ class Controller
                                                 lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                             ],
                               statusline:   [],
-                              error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join})` if $log.has_errors? }],
+                              error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
                               play_start:   [lambda { `update_play_w2ui('start')` }],
                               play_stop:    [lambda { `update_play_w2ui('stop')` }]
     }
