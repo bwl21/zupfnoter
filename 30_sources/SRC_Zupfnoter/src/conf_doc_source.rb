@@ -60,7 +60,7 @@ produce_patterns = [/annotations\.vl/, /^templates\.tuplets/]
 
 a=ConfDocProvider.new
 
-File.open("localization/help_de-de.md").read.scan(/## ([^\n]*)([^#]*)/).each do |match|
+File.open("localization/help_de-de.md").read.scan(/## ([^\n]*)([^#]*)/).sort_by{|i|i[0]}.each do |match|
   a.insert(match[0], match[1])
 end
 
@@ -91,17 +91,22 @@ produce_keys = $conf.keys.select { |k| produce_patterns.select { |ik| k.match(ik
 show_keys    = ($conf.keys - ignore_keys + produce_keys).uniq.sort_by { |k| k.gsub('templates', 'extract.0') }
 
 mdhelp = []
-show_keys.each do |key|
+show_keys.sort.each do |key|
   show_key = key #.gsub(/^templates\.([a-z]+)(\.)/){|m| "extract.0.#{$1}.0."}
 
   candidate_keys = I18n.get_candidate_keys(key)
   candidates     = candidate_keys.map { |c| a.entries_md[c.join('.')] }
 
   helptext = candidates.compact.first || %Q{TODO: Helptext für #{key} einfügen }
+  keyparts = key.split(".")
 
-  result = %Q{
+  #\\index{#{keyparts.last.gsub("_", "-")}}\\index{#{keyparts.join(",").gsub("_", "-")}}
 
-## `#{show_key}` - #{locale['phrases'][key.split(".").last]}
+
+  result   = %Q{
+
+## `#{show_key}` - #{locale['phrases'][key.split(".").last]} {##{show_key}}
+
 
   #{helptext}
 
@@ -112,7 +117,7 @@ end
 
 
 File.open("xxx.md", "w") do |f|
-  f.puts "# Konfiguration der Ausgabe"
+  f.puts "# Konfiguration der Ausgabe {#konfiguration}"
   f.puts %Q{
 
 Dieses Kapitel beschreibt die Konfiguration der Erstellung der Unterlegnotenblätter. Das Kapitel ist als Referenz aufgebaut.
@@ -168,5 +173,5 @@ b.keys.each do |key|
 end
 
 File.open("x.locales.template", "w") do |f|
-  f.puts keys.to_a.map { |v| %Q{"#{v}": "**--#{v}"} }.uniq.sort_by { |i| i.upcase }.join(",\n")
+  f.puts keys.sort.to_a.map { |v| %Q{"#{v}": "**--#{v}"} }.uniq.sort_by { |i| i.upcase }.join(",\n")
 end
