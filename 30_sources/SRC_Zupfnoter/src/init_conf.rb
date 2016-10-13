@@ -62,6 +62,7 @@ module InitConf
                                 REST_SIZE:    [4, 2]
                  },
                  nonflowrest:  false,
+                 notes:        {},
                  barnumbers:   {
                      voices:  [],
                      pos:     [6, -4],
