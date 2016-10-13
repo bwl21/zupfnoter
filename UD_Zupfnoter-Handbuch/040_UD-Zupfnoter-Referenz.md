@@ -307,10 +307,11 @@ darstellen zu können, gibt es folgende Elemente:
 Zupfnoter ist aus folgenden Bedienelementen aufgebaut:
 
 -   Fenster
-    -   links: **Editor** zum Eingeben der ABC-Notation
+    -   links: **Eignabe** zum Eingeben der ABC-Notation bzw. der
+        Konfiguration
     -   rechts oben: **Notenvorschau** zur Kontrolle des Musikstücks
     -   rechts unten **Unterlegnotenvorschau**
--   Reiter zum Umschalten verschiedener Ansichten
+-   Reiter zum Auswählen verschiedener Ansichten
 -   **Werkzeugleiste** Leiste für Schaltflächen und Menüs
 -   **Statusleiste**: für Syteminformationen
 -   **Kontextmenü**: zur speziellen Bearbeitung von Elementen
@@ -512,15 +513,15 @@ Das Eingeabefenster enthält seinerseits
 
 -   eine eigene Werkzeuigleiste zu Ansteuerung von
     Bearbeitungsfunktionen
--   Reiter zur Auswahl verschiedener Ansichten
--   den eigentlichen Bearbeitungsbereich
+-   verschiedene Bearbeitungsansichten, welche über Karteilreiter
+    ausgewählt werden.
 
 #### Werkzeugleiste des Eingabefensters
 
--   Menü **Konfiguration** (Blattkonfiguration):
+-   Menü **Konfig. einfügen** (Blattkonfiguration):
 
-    Dieses Menü fügt Einstelliugnen zur Gestaltung und dem Design der
-    Unterlegnoten ein.
+    Über dieses Menü kannst du Konfigurationsparameter (Einstellungen)
+    zur Gestaltung u der Unterlegnoten **einfügen**.
 
     Die Reihenfolge der Menüpunkte entspricht der Bearbeitungsabfolge,
     wobei Menüpunkte auch übersprungen werden dürfen. Die Erstellung der
@@ -531,108 +532,79 @@ Das Eingeabefenster enthält seinerseits
     [Grundlegende-Blatteinstellungen](#grundlegende-blatteinstellungen)
     beschrieben
 
-    **Hinweis**: Die Einstellungen werden in folgender Reiehenfolge
-    angewendet:
+    > **Hinweis**: Die Einstellungen werden in folgender Reihenfolge
+    > angewendet:
+    >
+    > 1.  in Zupfnoter fest eingebaute Einstellugnen
+    > 2.  Einstellungen aus dem Auszug 0
+    > 3.  Einstellungen aus dem aktiven Auszug
 
-    1.  in Zupfnoter fest eingebaute Einstellugnen
-    2.  Einstellungen aus dem Auszug 0
-    3.  Einstellungen aus dem aktiven Auszug
--   Menü **Konfiguraion bearbeiten**
+-   Menü **Konfig. bearbeiten**
 
-    TODO: beschreiben, wenn fertig implementiert
+    Über dieses Menü kannst du die Konfigurationsparameter
+    **bearbeiten**. Dazu werden entprechende Bildschirmmasken
+    aufgerufen. Weitere Informationen findest du im
+    Kapitel \ref(konfigurationsmasken)":
+    [Konfigurationsmasken](#konfigurationsmasken)"
 
-    Über dieses Menü kommt eine Bildschirmmaske zur Bearbeitung der
-    angewählten Einstellung.
+-   Menü **Zusatz einfügen**
 
-#### Eingabebereich und ABC-Notation (Editor)
+    Über dieseskönnen Zupfnoter-spezifische Zusätze an eine Note bzw. an
+    einen Taktstrich eingefügt werden. Zupfnoter verwendet spzifische
+    Zusätze, um z.b. die Position von Sprunglinien anzugeben, oder
+    Notengebundene Anmerkungen zu erfassen. Diese Zusätze sind an eine
+    Note bzw. an einen Taktstrich gebungen und werden in Form einer
+    ABC-Anmerkung notiert (z.B.`"^@@3" :|` für die Lage einer Sprungline
+    für eine Wiederholung).
 
-TODO: überarbeten:
+    > **Hinweis**: Dieses Menü wird daher erst dann aktiv, wenn die
+    > Schreibmarke (Cursor) zwischen einem Leerzeichen und einer
+    > Note/bzw. Taktstrich steht. Man erkennt das auch in der
+    > Statusleiste links unten: dort sollte das wort `editable.before`
+    > erscheinen, dann ist die Schaltfläche aktiv.
+    >
+    > Einzelne Unterpunkte des Menüs sind nur aktiv, wenn die
+    > Schreibmarke vor einer Note steht.
 
-Die ABC-Notation wurde erfunden, um Musikstücke auf Computern
-verarbeiten zu können. Computer können die ABC-Notation interpretieren,
-um daraus herkömmliche Musiknoten zu generieren oder auch Musikstücke
-auf dem Computer abspielen zu können. Unter dem Hilfemenü des Zupfnoters
-findet man eine deutsche Anleitung für die ABC-Notation.
+    Über das Menü können Fenster aufgerufen werden, um diese Zusaätze
+    einzufügen.
 
-Als zusätzliche Information zu dieser Anleitung sei noch erwähnt, dass
-der Befehl X: (Liednummer) eine positive Ganzzahl sein muss. Es dürfen
-keine Buchstaben, Leerzeichen oder Unterstriche enthalten sein.
+-   Schaltfläche **Zusatz bearbeiten**
 
-> **Hinweis:** Veränderungen in der ABC-Notation wirken unterschiedlich
-> auf die beiden anderen Fenster:
->
-> -   Die Notenvorschau wird unmittelbar aktualisiert
-> -   Die Unterlegnotenvorschau wird erst durch die Funktion "Rendern"
->     aktualisiert
+    Über diese Schalzfläche kann man die Bearbeitungsmasken für
+    vorhandene Zusätze erneut aufrufen.
 
-Wenn man mit der Maus eine Note in der ABC-Notation selektiert, wechselt
-die Note in der herkömmlichen Notenschrift und in den Unterlegnoten von
-schwarz auf Rot. Umgekehrt funktioniert es genauso. Wenn man auf eine
-Noten in einer der Vorschauen klickt, wird diese im Eingabebereich
-selektiert. So findet man schnell zu einer Stelle, die man ändern möchte
-oder wo man was hinzufügen möchte.
+    > **Hinweis**: Diese Schaltfläche ist erst aktiv, wenn die
+    > Schreibmarke in einem solchen Zusatz steht. Man erkennt das auch
+    > in der Statusleiste links unten: dort sollte das wort `editable`
+    > erscheinen, dann ist die Schaltfläche aktiv.
 
-> **Hinweis::** Wenn man zunächst eine Note, und dann mit gedrückter
-> "Shift"-Taste eine zweite Note anklickt, dann werden die dazwischen
-> liegenden Noten selektiert.
+#### Bearbeitungsansichten des Eingabefensters
 
-Das Ende der ABC-Notation wird mit einer Leerzeile eingeleitet. Sollte
-nach einer Leerzeile noch ABC-Notation folgen, wird dies vom Computer
-ignoriert.
+Über die Karteireiter kann man zwischen den verschiedenen
+Bearbeitungsansichten umschalten:
 
-#### Linker Abschnitt Zupfnoter-Einstellungen
-
-Nach der ABC-Notation kommen die Zupfnoter-Einstellugnen. Diese werden
-durch den Kommentar
-
-    `%%%%zupfnoter.config`
-
-von der ABC-Notation abgetrennt. Die ABC-Notation und die
-Zupfnoter-Einstellungen dürfen nicht gemischt werden.
-
-Die Zupfnoter-Einstellungen sind im sog. JSON-Format angegeben (siehe
-Kapitel \ref(konfiguration} [Konfiguration der Ausgabe](#konfiguration)
-
-Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
-verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
-besser positioniert werden oder string names (Saitennamen) eingefügt
-werden. Die Zupfnoter-Einstellungen können manuell eingegeben werden
-oder über das Menü sheet config (Blattkonfiguration) erzeugt werden.
-Weitere Informationen zu den Zupfnoter-Einstellungen stehen im nächsten
-Kapitel.
-
-Wichtig ist, immer daran zu denken nach einer Änderung in der Menüleiste
-auf render (ausführen) zu drücken, damit die Unterlegnoten aktualisiert
-werden.
-
-Mit der Maus können in diesem Teil Textfelder optimal dem Stimmverlauf
-angepasst werden. Danach sind die Werte in dem entsprechenden
-Zupfnoter-Kommando bzgl. der Positionsparameter angepasst worden.
-
-#### Fehlermarkierung und Fehlermeldung
-
-Zupfnoter zeigt über ein rotes Quadrat mit Kreuz links von den Abc
-Notationszeilen oder den Zupfnoter-Einstellungen an, daß in der Zeile
-ein Fehler aufgetreten ist. Wenn man mit der Maus auf das rote Quadrat
-geht, wird die Fehlermeldung angezeigt, z.B. abc:12:19 error=F-Text. Das
-bedeutet in Zeile 12 an Stelle 19 ist der F-Text nicht korrekt.
-
-Es müssen alle Fehler beseitigt werden, ansonsten können keine
-herkömmlichen Noten oder Unterlegnoten generiert werden.
-
-> **Hinweis:** Die Position des Cursors (der Schreibmarke) wird als
-> Zeile:Spalte ganz links in der Statusleiste angezeigt.
-
-> **Hinweis:** die letzten Fehlermeldungen kann man in der der Konsole
-> (mit `ctrl/cmd-K` sehen.
-
-TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einfügen???
-
-TODO: popup-Fenster für Fehlermeldungen
+-   Texteditor (siehe Kapitel \ref{texteditor}
+    "[Texteditor](#texteditor)")
+-   Konfigurationsmasken Kapitel \ref(konfigurationsmasken)
+    "[Konfigurationsmasken](#konfigurationsmasken)"
 
 ### Fenster rechts oben : Notenvorschau
 
-TODO:
+TODO: ergänzen
+
+Die Notenvorschau zeigt das Musikstück in herkömmlichen Noten an. Damit
+kann man sich bei der Erfassung auf die musikalischen Aspekte
+konzentrieren.
+
+Wenn man auf Elemente in der Notenvorschau klickt, werden diese auch im
+Texteditor und in der Unterlegnotenvorschau hervorgehoben.
+
+> **Hinweis::** Wenn man zunächst eine Note, und dann mit gedrückter
+> "Shift"-Taste eine zweite Note anklickt, dann werden die dazwischen
+> liegenden Noten selektiert. Damit kannst du z.B. einen Auschnitt aus
+> einer bestimmten Stimme über die Notenvorschaut auswählen und
+> anschließend abspielen lassen.
 
 ### Fenster rechts unten : Unterlegnotenvorschau
 
@@ -664,3 +636,137 @@ Verfügung:
 
 > **Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
 > "strg" - Taste
+
+## Texteditor
+
+Im Teexteditor kannst du die ABC-Notation bearbeiten. Darüberhinaus
+kannst du die Konfigurationsparameter sehen und ggf. direkt (d.h. ohne
+Bildschirmmasken) sehen und ggf. korrigieren (für Experten).
+
+### Erfassung der ABC-Notation im Texteditor
+
+Im Texteditor kannst du die ABC-Notation erfassen. Elemente werden
+entsprechend ihrer Bedetung farblich hervorgehoben (Syntax-Coloring). In
+der Statusleiste links unten zeigt Zupfnoter auch Hinweise über die
+Bedeutung des Elementes links von der aktuellen Schreibmarke an.
+
+> **Hinweis**: Diese Anzeige ist noch sehr technisch, in manchen Fällen
+> aber dennoch hilfreich. Sie steuert z.B. die verfügbarkeit der
+> Schaltflächen für die Zusätze.
+
+Als zusätzliche Information zu dieser Anleitung sei noch erwähnt, dass
+der Befehl X: (Liednummer) eine positive Ganzzahl sein muss. Es dürfen
+keine Buchstaben, Leerzeichen oder Unterstriche enthalten sein.
+
+> **Hinweis:** Veränderungen in der ABC-Notation wirken unterschiedlich
+> auf die beiden anderen Fenster:
+>
+> -   Die Notenvorschau wird unmittelbar aktualisiert
+> -   Die Unterlegnotenvorschau wird erst durch die Funktion "Rendern"
+>     aktualisiert
+
+Der Texteditor ist mit den anderen Fenstern synchronisiert. Wenn man mit
+der Maus eine Note in der ABC-Notation selektiert, wechselt die Note in
+der herkömmlichen Notenschrift und in den Unterlegnoten von schwarz auf
+Rot. Umgekehrt funktioniert es genauso. Wenn man auf eine Noten in einer
+der Vorschauen klickt, wird diese im Eingabebereich selektiert. So
+findet man schnell zu einer Stelle, die man ändern möchte oder wo man
+was hinzufügen möchte.
+
+> **Hinweis::** Wenn man zunächst eine Note, und dann mit gedrückter
+> "Shift"-Taste eine zweite Note anklickt, dann werden die dazwischen
+> liegenden Noten selektiert.
+
+Das Ende der ABC-Notation wird mit einer Leerzeile eingeleitet. Sollte
+nach einer Leerzeile noch ABC-Notation folgen, wird dies vom Computer
+ignoriert.
+
+Du kannst die \index{Liedtexte}Liedtexte schnell efassen, indem du
+zunächst den Text (von der ABC-Notation durch eine Leerzeile getrennt)
+eingibst. Danach kannst du mit folgenden Schritten den Text um
+entsprechende ABC-Notation für Liedtexte `W:` ergänzen:
+
+1.  Stelle die Schreibmarke in die erste Zeile des Liedtextes
+2.  Halte gleichzeitig die Taten `Alt` und `Ctrl` gedrückt und
+3.  bewege die Schreibmarke mit den Pfieltasten an das Ende des
+    Liedtextes.
+4.  Du siehst nun eine dünne schwarze Linie an den Zeilenanfängen. Nun
+    gib die Zeichen `W:`ein. Diese Zeichenkette wird nun an allen Zeilen
+    des Liedtextes vorangestellt.
+
+### Darstellung der Konfigurationsparameter als JSON
+
+Nach der ABC-Notation kommen die Zupfnoter-Einstellugnen. Diese werden
+durch den Kommentar
+
+    `%%%%zupfnoter.config`
+
+von der ABC-Notation abgetrennt. Die ABC-Notation und die
+Zupfnoter-Einstellungen dürfen nicht gemischt werden.
+
+> **Hinweis**: zur komfortablen Bearbeitung der Konfigurationsparameter
+> gibt es Bildschirmmasken (siehe Kapitel \ref{konfigurationsmasken}:
+> "[Konfigurationsmasken](#konfigurationsmasken)").
+
+Die Zupfnoter-Einstellungen sind im sog. JSON-Format angegeben (siehe
+Kapitel \ref(konfiguration} [Konfiguration der Ausgabe](#konfiguration)
+
+Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
+verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
+besser positioniert werden oder string names (Saitennamen) eingefügt
+werden. Die Zupfnoter-Einstellungen können manuell eingegeben werden
+oder über das Menü sheet config (Blattkonfiguration) erzeugt werden.
+Weitere Informationen zu den Zupfnoter-Einstellungen stehen im
+Kapitel \ref{konfiguration} "[Konfiguration](#konfiguration)".
+
+> **Hinweis**: Wichtig ist, nach einer Änderung in der Menüleiste immer
+> auf auf "Rendern" (ausführen) zu drücken, damit die Unterlegnoten
+> aktualisiert werden.
+
+Mit der Maus können in diesem Teil Textfelder optimal dem Stimmverlauf
+angepasst werden. Danach sind die Werte in dem entsprechenden
+Zupfnoter-Kommando bzgl. der Positionsparameter angepasst worden.
+
+### Fehlermarkierung und Fehlermeldung im Texteditor
+
+\index{Fehlermeldung}Zupfnoter zeigt über ein rotes Quadrat mit Kreuz
+links von den Abc Notationszeilen oder den Zupfnoter-Einstellungen an,
+daß in der Zeile ein Fehler aufgetreten ist. Wenn man mit der Maus auf
+das rote Quadrat geht, wird die Fehlermeldung angezeigt, z.B. abc:12:19
+error=F-Text. Das bedeutet in Zeile 12 an Stelle 19 ist der F-Text nicht
+korrekt.
+
+Es müssen alle Fehler beseitigt werden, ansonsten können keine
+herkömmlichen Noten oder Unterlegnoten generiert werden.
+
+> **Hinweis:** Die Position des Cursors (der Schreibmarke) wird als
+> Zeile:Spalte ganz links in der Statusleiste angezeigt.
+
+> **Hinweis:** die letzten Fehlermeldungen kann man in der der Konsole
+> (mit `ctrl/cmd-K` sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch
+> ein Fenster mit den letzten Fehlermeldungen an.
+
+TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einfügen???
+
+## Konfigurationsmasken
+
+TODO:
+
+-   Konfigurationsmasken vordefiniert oder dynamisch erzeugt, daher nur
+    ein Beispiel
+    -   vordefinierte haben konstanten Grundaufbau
+    -   dynamische zeigen nur Parameter, die im Musikstück vorhanden
+        sind
+-   Aufbau
+    -   Löschknopf
+    -   Einfügeknopf
+    -   -   label
+    -   Eingabefeld
+    -   Hilfe-Taste
+    -   Vorgabe
+
+-   Maske ggf mit Refresh aktualisieren
+-   Feldeingabe mit "TAB" Beenden
+-   Refresh nicht vergessen
+
+## Zupfnoter-spezifische Zusätze {#zusaetze}

@@ -32,6 +32,13 @@ Entchen” nachvollziehen.
 
 ## Dein erstes Musikstück eingeben {#dein-erstes-musikstueck-eingeben}
 
+Zupfnoter erfasst das Musikstück in der so genannten ABC-Notation. Diese
+wurde (unabhängig von Zupfnoter) erfunden, um Musikstücke auf Computern
+verarbeiten zu können. Computer können die ABC-Notation interpretieren,
+um daraus herkömmliche Musiknoten zu generieren oder auch Musikstücke
+auf dem Computer abspielen zu können. Unter dem Hilfemenü des Zupfnoters
+findet man eine deutsche Anleitung für die ABC-Notation.
+
 1.  klicke auf Schaltfläche "Neu", es erscheint ein Eingabeformular
 
 2.  gib die Liednummer (X:) und den Titel in das ein (z.B.; X: "1",

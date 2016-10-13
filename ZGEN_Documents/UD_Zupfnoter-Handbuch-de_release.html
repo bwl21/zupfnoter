@@ -45,6 +45,13 @@
 <li><a href="#fenster-rechts-unten-unterlegnotenvorschau"><span class="toc-section-number">4.2.5</span> Fenster rechts unten : Unterlegnotenvorschau</a></li>
 </ul></li>
 <li><a href="#shortcuts"><span class="toc-section-number">4.3</span> Shortcuts</a></li>
+<li><a href="#texteditor"><span class="toc-section-number">4.4</span> Texteditor</a><ul>
+<li><a href="#erfassung-der-abc-notation-im-texteditor"><span class="toc-section-number">4.4.1</span> Erfassung der ABC-Notation im Texteditor</a></li>
+<li><a href="#darstellung-der-konfigurationsparameter-als-json"><span class="toc-section-number">4.4.2</span> Darstellung der Konfigurationsparameter als JSON</a></li>
+<li><a href="#fehlermarkierung-und-fehlermeldung-im-texteditor"><span class="toc-section-number">4.4.3</span> Fehlermarkierung und Fehlermeldung im Texteditor</a></li>
+</ul></li>
+<li><a href="#konfigurationsmasken"><span class="toc-section-number">4.5</span> Konfigurationsmasken</a></li>
+<li><a href="#zusaetze"><span class="toc-section-number">4.6</span> Zupfnoter-spezifische Zus&#228;tze</a></li>
 </ul></li>
 <li><a href="#zupfnoter-f&#252;r-experten"><span class="toc-section-number">5</span> Zupfnoter f&#252;r Experten</a><ul>
 <li><a href="#auszuege"><span class="toc-section-number">5.1</span> Erstellung von Ausz&#252;gen</a></li>
@@ -55,66 +62,90 @@
 </ul></li>
 <li><a href="#best-practice"><span class="toc-section-number">6</span> Best practice</a></li>
 <li><a href="#abc-tutorial"><span class="toc-section-number">7</span> ABC Tutorial</a></li>
-<li><a href="#konfiguration-der-ausgabekonfiguration"><span class="toc-section-number">8</span> Konfiguration der Ausgabe(#konfiguration)</a><ul>
-<li><a href="#annotations.vl"><span class="toc-section-number">8.0.1</span> <code id="hugo.annotations.vl">annotations.vl</code></a></li>
-<li><a href="#annotations.vl.pos"><span class="toc-section-number">8.0.2</span> <code id="annotations.vl.pos">annotations.vl.pos</code></a></li>
-<li><a href="#annotations.vl.text"><span class="toc-section-number">8.0.3</span> <code id="annotations.vl.text">annotations.vl.text</code></a></li>
-<li><a href="#extract"><span class="toc-section-number">8.1</span> <code id="extract">extract</code></a><ul>
-<li><a href="#extract.0"><span class="toc-section-number">8.1.1</span> <code id="extract.0">extract.0</code></a></li>
-<li><a href="#extract.0.barnumbers"><span class="toc-section-number">8.1.2</span> <code id="extract.0.barnumbers">extract.0.barnumbers</code></a></li>
-<li><a href="#extract.0.barnumbers.pos"><span class="toc-section-number">8.1.3</span> <code id="extract.0.barnumbers.pos">extract.0.barnumbers.pos</code></a></li>
-<li><a href="#extract.0.barnumbers.prefix"><span class="toc-section-number">8.1.4</span> <code id="extract.0.barnumbers.prefix">extract.0.barnumbers.prefix</code></a></li>
-<li><a href="#extract.0.barnumbers.style"><span class="toc-section-number">8.1.5</span> <code id="extract.0.barnumbers.style">extract.0.barnumbers.style</code></a></li>
-<li><a href="#extract.0.barnumbers.voices"><span class="toc-section-number">8.1.6</span> <code id="extract.0.barnumbers.voices">extract.0.barnumbers.voices</code></a></li>
-<li><a href="#extract.0.countnotes"><span class="toc-section-number">8.1.7</span> <code id="extract.0.countnotes">extract.0.countnotes</code></a></li>
-<li><a href="#extract.0.countnotes.pos"><span class="toc-section-number">8.1.8</span> <code id="extract.0.countnotes.pos">extract.0.countnotes.pos</code></a></li>
-<li><a href="#extract.0.countnotes.voices"><span class="toc-section-number">8.1.9</span> <code id="extract.0.countnotes.voices">extract.0.countnotes.voices</code></a></li>
-<li><a href="#extract.0.flowlines"><span class="toc-section-number">8.1.10</span> <code id="extract.0.flowlines">extract.0.flowlines</code></a></li>
-<li><a href="#extract.0.jumplines"><span class="toc-section-number">8.1.11</span> <code id="extract.0.jumplines">extract.0.jumplines</code></a></li>
-<li><a href="#extract.0.layout"><span class="toc-section-number">8.1.12</span> <code id="extract.0.layout">extract.0.layout</code></a></li>
-<li><a href="#extract.0.layout.ellipse_size"><span class="toc-section-number">8.1.13</span> <code id="extract.0.layout.ELLIPSE_SIZE">extract.0.layout.ELLIPSE_SIZE</code></a></li>
-<li><a href="#extract.0.layout.line_medium"><span class="toc-section-number">8.1.14</span> <code id="extract.0.layout.LINE_MEDIUM">extract.0.layout.LINE_MEDIUM</code></a></li>
-<li><a href="#extract.0.layout.line_thick"><span class="toc-section-number">8.1.15</span> <code id="extract.0.layout.LINE_THICK">extract.0.layout.LINE_THICK</code></a></li>
-<li><a href="#extract.0.layout.line_thin"><span class="toc-section-number">8.1.16</span> <code id="extract.0.layout.LINE_THIN">extract.0.layout.LINE_THIN</code></a></li>
-<li><a href="#extract.0.layout.rest_size"><span class="toc-section-number">8.1.17</span> <code id="extract.0.layout.REST_SIZE">extract.0.layout.REST_SIZE</code></a></li>
-<li><a href="#extract.0.layout.limit_a3"><span class="toc-section-number">8.1.18</span> <code id="extract.0.layout.limit_a3">extract.0.layout.limit_a3</code></a></li>
-<li><a href="#extract.0.layoutlines"><span class="toc-section-number">8.1.19</span> <code id="extract.0.layoutlines">extract.0.layoutlines</code></a></li>
-<li><a href="#extract.0.legend"><span class="toc-section-number">8.1.20</span> <code id="extract.0.legend">extract.0.legend</code></a></li>
-<li><a href="#extract.0.legend.pos"><span class="toc-section-number">8.1.21</span> <code id="extract.0.legend.pos">extract.0.legend.pos</code></a></li>
-<li><a href="#extract.0.legend.spos"><span class="toc-section-number">8.1.22</span> <code id="extract.0.legend.spos">extract.0.legend.spos</code></a></li>
-<li><a href="#extract.0.lyrics"><span class="toc-section-number">8.1.23</span> <code id="extract.0.lyrics">extract.0.lyrics</code></a></li>
-<li><a href="#extract.0.nonflowrest"><span class="toc-section-number">8.1.24</span> <code id="extract.0.nonflowrest">extract.0.nonflowrest</code></a></li>
-<li><a href="#extract.0.notes"><span class="toc-section-number">8.1.25</span> <code id="extract.0.notes">extract.0.notes</code></a></li>
-<li><a href="#extract.0.repeatsigns"><span class="toc-section-number">8.1.26</span> <code id="extract.0.repeatsigns">extract.0.repeatsigns</code></a></li>
-<li><a href="#extract.0.repeatsigns.left"><span class="toc-section-number">8.1.27</span> <code id="extract.0.repeatsigns.left">extract.0.repeatsigns.left</code></a></li>
-<li><a href="#extract.0.repeatsigns.left.pos"><span class="toc-section-number">8.1.28</span> <code id="extract.0.repeatsigns.left.pos">extract.0.repeatsigns.left.pos</code></a></li>
-<li><a href="#extract.0.repeatsigns.left.style"><span class="toc-section-number">8.1.29</span> <code id="extract.0.repeatsigns.left.style">extract.0.repeatsigns.left.style</code></a></li>
-<li><a href="#extract.0.repeatsigns.left.text"><span class="toc-section-number">8.1.30</span> <code id="extract.0.repeatsigns.left.text">extract.0.repeatsigns.left.text</code></a></li>
-<li><a href="#extract.0.repeatsigns.right"><span class="toc-section-number">8.1.31</span> <code id="extract.0.repeatsigns.right">extract.0.repeatsigns.right</code></a></li>
-<li><a href="#extract.0.repeatsigns.right.pos"><span class="toc-section-number">8.1.32</span> <code id="extract.0.repeatsigns.right.pos">extract.0.repeatsigns.right.pos</code></a></li>
-<li><a href="#extract.0.repeatsigns.right.style"><span class="toc-section-number">8.1.33</span> <code id="extract.0.repeatsigns.right.style">extract.0.repeatsigns.right.style</code></a></li>
-<li><a href="#extract.0.repeatsigns.right.text"><span class="toc-section-number">8.1.34</span> <code id="extract.0.repeatsigns.right.text">extract.0.repeatsigns.right.text</code></a></li>
-<li><a href="#extract.0.repeatsigns.voices"><span class="toc-section-number">8.1.35</span> <code id="extract.0.repeatsigns.voices">extract.0.repeatsigns.voices</code></a></li>
-<li><a href="#extract.0.startpos"><span class="toc-section-number">8.1.36</span> <code id="extract.0.startpos">extract.0.startpos</code></a></li>
-<li><a href="#extract.0.stringnames"><span class="toc-section-number">8.1.37</span> <code id="extract.0.stringnames">extract.0.stringnames</code></a></li>
-<li><a href="#extract.0.stringnames.marks"><span class="toc-section-number">8.1.38</span> <code id="extract.0.stringnames.marks">extract.0.stringnames.marks</code></a></li>
-<li><a href="#extract.0.stringnames.marks.hpos"><span class="toc-section-number">8.1.39</span> <code id="extract.0.stringnames.marks.hpos">extract.0.stringnames.marks.hpos</code></a></li>
-<li><a href="#extract.0.stringnames.marks.vpos"><span class="toc-section-number">8.1.40</span> <code id="extract.0.stringnames.marks.vpos">extract.0.stringnames.marks.vpos</code></a></li>
-<li><a href="#extract.0.stringnames.style"><span class="toc-section-number">8.1.41</span> <code id="extract.0.stringnames.style">extract.0.stringnames.style</code></a></li>
-<li><a href="#extract.0.stringnames.text"><span class="toc-section-number">8.1.42</span> <code id="extract.0.stringnames.text">extract.0.stringnames.text</code></a></li>
-<li><a href="#extract.0.stringnames.vpos"><span class="toc-section-number">8.1.43</span> <code id="extract.0.stringnames.vpos">extract.0.stringnames.vpos</code></a></li>
-<li><a href="#extract.0.subflowlines"><span class="toc-section-number">8.1.44</span> <code id="extract.0.subflowlines">extract.0.subflowlines</code></a></li>
-<li><a href="#extract.0.synchlines"><span class="toc-section-number">8.1.45</span> <code id="extract.0.synchlines">extract.0.synchlines</code></a></li>
-<li><a href="#extract.0.title"><span class="toc-section-number">8.1.46</span> <code id="extract.0.title">extract.0.title</code></a></li>
-<li><a href="#extract.0.voices"><span class="toc-section-number">8.1.47</span> <code id="extract.0.voices">extract.0.voices</code></a></li>
-</ul></li>
-<li><a href="#produce"><span class="toc-section-number">8.2</span> <code id="produce">produce</code></a></li>
-<li><a href="#restposition"><span class="toc-section-number">8.3</span> <code id="restposition">restposition</code></a><ul>
-<li><a href="#restposition.default"><span class="toc-section-number">8.3.1</span> <code id="restposition.default">restposition.default</code></a></li>
-<li><a href="#restposition.repeatend"><span class="toc-section-number">8.3.2</span> <code id="restposition.repeatend">restposition.repeatend</code></a></li>
-<li><a href="#restposition.repeatstart"><span class="toc-section-number">8.3.3</span> <code id="restposition.repeatstart">restposition.repeatstart</code></a></li>
-</ul></li>
-<li><a href="#wrap"><span class="toc-section-number">8.4</span> <code id="wrap">wrap</code></a></li>
+<li><a href="#konfiguration"><span class="toc-section-number">8</span> Konfiguration der Ausgabe</a><ul>
+<li><a href="#annotations"><span class="toc-section-number">8.1</span> <code>annotations</code> - Beschriftungen</a></li>
+<li><a href="#annotations.vl"><span class="toc-section-number">8.2</span> <code>annotations.vl</code> - &#8216;V&#8217; links</a></li>
+<li><a href="#annotations.vl.pos"><span class="toc-section-number">8.3</span> <code>annotations.vl.pos</code> - Position</a></li>
+<li><a href="#annotations.vl.text"><span class="toc-section-number">8.4</span> <code>annotations.vl.text</code> - Text</a></li>
+<li><a href="#annotations.vr"><span class="toc-section-number">8.5</span> <code>annotations.vr</code> - &#8216;V&#8217; rechts</a></li>
+<li><a href="#annotations.vr.pos"><span class="toc-section-number">8.6</span> <code>annotations.vr.pos</code> - Position</a></li>
+<li><a href="#annotations.vr.text"><span class="toc-section-number">8.7</span> <code>annotations.vr.text</code> - Text</a></li>
+<li><a href="#annotations.vt"><span class="toc-section-number">8.8</span> <code>annotations.vt</code> - &#8216;V&#8217; oben</a></li>
+<li><a href="#annotations.vt.pos"><span class="toc-section-number">8.9</span> <code>annotations.vt.pos</code> - Position</a></li>
+<li><a href="#annotations.vt.text"><span class="toc-section-number">8.10</span> <code>annotations.vt.text</code> - Text</a></li>
+<li><a href="#extract"><span class="toc-section-number">8.11</span> <code>extract</code> - Auszug</a></li>
+<li><a href="#extract.0.barnumbers"><span class="toc-section-number">8.12</span> <code>extract.0.barnumbers</code> - Taktnummern</a></li>
+<li><a href="#extract.0.barnumbers.autopos"><span class="toc-section-number">8.13</span> <code>extract.0.barnumbers.autopos</code> - automatisch positionieren</a></li>
+<li><a href="#extract.0.barnumbers.pos"><span class="toc-section-number">8.14</span> <code>extract.0.barnumbers.pos</code> - Position</a></li>
+<li><a href="#extract.0.barnumbers.prefix"><span class="toc-section-number">8.15</span> <code>extract.0.barnumbers.prefix</code> - Pr&#228;fix</a></li>
+<li><a href="#extract.0.barnumbers.style"><span class="toc-section-number">8.16</span> <code>extract.0.barnumbers.style</code> - Stil</a></li>
+<li><a href="#extract.0.barnumbers.voices"><span class="toc-section-number">8.17</span> <code>extract.0.barnumbers.voices</code> - Stimmen</a></li>
+<li><a href="#extract.0.countnotes"><span class="toc-section-number">8.18</span> <code>extract.0.countnotes</code> - Z&#228;hlmarken</a></li>
+<li><a href="#extract.0.countnotes.autopos"><span class="toc-section-number">8.19</span> <code>extract.0.countnotes.autopos</code> - automatisch positionieren</a></li>
+<li><a href="#extract.0.countnotes.pos"><span class="toc-section-number">8.20</span> <code>extract.0.countnotes.pos</code> - Position</a></li>
+<li><a href="#extract.0.countnotes.style"><span class="toc-section-number">8.21</span> <code>extract.0.countnotes.style</code> - Stil</a></li>
+<li><a href="#extract.0.countnotes.voices"><span class="toc-section-number">8.22</span> <code>extract.0.countnotes.voices</code> - Stimmen</a></li>
+<li><a href="#extract.0.filenamepart"><span class="toc-section-number">8.23</span> <code>extract.0.filenamepart</code> - Filename-Zusatz</a></li>
+<li><a href="#extract.0.flowlines"><span class="toc-section-number">8.24</span> <code>extract.0.flowlines</code> - Melodielinien</a></li>
+<li><a href="#extract.0.jumplines"><span class="toc-section-number">8.25</span> <code>extract.0.jumplines</code> - Sprunglinien</a></li>
+<li><a href="#extract.0.layout"><span class="toc-section-number">8.26</span> <code>extract.0.layout</code> - Layout</a></li>
+<li><a href="#extract.0.layout.ELLIPSE_SIZE"><span class="toc-section-number">8.27</span> <code>extract.0.layout.ELLIPSE_SIZE</code> - Notengr&#246;&#223;e</a></li>
+<li><a href="#extract.0.layout.LINE_MEDIUM"><span class="toc-section-number">8.28</span> <code>extract.0.layout.LINE_MEDIUM</code> - Linienst&#228;rke mittel</a></li>
+<li><a href="#extract.0.layout.LINE_THICK"><span class="toc-section-number">8.29</span> <code>extract.0.layout.LINE_THICK</code> - Linienst&#228;rke dick</a></li>
+<li><a href="#extract.0.layout.LINE_THIN"><span class="toc-section-number">8.30</span> <code>extract.0.layout.LINE_THIN</code> - Linienst&#228;rke d&#252;nn</a></li>
+<li><a href="#extract.0.layout.REST_SIZE"><span class="toc-section-number">8.31</span> <code>extract.0.layout.REST_SIZE</code> - Gr&#246;&#223;e der Pausen</a></li>
+<li><a href="#extract.0.layout.limit_a3"><span class="toc-section-number">8.32</span> <code>extract.0.layout.limit_a3</code> - Begrenzung auf A3</a></li>
+<li><a href="#extract.0.layoutlines"><span class="toc-section-number">8.33</span> <code>extract.0.layoutlines</code> - Stimmen f&#252;r Layout</a></li>
+<li><a href="#extract.0.legend"><span class="toc-section-number">8.34</span> <code>extract.0.legend</code> - Legende</a></li>
+<li><a href="#extract.0.legend.pos"><span class="toc-section-number">8.35</span> <code>extract.0.legend.pos</code> - Position</a></li>
+<li><a href="#extract.0.legend.spos"><span class="toc-section-number">8.36</span> <code>extract.0.legend.spos</code> - Position Sublegende</a></li>
+<li><a href="#extract.0.lyrics"><span class="toc-section-number">8.37</span> <code>extract.0.lyrics</code> - Liedtexte</a></li>
+<li><a href="#extract.0.nonflowrest"><span class="toc-section-number">8.38</span> <code>extract.0.nonflowrest</code> - Begleitpausen</a></li>
+<li><a href="#extract.0.notes"><span class="toc-section-number">8.39</span> <code>extract.0.notes</code> - Beschriftungen</a></li>
+<li><a href="#extract.0.printer"><span class="toc-section-number">8.40</span> <code>extract.0.printer</code> - Drucker</a></li>
+<li><a href="#extract.0.printer.a3_offset"><span class="toc-section-number">8.41</span> <code>extract.0.printer.a3_offset</code> - Offset f&#252;r A3</a></li>
+<li><a href="#extract.0.printer.a4_offset"><span class="toc-section-number">8.42</span> <code>extract.0.printer.a4_offset</code> - Offset f&#252;r A4</a></li>
+<li><a href="#extract.0.printer.show_border"><span class="toc-section-number">8.43</span> <code>extract.0.printer.show_border</code> - Blattbegrenzg. zeichnen</a></li>
+<li><a href="#extract.0.repeatsigns"><span class="toc-section-number">8.44</span> <code>extract.0.repeatsigns</code> - Wiederholungszeichen</a></li>
+<li><a href="#extract.0.repeatsigns.left"><span class="toc-section-number">8.45</span> <code>extract.0.repeatsigns.left</code> - links</a></li>
+<li><a href="#extract.0.repeatsigns.left.pos"><span class="toc-section-number">8.46</span> <code>extract.0.repeatsigns.left.pos</code> - Position</a></li>
+<li><a href="#extract.0.repeatsigns.left.style"><span class="toc-section-number">8.47</span> <code>extract.0.repeatsigns.left.style</code> - Stil</a></li>
+<li><a href="#extract.0.repeatsigns.left.text"><span class="toc-section-number">8.48</span> <code>extract.0.repeatsigns.left.text</code> - Text</a></li>
+<li><a href="#extract.0.repeatsigns.right"><span class="toc-section-number">8.49</span> <code>extract.0.repeatsigns.right</code> - rechts</a></li>
+<li><a href="#extract.0.repeatsigns.right.pos"><span class="toc-section-number">8.50</span> <code>extract.0.repeatsigns.right.pos</code> - Position</a></li>
+<li><a href="#extract.0.repeatsigns.right.style"><span class="toc-section-number">8.51</span> <code>extract.0.repeatsigns.right.style</code> - Stil</a></li>
+<li><a href="#extract.0.repeatsigns.right.text"><span class="toc-section-number">8.52</span> <code>extract.0.repeatsigns.right.text</code> - Text</a></li>
+<li><a href="#extract.0.repeatsigns.voices"><span class="toc-section-number">8.53</span> <code>extract.0.repeatsigns.voices</code> - Stimmen</a></li>
+<li><a href="#extract.0.startpos"><span class="toc-section-number">8.54</span> <code>extract.0.startpos</code> - Startposition</a></li>
+<li><a href="#extract.0.stringnames"><span class="toc-section-number">8.55</span> <code>extract.0.stringnames</code> - Saitennamen</a></li>
+<li><a href="#extract.0.stringnames.marks"><span class="toc-section-number">8.56</span> <code>extract.0.stringnames.marks</code> - Saitenmarken</a></li>
+<li><a href="#extract.0.stringnames.marks.hpos"><span class="toc-section-number">8.57</span> <code>extract.0.stringnames.marks.hpos</code> - horizontale Position</a></li>
+<li><a href="#extract.0.stringnames.marks.vpos"><span class="toc-section-number">8.58</span> <code>extract.0.stringnames.marks.vpos</code> - vertikale Position</a></li>
+<li><a href="#extract.0.stringnames.style"><span class="toc-section-number">8.59</span> <code>extract.0.stringnames.style</code> - Stil</a></li>
+<li><a href="#extract.0.stringnames.text"><span class="toc-section-number">8.60</span> <code>extract.0.stringnames.text</code> - Text</a></li>
+<li><a href="#extract.0.stringnames.vpos"><span class="toc-section-number">8.61</span> <code>extract.0.stringnames.vpos</code> - vertikale Position</a></li>
+<li><a href="#extract.0.subflowlines"><span class="toc-section-number">8.62</span> <code>extract.0.subflowlines</code> - Hilfsmelodielinien</a></li>
+<li><a href="#extract.0.synchlines"><span class="toc-section-number">8.63</span> <code>extract.0.synchlines</code> - Synchroniationslinien</a></li>
+<li><a href="#extract.0.title"><span class="toc-section-number">8.64</span> <code>extract.0.title</code> - Titel</a></li>
+<li><a href="#extract.0.voices"><span class="toc-section-number">8.65</span> <code>extract.0.voices</code> - Stimmen</a></li>
+<li><a href="#produce"><span class="toc-section-number">8.66</span> <code>produce</code> - Ausz&#252;ge</a></li>
+<li><a href="#restposition"><span class="toc-section-number">8.67</span> <code>restposition</code> - Position der Pausen</a></li>
+<li><a href="#restposition.default"><span class="toc-section-number">8.68</span> <code>restposition.default</code> - Vorgabewert</a></li>
+<li><a href="#restposition.repeatend"><span class="toc-section-number">8.69</span> <code>restposition.repeatend</code> - Wiederholungsende</a></li>
+<li><a href="#restposition.repeatstart"><span class="toc-section-number">8.70</span> <code>restposition.repeatstart</code> - Wiederholungsanfang</a></li>
+<li><a href="#templates"><span class="toc-section-number">8.71</span> <code>templates</code> - Vorlagen</a></li>
+<li><a href="#templates.lyrics"><span class="toc-section-number">8.72</span> <code>templates.lyrics</code> - Liedtexte</a></li>
+<li><a href="#templates.lyrics.pos"><span class="toc-section-number">8.73</span> <code>templates.lyrics.pos</code> - Position</a></li>
+<li><a href="#templates.lyrics.verses"><span class="toc-section-number">8.74</span> <code>templates.lyrics.verses</code> - Strophens</a></li>
+<li><a href="#templates.notes"><span class="toc-section-number">8.75</span> <code>templates.notes</code> - Beschriftungen</a></li>
+<li><a href="#templates.notes.pos"><span class="toc-section-number">8.76</span> <code>templates.notes.pos</code> - Position</a></li>
+<li><a href="#templates.notes.style"><span class="toc-section-number">8.77</span> <code>templates.notes.style</code> - Stil</a></li>
+<li><a href="#templates.notes.text"><span class="toc-section-number">8.78</span> <code>templates.notes.text</code> - Text</a></li>
+<li><a href="#templates.tuplet"><span class="toc-section-number">8.79</span> <code>templates.tuplet</code> - Tuplet</a></li>
+<li><a href="#templates.tuplet.cp1"><span class="toc-section-number">8.80</span> <code>templates.tuplet.cp1</code> - Kontrollpunkt 1</a></li>
+<li><a href="#templates.tuplet.cp2"><span class="toc-section-number">8.81</span> <code>templates.tuplet.cp2</code> - Kontrollpunkt 2</a></li>
+<li><a href="#templates.tuplet.shape"><span class="toc-section-number">8.82</span> <code>templates.tuplet.shape</code> - Linienform</a></li>
+<li><a href="#wrap"><span class="toc-section-number">8.83</span> <code>wrap</code> - wrap</a></li>
 </ul></li>
 </ul>
 </div>
@@ -164,6 +195,7 @@
 <p>Beim ersten Aufruf des Zupfnoter erscheint ein beispielhaftes Musikst&#252;ck. Mit diesem Beispiel kannst du in die Grundlagen des Zupfnoters einsteigen.</p>
 <p>Anhand der schriftlichen Anleitungen unter dem Hilfemen&#252; und mit den m&#252;ndlichen Unterweisung in den Tutorial-Videos (Selbstlerneinheiten) lassen sich gut die einzelnen Schritte f&#252;r die Erstellung &#8220;Alle meine Entchen&#8221; nachvollziehen.</p>
 <h2 id="dein-erstes-musikstueck-eingeben"><span class="header-section-number">3.2</span> Dein erstes Musikst&#252;ck eingeben</h2>
+<p>Zupfnoter erfasst das Musikst&#252;ck in der so genannten ABC-Notation. Diese wurde (unabh&#228;ngig von Zupfnoter) erfunden, um Musikst&#252;cke auf Computern verarbeiten zu k&#246;nnen. Computer k&#246;nnen die ABC-Notation interpretieren, um daraus herk&#246;mmliche Musiknoten zu generieren oder auch Musikst&#252;cke auf dem Computer abspielen zu k&#246;nnen. Unter dem Hilfemen&#252; des Zupfnoters findet man eine deutsche Anleitung f&#252;r die ABC-Notation.</p>
 <ol style="list-style-type: decimal">
 <li><p>klicke auf Schaltfl&#228;che &#8220;Neu&#8221;, es erscheint ein Eingabeformular</p></li>
 <li><p>gib die Liednummer (X:) und den Titel in das ein (z.B.; X: &#8220;1&#8221;, Titel: &#8220;Alle meine Entchen&#8221;) und best&#228;tige mit der Schaltfl&#228;che &#8220;Ok&#8221;.</p>
@@ -459,11 +491,11 @@ W: Strophe 2 Zeile 2</code></pre>
 <ul>
 <li>Fenster
 <ul>
-<li>links: <strong>Editor</strong> zum Eingeben der ABC-Notation</li>
+<li>links: <strong>Eignabe</strong> zum Eingeben der ABC-Notation bzw. der Konfiguration</li>
 <li>rechts oben: <strong>Notenvorschau</strong> zur Kontrolle des Musikst&#252;cks</li>
 <li>rechts unten <strong>Unterlegnotenvorschau</strong></li>
 </ul></li>
-<li>Reiter zum Umschalten verschiedener Ansichten</li>
+<li>Reiter zum Ausw&#228;hlen verschiedener Ansichten</li>
 <li><strong>Werkzeugleiste</strong> Leiste f&#252;r Schaltfl&#228;chen und Men&#252;s</li>
 <li><strong>Statusleiste</strong>: f&#252;r Syteminformationen</li>
 <li><strong>Kontextmen&#252;</strong>: zur speziellen Bearbeitung von Elementen (erreichbar mit rechte Maustaste)</li>
@@ -548,62 +580,50 @@ W: Strophe 2 Zeile 2</code></pre>
 <p>Das Eingeabefenster enth&#228;lt seinerseits</p>
 <ul>
 <li>eine eigene Werkzeuigleiste zu Ansteuerung von Bearbeitungsfunktionen</li>
-<li>Reiter zur Auswahl verschiedener Ansichten</li>
-<li>den eigentlichen Bearbeitungsbereich</li>
+<li>verschiedene Bearbeitungsansichten, welche &#252;ber Karteilreiter ausgew&#228;hlt werden.</li>
 </ul>
 <h4 id="werkzeugleiste-des-eingabefensters"><span class="header-section-number">4.2.3.1</span> Werkzeugleiste des Eingabefensters</h4>
 <ul>
-<li><p>Men&#252; <strong>Konfiguration</strong> (Blattkonfiguration):</p>
-<p>Dieses Men&#252; f&#252;gt Einstelliugnen zur Gestaltung und dem Design der Unterlegnoten ein.</p>
+<li><p>Men&#252; <strong>Konfig. einf&#252;gen</strong> (Blattkonfiguration):</p>
+<p>&#220;ber dieses Men&#252; kannst du Konfigurationsparameter (Einstellungen) zur Gestaltung u der Unterlegnoten <strong>einf&#252;gen</strong>.</p>
 <p>Die Reihenfolge der Men&#252;punkte entspricht der Bearbeitungsabfolge, wobei Men&#252;punkte auch &#252;bersprungen werden d&#252;rfen. Die Erstellung der ABC-Notation sollte abgeschlossen sein, bevor man mit der Gestaltung der Unterlegnoten beginnt.</p>
 <p>Die Men&#252;punkte sind im Kapitel <a href="#grundlegende-blatteinstellungen">Grundlegende-Blatteinstellungen</a> beschrieben</p>
-<p><strong>Hinweis</strong>: Die Einstellungen werden in folgender Reiehenfolge angewendet:</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Die Einstellungen werden in folgender Reihenfolge angewendet:</p>
 <ol style="list-style-type: decimal">
 <li>in Zupfnoter fest eingebaute Einstellugnen</li>
 <li>Einstellungen aus dem Auszug 0</li>
 <li>Einstellungen aus dem aktiven Auszug</li>
-</ol></li>
-<li><p>Men&#252; <strong>Konfiguraion bearbeiten</strong></p>
-<p>TODO: beschreiben, wenn fertig implementiert</p>
-<p>&#220;ber dieses Men&#252; kommt eine Bildschirmmaske zur Bearbeitung der angew&#228;hlten Einstellung.</p></li>
-</ul>
-<h4 id="eingabebereich-und-abc-notation-editor"><span class="header-section-number">4.2.3.2</span> Eingabebereich und ABC-Notation (Editor)</h4>
-<p>TODO: &#252;berarbeten:</p>
-<p>Die ABC-Notation wurde erfunden, um Musikst&#252;cke auf Computern verarbeiten zu k&#246;nnen. Computer k&#246;nnen die ABC-Notation interpretieren, um daraus herk&#246;mmliche Musiknoten zu generieren oder auch Musikst&#252;cke auf dem Computer abspielen zu k&#246;nnen. Unter dem Hilfemen&#252; des Zupfnoters findet man eine deutsche Anleitung f&#252;r die ABC-Notation.</p>
-<p>Als zus&#228;tzliche Information zu dieser Anleitung sei noch erw&#228;hnt, dass der Befehl X: (Liednummer) eine positive Ganzzahl sein muss. Es d&#252;rfen keine Buchstaben, Leerzeichen oder Unterstriche enthalten sein.</p>
+</ol>
+</blockquote></li>
+<li><p>Men&#252; <strong>Konfig. bearbeiten</strong></p>
+<p>&#220;ber dieses Men&#252; kannst du die Konfigurationsparameter <strong>bearbeiten</strong>. Dazu werden entprechende Bildschirmmasken aufgerufen. Weitere Informationen findest du im Kapitel&#160;(konfigurationsmasken)&#8220;: <a href="#konfigurationsmasken">Konfigurationsmasken</a>&#8221;</p></li>
+<li><p>Men&#252; <strong>Zusatz einf&#252;gen</strong></p>
+<p>&#220;ber diesesk&#246;nnen Zupfnoter-spezifische Zus&#228;tze an eine Note bzw. an einen Taktstrich eingef&#252;gt werden. Zupfnoter verwendet spzifische Zus&#228;tze, um z.b. die Position von Sprunglinien anzugeben, oder Notengebundene Anmerkungen zu erfassen. Diese Zus&#228;tze sind an eine Note bzw. an einen Taktstrich gebungen und werden in Form einer ABC-Anmerkung notiert (z.B.<code>&quot;^@@3&quot; :|</code> f&#252;r die Lage einer Sprungline f&#252;r eine Wiederholung).</p>
 <blockquote>
-<p><strong>Hinweis:</strong> Ver&#228;nderungen in der ABC-Notation wirken unterschiedlich auf die beiden anderen Fenster:</p>
+<p><strong>Hinweis</strong>: Dieses Men&#252; wird daher erst dann aktiv, wenn die Schreibmarke (Cursor) zwischen einem Leerzeichen und einer Note/bzw. Taktstrich steht. Man erkennt das auch in der Statusleiste links unten: dort sollte das wort <code>editable.before</code> erscheinen, dann ist die Schaltfl&#228;che aktiv.</p>
+<p>Einzelne Unterpunkte des Men&#252;s sind nur aktiv, wenn die Schreibmarke vor einer Note steht.</p>
+</blockquote>
+<p>&#220;ber das Men&#252; k&#246;nnen Fenster aufgerufen werden, um diese Zusa&#228;tze einzuf&#252;gen.</p></li>
+<li><p>Schaltfl&#228;che <strong>Zusatz bearbeiten</strong></p>
+<p>&#220;ber diese Schalzfl&#228;che kann man die Bearbeitungsmasken f&#252;r vorhandene Zus&#228;tze erneut aufrufen.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Diese Schaltfl&#228;che ist erst aktiv, wenn die Schreibmarke in einem solchen Zusatz steht. Man erkennt das auch in der Statusleiste links unten: dort sollte das wort <code>editable</code> erscheinen, dann ist die Schaltfl&#228;che aktiv.</p>
+</blockquote></li>
+</ul>
+<h4 id="bearbeitungsansichten-des-eingabefensters"><span class="header-section-number">4.2.3.2</span> Bearbeitungsansichten des Eingabefensters</h4>
+<p>&#220;ber die Karteireiter kann man zwischen den verschiedenen Bearbeitungsansichten umschalten:</p>
 <ul>
-<li>Die Notenvorschau wird unmittelbar aktualisiert</li>
-<li>Die Unterlegnotenvorschau wird erst durch die Funktion &#8220;Rendern&#8221; aktualisiert</li>
+<li>Texteditor (siehe Kapitel&#160; &#8220;<a href="#texteditor">Texteditor</a>&#8221;)</li>
+<li>Konfigurationsmasken Kapitel&#160;(konfigurationsmasken) &#8220;<a href="#konfigurationsmasken">Konfigurationsmasken</a>&#8221;</li>
 </ul>
-</blockquote>
-<p>Wenn man mit der Maus eine Note in der ABC-Notation selektiert, wechselt die Note in der herk&#246;mmlichen Notenschrift und in den Unterlegnoten von schwarz auf Rot. Umgekehrt funktioniert es genauso. Wenn man auf eine Noten in einer der Vorschauen klickt, wird diese im Eingabebereich selektiert. So findet man schnell zu einer Stelle, die man &#228;ndern m&#246;chte oder wo man was hinzuf&#252;gen m&#246;chte.</p>
-<blockquote>
-<p><strong>Hinweis::</strong> Wenn man zun&#228;chst eine Note, und dann mit gedr&#252;ckter &#8220;Shift&#8221;-Taste eine zweite Note anklickt, dann werden die dazwischen liegenden Noten selektiert.</p>
-</blockquote>
-<p>Das Ende der ABC-Notation wird mit einer Leerzeile eingeleitet. Sollte nach einer Leerzeile noch ABC-Notation folgen, wird dies vom Computer ignoriert.</p>
-<h4 id="linker-abschnitt-zupfnoter-einstellungen"><span class="header-section-number">4.2.3.3</span> Linker Abschnitt Zupfnoter-Einstellungen</h4>
-<p>Nach der ABC-Notation kommen die Zupfnoter-Einstellugnen. Diese werden durch den Kommentar</p>
-<pre><code>`%%%%zupfnoter.config`</code></pre>
-<p>von der ABC-Notation abgetrennt. Die ABC-Notation und die Zupfnoter-Einstellungen d&#252;rfen nicht gemischt werden.</p>
-<p>Die Zupfnoter-Einstellungen sind im sog. JSON-Format angegeben (siehe Kapitel (konfiguration} <a href="#konfiguration">Konfiguration der Ausgabe</a></p>
-<p>&#220;ber die Zupfnoter-Einstellungen wird das Design der Unterlegnoten verfeinert. So k&#246;nnen zum Beispiel repeat lines (Wiederholungslinien) besser positioniert werden oder string names (Saitennamen) eingef&#252;gt werden. Die Zupfnoter-Einstellungen k&#246;nnen manuell eingegeben werden oder &#252;ber das Men&#252; sheet config (Blattkonfiguration) erzeugt werden. Weitere Informationen zu den Zupfnoter-Einstellungen stehen im n&#228;chsten Kapitel.</p>
-<p>Wichtig ist, immer daran zu denken nach einer &#196;nderung in der Men&#252;leiste auf render (ausf&#252;hren) zu dr&#252;cken, damit die Unterlegnoten aktualisiert werden.</p>
-<p>Mit der Maus k&#246;nnen in diesem Teil Textfelder optimal dem Stimmverlauf angepasst werden. Danach sind die Werte in dem entsprechenden Zupfnoter-Kommando bzgl. der Positionsparameter angepasst worden.</p>
-<h4 id="fehlermarkierung-und-fehlermeldung"><span class="header-section-number">4.2.3.4</span> Fehlermarkierung und Fehlermeldung</h4>
-<p>Zupfnoter zeigt &#252;ber ein rotes Quadrat mit Kreuz links von den Abc Notationszeilen oder den Zupfnoter-Einstellungen an, da&#223; in der Zeile ein Fehler aufgetreten ist. Wenn man mit der Maus auf das rote Quadrat geht, wird die Fehlermeldung angezeigt, z.B. abc:12:19 error=F-Text. Das bedeutet in Zeile 12 an Stelle 19 ist der F-Text nicht korrekt.</p>
-<p>Es m&#252;ssen alle Fehler beseitigt werden, ansonsten k&#246;nnen keine herk&#246;mmlichen Noten oder Unterlegnoten generiert werden.</p>
-<blockquote>
-<p><strong>Hinweis:</strong> Die Position des Cursors (der Schreibmarke) wird als Zeile:Spalte ganz links in der Statusleiste angezeigt.</p>
-</blockquote>
-<blockquote>
-<p><strong>Hinweis:</strong> die letzten Fehlermeldungen kann man in der der Konsole (mit <code>ctrl/cmd-K</code> sehen.</p>
-</blockquote>
-<p>TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einf&#252;gen???</p>
-<p>TODO: popup-Fenster f&#252;r Fehlermeldungen</p>
 <h3 id="fenster-rechts-oben-notenvorschau"><span class="header-section-number">4.2.4</span> Fenster rechts oben : Notenvorschau</h3>
-<p>TODO:</p>
+<p>TODO: erg&#228;nzen</p>
+<p>Die Notenvorschau zeigt das Musikst&#252;ck in herk&#246;mmlichen Noten an. Damit kann man sich bei der Erfassung auf die musikalischen Aspekte konzentrieren.</p>
+<p>Wenn man auf Elemente in der Notenvorschau klickt, werden diese auch im Texteditor und in der Unterlegnotenvorschau hervorgehoben.</p>
+<blockquote>
+<p><strong>Hinweis::</strong> Wenn man zun&#228;chst eine Note, und dann mit gedr&#252;ckter &#8220;Shift&#8221;-Taste eine zweite Note anklickt, dann werden die dazwischen liegenden Noten selektiert. Damit kannst du z.B. einen Auschnitt aus einer bestimmten Stimme &#252;ber die Notenvorschaut ausw&#228;hlen und anschlie&#223;end abspielen lassen.</p>
+</blockquote>
 <h3 id="fenster-rechts-unten-unterlegnotenvorschau"><span class="header-section-number">4.2.5</span> Fenster rechts unten : Unterlegnotenvorschau</h3>
 <p>Die Unterlegnotenvorschau zeigt die erzeugten Unterlegnoten. &#252;ber den Reiter &#8220;Zoom&#8221; kann man die Anzeige vergr&#246;&#223;ern oder verkleinern.</p>
 <p>&#220;ber die Scrollbalken kann man den angezeigten Ausschnitt w&#228;hlen.</p>
@@ -623,6 +643,80 @@ W: Strophe 2 Zeile 2</code></pre>
 <blockquote>
 <p><strong>Hinweis:</strong> unter Windows / Linux entspricht &#8220;cmd&#8221; der &#8220;ctrl&#8221; oder &#8220;strg&#8221; - Taste</p>
 </blockquote>
+<h2 id="texteditor"><span class="header-section-number">4.4</span> Texteditor</h2>
+<p>Im Teexteditor kannst du die ABC-Notation bearbeiten. Dar&#252;berhinaus kannst du die Konfigurationsparameter sehen und ggf. direkt (d.h. ohne Bildschirmmasken) sehen und ggf. korrigieren (f&#252;r Experten).</p>
+<h3 id="erfassung-der-abc-notation-im-texteditor"><span class="header-section-number">4.4.1</span> Erfassung der ABC-Notation im Texteditor</h3>
+<p>Im Texteditor kannst du die ABC-Notation erfassen. Elemente werden entsprechend ihrer Bedetung farblich hervorgehoben (Syntax-Coloring). In der Statusleiste links unten zeigt Zupfnoter auch Hinweise &#252;ber die Bedeutung des Elementes links von der aktuellen Schreibmarke an.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Diese Anzeige ist noch sehr technisch, in manchen F&#228;llen aber dennoch hilfreich. Sie steuert z.B. die verf&#252;gbarkeit der Schaltfl&#228;chen f&#252;r die Zus&#228;tze.</p>
+</blockquote>
+<p>Als zus&#228;tzliche Information zu dieser Anleitung sei noch erw&#228;hnt, dass der Befehl X: (Liednummer) eine positive Ganzzahl sein muss. Es d&#252;rfen keine Buchstaben, Leerzeichen oder Unterstriche enthalten sein.</p>
+<blockquote>
+<p><strong>Hinweis:</strong> Ver&#228;nderungen in der ABC-Notation wirken unterschiedlich auf die beiden anderen Fenster:</p>
+<ul>
+<li>Die Notenvorschau wird unmittelbar aktualisiert</li>
+<li>Die Unterlegnotenvorschau wird erst durch die Funktion &#8220;Rendern&#8221; aktualisiert</li>
+</ul>
+</blockquote>
+<p>Der Texteditor ist mit den anderen Fenstern synchronisiert. Wenn man mit der Maus eine Note in der ABC-Notation selektiert, wechselt die Note in der herk&#246;mmlichen Notenschrift und in den Unterlegnoten von schwarz auf Rot. Umgekehrt funktioniert es genauso. Wenn man auf eine Noten in einer der Vorschauen klickt, wird diese im Eingabebereich selektiert. So findet man schnell zu einer Stelle, die man &#228;ndern m&#246;chte oder wo man was hinzuf&#252;gen m&#246;chte.</p>
+<blockquote>
+<p><strong>Hinweis::</strong> Wenn man zun&#228;chst eine Note, und dann mit gedr&#252;ckter &#8220;Shift&#8221;-Taste eine zweite Note anklickt, dann werden die dazwischen liegenden Noten selektiert.</p>
+</blockquote>
+<p>Das Ende der ABC-Notation wird mit einer Leerzeile eingeleitet. Sollte nach einer Leerzeile noch ABC-Notation folgen, wird dies vom Computer ignoriert.</p>
+<p>Du kannst die Liedtexte schnell efassen, indem du zun&#228;chst den Text (von der ABC-Notation durch eine Leerzeile getrennt) eingibst. Danach kannst du mit folgenden Schritten den Text um entsprechende ABC-Notation f&#252;r Liedtexte <code>W:</code> erg&#228;nzen:</p>
+<ol style="list-style-type: decimal">
+<li>Stelle die Schreibmarke in die erste Zeile des Liedtextes</li>
+<li>Halte gleichzeitig die Taten <code>Alt</code> und <code>Ctrl</code> gedr&#252;ckt und</li>
+<li>bewege die Schreibmarke mit den Pfieltasten an das Ende des Liedtextes.</li>
+<li>Du siehst nun eine d&#252;nne schwarze Linie an den Zeilenanf&#228;ngen. Nun gib die Zeichen <code>W:</code>ein. Diese Zeichenkette wird nun an allen Zeilen des Liedtextes vorangestellt.</li>
+</ol>
+<h3 id="darstellung-der-konfigurationsparameter-als-json"><span class="header-section-number">4.4.2</span> Darstellung der Konfigurationsparameter als JSON</h3>
+<p>Nach der ABC-Notation kommen die Zupfnoter-Einstellugnen. Diese werden durch den Kommentar</p>
+<pre><code>`%%%%zupfnoter.config`</code></pre>
+<p>von der ABC-Notation abgetrennt. Die ABC-Notation und die Zupfnoter-Einstellungen d&#252;rfen nicht gemischt werden.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: zur komfortablen Bearbeitung der Konfigurationsparameter gibt es Bildschirmmasken (siehe Kapitel&#160;: &#8220;<a href="#konfigurationsmasken">Konfigurationsmasken</a>&#8221;).</p>
+</blockquote>
+<p>Die Zupfnoter-Einstellungen sind im sog. JSON-Format angegeben (siehe Kapitel (konfiguration} <a href="#konfiguration">Konfiguration der Ausgabe</a></p>
+<p>&#220;ber die Zupfnoter-Einstellungen wird das Design der Unterlegnoten verfeinert. So k&#246;nnen zum Beispiel repeat lines (Wiederholungslinien) besser positioniert werden oder string names (Saitennamen) eingef&#252;gt werden. Die Zupfnoter-Einstellungen k&#246;nnen manuell eingegeben werden oder &#252;ber das Men&#252; sheet config (Blattkonfiguration) erzeugt werden. Weitere Informationen zu den Zupfnoter-Einstellungen stehen im Kapitel&#160; &#8220;<a href="#konfiguration">Konfiguration</a>&#8221;.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Wichtig ist, nach einer &#196;nderung in der Men&#252;leiste immer auf auf &#8220;Rendern&#8221; (ausf&#252;hren) zu dr&#252;cken, damit die Unterlegnoten aktualisiert werden.</p>
+</blockquote>
+<p>Mit der Maus k&#246;nnen in diesem Teil Textfelder optimal dem Stimmverlauf angepasst werden. Danach sind die Werte in dem entsprechenden Zupfnoter-Kommando bzgl. der Positionsparameter angepasst worden.</p>
+<h3 id="fehlermarkierung-und-fehlermeldung-im-texteditor"><span class="header-section-number">4.4.3</span> Fehlermarkierung und Fehlermeldung im Texteditor</h3>
+<p>Zupfnoter zeigt &#252;ber ein rotes Quadrat mit Kreuz links von den Abc Notationszeilen oder den Zupfnoter-Einstellungen an, da&#223; in der Zeile ein Fehler aufgetreten ist. Wenn man mit der Maus auf das rote Quadrat geht, wird die Fehlermeldung angezeigt, z.B. abc:12:19 error=F-Text. Das bedeutet in Zeile 12 an Stelle 19 ist der F-Text nicht korrekt.</p>
+<p>Es m&#252;ssen alle Fehler beseitigt werden, ansonsten k&#246;nnen keine herk&#246;mmlichen Noten oder Unterlegnoten generiert werden.</p>
+<blockquote>
+<p><strong>Hinweis:</strong> Die Position des Cursors (der Schreibmarke) wird als Zeile:Spalte ganz links in der Statusleiste angezeigt.</p>
+</blockquote>
+<blockquote>
+<p><strong>Hinweis:</strong> die letzten Fehlermeldungen kann man in der der Konsole (mit <code>ctrl/cmd-K</code> sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch ein Fenster mit den letzten Fehlermeldungen an.</p>
+</blockquote>
+<p>TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einf&#252;gen???</p>
+<h2 id="konfigurationsmasken"><span class="header-section-number">4.5</span> Konfigurationsmasken</h2>
+<p>TODO:</p>
+<ul>
+<li>Konfigurationsmasken vordefiniert oder dynamisch erzeugt, daher nur ein Beispiel
+<ul>
+<li>vordefinierte haben konstanten Grundaufbau</li>
+<li>dynamische zeigen nur Parameter, die im Musikst&#252;ck vorhanden sind</li>
+</ul></li>
+<li>Aufbau
+<ul>
+<li>L&#246;schknopf</li>
+<li>Einf&#252;geknopf</li>
+<li><ul>
+<li>label</li>
+</ul></li>
+<li>Eingabefeld</li>
+<li>Hilfe-Taste</li>
+<li>Vorgabe</li>
+</ul></li>
+<li>Maske ggf mit Refresh aktualisieren</li>
+<li>Feldeingabe mit &#8220;TAB&#8221; Beenden</li>
+<li>Refresh nicht vergessen</li>
+</ul>
+<h2 id="zusaetze"><span class="header-section-number">4.6</span> Zupfnoter-spezifische Zus&#228;tze</h2>
 <h1 id="zupfnoter-f&#252;r-experten"><span class="header-section-number">5</span> Zupfnoter f&#252;r Experten</h1>
 <h2 id="auszuege"><span class="header-section-number">5.1</span> Erstellung von Ausz&#252;gen</h2>
 <p>TODO: Konzept der Ausz&#252;ge beschreiben</p>
@@ -690,514 +784,539 @@ W: Strophe 2 Zeile 2</code></pre>
 </ul>
 <h1 id="abc-tutorial"><span class="header-section-number">7</span> ABC Tutorial</h1>
 <p>todo Penzing</p>
-<h1 id="konfiguration-der-ausgabekonfiguration"><span class="header-section-number">8</span> Konfiguration der Ausgabe(#konfiguration)</h1>
-<p>details zu layout ist <a href="#extract.0.layout">hier</a></p>
-<h3 id="annotations.vl"><span class="header-section-number">8.0.1</span> <code id="hugo.annotations.vl">annotations.vl</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;vl&quot;: {&quot;pos&quot;: [-1, -5], &quot;text&quot;: &quot;v&quot;}</code></pre></li>
-</ul>
-<h3 id="annotations.vl.pos"><span class="header-section-number">8.0.2</span> <code id="annotations.vl.pos">annotations.vl.pos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;pos&quot;: [-1, -5]</code></pre></li>
-</ul>
-<h3 id="annotations.vl.text"><span class="header-section-number">8.0.3</span> <code id="annotations.vl.text">annotations.vl.text</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
-</ul>
-<h2 id="extract"><span class="header-section-number">8.1</span> <code id="extract">extract</code></h2>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;extract&quot;: {
-  &quot;0&quot; : {
-    &quot;title&quot;        : &quot;alle Stimmen&quot;,
-    &quot;voices&quot;       : [1, 2, 3, 4],
-    &quot;flowlines&quot;    : [1, 3],
-    &quot;subflowlines&quot; : [2, 4],
-    &quot;synchlines&quot;   : [[1, 2], [3, 4]],
-    &quot;jumplines&quot;    : [1, 3],
-    &quot;repeatsigns&quot;  : {
-      &quot;voices&quot; : [],
-      &quot;left&quot;   : {&quot;pos&quot;: [-7, -2], &quot;text&quot;: &quot;|:&quot;, &quot;style&quot;: &quot;bold&quot;},
-      &quot;right&quot;  : {&quot;pos&quot;: [5, -2], &quot;text&quot;: &quot;:|&quot;, &quot;style&quot;: &quot;bold&quot;}
-    },
-    &quot;layoutlines&quot;  : [1, 2, 3, 4],
-    &quot;barnumbers&quot;   : {
-      &quot;voices&quot; : [],
-      &quot;pos&quot;    : [6, -4],
-      &quot;style&quot;  : &quot;small_bold&quot;,
-      &quot;prefix&quot; : &quot;&quot;
-    },
-    &quot;countnotes&quot;   : {&quot;voices&quot;: [], &quot;pos&quot;: [3, -2]},
-    &quot;legend&quot;       : {&quot;pos&quot;: [320, 20], &quot;spos&quot;: [320, 27]},
-    &quot;notes&quot;        : {},
-    &quot;lyrics&quot;       : {},
-    &quot;nonflowrest&quot;  : false,
-    &quot;layout&quot;       : {
+<h1 id="konfiguration"><span class="header-section-number">8</span> Konfiguration der Ausgabe</h1>
+<p>Dieses Kapitel beschreibt die Konfiguration der Erstellung der Unterlegnotenbl&#228;tter. Das Kapitel ist als Referenz aufgebaut. Die einzelnen Konfigurationsparameter werden in alphabetischer Reihenfolge aufgef&#252;hrt. Bei den einzelnen Parametern wird der Text der Online-Hilfe, sowie die Voreinstellungen des Systems dargestellt.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Auch wenn in den Bildschirmmasken die Namen der Konfigurationsparameter &#252;bersetzt sind, so basiert diese Referenz den englischen Namen.</p>
+</blockquote>
+<blockquote>
+<p><strong>Hinweis</strong>: Manche Konfigurationsparameter treten k&#246;nnen mehrfach auftreten (z.B. <code>extract</code>). In diesem Kapitel wird dann immer die Instanz mit der Nr. 0 (z.B. <code>extract.0</code>) beschrieben.</p>
+</blockquote>
+<h2 id="annotations"><span class="header-section-number">8.1</span> <code>annotations</code> - Beschriftungen</h2>
+<p>Hier kannst du eine Liste von vordefinierten notenbezogenen Anmerkiungen angeben.</p>
+<p>Zupfnoter bringt einige solcher Definitionen bereits mit.</p>
+<p>Diese notenbezogenen Beschriftungen kannst du &#252;ber &#8220;Zusatz einf&#252;gen&#8221; mit einer Note verbinden.</p>
+<pre><code>    &quot;annotations&quot;: {
+      &quot;vl&quot; : {&quot;pos&quot;: [-1, -5], &quot;text&quot;: &quot;v&quot;},
+      &quot;vr&quot; : {&quot;pos&quot;: [2, -5], &quot;text&quot;: &quot;v&quot;},
+      &quot;vt&quot; : {&quot;pos&quot;: [-5, -5], &quot;text&quot;: &quot;v&quot;}
+    }
+      </code></pre>
+<h2 id="annotations.vl"><span class="header-section-number">8.2</span> <code>annotations.vl</code> - &#8216;V&#8217; links</h2>
+<p>Hier siehst du ein Beispiel f&#252;r eine notenbezogenen Anmerkung (hier mit dem Namen <code>vl</code>).<br />Diese dient dazu ein &#8220;V&#8221; an die Harfennote zu drucken um anzudeuten, dass die Saite nach Ablauf des Notenwertes abged&#228;mpft werden soll.</p>
+<pre><code>    &quot;vl&quot;: {&quot;pos&quot;: [-1, -5], &quot;text&quot;: &quot;v&quot;}
+      </code></pre>
+<h2 id="annotations.vl.pos"><span class="header-section-number">8.3</span> <code>annotations.vl.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [-1, -5]
+      </code></pre>
+<h2 id="annotations.vl.text"><span class="header-section-number">8.4</span> <code>annotations.vl.text</code> - Text</h2>
+<p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein</p>
+<pre><code>    &quot;text&quot;: &quot;v&quot;
+      </code></pre>
+<h2 id="annotations.vr"><span class="header-section-number">8.5</span> <code>annotations.vr</code> - &#8216;V&#8217; rechts</h2>
+<p>TODO: Helptext f&#252;r annotations.vr einf&#252;gen</p>
+<pre><code>    &quot;vr&quot;: {&quot;pos&quot;: [2, -5], &quot;text&quot;: &quot;v&quot;}
+      </code></pre>
+<h2 id="annotations.vr.pos"><span class="header-section-number">8.6</span> <code>annotations.vr.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [2, -5]
+      </code></pre>
+<h2 id="annotations.vr.text"><span class="header-section-number">8.7</span> <code>annotations.vr.text</code> - Text</h2>
+<p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein</p>
+<pre><code>    &quot;text&quot;: &quot;v&quot;
+      </code></pre>
+<h2 id="annotations.vt"><span class="header-section-number">8.8</span> <code>annotations.vt</code> - &#8216;V&#8217; oben</h2>
+<p>TODO: Helptext f&#252;r annotations.vt einf&#252;gen</p>
+<pre><code>    &quot;vt&quot;: {&quot;pos&quot;: [-5, -5], &quot;text&quot;: &quot;v&quot;}
+      </code></pre>
+<h2 id="annotations.vt.pos"><span class="header-section-number">8.9</span> <code>annotations.vt.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [-5, -5]
+      </code></pre>
+<h2 id="annotations.vt.text"><span class="header-section-number">8.10</span> <code>annotations.vt.text</code> - Text</h2>
+<p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein</p>
+<pre><code>    &quot;text&quot;: &quot;v&quot;
+      </code></pre>
+<h2 id="extract"><span class="header-section-number">8.11</span> <code>extract</code> - Auszug</h2>
+<p>Hier kannst du Ausz&#252;ge f&#252;r deine Unterlegnoten definieren. Das ist besonders bei mehrstimmigen S&#228;tzen sinnvoll (Siehe Kapitel &#8220;Ausz&#252;ge&#8221;).</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Einstellungen im Auszug 0 wirken auf die anderen Ausz&#252;ge, sofern sie dort nicht &#252;berschrieben werden.</p>
+</blockquote>
+<p><code>extract.0</code> spezifiziert den Auszug 0; <code>extract.1</code> spezifiziert den Auszug 1 usw.</p>
+<pre><code>    &quot;extract&quot;: {
+      &quot;0&quot; : {
+        &quot;title&quot;        : &quot;alle Stimmen&quot;,
+        &quot;voices&quot;       : [1, 2, 3, 4],
+        &quot;flowlines&quot;    : [1, 3],
+        &quot;subflowlines&quot; : [2, 4],
+        &quot;synchlines&quot;   : [[1, 2], [3, 4]],
+        &quot;jumplines&quot;    : [1, 3],
+        &quot;repeatsigns&quot;  : {
+          &quot;voices&quot; : [],
+          &quot;left&quot;   : {&quot;pos&quot;: [-7, -2], &quot;text&quot;: &quot;|:&quot;, &quot;style&quot;: &quot;bold&quot;},
+          &quot;right&quot;  : {&quot;pos&quot;: [5, -2], &quot;text&quot;: &quot;:|&quot;, &quot;style&quot;: &quot;bold&quot;}
+        },
+        &quot;layoutlines&quot;  : [1, 2, 3, 4],
+        &quot;barnumbers&quot;   : {
+          &quot;voices&quot;  : [],
+          &quot;pos&quot;     : [6, -4],
+          &quot;style&quot;   : &quot;small_bold&quot;,
+          &quot;autopos&quot; : false,
+          &quot;prefix&quot;  : &quot;&quot;
+        },
+        &quot;countnotes&quot;   : {
+          &quot;voices&quot;  : [],
+          &quot;pos&quot;     : [3, -2],
+          &quot;style&quot;   : &quot;smaller&quot;,
+          &quot;autopos&quot; : false
+        },
+        &quot;legend&quot;       : {&quot;pos&quot;: [320, 20], &quot;spos&quot;: [320, 27]},
+        &quot;notes&quot;        : {},
+        &quot;lyrics&quot;       : {},
+        &quot;nonflowrest&quot;  : false,
+        &quot;layout&quot;       : {
+          &quot;limit_a3&quot;     : true,
+          &quot;LINE_THIN&quot;    : 0.1,
+          &quot;LINE_MEDIUM&quot;  : 0.3,
+          &quot;LINE_THICK&quot;   : 0.5,
+          &quot;ELLIPSE_SIZE&quot; : [3.5, 1.7],
+          &quot;REST_SIZE&quot;    : [4, 2]
+        },
+        &quot;stringnames&quot;  : {
+          &quot;vpos&quot;  : [],
+          &quot;text&quot;  : &quot;G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G&quot;,
+          &quot;style&quot; : &quot;small&quot;,
+          &quot;marks&quot; : {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]}
+        },
+        &quot;filenamepart&quot; : null,
+        &quot;printer&quot;      : {
+          &quot;a3_offset&quot;   : [0, 0],
+          &quot;a4_offset&quot;   : [-5, 0],
+          &quot;show_border&quot; : true
+        },
+        &quot;startpos&quot;     : 15
+      },
+      &quot;1&quot; : {
+        &quot;title&quot;        : &quot;Sopran, Alt&quot;,
+        &quot;voices&quot;       : [1, 2],
+        &quot;filenamepart&quot; : null
+      },
+      &quot;2&quot; : {
+        &quot;title&quot;        : &quot;Tenor, Bass&quot;,
+        &quot;voices&quot;       : [3, 4],
+        &quot;filenamepart&quot; : null
+      }
+    }
+      </code></pre>
+<h2 id="extract.0.barnumbers"><span class="header-section-number">8.12</span> <code>extract.0.barnumbers</code> - Taktnummern</h2>
+<p>Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt ausgegeben werden sollen.</p>
+<pre><code>    &quot;barnumbers&quot;: {
+      &quot;voices&quot;  : [],
+      &quot;pos&quot;     : [6, -4],
+      &quot;style&quot;   : &quot;small_bold&quot;,
+      &quot;autopos&quot; : false,
+      &quot;prefix&quot;  : &quot;&quot;
+    }
+      </code></pre>
+<h2 id="extract.0.barnumbers.autopos"><span class="header-section-number">8.13</span> <code>extract.0.barnumbers.autopos</code> - automatisch positionieren</h2>
+<p>Hier kannst du die automatische Positionierung einschalten. Dabei werden Z&#228;hlmarken bzw. Taktnummern abh&#228;ngig von der Gr&#246;&#223;e der Noten platziert. Wenn diese Option ausgeschaltet, gelten die Werte von <code>pos</code>. Dies kann bei manchen St&#252;cken eine sinnvollere Einstellugn sein.</p>
+<p>Die Z&#228;hlmarken/Taktnummer lassen sich weiterhin mit der Maus verschieben.</p>
+<pre><code>    &quot;autopos&quot;: false
+      </code></pre>
+<h2 id="extract.0.barnumbers.pos"><span class="header-section-number">8.14</span> <code>extract.0.barnumbers.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [6, -4]
+      </code></pre>
+<h2 id="extract.0.barnumbers.prefix"><span class="header-section-number">8.15</span> <code>extract.0.barnumbers.prefix</code> - Pr&#228;fix</h2>
+<p>Hier kannst du einen Text angeben, der z.B. vor der Taktnummeer ausgegeben werden soll (Pr&#228;fix).</p>
+<pre><code>    &quot;prefix&quot;: &quot;&quot;
+      </code></pre>
+<h2 id="extract.0.barnumbers.style"><span class="header-section-number">8.16</span> <code>extract.0.barnumbers.style</code> - Stil</h2>
+<p>Hier kannst du den Stil f&#252;r den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
+<pre><code>    &quot;style&quot;: &quot;small_bold&quot;
+      </code></pre>
+<h2 id="extract.0.barnumbers.voices"><span class="header-section-number">8.17</span> <code>extract.0.barnumbers.voices</code> - Stimmen</h2>
+<p>Hier kannst du eine Liste der Stimmen angeben, die Taktnummern bekommen sollen.</p>
+<pre><code>    &quot;voices&quot;: []
+      </code></pre>
+<h2 id="extract.0.countnotes"><span class="header-section-number">8.18</span> <code>extract.0.countnotes</code> - Z&#228;hlmarken</h2>
+<p>Hier kannst du angeben, ob und wie Z&#228;hlmarken in deinem Unterlegnotenblatt ausgegeben werden sollen.</p>
+<p>Z&#228;hlmarken sind hilfreich, um sich ein St&#252;ck erarbeiten. Sie geben Hilfestellung beim einhalten der vorgegebenen Notenweret.</p>
+<pre><code>    &quot;countnotes&quot;: {
+      &quot;voices&quot;  : [],
+      &quot;pos&quot;     : [3, -2],
+      &quot;style&quot;   : &quot;smaller&quot;,
+      &quot;autopos&quot; : false
+    }
+      </code></pre>
+<h2 id="extract.0.countnotes.autopos"><span class="header-section-number">8.19</span> <code>extract.0.countnotes.autopos</code> - automatisch positionieren</h2>
+<p>Hier kannst du die automatische Positionierung einschalten. Dabei werden Z&#228;hlmarken bzw. Taktnummern abh&#228;ngig von der Gr&#246;&#223;e der Noten platziert. Wenn diese Option ausgeschaltet, gelten die Werte von <code>pos</code>. Dies kann bei manchen St&#252;cken eine sinnvollere Einstellugn sein.</p>
+<p>Die Z&#228;hlmarken/Taktnummer lassen sich weiterhin mit der Maus verschieben.</p>
+<pre><code>    &quot;autopos&quot;: false
+      </code></pre>
+<h2 id="extract.0.countnotes.pos"><span class="header-section-number">8.20</span> <code>extract.0.countnotes.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [3, -2]
+      </code></pre>
+<h2 id="extract.0.countnotes.style"><span class="header-section-number">8.21</span> <code>extract.0.countnotes.style</code> - Stil</h2>
+<p>Hier kannst du den Stil f&#252;r den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
+<pre><code>    &quot;style&quot;: &quot;smaller&quot;
+      </code></pre>
+<h2 id="extract.0.countnotes.voices"><span class="header-section-number">8.22</span> <code>extract.0.countnotes.voices</code> - Stimmen</h2>
+<p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, die Z&#228;hlmarken bekommen sollen.</p>
+<pre><code>    &quot;voices&quot;: []
+      </code></pre>
+<h2 id="extract.0.filenamepart"><span class="header-section-number">8.23</span> <code>extract.0.filenamepart</code> - Filename-Zusatz</h2>
+<p>Hier kannst du einen Zusatz angeben, um welchen der Filename der PDF-Dateien f&#252;r diesen Auszug erg&#228;nzt werden soll. Auf diese Weise wird jeder Auszug in einer eigenen Datei wiedergegeben.</p>
+<p>Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von <code>extract.0.title</code> gebildet.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Bitte achte darauf, da&#223; jeder Auszug einen eindeutigen Filename-Zusatz oder Titel hat. Sonst werden mehrere Ausz&#252;ge in die gleiche Datei geschrieben (und nur der letzte bleibt &#252;brig).</p>
+</blockquote>
+<pre><code>    &quot;filenamepart&quot;: null
+      </code></pre>
+<h2 id="extract.0.flowlines"><span class="header-section-number">8.24</span> <code>extract.0.flowlines</code> - Melodielinien</h2>
+<p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, f&#252;r die Flu&#223;linien eingezeichnet werden sollen.</p>
+<pre><code>    &quot;flowlines&quot;: [1, 3]
+      </code></pre>
+<h2 id="extract.0.jumplines"><span class="header-section-number">8.25</span> <code>extract.0.jumplines</code> - Sprunglinien</h2>
+<p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, f&#252;r die Sprunglinien eingezeichnet werden sollen.</p>
+<pre><code>    &quot;jumplines&quot;: [1, 3]
+      </code></pre>
+<h2 id="extract.0.layout"><span class="header-section-number">8.26</span> <code>extract.0.layout</code> - Layout</h2>
+<p>Hier kannst du die Parameter f&#252;r das Layout eintsllen. Damit l&#228;sst das Notenbild gezielt optimieren.</p>
+<pre><code>    &quot;layout&quot;: {
       &quot;limit_a3&quot;     : true,
       &quot;LINE_THIN&quot;    : 0.1,
       &quot;LINE_MEDIUM&quot;  : 0.3,
       &quot;LINE_THICK&quot;   : 0.5,
       &quot;ELLIPSE_SIZE&quot; : [3.5, 1.7],
       &quot;REST_SIZE&quot;    : [4, 2]
-    },
-    &quot;stringnames&quot;  : {
+    }
+      </code></pre>
+<h2 id="extract.0.layout.ELLIPSE_SIZE"><span class="header-section-number">8.27</span> <code>extract.0.layout.ELLIPSE_SIZE</code> - Notengr&#246;&#223;e</h2>
+<p>Hier kannst du die Gr&#246;&#223;e der ganzen Noten einstellen. Sinnvolle Werte sind [2-4, 1.2-2].</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Die Gr&#246;&#223;e der anderen Noten werden ausgehend von diesem Wert berechnet.</p>
+<p>Da die Noten auch mit der dicken Linie umrandet werden, kann auch die &#8220;Linienst&#228;rke <code>dick</code>&#8221; reeduziert werden, um ein filigraneres Notenbild zu erhalten.</p>
+</blockquote>
+<pre><code>    &quot;ELLIPSE_SIZE&quot;: [3.5, 1.7]
+      </code></pre>
+<h2 id="extract.0.layout.LINE_MEDIUM"><span class="header-section-number">8.28</span> <code>extract.0.layout.LINE_MEDIUM</code> - Linienst&#228;rke mittel</h2>
+<p>Hier stellst du die Breite (in mm) von mittelstarken Linien ein.</p>
+<pre><code>    &quot;LINE_MEDIUM&quot;: 0.3
+      </code></pre>
+<h2 id="extract.0.layout.LINE_THICK"><span class="header-section-number">8.29</span> <code>extract.0.layout.LINE_THICK</code> - Linienst&#228;rke dick</h2>
+<p>Hier stellst du die Breite (in mm) von dicken Linien ein.</p>
+<pre><code>    &quot;LINE_THICK&quot;: 0.5
+      </code></pre>
+<h2 id="extract.0.layout.LINE_THIN"><span class="header-section-number">8.30</span> <code>extract.0.layout.LINE_THIN</code> - Linienst&#228;rke d&#252;nn</h2>
+<p>Hier stellst du die Breite (in mm) von d&#252;nnen Linien ein.</p>
+<pre><code>    &quot;LINE_THIN&quot;: 0.1
+      </code></pre>
+<h2 id="extract.0.layout.REST_SIZE"><span class="header-section-number">8.31</span> <code>extract.0.layout.REST_SIZE</code> - Gr&#246;&#223;e der Pausen</h2>
+<p>Hier kannst du die Gr&#246;&#223;e der Pausen einstellen. Sinnvolle Werte sind [2-4, 1.2-2]</p>
+<blockquote>
+<p><strong>Hinweis</strong>:Bitte beachte, dass nur die Angabe der H&#246;he von ber&#252;cksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.</p>
+</blockquote>
+<pre><code>    &quot;REST_SIZE&quot;: [4, 2]
+      </code></pre>
+<h2 id="extract.0.layout.limit_a3"><span class="header-section-number">8.32</span> <code>extract.0.layout.limit_a3</code> - Begrenzung auf A3</h2>
+<p>Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das Unterlegnotenblatt etwas gr&#246;&#223;er ist als A3 w&#252;rde sonst die Note angeshnitten.</p>
+<pre><code>    &quot;limit_a3&quot;: true
+      </code></pre>
+<h2 id="extract.0.layoutlines"><span class="header-section-number">8.33</span> <code>extract.0.layoutlines</code> - Stimmen f&#252;r Layout</h2>
+<p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, die zur die Berechnung des vertikalen Anordnugn der Noten (Layout) herangezogen werden sollen.</p>
+<p>&#220;blicherweise werden alle Stimmen f&#252;r die Berechnung des Layouts herangezogen. Bei langen St&#252;cken kann es aber sinnvoll sein, nur die dargstellten Stimmmen zur Berechnung des Layouts zu ber&#252;cksichtigen, um ein ausgwogeneres Notenbild zu bekommen.</p>
+<blockquote>
+<p><strong>Hineis</strong>: Auch wenn der Parameter <code>layoutlines</code> hei&#223;t, bewirkt er nicht, dass irgendwelche Linien eingezeichnet werden.</p>
+</blockquote>
+<pre><code>    &quot;layoutlines&quot;: [1, 2, 3, 4]
+      </code></pre>
+<h2 id="extract.0.legend"><span class="header-section-number">8.34</span> <code>extract.0.legend</code> - Legende</h2>
+<p>Hier kannst du die Darstellung der Legende konfigurieren. Dabei wird unterschieden zwischen * <code>pos</code> - Position des Titels des Musikst&#252;ckes * <code>spos</code> - Position der Sublegende, d.h. der weiteren Angaben zum Musikst&#252;ck</p>
+<blockquote>
+<p><strong>Hinewis</strong>: Die Legende wird vorzugsweise durch Verschieben mit der Maus positioniert. F&#252;r eine genaue positionierung kann jedoch die Eingabe &#252;ber die Bildschirmmaske sinnvol sein.</p>
+</blockquote>
+<pre><code>    &quot;legend&quot;: {&quot;pos&quot;: [320, 20], &quot;spos&quot;: [320, 27]}
+      </code></pre>
+<h2 id="extract.0.legend.pos"><span class="header-section-number">8.35</span> <code>extract.0.legend.pos</code> - Position</h2>
+<p>Hier kannst du die Darstellung des Titels des Musikst&#252;ckes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [320, 20]
+      </code></pre>
+<h2 id="extract.0.legend.spos"><span class="header-section-number">8.36</span> <code>extract.0.legend.spos</code> - Position Sublegende</h2>
+<p>Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des Musikst&#252;ckes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;spos&quot;: [320, 27]
+      </code></pre>
+<h2 id="extract.0.lyrics"><span class="header-section-number">8.37</span> <code>extract.0.lyrics</code> - Liedtexte</h2>
+<p>Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den Liedtext auf mehrer Bl&#246;cke aufteilen.</p>
+<p>Ein einzelner Block listet die Strophen auf, die er enth&#228;lt, und die gemeinsam poitioniert werden.</p>
+<pre><code>    &quot;lyrics&quot;: {}
+      </code></pre>
+<h2 id="extract.0.nonflowrest"><span class="header-section-number">8.38</span> <code>extract.0.nonflowrest</code> - Begleitpausen</h2>
+<p>Hier kannst du einstellen, ob in den Begleitstimmen ebenfalls die Pausen dargestellt werden sollen. Eine Stimme wird dann Begleitstimme betrachtet, wenn sie keine Flu&#223;linie hat.</p>
+<p>Normalerweise ist es nicht sinnvoll, in den Begleitstimmen Pausen darzustellen, da der Spieler sich ja an den Pausen in der Flu&#223;linie orientiert.</p>
+<pre><code>    &quot;nonflowrest&quot;: false
+      </code></pre>
+<h2 id="extract.0.notes"><span class="header-section-number">8.39</span> <code>extract.0.notes</code> - Beschriftungen</h2>
+<p>Hier kannst du eine Seitenbeschriftungen hinzuf&#252;gen. Beim Einf&#252;gen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>. Es kann aber auch sinnvoll sein eine sprechende Bezeichnung f&#252;r die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht m&#246;glich.</p>
+<pre><code>    &quot;notes&quot;: {}
+      </code></pre>
+<h2 id="extract.0.printer"><span class="header-section-number">8.40</span> <code>extract.0.printer</code> - Drucker</h2>
+<p>Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.</p>
+<blockquote>
+<p><strong>Hinweis:</strong> Durch Verwendung dieser Funktion passen die erstellten PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem Druckdialog findest.</p>
+</blockquote>
+<pre><code>    &quot;printer&quot;: {
+      &quot;a3_offset&quot;   : [0, 0],
+      &quot;a4_offset&quot;   : [-5, 0],
+      &quot;show_border&quot; : true
+    }
+      </code></pre>
+<h2 id="extract.0.printer.a3_offset"><span class="header-section-number">8.41</span> <code>extract.0.printer.a3_offset</code> - Offset f&#252;r A3</h2>
+<p>Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier verschoben werden soll.</p>
+<p>Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Wenn ein Unterlegnotenblatt f&#252;r eine 25 saitige Harfe auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht mehr angeschnitten.</p>
+<p>In diesem Fall kann es auch sinnvoll sein, <code>limit-A3</code> auszuschalten.</p>
+</blockquote>
+<pre><code>    &quot;a3_offset&quot;: [0, 0]
+      </code></pre>
+<h2 id="extract.0.printer.a4_offset"><span class="header-section-number">8.42</span> <code>extract.0.printer.a4_offset</code> - Offset f&#252;r A4</h2>
+<p>Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier verschoben werden soll.</p>
+<p>Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;a4_offset&quot;: [-5, 0]
+      </code></pre>
+<h2 id="extract.0.printer.show_border"><span class="header-section-number">8.43</span> <code>extract.0.printer.show_border</code> - Blattbegrenzg. zeichnen</h2>
+<p>Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll. Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.</p>
+<p>Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem Papier. Dadurch wird die Blattbegrenzung gedruckt, daf&#252;r fehlen dann unten ca. 10 mm.</p>
+<p>Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die Situation verbessert.</p>
+<pre><code>    &quot;show_border&quot;: true
+      </code></pre>
+<h2 id="extract.0.repeatsigns"><span class="header-section-number">8.44</span> <code>extract.0.repeatsigns</code> - Wiederholungszeichen</h2>
+<p>Hier kannst du die Darstellung der Wiederholungszeichen steuern. Dabei wird angegeben, f&#252;r welche Stimmen Wiederholgungszeichen gedruckt werden, wie die Wiederholungszeichen gedruckt werden, und wie sie positioniert werden.</p>
+<pre><code>    &quot;repeatsigns&quot;: {
+      &quot;voices&quot; : [],
+      &quot;left&quot;   : {&quot;pos&quot;: [-7, -2], &quot;text&quot;: &quot;|:&quot;, &quot;style&quot;: &quot;bold&quot;},
+      &quot;right&quot;  : {&quot;pos&quot;: [5, -2], &quot;text&quot;: &quot;:|&quot;, &quot;style&quot;: &quot;bold&quot;}
+    }
+      </code></pre>
+<h2 id="extract.0.repeatsigns.left"><span class="header-section-number">8.45</span> <code>extract.0.repeatsigns.left</code> - links</h2>
+<p>Hier kannst du die Darstellung des linken Wiederholungszeichen steuern.</p>
+<pre><code>    &quot;left&quot;: {&quot;pos&quot;: [-7, -2], &quot;text&quot;: &quot;|:&quot;, &quot;style&quot;: &quot;bold&quot;}
+      </code></pre>
+<h2 id="extract.0.repeatsigns.left.pos"><span class="header-section-number">8.46</span> <code>extract.0.repeatsigns.left.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [-7, -2]
+      </code></pre>
+<h2 id="extract.0.repeatsigns.left.style"><span class="header-section-number">8.47</span> <code>extract.0.repeatsigns.left.style</code> - Stil</h2>
+<p>Hier kannst du den Stil f&#252;r den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
+<pre><code>    &quot;style&quot;: &quot;bold&quot;
+      </code></pre>
+<h2 id="extract.0.repeatsigns.left.text"><span class="header-section-number">8.48</span> <code>extract.0.repeatsigns.left.text</code> - Text</h2>
+<p>Hier gibst du den Text an, der als linkes Wiederholungszeichen ausgegeben werden soll.</p>
+<pre><code>    &quot;text&quot;: &quot;|:&quot;
+      </code></pre>
+<h2 id="extract.0.repeatsigns.right"><span class="header-section-number">8.49</span> <code>extract.0.repeatsigns.right</code> - rechts</h2>
+<p>Hier kannst du die Darstellung des rechten Wiederholungszeichen steuern.</p>
+<pre><code>    &quot;right&quot;: {&quot;pos&quot;: [5, -2], &quot;text&quot;: &quot;:|&quot;, &quot;style&quot;: &quot;bold&quot;}
+      </code></pre>
+<h2 id="extract.0.repeatsigns.right.pos"><span class="header-section-number">8.50</span> <code>extract.0.repeatsigns.right.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [5, -2]
+      </code></pre>
+<h2 id="extract.0.repeatsigns.right.style"><span class="header-section-number">8.51</span> <code>extract.0.repeatsigns.right.style</code> - Stil</h2>
+<p>Hier kannst du den Stil f&#252;r den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
+<pre><code>    &quot;style&quot;: &quot;bold&quot;
+      </code></pre>
+<h2 id="extract.0.repeatsigns.right.text"><span class="header-section-number">8.52</span> <code>extract.0.repeatsigns.right.text</code> - Text</h2>
+<p>Hier gibst du den Text an, der als rechtes Wiederholungszeichen ausgegeben werden soll.</p>
+<pre><code>    &quot;text&quot;: &quot;:|&quot;
+      </code></pre>
+<h2 id="extract.0.repeatsigns.voices"><span class="header-section-number">8.53</span> <code>extract.0.repeatsigns.voices</code> - Stimmen</h2>
+<p>Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, f&#252;r welche Wiederholungszeichen anstelle von Sprunglinine ausgegeben werden.</p>
+<blockquote>
+<p>Hinweis: Zupnoter stellt f&#252;r die hier aufgelisteten Stimmen keine Sprunglinien mehr dar.</p>
+</blockquote>
+<pre><code>    &quot;voices&quot;: []
+      </code></pre>
+<h2 id="extract.0.startpos"><span class="header-section-number">8.54</span> <code>extract.0.startpos</code> - Startposition</h2>
+<p>Hier kannst du die Position von oben angeben, an welcher die Harfennoten beinnen. Damit kannst du ein ausgewogeneres Bild erhalten.</p>
+<blockquote>
+<p><strong>Hinweis</strong>:Durch diese Funktion wird auch der Bereich verkleinert, in dem die Noten dargestellt werden. Sie ist daher vorzugsweise bei kurzen St&#252;cken anzuwenden, die sonst oben auf der Seite h&#228;ngen.</p>
+</blockquote>
+<pre><code>    &quot;startpos&quot;: 15
+      </code></pre>
+<h2 id="extract.0.stringnames"><span class="header-section-number">8.55</span> <code>extract.0.stringnames</code> - Saitennamen</h2>
+<p>Hier kannst du stueern, ob und wie Saitennamen auf das Unterlegnotenblatt gedruckt werden.</p>
+<pre><code>    &quot;stringnames&quot;: {
       &quot;vpos&quot;  : [],
       &quot;text&quot;  : &quot;G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G&quot;,
       &quot;style&quot; : &quot;small&quot;,
       &quot;marks&quot; : {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]}
-    },
-    &quot;startpos&quot;     : 15
-  },
-  &quot;1&quot; : {&quot;title&quot;: &quot;Sopran, Alt&quot;, &quot;voices&quot;: [1, 2]},
-  &quot;2&quot; : {&quot;title&quot;: &quot;Tenor, Bass&quot;, &quot;voices&quot;: [3, 4]}
-}</code></pre></li>
-</ul>
-<h3 id="extract.0"><span class="header-section-number">8.1.1</span> <code id="extract.0">extract.0</code></h3>
-<p>erklaerung_kommt_noch</p>
+    }
+      </code></pre>
+<h2 id="extract.0.stringnames.marks"><span class="header-section-number">8.56</span> <code>extract.0.stringnames.marks</code> - Saitenmarken</h2>
+<p>Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.</p>
+<pre><code>    &quot;marks&quot;: {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]}
+      </code></pre>
+<h2 id="extract.0.stringnames.marks.hpos"><span class="header-section-number">8.57</span> <code>extract.0.stringnames.marks.hpos</code> - horizontale Position</h2>
+<p>Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe ist eine durch Komma getrennte liste von Midi-Pitches.</p>
+<p>Die Angabe <code>[43, 55, 79]</code> druckt Saitenmarken bei <code>G, G, g'</code>. also bei den &#228;u&#223;eren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.</p>
+<pre><code>    &quot;hpos&quot;: [43, 55, 79]
+      </code></pre>
+<h2 id="extract.0.stringnames.marks.vpos"><span class="header-section-number">8.58</span> <code>extract.0.stringnames.marks.vpos</code> - vertikale Position</h2>
+<p>Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in mm.</p>
+<pre><code>    &quot;vpos&quot;: [11]
+      </code></pre>
+<h2 id="extract.0.stringnames.style"><span class="header-section-number">8.59</span> <code>extract.0.stringnames.style</code> - Stil</h2>
+<p>Hier kannst du den Stil f&#252;r den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
+<pre><code>    &quot;style&quot;: &quot;small&quot;
+      </code></pre>
+<h2 id="extract.0.stringnames.text"><span class="header-section-number">8.60</span> <code>extract.0.stringnames.text</code> - Text</h2>
+<p>Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an. Die Liste wird so oft zusamengef&#252;gt, dass alle Saiten einen Nanen bekommen.</p>
+<p>In der Regel reicht es also, die Saitennamen f&#252;r eine Oktave anzugeben.</p>
+<p><strong>Beispiel:</strong></p>
 <ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;0&quot;: {
-  &quot;title&quot;        : &quot;alle Stimmen&quot;,
-  &quot;voices&quot;       : [1, 2, 3, 4],
-  &quot;flowlines&quot;    : [1, 3],
-  &quot;subflowlines&quot; : [2, 4],
-  &quot;synchlines&quot;   : [[1, 2], [3, 4]],
-  &quot;jumplines&quot;    : [1, 3],
-  &quot;repeatsigns&quot;  : {
-    &quot;voices&quot; : [],
-    &quot;left&quot;   : {&quot;pos&quot;: [-7, -2], &quot;text&quot;: &quot;|:&quot;, &quot;style&quot;: &quot;bold&quot;},
-    &quot;right&quot;  : {&quot;pos&quot;: [5, -2], &quot;text&quot;: &quot;:|&quot;, &quot;style&quot;: &quot;bold&quot;}
-  },
-  &quot;layoutlines&quot;  : [1, 2, 3, 4],
-  &quot;barnumbers&quot;   : {
-    &quot;voices&quot; : [],
-    &quot;pos&quot;    : [6, -4],
-    &quot;style&quot;  : &quot;small_bold&quot;,
-    &quot;prefix&quot; : &quot;&quot;
-  },
-  &quot;countnotes&quot;   : {&quot;voices&quot;: [], &quot;pos&quot;: [3, -2]},
-  &quot;legend&quot;       : {&quot;pos&quot;: [320, 20], &quot;spos&quot;: [320, 27]},
-  &quot;notes&quot;        : {},
-  &quot;lyrics&quot;       : {},
-  &quot;nonflowrest&quot;  : false,
-  &quot;layout&quot;       : {
-    &quot;limit_a3&quot;     : true,
-    &quot;LINE_THIN&quot;    : 0.1,
-    &quot;LINE_MEDIUM&quot;  : 0.3,
-    &quot;LINE_THICK&quot;   : 0.5,
-    &quot;ELLIPSE_SIZE&quot; : [3.5, 1.7],
-    &quot;REST_SIZE&quot;    : [4, 2]
-  },
-  &quot;stringnames&quot;  : {
-    &quot;vpos&quot;  : [],
-    &quot;text&quot;  : &quot;G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G&quot;,
-    &quot;style&quot; : &quot;small&quot;,
-    &quot;marks&quot; : {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]}
-  },
-  &quot;startpos&quot;     : 15
-}</code></pre></li>
-</ul>
-<h3 id="extract.0.barnumbers"><span class="header-section-number">8.1.2</span> <code id="extract.0.barnumbers">extract.0.barnumbers</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;barnumbers&quot;: {
-  &quot;voices&quot; : [],
-  &quot;pos&quot;    : [6, -4],
-  &quot;style&quot;  : &quot;small_bold&quot;,
-  &quot;prefix&quot; : &quot;&quot;
-}</code></pre></li>
-</ul>
-<h3 id="extract.0.barnumbers.pos"><span class="header-section-number">8.1.3</span> <code id="extract.0.barnumbers.pos">extract.0.barnumbers.pos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;pos&quot;: [6, -4]</code></pre></li>
-</ul>
-<h3 id="extract.0.barnumbers.prefix"><span class="header-section-number">8.1.4</span> <code id="extract.0.barnumbers.prefix">extract.0.barnumbers.prefix</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;prefix&quot;: &quot;&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.barnumbers.style"><span class="header-section-number">8.1.5</span> <code id="extract.0.barnumbers.style">extract.0.barnumbers.style</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;style&quot;: &quot;small_bold&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.barnumbers.voices"><span class="header-section-number">8.1.6</span> <code id="extract.0.barnumbers.voices">extract.0.barnumbers.voices</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;voices&quot;: []</code></pre></li>
-</ul>
-<h3 id="extract.0.countnotes"><span class="header-section-number">8.1.7</span> <code id="extract.0.countnotes">extract.0.countnotes</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;countnotes&quot;: {&quot;voices&quot;: [], &quot;pos&quot;: [3, -2]}</code></pre></li>
-</ul>
-<h3 id="extract.0.countnotes.pos"><span class="header-section-number">8.1.8</span> <code id="extract.0.countnotes.pos">extract.0.countnotes.pos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;pos&quot;: [3, -2]</code></pre></li>
-</ul>
-<h3 id="extract.0.countnotes.voices"><span class="header-section-number">8.1.9</span> <code id="extract.0.countnotes.voices">extract.0.countnotes.voices</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;voices&quot;: []</code></pre></li>
-</ul>
-<h3 id="extract.0.flowlines"><span class="header-section-number">8.1.10</span> <code id="extract.0.flowlines">extract.0.flowlines</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;flowlines&quot;: [1, 3]</code></pre></li>
-</ul>
-<h3 id="extract.0.jumplines"><span class="header-section-number">8.1.11</span> <code id="extract.0.jumplines">extract.0.jumplines</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;jumplines&quot;: [1, 3]</code></pre></li>
-</ul>
-<h3 id="extract.0.layout"><span class="header-section-number">8.1.12</span> <code id="extract.0.layout">extract.0.layout</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;layout&quot;: {
-  &quot;limit_a3&quot;     : true,
-  &quot;LINE_THIN&quot;    : 0.1,
-  &quot;LINE_MEDIUM&quot;  : 0.3,
-  &quot;LINE_THICK&quot;   : 0.5,
-  &quot;ELLIPSE_SIZE&quot; : [3.5, 1.7],
-  &quot;REST_SIZE&quot;    : [4, 2]
-}</code></pre></li>
-</ul>
-<h3 id="extract.0.layout.ellipse_size"><span class="header-section-number">8.1.13</span> <code id="extract.0.layout.ELLIPSE_SIZE">extract.0.layout.ELLIPSE_SIZE</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;ELLIPSE_SIZE&quot;: [3.5, 1.7]</code></pre></li>
-</ul>
-<h3 id="extract.0.layout.line_medium"><span class="header-section-number">8.1.14</span> <code id="extract.0.layout.LINE_MEDIUM">extract.0.layout.LINE_MEDIUM</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;LINE_MEDIUM&quot;: 0.3</code></pre></li>
-</ul>
-<h3 id="extract.0.layout.line_thick"><span class="header-section-number">8.1.15</span> <code id="extract.0.layout.LINE_THICK">extract.0.layout.LINE_THICK</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;LINE_THICK&quot;: 0.5</code></pre></li>
-</ul>
-<h3 id="extract.0.layout.line_thin"><span class="header-section-number">8.1.16</span> <code id="extract.0.layout.LINE_THIN">extract.0.layout.LINE_THIN</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;LINE_THIN&quot;: 0.1</code></pre></li>
-</ul>
-<h3 id="extract.0.layout.rest_size"><span class="header-section-number">8.1.17</span> <code id="extract.0.layout.REST_SIZE">extract.0.layout.REST_SIZE</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;REST_SIZE&quot;: [4, 2]</code></pre></li>
-</ul>
-<h3 id="extract.0.layout.limit_a3"><span class="header-section-number">8.1.18</span> <code id="extract.0.layout.limit_a3">extract.0.layout.limit_a3</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;limit_a3&quot;: true</code></pre></li>
-</ul>
-<h3 id="extract.0.layoutlines"><span class="header-section-number">8.1.19</span> <code id="extract.0.layoutlines">extract.0.layoutlines</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;layoutlines&quot;: [1, 2, 3, 4]</code></pre></li>
-</ul>
-<h3 id="extract.0.legend"><span class="header-section-number">8.1.20</span> <code id="extract.0.legend">extract.0.legend</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;legend&quot;: {&quot;pos&quot;: [320, 20], &quot;spos&quot;: [320, 27]}</code></pre></li>
-</ul>
-<h3 id="extract.0.legend.pos"><span class="header-section-number">8.1.21</span> <code id="extract.0.legend.pos">extract.0.legend.pos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;pos&quot;: [320, 20]</code></pre></li>
-</ul>
-<h3 id="extract.0.legend.spos"><span class="header-section-number">8.1.22</span> <code id="extract.0.legend.spos">extract.0.legend.spos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;spos&quot;: [320, 27]</code></pre></li>
-</ul>
-<h3 id="extract.0.lyrics"><span class="header-section-number">8.1.23</span> <code id="extract.0.lyrics">extract.0.lyrics</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;lyrics&quot;: {}</code></pre></li>
-</ul>
-<h3 id="extract.0.nonflowrest"><span class="header-section-number">8.1.24</span> <code id="extract.0.nonflowrest">extract.0.nonflowrest</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;nonflowrest&quot;: false</code></pre></li>
-</ul>
-<h3 id="extract.0.notes"><span class="header-section-number">8.1.25</span> <code id="extract.0.notes">extract.0.notes</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;notes&quot;: {}</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns"><span class="header-section-number">8.1.26</span> <code id="extract.0.repeatsigns">extract.0.repeatsigns</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;repeatsigns&quot;: {
-  &quot;voices&quot; : [],
-  &quot;left&quot;   : {&quot;pos&quot;: [-7, -2], &quot;text&quot;: &quot;|:&quot;, &quot;style&quot;: &quot;bold&quot;},
-  &quot;right&quot;  : {&quot;pos&quot;: [5, -2], &quot;text&quot;: &quot;:|&quot;, &quot;style&quot;: &quot;bold&quot;}
-}</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.left"><span class="header-section-number">8.1.27</span> <code id="extract.0.repeatsigns.left">extract.0.repeatsigns.left</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;left&quot;: {&quot;pos&quot;: [-7, -2], &quot;text&quot;: &quot;|:&quot;, &quot;style&quot;: &quot;bold&quot;}</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.left.pos"><span class="header-section-number">8.1.28</span> <code id="extract.0.repeatsigns.left.pos">extract.0.repeatsigns.left.pos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;pos&quot;: [-7, -2]</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.left.style"><span class="header-section-number">8.1.29</span> <code id="extract.0.repeatsigns.left.style">extract.0.repeatsigns.left.style</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;style&quot;: &quot;bold&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.left.text"><span class="header-section-number">8.1.30</span> <code id="extract.0.repeatsigns.left.text">extract.0.repeatsigns.left.text</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;text&quot;: &quot;|:&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.right"><span class="header-section-number">8.1.31</span> <code id="extract.0.repeatsigns.right">extract.0.repeatsigns.right</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;right&quot;: {&quot;pos&quot;: [5, -2], &quot;text&quot;: &quot;:|&quot;, &quot;style&quot;: &quot;bold&quot;}</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.right.pos"><span class="header-section-number">8.1.32</span> <code id="extract.0.repeatsigns.right.pos">extract.0.repeatsigns.right.pos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;pos&quot;: [5, -2]</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.right.style"><span class="header-section-number">8.1.33</span> <code id="extract.0.repeatsigns.right.style">extract.0.repeatsigns.right.style</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;style&quot;: &quot;bold&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.right.text"><span class="header-section-number">8.1.34</span> <code id="extract.0.repeatsigns.right.text">extract.0.repeatsigns.right.text</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;text&quot;: &quot;:|&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.repeatsigns.voices"><span class="header-section-number">8.1.35</span> <code id="extract.0.repeatsigns.voices">extract.0.repeatsigns.voices</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;voices&quot;: []</code></pre></li>
-</ul>
-<h3 id="extract.0.startpos"><span class="header-section-number">8.1.36</span> <code id="extract.0.startpos">extract.0.startpos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;startpos&quot;: 15</code></pre></li>
-</ul>
-<h3 id="extract.0.stringnames"><span class="header-section-number">8.1.37</span> <code id="extract.0.stringnames">extract.0.stringnames</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;stringnames&quot;: {
-  &quot;vpos&quot;  : [],
-  &quot;text&quot;  : &quot;G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G&quot;,
-  &quot;style&quot; : &quot;small&quot;,
-  &quot;marks&quot; : {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]}
-}</code></pre></li>
-</ul>
-<h3 id="extract.0.stringnames.marks"><span class="header-section-number">8.1.38</span> <code id="extract.0.stringnames.marks">extract.0.stringnames.marks</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;marks&quot;: {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]}</code></pre></li>
-</ul>
-<h3 id="extract.0.stringnames.marks.hpos"><span class="header-section-number">8.1.39</span> <code id="extract.0.stringnames.marks.hpos">extract.0.stringnames.marks.hpos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;hpos&quot;: [43, 55, 79]</code></pre></li>
-</ul>
-<h3 id="extract.0.stringnames.marks.vpos"><span class="header-section-number">8.1.40</span> <code id="extract.0.stringnames.marks.vpos">extract.0.stringnames.marks.vpos</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;vpos&quot;: [11]</code></pre></li>
-</ul>
-<h3 id="extract.0.stringnames.style"><span class="header-section-number">8.1.41</span> <code id="extract.0.stringnames.style">extract.0.stringnames.style</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;style&quot;: &quot;small&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.stringnames.text"><span class="header-section-number">8.1.42</span> <code id="extract.0.stringnames.text">extract.0.stringnames.text</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
+<li><code>+ -</code> erzeugt <code>+ - +  + - + -</code></li>
+<li><p>`C C</p>
 <pre><code>&quot;text&quot;: &quot;G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G&quot;</code></pre></li>
 </ul>
-<h3 id="extract.0.stringnames.vpos"><span class="header-section-number">8.1.43</span> <code id="extract.0.stringnames.vpos">extract.0.stringnames.vpos</code></h3>
-<p>erklaerung_kommt_noch</p>
+<h2 id="extract.0.stringnames.vpos"><span class="header-section-number">8.61</span> <code>extract.0.stringnames.vpos</code> - vertikale Position</h2>
+<p>Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in mm.</p>
+<pre><code>    &quot;vpos&quot;: []
+      </code></pre>
+<h2 id="extract.0.subflowlines"><span class="header-section-number">8.62</span> <code>extract.0.subflowlines</code> - Hilfsmelodielinien</h2>
+<p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, f&#252;r die Unterflu&#223;linien eingezeichnet werden sollen.</p>
+<pre><code>    &quot;subflowlines&quot;: [2, 4]
+      </code></pre>
+<h2 id="extract.0.synchlines"><span class="header-section-number">8.63</span> <code>extract.0.synchlines</code> - Synchroniationslinien</h2>
+<p>Hier kannst du angeben, welche Stimmenpaare &#252;ber Synchronisationslinien verbunden werden sollen.</p>
+<p>Die Angabe erfolgt in der Bildschirmmaske als eine durch Komma separierte Liste von Stimmenpaaren (darin die Stimmen durch &#8220;-&#8221; getrennt).</p>
+<p>Die Angabe <code>1-2, 3-4</code> bedeutet beispielsweise, dass zwischen den Stimmen 1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie gezeichnet werden soll.</p>
+<blockquote>
+<p><strong>Hinweis</strong>:In der Texteingabe wird das als eine Liste von zweiwerteingen Listen dargestellt.</p>
+</blockquote>
+<pre><code>    &quot;synchlines&quot;: [[1, 2], [3, 4]]
+      </code></pre>
+<h2 id="extract.0.title"><span class="header-section-number">8.64</span> <code>extract.0.title</code> - Titel</h2>
+<p>Hier pezifizierst du den Titel des Auszuges. Er wird in der Legende mit ausgegeben.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Der Titel des Auszuges wird an die Angabe in der Zeile &#8220;F:&#8221; angeh&#228;ngt, falls nicht noch ein <code>extract.0.filenamepart</code> spezifiziert ist.</p>
+</blockquote>
+<pre><code>    &quot;title&quot;: &quot;alle Stimmen&quot;
+      </code></pre>
+<h2 id="extract.0.voices"><span class="header-section-number">8.65</span> <code>extract.0.voices</code> - Stimmen</h2>
+<p>Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der <code>%%score</code> - Anweisung in der ABC-Notation.</p>
+<pre><code>    &quot;voices&quot;: [1, 2, 3, 4]
+      </code></pre>
+<h2 id="produce"><span class="header-section-number">8.66</span> <code>produce</code> - Ausz&#252;ge</h2>
+<p>Hier kannst du eine Liste der Auszu&#252;ge angeben, f&#252;r welche eine PDF-DAtei mit erzeugt werden soll.</p>
+<blockquote>
+<p><strong>Hinweis:</strong> Manchmal ist es sinnvoll, Ausz&#252;ge nur zur Bearbeitung anzulegen, diese aber nicht zu drucken. Es kommt auch vor, dass Auszug 0 nur verwendet wird, um Vorgaben f&#252;r die anderen Ausz&#252;ge zu machen, nicht aber um ihn wirklich auszudrucken.</p>
+</blockquote>
+<pre><code>    &quot;produce&quot;: [0]
+      </code></pre>
+<h2 id="restposition"><span class="header-section-number">8.67</span> <code>restposition</code> - Position der Pausen</h2>
+<p>Hier kannst du angeben an welcher Tonh&#246;he die Pausen eingetragenw werden sollen. Pausen haben an sich keine Tonh&#246;he, daher ist es nicht eindeutig, wie sie im Umterlegnotenblatt positioniert werden sollen.</p>
 <ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;vpos&quot;: []</code></pre></li>
-</ul>
-<h3 id="extract.0.subflowlines"><span class="header-section-number">8.1.44</span> <code id="extract.0.subflowlines">extract.0.subflowlines</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;subflowlines&quot;: [2, 4]</code></pre></li>
-</ul>
-<h3 id="extract.0.synchlines"><span class="header-section-number">8.1.45</span> <code id="extract.0.synchlines">extract.0.synchlines</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;synchlines&quot;: [[1, 2], [3, 4]]</code></pre></li>
-</ul>
-<h3 id="extract.0.title"><span class="header-section-number">8.1.46</span> <code id="extract.0.title">extract.0.title</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;title&quot;: &quot;alle Stimmen&quot;</code></pre></li>
-</ul>
-<h3 id="extract.0.voices"><span class="header-section-number">8.1.47</span> <code id="extract.0.voices">extract.0.voices</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;voices&quot;: [1, 2, 3, 4]</code></pre></li>
-</ul>
-<h2 id="produce"><span class="header-section-number">8.2</span> <code id="produce">produce</code></h2>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;produce&quot;: [0]</code></pre></li>
-</ul>
-<h2 id="restposition"><span class="header-section-number">8.3</span> <code id="restposition">restposition</code></h2>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
+<li><code>center</code> positioniert die Pause zwischen die vorherige und die n&#228;chste Note</li>
+<li><code>next</code> positioniert die Pause auf die gleiche Tonh&#246;he wie die n&#228;chste Note</li>
+<li><p><code>default</code> &#252;bernimmt den Vorgabewert</p>
 <pre><code>&quot;restposition&quot;: {
   &quot;default&quot;     : &quot;center&quot;,
   &quot;repeatstart&quot; : &quot;next&quot;,
   &quot;repeatend&quot;   : &quot;default&quot;
 }</code></pre></li>
 </ul>
-<h3 id="restposition.default"><span class="header-section-number">8.3.1</span> <code id="restposition.default">restposition.default</code></h3>
-<p>erklaerung_kommt_noch</p>
+<h2 id="restposition.default"><span class="header-section-number">8.68</span> <code>restposition.default</code> - Vorgabewert</h2>
+<p>Hier kannst den Vorgabewert f&#252;r die Pausenposition angeben.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: <code>default</code> als Vorgabewert nimmt den intenrn Vorgabewert <code>center</code>.</p>
+</blockquote>
+<pre><code>    &quot;default&quot;: &quot;center&quot;
+      </code></pre>
+<h2 id="restposition.repeatend"><span class="header-section-number">8.69</span> <code>restposition.repeatend</code> - Wiederholungsende</h2>
+<p>Hier kannst du die Pausenposition nach einer Wiederholung einstellen.</p>
+<pre><code>    &quot;repeatend&quot;: &quot;default&quot;
+      </code></pre>
+<h2 id="restposition.repeatstart"><span class="header-section-number">8.70</span> <code>restposition.repeatstart</code> - Wiederholungsanfang</h2>
+<p>Hier kannst du die Pausenposition vor einer Wiederholung einstellen.</p>
+<pre><code>    &quot;repeatstart&quot;: &quot;next&quot;
+      </code></pre>
+<h2 id="templates"><span class="header-section-number">8.71</span> <code>templates</code> - Vorlagen</h2>
+<p>Dieser Parameter kann nicht vom Benutzer gesetzt werden sondern liefert die Vorlagen beim Einf&#252;gugen neuer Liedtext-Bl&#246;cke bzw. Seitenbeschriftungen etc.</p>
+<p>Er ist hier aufgef&#252;hrt, um die Vorlagen selbst zu dokumentieren.</p>
+<pre><code>    &quot;templates&quot;: {
+      &quot;notes&quot;  : {&quot;pos&quot;: [320, 6], &quot;text&quot;: &quot;ENTER_NOTE&quot;, &quot;style&quot;: &quot;large&quot;},
+      &quot;lyrics&quot; : {
+        &quot;verses&quot; : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        &quot;pos&quot;    : [350, 70]
+      },
+      &quot;tuplet&quot; : {&quot;cp1&quot;: [5, 2], &quot;cp2&quot;: [5, -2], &quot;shape&quot;: [&quot;c&quot;]}
+    }
+      </code></pre>
+<h2 id="templates.lyrics"><span class="header-section-number">8.72</span> <code>templates.lyrics</code> - Liedtexte</h2>
+<p>Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den Liedtext auf mehrer Bl&#246;cke aufteilen.</p>
+<p>Ein einzelner Block listet die Strophen auf, die er enth&#228;lt, und die gemeinsam poitioniert werden.</p>
+<pre><code>    &quot;lyrics&quot;: {
+      &quot;verses&quot; : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      &quot;pos&quot;    : [350, 70]
+    }
+      </code></pre>
+<h2 id="templates.lyrics.pos"><span class="header-section-number">8.73</span> <code>templates.lyrics.pos</code> - Position</h2>
+<p>Dies ist die Vorgabe f&#252;r Position, an welcher der Liedtext-Block ausgegeben werden soll. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [350, 70]
+      </code></pre>
+<h2 id="templates.lyrics.verses"><span class="header-section-number">8.74</span> <code>templates.lyrics.verses</code> - Strophens</h2>
+<p>Dies ist die Vorgabe f&#252;r die Liste der Strophen die im Liedtext-Block ausgegeben werden.</p>
+<pre><code>    &quot;verses&quot;: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      </code></pre>
+<h2 id="templates.notes"><span class="header-section-number">8.75</span> <code>templates.notes</code> - Beschriftungen</h2>
+<p>Hier kannst du eine Seitenbeschriftungen hinzuf&#252;gen. Beim Einf&#252;gen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>. Es kann aber auch sinnvoll sein eine sprechende Bezeichnung f&#252;r die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht m&#246;glich.</p>
+<pre><code>    &quot;notes&quot;: {&quot;pos&quot;: [320, 6], &quot;text&quot;: &quot;ENTER_NOTE&quot;, &quot;style&quot;: &quot;large&quot;}
+      </code></pre>
+<h2 id="templates.notes.pos"><span class="header-section-number">8.76</span> <code>templates.notes.pos</code> - Position</h2>
+<p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
+<pre><code>    &quot;pos&quot;: [320, 6]
+      </code></pre>
+<h2 id="templates.notes.style"><span class="header-section-number">8.77</span> <code>templates.notes.style</code> - Stil</h2>
+<p>Hier kannst du den Stil f&#252;r den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
+<pre><code>    &quot;style&quot;: &quot;large&quot;
+      </code></pre>
+<h2 id="templates.notes.text"><span class="header-section-number">8.78</span> <code>templates.notes.text</code> - Text</h2>
+<p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein</p>
+<pre><code>    &quot;text&quot;: &quot;ENTER_NOTE&quot;
+      </code></pre>
+<h2 id="templates.tuplet"><span class="header-section-number">8.79</span> <code>templates.tuplet</code> - Tuplet</h2>
+<p>Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets) steuern.</p>
+<pre><code>    &quot;tuplet&quot;: {&quot;cp1&quot;: [5, 2], &quot;cp2&quot;: [5, -2], &quot;shape&quot;: [&quot;c&quot;]}
+      </code></pre>
+<h2 id="templates.tuplet.cp1"><span class="header-section-number">8.80</span> <code>templates.tuplet.cp1</code> - Kontrollpunkt 1</h2>
+<p>Hier gibst du den Kontrollpunkt f&#252;r die erste Note an.</p>
+<pre><code>    &quot;cp1&quot;: [5, 2]
+      </code></pre>
+<h2 id="templates.tuplet.cp2"><span class="header-section-number">8.81</span> <code>templates.tuplet.cp2</code> - Kontrollpunkt 2</h2>
+<p>Hier gibst du den Kontrollpunkt f&#252;r die letzte Note an.</p>
+<pre><code>    &quot;cp2&quot;: [5, -2]
+      </code></pre>
+<h2 id="templates.tuplet.shape"><span class="header-section-number">8.82</span> <code>templates.tuplet.shape</code> - Linienform</h2>
+<p>Hier gibst du eine Liste von Linienformen f&#252;r das Tuplet an.</p>
 <ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;default&quot;: &quot;center&quot;</code></pre></li>
+<li><code>c</code>: Kurve</li>
+<li><code>l</code>: Linie</li>
 </ul>
-<h3 id="restposition.repeatend"><span class="header-section-number">8.3.2</span> <code id="restposition.repeatend">restposition.repeatend</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;repeatend&quot;: &quot;default&quot;</code></pre></li>
-</ul>
-<h3 id="restposition.repeatstart"><span class="header-section-number">8.3.3</span> <code id="restposition.repeatstart">restposition.repeatstart</code></h3>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;repeatstart&quot;: &quot;next&quot;</code></pre></li>
-</ul>
-<h2 id="wrap"><span class="header-section-number">8.4</span> <code id="wrap">wrap</code></h2>
-<p>erklaerung_kommt_noch</p>
-<ul>
-<li><p>Struktur:</p></li>
-<li><p>Beispiel:</p>
-<pre><code>&quot;wrap&quot;: 60</code></pre></li>
-</ul>
+<blockquote>
+<p><strong>Hinweis</strong>: Mit der Linienform <code>l</code> kann man die Lage der Kontrollpunkte (als Ecken im Linienzug) sehen.</p>
+</blockquote>
+<pre><code>    &quot;shape&quot;: [&quot;c&quot;]
+      </code></pre>
+<h2 id="wrap"><span class="header-section-number">8.83</span> <code>wrap</code> - wrap</h2>
+<p>Hier kannst du angeben, in welcher Spalte der Zeilenumbruch im Konfigurationsabschnitt erfolgen soll. Das kann bei komplexen Konfigurationen sinnvoll sein, um die &#220;bersichtlichkeit zu erh&#246;hen.</p>
+<pre><code>    &quot;wrap&quot;: 60</code></pre>
+<p></p>
+
+<p></p>
 <div class="footnotes">
 <hr />
 <ol>
