@@ -3,9 +3,9 @@
 TODO: stay tunend
 
 -   guter ton der harfennoten
--   Zusammenarbeits modelle
+-   Zusammenarbeitsmodelle
 -   bewährte Auszüge
 -   Legende
-    -   Vorname, nachname, Jahresangeaben von Komponist, TEexter
+    -   Vorname, Nachname, Jahresangaben von Komponist, Teexter
 -   Abdrucksrechte
 -   Hinweis: bitte nicht kopieren ...

@@ -15,6 +15,8 @@ Zum Verständnis von Zupfnoter sind folgende Themen wichtig:
 ![Zupfnoter
 Elemente](../ZAUX_images/3015_reference_sheet_alle-Stimmen_a3.pdf)
 
+TODO: Bild aktualisieren
+
 Dieses Bild zeigt die Elemente und Merkmale aus denen Zupfnoter ein
 Unterlegnotenblatt aufbaut:
 
@@ -26,8 +28,11 @@ In der ABC-Notation wird in den Kopfzeilen ein Standardnotenwert
 angegeben, z.B. `L:1/4`. Dies bedeutet, daß standardmäßig in
 Viertelnoten erfasst wird. Ausgehend von diesem Wert ergibt sich der
 Notenwert duch Multplikation mit der angegebenen Länge. Diese
-Längenangaben wird an den Notennamen angehängt. TODO: verweise auf
-ABC-Kapitel
+Längenangaben wird an den Notennamen angehängt.
+
+TODO: verweise auf ABC-Kapitel
+
+\needspace{5cm}
 
 Im Folgenden wird von **Vierteln als Standardnotenwert** und dem
 Notennamen `C` ausgegangen.
@@ -51,6 +56,8 @@ Notennamen `C` ausgegangen.
 -   **(7) punctuated quarter note - punktierte viertel Note** entspricht
     in ABC-Notation: `C3/2` (also drei halbe Viertel :-)
 
+\needspace{5cm}
+
 ### Darstellung von Pausen
 
 Im Folgenden wird von **Vierteln als Standardnotenwert** ausgegangen.
@@ -63,9 +70,9 @@ Im Folgenden wird von **Vierteln als Standardnotenwert** ausgegangen.
     oder `z1`
 
 -   **(14) eighth rest - achtel Pause** entspricht in ABC-Notation:
-    `z1/4` oder `z//`
+    `z1/2` oder `z/`
 
--   **(15) sixteenth rest - sechezhntel Pause** entspricht in
+-   **(15) sixteenth rest - sechzehntel Pause** entspricht in
     ABC-Notation: `z1/4` oder `z//`
 
 -   **(16) punctuated half rest - punktierte halbe Pause** entspricht in
@@ -185,33 +192,37 @@ gibt es folgende Elemente:
 
     Mehr Einzelheiten siehe Kapitel [Handhabung variante Enden].
 
--   **(31) flowline - Flusslinie oder Melodielinie**: Die Flußlinie
-    verbindet die Noten **einer** Stimme und markiert so die Führung
-    innerhalb dieser **einen** Stimme. Standardmäßig stellt Zupfnoter
-    die Flußline in der ersten und dritten Stimme dar.
+-   **(31) flowline - Flusslinie**: Die Flußlinie verbindet die Noten
+    **einer** Stimme und markiert so die Führung innerhalb dieser
+    **einen** Stimme. Standardmäßig stellt Zupfnoter die Flußline in der
+    ersten und dritten Stimme dar.
+
+    > **Hinweis**: Manchmal wird die Flußlinie auch als Melodielinie
+    > bezeichnet. Dies ist aber nur korrekt, wenn es sich um die
+    > Flußlinie der Melodiestimme handelt.
 
     > **Hinweis** Über die [Einstellungen in der Konfiguration] kann die
     > Ausgabe von Flußlinien für die jeweiligen Stimmen eingestellt
     > werden. [extract.0.flowlines]
 
--   **(33) subflowline - Unterflusslinie**: Die Unterflusslinie
-    verbindet innerhalb einer Stimme ohne Flußline diejenigen Noten, die
-    nicht über eine Synchronisationslinie (32) mit einer anderen Stimme
-    verbunden sind.
-
-    > **Hinweis** Über die [Einstellungen in der Konfiguration] kann die
-    > Ausgabe von Unterflußlinien für die jeweiligen Stimmen eingestellt
-    > werden. [extract.0.subflowlines]
-
 -   **(32) synchline - Synchronisationslinie**: Die
     Synchronisationslinien verbinden Noten aus zwei **verschiedenen
-    Stimmen**, die zum gleichen Zeit gespielt werden. Standardmäßig
+    Stimmen**, die zum gleichen Zeitöpunt gespielt werden. Standardmäßig
     stellt Zupfnoter die Synchronisationslinie zwischen den Stimmen
     *eins und zwei* sowie *drei und vier* dar.
 
     > **Hinweis** Über die [Einstellungen in der Konfiguration] kann die
     > Ausgabe von Synchronisationslinien eingestellt werden.
     > [extract.0.sychlines]
+
+-   **(33) subflowline - Unterflusslinie**: Die Unterflusslinie
+    verbindet innerhalb einer Stimme ohne Flußlinie diejenigen Noten,
+    die nicht über eine Synchronisationslinie (32) mit einer anderen
+    Stimme verbunden sind.
+
+    > **Hinweis** Über die [Einstellungen in der Konfiguration] kann die
+    > Ausgabe von Unterflußlinien für die jeweiligen Stimmen eingestellt
+    > werden. [extract.0.subflowlines]
 
 ### Elemente für das gesamte Musikstück
 
@@ -277,21 +288,23 @@ darstellen zu können, gibt es folgende Elemente:
     nachzuvollziehen. Er wird immer auf den Unterlegnoten ausgegeben und
     kann nicht unterdrückt werden.
 
--   **(71) creation note - Ersellungsnotiz**: Die Erstellungsnotiz gibt
+-   **(71) creation note - Ertsellungsnotiz**: Die Erstellungsnotiz gibt
     weitere Informationen zum technischen Stand der Erstellung. Diese
     wird immer auf den Unterlegnoten ausgegeben und kann nicht
     unterdrückt werden. Die Erstellungsnotiz hilft beim Nachvollziehen
-    von Veränderungen und Sie besteht aus
+    von Veränderungen und besteht aus
 
     -   Zeitpunkt der Erstellung der PDF-Datei (CEST steht für
-        "*C*entral *E*urpean *S*ummer *T*ime")
+        "*C*entral *E*uropean *S*ummer *T*ime")
     -   Software-Version der Zupfnoter
     -   Server von welchem der Zupfnoter geladen wurde
 -   **(72) reference to zupfnoter website - Referenz auf Zupfnoter
-    Website**: Dies ist die Referenz auf Zupfnoter als Werkzeug zur
-    Erstellung des Unterlegnotenblattes, also Werbung in eigener Sache.
-    Diese wird immer auf den Unterlegnoten ausgegeben und kann nicht
-    unterdrückt werden.
+    Website**: Dies ist die Referenz auf Zupf-\
+    noter als Werkzeug zur Erstellung des Unterlegnotenblattes, also
+    Werbung in eigener Sache. Diese wird immer auf den Unterlegnoten
+    ausgegeben und kann nicht unterdrückt werden.
+
+    TODO: Silbentrennung
 
 -   **{73} fingerprint - Fingerabdruck**: Diese Nummer ist wie ein
     Fingerabdruck der ABC-Datei. Dies bedeutet, dass Unterlegnoten (z.b.
@@ -333,7 +346,10 @@ Bildschirmaufbau](../ZAUX_Images/040_030_Bildschirmaufbau.pdf)
     Über die Reiter können verschiedene Zoom-Stufen eingestellt werden.
 
     > **Hinweis**: Da die Berechnung der Unterlegnoten einige Sekunden
-    > dauert, wird dieses Fenster nur durch "rendern" aktualisiert.
+    > dauert, wird dieses Fens-\
+    > ter nur durch "rendern" aktualisiert.
+
+    TODO:Trennung
 
 -   Im **linken Fenster** wird die ABC-Notation sowie die
     Zupfnoter-Einstellungen angezeigt. Für die ABC-Notation gibt es eine
@@ -344,7 +360,7 @@ Bildschirmaufbau](../ZAUX_Images/040_030_Bildschirmaufbau.pdf)
     Über die Reiter kann auf die formularbasierte Konfiguration
     umgeschaltet werden.
 
-### WerkzeugleisteLeiste für Schaltflächen und Menüs
+### Werkzeugleiste für Schaltflächen und Menüs
 
 In der oberen Werkzeugleiste, die über alle Abschnitte hinweg liegt,
 befinden sich Schaltflächen und Menüs die man während der Erstellung von
@@ -354,7 +370,7 @@ Zupfnoter bestimmte Aktivitäten aus.
 Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 \ref{shortcuts} [Shortcuts](#shortcuts)
 
-> **Hinweis**: Für die Vesion 1.5 wird die Bedienungsoberfläche von
+> **Hinweis**: Für die Vesrion 1.5 wird die Bedienungsoberfläche von
 > Zupfnoter verbessert. Daher sind die Informationen in diesem Kapitel
 > vorläufig.
 
@@ -377,8 +393,8 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 
 -   Schaltfläche **Öffnen**: Es öffnet sich ein Dateiauswahlfenster
     deiner Dropbox. Der grüne Hinweis not connect nach der Schaltfläche
-    save bedeutet, dass die Dropbox nicht mit dem Zupfnoter verbunden
-    ist.
+    "speichern" bedeutet, dass die Dropbox nicht mit dem Zupfnoter
+    verbunden ist.
 
     TODO: anpassen auf kommenden Dialog
 
@@ -386,17 +402,17 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
     > Dropbox und auch das aktuelle Verzeichnis in der Dropbox
     > angezeigt.
 
--   Schaltfläche **Speichern** (sichern, speichern): Das fertig
-    gestellte Musikstück wird in deiner Dropbox gespeichert. Es wird
-    eine ABC-Datei, jeweils eine Datei für A3 und A4 für Unterlegnoten
-    pro Auszug gespeichert.
+-   Schaltfläche **Speichern** (sichern): Das fertig gestellte
+    Musikstück wird in deiner Dropbox gespeichert. Es wird eine
+    ABC-Datei, jeweils eine Datei für A3 und A4 für Unterlegnoten pro
+    Auszug gespeichert.
 
     > **Hinweis:** Solange man noch nichts abgespeichert hat, erscheint
     > das Wort "Speichern" in roter Schrift.
 
 -   Menü **Drucken**: Damit kann man Druckvorschauen anzeigen, welche
     auch über die Browser-Funktionen gedruckt werden können (siehe
-    Kapitel \ref{musikstueck-drucken} [Muskstück
+    Kapitel \ref{musikstueck-drucken} [Musikstück
     drucken](#musikstueck-drucken)).
 
     -   Schaltfläche **A3**: Es öffnet sich ein Browserfenster mit
@@ -408,13 +424,12 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
         drei Seiten und kann nun ausgedruckt werden oder auf dem PC als
         pdf-Datei abgespeichert werden. Die Schnittmarken auf dem A4
         Papier kennzeichnen, an welcher Stelle die drei A4-Blätter
-        zusammen geklebt werden müssen. Entweder klebt man mit einem
-        Prittstift oder mit Tesafilm die Blätter zusammen.
+        zusammen geklebt werden müssen.
 
     -   Schaltfläche **Noten**: Es öffnet sich ein Browserfenster mit
         den Noten. Dies ist eine HTML - Datei und muss daher über den
         Browser gedruckt werden. Du kannst diese auch abspeichern, aber
-        auch dann msus sie über den Bwoeder gedruct werden.
+        auch dann muss sie über den Browser gedruckt werden.
 
 -   Menü **Ansicht** (Ansicht): Hiermit kann man festlegen, wie der
     Bildschirmaufbau des Zupfnoter gestaltet sein soll. Einige
@@ -426,8 +441,8 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
         meistens gearbeitet, weil man eine schnelle Rückmeldung zu den
         Ergebnissen hat.
 
-    -   Die instellung **Noteneingabe** zeigt den Editor (linkes
-        Fenster) und die Notenvorachau (Fenster rechts oben). Diese
+    -   Die Einstellung **Noteneingabe** zeigt den Editor (linkes
+        Fenster) und die Notenvorschau (Fenster rechts oben). Diese
         Einstellung ist hilfreich, wenn man sich zunächst auf die reine
         Eingabe des Muskstücks konzentrieren will.
 
@@ -449,15 +464,15 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 
 -   Schaltfläche **Auszug** (nur ein Korb-Symbol) bestimmt, welcher
     Auszug in der Unterlegnotenvorschau dargestellt wird. Für Details zu
-    Ausuzügen siehe Kapitel \ref{auszuege} [Erstellung von
+    Auszügen siehe Kapitel \ref{auszuege} [Erstellung von
     Auszügen](#auszuege).
 
-    Es gibt die Auszüge 0 bis 3. Der Auszug 0 beinhaltet alle Stimmen
-    und wird automatisch vom Zupfnoter erstellt. Wenn man einen Auszug
-    erstellen möchte, wählt man z.B. Auszug 1 aus und definiert im
-    Abschnitt links, was man im Auszug 1 sehen möchte: 1.te und 2.te
-    Stimme. Der Auszug 2 könnte dann zur Darstellung der 3.ten und 4.ten
-    Stimme dienen.
+    Es gibt standardmässig die Auszüge 0 bis 3. Der Auszug 0 beinhaltet
+    alle Stimmen und wird automatisch vom Zupfnoter erstellt. Wenn man
+    einen Auszug erstellen möchte, wählt man z.B. Auszug 1 aus und
+    definiert im Abschnitt links, was man im Auszug 1 sehen möchte: 1.te
+    und 2.te Stimme. Der Auszug 2 könnte dann zur Darstellung der 3.ten
+    und 4.ten Stimme dienen.
 
     TODO: Überarbeiten nach Verbesserung der Bedienung von Auszuügen.
 
@@ -470,9 +485,9 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
     > **Hinweis:** Diese Funktion sollte häufig genutzt werden um immer
     > aktuelle Ergebnisse auf dem Bildschirm zu sehen.
 
--   Schaltfläche **Play** (Wiedergabe) spielt das Muskitsück ab. Damit
-    kann man duch Anhören Fehler in den einegegebenen Noten erkennen.
-    Die wiedergebenen Noten werden wie folgt bestimmt:
+-   Schaltfläche **Play** (Wiedergabe) spielt das Musikstück ab. Damit
+    kann man durch Anhören Fehler in den eingegebenen Noten erkennen.
+    Die wiedergegebenen Noten werden wie folgt ausgewählt:
 
     -   wenn keine Noten selektiert sind, spielt Zupfnoter alle
         vorhandenen Stimmen. Damit kann man einen Eindruck des
@@ -493,19 +508,14 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
     >     die Noten von Anfang bis zum Ende.
     >
     > -   Zur Wiedergabe simuliert Zupfnoter einen Tischharfenspieler.
-    >     Daher führt er bei Bedarf zunächst die Fuktion "Rendern" aus
+    >     Daher führt er bei Bedarf zunächst die Funktion "Rendern" aus,
     >     um die Unterlegnoten zu aktualisieren.
     >
-    > -   Die Geschwindidgkeit der Wiedergabe wird über die Kopfzheile
+    > -   Die Geschwindigkeit der Wiedergabe wird über die Kopfzeile
     >     "`Q:`" bestimmt.
     >
 -   Menü **Hilfe** (Hilfe): Hier findet man hilfreiche Links und
-    nleitungen
-
--   Schaltfläche **Console** (Konsole): Mit der Schaltfläche console
-    kann man einen Blick auf die Computersprache des Notenzupfers
-    werfen. Dieser Befehl sollte nur von Programmierer genutzt werden.
-    Die Performance des Computers wird dadurch schlechter.
+    Anleitungen
 
 ### Linkes Fenster: Eingabe
 
@@ -521,7 +531,7 @@ Das Eingeabefenster enthält seinerseits
 -   Menü **Konfig. einfügen** (Blattkonfiguration):
 
     Über dieses Menü kannst du Konfigurationsparameter (Einstellungen)
-    zur Gestaltung u der Unterlegnoten **einfügen**.
+    zur Gestaltung der Unterlegnoten **einfügen**.
 
     Die Reihenfolge der Menüpunkte entspricht der Bearbeitungsabfolge,
     wobei Menüpunkte auch übersprungen werden dürfen. Die Erstellung der
@@ -535,7 +545,7 @@ Das Eingeabefenster enthält seinerseits
     > **Hinweis**: Die Einstellungen werden in folgender Reihenfolge
     > angewendet:
     >
-    > 1.  in Zupfnoter fest eingebaute Einstellugnen
+    > 1.  in Zupfnoter fest eingebaute Einstellungen
     > 2.  Einstellungen aus dem Auszug 0
     > 3.  Einstellungen aus dem aktiven Auszug
 
@@ -608,16 +618,17 @@ Texteditor und in der Unterlegnotenvorschau hervorgehoben.
 
 ### Fenster rechts unten : Unterlegnotenvorschau
 
-Die Unterlegnotenvorschau zeigt die erzeugten Unterlegnoten. über den
+Die Unterlegnotenvorschau zeigt die erzeugten Unterlegnoten. Über den
 Reiter "Zoom" kann man die Anzeige vergrößern oder verkleinern.
 
 Über die Scrollbalken kann man den angezeigten Ausschnitt wählen.
 
-Durch Ziehen/Ablegen kann men Elemente auf dem Notenblatt veschieben.
-Wenn du mit der Maus über ein veerschieebbares Element fährst, wird der
+Durch Ziehen/Ablegen kann man Elemente auf dem Notenblatt verschieben.
+Wenn du die Maus über ein verschiebbares Element bewegst, wird der
 Mauszeiger zu einer "Hand".
 
-Über ein Kontextmenü kannst du erweiterte Einstellunge vornehmen.
+Über ein Kontextmenü (klick mit rechter Maustaste) kannst du erweiterte
+Einstellungen vornehmen.
 
 > **Hinweis:** Die Einstellungen werden im Eingabebereich
 > (Einstellungen) abgelegt. Der Name der Einstellung erscheint rechts
@@ -626,8 +637,8 @@ Mauszeiger zu einer "Hand".
 
 ## Shortcuts
 
-Für eine flüssige Bedienung stellt Zuüpfnoter folgende Shortcuts zur
-Verfügung:
+Für eine flüssige Bedienung stellt Zupfnoter folgende Shortcuts
+(Tastenkombinationen) zur Verfügung:
 
 -   "cmd - S": Speichern
 -   "cmd - k": Konsole
@@ -767,6 +778,6 @@ TODO:
 
 -   Maske ggf mit Refresh aktualisieren
 -   Feldeingabe mit "TAB" Beenden
--   Refresh nicht vergessen
+-   Render nicht vergessen
 
 ## Zupfnoter-spezifische Zusätze {#zusaetze}

@@ -19,19 +19,19 @@ TODO: text überarbeiten
     Spezifizert den Titel des Auszugs
 
     **Hinweis:** Der Titel des Auszug ist nicht zu verwechseln mit dem
-    Titel des Musktistücks ( ABC-Kopfzeite "´T:\`")
+    Titel des Musikstücks ( ABC-Kopfzeite "´T:\`")
 
 -   "Stimmen": [extract.x.voices]
 
-    Spezifiziert, welche Stimmen im dem Auszug dargestellt werden.
+    Spezifiziert, welche Stimmen in dem Auszug dargestellt werden.
 
 -   **Flusslinien** [extract.x.flowlines]
 
-    Spezifizert, welche Stimmen eine Flusslinie erhalten sollen.
+    Spezifiziert, welche Stimmen eine Flusslinie erhalten sollen.
 
 -   **Stimmen für layout**: [extract.x.layoutlines]
 
-    Zupfnoter errechnet die vertkale Anordnung der Noten aus den
+    Zupfnoter errechnet die vertikale Anordnung der Noten aus den
     einzelnen Notenlängen. Über diese Einstellung wird bestimmt, welche
     Stimmen in die Berechnung eingehen.
 
@@ -57,38 +57,34 @@ TODO: text überarbeiten
     "`^@5 :|`" - der Vertikale Teil der Sprunglinie liegt fünf
     Halbtonschritte rechts von der letzten Note des Abschnittes
 
--   **Synchnronisationslinien:** (Synchronisationslinie, Querlinie zu
+-   **Synchcronisationslinien:** (Synchronisationslinie, Querlinie zu
     Begleitnoten) [extract.x.synchlines]
 
     Diese Einstellung bestimmt, zwischen welchen Stimmen die
     Synchronisiationslinien dargestellt werden.
 
-    **Hinweise:** Synchronisationsliniem für Mehrklänge werden immer
+    **Hinweise:** Synchronisationslinien für Mehrklänge werden immer
     dargestellt.
 
 -   **Legende**: [extract.x.legend]
 
     Diese Einstellung bestimmt die Position der Legende. Dabei kann die
-    Überschrift des Musikstückes und der Informationsbloock separat
-    poitioniert werden.
+    Überschrift des Musikstückes und der Informationsblock separat
+    positioniert werden.
 
     **Hinweis:** durch Veschieben der Objekte mit der Maus wird diese
     Einstellung automatisch eingefügt.
 
 -   **Liedtexte:** (Liedtexte) [extract.x.lyrics]
 
-    In der Abc Notation werden Liedertexte im Kopffeld W:
+    Diese Einstellung bstimmt, wie die Liedtexte im Unterlegnotenblatt
+    positioniert werden.
 
-    erfasst und mit bestimmten Symbolen werden Wörter oder Silben den
-    herkömmlichen Noten zugeordnet. Diese Liedertexte können nicht für
-    die Tisch-Harfen-Noten genutzt werden. Deshalb muss man die
-    Liedertexte für die Tisch-Harfen-Noten über dieses
-    Tisch-Harfen-Noten erstellen. Es bietet sich an, pro Strophe ein
-    Zupfnoter-Kommando (durchnumerieren) zu erstellen, damit man die
-    verschiedenen Strophen besser auf dem Blatt der Tisch-Harfen-Noten
-    verteilen kann.
-
-    todo: unterschied zwischen `w:` und `W:`
+    > **Hinweis**: Zupfnoter kann nur die Liedtexte aus der Kopfzeile
+    > "`W:`" verarbeiten. In der Abc Notation kann man Liedtexte auch im
+    > Kopffeld "`w:`" erfassen, um sie innerhalb der Notenzeilen
+    > anzuordnen. Mit bestimmten Symbolen werden Wörter oder Silben den
+    > herkömmlichen Noten zugeordnet.
 
 -   **Seitenbeschriftung:** [extract.x.notes]
 
@@ -98,15 +94,15 @@ TODO: text überarbeiten
 -   **Begleitpausen:** [extact.x.nonflowrest]
 
     Generell werden Pausen in den Begleitnoten (Stimmen ohne Flusslinie)
-    der herkömmlichen Noten und Tisch-Harfen-Noten unterdrückt. Wenn die
-    Pausen auch in den Begleitstimmen sehen möchte, kann msn sie mit
-    dier Einstellung einschalten.
+    der herkömmlichen Noten und Tisch-Harfen-Noten unterdrückt. Wenn du
+    die Pausen auch in den Begleitstimmen darstellen möchtest, kannst du
+    sie mit dieser Einstellung einschalten.
 
 -   **Startposition:** [extract.x.startpos]
 
     Mit dieser Einstellung kann man die Startposition der Unterlegnoten
-    festlegen. Die Angabe erfolgt in mm und wird vom oberen Blattrand
-    gemessen.
+    festlegen. Die Angabe erfolgt in Millimeter und wird vom oberen
+    Blattrand gemessen.
 
 -   **Unterflusslinien**: [extract.x.subflowlines]
 

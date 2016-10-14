@@ -26,7 +26,7 @@ Musikstück. Mit diesem Beispiel kannst du in die Grundlagen des
 Zupfnoters einsteigen.
 
 Anhand der schriftlichen Anleitungen unter dem Hilfemenü und mit den
-mündlichen Unterweisung in den Tutorial-Videos (Selbstlerneinheiten)
+mündlichen Unterweisungen in den Tutorial-Videos (Selbstlerneinheiten)
 lassen sich gut die einzelnen Schritte für die Erstellung “Alle meine
 Entchen” nachvollziehen.
 
@@ -93,7 +93,7 @@ Klammer:
 -   `[` erzeugt man mit der Taste `Alt` und der Taste `5`
 -   `]` erzeugt man mit der Taste Alt und der Taste `6`
 
-## Das Musikstück prüfen
+## Dein Musikstück prüfen
 
 Du möchtest nun prüfen, ob die Noten auch korrekt sind. Dazu kannst du
 es einfach mal anhören:
@@ -173,7 +173,7 @@ Beispiel kannst zunächst einen Liedtext hinzufügen:
     > liegenden Texten anzuzeigen, welcher Text verschoben wurde. Durch
     > klicken auf die Schaltfläche "Rendern" wird er wieder schwarz.
 
-## Das Musikstück drucken {#musikstueck-drucken}
+## Dein Musikstück drucken {#musikstueck-drucken}
 
 Wenn das Musikstück fertig gestaltet ist, willst du es natürlich auch
 drucken:
@@ -206,7 +206,7 @@ Wenn du dein Musikstück als herkömmliche Noten ausdrucken willst:
 
 2.  klicke auf Menüeintrag "Noten"
 
-    Es erscheint ein neuer Reiter in deinem Browser mit eine Vorschau
+    Es erscheint ein neuer Reiter in deinem Browser mit einer Vorschau
     der herkömmlichen Noten.
 
 3.  Wähle in deinem Browser zum Drucken die Druckfunktion aus.
@@ -291,11 +291,11 @@ verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 > Computer arbeitest. Besser ist es, gleich im "Inkognito"-Modus des
 > Browsers zu arbeiten.
 >
-> Dropbox-Anwendungen speichern ein geheimes Token auf deinem lokalen
-> Rechner. Wenn du vermutest, das dieses Token kompromittiert ist,
-> kannst du auf der Website von Dropbox die Verbindung zu Zupfnoter
-> löschen. Dadurch wird bei der nächsten Anmeldung ein neues Token
-> erzeugt.
+> Dropbox-Anwendungen speichern ein geheime Zeichenkette (auch Token
+> genannt) auf deinem lokalen Rechner. Wenn du vermutest, das dieses
+> Token kompromittiert ist, kannst du auf der Website von Dropbox die
+> Verbindung zu Zupfnoter löschen. Dadurch wird bei der nächsten
+> Anmeldung ein neues Token erzeugt.
 
 ## Musikstück importieren
 
