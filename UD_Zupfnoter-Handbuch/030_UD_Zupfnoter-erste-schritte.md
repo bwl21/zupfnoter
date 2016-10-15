@@ -51,6 +51,10 @@ findet man eine deutsche Anleitung für die ABC-Notation.
     Zeile 3. Zeile 2 zeigt den Dateinamen den Zupfnoter aus Nummer und
     Titel gebildet hat.
 
+    > **Hinweis**: Der Wert von `X:` (Liednummer) muss eine positive
+    > Ganzzahl sein. Es dürfen keine Buchstaben, Leerzeichen oder
+    > Unterstriche enthalten sein.
+
 3.  klicke im linken Fenster in Zeile 12
 
 4.  gib die folgenden Notennamen und Notenwerte ein:

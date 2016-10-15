@@ -4,11 +4,49 @@
 
 Zum Verständnis von Zupfnoter sind folgende Themen wichtig:
 
+-   [Zupfnoter-Prinzipien](#zupfnoter-prinzipien)
 -   [Elemente der von Zupfnoter erstellten
     Unterlegnoten](#elemente-der-von-zupfnoter-erstellten-unterlegnoten)
--   [Genereller Bildschimaufbau]
--   [Zupfnoter-Prinzipien] (Umwandlung von ABC-Notation in
-    Unterlegnoten)
+-   [Genereller Bildschimaufbau](#genereller-bildschirmaufbau)
+
+## Zupfnoter Prinzipien
+
+Zupfnoter arbeitet nach dem Prinzip der Umwandlung von ABC-Notation in
+Unterlegnoten. Im Gegensatz zu so genanten "What You See is What you
+get" - Sytemen werden also die Unterlegnoten nicht direkt bearbeitetn
+sondern entstehen automatisch durch Umwandlung aus einem Modell des
+Musikstückes.
+
+Dieses Modell ist allgemeiner und präziser als die Unterlegnoten und
+basiert auf der ABC-Notation als ein de-facto Standard. Wie du siehst
+kann aus diesem Modell ja auch ein herkömmliches Notenblatt erstellt
+werden. In diesem Sinne sind die Unterlegnoten lediglich eine von
+mehreren grafischen Darstellungen des Musikstückes.
+
+Andererseits gibt es in den Unterlegnoten spezifische Sachverhalte,
+welche durch die ABC-Notation standardmäßig nicht dargestellt werden
+können. Daher verwendet Zupfnoter zwei Konventionen innerhalb der
+ABC-Notation:
+
+-   **Zusätze**: Hier werden die "Annotations" der ABC-Notation mit
+    spezifischen Konventionen verwendet. Diese Zusätze stehen vor der
+    Note bzw. dem Taktstrich auf den sie sich beziehen.
+
+    Weitere Details findest du in Kapitel \ref{masken-fuer-zusaetze}
+    [Zusätze](#masken-fuer-zusaetze).
+
+-   **Konfiguration** - dies ist ein eigener Block im so genannten
+    JSON - Format welcher nach der eigentlichen ABC-Notation steht und
+    von diesem durch mindestens eine Leerzeile gefolgt von
+
+    `%%%%zupfnoter.config`
+
+    abgesetzt ist. Weitere Details findest du in
+    Kapitel \ref{konfiguration} [Konfiguration](#konfiguration) bzw.
+    Kapitel \ref{#konfigurationsmasken}
+    [Konfigurationsmasken](#konfigurationsmasken)
+
+Für beide Konventionen bietet Zupfnoter eine grafische Benutzerführung.
 
 ## Elemente der von Zupfnoter erstellten Unterlegnoten
 
@@ -521,8 +559,7 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 
 Das Eingeabefenster enthält seinerseits
 
--   eine eigene Werkzeuigleiste zu Ansteuerung von
-    Bearbeitungsfunktionen
+-   eine eigene Werkzeugleiste zu Ansteuerung von Bearbeitungsfunktionen
 -   verschiedene Bearbeitungsansichten, welche über Karteilreiter
     ausgewählt werden.
 
@@ -559,17 +596,17 @@ Das Eingeabefenster enthält seinerseits
 
 -   Menü **Zusatz einfügen**
 
-    Über dieseskönnen Zupfnoter-spezifische Zusätze an eine Note bzw. an
-    einen Taktstrich eingefügt werden. Zupfnoter verwendet spzifische
-    Zusätze, um z.b. die Position von Sprunglinien anzugeben, oder
-    Notengebundene Anmerkungen zu erfassen. Diese Zusätze sind an eine
-    Note bzw. an einen Taktstrich gebungen und werden in Form einer
-    ABC-Anmerkung notiert (z.B.`"^@@3" :|` für die Lage einer Sprungline
-    für eine Wiederholung).
+    \index{Zusatz}Über dieses Menü können Zupfnoter-spezifische Zusätze
+    an eine Note bzw. an einen Taktstrich eingefügt werden. Zupfnoter
+    verwendet spzifische Zusätze, um z.b. die Position von Sprunglinien
+    anzugeben, oder Notengebundene Anmerkungen zu erfassen. Diese
+    Zusätze sind an eine Note bzw. an einen Taktstrich gebunden und
+    werden in Form einer ABC-Anmerkung notiert (z.B.`"^@@3" :|` für die
+    Lage einer Sprungline für eine Wiederholung).
 
     > **Hinweis**: Dieses Menü wird daher erst dann aktiv, wenn die
     > Schreibmarke (Cursor) zwischen einem Leerzeichen und einer
-    > Note/bzw. Taktstrich steht. Man erkennt das auch in der
+    > Note/bzw. einem Taktstrich steht. Man erkennt das auch in der
     > Statusleiste links unten: dort sollte das wort `editable.before`
     > erscheinen, dann ist die Schaltfläche aktiv.
     >
@@ -635,10 +672,31 @@ Einstellungen vornehmen.
 > unten in der Statuszeile, wenn man mit der Maus über ein Element
 > fährt.
 
-## Shortcuts
+### Statusleiste am unteren Bildschirmrand
 
-Für eine flüssige Bedienung stellt Zupfnoter folgende Shortcuts
-(Tastenkombinationen) zur Verfügung:
+Am unteren Bildschirmrand gibt es eine Statusleiste mit folgenden
+Einträgen
+
+-   Position der Schreibmarke im Editor
+-   Bedeutung des Symbols links von der Schreibmarke (Syntax Token)
+-   Pfad zur Dropbox
+-   Aktives Filter für Loglevel (am besten auf "Error" eingestellt)
+
+### Konsole
+
+Die Konsole ist nur sichtbar, wenn sie mit `cmd-K` eingeschaltet wurde.
+Sie stellt die letzten Meldungen von Zupfnoter dar. Experten können in
+der Konsole auch weitere Befehle eingeben, die Zupfnoter direkt steuern.
+Mehr mit dem Befehl "Hilfe".
+
+> **Hinweis**: Die Zupfnoter-Menüs lösen letztendlich solche
+> Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
+> Regel nicht brauchen.
+
+## Tastenkombinationen (Shortcuts)
+
+Für eine flüssige Bedienung stellt Zupfnoter folgende
+Tastenkombinationen (Shiortcuts) zur Verfügung:
 
 -   "cmd - S": Speichern
 -   "cmd - k": Konsole
@@ -664,10 +722,6 @@ Bedeutung des Elementes links von der aktuellen Schreibmarke an.
 > **Hinweis**: Diese Anzeige ist noch sehr technisch, in manchen Fällen
 > aber dennoch hilfreich. Sie steuert z.B. die verfügbarkeit der
 > Schaltflächen für die Zusätze.
-
-Als zusätzliche Information zu dieser Anleitung sei noch erwähnt, dass
-der Befehl X: (Liednummer) eine positive Ganzzahl sein muss. Es dürfen
-keine Buchstaben, Leerzeichen oder Unterstriche enthalten sein.
 
 > **Hinweis:** Veränderungen in der ABC-Notation wirken unterschiedlich
 > auf die beiden anderen Fenster:
@@ -778,6 +832,32 @@ TODO:
 
 -   Maske ggf mit Refresh aktualisieren
 -   Feldeingabe mit "TAB" Beenden
--   Render nicht vergessen
+-   "Rendern" nicht vergessen
 
-## Zupfnoter-spezifische Zusätze {#zusaetze}
+> ![Konfigurationsmaske](../ZAUX_Images/040-040_Konfigurationsmasken.jpg) 
+
+## Masken für Zupfnoter-spezifische Zusätze {#masken-zusaetze}
+
+\index{Zusatz}Zupfnoter verwendet "Annotations" der ABC-Notation mit
+spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
+Taktstrich auf den sie sich beziehen.
+
+Zupfnoter unterstützt die Pflege diese Zusätze über eine
+Bildschirmmaske. Diese wird über Schaltflächen bzw. Menüs in der
+Werkzeugleiste des Eingabefensters aufgerufen (siehe
+Kapitel \ref{werkzeugleiste-des-eingabefensters} [Werkzeugleiste des
+Eingabefensters](#werkzeugleiste-des-eingabefensters)).
+
+> **Hinweis**: Der Aufruf von "einfügen" und "bearbeiten" liegt auf
+> unterschiedlichen Schaltflächen, da beim "Einfügen" ein Menü erscheint
+> über welches ausgewählt wird, "was" eingefügt weden soll. Beim
+> Bearbeiten ist diese Auswahl nicht mehr notwendig. Daher wird
+> "bearbeiten" über eine Schaltflcähe direkt aufgerufen.
+
+> > > ![](../ZAUX_Images/040-050_Menue-fuer-zusaetze.jpg) 
+
+Es erscheint eine Maske nach folgendem Beispiel:
+
+> > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
+
+<!-- -->

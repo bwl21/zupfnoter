@@ -1,3 +1,5 @@
+\cleardoublepage
+
 # Zupfnoter für Experten
 
 ## Erstellung von Auszügen {#auszuege}
@@ -131,3 +133,51 @@ TODO: text überarbeiten
 
     Diese Einstellung bestimmt, an welchen Stimmen die Takte numeriert
     werden. Ebenso wird Position und Darstellung bestimmt.
+
+## Masken für Zupfnoter-spezifische Zusätze {#zusaetze}
+
+\index{Zusatz}Zupfnoter verwendet "Annotations" der ABC-Notation mit
+spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
+Taktstrich auf den sie sich beziehen.
+
+Zupfnoter-Annotations beginnen mit einem der Zeichen `:`, `@`, `!`, `#`,
+`<`, `>`. Beispielwesie bedeutets `"^>"` dass das Notensymbol in den
+Unterlegnoten nach rechts verschoben werden.
+
+Es gibt folgende Zusätze:
+
+-   **`^:`** - Sprungziel: Damit kannst du ein Ziel festelegen zu dem
+    eine Sprunglinie gezeichnet werden kann. Damit kannst du beliebige
+    Sprünge darstellen.
+
+-   **`^@`** - Sprung: Damit kannst du eine Sprunglinie erzeugen.
+    Beispiele: `@p1@3`, `@@-4`
+
+-   **`^!`** - Anmerkung: Damit kannst du eine Beschriftung an eine Note
+    in den Umterlegnoten anbringen
+
+    Beispiel:
+
+    `"^"this is my note@5,2"` schreibt eine Anmerkung 5 mm rechts, 2mm
+    unter die Note
+
+-   **`^#`** - Anmerkungsreferenz: Damit kannst du eine Anmerkung mit
+    einem vordefinierten Text anbringen
+
+-   **`^\>`** - Rechtsverschiebung: Verschiebt das Notensymbol in den
+    Unterlegnoten nach rechts
+
+-   **`^\<`** - Linksverschiebung: Verschiebt das Notensybmol in den
+    Unterlegnoten nach links
+
+-   **[r:n_11]** - Verschiebemarke: Das ist eine eingebettete Kopfzeile
+    der ABC-Notation. Wenn man mit der Maus Elemente im
+    Unterlegnotenblatt verschiebt, wird diese Verschiebung in der
+    Konfiguration abgespeichert (`notebound`). Die Referenz wird dann
+    über den Namen der Verschiebemarke hergestellt.
+
+    > **Hinweis**: Wenn keine Verschiebemarke vorhanden ist, wird diese
+    > Referenz über die Zeitachse hergestellt. Daher geht diese
+    > Verbindung eventuell verloren, wenn das Zeitgefüge des
+    > Musikstückes verändert wird. Das kann durch einfügen einer
+    > Verschiebemarke verhindert werden.
