@@ -10,13 +10,13 @@ Zupfnoter ist so flexibel, dass man Noten für alle chromatischen
 Instrumente erstellen kann, die von oben nach unten gespielt werden,
 egal welche Form, wieviele Saiten und welchen Saitenabstand sie haben.
 Insbesondere kann der Saitenabstand individuell eingestellt werden, so
-dass Zupfnoter auch für Instumente mit einem Saitenabtand ungleich 11.5
-mm geeignet ist. TODO: non breaking space
+dass Zupfnoter auch für Instumente mit einem Saitenabstand ungleich
+11.5 mm geeignet ist.
 
-Der Zupfnoter wird über die Homepage www.zupfnoter.de aufgerufen und
-kann ohne die Installation einer Software auf deinem PC sofort
-angewendet werden. Er läuft unabhängig vom Betriebssystem des PC’s und
-ist für Mac, Linux und sogar für Windows geeignet.
+Der Zupfnoter wird über die Homepage <https://www.zupfnoter.de>
+aufgerufen und kann ohne die Installation einer Software auf deinem PC
+sofort angewendet werden. Er läuft unabhängig vom Betriebssystem des
+PC’s und ist für Mac, Linux und sogar für Windows geeignet.
 
 Zupfnoter unterstützt vier grundlegende Schritte zur Erstellung von
 Unterlegnoten:
@@ -25,9 +25,10 @@ TODO: mit icons illustrieren
 
 -   **Noten eingeben**
 
-    Zupfnoter erfasst die Musikstücke[^1] in der Standard-ABC-Notation.
-    Diese kann man selbst eingeben oder vorhandene ABC-Dateien
-    verwenden.
+    Zupfnoter erfasst die
+    Musikstücke[^020_UD_Zupfnoter-Einfuehrung.md_1] in der
+    Standard-ABC-Notation. Diese kann man selbst eingeben oder
+    vorhandene ABC-Dateien verwenden.
 
     Über die Music-XML-Schnittstelle können Noten aus vielen
     Musik-Programmen importiert werden (z.B. aus dem ebenfalls freien
@@ -66,7 +67,7 @@ TODO: mit icons illustrieren
     Als Web-Anwendung speichert Zupfnoter die erstellten Musikstücke per
     Download auf dem lokalen Rechner oder in der Cloud (Dropbox).
 
-[^1]: In diesem Handbuch wird "Musikstück" als Oberbegriff zu Musik bzw.
-    Lied verwendet. Lied (aus mhd. liet, „Strophe“) ist der
-    Sammelbegriff für kleinere, knapp gegliederte gesungene
-    Kompositionen aus Musik und Liedtext.
+[^020_UD_Zupfnoter-Einfuehrung.md_1]: In diesem Handbuch wird
+    "Musikstück" als Oberbegriff zu Musik bzw. Lied verwendet. Lied (aus
+    mhd. liet, „Strophe“) ist der Sammelbegriff für kleinere, knapp
+    gegliederte gesungene Kompositionen aus Musik und Liedtext.

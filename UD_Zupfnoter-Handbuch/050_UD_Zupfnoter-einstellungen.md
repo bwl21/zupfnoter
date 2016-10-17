@@ -12,7 +12,7 @@ TODO: Konzept der Auszüge beschreiben
 
 see https://github.com/bwl21/zupfnoter/issues/71
 
-### Grundlegende Blatteinstellungen
+### Grundlegende Blatteinstellungen (Konfiguration)
 
 TODO: text überarbeiten
 
@@ -20,10 +20,10 @@ TODO: text überarbeiten
 
     Spezifizert den Titel des Auszugs
 
-    **Hinweis:** Der Titel des Auszug ist nicht zu verwechseln mit dem
-    Titel des Musikstücks ( ABC-Kopfzeite "´T:\`")
+    > **Hinweis:** Der Titel des Auszug ist nicht zu verwechseln mit dem
+    > Titel des Musikstücks ( ABC-Kopfzeite "´T:\`")
 
--   "Stimmen": [extract.x.voices]
+-   **Stimmen**: [extract.x.voices]
 
     Spezifiziert, welche Stimmen in dem Auszug dargestellt werden.
 
@@ -56,10 +56,10 @@ TODO: text überarbeiten
     eingestellt. Dazu wird vor dem entsprechenden Taktstrich z.B.
     eingegeben:
 
-    "`^@5 :|`" - der Vertikale Teil der Sprunglinie liegt fünf
+    "`^@5 :|`" - der vertikale Teil der Sprunglinie liegt fünf
     Halbtonschritte rechts von der letzten Note des Abschnittes
 
--   **Synchcronisationslinien:** (Synchronisationslinie, Querlinie zu
+-   **Synchronisationslinien:** (Synchronisationslinie, Querlinie zu
     Begleitnoten) [extract.x.synchlines]
 
     Diese Einstellung bestimmt, zwischen welchen Stimmen die
@@ -134,7 +134,7 @@ TODO: text überarbeiten
     Diese Einstellung bestimmt, an welchen Stimmen die Takte numeriert
     werden. Ebenso wird Position und Darstellung bestimmt.
 
-## Masken für Zupfnoter-spezifische Zusätze {#zusaetze}
+## Zupfnoter-spezifische Zusätze {#zusaetze}
 
 \index{Zusatz}Zupfnoter verwendet "Annotations" der ABC-Notation mit
 spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
@@ -143,6 +143,10 @@ Taktstrich auf den sie sich beziehen.
 Zupfnoter-Annotations beginnen mit einem der Zeichen `:`, `@`, `!`, `#`,
 `<`, `>`. Beispielwesie bedeutets `"^>"` dass das Notensymbol in den
 Unterlegnoten nach rechts verschoben werden.
+
+> **Hinweis**: Dieses Zusätze können über Bildschirmmasken komfortabel
+> bearbeitet werden (siehe Kapitel \ref{masken-fuer-zusaetze} [Masken
+> für Zupfnoter-spezifische Zusätze](#masken-fuer-zusaetze)).
 
 Es gibt folgende Zusätze:
 
@@ -153,21 +157,21 @@ Es gibt folgende Zusätze:
 -   **`^@`** - Sprung: Damit kannst du eine Sprunglinie erzeugen.
     Beispiele: `@p1@3`, `@@-4`
 
--   **`^!`** - Anmerkung: Damit kannst du eine Beschriftung an eine Note
-    in den Umterlegnoten anbringen
+-   **`^!`** - Notenbeschriftung: Damit kannst du eine Beschriftung an
+    eine Note in den Umterlegnoten anbringen
 
     Beispiel:
 
-    `"^"this is my note@5,2"` schreibt eine Anmerkung 5 mm rechts, 2mm
-    unter die Note
+    `"^"this is my note@5,2"` schreibt eine Beschriftung 5 mm rechts,
+    2mm unter die Note
 
--   **`^#`** - Anmerkungsreferenz: Damit kannst du eine Anmerkung mit
-    einem vordefinierten Text anbringen
+-   **`^#`** - Ref. Notenbeschriftung: Damit kannst du eine Beschriftung
+    mit einem vordefinierten Text (Beschriftungsvorlage) anbringen
 
--   **`^\>`** - Rechtsverschiebung: Verschiebt das Notensymbol in den
+-   **`^>`** - Rechtsverschiebung: Verschiebt das Notensymbol in den
     Unterlegnoten nach rechts
 
--   **`^\<`** - Linksverschiebung: Verschiebt das Notensybmol in den
+-   **`^<`** - Linksverschiebung: Verschiebt das Notensybmol in den
     Unterlegnoten nach links
 
 -   **[r:n_11]** - Verschiebemarke: Das ist eine eingebettete Kopfzeile
@@ -179,5 +183,5 @@ Es gibt folgende Zusätze:
     > **Hinweis**: Wenn keine Verschiebemarke vorhanden ist, wird diese
     > Referenz über die Zeitachse hergestellt. Daher geht diese
     > Verbindung eventuell verloren, wenn das Zeitgefüge des
-    > Musikstückes verändert wird. Das kann durch einfügen einer
+    > Musikstückes verändert wird. Das kann durch Einfügen einer
     > Verschiebemarke verhindert werden.

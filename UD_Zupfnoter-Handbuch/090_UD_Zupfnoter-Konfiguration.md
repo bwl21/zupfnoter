@@ -10,19 +10,18 @@ sowie die Voreinstellungen des Systems dargestellt.
 > Konfigurationsparameter übersetzt sind, so basiert diese Referenz den
 > englischen Namen.
 
-> **Hinweis**: Manche Konfigurationsparameter treten können mehrfach
-> auftreten (z.B. `extract`). In diesem Kapitel wird dann immer die
-> Instanz mit der Nr. 0 (z.B. `extract.0`) beschrieben.
+> **Hinweis**: Manche Konfigurationsparameter können mehrfach auftreten
+> (z.B. `extract`). In diesem Kapitel wird dann immer die Instanz mit
+> der Nr. 0 (z.B. `extract.0`) beschrieben.
 
-## `annotations` - Beschriftungen {#annotations}
+## `annotations` - Beschriftungsvorlagen {#annotations}
 
-Hier kannst du eine Liste von vordefinierten notenbezogenen Anmerkiungen
-angeben.
+Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
 
 Zupfnoter bringt einige solcher Definitionen bereits mit.
 
-Diese notenbezogenen Beschriftungen kannst du über "Zusatz einfügen" mit
-einer Note verbinden.
+Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit einer
+Note verbinden (Notenbeschriftung).
 
         "annotations": {
           "vl" : {"pos": [-1, -5], "text": "v"},
@@ -33,8 +32,8 @@ einer Note verbinden.
 
 ## `annotations.vl` - 'V' links {#annotations.vl}
 
-Hier siehst du ein Beispiel für eine notenbezogenen Anmerkung (hier mit
-dem Namen `vl`).\
+Hier siehst du ein Beispiel für eine Notenbeschriftung (hier mit dem
+Namen `vl`).\
 Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
 dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
 
@@ -308,7 +307,7 @@ Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von
         "filenamepart": null
           
 
-## `extract.0.flowlines` - Melodielinien {#extract.0.flowlines}
+## `extract.0.flowlines` - Flußlinien {#extract.0.flowlines}
 
 Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
 angeben, für die Flußlinien eingezeichnet werden sollen.
@@ -375,7 +374,7 @@ Hier stellst du die Breite (in mm) von dünnen Linien ein.
         "LINE_THIN": 0.1
           
 
-## `extract.0.layout.REST_SIZE` - Größe der Pausen {#extract.0.layout.REST_SIZE}
+## `extract.0.layout.REST_SIZE` - Pausengröße {#extract.0.layout.REST_SIZE}
 
 Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 [2-4, 1.2-2]
@@ -468,7 +467,7 @@ orientiert.
         "nonflowrest": false
           
 
-## `extract.0.notes` - Beschriftungen {#extract.0.notes}
+## `extract.0.notes` - Seitenbeschriftungen {#extract.0.notes}
 
 Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
 Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`. Es
@@ -720,7 +719,7 @@ angeben, für die Unterflußlinien eingezeichnet werden sollen.
         "subflowlines": [2, 4]
           
 
-## `extract.0.synchlines` - Synchroniationslinien {#extract.0.synchlines}
+## `extract.0.synchlines` - Synchronisationslinien {#extract.0.synchlines}
 
 Hier kannst du angeben, welche Stimmenpaare über Synchronisationslinien
 verbunden werden sollen.
@@ -729,19 +728,19 @@ Die Angabe erfolgt in der Bildschirmmaske als eine durch Komma
 separierte Liste von Stimmenpaaren (darin die Stimmen durch "-"
 getrennt).
 
-Die Angabe `1-2, 3-4` bedeutet beispielsweise, dass zwischen den Stimmen
-1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie gezeichnet
-werden soll.
+Die Angabe "`1-2, 3-4`" bedeutet beispielsweise, dass zwischen den
+Stimmen 1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie
+gezeichnet werden soll.
 
 > **Hinweis**:In der Texteingabe wird das als eine Liste von
-> zweiwerteingen Listen dargestellt.
+> zweiwertigen Listen dargestellt.
 
         "synchlines": [[1, 2], [3, 4]]
           
 
 ## `extract.0.title` - Titel {#extract.0.title}
 
-Hier pezifizierst du den Titel des Auszuges. Er wird in der Legende mit
+Hier spezifizierst du den Titel des Auszuges. Er wird in der Legende mit
 ausgegeben.
 
 > **Hinweis**: Der Titel des Auszuges wird an die Angabe in der Zeile
@@ -856,7 +855,7 @@ von horizontaler / vertikaler Position.
         "pos": [350, 70]
           
 
-## `templates.lyrics.verses` - Strophens {#templates.lyrics.verses}
+## `templates.lyrics.verses` - Strophen {#templates.lyrics.verses}
 
 Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block
 ausgegeben werden.
@@ -864,7 +863,7 @@ ausgegeben werden.
         "verses": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
           
 
-## `templates.notes` - Beschriftungen {#templates.notes}
+## `templates.notes` - Seitenbeschriftungen {#templates.notes}
 
 Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
 Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`. Es
