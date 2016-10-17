@@ -126,6 +126,10 @@ task :deploy => [:build] do
     cp f, "#{OUTFOLDER}/webserver/public/locale/#{File.basename(f)}"
   end
 
+  Dir["../public/*.pdf"].each do |f|
+    cp f, "#{OUTFOLDER}/webserver/public/#{File.basename(f)}"
+  end
+
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
   cp "../vendor/ace/mode-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-abc.js"
   cp "../vendor/ace/theme-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/theme-abc.js"

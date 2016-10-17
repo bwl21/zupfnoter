@@ -28,6 +28,7 @@ class Controller
 
       command.as_action do |args|
         set_status(view: args[:view].to_i)
+        @config_form_editor.refresh_form if @config_form_editor
         render_previews
       end
     end
@@ -401,6 +402,7 @@ C,
             lyrics:                {keys: expand_extract_keys([:lyrics])},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3'])},
             printer:               {keys: expand_extract_keys([:printer])},
+            stringnames:           {keys: expand_extract_keys([:stringnames])},
             global:                {keys: [:produce]},
             extract0:              {keys: ['extract.0']},
             extract_current:       {keys: ["extract.#{@systemstatus[:view]}"]},
@@ -474,7 +476,7 @@ C,
           handle_command("addconf #{addconf_set}") if addconf
         end
 
-        editor_title        = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
+        editor_title        = %Q{Exract #{@systemstatus[:view]}: #{args[:set]}}
         editorparams        = {
             title:               editor_title,
             editor:              @editor,
@@ -832,7 +834,7 @@ C,
           print_variants.map do |print_variant|
             index                                                                 = print_variant[:view_id]
             pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenmaepaet]}_a4.pdf"] = render_a4(index).output(:blob)
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
             nil
           end
 

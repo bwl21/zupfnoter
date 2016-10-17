@@ -1,16 +1,16 @@
 ## annotations
 
-Hier kannst du eine Liste von vordefinierten notenbezogenen Anmerkiungen
+Hier kannst du eine Liste von Beschriftungsvorlagen
 angeben.
 
 Zupfnoter bringt einige solcher Definitionen bereits mit.
 
-Diese notenbezogenen Beschriftungen kannst du über "Zusatz einfügen" mit
-einer Note verbinden.
+Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit
+einer Note verbinden (Notenbeschriftung).
 
 ## annotations.vl
 
-Hier siehst du ein Beispiel für eine notenbezogenen Anmerkung (hier mit
+Hier siehst du ein Beispiel für eine Notenbeschriftung (hier mit
 dem Namen `vl`).\
 Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
 dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
@@ -90,7 +90,7 @@ von horizontaler / vertikaler Position.
 
 ## extract.0.title
 
-Hier pezifizierst du den Titel des Auszuges. Er wird in der Legende mit
+Hier spezifizierst du den Titel des Auszuges. Er wird in der Legende mit
 ausgegeben.
 
 > **Hinweis**: Der Titel des Auszuges wird an die Angabe in der Zeile
@@ -154,12 +154,12 @@ Die Angabe erfolgt in der Bildschirmmaske als eine durch Komma
 separierte Liste von Stimmenpaaren (darin die Stimmen durch "-"
 getrennt).
 
-Die Angabe `1-2, 3-4` bedeutet beispielsweise, dass zwischen den Stimmen
+Die Angabe "`1-2, 3-4`" bedeutet beispielsweise, dass zwischen den Stimmen
 1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie gezeichnet
 werden soll.
 
 > **Hinweis**:In der Texteingabe wird das als eine Liste von
-> zweiwerteingen Listen dargestellt.
+> zweiwertigen Listen dargestellt.
 
 ## layout
 

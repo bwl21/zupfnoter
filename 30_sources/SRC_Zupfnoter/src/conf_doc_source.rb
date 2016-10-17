@@ -107,7 +107,6 @@ show_keys.sort.each do |key|
 
 ## `#{show_key}` - #{locale['phrases'][key.split(".").last]} {##{show_key}}
 
-
   #{helptext}
 
   #{get_example($conf, key)}
@@ -127,7 +126,7 @@ wird der Text der Online-Hilfe, sowie die Voreinstellungen des Systems dargestel
 >**Hinweis**: Auch wenn in den Bildschirmmasken die Namen der Konfigurationsparameter übersetzt sind, so basiert
 >diese Referenz den englischen Namen.
 
->**Hinweis**: Manche Konfigurationsparameter treten können mehrfach auftreten (z.B. `extract`). In diesem Kapitel wird
+>**Hinweis**: Manche Konfigurationsparameter können mehrfach auftreten (z.B. `extract`). In diesem Kapitel wird
 >dann immer die Instanz mit der Nr. 0 (z.B. `extract.0`) beschrieben.
           }
   f.puts mdhelp

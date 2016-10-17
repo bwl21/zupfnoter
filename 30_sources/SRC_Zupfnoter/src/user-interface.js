@@ -250,7 +250,7 @@ function init_w2ui(uicontroller) {
                         id: 'HarfenEingabe',
                         tooltip: "editor and harpnotes\napplicaple to tweak the notes for harp"
                     },
-                    {text: 'Tune"', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
+                    {text: 'Tune', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
                     {
                         text: 'Harp',
                         icon: 'fa fa-file-picture-o',
@@ -337,7 +337,7 @@ function init_w2ui(uicontroller) {
                 window.open("http://www.zupfnoter.de")
             }
             if (event.target == "tbHelp:tbManual") {
-                window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
+                window.open("/public/UD_Zupfnoter-Handbuch-de_review.pdf")
             }
             if (event.target == "tbHelp:tbReference") {
                 window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
@@ -436,9 +436,10 @@ function init_w2ui(uicontroller) {
                     },
                     {
                         id: 'annotations',
-                        text: 'notebound annotation',
+                        text: 'annotation template',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
+                    {id: 'stringnames', text: 'Stringnames', tooltip: "Edit presentation of stringanmes"},
                     {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"}
                 ]
             },
@@ -693,7 +694,7 @@ function set_tbitem_caption(item, caption) {
 function update_systemstatus_w2ui(systemstatus) {
     $(".dropbox-status").html(systemstatus.dropbox);
 
-    set_tbitem_caption('tb_view', systemstatus.view);
+    set_tbitem_caption('tb_view', 'Extract ' + systemstatus.view);
 
     if (systemstatus.music_model == 'changed') {
         $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
