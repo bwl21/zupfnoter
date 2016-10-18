@@ -408,27 +408,40 @@ module Harpnotes
         end
       end
 
+
+      # this generates the count notes
+      # Approach
+      # 1. have a lookup table for one full bar how to count: 1eue 2eue 3eue ...
+      # 2. compute the coount numbers covered by a particlar note:
+      # 3. lookup in the coountnames: REsult maybe something like eu3e or 3eue or 2eue3eue
+      # 4. split on notes (numbers) and fracts (eue)
+      # 5. set trailing fracts (fracts with i > 1) to nil (e.g. 4eue) -> "4"
+      # 6. combine ths tuff again
+      # 7. normalize "ue" to "u"
       def _transform_count_note(voice_element)
         if @countby
           count_base  = ABC2SVG_DURATION_FACTOR / @countby
-          count_start = 4 * (voice_element[:time] - @measure_start_time) / count_base
+          count_start = 4 * (voice_element[:time] - @measure_start_time) / count_base  # literal 4: divide one beat by 4: 1eue
           count_end   = count_start + 4 * voice_element[:dur] / count_base
 
           if (count_start % 1 == 0) and (count_end % 1) == 0
-            count_range = (count_start ... count_end).to_a.map { |i| @countnames[i] }.join('')
+            count_range = (count_start ... count_end).to_a.map { |i| @countnames[i] }.join
           else
             if (count_start % 1) == 0 # start of tuplet
               count_range = (count_start ... count_end.ceil).to_a.map { |i| @countnames[i] }.join('')
             else
-              count_range = '' #(count_start % 1).to_s[1..2]
+              count_range = '' #(count_start % 1).to_s[1..2] # we are out of sync, don't know what to do.
             end
           end
 
           # clenaup count_range
 
-          notes  = count_range.split(/[eu\?]+/)
+          notes  = count_range.split(/[eui\?]+/)
           fracts = count_range.split(/[0-9]+/)
+          fracts = [''] if fracts.empty?       # https://github.com/bwl21/zupfnoter/issues/84
 
+          # now cleanup contnotes
+          # todo:can we use regular expressions for this
           fracts.each_with_index { |v, i| fracts[i] = nil if i >= 1 }
           count_range = fracts.zip(notes).flatten.compact.join(" ").strip.split.join("-")
           count_range = count_range.gsub('ue', 'u')
