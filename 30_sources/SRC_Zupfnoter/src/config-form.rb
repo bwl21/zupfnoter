@@ -809,7 +809,7 @@ class ConfstackEditor
                     <table>
                     <tr><th style="width:20em;">#{I18n.t("Name")}</th>
                     <th>#{I18n.t("Value")}</th><th/><th>#{I18n.t("Effective value")}</th></tr>
-                    #{@value.keys.map { |key| mk_fieldHTML(key) }.join}
+                    #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>
                     }
     }
@@ -823,8 +823,10 @@ class ConfstackEditor
   end
 
 
-  def mk_fieldHTML(key)
+  def mk_fieldHTML(key, value)
     help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
+    delete_icon  = value.nil? ? 'fa-minus': 'fa-trash'
+    delete_button = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
     padding      = 1.5 * (key.split(".").count - 1)
     first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
     last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
@@ -836,7 +838,7 @@ class ConfstackEditor
 
            <td  colspan="2" >
             #{first_indent}
-            <button tabIndex="-1" class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
+            #{delete_button}
             #{fillup_button}
            <strong>#{ I18n.t_key(key)}</strong>
            </td>
@@ -848,8 +850,8 @@ class ConfstackEditor
       %Q{
         <tr>
          <td style="vertical-align: top;">#{first_indent}
-           <button tabIndex="-1" class="znconfig-button fa fa-times-circle" name="#{key}:delete"></button >
-           #{default_button}
+              #{delete_button}
+              #{default_button}
            <strong>#{ I18n.t_key(key)}</strong>
         </td>
         <td style="vertical-align: top;">
