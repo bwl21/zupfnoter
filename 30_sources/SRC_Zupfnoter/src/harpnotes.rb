@@ -658,8 +658,8 @@ module Harpnotes
       #
       # @return [type] [description]
       def initialize(children, active_voices)
-        @children      = children
-        @active_voices = active_voices
+        @children       = children
+        @active_voices  = active_voices
         @printer_config = $conf['printer']
       end
     end
@@ -1309,16 +1309,24 @@ module Harpnotes
         end
 
         #sheet based annotations
-        print_options_hash[:notes].each do |k, note|
-          #note is an array [center, text, style] todo: refactor this
-          annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
-                                                            "extract.#{print_variant_nr}.notes.#{k}.pos", {pos: note[:pos]})
+        # todo: implement a proper strategy for validateion of conf
+        begin
+          print_options_hash[:notes].each do |k, note|
+            #note is an array [center, text, style] todo: refactor this
+            conf_key = "extract.#{print_variant_nr}.notes.#{k}"
+            raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
+            raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
+            annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
+                                                              "#{conf_key}.pos", {pos: note[:pos]})
+          end
+        rescue Exception => e
+          $log.error e.message
         end
 
 
         sheet_elements = debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 
-        result = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
+        result                = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
         result.printer_config = $conf[:printer]
 
         $conf.pop # remove view specific configuration printer
@@ -1892,7 +1900,7 @@ module Harpnotes
 
           if x_offset > 415
             shift += -size.first
-            shift -= 1.5 if dotted  # todo: derive 1.5 from dotted size
+            shift -= 1.5 if dotted # todo: derive 1.5 from dotted size
           end
         end
 
