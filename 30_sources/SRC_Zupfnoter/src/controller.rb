@@ -116,6 +116,7 @@ class Controller
     $conf.push(_init_conf)
 
     @editor = Harpnotes::TextPane.new("abcEditor")
+    @editor.controller = self
 
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
     @songbook        = LocalStore.new("songbook")

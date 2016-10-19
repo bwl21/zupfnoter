@@ -1,7 +1,7 @@
 module Harpnotes
 
   class TextPane
-    attr_accessor :editor
+    attr_accessor :editor, :controller
 
     #
     # Initializes the text pane
@@ -470,13 +470,14 @@ module Harpnotes
 
     # this copies the lyrics to the lyrics editor
     def to_lyrics
-      lyrics = get_lyrics
+      $log.clear_errors  # to rais error for multiple lyrics
 
       # add initial lyrics
       # abc editor does not have one
+      lyrics = get_lyrics
       unless lyrics
         abc            = get_abc_part
-        abc_with_lyris = abc.strip + "%\nW:\n\n"
+        abc_with_lyris = abc.strip + "\n%\nW:\n%\n%\n"
         replace_text(abc, abc_with_lyris)
       end
 
@@ -487,16 +488,19 @@ module Harpnotes
       @handle_from_lyrics=false
       %x{#{@lyrics_editor}.getSession().setValue(#{get_lyrics});}
       @handle_from_lyrics=true
+
+      @controller.call_consumers(:error_alert)
       nil
     end
 
     def from_lyrics
       if @handle_from_lyrics
         lyrics_raw = get_lyrics_raw
-        JS.debugger
+
         oldtext = lyrics_raw.first.first # this depends on the the pattern in get_lyrics_raw
         # first match, first group
         newtext = %x{#{@lyrics_editor}.getSession().getValue();}
+        newtext = " " if newtext.empty?
         newtext = newtext.split("\n").map { |l| "W:#{l}" }.join("\n")
         newtext = %Q{\n#{newtext}\n}
         replace_text(oldtext, newtext)
