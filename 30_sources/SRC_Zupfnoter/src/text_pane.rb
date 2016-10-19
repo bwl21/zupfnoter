@@ -66,6 +66,7 @@ module Harpnotes
 
         // todo: refine autocompletion according to http://plnkr.co/edit/6MVntVmXYUbjR0DI82Cr?p=preview
         //                                          https://github.com/ajaxorg/ace/wiki/How-to-enable-Autocomplete-in-the-Ace-editor
+        editor.on('change', function(){#{from_lyrics}})
       }
       @lyrics_editor            = `editor`
       @lyrics_range             = `ace.require('ace/range').Range`
@@ -184,7 +185,6 @@ module Harpnotes
       %x{
          self.editor.getSession().setValue(text);
       }
-      to_lyrics
     end
 
     # replace a text in the editor
@@ -408,8 +408,11 @@ module Harpnotes
 
     def get_lyrics
       retval = get_lyrics_raw
-      `debugger`
-      lyrics = retval.map { |r| r.first.gsub(/\nW\:[ \t]*/, "\n") }.join().strip
+      if retval.count >0
+        lyrics = retval.map { |r| r.first.gsub(/\nW\:[ \t]*/, "\n") }.join().strip
+      else
+        lyrics = nil
+      end
       lyrics
     end
 
@@ -426,18 +429,38 @@ module Harpnotes
 
     # this copies the lyrics to the lyrics editor
     def to_lyrics
+      lyrics = get_lyrics
+
+      # add initial lyrics
+      # abc editor does not have one
+      unless lyrics
+        abc            = get_abc_part
+        abc_with_lyris = abc.strip + "%\nW:\n\n"
+        replace_text(abc, abc_with_lyris)
+      end
+
+      # ned to suppress the change handler
+      # Ace fires the change handler twice
+      # first when removing the old value
+      # then when setting the new value
+      @handle_from_lyrics=false
       %x{#{@lyrics_editor}.getSession().setValue(#{get_lyrics});}
+      @handle_from_lyrics=true
+      nil
     end
 
     def from_lyrics
-       lyrics_raw = get_lyrics_raw
-       oldtext = lyrics_raw.first.first  # this depends on the the pattern in get_lyrics_raw
-                                                # first match, first group
-       newtext = %x{#{@lyrics_editor}.getSession().getValue();}
-       newtext = newtext.split("\n").map{|l| "W:#{l}"}.join("\n")
-       newtext = %Q{\n#{newtext}\n}
-       `debugger`
-       replace_text(oldtext, newtext)
+      if @handle_from_lyrics
+        lyrics_raw = get_lyrics_raw
+        JS.debugger
+        oldtext = lyrics_raw.first.first # this depends on the the pattern in get_lyrics_raw
+        # first match, first group
+        newtext = %x{#{@lyrics_editor}.getSession().getValue();}
+        newtext = newtext.split("\n").map { |l| "W:#{l}" }.join("\n")
+        newtext = %Q{\n#{newtext}\n}
+        replace_text(oldtext, newtext)
+      end
+      nil
     end
 
   end

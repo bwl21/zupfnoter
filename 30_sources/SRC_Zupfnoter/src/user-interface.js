@@ -532,7 +532,6 @@ function init_w2ui(uicontroller) {
         onClick: function (event) {
             $('#editortabspanel .tab').hide();
             if (event.target == "abcLyrics") {uicontroller.editor.$to_lyrics()}
-            if (event.target == "abcEditor") {uicontroller.editor.$from_lyrics()}
             $('#' + event.target).show();
             $('#' + event.target).resize();
         }
