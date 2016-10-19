@@ -3,7 +3,7 @@
 ## Fix
 
 * adjusted German language #47
-* improved auto positioning of barnubmers and count notes #81
+* improved auto positioning of barnubmers and counthints #81
 
 ## Enhancement
 
@@ -12,6 +12,7 @@
 * more styles for annotations #70
 * now have a parameter "filename" per extrat to determine the filename addendum for the extract #72
 * now raise a popup if an error occurs on render or save #76
+* now have tab to edit lyrics #8
 
 # V 1.4.2
 
