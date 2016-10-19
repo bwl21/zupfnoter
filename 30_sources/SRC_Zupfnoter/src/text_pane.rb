@@ -1,7 +1,7 @@
 module Harpnotes
 
   class TextPane
-    attr_accessor :editor
+    attr_accessor :editor, :controller
 
     #
     # Initializes the text pane
@@ -36,8 +36,43 @@ module Harpnotes
       @range             = `ace.require('ace/range').Range`
       @inhibit_callbacks = false;
       @markers = []
+      create_lyrics_editor('abcLyrics')
     end
 
+    def create_lyrics_editor(div)
+      #
+      # Initializes the text pane
+      # @param div [String] The id of the div for the textpae
+      #
+      # @return [object] The javascript object for Ace
+      %x{
+        // see http://stackoverflow.com/questions/13545433/autocompletion-in-ace-editor
+        //     http://stackoverflow.com/questions/26991288/ace-editor-autocompletion-remove-local-variables
+        var langTools = ace.require("ace/ext/language_tools");
+        langTools.setCompleters([langTools.snippetCompleter])
+
+        var editor = ace.edit(div);
+        editor.$blockScrolling = Infinity;
+
+        editor.getSession().setMode("ace/mode/markdown");
+
+        editor.setTheme("ace/theme/abc");
+
+        editor.setOptions({
+          highlightActiveLine: true,
+          enableBasicAutocompletion: true,
+          enableSnippets: true,
+          enableLiveAutocompletion: false        });
+
+        // todo: refine autocompletion according to http://plnkr.co/edit/6MVntVmXYUbjR0DI82Cr?p=preview
+        //                                          https://github.com/ajaxorg/ace/wiki/How-to-enable-Autocomplete-in-the-Ace-editor
+        editor.on('change', function(){#{from_lyrics}})
+      }
+      @lyrics_editor            = `editor`
+      @lyrics_range             = `ace.require('ace/range').Range`
+      @lyrics_inhibit_callbacks = false;
+      @lyrics_markers = []
+    end
 
     #
     # Install a handler for "change" event
@@ -410,6 +445,67 @@ module Harpnotes
       line_no  = lines.count
       char_pos = lines.last.length()
       return line_no, char_pos
+    end
+
+    def get_lyrics
+      retval = get_lyrics_raw
+      if retval.count >0
+        lyrics = retval.map { |r| r.first.gsub(/\nW\:[ \t]*/, "\n") }.join().strip
+      else
+        lyrics = nil
+      end
+      lyrics
+    end
+
+    def get_lyrics_raw
+      regex    = /((\n((W\:)([^\n]*)\n)+)+)/
+      abc_code = get_abc_part
+      retval   = abc_code.scan(regex)
+      if retval.count > 1
+        $log.error("you have more than one lyrics section in your abc code")
+      end
+      retval
+    end
+
+
+    # this copies the lyrics to the lyrics editor
+    def to_lyrics
+      $log.clear_errors  # to rais error for multiple lyrics
+
+      # add initial lyrics
+      # abc editor does not have one
+      lyrics = get_lyrics
+      unless lyrics
+        abc            = get_abc_part
+        abc_with_lyris = abc.strip + "\n%\nW:\n%\n%\n"
+        replace_text(abc, abc_with_lyris)
+      end
+
+      # ned to suppress the change handler
+      # Ace fires the change handler twice
+      # first when removing the old value
+      # then when setting the new value
+      @handle_from_lyrics=false
+      %x{#{@lyrics_editor}.getSession().setValue(#{get_lyrics});}
+      @handle_from_lyrics=true
+
+      @controller.call_consumers(:error_alert)
+      nil
+    end
+
+    def from_lyrics
+      if @handle_from_lyrics
+        lyrics_raw = get_lyrics_raw
+
+        oldtext = lyrics_raw.first.first # this depends on the the pattern in get_lyrics_raw
+        # first match, first group
+        newtext = %x{#{@lyrics_editor}.getSession().getValue();}
+        newtext = " " if newtext.empty?
+        newtext = newtext.split("\n").map { |l| "W:#{l}" }.join("\n")
+        newtext = %Q{\n#{newtext}\n}
+        replace_text(oldtext, newtext)
+      end
+      nil
     end
 
   end

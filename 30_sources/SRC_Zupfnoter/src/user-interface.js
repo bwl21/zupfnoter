@@ -562,8 +562,8 @@ function init_w2ui(uicontroller) {
 
     var editortabshtml = '<div id="editortabspanel" style="height:100%">'
             + '<div id="abcEditor" class="tab" style="height:100%;"></div>'
-            + '<div id="abcLyrics" class="tab" style="height:100%;"></div>'
             + '<div id="configtab" class="tab" style="height:100%;"></div>'
+            + '<div id="abcLyrics" class="tab" style="height:100%;"></div>'
             + '</div>'
         ;
 
@@ -572,11 +572,13 @@ function init_w2ui(uicontroller) {
         active: 'abcEditor',
         tabs: [
             {id: 'abcEditor', text: w2utils.lang('abc')},
-            {id: 'abcLyrics', text: w2utils.lang('lyrics')},
-            {id: 'configtab', text: w2utils.lang('Configuration')}
+            {id: 'configtab', text: w2utils.lang('Configuration')},
+            {id: 'abcLyrics', text: w2utils.lang('lyrics')}
+
         ],
         onClick: function (event) {
             $('#editortabspanel .tab').hide();
+            if (event.target == "abcLyrics") {uicontroller.editor.$to_lyrics()}
             $('#' + event.target).show();
             $('#' + event.target).resize();
         }
