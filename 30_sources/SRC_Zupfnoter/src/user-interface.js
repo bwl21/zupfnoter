@@ -250,7 +250,7 @@ function init_w2ui(uicontroller) {
                         id: 'HarfenEingabe',
                         tooltip: "editor and harpnotes\napplicaple to tweak the notes for harp"
                     },
-                    {text: 'Notes', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
+                    {text: 'Tune', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
                     {
                         text: 'Harp',
                         icon: 'fa fa-file-picture-o',
@@ -337,7 +337,7 @@ function init_w2ui(uicontroller) {
                 window.open("http://www.zupfnoter.de")
             }
             if (event.target == "tbHelp:tbManual") {
-                window.open("https://github.com/bwl21/zupfnoter/blob/master/README.md")
+                window.open("/public/UD_Zupfnoter-Handbuch-de_review.pdf")
             }
             if (event.target == "tbHelp:tbReference") {
                 window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
@@ -353,8 +353,9 @@ function init_w2ui(uicontroller) {
         name: 'editor-toolbar',
         style: tbstyle,
         items: [
+            {type: 'spacer'},
             {
-                type: 'menu', text: "sheet config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
+                type: 'menu', text: "Add Config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
                 items: [
                     {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
                     {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
@@ -402,6 +403,11 @@ function init_w2ui(uicontroller) {
                     {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
                     {text: ''},
                     {
+                        id: 'printer',
+                        text: 'Printer adapt',
+                        tooltip: "specify printer adaptations details \n(e.g. offsets)"
+                    },
+                    {
                         id: 'restpos_1.3',
                         text: 'rests as V 1.3',
                         tooltip: "configure positioning of rests\ncompatible to version 1.3"
@@ -416,22 +422,53 @@ function init_w2ui(uicontroller) {
                 icon: 'fa fa-pencil',
                 tooltip: "Edit configuration with forms",
                 items: [
-                    {text: 'global', tooltip: "edit global settings for the current song"},
-                    {id: 'extract_primitives', text: 'basic settings', tooltip: "Edit basic settings of extract"},
+                    {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
                     {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
-                    {text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
+                    {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
+                    {
+                        id: 'barnumbers_countnotes',
+                        text: 'barnumbers and countnotes',
+                        tooltip: "edit barnumbers or countnotes"
+                    },
                     {
                         id: 'notes',
                         text: 'page annotation',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
-                    {id: 'tuplet', tooltip: "edit settings for tuplets\nin current extract"},
-                    {},
-                    {id: 'extract0', text: 'extract 0', tooltip: "Edit extract 0"},
-                    {id: 'extract_current', text: 'current extract', tooltip: "Edit current extract"}
+                    {
+                        id: 'annotations',
+                        text: 'annotation template',
+                        tooltip: "edit settings for sheet annotations\nin current extract"
+                    },
+                    {id: 'stringnames', text: 'Stringnames', tooltip: "Edit presentation of stringanmes"},
+                    {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"}
                 ]
+            },
+            {
+                type: 'menu',
+                text: "Insert Addon",
+                id: 'add_snippet',
+                items: [
+                    {id: 'goto', text: 'Goto', tooltip: "Add a Jump"},
+                    {id: 'shifter', text: 'Shift', tooltip: "Add a shift"},
+                    {},
+                    {id: 'draggable', text: 'Draggable', tooltip: "Add a draggable mark"},
+                    {},
+                    {id: 'annotation', text: 'Annotation', tooltip: "Add an annotation"},
+                    {id: 'annotationref', text: 'Annotation Ref', tooltip: "Add a predefined annotation"},
+                    {},
+                    {id: 'jumptarget', text: 'Jumptarget', tooltip: "Add a Jumptarget"}
+                ],
+                icon: 'fa fa-gear',
+                tooltip: "Insert addon at cursor position",
+            },
+            {
+                type: 'button',
+                text: "Edit Addon",
+                id: 'edit_snippet',
+                icon: 'fa fa-pencil',
+                tooltip: "Edit addon on cursor position"
             }
-
         ],
 
         onClick: function (event) {
@@ -457,9 +494,23 @@ function init_w2ui(uicontroller) {
 
             config_event2 = event.target.split(":")
             if (['edit_config'].includes(config_event2[0])) {
-                if (config_event[1]) {
+                if (config_event2[1]) {
                     w2ui.layout_left_tabs.click('configtab');
                     uicontroller.$handle_command("editconf " + config_event2[1])
+                }
+            }
+
+            config_event3 = event.target.split(":")
+            if (['edit_snippet'].includes(config_event3[0])) {
+                w2ui.layout_left_tabs.click('abcEditor');
+                uicontroller.$handle_command("editsnippet")
+            }
+
+            config_event4 = event.target.split(":")
+            if (['add_snippet'].includes(config_event4[0])) {
+                if (config_event4[1]) {
+                    w2ui.layout_left_tabs.click('abcEditor');
+                    uicontroller.$handle_command("addsnippet " + config_event4[1])
                 }
             }
         }
@@ -501,13 +552,9 @@ function init_w2ui(uicontroller) {
         ],
 
         onClick: function (event) {
-
-
-            config_event = event.target.split(":")
-            if (['config'].includes(config_event[0])) {
-                if (config_event[1]) {
-                    uicontroller.$handle_command("addconf " + event.target.split(":")[1])
-                }
+            sb_event = event.target.split(":")
+            if (sb_event[0] == 'sb_loglevel') {
+                uicontroller.$toggle_console()
             }
         }
     }
@@ -650,7 +697,7 @@ function set_tbitem_caption(item, caption) {
 function update_systemstatus_w2ui(systemstatus) {
     $(".dropbox-status").html(systemstatus.dropbox);
 
-    set_tbitem_caption('tb_view', systemstatus.view);
+    set_tbitem_caption('tb_view', 'Extract ' + systemstatus.view);
 
     if (systemstatus.music_model == 'changed') {
         $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
@@ -662,10 +709,37 @@ function update_systemstatus_w2ui(systemstatus) {
     $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
 }
 
+function update_error_status_w2ui(errors) {
+    w2alert(errors, w2utils.lang("Errors occurred"))
+}
 
 function update_editor_status_w2ui(editorstatus) {
     $(".editor-status-position").html(editorstatus.position);
     $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
+    if (editorstatus.token.type.startsWith("zupfnoter.editable")) {
+        w2ui.layout_left_toolbar.enable('edit_snippet')
+    }
+    else {
+        w2ui.layout_left_toolbar.disable('edit_snippet')
+    }
+
+    // todo: implement a proper inhibit manager
+    if (editorstatus.token.type.startsWith("zupfnoter.editable.before")) {
+        w2ui.layout_left_toolbar.enable('add_snippet');
+        w2ui.layout_left_toolbar.enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
+
+        w2ui.layout_left_toolbar.disable('edit_snippet');
+    }
+    else {
+        w2ui.layout_left_toolbar.disable('add_snippet')
+    }
+
+    if (editorstatus.token.type.startsWith("zupfnoter.editable.beforeBar")) {
+        w2ui.layout_left_toolbar.disable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
+    }
+
+
+    w2ui.layout_left_toolbar.refresh()
 }
 
 function update_mouseover_status_w2ui(element_info) {

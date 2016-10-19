@@ -1,19 +1,7 @@
 # This is a wrapper class for local store
 
 
-module I18n
-  def self.t(text)
-    `w2utils.lang(#{text})`
-  end
 
-  def self.t_key(key)
-    key.split(".").last
-  end
-
-  def self.locale(language)
-    `w2utils.locale('public/locale/' + #{language} + '.json')`
-  end
-end
 
 class LocalStore
 
@@ -107,13 +95,7 @@ class Controller
     I18n.locale(languages[browser_language]) if browser_language
 
 
-    @zupfnoter_ui                  = `window.hugo = new init_w2ui(#{self});`
-    @update_systemstatus_consumers = {systemstatus: [
-                                                        lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
-                                                    ],
-                                      play_start:   [lambda { `update_play_w2ui('start')` }],
-                                      play_stop:    [lambda { `update_play_w2ui('stop')` }]
-    }
+    @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
@@ -180,16 +162,31 @@ class Controller
   end
 
 
+  # this method invokes the system conumers
+  def call_consumers(clazz)
+    @systemstatus_consumers = {systemstatus: [
+                                                lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                            ],
+                              statusline:   [],
+                              error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
+                              play_start:   [lambda { `update_play_w2ui('start')` }],
+                              play_stop:    [lambda { `update_play_w2ui('stop')` }]
+    }
+    @systemstatus_consumers[clazz].each { |c| c.call() }
+  end
+
   # this handles a command
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
+    $log.clear_errors
     begin
       $log.timestamp_start
       $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
-      $log.error("#{e.message} in #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
+      $log.error("#{e.message} in command #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
     end
+    call_consumers(:error_alert)
   end
 
   # Save session to local store
@@ -212,7 +209,6 @@ class Controller
       alert "could not load from URL: #{url}"
     end.always do |response|
     end
-
   end
 
   # load session from localstore
@@ -428,7 +424,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         if @harpnote_player.is_playing?
           stop_play_abc
         else
-          @update_systemstatus_consumers[:play_start].each { |i| i.call() }
+          call_consumers(:play_start)
           @harpnote_player.play_auto() if mode == :auto
           @harpnote_player.play_song() if mode == :music_model
           @harpnote_player.play_selection() if mode == :selection
@@ -443,7 +439,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    @update_systemstatus_consumers[:play_stop].each { |i| i.call() }
+    call_consumers(:play_stop)
   end
 
 
@@ -469,6 +465,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the previews
   # also saves abc in localstore()
   def render_harpnotepreview_callback
+    $log.clear_errors
     s = Time.now
     begin
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
@@ -489,6 +486,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @editor.set_annotations($log.annotations)
     set_status(harpnotes_dirty: false)
 
+    call_consumers(:error_alert)
+
+
     nil
   end
 
@@ -496,6 +496,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
     $log.info("rendering")
+    $log.clear_errors
     unless @systemstatus[:autorefresh] == :remote
       save_to_localstorage
       send_remote_command('render')
@@ -542,17 +543,18 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
     config = get_config_from_editor
-
+    @editor.neat_config
     $conf.push(config)
     abc_parser = $conf.get('abc_parser')
     $log.timestamp_start
     @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     @music_model.checksum = @editor.get_checksum
-    `document.title = #{@music_model.meta_data[:filename]}`
-    $log.timestamp("transform")
+    `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
+    $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-    $log.timestamp("   layout")
+
+    $log.timestamp("layout  #{__FILE__} #{__LINE__}")
 
     #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
@@ -564,22 +566,28 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def get_config_from_editor
     config_part = @editor.get_config_part
     begin
-      config         = %x{json_parse(#{config_part})}
-      config         = JSON.parse(config_part)
+      $log.timestamp("3.1.1 #{__FILE__} #{__LINE__}")
+      #config         = %x{json_parse(#{config_part})}
+      config = JSON.parse(config_part)
+      $log.timestamp("3.1.2  #{__FILE__} #{__LINE__}")
       config, status = migrate_config(config)
+      $log.timestamp("3.1.3  #{__FILE__} #{__LINE__}")
 
-      @editor.set_config_part(config)
 
       if status[:changed]
         alert(status[:message])
+        @editor.set_config_part(config)
         @editor.prepend_comment(status[:message])
       end
+      $log.timestamp("3.1.4  #{__FILE__} #{__LINE__}")
+
 
     rescue Object => error
       line_col = @editor.get_config_position(error.last)
       $log.error("#{error.first} at #{line_col}", line_col)
       config = {}
     end
+
     config
   end
 
@@ -656,7 +664,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
-    @update_systemstatus_consumers[:systemstatus].each { |c| c.call() }
+    call_consumers(:systemstatus)
     nil
   end
 
@@ -678,7 +686,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       conf_key = info[:conf_key]
 
       newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+
       @editor.patch_config_part(conf_key, newcoords)
+      @config_form_editor.refresh_form if @config_form_editor
 
       report = "#{conf_key}: #{newcoords}"
       `$("#harpPreview").w2overlay(#{report});`
@@ -868,7 +878,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
 
       editorstatus = {position:  position,
-                      tokeninfo: "#{token[:type]} [#{token[:value]}]"}
+                      tokeninfo: "#{token[:type]} [#{token[:value]}]",
+                      token:     token
+      }
 
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
 
@@ -966,198 +978,18 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   private
 
-  def self.init_conf()
-    result =
-        {produce:      [0],
-         abc_parser:   'ABC2SVG',
-         restposition: {default: :center, repeatstart: :next, repeatend: :default},
-         wrap:         60,
-         defaults:     {
-             notebound: {annotation: {pos: [5, -7]},
-                         partname:   {pos: [-4, -7]},
-                         variantend: {pos: [-4, -7]},
-                         tuplet:     {
-                             cp1:   [5, 2], # first control point positive x: point is east of flowline, positive y: point is south of note
-                             cp2:   [5, -2], # second control point
-                             shape: ['c'] # 'c' | 'l' => curve | line
-                         }
-             }
-         },
-         templates:    {# this is used to update / create new objects
-                        notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
-                        lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]},
-                        tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']}
-         },
-
-         annotations:  {
-             vt: {text: "v", pos: [-5, -5]},
-             vr: {text: "v", pos: [2, -5]},
-             vl: {text: "v", pos: [-1, -5]}
-
-         }, # default for note based annotations
-
-         extract:      {
-             "0" => {
-                 title:        "alle Stimmen",
-                 startpos:     15,
-                 voices:       [1, 2, 3, 4],
-                 synchlines:   [[1, 2], [3, 4]],
-                 flowlines:    [1, 3],
-                 subflowlines: [2, 4],
-                 jumplines:    [1, 3],
-                 repeatsigns:  {voices: [],
-                                left:   {pos: [-7, -2], text: '|:', style: :bold},
-                                right:  {pos: [5, -2], text: ':|', style: :bold}
-                 },
-                 layoutlines:  [1, 2, 3, 4],
-                 legend:       {spos: [320, 27], pos: [320, 20]},
-                 lyrics:       {},
-                 layout:       {limit_a3:     true,
-                                LINE_THIN:    0.1,
-                                LINE_MEDIUM:  0.3,
-                                LINE_THICK:   0.5,
-                                # all numbers in mm
-                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                REST_SIZE:    [4, 2]},
-                 nonflowrest:  false,
-                 notes:        {},
-                 barnumbers:   {
-                     voices: [],
-                     pos:    [6, -4],
-                     style:  "small_bold",
-                     prefix: ""
-                 },
-                 countnotes:   {voices: [], pos: [3, -2]},
-                 stringnames:  {
-                     text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
-                     vpos:  [],
-                     style: :small,
-                     marks: {vpos: [11], hpos: [43, 55, 79]}
-                 }
-             },
-             "1" => {
-                 title:  "Sopran, Alt",
-                 voices: [1, 2]
-             },
-             "2" => {
-                 title:  "Tenor, Bass",
-                 voices: [3, 4]
-             }
-         },
-
-
-         layout:
-        {
-            grid:              false,
-            limit_a3:          true,
-            SHOW_SLUR:         false,
-            LINE_THIN:         0.1,
-            LINE_MEDIUM:       0.3,
-            LINE_THICK:        0.5,
-            # all numbers in mm
-            ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
-            REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
-
-            # x-size of one step in a pitch. It is the horizontal
-            # distance between two strings of the harp
-
-            X_SPACING:         11.5, # Distance of strings
-
-            # X coordinate of the very first beat
-            X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
-
-            Y_SCALE:           4, # 4 mm per minimal
-            DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
-
-            # this affects the performance of the harpnote renderer
-            # it also specifies the resolution of note starts
-            # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
-            # in order to at least being able to handle triplets, we need to scale this up by 3
-            # todo:see if we can speed it up by using 16 ...
-            BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
-            SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
-            # in particular specifies the range of DURATION_TO_STYLE etc.
-
-            BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
-
-            # this is the negative of midi-pitch of the lowest plaayble note
-            # see http://computermusicresource.com/midikeys.html
-            PITCH_OFFSET:      -43,
-
-            FONT_STYLE_DEF:    {
-                bold:         {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
-                italic:       {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
-                large:        {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
-                regular:      {text_color: [0, 0, 0], font_size: 12, font_style: "normal"},
-                small_bold:   {text_color: [0, 0, 0], font_size: 9, font_style: "bold"},
-                small_italic: {text_color: [0, 0, 0], font_size: 9, font_style: "italic"},
-                small:        {text_color: [0, 0, 0], font_size: 9, font_style: "normal"},
-                smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
-            },
-
-            MM_PER_POINT:      0.3,
-
-            # This is a lookup table to map durations to giraphical representation
-            DURATION_TO_STYLE: {
-                #key      size   fill          dot                  abc duration
-
-                :err => [2, :filled, FALSE], # 1      1
-                :d64 => [1, :empty, FALSE], # 1      1
-                :d48 => [0.75, :empty, TRUE], # 1/2 *
-                :d32 => [0.75, :empty, FALSE], # 1/2
-                :d24 => [0.75, :filled, TRUE], # 1/4 *
-                :d16 => [0.75, :filled, FALSE], # 1/4
-                :d12 => [0.5, :filled, TRUE], # 1/8 *
-                :d8  => [0.5, :filled, FALSE], # 1/8
-                :d6  => [0.3, :filled, TRUE], # 1/16 *
-                :d4  => [0.3, :filled, FALSE], # 1/16
-                :d3  => [0.1, :filled, TRUE], # 1/32 *
-                :d2  => [0.1, :filled, FALSE], # 1/32
-                :d1  => [0.05, :filled, FALSE] # 1/64
-            },
-
-            REST_TO_GLYPH:     {
-                # this basically determines the white background rectangel
-                # [sizex, sizey], glyph, dot # note that sizex has no effect.
-                :err => [[2, 2], :rest_1, FALSE], # 1      1
-                :d64 => [[1, 0.8], :rest_1, FALSE], # 1      1   # make it a bit smaller than the note to improve visibility of barover
-                :d48 => [[0.5, 0.4], :rest_1, TRUE], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
-                :d32 => [[0.5, 0.4], :rest_1, FALSE], # 1/2      # make it a bit smaller than the note to improve visibility of barover
-                :d24 => [[0.4, 0.75], :rest_4, TRUE], # 1/4 *
-                :d16 => [[0.4, 0.75], :rest_4, FALSE], # 1/4
-                :d12 => [[0.4, 0.5], :rest_8, TRUE], # 1/8 *
-                :d8  => [[0.4, 0.5], :rest_8, FALSE], # 1/8
-                :d6  => [[0.4, 0.3], :rest_16, TRUE], # 1/16 *
-                :d4  => [[0.3, 0.3], :rest_16, FALSE], # 1/16
-                :d3  => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
-                :d2  => [[0.3, 0.5], :rest_32, FALSE], # 1/32
-                :d1  => [[0.3, 0.5], :rest_64, FALSE] # 1/64
-            }
-        },
-        neatjson: {wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-                    explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                     :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                     :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                     :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
-                                     "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                    ],
-                                    []],
-    }
-    }
-
-    result
-  end
-
 
   # returns a hash with the default values of configuration
   def _init_conf()
-    self.class.init_conf()
+    InitConf.init_conf()
   end
 
 end
 
 Document.ready? do
   a = Controller.new
+  # provide access to  zupfnoter controller from browser console
+  # to suppert debuggeing
+  `window.zupfnoter=#{a}`
 end
 

@@ -104,6 +104,7 @@ module Harpnotes
     #
     # @return [type] [description]
     def on_cursor_change(&block)
+      block.call(nil)
       Native(Native(@editor)[:selection]).on(:changeCursor) do |e|
         block.call(e) unless @inhibit_callbacks
       end
@@ -121,6 +122,9 @@ module Harpnotes
     # Get the border of the current selection
     # todo: this might be not enough in case of multiple selectios.
     #
+    # Note that it returnes [row, col] for start and end
+    # counting from "0"
+    #
     # @return [Array of Number] [start, end] position of selection
     def get_selection_positions
       %x{
@@ -132,12 +136,30 @@ module Harpnotes
       [`range_start`, `range_end`]
     end
 
+    # This method provides information about the current selection
+    # the results are intended to be shown in the statuslilne
+    # therefore, we add 1 to row and column
+    #
+    # note it also provides token information in which we
+    # do not increment startpos and endpos such that it can be
+    # used together with patchtoken
+    #
+    # result: {selection: [], token: {type: <type>, value: <value>}}
     def get_selection_info
       %x{
          doc = self.editor.selection.doc;
          range = self.editor.selection.getRange();
          token = self.editor.session.getTokenAt(range.start.row, range.start.column);
+         if (token){
+           token.startpos = [range.start.row, token.start];
+           token.endpos = [range.start.row, token.start + token.value.length];
+         }
+         else
+         {
+          //todo handle missing token
+         }
         }
+      # note that
       Native(`{selection: [[range.start.row+1, range.start.column+1], [range.end.row+1, range.end.column+1]], token: token}`)
     end
 
@@ -187,6 +209,19 @@ module Harpnotes
       }
     end
 
+    # replaces the text of the range by
+    # range is a reange object
+    # s
+    # @param [Array] startpos [row, col] starting with 0
+    # @param [Array] endpos   [row, col] starting with 0
+    # @param [String] text
+    def replace_range(startpos, endpos, text)
+      %x{
+      therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
+      #{editor}.getSession().replace(therange, #{text})
+      }
+    end
+
     # replace a text in the editor
     # this is to maintain undo stack
     # @param oldtext the text to be removed
@@ -224,7 +259,6 @@ module Harpnotes
     def prepend_comment(message)
       text =message.split(/\r?\n/).map { |l| "% #{l}" }.join("\n") + "\n%\n"
       %x{
-      debugger;
       #{@editor}.selection.moveCursorFileStart();
       #{@editor}.insert(#{text});
       }
@@ -275,6 +309,12 @@ module Harpnotes
       get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
+    def neat_config
+      config_part = get_config_part
+      config = JSON.parse(config_part)
+      set_config_part(config)
+    end
+
     def get_checksum
       s = get_text
       %x{
@@ -298,16 +338,7 @@ module Harpnotes
     #
     def set_config_part(object)
       the_selection = get_selection_positions
-      options       = {wrap:          object['wrap']||$conf['wrap'], aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-                       explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                        :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
-                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                       ],
-                                       []],
-      }
+      options       = $conf[:neatjson]
 
       configjson = JSON.neat_generate(object, options)
 
@@ -345,6 +376,16 @@ module Harpnotes
       end
     end
 
+
+    # this methods patches a token
+    # @param [Array] endpos [row, col]
+    def patch_token(token, endpos, newvalue)
+      oldtoken = get_selection_info.token
+      raise "cannot patch token if there is a name mismatch '#{oldtoken.type}' - '#{token}'" unless oldtoken.type.to_s == token.to_s
+      #raise "cannot patch token if in wrong position" if oldtoken.endpos != endpos
+
+      replace_range(oldtoken.startpos, oldtoken.endpos, newvalue)
+    end
 
     # this adds the parts of object which are not yet in config
     # it does not change the values of config

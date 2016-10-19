@@ -22,6 +22,7 @@ class ConsoleLogger
     @console = element_id # Element.find("##{element_id}")
     @loglevel = LOGLEVELS[:info]
     @timestamp = Time.now
+    clear_errors
     clear_annotations
   end
 
@@ -40,6 +41,7 @@ class ConsoleLogger
   #
   # @return [Object] undefined
   def error(msg, start_pos = nil, end_pos = nil)
+    @captured_errors.push(msg)
     add_annotation(msg, start_pos, end_pos, :error)
     write(:error, msg)
   end
@@ -70,7 +72,7 @@ class ConsoleLogger
 
   # outputs an info entry with the current timestamp
   def timestamp(msg, start_pos = nil, end_pos = nil)
-    $log.info("Timestamp #{Time.now() - @timestamp} sec: #{msg} #{__FILE__} #{__LINE__}")
+    $log.info("Timestamp #{Time.now() - @timestamp} sec: #{msg}")
   end
 
   # resets the timestamp. subsequent calls to timestamp are based on this time
@@ -78,12 +80,24 @@ class ConsoleLogger
      @timestamp = Time.now
   end
 
+  def clear_errors
+    @captured_errors = []
+  end
+
+  def has_errors?
+      @captured_errors.count > 0
+  end
+
+  def get_errors
+    @captured_errors
+  end
+
   # executes the block and outputs n info entry with the duration
   # returns the result of the block
   def benchmark(msg, &block)
     s = Time.now
     result = block.call
-    $log.info("  elapsed #{Time.now() -s} sec for #{msg}  #{__FILE__} #{__LINE__}")
+    $log.info("  elapsed #{Time.now() -s} sec for #{msg}")
     result
   end
 

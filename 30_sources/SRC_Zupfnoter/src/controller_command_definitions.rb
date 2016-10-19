@@ -28,6 +28,7 @@ class Controller
 
       command.as_action do |args|
         set_status(view: args[:view].to_i)
+        @config_form_editor.refresh_form if @config_form_editor
         render_previews
       end
     end
@@ -311,13 +312,9 @@ C,
             'produce'          => lambda { {key: "produce", value: $conf['produce']} },
             'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
             'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
-                                            value: {limit_a3:     true,
-                                                    LINE_THIN:    0.1,
-                                                    LINE_MEDIUM:  0.3,
-                                                    LINE_THICK:   0.5,
-                                                    # all numbers in mm
-                                                    ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                                    REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
+                                            value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
+            'printer'          => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
+                                            value: $conf['extract.0.printer']} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
             'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
@@ -369,6 +366,7 @@ C,
           end
 
           @editor.patch_config_part(the_key, patchvalue)
+          @config_form_editor.refresh_form if @config_form_editor
         else
           raise "unknown configuration parameter #{value[:key]}"
           nil
@@ -386,32 +384,46 @@ C,
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
-        parameter.set_help { "one of #{sets.keys.to_s}" }
+        parameter.set_help { "one of the editable keys" } #"#{sets.keys.to_s}" }
       end
 
       command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
 
       command.as_action do |args|
-        $log.timestamp("editconf #{args[:set]}")
+        $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
 
         sets = {
-            extract_primitives: {keys: expand_extract_keys([:title, :voices, :flowlines, :synchlines, :jumplines, 'repeatsigns.voices', :layoutlines, :startpos])},
-            tuplet:             {keys: expand_extract_keys([:tuplet])},
-            notes:              {keys: expand_extract_keys([:notes])},
-            lyrics:             {keys: expand_extract_keys([:lyrics])},
-            layout:             {keys: expand_extract_keys([:layout])},
-            global:             {keys: [:produce]},
-            extract0:           {keys: ['extract.0']},
-            extract_current:    {keys: ["extract.#{@systemstatus[:view]}"]}
+            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+                                                                            'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest,
+                                                                           ]) + [:restposition]},
+            barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
+
+            notes:                 {keys: expand_extract_keys([:notes])},
+            lyrics:                {keys: expand_extract_keys([:lyrics])},
+            layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3'])},
+            printer:               {keys: expand_extract_keys([:printer])},
+            stringnames:           {keys: expand_extract_keys([:stringnames])},
+            global:                {keys: [:produce]},
+            extract0:              {keys: ['extract.0']},
+            extract_current:       {keys: ["extract.#{@systemstatus[:view]}"]},
+            xx:                    {keys: ['xx']}
         }
 
-        editable_keys    = (a=sets[args[:set]]) ? a[:keys] : [args[:set]]
+        a = sets[args[:set]]
+        if a
+          editable_keys = a[:keys]
+          addconf_set   = a[:addconf]
+        else
+          editable_keys = [args[:set]]
+        end
 
 
         # this handler yields three value sets
         # the current value
 
         get_configvalues = lambda do
+          $log.timestamp("1 #{__FILE__} #{__LINE__}")
+
           editor_conf        = Confstack.new(false)
           editor_conf.strict = false
 
@@ -421,12 +433,19 @@ C,
           default_conf        = Confstack.new(false)
           default_conf.strict = false
 
+          $log.timestamp("2  #{__FILE__} #{__LINE__}")
+
           editable_values  = Confstack.new(false)
           default_values   = Confstack.new(false)
           effective_values = Confstack.new(false)
 
+          $log.timestamp("3  #{__FILE__} #{__LINE__}")
+
           configvalues_from_editor = get_config_from_editor
+          $log.timestamp("3.1  #{__FILE__} #{__LINE__}")
           editor_conf.push(configvalues_from_editor)
+
+          $log.timestamp("4  #{__FILE__} #{__LINE__}")
 
           default_conf.push($conf.get) # start with defaults
           default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
@@ -434,6 +453,8 @@ C,
             default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
             default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
           end
+          $log.timestamp("5  #{__FILE__} #{__LINE__}")
+
           effective_conf.push (default_conf.get.clone)
           effective_conf.push (editor_conf.get.clone)
 
@@ -442,6 +463,8 @@ C,
             default_values[k]   = default_conf[k]
             effective_values[k] = effective_conf[k]
           }
+          $log.timestamp("6  #{__FILE__} #{__LINE__}")
+
           {current: editable_values.get, effective: effective_values.get, default: default_values.get}
         end
 
@@ -449,15 +472,57 @@ C,
           handle_command("editconf #{args[:set]}")
         end
 
-        editor_title       = %Q{Exract: #{@systemstatus[:view]}: #{args[:set]}}
-        config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
-        config_form_editor.generate_form
+        add_entries_handler = lambda do
+          handle_command("addconf #{addconf_set}") if addconf
+        end
+
+        editor_title        = %Q{Exract #{@systemstatus[:view]}: #{args[:set]}}
+        editorparams        = {
+            title:               editor_title,
+            editor:              @editor,
+            value_handler:       get_configvalues,
+            refresh_handler:     refresh_editor,
+            add_entries_handler: add_entries_handler
+        }
+        #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
+        @config_form_editor = ConfstackEditor.new(editorparams)
+        @config_form_editor.generate_form
 
         nil
       end
 
       command.as_inverse do |args|
         $conf.pop # todo: this is a bit risky
+      end
+    end
+
+    @commands.add_command(:editsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup(sel[:token][:type], sel[:token][:value]) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value)
+        end
+        nil
+      end
+    end
+
+    @commands.add_command(:addsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.add_parameter(:token, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup("zupfnoter.editable.#{args[:token]}", nil) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value)
+        end
+        nil
       end
     end
 
@@ -675,14 +740,19 @@ C,
       command.as_action do |args|
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
-          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.*)\/(.*)/).to_a
-          path       =fileparts[1]
-          filename   =fileparts[2]
+          # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
+          path       = "/#{fileparts[1]}"
+          filename   = fileparts.last
 
-          handle_command("dlogin full /#{path}/")
-          $log.message("found #{path} / #{filename}")
+          newpath = "#{path}"
+          handle_command("dlogin full #{path}")
+          $log.message("found #{path}#{filename}")
           handle_command("dopen #{filename.split("_").first}")
-          $log.message("opened #{path} / #{filename}")
+          $log.message("opened #{path}#{filename}")
+        end.fail do |message|
+          $log.error message
         end
       end
     end
@@ -741,10 +811,10 @@ C,
 
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = metadata[:F].first
-        $log.debug("#{metadata.to_s} (#{__FILE__} #{__LINE__})")
+
+        filebase = metadata[:F]
         if filebase
-          filebase = filebase.split("\n").first
+          filebase = filebase.first.split("\n").first
         else
           raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
         end
@@ -762,10 +832,9 @@ C,
           save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
           pdfs = {}
           print_variants.map do |print_variant|
-            index                                                          = print_variant[:view_id]
-            filename                                                       = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a3.pdf"] = render_a3(index).output(:blob)
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a4.pdf"] = render_a4(index).output(:blob)
+            index                                                                 = print_variant[:view_id]
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
             nil
           end
 

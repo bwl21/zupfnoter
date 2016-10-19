@@ -11,7 +11,7 @@ module W2ui
     end
 
     def open2()
-      %x{openPopup(#{@the_form})}
+       %x{openPopup(#{@the_form})}
     end
     def open()
 

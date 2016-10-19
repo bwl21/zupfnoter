@@ -17,15 +17,13 @@ LOCALEPATH   = "../public/locale/"
 VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
-
 desc "update public/locale"
 task :updateLocales do
   puts "updating locales"
-  locales = Dir["#{LOCALEPATH}*.json"].map { |f| f.split(LOCALEPATH).last }
+  locales = Dir["#{LOCALEPATH}??-??.json"].map { |f| f.split(LOCALEPATH).last }
   locales.each do |locale|
     w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
     znlocalefile   = File.open("localization/zupfnoter_#{locale}")
-
 
     w2uilocales = JSON.parse(w2uilocalefile.read)
     znlocales   = JSON.parse(znlocalefile.read)
@@ -49,7 +47,7 @@ task :updateAbc2svg do
 end
 
 desc "Build our app to #{ZUPFNOTER_JS}"
-task :build => [:updateLocales] do
+task :build => [:buildConfigDoc, :updateLocales] do
   #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.use_gem "vector2d"
@@ -126,6 +124,10 @@ task :deploy => [:build] do
 
   Dir["../public/locale/*.json"].each do |f|
     cp f, "#{OUTFOLDER}/webserver/public/locale/#{File.basename(f)}"
+  end
+
+  Dir["../public/*.pdf"].each do |f|
+    cp f, "#{OUTFOLDER}/webserver/public/#{File.basename(f)}"
   end
 
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
@@ -248,69 +250,8 @@ task :buildDesktop => [:build] do
 end
 
 
-desc "generate a raw file for documentation of config"
+desc "config doc and help"
 task :buildConfigDoc do
-  class Document
-    def self.ready?
-
-    end
-  end
-
-
-  def get_example(conf, key)
-    neatjson_options = {wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-                       explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
-                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                        :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
-                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                       ],
-                                       []],
-    }
-    k = key.split(".").last
-    %Q{
-"#{k}": #{JSON.neat_generate(conf[key], neatjson_options)}
-      }.split("\n").map { |l| "        #{l}" }.join("\n")
-  end
-
-  ignore_patterns = [/^neatjson/, /abc_parser^*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
-                     /^layout.*/
-  ]
-  produce_patterns = [/annotations\.vl/, /^templates\.tuplets/]
-
-
-  require './controller.rb'
-  require './confstack.rb'
-  require './neatjson.rb'
-
-  a = Controller.init_conf
-  b = Confstack.new(false)
-  b.push(JSON.parse(a.to_json))
-  File.open("xxx.md", "w") do |f|
-    f.puts "# Konfiguration der Ausgabe"
-
-    ignore_keys = b.keys.select{|k| ignore_patterns.select{|ik| k.match(ik)}.count > 0}
-    produce_keys = b.keys.select{|k|  produce_patterns.select{|ik| k.match(ik)}.count > 0}
-    show_keys = (b.keys - ignore_keys + produce_keys).uniq.sort
-
-    puts show_keys
-    show_keys.each do |key|
-      f.puts %Q{
-
-#{("#" * (key.split(".").count + 1))[0,3] }  `#{key}` {##{key}}
-
-
-erklaerung_kommt_noch
-
-
-* Struktur:
-
-* Beispiel:
-
-#{get_example(b, key)}
-
-}
-    end
-  end
+  sh 'ruby conf_doc_source.rb'
+  sh 'pandoc xxx.md -o xxx.html --standalone'
 end

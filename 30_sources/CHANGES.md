@@ -1,14 +1,26 @@
 # V 1.5
 
-## Changes
+## Fix
 
 * adjusted German language #47
+* improved auto positioning of barnubmers and count notes #81
+
+## Enhancement
+
+* now have forms based configuration #67
+* now have foms based editing of snippets (now called addons) #83
+* more styles for annotations #70
+* now have a parameter "filename" per extrat to determine the filename addendum for the extract #72
+* now raise a popup if an error occurs on render or save #76
 
 # V 1.4.2
 
 ## Fix
 
-* barnumbers are smaall_bold again #60
+* barnumbers are small_bold again #60
+* optimized placement of cutmarks #74
+* fixed tempo note for e.g. 3/8= 120 #79
+* fix countnotes #78
 
 # V 1.4.2
 
