@@ -550,11 +550,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
     @music_model.checksum = @editor.get_checksum
     `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
-    $log.timestamp("transform")
+    $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
     result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
 
-    $log.timestamp("   layout")
+    $log.timestamp("layout  #{__FILE__} #{__LINE__}")
 
     #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
     @editor.set_annotations($log.annotations)
@@ -566,12 +566,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def get_config_from_editor
     config_part = @editor.get_config_part
     begin
-      $log.timestamp("3.1.1")
+      $log.timestamp("3.1.1 #{__FILE__} #{__LINE__}")
       #config         = %x{json_parse(#{config_part})}
       config = JSON.parse(config_part)
-      $log.timestamp("3.1.2")
+      $log.timestamp("3.1.2  #{__FILE__} #{__LINE__}")
       config, status = migrate_config(config)
-      $log.timestamp("3.1.3")
+      $log.timestamp("3.1.3  #{__FILE__} #{__LINE__}")
 
 
       if status[:changed]
@@ -579,7 +579,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @editor.set_config_part(config)
         @editor.prepend_comment(status[:message])
       end
-      $log.timestamp("3.1.4")
+      $log.timestamp("3.1.4  #{__FILE__} #{__LINE__}")
 
 
     rescue Object => error

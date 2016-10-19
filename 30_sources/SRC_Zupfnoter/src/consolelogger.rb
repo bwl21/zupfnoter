@@ -72,7 +72,7 @@ class ConsoleLogger
 
   # outputs an info entry with the current timestamp
   def timestamp(msg, start_pos = nil, end_pos = nil)
-    $log.info("Timestamp #{Time.now() - @timestamp} sec: #{msg} #{__FILE__} #{__LINE__}")
+    $log.info("Timestamp #{Time.now() - @timestamp} sec: #{msg}")
   end
 
   # resets the timestamp. subsequent calls to timestamp are based on this time
@@ -97,7 +97,7 @@ class ConsoleLogger
   def benchmark(msg, &block)
     s = Time.now
     result = block.call
-    $log.info("  elapsed #{Time.now() -s} sec for #{msg}  #{__FILE__} #{__LINE__}")
+    $log.info("  elapsed #{Time.now() -s} sec for #{msg}")
     result
   end
 

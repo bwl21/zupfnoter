@@ -390,7 +390,7 @@ C,
       command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
 
       command.as_action do |args|
-        $log.timestamp("editconf #{args[:set]}")
+        $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
 
         sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
@@ -422,7 +422,7 @@ C,
         # the current value
 
         get_configvalues = lambda do
-          $log.timestamp(1)
+          $log.timestamp("1 #{__FILE__} #{__LINE__}")
 
           editor_conf        = Confstack.new(false)
           editor_conf.strict = false
@@ -433,19 +433,19 @@ C,
           default_conf        = Confstack.new(false)
           default_conf.strict = false
 
-          $log.timestamp(2)
+          $log.timestamp("2  #{__FILE__} #{__LINE__}")
 
           editable_values  = Confstack.new(false)
           default_values   = Confstack.new(false)
           effective_values = Confstack.new(false)
 
-          $log.timestamp(3)
+          $log.timestamp("3  #{__FILE__} #{__LINE__}")
 
           configvalues_from_editor = get_config_from_editor
-          $log.timestamp(3.1)
+          $log.timestamp("3.1  #{__FILE__} #{__LINE__}")
           editor_conf.push(configvalues_from_editor)
 
-          $log.timestamp(4)
+          $log.timestamp("4  #{__FILE__} #{__LINE__}")
 
           default_conf.push($conf.get) # start with defaults
           default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
@@ -453,7 +453,7 @@ C,
             default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
             default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
           end
-          $log.timestamp(5)
+          $log.timestamp("5  #{__FILE__} #{__LINE__}")
 
           effective_conf.push (default_conf.get.clone)
           effective_conf.push (editor_conf.get.clone)
@@ -463,7 +463,7 @@ C,
             default_values[k]   = default_conf[k]
             effective_values[k] = effective_conf[k]
           }
-          $log.timestamp(6)
+          $log.timestamp("6  #{__FILE__} #{__LINE__}")
 
           {current: editable_values.get, effective: effective_values.get, default: default_values.get}
         end

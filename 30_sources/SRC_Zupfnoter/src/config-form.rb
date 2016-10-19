@@ -673,11 +673,11 @@ class ConfstackEditor
 
     value_handler = editorparams[:value_handler]
 
-    $log.timestamp("initialize Form")
+    $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
 
-    value_handler_result = $log.benchmark("value handler") { value_handler.call }
+    value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") { value_handler.call }
 
-    $log.benchmark("process value handler result") do
+    $log.benchmark("process value handler result #{__FILE__} #{__LINE__}") do
       @value                = Confstack.new(false)
       @effective_value      = Confstack.new(false)
       @default_value        = Confstack.new(false)
@@ -685,7 +685,7 @@ class ConfstackEditor
 
       @value.push(value_handler_result[:current])
       @effective_value.push(value_handler_result[:effective])
-      @default_value.push($log.benchmark('getvalues') { value_handler_result[:default] })
+      @default_value.push($log.benchmark("getvalues #{__FILE__} #{__LINE__}") { value_handler_result[:default] })
     end
 
     @form   = nil # Form object to be passed to w2ui
@@ -693,13 +693,13 @@ class ConfstackEditor
     @record = {} # hash to prepare the record for the form
 
     @record = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
-    $log.timestamp("end initialize Form")
+    $log.timestamp("end initialize Form  #{__FILE__} #{__LINE__}")
     nil
   end
 
 
   def show_form
-    $log.timestamp("initialize Form")
+    $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
     x=@form.to_n
     %x{
     if (w2ui[#{x}.name]){w2ui[#{x}.name].destroy()};
@@ -779,7 +779,7 @@ class ConfstackEditor
   end
 
   def generate_form
-    $log.timestamp("generate Form")
+    $log.timestamp("generate Form  #{__FILE__} #{__LINE__}")
     @form = {
         name:       "configform",
         #header:     I18n.t(@title),
@@ -823,6 +823,8 @@ class ConfstackEditor
   end
 
 
+  # @param [String] key the key of the field
+  # @param [Object] value - the current value from editor basically used to determin the icon on the delete button
   def mk_fieldHTML(key, value)
     help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
     delete_icon  = value.nil? ? 'fa-minus': 'fa-trash'
