@@ -353,6 +353,7 @@ function init_w2ui(uicontroller) {
         name: 'editor-toolbar',
         style: tbstyle,
         items: [
+            {type: 'spacer'},
             {
                 type: 'menu', text: "Add Config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
                 items: [
