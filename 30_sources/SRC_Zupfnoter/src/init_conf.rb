@@ -24,15 +24,16 @@ module InitConf
              }
          },
          templates:    {# this is used to update / create new objects
-                        notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"},
-                        lyrics: {verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], pos: [350, 70]},
-                        tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']}
+                        notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
+                        lyrics: {verses: [1], pos: [350, 70]},
+                        tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
+                        annotations: {text: "_vorlage_", pos: [-5, -6]}  # Notenbeschriftungsvorlage
          },
 
          annotations:  {
-             vt: {text: "v", pos: [-5, -5]},
-             vr: {text: "v", pos: [2, -5]},
-             vl: {text: "v", pos: [-1, -5]}
+             vl: {text: "v", pos: [-5, -5]},
+             vt: {text: "v", pos: [2, -5]},
+             vr: {text: "v", pos: [-1, -5]}
 
          }, # default for note based annotations
 

@@ -168,8 +168,8 @@ class SnippetEditor
       ]
 
       @validate = lambda do |event|
-        `#{event}.errors.push({ field: this.get('second'), error: w2utils.lang('Please provide also X ') });` if `this.record['second'] === ''` and not `this.record['third'] === ''`
-        `#{event}.errors.push({ field: this.get('third'), error: w2utils.lang('Please provide also Y') });` if `this.record['third'] === ''` and not `this.record['second'] === ''`
+        `#{event}.errors.push({ field: this.get('second'), error: #{I18n.t('Please provide also value for out-line')} });` if `this.record['second'] === ''` and not `this.record['third'] === ''`
+        `#{event}.errors.push({ field: this.get('third'), error: #{I18n.t('Please provide also followup-line')} });` if `this.record['third'] === ''` and not `this.record['second'] === ''`
       end
 
       if level[3]
@@ -267,8 +267,8 @@ class SnippetEditor
       ]
 
       @validate = lambda do |event|
-        `#{event}.errors.push({ field: this.get('X'), error: w2utils.lang('Please provide also X ') });` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
-        `#{event}.errors.push({ field: this.get('Y'), error: w2utils.lang('Please provide also Y') });` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
+        `#{event}.errors.push({ field: this.get('X'), error: #{I18n.t('Please provide also X')} });` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
+        `#{event}.errors.push({ field: this.get('Y'), error: #{I18n.t('Please provide also Y')} });` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
       end
 
       @record = {text: text, X: pos_x, Y: pos_y}
@@ -277,7 +277,7 @@ class SnippetEditor
 
   class AnnotationRef < Form
     def to_string(record)
-      if record[:X]
+      unless record[:X] === ''
         wrapup_string(%Q{"^##{record[:text]}@#{record[:X]},#{record[:Y]}"})
       else
         wrapup_string(%Q{"^##{record[:text]}"})
@@ -303,8 +303,13 @@ class SnippetEditor
         pos_y   = nil
       end
 
+      @validate = lambda do |event|
+        `#{event}.errors.push({ field: this.get('X'), error: #{I18n.t('Please provide also X')} });` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
+        `#{event}.errors.push({ field: this.get('Y'), error: #{I18n.t('Please provide also Y')} });` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
+      end
+
       @fields = [
-          {field: :text, type: 'string', required: false, html: {caption: I18n.t("Name of annotation"), text: I18n.t('Name of annotation')}},
+          {field: :text, type: 'string', required: true, html: {caption: I18n.t("Name of annotation"), text: I18n.t('Name of annotation')}},
           {field: :X, type: 'int', required: false, html: {caption: I18n.t("X-position"), text: I18n.t('horizontal position')}},
           {field: :Y, type: 'int', required: false, html: {caption: I18n.t("Y-position"), text: I18n.t('vertical position (top->down)')}},
       ]
@@ -769,6 +774,7 @@ class ConfstackEditor
             register_events
           end
         when 'fillup'
+          JS.debugger
           @editor.extend_config_part(target.first, @helper.to_template(target.first))
           refresh_form
           register_events
@@ -818,7 +824,6 @@ class ConfstackEditor
   end
 
   def refresh_form
-    # todo handle focus
     @refresh_handler.call
   end
 
@@ -826,12 +831,12 @@ class ConfstackEditor
   # @param [String] key the key of the field
   # @param [Object] value - the current value from editor basically used to determin the icon on the delete button
   def mk_fieldHTML(key, value)
-    help_button  = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
-    delete_icon  = value.nil? ? 'fa-minus': 'fa-trash'
+    help_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
+    delete_icon   = value.nil? ? 'fa-minus' : 'fa-trash'
     delete_button = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
-    padding      = 1.5 * (key.split(".").count - 1)
-    first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
-    last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
+    padding       = 1.5 * (key.split(".").count - 1)
+    first_indent  = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
+    last_indent   = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
       fillup_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
@@ -840,8 +845,8 @@ class ConfstackEditor
 
            <td  colspan="2" >
             #{first_indent}
-            #{delete_button}
-            #{fillup_button}
+      #{delete_button}
+      #{fillup_button}
            <strong>#{ I18n.t_key(key)}</strong>
            </td>
            <td style="vertical-align: top;">#{help_button}</td>
@@ -852,8 +857,8 @@ class ConfstackEditor
       %Q{
         <tr>
          <td style="vertical-align: top;">#{first_indent}
-              #{delete_button}
-              #{default_button}
+      #{delete_button}
+      #{default_button}
            <strong>#{ I18n.t_key(key)}</strong>
         </td>
         <td style="vertical-align: top;">

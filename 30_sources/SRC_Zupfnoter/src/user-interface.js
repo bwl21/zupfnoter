@@ -394,7 +394,7 @@ function init_w2ui(uicontroller) {
                     {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
                     {
                         id: 'annotations',
-                        text: 'annotation template',
+                        text: 'annotations',
                         tooltip: "specify temmplate for\n note bound annotations"
                     },
                     {text: ''},
@@ -423,13 +423,14 @@ function init_w2ui(uicontroller) {
                 tooltip: "Edit configuration with forms",
                 items: [
                     {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
-                    {id: 'layout', text: 'layout', tooltip: "Edit layouyt paerameters"},
+                    {id: 'layout', text: 'layout', tooltip: "Edit layout paerameters\nin current extract"},
                     {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
                     {
                         id: 'barnumbers_countnotes',
                         text: 'barnumbers and countnotes',
                         tooltip: "edit barnumbers or countnotes"
                     },
+                    {},
                     {
                         id: 'notes',
                         text: 'page annotation',
@@ -437,9 +438,10 @@ function init_w2ui(uicontroller) {
                     },
                     {
                         id: 'annotations',
-                        text: 'annotation template',
+                        text: 'annotations',
                         tooltip: "edit settings for sheet annotations\nin current extract"
                     },
+                    {},
                     {id: 'stringnames', text: 'Stringnames', tooltip: "Edit presentation of stringanmes"},
                     {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"}
                 ]
@@ -488,6 +490,7 @@ function init_w2ui(uicontroller) {
             config_event = event.target.split(":")
             if (['config'].includes(config_event[0])) {
                 if (config_event[1]) {
+                    debugger
                     uicontroller.$handle_command("addconf " + event.target.split(":")[1])
                 }
             }
@@ -495,6 +498,7 @@ function init_w2ui(uicontroller) {
             config_event2 = event.target.split(":")
             if (['edit_config'].includes(config_event2[0])) {
                 if (config_event2[1]) {
+                    debugger
                     w2ui.layout_left_tabs.click('configtab');
                     uicontroller.$handle_command("editconf " + config_event2[1])
                 }
@@ -562,8 +566,8 @@ function init_w2ui(uicontroller) {
 
     var editortabshtml = '<div id="editortabspanel" style="height:100%">'
             + '<div id="abcEditor" class="tab" style="height:100%;"></div>'
-            + '<div id="configtab" class="tab" style="height:100%;"></div>'
             + '<div id="abcLyrics" class="tab" style="height:100%;"></div>'
+            + '<div id="configtab" class="tab" style="height:100%;"></div>'
             + '</div>'
         ;
 
@@ -572,9 +576,8 @@ function init_w2ui(uicontroller) {
         active: 'abcEditor',
         tabs: [
             {id: 'abcEditor', text: w2utils.lang('abc')},
-            {id: 'configtab', text: w2utils.lang('Configuration')},
-            {id: 'abcLyrics', text: w2utils.lang('lyrics')}
-
+            {id: 'abcLyrics', text: w2utils.lang('lyrics')},
+            {id: 'configtab', text: w2utils.lang('Configuration')}
         ],
         onClick: function (event) {
             $('#editortabspanel .tab').hide();
