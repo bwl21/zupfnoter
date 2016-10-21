@@ -10,6 +10,7 @@
 * fix whitespace handling in lyrics and filenames #54
 * report multiple F and T lines #54
 * non BWC trim filename addendum #54
+* Jumpline end not correct in case of a full rest #50
 
 ## Enhancement
 

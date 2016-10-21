@@ -2015,7 +2015,7 @@ module Harpnotes
         p2                = start_of_vertical
         p3                = end_of_vertical
         p4                = to + end_offset
-        p4_line           = to + end_offset * [1.5, 1] # end of line such that it ends inside of the arrow
+        p4_line           = to + end_offset + end_orientation * [2, 0] # end of line such that it ends inside of the arrow
 
         # arrow points
         a1                = p4 + end_orientation * 2.5 + [0, 1]
