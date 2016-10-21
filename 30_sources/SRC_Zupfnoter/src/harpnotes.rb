@@ -1260,7 +1260,7 @@ module Harpnotes
 
         delta           = 12.0 * $conf.get('layout.X_SPACING') # cut in octaves
         (1..2).each do |i| # number rof cutmarks
-          [4, 288].each do |y| # the y  Coordinates
+          [4, 290].each do |y| # the y  Coordinates
             # 0.25 Fragment of string distance to place the cutmark
             sheet_marks << Harpnotes::Drawing::Annotation.new([0.25 * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') + delta * i, y], "x", :small, nil)
           end
