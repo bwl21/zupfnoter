@@ -174,7 +174,7 @@ class Controller
 
         song_id    = args[:id]
         song_title = args[:title]
-        filename   = song_title.gsub(/[^a-zA-Z0-9\-\_]/, "_")
+        filename   = song_title.strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
         raise "no id specified" unless song_id
         raise "no title specified" unless song_title
 

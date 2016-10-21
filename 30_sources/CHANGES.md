@@ -5,6 +5,9 @@
 * adjusted German language #47
 * improved auto positioning of barnubmers and counthints #81
 * fix whitespace handling in lyrics #54
+* fix whitespace handling in lyrics and filenames #54
+* report multiple F and T lines #54
+* non BWC trim filename addendum #54
 
 ## Enhancement
 

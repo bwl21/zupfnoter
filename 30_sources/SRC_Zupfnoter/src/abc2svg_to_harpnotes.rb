@@ -47,7 +47,7 @@ module Harpnotes
 
         result[:print] = $conf.get("produce").map do |i|
           title        = $conf.get("extract.#{i}.title")
-          filenamepart = ($conf.get("extract.#{i}.filenamepart") || title)
+          filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
           if title
             {title: title, view_id: i, filenamepart: filenamepart}
           else
