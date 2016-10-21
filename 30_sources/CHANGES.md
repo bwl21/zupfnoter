@@ -3,8 +3,10 @@
 ## Fix
 
 * adjusted German language #47
+* open files from dropbox  #77
 * improved auto positioning of barnubmers and counthints #81
-* fix whitespace handling in lyrics #54
+* builtin sheet annotation no longer claims a copyright #69
+* optimized position of cutmarks #74
 * fix whitespace handling in lyrics and filenames #54
 * report multiple F and T lines #54
 * non BWC trim filename addendum #54
@@ -13,6 +15,7 @@
 
 * now have forms based configuration #67
 * now have foms based editing of snippets (now called addons) #83
+* now have a lyrics editor tab #8
 * more styles for annotations #70
 * now have a parameter "filename" per extrat to determine the filename addendum for the extract #72
 * now raise a popup if an error occurs on render or save #76
