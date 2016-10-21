@@ -1297,11 +1297,11 @@ module Harpnotes
           text = lyric_text.join("\n")
 
           if lyrics
-            verses = text.split("\n\n")
+            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map{|i| i.strip}
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
               pos      = entry[:pos]
-              the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
+              the_text = entry[:verses].map { |i| verses[i.to_i - 1]}.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
                                                                 "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos})
             end

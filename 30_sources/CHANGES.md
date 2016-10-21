@@ -4,6 +4,7 @@
 
 * adjusted German language #47
 * improved auto positioning of barnubmers and counthints #81
+* fix whitespace handling in lyrics #54
 
 ## Enhancement
 
