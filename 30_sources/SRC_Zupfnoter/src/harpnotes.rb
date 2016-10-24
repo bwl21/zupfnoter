@@ -1382,8 +1382,6 @@ module Harpnotes
 
           sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
             x = (-start_scale + pitch) * x_spacing + x_offset
-            x += 1 if pitch == start_scale
-            x -= 2 if pitch == end_scale
             vpos.each do |vpos|
               result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style)
             end

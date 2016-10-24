@@ -60,7 +60,8 @@ module InitConf
                                 LINE_THICK:   0.5,
                                 # all numbers in mm
                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                REST_SIZE:    [4, 2]
+                                REST_SIZE:    [4, 2],
+                                grid:false,
                  },
                  nonflowrest:  false,
                  notes:        {},

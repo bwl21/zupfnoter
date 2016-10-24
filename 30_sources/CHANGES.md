@@ -11,14 +11,16 @@
 * report multiple F and T lines #54
 * non BWC trim filename addendum #54
 * Jumpline end not correct in case of a full rest #50
+* no longer shift first and last string name #18
 
 ## Enhancement
 
+* now we have configuration paramters for pinter optmimization #82
 * now have forms based configuration #67
-* now have foms based editing of snippets (now called addons) #83
+* now have forms based editing of snippets (now called addons) #83
 * now have a lyrics editor tab #8
 * more styles for annotations #70
-* now have a parameter "filename" per extrat to determine the filename addendum for the extract #72
+* now have a parameter "filename" per extrcat to determine the filename addendum for the extract #72
 * now raise a popup if an error occurs on render or save #76
 * now have tab to edit lyrics #8
 
