@@ -672,9 +672,10 @@ class ConfstackEditor
   #
   #def initialize(title, editor, value_handler, refresh_handler)
   def initialize(editorparams)
-    @title           = editorparams[:title]
-    @editor          = editorparams[:editor]
-    @refresh_handler = editorparams[:refresh_handler]
+    @title            = editorparams[:title]
+    @editor           = editorparams[:editor]
+    @refresh_handler  = editorparams[:refresh_handler]
+    @newentry_handler = editorparams[:newentry_handler]
 
     value_handler = editorparams[:value_handler]
 
@@ -730,7 +731,7 @@ class ConfstackEditor
     @live_record.each do |k, v|
       value = Native(v)
       if @record[k].nil?
-        patchvalue[k] = @helper.to_value(k, v) unless v.nil?
+        patchvalue[k] = @helper.to_value(k, value) unless value.nil?
       else
         if value.nil?
           patchvalue[k] = @helper.to_value(k, nil) # this will produce the 'empty value'
@@ -774,7 +775,6 @@ class ConfstackEditor
             register_events
           end
         when 'fillup'
-          JS.debugger
           @editor.extend_config_part(target.first, @helper.to_template(target.first))
           refresh_form
           register_events
@@ -801,13 +801,16 @@ class ConfstackEditor
           `event.onComplete=#{a}`
         },
         toolbar:    {
+            style: 'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;',  #todo fix this
             items:   [
-                         {id: 'title', type: 'html', html: %Q{<div style="font-size:150%;vertical-align:middle;margin-bottom: 4px;">#{I18n.t(@title)}</div>}},
+                         {id: 'title', class:'foobar', style:"margin-top:0px", type: 'html', html: %Q{<div style="font-size:120%;vertical-align:top;margin-bottom: 8px;">#{I18n.t(@title)}</div>}},
                          {id: 'bt3', type: 'spacer'},
-                         {id: 'refresh', type: 'button', caption: 'Refresh', img: 'icon-page'},
+                         {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), img: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?  },
+                         {id: 'refresh', type: 'button', caption: 'Refresh', img: 'fa fa-refresh'},
                      ],
             onClick: lambda do |event|
               refresh_form if (Native(event).target == 'refresh')
+              @newentry_handler.call  if (Native(event).target == 'new_entry')
             end
         },
         onValidate: lambda { alert("validate"); nil },

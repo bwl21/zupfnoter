@@ -398,21 +398,21 @@ C,
                                                                            ]) + [:restposition]},
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 
-            notes:                 {keys: expand_extract_keys([:notes])},
-            lyrics:                {keys: expand_extract_keys([:lyrics])},
+            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda{handle_command("addconf notes")}},
+            lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda{handle_command("addconf lyrics")}},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3'])},
             printer:               {keys: expand_extract_keys([:printer])},
             stringnames:           {keys: expand_extract_keys([:stringnames])},
             extract0:              {keys: ['extract.0']},
-            extract_current:       {keys: ["extract.#{@systemstatus[:view]}"]},
+            extract_current:       {keys: expand_extract_keys($conf.keys.select{|k| k.start_with?('extract.0.')}.map{|k|k.split('extract.0.').last}) },
             xx:                    {keys: ['xx']}
         }
 
         a = sets[args[:set]]
         if a
           editable_keys = a[:keys]
-          addconf_set   = a[:addconf]
-        else
+          newentry_handler   = a[:newentry_handler]
+        else  # use the argument as key if there is no set.
           editable_keys = [args[:set]]
         end
 
@@ -471,17 +471,13 @@ C,
           handle_command("editconf #{args[:set]}")
         end
 
-        add_entries_handler = lambda do
-          handle_command("addconf #{addconf_set}") if addconf
-        end
-
         editor_title        = %Q{Exract #{@systemstatus[:view]}: #{args[:set]}}
         editorparams        = {
             title:               editor_title,
             editor:              @editor,
             value_handler:       get_configvalues,
             refresh_handler:     refresh_editor,
-            add_entries_handler: add_entries_handler
+            newentry_handler:   newentry_handler
         }
         #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
         @config_form_editor = ConfstackEditor.new(editorparams)
