@@ -713,7 +713,7 @@ function update_systemstatus_w2ui(systemstatus) {
 }
 
 function update_error_status_w2ui(errors) {
-    w2alert(errors, w2utils.lang("Errors occurred"))
+    w2popup.open({title: w2utils.lang("Errors occurred"), body: errors, width: 700})
 }
 
 function update_editor_status_w2ui(editorstatus) {

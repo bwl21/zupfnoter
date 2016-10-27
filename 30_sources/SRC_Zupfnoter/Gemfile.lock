@@ -5,7 +5,12 @@ GEM
     concurrent-ruby (1.0.0)
     graphviz (0.1.0)
     hike (1.2.3)
+    json-schema-generator (0.0.9)
+      jsonpath
+    jsonpath (0.5.8)
+      multi_json
     method_source (0.8.2)
+    multi_json (1.12.1)
     opal (0.9.0)
       hike (~> 1.2)
       sourcemap (~> 0.1.0)
@@ -36,6 +41,7 @@ PLATFORMS
 DEPENDENCIES
   bundler
   graphviz
+  json-schema-generator
   opal (~> 0.9.0)
   opal-jquery (~> 0.4.0)
   pry

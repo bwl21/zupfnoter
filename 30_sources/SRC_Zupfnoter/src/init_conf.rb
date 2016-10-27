@@ -24,10 +24,10 @@ module InitConf
              }
          },
          templates:    {# this is used to update / create new objects
-                        notes:  {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
-                        lyrics: {verses: [1], pos: [350, 70]},
-                        tuplet: {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
-                        annotations: {text: "_vorlage_", pos: [-5, -6]}  # Notenbeschriftungsvorlage
+                        notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
+                        lyrics:      {verses: [1], pos: [350, 70]},
+                        tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
+                        annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
 
          annotations:  {
@@ -61,7 +61,7 @@ module InitConf
                                 # all numbers in mm
                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                 REST_SIZE:    [4, 2],
-                                grid:false,
+                                grid:         false,
                  },
                  nonflowrest:  false,
                  notes:        {},

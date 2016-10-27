@@ -2,6 +2,7 @@ require 'opal'
 require 'opal-jquery'
 require 'vector2d'
 require 'neatjson'
+require 'opal-ajv'
 #require 'math'
 
 require 'consolelogger'

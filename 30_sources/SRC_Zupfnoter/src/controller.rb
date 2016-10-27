@@ -1,8 +1,6 @@
 # This is a wrapper class for local store
 
 
-
-
 class LocalStore
 
   def initialize(name)
@@ -115,7 +113,9 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
-    @editor = Harpnotes::TextPane.new("abcEditor")
+    @json_validator = Ajv::JsonValidator.new
+
+    @editor            = Harpnotes::TextPane.new("abcEditor")
     @editor.controller = self
 
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
@@ -166,12 +166,12 @@ class Controller
   # this method invokes the system conumers
   def call_consumers(clazz)
     @systemstatus_consumers = {systemstatus: [
-                                                lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
-                                            ],
-                              statusline:   [],
-                              error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
-                              play_start:   [lambda { `update_play_w2ui('start')` }],
-                              play_stop:    [lambda { `update_play_w2ui('stop')` }]
+                                                 lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                             ],
+                               statusline:   [],
+                               error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
+                               play_start:   [lambda { `update_play_w2ui('start')` }],
+                               play_stop:    [lambda { `update_play_w2ui('stop')` }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -185,7 +185,7 @@ class Controller
       $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
-      $log.error("#{e.message} in command #{command} #{e.caller} #{__FILE__}:#{__LINE__}")
+      $log.error("#{e.message} in command #{command} #{e.backtrace.join("\n")} #{__FILE__}:#{__LINE__}")
     end
     call_consumers(:error_alert)
   end
@@ -543,23 +543,36 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
     $log.clear_annotations
+
     config = get_config_from_editor
     @editor.neat_config
-    $conf.push(config)
-    abc_parser = $conf.get('abc_parser')
-    $log.timestamp_start
-    @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
-    @music_model.checksum = @editor.get_checksum
-    `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
-    $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
-    result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+    $conf.push(config)  # in case of error, we hav the ensure close below
 
-    $log.timestamp("layout  #{__FILE__} #{__LINE__}")
+    begin
 
-    #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
-    @editor.set_annotations($log.annotations)
-    $conf.pop
+      $log.benchmark("validate default conf") do
+        @json_validator.validate_conf($conf) if $log.loglevel == :debug
+      end
+
+      abc_parser = $conf.get('abc_parser')
+      $log.timestamp_start
+      @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+      @music_model.checksum = @editor.get_checksum
+      `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
+      $log.timestamp("transform  #{__FILE__} #{__LINE__}")
+
+      result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+
+      $log.timestamp("layout  #{__FILE__} #{__LINE__}")
+
+      #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
+      @editor.set_annotations($log.annotations)
+    rescue Exception => e
+      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1, 1], [10, 1000])
+    ensure
+      $conf.pop
+    end
     result
   end
 
