@@ -123,22 +123,31 @@ Als nächstes kannst du die Unterlegnoten gestalten. Zupfnoter bietet
 eine sehr große Vielfalt an Gestaltungsmöglichkeiten. Als einfaches
 Beispiel kannst zunächst einen Liedtext hinzufügen:
 
-1.  klicke im linken Fenster auf die Zeile 15, also in die Zeile nach
-    dem "C,"
+1.  klicke im linken Fenster auf den Reiter `Liedtexte`
 
-2.  füge die folgenden Zeilen ein (dies ist die Darstellung von
-    Liedtexten in der ABC-Notation):
+2.  füge nun die folgendenden Zeilen ein
+
+        alle meine Entchen
+        schwimmen auf dem See
+        schwimmen auf dem See
+        Köpfchen in das Wasser
+        Schwänzchen in die Höh
+
+    Dieser Text erscheint sofort in dem Fenster rechts oben (der
+    Notenvorschau), nicht jedoch in den Unterlegnoten. Dort erscheint
+    der Liedtext erst, wenn die Einstellungen zur Gestaltung und
+    Positionierung von Liedtexten eingefügt worden sind.
+
+    > **Hinweis**: Wenn du zurück gehst auf den den Reiter `ABC` siehst
+    > du in Zeile 15, (also in die Zeile nach dem "C,") nun die
+    > folgenden zeilen (dies ist die Darstellung von Liedtexten in der
+    > ABC-Notation):
 
         W: alle meine Entchen
         W: schwimmen auf dem See
         W: schwimmen auf dem See
         W: Köpfchen in das Wasser
         W: Schwänzchen in die Höh
-
-    Dieser Text erscheint sofort in dem Fenster rechts oben (der
-    Notenvorschau), nicht jedoch in den Unterlegnoten. Dort erscheint
-    der Liedtext erst, wenn die Einstellungen zur Gestaltung und
-    Positionierung von Liedtexten eingefügt worden sind.
 
 3.  klicke auf die Schaltfläche "Einstellungen". Dadurch öffnet sich das
     Menü zum Einfügen von "Konfiguration" in das Musikstück.
@@ -148,6 +157,8 @@ Beispiel kannst zunächst einen Liedtext hinzufügen:
     eingefügt (zunächst musst du hier nichts tun. Wenn du einst ein
     Profi im Zupfnoter sein wirst, wirst du diese Zeilen schätzen
     lernen):
+
+    \needspace{10cm}
 
           "extract"  : {
             "0" : {

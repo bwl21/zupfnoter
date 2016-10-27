@@ -47,3 +47,5 @@ TODO: markieren, für welche Zielgruppe welche Textabschnitte relevant
 sind.
 
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
+
+TODO: Screenshots aktualisieren

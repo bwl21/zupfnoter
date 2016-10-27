@@ -13,7 +13,7 @@ Zum Verständnis von Zupfnoter sind folgende Themen wichtig:
 
 Zupfnoter arbeitet nach dem Prinzip der Umwandlung von ABC-Notation in
 Unterlegnoten. Im Gegensatz zu so genanten "What You See is What you
-get" - Sytemen werden also die Unterlegnoten nicht direkt bearbeitetn
+get" - Sytemen werden also die Unterlegnoten nicht direkt bearbeiten
 sondern entstehen automatisch durch Umwandlung aus einem Modell des
 Musikstückes.
 
@@ -30,23 +30,40 @@ ABC-Notation:
 
 -   **Zusätze**: Hier werden die "Annotations" der ABC-Notation mit
     spezifischen Konventionen verwendet. Diese Zusätze stehen vor der
-    Note bzw. dem Taktstrich auf den sie sich beziehen.
+    Note bzw. dem Taktstrich auf den sie sich
+    beziehen.\index{Zusatz!Prinzipien}
 
-    Weitere Details findest du in Kapitel \ref{masken-fuer-zusaetze}
-    [Zusätze](#masken-fuer-zusaetze).
+    Für die Erstellung und Bearbeitung der "Zusätze" gibt es eine
+    grafische Benutzerführung durch Bildschirmmasken (Siehe
+    Kapitel \ref{masken-fuer-zusaetze}
+    [Zusätze](#masken-fuer-zusaetze)).
 
--   **Konfiguration** - dies ist ein eigener Block im so genannten
-    JSON - Format welcher nach der eigentlichen ABC-Notation steht und
-    von diesem durch mindestens eine Leerzeile gefolgt von
+-   **Konfiguration** - Zupfnoter gewinnt seine Leistungsfähigkit und
+    \index{Konfiguration} Flexibilität durch vielfältige
+    Einstellmöglichkeiten - genannt Konfigurationsparameter. Diese
+    Konfigurationsparameter wirken auf die Erstellung der
+    Unterlegnotenblätter und steuern z.B:
+
+    -   Stimmen, die augesgeben werden; Stimmen durch
+        Synchronisiationslinien verbunden werden usw.
+    -   Größe von Notenelementen, Liniendicken
+    -   Beschriftungen
+
+    Die Konfigurationsparameter sind thematisch hierarchisiert (z.B.
+    `extract.0.layout` `extract.0.printer`). Eine Referenz und
+    Erläuterung zu den Konfigurationsparametern findst du in
+    \ref{konfiguration} [Konfiguration](#konfiguration).
+
+    Für die Bearbeitung der Konfigurationsmparameter gibt es
+    Bildschirmmasken (siehe
+    Kapitel \ref{konfigurationsmasken}[Konfigurationsmasken](#konfigurationsmasken))
+
+    Zupfnoter speichert die Konfigurationsparameter in einem Abschnitt
+    nach der ABC-Notation, der durch
 
     `%%%%zupfnoter.config`
 
-    abgesetzt ist. Weitere Details findest du in
-    Kapitel \ref{konfiguration} [Konfiguration](#konfiguration) bzw.
-    Kapitel \ref{konfigurationsmasken}
-    [Konfigurationsmasken](#konfigurationsmasken)
-
-Für beide Konventionen bietet Zupfnoter eine grafische Benutzerführung.
+    abgesetzt ist.
 
 \needspace{15cm}
 
@@ -263,7 +280,7 @@ gibt es folgende Elemente:
 
     Mehr Einzelheiten siehe Kapitel [Handhabung variante Enden].
 
-### Elemente für das gesamte Musikstück
+### Elemente für das gesamte Musikstück bzw. Unterlegnotenblatt
 
 Um auf den Unterlegnoten Texte und Beschriftungen allgemeiner Art
 darstellen zu können, gibt es folgende Elemente:
@@ -353,6 +370,57 @@ darstellen zu können, gibt es folgende Elemente:
     > Noten ausgegeben. Der Fingerabdruck wird aus dem ABC-Text errechet
     > und ist daher nicht im ABC-Text enthalten.
 
+### Beschriftungen
+
+Zupfnoter hat vielfältige Möglichkeiten, das Beschriftungen einzufügen.
+Auf den Unterlegnoten sind diese nicht leider nicht immer zu
+unterscheiden:
+
+-   **Standardbeschriftungen** siehe "Elemente für das gesamte
+    Musikstück
+
+-   **Notenbeschriftung**
+
+    Die Notenbeschriftung ist mit einer einzelnen Note verbunden und
+    verschiebt sich ggf. wenn die Tonhöhe oder der Zeitbezug dieser Note
+    verändert wird. Die Notenbeschriftung wird über einen
+    "Zusatz"\index{Zusatz} direkt in die ABC-Notation eingefügt.
+
+    Für wiederkehrende Texte bzw. längere und mehrzeilige Texte in der
+    Konfiguration eine Notenbeschriftungsvorlage [annotations]
+    \index{Notenbeschriftungsvorlage} mit Positionsangabe anlegen und
+    über einen Zusatz ("Ref. Notenbeschriftung") daraus eine
+    Notenbeschrifung erstellen.
+
+    > **Hinweis**: Zupfnoter kennt standardmäßig die
+    > Noptenbeschriftungsvorlagen `vl` `vt`, `vr`. Damoit kann man
+    > einfach ein "Abdämpfungszeichen" anbringen.
+    > [^040_UD-Zupfnoter-Referenz.md_1].
+
+    Im Zusatz kann eine Position mit angegeben angegeben werden. Damit
+    bleibt die Position der Notenbeschriftung erhalten, auch wenn der
+    Zeitbezug der Note geändert wird.
+
+    > **Hinweis** Wenn man die Notenbeschriftung mit der Maus
+    > verschiebt, wirkt nur noch diese Verschiebung ud die Angabe im
+    > Zusatz wird ignoriert. Diese Verschiebung wird in der
+    > Konfiguration gespeichert und ist an die die Startzeit der Note
+    > gebunden, solange keine Verschiebemarke \index{Verschiebemarke} in
+    > der ABC-Notation eingefügt ist
+    > ([extract.x.notebound.annotation.v\_{voice}.{time}]).
+
+-   **Seitenbeschriftung**
+
+    Die Seitenbeschriftungen werden ausschliesslich über die
+    Konfiguration hinzugefügt [extract.x.notes]. Ihre Anordnung bezieht
+    sich auf den Seitenrand. Der Schriftstil kann gewählt werden.
+
+-   **Liedtexte**
+
+    Liedtexte werden in den `W:` - Zeilen in der ABC-Notation erfasst
+    und über die Konfiguration auf dem Blatt positioniert
+    [extract.x.lyrics.x]
+
 ## Genereller Bildschirmaufbau
 
 Die Benutzungsoberfläche von Zupfnoter ist aus folgenden Elementen
@@ -363,7 +431,7 @@ aufgebaut:
         Konfiguration
     -   rechts oben: **Notenvorschau** zur Kontrolle des Musikstücks
     -   rechts unten **Unterlegnotenvorschau**
-        [^040_UD-Zupfnoter-Referenz.md_1]
+        [^040_UD-Zupfnoter-Referenz.md_2]
 -   **Statusleiste**: für Syteminformationen (erreichbar mit rechte
     Maustaste)
 -   Bedienelemente in den Fenstern
@@ -378,6 +446,22 @@ Bildschirmaufbau](../ZAUX_Images/040_030_Bildschirmaufbau.pdf) 
 
 Zupfnoter kennt drei Hauptfenster:
 
+-   Das **linke Fenster** zeigt die Eingabemöglichkeiten über drei
+    Reiter
+
+    -   `ABC`- Der Texteidtor für die ABC-Notation sowie die
+        Zupfnoter-Einstellungen angezeigt. Für die ABC-Notation gibt es
+        eine separate Anleitung im Menü `Hilfe`.
+
+    -   `Liedtextexte` für die Erfassung der Liedtexte
+
+    -   `Konfiguration` für die formulargeführte Bearbeitung der
+        Zupfnoter-Konfiguration.
+
+    Mit Hilfe der ABC-Notation und der im gleichen Fenster sichtbaren
+    Zupfnoter-Konfiguration wird das Notenbild für die Tischharfen
+    generiert.
+
 -   Im **rechten oberen Fenster** wird in der herkömmlichen Notenschrift
     das Musikstück gezeigt. Die Darstellung in herkömmlicher
     Notenschrift kann mehrstimmig erfolgen.
@@ -389,17 +473,7 @@ Zupfnoter kennt drei Hauptfenster:
     Über die Reiter können verschiedene Zoom-Stufen eingestellt werden.
 
     > **Hinweis**: Da die Berechnung der Unterlegnoten einige Sekunden
-    > dauert, wird dieses Fens-\
-    > ter nur durch "rendern" aktualisiert.
-
--   Im **linken Fenster** wird die ABC-Notation sowie die
-    Zupfnoter-Einstellungen angezeigt. Für die ABC-Notation gibt es eine
-    separate Anleitung. Mit Hilfe der ABC-Notation und der
-    Zupfnoter-Einstellungen wird das Notenbild für die Tischharfen
-    generiert.
-
-    Über die Reiter kann auf die formularbasierte Konfiguration
-    umgeschaltet werden.
+    > dauert, wird dieses Fenster nur durch `Rendern` aktualisiert.
 
 ### Werkzeugleiste für Schaltflächen und Menüs
 
@@ -608,13 +682,14 @@ Das Eingeabefenster enthält seinerseits
 
 -   Menü **Zusatz einfügen**
 
-    \index{Zusatz}Über dieses Menü können Zupfnoter-spezifische Zusätze
-    an eine Note bzw. an einen Taktstrich eingefügt werden. Zupfnoter
-    verwendet spzifische Zusätze, um z.b. die Position von Sprunglinien
-    anzugeben, oder Notengebundene Anmerkungen zu erfassen. Diese
-    Zusätze sind an eine Note bzw. an einen Taktstrich gebunden und
-    werden in Form einer ABC-Anmerkung notiert (z.B.`"^@@3" :|` für die
-    Lage einer Sprungline für eine Wiederholung).
+    \index{Zusatz!einfügen|textbf}Über dieses Menü können
+    Zupfnoter-spezifische Zusätze an eine Note bzw. an einen Taktstrich
+    eingefügt werden. Zupfnoter verwendet spzifische Zusätze, um z.b.
+    die Position von Sprunglinien anzugeben, oder Notengebundene
+    Anmerkungen zu erfassen. Diese Zusätze sind an eine Note bzw. an
+    einen Taktstrich gebunden und werden in Form einer ABC-Anmerkung
+    notiert (z.B.`"^@@3" :|` für die Lage einer Sprungline für eine
+    Wiederholung).
 
     > **Hinweis**: Dieses Menü wird daher erst dann aktiv, wenn die
     > Schreibmarke (Cursor) zwischen einem Leerzeichen und einer
@@ -740,7 +815,7 @@ Bedeutung des Elementes links von der aktuellen Schreibmarke an.
 > auf die beiden anderen Fenster:
 >
 > -   Die Notenvorschau wird unmittelbar aktualisiert
-> -   Die Unterlegnotenvorschau wird erst durch die Funktion "Rendern"
+> -   Die Unterlegnotenvorschau wird erst durch die Funktion `Rendern`
 >     aktualisiert
 
 Der Texteditor ist mit den anderen Fenstern synchronisiert. Wenn man mit
@@ -771,6 +846,30 @@ entsprechende ABC-Notation für Liedtexte `W:` ergänzen:
 4.  Du siehst nun eine dünne schwarze Linie an den Zeilenanfängen. Nun
     gib die Zeichen `W:`ein. Diese Zeichenkette wird nun an allen Zeilen
     des Liedtextes vorangestellt.
+
+### Masken für Zupfnoter-spezifische Zusätze {#masken-fuer-zusaetze}
+
+\index{Zusatz}Zupfnoter verwendet "Annotations" der ABC-Notation mit
+spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
+Taktstrich auf den sie sich beziehen.
+
+Zupfnoter unterstützt die Pflege diese Zusätze über eine
+Bildschirmmaske. Diese wird über Schaltflächen bzw. Menüs in der
+Werkzeugleiste des Eingabefensters aufgerufen (siehe
+Kapitel \ref{werkzeugleiste-des-eingabefensters} [Werkzeugleiste des
+Eingabefensters](#werkzeugleiste-des-eingabefensters)).
+
+> **Hinweis**: Der Aufruf von "einfügen" und "bearbeiten" liegt auf
+> unterschiedlichen Schaltflächen, da beim "Einfügen" ein Menü erscheint
+> über welches ausgewählt wird, "was" eingefügt weden soll. Beim
+> Bearbeiten ist diese Auswahl nicht mehr notwendig. Daher wird
+> "bearbeiten" über eine Schaltflcähe direkt aufgerufen.
+
+> > > ![](../ZAUX_Images/040-050_Menue-fuer-zusaetze.jpg) 
+
+Es erscheint eine Maske nach folgendem Beispiel:
+
+> > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
 
 ### Darstellung der Konfigurationsparameter im Texteditor
 
@@ -803,7 +902,7 @@ Weitere Informationen zu den Zupfnoter-Einstellungen stehen im
 Kapitel \ref{konfiguration} "[Konfiguration](#konfiguration)".
 
 > **Hinweis**: Wichtig ist, nach einer Änderung in der Menüleiste immer
-> auf auf "Rendern" (ausführen) zu drücken, damit die Unterlegnoten
+> auf auf `Rendern` (ausführen) zu drücken, damit die Unterlegnoten
 > aktualisiert werden.
 
 > **Hinweis**: Wenn man im Vorschaufenster Elemente mit der Maus
@@ -834,12 +933,33 @@ herkömmlichen Noten oder Unterlegnoten generiert werden.
 
 TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einfügen???
 
+## Editor für Liedtexte
+
+\index{Liedtexte}Liedtexte werden in der ABC-Notation in den Kopfpzeilen
+`W:` erfasst. Zur Vereinfachung der Eingabe bietet Zupfnoter auch einen
+Liedtext-Editor Dieser ist über den Reiter `Liedtexte` erreichbar.
+
+> ![Liedtexteditor](../ZAUX_Images/040-070_lyricseditor.jpg) 
+
+Die Texte werden beim Klick auf den Reiter `Liedtexte` aus dem
+Texteditor für ABC-Notation entnommen. Bei jeder Änderung werden werden
+die Texte sofort in den Textedtior zurückgeführt. Daher kann man die
+Änderungen an Texten sofort in der Notenvorschau sehen und auch aus dem
+Liedtexteditor `Rendern` aufrufen, um sie in der Unterlegnotenvorschau
+zu sehen.
+
+> **Hinweis**: Die Anordnung der Liedtexte wird über die Konfiguration
+> bestimmt (siehe Kapitel \ref{extract.0.lyrics}
+> [extract.0.lyrics](#extract.0.lyrics)
+
 ## Konfigurationsmasken
 
-Zupfnoter bietet eine komfortable Benutzerführung über Bildschirmmasken,
-umd die Konfigurationsparameter zu bearbeiten. Diese Masken werden über
-das Menu "**Konfig. bearbeiten**" aufgerufen. Die Masken wirken dann auf
-den aktuell eingestellten Auszug.
+Zupfnoter bezieht seine Leisutngsfähigkeit und Flexibil
+
+Zupfnoter bietet eine komfortable Barbeitung der Konfigurationsparameter
+über Bildschirmmasken. Diese Masken werden über das Menu "**Konfig.
+bearbeiten**" aufgerufen. Die Masken wirken dann auf den aktuell
+eingestellten Auszug.
 
 > **Hinweis**: Grundsätzlich bildet Zupfnoter für jeden
 > Konfigurationsparameter einen Wert in folgender Reihenfolge
@@ -852,7 +972,7 @@ den aktuell eingestellten Auszug.
 
 Dabei gibt es zwei Arten von Masken
 
--   vordefinierte Masken mit einem festen Aufbau. Diese zeiden
+-   vordefinierte Masken mit einem festen Aufbau. Diese zeigen
     Eingabefelder für Parameter auch dann, wenn sie im Musikstück noch
     nicht vorhanden sind. Wichtigstes Beispiel ist die Maske
     "Grundeinstellungen"
@@ -871,18 +991,35 @@ den Konfigurtionsmasken pro Parameter je eine Zeile mit den folgenden
 Elementen:
 
 -   `Löschen` - Löscht den Paramter aus der Konfiguration
--   `Füllen` - fügt den Parameter in die Konfiguration ein. Ggf. werden
-    auch Unterparameter mit eingefügt, z.B. bei "Layout"
-    -   `Name` - die Beschriftung des Parameters
+
+    > **Hinweis**: Diese Taste kann ggf. einen ganzen Auszug löschen
+    > (wenn man die `Löschen` - Button an einem Auszug drückt. Also
+    > bitte vorsichtig.
+
+-   `Füllen` - Diese Taste füllt den Parameter mit den Vorgabewerten.
+    Falls noch nicht vorhanden wird er auch in die in die Konfiguration
+    eingefügt (Ggf. werden auch Unterparameter mit eingefügt, z.B. bei
+    "Layout").
+-   `Name` - die Beschriftung des Parameters
 -   `Eingabefeld` - hier kann der Wert eingegeben werden. Bei
     Gruppierungen gibt es kein Eingeabefeld, da hier die Werte in die
     Unterparameter eingetragen werden.
 -   `Hilfe` - zeigt eine spezifische Hilfe für diesen Parameter an
 -   `aktuell wirksamer Wert` - zeigt den Wert an, der für den Paramter
-    gerade gültig ist. Mit Klick auf den Knopf `Füllen` wird der
-    Parameter in den aktuellen Auszug eingefügt und mit dem wirksamen
-    Wert befüllt. Der Wert kann dann ggf. für diesen Auszug angepasst
-    werden.
+    gerade gültig ist.
+
+    > **Hinweis**: Hier wird ggf. der Wert aus `extract.0` angezeigt
+    > falls im aktuellen Auszug noch kein Wert vorhanden ist.
+    >
+    > Mit Klick auf den Knopf `Füllen` wird der Parameter in den
+    > aktuellen Auszug eingefügt und mit dem wirksamen Wert befüllt. Der
+    > Wert kann dann ggf. für diesen Auszug angepasst werden.
+
+    > **Hinweis**: Wenn ein neuer Wert im Eingabefeld eingegebn, das
+    > Eingabefeld aber noch nicht verlassen wurde, Zeit "aktuell
+    > wirksamer Wert" noch den alten Wert an. Du musst das Eingabefeld
+    > verlassen (z.b. mit der "Tab" - Taste) um die Eingabe des Wertes
+    > abzuschließen.
 
 > ![Konfigurationsmaske](../ZAUX_Images/040-040_Konfigurationsmasken.pdf) 
 
@@ -893,35 +1030,19 @@ Für die Bedienung der Masken ist noch wichtig
     `Refresh` die Maske neu aufgebaut werden. Dies ist z.B. dann
     notwendigWenn der Konfigurationsparameer außerhalb der Maske
     geändert wird (z.B. im Texteditor).
--   Feldeingabe mit "TAB" Beenden
--   "Rendern" nicht vergessen
-
-## Masken für Zupfnoter-spezifische Zusätze {#masken-fuer-zusaetze}
-
-\index{Zusatz}Zupfnoter verwendet "Annotations" der ABC-Notation mit
-spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
-Taktstrich auf den sie sich beziehen.
-
-Zupfnoter unterstützt die Pflege diese Zusätze über eine
-Bildschirmmaske. Diese wird über Schaltflächen bzw. Menüs in der
-Werkzeugleiste des Eingabefensters aufgerufen (siehe
-Kapitel \ref{werkzeugleiste-des-eingabefensters} [Werkzeugleiste des
-Eingabefensters](#werkzeugleiste-des-eingabefensters)).
-
-> **Hinweis**: Der Aufruf von "einfügen" und "bearbeiten" liegt auf
-> unterschiedlichen Schaltflächen, da beim "Einfügen" ein Menü erscheint
-> über welches ausgewählt wird, "was" eingefügt weden soll. Beim
-> Bearbeiten ist diese Auswahl nicht mehr notwendig. Daher wird
-> "bearbeiten" über eine Schaltflcähe direkt aufgerufen.
-
-> > > ![](../ZAUX_Images/040-050_Menue-fuer-zusaetze.jpg) 
-
-Es erscheint eine Maske nach folgendem Beispiel:
-
-> > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
+-   Schalltfläche `Neuer Eintrag`: Diese Taste fügt eine neue Intanz
+    eines Parameters ein. Sie ist nur vorhanden, wenn es für einen
+    Parameter mehrere Instanzen geben kann (z.B.
+    \index{Liedtexte}Liedtexte [lyrics.x],
+    \index{Seitenbeschriftung}Seitenbeschrifung [notes.x])
+-   Feldeingabe mit der "TAB"-Taste bestätigen
+-   `Rendern` nicht vergessen
 
 <!-- -->
 
-[^040_UD-Zupfnoter-Referenz.md_1]: Es gibt noch ein weiteres Fenster,
+[^040_UD-Zupfnoter-Referenz.md_1]: longnote Leider gibt es keine
+    entsprechende Dekoration im ABC-Standard
+
+[^040_UD-Zupfnoter-Referenz.md_2]: Es gibt noch ein weiteres Fenster,
     die Konsole, welche nur bei Bedarf von Experten genutzt wird (siehe
     Kapitel \ref{konsole-fenster} [Konsole](#konsole-fenster)).

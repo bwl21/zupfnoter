@@ -6,37 +6,13 @@
 /Contents 4 0 R>>
 endobj
 4 0 obj
-<</Length 52657>>
+<</Length 53786>>
 stream
 0.57 w
 0 G
 2.83 839.06 1184.88 -836.22 re
 S
 0.00 841.89 1190.55 -841.89 re
-S
-412.441 824.882 m 
-418.110 819.213 l
-S
-412.441 819.213 m 
-418.110 824.882 l
-S
-412.441 22.677 m 
-418.110 17.008 l
-S
-412.441 17.008 m 
-418.110 22.677 l
-S
-803.622 824.882 m 
-809.291 819.213 l
-S
-803.622 819.213 m 
-809.291 824.882 l
-S
-803.622 22.677 m 
-809.291 17.008 l
-S
-803.622 17.008 m 
-809.291 22.677 l
 S
 0.28 w
 [3] 3 d
@@ -734,7 +710,7 @@ B
 865.772 604.134 m 
 904.394 604.134 l
 904.394 634.040 l
-870.909 634.040 l
+871.441 634.040 l
 S
 0.28 w
 0.00 0.00 0.00 rg
@@ -1822,6 +1798,46 @@ BT
 (3) Tj
 ET
 0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+475.65 793.70 Td
+(1) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+473.17 751.39 Td
+(2) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+473.17 634.89 Td
+(3) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+473.17 575.36 Td
+(4) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+473.17 460.56 Td
+(5) Tj
+ET
+0.28 w
 0.50 0.50 0.50 rg
 1.00 1.00 1.00 rg
 1.00 1.00 1.00 rg
@@ -1864,7 +1880,7 @@ B
 458.504 653.074 m 
 415.417 653.074 l
 415.417 634.040 l
-448.902 634.040 l
+448.370 634.040 l
 S
 0.28 w
 0.00 0.00 0.00 rg
@@ -1879,7 +1895,7 @@ B
 458.504 653.074 m 
 415.417 653.074 l
 415.417 574.512 l
-448.902 574.512 l
+448.370 574.512 l
 S
 0.28 w
 0.00 0.00 0.00 rg
@@ -1894,7 +1910,7 @@ B
 474.591 604.134 m 
 513.213 604.134 l
 513.213 459.709 l
-479.728 459.709 l
+480.260 459.709 l
 S
 0.28 w
 0.00 0.00 0.00 rg
@@ -1909,7 +1925,7 @@ B
 474.591 544.607 m 
 513.213 544.607 l
 513.213 459.709 l
-479.728 459.709 l
+480.260 459.709 l
 S
 0.28 w
 0.00 0.00 0.00 rg
@@ -1940,7 +1956,7 @@ BT
 /F2 9 Tf
 10.35 TL
 0.000 g
-478.49 797.39 Td
+492.66 777.54 Td
 (\(28\) Zählhilfen) Tj
 ET
 0.28 w
@@ -1948,7 +1964,15 @@ BT
 /F2 9 Tf
 10.35 TL
 0.000 g
-492.66 628.16 Td
+492.66 750.61 Td
+(\(29\) Taktnummer) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+492.66 625.61 Td
 (\(28\) Zählhilfen) Tj
 ET
 0.28 w
@@ -1957,7 +1981,7 @@ BT
 10.35 TL
 0.000 g
 421.80 588.76 Td
-(\(29\) variantes Ende) Tj
+(\(50\) variantes Ende) Tj
 ET
 0.28 w
 BT
@@ -1982,9 +2006,9 @@ BT
 13.799999999999999 TL
 0.000 g
 975.12 755.15 Td
-(alle-Stimmen) Tj
+(alle Stimmen) Tj
 T* () Tj
-T* (Takt: 4/4 \(1/4 = 120\)) Tj
+T* (Takt: 4/4 \(1/4=120\)) Tj
 T* (Tonart: C ) Tj
 ET
 0.28 w
@@ -1993,7 +2017,7 @@ BT
 6.8999999999999995 TL
 0.000 g
 425.20 17.58 Td
-(3015_reference_sheet - created 2016-09-21 19:47:22 CEST by Zupfnoter 1.5.0 dev [http://localhost:9292/]) Tj
+(3015_reference_sheet - created 2016-10-27 16:08:46 CEST by Zupfnoter 1.5.0 dev 2 [http://localhost:9292/]) Tj
 ET
 0.28 w
 BT
@@ -2009,7 +2033,7 @@ BT
 6.8999999999999995 TL
 0.000 g
 1133.86 17.58 Td
-(164 644 625) Tj
+(294 072 265) Tj
 ET
 0.28 w
 BT
@@ -2019,45 +2043,62 @@ BT
 1014.80 650.27 Td
 (\(1\) full note) Tj
 T* (\(2\) half note) Tj
-T* (\(3\) quarter note ) Tj
-T* (\(4\) eighth note ) Tj
+T* (\(3\) quarter note) Tj
+T* (\(4\) eighth note) Tj
 T* (\(5\) sixteenth note) Tj
 T* (\(6\) punctuated half note) Tj
 T* (\(7\) punctuated quarter note) Tj
 T* () Tj
-T* (\(11\) full rest ) Tj
-T* (\(12\) half rest ) Tj
-T* (\(13\) quarter rest ) Tj
-T* (\(14\) eighth  rest) Tj
+T* (\(11\) full rest) Tj
+T* (\(12\) half rest) Tj
+T* (\(13\) quarter rest) Tj
+T* (\(14\) eighth rest) Tj
 T* (\(15\) sixteenth rest) Tj
 T* (\(16\) punctuated half rest) Tj
 T* (\(17\) punctuated quarter rest) Tj
 T* () Tj
-T* (\(20\) measure bar ) Tj
-T* (\(21\) unison ) Tj
-T* (\(22\) triplet ) Tj
-T* (\(23\) tie ) Tj
-T* (\(24\) repeat signs ) Tj
-T* (\(25\) jumpline for repeat ) Tj
-T* (\(26\) synchline for unison ) Tj
-T* (\(27\) part note ) Tj
+T* (\(20\) measure bar) Tj
+T* (\(21\) unison) Tj
+T* (\(22\) triplet) Tj
+T* (\(23\) tie) Tj
+T* (\(24\) repeat signs) Tj
+T* (\(25\) jumpline for repeat) Tj
+T* (\(26\) synchline for unison) Tj
+T* (\(27\) part note) Tj
 T* (\(28\) countnotes) Tj
-T* (\(29\) variant ending) Tj
+T* (\(29\) barnumbers) Tj
 T* (\(30\) decoration \(fermata\)) Tj
 T* () Tj
-T* (\(31\) flowline ) Tj
-T* (\(32\) synchline ) Tj
-T* (\(33\) subflowline ) Tj
-T* (\(34\) legend ) Tj
+T* (\(31\) flowline) Tj
+T* (\(32\) synchline) Tj
+T* (\(33\) subflowline) Tj
+T* (\(34\) legend) Tj
 T* (\(35\) extract title in legend) Tj
-T* (\(36\) lyrics ) Tj
+T* (\(36\) lyrics) Tj
 T* (\(37\) string names) Tj
 T* (\(38\) string marks) Tj
+T* (\(39\) cutmarks) Tj
 T* () Tj
-T* (\(70\) input filename) Tj
+T* (\(50\) variant ending) Tj
+ET
+0.28 w
+BT
+/F1 12 Tf
+13.799999999999999 TL
+0.000 g
+836.22 179.72 Td
+(\(70\) input filename) Tj
 T* (\(71\) creation note) Tj
 T* (\(72\) advertising Zupfnoter) Tj
 T* (\(73\) Input checksum) Tj
+T* () Tj
+T* () Tj
+T* () Tj
+T* () Tj
+T* () Tj
+T* () Tj
+T* () Tj
+T* () Tj
 ET
 0.28 w
 BT
@@ -2096,7 +2137,7 @@ BT
 /F2 9 Tf
 10.35 TL
 0.000 g
-408.19 811.56 Td
+538.58 805.89 Td
 (\(37\) Saitennamen) Tj
 ET
 0.28 w
@@ -2106,6 +2147,14 @@ BT
 0.000 g
 368.50 788.88 Td
 (\(38\) Saitenmarke) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+411.02 811.56 Td
+(\(39\) Schneidemarke) Tj
 ET
 0.28 w
 BT
@@ -2138,6 +2187,49 @@ BT
 0.000 g
 1094.17 32.03 Td
 (\(73\) Fingerabdruck) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+807.87 811.56 Td
+(\(39\) Schneidemarke) Tj
+ET
+0.28 w
+BT
+/F1 9 Tf
+10.35 TL
+0.000 g
+1017.64 83.06 Td
+(© 2016 zupfnoter.de) Tj
+ET
+0.28 w
+BT
+/F1 9 Tf
+10.35 TL
+0.000 g
+728.50 97.23 Td
+(HInweis: Dieses Blatt wurde erstellt mit Zupfnoter.) Tj
+T* () Tj
+T* (Texte bei den Noten: Notenbeschriftung) Tj
+T* (Erläuternde Texte: Seitbenbeschriftung) Tj
+ET
+0.28 w
+BT
+/F2 20 Tf
+23 TL
+0.000 g
+1125.35 805.04 Td
+(                ) Tj
+ET
+0.28 w
+BT
+/F2 9 Tf
+10.35 TL
+0.000 g
+1017.64 68.88 Td
+(Bitte nicht kopieren) Tj
 ET
 0.28 w
 0.00 0.00 0.00 rg
@@ -2174,7 +2266,7 @@ BT
 /F1 9 Tf
 10.35 TL
 0.000 g
-7.94 820.06 Td
+5.10 820.06 Td
 (G) Tj
 ET
 0.28 w
@@ -2462,8 +2554,40 @@ BT
 /F1 9 Tf
 10.35 TL
 0.000 g
-1172.98 820.06 Td
+1178.65 820.06 Td
 (G) Tj
+ET
+0.28 w
+BT
+/F1 9 Tf
+10.35 TL
+0.000 g
+407.27 822.90 Td
+(x) Tj
+ET
+0.28 w
+BT
+/F1 9 Tf
+10.35 TL
+0.000 g
+407.27 12.19 Td
+(x) Tj
+ET
+0.28 w
+BT
+/F1 9 Tf
+10.35 TL
+0.000 g
+798.45 822.90 Td
+(x) Tj
+ET
+0.28 w
+BT
+/F1 9 Tf
+10.35 TL
+0.000 g
+798.45 12.19 Td
+(x) Tj
 ET
 endstream
 endobj
@@ -2558,7 +2682,7 @@ endobj
 17 0 obj
 <<
 /Producer (jsPDF 1.0.145-git 2014-05-25T12:54:diegocr)
-/CreationDate (D:20160921194722)
+/CreationDate (D:20161027160847)
 >>
 endobj
 18 0 obj
@@ -2572,24 +2696,24 @@ endobj
 xref
 0 19
 0000000000 65535 f 
-0000052795 00000 n 
-0000054025 00000 n 
+0000053924 00000 n 
+0000055154 00000 n 
 0000000009 00000 n 
 0000000087 00000 n 
-0000052883 00000 n 
-0000052973 00000 n 
-0000053068 00000 n 
-0000053166 00000 n 
-0000053268 00000 n 
-0000053356 00000 n 
-0000053450 00000 n 
-0000053547 00000 n 
-0000053648 00000 n 
-0000053741 00000 n 
-0000053833 00000 n 
-0000053927 00000 n 
-0000054249 00000 n 
-0000054359 00000 n 
+0000054012 00000 n 
+0000054102 00000 n 
+0000054197 00000 n 
+0000054295 00000 n 
+0000054397 00000 n 
+0000054485 00000 n 
+0000054579 00000 n 
+0000054676 00000 n 
+0000054777 00000 n 
+0000054870 00000 n 
+0000054962 00000 n 
+0000055056 00000 n 
+0000055378 00000 n 
+0000055488 00000 n 
 trailer
 <<
 /Size 19
@@ -2597,5 +2721,5 @@ trailer
 /Info 17 0 R
 >>
 startxref
-54463
+55592
 %%EOF
