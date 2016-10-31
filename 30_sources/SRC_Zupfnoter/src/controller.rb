@@ -85,14 +85,13 @@ class Controller
 
     # todo make this configurable by a preferences menu
     languages        = {'de'    => 'de-de',
-                        'de-DE' => 'de-de',
+                        'de-de' => 'de-de',
                         'en'    => 'en-US',
-                        'en-US' => 'en-US'
+                        'en-us' => 'en-US'
     }
-    browser_language = `navigator.language`
+    browser_language = `navigator.language`.downcase
     I18n.locale(languages[browser_language]) if browser_language
-
-
+    
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
@@ -473,11 +472,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @song_harpnotes = layout_harpnotes(@systemstatus[:view])
 
         if @song_harpnotes
-        # todo: not sure if it is good to pass active_voices via @song_harpnotes
-        # todo: refactor better moove that part of the code out here
-        @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
-        @harpnote_preview_printer.draw(@song_harpnotes)
-        set_status(harpnotes_dirty: false)
+          # todo: not sure if it is good to pass active_voices via @song_harpnotes
+          # todo: refactor better moove that part of the code out here
+          @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
+          @harpnote_preview_printer.draw(@song_harpnotes)
+          set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
         $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
@@ -520,8 +519,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           call_consumers(:error_alert)
           set_inactive("#harpPreview")
           @editor.set_annotations($log.annotations)
+        end
       end
-    end
     end
 
 
@@ -875,10 +874,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
       $log.warning "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-        @harpnote_preview_printer.unhighlight_all
-        @harpnote_preview_printer.range_highlight(a.first, a.last)
+      @harpnote_preview_printer.unhighlight_all
+      @harpnote_preview_printer.range_highlight(a.first, a.last)
       @tune_preview_printer.range_highlight(a.first, a.last)
-        @harpnote_player.range_highlight(a.first, a.last)
+      @harpnote_player.range_highlight(a.first, a.last)
 
     end
 
