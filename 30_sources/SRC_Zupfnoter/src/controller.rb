@@ -519,6 +519,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           call_consumers(:error_alert)
           set_inactive("#harpPreview")
           @editor.set_annotations($log.annotations)
+          promise.resolve()
         end
       end
     end
