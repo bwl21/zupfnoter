@@ -185,7 +185,7 @@ class Controller
       $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
-      $log.error("#{e.message} in command #{command} #{e.backtrace.join("\n")} #{__FILE__}:#{__LINE__}")
+      $log.error("#{e.message} in command #{command}}", nil, nil, e.backtrace)
     end
     call_consumers(:error_alert)
   end
@@ -454,7 +454,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       abc_text = @editor.get_abc_part
       @tune_preview_printer.draw(abc_text)
     rescue Exception => e
-      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1, 1], [10, 1000])
+      $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
     $log.debug("finished render tune #{__FILE__} #{__LINE__}")
     set_inactive("#tunePreview")
@@ -467,29 +467,24 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the previews
   # also saves abc in localstore()
   def render_harpnotepreview_callback
-    $log.clear_errors
     $log.benchmark("render_harpnotepreview_callback") do
       begin
         $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
         @song_harpnotes = layout_harpnotes(@systemstatus[:view])
+
+        if @song_harpnotes
         # todo: not sure if it is good to pass active_voices via @song_harpnotes
         # todo: refactor better moove that part of the code out here
         @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
-
         @harpnote_preview_printer.draw(@song_harpnotes)
         set_status(harpnotes_dirty: false)
+        end
       rescue Exception => e
-        $log.error(["Bug", e.message, e.backtrace].join("\n"), [1, 1], [10, 1000])
+        $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
       end
 
       set_status(refresh: false)
     end
-
-    set_inactive("#harpPreview")
-    @editor.set_annotations($log.annotations)
-
-    call_consumers(:error_alert)
-
 
     nil
   end
@@ -497,9 +492,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
+
+    @editor.resize();
     $log.info("rendering")
     set_status(harpnotes_dirty: true)
+
     $log.clear_errors
+    $log.clear_annotations
+
     unless @systemstatus[:autorefresh] == :remote
       save_to_localstorage
       send_remote_command('render')
@@ -515,9 +515,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       Promise.new.tap do |promise|
         set_active("#harpPreview")
         `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
+      end.then do
+        Promise.new.tap do |promise|
+          call_consumers(:error_alert)
+          set_inactive("#harpPreview")
+          @editor.set_annotations($log.annotations)
       end
     end
-    @editor.resize();
+    end
+
 
     result
   end
@@ -544,7 +550,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0)
-    $log.clear_annotations
 
     config = get_config_from_editor
     @editor.neat_config
@@ -571,7 +576,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
     rescue Exception => e
-      $log.error(["Bug", e.message, e.backtrace].join("\n"), [1, 1], [10, 1000])
+      $log.error(%Q{#{e.message}}, nil, nil, e.backtrace)
     ensure
       $conf.pop
     end
@@ -869,13 +874,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       ranges         = selection_info[:selection]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
-
-      unless @systemstatus[:harpnotes_dirty] # ths prevents the editor to hang if there were errors preventing generation of harpnotes
-        @tune_preview_printer.range_highlight(a.first, a.last)
+      $log.warning "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
         @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
+      @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
-      end
+
     end
 
     @editor.on_cursor_change do |e|

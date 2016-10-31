@@ -201,7 +201,7 @@ module Harpnotes
           begin
             result = self.send("_transform_#{type}", voice_model_element, index, voice_index)
           rescue Exception => e
-            $log.error("BUG: #{e}", charpos_to_line_column(voice_model_element[:istart]))
+            $log.error("Bug: #{e}", charpos_to_line_column(voice_model_element[:istart]))
             nil
           end
           result
@@ -421,7 +421,7 @@ module Harpnotes
       def _transform_count_note(voice_element)
         if @countby
           count_base  = ABC2SVG_DURATION_FACTOR / @countby
-          count_start = 4 * (voice_element[:time] - @measure_start_time) / count_base  # literal 4: divide one beat by 4: 1eue
+          count_start = 4 * (voice_element[:time] - @measure_start_time) / count_base # literal 4: divide one beat by 4: 1eue
           count_end   = count_start + 4 * voice_element[:dur] / count_base
 
           if (count_start % 1 == 0) and (count_end % 1) == 0
@@ -438,7 +438,7 @@ module Harpnotes
 
           notes  = count_range.split(/[eui\?]+/)
           fracts = count_range.split(/[0-9]+/)
-          fracts = [''] if fracts.empty?       # https://github.com/bwl21/zupfnoter/issues/84
+          fracts = [''] if fracts.empty? # https://github.com/bwl21/zupfnoter/issues/84
 
           # now cleanup contnotes
           # todo:can we use regular expressions for this
