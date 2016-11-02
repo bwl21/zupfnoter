@@ -1184,9 +1184,12 @@ module Harpnotes
 
         @y_offset = print_options_hash[:startpos]
 
-        beat_compression_map = compute_beat_compression(music, print_options_hash[:layoutlines])
-        maximal_beat         = beat_compression_map.values.max
-        full_beat_spacing    = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
+        beat_compression_map = nil
+        $log.benchmark("compute beat compression map") do
+          beat_compression_map = compute_beat_compression(music, print_options_hash[:layoutlines])
+        end
+        maximal_beat      = beat_compression_map.values.max
+        full_beat_spacing = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
 
         if full_beat_spacing < @beat_spacing
           factor = (@beat_spacing / full_beat_spacing)
@@ -1297,11 +1300,11 @@ module Harpnotes
           text = lyric_text.join("\n")
 
           if lyrics
-            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map{|i| i.strip}
+            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map { |i| i.strip }
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
               pos      = entry[:pos]
-              the_text = entry[:verses].map { |i| verses[i.to_i - 1]}.join("\n\n")
+              the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
                                                                 "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos})
             end
@@ -1801,9 +1804,10 @@ module Harpnotes
         last_size            = 0
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
+        relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
 
         duration_to_style = $conf.get('layout.DURATION_TO_STYLE')
-        result            = Hash[(0..max_beat).map do |beat|
+        result            = Hash[relevant_keys.map do |beat|
           notes_on_beat        = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
           max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
           has_no_notes_on_beat = notes_on_beat.empty?
@@ -1829,6 +1833,13 @@ module Harpnotes
             unless is_new_part.empty?
               increment += increment
             end
+
+            if beat==2688/8 #14976/8
+              JS.debugger
+              #increment = -500
+            end
+
+
             current_beat += increment
           end
           [beat, current_beat]
