@@ -320,7 +320,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def migrate_config(config)
     result       = Confstack.new(false)
     result.strict= false
-    old_config   = config.clone
+    old_config       = Confstack.new(false)
+    old_config.strict= false
+    old_config.push(config.clone)
     result.push(config)
 
     if config['extract']
@@ -337,7 +339,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     new_config = migrate_config_cleanup(result.get)
 
-    unless old_config == new_config
+    unless old_config.get == new_config
+      JS.debugger
       status = {
           changed:    true,
           message:    %Q{#{I18n.t(I18n.t("Please double check the generated sheets.\n\nYour abc file was automatically migrated\nto Zupfnoter version"))} #{VERSION}},
