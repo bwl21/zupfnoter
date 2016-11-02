@@ -332,8 +332,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       sheetnotes = migrate_notes(result)
       result.push(sheetnotes)
 
-      new_legend = migrate_config_legend(result)
-      result.push(new_legend)
     end
     result['$schema'] = SCHEMA_VERSION
 
@@ -364,24 +362,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
     config
   end
-
-  def migrate_config_legend(config)
-    new_legend = config['extract'].inject({}) do |r, element|
-      legend = element.last['legend']
-      if legend
-        unless legend['spos'] # prevewnt loop
-          opos = legend["pos"]
-
-          result           = {"spos" => [opos.first, opos.last + 7], "pos" => opos}
-          r[element.first] = {"legend" => result}
-        end
-      end
-      r
-    end
-
-    {"extract" => new_legend}
-  end
-
+  
   def migrate_config_lyrics(config)
     new_lyrics = config['extract'].inject({}) do |r, element|
       lyrics = element.last['lyrics']
