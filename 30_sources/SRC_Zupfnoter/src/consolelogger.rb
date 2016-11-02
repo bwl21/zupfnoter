@@ -40,7 +40,7 @@ class ConsoleLogger
   #                             derived from start_pos if left out
   #
   # @return [Object] undefined
-  def error(msg, start_pos = nil, end_pos = nil, backtrace = nil)
+  def error(msg, start_pos = nil, end_pos = nil, backtrace = [])
     @captured_errors.push(msg)
     add_annotation(msg, start_pos, end_pos, :error)
     backtrace_message = backtrace.join("\n") if loglevel == :debug
