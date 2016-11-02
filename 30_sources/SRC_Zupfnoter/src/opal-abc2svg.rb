@@ -31,7 +31,8 @@ module ABC2SVG
                read_file:   nil,
                annotate:    true,
                page_format: true,
-               keep_remark: true
+               keep_remark: true,
+               titletrim:   false
       }
 
 
@@ -71,6 +72,8 @@ module ABC2SVG
       end
 
       @root = %x{new Abc(#{@user.to_n})}
+      %x{#{@root}.tosvg("my_parameters","%%titletrim 0");}
+      @root
     end
 
     # Highligh routines.

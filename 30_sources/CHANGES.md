@@ -19,6 +19,7 @@
 * Jumpline end are now correct in case of a full rest #50
 * no longer shift first and last string name #18
 * Editor no longer hangs if no harpnotes were cteated #86
+* abc2svg titletrim now turned off #88
 
 ## Enhancement
 
