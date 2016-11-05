@@ -45,7 +45,7 @@ findet man eine deutsche Anleitung für die ABC-Notation.
     Titel: "Alle meine Entchen") und bestätige mit der Schaltfläche
     "Ok".
 
-    > > ![](../ZAUX_Images/030-015_create-new-sheet.jpg) 
+    > > > ![](../ZAUX_Images/030-015_create-new-sheet.jpg) 
 
     Im linken Fenster erscheint die Nummer in Zeile 1 und der Titel in
     Zeile 3. Zeile 2 zeigt den Dateinamen den Zupfnoter aus Nummer und
@@ -80,22 +80,22 @@ erstellt.
 
 \needspace{5cm}
 
-**Hinweis:** Um Taktstriche, Wiederholungszeichen und Schlussstriche
-darstellen zu können, benötigt man folgende Tastenkombinationen zur
-Erstellung des senkrechten Striches (vertical bar) bzw. der eckigen
-Klammer:
-
-**Windows**
-
--   `|` erzeugt man mit der Taste AltGr und der Taste links vom Y
--   `[` erzeugt man mit der Taste `AltGr` und der Taste `8`
--   `]` erzeugt man mit der Taste `AltGr` und der Taste `9`
-
-**Mac**
-
--   `|` erzeugt man mit der Taste `Alt` und der Taste `7`
--   `[` erzeugt man mit der Taste `Alt` und der Taste `5`
--   `]` erzeugt man mit der Taste Alt und der Taste `6`
+> **Hinweis:** Um Taktstriche ("**`|`**"), Wiederholungszeichen
+> ("**`|: :|`**") und Schlussstriche ("**`]`**") darstellen zu können,
+> benötigt man folgende Tastenkombinationen zur Erstellung des
+> senkrechten Striches (vertical bar) bzw. der eckigen Klammer:
+>
+> **Windows**
+>
+> -   `|` erzeugt man mit der Taste AltGr und der Taste links vom Y
+> -   `[` erzeugt man mit der Taste `AltGr` und der Taste `8`
+> -   `]` erzeugt man mit der Taste `AltGr` und der Taste `9`
+>
+> **Mac**
+>
+> -   `|` erzeugt man mit der Taste `Alt` und der Taste `7`
+> -   `[` erzeugt man mit der Taste `Alt` und der Taste `5`
+> -   `]` erzeugt man mit der Taste Alt und der Taste `6`
 
 ## Dein Musikstück prüfen
 
@@ -106,7 +106,7 @@ es einfach mal anhören:
 
     Zupfnoter spielt "Alle meine Entchen" von Beginn an.
 
-2.  klicke auf die erste ganze Note imf Fenster rechts oben (das sollte
+2.  klicke auf die erste ganze Note im Fenster rechts oben (das sollte
     ein "G" sein). Diese wird dadurch ausgewählt und in allen Fenstern
     markiert.
 
@@ -117,70 +117,81 @@ es einfach mal anhören:
 
     Zupfnoter spielt "Alle meine Entchen" ab der ausgewählten Note.
 
-## Die Unterlegnoten gestalten
+## Die Unterlegnoten gestalten {#musikstueck-gestalten}
 
 Als nächstes kannst du die Unterlegnoten gestalten. Zupfnoter bietet
 eine sehr große Vielfalt an Gestaltungsmöglichkeiten. Als einfaches
-Beispiel kannst zunächst einen Liedtext hinzufügen:
+Beispiel kannst du zunächst einen Liedtext hinzufügen:
 
 1.  klicke im linken Fenster auf den Reiter `Liedtexte`
 
 2.  füge nun die folgendenden Zeilen ein
 
-        alle meine Entchen
+        Alle meine Entchen
         schwimmen auf dem See
         schwimmen auf dem See
+
         Köpfchen in das Wasser
         Schwänzchen in die Höh
+
+    ![](../ZAUX_Images/030-025_erfassung-liedtext.jpg) 
 
     Dieser Text erscheint sofort in dem Fenster rechts oben (der
     Notenvorschau), nicht jedoch in den Unterlegnoten. Dort erscheint
     der Liedtext erst, wenn die Einstellungen zur Gestaltung und
     Positionierung von Liedtexten eingefügt worden sind.
 
+    \needspace{6cm}
+
     > **Hinweis**: Wenn du zurück gehst auf den den Reiter `ABC` siehst
     > du in Zeile 15, (also in die Zeile nach dem "C,") nun die
     > folgenden zeilen (dies ist die Darstellung von Liedtexten in der
     > ABC-Notation):
+    >
+    >        W: alle meine Entchen
+    >        W: schwimmen auf dem See
+    >        W: schwimmen auf dem See
+    >        W:
+    >        W: Köpfchen in ds Wasser
+    >        W: Schwänzchen in die Höh
 
-        W: alle meine Entchen
-        W: schwimmen auf dem See
-        W: schwimmen auf dem See
-        W: Köpfchen in das Wasser
-        W: Schwänzchen in die Höh
+3.  klicke auf die Schaltfläche "Konfig. bearbeiten". Dadurch öffnet
+    sich das Menü zum Einfügen von "Konfiguration" in das Musikstück.
 
-3.  klicke auf die Schaltfläche "Einstellungen". Dadurch öffnet sich das
-    Menü zum Einfügen von "Konfiguration" in das Musikstück.
+4.  klicke auf den Eintrag "Liedtexte", um die Maske für Einstellungen
+    für Liedtexte aufzurufen.
 
-4.  klicke auf den Eintrag "Liedtexte", um die Einstellungen für
-    Liedtexte hinzuzufügen. Dadurch wird im linken Fenster folgendes
-    eingefügt (zunächst musst du hier nichts tun. Wenn du einst ein
-    Profi im Zupfnoter sein wirst, wirst du diese Zeilen schätzen
-    lernen):
+5.  Klicke auf die Schaltfläche "Neuer Eintrag" um einen neuen
+    Liedtextblock hinzuzufügen[^030_UD_Zupfnoter-erste-schritte.md_1]
 
-    \needspace{10cm}
+6.  Trage im Feld "Strophen" ein: "`1, 2`", und bestätige die Eingabe
+    durch Drücken der "Tab" - Taste.
+
+    Das bedeutet, dass in dem neuen Liedtextblock die Strophen 1 und 2
+    ausgegeben werden.
+
+    ![](../ZAUX_Images/030-026_konfiguration-liedtext.jpg) 
+
+    Dadurch wird im linken Fenster folgendes eingefügt (zunächst musst
+    du hier nichts tun. Wenn du einst ein Profi im Zupfnoter sein wirst,
+    wirst du diese Zeilen schätzen lernen):
+
+    \needspace{4cm}
 
           "extract"  : {
-            "0" : {
-              "lyrics" : {
-                "1" : {
-                  "verses" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                  "pos"    : [350, 70]
-                }
-              }
-            }
-          }
+            "0" : {"lyrics": {"1": {"verses": [1, 2], "pos": [350, 70]}}}
+          },
 
     \needspace{15cm}
 
-5.  klicke auf die Schaltfläche "Rendern", um die Unterlegnoten zu
+7.  klicke auf die Schaltfläche "Rendern", um die Unterlegnoten zu
     aktualisieren.
 
     Nun erscheinen die Liedtexte:
 
-    ![](../ZAUX_Images/030-030_erste-schritte-lyrics.jpg) 
+    ![](../ZAUX_Images/030-027_erste-schritte-lyrics.jpg) 
 
-6.  Verschiebe mit der Maus die Liedtexte in der Vorschau der
+8.  Verschiebe mit der Maus die Liedtexte in der Vorschau der
     Unterlegnoten (Fenster rechts unten) an die Position, die dir
     gefällt.
 
@@ -228,16 +239,28 @@ Wenn du dein Musikstück als herkömmliche Noten ausdrucken willst:
 
 ## Dein Musikstück speichern
 
+Du hast vielleicht schon bemerkt, dass Zupfnoter bei einem Neustart
+immer das **zuletzt bearbeitete** Musikstück wieder geladen hat.
+
+Da du aber nicht nur ein Musikstück schreiben willst, solltest du
+natürlich dein Musikstück auf deinem Rechner so abspeichern, dass du es
+später wieder laden und weiter bearbeiten kannst.
+
+Zupfnoter bietet dazu zuwei Möglichkeiten:
+
+-   Speichern per Download: Das läuft vollkommen lokal, ist aber nicht
+    sehr komfortabel
+-   Speichern in der Cloud (per Dropbox): Das nutzt die Cloud-Dienste,
+    hat aber wesentliche Vorteile
+
 ### Speichern per Download
 
-Du hast vielleicht schon bemerkt, dass Zupfnoter bei einem Neustart
-immer das zuletzt bearbeitete Musikstück wieder geladen hat. Natürlich
-solltest du dein Musikstück auf deinem Rechner so abspeichern, dass du
-es später auch überarbeiten kannst.
+Zum Speichern per Download führe folgende Schritte aus:
 
 1.  klicke auf die Schaltfläche "Dl abc"
-2.  dein Musikstück wird in deinem Download-Ordner abgelegt. Zupfnoter
-    bildet den Dateinamen aus der Information in Zeile 2:
+2.  dein Musikstück wird auf deinem Computer in deinem "Download-Ordner"
+    abgelegt. Zupfnoter bildet den Dateinamen aus der Information in
+    Zeile 2:
 
     aus "`F: 1_Alle-meine-Entchen`" entsteht
     "`1_Alle-meine-Entchen.abc`"
@@ -282,14 +305,16 @@ hast du viele Vorteile bei Zupfbnoter:
     nachvollziehen kannst.
 -   Über die Dropbox kannst du deine Dateien mit anderen teilen, um
     gemeinsam an einem Musikstück zu arbeiten
--   Selbst, wenn du nicht online bist, hast du ein Kopie aller deiner
-    Musikstücke (auch der PDFs) auf deiner lokalen Platte
+-   Selbst, wenn du nicht online bist, hast du jeweils eine Kopie aller
+    deiner Musikstücke (auch der PDFs) auf deiner lokalen Platte
+    [^030_UD_Zupfnoter-erste-schritte.md_2].
 
 Zur Einrichtung einer Dropbox gehst du auf <https://www.dropbox.com/de>.
 Wenn du dich bei Dropbox angemeldet hast, findest du dort ein
 deutschsprachiges Benutzerhandbuch.
 
-> **Hinweis**: Dropbox speichet seine Daten nicht in Deutschland.
+> **Hinweis**: Dropbox speichert seine Daten nicht in Deutschland
+> [^030_UD_Zupfnoter-erste-schritte.md_3].
 
 Wenn du ein Konto bei Dropbox hast, musst du Zupfnoter **einmalig pro
 verwendetem Browser** mit diesem Dropbox-Konto verbinden:
@@ -299,48 +324,82 @@ verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 -   gib Email-Adresse und Kennwort ein
 -   Zupfnoter ist nun verbunden
 
-> **Hinweis** bei Verwendung öffentlicher Computer (z.B. Internet-Cafe)
-> Solange du mit deinem Browser bei Dropbox angemeldet bist, hat der
-> Browser Zugriff auf alle deine Dateien. Daher musst du dich
-> **unbedingt bei Dropbox** abmelden, wenn du an einem öffentlichen
-> Computer arbeitest. Besser ist es, gleich im "Inkognito"-Modus des
-> Browsers zu arbeiten.
->
-> Dropbox-Anwendungen speichern ein geheime Zeichenkette (auch Token
-> genannt) auf deinem lokalen Rechner. Wenn du vermutest, das dieses
-> Token kompromittiert ist, kannst du auf der Website von Dropbox die
-> Verbindung zu Zupfnoter löschen. Dadurch wird bei der nächsten
-> Anmeldung ein neues Token erzeugt.
+Zupfnoter hat nun Zugriff folgende Dateitypen in deiner Dropbox ".abc
+files, .zip files, audio files, documents, text files".
 
-## Musikstück importieren
+> **Hinweis zur Sicherheit** z.B. bei Verwendung fremder Computer (z.B.
+> im Internet-Cafe):
+>
+> -   Solange du mit deinem Browser bei Dropbox angemeldet bist, hat der
+>     Browser Zugriff auf alle deine
+>     Dateien[^030_UD_Zupfnoter-erste-schritte.md_4]. Daher musst du
+>     dich in **unbedingt in *allen* Browser-Fenstern von der Dropbox**
+>     abmelden, wenn du an einem fremden Computer arbeitest.
+>
+> -   Dropbox-Anwendungen speichern ein geheime Zeichenkette (auch
+>     "Accesstoken" genannt) auf deineme lokalen Rechner. Wenn du
+>     vermutest, das dieses Token kompromittiert wurde, kannst du auf
+>     der Website von Dropbox die Verbindung zu Zupfnoter löschen.
+>     Dadurch wird bei der nächsten Anmeldung ein neues Token erzeugt.
+>
+>     Gehe dazu auf <https://www.dropbox.com/account#security>. Dort
+>     kannst du sehen, welche Anwendungen bzw. welche Sitzungen mit
+>     deiner Dropbox verbunden sind. Diese kannst du hier auch löschen.
+>
+> -   Dropbox sendet dir eine E-Mail, wenn immer du eine Anwendung mit
+>     deiner Dropbox verbindest.
+>
+> ## Musikstück importieren
 
 Falls du schon ein anderes Musikprogramm verwendest (z.B. Musescore
 <https://www.musescore.com>) kannst du deine Musikstücke in den
-Zupfnoter importieren, wenn dein anderes Musikprogramm MusicXml
-(<https://www.musicxml.com/de/>) exportieren kann.
+Zupfnoter importieren, wenn dein anderes Musikprogramm das Dateiformat
+"MusicXml" (<https://www.musicxml.com/de/>) exportieren kann.
 
-Es gibt auch Webseiten, die frei zugängliche Musikstücke als MusicXML
-oder ABC Dateien zum Download anbieten.
+Es gibt auch Webseiten, die frei zugängliche Musikstücke in den
+Dateiformaten "MusicXML (.xml)" oder "ABC-Notation (.abc)" zum Download
+anbieten[^030_UD_Zupfnoter-erste-schritte.md_5].
+
+> **Hinweis** MuseScore ist sowohl der Name eines Musikprogrammes als
+> auch er Name einer Website, welche Musikstücke zum Downlaod anbietet.
+> Du kannst hier auch die "komprimierten XML-Dateien" mit der Endung
+> ".mxl" verwenden.
 
 Um ABC oder MusicXML zu importieren, kannst du einfach die Datei aus
-deinem Rechner (Explorer oder Finder) in den Zupfnoter ziehen.\
-Zupfnoter übersetzt das xml-Format in Abc Notation.
+deinem Rechner (Windows: Datei-Explorer oder Mac: Finder) in den
+Zupfnoter ziehen. Zupfnoter übersetzt dann das XML-Format in Abc
+Notation.
 
 Bei der Auswahl eines Musikstückes im xml-Format sollte man 30 Takte
 nicht überschreiten. Am besten eignen sich Klaviernoten für den Import.
 Ausserdem sollte man auf die Bandbreite der Noten achten, die
-Tisch-Harfen mit 25 Saiten haben einn Tonumfang von zwei Oktaven (G bis
+Tisch-Harfen mit 25 Saiten haben einen Tonumfang von zwei Oktaven (G bis
 g).
 
 In der Regel ist etwas Nacharbeit erforderlich, um das importierte
-Muskskstück für die Tischharfe anzupassen.
+Musikstück für die Tischharfe anzupassen.
 
 > **Hinweis**: bitte achte darauf, dass du die Zeile "F:" ggf. von Hand
 > hinzufügst, damit Zupfnoter den Dateinamen kennt unter welchem er das
 > Musikstück speichern soll.
 
-Die ABC-Notation kann man anhand der Anleitung im Hilfemenü manuell
-eingeben oder man sucht das gewünschte Stück im Internet auf einer
-Musikseite raus und lädt sich das Musikstück im xml-Format herunter.
-Danach wird die xml-Datei per Maus in den Zupfnoter in den linken
-Abschnitt gezogen.
+[^030_UD_Zupfnoter-erste-schritte.md_1]: man mag sich fragen, warum
+    Zupfnoter nicht einen Standard-Liedbock eingebaut hat. Ein solcher
+    Standard-Liedbock schlägt aber immer wieder durch und macht die
+    inidividuelle Anordnung von Strophen sehr komplex, da man nicht nur
+    die Strophen hinzufügen, sondern auch die Wirkung des
+    Stnadard-Liedbocks neutralisieren muss.
+
+[^030_UD_Zupfnoter-erste-schritte.md_2]: Für diese Funktion muss der
+    "Dropbox client" installiert sein.
+
+[^030_UD_Zupfnoter-erste-schritte.md_3]: Da es sich aber nicht um
+    personenbezogene Daten handelt, ist das unkritisch.
+
+[^030_UD_Zupfnoter-erste-schritte.md_4]: Zupfnoter hat nun Zugriff
+    folgende Dateitypen in deiner Dropbox ".abc files, .zip files, audio
+    files, documents, text files"
+
+[^030_UD_Zupfnoter-erste-schritte.md_5]: Das bedeutet nicht, dass diese
+    Musikstücke automatisch gemeinfrei sein. Für die Verwendungsrechte
+    bist du selbst verantwortlich!

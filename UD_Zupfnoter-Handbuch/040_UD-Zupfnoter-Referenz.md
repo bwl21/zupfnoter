@@ -4,44 +4,48 @@
 
 Zum Verständnis von Zupfnoter sind folgende Themen wichtig:
 
--   [Zupfnoter-Prinzipien](#zupfnoter-prinzipien)
+-   [Zupfnoter-Prinzipien](#zupfnoter-prinzipien) (Kapitel
+    \ref{zupfnoter-prinzipien})
 -   [Elemente der von Zupfnoter erstellten
     Unterlegnoten](#elemente-der-von-zupfnoter-erstellten-unterlegnoten)
--   [Genereller Bildschimaufbau](#genereller-bildschirmaufbau)
+    (Kapitel \ref{elemente-der-von-zupfnoter-erstellten-unterlegnoten})
+-   [Bildschimaufbau](#genereller-bildschirmaufbau) (Kapitel
+    \ref{genereller-bildschirmaufbau})
 
 ## Zupfnoter Prinzipien
 
 Zupfnoter arbeitet nach dem Prinzip der Umwandlung von ABC-Notation in
-Unterlegnoten. Im Gegensatz zu so genanten "What You See is What you
-get" - Sytemen werden also die Unterlegnoten nicht direkt bearbeiten
+Unterlegnoten. Im Gegensatz zu so genanten "what you see is what you
+get" - Systemen werden also die Unterlegnoten nicht direkt bearbeiter,
 sondern entstehen automatisch durch Umwandlung aus einem Modell des
 Musikstückes.
 
 Dieses Modell ist allgemeiner und präziser als die Unterlegnoten und
 basiert auf der ABC-Notation als ein de-facto Standard. Wie du siehst
-kann aus diesem Modell ja auch ein herkömmliches Notenblatt erstellt
-werden. In diesem Sinne sind die Unterlegnoten lediglich eine von
-mehreren grafischen Darstellungen des Musikstückes.
+kann aus diesem Modell (der ABC-Notation) ja auch ein herkömmliches
+Notenblatt erstellt werden. In diesem Sinne sind die Unterlegnoten
+lediglich eine von mehreren grafischen Darstellungen des Musikstückes.
 
-Andererseits gibt es in den Unterlegnoten spezifische Sachverhalte,
-welche durch die ABC-Notation standardmäßig nicht dargestellt werden
-können. Daher verwendet Zupfnoter zwei Konventionen innerhalb der
+Andererseits gibt es im Gengensatz zur den herkömmlichen Noten in den
+Unterlegnoten spezifische Sachverhalte, deren Darstellung in der
+ABC-Notation nicht standardisiert sind. Daher verwendet Zupfnoter
+zusätzlich zwei spezifische Darstellungen (Konventionen) innerhalb der
 ABC-Notation:
 
--   **Zusätze**: Hier werden die "Annotations" der ABC-Notation mit
-    spezifischen Konventionen verwendet. Diese Zusätze stehen vor der
-    Note bzw. dem Taktstrich auf den sie sich
+-   **Zusätze** zu Noten und Taktstrichen: Hier werden die "Annotations"
+    der ABC-Notation mit spezifischen Formaten verwendet. Diese Zusätze
+    stehen vor der Note bzw. dem Taktstrich auf den sie sich
     beziehen.\index{Zusatz!Prinzipien}
 
-    Für die Erstellung und Bearbeitung der "Zusätze" gibt es eine
+    Für die Erstellung und Bearbeitung dieser "Zusätze" gibt es eine
     grafische Benutzerführung durch Bildschirmmasken (Siehe
     Kapitel \ref{masken-fuer-zusaetze}
     [Zusätze](#masken-fuer-zusaetze)).
 
--   **Konfiguration** - Zupfnoter gewinnt seine Leistungsfähigkit und
-    \index{Konfiguration} Flexibilität durch vielfältige
-    Einstellmöglichkeiten - genannt Konfigurationsparameter. Diese
-    Konfigurationsparameter wirken auf die Erstellung der
+-   **Konfiguration** der Unterlegnoten: Zupfnoter gewinnt seine
+    Leistungsfähigkit und \index{Konfiguration} Flexibilität durch
+    vielfältige Einstellmöglichkeiten - genannt Konfigurationsparameter.
+    Diese Konfigurationsparameter wirken auf die Erstellung der
     Unterlegnotenblätter und steuern z.B:
 
     -   Stimmen, die augesgeben werden; Stimmen durch
@@ -58,30 +62,38 @@ ABC-Notation:
     Bildschirmmasken (siehe
     Kapitel \ref{konfigurationsmasken}[Konfigurationsmasken](#konfigurationsmasken))
 
-    Zupfnoter speichert die Konfigurationsparameter in einem Abschnitt
-    nach der ABC-Notation, der durch
+    Zupfnoter speichert die Konfigurationsparameter im so genannten
+    JSON-Format in einem Abschnitt nach der ABC-Notation, der durch
 
     `%%%%zupfnoter.config`
 
     abgesetzt ist.
 
-\needspace{15cm}
+<!-- das erstellte blatt in Vorschau drehen und als PDF wieder exportieren -->
+![Zupfnoter Elemente](../ZAUX_images/3015_reference_sheet_doc_a3.pdf)
 
 ## Elemente der von Zupfnoter erstellten Unterlegnoten
 
-![Zupfnoter Elemente](../ZAUX_images/3015_reference_sheet_doc_a3.pdf) 
+Das Bild auf der vorigen Seite zeigt die Elemente und Merkmale aus denen
+Zupfnoter ein Unterlegnotenblatt aufbaut. In den nachfolgenden
+Unterkapiteln werden die einzelnen Elemente und Merkmale dieser
+Darstellung erläutert. Als Referenz dient die Nummer in dieser
+Abbildung.
 
-Dieses Bild zeigt die Elemente und Merkmale aus denen Zupfnoter ein
-Unterlegnotenblatt aufbaut:
+Bei manchen Elementen ist auch eine Konfiguration notwendig. Die
+nachfolgende Beschreibung enthält auch einen verweise auf den (internen)
+Namen des entsprechenden Kongigurationsparameters.
+
+> **Hinweis**: In dieser Darstellung sind die englischen Begriffe
+> aufgelistet. Für diese Auflistung wurde die Funktion "Liedtexte"
+> verwendet.
 
 ### Darstellung der Noten
-
-TODO: Querverweise zur Konfiguration
 
 In der ABC-Notation wird in den Kopfzeilen ein Standardnotenwert
 angegeben, z.B. `L:1/4`. Dies bedeutet, daß standardmäßig in
 Viertelnoten erfasst wird. Ausgehend von diesem Wert ergibt sich der
-Notenwert duch Multplikation mit der angegebenen Länge. Diese
+Notenwert duch Multiplikation mit der angegebenen Länge. Diese
 Längenangaben wird an den Notennamen angehängt.
 
 TODO: verweise auf ABC-Kapitel
@@ -89,7 +101,7 @@ TODO: verweise auf ABC-Kapitel
 \needspace{5cm}
 
 Im Folgenden wird von **Vierteln als Standardnotenwert** und dem
-Notennamen `C` ausgegangen.
+Notennamen **`C`** ausgegangen.
 
 -   **(1) full note - ganze Note** entspricht in ABC-Notation: `C4`
 
@@ -137,16 +149,16 @@ Im Folgenden wird von **Vierteln als Standardnotenwert** ausgegangen.
 
 ### Darstellung notenbezogener Elemente
 
-Um auf dern Unterlegnoten einzelnen Noten graphische Elemente oder Texte
+Um auf den Unterlegnoten einzelnen Noten graphische Elemente oder Texte
 hinzuzufügen gibt es bei Zupfnoter Elemente, die fest mit Noten
 verbunden sind. Da sie im Kontext von Noten positioniert werden, nennt
 man sie "notenbezogene Elemente":
 
 -   **(20) measure bar - Taktstrich**: Der Taktstrich entsteht aus der
-    Takteingabe in der ABC-Notation (z.B. `| |]`). Zur Eingabe dieser
+    Takteingabe in der ABC-Notation (z.B. `|` `|]`). Zur Eingabe dieser
     Sonderzeichen siehe Kapitel \ref{dein-erstes-musikstueck-eingeben},
     ([Tastenkombinationen für
-    Sonderzeichen](#dein-erstes-musikstueck-eingeben)
+    Sonderzeichen](#dein-erstes-musikstueck-eingeben))
 
 -   **(21) unison - Mehrklang**:\
     Ein Mehrklang entsteht, wenn in der ABC-Notation mehrere Noten in
@@ -161,14 +173,14 @@ man sie "notenbezogene Elemente":
     > Man kann sie jedoch anhand der Flußlinie unterscheiden und den
     > jeweiligen Stimmen zuordnen.
     >
-    > Die Angabe von Akkordsymbolen in ABC-Notation wird für die
+    > Die Angabe von Akkordsymbolen in der ABC-Notation wird für die
     > Unterlegnoten ignoriert.
 
 -   **(22) triplet - Triole**: Bei einer Triole werden drei Noten auf
     zwei Schläge verteilt. Bei einer Triole werden Anfang und Ende einer
     Reihe von Noten mit einem Bogen verbunden. Die Länge der Triole wird
-    an den den Bogen geschrieben. Eine Verallgemeinerung der Triole ist
-    das Tuplet. Dieses verteilt n Noten auf m Schläge. Zupfnoter kann
+    an den Bogen geschrieben. Eine Verallgemeinerung der Triole ist das
+    Tuplet. Dieses verteilt n Noten auf m Schläge. Zupfnoter kann
     beliebige Tuplets, auch wenn bei Tischharfen meistens nur Triolen
     verwendet werden.
 
@@ -193,8 +205,10 @@ man sie "notenbezogene Elemente":
 
     > **Hinweis** Wiederholungszeichen sind eine Alternative zu
     > Sprunglinien. Ihre Ausgabe hängt von der aktuellen Konfiguration
-    > ab (siehe Kapitel \ref{extract.0.repeatsigns}
+    > ab (siehe Kapitel \ref{extract.0.repeatsigns},
     > [`repeatsigns`](#extract.0.repeatsigns)).
+
+-   (25), (26) siehe nächster Abschnitt
 
 -   **(27) part note - Bezeichnung von Abschnitten im Musikstück**: Man
     kann ein Musikstück in Abschnitte aufteilen. Die Abschnitte können
@@ -207,14 +221,27 @@ man sie "notenbezogene Elemente":
     wird. Hier ist "Teil 1" die Bezeichnung des Abschnitts.
 
 -   **(28) countnotes - Zählhilfen**: Zupfnoter kann die Noten
-    automatisch mit Zählhilfen beschriften. Diese Ausgabe ist
-    konfigurationsabhängig. Die Zählweise ergibt sich aus der
-    Taktangabe. Beispiel siehe Abbildung [Zupfnoter Elemente].
+    automatisch mit Zählhilfen beschriften. Die Zählweise ergibt sich
+    aus der Taktangabe. Beispiel siehe Abbildung [Zupfnoter Elemente].
+    Diese Ausgabe (für welche Stimmen, Position) ist
+    konfigurationsabhängig (`extract.0.countnotes`).
+
+    > **Hinweis** die Zählhilfen sind so gesataltet, dass man während
+    > des Spields die Zeitachse durchzählt. Bei Noten mit mehreren
+    > Schlägen beginnt die Zählhilfe immer mit der Nummer des ersten
+    > Schlages (z.B. 2-3 ist eine Note, die bei Schlag 2 beginnt und
+    > zwei Schläge lang gespielt wird, d.h. während diese Note klingt,
+    > zählt man 2 - 3)
 
 -   **(29) barnumbers - Taktnummer**: Zupfnoter kann die Takte
     automatisch durchnummerieren. Damit kann bei gemeinsamem Spiel auch
-    mitten im Musikstück wieder aufsetzen. Diese Ausgabe ist
-    konfigurationsabhängig.
+    mitten im Musikstück wieder eingesetz werden. Diese Ausgabe ist
+    konfigurationsabhängig (`extract.0.barnumbers`.
+
+-   **(30) decoration - Dekoration**: Zupfnoter kann einzelne
+    Dekorationen (Stand Version 1.5 nur die Fermate) darstellen. Für
+    diese Dekorationen werden die Eingaben der ABC-Notation verwednet
+    (z.B. für die Fermate : "`!fermata!`" oder "`H`").
 
 ### Darstellung von Verbindungslinien
 
@@ -227,26 +254,23 @@ gibt es folgende Elemente:
 
     > **Hinweis** Wiederholungszeichen sind eine Alternative zu
     > Sprunglinien. Ihre Ausgabe hängt von der aktuellen Konfiguration
-    > ab (siehe Kapitel \ref{extract.0.repeatsigns}
-    > [`repeatsigns`](#extract.0.repeatsigns)).
+    > ab (siehe Kapitel \ref{extract.0.repeatsigns},
+    > [`extract.0.repeatsigns`](#extract.0.repeatsigns)).
 
 -   **(26) synchline for unison - Synchronisationslinie für Mehrklang**:
     siehe (21) in Kapitel \ref{darstellung-notenbezogener-elemente}:
     [Darstellung notenbezogener
     Elemente](#darstellung-notenbezogener-elemente)
 
--   **(31) flowline - Flusslinie**: Die Flußlinie verbindet die Noten
+-   **(31) flowline - Flusslinie**: Die
+    Flußlinie[^040_UD-Zupfnoter-Referenz.md_1] verbindet die Noten
     **einer** Stimme und markiert so die Führung innerhalb dieser
     **einen** Stimme. Standardmäßig stellt Zupfnoter die Flußline in der
     ersten und dritten Stimme dar.
 
-    > **Hinweis**: Manchmal wird die Flußlinie auch als Melodielinie
-    > bezeichnet. Dies ist aber nur korrekt, wenn es sich um die
-    > Flußlinie der Melodiestimme handelt.
-
-    > **Hinweis** Über die [Einstellungen in der Konfiguration] kann die
-    > Ausgabe von Flußlinien für die jeweiligen Stimmen eingestellt
-    > werden ([extract.0.flowlines](#extract.0.flowlines)).
+    Die Ausgabe von Flusslinien für die einzelnen Stimmen hängt von der
+    aktuellen Konfiguration (siehe Kapitel \ref{extract.0.flowlines},
+    [extract.0.flowlines](#extract.0.flowlines)) ab.
 
 -   **(32) synchline - Synchronisationslinie**: Die
     Synchronisationslinien verbinden Noten aus zwei **verschiedenen
@@ -254,33 +278,53 @@ gibt es folgende Elemente:
     stellt Zupfnoter die Synchronisationslinie zwischen den Stimmen
     *eins und zwei* sowie *drei und vier* dar.
 
-    > **Hinweis** Über die [Einstellungen in der Konfiguration] kann die
-    > Ausgabe von Synchronisationslinien eingestellt werden
-    > ([extract.0.synchlines](#extract.0.synchlines)).
+    Die Ausgabe von Synchronisationslinien für die einzelnen Stimmen
+    hängt von der aktuellen Konfiguration (siehe Kapitel
+    \ref{extract.0.synchlines},
+    [extract.0.synchlines](#extract.0.synchlines)) ab.
 
 -   **(33) subflowline - Unterflusslinie**: Die Unterflusslinie
     verbindet innerhalb einer Stimme ohne Flußlinie diejenigen Noten,
     die nicht über eine Synchronisationslinie (32) mit einer anderen
     Stimme verbunden sind.
 
-    > **Hinweis** Über die [Einstellungen in der Konfiguration] kann die
-    > Ausgabe von Unterflußlinien für die jeweiligen Stimmen eingestellt
-    > werden ([extract.0.subflowlines](#extract.0.subflowlines).
+    Die Ausgabe von Unterlusslinien für die einzelnen Stimmen hängt von
+    der aktuellen Konfiguration (siehe Kapitel
+    \ref{extract.0.subflowlines},
+    [extract.0.subflowlines](#extract.0.subflowlines)) ab.
 
--   **(50) variant ending - variante Enden**: Wo Wiederholungen
-    unterschiedlich enden, bezeichnet man das als variante Enden. In der
-    ABC-Notation schreibt man hierfür Ziffern (z.B. 1 und 2) unmittelbar
-    hinter den Taktstrich.
+-   (34) ff siehe Kaptitel \ref{elemente-fuer-das-ganze-blatt}
+-   **(50) variant ending - variante Enden - Volten**: Wo mehrfach
+    gespielte Abschnitte unterschiedlich enden, bezeichnet man das als
+    variante Enden. In der ABC-Notation schreibt man hierfür Ziffern
+    (z.B. 1 und 2) unmittelbar hinter den Taktstrich bei dem die
+    Variation beginnt.
 
     Zupfnoter stellt diese varianten Enden als eine Menge von
     Sprunglinien dar:
 
-    -   Eingangslinie (im Beispiel links)
-    -   Ausgangslinie (im Beispiel rechts)
+    -   **(51) Eingangslinie** (im Beispiel links): Es gibt pro
+        Variation eine Linie, welche zum Anfang der Variation führt
+    -   **(52) Ausgangslinie** (im Beispiel rechts): Es gibt pro
+        Variation eine Ausgangslinie, welche zur nächsten Note nach der
+        letzten Variation führt.
 
-    Mehr Einzelheiten siehe Kapitel [Handhabung variante Enden].
+        > **Hinweis**: Wenn die Varianten am Ende einer Wiederholung
+        > stehen, entfällt die Ausgangslinie. Stattdessen wird eine
+        > normale **(25) Sprunglinie für Wiederholung** verwendet. Die
+        > Positionsangabe der Ausganslinie wird in diesem Fall ignoriert
+        > und die Positionsangabe der Sprunglinie am Ender der
+        > Wiederholung verwednet.
 
-### Elemente für das gesamte Musikstück bzw. Unterlegnotenblatt
+    -   **(53) Folgelinie** ist die Ausgangslinie der letzten Variation.
+        Diese kann separat positioniert werden, um das gwünschte
+        Notenbild zu erreichen.
+
+    Die Positionen deieser Linien werden als Zusatz vor den Taktstrich
+    der ersten Variation geschrieben (Schaltfläche "Zusatz einfügen"
+    bzw. "Zusatz bearbeiten")
+
+### Elemente für das gesamte Musikstück bzw. Unterlegnotenblatt {#elemente-fuer-das-ganze-blatt}
 
 Um auf den Unterlegnoten Texte und Beschriftungen allgemeiner Art
 darstellen zu können, gibt es folgende Elemente:
@@ -307,9 +351,10 @@ darstellen zu können, gibt es folgende Elemente:
     \ref{auszuege}[Auszüge](#auszuege)).
 
 -   **(36) lyrics - Liedtexte**: Zupfnoter stellt auch Liedtexte dar.
-    Diese Liedtexte werden aus aufeinander folgenden Kopfzeilen der
-    ABC-Notation entnommen (`W:`) und zu Strophen zusammengefügt.
-    Einzelne Strophen trennt man mit einer "Leerzeile" ("`W:`")
+    Diese Liedtexte (siehe auch Kapitel \ref{musikstueck-gestalten})
+    werden aus aufeinander folgenden Kopfzeilen der ABC-Notation
+    entnommen (`W:`) und zu Strophen zusammengefügt. Einzelne Strophen
+    trennt man mit einer "Leerzeile" ("`W:`")
 
         W: Strophe 1 Zeile 1
         W: Strophe 1 Zeile 2
@@ -318,14 +363,24 @@ darstellen zu können, gibt es folgende Elemente:
         W: Strophe 2 Zeile 2
 
     > **Hinweis**: Die Ausgabe der Strophen muß über die Konfiguration
-    > eingestellt werden (siehe [extract.x.lyrics](#extract.0.lyrics))
+    > eingestellt werden (siehe Kapitel \ref{extract.0.lyrics},
+    > [extract.x.lyrics](#extract.0.lyrics)).
+
+    > **Hinweis**: Zupfnoter ignoriert Liedtexte in den Notenlinien
+    > (ABC-Notation Kopfzeile `w:` (Kleinbuchstaben).
+
+### Elemente zur Handhabung des Unterlegnotenblattes
+
+Zupfnoter druckt Elemente auf das Unterlegnotenblatt, um das Zuschneiden
+und das Einelgen in das Instrument zu vereinfachen:
 
 -   **(37) stringnames - Saitennamen**: Zupfnoter kann die Namen der
     Saiten auf den Unterlegnoten ausgeben.
 
     > **Hinweis**: Über die [Einstellungen in der Konfiguration] kann
-    > die Ausgabe von Saitennamen eingestellt werden
-    > ([extract.0.stringnames](#extract.0.stringnames)).
+    > die Ausgabe von Saitennamen eingestellt werden (siehe Kapitel
+    > \ref{extract.0.stringnames},
+    > [extract.0.stringnames](#extract.0.stringnames)).
 
 -   **(38) marks - Saitenmarke** Die Saitenmarken sind eine Hilfe zum
     korrekten Einlegen der Unterlegnoten in die Tischharfe. Das Blatt
@@ -333,19 +388,23 @@ darstellen zu können, gibt es folgende Elemente:
     den G-Saiten liegen.
 
     > **Hinweis:** Über die [Einstellungen in der Konfiguration] kann
-    > die Ausgabe der Saitenmarken beeinflußt werden
-    > ([extract.0.stringnames.marks](#extract.0.stringnames.marks)).
+    > die Ausgabe der Saitenmarken beeinflusst werden (siehe Kapitel
+    > \ref{extract.0.stringnames.marks},
+    > [extract.0.stringnames.marks](#extract.0.stringnames.marks)).
 
 -   **(39) cutmarks - Schneidemarken**: Die Schneidemarken sind eine
     Zuschneidehilfe für den Fall, dass die Unterlegnoten auf DIN-A4
-    Seiten ausgegeben werden.
+    Seiten ausgegeben werden (Siehe Kapitel \ref{musikstueck-drucken},
+    [Musikstück drucken](#musikstueck-drucken)).
+
+### Elemente zur Organisation von Unterlegnoten
 
 -   **(70) input filename - Name der Eingabedatei**: Der Name der
-    Eingabedatei hilft, den Ursprung eins ausgedruckten Blattes
+    Eingabedatei hilft, den Ursprung eines ausgedruckten Blattes
     nachzuvollziehen. Er wird immer auf den Unterlegnoten ausgegeben und
     kann nicht unterdrückt werden.
 
--   **(71) creation note - Ertsellungsnotiz**: Die Erstellungsnotiz gibt
+-   **(71) creation note - Erstellungsnotiz**: Die Erstellungsnotiz gibt
     weitere Informationen zum technischen Stand der Erstellung. Diese
     wird immer auf den Unterlegnoten ausgegeben und kann nicht
     unterdrückt werden. Die Erstellungsnotiz hilft beim Nachvollziehen
@@ -353,7 +412,7 @@ darstellen zu können, gibt es folgende Elemente:
 
     -   Zeitpunkt der Erstellung der PDF-Datei (CEST steht für
         "*C*entral *E*uropean *S*ummer *T*ime")
-    -   Software-Version der Zupfnoter
+    -   Software-Version von Zupfnoter
     -   Server von welchem der Zupfnoter geladen wurde
 -   **(72) reference to zupfnoter website - Referenz auf Zupfnoter
     Website**: Dies ist die Referenz auf Zupf-\
@@ -366,36 +425,43 @@ darstellen zu können, gibt es folgende Elemente:
     verschiedene Auszüge) mit dem selben Fingerabdruck auch aus einer
     identischen Quelle stammen und somit zuverlässig zusammen passen.
 
-    > **Hinweis:** Der Fingarabdruck wird nicht auf den herkömmlichen
-    > Noten ausgegeben. Der Fingerabdruck wird aus dem ABC-Text errechet
-    > und ist daher nicht im ABC-Text enthalten.
+    > **Hinweis:** Der Fingerabdruck wird nicht auf den herkömmlichen
+    > Noten ausgegeben. Der Fingerabdruck wird aus dem ABC-Text
+    > errechnet und ist daher nicht im ABC-Text enthalten.
 
-### Beschriftungen
+### Zusammenfassung der Beschriftungen in Zupfnoter
 
 Zupfnoter hat vielfältige Möglichkeiten, das Beschriftungen einzufügen.
 Auf den Unterlegnoten sind diese nicht leider nicht immer zu
-unterscheiden:
+unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
 
--   **Standardbeschriftungen** siehe "Elemente für das gesamte
-    Musikstück
+-   **Standardbeschriftungen** (siehe Kapitel
+    \ref{elemente-fuer-das-ganze-blatt}, [Elemente für das gesamte
+    Musikstück](#elemente-fuer-das-ganze-blatt))
+
+    Die Standardbeschriftung wird aus der Kopfzeilen der ABC-Notation
+    entnommen, sie erscheint auch auf den herkömmlichen Noten.
 
 -   **Notenbeschriftung**
 
     Die Notenbeschriftung ist mit einer einzelnen Note verbunden und
     verschiebt sich ggf. wenn die Tonhöhe oder der Zeitbezug dieser Note
     verändert wird. Die Notenbeschriftung wird über einen
-    "Zusatz"\index{Zusatz} direkt in die ABC-Notation eingefügt.
+    "Zusatz"\index{Zusatz} direkt in die ABC-Notation eingefügt (siehe
+    Kapitel \ref{darstellung-notenbezogener-elemente}, [Darstellung
+    notenbezogener Elemente](#darstellung-notenbezogener-elemente)).
 
     Für wiederkehrende Texte bzw. längere und mehrzeilige Texte in der
-    Konfiguration eine Notenbeschriftungsvorlage [annotations]
+    Konfiguration eine Notenbeschriftungsvorlage (Kapitel
+    \ref{annotations}, [annotations](#annotations)
     \index{Notenbeschriftungsvorlage} mit Positionsangabe anlegen und
-    über einen Zusatz ("Ref. Notenbeschriftung") daraus eine
-    Notenbeschrifung erstellen.
+    über einen Zusatz (Schaltfläche "Ref. Notenbeschriftung") daraus
+    eine Notenbeschrifung erstellen.
 
     > **Hinweis**: Zupfnoter kennt standardmäßig die
     > Noptenbeschriftungsvorlagen `vl` `vt`, `vr`. Damoit kann man
     > einfach ein "Abdämpfungszeichen" anbringen.
-    > [^040_UD-Zupfnoter-Referenz.md_1].
+    > [^040_UD-Zupfnoter-Referenz.md_2].
 
     Im Zusatz kann eine Position mit angegeben angegeben werden. Damit
     bleibt die Position der Notenbeschriftung erhalten, auch wenn der
@@ -412,78 +478,106 @@ unterscheiden:
 -   **Seitenbeschriftung**
 
     Die Seitenbeschriftungen werden ausschliesslich über die
-    Konfiguration hinzugefügt [extract.x.notes]. Ihre Anordnung bezieht
-    sich auf den Seitenrand. Der Schriftstil kann gewählt werden.
+    Konfiguration hinzugefügt (Kapitel \ref{extract.0.notes},
+    [extract.x.notes](#extract.0.notes). Ihre Anordnung bezieht sich auf
+    den Seitenrand. Der Schriftstil kann gewählt werden (siehe auch
+    Kapitel \ref{elemente-fuer-das-ganze-blatt}, [Elemente für das
+    gesamte Musikstück](#elemente-fuer-das-ganze-blatt)).
 
 -   **Liedtexte**
 
     Liedtexte werden in den `W:` - Zeilen in der ABC-Notation erfasst
-    und über die Konfiguration auf dem Blatt positioniert
-    [extract.x.lyrics.x]
+    und über die Konfiguration (Kapitel \ref{templates.lyrics},
+    [extract.x.lyrics.x](#templates.lyrics)) auf dem Blatt positioniert.
 
-## Genereller Bildschirmaufbau
+    Für weitere Einzelheiten siehe auch Kapitel
+    \ref{elemente-fuer-das-ganze-blatt}, [Elemente für das ganze
+    Blatt](#elemente-fuer-das-ganze-blatt).
+
+## Zupfnoter Bildschirmaufbau {#genereller-bildschirmaufbau}
 
 Die Benutzungsoberfläche von Zupfnoter ist aus folgenden Elementen
 aufgebaut:
 
--   Drei Fenster
-    -   links: **Eigabe** zum Eingeben der ABC-Notation bzw. der
-        Konfiguration
-    -   rechts oben: **Notenvorschau** zur Kontrolle des Musikstücks
-    -   rechts unten **Unterlegnotenvorschau**
-        [^040_UD-Zupfnoter-Referenz.md_2]
--   **Statusleiste**: für Syteminformationen (erreichbar mit rechte
-    Maustaste)
--   Bedienelemente in den Fenstern
-    -   **Reiter** zum Auswählen verschiedener Ansichten
-    -   **Werkzeugleiste** Leiste für Schaltflächen und Menüs
-    -   **Kontextmenü**: zur speziellen Bearbeitung von Elementen
+-   Fenster (Eingabe, Notenvorschau, Unterlegnotenvorschau) (Kapitel
+    \ref{fensteraufbau}, [Fensteraufbau](#fensteraufbau)) mit mit
+    Reitern, Werkzueugleisten und Kontextmenüs
+-   Werkzeugleiste (Kapitel \ref{menues-im-hauptfenster})
+-   Statusleiste (Kapitel \ref{statusleiste},
+    [Statusleiste](#statusleiste)
 
 ![Zupfnoter
 Bildschirmaufbau](../ZAUX_Images/040_030_Bildschirmaufbau.pdf) 
 
-### Fenster
+### Fensteraufbau
 
-Zupfnoter kennt drei Hauptfenster:
+Zupfnoter kennt drei Fenster[^040_UD-Zupfnoter-Referenz.md_3]:
 
--   Das **linke Fenster** zeigt die Eingabemöglichkeiten über drei
-    Reiter
+-   Das **linken Fenster** zeigt die Eingabemöglichkeiten über drei
+    Reiter (Kapitel \ref{eingabefenster-details},
+    [Eingabe](#eingabefenster-details)):
 
-    -   `ABC`- Der Texteidtor für die ABC-Notation sowie die
-        Zupfnoter-Einstellungen angezeigt. Für die ABC-Notation gibt es
-        eine separate Anleitung im Menü `Hilfe`.
-
+    -   `ABC`- Der Texteditor für die ABC-Notation
     -   `Liedtextexte` für die Erfassung der Liedtexte
-
     -   `Konfiguration` für die formulargeführte Bearbeitung der
         Zupfnoter-Konfiguration.
+-   Im **rechten oberen Fenster** (Kapitel \ref{notenvorschau},
+    [Eingabe](#notenvorschau)) wird in der herkömmlichen Notenschrift
+    das Musikstück gezeigt, und kann somit musikallisch überprüft
+    wreden.
 
-    Mit Hilfe der ABC-Notation und der im gleichen Fenster sichtbaren
-    Zupfnoter-Konfiguration wird das Notenbild für die Tischharfen
-    generiert.
-
--   Im **rechten oberen Fenster** wird in der herkömmlichen Notenschrift
-    das Musikstück gezeigt. Die Darstellung in herkömmlicher
-    Notenschrift kann mehrstimmig erfolgen.
+    Die Darstellung in herkömmlicher Notenschrift kann mehrstimmig
+    erfolgen (gesteuert über die `%%score` - Anweisung in der
+    ABC-Notation). Wenn das Musikstück Texte enthält (also ein Lied
+    ist), werden diese Texte auch in der Notenvorschau angezeigt.
 
 -   Im **rechten unteren Fenster** werden die Unterlegnoten angezeigt.
     Diese entsprechen inhaltlich der herkömmlichen Notenschrift im
-    rechten oberen Fenster.
+    rechten oberen Fenster [\^040_UD-Zupfnoter-Referenz.md_3] (Kapitel
+    \ref{unterlegnotenvorschau}, [Eingabe](#unterlegnotenvorschau)).
 
     Über die Reiter können verschiedene Zoom-Stufen eingestellt werden.
 
     > **Hinweis**: Da die Berechnung der Unterlegnoten einige Sekunden
     > dauert, wird dieses Fenster nur durch `Rendern` aktualisiert.
 
-### Werkzeugleiste für Schaltflächen und Menüs
+Die Anordnung dieser Fenster ist in Zupfnoter fest vorgegeben. Man kann
+aber während der Arbeit folgende Einstellungen vornehmen, um den
+aktuellen Arbeitsschrit besser zu unterstützen:
 
-Die Zupfnoter - Werkzeugleiste, ist immer sichtbar und ersteckt sich
-über aller Fenster. In ihr befinden sich Schaltflächen und Menüs die man
-während der Erstellung von Unterlegnoten benötigt. Nach einem Klick auf
-die Schaltflächen führt der Zupfnoter bestimmte Aktivitäten aus.
+-   Fenstergröße verstellen: Die Trennlinien zwischen den Fenstern
+    können mit der MAus verschoben werden, um Platz für die aktuell
+    wichtigen Elemente zu schaffen
+-   Über das Menü "Ansicht" kann man einzelne Fenster ausblenden so dass
+    die anderen Fenster größer werden (Siehe Kapitel
+    \ref{menues-im-hauptfenster}, [Werkzeugleiste für Schaltflächen und
+    Menüs](#menues-im-hauptfenster)
 
-Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
-\ref{shortcuts} [Shortcuts](#shortcuts))
+Innerhalb dieser Fenster gibt es weitere **Bedienelemente**:
+
+-   **Reiter** zum Auswählen verschiedener Ansichten
+-   **Werkzeugleiste** Leiste für Schaltflächen und Menüs
+-   **Kontextmenü**: zur speziellen Bearbeitung von Elementen
+    (erreichbar mit rechte Maustaste)
+
+Über die drei festen Fenster hinaus gibt es **Dialoge**. Das sind
+Fenster die aufscheinen, um bestimmte Informationen einzugeben bzw. zu
+ändern (z.B. Dialog im Kapitel \ref{dein-erstes-musikstueck-eingeben},
+[Dein erstes Musikstück eingeben](#dein-erstes-musikstueck-eingeben)).
+
+> **Hinweis**: Der Begriff "Fenster" wird sowohl für die Fenster des
+> Betriebssytems als auch die Fenster innerhalb Zupfnoter verwendet.
+
+### Werkzeugleiste für Schaltflächen und Menüs {#menues-im-hauptfenster}
+
+Die Zupfnoter - Werkzeugleiste ist immer sichtbar (also auch in allen
+Ansichten) und ersteckt sich über aller Fenster. In ihr befinden sich
+Schaltflächen und Menüs die man während der Erstellung von Unterlegnoten
+benötigt. Nach einem Klick auf die Schaltflächen führt der Zupfnoter
+bestimmte Aktivitäten aus.
+
+Einige Funktionen sind auch über Tastenkombinationen (Shortcuts)
+erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
 
 > **Hinweis**: Für die Vesrion 1.5 wird die Bedienungsoberfläche von
 > Zupfnoter verbessert. Daher sind die Informationen in diesem Kapitel
@@ -492,13 +586,15 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 -   Schaltfläche **Zupfnoter**: TODO: – Detailinfo als Popup darstellen
 
 -   Schaltfläche **Neu** (erstellen): Es wird ein leerer Bildschirm ohne
-    Inhalte erstellt und man kann ein neues Musikstück erstellen.
+    Inhalte erstellt und man kann ein neues Musikstück erstellen (siehe
+    Kapitel \ref{dein-erstes-musikstueck-eingeben}[Dein erstes
+    Musikstück eingeben](#dein-erstes-musikstueck-eingeben)).
 
 -   Schaltfläche **Einloggen**: TODO: -
     https://github.com/bwl21/zupfnoter/issues/75
 
     Über diese Schaltfläche kannst du das Verzeichnis in der Dropbox
-    angeben, in die Zupfnoter dein Musikstück speichert.
+    angeben, in die Zupfnoter dein Musikstück speichern soll.
 
 -   Schaltfläche **DL abc** (Download ABC): Hiermit kann man
     Zwischenstände oder fertige Musikstücke als ABC-Datei auf seinen
@@ -507,15 +603,15 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
     Inhalt steht zur Bearbeitung im Zupfnoter wieder zur Verfügung.
 
 -   Schaltfläche **Öffnen**: Es öffnet sich ein Dateiauswahlfenster
-    deiner Dropbox. Der grüne Hinweis not connect nach der Schaltfläche
-    "speichern" bedeutet, dass die Dropbox nicht mit dem Zupfnoter
-    verbunden ist.
+    deiner Dropbox. Dort kannst du eine Datei auswählen und zur
+    Bearbeitung im Zupfnoter öffnen.
 
     TODO: anpassen auf kommenden Dialog
 
     > **Hinweis**: in der Statuszeile wird der Verbindungszustand zur
     > Dropbox und auch das aktuelle Verzeichnis in der Dropbox
-    > angezeigt.
+    > angezeigt. "Not connected" bedeutet, das Zupfnoter nicht mit
+    > deiner Dropbox verbundn ist.
 
 -   Schaltfläche **Speichern** (sichern): Das fertig gestellte
     Musikstück wird in deiner Dropbox gespeichert. Es wird eine
@@ -531,8 +627,9 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
     drucken](#musikstueck-drucken)).
 
     -   Schaltfläche **A3**: Es öffnet sich ein Browserfenster mit
-        Unterlegnoten im A3 Format als pdf. Dies kann nun ausgedruckt
-        werden oder auf dem PC als pdf-Datei abgespeichert werden
+        Unterlegnoten im A3-Querformat als pdf. Dies kann nun
+        ausgedruckt werden oder auf dem PC als pdf-Datei abgespeichert
+        werden.
 
     -   Schaltfläche **A4**: Es öffnet sich ein Browserfenster mit
         Unterlegnoten im A4 Hochformat als pdf. Diese Datei enthält dann
@@ -542,34 +639,44 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
         zusammen geklebt werden müssen.
 
     -   Schaltfläche **Noten**: Es öffnet sich ein Browserfenster mit
-        den Noten. Dies ist eine HTML - Datei und muss daher über den
-        Browser gedruckt werden. Du kannst diese auch abspeichern, aber
-        auch dann muss sie über den Browser gedruckt werden.
+        den herkömmlichen Noten. Dies ist eine HTML - Datei und muss
+        daher über den Browser gedruckt werden. Du kannst diese auch
+        abspeichern, aber auch dann muss sie über den Browser gedruckt
+        werden.
+
+        > **Hinweis**: Wenn du eine PDF - Datei davon haben möchest,
+        > musst diese mit "Bordmitteln" deines PC erstellen. Du kannst
+        > auch eines der gänigen ABC-Programme verwenden (z.B. Easy-ABC)
+        > um die Noten zu drucken.
 
 -   Menü **Ansicht** (Ansicht): Hiermit kann man festlegen, wie der
     Bildschirmaufbau des Zupfnoter gestaltet sein soll. Einige Fesnter
-    können so ausgeblendet werden, um mehr Platz zu schaffen.
+    können so ausgeblendet werden, um mehr Platz für einzelne Fenster zu
+    schaffen.
 
     -   Die Einstellung **Alle Fenster** ist der
-        Standardbildschirmaufbau mit allen drei Fenstern (ABC-Notation,
+        Standardbildschirmaufbau mit allen drei Fenstern (Eingabe,
         herkömmliche Noten, Unterlegnoten). In dieser Enstellung wird
         meistens gearbeitet, weil man eine schnelle Rückmeldung zu den
         Ergebnissen hat.
 
-    -   Die Einstellung **Noteneingabe** zeigt den Editor (linkes
-        Fenster) und die Notenvorschau (Fenster rechts oben). Diese
-        Einstellung ist hilfreich, wenn man sich zunächst auf die reine
-        Eingabe des Muskstücks konzentrieren will.
+    -   Die Einstellung **Noteneingabe** zeigt das Eingebaefenster
+        (linkes Fenster) und die Notenvorschau (Fenster rechts oben).
+        Diese Einstellung ist hilfreich, wenn man sich zunächst auf die
+        reine Eingabe des Muskstücks konzentrieren will.
 
-    -   Die Einstellung **Harfeneingabe** zeigt den Editor (linkes
-        Fenster) und die Harfennotenvorschau (Fenster rechts unten).
-        Diese Einstellung ist hilfreich wenn das Musikstück komplett
-        erfasst ist, und man das Layout der Unterlegnoten optimieren
-        will.
+    -   Die Einstellung **Harfeneingabe** zeigt das Eingabefenster
+        (linkes Fenster) und die Harfennotenvorschau (Fenster rechts
+        unten). Diese Einstellung ist hilfreich wenn das Musikstück
+        komplett erfasst ist, und man das Layout der Unterlegnoten
+        optimieren will.
 
     -   Mit der Einstellung **Noten** sieht man nur die herkömmlichen
         Noten. Dies ist hilfreich zu Kontrolle des Musikstückes durch
         einen Lektor.
+
+        > **Hinweis:** In dieser Ansicht werden die abgespielten Noten
+        > rot dargestellt.
 
     -   Mit der Einstellung **Harfennoten** (Harfe) sieht man nur eine
         Vorschau der Unterlegnoten. Diese Einstellugn ist hilfreich zur
@@ -579,11 +686,11 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
         > **Hinweis:** Im Gegensatz zur Druckvorschau werden in dieser
         > Ansicht die abgespielten Noten rot dargestellt.
 
--   Schaltfläche **Auszug** wählt den aktiven Auszug. Damit wird
-    bestimmt,
-    -   welcher Auszug in Unterlegnotenvorschau dargestellt wird. Für
-        Details zu Auszügen (siehe Kapitel \ref{auszuege} [Erstellung
-        von Auszügen](#auszuege)).
+-   Schaltfläche **Auszug**: Hierüber wählt man den aktiven Auszug.
+    Damit wird bestimmt,
+    -   welcher Auszug in der Unterlegnotenvorschau dargestellt wird.
+        Für Details zu Auszügen (siehe Kapitel \ref{auszuege}
+        [Erstellung von Auszügen](#auszuege)).
     -   welcher Auszug in den Konfigurationsmasken bearbeitet wird
         (siehe Kapitel \ref{konfigurationsmasken}
         [Konfigurationsmasken](#konfigurationsmasken)).
@@ -591,19 +698,20 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
     Es gibt standardmässig die Auszüge 0 bis 3. Der Auszug 0 beinhaltet
     alle Stimmen und wird automatisch vom Zupfnoter erstellt. Wenn man
     einen Auszug erstellen möchte, wählt man z.B. Auszug 1 aus und
-    definiert im Abschnitt links, was man im Auszug 1 sehen möchte: 1.te
-    und 2.te Stimme. Der Auszug 2 könnte dann zur Darstellung der 3.ten
-    und 4.ten Stimme dienen.
+    definiert im Abschnitt links, was man im Auszug 1 sehen möchte: z.B.
+    1.te und 2.te Stimme. Der Auszug 2 könnte dann z.B. zur Darstellung
+    der 3.ten und 4.ten Stimme dienen.
 
     TODO: Überarbeiten nach Verbesserung der Bedienung von Auszuügen.
 
--   Schaltfläche **Rendern** (umwandeln): alternativ `Strg` und `R`
+-   Schaltfläche **Rendern** (umwandeln): (alternativ Tastenkombination
+    `Strg` und `R`)
 
-    Nach der Fertigstellung der ABC-Notation wird mit Klick auf diese
-    Schaltfläche die Ansicht der Unterlegnoten und die Fehlermeldungen
-    im Editor aktualsiert.
+    Mit Klick auf diese Schaltfläche werden die Ansicht der
+    Unterlegnoten und die Fehlermeldungen im Texteditor des
+    Eingebefensters aktualisiert.
 
-    > **Hinweis:** Diese Funktion sollte häufig genutzt werden um immer
+    > **Hinweis:** Diese Funktion sollte häufig genutzt werden, um immer
     > aktuelle Ergebnisse auf dem Bildschirm zu sehen.
 
 -   Schaltfläche **Play** (Wiedergabe) spielt das Musikstück ab. Damit
@@ -638,12 +746,12 @@ Einige Funktionen sind auch über Shortcuts erreichbar (siehe Kapitel
 -   Menü **Hilfe** (Hilfe): Hier findet man hilfreiche Links und
     Anleitungen
 
-### Fenster links: Eingabe
+### Fenster links: Eingabe {#eingabefenster}
 
 Das Eingeabefenster enthält seinerseits
 
 -   eine eigene Werkzeugleiste zu Ansteuerung von Bearbeitungsfunktionen
--   verschiedene Bearbeitungsansichten, welche über Kartei reiter
+-   verschiedene Bearbeitungsansichten, welche über Karteireiter
     ausgewählt werden.
 
 #### Werkzeugleiste des Eingabefensters
@@ -651,7 +759,16 @@ Das Eingeabefenster enthält seinerseits
 -   Menü **Konfig. einfügen**
 
     Über dieses Menü kannst du Konfigurationsparameter (Einstellungen)
-    zur Gestaltung der Unterlegnoten **einfügen**.
+    zur Gestaltung der Unterlegnoten einfügen.
+
+    > **Hinweis** über dieses Menü werden Konfigurationsparameter mit
+    > Standardwerten eingefügt. Das menü ist auch dann verfügbar, wenn
+    > der Karteireiter "Konfiguration" aktiv ist. Damit können Parameter
+    > hinzugefügt werden, die in der MAske noch nciht dargestellt
+    > wertden, das sie in der Konfiguration noch nicht vorhanden sind.
+    >
+    > Die Werte der eingefügten Parameter können dann in über die
+    > Konfigurationsmaken oder im Texteditor geändert werden.
 
     Die Reihenfolge der Menüpunkte entspricht der Bearbeitungsabfolge,
     wobei Menüpunkte auch übersprungen werden dürfen. Die Erstellung der
@@ -659,11 +776,12 @@ Das Eingeabefenster enthält seinerseits
     der Unterlegnoten beginnt.
 
     Die Menüpunkte sind im Kapitel
+    \ref{grundlegende-blatteinstellungen},
     [Grundlegende-Blatteinstellungen](#grundlegende-blatteinstellungen)
     beschrieben
 
-    > **Hinweis**: Grundsätzlich bildet Zupfnoter für jeden
-    > Konfigurationsparameter einen Wert in folgender Reihenfolge
+    > **Hinweis**: Grundsätzlich sucht Zupfnoter für jeden
+    > Konfigurationsparameter einen Wert an folgenden Stellen:
     >
     > 1.  Der Wert im aktuellen Auszug bzw. im Musikstück (für Parameter
     >     die nicht pro Auszug gesetzt werden können)
@@ -674,18 +792,18 @@ Das Eingeabefenster enthält seinerseits
 
 -   Menü **Konfig. bearbeiten**
 
-    Über dieses Menü kannst du die Konfigurationsparameter
-    **bearbeiten**. Dazu werden entprechende Bildschirmmasken
-    aufgerufen. Weitere Informationen findest du im\
+    Über dieses Menü kannst du die Konfigurationsparameter bearbeiten.
+    Dazu werden entprechende Bildschirmmasken aufgerufen. Weitere
+    Informationen findest du im\
     Kapitel \ref{konfigurationsmasken}:
-    "[Konfigurationsmasken](#konfigurationsmasken)"
+    "[Konfigurationsmasken](#konfigurationsmasken)".
 
 -   Menü **Zusatz einfügen**
 
     \index{Zusatz!einfügen|textbf}Über dieses Menü können
     Zupfnoter-spezifische Zusätze an eine Note bzw. an einen Taktstrich
-    eingefügt werden. Zupfnoter verwendet spzifische Zusätze, um z.b.
-    die Position von Sprunglinien anzugeben, oder Notengebundene
+    eingefügt werden. Zupfnoter verwendet spezifische Zusätze, um z.B.
+    die Position von Sprunglinien anzugeben oder notengebundene
     Anmerkungen zu erfassen. Diese Zusätze sind an eine Note bzw. an
     einen Taktstrich gebunden und werden in Form einer ABC-Anmerkung
     notiert (z.B.`"^@@3" :|` für die Lage einer Sprungline für eine
@@ -694,13 +812,13 @@ Das Eingeabefenster enthält seinerseits
     > **Hinweis**: Dieses Menü wird daher erst dann aktiv, wenn die
     > Schreibmarke (Cursor) zwischen einem Leerzeichen und einer
     > Note/bzw. einem Taktstrich steht. Man erkennt das auch in der
-    > Statusleiste links unten: dort sollte das wort `editable.before`
+    > Statusleiste links unten: dort sollte das Wort `editable.before`
     > erscheinen, dann ist die Schaltfläche aktiv.
     >
     > Einzelne Unterpunkte des Menüs sind nur aktiv, wenn die
-    > Schreibmarke vor einer Note steht.
+    > Schreibmarke (Cursor) vor einer Note steht.
 
-    Über das Menü können Fenster aufgerufen werden, um diese Zusaätze
+    Über das Menü können Fenster aufgerufen werden, um diese Zusätze
     einzufügen.
 
 -   Schaltfläche **Zusatz bearbeiten**
@@ -709,36 +827,41 @@ Das Eingeabefenster enthält seinerseits
     vorhandene Zusätze erneut aufrufen.
 
     > **Hinweis**: Diese Schaltfläche ist erst aktiv, wenn die
-    > Schreibmarke in einem solchen Zusatz steht. Man erkennt das auch
-    > in der Statusleiste links unten: dort sollte das wort `editable`
-    > erscheinen, dann ist die Schaltfläche aktiv.
+    > Schreibmarke (Cursor) in einem solchen Zusatz steht. Man erkennt
+    > das auch in der Statusleiste links unten: dort sollte das Wort
+    > `editable` erscheinen, dann ist die Schaltfläche aktiv.
 
 #### Bearbeitungsansichten des Eingabefensters
+
+ <!-- hier fixes leerzeichen belassen -->
 
 Über die Karteireiter kann man zwischen den verschiedenen
 Bearbeitungsansichten umschalten:
 
--   Texteditor (siehe Kapitel \ref{texteditor}
-    [Texteditor](#texteditor))
--   Konfigurationsmasken (siehe Kapitel \ref{konfigurationsmasken}
+-   `ABC`: \index{Texteditor}Texteditor zur Bearbeitung der ABC-Notation
+    (siehe Kapitel \ref{texteditor} [Texteditor](#texteditor))
+-   `Liedtexte`: Texteditor zur Bearbietung der Liedtexte\
+-   `Konfiguration`: Masken zur Bearbeitung der
+    Konfigurationsparameterwerte (siehe
+    Kapitel \ref{konfigurationsmasken}
     [Konfigurationsmasken](#konfigurationsmasken))
 
-### Fenster rechts oben: Notenvorschau
+### Fenster rechts oben: Notenvorschau {#notenvorschau}
 
 Die Notenvorschau zeigt das Musikstück in herkömmlichen Noten an. Damit
 kann man sich bei der Erfassung auf die musikalischen Aspekte
 konzentrieren.
 
 Wenn man auf Elemente in der Notenvorschau klickt, werden diese auch im
-Texteditor und in der Unterlegnotenvorschau hervorgehoben.
+Texteditor der Eingabe und in der Unterlegnotenvorschau hervorgehoben.
 
-> **Hinweis::** Wenn man zunächst eine Note, und dann mit gedrückter
-> "Shift"-Taste ("Umschalttaste") eine zweite Note anklickt, dann werden
-> die dazwischen liegenden Noten selektiert. Damit kannst du z.B. einen
-> Auschnitt aus einer bestimmten Stimme über die Notenvorschaut
-> auswählen und anschließend abspielen lassen.
+> **Hinweis::** Wenn man zunächst eine Note anklickt, und dann mit
+> gedrückter "Shift"-Taste ("Umschalttaste") eine zweite Note anklickt,
+> dann werden die dazwischen liegenden Noten selektiert. Damit kannst du
+> z.B. einen Auschnitt aus einer bestimmten Stimme über die
+> Notenvorschau auswählen und anschließend abspielen lassen.
 
-### Fenster rechts unten: Unterlegnotenvorschau
+### Fenster rechts unten: Unterlegnotenvorschau {#unterlegnotenvorschau}
 
 Die Unterlegnotenvorschau zeigt die erzeugten Unterlegnoten. Über den
 Reiter "Zoom" kann man die Anzeige vergrößern oder verkleinern.
@@ -748,7 +871,7 @@ Reiter "Zoom" kann man die Anzeige vergrößern oder verkleinern.
 Durch Ziehen/Ablegen kann man Elemente auf dem Notenblatt verschieben.
 Wenn du die Maus über ein verschiebbares Element bewegst, wird der
 Mauszeiger zu einer "Hand". Das Ergebnis der Verschiebung wird in den
-Konfigurationsparametern abgespeichert (siehe TODO)
+entsprechenden Konfigurationsparametern abgespeichert.
 
 Über ein Kontextmenü (klick mit rechter Maustaste) kannst du erweiterte
 Einstellungen vornehmen (Konfigurationsparameter setzen)
@@ -758,7 +881,7 @@ Einstellungen vornehmen (Konfigurationsparameter setzen)
 > Konfigurationsparameters erscheint rechts unten in der Statuszeile,
 > wenn man mit der Maus über ein Element fährt.
 
-### Statusleiste am unteren Bildschirmrand
+### Statusleiste am unteren Bildschirmrand {#statusleiste}
 
 Am unteren Bildschirmrand gibt es eine Statusleiste mit folgenden
 Einträgen
@@ -766,16 +889,19 @@ Einträgen
 -   Position der Schreibmarke im Editor
 -   Bedeutung des Symbols links von der Schreibmarke (Syntax Token)
 -   Pfad zur Dropbox
--   Aktives Filter für Loglevel (am besten auf "Error" eingestellt)
+-   Aktiver Filter für Meldungen in der Konsole (Loglevel). Das Filter
+    kann über deen Eingebbefehl`loglevel error` in der Konsole
+    umgestellt werden [^040_UD-Zupfnoter-Referenz.md_4].
 -   Name des Konfigurationsparameters für das Element unter dem
-    Mauszeiger
+    Mauszeiger falls dieses mit der Maus veschoben werden kann.
 
 ### Konsole {#konsole-fenster}
 
-Die Konsole ist nur sichtbar, wenn sie mit `cmd-K` eingeschaltet wurde.
-Sie stellt die letzten Meldungen von Zupfnoter dar. Experten können in
-der Konsole auch weitere Befehle eingeben, die Zupfnoter direkt steuern.
-Mehr mit dem Befehl "Hilfe".
+Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination `cmd-K`
+eingeschaltet wurde. Sie stellt die letzten Meldungen von Zupfnoter dar.
+Experten können in der Konsole auch weitere Befehle eingeben, die
+Zupfnoter direkt steuern. Die möglichen Befehle kann man mit dem Befehl
+`help` in der Konsole anzeigen.
 
 > **Hinweis**: Die Zupfnoter-Menüs lösen letztendlich solche
 > Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
@@ -784,23 +910,45 @@ Mehr mit dem Befehl "Hilfe".
 ## Tastenkombinationen (Shortcuts) {#shortcuts}
 
 Für eine flüssige Bedienung stellt Zupfnoter folgende
-Tastenkombinationen (Shiortcuts) zur Verfügung:
+Tastenkombinationen (Shortcuts) zur Verfügung:
 
--   "cmd - s": Speichern
--   "cmd - k": Konsole
--   "cmd - s": Rendern
--   "cmd - p": Play
+-   "cmd - s": Speichern in der Dropbox
+-   "cmd - k": Konsole anzeigen
+-   "cmd - r": Rendern (aktualisieren der Unterlegnoten)
+-   "cmd - p": Play (abspielen)
 
 > **Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
 > "strg" - Taste
 
-## Texteditor
+## Eingabe {#eingabefenster-details}
+
+Im Fenster "Eingabe", (linkes Fenster) kannst du folgende
+Eingabemöglichkeiten nutze:
+
+-   `ABC`- Der \index{Texteditor}Texteditor für die ABC-Notation sowie
+    die Konfiguration der Unterlegnoten (im JSON-Format) angezeigt und
+    bearbeitet (siehe Kapitel \ref{texteditor},
+    [Texteditor](#texteditor). Für die ABC-Notation gibt es eine
+    separate Anleitung im Menü `Hilfe`
+
+-   `Liedtextexte` für die Erfassung der Liedtexte (siehe Kapitel
+    \ref{liedtexteditor}, [Liedtexteditor](#liedtexteditor)
+
+-   `Konfiguration` für die formulargeführte Bearbeitung der
+    Zupfnoter-Konfiguration. Die hier gemachten Eingaben werden sofort
+    in den Texteeditor zurückgeführt. Es gibt daher zwei
+    Bearbeitungsmöglichkeiten für die Konfiguration.
+
+    > Hinweis: bei komplexen Konfigurationen kann diese Rückführung
+    > einige Sekunden dauern. Die formulargeführte Konfiguration ist
+    > jedoch reobuster als die direkte Bearbeitung im Texteditor, bietet
+    > integrierte Hilfe und Prüfungen.
+
+### Erfassung der ABC-Notation im Texteditor {#texteditor}
 
 Im Teexteditor kannst du die ABC-Notation bearbeiten. Darüberhinaus
 kannst du die Konfigurationsparameter sehen und ggf. direkt (d.h. ohne
 Bildschirmmasken) sehen und ggf. korrigieren (für Experten).
-
-### Erfassung der ABC-Notation im Texteditor
 
 Im Texteditor kannst du die ABC-Notation erfassen. Elemente werden
 entsprechend ihrer Bedetung farblich hervorgehoben (Syntax-Coloring). In
@@ -808,7 +956,7 @@ der Statusleiste links unten zeigt Zupfnoter auch Hinweise über die
 Bedeutung des Elementes links von der aktuellen Schreibmarke an.
 
 > **Hinweis**: Diese Anzeige ist noch sehr technisch, in manchen Fällen
-> aber dennoch hilfreich. Sie steuert z.B. die verfügbarkeit der
+> aber dennoch hilfreich. Sie steuert z.B. die Verfügbarkeit der
 > Schaltflächen für die Zusätze.
 
 > **Hinweis:** Veränderungen in der ABC-Notation wirken unterschiedlich
@@ -821,57 +969,61 @@ Bedeutung des Elementes links von der aktuellen Schreibmarke an.
 Der Texteditor ist mit den anderen Fenstern synchronisiert. Wenn man mit
 der Maus eine Note in der ABC-Notation selektiert, wechselt die Note in
 der herkömmlichen Notenschrift und in den Unterlegnoten von schwarz auf
-Rot. Umgekehrt funktioniert es genauso. Wenn man auf eine Noten in einer
-der Vorschauen klickt, wird diese im Eingabebereich selektiert. So
-findet man schnell zu einer Stelle, die man ändern möchte oder wo man
-was hinzufügen möchte.
+Rot. Umgekehrt funktioniert es genauso: wenn du auf eine Noten in einer
+der Vorschauen klickst, wird diese im Eingabebereich selektiert. So
+findest du schnell zu einer Stelle, die du ändern möchtest oder wo du
+etwas hinzufügen möchtest.
 
-> **Hinweis::** Wenn man zunächst eine Note, und dann mit gedrückter
+> **Hinweis**: Wenn man zunächst eine Note, und dann mit gedrückter
 > "Shift"-Taste eine zweite Note anklickt, dann werden die dazwischen
 > liegenden Noten selektiert.
 
-Das Ende der ABC-Notation wird mit einer Leerzeile eingeleitet. Sollte
-nach einer Leerzeile noch ABC-Notation folgen, wird dies vom Computer
-ignoriert.
+> **Hinweis**: Das Ende der ABC-Notation wird mit einer Leerzeile
+> eingeleitet. Sollte nach einer Leerzeile noch ABC-Notation folgen,
+> wird dies von Zupfnoter ignoriert.
 
-Du kannst die \index{Liedtexte}Liedtexte schnell efassen, indem du
-zunächst den Text (von der ABC-Notation durch eine Leerzeile getrennt)
-eingibst. Danach kannst du mit folgenden Schritten den Text um
-entsprechende ABC-Notation für Liedtexte `W:` ergänzen:
+> **Hinweis**: Auch wenn der Texteditor die Zusätze, die Liedtexte und
+> die Konfigurationsparamter anzeigt ist es doch besser, die grafischen
+> Barbeitungsmöglichnkeiten zu nutzen:
+>
+> -   (Kapitel \ref{liedtexteditor}, [Masken für
+>     Zusätze](#liedtexteditor))
+> -   (Kapitel \ref{masken-fuer-zusaetze}, [Masken für
+>     Zusätze](#masken-fuer-zusaetze))
+> -   (Kapitel \ref{konfigurationsmasken},
+>     [Konfigurationsmasken](#konfigurationsmasken))
 
-1.  Stelle die Schreibmarke in die erste Zeile des Liedtextes
-2.  Halte gleichzeitig die Taten `Alt` und `Ctrl` gedrückt und
-3.  bewege die Schreibmarke mit den Pfieltasten an das Ende des
-    Liedtextes.
-4.  Du siehst nun eine dünne schwarze Linie an den Zeilenanfängen. Nun
-    gib die Zeichen `W:`ein. Diese Zeichenkette wird nun an allen Zeilen
-    des Liedtextes vorangestellt.
+#### Anzeige von Fehlern im Texteditor
 
-### Masken für Zupfnoter-spezifische Zusätze {#masken-fuer-zusaetze}
+ 
 
-\index{Zusatz}Zupfnoter verwendet "Annotations" der ABC-Notation mit
-spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
-Taktstrich auf den sie sich beziehen.
+\index{Fehlermeldung}Zupfnoter zeigt im Texteditor über ein rotes
+Quadrat mit Kreuz links von den ABC-Notationszeilen oder den
+Zupfnoter-Einstellungen an, daß in der Zeile ein Fehler aufgetreten ist.
+Wenn man mit der Maus auf das rote Quadrat geht, wird die Fehlermeldung
+angezeigt, z.B. abc:12:11 Error:Bad character '2'.
 
-Zupfnoter unterstützt die Pflege diese Zusätze über eine
-Bildschirmmaske. Diese wird über Schaltflächen bzw. Menüs in der
-Werkzeugleiste des Eingabefensters aufgerufen (siehe
-Kapitel \ref{werkzeugleiste-des-eingabefensters} [Werkzeugleiste des
-Eingabefensters](#werkzeugleiste-des-eingabefensters)).
+> > > ![Texteditor
+> > > Fehleranzeige](../ZAUX_Images/040-080_texteditor-fehleranzeige.jpg) 
 
-> **Hinweis**: Der Aufruf von "einfügen" und "bearbeiten" liegt auf
-> unterschiedlichen Schaltflächen, da beim "Einfügen" ein Menü erscheint
-> über welches ausgewählt wird, "was" eingefügt weden soll. Beim
-> Bearbeiten ist diese Auswahl nicht mehr notwendig. Daher wird
-> "bearbeiten" über eine Schaltflcähe direkt aufgerufen.
+Das bedeutet in Zeile 12 an Stelle 11 ist das Zeichen '2' fehlerhaft
+ist. Im vorliegenden Fall ist ein Leerzeichen zwischen der Tonhöhe und
+dem Notenwert.
 
-> > > ![](../ZAUX_Images/040-050_Menue-fuer-zusaetze.jpg) 
+Es sollten alle Fehler beseitigt werden, ansonsten können unter
+Umständen keine herkömmlichen Noten oder Unterlegnoten generiert werden.
 
-Es erscheint eine Maske nach folgendem Beispiel:
+> **Hinweis**: Die Position des Cursors (der Schreibmarke) wird im
+> Format Zeile:Spalte (z.B. 12:11) ganz links in der Statusleiste
+> angezeigt.
 
-> > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
+> **Hinweis**: Die letzten Fehlermeldungen kann man in der Konsole (mit
+> `ctrl/cmd-K`) sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch ein
+> Fenster mit den letzten Fehlermeldungen an.
 
-### Darstellung der Konfigurationsparameter im Texteditor
+#### Darstellung der Konfigurationsparameter im Texteditor
+
+ 
 
 Nach der ABC-Notation kommen die Zupfnoter-Einstellungen. Diese werden
 durch den Kommentar
@@ -912,28 +1064,7 @@ Kapitel \ref{konfiguration} "[Konfiguration](#konfiguration)".
 > wieder rückgängig machen. Das gilt auch für die Bearbeitung der
 > Konfigurationsparameter über die Bildschirmmasken.
 
-### Fehlermarkierung und Fehlermeldung im Texteditor
-
-\index{Fehlermeldung}Zupfnoter zeigt über ein rotes Quadrat mit Kreuz
-links von den Abc Notationszeilen oder den Zupfnoter-Einstellungen an,
-daß in der Zeile ein Fehler aufgetreten ist. Wenn man mit der Maus auf
-das rote Quadrat geht, wird die Fehlermeldung angezeigt, z.B. abc:12:19
-error=F-Text. Das bedeutet in Zeile 12 an Stelle 19 ist der F-Text nicht
-korrekt.
-
-Es müssen alle Fehler beseitigt werden, ansonsten können keine
-herkömmlichen Noten oder Unterlegnoten generiert werden.
-
-> **Hinweis:** Die Position des Cursors (der Schreibmarke) wird als
-> Zeile:Spalte ganz links in der Statusleiste angezeigt.
-
-> **Hinweis:** die letzten Fehlermeldungen kann man in der der Konsole
-> (mit `ctrl/cmd-K` sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch
-> ein Fenster mit den letzten Fehlermeldungen an.
-
-TODO: Hardcopy (snippet) von rotem Quadrat mit Kreuz hier einfügen???
-
-## Editor für Liedtexte
+### Editor für Liedtexte {#liedtexteditor}
 
 \index{Liedtexte}Liedtexte werden in der ABC-Notation in den Kopfpzeilen
 `W:` erfasst. Zur Vereinfachung der Eingabe bietet Zupfnoter auch einen
@@ -949,12 +1080,10 @@ Liedtexteditor `Rendern` aufrufen, um sie in der Unterlegnotenvorschau
 zu sehen.
 
 > **Hinweis**: Die Anordnung der Liedtexte wird über die Konfiguration
-> bestimmt (siehe Kapitel \ref{extract.0.lyrics}
-> [extract.0.lyrics](#extract.0.lyrics)
+> bestimmt (siehe Kapitel \ref{templates.lyrics}
+> [extract.0.lyrics](#templates.lyrics)
 
-## Konfigurationsmasken
-
-Zupfnoter bezieht seine Leisutngsfähigkeit und Flexibil
+### Konfigurationsmasken
 
 Zupfnoter bietet eine komfortable Barbeitung der Konfigurationsparameter
 über Bildschirmmasken. Diese Masken werden über das Menu "**Konfig.
@@ -987,13 +1116,13 @@ Dabei gibt es zwei Arten von Masken
 Da wie gesagt, die Konfigurationsparameter an verschiedenen Stellen
 gesucht werden, muss auch das Einfügen / Löschen von
 Konfigurationsparametern über die Masken möglich sein. Daher gibt es in
-den Konfigurtionsmasken pro Parameter je eine Zeile mit den folgenden
+den Konfigurationsmasken pro Parameter je eine Zeile mit den folgenden
 Elementen:
 
 -   `Löschen` - Löscht den Paramter aus der Konfiguration
 
     > **Hinweis**: Diese Taste kann ggf. einen ganzen Auszug löschen
-    > (wenn man die `Löschen` - Button an einem Auszug drückt. Also
+    > (wenn man die `Löschen` - Button an einem Auszug drückt. Also sei
     > bitte vorsichtig.
 
 -   `Füllen` - Diese Taste füllt den Parameter mit den Vorgabewerten.
@@ -1002,7 +1131,7 @@ Elementen:
     "Layout").
 -   `Name` - die Beschriftung des Parameters
 -   `Eingabefeld` - hier kann der Wert eingegeben werden. Bei
-    Gruppierungen gibt es kein Eingeabefeld, da hier die Werte in die
+    Gruppierungen gibt es kein Eingabefeld, da hier die Werte in die
     Unterparameter eingetragen werden.
 -   `Hilfe` - zeigt eine spezifische Hilfe für diesen Parameter an
 -   `aktuell wirksamer Wert` - zeigt den Wert an, der für den Paramter
@@ -1036,13 +1165,53 @@ Für die Bedienung der Masken ist noch wichtig
     \index{Liedtexte}Liedtexte [lyrics.x],
     \index{Seitenbeschriftung}Seitenbeschrifung [notes.x])
 -   Feldeingabe mit der "TAB"-Taste bestätigen
--   `Rendern` nicht vergessen
+-   `Rendern` nicht vergessen (**In der Maske drück erst TAB, dann geht
+    auch das "Rendern" ab**)
+
+### Masken für Zupfnoter-spezifische Zusätze {#masken-fuer-zusaetze}
+
+Um notenbezogene Zusatzinformation für Zupfnoter direkt zu erfassen,
+verwendet\index{Zusatz}Zupfnoter "Annotations" der ABC-Notation mit
+spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
+Taktstrich auf den sie sich beziehen. Beispiel für solche Zusätze sind
+
+-   Positionierung von Sprunglinien `"^@da cape@10" C` oder `"@@4" :|`
+-   Verschiebung von Noten nach links/rechts `"^>!" C`
+-   Notenbeschriftung `"^!fine@1,1"`
+-   Sprungziele `"^:fine"`
+-   Verschiebemarken `[r: hugo]`
+
+Zupfnoter unterstützt die Pflege diese Zusätze über Bildschirmmasken.
+Diese kannst du über Schaltflächen bzw. Menüs in der Werkzeugleiste des
+Eingabefensters aufrufen (siehe
+Kapitel \ref{werkzeugleiste-des-eingabefensters} [Werkzeugleiste des
+Eingabefensters](#werkzeugleiste-des-eingabefensters)).
+
+> **Hinweis**: Der Aufruf von "Zusatz einfügen" und "Zusatz bearbeiten"
+> liegt auf unterschiedlichen Schaltflächen, da beim "Einfügen" ein Menü
+> erscheint über welches ausgewählt wird, "was" eingefügt weden soll.
+> Beim Bearbeiten ist diese Auswahl nicht mehr notwendig. Daher wird
+> "bearbeiten" über eine Schaltflcähe direkt aufgerufen.
+
+> > > ![](../ZAUX_Images/040-050_Menue-fuer-zusaetze.jpg) 
+
+Es erscheint eine Maske nach folgendem Beispiel:
+
+> > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
 
 <!-- -->
 
-[^040_UD-Zupfnoter-Referenz.md_1]: longnote Leider gibt es keine
-    entsprechende Dekoration im ABC-Standard
+[^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
+    Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um
+    die Flußlinie der Melodiestimme (meist der ersten Stimme) handelt.
 
-[^040_UD-Zupfnoter-Referenz.md_2]: Es gibt noch ein weiteres Fenster,
+[^040_UD-Zupfnoter-Referenz.md_2]: Leider gibt es keine entsprechende
+    Dekoration im ABC-Standard
+
+[^040_UD-Zupfnoter-Referenz.md_3]: Es gibt noch ein weiteres Fenster,
     die Konsole, welche nur bei Bedarf von Experten genutzt wird (siehe
     Kapitel \ref{konsole-fenster} [Konsole](#konsole-fenster)).
+
+[^040_UD-Zupfnoter-Referenz.md_4]: Das Filter lässt man am besten auf
+    "Error" eingestellt, nur bei Problembehbungen bzw. Fehlersuche im
+    Programm sind andere Einstellungen sinnvoll

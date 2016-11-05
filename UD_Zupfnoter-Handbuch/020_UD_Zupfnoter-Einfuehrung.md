@@ -11,7 +11,7 @@ Instrumente erstellen kann, die von oben nach unten gespielt werden,
 egal welche Form, wieviele Saiten und welchen Saitenabstand sie haben.
 Insbesondere kann der Saitenabstand individuell eingestellt werden, so
 dass Zupfnoter auch für Instumente mit einem Saitenabstand ungleich
-11.5 mm geeignet ist.
+11,5 mm geeignet ist.
 
 Der Zupfnoter wird über die Homepage <https://www.zupfnoter.de>
 aufgerufen und kann ohne die Installation einer Software auf deinem PC
@@ -20,8 +20,6 @@ PC’s und ist für Mac, Linux und sogar für Windows geeignet.
 
 Zupfnoter unterstützt vier grundlegende Schritte zur Erstellung von
 Unterlegnoten:
-
-TODO: mit icons illustrieren
 
 -   **Noten eingeben**
 
@@ -37,19 +35,20 @@ TODO: mit icons illustrieren
 -   **Prüfen**
 
     Zupfnoter stellt die Musikstücke in ABC-Notation, in regulären Noten
-    und in Harfennoten auf dem Bildschirm dar.
+    und auch als Unterlegnotenvorschau auf dem Bildschirm dar.
 
-    Zupfnoter spielt die Musikstücke auch ab und zeigt den Ablauf in den
-    beiden Notenansichten an. Die eingegebenen Noten können so einfach
-    überprüft und korrigiert werden.
+    Zupfnoter spielt die Musikstücke auch ab und zeigt während des
+    Abspielens den Ablauf in den beiden Notenansichten an. Die
+    eingegebenen Noten können so einfach überprüft und korrigiert
+    werden.
 
     Taktfehler können in den regulären Noten leicht erkannt werden.
 
 -   **Gestalten**
 
-    Zupfnoter setzt die Unterlegoten für die Tischharfe automatisch. Man
-    hat dabei sehr flexible Gestaltungsmöglichkeiten und kann einzelne
-    Stimmen beliebig für die Ausgabe zusammenstellen (Auszüge).
+    Zupfnoter setzt die Unterlegnoten für die Tischharfe automatisch.
+    Man hat dabei sehr flexible Gestaltungsmöglichkeiten und kann
+    einzelne Stimmen beliebig für die Ausgabe zusammenstellen (Auszüge).
 
     Für die Stimmen gibt es wählbare Dekorationen wie Melodielinien,
     Zählmarken, Synchronisationslinien. Sogar die Größe der Noten ist

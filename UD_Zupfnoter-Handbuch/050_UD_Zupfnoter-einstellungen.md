@@ -12,7 +12,7 @@ TODO: Konzept der Auszüge beschreiben
 
 see https://github.com/bwl21/zupfnoter/issues/71
 
-### Grundlegende Blatteinstellungen (Konfiguration)
+### Grundlegende Blatteinstellungen (Konfiguration) {#grundlegende-blatteinstellungen}
 
 TODO: text überarbeiten
 

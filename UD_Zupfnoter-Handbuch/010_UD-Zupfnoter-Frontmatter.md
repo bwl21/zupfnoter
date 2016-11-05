@@ -31,10 +31,11 @@ Zielgruppen im Blick:
 
 -   **Ersteller einfacher Unterlegnoten**: Der Einsteiger erstellt
     Musikstücke mit einer Stimme und ggf. Texten. Hierzu gehört auch der
-    Import vorhandener Stücke über MusicXml oder ABC.
+    Import vorhandener Stücke über die Dateiformate MusicXml (.xml,
+    .mxl) oder ABC-Notation (.abc).
 
 -   **Ersteller anspruchsvoller Unterlegnoten**: Der Experte erstellt
-    komplexe Musikstücke mit vielen Stimmen, detaillierter Anrordnung,
+    komplexe Musikstücke mit vielen Stimmen, detaillierter Anordnung,
     mehreren Auszügen, Transponierungen usw. Diese Zielgruppe nutzt mehr
     und mehr die vielfältigen Möglichkeiten von Zupfnoter und ist im
     Wesentlichen durch die Größe des Instrumentes und die eigene
@@ -43,9 +44,9 @@ Zielgruppen im Blick:
 -   **Lektoren** schreiben nicht selbst im Zupfnoter, sondern redigieren
     Noten in Zpufnoter.
 
+Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
+
 TODO: markieren, für welche Zielgruppe welche Textabschnitte relevant
 sind.
-
-Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 
 TODO: Screenshots aktualisieren
