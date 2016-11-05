@@ -72,7 +72,7 @@ unterschieden zwischen \* `pos` - Position des Titels des
 Musikstückes \* `spos` - Position der Sublegende, d.h. der weiteren
 Angaben zum Musikstück
 
-> **Hinewis**: Die Legende wird vorzugsweise durch Verschieben mit der
+> **Hinweis**: Die Legende wird vorzugsweise durch Verschieben mit der
 > Maus positioniert. Für eine genaue positionierung kann jedoch die
 > Eingabe über die Bildschirmmaske sinnvol sein.
 
