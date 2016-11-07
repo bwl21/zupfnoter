@@ -11,6 +11,7 @@ Zum Verständnis von Zupfnoter sind folgende Themen wichtig:
     (Kapitel \ref{elemente-der-von-zupfnoter-erstellten-unterlegnoten})
 -   [Bildschimaufbau](#genereller-bildschirmaufbau) (Kapitel
     \ref{genereller-bildschirmaufbau})
+-   [Erstellung von Auszügen](#auszuege) (Kapitel \ref{auszuege})
 
 ## Zupfnoter Prinzipien
 
@@ -1200,6 +1201,79 @@ Es erscheint eine Maske nach folgendem Beispiel:
 > > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
 
 <!-- -->
+\clearpage
+
+## Erstellung von Auszügen {#auszuege}
+
+Zupfnoter geht von einem Modell aus, welches alle Eigenschaften des
+Musikstückes darstellt. Aus diesem kompletten Modell können Auszüge
+erstellt werden, die spezifische Elemente darstellen. Damit kannst du
+Blätter für verschiedene Zielgruppen erstellen, z.B.:
+
+-   Gesamtansicht für lektoren
+-   Einzelstimmen für Anfänger
+-   Beliebige Kombinatinen von Stimmen für Leiter und Fortgeschrittene
+-   verschiedene Hilfsinformationen (Zählhilfen, Taktnummern etc.)
+
+Für jeden Auszug gibt es einen Satz von Konfigurationsparameetern
+(`extract.0`, `extract.1`usw.). Über die Schaltflcähe `Auzzug` kann der
+aktuell aktive Auuszug einstellen. Der aktive Auszug bestimmt, was in
+der Unterlegnotenvorschau angezeigt wird und auf welchen Auszug die
+Konfigurationsmasen wirken.
+
+Die Auszuüge werden durchnummeriert[^040_UD-Zupfnoter-Referenz.md_5].
+
+Der Auszug mit der Nummer 0 hat eine besondere Rolle: Die dort
+angegebenen Werte für die Konfigurationsparameter wirken auf die Auszüge
+mit höherer Nummer solange sie dort nicht überschrieben werden.
+
+Damit kannst du im Auszug 0 die grundlegenden Einstellungen vornehmen
+und in den höherern Auszuügen spezifische Anforderungen erfüllen.
+
+Einstellungen, die auch im Auszug 0 nicht definiert sind, belegt
+Zupfnoter mit programminternen Voreinstellungen. Diese Vorgabewerte sind
+so, dass folgende Auszüge definiert entstehen.
+
+-   Auszug 0: Alle Stimmen
+-   Auszug 1: Sopran, Alt
+-   Auszug 2: Tenor, Bass
+
+Dabei wird von einem vierstimmigen Satz ausgegangen und Flusslinien,
+Synchronsiationslinen, Stimmenauswahl etc. darauf abgestimmt.
+
+\needspace{15cm}
+
+Die folgende Abbildung illustriert das Konzept der Auszüge:
+
+![](../ZAUX_Images/040-035_extracts.pdf) 
+
+In diesem Beispiel kannst du die Zusammenhänge sehen:
+
+-   Auszug 0 ist hier so konifugriert
+
+    -   alle Stimmen (1,2,3,4)
+    -   Wiederholungszeichen statt Sprunglinien
+    -   Aufteilung der Liedtexte auf zwei Blöcke
+        -   Block 1: Strophe 1 und 2
+        -   Block 2: Strophe 3 und 4
+-   Auszug 1 hat gegenüber Auszug 0:
+
+    -   nur Stimme 1 und 2
+    -   andere Position der Liedtexte
+-   Auszug 2 gat gegenüber Auszug 0:
+
+    -   nur Stimme 3 und 4 Voreinstellung in Zupfnoter entspricht.)
+    -   andere Positionierung der Legende
+    -   andere Aufteilung der Liedtexte:
+        -   Alle Strphen in einem Block (Angabe `"verses": [1,2,3,4]`)
+        -   Liedtextblock 2 enthält keine Strophen mehr (Angabe
+            `"verses" : [0]`). Diese Angabe ist notwendig, weil sonst
+            die in Auszug 0 definerten Strophen wirksam bleben.
+            `extract.0.lyrics.2`
+
+> **Hinweis**: Die Angaben der auszugebenden Stimmen könnte an sich
+> entfallen, da da sie der Voreinstellung in Zupfnoter entsprechen. Sie
+> sind hir nur zur Illustration sufgeüfhrt.
 
 [^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um
@@ -1215,3 +1289,7 @@ Es erscheint eine Maske nach folgendem Beispiel:
 [^040_UD-Zupfnoter-Referenz.md_4]: Das Filter lässt man am besten auf
     "Error" eingestellt, nur bei Problembehbungen bzw. Fehlersuche im
     Programm sind andere Einstellungen sinnvoll
+
+[^040_UD-Zupfnoter-Referenz.md_5]: Zupfnoter kann über die Menüleiste
+    die Auszüge 0-3 wählen. Braucht man mehr Auszüge, so ist das über
+    die Konsole möglich.

@@ -2,10 +2,6 @@
 
 # Zupfnoter für Experten
 
-## Erstellung von Auszügen {#auszuege}
-
-TODO: Konzept der Auszüge beschreiben
-
 ## Zupfnoter Einstellungen
 
 ### Persönliche Einstellungen
