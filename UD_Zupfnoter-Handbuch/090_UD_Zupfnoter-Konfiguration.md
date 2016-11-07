@@ -14,7 +14,7 @@ sowie die Voreinstellungen des Systems dargestellt.
 > (z.B. `extract`). In diesem Kapitel wird dann immer die Instanz mit
 > der Nr. 0 (z.B. `extract.0`) beschrieben.
 
-## `annotations` - Beschriftungsvorlagen {#annotations}
+## `annotations` - Notenbeschriftungsvorlagen {#annotations}
 
 Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
 
@@ -24,9 +24,9 @@ Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit einer
 Note verbinden (Notenbeschriftung).
 
         "annotations": {
-          "vl" : {"pos": [-1, -5], "text": "v"},
-          "vr" : {"pos": [2, -5], "text": "v"},
-          "vt" : {"pos": [-5, -5], "text": "v"}
+          "vl" : {"pos": [-5, -5], "text": "v"},
+          "vr" : {"pos": [-1, -5], "text": "v"},
+          "vt" : {"pos": [2, -5], "text": "v"}
         }
           
 
@@ -37,7 +37,7 @@ Namen `vl`).\
 Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
 dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
 
-        "vl": {"pos": [-1, -5], "text": "v"}
+        "vl": {"pos": [-5, -5], "text": "v"}
           
 
 ## `annotations.vl.pos` - Position {#annotations.vl.pos}
@@ -45,7 +45,7 @@ dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [-1, -5]
+        "pos": [-5, -5]
           
 
 ## `annotations.vl.text` - Text {#annotations.vl.text}
@@ -60,7 +60,7 @@ auch mehrzeilig sein
 
 TODO: Helptext für annotations.vr einfügen
 
-        "vr": {"pos": [2, -5], "text": "v"}
+        "vr": {"pos": [-1, -5], "text": "v"}
           
 
 ## `annotations.vr.pos` - Position {#annotations.vr.pos}
@@ -68,7 +68,7 @@ TODO: Helptext für annotations.vr einfügen
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [2, -5]
+        "pos": [-1, -5]
           
 
 ## `annotations.vr.text` - Text {#annotations.vr.text}
@@ -83,7 +83,7 @@ auch mehrzeilig sein
 
 TODO: Helptext für annotations.vt einfügen
 
-        "vt": {"pos": [-5, -5], "text": "v"}
+        "vt": {"pos": [2, -5], "text": "v"}
           
 
 ## `annotations.vt.pos` - Position {#annotations.vt.pos}
@@ -91,7 +91,7 @@ TODO: Helptext für annotations.vt einfügen
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [-5, -5]
+        "pos": [2, -5]
           
 
 ## `annotations.vt.text` - Text {#annotations.vt.text}
@@ -105,7 +105,7 @@ auch mehrzeilig sein
 ## `extract` - Auszug {#extract}
 
 Hier kannst du Auszüge für deine Unterlegnoten definieren. Das ist
-besonders bei mehrstimmigen Sätzen sinnvoll (Siehe Kapitel "Auszüge").
+besonders bei mehrstimmigen Sätzen sinnvoll.
 
 > **Hinweis**: Einstellungen im Auszug 0 wirken auf die anderen Auszüge,
 > sofern sie dort nicht überschrieben werden.
@@ -150,7 +150,8 @@ Auszug 1 usw.
               "LINE_MEDIUM"  : 0.3,
               "LINE_THICK"   : 0.5,
               "ELLIPSE_SIZE" : [3.5, 1.7],
-              "REST_SIZE"    : [4, 2]
+              "REST_SIZE"    : [4, 2],
+              "grid"         : false
             },
             "stringnames"  : {
               "vpos"  : [],
@@ -193,7 +194,7 @@ ausgegeben werden sollen.
         }
           
 
-## `extract.0.barnumbers.autopos` - automatisch positionieren {#extract.0.barnumbers.autopos}
+## `extract.0.barnumbers.autopos` - automat. positionieren {#extract.0.barnumbers.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -254,7 +255,7 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
         }
           
 
-## `extract.0.countnotes.autopos` - automatisch positionieren {#extract.0.countnotes.autopos}
+## `extract.0.countnotes.autopos` - automat. positionieren {#extract.0.countnotes.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -334,7 +335,8 @@ Notenbild gezielt optimieren.
           "LINE_MEDIUM"  : 0.3,
           "LINE_THICK"   : 0.5,
           "ELLIPSE_SIZE" : [3.5, 1.7],
-          "REST_SIZE"    : [4, 2]
+          "REST_SIZE"    : [4, 2],
+          "grid"         : false
         }
           
 
@@ -385,6 +387,13 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
         "REST_SIZE": [4, 2]
           
 
+## `extract.0.layout.grid` - Raster {#extract.0.layout.grid}
+
+TODO: Helptext für extract.0.layout.grid einfügen
+
+        "grid": false
+          
+
 ## `extract.0.layout.limit_a3` - Begrenzung auf A3 {#extract.0.layout.limit_a3}
 
 Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
@@ -418,7 +427,7 @@ unterschieden zwischen \* `pos` - Position des Titels des
 Musikstückes \* `spos` - Position der Sublegende, d.h. der weiteren
 Angaben zum Musikstück
 
-> **Hinewis**: Die Legende wird vorzugsweise durch Verschieben mit der
+> **Hinweis**: Die Legende wird vorzugsweise durch Verschieben mit der
 > Maus positioniert. Für eine genaue positionierung kann jedoch die
 > Eingabe über die Bildschirmmaske sinnvol sein.
 
@@ -823,13 +832,39 @@ Seitenbeschriftungen etc.
 Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 
         "templates": {
-          "notes"  : {"pos": [320, 6], "text": "ENTER_NOTE", "style": "large"},
-          "lyrics" : {
-            "verses" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            "pos"    : [350, 70]
-          },
-          "tuplet" : {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"]}
+          "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
+          "notes"       : {"pos": [320, 6], "text": "ENTER_NOTE", "style": "large"},
+          "lyrics"      : {"verses": [1], "pos": [350, 70]},
+          "tuplet"      : {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"]}
         }
+          
+
+## `templates.annotations` - Notenbeschriftungsvorlagen {#templates.annotations}
+
+Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
+
+Zupfnoter bringt einige solcher Definitionen bereits mit.
+
+Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit einer
+Note verbinden (Notenbeschriftung).
+
+        "annotations": {"pos": [-5, -6], "text": "_vorlage_"}
+          
+
+## `templates.annotations.pos` - Position {#templates.annotations.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [-5, -6]
+          
+
+## `templates.annotations.text` - Text {#templates.annotations.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "_vorlage_"
           
 
 ## `templates.lyrics` - Liedtexte {#templates.lyrics}
@@ -840,10 +875,7 @@ Liedtext auf mehrer Blöcke aufteilen.
 Ein einzelner Block listet die Strophen auf, die er enthält, und die
 gemeinsam poitioniert werden.
 
-        "lyrics": {
-          "verses" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          "pos"    : [350, 70]
-        }
+        "lyrics": {"verses": [1], "pos": [350, 70]}
           
 
 ## `templates.lyrics.pos` - Position {#templates.lyrics.pos}
@@ -860,7 +892,7 @@ von horizontaler / vertikaler Position.
 Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block
 ausgegeben werden.
 
-        "verses": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        "verses": [1]
           
 
 ## `templates.notes` - Seitenbeschriftungen {#templates.notes}
