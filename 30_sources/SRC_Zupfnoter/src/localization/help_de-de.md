@@ -29,7 +29,7 @@ sind [2-4, 1.2-2].
 ## extract
 
 Hier kannst du Auszüge für deine Unterlegnoten definieren. Das ist
-besonders bei mehrstimmigen Sätzen sinnvoll (Siehe Kapitel "Auszüge").
+besonders bei mehrstimmigen Sätzen sinnvoll.
 
 > **Hinweis**: Einstellungen im Auszug 0 wirken auf die anderen Auszüge,
 > sofern sie dort nicht überschrieben werden.
