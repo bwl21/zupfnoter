@@ -338,7 +338,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     new_config = migrate_config_cleanup(result.get)
 
     unless old_config.get == new_config
-      JS.debugger
       status = {
           changed:    true,
           message:    %Q{#{I18n.t(I18n.t("Please double check the generated sheets.\n\nYour abc file was automatically migrated\nto Zupfnoter version"))} #{VERSION}},

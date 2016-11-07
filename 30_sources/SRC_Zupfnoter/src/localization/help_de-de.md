@@ -1,17 +1,16 @@
 ## annotations
 
-Hier kannst du eine Liste von Beschriftungsvorlagen
-angeben.
+Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
 
 Zupfnoter bringt einige solcher Definitionen bereits mit.
 
-Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit
-einer Note verbinden (Notenbeschriftung).
+Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit einer
+Note verbinden (Notenbeschriftung).
 
 ## annotations.vl
 
-Hier siehst du ein Beispiel für eine Notenbeschriftung (hier mit
-dem Namen `vl`).\
+Hier siehst du ein Beispiel für eine Notenbeschriftung (hier mit dem
+Namen `vl`).\
 Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
 dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
 
@@ -154,9 +153,9 @@ Die Angabe erfolgt in der Bildschirmmaske als eine durch Komma
 separierte Liste von Stimmenpaaren (darin die Stimmen durch "-"
 getrennt).
 
-Die Angabe "`1-2, 3-4`" bedeutet beispielsweise, dass zwischen den Stimmen
-1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie gezeichnet
-werden soll.
+Die Angabe "`1-2, 3-4`" bedeutet beispielsweise, dass zwischen den
+Stimmen 1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie
+gezeichnet werden soll.
 
 > **Hinweis**:In der Texteingabe wird das als eine Liste von
 > zweiwertigen Listen dargestellt.
@@ -211,7 +210,13 @@ von horizontaler / vertikaler Position.
 ## lyrics.0.verses
 
 Hier gibst du die Liste der Strophen an die im Liedtext-Block ausgegeben
-werden.
+werden. Gib eine kommaseparierte Liste von Versnummern an.
+
+> **Hinweis**: Die Nummern der Strophen ergibt sich aus der Reihenfolge,
+> nicht aus etwa vorhandener Nummer im Text der Strophe.
+>
+> **Hinweis**: negative Nummern zählen von hinten. Daher gibt z.B. `-1`
+> die letzte Strophe aus. `0` gibt gar keine Strophe aus.
 
 ## lyrics.verses
 

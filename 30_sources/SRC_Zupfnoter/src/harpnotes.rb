@@ -1304,7 +1304,12 @@ module Harpnotes
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
               pos      = entry[:pos]
-              the_text = entry[:verses].map { |i| verses[i.to_i - 1] }.join("\n\n")
+              the_text = entry[:verses].map { |i|
+                j = 9999 if i==0 # this is a workaround, assuming that we do not have 1000 verses
+                j = i if i < 0
+                j = i - 1 if i > 0
+                verses[j]
+              }.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
                                                                 "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos})
             end
