@@ -99,43 +99,46 @@ module InitConf
 
 
          layout:       {
-             grid:              false,
-             limit_a3:          true,
-             SHOW_SLUR:         false,
-             LINE_THIN:         0.1,
-             LINE_MEDIUM:       0.3,
-             LINE_THICK:        0.5,
+             grid:                  false,
+             pack_method:           0,
+             pack_max_spreadfactor: 2,
+
+             limit_a3:              true,
+             SHOW_SLUR:             false,
+             LINE_THIN:             0.1,
+             LINE_MEDIUM:           0.3,
+             LINE_THICK:            0.5,
              # all numbers in mm
-             ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
-             REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
+             ELLIPSE_SIZE:          [3.5, 1.7], # radii of the largest Ellipse
+             REST_SIZE:             [4, 2], # radii of the largest Rest Glyph
 
              # x-size of one step in a pitch. It is the horizontal
              # distance between two strings of the harp
 
-             X_SPACING:         11.5, # Distance of strings
+             X_SPACING:             11.5, # Distance of strings
 
              # X coordinate of the very first beat
-             X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
+             X_OFFSET:              2.8, #ELLIPSE_SIZE.first,
 
-             Y_SCALE:           4, # 4 mm per minimal
-             DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
+             Y_SCALE:               4, # 4 mm per minimal
+             DRAWING_AREA_SIZE:     [400, 282], # Area in which Drawables can be placed
 
              # this affects the performance of the harpnote renderer
              # it also specifies the resolution of note starts
              # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
              # in order to at least being able to handle triplets, we need to scale this up by 3
              # todo:see if we can speed it up by using 16 ...
-             BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
-             SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
+             BEAT_RESOLUTION:       192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+             SHORTEST_NOTE:         64, # shortest possible note (1/64) do not change this
              # in particular specifies the range of DURATION_TO_STYLE etc.
 
-             BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
+             BEAT_PER_DURATION:     3, # BEAT_RESOLUTION / SHORTEST_NOTE,
 
              # this is the negative of midi-pitch of the lowest plaayble note
              # see http://computermusicresource.com/midikeys.html
-             PITCH_OFFSET:      -43,
+             PITCH_OFFSET:          -43,
 
-             FONT_STYLE_DEF:    {
+             FONT_STYLE_DEF:        {
                  bold:         {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
                  italic:       {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
                  large:        {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
@@ -146,10 +149,10 @@ module InitConf
                  smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
              },
 
-             MM_PER_POINT:      0.3,
+             MM_PER_POINT:          0.3,
 
              # This is a lookup table to map durations to giraphical representation
-             DURATION_TO_STYLE: {
+             DURATION_TO_STYLE:     {
                  #key      size   fill          dot                  abc duration
 
                  :err => [2, :filled, FALSE], # 1      1
@@ -167,7 +170,7 @@ module InitConf
                  :d1  => [0.05, :filled, FALSE] # 1/64
              },
 
-             REST_TO_GLYPH:     {
+             REST_TO_GLYPH:         {
                  # this basically determines the white background rectangel
                  # [sizex, sizey], glyph, dot # note that sizex has no effect.
                  :err => [[2, 2], :rest_1, FALSE], # 1      1
