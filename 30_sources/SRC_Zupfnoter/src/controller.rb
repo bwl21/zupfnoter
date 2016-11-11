@@ -581,7 +581,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       if status[:changed]
         alert(status[:message])
         @editor.set_config_part(config)
-        @editor.prepend_comment(status[:message])
+        # @editor.prepend_comment(status[:message])
       end
       $log.timestamp("3.1.4  #{__FILE__} #{__LINE__}")
 
