@@ -20,6 +20,7 @@
 * no longer shift first and last string name #18
 * Editor no longer hangs if no harpnotes were cteated #86
 * abc2svg titletrim now turned off #88
+* browser now consider zupfnoter as secure site again #90
 * Now also use ctrl/cmd-RETURN for render
 
 ## Enhancement

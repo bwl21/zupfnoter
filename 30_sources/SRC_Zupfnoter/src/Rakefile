@@ -118,6 +118,7 @@ task :deploy => [:build] do
 
   cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
   cp("../public/icons/favicon.png", "#{OUTFOLDER}/webserver/public/icons/favicon.png")
+  cp("../public/icons/underline.gif", "#{OUTFOLDER}/webserver/public/icons/underline.gif")
   Dir["../public/demos/*.abc"].each do |f|
     cp f, "#{OUTFOLDER}/webserver/public/demos/#{File.basename(f)}"
   end
@@ -132,10 +133,12 @@ task :deploy => [:build] do
 
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
   cp "../vendor/ace/mode-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-abc.js"
+  cp "../vendor/ace/mode-markdown.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-markdown.js"
   cp "../vendor/ace/theme-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/theme-abc.js"
   cp "../vendor/ace/snippets/text.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/text.js"
   cp "../vendor/ace/ext-language_tools.js", "#{OUTFOLDER}/webserver/vendor/ace/ext-language_tools.js"
   cp("../vendor/ace/snippets/abc.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/abc.js")
+  cp("../vendor/ace/snippets/markdown.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/markdown.js")
   cp("../vendor/abc2svg-1.js", "#{OUTFOLDER}/vendor/abc2svg-1.js")
   Dir['../vendor/ace/ext-*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
