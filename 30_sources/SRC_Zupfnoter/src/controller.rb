@@ -139,7 +139,7 @@ class Controller
 
     # todo: this should be optimized
     # todo: loading is determined in the load_* Methids. Not sure if this is ok
-    uri = get_uri
+    uri = self.class.get_uri
     mode = uri[:parsed_search][:mode].last rescue :work
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode)
 
@@ -595,7 +595,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config
   end
 
-  def get_uri()
+  def self.get_uri()
     parser = nil;
     # got this from http://stackoverflow.com/a/21152762/2092206
     # maybe we switch to https://github.com/medialize/URI.js
