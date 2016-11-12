@@ -1,6 +1,6 @@
 module InitConf
 # how to add a new parameter
-# 1. set the default eher
+# 1. set the default here
 # 2. maintain neatjson options to get it sorted here as well
 # 3. update controller_command_defnitions to provide the add / edit commands
 # 4. update conf_doc_source.rb to provide the documentation and help
@@ -28,6 +28,19 @@ module InitConf
                         lyrics:      {verses: [1], pos: [350, 70]},
                         tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
                         annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
+         },
+
+         presets:      {
+             layouts:       {regular: nil,
+                             compact: nil,
+                             large:   nil
+             },
+
+             printsettings: {
+                 west:  nil,
+                 east:  nil,
+                 south: nil
+             }
          },
 
          annotations:  {
@@ -102,7 +115,7 @@ module InitConf
              grid:                  false,
              pack_method:           0,
              pack_max_spreadfactor: 2,
-
+             pack_min_increment:    0.2,
              limit_a3:              true,
              SHOW_SLUR:             false,
              LINE_THIN:             0.1,
@@ -196,7 +209,11 @@ module InitConf
                               :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                               #
                               :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, :a3_offset, :a4_offset, # sort within laoyut
+
+                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
+                              :DRAWING_AREA_SIZE,
+                              :pack_method, :pack_max_spreadfactor, :pack_min_increment, :a3_offset, :a4_offset, # sort within laoyut
+
                               "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                               :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
                              ],
