@@ -21,6 +21,7 @@
 * no longer shift name first and last string in the stringnames #18
 * Editor no longer hangs if harpnotes could not be created #86
 * abc2svg titletrim now turned off #88
+* Now also use ctrl/cmd-RETURN for render
 
 ## Enhancement
 
