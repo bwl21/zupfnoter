@@ -914,7 +914,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         case (e.key_code)
           when 'A'.ord
             @editor.select_range_by_position(0, 10000)
-          when 'R'.ord #r
+          when 'R'.ord ,13
             e.prevent
             render_previews()
           when 'S'.ord #s
