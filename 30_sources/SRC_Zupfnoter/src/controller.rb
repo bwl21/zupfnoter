@@ -452,13 +452,17 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.benchmark("render_harpnotepreview_callback") do
       begin
         $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
-        @song_harpnotes = layout_harpnotes(@systemstatus[:view])
+        $log.benchmark("layout_harpnotes") do
+          @song_harpnotes = layout_harpnotes(@systemstatus[:view])
+        end
 
         if @song_harpnotes
           # todo: not sure if it is good to pass active_voices via @song_harpnotes
           # todo: refactor better moove that part of the code out here
           @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
+        $log.benchmark("draw") do
           @harpnote_preview_printer.draw(@song_harpnotes)
+        end
           set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
@@ -553,8 +557,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
       result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
-
-      $log.timestamp("layout  #{__FILE__} #{__LINE__}")
 
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
