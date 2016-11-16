@@ -5,6 +5,8 @@ function init_w2ui(uicontroller) {
     };
 
     var zoomlevel = [1400, 2200];
+    var current_perspective = 'tb_perspective:Alle';
+    var isFullScreen = false;
 
     previews = {
         'tbPreview:tbPrintA3': function () {
@@ -55,25 +57,15 @@ function init_w2ui(uicontroller) {
             $("#tunePreview").attr('width', '25cm');
         },
         'tb_perspective:Harfe': function () {
+            w2ui['layout'].sizeTo('preview', "100%");
+            w2ui['layout'].show('preview', window.instant);
             w2ui['layout'].hide('left', window.instant);
             w2ui['layout'].hide('bottom', window.instant);
             w2ui['layout'].hide('main', window.instant);
-            w2ui['layout'].show('preview', window.instant);
-            w2ui['layout'].sizeTo('preview', "100%");
             zoomHarpPreview(['100%', '98%'])
-        },
-        'tb_view:0': function () {
-            uicontroller.$handle_command("view 0")
-        },
-        'tb_view:1': function () {
-            uicontroller.$handle_command("view 1")
-        },
-        'tb_view:2': function () {
-            uicontroller.$handle_command("view 2")
-        },
-        'tb_view:3': function () {
-            uicontroller.$handle_command("view 3")
-        },
+        }
+    }
+    scalehandlers = {
         'tb_scale:groß': function () {
             zoomlevel = [1400, 2200];
             zoomHarpPreview(zoomlevel);
@@ -89,9 +81,21 @@ function init_w2ui(uicontroller) {
         'tb_scale:fit': function () {
             zoomlevel = ['100%', '100%'];
             zoomHarpPreview(zoomlevel);
+        }
+    }
+    toolbarhandlers = {
+        'tb_view:0': function () {
+            uicontroller.$handle_command("view 0")
         },
-
-
+        'tb_view:1': function () {
+            uicontroller.$handle_command("view 1")
+        },
+        'tb_view:2': function () {
+            uicontroller.$handle_command("view 2")
+        },
+        'tb_view:3': function () {
+            uicontroller.$handle_command("view 3")
+        },
         'tbPlay': function () {
             uicontroller.$play_abc('auto');
         },
@@ -231,6 +235,13 @@ function init_w2ui(uicontroller) {
 
             {type: 'break'},
             {
+                type: 'button',
+                id: 'tbFullScreen',
+                text: '',
+                icon: 'fa fa-arrows-alt',
+                tooltip: "harpnotes only\napplicable to proofread harpnotes"
+            },
+            {
                 type: 'menu',
                 id: 'tb_perspective',
                 text: 'Perspective',
@@ -253,7 +264,7 @@ function init_w2ui(uicontroller) {
                     {text: 'Tune', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
                     {
                         text: 'Harp',
-                        icon: 'fa fa-file-picture-o',
+                        icon: 'fa fa-arrows-alt',
                         id: 'Harfe',
                         tooltip: "harpnotes only\napplicable to proofread harpnotes"
                     }
@@ -308,8 +319,25 @@ function init_w2ui(uicontroller) {
             // handle perspectives
             if (perspectives[event.target]) {
                 perspectives[event.target]();
+                isFullScreen = false;
+                current_perspective = event.target;
                 if (event.subItem) {
                     event.item.text = event.subItem.text
+                }
+            }
+
+            if (toolbarhandlers[event.target]) {
+                toolbarhandlers[event.target]();
+            }
+
+            if (event.target == 'tbFullScreen') {
+                if (isFullScreen) {
+                    perspectives[current_perspective]();
+                    isFullScreen = false;
+                }
+                else {
+                    perspectives['tb_perspective:Harfe']();
+                    isFullScreen = true;
                 }
             }
 
@@ -581,7 +609,9 @@ function init_w2ui(uicontroller) {
         ],
         onClick: function (event) {
             $('#editortabspanel .tab').hide();
-            if (event.target == "abcLyrics") {uicontroller.editor.$to_lyrics()}
+            if (event.target == "abcLyrics") {
+                uicontroller.editor.$to_lyrics()
+            }
             $('#' + event.target).show();
             $('#' + event.target).resize();
         }
@@ -608,7 +638,7 @@ function init_w2ui(uicontroller) {
         ],
         onClick: function (event) {
             $('#harpPreview .tab').hide();
-            perspectives['tb_scale:' + event.target]();
+            scalehandlers['tb_scale:' + event.target]();
             $('#harpPreview #' + event.target).show();
         }
     };

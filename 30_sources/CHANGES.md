@@ -31,6 +31,7 @@
 * now have a parameter "filenamepart" per extract to determine the filename addendum for the extract #72
 * now raise a popup if an error occurs on render or save #76
 * now have tab to edit lyrics #8
+* now have a button to toggle harpnote preview #93
 
 # V 1.4.2
 
