@@ -739,12 +739,12 @@ C,
           # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
           fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
           path       = "/#{fileparts[1]}"
-          filename   = fileparts.last
+          filename   = `decodeURIComponent(#{fileparts.last})`
 
           newpath = "#{path}"
           handle_command("dlogin full #{path}")
           $log.message("found #{path}#{filename}")
-          handle_command("dopen #{filename.split("_").first}")
+          handle_command(%Q{dopenfn "#{filename}"})
           $log.message("opened #{path}#{filename}")
         end.fail do |message|
           $log.error message
@@ -867,6 +867,45 @@ C,
         end.then do |entries|
           $log.debug("#{entries} (#{__FILE__} #{__LINE__})")
           fileid = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }.first
+          @dropboxclient.read_file("#{rootpath}#{fileid}")
+        end.then do |abc_text|
+          $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
+          filebase = fileid.split(".abc")[0 .. -1].join(".abc")
+          abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
+
+          @editor.set_text(abc_text)
+          set_status(music_model: "loaded")
+          handle_command("render")
+
+        end.fail do |err|
+          $log.error("could not load file #{err}")
+        end
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+    end
+
+
+    @commands.add_command(:dopenfn) do |command|
+
+      command.add_parameter(:fileid, :string, "file id")
+      command.add_parameter(:path, :string) do |p|
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        fileid        = args[:fileid]
+        rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
+        $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
+
+        @dropboxclient.authenticate().then do |error, data|
           @dropboxclient.read_file("#{rootpath}#{fileid}")
         end.then do |abc_text|
           $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
