@@ -518,7 +518,6 @@ function init_w2ui(uicontroller) {
             config_event = event.target.split(":")
             if (['config'].includes(config_event[0])) {
                 if (config_event[1]) {
-                    debugger
                     uicontroller.$handle_command("addconf " + event.target.split(":")[1])
                 }
             }
@@ -526,7 +525,6 @@ function init_w2ui(uicontroller) {
             config_event2 = event.target.split(":")
             if (['edit_config'].includes(config_event2[0])) {
                 if (config_event2[1]) {
-                    debugger
                     w2ui.layout_left_tabs.click('configtab');
                     uicontroller.$handle_command("editconf " + config_event2[1])
                 }
