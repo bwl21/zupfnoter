@@ -1840,7 +1840,6 @@ module Harpnotes
             end
 
             # if beat==2688/8 #14976/8
-            #   JS.debugger
             #   #increment = -500
             # end
 
