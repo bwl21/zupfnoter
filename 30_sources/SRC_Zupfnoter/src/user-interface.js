@@ -135,7 +135,6 @@ function init_w2ui(uicontroller) {
         },
 
         'tb_open': function () {
-            uicontroller.$handle_command("dlogin full /");
             uicontroller.$handle_command("dchoose")
         },
 

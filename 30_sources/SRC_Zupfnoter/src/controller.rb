@@ -141,11 +141,13 @@ class Controller
     # todo: loading is determined in the load_* Methids. Not sure if this is ok
     uri = self.class.get_uri
     mode = uri[:parsed_search][:mode].last rescue :work
-    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode)
+
+    load_from_loacalstorage
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
+    set_status(mode: mode)
 
     #
     # load from previous session
-    load_from_loacalstorage
 
     demo_uri = uri[:parsed_search][:load] rescue nil
     load_from_uri(uri[:parsed_search][:load]) if demo_uri
@@ -156,9 +158,17 @@ class Controller
     @editor.get_lyrics
     render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
     #
-    setup_nodewebkit
+    #setup_nodewebkit
     # # now trigger the interactive UI
     setup_ui_listener
+
+    # todo
+    # todo this completes the very first connection to dropbox
+    # todo in this case dropbox-Api goes to another window and returns with an access token
+    # todo don't know if this is the most eleant solution
+    # see controller_command_definitions.rb
+    #
+    handle_command(@systemstatus[:zndropboxlogincmd]) if uri[:hash].start_with?("#access_token")  and  @systemstatus[:zndropboxlogincmd]
   end
 
 
@@ -184,7 +194,7 @@ class Controller
       $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
-      $log.error("#{e.message} in command #{command}}", nil, nil, e.backtrace)
+      $log.error(%Q{#{e.message} in command "#{command}"}, nil, nil, e.backtrace)
     end
     call_consumers(:error_alert)
   end
@@ -193,7 +203,7 @@ class Controller
   # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:zndropboxlogincmd, :music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
       abc = @editor.get_text
@@ -219,7 +229,7 @@ class Controller
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
     if @systemstatus[:dropboxapp]
-      handle_command("dlogin #{@systemstatus[:dropboxapp]} #{@systemstatus[:dropboxpath]}")
+      handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}"})
     end
     nil
   end
@@ -668,10 +678,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
+
+    save_to_localstorage
     call_consumers(:systemstatus)
     nil
   end
 
+  # this method sets systemstatus from the status of @dropboxclient
+  def set_status_dropbox_status
+    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
+  end
 
   private
 
