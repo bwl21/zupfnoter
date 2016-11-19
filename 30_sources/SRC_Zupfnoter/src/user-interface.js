@@ -149,7 +149,7 @@ function init_w2ui(uicontroller) {
         'tb_login': function () {
             openPopup({
                 name: 'loginForm',
-                text: 'Login',
+                text: w2utils.lang('Login'),
                 style: 'border: 0px; background-color: transparent;',
                 fields: [
                     {
@@ -160,13 +160,13 @@ function init_w2ui(uicontroller) {
                     },
                 ],
                 actions: {
-                    "login": function () {
+                    "Ok": function () {
                         if (this.validate().length == 0) {
                             uicontroller.$handle_command("dlogin full " + this.record.folder)
                             w2popup.close();
                         }
                     },
-                    "reset": function () {
+                    "Cancel": function () {
                         this.clear();
                     }
                 }
@@ -478,13 +478,14 @@ function init_w2ui(uicontroller) {
                 text: "Insert Addon",
                 id: 'add_snippet',
                 items: [
+                    // note the text here shall match the names of subclasses of Snippeteditor::Form to get the right translation
                     {id: 'goto', text: 'Goto', tooltip: "Add a Jump"},
-                    {id: 'shifter', text: 'Shift', tooltip: "Add a shift"},
+                    {id: 'shifter', text: 'Shifter', tooltip: "Add a shift"},
                     {},
                     {id: 'draggable', text: 'Draggable', tooltip: "Add a draggable mark"},
                     {},
                     {id: 'annotation', text: 'Annotation', tooltip: "Add an annotation"},
-                    {id: 'annotationref', text: 'Annotation Ref', tooltip: "Add a predefined annotation"},
+                    {id: 'annotationref', text: 'AnnotationRef', tooltip: "Add a predefined annotation"},
                     {},
                     {id: 'jumptarget', text: 'Jumptarget', tooltip: "Add a Jumptarget"}
                 ],

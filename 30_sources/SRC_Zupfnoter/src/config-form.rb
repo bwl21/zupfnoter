@@ -70,7 +70,7 @@ class SnippetEditor
       to_record(string)
       @theForm = {
           name:       "editsnippet",
-          text:       I18n.t(self.class.name),
+          text:       I18n.t(self.class.name.split("::").last),
           fields:     @fields,
           record:     @record,
           onChange:   lambda { |event|
