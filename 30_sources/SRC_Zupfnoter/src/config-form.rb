@@ -114,6 +114,7 @@ class SnippetEditor
             width: 800,
             height: 300,
             showMax: true,
+            modal:true,
             onToggle: function (event) {
               $(w2ui[#{@theForm}.name].box).hide();
               event.onComplete = function () {

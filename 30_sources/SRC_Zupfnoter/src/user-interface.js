@@ -797,6 +797,7 @@ function openPopup(theForm) {
         style: 'padding: 15px 0px 0px 0px',
         width: 500,
         height: 300,
+        modal:true,
         showMax: true,
         onToggle: function (event) {
             $(w2ui[theForm.name].box).hide();
