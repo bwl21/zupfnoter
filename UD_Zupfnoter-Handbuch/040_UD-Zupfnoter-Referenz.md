@@ -48,7 +48,7 @@ ABC-Notation:
     Diese Konfigurationsparameter wirken auf die Erstellung der
     Unterlegnotenblätter und steuern z.B:
 
-    -   Stimmen, die augesgeben werden; Stimmen durch
+    -   Stimmen, die ausgegeben werden; Stimmen durch
         Synchronisiationslinien verbunden werden usw.
     -   Größe von Notenelementen, Liniendicken
     -   Beschriftungen
@@ -1207,30 +1207,35 @@ Es erscheint eine Maske nach folgendem Beispiel:
 
 ## Erstellung von Auszügen {#auszuege}
 
-Zupfnoter geht von einem Modell aus, welches alle Eigenschaften des
-Musikstückes darstellt. Aus diesem kompletten Modell können Auszüge
-erstellt werden, die spezifische Elemente darstellen. Damit kannst du
-Blätter für verschiedene Zielgruppen erstellen, z.B.:
+Zupfnoter erfasst zunächst **alle Stimmen** eines Musikstückes als
+umfassendes Modell. Aus diesem kompletten Modell können Auszüge erstellt
+werden, welche spezifische Elemente darstellen. Damit kannst du Blätter
+für verschiedene Zielgruppen erstellen, z.B.:
 
 -   Gesamtansicht für lektoren
--   Einzelstimmen für Anfänger
+-   Einzelstimmen für Anfänger (z.B. nur die erste Stimme, Zählhilfen)
 -   Beliebige Kombinatinen von Stimmen für Leiter und Fortgeschrittene
+    (z.B. zwei Stimmen, aber keine Zählhilfen mehr)
 -   verschiedene Hilfsinformationen (Zählhilfen, Taktnummern etc.)
+-   Sonstige Einstellungen (z.B. Druckeroptimierung usw.)
 
 Für jeden Auszug gibt es einen Satz von Konfigurationsparameetern
-(`extract.0`, `extract.1`usw.). Über die Schaltflcähe `Auzzug` kann der
-aktuell aktive Auuszug einstellen. Der aktive Auszug bestimmt, was in
-der Unterlegnotenvorschau angezeigt wird und auf welchen Auszug die
-Konfigurationsmasen wirken.
+(`extract.0`, `extract.1`) usw. welcher den Inhalt des jeweiligen
+Auszuges bestimmt. Über die Schaltflcähe `Auzzug` kannst aktuell aktiven
+Auuszug einstellen. Der aktive Auszug bestimmt,
+
+-   was in der Unterlegnotenvorschau angezeigt wird
+-   auf welchen Auszug die Konfigurationsmasken wirken.
 
 Die Auszuüge werden durchnummeriert[^040_UD-Zupfnoter-Referenz.md_5].
 
-Der Auszug mit der Nummer 0 hat eine besondere Rolle: Die dort
-angegebenen Werte für die Konfigurationsparameter wirken auf die Auszüge
-mit höherer Nummer solange sie dort nicht überschrieben werden.
+Der Auszug mit der **Nummer 0** hat eine besondere Rolle: Er gilt als
+Vorgabe für die anderen Auszuüge. Die im Auszug 0 angegebenen Werte für
+die Konfigurationsparameter wirken also auf die Auszüge mit höherer
+Nummer solange sie dort nicht überschrieben werden.
 
 Damit kannst du im Auszug 0 die grundlegenden Einstellungen vornehmen
-und in den höherern Auszuügen spezifische Anforderungen erfüllen.
+und in den höherern Auszügen spezifische Anforderungen erfüllen.
 
 Einstellungen, die auch im Auszug 0 nicht definiert sind, belegt
 Zupfnoter mit programminternen Voreinstellungen. Diese Vorgabewerte sind

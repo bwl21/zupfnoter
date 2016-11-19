@@ -320,11 +320,40 @@ Wenn du ein Konto bei Dropbox hast, musst du Zupfnoter **einmalig pro
 verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 
 -   klicke auf Schaltfläche "Einloggen"
--   es erscheint das Anmeldefenster der Dropbox
--   gib Email-Adresse und Kennwort ein
--   Zupfnoter ist nun verbunden
+-   es erscheint der Zupfnoter - Dialog "Einloggen" - gib dort bitte ein
+    Verezeichnis aus deiner Dropbox ein, in welcher du dein Musikstück
+    speichern möchtest
 
-Zupfnoter hat nun Zugriff folgende Dateitypen in deiner Dropbox ".abc
+    > > > ![](../ZAUX_Images/030-041_Dropbox-step-01.jpg) 
+
+-   klicke dann auf "OK"
+-   Um das Anmeldefenster der Dropbox zu erreichen, muss Zupfnoter
+    kurzeitig verlassen werden. Diesen Vorgang musst du bestätigen:
+
+    > > > ![](../ZAUX_Images/030-042_Dropbox-step-02.jpg) 
+
+-   es erscheint das Anmeldefenster der **Dropbox** falls du nicht schno
+    bei Dropobox eingeloggt bist
+-   gib dort Email-Adresse und Kennwort ein um dich bei Dropbox
+    auszuweisen
+
+    > > > ![](../ZAUX_Images/030-043_Dropbox-step-03.jpg) 
+
+-   Dropbox fragt nun nach deiner Zustimmung, dass Zupfnoter auf Dateien
+    in deiner Dropbox zugreifen kann. Bitte bestätige das.
+
+    > > > ![](../ZAUX_Images/030-044_Dropbox-step-04.jpg) 
+
+-   Dropbox kehrt nun zu Zupfnoter zurück. Zupfnoter ist nun mit der
+    Dropbox verbunden.
+-   Drücke nun im Zupfnoter auf "Speichern", um dein Musikstück und die
+    Auszüge als PDF-Dateien in deiner Dropbox zu speichern.
+
+    > **HInweis**: Zupfnoter speichert in dem Verzeichnis, welches beim
+    > Einloggen angegeben wurde. Fall das Verzeichnis nicht existiert,
+    > wird es angelegt. Bitte achte auf also die richtige Schreibweise
+
+Zupfnoter hat nun Zugriff folgende Dateitypen in deiner Dropbox: ".abc
 files, .zip files, audio files, documents, text files".
 
 > **Hinweis zur Sicherheit** z.B. bei Verwendung fremder Computer (z.B.
@@ -335,6 +364,9 @@ files, .zip files, audio files, documents, text files".
 >     Dateien[^030_UD_Zupfnoter-erste-schritte.md_4]. Daher musst du
 >     dich in **unbedingt in *allen* Browser-Fenstern von der Dropbox**
 >     abmelden, wenn du an einem fremden Computer arbeitest.
+>
+>     Es ist auf jeden Fall sinnvoll, an fremden Computern im
+>     "inkognito - Modus" des Browsers zu arbeiten.
 >
 > -   Dropbox-Anwendungen speichern ein geheime Zeichenkette (auch
 >     "Accesstoken" genannt) auf deineme lokalen Rechner. Wenn du
@@ -349,7 +381,27 @@ files, .zip files, audio files, documents, text files".
 > -   Dropbox sendet dir eine E-Mail, wenn immer du eine Anwendung mit
 >     deiner Dropbox verbindest.
 >
-> ## Musikstück importieren
+> <!-- -->
+
+## Musikstück aus Dropbox laden
+
+Um das Musikstück wieder zu laden, klicke auf "Öffnen". Es erscheint ein
+Datei-Auswahl-Dialog von Dropbox. Dort ist oben ein Suchfeld. Dort
+kannst du einen Teil des Dateinamens eingeben, um die gewünschte Datei
+zu suchen.
+
+> **Hinweis**: Wenn du im Suchfeld die Zeichenkette "abc" hinzufügst,
+> dann werden nur noch ABC-Datien angezeigt. Wenn du zum Beispiel im
+> Suchfeld eingibst: `entchen abc`, dann werden alle Dateien gesucht, in
+> deren Namen die Worte 'entchen' und 'abc' vorkommen
+
+> > > ![](../ZAUX_Images/030-045_Dropbox-step-05.jpg) 
+
+> **Hinweis**: Zupfnoter loggt sich in das Verzeichnis der zuletzt
+> geöffneten Datei ein. Du kannst am unteren Rand vo Zupfnoter sehen, in
+> welches Dropbox-Verzeichnis Zupfnoter speichert.
+
+## Musikstück importieren
 
 Falls du schon ein anderes Musikprogramm verwendest (z.B. Musescore
 <https://www.musescore.com>) kannst du deine Musikstücke in den
