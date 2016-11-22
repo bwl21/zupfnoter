@@ -91,7 +91,7 @@ class Controller
     }
     browser_language = `navigator.language`.downcase
     I18n.locale(languages[browser_language]) if browser_language
-    
+
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
@@ -168,7 +168,7 @@ class Controller
     # todo don't know if this is the most eleant solution
     # see controller_command_definitions.rb
     #
-    handle_command(@systemstatus[:zndropboxlogincmd]) if uri[:hash].start_with?("#access_token")  and  @systemstatus[:zndropboxlogincmd]
+    handle_command(@systemstatus[:zndropboxlogincmd]) if uri[:hash].start_with?("#access_token") and @systemstatus[:zndropboxlogincmd]
   end
 
 
@@ -328,8 +328,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # migrate the configuration which is provided from textox
   # this method is necesary to upgrade existing sheets
   def migrate_config(config)
-    result       = Confstack.new(false)
-    result.strict= false
+    result           = Confstack.new(false)
+    result.strict    = false
     old_config       = Confstack.new(false)
     old_config.strict= false
     old_config.push(config.clone)
@@ -371,7 +371,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
     config
   end
-  
+
   def migrate_config_lyrics(config)
     new_lyrics = config['extract'].inject({}) do |r, element|
       lyrics = element.last['lyrics']
@@ -578,28 +578,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # this retrieves the current config from the editor
   def get_config_from_editor
-    config_part = @editor.get_config_part
-    begin
-      $log.timestamp("3.1.1 #{__FILE__} #{__LINE__}")
-      #config         = %x{json_parse(#{config_part})}
-      config = JSON.parse(config_part)
-      $log.timestamp("3.1.2  #{__FILE__} #{__LINE__}")
+    config, status = @editor.get_parsed_config
+   if status
       config, status = migrate_config(config)
-      $log.timestamp("3.1.3  #{__FILE__} #{__LINE__}")
-
-
       if status[:changed]
         alert(status[:message])
         @editor.set_config_part(config)
         # @editor.prepend_comment(status[:message])
       end
-      $log.timestamp("3.1.4  #{__FILE__} #{__LINE__}")
-
-
-    rescue Object => error
-      line_col = @editor.get_config_position(error.last)
-      $log.error("#{error.first} at #{line_col}", line_col)
-      config = {}
     end
 
     config
@@ -930,7 +916,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         case (e.key_code)
           when 'A'.ord
             @editor.select_range_by_position(0, 10000)
-          when 'R'.ord ,13
+          when 'R'.ord, 13
             e.prevent
             render_previews()
           when 'S'.ord #s
