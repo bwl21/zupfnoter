@@ -686,20 +686,21 @@ class ConfstackEditor
 
     $log.benchmark("process value handler result #{__FILE__} #{__LINE__}") do
       @value                = Confstack.new(false)
-      @effective_value      = Confstack.new(false)
+      @effective_value_raw  = Confstack.new(false)
       @default_value        = Confstack.new(false)
       @default_value.strict = false
 
       @value.push(value_handler_result[:current])
-      @effective_value.push(value_handler_result[:effective])
-      @default_value.push($log.benchmark("getvalues #{__FILE__} #{__LINE__}") { value_handler_result[:default] })
+      @effective_value_raw.push(value_handler_result[:effective])
+      #@default_value.push($log.benchmark("getvalues #{__FILE__} #{__LINE__}") { value_handler_result[:default] })
     end
 
     @form   = nil # Form object to be passed to w2ui
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
     @record = {} # hash to prepare the record for the form
 
-    @record = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
+    @record          = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
+    @effective_value = @effective_value_raw.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r }
     $log.timestamp("end initialize Form  #{__FILE__} #{__LINE__}")
     nil
   end
@@ -802,16 +803,16 @@ class ConfstackEditor
           `event.onComplete=#{a}`
         },
         toolbar:    {
-            style: 'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;',  #todo fix this
+            style:   'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;', #todo fix this
             items:   [
-                         {id: 'title', class:'foobar', style:"margin-top:0px", type: 'html', html: %Q{<div style="font-size:120%;vertical-align:top;margin-bottom: 8px;">#{I18n.t(@title)}</div>}},
+                         {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<div style="font-size:120%;vertical-align:top;margin-bottom: 8px;">#{I18n.t(@title)}</div>}},
                          {id: 'bt3', type: 'spacer'},
-                         {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), img: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?  },
+                         {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), img: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
                          {id: 'refresh', type: 'button', caption: 'Refresh', img: 'fa fa-refresh'},
                      ],
             onClick: lambda do |event|
               refresh_form if (Native(event).target == 'refresh')
-              @newentry_handler.call  if (Native(event).target == 'new_entry')
+              @newentry_handler.call if (Native(event).target == 'new_entry')
             end
         },
         onValidate: lambda { alert("validate"); nil },
@@ -857,7 +858,7 @@ class ConfstackEditor
          </tr>
         }
     else
-      default_button = %Q{<button tabIndex="-1" class="foobar znconfig-button fa fa-circle-o" title="#{@default_value[key].to_s}" name="#{key}:fillup"></button>}
+      default_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{@effective_value[key]}" name="#{key}:fillup"></button>}
       %Q{
         <tr>
          <td style="vertical-align: top;">#{first_indent}
