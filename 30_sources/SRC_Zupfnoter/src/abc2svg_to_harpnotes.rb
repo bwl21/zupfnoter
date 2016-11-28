@@ -249,6 +249,10 @@ module Harpnotes
         end
       end
 
+      def _bar_is_repetition_end?(type)
+        type =~/^:.*$/
+      end
+
       def _transform_bar(voice_element)
         result = []
         type   = voice_element[:bar_type]
@@ -284,7 +288,17 @@ module Harpnotes
         # [:rbstart] check if it is really started
         if (voice_element[:rbstop] == 2) and (!@variant_endings.last.last.nil?) and (@variant_endings.last.last[:rbstart])
           @variant_endings.last.last[:rbstop] = @previous_note
-          @variant_endings.last.last[:repeat_end] = true if true if type =~/^:.*$/
+          @variant_endings.last.last[:repeat_end] = true if _bar_is_repetition_end?(type)
+
+          # here we handle multiple variant endings with end with a repetition
+          # where the repetion start is not the very beginning
+          #
+          if _bar_is_repetition_end?(type) # variant ends with a repeat; push the repotition start
+            @pushed_variant_ending_repeat = true
+            @repetition_stack.push @repetition_stack.last
+          else # variant does not end with a repeat; check if we have pushed a variant repetion and santize the same.
+            @repetition_stack.pop if @pushed_variant_ending_repeat
+          end
 
           #prepare a new variant_ending group if there is only an rbstop
           unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
@@ -294,8 +308,10 @@ module Harpnotes
         end
 
 
-        result << _transform_bar_repeat_end(voice_element) if type =~/^:.*$/
+        result << _transform_bar_repeat_end(voice_element) if _bar_is_repetition_end?(type)
 
+        # here we handle the case that a repeat is within a measure (textcase 3016 in measure repeats)
+        # it shall not create a bar in harpnotes
         if type.include? ':'
           unless @is_first_measure ## first measure after a meter statment cannot suppress bar
             @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
