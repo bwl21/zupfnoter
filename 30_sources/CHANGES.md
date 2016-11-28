@@ -6,6 +6,7 @@
 * we now have a filenamepart per extract. It allows to change titles without changing the filenames. 
   Future releases might introduce a default value. So better adapt this parameter now.
 * you need first to invoke "login" in Zupfnoter before you can use the "open"
+* the fingerprint on a page might change as we now have 2 decimal digits in configuration #95
 
 ## Fix
 
@@ -22,6 +23,7 @@
 * Editor no longer hangs if harpnotes could not be created #86
 * abc2svg titletrim now turned off #88
 * Now also use ctrl/cmd-RETURN for render
+* Now yield 1.50 instead of 1.49999999 to minimize rounding effects #95
 
 ## Enhancement
 
