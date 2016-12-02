@@ -309,10 +309,23 @@ module Harpnotes
       get_text.split(CONFIG_SEPARATOR)[1] || "{}"
     end
 
-    def neat_config
+    def get_parsed_config
       config_part = get_config_part
-      config = JSON.parse(config_part)
-      set_config_part(config)
+      begin
+        config = JSON.parse(config_part)
+        status = true
+      rescue Exception => error
+        line_col = get_config_position(error.message.split.last.to_i)
+        $log.error("#{error.message} at #{line_col}", line_col)
+        config = {}
+        status = false
+      end
+      [config, status]
+    end
+
+    def neat_config
+      config, status = get_parsed_config
+      set_config_part(config) if status
     end
 
     def get_checksum

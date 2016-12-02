@@ -1292,7 +1292,7 @@ module Harpnotes
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{LOCATION}]", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([325, 289], "Zupfnoter: https://www.zupfnoter.de", :smaller)
-        annotations << Harpnotes::Drawing::Annotation.new([400, 289], music.checksum, :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([380, 289], music.checksum, :smaller)
 
         lyrics     = print_options_hash[:lyrics]
         lyric_text = music.harpnote_options[:lyrics][:text]
@@ -1846,10 +1846,9 @@ module Harpnotes
               increment += increment
             end
 
-            if beat==2688/8 #14976/8
-              JS.debugger
-              #increment = -500
-            end
+            # if beat==2688/8 #14976/8
+            #   #increment = -500
+            # end
 
 
             current_beat += increment

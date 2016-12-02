@@ -88,7 +88,9 @@ module Harpnotes
 
     # hightlights the drawn elements driven by the selection range in the abc text
     def range_highlight(from, to)
-      get_elements_by_range(from, to).each { |element| highlight_element(element) }
+      elements = get_elements_by_range(from, to)
+      elements.each { |element| highlight_element(element) }
+      scroll_to_element(elements.first) unless elements.empty?
     end
 
     # hightlights the drawn elements driven by the selection range in the abc text
@@ -127,7 +129,13 @@ module Harpnotes
     def highlight_element(element)
       unhighlight_element(element)
       @highlighted.push(element)
-      @x = 0 unless @x
+      element.unhighlight_color = element[:fill]
+      element[:fill]            = "#ff0000"
+      element[:stroke]          = "#ff0000"
+      nil
+    end
+
+    def scroll_to_element(element)
       %x{
             var node = #{element}.r;
             var bbox = node.getBBox();
@@ -135,11 +143,8 @@ module Harpnotes
             top = 100 * Math.floor(top/100);
             $("#"+#{@container_id}).get(0).scrollTop=top;
       }
-      element.unhighlight_color = element[:fill]
-      element[:fill]            ="#ff0000"
-      element[:stroke]          ="#ff0000"
-      nil
     end
+
 
     def unhighlight_element(element)
       if @highlighted.include?(element)
@@ -180,20 +185,20 @@ module Harpnotes
     end
 
     def draw_glyph(root)
-      center     = [root.center.first, root.center.last]
-      size       = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
+      center = [root.center.first, root.center.last]
+      size   = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
 
-      line_width = root.line_width
+      line_width        = root.line_width
       @paper.line_width = 0.1
 
       #path_spec = "M#{center.first} #{center.last}"
-      path_spec  = path_to_raphael(root.glyph[:d])
+      path_spec         = path_to_raphael(root.glyph[:d])
       #path_spec = self.glyph_to_path_spec(root.glyph)
 
       # draw a white background
-      e          = @paper.rect(root.center.first, root.center.last - size.last, size.first, size.last)
-      e[:fill]   = "white"
-      e[:stroke] = "white"
+      e                 = @paper.rect(root.center.first, root.center.last - size.last, size.first, size.last)
+      e[:fill]          = "white"
+      e[:stroke]        = "white"
       e.transform("t-#{size.first/2} #{size.last/2}")
 
       # draw th path
@@ -314,7 +319,7 @@ module Harpnotes
       element                 = @paper.text(root.center.first, root.center.last, text)
       element[:"font-size"]   = 1 #; style[:font_size]
       element[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
-      element[:"font-style"] = "italic" if style[:font_style].to_s.include? "italic"
+      element[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
       element[:"text-anchor"] = "start"
 
       # getting the same adjustment as in postscript

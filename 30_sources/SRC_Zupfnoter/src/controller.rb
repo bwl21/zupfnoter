@@ -91,7 +91,7 @@ class Controller
     }
     browser_language = `navigator.language`.downcase
     I18n.locale(languages[browser_language]) if browser_language
-    
+
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
 
     Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
@@ -141,11 +141,13 @@ class Controller
     # todo: loading is determined in the load_* Methids. Not sure if this is ok
     uri = self.class.get_uri
     mode = uri[:parsed_search][:mode].last rescue :work
-    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode)
+
+    load_from_loacalstorage
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
+    set_status(mode: mode)
 
     #
     # load from previous session
-    load_from_loacalstorage
 
     demo_uri = uri[:parsed_search][:load] rescue nil
     load_from_uri(uri[:parsed_search][:load]) if demo_uri
@@ -156,9 +158,17 @@ class Controller
     @editor.get_lyrics
     render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
     #
-    setup_nodewebkit
+    #setup_nodewebkit
     # # now trigger the interactive UI
     setup_ui_listener
+
+    # todo
+    # todo this completes the very first connection to dropbox
+    # todo in this case dropbox-Api goes to another window and returns with an access token
+    # todo don't know if this is the most eleant solution
+    # see controller_command_definitions.rb
+    #
+    handle_command(@systemstatus[:zndropboxlogincmd]) if uri[:hash].start_with?("#access_token") and @systemstatus[:zndropboxlogincmd]
   end
 
 
@@ -184,7 +194,7 @@ class Controller
       $log.timestamp(command)
       @commands.run_string(command)
     rescue Exception => e
-      $log.error("#{e.message} in command #{command}}", nil, nil, e.backtrace)
+      $log.error(%Q{#{e.message} in command "#{command}"}, nil, nil, e.backtrace)
     end
     call_consumers(:error_alert)
   end
@@ -193,7 +203,7 @@ class Controller
   # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:zndropboxlogincmd, :music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
       abc = @editor.get_text
@@ -219,7 +229,7 @@ class Controller
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
     if @systemstatus[:dropboxapp]
-      handle_command("dlogin #{@systemstatus[:dropboxapp]} #{@systemstatus[:dropboxpath]}")
+      handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}"})
     end
     nil
   end
@@ -318,8 +328,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # migrate the configuration which is provided from textox
   # this method is necesary to upgrade existing sheets
   def migrate_config(config)
-    result       = Confstack.new(false)
-    result.strict= false
+    result           = Confstack.new(false)
+    result.strict    = false
     old_config       = Confstack.new(false)
     old_config.strict= false
     old_config.push(config.clone)
@@ -361,7 +371,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
     config
   end
-  
+
   def migrate_config_lyrics(config)
     new_lyrics = config['extract'].inject({}) do |r, element|
       lyrics = element.last['lyrics']
@@ -452,17 +462,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.benchmark("render_harpnotepreview_callback") do
       begin
         $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
-        $log.benchmark("layout_harpnotes") do
-          @song_harpnotes = layout_harpnotes(@systemstatus[:view])
-        end
+        @song_harpnotes = layout_harpnotes(@systemstatus[:view])
 
         if @song_harpnotes
           # todo: not sure if it is good to pass active_voices via @song_harpnotes
           # todo: refactor better moove that part of the code out here
           @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
-        $log.benchmark("draw") do
           @harpnote_preview_printer.draw(@song_harpnotes)
-        end
           set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
@@ -558,6 +564,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
 
+      $log.timestamp("layout  #{__FILE__} #{__LINE__}")
+
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
     rescue Exception => e
@@ -570,28 +578,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # this retrieves the current config from the editor
   def get_config_from_editor
-    config_part = @editor.get_config_part
-    begin
-      $log.timestamp("3.1.1 #{__FILE__} #{__LINE__}")
-      #config         = %x{json_parse(#{config_part})}
-      config = JSON.parse(config_part)
-      $log.timestamp("3.1.2  #{__FILE__} #{__LINE__}")
+    config, status = @editor.get_parsed_config
+   if status
       config, status = migrate_config(config)
-      $log.timestamp("3.1.3  #{__FILE__} #{__LINE__}")
-
-
       if status[:changed]
         alert(status[:message])
         @editor.set_config_part(config)
-        @editor.prepend_comment(status[:message])
+        # @editor.prepend_comment(status[:message])
       end
-      $log.timestamp("3.1.4  #{__FILE__} #{__LINE__}")
-
-
-    rescue Object => error
-      line_col = @editor.get_config_position(error.last)
-      $log.error("#{error.first} at #{line_col}", line_col)
-      config = {}
     end
 
     config
@@ -670,10 +664,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
+
+    save_to_localstorage
     call_consumers(:systemstatus)
     nil
   end
 
+  # this method sets systemstatus from the status of @dropboxclient
+  def set_status_dropbox_status
+    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
+  end
 
   private
 
@@ -916,7 +916,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         case (e.key_code)
           when 'A'.ord
             @editor.select_range_by_position(0, 10000)
-          when 'R'.ord ,13
+          when 'R'.ord, 13
             e.prevent
             render_previews()
           when 'S'.ord #s

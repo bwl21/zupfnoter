@@ -1,6 +1,11 @@
 class Controller
   private
 
+  def _report_error_from_promise (errormessage)
+    $log.error errormessage
+    call_consumers(:error_alert)
+  end
+
   def __ic_01_internal_commands
     $log.info("registering commands")
     @commands.add_command(:help) do |c|
@@ -657,16 +662,29 @@ C,
             $log.error("select app | full")
         end
 
+
+        # notes
+        # the login approach in dropbox redirects to login-pages from dropbix which eventually
+        # return to zupfnoter with an access token.
+        # Zupfnoter then finalizes the login by invoking zndropboxlogincmd at the end of Controller.initialize
+        # therefore we need to store it here
+        #
+        set_status({zndropboxlogincmd: %Q{dlogin #{args[:scope]} "#{args[:path]}"}})
+
+        # now do the authentification
         @dropboxclient.authenticate().then do
-          set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
+          set_status({zndropboxlogincmd: nil}) # nos login was sucessful, therefore we do not need this command anymore -
+          set_status_dropbox_status
           $log.message("logged in at dropbox with #{args[:scope]} access")
+        end.fail do |err|
+          _report_error_from_promise err
         end
       end
       command.as_inverse do |args|
-        set_status(dropbox: "logged out")
+        set_status(dropbox: I18n.t("logged out"))
 
         $log.message("logged out from dropbox")
-        @dropboxclient = nil
+        @dropboxclient = Opal::DropboxJs::NilClient.new
       end
     end
 
@@ -705,13 +723,13 @@ C,
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
 
-        set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
+        set_status_dropbox_status
         $log.message("dropbox path changed to #{@dropboxpath}")
       end
 
       command.as_inverse do |args|
         @dropboxpath = args[:oldval]
-        set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
+        set_status_dropbox_status
         $log.message("dropbox path changed back to #{@dropboxpath}")
       end
     end
@@ -733,18 +751,19 @@ C,
       command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
+        @dropboxclient.authenticate
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
           # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
           # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
           fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
           path       = "/#{fileparts[1]}"
-          filename   = fileparts.last
+          filename   = `decodeURIComponent(#{fileparts.last})`
 
           newpath = "#{path}"
           handle_command("dlogin full #{path}")
           $log.message("found #{path}#{filename}")
-          handle_command("dopen #{filename.split("_").first}")
+          handle_command(%Q{dopenfn "#{filename}"})
           $log.message("opened #{path}#{filename}")
         end.fail do |message|
           $log.error message
@@ -838,10 +857,10 @@ C,
           end
         end
         Promise.when(*save_promises).then do
-          set_status(music_model: "saved to dropbox")
+          set_status(music_model: I18n.t("saved to dropbox"))
           $log.message("all files saved")
         end.fail do |err|
-          $log.error("there was an error saving files #{err}")
+          _report_error_from_promise(err)
         end
       end
     end
@@ -859,6 +878,7 @@ C,
       command.as_action do |args|
         args[:oldval] = @editor.get_text
         fileid        = args[:fileid]
+        fileidfound   = nil
         rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
         $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
 
@@ -866,8 +886,58 @@ C,
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.debug("#{entries} (#{__FILE__} #{__LINE__})")
-          fileid = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }.first
-          @dropboxclient.read_file("#{rootpath}#{fileid}")
+          fileidfound = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }
+          unless fileidfound
+            result = Promise.new.reject(%Q{#{I18n.t("There is no file with this id")} in #{rootpath}})
+          else
+            unless fileidfound.count == 1
+              result = Promise.new.reject(%Q{#{I18n.t("Ambiguous file number")}: #{fileid} in #{rootpath}:\n #{fileidfound.join("\n ")}}) unless fileidfound.count == 1
+            else
+              fileidfound = fileidfound.first
+              result      = @dropboxclient.read_file("#{rootpath}#{fileidfound}")
+            end
+          end
+          result
+        end.then do |abc_text|
+          $log.debug "loaded #{fileidfound} (#{__FILE__} #{__LINE__})"
+          filebase = fileidfound.split(".abc")[0 .. -1].join(".abc")
+          abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
+
+          @editor.set_text(abc_text)
+          set_status(music_model: "loaded")
+          handle_command("render")
+
+        end.fail do |err|
+          _report_error_from_promise (%Q{could not load file with ID #{fileid}: #{err}})
+        end
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+    end
+
+
+    @commands.add_command(:dopenfn) do |command|
+
+      command.add_parameter(:fileid, :string, "file id")
+      command.add_parameter(:path, :string) do |p|
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        fileid        = args[:fileid]
+        rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
+        filename      = "#{rootpath}#{fileid}"
+        $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
+
+        @dropboxclient.authenticate().then do |error, data|
+          @dropboxclient.read_file(filename)
         end.then do |abc_text|
           $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
           filebase = fileid.split(".abc")[0 .. -1].join(".abc")
@@ -878,7 +948,8 @@ C,
           handle_command("render")
 
         end.fail do |err|
-          $log.error("could not load file #{err}")
+          _report_error_from_promise %Q{#{I18n.t('could not open file')}: #{err} : "#{filename}"}
+          nil
         end
       end
 

@@ -33,6 +33,7 @@ require 'opal-w2ui'
 require 'version'
 require 'user-interface.js'
 require 'config-form'
+require 'snippet_editor'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"

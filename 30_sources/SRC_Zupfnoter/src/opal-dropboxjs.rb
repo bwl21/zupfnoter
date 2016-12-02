@@ -50,7 +50,9 @@ module Opal
         Promise.new.tap do |promise|
           block.call(lambda { |error, data|
             if error
-              promise.reject(error)
+              # todo: don't know if this is generic enough. it assumes that error is a dedicated structure.
+              errormessage = Native(error)[:response].error rescue "unspecified error from Dropbox API"
+              promise.reject(errormessage)
             else
               promise.resolve(data)
             end
@@ -75,7 +77,7 @@ module Opal
         Promise.new.tap do |promise|
           block.call(lambda { |data|
             if false
-              promise.reject(error)
+              promise.reject(Native(error)[:response].error)
             else
               promise.resolve(Native(data))
             end
@@ -96,8 +98,8 @@ module Opal
                 $log.info("#{remaining} remaining retries #{info}")
                 block.call(handler)
               else
-                $log.error(error)
-                promise.reject(error)
+                $log.error(I18n.t("Error from Dropbox with failed retries"))
+                promise.reject("Repeated Error from Dropobox")
               end
             else
               $log.info("successs #{info}")

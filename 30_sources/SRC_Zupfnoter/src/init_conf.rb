@@ -204,6 +204,7 @@ module InitConf
 
          neatjson:     {
              wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
+             decimals: 2,
              explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                               :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
                               :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,

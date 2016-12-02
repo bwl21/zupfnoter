@@ -420,7 +420,8 @@ In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
 **Beispiel:**
 
 -   `+ -` erzeugt `+ - +  + - + -`
--   `C C# D C# E F F# G G# A A# Bb B` erzeugt die regulären Saitennamen
+-   `C Cis D Dis E F Fis G Gis A Aia Bb B` erzeugt die regulären
+    Saitennamen
 
 ## style
 

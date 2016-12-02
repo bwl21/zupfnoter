@@ -5,6 +5,8 @@ function init_w2ui(uicontroller) {
     };
 
     var zoomlevel = [1400, 2200];
+    var current_perspective = 'tb_perspective:Alle';
+    var isFullScreen = false;
 
     previews = {
         'tbPreview:tbPrintA3': function () {
@@ -55,25 +57,15 @@ function init_w2ui(uicontroller) {
             $("#tunePreview").attr('width', '25cm');
         },
         'tb_perspective:Harfe': function () {
+            w2ui['layout'].sizeTo('preview', "100%");
+            w2ui['layout'].show('preview', window.instant);
             w2ui['layout'].hide('left', window.instant);
             w2ui['layout'].hide('bottom', window.instant);
             w2ui['layout'].hide('main', window.instant);
-            w2ui['layout'].show('preview', window.instant);
-            w2ui['layout'].sizeTo('preview', "100%");
             zoomHarpPreview(['100%', '98%'])
-        },
-        'tb_view:0': function () {
-            uicontroller.$handle_command("view 0")
-        },
-        'tb_view:1': function () {
-            uicontroller.$handle_command("view 1")
-        },
-        'tb_view:2': function () {
-            uicontroller.$handle_command("view 2")
-        },
-        'tb_view:3': function () {
-            uicontroller.$handle_command("view 3")
-        },
+        }
+    }
+    scalehandlers = {
         'tb_scale:groß': function () {
             zoomlevel = [1400, 2200];
             zoomHarpPreview(zoomlevel);
@@ -89,9 +81,21 @@ function init_w2ui(uicontroller) {
         'tb_scale:fit': function () {
             zoomlevel = ['100%', '100%'];
             zoomHarpPreview(zoomlevel);
+        }
+    }
+    toolbarhandlers = {
+        'tb_view:0': function () {
+            uicontroller.$handle_command("view 0")
         },
-
-
+        'tb_view:1': function () {
+            uicontroller.$handle_command("view 1")
+        },
+        'tb_view:2': function () {
+            uicontroller.$handle_command("view 2")
+        },
+        'tb_view:3': function () {
+            uicontroller.$handle_command("view 3")
+        },
         'tbPlay': function () {
             uicontroller.$play_abc('auto');
         },
@@ -131,7 +135,6 @@ function init_w2ui(uicontroller) {
         },
 
         'tb_open': function () {
-            uicontroller.$handle_command("dlogin full /");
             uicontroller.$handle_command("dchoose")
         },
 
@@ -146,7 +149,7 @@ function init_w2ui(uicontroller) {
         'tb_login': function () {
             openPopup({
                 name: 'loginForm',
-                text: 'Login',
+                text: w2utils.lang('Login'),
                 style: 'border: 0px; background-color: transparent;',
                 fields: [
                     {
@@ -157,13 +160,13 @@ function init_w2ui(uicontroller) {
                     },
                 ],
                 actions: {
-                    "login": function () {
+                    "Ok": function () {
                         if (this.validate().length == 0) {
                             uicontroller.$handle_command("dlogin full " + this.record.folder)
                             w2popup.close();
                         }
                     },
-                    "reset": function () {
+                    "Cancel": function () {
                         this.clear();
                     }
                 }
@@ -231,6 +234,13 @@ function init_w2ui(uicontroller) {
 
             {type: 'break'},
             {
+                type: 'button',
+                id: 'tbFullScreen',
+                text: '',
+                icon: 'fa fa-arrows-alt',
+                tooltip: "harpnotes only\napplicable to proofread harpnotes"
+            },
+            {
                 type: 'menu',
                 id: 'tb_perspective',
                 text: 'Perspective',
@@ -253,7 +263,7 @@ function init_w2ui(uicontroller) {
                     {text: 'Tune', icon: 'fa fa-music', id: 'Noten', tooltip: "notes only"},
                     {
                         text: 'Harp',
-                        icon: 'fa fa-file-picture-o',
+                        icon: 'fa fa-arrows-alt',
                         id: 'Harfe',
                         tooltip: "harpnotes only\napplicable to proofread harpnotes"
                     }
@@ -308,8 +318,25 @@ function init_w2ui(uicontroller) {
             // handle perspectives
             if (perspectives[event.target]) {
                 perspectives[event.target]();
+                isFullScreen = false;
+                current_perspective = event.target;
                 if (event.subItem) {
                     event.item.text = event.subItem.text
+                }
+            }
+
+            if (toolbarhandlers[event.target]) {
+                toolbarhandlers[event.target]();
+            }
+
+            if (event.target == 'tbFullScreen') {
+                if (isFullScreen) {
+                    perspectives[current_perspective]();
+                    isFullScreen = false;
+                }
+                else {
+                    perspectives['tb_perspective:Harfe']();
+                    isFullScreen = true;
                 }
             }
 
@@ -451,13 +478,14 @@ function init_w2ui(uicontroller) {
                 text: "Insert Addon",
                 id: 'add_snippet',
                 items: [
+                    // note the text here shall match the names of subclasses of Snippeteditor::Form to get the right translation
                     {id: 'goto', text: 'Goto', tooltip: "Add a Jump"},
-                    {id: 'shifter', text: 'Shift', tooltip: "Add a shift"},
+                    {id: 'shifter', text: 'Shifter', tooltip: "Add a shift"},
                     {},
                     {id: 'draggable', text: 'Draggable', tooltip: "Add a draggable mark"},
                     {},
                     {id: 'annotation', text: 'Annotation', tooltip: "Add an annotation"},
-                    {id: 'annotationref', text: 'Annotation Ref', tooltip: "Add a predefined annotation"},
+                    {id: 'annotationref', text: 'AnnotationRef', tooltip: "Add a predefined annotation"},
                     {},
                     {id: 'jumptarget', text: 'Jumptarget', tooltip: "Add a Jumptarget"}
                 ],
@@ -490,7 +518,6 @@ function init_w2ui(uicontroller) {
             config_event = event.target.split(":")
             if (['config'].includes(config_event[0])) {
                 if (config_event[1]) {
-                    debugger
                     uicontroller.$handle_command("addconf " + event.target.split(":")[1])
                 }
             }
@@ -498,7 +525,6 @@ function init_w2ui(uicontroller) {
             config_event2 = event.target.split(":")
             if (['edit_config'].includes(config_event2[0])) {
                 if (config_event2[1]) {
-                    debugger
                     w2ui.layout_left_tabs.click('configtab');
                     uicontroller.$handle_command("editconf " + config_event2[1])
                 }
@@ -581,7 +607,9 @@ function init_w2ui(uicontroller) {
         ],
         onClick: function (event) {
             $('#editortabspanel .tab').hide();
-            if (event.target == "abcLyrics") {uicontroller.editor.$to_lyrics()}
+            if (event.target == "abcLyrics") {
+                uicontroller.editor.$to_lyrics()
+            }
             $('#' + event.target).show();
             $('#' + event.target).resize();
         }
@@ -608,7 +636,7 @@ function init_w2ui(uicontroller) {
         ],
         onClick: function (event) {
             $('#harpPreview .tab').hide();
-            perspectives['tb_scale:' + event.target]();
+            scalehandlers['tb_scale:' + event.target]();
             $('#harpPreview #' + event.target).show();
         }
     };
@@ -770,6 +798,7 @@ function openPopup(theForm) {
         style: 'padding: 15px 0px 0px 0px',
         width: 500,
         height: 300,
+        modal:true,
         showMax: true,
         onToggle: function (event) {
             $(w2ui[theForm.name].box).hide();
