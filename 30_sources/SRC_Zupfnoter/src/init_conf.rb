@@ -12,6 +12,10 @@ module InitConf
          abc_parser:   'ABC2SVG',
          restposition: {default: :center, repeatstart: :next, repeatend: :default},
          wrap:         60,
+
+
+         # here are values for object which occur multiple times
+         # such that there i no expolicit default in the configuration
          defaults:     {
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
@@ -23,26 +27,32 @@ module InitConf
                          }
              }
          },
-         templates:    {# this is used to update / create new objects
+
+         # this is used to upddate / create new objects
+         templates:    {
                         notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
                         lyrics:      {verses: [1], pos: [350, 70]},
                         tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
                         annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
 
+         # this is used to populate a presets menu
+         # in configuration editor
          presets:      {
-             layouts:       {regular: nil,
-                             compact: nil,
-                             large:   nil
+             layout:  {
+                 regular: nil,
+                 compact: nil,
+                 large:   nil
              },
 
-             printsettings: {
+             printer: {
                  west:  nil,
                  east:  nil,
                  south: nil
              }
          },
 
+         # these are the builtin notebound annotations
          annotations:  {
              vl: {text: "v", pos: [-5, -5]},
              vt: {text: "v", pos: [2, -5]},
@@ -67,6 +77,9 @@ module InitConf
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {},
+                 #
+                 # this denotes the layout parameters which are intended to bne configured
+                 # by the regular user
                  layout:       {limit_a3:     true,
                                 LINE_THIN:    0.1,
                                 LINE_MEDIUM:  0.3,
@@ -74,7 +87,12 @@ module InitConf
                                 # all numbers in mm
                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                 REST_SIZE:    [4, 2],
-                                grid:         false,
+                                packer:       {
+                                    pack_method:           0,
+                                    pack_max_spreadfactor: 2,
+                                    pack_min_increment:    0.2
+                                },
+                                limit_a3:     true
                  },
                  nonflowrest:  false,
                  notes:        {},
@@ -111,47 +129,57 @@ module InitConf
          },
 
 
+         # this is the builtin default for layout
+         # it is somehow double maintained es
+         # extrat.0.layout defines a default as well.
+         # but the runtime layout has more parameters which
+         # are not intended to be configured by a regular user.
+         #
+         # nevertheless, an expert user could also change the
+         # other parameters
          layout:       {
-             grid:                  false,
-             pack_method:           0,
-             pack_max_spreadfactor: 2,
-             pack_min_increment:    0.2,
-             limit_a3:              true,
-             SHOW_SLUR:             false,
-             LINE_THIN:             0.1,
-             LINE_MEDIUM:           0.3,
-             LINE_THICK:            0.5,
+             grid:              false,
+             packer:            {
+                 pack_method:           0,
+                 pack_max_spreadfactor: 2,
+                 pack_min_increment:    0.2
+             },
+             limit_a3:          true,
+             SHOW_SLUR:         false,
+             LINE_THIN:         0.1,
+             LINE_MEDIUM:       0.3,
+             LINE_THICK:        0.5,
              # all numbers in mm
-             ELLIPSE_SIZE:          [3.5, 1.7], # radii of the largest Ellipse
-             REST_SIZE:             [4, 2], # radii of the largest Rest Glyph
+             ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
+             REST_SIZE:         [4, 2], # radii of the largest Rest Glyph
 
              # x-size of one step in a pitch. It is the horizontal
              # distance between two strings of the harp
 
-             X_SPACING:             11.5, # Distance of strings
+             X_SPACING:         11.5, # Distance of strings
 
              # X coordinate of the very first beat
-             X_OFFSET:              2.8, #ELLIPSE_SIZE.first,
+             X_OFFSET:          2.8, #ELLIPSE_SIZE.first,
 
-             Y_SCALE:               4, # 4 mm per minimal
-             DRAWING_AREA_SIZE:     [400, 282], # Area in which Drawables can be placed
+             Y_SCALE:           4, # 4 mm per minimal
+             DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed
 
              # this affects the performance of the harpnote renderer
              # it also specifies the resolution of note starts
              # in fact the shortest playable note is 1/16; to display dotted 16, we need 1/32
              # in order to at least being able to handle triplets, we need to scale this up by 3
              # todo:see if we can speed it up by using 16 ...
-             BEAT_RESOLUTION:       192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
-             SHORTEST_NOTE:         64, # shortest possible note (1/64) do not change this
+             BEAT_RESOLUTION:   192, # SHORTEST_NOTE * BEAT_PER_DURATION, ## todo use if want to support 5 * 7 * 9  # Resolution of Beatmap
+             SHORTEST_NOTE:     64, # shortest possible note (1/64) do not change this
              # in particular specifies the range of DURATION_TO_STYLE etc.
 
-             BEAT_PER_DURATION:     3, # BEAT_RESOLUTION / SHORTEST_NOTE,
+             BEAT_PER_DURATION: 3, # BEAT_RESOLUTION / SHORTEST_NOTE,
 
              # this is the negative of midi-pitch of the lowest plaayble note
              # see http://computermusicresource.com/midikeys.html
-             PITCH_OFFSET:          -43,
+             PITCH_OFFSET:      -43,
 
-             FONT_STYLE_DEF:        {
+             FONT_STYLE_DEF:    {
                  bold:         {text_color: [0, 0, 0], font_size: 12, font_style: "bold"},
                  italic:       {text_color: [0, 0, 0], font_size: 12, font_style: "italic"},
                  large:        {text_color: [0, 0, 0], font_size: 20, font_style: "bold"},
@@ -162,10 +190,10 @@ module InitConf
                  smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
              },
 
-             MM_PER_POINT:          0.3,
+             MM_PER_POINT:      0.3,
 
              # This is a lookup table to map durations to giraphical representation
-             DURATION_TO_STYLE:     {
+             DURATION_TO_STYLE: {
                  #key      size   fill          dot                  abc duration
 
                  :err => [2, :filled, FALSE], # 1      1
@@ -183,7 +211,7 @@ module InitConf
                  :d1  => [0.05, :filled, FALSE] # 1/64
              },
 
-             REST_TO_GLYPH:         {
+             REST_TO_GLYPH:     {
                  # this basically determines the white background rectangel
                  # [sizex, sizey], glyph, dot # note that sizex has no effect.
                  :err => [[2, 2], :rest_1, FALSE], # 1      1
@@ -204,16 +232,20 @@ module InitConf
 
          neatjson:     {
              wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-             decimals: 2,
+             decimals:      2,
              explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                               :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
                               :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                               #
                               :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
 
+                              # sort within layout
                               :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                               :DRAWING_AREA_SIZE,
-                              :pack_method, :pack_max_spreadfactor, :pack_min_increment, :a3_offset, :a4_offset, # sort within laoyut
+                              :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+
+                              # sort within printer
+                              :a3_offset, :a4_offset, # sort within laoyut
 
                               "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                               :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations

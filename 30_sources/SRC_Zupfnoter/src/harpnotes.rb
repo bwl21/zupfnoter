@@ -1195,7 +1195,7 @@ module Harpnotes
           factor = (@beat_spacing / full_beat_spacing)
           $log.warning("note distance too small (factor #{factor})")
         end
-        @beat_spacing = [full_beat_spacing, $conf.get('layout.pack_max_spreadfactor') * @beat_spacing].min # limit beat spacing to twice of optimal spacing
+        @beat_spacing = [full_beat_spacing, $conf.get('layout.packer.pack_max_spreadfactor') * @beat_spacing].min # limit beat spacing to twice of optimal spacing
 
         # first optimize the vertical arrangement of the notes
         # by analyzing the beat layout
@@ -1782,9 +1782,9 @@ module Harpnotes
 
 
       def compute_beat_compression(music, layout_lines)
-        result = compute_beat_compression_1(music, layout_lines) if $conf.get('layout.pack_method') == 1
-        result = compute_beat_compression_2(music, layout_lines) if $conf.get('layout.pack_method') == 2
-        result = compute_beat_compression_0(music, layout_lines) if ($conf.get('layout.pack_method') || 0) == 0
+        result = compute_beat_compression_1(music, layout_lines) if $conf.get('layout.packer.pack_method') == 1
+        result = compute_beat_compression_2(music, layout_lines) if $conf.get('layout.packer.pack_method') == 2
+        result = compute_beat_compression_0(music, layout_lines) if ($conf.get('layout.packer.pack_method') || 0) == 0
         result
       end
 
@@ -1880,7 +1880,7 @@ module Harpnotes
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
         conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-        conf_min_increment   = ($conf.get('layout.pack_min_increment') || 0) * conf_beat_resolution
+        conf_min_increment   = ($conf.get('layout.packer.pack_min_increment') || 0) * conf_beat_resolution
 
         # todo:clarify the initialization
         current_beat         = 0
@@ -1933,12 +1933,14 @@ module Harpnotes
                 history_collision = history[i] && (history[i][:pitchmap].keys & pitchmap.keys) if history[i]
                 if history_collision and history_collision.first
                   distance_from_collision = current_beat - history[i][:beat]
-                  increment               = [default_increment - distance_from_collision, conf_min_increment].max
+                  increment               = default_increment - distance_from_collision
                 end
               }
             else
-              #increment = increment * 0.7
+              #increment = [conf_min_increment, increment].max
             end
+
+            increment = [conf_min_increment, increment].max
 
            # $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
 

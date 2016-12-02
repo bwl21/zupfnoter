@@ -36,6 +36,7 @@
 * now have a parameter "filenamepart" per extract to determine the filename addendum for the extract #72
 * now raise a popup if an error occurs on render or save #76
 * now have a button to toggle harpnote preview #93
+* now have foundation for optimized packer, and an experimental packer #89
 
 # V 1.4.2
 

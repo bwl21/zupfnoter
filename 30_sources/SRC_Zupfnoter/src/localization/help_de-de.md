@@ -183,6 +183,55 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
+## layout.packer
+
+Hier kannst du weitere Einzelheiten für die vertikale Anordnung der
+Noten konfigurieren. Es sind subtile Feinheiten, welche den Unterschied
+ausmachen. Daher sind diese Funktionen noch experimentell.
+
+## layout.packer.pack_method
+
+Hier kannst du die pack-Methode auswählen
+
+-   **0** : Die bisherige Methode: diese geht nach jedem Schrift um die
+    Höhe der größten Note weiter
+
+-   **1** : Kopmpakt: diese geht nur dann weiter, wenn
+
+    -   ein Richtungswechsel der Melodie vorliegt
+    -   Noten übereinander gezeichnet würden
+
+    Das bedeutet dass bei monotonen Melodien die Noten enger gesetzt
+    werden.
+
+    > Hinweis: Diese Methode eignet sich am besten für lange,
+    > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
+    > Stücken schnell verloren. Bei dieser Methode sind die
+    > Synchronisiationslinien nicht immer gut sichtbar.
+
+## layout.packer.pack_min_increment
+
+Dieser Faktor bstimmt, wie weit pro Schlag auf jeden Fall weiter gerückt
+wird. Pro Schlag wird mindestens um diesen Anteil einer Maximalnote
+weiter geschaltet.
+
+Beispiele:
+
+-   **0.0**: es entstehen horizontale Flußlinien
+-   **1.0**: es wird mindests um eine ganze Note weiter geschaltet
+-   **0.2**: es wird um 20% einer ganzen Note weiter geschaltet. Dies
+    liefert angenehme Ergebnisse.
+
+## layout.packer.pack_max_spreadfactor
+
+Nach der Berechnung des maximal komprimierten Layouts versucht
+Zufpnoter, dieses so weit zu spreizen, dass der verfügbare Raum
+ausgefüllt wird.
+
+Dieser Faaktor bestimmt, wie weit das maximal kompprimierte Layout in
+der Vertikalen gespreizt weden soll. Er wirkt sich bei kurzen Stücken
+aus, welche das Blatt nicht vollständig ausfüllen.
+
 ## lyrics
 
 Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den
