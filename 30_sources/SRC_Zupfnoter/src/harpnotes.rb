@@ -1195,7 +1195,7 @@ module Harpnotes
           factor = (@beat_spacing / full_beat_spacing)
           $log.warning("note distance too small (factor #{factor})")
         end
-        @beat_spacing = [full_beat_spacing, 2 * @beat_spacing].min # limit beat spacing to twice of optimal spacing
+        @beat_spacing = [full_beat_spacing, $conf.get('layout.packer.pack_max_spreadfactor') * @beat_spacing].min # limit beat spacing to twice of optimal spacing
 
         # first optimize the vertical arrangement of the notes
         # by analyzing the beat layout
@@ -1781,6 +1781,13 @@ module Harpnotes
       private
 
 
+      def compute_beat_compression(music, layout_lines)
+        result = compute_beat_compression_1(music, layout_lines) if $conf.get('layout.packer.pack_method') == 1
+        result = compute_beat_compression_2(music, layout_lines) if $conf.get('layout.packer.pack_method') == 2
+        result = compute_beat_compression_0(music, layout_lines) if ($conf.get('layout.packer.pack_method') || 0) == 0
+        result
+      end
+
       # compress  beat layout of a music sheet
       #
       # This algorithm considers the number of notes and the particular radii of the notes
@@ -1799,7 +1806,7 @@ module Harpnotes
       #
       # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
       #
-      def compute_beat_compression(music, layout_lines)
+      def compute_beat_compression_0(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
         conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
@@ -1851,6 +1858,221 @@ module Harpnotes
         result
       end
 
+      # compress  beat layout of a music sheet
+      #
+      # This algorithm considers the number of notes and the particular radii of the notes
+      # when a beat (layout beat, not to mess up with song beat) has a note
+      # the the
+      #
+      # returns a beat-map { beat => vertical_position_indicator }
+      # vertical_position_indicator scales like beats but can be fractions
+      # the need to be scaled to the aboslute position on the sheet later.
+      # this scaling cannot be done here since it depends on the relative radii
+      # of the musig on the sheet.
+      #
+      # we need to increment the position by the (radii[i] + radii[i-1])/2
+      #
+      # @param music Harpnotes::Music::Document the document to optimize the beat layout
+      #
+      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
+      #
+      def compute_beat_compression_1(music, layout_lines)
+        max_beat = music.beat_maps.map { |map| map.keys.max }.max
+
+        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
+        conf_min_increment   = ($conf.get('layout.packer.pack_min_increment') || 0) * conf_beat_resolution
+
+        # todo:clarify the initialization
+        current_beat         = 0
+        last_size            = 0
+
+        relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
+        relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
+
+        history           = [] # this keps a history of pitchmaps and the mapped beat of the same
+        duration_to_style = $conf.get('layout.DURATION_TO_STYLE')
+        result            = Hash[relevant_keys.map do |beat|
+          notes_on_beat = relevant_beat_maps.map { |bm|
+            playable = bm[beat]
+            notes    = [playable]
+            notes.push playable.notes if playable.is_a? Harpnotes::Music::SynchPoint
+            notes
+          }.flatten.compact ## select the voices for optimization
+
+          max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
+          has_no_notes_on_beat = notes_on_beat.empty?
+          is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
+          measure_start        = notes_on_beat.select { |n| n.measure_start? }.first
+
+          pitchmap = Hash[notes_on_beat.map { |n| [n.pitch, n.duration] }]
+
+          unless has_no_notes_on_beat
+            begin
+              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+            rescue Exception => e
+              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+            end
+
+            # we need to increment the position by the (radii[i] + radii[i-1])/2
+            increment = (size + last_size)/2
+            last_size = size
+
+            default_increment = increment
+
+            can_compress_more = true
+            a                 = [{beat: current_beat, pitchmap: pitchmap}, history].flatten[0..2]
+            if a and a[2]
+              can_compress_more = a.each_with_index.map { |v, i| a[i][:pitchmap].first <=> a[i-1][:pitchmap].first }[1 .. -1].inject(1, :*) > -1
+            end
+            $log.debug %Q{ #{can_compress_more} #{is_new_part.empty?} #{is_new_part} #{a}}
+
+
+            if can_compress_more or not is_new_part.empty?
+              increment = conf_min_increment # increment/4 # default_increment
+              history.each_with_index.to_a.reverse.each { |v, i|
+                history_collision = history[i] && (history[i][:pitchmap].keys & pitchmap.keys) if history[i]
+                if history_collision and history_collision.first
+                  distance_from_collision = current_beat - history[i][:beat]
+                  increment               = default_increment - distance_from_collision
+                end
+              }
+            else
+              #increment = [conf_min_increment, increment].max
+            end
+
+            increment = [conf_min_increment, increment].max
+
+           # $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
+
+
+            if measure_start
+              increment += default_increment / 4
+            end
+
+            # if a new part starts on this beat, double the increment
+            unless is_new_part.empty?
+              increment += default_increment
+            end
+
+            current_beat += increment
+
+            history.unshift({beat: current_beat, pitchmap: pitchmap})
+            current_beat
+          end
+          [beat, current_beat]
+        end]
+        result
+      end
+
+
+      # compress  beat layout of a music sheet
+      #
+      # This algorithm considers the number of notes and the particular radii of the notes
+      # when a beat (layout beat, not to mess up with song beat) has a note
+      # the the
+      #
+      # returns a beat-map { beat => vertical_position_indicator }
+      # vertical_position_indicator scales like beats but can be fractions
+      # the need to be scaled to the aboslute position on the sheet later.
+      # this scaling cannot be done here since it depends on the relative radii
+      # of the musig on the sheet.
+      #
+      # we need to increment the position by the (radii[i] + radii[i-1])/2
+      #
+      # @param music Harpnotes::Music::Document the document to optimize the beat layout
+      #
+      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
+      #
+      def compute_beat_compression_2(music, layout_lines)
+        max_beat = music.beat_maps.map { |map| map.keys.max }.max
+
+        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
+
+        silo         = [[]]
+
+        # todo:clarify the initialization
+        current_beat = 0
+        last_size    = 0
+
+
+        relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
+        relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
+
+        history             = []
+        default_inc_history = []
+        inc_history         = []
+        duration_to_style   = $conf.get('layout.DURATION_TO_STYLE')
+
+        relevant_beat_maps.each do |beatmap|
+          beatmap.each do |key, playable|
+            notes = [playable]
+            notes = playable.notes if playable.is_a? Harpnotes::Music::SynchPoint
+            notes.each do |note|
+              if silo[note.pitch]
+                if silo[note.pitch].last.first.beat == note.beat
+                  silo[note.pitch].last.push(note)
+                else
+                  silo[note.pitch].push([[note]])
+                end
+              else
+                silo[note.pitch]=[[note]]
+              end
+            end
+          end
+        end
+
+
+        result = Hash[relevant_keys.map do |beat|
+          notes_on_beat        = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
+          max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
+          has_no_notes_on_beat = notes_on_beat.empty?
+          is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
+          measure_start        = notes_on_beat.select { |n| n.measure_start? }.first
+
+          pitchmap = Hash[notes_on_beat.map { |n| [n.pitch, n.duration] }]
+
+          unless has_no_notes_on_beat
+            begin
+              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+            rescue Exception => e
+              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+            end
+
+            # we need to increment the position by the (radii[i] + radii[i-1])/2
+            increment = (size + last_size)/2
+            last_size = size
+
+
+            default_inc_history.unshift(increment)
+
+            default_increment = increment
+            increment         = 0 # increment/4 # default_increment
+            default_inc_history.reverse.each_with_index.to_a.reverse.each { |v, i|
+              increment = default_inc_history[i] - inc_history[i - 1] if history[i] && (history[i].keys & pitchmap.keys).first
+            }
+
+            inc_history.unshift(increment)
+
+            $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
+            history.unshift(pitchmap)
+
+            if measure_start
+              increment += default_increment / 4
+            end
+
+            # if a new part starts on this beat, double the increment
+            unless is_new_part.empty?
+              increment += increment
+            end
+
+            current_beat += increment
+          end
+          [beat, current_beat]
+        end]
+        result
+      end
+
+
       #
       # layout the one Playable on the sheet
       #
@@ -1885,8 +2107,7 @@ module Harpnotes
         x_offset = ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')
         y_offset = beat_layout.call(root.beat)
 
-        scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
+        dotted, fill, size = compute_ellipse_properties_from_note(root)
 
         shift = layout_note_shift(root, size, x_offset, dotted)
 
@@ -1895,6 +2116,12 @@ module Harpnotes
         res.hasbarover = true if root.measure_start
         res.is_note    = true
         res
+      end
+
+      def compute_ellipse_properties_from_note(root)
+        scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
+        return dotted, fill, size
       end
 
       # layout the shift right/left of a note depending on

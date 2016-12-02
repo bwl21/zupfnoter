@@ -1,6 +1,6 @@
 module InitConf
 # how to add a new parameter
-# 1. set the default eher
+# 1. set the default here
 # 2. maintain neatjson options to get it sorted here as well
 # 3. update controller_command_defnitions to provide the add / edit commands
 # 4. update conf_doc_source.rb to provide the documentation and help
@@ -12,6 +12,10 @@ module InitConf
          abc_parser:   'ABC2SVG',
          restposition: {default: :center, repeatstart: :next, repeatend: :default},
          wrap:         60,
+
+
+         # here are values for object which occur multiple times
+         # such that there i no expolicit default in the configuration
          defaults:     {
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
@@ -23,13 +27,32 @@ module InitConf
                          }
              }
          },
-         templates:    {# this is used to update / create new objects
+
+         # this is used to upddate / create new objects
+         templates:    {
                         notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
                         lyrics:      {verses: [1], pos: [350, 70]},
                         tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
                         annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
 
+         # this is used to populate a presets menu
+         # in configuration editor
+         presets:      {
+             layout:  {
+                 regular: nil,
+                 compact: nil,
+                 large:   nil
+             },
+
+             printer: {
+                 west:  nil,
+                 east:  nil,
+                 south: nil
+             }
+         },
+
+         # these are the builtin notebound annotations
          annotations:  {
              vl: {text: "v", pos: [-5, -5]},
              vt: {text: "v", pos: [2, -5]},
@@ -54,6 +77,9 @@ module InitConf
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 20]},
                  lyrics:       {},
+                 #
+                 # this denotes the layout parameters which are intended to bne configured
+                 # by the regular user
                  layout:       {limit_a3:     true,
                                 LINE_THIN:    0.1,
                                 LINE_MEDIUM:  0.3,
@@ -61,7 +87,12 @@ module InitConf
                                 # all numbers in mm
                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                 REST_SIZE:    [4, 2],
-                                grid:         false,
+                                packer:       {
+                                    pack_method:           0,
+                                    pack_max_spreadfactor: 2,
+                                    pack_min_increment:    0.2
+                                },
+                                limit_a3:     true
                  },
                  nonflowrest:  false,
                  notes:        {},
@@ -98,8 +129,21 @@ module InitConf
          },
 
 
+         # this is the builtin default for layout
+         # it is somehow double maintained es
+         # extrat.0.layout defines a default as well.
+         # but the runtime layout has more parameters which
+         # are not intended to be configured by a regular user.
+         #
+         # nevertheless, an expert user could also change the
+         # other parameters
          layout:       {
              grid:              false,
+             packer:            {
+                 pack_method:           0,
+                 pack_max_spreadfactor: 2,
+                 pack_min_increment:    0.2
+             },
              limit_a3:          true,
              SHOW_SLUR:         false,
              LINE_THIN:         0.1,
@@ -188,13 +232,21 @@ module InitConf
 
          neatjson:     {
              wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
-             decimals: 2,
+             decimals:      2,
              explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                               :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
                               :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                               #
                               :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, :a3_offset, :a4_offset, # sort within laoyut
+
+                              # sort within layout
+                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
+                              :DRAWING_AREA_SIZE,
+                              :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+
+                              # sort within printer
+                              :a3_offset, :a4_offset, # sort within laoyut
+
                               "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                               :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
                              ],

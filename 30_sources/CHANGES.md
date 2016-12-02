@@ -22,6 +22,7 @@
 * no longer shift name first and last string in the stringnames #18
 * Editor no longer hangs if harpnotes could not be created #86
 * abc2svg titletrim now turned off #88
+* browser now consider zupfnoter as secure site again #90
 * Now also use ctrl/cmd-RETURN for render
 * Now yield 1.50 instead of 1.49999999 to minimize rounding effects #95
 
@@ -35,6 +36,7 @@
 * now have a parameter "filenamepart" per extract to determine the filename addendum for the extract #72
 * now raise a popup if an error occurs on render or save #76
 * now have a button to toggle harpnote preview #93
+* now have foundation for optimized packer, and an experimental packer #89
 
 # V 1.4.2
 
