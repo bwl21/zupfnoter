@@ -766,12 +766,12 @@ Das Eingeabefenster enthält seinerseits
     zur Gestaltung der Unterlegnoten einfügen.
 
     > **Hinweis** über dieses Menü werden Konfigurationsparameter mit
-    > Standardwerten eingefügt. Das menü ist auch dann verfügbar, wenn
+    > Standardwerten eingefügt. Das Menü ist auch dann verfügbar, wenn
     > der Karteireiter "Konfiguration" aktiv ist. Damit können Parameter
-    > hinzugefügt werden, die in der MAske noch nciht dargestellt
-    > wertden, das sie in der Konfiguration noch nicht vorhanden sind.
+    > hinzugefügt werden, die in der Maske noch nicht dargestellt
+    > werden, da sie in der Konfiguration noch nicht vorhanden sind.
     >
-    > Die Werte der eingefügten Parameter können dann in über die
+    > Die Werte der eingefügten Parameter können dann über die
     > Konfigurationsmaken oder im Texteditor geändert werden.
 
     Die Reihenfolge der Menüpunkte entspricht der Bearbeitungsabfolge,
@@ -1116,11 +1116,10 @@ Dabei gibt es zwei Arten von Masken
     > "**Konfig. einfügen**" zusätzliche Parameter hinzuzufügen, während
     > man in einer dynamischen Maske arbeitet.
 
-Da wie gesagt, die Konfigurationsparameter an verschiedenen Stellen
-gesucht werden, muss auch das Einfügen / Löschen von
-Konfigurationsparametern über die Masken möglich sein. Daher gibt es in
-den Konfigurationsmasken pro Parameter je eine Zeile mit den folgenden
-Elementen:
+Da die Konfigurationsparameter an verschiedenen Stellen gesucht werden,
+muss auch das Einfügen / Löschen von Konfigurationsparametern über die
+Masken möglich sein. Daher gibt es in den Konfigurationsmasken pro
+Parameter je eine Zeile mit den folgenden Elementen:
 
 -   `Löschen` - Löscht den Paramter aus der Konfiguration
 
@@ -1162,11 +1161,16 @@ Für die Bedienung der Masken ist noch wichtig
     `Refresh` die Maske neu aufgebaut werden. Dies ist z.B. dann
     notwendigWenn der Konfigurationsparameer außerhalb der Maske
     geändert wird (z.B. im Texteditor).
--   Schalltfläche `Neuer Eintrag`: Diese Taste fügt eine neue Intanz
-    eines Parameters ein. Sie ist nur vorhanden, wenn es für einen
-    Parameter mehrere Instanzen geben kann (z.B.
-    \index{Liedtexte}Liedtexte [lyrics.x],
-    \index{Seitenbeschriftung}Seitenbeschrifung [notes.x])
+-   Schalltfläche `Neuer Eintrag`: Diese Taste fügt eine neue Instanz
+    eines Parameters ein. Sie ist nur aktiv, wenn es für einen Parameter
+    mehrere Instanzen geben kann (z.B. \index{Liedtexte}Liedtexte
+    [lyrics.x], \index{Seitenbeschriftung}Seitenbeschrifung [notes.x])
+-   Schalltfläche `Schnelleinstellungen`: Diese Taste öffnet ein Menü,
+    aus dem du für die aktuelle Maske eine Voreinstellung auswählne
+    kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination
+    von Parametern für einen bestimmten Fall (z.B. für ein "kompaktes
+    Layout"). Diese Schaltfläche ist nur für solche Masken aktiv, für
+    die es auch Voreinstellungen gibt.
 -   Feldeingabe mit der "TAB"-Taste bestätigen
 -   `Rendern` nicht vergessen (**In der Maske drück erst TAB, dann geht
     auch das "Rendern" ab**)

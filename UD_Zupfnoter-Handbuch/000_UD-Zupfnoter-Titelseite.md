@@ -1,7 +1,7 @@
 
 > >\ \ \ ![](../ZAUX_Images/000_frontimage.jpg) \  
 
-> für Zupfnoter Version 1.5.0 beta 1
+> für Zupfnoter Version 1.5.0 beta 3
 
 > Stand nach Review 3 
 

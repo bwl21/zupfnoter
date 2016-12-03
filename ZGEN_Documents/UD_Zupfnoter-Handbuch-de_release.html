@@ -769,8 +769,8 @@ W: Strophe 2 Zeile 2</code></pre>
 <li><p>Men&#252; <strong>Konfig. einf&#252;gen</strong></p>
 <p>&#220;ber dieses Men&#252; kannst du Konfigurationsparameter (Einstellungen) zur Gestaltung der Unterlegnoten einf&#252;gen.</p>
 <blockquote>
-<p><strong>Hinweis</strong> &#252;ber dieses Men&#252; werden Konfigurationsparameter mit Standardwerten eingef&#252;gt. Das men&#252; ist auch dann verf&#252;gbar, wenn der Karteireiter &#8220;Konfiguration&#8221; aktiv ist. Damit k&#246;nnen Parameter hinzugef&#252;gt werden, die in der MAske noch nciht dargestellt wertden, das sie in der Konfiguration noch nicht vorhanden sind.</p>
-<p>Die Werte der eingef&#252;gten Parameter k&#246;nnen dann in &#252;ber die Konfigurationsmaken oder im Texteditor ge&#228;ndert werden.</p>
+<p><strong>Hinweis</strong> &#252;ber dieses Men&#252; werden Konfigurationsparameter mit Standardwerten eingef&#252;gt. Das Men&#252; ist auch dann verf&#252;gbar, wenn der Karteireiter &#8220;Konfiguration&#8221; aktiv ist. Damit k&#246;nnen Parameter hinzugef&#252;gt werden, die in der Maske noch nicht dargestellt werden, da sie in der Konfiguration noch nicht vorhanden sind.</p>
+<p>Die Werte der eingef&#252;gten Parameter k&#246;nnen dann &#252;ber die Konfigurationsmaken oder im Texteditor ge&#228;ndert werden.</p>
 </blockquote>
 <p>Die Reihenfolge der Men&#252;punkte entspricht der Bearbeitungsabfolge, wobei Men&#252;punkte auch &#252;bersprungen werden d&#252;rfen. Die Erstellung der ABC-Notation sollte abgeschlossen sein, bevor man mit der Gestaltung der Unterlegnoten beginnt.</p>
 <p>Die Men&#252;punkte sind im Kapitel  <a href="#grundlegende-blatteinstellungen">Grundlegende-Blatteinstellungen</a> beschrieben</p>
@@ -943,7 +943,7 @@ W: Strophe 2 Zeile 2</code></pre>
 <p><strong>Hinweis</strong>: Es kann durchaus sinnvoll sein, &#252;ber das Men&#252; &#8220;<strong>Konfig. einf&#252;gen</strong>&#8221; zus&#228;tzliche Parameter hinzuzuf&#252;gen, w&#228;hrend man in einer dynamischen Maske arbeitet.</p>
 </blockquote></li>
 </ul>
-<p>Da wie gesagt, die Konfigurationsparameter an verschiedenen Stellen gesucht werden, muss auch das Einf&#252;gen / L&#246;schen von Konfigurationsparametern &#252;ber die Masken m&#246;glich sein. Daher gibt es in den Konfigurationsmasken pro Parameter je eine Zeile mit den folgenden Elementen:</p>
+<p>Da die Konfigurationsparameter an verschiedenen Stellen gesucht werden, muss auch das Einf&#252;gen / L&#246;schen von Konfigurationsparametern &#252;ber die Masken m&#246;glich sein. Daher gibt es in den Konfigurationsmasken pro Parameter je eine Zeile mit den folgenden Elementen:</p>
 <ul>
 <li><p><code>L&#246;schen</code> - L&#246;scht den Paramter aus der Konfiguration</p>
 <blockquote>
@@ -968,7 +968,8 @@ W: Strophe 2 Zeile 2</code></pre>
 <p>F&#252;r die Bedienung der Masken ist noch wichtig</p>
 <ul>
 <li>Schaltfl&#228;che <code>Refresh</code>: Um sicher zu gehen, dass die Konfigurationsmaske wirklich die aktuellen Werte zeigt, kann mit <code>Refresh</code> die Maske neu aufgebaut werden. Dies ist z.B. dann notwendigWenn der Konfigurationsparameer au&#223;erhalb der Maske ge&#228;ndert wird (z.B. im Texteditor).</li>
-<li>Schalltfl&#228;che <code>Neuer Eintrag</code>: Diese Taste f&#252;gt eine neue Intanz eines Parameters ein. Sie ist nur vorhanden, wenn es f&#252;r einen Parameter mehrere Instanzen geben kann (z.B. Liedtexte [lyrics.x], Seitenbeschrifung [notes.x])</li>
+<li>Schalltfl&#228;che <code>Neuer Eintrag</code>: Diese Taste f&#252;gt eine neue Instanz eines Parameters ein. Sie ist nur aktiv, wenn es f&#252;r einen Parameter mehrere Instanzen geben kann (z.B. Liedtexte [lyrics.x], Seitenbeschrifung [notes.x])</li>
+<li>Schalltfl&#228;che <code>Schnelleinstellungen</code>: Diese Taste &#246;ffnet ein Men&#252;, aus dem du f&#252;r die aktuelle Maske eine Voreinstellung ausw&#228;hlne kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination von Parametern f&#252;r einen bestimmten Fall (z.B. f&#252;r ein &#8220;kompaktes Layout&#8221;). Diese Schaltfl&#228;che ist nur f&#252;r solche Masken aktiv, f&#252;r die es auch Voreinstellungen gibt.</li>
 <li>Feldeingabe mit der &#8220;TAB&#8221;-Taste best&#228;tigen</li>
 <li><code>Rendern</code> nicht vergessen (<strong>In der Maske dr&#252;ck erst TAB, dann geht auch das &#8220;Rendern&#8221; ab</strong>)</li>
 </ul>
