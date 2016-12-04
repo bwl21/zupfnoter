@@ -30,25 +30,58 @@ module InitConf
 
          # this is used to upddate / create new objects
          templates:    {
-                        notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
-                        lyrics:      {verses: [1], pos: [350, 70]},
-                        tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
-                        annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
+             notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
+             lyrics:      {verses: [1], pos: [350, 70]},
+             tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
+             annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
 
-         # this is used to populate a presets menu
+         # this is used to populate a QuickSettings menu
          # in configuration editor
+         # needs to be handled in contrller_command_definiitions
          presets:      {
              layout:  {
-                 regular: nil,
-                 compact: nil,
-                 large:   nil
+                 layout_compact: {
+                     LINE_MEDIUM:  0.2,
+                     LINE_THICK:   0.3,
+                     # all numbers in mm
+                     ELLIPSE_SIZE: [3.5, 1.3], # radii of the largest Ellipse
+                     REST_SIZE:    [4, 1.5]
+                 },
+                 layout_regular: lambda { $conf['extract.0.layout'] },
+                 layout_large:   {
+                     LINE_MEDIUM:  0.3,
+                     LINE_THICK:   0.7,
+                     ELLIPSE_SIZE: [4, 2], # radii of the largest Ellipse
+                     REST_SIZE:    [4, 2]
+                 }
              },
 
              printer: {
-                 west:  nil,
-                 east:  nil,
-                 south: nil
+                 printer_left:    {
+                     printer: {
+                         a3_offset:   [-10, 0],
+                         a4_offset:   [-5, 0],
+                         show_border: false
+                     },
+                     layout:  {limit_a3: false}
+                 },
+                 printer_centric: {
+                     printer: {
+                         a3_offset:   [0, 0],
+                         a4_offset:   [5, 0],
+                         show_border: false
+                     },
+                     layout:  {limit_a3: true}
+                 },
+                 printer_right:   {
+                     printer: {
+                         a3_offset:   [10, 0],
+                         a4_offset:   [5, 0],
+                         show_border: false
+                     },
+                     layout:  {limit_a3: false}
+                 }
              }
          },
 

@@ -341,13 +341,19 @@ C,
                                                  [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
                                                    r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
                                                    r
-                                                 end
-            } }
+                                                 end} }
         }
 
+        $conf['presets.layout'].each do |key, preset_value|
+          values["preset.layout.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset} }
+        end
+
+        $conf['presets.printer'].each do |key, preset_value|
+          values["preset.printer.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.printer.#{key}"], method: :preset} }
+        end
 
         # here we handle the menu stuff
-        value  = values[args[:key]]
+        value = values[args[:key]]
         if value
 
           value = value.call
@@ -358,7 +364,7 @@ C,
           keys_from_value        = localconf.keys
 
           config_from_editor = get_config_from_editor
-          localconf.push(config_from_editor)
+          localconf.push(config_from_editor) unless value[:method] == :preset
 
           patchvalue = localconf[value[:key]]
 
@@ -403,10 +409,11 @@ C,
                                                                            ]) + [:restposition]},
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 
+            annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
-            layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3'])},
-            printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3'])},
+            layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
+            printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             stringnames:           {keys: expand_extract_keys([:stringnames])},
             extract0:              {keys: ['extract.0']},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
@@ -415,10 +422,12 @@ C,
 
         a = sets[args[:set]]
         if a
-          editable_keys    = a[:keys]
-          newentry_handler = a[:newentry_handler]
+          editable_keys         = a[:keys]
+          newentry_handler      = a[:newentry_handler]
+          quicksetting_commands = a[:quicksetting_commands] || []
         else # use the argument as key if there is no set.
-          editable_keys = [args[:set]]
+          quicksetting_commands = []
+          editable_keys         = [args[:set]]
         end
 
 
@@ -478,11 +487,13 @@ C,
 
         editor_title        = %Q{Exract #{@systemstatus[:view]}: #{args[:set]}}
         editorparams        = {
-            title:            editor_title,
-            editor:           @editor,
-            value_handler:    get_configvalues,
-            refresh_handler:  refresh_editor,
-            newentry_handler: newentry_handler
+            title:                 editor_title,
+            editor:                @editor,
+            value_handler:         get_configvalues,
+            refresh_handler:       refresh_editor,
+            newentry_handler:      newentry_handler,
+            quicksetting_commands: quicksetting_commands,
+            controller:            self
         }
         #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
         @config_form_editor = ConfstackEditor.new(editorparams)
@@ -568,6 +579,14 @@ C,
     value = localconf[key]
 
     value
+  end
+
+  # this yields an array of addconf-arguments
+  # used to populate a preset menu
+  def _get_quicksetting_commands(preset_domain)
+    $conf["presets.#{preset_domain}"].map do |k, v|
+      %Q{preset.#{preset_domain}.#{k}}
+    end
   end
 
   def __ic_04_localstore_commands

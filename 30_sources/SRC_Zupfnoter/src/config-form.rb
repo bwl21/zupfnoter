@@ -308,10 +308,12 @@ class ConfstackEditor
   #
   #def initialize(title, editor, value_handler, refresh_handler)
   def initialize(editorparams)
-    @title            = editorparams[:title]
-    @editor           = editorparams[:editor]
-    @refresh_handler  = editorparams[:refresh_handler]
-    @newentry_handler = editorparams[:newentry_handler]
+    @title                 = editorparams[:title]
+    @editor                = editorparams[:editor]
+    @refresh_handler       = editorparams[:refresh_handler]
+    @newentry_handler      = editorparams[:newentry_handler]
+    @quicksetting_commands = editorparams[:quicksetting_commands]
+    @controller            = editorparams[:controller]
 
     value_handler = editorparams[:value_handler]
 
@@ -423,6 +425,11 @@ class ConfstackEditor
 
   def generate_form
     $log.timestamp("generate Form  #{__FILE__} #{__LINE__}")
+
+    presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
+                  items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
+    }
+
     @form = {
         name:       "configform",
         #header:     I18n.t(@title),
@@ -442,12 +449,20 @@ class ConfstackEditor
             items:   [
                          {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<div style="font-size:120%;vertical-align:top;margin-bottom: 8px;">#{I18n.t(@title)}</div>}},
                          {id: 'bt3', type: 'spacer'},
-                         {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), img: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
-                         {id: 'refresh', type: 'button', caption: 'Refresh', img: 'fa fa-refresh'},
+                         presetmenu,
+                         {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), icon: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
+                         {id: 'refresh', type: 'button', caption: 'Refresh', icon: 'fa fa-refresh'},
                      ],
             onClick: lambda do |event|
-              refresh_form if (Native(event).target == 'refresh')
-              @newentry_handler.call if (Native(event).target == 'new_entry')
+              the_target = Native(event).target
+
+              if the_target.start_with? 'presets:'
+                @controller.handle_command (%Q{addconf "#{the_target.split('presets:').last}"})
+              end
+
+              refresh_form if (the_target == 'refresh')
+
+              @newentry_handler.call if (the_target == 'new_entry')
             end
         },
         onValidate: lambda { alert("validate"); nil },
