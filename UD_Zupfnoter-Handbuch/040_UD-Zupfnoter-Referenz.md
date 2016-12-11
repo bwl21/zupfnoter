@@ -240,7 +240,7 @@ man sie "notenbezogene Elemente":
 
 -   **(30) decoration - Dekoration**: Zupfnoter kann einzelne
     Dekorationen (Stand Version 1.5 nur die Fermate) darstellen. Für
-    diese Dekorationen werden die Eingaben der ABC-Notation verwednet
+    diese Dekorationen werden die Eingaben der ABC-Notation verwendet
     (z.B. für die Fermate : "`!fermata!`" oder "`H`").
 
 ### Darstellung von Verbindungslinien
@@ -317,7 +317,7 @@ gibt es folgende Elemente:
         > normale **(25) Sprunglinie für Wiederholung** verwendet. Die
         > Positionsangabe der Ausganslinie wird in diesem Fall ignoriert
         > und die Positionsangabe der Sprunglinie am Ender der
-        > Wiederholung verwednet.
+        > Wiederholung verwendet.
 
     -   **(53) Folgelinie** ist die Ausgangslinie der letzten Variation.
         Diese kann separat positioniert werden, um das gwünschte
@@ -369,8 +369,18 @@ darstellen zu können, gibt es folgende Elemente:
     > eingestellt werden (siehe Kapitel
     > \ref{extract.0.lyrics} [extract.x.lyrics](#extract.0.lyrics)).
 
-    > **Hinweis**: Zupfnoter ignoriert Liedtexte in den Notenlinien
-    > (ABC-Notation Kopfzeile `w:` (Kleinbuchstaben).
+    > **Hinweis**: In der ABC-Notation kann man Liedtexte mit sowhohl
+    > mit Kopfzeile `W:`(Großbuchstaben) als auch mit Kopfzeile `w:`
+    > (Kleionbuchstaben) eingeben. Die Variante mot Kleinbuchstaben wird
+    > verwendet, um die Lietexte direkt in die Notensyteme zu schreiben.
+    > Zupfnoter ignoriert diese Liedtexte in den Notenlinien
+
+    > **Hinweis**: Auch wenn die ABC-Notation es erlaubt, die Kopfzeilen
+    > `W:` im ganezn ABC-Text zu verteilen ist es wichtig, die Liedtexte
+    > dennoch in einem Block zusammenzufassen. Sonst meldet Zupfnoter,
+    > dass es mehrere Liedtexte gibt. Der Editor fasst si alle zusammen,
+    > löscht aber die anderen Blöcke nicht. Das muss manuell korrigiert
+    > werden.
 
 ### Elemente zur Handhabung des Unterlegnotenblattes
 
@@ -709,7 +719,7 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
     TODO: Überarbeiten nach Verbesserung der Bedienung von Auszuügen.
 
 -   Schaltfläche **Rendern** (umwandeln): (alternativ Tastenkombination
-    `Strg` und `R`)
+    `cmd/ctrl - R` bzw. `cmd/ctrl - RETURN`.
 
     Mit Klick auf diese Schaltfläche werden die Ansicht der
     Unterlegnoten und die Fehlermeldungen im Texteditor des
@@ -799,7 +809,7 @@ Das Eingeabefenster enthält seinerseits
     Dazu werden entprechende Bildschirmmasken aufgerufen. Weitere
     Informationen findest du im\
     Kapitel \ref{konfigurationsmasken}
-    "[Konfigurationsmasken](#konfigurationsmasken)".
+    [Konfigurationsmasken](#konfigurationsmasken).
 
 -   Menü **Zusatz einfügen**
 
@@ -900,11 +910,11 @@ Einträgen
 
 ### Konsole {#konsole-fenster}
 
-Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination `cmd-K`
-eingeschaltet wurde. Sie stellt die letzten Meldungen von Zupfnoter dar.
-Experten können in der Konsole auch weitere Befehle eingeben, die
-Zupfnoter direkt steuern. Die möglichen Befehle kann man mit dem Befehl
-`help` in der Konsole anzeigen.
+Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination
+`cmd/ctrl-K` eingeschaltet wurde. Sie stellt die letzten Meldungen von
+Zupfnoter dar. Experten können in der Konsole auch weitere Befehle
+eingeben, die Zupfnoter direkt steuern. Die möglichen Befehle kann man
+mit dem Befehl `help` in der Konsole anzeigen.
 
 > **Hinweis**: Die Zupfnoter-Menüs lösen letztendlich solche
 > Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
@@ -1021,8 +1031,8 @@ Umständen keine herkömmlichen Noten oder Unterlegnoten generiert werden.
 > angezeigt.
 
 > **Hinweis**: Die letzten Fehlermeldungen kann man in der Konsole (mit
-> `ctrl/cmd-K`) sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch ein
-> Fenster mit den letzten Fehlermeldungen an.
+> `cmd/ctrl - K`) sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch
+> ein Fenster mit den letzten Fehlermeldungen an.
 
 #### Darstellung der Konfigurationsparameter im Texteditor
 
@@ -1063,8 +1073,8 @@ Kapitel \ref{konfiguration} [Konfiguration](#konfiguration).
 > **Hinweis**: Wenn man im Vorschaufenster Elemente mit der Maus
 > verschiebt wird diese Änderung sofort in den Konfigurationsparametern
 > im Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher
-> kann man mit "Undo" (cmd/ctrl-Z) im Texteditor solche Änderungen auch
-> wieder rückgängig machen. Das gilt auch für die Bearbeitung der
+> kann man mit "Undo" (`cmd/ctrl - Z`) im Texteditor solche Änderungen
+> auch wieder rückgängig machen. Das gilt auch für die Bearbeitung der
 > Konfigurationsparameter über die Bildschirmmasken.
 
 ### Editor für Liedtexte {#liedtexteditor}
@@ -1285,6 +1295,110 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
 > **Hinweis**: Die Angaben der auszugebenden Stimmen könnte an sich
 > entfallen, da da sie der Voreinstellung in Zupfnoter entsprechen. Sie
 > sind hir nur zur Illustration sufgeüfhrt.
+
+## Sonstige Hinweise
+
+### Wenn Zupfnoter beim Start hängen bleibt
+
+Was ist heute schon perfekt - auch bei Zupfnoter kann es Probleme geben.
+In seltenen Fällen kann es vorkommen, dass die ABC-Noten oder die
+Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den
+gleichen Fehler läuft und keine Bearbeitung mehr möglich ist.
+
+In diesem Fall kannst du beim Aufruf von Zupfnoter /?debug anhängen,
+z.B.
+
+    https://zupfnoter.weichel21.de/?debug
+
+Dann startet Zupfnoter, versucht aber nicht gleich ein "Rendern" . Damit
+kannst dann die Eingaben korrigieren bis "Rendern" wieder funktioniert.
+
+### Transponieren
+
+Wenn das Musikstück nicht auf die Harfe passt, kann man es ggf. durch
+transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B.
+die folgende Kopfzeile ein. Diese veschiebt das Stück drei Halbtnach
+unten (in den Unterlegnoten also nach links)
+
+`I:transpose -3`
+
+> **Hinweise**
+>
+> -   Diese Kopfzeile muß vor der Kopfzeile mit der Angabe der Tonart
+>     stehen, damit sie auf das ganze Stück wirkt.
+>
+> -   Diese Anweisung kann auch als als eingebettete Kopfzeile
+>     geschrieben werden, um Teile einer Stimme zu transponieren, z.B.
+>     `C[I:transpose 2]DE` ist also dasselbe wie `CE^F`. Das ist aber
+>     schon ziemlich trickreich ...
+>
+> -   Transpose stellt auch die Vorzeichen auf die neue Tonart um.
+>
+> -   Die Zahl nach dem `transpose` gibt die Anzahl der Halbtonschritte
+>     an. Negative Werte transponieren nach unten (nach links im
+>     Unterlegnotenblatt).
+>
+> <!-- -->
+
+### Wenn Takte nicht synchron sind
+
+Zupfnoter prüft nicht, ob die Takte in allen Stimmen synchron sind. Wenn
+die Takte in den Stimmen nicht synchron sind, kommt es zu
+unterschiedlichen Zeilenumbrüchen und fehlerhaften Unterlegnoten.
+
+Die Takte kann man am besten prüfen, wenn jede Stimme eine eigene
+Notenzeile im Notensystem hat.
+
+Dies erreicht man mit
+
+`%%score 1 2 3 4` Das bewirkt ein Notensystem mit einer Noteznzeile pro
+Stimme. Weitere Einzelheiten im nächsten Kapitel.
+
+### Mehrere Stimmen in ABC-Notation {#mherere-Stimmen-in-abc}
+
+Da das im Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt
+es hier weitere Informationen.
+
+Die Kopfzeile `V:` The V: erlaubt die Erfassung mehrstimmiger Stücke.
+Dabei wird das Stück in Stimmen aufgeteilt. Jede Stimme beginnt mit
+einer `V:` - Kopfzeile. Alle Noten die dieser Zeile folgen bis zur
+nächsten `V:` - Kopfzeile oder dem Ende des Stückes gehören zu dieser
+Stimme.
+
+Die `V:` Zeile definiert auch die Eigenschaften der Stimme mit folgendem
+Aufbau
+
+> `V:<ID> [clef=]<clef name> [octave=<number>]"`
+
+Darin ist
+
+-   `<ID>` eine Identifiaktion der Stimme, sie wird inder `%%score` -
+    Anweisung referenziert. Es empfhiehlt sich hier einfach ganze Zahlen
+    zu verwenden un ddie Stimme so durchzunumerieren.
+-   `[clef=]<clef name>` optionale Angabe des Notenschlüssels. Name ist
+    `treble` (Viloinschlüssel) oder `bass` (Baßschlüssel)
+-   `octave=<number>` optionale Angabe einer Oktavierung. Positive
+    Zahlen transponieren eine Oktave noch oben, negative Zahlen um eine
+    Oktabe nach untern.
+
+Die Darstellung der Stimmen im Notensystem wird durch die `%%score` -
+Anweisung bestimmt. Hier einfach zwei im Zusammenhang von Zupfnoter
+relevante Beispiele
+
+-   `%%score 1 2 3 4` - Stimme 1,2,3,4 jeweils in einer eigenen
+    Notenzeile
+-   `%%score (1 2) (3 4)` - Stimme 1, 2 bzw. 3,4 zusammengefasst in in
+    einer Notenzeile
+
+> **Hinweis**: In einigen Konfigurationseinstellungen von Zupfnoter
+> werden Stimmen über eine Stimmen-Nummer angegeben. Die dabei relevante
+> Nummerierung der Stimmem ergibt sich aus der Reihenfolge der Stimmen
+> in der `%%score` - Anweisung im ABC-Notation (nicht zu verwecheln mit
+> der Identifikation der Stimme in der `V:` - Zeile.
+
+> **Hinweis**: Die ABC-Notation erlaubt mehrere `%%score` - Anweisungen.
+> Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das
+> Verhalten noch nicht ausgetestet ist.
 
 [^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um

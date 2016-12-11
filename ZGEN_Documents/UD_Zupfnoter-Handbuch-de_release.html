@@ -59,14 +59,19 @@
 <li><a href="#masken-fuer-zusaetze"><span class="toc-section-number">4.5.4</span> Masken f&#252;r Zupfnoter-spezifische Zus&#228;tze</a></li>
 </ul></li>
 <li><a href="#auszuege"><span class="toc-section-number">4.6</span> Erstellung von Ausz&#252;gen</a></li>
+<li><a href="#sonstige-hinweise"><span class="toc-section-number">4.7</span> Sonstige Hinweise</a><ul>
+<li><a href="#wenn-zupfnoter-beim-start-h&#228;ngen-bleibt"><span class="toc-section-number">4.7.1</span> Wenn Zupfnoter beim Start h&#228;ngen bleibt</a></li>
+<li><a href="#transponieren"><span class="toc-section-number">4.7.2</span> Transponieren</a></li>
+<li><a href="#wenn-takte-nicht-synchron-sind"><span class="toc-section-number">4.7.3</span> Wenn Takte nicht synchron sind</a></li>
+<li><a href="#mherere-Stimmen-in-abc"><span class="toc-section-number">4.7.4</span> Mehrere Stimmen in ABC-Notation</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#zupfnoter-f&#252;r-experten"><span class="toc-section-number">5</span> Zupfnoter f&#252;r Experten</a><ul>
-<li><a href="#wenn-zupfnoter-beim-start-h&#228;ngen-bleibt"><span class="toc-section-number">5.1</span> Wenn Zupfnoter beim Start h&#228;ngen bleibt</a></li>
-<li><a href="#zupfnoter-einstellungen"><span class="toc-section-number">5.2</span> Zupfnoter Einstellungen</a><ul>
-<li><a href="#pers&#246;nliche-einstellungen"><span class="toc-section-number">5.2.1</span> Pers&#246;nliche Einstellungen</a></li>
-<li><a href="#grundlegende-blatteinstellungen"><span class="toc-section-number">5.2.2</span> Grundlegende Blatteinstellungen (Konfiguration)</a></li>
+<li><a href="#zupfnoter-einstellungen"><span class="toc-section-number">5.1</span> Zupfnoter Einstellungen</a><ul>
+<li><a href="#pers&#246;nliche-einstellungen"><span class="toc-section-number">5.1.1</span> Pers&#246;nliche Einstellungen</a></li>
+<li><a href="#grundlegende-blatteinstellungen"><span class="toc-section-number">5.1.2</span> Grundlegende Blatteinstellungen (Konfiguration)</a></li>
 </ul></li>
-<li><a href="#zusaetze"><span class="toc-section-number">5.3</span> Zupfnoter-spezifische Zus&#228;tze</a></li>
+<li><a href="#zusaetze"><span class="toc-section-number">5.2</span> Zupfnoter-spezifische Zus&#228;tze</a></li>
 </ul></li>
 <li><a href="#best-practice"><span class="toc-section-number">6</span> Best practice</a></li>
 <li><a href="#abc-tutorial"><span class="toc-section-number">7</span> ABC Tutorial</a></li>
@@ -170,6 +175,10 @@
 <li><p><strong>Lektoren</strong> schreiben nicht selbst im Zupfnoter, sondern redigieren Noten in Zpufnoter.</p></li>
 </ul>
 <p>Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff. sind nur rudiment&#228;r. Wir ver&#246;ffentlichen daher die Voreabversionen mit TODOs und Zeilennummern.</p>
+<p>F&#252;r Hinweise auf Fehler oder Verbessrungsm&#246;glichkeiten sind wir sehr dankbar.</p>
+</blockquote>
 <p>TODO: markieren, f&#252;r welche Zielgruppe welche Textabschnitte relevant sind.</p>
 <p>TODO: Screenshots aktualisieren</p>
 <h1 id="einf&#252;hrung"><span class="header-section-number">2</span> Einf&#252;hrung</h1>
@@ -540,7 +549,7 @@ Schw&#228;nzchen in die H&#246;h</code></pre>
 <p><strong>Hinweis</strong> die Z&#228;hlhilfen sind so gesataltet, dass man w&#228;hrend des Spields die Zeitachse durchz&#228;hlt. Bei Noten mit mehreren Schl&#228;gen beginnt die Z&#228;hlhilfe immer mit der Nummer des ersten Schlages (z.B. 2-3 ist eine Note, die bei Schlag 2 beginnt und zwei Schl&#228;ge lang gespielt wird, d.h. w&#228;hrend diese Note klingt, z&#228;hlt man 2 - 3)</p>
 </blockquote></li>
 <li><p><strong>(29) barnumbers - Taktnummer</strong>: Zupfnoter kann die Takte automatisch durchnummerieren. Damit kann bei gemeinsamem Spiel auch mitten im Musikst&#252;ck wieder eingesetz werden. Diese Ausgabe ist konfigurationsabh&#228;ngig (<code>extract.0.barnumbers</code>.</p></li>
-<li><p><strong>(30) decoration - Dekoration</strong>: Zupfnoter kann einzelne Dekorationen (Stand&#160;Version 1.5 nur die Fermate) darstellen. F&#252;r diese Dekorationen werden die Eingaben der ABC-Notation verwednet (z.B.&#160;f&#252;r die Fermate : &#8220;<code>!fermata!</code>&#8221; oder &#8220;<code>H</code>&#8221;).</p></li>
+<li><p><strong>(30) decoration - Dekoration</strong>: Zupfnoter kann einzelne Dekorationen (Stand&#160;Version 1.5 nur die Fermate) darstellen. F&#252;r diese Dekorationen werden die Eingaben der ABC-Notation verwendet (z.B.&#160;f&#252;r die Fermate : &#8220;<code>!fermata!</code>&#8221; oder &#8220;<code>H</code>&#8221;).</p></li>
 </ul>
 <h3 id="darstellung-von-verbindungslinien"><span class="header-section-number">4.2.4</span> Darstellung von Verbindungslinien</h3>
 <p>Um auf den Unterlegenoten die Zusammenh&#228;nge zwischen Noten darzustellen, gibt es folgende Elemente:</p>
@@ -563,7 +572,7 @@ Schw&#228;nzchen in die H&#246;h</code></pre>
 <li><strong>(51) Eingangslinie</strong> (im Beispiel links): Es gibt pro Variation eine Linie, welche zum Anfang der Variation f&#252;hrt</li>
 <li><p><strong>(52) Ausgangslinie</strong> (im Beispiel rechts): Es gibt pro Variation eine Ausgangslinie, welche zur n&#228;chsten Note nach der letzten Variation f&#252;hrt.</p>
 <blockquote>
-<p><strong>Hinweis</strong>: Wenn die Varianten am Ende einer Wiederholung stehen, entf&#228;llt die Ausgangslinie. Stattdessen wird eine normale <strong>(25) Sprunglinie f&#252;r Wiederholung</strong> verwendet. Die Positionsangabe der Ausganslinie wird in diesem Fall ignoriert und die Positionsangabe der Sprunglinie am Ender der Wiederholung verwednet.</p>
+<p><strong>Hinweis</strong>: Wenn die Varianten am Ende einer Wiederholung stehen, entf&#228;llt die Ausgangslinie. Stattdessen wird eine normale <strong>(25) Sprunglinie f&#252;r Wiederholung</strong> verwendet. Die Positionsangabe der Ausganslinie wird in diesem Fall ignoriert und die Positionsangabe der Sprunglinie am Ender der Wiederholung verwendet.</p>
 </blockquote></li>
 <li><p><strong>(53) Folgelinie</strong> ist die Ausgangslinie der letzten Variation. Diese kann separat positioniert werden, um das gw&#252;nschte Notenbild zu erreichen.</p></li>
 </ul>
@@ -594,7 +603,10 @@ W: Strophe 2 Zeile 2</code></pre>
 <p><strong>Hinweis</strong>: Die Ausgabe der Strophen mu&#223; &#252;ber die Konfiguration eingestellt werden (siehe Kapitel &#160;<a href="#extract.0.lyrics">extract.x.lyrics</a>).</p>
 </blockquote>
 <blockquote>
-<p><strong>Hinweis</strong>: Zupfnoter ignoriert Liedtexte in den Notenlinien (ABC-Notation Kopfzeile <code>w:</code> (Kleinbuchstaben).</p>
+<p><strong>Hinweis</strong>: In der ABC-Notation kann man Liedtexte mit sowhohl mit Kopfzeile <code>W:</code>(Gro&#223;buchstaben) als auch mit Kopfzeile <code>w:</code> (Kleionbuchstaben) eingeben. Die Variante mot Kleinbuchstaben wird verwendet, um die Lietexte direkt in die Notensyteme zu schreiben. Zupfnoter ignoriert diese Liedtexte in den Notenlinien</p>
+</blockquote>
+<blockquote>
+<p><strong>Hinweis</strong>: Auch wenn die ABC-Notation es erlaubt, die Kopfzeilen <code>W:</code> im ganezn ABC-Text zu verteilen ist es wichtig, die Liedtexte dennoch in einem Block zusammenzufassen. Sonst meldet Zupfnoter, dass es mehrere Liedtexte gibt. Der Editor fasst si alle zusammen, l&#246;scht aber die anderen Bl&#246;cke nicht. Das muss manuell korrigiert werden.</p>
 </blockquote></li>
 </ul>
 <h3 id="elemente-zur-handhabung-des-unterlegnotenblattes"><span class="header-section-number">4.2.6</span> Elemente zur Handhabung des Unterlegnotenblattes</h3>
@@ -737,7 +749,7 @@ W: Strophe 2 Zeile 2</code></pre>
 </ul>
 <p>Es gibt standardm&#228;ssig die Ausz&#252;ge 0 bis 3. Der Auszug 0 beinhaltet alle Stimmen und wird automatisch vom Zupfnoter erstellt. Wenn man einen Auszug erstellen m&#246;chte, w&#228;hlt man z.B. Auszug 1 aus und definiert im Abschnitt links, was man im Auszug 1 sehen m&#246;chte: z.B. 1.te und 2.te Stimme. Der Auszug 2 k&#246;nnte dann z.B. zur Darstellung der 3.ten und 4.ten Stimme dienen.</p>
 <p>TODO: &#220;berarbeiten nach Verbesserung der Bedienung von Auszu&#252;gen.</p></li>
-<li><p>Schaltfl&#228;che <strong>Rendern</strong> (umwandeln): (alternativ Tastenkombination <code>Strg</code> und <code>R</code>)</p>
+<li><p>Schaltfl&#228;che <strong>Rendern</strong> (umwandeln): (alternativ Tastenkombination <code>cmd/ctrl - R</code> bzw. <code>cmd/ctrl - RETURN</code>.</p>
 <p>Mit Klick auf diese Schaltfl&#228;che werden die Ansicht der Unterlegnoten und die Fehlermeldungen im Texteditor des Eingebefensters aktualisiert.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Diese Funktion sollte h&#228;ufig genutzt werden, um immer aktuelle Ergebnisse auf dem Bildschirm zu sehen.</p>
@@ -783,7 +795,7 @@ W: Strophe 2 Zeile 2</code></pre>
 </ol>
 </blockquote></li>
 <li><p>Men&#252; <strong>Konfig. bearbeiten</strong></p>
-<p>&#220;ber dieses Men&#252; kannst du die Konfigurationsparameter bearbeiten. Dazu werden entprechende Bildschirmmasken aufgerufen. Weitere Informationen findest du im<br />Kapitel&#160; &#8220;<a href="#konfigurationsmasken">Konfigurationsmasken</a>&#8221;.</p></li>
+<p>&#220;ber dieses Men&#252; kannst du die Konfigurationsparameter bearbeiten. Dazu werden entprechende Bildschirmmasken aufgerufen. Weitere Informationen findest du im<br />Kapitel&#160; <a href="#konfigurationsmasken">Konfigurationsmasken</a>.</p></li>
 <li><p>Men&#252; <strong>Zusatz einf&#252;gen</strong></p>
 <p>&#220;ber dieses Men&#252; k&#246;nnen Zupfnoter-spezifische Zus&#228;tze an eine Note bzw. an einen Taktstrich eingef&#252;gt werden. Zupfnoter verwendet spezifische Zus&#228;tze, um z.B. die Position von Sprunglinien anzugeben oder notengebundene Anmerkungen zu erfassen. Diese Zus&#228;tze sind an eine Note bzw. an einen Taktstrich gebunden und werden in Form einer ABC-Anmerkung notiert (z.B.<code>&quot;^@@3&quot; :|</code> f&#252;r die Lage einer Sprungline f&#252;r eine Wiederholung).</p>
 <blockquote>
@@ -829,7 +841,7 @@ W: Strophe 2 Zeile 2</code></pre>
 <li>Name des Konfigurationsparameters f&#252;r das Element unter dem Mauszeiger falls dieses mit der Maus veschoben werden kann.</li>
 </ul>
 <h3 id="konsole-fenster"><span class="header-section-number">4.3.7</span> Konsole</h3>
-<p>Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination <code>cmd-K</code> eingeschaltet wurde. Sie stellt die letzten Meldungen von Zupfnoter dar. Experten k&#246;nnen in der Konsole auch weitere Befehle eingeben, die Zupfnoter direkt steuern. Die m&#246;glichen Befehle kann man mit dem Befehl <code>help</code> in der Konsole anzeigen.</p>
+<p>Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination <code>cmd/ctrl-K</code> eingeschaltet wurde. Sie stellt die letzten Meldungen von Zupfnoter dar. Experten k&#246;nnen in der Konsole auch weitere Befehle eingeben, die Zupfnoter direkt steuern. Die m&#246;glichen Befehle kann man mit dem Befehl <code>help</code> in der Konsole anzeigen.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Die Zupfnoter-Men&#252;s l&#246;sen letztendlich solche Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der Regel nicht brauchen.</p>
 </blockquote>
@@ -898,7 +910,7 @@ W: Strophe 2 Zeile 2</code></pre>
 <p><strong>Hinweis</strong>: Die Position des Cursors (der Schreibmarke) wird im Format Zeile:Spalte (z.B. 12:11) ganz links in der Statusleiste angezeigt.</p>
 </blockquote>
 <blockquote>
-<p><strong>Hinweis</strong>: Die letzten Fehlermeldungen kann man in der Konsole (mit <code>ctrl/cmd-K</code>) sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch ein Fenster mit den letzten Fehlermeldungen an.</p>
+<p><strong>Hinweis</strong>: Die letzten Fehlermeldungen kann man in der Konsole (mit <code>cmd/ctrl - K</code>) sehen. Nach wichtigen Befehlen zeigt Zupfnoter auch ein Fenster mit den letzten Fehlermeldungen an.</p>
 </blockquote>
 <h4 id="darstellung-der-konfigurationsparameter-im-texteditor"><span class="header-section-number">4.5.1.2</span> Darstellung der Konfigurationsparameter im Texteditor</h4>
 <p>&#160;</p>
@@ -914,7 +926,7 @@ W: Strophe 2 Zeile 2</code></pre>
 <p><strong>Hinweis</strong>: Wichtig ist, nach einer &#196;nderung in der Men&#252;leiste immer auf auf <code>Rendern</code> (ausf&#252;hren) zu dr&#252;cken, damit die Unterlegnoten aktualisiert werden.</p>
 </blockquote>
 <blockquote>
-<p><strong>Hinweis</strong>: Wenn man im Vorschaufenster Elemente mit der Maus verschiebt wird diese &#196;nderung sofort in den Konfigurationsparametern im Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher kann man mit &#8220;Undo&#8221; (cmd/ctrl-Z) im Texteditor solche &#196;nderungen auch wieder r&#252;ckg&#228;ngig machen. Das gilt auch f&#252;r die Bearbeitung der Konfigurationsparameter &#252;ber die Bildschirmmasken.</p>
+<p><strong>Hinweis</strong>: Wenn man im Vorschaufenster Elemente mit der Maus verschiebt wird diese &#196;nderung sofort in den Konfigurationsparametern im Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher kann man mit &#8220;Undo&#8221; (<code>cmd/ctrl - Z</code>) im Texteditor solche &#196;nderungen auch wieder r&#252;ckg&#228;ngig machen. Das gilt auch f&#252;r die Bearbeitung der Konfigurationsparameter &#252;ber die Bildschirmmasken.</p>
 </blockquote>
 <h3 id="liedtexteditor"><span class="header-section-number">4.5.2</span> Editor f&#252;r Liedtexte</h3>
 <p>Liedtexte werden in der ABC-Notation in den Kopfpzeilen <code>W:</code> erfasst. Zur Vereinfachung der Eingabe bietet Zupfnoter auch einen Liedtext-Editor Dieser ist &#252;ber den Reiter <code>Liedtexte</code> erreichbar.</p>
@@ -1059,17 +1071,60 @@ W: Strophe 2 Zeile 2</code></pre>
 <blockquote>
 <p><strong>Hinweis</strong>: Die Angaben der auszugebenden Stimmen k&#246;nnte an sich entfallen, da da sie der Voreinstellung in Zupfnoter entsprechen. Sie sind hir nur zur Illustration sufge&#252;fhrt.</p>
 </blockquote>
+<h2 id="sonstige-hinweise"><span class="header-section-number">4.7</span> Sonstige Hinweise</h2>
+<h3 id="wenn-zupfnoter-beim-start-h&#228;ngen-bleibt"><span class="header-section-number">4.7.1</span> Wenn Zupfnoter beim Start h&#228;ngen bleibt</h3>
+<p>Was ist heute schon perfekt - auch bei Zupfnoter kann es Probleme geben. In seltenen F&#228;llen kann es vorkommen, dass die ABC-Noten oder die Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den gleichen Fehler l&#228;uft und keine Bearbeitung mehr m&#246;glich ist.</p>
+<p>In diesem Fall kannst du beim Aufruf von Zupfnoter /?debug anh&#228;ngen, z.B.</p>
+<pre><code>https://zupfnoter.weichel21.de/?debug</code></pre>
+<p>Dann startet Zupfnoter, versucht aber nicht gleich ein &#8220;Rendern&#8221; . Damit kannst dann die Eingaben korrigieren bis &#8220;Rendern&#8221; wieder funktioniert.</p>
+<h3 id="transponieren"><span class="header-section-number">4.7.2</span> Transponieren</h3>
+<p>Wenn das Musikst&#252;ck nicht auf die Harfe passt, kann man es ggf. durch transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B. die folgende Kopfzeile ein. Diese veschiebt das St&#252;ck drei Halbtnach unten (in den Unterlegnoten also nach links)</p>
+<p><code>I:transpose -3</code></p>
+<blockquote>
+<p><strong>Hinweise</strong></p>
+<ul>
+<li><p>Diese Kopfzeile mu&#223; vor der Kopfzeile mit der Angabe der Tonart stehen, damit sie auf das ganze St&#252;ck wirkt.</p></li>
+<li><p>Diese Anweisung kann auch als als eingebettete Kopfzeile geschrieben werden, um Teile einer Stimme zu transponieren, z.B. <code>C[I:transpose 2]DE</code> ist also dasselbe wie <code>CE^F</code>. Das ist aber schon ziemlich trickreich &#8230;</p></li>
+<li><p>Transpose stellt auch die Vorzeichen auf die neue Tonart um.</p></li>
+<li><p>Die Zahl nach dem <code>transpose</code> gibt die Anzahl der Halbtonschritte an. Negative Werte transponieren nach unten (nach links im Unterlegnotenblatt).</p></li>
+</ul>
+<!-- -->
+</blockquote>
+<h3 id="wenn-takte-nicht-synchron-sind"><span class="header-section-number">4.7.3</span> Wenn Takte nicht synchron sind</h3>
+<p>Zupfnoter pr&#252;ft nicht, ob die Takte in allen Stimmen synchron sind. Wenn die Takte in den Stimmen nicht synchron sind, kommt es zu unterschiedlichen Zeilenumbr&#252;chen und fehlerhaften Unterlegnoten.</p>
+<p>Die Takte kann man am besten pr&#252;fen, wenn jede Stimme eine eigene Notenzeile im Notensystem hat.</p>
+<p>Dies erreicht man mit</p>
+<p><code>%%score 1 2 3 4</code> Das bewirkt ein Notensystem mit einer Noteznzeile pro Stimme. Weitere Einzelheiten im n&#228;chsten Kapitel.</p>
+<h3 id="mherere-Stimmen-in-abc"><span class="header-section-number">4.7.4</span> Mehrere Stimmen in ABC-Notation</h3>
+<p>Da das im Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt es hier weitere Informationen.</p>
+<p>Die Kopfzeile <code>V:</code> The V: erlaubt die Erfassung mehrstimmiger St&#252;cke. Dabei wird das St&#252;ck in Stimmen aufgeteilt. Jede Stimme beginnt mit einer <code>V:</code> - Kopfzeile. Alle Noten die dieser Zeile folgen bis zur n&#228;chsten <code>V:</code> - Kopfzeile oder dem Ende des St&#252;ckes geh&#246;ren zu dieser Stimme.</p>
+<p>Die <code>V:</code> Zeile definiert auch die Eigenschaften der Stimme mit folgendem Aufbau</p>
+<blockquote>
+<p><code>V:&lt;ID&gt; [clef=]&lt;clef name&gt; [octave=&lt;number&gt;]&quot;</code></p>
+</blockquote>
+<p>Darin ist</p>
+<ul>
+<li><code>&lt;ID&gt;</code> eine Identifiaktion der Stimme, sie wird inder <code>%%score</code> - Anweisung referenziert. Es empfhiehlt sich hier einfach ganze Zahlen zu verwenden un ddie Stimme so durchzunumerieren.</li>
+<li><code>[clef=]&lt;clef name&gt;</code> optionale Angabe des Notenschl&#252;ssels. Name ist <code>treble</code> (Viloinschl&#252;ssel) oder <code>bass</code> (Ba&#223;schl&#252;ssel)</li>
+<li><code>octave=&lt;number&gt;</code> optionale Angabe einer Oktavierung. Positive Zahlen transponieren eine Oktave noch oben, negative Zahlen um eine Oktabe nach untern.</li>
+</ul>
+<p>Die Darstellung der Stimmen im Notensystem wird durch die <code>%%score</code> - Anweisung bestimmt. Hier einfach zwei im Zusammenhang von Zupfnoter relevante Beispiele</p>
+<ul>
+<li><code>%%score 1 2 3 4</code> - Stimme 1,2,3,4 jeweils in einer eigenen Notenzeile</li>
+<li><code>%%score (1 2) (3 4)</code> - Stimme 1, 2 bzw. 3,4 zusammengefasst in in einer Notenzeile</li>
+</ul>
+<blockquote>
+<p><strong>Hinweis</strong>: In einigen Konfigurationseinstellungen von Zupfnoter werden Stimmen &#252;ber eine Stimmen-Nummer angegeben. Die dabei relevante Nummerierung der Stimmem ergibt sich aus der Reihenfolge der Stimmen in der <code>%%score</code> - Anweisung im ABC-Notation (nicht zu verwecheln mit der Identifikation der Stimme in der <code>V:</code> - Zeile.</p>
+</blockquote>
+<blockquote>
+<p><strong>Hinweis</strong>: Die ABC-Notation erlaubt mehrere <code>%%score</code> - Anweisungen. Bitte vermeide das, weil Zupfnoter daf&#252;r nicht ausgelegt ist und das Verhalten noch nicht ausgetestet ist.</p>
+</blockquote>
 <p></p>
 <h1 id="zupfnoter-f&#252;r-experten"><span class="header-section-number">5</span> Zupfnoter f&#252;r Experten</h1>
-<h2 id="wenn-zupfnoter-beim-start-h&#228;ngen-bleibt"><span class="header-section-number">5.1</span> Wenn Zupfnoter beim Start h&#228;ngen bleibt</h2>
-<p>Was ist heute schon perfekt - auch bei Zupfnoter kann es Probleme geben. In seltenen F&#228;llen kann es vorkommen, dass die ABC-Noten oder die Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den gleichen Fehler l&#228;uft und keine Bearbeitung mehr m&#246;glich ist.</p>
-<p>In diesem Fall kannst du Zupfnoter aufrufen und ein /?debug anh&#228;ngen, z.B.</p>
-<pre><code>https://zupfnoter.weichel21.de/?debug</code></pre>
-<p>Dann startet Zupfnoter, versucht aber nich gleich ein &#8220;Rendern&#8221; . Damit kannst dann die Eingaben korrigieren bis &#8220;Rendern&#8221; wieder funktioniert.</p>
-<h2 id="zupfnoter-einstellungen"><span class="header-section-number">5.2</span> Zupfnoter Einstellungen</h2>
-<h3 id="pers&#246;nliche-einstellungen"><span class="header-section-number">5.2.1</span> Pers&#246;nliche Einstellungen</h3>
+<h2 id="zupfnoter-einstellungen"><span class="header-section-number">5.1</span> Zupfnoter Einstellungen</h2>
+<h3 id="pers&#246;nliche-einstellungen"><span class="header-section-number">5.1.1</span> Pers&#246;nliche Einstellungen</h3>
 <p>see https://github.com/bwl21/zupfnoter/issues/71</p>
-<h3 id="grundlegende-blatteinstellungen"><span class="header-section-number">5.2.2</span> Grundlegende Blatteinstellungen (Konfiguration)</h3>
+<h3 id="grundlegende-blatteinstellungen"><span class="header-section-number">5.1.2</span> Grundlegende Blatteinstellungen (Konfiguration)</h3>
 <p>TODO: text &#252;berarbeiten</p>
 <ul>
 <li><p><strong>Titel</strong>: [extract.x.title]</p>
@@ -1089,7 +1144,8 @@ W: Strophe 2 Zeile 2</code></pre>
 <li><p><strong>Sprunglinien:</strong> [extract.x.jumplines]</p>
 <p>Diese Einstellung wird bestimmt, f&#252;r welche Stimmen die Sprunglinien dargestellt werden.</p>
 <p>Wiederholungszeichen in den herk&#246;mmlichen Noten werden in den Tisch-Harfen-Noten als Wiederholungslinie dargestellt. In der Regel muss der vertikale Teil der Wiederholungslinie nach rechts verschoben werden, damit er rechts von den Noten liegt und nicht mitten durch das Notenbild der Tisch-Harfen-Noten geht. Die horizontale Position der Sprunglinie wird &#252;ber die ABC-Notation eingestellt. Dazu wird vor dem entsprechenden Taktstrich z.B. eingegeben:</p>
-<p>&#8220;<code>^@5 :|</code>&#8221; - der vertikale Teil der Sprunglinie liegt f&#252;nf Halbtonschritte rechts von der letzten Note des Abschnittes</p></li>
+<p>&#8220;<code>^@@5 :|</code>&#8221; - der vertikale Teil der Sprunglinie liegt f&#252;nf Halbtonschritte <strong>rechts</strong> von der letzten Note des Abschnittes</p>
+<p>&#8220;<code>^@@-5 :|</code>&#8221; - der vertikale Teil der Sprunglinie liegt f&#252;nf Halbtonschritte <strong>links</strong> von der letzten Note des Abschnittes</p></li>
 <li><p><strong>Synchronisationslinien:</strong> (Synchronisationslinie, Querlinie zu Begleitnoten) [extract.x.synchlines]</p>
 <p>Diese Einstellung bestimmt, zwischen welchen Stimmen die Synchronisiationslinien dargestellt werden.</p>
 <p><strong>Hinweise:</strong> Synchronisationslinien f&#252;r Mehrkl&#228;nge werden immer dargestellt.</p></li>
@@ -1118,7 +1174,7 @@ W: Strophe 2 Zeile 2</code></pre>
 <li><p><strong>Taktnummern:</strong> [extract.x.barnumbers]</p>
 <p>Diese Einstellung bestimmt, an welchen Stimmen die Takte numeriert werden. Ebenso wird Position und Darstellung bestimmt.</p></li>
 </ul>
-<h2 id="zusaetze"><span class="header-section-number">5.3</span> Zupfnoter-spezifische Zus&#228;tze</h2>
+<h2 id="zusaetze"><span class="header-section-number">5.2</span> Zupfnoter-spezifische Zus&#228;tze</h2>
 <p>Zupfnoter verwendet &#8220;Annotations&#8221; der ABC-Notation mit spezifischen Konventionen. Diese Zus&#228;tze stehen vor der Note bzw. dem Taktstrich auf den sie sich beziehen.</p>
 <p>Zupfnoter-Annotations beginnen mit einem der Zeichen <code>:</code>, <code>@</code>, <code>!</code>, <code>#</code>, <code>&lt;</code>, <code>&gt;</code>. Beispielwesie bedeutets <code>&quot;^&gt;&quot;</code> dass das Notensymbol in den Unterlegnoten nach rechts verschoben werden.</p>
 <blockquote>
@@ -1583,7 +1639,7 @@ W: Strophe 2 Zeile 2</code></pre>
 <pre><code>    &quot;title&quot;: &quot;alle Stimmen&quot;
       </code></pre>
 <h2 id="extract.0.voices"><span class="header-section-number">8.66</span> <code>extract.0.voices</code> - Stimmen</h2>
-<p>Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der <code>%%score</code> - Anweisung in der ABC-Notation.</p>
+<p>Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der <strong>ersten</strong> <code>%%score</code> - Anweisung in der ABC-Notation.</p>
 <pre><code>    &quot;voices&quot;: [1, 2, 3, 4]
       </code></pre>
 <h2 id="produce"><span class="header-section-number">8.67</span> <code>produce</code> - Ausz&#252;ge</h2>

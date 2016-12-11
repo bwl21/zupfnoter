@@ -2,21 +2,6 @@
 
 # Zupfnoter für Experten
 
-## Wenn Zupfnoter beim Start hängen bleibt
-
-Was ist heute schon perfekt - auch bei Zupfnoter kann es Probleme geben.
-In seltenen Fällen kann es vorkommen, dass die ABC-Noten oder die
-Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den
-gleichen Fehler läuft und keine Bearbeitung mehr möglich ist.
-
-In diesem Fall kannst du Zupfnoter aufrufen und ein /?debug anhängen,
-z.B.
-
-    https://zupfnoter.weichel21.de/?debug
-
-Dann startet Zupfnoter, versucht aber nich gleich ein "Rendern" . Damit
-kannst dann die Eingaben korrigieren bis "Rendern" wieder funktioniert.
-
 ## Zupfnoter Einstellungen
 
 ### Persönliche Einstellungen
@@ -67,8 +52,11 @@ TODO: text überarbeiten
     eingestellt. Dazu wird vor dem entsprechenden Taktstrich z.B.
     eingegeben:
 
-    "`^@5 :|`" - der vertikale Teil der Sprunglinie liegt fünf
-    Halbtonschritte rechts von der letzten Note des Abschnittes
+    "`^@@5 :|`" - der vertikale Teil der Sprunglinie liegt fünf
+    Halbtonschritte **rechts** von der letzten Note des Abschnittes
+
+    "`^@@-5 :|`" - der vertikale Teil der Sprunglinie liegt fünf
+    Halbtonschritte **links** von der letzten Note des Abschnittes
 
 -   **Synchronisationslinien:** (Synchronisationslinie, Querlinie zu
     Begleitnoten) [extract.x.synchlines]

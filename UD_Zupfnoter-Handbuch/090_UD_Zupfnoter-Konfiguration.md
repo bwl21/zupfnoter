@@ -764,7 +764,7 @@ ausgegeben.
 
 Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste
 von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
-`%%score` - Anweisung in der ABC-Notation.
+**ersten** `%%score` - Anweisung in der ABC-Notation.
 
         "voices": [1, 2, 3, 4]
           

@@ -46,6 +46,13 @@ Zielgruppen im Blick:
 
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 
+> **Hinweis**: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff. sind
+> nur rudimentär. Wir veröffentlichen daher die Voreabversionen mit
+> TODOs und Zeilennummern.
+>
+> Für Hinweise auf Fehler oder Verbessrungsmöglichkeiten sind wir sehr
+> dankbar.
+
 TODO: markieren, für welche Zielgruppe welche Textabschnitte relevant
 sind.
 
