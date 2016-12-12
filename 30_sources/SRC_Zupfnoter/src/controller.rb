@@ -695,9 +695,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       @editor.patch_config_part(conf_key, newcoords)
       @config_form_editor.refresh_form if @config_form_editor
-
-      report = "#{conf_key}: #{newcoords}"
-      `$("#harpPreview").w2overlay(#{report});`
     end
 
     @harpnote_preview_printer.on_mouseover do |info|

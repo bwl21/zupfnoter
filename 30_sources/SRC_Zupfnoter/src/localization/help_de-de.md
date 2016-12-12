@@ -61,15 +61,22 @@ herangezogen. Bei langen Stücken kann es aber sinnvoll sein, nur die
 dargstellten Stimmmen zur Berechnung des Layouts zu berücksichtigen, um
 ein ausgwogeneres Notenbild zu bekommen.
 
-> **Hineis**: Auch wenn der Parameter `layoutlines` heißt, bewirkt er
+> **Hinweis**: Auch wenn der Parameter `layoutlines` heißt, bewirkt er
 > nicht, dass irgendwelche Linien eingezeichnet werden.
+>
+> **Hinweis**: Bei einem Stück mit vielen Noten ist es sinnvoll, hier
+> nur die im aktuellen Auszug dargestellten Stimmen aufzulisten. Damit
+> ist zwar das Notenbild nicht mehr bei allen Auszügen gleich, die Noten
+> sind aber besser verteilt.
 
 ## extract.0.legend
 
 Hier kannst du die Darstellung der Legende konfigurieren. Dabei wird
-unterschieden zwischen \* `pos` - Position des Titels des
-Musikstückes \* `spos` - Position der Sublegende, d.h. der weiteren
-Angaben zum Musikstück
+unterschieden zwischen
+
+-   `pos` - Position des Titels des Musikstückes
+-   `spos` - Position der Sublegende, d.h. der weiteren Angaben zum
+    Musikstück
 
 > **Hinweis**: Die Legende wird vorzugsweise durch Verschieben mit der
 > Maus positioniert. Für eine genaue positionierung kann jedoch die
@@ -204,7 +211,7 @@ Hier kannst du die pack-Methode auswählen
     Das bedeutet dass bei monotonen Melodien die Noten enger gesetzt
     werden.
 
-    > Hinweis: Diese Methode eignet sich am besten für lange,
+    > **Hinweis**: Diese Methode eignet sich am besten für lange,
     > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
     > Stücken schnell verloren. Bei dieser Methode sind die
     > Synchronisiationslinien nicht immer gut sichtbar.
@@ -285,11 +292,12 @@ orientiert.
 ## notes
 
 Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
-Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`. Es
-kann aber auch sinnvoll sein eine sprechende Bezeichnung für die
-Beschriftung manuell vorzugeben um ihrer spezifische Verwendung
-hervorzuheben z.B. `notes.T_Copyright`. Das ist allerdings nur in der
-Textansicht möglich.
+Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
+
+> **Hinweis**: Es kann aber auch sinnvoll sein eine sprechende
+> Bezeichnung für die Beschriftung manuell vorzugeben um ihrer
+> spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
+> allerdings nur in der Textansicht möglich.
 
 ## notes.0.pos
 
@@ -378,7 +386,7 @@ Hier kannst du die Darstellung des linken Wiederholungszeichen steuern.
 ## repeatsigns.voices
 
 Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, für
-welche Wiederholungszeichen anstelle von Sprunglinine ausgegeben werden.
+welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
 
 > Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine
 > Sprunglinien mehr dar.
