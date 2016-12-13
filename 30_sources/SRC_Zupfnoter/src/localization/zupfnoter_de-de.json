@@ -96,6 +96,7 @@
     "editor and notes\napplicable to enter notes": "Zeige ABC und Notendarstellung\ngeeignet zur Eingabe von Noten",
     "Effective value": "aktuell wirksamer Wert",
     "ELLIPSE_SIZE": "Notengröße",
+    "end-of-translagion": "end-of-translation",
     "enter a page bound annotation": "Seitengebundene Beschriftung\nanlegen/bearbeiten",
     "Enter Harp": "Harfeneingabe",
     "Enter Notes": "Noteneingabe",
@@ -185,6 +186,7 @@
     "Open ABC file in dropbox": "ABC-File in Dropbox öffnen",
     "Open an ABC tutorial (in German)": "Öffne ABC - Einfürung\nin Deutsch",
     "Open the user manual": "Öffne das Zupfnoter Benutzerhandbuch",
+    "Open the version information on website": "Vesionsinformaitonen anzeigen",
     "Open the video tutorials on youtube": "Schulungsvideos auf\nYouTube",
     "Open Zupfnoter website": "Öffne die Zupfnoter - Homepage",
     "Open": "Öffnen",
@@ -218,6 +220,8 @@
     "printer_right": "Druck nach rechts schieben",
     "produce": "Auszüge",
     "Quick Setting": "Schnelleinstellungen",
+    "read later": "später lesen",
+    "read now": "jetzt lesen",
     "Reference": "Referenz",
     "regular": "normal",
     "Render previews": "Vorschauen neu errechnen",
@@ -287,6 +291,7 @@
     "the name for the dreaggables of this note": "Name der Verschiebemarke dieser Note",
     "the name for this target": "Name des Sprunziels",
     "There is an error in the data you have entered": "Fehler in den eingegebenen Daten",
+    "There is new unread information": "Es gibt neue Informationen",
     "There is no file with this id": "Es gibt keine Datei mit der Nummer",
     "title": "Titel",
     "Title": "Titel",
@@ -295,6 +300,7 @@
     "Value": "Wert",
     "variantend": "Variantes Ende",
     "verses": "Strophen",
+    "Version info": "Versionsinformationen",
     "vertical position (top->down)": "vertikale position (von oben nach unten)",
     "Videos": "Videos",
     "vl": "'V' links",
@@ -311,8 +317,7 @@
     "Y-position": "Y-position",
     "Y_SCALE": "Vertikale Skalierung",
     "Yes": "Ja",
-    "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
-    "end-of-translagion": "end-of-translation"
+    "zoom harpnote preview": "Zoom in Vorschau der Harfennoten"
   }
 }
 

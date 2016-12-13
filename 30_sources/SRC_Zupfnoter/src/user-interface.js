@@ -1,5 +1,7 @@
 function init_w2ui(uicontroller) {
 
+    w2popup.defaults.speed=0;
+
     function zoomHarpPreview(size) {
         $("#harpPreview svg").attr('height', size[0]).attr('width', size[1]);
     };
@@ -288,19 +290,20 @@ function init_w2ui(uicontroller) {
             {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', tooltip: 'Play music'},
             {
                 type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', tooltip: 'Get help', items: [
-                {text: 'Videos', icon: 'fa fa-tags', id: "tbTutorials", tooltip: 'Open the video tutorials on youtube'},
+                {text: 'Version info', icon: 'fa fa-tags', id: "tbVersionInfo", tooltip: 'Open the version information on website'},
+                {text: 'Videos', icon: 'fa fa-youtube-play', id: "tbTutorials", tooltip: 'Open the video tutorials on youtube'},
                 {
                     text: 'abc Tutorial',
-                    icon: 'fa fa-tags',
+                    icon: 'fa fa-graduation-cap',
                     id: "tbAbcTutorial",
                     tooltip: 'Open an ABC tutorial (in German)'
                 },
-                {text: 'Manual', icon: 'fa fa-tags', id: "tbManual", tooltip: 'Open the user manual'},
-                {text: 'Homepage', icon: 'fa fa-tags', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
+                {text: 'Manual', icon: 'fa fa-book', id: "tbManual", tooltip: 'Open the user manual'},
+                {text: 'Homepage', icon: 'fa fa-home', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
                 {text: ''},
                 {
                     text: 'Reference',
-                    icon: 'fa fa-tags',
+                    icon: 'fa fa-map-o',
                     id: "tbReference",
                     tooltip: 'Open a new Zupfnoter window\nwith the reference page'
                 },
@@ -353,6 +356,9 @@ function init_w2ui(uicontroller) {
             }
             if (event.target == "tb_home") {
                 window.open("https://www.zupfnoter.de")
+            }
+            if (event.target == "tbHelp:tbVersionInfo") {
+                window.open(uicontroller.$info_url())
             }
             if (event.target == "tbHelp:tbTutorials") {
                 window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")

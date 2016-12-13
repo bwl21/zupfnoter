@@ -78,7 +78,7 @@ end
 class Controller
 
   attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
-  attr_accessor :zupfnoter_ui
+  attr_accessor :zupfnoter_ui, :info_url
 
   def initialize
 
@@ -90,7 +90,11 @@ class Controller
                         'en-us' => 'en-US'
     }
     browser_language = `navigator.language`.downcase
-    I18n.locale(languages[browser_language]) if browser_language
+    zupfnoter_language = languages[browser_language]
+
+    @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
+
+    I18n.locale(zupfnoter_language) if browser_language
 
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
 
@@ -162,6 +166,10 @@ class Controller
     # # now trigger the interactive UI
     setup_ui_listener
 
+
+    show_message_of_the_day
+
+
     # todo
     # todo this completes the very first connection to dropbox
     # todo in this case dropbox-Api goes to another window and returns with an access token
@@ -203,7 +211,7 @@ class Controller
   # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:zndropboxlogincmd, :music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
       abc = @editor.get_text
@@ -579,7 +587,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # this retrieves the current config from the editor
   def get_config_from_editor
     config, status = @editor.get_parsed_config
-   if status
+    if status
       config, status = migrate_config(config)
       if status[:changed]
         alert(status[:message])
@@ -940,6 +948,78 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
 
+  end
+
+  def show_message_of_the_day
+    messages = []
+
+    info_feed_url = "#{@info_url}/feed/"
+    %x{
+        $.get(#{info_feed_url}, function (data) {
+            $(data).find("item").each(function () { // or "item" or whatever suits your feed
+                var el = $(this);
+                #{messages}.push(
+                  {'title':  el.find("title").text(),
+                   'description': el.find("description").text(),
+                   'link':  el.find("link").text(),
+                   'pubDate': el.find("pubDate").text(),
+                   'postId': el.find("post-id").text()
+                  }
+                )
+            })
+          #{present_message_of_the_day(messages)}
+        });
+    }
+  end
+
+  def present_message_of_the_day(messages)
+
+    last_info_id = Native(messages.first)[:postId].to_i
+    last_read_info_id = systemstatus[:last_read_info_id] || 0
+
+    have_read = lambda do
+      %x{window.open(#{@info_url})}
+      set_status({last_read_info_id: last_info_id})
+    end
+
+    have_not_read = lambda do
+      # alert (" hat nicht gelesen gelesen")
+    end
+
+    body = messages.map { |m|
+      nm      = Native(m)
+      post_id = nm[:postId]
+      desc    = nm[:description]
+      %Q{<div style="text-align:left;"><p>#{post_id}: #{nm[:title]}</p></div>}
+    }.join
+
+    options = {
+        msg:      body,
+        title:    I18n.t('There is new unread information'),
+        width:    600, # width of the dialog
+        height:   200, # height of the dialog
+        modal:    true,
+        btn_yes:  {
+            text:     I18n.t('read now'), # text for yes button (or yes_text)
+            class:    '', # class for yes button (or yes_class)
+            style:    '', # style for yes button (or yes_style)
+            callBack: have_read # callBack for yes button (or yes_callBack)
+        },
+        btn_no:   {
+            text:     I18n.t('read later'), # text for no button (or no_text)
+            class:    '', # class for no button (or no_class)
+            style:    '', # style for no button (or no_style)
+            callBack: have_not_read # callBack for no button (or no_callBack)
+        },
+        callBack: nil # common callBack
+    };
+
+    # todo: w2confirm might be in conflict with other popus
+    if last_info_id > last_read_info_id
+      %x{
+       w2confirm(#{options.to_n});
+      }
+    end
   end
 
   # @param [Boolean] init if true triggers a new refresh request; if false restarts a running request

@@ -37,6 +37,7 @@
 * now raise a popup if an error occurs on render or save #76
 * now have a button to toggle harpnote preview #93
 * now have foundation for optimized packer, and an experimental packer #89
+* now show information of the day #98
 
 # V 1.4.2
 
