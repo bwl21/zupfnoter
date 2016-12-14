@@ -24,12 +24,14 @@ task :updateLocales do
   locales.each do |locale|
     w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
     znlocalefile   = File.open("localization/zupfnoter_#{locale}")
+    abc2svglocalefile = File.open("localization/abc2svg_#{locale}")
 
     w2uilocales = JSON.parse(w2uilocalefile.read)
     znlocales   = JSON.parse(znlocalefile.read)
-
+    abc2svglocales = JSON.parse(abc2svglocalefile.read)
 
     w2uilocales['phrases'].merge!(znlocales['phrases'])
+    w2uilocales['phrases'].merge!(abc2svglocales['phrases'])
     File.open("#{LOCALEPATH}/#{locale}", "w") { |f| f.puts JSON.neat_generate(w2uilocales, {wrap: 180, after_colon: 1}) }
   end
 end

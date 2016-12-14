@@ -32,7 +32,8 @@ module ABC2SVG
                annotate:    true,
                page_format: true,
                keep_remark: true,
-               titletrim:   false
+               titletrim:   false,
+               textrans:    Native(`w2utils.settings.phrases`)
       }
 
 
