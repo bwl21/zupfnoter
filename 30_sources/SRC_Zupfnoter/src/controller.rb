@@ -864,12 +864,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       ranges         = selection_info[:selection]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
-      $log.warning "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-      @harpnote_preview_printer.unhighlight_all
-      @harpnote_preview_printer.range_highlight(a.first, a.last)
-      @tune_preview_printer.range_highlight(a.first, a.last)
-      @harpnote_player.range_highlight(a.first, a.last)
-
+      $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
+      unless false# @systemstatus[:harpnotes_dirty]
+        @harpnote_preview_printer.unhighlight_all
+        @harpnote_preview_printer.range_highlight(a.first, a.last)
+        @tune_preview_printer.range_highlight(a.first, a.last)
+        @harpnote_player.range_highlight(a.first, a.last)
+      end
     end
 
     @editor.on_cursor_change do |e|
