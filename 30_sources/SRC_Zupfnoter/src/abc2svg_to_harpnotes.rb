@@ -90,7 +90,7 @@ module Harpnotes
         if tempo_note
           duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           duration_display = duration.map { |d| "1/#{1/d}" }
-          bpm              = tempo_note[:tempo_value].to_i
+          bpm              = tempo_note[:tempo].to_i
           tempo            = {duration: duration, bpm: bpm}
         else
           duration         = [0.25]
@@ -98,7 +98,9 @@ module Harpnotes
           bpm              = 120
           tempo            = {duration: duration, bpm: bpm}
         end
+        bpm              = 120 unless  bpm >= 1
 
+        JS.debugger
         @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
@@ -287,7 +289,7 @@ module Harpnotes
         # variant_endings.last.last - > the current variant ending within the current variant ending group
         # [:rbstart] check if it is really started
         if (voice_element[:rbstop] == 2) and (!@variant_endings.last.last.nil?) and (@variant_endings.last.last[:rbstart])
-          @variant_endings.last.last[:rbstop] = @previous_note
+          @variant_endings.last.last[:rbstop]     = @previous_note
           @variant_endings.last.last[:repeat_end] = true if _bar_is_repetition_end?(type)
 
           # here we handle multiple variant endings with end with a repetition

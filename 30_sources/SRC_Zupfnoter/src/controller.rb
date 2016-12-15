@@ -84,12 +84,12 @@ class Controller
 
 
     # todo make this configurable by a preferences menu
-    languages        = {'de'    => 'de-de',
-                        'de-de' => 'de-de',
-                        'en'    => 'en-US',
-                        'en-us' => 'en-US'
+    languages          = {'de'    => 'de-de',
+                          'de-de' => 'de-de',
+                          'en'    => 'en-US',
+                          'en-us' => 'en-US'
     }
-    browser_language = `navigator.language`.downcase
+    browser_language   = `navigator.language`.downcase
     zupfnoter_language = languages[browser_language]
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
@@ -435,7 +435,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         promise.resolve()
       end
     end.fail do |message|
-      `alert(#{message})`
+      $log.error("bug: Error in player #{message}", __FILE__, __LINE__)
+      call_consumers(:error_alert)
     end
   end
 
@@ -975,7 +976,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def present_message_of_the_day(messages)
 
-    last_info_id = Native(messages.first)[:postId].to_i
+    last_info_id      = Native(messages.first)[:postId].to_i
     last_read_info_id = systemstatus[:last_read_info_id] || 0
 
     have_read = lambda do
