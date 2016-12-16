@@ -1176,7 +1176,7 @@ Für die Bedienung der Masken ist noch wichtig
     mehrere Instanzen geben kann (z.B. \index{Liedtexte}Liedtexte
     [lyrics.x], \index{Seitenbeschriftung}Seitenbeschrifung [notes.x])
 -   Schalltfläche `Schnelleinstellungen`: Diese Taste öffnet ein Menü,
-    aus dem du für die aktuelle Maske eine Voreinstellung auswählne
+    aus dem du für die aktuelle Maske eine Voreinstellung auswählen
     kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination
     von Parametern für einen bestimmten Fall (z.B. für ein "kompaktes
     Layout"). Diese Schaltfläche ist nur für solche Masken aktiv, für
