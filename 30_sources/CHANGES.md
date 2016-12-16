@@ -10,7 +10,7 @@
 
 ## Fix
 
-* adjusted German language #47
+* adjusted German language also for error messages #47
 * communication with Dropbox (error handling etc.)  #77
 * improved auto positioning of barnumbers and counthints #81
 * builtin sheet annotation no longer claims a copyright #69
@@ -38,6 +38,7 @@
 * now have a button to toggle harpnote preview #93
 * now have foundation for optimized packer, and an experimental packer #89
 * now show information of the day #98
+* now have quick settings for some configuration #97
 
 # V 1.4.2
 
