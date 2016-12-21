@@ -17,21 +17,21 @@ LOCALEPATH   = "../public/locale/"
 VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
-
 desc "update public/locale"
 task :updateLocales do
   puts "updating locales"
-  locales = Dir["#{LOCALEPATH}*.json"].map { |f| f.split(LOCALEPATH).last }
+  locales = Dir["#{LOCALEPATH}??-??.json"].map { |f| f.split(LOCALEPATH).last }
   locales.each do |locale|
     w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
     znlocalefile   = File.open("localization/zupfnoter_#{locale}")
-
+    abc2svglocalefile = File.open("localization/abc2svg_#{locale}")
 
     w2uilocales = JSON.parse(w2uilocalefile.read)
     znlocales   = JSON.parse(znlocalefile.read)
-
+    abc2svglocales = JSON.parse(abc2svglocalefile.read)
 
     w2uilocales['phrases'].merge!(znlocales['phrases'])
+    w2uilocales['phrases'].merge!(abc2svglocales['phrases'])
     File.open("#{LOCALEPATH}/#{locale}", "w") { |f| f.puts JSON.neat_generate(w2uilocales, {wrap: 180, after_colon: 1}) }
   end
 end
@@ -49,7 +49,7 @@ task :updateAbc2svg do
 end
 
 desc "Build our app to #{ZUPFNOTER_JS}"
-task :build => [:updateLocales] do
+task :build => [:buildConfigDoc, :updateLocales] do
   #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.use_gem "vector2d"
@@ -120,6 +120,7 @@ task :deploy => [:build] do
 
   cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
   cp("../public/icons/favicon.png", "#{OUTFOLDER}/webserver/public/icons/favicon.png")
+  cp("../public/icons/underline.gif", "#{OUTFOLDER}/webserver/public/icons/underline.gif")
   Dir["../public/demos/*.abc"].each do |f|
     cp f, "#{OUTFOLDER}/webserver/public/demos/#{File.basename(f)}"
   end
@@ -128,12 +129,18 @@ task :deploy => [:build] do
     cp f, "#{OUTFOLDER}/webserver/public/locale/#{File.basename(f)}"
   end
 
+  Dir["../public/*.pdf"].each do |f|
+    cp f, "#{OUTFOLDER}/webserver/public/#{File.basename(f)}"
+  end
+
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
   cp "../vendor/ace/mode-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-abc.js"
+  cp "../vendor/ace/mode-markdown.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-markdown.js"
   cp "../vendor/ace/theme-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/theme-abc.js"
   cp "../vendor/ace/snippets/text.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/text.js"
   cp "../vendor/ace/ext-language_tools.js", "#{OUTFOLDER}/webserver/vendor/ace/ext-language_tools.js"
   cp("../vendor/ace/snippets/abc.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/abc.js")
+  cp("../vendor/ace/snippets/markdown.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/markdown.js")
   cp("../vendor/abc2svg-1.js", "#{OUTFOLDER}/vendor/abc2svg-1.js")
   Dir['../vendor/ace/ext-*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
@@ -245,4 +252,12 @@ task :buildDesktop => [:build] do
     sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
   end
   #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
+end
+
+
+desc "config doc and help"
+task :buildConfigDoc do
+  sh 'wortsammler -bi localization/help_de-de.md'
+  sh 'ruby conf_doc_source.rb'
+  sh 'pandoc xxx.md -o xxx.html --standalone'
 end

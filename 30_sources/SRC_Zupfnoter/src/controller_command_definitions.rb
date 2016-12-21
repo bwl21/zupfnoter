@@ -1,6 +1,11 @@
 class Controller
   private
 
+  def _report_error_from_promise (errormessage)
+    $log.error errormessage
+    call_consumers(:error_alert)
+  end
+
   def __ic_01_internal_commands
     $log.info("registering commands")
     @commands.add_command(:help) do |c|
@@ -28,6 +33,7 @@ class Controller
 
       command.as_action do |args|
         set_status(view: args[:view].to_i)
+        @config_form_editor.refresh_form if @config_form_editor
         render_previews
       end
     end
@@ -173,7 +179,7 @@ class Controller
 
         song_id    = args[:id]
         song_title = args[:title]
-        filename   = song_title.gsub(/[^a-zA-Z0-9\-\_]/, "_")
+        filename   = song_title.strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
         raise "no id specified" unless song_id
         raise "no title specified" unless song_title
 
@@ -258,36 +264,6 @@ C,
       end
     end
 
-    @commands.add_command(:conf) do |command|
-      command.undoable = false
-
-      command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help { "parameter key" }
-      end
-
-      command.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_help { "parameter value (true | false" }
-      end
-
-
-      command.set_help { "set configuration parameter true/false" }
-
-      command.as_action do |args|
-        value = {'true' => true, 'false' => false}[args[:value]]
-
-        raise "invalid key #{args[:key]}" unless $conf.keys.include?(args[:key])
-        raise "value must be true or false" if value.nil?
-        $conf[args[:key]] = value
-
-        nil
-      end
-
-      command.as_inverse do |args|
-        $conf.pop # todo: this is a bit risky
-      end
-    end
-
-
     @commands.add_command(:stdnotes) do |command|
       command.undoable = false
 
@@ -310,7 +286,6 @@ C,
         nil
       end
     end
-
 
 
     @commands.add_command(:addconf) do |command|
@@ -340,64 +315,228 @@ C,
             'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
             'subflowlines'     => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
             'produce'          => lambda { {key: "produce", value: $conf['produce']} },
-            'annotations'      => lambda { {key: "annotations", value: $conf['annotations']} },
+            'annotations'      => lambda { {key: "annotations.x", value: $conf['templates.annotations']} },
             'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
-                                            value: {limit_a3:     true,
-                                                    LINE_THIN:    0.1,
-                                                    LINE_MEDIUM:  0.3,
-                                                    LINE_THICK:   0.5,
-                                                    # all numbers in mm
-                                                    ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                                    REST_SIZE:    [4, 2]}} }, # radii of the largest Rest Glyph} },
+                                            value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
+            'printer'          => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
+                                            value: $conf['extract.0.printer']} }, # radii of the largest Rest Glyph} },
             'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
-            'barnumbers'        => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
+            'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
                                             value: {
                                                 voices: [],
                                                 pos:    [6, -4]
                                             }} },
-            'barnumbers.full'   => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
+            'barnumbers.full'  => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
 
             'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
             'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
-            'xx'               => lambda { {key: "xx", value: $conf[]} }
+            'x1'               => lambda { {key: "xx", value: $conf[]} },
+            'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} },
+            'hugo'             => lambda { {key: "extract.#{@systemstatus[:view]}",
+                                            value:
+                                                 [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
+                                                   r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
+                                                   r
+                                                 end} }
         }
 
+        $conf['presets.layout'].each do |key, preset_value|
+          values["preset.layout.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset} }
+        end
+
+        $conf['presets.printer'].each do |key, preset_value|
+          values["preset.printer.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.printer.#{key}"], method: :preset} }
+        end
 
         # here we handle the menu stuff
-        value  = values[args[:key]]
+        value = values[args[:key]]
         if value
 
           value = value.call
 
-          localconf              = Confstack.new
+          localconf              = Confstack.new(false)
           localconf.strict       = false
           localconf[value[:key]] = value[:value]
+          keys_from_value        = localconf.keys
 
           config_from_editor = get_config_from_editor
-          localconf.push(config_from_editor)
+          localconf.push(config_from_editor) unless value[:method] == :preset
 
-          local_value = localconf[value[:key]]
+          patchvalue = localconf[value[:key]]
 
           the_key = value[:key]
+          # this computes the next key number
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0..-2].join(".")
             next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
             the_key    = %Q{#{parent_key}.#{next_free}}
           end
 
-          patchvalue = local_value #|| value[:value]
-
           @editor.patch_config_part(the_key, patchvalue)
+          @config_form_editor.refresh_form if @config_form_editor
         else
           raise "unknown configuration parameter #{value[:key]}"
           nil
         end
       end
     end
+
+
+    @commands.add_command(:editconf) do |command|
+
+      def expand_extract_keys(keys)
+        keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
+      end
+
+      command.undoable = false
+
+      command.add_parameter(:set, :string) do |parameter|
+        parameter.set_help { "one of the editable keys" } #"#{sets.keys.to_s}" }
+      end
+
+      command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
+
+      command.as_action do |args|
+        $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
+
+        sets = {
+            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+                                                                            'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest,
+                                                                           ]) + [:restposition]},
+            barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
+
+            annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
+            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }},
+            lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
+            layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
+            printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
+            stringnames:           {keys: expand_extract_keys([:stringnames])},
+            extract0:              {keys: ['extract.0']},
+            extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
+            xx:                    {keys: ['xx']}
+        }
+
+        a = sets[args[:set]]
+        if a
+          editable_keys         = a[:keys]
+          newentry_handler      = a[:newentry_handler]
+          quicksetting_commands = a[:quicksetting_commands] || []
+        else # use the argument as key if there is no set.
+          quicksetting_commands = []
+          editable_keys         = [args[:set]]
+        end
+
+
+        # this handler yields three value sets
+        # the current value
+
+        get_configvalues = lambda do
+          $log.timestamp("1 #{__FILE__} #{__LINE__}")
+
+          editor_conf        = Confstack.new(false)
+          editor_conf.strict = false
+
+          effective_conf        = Confstack.new(false)
+          effective_conf.strict = false
+
+          default_conf        = Confstack.new(false)
+          default_conf.strict = false
+
+          $log.timestamp("2  #{__FILE__} #{__LINE__}")
+
+          editable_values  = Confstack.new(false)
+          default_values   = Confstack.new(false)
+          effective_values = Confstack.new(false)
+
+          $log.timestamp("3  #{__FILE__} #{__LINE__}")
+
+          configvalues_from_editor = get_config_from_editor
+          $log.timestamp("3.1  #{__FILE__} #{__LINE__}")
+          editor_conf.push(configvalues_from_editor)
+
+          $log.timestamp("4  #{__FILE__} #{__LINE__}")
+
+          default_conf.push($conf.get) # start with defaults
+          default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
+          unless @systemstatus[:view] == 0
+            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
+            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
+          end
+          $log.timestamp("5  #{__FILE__} #{__LINE__}")
+
+          effective_conf.push (default_conf.get.clone)
+          effective_conf.push (editor_conf.get.clone)
+
+          editable_keys.each { |k|
+            editable_values[k]  = editor_conf[k]
+            default_values[k]   = default_conf[k]
+            effective_values[k] = effective_conf[k]
+          }
+          $log.timestamp("6  #{__FILE__} #{__LINE__}")
+
+          {current: editable_values.get, effective: effective_values.get, default: default_values.get}
+        end
+
+        refresh_editor = lambda do
+          handle_command("editconf #{args[:set]}")
+        end
+
+        editor_title        = %Q{Exract #{@systemstatus[:view]}: #{args[:set]}}
+        editorparams        = {
+            title:                 editor_title,
+            editor:                @editor,
+            value_handler:         get_configvalues,
+            refresh_handler:       refresh_editor,
+            newentry_handler:      newentry_handler,
+            quicksetting_commands: quicksetting_commands,
+            controller:            self
+        }
+        #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
+        @config_form_editor = ConfstackEditor.new(editorparams)
+        @config_form_editor.generate_form
+
+        nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
+    end
+
+    @commands.add_command(:editsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup(sel[:token][:type], sel[:token][:value]) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value)
+        end
+        nil
+      end
+    end
+
+    @commands.add_command(:addsnippet) do |command|
+      command.undoable = false
+      command.set_help { "edit current snippet" }
+
+      command.add_parameter(:token, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.as_action do |args|
+        sel = @editor.get_selection_info
+        SnippetEditor.new.setup("zupfnoter.editable.#{args[:token]}", nil) do |value|
+          @editor.patch_token(sel[:token][:type], 0, value)
+        end
+        nil
+      end
+    end
+
 
     @commands.add_command(:cconf) do |command|
       command.undoable = false
@@ -440,6 +579,14 @@ C,
     value = localconf[key]
 
     value
+  end
+
+  # this yields an array of addconf-arguments
+  # used to populate a preset menu
+  def _get_quicksetting_commands(preset_domain)
+    $conf["presets.#{preset_domain}"].map do |k, v|
+      %Q{preset.#{preset_domain}.#{k}}
+    end
   end
 
   def __ic_04_localstore_commands
@@ -534,16 +681,29 @@ C,
             $log.error("select app | full")
         end
 
+
+        # notes
+        # the login approach in dropbox redirects to login-pages from dropbix which eventually
+        # return to zupfnoter with an access token.
+        # Zupfnoter then finalizes the login by invoking zndropboxlogincmd at the end of Controller.initialize
+        # therefore we need to store it here
+        #
+        set_status({zndropboxlogincmd: %Q{dlogin #{args[:scope]} "#{args[:path]}"}})
+
+        # now do the authentification
         @dropboxclient.authenticate().then do
-          set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
+          set_status({zndropboxlogincmd: nil}) # nos login was sucessful, therefore we do not need this command anymore -
+          set_status_dropbox_status
           $log.message("logged in at dropbox with #{args[:scope]} access")
+        end.fail do |err|
+          _report_error_from_promise err
         end
       end
       command.as_inverse do |args|
-        set_status(dropbox: "logged out")
+        set_status(dropbox: I18n.t("logged out"))
 
         $log.message("logged out from dropbox")
-        @dropboxclient = nil
+        @dropboxclient = Opal::DropboxJs::NilClient.new
       end
     end
 
@@ -582,13 +742,13 @@ C,
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
 
-        set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
+        set_status_dropbox_status
         $log.message("dropbox path changed to #{@dropboxpath}")
       end
 
       command.as_inverse do |args|
         @dropboxpath = args[:oldval]
-        set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}")
+        set_status_dropbox_status
         $log.message("dropbox path changed back to #{@dropboxpath}")
       end
     end
@@ -610,16 +770,22 @@ C,
       command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
+        @dropboxclient.authenticate
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
-          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.*)\/(.*)/).to_a
-          path       =fileparts[1]
-          filename   =fileparts[2]
+          # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
+          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
+          path       = "/#{fileparts[1]}"
+          filename   = `decodeURIComponent(#{fileparts.last})`
 
-          handle_command("dlogin full /#{path}/")
-          $log.message("found #{path} / #{filename}")
-          handle_command("dopen #{filename.split("_").first}")
-          $log.message("opened #{path} / #{filename}")
+          newpath = "#{path}"
+          handle_command("dlogin full #{path}")
+          $log.message("found #{path}#{filename}")
+          handle_command(%Q{dopenfn "#{filename}"})
+          $log.message("opened #{path}#{filename}")
+        end.fail do |message|
+          $log.error message
         end
       end
     end
@@ -678,10 +844,10 @@ C,
 
         abc_code = @editor.get_text
         metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = metadata[:F].first
-        $log.debug("#{metadata.to_s} (#{__FILE__} #{__LINE__})")
+
+        filebase = metadata[:F]
         if filebase
-          filebase = filebase.split("\n").first
+          filebase = filebase.first.split("\n").first
         else
           raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
         end
@@ -699,10 +865,9 @@ C,
           save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
           pdfs = {}
           print_variants.map do |print_variant|
-            index                                                          = print_variant[:view_id]
-            filename                                                       = print_variant[:title].gsub(/[^a-zA-Z0-9\-\_]/, "_")
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a3.pdf"] = render_a3(index).output(:blob)
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:title]}_a4.pdf"] = render_a4(index).output(:blob)
+            index                                                                 = print_variant[:view_id]
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
+            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
             nil
           end
 
@@ -711,10 +876,10 @@ C,
           end
         end
         Promise.when(*save_promises).then do
-          set_status(music_model: "saved to dropbox")
+          set_status(music_model: I18n.t("saved to dropbox"))
           $log.message("all files saved")
         end.fail do |err|
-          $log.error("there was an error saving files #{err}")
+          _report_error_from_promise(err)
         end
       end
     end
@@ -732,6 +897,7 @@ C,
       command.as_action do |args|
         args[:oldval] = @editor.get_text
         fileid        = args[:fileid]
+        fileidfound   = nil
         rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
         $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
 
@@ -739,8 +905,58 @@ C,
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.debug("#{entries} (#{__FILE__} #{__LINE__})")
-          fileid = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }.first
-          @dropboxclient.read_file("#{rootpath}#{fileid}")
+          fileidfound = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }
+          unless fileidfound
+            result = Promise.new.reject(%Q{#{I18n.t("There is no file with this id")} in #{rootpath}})
+          else
+            unless fileidfound.count == 1
+              result = Promise.new.reject(%Q{#{I18n.t("Ambiguous file number")}: #{fileid} in #{rootpath}:\n #{fileidfound.join("\n ")}}) unless fileidfound.count == 1
+            else
+              fileidfound = fileidfound.first
+              result      = @dropboxclient.read_file("#{rootpath}#{fileidfound}")
+            end
+          end
+          result
+        end.then do |abc_text|
+          $log.debug "loaded #{fileidfound} (#{__FILE__} #{__LINE__})"
+          filebase = fileidfound.split(".abc")[0 .. -1].join(".abc")
+          abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
+
+          @editor.set_text(abc_text)
+          set_status(music_model: "loaded")
+          handle_command("render")
+
+        end.fail do |err|
+          _report_error_from_promise (%Q{could not load file with ID #{fileid}: #{err}})
+        end
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+    end
+
+
+    @commands.add_command(:dopenfn) do |command|
+
+      command.add_parameter(:fileid, :string, "file id")
+      command.add_parameter(:path, :string) do |p|
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        fileid        = args[:fileid]
+        rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
+        filename      = "#{rootpath}#{fileid}"
+        $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
+
+        @dropboxclient.authenticate().then do |error, data|
+          @dropboxclient.read_file(filename)
         end.then do |abc_text|
           $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
           filebase = fileid.split(".abc")[0 .. -1].join(".abc")
@@ -751,7 +967,8 @@ C,
           handle_command("render")
 
         end.fail do |err|
-          $log.error("could not load file #{err}")
+          _report_error_from_promise %Q{#{I18n.t('could not open file')}: #{err} : "#{filename}"}
+          nil
         end
       end
 

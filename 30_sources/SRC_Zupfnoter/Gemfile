@@ -11,3 +11,6 @@ gem 'vector2d', "~> 2.1.0"
 gem 'pry'
 gem 'graphviz'
 gem 'bundler'
+gem 'redcarpet'
+gem 'json-schema-generator'
+gem 'wortsammler'

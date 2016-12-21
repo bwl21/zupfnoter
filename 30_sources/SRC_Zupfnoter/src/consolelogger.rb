@@ -21,6 +21,8 @@ class ConsoleLogger
   def initialize(element_id)
     @console = element_id # Element.find("##{element_id}")
     @loglevel = LOGLEVELS[:info]
+    @timestamp = Time.now
+    clear_errors
     clear_annotations
   end
 
@@ -38,9 +40,11 @@ class ConsoleLogger
   #                             derived from start_pos if left out
   #
   # @return [Object] undefined
-  def error(msg, start_pos = nil, end_pos = nil)
+  def error(msg, start_pos = nil, end_pos = nil, backtrace = [])
+    @captured_errors.push(msg)
     add_annotation(msg, start_pos, end_pos, :error)
-    write(:error, msg)
+    backtrace_message = backtrace.join("\n") if loglevel == :debug
+    write(:error, "#{msg}#{backtrace_message}")
   end
 
   # for documentation see : error
@@ -65,6 +69,37 @@ class ConsoleLogger
   def message(msg, start_pos = nil, end_pos = nil)
     add_annotation(msg, start_pos, end_pos, :message)
     write(:message, msg)
+  end
+
+  # outputs an info entry with the current timestamp
+  def timestamp(msg, start_pos = nil, end_pos = nil)
+    $log.info("Timestamp #{Time.now() - @timestamp} sec: #{msg}")
+  end
+
+  # resets the timestamp. subsequent calls to timestamp are based on this time
+  def timestamp_start()
+     @timestamp = Time.now
+  end
+
+  def clear_errors
+    @captured_errors = []
+  end
+
+  def has_errors?
+      @captured_errors.count > 0
+  end
+
+  def get_errors
+    @captured_errors
+  end
+
+  # executes the block and outputs n info entry with the duration
+  # returns the result of the block
+  def benchmark(msg, &block)
+    s = Time.now
+    result = block.call
+    $log.info("  elapsed #{Time.now() -s} sec for #{msg}")
+    result
   end
 
   # adjust the level to filter the messages

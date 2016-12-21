@@ -1,12 +1,6 @@
-@import "reset";
+//@import "reset";
 
 //@import "icons/fontello.css";
-
-.zn_draggable {cursor:pointer;}
-
-.w2ui-tb-caption{
-  vertical-align: middle;
-}
 
 $toolbarHeight: 30px;
 $titleHeight: 2em;
@@ -20,6 +14,7 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   background-color: $backgoundColor;
   color: green;
+  margin: 0px;
   vertical-align: center;
 }
 
@@ -137,7 +132,6 @@ body {
     display: inline-block;
   }
 
-
   // this stuff is mainly copied from opal-irb
 
   .jqconsole {
@@ -178,7 +172,6 @@ body {
   .jqconsole-composition {
     background-color: red;
   }
-
 
 }
 
@@ -256,7 +249,62 @@ body {
   z-index: 999;
 }
 
-rect.abcref {fill:grey;fill-opacity:0.01}
-rect.abcref:hover {fill-opacity:0.5}
+rect.abcref {
+  fill: grey;
+  fill-opacity: 0.01
+}
 
-rect.highlight {fill: red;fill-opacity:0.2}
+rect.abcref:hover {
+  fill-opacity: 0.5
+}
+
+rect.highlight {
+  fill: red;
+  fill-opacity: 0.2
+}
+
+.zn-nilfield {
+  border: 1px solid #b5b4b6 !important;
+  background-color: #b5b4b6 !important;
+}
+
+.zn-statusbar {
+  border: 1px solid #b5b4b6 !important;
+}
+
+.zn_draggable {
+  cursor: pointer;
+}
+
+.w2ui-tb-caption {
+  vertical-align: middle;
+}
+
+.w2ui-overlay {
+  color: black;
+  p{
+    margin: 1ex;
+    margin-left: 1em;
+  }
+
+  blockquote {
+    margin-left: 1em;
+  }
+
+  ul {
+    margin-left: 4em;
+    list-style: square outside;
+  }
+}
+
+#statusbar-layout .w2ui-tb-caption {
+  vertical-align: top;
+}
+
+#statusbar-layout table {
+  vertical-align: top;
+}
+
+#statusbar-layout * {
+  vertical-align: top;
+}

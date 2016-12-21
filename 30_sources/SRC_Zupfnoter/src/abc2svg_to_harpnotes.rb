@@ -46,9 +46,10 @@ module Harpnotes
         result = {lyrics: {text: @info_fields[:W]}}
 
         result[:print] = $conf.get("produce").map do |i|
-          title = $conf.get("extract.#{i}.title")
+          title        = $conf.get("extract.#{i}.title")
+          filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
           if title
-            {title: title, view_id: i}
+            {title: title, view_id: i, filenamepart: filenamepart}
           else
             $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
             nil
@@ -89,7 +90,7 @@ module Harpnotes
         if tempo_note
           duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           duration_display = duration.map { |d| "1/#{1/d}" }
-          bpm              = tempo_note[:tempo_value].to_i
+          bpm              = tempo_note[:tempo].to_i
           tempo            = {duration: duration, bpm: bpm}
         else
           duration         = [0.25]
@@ -97,12 +98,13 @@ module Harpnotes
           bpm              = 120
           tempo            = {duration: duration, bpm: bpm}
         end
+        bpm              = 120 unless  bpm >= 1
 
         @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
                       tempo:         {duration: duration, bpm: bpm},
-                      tempo_display: [duration_display, "=", bpm].join(' '),
+                      tempo_display: @info_fields[:Q], #[duration_display, "=", bpm].join(' '),
                       meter:         @info_fields[:M],
                       key:           "#{key} #{o_key_display}"
         }
@@ -132,6 +134,8 @@ module Harpnotes
       # This resets the converter
       # to be called when beginning a new voice
       def _reset_state
+
+        @countnames = (1..32).to_a.map { |i| [i, 'e', 'u', 'e'] }.flatten
 
         @jumptargets = {} # the lookup table for jumps
 
@@ -198,7 +202,7 @@ module Harpnotes
           begin
             result = self.send("_transform_#{type}", voice_model_element, index, voice_index)
           rescue Exception => e
-            $log.error("BUG: #{e}", charpos_to_line_column(voice_model_element[:istart]))
+            $log.error("Bug: #{e}", charpos_to_line_column(voice_model_element[:istart]))
             nil
           end
           result
@@ -246,6 +250,10 @@ module Harpnotes
         end
       end
 
+      def _bar_is_repetition_end?(type)
+        type =~/^:.*$/
+      end
+
       def _transform_bar(voice_element)
         result = []
         type   = voice_element[:bar_type]
@@ -280,8 +288,18 @@ module Harpnotes
         # variant_endings.last.last - > the current variant ending within the current variant ending group
         # [:rbstart] check if it is really started
         if (voice_element[:rbstop] == 2) and (!@variant_endings.last.last.nil?) and (@variant_endings.last.last[:rbstart])
-          @variant_endings.last.last[:rbstop] = @previous_note
-          @variant_endings.last.last[:repeat_end] = true if true if type =~/^:.*$/
+          @variant_endings.last.last[:rbstop]     = @previous_note
+          @variant_endings.last.last[:repeat_end] = true if _bar_is_repetition_end?(type)
+
+          # here we handle multiple variant endings with end with a repetition
+          # where the repetion start is not the very beginning
+          #
+          if _bar_is_repetition_end?(type) # variant ends with a repeat; push the repotition start
+            @pushed_variant_ending_repeat = true
+            @repetition_stack.push @repetition_stack.last
+          else # variant does not end with a repeat; check if we have pushed a variant repetion and santize the same.
+            @repetition_stack.pop if @pushed_variant_ending_repeat
+          end
 
           #prepare a new variant_ending group if there is only an rbstop
           unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
@@ -291,8 +309,10 @@ module Harpnotes
         end
 
 
-        result << _transform_bar_repeat_end(voice_element) if type =~/^:.*$/
+        result << _transform_bar_repeat_end(voice_element) if _bar_is_repetition_end?(type)
 
+        # here we handle the case that a repeat is within a measure (textcase 3016 in measure repeats)
+        # it shall not create a bar in harpnotes
         if type.include? ':'
           unless @is_first_measure ## first measure after a meter statment cannot suppress bar
             @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
@@ -405,17 +425,43 @@ module Harpnotes
         end
       end
 
+
+      # this generates the count notes
+      # Approach
+      # 1. have a lookup table for one full bar how to count: 1eue 2eue 3eue ...
+      # 2. compute the coount numbers covered by a particlar note:
+      # 3. lookup in the coountnames: REsult maybe something like eu3e or 3eue or 2eue3eue
+      # 4. split on notes (numbers) and fracts (eue)
+      # 5. set trailing fracts (fracts with i > 1) to nil (e.g. 4eue) -> "4"
+      # 6. combine ths tuff again
+      # 7. normalize "ue" to "u"
       def _transform_count_note(voice_element)
         if @countby
-          countnames ={0.5 => "u", 0.25 => "e", 0.75 => "e"}
-
           count_base  = ABC2SVG_DURATION_FACTOR / @countby
-          count_start = 1 + (voice_element[:time] - @measure_start_time) / count_base
-          count_end   = count_start + voice_element[:dur] / count_base - 1
-          count_range = (count_start.floor .. count_end.ceil).to_a.join("-")
-          count_range = (countnames[count_start % 1]) unless (count_start % 1) == 0
-          count_range = "?" unless count_range
+          count_start = 4 * (voice_element[:time] - @measure_start_time) / count_base # literal 4: divide one beat by 4: 1eue
+          count_end   = count_start + 4 * voice_element[:dur] / count_base
 
+          if (count_start % 1 == 0) and (count_end % 1) == 0
+            count_range = (count_start ... count_end).to_a.map { |i| @countnames[i] }.join
+          else
+            if (count_start % 1) == 0 # start of tuplet
+              count_range = (count_start ... count_end.ceil).to_a.map { |i| @countnames[i] }.join('')
+            else
+              count_range = '' #(count_start % 1).to_s[1..2] # we are out of sync, don't know what to do.
+            end
+          end
+
+          # clenaup count_range
+
+          notes  = count_range.split(/[eui\?]+/)
+          fracts = count_range.split(/[0-9]+/)
+          fracts = [''] if fracts.empty? # https://github.com/bwl21/zupfnoter/issues/84
+
+          # now cleanup contnotes
+          # todo:can we use regular expressions for this
+          fracts.each_with_index { |v, i| fracts[i] = nil if i >= 1 }
+          count_range = fracts.zip(notes).flatten.compact.join(" ").strip.split.join("-")
+          count_range = count_range.gsub('ue', 'u')
           count_range
         end
       end
@@ -764,7 +810,10 @@ module Harpnotes
               distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
               result.push({target: target, distance: distance})
             else
-              raise "Syntax-Error in Jump annotation: #{line}"
+              start_pos=charpos_to_line_column(bar[:istart])
+              end_pos  = charpos_to_line_column(bar[:iend])
+              $log.error("Syntax-Error in Jump anotation", start_pos, end_pos)
+              #raise "Syntax-Error in Jump annotation: #{line}"
             end
           end
           result

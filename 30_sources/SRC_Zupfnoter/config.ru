@@ -9,7 +9,7 @@
     s.append_path 'src'
 
     Opal.use_gem "vector2d"
-
+    Opal::Config.source_map_enabled = true
     Opal.paths.each { |p| s.append_path(p) }
 
 

@@ -13,6 +13,7 @@ module Harpnotes
         @isplaying      = false
         @selection      = []
         @voices_to_play = [1, 2, 3, 4, 5, 6, 7, 8]
+        @voice_elements = []
       end
 
       def is_playing?
@@ -129,7 +130,7 @@ module Harpnotes
           begin
             `#{inst}.silence()`
           rescue Exception => e
-            $log.info(e.backtrace)
+            $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
           end
         }
         @isplaying = false

@@ -76,14 +76,15 @@ module Harpnotes
       # get the abc-specified metadata of the current song from the editor_f
       #
       def get_metadata(abc_code)
-        retval = abc_code.split("\n").inject({}) do |result, line|
-          entry               = line.match(/^([A-Z]):\s*(.*)/) { |m| [m[1], m[2]] }
+        retval = abc_code.split("\n").each_with_index.inject({}) do |result, (line, index)|
+          entry = line.match(/^([A-Z]):\s*(.*)/) { |m| [m[1], m[2]] }
           if entry
             key = entry.first
             if result[key]
-              result[key] << entry.last
+              $log.error(%Q{#{I18n.t("more than one line found for ")} ':#{key}'}, [index+1, 1]) if ['F', 'X'].include?(key)
+              result[key] << entry.last.strip
             else
-              result[key] = [entry.last]
+              result[key] = [entry.last.strip]
             end
           end
           result
