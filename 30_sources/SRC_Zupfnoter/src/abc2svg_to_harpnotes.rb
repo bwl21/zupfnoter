@@ -100,7 +100,6 @@ module Harpnotes
         end
         bpm              = 120 unless  bpm >= 1
 
-        JS.debugger
         @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
