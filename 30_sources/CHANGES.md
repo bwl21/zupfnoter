@@ -1,3 +1,9 @@
+# V 1.5.1
+
+## Fix
+
+* dragging of text now alsow works Firefox again  #102
+
 # V 1.5
 
 ## backward compatibility issues
