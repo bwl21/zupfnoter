@@ -3,6 +3,7 @@
 ## Fix
 
 * dragging of text now alsow works Firefox again  #102
+* Better note selection in the editor
 
 # V 1.5
 
