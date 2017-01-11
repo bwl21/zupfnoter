@@ -58,29 +58,31 @@ module Harpnotes
         result
       end
 
-      def _get_key_by_accidentals(accidentals)
+      def _get_key_by_accidentals(key_model)
         {
-            7  => 'C#', #,	A#m	G#Mix	D#Dor	E#Phr	F#Lyd	B#Loc
-            6  => 'F#', #	D#m	C#Mix	G#Dor	A#Phr	BLyd	E#Loc
-            5  => 'B', #	G#m	F#Mix	C#Dor	D#Phr	ELyd	A#Loc
-            4  => 'E', #'C#m	BMix	F#Dor	G#Phr	ALyd	D#Loc
-            3  => 'A', #	F#m	EMix	BDor	C#Phr	DLyd	G#Loc
-            2  => 'D', #	Bm	AMix	EDor	F#Phr	GLyd	C#Loc
-            1  => 'G', #	Em	DMix	ADor	BPhr	CLyd	F#Loc
-            0  => 'C', #	Am	GMix	DDor	EPhr	FLyd	BLoc
-            -1 => 'F', #	Dm	CMix	GDor	APhr	BbLyd	ELoc
-            -2 => 'Bb', #	Gm	FMix	CDor	DPhr	EbLyd	ALoc
-            -3 => 'Eb', #	Cm	BbMix	FDor	GPhr	AbLyd	DLoc
-            -4 => 'Ab', #	Fm	EbMix	BbDor	CPhr	DbLyd	GLoc
-            -5 => 'Db', #	Bbm	AbMix	EbDor	FPhr	GbLyd	CLoc
-            -6 => 'Gb', #	Ebm	DbMix	AbDor	BbPhr	CbLyd	FLoc
-            -7 => 'Cb' #	Abm	GbMix	DbDor	EbPhr	FbLyd	BbLoc
-        }[accidentals]
+            #0=ionian(major), 1=dorian, 2=phrygian, 3=lydian, 4=mixolydia, 5=aeolian(minor) and 6=locrian
+
+            7  => ['C#', 'D#Dor', 'E#Phr', 'F#Lyd', 'G#Mix', 'A#m', 'B#Loc'],
+            6  => ['F#', 'G#Dor', 'A#Phr', 'BLyd', 'C#Mix', 'D#m', 'E#Loc'],
+            5  => ['B', 'C#Dor', 'D#Phr', 'ELyd', 'F#Mix', 'G#m', 'A#Loc'],
+            4  => ['E', 'F#Dor', 'G#Phr', 'ALyd', 'BMix', 'C#m', 'D#Loc'],
+            3  => ['A', 'BDor', 'C#Phr', 'DLyd', 'EMix', 'F#m', 'G#Loc'],
+            2  => ['D', 'EDor', 'F#Phr', 'GLyd', 'AMix', 'Bm', 'C#Loc'],
+            1  => ['G', 'ADor', 'BPhr', 'CLyd', 'DMix', 'Em', 'F#Loc'],
+            0  => ['C', 'DDor', 'EPhr', 'FLyd', 'GMix', 'Am', 'BLoc'],
+            -1 => ['F', 'GDor', 'APhr', 'BbLyd', 'CMix', 'Dm', 'ELoc'],
+            -2 => ['Bb', 'CDor', 'DPhr', 'EbLyd', 'FMix', 'Gm', 'ALoc'],
+            -3 => ['Eb', 'FDor', 'GPhr', 'AbLyd', 'BbMix', 'Cm', 'DLoc'],
+            -4 => ['Ab', 'BbDor', 'CPhr', 'DbLyd', 'EbMix', 'Fm', 'GLoc'],
+            -5 => ['Db', 'EbDor', 'FPhr', 'GbLyd', 'AbMix', 'Bbm', 'CLoc'],
+            -6 => ['Gb', 'AbDor', 'BbPhr' 'CbLyd', 'DbMix', 'Ebm', 'FLoc'],
+            -7 => ['Cb' 'DbDor', 'EbPhr' 'FbLyd', 'GbMix', 'Abm', 'BbLoc'],
+        }[key_model[:k_sf]][key_model[:k_mode]]
       end
 
       def _make_metadata
-        key           = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key][:k_sf])
-        o_key         = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey][:k_sf])
+        key           = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key])
+        o_key         = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey])
         o_key_display =""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
@@ -98,7 +100,7 @@ module Harpnotes
           bpm              = 120
           tempo            = {duration: duration, bpm: bpm}
         end
-        bpm              = 120 unless  bpm >= 1
+        bpm = 120 unless bpm >= 1
 
         @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
                       title:         (@info_fields[:T] or []).join("\n"),
