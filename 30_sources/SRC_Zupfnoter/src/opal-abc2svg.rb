@@ -188,7 +188,7 @@ module ABC2SVG
       json_model = ""
       %x{
           abcmidi = new AbcMIDI();
-          abcmidi.add(#{tsfirst}, #{voice_tb}[0].key);
+          abcmidi.add(#{tsfirst}, #{voice_tb});
           to_json = new AbcJSON();
           #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
       }

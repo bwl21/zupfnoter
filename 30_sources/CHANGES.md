@@ -4,6 +4,11 @@
 
 * dragging of text now alsow works Firefox again  #102
 * Better note selection in the editor
+* non BWC: now handle treble+8, treble-8 #104 provided by abc2svg 1.9.0
+
+## backward compatibilility issues
+
+* double check if you have clef octaves "+8", "-8" and 
 
 # V 1.5
 
