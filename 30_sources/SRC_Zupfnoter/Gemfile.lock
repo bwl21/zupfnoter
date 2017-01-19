@@ -14,6 +14,7 @@ GEM
     method_source (0.8.2)
     multi_json (1.12.1)
     nokogiri (1.5.10)
+    nokogiri (1.5.10-x86-mingw32)
     opal (0.9.0)
       hike (~> 1.2)
       sourcemap (~> 0.1.0)
@@ -54,6 +55,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86-mingw32
 
 DEPENDENCIES
   bundler

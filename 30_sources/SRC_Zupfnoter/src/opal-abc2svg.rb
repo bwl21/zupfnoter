@@ -91,7 +91,7 @@ module ABC2SVG
       get_elements_by_range(from, to).each do |id|
         element = Element.find("##{id}")
 
-        %x{#{element}.parents('svg').get(0).scrollIntoView()}
+        %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
         classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
         element.attr('class', classes)
       end
@@ -136,7 +136,10 @@ module ABC2SVG
 
     # todo: mke private or even remove?
     def get_svg
-      @svgbuf.join("\n")
+      result = @svgbuf.join("\n")
+      result = result.gsub("<svg ", %Q{<div class="svg_block"><svg })
+      result = result.gsub("</svg>", %Q{</svg></div>})
+      result
     end
 
     # this produces html for printing
