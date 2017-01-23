@@ -1166,7 +1166,7 @@ module Harpnotes
       # @param [Integer] print_variant_nr = 0  If a song has multiple print_variants, this is the index of the one to be shown
       #
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
-      def layout(music, beat_layout = nil, print_variant_nr = 0)
+      def layout(music, beat_layout = nil, print_variant_nr = 0, page_format='A4')
 
         print_options_raw = get_print_options(print_variant_nr)
 
@@ -1261,11 +1261,13 @@ module Harpnotes
 
         # build cutmarks
 
-        delta           = 12.0 * $conf.get('layout.X_SPACING') # cut in octaves
-        (1..2).each do |i| # number rof cutmarks
-          [4, 290].each do |y| # the y  Coordinates
-            # 0.25 Fragment of string distance to place the cutmark
-            sheet_marks << Harpnotes::Drawing::Annotation.new([0.25 * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') + delta * i, y], "x", :small, nil)
+        if page_format == 'A4'
+          delta = 12.0 * $conf.get('layout.X_SPACING') # cut in octaves
+          (1..2).each do |i| # number rof cutmarks
+            [4, 290].each do |y| # the y  Coordinates
+              # 0.25 Fragment of string distance to place the cutmark
+              sheet_marks << Harpnotes::Drawing::Annotation.new([0.25 * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') + delta * i, y], "x", :small, nil)
+            end
           end
         end
 
@@ -1942,7 +1944,7 @@ module Harpnotes
 
             increment = [conf_min_increment, increment].max
 
-           # $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
+            # $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
 
 
             if measure_start
