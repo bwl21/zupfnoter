@@ -323,13 +323,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the harpnotes to a3
   def render_a3(index = @systemstatus[:view])
     printer = Harpnotes::PDFEngine.new
-    printer.draw(layout_harpnotes(index))
+    printer.draw(layout_harpnotes(index, 'A3'))
   end
 
 
   # render the harpnotes splitted on a4 pages
   def render_a4(index = @systemstatus[:view])
-    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index))
+    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
   end
 
 
@@ -551,7 +551,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
-  def layout_harpnotes(print_variant = 0)
+  def layout_harpnotes(print_variant = 0, page_format='A4')
 
     config = get_config_from_editor
     @editor.neat_config
@@ -571,7 +571,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
-      result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+      result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)
 
       $log.timestamp("layout  #{__FILE__} #{__LINE__}")
 
