@@ -299,6 +299,55 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 > spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
 > allerdings nur in der Textansicht möglich.
 
+## notes.0.T01_number
+
+Dieses Template fügt eine Nummer im Notenblatt ein. Damit kannst du
+deine eigenen Ordnungskriterien realiseren.
+
+Das vorgesehene Numernschema setzt sich aus zwei Blöcken zusammen
+
+-   3 Zeichen für den Urheber, sozusagen die Unterlegnotenmanufaktur
+-   3 Zeichen für eine fortlaufende Nummer. Es ist sinnvoll diese Nummer
+    mit führenden Nullen zu schreiben.
+
+Beispiel: `BWL-001` - Bernhard Weichel - Blatt 001
+
+## notes.T01_number_extract
+
+Dieses Template fügt zwei Zeichem am Ende der Nummer an. Damit kann man
+den jeweiligen Auszug kennzeichen.
+
+Ein sinnvolles schema ist:
+
+-   `-A` - Sopran Alt - per default Auszug 1
+-   `-B` - Tenor Bass - per default Auszug 2
+-   `-M` - Nur Melodie - am besten Auszug 3 - ist aber nicht per default
+    konfiguriert
+-   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
+    aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
+
+## notes.T02_copyright_music
+
+Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
+das Copyright auf die Komposition angegeben.
+
+## notes.T03_copyright_harpnotes
+
+Dieses Template fügt einen Copyrightvermerk für das Unterlgnotenbild
+ein. Damit reklamierst du ein Copyright für die Umsetzung auf die
+Tischharfe
+
+## notes.T04_to_order
+
+Dieses Template fügt eine Notiz ein wo man das Unterlegnotenblatt
+beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
+Weise vertrieben werden.
+
+## notes.T09_do_not_copy
+
+Dieses Template fügt eine Notiz ein, die darauf hinweist, dass das Blatt
+nicht ohne Erlaubnis kopiert werden darf.
+
 ## notes.0.pos
 
 Hier gibst du die Position der Seitenbeschriftung an, an welcher der
