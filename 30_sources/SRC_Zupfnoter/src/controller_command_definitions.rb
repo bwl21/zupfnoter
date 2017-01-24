@@ -344,6 +344,15 @@ C,
                                                  end} }
         }
 
+        # create the commands for presets
+
+        $conf['presets.notes'].each do |key, preset_value|
+          entry = $conf["presets.notes.#{key}"]
+          to_key = entry[:key] || key
+          value = entry[:value]
+          values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
+        end
+
         $conf['presets.layout'].each do |key, preset_value|
           values["preset.layout.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset} }
         end
@@ -379,7 +388,7 @@ C,
           @editor.patch_config_part(the_key, patchvalue)
           @config_form_editor.refresh_form if @config_form_editor
         else
-          raise "unknown configuration parameter #{value[:key]}"
+          raise "unknown configuration parameter #{args[:key]}"
           nil
         end
       end
@@ -410,7 +419,7 @@ C,
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
-            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }},
+            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},

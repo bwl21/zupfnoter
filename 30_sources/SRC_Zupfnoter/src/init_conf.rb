@@ -57,6 +57,45 @@ module InitConf
                  }
              },
 
+             notes:   {
+                 T01_number:               {
+                     value: {
+                         pos:   [394, 17],
+                         text:  "XXX-999-X",
+                         style: "bold"
+                     }},
+                 T01_number_extract:       {
+                     value: {
+                         pos:   [411, 17],
+                         text:  "-X",
+                         style: "bold"
+                     }},
+                 T01_number_extract_value: {
+                     key:   :T01_number_extract,
+                     value: {
+                         text: "-X",
+                     }},
+                 T02_copyright_music:      {value: {pos: [372, 227], text: " ", style: "small"}},
+                 T03_copyright_harpnotes:  {
+                     value: {
+                         pos:   [344, 208],
+                         text:  " ",
+                         style: "small"
+                     }},
+                 T04_to_order:             {
+                     value: {
+                         pos:   [369, 224],
+                         text:  "",
+                         style: "small"
+                     }},
+                 T99_do_not_copy:          {
+                     value: {
+                         pos:   [380, 284],
+                         text:  "Bitte nicht kopieren",
+                         style: "small_bold"
+                     }}
+             },
+
              printer: {
                  printer_left:    {
                      printer: {
@@ -96,7 +135,7 @@ module InitConf
          extract:      {
              "0" => {
                  title:        "alle Stimmen",
-                 filenamepart: nil,
+                 filenamepart: 'alle-stimmen',
                  startpos:     15,
                  voices:       [1, 2, 3, 4],
                  synchlines:   [[1, 2], [3, 4]],
@@ -151,13 +190,18 @@ module InitConf
              },
              "1" => {
                  title:        "Sopran, Alt",
-                 filenamepart: nil,
+                 filenamepart: 'sopran-alt',
                  voices:       [1, 2]
              },
              "2" => {
                  title:        "Tenor, Bass",
-                 filenamepart: nil,
+                 filenamepart: 'tenor-bass',
                  voices:       [3, 4]
+             },
+             "3" => {
+                 title:        "Melodie",
+                 filenamepart: 'melodie',
+                 voices:       [1]
              }
          },
 
