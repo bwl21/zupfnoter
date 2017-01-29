@@ -734,6 +734,8 @@ C,
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.message("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
+        end.fail do |err|
+          _report_error_from_promise err
         end
       end
     end
