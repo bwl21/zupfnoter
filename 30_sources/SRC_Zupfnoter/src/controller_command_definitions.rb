@@ -675,7 +675,7 @@ C,
 
         case args[:scope]
           when "full"
-            @dropboxclient          = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
+            @dropboxclient          = Opal::DropboxJs::Client.new('zwydv2vbgp30e05')
             @dropboxclient.app_name = "DrBx"
             @dropboxclient.app_id   = "full"
             @dropboxpath            = path

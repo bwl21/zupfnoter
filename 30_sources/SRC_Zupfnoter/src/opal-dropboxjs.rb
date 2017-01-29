@@ -1,4 +1,103 @@
-require 'promise'
+#require 'promise'
+
+module Bowser
+  module ServiceWorker
+    class Promise
+      attr_reader :value, :failure
+
+      def initialize &block
+        @native = `new Promise(function(resolve, reject) {
+          #{@resolve = `resolve`};
+          #{@reject = `reject`};
+          #{block.call(self) if block_given?};
+        })`
+      end
+
+      def self.from_native promise
+        p = allocate
+        p.instance_exec { @native = promise }
+        p
+      end
+
+      def self.all promises
+        from_native `Promise.all(#{promises.map(&:to_n)})`
+      end
+
+      def self.race promises
+        from_native `Promise.race(#{promises.map(&:to_n)})`
+      end
+
+      def self.reject reason
+        new.reject reason
+      end
+
+      def self.resolve value
+        new.resolve value
+      end
+
+      def then &block
+        Promise.from_native `#@native.then(block)`
+      end
+
+      def fail &block
+        Promise.from_native `#@native.catch(block)`
+      end
+
+      def always &block
+        Promise.from_native `#@native.then(block).fail(block)`
+      end
+
+      def resolve value
+        return self if resolved?
+        if rejected?
+          `console.warn(#{self}, #{"tried to resolve, already #{resolved? ? 'resolved' : 'rejected'} with"}, #{@value || @failure})`
+        end
+
+        @value = value
+        @resolve.call value
+        self
+      end
+
+      def reject failure
+        return self if rejected?
+        if resolved?
+          `console.warn(#{self}, #{"tried to reject, already #{resolved? ? 'resolved' : 'rejected'} with"}, #{@value || @failure})`
+        end
+
+        @failure = failure
+        @reject.call failure
+        self
+      end
+
+      def realized?
+        resolved? || rejected?
+      end
+
+      def resolved?
+        !value.nil?
+      end
+
+      def rejected?
+        !failure.nil?
+      end
+
+      def to_n
+        @native
+      end
+
+      %x{
+        Opal.defn(self, 'then', function(callback) {
+          var self = this;
+          #{self.then(&`callback`)};
+        });
+        Opal.defn(self, 'catch', function(callback) {
+          var self = this;
+          #{self.fail(&`callback`)};
+        });
+      }
+    end
+  end
+end
 
 
 module Opal
@@ -10,7 +109,7 @@ module Opal
       attr_accessor :root_in_dropbox, :app_name
 
       def authenticate()
-        raise "not logged in to dropbox"
+        raise I18n.t("not logged in to dropbox")
       end
     end
 
@@ -25,7 +124,8 @@ module Opal
       def initialize(key)
         @errorlogger = lambda { |error| $log.error(error) }
 
-        @root = `new Dropbox.Client({ key: #{key} });`
+        @root = `new Dropbox({clientId: #{key}});`
+
         # %x{
         #    self.root.onError.addListener(function(error) {
         #                            self.errorlogger(error)
@@ -33,6 +133,77 @@ module Opal
         # }
       end
 
+      def getAccessToken(iblock)
+        %x{
+            parseQueryString = function(str) {
+                  var ret = Object.create(null);
+
+                  if (typeof str !== 'string') {
+                    return ret;
+                  }
+
+                  str = str.trim().replace(/^(\?|#|&)/, '');
+
+                  if (!str) {
+                    return ret;
+                  }
+
+                  str.split('&').forEach(function (param) {
+                    var parts = param.replace(/\+/g, ' ').split('=');
+                    // Firefox (pre 40) decodes `%3D` to `=`
+                    // https://github.com/sindresorhus/query-string/pull/37
+                    var key = parts.shift();
+                    var val = parts.length > 0 ? parts.join('=') : undefined;
+
+                    key = decodeURIComponent(key);
+
+                    // missing `=` should be `null`:
+                    // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+                    val = val === undefined ? null : decodeURIComponent(val);
+
+                    if (ret[key] === undefined) {
+                      ret[key] = val;
+                    } else if (Array.isArray(ret[key])) {
+                      ret[key].push(val);
+                    } else {
+                      ret[key] = [ret[key], val];
+                    }
+                  });
+                  return ret;
+                }
+
+
+            access_token = localStorage.getItem('dbx_token');  // try to ge an accesstoken from previous session
+            if (!access_token) {
+                dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
+                access_token = dropbox_answers.access_token;
+                if (access_token) {
+                    localStorage.setItem('dbx_token', access_token);
+                    #{iblock.call(nil, true)}
+                    window.location.href = #{Controller::get_uri[:origin]}; // this is just to remove the access token from the adress bar
+                 }
+                else if (dropbox_answers.error)
+                 {
+                  #{iblock.call(%x{errror}, nil)}
+                 }
+                else
+                 {
+                  var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin]+"/"});
+                  #{iblock.call(nil, true)}
+                  window.location.href=authUrl;
+                 }
+            }
+           else
+            {
+             #{@root} = new Dropbox({accessToken: access_token})
+             #{iblock.call(nil, true)}
+            }
+        }
+      end
+
+      def logout
+
+      end
 
       # this method supports to execute a block in a promise
       #
@@ -47,11 +218,11 @@ module Opal
       # @return [Promise]
       #
       def with_promise(&block)
-        Promise.new.tap do |promise|
+        Bowser::ServiceWorker::Promise.new.tap do |promise|
           block.call(lambda { |error, data|
             if error
               # todo: don't know if this is generic enough. it assumes that error is a dedicated structure.
-              errormessage = Native(error)[:response].error rescue "unspecified error from Dropbox API"
+              errormessage = Native(error).error rescue "unspecified error from Dropbox API"
               promise.reject(errormessage)
             else
               promise.resolve(data)
@@ -81,7 +252,7 @@ module Opal
             else
               promise.resolve(Native(data))
             end
-            }
+          }
           )
         end
       end
@@ -115,7 +286,8 @@ module Opal
       # @return [Promise]
       def authenticate()
         with_promise() do |iblock|
-          %x(#@root.authenticate(#{iblock}))
+          #  %x(#@root.authenticate(#{iblock}))
+          getAccessToken(iblock)
         end
       end
 
@@ -157,8 +329,32 @@ module Opal
 
       def read_dir(dirname = "/")
         with_promise() do |iblock|
-          %x{#@root.readdir(#{dirname}, #{iblock})}
-          nil
+          %x{
+             #{@root}.filesListFolder({path: #{dirname}})
+                .then(function (response) {
+                    #{iblock}(nil, response.entries.map(function(i){return i.name}))
+                })
+                .catch(function (error) {
+                    #{iblock}(error, nil)
+                });
+          }
+        end
+      end
+
+      # @param [String] dirname - name of the directory to be read
+      # @return [Promise]
+
+      def read_dirxx(dirname = "/")
+        a = %x{#{@root}.filesListFolder({path: #{dirname}})}
+        Bowser::ServiceWorker::Promise.from_native(a).then do |value|
+          Bowser::ServiceWorker::Promise.new.tap do |promise|
+            begin
+              result = Native(value)[:entries].map { |i| i.name }
+              promise.resolve(result)
+            rescue Exception => error
+              promise.reject(error.message)
+            end
+          end
         end
       end
 
