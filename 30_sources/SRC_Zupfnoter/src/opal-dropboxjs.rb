@@ -1,103 +1,5 @@
 #require 'promise'
 
-module Bowser
-  module ServiceWorker
-    class Promise
-      attr_reader :value, :failure
-
-      def initialize &block
-        @native = `new Promise(function(resolve, reject) {
-          #{@resolve = `resolve`};
-          #{@reject = `reject`};
-          #{block.call(self) if block_given?};
-        })`
-      end
-
-      def self.from_native promise
-        p = allocate
-        p.instance_exec { @native = promise }
-        p
-      end
-
-      def self.all promises
-        from_native `Promise.all(#{promises.map(&:to_n)})`
-      end
-
-      def self.race promises
-        from_native `Promise.race(#{promises.map(&:to_n)})`
-      end
-
-      def self.reject reason
-        new.reject reason
-      end
-
-      def self.resolve value
-        new.resolve value
-      end
-
-      def then &block
-        Promise.from_native `#@native.then(block)`
-      end
-
-      def fail &block
-        Promise.from_native `#@native.catch(block)`
-      end
-
-      def always &block
-        Promise.from_native `#@native.then(block).fail(block)`
-      end
-
-      def resolve value
-        return self if resolved?
-        if rejected?
-          `console.warn(#{self}, #{"tried to resolve, already #{resolved? ? 'resolved' : 'rejected'} with"}, #{@value || @failure})`
-        end
-
-        @value = value
-        @resolve.call value
-        self
-      end
-
-      def reject failure
-        return self if rejected?
-        if resolved?
-          `console.warn(#{self}, #{"tried to reject, already #{resolved? ? 'resolved' : 'rejected'} with"}, #{@value || @failure})`
-        end
-
-        @failure = failure
-        @reject.call failure
-        self
-      end
-
-      def realized?
-        resolved? || rejected?
-      end
-
-      def resolved?
-        !value.nil?
-      end
-
-      def rejected?
-        !failure.nil?
-      end
-
-      def to_n
-        @native
-      end
-
-      %x{
-        Opal.defn(self, 'then', function(callback) {
-          var self = this;
-          #{self.then(&`callback`)};
-        });
-        Opal.defn(self, 'catch', function(callback) {
-          var self = this;
-          #{self.fail(&`callback`)};
-        });
-      }
-    end
-  end
-end
 
 
 module Opal
@@ -218,7 +120,7 @@ module Opal
       # @return [Promise]
       #
       def with_promise(&block)
-        Bowser::ServiceWorker::Promise.new.tap do |promise|
+        Promise.new.tap do |promise|
           block.call(lambda { |error, data|
             if error
               # todo: don't know if this is generic enough. it assumes that error is a dedicated structure.
@@ -266,7 +168,8 @@ module Opal
             if error
               remaining -= 1
               if remaining >= 0
-                $log.info("#{remaining} remaining retries #{info}")
+                `debugger`
+                $log.info("#{remaining} remaining retries #{info}, erroro: #{error}")
                 block.call(handler)
               else
                 $log.error(I18n.t("Error from Dropbox with failed retries"))
@@ -307,9 +210,11 @@ module Opal
       # @return [Promise]
 
       def write_file(filename, data)
-        $log.debug("waiting")
-        with_promise_retry(filename, 2) do |iblock|
-          %x{#@root.writeFile(#{filename}, #{data}, #{iblock})}
+        with_promise_retry(filename, 4) do |iblock|
+          %x{#{@root}.filesUpload({path: #{filename}, contents: #{data}, mode:{'.tag': 'overwrite'}})
+            .then(function(respnse){#{iblock}(nil, respnse)})
+            .catch(function(error){#{iblock}(error, nil)})
+            }
         end
       end
 
@@ -319,7 +224,16 @@ module Opal
 
       def read_file(filename)
         with_promise() do |iblock|
-          %x{#@root.readFile(#{filename}, #{iblock})}
+              %x{#@root.filesDownload({path: #{filename}})
+                .then(function(response){
+                    reader = new FileReader();
+                    reader.addEventListener("loadend", function(){
+                     #{iblock}(nil, reader.result);
+                    });
+                    reader.readAsText(response.fileBlob);
+                 })
+                .catch(function(error){#{iblock}(error, nil)})
+                }
         end
       end
 
@@ -346,8 +260,8 @@ module Opal
 
       def read_dirxx(dirname = "/")
         a = %x{#{@root}.filesListFolder({path: #{dirname}})}
-        Bowser::ServiceWorker::Promise.from_native(a).then do |value|
-          Bowser::ServiceWorker::Promise.new.tap do |promise|
+        Promise.from_native(a).then do |value|
+          Promise.new.tap do |promise|
             begin
               result = Native(value)[:entries].map { |i| i.name }
               promise.resolve(result)
