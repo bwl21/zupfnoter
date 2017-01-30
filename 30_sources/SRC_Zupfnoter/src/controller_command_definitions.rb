@@ -347,9 +347,9 @@ C,
         # create the commands for presets
 
         $conf['presets.notes'].each do |key, preset_value|
-          entry = $conf["presets.notes.#{key}"]
-          to_key = entry[:key] || key
-          value = entry[:value]
+          entry                         = $conf["presets.notes.#{key}"]
+          to_key                        = entry[:key] || key
+          value                         = entry[:value]
           values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
         end
 
@@ -716,6 +716,21 @@ C,
       end
     end
 
+
+    @commands.add_command(:dlogout) do |command|
+      command.undoable = false
+      command.set_help { "logout from dropbox" } # todo factor out to comman class
+
+      command.as_action do |args|
+
+        @dropboxclient.revokeAccessToken.then do |entries|
+          $log.message("logged out from dropbox")
+        end.fail do |err|
+          _report_error_from_promise err
+        end
+      end
+
+    end
     @commands.add_command(:dls) do |command|
       command.undoable = false
 
@@ -890,7 +905,7 @@ C,
           saved_paths = Native(xx).map do |x|
             x.path_display if x.respond_to? :path_display
           end.compact
-          message = I18n.t("saved to dropbox") + "\n<pre>" + saved_paths.join("\n") + "</pre>"
+          message     = I18n.t("saved to dropbox") + "\n<pre>" + saved_paths.join("\n") + "</pre>"
           set_status(music_model: message)
           `w2alert(#{message}, "Info")`
           $log.message(message)

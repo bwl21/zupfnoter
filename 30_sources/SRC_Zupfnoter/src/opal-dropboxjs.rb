@@ -26,6 +26,8 @@ module Opal
       def initialize(key)
         @errorlogger = lambda { |error| $log.error(error) }
 
+        @accesstoken_key = "dbx_token"
+
         @root = `new Dropbox({clientId: #{key}});`
 
         # %x{
@@ -33,6 +35,41 @@ module Opal
         #                            self.errorlogger(error)
         #    });
         # }
+      end
+
+      def get_access_token_from_localstore
+        %x{ localStorage.getItem(#{@accesstoken_key}) }
+      end
+
+      def save_access_token_to_localstore(token)
+        %x{ localStorage.setItem(#{@accesstoken_key}, #{token}) }
+      end
+
+      def remove_access_token_from_localstore
+        %x{ localStorage.removeItem(#{@accesstoken_key}) }
+      end
+
+      def revokeAccessToken
+        with_promise do |iblock|
+          %x{
+           access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
+           if (access_token){
+              #{@root}.authTokenRevoke()                       // revoke the access toke at dropbox
+                    .then(function (response) {
+                        #{remove_access_token_from_localstore};  // remove an existing access token in case of success
+                        #{iblock.call(nil, `response`)}
+                       }
+                     ).catch(function (error) {
+                        #{remove_access_token_from_localstore};  // remove an existing access token in case of error; it is mainly a malformed token
+                        #{iblock.call(`error`, nil)} }
+                     );
+            }
+           else
+            {
+             #{iblock.call(`{error: "kein Accesstoken vorhanden"}`, nil)}
+            }
+         }
+        end
       end
 
       def getAccessToken(iblock)
@@ -78,15 +115,15 @@ module Opal
             access_token = localStorage.getItem('dbx_token');  // try to ge an accesstoken from previous session
             if (!access_token) {
                 dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
+                window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
                 access_token = dropbox_answers.access_token;
                 if (access_token) {
-                    localStorage.setItem('dbx_token', access_token);
+                    #{save_access_token_to_localstore(`access_token`)}
                     #{iblock.call(nil, true)}
-                    window.location.href = #{Controller::get_uri[:origin]}; // this is just to remove the access token from the adress bar
                  }
                 else if (dropbox_answers.error)
                  {
-                  #{iblock.call(%x{errror}, nil)}
+                  #{iblock.call(%x{dropbox_answers}, nil)}
                  }
                 else
                  {
@@ -168,8 +205,7 @@ module Opal
             if error
               remaining -= 1
               if remaining >= 0
-                `debugger`
-                $log.info("#{remaining} remaining retries #{info}, erroro: #{error}")
+                $log.info("#{remaining} remaining retries #{info}, error: #{`error.error`}")
                 block.call(handler)
               else
                 $log.error(I18n.t("Error from Dropbox with failed retries"))
