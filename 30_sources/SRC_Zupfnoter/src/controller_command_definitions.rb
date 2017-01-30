@@ -886,9 +886,14 @@ C,
             save_promises.push(@dropboxclient.write_file(name, pdfdata))
           end
         end
-        Promise.when(*save_promises).then do
-          set_status(music_model: I18n.t("saved to dropbox"))
-          $log.message("all files saved")
+        Promise.when(*save_promises).then do |xx|
+          saved_paths = Native(xx).map do |x|
+            x.path_display if x.respond_to? :path_display
+          end.compact
+          message = I18n.t("saved to dropbox") + "\n<pre>" + saved_paths.join("\n") + "</pre>"
+          set_status(music_model: message)
+          `w2alert(#{message}, "Info")`
+          $log.message(message)
         end.fail do |err|
           _report_error_from_promise(err)
         end
