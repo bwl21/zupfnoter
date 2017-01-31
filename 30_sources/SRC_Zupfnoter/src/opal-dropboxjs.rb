@@ -1,7 +1,6 @@
 #require 'promise'
 
 
-
 module Opal
   module DropboxJs
 
@@ -10,9 +9,10 @@ module Opal
     class NilClient
       attr_accessor :root_in_dropbox, :app_name
 
-      def authenticate()
-        raise I18n.t("not logged in to dropbox")
+      def method_missing(m, *args, &block)
+        raise I18n.t("you are not logged in to dropbox")
       end
+
     end
 
     # This class wraps the dropbox-js client
@@ -112,7 +112,7 @@ module Opal
                 }
 
 
-            access_token = localStorage.getItem('dbx_token');  // try to ge an accesstoken from previous session
+            access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
             if (!access_token) {
                 dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
                 window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
@@ -123,12 +123,16 @@ module Opal
                  }
                 else if (dropbox_answers.error)
                  {
-                  #{iblock.call(%x{dropbox_answers}, nil)}
+                   #{remove_access_token_from_localstore}
+                   #{iblock.call(%x{dropbox_answers}, nil)}
                  }
                 else
                  {
                   var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin]+"/"});
-                  #{iblock.call(nil, true)}
+                  #{
+                    remove_access_token_from_localstore
+                    iblock.call(`{error: "warte auf Authentifizierung"}`, nil)
+                   }
                   window.location.href=authUrl;
                  }
             }
@@ -138,10 +142,6 @@ module Opal
              #{iblock.call(nil, true)}
             }
         }
-      end
-
-      def logout
-
       end
 
       # this method supports to execute a block in a promise
@@ -186,8 +186,8 @@ module Opal
       def with_promise_chooser(&block)
         Promise.new.tap do |promise|
           block.call(lambda { |data|
-            if false
-              promise.reject(Native(error)[:response].error)
+            if data==false
+              promise.reject(I18n.t("you are not logged in to dropbox"))
             else
               promise.resolve(Native(data))
             end
@@ -225,9 +225,21 @@ module Opal
       # @return [Promise]
       def authenticate()
         with_promise() do |iblock|
-          #  %x(#@root.authenticate(#{iblock}))
           getAccessToken(iblock)
         end
+      end
+
+
+      def reconnect()
+        access_token = get_access_token_from_localstore  # try to get an accesstoken from previous session
+        if access_token
+          @root = %x{new Dropbox({accessToken: #{access_token}})}
+        end
+      end
+
+
+      def is_authenticated?
+        not Native(get_access_token_from_localstore).nil?
       end
 
 
@@ -260,7 +272,7 @@ module Opal
 
       def read_file(filename)
         with_promise() do |iblock|
-              %x{#@root.filesDownload({path: #{filename}})
+          %x{#@root.filesDownload({path: #{filename}})
                 .then(function(response){
                     reader = new FileReader();
                     reader.addEventListener("loadend", function(){
@@ -280,7 +292,7 @@ module Opal
       def read_dir(dirname = "/")
         with_promise() do |iblock|
           %x{
-             #{@root}.filesListFolder({path: #{dirname}})
+          #{@root}.filesListFolder({path: #{dirname}})
                 .then(function (response) {
                     #{iblock}(nil, response.entries.map(function(i){return i.name}))
                 })
@@ -311,8 +323,10 @@ module Opal
 
       def choose_file(options)
 
+
         with_promise_chooser() do |iblock|
-          %x{
+          if is_authenticated?
+            %x{
               dropbox_options = {
 
                   // Required. Called when a user selects an item in the Chooser.
@@ -335,6 +349,9 @@ module Opal
 
                   Dropbox.choose(dropbox_options);
           }
+          else
+            iblock.call(false)
+          end
         end
       end
 

@@ -666,6 +666,11 @@ C,
         parameter.set_help { "path to set in dropbox" }
       end
 
+      command.add_parameter(:reconnect, :boolean) do |parameter|
+        parameter.set_default { false }
+        parameter.set_help { "true to reconnect" }
+      end
+
       command.set_help { "dropbox login for #{command.parameter_help(0)}" }
 
       command.as_action do |args|
@@ -723,14 +728,21 @@ C,
 
       command.as_action do |args|
 
+
         @dropboxclient.revokeAccessToken.then do |entries|
           $log.message("logged out from dropbox")
+          @dropboxclient = Opal::DropboxJs::NilClient.new
         end.fail do |err|
           _report_error_from_promise err
         end
+
+        set_status({zndropboxlogincmd: nil})
+        set_status_dropbox_status
+
       end
 
     end
+
     @commands.add_command(:dls) do |command|
       command.undoable = false
 
@@ -796,7 +808,6 @@ C,
       command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
-        @dropboxclient.authenticate
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
           # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
