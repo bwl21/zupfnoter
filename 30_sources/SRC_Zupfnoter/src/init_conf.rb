@@ -60,8 +60,8 @@ module InitConf
              notes:   {
                  T01_number:               {
                      value: {
-                         pos:   [394, 17],
-                         text:  "XXX-999-X",
+                         pos:   [393, 17],
+                         text:  "MMM-999",
                          style: "bold"
                      }},
                  T01_number_extract:       {
