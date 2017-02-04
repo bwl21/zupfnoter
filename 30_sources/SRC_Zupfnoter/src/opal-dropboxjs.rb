@@ -7,12 +7,15 @@ module Opal
 
     # this is a dummy client to register before login
     class NilClient
-      attr_accessor :root_in_dropbox, :app_name
+      attr_accessor :root_in_dropbox, :app_name, :app_id
 
       def method_missing(m, *args, &block)
         raise I18n.t("you are not logged in to dropbox")
       end
 
+      def is_authenticated?
+        false
+      end
     end
 
     # This class wraps the dropbox-js client
@@ -118,6 +121,7 @@ module Opal
                 window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
                 access_token = dropbox_answers.access_token;
                 if (access_token) {
+                    #{@root} = new Dropbox({accessToken: access_token})
                     #{save_access_token_to_localstore(`access_token`)}
                     #{iblock.call(nil, true)}
                  }
@@ -128,12 +132,7 @@ module Opal
                  }
                 else
                  {
-                  var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin]+"/"});
-                  #{
-                    remove_access_token_from_localstore
-                    iblock.call(`{error: "warte auf Authentifizierung"}`, nil)
-                   }
-                  window.location.href=authUrl;
+                    //#{login}
                  }
             }
            else
@@ -229,6 +228,21 @@ module Opal
         end
       end
 
+      ## this performs a login on Dropbox
+      def login
+        revokeAccessToken if is_authenticated?
+
+        with_promise() do |iblock|
+          %x{
+           var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin]+"/"});
+           #{
+            remove_access_token_from_localstore
+            iblock.call(`{error: "warte auf Authentifizierung"}`, nil)
+            }
+           window.location.href=authUrl;
+          }
+        end
+      end
 
       def reconnect()
         access_token = get_access_token_from_localstore  # try to get an accesstoken from previous session

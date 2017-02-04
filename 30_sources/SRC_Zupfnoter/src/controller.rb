@@ -153,6 +153,8 @@ class Controller
     #
     # load from previous session
 
+    handle_command('dreconnect')
+
     demo_uri = uri[:parsed_search][:load] rescue nil
     load_from_uri(uri[:parsed_search][:load]) if demo_uri
 
@@ -176,7 +178,6 @@ class Controller
     # todo don't know if this is the most eleant solution
     # see controller_command_definitions.rb
     #
-    handle_command(@systemstatus[:zndropboxlogincmd]) if uri[:hash].start_with?("#access_token") and @systemstatus[:zndropboxlogincmd]
   end
 
 
@@ -236,9 +237,6 @@ class Controller
     @editor.set_text(abc) unless abc.nil?
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
-    if @systemstatus[:dropboxapp]
-      handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}"})
-    end
     nil
   end
 
