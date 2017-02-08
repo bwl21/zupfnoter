@@ -105,7 +105,9 @@ module Ajv
                                                                            :shape => {:type        => "array",
                                                                                       :minItems    => 1,
                                                                                       :uniqueItems => true,
-                                                                                      :items       => {:type => "string"}}}}}}}},
+                                                                                      :items       => {:type => "string"}},
+                                                                           :show  => {:type => 'boolean'}
+                                                                          }}}}}},
            :templates    => {:type       => "object",
                              :required   => ["notes", "lyrics", "tuplet", "annotations"],
                              :properties =>
@@ -154,7 +156,7 @@ module Ajv
                              #:required          => ["0", "1", "2", "3"],
                              :patternProperties =>
                                  {:"\d*" => {:type       => "object",
-                                             :requiredx   =>
+                                             :requiredx  =>
                                                  ["title", "filenamepart", "startpos", "voices", "synchlines",
                                                   "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines",
                                                   "legend", "lyrics", "layout", "nonflowrest", "notes", "barnumbers",
@@ -187,7 +189,7 @@ module Ajv
                                                                     :uniqueItems => true,
                                                                     :items       => {:type => "integer"}},
                                                   :repeatsigns  => {:type       => "object",
-                                                                    :requiredx   => ["voices", "left", "right"],
+                                                                    :requiredx  => ["voices", "left", "right"],
                                                                     :properties =>
                                                                         {:voices => {:type        => "array",
                                                                                      :minItems    => 0,
@@ -220,7 +222,7 @@ module Ajv
                                                                     :properties =>
                                                                         {}},
                                                   :layout       => {:type       => "object",
-                                                                    :requiredx   => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
+                                                                    :requiredx  => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
                                                                     :properties =>
                                                                         {:limit_a3     => {:type => "boolean"},
                                                                          :LINE_THIN    => {:type => "number"},

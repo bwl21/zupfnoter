@@ -7,6 +7,7 @@
 * non BWC: now handle treble+8, treble-8 #104 provided by abc2svg 1.9.0
 * cutmarks only show up if rendered for A4 printing #100
 * do not show variation marks if jumplines are turned off #110
+* supress rendering of tuplets via configuration #55
 
 ## backward compatibilility issues
 

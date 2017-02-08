@@ -23,7 +23,8 @@ module InitConf
                          tuplet:     {
                              cp1:   [5, 2], # first control point positive x: point is east of flowline, positive y: point is south of note
                              cp2:   [5, -2], # second control point
-                             shape: ['c'] # 'c' | 'l' => curve | line
+                             shape: ['c'], # 'c' | 'l' => curve | line
+                             show:  true
                          }
              }
          },
@@ -32,7 +33,7 @@ module InitConf
          templates:    {
              notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
              lyrics:      {verses: [1], pos: [350, 70]},
-             tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
+             tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
              annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
 

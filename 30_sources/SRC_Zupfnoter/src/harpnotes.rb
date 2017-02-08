@@ -1588,13 +1588,14 @@ module Harpnotes
             configured_anchor = (bezier_anchor + pos_from_conf)
             conf_value        = (configured_anchor - bezier_anchor).to_a.map { |i| i.round(0) }
 
-            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THIN') })
-            result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
-                                                           :small,
-                                                           tuplet_start,
-                                                           conf_key + ".#{conf_key_pos}",
-                                                           {conf_key_pos.to_s => conf_value.to_a}))
-
+            unless tuplet_options[:show] == false
+              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THIN') })
+              result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
+                                                             :small,
+                                                             tuplet_start,
+                                                             conf_key + ".#{conf_key_pos}",
+                                                             {conf_key_pos.to_s => conf_value.to_a}))
+            end
             tuplet_notes = []
             tuplet_start = nil
             # compute the position
@@ -1712,7 +1713,7 @@ module Harpnotes
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
                                                         conf_key, {pos: annotationoffset})
-          result = nil if annotation.policy==:Goto and not show_options[:jumpline]
+          result   = nil if annotation.policy==:Goto and not show_options[:jumpline]
           result
         end
 

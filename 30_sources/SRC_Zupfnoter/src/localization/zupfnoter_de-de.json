@@ -317,7 +317,17 @@
     "Y-position": "Y-position",
     "Y_SCALE": "Vertikale Skalierung",
     "Yes": "Ja",
-    "zoom harpnote preview": "Zoom in Vorschau der Harfennoten"
+    "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
+    "key": "schlüssel",
+    "show": "anzeigen",
+    "T01_number": "T01 Nummer",
+    "T01_number_extract": "T01 Auszug-Nummer",
+    "T01_number_extract_value": "T01 Auszugn Nummer Wert",
+    "T02_copyright_music": "T02 Copyright Musik",
+    "T03_copyright_harpnotes": "T03 Copyright Unterlegnoten",
+    "T04_to_order": "T04 zu beziehen bei",
+    "T99_do_not_copy": "T05 bitte nicht kopieren",
+    "value": "Wert"
   }
 }
 

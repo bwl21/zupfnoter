@@ -547,6 +547,19 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
 steuern.
 
+> **Hinweis**: diese Einstellungen wirken immer auf alle Tuplets aller
+> Stimmen, die zum gleichen Zeitpunkt gespielt werden.
+>
+> Wenn du die Tuplets individuell konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor das tuplet zu setzen. Dabei ist
+> es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn man die
+> Verschiebemarken gleich benennt.
+>
+> Z.B. kann man eine Verschiebemarke `tpl_links` an alle tuplets
+> schreiben, deren Bogen links von der FLußlineie liegen soll. Diese
+> können dann über den parameter `extract.0.tuplet.tpl_links` gemeinsam
+> konfiguriert werden
+
 ## tuplet.0
 
 Hier kannst du die Darstellung einer Triole (genauer gesagt, eines
@@ -569,6 +582,10 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 
 > **Hinweis**: Mit der Linienform `l` kann man die Lage der
 > Kontrollpunkte (als Ecken im Linienzug) sehen.
+
+## show
+
+Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 
 ## text
 
