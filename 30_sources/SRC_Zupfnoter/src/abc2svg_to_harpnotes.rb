@@ -624,6 +624,7 @@ module Harpnotes
             end
           end
 
+          # variant ending followupliens
           if variant_ending_group[-1][:is_followup]
             result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
           end
@@ -747,7 +748,7 @@ module Harpnotes
           conf_key                              = "notebound.variantend.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position                              = $conf['defaults.notebound.variantend.pos']
           harpnote_elements.first.first_in_part = true
-          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text}, conf_key)
+          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text, policy: :Goto}, conf_key)
           @next_note_marks[:variant_ending] = nil
           @variant_endings.last.push({})
           @variant_endings.last.last[:rbstart] = @previous_note

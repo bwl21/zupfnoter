@@ -425,6 +425,10 @@ module Harpnotes
       def position
         @annotations[:pos]
       end
+
+      def policy # this is used for filtering in layout for example if visibility is to be controlled (annotations on variant endings : Goto)
+        @annotations[:policy]
+      end
     end
 
     #
@@ -1708,6 +1712,7 @@ module Harpnotes
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
                                                         conf_key, {pos: annotationoffset})
+          result = nil if annotation.policy==:Goto and not show_options[:jumpline]
           result
         end
 
