@@ -110,7 +110,12 @@ class Controller
     @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
-    $log.info ("Welcome to Zupfnoter #{VERSION}")
+    $log.info ("Welcome to Zupfnoter")
+    $log.info ("Zupfnoter #{VERSION}")
+    $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
+    $log.info ("Ruby:     #{RUBY_VERSION}")
+    $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
+
 
     $conf        = Confstack.new()
     $conf.strict = false
