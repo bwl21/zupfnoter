@@ -8,6 +8,9 @@
 * cutmarks only show up if rendered for A4 printing #100
 * do not show variation marks if jumplines are turned off #110
 * supress rendering of tuplets via configuration #55
+* no longer show barnumbers/contnotes on invisible rests #109
+* show unsynchronized rests such that subflowlines do not end somewhere #109
+
 
 ## backward compatibilility issues
 

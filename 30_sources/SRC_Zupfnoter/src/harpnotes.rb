@@ -1217,7 +1217,8 @@ module Harpnotes
           print_options_hash[:voices].include?(sl.first) && print_options_hash[:voices].include?(sl.last)
         }
 
-        synched_notes   = required_synchlines.map do |selector|
+        # determine the synchronized notes
+        synched_notes               = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
             [sp.notes.first, sp.notes.last]
@@ -1225,8 +1226,8 @@ module Harpnotes
         end.flatten
 
         # sheet_elements derived from the voices
-        active_voices   = print_options_hash[:voices]
-        voice_elements  = music.voices.each_with_index.map { |v, index|
+        active_voices               = print_options_hash[:voices]
+        voice_elements              = music.voices.each_with_index.map { |v, index|
           if active_voices.include?(index) ## todo add control for jumpline right border
             countnotes_options = print_options_hash[:countnotes]
             countnotes_options = nil unless countnotes_options[:voices].include?(index)
@@ -1240,7 +1241,7 @@ module Harpnotes
                          subflowline:       print_options_hash[:subflowlines].include?(index),
                          jumpline:          print_options_hash[:jumplines].include?(index),
                          repeatsigns:       print_options_hash[:repeatsigns],
-                         synched_notes:     synched_notes,
+                         synched_notes:     synched_notes, # synchronized notes to determine subflowlines
                          countnotes:        countnotes_options,
                          barnumbers:        barnumbers_options,
                          print_options_raw: print_options_raw
@@ -1249,10 +1250,10 @@ module Harpnotes
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
         # this is a lookup table to find the drawing symbol by a note
-        note_to_ellipse = Hash[voice_elements.select { |e| e.is_note? }.map { |e| [e.origin, e] }]
+        note_to_ellipse             = Hash[voice_elements.select { |e| e.is_note? }.map { |e| [e.origin, e] }]
 
         # build synchlines between voices
-        synch_lines     = required_synchlines.map do |selector|
+        synch_lines                 = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
             FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
@@ -1261,7 +1262,7 @@ module Harpnotes
 
 
         # build Scalebar
-        sheet_marks     = layout_stringnames(print_options_hash)
+        sheet_marks                 = layout_stringnames(print_options_hash)
 
         # build cutmarks
 
@@ -1425,7 +1426,10 @@ module Harpnotes
 
         # uncomemnt this if you want to hide rests in voices without flowlines
         unless show_options[:nonflowrest]
-          playables.each { |c| c.visible=false if c.is_a? Pause and not show_options[:flowline] }
+          playables.each do |c|
+            c.visible=false if c.is_a? Pause and not show_options[:flowline] and show_options[:synched_notes].include?(c)
+            c.visible=false if c.is_a? Pause and not show_options[:subflowline] and not show_options[:flowline]
+          end
         end
 
         res_decorations                 = []
@@ -1455,13 +1459,14 @@ module Harpnotes
         # draw the countnotes
         # todo: handle shift
         # todo: handle influence of style to position of text
+        visible_playables = playables.select { |playable| playable.visible? }
         if show_options[:countnotes]
           countnotes_options = show_options[:countnotes]
           style              = countnotes_options[:style]
           autopos            = countnotes_options[:autopos]
           fixedpos           = countnotes_options[:pos]
 
-          res_countnotes = playables.map do |playable|
+          res_countnotes = visible_playables.map do |playable|
             notebound_pos_key = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}.pos"
             conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
             count_note        = playable.count_note || ""
@@ -1495,7 +1500,7 @@ module Harpnotes
           fixedpos           = barnumbers_options[:pos]
           prefix             = barnumbers_options[:prefix]
 
-          res_barnumbers = playables.select { |p| p.measure_start? }.map do |playable|
+          res_barnumbers = visible_playables.select { |p| p.measure_start? }.map do |playable|
 
             the_playable = lookuptable_drawing_by_playable[playable]
 
@@ -1544,10 +1549,6 @@ module Harpnotes
             res = nil
             res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
             res = nil if playable.first_in_part?
-          end
-
-          unless playable.visible?
-            res = nil #$log.warning("invisible pause in subflowline", playable.start_pos)
           end
 
           previous_note = playable
