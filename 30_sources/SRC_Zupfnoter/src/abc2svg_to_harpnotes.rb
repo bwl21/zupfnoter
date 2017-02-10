@@ -47,11 +47,11 @@ module Harpnotes
 
         result[:print] = $conf.get("produce").map do |i|
           title        = $conf.get("extract.#{i}.title")
-          filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
           if title
+            filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
             {title: title, view_id: i, filenamepart: filenamepart}
           else
-            $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
+            $log.error(I18n.t("could not find extract with number") + " #{i}", [1, 1], [1000, 1000])
             nil
           end
         end.compact

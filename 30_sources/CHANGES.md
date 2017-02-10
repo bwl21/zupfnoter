@@ -10,6 +10,7 @@
 * supress rendering of tuplets via configuration #55
 * no longer show barnumbers/contnotes on invisible rests #109
 * show unsynchronized rests such that subflowlines do not end somewhere #109
+* no longer throw internal message if produce refers to non existing extract #114
 
 ## Enhancement
 
