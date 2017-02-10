@@ -520,6 +520,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end.then do
       Promise.new.tap do |promise|
         set_active("#harpPreview")
+        @harpnote_preview_printer.clear
         `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
       end.then do
         Promise.new.tap do |promise|

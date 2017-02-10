@@ -15,6 +15,7 @@
 ## Enhancement
 
 * now suppoert tilde as non braeking space in lyrics #113
+* Harpnote preview is cleared before rendering #101
 
 
 ## backward compatibilility issues
