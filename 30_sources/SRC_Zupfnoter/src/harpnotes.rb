@@ -1307,7 +1307,7 @@ module Harpnotes
           text = lyric_text.join("\n")
 
           if lyrics
-            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map { |i| i.strip }
+            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map { |i| i.gsub('~', " ") }
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
               pos      = entry[:pos]

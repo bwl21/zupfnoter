@@ -11,6 +11,10 @@
 * no longer show barnumbers/contnotes on invisible rests #109
 * show unsynchronized rests such that subflowlines do not end somewhere #109
 
+## Enhancement
+
+* now suppoert tilde as non braeking space in lyrics #113
+
 
 ## backward compatibilility issues
 
