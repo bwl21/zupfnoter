@@ -457,8 +457,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     setup_tune_preview
 
     begin
-      abc_text = @editor.get_abc_part.gsub("~", " ")
-      @tune_preview_printer.draw(abc_text)
+      abc_text = @editor.get_abc_part
+      abc_text = abc_text.split("\n").map { |line|
+        result = line
+        result = result.gsub('~', ' ') if line.start_with? 'W:'
+        result
+      }.join("\n")
+
       @tune_preview_printer.draw(abc_text, @editor.get_checksum)
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
