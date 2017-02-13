@@ -16,7 +16,7 @@
 
 * now suppoert tilde as non braeking space in lyrics #113
 * Harpnote preview is cleared before rendering #101
-
+* show checksum also in the tune preview #80
 
 ## backward compatibilility issues
 
