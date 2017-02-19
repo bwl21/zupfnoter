@@ -414,7 +414,9 @@ C,
 
         sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
-                                                                            'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest,
+                                                                            'repeatsigns.voices', 'barnumbers.voices','barnumbers.autopos', 'countnotes.voices','countnotes.autopos',
+                                                                            'printer.show_border', 'stringnames.vpos',
+                                                                            :startpos,
                                                                            ]) + [:restposition]},
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 

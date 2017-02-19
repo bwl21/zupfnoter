@@ -160,6 +160,8 @@ module InitConf
                                 # all numbers in mm
                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                 REST_SIZE:    [4, 2],
+                                REST_SIZE:    [4, 2],
+                                DRAWING_AREA_SIZE: [400, 282],
                                 packer:       {
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
@@ -172,11 +174,11 @@ module InitConf
                  barnumbers:   {
                      voices:  [],
                      pos:     [6, -4],
-                     autopos: false,
+                     autopos: true,
                      style:   "small_bold",
                      prefix:  ""
                  },
-                 countnotes:   {voices: [], pos: [3, -2], autopos: false, style: "smaller"},
+                 countnotes:   {voices: [], pos: [3, -2], autopos: true, style: "smaller"},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
@@ -186,7 +188,7 @@ module InitConf
                  printer:      {
                      a3_offset:   [0, 0],
                      a4_offset:   [-5, 0],
-                     show_border: true
+                     show_border: false
                  }
              },
              "1" => {
