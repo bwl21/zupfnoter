@@ -1453,7 +1453,7 @@ module Harpnotes
 
         lookuptable_drawing_by_playable = Hash[res_playables.select { |e| e.origin.is_a? Harpnotes::Music::Playable }.map { |e| [e.origin, e] }.reverse]
 
-        res_decorations = res_decorations.flatten.compact
+        res_decorations   = res_decorations.flatten.compact
 
 
         # draw the countnotes
@@ -1474,9 +1474,14 @@ module Harpnotes
             the_playable = lookuptable_drawing_by_playable[playable]
 
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
+
             unless annotationoffset
               if autopos
-                annotationoffset = [the_playable.size_with_dot.first + 1, -the_playable.size.last] # todo derive "3" from style?
+                # draw the countnote opposit of outgoing flowline (computed by next_pitch)
+                # literals are experimental
+                # 1 mm horizontal distance, 0.5 mm vertical
+                auto_x           = (playable.next_pitch || playable.pitch) >= playable.pitch ? -count_note.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1
+                annotationoffset = [auto_x, 0.5] # todo derive "3" from style?
               else
                 annotationoffset = fixedpos
               end
@@ -1511,7 +1516,9 @@ module Harpnotes
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
             unless annotationoffset
               if autopos
-                annotationoffset = [the_playable.size.first + 0.5, -the_playable.size.last - 4] # todo derive "7" from style?
+                # 1 mm horizontal distance, 0.5 mm vertical
+                auto_x           = (playable.prev_pitch || playable.pitch) > playable.pitch ? -barnumber.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1
+                annotationoffset = [auto_x, -the_playable.size.last - 4] # todo derive "7" from style?
               else
                 annotationoffset = fixedpos
               end

@@ -11,6 +11,7 @@
 * no longer show barnumbers/contnotes on invisible rests #109
 * show unsynchronized rests such that subflowlines do not end somewhere #109
 * no longer throw internal message if produce refers to non existing extract #114
+* non BWC improved auto positioning of barnumbers and counthints #81
 
 ## Enhancement
 
@@ -21,6 +22,7 @@
 ## backward compatibilility issues
 
 * double check if you have clef octaves "+8", "-8" and 
+* Barnumbers and Conuntnotes autopos is now turned on; autopos-Algorithm is improved
 
 # V 1.5
 
