@@ -331,8 +331,8 @@ module InitConf
 
          neatjson:     {
              wrap:          60, aligned: true,
-             after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short:true,
-             afterComma: 1, afterColon1: 1, afterColonN: 1, beforeColonN: 1, short:true,
+             after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short:false,
+             afterComma: 1, afterColon1: 1, afterColonN: 1, beforeColonN: 1, short:false  ,
              decimals:      2,
              explicit_sort: [explicit_sort,
                              []],
