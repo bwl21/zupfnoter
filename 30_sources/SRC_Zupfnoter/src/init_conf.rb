@@ -12,7 +12,7 @@ module InitConf
                      :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
                      :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                      #
-                     :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
+                     :annotation, :partname, :variantend, :countnotes, :stringnames, # sort within notebound
 
                      # sort within layout
                      :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
@@ -334,9 +334,7 @@ module InitConf
              after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short:false,
              afterComma: 1, afterColon1: 1, afterColonN: 1, beforeColonN: 1, short:false  ,
              decimals:      2,
-             explicit_sort: [explicit_sort,
-                             []],
-             sortxx: Hash[explicit_sort.each_with_index.to_a]
+             explicit_sort: Hash[explicit_sort.each_with_index.to_a]
          }
         }
 
