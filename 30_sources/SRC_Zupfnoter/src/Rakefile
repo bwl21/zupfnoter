@@ -5,7 +5,7 @@ require 'erb'
 require 'zip'
 require 'net/http'
 require 'pry'
-require './neatjson.rb'
+require 'neatjson.rb'
 
 HTMLTEMPLATE = "../index_opal.html.erb"
 PACKAGE_JSON = "../package.json"
