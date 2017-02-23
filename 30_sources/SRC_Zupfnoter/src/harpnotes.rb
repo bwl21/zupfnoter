@@ -1854,7 +1854,7 @@ module Harpnotes
             last_size = size
 
             if measure_start
-              increment += increment / 4
+              increment += increment / 4 # taktstrich-Abstand
             end
 
             # if a new part starts on this beat, double the increment
@@ -2136,7 +2136,7 @@ module Harpnotes
 
       def compute_ellipse_properties_from_note(root)
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale -  0.5 * $conf.get('layout.LINE_THICK') }
         return dotted, fill, size
       end
 
@@ -2333,7 +2333,7 @@ module Harpnotes
       def make_sheetmark_path(note)
         w     = 0.5; h=5
         base  = Vector2d(note) - [w, h/2]
-        vpath = [Vector2d(w, -(w)), Vector2d(w, 2*w),
+        vpath = [Vector2d(w, -(2*w)), Vector2d(w, 2*w),
                  Vector2d(0, h),
                  Vector2d(-(w), 2*w), Vector2d(-(w), -2*(w)),
                  Vector2d(0, -h)]

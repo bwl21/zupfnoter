@@ -11,6 +11,7 @@
 * show unsynchronized rests such that subflowlines do not end somewhere #109
 * no longer throw internal message if produce refers to non existing extract #114
 * non BWC improved auto positioning of barnumbers and counthints #81
+* fix size of notes an sheetmark shape #120
 
 ## Enhancement
 
@@ -19,7 +20,7 @@
 * show checksum also in the tune preview #80
 * supress rendering of tuplets via configuration #55
 * improved support for abc 2.2 #99
-
+    
 
 ## backward compatibilility issues
 
