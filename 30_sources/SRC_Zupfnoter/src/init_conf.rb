@@ -7,6 +7,25 @@ module InitConf
 # 5. update config-form.rb to attach a type
 # 6. update user-interface.js to add the menu entries
   def self.init_conf()
+
+    explicit_sort = [:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
+                     :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
+                     :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
+                     #
+                     :annotation, :partname, :variantend, :countnotes, :stringnames, # sort within notebound
+
+                     # sort within layout
+                     :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
+                     :DRAWING_AREA_SIZE,
+                     :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+
+                     # sort within printer
+                     :a3_offset, :a4_offset, # sort within laoyut
+
+                     "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
+                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
+    ]
+
     result =
         {produce:      [0],
          abc_parser:   'ABC2SVG',
@@ -311,26 +330,11 @@ module InitConf
          },
 
          neatjson:     {
-             wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
+             wrap:          60, aligned: true,
+             after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short:false,
+             afterComma: 1, afterColon1: 1, afterColonN: 1, beforeColonN: 1, short:false  ,
              decimals:      2,
-             explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                              :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
-                              :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
-                              #
-                              :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-
-                              # sort within layout
-                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
-                              :DRAWING_AREA_SIZE,
-                              :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
-
-                              # sort within printer
-                              :a3_offset, :a4_offset, # sort within laoyut
-
-                              "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                              :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
-                             ],
-                             []],
+             explicit_sort: Hash[explicit_sort.each_with_index.to_a]
          }
         }
 
