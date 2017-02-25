@@ -433,14 +433,74 @@ und das Einelgen in das Instrument zu vereinfachen:
     Werbung in eigener Sache. Diese wird immer auf den Unterlegnoten
     ausgegeben und kann nicht unterdrückt werden.
 
--   **{73} fingerprint - Fingerabdruck**: Diese Nummer ist wie ein
+-   **(73) fingerprint - Fingerabdruck**: Diese Nummer ist wie ein
     Fingerabdruck der ABC-Datei. Dies bedeutet, dass Unterlegnoten (z.b.
     verschiedene Auszüge) mit dem selben Fingerabdruck auch aus einer
     identischen Quelle stammen und somit zuverlässig zusammen passen.
 
-    > **Hinweis:** Der Fingerabdruck wird nicht auf den herkömmlichen
-    > Noten ausgegeben. Der Fingerabdruck wird aus dem ABC-Text
-    > errechnet und ist daher nicht im ABC-Text enthalten.
+    > **Hinweis:** Der Fingerabdruck wird aus dem ABC-Text errechnet und
+    > ist daher nicht im ABC-Text enthalten.
+
+### Vordefinierte Blattbeschriftungen
+
+Zupfnoter bietet eine Reihe von Vorlagen für die Seitenbeschrifungen.
+Damit lässt sich ein einheitliches Vorgehen bei der Beschrifung der
+Unterlegnoten erreichen. Diese können in der Konfigurationsmaske
+"Seitenbeschriftung" eingegeben werden. Zupfnoter hat geeignete
+Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
+
+-   **(74) T04 to order - zu beziehen bei**: Hier kann man angeben, über
+    welche Adresse das Unterlegnotenblatt bezogen werden kann
+    (Konfiguration siehe Kapitel
+    \ref{presets.notes.T04ux5ftoux5forder}[presets.notes.T04_to_order](#presets.notes.T04_to_order).
+    Das ist natürlich nur sinnvoll, wenn es für die erstellen
+    Unterlegnoten einen Vertriebsweg gibt.
+
+-   **(75) T02 Copryright music - Urheberrechte für das Stück**: Hier
+    kann mam die Urheberrechte für das Musikstück angeben (Konfiguration
+    siehe Kapitel
+    \ref{presets.notes.T02ux5fcopyrightux5fmusic}[presets.notes.T02_copyright_music](#presets.notes.T02_copyright_music).
+    Es wird empfohlen, diese Rechte immer anzugeben und den Satz
+    "Privatkopie" hinzuzufügen, wenn mit dem Rechteinhaber keine
+    Vereinbarung geschlossen wurde.
+
+    > **Hinweis:** In diesem Fall darf das Unterlegnotenblatt natürliche
+    > auch nicht verteilt oder vertrieben werden, sondern wird nur zum
+    > persönlichen Gebrauch erstellt (sog. Privatkopie)
+
+-   **(76) T03 Coppyright harpnotes - Rechte am Notenbild**: Unabhängig
+    von den Urheberrechten am Stück entsteht auch ein Urheberrecht an
+    den erstellen Unterlegnoten. Hier kannst du diese Rechte
+    beanspruchen (Konfiguration siehe Kapitel
+    \ref{presets.notes.T03ux5fcopyrightux5fharpnotes}[extract.0.synchlines](#presets.notes.T03_copyright_harpnotes).
+
+-   **(77) T99 do not copy - Bitte nicht kopieren**: Diese Beschriftung
+    soll den Blick dafür schärfen, das die erstellen Unterlegnoten nicht
+    einfach wild kopiert werden dürfen, sondern die Urheberrechte zu
+    bachten sind (Konfiguration siehe Kapitel
+    \ref{presets.notes.T99ux5fdoux5fnotux5fcopy}[presets.notes.T99_do_not_copy](#presets.notes.T99_do_not_copy).
+
+-   **(78) T01 Number - Nummer**: Hier kannst du eine Nummer angeben,
+    welche das Unterlegnotenblatt eindeutig und schnell identifizierbar
+    macht(Konfiguration siehe Kapitel
+    \ref{presets.notes.T01ux5fnumber}[presets.notes.T01_number](#presets.notes.T01_number).
+    Im Grunde ist das wie eine Bestellnummer. Es wird empfohlen, die
+    Nummer nach folgendem Schema zu gestalten:
+
+    `XXX-999` darin ist
+
+    -   `XXX` ist ein Kürzel für den Herausgeber, z.B. RBW für Ruth und
+        Bernhard Weichel, ZNR - für Zupfnoter
+        [^040_UD-Zupfnoter-Referenz.md_2]
+
+    -   `999` eine Nummer für das Blatt
+
+    Z.B. ist dann `RBW-320` das Blatt 320 aus der Werkstatt von Ruth und
+    Bernhard Weichel.
+
+-   **(79) T01 Number extract - Kürzel für den Auszug**: Hier kannst du
+    ein Kürzel für den Auszug angebeen (Konfiguration siehe Kapitel
+    \ref{presets.notes.T01ux5fnumberux5fextract}[presets.notes.T01_number_extract](#presets.notes.T01_number_extract))
 
 ### Zusammenfassung der Beschriftungen in Zupfnoter
 
@@ -474,7 +534,7 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
     > **Hinweis**: Zupfnoter kennt standardmäßig die
     > Noptenbeschriftungsvorlagen `vl` `vt`, `vr`. Damoit kann man
     > einfach ein "Abdämpfungszeichen" anbringen.
-    > [^040_UD-Zupfnoter-Referenz.md_2].
+    > [^040_UD-Zupfnoter-Referenz.md_3].
 
     Im Zusatz kann eine Position mit angegeben angegeben werden. Damit
     bleibt die Position der Notenbeschriftung erhalten, auch wenn der
@@ -525,7 +585,7 @@ Bildschirmaufbau](../ZAUX_Images/040_030_Bildschirmaufbau.pdf) 
 
 ### Fensteraufbau
 
-Zupfnoter kennt drei Fenster[^040_UD-Zupfnoter-Referenz.md_3]:
+Zupfnoter kennt drei Fenster[^040_UD-Zupfnoter-Referenz.md_4]:
 
 -   Das **linken Fenster** zeigt die Eingabemöglichkeiten über drei
     Reiter (Kapitel \ref{eingabefenster-details}
@@ -904,7 +964,7 @@ Einträgen
 -   Pfad zur Dropbox
 -   Aktiver Filter für Meldungen in der Konsole (Loglevel). Das Filter
     kann über deen Eingebbefehl`loglevel error` in der Konsole
-    umgestellt werden [^040_UD-Zupfnoter-Referenz.md_4].
+    umgestellt werden [^040_UD-Zupfnoter-Referenz.md_5].
 -   Name des Konfigurationsparameters für das Element unter dem
     Mauszeiger falls dieses mit der Maus veschoben werden kann.
 
@@ -1241,7 +1301,7 @@ Auuszug einstellen. Der aktive Auszug bestimmt,
 -   was in der Unterlegnotenvorschau angezeigt wird
 -   auf welchen Auszug die Konfigurationsmasken wirken.
 
-Die Auszuüge werden durchnummeriert[^040_UD-Zupfnoter-Referenz.md_5].
+Die Auszuüge werden durchnummeriert[^040_UD-Zupfnoter-Referenz.md_6].
 
 Der Auszug mit der **Nummer 0** hat eine besondere Rolle: Er gilt als
 Vorgabe für die anderen Auszuüge. Die im Auszug 0 angegebenen Werte für
@@ -1320,25 +1380,41 @@ transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B.
 die folgende Kopfzeile ein. Diese veschiebt das Stück drei Halbtnach
 unten (in den Unterlegnoten also nach links)
 
-`I:transpose -3`
+Dazu gibt es mit ABC 2.2 eine standardisierte Spezifikation, die ab
+Zupfnoter 1.6 auch umgesetzt ist.
 
-> **Hinweise**
->
-> -   Diese Kopfzeile muß vor der Kopfzeile mit der Angabe der Tonart
->     stehen, damit sie auf das ganze Stück wirkt.
->
-> -   Diese Anweisung kann auch als als eingebettete Kopfzeile
->     geschrieben werden, um Teile einer Stimme zu transponieren, z.B.
->     `C[I:transpose 2]DE` ist also dasselbe wie `CE^F`. Das ist aber
->     schon ziemlich trickreich ...
->
-> -   Transpose stellt auch die Vorzeichen auf die neue Tonart um.
->
-> -   Die Zahl nach dem `transpose` gibt die Anzahl der Halbtonschritte
->     an. Negative Werte transponieren nach unten (nach links im
->     Unterlegnotenblatt).
->
-> <!-- -->
+Es würde zu weit führen hier alle Möglichkeiten darzustellen (und es
+sind wirklich sehr viele). Sie sind in
+<http://abcnotation.com/wiki/abc:standard:v2.2#voice_modifiers_-_clefs_and_transposition>
+zu finden.
+
+-   Transponierungen können nun an den Kopfzeilen `K:` und `V:`angegeben
+    werden.
+-   Angaben zur Transponierung ersetzen die vorherigen Angaben
+
+Die Angaben erfolgen über den parameter `shift=<note1><note2>`, zum
+Beispiel
+
+    V:1 shift=cd
+    K:c shift=<cd
+
+Das intervall für die Transponierung wird durch zwei Noten, `<note1>`
+`<note2>` angegeben. Hier bezieht sich `<note1>` auf den transkribierten
+abc-Code und `<note2>` bezieht sich auf die gerenderte Ausgabe.
+
+> Hinweis: Es wirken sich nur die Angaben aus `shift` auf die
+> Unterlegnoten aus, weil die Tischharfe kein transponierendes
+> Instrument ist.
+
+Beispiel: Im Folgenden wird die Setzpartitur von C nach G transponiert.
+
+    K:C shift=CG
+    CDE
+
+is äquivalient zu
+
+    K:G
+    GAB
 
 ### Wenn Takte nicht synchron sind
 
@@ -1353,6 +1429,13 @@ Dies erreicht man mit
 
 `%%score 1 2 3 4` Das bewirkt ein Notensystem mit einer Noteznzeile pro
 Stimme. Weitere Einzelheiten im nächsten Kapitel.
+
+In diesem Zusammenhang ist es auch hilfreich, die Taktnummern
+einzuschalten.
+
+Um Taktnummern in den Noten darzustellen dient die Kopfzeile
+
+    I:measurenb 1
 
 ### Mehrere Stimmen in ABC-Notation {#mherere-Stimmen-in-abc}
 
@@ -1404,17 +1487,21 @@ relevante Beispiele
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um
     die Flußlinie der Melodiestimme (meist der ersten Stimme) handelt.
 
-[^040_UD-Zupfnoter-Referenz.md_2]: Leider gibt es keine entsprechende
+[^040_UD-Zupfnoter-Referenz.md_2]: Vielleicht gelingt es eines Tages,
+    ein Verzeichnis diser Kürzel zu erstellen um so Kollisionen zu
+    vermeiden
+
+[^040_UD-Zupfnoter-Referenz.md_3]: Leider gibt es keine entsprechende
     Dekoration im ABC-Standard
 
-[^040_UD-Zupfnoter-Referenz.md_3]: Es gibt noch ein weiteres Fenster,
+[^040_UD-Zupfnoter-Referenz.md_4]: Es gibt noch ein weiteres Fenster,
     die Konsole, welche nur bei Bedarf von Experten genutzt wird (siehe
     Kapitel \ref{konsole-fenster} [Konsole](#konsole-fenster)).
 
-[^040_UD-Zupfnoter-Referenz.md_4]: Das Filter lässt man am besten auf
+[^040_UD-Zupfnoter-Referenz.md_5]: Das Filter lässt man am besten auf
     "Error" eingestellt, nur bei Problembehbungen bzw. Fehlersuche im
     Programm sind andere Einstellungen sinnvoll
 
-[^040_UD-Zupfnoter-Referenz.md_5]: Zupfnoter kann über die Menüleiste
+[^040_UD-Zupfnoter-Referenz.md_6]: Zupfnoter kann über die Menüleiste
     die Auszüge 0-3 wählen. Braucht man mehr Auszüge, so ist das über
     die Konsole möglich.
