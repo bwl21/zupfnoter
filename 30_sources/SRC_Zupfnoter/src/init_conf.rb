@@ -99,19 +99,19 @@ module InitConf
                      }},
                  T02_copyright_music: {
                      value: {
-                         pos: [372, 227],
+                         pos: [340, 251],
                          text: "© #{Time.now.year}\n#{I18n.t("Private copy")}",
                          style: "small"
                      }},
                  T03_copyright_harpnotes:  {
                      value: {
-                         pos:   [344, 208],
-                         text:  "© #{Time.now.year} zupfnoter.de",
+                         pos:   [340, 260],
+                         text:  "© #{Time.now.year} Notenbild: zupfnoter.de",
                          style: "small"
                      }},
                  T04_to_order:             {
                      value: {
-                         pos:   [369, 224],
+                         pos:   [340, 242],
                          text:  I18n.t("provided by\n"),
                          style: "small"
                      }},

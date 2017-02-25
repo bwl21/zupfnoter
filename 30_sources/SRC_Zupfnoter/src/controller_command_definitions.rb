@@ -194,18 +194,65 @@ L:1/4
 Q:1/4=120
 K:C
 %%score 1 2
-V:1 clef=treble-8 name="Sopran" snm="S"
+V:1 clef=treble name="Sopran" snm="S"
 C
-V:2 clef=treble-8  name="Alt" snm="A"
+V:2 clef=treble  name="Alt" snm="A"
 C,
 
 %%%%zupfnoter.config
 
 {
-  "produce": [1],
+  "produce"  : [1, 2],
+  "extract"  : {
+    "0" : {
+      "voices"      : [1, 2, 3, 4],
+      "flowlines"   : [1, 3],
+      "repeatsigns" : {"voices": [1, 2, 3, 4]},
+      "layoutlines" : [1, 2, 3, 4],
+      "barnumbers"  : {
+        "voices"  : [1, 3],
+        "pos"     : [6, -4],
+        "autopos" : true,
+        "style"   : "small_bold",
+        "prefix"  : ""
+      },
+      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
+      "lyrics"      : {
+        "1" : {"verses": [1, 2], "pos": [8, 102]},
+        "2" : {"verses": [3, 4], "pos": [347, 118]}
+      },
+      "notes"       : {
+        "T01_number"              : {
+          "pos"   : [393, 17],
+          "text"  : "XXX-999",
+          "style" : "bold"
+        },
+        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [340, 272],
+          "text"  : "© 2017 Notenbild: ",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "countnotes"  : {
+        "voices"  : [1, 3],
+        "pos"     : [3, -2],
+        "autopos" : true,
+        "style"   : "smaller"
+      },
+      "stringnames" : {"vpos": [4]}
+    },
+    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
+    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
+    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
+  },
   "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
   "$version" : "#{VERSION}"
-
 }
 }
         args[:oldval] = @editor.get_text
