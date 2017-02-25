@@ -173,8 +173,20 @@ man sie "notenbezogene Elemente":
     > Man kann sie jedoch anhand der Flußlinie unterscheiden und den
     > jeweiligen Stimmen zuordnen.
     >
-    > Die Angabe von Akkordsymbolen in der ABC-Notation wird für die
-    > Unterlegnoten ignoriert.
+    > **Hinweis**: Die Angabe von Akkordsymbolen in der ABC-Notation
+    > wird für die Unterlegnoten ignoriert.
+
+    Meist ist es so, dass bei Mehrklängen die höchste Note die
+    Melodieführung übernimmt. Daher wird bei einem Mehrklang die
+    Flußlinie and die letzte Note geführt.
+
+    > **Hinweis**: Wenn man das anders haben möchte, muss man die
+    > Reihenfolge der Noten in der ABC-Notation verändern oder doe
+    > "Führungsnote" als letzte Note wiederholen. Beispiel:
+    >
+    > -   `[CEG]` - Die Flußlinie geht an `G`
+    > -   `[GEC]` - Die Flußlinie geht an `C`
+    > -   `[CEGC]` - Die Flußlinie geht an `C`
 
 -   **(22) triplet - Triole**: Bei einer Triole werden drei Noten auf
     zwei Schläge verteilt. Bei einer Triole werden Anfang und Ende einer
