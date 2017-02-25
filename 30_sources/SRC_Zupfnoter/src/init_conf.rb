@@ -22,6 +22,8 @@ module InitConf
                      # sort within printer
                      :a3_offset, :a4_offset, # sort within laoyut
 
+                     :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T99_do_not_copy,
+
                      "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                      :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
     ]
@@ -80,8 +82,8 @@ module InitConf
              notes:   {
                  T01_number:               {
                      value: {
-                         pos:   [394, 17],
-                         text:  "XXX-999-X",
+                         pos:   [393, 17],
+                         text:  "XXX-999",
                          style: "bold"
                      }},
                  T01_number_extract:       {
@@ -95,23 +97,28 @@ module InitConf
                      value: {
                          text: "-X",
                      }},
-                 T02_copyright_music:      {value: {pos: [372, 227], text: " ", style: "small"}},
+                 T02_copyright_music: {
+                     value: {
+                         pos: [372, 227],
+                         text: "© #{Time.now.year}\n#{I18n.t("Private copy")}",
+                         style: "small"
+                     }},
                  T03_copyright_harpnotes:  {
                      value: {
                          pos:   [344, 208],
-                         text:  " ",
+                         text:  "© #{Time.now.year} zupfnoter.de",
                          style: "small"
                      }},
                  T04_to_order:             {
                      value: {
                          pos:   [369, 224],
-                         text:  "",
+                         text:  I18n.t("provided by\n"),
                          style: "small"
                      }},
                  T99_do_not_copy:          {
                      value: {
                          pos:   [380, 284],
-                         text:  "Bitte nicht kopieren",
+                         text:  I18n.t("Please do not copy"),
                          style: "small_bold"
                      }}
              },
@@ -167,7 +174,7 @@ module InitConf
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {spos: [320, 27], pos: [320, 20]},
+                 legend:       {spos: [320, 27], pos: [320, 320]},
                  lyrics:       {},
                  #
                  # this denotes the layout parameters which are intended to bne configured
@@ -334,7 +341,7 @@ module InitConf
              after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short:false,
              afterComma: 1, afterColon1: 1, afterColonN: 1, beforeColonN: 1, short:false  ,
              decimals:      2,
-             explicit_sort: Hash[explicit_sort.each_with_index.to_a]
+             explicit_sort: Hash[explicit_sort.each_with_index.to_a.map { |i| [i.first, '_' + "000#{i.last}"[-4..-1]] }]
          }
         }
 
