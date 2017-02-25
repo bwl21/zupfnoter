@@ -355,7 +355,6 @@ darstellen zu können, gibt es folgende Elemente:
     -   Empfohlene Geschwindigkeit (ABC-Notation Zeile "`Q:`")
     -   Tonart des Musikstücks (ABC-Notation Zeile "`K:`")
     -   Tonart der Druckausgaben falls das Musikstück transponiert wurde
-        (ABC-Notation z.B. "`I:transpose=1`")
 
     Die Legende kann mit der Maus im rechten unteren Fenster auf den
     Unterlegnoten optimal positioniert werden.
@@ -1403,7 +1402,11 @@ kannst dann die Eingaben korrigieren bis "Rendern" wieder funktioniert.
 Wenn das Musikstück nicht auf die Harfe passt, kann man es ggf. durch
 transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B.
 die folgende Kopfzeile ein. Diese veschiebt das Stück drei Halbtnach
-unten (in den Unterlegnoten also nach links)
+unten (in den Unterlegnoten also nach links).
+
+> **Hinweis**: Zupfnoter gibt die Transponierung der ersten Stimme im
+> Unterlegnotenblatt aus. Abweichende Transpnierungen in den anderen
+> Stimmen werden zwar ausgeführt, aber nicht vermerkt.
 
 Dazu gibt es mit ABC 2.2 eine standardisierte Spezifikation, die ab
 Zupfnoter 1.6 auch umgesetzt ist.
@@ -1484,10 +1487,18 @@ Darin ist
     Anweisung referenziert. Es empfhiehlt sich hier einfach ganze Zahlen
     zu verwenden un ddie Stimme so durchzunumerieren.
 -   `[clef=]<clef name>` optionale Angabe des Notenschlüssels. Name ist
-    `treble` (Viloinschlüssel) oder `bass` (Baßschlüssel)
+    -   `treble` `treble+8` `treble-8` Violinschlüssel (+8 bzw. -8
+        verschiebt Unterlegnoten um eine Oktave)
+    -   `bass` `bass+8` `bass-8` Bass-Schlüssel (+8 bzw. -8) verschiebt
+        die Unterlegnoten um eine Oktave)
 -   `octave=<number>` optionale Angabe einer Oktavierung. Positive
     Zahlen transponieren eine Oktave noch oben, negative Zahlen um eine
-    Oktabe nach untern.
+    Oktave nach unten.
+-   `shift=<note1><note2>` Transponiert die Stimme (siehe Kapitel
+    \ref{transponieren} [Transponieren](#transponieren)).
+
+    > **Hinweis**: Auf den Unterlegnoten wird nur die Transponierung
+    > angegeben, die auf die erste Stimme wirkt.
 
 Die Darstellung der Stimmen im Notensystem wird durch die `%%score` -
 Anweisung bestimmt. Hier einfach zwei im Zusammenhang von Zupfnoter

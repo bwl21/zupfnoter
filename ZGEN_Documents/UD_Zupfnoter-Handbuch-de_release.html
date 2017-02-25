@@ -681,7 +681,7 @@ Schw&#228;nzchen in die H&#246;h</code></pre>
 <li>Takt des Musikst&#252;cks (ABC-Notation Zeile &#8220;<code>M:</code>&#8221;)</li>
 <li>Empfohlene Geschwindigkeit (ABC-Notation Zeile &#8220;<code>Q:</code>&#8221;)</li>
 <li>Tonart des Musikst&#252;cks (ABC-Notation Zeile &#8220;<code>K:</code>&#8221;)</li>
-<li>Tonart der Druckausgaben falls das Musikst&#252;ck transponiert wurde (ABC-Notation z.B. &#8220;<code>I:transpose=1</code>&#8221;)</li>
+<li>Tonart der Druckausgaben falls das Musikst&#252;ck transponiert wurde</li>
 </ul>
 <p>Die Legende kann mit der Maus im rechten unteren Fenster auf den Unterlegnoten optimal positioniert werden.</p></li>
 <li><p><strong>(35) extract title in legend - Titel des Auszugs</strong>: Dies bezeichnet den Titel des Auszuges (siehe Konfiguration <a href="#extract.0.title">extract.x.title</a> bzw. Kapitel&#160;&#160;<a href="#auszuege">Ausz&#252;ge</a>).</p></li>
@@ -1196,7 +1196,10 @@ W: Strophe 2 Zeile 2</code></pre>
 <pre><code>https://zupfnoter.weichel21.de/?debug</code></pre>
 <p>Dann startet Zupfnoter, versucht aber nicht gleich ein &#8220;Rendern&#8221; . Damit kannst dann die Eingaben korrigieren bis &#8220;Rendern&#8221; wieder funktioniert.</p>
 <h3 id="transponieren"><span class="header-section-number">4.7.2</span> Transponieren</h3>
-<p>Wenn das Musikst&#252;ck nicht auf die Harfe passt, kann man es ggf. durch transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B. die folgende Kopfzeile ein. Diese veschiebt das St&#252;ck drei Halbtnach unten (in den Unterlegnoten also nach links)</p>
+<p>Wenn das Musikst&#252;ck nicht auf die Harfe passt, kann man es ggf. durch transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B. die folgende Kopfzeile ein. Diese veschiebt das St&#252;ck drei Halbtnach unten (in den Unterlegnoten also nach links).</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Zupfnoter gibt die Transponierung der ersten Stimme im Unterlegnotenblatt aus. Abweichende Transpnierungen in den anderen Stimmen werden zwar ausgef&#252;hrt, aber nicht vermerkt.</p>
+</blockquote>
 <p>Dazu gibt es mit ABC 2.2 eine standardisierte Spezifikation, die ab Zupfnoter 1.6 auch umgesetzt ist.</p>
 <p>Es w&#252;rde zu weit f&#252;hren hier alle M&#246;glichkeiten darzustellen (und es sind wirklich sehr viele). Sie sind in <a href="http://abcnotation.com/wiki/abc:standard:v2.2#voice_modifiers_-_clefs_and_transposition" class="uri">http://abcnotation.com/wiki/abc:standard:v2.2#voice_modifiers_-_clefs_and_transposition</a> zu finden.</p>
 <ul>
@@ -1234,8 +1237,16 @@ GAB</code></pre>
 <p>Darin ist</p>
 <ul>
 <li><code>&lt;ID&gt;</code> eine Identifiaktion der Stimme, sie wird inder <code>%%score</code> - Anweisung referenziert. Es empfhiehlt sich hier einfach ganze Zahlen zu verwenden un ddie Stimme so durchzunumerieren.</li>
-<li><code>[clef=]&lt;clef name&gt;</code> optionale Angabe des Notenschl&#252;ssels. Name ist <code>treble</code> (Viloinschl&#252;ssel) oder <code>bass</code> (Ba&#223;schl&#252;ssel)</li>
-<li><code>octave=&lt;number&gt;</code> optionale Angabe einer Oktavierung. Positive Zahlen transponieren eine Oktave noch oben, negative Zahlen um eine Oktabe nach untern.</li>
+<li><code>[clef=]&lt;clef name&gt;</code> optionale Angabe des Notenschl&#252;ssels. Name ist
+<ul>
+<li><code>treble</code> <code>treble+8</code> <code>treble-8</code> Violinschl&#252;ssel (+8 bzw. -8 verschiebt Unterlegnoten um eine Oktave)</li>
+<li><code>bass</code> <code>bass+8</code> <code>bass-8</code> Bass-Schl&#252;ssel (+8 bzw. -8) verschiebt die Unterlegnoten um eine Oktave)</li>
+</ul></li>
+<li><code>octave=&lt;number&gt;</code> optionale Angabe einer Oktavierung. Positive Zahlen transponieren eine Oktave noch oben, negative Zahlen um eine Oktave nach unten.</li>
+<li><p><code>shift=&lt;note1&gt;&lt;note2&gt;</code> Transponiert die Stimme (siehe Kapitel  <a href="#transponieren">Transponieren</a>).</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Auf den Unterlegnoten wird nur die Transponierung angegeben, die auf die erste Stimme wirkt.</p>
+</blockquote></li>
 </ul>
 <p>Die Darstellung der Stimmen im Notensystem wird durch die <code>%%score</code> - Anweisung bestimmt. Hier einfach zwei im Zusammenhang von Zupfnoter relevante Beispiele</p>
 <ul>
