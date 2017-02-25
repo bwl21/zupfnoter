@@ -85,17 +85,24 @@ erstellt.
 > benötigt man folgende Tastenkombinationen zur Erstellung des
 > senkrechten Striches (vertical bar) bzw. der eckigen Klammer:
 >
+> siehe auch <http://www.die-tastenkombination.de/>
+>
 > **Windows**
 >
 > -   `|` erzeugt man mit der Taste AltGr und der Taste links vom Y
 > -   `[` erzeugt man mit der Taste `AltGr` und der Taste `8`
 > -   `]` erzeugt man mit der Taste `AltGr` und der Taste `9`
->
+> -   `~` erzeugt man mit der Taste `AltGr` der Taste `+`
+> -   `©` erzeugt man mit der Taste `Alt`und der Tastefolge 069 auf dem
+>     Ziffernblock
+
 > **Mac**
 >
 > -   `|` erzeugt man mit der Taste `Alt` und der Taste `7`
 > -   `[` erzeugt man mit der Taste `Alt` und der Taste `5`
-> -   `]` erzeugt man mit der Taste Alt und der Taste `6`
+> -   `]` erzeugt man mit der Taste `Alt` und der Taste `6`
+> -   `~` erzeugt man mit der Taste `Alt` der Taste `n`
+> -   `©` erzeugt man mit der Taste `Alt`und der Taste `G`
 
 ## Dein Musikstück prüfen
 

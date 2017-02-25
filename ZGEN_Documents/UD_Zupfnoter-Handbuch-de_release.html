@@ -320,17 +320,24 @@
 <p></p>
 <blockquote>
 <p><strong>Hinweis:</strong> Um Taktstriche (&#8220;<strong><code>|</code></strong>&#8221;), Wiederholungszeichen (&#8220;<strong><code>|: :|</code></strong>&#8221;) und Schlussstriche (&#8220;<strong><code>]</code></strong>&#8221;) darstellen zu k&#246;nnen, ben&#246;tigt man folgende Tastenkombinationen zur Erstellung des senkrechten Striches (vertical bar) bzw. der eckigen Klammer:</p>
+<p>siehe auch <a href="http://www.die-tastenkombination.de/" class="uri">http://www.die-tastenkombination.de/</a></p>
 <p><strong>Windows</strong></p>
 <ul>
 <li><code>|</code> erzeugt man mit der Taste AltGr und der Taste links vom Y</li>
 <li><code>[</code> erzeugt man mit der Taste <code>AltGr</code> und der Taste <code>8</code></li>
 <li><code>]</code> erzeugt man mit der Taste <code>AltGr</code> und der Taste <code>9</code></li>
+<li><code>~</code> erzeugt man mit der Taste <code>AltGr</code> der Taste <code>+</code></li>
+<li><code>&#169;</code> erzeugt man mit der Taste <code>Alt</code>und der Tastefolge 069 auf dem Ziffernblock</li>
 </ul>
+</blockquote>
+<blockquote>
 <p><strong>Mac</strong></p>
 <ul>
 <li><code>|</code> erzeugt man mit der Taste <code>Alt</code> und der Taste <code>7</code></li>
 <li><code>[</code> erzeugt man mit der Taste <code>Alt</code> und der Taste <code>5</code></li>
-<li><code>]</code> erzeugt man mit der Taste Alt und der Taste <code>6</code></li>
+<li><code>]</code> erzeugt man mit der Taste <code>Alt</code> und der Taste <code>6</code></li>
+<li><code>~</code> erzeugt man mit der Taste <code>Alt</code> der Taste <code>n</code></li>
+<li><code>&#169;</code> erzeugt man mit der Taste <code>Alt</code>und der Taste <code>G</code></li>
 </ul>
 </blockquote>
 <h2 id="dein-musikst&#252;ck-pr&#252;fen"><span class="header-section-number">3.3</span> Dein Musikst&#252;ck pr&#252;fen</h2>
@@ -682,8 +689,15 @@ W: Strophe 2 Zeile 2</code></pre>
 <p><strong>Hinweis</strong>: In der ABC-Notation kann man Liedtexte mit sowhohl mit Kopfzeile <code>W:</code>(Gro&#223;buchstaben) als auch mit Kopfzeile <code>w:</code> (Kleionbuchstaben) eingeben. Die Variante mot Kleinbuchstaben wird verwendet, um die Lietexte direkt in die Notensyteme zu schreiben. Zupfnoter ignoriert diese Liedtexte in den Notenlinien</p>
 </blockquote>
 <blockquote>
-<p><strong>Hinweis</strong>: Auch wenn die ABC-Notation es erlaubt, die Kopfzeilen <code>W:</code> im ganezn ABC-Text zu verteilen ist es wichtig, die Liedtexte dennoch in einem Block zusammenzufassen. Sonst meldet Zupfnoter, dass es mehrere Liedtexte gibt. Der Editor fasst si alle zusammen, l&#246;scht aber die anderen Bl&#246;cke nicht. Das muss manuell korrigiert werden.</p>
-</blockquote></li>
+<p><strong>Hinweis</strong>: Auch wenn die ABC-Notation es erlaubt, die Kopfzeilen <code>W:</code> im ganezn ABC-Text zu verteilen ist es wichtig, die Liedtexte dennoch in einem Block zusammenzufassen. Sonst meldet Zupfnoter, dass es mehrere Liedtexte gibt. Der Editor fasst sie alle zusammen, l&#246;scht aber die anderen Bl&#246;cke nicht. Das muss manuell korrigiert werden.</p>
+</blockquote>
+<blockquote>
+<p><strong>Hinweis</strong>: Zupfnoter ignoriert Leerzeichen am Anfang von Liedtexten. Macnhmal m&#246;chte man aber den Liedtext in bestimmten Zeilen etwas einr&#252;cken um den Text um eine Note im Unterlegnotenblatt herumflie&#223;en zu lassen. Wenn aleo eine Textzeile mit einer Reihe Tilde (<code>~</code>) - Zeichen beginnt werden diese in den Unterlegnoten als Leerraum ausgegeben und so der Textbeginn nach rechts verschoben.</p>
+</blockquote>
+<pre><code>        W: Strophe 1 Zeile 1
+        W: ~Strophe 1 Zeile 2
+        W: ~~Strophe 1 Zeile 2
+        W: ~~~Strophe 1 Zeile 2</code></pre></li>
 </ul>
 <h3 id="elemente-zur-handhabung-des-unterlegnotenblattes"><span class="header-section-number">4.2.6</span> Elemente zur Handhabung des Unterlegnotenblattes</h3>
 <p>Zupfnoter druckt Elemente auf das Unterlegnotenblatt, um das Zuschneiden und das Einelgen in das Instrument zu vereinfachen:</p>

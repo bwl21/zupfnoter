@@ -378,9 +378,22 @@ darstellen zu können, gibt es folgende Elemente:
     > **Hinweis**: Auch wenn die ABC-Notation es erlaubt, die Kopfzeilen
     > `W:` im ganezn ABC-Text zu verteilen ist es wichtig, die Liedtexte
     > dennoch in einem Block zusammenzufassen. Sonst meldet Zupfnoter,
-    > dass es mehrere Liedtexte gibt. Der Editor fasst si alle zusammen,
-    > löscht aber die anderen Blöcke nicht. Das muss manuell korrigiert
-    > werden.
+    > dass es mehrere Liedtexte gibt. Der Editor fasst sie alle
+    > zusammen, löscht aber die anderen Blöcke nicht. Das muss manuell
+    > korrigiert werden.
+
+    > **Hinweis**: Zupfnoter ignoriert Leerzeichen am Anfang von
+    > Liedtexten. Macnhmal möchte man aber den Liedtext in bestimmten
+    > Zeilen etwas einrücken um den Text um eine Note im
+    > Unterlegnotenblatt herumfließen zu lassen. Wenn aleo eine
+    > Textzeile mit einer Reihe Tilde (`~`) - Zeichen beginnt werden
+    > diese in den Unterlegnoten als Leerraum ausgegeben und so der
+    > Textbeginn nach rechts verschoben.
+
+                W: Strophe 1 Zeile 1
+                W: ~Strophe 1 Zeile 2
+                W: ~~Strophe 1 Zeile 2
+                W: ~~~Strophe 1 Zeile 2
 
 ### Elemente zur Handhabung des Unterlegnotenblattes
 
