@@ -237,6 +237,16 @@ module Harpnotes
       def proxy_note
         self
       end
+
+      # this yields the most left note of the playable
+      def left
+        self
+      end
+
+      # this yields the most right note of a unison
+      def right
+        self
+      end
     end
 
     # A single note
@@ -333,6 +343,15 @@ module Harpnotes
       # @return [Object]
       def get_proxy_object(objects)
         objects.last
+      end
+
+
+      def left
+        @notes.first # sort_by { |i| i.pitch }.first
+      end
+
+      def right
+        @notes.last #sort_by { |i| i.pitch }.last
       end
 
     end
@@ -515,44 +534,34 @@ module Harpnotes
       # @param selector [Array] index of the two voices to be synchend
       # @return [Array] The syncpoints which were found in the song
       def build_synch_points(selector = nil)
-        syncpoints = expanded_beat_maps.map do |playables|
-          playables     = [playables[selector.first], playables[selector.last]] if selector
+        syncpoints = expanded_beat_maps.map do |beatmap_entry|
+          playables = [beatmap_entry[selector.first], beatmap_entry[selector.last]].compact.select { |i| i.visible? } # if selector
 
-          #
-          # replace syncpoints with the first note of a syncpoint
-          # this might lead to double printing of the
-          # inner synchline.
-          # todo: investigate if this is a problem
-          # todo: it is a problem!!
-          the_playables = playables.map { |p|
-            r = p.proxy_note if p.is_a? Playable
-            r
-          }
+          # compute the shortest synchline between the tow voices
+          # find most left and most right notes of the involved voices
 
-          # n_playables = playables.map {|p|
-          #   r = [p] if p.is_a? Note
-          #   r = p.notes if  p.is_a? SynchPoint
-          #   r
-          # }
+          pfirst    = playables[0]
+          plast     = playables[1]
 
-          # if n_playables.compact.length >1
-          #   #a = n_playables.product(n_playables).map{|p| [p.first.first, p.last.first]}
-          #   b = n_playables.map{|a1| n_playables.map{|a2| [a1.first, a2.first]} }
-          #   a = b.sort_by{|p| (p.last.pitch - p.first.pitch).abs }.first
-          #   SynchPoint.new(a)
-          # end
+          # it might be that on the particular beat there are not two visible playaybles
 
-          #the_playables.compact!
-          result        = nil
-          if the_playables.compact.select { |p| p.visible? }.length > 1
-            result = SynchPoint.new(the_playables)
+          if pfirst && plast
+            first_left  = pfirst.left
+            first_right = pfirst.right
+
+            last_left  = plast.left
+            last_right = plast.right
+
+            candidates = [first_left, first_right].product [last_left, last_right]
           end
+          if candidates
+            synchpoint = candidates.min_by { |i| (i.last.pitch - i.first.pitch).abs }
+            result     = SynchPoint.new(synchpoint)
+          end
+
           result
         end.flatten.compact
 
-        # this drops synchpoints which contain other playables than notes
-        # todo: investigate if we still need this.
-        syncpoints = syncpoints.select { |sp| sp.notes.reject { |e| e.is_a?(Playable) }.empty? }
         syncpoints
       end
 
@@ -1219,7 +1228,7 @@ module Harpnotes
 
         # determine the synchronized notes
         synched_notes               = required_synchlines.map do |selector|
-          synch_points_to_show = music.build_synch_points(selector)
+          synch_points_to_show = $log.benchmark("build_syncpoints") { music.build_synch_points(selector) }
           synch_points_to_show.map do |sp|
             [sp.notes.first, sp.notes.last]
           end
