@@ -174,7 +174,7 @@ module InitConf
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {spos: [320, 27], pos: [320, 320]},
+                 legend:       {spos: [320, 27], pos: [320, 7]},
                  lyrics:       {},
                  #
                  # this denotes the layout parameters which are intended to bne configured
