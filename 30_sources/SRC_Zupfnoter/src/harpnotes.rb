@@ -1875,6 +1875,8 @@ module Harpnotes
             #   #increment = -500
             # end
 
+            moreinc   = $conf["layout.increments.#{notes_on_beat.first.znid}"]
+            increment += moreinc if moreinc
 
             current_beat += increment
           end
@@ -1978,6 +1980,11 @@ module Harpnotes
             unless is_new_part.empty?
               increment += default_increment
             end
+
+            moreinc   = $conf["layout.increments.#{notes_on_beat.first.znid}"]
+            $log.info("#{notes_on_beat.first.znid}: #{increment} #{conf_beat_resolution} #{moreinc}")
+            increment += moreinc * conf_beat_resolution if moreinc
+
 
             current_beat += increment
 
@@ -2145,7 +2152,7 @@ module Harpnotes
 
       def compute_ellipse_properties_from_note(root)
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale -  0.5 * $conf.get('layout.LINE_THICK') }
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale - 0.5 * $conf.get('layout.LINE_THICK') }
         return dotted, fill, size
       end
 
@@ -2195,6 +2202,7 @@ module Harpnotes
 
         res = []
         # todo: signature has center / size swapped
+        # todo: we need a flowline in the result, otherwise the Syncpoint would not have proper origin
         res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, proxy_note.center, proxy_note.size) # Flowline is in fact a line
         res << resnotes
         res
