@@ -47,11 +47,11 @@ module Harpnotes
 
         result[:print] = $conf.get("produce").map do |i|
           title        = $conf.get("extract.#{i}.title")
-          filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
           if title
+            filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
             {title: title, view_id: i, filenamepart: filenamepart}
           else
-            $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
+            $log.error(I18n.t("could not find extract with number") + " #{i}", [1, 1], [1000, 1000])
             nil
           end
         end.compact
@@ -624,6 +624,7 @@ module Harpnotes
             end
           end
 
+          # variant ending followupliens
           if variant_ending_group[-1][:is_followup]
             result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
           end
@@ -747,7 +748,7 @@ module Harpnotes
           conf_key                              = "notebound.variantend.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position                              = $conf['defaults.notebound.variantend.pos']
           harpnote_elements.first.first_in_part = true
-          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text}, conf_key)
+          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text, policy: :Goto}, conf_key)
           @next_note_marks[:variant_ending] = nil
           @variant_endings.last.push({})
           @variant_endings.last.last[:rbstart] = @previous_note

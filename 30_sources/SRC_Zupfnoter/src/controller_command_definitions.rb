@@ -194,18 +194,65 @@ L:1/4
 Q:1/4=120
 K:C
 %%score 1 2
-V:1 clef=treble-8 name="Sopran" snm="S"
+V:1 clef=treble name="Sopran" snm="S"
 C
-V:2 clef=treble-8  name="Alt" snm="A"
+V:2 clef=treble  name="Alt" snm="A"
 C,
 
 %%%%zupfnoter.config
 
 {
-  "produce": [1],
+  "produce"  : [1, 2],
+  "extract"  : {
+    "0" : {
+      "voices"      : [1, 2, 3, 4],
+      "flowlines"   : [1, 3],
+      "repeatsigns" : {"voices": [1, 2, 3, 4]},
+      "layoutlines" : [1, 2, 3, 4],
+      "barnumbers"  : {
+        "voices"  : [1, 3],
+        "pos"     : [6, -4],
+        "autopos" : true,
+        "style"   : "small_bold",
+        "prefix"  : ""
+      },
+      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
+      "lyrics"      : {
+        "1" : {"verses": [1, 2], "pos": [8, 102]},
+        "2" : {"verses": [3, 4], "pos": [347, 118]}
+      },
+      "notes"       : {
+        "T01_number"              : {
+          "pos"   : [393, 17],
+          "text"  : "XXX-999",
+          "style" : "bold"
+        },
+        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [340, 272],
+          "text"  : "© 2017 Notenbild: ",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "countnotes"  : {
+        "voices"  : [1, 3],
+        "pos"     : [3, -2],
+        "autopos" : true,
+        "style"   : "smaller"
+      },
+      "stringnames" : {"vpos": [4]}
+    },
+    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
+    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
+    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
+  },
   "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
   "$version" : "#{VERSION}"
-
 }
 }
         args[:oldval] = @editor.get_text
@@ -438,7 +485,9 @@ C,
 
         sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
-                                                                            'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest,
+                                                                            'repeatsigns.voices', 'barnumbers.voices','barnumbers.autopos', 'countnotes.voices','countnotes.autopos',
+                                                                            'printer.show_border', 'stringnames.vpos',
+                                                                            :startpos,
                                                                            ]) + [:restposition]},
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 
@@ -470,48 +519,30 @@ C,
         get_configvalues = lambda do
           $log.timestamp("1 #{__FILE__} #{__LINE__}")
 
-          editor_conf        = Confstack.new(false)
-          editor_conf.strict = false
 
-          effective_conf        = Confstack.new(false)
-          effective_conf.strict = false
-
-          default_conf        = Confstack.new(false)
-          default_conf.strict = false
-
-          $log.timestamp("2  #{__FILE__} #{__LINE__}")
-
-          editable_values  = Confstack.new(false)
-          default_values   = Confstack.new(false)
-          effective_values = Confstack.new(false)
-
-          $log.timestamp("3  #{__FILE__} #{__LINE__}")
-
-          configvalues_from_editor = get_config_from_editor
-          $log.timestamp("3.1  #{__FILE__} #{__LINE__}")
-          editor_conf.push(configvalues_from_editor)
-
-          $log.timestamp("4  #{__FILE__} #{__LINE__}")
-
-          default_conf.push($conf.get) # start with defaults
-          default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
-          unless @systemstatus[:view] == 0
-            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
-            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
-          end
           $log.timestamp("5  #{__FILE__} #{__LINE__}")
 
-          effective_conf.push (default_conf.get.clone)
-          effective_conf.push (editor_conf.get.clone)
 
-          editable_keys.each { |k|
-            editable_values[k]  = editor_conf[k]
-            default_values[k]   = default_conf[k]
-            effective_values[k] = effective_conf[k]
-          }
+          editor_conf        = Confstack.new(false)
+          editor_conf.strict = false
+          editor_conf.push(get_config_from_editor)
+
+          effective_values = Confstack.new(false)
+          editable_values = Confstack.new(false)
+
+          editable_keys.each do |k|
+            editable_values[k] = editor_conf[k]
+            zerokey = k.gsub(/extract\.[^\.]+/, 'extract.0')
+            value = editable_values[k]
+            value = $conf[k] if value.nil?
+            value = editor_conf[zerokey] if value.nil?
+            value = $conf[zerokey] if value.nil?
+            effective_values[k] = value
+          end
+
           $log.timestamp("6  #{__FILE__} #{__LINE__}")
 
-          {current: editable_values.get, effective: effective_values.get, default: default_values.get}
+          {current: editable_values.get, effective: effective_values.get, default: effective_values.get}
         end
 
         refresh_editor = lambda do

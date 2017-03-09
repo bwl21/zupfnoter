@@ -7,6 +7,27 @@ module InitConf
 # 5. update config-form.rb to attach a type
 # 6. update user-interface.js to add the menu entries
   def self.init_conf()
+
+    explicit_sort = [:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
+                     :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
+                     :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
+                     #
+                     :annotation, :partname, :variantend, :countnotes, :stringnames, # sort within notebound
+
+                     # sort within layout
+                     :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
+                     :DRAWING_AREA_SIZE,
+                     :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+
+                     # sort within printer
+                     :a3_offset, :a4_offset, # sort within laoyut
+
+                     :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T99_do_not_copy,
+
+                     "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
+                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
+    ]
+
     result =
         {produce:      [0],
          abc_parser:   'ABC2SVG',
@@ -23,7 +44,8 @@ module InitConf
                          tuplet:     {
                              cp1:   [5, 2], # first control point positive x: point is east of flowline, positive y: point is south of note
                              cp2:   [5, -2], # second control point
-                             shape: ['c'] # 'c' | 'l' => curve | line
+                             shape: ['c'], # 'c' | 'l' => curve | line
+                             show:  true
                          }
              }
          },
@@ -32,7 +54,7 @@ module InitConf
          templates:    {
              notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
              lyrics:      {verses: [1], pos: [350, 70]},
-             tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
+             tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
              annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
 
@@ -61,7 +83,7 @@ module InitConf
                  T01_number:               {
                      value: {
                          pos:   [393, 17],
-                         text:  "MMM-999",
+                         text:  "XXX-999",
                          style: "bold"
                      }},
                  T01_number_extract:       {
@@ -75,23 +97,28 @@ module InitConf
                      value: {
                          text: "-X",
                      }},
-                 T02_copyright_music:      {value: {pos: [372, 227], text: " ", style: "small"}},
+                 T02_copyright_music: {
+                     value: {
+                         pos: [340, 251],
+                         text: "© #{Time.now.year}\n#{I18n.t("Private copy")}",
+                         style: "small"
+                     }},
                  T03_copyright_harpnotes:  {
                      value: {
-                         pos:   [344, 208],
-                         text:  " ",
+                         pos:   [340, 260],
+                         text:  "© #{Time.now.year} Notenbild: zupfnoter.de",
                          style: "small"
                      }},
                  T04_to_order:             {
                      value: {
-                         pos:   [369, 224],
-                         text:  "",
+                         pos:   [340, 242],
+                         text:  I18n.t("provided by\n"),
                          style: "small"
                      }},
                  T99_do_not_copy:          {
                      value: {
                          pos:   [380, 284],
-                         text:  "Bitte nicht kopieren",
+                         text:  I18n.t("Please do not copy"),
                          style: "small_bold"
                      }}
              },
@@ -147,7 +174,7 @@ module InitConf
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {spos: [320, 27], pos: [320, 20]},
+                 legend:       {spos: [320, 27], pos: [320, 7]},
                  lyrics:       {},
                  #
                  # this denotes the layout parameters which are intended to bne configured
@@ -159,6 +186,8 @@ module InitConf
                                 # all numbers in mm
                                 ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                 REST_SIZE:    [4, 2],
+                                REST_SIZE:    [4, 2],
+                                DRAWING_AREA_SIZE: [400, 282],
                                 packer:       {
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
@@ -171,11 +200,11 @@ module InitConf
                  barnumbers:   {
                      voices:  [],
                      pos:     [6, -4],
-                     autopos: false,
+                     autopos: true,
                      style:   "small_bold",
                      prefix:  ""
                  },
-                 countnotes:   {voices: [], pos: [3, -2], autopos: false, style: "smaller"},
+                 countnotes:   {voices: [], pos: [3, -2], autopos: true, style: "smaller"},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
@@ -185,7 +214,7 @@ module InitConf
                  printer:      {
                      a3_offset:   [0, 0],
                      a4_offset:   [-5, 0],
-                     show_border: true
+                     show_border: false
                  }
              },
              "1" => {
@@ -308,26 +337,11 @@ module InitConf
          },
 
          neatjson:     {
-             wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
+             wrap:          60, aligned: true,
+             after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short:false,
+             afterComma: 1, afterColon1: 1, afterColonN: 1, beforeColonN: 1, short:false  ,
              decimals:      2,
-             explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                              :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
-                              :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
-                              #
-                              :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-
-                              # sort within layout
-                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
-                              :DRAWING_AREA_SIZE,
-                              :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
-
-                              # sort within printer
-                              :a3_offset, :a4_offset, # sort within laoyut
-
-                              "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                              :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
-                             ],
-                             []],
+             explicit_sort: Hash[explicit_sort.each_with_index.to_a.map { |i| [i.first, '_' + "000#{i.last}"[-4..-1]] }]
          }
         }
 

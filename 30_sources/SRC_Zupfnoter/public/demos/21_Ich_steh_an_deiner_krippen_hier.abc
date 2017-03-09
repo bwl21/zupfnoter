@@ -34,11 +34,45 @@ G,/F,/ | E,3/2 D,/ C,3/2 B,,/ | C,/A,,/ D, G,, C, |
 G,/F,/ E, B,/A,/ G, | D D, G, :| z | B,/C/ D/2-D/2 G,/A,/ B, |
 E,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |
 E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
-
+%
+W: 
+W: 1. Ich steh' an deiner Krippe hier,
+W: o Jesu, du mein Leben;
+W: ich komme, bring' und schenke dir,
+W: was du mir hast gegeben.
+W: Nimm hin, es ist mein Geist und Sinn,
+W: Herz, Seel' und Mut, nimm alles hin
+W: und laß dir's wohl gefallen.
+W: 
+W: 2. Da ich noch nicht geboren war,
+W: da bist du mir geboren
+W: und hast dich mir zu eigen gar,
+W: eh’ ich dich kannt’, erkoren.
+W: Eh’ ich durch deine Hand gemacht,
+W: da hast du schon bei dir bedacht,
+W: wie du mein wolltest werden.
+W: 
+W: 3. Ich lag in tiefer Todesnacht,
+W: du warest meine Sonne,
+W: die Sonne, die mir zugebracht
+W: Licht, Leben, Freud’ und Wonne.
+W: O Sonne, die das werte Licht
+W: des Glaubens in mir zugericht’,
+W: wie schön sind deine Strahlen.
+W: 
+W: 4. Ich sehe dich mit Freuden an
+W: und kann mich nicht satt sehen;
+W: und weil ich nun nichts weiter kann,
+W: bleib’ ich anbetend stehen.
+W: O daß mein Sinn ein Abgrund wär’
+W: und meine Seel’ ein weites Meer,
+W: daß ich dich möchte fassen.
+%
+%
 %%%%zupfnoter.config
 
 {
-  "produce"     : [1],
+  "produce"     : [0, 1, 2],
   "annotations" : {
     "refn" : {
       "pos"  : [20, 10],
@@ -50,21 +84,70 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     "0" : {
       "voices"      : [1, 2, 3, 4],
       "flowlines"   : [1, 3],
+      "repeatsigns" : {"voices": [1, 2, 3, 4]},
       "layoutlines" : [1, 2, 3, 4],
-      "legend"      : {"pos": [310, 175], "spos": [310, 182]},
+      "barnumbers"  : {
+        "voices"  : [1, 3],
+        "pos"     : [6, -4],
+        "autopos" : true,
+        "style"   : "small_bold",
+        "prefix"  : ""
+      },
+      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
+      "lyrics"      : {
+        "1" : {"verses": [1, 2], "pos": [8, 102]},
+        "2" : {"verses": [3, 4], "pos": [347, 118]}
+      },
       "notes"       : {
-        "1" : {
-          "pos"   : [340, 10],
-          "text"  : "Ich steh an deiner Krippen hier",
-          "style" : "strong"
+        "T01_number"              : {
+          "pos"   : [393, 17],
+          "text"  : "ZNR-021",
+          "style" : "bold"
+        },
+        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [340, 272],
+          "text"  : "© 2017 Notenbild: Ruth und Bernhard Weichel\nWendelin-Hippler-Str. 21, 70499 Stuttgart",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
         }
       },
-      "lyrics"      : {
-        "1" : {
-          "verses" : [1, 2, 3, 4, 5, 6, 7, 8],
-          "pos"    : [10, 100]
-        }
+      "printer"     : {
+        "a3_offset"   : [0, 0],
+        "a4_offset"   : [-5, 0],
+        "show_border" : true
+      },
+      "countnotes"  : {
+        "voices"  : [1, 3],
+        "pos"     : [3, -2],
+        "autopos" : true,
+        "style"   : "smaller"
+      },
+      "stringnames" : {
+        "vpos"  : [4],
+        "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "style" : "small",
+        "marks" : {"hpos": [43, 79], "vpos": [12]}
       }
+    },
+    "1" : {
+      "lyrics"      : {"1": {"pos": [166, 39]}},
+      "notes"       : {"T01_number_extract": {"text": "-A"}},
+      "stringnames" : {
+        "vpos"  : [],
+        "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "style" : "small",
+        "marks" : {"hpos": [43, 55, 79]}
+      }
+    },
+    "2" : {
+      "legend" : {"pos": [301, 10], "spos": [327, 29]},
+      "lyrics" : {"1": {"pos": [272, 74]}, "2": {"pos": [272, 152]}},
+      "notes"  : {"T01_number_extract": {"text": "-B"}}
     }
   },
   "$schema"     : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",

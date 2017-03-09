@@ -253,7 +253,7 @@ class ConfstackEditor
           Integer         => ['startpos', 'pack_method',],
           OneLineString   => ['title', 'filenamepart'],
           MultiLineString => ['text'],
-          Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest'],
+          Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment'],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],

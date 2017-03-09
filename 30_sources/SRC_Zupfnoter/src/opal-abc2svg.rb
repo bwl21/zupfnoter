@@ -116,12 +116,18 @@ module ABC2SVG
       _set_on_select()
     end
 
-    def draw(abc_code)
+    def draw(abc_code,  checksum="")
+      abc_text_insert = %Q{
+%%textoption right
+%%textfont * * 8
+%%text #{checksum}
+      }
+
       @abc_source          = abc_code
       @element_to_position = {}
       @svgbuf              = []
       %x{
-      #{@root}.tosvg(#{"abc"}, #{@abc_source});
+      #{@root}.tosvg(#{"abc"}, #{@abc_source + abc_text_insert});
       }
 
       @printer.html(get_svg())

@@ -456,7 +456,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     begin
       abc_text = @editor.get_abc_part
-      @tune_preview_printer.draw(abc_text)
+      abc_text = abc_text.split("\n").map { |line|
+        result = line
+        result = result.gsub('~', ' ') if line.start_with? 'W:'
+        result
+      }.join("\n")
+
+      @tune_preview_printer.draw(abc_text, @editor.get_checksum)
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
@@ -518,6 +524,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end.then do
       Promise.new.tap do |promise|
         set_active("#harpPreview")
+        @harpnote_preview_printer.clear
         `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
       end.then do
         Promise.new.tap do |promise|

@@ -1,7 +1,7 @@
 require 'opal'
 require 'opal-jquery'
 require 'vector2d'
-require 'neatjson'
+require 'opal-neatjson'
 require 'opal-ajv'
 #require 'math'
 

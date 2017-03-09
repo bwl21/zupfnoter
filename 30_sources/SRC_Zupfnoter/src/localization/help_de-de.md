@@ -14,6 +14,12 @@ Namen `vl`).\
 Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
 dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
 
+## DRAWING_AREA_SIZE
+
+Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
+aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
+großen Stücken noch ein bisschen mehr Platz ausreizen.
+
 ## ELLIPSE_SIZE
 
 Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
@@ -218,9 +224,9 @@ Hier kannst du die pack-Methode auswählen
 
 ## layout.packer.pack_min_increment
 
-Dieser Faktor bstimmt, wie weit pro Schlag auf jeden Fall weiter gerückt
-wird. Pro Schlag wird mindestens um diesen Anteil einer Maximalnote
-weiter geschaltet.
+Dieser Faktor bstimmt, wie weit pro Note auf jeden Fall weiter gerückt
+wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
+geschaltet.
 
 Beispiele:
 
@@ -232,12 +238,15 @@ Beispiele:
 ## layout.packer.pack_max_spreadfactor
 
 Nach der Berechnung des maximal komprimierten Layouts versucht
-Zufpnoter, dieses so weit zu spreizen, dass der verfügbare Raum
+Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfläche voll
 ausgefüllt wird.
 
-Dieser Faaktor bestimmt, wie weit das maximal kompprimierte Layout in
-der Vertikalen gespreizt weden soll. Er wirkt sich bei kurzen Stücken
-aus, welche das Blatt nicht vollständig ausfüllen.
+Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der
+Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen Stücken aus,
+welche das Blatt nicht vollständig ausfüllen.
+
+Bei sehr kurzen Stücken ist es sinnvoll, die Spreizung zu begrenzen,
+weil sonst die Noten sehr weit auseinander liegen.
 
 ## lyrics
 
@@ -547,6 +556,19 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
 steuern.
 
+> **Hinweis**: diese Einstellungen wirken immer auf alle Tuplets aller
+> Stimmen, die zum gleichen Zeitpunkt gespielt werden.
+>
+> Wenn du die Tuplets individuell konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor das tuplet zu setzen. Dabei ist
+> es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn man die
+> Verschiebemarken gleich benennt.
+>
+> Z.B. kann man eine Verschiebemarke `tpl_links` an alle tuplets
+> schreiben, deren Bogen links von der FLußlineie liegen soll. Diese
+> können dann über den parameter `extract.0.tuplet.tpl_links` gemeinsam
+> konfiguriert werden
+
 ## tuplet.0
 
 Hier kannst du die Darstellung einer Triole (genauer gesagt, eines
@@ -569,6 +591,10 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 
 > **Hinweis**: Mit der Linienform `l` kann man die Lage der
 > Kontrollpunkte (als Ecken im Linienzug) sehen.
+
+## show
+
+Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 
 ## text
 

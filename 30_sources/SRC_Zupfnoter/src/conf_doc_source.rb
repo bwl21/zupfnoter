@@ -138,7 +138,7 @@ end
 
 require './controller.rb'
 require './confstack.rb'
-require './neatjson.rb'
+require 'neatjson.rb'
 
 
 a = InitConf.init_conf

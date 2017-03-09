@@ -1,4 +1,4 @@
-# V 1.5.1
+# V 1.6.0
 
 ## Fix
 
@@ -6,10 +6,27 @@
 * Better note selection in the editor
 * non BWC: now handle treble+8, treble-8 #104 provided by abc2svg 1.9.0
 * cutmarks only show up if rendered for A4 printing #100
+* do not show variation marks if jumplines are turned off #110
+* no longer show barnumbers/contnotes on invisible rests #109
+* show unsynchronized rests such that subflowlines do not end somewhere #109
+* no longer throw internal message if produce refers to non existing extract #114
+* non BWC improved auto positioning of barnumbers and counthints #81
+* fix size of notes an sheetmark shape #120
+
+## Enhancement
+
+* now suppoert tilde as non braeking space in lyrics #113
+* Harpnote preview is cleared before rendering #101
+* show checksum also in the tune preview #80
+* supress rendering of tuplets via configuration #55
+* improved support for abc 2.2 #99
+    
 
 ## backward compatibilility issues
 
-* double check if you have clef octaves "+8", "-8" and 
+* double check if you have clef octaves "+8", "-8" and remove the same in order to get the previous result 
+* double check if you use inline transposition. This is no longer supported. You need to do the transposition manually.
+* Barnumbers and Conuntnotes autopos is now turned on; autopos-Algorithm is improved
 
 # V 1.5
 

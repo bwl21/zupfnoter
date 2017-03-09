@@ -25,6 +25,10 @@ module Harpnotes
       @paper.set_view_box(x, y, width, height, true)
     end
 
+    def clear
+      @paper.clear
+    end
+
     def draw(sheet)
       @paper.clear
       @elements    = {} # record all elements being on the sheet, using upstream object as key

@@ -353,7 +353,10 @@ module Harpnotes
       the_selection = get_selection_positions
       options       = $conf[:neatjson]
 
-      configjson = JSON.neat_generate(object, options)
+
+
+      configjson = ""
+      $log.benchmark("neat_json", __LINE__, __FILE__) {configjson = JSON.neat_generate(object, options)}
 
       unless get_text.split(CONFIG_SEPARATOR)[1]
         append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})

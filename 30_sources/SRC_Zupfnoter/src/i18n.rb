@@ -1,6 +1,8 @@
 module I18n
   def self.t(text)
-    `w2utils.lang(#{text})`
+    if RUBY_ENGINE=='opal'
+      `w2utils.lang(#{text})`
+    end
   end
 
   def self.t_key(key)
