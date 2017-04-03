@@ -180,6 +180,7 @@
     "missing text": "Text fehlt",
     "MM_PER_POINT": "MM pro point",
     "more than one line found for ": "Mehr als eine Zeile gefunden für ",
+    "moreinc" : "extra Vorschub",
     "Name of annotation": "Name der Beschriftungsvorlage",
     "Name of draggable": "Name der Verschiebemarke",
     "Name of target": "Name des Sprungziels",
@@ -342,7 +343,9 @@
     "Y_SCALE": "Vertikale Skalierung",
     "Yes": "Ja",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
+
     "value": "Wert"
+
   }
 }
 

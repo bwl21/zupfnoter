@@ -785,7 +785,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     function pasteMxl(text){
        zip = new JSZip(text);
-       text = zip.file(/^lg.*xml$/)[0].asText();
+       text = zip.file(/^[^/ ]*\.xml$/)[0].asText();
        pasteXml(text);
     }
 

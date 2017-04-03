@@ -12,6 +12,7 @@
 * no longer throw internal message if produce refers to non existing extract #114
 * non BWC improved auto positioning of barnumbers and counthints #81
 * fix size of notes an sheetmark shape #120
+* now import mxl files produced by musescore (not only the ones downloaded from musescore.org) #123
 
 ## Enhancement
 

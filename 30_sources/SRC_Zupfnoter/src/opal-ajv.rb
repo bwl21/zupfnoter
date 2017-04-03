@@ -235,7 +235,7 @@ module Ajv
                                                                          :REST_SIZE    => {:type        => "array",
                                                                                            :minItems    => 1,
                                                                                            :uniqueItems => true,
-                                                                                           :items       => {:type => "integer"}},
+                                                                                           :items       => {:type => "number"}},
                                                                          :grid         => {:type => "boolean"}}},
                                                   :nonflowrest  => {:type => "boolean"},
                                                   :notes        => {:patternProperties => {'.*' => {:"$ref" => '#/definitions/notes_entry'}}},
@@ -492,7 +492,7 @@ module Ajv
                                  }
            },
            :neatjson     => {:type       => "object",
-                             :required   => ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "sorted", "explicit_sort"],
+                             :required   => ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "explicit_sort"],
                              :properties =>
                                  {:wrap           => {:type => "integer"},
                                   :aligned        => {:type => "boolean"},
@@ -501,13 +501,8 @@ module Ajv
                                   :after_colon_n  => {:type => "integer"},
                                   :before_colon_n => {:type => "integer"},
                                   :sorted         => {:type => "boolean"},
-                                  :explicit_sort  => {:type        => "array",
-                                                      :minItems    => 2,
-                                                      :uniqueItems => true,
-                                                      :items       => {:type        => "array",
-                                                                       :minItems    => 0,
-                                                                       :uniqueItems => true,
-                                                                       :items       => {:type => "string"}}}}}}}
+                                  :explicit_sort  => {:type        => "object"}
+                                                      }}}}
 
     end
   end

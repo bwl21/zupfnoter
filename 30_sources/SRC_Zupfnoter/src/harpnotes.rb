@@ -1129,6 +1129,9 @@ module Harpnotes
         @beat_spacing = $conf.get('layout.Y_SCALE') * 1.0/$conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
         @slur_index   = {}
         @y_offset     = 5
+        @conf_moreinc = $conf['layout.moreinc'].inject({}){|result, entry| result[entry.last.first] = entry.last.last; result }
+        @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
+
       end
 
 
@@ -1813,7 +1816,8 @@ module Harpnotes
         result
       end
 
-      # compress  beat layout of a music sheet
+      # Standard algorith to compress  beat layout of a music sheet
+      # it increments on every beat
       #
       # This algorithm considers the number of notes and the particular radii of the notes
       # when a beat (layout beat, not to mess up with song beat) has a note
@@ -1828,13 +1832,13 @@ module Harpnotes
       # we need to increment the position by the (radii[i] + radii[i-1])/2
       #
       # @param music Harpnotes::Music::Document the document to optimize the beat layout
+      # @param [layout_lines] layout_lines list of voices to take into account
       #
       # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
       #
       def compute_beat_compression_0(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
 
         # todo:clarify the initialization
         current_beat         = 0
@@ -1853,7 +1857,7 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
             rescue Exception => e
               $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
@@ -1875,6 +1879,7 @@ module Harpnotes
             #   #increment = -500
             # end
 
+            increment += get_more_inc(notes_on_beat)
 
             current_beat += increment
           end
@@ -1883,29 +1888,18 @@ module Harpnotes
         result
       end
 
-      # compress  beat layout of a music sheet
-      #
-      # This algorithm considers the number of notes and the particular radii of the notes
-      # when a beat (layout beat, not to mess up with song beat) has a note
-      # the the
-      #
-      # returns a beat-map { beat => vertical_position_indicator }
-      # vertical_position_indicator scales like beats but can be fractions
-      # the need to be scaled to the aboslute position on the sheet later.
-      # this scaling cannot be done here since it depends on the relative radii
-      # of the musig on the sheet.
-      #
-      # we need to increment the position by the (radii[i] + radii[i-1])/2
-      #
-      # @param music Harpnotes::Music::Document the document to optimize the beat layout
-      #
-      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
-      #
+      # this computes manually added additional increments
+      def get_more_inc(notes_on_beat)
+        moreinc   = notes_on_beat.map { |note| @conf_moreinc[note.znid] }.compact.first
+        moreinc ? moreinc * @conf_beat_resolution: 0
+      end
+
+      # for details see compute_beatcompression_0
+      # this algorithm incremnts only if there is a flowline changes direaction or is vertical
       def compute_beat_compression_1(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-        conf_min_increment   = ($conf.get('layout.packer.pack_min_increment') || 0) * conf_beat_resolution
+        conf_min_increment   = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
 
         # todo:clarify the initialization
         current_beat         = 0
@@ -1933,7 +1927,7 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
             rescue Exception => e
               $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
@@ -1979,6 +1973,8 @@ module Harpnotes
               increment += default_increment
             end
 
+            increment += get_more_inc(notes_on_beat)
+
             current_beat += increment
 
             history.unshift({beat: current_beat, pitchmap: pitchmap})
@@ -1990,30 +1986,12 @@ module Harpnotes
       end
 
 
-      # compress  beat layout of a music sheet
-      #
-      # This algorithm considers the number of notes and the particular radii of the notes
-      # when a beat (layout beat, not to mess up with song beat) has a note
-      # the the
-      #
-      # returns a beat-map { beat => vertical_position_indicator }
-      # vertical_position_indicator scales like beats but can be fractions
-      # the need to be scaled to the aboslute position on the sheet later.
-      # this scaling cannot be done here since it depends on the relative radii
-      # of the musig on the sheet.
-      #
-      # we need to increment the position by the (radii[i] + radii[i-1])/2
-      #
-      # @param music Harpnotes::Music::Document the document to optimize the beat layout
-      #
-      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
-      #
+      # for details see compute_beatcompression_0
+      # this algorithm incremnts only if there is a collision with the previous notes
       def compute_beat_compression_2(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-
-        silo         = [[]]
+        silo         = [[]] # here we memoize the previous notes
 
         # todo:clarify the initialization
         current_beat = 0
@@ -2058,7 +2036,7 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
             rescue Exception => e
               $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
@@ -2078,7 +2056,7 @@ module Harpnotes
 
             inc_history.unshift(increment)
 
-            $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
+            #$log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
             history.unshift(pitchmap)
 
             if measure_start
@@ -2089,6 +2067,8 @@ module Harpnotes
             unless is_new_part.empty?
               increment += increment
             end
+
+            increment += get_more_inc(notes_on_beat)
 
             current_beat += increment
           end
@@ -2145,7 +2125,7 @@ module Harpnotes
 
       def compute_ellipse_properties_from_note(root)
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale -  0.5 * $conf.get('layout.LINE_THICK') }
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale - 0.5 * $conf.get('layout.LINE_THICK') }
         return dotted, fill, size
       end
 
@@ -2195,6 +2175,7 @@ module Harpnotes
 
         res = []
         # todo: signature has center / size swapped
+        # todo: we need a flowline in the result, otherwise the Syncpoint would not have proper origin
         res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, proxy_note.center, proxy_note.size) # Flowline is in fact a line
         res << resnotes
         res
