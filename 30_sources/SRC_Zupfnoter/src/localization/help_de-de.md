@@ -196,6 +196,32 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
+## layout.moreinc
+
+Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
+
+> **Hinweis**: Diese Funktion ist nun wirklich für die ganzen Experten.
+> Bitte verwende sie also nur, wenn du weißt, was du tust.
+> Anwendungsfälle für diese Funktion:
+>
+> -   Linien (z.B. Sprunglinien) gehen unglücklich durch andere Noten
+>     oder Beschriftungen
+> -   Bei sehr dichten Layouts gehen Taktstriche in die vorherige Note
+> -   Man hat sehr viele Noten, könnte aber einen Teil in eine freie
+>     Fläche schieben. In diesem fall würde die Flusslinie teilweise
+>     nach oben gehen.
+
+Dieser Parameter enthält eine Liste manuellen Layoutkorrekturen. Jeder
+eintrag ist ein Feld mit Notenlabel und Vorschubwert.
+
+-   **Notenlabel**: kannst du rechts unten sehen, wenn du mit der Maus
+    auf die Note fährst. Am besten ist es eine "Verschiebemarke" vor der
+    betroffenen Note anzubrigen.
+
+-   **Verschiebewert**: Dieser Wert ist ein vielfaches des normalen
+    Vorschubs und wird hinzugefügt. Zum Beispiel wird duch "1.0" der
+    Vorschub verdoppelt. "-1.0" würde den Vorschub auf 0 setzen.
+
 ## layout.packer
 
 Hier kannst du weitere Einzelheiten für die vertikale Anordnung der

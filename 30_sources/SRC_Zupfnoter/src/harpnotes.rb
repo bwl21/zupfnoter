@@ -1129,6 +1129,9 @@ module Harpnotes
         @beat_spacing = $conf.get('layout.Y_SCALE') * 1.0/$conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
         @slur_index   = {}
         @y_offset     = 5
+        @conf_moreinc = $conf['layout.moreinc'].inject({}){|result, entry| result[entry.last.first] = entry.last.last; result }
+        @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
+
       end
 
 
@@ -1836,7 +1839,6 @@ module Harpnotes
       def compute_beat_compression_0(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
 
         # todo:clarify the initialization
         current_beat         = 0
@@ -1855,7 +1857,7 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
             rescue Exception => e
               $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
@@ -1877,8 +1879,7 @@ module Harpnotes
             #   #increment = -500
             # end
 
-            moreinc   = notes_on_beat.map{|note| $conf["layout.increments.#{note.znid}"]}.compact.first
-            increment += moreinc * conf_beat_resolution if moreinc
+            increment += get_more_inc(notes_on_beat)
 
             current_beat += increment
           end
@@ -1887,15 +1888,18 @@ module Harpnotes
         result
       end
 
-
+      # this computes manually added additional increments
+      def get_more_inc(notes_on_beat)
+        moreinc   = notes_on_beat.map { |note| @conf_moreinc[note.znid] }.compact.first
+        moreinc ? moreinc * @conf_beat_resolution: 0
+      end
 
       # for details see compute_beatcompression_0
       # this algorithm incremnts only if there is a flowline changes direaction or is vertical
       def compute_beat_compression_1(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-        conf_min_increment   = ($conf.get('layout.packer.pack_min_increment') || 0) * conf_beat_resolution
+        conf_min_increment   = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
 
         # todo:clarify the initialization
         current_beat         = 0
@@ -1923,7 +1927,7 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
             rescue Exception => e
               $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
@@ -1969,8 +1973,7 @@ module Harpnotes
               increment += default_increment
             end
 
-            moreinc   = notes_on_beat.map{|note| $conf["layout.increments.#{note.znid}"]}.compact.first
-            increment += moreinc * conf_beat_resolution if moreinc
+            increment += get_more_inc(notes_on_beat)
 
             current_beat += increment
 
@@ -1988,9 +1991,7 @@ module Harpnotes
       def compute_beat_compression_2(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-
-        silo         = [[]]
+        silo         = [[]] # here we memoize the previous notes
 
         # todo:clarify the initialization
         current_beat = 0
@@ -2035,7 +2036,7 @@ module Harpnotes
 
           unless has_no_notes_on_beat
             begin
-              size = %x{#{conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
             rescue Exception => e
               $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
             end
@@ -2067,8 +2068,7 @@ module Harpnotes
               increment += increment
             end
 
-            moreinc   = notes_on_beat.map{|note| $conf["layout.increments.#{note.znid}"]}.compact.first
-            increment += moreinc * conf_beat_resolution if moreinc
+            increment += get_more_inc(notes_on_beat)
 
             current_beat += increment
           end

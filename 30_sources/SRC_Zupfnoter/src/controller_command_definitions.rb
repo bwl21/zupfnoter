@@ -357,6 +357,7 @@ C,
             'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
             'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
             'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']} },
+            'moreinc'          => lambda { {key: "extract.#{@systemstatus[:view]}.layout.moreinc.x", value: $conf['templates.moreinc']} },
             'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']} },
             'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
             'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
@@ -394,9 +395,9 @@ C,
         # create the commands for presets
 
         $conf['presets.notes'].each do |key, preset_value|
-          entry = $conf["presets.notes.#{key}"]
-          to_key = entry[:key] || key
-          value = entry[:value]
+          entry                         = $conf["presets.notes.#{key}"]
+          to_key                        = entry[:key] || key
+          value                         = entry[:value]
           values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
         end
 
@@ -461,7 +462,7 @@ C,
 
         sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
-                                                                            'repeatsigns.voices', 'barnumbers.voices','barnumbers.autopos', 'countnotes.voices','countnotes.autopos',
+                                                                            'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
                                                                             'printer.show_border', 'stringnames.vpos',
                                                                             :startpos,
                                                                            ]) + [:restposition]},
@@ -470,6 +471,7 @@ C,
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
+            moreinc:               {keys: expand_extract_keys(['layout.moreinc']), newentry_handler: lambda { handle_command("addconf moreinc") }},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             stringnames:           {keys: expand_extract_keys([:stringnames])},
@@ -504,15 +506,15 @@ C,
           editor_conf.push(get_config_from_editor)
 
           effective_values = Confstack.new(false)
-          editable_values = Confstack.new(false)
+          editable_values  = Confstack.new(false)
 
           editable_keys.each do |k|
-            editable_values[k] = editor_conf[k]
-            zerokey = k.gsub(/extract\.[^\.]+/, 'extract.0')
-            value = editable_values[k]
-            value = $conf[k] if value.nil?
-            value = editor_conf[zerokey] if value.nil?
-            value = $conf[zerokey] if value.nil?
+            editable_values[k]  = editor_conf[k]
+            zerokey             = k.gsub(/extract\.[^\.]+/, 'extract.0')
+            value               = editable_values[k]
+            value               = $conf[k] if value.nil?
+            value               = editor_conf[zerokey] if value.nil?
+            value               = $conf[zerokey] if value.nil?
             effective_values[k] = value
           end
 
