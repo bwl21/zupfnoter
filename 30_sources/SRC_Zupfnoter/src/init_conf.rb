@@ -6,6 +6,7 @@ module InitConf
 # 4. update conf_doc_source.rb / help_de-de.md to provide the documentation and help
 # 5. update config-form.rb to attach a type
 # 6. update user-interface.js to add the menu entries
+# 7: update json schema in opal-ajv.rb
   def self.init_conf()
 
     explicit_sort = [:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
