@@ -1813,7 +1813,8 @@ module Harpnotes
         result
       end
 
-      # compress  beat layout of a music sheet
+      # Standard algorith to compress  beat layout of a music sheet
+      # it increments on every beat
       #
       # This algorithm considers the number of notes and the particular radii of the notes
       # when a beat (layout beat, not to mess up with song beat) has a note
@@ -1828,6 +1829,7 @@ module Harpnotes
       # we need to increment the position by the (radii[i] + radii[i-1])/2
       #
       # @param music Harpnotes::Music::Document the document to optimize the beat layout
+      # @param [layout_lines] layout_lines list of voices to take into account
       #
       # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
       #
@@ -1875,6 +1877,8 @@ module Harpnotes
             #   #increment = -500
             # end
 
+            moreinc   = notes_on_beat.map{|note| $conf["layout.increments.#{note.znid}"]}.compact.first
+            increment += moreinc * conf_beat_resolution if moreinc
 
             current_beat += increment
           end
@@ -1883,24 +1887,10 @@ module Harpnotes
         result
       end
 
-      # compress  beat layout of a music sheet
-      #
-      # This algorithm considers the number of notes and the particular radii of the notes
-      # when a beat (layout beat, not to mess up with song beat) has a note
-      # the the
-      #
-      # returns a beat-map { beat => vertical_position_indicator }
-      # vertical_position_indicator scales like beats but can be fractions
-      # the need to be scaled to the aboslute position on the sheet later.
-      # this scaling cannot be done here since it depends on the relative radii
-      # of the musig on the sheet.
-      #
-      # we need to increment the position by the (radii[i] + radii[i-1])/2
-      #
-      # @param music Harpnotes::Music::Document the document to optimize the beat layout
-      #
-      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
-      #
+
+
+      # for details see compute_beatcompression_0
+      # this algorithm incremnts only if there is a flowline changes direaction or is vertical
       def compute_beat_compression_1(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
@@ -1979,6 +1969,9 @@ module Harpnotes
               increment += default_increment
             end
 
+            moreinc   = notes_on_beat.map{|note| $conf["layout.increments.#{note.znid}"]}.compact.first
+            increment += moreinc * conf_beat_resolution if moreinc
+
             current_beat += increment
 
             history.unshift({beat: current_beat, pitchmap: pitchmap})
@@ -1990,24 +1983,8 @@ module Harpnotes
       end
 
 
-      # compress  beat layout of a music sheet
-      #
-      # This algorithm considers the number of notes and the particular radii of the notes
-      # when a beat (layout beat, not to mess up with song beat) has a note
-      # the the
-      #
-      # returns a beat-map { beat => vertical_position_indicator }
-      # vertical_position_indicator scales like beats but can be fractions
-      # the need to be scaled to the aboslute position on the sheet later.
-      # this scaling cannot be done here since it depends on the relative radii
-      # of the musig on the sheet.
-      #
-      # we need to increment the position by the (radii[i] + radii[i-1])/2
-      #
-      # @param music Harpnotes::Music::Document the document to optimize the beat layout
-      #
-      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
-      #
+      # for details see compute_beatcompression_0
+      # this algorithm incremnts only if there is a collision with the previous notes
       def compute_beat_compression_2(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
@@ -2078,7 +2055,7 @@ module Harpnotes
 
             inc_history.unshift(increment)
 
-            $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
+            #$log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
             history.unshift(pitchmap)
 
             if measure_start
@@ -2089,6 +2066,9 @@ module Harpnotes
             unless is_new_part.empty?
               increment += increment
             end
+
+            moreinc   = notes_on_beat.map{|note| $conf["layout.increments.#{note.znid}"]}.compact.first
+            increment += moreinc * conf_beat_resolution if moreinc
 
             current_beat += increment
           end
@@ -2145,7 +2125,7 @@ module Harpnotes
 
       def compute_ellipse_properties_from_note(root)
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale -  0.5 * $conf.get('layout.LINE_THICK') }
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale - 0.5 * $conf.get('layout.LINE_THICK') }
         return dotted, fill, size
       end
 
@@ -2195,6 +2175,7 @@ module Harpnotes
 
         res = []
         # todo: signature has center / size swapped
+        # todo: we need a flowline in the result, otherwise the Syncpoint would not have proper origin
         res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, proxy_note.center, proxy_note.size) # Flowline is in fact a line
         res << resnotes
         res
