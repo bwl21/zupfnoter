@@ -1126,10 +1126,10 @@ module Harpnotes
         # Spacing between two BeatTable increments
         # 1.0 = dureation of a whole note
         #
-        @beat_spacing = $conf.get('layout.Y_SCALE') * 1.0/$conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
-        @slur_index   = {}
-        @y_offset     = 5
-        @conf_moreinc = $conf['layout.moreinc'].inject({}){|result, entry| result[entry.last.first] = entry.last.last; result }
+        @beat_spacing         = $conf.get('layout.Y_SCALE') * 1.0/$conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
+        @slur_index           = {}
+        @y_offset             = 5
+        @conf_moreinc         = $conf['layout.moreinc'].inject({}) { |result, entry| result[entry.last.first] = entry.last.last; result }
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
 
       end
@@ -1489,11 +1489,22 @@ module Harpnotes
 
             unless annotationoffset
               if autopos
+                pitchoffset = playable.pitch + $conf['layout.PITCH_OFFSET']
+                if pitchoffset <= 0
+                  autopos = :right
+                elsif pitchoffset >= 36
+                  autopos = :left
+                elsif (playable.next_pitch || playable.pitch) > playable.pitch
+                  autopos = :left
+                else
+                  autopos = :right
+                end
+                # 1 mm horizontal distance, 0.5 mm vertical
                 # draw the countnote opposit of outgoing flowline (computed by next_pitch)
                 # literals are experimental
                 # 1 mm horizontal distance, 0.5 mm vertical
-                auto_x           = (playable.next_pitch || playable.pitch) >= playable.pitch ? -count_note.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1
-                annotationoffset = [auto_x, 0.5] # todo derive "3" from style?
+                auto_x           = autopos == :left ? -count_note.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1
+                annotationoffset = [auto_x, 0] # todo derive "3" from style?
               else
                 annotationoffset = fixedpos
               end
@@ -1527,10 +1538,20 @@ module Harpnotes
 
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
             unless annotationoffset
+              pitchoffset = playable.pitch + $conf['layout.PITCH_OFFSET']
               if autopos
+                if pitchoffset <= 0
+                  autopos = :right
+                elsif pitchoffset >= 36
+                  autopos = :left
+                elsif (playable.prev_pitch || playable.pitch) >= playable.pitch
+                  autopos = :left
+                else
+                  autopos = :right
+                end
                 # 1 mm horizontal distance, 0.5 mm vertical
-                auto_x           = (playable.prev_pitch || playable.pitch) > playable.pitch ? -barnumber.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1
-                annotationoffset = [auto_x, -the_playable.size.last - 4] # todo derive "7" from style?
+                auto_x           = (autopos==:left ? (-barnumber.length - the_playable.size.first - 2) : (the_playable.size_with_dot.first + 1))
+                annotationoffset = [auto_x, -the_playable.size.last - 3] # todo derive "7" from style?
               else
                 annotationoffset = fixedpos
               end
@@ -1837,12 +1858,12 @@ module Harpnotes
       # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
       #
       def compute_beat_compression_0(music, layout_lines)
-        max_beat = music.beat_maps.map { |map| map.keys.max }.max
+        max_beat     = music.beat_maps.map { |map| map.keys.max }.max
 
 
         # todo:clarify the initialization
-        current_beat         = 0
-        last_size            = 0
+        current_beat = 0
+        last_size    = 0
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
         relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
@@ -1890,8 +1911,8 @@ module Harpnotes
 
       # this computes manually added additional increments
       def get_more_inc(notes_on_beat)
-        moreinc   = notes_on_beat.map { |note| @conf_moreinc[note.znid] }.compact.first
-        moreinc ? moreinc * @conf_beat_resolution: 0
+        moreinc = notes_on_beat.map { |note| @conf_moreinc[note.znid] }.compact.first
+        moreinc ? moreinc * @conf_beat_resolution : 0
       end
 
       # for details see compute_beatcompression_0
@@ -1899,11 +1920,11 @@ module Harpnotes
       def compute_beat_compression_1(music, layout_lines)
         max_beat = music.beat_maps.map { |map| map.keys.max }.max
 
-        conf_min_increment   = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
+        conf_min_increment = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
 
         # todo:clarify the initialization
-        current_beat         = 0
-        last_size            = 0
+        current_beat       = 0
+        last_size          = 0
 
         relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
         relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
