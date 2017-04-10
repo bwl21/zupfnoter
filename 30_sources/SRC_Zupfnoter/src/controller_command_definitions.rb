@@ -760,13 +760,13 @@ C,
         unless @dropboxclient.is_authenticated?
           case args[:scope]
             when "full"
-              @dropboxclient          = Opal::DropboxJs::Client.new('zwydv2vbgp30e05')
+              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_FULL)
               @dropboxclient.app_name = "DrBx"
               @dropboxclient.app_id   = "full"
               @dropboxpath            = path
 
             when "app"
-              @dropboxclient          = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
+              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_APP)
               @dropboxclient.app_name = "App"
               @dropboxclient.app_id   = "app"
               @dropboxpath            = path

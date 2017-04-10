@@ -149,7 +149,7 @@ module Opal
       #     the payload code handle argument
       #     iblock = the block provided to the underlying API.
       #              its signature is derived from the the underlying library.
-      #              in this case it is defined by the callbacks of drobox-js which has two paramteres (error, data)
+      #              in this case it is defined by the callbacks of drobox-js V1 which has two paramteres (error, data)
       # end
       #
       # @yieldparam [Lambda] block payload the block with the job to do
