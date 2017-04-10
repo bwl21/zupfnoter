@@ -1502,7 +1502,7 @@ module Harpnotes
                 end
 
                 tie_x = 1 if autopos == :right and playable.tie_start?
-                auto_x           = tie_x + (autopos == :left ? -count_note.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1
+                auto_x           = tie_x + (autopos == :left ? -count_note.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1)
                 annotationoffset = [auto_x, 0] # todo derive "3" from style?
               else
                 annotationoffset = fixedpos
