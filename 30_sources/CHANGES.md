@@ -21,6 +21,8 @@
 * show checksum also in the tune preview #80
 * supress rendering of tuplets via configuration #55
 * improved support for abc 2.2 #99
+* now support dropbox API 2.0 (mandaory from June 17) #63
+* now have dropdown menu for dropbox to open, save login, logout 
     
 
 ## backward compatibilility issues
