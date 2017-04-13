@@ -857,11 +857,9 @@ module Harpnotes
         if voice_element[:in_tuplet]
 
           #tuplet_id = @abc_model[:music_type_ids][:tuplet].to_s # todo: optimize performance here ...
-          tuplet_id = "15"
-          if _get_extra(voice_element, tuplet_id) # [:extra] and voice_element[:extra][tuplet_id]   # todo: attr_reader :
-            @tuplet_count      = (_get_extra(voice_element, tuplet_id)[:tuplet_r])
-            @tuplet_p          = (_get_extra(voice_element, tuplet_id)[:tuplet_p])
-            @tuplet_down_count = @tuplet_count
+
+          if voice_element[:tp0]
+            @tuplet_p          = voice_element[:tp0]
             tuplet_start       = true
           else
             tuplet_start = nil
@@ -869,11 +867,9 @@ module Harpnotes
 
           tuplet = @tuplet_p
 
-          if @tuplet_down_count == 1
-            @tuplet_count = 1
+          if voice_element[:te0]
             tuplet_end    = true
           else
-            @tuplet_down_count -= 1
             tuplet_end         = nil
           end
         else
