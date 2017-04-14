@@ -164,15 +164,6 @@ module Harpnotes
       end
 
       def _transform_voices
-
-        part_id = @abc_model[:music_type_ids][:part].to_s # performance ...
-
-        # get parts from the first voice.
-        @abc_model[:voices].first[:symbols].each do |voice_model_element|
-          part                                         = (_get_extra(voice_model_element, part_id) or {})[:text]
-          @part_table[voice_model_element[:time].to_s] = part if part
-        end
-
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
           voice_id = "v_#{voice_index + 1}"
           result   = _transform_voice(voice_model, voice_id)
@@ -323,6 +314,12 @@ module Harpnotes
 
         @is_first_measure = false
         result
+      end
+
+      def _transform_part(voice_element, index, voice_index)
+        @part_table[voice_element[:time]] = voice_element[:text]
+        `debugger`
+        nil
       end
 
       # @param [Object] voice_index this is not used but keeps the inteface consistent with _transform_rest
@@ -722,7 +719,8 @@ module Harpnotes
         znid           = the_note.znid
 
         # handle parts as annotation
-        if part_label = @part_table[voice_element[:time].to_s]
+
+        if part_label = @part_table[voice_element[:time]]
           conf_key = "notebound.partname.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position = $conf['defaults.notebound.partname.pos']
 
