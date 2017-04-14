@@ -870,12 +870,18 @@ module Harpnotes
         result
       end
 
-      # this parses the tuplet_information out of the voice_elmenet
+      # this parses the tuplet_information out of the voice_elment
       def _parse_tuplet_info(voice_element)
         if voice_element[:in_tuplet]
 
-          #tuplet_id = @abc_model[:music_type_ids][:tuplet].to_s # todo: optimize performance here ...
+          # check for nested tuplets
+          if voice_element[:tp1]
+            start_pos = charpos_to_line_column(voice_element[:istart])
+            end_pos = charpos_to_line_column(voice_element[:iend])
+            $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Nested Tuplet"), start_pos, end_pos)
+          end
 
+          #find tuplet start
           if voice_element[:tp0]
             @tuplet_p    = voice_element[:tp0]
             tuplet_start = true
@@ -883,8 +889,10 @@ module Harpnotes
             tuplet_start = nil
           end
 
-          tuplet = @tuplet_p
+          # we are within a tuplet
+          tuplet = @tuplet_p   # the size of tuplet (3, etc.
 
+          # detect tuiplet end
           if voice_element[:te0]
             tuplet_end = true
           else
