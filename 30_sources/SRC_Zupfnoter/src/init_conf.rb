@@ -1,3 +1,4 @@
+
 module InitConf
 # how to add a new parameter
 # 1. set the default here
@@ -188,14 +189,12 @@ module InitConf
                                 # all numbers in mm
                                 ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
                                 REST_SIZE:         [4, 2],
-                                REST_SIZE:         [4, 2],
                                 DRAWING_AREA_SIZE: [400, 282],
                                 packer:            {
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
                                     pack_min_increment:    0.2
                                 },
-                                limit_a3:          true,
                                 moreinc:           {}
                  },
                  nonflowrest:  false,
@@ -343,7 +342,7 @@ module InitConf
          neatjson:     {
              wrap:          60, aligned: true,
              after_comma:   1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short: false,
-             afterComma:    1, afterColon1: 1, afterColonN: 1, beforeColonN: 1, short: false,
+             afterComma:    1, afterColon1: 1, afterColonN: 1, beforeColonN: 1,
              decimals:      2,
              explicit_sort: Hash[explicit_sort.each_with_index.to_a.map { |i| [i.first, '_' + "000#{i.last}"[-4..-1]] }]
          }
