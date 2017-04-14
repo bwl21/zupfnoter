@@ -87,25 +87,21 @@ module Harpnotes
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
         tempo_id = @abc_model[:music_type_ids][:tempo].to_s
-        tempo_note = _get_extra(@abc_model[:voices].first[:voice_properties][:sym], tempo_id) rescue nil
+        tempo_note = @abc_model[:voices].first[:voice_properties][:sym] rescue nil
 
         if tempo_note
-          duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
-          duration_display = duration.map { |d| "1/#{1/d}" }
-          bpm              = tempo_note[:tempo].to_i
-          tempo            = {duration: duration, bpm: bpm}
+          duration = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
+          bpm      = tempo_note[:tempo].to_i
         else
-          duration         = [0.25]
-          duration_display = duration.map { |d| "1/#{1/d}" }
-          bpm              = 120
-          tempo            = {duration: duration, bpm: bpm}
+          duration = [0.25]
+          bpm      = 120
         end
         bpm = 120 unless bpm >= 1
 
         @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
-                      tempo:         {duration: duration, bpm: bpm},
+                      tempo:         {duration: duration, bpm: bpm, sym: tempo_note},
                       tempo_display: @info_fields[:Q], #[duration_display, "=", bpm].join(' '),
                       meter:         @info_fields[:M],
                       key:           "#{key} #{o_key_display}"
@@ -116,7 +112,7 @@ module Harpnotes
 
 
       def _mkznid(voice_element)
-        result = @remark_table[voice_element[:time]] 
+        result = @remark_table[voice_element[:time]]
         if result
           unless result.match(/[a-z][a-zA-Z0-9_]*/)
             start_pos=charpos_to_line_column(voice_element[:istart])
@@ -539,6 +535,17 @@ module Harpnotes
         _make_repeats_jumps_annotations(result, voice_element, voice_index)
 
         result
+      end
+
+      def _transform_tempo(voice_element, index, voice_index)
+
+        # note that abc2svd yields Tune based Tempo in voice_propoeties.sym as well as in symbols
+        # therefore we need to filter the Tune based tempo ...
+        unless voice_element == @meta_data[:tempo][:sym]
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos = charpos_to_line_column(voice_element[:iend])
+          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
+        end
       end
 
       def _transform_yspace(voice_element, index)

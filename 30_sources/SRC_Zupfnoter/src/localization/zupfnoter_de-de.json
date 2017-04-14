@@ -1,7 +1,5 @@
 {
   "phrases": {
-
-
     "": "",
     "0": "0",
     "1": "1",
@@ -310,6 +308,7 @@
     "T99_do_not_copy": "T99 bitte nicht kopieren",
     "target to jump to": "Sprungziel",
     "templates": "Vorlagen",
+    "tempo change not suported by zupfnoter": "Zupfnoter unterstüzt keine Tempoänderungen",
     "Text of annotation": "Text der Notenbeschriftung",
     "text": "Text",
     "text_color": "Textfarbe",
