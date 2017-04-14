@@ -232,6 +232,11 @@ man sie "notenbezogene Elemente":
     neuen Abschnittes z.B. die Zeichenfolge "`[P:Teil 1]`" vorangestellt
     wird. Hier ist "Teil 1" die Bezeichnung des Abschnitts.
 
+    > **Hinweis:** Die Aufteilung in Abschnitte gilt für das gesamte
+    > Musikstück. daher muss die Bezeichung von Abschnitten in der
+    > **ersten Stimme** erfolgen. Sie wirkt dann auf alle Stimmen.
+    > Abschnittsbezeichungen in den folgenden Stimmen werden ignoriert.
+
 -   **(28) countnotes - Zählhilfen**: Zupfnoter kann die Noten
     automatisch mit Zählhilfen beschriften. Die Zählweise ergibt sich
     aus der Taktangabe. Beispiel siehe Abbildung [Zupfnoter Elemente].
@@ -1424,15 +1429,16 @@ Die Angaben erfolgen über den parameter `shift=<note1><note2>`, zum
 Beispiel
 
     V:1 shift=cd
-    K:c shift=<cd
+    K:c shift=cd
 
 Das intervall für die Transponierung wird durch zwei Noten, `<note1>`
 `<note2>` angegeben. Hier bezieht sich `<note1>` auf den transkribierten
 abc-Code und `<note2>` bezieht sich auf die gerenderte Ausgabe.
 
-> Hinweis: Es wirken sich nur die Angaben aus `shift` auf die
-> Unterlegnoten aus, weil die Tischharfe kein transponierendes
-> Instrument ist.
+> **Hinweis**: ABC-Notation kennt noch weitere Schlüsselworte zum
+> Transponieren (score, sound, instrument). Es wirken sich nur die
+> Angaben aus `shift` auf die Unterlegnoten aus, weil die Tischharfe
+> kein transponierendes Instrument ist.
 
 Beispiel: Im Folgenden wird die Setzpartitur von C nach G transponiert.
 

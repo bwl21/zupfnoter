@@ -139,6 +139,7 @@ Auszug 1 usw.
               "LINE_THIN"         : 0.1,
               "REST_SIZE"         : [4, 2],
               "limit_a3"          : true,
+              "moreinc"           : {},
               "packer"            : {
                 "pack_max_spreadfactor" : 2,
                 "pack_method"           : 0,
@@ -146,7 +147,7 @@ Auszug 1 usw.
               }
             },
             "layoutlines"  : [1, 2, 3, 4],
-            "legend"       : {"pos": [320, 320], "spos": [320, 27]},
+            "legend"       : {"pos": [320, 7], "spos": [320, 27]},
             "lyrics"       : {},
             "nonflowrest"  : false,
             "notes"        : {},
@@ -347,6 +348,7 @@ Notenbild gezielt optimieren.
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
           "limit_a3"          : true,
+          "moreinc"           : {},
           "packer"            : {
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
@@ -419,6 +421,34 @@ angeshnitten.
 
         "limit_a3": true
           
+
+## `extract.0.layout.moreinc` - extra Vorschub {#extract.0.layout.moreinc}
+
+Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
+
+> **Hinweis**: Diese Funktion ist nun wirklich für die ganzen Experten.
+> Bitte verwende sie also nur, wenn du weißt, was du tust.
+> Anwendungsfälle für diese Funktion:
+>
+> -   Linien (z.B. Sprunglinien) gehen unglücklich durch andere Noten
+>     oder Beschriftungen
+> -   Bei sehr dichten Layouts gehen Taktstriche in die vorherige Note
+> -   Man hat sehr viele Noten, könnte aber einen Teil in eine freie
+>     Fläche schieben. In diesem fall würde die Flusslinie teilweise
+>     nach oben gehen.
+
+Dieser Parameter enthält eine Liste manuellen Layoutkorrekturen. Jeder
+eintrag ist ein Feld mit Notenlabel und Vorschubwert.
+
+-   **Notenlabel**: kannst du rechts unten sehen, wenn du mit der Maus
+    auf die Note fährst. Am besten ist es eine "Verschiebemarke" vor der
+    betroffenen Note anzubrigen.
+
+-   **Verschiebewert**: Dieser Wert ist ein vielfaches des normalen
+    Vorschubs und wird hinzugefügt. Zum Beispiel wird duch "1.0" der
+    Vorschub verdoppelt. "-1.0" würde den Vorschub auf 0 setzen.
+
+        "moreinc": {}
 
 ## `extract.0.layout.packer` - Packer {#extract.0.layout.packer}
 
@@ -521,7 +551,7 @@ unterschieden zwischen
 > Maus positioniert. Für eine genaue positionierung kann jedoch die
 > Eingabe über die Bildschirmmaske sinnvol sein.
 
-        "legend": {"pos": [320, 320], "spos": [320, 27]}
+        "legend": {"pos": [320, 7], "spos": [320, 27]}
           
 
 ## `extract.0.legend.pos` - Position {#extract.0.legend.pos}
@@ -530,7 +560,7 @@ Hier kannst du die Darstellung des Titels des Musikstückes angeben. Die
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
 vertikaler Position.
 
-        "pos": [320, 320]
+        "pos": [320, 7]
           
 
 ## `extract.0.legend.spos` - Position Sublegende {#extract.0.legend.spos}
@@ -878,7 +908,7 @@ TODO: Helptext für presets einfügen
               "LINE_THICK"   : 0.7,
               "REST_SIZE"    : [4, 2]
             },
-            "layout_regular" : "#<Proc:0x007fdb73838870@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:73 (lambda)>"
+            "layout_regular" : "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
           },
           "notes"   : {
             "T01_number"               : {
@@ -890,20 +920,20 @@ TODO: Helptext für presets einfügen
             "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
             "T02_copyright_music"      : {
               "value" : {
-                "pos"   : [372, 227],
+                "pos"   : [340, 251],
                 "style" : "small",
                 "text"  : "© 2017\n"
               }
             },
             "T03_copyright_harpnotes"  : {
               "value" : {
-                "pos"   : [344, 208],
+                "pos"   : [340, 260],
                 "style" : "small",
-                "text"  : "© 2017 zupfnoter.de"
+                "text"  : "© 2017 Notenbild: zupfnoter.de"
               }
             },
             "T04_to_order"             : {
-              "value" : {"pos": [369, 224], "style": "small", "text": null}
+              "value" : {"pos": [340, 242], "style": "small", "text": null}
             },
             "T99_do_not_copy"          : {
               "value" : {
@@ -960,7 +990,7 @@ Notenbild gezielt optimieren.
             "LINE_THICK"   : 0.7,
             "REST_SIZE"    : [4, 2]
           },
-          "layout_regular" : "#<Proc:0x007fdb73838870@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:73 (lambda)>"
+          "layout_regular" : "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
         }
           
 
@@ -1072,7 +1102,7 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 
 TODO: Helptext für presets.layout.layout_regular einfügen
 
-        "layout_regular": "#<Proc:0x007fdb73838870@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:73 (lambda)>"
+        "layout_regular": "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
           
 
 ## `presets.notes` - Seitenbeschriftungen {#presets.notes}
@@ -1095,20 +1125,20 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
           "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
           "T02_copyright_music"      : {
             "value" : {
-              "pos"   : [372, 227],
+              "pos"   : [340, 251],
               "style" : "small",
               "text"  : "© 2017\n"
             }
           },
           "T03_copyright_harpnotes"  : {
             "value" : {
-              "pos"   : [344, 208],
+              "pos"   : [340, 260],
               "style" : "small",
-              "text"  : "© 2017 zupfnoter.de"
+              "text"  : "© 2017 Notenbild: zupfnoter.de"
             }
           },
           "T04_to_order"             : {
-            "value" : {"pos": [369, 224], "style": "small", "text": null}
+            "value" : {"pos": [340, 242], "style": "small", "text": null}
           },
           "T99_do_not_copy"          : {
             "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
@@ -1240,7 +1270,7 @@ Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
 das Copyright auf die Komposition angegeben.
 
         "T02_copyright_music": {
-          "value" : {"pos": [372, 227], "style": "small", "text": "© 2017\n"}
+          "value" : {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
         }
           
 
@@ -1248,7 +1278,7 @@ das Copyright auf die Komposition angegeben.
 
 TODO: Helptext für presets.notes.T02_copyright_music.value einfügen
 
-        "value": {"pos": [372, 227], "style": "small", "text": "© 2017\n"}
+        "value": {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
           
 
 ## `presets.notes.T02_copyright_music.value.pos` - Position {#presets.notes.T02_copyright_music.value.pos}
@@ -1256,7 +1286,7 @@ TODO: Helptext für presets.notes.T02_copyright_music.value einfügen
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [372, 227]
+        "pos": [340, 251]
           
 
 ## `presets.notes.T02_copyright_music.value.style` - Stil {#presets.notes.T02_copyright_music.value.style}
@@ -1283,9 +1313,9 @@ Tischharfe
 
         "T03_copyright_harpnotes": {
           "value" : {
-            "pos"   : [344, 208],
+            "pos"   : [340, 260],
             "style" : "small",
-            "text"  : "© 2017 zupfnoter.de"
+            "text"  : "© 2017 Notenbild: zupfnoter.de"
           }
         }
           
@@ -1296,9 +1326,9 @@ TODO: Helptext für presets.notes.T03_copyright_harpnotes.value
 einfügen
 
         "value": {
-          "pos"   : [344, 208],
+          "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2017 zupfnoter.de"
+          "text"  : "© 2017 Notenbild: zupfnoter.de"
         }
           
 
@@ -1307,7 +1337,7 @@ einfügen
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [344, 208]
+        "pos": [340, 260]
           
 
 ## `presets.notes.T03_copyright_harpnotes.value.style` - Stil {#presets.notes.T03_copyright_harpnotes.value.style}
@@ -1323,7 +1353,7 @@ aus vordefinierten Stilen.
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
 
-        "text": "© 2017 zupfnoter.de"
+        "text": "© 2017 Notenbild: zupfnoter.de"
           
 
 ## `presets.notes.T04_to_order` - T04 zu beziehen bei {#presets.notes.T04_to_order}
@@ -1333,7 +1363,7 @@ beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
 Weise vertrieben werden.
 
         "T04_to_order": {
-          "value" : {"pos": [369, 224], "style": "small", "text": null}
+          "value" : {"pos": [340, 242], "style": "small", "text": null}
         }
           
 
@@ -1341,7 +1371,7 @@ Weise vertrieben werden.
 
 TODO: Helptext für presets.notes.T04_to_order.value einfügen
 
-        "value": {"pos": [369, 224], "style": "small", "text": null}
+        "value": {"pos": [340, 242], "style": "small", "text": null}
           
 
 ## `presets.notes.T04_to_order.value.pos` - Position {#presets.notes.T04_to_order.value.pos}
@@ -1349,7 +1379,7 @@ TODO: Helptext für presets.notes.T04_to_order.value einfügen
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [369, 224]
+        "pos": [340, 242]
           
 
 ## `presets.notes.T04_to_order.value.style` - Stil {#presets.notes.T04_to_order.value.style}
@@ -1793,6 +1823,7 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
         "templates": {
           "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
           "lyrics"      : {"pos": [350, 70], "verses": [1]},
+          "moreinc"     : ["znid", 0],
           "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
           "tuplet"      : {
             "cp1"   : [5, 2],
@@ -1857,6 +1888,13 @@ Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block
 ausgegeben werden.
 
         "verses": [1]
+          
+
+## `templates.moreinc` - extra Vorschub {#templates.moreinc}
+
+TODO: Helptext für templates.moreinc einfügen
+
+        "moreinc": ["znid", 0]
           
 
 ## `templates.notes` - Seitenbeschriftungen {#templates.notes}

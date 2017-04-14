@@ -326,7 +326,8 @@ deutschsprachiges Benutzerhandbuch.
 Wenn du ein Konto bei Dropbox hast, musst du Zupfnoter **einmalig pro
 verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 
--   klicke auf Schaltfläche "Einloggen"
+-   klicke auf Schaltfläche "Einloggen" bzw. wähle das Menü "Dropbox \>
+    Einloggen"
 -   es erscheint der Zupfnoter - Dialog "Einloggen" - gib dort bitte ein
     Verezeichnis aus deiner Dropbox ein, in welcher du dein Musikstück
     speichern möchtest
@@ -353,15 +354,19 @@ verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 
 -   Dropbox kehrt nun zu Zupfnoter zurück. Zupfnoter ist nun mit der
     Dropbox verbunden.
--   Drücke nun im Zupfnoter auf "Speichern", um dein Musikstück und die
-    Auszüge als PDF-Dateien in deiner Dropbox zu speichern.
+-   Drücke nun im Zupfnoter auf "Speichern", (bzw. wähle das Menü
+    "Dropbox \> Speichern" )um dein Musikstück und die Auszüge als
+    PDF-Dateien in deiner Dropbox zu speichern.
 
     > **HInweis**: Zupfnoter speichert in dem Verzeichnis, welches beim
     > Einloggen angegeben wurde. Fall das Verzeichnis nicht existiert,
     > wird es angelegt. Bitte achte auf also die richtige Schreibweise
 
-Zupfnoter hat nun Zugriff folgende Dateitypen in deiner Dropbox: ".abc
-files, .zip files, audio files, documents, text files".
+Zupfnoter hat nun im Prinzip Zugriff alle Dateien in deiner Dropbox.
+Zupfnoter verwendet jedoch nur folgende Dateitypen in deiner Dropbox:
+
+-   schreibt "abc", "pdf", "html""
+-   liest "abc"
 
 > **Hinweis zur Sicherheit** z.B. bei Verwendung fremder Computer (z.B.
 > im Internet-Cafe):
@@ -388,19 +393,24 @@ files, .zip files, audio files, documents, text files".
 > -   Dropbox sendet dir eine E-Mail, wenn immer du eine Anwendung mit
 >     deiner Dropbox verbindest.
 >
+> -   Im Menu "Dropbox \> Ausloggen" kannst du Zupfnoter von deiner
+>     Dropbox trennen. Das Accesstoken wird dabei auch bei Dropbox
+>     gelöscht. Du musst dich ggf. neu anmelden um wieder mit Dropbox
+>     arbeiten zu können.
+>
 > <!-- -->
 
 ## Musikstück aus Dropbox laden
 
-Um das Musikstück wieder zu laden, klicke auf "Öffnen". Es erscheint ein
-Datei-Auswahl-Dialog von Dropbox. Dort ist oben ein Suchfeld. Dort
-kannst du einen Teil des Dateinamens eingeben, um die gewünschte Datei
-zu suchen.
+Um das Musikstück wieder zu laden, klicke auf "Öffnen" bzw. wähle das
+Menü "Dropbox \> Öfnnen. Es erscheint ein Datei-Auswahl-Dialog von
+Dropbox. Dort ist oben ein Suchfeld. Dort kannst du einen Teil des
+Dateinamens eingeben, um die gewünschte Datei zu suchen.
 
-> **Hinweis**: Wenn du im Suchfeld die Zeichenkette "abc" hinzufügst,
+> **Hinweis**: Wenn du im Suchfeld die Zeichenkette "abc" voanstellst,
 > dann werden nur noch ABC-Datien angezeigt. Wenn du zum Beispiel im
-> Suchfeld eingibst: `entchen abc`, dann werden alle Dateien gesucht, in
-> deren Namen die Worte 'entchen' und 'abc' vorkommen
+> Suchfeld eingibst: `abc ent`, dann werden alle Dateien gesucht, in
+> deren Namen die Worte 'abc' vorkomment und mit 'ent' beginnen
 
 > > > ![](../ZAUX_Images/030-045_Dropbox-step-05.jpg) 
 
