@@ -46,7 +46,7 @@ module Harpnotes
         result = {lyrics: {text: @info_fields[:W]}}
 
         result[:print] = $conf.get("produce").map do |i|
-          title        = $conf.get("extract.#{i}.title")
+          title = $conf.get("extract.#{i}.title")
           if title
             filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
             {title: title, view_id: i, filenamepart: filenamepart}
@@ -116,19 +116,17 @@ module Harpnotes
 
 
       def _mkznid(voice_element)
-        result = _get_extra(voice_element, 17) #todo: get rid of literal constant:  @abc_model[:music_type_ids][:extra].to_s
+        result = @remark_table[voice_element[:time]] 
         if result
-          result = result[:text]
-
           unless result.match(/[a-z][a-zA-Z0-9_]*/)
             start_pos=charpos_to_line_column(voice_element[:istart])
             end_pos  = charpos_to_line_column(voice_element[:iend])
             $log.error("illegal character in of [r:] (must be of [a-z][a-z0.9_])", start_pos, end_pos)
             result = nil
           end
+        else
+          result = "#{voice_element[:time]}" unless result
         end
-
-        result = "#{voice_element[:time]}" unless result
 
         result
       end
@@ -152,6 +150,7 @@ module Harpnotes
         }
         @previous_new_part = []
         @previous_note     = nil
+        @remark_table      = {}
         @repetition_stack  = []
         @variant_endings   = [[]] # nested array of variant ending groups
         @tie_started       = false
@@ -318,7 +317,11 @@ module Harpnotes
 
       def _transform_part(voice_element, index, voice_index)
         @part_table[voice_element[:time]] = voice_element[:text]
-        `debugger`
+        nil
+      end
+
+      def _transform_remark(voice_element, index, voice_index)
+        @remark_table[voice_element[:time]] = voice_element[:text]
         nil
       end
 
@@ -857,8 +860,8 @@ module Harpnotes
           #tuplet_id = @abc_model[:music_type_ids][:tuplet].to_s # todo: optimize performance here ...
 
           if voice_element[:tp0]
-            @tuplet_p          = voice_element[:tp0]
-            tuplet_start       = true
+            @tuplet_p    = voice_element[:tp0]
+            tuplet_start = true
           else
             tuplet_start = nil
           end
@@ -866,9 +869,9 @@ module Harpnotes
           tuplet = @tuplet_p
 
           if voice_element[:te0]
-            tuplet_end    = true
+            tuplet_end = true
           else
-            tuplet_end         = nil
+            tuplet_end = nil
           end
         else
           tuplet       = 1
