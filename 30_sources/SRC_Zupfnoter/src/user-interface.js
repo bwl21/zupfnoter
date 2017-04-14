@@ -206,7 +206,7 @@ function init_w2ui(uicontroller) {
         id: 'tbDropbox',
         text: 'Dropbox',
         icon: 'fa fa-dropbox',
-        hint: 'Interact with dropbox',
+        tooltip: 'Interact with dropbox',
         items: [
           {type: 'button', id: 'tb_open', text: 'Open', icon: 'fa fa-search', tooltip: 'Open ABC file in dropbox'},
           {type: 'button', id: 'tb_save', text: 'Save', icon: 'fa fa-floppy-o', tooltip: 'Save ABC file in dropbox'},
