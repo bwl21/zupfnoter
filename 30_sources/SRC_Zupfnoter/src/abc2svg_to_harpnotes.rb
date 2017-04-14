@@ -312,11 +312,21 @@ module Harpnotes
       end
 
       def _transform_part(voice_element, index, voice_index)
+        if @part_table[voice_element[:time]]
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos = charpos_to_line_column(voice_element[:iend])
+          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple parts for same note"), start_pos, end_pos)
+        end
         @part_table[voice_element[:time]] = voice_element[:text]
         nil
       end
 
       def _transform_remark(voice_element, index, voice_index)
+        if @remark_table[voice_element[:time]]
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos = charpos_to_line_column(voice_element[:iend])
+          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple remarks for same note"), start_pos, end_pos)
+        end
         @remark_table[voice_element[:time]] = voice_element[:text]
         nil
       end
