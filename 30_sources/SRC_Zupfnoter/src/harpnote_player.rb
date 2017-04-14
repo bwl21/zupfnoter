@@ -115,7 +115,7 @@ module Harpnotes
 
             %x{
             #{inst}.tone(#{note});
-            #{inst}.schedule(#{note}.delay + #{note}.duration, function(){#{inst}._trigger("noteoff", #{note});});
+           // #{inst}.schedule(#{note}.delay + #{note}.duration, function(){#{inst}._trigger("noteoff", #{note});});
            }
           end
           @isplaying = true

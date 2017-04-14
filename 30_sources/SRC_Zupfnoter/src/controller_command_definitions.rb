@@ -194,18 +194,65 @@ L:1/4
 Q:1/4=120
 K:C
 %%score 1 2
-V:1 clef=treble-8 name="Sopran" snm="S"
+V:1 clef=treble name="Sopran" snm="S"
 C
-V:2 clef=treble-8  name="Alt" snm="A"
+V:2 clef=treble  name="Alt" snm="A"
 C,
 
 %%%%zupfnoter.config
 
 {
-  "produce": [1],
+  "produce"  : [1, 2],
+  "extract"  : {
+    "0" : {
+      "voices"      : [1, 2, 3, 4],
+      "flowlines"   : [1, 3],
+      "repeatsigns" : {"voices": [1, 2, 3, 4]},
+      "layoutlines" : [1, 2, 3, 4],
+      "barnumbers"  : {
+        "voices"  : [1, 3],
+        "pos"     : [6, -4],
+        "autopos" : true,
+        "style"   : "small_bold",
+        "prefix"  : ""
+      },
+      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
+      "lyrics"      : {
+        "1" : {"verses": [1, 2], "pos": [8, 102]},
+        "2" : {"verses": [3, 4], "pos": [347, 118]}
+      },
+      "notes"       : {
+        "T01_number"              : {
+          "pos"   : [393, 17],
+          "text"  : "XXX-999",
+          "style" : "bold"
+        },
+        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [340, 272],
+          "text"  : "© 2017 Notenbild: ",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "countnotes"  : {
+        "voices"  : [1, 3],
+        "pos"     : [3, -2],
+        "autopos" : true,
+        "style"   : "smaller"
+      },
+      "stringnames" : {"vpos": [4]}
+    },
+    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
+    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
+    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
+  },
   "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
   "$version" : "#{VERSION}"
-
 }
 }
         args[:oldval] = @editor.get_text
@@ -267,13 +314,23 @@ C,
     @commands.add_command(:stdnotes) do |command|
       command.undoable = false
 
-      command.set_help { "configure with template from localstore" }
+      command.set_help { "configure extract with template from localstore" }
 
       command.as_action do |args|
         handle_command("addconf standardnotes")
       end
     end
 
+
+    @commands.add_command(:stdextract) do |command|
+      command.undoable = false
+
+      command.set_help { "configure with template from localstore" }
+
+      command.as_action do |args|
+        handle_command("addconf standardextract")
+      end
+    end
 
     @commands.add_command(:setstdnotes) do |command|
       command.undoable = false
@@ -283,6 +340,19 @@ C,
       command.as_action do |args|
         template = @editor.get_config_part_value('extract.0').to_json
         `localStorage.setItem('standardnotes', #{template})`
+        nil
+      end
+    end
+
+
+    @commands.add_command(:setstdextract) do |command|
+      command.undoable = false
+
+      command.set_help { "configure stdc onfig in localstore" }
+
+      command.as_action do |args|
+        template = @editor.get_config_part_value('extract').to_json
+        `localStorage.setItem('standardextract', #{template})`
         nil
       end
     end
@@ -310,6 +380,7 @@ C,
             'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
             'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
             'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']} },
+            'moreinc'          => lambda { {key: "extract.#{@systemstatus[:view]}.layout.moreinc.x", value: $conf['templates.moreinc']} },
             'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']} },
             'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
             'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
@@ -334,6 +405,7 @@ C,
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
+            'standardextract'  => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} },
             'x1'               => lambda { {key: "xx", value: $conf[]} },
             'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} },
             'hugo'             => lambda { {key: "extract.#{@systemstatus[:view]}",
@@ -343,6 +415,15 @@ C,
                                                    r
                                                  end} }
         }
+
+        # create the commands for presets
+
+        $conf['presets.notes'].each do |key, preset_value|
+          entry                         = $conf["presets.notes.#{key}"]
+          to_key                        = entry[:key] || key
+          value                         = entry[:value]
+          values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
+        end
 
         $conf['presets.layout'].each do |key, preset_value|
           values["preset.layout.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset} }
@@ -379,7 +460,7 @@ C,
           @editor.patch_config_part(the_key, patchvalue)
           @config_form_editor.refresh_form if @config_form_editor
         else
-          raise "unknown configuration parameter #{value[:key]}"
+          raise "unknown configuration parameter #{args[:key]}"
           nil
         end
       end
@@ -405,13 +486,16 @@ C,
 
         sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
-                                                                            'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices', :startpos, :nonflowrest,
+                                                                            'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
+                                                                            'printer.show_border', 'stringnames.vpos',
+                                                                            :startpos,
                                                                            ]) + [:restposition]},
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
 
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
-            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }},
+            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
+            moreinc:               {keys: expand_extract_keys(['layout.moreinc']), newentry_handler: lambda { handle_command("addconf moreinc") }},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             stringnames:           {keys: expand_extract_keys([:stringnames])},
@@ -437,48 +521,30 @@ C,
         get_configvalues = lambda do
           $log.timestamp("1 #{__FILE__} #{__LINE__}")
 
-          editor_conf        = Confstack.new(false)
-          editor_conf.strict = false
 
-          effective_conf        = Confstack.new(false)
-          effective_conf.strict = false
-
-          default_conf        = Confstack.new(false)
-          default_conf.strict = false
-
-          $log.timestamp("2  #{__FILE__} #{__LINE__}")
-
-          editable_values  = Confstack.new(false)
-          default_values   = Confstack.new(false)
-          effective_values = Confstack.new(false)
-
-          $log.timestamp("3  #{__FILE__} #{__LINE__}")
-
-          configvalues_from_editor = get_config_from_editor
-          $log.timestamp("3.1  #{__FILE__} #{__LINE__}")
-          editor_conf.push(configvalues_from_editor)
-
-          $log.timestamp("4  #{__FILE__} #{__LINE__}")
-
-          default_conf.push($conf.get) # start with defaults
-          default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get('extract.0')}})
-          unless @systemstatus[:view] == 0
-            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => editor_conf.get('extract.0')}})
-            default_conf.push({"extract" => {"#{@systemstatus[:view]}" => $conf.get("extract.#{@systemstatus[:view]}")}})
-          end
           $log.timestamp("5  #{__FILE__} #{__LINE__}")
 
-          effective_conf.push (default_conf.get.clone)
-          effective_conf.push (editor_conf.get.clone)
 
-          editable_keys.each { |k|
+          editor_conf        = Confstack.new(false)
+          editor_conf.strict = false
+          editor_conf.push(get_config_from_editor)
+
+          effective_values = Confstack.new(false)
+          editable_values  = Confstack.new(false)
+
+          editable_keys.each do |k|
             editable_values[k]  = editor_conf[k]
-            default_values[k]   = default_conf[k]
-            effective_values[k] = effective_conf[k]
-          }
+            zerokey             = k.gsub(/extract\.[^\.]+/, 'extract.0')
+            value               = editable_values[k]
+            value               = $conf[k] if value.nil?
+            value               = editor_conf[zerokey] if value.nil?
+            value               = $conf[zerokey] if value.nil?
+            effective_values[k] = value
+          end
+
           $log.timestamp("6  #{__FILE__} #{__LINE__}")
 
-          {current: editable_values.get, effective: effective_values.get, default: default_values.get}
+          {current: editable_values.get, effective: effective_values.get, default: effective_values.get}
         end
 
         refresh_editor = lambda do
@@ -646,7 +712,29 @@ C,
   end
 
   def __ic_05_dropbox_commands
+
+
+    # * dlogin - invokes dropbox authentication
+    #            changes the path if already logged in
+    #            does reauthentication if called from drelogin
+    # * dreconnect - boils down to login and is used by controller upon
+    #                start. Used to get the access_token or to reinitialize
+    #                the dropbox client
+    # * dlogout - revokes the access token from dropbox and local storage
+
+    @commands.add_command (:dreconnect) do |command|
+
+      command.set_help { "INTERNAL: This performs a reconnect after restart of zupfnoter" }
+      command.as_action do
+        handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true}) if @systemstatus[:dropboxapp]
+      end
+
+
+    end
+
     @commands.add_command(:dlogin) do |command|
+      command.undoable = false
+
       command.add_parameter(:scope, :string) do |parameter|
         parameter.set_default { @systemstatus[:dropboxapp] || 'full' }
         parameter.set_help { "(app | full) app: app only | full: full dropbox" }
@@ -657,6 +745,11 @@ C,
         parameter.set_help { "path to set in dropbox" }
       end
 
+      command.add_parameter(:reconnect, :boolean) do |parameter|
+        parameter.set_default { false }
+        parameter.set_help { "INTERNAL: true to reconnect" }
+      end
+
       command.set_help { "dropbox login for #{command.parameter_help(0)}" }
 
       command.as_action do |args|
@@ -664,21 +757,28 @@ C,
         path = args[:path]
         path += '/' unless path.end_with? '/'
 
-        case args[:scope]
-          when "full"
-            @dropboxclient          = Opal::DropboxJs::Client.new('us2s6tq6bubk6xh')
-            @dropboxclient.app_name = "DrBx"
-            @dropboxclient.app_id   = "full"
-            @dropboxpath            = path
+        unless @dropboxclient.is_authenticated?
+          case args[:scope]
+            when "full"
+              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_FULL)
+              @dropboxclient.app_name = "DrBx"
+              @dropboxclient.app_id   = "full"
+              @dropboxpath            = path
 
-          when "app"
-            @dropboxclient          = Opal::DropboxJs::Client.new('xr3zna7wrp75zax')
-            @dropboxclient.app_name = "App"
-            @dropboxclient.app_id   = "app"
-            @dropboxpath            = path
+            when "app"
+              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_APP)
+              @dropboxclient.app_name = "App"
+              @dropboxclient.app_id   = "app"
+              @dropboxpath            = path
 
-          else
-            $log.error("select app | full")
+            else
+              $log.error("select app | full")
+          end
+        else
+          @dropboxpath = path
+          if @dropboxclient.app_id != args[:scope]
+            raise I18n.t("you need to logout if you want to change the application scope")
+          end
         end
 
 
@@ -688,23 +788,48 @@ C,
         # Zupfnoter then finalizes the login by invoking zndropboxlogincmd at the end of Controller.initialize
         # therefore we need to store it here
         #
-        set_status({zndropboxlogincmd: %Q{dlogin #{args[:scope]} "#{args[:path]}"}})
 
-        # now do the authentification
-        @dropboxclient.authenticate().then do
-          set_status({zndropboxlogincmd: nil}) # nos login was sucessful, therefore we do not need this command anymore -
+        if args[:reconnect]
+          @dropboxclient.authenticate().then do
+            set_status_dropbox_status
+            $log.message("logged in at dropbox with #{args[:scope]} access")
+          end.fail do |err|
+            _report_error_from_promise err
+          end
+        else
           set_status_dropbox_status
-          $log.message("logged in at dropbox with #{args[:scope]} access")
+          unless @dropboxclient.is_authenticated?
+            # now trigger authentification
+            @dropboxclient.login().then do
+              $log.message("logged in at dropbox with #{args[:scope]} access")
+            end.fail do |err|
+              _report_error_from_promise err
+            end
+          else
+            # nothing else to do
+          end
+        end
+      end
+    end
+
+
+    @commands.add_command(:dlogout) do |command|
+      command.undoable = false
+      command.set_help { "logout from dropbox" } # todo factor out to comman class
+
+      command.as_action do |args|
+
+        @dropboxclient.revokeAccessToken.then do |entries|
+          $log.message("logged out from dropbox")
+          @dropboxclient = Opal::DropboxJs::NilClient.new
+          @dropboxpath   = nil
+          set_status_dropbox_status
+          call_consumers(:systemstatus)
         end.fail do |err|
           _report_error_from_promise err
         end
       end
-      command.as_inverse do |args|
-        set_status(dropbox: I18n.t("logged out"))
 
-        $log.message("logged out from dropbox")
-        @dropboxclient = Opal::DropboxJs::NilClient.new
-      end
     end
 
     @commands.add_command(:dls) do |command|
@@ -725,6 +850,8 @@ C,
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.message("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
+        end.fail do |err|
+          _report_error_from_promise err
         end
       end
     end
@@ -770,7 +897,6 @@ C,
       command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
-        @dropboxclient.authenticate
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
           # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
@@ -875,9 +1001,14 @@ C,
             save_promises.push(@dropboxclient.write_file(name, pdfdata))
           end
         end
-        Promise.when(*save_promises).then do
-          set_status(music_model: I18n.t("saved to dropbox"))
-          $log.message("all files saved")
+        Promise.when(*save_promises).then do |xx|
+          saved_paths = Native(xx).map do |x|
+            x.path_display if x.respond_to? :path_display
+          end.compact
+          message     = I18n.t("saved to dropbox") + "\n<pre>" + saved_paths.join("\n") + "</pre>"
+          set_status(music_model: message)
+          `w2alert(#{message}, "Info")`
+          $log.message(message)
         end.fail do |err|
           _report_error_from_promise(err)
         end

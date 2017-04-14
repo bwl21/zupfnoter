@@ -167,37 +167,38 @@ module Raphael
           ox = 0,
           oy = 0,
           moveFnc = function(dx, dy) {
+
             scale = this.paper._viewBox[3] / this.paper.canvas.height.baseVal.value ;
             lx = Math.round(scale * dx) + ox;
             ly = Math.round(scale * dy) + oy;
 
-              if (doDrag)this.transform('t' + lx + ',' + ly + otransform);
+              if (doDrag) this.transform('t' + lx + ',' + ly + otransform);
           },
 
-          startFnc = function() { (event.button == 0) ? doDrag=true: doDrag=false;},
+          startFnc = function(dx, dy, event) { (event.button == 0) ? doDrag=true: doDrag=false;},
 
           endFnc = function() {
             if (doDrag){
               ox = lx;
               oy = ly;
               element.r.attr({fill: 'red'});
-              #{@on_drag_end}({element: element.r, "conf_key": element.conf_key, "conf_value": element.conf_value, "origin": element.startpos, "delta":  [ox, oy]} );
+              #{@on_drag_end}({element: me, "conf_key": element.conf_key, "conf_value": element.conf_value, "origin": element.startpos, "delta":  [ox, oy]} );
             }
           };
 
           mouseoverFnc = function(){
-            #{@on_mouseover_handler}({element: element.r, conf_key: element.conf_key})
+            #{@on_mouseover_handler}({element: me, conf_key: #{element}.conf_key})
           }
 
           mouseoutFnc = function(){
-            #{@on_mouseout_handler}({element: element.r, conf_key: element.conf_key})
+            #{@on_mouseout_handler}({element: me, conf_key: #{element}.conf_key})
           }
 
-      element.r.drag(moveFnc, startFnc, endFnc);
-      element.r.mouseover(mouseoverFnc);
-      element.r.mouseout(mouseoutFnc);
+      me.drag(moveFnc, startFnc, endFnc);
+      me.mouseover(mouseoverFnc);
+      me.mouseout(mouseoutFnc);
 
-      element.r.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: element.r, conf_key: element.conf_key});};
+      me.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: element.r, conf_key: element.conf_key});};
 
       }
     end

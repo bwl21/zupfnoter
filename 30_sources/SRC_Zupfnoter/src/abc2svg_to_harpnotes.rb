@@ -46,64 +46,62 @@ module Harpnotes
         result = {lyrics: {text: @info_fields[:W]}}
 
         result[:print] = $conf.get("produce").map do |i|
-          title        = $conf.get("extract.#{i}.title")
-          filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
+          title = $conf.get("extract.#{i}.title")
           if title
+            filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
             {title: title, view_id: i, filenamepart: filenamepart}
           else
-            $log.error("could not find extract number #{i}", [1, 1], [1000, 1000])
+            $log.error(I18n.t("could not find extract with number") + " #{i}", [1, 1], [1000, 1000])
             nil
           end
         end.compact
         result
       end
 
-      def _get_key_by_accidentals(accidentals)
+      def _get_key_by_accidentals(key_model)
         {
-            7  => 'C#', #,	A#m	G#Mix	D#Dor	E#Phr	F#Lyd	B#Loc
-            6  => 'F#', #	D#m	C#Mix	G#Dor	A#Phr	BLyd	E#Loc
-            5  => 'B', #	G#m	F#Mix	C#Dor	D#Phr	ELyd	A#Loc
-            4  => 'E', #'C#m	BMix	F#Dor	G#Phr	ALyd	D#Loc
-            3  => 'A', #	F#m	EMix	BDor	C#Phr	DLyd	G#Loc
-            2  => 'D', #	Bm	AMix	EDor	F#Phr	GLyd	C#Loc
-            1  => 'G', #	Em	DMix	ADor	BPhr	CLyd	F#Loc
-            0  => 'C', #	Am	GMix	DDor	EPhr	FLyd	BLoc
-            -1 => 'F', #	Dm	CMix	GDor	APhr	BbLyd	ELoc
-            -2 => 'Bb', #	Gm	FMix	CDor	DPhr	EbLyd	ALoc
-            -3 => 'Eb', #	Cm	BbMix	FDor	GPhr	AbLyd	DLoc
-            -4 => 'Ab', #	Fm	EbMix	BbDor	CPhr	DbLyd	GLoc
-            -5 => 'Db', #	Bbm	AbMix	EbDor	FPhr	GbLyd	CLoc
-            -6 => 'Gb', #	Ebm	DbMix	AbDor	BbPhr	CbLyd	FLoc
-            -7 => 'Cb' #	Abm	GbMix	DbDor	EbPhr	FbLyd	BbLoc
-        }[accidentals]
+            #0=ionian(major), 1=dorian, 2=phrygian, 3=lydian, 4=mixolydia, 5=aeolian(minor) and 6=locrian
+
+            7  => ['C#', 'D#Dor', 'E#Phr', 'F#Lyd', 'G#Mix', 'A#m', 'B#Loc'],
+            6  => ['F#', 'G#Dor', 'A#Phr', 'BLyd', 'C#Mix', 'D#m', 'E#Loc'],
+            5  => ['B', 'C#Dor', 'D#Phr', 'ELyd', 'F#Mix', 'G#m', 'A#Loc'],
+            4  => ['E', 'F#Dor', 'G#Phr', 'ALyd', 'BMix', 'C#m', 'D#Loc'],
+            3  => ['A', 'BDor', 'C#Phr', 'DLyd', 'EMix', 'F#m', 'G#Loc'],
+            2  => ['D', 'EDor', 'F#Phr', 'GLyd', 'AMix', 'Bm', 'C#Loc'],
+            1  => ['G', 'ADor', 'BPhr', 'CLyd', 'DMix', 'Em', 'F#Loc'],
+            0  => ['C', 'DDor', 'EPhr', 'FLyd', 'GMix', 'Am', 'BLoc'],
+            -1 => ['F', 'GDor', 'APhr', 'BbLyd', 'CMix', 'Dm', 'ELoc'],
+            -2 => ['Bb', 'CDor', 'DPhr', 'EbLyd', 'FMix', 'Gm', 'ALoc'],
+            -3 => ['Eb', 'FDor', 'GPhr', 'AbLyd', 'BbMix', 'Cm', 'DLoc'],
+            -4 => ['Ab', 'BbDor', 'CPhr', 'DbLyd', 'EbMix', 'Fm', 'GLoc'],
+            -5 => ['Db', 'EbDor', 'FPhr', 'GbLyd', 'AbMix', 'Bbm', 'CLoc'],
+            -6 => ['Gb', 'AbDor', 'BbPhr' 'CbLyd', 'DbMix', 'Ebm', 'FLoc'],
+            -7 => ['Cb' 'DbDor', 'EbPhr' 'FbLyd', 'GbMix', 'Abm', 'BbLoc'],
+        }[key_model[:k_sf]][key_model[:k_mode]]
       end
 
       def _make_metadata
-        key           = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key][:k_sf])
-        o_key         = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey][:k_sf])
+        key           = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key])
+        o_key         = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey])
         o_key_display =""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
         tempo_id = @abc_model[:music_type_ids][:tempo].to_s
-        tempo_note = _get_extra(@abc_model[:voices].first[:voice_properties][:sym], tempo_id) rescue nil
+        tempo_note = @abc_model[:voices].first[:voice_properties][:sym] rescue nil
 
         if tempo_note
-          duration         = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
-          duration_display = duration.map { |d| "1/#{1/d}" }
-          bpm              = tempo_note[:tempo].to_i
-          tempo            = {duration: duration, bpm: bpm}
+          duration = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
+          bpm      = tempo_note[:tempo].to_i
         else
-          duration         = [0.25]
-          duration_display = duration.map { |d| "1/#{1/d}" }
-          bpm              = 120
-          tempo            = {duration: duration, bpm: bpm}
+          duration = [0.25]
+          bpm      = 120
         end
-        bpm              = 120 unless  bpm >= 1
+        bpm = 120 unless bpm >= 1
 
         @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
-                      tempo:         {duration: duration, bpm: bpm},
+                      tempo:         {duration: duration, bpm: bpm, sym: tempo_note},
                       tempo_display: @info_fields[:Q], #[duration_display, "=", bpm].join(' '),
                       meter:         @info_fields[:M],
                       key:           "#{key} #{o_key_display}"
@@ -114,19 +112,17 @@ module Harpnotes
 
 
       def _mkznid(voice_element)
-        result = _get_extra(voice_element, 17) #todo: get rid of literal constant:  @abc_model[:music_type_ids][:extra].to_s
+        result = @remark_table[voice_element[:time]]
         if result
-          result = result[:text]
-
           unless result.match(/[a-z][a-zA-Z0-9_]*/)
             start_pos=charpos_to_line_column(voice_element[:istart])
             end_pos  = charpos_to_line_column(voice_element[:iend])
             $log.error("illegal character in of [r:] (must be of [a-z][a-z0.9_])", start_pos, end_pos)
             result = nil
           end
+        else
+          result = "#{voice_element[:time]}" unless result
         end
-
-        result = "#{voice_element[:time]}" unless result
 
         result
       end
@@ -150,6 +146,7 @@ module Harpnotes
         }
         @previous_new_part = []
         @previous_note     = nil
+        @remark_table      = {}
         @repetition_stack  = []
         @variant_endings   = [[]] # nested array of variant ending groups
         @tie_started       = false
@@ -162,15 +159,6 @@ module Harpnotes
       end
 
       def _transform_voices
-
-        part_id = @abc_model[:music_type_ids][:part].to_s # performance ...
-
-        # get parts from the first voice.
-        @abc_model[:voices].first[:symbols].each do |voice_model_element|
-          part                                         = (_get_extra(voice_model_element, part_id) or {})[:text]
-          @part_table[voice_model_element[:time].to_s] = part if part
-        end
-
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
           voice_id = "v_#{voice_index + 1}"
           result   = _transform_voice(voice_model, voice_id)
@@ -321,6 +309,26 @@ module Harpnotes
 
         @is_first_measure = false
         result
+      end
+
+      def _transform_part(voice_element, index, voice_index)
+        if @part_table[voice_element[:time]]
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos = charpos_to_line_column(voice_element[:iend])
+          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple parts for same note"), start_pos, end_pos)
+        end
+        @part_table[voice_element[:time]] = voice_element[:text]
+        nil
+      end
+
+      def _transform_remark(voice_element, index, voice_index)
+        if @remark_table[voice_element[:time]]
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos = charpos_to_line_column(voice_element[:iend])
+          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple remarks for same note"), start_pos, end_pos)
+        end
+        @remark_table[voice_element[:time]] = voice_element[:text]
+        nil
       end
 
       # @param [Object] voice_index this is not used but keeps the inteface consistent with _transform_rest
@@ -539,6 +547,17 @@ module Harpnotes
         result
       end
 
+      def _transform_tempo(voice_element, index, voice_index)
+
+        # note that abc2svd yields Tune based Tempo in voice_propoeties.sym as well as in symbols
+        # therefore we need to filter the Tune based tempo ...
+        unless voice_element == @meta_data[:tempo][:sym]
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos = charpos_to_line_column(voice_element[:iend])
+          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
+        end
+      end
+
       def _transform_yspace(voice_element, index)
         #  This is a stub for future expansion
       end
@@ -622,6 +641,7 @@ module Harpnotes
             end
           end
 
+          # variant ending followupliens
           if variant_ending_group[-1][:is_followup]
             result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
           end
@@ -719,7 +739,8 @@ module Harpnotes
         znid           = the_note.znid
 
         # handle parts as annotation
-        if part_label = @part_table[voice_element[:time].to_s]
+
+        if part_label = @part_table[voice_element[:time]]
           conf_key = "notebound.partname.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position = $conf['defaults.notebound.partname.pos']
 
@@ -745,7 +766,7 @@ module Harpnotes
           conf_key                              = "notebound.variantend.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position                              = $conf['defaults.notebound.variantend.pos']
           harpnote_elements.first.first_in_part = true
-          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text}, conf_key)
+          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text, policy: :Goto}, conf_key)
           @next_note_marks[:variant_ending] = nil
           @variant_endings.last.push({})
           @variant_endings.last.last[:rbstart] = @previous_note
@@ -849,29 +870,33 @@ module Harpnotes
         result
       end
 
-      # this parses the tuplet_information out of the voice_elmenet
+      # this parses the tuplet_information out of the voice_elment
       def _parse_tuplet_info(voice_element)
         if voice_element[:in_tuplet]
 
-          #tuplet_id = @abc_model[:music_type_ids][:tuplet].to_s # todo: optimize performance here ...
-          tuplet_id = "15"
-          if _get_extra(voice_element, tuplet_id) # [:extra] and voice_element[:extra][tuplet_id]   # todo: attr_reader :
-            @tuplet_count      = (_get_extra(voice_element, tuplet_id)[:tuplet_r])
-            @tuplet_p          = (_get_extra(voice_element, tuplet_id)[:tuplet_p])
-            @tuplet_down_count = @tuplet_count
-            tuplet_start       = true
+          # check for nested tuplets
+          if voice_element[:tp1]
+            start_pos = charpos_to_line_column(voice_element[:istart])
+            end_pos = charpos_to_line_column(voice_element[:iend])
+            $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Nested Tuplet"), start_pos, end_pos)
+          end
+
+          #find tuplet start
+          if voice_element[:tp0]
+            @tuplet_p    = voice_element[:tp0]
+            tuplet_start = true
           else
             tuplet_start = nil
           end
 
-          tuplet = @tuplet_p
+          # we are within a tuplet
+          tuplet = @tuplet_p   # the size of tuplet (3, etc.
 
-          if @tuplet_down_count == 1
-            @tuplet_count = 1
-            tuplet_end    = true
+          # detect tuiplet end
+          if voice_element[:te0]
+            tuplet_end = true
           else
-            @tuplet_down_count -= 1
-            tuplet_end         = nil
+            tuplet_end = nil
           end
         else
           tuplet       = 1

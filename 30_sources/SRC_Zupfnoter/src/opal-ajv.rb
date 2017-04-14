@@ -105,7 +105,9 @@ module Ajv
                                                                            :shape => {:type        => "array",
                                                                                       :minItems    => 1,
                                                                                       :uniqueItems => true,
-                                                                                      :items       => {:type => "string"}}}}}}}},
+                                                                                      :items       => {:type => "string"}},
+                                                                           :show  => {:type => 'boolean'}
+                                                                          }}}}}},
            :templates    => {:type       => "object",
                              :required   => ["notes", "lyrics", "tuplet", "annotations"],
                              :properties =>
@@ -154,7 +156,7 @@ module Ajv
                              #:required          => ["0", "1", "2", "3"],
                              :patternProperties =>
                                  {:"\d*" => {:type       => "object",
-                                             :requiredx   =>
+                                             :requiredx  =>
                                                  ["title", "filenamepart", "startpos", "voices", "synchlines",
                                                   "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines",
                                                   "legend", "lyrics", "layout", "nonflowrest", "notes", "barnumbers",
@@ -187,7 +189,7 @@ module Ajv
                                                                     :uniqueItems => true,
                                                                     :items       => {:type => "integer"}},
                                                   :repeatsigns  => {:type       => "object",
-                                                                    :requiredx   => ["voices", "left", "right"],
+                                                                    :requiredx  => ["voices", "left", "right"],
                                                                     :properties =>
                                                                         {:voices => {:type        => "array",
                                                                                      :minItems    => 0,
@@ -220,7 +222,7 @@ module Ajv
                                                                     :properties =>
                                                                         {}},
                                                   :layout       => {:type       => "object",
-                                                                    :requiredx   => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
+                                                                    :requiredx  => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
                                                                     :properties =>
                                                                         {:limit_a3     => {:type => "boolean"},
                                                                          :LINE_THIN    => {:type => "number"},
@@ -233,7 +235,7 @@ module Ajv
                                                                          :REST_SIZE    => {:type        => "array",
                                                                                            :minItems    => 1,
                                                                                            :uniqueItems => true,
-                                                                                           :items       => {:type => "integer"}},
+                                                                                           :items       => {:type => "number"}},
                                                                          :grid         => {:type => "boolean"}}},
                                                   :nonflowrest  => {:type => "boolean"},
                                                   :notes        => {:patternProperties => {'.*' => {:"$ref" => '#/definitions/notes_entry'}}},
@@ -490,7 +492,7 @@ module Ajv
                                  }
            },
            :neatjson     => {:type       => "object",
-                             :required   => ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "sorted", "explicit_sort"],
+                             :required   => ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "explicit_sort"],
                              :properties =>
                                  {:wrap           => {:type => "integer"},
                                   :aligned        => {:type => "boolean"},
@@ -499,13 +501,8 @@ module Ajv
                                   :after_colon_n  => {:type => "integer"},
                                   :before_colon_n => {:type => "integer"},
                                   :sorted         => {:type => "boolean"},
-                                  :explicit_sort  => {:type        => "array",
-                                                      :minItems    => 2,
-                                                      :uniqueItems => true,
-                                                      :items       => {:type        => "array",
-                                                                       :minItems    => 0,
-                                                                       :uniqueItems => true,
-                                                                       :items       => {:type => "string"}}}}}}}
+                                  :explicit_sort  => {:type        => "object"}
+                                                      }}}}
 
     end
   end

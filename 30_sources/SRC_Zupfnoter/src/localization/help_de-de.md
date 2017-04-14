@@ -14,6 +14,12 @@ Namen `vl`).\
 Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
 dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
 
+## DRAWING_AREA_SIZE
+
+Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
+aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
+großen Stücken noch ein bisschen mehr Platz ausreizen.
+
 ## ELLIPSE_SIZE
 
 Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
@@ -190,6 +196,32 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
+## layout.moreinc
+
+Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
+
+> **Hinweis**: Diese Funktion ist nun wirklich für die ganzen Experten.
+> Bitte verwende sie also nur, wenn du weißt, was du tust.
+> Anwendungsfälle für diese Funktion:
+>
+> -   Linien (z.B. Sprunglinien) gehen unglücklich durch andere Noten
+>     oder Beschriftungen
+> -   Bei sehr dichten Layouts gehen Taktstriche in die vorherige Note
+> -   Man hat sehr viele Noten, könnte aber einen Teil in eine freie
+>     Fläche schieben. In diesem fall würde die Flusslinie teilweise
+>     nach oben gehen.
+
+Dieser Parameter enthält eine Liste manuellen Layoutkorrekturen. Jeder
+eintrag ist ein Feld mit Notenlabel und Vorschubwert.
+
+-   **Notenlabel**: kannst du rechts unten sehen, wenn du mit der Maus
+    auf die Note fährst. Am besten ist es eine "Verschiebemarke" vor der
+    betroffenen Note anzubrigen.
+
+-   **Verschiebewert**: Dieser Wert ist ein vielfaches des normalen
+    Vorschubs und wird hinzugefügt. Zum Beispiel wird duch "1.0" der
+    Vorschub verdoppelt. "-1.0" würde den Vorschub auf 0 setzen.
+
 ## layout.packer
 
 Hier kannst du weitere Einzelheiten für die vertikale Anordnung der
@@ -218,9 +250,9 @@ Hier kannst du die pack-Methode auswählen
 
 ## layout.packer.pack_min_increment
 
-Dieser Faktor bstimmt, wie weit pro Schlag auf jeden Fall weiter gerückt
-wird. Pro Schlag wird mindestens um diesen Anteil einer Maximalnote
-weiter geschaltet.
+Dieser Faktor bstimmt, wie weit pro Note auf jeden Fall weiter gerückt
+wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
+geschaltet.
 
 Beispiele:
 
@@ -232,12 +264,15 @@ Beispiele:
 ## layout.packer.pack_max_spreadfactor
 
 Nach der Berechnung des maximal komprimierten Layouts versucht
-Zufpnoter, dieses so weit zu spreizen, dass der verfügbare Raum
+Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfläche voll
 ausgefüllt wird.
 
-Dieser Faaktor bestimmt, wie weit das maximal kompprimierte Layout in
-der Vertikalen gespreizt weden soll. Er wirkt sich bei kurzen Stücken
-aus, welche das Blatt nicht vollständig ausfüllen.
+Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der
+Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen Stücken aus,
+welche das Blatt nicht vollständig ausfüllen.
+
+Bei sehr kurzen Stücken ist es sinnvoll, die Spreizung zu begrenzen,
+weil sonst die Noten sehr weit auseinander liegen.
 
 ## lyrics
 
@@ -298,6 +333,55 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 > Bezeichnung für die Beschriftung manuell vorzugeben um ihrer
 > spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
 > allerdings nur in der Textansicht möglich.
+
+## notes.0.T01_number
+
+Dieses Template fügt eine Nummer im Notenblatt ein. Damit kannst du
+deine eigenen Ordnungskriterien realiseren.
+
+Das vorgesehene Numernschema setzt sich aus zwei Blöcken zusammen
+
+-   3 Zeichen für den Urheber, sozusagen die Unterlegnotenmanufaktur
+-   3 Zeichen für eine fortlaufende Nummer. Es ist sinnvoll diese Nummer
+    mit führenden Nullen zu schreiben.
+
+Beispiel: `BWL-001` - Bernhard Weichel - Blatt 001
+
+## notes.T01_number_extract
+
+Dieses Template fügt zwei Zeichem am Ende der Nummer an. Damit kann man
+den jeweiligen Auszug kennzeichen.
+
+Ein sinnvolles schema ist:
+
+-   `-A` - Sopran Alt - per default Auszug 1
+-   `-B` - Tenor Bass - per default Auszug 2
+-   `-M` - Nur Melodie - am besten Auszug 3 - ist aber nicht per default
+    konfiguriert
+-   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
+    aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
+
+## notes.T02_copyright_music
+
+Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
+das Copyright auf die Komposition angegeben.
+
+## notes.T03_copyright_harpnotes
+
+Dieses Template fügt einen Copyrightvermerk für das Unterlgnotenbild
+ein. Damit reklamierst du ein Copyright für die Umsetzung auf die
+Tischharfe
+
+## notes.T04_to_order
+
+Dieses Template fügt eine Notiz ein wo man das Unterlegnotenblatt
+beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
+Weise vertrieben werden.
+
+## notes.T09_do_not_copy
+
+Dieses Template fügt eine Notiz ein, die darauf hinweist, dass das Blatt
+nicht ohne Erlaubnis kopiert werden darf.
 
 ## notes.0.pos
 
@@ -498,6 +582,19 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
 steuern.
 
+> **Hinweis**: diese Einstellungen wirken immer auf alle Tuplets aller
+> Stimmen, die zum gleichen Zeitpunkt gespielt werden.
+>
+> Wenn du die Tuplets individuell konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor das tuplet zu setzen. Dabei ist
+> es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn man die
+> Verschiebemarken gleich benennt.
+>
+> Z.B. kann man eine Verschiebemarke `tpl_links` an alle tuplets
+> schreiben, deren Bogen links von der FLußlineie liegen soll. Diese
+> können dann über den parameter `extract.0.tuplet.tpl_links` gemeinsam
+> konfiguriert werden
+
 ## tuplet.0
 
 Hier kannst du die Darstellung einer Triole (genauer gesagt, eines
@@ -520,6 +617,10 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 
 > **Hinweis**: Mit der Linienform `l` kann man die Lage der
 > Kontrollpunkte (als Ecken im Linienzug) sehen.
+
+## show
+
+Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 
 ## text
 

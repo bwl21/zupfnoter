@@ -110,7 +110,12 @@ class Controller
     @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
-    $log.info ("Welcome to Zupfnoter #{VERSION}")
+    $log.info ("Welcome to Zupfnoter")
+    $log.info ("Zupfnoter #{VERSION}")
+    $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
+    $log.info ("Ruby:     #{RUBY_VERSION}")
+    $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
+
 
     $conf        = Confstack.new()
     $conf.strict = false
@@ -153,6 +158,8 @@ class Controller
     #
     # load from previous session
 
+    handle_command('dreconnect')
+
     demo_uri = uri[:parsed_search][:load] rescue nil
     load_from_uri(uri[:parsed_search][:load]) if demo_uri
 
@@ -176,7 +183,6 @@ class Controller
     # todo don't know if this is the most eleant solution
     # see controller_command_definitions.rb
     #
-    handle_command(@systemstatus[:zndropboxlogincmd]) if uri[:hash].start_with?("#access_token") and @systemstatus[:zndropboxlogincmd]
   end
 
 
@@ -236,9 +242,6 @@ class Controller
     @editor.set_text(abc) unless abc.nil?
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
-    if @systemstatus[:dropboxapp]
-      handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}"})
-    end
     nil
   end
 
@@ -323,13 +326,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # render the harpnotes to a3
   def render_a3(index = @systemstatus[:view])
     printer = Harpnotes::PDFEngine.new
-    printer.draw(layout_harpnotes(index))
+    printer.draw(layout_harpnotes(index, 'A3'))
   end
 
 
   # render the harpnotes splitted on a4 pages
   def render_a4(index = @systemstatus[:view])
-    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index))
+    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
   end
 
 
@@ -453,7 +456,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     begin
       abc_text = @editor.get_abc_part
-      @tune_preview_printer.draw(abc_text)
+      abc_text = abc_text.split("\n").map { |line|
+        result = line
+        result = result.gsub('~', ' ') if line.start_with? 'W:'
+        result
+      }.join("\n")
+
+      @tune_preview_printer.draw(abc_text, @editor.get_checksum)
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
@@ -515,6 +524,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end.then do
       Promise.new.tap do |promise|
         set_active("#harpPreview")
+        @harpnote_preview_printer.clear
         `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
       end.then do
         Promise.new.tap do |promise|
@@ -551,7 +561,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
-  def layout_harpnotes(print_variant = 0)
+  def layout_harpnotes(print_variant = 0, page_format='A4')
 
     config = get_config_from_editor
     @editor.neat_config
@@ -571,7 +581,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
-      result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant)
+      result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)
 
       $log.timestamp("layout  #{__FILE__} #{__LINE__}")
 
@@ -775,7 +785,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     function pasteMxl(text){
        zip = new JSZip(text);
-       text = zip.file(/^lg.*xml$/)[0].asText();
+       text = zip.file(/^[^/ ]*\.xml$/)[0].asText();
        pasteXml(text);
     }
 
@@ -1074,6 +1084,8 @@ Document.ready? do
   a = Controller.new
   # provide access to  zupfnoter controller from browser console
   # to suppert debuggeing
+  Element.find("html").append(%Q{ <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="#{DBX_APIKEY_FULL}"></script>
+})
   `window.zupfnoter=#{a}`
 end
 

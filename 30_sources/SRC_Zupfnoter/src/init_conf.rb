@@ -1,12 +1,35 @@
+
 module InitConf
 # how to add a new parameter
 # 1. set the default here
 # 2. maintain neatjson options to get it sorted here as well
 # 3. update controller_command_defnitions to provide the add / edit commands
-# 4. update conf_doc_source.rb to provide the documentation and help
+# 4. update conf_doc_source.rb / help_de-de.md to provide the documentation and help
 # 5. update config-form.rb to attach a type
 # 6. update user-interface.js to add the menu entries
+# 7: update json schema in opal-ajv.rb
   def self.init_conf()
+
+    explicit_sort = [:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
+                     :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
+                     :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
+                     #
+                     :annotation, :partname, :variantend, :countnotes, :stringnames, # sort within notebound
+
+                     # sort within layout
+                     :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
+                     :DRAWING_AREA_SIZE,
+                     :moreinc, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+
+                     # sort within printer
+                     :a3_offset, :a4_offset, # sort within laoyut
+
+                     :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T99_do_not_copy,
+
+                     "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
+                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
+    ]
+
     result =
         {produce:      [0],
          abc_parser:   'ABC2SVG',
@@ -23,17 +46,19 @@ module InitConf
                          tuplet:     {
                              cp1:   [5, 2], # first control point positive x: point is east of flowline, positive y: point is south of note
                              cp2:   [5, -2], # second control point
-                             shape: ['c'] # 'c' | 'l' => curve | line
+                             shape: ['c'], # 'c' | 'l' => curve | line
+                             show:  true
                          }
              }
          },
 
          # this is used to upddate / create new objects
-         templates:    {
+         templates: {
              notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
              lyrics:      {verses: [1], pos: [350, 70]},
-             tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c']},
-             annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
+             tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
+             annotations: {text: "_vorlage_", pos: [-5, -6]}, # Notenbeschriftungsvorlage
+             moreinc:     ["znid", 0.0]
          },
 
          # this is used to populate a QuickSettings menu
@@ -55,6 +80,50 @@ module InitConf
                      ELLIPSE_SIZE: [4, 2], # radii of the largest Ellipse
                      REST_SIZE:    [4, 2]
                  }
+             },
+
+             notes:   {
+                 T01_number:               {
+                     value: {
+                         pos:   [393, 17],
+                         text:  "XXX-999",
+                         style: "bold"
+                     }},
+                 T01_number_extract:       {
+                     value: {
+                         pos:   [411, 17],
+                         text:  "-X",
+                         style: "bold"
+                     }},
+                 T01_number_extract_value: {
+                     key:   :T01_number_extract,
+                     value: {
+                         text: "-X",
+                     }},
+                 T02_copyright_music:      {
+                     value: {
+                         pos:   [340, 251],
+                         text:  "© #{Time.now.year}\n#{I18n.t("Private copy")}",
+                         style: "small"
+                     }},
+                 T03_copyright_harpnotes:  {
+                     value: {
+                         pos:   [340, 260],
+                         text:  "© #{Time.now.year} Notenbild: zupfnoter.de",
+                         style: "small"
+                     }},
+                 T04_to_order:             {
+                     value: {
+                         pos:   [340, 242],
+                         text:  I18n.t("provided by\n"),
+                         style: "small"
+                     }},
+                 T99_do_not_copy:          {
+                     value: {
+                         pos:   [380, 284],
+                         text:  I18n.t("Please do not copy"),
+                         style: "small_bold"
+                     }}
              },
 
              printer: {
@@ -96,7 +165,7 @@ module InitConf
          extract:      {
              "0" => {
                  title:        "alle Stimmen",
-                 filenamepart: nil,
+                 filenamepart: 'alle-stimmen',
                  startpos:     15,
                  voices:       [1, 2, 3, 4],
                  synchlines:   [[1, 2], [3, 4]],
@@ -108,35 +177,36 @@ module InitConf
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {spos: [320, 27], pos: [320, 20]},
+                 legend:       {spos: [320, 27], pos: [320, 7]},
                  lyrics:       {},
                  #
                  # this denotes the layout parameters which are intended to bne configured
                  # by the regular user
-                 layout:       {limit_a3:     true,
-                                LINE_THIN:    0.1,
-                                LINE_MEDIUM:  0.3,
-                                LINE_THICK:   0.5,
+                 layout:       {limit_a3:          true,
+                                LINE_THIN:         0.1,
+                                LINE_MEDIUM:       0.3,
+                                LINE_THICK:        0.5,
                                 # all numbers in mm
-                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
-                                REST_SIZE:    [4, 2],
-                                packer:       {
+                                ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
+                                REST_SIZE:         [4, 2],
+                                DRAWING_AREA_SIZE: [400, 282],
+                                packer:            {
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
                                     pack_min_increment:    0.2
                                 },
-                                limit_a3:     true
+                                moreinc:           {}
                  },
                  nonflowrest:  false,
                  notes:        {},
                  barnumbers:   {
                      voices:  [],
                      pos:     [6, -4],
-                     autopos: false,
+                     autopos: true,
                      style:   "small_bold",
                      prefix:  ""
                  },
-                 countnotes:   {voices: [], pos: [3, -2], autopos: false, style: "smaller"},
+                 countnotes:   {voices: [], pos: [3, -2], autopos: true, style: "smaller"},
                  stringnames:  {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
@@ -146,18 +216,23 @@ module InitConf
                  printer:      {
                      a3_offset:   [0, 0],
                      a4_offset:   [-5, 0],
-                     show_border: true
+                     show_border: false
                  }
              },
              "1" => {
                  title:        "Sopran, Alt",
-                 filenamepart: nil,
+                 filenamepart: 'sopran-alt',
                  voices:       [1, 2]
              },
              "2" => {
                  title:        "Tenor, Bass",
-                 filenamepart: nil,
+                 filenamepart: 'tenor-bass',
                  voices:       [3, 4]
+             },
+             "3" => {
+                 title:        "Melodie",
+                 filenamepart: 'melodie',
+                 voices:       [1]
              }
          },
 
@@ -177,6 +252,7 @@ module InitConf
                  pack_max_spreadfactor: 2,
                  pack_min_increment:    0.2
              },
+             moreinc:           {},
              limit_a3:          true,
              SHOW_SLUR:         false,
              LINE_THIN:         0.1,
@@ -264,29 +340,17 @@ module InitConf
          },
 
          neatjson:     {
-             wrap:          60, aligned: true, after_comma: 1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, sorted: true,
+             wrap:          60, aligned: true,
+             after_comma:   1, after_colon_1: 1, after_colon_n: 1, before_colon_n: 1, short: false,
+             afterComma:    1, afterColon1: 1, afterColonN: 1, beforeColonN: 1,
              decimals:      2,
-             explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
-                              :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
-                              :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
-                              #
-                              :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-
-                              # sort within layout
-                              :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
-                              :DRAWING_AREA_SIZE,
-                              :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
-
-                              # sort within printer
-                              :a3_offset, :a4_offset, # sort within laoyut
-
-                              "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                              :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
-                             ],
-                             []],
+             explicit_sort: Hash[explicit_sort.each_with_index.to_a.map { |i| [i.first, '_' + "000#{i.last}"[-4..-1]] }]
          }
         }
 
     result
   end
 end
+
+DBX_APIKEY_FULL = "zwydv2vbgp30e05"
+DBX_APIKEY_APP = "xr3zna7wrp75zax"

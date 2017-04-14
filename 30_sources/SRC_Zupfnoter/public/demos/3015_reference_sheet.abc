@@ -6,17 +6,19 @@ S:
 M:4/4
 L:1/4
 Q:1/4=120
-K:C
-%%score 1 2 3 4
-V:1 clef=treble-8 name="Sopran" snm="S"
-"^!(1)"G4 | "^!(2)"A2 "^!(3)"A "^!(4)"A/ "^!(5)"A// A//|: "^!(6)"A3 "^!(25)" A :| "^!(7)"A > A 
-[P:Rests]"^!(11)"z4 | "^!(12)"z2 "^!(13)"z "^!(14)"z/ "^!(15)"z// z//| "^!(16)"z3 z | "^!(17)"z > z 
-V:2 clef=treble-8   name="Alt" snm="A"
-[I:transpose -6]  "^!(20)"A2 "^!(33)"B2 | (3"^!(22)"A A A "^!(23)" A-A |: "^!(24)" A3 A :| "^!(26)@-20,-5" "^!(21)@-35,3" "^!(21)@6,3"[FA] > A 
-"^!(27)"z4 | z2 z z/ z// z//| z3 z | z > z 
+K:C 
+%%score 1 2 3
+V:1 clef=treble name="Sopran" snm="S"
+"^#(1)@5,-2" "^#(31)@5,5"G4 | "^#(2)@5,-2"A2 "^#(3)@5,-2"A "^#(4)@5,-2"A/ "^#(5)@5,-2"A// A//|: "^#(6)"A3 "^#(25)@20,-5" A :| "^#(7)@5,-2"A > A 
+[P:Rests]"^#(11)@5,-2"z4 | "^#(12)@5,-2"z2 "^#(13)@5,-2"z "^#(14)@5,-2"z/ "^#(15)@5,-2"z// z//| "^#(16)@5,-2"z3 z | "^#(17)@5,-2"z > z 
+V:2 clef=treble   name="Alt" snm="A" shift=c^F
+ "^#(20)"A2 "^#(33)@-10,-5"B2 | (3"^#(22)@8,5"A A A "^#(23)@5,1" A-A |: A3 "^#(24)@10,2"  A :| "^#(26)@-30,3" [FA] > A 
+"^#(27)"z4 | z2 z z/ z// z//| z3 z | z > z 
 V:3 octave=-1
-"^!(28)"A4 | A2 A A/ "^!(28)"A// A//"^@@-2,2,2"|1 A3  A |2 "^!(29)" A A3 || A A "^!(30)"HA
+"^#(28)@10,0"A4 |  "^#(29)@10,-5" A2 A A/ A// A//"^@@-2,2,-2"|1 "^#(28)@10,-2"A3  "^#(51)@-40,0" A |2 "^#(50)@-15,-10" A "^#(53)@-40,10" "^#(52)@1,10" A3 || A A "^#(30)"HA
 %
+W:Notes
+W:
 W:(1) full note
 W:(2) half note
 W:(3) quarter note 
@@ -25,6 +27,8 @@ W:(5) sixteenth note
 W:(6) punctuated half note
 W:(7) punctuated quarter note
 W:
+W:Rests
+W:
 W:(11) full rest 
 W:(12) half rest 
 W:(13) quarter rest 
@@ -32,6 +36,8 @@ W:(14) eighth  rest
 W:(15) sixteenth rest
 W:(16) punctuated half rest
 W:(17) punctuated quarter rest
+W:
+W:Notebound elements
 W:
 W:(20) measure bar 
 W:(21) unison 
@@ -42,128 +48,276 @@ W:(25) jumpline for repeat
 W:(26) synchline for unison 
 W:(27) part note 
 W:(28) countnotes
-W:(29) variant ending
+W:(29) barnumbers
 W:(30) decoration (fermata)
+W:
+W:Connection lines
 W:
 W:(31) flowline 
 W:(32) synchline 
-W:(33) subflowline 
+W:(33) subflowline
+W:
+W:Sheet annotation
+W:
 W:(34) legend 
 W:(35) extract title in legend
 W:(36) lyrics 
 W:(37) string names
 W:(38) string marks
+W:(39) cutmarks
+W:
+W:Variant ending
+W:
+W:(50) variant ending
+W:(51) input line
+W:(52) output line
+W:(53) followiup line
+W:
+W:Organizational items
 W:
 W:(70) input filename
 W:(71) creation note
 W:(72) advertising Zupfnoter
-W:(73) Input checksum
+W:(73) Fingerprint
+W:
+W:Sheet notes by preset
+W:
+W:(74) T04 to order
+W:(75) T02 Copryright music
+W:(76) T03 Coppyright harpnotes
+W:(77) T99 do not copy
+W:(78) T01 Number
+W:(79) T01 Number extract
 
 
 %%%%zupfnoter.config
 
 {
-  "produce"  : [0],
-  "extract"  : {
+  "produce"     : [0],
+  "annotations" : {
+    "(1)"  : {"text": "(1) ganze Note", "style": "small_bold"},
+    "(10)" : {"text": "(2xxx) halbe Note", "style": "small_bold"},
+    "(11)" : {"text": "(11) ganze Pause", "style": "small_bold"},
+    "(12)" : {"text": "(12) halbe Pause", "style": "small_bold"},
+    "(13)" : {"text": "(13) viertel Pause", "style": "small_bold"},
+    "(14)" : {"text": "(14) achtel Pause", "style": "small_bold"},
+    "(15)" : {
+      "text"  : "(15) sechtzehntel Pause",
+      "style" : "small_bold"
+    },
+    "(16)" : {
+      "text"  : "(16) punktierte halbe Pause",
+      "style" : "small_bold"
+    },
+    "(17)" : {
+      "text"  : "(17) punktierte viertel Pause",
+      "style" : "small_bold"
+    },
+    "(18)" : {"text": "(2) halbe Note", "style": "small_bold"},
+    "(19)" : {"text": "(2) halbe Note", "style": "small_bold"},
+    "(2)"  : {"text": "(2) halbe Note", "style": "small_bold"},
+    "(20)" : {"text": "(20) Taktstrich", "style": "small_bold"},
+    "(21)" : {"text": "(21) Mehrklang", "style": "small_bold"},
+    "(22)" : {"text": "(22) Triole", "style": "small_bold"},
+    "(23)" : {"text": "(23) Bindebogen", "style": "small_bold"},
+    "(24)" : {
+      "text"  : "(24) Wiederholungszeichen",
+      "style" : "small_bold"
+    },
+    "(25)" : {
+      "text"  : "(25) Sprunglinie für\n Wiederholung",
+      "style" : "small_bold"
+    },
+    "(26)" : {
+      "text"  : "(26) Mehrklang mit \nSynchronisationslinie",
+      "style" : "small_bold"
+    },
+    "(27)" : {"text": "(27) Abschnittsname", "style": "small_bold"},
+    "(28)" : {"text": "(28) Zählhilfen", "style": "small_bold"},
+    "(29)" : {"text": "(29) Taktnummer", "style": "small_bold"},
+    "(3)"  : {"text": "(3) viertel Note", "style": "small_bold"},
+    "(30)" : {
+      "text"  : "(30) Dekoration \n(Fermate)",
+      "style" : "small_bold"
+    },
+    "(31)" : {"text": "(31) Flusslinie", "style": "small_bold"},
+    "(32)" : {"text": "(32) Unterflusslinie", "style": "small_bold"},
+    "(33)" : {"text": "(33) Unterflusslinie", "style": "small_bold"},
+    "(4)"  : {"text": "(4) achtel Note", "style": "small_bold"},
+    "(5)"  : {"text": "(5) sechzehntel Note", "style": "small_bold"},
+    "(50)" : {"text": "(50) variantes Ende", "style": "small_bold"},
+    "(51)" : {"text": "(51) Eingangslinie", "style": "small_bold"},
+    "(52)" : {"text": "(52) Ausgangslinie", "style": "small_bold"},
+    "(53)" : {"text": "(53) Folgelinie", "style": "small_bold"},
+    "(6)"  : {
+      "text"  : "(6) punktierte halbe Note",
+      "style" : "small_bold"
+    },
+    "(7)"  : {
+      "text"  : "(7) punktierte viertel Note",
+      "style" : "small_bold"
+    },
+    "(8)"  : {"text": "(2xxxx) halbe Note", "style": "small_bold"},
+    "(9)"  : {"text": "(2xxx) halbe Note", "style": "small_bold"},
+    "vl"   : {"pos": [-1, -5], "text": "v"},
+    "vr"   : {"pos": [2, -5], "text": "v"},
+    "vt"   : {"pos": [-5, -5], "text": "v"}
+  },
+  "extract"     : {
     "0" : {
-      "title"        : "alle Stimmen",
+      "filenamepart" : "doc",
       "flowlines"    : [1, 3],
       "subflowlines" : [2, 4],
       "repeatsigns"  : {"voices": [2]},
-      "countnotes"   : {"voices": [3], "pos": [3, -2]},
-      "legend"       : {"pos": [323, 18], "spos": [323, 26]},
+      "barnumbers"   : {
+        "voices"  : [3],
+        "pos"     : [6, -4],
+        "autopos" : true,
+        "style"   : "small_bold",
+        "prefix"  : ""
+      },
+      "legend"       : {"pos": [325, 8], "spos": [344, 28]},
+      "nonflowrest"  : true,
+      "lyrics"       : {
+        "1" : {
+          "verses" : [1, 2, 3, 4, 5, 6, 7, 8],
+          "pos"    : [50, 30],
+          "style"  : "small_bold"
+        },
+        "2" : {"verses": [11, 12], "pos": [110, 225]},
+        "4" : {"verses": [13, 14], "pos": [161, 225]},
+        "5" : {"verses": [9, 10], "pos": [50, 225]},
+        "6" : {"verses": [15, 16], "pos": [217, 225]}
+      },
       "notes"        : {
-        "31" : {
-          "pos"   : [288, 23],
-          "text"  : "(31)",
-          "style" : "regular"
+        "T01_number"              : {
+          "pos"   : [393, 15],
+          "text"  : "XXX-999",
+          "style" : "bold"
         },
-        "32" : {
-          "pos"   : [250, 15],
-          "text"  : "(32)",
-          "style" : "regular"
+        "T01_number_extract"      : {"pos": [411, 15], "text": "-X", "style": "bold"},
+        "T02_copyright_music"     : {
+          "pos"   : [340, 251],
+          "text"  : "© 2017 Bernhard Weichel\nPrivatkopie",
+          "style" : "small"
         },
-        "34" : {
-          "pos"   : [323, 13],
-          "text"  : "(34)",
-          "style" : "regular"
+        "T03_copyright_harpnotes" : {
+          "pos"   : [340, 260],
+          "text"  : "© 2017 Notenbild: zupfnoter.de",
+          "style" : "small"
         },
-        "35" : {
-          "pos"   : [349, 27],
-          "text"  : "(35)",
-          "style" : "regular"
+        "T04_to_order"            : {
+          "pos"   : [340, 242],
+          "text"  : "zu beziehen bei\nzupfnoter.de",
+          "style" : "small"
         },
-        "36" : {
-          "pos"   : [340, 51],
-          "text"  : "(36)",
-          "style" : "regular"
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
         },
-        "37" : {"pos": [86, 9], "text": "(37)", "style": "regular"},
-        "38" : {
-          "pos"   : [135, 16],
-          "text"  : "(38)",
-          "style" : "regular"
+        "32"                      : {
+          "pos"   : [254, 36],
+          "text"  : "(32) Synchronisationslinie\nzwischen Stimmen",
+          "style" : "small_bold"
         },
-        "70" : {
+        "34"                      : {
+          "pos"   : [326, 15],
+          "text"  : "(34) Titel",
+          "style" : "small_bold"
+        },
+        "35"                      : {
+          "pos"   : [371, 29],
+          "text"  : "(35) Titel des Auszugs\n        und Legende",
+          "style" : "small_bold"
+        },
+        "36"                      : {
+          "pos"   : [102, 200],
+          "text"  : "(36) Liedtexte",
+          "style" : "small_bold"
+        },
+        "37"                      : {
+          "pos"   : [190, 10],
+          "text"  : "(37) Saitennamen",
+          "style" : "small_bold"
+        },
+        "38"                      : {
+          "pos"   : [130, 16],
+          "text"  : "(38) Saitenmarke",
+          "style" : "small_bold"
+        },
+        "39"                      : {
+          "pos"   : [145, 8],
+          "text"  : "(39) Schneidemarke",
+          "style" : "small_bold"
+        },
+        "39-1"                    : {
+          "pos"   : [285, 8],
+          "text"  : "(39) Schneidemarke",
+          "style" : "small_bold"
+        },
+        "70"                      : {
           "pos"   : [150, 283],
-          "text"  : "(70)",
-          "style" : "regular"
+          "text"  : "(70) Name der Einabedatei",
+          "style" : "small_bold"
         },
-        "71" : {
-          "pos"   : [180, 283],
-          "text"  : "(71)",
-          "style" : "regular"
+        "71"                      : {
+          "pos"   : [194, 283],
+          "text"  : "(71) Erstellungsnotiz",
+          "style" : "small_bold"
         },
-        "72" : {
-          "pos"   : [284, 282],
-          "text"  : "(72)",
-          "style" : "regular"
+        "72"                      : {
+          "pos"   : [325, 292],
+          "text"  : "(72) Zupfnoter-Website",
+          "style" : "small_bold"
         },
-        "73" : {
-          "pos"   : [400, 282],
-          "text"  : "(73)",
-          "style" : "regular"
+        "73"                      : {
+          "pos"   : [380, 291],
+          "text"  : "(73) Fingerabdruck",
+          "style" : "small_bold"
+        },
+        "74"                      : {
+          "pos"   : [293, 242],
+          "text"  : "(74)  T04 zu beziehen bei",
+          "style" : "small_bold"
+        },
+        "75"                      : {
+          "pos"   : [293, 251],
+          "text"  : "(75) T02 Copyright Musik",
+          "style" : "small_bold"
+        },
+        "76"                      : {
+          "pos"   : [293, 260],
+          "text"  : "(76) T03 Copyright Notenbild",
+          "style" : "small_bold"
+        },
+        "77"                      : {
+          "pos"   : [336, 282],
+          "text"  : "(77) T99 Bitte nicht kopieren",
+          "style" : "small_bold"
+        },
+        "78"                      : {
+          "pos"   : [366, 16],
+          "text"  : "(78) T01 Nummer",
+          "style" : "small_bold"
+        },
+        "79"                      : {
+          "pos"   : [374, 19],
+          "text"  : "                                         (79)\nT01 Nummer des Auszugs",
+          "style" : "small_bold"
         }
       },
-      "lyrics"       : {"1": {"verses": [1, 2, 3, 4, 5], "pos": [345, 59]}},
-      "nonflowrest"  : true,
+      "countnotes"   : {"voices": [3], "pos": [3, -2]},
       "stringnames"  : {"vpos": [5]},
       "notebound"    : {
-        "annotation" : {
-          "v_2" : {
-            "768"  : {"pos": [-16, -3]},
-            "1536" : {"pos": [9, 4]},
-            "2304" : {"pos": [4, 1]},
-            "3072" : {"pos": [-16, -2]},
-            "4608" : {"pos": [-11, 2]},
-            "5376" : {"pos": [-22, -7]}
-          },
-          "v_1" : {
-            "2304" : {"pos": [4, -4]},
-            "2688" : {"pos": [4, -4]},
-            "2880" : {"pos": [4, -3]},
-            "3072" : {"pos": [2, -8]},
-            "4224" : {"pos": [19, -3]},
-            "6912" : {"pos": [5, -3]},
-            "7680" : {"pos": [5, -2]},
-            "8064" : {"pos": [5, -2]},
-            "8256" : {"pos": [5, -1]},
-            "8448" : {"pos": [5, -3]}
-          },
-          "v_3" : {
-            "0"    : {"pos": [12, -3]},
-            "2880" : {"pos": [7, -2]},
-            "6912" : {"pos": [3, -6]}
-          }
-        },
+        "annotation" : {"v_2": {"4608": {"pos": [-31, 1]}}, "v_3": {}},
         "partname"   : {
           "v_1" : {"5376": {"pos": [-14, -7]}},
           "v_2" : {"5376": {"pos": [-12, -7]}}
         }
       }
-    },
-    "1" : {}
+    }
   },
-  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
-  "$version" : "1.4.0 beta 2"
+  "$schema"     : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version"    : "1.5.0 dev"
 }

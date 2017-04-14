@@ -308,3 +308,9 @@ rect.highlight {
 #statusbar-layout * {
   vertical-align: top;
 }
+
+#tunePreview {
+   text, path {pointer-events: none;}
+ }
+
+

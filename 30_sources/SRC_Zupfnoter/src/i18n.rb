@@ -1,6 +1,8 @@
 module I18n
   def self.t(text)
-    `w2utils.lang(#{text})`
+    if RUBY_ENGINE=='opal'
+      `w2utils.lang(#{text})`
+    end
   end
 
   def self.t_key(key)
@@ -22,8 +24,8 @@ module I18n
     help_key  = key
     help_key  = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
     help_key  = help_key.gsub(/^(extract\.0\.lyrics\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
-    help_key  = help_key.gsub(/^(extract\.0\.notes\.)([a-zA-Z_0-9]+)(.*)$/) { "#{$1}0#{$3}" }
-    help_key  = help_key.gsub(/^(extract\.0\.tuplet\.)([a-zA-Z_0-9]+)(.*)$/) { "#{$1}0#{$3}" }
+    help_key  = help_key.gsub(/^(extract\.0\.notes\.)([a-zA-SU-Z_0-9]+)(.*)$/) { "#{$1}0#{$3}" }
+    help_key  = help_key.gsub(/^(extract\.0\.tuplet\.)([a-zA-SU-Z_0-9]+)(.*)$/) { "#{$1}0#{$3}" }
     keyparts  = help_key.split(".")
     downwards = []; upwards = []
     (0 .. keyparts.length - 1).each do |i|

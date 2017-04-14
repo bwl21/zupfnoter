@@ -39,7 +39,7 @@ module ABC2SVG
 
       set_callback(:errmsg) do |message, line_number, column_number|
         #todo handle produce startpos / endpos
-        $log.error(message, [line_number+1, column_number+1])
+        $log.error(message, [line_number+1, column_number+1]) if line_number
       end
 
 
@@ -91,7 +91,7 @@ module ABC2SVG
       get_elements_by_range(from, to).each do |id|
         element = Element.find("##{id}")
 
-        %x{#{element}.parents('svg').get(0).scrollIntoView()}
+        %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
         classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
         element.attr('class', classes)
       end
@@ -116,12 +116,18 @@ module ABC2SVG
       _set_on_select()
     end
 
-    def draw(abc_code)
+    def draw(abc_code,  checksum="")
+      abc_text_insert = %Q{
+%%textoption right
+%%textfont * * 8
+%%text #{checksum}
+      }
+
       @abc_source          = abc_code
       @element_to_position = {}
       @svgbuf              = []
       %x{
-      #{@root}.tosvg(#{"abc"}, #{@abc_source});
+      #{@root}.tosvg(#{"abc"}, #{@abc_source + abc_text_insert});
       }
 
       @printer.html(get_svg())
@@ -136,7 +142,10 @@ module ABC2SVG
 
     # todo: mke private or even remove?
     def get_svg
-      @svgbuf.join("\n")
+      result = @svgbuf.join("\n")
+      result = result.gsub("<svg ", %Q{<div class="svg_block"><svg })
+      result = result.gsub("</svg>", %Q{</svg></div>})
+      result
     end
 
     # this produces html for printing
@@ -188,7 +197,7 @@ module ABC2SVG
       json_model = ""
       %x{
           abcmidi = new AbcMIDI();
-          abcmidi.add(#{tsfirst}, #{voice_tb}[0].key);
+          abcmidi.add(#{tsfirst}, #{voice_tb});
           to_json = new AbcJSON();
           #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
       }
