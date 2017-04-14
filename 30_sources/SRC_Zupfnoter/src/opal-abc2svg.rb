@@ -39,7 +39,7 @@ module ABC2SVG
 
       set_callback(:errmsg) do |message, line_number, column_number|
         #todo handle produce startpos / endpos
-        $log.error(message, [line_number+1, column_number+1])
+        $log.error(message, [line_number+1, column_number+1]) if line_number
       end
 
 

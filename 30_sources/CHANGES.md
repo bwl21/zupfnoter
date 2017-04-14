@@ -13,6 +13,7 @@
 * non BWC improved auto positioning of barnumbers and counthints #81
 * fix size of notes an sheetmark shape #120
 * now import mxl files produced by musescore (not only the ones downloaded from musescore.org) #123
+* updated to abc2svg 1.12 ff #124
 
 ## Enhancement
 
@@ -30,6 +31,8 @@
 * double check if you have clef octaves "+8", "-8" and remove the same in order to get the previous result 
 * double check if you use inline transposition. This is no longer supported. You need to do the transposition manually.
 * Barnumbers and Conuntnotes autopos is now turned on; autopos-Algorithm is improved
+* in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
+
 
 # V 1.5
 

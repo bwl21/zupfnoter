@@ -1,7 +1,5 @@
 {
   "phrases": {
-
-
     "": "",
     "0": "0",
     "1": "1",
@@ -181,6 +179,8 @@
     "MM_PER_POINT": "MM pro point",
     "more than one line found for ": "Mehr als eine Zeile gefunden für ",
     "moreinc" : "extra Vorschub",
+    "Multiple parts for same note": "Mehrere Part-Angaben [P:] für eine Note",
+    "Multiple remarks for same note": "Mehrere Verschiebemarken [r: ]für eine Note",
     "Name of annotation": "Name der Beschriftungsvorlage",
     "Name of draggable": "Name der Verschiebemarke",
     "Name of target": "Name des Sprungziels",
@@ -310,6 +310,7 @@
     "T99_do_not_copy": "T99 bitte nicht kopieren",
     "target to jump to": "Sprungziel",
     "templates": "Vorlagen",
+    "tempo change not suported by zupfnoter": "Zupfnoter unterstüzt keine Tempoänderungen",
     "Text of annotation": "Text der Notenbeschriftung",
     "text": "Text",
     "text_color": "Textfarbe",
