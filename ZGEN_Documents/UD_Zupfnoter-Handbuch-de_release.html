@@ -66,6 +66,7 @@
 <li><a href="#wenn-takte-nicht-synchron-sind"><span class="toc-section-number">4.7.3</span> Wenn Takte nicht synchron sind</a></li>
 <li><a href="#mherere-Stimmen-in-abc"><span class="toc-section-number">4.7.4</span> Mehrere Stimmen in ABC-Notation</a></li>
 <li><a href="#wenn-die-vertikale-anodrnung-optimiert-werden-soll"><span class="toc-section-number">4.7.5</span> Wenn die vertikale Anodrnung optimiert werden soll</a></li>
+<li><a href="#extra-einstellungen-f&#252;r-die-notenvorschau"><span class="toc-section-number">4.7.6</span> Extra Einstellungen f&#252;r die Notenvorschau</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#zupfnoter-f&#252;r-experten"><span class="toc-section-number">5</span> Zupfnoter f&#252;r Experten</a><ul>
@@ -1275,6 +1276,14 @@ GAB</code></pre>
 </blockquote>
 <h3 id="wenn-die-vertikale-anodrnung-optimiert-werden-soll"><span class="header-section-number">4.7.5</span> Wenn die vertikale Anodrnung optimiert werden soll</h3>
 <p>Es kann vorkommen, dass man in das vertikale Layout eingreifen muss, z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen Stimme l&#228;&#252;ft. Die M&#246;glichkeiten dazu sind in Kapitel&#160;&#160;<a href="#extract.0.layout.moreinc"><code>morinc</code></a> beschrieben.</p>
+<h3 id="extra-einstellungen-f&#252;r-die-notenvorschau"><span class="header-section-number">4.7.6</span> Extra Einstellungen f&#252;r die Notenvorschau</h3>
+<p>Die Notenvorschau kann durch I: oder &#8220;%%&#8221; - Zeilen beeinflusst werden. Einhelheiten siehe <a href="http://moinejf.free.fr/abcm2ps-doc/index.html" class="uri">http://moinejf.free.fr/abcm2ps-doc/index.html</a></p>
+<p>H&#228;ufige Einstellungen bei Zupfnoter sind:</p>
+<ul>
+<li><code>I:measurenb 1</code> - schreibt Taktnummern in die Notenvorschau. Die Anzeigt ist nur dann korrekt, wennd die Takte die korrekte L&#228;nge haben.</li>
+<li><code>I:staffnonote 2</code> - zeigt auch leere Notenlinien in der Notenvorschau</li>
+<li><code>I:linewarn 0</code> - unterdr&#252;ckt Meldungen&#252;ber nicht gef&#252;llte oder zu volle Zeilen in der Notenvorschau</li>
+</ul>
 <p></p>
 <h1 id="zupfnoter-f&#252;r-experten"><span class="header-section-number">5</span> Zupfnoter f&#252;r Experten</h1>
 <h2 id="zupfnoter-einstellungen"><span class="header-section-number">5.1</span> Zupfnoter Einstellungen</h2>

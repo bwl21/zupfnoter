@@ -1531,7 +1531,22 @@ Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
 z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
 Stimme läüft. Die Möglichkeiten dazu sind in
 Kapitel \ref{extract.0.layout.moreinc} [`morinc`](#extract.0.layout.moreinc)
-beschrieben. 
+beschrieben.
+
+### Extra Einstellungen für die Notenvorschau
+
+Die Notenvorschau kann durch I: oder "%%" - Zeilen beeinflusst werden.
+Einhelheiten siehe <http://moinejf.free.fr/abcm2ps-doc/index.html>
+
+Häufige Einstellungen bei Zupfnoter sind:
+
+-   `I:measurenb 1` - schreibt Taktnummern in die Notenvorschau. Die
+    Anzeigt ist nur dann korrekt, wennd die Takte die korrekte Länge
+    haben.
+-   `I:staffnonote 2` - zeigt auch leere Notenlinien in der
+    Notenvorschau
+-   `I:linewarn 0` - unterdrückt Meldungenüber nicht gefüllte oder zu
+    volle Zeilen in der Notenvorschau
 
 [^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um
