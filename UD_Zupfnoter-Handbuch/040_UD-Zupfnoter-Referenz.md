@@ -1525,6 +1525,14 @@ relevante Beispiele
 > Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das
 > Verhalten noch nicht ausgetestet ist.
 
+### Wenn die vertikale Anodrnung optimiert werden soll
+
+Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
+z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
+Stimme läüft. Die Möglichkeiten dazu sind in
+Kapitel \ref{extract.0.layout.moreinc} [`morinc`](#extract.0.layout.moreinc)
+beschrieben. 
+
 [^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um
     die Flußlinie der Melodiestimme (meist der ersten Stimme) handelt.
