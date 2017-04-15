@@ -150,6 +150,12 @@ Beispiel kannst du zunächst einen Liedtext hinzufügen:
 
     \needspace{6cm}
 
+    > **Hinseis:** Leerzeichen in den Liedtexten werden komprimiert,
+    > d.h. zu einem Leerzeichen zusammengefasst. Leerzeichen am Anfang
+    > einer Zeile (führende Leerzeichen) werden ignoriert. Du kannst
+    > aber die Ausgabe eines Leerzeichens erzwingen, wenn du die Tilde
+    > (\~) anstelle eines Leerzeichens verwendest.
+
     > **Hinweis**: Wenn du zurück gehst auf den den Reiter `ABC` siehst
     > du in Zeile 15, (also in die Zeile nach dem "C,") nun die
     > folgenden zeilen (dies ist die Darstellung von Liedtexten in der
