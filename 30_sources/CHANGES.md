@@ -14,6 +14,9 @@
 * fix size of notes an sheetmark shape #120
 * now import mxl files produced by musescore (not only the ones downloaded from musescore.org) #123
 * updated to abc2svg 1.12 ff #124
+* improeved display of overlapping synchlines #121
+* speedup configuration forms #118, #119
+* now Zupfnoter no longer makes all Keys to Major Key upon transposition #103
 
 ## Enhancement
 
