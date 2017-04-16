@@ -38,8 +38,11 @@ module ABC2SVG
 
 
       set_callback(:errmsg) do |message, line_number, column_number|
-        #todo handle produce startpos / endpos
-        $log.error(message, [line_number+1, column_number+1]) if line_number
+        if line_number
+          $log.error(message, [line_number+1, column_number+1])
+        else
+          $log.error(message)
+        end
       end
 
 
@@ -116,7 +119,7 @@ module ABC2SVG
       _set_on_select()
     end
 
-    def draw(abc_code,  checksum="")
+    def draw(abc_code, checksum="")
       abc_text_insert = %Q{
 %%textoption right
 %%textfont * * 8
