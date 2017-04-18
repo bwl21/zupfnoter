@@ -610,23 +610,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config
   end
 
-  def self.get_uri()
+  def self. get_uri()
     parser = nil;
     # got this from http://stackoverflow.com/a/21152762/2092206
     # maybe we switch to https://github.com/medialize/URI.js
     %x{
-    #{parser} = document.createElement('a');
-        parser.href = window.location.href;
+        #{parser} = new URL(window.location.href);
 
         var qd = {};
-        parser.search.substr(1).split("&").forEach(function(item) {
+        #{parser}.search.substr(1).split("&").forEach(function(item) {
             var s = item.split("="),
                 k = s[0],
                 v = s[1] && decodeURIComponent(s[1]);
             //(k in qd) ? qd[k].push(v) : qd[k] = [v]
             (qd[k] = qd[k] || []).push(v) //short-circuit
             })
-         parser.parsed_search = qd
+         #{parser}.parsed_search = qd
       }
 
     # parser.protocol; // => "http:"
