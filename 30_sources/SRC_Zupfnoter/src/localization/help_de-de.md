@@ -196,7 +196,7 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
-## layout.moreinc
+## layout.minc
 
 Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
 
@@ -211,16 +211,23 @@ Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
 >     Fläche schieben. In diesem fall würde die Flusslinie teilweise
 >     nach oben gehen.
 
-Dieser Parameter enthält eine Liste manuellen Layoutkorrekturen. Jeder
-eintrag ist ein Feld mit Notenlabel und Vorschubwert.
+Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
+Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
+Zeitpunkt.
 
--   **Notenlabel**: kannst du rechts unten sehen, wenn du mit der Maus
-    auf die Note fährst. Am besten ist es eine "Verschiebemarke" vor der
-    betroffenen Note anzubrigen.
+## minc_f
 
--   **Verschiebewert**: Dieser Wert ist ein vielfaches des normalen
-    Vorschubs und wird hinzugefügt. Zum Beispiel wird duch "1.0" der
-    Vorschub verdoppelt. "-1.0" würde den Vorschub auf 0 setzen.
+Hier gibst du den Korrekturfaktor für den vertikalen Voreschub an.
+
+Dieser Wert ist ein vielfaches des Vorschubs einer ganzen Noten und wird
+hinzugefügt. Zum Beispiel wird duch "1.0" der Vorschub verdoppelt.
+
+**Beispiele**:
+
+-   `-1.0` würde den Vorschub um eine ganze Note zurück setzen
+-   `0` ändert nichts am Vorschub. Damit kann man den Wert zurücksetzen,
+    falls er im Auszug 0 gesetzt wurde.
+-   `0.5` vergrößert den Vorschub um die Hälfte einer ganzen Note.
 
 ## layout.packer
 
@@ -250,11 +257,11 @@ Hier kannst du die pack-Methode auswählen
 
 ## layout.packer.pack_min_increment
 
-Dieser Faktor bstimmt, wie weit pro Note auf jeden Fall weiter gerückt
+Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt
 wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
 geschaltet.
 
-Beispiele:
+**Beispiele**:
 
 -   **0.0**: es entstehen horizontale Flußlinien
 -   **1.0**: es wird mindests um eine ganze Note weiter geschaltet

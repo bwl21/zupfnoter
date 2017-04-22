@@ -344,7 +344,7 @@ class SnippetEditor
       super(string)
       @fields = [
           {field:   "selector", type: :list,
-           options: {items: [:draggable, :anntoation, :annotationref, :jumptarget]}}
+           options: {items: [:set_draggable, :anntoation, :annotationref, :jumptarget]}}
       ]
     end
   end

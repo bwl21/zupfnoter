@@ -171,22 +171,6 @@ class ConfstackEditor
       end
     end
 
-    class LabeledFloat < ZnTypes
-      def self.to_value(key, string)
-        thekey   = string.split(":").first.strip
-        thevalue = string.split(":").last.to_f
-        [thekey, thevalue]
-      end
-
-      def self.to_string(key, value)
-        a = %Q{#{value.first}: #{value.last}}
-      end
-
-      def self.to_neutral(key)
-        ["neutral", 0.0]
-      end
-    end
-
     class IntegerList < ZnTypes
       def self.to_value(key, string)
         string.split(",").map { |i| i.to_i }
@@ -269,9 +253,8 @@ class ConfstackEditor
           Integer         => ['startpos', 'pack_method',],
           OneLineString   => ['title', 'filenamepart'],
           MultiLineString => ['text'],
-          LabeledFloat    => ['moreinc.x'],
           Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show"],
-          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment'],
+          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f'],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],

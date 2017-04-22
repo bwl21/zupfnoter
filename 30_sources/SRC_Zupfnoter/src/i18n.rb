@@ -39,7 +39,7 @@ module I18n
   def self.locale(language)
 
     $conf_helptext = {}
-    HTTP.get("public/locale/conf-help_#{language}.json").then do |response|
+    HTTP.get("public/locale/conf-help_#{language}.json/?#{Time.now}").then do |response|
       $conf_helptext = Native(response.body)
       $conf_helptext = JSON.parse($conf_helptext) if $conf_helptext.is_a? String
     end.fail do |response|

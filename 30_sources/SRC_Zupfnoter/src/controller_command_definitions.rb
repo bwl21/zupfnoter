@@ -380,7 +380,6 @@ C,
             'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
             'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
             'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']} },
-            'moreinc'          => lambda { {key: "extract.#{@systemstatus[:view]}.layout.moreinc.x", value: $conf['templates.moreinc']} },
             'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']} },
             'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
             'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
@@ -484,7 +483,9 @@ C,
       command.as_action do |args|
         $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
 
-        sets = {
+        # this is the set of predefined configuration pages
+        # it is the argument of editconf {set} respectively addconf{set}
+        form_sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
                                                                             'printer.show_border', 'stringnames.vpos',
@@ -495,7 +496,7 @@ C,
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
-            moreinc:               {keys: expand_extract_keys(['layout.moreinc']), newentry_handler: lambda { handle_command("addconf moreinc") }},
+            minc:                  {keys: expand_extract_keys(['layout.minc'])},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             stringnames:           {keys: expand_extract_keys([:stringnames])},
@@ -504,11 +505,32 @@ C,
             xx:                    {keys: ['xx']}
         }
 
-        a = sets[args[:set]]
-        if a
-          editable_keys         = a[:keys]
-          newentry_handler      = a[:newentry_handler]
-          quicksetting_commands = a[:quicksetting_commands] || []
+        # regular expression formsets match by a regular expression
+        # this supports forms which start with a variable key.
+        # it is useful for extracts, notes, morincs etc.
+        # todo: implement a more flexible replacement thatn simply prefixing
+        regexp_form_sets = {
+            /extract.(\d+).layout.minc\.(\d+)/ => {keys: ["minc_f"]}
+        }
+
+        # see if we have a static form set
+        the_form = form_sets[args[:set]]
+
+        # see if we have a regular expression formset
+        unless the_form
+          regexp_form_sets.each do |pattern, entry|
+            if match = args[:set].match(pattern)
+              the_form        = entry
+              the_form[:keys] = the_form[:keys].map { |inner_key| "#{args[:set]}.#{inner_key}" }
+            end
+          end
+        end
+
+        # now handle the form
+        if the_form
+          editable_keys         = the_form[:keys]
+          newentry_handler      = the_form[:newentry_handler]
+          quicksetting_commands = the_form[:quicksetting_commands] || []
         else # use the argument as key if there is no set.
           quicksetting_commands = []
           editable_keys         = [args[:set]]

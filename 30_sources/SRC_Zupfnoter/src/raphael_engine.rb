@@ -181,6 +181,8 @@ module Harpnotes
       if root.hasbarover?
         draw_the_barover(root)
       end
+      e.conf_key = root.conf_key;
+      @paper.set_conf_editable(e);
 
       e.on_click do
         origin = root.origin
@@ -235,7 +237,7 @@ module Harpnotes
 
       # make annotation draggable
       if root.conf_key
-        @paper.draggable(e)
+        @paper.set_draggable(e)
         e.conf_key   = root.conf_key
         e.conf_value = root.conf_value
       end
@@ -348,7 +350,7 @@ module Harpnotes
 
       # make annotation draggable
       if root.conf_key
-        @paper.draggable(element)
+        @paper.set_draggable(element)
         element.conf_key   = root.conf_key
         element.conf_value = root.conf_value
       end

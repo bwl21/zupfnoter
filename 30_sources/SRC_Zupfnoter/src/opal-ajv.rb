@@ -43,20 +43,21 @@ module Ajv
        :required    => ["confstack", "produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
 
        :definitions => {
-           :pos          => {:type        => "array",
-                             :minItems    => 2,
-                             :uniqueItems => false,
-                             :items       => {:type => "number"}},
-           :notes_entry  => {:type       => "object",
-                             :required   => ["pos", "text", "style"],
-                             :properties =>
-                                 {:pos   => {:'$ref' => '#/definitions/pos'},
-                                  :text  => {:type => "string"},
-                                  :style => {:type => "string"}}},
-           :moreincentry => {
-               :type       => "object",
-               :required   => [:moreincfactor],
-               :properties => {:moreincfactor => {:type => "number"}}
+           :pos           => {:type        => "array",
+                              :minItems    => 2,
+                              :uniqueItems => false,
+                              :items       => {:type => "number"}},
+           :notes_entry   => {:type       => "object",
+                              :required   => ["pos", "text", "style"],
+                              :properties =>
+                                  {:pos   => {:'$ref' => '#/definitions/pos'},
+                                   :text  => {:type => "string"},
+                                   :style => {:type => "string"}}},
+           :minc_entry => {
+               :type                 => "object",
+               :required             => [:minc_f],
+               :additionalProperties => false,
+               :properties           => {:minc_f => {:type => "number"}}
            }
        },
 
@@ -234,15 +235,15 @@ module Ajv
                                                                          :LINE_THIN         => {:type => "number"},
                                                                          :LINE_MEDIUM       => {:type => "number"},
                                                                          :LINE_THICK        => {:type => "number"},
-                                                                         :DRAWING_AREA_SIZE => {:type        => "array",
-                                                                                                :minItems    => 2,
-                                                                                                :items       => {:type => "number"}},
-                                                                         :ELLIPSE_SIZE      => {:type        => "array",
-                                                                                                :minItems    => 2,
-                                                                                                :items       => {:type => "number"}},
-                                                                         :REST_SIZE         => {:type        => "array",
-                                                                                                :minItems    => 2,
-                                                                                                :items       => {:type => "number"}},
+                                                                         :DRAWING_AREA_SIZE => {:type     => "array",
+                                                                                                :minItems => 2,
+                                                                                                :items    => {:type => "number"}},
+                                                                         :ELLIPSE_SIZE      => {:type     => "array",
+                                                                                                :minItems => 2,
+                                                                                                :items    => {:type => "number"}},
+                                                                         :REST_SIZE         => {:type     => "array",
+                                                                                                :minItems => 2,
+                                                                                                :items    => {:type => "number"}},
                                                                          :grid              => {:type => "boolean"},
                                                                          :packer            => {:type       => 'object',
                                                                                                 :properties => {
@@ -250,9 +251,10 @@ module Ajv
                                                                                                     :pack_max_spread_factor => {:type => 'number'},
                                                                                                     :pack_min_increment     => {:type => 'number'}
                                                                                                 }},
-                                                                         :moreinc           => {:type       => "object",
-                                                                                                :properties => {
-                                                                                                    "\d*" => {:'$ref' => '#/definitions/moreincentry'}
+                                                                         :minc              => {:type                 => "object",
+                                                                                                :additionalProperties => false,
+                                                                                                :patternProperties    => {
+                                                                                                    "\d*" => {:'$ref' => '#/definitions/minc_entry'}
                                                                                                 }
                                                                          }
                                                                         }

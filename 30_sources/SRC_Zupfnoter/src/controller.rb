@@ -727,8 +727,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       %x{
           $(#{info.to_n}.element.node).w2menu({
                                        items: [
-                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' },
-                                                  { id: 'template', text: 'Add template', icon: 'fa fa-gear' },
+                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' }
                                               ],
                                        onSelect: function (event) {
                                            w2ui.layout_left_tabs.click('configtab');
