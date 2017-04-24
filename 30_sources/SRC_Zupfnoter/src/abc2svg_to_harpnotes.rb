@@ -39,6 +39,9 @@ module Harpnotes
         result.meta_data        = @meta_data
         result.harpnote_options = _make_harpnote_options
 
+        filebase = result.meta_data[:filename]
+        $log.error(I18n.t("Filename not specified in song add an F: instruction"), [1,1]) if filebase.empty?
+
         result
       end
 

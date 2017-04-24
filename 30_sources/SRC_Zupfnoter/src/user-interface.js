@@ -170,8 +170,8 @@ function init_w2ui(uicontroller) {
         actions: {
           "Ok": function () {
             if (this.validate().length == 0) {
-              uicontroller.$handle_command("dlogin full " + this.record.folder)
               w2popup.close();
+              uicontroller.$handle_command("dlogin full \"" + this.record.folder+ "\"")
             }
           },
           "Cancel": function () {

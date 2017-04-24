@@ -27,6 +27,8 @@
 * improved support for abc 2.2 #99
 * now support dropbox API 2.0 (mandaory from June 17) #63
 * now have dropdown menu for dropbox to open, save login, logout 
+* improve error reporting on dropbox save #128
+
     
 
 ## backward compatibilility issues
@@ -35,7 +37,8 @@
 * double check if you use inline transposition. This is no longer supported. You need to do the transposition manually.
 * Barnumbers and Conuntnotes autopos is now turned on; autopos-Algorithm is improved
 * in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
-
+* now get message if F: is missing
+* now get messaage Filename or path contains whitespace and special characters
 
 # V 1.5
 

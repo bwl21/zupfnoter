@@ -84,6 +84,10 @@ module Harpnotes
               $log.error(%Q{#{I18n.t("more than one line found for ")} ':#{key}'}, [index+1, 1]) if ['F', 'X'].include?(key)
               result[key] << entry.last.strip
             else
+              if key == 'F'
+                filename = entry.last.strip
+                $log.error(%Q{"#{filename}": #{I18n.t("bad characters in filename")}}, [index+1, 1]) unless filename.match(/^[a-zA-z0-9_\-]+$/)
+              end
               result[key] = [entry.last.strip]
             end
           end
