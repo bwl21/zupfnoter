@@ -777,7 +777,7 @@ C,
       command.as_action do |args|
 
         path = args[:path]
-        path += '/' unless path.end_with? '/'
+        path = reconile_dropbox_path(path)
 
         unless @dropboxclient.is_authenticated?
           case args[:scope]
@@ -888,6 +888,7 @@ C,
 
       command.as_action do |args|
         rootpath      = args[:path]
+        reconile_dropbox_path(rootpath)
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
 
@@ -946,14 +947,8 @@ C,
 
       command.as_action do |args|
         abc_code = @editor.get_text
-        metadata = @abc_transformer.get_metadata(abc_code)
-        filebase = metadata[:F].first rescue nil
-        if filebase
-          filebase = filebase.split("\n").first
-        else
-          `w2alert("Filename not specified in song! Please add an F:<filename> instruction to your abc", "Error")`
-          raise "Filename not specified in song add an F:<filename> instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
-        end
+        load_music_model
+        filebase = @music_model.meta_data[:filename]
 
         %x{
           var element = document.createElement('a');
@@ -990,13 +985,9 @@ C,
           raise message
         end
 
-        load_music_model
+        layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
         print_variants = @music_model.harpnote_options[:print]
-
         filebase = @music_model.meta_data[:filename]
-        if filebase.empty?
-          raise I18n.t("Filename not specified in song add an F: instruction") ## "#{metadata[:X]}_#{metadata[:T]}"
-        end
 
         rootpath = args[:path]
 
@@ -1020,7 +1011,7 @@ C,
           saved_paths = Native(xx).map do |x|
             x.path_display if x.respond_to? :path_display
           end.compact
-          message     = I18n.t("saved to dropbox") + "\n<pre>" + saved_paths.join("\n") + "</pre>"
+          message     = %Q{#{saved_paths.count} } + I18n.t("Files saved to dropbox") + "\n<pre>" + saved_paths.join("\n") + "</pre>"
           set_status(music_model: message)
           `w2alert(#{message}, "Info")`
           $log.message(message)
@@ -1124,6 +1115,14 @@ C,
       end
     end
 
+  end
+
+  def reconile_dropbox_path(path)
+    path        ="/#{path}" unless path.start_with? "/"
+    path        ="#{path}/" unless path.end_with? "/"
+    path_pattern=/^\/([a-zA-z_^-]+\/)*$/
+    raise(%Q{"#{path}": #{I18n.t("does not match pattern:")} #{path_pattern.to_s} }) unless path.match(path_pattern)
+    path
   end
 end
 
