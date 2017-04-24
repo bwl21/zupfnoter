@@ -574,10 +574,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @json_validator.validate_conf($conf) if $log.loglevel == :debug
       end
 
-      abc_parser = $conf.get('abc_parser')
-      $log.timestamp_start
-      @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
-      @music_model.checksum = @editor.get_checksum
+      load_music_model
       `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
@@ -593,6 +590,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $conf.pop
     end
     result
+  end
+
+  def load_music_model
+    abc_parser = $conf.get('abc_parser')
+    $log.timestamp_start
+    @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+    @music_model.checksum = @editor.get_checksum
   end
 
   # this retrieves the current config from the editor

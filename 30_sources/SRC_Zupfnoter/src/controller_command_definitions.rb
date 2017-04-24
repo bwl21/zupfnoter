@@ -485,7 +485,7 @@ C,
 
         # this is the set of predefined configuration pages
         # it is the argument of editconf {set} respectively addconf{set}
-        form_sets = {
+        form_sets        = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
                                                                             'printer.show_border', 'stringnames.vpos',
@@ -514,7 +514,7 @@ C,
         }
 
         # see if we have a static form set
-        the_form = form_sets[args[:set]]
+        the_form         = form_sets[args[:set]]
 
         # see if we have a regular expression formset
         unless the_form
@@ -983,27 +983,20 @@ C,
       command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
 
       command.as_action do |args|
-
+        
         unless @systemstatus[:mode] == :work
           message = "Cannot save in  #{@systemstatus[:mode]} mode"
           alert message
           raise message
         end
 
-        abc_code = @editor.get_text
-        metadata = @abc_transformer.get_metadata(abc_code)
-
-        filebase = metadata[:F]
-        if filebase
-          filebase = filebase.first.split("\n").first
-        else
-          raise "Filename not specified in song add an F: instruction" ## "#{metadata[:X]}_#{metadata[:T]}"
-        end
-
-        layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
-        render_previews
-
+        load_music_model
         print_variants = @music_model.harpnote_options[:print]
+
+        filebase = @music_model.meta_data[:filename]
+        if filebase.empty?
+          raise I18n.t("Filename not specified in song add an F: instruction") ## "#{metadata[:X]}_#{metadata[:T]}"
+        end
 
         rootpath = args[:path]
 
