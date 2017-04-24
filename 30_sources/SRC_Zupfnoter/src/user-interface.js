@@ -525,7 +525,7 @@ function init_w2ui(uicontroller) {
           {},
           {id: 'stringnames', text: 'Stringnames', tooltip: "Edit presentation of stringanmes"},
           {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
-          {id: 'moreinc', text: 'moreinc', tooltip: "edit extra increments"}
+          {id: 'minc', text: 'minc', tooltip: "edit extra increments"}
         ]
       },
       {

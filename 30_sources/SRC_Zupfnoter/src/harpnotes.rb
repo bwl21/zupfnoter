@@ -1129,7 +1129,6 @@ module Harpnotes
         @beat_spacing         = $conf.get('layout.Y_SCALE') * 1.0/$conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
         @slur_index           = {}
         @y_offset             = 5
-        @conf_moreinc         = $conf['layout.moreinc'].inject({}) { |result, entry| result[entry.last.first] = entry.last.last; result }
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
 
       end
@@ -1309,7 +1308,7 @@ module Harpnotes
                                                           "extract.#{print_variant_nr}.legend.spos", {pos: legend_pos})
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
-        annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{LOCATION}]", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([325, 289], "Zupfnoter: https://www.zupfnoter.de", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new([380, 289], music.checksum, :smaller)
 
@@ -1444,13 +1443,16 @@ module Harpnotes
           end
         end
 
+        # now w handle decorations (!fermata! etc.)
         res_decorations                 = []
         res_playables                   = playables.map do |playable|
           result          = layout_playable(playable, beat_layout) # unless playable.is_a? Pause
-
-          # make decorations
           decoration_root = [result].flatten.last # todo this is not DRY: see layout_accord which also selects the proxy note
+
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
+
+          # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
+          decoration_root.conf_key = %Q{extract.#{print_variant_nr}.layout.minc.#{playable.time}.minc_f}
 
           [result]
         end.flatten.compact
@@ -1501,7 +1503,7 @@ module Harpnotes
                   autopos = :right
                 end
 
-                tie_x = 1 if autopos == :right and playable.tie_start?
+                tie_x            = 1 if autopos == :right and playable.tie_start?
                 auto_x           = tie_x + (autopos == :left ? -count_note.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1)
                 annotationoffset = [auto_x, 0] # todo derive "3" from style?
               else
@@ -1899,7 +1901,7 @@ module Harpnotes
             #   #increment = -500
             # end
 
-            increment += get_more_inc(notes_on_beat)
+            increment += get_minc_factor(notes_on_beat.first.time)
 
             current_beat += increment
           end
@@ -1909,9 +1911,9 @@ module Harpnotes
       end
 
       # this computes manually added additional increments
-      def get_more_inc(notes_on_beat)
-        moreinc = notes_on_beat.map { |note| @conf_moreinc[note.znid] }.compact.first
-        moreinc ? moreinc * @conf_beat_resolution : 0
+      def get_minc_factor(time)
+        moreinc_factor = $conf["layout.minc.#{time}.minc_f"]
+        moreinc_factor ? moreinc_factor  * @conf_beat_resolution : 0
       end
 
       # for details see compute_beatcompression_0
@@ -1993,7 +1995,7 @@ module Harpnotes
               increment += default_increment
             end
 
-            increment += get_more_inc(notes_on_beat)
+            increment += get_minc_factor(notes_on_beat.first.time)
 
             current_beat += increment
 
@@ -2088,7 +2090,7 @@ module Harpnotes
               increment += increment
             end
 
-            increment += get_more_inc(notes_on_beat)
+            increment += get_minc_factor(notes_on_beat.first.time)
 
             current_beat += increment
           end

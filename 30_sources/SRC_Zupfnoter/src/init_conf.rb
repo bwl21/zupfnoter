@@ -19,7 +19,7 @@ module InitConf
                      # sort within layout
                      :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
-                     :moreinc, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+                     :minc, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
 
                      # sort within printer
                      :a3_offset, :a4_offset, # sort within laoyut
@@ -53,12 +53,11 @@ module InitConf
          },
 
          # this is used to upddate / create new objects
-         templates: {
+         templates:    {
              notes:       {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
              lyrics:      {verses: [1], pos: [350, 70]},
              tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
-             annotations: {text: "_vorlage_", pos: [-5, -6]}, # Notenbeschriftungsvorlage
-             moreinc:     ["znid", 0.0]
+             annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
 
          # this is used to populate a QuickSettings menu
@@ -190,12 +189,12 @@ module InitConf
                                 ELLIPSE_SIZE:      [3.5, 1.7], # radii of the largest Ellipse
                                 REST_SIZE:         [4, 2],
                                 DRAWING_AREA_SIZE: [400, 282],
+                                minc:              {}, # moreinc
                                 packer:            {
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
                                     pack_min_increment:    0.2
-                                },
-                                moreinc:           {}
+                                }
                  },
                  nonflowrest:  false,
                  notes:        {},
@@ -252,7 +251,6 @@ module InitConf
                  pack_max_spreadfactor: 2,
                  pack_min_increment:    0.2
              },
-             moreinc:           {},
              limit_a3:          true,
              SHOW_SLUR:         false,
              LINE_THIN:         0.1,
@@ -353,4 +351,4 @@ module InitConf
 end
 
 DBX_APIKEY_FULL = "zwydv2vbgp30e05"
-DBX_APIKEY_APP = "xr3zna7wrp75zax"
+DBX_APIKEY_APP  = "xr3zna7wrp75zax"

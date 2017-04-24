@@ -574,10 +574,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @json_validator.validate_conf($conf) if $log.loglevel == :debug
       end
 
-      abc_parser = $conf.get('abc_parser')
-      $log.timestamp_start
-      @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
-      @music_model.checksum = @editor.get_checksum
+      load_music_model
       `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
@@ -595,6 +592,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result
   end
 
+  def load_music_model
+    abc_parser = $conf.get('abc_parser')
+    $log.timestamp_start
+    @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
+    @music_model.checksum = @editor.get_checksum
+  end
+
   # this retrieves the current config from the editor
   def get_config_from_editor
     config, status = @editor.get_parsed_config
@@ -610,23 +614,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config
   end
 
-  def self.get_uri()
+  def self. get_uri()
     parser = nil;
     # got this from http://stackoverflow.com/a/21152762/2092206
     # maybe we switch to https://github.com/medialize/URI.js
     %x{
-    #{parser} = document.createElement('a');
-        parser.href = window.location.href;
+        #{parser} = new URL(window.location.href);
 
         var qd = {};
-        parser.search.substr(1).split("&").forEach(function(item) {
+        #{parser}.search.substr(1).split("&").forEach(function(item) {
             var s = item.split("="),
                 k = s[0],
                 v = s[1] && decodeURIComponent(s[1]);
             //(k in qd) ? qd[k].push(v) : qd[k] = [v]
             (qd[k] = qd[k] || []).push(v) //short-circuit
             })
-         parser.parsed_search = qd
+         #{parser}.parsed_search = qd
       }
 
     # parser.protocol; // => "http:"
@@ -728,8 +731,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       %x{
           $(#{info.to_n}.element.node).w2menu({
                                        items: [
-                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' },
-                                                  { id: 'template', text: 'Add template', icon: 'fa fa-gear' },
+                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' }
                                               ],
                                        onSelect: function (event) {
                                            w2ui.layout_left_tabs.click('configtab');

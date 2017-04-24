@@ -14,6 +14,8 @@ OUTFOLDER    = "../deploy_files"
 INDEXFILE    = "index.html"
 LOCALEPATH   = "../public/locale/"
 
+GITSHA = %x{git log --pretty=format:'%h' -n 1}  # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
+
 VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 

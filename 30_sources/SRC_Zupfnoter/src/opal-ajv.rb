@@ -25,7 +25,7 @@ module Ajv
         errors.each do |error|
           path    = `#{error}.dataPath`
           path    = path[1 .. -1].gsub("/", '.') if path.start_with? "/"
-          message = %x{#{path}+ ': ' + #{error}.message}
+          message = %x{#{path}+ ': ' + #{error}.message + "\n" + JSON.stringify(error.params, null, " ")}
           $log.error(message)
         end
       end
@@ -43,16 +43,22 @@ module Ajv
        :required    => ["confstack", "produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
 
        :definitions => {
-           :pos         => {:type        => "array",
-                            :minItems    => 2,
-                            :uniqueItems => false,
-                            :items       => {:type => "number"}},
-           :notes_entry => {:type       => "object",
-                            :required   => ["pos", "text", "style"],
-                            :properties =>
-                                {:pos   => {:'$ref' => '#/definitions/pos'},
-                                 :text  => {:type => "string"},
-                                 :style => {:type => "string"}}}
+           :pos           => {:type        => "array",
+                              :minItems    => 2,
+                              :uniqueItems => false,
+                              :items       => {:type => "number"}},
+           :notes_entry   => {:type       => "object",
+                              :required   => ["pos", "text", "style"],
+                              :properties =>
+                                  {:pos   => {:'$ref' => '#/definitions/pos'},
+                                   :text  => {:type => "string"},
+                                   :style => {:type => "string"}}},
+           :minc_entry => {
+               :type                 => "object",
+               :required             => [:minc_f],
+               :additionalProperties => false,
+               :properties           => {:minc_f => {:type => "number"}}
+           }
        },
 
        :properties  => {
@@ -221,22 +227,38 @@ module Ajv
                                                   :lyrics       => {:type       => "object",
                                                                     :properties =>
                                                                         {}},
-                                                  :layout       => {:type       => "object",
-                                                                    :requiredx  => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
-                                                                    :properties =>
-                                                                        {:limit_a3     => {:type => "boolean"},
-                                                                         :LINE_THIN    => {:type => "number"},
-                                                                         :LINE_MEDIUM  => {:type => "number"},
-                                                                         :LINE_THICK   => {:type => "number"},
-                                                                         :ELLIPSE_SIZE => {:type        => "array",
-                                                                                           :minItems    => 1,
-                                                                                           :uniqueItems => true,
-                                                                                           :items       => {:type => "number"}},
-                                                                         :REST_SIZE    => {:type        => "array",
-                                                                                           :minItems    => 1,
-                                                                                           :uniqueItems => true,
-                                                                                           :items       => {:type => "number"}},
-                                                                         :grid         => {:type => "boolean"}}},
+                                                  :layout       => {:type                 => "object",
+                                                                    :requiredx            => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
+                                                                    :additionalProperties => false,
+                                                                    :properties           =>
+                                                                        {:limit_a3          => {:type => "boolean"},
+                                                                         :LINE_THIN         => {:type => "number"},
+                                                                         :LINE_MEDIUM       => {:type => "number"},
+                                                                         :LINE_THICK        => {:type => "number"},
+                                                                         :DRAWING_AREA_SIZE => {:type     => "array",
+                                                                                                :minItems => 2,
+                                                                                                :items    => {:type => "number"}},
+                                                                         :ELLIPSE_SIZE      => {:type     => "array",
+                                                                                                :minItems => 2,
+                                                                                                :items    => {:type => "number"}},
+                                                                         :REST_SIZE         => {:type     => "array",
+                                                                                                :minItems => 2,
+                                                                                                :items    => {:type => "number"}},
+                                                                         :grid              => {:type => "boolean"},
+                                                                         :packer            => {:type       => 'object',
+                                                                                                :properties => {
+                                                                                                    :pack_method            => {:type => 'integer'},
+                                                                                                    :pack_max_spread_factor => {:type => 'number'},
+                                                                                                    :pack_min_increment     => {:type => 'number'}
+                                                                                                }},
+                                                                         :minc              => {:type                 => "object",
+                                                                                                :additionalProperties => false,
+                                                                                                :patternProperties    => {
+                                                                                                    "\d*" => {:'$ref' => '#/definitions/minc_entry'}
+                                                                                                }
+                                                                         }
+                                                                        }
+                                                  },
                                                   :nonflowrest  => {:type => "boolean"},
                                                   :notes        => {:patternProperties => {'.*' => {:"$ref" => '#/definitions/notes_entry'}}},
                                                   :barnumbers   => {:type       => "object",
@@ -501,8 +523,8 @@ module Ajv
                                   :after_colon_n  => {:type => "integer"},
                                   :before_colon_n => {:type => "integer"},
                                   :sorted         => {:type => "boolean"},
-                                  :explicit_sort  => {:type        => "object"}
-                                                      }}}}
+                                  :explicit_sort  => {:type => "object"}
+                                 }}}}
 
     end
   end

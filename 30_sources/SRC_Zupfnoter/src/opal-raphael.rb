@@ -118,7 +118,7 @@ module Raphael
 
       @canvas     = [width, height]
       @scale      = 1
-      @r          = `Raphael(#{element}, #{width}, #{height})`    # this creates the raphael paper
+      @r          = `Raphael(#{element}, #{width}, #{height})` # this creates the raphael paper
       @line_width = 0.2 # todo:clarify value
     end
 
@@ -156,7 +156,29 @@ module Raphael
       @draggable_rightclick_handler = block
     end
 
-    def draggable(element)
+
+    # this attaches the context menu only
+    def set_conf_editable(element)
+      conf_key = element.conf_key
+      %x{
+          var me = #{element.r};
+          mouseoverFnc = function(){
+            #{@on_mouseover_handler}({element: me, conf_key: #{conf_key}})
+          }
+
+          mouseoutFnc = function(){
+            #{@on_mouseout_handler}({element: me, conf_key: #{conf_key}})
+          }
+
+          me.mouseover(mouseoverFnc);
+          me.mouseout(mouseoutFnc);
+          me.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: element.r, conf_key: #{conf_key}});};
+      }
+    end
+
+    # this makes the element draggable
+    # it also includes a context menu
+    def set_draggable(element)
       #inspired by http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
       %x{
       #{element.r}.node.className.baseVal +=" zn_draggable"

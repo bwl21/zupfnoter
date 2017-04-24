@@ -185,7 +185,7 @@ module Harpnotes
         doc = self.editor.selection.doc
         startrange = doc.indexToPosition(#{selection_newstart});
         endrange = doc.indexToPosition(#{selection_end});
-        range = new Range(startrange.row, startrange.column, endrange.row, endrange.column);
+        range = new #{@range}(startrange.row, startrange.column, endrange.row, endrange.column);
         myrange = {start:startrange, end:endrange}
         #{@editor}.focus();
         #{@editor}.selection.setSelectionRange(myrange, false);

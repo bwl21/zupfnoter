@@ -89,12 +89,14 @@ module Harpnotes
         tempo_id = @abc_model[:music_type_ids][:tempo].to_s
         tempo_note = @abc_model[:voices].first[:voice_properties][:sym] rescue nil
 
-        if tempo_note
-          duration = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
-          bpm      = tempo_note[:tempo].to_i
+        if tempo_note && tempo_note[:tempo_notes]
+          duration      = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
+          bpm           = tempo_note[:tempo].to_i
+          tempo_display = @info_fields[:Q]
         else
-          duration = [0.25]
-          bpm      = 120
+          duration      = [0.25]
+          bpm           = 120
+          tempo_display = '1/4=120'
         end
         bpm = 120 unless bpm >= 1
 
@@ -102,7 +104,7 @@ module Harpnotes
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
                       tempo:         {duration: duration, bpm: bpm, sym: tempo_note},
-                      tempo_display: @info_fields[:Q], #[duration_display, "=", bpm].join(' '),
+                      tempo_display: tempo_display,
                       meter:         @info_fields[:M],
                       key:           "#{key} #{o_key_display}"
         }
@@ -314,7 +316,7 @@ module Harpnotes
       def _transform_part(voice_element, index, voice_index)
         if @part_table[voice_element[:time]]
           start_pos = charpos_to_line_column(voice_element[:istart])
-          end_pos = charpos_to_line_column(voice_element[:iend])
+          end_pos   = charpos_to_line_column(voice_element[:iend])
           $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple parts for same note"), start_pos, end_pos)
         end
         @part_table[voice_element[:time]] = voice_element[:text]
@@ -324,7 +326,7 @@ module Harpnotes
       def _transform_remark(voice_element, index, voice_index)
         if @remark_table[voice_element[:time]]
           start_pos = charpos_to_line_column(voice_element[:istart])
-          end_pos = charpos_to_line_column(voice_element[:iend])
+          end_pos   = charpos_to_line_column(voice_element[:iend])
           $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple remarks for same note"), start_pos, end_pos)
         end
         @remark_table[voice_element[:time]] = voice_element[:text]
@@ -553,7 +555,7 @@ module Harpnotes
         # therefore we need to filter the Tune based tempo ...
         unless voice_element == @meta_data[:tempo][:sym]
           start_pos = charpos_to_line_column(voice_element[:istart])
-          end_pos = charpos_to_line_column(voice_element[:iend])
+          end_pos   = charpos_to_line_column(voice_element[:iend])
           $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
         end
       end
@@ -877,7 +879,7 @@ module Harpnotes
           # check for nested tuplets
           if voice_element[:tp1]
             start_pos = charpos_to_line_column(voice_element[:istart])
-            end_pos = charpos_to_line_column(voice_element[:iend])
+            end_pos   = charpos_to_line_column(voice_element[:iend])
             $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Nested Tuplet"), start_pos, end_pos)
           end
 
@@ -890,7 +892,7 @@ module Harpnotes
           end
 
           # we are within a tuplet
-          tuplet = @tuplet_p   # the size of tuplet (3, etc.
+          tuplet = @tuplet_p # the size of tuplet (3, etc.
 
           # detect tuiplet end
           if voice_element[:te0]
