@@ -486,7 +486,7 @@ C,
         # this is the set of predefined configuration pages
         # it is the argument of editconf {set} respectively addconf{set}
         form_sets        = {
-            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
                                                                             'printer.show_border', 'stringnames.vpos',
                                                                             :startpos,
@@ -994,7 +994,7 @@ C,
         save_promises=[]
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
-          save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
+          save_promises.push @dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)
           pdfs = {}
           print_variants.map do |print_variant|
             index                                                                 = print_variant[:view_id]
