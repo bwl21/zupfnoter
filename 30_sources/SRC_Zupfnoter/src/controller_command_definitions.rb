@@ -781,7 +781,7 @@ C,
       command.as_action do |args|
 
         path = args[:path]
-        path = reconile_dropbox_path(path)
+        path = reconcile_dropbox_path(path)
 
         unless @dropboxclient.is_authenticated?
           case args[:scope]
@@ -891,8 +891,8 @@ C,
       command.set_help { "dropbox change dir to #{command.parameter_help(0)}" }
 
       command.as_action do |args|
-        rootpath      = args[:path]
-        reconile_dropbox_path(rootpath)
+        rootpath = args[:path]
+        rootpath = reconcile_dropbox_path(rootpath)
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
 
@@ -990,7 +990,7 @@ C,
 
         layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
         print_variants = @music_model.harpnote_options[:print]
-        filebase = @music_model.meta_data[:filename]
+        filebase       = @music_model.meta_data[:filename]
 
         rootpath = args[:path]
 
@@ -1123,7 +1123,7 @@ C,
 
   end
 
-  def reconile_dropbox_path(path)
+  def reconcile_dropbox_path(path)
     path        ="/#{path}" unless path.start_with? "/"
     path        ="#{path}/" unless path.end_with? "/"
     path_pattern=/^\/([a-zA-z_^-]+\/)*$/
