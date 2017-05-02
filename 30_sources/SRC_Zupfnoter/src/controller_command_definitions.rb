@@ -756,8 +756,6 @@ C,
       command.as_action do
         handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true}) if @systemstatus[:dropboxapp]
       end
-
-
     end
 
     @commands.add_command(:dlogin) do |command|
@@ -1011,7 +1009,10 @@ C,
           pdfs.each do |name, pdfdata|
             save_promises.push(@dropboxclient.write_file(name, pdfdata))
           end
+        end.fail do |err|
+          _report_error_from_promise(err)
         end
+
         Promise.when(*save_promises).then do |xx|
           saved_paths = Native(xx).map do |x|
             x.path_display if x.respond_to? :path_display
