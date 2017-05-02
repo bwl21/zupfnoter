@@ -151,6 +151,7 @@ class Controller
     uri = self.class.get_uri
     mode = uri[:parsed_search][:mode].last rescue :work
 
+    cleanup_localstorage
     load_from_loacalstorage
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
@@ -238,10 +239,26 @@ class Controller
   # load session from localstore
   def load_from_loacalstorage
     abc = Native(`localStorage.getItem('abc_data')`)
-    abc = Native(`localStorage.getItem('abc_data')`)
     @editor.set_text(abc) unless abc.nil?
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
+    nil
+  end
+
+  # this does a cleanip of localstorage
+  # note that this is maintained from version to version
+  def cleanup_localstorage
+    keys = `Object.keys(localStorage)`
+    dbx_apiv1_traces = keys.select{|k| k.match(/dropbox\-auth:default:/)}
+    unless dbx_apiv1_traces.empty?
+      %x{
+      debugger;
+         localStorage.removeItem(#{dbx_apiv1_traces.first});
+         localStorage.removeItem('systemstatus');
+        }
+    end
+
+    %x{localStorage.setItem('zupfnoterVersion', #{VERSION})}
     nil
   end
 

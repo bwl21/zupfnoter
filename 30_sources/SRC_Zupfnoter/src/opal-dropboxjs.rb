@@ -132,6 +132,7 @@ module Opal
                  }
                 else
                  {
+                    #{iblock.call(%x{{"error": "BUG: this should not happen; " + #{__FILE__} + ":" + #{__LINE__}}}, nil)}
                     //#{login}
                  }
             }
