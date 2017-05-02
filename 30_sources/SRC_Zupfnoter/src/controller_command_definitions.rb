@@ -472,6 +472,10 @@ C,
         keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
       end
 
+      def expand_extractnumbering(keys)
+        [0, 1, 2, 3].product(keys).map { |number, key| "extract.#{number}.#{key}" }
+      end
+
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
@@ -491,8 +495,10 @@ C,
                                                                             'printer.show_border', 'stringnames.vpos',
                                                                             :startpos,
                                                                            ]) + [:restposition]},
+            extract_annotation:     {keys: [:produce,
+                                           expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
+            },
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
-
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
@@ -978,7 +984,6 @@ C,
       command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
 
       command.as_action do |args|
-        
         unless @systemstatus[:mode] == :work
           message = "Cannot save in  #{@systemstatus[:mode]} mode"
           alert message
