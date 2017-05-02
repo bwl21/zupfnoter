@@ -504,7 +504,7 @@
     "Bad page width $1": "fehlerhafte Seitenbreite $1",
     "Bad scale value in %%font": "fehlerhafter scale - Wert in %%font",
     "Bad stafflines= value": "fehlerhafter Wert für stafflines=",
-    "Bad tie": "fehlerhafter Bindebogen",
+    "Bad tie": "fehlerhafter Haltebogen",
     "Bad user character '$1'": "falsches benutzerdefiniertes Zeichen '$1' in U:/%%user",
     "Bad value '$1' in %%linebreak - ignored": "fehlerhafter Wert '$1' in %%linebreak - ignoriert",
     "Bad value for %%$1": "fehlerhafter Wert für %%$1",
