@@ -754,7 +754,19 @@ C,
 
       command.set_help { "INTERNAL: This performs a reconnect after restart of zupfnoter" }
       command.as_action do
-        handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true}) if @systemstatus[:dropboxapp]
+        if @systemstatus[:dropboxapp]
+          handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true})
+        else
+          # we double check if dropbox login is out of sync
+          # either have an access token in the url
+          # see comment in authenticate for details.
+          @dropboxclient = Opal::DropboxJs::Client.new(nil)
+          @dropboxclient.authenticate().then do
+            $log.error("BUG: this shoudl not happen #{__FILE__}:#{__LINE__}")
+          end.fail do |err|
+            _report_error_from_promise err
+          end
+        end
       end
     end
 
@@ -845,12 +857,14 @@ C,
 
       command.as_action do |args|
 
-        @dropboxclient.revokeAccessToken.then do |entries|
-          $log.message("logged out from dropbox")
+        @dropboxclient.revoke_access_token.then do |entries|
+          message = I18n.t("logged out from dropbox")
+          $log.message(message)
           @dropboxclient = Opal::DropboxJs::NilClient.new
           @dropboxpath   = nil
           set_status_dropbox_status
           call_consumers(:systemstatus)
+          `w2alert(#{message}, "Info")`
         end.fail do |err|
           _report_error_from_promise err
         end
