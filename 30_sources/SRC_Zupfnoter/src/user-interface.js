@@ -504,18 +504,19 @@ function init_w2ui(uicontroller) {
         tooltip: "Edit configuration with forms",
         items: [
           {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
-          {id: 'layout', text: 'layout', tooltip: "Edit layout paerameters\nin current extract"},
+          {id: 'extract_annotation', text: 'Extract-Annotation', tooltip: "Edit annotations of an extract"},
           {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
-          {
-            id: 'barnumbers_countnotes',
-            text: 'barnumbers and countnotes',
-            tooltip: "edit barnumbers or countnotes"
-          },
-          {},
+          {id: 'layout', text: 'layout', tooltip: "Edit layout paerameters\nin current extract"},
           {
             id: 'notes',
             text: 'page annotation',
             tooltip: "edit settings for sheet annotations\nin current extract"
+          },
+          {},
+          {
+            id: 'barnumbers_countnotes',
+            text: 'barnumbers and countnotes',
+            tooltip: "edit barnumbers or countnotes"
           },
           {
             id: 'annotations',
@@ -525,6 +526,7 @@ function init_w2ui(uicontroller) {
           {},
           {id: 'stringnames', text: 'Stringnames', tooltip: "Edit presentation of stringanmes"},
           {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
+          {},
           {id: 'minc', text: 'minc', tooltip: "edit extra increments"}
         ]
       },
