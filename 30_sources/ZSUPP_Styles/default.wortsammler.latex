@@ -145,6 +145,7 @@ $endif$
 \author{$for(author)$$author$$sep$ \and $endfor$}
 \date{$date$}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Wortsammler specific settings
@@ -213,8 +214,8 @@ $endif$
 \setlength{\evensidemargin}{-0.5cm}
 \setlength{\textwidth}{17cm}
 \setlength{\topmargin}{-2.0cm}
-\setlength{\headheight}{1cm}
-\setlength{\headsep}{1.5cm}
+\setlength{\headheight}{53pt}
+\setlength{\headsep}{0.5cm}
 \setlength{\textheight}{25cm}
 \setlength{\footskip}{1cm}
 
@@ -286,7 +287,7 @@ $endif$
 $if(toc)$
 {
 \hypersetup{linkcolor=black}
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{3}
 \tableofcontents
 \newpage
 }
