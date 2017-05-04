@@ -11,12 +11,17 @@ class Controller
     @commands.add_command(:help) do |c|
       c.undoable = false
 
+      c.add_parameter(:what, :string) do |parameter|
+        parameter.set_default { "" }
+        parameter.set_help { "filter string for help command" }
+      end
+
       c.set_help do
         "this help";
       end
 
-      c.as_action do
-        $log.message("<pre>#{@commands.help_string_style.join("\n")}</pre>")
+      c.as_action do |args|
+        $log.message("<pre>#{@commands.help_string_style.select{|i| i.include? args[:what]}.join("\n")}</pre>")
       end
     end
 
