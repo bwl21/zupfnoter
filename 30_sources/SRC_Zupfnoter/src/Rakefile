@@ -14,7 +14,7 @@ OUTFOLDER    = "../deploy_files"
 INDEXFILE    = "index.html"
 LOCALEPATH   = "../public/locale/"
 
-GITSHA = %x{git log --pretty=format:'%h' -n 1}  # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
+GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
 
 VENDORFOLDER ="../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
@@ -24,12 +24,12 @@ task :updateLocales do
   puts "updating locales"
   locales = Dir["#{LOCALEPATH}??-??.json"].map { |f| f.split(LOCALEPATH).last }
   locales.each do |locale|
-    w2uilocalefile = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
-    znlocalefile   = File.open("localization/zupfnoter_#{locale}")
+    w2uilocalefile    = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
+    znlocalefile      = File.open("localization/zupfnoter_#{locale}")
     abc2svglocalefile = File.open("localization/abc2svg_#{locale}")
 
-    w2uilocales = JSON.parse(w2uilocalefile.read)
-    znlocales   = JSON.parse(znlocalefile.read)
+    w2uilocales    = JSON.parse(w2uilocalefile.read)
+    znlocales      = JSON.parse(znlocalefile.read)
     abc2svglocales = JSON.parse(abc2svglocalefile.read)
 
     w2uilocales['phrases'].merge!(znlocales['phrases'])
@@ -256,6 +256,23 @@ task :buildDesktop => [:build] do
   #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
 end
 
+desc "create user manual"
+task :buildUserManual do
+
+  require "#{File.dirname(__FILE__)}/version.rb"
+  File.open("../../UD_Zupfnoter-Handbuch/000_UD-Zupfnoter-Version.md", "w") do |f|
+     f.puts (%Q{
+Version #{VERSION}
+
+#{COPYRIGHT}
+     })
+  end
+
+  cd "../../ZSUPP_Tools" do
+    sh "bundle exec rake UD"
+    cp "../ZGEN_Documents/UD_Zupfnoter-Handbuch-de_review.pdf", "../SRC_Zupfnoter/public"
+  end
+end
 
 desc "config doc and help"
 task :buildConfigDoc do

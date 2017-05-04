@@ -3,8 +3,6 @@
     :outdir: ../ZGEN_Documents
     :outname: UD_Zupfnoter-Handbuch-de
     :format:
-        - docx
-        - html
         - pdf
 
     :vars: 
@@ -36,6 +34,7 @@
 
     :frontmatter:
       - ../UD_Zupfnoter-Handbuch/000_UD-Zupfnoter-Titelseite.md
+      - ../UD_Zupfnoter-Handbuch/000_UD-Zupfnoter-Version.md
 
 
 
