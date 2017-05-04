@@ -30,6 +30,9 @@
 * improve error reporting on dropbox save #128
 * fine tune structure of configuration menu #116
 
+## Experimental features
+
+* now can load the template from LocalStorage #71
     
 
 ## backward compatibilility issues

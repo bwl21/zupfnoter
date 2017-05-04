@@ -1,3 +1,5 @@
+ZN_TEMPLATENAME = 'zntemplate'
+
 class Controller
   private
 
@@ -184,82 +186,12 @@ class Controller
 
         song_id    = args[:id]
         song_title = args[:title]
-        filename   = song_title.strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
+        filename   = song_title.strip.downcase.gsub(/[^a-z0-9]/, {'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss', ' ' => "-"})
         raise "no id specified" unless song_id
         raise "no title specified" unless song_title
 
         ## todo use erb for this
-        template      = %Q{X:#{song_id}
-F:#{song_id}_#{filename}
-T:#{song_title}
-C:
-S:
-M:4/4
-L:1/4
-Q:1/4=120
-K:C
-%%score 1 2
-V:1 clef=treble name="Sopran" snm="S"
-C
-V:2 clef=treble  name="Alt" snm="A"
-C,
-
-%%%%zupfnoter.config
-
-{
-  "produce"  : [1, 2],
-  "extract"  : {
-    "0" : {
-      "voices"      : [1, 2, 3, 4],
-      "flowlines"   : [1, 3],
-      "repeatsigns" : {"voices": [1, 2, 3, 4]},
-      "layoutlines" : [1, 2, 3, 4],
-      "barnumbers"  : {
-        "voices"  : [1, 3],
-        "pos"     : [6, -4],
-        "autopos" : true,
-        "style"   : "small_bold",
-        "prefix"  : ""
-      },
-      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
-      "lyrics"      : {
-        "1" : {"verses": [1, 2], "pos": [8, 102]},
-        "2" : {"verses": [3, 4], "pos": [347, 118]}
-      },
-      "notes"       : {
-        "T01_number"              : {
-          "pos"   : [393, 17],
-          "text"  : "XXX-999",
-          "style" : "bold"
-        },
-        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
-        "T03_copyright_harpnotes" : {
-          "pos"   : [340, 272],
-          "text"  : "© 2017 Notenbild: ",
-          "style" : "small"
-        },
-        "T99_do_not_copy"         : {
-          "pos"   : [380, 284],
-          "text"  : "Bitte nicht kopieren",
-          "style" : "small_bold"
-        }
-      },
-      "countnotes"  : {
-        "voices"  : [1, 3],
-        "pos"     : [3, -2],
-        "autopos" : true,
-        "style"   : "smaller"
-      },
-      "stringnames" : {"vpos": [4]}
-    },
-    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
-    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
-    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
-  },
-  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
-  "$version" : "#{VERSION}"
-}
-}
+        template      = create_from_current_template({song_id: song_id, filename: filename, song_title: song_title, version: VERSION})
         args[:oldval] = @editor.get_text
         @editor.set_text(template)
         set_status(music_model: "new")
@@ -358,6 +290,20 @@ C,
       command.as_action do |args|
         template = @editor.get_config_part_value('extract').to_json
         `localStorage.setItem('standardextract', #{template})`
+        nil
+      end
+    end
+
+    @commands.add_command(:settemplate) do |command|
+      command.undoable = false
+      command.set_help { "set the current editor content as template"}
+      command.as_action do |args|
+        template = @editor.get_text('extract.0')
+        if template.empty?
+          `localStorage.removeItem(#{ZN_TEMPLATENAME})`
+        else
+        `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
+        end
         nil
       end
     end
@@ -500,7 +446,7 @@ C,
                                                                             'printer.show_border', 'stringnames.vpos',
                                                                             :startpos,
                                                                            ]) + [:restposition]},
-            extract_annotation:     {keys: [:produce,
+            extract_annotation:    {keys: [:produce,
                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
             },
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
@@ -665,6 +611,94 @@ C,
     end
 
 
+  end
+
+  def create_from_current_template(parameters)
+    result = Native(`localStorage.getItem(#{ZN_TEMPLATENAME})`)
+    unless `result`
+      result = %Q{% - settings to improve Handling in Zupfnoter
+I:measurenb 1
+I:linewarn 0
+I:staffnonote 2
+% --------------
+X:{{song_id}}
+F:{{song_id}}_{{filename}}
+T:{{song_title}}
+C:
+S:
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%
+%
+%%score 1
+%
+V:1 clef=treble name="Sopran" snm="S"
+C
+
+%%%%zupfnoter.config
+
+{
+  "produce"  : [1, 2],
+  "extract"  : {
+    "0" : {
+      "voices"      : [1, 2, 3, 4],
+      "flowlines"   : [1, 3],
+      "repeatsigns" : {"voices": [1, 2, 3, 4]},
+      "layoutlines" : [1, 2, 3, 4],
+      "barnumbers"  : {
+        "voices"  : [1, 3],
+        "pos"     : [6, -4],
+        "autopos" : true,
+        "style"   : "small_bold",
+        "prefix"  : ""
+      },
+      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
+      "lyrics"      : {
+        "1" : {"verses": [1, 2], "pos": [8, 102]},
+        "2" : {"verses": [3, 4], "pos": [347, 118]}
+      },
+      "notes"       : {
+        "T01_number"              : {
+          "pos"   : [393, 17],
+          "text"  : "XXX-{{song_id}}",
+          "style" : "bold"
+        },
+        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [340, 272],
+          "text"  : "© 2017 Notenbild: ",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "countnotes"  : {
+        "voices"  : [1, 3],
+        "pos"     : [3, -2],
+        "autopos" : true,
+        "style"   : "smaller"
+      },
+      "stringnames" : {"vpos": [4]}
+    },
+    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
+    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
+    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
+  },
+  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version" : "{{version}}"
+ }
+}
+    end
+
+    parameters.each do |name, value|
+      result = result.gsub("{{#{name}}}", value)
+    end
+    result
   end
 
   def get_conf_value_from_editor_for_current_view(key)
@@ -910,8 +944,8 @@ C,
       command.set_help { "dropbox change dir to #{command.parameter_help(0)}" }
 
       command.as_action do |args|
-        rootpath = args[:path]
-        rootpath = reconcile_dropbox_path(rootpath)
+        rootpath      = args[:path]
+        rootpath      = reconcile_dropbox_path(rootpath)
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
 
