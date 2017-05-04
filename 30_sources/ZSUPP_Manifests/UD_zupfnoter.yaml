@@ -1,0 +1,53 @@
+-
+    :name:  komplett
+    :outdir: ../ZGEN_Documents
+    :outname: UD_Zupfnoter-Handbuch-de
+    :format:
+        - docx
+        - html
+        - pdf
+
+    :vars: 
+        :lang: german
+        :fontsize: 12pt
+        :mainfont: Calibri
+        :sansfont: Calibri
+        :geometry: a4paper 
+        :logofile: ../ZAUX_Images/favicon.png
+
+    :stylefiles:
+      :latex: ../ZSUPP_Styles/default.wortsammler.latex
+      :docx:  ../ZSUPP_Styles/default.wortsammler.docx
+      :html:  ../ZSUPP_Styles/default.wortsammler.css
+
+    :input: 
+        - ../UD_Zupfnoter-Handbuch/010_UD-Zupfnoter-Frontmatter.md
+        - ../UD_Zupfnoter-Handbuch/020_UD_Zupfnoter-Einfuehrung.md
+        - ../UD_Zupfnoter-Handbuch/030_UD_Zupfnoter-erste-schritte.md
+        - ../UD_Zupfnoter-Handbuch/040_UD-Zupfnoter-Referenz.md
+        - ../UD_Zupfnoter-Handbuch/050_UD_Zupfnoter-einstellungen.md
+        - ../UD_Zupfnoter-Handbuch/060_UD_Zupfnoter-best-practice.md
+        - ../UD_Zupfnoter-Handbuch/080_UD_Zupfnoter-ABC-tutorial.md
+        - ../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md
+        - ../UD_Zupfnoter-Handbuch/part_index.md
+    :forget:
+        - ../UD_Abc-Notation/abc-notation-1.md
+        - ../UD_Abc-Notation/abc-notation-2.md
+
+    :frontmatter:
+      - ../UD_Zupfnoter-Handbuch/000_UD-Zupfnoter-Titelseite.md
+
+
+
+    :editions:
+
+        :review:
+            :title: Zupfnoter-Handbuch (review)
+            :filepart: review
+            :debug: true
+
+        :release:
+            :title: Zupfnoter-Handbuch 
+            :filepart: release
+
+
