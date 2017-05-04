@@ -1,0 +1,146 @@
+X:3015
+F:3015_reference_sheet
+T:Zupfnoter Reference Sheet
+C:
+S:
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score 1 2 3 4
+V:1 clef=treble-8 name="Sopran" snm="S"
+"^!(1)"G4 | "^!(2)"A2 "^!(3)"A "^!(4)"A/ "^!(5)"A// A//|: "^!(6)"A3 "^!(25)" A :| "^!(7)"A > A 
+[P:Rests]"^!(11)"z4 | "^!(12)"z2 "^!(13)"z "^!(14)"z/ "^!(15)"z// z//| "^!(16)"z3 z | "^!(17)"z > z 
+V:2 clef=treble-8   name="Alt" snm="A"
+[I:transpose -6]  "^!(20)"A2 "^!(33)"B2 | (3"^!(22)"A A A "^!(23)" A-A |: "^!(24)" A3 A :| "^!(26)@-20,-5" "^!(21)@-35,3" "^!(21)@6,3"[FA] > A 
+"^!(27)"z4 | z2 z z/ z// z//| z3 z | z > z 
+V:3 octave=-1
+"^!(28)"A4 | A2 A A/ "^!(28)"A// A//"^@@-2,2,2"|1 A3  A |2 "^!(29)" A A3 || A A A
+%
+W:(1) full note
+W:(2) half note
+W:(3) quarter note 
+W:(4) eighth note 
+W:(5) sixteenth note
+W:(6) punctuated half note
+W:(7) punctuated quarter note
+W:
+W:(11) full rest 
+W:(12) half rest 
+W:(13) quarter rest 
+W:(14) eighth  rest
+W:(15) sixteenth rest
+W:(16) punctuated half rest
+W:(17) punctuated quarter rest
+W:
+W:(20) measure bar 
+W:(21) unison 
+W:(22) triplet 
+W:(23) tie 
+W:(24) repeat signs 
+W:(25) jumpline for repeat 
+W:(26) synchline for unison 
+W:(27) part note 
+W:(28) countnotes
+W:(29) variant ending
+W:
+W:(31) flowline 
+W:(32) synchline 
+W:(33) subflowline 
+W:(34) legend 
+W:(35) extract title in legent
+W:(36) lyrics 
+W:(37) stringnames
+
+%%%%zupfnoter.config
+
+{
+  "produce"  : [0],
+  "extract"  : {
+    "0" : {
+      "title"        : "alle Stimmen",
+      "flowlines"    : [1, 3],
+      "subflowlines" : [2, 4],
+      "repeatsigns"  : {"voices": [2]},
+      "countnotes"   : {"voices": [3], "pos": [3, -2]},
+      "legend"       : {"pos": [323, 18], "spos": [323, 26]},
+      "notes"        : {
+        "31" : {
+          "pos"   : [288, 23],
+          "text"  : "(31)",
+          "style" : "regular"
+        },
+        "32" : {
+          "pos"   : [250, 15],
+          "text"  : "(32)",
+          "style" : "regular"
+        },
+        "34" : {
+          "pos"   : [323, 13],
+          "text"  : "(34)",
+          "style" : "regular"
+        },
+        "35" : {
+          "pos"   : [349, 27],
+          "text"  : "(35)",
+          "style" : "regular"
+        },
+        "36" : {
+          "pos"   : [340, 51],
+          "text"  : "(36)",
+          "style" : "regular"
+        },
+        "37" : {
+          "pos"   : [145, 9],
+          "text"  : "(37)",
+          "style" : "regular"
+        }
+      },
+      "lyrics"       : {"1": {"verses": [1, 2, 3, 4, 5], "pos": [345, 59]}},
+      "nonflowrest"  : true,
+      "stringnames"  : {"vpos": [5]},
+      "notebound"    : {
+        "annotation" : {
+          "v_2" : {
+            "768"  : {"pos": [-16, -3]},
+            "1536" : {"pos": [9, 4]},
+            "2304" : {"pos": [4, 1]},
+            "3072" : {"pos": [-16, -2]},
+            "5376" : {"pos": [5, -7]}
+          },
+          "v_1" : {
+            "2304" : {"pos": [4, -4]},
+            "2688" : {"pos": [4, -4]},
+            "2880" : {"pos": [4, -3]},
+            "3072" : {"pos": [2, -8]},
+            "4224" : {"pos": [19, -3]},
+            "6912" : {"pos": [5, -3]},
+            "7680" : {"pos": [5, -2]},
+            "8064" : {"pos": [5, -2]},
+            "8256" : {"pos": [5, -1]},
+            "8448" : {"pos": [5, -3]}
+          },
+          "v_3" : {"0": {"pos": [12, -3]}, "2880": {"pos": [7, -2]}}
+        },
+        "partname"   : {
+          "v_1" : {"5376": {"pos": [-14, -7]}},
+          "v_2" : {"5376": {"pos": [-12, -7]}}
+        }
+      }
+    },
+    "1" : {
+      "notes"     : {"37": {"pos": [195, 9]}},
+      "notebound" : {
+        "annotation" : {
+          "v_2" : {
+            "768"  : {"pos": [-16, -3]},
+            "2304" : {"pos": [5, 1]}
+          },
+          "v_1" : {"5376": {"pos": [6, -2]}}
+        }
+      }
+    }
+  },
+  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version" : "1.3.2 beta 2"
+}
