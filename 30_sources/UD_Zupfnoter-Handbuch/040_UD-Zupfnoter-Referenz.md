@@ -481,14 +481,14 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
 -   **(74) T04 to order - zu beziehen bei**: Hier kann man angeben, über
     welche Adresse das Unterlegnotenblatt bezogen werden kann
     (Konfiguration siehe Kapitel
-    \ref{presets.notes.T04ux5ftoux5forder}[presets.notes.T04_to_order](#presets.notes.T04_to_order).
+    \ref{presets.notes.T04ux5ftoux5forder}[presets.notes.T04_to_order](#presets.notes.T04_to_order)).
     Das ist natürlich nur sinnvoll, wenn es für die erstellen
     Unterlegnoten einen Vertriebsweg gibt.
 
 -   **(75) T02 Copryright music - Urheberrechte für das Stück**: Hier
     kann mam die Urheberrechte für das Musikstück angeben (Konfiguration
     siehe Kapitel
-    \ref{presets.notes.T02ux5fcopyrightux5fmusic}[presets.notes.T02_copyright_music](#presets.notes.T02_copyright_music).
+    \ref{presets.notes.T02ux5fcopyrightux5fmusic}[presets.notes.T02_copyright_music](#presets.notes.T02_copyright_music)).
     Es wird empfohlen, diese Rechte immer anzugeben und den Satz
     "Privatkopie" hinzuzufügen, wenn mit dem Rechteinhaber keine
     Vereinbarung geschlossen wurde.
@@ -501,18 +501,18 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
     von den Urheberrechten am Stück entsteht auch ein Urheberrecht an
     den erstellen Unterlegnoten. Hier kannst du diese Rechte
     beanspruchen (Konfiguration siehe Kapitel
-    \ref{presets.notes.T03ux5fcopyrightux5fharpnotes}[extract.0.synchlines](#presets.notes.T03_copyright_harpnotes).
+    \ref{presets.notes.T03ux5fcopyrightux5fharpnotes}[extract.0.synchlines](#presets.notes.T03_copyright_harpnotes)).
 
 -   **(77) T99 do not copy - Bitte nicht kopieren**: Diese Beschriftung
     soll den Blick dafür schärfen, das die erstellen Unterlegnoten nicht
     einfach wild kopiert werden dürfen, sondern die Urheberrechte zu
     bachten sind (Konfiguration siehe Kapitel
-    \ref{presets.notes.T99ux5fdoux5fnotux5fcopy}[presets.notes.T99_do_not_copy](#presets.notes.T99_do_not_copy).
+    \ref{presets.notes.T99ux5fdoux5fnotux5fcopy}[presets.notes.T99_do_not_copy](#presets.notes.T99_do_not_copy)).
 
 -   **(78) T01 Number - Nummer**: Hier kannst du eine Nummer angeben,
     welche das Unterlegnotenblatt eindeutig und schnell identifizierbar
     macht(Konfiguration siehe Kapitel
-    \ref{presets.notes.T01ux5fnumber}[presets.notes.T01_number](#presets.notes.T01_number).
+    \ref{presets.notes.T01ux5fnumber}[presets.notes.T01_number](#presets.notes.T01_number)).
     Im Grunde ist das wie eine Bestellnummer. Es wird empfohlen, die
     Nummer nach folgendem Schema zu gestalten:
 
@@ -654,7 +654,7 @@ aktuellen Arbeitsschrit besser zu unterstützen:
 -   Über das Menü "Ansicht" kann man einzelne Fenster ausblenden so dass
     die anderen Fenster größer werden (Siehe Kapitel
     \ref{menues-im-hauptfenster} [Werkzeugleiste für Schaltflächen und
-    Menüs](#menues-im-hauptfenster)
+    Menüs](#menues-im-hauptfenster))
 
 Innerhalb dieser Fenster gibt es weitere **Bedienelemente**:
 
@@ -1030,11 +1030,11 @@ Eingabemöglichkeiten nutze:
 -   `ABC`- Der \index{Texteditor}Texteditor für die ABC-Notation sowie
     die Konfiguration der Unterlegnoten (im JSON-Format) angezeigt und
     bearbeitet (siehe Kapitel \ref{texteditor}
-    [Texteditor](#texteditor). Für die ABC-Notation gibt es eine
+    [Texteditor](#texteditor)). Für die ABC-Notation gibt es eine
     separate Anleitung im Menü `Hilfe`
 
 -   `Liedtextexte` für die Erfassung der Liedtexte (siehe Kapitel
-    \ref{liedtexteditor} [Liedtexteditor](#liedtexteditor)
+    \ref{liedtexteditor} [Liedtexteditor](#liedtexteditor))
 
 -   `Konfiguration` für die formulargeführte Bearbeitung der
     Zupfnoter-Konfiguration. Die hier gemachten Eingaben werden sofort
@@ -1183,7 +1183,7 @@ zu sehen.
 
 > **Hinweis**: Die Anordnung der Liedtexte wird über die Konfiguration
 > bestimmt (siehe Kapitel \ref{templates.lyrics}
-> [extract.0.lyrics](#templates.lyrics)
+> [extract.0.lyrics](#templates.lyrics)).
 
 ### Konfigurationsmasken
 
