@@ -71,6 +71,3 @@ DEPENDENCIES
   vector2d (~> 2.1.0)
   wortsammler (~> 1.0.2)
   zip
-
-BUNDLED WITH
-   1.13.6

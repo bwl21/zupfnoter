@@ -1009,6 +1009,41 @@ mit dem Befehl `help` in der Konsole anzeigen.
 > Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
 > Regel nicht brauchen.
 
+Andererseits gibt es gerade in der Konsole manche experimentelle
+Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
+ist.
+
+-   `setstdnotes`: kopiert dem aktuellen Stück die Konfiguration der
+    Blattbeschriftungen usw um sie auf ein anderes Stück zu übertragen.
+-   `setstdextract`: kopiert dem aktuellen Stück die Konfiguration der
+    Auszüge, um sie auf ein anderes Stück zu übertragen.
+-   `stdnotes`: überträgt die zuletzt kopierte Konfiguration der
+    Blattbeschriftungen auf das aktuelle Stück
+-   `stdectract`: überträgt die zuletzt kopierte Konfiguration der
+    Auszüge auf das aktuelle Stück
+
+> **Hinweis**: Diese Befehle sind hilfreich um schnell die Konfiguration
+> eines aus MusicXml importierten Stückes einzustellen.
+
+Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
+hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
+
+-   `loglevel debug` - schaltet ausführlichere Fehlermeldungen ein.
+    Zupfnoter wird dadurch zwar deutlich langsammer, aber für den
+    Zupfnoter-Entweickler sind die Ausgaben hilfreich um die Ursache von
+    Problemen einzukreisen
+-   `loglevel error` - Es werden nur noch schwerwiegende Fehler
+    gemeldet. Das ist für die normale Anwendung ausreichend.
+
+Eine Übersicht der Befehle für die Konsole gibt der Befehl
+
+-   `help <thema>` - z.B. `help std` gibt aus
+
+        stdnotes  : configure extract with template from localstore
+        stdextract  : configure with template from localstore
+        setstdnotes  : configure stdnotes in localstore
+        setstdextract  : configure stdc onfig in localstore
+
 ## Tastenkombinationen (Shortcuts) {#shortcuts}
 
 Für eine flüssige Bedienung stellt Zupfnoter folgende
@@ -1130,7 +1165,7 @@ Umständen keine herkömmlichen Noten oder Unterlegnoten generiert werden.
 Nach der ABC-Notation kommen die Zupfnoter-Einstellungen. Diese werden
 durch den Kommentar
 
-    `%%%%zupfnoter.config`
+    %%%%zupfnoter.config
 
 von der ABC-Notation abgetrennt. Die ABC-Notation und die
 Zupfnoter-Einstellungen dürfen nicht gemischt werden.
