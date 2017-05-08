@@ -13,5 +13,5 @@ gem 'graphviz'
 gem 'bundler'
 gem 'redcarpet'
 gem 'json-schema-generator'
-gem 'wortsammler'
+gem 'wortsammler', "~> 1.0.2"
 gem 'neatjson'

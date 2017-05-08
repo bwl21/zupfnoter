@@ -1,0 +1,1989 @@
+# Konfiguration der Ausgabe {#konfiguration}
+
+Dieses Kapitel beschreibt die Konfiguration der Erstellung der
+Unterlegnotenblätter. Das Kapitel ist als Referenz aufgebaut. Die
+einzelnen Konfigurationsparameter werden in alphabetischer Reihenfolge
+aufgeführt. Bei den einzelnen Parametern wird der Text der Online-Hilfe,
+sowie die Voreinstellungen des Systems dargestellt.
+
+> **Hinweis**: Auch wenn in den Bildschirmmasken die Namen der
+> Konfigurationsparameter übersetzt sind, so basiert diese Referenz den
+> englischen Namen.
+
+> **Hinweis**: Manche Konfigurationsparameter können mehrfach auftreten
+> (z.B. `extract`). In diesem Kapitel wird dann immer die Instanz mit
+> der Nr. 0 (z.B. `extract.0`) beschrieben.
+
+## `annotations` - Notenbeschriftungsvorlagen {#annotations}
+
+Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
+
+Zupfnoter bringt einige solcher Definitionen bereits mit.
+
+Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit einer
+Note verbinden (Notenbeschriftung).
+
+        "annotations": {
+          "vl" : {"pos": [-5, -5], "text": "v"},
+          "vr" : {"pos": [-1, -5], "text": "v"},
+          "vt" : {"pos": [2, -5], "text": "v"}
+        }
+          
+
+## `annotations.vl` - 'V' links {#annotations.vl}
+
+Hier siehst du ein Beispiel für eine Notenbeschriftung (hier mit dem
+Namen `vl`).\
+Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
+dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
+
+        "vl": {"pos": [-5, -5], "text": "v"}
+          
+
+## `annotations.vl.pos` - Position {#annotations.vl.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [-5, -5]
+          
+
+## `annotations.vl.text` - Text {#annotations.vl.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "v"
+          
+
+## `annotations.vr` - 'V' rechts {#annotations.vr}
+
+TODO: Helptext für annotations.vr einfügen
+
+        "vr": {"pos": [-1, -5], "text": "v"}
+          
+
+## `annotations.vr.pos` - Position {#annotations.vr.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [-1, -5]
+          
+
+## `annotations.vr.text` - Text {#annotations.vr.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "v"
+          
+
+## `annotations.vt` - 'V' oben {#annotations.vt}
+
+TODO: Helptext für annotations.vt einfügen
+
+        "vt": {"pos": [2, -5], "text": "v"}
+          
+
+## `annotations.vt.pos` - Position {#annotations.vt.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [2, -5]
+          
+
+## `annotations.vt.text` - Text {#annotations.vt.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "v"
+          
+
+## `extract` - Auszug {#extract}
+
+Hier kannst du Auszüge für deine Unterlegnoten definieren. Das ist
+besonders bei mehrstimmigen Sätzen sinnvoll.
+
+> **Hinweis**: Einstellungen im Auszug 0 wirken auf die anderen Auszüge,
+> sofern sie dort nicht überschrieben werden.
+
+`extract.0` spezifiziert den Auszug 0; `extract.1` spezifiziert den
+Auszug 1 usw.
+
+        "extract": {
+          "0" : {
+            "barnumbers"   : {
+              "autopos" : true,
+              "pos"     : [6, -4],
+              "prefix"  : "",
+              "style"   : "small_bold",
+              "voices"  : []
+            },
+            "countnotes"   : {
+              "autopos" : true,
+              "pos"     : [3, -2],
+              "style"   : "smaller",
+              "voices"  : []
+            },
+            "filenamepart" : "alle-stimmen",
+            "flowlines"    : [1, 3],
+            "jumplines"    : [1, 3],
+            "layout"       : {
+              "DRAWING_AREA_SIZE" : [400, 282],
+              "ELLIPSE_SIZE"      : [3.5, 1.7],
+              "LINE_MEDIUM"       : 0.3,
+              "LINE_THICK"        : 0.5,
+              "LINE_THIN"         : 0.1,
+              "REST_SIZE"         : [4, 2],
+              "limit_a3"          : true,
+              "minc"              : {},
+              "packer"            : {
+                "pack_max_spreadfactor" : 2,
+                "pack_method"           : 0,
+                "pack_min_increment"    : 0.2
+              }
+            },
+            "layoutlines"  : [1, 2, 3, 4],
+            "legend"       : {"pos": [320, 7], "spos": [320, 27]},
+            "lyrics"       : {},
+            "nonflowrest"  : false,
+            "notes"        : {},
+            "printer"      : {
+              "a3_offset"   : [0, 0],
+              "a4_offset"   : [-5, 0],
+              "show_border" : false
+            },
+            "repeatsigns"  : {
+              "left"   : {"pos": [-7, -2], "style": "bold", "text": "|:"},
+              "right"  : {"pos": [5, -2], "style": "bold", "text": ":|"},
+              "voices" : []
+            },
+            "startpos"     : 15,
+            "stringnames"  : {
+              "marks" : {"hpos": [43, 55, 79], "vpos": [11]},
+              "style" : "small",
+              "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+              "vpos"  : []
+            },
+            "subflowlines" : [2, 4],
+            "synchlines"   : [[1, 2], [3, 4]],
+            "title"        : "alle Stimmen",
+            "voices"       : [1, 2, 3, 4]
+          },
+          "1" : {
+            "filenamepart" : "sopran-alt",
+            "title"        : "Sopran, Alt",
+            "voices"       : [1, 2]
+          },
+          "2" : {
+            "filenamepart" : "tenor-bass",
+            "title"        : "Tenor, Bass",
+            "voices"       : [3, 4]
+          },
+          "3" : {
+            "filenamepart" : "melodie",
+            "title"        : "Melodie",
+            "voices"       : [1]
+          }
+        }
+          
+
+## `extract.0.barnumbers` - Taktnummern {#extract.0.barnumbers}
+
+Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt
+ausgegeben werden sollen.
+
+        "barnumbers": {
+          "autopos" : true,
+          "pos"     : [6, -4],
+          "prefix"  : "",
+          "style"   : "small_bold",
+          "voices"  : []
+        }
+          
+
+## `extract.0.barnumbers.autopos` - automat. positionieren {#extract.0.barnumbers.autopos}
+
+Hier kannst du die automatische Positionierung einschalten. Dabei werden
+Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
+Wenn diese Option ausgeschaltet, gelten die Werte von `pos`. Dies kann
+bei manchen Stücken eine sinnvollere Einstellugn sein.
+
+Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
+verschieben.
+
+        "autopos": true
+          
+
+## `extract.0.barnumbers.pos` - Position {#extract.0.barnumbers.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [6, -4]
+          
+
+## `extract.0.barnumbers.prefix` - Präfix {#extract.0.barnumbers.prefix}
+
+Hier kannst du einen Text angeben, der z.B. vor der Taktnummeer
+ausgegeben werden soll (Präfix).
+
+        "prefix": ""
+          
+
+## `extract.0.barnumbers.style` - Stil {#extract.0.barnumbers.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "small_bold"
+          
+
+## `extract.0.barnumbers.voices` - Stimmen {#extract.0.barnumbers.voices}
+
+Hier kannst du eine Liste der Stimmen angeben, die Taktnummern bekommen
+sollen.
+
+        "voices": []
+          
+
+## `extract.0.countnotes` - Zählmarken {#extract.0.countnotes}
+
+Hier kannst du angeben, ob und wie Zählmarken in deinem
+Unterlegnotenblatt ausgegeben werden sollen.
+
+Zählmarken sind hilfreich, um sich ein Stück erarbeiten. Sie geben
+Hilfestellung beim einhalten der vorgegebenen Notenweret.
+
+        "countnotes": {
+          "autopos" : true,
+          "pos"     : [3, -2],
+          "style"   : "smaller",
+          "voices"  : []
+        }
+          
+
+## `extract.0.countnotes.autopos` - automat. positionieren {#extract.0.countnotes.autopos}
+
+Hier kannst du die automatische Positionierung einschalten. Dabei werden
+Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
+Wenn diese Option ausgeschaltet, gelten die Werte von `pos`. Dies kann
+bei manchen Stücken eine sinnvollere Einstellugn sein.
+
+Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
+verschieben.
+
+        "autopos": true
+          
+
+## `extract.0.countnotes.pos` - Position {#extract.0.countnotes.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [3, -2]
+          
+
+## `extract.0.countnotes.style` - Stil {#extract.0.countnotes.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "smaller"
+          
+
+## `extract.0.countnotes.voices` - Stimmen {#extract.0.countnotes.voices}
+
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
+angeben, die Zählmarken bekommen sollen.
+
+        "voices": []
+          
+
+## `extract.0.filenamepart` - Filename-Zusatz {#extract.0.filenamepart}
+
+Hier kannst du einen Zusatz angeben, um welchen der Filename der
+PDF-Dateien für diesen Auszug ergänzt werden soll. Auf diese Weise wird
+jeder Auszug in einer eigenen Datei wiedergegeben.
+
+Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von
+`extract.0.title` gebildet.
+
+> **Hinweis**: Bitte achte darauf, daß jeder Auszug einen eindeutigen
+> Filename-Zusatz oder Titel hat. Sonst werden mehrere Auszüge in die
+> gleiche Datei geschrieben (und nur der letzte bleibt übrig).
+
+        "filenamepart": "alle-stimmen"
+          
+
+## `extract.0.flowlines` - Flußlinien {#extract.0.flowlines}
+
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
+angeben, für die Flußlinien eingezeichnet werden sollen.
+
+        "flowlines": [1, 3]
+          
+
+## `extract.0.jumplines` - Sprunglinien {#extract.0.jumplines}
+
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
+angeben, für die Sprunglinien eingezeichnet werden sollen.
+
+        "jumplines": [1, 3]
+          
+
+## `extract.0.layout` - Layout {#extract.0.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {
+          "DRAWING_AREA_SIZE" : [400, 282],
+          "ELLIPSE_SIZE"      : [3.5, 1.7],
+          "LINE_MEDIUM"       : 0.3,
+          "LINE_THICK"        : 0.5,
+          "LINE_THIN"         : 0.1,
+          "REST_SIZE"         : [4, 2],
+          "limit_a3"          : true,
+          "minc"              : {},
+          "packer"            : {
+            "pack_max_spreadfactor" : 2,
+            "pack_method"           : 0,
+            "pack_min_increment"    : 0.2
+          }
+        }
+          
+
+## `extract.0.layout.DRAWING_AREA_SIZE` - Größe der Zeichenfläche {#extract.0.layout.DRAWING_AREA_SIZE}
+
+Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
+aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
+großen Stücken noch ein bisschen mehr Platz ausreizen.
+
+        "DRAWING_AREA_SIZE": [400, 282]
+          
+
+## `extract.0.layout.ELLIPSE_SIZE` - Notengröße {#extract.0.layout.ELLIPSE_SIZE}
+
+Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
+sind [2-4, 1.2-2].
+
+> **Hinweis**: Die Größe der anderen Noten werden ausgehend von diesem
+> Wert berechnet.
+>
+> Da die Noten auch mit der dicken Linie umrandet werden, kann auch die
+> "Linienstärke `dick`" reeduziert werden, um ein filigraneres Notenbild
+> zu erhalten.
+
+        "ELLIPSE_SIZE": [3.5, 1.7]
+          
+
+## `extract.0.layout.LINE_MEDIUM` - Linienstärke mittel {#extract.0.layout.LINE_MEDIUM}
+
+Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
+
+        "LINE_MEDIUM": 0.3
+          
+
+## `extract.0.layout.LINE_THICK` - Linienstärke dick {#extract.0.layout.LINE_THICK}
+
+Hier stellst du die Breite (in mm) von dicken Linien ein.
+
+        "LINE_THICK": 0.5
+          
+
+## `extract.0.layout.LINE_THIN` - Linienstärke dünn {#extract.0.layout.LINE_THIN}
+
+Hier stellst du die Breite (in mm) von dünnen Linien ein.
+
+        "LINE_THIN": 0.1
+          
+
+## `extract.0.layout.REST_SIZE` - Pausengröße {#extract.0.layout.REST_SIZE}
+
+Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
+[2-4, 1.2-2]
+
+> **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
+> berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
+
+        "REST_SIZE": [4, 2]
+          
+
+## `extract.0.layout.limit_a3` - Begrenzung auf A3 {#extract.0.layout.limit_a3}
+
+Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
+Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
+angeshnitten.
+
+        "limit_a3": true
+          
+
+## `extract.0.layout.minc` - extra Vorschub {#extract.0.layout.minc}
+
+Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
+
+> **Hinweis**: Diese Funktion ist nun wirklich für die ganzen Experten.
+> Bitte verwende sie also nur, wenn du weißt, was du tust.
+> Anwendungsfälle für diese Funktion:
+>
+> -   Linien (z.B. Sprunglinien) gehen unglücklich durch andere Noten
+>     oder Beschriftungen
+> -   Bei sehr dichten Layouts gehen Taktstriche in die vorherige Note
+> -   Man hat sehr viele Noten, könnte aber einen Teil in eine freie
+>     Fläche schieben. In diesem fall würde die Flusslinie teilweise
+>     nach oben gehen.
+
+Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
+Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
+Zeitpunkt.
+
+        "minc": {}
+          
+
+## `extract.0.layout.packer` - Packer {#extract.0.layout.packer}
+
+Hier kannst du weitere Einzelheiten für die vertikale Anordnung der
+Noten konfigurieren. Es sind subtile Feinheiten, welche den Unterschied
+ausmachen. Daher sind diese Funktionen noch experimentell.
+
+        "packer": {
+          "pack_max_spreadfactor" : 2,
+          "pack_method"           : 0,
+          "pack_min_increment"    : 0.2
+        }
+          
+
+## `extract.0.layout.packer.pack_max_spreadfactor` - max. Spreizung {#extract.0.layout.packer.pack_max_spreadfactor}
+
+Nach der Berechnung des maximal komprimierten Layouts versucht
+Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfläche voll
+ausgefüllt wird.
+
+Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der
+Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen Stücken aus,
+welche das Blatt nicht vollständig ausfüllen.
+
+Bei sehr kurzen Stücken ist es sinnvoll, die Spreizung zu begrenzen,
+weil sonst die Noten sehr weit auseinander liegen.
+
+        "pack_max_spreadfactor": 2
+          
+
+## `extract.0.layout.packer.pack_method` - Packmethode {#extract.0.layout.packer.pack_method}
+
+Hier kannst du die pack-Methode auswählen
+
+-   **0** : Die bisherige Methode: diese geht nach jedem Schrift um die
+    Höhe der größten Note weiter
+
+-   **1** : Kopmpakt: diese geht nur dann weiter, wenn
+
+    -   ein Richtungswechsel der Melodie vorliegt
+    -   Noten übereinander gezeichnet würden
+
+    Das bedeutet dass bei monotonen Melodien die Noten enger gesetzt
+    werden.
+
+    > **Hinweis**: Diese Methode eignet sich am besten für lange,
+    > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
+    > Stücken schnell verloren. Bei dieser Methode sind die
+    > Synchronisiationslinien nicht immer gut sichtbar.
+
+        "pack_method": 0
+
+## `extract.0.layout.packer.pack_min_increment` - min. Inkrement {#extract.0.layout.packer.pack_min_increment}
+
+Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt
+wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
+geschaltet.
+
+**Beispiele**:
+
+-   **0.0**: es entstehen horizontale Flußlinien
+-   **1.0**: es wird mindests um eine ganze Note weiter geschaltet
+-   **0.2**: es wird um 20% einer ganzen Note weiter geschaltet. Dies
+    liefert angenehme Ergebnisse.
+
+        "pack_min_increment": 0.2
+
+## `extract.0.layoutlines` - Stimmen für Layout {#extract.0.layoutlines}
+
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
+angeben, die zur die Berechnung des vertikalen Anordnugn der Noten
+(Layout) herangezogen werden sollen.
+
+Üblicherweise werden alle Stimmen für die Berechnung des Layouts
+herangezogen. Bei langen Stücken kann es aber sinnvoll sein, nur die
+dargstellten Stimmmen zur Berechnung des Layouts zu berücksichtigen, um
+ein ausgwogeneres Notenbild zu bekommen.
+
+> **Hinweis**: Auch wenn der Parameter `layoutlines` heißt, bewirkt er
+> nicht, dass irgendwelche Linien eingezeichnet werden.
+>
+> **Hinweis**: Bei einem Stück mit vielen Noten ist es sinnvoll, hier
+> nur die im aktuellen Auszug dargestellten Stimmen aufzulisten. Damit
+> ist zwar das Notenbild nicht mehr bei allen Auszügen gleich, die Noten
+> sind aber besser verteilt.
+
+        "layoutlines": [1, 2, 3, 4]
+          
+
+## `extract.0.legend` - Legende {#extract.0.legend}
+
+Hier kannst du die Darstellung der Legende konfigurieren. Dabei wird
+unterschieden zwischen
+
+-   `pos` - Position des Titels des Musikstückes
+-   `spos` - Position der Sublegende, d.h. der weiteren Angaben zum
+    Musikstück
+
+> **Hinweis**: Die Legende wird vorzugsweise durch Verschieben mit der
+> Maus positioniert. Für eine genaue positionierung kann jedoch die
+> Eingabe über die Bildschirmmaske sinnvol sein.
+
+        "legend": {"pos": [320, 7], "spos": [320, 27]}
+          
+
+## `extract.0.legend.pos` - Position {#extract.0.legend.pos}
+
+Hier kannst du die Darstellung des Titels des Musikstückes angeben. Die
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "pos": [320, 7]
+          
+
+## `extract.0.legend.spos` - Position Sublegende {#extract.0.legend.spos}
+
+Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
+Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
+von horizontaler / vertikaler Position.
+
+        "spos": [320, 27]
+          
+
+## `extract.0.lyrics` - Liedtexte {#extract.0.lyrics}
+
+Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den
+Liedtext auf mehrer Blöcke aufteilen.
+
+Ein einzelner Block listet die Strophen auf, die er enthält, und die
+gemeinsam poitioniert werden.
+
+        "lyrics": {}
+          
+
+## `extract.0.nonflowrest` - Begleitpausen {#extract.0.nonflowrest}
+
+Hier kannst du einstellen, ob in den Begleitstimmen ebenfalls die Pausen
+dargestellt werden sollen. Eine Stimme wird dann Begleitstimme
+betrachtet, wenn sie keine Flußlinie hat.
+
+Normalerweise ist es nicht sinnvoll, in den Begleitstimmen Pausen
+darzustellen, da der Spieler sich ja an den Pausen in der Flußlinie
+orientiert.
+
+        "nonflowrest": false
+          
+
+## `extract.0.notes` - Seitenbeschriftungen {#extract.0.notes}
+
+Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
+Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
+
+> **Hinweis**: Es kann aber auch sinnvoll sein eine sprechende
+> Bezeichnung für die Beschriftung manuell vorzugeben um ihrer
+> spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
+> allerdings nur in der Textansicht möglich.
+
+        "notes": {}
+          
+
+## `extract.0.printer` - Drucker {#extract.0.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset"   : [0, 0],
+          "a4_offset"   : [-5, 0],
+          "show_border" : false
+        }
+          
+
+## `extract.0.printer.a3_offset` - Offset für A3 {#extract.0.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [0, 0]
+          
+
+## `extract.0.printer.a4_offset` - Offset für A4 {#extract.0.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": [-5, 0]
+          
+
+## `extract.0.printer.show_border` - Blattbegrenzg. zeichnen {#extract.0.printer.show_border}
+
+Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
+Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
+Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
+auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
+Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
+
+Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
+Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
+unten ca. 10 mm.
+
+Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
+Situation verbessert.
+
+        "show_border": false
+          
+
+## `extract.0.repeatsigns` - Wiederholungszeichen {#extract.0.repeatsigns}
+
+Hier kannst du die Darstellung der Wiederholungszeichen steuern. Dabei
+wird angegeben, für welche Stimmen Wiederholgungszeichen gedruckt
+werden, wie die Wiederholungszeichen gedruckt werden, und wie sie
+positioniert werden.
+
+        "repeatsigns": {
+          "left"   : {"pos": [-7, -2], "style": "bold", "text": "|:"},
+          "right"  : {"pos": [5, -2], "style": "bold", "text": ":|"},
+          "voices" : []
+        }
+          
+
+## `extract.0.repeatsigns.left` - links {#extract.0.repeatsigns.left}
+
+Hier kannst du die Darstellung des linken Wiederholungszeichen steuern.
+
+        "left": {"pos": [-7, -2], "style": "bold", "text": "|:"}
+          
+
+## `extract.0.repeatsigns.left.pos` - Position {#extract.0.repeatsigns.left.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [-7, -2]
+          
+
+## `extract.0.repeatsigns.left.style` - Stil {#extract.0.repeatsigns.left.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "bold"
+          
+
+## `extract.0.repeatsigns.left.text` - Text {#extract.0.repeatsigns.left.text}
+
+Hier gibst du den Text an, der als linkes Wiederholungszeichen
+ausgegeben werden soll.
+
+        "text": "|:"
+          
+
+## `extract.0.repeatsigns.right` - rechts {#extract.0.repeatsigns.right}
+
+Hier kannst du die Darstellung des rechten Wiederholungszeichen steuern.
+
+        "right": {"pos": [5, -2], "style": "bold", "text": ":|"}
+          
+
+## `extract.0.repeatsigns.right.pos` - Position {#extract.0.repeatsigns.right.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [5, -2]
+          
+
+## `extract.0.repeatsigns.right.style` - Stil {#extract.0.repeatsigns.right.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "bold"
+          
+
+## `extract.0.repeatsigns.right.text` - Text {#extract.0.repeatsigns.right.text}
+
+Hier gibst du den Text an, der als rechtes Wiederholungszeichen
+ausgegeben werden soll.
+
+        "text": ":|"
+          
+
+## `extract.0.repeatsigns.voices` - Stimmen {#extract.0.repeatsigns.voices}
+
+Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, für
+welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
+
+> Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine
+> Sprunglinien mehr dar.
+
+        "voices": []
+          
+
+## `extract.0.startpos` - Startposition {#extract.0.startpos}
+
+Hier kannst du die Position von oben angeben, an welcher die Harfennoten
+beinnen. Damit kannst du ein ausgewogeneres Bild erhalten.
+
+> **Hinweis**:Durch diese Funktion wird auch der Bereich verkleinert, in
+> dem die Noten dargestellt werden. Sie ist daher vorzugsweise bei
+> kurzen Stücken anzuwenden, die sonst oben auf der Seite hängen.
+
+        "startpos": 15
+          
+
+## `extract.0.stringnames` - Saitennamen {#extract.0.stringnames}
+
+Hier kannst du stueern, ob und wie Saitennamen auf das
+Unterlegnotenblatt gedruckt werden.
+
+        "stringnames": {
+          "marks" : {"hpos": [43, 55, 79], "vpos": [11]},
+          "style" : "small",
+          "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+          "vpos"  : []
+        }
+          
+
+## `extract.0.stringnames.marks` - Saitenmarken {#extract.0.stringnames.marks}
+
+Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
+
+        "marks": {"hpos": [43, 55, 79], "vpos": [11]}
+          
+
+## `extract.0.stringnames.marks.hpos` - horizontale Position {#extract.0.stringnames.marks.hpos}
+
+Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
+ist eine durch Komma getrennte liste von Midi-Pitches.
+
+Die Angabe `[43, 55, 79]` druckt Saitenmarken bei `G, G, g'`. also bei
+den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
+
+        "hpos": [43, 55, 79]
+          
+
+## `extract.0.stringnames.marks.vpos` - vertikale Position {#extract.0.stringnames.marks.vpos}
+
+Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in
+mm.
+
+        "vpos": [11]
+          
+
+## `extract.0.stringnames.style` - Stil {#extract.0.stringnames.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "small"
+          
+
+## `extract.0.stringnames.text` - Text {#extract.0.stringnames.text}
+
+Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
+Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
+bekommen.
+
+In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+
+**Beispiel:**
+
+-   `+ -` erzeugt `+ - +  + - + -`
+-   `C Cis D Dis E F Fis G Gis A Aia Bb B` erzeugt die regulären
+    Saitennamen
+
+        "text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G"
+
+## `extract.0.stringnames.vpos` - vertikale Position {#extract.0.stringnames.vpos}
+
+Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in
+mm.
+
+        "vpos": []
+          
+
+## `extract.0.subflowlines` - Hilfsmelodielinien {#extract.0.subflowlines}
+
+Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
+angeben, für die Unterflußlinien eingezeichnet werden sollen.
+
+        "subflowlines": [2, 4]
+          
+
+## `extract.0.synchlines` - Synchronisationslinien {#extract.0.synchlines}
+
+Hier kannst du angeben, welche Stimmenpaare über Synchronisationslinien
+verbunden werden sollen.
+
+Die Angabe erfolgt in der Bildschirmmaske als eine durch Komma
+separierte Liste von Stimmenpaaren (darin die Stimmen durch "-"
+getrennt).
+
+Die Angabe "`1-2, 3-4`" bedeutet beispielsweise, dass zwischen den
+Stimmen 1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie
+gezeichnet werden soll.
+
+> **Hinweis**:In der Texteingabe wird das als eine Liste von
+> zweiwertigen Listen dargestellt.
+
+        "synchlines": [[1, 2], [3, 4]]
+          
+
+## `extract.0.title` - Titel {#extract.0.title}
+
+Hier spezifizierst du den Titel des Auszuges. Er wird in der Legende mit
+ausgegeben.
+
+> **Hinweis**: Der Titel des Auszuges wird an die Angabe in der Zeile
+> "F:" angehängt, falls nicht noch ein `extract.0.filenamepart`
+> spezifiziert ist.
+
+        "title": "alle Stimmen"
+          
+
+## `extract.0.voices` - Stimmen {#extract.0.voices}
+
+Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste
+von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
+`%%score` - Anweisung in der ABC-Notation.
+
+        "voices": [1, 2, 3, 4]
+          
+
+## `presets` - Vorlagen {#presets}
+
+TODO: Helptext für presets einfügen
+
+        "presets": {
+          "layout"  : {
+            "layout_compact" : {
+              "ELLIPSE_SIZE" : [3.5, 1.3],
+              "LINE_MEDIUM"  : 0.2,
+              "LINE_THICK"   : 0.3,
+              "REST_SIZE"    : [4, 1.5]
+            },
+            "layout_large"   : {
+              "ELLIPSE_SIZE" : [4, 2],
+              "LINE_MEDIUM"  : 0.3,
+              "LINE_THICK"   : 0.7,
+              "REST_SIZE"    : [4, 2]
+            },
+            "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
+          },
+          "notes"   : {
+            "T01_number"               : {
+              "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+            },
+            "T01_number_extract"       : {
+              "value" : {"pos": [411, 17], "style": "bold", "text": "-X"}
+            },
+            "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
+            "T02_copyright_music"      : {
+              "value" : {
+                "pos"   : [340, 251],
+                "style" : "small",
+                "text"  : "© 2017\n"
+              }
+            },
+            "T03_copyright_harpnotes"  : {
+              "value" : {
+                "pos"   : [340, 260],
+                "style" : "small",
+                "text"  : "© 2017 Notenbild: zupfnoter.de"
+              }
+            },
+            "T04_to_order"             : {
+              "value" : {"pos": [340, 242], "style": "small", "text": null}
+            },
+            "T99_do_not_copy"          : {
+              "value" : {
+                "pos"   : [380, 284],
+                "style" : "small_bold",
+                "text"  : null
+              }
+            }
+          },
+          "printer" : {
+            "printer_centric" : {
+              "layout"  : {"limit_a3": true},
+              "printer" : {
+                "a3_offset"   : [0, 0],
+                "a4_offset"   : [5, 0],
+                "show_border" : false
+              }
+            },
+            "printer_left"    : {
+              "layout"  : {"limit_a3": false},
+              "printer" : {
+                "a3_offset"   : [-10, 0],
+                "a4_offset"   : [-5, 0],
+                "show_border" : false
+              }
+            },
+            "printer_right"   : {
+              "layout"  : {"limit_a3": false},
+              "printer" : {
+                "a3_offset"   : [10, 0],
+                "a4_offset"   : [5, 0],
+                "show_border" : false
+              }
+            }
+          }
+        }
+          
+
+## `presets.layout` - Layout {#presets.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {
+          "layout_compact" : {
+            "ELLIPSE_SIZE" : [3.5, 1.3],
+            "LINE_MEDIUM"  : 0.2,
+            "LINE_THICK"   : 0.3,
+            "REST_SIZE"    : [4, 1.5]
+          },
+          "layout_large"   : {
+            "ELLIPSE_SIZE" : [4, 2],
+            "LINE_MEDIUM"  : 0.3,
+            "LINE_THICK"   : 0.7,
+            "REST_SIZE"    : [4, 2]
+          },
+          "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
+        }
+          
+
+## `presets.layout.layout_compact` - Kompaktes Layout {#presets.layout.layout_compact}
+
+TODO: Helptext für presets.layout.layout_compact einfügen
+
+        "layout_compact": {
+          "ELLIPSE_SIZE" : [3.5, 1.3],
+          "LINE_MEDIUM"  : 0.2,
+          "LINE_THICK"   : 0.3,
+          "REST_SIZE"    : [4, 1.5]
+        }
+          
+
+## `presets.layout.layout_compact.ELLIPSE_SIZE` - Notengröße {#presets.layout.layout_compact.ELLIPSE_SIZE}
+
+Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
+sind [2-4, 1.2-2].
+
+> **Hinweis**: Die Größe der anderen Noten werden ausgehend von diesem
+> Wert berechnet.
+>
+> Da die Noten auch mit der dicken Linie umrandet werden, kann auch die
+> "Linienstärke `dick`" reeduziert werden, um ein filigraneres Notenbild
+> zu erhalten.
+
+        "ELLIPSE_SIZE": [3.5, 1.3]
+          
+
+## `presets.layout.layout_compact.LINE_MEDIUM` - Linienstärke mittel {#presets.layout.layout_compact.LINE_MEDIUM}
+
+TODO: Helptext für presets.layout.layout_compact.LINE_MEDIUM einfügen
+
+        "LINE_MEDIUM": 0.2
+          
+
+## `presets.layout.layout_compact.LINE_THICK` - Linienstärke dick {#presets.layout.layout_compact.LINE_THICK}
+
+TODO: Helptext für presets.layout.layout_compact.LINE_THICK einfügen
+
+        "LINE_THICK": 0.3
+          
+
+## `presets.layout.layout_compact.REST_SIZE` - Pausengröße {#presets.layout.layout_compact.REST_SIZE}
+
+Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
+[2-4, 1.2-2]
+
+> **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
+> berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
+
+        "REST_SIZE": [4, 1.5]
+          
+
+## `presets.layout.layout_large` - Großes Layout {#presets.layout.layout_large}
+
+TODO: Helptext für presets.layout.layout_large einfügen
+
+        "layout_large": {
+          "ELLIPSE_SIZE" : [4, 2],
+          "LINE_MEDIUM"  : 0.3,
+          "LINE_THICK"   : 0.7,
+          "REST_SIZE"    : [4, 2]
+        }
+          
+
+## `presets.layout.layout_large.ELLIPSE_SIZE` - Notengröße {#presets.layout.layout_large.ELLIPSE_SIZE}
+
+Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
+sind [2-4, 1.2-2].
+
+> **Hinweis**: Die Größe der anderen Noten werden ausgehend von diesem
+> Wert berechnet.
+>
+> Da die Noten auch mit der dicken Linie umrandet werden, kann auch die
+> "Linienstärke `dick`" reeduziert werden, um ein filigraneres Notenbild
+> zu erhalten.
+
+        "ELLIPSE_SIZE": [4, 2]
+          
+
+## `presets.layout.layout_large.LINE_MEDIUM` - Linienstärke mittel {#presets.layout.layout_large.LINE_MEDIUM}
+
+TODO: Helptext für presets.layout.layout_large.LINE_MEDIUM einfügen
+
+        "LINE_MEDIUM": 0.3
+          
+
+## `presets.layout.layout_large.LINE_THICK` - Linienstärke dick {#presets.layout.layout_large.LINE_THICK}
+
+TODO: Helptext für presets.layout.layout_large.LINE_THICK einfügen
+
+        "LINE_THICK": 0.7
+          
+
+## `presets.layout.layout_large.REST_SIZE` - Pausengröße {#presets.layout.layout_large.REST_SIZE}
+
+Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
+[2-4, 1.2-2]
+
+> **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
+> berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
+
+        "REST_SIZE": [4, 2]
+          
+
+## `presets.layout.layout_regular` - Normales Layout {#presets.layout.layout_regular}
+
+TODO: Helptext für presets.layout.layout_regular einfügen
+
+        "layout_regular": "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
+          
+
+## `presets.notes` - Seitenbeschriftungen {#presets.notes}
+
+Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
+Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
+
+> **Hinweis**: Es kann aber auch sinnvoll sein eine sprechende
+> Bezeichnung für die Beschriftung manuell vorzugeben um ihrer
+> spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
+> allerdings nur in der Textansicht möglich.
+
+        "notes": {
+          "T01_number"               : {
+            "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+          },
+          "T01_number_extract"       : {
+            "value" : {"pos": [411, 17], "style": "bold", "text": "-X"}
+          },
+          "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
+          "T02_copyright_music"      : {
+            "value" : {
+              "pos"   : [340, 251],
+              "style" : "small",
+              "text"  : "© 2017\n"
+            }
+          },
+          "T03_copyright_harpnotes"  : {
+            "value" : {
+              "pos"   : [340, 260],
+              "style" : "small",
+              "text"  : "© 2017 Notenbild: zupfnoter.de"
+            }
+          },
+          "T04_to_order"             : {
+            "value" : {"pos": [340, 242], "style": "small", "text": null}
+          },
+          "T99_do_not_copy"          : {
+            "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
+          }
+        }
+          
+
+## `presets.notes.T01_number` - T01 Nummer {#presets.notes.T01_number}
+
+TODO: Helptext für presets.notes.T01_number einfügen
+
+        "T01_number": {
+          "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+        }
+          
+
+## `presets.notes.T01_number.value` - Wert {#presets.notes.T01_number.value}
+
+TODO: Helptext für presets.notes.T01_number.value einfügen
+
+        "value": {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+          
+
+## `presets.notes.T01_number.value.pos` - Position {#presets.notes.T01_number.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [393, 17]
+          
+
+## `presets.notes.T01_number.value.style` - Stil {#presets.notes.T01_number.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "bold"
+          
+
+## `presets.notes.T01_number.value.text` - Text {#presets.notes.T01_number.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "XXX-999"
+          
+
+## `presets.notes.T01_number_extract` - T01 Auszug-Nummer {#presets.notes.T01_number_extract}
+
+Dieses Template fügt zwei Zeichem am Ende der Nummer an. Damit kann man
+den jeweiligen Auszug kennzeichen.
+
+Ein sinnvolles schema ist:
+
+-   `-A` - Sopran Alt - per default Auszug 1
+-   `-B` - Tenor Bass - per default Auszug 2
+-   `-M` - Nur Melodie - am besten Auszug 3 - ist aber nicht per default
+    konfiguriert
+-   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
+    aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
+
+        "T01_number_extract": {"value": {"pos": [411, 17], "style": "bold", "text": "-X"}}
+
+## `presets.notes.T01_number_extract.value` - Wert {#presets.notes.T01_number_extract.value}
+
+TODO: Helptext für presets.notes.T01_number_extract.value einfügen
+
+        "value": {"pos": [411, 17], "style": "bold", "text": "-X"}
+          
+
+## `presets.notes.T01_number_extract.value.pos` - Position {#presets.notes.T01_number_extract.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [411, 17]
+          
+
+## `presets.notes.T01_number_extract.value.style` - Stil {#presets.notes.T01_number_extract.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "bold"
+          
+
+## `presets.notes.T01_number_extract.value.text` - Text {#presets.notes.T01_number_extract.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "-X"
+          
+
+## `presets.notes.T01_number_extract_value` - T01 Auszugn Nummer Wert {#presets.notes.T01_number_extract_value}
+
+TODO: Helptext für presets.notes.T01_number_extract_value einfügen
+
+        "T01_number_extract_value": {"key": "T01_number_extract", "value": {"text": "-X"}}
+          
+
+## `presets.notes.T01_number_extract_value.key` - schlüssel {#presets.notes.T01_number_extract_value.key}
+
+TODO: Helptext für presets.notes.T01_number_extract_value.key
+einfügen
+
+        "key": "T01_number_extract"
+          
+
+## `presets.notes.T01_number_extract_value.value` - Wert {#presets.notes.T01_number_extract_value.value}
+
+TODO: Helptext für presets.notes.T01_number_extract_value.value
+einfügen
+
+        "value": {"text": "-X"}
+          
+
+## `presets.notes.T01_number_extract_value.value.text` - Text {#presets.notes.T01_number_extract_value.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "-X"
+          
+
+## `presets.notes.T02_copyright_music` - T02 Copyright Musik {#presets.notes.T02_copyright_music}
+
+Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
+das Copyright auf die Komposition angegeben.
+
+        "T02_copyright_music": {
+          "value" : {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+        }
+          
+
+## `presets.notes.T02_copyright_music.value` - Wert {#presets.notes.T02_copyright_music.value}
+
+TODO: Helptext für presets.notes.T02_copyright_music.value einfügen
+
+        "value": {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+          
+
+## `presets.notes.T02_copyright_music.value.pos` - Position {#presets.notes.T02_copyright_music.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [340, 251]
+          
+
+## `presets.notes.T02_copyright_music.value.style` - Stil {#presets.notes.T02_copyright_music.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "small"
+          
+
+## `presets.notes.T02_copyright_music.value.text` - Text {#presets.notes.T02_copyright_music.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "© 2017\n"
+          
+
+## `presets.notes.T03_copyright_harpnotes` - T03 Copyright Unterlegnoten {#presets.notes.T03_copyright_harpnotes}
+
+Dieses Template fügt einen Copyrightvermerk für das Unterlgnotenbild
+ein. Damit reklamierst du ein Copyright für die Umsetzung auf die
+Tischharfe
+
+        "T03_copyright_harpnotes": {
+          "value" : {
+            "pos"   : [340, 260],
+            "style" : "small",
+            "text"  : "© 2017 Notenbild: zupfnoter.de"
+          }
+        }
+          
+
+## `presets.notes.T03_copyright_harpnotes.value` - Wert {#presets.notes.T03_copyright_harpnotes.value}
+
+TODO: Helptext für presets.notes.T03_copyright_harpnotes.value
+einfügen
+
+        "value": {
+          "pos"   : [340, 260],
+          "style" : "small",
+          "text"  : "© 2017 Notenbild: zupfnoter.de"
+        }
+          
+
+## `presets.notes.T03_copyright_harpnotes.value.pos` - Position {#presets.notes.T03_copyright_harpnotes.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [340, 260]
+          
+
+## `presets.notes.T03_copyright_harpnotes.value.style` - Stil {#presets.notes.T03_copyright_harpnotes.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "small"
+          
+
+## `presets.notes.T03_copyright_harpnotes.value.text` - Text {#presets.notes.T03_copyright_harpnotes.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "© 2017 Notenbild: zupfnoter.de"
+          
+
+## `presets.notes.T04_to_order` - T04 zu beziehen bei {#presets.notes.T04_to_order}
+
+Dieses Template fügt eine Notiz ein wo man das Unterlegnotenblatt
+beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
+Weise vertrieben werden.
+
+        "T04_to_order": {
+          "value" : {"pos": [340, 242], "style": "small", "text": null}
+        }
+          
+
+## `presets.notes.T04_to_order.value` - Wert {#presets.notes.T04_to_order.value}
+
+TODO: Helptext für presets.notes.T04_to_order.value einfügen
+
+        "value": {"pos": [340, 242], "style": "small", "text": null}
+          
+
+## `presets.notes.T04_to_order.value.pos` - Position {#presets.notes.T04_to_order.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [340, 242]
+          
+
+## `presets.notes.T04_to_order.value.style` - Stil {#presets.notes.T04_to_order.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "small"
+          
+
+## `presets.notes.T04_to_order.value.text` - Text {#presets.notes.T04_to_order.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": null
+          
+
+## `presets.notes.T99_do_not_copy` - T99 bitte nicht kopieren {#presets.notes.T99_do_not_copy}
+
+TODO: Helptext für presets.notes.T99_do_not_copy einfügen
+
+        "T99_do_not_copy": {
+          "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
+        }
+          
+
+## `presets.notes.T99_do_not_copy.value` - Wert {#presets.notes.T99_do_not_copy.value}
+
+TODO: Helptext für presets.notes.T99_do_not_copy.value einfügen
+
+        "value": {"pos": [380, 284], "style": "small_bold", "text": null}
+          
+
+## `presets.notes.T99_do_not_copy.value.pos` - Position {#presets.notes.T99_do_not_copy.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [380, 284]
+          
+
+## `presets.notes.T99_do_not_copy.value.style` - Stil {#presets.notes.T99_do_not_copy.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "small_bold"
+          
+
+## `presets.notes.T99_do_not_copy.value.text` - Text {#presets.notes.T99_do_not_copy.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": null
+          
+
+## `presets.printer` - Drucker {#presets.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "printer_centric" : {
+            "layout"  : {"limit_a3": true},
+            "printer" : {
+              "a3_offset"   : [0, 0],
+              "a4_offset"   : [5, 0],
+              "show_border" : false
+            }
+          },
+          "printer_left"    : {
+            "layout"  : {"limit_a3": false},
+            "printer" : {
+              "a3_offset"   : [-10, 0],
+              "a4_offset"   : [-5, 0],
+              "show_border" : false
+            }
+          },
+          "printer_right"   : {
+            "layout"  : {"limit_a3": false},
+            "printer" : {
+              "a3_offset"   : [10, 0],
+              "a4_offset"   : [5, 0],
+              "show_border" : false
+            }
+          }
+        }
+          
+
+## `presets.printer.printer_centric` - Druck zentieren {#presets.printer.printer_centric}
+
+TODO: Helptext für presets.printer.printer_centric einfügen
+
+        "printer_centric": {
+          "layout"  : {"limit_a3": true},
+          "printer" : {
+            "a3_offset"   : [0, 0],
+            "a4_offset"   : [5, 0],
+            "show_border" : false
+          }
+        }
+          
+
+## `presets.printer.printer_centric.layout` - Layout {#presets.printer.printer_centric.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {"limit_a3": true}
+          
+
+## `presets.printer.printer_centric.layout.limit_a3` - Begrenzung auf A3 {#presets.printer.printer_centric.layout.limit_a3}
+
+Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
+Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
+angeshnitten.
+
+        "limit_a3": true
+          
+
+## `presets.printer.printer_centric.printer` - Drucker {#presets.printer.printer_centric.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset"   : [0, 0],
+          "a4_offset"   : [5, 0],
+          "show_border" : false
+        }
+          
+
+## `presets.printer.printer_centric.printer.a3_offset` - Offset für A3 {#presets.printer.printer_centric.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [0, 0]
+          
+
+## `presets.printer.printer_centric.printer.a4_offset` - Offset für A4 {#presets.printer.printer_centric.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": [5, 0]
+          
+
+## `presets.printer.printer_centric.printer.show_border` - Blattbegrenzg. zeichnen {#presets.printer.printer_centric.printer.show_border}
+
+Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
+Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
+Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
+auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
+Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
+
+Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
+Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
+unten ca. 10 mm.
+
+Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
+Situation verbessert.
+
+        "show_border": false
+          
+
+## `presets.printer.printer_left` - Druck nach links schieben {#presets.printer.printer_left}
+
+TODO: Helptext für presets.printer.printer_left einfügen
+
+        "printer_left": {
+          "layout"  : {"limit_a3": false},
+          "printer" : {
+            "a3_offset"   : [-10, 0],
+            "a4_offset"   : [-5, 0],
+            "show_border" : false
+          }
+        }
+          
+
+## `presets.printer.printer_left.layout` - Layout {#presets.printer.printer_left.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {"limit_a3": false}
+          
+
+## `presets.printer.printer_left.layout.limit_a3` - Begrenzung auf A3 {#presets.printer.printer_left.layout.limit_a3}
+
+Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
+Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
+angeshnitten.
+
+        "limit_a3": false
+          
+
+## `presets.printer.printer_left.printer` - Drucker {#presets.printer.printer_left.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset"   : [-10, 0],
+          "a4_offset"   : [-5, 0],
+          "show_border" : false
+        }
+          
+
+## `presets.printer.printer_left.printer.a3_offset` - Offset für A3 {#presets.printer.printer_left.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [-10, 0]
+          
+
+## `presets.printer.printer_left.printer.a4_offset` - Offset für A4 {#presets.printer.printer_left.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": [-5, 0]
+          
+
+## `presets.printer.printer_left.printer.show_border` - Blattbegrenzg. zeichnen {#presets.printer.printer_left.printer.show_border}
+
+Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
+Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
+Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
+auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
+Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
+
+Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
+Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
+unten ca. 10 mm.
+
+Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
+Situation verbessert.
+
+        "show_border": false
+          
+
+## `presets.printer.printer_right` - Druck nach rechts schieben {#presets.printer.printer_right}
+
+TODO: Helptext für presets.printer.printer_right einfügen
+
+        "printer_right": {
+          "layout"  : {"limit_a3": false},
+          "printer" : {
+            "a3_offset"   : [10, 0],
+            "a4_offset"   : [5, 0],
+            "show_border" : false
+          }
+        }
+          
+
+## `presets.printer.printer_right.layout` - Layout {#presets.printer.printer_right.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {"limit_a3": false}
+          
+
+## `presets.printer.printer_right.layout.limit_a3` - Begrenzung auf A3 {#presets.printer.printer_right.layout.limit_a3}
+
+Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
+Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
+angeshnitten.
+
+        "limit_a3": false
+          
+
+## `presets.printer.printer_right.printer` - Drucker {#presets.printer.printer_right.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset"   : [10, 0],
+          "a4_offset"   : [5, 0],
+          "show_border" : false
+        }
+          
+
+## `presets.printer.printer_right.printer.a3_offset` - Offset für A3 {#presets.printer.printer_right.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [10, 0]
+          
+
+## `presets.printer.printer_right.printer.a4_offset` - Offset für A4 {#presets.printer.printer_right.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": [5, 0]
+          
+
+## `presets.printer.printer_right.printer.show_border` - Blattbegrenzg. zeichnen {#presets.printer.printer_right.printer.show_border}
+
+Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
+Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
+Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
+auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
+Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
+
+Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
+Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
+unten ca. 10 mm.
+
+Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
+Situation verbessert.
+
+        "show_border": false
+          
+
+## `produce` - Auszüge {#produce}
+
+Hier kannst du eine Liste der Auszuüge angeben, für welche eine
+PDF-DAtei mit erzeugt werden soll.
+
+> **Hinweis:** Manchmal ist es sinnvoll, Auszüge nur zur Bearbeitung
+> anzulegen, diese aber nicht zu drucken. Es kommt auch vor, dass Auszug
+> 0 nur verwendet wird, um Vorgaben für die anderen Auszüge zu machen,
+> nicht aber um ihn wirklich auszudrucken.
+
+        "produce": [0]
+          
+
+## `restposition` - Position der Pausen {#restposition}
+
+Hier kannst du angeben an welcher Tonhöhe die Pausen eingetragenw werden
+sollen. Pausen haben an sich keine Tonhöhe, daher ist es nicht
+eindeutig, wie sie im Umterlegnotenblatt positioniert werden sollen.
+
+-   `center` positioniert die Pause zwischen die vorherige und die
+    nächste Note
+-   `next` positioniert die Pause auf die gleiche Tonhöhe wie die
+    nächste Note
+-   `default` übernimmt den Vorgabewert
+
+        "restposition": {
+          "default"     : "center",
+          "repeatend"   : "default",
+          "repeatstart" : "next"
+        }
+
+## `restposition.default` - Vorgabewert {#restposition.default}
+
+Hier kannst den Vorgabewert für die Pausenposition angeben.
+
+> **Hinweis**: `default` als Vorgabewert nimmt den intenrn Vorgabewert
+> `center`.
+
+        "default": "center"
+          
+
+## `restposition.repeatend` - Wiederholungsende {#restposition.repeatend}
+
+Hier kannst du die Pausenposition nach einer Wiederholung einstellen.
+
+        "repeatend": "default"
+          
+
+## `restposition.repeatstart` - Wiederholungsanfang {#restposition.repeatstart}
+
+Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
+
+        "repeatstart": "next"
+          
+
+## `templates` - Vorlagen {#templates}
+
+Dieser Parameter kann nicht vom Benutzer gesetzt werden sondern liefert
+die Vorlagen beim Einfügugen neuer Liedtext-Blöcke bzw.
+Seitenbeschriftungen etc.
+
+Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
+
+        "templates": {
+          "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
+          "lyrics"      : {"pos": [350, 70], "verses": [1]},
+          "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
+          "tuplet"      : {
+            "cp1"   : [5, 2],
+            "cp2"   : [5, -2],
+            "shape" : ["c"],
+            "show"  : true
+          }
+        }
+          
+
+## `templates.annotations` - Notenbeschriftungsvorlagen {#templates.annotations}
+
+Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
+
+Zupfnoter bringt einige solcher Definitionen bereits mit.
+
+Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit einer
+Note verbinden (Notenbeschriftung).
+
+        "annotations": {"pos": [-5, -6], "text": "_vorlage_"}
+          
+
+## `templates.annotations.pos` - Position {#templates.annotations.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [-5, -6]
+          
+
+## `templates.annotations.text` - Text {#templates.annotations.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "_vorlage_"
+          
+
+## `templates.lyrics` - Liedtexte {#templates.lyrics}
+
+Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den
+Liedtext auf mehrer Blöcke aufteilen.
+
+Ein einzelner Block listet die Strophen auf, die er enthält, und die
+gemeinsam poitioniert werden.
+
+        "lyrics": {"pos": [350, 70], "verses": [1]}
+          
+
+## `templates.lyrics.pos` - Position {#templates.lyrics.pos}
+
+Dies ist die Vorgabe für Position, an welcher der Liedtext-Block
+ausgegeben werden soll. Angabe erfolgt in mm als kommagetrennte Liste
+von horizontaler / vertikaler Position.
+
+        "pos": [350, 70]
+          
+
+## `templates.lyrics.verses` - Strophen {#templates.lyrics.verses}
+
+Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block
+ausgegeben werden.
+
+        "verses": [1]
+          
+
+## `templates.notes` - Seitenbeschriftungen {#templates.notes}
+
+Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
+Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
+
+> **Hinweis**: Es kann aber auch sinnvoll sein eine sprechende
+> Bezeichnung für die Beschriftung manuell vorzugeben um ihrer
+> spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
+> allerdings nur in der Textansicht möglich.
+
+        "notes": {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"}
+          
+
+## `templates.notes.pos` - Position {#templates.notes.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [320, 6]
+          
+
+## `templates.notes.style` - Stil {#templates.notes.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "large"
+          
+
+## `templates.notes.text` - Text {#templates.notes.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein
+
+        "text": "ENTER_NOTE"
+          
+
+## `templates.tuplet` - Tuplet {#templates.tuplet}
+
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+steuern.
+
+> **Hinweis**: diese Einstellungen wirken immer auf alle Tuplets aller
+> Stimmen, die zum gleichen Zeitpunkt gespielt werden.
+>
+> Wenn du die Tuplets individuell konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor das tuplet zu setzen. Dabei ist
+> es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn man die
+> Verschiebemarken gleich benennt.
+>
+> Z.B. kann man eine Verschiebemarke `tpl_links` an alle tuplets
+> schreiben, deren Bogen links von der FLußlineie liegen soll. Diese
+> können dann über den parameter `extract.0.tuplet.tpl_links` gemeinsam
+> konfiguriert werden
+
+        "tuplet": {
+          "cp1"   : [5, 2],
+          "cp2"   : [5, -2],
+          "shape" : ["c"],
+          "show"  : true
+        }
+          
+
+## `templates.tuplet.cp1` - Kontrollpunkt 1 {#templates.tuplet.cp1}
+
+Hier gibst du den Kontrollpunkt für die erste Note an.
+
+        "cp1": [5, 2]
+          
+
+## `templates.tuplet.cp2` - Kontrollpunkt 2 {#templates.tuplet.cp2}
+
+Hier gibst du den Kontrollpunkt für die letzte Note an.
+
+        "cp2": [5, -2]
+          
+
+## `templates.tuplet.shape` - Linienform {#templates.tuplet.shape}
+
+Hier gibst du eine Liste von Linienformen für das Tuplet an.
+
+-   `c`: Kurve
+-   `l`: Linie
+
+> **Hinweis**: Mit der Linienform `l` kann man die Lage der
+> Kontrollpunkte (als Ecken im Linienzug) sehen.
+
+        "shape": ["c"]
+          
+
+## `templates.tuplet.show` - anzeigen {#templates.tuplet.show}
+
+Hier gibst du an, ob das Tuplet ausgegeben werden soll.
+
+        "show": true
+          
+
+## `wrap` - wrap {#wrap}
+
+Hier kannst du angeben, in welcher Spalte der Zeilenumbruch im
+Konfigurationsabschnitt erfolgen soll. Das kann bei komplexen
+Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
+
+        "wrap": 60

@@ -28,7 +28,12 @@
 * now support dropbox API 2.0 (mandaory from June 17) #63
 * now have dropdown menu for dropbox to open, save login, logout 
 * improve error reporting on dropbox save #128
+* fine tune structure of configuration menu #116
+* add another German tutorial #38
 
+## Experimental features
+
+* now can load the template from LocalStorage #71
     
 
 ## backward compatibilility issues

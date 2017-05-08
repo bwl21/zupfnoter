@@ -1,5 +1,6 @@
 #require 'promise'
 
+## this wraps dropbox - api - v2.0
 
 module Opal
   module DropboxJs
@@ -52,7 +53,23 @@ module Opal
         %x{ localStorage.removeItem(#{@accesstoken_key}) }
       end
 
-      def revokeAccessToken
+
+      def revoke_zombie_access_token(access_token)
+        %x{
+           dbx =  new Dropbox({accessToken: #{access_token}});
+
+           dbx.authTokenRevoke()
+           .then(function(response) {
+             #{$log.error("Zombie-Token revoked")};
+           }
+          ).catch(function(error){
+            #{$log.error("failed to revoke Zombie-token")};
+           }
+          );
+        }
+      end
+
+      def revoke_access_token()
         with_promise do |iblock|
           %x{
            access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
@@ -69,7 +86,10 @@ module Opal
             }
            else
             {
-             #{iblock.call(`{error: "kein Accesstoken vorhanden"}`, nil)}
+             #{
+               message = I18n.t("No access token to revoke")
+               iblock.call(`{error: #{message}}`, nil)
+              }
             }
          }
         end
@@ -114,32 +134,72 @@ module Opal
                   return ret;
                 }
 
-
-            access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
-            if (!access_token) {
-                dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
-                window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
-                access_token = dropbox_answers.access_token;
-                if (access_token) {
-                    #{@root} = new Dropbox({accessToken: access_token})
-                    #{save_access_token_to_localstore(`access_token`)}
-                    #{iblock.call(nil, true)}
-                 }
-                else if (dropbox_answers.error)
+            dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
+            window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
+            access_token_from_url = dropbox_answers.access_token;
+            if (dropbox_answers.error)
                  {
                    #{remove_access_token_from_localstore}
                    #{iblock.call(%x{dropbox_answers}, nil)}
                  }
-                else
-                 {
-                    //#{login}
+
+            access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
+
+            // login-status
+            //
+            //app      token       url-token   |  status     situation
+            //
+            // no        no            no       !   ok        not logged in
+            // no        no            yes      !   fail      zombie login
+            // no        yes           no       !   fail      zombie token
+            // no        yes           no       !   fail      zombie token and zombie login
+            //
+            // yes       no            yes      !   ok        new login
+            // yes       no            no       !   fail      lost token
+            // yes       yes           yes      !   fail      zombie login
+            // yes       yes           no       !   ok        already logged in
+
+            if ( #{@app_id.nil?}){
+              if (! access_token && ! access_token_from_url)
+               {
+                // we are not logged in
+               }
+              else
+               {
+                 message = #{I18n.t("Zombie token or zombie login occured. Maybe you hit the back button in the browser.")}
+                 #{iblock.call(%x{{"error": message }}, nil)}
+               }
+             }
+            else
+             {
+              if (!access_token ) {
+                if (access_token_from_url) {   // new login
+                    #{@root} = new Dropbox({accessToken: access_token_from_url})
+                    #{save_access_token_to_localstore(`access_token_from_url`)}
+                    #{iblock.call(nil, true)}
                  }
+                else  // ! lost token
+                 {
+                    message = #{I18n.t("Lost Access token. This should not happen. Please file a bug report.")}
+                    #{iblock.call(%x{{"error": message }}, nil)}
+                 }
+               }
+             else  // has token
+              {
+                if (access_token_from_url){ // zombie token
+                  message = #{I18n.t("Zombie Accesstoken revoked; do not use Browser back after login to dropbox")}
+                  #{
+                    revoke_zombie_access_token(`access_token_from_url`)
+                    iblock.call(%x{{"error": message }}, nil)
+                   }
+                 }
+              else  // already logged in
+               {
+                #{@root} = new Dropbox({accessToken: access_token})
+                #{iblock.call(nil, true)}
+               }
             }
-           else
-            {
-             #{@root} = new Dropbox({accessToken: access_token})
-             #{iblock.call(nil, true)}
-            }
+          }
         }
       end
 
@@ -230,7 +290,7 @@ module Opal
 
       ## this performs a login on Dropbox
       def login
-        revokeAccessToken if is_authenticated?
+        revoke_access_token if is_authenticated?
 
         with_promise() do |iblock|
           %x{

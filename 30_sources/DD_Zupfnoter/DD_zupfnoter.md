@@ -1,10 +1,42 @@
-# Handling google analytics
+rvm# Handling google analytics
 
 * Analytics ia applied for webserver-installation only, not for localhost nor desktop
 * this is done by the method `javascript_include_analytics` which is defined in the related rake tasks.
 * for localhost, the method is not defined, and therefore the template does not include the script
 
 # build environments
+
+## rvm ruby homebrew etc
+
+### having some trouble with SIP
+
+    https://digitizor.com/fix-homebrew-permissions-osx-el-capitan/
+    
+    https://www.computersnyou.com/5307/setup-homebrew-and-rvm-on-mac-osx-10-11-ei-capitan/
+    
+    http://stackoverflow.com/questions/22459944/ruby-2-1-1-with-rvm-getting-libyaml-errors
+    
+### my setup on osx
+ 
+1. install homebrew locally
+    
+    https://github.com/Homebrew/brew/blob/master/docs/Installation.md#installation
+    
+    cd ~
+    git clone https://github.com/Homebrew/brew.git
+    export PATH=${HOME}/brew/bin:${PATH}
+    
+2. update ~/.bashrc 
+
+    # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+    export PATH=${HOME}/brew/bin:${PATH}
+    export PATH="$PATH:$HOME/.rvm/bin"
+    
+3. install rvm
+
+    https://rvm.io/rvm/install
+
+    
 
 ## project documentation
 

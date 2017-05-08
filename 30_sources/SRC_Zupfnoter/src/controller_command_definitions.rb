@@ -1,3 +1,5 @@
+ZN_TEMPLATENAME = 'zntemplate'
+
 class Controller
   private
 
@@ -11,12 +13,17 @@ class Controller
     @commands.add_command(:help) do |c|
       c.undoable = false
 
+      c.add_parameter(:what, :string) do |parameter|
+        parameter.set_default { "" }
+        parameter.set_help { "filter string for help command" }
+      end
+
       c.set_help do
         "this help";
       end
 
-      c.as_action do
-        $log.message("<pre>#{@commands.help_string_style.join("\n")}</pre>")
+      c.as_action do |args|
+        $log.message("<pre>#{@commands.help_string_style.select{|i| i.include? args[:what]}.join("\n")}</pre>")
       end
     end
 
@@ -179,82 +186,12 @@ class Controller
 
         song_id    = args[:id]
         song_title = args[:title]
-        filename   = song_title.strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
+        filename   = song_title.strip.downcase.gsub(/[^a-z0-9]/, {'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss', ' ' => "-"})
         raise "no id specified" unless song_id
         raise "no title specified" unless song_title
 
         ## todo use erb for this
-        template      = %Q{X:#{song_id}
-F:#{song_id}_#{filename}
-T:#{song_title}
-C:
-S:
-M:4/4
-L:1/4
-Q:1/4=120
-K:C
-%%score 1 2
-V:1 clef=treble name="Sopran" snm="S"
-C
-V:2 clef=treble  name="Alt" snm="A"
-C,
-
-%%%%zupfnoter.config
-
-{
-  "produce"  : [1, 2],
-  "extract"  : {
-    "0" : {
-      "voices"      : [1, 2, 3, 4],
-      "flowlines"   : [1, 3],
-      "repeatsigns" : {"voices": [1, 2, 3, 4]},
-      "layoutlines" : [1, 2, 3, 4],
-      "barnumbers"  : {
-        "voices"  : [1, 3],
-        "pos"     : [6, -4],
-        "autopos" : true,
-        "style"   : "small_bold",
-        "prefix"  : ""
-      },
-      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
-      "lyrics"      : {
-        "1" : {"verses": [1, 2], "pos": [8, 102]},
-        "2" : {"verses": [3, 4], "pos": [347, 118]}
-      },
-      "notes"       : {
-        "T01_number"              : {
-          "pos"   : [393, 17],
-          "text"  : "XXX-999",
-          "style" : "bold"
-        },
-        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
-        "T03_copyright_harpnotes" : {
-          "pos"   : [340, 272],
-          "text"  : "© 2017 Notenbild: ",
-          "style" : "small"
-        },
-        "T99_do_not_copy"         : {
-          "pos"   : [380, 284],
-          "text"  : "Bitte nicht kopieren",
-          "style" : "small_bold"
-        }
-      },
-      "countnotes"  : {
-        "voices"  : [1, 3],
-        "pos"     : [3, -2],
-        "autopos" : true,
-        "style"   : "smaller"
-      },
-      "stringnames" : {"vpos": [4]}
-    },
-    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
-    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
-    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
-  },
-  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
-  "$version" : "#{VERSION}"
-}
-}
+        template      = create_from_current_template({song_id: song_id, filename: filename, song_title: song_title, version: VERSION})
         args[:oldval] = @editor.get_text
         @editor.set_text(template)
         set_status(music_model: "new")
@@ -353,6 +290,20 @@ C,
       command.as_action do |args|
         template = @editor.get_config_part_value('extract').to_json
         `localStorage.setItem('standardextract', #{template})`
+        nil
+      end
+    end
+
+    @commands.add_command(:settemplate) do |command|
+      command.undoable = false
+      command.set_help { "set the current editor content as template"}
+      command.as_action do |args|
+        template = @editor.get_text('extract.0')
+        if template.empty?
+          `localStorage.removeItem(#{ZN_TEMPLATENAME})`
+        else
+        `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
+        end
         nil
       end
     end
@@ -472,6 +423,10 @@ C,
         keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
       end
 
+      def expand_extractnumbering(keys)
+        [0, 1, 2, 3].product(keys).map { |number, key| "extract.#{number}.#{key}" }
+      end
+
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
@@ -486,13 +441,15 @@ C,
         # this is the set of predefined configuration pages
         # it is the argument of editconf {set} respectively addconf{set}
         form_sets        = {
-            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :synchlines, :jumplines, :layoutlines,
+            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
                                                                             'printer.show_border', 'stringnames.vpos',
                                                                             :startpos,
                                                                            ]) + [:restposition]},
+            extract_annotation:    {keys: [:produce,
+                                           expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
+            },
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
-
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
@@ -656,6 +613,94 @@ C,
 
   end
 
+  def create_from_current_template(parameters)
+    result = Native(`localStorage.getItem(#{ZN_TEMPLATENAME})`)
+    unless `result`
+      result = %Q{% - settings to improve Handling in Zupfnoter
+I:measurenb 1
+I:linewarn 0
+I:staffnonote 2
+% --------------
+X:{{song_id}}
+F:{{song_id}}_{{filename}}
+T:{{song_title}}
+C:
+S:
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%
+%
+%%score 1
+%
+V:1 clef=treble name="Sopran" snm="S"
+C
+
+%%%%zupfnoter.config
+
+{
+  "produce"  : [1, 2],
+  "extract"  : {
+    "0" : {
+      "voices"      : [1, 2, 3, 4],
+      "flowlines"   : [1, 3],
+      "repeatsigns" : {"voices": [1, 2, 3, 4]},
+      "layoutlines" : [1, 2, 3, 4],
+      "barnumbers"  : {
+        "voices"  : [1, 3],
+        "pos"     : [6, -4],
+        "autopos" : true,
+        "style"   : "small_bold",
+        "prefix"  : ""
+      },
+      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
+      "lyrics"      : {
+        "1" : {"verses": [1, 2], "pos": [8, 102]},
+        "2" : {"verses": [3, 4], "pos": [347, 118]}
+      },
+      "notes"       : {
+        "T01_number"              : {
+          "pos"   : [393, 17],
+          "text"  : "XXX-{{song_id}}",
+          "style" : "bold"
+        },
+        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [340, 272],
+          "text"  : "© 2017 Notenbild: ",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "countnotes"  : {
+        "voices"  : [1, 3],
+        "pos"     : [3, -2],
+        "autopos" : true,
+        "style"   : "smaller"
+      },
+      "stringnames" : {"vpos": [4]}
+    },
+    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
+    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
+    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
+  },
+  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version" : "{{version}}"
+ }
+}
+    end
+
+    parameters.each do |name, value|
+      result = result.gsub("{{#{name}}}", value)
+    end
+    result
+  end
+
   def get_conf_value_from_editor_for_current_view(key)
 
     localconf       = Confstack.new
@@ -748,10 +793,20 @@ C,
 
       command.set_help { "INTERNAL: This performs a reconnect after restart of zupfnoter" }
       command.as_action do
-        handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true}) if @systemstatus[:dropboxapp]
+        if @systemstatus[:dropboxapp]
+          handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true})
+        else
+          # we double check if dropbox login is out of sync
+          # either have an access token in the url
+          # see comment in authenticate for details.
+          @dropboxclient = Opal::DropboxJs::Client.new(nil)
+          @dropboxclient.authenticate().then do
+            $log.error("BUG: this shoudl not happen #{__FILE__}:#{__LINE__}")
+          end.fail do |err|
+            _report_error_from_promise err
+          end
+        end
       end
-
-
     end
 
     @commands.add_command(:dlogin) do |command|
@@ -777,7 +832,7 @@ C,
       command.as_action do |args|
 
         path = args[:path]
-        path = reconile_dropbox_path(path)
+        path = reconcile_dropbox_path(path)
 
         unless @dropboxclient.is_authenticated?
           case args[:scope]
@@ -841,12 +896,14 @@ C,
 
       command.as_action do |args|
 
-        @dropboxclient.revokeAccessToken.then do |entries|
-          $log.message("logged out from dropbox")
+        @dropboxclient.revoke_access_token.then do |entries|
+          message = I18n.t("logged out from dropbox")
+          $log.message(message)
           @dropboxclient = Opal::DropboxJs::NilClient.new
           @dropboxpath   = nil
           set_status_dropbox_status
           call_consumers(:systemstatus)
+          `w2alert(#{message}, "Info")`
         end.fail do |err|
           _report_error_from_promise err
         end
@@ -888,7 +945,7 @@ C,
 
       command.as_action do |args|
         rootpath      = args[:path]
-        reconile_dropbox_path(rootpath)
+        rootpath      = reconcile_dropbox_path(rootpath)
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
 
@@ -978,7 +1035,6 @@ C,
       command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
 
       command.as_action do |args|
-        
         unless @systemstatus[:mode] == :work
           message = "Cannot save in  #{@systemstatus[:mode]} mode"
           alert message
@@ -987,14 +1043,14 @@ C,
 
         layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
         print_variants = @music_model.harpnote_options[:print]
-        filebase = @music_model.meta_data[:filename]
+        filebase       = @music_model.meta_data[:filename]
 
         rootpath = args[:path]
 
         save_promises=[]
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
-          save_promises.push [@dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)]
+          save_promises.push @dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)
           pdfs = {}
           print_variants.map do |print_variant|
             index                                                                 = print_variant[:view_id]
@@ -1006,7 +1062,10 @@ C,
           pdfs.each do |name, pdfdata|
             save_promises.push(@dropboxclient.write_file(name, pdfdata))
           end
+        end.fail do |err|
+          _report_error_from_promise(err)
         end
+
         Promise.when(*save_promises).then do |xx|
           saved_paths = Native(xx).map do |x|
             x.path_display if x.respond_to? :path_display
@@ -1117,7 +1176,7 @@ C,
 
   end
 
-  def reconile_dropbox_path(path)
+  def reconcile_dropbox_path(path)
     path        ="/#{path}" unless path.start_with? "/"
     path        ="#{path}/" unless path.end_with? "/"
     path_pattern=/^\/([a-zA-z_^-]+\/)*$/

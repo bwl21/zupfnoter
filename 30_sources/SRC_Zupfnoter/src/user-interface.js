@@ -329,12 +329,6 @@ function init_w2ui(uicontroller) {
           tooltip: 'Open the version information on website'
         },
         {text: 'Videos', icon: 'fa fa-youtube-play', id: "tbTutorials", tooltip: 'Open the video tutorials on youtube'},
-        {
-          text: 'abc Tutorial',
-          icon: 'fa fa-graduation-cap',
-          id: "tbAbcTutorial",
-          tooltip: 'Open an ABC tutorial (in German)'
-        },
         {text: 'Manual', icon: 'fa fa-book', id: "tbManual", tooltip: 'Open the user manual'},
         {text: 'Homepage', icon: 'fa fa-home', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
         {text: ''},
@@ -349,7 +343,21 @@ function init_w2ui(uicontroller) {
           icon: 'fa fa-tags',
           id: "tbDemo",
           tooltip: 'Open a demo sheet\n(Ich steh an deiner Kripen hier)'
-        }
+        },
+        {},
+        {
+          text: 'abc Tutorial concise',
+          icon: 'fa fa-leanpub',
+          id: "tbAbcTutorial",
+          tooltip: 'Open an concise ABC tutorial (in German)'
+        },
+        {
+          text: 'abc Tutorial detail',
+          icon: 'fa fa-graduation-cap',
+          id: "tbAbcTutorialSchacherl",
+          tooltip: 'Open a detailed ABC tutorial (in German)'
+        },
+
       ]
       }
     ],
@@ -413,6 +421,9 @@ function init_w2ui(uicontroller) {
       }
       if (event.target == "tbHelp:tbAbcTutorial") {
         window.open("http://penzeng.de/Geige/Abc.htm")
+      }
+      if (event.target == "tbHelp:tbAbcTutorialSchacherl") {
+        window.open("http://kurs.schacherl.info/ABC-Musiknotation/abc_syntax/abc_syntax.html")
       }
       if (event.target == "tbHelp:tbHomepage") {
         window.open("http://www.zupfnoter.de")
@@ -504,18 +515,19 @@ function init_w2ui(uicontroller) {
         tooltip: "Edit configuration with forms",
         items: [
           {id: 'basic_settings', text: 'basic settings', tooltip: "Edit basic settings of extract"},
-          {id: 'layout', text: 'layout', tooltip: "Edit layout paerameters\nin current extract"},
+          {id: 'extract_annotation', text: 'Extract-Annotation', tooltip: "Edit annotations of an extract"},
           {id: 'lyrics', text: 'lyrics', tooltip: "edit settings for lyrics\nin current extract"},
-          {
-            id: 'barnumbers_countnotes',
-            text: 'barnumbers and countnotes',
-            tooltip: "edit barnumbers or countnotes"
-          },
-          {},
+          {id: 'layout', text: 'layout', tooltip: "Edit layout paerameters\nin current extract"},
           {
             id: 'notes',
             text: 'page annotation',
             tooltip: "edit settings for sheet annotations\nin current extract"
+          },
+          {},
+          {
+            id: 'barnumbers_countnotes',
+            text: 'barnumbers and countnotes',
+            tooltip: "edit barnumbers or countnotes"
           },
           {
             id: 'annotations',
@@ -525,6 +537,7 @@ function init_w2ui(uicontroller) {
           {},
           {id: 'stringnames', text: 'Stringnames', tooltip: "Edit presentation of stringanmes"},
           {id: 'printer', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
+          {},
           {id: 'minc', text: 'minc', tooltip: "edit extra increments"}
         ]
       },
