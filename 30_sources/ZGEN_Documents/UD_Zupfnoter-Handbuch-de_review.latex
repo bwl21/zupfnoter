@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.6.0 dev 6
+Version 1.6.0 dev 7
 
 © 2017 https://www.zupfnoter.de
 
@@ -3513,7 +3513,7 @@ spezifiziert den Auszug 1 usw.
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
           "limit_a3"          : true,
-          "moreinc"           : {},
+          "minc"              : {},
           "packer"            : {
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
@@ -3772,7 +3772,7 @@ Notenbild gezielt optimieren.
       "LINE_THIN"         : 0.1,
       "REST_SIZE"         : [4, 2],
       "limit_a3"          : true,
-      "moreinc"           : {},
+      "minc"              : {},
       "packer"            : {
         "pack_max_spreadfactor" : 2,
         "pack_method"           : 0,
@@ -3877,9 +3877,8 @@ angeshnitten.
       
 \end{verbatim}
 
-\hyperdef{}{extract.0.layout.moreinc}{\subsection{\texorpdfstring{\texttt{extract.0.layout.moreinc}
-- extra
-Vorschub}{extract.0.layout.moreinc - extra Vorschub}}\label{extract.0.layout.moreinc}}
+\subsection{\texorpdfstring{\texttt{extract.0.layout.minc} - extra
+Vorschub}{extract.0.layout.minc - extra Vorschub}}\label{extract.0.layout.minc}
 
 Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
 
@@ -3902,23 +3901,14 @@ Anwendungsfälle für diese Funktion:
 \end{itemize}
 \end{quote}
 
-Dieser Parameter enthält eine Liste manuellen Layoutkorrekturen. Jeder
-eintrag ist ein Feld mit Notenlabel und Vorschubwert.
-
-\begin{itemize}
-\item
-  \textbf{Notenlabel}: kannst du rechts unten sehen, wenn du mit der
-  Maus auf die Note fährst. Am besten ist es eine ``Verschiebemarke''
-  vor der betroffenen Note anzubrigen.
-\item
-  \textbf{Verschiebewert}: Dieser Wert ist ein vielfaches des normalen
-  Vorschubs und wird hinzugefügt. Zum Beispiel wird duch ``1.0'' der
-  Vorschub verdoppelt. ``-1.0'' würde den Vorschub auf 0 setzen.
+Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
+Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
+Zeitpunkt.
 
 \begin{verbatim}
-"moreinc": {}
+    "minc": {}
+      
 \end{verbatim}
-\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{extract.0.layout.packer} -
 Packer}{extract.0.layout.packer - Packer}}\label{extract.0.layout.packer}
@@ -3996,11 +3986,11 @@ Hier kannst du die pack-Methode auswählen
 - min.
 Inkrement}{extract.0.layout.packer.pack\_min\_increment - min. Inkrement}}\label{extract.0.layout.packer.packux5fminux5fincrement}
 
-Dieser Faktor bstimmt, wie weit pro Note auf jeden Fall weiter gerückt
+Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt
 wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
 geschaltet.
 
-Beispiele:
+\textbf{Beispiele}:
 
 \begin{itemize}
 \item
@@ -4551,7 +4541,7 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
           "LINE_THICK"   : 0.7,
           "REST_SIZE"    : [4, 2]
         },
-        "layout_regular" : "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
+        "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
       },
       "notes"   : {
         "T01_number"               : {
@@ -4636,7 +4626,7 @@ Notenbild gezielt optimieren.
         "LINE_THICK"   : 0.7,
         "REST_SIZE"    : [4, 2]
       },
-      "layout_regular" : "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
+      "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
     }
       
 \end{verbatim}
@@ -4806,7 +4796,7 @@ TODO:\marginpar{TODO} Helptext für presets.layout.layout\_regular
 einfügen
 
 \begin{verbatim}
-    "layout_regular": "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
+    "layout_regular": "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
       
 \end{verbatim}
 
@@ -5815,7 +5805,6 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
     "templates": {
       "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
       "lyrics"      : {"pos": [350, 70], "verses": [1]},
-      "moreinc"     : ["znid", 0],
       "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
       "tuplet"      : {
         "cp1"   : [5, 2],
@@ -5898,16 +5887,6 @@ ausgegeben werden.
 
 \begin{verbatim}
     "verses": [1]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{templates.moreinc} - extra
-Vorschub}{templates.moreinc - extra Vorschub}}\label{templates.moreinc}
-
-TODO:\marginpar{TODO} Helptext für templates.moreinc einfügen
-
-\begin{verbatim}
-    "moreinc": ["znid", 0]
       
 \end{verbatim}
 
