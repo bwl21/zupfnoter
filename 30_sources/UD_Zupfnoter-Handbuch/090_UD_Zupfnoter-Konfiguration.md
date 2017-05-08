@@ -139,7 +139,7 @@ Auszug 1 usw.
               "LINE_THIN"         : 0.1,
               "REST_SIZE"         : [4, 2],
               "limit_a3"          : true,
-              "moreinc"           : {},
+              "minc"              : {},
               "packer"            : {
                 "pack_max_spreadfactor" : 2,
                 "pack_method"           : 0,
@@ -348,7 +348,7 @@ Notenbild gezielt optimieren.
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
           "limit_a3"          : true,
-          "moreinc"           : {},
+          "minc"              : {},
           "packer"            : {
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
@@ -422,7 +422,7 @@ angeshnitten.
         "limit_a3": true
           
 
-## `extract.0.layout.moreinc` - extra Vorschub {#extract.0.layout.moreinc}
+## `extract.0.layout.minc` - extra Vorschub {#extract.0.layout.minc}
 
 Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
 
@@ -437,18 +437,12 @@ Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
 >     Fläche schieben. In diesem fall würde die Flusslinie teilweise
 >     nach oben gehen.
 
-Dieser Parameter enthält eine Liste manuellen Layoutkorrekturen. Jeder
-eintrag ist ein Feld mit Notenlabel und Vorschubwert.
+Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
+Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
+Zeitpunkt.
 
--   **Notenlabel**: kannst du rechts unten sehen, wenn du mit der Maus
-    auf die Note fährst. Am besten ist es eine "Verschiebemarke" vor der
-    betroffenen Note anzubrigen.
-
--   **Verschiebewert**: Dieser Wert ist ein vielfaches des normalen
-    Vorschubs und wird hinzugefügt. Zum Beispiel wird duch "1.0" der
-    Vorschub verdoppelt. "-1.0" würde den Vorschub auf 0 setzen.
-
-        "moreinc": {}
+        "minc": {}
+          
 
 ## `extract.0.layout.packer` - Packer {#extract.0.layout.packer}
 
@@ -503,11 +497,11 @@ Hier kannst du die pack-Methode auswählen
 
 ## `extract.0.layout.packer.pack_min_increment` - min. Inkrement {#extract.0.layout.packer.pack_min_increment}
 
-Dieser Faktor bstimmt, wie weit pro Note auf jeden Fall weiter gerückt
+Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt
 wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
 geschaltet.
 
-Beispiele:
+**Beispiele**:
 
 -   **0.0**: es entstehen horizontale Flußlinien
 -   **1.0**: es wird mindests um eine ganze Note weiter geschaltet
@@ -908,7 +902,7 @@ TODO: Helptext für presets einfügen
               "LINE_THICK"   : 0.7,
               "REST_SIZE"    : [4, 2]
             },
-            "layout_regular" : "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
+            "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
           },
           "notes"   : {
             "T01_number"               : {
@@ -990,7 +984,7 @@ Notenbild gezielt optimieren.
             "LINE_THICK"   : 0.7,
             "REST_SIZE"    : [4, 2]
           },
-          "layout_regular" : "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
+          "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
         }
           
 
@@ -1102,7 +1096,7 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 
 TODO: Helptext für presets.layout.layout_regular einfügen
 
-        "layout_regular": "#<Proc:0x007ffbd402bb60@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:76 (lambda)>"
+        "layout_regular": "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
           
 
 ## `presets.notes` - Seitenbeschriftungen {#presets.notes}
@@ -1823,7 +1817,6 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
         "templates": {
           "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
           "lyrics"      : {"pos": [350, 70], "verses": [1]},
-          "moreinc"     : ["znid", 0],
           "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
           "tuplet"      : {
             "cp1"   : [5, 2],
@@ -1888,13 +1881,6 @@ Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block
 ausgegeben werden.
 
         "verses": [1]
-          
-
-## `templates.moreinc` - extra Vorschub {#templates.moreinc}
-
-TODO: Helptext für templates.moreinc einfügen
-
-        "moreinc": ["znid", 0]
           
 
 ## `templates.notes` - Seitenbeschriftungen {#templates.notes}
