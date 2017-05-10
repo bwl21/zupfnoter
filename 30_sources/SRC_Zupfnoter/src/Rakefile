@@ -147,7 +147,7 @@ task :deploy => [:build] do
   Dir['../vendor/ace/ext-*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
   def javascript_include_tag(filename)
-    "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
+    "<script src = \"public/#{ZUPFNOTER_JS}?#{GITSHA}\" type=\"application/javascript\"></script>"
   end
 
   def javascript_include_analytics()
