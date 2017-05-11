@@ -1,4 +1,4 @@
-require 'opal-raphael'
+require 'opal-svg'
 require 'harpnotes'
 
 module Harpnotes
@@ -29,6 +29,10 @@ module Harpnotes
       @paper.clear
     end
 
+    def flush
+      Element.find("##{@container_id}").html(@paper.get_svg)
+    end
+
     def draw(sheet)
       @paper.clear
       @elements    = {} # record all elements being on the sheet, using upstream object as key
@@ -40,20 +44,22 @@ module Harpnotes
       sheet.children.each do |child|
         @paper.line_width = child.line_width
         if child.is_a? Ellipse
-          draw_ellipse(child) if child.visible?
+          #    draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
-          draw_flowline(child) if child.visible?
+          #    draw_flowline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
-          draw_glyph(child) if child.visible?
+          #    draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Path
-          draw_path(child) if child.visible?
+          #    draw_path(child) if child.visible?
         else
           $log.error "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
         end
       end
+
+      flush
     end
 
     def on_select(&block)
@@ -321,40 +327,44 @@ module Harpnotes
       style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
       mm_per_point = $conf.get('layout.MM_PER_POINT')
 
-      text                    = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n")
-      element                 = @paper.text(root.center.first, root.center.last, text)
-      element[:"font-size"]   = 1 #; style[:font_size]
-      element[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
-      element[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
-      element[:"text-anchor"] = "start"
+      text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n") #
+      attr                 ={}
+      attr[:"font-size"]   = style[:font_size]/3
+      attr[:"font-family"] = "Arial"
+      attr[:transform]     = "scale(1.05, 1)"
+      attr[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
+      attr[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
+      attr[:"text-anchor"] = "start"
+      element              = @paper.text(root.center.first/1.05, root.center.last, text, attr)
 
       # getting the same adjustment as in postscript
       # in raphael, the center of the  text is vertically the anchor point, so we need to shift it up by half of the size
       # we fix this by computing the bounding box
 
       # first we scale the text
-      scaley                  = style[:font_size] / 3 #* should be mm_per_point; but i had to figure it out by try and error
-      scalex                  = scaley * 45/42.5 # figured out by try and error - adjust the differnt horitzontal font spacing
-      element.transform("s#{scalex},#{scaley}")
+      #scaley                  = style[:font_size] / 3 #* should be mm_per_point; but i had to figure it out by try and error
+      #scalex                  = scaley * 45/42.5 # figured out by try and error - adjust the differnt horitzontal font spacing
+      #element.transform("s#{scalex},#{scaley}")
 
       # then we measure the result
-      bbox        = element.get_bbox()
-      #$log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]} (#{__FILE__} #{__LINE__})))
+      #bbox        = element.get_bbox()
+      ##$log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]} (#{__FILE__} #{__LINE__})))
 
-      dx          = root.center.first - bbox[:x]
-      dy          = root.center.last - bbox[:y]
+      #dx          = root.center.first - bbox[:x]
+      #+dy          = root.center.last - bbox[:y]
 
       # finally we transform the result
-      translation ="s#{scalex},#{scaley}T#{dx},#{dy}"
-      element.transform(translation)
+      #translation ="s#{scalex},#{scaley}T#{dx},#{dy}"
+      #element.transform(translation)
 
       # make annotation draggable
-      if root.conf_key
-        @paper.set_draggable(element)
-        element.conf_key   = root.conf_key
-        element.conf_value = root.conf_value
-      end
-      element.startpos = root.center
+      #if root.conf_key
+      #  @paper.set_draggable(element)
+      #  element.conf_key   = root.conf_key
+      #  element.conf_value = root.conf_value
+      #
+      #end
+      #element.startpos = root.center
 
       element
 
