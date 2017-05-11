@@ -26,11 +26,12 @@ module Harpnotes
     end
 
     def clear
-      @paper.clear
+      Element.find("##{@container_id}").html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
     end
 
     def flush
-      Element.find("##{@container_id}").html(@paper.get_svg)
+      svg = @paper.get_svg
+      Element.find("##{@container_id}").html(svg)
     end
 
     def draw(sheet)
@@ -44,15 +45,15 @@ module Harpnotes
       sheet.children.each do |child|
         @paper.line_width = child.line_width
         if child.is_a? Ellipse
-          #    draw_ellipse(child) if child.visible?
+              draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
-          #    draw_flowline(child) if child.visible?
+              draw_flowline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
-          #    draw_glyph(child) if child.visible?
+              draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Path
-          #    draw_path(child) if child.visible?
+              draw_path(child) if child.visible?
         else
           $log.error "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -172,14 +173,16 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
+      attr={}
+      attr["fill"] = root.fill == :filled ? "black" : "white"
+      attr[:stroke] = 'black'
       if root.rect?
         e = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last, 2 * root.size.first, 2 * root.size.last)
       else
-        e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last)
+        e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last, attr)
       end
       push_element(root.origin, e)
 
-      e["fill"] = root.fill == :filled ? "black" : "white"
       if root.dotted?
         draw_the_dot(root)
       end
@@ -187,6 +190,7 @@ module Harpnotes
       if root.hasbarover?
         draw_the_barover(root)
       end
+=begin
       e.conf_key = root.conf_key;
       @paper.set_conf_editable(e);
 
@@ -194,6 +198,7 @@ module Harpnotes
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
+=end
     end
 
     def draw_glyph(root)
@@ -208,54 +213,64 @@ module Harpnotes
       #path_spec = self.glyph_to_path_spec(root.glyph)
 
       # draw a white background
-      e                 = @paper.rect(root.center.first, root.center.last - size.last, size.first, size.last)
-      e[:fill]          = "white"
-      e[:stroke]        = "white"
-      e.transform("t-#{size.first/2} #{size.last/2}")
+      e                 = @paper.rect(root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0, {fill: "white", stroke: "white"})
 
+      nil
       # draw th path
-      e        = @paper.path(path_spec)
-      e[:fill] = "black"
-      push_element(root.origin, e)
 
-      e.on_click do
-        origin = root.origin
-        @on_select.call(origin) unless origin.nil? or @on_select.nil?
-      end
+      scalefactor = size.last / root.glyph[:h]
+      attr={}
+      attr[:fill] = "black"
+      attr[:transform]="translate(#{(center.first)},#{(center.last)}) translate(0,#{(0)}) scale(#{scalefactor})"
+      e        = @paper.path(path_spec, attr)
+
+      nil
 
 
-      # scale and move the glyph
-      bbox         = e.get_bbox()
-      glyph_center = [(bbox[:x] + bbox[:x2])/2, (bbox[:y] + bbox[:y2])/2]
-      scalefactor  = size.last / bbox[:height]
-      e.transform("t#{(center.first)} #{(center.last)}t#{(-glyph_center.first)} #{(-glyph_center.last)}s#{scalefactor}")
+#       push_element(root.origin, e)
+#
+#       e.on_click do
+#         origin = root.origin
+#         @on_select.call(origin) unless origin.nil? or @on_select.nil?
+#       end
+#
+#
+#       # scale and move the glyph
+#       bbox         = e.get_bbox()
+#       glyph_center = [(bbox[:x] + bbox[:x2])/2, (bbox[:y] + bbox[:y2])/2]
+#       scalefactor  = size.last / bbox[:height]
+#       e.transform("t#{(center.first)} #{(center.last)}t#{(-glyph_center.first)} #{(-glyph_center.last)}s#{scalefactor}")
+#
+#       @paper.line_width = line_width
+#
+#       # add the dot if needed
+#       if root.dotted?
+#         draw_the_dot(root)
+#       end
+#
+#       if root.hasbarover?
+#         draw_the_barover(root)
+#       end
+#
+#       # make annotation draggable
+#       if root.conf_key
+#         @paper.set_draggable(e)
+#         e.conf_key   = root.conf_key
+#         e.conf_value = root.conf_value
+#       end
 
-      @paper.line_width = line_width
-
-      # add the dot if needed
-      if root.dotted?
-        draw_the_dot(root)
-      end
-
-      if root.hasbarover?
-        draw_the_barover(root)
-      end
-
-      # make annotation draggable
-      if root.conf_key
-        @paper.set_draggable(e)
-        e.conf_key   = root.conf_key
-        e.conf_value = root.conf_value
-      end
     end
 
     def draw_the_barover(root)
       e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 1.3 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
+
+=begin
       e_bar.on_click do
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
       push_element(root.origin, e_bar)
+=end
     end
 
     # this draws the dot to an ellipse or glyph
@@ -264,19 +279,20 @@ module Harpnotes
       ds2             = DOTTED_SIZE + root.line_width/2
       x               = root.center.first + (root.size.first + ds1)
       y               = root.center.last
-      e_dot           = @paper.ellipse(x, y, ds2, ds2)
-      e_dot["stroke"] = "white"
-      e_dot["fill"]   = "white"
+      e_dot           = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"})
+
       push_element(root.origin, e_dot)
 
-      e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE)
-      e_dot["fill"] = "black"
+      e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill:"black"})
+
+=begin
       push_element(root.origin, e_dot)
 
       e_dot.on_click do
         origin = root.origin
         @on_select.call(origin) unless origin.nil? or @on_select.nil?
       end
+=end
     end
 
 
@@ -288,10 +304,11 @@ module Harpnotes
     # 
     # @return [type] [description]
     def draw_flowline(root)
-      l                     = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1])
+      attr={}
+      attr["stroke-dasharray"] = "2,1" if root.style == :dashed
+      attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
+      l                     = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
       # see http://stackoverflow.com/questions/10940316/how-to-use-attrs-stroke-dasharray-stroke-linecap-stroke-linejoin-in-raphaeljs
-      l["stroke-dasharray"] = "-" if root.style == :dashed
-      l["stroke-dasharray"] = ". " if root.style == :dotted
     end
 
     # 
@@ -299,7 +316,7 @@ module Harpnotes
     # @param root [Drawing::Jumpline] The jumpline to be drawn
     # 
     # @return [nil] nothing
-    def draw_jumpline(root)
+    def draw_jumpline_outdated(root)
       startpoint    = root.from.center
       startpoint[0] += PADDING
 
@@ -316,9 +333,10 @@ module Harpnotes
       path = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
       @paper.path(path)
 
-      arrow         = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0")
-      arrow["fill"] = "red"
-      arrow.translate(startpoint[0], startpoint[1])
+      attr={}
+      attr[:fill] = "red"
+      attr[:transform] = "t#{startpoint[0]},#{startpoint[1]}"
+      arrow         = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0", attr )
     end
 
     # Draw an an annotation
@@ -327,44 +345,17 @@ module Harpnotes
       style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
       mm_per_point = $conf.get('layout.MM_PER_POINT')
 
+      #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
+
       text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n") #
       attr                 ={}
-      attr[:"font-size"]   = style[:font_size]/3
+      attr[:"font-size"]   = style[:font_size]/3   # literal by try and error
       attr[:"font-family"] = "Arial"
-      attr[:transform]     = "scale(1.05, 1)"
+      attr[:transform]     = "scale(1.05, 1) translate(0,#{-style[:font_size]/8})" # literal by try and error
       attr[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
       attr[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
       attr[:"text-anchor"] = "start"
-      element              = @paper.text(root.center.first/1.05, root.center.last, text, attr)
-
-      # getting the same adjustment as in postscript
-      # in raphael, the center of the  text is vertically the anchor point, so we need to shift it up by half of the size
-      # we fix this by computing the bounding box
-
-      # first we scale the text
-      #scaley                  = style[:font_size] / 3 #* should be mm_per_point; but i had to figure it out by try and error
-      #scalex                  = scaley * 45/42.5 # figured out by try and error - adjust the differnt horitzontal font spacing
-      #element.transform("s#{scalex},#{scaley}")
-
-      # then we measure the result
-      #bbox        = element.get_bbox()
-      ##$log.debug(%Q(#{root.center.first}, #{root.center.last} ”#{text}” #{bbox[:width]}, #{bbox[:height]} (#{__FILE__} #{__LINE__})))
-
-      #dx          = root.center.first - bbox[:x]
-      #+dy          = root.center.last - bbox[:y]
-
-      # finally we transform the result
-      #translation ="s#{scalex},#{scaley}T#{dx},#{dy}"
-      #element.transform(translation)
-
-      # make annotation draggable
-      #if root.conf_key
-      #  @paper.set_draggable(element)
-      #  element.conf_key   = root.conf_key
-      #  element.conf_value = root.conf_value
-      #
-      #end
-      #element.startpos = root.center
+      element              = @paper.text(root.center.first/1.05, root.center.last, text, attr) # literal by try and error
 
       element
 
@@ -373,9 +364,10 @@ module Harpnotes
     # draw a path
     def draw_path(root)
       path_spec = path_to_raphael(root.path)
-      #@paper.path(path_spec)
-      e         =@paper.path(path_spec)
-      e[:fill]  = "#000000" if root.filled?
+      attr={}
+      attr[:fill] = "none"
+      attr[:fill] =  "#000000" if root.filled?
+      e         = @paper.path(path_spec, attr)
     end
   end
 

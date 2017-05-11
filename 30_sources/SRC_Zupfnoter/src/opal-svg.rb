@@ -122,7 +122,7 @@ module Raphael
       @r          = `Raphael(#{element}, #{width}, #{height})` # this creates the raphael paper
       @line_width = 0.2 # todo:clarify value
 
-      @svgbuffer.push (%Q{<svg width="#{width}" height="#{height}" viewBox="0, 0, 440, 297" > })  ## todo improve handling of viewbox
+      clear
     end
 
     # @return the native raphael object
@@ -147,7 +147,8 @@ module Raphael
     #
     # @return [type] [description]
     def clear
-      `self.r.clear()`
+      @svgbuffer = []
+      @svgbuffer.push(%Q{<svg width="#{@canvas.first}" height="#{@canvas.last}" viewBox="0, 0, 440, 297" > }) ## todo improve handling of viewbox
     end
 
     def on_mouseover(&block)
@@ -244,10 +245,12 @@ module Raphael
     # @param ry [Numeric] ry - vertical radius
     #
     # @return [element] The generated Element
-    def ellipse(x, y, rx, ry)
-      result            = Raphael::Element.new(`self.r.ellipse(x, y, rx, ry)`)
-      result.line_width = @line_width
-      result
+    def ellipse(x, y, rx, ry, attributes = {})
+      attr = _attr_to_xml(attributes)
+      svg  = %Q{<ellipse cx="#{x}" cy="#{y}" rx="#{rx}" ry="#{ry}" stroke-width="#{@line_width}" #{attr}/>}
+
+      @svgbuffer.push(svg)
+
     end
 
     #
@@ -258,10 +261,12 @@ module Raphael
     #
     #
     # @return [Element] The generated Element
-    def path(spec)
-      result            = Raphael::Element.new(`self.r.path(spec)`)
-      result.line_width = @line_width
-      result
+    def path(spec, attributes={})
+      attrs = _attr_to_xml(attributes)
+      @svgbuffer.push %Q{<path class="znunhighlight" stroke-width="#{@line_width}" d="#{spec}" #{attrs}/>}
+      #result            = Raphael::Element.new(`self.r.path(spec)`)
+      #result.line_width = @line_width
+      #result
     end
 
     # Draw an Rectangle
@@ -273,8 +278,8 @@ module Raphael
     # @param radius [Numeric] radius for rounded corners, default is 0
     #
     # @return [element] The generated Element
-    def rect_like_ellipse(x, y, rx, ry, radius = 0)
-      result            = Raphael::Element.new(`self.r.rect(#{x}-#{rx}, #{y}-#{ry}, 2*#{rx}, 2*#{ry}, #{radius})`)
+    def rect_like_ellipse_outdated(x, y, rx, ry, radius = 0)
+      #result            = Raphael::Element.new(`self.r.rect(#{x}-#{rx}, #{y}-#{ry}, 2*#{rx}, 2*#{ry}, #{radius})`)
       result.line_width = @line_width
       result
     end
@@ -288,8 +293,10 @@ module Raphael
     # @param radius [Numeric] radius for rounded corners, default is 0
     #
     # @return [element] The generated Element
-    def rect(x, y, rx, ry, radius = 0)
-      @svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" ry="#{radius}" ry="#{radius}" style="fill:none;stroke-width:#{@line_width};stroke:rgb(0,0,0)" />})
+    def rect(x, y, rx, ry, radius = 0, attributes={fill: "none", stroke: "black", "stroke-width" => @line_width})
+      attr = _attr_to_xml(attributes)
+      #@svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" style="fill:#{attr[:fill]};stroke-width:#{@line_width};stroke:#{attr[:stroke]}" />})
+      @svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" #{attr} />})
     end
 
 
@@ -307,8 +314,8 @@ module Raphael
     # @param y2 [Numeric] vertical endpoint coordinate
     #
     # @return [Element] The generated Element
-    def line(x1, y1, x2, y2)
-      path("M#{x1},#{y1}L#{x2},#{y2}")
+    def line(x1, y1, x2, y2, attributes = {})
+      path("M#{x1},#{y1}L#{x2},#{y2}", attributes)
     end
 
     #
@@ -321,10 +328,14 @@ module Raphael
     # @return [Element] The generated Element
     def text(x, y, text, attributes={})
 
-      attrs = attributes.map{|k,v| %Q{#{k}="#{v}"}}
-      tspans = text.split("\n").map{|l| %Q{<tspan dy="1.2em" x="#{x}">#{l}</tspan>}}
+      attrs  = _attr_to_xml(attributes)
+      tspans = text.split("\n").map { |l| %Q{<tspan dy="1.2em" x="#{x}">#{l}</tspan>} }.join()
 
-      @svgbuffer.push %Q{<text x="#{x}" y="#{y}"  #{attrs.join(" ")}>#{tspans.join()}</text>}
+      @svgbuffer.push %Q{<text x="#{x}" y="#{y}"  #{attrs}>#{tspans}</text>}
+    end
+
+    def _attr_to_xml(attributes)
+      attributes.map { |k, v| %Q{#{k}="#{v}"} }.join(" ")
     end
 
     #
