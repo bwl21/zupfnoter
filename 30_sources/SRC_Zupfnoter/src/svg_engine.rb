@@ -26,12 +26,17 @@ module Harpnotes
     end
 
     def clear
+      @elements = {}
       Element.find("##{@container_id}").html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
     end
 
     def flush
       svg = @paper.get_svg
       Element.find("##{@container_id}").html(svg)
+      $log.benchmark("binding elements")  {bind_elements}
+
+      `debugger`
+      nil
     end
 
     def draw(sheet)
@@ -140,7 +145,7 @@ module Harpnotes
     def highlight_element(element)
       unhighlight_element(element)
       @highlighted.push(element)
-      element.unhighlight_color = element[:fill]
+      #element.unhighlight_color = element[:fill]
       element[:fill]            = "#ff0000"
       element[:stroke]          = "#ff0000"
       nil
@@ -160,12 +165,17 @@ module Harpnotes
     def unhighlight_element(element)
       if @highlighted.include?(element)
         @highlighted     -= [element]
-        element[:fill]   = element.unhighlight_color
+        element[:fill]   = "#000000" #element.unhighlight_color
         element[:stroke] = "#000000"
       end
       nil
     end
 
+    def bind_elements
+      @elements.keys.each do |k|
+        @elements[k] = @elements[k].map{|id| Element.find("##{id}")}
+      end
+    end
 
     def push_element(root, element)
       @elements[root] ||= []
@@ -223,8 +233,7 @@ module Harpnotes
       attr[:fill] = "black"
       attr[:transform]="translate(#{(center.first)},#{(center.last)}) translate(0,#{(0)}) scale(#{scalefactor})"
       e        = @paper.path(path_spec, attr)
-
-      nil
+      push_element(root.origin, e)
 
       if root.dotted?
         draw_the_dot(root)
@@ -308,7 +317,7 @@ module Harpnotes
       attr={}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
-      l                     = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
+      @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
       # see http://stackoverflow.com/questions/10940316/how-to-use-attrs-stroke-dasharray-stroke-linecap-stroke-linejoin-in-raphaeljs
     end
 
@@ -346,6 +355,7 @@ module Harpnotes
       style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
       mm_per_point = $conf.get('layout.MM_PER_POINT')
 
+      # activate to debug the positioning of text
       #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
 
       text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n") #

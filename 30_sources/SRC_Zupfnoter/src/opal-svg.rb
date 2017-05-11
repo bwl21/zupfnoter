@@ -33,10 +33,15 @@ module Raphael
       @canvas     = [width, height]
       @scale      = 1
       @svgbuffer  = []
+      @id = 0
 
       @line_width = 0.2 # todo:clarify value
 
       clear
+    end
+
+    def new_id
+      "ZN_#{@id+=1}"
     end
 
     # @return the resulting SVG
@@ -56,6 +61,7 @@ module Raphael
     #
     # @return [type] [description]
     def clear
+      @id = 0
       @svgbuffer = []
       @svgbuffer.push(%Q{<svg width="#{@canvas.first}" height="#{@canvas.last}" viewBox="0, 0, 440, 297" > }) ## todo improve handling of viewbox
     end
@@ -155,11 +161,12 @@ module Raphael
     #
     # @return [element] The generated Element
     def ellipse(x, y, rx, ry, attributes = {})
+      id = new_id
       attr = _attr_to_xml(attributes)
-      svg  = %Q{<ellipse cx="#{x}" cy="#{y}" rx="#{rx}" ry="#{ry}" stroke-width="#{@line_width}" #{attr}/>}
+      svg  = %Q{<ellipse id="#{id}" cx="#{x}" cy="#{y}" rx="#{rx}" ry="#{ry}" stroke-width="#{@line_width}" #{attr}/>}
 
       @svgbuffer.push(svg)
-
+      id
     end
 
     #
@@ -172,26 +179,11 @@ module Raphael
     # @return [Element] The generated Element
     def path(spec, attributes={})
       attrs = _attr_to_xml(attributes)
-      @svgbuffer.push %Q{<path class="znunhighlight" stroke-width="#{@line_width}" d="#{spec}" #{attrs}/>}
-      #result            = Raphael::Element.new(`self.r.path(spec)`)
-      #result.line_width = @line_width
-      #result
+      id = new_id
+      @svgbuffer.push %Q{<path id="#{id}" class="znunhighlight" stroke-width="#{@line_width}" d="#{spec}" #{attrs}/>}
+      id
     end
 
-    # Draw an Rectangle
-    #
-    # @param x [Numeric] x - of center
-    # @param y [Numeric] y - of center
-    # @param rx [Numeric] rx - horizontal radius
-    # @param ry [Numeric] ry - vertical radius
-    # @param radius [Numeric] radius for rounded corners, default is 0
-    #
-    # @return [element] The generated Element
-    def rect_like_ellipse_outdated(x, y, rx, ry, radius = 0)
-      #result            = Raphael::Element.new(`self.r.rect(#{x}-#{rx}, #{y}-#{ry}, 2*#{rx}, 2*#{ry}, #{radius})`)
-      result.line_width = @line_width
-      result
-    end
 
     # Draw an Rectangle like an ellipse
     #
@@ -203,9 +195,11 @@ module Raphael
     #
     # @return [element] The generated Element
     def rect(x, y, rx, ry, radius = 0, attributes={fill: "none", stroke: "black", "stroke-width" => @line_width})
+      id = new_id
       attr = _attr_to_xml(attributes)
       #@svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" style="fill:#{attr[:fill]};stroke-width:#{@line_width};stroke:#{attr[:stroke]}" />})
-      @svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" #{attr} />})
+      @svgbuffer.push(%Q{<rect id="#{id}" x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" #{attr} />})
+      id
     end
 
 
@@ -236,11 +230,11 @@ module Raphael
     #
     # @return [Element] The generated Element
     def text(x, y, text, attributes={})
-
+      id=new_id
       attrs  = _attr_to_xml(attributes)
       tspans = text.split("\n").map { |l| %Q{<tspan dy="1.2em" x="#{x}">#{l}</tspan>} }.join()
 
-      @svgbuffer.push %Q{<text x="#{x}" y="#{y}"  #{attrs}>#{tspans}</text>}
+      @svgbuffer.push %Q{<text id="#{id}" x="#{x}" y="#{y}"  #{attrs}>#{tspans}</text>}
     end
 
     def _attr_to_xml(attributes)
