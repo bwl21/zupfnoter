@@ -3,7 +3,7 @@ require 'harpnotes'
 
 module Harpnotes
 
-  class RaphaelEngine
+  class SvgEngine
     include Harpnotes::Drawing
     attr_reader :paper
 
@@ -205,7 +205,6 @@ module Harpnotes
       center = [root.center.first, root.center.last]
       size   = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
 
-      line_width        = root.line_width
       @paper.line_width = 0.1
 
       #path_spec = "M#{center.first} #{center.last}"
@@ -218,6 +217,7 @@ module Harpnotes
       nil
       # draw th path
 
+      @paper.line_width = root.line_width
       scalefactor = size.last / root.glyph[:h]
       attr={}
       attr[:fill] = "black"
@@ -226,6 +226,13 @@ module Harpnotes
 
       nil
 
+      if root.dotted?
+        draw_the_dot(root)
+      end
+
+      if root.hasbarover?
+        draw_the_barover(root)
+      end
 
 #       push_element(root.origin, e)
 #
@@ -234,12 +241,6 @@ module Harpnotes
 #         @on_select.call(origin) unless origin.nil? or @on_select.nil?
 #       end
 #
-#
-#       # scale and move the glyph
-#       bbox         = e.get_bbox()
-#       glyph_center = [(bbox[:x] + bbox[:x2])/2, (bbox[:y] + bbox[:y2])/2]
-#       scalefactor  = size.last / bbox[:height]
-#       e.transform("t#{(center.first)} #{(center.last)}t#{(-glyph_center.first)} #{(-glyph_center.last)}s#{scalefactor}")
 #
 #       @paper.line_width = line_width
 #
@@ -262,7 +263,7 @@ module Harpnotes
     end
 
     def draw_the_barover(root)
-      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 1.3 * root.line_width, 2 * root.size.first, 0.0001) # svg does not show if heigt=0
+      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 0.5 , 2 * root.size.first, 0.3, 0, {fill: :black}) # svg does not show if heigt=0
 
 =begin
       e_bar.on_click do

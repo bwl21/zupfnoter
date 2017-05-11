@@ -11,92 +11,6 @@ module Raphael
   #
   # This represents a Raphael element
   #
-  class Element
-    attr_accessor :unhighlight_color, :r, :conf_key, :conf_value, :startpos
-    #
-    # Constructor
-    #
-    # @param r [] The Raphael element
-    #
-    # @return [type] [description]
-    def initialize(r)
-      @r                  = r
-      @conf_key           = "conf unknown"
-      @startpos           = [0, 0]
-      self["stroke-width"]=0.5
-    end
-
-
-    #
-    # get a Raphael attribute
-    # @param name [String] The name of the attribute
-    #
-    # @return [String] The value of the attribute
-    def [](name)
-      `self.r.attr(name)`
-    end
-
-
-    #
-    # set the a Raphael attribute
-    # @param name [String] The name of the attribute
-    # @param value [Object] The value of the attribute
-    #
-    # @return [type] [description]
-    def []=(name, value)
-      `self.r.attr(name, value)`
-    end
-
-    # adjust the line width of the current Raphael element
-    # @param [Numerical] width with of the elment in mm
-    def line_width=(width)
-      self["stroke-width"]=width
-    end
-
-    #
-    # Wrap translate
-    # @param x [Numeric] horizontal distance
-    # @param y [Numeric] vertical distance
-    #
-    # @return [type] [description]
-    def translate(x, y)
-      `self.r.translate(x, y)`
-    end
-
-    #
-    # Wrap transform
-    #
-    # @param [Object] cmd - http://raphaeljs.com/reference.html#Element.transform
-    def transform(cmd)
-      `self.r.transform(cmd)`
-    end
-
-
-    #
-    # the the size of an object
-    # @return [Native Javascript object] see http://raphaeljs.com/reference.html#Element.getBBox
-    #
-    def get_bbox()
-      Native(`self.r.getBBox()`)
-    end
-
-
-    #
-    # Add an on_click handler
-    # @param block [type] [description]
-    #
-    # @return [type] [description]
-    def on_click(&block)
-      %x{
-        var wrapper = function(evt) {
-          return block.apply(null, arguments);
-        };
-        self.r.click(wrapper);
-      }
-    end
-
-  end
-
 
   #
   # Wraps Raphael drawing area
@@ -119,15 +33,10 @@ module Raphael
       @canvas     = [width, height]
       @scale      = 1
       @svgbuffer  = []
-      @r          = `Raphael(#{element}, #{width}, #{height})` # this creates the raphael paper
+
       @line_width = 0.2 # todo:clarify value
 
       clear
-    end
-
-    # @return the native raphael object
-    def raw
-      @r
     end
 
     # @return the resulting SVG
