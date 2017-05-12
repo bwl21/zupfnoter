@@ -171,10 +171,17 @@ module Harpnotes
     def unhighlight_element(element)
       element.attr('class', ['abcref'])
 
-      @highlighted -= [element]
+        @highlighted -= [element]
       nil
     end
 
+
+    # this binds Music model elements to drawing dom nodes
+    # approach:
+    # as svg is generated as a string, the dom nodes need to be found
+    # by an id and connected to the music model elements
+    # svg_engine uses abc_ref to create clicable areas with ids
+    # these areas are also used for highlighting
     def bind_elements
       @elements.keys.each do |k|
         @elements[k] = @elements[k].map do |id|
@@ -201,7 +208,6 @@ module Harpnotes
       else
         e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last, attr)
       end
-      push_element(root.origin, e)
 
       if root.dotted?
         draw_the_dot(root)
@@ -210,6 +216,10 @@ module Harpnotes
       if root.hasbarover?
         draw_the_barover(root)
       end
+
+      e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
+      push_element(root.origin, e)
+
 =begin
       e.conf_key = root.conf_key;
       @paper.set_conf_editable(e);
@@ -243,7 +253,6 @@ module Harpnotes
       attr[:fill]       = "black"
       attr[:transform]  ="translate(#{(center.first)},#{(center.last)}) translate(0,#{(0)}) scale(#{scalefactor})"
       e                 = @paper.path(path_spec, attr)
-      push_element(root.origin, e)
 
       if root.dotted?
         draw_the_dot(root)
@@ -252,6 +261,9 @@ module Harpnotes
       if root.hasbarover?
         draw_the_barover(root)
       end
+
+      e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
+      push_element(root.origin, e)
 
 #       push_element(root.origin, e)
 #
@@ -299,11 +311,8 @@ module Harpnotes
       ds2   = DOTTED_SIZE + root.line_width/2
       x     = root.center.first + (root.size.first + ds1)
       y     = root.center.last
-      e_dot = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"})
-
-      push_element(root.origin, e_dot)
-
-      e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"})
+      e_dot = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"}) # white outer
+      e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"})  # black inner
 
 =begin
       push_element(root.origin, e_dot)
