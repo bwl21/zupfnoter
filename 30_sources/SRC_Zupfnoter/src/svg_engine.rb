@@ -35,7 +35,6 @@ module Harpnotes
       Element.find("##{@container_id}").html(svg)
       $log.benchmark("binding elements")  {bind_elements}
 
-      `debugger`
       nil
     end
 
@@ -145,28 +144,33 @@ module Harpnotes
     def highlight_element(element)
       unhighlight_element(element)
       @highlighted.push(element)
+      classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
+      element.attr('class', ['highlight'])
       #element.unhighlight_color = element[:fill]
-      element[:fill]            = "#ff0000"
-      element[:stroke]          = "#ff0000"
+      #element[:fill]            = "#ff0000"
+      #element[:stroke]          = "#ff0000"
       nil
     end
 
     def scroll_to_element(element)
-      %x{
-            var node = #{element}.r;
-            var bbox = node.getBBox();
-            var top = bbox.y + bbox.y2;
-            top = 100 * Math.floor(top/100);
-            $("#"+#{@container_id}).get(0).scrollTop=top;
-      }
+
+      # %x{
+      #       var node = #{element};
+      #       var bbox = node.getBBox();
+      #       var top = bbox.y + bbox.y2;
+      #       top = 100 * Math.floor(top/100);
+      #       $("#"+#{@container_id}).get(0).scrollTop=top;
+      # }
     end
 
 
     def unhighlight_element(element)
+      element.attr('class', ['abcref'])
+     # Element.find('.highlight').attr('class', 'abcref')
       if @highlighted.include?(element)
         @highlighted     -= [element]
-        element[:fill]   = "#000000" #element.unhighlight_color
-        element[:stroke] = "#000000"
+       # element[:fill]   = "#000000" #element.unhighlight_color
+       # element[:stroke] = "#000000"
       end
       nil
     end

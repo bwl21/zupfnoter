@@ -151,6 +151,11 @@ module Raphael
       }
     end
 
+    def add_abcref(x, y, rx, ry, id)
+      svg =%Q{<rect class="abcref" id="#{id}" x="#{x - rx - 1.5}" y="#{y - ry - 1.5 }" width="#{2 * rx+3}" height="#{2 * ry + 3}"/>}
+      @svgbuffer.push(svg)
+    end
+
 
     # Draw an ellipse
     #
@@ -163,9 +168,10 @@ module Raphael
     def ellipse(x, y, rx, ry, attributes = {})
       id = new_id
       attr = _attr_to_xml(attributes)
-      svg  = %Q{<ellipse id="#{id}" cx="#{x}" cy="#{y}" rx="#{rx}" ry="#{ry}" stroke-width="#{@line_width}" #{attr}/>}
-
+      svg  = %Q{<ellipse  cx="#{x}" cy="#{y}" rx="#{rx}" ry="#{ry}" stroke-width="#{@line_width}" #{attr}/>}
       @svgbuffer.push(svg)
+      add_abcref(x,y, rx, ry, id)
+
       id
     end
 
