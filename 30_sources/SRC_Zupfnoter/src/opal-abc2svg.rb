@@ -110,7 +110,7 @@ module ABC2SVG
     end
 
     def unhighlight_all()
-      Element.find('.highlight').attr('class', 'abcref')
+      Element.find("##{@printer.id} .highlight").attr('class', 'abcref')
     end
 
 

@@ -14,7 +14,7 @@ module Harpnotes
 
     def initialize(element_id, width, height)
       @container_id = element_id
-      @paper        = Raphael::Paper.new(element_id, width, height)
+      @paper        = ZnSvg::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select    = nil
       @elements     = {} # record all elements being on the sheet, using upstream object as key
@@ -33,7 +33,7 @@ module Harpnotes
     def flush
       svg = @paper.get_svg
       Element.find("##{@container_id}").html(svg)
-      $log.benchmark("binding elements")  {bind_elements}
+      $log.benchmark("binding elements") { bind_elements }
 
       nil
     end
@@ -49,15 +49,15 @@ module Harpnotes
       sheet.children.each do |child|
         @paper.line_width = child.line_width
         if child.is_a? Ellipse
-              draw_ellipse(child) if child.visible?
+          draw_ellipse(child) if child.visible?
         elsif child.is_a? FlowLine
-              draw_flowline(child) if child.visible?
+          draw_flowline(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Glyph
-              draw_glyph(child) if child.visible?
+          draw_glyph(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Path
-              draw_path(child) if child.visible?
+          draw_path(child) if child.visible?
         else
           $log.error "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -103,6 +103,11 @@ module Harpnotes
 
     # hightlights the drawn elements driven by the selection range in the abc text
     def range_highlight(from, to)
+      unhighlight_all # todo in tune preview, we unhilight all, why not here? here the controller does unhiglighting!
+      range_highlight_more(from, to)
+    end
+
+    def range_highlight_more(from, to)
       elements = get_elements_by_range(from, to)
       elements.each { |element| highlight_element(element) }
       scroll_to_element(elements.first) unless elements.empty?
@@ -110,7 +115,10 @@ module Harpnotes
 
     # hightlights the drawn elements driven by the selection range in the abc text
     def range_unhighlight(from, to)
-      get_elements_by_range(from, to).each { |element| unhighlight_element(element) }
+      elements = get_elements_by_range(from, to)
+      elements.each { |element| unhighlight_element(element) }
+      `debugger`
+      nil
     end
 
 
@@ -142,13 +150,9 @@ module Harpnotes
     end
 
     def highlight_element(element)
-      unhighlight_element(element)
       @highlighted.push(element)
-      classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
+      #classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
       element.attr('class', ['highlight'])
-      #element.unhighlight_color = element[:fill]
-      #element[:fill]            = "#ff0000"
-      #element[:stroke]          = "#ff0000"
       nil
     end
 
@@ -166,18 +170,20 @@ module Harpnotes
 
     def unhighlight_element(element)
       element.attr('class', ['abcref'])
-     # Element.find('.highlight').attr('class', 'abcref')
-      if @highlighted.include?(element)
-        @highlighted     -= [element]
-       # element[:fill]   = "#000000" #element.unhighlight_color
-       # element[:stroke] = "#000000"
-      end
+
+      @highlighted -= [element]
       nil
     end
 
     def bind_elements
       @elements.keys.each do |k|
-        @elements[k] = @elements[k].map{|id| Element.find("##{id}")}
+        @elements[k] = @elements[k].map do |id|
+          origin = Element.find("##{id}")   # find the DOM - node correspnding to Harpnote Object (k)
+          origin.on(:click) do
+            @on_select.call(k) unless origin.nil? or @on_select.nil?
+          end
+          origin
+        end
       end
     end
 
@@ -187,8 +193,8 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
-      attr={}
-      attr["fill"] = root.fill == :filled ? "black" : "white"
+      attr          ={}
+      attr["fill"]  = root.fill == :filled ? "black" : "white"
       attr[:stroke] = 'black'
       if root.rect?
         e = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last, 2 * root.size.first, 2 * root.size.last)
@@ -232,11 +238,11 @@ module Harpnotes
       # draw th path
 
       @paper.line_width = root.line_width
-      scalefactor = size.last / root.glyph[:h]
-      attr={}
-      attr[:fill] = "black"
-      attr[:transform]="translate(#{(center.first)},#{(center.last)}) translate(0,#{(0)}) scale(#{scalefactor})"
-      e        = @paper.path(path_spec, attr)
+      scalefactor       = size.last / root.glyph[:h]
+      attr              ={}
+      attr[:fill]       = "black"
+      attr[:transform]  ="translate(#{(center.first)},#{(center.last)}) translate(0,#{(0)}) scale(#{scalefactor})"
+      e                 = @paper.path(path_spec, attr)
       push_element(root.origin, e)
 
       if root.dotted?
@@ -276,7 +282,7 @@ module Harpnotes
     end
 
     def draw_the_barover(root)
-      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 0.5 , 2 * root.size.first, 0.3, 0, {fill: :black}) # svg does not show if heigt=0
+      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 0.5, 2 * root.size.first, 0.3, 0, {fill: :black}) # svg does not show if heigt=0
 
 =begin
       e_bar.on_click do
@@ -289,15 +295,15 @@ module Harpnotes
 
     # this draws the dot to an ellipse or glyph
     def draw_the_dot(root)
-      ds1             = DOTTED_SIZE + root.line_width
-      ds2             = DOTTED_SIZE + root.line_width/2
-      x               = root.center.first + (root.size.first + ds1)
-      y               = root.center.last
-      e_dot           = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"})
+      ds1   = DOTTED_SIZE + root.line_width
+      ds2   = DOTTED_SIZE + root.line_width/2
+      x     = root.center.first + (root.size.first + ds1)
+      y     = root.center.last
+      e_dot = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"})
 
       push_element(root.origin, e_dot)
 
-      e_dot         = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill:"black"})
+      e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"})
 
 =begin
       push_element(root.origin, e_dot)
@@ -310,25 +316,25 @@ module Harpnotes
     end
 
 
-    # 
+    #
     # Draw a Flowline to indicate the flow of the music. It indicates
     # the sequence in which the notes are played
-    # 
+    #
     # @param root [type] [description]
-    # 
+    #
     # @return [type] [description]
     def draw_flowline(root)
-      attr={}
+      attr                     ={}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
       @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
       # see http://stackoverflow.com/questions/10940316/how-to-use-attrs-stroke-dasharray-stroke-linecap-stroke-linejoin-in-raphaeljs
     end
 
-    # 
+    #
     # Draw a Jump line to indicate that the music is to be continued at another beat
     # @param root [Drawing::Jumpline] The jumpline to be drawn
-    # 
+    #
     # @return [nil] nothing
     def draw_jumpline_outdated(root)
       startpoint    = root.from.center
@@ -347,24 +353,24 @@ module Harpnotes
       path = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
       @paper.path(path)
 
-      attr={}
-      attr[:fill] = "red"
+      attr             ={}
+      attr[:fill]      = "red"
       attr[:transform] = "t#{startpoint[0]},#{startpoint[1]}"
-      arrow         = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0", attr )
+      arrow            = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0", attr)
     end
 
     # Draw an an annotation
     def draw_annotation(root)
 
-      style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
-      mm_per_point = $conf.get('layout.MM_PER_POINT')
+      style                = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
+      mm_per_point         = $conf.get('layout.MM_PER_POINT')
 
       # activate to debug the positioning of text
       #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
 
       text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n") #
       attr                 ={}
-      attr[:"font-size"]   = style[:font_size]/3   # literal by try and error
+      attr[:"font-size"]   = style[:font_size]/3 # literal by try and error
       attr[:"font-family"] = "Arial"
       attr[:transform]     = "scale(1.05, 1) translate(0,#{-style[:font_size]/8})" # literal by try and error
       attr[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
@@ -378,11 +384,11 @@ module Harpnotes
 
     # draw a path
     def draw_path(root)
-      path_spec = path_to_raphael(root.path)
-      attr={}
+      path_spec   = path_to_raphael(root.path)
+      attr        ={}
       attr[:fill] = "none"
-      attr[:fill] =  "#000000" if root.filled?
-      e         = @paper.path(path_spec, attr)
+      attr[:fill] = "#000000" if root.filled?
+      e           = @paper.path(path_spec, attr)
     end
   end
 

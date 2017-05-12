@@ -6,7 +6,7 @@
 # `self.r` in the native javascript
 # of the methods
 #
-module Raphael
+module ZnSvg
 
   #
   # This represents a Raphael element
@@ -19,7 +19,7 @@ module Raphael
 
     #
     # Construtctor
-    # @param element [String] The indentifier of the canvas element
+    # @param element [String] The indentifier of the canvas element # not used
     # @param width [Numeric] Width of the canvas in pixels
     # @param height [Numeric] Height of the canvas in pixels
     #

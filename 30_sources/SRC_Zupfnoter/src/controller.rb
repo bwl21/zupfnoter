@@ -677,7 +677,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
 
-    @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar])
+    @harpnote_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
   end
 
 
@@ -694,8 +694,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # previous selections are removed
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
-    @harpnote_preview_printer.unhighlight_all()
-
     highlight_abc_object(abcelement)
   end
 
@@ -768,7 +766,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
     # $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     # printerparams = {staffwidth: width} #todo compute the staffwidth
-    @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
+    @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
 
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement) # todo remove me
@@ -896,7 +894,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
       unless false# @systemstatus[:harpnotes_dirty]
-        @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
