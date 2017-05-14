@@ -23,6 +23,7 @@ module ZnSvg
     # @param width [Numeric] Width of the canvas in pixels
     # @param height [Numeric] Height of the canvas in pixels
     #
+    # dropinfo: a js-object: {element: {svg-node}, conf_key: {conf_key}, conf_value: {value for conf_key}}
     # @return [type] [description]
     def initialize(element, width, height)
       @on_drag_end                  = lambda { |dropinfo| $log.info(dropinfo) }
@@ -84,10 +85,11 @@ module ZnSvg
 
 
     # this attaches the context menu only
-    def set_conf_editable(element)
-      conf_key = element.conf_key
+    #
+
+    def set_conf_editable(svg_element, conf_key)
       %x{
-          var me = #{element.r};
+          var me = #{svg_element};
           mouseoverFnc = function(){
             #{@on_mouseover_handler}({element: me, conf_key: #{conf_key}})
           }
@@ -95,21 +97,21 @@ module ZnSvg
           mouseoutFnc = function(){
             #{@on_mouseout_handler}({element: me, conf_key: #{conf_key}})
           }
-
           me.mouseover(mouseoverFnc);
           me.mouseout(mouseoutFnc);
-          me.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: element.r, conf_key: #{conf_key}});};
+
+          me[0].oncontextmenu = function(){ return #{@draggable_rightclick_handler}({element: svg_element, conf_key: #{conf_key}});};
       }
     end
 
     # this makes the element draggable
     # it also includes a context menu
-    def set_draggable(element)
+    def set_draggable(element, conv_key, conf_value)
       #inspired by http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
       %x{
-      #{element.r}.node.className.baseVal +=" zn_draggable"
+         #{element}.node.className.baseVal +=" zn_draggable"
          var otransform = element.r.transform(); // save the orginal transformation
-         var me = #{element.r},
+         var me = #{element},
           lx = 0,
           ly = 0,
           ox = 0,
@@ -130,23 +132,23 @@ module ZnSvg
               ox = lx;
               oy = ly;
               element.r.attr({fill: 'red'});
-              #{@on_drag_end}({element: me, "conf_key": element.conf_key, "conf_value": element.conf_value, "origin": element.startpos, "delta":  [ox, oy]} );
+              #{@on_drag_end}({element: me, "conf_key": conf_key, "conf_value": #{conf_value}, "origin": element.startpos, "delta":  [ox, oy]} );
             }
           };
 
           mouseoverFnc = function(){
-            #{@on_mouseover_handler}({element: me, conf_key: #{element}.conf_key})
+            #{@on_mouseover_handler}({element: me, conf_key: #{conf_key}})
           }
 
           mouseoutFnc = function(){
-            #{@on_mouseout_handler}({element: me, conf_key: #{element}.conf_key})
+            #{@on_mouseout_handler}({element: me, conf_key: #{conf_key}})
           }
 
       me.drag(moveFnc, startFnc, endFnc);$scope.get('Element').$find("#" + (self.container_id))<
       me.mouseover(mouseoverFnc);
       me.mouseout(mouseoutFnc);
 
-      me.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: element.r, conf_key: element.conf_key});};
+      me.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: #{element}, conf_key: #{conf_key}});};
 
       }
     end

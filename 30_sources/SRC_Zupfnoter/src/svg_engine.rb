@@ -26,7 +26,8 @@ module Harpnotes
     end
 
     def clear
-      @elements = {}
+      @elements = {}                   # here we collect the interactive music_model_elements
+      @interactive_elements = {}       # here we collect the interactive layout_model_elements
       Element.find("##{@container_id}").html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
     end
 
@@ -176,27 +177,34 @@ module Harpnotes
     end
 
 
-    # this binds Music model elements to drawing dom nodes
+    # this binds Music model elements to svg dom nodes
     # approach:
     # as svg is generated as a string, the dom nodes need to be found
     # by an id and connected to the music model elements
+    # the association between drawing model elements and svg_ids is collected in @interactive_elements
     # svg_engine uses abc_ref to create clicable areas with ids
     # these areas are also used for highlighting
+    #
     def bind_elements
-      @elements.keys.each do |k|
-        @elements[k] = @elements[k].map do |id|
-          origin = Element.find("##{id}")   # find the DOM - node correspnding to Harpnote Object (k)
-          origin.on(:click) do
-            @on_select.call(k) unless origin.nil? or @on_select.nil?
+      @interactive_elements.keys.each do |music_model_element|
+        @elements[music_model_element.origin] = @interactive_elements[music_model_element].map do |svg_id|
+          svg_node = Element.find("##{svg_id}")   # find the DOM - node correspnding to Harpnote Object (k)
+          @paper.set_conf_editable(svg_node, music_model_element.conf_key)
+
+          svg_node.on(:click) do
+            @on_select.call(music_model_element.origin) unless svg_node.nil? or @on_select.nil?
           end
-          origin
+          svg_node
         end
       end
     end
 
-    def push_element(root, element)
-      @elements[root] ||= []
-      @elements[root] << element
+
+    # this method collects the drawing model elements and the associatited svg element ids.
+    # see bind_elements how the music-model-elements are bound to the svg-nodes
+    def push_element(drawing_model_element, svg_id)
+      @interactive_elements[drawing_model_element] ||= []
+      @interactive_elements[drawing_model_element] << svg_id
     end
 
     def draw_ellipse(root)
@@ -218,7 +226,7 @@ module Harpnotes
       end
 
       e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
-      push_element(root.origin, e)
+      push_element(root, e)
 
 =begin
       e.conf_key = root.conf_key;
@@ -263,7 +271,7 @@ module Harpnotes
       end
 
       e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
-      push_element(root.origin, e)
+      push_element(root, e)
 
 #       push_element(root.origin, e)
 #

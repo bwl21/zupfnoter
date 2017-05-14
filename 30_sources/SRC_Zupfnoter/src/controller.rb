@@ -742,9 +742,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       `update_mouseover_status_w2ui('')`
     end
 
+    # info: see ZnSvg::Paper
     @harpnote_preview_printer.on_draggable_rightcklick do |info|
       %x{
-          $(#{info.to_n}.element.node).w2menu({
+          $(#{info.element}).w2menu({
                                        items: [
                                                   { id: 'config', text: 'Edit config', icon: 'fa fa-gear' }
                                               ],
