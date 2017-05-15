@@ -33,9 +33,11 @@ module Harpnotes
 
     def flush
       svg = @paper.get_svg
-      Element.find("##{@container_id}").html(svg)
+      Element.find("##{@container_id}").html('')
+      svgpaper = %x{SVG(#{@container_id})}
+      %x{#{svgpaper}.svg(#{svg})}
+      #Element.find("##{@container_id}").html(svg)
       $log.benchmark("binding elements") { bind_elements }
-
       nil
     end
 
@@ -191,6 +193,10 @@ module Harpnotes
         @elements[music_model_element] = @interactive_elements[layout_model_element].map do |svg_id|
           svg_node = Element.find("##{svg_id}")   # find the DOM - node correspnding to Harpnote Object (k)
           @paper.set_conf_editable(svg_node, layout_model_element.conf_key)
+
+          %x{
+           xx = SVG.get(#{svg_id}).draggable()
+          }
 
           svg_node.on(:click) do
             @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
