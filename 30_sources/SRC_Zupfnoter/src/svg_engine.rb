@@ -186,13 +186,14 @@ module Harpnotes
     # these areas are also used for highlighting
     #
     def bind_elements
-      @interactive_elements.keys.each do |music_model_element|
-        @elements[music_model_element.origin] = @interactive_elements[music_model_element].map do |svg_id|
+      @interactive_elements.keys.each do |layout_model_element|
+        music_model_element = layout_model_element.origin
+        @elements[music_model_element] = @interactive_elements[layout_model_element].map do |svg_id|
           svg_node = Element.find("##{svg_id}")   # find the DOM - node correspnding to Harpnote Object (k)
-          @paper.set_conf_editable(svg_node, music_model_element.conf_key)
+          @paper.set_conf_editable(svg_node, layout_model_element.conf_key)
 
           svg_node.on(:click) do
-            @on_select.call(music_model_element.origin) unless svg_node.nil? or @on_select.nil?
+            @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
           end
           svg_node
         end
