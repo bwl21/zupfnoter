@@ -33,9 +33,7 @@ module Harpnotes
 
     def flush
       svg = @paper.get_svg
-      Element.find("##{@container_id}").html('')
-      svgpaper = %x{SVG(#{@container_id})}
-      %x{#{svgpaper}.svg(#{svg})}
+      Element.find("##{@container_id}").html(svg)
       #Element.find("##{@container_id}").html(svg)
       $log.benchmark("binding elements") { bind_elements }
       nil
@@ -120,7 +118,6 @@ module Harpnotes
     def range_unhighlight(from, to)
       elements = get_elements_by_range(from, to)
       elements.each { |element| unhighlight_element(element) }
-      `debugger`
       nil
     end
 
@@ -178,7 +175,6 @@ module Harpnotes
       nil
     end
 
-
     # this binds Music model elements to svg dom nodes
     # approach:
     # as svg is generated as a string, the dom nodes need to be found
@@ -190,19 +186,32 @@ module Harpnotes
     def bind_elements
       @interactive_elements.keys.each do |layout_model_element|
         music_model_element = layout_model_element.origin
-        @elements[music_model_element] = @interactive_elements[layout_model_element].map do |svg_id|
-          svg_node = Element.find("##{svg_id}")   # find the DOM - node correspnding to Harpnote Object (k)
+
+        svg_nodes = @interactive_elements[layout_model_element].map do |svg_id|
+          svg_node = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
+
+          # bind context menus
           @paper.set_conf_editable(svg_node, layout_model_element.conf_key)
 
-          %x{
-           xx = SVG.get(#{svg_id}).draggable()
-          }
-
-          svg_node.on(:click) do
-            @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
+          # bind draggable elements
+          # todo better kriteria for draggables
+          if layout_model_element.conf_value and layout_model_element.conf_key and !music_model_element.is_a? Harpnotes::Music::Playable
+            @paper.set_draggable(svg_node, layout_model_element.conf_key, layout_model_element.conf_value)
           end
+
           svg_node
         end
+
+        # bind elements to be selectable - this has the chanin abc <- Music <- Layout <- SVG
+        if music_model_element.is_a? Harpnotes::Music::Playable # only music elements can be highlighted
+          @elements[music_model_element] = svg_nodes.map do |svg_node|
+            svg_node.on(:click) do
+              @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
+            end
+            svg_node
+          end
+        end
+
       end
     end
 
@@ -250,18 +259,21 @@ module Harpnotes
       center = [root.center.first, root.center.last]
       size   = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
 
+      is_playable = root.origin.is_a? Harpnotes::Music::Playable
+
       @paper.line_width = 0.1
 
       #path_spec = "M#{center.first} #{center.last}"
       path_spec         = path_to_raphael(root.glyph[:d])
       #path_spec = self.glyph_to_path_spec(root.glyph)
 
-      # draw a white background
-      e                 = @paper.rect(root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0, {fill: "white", stroke: "white"})
 
-      nil
+      # draw a white background if it is a playble
+      if is_playable
+        e                 = @paper.rect(root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0, {fill: "white", stroke: "white"})
+      end
+
       # draw th path
-
       @paper.line_width = root.line_width
       scalefactor       = size.last / root.glyph[:h]
       attr              ={}
@@ -277,8 +289,12 @@ module Harpnotes
         draw_the_barover(root)
       end
 
-      e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
-      push_element(root, e)
+      if is_playable
+         e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
+         push_element(root, e)
+      else
+        push_element(root, e)
+      end
 
 #       push_element(root.origin, e)
 #
@@ -402,6 +418,7 @@ module Harpnotes
       attr[:"text-anchor"] = "start"
       element              = @paper.text(root.center.first/1.05, root.center.last, text, attr) # literal by try and error
 
+      push_element(root, element)
       element
 
     end

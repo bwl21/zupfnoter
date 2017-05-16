@@ -26,7 +26,7 @@ module ZnSvg
     # dropinfo: a js-object: {element: {svg-node}, conf_key: {conf_key}, conf_value: {value for conf_key}}
     # @return [type] [description]
     def initialize(element, width, height)
-      @on_drag_end                  = lambda { |dropinfo| $log.info(dropinfo) }
+      @draggable_dragend_handler    = lambda { |dropinfo| $log.info(dropinfo) }
       @on_mouseover_handler         = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
       @on_mouseout_handler          = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
       @draggable_rightclick_handler = lambda { |dropinfo|}
@@ -41,7 +41,7 @@ module ZnSvg
       clear
     end
 
-    def new_id
+    def new_id!
       "ZN_#{@id+=1}"
     end
 
@@ -76,9 +76,10 @@ module ZnSvg
     end
 
     def on_annotation_drag_end(&block)
-      @on_drag_end = block
+      @draggable_dragend_handler = block
     end
 
+    # @param block: {element: {},  detla: {}, conf_key: {}, conf_val {} }
     def on_draggable_rightclick(&block)
       @draggable_rightclick_handler = block
     end
@@ -104,57 +105,33 @@ module ZnSvg
       }
     end
 
-    # this makes the element draggable
-    # it also includes a context menu
-    def set_draggable(element, conv_key, conf_value)
-      #inspired by http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
+    def set_draggable(svg_element, conf_key, conf_value)
       %x{
-         #{element}.node.className.baseVal +=" zn_draggable"
-         var otransform = element.r.transform(); // save the orginal transformation
-         var me = #{element},
-          lx = 0,
-          ly = 0,
-          ox = 0,
-          oy = 0,
-          moveFnc = function(dx, dy) {
+                xx = SVG.get(#{svg_element}[0].id)
+                xx.addClass("zn_draggable")
 
-            scale = this.paper._viewBox[3] / this.paper.canvas.height.baseVal.value ;
-            lx = Math.round(scale * dx) + ox;
-            ly = Math.round(scale * dy) + oy;
+                xx.draggable(function(x,y){return {x: Math.round(x), y:Math.round(y)}});
 
-              if (doDrag) this.transform('t' + lx + ',' + ly + otransform);
-          },
+                var sx=0, sy=0;
+                xx.on('dragstart', function(e){
+                   sx = e.detail.p.x;
+                   sy = e.detail.p.y;
+                   this.fill("red")
+                } );
 
-          startFnc = function(dx, dy, event) { (event.button == 0) ? doDrag=true: doDrag=false;},
+                // todo: don't know why 'this' is the only way to change the filling ...
+                xx.on('dragend',function(e){
+                  this.fill("green");
+                  #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: #{svg_element}[0], conf_key: #{conf_key}, conf_value: #{conf_value} } )
+                  } )
+              }
 
-          endFnc = function() {
-            if (doDrag){
-              ox = lx;
-              oy = ly;
-              element.r.attr({fill: 'red'});
-              #{@on_drag_end}({element: me, "conf_key": conf_key, "conf_value": #{conf_value}, "origin": element.startpos, "delta":  [ox, oy]} );
-            }
-          };
-
-          mouseoverFnc = function(){
-            #{@on_mouseover_handler}({element: me, conf_key: #{conf_key}})
-          }
-
-          mouseoutFnc = function(){
-            #{@on_mouseout_handler}({element: me, conf_key: #{conf_key}})
-          }
-
-      me.drag(moveFnc, startFnc, endFnc);$scope.get('Element').$find("#" + (self.container_id))<
-      me.mouseover(mouseoverFnc);
-      me.mouseout(mouseoutFnc);
-
-      me.node.oncontextmenu = function(){return #{@draggable_rightclick_handler}({element: #{element}, conf_key: #{conf_key}});};
-
-      }
     end
 
+
+
     def add_abcref(x, y, rx, ry)
-      id = new_id
+      id = new_id!
       svg =%Q{<rect class="abcref" id="#{id}" x="#{x - rx - 1.5}" y="#{y - ry - 1.5 }" width="#{2 * rx+3}" height="#{2 * ry + 3}"/>}
       @svgbuffer.push(svg)
       id
@@ -186,8 +163,8 @@ module ZnSvg
     # @return [Element] The generated Element
     def path(spec, attributes={})
       attrs = _attr_to_xml(attributes)
-      id = new_id
-      @svgbuffer.push %Q{<path id="#{id}" class="znunhighlight" stroke-width="#{@line_width}" d="#{spec}" #{attrs}/>}
+      id = new_id!
+      @svgbuffer.push %Q{<g id="#{id}"><path class="znunhighlight" stroke-width="#{@line_width}" d="#{spec}" #{attrs}/></g>}
       id
     end
 
@@ -202,7 +179,7 @@ module ZnSvg
     #
     # @return [element] The generated Element
     def rect(x, y, rx, ry, radius = 0, attributes={fill: "none", stroke: "black", "stroke-width" => @line_width})
-      id = new_id
+      id = new_id!
       attr = _attr_to_xml(attributes)
       #@svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" style="fill:#{attr[:fill]};stroke-width:#{@line_width};stroke:#{attr[:stroke]}" />})
       @svgbuffer.push(%Q{<rect id="#{id}" x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" #{attr} />})
@@ -237,11 +214,13 @@ module ZnSvg
     #
     # @return [Element] The generated Element
     def text(x, y, text, attributes={})
-      id=new_id
+      id = new_id!
       attrs  = _attr_to_xml(attributes)
       tspans = text.split("\n").map { |l| %Q{<tspan dy="1.2em" x="#{x}">#{l}</tspan>} }.join()
 
-      @svgbuffer.push %Q{<text id="#{id}" x="#{x}" y="#{y}"  #{attrs}>#{tspans}</text>}
+      @svgbuffer.push %Q{<g id="#{id}" x="#{x}" y="#{y}"><text x="#{x}" y="#{y}" id="#{id}" #{attrs}>#{tspans}</text></g>}
+     # $log.info %Q{<g id="#{id}"><text id="#{id}" x="#{x}" y="#{y}"  #{attrs}>#{tspans}</text></g>}
+      id
     end
 
     def _attr_to_xml(attributes)
