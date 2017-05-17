@@ -852,7 +852,7 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
     > **Hinweis**': Über das Hilfe Menü kann man auch Beispiele
     > aufrufen. Diese öffnen ein neues Zupfnoter-Fenster im Demo -
     > Modus. In desem Modus kann man nicht speichern oder öffen. Die
-    > entprschenden Menüpunkte sind inaktiv. 
+    > entprschenden Menüpunkte sind inaktiv.
     >
     > Der aktuelle Modus wird in der Statuszeile angezeigt.
 
