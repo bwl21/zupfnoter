@@ -1901,7 +1901,7 @@ module Harpnotes
             #   #increment = -500
             # end
 
-            increment += get_minc_factor(notes_on_beat.first.time)
+            increment += get_minc_factor(notes_on_beat.first.time, increment)
 
             current_beat += increment
           end
@@ -1911,9 +1911,9 @@ module Harpnotes
       end
 
       # this computes manually added additional increments
-      def get_minc_factor(time)
+      def get_minc_factor(time, increment = @conf_beat_resolution)
         moreinc_factor = $conf["layout.minc.#{time}.minc_f"]
-        moreinc_factor ? moreinc_factor  * @conf_beat_resolution : 0
+        moreinc_factor ? moreinc_factor  * increment : 0
       end
 
       # for details see compute_beatcompression_0
@@ -1995,7 +1995,7 @@ module Harpnotes
               increment += default_increment
             end
 
-            increment += get_minc_factor(notes_on_beat.first.time)
+            increment += get_minc_factor(notes_on_beat.first.tim, increment)
 
             current_beat += increment
 
@@ -2090,7 +2090,7 @@ module Harpnotes
               increment += increment
             end
 
-            increment += get_minc_factor(notes_on_beat.first.time)
+            increment += get_minc_factor(notes_on_beat.first.time, increment)
 
             current_beat += increment
           end
