@@ -31,6 +31,7 @@
 * improve error reporting on dropbox save #128
 * fine tune structure of configuration menu #116
 * add another German tutorial #38
+* disable New, Dropbox, Login, Open, Save in demo mode #135
 
 ## Experimental features
 
