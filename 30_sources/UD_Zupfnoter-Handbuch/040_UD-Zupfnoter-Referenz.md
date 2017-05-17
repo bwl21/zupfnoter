@@ -849,6 +849,13 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
 -   Menü **Hilfe** (Hilfe): Hier findet man hilfreiche Links und
     Anleitungen
 
+    > **Hinweis**': Über das Hilfe Menü kann man auch Beispiele
+    > aufrufen. Diese öffnen ein neues Zupfnoter-Fenster im Demo -
+    > Modus. In desem Modus kann man nicht speichern oder öffen. Die
+    > entprschenden Menüpunkte sind inaktiv. 
+    >
+    > Der aktuelle Modus wird in der Statuszeile angezeigt.
+
 ### Fenster links: Eingabe {#eingabefenster}
 
 Das Eingeabefenster enthält seinerseits
@@ -994,8 +1001,11 @@ Einträgen
 -   Aktiver Filter für Meldungen in der Konsole (Loglevel). Das Filter
     kann über deen Eingebbefehl`loglevel error` in der Konsole
     umgestellt werden [^040_UD-Zupfnoter-Referenz.md_5].
+-   Aktueller Modus von Zupfnoter. Hier gibt es `work` und `demo`. im
+    Demo-Modus sind einge Menüpunkte nicht aktiv.
 -   Name des Konfigurationsparameters für das Element unter dem
-    Mauszeiger falls dieses mit der Maus veschoben werden kann.
+    Mauszeiger falls dieses mit der Maus veschoben werden kann oder über
+    das Kontext-Menü konfiguriert werden kann.
 
 ### Konsole {#konsole-fenster}
 
@@ -1565,7 +1575,7 @@ relevante Beispiele
 Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
 z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
 Stimme läüft. Die Möglichkeiten dazu sind in
-Kapitel \ref{extract.0.layout.moreinc} [`morinc`](#extract.0.layout.moreinc)
+Kapitel \ref{extract.0.layout.minc} [`minc`](#extract.0.layout.minc)
 beschrieben.
 
 ### Extra Einstellungen für die Notenvorschau
@@ -1582,6 +1592,15 @@ Häufige Einstellungen bei Zupfnoter sind:
     Notenvorschau
 -   `I:linewarn 0` - unterdrückt Meldungenüber nicht gefüllte oder zu
     volle Zeilen in der Notenvorschau
+
+### Parameter in der Zupfnoter-URL
+
+In der Adressleiste des Browsers können Parameter übergeben wreden. Das
+ist für den Benutzer meist nicht erforderlich. Die Parameter werden hier
+zur Vollständigkeit aufgeführt.
+
+-   `?mode={demo | work}`
+-   `?debug`
 
 [^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um

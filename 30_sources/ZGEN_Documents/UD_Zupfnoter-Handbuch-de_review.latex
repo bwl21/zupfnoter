@@ -2038,6 +2038,15 @@ vorläufig.
 \item
   Menü \textbf{Hilfe} (Hilfe): Hier findet man hilfreiche Links und
   Anleitungen
+
+  \begin{quote}
+  \textbf{Hinweis}': Über das Hilfe Menü kann man auch Beispiele
+  aufrufen. Diese öffnen ein neues Zupfnoter-Fenster im Demo - Modus. In
+  desem Modus kann man nicht speichern oder öffen. Die entprschenden
+  Menüpunkte sind ausgegraut.
+
+  Der aktuelle Modus wird in der Statuszeile angezeigt.
+  \end{quote}
 \end{itemize}
 
 \subsubsection{Fenster links: Eingabe}\label{eingabefenster}
@@ -2230,8 +2239,12 @@ Einträgen
     ``Error'' eingestellt, nur bei Problembehbungen bzw. Fehlersuche im
     Programm sind andere Einstellungen sinnvoll}.
 \item
+  Aktueller Modus von Zupfnoter. Hier gibt es \texttt{work} und
+  \texttt{demo}. im Demo-Modus sind einge Menüpunkte nicht aktiv.
+\item
   Name des Konfigurationsparameters für das Element unter dem Mauszeiger
-  falls dieses mit der Maus veschoben werden kann.
+  falls dieses mit der Maus veschoben werden kann oder über das
+  Kontext-Menü konfiguriert werden kann.
 \end{itemize}
 
 \hyperdef{}{konsole-fenster}{\subsubsection{Konsole}\label{konsole-fenster}}
@@ -3066,7 +3079,7 @@ soll}\label{wenn-die-vertikale-anodrnung-optimiert-werden-soll}
 Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
 z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
 Stimme läüft. Die Möglichkeiten dazu sind in
-Kapitel~\ref{extract.0.layout.moreinc}~\hyperref[extract.0.layout.moreinc]{\texttt{morinc}}
+Kapitel~\ref{extract.0.layout.minc}~\hyperref[extract.0.layout.minc]{\texttt{minc}}
 beschrieben.
 
 \subsubsection{Extra Einstellungen für die
@@ -3090,6 +3103,21 @@ Häufige Einstellungen bei Zupfnoter sind:
 \item
   \texttt{I:linewarn\ 0} - unterdrückt Meldungenüber nicht gefüllte oder
   zu volle Zeilen in der Notenvorschau
+\end{itemize}
+
+\subsubsection{Parameter in der
+Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}
+
+In der Adressleiste des Browsers können Parameter übergeben wreden. Das
+ist für den Benutzer meist nicht erforderlich. Die Parameter werden hier
+zur Vollständigkeit aufgeführt.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{?mode=\{demo\ \textbar{}\ work\}}
+\item
+  \texttt{?debug}
 \end{itemize}
 
 \cleardoublepage
@@ -3877,8 +3905,9 @@ angeshnitten.
       
 \end{verbatim}
 
-\subsection{\texorpdfstring{\texttt{extract.0.layout.minc} - extra
-Vorschub}{extract.0.layout.minc - extra Vorschub}}\label{extract.0.layout.minc}
+\hyperdef{}{extract.0.layout.minc}{\subsection{\texorpdfstring{\texttt{extract.0.layout.minc}
+- extra
+Vorschub}{extract.0.layout.minc - extra Vorschub}}\label{extract.0.layout.minc}}
 
 Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
 
@@ -4541,7 +4570,7 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
           "LINE_THICK"   : 0.7,
           "REST_SIZE"    : [4, 2]
         },
-        "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
+        "layout_regular" : "#<Proc:0x007f991b12ec18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
       },
       "notes"   : {
         "T01_number"               : {
@@ -4626,7 +4655,7 @@ Notenbild gezielt optimieren.
         "LINE_THICK"   : 0.7,
         "REST_SIZE"    : [4, 2]
       },
-      "layout_regular" : "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
+      "layout_regular" : "#<Proc:0x007f991b12ec18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
     }
       
 \end{verbatim}
@@ -4796,7 +4825,7 @@ TODO:\marginpar{TODO} Helptext für presets.layout.layout\_regular
 einfügen
 
 \begin{verbatim}
-    "layout_regular": "#<Proc:0x007fe9e1a0d5e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
+    "layout_regular": "#<Proc:0x007f991b12ec18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:75 (lambda)>"
       
 \end{verbatim}
 
