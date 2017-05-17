@@ -1,4 +1,4 @@
-# V 1.6.0
+# V 1.6.1
 
 ## Fix
 
@@ -17,6 +17,7 @@
 * improeved display of overlapping synchlines #121
 * speedup configuration forms #118, #119
 * now Zupfnoter no longer makes all Keys to Major Key upon transposition #103
+* reference sheet not longer raises errors #134
 
 ## Enhancement
 
@@ -30,6 +31,7 @@
 * improve error reporting on dropbox save #128
 * fine tune structure of configuration menu #116
 * add another German tutorial #38
+* disable New, Dropbox, Login, Open, Save in demo mode #135
 
 ## Experimental features
 

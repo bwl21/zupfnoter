@@ -147,7 +147,7 @@ task :deploy => [:build] do
   Dir['../vendor/ace/ext-*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
   def javascript_include_tag(filename)
-    "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
+    "<script src = \"public/#{ZUPFNOTER_JS}?#{GITSHA}\" type=\"application/javascript\"></script>"
   end
 
   def javascript_include_analytics()
@@ -278,5 +278,5 @@ desc "config doc and help"
 task :buildConfigDoc do
   sh 'wortsammler -bi localization/help_de-de.md'
   sh 'ruby conf_doc_source.rb'
-  sh 'pandoc xxx.md -o xxx.html --standalone'
+  sh 'wortsammler -bi ../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md'
 end

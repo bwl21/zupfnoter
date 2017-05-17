@@ -219,8 +219,20 @@ Zeitpunkt.
 
 Hier gibst du den Korrekturfaktor für den vertikalen Voreschub an.
 
-Dieser Wert ist ein vielfaches des Vorschubs einer ganzen Noten und wird
-hinzugefügt. Zum Beispiel wird duch "1.0" der Vorschub verdoppelt.
+Die Angabe bestimmt, welcher Anteil am errechneten vertikalen Abstand
+als extra Abstand **hinzugefügt** wird. (`a = (a + minc_f * a`))
+
+Im Beispiel
+
+        "minc" : {
+           "2304": {"minc_f": 1}, 
+           "4224": {"minc_f": -0.25}
+           }
+
+-   bei 2304 wird der Abstand verdoppelt. Mit derm Faktor 1 wird ein
+    Normalabstand wird hinugefügt.
+-   bei 4224 wird der abstand um 25% reduziert. Mit dem Faktor -0.25
+    wird ein Viertel des Maximalabstandes abgezogen
 
 **Beispiele**:
 
