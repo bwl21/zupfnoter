@@ -1,3 +1,8 @@
+% - settings to improve Handling in Zupfnoter
+I:measurenb 1
+I:linewarn 0
+I:staffnonote 2
+% --------------
 X:3015
 F:3015_reference_sheet
 T:Zupfnoter Reference Sheet
@@ -268,12 +273,12 @@ W:(79) T01 Number extract
           "style" : "small_bold"
         },
         "72"                      : {
-          "pos"   : [325, 292],
+          "pos"   : [290, 288],
           "text"  : "(72) Zupfnoter-Website",
           "style" : "small_bold"
         },
         "73"                      : {
-          "pos"   : [380, 291],
+          "pos"   : [350, 286],
           "text"  : "(73) Fingerabdruck",
           "style" : "small_bold"
         },
@@ -293,7 +298,7 @@ W:(79) T01 Number extract
           "style" : "small_bold"
         },
         "77"                      : {
-          "pos"   : [336, 282],
+          "pos"   : [370, 278],
           "text"  : "(77) T99 Bitte nicht kopieren",
           "style" : "small_bold"
         },
