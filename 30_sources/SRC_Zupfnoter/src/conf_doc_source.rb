@@ -74,7 +74,7 @@ end
 $conf_helptext = a.entries_html
 
 ignore_patterns  = [/^neatjson.*/, /abc_parser.*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
-                    /^layout.*/, /^extract\.0$/
+                    /^layout.*/, /^extract\.0$/, /^presets\.layout\..*$/
 ]
 produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/, /^templates/, /^annotations/]
 
@@ -83,6 +83,7 @@ locale = JSON.parse(File.read('../public/locale/de-de.json'))
 
 $conf = Confstack.new(false)
 $conf.push(JSON.parse(InitConf.init_conf.to_json))
+$conf['presets.layout.layout_regular'] = nil  # This is a lambda  which needs to be suppressed for documentation
 
 ignore_keys  = $conf.keys.select { |k| ignore_patterns.select { |ik| k.match(ik) }.count > 0 }
 produce_keys = $conf.keys.select { |k| produce_patterns.select { |ik| k.match(ik) }.count > 0 }

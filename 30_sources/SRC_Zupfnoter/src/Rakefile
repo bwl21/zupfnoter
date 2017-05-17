@@ -278,4 +278,5 @@ desc "config doc and help"
 task :buildConfigDoc do
   sh 'wortsammler -bi localization/help_de-de.md'
   sh 'ruby conf_doc_source.rb'
+  sh 'wortsammler -bi ../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md'
 end
