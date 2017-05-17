@@ -17,6 +17,7 @@
 * improeved display of overlapping synchlines #121
 * speedup configuration forms #118, #119
 * now Zupfnoter no longer makes all Keys to Major Key upon transposition #103
+* reference sheet not longer raises errors #134
 
 ## Enhancement
 
