@@ -19,22 +19,24 @@ module ZnSvg
 
     #
     # Construtctor
-    # @param element [String] The indentifier of the canvas element # not used
+    # @param container_id [String] The indentifier of the canvas element # not used
     # @param width [Numeric] Width of the canvas in pixels
     # @param height [Numeric] Height of the canvas in pixels
     #
     # dropinfo: a js-object: {element: {svg-node}, conf_key: {conf_key}, conf_value: {value for conf_key}}
     # @return [type] [description]
-    def initialize(element, width, height)
+    def initialize(container_id, width, height)
+      @container_id = container_id
       @draggable_dragend_handler    = lambda { |dropinfo| $log.info(dropinfo) }
       @on_mouseover_handler         = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
       @on_mouseout_handler          = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
       @draggable_rightclick_handler = lambda { |dropinfo|}
 
-      @canvas     = [width, height]
-      @scale      = 1
-      @svgbuffer  = []
-      @id = 0
+      @canvas    = [width, height]
+      @scale     = 1
+      @viewbox   = [0, 0, 420, 297] # what a default ?
+      @svgbuffer = []
+      @id        = 0
 
       @line_width = 0.2 # todo:clarify value
 
@@ -62,9 +64,9 @@ module ZnSvg
     #
     # @return [type] [description]
     def clear
-      @id = 0
+      @id        = 0
       @svgbuffer = []
-      @svgbuffer.push(%Q{<svg width="#{@canvas.first}" height="#{@canvas.last}" viewBox="0, 0, 440, 297" > }) ## todo improve handling of viewbox
+      @svgbuffer.push(%Q{<svg width="#{@canvas.first}" height="#{@canvas.last}" viewBox="#{@viewbox.join(', ')}" > }) ## todo improve handling of viewbox
     end
 
     def on_mouseover(&block)
@@ -146,7 +148,7 @@ module ZnSvg
 
 
     def add_abcref(x, y, rx, ry)
-      id = new_id!
+      id  = new_id!
       svg =%Q{<rect class="abcref" id="#{id}" x="#{x - rx - 1.5}" y="#{y - ry - 1.5 }" width="#{2 * rx+3}" height="#{2 * ry + 3}"/>}
       @svgbuffer.push(svg)
       id
@@ -177,11 +179,11 @@ module ZnSvg
     #
     # @return [Element] The generated Element
     def path(spec, attributes={}, bgrectspec=nil)
-      id = new_id!
-      group_attrs = _attr_to_xml({fill: attributes[:fill]})  # move fill attibute to the group such that drag drop can change the color
+      id          = new_id!
+      group_attrs = _attr_to_xml({fill: attributes[:fill]}) # move fill attibute to the group such that drag drop can change the color
       attributes.delete(:fill)
 
-      attrs = _attr_to_xml(attributes)
+      attrs  = _attr_to_xml(attributes)
 
       # recte a transparent background rectangle to make selection easier
       bgrect = %Q{<rect class="abcref" x="#{bgrectspec[0]}", y="#{bgrectspec[1]}", width="#{bgrectspec[2]}", height="#{bgrectspec[3]}" />} if bgrectspec
@@ -201,7 +203,7 @@ module ZnSvg
     #
     # @return [element] The generated Element
     def rect(x, y, rx, ry, radius = 0, attributes={fill: "none", stroke: "black", "stroke-width" => @line_width})
-      id = new_id!
+      id   = new_id!
       attr = _attr_to_xml(attributes)
       #@svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" style="fill:#{attr[:fill]};stroke-width:#{@line_width};stroke:#{attr[:stroke]}" />})
       @svgbuffer.push(%Q{<rect id="#{id}" x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" #{attr} />})
@@ -210,7 +212,8 @@ module ZnSvg
 
 
     def set_view_box(x, y, width, height, fit)
-      @scale = @canvas.last / height
+      @viewbox = [x, y, width, height]
+      @scale   = @canvas.last / height
       # todo change viewbox in @svgbugger if necessary
     end
 
@@ -236,12 +239,12 @@ module ZnSvg
     #
     # @return [Element] The generated Element
     def text(x, y, text, attributes={})
-      id = new_id!
+      id     = new_id!
       attrs  = _attr_to_xml(attributes)
       tspans = text.split("\n").map { |l| %Q{<tspan dy="1.2em" x="#{x}">#{l}</tspan>} }.join()
 
       @svgbuffer.push %Q{<g id="#{id}" x="#{x}" y="#{y}"><text x="#{x}" y="#{y}" id="#{id}" #{attrs}>#{tspans}</text></g>}
-     # $log.info %Q{<g id="#{id}"><text id="#{id}" x="#{x}" y="#{y}"  #{attrs}>#{tspans}</text></g>}
+      # $log.info %Q{<g id="#{id}"><text id="#{id}" x="#{x}" y="#{y}"  #{attrs}>#{tspans}</text></g>}
       id
     end
 
@@ -260,6 +263,15 @@ module ZnSvg
 
     def enable_pan_zoom
       `self.r.panzoom().enable()` if `self.r.panzoom != undefined`
+    end
+
+    def scroll_to_element(element)
+      %x{
+        height = $("#" + #{@container_id} + " svg").height();
+        thetopraw = element[0].y.baseVal.value;
+        thetop = thetopraw * (height / #{@viewbox[3]}) - 100;  // keep 110 px from top border
+        $("#"+#{@container_id}).get(0).scrollTop = thetop;
+      }
     end
 
   end
