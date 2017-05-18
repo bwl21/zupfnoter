@@ -105,29 +105,44 @@ module ZnSvg
       }
     end
 
-    def set_draggable(svg_element, conf_key, conf_value)
+    # mkake the svg_emeent with svg_element_id draggable
+    # pass conf_key and conf_value to the drag handler
+    def set_draggable(svg_element_id, conf_key, conf_value)
       %x{
-                xx = SVG.get(#{svg_element}[0].id)
-                xx.addClass("zn_draggable")
 
-                xx.draggable(function(x,y){return {x: Math.round(x), y:Math.round(y)}});
+          var xx = SVG.get(#{svg_element_id});
+          xx.addClass("zn_draggable");
 
-                var sx=0, sy=0;
-                xx.on('dragstart', function(e){
-                   sx = e.detail.p.x;
-                   sy = e.detail.p.y;
-                   this.fill("red")
-                } );
+          xx.draggable(function(x, y) {
+            return {
+              x:  Math.floor(x),
+              y:  Math.floor(y)
+            }
+          });
 
-                // todo: don't know why 'this' is the only way to change the filling ...
-                xx.on('dragend',function(e){
-                  this.fill("green");
-                  #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: #{svg_element}[0], conf_key: #{conf_key}, conf_value: #{conf_value} } )
-                  } )
-              }
+          var sx = 0,
+            sy = 0;
+          xx.on('dragstart', function(e) {
+            sx = e.detail.p.x;
+            sy = e.detail.p.y;
+            this.fill("red");
+          });
 
+          // todo: don't know why 'this' is the only way to change the filling ...
+          xx.on('dragend', function(e) {
+            this.fill("green");
+            #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: xx, conf_key: #{conf_key}, conf_value: #{conf_value} } )
+
+            var result = {
+              delta: [ e.detail.p.x - sx, e.detail.p.y - sy],
+              element: svg_element
+            };
+            alert(JSON.stringify(result));
+          })
+
+
+      }
     end
-
 
 
     def add_abcref(x, y, rx, ry)
@@ -161,10 +176,17 @@ module ZnSvg
     #
     #
     # @return [Element] The generated Element
-    def path(spec, attributes={})
-      attrs = _attr_to_xml(attributes)
+    def path(spec, attributes={}, bgrectspec=nil)
       id = new_id!
-      @svgbuffer.push %Q{<g id="#{id}"><path class="znunhighlight" stroke-width="#{@line_width}" d="#{spec}" #{attrs}/></g>}
+      group_attrs = _attr_to_xml({fill: attributes[:fill]})  # move fill attibute to the group such that drag drop can change the color
+      attributes.delete(:fill)
+
+      attrs = _attr_to_xml(attributes)
+
+      # recte a transparent background rectangle to make selection easier
+      bgrect = %Q{<rect class="abcref" x="#{bgrectspec[0]}", y="#{bgrectspec[1]}", width="#{bgrectspec[2]}", height="#{bgrectspec[3]}" />} if bgrectspec
+
+      @svgbuffer.push %Q{<g id="#{id}" "#{group_attrs}" >#{bgrect}<path class="znunhighlight" stroke-width="#{@line_width}" #{attrs} d="#{spec}"/></g>}
       id
     end
 

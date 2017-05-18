@@ -26,8 +26,8 @@ module Harpnotes
     end
 
     def clear
-      @elements = {}                   # here we collect the interactive music_model_elements
-      @interactive_elements = {}       # here we collect the interactive layout_model_elements
+      @elements             = {} # here we collect the interactive music_model_elements
+      @interactive_elements = {} # here we collect the interactive layout_model_elements
       Element.find("##{@container_id}").html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
     end
 
@@ -157,7 +157,6 @@ module Harpnotes
     end
 
     def scroll_to_element(element)
-
       # %x{
       #       var node = #{element};
       #       var bbox = node.getBBox();
@@ -171,7 +170,7 @@ module Harpnotes
     def unhighlight_element(element)
       element.attr('class', ['abcref'])
 
-        @highlighted -= [element]
+      @highlighted -= [element]
       nil
     end
 
@@ -196,7 +195,7 @@ module Harpnotes
           # bind draggable elements
           # todo better kriteria for draggables
           if layout_model_element.conf_value and layout_model_element.conf_key and !music_model_element.is_a? Harpnotes::Music::Playable
-            @paper.set_draggable(svg_node, layout_model_element.conf_key, layout_model_element.conf_value)
+            @paper.set_draggable(svg_id, layout_model_element.conf_key, layout_model_element.conf_value)
           end
 
           svg_node
@@ -224,7 +223,7 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
-      attr          ={}
+      attr          = {}
       attr["fill"]  = root.fill == :filled ? "black" : "white"
       attr[:stroke] = 'black'
       if root.rect?
@@ -268,18 +267,19 @@ module Harpnotes
       #path_spec = self.glyph_to_path_spec(root.glyph)
 
 
+      bgrect            = [root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0]
       # draw a white background if it is a playble
       if is_playable
-        e                 = @paper.rect(root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0, {fill: "white", stroke: "white"})
+        e = @paper.rect(root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0, {fill: "white", stroke: "white"})
       end
 
       # draw th path
       @paper.line_width = root.line_width
       scalefactor       = size.last / root.glyph[:h]
-      attr              ={}
+      attr              = {}
       attr[:fill]       = "black"
-      attr[:transform]  ="translate(#{(center.first)},#{(center.last)}) translate(0,#{(0)}) scale(#{scalefactor})"
-      e                 = @paper.path(path_spec, attr)
+      attr[:transform]  = "translate(#{(center.first)},#{(center.last)}) scale(#{scalefactor})"
+      e                 = @paper.path(path_spec, attr, bgrect)
 
       if root.dotted?
         draw_the_dot(root)
@@ -290,8 +290,8 @@ module Harpnotes
       end
 
       if is_playable
-         e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
-         push_element(root, e)
+        e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
+        push_element(root, e)
       else
         push_element(root, e)
       end
@@ -325,7 +325,10 @@ module Harpnotes
     end
 
     def draw_the_barover(root)
-      e_bar = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last - 0.5, 2 * root.size.first, 0.3, 0, {fill: :black}) # svg does not show if heigt=0
+      e_bar = @paper.rect(root.center.first - root.size.first,
+                          root.center.last - root.size.last - 1.5 * root.line_width,
+                          2 * root.size.first,
+                          0.5, 0, {fill: 'black'}) # svg does not show if height=0
 
 =begin
       e_bar.on_click do
@@ -343,7 +346,7 @@ module Harpnotes
       x     = root.center.first + (root.size.first + ds1)
       y     = root.center.last
       e_dot = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"}) # white outer
-      e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"})  # black inner
+      e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"}) # black inner
 
 =begin
       push_element(root.origin, e_dot)
@@ -364,7 +367,7 @@ module Harpnotes
     #
     # @return [type] [description]
     def draw_flowline(root)
-      attr                     ={}
+      attr                     = {stroke: 'black'}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
       @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
@@ -393,10 +396,8 @@ module Harpnotes
       path = "M#{endpoint[0]},#{endpoint[1]}L#{depth},#{endpoint[1]}L#{depth},#{startpoint[1]}L#{startpoint[0]},#{startpoint[1]}"
       @paper.path(path)
 
-      attr             ={}
-      attr[:fill]      = "red"
-      attr[:transform] = "t#{startpoint[0]},#{startpoint[1]}"
-      arrow            = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0", attr)
+      attr  = {fill: 'red', transform: "t#{startpoint[0]},#{startpoint[1]}"}
+      arrow = @paper.path("M0,0L#{ARROW_SIZE},#{-0.5 * ARROW_SIZE}L#{ARROW_SIZE},#{0.5 * ARROW_SIZE}L0,0", attr)
     end
 
     # Draw an an annotation
@@ -409,7 +410,7 @@ module Harpnotes
       #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
 
       text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n") #
-      attr                 ={}
+      attr                 = {}
       attr[:"font-size"]   = style[:font_size]/3 # literal by try and error
       attr[:"font-family"] = "Arial"
       attr[:transform]     = "scale(1.05, 1) translate(0,#{-style[:font_size]/8})" # literal by try and error
@@ -426,8 +427,7 @@ module Harpnotes
     # draw a path
     def draw_path(root)
       path_spec   = path_to_raphael(root.path)
-      attr        ={}
-      attr[:fill] = "none"
+      attr        = {stroke: :black, fill: 'none'}
       attr[:fill] = "#000000" if root.filled?
       e           = @paper.path(path_spec, attr)
     end
