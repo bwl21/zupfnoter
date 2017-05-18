@@ -14,6 +14,7 @@ module Harpnotes
 
     def initialize(element_id, width, height)
       @container_id = element_id
+      @preview_container = Element.find("##{@container_id}")
       @paper        = ZnSvg::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select    = nil
@@ -25,16 +26,28 @@ module Harpnotes
       @paper.set_view_box(x, y, width, height, true)
     end
 
+    def set_canvas(size)
+      @paper.set_canvas(size)
+    end
+
     def clear
       @elements             = {} # here we collect the interactive music_model_elements
       @interactive_elements = {} # here we collect the interactive layout_model_elements
-      Element.find("##{@container_id}").html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
+
+      @preview_scroll = [`#{@preview_container}.scrollLeft()`, `#{@preview_container}.scrollTop()`];
+
+      @preview_container.html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
     end
 
     def flush
       svg = @paper.get_svg
-      Element.find("##{@container_id}").html(svg)
-      #Element.find("##{@container_id}").html(svg)
+      @preview_container.html(svg)
+
+      %x{
+         #{@preview_container}.scrollLeft(#{@preview_scroll.first});
+         #{@preview_container}.scrollTop(#{@preview_scroll.last})
+;      }
+
       $log.benchmark("binding elements") { bind_elements }
       nil
     end

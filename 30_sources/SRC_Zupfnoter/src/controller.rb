@@ -775,6 +775,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
   end
 
+  def set_harppreview_size(size)
+    @harpnote_preview_printer.set_canvas(size)
+  end
+
   def set_file_drop(dropzone)
     %x{
 

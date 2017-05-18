@@ -87,6 +87,11 @@ module ZnSvg
     end
 
 
+    def set_canvas(size)
+      @canvas = size;
+      nil
+    end
+
     # this attaches the context menu only
     #
 
@@ -186,9 +191,9 @@ module ZnSvg
       attrs  = _attr_to_xml(attributes)
 
       # recte a transparent background rectangle to make selection easier
-      bgrect = %Q{<rect class="abcref" x="#{bgrectspec[0]}", y="#{bgrectspec[1]}", width="#{bgrectspec[2]}", height="#{bgrectspec[3]}" />} if bgrectspec
+      bgrect = %Q{<rect class="abcref" x="#{bgrectspec[0]}" y="#{bgrectspec[1]}" width="#{bgrectspec[2]}" height="#{bgrectspec[3]}" />} if bgrectspec
 
-      @svgbuffer.push %Q{<g id="#{id}" "#{group_attrs}" >#{bgrect}<path class="znunhighlight" stroke-width="#{@line_width}" #{attrs} d="#{spec}"/></g>}
+      @svgbuffer.push %Q{<g id="#{id}" #{group_attrs} >#{bgrect}<path class="znunhighlight" stroke-width="#{@line_width}" #{attrs} d="#{spec}"/></g>}
       id
     end
 
