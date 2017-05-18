@@ -157,13 +157,12 @@ module Harpnotes
     end
 
     def scroll_to_element(element)
-      # %x{
-      #       var node = #{element};
-      #       var bbox = node.getBBox();
-      #       var top = bbox.y + bbox.y2;
-      #       top = 100 * Math.floor(top/100);
-      #       $("#"+#{@container_id}).get(0).scrollTop=top;
-      # }
+      %x{
+        height = $("#harpPreview svg").attr("height");
+        thetopr = element[0].y.baseVal.value;
+        thetop = thetopr * (height/297) - 100;
+        $("#"+#{@container_id}).get(0).scrollTop = thetop;
+      }
     end
 
 
