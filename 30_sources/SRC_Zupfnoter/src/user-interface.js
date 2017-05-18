@@ -641,6 +641,11 @@ function init_w2ui(uicontroller) {
         id: 'sb_loglevel',
         text: '<div style="padding: 0px !important;"><span class="sb-loglevel" "></span></div>'
       },
+      {
+        type: 'button',
+        id: 'sb_mode',
+        text: '<div style="padding: 0px !important;"><span class="sb-mode" "></span></div>'
+      },
       {type: 'spacer'},
       {
         type: 'button',
@@ -807,6 +812,24 @@ function update_systemstatus_w2ui(systemstatus) {
   ;
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
+  $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
+
+  if (systemstatus.mode == 'demo') {
+    w2ui.layout_top_toolbar.disable('tb_create')
+    w2ui.layout_top_toolbar.disable('tb_open')
+    w2ui.layout_top_toolbar.disable('tb_save')
+    w2ui.layout_top_toolbar.disable('tbDropbox')
+    w2ui.layout_top_toolbar.disable('tb_login')
+  }
+  else {
+    w2ui.layout_top_toolbar.enable('tb_create')
+    w2ui.layout_top_toolbar.enable('tb_open')
+    w2ui.layout_top_toolbar.enable('tb_save')
+    w2ui.layout_top_toolbar.enable('tbDropbox')
+    w2ui.layout_top_toolbar.enable('tb_login')
+  }
+
+
 }
 
 function update_error_status_w2ui(errors) {

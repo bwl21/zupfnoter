@@ -251,8 +251,10 @@ class Controller
     keys = `Object.keys(localStorage)`
     dbx_apiv1_traces = keys.select{|k| k.match(/dropbox\-auth:default:/)}
     unless dbx_apiv1_traces.empty?
+      # remove dropbox api-v1
+      # remove systemstatus to get rid of the dropbox login status
+      # dodo: refine this to remove only dropobox state
       %x{
-      debugger;
          localStorage.removeItem(#{dbx_apiv1_traces.first});
          localStorage.removeItem('systemstatus');
         }
