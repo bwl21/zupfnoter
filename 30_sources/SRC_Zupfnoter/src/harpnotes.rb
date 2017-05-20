@@ -1790,7 +1790,7 @@ module Harpnotes
             annotationoffset = [0, (-decoration_root.size.last/decoration_scale - decoration_distance).round()] unless annotationoffset
 
             decoration_center = [decoration_root.center.first + annotationoffset.first, decoration_root.center.last + annotationoffset.last]
-            r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, playable, conf_key, {pos: annotationoffset})
+            r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, {pos: annotationoffset})
             r.is_note         = false
             decoration_result.push [r]
           end

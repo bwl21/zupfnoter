@@ -679,7 +679,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
 
-    @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar])
+    @harpnote_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
   end
 
 
@@ -696,8 +696,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # previous selections are removed
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
-    @harpnote_preview_printer.unhighlight_all()
-
     highlight_abc_object(abcelement)
   end
 
@@ -722,7 +720,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # setup the harpnote prviewer
   def setup_harpnote_preview
 
-    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
+    @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
     @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing such that we can draw in mm
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
@@ -746,9 +744,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       `update_mouseover_status_w2ui('')`
     end
 
+    # info: see ZnSvg::Paper
     @harpnote_preview_printer.on_draggable_rightcklick do |info|
       %x{
-          $(#{info.to_n}.element.node).w2menu({
+          $(#{info.element}).w2menu({
                                        items: [
                                                   { id: 'config', text: 'Edit config', icon: 'fa fa-gear' }
                                               ],
@@ -770,12 +769,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
     # $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     # printerparams = {staffwidth: width} #todo compute the staffwidth
-    @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
+    @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
 
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement) # todo remove me
       select_abc_object(abcelement)
     end
+  end
+
+  def set_harppreview_size(size)
+    @harpnote_preview_printer.set_canvas(size)
   end
 
   def set_file_drop(dropzone)
@@ -898,7 +901,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
       unless false# @systemstatus[:harpnotes_dirty]
-        @harpnote_preview_printer.unhighlight_all
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)

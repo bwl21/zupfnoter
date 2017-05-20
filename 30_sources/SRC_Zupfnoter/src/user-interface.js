@@ -3,7 +3,8 @@ function init_w2ui(uicontroller) {
   w2popup.defaults.speed = 0;
 
   function zoomHarpPreview(size) {
-    $("#harpPreview svg").attr('height', size[0]).attr('width', size[1]);
+    uicontroller.$set_harppreview_size(size);
+    $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
   };
 
   var zoomlevel = [1400, 2200];
@@ -64,20 +65,20 @@ function init_w2ui(uicontroller) {
       w2ui['layout'].hide('left', window.instant);
       w2ui['layout'].hide('bottom', window.instant);
       w2ui['layout'].hide('main', window.instant);
-      zoomHarpPreview(['100%', '98%'])
+      zoomHarpPreview(['98%', '100%'])
     }
   }
   scalehandlers = {
     'tb_scale:groß': function () {
-      zoomlevel = [1400, 2200];
+      zoomlevel = [2200, 1400];
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:mittel': function () {
-      zoomlevel = [700, 1500];
+      zoomlevel = [1500, 750];
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:klein': function () {
-      zoomlevel = [400, 800];
+      zoomlevel = [800, 400];
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:fit': function () {

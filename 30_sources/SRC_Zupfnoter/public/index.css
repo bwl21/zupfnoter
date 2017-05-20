@@ -220,3 +220,6 @@ rect.highlight {
 
 #tunePreview text, #tunePreview path {
   pointer-events: none; }
+
+#harpPreview .znunhighlight {
+  stroke: #000000; }
