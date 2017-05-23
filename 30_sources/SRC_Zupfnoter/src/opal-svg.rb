@@ -144,6 +144,98 @@ module ZnSvg
     end
 
 
+    def set_draggable_tuplet(svg_element_id, conf_key, conf_value, draginfo)
+      %x{
+      var xx = SVG.get(#{svg_element_id});
+      xx.addClass("zn_draggable");
+      #{thedraginfo = draginfo.dup}
+
+      xx.draggable(function(x, y) {
+        return {
+            x: x - x % 5,
+            y: y - y % 5
+        }
+      });
+
+      var sx = 0,
+          sy = 0,
+          target_id = null,
+          target_curve=null;
+
+      xx.on('dragstart', function(e) {
+
+        sx = e.detail.p.x;
+        sy = e.detail.p.y;
+        this.stroke("blue");
+        target_id = #{thedraginfo[:target_id]};
+        target_curve = $( '#' + target_id );
+      });
+
+
+
+
+      xx.on('dragmove', function(e){
+        e.preventDefault();
+
+        dx = e.detail.p.x - sx;
+        dy = e.detail.p.y - sy;
+
+        #{
+      p1  = draginfo[:p1]
+      p2  = draginfo[:p2]
+      cp1 = draginfo[:cp1]
+      cp2 = draginfo[:cp2]
+
+      deltap = p2 - p1
+      }
+
+      cp_id = e.target.children[0].attributes['data-cp'].value
+      if (cp_id == "cp1") {#{cp1 = cp1 + [`dx`, `dy`]}}
+                 else {#{cp2 = cp2 + [`dx`, `dy`]}}
+
+      newpath = [['M', #{p1.x}, #{p1.y}], ['C', #{cp1.x}, #{cp1.y}, #{cp2.x}, #{cp2.y}, #{p2.x}, #{p2.y}]]
+      np = #{path_to_raphael(`newpath`)};
+      target_curve.children()[0].setAttribute('d', np);
+
+      newpath = [['M', #{p1.x}, #{p1.y}], ['L', #{cp1.x}, #{cp1.y}], ['L', #{cp2.x}, #{cp2.y}], ['L', #{p2.x}, #{p2.y}]]
+      np = #{path_to_raphael(`newpath`)};
+      e.target.firstChild.setAttribute('d', np);
+
+      })
+
+        xx.on('dragend', function(e) {
+      #{
+      draginfo[:cp1] = cp1
+      draginfo[:cp2] = cp2
+      }
+          this.stroke("red");
+            conf_key_to_change = #{draginfo[:conf_key]} + "." + cp_id
+
+            #{
+      rotate_by = Math::PI * 0.5
+      np1       = (p1 - cp1).rotate(-deltap.angle).rotate(-rotate_by)
+      np2       = (p2 - cp2).rotate(-deltap.angle).rotate(-rotate_by)
+      }
+
+             if (cp_id == "cp1") {
+                 conf_value_new = #{np1.to_a}
+                  newpath = [['M', #{p1.x}, #{p1.y}], ['L', #{cp1.x}, #{cp1.y}]]
+                  np = #{path_to_raphael(`newpath`)};
+                  e.target.firstChild.setAttribute('d', np);
+                }
+                 else
+                {
+                 conf_value_new = #{np2.to_a}
+                  newpath = [['M', #{p2.x}, #{p2.y}],  ['L', #{cp2.x}, #{cp2.y}]]
+                  np = #{path_to_raphael(`newpath`)};
+                  e.target.firstChild.setAttribute('d', np);
+                }
+
+            #{@draggable_dragend_handler}( { conf_key: conf_key_to_change, conf_value_new: conf_value_new } )
+        })
+      }
+    end
+
     def set_draggable_jumpline(svg_element_id, conf_key, conf_value, draginfo)
       %x{
       var xx = SVG.get(#{svg_element_id});
@@ -168,7 +260,6 @@ module ZnSvg
 
       xx.on('dragmove', function(e){
         e.preventDefault();
-
 
         dx = e.detail.p.x - sx;
         dx = dx - dx % #{$conf['layout.X_SPACING']}; // we still drag in string rasters.
@@ -233,13 +324,14 @@ module ZnSvg
       group_attrs = _attr_to_xml({fill: attributes[:fill], stroke: attributes[:stroke]}) # move fill attibute to the group such that drag drop can change the color
       attributes.delete(:fill)
       attributes.delete(:stroke)
+      attributes[:'stroke-width'] = @line_width unless attributes[:'stroke-width']
 
       attrs  = _attr_to_xml(attributes)
 
       # recte a transparent background rectangle to make selection easier
       bgrect = %Q{<rect class="abcref" x="#{bgrectspec[0]}" y="#{bgrectspec[1]}" width="#{bgrectspec[2]}" height="#{bgrectspec[3]}" />} if bgrectspec
 
-      @svgbuffer.push %Q{<g id="#{id}" #{group_attrs} >#{bgrect}<path stroke-width="#{@line_width}" #{attrs} d="#{thespec}"/></g>}
+      @svgbuffer.push %Q{<g id="#{id}" #{group_attrs} >#{bgrect}<path #{attrs} d="#{thespec}"/></g>}
       id
     end
 
@@ -289,7 +381,7 @@ module ZnSvg
     # @param y2 [Numeric] vertical endpoint coordinate
     #
     # @return [Element] The generated Element
-    def line(x1, y1, x2, y2, attributes = {})
+    def line(x1, y1, x2, y2, attributes = {}, draginfo = nil)
       path("M#{x1},#{y1}L#{x2},#{y2}", attributes)
     end
 

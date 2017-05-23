@@ -44,9 +44,9 @@ module Harpnotes
       @preview_container.html(svg)
 
       %x{
-         #{@preview_container}.scrollLeft(#{@preview_scroll.first});
-         #{@preview_container}.scrollTop(#{@preview_scroll.last})
-;      }
+      #{@preview_container}.scrollLeft(#{@preview_scroll.first});
+      #{@preview_container}.scrollTop(#{@preview_scroll.last});
+      }
 
       $log.benchmark("binding elements") { bind_elements }
       nil
@@ -196,9 +196,11 @@ module Harpnotes
           if draginfo
             case draginfo[:handler]
               when :annotation
-                @paper.set_draggable(svg_id, layout_model_element.conf_key, layout_model_element.conf_value)
+                @paper.set_draggable(svg_id, layout_model_element.conf_key, layout_model_element.conf_value) # annotations do not have a ddraghandler
               when :jumpline
                 @paper.set_draggable_jumpline(svg_id, layout_model_element.conf_key, layout_model_element.conf_value, draginfo)
+              when :tuplet
+                @paper.set_draggable_tuplet(svg_id, layout_model_element.conf_key, layout_model_element.conf_value, draginfo)
             end
           end
 
@@ -245,7 +247,7 @@ module Harpnotes
         draw_the_barover(root)
       end
 
-      e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
+      e = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last)
       push_element(root, e)
 
 =begin
@@ -293,7 +295,7 @@ module Harpnotes
       end
 
       if is_playable
-        e = @paper.add_abcref(root.center.first, root.center.last, root.size.first, root.size.last)
+        e = @paper.add_abcref(root.center.first, root.center.last, 0.6 * root.size.first, 0.6 * root.size.last)
         push_element(root, e)
       else
         push_element(root, e)
@@ -432,7 +434,21 @@ module Harpnotes
       attr        = {stroke: :black, fill: 'none'}
       attr[:fill] = "#000000" if root.filled?
       e           = @paper.path(root.path, attr)
-      push_element(root, e)
+
+      draginfo = root.draginfo
+      if draginfo
+        draginfo[:target_id] = e
+        case draginfo[:handler]
+          when :jumpline
+            push_element(root, e)
+          when :tuplet
+            e = @paper.line(draginfo[:p1].x, draginfo[:p1].y, draginfo[:cp1].x, draginfo[:cp1].y, {'data-cp' => "cp1", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
+            push_element(root, e)
+            e = @paper.line(draginfo[:p2].x, draginfo[:p2].y, draginfo[:cp2].x, draginfo[:cp2].y, {'data-cp' => "cp2", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
+            push_element(root, e)
+            nil
+        end
+      end
     end
   end
 

@@ -258,6 +258,14 @@ rect.abcref:hover {
   fill-opacity: 0.5
 }
 
+.zncontrol {
+  opacity: 0.1
+}
+
+.zncontrol:hover, .zncontrol:active {
+  opacity: 0.5
+}
+
 rect.highlight {
   fill: red;
   fill-opacity: 0.2

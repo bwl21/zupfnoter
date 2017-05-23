@@ -1631,13 +1631,19 @@ module Harpnotes
             p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
             p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
 
-            tiepath, bezier_anchor = make_annotated_bezier_path([p1, p2], tuplet_options)
+            tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
             pos_from_conf = tuplet_options['pos'] rescue [0, 0]
             configured_anchor = (bezier_anchor + pos_from_conf)
             conf_value        = (configured_anchor - bezier_anchor).to_a.map { |i| i.round(0) }
 
+            shape_drag_callback = lambda do |the_tuplet_options|
+              nil
+            end
+
             unless tuplet_options[:show] == false
-              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THIN') })
+              conf_key_edit = conf_key + ".xxx" # "Edit conf strips the last element of conf_key"
+              draginfo = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
+              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
               result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
                                                              :small,
                                                              nil,
@@ -2462,7 +2468,7 @@ module Harpnotes
         slurpath += start + curve if tuplet_options[:shape].include? 'c'
         slurpath += start + line if tuplet_options[:shape].include? 'l'
 
-        [slurpath, annotation_anchor]
+        [slurpath, annotation_anchor, cpa1, cpa2]
       end
 
     end
