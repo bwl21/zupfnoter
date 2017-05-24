@@ -267,9 +267,11 @@ module Harpnotes
             lines = []
             start = element[1 .. 2]
           when "L"
+            new_start = [[start], lines].flatten(1).inject([0, 0]) {|i, o| [o[0] + i[-2], o[1] + i[-1]]}
             @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
             lines = []
-            start = element[1 .. 2]
+            start = new_start
+            lines.push [element[1] - new_start.first, element[2] - new_start.last]
           when "l"
             lines.push element[1 .. -1]
           when "c"
