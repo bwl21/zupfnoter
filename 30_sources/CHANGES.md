@@ -2,6 +2,8 @@
 
 ## fix
 
+* tuplet lines are now correct in pdf (#139)
+
 ## enhancement
 
 * jumplines can now be configured by drag & drop (#136)
