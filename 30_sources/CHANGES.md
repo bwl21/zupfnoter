@@ -1,3 +1,12 @@
+# V 1.7
+
+## Fix
+
+## Enhancement
+
+* Jumplines can now be positioned by drag and drop (#136)
+
+
 # V 1.6.1
 
 ## Fix

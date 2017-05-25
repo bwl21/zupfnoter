@@ -13,13 +13,13 @@ module Harpnotes
     DOTTED_SIZE     = 0.3
 
     def initialize(element_id, width, height)
-      @container_id = element_id
+      @container_id      = element_id
       @preview_container = Element.find("##{@container_id}")
-      @paper        = ZnSvg::Paper.new(element_id, width, height)
+      @paper             = ZnSvg::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
-      @on_select    = nil
-      @elements     = {} # record all elements being on the sheet, using upstream object as key
-      @highlighted  = []
+      @on_select         = nil
+      @elements          = {} # record all elements being on the sheet, using upstream object as key
+      @highlighted       = []
     end
 
     def set_view_box(x, y, width, height)
@@ -137,14 +137,6 @@ module Harpnotes
 
     private
 
-    def path_to_raphael(path)
-      result = path.inject("") do |result, element|
-        result += element.first
-        result += element[1 .. -1].join(" ")
-      end
-      result
-    end
-
     def get_elements_by_range(from, to)
       result = []
       range  = [from, to].sort()
@@ -200,16 +192,22 @@ module Harpnotes
           @paper.set_conf_editable(svg_node, layout_model_element.conf_key)
 
           # bind draggable elements
-          # todo better kriteria for draggables
-          if layout_model_element.conf_value and layout_model_element.conf_key and !music_model_element.is_a? Harpnotes::Music::Playable
-            @paper.set_draggable(svg_id, layout_model_element.conf_key, layout_model_element.conf_value)
+          draginfo = layout_model_element.draginfo
+          if draginfo
+            case draginfo[:handler]
+              when :annotation
+                @paper.set_draggable(svg_id, layout_model_element.conf_key, layout_model_element.conf_value)
+              when :jumpline
+                @paper.set_draggable_jumpline(svg_id, layout_model_element.conf_key, layout_model_element.conf_value, draginfo)
+            end
           end
 
           svg_node
         end
 
+
         # bind elements to be selectable - this has the chanin abc <- Music <- Layout <- SVG
-        if music_model_element.is_a? Harpnotes::Music::Playable # only music elements can be highlighted
+        if music_model_element.is_a? Harpnotes::Music::Playable and !layout_model_element.is_a? Harpnotes::Drawing::Path # only music elements can be highlighted
           @elements[music_model_element] = svg_nodes.map do |svg_node|
             svg_node.on(:click) do
               @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
@@ -270,8 +268,6 @@ module Harpnotes
       @paper.line_width = 0.1
 
       #path_spec = "M#{center.first} #{center.last}"
-      path_spec         = path_to_raphael(root.glyph[:d])
-      #path_spec = self.glyph_to_path_spec(root.glyph)
 
 
       bgrect            = [root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0]
@@ -286,7 +282,7 @@ module Harpnotes
       attr              = {}
       attr[:fill]       = "black"
       attr[:transform]  = "translate(#{(center.first)},#{(center.last)}) scale(#{scalefactor})"
-      e                 = @paper.path(path_spec, attr, bgrect)
+      e                 = @paper.path(root.glyph[:d], attr, bgrect)
 
       if root.dotted?
         draw_the_dot(root)
@@ -433,10 +429,10 @@ module Harpnotes
 
     # draw a path
     def draw_path(root)
-      path_spec   = path_to_raphael(root.path)
       attr        = {stroke: :black, fill: 'none'}
       attr[:fill] = "#000000" if root.filled?
-      e           = @paper.path(path_spec, attr)
+      e           = @paper.path(root.path, attr)
+      push_element(root, e)
     end
   end
 
