@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.6.1
+Version 1.6.1 ++dev
 
 © 2017 https://www.zupfnoter.de
 
@@ -2738,6 +2738,96 @@ Es erscheint eine Maske nach folgendem Beispiel:
 \begin{quote}
 \includegraphics{../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg}~
 \end{quote}
+\end{quote}
+
+\subsection{mit der Maus
+konfigurieren}\label{mit-der-maus-konfigurieren}
+
+Einstellungen, welche die Position und Gestalt von Element im
+Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+\item
+  Anordnung von Sprunglinien
+\item
+  Gestalt der Triolenbogen (Tuplet)
+\end{itemize}
+
+Für die grundsätzliche Bedienung gilt:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Wenn du den Mauszeiger über ein solches Element bewegst, ändert dieser
+  seine Form. Darüber hinaus zeigt die Statusleiste rechts unten,
+  welcher Konfigurationsparamter verwändert wird.
+\item
+  Bei solchen Elementen ruft das Kontextmenü \texttt{Edit\ config} den
+  entsprechenden Konfigurationseditor auf.
+\item
+  Nach dem Beargbeiten des Elementes mit der Maus wird das Element rot.
+  Bitte führe einen ``Render'' aus um die Unterlegnotenvorschau zu
+  aktualisieren.
+\item
+  Bitte beachte, dass manche Einstellungen am Zeitbezug der Note hängen.
+  Wenn du also dein Stück so überarbeitest, dass sich der Zeitbezug
+  einer Note ändert, musst du ggf. die Konfiguration erneute
+  durchführen.
+\end{itemize}
+
+\subsubsection{Texte verschieben}\label{texte-verschieben}
+
+Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
+Taktnummern, Zählhinweise, Variatnenbezeichenr, Bezeichner von Parts mit
+der Maus verschieben.
+
+\subsubsection{Sprunglinien verschieben}\label{sprunglinien-verschieben}
+
+Du kannst horizontale Lage der Sprunglinien mit der Maus einstellen. Die
+Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
+
+\begin{quote}
+\textbf{Hinweis}: Bei varianten Enden wirkt der selbe
+Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte drücke
+daher auf \texttt{Render} um das Endergebnis zu sehen. Danach sind auch
+die Pfeile an den Sprunglineine wieder korrekt.
+\end{quote}
+
+\subsubsection{Triolenbogen gestalten}\label{triolenbogen-gestalten}
+
+Das Gestalten von Triolenbogen ist etwas vom komplexesten, was Zupfnoter
+zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
+
+\includegraphics{../ZAUX_Images/040-090_drag-drop-tuplet.pdf}~
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  wenn man genau hinschaut, dann siehst du an den Triolenbögen zwei
+  kleine Griffe. Wenn du die Maus darüber bewegst, kann due diese mit
+  gedrückter Maustaste bwegegen.
+\item
+  wenn du die Maus bewegst, ändert sich das Bild zu einem Trapez. Der
+  entstezende Bogen wird durch zwei Kontrolpunkte (die oberen Ecken des
+  Trapezes) gestaltet. Im vorstehenden Bild wurde der linke Griff (d.h.
+  der linke Kontrollpunkt) bewegt.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis}: Am besgten experimentierst du ein bisschen, um
+Erfahrung zu sammeln. Es würde zu weit führen, hier alle Möglichkeiten
+darzustellen.
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Es kann vorkommen, dass die Griffe von Noten verdeckt
+und daher mit der Maus nicht erreichbar sind. In diesem Fall kannst du
+an der Triolenbeschriftung oder an einem andere Griff
+\texttt{Edit\ Cconfig} aufrufen und den Kontrollpunkt so ändern, dass er
+wireder sichtbar wird.
 \end{quote}
 
 \clearpage
