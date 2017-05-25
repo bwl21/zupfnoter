@@ -248,8 +248,8 @@ class Controller
   # this does a cleanip of localstorage
   # note that this is maintained from version to version
   def cleanup_localstorage
-    keys = `Object.keys(localStorage)`
-    dbx_apiv1_traces = keys.select{|k| k.match(/dropbox\-auth:default:/)}
+    keys             = `Object.keys(localStorage)`
+    dbx_apiv1_traces = keys.select { |k| k.match(/dropbox\-auth:default:/) }
     unless dbx_apiv1_traces.empty?
       # remove dropbox api-v1
       # remove systemstatus to get rid of the dropbox login status
@@ -633,12 +633,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config
   end
 
-  def self. get_uri()
+  def self.get_uri()
     parser = nil;
     # got this from http://stackoverflow.com/a/21152762/2092206
     # maybe we switch to https://github.com/medialize/URI.js
     %x{
-        #{parser} = new URL(window.location.href);
+    #{parser} = new URL(window.location.href);
 
         var qd = {};
         #{parser}.search.substr(1).split("&").forEach(function(item) {
@@ -728,9 +728,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
-      conf_key = info[:conf_key]
 
-      newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+      conf_key  = info[:conf_key]
+      newcoords = info[:conf_value_new]
+      unless newcoords
+        newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+      end
 
       @editor.patch_config_part(conf_key, newcoords)
       @config_form_editor.refresh_form if @config_form_editor
@@ -900,7 +903,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
       $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-      unless false# @systemstatus[:harpnotes_dirty]
+      unless false # @systemstatus[:harpnotes_dirty]
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)

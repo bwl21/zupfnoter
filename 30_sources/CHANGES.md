@@ -1,3 +1,11 @@
+# v 1.7
+
+## fix
+
+## enhancement
+
+* jumplines can now be configured by drag & drop (#136)
+
 # V 1.6.1
 
 ## Fix

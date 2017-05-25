@@ -26,7 +26,7 @@ module ZnSvg
     # dropinfo: a js-object: {element: {svg-node}, conf_key: {conf_key}, conf_value: {value for conf_key}}
     # @return [type] [description]
     def initialize(container_id, width, height)
-      @container_id = container_id
+      @container_id                 = container_id
       @draggable_dragend_handler    = lambda { |dropinfo| $log.info(dropinfo) }
       @on_mouseover_handler         = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
       @on_mouseout_handler          = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
@@ -132,25 +132,69 @@ module ZnSvg
           xx.on('dragstart', function(e) {
             sx = e.detail.p.x;
             sy = e.detail.p.y;
-            this.fill("red");
+            this.fill("blue");
           });
 
           // todo: don't know why 'this' is the only way to change the filling ...
           xx.on('dragend', function(e) {
-            this.fill("green");
-            #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: xx, conf_key: #{conf_key}, conf_value: #{conf_value} } )
-
-            var result = {
-              delta: [ e.detail.p.x - sx, e.detail.p.y - sy],
-              element: svg_element
-            };
-            alert(JSON.stringify(result));
+            this.fill("red");
+            #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: this, conf_key: #{conf_key}, conf_value: #{conf_value} } )
           })
-
-
       }
     end
 
+
+    def set_draggable_jumpline(svg_element_id, conf_key, conf_value, draginfo)
+      %x{
+      var xx = SVG.get(#{svg_element_id});
+      xx.addClass("zn_draggable");
+      #{thedraginfo = draginfo.dup
+      vertical      = draginfo[:jumpline][:vertical]}
+
+      xx.draggable(function(x, y) {
+        return {
+            x: x - x % #{draginfo[:xspacing]},
+            y:  0
+        }
+      });
+
+      var sx = 0,
+          sy = 0;
+      xx.on('dragstart', function(e) {
+        sx = e.detail.p.x;
+        sy = e.detail.p.y;
+        this.stroke("blue");
+      });
+
+      xx.on('dragmove', function(e){
+        e.preventDefault();
+
+
+        dx = e.detail.p.x - sx;
+        dx = dx - dx % #{$conf['layout.X_SPACING']}; // we still drag in string rasters.
+
+        #{
+      thedraginfo[:jumpline][:vertical] = vertical + `dx`
+      newpath                           = Harpnotes::Layout::Default.make_path_from_jumpline(thedraginfo[:jumpline])[0]
+      }
+
+        np = #{path_to_raphael(newpath)}
+        e.target.children[0].setAttribute('d', np);
+      })
+
+        // todo: don't know why 'this' is the only way to change the filling ...
+        xx.on('dragend', function(e) {
+          this.stroke("red");
+          var result = {
+            delta: [ e.detail.p.x - sx, e.detail.p.y - sy],
+            element: svg_element_id
+          };
+            conf_value_new = Math.round(((vertical + dx ) / #{$conf['layout.X_SPACING']}))
+            if (conf_value_new <= 0) conf_value_new -= 1
+            #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: this, conf_key: #{conf_key}, conf_value: #{conf_value}, conf_value_new: conf_value_new } )
+        })
+      }
+    end
 
     def add_abcref(x, y, rx, ry)
       id  = new_id!
@@ -184,17 +228,31 @@ module ZnSvg
     #
     # @return [Element] The generated Element
     def path(spec, attributes={}, bgrectspec=nil)
+      thespec     = path_to_raphael(spec)
       id          = new_id!
-      group_attrs = _attr_to_xml({fill: attributes[:fill]}) # move fill attibute to the group such that drag drop can change the color
+      group_attrs = _attr_to_xml({fill: attributes[:fill], stroke: attributes[:stroke]}) # move fill attibute to the group such that drag drop can change the color
       attributes.delete(:fill)
+      attributes.delete(:stroke)
 
       attrs  = _attr_to_xml(attributes)
 
       # recte a transparent background rectangle to make selection easier
       bgrect = %Q{<rect class="abcref" x="#{bgrectspec[0]}" y="#{bgrectspec[1]}" width="#{bgrectspec[2]}" height="#{bgrectspec[3]}" />} if bgrectspec
 
-      @svgbuffer.push %Q{<g id="#{id}" #{group_attrs} >#{bgrect}<path class="znunhighlight" stroke-width="#{@line_width}" #{attrs} d="#{spec}"/></g>}
+      @svgbuffer.push %Q{<g id="#{id}" #{group_attrs} >#{bgrect}<path stroke-width="#{@line_width}" #{attrs} d="#{thespec}"/></g>}
       id
+    end
+
+    def path_to_raphael(path)
+      if path.is_a? Array
+        result = path.inject("") do |result, element|
+          result += element.first
+          result += element[1 .. -1].join(" ")
+        end
+      else
+        result=path
+      end
+      result
     end
 
 

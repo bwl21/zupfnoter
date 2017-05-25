@@ -92,19 +92,20 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :origin,
-                    :beat,
-                    :visible,
-                    :start_pos,
-                    :end_pos,
-                    :time,
-                    :znid,
-                    :decorations,
-                    :count_note, # string to support count_notes need to be queried even for measuers ...
-                    :pos,
+      attr_accessor :beat,
                     :box, # ??
+                    :conf_key,
+                    :count_note, # string to support count_notes need to be queried even for measuers ...
+                    :decorations,
+                    :end_pos,
+                    :next_pitch,
+                    :pos,
                     :prev_pitch,
-                    :next_pitch
+                    :start_pos,
+                    :time,
+                    :visible,
+                    :znid,
+                    :origin
 
       def initialize
         @visible = true
@@ -133,7 +134,7 @@ module Harpnotes
     # be part of the harpnote sheet
     # pitch and beat are delegated to its companion
     class NonPlayable < MusicEntity
-      attr_accessor :companion, :conf_key
+      attr_accessor :companion
 
       #
       # Constructor
@@ -474,9 +475,10 @@ module Harpnotes
         raise "End point of Jump (#{from.class}) must be a Playable" unless from.is_a? Harpnotes::Music::Playable
         raise "Start point of Jump (#{to.class}) must be a Playable" unless to.is_a? Harpnotes::Music::Playable
 
-        @from   = from
-        @to     = to
-        @policy = policy
+        @from     = from
+        @to       = to
+        @policy   = policy
+        @conf_key = policy[:conf_key]
       end
     end
 
@@ -678,9 +680,13 @@ module Harpnotes
     end
 
     # this represetns objects which can be visible
+    # draginfo {handler: :drag | jumpline | bezier,
+    #           jumpline {p1: [x1, y1], pv: xv, p2: [x2, y1] } |
+    #           bezier: {cp1: [x1, y2], cp2: [x2, y2]}
+    #
+    # }
     class Drawable
-
-      attr_accessor :conf_key, :conf_value, :is_note
+      attr_accessor :conf_key, :conf_value, :is_note, :draginfo
 
       def initialize
         @visible    = true
@@ -802,7 +808,7 @@ module Harpnotes
     # ["c", x, y, cp1x, cp1y, cp2x, cp2y}]
     # ["M", x, y]
     class Path < Drawable
-      attr_reader :path, :style
+      attr_reader :path, :style, :origin
 
 
       # @param [Array] path see class description for details
@@ -1303,9 +1309,9 @@ module Harpnotes
         legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
-                                                          "extract.#{print_variant_nr}.legend.pos", {pos: title_pos})
+                                                          "extract.#{print_variant_nr}.legend.pos", {pos: title_pos}).tap { |s| s.draginfo={handler: :annotation} }
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
-                                                          "extract.#{print_variant_nr}.legend.spos", {pos: legend_pos})
+                                                          "extract.#{print_variant_nr}.legend.spos", {pos: legend_pos}).tap { |s| s.draginfo={handler: :annotation} }
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
@@ -1329,7 +1335,7 @@ module Harpnotes
                 verses[j]
               }.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
-                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos})
+                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos}).tap { |s| s.draginfo={handler: :annotation} }
             end
           end
         end
@@ -1343,7 +1349,7 @@ module Harpnotes
             raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
             raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
             annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
-                                                              "#{conf_key}.pos", {pos: note[:pos]})
+                                                              "#{conf_key}.pos", {pos: note[:pos]}).tap { |s| s.draginfo={handler: :annotation} }
           end
         rescue Exception => e
           $log.error e.message
@@ -1513,7 +1519,7 @@ module Harpnotes
 
             position = Vector2d(the_playable.center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, count_note, style, playable.origin,
-                                                          conf_key, {pos: annotationoffset})
+                                                          conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
             result
           end
         end
@@ -1560,7 +1566,7 @@ module Harpnotes
 
             position = Vector2d(lookuptable_drawing_by_playable[playable].center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, barnumber, style, playable.origin,
-                                                          conf_key, {pos: annotationoffset})
+                                                          conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
             result
           end
         end
@@ -1634,9 +1640,11 @@ module Harpnotes
               result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THIN') })
               result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
                                                              :small,
-                                                             tuplet_start,
+                                                             nil,
                                                              conf_key + ".#{conf_key_pos}",
-                                                             {conf_key_pos.to_s => conf_value.to_a}))
+                                                             {conf_key_pos.to_s => conf_value.to_a})
+                              .tap { |s| s.draginfo={handler: :annotation} }
+              )
             end
             tuplet_notes = []
             tuplet_start = nil
@@ -1691,33 +1699,38 @@ module Harpnotes
 
         # draw the jumplines
         res_gotos                    = voice.select { |c| c.is_a? Goto }.map do |goto|
-          distance        = goto.policy[:distance]
+          if goto.conf_key
+            conf_key = "extract.#{print_variant_nr}.#{goto.conf_key}"
+            distance = $conf[conf_key]
+          end
+
+          distance = goto.policy[:distance] unless distance
+          distance = 1 unless distance
+          distance = distance - 1 if distance > 0 # make distancebeh  symmetric  -1 0 1
+
           from_anchor     = goto.policy[:from_anchor] || :after # after -> reight
           to_anchor       = goto.policy[:to_anchor] || :before # before -> left
           vertical_anchor = goto.policy[:vertical_anchor] || :from
 
           $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
 
-          distance = distance - 1 if distance > 0 # make distancebeh  syymetric  -1 0 1
-          if distance
-            # vertical = {distance: (distance + 0.5) * X_SPACING}
-            # vertical path shoudl be between two strings -> 0.5
-            vertical = (distance + 0.5) * $conf.get('layout.X_SPACING')
-          else
-            vertical = 0.5 * $conf.get('layout.X_SPACING') # {level: goto.verticalpos[:level]}
-          end
+          vertical = (distance + 0.5) * $conf.get('layout.X_SPACING')
+
 
           from = lookuptable_drawing_by_playable[goto.from]
           to   = lookuptable_drawing_by_playable[goto.to]
 
-          path = make_path_from_jumpline(
-              from:     {center: from.center, size: from.size, anchor: from_anchor},
-              to:       {center: to.center, size: to.size, anchor: to_anchor},
-              vertical: vertical, vertical_anchor: vertical_anchor
-          )
+          jumpline_info = {from:     {center: from.center, size: from.size, anchor: from_anchor},
+                           to:       {center: to.center, size: to.size, anchor: to_anchor},
+                           vertical: vertical, vertical_anchor: vertical_anchor,
+                           xspacing: $conf['layout.X_SPACING']
+          }
+
+          path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
+          draginfo = {handler: :jumpline, jumpline: jumpline_info}
 
           unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
-            [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.line_width = $conf.get('layout.LINE_THICK') },
+            [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
              Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
           end
         end.flatten
@@ -1754,7 +1767,7 @@ module Harpnotes
 
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
-                                                        conf_key, {pos: annotationoffset})
+                                                        conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
           result   = nil if annotation.policy==:Goto and not show_options[:jumpline]
           result
         end
@@ -1824,7 +1837,7 @@ module Harpnotes
         position = Vector2d(lookuptable_drawing_by_playable[point_note].center) + annotationoffset
 
         Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
-                                           point_note.origin, conf_key, {pos: annotationoffset})
+                                           point_note.origin, conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
       end
 
 
@@ -1913,7 +1926,7 @@ module Harpnotes
       # this computes manually added additional increments
       def get_minc_factor(time, increment = @conf_beat_resolution)
         moreinc_factor = $conf["layout.minc.#{time}.minc_f"]
-        moreinc_factor ? moreinc_factor  * increment : 0
+        moreinc_factor ? moreinc_factor * increment : 0
       end
 
       # for details see compute_beatcompression_0
@@ -1995,7 +2008,7 @@ module Harpnotes
               increment += default_increment
             end
 
-            increment += get_minc_factor(notes_on_beat.first.tim, increment)
+            increment += get_minc_factor(notes_on_beat.first.time, increment)
 
             current_beat += increment
 
@@ -2242,8 +2255,7 @@ module Harpnotes
       #                from:     {center: from.center, size: from.size, anchor: :after},
       #                to:       {center: to.center, size: to.size, anchor: :before},
       #                vertical: vertical
-
-      def make_path_from_jumpline(arg)
+      def self.make_path_from_jumpline(arg)
         # arg hash like :
         #                from:     {center: from.center, size: from.size, anchor: :after},
         #                to:       {center: to.center, size: to.size, anchor: :before},
@@ -2261,7 +2273,7 @@ module Harpnotes
         vertical_anchor = from # the endpoint to which the varticalpos relates to
         vertical_anchor = to if arg[:vertical_anchor] == :to
 
-        start_of_vertical = Vector2d(vertical_anchor.x + verticalpos, from.y)
+        start_of_vertical = Vector2d(vertical_anchor.x + verticalpos, from.y) # todo: handle the case that vertical is 0;
         end_of_vertical   = Vector2d(vertical_anchor.x + verticalpos, to.y)
 
         start_orientation = Vector2d((((start_of_vertical - from) * [1, 0]).normalize).x, 0)
@@ -2314,6 +2326,7 @@ module Harpnotes
         ]
         path
       end
+
 
       #
       # Convert a duration to a symbol todo: move DURATION_TO_STYLE in here
