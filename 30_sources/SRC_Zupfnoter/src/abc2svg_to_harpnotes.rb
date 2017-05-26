@@ -204,7 +204,7 @@ module Harpnotes
         # handle the jumplines
         result                = result.flatten
         jumplines             = result.inject([]) do |jumplines, element|
-          jumplines << _make_jumplines(element)
+          jumplines << _make_jumplines(element, voice_index)
           jumplines
         end
 
@@ -663,18 +663,20 @@ module Harpnotes
 
       # make the jumplines if an explicit goto of an element
       # @param [Playable] element - an element of the converted voice
-      def _make_jumplines(element)
+      def _make_jumplines(element, voice_id)
         if element.is_a?(Harpnotes::Music::Playable)
           goto_infos = _extract_goto_info_from_bar(element.origin[:raw])
           goto_infos.inject([]) do |result, goto_info|
             targetname = goto_info[:target]
             target     = @jumptargets[targetname]
+            conf_key = "notebound.jumplines.#{voice_id}.#{element.znid}.p_goto"
+
 
             argument = goto_info[:distance].first || 2
             if target.nil?
               $log.error("target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
             else
-              result << Harpnotes::Music::Goto.new(element, target, distance: argument) #todo: better algorithm
+              result << Harpnotes::Music::Goto.new(element, target, conf_key: conf_key, distance: argument) #todo: better algorithm
             end
 
             result
