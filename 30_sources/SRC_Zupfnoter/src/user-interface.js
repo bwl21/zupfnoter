@@ -177,6 +177,7 @@ function init_w2ui(uicontroller) {
           },
           "Cancel": function () {
             this.clear();
+            w2popup.close();
           }
         }
       })
