@@ -3,6 +3,7 @@
 ## fix
 
 * tuplet lines are now correct in pdf (#139)
+* no longer have unexpected subflowlines to unisons (#140)
 
 ## enhancement
 

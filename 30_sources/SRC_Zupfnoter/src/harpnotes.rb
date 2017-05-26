@@ -280,18 +280,19 @@ module Harpnotes
     # It is called SynchPoint since it is represented by a horizontal
     # line connecting the involved notes
     class SynchPoint < Playable
-      attr_reader :notes
+      attr_reader :notes, :synched_notes
 
       #
       # Constructor
       #
       # @param notes [Array of Note] The particular notes of the chord
-      #
-      def initialize(notes)
+      # @param [Object] synched_notes the notes synched by this point
+      def initialize(notes, synched_notes=[])
         super()
         raise "Notes must be an array" unless notes.is_a? Array
 
         @notes = notes
+        @synched_notes = [notes, synched_notes].flatten.uniq
       end
 
       def measure_start
@@ -546,6 +547,9 @@ module Harpnotes
           plast     = playables[1]
 
           # it might be that on the particular beat there are not two visible playaybles
+          # playables might be a synchpoint so we consider synchronization of two unisons
+          # [left, right] <-> [left, right]
+          # we have to find the shortest diestance
 
           if pfirst && plast
             first_left  = pfirst.left
@@ -556,9 +560,10 @@ module Harpnotes
 
             candidates = [first_left, first_right].product [last_left, last_right]
           end
+
           if candidates
             synchpoint = candidates.min_by { |i| (i.last.pitch - i.first.pitch).abs }
-            result     = SynchPoint.new(synchpoint)
+            result     = SynchPoint.new(synchpoint, candidates)
           end
 
           result
@@ -1238,7 +1243,7 @@ module Harpnotes
         synched_notes               = required_synchlines.map do |selector|
           synch_points_to_show = $log.benchmark("build_syncpoints") { music.build_synch_points(selector) }
           synch_points_to_show.map do |sp|
-            [sp.notes.first, sp.notes.last]
+            sp.synched_notes
           end
         end.flatten
 
@@ -1592,6 +1597,7 @@ module Harpnotes
         # note that invisible rests make no sense and therefore do not interruppt subflowlines
         previous_note  = nil
         res_sub_flow   = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
+
           unless show_options[:synched_notes].include?(playable.proxy_note)
             res = nil
             res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
