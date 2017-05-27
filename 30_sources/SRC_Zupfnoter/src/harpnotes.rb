@@ -1761,7 +1761,7 @@ module Harpnotes
           }
 
           path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
-          draginfo = {handler: :jumpline, jumpline: jumpline_info}
+          draginfo = {handler: :jumpline, jumpline: jumpline_info, xspacing:  $conf.get('layout.X_SPACING')}
 
           unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
             [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },

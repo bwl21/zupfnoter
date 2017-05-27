@@ -127,9 +127,8 @@ module ZnSvg
             }
           });
 
-          var sx = 0,
-            sy = 0;
           xx.on('dragstart', function(e) {
+            ismoved = false;
             sx = e.detail.p.x;
             sy = e.detail.p.y;
             this.fill("blue");
@@ -137,8 +136,11 @@ module ZnSvg
 
           // todo: don't know why 'this' is the only way to change the filling ...
           xx.on('dragend', function(e) {
-            this.fill("red");
-            #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: this, conf_key: #{conf_key}, conf_value: #{conf_value} } )
+            delta = [Math.floor(e.detail.p.x - sx), Math.floor(e.detail.p.y - sy)]
+              if (delta[0] !== 0 || delta[1] !== 0){
+              this.fill("red");
+              #{@draggable_dragend_handler}( { delta: delta, element: this, conf_key: #{conf_key}, conf_value: #{conf_value} } )
+            }
           })
       }
     end
@@ -150,12 +152,7 @@ module ZnSvg
       xx.addClass("zn_draggable");
       #{thedraginfo = draginfo.dup}
 
-      xx.draggable(function(x, y) {
-        return {
-            x: x - x % 5,
-            y: y - y % 5
-        }
-      });
+      xx.draggable();
 
       var sx = 0,
           sy = 0,
@@ -177,8 +174,8 @@ module ZnSvg
       xx.on('dragmove', function(e){
         e.preventDefault();
 
-        dx = e.detail.p.x - sx;
-        dy = e.detail.p.y - sy;
+        dx = e.detail.p.x - sx; // dx = dx - dx % 5;
+        dy = e.detail.p.y - sy; // dy = dy - dy % 5;
 
         #{
       p1  = draginfo[:p1]
@@ -243,12 +240,7 @@ module ZnSvg
       #{thedraginfo = draginfo.dup
       vertical      = draginfo[:jumpline][:vertical]}
 
-      xx.draggable(function(x, y) {
-        return {
-            x: x - x % #{draginfo[:xspacing]},
-            y:  0
-        }
-      });
+      xx.draggable();
 
       var sx = 0,
           sy = 0;
@@ -262,7 +254,7 @@ module ZnSvg
         e.preventDefault();
 
         dx = e.detail.p.x - sx;
-        dx = dx - dx % #{$conf['layout.X_SPACING']}; // we still drag in string rasters.
+        dx = dx - dx % #{draginfo[:xspacing]}; // we still drag in string rasters.
 
         #{
       thedraginfo[:jumpline][:vertical] = vertical + `dx`
