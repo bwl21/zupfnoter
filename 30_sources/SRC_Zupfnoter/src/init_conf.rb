@@ -1,4 +1,3 @@
-
 module InitConf
 # how to add a new parameter
 # 1. set the default here
@@ -78,6 +77,13 @@ module InitConf
                      LINE_THICK:   0.7,
                      ELLIPSE_SIZE: [4, 2], # radii of the largest Ellipse
                      REST_SIZE:    [4, 2]
+                 },
+                 manual_sheet:   {
+                     manual_sheet:   {
+                         llpos: [0, 297],
+                         trpos: [420, 0],
+                         url:   ""
+                     }
                  }
              },
 

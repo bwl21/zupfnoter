@@ -13,6 +13,7 @@ module Harpnotes
     DOTTED_SIZE     = 0.3
 
     def initialize(element_id, width, height)
+      @viewbox           = [0, 0, 100, 100] # todo: do we need these defaults?
       @container_id      = element_id
       @preview_container = Element.find("##{@container_id}")
       @paper             = ZnSvg::Paper.new(element_id, width, height)
@@ -23,6 +24,7 @@ module Harpnotes
     end
 
     def set_view_box(x, y, width, height)
+      @viewbox = [x, y, width, height]
       @paper.set_view_box(x, y, width, height, true)
     end
 
@@ -56,8 +58,8 @@ module Harpnotes
       @paper.clear
       @elements    = {} # record all elements being on the sheet, using upstream object as key
       @highlighted = []
-      @paper.rect(1.0, 1.0, 418, 295)
-      @paper.rect(0.0, 0.0, 420.0, 297.0)
+      @paper.rect(@viewbox[0] + 1, @viewbox[1] + 1, @viewbox[2] - 2, @viewbox[3] - 2)
+      @paper.rect(@viewbox[0], @viewbox[1], @viewbox[2], @viewbox[3])
 
 
       sheet.children.each do |child|
@@ -72,6 +74,8 @@ module Harpnotes
           draw_annotation(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Path
           draw_path(child) if child.visible?
+        elsif child.is_a? Harpnotes::Drawing::Image
+          draw_image(child)
         else
           $log.error "BUG:don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -427,6 +431,14 @@ module Harpnotes
       push_element(root, element)
       element
 
+    end
+
+    def draw_image(root)
+      width    = ((@viewbox[2] - @viewbox[0]) ** 2) / (root.trpos.x - root.llpos.x)
+      height   = ((@viewbox[3] - @viewbox[1]) ** 2) / (root.llpos.y - root.trpos.y)
+      position = Vector2d([0, 0]) - [root.llpos.x, root.trpos.y]
+      e        = @paper.image(root.url, position.x, position.y, width, height)
+      e
     end
 
     # draw a path

@@ -907,7 +907,10 @@ TODO: Helptext für presets einfügen
               "LINE_THICK"   : 0.7,
               "REST_SIZE"    : [4, 2]
             },
-            "layout_regular" : null
+            "layout_regular" : null,
+            "manual_sheet"   : {
+              "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+            }
           },
           "notes"   : {
             "T01_number"               : {
@@ -989,7 +992,10 @@ Notenbild gezielt optimieren.
             "LINE_THICK"   : 0.7,
             "REST_SIZE"    : [4, 2]
           },
-          "layout_regular" : null
+          "layout_regular" : null,
+          "manual_sheet"   : {
+            "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+          }
         }
           
 

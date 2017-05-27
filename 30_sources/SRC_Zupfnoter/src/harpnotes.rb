@@ -291,7 +291,7 @@ module Harpnotes
         super()
         raise "Notes must be an array" unless notes.is_a? Array
 
-        @notes = notes
+        @notes         = notes
         @synched_notes = [notes, synched_notes].flatten.uniq
       end
 
@@ -808,6 +808,18 @@ module Harpnotes
     end
 
 
+    class Image < Drawable
+      attr_reader :url, :llpos, :trpos
+      # @param [String] url of imabge
+      # @param [Vector2d] llpos lower left postion of crop in image
+      # @param [Vector2d] trpos to right postion of crop in image
+      def initialize (url, llpos, trpos)
+        @url   = url
+        @llpos = llpos
+        @trpos = trpos
+      end
+    end
+
     # this represents a path to be rendered. The path is noted as an array of path commands:
     # ["l", x, y ] or
     # ["c", x, y, cp1x, cp1y, cp2x, cp2y}]
@@ -1145,6 +1157,14 @@ module Harpnotes
       end
 
 
+      def layout_manual_sheet(conf)
+        result = []
+        unless conf.nil?
+          result.push Harpnotes::Drawing::Image.new(conf['url'], Vector2d(conf['llpos']), Vector2d(conf['trpos']))
+        end
+        result
+      end
+
       # todo: configur the stuff
       # options = {
       #     size: 1
@@ -1205,6 +1225,8 @@ module Harpnotes
 
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
+
+        manual_sheet = layout_manual_sheet($conf['layout.manual_sheet'])
 
         initialize
 
@@ -1361,7 +1383,7 @@ module Harpnotes
         end
 
 
-        sheet_elements = debug_grid + synch_lines + voice_elements + annotations + sheet_marks
+        sheet_elements = manual_sheet + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 
         result                = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
         result.printer_config = $conf[:printer]
@@ -1648,7 +1670,7 @@ module Harpnotes
 
             unless tuplet_options[:show] == false
               conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
-              draginfo = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
+              draginfo      = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
               result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
               result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
                                                              :small,

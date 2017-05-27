@@ -310,6 +310,15 @@ module ZnSvg
       nil
     end
 
+
+    def image(url, x, y, width, height)
+      @svgbuffer.push(%Q{  <image x="#{x}" y="#{y}" width="#{width}" height="#{height}"
+    preserveAspectRatio="none" opacity="0.4"
+    xlink:href="#{url}">
+  </image>})
+
+    end
+
     #
     # Draw a path
     #
