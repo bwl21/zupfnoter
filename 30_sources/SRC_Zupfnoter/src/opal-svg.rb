@@ -114,16 +114,18 @@ module ZnSvg
 
     # mkake the svg_emeent with svg_element_id draggable
     # pass conf_key and conf_value to the drag handler
-    def set_draggable(svg_element_id, conf_key, conf_value)
+    def set_draggable_pos(svg_element_id, conf_key, conf_value)
+      conf_value_new = conf_value.to_n
       %x{
 
           var xx = SVG.get(#{svg_element_id});
+          var sy = 0, sy=0;
           xx.addClass("zn_draggable");
 
           xx.draggable(function(x, y) {
             return {
-              x:  Math.floor(x),
-              y:  Math.floor(y)
+              x: Math.round(x),// Math.floor(x),
+              y: Math.round(y)// Math.floor(y)
             }
           });
 
@@ -136,41 +138,55 @@ module ZnSvg
 
           // todo: don't know why 'this' is the only way to change the filling ...
           xx.on('dragend', function(e) {
-            delta = [Math.floor(e.detail.p.x - sx), Math.floor(e.detail.p.y - sy)]
-              if (delta[0] !== 0 || delta[1] !== 0){
-              this.fill("red");
-              #{@draggable_dragend_handler}( { delta: delta, element: this, conf_key: #{conf_key}, conf_value: #{conf_value} } )
-            }
+
+            this.fill("red");
+            deltax =  Math.round(e.detail.p.x - sx);
+            deltay =  Math.round(e.detail.p.y - sy);
+
+            conf_value_new[0] += deltax;
+            conf_value_new[1] += deltay;
+
+             #{@draggable_dragend_handler.call( {element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`)} ) };
           })
       }
     end
 
 
+    #
+    # make tuplets reshape by ddrag and drop
+    #
+    # @param [String] svg_element_id - the id of the group which controls draggable for tuplet
+    # @param [String] conf_key - the configuration key for the tuplet (not used - for symmetry of api only passed in draginfo instead)
+    # @param [String] conf_value - the configuration value of the tuplet (not used - for symmetry of api only passed in draginfo instead)
+    # @param [Hash] draginfo - the information for the draghandler - see usage for detail.
+    #                             draginfo      = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
+
     def set_draggable_tuplet(svg_element_id, conf_key, conf_value, draginfo)
       %x{
       var xx = SVG.get(#{svg_element_id});
       xx.addClass("zn_draggable");
-      #{thedraginfo = draginfo.dup}
 
       xx.draggable();
 
-      var sx = 0,
+      var sx = 0,                // initialize the outer variables for the closures
           sy = 0,
           target_id = null,
           target_curve=null;
 
+
+      // *******************************************************************************************
       xx.on('dragstart', function(e) {
 
         sx = e.detail.p.x;
         sy = e.detail.p.y;
         this.stroke("blue");
-        target_id = #{thedraginfo[:target_id]};
+        target_id = #{draginfo[:target_id]};
         target_curve = $( '#' + target_id );
       });
 
 
 
-
+      // *******************************************************************************************
       xx.on('dragmove', function(e){
         e.preventDefault();
 
@@ -186,20 +202,24 @@ module ZnSvg
       deltap = p2 - p1
       }
 
+      // need to find out which of the handle was drag
       cp_id = e.target.children[0].attributes['data-cp'].value
       if (cp_id == "cp1") {#{cp1 = cp1 + [`dx`, `dy`]}}
                  else {#{cp2 = cp2 + [`dx`, `dy`]}}
 
+      // the bezier curve
       newpath = [['M', #{p1.x}, #{p1.y}], ['C', #{cp1.x}, #{cp1.y}, #{cp2.x}, #{cp2.y}, #{p2.x}, #{p2.y}]]
       np = #{path_to_raphael(`newpath`)};
       target_curve.children()[0].setAttribute('d', np);
 
+      // draw the lines to illustrate the controlpoints
       newpath = [['M', #{p1.x}, #{p1.y}], ['L', #{cp1.x}, #{cp1.y}], ['L', #{cp2.x}, #{cp2.y}], ['L', #{p2.x}, #{p2.y}]]
       np = #{path_to_raphael(`newpath`)};
       e.target.firstChild.setAttribute('d', np);
 
       })
 
+      // *************************************************************************************************************
         xx.on('dragend', function(e) {
       #{
       draginfo[:cp1] = cp1
@@ -235,16 +255,14 @@ module ZnSvg
 
     def set_draggable_jumpline(svg_element_id, conf_key, conf_value, draginfo)
       %x{
+
       var xx = SVG.get(#{svg_element_id});
       xx.addClass("zn_draggable");
-      #{thedraginfo = draginfo.dup
-      vertical      = draginfo[:jumpline][:vertical]}
 
       xx.draggable();
 
-      var sx = 0,
-          sy = 0;
       xx.on('dragstart', function(e) {
+        #{vertical      = draginfo[:jumpline][:vertical]}
         sx = e.detail.p.x;
         sy = e.detail.p.y;
         this.stroke("blue");
@@ -257,8 +275,8 @@ module ZnSvg
         dx = dx - dx % #{draginfo[:xspacing]}; // we still drag in string rasters.
 
         #{
-      thedraginfo[:jumpline][:vertical] = vertical + `dx`
-      newpath                           = Harpnotes::Layout::Default.make_path_from_jumpline(thedraginfo[:jumpline])[0]
+      draginfo[:jumpline][:vertical] = vertical + `dx`
+      newpath                        = Harpnotes::Layout::Default.make_path_from_jumpline(draginfo[:jumpline])[0]
       }
 
         np = #{path_to_raphael(newpath)}

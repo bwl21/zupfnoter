@@ -200,7 +200,7 @@ module Harpnotes
           if draginfo
             case draginfo[:handler]
               when :annotation
-                @paper.set_draggable(svg_id, layout_model_element.conf_key, layout_model_element.conf_value) # annotations do not have a ddraghandler
+                @paper.set_draggable_pos(svg_id, layout_model_element.conf_key, layout_model_element.conf_value) # annotations do not have a ddraghandler
               when :jumpline
                 @paper.set_draggable_jumpline(svg_id, layout_model_element.conf_key, layout_model_element.conf_value, draginfo)
               when :tuplet

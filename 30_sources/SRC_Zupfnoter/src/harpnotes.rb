@@ -1336,9 +1336,9 @@ module Harpnotes
         legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
-                                                          "extract.#{print_variant_nr}.legend.pos", {pos: title_pos}).tap { |s| s.draginfo={handler: :annotation} }
+                                                          "extract.#{print_variant_nr}.legend.pos", title_pos).tap { |s| s.draginfo={handler: :annotation} }
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
-                                                          "extract.#{print_variant_nr}.legend.spos", {pos: legend_pos}).tap { |s| s.draginfo={handler: :annotation} }
+                                                          "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo={handler: :annotation} }
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
@@ -1362,7 +1362,7 @@ module Harpnotes
                 verses[j]
               }.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
-                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", {pos: pos}).tap { |s| s.draginfo={handler: :annotation} }
+                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", pos).tap { |s| s.draginfo={handler: :annotation} }
             end
           end
         end
@@ -1376,7 +1376,7 @@ module Harpnotes
             raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
             raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
             annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
-                                                              "#{conf_key}.pos", {pos: note[:pos]}).tap { |s| s.draginfo={handler: :annotation} }
+                                                              "#{conf_key}.pos", note[:pos]).tap { |s| s.draginfo={handler: :annotation} }
           end
         rescue Exception => e
           $log.error e.message
@@ -1546,7 +1546,7 @@ module Harpnotes
 
             position = Vector2d(the_playable.center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, count_note, style, playable.origin,
-                                                          conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
+                                                          conf_key, annotationoffset).tap { |s| s.draginfo={handler: :annotation} }
             result
           end
         end
@@ -1593,7 +1593,7 @@ module Harpnotes
 
             position = Vector2d(lookuptable_drawing_by_playable[playable].center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, barnumber, style, playable.origin,
-                                                          conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
+                                                          conf_key, annotationoffset).tap { |s| s.draginfo={handler: :annotation} }
             result
           end
         end
@@ -1676,7 +1676,7 @@ module Harpnotes
                                                              :small,
                                                              nil,
                                                              conf_key + ".#{conf_key_pos}",
-                                                             {conf_key_pos.to_s => conf_value.to_a})
+                                                             conf_value.to_a)
                               .tap { |s| s.draginfo={handler: :annotation} }
               )
             end
@@ -1801,7 +1801,7 @@ module Harpnotes
 
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
-                                                        conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
+                                                        conf_key, annotationoffset).tap { |s| s.draginfo={handler: :annotation} }
           result   = nil if annotation.policy==:Goto and not show_options[:jumpline]
           result
         end
@@ -1871,7 +1871,7 @@ module Harpnotes
         position = Vector2d(lookuptable_drawing_by_playable[point_note].center) + annotationoffset
 
         Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
-                                           point_note.origin, conf_key, {pos: annotationoffset}).tap { |s| s.draginfo={handler: :annotation} }
+                                           point_note.origin, conf_key, annotationoffset).tap { |s| s.draginfo={handler: :annotation} }
       end
 
 

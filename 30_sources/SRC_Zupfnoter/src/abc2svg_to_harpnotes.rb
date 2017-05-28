@@ -593,7 +593,7 @@ module Harpnotes
         @next_note_marks[:first_in_part] = true
 
         entity   = @previous_note
-        conf_key = "notebound.jumplines.#{voice_id}.#{entity.znid}.p_repeat"
+        conf_key = "notebound.c_jumplines.#{voice_id}.#{entity.znid}.p_repeat"
 
         [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true, level: level, conf_key: conf_key)]
       end
@@ -629,7 +629,7 @@ module Harpnotes
 
           distance  = variant_ending_group[0][:distance]
           entity    = variant_ending_group.first[:rbstop]
-          conf_keys = ['p_begin', 'p_end', 'p_follow'].map { |p| "notebound.jumplines.#{voice_id}.#{entity.znid}.#{p}" }
+          conf_keys = ['p_begin', 'p_end', 'p_follow'].map { |p| "notebound.c_jumplines.#{voice_id}.#{entity.znid}.#{p}" }
 
 
           if variant_ending_group[-1][:is_followup]
@@ -669,7 +669,7 @@ module Harpnotes
           goto_infos.inject([]) do |result, goto_info|
             targetname = goto_info[:target]
             target     = @jumptargets[targetname]
-            conf_key = "notebound.jumplines.#{voice_id}.#{element.znid}.p_goto"
+            conf_key = "notebound.c_jumplines.#{voice_id}.#{element.znid}.p_goto"
 
 
             argument = goto_info[:distance].first || 2
