@@ -9,6 +9,8 @@
 
 * jumplines can now be configured by drag & drop (#136)
 * tuplets can now be sculptured by drag & drop (#138)
+* improved performance of configuration (#115)
+* improved performance of harpnote preview (#87)
 
 # V 1.6.1
 
