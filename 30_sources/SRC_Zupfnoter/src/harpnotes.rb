@@ -1468,12 +1468,24 @@ module Harpnotes
         voice_nr  = show_options[:voice_nr]
         playables = voice.select { |c| c.is_a? Playable }
 
-        # uncomemnt this if you want to hide rests in voices without flowlines
+        # handle visibility of rests in nonflows
         unless show_options[:nonflowrest]
+          previous_note = nil
+
           playables.each do |c|
-            c.visible=false if c.is_a? Pause and not show_options[:flowline] and show_options[:synched_notes].include?(c)
-            c.visible=false if c.is_a? Pause and not show_options[:subflowline] and not show_options[:flowline]
+            # if no flowline and synched -> not visible
+            c.visible = false if c.is_a? Pause and not show_options[:flowline]
+            # if neither flowline or subflowline -> not visible
+            c.visible = false if c.is_a? Pause and not show_options[:subflowline] and not show_options[:flowline]
+
+            # turn previous note visible if the current playable is visible but not synchronized
+            # which in turn means that it is part of a subflowline
+            if c.visible and not show_options[:synched_notes].include?(c)
+              previous_note.visible = true unless previous_note.nil?  # this handles the very first note which has previous_note
+            end
+            previous_note = c
           end
+
         end
 
         # now w handle decorations (!fermata! etc.)
@@ -1616,13 +1628,19 @@ module Harpnotes
 
 
         # draw the subflowlines
-        # note that invisible rests make no sense and therefore do not interruppt subflowlines
+        # note that invisible rests make no sense and therefore do not interrupt subflowlines
         previous_note  = nil
         res_sub_flow   = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
 
           unless show_options[:synched_notes].include?(playable.proxy_note)
             res = nil
-            res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted) unless previous_note.nil?
+
+            # draw subflowline if both ends are visible
+            if not previous_note.nil? and previous_note.visible and playable.visible
+              res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
+            end
+
+            # this supports the case that synclines are entirely turned off and also no flowlines show up.
             res = nil if playable.first_in_part?
           end
 
@@ -1761,7 +1779,7 @@ module Harpnotes
           }
 
           path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
-          draginfo = {handler: :jumpline, jumpline: jumpline_info, xspacing:  $conf.get('layout.X_SPACING')}
+          draginfo = {handler: :jumpline, jumpline: jumpline_info, xspacing: $conf.get('layout.X_SPACING')}
 
           unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
             [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
