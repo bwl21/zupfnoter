@@ -128,6 +128,21 @@ end
 
 #https://github.com/rails/rails/blob/d66e7835bea9505f7003e5038aa19b6ea95ceea1/activesupport/lib/active_support/core_ext/object/deep_dup.rb
 
+# this is for Opal to avoid that builtin primitives are converted to Objects
+# jspdf does not accept a String object for text
+class String
+  def deep_dup
+    self.to_n
+  end
+end
+
+class Numerical
+  def deep_dup
+    self.to_n
+  end
+end
+# end this is for opal
+
 class Object
   # Returns a deep copy of object if it's duplicable. If it's
   # not duplicable, returns +self+.
