@@ -99,13 +99,11 @@ module Harpnotes
                     :decorations,
                     :end_pos,
                     :next_pitch,
-                    :next_first_in_part,
                     :pos,
                     :prev_pitch,
                     :start_pos,
                     :time,
                     :visible,
-                    :variant, # the variant within a variant block
                     :znid,
                     :origin
 
@@ -332,10 +330,6 @@ module Harpnotes
 
       def proxy_note
         get_proxy_object(@notes)
-      end
-
-      def variant
-        proxy_note.variant
       end
 
       # a Synchpoint is made of multiple notes
@@ -608,6 +602,7 @@ module Harpnotes
       #
       # @return nil
       def update_beats
+
         @beat_maps= @voices.map do |voice|
           current_beat = 0
           voice_map    = voice.select { |e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
@@ -696,13 +691,12 @@ module Harpnotes
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :is_note, :draginfo, :color
+      attr_accessor :conf_key, :conf_value, :is_note, :draginfo
 
       def initialize
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
         @conf_key   = nil
-        @color      = $conf.get('layout.color.color_default')
       end
 
       def center
@@ -854,7 +848,7 @@ module Harpnotes
     # This represents a note in the shape of an ellipsis
     #
     class Ellipse < Symbol
-      attr_reader :center, :size, :fill, :origin, :color
+      attr_reader :center, :size, :fill, :origin
 
       #
       # Constructor
@@ -1000,8 +994,7 @@ module Harpnotes
                          ["c", 0.15, -0.06, 1.14, -0.24, 2.22, -0.42], ["c", 1.05, -0.18, 1.92, -0.36, 1.92, -0.36],
                          ["c", 0, -0, -0.87, -0.18, -1.92, -0.36], ["c", -1.08, -0.18, -2.07, -0.36, -2.22, -0.42],
                          ["c", -0.18, -0.03, -1.98, -0.48, -4.02, -1.02], ["c", -2.97, -0.78, -3.75, -0.99, -3.84, -1.05],
-                         ["c", -0.12, -0.09, -0.18, -0.3, -0.18, -0.45], ["c", 0.03, -0.15, 0.15, -0.3, 0.3, -0.39], ["z"]], w: 13.5, h: 7.5},
-          error:    {d: [["M", -10, -5], ['l', 0, 10], ['l', 20, -10], ['l', 0, 10], ['z']], w: 20, h: 10},
+                         ["c", -0.12, -0.09, -0.18, -0.3, -0.18, -0.45], ["c", 0.03, -0.15, 0.15, -0.3, 0.3, -0.39], ["z"]], w: 13.5, h: 7.5}
 
           #rest_32:  {d: [["M", 4.23, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.27, -0.06], ["c", 0.33, -0.21, 0.99, -1.11, 1.44, -1.98], ["c", 0.09, -0.24, 0.21, -0.33, 0.39, -0.33], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.57, 2.67, -3.21, 13.89], ["c", -1.8, 7.62, -3.3, 13.89, -3.3, 13.92], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, -0, -0.3, -0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.09, -0.57, 1.23, -4.92], ["c", 0.69, -2.67, 1.26, -4.86, 1.29, -4.89], ["c", 0, -0.03, -0.12, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.12, 0.09, 0.3, 0.18, 0.48, 0.21], ["c", 0.12, -0, 0.18, -0, 0.3, -0.09], ["c", 0.42, -0.21, 1.29, -1.29, 1.56, -1.89], ["c", 0.03, -0.12, 1.23, -4.59, 1.23, -4.65], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -0.63, 0.18, -1.2, 0.36, -1.74, 0.45], ["c", -0.39, 0.06, -0.54, 0.06, -1.02, 0.06], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.18, 0.18, 0.51, 0.27, 0.72, 0.15], ["c", 0.3, -0.12, 0.69, -0.57, 1.08, -1.17], ["c", 0.42, -0.6, 0.39, -0.51, 1.05, -3.03], ["c", 0.33, -1.26, 0.6, -2.31, 0.6, -2.34], ["c", 0, -0, -0.21, 0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.14, 0.33, -1.62, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 11.373, h: 28.883},
           #rest_64:  {d: [["M", 5.13, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.24, -0.12, 0.63, -0.66, 1.08, -1.56], ["c", 0.33, -0.66, 0.39, -0.72, 0.6, -0.72], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.69, 3.66, -3.54, 17.64], ["c", -1.95, 9.66, -3.57, 17.61, -3.57, 17.64], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.06, -0.57, 1.05, -4.95], ["c", 0.6, -2.7, 1.08, -4.89, 1.08, -4.92], ["c", 0, 0, -0.24, 0.06, -0.51, 0.15], ["c", -0.66, 0.24, -1.2, 0.36, -1.77, 0.48], ["c", -0.42, 0.06, -0.57, 0.06, -1.05, 0.06], ["c", -0.69, 0, -0.87, -0.03, -1.35, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.21, 0.03, 0.39, -0.09, 0.72, -0.42], ["c", 0.45, -0.45, 1.02, -1.26, 1.17, -1.65], ["c", 0.03, -0.09, 0.27, -1.14, 0.54, -2.34], ["c", 0.27, -1.2, 0.48, -2.19, 0.51, -2.22], ["c", 0, -0.03, -0.09, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.9, 0.42], ["c", 0.36, -0.18, 1.2, -1.26, 1.47, -1.89], ["c", 0.03, -0.09, 0.3, -1.2, 0.57, -2.43], ["l", 0.51, -2.28], ["l", -0.54, 0.18], ["c", -1.11, 0.36, -1.8, 0.48, -2.61, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.21, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.36, -0.18, 0.93, -0.93, 1.29, -1.68], ["c", 0.12, -0.24, 0.18, -0.48, 0.63, -2.55], ["l", 0.51, -2.31], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -1.14, 0.36, -2.1, 0.54, -2.82, 0.51], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 12.453, h: 36.383},
@@ -1015,14 +1008,9 @@ module Harpnotes
       # @param [Object] origin the origin of the glyph for backtracking
       def initialize(center, size, glyph_name, dotted = FALSE, origin = nil, conf_key = nil, conf_value = {})
         super()
-        glyph = GLYPHS[glyph_name]
-        unless glyph
-          $log.error ("BUG: unsuppoerted glyph #{glyph_name}") unless glyph
-          glyph = GLYPHS[:error]
-        end
         @center     = center
         @glyph_name = glyph_name
-        @glyph      = glyph
+        @glyph      = GLYPHS[glyph_name]
         @size       = size #
         @dotted     = dotted
         @origin     = origin
@@ -1169,6 +1157,17 @@ module Harpnotes
         @color_default        = $conf.get('layout.color.color_default')
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
+        @pitch_to_xpos        = lambda { |root| ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') }
+
+        @pitch_to_xpos = lambda { |root|
+          #          G        c        d        e        f        g        a        b        c'
+          x = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8]]]
+          `debugger`
+          x = x[root.pitch + $conf.get('layout.PITCH_OFFSET')]
+          result = 0
+          result = (  x) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') if x
+          result
+        }
       end
 
 
@@ -1249,8 +1248,7 @@ module Harpnotes
 
         beat_compression_map = nil
         $log.benchmark("compute beat compression map") do
-          layoutlines          = print_options_hash[:voices] + print_options_hash[:layoutlines].uniq
-          beat_compression_map = compute_beat_compression(music, layoutlines)
+          beat_compression_map = compute_beat_compression(music, print_options_hash[:layoutlines])
         end
         maximal_beat      = beat_compression_map.values.max
         full_beat_spacing = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
@@ -1316,9 +1314,7 @@ module Harpnotes
         synch_lines                 = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
-            res       = FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
-            res.color = compute_color_by_variant_no(sp.notes.first.variant)
-            res
+            FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
           end
         end.flatten
 
@@ -1385,10 +1381,6 @@ module Harpnotes
           end
         end
 
-        # build sortmarks
-        sortmark_options = print_options_hash['sortmark']
-        sheet_marks << layout_sortmark(title, sortmark_options) if sortmark_options['show']
-
         #sheet based annotations
         # todo: implement a proper strategy for validateion of conf
         begin
@@ -1429,19 +1421,6 @@ module Harpnotes
           print_options_raw.push(song_print_options)
         end
         print_options_raw
-      end
-
-
-      def layout_sortmark(title, options)
-        sortname = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
-        b        = (sortname+"AAAA").split('').map { |i| i.ord - "A".ord }
-        a        = b[0] + (0.1 * b[1] + 0.01 * b[2] + 0.001 * b[3]) * 0.5/2.4 # 0.5 cover half the stringdistance; 2.4 - 24 positions
-        w, h     = options['size']
-        fill     = options['fill'] ? :filled : :open
-        markpos  = (12.5 + a) * $conf.get('layout.X_SPACING') # 12 - 12 strings fro mleft border
-
-        markpath = [['M', markpos, 0], ['l', -w/2, h], ['l', w, 0], ['l', -w/2, -h], ['l', 0, h], ['l', 0, -h], ['z']]
-        Harpnotes::Drawing::Path.new(markpath, fill)
       end
 
       # this creates a scale bar
@@ -1515,7 +1494,7 @@ module Harpnotes
 
             # turn previous note visible if the current playable is visible but not synchronized
             # which in turn means that it is part of a subflowline
-            if c.visible and not show_options[:synched_notes].include?(c.proxy_note)
+            if c.visible and not show_options[:synched_notes].include?(c)
               previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
             end
             previous_note = c
@@ -1651,7 +1630,6 @@ module Harpnotes
           res = nil
           unless previous_note.nil?
             res            = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
-            #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
           end
@@ -1674,7 +1652,6 @@ module Harpnotes
             # draw subflowline if both ends are visible
             if not previous_note.nil? and previous_note.visible and playable.visible
               res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
-              #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             end
 
             # this supports the case that synclines are entirely turned off and also no flowlines show up.
@@ -1790,7 +1767,7 @@ module Harpnotes
         res_gotos                    = voice.select { |c| c.is_a? Goto }.map do |goto|
           if goto.conf_key
             conf_key = "extract.#{print_variant_nr}.#{goto.conf_key}"
-            distance = show_options[:print_options_raw][goto.conf_key]
+            distance = $conf[conf_key]
           end
 
           distance = goto.policy[:distance] unless distance
@@ -1809,12 +1786,10 @@ module Harpnotes
           from = lookuptable_drawing_by_playable[goto.from]
           to   = lookuptable_drawing_by_playable[goto.to]
 
-          jumpline_info = {from:            {center: from.center, size: from.size, anchor: from_anchor},
-                           to:              {center: to.center, size: to.size, anchor: to_anchor},
-                           vertical:        vertical, vertical_anchor: vertical_anchor,
-                           padding:         goto.policy[:padding],
-                           xspacing:        $conf['layout.X_SPACING'],
-                           jumpline_anchor: $conf['layout.jumpline_anchor']
+          jumpline_info = {from:     {center: from.center, size: from.size, anchor: from_anchor},
+                           to:       {center: to.center, size: to.size, anchor: to_anchor},
+                           vertical: vertical, vertical_anchor: vertical_anchor,
+                           xspacing: $conf['layout.X_SPACING']
           }
 
           path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
@@ -1824,16 +1799,13 @@ module Harpnotes
             [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
              Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
           end
-        end.flatten.compact
-
+        end.flatten
         res_gotos                    = [] unless show_options[:jumpline]
-        color_default                = @color_default
-        res_gotos.each { |the_goto| the_goto.color = color_default }
 
 
         # draw the repeatmarks
 
-        res_repeatmarks = []
+        res_repeatmarks              = []
         if show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
           res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
 
@@ -1897,9 +1869,8 @@ module Harpnotes
             annotationoffset = [0, (-decoration_root.size.last/decoration_scale - decoration_distance).round()] unless annotationoffset
 
             decoration_center = [decoration_root.center.first + annotationoffset.first, decoration_root.center.last + annotationoffset.last]
-            r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, annotationoffset)
-            r.tap { |s| s.draginfo={handler: :annotation} }
-            r.is_note = false
+            r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, {pos: annotationoffset})
+            r.is_note         = false
             decoration_result.push [r]
           end
         end
@@ -1927,7 +1898,7 @@ module Harpnotes
           else
             attach_side = companion_note.pitch <= companion_note.next_pitch ? :left : :right
           end
-        else # :end
+        else  # :end
           companion_note = goto.from
           if goto.to == goto.from
             attach_side = :right
@@ -1957,13 +1928,33 @@ module Harpnotes
 
       def compute_beat_compression(music, layout_lines)
         result = compute_beat_compression_1(music, layout_lines) if $conf.get('layout.packer.pack_method') == 1
-        result = compute_beat_compression_10(music, layout_lines) if $conf.get('layout.packer.pack_method') == 10
+        result = compute_beat_compression_2(music, layout_lines) if $conf.get('layout.packer.pack_method') == 2
+        result = compute_beat_compression_3(music, layout_lines) if $conf.get('layout.packer.pack_method') == 3
         result = compute_beat_compression_0(music, layout_lines) if ($conf.get('layout.packer.pack_method') || 0) == 0
         result
       end
 
-      # this is the legacy compressor kept for a while as fallback
-      def compute_beat_compression_10(music, layout_lines)
+      # Standard algorith to compress  beat layout of a music sheet
+      # it increments on every beat
+      #
+      # This algorithm considers the number of notes and the particular radii of the notes
+      # when a beat (layout beat, not to mess up with song beat) has a note
+      # the the
+      #
+      # returns a beat-map { beat => vertical_position_indicator }
+      # vertical_position_indicator scales like beats but can be fractions
+      # the need to be scaled to the aboslute position on the sheet later.
+      # this scaling cannot be done here since it depends on the relative radii
+      # of the musig on the sheet.
+      #
+      # we need to increment the position by the (radii[i] + radii[i-1])/2
+      #
+      # @param music Harpnotes::Music::Document the document to optimize the beat layout
+      # @param [layout_lines] layout_lines list of voices to take into account
+      #
+      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
+      #
+      def compute_beat_compression_0(music, layout_lines)
         max_beat     = music.beat_maps.map { |map| map.keys.max }.max
 
 
@@ -2015,175 +2006,207 @@ module Harpnotes
         result
       end
 
+      def compute_beat_compression_3(music, layout_lines)
+
+        # todo:clarify the initialization
+
+        relevant_keys = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
+
+        result = Hash[relevant_keys.map do |beat|
+
+          [beat, beat]
+        end]
+        result
+      end
+
 
       # this computes manually added additional increments
       def get_minc_factor(time, increment = @conf_beat_resolution)
-        minc = @layout_minc[time.to_s]
-        if minc
-          minc[:minc_f] * increment
-        else
-          0
-        end
+        moreinc_factor = $conf["layout.minc.#{time}.minc_f"]
+        moreinc_factor ? moreinc_factor * increment : 0
       end
 
-      # Standard algorith to compress  beat layout of a music sheet
-      # it increments on every beat
-      #
-      # This algorithm considers the number of notes and the particular radii of the notes
-      # when a beat (layout beat, not to mess up with song beat) has a note
-      # the the
-      #
-      # returns a beat-map { beat => vertical_position_indicator }
-      # vertical_position_indicator scales like beats but can be fractions
-      # the need to be scaled to the aboslute position on the sheet later.
-      # this scaling cannot be done here since it depends on the relative radii
-      # of the musig on the sheet.
-      #
-      # we need to increment the position by the (radii[i] + radii[i-1])/2
-      #
-      # @param music Harpnotes::Music::Document the document to optimize the beat layout
-      # @param [layout_lines] layout_lines list of voices to take into account
-      #
-      # @return [Hash] a beat map { 10 => 5 } beat 10 is placed at vertical position 5 (* beat_spacing)
-      #
-      def compute_beat_compression_0(music, layout_lines)
-        duration_to_style  = $conf.get('layout.DURATION_TO_STYLE')
-        conf_min_increment = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
-
-
-        # initialize the memory
-        newbeat            = 0
-        compression_map    = {}
-        last_size          = 0
-
-        # find relevant notes for vertical layout
-        relevant_notes     = layout_lines.map { |voice_id| music.voices[voice_id] }.inject([]) { |result, voice| result.push(voice) }.flatten.select { |note| note.is_a? Harpnotes::Music::Playable }
-        relevant_sp        = relevant_notes.select { |note| note.is_a? Harpnotes::Music::SynchPoint }.map { |sp| sp.notes }
-        relevant_notes     = relevant_notes.push(relevant_sp).flatten
-
-
-        # get relvant beats
-        relevant_beats     = relevant_notes.group_by { |playable| playable.beat }
-
-        relevant_beats.keys.sort.each do |beat| # note that hashes are not sorted!
-          notes = relevant_beats[beat]
-
-          max_duration_on_beat = notes.map { |n| n.duration }.max
-
-          # detect parts and measure starts
-          is_new_part          = notes.select { |n| n.first_in_part? }
-          measure_start        = notes.select { |n| n.measure_start? }
-
-          # get the increment from thoe note sizes
-          begin
-            size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
-          rescue Exception => e
-            $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
-          end
-
-          defaultincrement = (size + last_size)/2
-          last_size        = size
-
-          # do the default incremnt in case of a collision
-          increment        = defaultincrement
-
-          increment        += defaultincrement unless is_new_part.empty? # handle part
-
-          increment        += increment / 4 unless measure_start.empty? # make room for measure bar
-
-          increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment
-
-          newbeat += increment
-
-          compression_map[beat] = newbeat
-        end
-
-        compression_map
-      end
-
-      # compressor based on collision detection
+      # for details see compute_beatcompression_0
+      # this algorithm incremnts only if there is a flowline changes direaction or is vertical
       def compute_beat_compression_1(music, layout_lines)
-        duration_to_style  = $conf.get('layout.DURATION_TO_STYLE')
+        max_beat = music.beat_maps.map { |map| map.keys.max }.max
+
         conf_min_increment = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
 
-
-        # initialize the memory
-        collision_stack    = {}
-        compression_map    = {}
-        newbeat            = 0
-        nextincrement      = 0
+        # todo:clarify the initialization
+        current_beat       = 0
         last_size          = 0
 
-        # find relevant notes for vertical layout
-        relevant_notes     = layout_lines.map { |voice_id| music.voices[voice_id] }.inject([]) { |result, voice| result.push(voice) }.flatten.select { |note| note.is_a? Harpnotes::Music::Playable }
-        relevant_sp        = relevant_notes.select { |note| note.is_a? Harpnotes::Music::SynchPoint }.map { |sp| sp.notes }
-        relevant_notes     = relevant_notes.push(relevant_sp).flatten
+        relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
+        relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
+
+        history           = [] # this keps a history of pitchmaps and the mapped beat of the same
+        duration_to_style = $conf.get('layout.DURATION_TO_STYLE')
+        result            = Hash[relevant_keys.map do |beat|
+          notes_on_beat = relevant_beat_maps.map { |bm|
+            playable = bm[beat]
+            notes    = [playable]
+            notes.push playable.notes if playable.is_a? Harpnotes::Music::SynchPoint
+            notes
+          }.flatten.compact ## select the voices for optimization
+
+          max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
+          has_no_notes_on_beat = notes_on_beat.empty?
+          is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
+          measure_start        = notes_on_beat.select { |n| n.measure_start? }.first
+
+          pitchmap = Hash[notes_on_beat.map { |n| [n.pitch, n.duration] }]
+
+          unless has_no_notes_on_beat
+            begin
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+            rescue Exception => e
+              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+            end
+
+            # we need to increment the position by the (radii[i] + radii[i-1])/2
+            increment = (size + last_size)/2
+            last_size = size
+
+            default_increment = increment
+
+            can_compress_more = true
+            a                 = [{beat: current_beat, pitchmap: pitchmap}, history].flatten[0..2]
+            if a and a[2]
+              can_compress_more = a.each_with_index.map { |v, i| a[i][:pitchmap].first <=> a[i-1][:pitchmap].first }[1 .. -1].inject(1, :*) > -1
+            end
+            $log.debug %Q{ #{can_compress_more} #{is_new_part.empty?} #{is_new_part} #{a}}
 
 
-        # get relvant beats
-        relevant_beats     = relevant_notes.group_by { |playable| playable.beat }
+            if can_compress_more or not is_new_part.empty?
+              increment = conf_min_increment # increment/4 # default_increment
+              history.each_with_index.to_a.reverse.each { |v, i|
+                history_collision = history[i] && (history[i][:pitchmap].keys & pitchmap.keys) if history[i]
+                if history_collision and history_collision.first
+                  distance_from_collision = current_beat - history[i][:beat]
+                  increment               = default_increment - distance_from_collision
+                end
+              }
+            else
+              #increment = [conf_min_increment, increment].max
+            end
 
-        relevant_beats.keys.sort.each do |beat| # note that hashes are not sorted!
-          notes = relevant_beats[beat]
+            increment = [conf_min_increment, increment].max
 
-          max_duration_on_beat = notes.map { |n| n.duration }.max
+            # $log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
 
-          # get the increment from thoe note sizes
-          begin
-            size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
-          rescue Exception => e
-            $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+
+            if measure_start
+              increment += default_increment / 4
+            end
+
+            # if a new part starts on this beat, double the increment
+            unless is_new_part.empty?
+              increment += default_increment
+            end
+
+            increment += get_minc_factor(notes_on_beat.first.time, increment)
+
+            current_beat += increment
+
+            history.unshift({beat: current_beat, pitchmap: pitchmap})
+            current_beat
           end
+          [beat, current_beat]
+        end]
+        result
+      end
 
-          defaultincrement = (size + last_size)/2
-          last_size        = size
 
-          # detect collisions
-          collisions       = notes.select do |note|
-            ((collision_stack[note.pitch] || -1) >= newbeat - conf_min_increment)
+      # for details see compute_beatcompression_0
+      # this algorithm incremnts only if there is a collision with the previous notes
+      def compute_beat_compression_2(music, layout_lines)
+        max_beat = music.beat_maps.map { |map| map.keys.max }.max
+
+        silo         = [[]] # here we memoize the previous notes
+
+        # todo:clarify the initialization
+        current_beat = 0
+        last_size    = 0
+
+
+        relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
+        relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
+
+        history             = []
+        default_inc_history = []
+        inc_history         = []
+        duration_to_style   = $conf.get('layout.DURATION_TO_STYLE')
+
+        relevant_beat_maps.each do |beatmap|
+          beatmap.each do |key, playable|
+            notes = [playable]
+            notes = playable.notes if playable.is_a? Harpnotes::Music::SynchPoint
+            notes.each do |note|
+              if silo[note.pitch]
+                if silo[note.pitch].last.first.beat == note.beat
+                  silo[note.pitch].last.push(note)
+                else
+                  silo[note.pitch].push([note])
+                end
+              else
+                silo[note.pitch]=[[note]]
+              end
+            end
           end
-
-          # detect inversions of tune
-          # it ignores inversions if the next note is a part
-          inversions       = notes.select do |note|
-            a      = [note.prev_pitch || note.pitch, note.pitch, note.next_pitch || note.pitch]
-            result = !((a.sort.reverse == a) or (a.sort == a))
-
-            result = false if note.next_first_in_part # this ignores cross part inversions
-            result
-          end
-
-          # detect parts and measure starts
-          is_new_part      = notes.select { |n| n.first_in_part? }
-          measure_start    = notes.select { |n| n.measure_start? }
-
-          increment     = nextincrement
-          nextincrement = conf_min_increment
-
-          # do the default incremnt in case of a collision
-          if not collisions.empty?
-            increment = defaultincrement
-          elsif not inversions.empty? # perform half incremnet in case of inversion
-            nextincrement = defaultincrement/2 # other half comes in next seuqence
-            increment     = nextincrement
-          end
-
-          # handle start part
-          unless is_new_part.empty?
-            increment     += defaultincrement
-            nextincrement = conf_min_increment
-          end
-          increment += increment / 4 unless measure_start.empty? # make room for measure bar
-
-          increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment
-
-          newbeat += increment
-
-          notes.each { |note| collision_stack[note.pitch] = newbeat }
-          compression_map[beat] = newbeat
         end
 
-        compression_map
+
+        result = Hash[relevant_keys.map do |beat|
+          notes_on_beat        = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
+          max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
+          has_no_notes_on_beat = notes_on_beat.empty?
+          is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
+          measure_start        = notes_on_beat.select { |n| n.measure_start? }.first
+
+          pitchmap = Hash[notes_on_beat.map { |n| [n.pitch, n.duration] }]
+
+          unless has_no_notes_on_beat
+            begin
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+            rescue Exception => e
+              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+            end
+
+            # we need to increment the position by the (radii[i] + radii[i-1])/2
+            increment = (size + last_size)/2
+            last_size = size
+
+
+            default_inc_history.unshift(increment)
+
+            default_increment = increment
+            increment         = 0 # increment/4 # default_increment
+            default_inc_history.reverse.each_with_index.to_a.reverse.each { |v, i|
+              increment = default_inc_history[i] - inc_history[i - 1] if history[i] && (history[i].keys & pitchmap.keys).first
+            }
+
+            inc_history.unshift(increment)
+
+            #$log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
+            history.unshift(pitchmap)
+
+            if measure_start
+              increment += default_increment / 4
+            end
+
+            # if a new part starts on this beat, double the increment
+            unless is_new_part.empty?
+              increment += increment
+            end
+
+            increment += get_minc_factor(notes_on_beat.first.time, increment)
+
+            current_beat += increment
+          end
+          [beat, current_beat]
+        end]
+        result
       end
 
 
@@ -2226,7 +2249,6 @@ module Harpnotes
         shift = layout_note_shift(root, size, x_offset, dotted)
 
         res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
-        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.hasbarover = true if root.measure_start
         res.is_note    = true
@@ -2243,10 +2265,16 @@ module Harpnotes
         result
       end
 
+
       def compute_ellipse_properties_from_note(root)
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale - 0.5 * $conf.get('layout.LINE_THICK') }
         return dotted, fill, size
+      end
+
+
+      def convert_pitch_to_xpos(root)
+        @pitch_to_xpos.call(root)
       end
 
       # layout the shift right/left of a note depending on
@@ -2319,7 +2347,6 @@ module Harpnotes
 
         res            = nil
         res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
-        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.visible    = false unless root.visible?
         res.hasbarover = true if root.measure_start
@@ -2346,15 +2373,12 @@ module Harpnotes
         #                from:     {center: from.center, size: from.size, anchor: :after},
         #                to:       {center: to.center, size: to.size, anchor: :before},
         #                vertical: vertical
-        #                padding:  2;
-        anchorx, anchory = arg[:jumpline_anchor] # the anchor of the jumpline related tothe note size.
-
         from        = Vector2d(arg[:from][:center]) # the coordnates of the from - point
-        from_offset = Vector2d(arg[:from][:size]) + [anchorx, anchory] # the offest of the from - point
-        from_anchor = arg[:from][:anchor] == :before ? -1 : 1 # these are multipliers! before: above (-1); after: below (+1)
+        from_offset = Vector2d(arg[:from][:size]) + [1, 1] # the offest of the from - point
+        from_anchor = arg[:from][:anchor] == :before ? -1 : 1 # before: above; after: below
 
         to        = Vector2d(arg[:to][:center])
-        to_offset = Vector2d(arg[:to][:size]) + [anchorx, anchory]
+        to_offset = Vector2d(arg[:to][:size]) + [1, 1]
         to_anchor = arg[:to][:anchor] == :before ? -1 : 1
 
         verticalpos = arg[:vertical]
