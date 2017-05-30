@@ -441,7 +441,7 @@ class Controller
         # this is the set of predefined configuration pages
         # it is the argument of editconf {set} respectively addconf{set}
         form_sets        = {
-            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines,
+            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :nonflowrest,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
                                                                             'printer.show_border', 'stringnames.vpos',
                                                                             :startpos,

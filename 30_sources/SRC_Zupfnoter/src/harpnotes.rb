@@ -1481,7 +1481,7 @@ module Harpnotes
             # turn previous note visible if the current playable is visible but not synchronized
             # which in turn means that it is part of a subflowline
             if c.visible and not show_options[:synched_notes].include?(c)
-              previous_note.visible = true unless previous_note.nil?  # this handles the very first note which has previous_note
+              previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
             end
             previous_note = c
           end
@@ -1869,15 +1869,31 @@ module Harpnotes
 
         # note we work with pitches here
         # otherwise we have to memize the previous drawing
-        if point_role==:end
-          point_note  = goto.from
-          attach_side = point_note.prev_pitch > point_note.pitch ? :left : :right
-        else
-          point_note  = goto.to
-          attach_side = point_note.next_pitch >= point_note.pitch ? :left : :right
+        # compute the character of  repeatsign
+        #
+        #        |: to    <----------------------+   goto.to     # begin!
+        #                next   prev             !
+        #                             from :|  --+   goto.from   # end!
+        #               <           <
+        #        if only one note in repetion next and prev are considered
+        #
+        if point_role == :begin
+          companion_note = goto.to
+          if goto.to == goto.from
+            attach_side = :left
+          else
+            attach_side = companion_note.pitch <= companion_note.next_pitch ? :left : :right
+          end
+        else  # :end
+          companion_note = goto.from
+          if goto.to == goto.from
+            attach_side = :right
+          else
+            attach_side = companion_note.prev_pitch <= companion_note.pitch ? :right : :left
+          end
         end
 
-        pos_key  = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{point_note.znid}.pos"
+        pos_key  = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{companion_note.znid}.pos"
         conf_key = "extract.#{print_variant_nr}.#{pos_key}"
 
         repeatsign_options = show_options[:repeatsigns][attach_side]
@@ -1886,10 +1902,10 @@ module Harpnotes
 
         text = repeatsign_options[:text]
 
-        position = Vector2d(lookuptable_drawing_by_playable[point_note].center) + annotationoffset
+        position = Vector2d(lookuptable_drawing_by_playable[companion_note].center) + annotationoffset
 
         Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
-                                           point_note.origin, conf_key, annotationoffset).tap { |s| s.draginfo={handler: :annotation} }
+                                           companion_note.origin, conf_key, annotationoffset).tap { |s| s.draginfo={handler: :annotation} }
       end
 
 
@@ -1899,6 +1915,7 @@ module Harpnotes
       def compute_beat_compression(music, layout_lines)
         result = compute_beat_compression_1(music, layout_lines) if $conf.get('layout.packer.pack_method') == 1
         result = compute_beat_compression_2(music, layout_lines) if $conf.get('layout.packer.pack_method') == 2
+        result = compute_beat_compression_3(music, layout_lines) if $conf.get('layout.packer.pack_method') == 3
         result = compute_beat_compression_0(music, layout_lines) if ($conf.get('layout.packer.pack_method') || 0) == 0
         result
       end
@@ -1974,6 +1991,20 @@ module Harpnotes
         end]
         result
       end
+
+      def compute_beat_compression_3(music, layout_lines)
+
+        # todo:clarify the initialization
+
+        relevant_keys = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
+
+        result = Hash[relevant_keys.map do |beat|
+
+          [beat, beat]
+        end]
+        result
+      end
+
 
       # this computes manually added additional increments
       def get_minc_factor(time, increment = @conf_beat_resolution)
