@@ -2133,7 +2133,7 @@ module Harpnotes
                 if silo[note.pitch].last.first.beat == note.beat
                   silo[note.pitch].last.push(note)
                 else
-                  silo[note.pitch].push([[note]])
+                  silo[note.pitch].push([note])
                 end
               else
                 silo[note.pitch]=[[note]]
