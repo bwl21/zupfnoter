@@ -1153,6 +1153,7 @@ module Harpnotes
         @slur_index           = {}
         @y_offset             = 5
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
+        @layout_minc          = $conf.get('layout.minc')
 
       end
 
@@ -1884,7 +1885,7 @@ module Harpnotes
           else
             attach_side = companion_note.pitch <= companion_note.next_pitch ? :left : :right
           end
-        else  # :end
+        else # :end
           companion_note = goto.from
           if goto.to == goto.from
             attach_side = :right
@@ -1992,24 +1993,15 @@ module Harpnotes
         result
       end
 
-      def compute_beat_compression_3(music, layout_lines)
-
-        # todo:clarify the initialization
-
-        relevant_keys = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
-
-        result = Hash[relevant_keys.map do |beat|
-
-          [beat, beat]
-        end]
-        result
-      end
-
 
       # this computes manually added additional increments
       def get_minc_factor(time, increment = @conf_beat_resolution)
-        moreinc_factor = $conf["layout.minc.#{time}.minc_f"]
-        moreinc_factor ? moreinc_factor * increment : 0
+        minc = @layout_minc[time.to_s]
+        if minc
+          minc[:minc_f] * increment
+        else
+          0
+        end
       end
 
       # for details see compute_beatcompression_0
@@ -2105,94 +2097,141 @@ module Harpnotes
 
 
       # for details see compute_beatcompression_0
-      # this algorithm incremnts only if there is a collision with the previous notes
+      # acts like 0 implemented like 3
       def compute_beat_compression_2(music, layout_lines)
-        max_beat = music.beat_maps.map { |map| map.keys.max }.max
-
-        silo         = [[]] # here we memoize the previous notes
-
-        # todo:clarify the initialization
-        current_beat = 0
-        last_size    = 0
+        duration_to_style  = $conf.get('layout.DURATION_TO_STYLE')
+        conf_min_increment = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
 
 
-        relevant_beat_maps = layout_lines.inject([]) { |r, i| r.push(music.beat_maps[i]) }.compact
-        relevant_keys      = music.beat_maps.inject([]) { |r, a| r.push(a.keys); r }.flatten.uniq.sort
+        # initialize the memory
+        newbeat            = 0
+        compression_map    = {}
+        last_size          = 0
 
-        history             = []
-        default_inc_history = []
-        inc_history         = []
-        duration_to_style   = $conf.get('layout.DURATION_TO_STYLE')
+        # find relevant notes for vertical layout
+        relevant_notes     = layout_lines.map { |voice_id| music.voices[voice_id] }.inject([]) { |result, voice| result.push(voice) }.flatten.select { |note| note.is_a? Harpnotes::Music::Playable }
+        relevant_sp        = relevant_notes.select { |note| note.is_a? Harpnotes::Music::SynchPoint }.map { |sp| sp.notes }
+        relevant_notes     = relevant_notes.push(relevant_sp).flatten
 
-        relevant_beat_maps.each do |beatmap|
-          beatmap.each do |key, playable|
-            notes = [playable]
-            notes = playable.notes if playable.is_a? Harpnotes::Music::SynchPoint
-            notes.each do |note|
-              if silo[note.pitch]
-                if silo[note.pitch].last.first.beat == note.beat
-                  silo[note.pitch].last.push(note)
-                else
-                  silo[note.pitch].push([note])
-                end
-              else
-                silo[note.pitch]=[[note]]
-              end
-            end
+
+        # get relvant beats
+        relevant_beats     = relevant_notes.group_by { |playable| playable.beat }
+
+        relevant_beats.keys.sort.each do |beat| # note that hashes are not sorted!
+          notes = relevant_beats[beat]
+
+          max_duration_on_beat = notes.map { |n| n.duration }.max
+
+          # detect parts and measure starts
+          is_new_part          = notes.select { |n| n.first_in_part? }
+          measure_start        = notes.select { |n| n.measure_start? }
+
+          # get the increment from thoe note sizes
+          begin
+            size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+          rescue Exception => e
+            $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
           end
+
+          defaultincrement = (size + last_size)/2
+          last_size        = size
+
+          # do the default incremnt in case of a collision
+          increment     = defaultincrement
+
+          increment     += defaultincrement unless is_new_part.empty? # handle part
+
+          increment     += increment / 4 unless measure_start.empty? # make room for measure bar
+
+          increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment
+
+          newbeat += increment
+
+          compression_map[beat] = newbeat
         end
 
+        compression_map
+      end
 
-        result = Hash[relevant_keys.map do |beat|
-          notes_on_beat        = relevant_beat_maps.map { |bm| bm[beat] }.flatten.compact ## select the voices for optimization
-          max_duration_on_beat = notes_on_beat.map { |n| n.duration }.max
-          has_no_notes_on_beat = notes_on_beat.empty?
-          is_new_part          = notes_on_beat.select { |n| n.first_in_part? }
-          measure_start        = notes_on_beat.select { |n| n.measure_start? }.first
-
-          pitchmap = Hash[notes_on_beat.map { |n| [n.pitch, n.duration] }]
-
-          unless has_no_notes_on_beat
-            begin
-              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
-            rescue Exception => e
-              $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
-            end
-
-            # we need to increment the position by the (radii[i] + radii[i-1])/2
-            increment = (size + last_size)/2
-            last_size = size
+      # this is a new optimized approach
+      def compute_beat_compression_3(music, layout_lines)
+        duration_to_style  = $conf.get('layout.DURATION_TO_STYLE')
+        conf_min_increment = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
 
 
-            default_inc_history.unshift(increment)
+        # initialize the memory
+        collision_stack    = {}
+        compression_map    = {}
+        newbeat            = 0
+        nextincrement      = 0
+        last_size          = 0
 
-            default_increment = increment
-            increment         = 0 # increment/4 # default_increment
-            default_inc_history.reverse.each_with_index.to_a.reverse.each { |v, i|
-              increment = default_inc_history[i] - inc_history[i - 1] if history[i] && (history[i].keys & pitchmap.keys).first
-            }
+        # find relevant notes for vertical layout
+        relevant_notes     = layout_lines.map { |voice_id| music.voices[voice_id] }.inject([]) { |result, voice| result.push(voice) }.flatten.select { |note| note.is_a? Harpnotes::Music::Playable }
+        relevant_sp        = relevant_notes.select { |note| note.is_a? Harpnotes::Music::SynchPoint }.map { |sp| sp.notes }
+        relevant_notes     = relevant_notes.push(relevant_sp).flatten
 
-            inc_history.unshift(increment)
 
-            #$log.info(%Q{#{beat}:#{default_increment}->#{increment} : #{pitchmap.keys} - #{history.last.keys} : #{history.last.keys & pitchmap.keys}}) unless history.empty?
-            history.unshift(pitchmap)
+        # get relvant beats
+        relevant_beats     = relevant_notes.group_by { |playable| playable.beat }
 
-            if measure_start
-              increment += default_increment / 4
-            end
+        relevant_beats.keys.sort.each do |beat| # note that hashes are not sorted!
+          notes = relevant_beats[beat]
 
-            # if a new part starts on this beat, double the increment
-            unless is_new_part.empty?
-              increment += increment
-            end
+          max_duration_on_beat = notes.map { |n| n.duration }.max
 
-            increment += get_minc_factor(notes_on_beat.first.time, increment)
-
-            current_beat += increment
+          # detect collisions
+          collisions           = notes.select do |note|
+            ((collision_stack[note.pitch] || -1) >= newbeat)
           end
-          [beat, current_beat]
-        end]
-        result
+
+          # detect inversions of tun
+          inversions           = notes.select do |note|
+            prev_pitch = note.prev_pitch || note.pitch
+            next_pitch = note.next_pitch || note.pitch
+
+            (prev_pitch < note.pitch and note.pitch > next_pitch) or
+                (prev_pitch > note.pitch and note.pitch < next_pitch)
+          end
+
+          # detect parts and measure starts
+          is_new_part          = notes.select { |n| n.first_in_part? }
+          measure_start        = notes.select { |n| n.measure_start? }
+
+          # get the increment from thoe note sizes
+          begin
+            size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
+          rescue Exception => e
+            $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
+          end
+
+          defaultincrement = (size + last_size)/2
+          last_size        = size
+
+          increment     = nextincrement
+          nextincrement = conf_min_increment
+
+          # do the default incremnt in case of a collision
+          if not collisions.empty?
+            increment = defaultincrement
+          elsif not inversions.empty? # perform half incremnet in case of inversion
+            nextincrement = defaultincrement/2 # other half comes in next seuqence
+            increment     = nextincrement
+          end
+
+          increment += defaultincrement unless is_new_part.empty? # handle part
+
+          increment += increment / 4 unless measure_start.empty? # make room for measure bar
+
+          increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment
+
+          newbeat += increment
+
+          notes.each { |note| collision_stack[note.pitch] = newbeat }
+          compression_map[beat] = newbeat
+        end
+
+        compression_map
       end
 
 
