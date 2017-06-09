@@ -11,6 +11,11 @@
 * tuplets can now be sculptured by drag & drop (#138)
 * improved performance of configuration (#115)
 * improved performance of harpnote preview (#87)
+* improved performance of vertical packer (#87, #89)
+
+## experimental feature
+
+* implemented a collision based packer (#89)
 
 # V 1.6.1
 

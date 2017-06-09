@@ -2774,8 +2774,7 @@ Für die grundsätzliche Bedienung gilt:
 \item
   Bitte beachte, dass manche Einstellungen am Zeitbezug der Note hängen.
   Wenn du also dein Stück so überarbeitest, dass sich der Zeitbezug
-  einer Note ändert, musst du ggf. die Konfiguration erneute
-  durchführen.
+  einer Note ändert, musst du ggf. die Konfiguration erneut durchführen.
 \end{itemize}
 
 \subsubsection{Texte verschieben}\label{texte-verschieben}
@@ -4660,7 +4659,20 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
           "LINE_THICK"   : 0.7,
           "REST_SIZE"    : [4, 2]
         },
-        "layout_regular" : null
+        "layout_regular" : null,
+        "manual_sheet"   : {
+          "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+        },
+        "packer_compact" : {
+          "packer" : {
+            "pack_max_spreadfactor" : 2,
+            "pack_method"           : 1,
+            "pack_min_increment"    : 0.2
+          }
+        },
+        "packer_regular" : {
+          "packer" : "#<Proc:0x007fba2218b580@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+        }
       },
       "notes"   : {
         "T01_number"               : {
@@ -4745,7 +4757,20 @@ Notenbild gezielt optimieren.
         "LINE_THICK"   : 0.7,
         "REST_SIZE"    : [4, 2]
       },
-      "layout_regular" : null
+      "layout_regular" : null,
+      "manual_sheet"   : {
+        "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+      },
+      "packer_compact" : {
+        "packer" : {
+          "pack_max_spreadfactor" : 2,
+          "pack_method"           : 1,
+          "pack_min_increment"    : 0.2
+        }
+      },
+      "packer_regular" : {
+        "packer" : "#<Proc:0x007fba2218b580@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+      }
     }
       
 \end{verbatim}
