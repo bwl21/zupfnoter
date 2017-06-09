@@ -99,6 +99,7 @@ module Harpnotes
                     :decorations,
                     :end_pos,
                     :next_pitch,
+                    :next_first_in_part,
                     :pos,
                     :prev_pitch,
                     :start_pos,
@@ -602,7 +603,6 @@ module Harpnotes
       #
       # @return nil
       def update_beats
-
         @beat_maps= @voices.map do |voice|
           current_beat = 0
           voice_map    = voice.select { |e| e.is_a? Playable }.inject(BeatMap.new(voice.index)) do |map, playable|
@@ -2137,11 +2137,11 @@ module Harpnotes
           last_size        = size
 
           # do the default incremnt in case of a collision
-          increment     = defaultincrement
+          increment        = defaultincrement
 
-          increment     += defaultincrement unless is_new_part.empty? # handle part
+          increment        += defaultincrement unless is_new_part.empty? # handle part
 
-          increment     += increment / 4 unless measure_start.empty? # make room for measure bar
+          increment        += increment / 4 unless measure_start.empty? # make room for measure bar
 
           increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment
 
@@ -2180,24 +2180,6 @@ module Harpnotes
 
           max_duration_on_beat = notes.map { |n| n.duration }.max
 
-          # detect collisions
-          collisions           = notes.select do |note|
-            ((collision_stack[note.pitch] || -1) >= newbeat)
-          end
-
-          # detect inversions of tun
-          inversions           = notes.select do |note|
-            prev_pitch = note.prev_pitch || note.pitch
-            next_pitch = note.next_pitch || note.pitch
-
-            (prev_pitch < note.pitch and note.pitch > next_pitch) or
-                (prev_pitch > note.pitch and note.pitch < next_pitch)
-          end
-
-          # detect parts and measure starts
-          is_new_part          = notes.select { |n| n.first_in_part? }
-          measure_start        = notes.select { |n| n.measure_start? }
-
           # get the increment from thoe note sizes
           begin
             size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(max_duration_on_beat)].first}}
@@ -2207,6 +2189,25 @@ module Harpnotes
 
           defaultincrement = (size + last_size)/2
           last_size        = size
+
+          # detect collisions
+          collisions       = notes.select do |note|
+            ((collision_stack[note.pitch] || -1) >= newbeat - conf_min_increment)
+          end
+
+          # detect inversions of tune
+          # it ignores inversions if the next note is a part
+          inversions       = notes.select do |note|
+            a      = [note.prev_pitch || note.pitch, note.pitch, note.next_pitch || note.pitch]
+            result = !((a.sort.reverse == a) or (a.sort == a))
+
+            result = false if note.next_first_in_part # this ignores cross part inversions
+            result
+          end
+
+          # detect parts and measure starts
+          is_new_part      = notes.select { |n| n.first_in_part? }
+          measure_start    = notes.select { |n| n.measure_start? }
 
           increment     = nextincrement
           nextincrement = conf_min_increment
@@ -2219,8 +2220,11 @@ module Harpnotes
             increment     = nextincrement
           end
 
-          increment += defaultincrement unless is_new_part.empty? # handle part
-
+          # handle start part
+          unless is_new_part.empty?
+            increment     += defaultincrement
+            nextincrement = conf_min_increment
+          end
           increment += increment / 4 unless measure_start.empty? # make room for measure bar
 
           increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment

@@ -739,12 +739,14 @@ module Harpnotes
       # note that this method upddates its fist parameter
       def _make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id)
         the_note = harpnote_elements.first
+        part_label = @part_table[voice_element[:time]]
 
         # we maintain the prev_pitch/next_pitch
         # for more detailed laoyut control of
         # repeatmarks, tuplets etc.
         if @previous_note
           @previous_note.next_pitch = the_note.pitch
+          @previous_note.next_first_in_part = true if part_label
           the_note.prev_pitch       = @previous_note.pitch
         end
 
@@ -754,7 +756,7 @@ module Harpnotes
 
         # handle parts as annotation
 
-        if part_label = @part_table[voice_element[:time]]
+        if part_label
           conf_key = "notebound.partname.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position = $conf['defaults.notebound.partname.pos']
 
