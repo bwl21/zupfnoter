@@ -910,6 +910,16 @@ TODO: Helptext für presets einfügen
             "layout_regular" : null,
             "manual_sheet"   : {
               "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+            },
+            "packer_compact" : {
+              "packer" : {
+                "pack_max_spreadfactor" : 2,
+                "pack_method"           : 1,
+                "pack_min_increment"    : 0.2
+              }
+            },
+            "packer_regular" : {
+              "packer" : "#<Proc:0x007fba2218b580@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
             }
           },
           "notes"   : {
@@ -995,6 +1005,16 @@ Notenbild gezielt optimieren.
           "layout_regular" : null,
           "manual_sheet"   : {
             "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+          },
+          "packer_compact" : {
+            "packer" : {
+              "pack_max_spreadfactor" : 2,
+              "pack_method"           : 1,
+              "pack_min_increment"    : 0.2
+            }
+          },
+          "packer_regular" : {
+            "packer" : "#<Proc:0x007fba2218b580@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
           }
         }
           

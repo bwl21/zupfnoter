@@ -18,7 +18,8 @@ module InitConf
                      # sort within layout
                      :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
-                     :minc, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+                     :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+                     :minc,
 
                      # sort within printer
                      :a3_offset, :a4_offset, # sort within laoyut
@@ -79,12 +80,23 @@ module InitConf
                      REST_SIZE:    [4, 2]
                  },
                  manual_sheet:   {
-                     manual_sheet:   {
+                     manual_sheet: {
                          llpos: [0, 297],
                          trpos: [420, 0],
                          url:   ""
                      }
-                 }
+                 },
+                 packer_compact: {
+                     packer: {
+                         pack_method:           1,
+                         pack_max_spreadfactor: 2,
+                         pack_min_increment:    0.20
+                     }
+                 },
+                 packer_regular: {
+                     packer: lambda { $conf.get('extract.0.layout.packer') }
+
+                 },
              },
 
              notes:   {
@@ -252,11 +264,6 @@ module InitConf
          # other parameters
          layout:       {
              grid:              false,
-             packer:            {
-                 pack_method:           0,
-                 pack_max_spreadfactor: 2,
-                 pack_min_increment:    0.2
-             },
              limit_a3:          true,
              SHOW_SLUR:         false,
              LINE_THIN:         0.1,
