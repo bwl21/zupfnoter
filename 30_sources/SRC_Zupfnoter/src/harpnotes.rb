@@ -1755,7 +1755,7 @@ module Harpnotes
         res_gotos                    = voice.select { |c| c.is_a? Goto }.map do |goto|
           if goto.conf_key
             conf_key = "extract.#{print_variant_nr}.#{goto.conf_key}"
-            distance = $conf[conf_key]
+            distance = show_options[:print_options_raw][goto.conf_key]
           end
 
           distance = goto.policy[:distance] unless distance
