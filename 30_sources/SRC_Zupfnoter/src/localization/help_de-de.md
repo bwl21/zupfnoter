@@ -59,21 +59,17 @@ Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von
 ## extract.0.layoutlines
 
 Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
-angeben, die zur die Berechnung des vertikalen Anordnugn der Noten
-(Layout) herangezogen werden sollen.
+angeben, die **zusätzlich** zu den dargestellten Stimmen zur die
+Berechnung des vertikalen Anordnung der Noten (Layout) herangezogen
+werden sollen.
 
-Üblicherweise werden alle Stimmen für die Berechnung des Layouts
-herangezogen. Bei langen Stücken kann es aber sinnvoll sein, nur die
-dargstellten Stimmmen zur Berechnung des Layouts zu berücksichtigen, um
-ein ausgwogeneres Notenbild zu bekommen.
+Üblicherweise werden nur die dargestellten Stimmen für die Berechnung
+des Layouts herangezogen. Es kann aber sinnvoll sein, weitere Stimmmen
+zur Berechnung des Layouts zu berücksichtigen, um in allen Auszügen ein
+ein gleichartiges Notenbild zu bekommen.
 
 > **Hinweis**: Auch wenn der Parameter `layoutlines` heißt, bewirkt er
 > nicht, dass irgendwelche Linien eingezeichnet werden.
->
-> **Hinweis**: Bei einem Stück mit vielen Noten ist es sinnvoll, hier
-> nur die im aktuellen Auszug dargestellten Stimmen aufzulisten. Damit
-> ist zwar das Notenbild nicht mehr bei allen Auszügen gleich, die Noten
-> sind aber besser verteilt.
 
 ## extract.0.legend
 
@@ -251,7 +247,7 @@ ausmachen. Daher sind diese Funktionen noch experimentell.
 
 Hier kannst du die pack-Methode auswählen
 
--   **0** : Die bisherige Methode: diese geht nach jedem Schrift um die
+-   **0** : Die bisherige Methode: diese geht nach jedem Schritt um die
     Höhe der größten Note weiter
 
 -   **1** : Kopmpakt: diese geht nur dann weiter, wenn
@@ -264,8 +260,11 @@ Hier kannst du die pack-Methode auswählen
 
     > **Hinweis**: Diese Methode eignet sich am besten für lange,
     > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
-    > Stücken schnell verloren. Bei dieser Methode sind die
-    > Synchronisiationslinien nicht immer gut sichtbar.
+    > Stücken schnell verloren.
+    >
+    > Bei dieser Methode sind die Synchronisiationslinien zwischen den
+    > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
+    > flach sind.
 
 ## layout.packer.pack_min_increment
 

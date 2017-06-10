@@ -17,6 +17,14 @@
 
 * implemented a collision based packer (#89)
 
+
+## backwards compatibility issues
+
+* layoutlines is now the combination of voices and layoutlines. I
+    t is not longer possible to show voices without considering 
+    them in the layout.
+
+
 # V 1.6.1
 
 ## Fix
