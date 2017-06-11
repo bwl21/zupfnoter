@@ -10,7 +10,7 @@ module Harpnotes
     PADDING         = 5
     ARROW_SIZE      = 1.0
     JUMPLINE_INDENT = 10
-    DOTTED_SIZE     = 0.3
+    DOTTED_SIZE     = 0.5  #radius of dot
 
     def initialize(element_id, width, height)
       @viewbox           = [0, 0, 100, 100] # todo: do we need these defaults?

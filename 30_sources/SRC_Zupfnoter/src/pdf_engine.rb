@@ -9,7 +9,7 @@ module Harpnotes
 
     PADDING         = 4.0
     JUMPLINE_INDENT = 10.0
-    DOTTED_SIZE     = 0.3
+    DOTTED_SIZE     = 0.5  # radius of dot
 
     #X_SPACING = 115.0/10.0
 
@@ -195,8 +195,8 @@ module Harpnotes
       #@pdf.fill = (0...3).map { 0 }
       #@pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
 
-      ds1 = DOTTED_SIZE + root.line_width
-      ds2 = DOTTED_SIZE + root.line_width/2
+      ds1 = DOTTED_SIZE + root.line_width    # distance of dot
+      ds2 = DOTTED_SIZE + root.line_width/2  # size of white dot
       x   = root.center.first + (root.size.first + ds1)
       y   = root.center.last
 
