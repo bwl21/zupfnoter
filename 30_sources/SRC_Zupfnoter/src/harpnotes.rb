@@ -2193,7 +2193,7 @@ module Harpnotes
 
       def compute_ellipse_properties_from_note(root)
         scale, fill, dotted = $conf.get('layout.DURATION_TO_STYLE')[check_duration(root)]
-        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale - 0.5 * $conf.get('layout.LINE_THICK') }
+        size                = $conf.get('layout.ELLIPSE_SIZE').map { |e| e * scale }
         return dotted, fill, size
       end
 

@@ -4,6 +4,7 @@
 
 * tuplet lines are now correct in pdf (#139)
 * no longer have unexpected subflowlines to unisons (#140)
+* fixed size of smaall notes (#143)
 
 ## enhancement
 

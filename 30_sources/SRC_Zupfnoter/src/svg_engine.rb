@@ -234,13 +234,25 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
-      attr          = {}
-      attr["fill"]  = root.fill == :filled ? "black" : "white"
-      attr[:stroke] = 'black'
+      attr              = {}
+      attr["fill"]      = root.fill == :filled ? "black" : "white"
+      attr[:stroke]     = 'black'
+      size              = root.size
+      @paper.line_width = 0
       if root.rect?
-        e = @paper.rect(root.center.first - root.size.first, root.center.last - root.size.last, 2 * root.size.first, 2 * root.size.last)
+        e = @paper.rect(root.center.first - size.first, root.center.last - size.last, 2 * size.first, 2 * size.last)
       else
-        e = @paper.ellipse(root.center.first, root.center.last, root.size.first, root.size.last, attr)
+        e = @paper.ellipse(root.center.first, root.center.last, size.first, size.last, attr)
+      end
+
+      unless root.fill == :filled
+        @paper.line_width = root.line_width
+        size              = root.size.map { |s| s - root.line_width / 2 }
+        if root.rect?
+          e = @paper.rect(root.center.first - size.first, root.center.last - size.last, 2 * size.first, 2 * size.last)
+        else
+          e = @paper.ellipse(root.center.first, root.center.last, size.first, size.last, attr)
+        end
       end
 
       if root.dotted?
@@ -253,16 +265,6 @@ module Harpnotes
 
       e = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last)
       push_element(root, e)
-
-=begin
-      e.conf_key = root.conf_key;
-      @paper.set_conf_editable(e);
-
-      e.on_click do
-        origin = root.origin
-        @on_select.call(origin) unless origin.nil? or @on_select.nil?
-      end
-=end
     end
 
     def draw_glyph(root)
@@ -305,32 +307,6 @@ module Harpnotes
         push_element(root, e)
       end
 
-#       push_element(root.origin, e)
-#
-#       e.on_click do
-#         origin = root.origin
-#         @on_select.call(origin) unless origin.nil? or @on_select.nil?
-#       end
-#
-#
-#       @paper.line_width = line_width
-#
-#       # add the dot if needed
-#       if root.dotted?
-#         draw_the_dot(root)
-#       end
-#
-#       if root.hasbarover?
-#         draw_the_barover(root)
-#       end
-#
-#       # make annotation draggable
-#       if root.conf_key
-#         @paper.set_draggable(e)
-#         e.conf_key   = root.conf_key
-#         e.conf_value = root.conf_value
-#       end
-
     end
 
     def draw_the_barover(root)
@@ -338,33 +314,17 @@ module Harpnotes
                           root.center.last - root.size.last - 1.5 * root.line_width,
                           2 * root.size.first,
                           0.5, 0, {fill: 'black'}) # svg does not show if height=0
-
-=begin
-      e_bar.on_click do
-        origin = root.origin
-        @on_select.call(origin) unless origin.nil? or @on_select.nil?
-      end
-      push_element(root.origin, e_bar)
-=end
     end
 
     # this draws the dot to an ellipse or glyph
     def draw_the_dot(root)
-      ds1   = DOTTED_SIZE + root.line_width
-      ds2   = DOTTED_SIZE + root.line_width/2
-      x     = root.center.first + (root.size.first + ds1)
-      y     = root.center.last
-      e_dot = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"}) # white outer
-      e_dot = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"}) # black inner
-
-=begin
-      push_element(root.origin, e_dot)
-
-      e_dot.on_click do
-        origin = root.origin
-        @on_select.call(origin) unless origin.nil? or @on_select.nil?
-      end
-=end
+      @paper.line_width = 0
+      ds1               = DOTTED_SIZE + root.line_width
+      ds2               = DOTTED_SIZE + root.line_width/2
+      x                 = root.center.first + (root.size.first + ds1)
+      y                 = root.center.last
+      e_dot             = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"}) # white outer
+      e_dot             = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"}) # black inner
     end
 
 
