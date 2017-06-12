@@ -1,7 +1,7 @@
 module Harpnotes
 
   class TextPane
-    attr_accessor :editor, :controller
+    attr_accessor :editor, :controller, :autofold
 
     #
     # Initializes the text pane
@@ -34,8 +34,9 @@ module Harpnotes
       }
       @editor            = `editor`
       @range             = `ace.require('ace/range').Range`
-      @inhibit_callbacks = false;
-      @markers = []
+      @inhibit_callbacks = false
+      @markers           = []
+      @autofold          = true
       create_lyrics_editor('abcLyrics')
     end
 
@@ -207,6 +208,7 @@ module Harpnotes
       %x{
          self.editor.getSession().setValue(text);
       }
+      fold_all
     end
 
     # replaces the text of the range by
@@ -220,6 +222,7 @@ module Harpnotes
       therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
       #{editor}.getSession().replace(therange, #{text})
       }
+      fold_all
     end
 
     # replace a text in the editor
@@ -228,6 +231,7 @@ module Harpnotes
     # œparam newtext  the new tet to be entered
     def replace_text(oldtext, newtext)
       %x{self.editor.replace(#{newtext}, {needle: #{oldtext}}) }
+      fold_all
     end
 
     # @param [Array] annotations  array of {row: 1, text: "", type: "error" | "warning" | "info"}
@@ -354,9 +358,8 @@ module Harpnotes
       options       = $conf[:neatjson]
 
 
-
       configjson = ""
-      $log.benchmark("neat_json", __LINE__, __FILE__) {configjson = JSON.neat_generate(object, options)}
+      $log.benchmark("neat_json", __LINE__, __FILE__) { configjson = JSON.neat_generate(object, options) }
 
       unless get_text.split(CONFIG_SEPARATOR)[1]
         append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
@@ -385,11 +388,21 @@ module Harpnotes
         pconfig.push(pconfig_patch.get)
         set_config_part(pconfig.get)
 
+        fold_all
+
       rescue Object => error
         line_col = get_config_position(error.last)
         $log.error("#{error.first} at #{line_col}", line_col)
         set_annotations($log.annotations)
       end
+    end
+
+    def fold_all
+      %x{ setTimeout(function(){self.editor.getSession().foldAll()}, 100) } if @autofold
+    end
+
+    def unfold_all
+      %x{ setTimeout(function(){self.editor.getSession().unfold()}, 100) }
     end
 
 
@@ -486,7 +499,7 @@ module Harpnotes
 
     # this copies the lyrics to the lyrics editor
     def to_lyrics
-      $log.clear_errors  # to rais error for multiple lyrics
+      $log.clear_errors # to rais error for multiple lyrics
 
       # add initial lyrics
       # abc editor does not have one

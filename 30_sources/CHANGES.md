@@ -13,11 +13,11 @@
 * improved performance of configuration (#115)
 * improved performance of harpnote preview (#87)
 * improved performance of vertical packer (#87, #89)
+* editor collapses config parameters by default (#144)
 
 ## experimental feature
 
 * implemented a collision based packer (#89)
-
 
 ## backwards compatibility issues
 
