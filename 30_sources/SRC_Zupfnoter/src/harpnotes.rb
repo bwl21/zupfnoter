@@ -1488,7 +1488,7 @@ module Harpnotes
 
             # turn previous note visible if the current playable is visible but not synchronized
             # which in turn means that it is part of a subflowline
-            if c.visible and not show_options[:synched_notes].include?(c)
+            if c.visible and not show_options[:synched_notes].include?(c.proxy_note)
               previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
             end
             previous_note = c
