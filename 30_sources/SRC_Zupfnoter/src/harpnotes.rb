@@ -1376,7 +1376,7 @@ module Harpnotes
         end
 
         # build sortmarks
-        sheet_marks << layout_sortmark(title) if $conf.get('layout.sortmark.show_sortmark')
+        sheet_marks << layout_sortmark(title, $conf.get(%Q{extract.#{print_variant_nr}.sortmark})) if $conf.get(%Q{extract.#{print_variant_nr}.sortmark.show})
 
         #sheet based annotations
         # todo: implement a proper strategy for validateion of conf
@@ -1421,18 +1421,17 @@ module Harpnotes
       end
 
 
-      def layout_sortmark(title)
+      def layout_sortmark(title, options)
         sortname   = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
         b = (sortname+"AAAA").split('').map{|i| i.ord - "A".ord}
         a = b[0] + (0.1 * b[1] +  0.01 * b[2] + 0.001 * b[3]) * 0.5/2.4   # 0.5 cover half the stringdistance; 2.4 - 24 positions
-        w, h = $conf.get('layout.sortmark.sortmark_size')
-        fill = ($conf.get('layout.sortmark.sortmark_fill') ? :filled : :open)
-
+        w, h = options['size']
+        fill = options['fill'] ? :filled : :open
+`debugger`
         markpos = (12.5 + a) * $conf.get('layout.X_SPACING')# 12 - 12 strings fro mleft border
 
         markpath = [['M', markpos, 0], ['l', -w/2, h], ['l', w, 0], ['l',-w/2 , -h], ['l',0 , h], ['l',0 , -h], ['z']]
-
-        Harpnotes::Drawing::Path.new(markpath, fill) if $conf.get('layout.sortmark.show_sortmark')
+        Harpnotes::Drawing::Path.new(markpath, fill)
       end
 
       # this creates a scale bar

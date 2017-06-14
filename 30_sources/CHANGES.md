@@ -14,6 +14,7 @@
 * improved performance of harpnote preview (#87)
 * improved performance of vertical packer (#87, #89)
 * editor collapses config parameters by default (#144)
+* now can print a sortmark on top of the sheet (#145)
 
 ## experimental feature
 

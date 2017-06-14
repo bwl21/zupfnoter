@@ -248,12 +248,12 @@ class ConfstackEditor
     def initialize
       @typemap = {
           IntegerPairs    => ['synchlines'],
-          FloatPair       => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset'],
+          FloatPair       => ['pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset'],
           IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
           Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow'],
           OneLineString   => ['title', 'filenamepart', 'url'],
           MultiLineString => ['text'],
-          Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show"],
+          Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show", "fill"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f'],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],

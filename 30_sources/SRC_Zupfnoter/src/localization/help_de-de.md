@@ -636,7 +636,7 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 > **Hinweis**: Mit der Linienform `l` kann man die Lage der
 > Kontrollpunkte (als Ecken im Linienzug) sehen.
 
-## show
+## tuplet.show
 
 Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 
@@ -644,6 +644,36 @@ Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
+
+## sortmark
+
+Hier konfigurierst du die Ausgabe einer Sortiermarke. Die Sortiermarke
+wird am oberen Blattrand gedruckt. Ihre horiozontale Position entspricht
+einer alphabetischen Sortierung der Titel. In einem nach Titel
+sortierten Stapel von Notenblättern bewegt sich die Sortiermarke also
+von links nach rechts. Damit kann man beim durchblättern gleich sehen,
+ob der Stapel sortiert ist.
+
+> **Hinweis**: Leider kann auf haushaltsüblichen Druckern nicht bis zum
+> Rand gedrukht werden. Daher muss man die Sortiermake mit einem
+> Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
+> Stapels kontrollieren, in dem man auf die Schnittkan des Stapels
+> schaut.
+
+## sortmark.fill
+
+Hier gibst du an, ob die Sortiermarke gefüllt werden soll. Die gefüllte
+Sortiermarke ist besser zu erkennen, könnte aber auch als störender
+empfunden werden.
+
+## sortmark.size
+
+Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von
+[2,4] hat sich als praktikabel erwiesen.
+
+## sortmark.show
+
+Hier gibst du an, ob eine Sortiermarke ausgegeben werden soll.
 
 ## voices
 

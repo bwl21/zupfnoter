@@ -3652,6 +3652,7 @@ spezifiziert den Auszug 1 usw.
           "right"  : {"pos": [5, -2], "style": "bold", "text": ":|"},
           "voices" : []
         },
+        "sortmark"     : {"fill": true, "show": false, "size": [2, 4]},
         "startpos"     : 15,
         "stringnames"  : {
           "marks" : {"hpos": [43, 55, 79], "vpos": [11]},
@@ -3701,8 +3702,8 @@ ausgegeben werden sollen.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{extract.0.barnumbers.autopos} -
-automat.
-positionieren}{extract.0.barnumbers.autopos - automat. positionieren}}\label{extract.0.barnumbers.autopos}
+autom.
+pos.}{extract.0.barnumbers.autopos - autom. pos.}}\label{extract.0.barnumbers.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -3781,8 +3782,8 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{extract.0.countnotes.autopos} -
-automat.
-positionieren}{extract.0.countnotes.autopos - automat. positionieren}}\label{extract.0.countnotes.autopos}
+autom.
+pos.}{extract.0.countnotes.autopos - autom. pos.}}\label{extract.0.countnotes.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -4188,8 +4189,8 @@ vertikaler Position.
       
 \end{verbatim}
 
-\subsection{\texorpdfstring{\texttt{extract.0.legend.spos} - Position
-Sublegende}{extract.0.legend.spos - Position Sublegende}}\label{extract.0.legend.spos}
+\subsection{\texorpdfstring{\texttt{extract.0.legend.spos} - Pos.
+Subleg}{extract.0.legend.spos - Pos. Subleg}}\label{extract.0.legend.spos}
 
 Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
 Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
@@ -4453,6 +4454,61 @@ Sprunglinien mehr dar.
       
 \end{verbatim}
 
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark} -
+Sortiermarke}{extract.0.sortmark - Sortiermarke}}\label{extract.0.sortmark}
+
+Hier konfigurierst du die Ausgabe einer Sortiermarke. Die Sortiermarke
+wird am oberen Blattrand gedruckt. Ihre horiozontale Position entspricht
+einer alphabetischen Sortierung der Titel. In einem nach Titel
+sortierten Stapel von Notenblättern bewegt sich die Sortiermarke also
+von links nach rechts. Damit kann man beim durchblättern gleich sehen,
+ob der Stapel sortiert ist.
+
+\begin{quote}
+\textbf{Hinweis}: Leider kann auf haushaltsüblichen Druckern nicht bis
+zum Rand gedrukht werden. Daher muss man die Sortiermake mit einem
+Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
+Stapels kontrollieren, in dem man auf die Schnittkan des Stapels schaut.
+\end{quote}
+
+\begin{verbatim}
+    "sortmark": {"fill": true, "show": false, "size": [2, 4]}
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark.fill} -
+ausfüllen}{extract.0.sortmark.fill - ausfüllen}}\label{extract.0.sortmark.fill}
+
+Hier gibst du an, ob die Sortiermarke gefüllt werden soll. Die gefüllte
+Sortiermarke ist besser zu erkennen, könnte aber auch als störender
+empfunden werden.
+
+\begin{verbatim}
+    "fill": true
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark.show} -
+anzeigen}{extract.0.sortmark.show - anzeigen}}\label{extract.0.sortmark.show}
+
+Hier gibst du an, ob eine Sortiermarke ausgegeben werden soll.
+
+\begin{verbatim}
+    "show": false
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark.size} -
+Größe}{extract.0.sortmark.size - Größe}}\label{extract.0.sortmark.size}
+
+Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von
+{[}2,4{]} hat sich als praktikabel erwiesen.
+
+\begin{verbatim}
+    "size": [2, 4]
+      
+\end{verbatim}
+
 \subsection{\texorpdfstring{\texttt{extract.0.startpos} -
 Startposition}{extract.0.startpos - Startposition}}\label{extract.0.startpos}
 
@@ -4670,7 +4726,7 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
           }
         },
         "packer_regular" : {
-          "packer" : "#<Proc:0x007fb79394ad70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+          "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
         }
       },
       "notes"   : {
@@ -4768,7 +4824,7 @@ Notenbild gezielt optimieren.
         }
       },
       "packer_regular" : {
-        "packer" : "#<Proc:0x007fb79394ad70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+        "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
       }
     }
       

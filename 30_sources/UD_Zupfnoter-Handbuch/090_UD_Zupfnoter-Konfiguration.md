@@ -149,11 +149,6 @@ Auszug 1 usw.
                 "pack_max_spreadfactor" : 2,
                 "pack_method"           : 0,
                 "pack_min_increment"    : 0.2
-              },
-              "sortmark"          : {
-                "fill_sortmark" : false,
-                "show_sortmark" : true,
-                "sortmark_size" : [3, 5]
               }
             },
             "layoutlines"  : [1, 2, 3, 4],
@@ -171,6 +166,7 @@ Auszug 1 usw.
               "right"  : {"pos": [5, -2], "style": "bold", "text": ":|"},
               "voices" : []
             },
+            "sortmark"     : {"fill": true, "show": false, "size": [2, 4]},
             "startpos"     : 15,
             "stringnames"  : {
               "marks" : {"hpos": [43, 55, 79], "vpos": [11]},
@@ -215,7 +211,7 @@ ausgegeben werden sollen.
         }
           
 
-## `extract.0.barnumbers.autopos` - automat. positionieren {#extract.0.barnumbers.autopos}
+## `extract.0.barnumbers.autopos` - autom. pos. {#extract.0.barnumbers.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -276,7 +272,7 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
         }
           
 
-## `extract.0.countnotes.autopos` - automat. positionieren {#extract.0.countnotes.autopos}
+## `extract.0.countnotes.autopos` - autom. pos. {#extract.0.countnotes.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -363,11 +359,6 @@ Notenbild gezielt optimieren.
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
             "pack_min_increment"    : 0.2
-          },
-          "sortmark"          : {
-            "fill_sortmark" : false,
-            "show_sortmark" : true,
-            "sortmark_size" : [3, 5]
           }
         }
           
@@ -528,38 +519,6 @@ geschaltet.
 
         "pack_min_increment": 0.2
 
-## `extract.0.layout.sortmark` - {#extract.0.layout.sortmark}
-
-TODO: Helptext für extract.0.layout.sortmark einfügen
-
-        "sortmark": {
-          "fill_sortmark" : false,
-          "show_sortmark" : true,
-          "sortmark_size" : [3, 5]
-        }
-          
-
-## `extract.0.layout.sortmark.fill_sortmark` - {#extract.0.layout.sortmark.fill_sortmark}
-
-TODO: Helptext für extract.0.layout.sortmark.fill_sortmark einfügen
-
-        "fill_sortmark": false
-          
-
-## `extract.0.layout.sortmark.show_sortmark` - {#extract.0.layout.sortmark.show_sortmark}
-
-TODO: Helptext für extract.0.layout.sortmark.show_sortmark einfügen
-
-        "show_sortmark": true
-          
-
-## `extract.0.layout.sortmark.sortmark_size` - {#extract.0.layout.sortmark.sortmark_size}
-
-TODO: Helptext für extract.0.layout.sortmark.sortmark_size einfügen
-
-        "sortmark_size": [3, 5]
-          
-
 ## `extract.0.layoutlines` - Stimmen für Layout {#extract.0.layoutlines}
 
 Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
@@ -603,7 +562,7 @@ vertikaler Position.
         "pos": [320, 7]
           
 
-## `extract.0.legend.spos` - Position Sublegende {#extract.0.legend.spos}
+## `extract.0.legend.spos` - Pos. Subleg {#extract.0.legend.spos}
 
 Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
 Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
@@ -799,6 +758,48 @@ welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
         "voices": []
           
 
+## `extract.0.sortmark` - Sortiermarke {#extract.0.sortmark}
+
+Hier konfigurierst du die Ausgabe einer Sortiermarke. Die Sortiermarke
+wird am oberen Blattrand gedruckt. Ihre horiozontale Position entspricht
+einer alphabetischen Sortierung der Titel. In einem nach Titel
+sortierten Stapel von Notenblättern bewegt sich die Sortiermarke also
+von links nach rechts. Damit kann man beim durchblättern gleich sehen,
+ob der Stapel sortiert ist.
+
+> **Hinweis**: Leider kann auf haushaltsüblichen Druckern nicht bis zum
+> Rand gedrukht werden. Daher muss man die Sortiermake mit einem
+> Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
+> Stapels kontrollieren, in dem man auf die Schnittkan des Stapels
+> schaut.
+
+        "sortmark": {"fill": true, "show": false, "size": [2, 4]}
+          
+
+## `extract.0.sortmark.fill` - ausfüllen {#extract.0.sortmark.fill}
+
+Hier gibst du an, ob die Sortiermarke gefüllt werden soll. Die gefüllte
+Sortiermarke ist besser zu erkennen, könnte aber auch als störender
+empfunden werden.
+
+        "fill": true
+          
+
+## `extract.0.sortmark.show` - anzeigen {#extract.0.sortmark.show}
+
+Hier gibst du an, ob eine Sortiermarke ausgegeben werden soll.
+
+        "show": false
+          
+
+## `extract.0.sortmark.size` - Größe {#extract.0.sortmark.size}
+
+Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von
+[2,4] hat sich als praktikabel erwiesen.
+
+        "size": [2, 4]
+          
+
 ## `extract.0.startpos` - Startposition {#extract.0.startpos}
 
 Hier kannst du die Position von oben angeben, an welcher die Harfennoten
@@ -960,7 +961,7 @@ TODO: Helptext für presets einfügen
               }
             },
             "packer_regular" : {
-              "packer" : "#<Proc:0x007fc6cc8c2450@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+              "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
             }
           },
           "notes"   : {
@@ -1055,7 +1056,7 @@ Notenbild gezielt optimieren.
             }
           },
           "packer_regular" : {
-            "packer" : "#<Proc:0x007fc6cc8c2450@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+            "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
           }
         }
           
