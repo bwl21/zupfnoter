@@ -215,6 +215,9 @@ rect.highlight {
     margin-left: 4em;
     list-style: square outside; }
 
+.w2ui-button .alert {
+  background-color: #ff898b; }
+
 #statusbar-layout .w2ui-tb-caption {
   vertical-align: top; }
 

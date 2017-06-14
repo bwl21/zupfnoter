@@ -805,13 +805,6 @@ function update_systemstatus_w2ui(systemstatus) {
 
   set_tbitem_caption('tb_view', 'Extract ' + systemstatus.view);
 
-  if (systemstatus.music_model == 'changed') {
-    $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
-  } else {
-    $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "")
-  }
-  ;
-
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
   $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
@@ -825,10 +818,19 @@ function update_systemstatus_w2ui(systemstatus) {
   else {
     w2ui.layout_top_toolbar.enable('tb_create')
     w2ui.layout_top_toolbar.enable('tb_open')
-    w2ui.layout_top_toolbar.enable('tb_save')
+    // w2ui.layout_top_toolbar.enable('tb_save')
     w2ui.layout_top_toolbar.enable('tbDropbox')
     w2ui.layout_top_toolbar.enable('tb_login')
   }
+
+
+  if (systemstatus.music_model == 'changed') {
+    $("#tb_layout_top_toolbar_item_tb_save table").addClass("alert")
+  } else {
+    $("#tb_layout_top_toolbar_item_tb_save table").removeClass("alert")
+  }
+  ;
+
 
 
 }
