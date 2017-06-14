@@ -496,6 +496,8 @@ module Harpnotes
         pitch_notes = [(pitch_notes.first or pitch_notes.last)] if $conf['restposition.default'] == :previous
         pitch_notes = [(pitch_notes.last or pitch_notes.first)] if $conf['restposition.default'] == :next
 
+        decorations = _parse_decorations(voice_element)
+
         pitch_notes = pitch_notes.compact
         unless pitch_notes.empty?
           pitch_notes = pitch_notes.map { |pitch_note| pitch_note[:notes].last[:midi] }
@@ -517,6 +519,7 @@ module Harpnotes
 
         result               = Harpnotes::Music::Pause.new(pitch, duration)
         result.measure_count = @measure_count
+        result.decorations   = decorations
         result.count_note    = _transform_count_note(voice_element)
         result.znid          = _mkznid(voice_element)
         result.time          = voice_element[:time]
