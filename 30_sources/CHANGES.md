@@ -7,7 +7,7 @@
 * fixed size of smaall notes (#143)
 * player also plays until tied notes edn (#147)
 * decorations now also work on rests (#127)
-)
+* shift now also works on unisons (#107)
 
 ## enhancement
 

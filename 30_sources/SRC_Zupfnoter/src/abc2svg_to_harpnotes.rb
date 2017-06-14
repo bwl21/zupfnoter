@@ -712,8 +712,10 @@ module Harpnotes
                   annotation = {text: text, style: :regular}
                 when "<"
                   entity.shift = {dir: :left, size: text, style: :regular}
+                  entity.notes.each {|note |note.shift = {dir: :left, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
                 when ">"
                   entity.shift = {dir: :right, size: text, style: :regular}
+                  entity.notes.each {|note |note.shift = {dir: :right, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
                 else
                   annotation = nil # it is not an annotation
               end
