@@ -134,6 +134,7 @@ module Harpnotes
           end
         }
         @isplaying = false
+        @inst=[]
       end
 
       def unhighlight_all()
