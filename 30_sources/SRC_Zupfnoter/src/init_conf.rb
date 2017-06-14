@@ -19,8 +19,8 @@ module InitConf
                      :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
                      :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+                     :sortmark, :show, :fill, :size,
                      :minc,
-
                      # sort within printer
                      :a3_offset, :a4_offset, # sort within laoyut
 
@@ -212,8 +212,9 @@ module InitConf
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
                                     pack_min_increment:    0.2
-                                }
+                                },
                  },
+                 sortmark: {size: [2, 4], fill: true, show: false },
                  nonflowrest:  false,
                  notes:        {},
                  barnumbers:   {

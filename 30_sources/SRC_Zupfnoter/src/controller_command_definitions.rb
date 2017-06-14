@@ -462,9 +462,9 @@ class Controller
         # it is the argument of editconf {set} respectively addconf{set}
         form_sets        = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :nonflowrest,
-                                                                            'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
-                                                                            'printer.show_border', 'stringnames.vpos',
                                                                             :startpos,
+                                                                            'repeatsigns.voices', 'barnumbers.voices',  'countnotes.voices',
+                                                                            'stringnames.vpos','sortmark.show',
                                                                            ]) + [:restposition]},
             extract_annotation:    {keys: [:produce,
                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
@@ -476,7 +476,7 @@ class Controller
             minc:                  {keys: expand_extract_keys(['layout.minc'])},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
-            stringnames:           {keys: expand_extract_keys([:stringnames])},
+            stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
             extract0:              {keys: ['extract.0']},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
             xx:                    {keys: ['xx']}
