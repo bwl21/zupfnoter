@@ -212,7 +212,8 @@ module InitConf
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
                                     pack_min_increment:    0.2
-                                }
+                                },
+                                sortmark: {sortmark_size: [3, 5], fill_sortmark: false, show_sortmark: true }
                  },
                  nonflowrest:  false,
                  notes:        {},

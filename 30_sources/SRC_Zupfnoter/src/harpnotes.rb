@@ -1375,6 +1375,9 @@ module Harpnotes
           end
         end
 
+        # build sortmarks
+        sheet_marks << layout_sortmark(title) if $conf.get('layout.sortmark.show_sortmark')
+
         #sheet based annotations
         # todo: implement a proper strategy for validateion of conf
         begin
@@ -1415,6 +1418,21 @@ module Harpnotes
           print_options_raw.push(song_print_options)
         end
         print_options_raw
+      end
+
+
+      def layout_sortmark(title)
+        sortname   = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
+        b = (sortname+"AAAA").split('').map{|i| i.ord - "A".ord}
+        a = b[0] + (0.1 * b[1] +  0.01 * b[2] + 0.001 * b[3]) * 0.5/2.4   # 0.5 cover half the stringdistance; 2.4 - 24 positions
+        w, h = $conf.get('layout.sortmark.sortmark_size')
+        fill = ($conf.get('layout.sortmark.sortmark_fill') ? :filled : :open)
+
+        markpos = (12.5 + a) * $conf.get('layout.X_SPACING')# 12 - 12 strings fro mleft border
+
+        markpath = [['M', markpos, 0], ['l', -w/2, h], ['l', w, 0], ['l',-w/2 , -h], ['l',0 , h], ['l',0 , -h], ['z']]
+
+        Harpnotes::Drawing::Path.new(markpath, fill) if $conf.get('layout.sortmark.show_sortmark')
       end
 
       # this creates a scale bar
@@ -2299,12 +2317,15 @@ module Harpnotes
         #                from:     {center: from.center, size: from.size, anchor: :after},
         #                to:       {center: to.center, size: to.size, anchor: :before},
         #                vertical: vertical
+
+        noteoffset = 2
+
         from        = Vector2d(arg[:from][:center]) # the coordnates of the from - point
-        from_offset = Vector2d(arg[:from][:size]) + [1, 1] # the offest of the from - point
+        from_offset = Vector2d(arg[:from][:size]) + [noteoffset, 1] # the offest of the from - point
         from_anchor = arg[:from][:anchor] == :before ? -1 : 1 # before: above; after: below
 
         to        = Vector2d(arg[:to][:center])
-        to_offset = Vector2d(arg[:to][:size]) + [1, 1]
+        to_offset = Vector2d(arg[:to][:size]) + [noteoffset, 1]
         to_anchor = arg[:to][:anchor] == :before ? -1 : 1
 
         verticalpos = arg[:vertical]

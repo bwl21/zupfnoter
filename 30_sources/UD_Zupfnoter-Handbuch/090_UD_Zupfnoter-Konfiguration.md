@@ -149,6 +149,11 @@ Auszug 1 usw.
                 "pack_max_spreadfactor" : 2,
                 "pack_method"           : 0,
                 "pack_min_increment"    : 0.2
+              },
+              "sortmark"          : {
+                "fill_sortmark" : false,
+                "show_sortmark" : true,
+                "sortmark_size" : [3, 5]
               }
             },
             "layoutlines"  : [1, 2, 3, 4],
@@ -358,6 +363,11 @@ Notenbild gezielt optimieren.
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
             "pack_min_increment"    : 0.2
+          },
+          "sortmark"          : {
+            "fill_sortmark" : false,
+            "show_sortmark" : true,
+            "sortmark_size" : [3, 5]
           }
         }
           
@@ -517,6 +527,38 @@ geschaltet.
     liefert angenehme Ergebnisse.
 
         "pack_min_increment": 0.2
+
+## `extract.0.layout.sortmark` - {#extract.0.layout.sortmark}
+
+TODO: Helptext für extract.0.layout.sortmark einfügen
+
+        "sortmark": {
+          "fill_sortmark" : false,
+          "show_sortmark" : true,
+          "sortmark_size" : [3, 5]
+        }
+          
+
+## `extract.0.layout.sortmark.fill_sortmark` - {#extract.0.layout.sortmark.fill_sortmark}
+
+TODO: Helptext für extract.0.layout.sortmark.fill_sortmark einfügen
+
+        "fill_sortmark": false
+          
+
+## `extract.0.layout.sortmark.show_sortmark` - {#extract.0.layout.sortmark.show_sortmark}
+
+TODO: Helptext für extract.0.layout.sortmark.show_sortmark einfügen
+
+        "show_sortmark": true
+          
+
+## `extract.0.layout.sortmark.sortmark_size` - {#extract.0.layout.sortmark.sortmark_size}
+
+TODO: Helptext für extract.0.layout.sortmark.sortmark_size einfügen
+
+        "sortmark_size": [3, 5]
+          
 
 ## `extract.0.layoutlines` - Stimmen für Layout {#extract.0.layoutlines}
 
@@ -918,7 +960,7 @@ TODO: Helptext für presets einfügen
               }
             },
             "packer_regular" : {
-              "packer" : "#<Proc:0x007fb79394ad70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+              "packer" : "#<Proc:0x007fc6cc8c2450@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
             }
           },
           "notes"   : {
@@ -1013,7 +1055,7 @@ Notenbild gezielt optimieren.
             }
           },
           "packer_regular" : {
-            "packer" : "#<Proc:0x007fb79394ad70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+            "packer" : "#<Proc:0x007fc6cc8c2450@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
           }
         }
           
