@@ -205,9 +205,11 @@ module Harpnotes
     # add new text to the editor
     # @param text the text to be set to the editor
     def set_text(text)
+      @inhibit_callbacks = true
       %x{
          self.editor.getSession().setValue(text);
       }
+      @inhibit_callbacks = false
       fold_all
     end
 
