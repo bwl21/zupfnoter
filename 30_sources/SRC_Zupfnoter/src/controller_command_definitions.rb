@@ -638,6 +638,7 @@ class Controller
     unless `result`
       result = %Q{% - settings to improve Handling in Zupfnoter
 I:measurenb 1
+I:contbarbn 1
 I:linewarn 0
 I:staffnonote 2
 % --------------

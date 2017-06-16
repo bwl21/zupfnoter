@@ -208,7 +208,7 @@ class ConfstackEditor
       def self.to_w2uifield(key)
         {field:       key,
          type:        'list',
-         options:     {items: ['center', 'next', 'default']},
+         options:     {items: ['center', 'next', 'previous', 'default']},
          required:    true,
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),
