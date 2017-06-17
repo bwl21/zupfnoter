@@ -32,7 +32,6 @@ module ABC2SVG
                annotate:    true,
                page_format: true,
                keep_remark: true,
-               titletrim:   false,
                textrans:    Native(`w2utils.settings.phrases`)
       }
 
@@ -76,7 +75,14 @@ module ABC2SVG
       end
 
       @root = %x{new Abc(#{@user.to_n})}
-      %x{#{@root}.tosvg("my_parameters","%%titletrim 0");}
+      defaults = %Q{
+I:titletrim 0
+I:measurenb 1
+I:contbarnb 1
+I:linewarn 0
+I:staffnonote 2
+      }
+      %x{#{@root}.tosvg("my_parameters",#{defaults});}
       @root
     end
 

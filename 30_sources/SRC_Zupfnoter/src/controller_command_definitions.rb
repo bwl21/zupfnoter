@@ -636,12 +636,7 @@ class Controller
   def create_from_current_template(parameters)
     result = Native(`localStorage.getItem(#{ZN_TEMPLATENAME})`)
     unless `result`
-      result = %Q{% - settings to improve Handling in Zupfnoter
-I:measurenb 1
-I:contbarbn 1
-I:linewarn 0
-I:staffnonote 2
-% --------------
+      result = %Q{
 X:{{song_id}}
 F:{{song_id}}_{{filename}}
 T:{{song_title}}

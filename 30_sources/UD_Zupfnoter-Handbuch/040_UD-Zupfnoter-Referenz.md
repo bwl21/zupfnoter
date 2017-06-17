@@ -1651,12 +1651,22 @@ Einhelheiten siehe <http://moinejf.free.fr/abcm2ps-doc/index.html>
 Häufige Einstellungen bei Zupfnoter sind:
 
 -   `I:measurenb 1` - schreibt Taktnummern in die Notenvorschau. Die
-    Anzeigt ist nur dann korrekt, wennd die Takte die korrekte Länge
+    Anzeigt ist nur dann korrekt, wenn die Takte die korrekte Länge
     haben.
+-   `I:contbarnb 1` - schreibt fortlaufende Taktnummern auch für
+    Variante Enden. Dies wirkt auch auf die Unterlegnoten
 -   `I:staffnonote 2` - zeigt auch leere Notenlinien in der
     Notenvorschau
 -   `I:linewarn 0` - unterdrückt Meldungenüber nicht gefüllte oder zu
     volle Zeilen in der Notenvorschau
+
+Zupfnoter verwendet von sich aus die folgenden Einstellungen:
+
+    I:titletrim 0
+    I:measurenb 1
+    I:contbarnb 1
+    I:linewarn 0
+    I:staffnonote 2
 
 ### Parameter in der Zupfnoter-URL
 

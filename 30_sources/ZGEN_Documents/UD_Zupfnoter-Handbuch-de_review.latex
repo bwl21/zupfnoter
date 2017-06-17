@@ -3184,8 +3184,11 @@ Häufige Einstellungen bei Zupfnoter sind:
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   \texttt{I:measurenb\ 1} - schreibt Taktnummern in die Notenvorschau.
-  Die Anzeigt ist nur dann korrekt, wennd die Takte die korrekte Länge
+  Die Anzeigt ist nur dann korrekt, wenn die Takte die korrekte Länge
   haben.
+\item
+  \texttt{I:contbarnb\ 1} - schreibt fortlaufende Taktnummern auch für
+  Variante Enden. Dies wirkt auch auf die Unterlegnoten
 \item
   \texttt{I:staffnonote\ 2} - zeigt auch leere Notenlinien in der
   Notenvorschau
@@ -3193,6 +3196,16 @@ Häufige Einstellungen bei Zupfnoter sind:
   \texttt{I:linewarn\ 0} - unterdrückt Meldungenüber nicht gefüllte oder
   zu volle Zeilen in der Notenvorschau
 \end{itemize}
+
+Zupfnoter verwendet von sich aus die folgenden Einstellungen:
+
+\begin{verbatim}
+I:titletrim 0
+I:measurenb 1
+I:contbarnb 1
+I:linewarn 0
+I:staffnonote 2
+\end{verbatim}
 
 \subsubsection{Parameter in der
 Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}

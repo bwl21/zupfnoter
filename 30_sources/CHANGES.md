@@ -8,6 +8,7 @@
 * player also plays until tied notes edn (#147)
 * decorations now also work on rests (#127)
 * shift now also works on unisons (#107)
+* abc2svg settings no longer necessary in tunes (removed from Template) (#71)
 
 ## enhancement
 
