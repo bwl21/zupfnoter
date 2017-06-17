@@ -166,6 +166,7 @@ Auszug 1 usw.
               "right"  : {"pos": [5, -2], "style": "bold", "text": ":|"},
               "voices" : []
             },
+            "sortmark"     : {"fill": true, "show": false, "size": [2, 4]},
             "startpos"     : 15,
             "stringnames"  : {
               "marks" : {"hpos": [43, 55, 79], "vpos": [11]},
@@ -210,7 +211,7 @@ ausgegeben werden sollen.
         }
           
 
-## `extract.0.barnumbers.autopos` - automat. positionieren {#extract.0.barnumbers.autopos}
+## `extract.0.barnumbers.autopos` - autom. pos. {#extract.0.barnumbers.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -271,7 +272,7 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
         }
           
 
-## `extract.0.countnotes.autopos` - automat. positionieren {#extract.0.countnotes.autopos}
+## `extract.0.countnotes.autopos` - autom. pos. {#extract.0.countnotes.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -482,7 +483,7 @@ weil sonst die Noten sehr weit auseinander liegen.
 
 Hier kannst du die pack-Methode auswählen
 
--   **0** : Die bisherige Methode: diese geht nach jedem Schrift um die
+-   **0** : Die bisherige Methode: diese geht nach jedem Schritt um die
     Höhe der größten Note weiter
 
 -   **1** : Kopmpakt: diese geht nur dann weiter, wenn
@@ -495,8 +496,11 @@ Hier kannst du die pack-Methode auswählen
 
     > **Hinweis**: Diese Methode eignet sich am besten für lange,
     > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
-    > Stücken schnell verloren. Bei dieser Methode sind die
-    > Synchronisiationslinien nicht immer gut sichtbar.
+    > Stücken schnell verloren.
+    >
+    > Bei dieser Methode sind die Synchronisiationslinien zwischen den
+    > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
+    > flach sind.
 
         "pack_method": 0
 
@@ -518,21 +522,17 @@ geschaltet.
 ## `extract.0.layoutlines` - Stimmen für Layout {#extract.0.layoutlines}
 
 Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
-angeben, die zur die Berechnung des vertikalen Anordnugn der Noten
-(Layout) herangezogen werden sollen.
+angeben, die **zusätzlich** zu den dargestellten Stimmen zur die
+Berechnung des vertikalen Anordnung der Noten (Layout) herangezogen
+werden sollen.
 
-Üblicherweise werden alle Stimmen für die Berechnung des Layouts
-herangezogen. Bei langen Stücken kann es aber sinnvoll sein, nur die
-dargstellten Stimmmen zur Berechnung des Layouts zu berücksichtigen, um
-ein ausgwogeneres Notenbild zu bekommen.
+Üblicherweise werden nur die dargestellten Stimmen für die Berechnung
+des Layouts herangezogen. Es kann aber sinnvoll sein, weitere Stimmmen
+zur Berechnung des Layouts zu berücksichtigen, um in allen Auszügen ein
+ein gleichartiges Notenbild zu bekommen.
 
 > **Hinweis**: Auch wenn der Parameter `layoutlines` heißt, bewirkt er
 > nicht, dass irgendwelche Linien eingezeichnet werden.
->
-> **Hinweis**: Bei einem Stück mit vielen Noten ist es sinnvoll, hier
-> nur die im aktuellen Auszug dargestellten Stimmen aufzulisten. Damit
-> ist zwar das Notenbild nicht mehr bei allen Auszügen gleich, die Noten
-> sind aber besser verteilt.
 
         "layoutlines": [1, 2, 3, 4]
           
@@ -562,7 +562,7 @@ vertikaler Position.
         "pos": [320, 7]
           
 
-## `extract.0.legend.spos` - Position Sublegende {#extract.0.legend.spos}
+## `extract.0.legend.spos` - Pos. Subleg. {#extract.0.legend.spos}
 
 Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
 Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
@@ -758,6 +758,48 @@ welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
         "voices": []
           
 
+## `extract.0.sortmark` - Sortiermarke {#extract.0.sortmark}
+
+Hier konfigurierst du die Ausgabe einer Sortiermarke. Die Sortiermarke
+wird am oberen Blattrand gedruckt. Ihre horiozontale Position entspricht
+einer alphabetischen Sortierung der Titel. In einem nach Titel
+sortierten Stapel von Notenblättern bewegt sich die Sortiermarke also
+von links nach rechts. Damit kann man beim durchblättern gleich sehen,
+ob der Stapel sortiert ist.
+
+> **Hinweis**: Leider kann auf haushaltsüblichen Druckern nicht bis zum
+> Rand gedrukht werden. Daher muss man die Sortiermake mit einem
+> Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
+> Stapels kontrollieren, in dem man auf die Schnittkan des Stapels
+> schaut.
+
+        "sortmark": {"fill": true, "show": false, "size": [2, 4]}
+          
+
+## `extract.0.sortmark.fill` - ausfüllen {#extract.0.sortmark.fill}
+
+Hier gibst du an, ob die Sortiermarke gefüllt werden soll. Die gefüllte
+Sortiermarke ist besser zu erkennen, könnte aber auch als störender
+empfunden werden.
+
+        "fill": true
+          
+
+## `extract.0.sortmark.show` - anzeigen {#extract.0.sortmark.show}
+
+Hier gibst du an, ob eine Sortiermarke ausgegeben werden soll.
+
+        "show": false
+          
+
+## `extract.0.sortmark.size` - Größe {#extract.0.sortmark.size}
+
+Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von
+[2,4] hat sich als praktikabel erwiesen.
+
+        "size": [2, 4]
+          
+
 ## `extract.0.startpos` - Startposition {#extract.0.startpos}
 
 Hier kannst du die Position von oben angeben, an welcher die Harfennoten
@@ -907,7 +949,20 @@ TODO: Helptext für presets einfügen
               "LINE_THICK"   : 0.7,
               "REST_SIZE"    : [4, 2]
             },
-            "layout_regular" : null
+            "layout_regular" : null,
+            "manual_sheet"   : {
+              "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+            },
+            "packer_compact" : {
+              "packer" : {
+                "pack_max_spreadfactor" : 2,
+                "pack_method"           : 1,
+                "pack_min_increment"    : 0.2
+              }
+            },
+            "packer_regular" : {
+              "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+            }
           },
           "notes"   : {
             "T01_number"               : {
@@ -989,7 +1044,20 @@ Notenbild gezielt optimieren.
             "LINE_THICK"   : 0.7,
             "REST_SIZE"    : [4, 2]
           },
-          "layout_regular" : null
+          "layout_regular" : null,
+          "manual_sheet"   : {
+            "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+          },
+          "packer_compact" : {
+            "packer" : {
+              "pack_max_spreadfactor" : 2,
+              "pack_method"           : 1,
+              "pack_min_increment"    : 0.2
+            }
+          },
+          "packer_regular" : {
+            "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+          }
         }
           
 

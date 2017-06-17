@@ -1,3 +1,36 @@
+# v 1.7
+
+## fix
+
+* tuplet lines are now correct in pdf (#139)
+* no longer have unexpected subflowlines to unisons (#140)
+* fixed size of smaall notes (#143)
+* player also plays until tied notes edn (#147)
+* decorations now also work on rests (#127)
+* shift now also works on unisons (#107)
+* abc2svg settings no longer necessary in tunes (removed from Template) (#71)
+
+## enhancement
+
+* jumplines can now be configured by drag & drop (#136)
+* tuplets can now be sculptured by drag & drop (#138)
+* improved performance of configuration (#115)
+* improved performance of harpnote preview (#87)
+* improved performance of vertical packer (#87, #89)
+* editor collapses config parameters by default (#144)
+* now can print a sortmark on top of the sheet (#145)
+
+## experimental feature
+
+* implemented a collision based packer (#89)
+
+## backwards compatibility issues
+
+* layoutlines is now the combination of voices and layoutlines. I
+    t is not longer possible to show voices without considering 
+    them in the layout.
+
+
 # V 1.6.1
 
 ## Fix

@@ -1,5 +1,7 @@
 {
   "phrases": {
+
+
     "": "",
     "0": "0",
     "1": "1",
@@ -14,6 +16,8 @@
     "a3_offset": "Offset für A3",
     "A4": "A4",
     "a4_offset": "Offset für A4",
+    "abc Tutorial concise": "ABC Tutorial kompakt",
+    "abc Tutorial detail": "ABC Tutorial ausführlich",
     "abc Tutorial": "ABC - Einführung",
     "abc": "ABC-Notation",
     "abc_parser": "abc_parser",
@@ -38,7 +42,7 @@
     "annotation": "Notenbeschriftung",
     "AnnotationRef": "Ref. Notenbeschriftung",
     "annotations": "Notenbeschriftungsvorlagen",
-    "autopos": "automat. positionieren",
+    "autopos": "autom. pos.",
     "bad characters in filename": "Fehlerhafte Zeichen im Filenamen",
     "barnumbers and countnotes": "Taktnummer und Zählmarken",
     "barnumbers": "Taktnummern",
@@ -129,6 +133,7 @@
     "Filename not specified in song add an F: instruction": "Kein Filename angegeben. Bitte füge eine F: - Kopfzeile hinzu",
     "filenamepart": "Filename-Zusatz",
     "Files saved to dropbox": "Dateien in Dropbox gespeichert",
+    "fill": "ausfüllen",
     "fit to viewport":"in Anzeigebereich\neinpassen",
     "fit" : "eingepasst",
     "Flowline": "Flußlinie",
@@ -175,6 +180,7 @@
     "LINE_MEDIUM": "Linienstärke mittel",
     "LINE_THICK": "Linienstärke dick",
     "LINE_THIN": "Linienstärke dünn",
+    "llpos": "unten links",
     "logged out from dropbox": "Du hast dich aus Dropbox ausgeloggt",
     "logged out": "ausgeloggt",
     "Login in dropbox;\nchoose folder in Dropbox": "In Dropbox einloggen;\nOrdner in Dropbox wählen",
@@ -184,6 +190,7 @@
     "Lost Access token. This should not happen. Please file a bug report.": "Zugriffstoken verloren. Das sollte nicht passieren. Bitte kontaktiere Zupfnoter-Entwicklung",
     "lyrics": "Liedtexte",
     "Manual": "Benutzerhandbuch",
+    "manual_sheet": "Manuelle Vorlage",
     "marks": "Saitenmarken",
     "medium view\nmost commonly used\nautoscroll works": "normale Größe\nmeistgenutzte Darstellunge\nautmatisches Scrollen\nfunktioniert",
     "medium": "normal",
@@ -192,6 +199,7 @@
     "missing pos": "Positionsangabe fehlt",
     "missing text": "Text fehlt",
     "MM_PER_POINT": "MM pro point",
+    "Mode": "Modus",
     "more than one line found for ": "Mehr als eine Zeile gefunden für ",
     "Multiple parts for same note": "Mehrere Part-Angaben [P:] für eine Note",
     "Multiple remarks for same note": "Mehrere Verschiebemarken [r: ]für eine Note",
@@ -203,6 +211,7 @@
     "New Entry": "Neuer Eintrag",
     "New": "Neu",
     "No access token to revoke": "Kein Zugriffstoken vorhanden, das gelöscht werden kann.",
+    "no preview available yet": "Noch keine Vorschau verfügbar",
     "nonflowrest": "Begleitpausen",
     "notebound annotation": "Notenbezogene Beschriftung",
     "notebound": "Notenbezogen",
@@ -211,11 +220,9 @@
     "notes": "Seitenbeschriftungen",
     "Ok": "OK",
     "Open a demo sheet\n(Ich steh an deiner Kripen hier)": "Öffne ein neues\nZupfnoter-Fenster mit\neinem Demonstrationsstück\n(Ich steh an deiner Krippen hier)",
+    "Open a detailed ABC tutorial (in German)": "Kompaktes Tutorial von Penzeng öffnen (Deutsch)",
     "Open a new Zupfnoter window\nwith the reference page": "Öffne ein neues\nZupfnoter-Fenster mit\neiner Erklärung\nder Zupfnoter-Ausgabe",
     "Open ABC file in dropbox": "ABC-File in Dropbox öffnen",
-    "abc Tutorial concise": "ABC Tutorial kompakt",
-    "abc Tutorial detail": "ABC Tutorial ausführlich",
-    "Open a detailed ABC tutorial (in German)": "Kompaktes Tutorial von Penzeng öffnen (Deutsch)",
     "Open an concise ABC tutorial (in German)": "Ausführliches Tutorial von Schacherl öffnen (Deutsch)",
     "Open the user manual": "Öffne das Zupfnoter Benutzerhandbuch",
     "Open the version information on website": "Vesionsinformationen anzeigen",
@@ -227,6 +234,8 @@
     "pack_method": "Packmethode",
     "pack_min_increment": "min. Inkrement",
     "packer": "Packer",
+    "packer_compact": "Packer kompakt",
+    "packer_regular": "Parker norm",
     "page annotation": "Seitenbeschriftung",
     "partname": "Partname",
     "Perspective": "Ansicht",
@@ -281,6 +290,7 @@
     "show": "anzeigen",
     "show_border": "Blattbegrenzg. zeichnen",
     "SHOW_SLUR": "zeige Bindebögen",
+    "size": "Größe",
     "small view\nto get an overview": "kleine Dastellung\nzur Gesamtübersicht",
     "small": "klein",
     "small_bold": "klein und fett",
@@ -288,6 +298,7 @@
     "smaller": "kleiner",
     "SnippetEditor::Annotation": "Zusatz bearbeiten::Notenbeschriftung",
     "sorted": "sortiert",
+    "sortmark": "Sortiermarke",
     "south": "südwärts",
     "specify all details for bar numbers": "Detaillierte Angaben zu Taktnummern",
     "specify all details for repeat signs": "Detaillierte Angaben\nzu Wiederholungszeichen",
@@ -310,7 +321,7 @@
     "specify which voices\nare connected by synchronization lines": "Angabe, welche Stimmenüber\nSynchronisationslinien\n(gestrichelte horizontale Linien)\nverbunden werden",
     "specify which voices\nshow repeat signs instead of jumplines": "Angabe, welche Stimmen\nWiederholgunszeichen statt\nSprunglinien verwenden",
     "specify which voides\nare considered to compute \nvertical spacing": "Angabe, welche Stimmen\nzur Berechnung\nder vertikalen Notenanordnung\nberücksihtigt werden",
-    "spos": "Position Sublegende",
+    "spos": "Pos. Subleg.",
     "startpos": "Startposition",
     "Stop": "Stop",
     "stringnames": "Saitennamen",
@@ -339,8 +350,11 @@
     "There is no file with this id": "Es gibt keine Datei mit der Nummer",
     "title": "Titel",
     "Title": "Titel",
+    "trpos": "oben rechts",
     "Tune": "Noten",
     "tuplet": "Tuplet",
+    "url": "URL",
+    "value": "Wert",
     "Value": "Wert",
     "variantend": "Variantes Ende",
     "verses": "Strophen",
@@ -367,9 +381,7 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
 
-
-    "value": "Wert"
-
+    "_ende_der_liste": ""
   }
 }
 

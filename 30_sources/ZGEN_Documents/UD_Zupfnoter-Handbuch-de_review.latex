@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.6.1
+Version 1.6.1 ++dev
 
 © 2017 https://www.zupfnoter.de
 
@@ -2740,6 +2740,95 @@ Es erscheint eine Maske nach folgendem Beispiel:
 \end{quote}
 \end{quote}
 
+\subsection{mit der Maus
+konfigurieren}\label{mit-der-maus-konfigurieren}
+
+Einstellungen, welche die Position und Gestalt von Element im
+Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+\item
+  Anordnung von Sprunglinien
+\item
+  Gestalt der Triolenbogen (Tuplet)
+\end{itemize}
+
+Für die grundsätzliche Bedienung gilt:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Wenn du den Mauszeiger über ein solches Element bewegst, ändert dieser
+  seine Form. Darüber hinaus zeigt die Statusleiste rechts unten,
+  welcher Konfigurationsparamter verwändert wird.
+\item
+  Bei solchen Elementen ruft das Kontextmenü \texttt{Edit\ config} den
+  entsprechenden Konfigurationseditor auf.
+\item
+  Nach dem Beargbeiten des Elementes mit der Maus wird das Element rot.
+  Bitte führe einen ``Render'' aus um die Unterlegnotenvorschau zu
+  aktualisieren.
+\item
+  Bitte beachte, dass manche Einstellungen am Zeitbezug der Note hängen.
+  Wenn du also dein Stück so überarbeitest, dass sich der Zeitbezug
+  einer Note ändert, musst du ggf. die Konfiguration erneut durchführen.
+\end{itemize}
+
+\subsubsection{Texte verschieben}\label{texte-verschieben}
+
+Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
+Taktnummern, Zählhinweise, Variatnenbezeichenr, Bezeichner von Parts mit
+der Maus verschieben.
+
+\subsubsection{Sprunglinien verschieben}\label{sprunglinien-verschieben}
+
+Du kannst horizontale Lage der Sprunglinien mit der Maus einstellen. Die
+Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
+
+\begin{quote}
+\textbf{Hinweis}: Bei varianten Enden wirkt der selbe
+Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte drücke
+daher auf \texttt{Render} um das Endergebnis zu sehen. Danach sind auch
+die Pfeile an den Sprunglineine wieder korrekt.
+\end{quote}
+
+\subsubsection{Triolenbogen gestalten}\label{triolenbogen-gestalten}
+
+Das Gestalten von Triolenbogen ist etwas vom komplexesten, was Zupfnoter
+zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
+
+\includegraphics{../ZAUX_Images/040-090_drag-drop-tuplet.pdf}~
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  wenn man genau hinschaut, dann siehst du an den Triolenbögen zwei
+  kleine Griffe. Wenn du die Maus darüber bewegst, kann due diese mit
+  gedrückter Maustaste bwegegen.
+\item
+  wenn du die Maus bewegst, ändert sich das Bild zu einem Trapez. Der
+  entstezende Bogen wird durch zwei Kontrolpunkte (die oberen Ecken des
+  Trapezes) gestaltet. Im vorstehenden Bild wurde der linke Griff (d.h.
+  der linke Kontrollpunkt) bewegt.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis}: Am besgten experimentierst du ein bisschen, um
+Erfahrung zu sammeln. Es würde zu weit führen, hier alle Möglichkeiten
+darzustellen.
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Es kann vorkommen, dass die Griffe von Noten verdeckt
+und daher mit der Maus nicht erreichbar sind. In diesem Fall kannst du
+an der Triolenbeschriftung oder an einem andere Griff
+\texttt{Edit\ Cconfig} aufrufen und den Kontrollpunkt so ändern, dass er
+wireder sichtbar wird.
+\end{quote}
+
 \clearpage
 
 \hyperdef{}{auszuege}{\subsection{Erstellung von
@@ -3095,8 +3184,11 @@ Häufige Einstellungen bei Zupfnoter sind:
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   \texttt{I:measurenb\ 1} - schreibt Taktnummern in die Notenvorschau.
-  Die Anzeigt ist nur dann korrekt, wennd die Takte die korrekte Länge
+  Die Anzeigt ist nur dann korrekt, wenn die Takte die korrekte Länge
   haben.
+\item
+  \texttt{I:contbarnb\ 1} - schreibt fortlaufende Taktnummern auch für
+  Variante Enden. Dies wirkt auch auf die Unterlegnoten
 \item
   \texttt{I:staffnonote\ 2} - zeigt auch leere Notenlinien in der
   Notenvorschau
@@ -3104,6 +3196,16 @@ Häufige Einstellungen bei Zupfnoter sind:
   \texttt{I:linewarn\ 0} - unterdrückt Meldungenüber nicht gefüllte oder
   zu volle Zeilen in der Notenvorschau
 \end{itemize}
+
+Zupfnoter verwendet von sich aus die folgenden Einstellungen:
+
+\begin{verbatim}
+I:titletrim 0
+I:measurenb 1
+I:contbarnb 1
+I:linewarn 0
+I:staffnonote 2
+\end{verbatim}
 
 \subsubsection{Parameter in der
 Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}
@@ -3563,6 +3665,7 @@ spezifiziert den Auszug 1 usw.
           "right"  : {"pos": [5, -2], "style": "bold", "text": ":|"},
           "voices" : []
         },
+        "sortmark"     : {"fill": true, "show": false, "size": [2, 4]},
         "startpos"     : 15,
         "stringnames"  : {
           "marks" : {"hpos": [43, 55, 79], "vpos": [11]},
@@ -3612,8 +3715,8 @@ ausgegeben werden sollen.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{extract.0.barnumbers.autopos} -
-automat.
-positionieren}{extract.0.barnumbers.autopos - automat. positionieren}}\label{extract.0.barnumbers.autopos}
+autom.
+pos.}{extract.0.barnumbers.autopos - autom. pos.}}\label{extract.0.barnumbers.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -3692,8 +3795,8 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{extract.0.countnotes.autopos} -
-automat.
-positionieren}{extract.0.countnotes.autopos - automat. positionieren}}\label{extract.0.countnotes.autopos}
+autom.
+pos.}{extract.0.countnotes.autopos - autom. pos.}}\label{extract.0.countnotes.autopos}
 
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
@@ -3983,7 +4086,7 @@ Hier kannst du die pack-Methode auswählen
 
 \begin{itemize}
 \item
-  \textbf{0} : Die bisherige Methode: diese geht nach jedem Schrift um
+  \textbf{0} : Die bisherige Methode: diese geht nach jedem Schritt um
   die Höhe der größten Note weiter
 \item
   \textbf{1} : Kopmpakt: diese geht nur dann weiter, wenn
@@ -4002,8 +4105,11 @@ Hier kannst du die pack-Methode auswählen
   \begin{quote}
   \textbf{Hinweis}: Diese Methode eignet sich am besten für lange,
   einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
-  Stücken schnell verloren. Bei dieser Methode sind die
-  Synchronisiationslinien nicht immer gut sichtbar.
+  Stücken schnell verloren.
+
+  Bei dieser Methode sind die Synchronisiationslinien zwischen den
+  Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr flach
+  sind.
   \end{quote}
 
 \begin{verbatim}
@@ -4039,22 +4145,18 @@ geschaltet.
 Layout}{extract.0.layoutlines - Stimmen für Layout}}\label{extract.0.layoutlines}
 
 Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
-angeben, die zur die Berechnung des vertikalen Anordnugn der Noten
-(Layout) herangezogen werden sollen.
+angeben, die \textbf{zusätzlich} zu den dargestellten Stimmen zur die
+Berechnung des vertikalen Anordnung der Noten (Layout) herangezogen
+werden sollen.
 
-Üblicherweise werden alle Stimmen für die Berechnung des Layouts
-herangezogen. Bei langen Stücken kann es aber sinnvoll sein, nur die
-dargstellten Stimmmen zur Berechnung des Layouts zu berücksichtigen, um
-ein ausgwogeneres Notenbild zu bekommen.
+Üblicherweise werden nur die dargestellten Stimmen für die Berechnung
+des Layouts herangezogen. Es kann aber sinnvoll sein, weitere Stimmmen
+zur Berechnung des Layouts zu berücksichtigen, um in allen Auszügen ein
+ein gleichartiges Notenbild zu bekommen.
 
 \begin{quote}
 \textbf{Hinweis}: Auch wenn der Parameter \texttt{layoutlines} heißt,
 bewirkt er nicht, dass irgendwelche Linien eingezeichnet werden.
-
-\textbf{Hinweis}: Bei einem Stück mit vielen Noten ist es sinnvoll, hier
-nur die im aktuellen Auszug dargestellten Stimmen aufzulisten. Damit ist
-zwar das Notenbild nicht mehr bei allen Auszügen gleich, die Noten sind
-aber besser verteilt.
 \end{quote}
 
 \begin{verbatim}
@@ -4100,8 +4202,8 @@ vertikaler Position.
       
 \end{verbatim}
 
-\subsection{\texorpdfstring{\texttt{extract.0.legend.spos} - Position
-Sublegende}{extract.0.legend.spos - Position Sublegende}}\label{extract.0.legend.spos}
+\subsection{\texorpdfstring{\texttt{extract.0.legend.spos} - Pos.
+Subleg}{extract.0.legend.spos - Pos. Subleg}}\label{extract.0.legend.spos}
 
 Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
 Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
@@ -4365,6 +4467,61 @@ Sprunglinien mehr dar.
       
 \end{verbatim}
 
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark} -
+Sortiermarke}{extract.0.sortmark - Sortiermarke}}\label{extract.0.sortmark}
+
+Hier konfigurierst du die Ausgabe einer Sortiermarke. Die Sortiermarke
+wird am oberen Blattrand gedruckt. Ihre horiozontale Position entspricht
+einer alphabetischen Sortierung der Titel. In einem nach Titel
+sortierten Stapel von Notenblättern bewegt sich die Sortiermarke also
+von links nach rechts. Damit kann man beim durchblättern gleich sehen,
+ob der Stapel sortiert ist.
+
+\begin{quote}
+\textbf{Hinweis}: Leider kann auf haushaltsüblichen Druckern nicht bis
+zum Rand gedrukht werden. Daher muss man die Sortiermake mit einem
+Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
+Stapels kontrollieren, in dem man auf die Schnittkan des Stapels schaut.
+\end{quote}
+
+\begin{verbatim}
+    "sortmark": {"fill": true, "show": false, "size": [2, 4]}
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark.fill} -
+ausfüllen}{extract.0.sortmark.fill - ausfüllen}}\label{extract.0.sortmark.fill}
+
+Hier gibst du an, ob die Sortiermarke gefüllt werden soll. Die gefüllte
+Sortiermarke ist besser zu erkennen, könnte aber auch als störender
+empfunden werden.
+
+\begin{verbatim}
+    "fill": true
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark.show} -
+anzeigen}{extract.0.sortmark.show - anzeigen}}\label{extract.0.sortmark.show}
+
+Hier gibst du an, ob eine Sortiermarke ausgegeben werden soll.
+
+\begin{verbatim}
+    "show": false
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.sortmark.size} -
+Größe}{extract.0.sortmark.size - Größe}}\label{extract.0.sortmark.size}
+
+Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von
+{[}2,4{]} hat sich als praktikabel erwiesen.
+
+\begin{verbatim}
+    "size": [2, 4]
+      
+\end{verbatim}
+
 \subsection{\texorpdfstring{\texttt{extract.0.startpos} -
 Startposition}{extract.0.startpos - Startposition}}\label{extract.0.startpos}
 
@@ -4570,7 +4727,20 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
           "LINE_THICK"   : 0.7,
           "REST_SIZE"    : [4, 2]
         },
-        "layout_regular" : null
+        "layout_regular" : null,
+        "manual_sheet"   : {
+          "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+        },
+        "packer_compact" : {
+          "packer" : {
+            "pack_max_spreadfactor" : 2,
+            "pack_method"           : 1,
+            "pack_min_increment"    : 0.2
+          }
+        },
+        "packer_regular" : {
+          "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+        }
       },
       "notes"   : {
         "T01_number"               : {
@@ -4655,7 +4825,20 @@ Notenbild gezielt optimieren.
         "LINE_THICK"   : 0.7,
         "REST_SIZE"    : [4, 2]
       },
-      "layout_regular" : null
+      "layout_regular" : null,
+      "manual_sheet"   : {
+        "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
+      },
+      "packer_compact" : {
+        "packer" : {
+          "pack_max_spreadfactor" : 2,
+          "pack_method"           : 1,
+          "pack_min_increment"    : 0.2
+        }
+      },
+      "packer_regular" : {
+        "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+      }
     }
       
 \end{verbatim}

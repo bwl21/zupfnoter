@@ -3,7 +3,8 @@ function init_w2ui(uicontroller) {
   w2popup.defaults.speed = 0;
 
   function zoomHarpPreview(size) {
-    $("#harpPreview svg").attr('height', size[0]).attr('width', size[1]);
+    uicontroller.$set_harppreview_size(size);
+    $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
   };
 
   var zoomlevel = [1400, 2200];
@@ -64,20 +65,20 @@ function init_w2ui(uicontroller) {
       w2ui['layout'].hide('left', window.instant);
       w2ui['layout'].hide('bottom', window.instant);
       w2ui['layout'].hide('main', window.instant);
-      zoomHarpPreview(['100%', '98%'])
+      zoomHarpPreview(['98%', '100%'])
     }
   }
   scalehandlers = {
     'tb_scale:groß': function () {
-      zoomlevel = [1400, 2200];
+      zoomlevel = [2200, 1400];
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:mittel': function () {
-      zoomlevel = [700, 1500];
+      zoomlevel = [1500, 750];
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:klein': function () {
-      zoomlevel = [400, 800];
+      zoomlevel = [800, 400];
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:fit': function () {
@@ -142,7 +143,12 @@ function init_w2ui(uicontroller) {
     },
 
     'tb_save': function () {
-      uicontroller.$handle_command("dsave")
+      $("#tb_layout_top_toolbar_item_tb_save table").removeClass("alert")
+      disable_save();
+      setTimeout(function(){
+        uicontroller.$handle_command("dsave");
+      }, 100)
+
     },
 
     'tb_download': function () {
@@ -176,6 +182,7 @@ function init_w2ui(uicontroller) {
           },
           "Cancel": function () {
             this.clear();
+            w2popup.close();
           }
         }
       })
@@ -803,13 +810,6 @@ function update_systemstatus_w2ui(systemstatus) {
 
   set_tbitem_caption('tb_view', 'Extract ' + systemstatus.view);
 
-  if (systemstatus.music_model == 'changed') {
-    $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "red")
-  } else {
-    $("#tb_layout_top_toolbar_item_tb_save .w2ui-tb-caption").css("color", "")
-  }
-  ;
-
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
   $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
@@ -823,10 +823,19 @@ function update_systemstatus_w2ui(systemstatus) {
   else {
     w2ui.layout_top_toolbar.enable('tb_create')
     w2ui.layout_top_toolbar.enable('tb_open')
-    w2ui.layout_top_toolbar.enable('tb_save')
+    // w2ui.layout_top_toolbar.enable('tb_save')
     w2ui.layout_top_toolbar.enable('tbDropbox')
     w2ui.layout_top_toolbar.enable('tb_login')
   }
+
+
+  if (systemstatus.music_model == 'changed') {
+    $("#tb_layout_top_toolbar_item_tb_save table").addClass("alert")
+  } else {
+    $("#tb_layout_top_toolbar_item_tb_save table").removeClass("alert")
+  }
+  ;
+
 
 
 }
@@ -876,6 +885,10 @@ function update_play_w2ui(status) {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Play", icon: "fa fa-play"})
   }
 }
+
+function disable_save(){w2ui.layout_top_toolbar.disable('tb_save')};
+function enable_save(){ w2ui.layout_top_toolbar.enable('tb_save')};
+
 ;
 
 function openPopup(theForm) {

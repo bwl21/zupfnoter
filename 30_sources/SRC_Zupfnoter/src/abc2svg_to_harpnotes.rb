@@ -40,7 +40,7 @@ module Harpnotes
         result.harpnote_options = _make_harpnote_options
 
         filebase = result.meta_data[:filename]
-        $log.error(I18n.t("Filename not specified in song add an F: instruction"), [1,1]) if filebase.empty?
+        $log.error(I18n.t("Filename not specified in song add an F: instruction"), [1, 1]) if filebase.empty?
 
         result
       end
@@ -167,7 +167,7 @@ module Harpnotes
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
           voice_id = "v_#{voice_index + 1}"
           result   = _transform_voice(voice_model, voice_id)
-          result   += _make_variant_ending_jumps if result
+          result   += _make_variant_ending_jumps(voice_id) if result
           result
         end.compact
 
@@ -204,7 +204,7 @@ module Harpnotes
         # handle the jumplines
         result                = result.flatten
         jumplines             = result.inject([]) do |jumplines, element|
-          jumplines << _make_jumplines(element)
+          jumplines << _make_jumplines(element, voice_index)
           jumplines
         end
 
@@ -247,7 +247,7 @@ module Harpnotes
         type =~/^:.*$/
       end
 
-      def _transform_bar(voice_element)
+      def _transform_bar(voice_element, index, voice_index)
         result = []
         type   = voice_element[:bar_type]
 
@@ -302,7 +302,7 @@ module Harpnotes
         end
 
 
-        result << _transform_bar_repeat_end(voice_element) if _bar_is_repetition_end?(type)
+        result << _transform_bar_repeat_end(voice_element, index, voice_index) if _bar_is_repetition_end?(type)
 
         # here we handle the case that a repeat is within a measure (textcase 3016 in measure repeats)
         # it shall not create a bar in harpnotes
@@ -496,6 +496,8 @@ module Harpnotes
         pitch_notes = [(pitch_notes.first or pitch_notes.last)] if $conf['restposition.default'] == :previous
         pitch_notes = [(pitch_notes.last or pitch_notes.first)] if $conf['restposition.default'] == :next
 
+        decorations = _parse_decorations(voice_element)
+
         pitch_notes = pitch_notes.compact
         unless pitch_notes.empty?
           pitch_notes = pitch_notes.map { |pitch_note| pitch_note[:notes].last[:midi] }
@@ -517,6 +519,7 @@ module Harpnotes
 
         result               = Harpnotes::Music::Pause.new(pitch, duration)
         result.measure_count = @measure_count
+        result.decorations   = decorations
         result.count_note    = _transform_count_note(voice_element)
         result.znid          = _mkznid(voice_element)
         result.time          = voice_element[:time]
@@ -552,7 +555,7 @@ module Harpnotes
         result
       end
 
-      def _transform_tempo(voice_element, index, voice_index)
+      def _transform_tempo(voice_element, index, voice_id)
 
         # note that abc2svd yields Tune based Tempo in voice_propoeties.sym as well as in symbols
         # therefore we need to filter the Tune based tempo ...
@@ -567,7 +570,7 @@ module Harpnotes
         #  This is a stub for future expansion
       end
 
-      def _transform_bar_repeat_end(bar)
+      def _transform_bar_repeat_end(voice_element, index, voice_id)
         level = @repetition_stack.length
         if level == 1
           start = @repetition_stack.last
@@ -575,7 +578,7 @@ module Harpnotes
           start = @repetition_stack.pop
         end
 
-        goto_info = _extract_goto_info_from_bar(bar)
+        goto_info = _extract_goto_info_from_bar(voice_element)
         distance = goto_info.last[:distance] rescue [2]
         if distance.count > 1
           raise "too many distance values for repeat end. Need only one #{distance}"
@@ -592,7 +595,10 @@ module Harpnotes
         distance                         = distance.first
         @next_note_marks[:first_in_part] = true
 
-        [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true, level: level)]
+        entity   = @previous_note
+        conf_key = "notebound.c_jumplines.#{voice_id}.#{entity.znid}.p_repeat"
+
+        [Harpnotes::Music::Goto.new(@previous_note, start, distance: distance, is_repeat: true, level: level, conf_key: conf_key)]
       end
 
       def _transform_grace
@@ -618,12 +624,16 @@ module Harpnotes
         nil #`debugger`
       end
 
-      def _make_variant_ending_jumps
+      def _make_variant_ending_jumps(voice_id)
         result           = []
         lastvariantgroup = (@variant_endings.last.empty? ? -2 : -1)
-        @variant_endings[0.. lastvariantgroup].each do |variant_ending_group|
+        @variant_endings[0 .. lastvariantgroup].each do |variant_ending_group|
           # variant ending startlines
-          distance = variant_ending_group[0][:distance]
+
+          distance  = variant_ending_group[0][:distance]
+          entity    = variant_ending_group.first[:rbstop]
+          conf_keys = ['p_begin', 'p_end', 'p_follow'].map { |p| "notebound.c_jumplines.#{voice_id}.#{entity.znid}.#{p}" }
+
 
           if variant_ending_group[-1][:is_followup]
             lastvariant = -2 # need to suppres startlines for the pseudo variation caused by followup notes
@@ -634,7 +644,7 @@ module Harpnotes
 
           # variant ending startlines
           variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
-            result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], distance: distance[0], from_anchor: :after, to_anchor: :before)
+            result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], conf_key: conf_keys[0], distance: distance[0], from_anchor: :after, to_anchor: :before)
           end
 
           # variant ending endlines
@@ -642,13 +652,13 @@ module Harpnotes
             # note that the repeat line is drawn by the _transform_bar_repeat_end
             # so we do not have the variant end line in this case
             unless variant_ending[:repeat_end]
-              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], distance: distance[1], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
+              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], conf_key: conf_keys[1], distance: distance[1], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
             end
           end
 
           # variant ending followupliens
           if variant_ending_group[-1][:is_followup]
-            result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
+            result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], conf_key: conf_keys[2], distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
           end
         end
         result
@@ -656,18 +666,20 @@ module Harpnotes
 
       # make the jumplines if an explicit goto of an element
       # @param [Playable] element - an element of the converted voice
-      def _make_jumplines(element)
+      def _make_jumplines(element, voice_id)
         if element.is_a?(Harpnotes::Music::Playable)
           goto_infos = _extract_goto_info_from_bar(element.origin[:raw])
           goto_infos.inject([]) do |result, goto_info|
             targetname = goto_info[:target]
             target     = @jumptargets[targetname]
+            conf_key = "notebound.c_jumplines.#{voice_id}.#{element.znid}.p_goto"
+
 
             argument = goto_info[:distance].first || 2
             if target.nil?
               $log.error("target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
             else
-              result << Harpnotes::Music::Goto.new(element, target, distance: argument) #todo: better algorithm
+              result << Harpnotes::Music::Goto.new(element, target, conf_key: conf_key, distance: argument) #todo: better algorithm
             end
 
             result
@@ -700,8 +712,10 @@ module Harpnotes
                   annotation = {text: text, style: :regular}
                 when "<"
                   entity.shift = {dir: :left, size: text, style: :regular}
+                  entity.notes.each {|note |note.shift = {dir: :left, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
                 when ">"
                   entity.shift = {dir: :right, size: text, style: :regular}
+                  entity.notes.each {|note |note.shift = {dir: :right, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
                 else
                   annotation = nil # it is not an annotation
               end
@@ -730,12 +744,14 @@ module Harpnotes
       # note that this method upddates its fist parameter
       def _make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id)
         the_note = harpnote_elements.first
+        part_label = @part_table[voice_element[:time]]
 
         # we maintain the prev_pitch/next_pitch
         # for more detailed laoyut control of
         # repeatmarks, tuplets etc.
         if @previous_note
           @previous_note.next_pitch = the_note.pitch
+          @previous_note.next_first_in_part = true if part_label
           the_note.prev_pitch       = @previous_note.pitch
         end
 
@@ -745,7 +761,7 @@ module Harpnotes
 
         # handle parts as annotation
 
-        if part_label = @part_table[voice_element[:time]]
+        if part_label
           conf_key = "notebound.partname.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position = $conf['defaults.notebound.partname.pos']
 

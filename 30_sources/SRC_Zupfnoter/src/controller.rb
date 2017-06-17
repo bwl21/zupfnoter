@@ -144,7 +144,6 @@ class Controller
     setup_harpnote_preview
 
     # initialize virgin zupfnoter
-    load_demo_tune
 
     # todo: this should be optimized
     # todo: loading is determined in the load_* Methids. Not sure if this is ok
@@ -153,6 +152,7 @@ class Controller
 
     cleanup_localstorage
     load_from_loacalstorage
+    load_demo_tune unless @editor.get_abc_part
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
 
@@ -195,7 +195,9 @@ class Controller
                                statusline:   [],
                                error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
                                play_start:   [lambda { `update_play_w2ui('start')` }],
-                               play_stop:    [lambda { `update_play_w2ui('stop')` }]
+                               play_stop:    [lambda { `update_play_w2ui('stop')` }],
+                               disable_save: [lambda { `disable_save();`}],
+                               enable_save:  [lambda { `enable_save();`}]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -248,8 +250,8 @@ class Controller
   # this does a cleanip of localstorage
   # note that this is maintained from version to version
   def cleanup_localstorage
-    keys = `Object.keys(localStorage)`
-    dbx_apiv1_traces = keys.select{|k| k.match(/dropbox\-auth:default:/)}
+    keys             = `Object.keys(localStorage)`
+    dbx_apiv1_traces = keys.select { |k| k.match(/dropbox\-auth:default:/) }
     unless dbx_apiv1_traces.empty?
       # remove dropbox api-v1
       # remove systemstatus to get rid of the dropbox login status
@@ -633,12 +635,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config
   end
 
-  def self. get_uri()
+  def self.get_uri()
     parser = nil;
     # got this from http://stackoverflow.com/a/21152762/2092206
     # maybe we switch to https://github.com/medialize/URI.js
     %x{
-        #{parser} = new URL(window.location.href);
+    #{parser} = new URL(window.location.href);
 
         var qd = {};
         #{parser}.search.substr(1).split("&").forEach(function(item) {
@@ -679,7 +681,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
 
-    @harpnote_preview_printer.range_highlight(a[:startChar], a[:endChar])
+    @harpnote_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
   end
 
 
@@ -696,8 +698,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # previous selections are removed
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
-    @harpnote_preview_printer.unhighlight_all()
-
     highlight_abc_object(abcelement)
   end
 
@@ -722,17 +722,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # setup the harpnote prviewer
   def setup_harpnote_preview
 
-    @harpnote_preview_printer = Harpnotes::RaphaelEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
-    @harpnote_preview_printer.set_view_box(0, 0, 440, 297) # this scales the whole thing such that we can draw in mm
+    @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
+    @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote.origin)
     end
 
     ## register handler for dragging annotations
     @harpnote_preview_printer.on_annotation_drag_end do |info|
-      conf_key = info[:conf_key]
 
-      newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+      conf_key  = info[:conf_key]
+      newcoords = info[:conf_value_new]
+      unless newcoords
+        newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+      end
 
       @editor.patch_config_part(conf_key, newcoords)
       @config_form_editor.refresh_form if @config_form_editor
@@ -746,9 +749,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       `update_mouseover_status_w2ui('')`
     end
 
+    # info: see ZnSvg::Paper
     @harpnote_preview_printer.on_draggable_rightcklick do |info|
       %x{
-          $(#{info.to_n}.element.node).w2menu({
+          $(#{info.element}).w2menu({
                                        items: [
                                                   { id: 'config', text: 'Edit config', icon: 'fa fa-gear' }
                                               ],
@@ -770,12 +774,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
     # $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     # printerparams = {staffwidth: width} #todo compute the staffwidth
-    @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find("#tunePreview"))
+    @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
 
     @tune_preview_printer.on_select do |abcelement|
       a=Native(abcelement) # todo remove me
       select_abc_object(abcelement)
     end
+  end
+
+  def set_harppreview_size(size)
+    @harpnote_preview_printer.set_canvas(size)
   end
 
   def set_file_drop(dropzone)
@@ -897,8 +905,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
       $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-      unless false# @systemstatus[:harpnotes_dirty]
-        @harpnote_preview_printer.unhighlight_all
+      unless false # @systemstatus[:harpnotes_dirty]
         @harpnote_preview_printer.range_highlight(a.first, a.last)
         @tune_preview_printer.range_highlight(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)

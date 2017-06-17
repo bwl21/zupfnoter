@@ -59,6 +59,26 @@ class Controller
       end
     end
 
+
+    @commands.add_command(:autofold) do |c|
+      c.undoable = false
+      c.set_help { "set automatic folding of config in editor #{c.parameter_help(0)}" }
+      c.add_parameter(:value, :boolean) do |parameter|
+        parameter.set_default { 'true' }
+        parameter.set_help { "true | false" }
+      end
+      c.as_action do |args|
+        value = {'true' => true, 'false' => false}[args[:value]]
+        if value
+          @editor.autofold = true
+          @editor.fold_all
+        else
+          @editor.autofold = false
+          @editor.unfold_all
+        end
+      end
+    end
+
     @commands.add_command(:autorefresh) do |c|
       c.undoable = false
       c.set_help { "turnon autorefresh" }
@@ -441,10 +461,10 @@ class Controller
         # this is the set of predefined configuration pages
         # it is the argument of editconf {set} respectively addconf{set}
         form_sets        = {
-            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines,
-                                                                            'repeatsigns.voices', 'barnumbers.voices', 'barnumbers.autopos', 'countnotes.voices', 'countnotes.autopos',
-                                                                            'printer.show_border', 'stringnames.vpos',
+            basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :nonflowrest,
                                                                             :startpos,
+                                                                            'repeatsigns.voices', 'barnumbers.voices',  'countnotes.voices',
+                                                                            'stringnames.vpos','sortmark.show',
                                                                            ]) + [:restposition]},
             extract_annotation:    {keys: [:produce,
                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
@@ -456,7 +476,7 @@ class Controller
             minc:                  {keys: expand_extract_keys(['layout.minc'])},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
-            stringnames:           {keys: expand_extract_keys([:stringnames])},
+            stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
             extract0:              {keys: ['extract.0']},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
             xx:                    {keys: ['xx']}
@@ -616,11 +636,7 @@ class Controller
   def create_from_current_template(parameters)
     result = Native(`localStorage.getItem(#{ZN_TEMPLATENAME})`)
     unless `result`
-      result = %Q{% - settings to improve Handling in Zupfnoter
-I:measurenb 1
-I:linewarn 0
-I:staffnonote 2
-% --------------
+      result = %Q{
 X:{{song_id}}
 F:{{song_id}}_{{filename}}
 T:{{song_title}}
@@ -1046,6 +1062,7 @@ C
         filebase       = @music_model.meta_data[:filename]
 
         rootpath = args[:path]
+        call_consumers(:disable_save)
 
         save_promises=[]
         @dropboxclient.authenticate().then do
@@ -1076,6 +1093,8 @@ C
           $log.message(message)
         end.fail do |err|
           _report_error_from_promise(err)
+        end.always do |err|
+          call_consumers(:enable_save)
         end
       end
     end

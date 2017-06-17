@@ -59,21 +59,17 @@ Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von
 ## extract.0.layoutlines
 
 Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
-angeben, die zur die Berechnung des vertikalen Anordnugn der Noten
-(Layout) herangezogen werden sollen.
+angeben, die **zusätzlich** zu den dargestellten Stimmen zur die
+Berechnung des vertikalen Anordnung der Noten (Layout) herangezogen
+werden sollen.
 
-Üblicherweise werden alle Stimmen für die Berechnung des Layouts
-herangezogen. Bei langen Stücken kann es aber sinnvoll sein, nur die
-dargstellten Stimmmen zur Berechnung des Layouts zu berücksichtigen, um
-ein ausgwogeneres Notenbild zu bekommen.
+Üblicherweise werden nur die dargestellten Stimmen für die Berechnung
+des Layouts herangezogen. Es kann aber sinnvoll sein, weitere Stimmmen
+zur Berechnung des Layouts zu berücksichtigen, um in allen Auszügen ein
+ein gleichartiges Notenbild zu bekommen.
 
 > **Hinweis**: Auch wenn der Parameter `layoutlines` heißt, bewirkt er
 > nicht, dass irgendwelche Linien eingezeichnet werden.
->
-> **Hinweis**: Bei einem Stück mit vielen Noten ist es sinnvoll, hier
-> nur die im aktuellen Auszug dargestellten Stimmen aufzulisten. Damit
-> ist zwar das Notenbild nicht mehr bei allen Auszügen gleich, die Noten
-> sind aber besser verteilt.
 
 ## extract.0.legend
 
@@ -251,7 +247,7 @@ ausmachen. Daher sind diese Funktionen noch experimentell.
 
 Hier kannst du die pack-Methode auswählen
 
--   **0** : Die bisherige Methode: diese geht nach jedem Schrift um die
+-   **0** : Die bisherige Methode: diese geht nach jedem Schritt um die
     Höhe der größten Note weiter
 
 -   **1** : Kopmpakt: diese geht nur dann weiter, wenn
@@ -264,8 +260,11 @@ Hier kannst du die pack-Methode auswählen
 
     > **Hinweis**: Diese Methode eignet sich am besten für lange,
     > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
-    > Stücken schnell verloren. Bei dieser Methode sind die
-    > Synchronisiationslinien nicht immer gut sichtbar.
+    > Stücken schnell verloren.
+    >
+    > Bei dieser Methode sind die Synchronisiationslinien zwischen den
+    > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
+    > flach sind.
 
 ## layout.packer.pack_min_increment
 
@@ -637,7 +636,7 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 > **Hinweis**: Mit der Linienform `l` kann man die Lage der
 > Kontrollpunkte (als Ecken im Linienzug) sehen.
 
-## show
+## tuplet.show
 
 Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 
@@ -645,6 +644,36 @@ Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
+
+## sortmark
+
+Hier konfigurierst du die Ausgabe einer Sortiermarke. Die Sortiermarke
+wird am oberen Blattrand gedruckt. Ihre horiozontale Position entspricht
+einer alphabetischen Sortierung der Titel. In einem nach Titel
+sortierten Stapel von Notenblättern bewegt sich die Sortiermarke also
+von links nach rechts. Damit kann man beim durchblättern gleich sehen,
+ob der Stapel sortiert ist.
+
+> **Hinweis**: Leider kann auf haushaltsüblichen Druckern nicht bis zum
+> Rand gedrukht werden. Daher muss man die Sortiermake mit einem
+> Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
+> Stapels kontrollieren, in dem man auf die Schnittkan des Stapels
+> schaut.
+
+## sortmark.fill
+
+Hier gibst du an, ob die Sortiermarke gefüllt werden soll. Die gefüllte
+Sortiermarke ist besser zu erkennen, könnte aber auch als störender
+empfunden werden.
+
+## sortmark.size
+
+Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von
+[2,4] hat sich als praktikabel erwiesen.
+
+## sortmark.show
+
+Hier gibst du an, ob eine Sortiermarke ausgegeben werden soll.
 
 ## voices
 

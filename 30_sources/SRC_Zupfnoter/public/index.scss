@@ -258,6 +258,14 @@ rect.abcref:hover {
   fill-opacity: 0.5
 }
 
+.zncontrol {
+  opacity: 0.1
+}
+
+.zncontrol:hover, .zncontrol:active {
+  opacity: 0.5
+}
+
 rect.highlight {
   fill: red;
   fill-opacity: 0.2
@@ -297,6 +305,14 @@ rect.highlight {
   }
 }
 
+.w2ui-button .alert{
+  background-color: #ff898b;
+}
+
+.w2ui-button .active{
+  background-color: #ffedf2;
+}
+
 #statusbar-layout .w2ui-tb-caption {
   vertical-align: top;
 }
@@ -313,4 +329,7 @@ rect.highlight {
    text, path {pointer-events: none;}
  }
 
+#harpPreview {
+  .znunhighlight {stroke: #000000;}
+}
 

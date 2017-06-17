@@ -1350,6 +1350,71 @@ Es erscheint eine Maske nach folgendem Beispiel:
 
 > > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
 
+## mit der Maus konfigurieren
+
+Einstellungen, welche die Position und Gestalt von Element im
+Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
+
+-   Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+-   Anordnung von Sprunglinien
+-   Gestalt der Triolenbogen (Tuplet)
+
+Für die grundsätzliche Bedienung gilt:
+
+-   Wenn du den Mauszeiger über ein solches Element bewegst, ändert
+    dieser seine Form. Darüber hinaus zeigt die Statusleiste rechts
+    unten, welcher Konfigurationsparamter verwändert wird.
+-   Bei solchen Elementen ruft das Kontextmenü `Edit config` den
+    entsprechenden Konfigurationseditor auf.
+-   Nach dem Beargbeiten des Elementes mit der Maus wird das Element
+    rot. Bitte führe einen "Render" aus um die Unterlegnotenvorschau zu
+    aktualisieren.
+-   Bitte beachte, dass manche Einstellungen am Zeitbezug der Note
+    hängen. Wenn du also dein Stück so überarbeitest, dass sich der
+    Zeitbezug einer Note ändert, musst du ggf. die Konfiguration erneut
+    durchführen.
+
+### Texte verschieben
+
+Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
+Taktnummern, Zählhinweise, Variatnenbezeichenr, Bezeichner von Parts mit
+der Maus verschieben.
+
+### Sprunglinien verschieben
+
+Du kannst horizontale Lage der Sprunglinien mit der Maus einstellen. Die
+Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
+
+> **Hinweis**: Bei varianten Enden wirkt der selbe
+> Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte drücke
+> daher auf `Render` um das Endergebnis zu sehen. Danach sind auch die
+> Pfeile an den Sprunglineine wieder korrekt.
+
+### Triolenbogen gestalten
+
+Das Gestalten von Triolenbogen ist etwas vom komplexesten, was Zupfnoter
+zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
+
+![](../ZAUX_Images/040-090_drag-drop-tuplet.pdf) 
+
+-   wenn man genau hinschaut, dann siehst du an den Triolenbögen zwei
+    kleine Griffe. Wenn du die Maus darüber bewegst, kann due diese mit
+    gedrückter Maustaste bwegegen.
+-   wenn du die Maus bewegst, ändert sich das Bild zu einem Trapez. Der
+    entstezende Bogen wird durch zwei Kontrolpunkte (die oberen Ecken
+    des Trapezes) gestaltet. Im vorstehenden Bild wurde der linke Griff
+    (d.h. der linke Kontrollpunkt) bewegt.
+
+> **Hinweis**: Am besgten experimentierst du ein bisschen, um Erfahrung
+> zu sammeln. Es würde zu weit führen, hier alle Möglichkeiten
+> darzustellen.
+
+> **Hinweis**: Es kann vorkommen, dass die Griffe von Noten verdeckt und
+> daher mit der Maus nicht erreichbar sind. In diesem Fall kannst du an
+> der Triolenbeschriftung oder an einem andere Griff `Edit Cconfig`
+> aufrufen und den Kontrollpunkt so ändern, dass er wireder sichtbar
+> wird.
+
 <!-- -->
 \clearpage
 
@@ -1586,12 +1651,22 @@ Einhelheiten siehe <http://moinejf.free.fr/abcm2ps-doc/index.html>
 Häufige Einstellungen bei Zupfnoter sind:
 
 -   `I:measurenb 1` - schreibt Taktnummern in die Notenvorschau. Die
-    Anzeigt ist nur dann korrekt, wennd die Takte die korrekte Länge
+    Anzeigt ist nur dann korrekt, wenn die Takte die korrekte Länge
     haben.
+-   `I:contbarnb 1` - schreibt fortlaufende Taktnummern auch für
+    Variante Enden. Dies wirkt auch auf die Unterlegnoten
 -   `I:staffnonote 2` - zeigt auch leere Notenlinien in der
     Notenvorschau
 -   `I:linewarn 0` - unterdrückt Meldungenüber nicht gefüllte oder zu
     volle Zeilen in der Notenvorschau
+
+Zupfnoter verwendet von sich aus die folgenden Einstellungen:
+
+    I:titletrim 0
+    I:measurenb 1
+    I:contbarnb 1
+    I:linewarn 0
+    I:staffnonote 2
 
 ### Parameter in der Zupfnoter-URL
 

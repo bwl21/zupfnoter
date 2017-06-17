@@ -9,12 +9,12 @@ module Harpnotes
 
     PADDING         = 4.0
     JUMPLINE_INDENT = 10.0
-    DOTTED_SIZE     = 0.3
+    DOTTED_SIZE     = 0.5  # radius of dot
 
     #X_SPACING = 115.0/10.0
 
     def initialize()
-      @pdf          = JsPDF.new(:l, :mm, :a3)
+      @pdf = JsPDF.new(:l, :mm, :a3)
     end
 
 
@@ -87,13 +87,27 @@ module Harpnotes
 
 
     def draw_ellipse(root)
-      style     = root.filled? ? :F : :FD
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 255 }
+      style           = root.filled? ? :F : :FD
+      size            = root.size
+      @pdf.line_width = 0
+      @pdf.fill       = (0...3).map { root.filled? ? 0 : 255 }
       if root.rect?
-        @pdf.rect_like_ellipse(root.center, root.size, style)
+        @pdf.rect_like_ellipse(root.center, size, style)
       else
-        @pdf.ellipse(root.center, root.size, style)
+        @pdf.ellipse(root.center, size, style)
       end
+
+
+      unless root.fill == :filled
+        @pdf.line_width = root.line_width
+        size            = size.map { |s| s - root.line_width / 2 }
+        if root.rect?
+          @pdf.rect_like_ellipse(root.center, size, style)
+        else
+          @pdf.ellipse(root.center, size, style)
+        end
+      end
+
 
       if root.dotted?
         draw_the_dot(root)
@@ -181,19 +195,20 @@ module Harpnotes
       #@pdf.fill = (0...3).map { 0 }
       #@pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
 
-      ds1         = DOTTED_SIZE + root.line_width
-      ds2         = DOTTED_SIZE + root.line_width/2
-      x           = root.center.first + (root.size.first + ds1)
-      y           = root.center.last
-      @pdf.fill   = [255, 255, 255]
-      @pdf.stroke = [255, 255, 255]
+      ds1 = DOTTED_SIZE + root.line_width    # distance of dot
+      ds2 = DOTTED_SIZE + root.line_width/2  # size of white dot
+      x   = root.center.first + (root.size.first + ds1)
+      y   = root.center.last
+
+      @pdf.line_width = 0
+      @pdf.fill       = [255, 255, 255]
+      @pdf.stroke     = [255, 255, 255]
       @pdf.ellipse([x, y], [ds2, ds2], :FD)
 
       @pdf.fill   = [0, 0, 0]
       @pdf.stroke = [0, 0, 0]
 
       @pdf.ellipse([x, y], [DOTTED_SIZE, DOTTED_SIZE], :FD)
-
     end
 
 
@@ -267,9 +282,11 @@ module Harpnotes
             lines = []
             start = element[1 .. 2]
           when "L"
+            new_start = [[start], lines].flatten(1).inject([0, 0]) { |i, o| [o[0] + i[-2], o[1] + i[-1]] }
             @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
             lines = []
-            start = element[1 .. 2]
+            start = new_start
+            lines.push [element[1] - new_start.first, element[2] - new_start.last]
           when "l"
             lines.push element[1 .. -1]
           when "c"

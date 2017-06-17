@@ -101,7 +101,7 @@ module Harpnotes
 
 
           # stoptime comes in msec
-          stop_time       = (lastnote[:delay] - firstnote[:delay] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
+          stop_time       = (lastnote[:delay] - firstnote[:delay] + lastnote[:duration] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
           @song_off_timer = `setTimeout(function(){#{@songoff_callback}.$call()}, #{stop_time} )`
 
           idx = 0
@@ -134,6 +134,7 @@ module Harpnotes
           end
         }
         @isplaying = false
+        @inst=[]
       end
 
       def unhighlight_all()

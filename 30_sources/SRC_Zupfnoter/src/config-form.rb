@@ -208,7 +208,7 @@ class ConfstackEditor
       def self.to_w2uifield(key)
         {field:       key,
          type:        'list',
-         options:     {items: ['center', 'next', 'default']},
+         options:     {items: ['center', 'next', 'previous', 'default']},
          required:    true,
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),
@@ -248,12 +248,12 @@ class ConfstackEditor
     def initialize
       @typemap = {
           IntegerPairs    => ['synchlines'],
-          FloatPair       => ['pos', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset'],
-          IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce"],
-          Integer         => ['startpos', 'pack_method',],
-          OneLineString   => ['title', 'filenamepart'],
+          FloatPair       => ['pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset'],
+          IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
+          Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow'],
+          OneLineString   => ['title', 'filenamepart', 'url'],
           MultiLineString => ['text'],
-          Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show"],
+          Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show", "fill", "grid"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f'],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
