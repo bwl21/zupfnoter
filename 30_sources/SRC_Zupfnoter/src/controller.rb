@@ -144,7 +144,6 @@ class Controller
     setup_harpnote_preview
 
     # initialize virgin zupfnoter
-    load_demo_tune
 
     # todo: this should be optimized
     # todo: loading is determined in the load_* Methids. Not sure if this is ok
@@ -153,6 +152,7 @@ class Controller
 
     cleanup_localstorage
     load_from_loacalstorage
+    load_demo_tune unless @editor.get_abc_part
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
 

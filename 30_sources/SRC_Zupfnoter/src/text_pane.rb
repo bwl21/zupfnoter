@@ -400,7 +400,8 @@ module Harpnotes
     end
 
     def fold_all
-      %x{ setTimeout(function(){self.editor.getSession().foldAll()}, 100) } if @autofold
+      lastline =  get_abc_part.lines.count
+      %x{ setTimeout(function(){self.editor.getSession().foldAll(#{lastline})}, 100) } if @autofold
     end
 
     def unfold_all
