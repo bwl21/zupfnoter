@@ -143,7 +143,12 @@ function init_w2ui(uicontroller) {
     },
 
     'tb_save': function () {
-      uicontroller.$handle_command("dsave")
+      $("#tb_layout_top_toolbar_item_tb_save table").removeClass("alert")
+      disable_save();
+      setTimeout(function(){
+        uicontroller.$handle_command("dsave");
+      }, 100)
+
     },
 
     'tb_download': function () {
@@ -880,6 +885,10 @@ function update_play_w2ui(status) {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Play", icon: "fa fa-play"})
   }
 }
+
+function disable_save(){w2ui.layout_top_toolbar.disable('tb_save')};
+function enable_save(){ w2ui.layout_top_toolbar.enable('tb_save')};
+
 ;
 
 function openPopup(theForm) {

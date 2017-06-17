@@ -195,7 +195,9 @@ class Controller
                                statusline:   [],
                                error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
                                play_start:   [lambda { `update_play_w2ui('start')` }],
-                               play_stop:    [lambda { `update_play_w2ui('stop')` }]
+                               play_stop:    [lambda { `update_play_w2ui('stop')` }],
+                               disable_save: [lambda { `disable_save();`}],
+                               enable_save:  [lambda { `enable_save();`}]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -734,7 +736,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       unless newcoords
         newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
       end
-`debugger`
+
       @editor.patch_config_part(conf_key, newcoords)
       @config_form_editor.refresh_form if @config_form_editor
     end

@@ -562,7 +562,7 @@ vertikaler Position.
         "pos": [320, 7]
           
 
-## `extract.0.legend.spos` - Pos. Subleg {#extract.0.legend.spos}
+## `extract.0.legend.spos` - Pos. Subleg. {#extract.0.legend.spos}
 
 Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
 Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
@@ -961,7 +961,7 @@ TODO: Helptext für presets einfügen
               }
             },
             "packer_regular" : {
-              "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+              "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
             }
           },
           "notes"   : {
@@ -1056,7 +1056,7 @@ Notenbild gezielt optimieren.
             }
           },
           "packer_regular" : {
-            "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
+            "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
           }
         }
           

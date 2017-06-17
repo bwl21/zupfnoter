@@ -1062,6 +1062,7 @@ C
         filebase       = @music_model.meta_data[:filename]
 
         rootpath = args[:path]
+        call_consumers(:disable_save)
 
         save_promises=[]
         @dropboxclient.authenticate().then do
@@ -1092,6 +1093,8 @@ C
           $log.message(message)
         end.fail do |err|
           _report_error_from_promise(err)
+        end.always do |err|
+          call_consumers(:enable_save)
         end
       end
     end
