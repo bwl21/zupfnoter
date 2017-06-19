@@ -174,6 +174,13 @@ gezeichnet werden soll.
 Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
 Notenbild gezielt optimieren.
 
+## layout.jumpline_anchor
+
+Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
+verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
+an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
+gesagt, das umhüllende Rechteck) der entsprechende Note.
+
 ## layout.limit_a3
 
 Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das

@@ -143,6 +143,7 @@ Auszug 1 usw.
               "LINE_THICK"        : 0.5,
               "LINE_THIN"         : 0.1,
               "REST_SIZE"         : [4, 2],
+              "jumpline_anchor"   : [3, 1],
               "limit_a3"          : true,
               "minc"              : {},
               "packer"            : {
@@ -353,6 +354,7 @@ Notenbild gezielt optimieren.
           "LINE_THICK"        : 0.5,
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
+          "jumpline_anchor"   : [3, 1],
           "limit_a3"          : true,
           "minc"              : {},
           "packer"            : {
@@ -417,6 +419,16 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 > berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
 
         "REST_SIZE": [4, 2]
+          
+
+## `extract.0.layout.jumpline_anchor` - Sprungl.Anker {#extract.0.layout.jumpline_anchor}
+
+Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
+verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
+an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
+gesagt, das umhüllende Rechteck) der entsprechende Note.
+
+        "jumpline_anchor": [3, 1]
           
 
 ## `extract.0.layout.limit_a3` - Begrenzung auf A3 {#extract.0.layout.limit_a3}
@@ -937,32 +949,32 @@ TODO: Helptext für presets einfügen
 
         "presets": {
           "layout"  : {
-            "layout_compact" : {
+            "-"               : {},
+            "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
+            "layout_compact"  : {
               "ELLIPSE_SIZE" : [3.5, 1.3],
               "LINE_MEDIUM"  : 0.2,
               "LINE_THICK"   : 0.3,
               "REST_SIZE"    : [4, 1.5]
             },
-            "layout_large"   : {
+            "layout_large"    : {
               "ELLIPSE_SIZE" : [4, 2],
               "LINE_MEDIUM"  : 0.3,
               "LINE_THICK"   : 0.7,
               "REST_SIZE"    : [4, 2]
             },
-            "layout_regular" : null,
-            "manual_sheet"   : {
+            "layout_regular"  : null,
+            "manual_sheet"    : {
               "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
             },
-            "packer_compact" : {
+            "packer_compact"  : {
               "packer" : {
                 "pack_max_spreadfactor" : 2,
                 "pack_method"           : 1,
                 "pack_min_increment"    : 0.2
               }
             },
-            "packer_regular" : {
-              "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
-            }
+            "packer_regular"  : null
           },
           "notes"   : {
             "T01_number"               : {
@@ -1032,32 +1044,32 @@ Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
 Notenbild gezielt optimieren.
 
         "layout": {
-          "layout_compact" : {
+          "-"               : {},
+          "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
+          "layout_compact"  : {
             "ELLIPSE_SIZE" : [3.5, 1.3],
             "LINE_MEDIUM"  : 0.2,
             "LINE_THICK"   : 0.3,
             "REST_SIZE"    : [4, 1.5]
           },
-          "layout_large"   : {
+          "layout_large"    : {
             "ELLIPSE_SIZE" : [4, 2],
             "LINE_MEDIUM"  : 0.3,
             "LINE_THICK"   : 0.7,
             "REST_SIZE"    : [4, 2]
           },
-          "layout_regular" : null,
-          "manual_sheet"   : {
+          "layout_regular"  : null,
+          "manual_sheet"    : {
             "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
           },
-          "packer_compact" : {
+          "packer_compact"  : {
             "packer" : {
               "pack_max_spreadfactor" : 2,
               "pack_method"           : 1,
               "pack_min_increment"    : 0.2
             }
           },
-          "packer_regular" : {
-            "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
-          }
+          "packer_regular"  : null
         }
           
 

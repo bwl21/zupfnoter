@@ -2,7 +2,9 @@
   "phrases": {
 
 
+
     "": "",
+    "-": "-",
     "0": "0",
     "1": "1",
     "2": "2",
@@ -161,6 +163,7 @@
     "Insert Addon": "Zusatz einfügen",
     "Interact with dropbox": "Arbeiten mit Dropbox",
     "italic": "kursiv",
+    "jumpline_anchor": "Sprungl.Anker",
     "jumplines": "Sprunglinien",
     "jumptarget": "Sprungziel",
     "Jumptarget": "Sprungziel",
