@@ -1,4 +1,16 @@
-rvm# Handling google analytics
+# Basic architecture
+
+Zupfnoter applies the following models
+
+* **abctext** this is entered by user and maintained in textpane.rb
+* **abcmodel** this is created by abc2svg
+* **musicmodel** this is created by transform. Model elements are such as Playable, Note, Rest, Goto etc. This conceptualizes the Harpnote Elements.
+* **drawingmodel** this represents the layout independent of the target format. Model elements are such asl "Ellipse, Path, (FlowLine)". This conceptualizes graphical terms.
+* **svg**  created from drawingmodel by svgengine
+* **pdf** created from drawingmodel by pdfengine
+* **harpnoteplayer** created from musicmodel
+
+# Handling google analytics
 
 * Analytics ia applied for webserver-installation only, not for localhost nor desktop
 * this is done by the method `javascript_include_analytics` which is defined in the related rake tasks.
