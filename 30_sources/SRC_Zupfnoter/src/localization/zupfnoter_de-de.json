@@ -190,7 +190,7 @@
     "Login": "Einloggen",
     "Logout from Dropbox": "bei Dropbox ausloggen",
     "Logout": "Ausloggen",
-    "Lost Access token. This should not happen. Please file a bug report.": "Zugriffstoken verloren. Das sollte nicht passieren. Bitte kontaktiere Zupfnoter-Entwicklung",
+    "Lost Access token. This should not happen. Please file a bug report.": "Zugriffstoken verloren. \nDas sollte nicht passieren. Bitte kontaktiere Zupfnoter-Entwicklung\nBitte noch einmal Dropbox/Ausloggen, danach mit Dropbox/Einloggen wieder einloggen.",
     "lyrics": "Liedtexte",
     "Manual": "Benutzerhandbuch",
     "manual_sheet": "Manuelle Vorlage",
