@@ -105,6 +105,7 @@ module Harpnotes
                     :start_pos,
                     :time,
                     :visible,
+                    :variant, # the variant within a variant block
                     :znid,
                     :origin
 
@@ -691,12 +692,13 @@ module Harpnotes
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :is_note, :draginfo
+      attr_accessor :conf_key, :conf_value, :is_note, :draginfo, :color
 
       def initialize
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
         @conf_key   = nil
+        @color      = $conf.get('layout.color.default')
       end
 
       def center
@@ -848,7 +850,7 @@ module Harpnotes
     # This represents a note in the shape of an ellipsis
     #
     class Ellipse < Symbol
-      attr_reader :center, :size, :fill, :origin
+      attr_reader :center, :size, :fill, :origin, :color
 
       #
       # Constructor
@@ -2210,10 +2212,21 @@ module Harpnotes
         shift = layout_note_shift(root, size, x_offset, dotted)
 
         res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
+        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.hasbarover = true if root.measure_start
         res.is_note    = true
         res
+      end
+
+      def compute_color_by_variant_no(variant_no)
+        if variant_no == 0
+          result = $conf.get('layout.color.default')
+        else
+          result = variant_no.odd? ? $conf.get('layout.color.variant1') : $conf.get('layout.color.variant2')
+        end
+
+        result
       end
 
       def compute_ellipse_properties_from_note(root)
@@ -2292,6 +2305,7 @@ module Harpnotes
 
         res            = nil
         res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
+        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.visible    = false unless root.visible?
         res.hasbarover = true if root.measure_start

@@ -155,6 +155,7 @@ module Harpnotes
         @repetition_stack  = []
         @variant_endings   = [[]] # nested array of variant ending groups
         @tie_started       = false
+        @variant_no        = 0
         @slurstack         = 0
         @tuplet_count      = 1
         @tuplet_down_count = 1
@@ -258,6 +259,7 @@ module Harpnotes
         @next_note_marks[:repeat_start] = true if type =~/^.*:$/
 
         if voice_element[:rbstart] == 2
+          @variant_no                       += 1
           @next_note_marks[:variant_ending] = {text: text}
         end
 
@@ -298,6 +300,7 @@ module Harpnotes
           unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
             @next_note_marks[:variant_followup] = true
             @variant_endings.push([])
+            @variant_no = 0
           end
         end
 
@@ -367,6 +370,7 @@ module Harpnotes
           result.tuplet       = tuplet
           result.tuplet_start = tuplet_start
           result.tuplet_end   = tuplet_end
+          result.variant      = @variant_no
           result
         end
 
@@ -526,6 +530,7 @@ module Harpnotes
         result.origin        = _parse_origin(voice_element)
         result.start_pos     = charpos_to_line_column(start_pos) # get column und line number of abc_code
         result.end_pos       = charpos_to_line_column(end_pos)
+        result.variant       = @variant_no
 
         #handle tuplets of synchpoint
         result.tuplet        = tuplet
@@ -672,7 +677,7 @@ module Harpnotes
           goto_infos.inject([]) do |result, goto_info|
             targetname = goto_info[:target]
             target     = @jumptargets[targetname]
-            conf_key = "notebound.c_jumplines.#{voice_id}.#{element.znid}.p_goto"
+            conf_key   = "notebound.c_jumplines.#{voice_id}.#{element.znid}.p_goto"
 
 
             argument = goto_info[:distance].first || 2
@@ -712,10 +717,10 @@ module Harpnotes
                   annotation = {text: text, style: :regular}
                 when "<"
                   entity.shift = {dir: :left, size: text, style: :regular}
-                  entity.notes.each {|note |note.shift = {dir: :left, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
+                  entity.notes.each { |note| note.shift = {dir: :left, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
                 when ">"
                   entity.shift = {dir: :right, size: text, style: :regular}
-                  entity.notes.each {|note |note.shift = {dir: :right, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
+                  entity.notes.each { |note| note.shift = {dir: :right, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
                 else
                   annotation = nil # it is not an annotation
               end
@@ -743,16 +748,16 @@ module Harpnotes
       #
       # note that this method upddates its fist parameter
       def _make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id)
-        the_note = harpnote_elements.first
+        the_note   = harpnote_elements.first
         part_label = @part_table[voice_element[:time]]
 
         # we maintain the prev_pitch/next_pitch
         # for more detailed laoyut control of
         # repeatmarks, tuplets etc.
         if @previous_note
-          @previous_note.next_pitch = the_note.pitch
+          @previous_note.next_pitch         = the_note.pitch
           @previous_note.next_first_in_part = true if part_label
-          the_note.prev_pitch       = @previous_note.pitch
+          the_note.prev_pitch               = @previous_note.pitch
         end
 
 

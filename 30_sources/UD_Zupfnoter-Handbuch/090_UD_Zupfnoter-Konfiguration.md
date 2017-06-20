@@ -143,6 +143,11 @@ Auszug 1 usw.
               "LINE_THICK"        : 0.5,
               "LINE_THIN"         : 0.1,
               "REST_SIZE"         : [4, 2],
+              "color"             : {
+                "default"  : "black",
+                "variant1" : "grey",
+                "variant2" : "darkgrey"
+              },
               "jumpline_anchor"   : [3, 1],
               "limit_a3"          : true,
               "minc"              : {},
@@ -354,6 +359,11 @@ Notenbild gezielt optimieren.
           "LINE_THICK"        : 0.5,
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
+          "color"             : {
+            "default"  : "black",
+            "variant1" : "grey",
+            "variant2" : "darkgrey"
+          },
           "jumpline_anchor"   : [3, 1],
           "limit_a3"          : true,
           "minc"              : {},
@@ -419,6 +429,38 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 > berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
 
         "REST_SIZE": [4, 2]
+          
+
+## `extract.0.layout.color` - {#extract.0.layout.color}
+
+TODO: Helptext für extract.0.layout.color einfügen
+
+        "color": {
+          "default"  : "black",
+          "variant1" : "grey",
+          "variant2" : "darkgrey"
+        }
+          
+
+## `extract.0.layout.color.default` - Vorgabewert {#extract.0.layout.color.default}
+
+TODO: Helptext für extract.0.layout.color.default einfügen
+
+        "default": "black"
+          
+
+## `extract.0.layout.color.variant1` - {#extract.0.layout.color.variant1}
+
+TODO: Helptext für extract.0.layout.color.variant1 einfügen
+
+        "variant1": "grey"
+          
+
+## `extract.0.layout.color.variant2` - {#extract.0.layout.color.variant2}
+
+TODO: Helptext für extract.0.layout.color.variant2 einfügen
+
+        "variant2": "darkgrey"
           
 
 ## `extract.0.layout.jumpline_anchor` - Sprungl.Anker {#extract.0.layout.jumpline_anchor}
