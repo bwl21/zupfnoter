@@ -20,6 +20,7 @@
 * editor collapses config parameters by default (#144)
 * now can print a sortmark on top of the sheet (#145)
 * the anchor of jumplines can now be configured (#150)
+* now have variant parts appear in grey
 
 ## experimental feature
 

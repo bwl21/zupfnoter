@@ -105,6 +105,7 @@ module Harpnotes
                     :start_pos,
                     :time,
                     :visible,
+                    :variant, # the variant within a variant block
                     :znid,
                     :origin
 
@@ -331,6 +332,10 @@ module Harpnotes
 
       def proxy_note
         get_proxy_object(@notes)
+      end
+
+      def variant
+        proxy_note.variant
       end
 
       # a Synchpoint is made of multiple notes
@@ -691,12 +696,13 @@ module Harpnotes
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :is_note, :draginfo
+      attr_accessor :conf_key, :conf_value, :is_note, :draginfo, :color
 
       def initialize
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
         @conf_key   = nil
+        @color      = $conf.get('layout.color.default')
       end
 
       def center
@@ -848,7 +854,7 @@ module Harpnotes
     # This represents a note in the shape of an ellipsis
     #
     class Ellipse < Symbol
-      attr_reader :center, :size, :fill, :origin
+      attr_reader :center, :size, :fill, :origin, :color
 
       #
       # Constructor
@@ -1160,7 +1166,9 @@ module Harpnotes
         @y_offset             = 5
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
         @layout_minc          = $conf.get('layout.minc')
-
+        @color_default        = $conf.get('layout.color.color_default')
+        @color_variant1       = $conf.get('layout.color.color_variant1')
+        @color_variant2       = $conf.get('layout.color.color_variant2')
       end
 
 
@@ -1308,7 +1316,9 @@ module Harpnotes
         synch_lines                 = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
-            FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
+            res = FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
+            res.color = compute_color_by_variant_no(sp.notes.first.variant)
+            res
           end
         end.flatten
 
@@ -1641,6 +1651,10 @@ module Harpnotes
           res = nil
           unless previous_note.nil?
             res            = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
+            if playable.nil?
+              `debugger`
+            end
+            res.color      = compute_color_by_variant_no(playable.variant)
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
           end
@@ -1663,6 +1677,7 @@ module Harpnotes
             # draw subflowline if both ends are visible
             if not previous_note.nil? and previous_note.visible and playable.visible
               res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
+              res.color = compute_color_by_variant_no(playable.variant)
             end
 
             # this supports the case that synclines are entirely turned off and also no flowlines show up.
@@ -1812,8 +1827,11 @@ module Harpnotes
             [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
              Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
           end
-        end.flatten
+        end.flatten.compact
+
         res_gotos                    = [] unless show_options[:jumpline]
+        color_default = @color_default
+        res_gotos.each {|the_goto| the_goto.color = color_default }
 
 
         # draw the repeatmarks
@@ -2210,10 +2228,21 @@ module Harpnotes
         shift = layout_note_shift(root, size, x_offset, dotted)
 
         res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
+        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.hasbarover = true if root.measure_start
         res.is_note    = true
         res
+      end
+
+      def compute_color_by_variant_no(variant_no)
+        if variant_no == 0
+          result = @color_default
+        else
+          result = variant_no.odd? ? @color_variant1 : @color_variant2
+        end
+
+        result
       end
 
       def compute_ellipse_properties_from_note(root)
@@ -2292,6 +2321,7 @@ module Harpnotes
 
         res            = nil
         res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
+        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.visible    = false unless root.visible?
         res.hasbarover = true if root.measure_start

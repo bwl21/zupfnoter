@@ -1,8 +1,6 @@
 {
   "phrases": {
 
-
-
     "": "",
     "-": "-",
     "0": "0",
@@ -56,6 +54,10 @@
     "beforeColonN": "beforeColonN",
     "bold": "fettdruck",
     "Choose extract": "Auszug wählen",
+    "color": "Farbeinstellung",
+    "color_default": "Sonstiges",
+    "color_variant1": "Variante1",
+    "color_variant2": "Variante2",
     "compact": "kompakt",
     "Configuration": "Konfiguration",
     "configure positioning of rests\ncompatible to version 1.3": "Pausen kompatibel zu version 1.3}",
@@ -94,7 +96,7 @@
     "does not match pattern:": "entspricht nicht dem Muster:",
     "download abc to local system": "ABC - File herunterladen",
     "Draggable": "Verschiebemarke",
-    "DRAWING_AREA_SIZE": "Größe der Zeichenfläche",
+    "DRAWING_AREA_SIZE": "Zeichenfl.Größe",
     "Dropbox": "Dropbox",
     "DURATION_TO_STYLE": "Dauer-zu-Zeit",
     "Edit addon on cursor position": "Zusatzinformation bearbeiten",
@@ -164,6 +166,7 @@
     "Interact with dropbox": "Arbeiten mit Dropbox",
     "italic": "kursiv",
     "jumpline_anchor": "Sprungl.Anker",
+    "jumplineoffset": "Sprungl.Anker",
     "jumplines": "Sprunglinien",
     "jumptarget": "Sprungziel",
     "Jumptarget": "Sprungziel",

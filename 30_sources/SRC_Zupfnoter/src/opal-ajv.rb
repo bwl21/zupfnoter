@@ -43,18 +43,18 @@ module Ajv
        :required    => ["confstack", "produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
 
        :definitions => {
-           :pos           => {:type        => "array",
-                              :minItems    => 2,
-                              :maxItems    => 2,
-                              :uniqueItems => false,
-                              :items       => {:type => "number"}},
-           :notes_entry   => {:type       => "object",
-                              :required   => ["pos", "text", "style"],
-                              :properties =>
-                                  {:pos   => {:'$ref' => '#/definitions/pos'},
-                                   :text  => {:type => "string"},
-                                   :style => {:type => "string"}}},
-           :minc_entry => {
+
+           :pos         => {:type        => "array",
+                            :minItems    => 2,
+                            :uniqueItems => false,
+                            :items       => {:type => "number"}},
+           :notes_entry => {:type       => "object",
+                            :required   => ["pos", "text", "style"],
+                            :properties =>
+                                {:pos   => {:'$ref' => '#/definitions/pos'},
+                                 :text  => {:type => "string"},
+                                 :style => {:type => "string"}}},
+           :minc_entry  => {
                :type                 => "object",
                :required             => [:minc_f],
                :additionalProperties => false,
@@ -233,15 +233,15 @@ module Ajv
                                                                     :additionalProperties => false,
                                                                     :properties           =>
                                                                         {:limit_a3          => {:type => "boolean"},
-                                                                         :jumpline_anchor => {:'$ref' => '#/definitions/pos'},
-                                                                         :manual_sheet    => {:type       => 'object',
-                                                                                              required: [:llpos, :trpos, :url],
-                                                                                              :properties => {llpos: {:'$ref' => '#/definitions/pos'},
-                                                                                                              trpos: {:'$ref' => '#/definitions/pos'},
-                                                                                                              url:    {:type => 'string'}}},
-                                                                         :LINE_THIN       => {:type => "number"},
-                                                                         :LINE_MEDIUM     => {:type => "number"},
-                                                                         :LINE_THICK      => {:type => "number"},
+                                                                         :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},
+                                                                         :manual_sheet      => {:type       => 'object',
+                                                                                                required:   [:llpos, :trpos, :url],
+                                                                                                :properties => {llpos: {:'$ref' => '#/definitions/pos'},
+                                                                                                                trpos: {:'$ref' => '#/definitions/pos'},
+                                                                                                                url:   {:type => 'string'}}},
+                                                                         :LINE_THIN         => {:type => "number"},
+                                                                         :LINE_MEDIUM       => {:type => "number"},
+                                                                         :LINE_THICK        => {:type => "number"},
                                                                          :DRAWING_AREA_SIZE => {:type     => "array",
                                                                                                 :minItems => 2,
                                                                                                 :items    => {:type => "number"}},
@@ -252,6 +252,12 @@ module Ajv
                                                                                                 :minItems => 2,
                                                                                                 :items    => {:type => "number"}},
                                                                          :grid              => {:type => "boolean"},
+                                                                         :jumpline_anchor   => {:"$ref" => "#/definitions/pos"},
+                                                                         :color             => {:type       => 'object',
+                                                                                                :properties => {:color_default  => {:type => 'string'},
+                                                                                                                :color_variant1 => {:type => 'string'},
+                                                                                                                :color_variant2 => {:type => 'string'}
+                                                                                                }},
                                                                          :packer            => {:type       => 'object',
                                                                                                 :properties => {
                                                                                                     :pack_method            => {:type => 'integer'},
