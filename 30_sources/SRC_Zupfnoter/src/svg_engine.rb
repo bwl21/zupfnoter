@@ -236,7 +236,7 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
-      color = COLORS[root.color]
+      color             = COLORS[root.color]
       attr              = {}
       attr["fill"]      = root.fill == :filled ? color : COLORS['white']
       attr[:stroke]     = color
@@ -328,7 +328,7 @@ module Harpnotes
       ds2               = DOTTED_SIZE + root.line_width/2
       x                 = root.center.first + (root.size.first + ds1)
       y                 = root.center.last
-      white = COLORS['white']
+      white             = COLORS['white']
       e_dot             = @paper.ellipse(x, y, ds2, ds2, {stroke: white, fill: white}) # white outer
       e_dot             = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: COLORS[root.color]}) # black inner
     end
@@ -342,7 +342,8 @@ module Harpnotes
     #
     # @return [type] [description]
     def draw_flowline(root)
-      attr                     = {stroke: root.color}
+      color                    = COLORS[root.color]
+      attr                     = {stroke: color}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
       @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
@@ -409,8 +410,9 @@ module Harpnotes
 
     # draw a path
     def draw_path(root)
-      attr        = {stroke: :black, fill: 'none'}
-      attr[:fill] = "#000000" if root.filled?
+      color       = COLORS[root.color]
+      attr        = {stroke: color, fill: 'none'}
+      attr[:fill] = color if root.filled?
       e           = @paper.path(root.path, attr)
 
       draginfo = root.draginfo

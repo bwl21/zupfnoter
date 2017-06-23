@@ -1166,7 +1166,9 @@ module Harpnotes
         @y_offset             = 5
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
         @layout_minc          = $conf.get('layout.minc')
-
+        @color_default        = $conf.get('layout.color.color_default')
+        @color_variant1       = $conf.get('layout.color.color_variant1')
+        @color_variant2       = $conf.get('layout.color.color_variant2')
       end
 
 
@@ -1825,8 +1827,11 @@ module Harpnotes
             [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
              Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
           end
-        end.flatten
+        end.flatten.compact
+
         res_gotos                    = [] unless show_options[:jumpline]
+        color_default = @color_default
+        res_gotos.each {|the_goto| the_goto.color = color_default }
 
 
         # draw the repeatmarks
@@ -2232,9 +2237,9 @@ module Harpnotes
 
       def compute_color_by_variant_no(variant_no)
         if variant_no == 0
-          result = $conf.get('layout.color.color_default')
+          result = @color_default
         else
-          result = variant_no.odd? ? $conf.get('layout.color.color_variant1') : $conf.get('layout.color.color_variant2')
+          result = variant_no.odd? ? @color_variant1 : @color_variant2
         end
 
         result

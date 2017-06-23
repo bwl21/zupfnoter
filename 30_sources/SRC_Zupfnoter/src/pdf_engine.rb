@@ -236,6 +236,8 @@ module Harpnotes
     #
     # @return [type] [description]
     def draw_flowline(root)
+      color = COLORS[root.color]
+      @pdf.stroke = color
       #@pdf.draw = (0...3).map { root.dashed? ? 128 : 0 }
       @pdf.line_dash = 3 if root.dashed?
       @pdf.line_dash = 6 if root.dotted?
