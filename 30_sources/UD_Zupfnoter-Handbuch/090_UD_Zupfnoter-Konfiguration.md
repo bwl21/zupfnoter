@@ -144,9 +144,9 @@ Auszug 1 usw.
               "LINE_THIN"         : 0.1,
               "REST_SIZE"         : [4, 2],
               "color"             : {
-                "default"  : "black",
-                "variant1" : "grey",
-                "variant2" : "darkgrey"
+                "color_default"  : "black",
+                "color_variant1" : "grey",
+                "color_variant2" : "darkgrey"
               },
               "jumpline_anchor"   : [3, 1],
               "limit_a3"          : true,
@@ -360,9 +360,9 @@ Notenbild gezielt optimieren.
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
           "color"             : {
-            "default"  : "black",
-            "variant1" : "grey",
-            "variant2" : "darkgrey"
+            "color_default"  : "black",
+            "color_variant1" : "grey",
+            "color_variant2" : "darkgrey"
           },
           "jumpline_anchor"   : [3, 1],
           "limit_a3"          : true,
@@ -375,7 +375,7 @@ Notenbild gezielt optimieren.
         }
           
 
-## `extract.0.layout.DRAWING_AREA_SIZE` - Größe der Zeichenfläche {#extract.0.layout.DRAWING_AREA_SIZE}
+## `extract.0.layout.DRAWING_AREA_SIZE` - Zeichenfl.Größe {#extract.0.layout.DRAWING_AREA_SIZE}
 
 Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
 aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
@@ -431,36 +431,60 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
         "REST_SIZE": [4, 2]
           
 
-## `extract.0.layout.color` - {#extract.0.layout.color}
+## `extract.0.layout.color` - Farbeinstellung {#extract.0.layout.color}
 
-TODO: Helptext für extract.0.layout.color einfügen
+Hier kannst du die Farbe für verschiedene Elemente einstellen.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
 
         "color": {
-          "default"  : "black",
-          "variant1" : "grey",
-          "variant2" : "darkgrey"
+          "color_default"  : "black",
+          "color_variant1" : "grey",
+          "color_variant2" : "darkgrey"
         }
           
 
-## `extract.0.layout.color.default` - Vorgabewert {#extract.0.layout.color.default}
+## `extract.0.layout.color.color_default` - Sonstiges {#extract.0.layout.color.color_default}
 
-TODO: Helptext für extract.0.layout.color.default einfügen
+Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen
+Elementen verwendet, die keine spzeifische Farbeinstellung haben.
 
-        "default": "black"
+        "color_default": "black"
           
 
-## `extract.0.layout.color.variant1` - {#extract.0.layout.color.variant1}
+## `extract.0.layout.color.color_variant1` - Variante1 {#extract.0.layout.color.color_variant1}
 
-TODO: Helptext für extract.0.layout.color.variant1 einfügen
+Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
+dargestellt werden.
 
-        "variant1": "grey"
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
+        "color_variant1": "grey"
           
 
-## `extract.0.layout.color.variant2` - {#extract.0.layout.color.variant2}
+## `extract.0.layout.color.color_variant2` - Variante2 {#extract.0.layout.color.color_variant2}
 
-TODO: Helptext für extract.0.layout.color.variant2 einfügen
+Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc.
+dargestellt werden.
 
-        "variant2": "darkgrey"
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
+        "color_variant2": "darkgrey"
           
 
 ## `extract.0.layout.jumpline_anchor` - Sprungl.Anker {#extract.0.layout.jumpline_anchor}

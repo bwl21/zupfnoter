@@ -174,6 +174,46 @@ gezeichnet werden soll.
 Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
 Notenbild gezielt optimieren.
 
+## layout.color
+
+Hier kannst du die Farbe für verschiedene Elemente einstellen.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
+## layout.color.color_default
+
+Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen
+Elementen verwendet, die keine spzeifische Farbeinstellung haben.
+
+## layout.color.color_variant1
+
+Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
+dargestellt werden.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
+## layout.color.color_variant2
+
+Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc.
+dargestellt werden.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
 ## layout.jumpline_anchor
 
 Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten

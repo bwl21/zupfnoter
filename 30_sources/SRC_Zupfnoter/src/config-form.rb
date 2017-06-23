@@ -217,6 +217,24 @@ class ConfstackEditor
       end
     end
 
+    class Color < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['black', 'grey', 'darkgrey']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html:        {caption: I18n.t("#{key}.caption")}}
+      end
+
+    end
+
     class TextStyle < ZnTypes
       def self.to_html(key)
         %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
@@ -258,6 +276,7 @@ class ConfstackEditor
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
+          Color           => ['color_default', 'color_variant1', 'color_variant2']
       }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil
@@ -300,8 +319,8 @@ class ConfstackEditor
     end
 
     def _type(key)
-      keyparts = key.split('.')
-      lookupkey = keyparts.last
+      keyparts         = key.split('.')
+      lookupkey        = keyparts.last
       lookupkey_with_x = keyparts[-2] + '.x' if keyparts[-2]
       @typemap[lookupkey] || @typemap[lookupkey_with_x] || ZnUnknown
     end
