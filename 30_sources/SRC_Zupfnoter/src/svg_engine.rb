@@ -342,7 +342,7 @@ module Harpnotes
     #
     # @return [type] [description]
     def draw_flowline(root)
-      attr                     = {stroke: 'black'}
+      attr                     = {stroke: root.color}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
       @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
