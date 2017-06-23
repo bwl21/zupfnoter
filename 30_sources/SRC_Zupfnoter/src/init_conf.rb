@@ -203,7 +203,7 @@ module InitConf
                  # by the regular user
                  layout:       {limit_a3:          true,
                                 jumpline_anchor:   [3, 1],
-                                color:             {default: 'black', variant1: 'grey', variant2: 'darkgrey'},
+                                color:             {color_default: 'black', color_variant1: 'grey', color_variant2: 'darkgrey'},
                                 LINE_THIN:         0.1,
                                 LINE_MEDIUM:       0.3,
                                 LINE_THICK:        0.5,

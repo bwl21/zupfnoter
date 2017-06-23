@@ -43,17 +43,17 @@ module Ajv
        :required    => ["confstack", "produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
 
        :definitions => {
-           :pos           => {:type        => "array",
-                              :minItems    => 2,
-                              :uniqueItems => false,
-                              :items       => {:type => "number"}},
-           :notes_entry   => {:type       => "object",
-                              :required   => ["pos", "text", "style"],
-                              :properties =>
-                                  {:pos   => {:'$ref' => '#/definitions/pos'},
-                                   :text  => {:type => "string"},
-                                   :style => {:type => "string"}}},
-           :minc_entry => {
+           :pos         => {:type        => "array",
+                            :minItems    => 2,
+                            :uniqueItems => false,
+                            :items       => {:type => "number"}},
+           :notes_entry => {:type       => "object",
+                            :required   => ["pos", "text", "style"],
+                            :properties =>
+                                {:pos   => {:'$ref' => '#/definitions/pos'},
+                                 :text  => {:type => "string"},
+                                 :style => {:type => "string"}}},
+           :minc_entry  => {
                :type                 => "object",
                :required             => [:minc_f],
                :additionalProperties => false,
@@ -245,6 +245,12 @@ module Ajv
                                                                                                 :minItems => 2,
                                                                                                 :items    => {:type => "number"}},
                                                                          :grid              => {:type => "boolean"},
+                                                                         :jumpline_anchor   => {:"$ref" => "#/definitions/pos"},
+                                                                         :color             => {:type       => 'object',
+                                                                                                :properties => {:color_default  => {:type => 'string'},
+                                                                                                                :color_variant1 => {:type => 'string'},
+                                                                                                                :color_variant2 => {:type => 'string'}
+                                                                                                }},
                                                                          :packer            => {:type       => 'object',
                                                                                                 :properties => {
                                                                                                     :pack_method            => {:type => 'integer'},
