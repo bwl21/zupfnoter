@@ -40,7 +40,7 @@ module Ajv
       {:$schema     => "http://json-schema.org/draft-04/schema#",
        :description => "Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7",
        :type        => "object",
-       :required    => ["confstack", "produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
+       :required    => ["produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
 
        :definitions => {
 

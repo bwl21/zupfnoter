@@ -1651,9 +1651,6 @@ module Harpnotes
           res = nil
           unless previous_note.nil?
             res            = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
-            if playable.nil?
-              `debugger`
-            end
             res.color      = compute_color_by_variant_no(playable.variant)
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible

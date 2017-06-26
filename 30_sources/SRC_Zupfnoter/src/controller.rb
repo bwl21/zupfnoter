@@ -117,7 +117,7 @@ class Controller
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
 
 
-    $conf        = Confstack.new()
+    $conf        = Confstack.new(nil)
     $conf.strict = false
     $conf.push(_init_conf)
 
@@ -587,6 +587,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config = get_config_from_editor
     @editor.neat_config
 
+    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
     $conf.push(config) # in case of error, we hav the ensure close below
 
     begin
