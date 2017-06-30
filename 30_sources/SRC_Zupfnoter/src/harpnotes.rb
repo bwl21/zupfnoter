@@ -702,7 +702,7 @@ module Harpnotes
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
         @conf_key   = nil
-        @color      = $conf.get('layout.color.default')
+        @color      = $conf.get('layout.color.color_default')
       end
 
       def center
@@ -1316,7 +1316,7 @@ module Harpnotes
         synch_lines                 = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
-            res = FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
+            res       = FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
             res.color = compute_color_by_variant_no(sp.notes.first.variant)
             res
           end
@@ -1651,7 +1651,7 @@ module Harpnotes
           res = nil
           unless previous_note.nil?
             res            = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
-            res.color      = compute_color_by_variant_no(playable.variant)
+            #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
           end
@@ -1673,8 +1673,8 @@ module Harpnotes
 
             # draw subflowline if both ends are visible
             if not previous_note.nil? and previous_note.visible and playable.visible
-              res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
-              res.color = compute_color_by_variant_no(playable.variant)
+              res       = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
+              #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             end
 
             # this supports the case that synclines are entirely turned off and also no flowlines show up.
@@ -1827,13 +1827,13 @@ module Harpnotes
         end.flatten.compact
 
         res_gotos                    = [] unless show_options[:jumpline]
-        color_default = @color_default
-        res_gotos.each {|the_goto| the_goto.color = color_default }
+        color_default                = @color_default
+        res_gotos.each { |the_goto| the_goto.color = color_default }
 
 
         # draw the repeatmarks
 
-        res_repeatmarks              = []
+        res_repeatmarks = []
         if show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
           res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
 

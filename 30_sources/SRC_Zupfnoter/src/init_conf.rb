@@ -91,6 +91,21 @@ module InitConf
 
                  },
                  '-'              => {},
+                 color_on:        {
+                     color: {
+                         color_default:  "black",
+                         color_variant1: "grey",
+                         color_variant2: "darkgrey"
+                     }
+
+                 },
+                 color_off:       {
+                     color: {
+                         color_default:  "black",
+                         color_variant1: "black",
+                         color_variant2: "black"
+                     }
+                 },
                  jumpline_anchor: {jumpline_anchor: [3, 1]},
                  manual_sheet:    {
                      manual_sheet: {
