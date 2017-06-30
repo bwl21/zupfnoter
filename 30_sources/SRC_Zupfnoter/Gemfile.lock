@@ -1,7 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    byebug (9.0.6)
     coderay (1.1.0)
     concurrent-ruby (1.0.0)
     diffy (2.1.4)
@@ -29,9 +28,6 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-byebug (3.4.2)
-      byebug (~> 9.0)
-      pry (~> 0.10)
     rack (1.6.4)
     rake (10.4.2)
     redcarpet (2.2.2)
@@ -70,7 +66,6 @@ DEPENDENCIES
   opal (~> 0.9.0)
   opal-jquery (~> 0.4.0)
   pry
-  pry-byebug
   rake
   redcarpet
   sass

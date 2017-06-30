@@ -181,7 +181,7 @@ module ZnSvg
         sy = e.detail.p.y;
         this.stroke("blue");
         target_id = #{draginfo[:target_id]};
-        target_curve = $( '#' + target_id );
+        target_curve = document.getElementById(target_id)
       });
 
 
@@ -203,14 +203,14 @@ module ZnSvg
       }
 
       // need to find out which of the handle was drag
-      cp_id = e.target.childNodes[0].attributes['data-cp'].value
+      cp_id = e.target.childNodes[0].attributes['data-cp'].value // use childNodes for Edge Browser
       if (cp_id == "cp1") {#{cp1 = cp1 + [`dx`, `dy`]}}
                  else {#{cp2 = cp2 + [`dx`, `dy`]}}
 
       // the bezier curve
       newpath = [['M', #{p1.x}, #{p1.y}], ['C', #{cp1.x}, #{cp1.y}, #{cp2.x}, #{cp2.y}, #{p2.x}, #{p2.y}]]
       np = #{path_to_raphael(`newpath`)};
-      target_curve.childNodes()[0].setAttribute('d', np);
+      target_curve.childNodes[0].setAttribute('d', np);
 
       // draw the lines to illustrate the controlpoints
       newpath = [['M', #{p1.x}, #{p1.y}], ['L', #{cp1.x}, #{cp1.y}], ['L', #{cp2.x}, #{cp2.y}], ['L', #{p2.x}, #{p2.y}]]
