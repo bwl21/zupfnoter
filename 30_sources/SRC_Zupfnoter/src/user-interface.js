@@ -100,6 +100,12 @@ function init_w2ui(uicontroller) {
     'tb_view:3': function () {
       uicontroller.$handle_command("view 3")
     },
+    'tb_view:4': function () {
+      uicontroller.$handle_command("view 4")
+    },
+    'tb_view:5': function () {
+      uicontroller.$handle_command("view 5")
+    },
     'tbPlay': function () {
       uicontroller.$play_abc('auto');
     },
@@ -318,10 +324,13 @@ function init_w2ui(uicontroller) {
         icon: 'fa fa-shopping-basket',
         tooltip: "Choose extract",
         items: [
-          {text: 'Extract 0', icon: 'fa fa-tags', id: "0"},
+          {text: 'Extract 0', icon: 'fa fa-asterisk', id: "0"},
+          {text: '--'},
           {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
           {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
-          {text: 'Extract 3', icon: 'fa fa-tags', id: "3"}
+          {text: 'Extract 3', icon: 'fa fa-tags', id: "3"},
+          {text: 'Extract 4', icon: 'fa fa-tags', id: "4"},
+          {text: 'Extract 5', icon: 'fa fa-tags', id: "5"}
         ]
       },
       {type: 'break'},

@@ -23,7 +23,7 @@ class Controller
       end
 
       c.as_action do |args|
-        $log.message("<pre>#{@commands.help_string_style.select{|i| i.include? args[:what]}.join("\n")}</pre>")
+        $log.message("<pre>#{@commands.help_string_style.select { |i| i.include? args[:what] }.join("\n")}</pre>")
       end
     end
 
@@ -316,13 +316,13 @@ class Controller
 
     @commands.add_command(:settemplate) do |command|
       command.undoable = false
-      command.set_help { "set the current editor content as template"}
+      command.set_help { "set the current editor content as template" }
       command.as_action do |args|
         template = @editor.get_text('extract.0')
         if template.empty?
           `localStorage.removeItem(#{ZN_TEMPLATENAME})`
         else
-        `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
+          `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
         end
         nil
       end
@@ -444,7 +444,7 @@ class Controller
       end
 
       def expand_extractnumbering(keys)
-        [0, 1, 2, 3].product(keys).map { |number, key| "extract.#{number}.#{key}" }
+        [0, 1, 2, 3, 4, 5].product(keys).map { |number, key| "extract.#{number}.#{key}" }
       end
 
       command.undoable = false
@@ -463,8 +463,8 @@ class Controller
         form_sets        = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :nonflowrest,
                                                                             :startpos,
-                                                                            'repeatsigns.voices', 'barnumbers.voices',  'countnotes.voices',
-                                                                            'stringnames.vpos','sortmark.show',
+                                                                            'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices',
+                                                                            'stringnames.vpos', 'sortmark.show',
                                                                            ]) + [:restposition]},
             extract_annotation:    {keys: [:produce,
                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
@@ -550,7 +550,7 @@ class Controller
           handle_command("editconf #{args[:set]}")
         end
 
-        editor_title        = %Q{Exract #{@systemstatus[:view]}: #{args[:set]}}
+        editor_title        = %Q{Extract #{@systemstatus[:view]}: #{args[:set]}}
         editorparams        = {
             title:                 editor_title,
             editor:                @editor,
