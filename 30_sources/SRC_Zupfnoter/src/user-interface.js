@@ -817,7 +817,10 @@ function set_tbitem_caption(item, caption) {
 function update_systemstatus_w2ui(systemstatus) {
   $(".dropbox-status").html(systemstatus.dropbox);
 
-  set_tbitem_caption('tb_view', 'Extract ' + systemstatus.view);
+  var tb_view_title = w2ui.layout_top_toolbar.get('tb_view:' + systemstatus.view)
+  tb_view_title = (tb_view_title ? tb_view_title.text : systemstatus.view)
+
+  set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
   $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
@@ -897,6 +900,10 @@ function update_play_w2ui(status) {
 
 function disable_save(){w2ui.layout_top_toolbar.disable('tb_save')};
 function enable_save(){ w2ui.layout_top_toolbar.enable('tb_save')};
+function set_extract_menu(id, text){
+  w2ui.layout_top_toolbar.set('tb_view:' + id, {text: text});
+  w2ui.layout_top_toolbar.refresh();
+};
 
 ;
 

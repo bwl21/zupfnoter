@@ -22,6 +22,7 @@
 * the anchor of jumplines can now be configured (#150)
 * now have variant parts appear in grey (#151)
 * now menu supports extract 0 to extract 5 (#153)
+* now menu also shows title of extracts (#153)
 
 ## experimental feature
 

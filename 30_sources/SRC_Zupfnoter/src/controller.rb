@@ -196,8 +196,12 @@ class Controller
                                error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
                                play_start:   [lambda { `update_play_w2ui('start')` }],
                                play_stop:    [lambda { `update_play_w2ui('stop')` }],
-                               disable_save: [lambda { `disable_save();`}],
-                               enable_save:  [lambda { `enable_save();`}]
+                               disable_save: [lambda { `disable_save();` }],
+                               enable_save:  [lambda { `enable_save();` }],
+                               extracts:     [lambda { @extracts.each { |entry|
+                                 title = "#{entry.first}: #{entry.last}"
+                                 `set_extract_menu(#{entry.first}, #{title})` }
+                               }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -590,6 +594,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
     $conf.push(config) # in case of error, we hav the ensure close below
 
+    @extracts = $conf.get('extract').inject([]) do |r, entry|
+      r.push([entry.first, entry.last[:title]])
+    end
+
+    call_consumers(:extracts)
     begin
 
       $log.benchmark("validate default conf") do

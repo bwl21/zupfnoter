@@ -270,6 +270,16 @@ module InitConf
                  title:        "Melodie",
                  filenamepart: 'melodie',
                  voices:       [1]
+             },
+             "4" => {
+                 title:        "Extract 4",
+                 filenamepart: 'extract-4',
+                 voices:       [1]
+             },
+             "5" => {
+                 title:        "Extract 5",
+                 filenamepart: 'extract-5',
+                 voices:       [1]
              }
          },
 
