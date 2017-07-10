@@ -199,6 +199,16 @@ Auszug 1 usw.
             "filenamepart" : "melodie",
             "title"        : "Melodie",
             "voices"       : [1]
+          },
+          "4" : {
+            "filenamepart" : "extract-4",
+            "title"        : "Extract 4",
+            "voices"       : [1]
+          },
+          "5" : {
+            "filenamepart" : "extract-5",
+            "title"        : "Extract 5",
+            "voices"       : [1]
           }
         }
           
@@ -1019,6 +1029,20 @@ TODO: Helptext für presets einfügen
         "presets": {
           "layout"  : {
             "-"               : {},
+            "color_off"       : {
+              "color" : {
+                "color_default"  : "black",
+                "color_variant1" : "black",
+                "color_variant2" : "black"
+              }
+            },
+            "color_on"        : {
+              "color" : {
+                "color_default"  : "black",
+                "color_variant1" : "grey",
+                "color_variant2" : "darkgrey"
+              }
+            },
             "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
             "layout_compact"  : {
               "ELLIPSE_SIZE" : [3.5, 1.3],
@@ -1114,6 +1138,20 @@ Notenbild gezielt optimieren.
 
         "layout": {
           "-"               : {},
+          "color_off"       : {
+            "color" : {
+              "color_default"  : "black",
+              "color_variant1" : "black",
+              "color_variant2" : "black"
+            }
+          },
+          "color_on"        : {
+            "color" : {
+              "color_default"  : "black",
+              "color_variant1" : "grey",
+              "color_variant2" : "darkgrey"
+            }
+          },
           "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
           "layout_compact"  : {
             "ELLIPSE_SIZE" : [3.5, 1.3],
