@@ -96,9 +96,8 @@ class Controller
 
     I18n.locale(zupfnoter_language) if browser_language
 
+    @version = VERSION
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
-
-    Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
@@ -133,7 +132,7 @@ class Controller
 
     @dropboxclient = Opal::DropboxJs::NilClient.new()
 
-    @systemstatus={}
+    @systemstatus={version: VERSION}
 
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
@@ -224,7 +223,9 @@ class Controller
   # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
+                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key)
+    }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
       abc = @editor.get_text
