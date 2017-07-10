@@ -143,6 +143,12 @@ Auszug 1 usw.
               "LINE_THICK"        : 0.5,
               "LINE_THIN"         : 0.1,
               "REST_SIZE"         : [4, 2],
+              "color"             : {
+                "color_default"  : "black",
+                "color_variant1" : "grey",
+                "color_variant2" : "darkgrey"
+              },
+              "jumpline_anchor"   : [3, 1],
               "limit_a3"          : true,
               "minc"              : {},
               "packer"            : {
@@ -192,6 +198,16 @@ Auszug 1 usw.
           "3" : {
             "filenamepart" : "melodie",
             "title"        : "Melodie",
+            "voices"       : [1]
+          },
+          "4" : {
+            "filenamepart" : "extract-4",
+            "title"        : "Extract 4",
+            "voices"       : [1]
+          },
+          "5" : {
+            "filenamepart" : "extract-5",
+            "title"        : "Extract 5",
             "voices"       : [1]
           }
         }
@@ -353,6 +369,12 @@ Notenbild gezielt optimieren.
           "LINE_THICK"        : 0.5,
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
+          "color"             : {
+            "color_default"  : "black",
+            "color_variant1" : "grey",
+            "color_variant2" : "darkgrey"
+          },
+          "jumpline_anchor"   : [3, 1],
           "limit_a3"          : true,
           "minc"              : {},
           "packer"            : {
@@ -363,7 +385,7 @@ Notenbild gezielt optimieren.
         }
           
 
-## `extract.0.layout.DRAWING_AREA_SIZE` - Größe der Zeichenfläche {#extract.0.layout.DRAWING_AREA_SIZE}
+## `extract.0.layout.DRAWING_AREA_SIZE` - Zeichenfl.Größe {#extract.0.layout.DRAWING_AREA_SIZE}
 
 Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
 aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
@@ -417,6 +439,75 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 > berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
 
         "REST_SIZE": [4, 2]
+          
+
+## `extract.0.layout.color` - Farbeinstellung {#extract.0.layout.color}
+
+Hier kannst du die Farbe für verschiedene Elemente einstellen.
+
+> **Hinweis** Die Farbe werden über die "HTML" - Namen angegegeben. Dort
+> ist `grey` ist dunkler als `darkgrey` :-)
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
+        "color": {
+          "color_default"  : "black",
+          "color_variant1" : "grey",
+          "color_variant2" : "darkgrey"
+        }
+          
+
+## `extract.0.layout.color.color_default` - Sonstiges {#extract.0.layout.color.color_default}
+
+Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen
+Elementen verwendet, die keine spzeifische Farbeinstellung haben.
+
+        "color_default": "black"
+          
+
+## `extract.0.layout.color.color_variant1` - Variante1 {#extract.0.layout.color.color_variant1}
+
+Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
+dargestellt werden.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
+        "color_variant1": "grey"
+          
+
+## `extract.0.layout.color.color_variant2` - Variante2 {#extract.0.layout.color.color_variant2}
+
+Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc.
+dargestellt werden.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+
+        "color_variant2": "darkgrey"
+          
+
+## `extract.0.layout.jumpline_anchor` - Sprungl.Anker {#extract.0.layout.jumpline_anchor}
+
+Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
+verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
+an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
+gesagt, das umhüllende Rechteck) der entsprechende Note.
+
+        "jumpline_anchor": [3, 1]
           
 
 ## `extract.0.layout.limit_a3` - Begrenzung auf A3 {#extract.0.layout.limit_a3}
@@ -937,32 +1028,46 @@ TODO: Helptext für presets einfügen
 
         "presets": {
           "layout"  : {
-            "layout_compact" : {
+            "-"               : {},
+            "color_off"       : {
+              "color" : {
+                "color_default"  : "black",
+                "color_variant1" : "black",
+                "color_variant2" : "black"
+              }
+            },
+            "color_on"        : {
+              "color" : {
+                "color_default"  : "black",
+                "color_variant1" : "grey",
+                "color_variant2" : "darkgrey"
+              }
+            },
+            "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
+            "layout_compact"  : {
               "ELLIPSE_SIZE" : [3.5, 1.3],
               "LINE_MEDIUM"  : 0.2,
               "LINE_THICK"   : 0.3,
               "REST_SIZE"    : [4, 1.5]
             },
-            "layout_large"   : {
+            "layout_large"    : {
               "ELLIPSE_SIZE" : [4, 2],
               "LINE_MEDIUM"  : 0.3,
               "LINE_THICK"   : 0.7,
               "REST_SIZE"    : [4, 2]
             },
-            "layout_regular" : null,
-            "manual_sheet"   : {
+            "layout_regular"  : null,
+            "manual_sheet"    : {
               "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
             },
-            "packer_compact" : {
+            "packer_compact"  : {
               "packer" : {
                 "pack_max_spreadfactor" : 2,
                 "pack_method"           : 1,
                 "pack_min_increment"    : 0.2
               }
             },
-            "packer_regular" : {
-              "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
-            }
+            "packer_regular"  : null
           },
           "notes"   : {
             "T01_number"               : {
@@ -1032,32 +1137,46 @@ Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
 Notenbild gezielt optimieren.
 
         "layout": {
-          "layout_compact" : {
+          "-"               : {},
+          "color_off"       : {
+            "color" : {
+              "color_default"  : "black",
+              "color_variant1" : "black",
+              "color_variant2" : "black"
+            }
+          },
+          "color_on"        : {
+            "color" : {
+              "color_default"  : "black",
+              "color_variant1" : "grey",
+              "color_variant2" : "darkgrey"
+            }
+          },
+          "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
+          "layout_compact"  : {
             "ELLIPSE_SIZE" : [3.5, 1.3],
             "LINE_MEDIUM"  : 0.2,
             "LINE_THICK"   : 0.3,
             "REST_SIZE"    : [4, 1.5]
           },
-          "layout_large"   : {
+          "layout_large"    : {
             "ELLIPSE_SIZE" : [4, 2],
             "LINE_MEDIUM"  : 0.3,
             "LINE_THICK"   : 0.7,
             "REST_SIZE"    : [4, 2]
           },
-          "layout_regular" : null,
-          "manual_sheet"   : {
+          "layout_regular"  : null,
+          "manual_sheet"    : {
             "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
           },
-          "packer_compact" : {
+          "packer_compact"  : {
             "packer" : {
               "pack_max_spreadfactor" : 2,
               "pack_method"           : 1,
               "pack_min_increment"    : 0.2
             }
           },
-          "packer_regular" : {
-            "packer" : "#<Proc:0x007fadd994fe88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
-          }
+          "packer_regular"  : null
         }
           
 

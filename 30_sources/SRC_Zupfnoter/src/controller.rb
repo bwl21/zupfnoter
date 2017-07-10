@@ -96,9 +96,8 @@ class Controller
 
     I18n.locale(zupfnoter_language) if browser_language
 
+    @version = VERSION
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
-
-    Element.find("#lbZupfnoter").html("Zupfnoter #{VERSION}")
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
@@ -117,7 +116,7 @@ class Controller
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
 
 
-    $conf        = Confstack.new()
+    $conf        = Confstack.new(nil)
     $conf.strict = false
     $conf.push(_init_conf)
 
@@ -133,7 +132,7 @@ class Controller
 
     @dropboxclient = Opal::DropboxJs::NilClient.new()
 
-    @systemstatus={}
+    @systemstatus={version: VERSION}
 
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
@@ -196,8 +195,12 @@ class Controller
                                error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
                                play_start:   [lambda { `update_play_w2ui('start')` }],
                                play_stop:    [lambda { `update_play_w2ui('stop')` }],
-                               disable_save: [lambda { `disable_save();`}],
-                               enable_save:  [lambda { `enable_save();`}]
+                               disable_save: [lambda { `disable_save();` }],
+                               enable_save:  [lambda { `enable_save();` }],
+                               extracts:     [lambda { @extracts.each { |entry|
+                                 title = "#{entry.first}: #{entry.last}"
+                                 `set_extract_menu(#{entry.first}, #{title})` }
+                               }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -220,7 +223,9 @@ class Controller
   # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh, :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key) }.to_json
+    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
+                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key)
+    }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
       abc = @editor.get_text
@@ -587,8 +592,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config = get_config_from_editor
     @editor.neat_config
 
+    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
     $conf.push(config) # in case of error, we hav the ensure close below
 
+    @extracts = $conf.get('extract').inject([]) do |r, entry|
+      r.push([entry.first, entry.last[:title]])
+    end
+
+    call_consumers(:extracts)
     begin
 
       $log.benchmark("validate default conf") do

@@ -105,6 +105,7 @@ module Harpnotes
                     :start_pos,
                     :time,
                     :visible,
+                    :variant, # the variant within a variant block
                     :znid,
                     :origin
 
@@ -331,6 +332,10 @@ module Harpnotes
 
       def proxy_note
         get_proxy_object(@notes)
+      end
+
+      def variant
+        proxy_note.variant
       end
 
       # a Synchpoint is made of multiple notes
@@ -691,12 +696,13 @@ module Harpnotes
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :is_note, :draginfo
+      attr_accessor :conf_key, :conf_value, :is_note, :draginfo, :color
 
       def initialize
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
         @conf_key   = nil
+        @color      = $conf.get('layout.color.color_default')
       end
 
       def center
@@ -848,7 +854,7 @@ module Harpnotes
     # This represents a note in the shape of an ellipsis
     #
     class Ellipse < Symbol
-      attr_reader :center, :size, :fill, :origin
+      attr_reader :center, :size, :fill, :origin, :color
 
       #
       # Constructor
@@ -995,7 +1001,7 @@ module Harpnotes
                          ["c", 0, -0, -0.87, -0.18, -1.92, -0.36], ["c", -1.08, -0.18, -2.07, -0.36, -2.22, -0.42],
                          ["c", -0.18, -0.03, -1.98, -0.48, -4.02, -1.02], ["c", -2.97, -0.78, -3.75, -0.99, -3.84, -1.05],
                          ["c", -0.12, -0.09, -0.18, -0.3, -0.18, -0.45], ["c", 0.03, -0.15, 0.15, -0.3, 0.3, -0.39], ["z"]], w: 13.5, h: 7.5},
-          error:   {d: [["M", -10, -5], ['l', 0, 10], ['l', 20, -10], ['l', 0, 10],  ['z']], w: 20, h: 10},
+          error:    {d: [["M", -10, -5], ['l', 0, 10], ['l', 20, -10], ['l', 0, 10], ['z']], w: 20, h: 10},
 
           #rest_32:  {d: [["M", 4.23, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.27, -0.06], ["c", 0.33, -0.21, 0.99, -1.11, 1.44, -1.98], ["c", 0.09, -0.24, 0.21, -0.33, 0.39, -0.33], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.57, 2.67, -3.21, 13.89], ["c", -1.8, 7.62, -3.3, 13.89, -3.3, 13.92], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, -0, -0.3, -0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.09, -0.57, 1.23, -4.92], ["c", 0.69, -2.67, 1.26, -4.86, 1.29, -4.89], ["c", 0, -0.03, -0.12, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.12, 0.09, 0.3, 0.18, 0.48, 0.21], ["c", 0.12, -0, 0.18, -0, 0.3, -0.09], ["c", 0.42, -0.21, 1.29, -1.29, 1.56, -1.89], ["c", 0.03, -0.12, 1.23, -4.59, 1.23, -4.65], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -0.63, 0.18, -1.2, 0.36, -1.74, 0.45], ["c", -0.39, 0.06, -0.54, 0.06, -1.02, 0.06], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.18, 0.18, 0.51, 0.27, 0.72, 0.15], ["c", 0.3, -0.12, 0.69, -0.57, 1.08, -1.17], ["c", 0.42, -0.6, 0.39, -0.51, 1.05, -3.03], ["c", 0.33, -1.26, 0.6, -2.31, 0.6, -2.34], ["c", 0, -0, -0.21, 0.03, -0.45, 0.12], ["c", -0.57, 0.18, -1.14, 0.33, -1.62, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, -0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 11.373, h: 28.883},
           #rest_64:  {d: [["M", 5.13, -13.62], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.18, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.24, -0.12, 0.63, -0.66, 1.08, -1.56], ["c", 0.33, -0.66, 0.39, -0.72, 0.6, -0.72], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.69, 3.66, -3.54, 17.64], ["c", -1.95, 9.66, -3.57, 17.61, -3.57, 17.64], ["c", -0.03, 0.06, -0.12, 0.12, -0.24, 0.18], ["c", -0.21, 0.09, -0.24, 0.09, -0.48, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.06, -0.57, 1.05, -4.95], ["c", 0.6, -2.7, 1.08, -4.89, 1.08, -4.92], ["c", 0, 0, -0.24, 0.06, -0.51, 0.15], ["c", -0.66, 0.24, -1.2, 0.36, -1.77, 0.48], ["c", -0.42, 0.06, -0.57, 0.06, -1.05, 0.06], ["c", -0.69, 0, -0.87, -0.03, -1.35, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.21, 0.03, 0.39, -0.09, 0.72, -0.42], ["c", 0.45, -0.45, 1.02, -1.26, 1.17, -1.65], ["c", 0.03, -0.09, 0.27, -1.14, 0.54, -2.34], ["c", 0.27, -1.2, 0.48, -2.19, 0.51, -2.22], ["c", 0, -0.03, -0.09, -0.03, -0.48, 0.12], ["c", -1.17, 0.39, -2.22, 0.57, -3, 0.54], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.9, 0.42], ["c", 0.36, -0.18, 1.2, -1.26, 1.47, -1.89], ["c", 0.03, -0.09, 0.3, -1.2, 0.57, -2.43], ["l", 0.51, -2.28], ["l", -0.54, 0.18], ["c", -1.11, 0.36, -1.8, 0.48, -2.61, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.36, -0.54, 0.96, -0.87, 1.65, -0.93], ["c", 0.54, -0.03, 1.02, 0.15, 1.41, 0.54], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.15, 0.63, 0.21, 0.81, 0.33, 0.96], ["c", 0.21, 0.21, 0.54, 0.3, 0.75, 0.18], ["c", 0.36, -0.18, 0.93, -0.93, 1.29, -1.68], ["c", 0.12, -0.24, 0.18, -0.48, 0.63, -2.55], ["l", 0.51, -2.31], ["c", 0, -0.03, -0.18, 0.03, -0.39, 0.12], ["c", -1.14, 0.36, -2.1, 0.54, -2.82, 0.51], ["c", -0.42, -0.03, -0.75, -0.12, -1.11, -0.3], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], w: 12.453, h: 36.383},
@@ -1160,7 +1166,9 @@ module Harpnotes
         @y_offset             = 5
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
         @layout_minc          = $conf.get('layout.minc')
-
+        @color_default        = $conf.get('layout.color.color_default')
+        @color_variant1       = $conf.get('layout.color.color_variant1')
+        @color_variant2       = $conf.get('layout.color.color_variant2')
       end
 
 
@@ -1308,7 +1316,9 @@ module Harpnotes
         synch_lines                 = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
-            FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
+            res       = FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
+            res.color = compute_color_by_variant_no(sp.notes.first.variant)
+            res
           end
         end.flatten
 
@@ -1423,14 +1433,14 @@ module Harpnotes
 
 
       def layout_sortmark(title, options)
-        sortname   = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
-        b = (sortname+"AAAA").split('').map{|i| i.ord - "A".ord}
-        a = b[0] + (0.1 * b[1] +  0.01 * b[2] + 0.001 * b[3]) * 0.5/2.4   # 0.5 cover half the stringdistance; 2.4 - 24 positions
-        w, h = options['size']
-        fill = options['fill'] ? :filled : :open
-        markpos = (12.5 + a) * $conf.get('layout.X_SPACING')# 12 - 12 strings fro mleft border
+        sortname = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
+        b        = (sortname+"AAAA").split('').map { |i| i.ord - "A".ord }
+        a        = b[0] + (0.1 * b[1] + 0.01 * b[2] + 0.001 * b[3]) * 0.5/2.4 # 0.5 cover half the stringdistance; 2.4 - 24 positions
+        w, h     = options['size']
+        fill     = options['fill'] ? :filled : :open
+        markpos  = (12.5 + a) * $conf.get('layout.X_SPACING') # 12 - 12 strings fro mleft border
 
-        markpath = [['M', markpos, 0], ['l', -w/2, h], ['l', w, 0], ['l',-w/2 , -h], ['l',0 , h], ['l',0 , -h], ['z']]
+        markpath = [['M', markpos, 0], ['l', -w/2, h], ['l', w, 0], ['l', -w/2, -h], ['l', 0, h], ['l', 0, -h], ['z']]
         Harpnotes::Drawing::Path.new(markpath, fill)
       end
 
@@ -1641,6 +1651,7 @@ module Harpnotes
           res = nil
           unless previous_note.nil?
             res            = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
+            #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
           end
@@ -1662,7 +1673,8 @@ module Harpnotes
 
             # draw subflowline if both ends are visible
             if not previous_note.nil? and previous_note.visible and playable.visible
-              res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
+              res       = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
+              #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             end
 
             # this supports the case that synclines are entirely turned off and also no flowlines show up.
@@ -1797,10 +1809,12 @@ module Harpnotes
           from = lookuptable_drawing_by_playable[goto.from]
           to   = lookuptable_drawing_by_playable[goto.to]
 
-          jumpline_info = {from:     {center: from.center, size: from.size, anchor: from_anchor},
-                           to:       {center: to.center, size: to.size, anchor: to_anchor},
-                           vertical: vertical, vertical_anchor: vertical_anchor,
-                           xspacing: $conf['layout.X_SPACING']
+          jumpline_info = {from:            {center: from.center, size: from.size, anchor: from_anchor},
+                           to:              {center: to.center, size: to.size, anchor: to_anchor},
+                           vertical:        vertical, vertical_anchor: vertical_anchor,
+                           padding:         goto.policy[:padding],
+                           xspacing:        $conf['layout.X_SPACING'],
+                           jumpline_anchor: $conf['layout.jumpline_anchor']
           }
 
           path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
@@ -1810,13 +1824,16 @@ module Harpnotes
             [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
              Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
           end
-        end.flatten
+        end.flatten.compact
+
         res_gotos                    = [] unless show_options[:jumpline]
+        color_default                = @color_default
+        res_gotos.each { |the_goto| the_goto.color = color_default }
 
 
         # draw the repeatmarks
 
-        res_repeatmarks              = []
+        res_repeatmarks = []
         if show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
           res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
 
@@ -2208,10 +2225,21 @@ module Harpnotes
         shift = layout_note_shift(root, size, x_offset, dotted)
 
         res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
+        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.hasbarover = true if root.measure_start
         res.is_note    = true
         res
+      end
+
+      def compute_color_by_variant_no(variant_no)
+        if variant_no == 0
+          result = @color_default
+        else
+          result = variant_no.odd? ? @color_variant1 : @color_variant2
+        end
+
+        result
       end
 
       def compute_ellipse_properties_from_note(root)
@@ -2290,6 +2318,7 @@ module Harpnotes
 
         res            = nil
         res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
+        res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
         res.visible    = false unless root.visible?
         res.hasbarover = true if root.measure_start
@@ -2316,15 +2345,15 @@ module Harpnotes
         #                from:     {center: from.center, size: from.size, anchor: :after},
         #                to:       {center: to.center, size: to.size, anchor: :before},
         #                vertical: vertical
-
-        noteoffset = 2
+        #                padding:  2;
+        anchorx, anchory = arg[:jumpline_anchor] # the anchor of the jumpline related tothe note size.
 
         from        = Vector2d(arg[:from][:center]) # the coordnates of the from - point
-        from_offset = Vector2d(arg[:from][:size]) + [noteoffset, 1] # the offest of the from - point
-        from_anchor = arg[:from][:anchor] == :before ? -1 : 1 # before: above; after: below
+        from_offset = Vector2d(arg[:from][:size]) + [anchorx, anchory] # the offest of the from - point
+        from_anchor = arg[:from][:anchor] == :before ? -1 : 1 # these are multipliers! before: above (-1); after: below (+1)
 
         to        = Vector2d(arg[:to][:center])
-        to_offset = Vector2d(arg[:to][:size]) + [noteoffset, 1]
+        to_offset = Vector2d(arg[:to][:size]) + [anchorx, anchory]
         to_anchor = arg[:to][:anchor] == :before ? -1 : 1
 
         verticalpos = arg[:vertical]

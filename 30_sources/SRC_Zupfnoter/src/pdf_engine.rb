@@ -9,7 +9,10 @@ module Harpnotes
 
     PADDING         = 4.0
     JUMPLINE_INDENT = 10.0
-    DOTTED_SIZE     = 0.5  # radius of dot
+    DOTTED_SIZE     = 0.5 # radius of dot
+
+    # COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [0, 128, 128], 'lightgrey' => [211, 0, 211], 'darkgrey' => [169,169,0]}
+     COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [128, 128, 128], 'lightgrey' => [211, 211, 211], 'darkgrey' => [169,169,169]}
 
     #X_SPACING = 115.0/10.0
 
@@ -87,10 +90,13 @@ module Harpnotes
 
 
     def draw_ellipse(root)
+
+      color           = COLORS[root.color]
       style           = root.filled? ? :F : :FD
       size            = root.size
       @pdf.line_width = 0
-      @pdf.fill       = (0...3).map { root.filled? ? 0 : 255 }
+      @pdf.stroke     = color
+      @pdf.fill       = root.filled? ? color : COLORS['white']
       if root.rect?
         @pdf.rect_like_ellipse(root.center, size, style)
       else
@@ -117,7 +123,8 @@ module Harpnotes
         draw_the_barover(root)
       end
 
-
+      @pdf.stroke = COLORS['black']
+      @pdf.fill   = COLORS['black']
     end
 
     def draw_glyph(root)
@@ -134,10 +141,9 @@ module Harpnotes
 
 
       # draw a white background
-      @pdf.fill   = (0...3).map { root.filled? ? 0 : 255 }
-
-      @pdf.fill   = [255, 255, 255]
-      @pdf.stroke = [255, 255, 255]
+      color = COLORS['white']
+      @pdf.fill   = color
+      @pdf.stroke = color
       @pdf.rect_like_ellipse(root.center, root.size, :FD)
 
 
@@ -149,8 +155,9 @@ module Harpnotes
 
       # draw th path
 
-      @pdf.fill   = [0, 0, 0]
-      @pdf.stroke = [0, 0, 0]
+      color = COLORS[root.color]
+      @pdf.fill   = color
+      @pdf.stroke = color
 
       scale           = [scalefactor, scalefactor]
       lines           = []
@@ -178,7 +185,7 @@ module Harpnotes
             $log.error("BUG: unsupported Pdf Path command '#{element.first}' in glyph (#{__FILE__} #{__LINE__})")
         end
       end
-      @pdf.stroke = [0, 0, 0]
+      @pdf.stroke = [0, 0, 0] # why this?
 
       # add the dot if needed
       if root.dotted?
@@ -195,25 +202,26 @@ module Harpnotes
       #@pdf.fill = (0...3).map { 0 }
       #@pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
 
-      ds1 = DOTTED_SIZE + root.line_width    # distance of dot
-      ds2 = DOTTED_SIZE + root.line_width/2  # size of white dot
+      color = COLORS[root.color]
+      ds1 = DOTTED_SIZE + root.line_width # distance of dot
+      ds2 = DOTTED_SIZE + root.line_width/2 # size of white dot
       x   = root.center.first + (root.size.first + ds1)
       y   = root.center.last
 
       @pdf.line_width = 0
-      @pdf.fill       = [255, 255, 255]
+      @pdf.fill       = [255, 255, 255]  # this needs to be white
       @pdf.stroke     = [255, 255, 255]
       @pdf.ellipse([x, y], [ds2, ds2], :FD)
 
-      @pdf.fill   = [0, 0, 0]
-      @pdf.stroke = [0, 0, 0]
+      @pdf.fill   = color
+      @pdf.stroke = color
 
       @pdf.ellipse([x, y], [DOTTED_SIZE, DOTTED_SIZE], :FD)
     end
 
 
     def draw_the_barover(root)
-      @pdf.fill  = (0...3).map { 0 }
+      @pdf.fill  = COLORS[root.color]
       new_center = [root.center.first, root.center.last - root.size.last - 1.3 * root.line_width]
       new_size   = [root.size.first, 0.2] # pdf shows rectangle of height 0
       @pdf.rect_like_ellipse(new_center, new_size, :F)
@@ -228,6 +236,8 @@ module Harpnotes
     #
     # @return [type] [description]
     def draw_flowline(root)
+      color = COLORS[root.color]
+      @pdf.stroke = color
       #@pdf.draw = (0...3).map { root.dashed? ? 128 : 0 }
       @pdf.line_dash = 3 if root.dashed?
       @pdf.line_dash = 6 if root.dotted?
@@ -273,7 +283,9 @@ module Harpnotes
       scale     = [1, 1]
       start     = []
       style     = root.filled? ? :FD : ""
-      @pdf.fill = (1..3).map { root.filled? ? 0 : 255 }
+      color = COLORS[root.color]
+      @pdf.fill = root.filled? ? color : COLORS['white']
+      @pdf.stroke = color
 
       root.path.each do |element|
         case element.first

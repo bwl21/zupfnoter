@@ -100,6 +100,12 @@ function init_w2ui(uicontroller) {
     'tb_view:3': function () {
       uicontroller.$handle_command("view 3")
     },
+    'tb_view:4': function () {
+      uicontroller.$handle_command("view 4")
+    },
+    'tb_view:5': function () {
+      uicontroller.$handle_command("view 5")
+    },
     'tbPlay': function () {
       uicontroller.$play_abc('auto');
     },
@@ -198,7 +204,7 @@ function init_w2ui(uicontroller) {
     name: 'toolbar',
     style: tbstyle,
     items: [
-      {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: '<span id="lbZupfnoter">Zupfnoter</span>'},
+      {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: 'Zupfnoter'},
       {type: 'html', html: '<div style="width:25px"/>'},
       {type: 'button', id: 'tb_create', text: 'New', icon: 'fa fa-file-o', tooltip: 'Create new sheet'},
       {
@@ -318,10 +324,13 @@ function init_w2ui(uicontroller) {
         icon: 'fa fa-shopping-basket',
         tooltip: "Choose extract",
         items: [
-          {text: 'Extract 0', icon: 'fa fa-tags', id: "0"},
+          {text: 'Extract 0', icon: 'fa fa-asterisk', id: "0"},
+          {text: '--'},
           {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
           {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
-          {text: 'Extract 3', icon: 'fa fa-tags', id: "3"}
+          {text: 'Extract 3', icon: 'fa fa-tags', id: "3"},
+          {text: 'Extract 4', icon: 'fa fa-tags', id: "4"},
+          {text: 'Extract 5', icon: 'fa fa-tags', id: "5"}
         ]
       },
       {type: 'break'},
@@ -807,8 +816,12 @@ function set_tbitem_caption(item, caption) {
 
 function update_systemstatus_w2ui(systemstatus) {
   $(".dropbox-status").html(systemstatus.dropbox);
+  w2ui.layout_top_toolbar.set('tb_home', {text: "Zupfdnoter " + systemstatus.version})
 
-  set_tbitem_caption('tb_view', 'Extract ' + systemstatus.view);
+  var tb_view_title = w2ui.layout_top_toolbar.get('tb_view:' + systemstatus.view)
+  tb_view_title = (tb_view_title ? tb_view_title.text : systemstatus.view)
+
+  set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
   $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
@@ -888,6 +901,10 @@ function update_play_w2ui(status) {
 
 function disable_save(){w2ui.layout_top_toolbar.disable('tb_save')};
 function enable_save(){ w2ui.layout_top_toolbar.enable('tb_save')};
+function set_extract_menu(id, text){
+  w2ui.layout_top_toolbar.set('tb_view:' + id, {text: text});
+  w2ui.layout_top_toolbar.refresh();
+};
 
 ;
 

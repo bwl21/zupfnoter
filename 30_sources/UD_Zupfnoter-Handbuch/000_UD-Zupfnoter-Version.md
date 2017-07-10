@@ -1,5 +1,5 @@
 
-Version 1.6.1 ++dev
+Version 1.7.0 dev ++
 
 © 2017 https://www.zupfnoter.de
      

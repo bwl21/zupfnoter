@@ -19,6 +19,10 @@
 * improved performance of vertical packer (#87, #89)
 * editor collapses config parameters by default (#144)
 * now can print a sortmark on top of the sheet (#145)
+* the anchor of jumplines can now be configured (#150)
+* now have variant parts appear in grey (#151)
+* now menu supports extract 0 to extract 5 (#153)
+* now menu also shows title of extracts (#153)
 
 ## experimental feature
 

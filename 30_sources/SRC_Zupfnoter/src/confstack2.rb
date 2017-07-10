@@ -356,6 +356,13 @@ class Confstack
     @confstack.count
   end
 
+  def reset_to(level)
+    @lookup_cache = {}
+    @sourcestack = @sourcestack[0 .. level]
+    @confstack = @confstack[0 .. level]
+    @confstack.count
+  end
+
   def save(name)
     result = self.get
 

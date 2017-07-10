@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.6.1 ++dev
+Version 1.7.0 dev ++
 
 © 2017 https://www.zupfnoter.de
 
@@ -3642,6 +3642,12 @@ spezifiziert den Auszug 1 usw.
           "LINE_THICK"        : 0.5,
           "LINE_THIN"         : 0.1,
           "REST_SIZE"         : [4, 2],
+          "color"             : {
+            "color_default"  : "black",
+            "color_variant1" : "grey",
+            "color_variant2" : "darkgrey"
+          },
+          "jumpline_anchor"   : [3, 1],
           "limit_a3"          : true,
           "minc"              : {},
           "packer"            : {
@@ -3902,6 +3908,12 @@ Notenbild gezielt optimieren.
       "LINE_THICK"        : 0.5,
       "LINE_THIN"         : 0.1,
       "REST_SIZE"         : [4, 2],
+      "color"             : {
+        "color_default"  : "black",
+        "color_variant1" : "grey",
+        "color_variant2" : "darkgrey"
+      },
+      "jumpline_anchor"   : [3, 1],
       "limit_a3"          : true,
       "minc"              : {},
       "packer"            : {
@@ -3914,8 +3926,8 @@ Notenbild gezielt optimieren.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{extract.0.layout.DRAWING\_AREA\_SIZE}
-- Größe der
-Zeichenfläche}{extract.0.layout.DRAWING\_AREA\_SIZE - Größe der Zeichenfläche}}\label{extract.0.layout.DRAWINGux5fAREAux5fSIZE}
+-
+Zeichenfl.Größe}{extract.0.layout.DRAWING\_AREA\_SIZE - Zeichenfl.Größe}}\label{extract.0.layout.DRAWINGux5fAREAux5fSIZE}
 
 Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
 aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
@@ -3992,6 +4004,96 @@ berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
 
 \begin{verbatim}
     "REST_SIZE": [4, 2]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.color} -
+Farbeinstellung}{extract.0.layout.color - Farbeinstellung}}\label{extract.0.layout.color}
+
+Hier kannst du die Farbe für verschiedene Elemente einstellen.
+
+\begin{quote}
+\textbf{Hinweis} Die Farbe von varianten Abnschnitten alterniert
+zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann
+werden die varianten Abschnitte gleichermassen eingefärbt.
+
+Wenn du beide auf den gleichen wert wie ``default'' stellst, dann werden
+variante Abschnitte nicht mehr durch Farbe abgesetzt.
+\end{quote}
+
+\begin{verbatim}
+    "color": {
+      "color_default"  : "black",
+      "color_variant1" : "grey",
+      "color_variant2" : "darkgrey"
+    }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.color.color\_default}
+-
+Sonstiges}{extract.0.layout.color.color\_default - Sonstiges}}\label{extract.0.layout.color.colorux5fdefault}
+
+Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen
+Elementen verwendet, die keine spzeifische Farbeinstellung haben.
+
+\begin{verbatim}
+    "color_default": "black"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.color.color\_variant1}
+-
+Variante1}{extract.0.layout.color.color\_variant1 - Variante1}}\label{extract.0.layout.color.colorux5fvariant1}
+
+Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
+dargestellt werden.
+
+\begin{quote}
+\textbf{Hinweis} Die Farbe von varianten Abnschnitten alterniert
+zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann
+werden die varianten Abschnitte gleichermassen eingefärbt.
+
+Wenn du beide auf den gleichen wert wie ``default'' stellst, dann werden
+variante Abschnitte nicht mehr durch Farbe abgesetzt.
+\end{quote}
+
+\begin{verbatim}
+    "color_variant1": "grey"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.color.color\_variant2}
+-
+Variante2}{extract.0.layout.color.color\_variant2 - Variante2}}\label{extract.0.layout.color.colorux5fvariant2}
+
+Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc.
+dargestellt werden.
+
+\begin{quote}
+\textbf{Hinweis} Die Farbe von varianten Abnschnitten alterniert
+zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann
+werden die varianten Abschnitte gleichermassen eingefärbt.
+
+Wenn du beide auf den gleichen wert wie ``default'' stellst, dann werden
+variante Abschnitte nicht mehr durch Farbe abgesetzt.
+\end{quote}
+
+\begin{verbatim}
+    "color_variant2": "darkgrey"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.jumpline\_anchor} -
+Sprungl.Anker}{extract.0.layout.jumpline\_anchor - Sprungl.Anker}}\label{extract.0.layout.jumplineux5fanchor}
+
+Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
+verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
+an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
+gesagt, das umhüllende Rechteck) der entsprechende Note.
+
+\begin{verbatim}
+    "jumpline_anchor": [3, 1]
       
 \end{verbatim}
 
@@ -4203,7 +4305,7 @@ vertikaler Position.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{extract.0.legend.spos} - Pos.
-Subleg}{extract.0.legend.spos - Pos. Subleg}}\label{extract.0.legend.spos}
+Subleg.}{extract.0.legend.spos - Pos. Subleg.}}\label{extract.0.legend.spos}
 
 Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
 Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
@@ -4715,32 +4817,32 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
 \begin{verbatim}
     "presets": {
       "layout"  : {
-        "layout_compact" : {
+        "-"               : {},
+        "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
+        "layout_compact"  : {
           "ELLIPSE_SIZE" : [3.5, 1.3],
           "LINE_MEDIUM"  : 0.2,
           "LINE_THICK"   : 0.3,
           "REST_SIZE"    : [4, 1.5]
         },
-        "layout_large"   : {
+        "layout_large"    : {
           "ELLIPSE_SIZE" : [4, 2],
           "LINE_MEDIUM"  : 0.3,
           "LINE_THICK"   : 0.7,
           "REST_SIZE"    : [4, 2]
         },
-        "layout_regular" : null,
-        "manual_sheet"   : {
+        "layout_regular"  : null,
+        "manual_sheet"    : {
           "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
         },
-        "packer_compact" : {
+        "packer_compact"  : {
           "packer" : {
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 1,
             "pack_min_increment"    : 0.2
           }
         },
-        "packer_regular" : {
-          "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
-        }
+        "packer_regular"  : null
       },
       "notes"   : {
         "T01_number"               : {
@@ -4813,32 +4915,32 @@ Notenbild gezielt optimieren.
 
 \begin{verbatim}
     "layout": {
-      "layout_compact" : {
+      "-"               : {},
+      "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
+      "layout_compact"  : {
         "ELLIPSE_SIZE" : [3.5, 1.3],
         "LINE_MEDIUM"  : 0.2,
         "LINE_THICK"   : 0.3,
         "REST_SIZE"    : [4, 1.5]
       },
-      "layout_large"   : {
+      "layout_large"    : {
         "ELLIPSE_SIZE" : [4, 2],
         "LINE_MEDIUM"  : 0.3,
         "LINE_THICK"   : 0.7,
         "REST_SIZE"    : [4, 2]
       },
-      "layout_regular" : null,
-      "manual_sheet"   : {
+      "layout_regular"  : null,
+      "manual_sheet"    : {
         "manual_sheet" : {"llpos": [0, 297], "trpos": [420, 0], "url": ""}
       },
-      "packer_compact" : {
+      "packer_compact"  : {
         "packer" : {
           "pack_max_spreadfactor" : 2,
           "pack_method"           : 1,
           "pack_min_increment"    : 0.2
         }
       },
-      "packer_regular" : {
-        "packer" : "#<Proc:0x007fb72b93abe0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:97 (lambda)>"
-      }
+      "packer_regular"  : null
     }
       
 \end{verbatim}

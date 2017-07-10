@@ -16,7 +16,7 @@ module InitConf
                      :annotation, :partname, :variantend, :countnotes, :stringnames, # sort within notebound
 
                      # sort within layout
-                     :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
+                     :limit_a3, :jumplineoffset, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
                      :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
                      :sortmark, :show, :fill, :size,
@@ -65,37 +65,54 @@ module InitConf
          # needs to be handled in contrller_command_definiitions
          presets:      {
              layout:  {
-                 layout_compact: {
+                 layout_compact:  {
                      LINE_MEDIUM:  0.2,
                      LINE_THICK:   0.3,
                      # all numbers in mm
                      ELLIPSE_SIZE: [3.5, 1.3], # radii of the largest Ellipse
                      REST_SIZE:    [4, 1.5]
                  },
-                 layout_regular: lambda { $conf['extract.0.layout'] },
-                 layout_large:   {
+                 layout_regular:  lambda { $conf['extract.0.layout'] },
+                 layout_large:    {
                      LINE_MEDIUM:  0.3,
                      LINE_THICK:   0.7,
                      ELLIPSE_SIZE: [4, 2], # radii of the largest Ellipse
                      REST_SIZE:    [4, 2]
                  },
-                 manual_sheet:   {
-                     manual_sheet: {
-                         llpos: [0, 297],
-                         trpos: [420, 0],
-                         url:   ""
-                     }
-                 },
-                 packer_compact: {
+                 packer_compact:  {
                      packer: {
                          pack_method:           1,
                          pack_max_spreadfactor: 2,
                          pack_min_increment:    0.20
                      }
                  },
-                 packer_regular: {
+                 packer_regular:  {
                      packer: lambda { $conf.get('extract.0.layout.packer') }
 
+                 },
+                 '-'              => {},
+                 color_on:        {
+                     color: {
+                         color_default:  "black",
+                         color_variant1: "grey",
+                         color_variant2: "darkgrey"
+                     }
+
+                 },
+                 color_off:       {
+                     color: {
+                         color_default:  "black",
+                         color_variant1: "black",
+                         color_variant2: "black"
+                     }
+                 },
+                 jumpline_anchor: {jumpline_anchor: [3, 1]},
+                 manual_sheet:    {
+                     manual_sheet: {
+                         llpos: [0, 297],
+                         trpos: [420, 0],
+                         url:   ""
+                     }
                  },
              },
 
@@ -200,6 +217,8 @@ module InitConf
                  # this denotes the layout parameters which are intended to bne configured
                  # by the regular user
                  layout:       {limit_a3:          true,
+                                jumpline_anchor:   [3, 1],
+                                color:             {color_default: 'black', color_variant1: 'grey', color_variant2: 'darkgrey'},
                                 LINE_THIN:         0.1,
                                 LINE_MEDIUM:       0.3,
                                 LINE_THICK:        0.5,
@@ -214,7 +233,7 @@ module InitConf
                                     pack_min_increment:    0.2
                                 },
                  },
-                 sortmark: {size: [2, 4], fill: true, show: false },
+                 sortmark:     {size: [2, 4], fill: true, show: false},
                  nonflowrest:  false,
                  notes:        {},
                  barnumbers:   {
@@ -250,6 +269,16 @@ module InitConf
              "3" => {
                  title:        "Melodie",
                  filenamepart: 'melodie',
+                 voices:       [1]
+             },
+             "4" => {
+                 title:        "Extract 4",
+                 filenamepart: 'extract-4',
+                 voices:       [1]
+             },
+             "5" => {
+                 title:        "Extract 5",
+                 filenamepart: 'extract-5',
                  voices:       [1]
              }
          },

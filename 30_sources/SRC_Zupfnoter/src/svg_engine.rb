@@ -10,7 +10,9 @@ module Harpnotes
     PADDING         = 5
     ARROW_SIZE      = 1.0
     JUMPLINE_INDENT = 10
-    DOTTED_SIZE     = 0.5  #radius of dot
+    DOTTED_SIZE     = 0.5 #radius of dot
+    COLORS          = {'black' => 'black', 'white' => 'white', 'grey' => 'grey', 'lightgrey' => 'lightgrey', 'darkgrey' => 'darkgrey'}
+
 
     def initialize(element_id, width, height)
       @viewbox           = [0, 0, 100, 100] # todo: do we need these defaults?
@@ -234,9 +236,10 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
+      color             = COLORS[root.color]
       attr              = {}
-      attr["fill"]      = root.fill == :filled ? "black" : "white"
-      attr[:stroke]     = 'black'
+      attr["fill"]      = root.fill == :filled ? color : COLORS['white']
+      attr[:stroke]     = color
       size              = root.size
       @paper.line_width = 0
       if root.rect?
@@ -271,6 +274,8 @@ module Harpnotes
       center = [root.center.first, root.center.last]
       size   = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
 
+      color = COLORS[root.color]
+
       is_playable = root.origin.is_a? Harpnotes::Music::Playable
 
       @paper.line_width = 0.1
@@ -288,7 +293,7 @@ module Harpnotes
       @paper.line_width = root.line_width
       scalefactor       = size.last / root.glyph[:h]
       attr              = {}
-      attr[:fill]       = "black"
+      attr[:fill]       = color
       attr[:transform]  = "translate(#{(center.first)},#{(center.last)}) scale(#{scalefactor})"
       e                 = @paper.path(root.glyph[:d], attr, bgrect)
 
@@ -313,7 +318,7 @@ module Harpnotes
       e_bar = @paper.rect(root.center.first - root.size.first,
                           root.center.last - root.size.last - 1.5 * root.line_width,
                           2 * root.size.first,
-                          0.5, 0, {fill: 'black'}) # svg does not show if height=0
+                          0.5, 0, {fill: COLORS[root.color]}) # svg does not show if height=0
     end
 
     # this draws the dot to an ellipse or glyph
@@ -323,8 +328,9 @@ module Harpnotes
       ds2               = DOTTED_SIZE + root.line_width/2
       x                 = root.center.first + (root.size.first + ds1)
       y                 = root.center.last
-      e_dot             = @paper.ellipse(x, y, ds2, ds2, {stroke: "white", fill: "white"}) # white outer
-      e_dot             = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: "black"}) # black inner
+      white             = COLORS['white']
+      e_dot             = @paper.ellipse(x, y, ds2, ds2, {stroke: white, fill: white}) # white outer
+      e_dot             = @paper.ellipse(x, y, DOTTED_SIZE, DOTTED_SIZE, {fill: COLORS[root.color]}) # black inner
     end
 
 
@@ -336,7 +342,8 @@ module Harpnotes
     #
     # @return [type] [description]
     def draw_flowline(root)
-      attr                     = {stroke: 'black'}
+      color                    = COLORS[root.color]
+      attr                     = {stroke: color}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
       @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
@@ -403,8 +410,9 @@ module Harpnotes
 
     # draw a path
     def draw_path(root)
-      attr        = {stroke: :black, fill: 'none'}
-      attr[:fill] = "#000000" if root.filled?
+      color       = COLORS[root.color]
+      attr        = {stroke: color, fill: 'none'}
+      attr[:fill] = color if root.filled?
       e           = @paper.path(root.path, attr)
 
       draginfo = root.draginfo

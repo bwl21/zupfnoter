@@ -104,7 +104,7 @@ class ConfstackEditor
       end
 
       def self.to_neutral(key)
-        nil
+        0
       end
     end
 
@@ -119,7 +119,7 @@ class ConfstackEditor
       end
 
       def self.to_neutral(key)
-        nil
+        true # not really necesasry, use cannot empty this field :-)
       end
 
       def self.to_w2uifield(key)
@@ -147,7 +147,7 @@ class ConfstackEditor
       end
 
       def self.to_neutral(key)
-        nil
+        0
       end
     end
 
@@ -215,6 +215,32 @@ class ConfstackEditor
          placeholder: '', #@value[key],
          html:        {caption: I18n.t("#{key}.caption")}}
       end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral RestPosition #{__FILE__} #{__LINE__}")
+      end
+    end
+
+    class Color < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['black', 'grey', 'darkgrey']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html:        {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral Color #{__FILE__} #{__LINE__}")
+      end
+
     end
 
     class TextStyle < ZnTypes
@@ -232,6 +258,11 @@ class ConfstackEditor
          placeholder: '', #@value[key],
          html:        {caption: I18n.t("#{key}.caption")}}
       end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral TextStyle #{__FILE__} #{__LINE__}")
+      end
+
     end
 
     class ZnUnknown < ZnTypes
@@ -248,7 +279,7 @@ class ConfstackEditor
     def initialize
       @typemap = {
           IntegerPairs    => ['synchlines'],
-          FloatPair       => ['pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset'],
+          FloatPair       => ['pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset', 'jumpline_anchor'],
           IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
           Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow'],
           OneLineString   => ['title', 'filenamepart', 'url'],
@@ -258,6 +289,7 @@ class ConfstackEditor
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
+          Color           => ['color_default', 'color_variant1', 'color_variant2']
       }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil
@@ -283,8 +315,8 @@ class ConfstackEditor
       _type(key).to_value(key, string) unless string.nil?
     end
 
-    def to_neutral(key)
-      _type(key).to_neutral(key)
+    def to_neutral(key, value = nil)
+      _type(key).to_neutral(key, value)
     end
 
     def to_template(key)
@@ -300,8 +332,8 @@ class ConfstackEditor
     end
 
     def _type(key)
-      keyparts = key.split('.')
-      lookupkey = keyparts.last
+      keyparts         = key.split('.')
+      lookupkey        = keyparts.last
       lookupkey_with_x = keyparts[-2] + '.x' if keyparts[-2]
       @typemap[lookupkey] || @typemap[lookupkey_with_x] || ZnUnknown
     end
@@ -375,7 +407,7 @@ class ConfstackEditor
         patchvalue[k] = @helper.to_value(k, value) unless value.nil?
       else
         if value.nil?
-          patchvalue[k] = @helper.to_value(k, nil) # this will produce the 'empty value'
+          patchvalue[k] = @helper.to_neutral(k, @record[k]) # this will produce the 'empty value'
         elsif value.is_a? String
           patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
         elsif value.is_a? Boolean
@@ -444,7 +476,10 @@ class ConfstackEditor
           `document.getElementById(#{event}.target).focus()`
             #nil
           }
-          `event.onComplete=#{a}`
+          %x{
+         // w2ui['configform'].validate(true)
+          event.onComplete=#{a}
+           }
         },
         toolbar:    {
             style:   'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;', #todo fix this
@@ -467,7 +502,7 @@ class ConfstackEditor
               @newentry_handler.call if (the_target == 'new_entry')
             end
         },
-        onValidate: lambda { alert("validate"); nil },
+        onValidate: lambda {|event| nil },
         formHTML:   %Q{
                     <table>
                     <tr><th style="width:20em;">#{I18n.t("Name")}</th>

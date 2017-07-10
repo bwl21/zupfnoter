@@ -84,6 +84,7 @@ locale = JSON.parse(File.read('../public/locale/de-de.json'))
 $conf = Confstack.new(false)
 $conf.push(JSON.parse(InitConf.init_conf.to_json))
 $conf['presets.layout.layout_regular'] = nil  # This is a lambda  which needs to be suppressed for documentation
+$conf['presets.layout.packer_regular'] = nil  # This is a lambda  which needs to be suppressed for documentation
 
 ignore_keys  = $conf.keys.select { |k| ignore_patterns.select { |ik| k.match(ik) }.count > 0 }
 produce_keys = $conf.keys.select { |k| produce_patterns.select { |ik| k.match(ik) }.count > 0 }

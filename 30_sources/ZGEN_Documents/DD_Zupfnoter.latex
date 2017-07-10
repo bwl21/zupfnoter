@@ -75,6 +75,7 @@
 \author{}
 \date{}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Wortsammler specific settings
@@ -138,8 +139,8 @@
 \setlength{\evensidemargin}{-0.5cm}
 \setlength{\textwidth}{17cm}
 \setlength{\topmargin}{-2.0cm}
-\setlength{\headheight}{1cm}
-\setlength{\headsep}{1.5cm}
+\setlength{\headheight}{53pt}
+\setlength{\headsep}{0.5cm}
 \setlength{\textheight}{25cm}
 \setlength{\footskip}{1cm}
 
@@ -193,12 +194,12 @@
 
 {
 \hypersetup{linkcolor=black}
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{3}
 \tableofcontents
 \newpage
 }
 
-\section{sample websites}
+\subsection{sample websites}\label{sample-websites}
 
 http://wfiedler-online.de/musikblog3/abc.php
 
@@ -215,5 +216,104 @@ http://normanschmidt.net/abc/index.php - choräle in abc
 http://penzeng.de/Geige/Abc.htm - Deutsche Anleitung
 
 http://abcplus.sourceforge.net/ABCPlus.pdf - Deutsche Anleitung
+
+https://github.com/MrRio/jsPDF
+
+https://github.com/paulrosen/abcjs
+
+http://trillian.mit.edu/\textasciitilde{}jc/cgi/abc/tunefind -
+tunefinder
+
+http://homepage.bnv-bamberg.de/flg-blw-partnerschaft/musik-facharbeit-eva-klein.pdf
+
+\subsection{useful links}\label{useful-links}
+
+https://github.com/paulrosen/abcjs - the abcjs package
+
+http://www.musicxml.com/ - detailled information about musicxml
+
+https://github.com/paulrosen/abcjs the sourcecode of an abcprocessor in
+js
+
+https://github.com/mudcube/MIDI.js - wie man midi im browser spielen
+kann
+
+http://threejs.org/ - webgl library
+
+http://raphaeljs.com/ - JS vector library
+
+https://github.com/dr-skot/abc \# ruby/treetop parser
+
+https://github.com/PencilCode/musical.js \# javascript player for ABC
+
+\subsection{choosing a vector-gem}\label{choosing-a-vector-gem}
+
+In order to compute the l ayout slurs and triplets we need a 2d vector
+library with :
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  add, subtract
+\item
+  rotate
+\item
+  angle
+\item
+  create from array
+\item
+  to\_a
+\end{itemize}
+
+nice to have
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  various constructors
+\item
+  inspect
+\end{itemize}
+
+special
+
+.to\_path
+
+\begin{itemize}
+\item
+  vector2d
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    big
+  \item
+    well documented
+  \item
+    actively maintained
+  \end{itemize}
+
+  The library of choice. Maybe I strip it down if it is too big.
+\item
+  vector2d-ruby
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    small
+  \item
+    not documented
+  \item
+    acively maintained
+  \end{itemize}
+\item
+  uzi-vector
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    not actively maintained
+  \end{itemize}
+\end{itemize}
 
 \end{document}
