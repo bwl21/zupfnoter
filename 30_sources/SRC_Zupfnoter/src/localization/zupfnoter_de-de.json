@@ -133,6 +133,8 @@
     "Extract 1": "Auszug 1",
     "Extract 2": "Auszug 2",
     "Extract 3": "Auszug 3",
+    "Extract 4": "Auszug 4",
+    "Extract 5": "Auszug 5",
     "Extract": "Auszug",
     "extract": "Auszug",
     "Extract-Annotation": "Auszugsbeschriftung",
@@ -388,6 +390,7 @@
     "Zombie Accesstoken revoked; do not use Browser back after login to dropbox": "Zombie Zugriffstoken gelöscht. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
+    "Zupfnoter": "Zupfnoter",
 
     "_ende_der_liste": ""
   }

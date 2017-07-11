@@ -816,7 +816,7 @@ function set_tbitem_caption(item, caption) {
 
 function update_systemstatus_w2ui(systemstatus) {
   $(".dropbox-status").html(systemstatus.dropbox);
-  w2ui.layout_top_toolbar.set('tb_home', {text: "Zupfdnoter " + systemstatus.version})
+  w2ui.layout_top_toolbar.set('tb_home', {text: "Zupfnoter" + " " + systemstatus.version})
 
   var tb_view_title = w2ui.layout_top_toolbar.get('tb_view:' + systemstatus.view)
   tb_view_title = (tb_view_title ? tb_view_title.text : systemstatus.view)

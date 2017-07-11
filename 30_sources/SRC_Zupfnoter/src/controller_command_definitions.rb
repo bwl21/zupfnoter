@@ -539,6 +539,9 @@ class Controller
             value               = editor_conf[zerokey] if value.nil?
             value               = $conf[zerokey] if value.nil?
             effective_values[k] = value
+            if k.end_with? '.filenamepart'
+              effective_values[k] = "< see help > " if not editable_values[k]
+            end
           end
 
           $log.timestamp("6  #{__FILE__} #{__LINE__}")
