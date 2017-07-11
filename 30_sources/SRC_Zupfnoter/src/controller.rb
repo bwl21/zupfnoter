@@ -197,6 +197,7 @@ class Controller
                                play_stop:    [lambda { `update_play_w2ui('stop')` }],
                                disable_save: [lambda { `disable_save();` }],
                                enable_save:  [lambda { `enable_save();` }],
+                               before_open:  [lambda { `before_open()`}],
                                extracts:     [lambda { @extracts.each { |entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})` }

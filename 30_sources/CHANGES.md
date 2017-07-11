@@ -9,6 +9,9 @@
 * decorations now also work on rests (#127)
 * shift now also works on unisons (#107)
 * abc2svg settings no longer necessary in tunes (removed from Template) (#71)
+* BWC Default for "filenamepart" is now as it was in 1.5 (#155)
+* Config form is refreshed after loading another song (#156)
+
 
 ## enhancement
 
@@ -31,7 +34,7 @@
 ## backwards compatibility issues
 
 * layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
-* Default for "filenamepart" is now as it was in 1.5 (#155)
+* BWC Default for "filenamepart" is now as it was in 1.5 (#155)
 
 
 # V 1.6.1
