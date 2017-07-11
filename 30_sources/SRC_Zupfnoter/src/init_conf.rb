@@ -199,7 +199,6 @@ module InitConf
          extract:      {
              "0" => {
                  title:        "alle Stimmen",
-                 filenamepart: 'alle-stimmen',
                  startpos:     15,
                  voices:       [1, 2, 3, 4],
                  synchlines:   [[1, 2], [3, 4]],
@@ -258,28 +257,22 @@ module InitConf
              },
              "1" => {
                  title:        "Sopran, Alt",
-                 filenamepart: 'sopran-alt',
                  voices:       [1, 2]
              },
              "2" => {
                  title:        "Tenor, Bass",
-                 filenamepart: 'tenor-bass',
                  voices:       [3, 4]
              },
              "3" => {
                  title:        "Melodie",
-                 filenamepart: 'melodie',
                  voices:       [1]
              },
              "4" => {
                  title:        "Extract 4",
-                 filenamepart: 'extract-4',
                  voices:       [1]
              },
              "5" => {
-                 title:        "Extract 5",
-                 filenamepart: 'extract-5',
-                 voices:       [1]
+                 title:        "Extract 5", voices:       [1]
              }
          },
 

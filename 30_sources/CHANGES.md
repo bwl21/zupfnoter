@@ -30,9 +30,8 @@
 
 ## backwards compatibility issues
 
-* layoutlines is now the combination of voices and layoutlines. I
-    t is not longer possible to show voices without considering 
-    them in the layout.
+* layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
+* Default for "filenamepart" is now as it was in 1.5 (#155)
 
 
 # V 1.6.1
@@ -83,6 +82,11 @@
 * in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
 * now get message if F: is missing
 * now get messaage Filename or path contains whitespace and special characters
+
+## known issues
+
+* default for filename part has changed to the defaults of the builtin configuration - fixed in 1.7 (#155)
+
 
 # V 1.5
 
