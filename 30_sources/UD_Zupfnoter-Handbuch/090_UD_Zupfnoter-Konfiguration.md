@@ -133,7 +133,6 @@ Auszug 1 usw.
               "style"   : "smaller",
               "voices"  : []
             },
-            "filenamepart" : "alle-stimmen",
             "flowlines"    : [1, 3],
             "jumplines"    : [1, 3],
             "layout"       : {
@@ -185,31 +184,11 @@ Auszug 1 usw.
             "title"        : "alle Stimmen",
             "voices"       : [1, 2, 3, 4]
           },
-          "1" : {
-            "filenamepart" : "sopran-alt",
-            "title"        : "Sopran, Alt",
-            "voices"       : [1, 2]
-          },
-          "2" : {
-            "filenamepart" : "tenor-bass",
-            "title"        : "Tenor, Bass",
-            "voices"       : [3, 4]
-          },
-          "3" : {
-            "filenamepart" : "melodie",
-            "title"        : "Melodie",
-            "voices"       : [1]
-          },
-          "4" : {
-            "filenamepart" : "extract-4",
-            "title"        : "Extract 4",
-            "voices"       : [1]
-          },
-          "5" : {
-            "filenamepart" : "extract-5",
-            "title"        : "Extract 5",
-            "voices"       : [1]
-          }
+          "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
+          "2" : {"title": "Tenor, Bass", "voices": [3, 4]},
+          "3" : {"title": "Melodie", "voices": [1]},
+          "4" : {"title": "Extract 4", "voices": [1]},
+          "5" : {"title": "Extract 5", "voices": [1]}
         }
           
 
@@ -323,22 +302,6 @@ Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
 angeben, die Zählmarken bekommen sollen.
 
         "voices": []
-          
-
-## `extract.0.filenamepart` - Filename-Zusatz {#extract.0.filenamepart}
-
-Hier kannst du einen Zusatz angeben, um welchen der Filename der
-PDF-Dateien für diesen Auszug ergänzt werden soll. Auf diese Weise wird
-jeder Auszug in einer eigenen Datei wiedergegeben.
-
-Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von
-`extract.0.title` gebildet.
-
-> **Hinweis**: Bitte achte darauf, daß jeder Auszug einen eindeutigen
-> Filename-Zusatz oder Titel hat. Sonst werden mehrere Auszüge in die
-> gleiche Datei geschrieben (und nur der letzte bleibt übrig).
-
-        "filenamepart": "alle-stimmen"
           
 
 ## `extract.0.flowlines` - Flußlinien {#extract.0.flowlines}

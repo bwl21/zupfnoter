@@ -151,7 +151,7 @@ function init_w2ui(uicontroller) {
     'tb_save': function () {
       $("#tb_layout_top_toolbar_item_tb_save table").removeClass("alert")
       disable_save();
-      setTimeout(function(){
+      setTimeout(function () {
         uicontroller.$handle_command("dsave");
       }, 100)
 
@@ -816,7 +816,7 @@ function set_tbitem_caption(item, caption) {
 
 function update_systemstatus_w2ui(systemstatus) {
   $(".dropbox-status").html(systemstatus.dropbox);
-  w2ui.layout_top_toolbar.set('tb_home', {text: "Zupfdnoter " + systemstatus.version})
+  w2ui.layout_top_toolbar.set('tb_home', {text: "Zupfnoter" + " " + systemstatus.version})
 
   var tb_view_title = w2ui.layout_top_toolbar.get('tb_view:' + systemstatus.view)
   tb_view_title = (tb_view_title ? tb_view_title.text : systemstatus.view)
@@ -848,7 +848,6 @@ function update_systemstatus_w2ui(systemstatus) {
     $("#tb_layout_top_toolbar_item_tb_save table").removeClass("alert")
   }
   ;
-
 
 
 }
@@ -899,9 +898,16 @@ function update_play_w2ui(status) {
   }
 }
 
-function disable_save(){w2ui.layout_top_toolbar.disable('tb_save')};
-function enable_save(){ w2ui.layout_top_toolbar.enable('tb_save')};
-function set_extract_menu(id, text){
+function disable_save() {
+  w2ui.layout_top_toolbar.disable('tb_save')
+};
+function enable_save() {
+  w2ui.layout_top_toolbar.enable('tb_save')
+};
+function before_open() {
+  w2ui.layout_left_tabs.click('abcEditor')
+};
+function set_extract_menu(id, text) {
   w2ui.layout_top_toolbar.set('tb_view:' + id, {text: text});
   w2ui.layout_top_toolbar.refresh();
 };

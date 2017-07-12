@@ -539,6 +539,9 @@ class Controller
             value               = editor_conf[zerokey] if value.nil?
             value               = $conf[zerokey] if value.nil?
             effective_values[k] = value
+            if k.end_with? '.filenamepart'
+              effective_values[k] = "< see help > " if not editable_values[k]
+            end
           end
 
           $log.timestamp("6  #{__FILE__} #{__LINE__}")
@@ -1099,6 +1102,8 @@ C
       end
     end
 
+
+    # todo this is obsolete ... use dopen_fn istead
     @commands.add_command(:dopen) do |command|
 
       command.add_parameter(:fileid, :string, "file id")
@@ -1137,8 +1142,10 @@ C
           filebase = fileidfound.split(".abc")[0 .. -1].join(".abc")
           abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
 
+          call_consumers(:before_open)
           @editor.set_text(abc_text)
           set_status(music_model: "loaded")
+
           handle_command("render")
 
         end.fail do |err|
@@ -1177,8 +1184,10 @@ C
           filebase = fileid.split(".abc")[0 .. -1].join(".abc")
           abc_text = @abc_transformer.add_metadata(abc_text, F: filebase)
 
+          call_consumers(:before_open)
           @editor.set_text(abc_text)
           set_status(music_model: "loaded")
+
           handle_command("render")
 
         end.fail do |err|

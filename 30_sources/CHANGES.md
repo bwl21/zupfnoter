@@ -9,6 +9,9 @@
 * decorations now also work on rests (#127)
 * shift now also works on unisons (#107)
 * abc2svg settings no longer necessary in tunes (removed from Template) (#71)
+* BWC Default for "filenamepart" is now as it was in 1.5 (#155)
+* Config form is refreshed after loading another song (#156)
+
 
 ## enhancement
 
@@ -30,9 +33,8 @@
 
 ## backwards compatibility issues
 
-* layoutlines is now the combination of voices and layoutlines. I
-    t is not longer possible to show voices without considering 
-    them in the layout.
+* layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
+* BWC Default for "filenamepart" is now as it was in 1.5 (#155)
 
 
 # V 1.6.1
@@ -83,6 +85,11 @@
 * in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
 * now get message if F: is missing
 * now get messaage Filename or path contains whitespace and special characters
+
+## known issues
+
+* default for filename part has changed to the defaults of the builtin configuration - fixed in 1.7 (#155)
+
 
 # V 1.5
 
