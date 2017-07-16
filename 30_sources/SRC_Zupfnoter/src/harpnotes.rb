@@ -1673,7 +1673,7 @@ module Harpnotes
 
             # draw subflowline if both ends are visible
             if not previous_note.nil? and previous_note.visible and playable.visible
-              res       = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
+              res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
               #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             end
 
@@ -1897,8 +1897,9 @@ module Harpnotes
             annotationoffset = [0, (-decoration_root.size.last/decoration_scale - decoration_distance).round()] unless annotationoffset
 
             decoration_center = [decoration_root.center.first + annotationoffset.first, decoration_root.center.last + annotationoffset.last]
-            r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, {pos: annotationoffset})
-            r.is_note         = false
+            r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, annotationoffset)
+            r.tap { |s| s.draginfo={handler: :annotation} }
+            r.is_note = false
             decoration_result.push [r]
           end
         end
