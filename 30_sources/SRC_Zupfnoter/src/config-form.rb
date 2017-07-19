@@ -45,7 +45,7 @@ class ConfstackEditor
 
         unless a
           help_key = key
-          help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
+          help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) {"#{$1}0#{$3}"}
           a        = $conf.get(help_key)
         end
 
@@ -68,11 +68,11 @@ class ConfstackEditor
 
     class IntegerPairs < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map { |i| i.split('-').map { |i| i.to_i } }
+        string.split(",").map {|pair| values = pair.split('-'); [values[0] || 0, values[1] || 0].map {|i| i.to_i}}
       end
 
       def self.to_string(key, value)
-        a = value.map { |v| %Q{#{v.first}-#{v.last}} }.join(", ")
+        a = value.map {|v| %Q{#{v.first}-#{v.last}}}.join(", ")
       end
 
       def self.to_neutral(key)
@@ -82,7 +82,8 @@ class ConfstackEditor
 
     class FloatPair < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map { |i| i.to_f }
+        list = string.split(",")
+        [list[0] || 0, list[1] || 0].map {|i| i.to_f}
       end
 
       def self.to_string(key, value)
@@ -173,11 +174,11 @@ class ConfstackEditor
 
     class IntegerList < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map { |i| i.to_i }
+        string.split(",").map {|i| i.to_i}
       end
 
       def self.to_string(key, value)
-        value.map { |i| i.to_s }.join(", ")
+        value.map {|i| i.to_s}.join(", ")
       end
 
       def self.to_neutral(key)
@@ -187,7 +188,7 @@ class ConfstackEditor
 
     class TupletShape < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map { |s| s.strip }
+        string.split(",").map {|s| s.strip}
       end
 
       def self.to_string(key, value)
@@ -213,7 +214,7 @@ class ConfstackEditor
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),
          placeholder: '', #@value[key],
-         html:        {caption: I18n.t("#{key}.caption")}}
+         html: {caption: I18n.t("#{key}.caption")}}
       end
 
       def self.to_neutral
@@ -234,7 +235,7 @@ class ConfstackEditor
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),
          placeholder: '', #@value[key],
-         html:        {caption: I18n.t("#{key}.caption")}}
+         html: {caption: I18n.t("#{key}.caption")}}
       end
 
       def self.to_neutral
@@ -256,7 +257,7 @@ class ConfstackEditor
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),
          placeholder: '', #@value[key],
-         html:        {caption: I18n.t("#{key}.caption")}}
+         html: {caption: I18n.t("#{key}.caption")}}
       end
 
       def self.to_neutral
@@ -290,7 +291,7 @@ class ConfstackEditor
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
           Color           => ['color_default', 'color_variant1', 'color_variant2']
-      }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
+      }.inject({}) {|r, (k, v)| v.each {|i| r[i] = k}; r}
 
       nil
     end
@@ -353,7 +354,7 @@ class ConfstackEditor
 
     $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
 
-    value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") { value_handler.call }
+    value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") {value_handler.call}
 
     $log.benchmark("process value handler result #{__FILE__} #{__LINE__}") do
       @value                = Confstack.new(false)
@@ -370,8 +371,8 @@ class ConfstackEditor
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
     @record = {} # hash to prepare the record for the form
 
-    @record          = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
-    @effective_value = @effective_value_raw.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r }
+    @record          = @value.keys.inject({}) {|r, k| r[k] = @helper.to_string(k, @value[k]); r}
+    @effective_value = @effective_value_raw.keys.inject({}) {|r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r}
     $log.timestamp("end initialize Form  #{__FILE__} #{__LINE__}")
     nil
   end
@@ -410,7 +411,7 @@ class ConfstackEditor
           patchvalue[k] = @helper.to_neutral(k, @record[k]) # this will produce the 'empty value'
         elsif value.is_a? String
           patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
-        elsif value.is_a? Boolean
+        elsif value.is_a? Boolean or value.is_a? Numeric
           patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
         else # return value is an object (e.g. selection list)
           value         = value[:id]
@@ -461,28 +462,30 @@ class ConfstackEditor
     $log.timestamp("generate Form  #{__FILE__} #{__LINE__}")
 
     presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
-                  items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
+                  items: @quicksetting_commands.map {|i| {id: i, text: i.split(".").last}}
     }
 
     @form = {
-        name:       "configform",
+        name: "configform",
         #header:     I18n.t(@title),
         style:      'border: 0px; background-color: transparent;',
-        fields:     @value.keys.map { |key| @helper.to_w2uifield(key) }.flatten.compact,
+        fields:     @value.keys.map {|key| @helper.to_w2uifield(key)}.flatten.compact,
         record:     @record,
         focus:      -1,
-        onChange:   lambda { |event|
-          a=lambda { push_config_to_editor
-          `document.getElementById(#{event}.target).focus()`
+        onChange:   lambda {|event|
+          a=lambda {
+            push_config_to_editor
+            %x{
+               document.getElementById(#{event}.target).focus()
+              }
             #nil
           }
           %x{
-         // w2ui['configform'].validate(true)
-          event.onComplete=#{a}
-           }
+            event.onComplete=#{a}
+          }
         },
         toolbar:    {
-            style:   'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;', #todo fix this
+            style: 'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;', #todo fix this
             items:   [
                          {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<div style="font-size:120%;vertical-align:top;margin-bottom: 8px;">#{I18n.t(@title)}</div>}},
                          {id: 'bt3', type: 'spacer'},
@@ -502,12 +505,12 @@ class ConfstackEditor
               @newentry_handler.call if (the_target == 'new_entry')
             end
         },
-        onValidate: lambda {|event| nil },
+        onValidate: nil,
         formHTML:   %Q{
                     <table>
                     <tr><th style="width:20em;">#{I18n.t("Name")}</th>
                     <th>#{I18n.t("Value")}</th><th/><th>#{I18n.t("Effective value")}</th></tr>
-                    #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
+                    #{@value.keys.map {|key| mk_fieldHTML(key, @value[key])}.join}
                     </table>
                     }
     }
