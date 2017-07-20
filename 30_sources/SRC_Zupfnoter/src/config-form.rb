@@ -241,7 +241,27 @@ class ConfstackEditor
       def self.to_neutral
         $log.error("BUG: this should not happen Neutral Color #{__FILE__} #{__LINE__}")
       end
+    end
 
+    class Instrument < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['37-strings-g-g', '18-strings-b-e', 'saitenspiel']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral Instrument #{__FILE__} #{__LINE__}")
+      end
     end
 
     class TextStyle < ZnTypes
@@ -281,8 +301,8 @@ class ConfstackEditor
       @typemap = {
           IntegerPairs    => ['synchlines'],
           FloatPair       => ['pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset', 'jumpline_anchor'],
-          IntegerList     => ['voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
-          Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow'],
+          IntegerList     => ['a4_pages', 'voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
+          Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow', 'PITCH_OFFSET'],
           OneLineString   => ['title', 'filenamepart', 'url'],
           MultiLineString => ['text'],
           Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show", "fill", "grid"],
@@ -290,6 +310,7 @@ class ConfstackEditor
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
+          Instrument      => ['instrument'],
           Color           => ['color_default', 'color_variant1', 'color_variant2']
       }.inject({}) {|r, (k, v)| v.each {|i| r[i] = k}; r}
 

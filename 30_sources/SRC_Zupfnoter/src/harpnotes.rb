@@ -1169,17 +1169,29 @@ module Harpnotes
         @color_default        = $conf.get('layout.color.color_default')
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
-        @pitch_to_xpos        = lambda {|root| ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')}
+        set_instrument_handlers
+      end
 
-        @pitch_to_xpos = lambda {|root|
-          #          G        c        d        e        f        g        a        b        c'       D'
-          x = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
-          `debugger`
-          x      = x[root.pitch + $conf.get('layout.PITCH_OFFSET')]
-          result = 0
-          result = (x) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') if x
-          result
-        }
+      def set_instrument_handlers
+        @bottom_annotation_positions = [[150, 289], [325, 289], [380, 289]]
+        @pitch_to_xpos = lambda {|root| ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')}
+
+        case $conf['layout.instrument']
+          when "saitenspiel"
+            @pitch_to_xpos = lambda {|root|
+              #          G        c        d        e        f        g        a        b        c'       D'
+              pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
+              pitch_to_stringpos = pitch_to_stringpos[root.pitch + $conf.get('layout.PITCH_OFFSET')]
+              result             = 0
+              result             = (pitch_to_stringpos) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') if pitch_to_stringpos
+              result
+            }
+           @bottom_annotation_positions = [[5, 287], [5, 290], [150, 290]]
+
+          when "18-strings-b-e"
+            @bottom_annotation_positions = [[5, 287], [5, 290], [150, 290]]
+          else
+        end
       end
 
 
@@ -1338,8 +1350,7 @@ module Harpnotes
         sheet_marks = layout_stringnames(print_options_hash)
 
         # build cutmarks
-
-        if page_format == 'A4'
+        if page_format == 'A4' and $conf['printer.a4_pages'].length > 1
           delta = 12.0 * $conf.get('layout.X_SPACING') # cut in octaves
           (1..2).each do |i| # number rof cutmarks
             [4, 290].each do |y| # the y  Coordinates
@@ -1370,9 +1381,9 @@ module Harpnotes
                                                           "extract.#{print_variant_nr}.legend.spos", legend_pos).tap {|s| s.draginfo={handler: :annotation}}
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
-        annotations << Harpnotes::Drawing::Annotation.new([150, 289], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
-        annotations << Harpnotes::Drawing::Annotation.new([325, 289], "Zupfnoter: https://www.zupfnoter.de", :smaller)
-        annotations << Harpnotes::Drawing::Annotation.new([380, 289], music.checksum, :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[1], "Zupfnoter: https://www.zupfnoter.de", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[2], music.checksum, :smaller)
 
         lyrics     = print_options_hash[:lyrics]
         lyric_text = music.harpnote_options[:lyrics][:text]

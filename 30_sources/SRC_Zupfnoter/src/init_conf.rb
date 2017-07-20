@@ -18,11 +18,11 @@ module InitConf
                      # sort within layout
                      :limit_a3, :jumplineoffset, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
-                     :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+                     :instrument, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
                      :sortmark, :show, :fill, :size,
                      :minc,
                      # sort within printer
-                     :a3_offset, :a4_offset, # sort within laoyut
+                     :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
 
                      :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T99_do_not_copy,
 
@@ -226,6 +226,7 @@ module InitConf
                                 REST_SIZE:         [4, 2],
                                 DRAWING_AREA_SIZE: [400, 282],
                                 minc:              {}, # moreinc
+                                instrument:        '37-strings-g-g',
                                 packer:            {
                                     pack_method:           0,
                                     pack_max_spreadfactor: 2,
@@ -252,6 +253,7 @@ module InitConf
                  printer:      {
                      a3_offset:   [0, 0],
                      a4_offset:   [-5, 0],
+                     a4_pages:    [0,1,2],
                      show_border: false
                  }
              },
