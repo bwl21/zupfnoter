@@ -325,7 +325,7 @@ function init_w2ui(uicontroller) {
         tooltip: "Choose extract",
         items: [
           {text: 'Extract 0', icon: 'fa fa-asterisk', id: "0"},
-          {text: '--'},
+          {},
           {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
           {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
           {text: 'Extract 3', icon: 'fa fa-tags', id: "3"},
@@ -540,6 +540,11 @@ function init_w2ui(uicontroller) {
             tooltip: "edit settings for sheet annotations\nin current extract"
           },
           {},
+          {
+            id: 'instrument_specific',
+            text: 'instrument specific',
+            tooltip: "settings for specific instrument sizes"
+          },
           {
             id: 'barnumbers_countnotes',
             text: 'barnumbers and countnotes',

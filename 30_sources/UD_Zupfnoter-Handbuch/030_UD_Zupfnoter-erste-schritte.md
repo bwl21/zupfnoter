@@ -409,7 +409,7 @@ Zupfnoter verwendet jedoch nur folgende Dateitypen in deiner Dropbox:
 ## Musikstück aus Dropbox laden
 
 Um das Musikstück wieder zu laden, klicke auf "Öffnen" bzw. wähle das
-Menü "Dropbox \> Öfnnen. Es erscheint ein Datei-Auswahl-Dialog von
+Menü "Dropbox \> Öfnnen". Es erscheint ein Datei-Auswahl-Dialog von
 Dropbox. Dort ist oben ein Suchfeld. Dort kannst du einen Teil des
 Dateinamens eingeben, um die gewünschte Datei zu suchen.
 

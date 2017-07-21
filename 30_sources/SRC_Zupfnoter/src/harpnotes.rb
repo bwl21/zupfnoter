@@ -1169,16 +1169,17 @@ module Harpnotes
         @color_default        = $conf.get('layout.color.color_default')
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
+        @draw_instrument      = nil;
         set_instrument_handlers
       end
 
       def set_instrument_handlers
         @bottom_annotation_positions = [[150, 289], [325, 289], [380, 289]]
-        @pitch_to_xpos = lambda {|root| ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')}
+        @pitch_to_xpos               = lambda {|root| ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')}
 
         case $conf['layout.instrument']
           when "saitenspiel"
-            @pitch_to_xpos = lambda {|root|
+            @pitch_to_xpos               = lambda {|root|
               #          G        c        d        e        f        g        a        b        c'       D'
               pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
               pitch_to_stringpos = pitch_to_stringpos[root.pitch + $conf.get('layout.PITCH_OFFSET')]
@@ -1186,7 +1187,16 @@ module Harpnotes
               result             = (pitch_to_stringpos) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') if pitch_to_stringpos
               result
             }
-           @bottom_annotation_positions = [[5, 287], [5, 290], [150, 290]]
+            @bottom_annotation_positions = [[5, 287], [5, 290], [150, 290]]
+            @draw_instrument             = lambda {
+              res            = Harpnotes::Drawing::Path.new([['M', 30, 6], ['L', 180, 81], ['L', 180, 216], ['L', 30, 291]], :open)
+              res.line_width = $conf.get('layout.LINE_MEDIUM');
+              res
+            }
+
+          when "21-strings-a-f"
+            @bottom_annotation_positions = [[150, 289], [325, 289], [360, 289]]
+
 
           when "18-strings-b-e"
             @bottom_annotation_positions = [[5, 287], [5, 290], [150, 290]]
@@ -1426,6 +1436,7 @@ module Harpnotes
           $log.error e.message
         end
 
+        sheet_marks.push(@draw_instrument.call) if @draw_instrument
 
         sheet_elements = manual_sheet + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 

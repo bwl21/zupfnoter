@@ -169,6 +169,21 @@ gezeichnet werden soll.
 > **Hinweis**:In der Texteingabe wird das als eine Liste von
 > zweiwertigen Listen dargestellt.
 
+## instrument
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
 ## layout
 
 Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
@@ -457,6 +472,18 @@ Hier gibst du die Position der Seitenbeschriftung an, an welcher der
 Liedtext-Block ausgegeben werden soll. Angabe erfolgt in mm als
 kommagetrennte Liste von horizontaler / vertikaler Position.
 
+## PITCH_OFFSET
+
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
+erscheint.
+
+Die Midi-Codes findest du auf
+[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+
 ## pos
 
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
@@ -508,6 +535,16 @@ verschoben werden soll.
 
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
 vertikaler Position.
+
+## printer.a4_pages
+
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
 
 ## printer.show_border
 
@@ -741,3 +778,7 @@ mm.
 Hier kannst du angeben, in welcher Spalte der Zeilenumbruch im
 Konfigurationsabschnitt erfolgen soll. Das kann bei komplexen
 Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
+
+## X_SPACING
+
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
