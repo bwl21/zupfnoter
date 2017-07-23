@@ -1195,11 +1195,11 @@ module Harpnotes
             }
 
           when "21-strings-a-f"
-            @bottom_annotation_positions = [[150, 289], [325, 289], [360, 289]]
+            @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
 
 
           when "18-strings-b-e"
-            @bottom_annotation_positions = [[5, 287], [5, 290], [150, 290]]
+            @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
           else
         end
       end

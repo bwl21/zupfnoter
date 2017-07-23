@@ -158,13 +158,13 @@ module InitConf
                  },
                  '18-strings-b-e' => {
                      layout:      {instrument:   '18-strings-b-e',
-                                   PITCH_OFFSET: -59,
+                                   PITCH_OFFSET: -43,
                                    X_SPACING:    11.50 # just to be safe
                      },
-                     stringnames: {text:  'B C C# D D# E F F# G G# A A# B C C# D D# E  - - - - - - - - - - - - - - - - - -',
+                     stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
                                    marks: {hpos: [59, 76]}
                      },
-                     printer:     {a4_pages: [0], a3_offset: [5,0], a4_offset: [-25, 0]}
+                     printer:     {a4_pages: [2], a3_offset: [30,0], a4_offset: [65, 0]}
                  },
                  'saitenspiel'    => {
                      layout:      {instrument:   'saitenspiel',

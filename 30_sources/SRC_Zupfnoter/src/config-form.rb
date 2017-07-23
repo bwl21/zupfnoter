@@ -34,7 +34,7 @@ class ConfstackEditor
         I18n.t(key)
       end
 
-      def self.to_neutral(key)
+      def self.to_neutral(key, string="")
         nil
       end
 
@@ -217,6 +217,10 @@ class ConfstackEditor
          html: {caption: I18n.t("#{key}.caption")}}
       end
 
+      def self.to_value(key, string)
+        string[:id]
+      end
+
       def self.to_neutral
         $log.error("BUG: this should not happen Neutral RestPosition #{__FILE__} #{__LINE__}")
       end
@@ -236,6 +240,10 @@ class ConfstackEditor
          tooltip:     I18n.t("#{key}.tooltip"),
          placeholder: '', #@value[key],
          html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_value(key, string)
+        string[:id]
       end
 
       def self.to_neutral
@@ -259,6 +267,10 @@ class ConfstackEditor
          html: {caption: I18n.t("#{key}.caption")}}
       end
 
+      def self.to_value(key, string)
+        string[:id]
+      end
+
       def self.to_neutral
         $log.error("BUG: this should not happen Neutral Instrument #{__FILE__} #{__LINE__}")
       end
@@ -278,6 +290,10 @@ class ConfstackEditor
          tooltip:     I18n.t("#{key}.tooltip"),
          placeholder: '', #@value[key],
          html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_value(key, string)
+        string[:id]
       end
 
       def self.to_neutral
@@ -425,7 +441,7 @@ class ConfstackEditor
     patchvalue = Confstack.new(false)
     @live_record.each do |k, v|
       value = Native(v)
-      if @record[k].nil?
+      if @record[k].nil? # this covers the new entry case
         patchvalue[k] = @helper.to_value(k, value) unless value.nil?
       else
         if value.nil?
@@ -434,9 +450,10 @@ class ConfstackEditor
           patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
         elsif value.is_a? Boolean or value.is_a? Numeric
           patchvalue[k] = @helper.to_value(k, value) unless (@record[k] == value) #or v.nil?
-        else # return value is an object (e.g. selection list)
-          value         = value[:id]
+        elsif value.has_key?(:id) # return value is an object (e.g. selection list)
           patchvalue[k] = @helper.to_value(k, value)
+        else
+          $log.error("BUG this should not happen #{__FILE__} #{__LINE__}")
         end
       end
     end
