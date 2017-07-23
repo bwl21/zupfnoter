@@ -12,7 +12,8 @@ module Harpnotes
     DOTTED_SIZE     = 0.5 # radius of dot
 
     # COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [0, 128, 128], 'lightgrey' => [211, 0, 211], 'darkgrey' => [169,169,0]}
-     COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [128, 128, 128], 'lightgrey' => [211, 211, 211], 'darkgrey' => [169,169,169]}
+    COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [128, 128, 128], 'lightgrey' => [211, 211, 211],
+              'darkgrey' => [169, 169, 169], 'dimgrey' => [105, 105, 105]}
 
     #X_SPACING = 115.0/10.0
 
@@ -26,7 +27,9 @@ module Harpnotes
       @pdf          = JsPDF.new(:p, :mm, :a4)
       @pdf.y_offset = sheet.printer_config['a4_offset'].last # -5
       addpage       = false
-      (0..2).each do |i|
+      pages         = sheet.printer_config['a4_pages'] || [0, 1, 2]
+
+      pages.each do |i|
         draw_segment(30 + sheet.printer_config['a4_offset'].first + i * delta, sheet, addpage) # todo: 30 = initial offset
         addpage = true
       end
@@ -106,7 +109,7 @@ module Harpnotes
 
       unless root.fill == :filled
         @pdf.line_width = root.line_width
-        size            = size.map { |s| s - root.line_width / 2 }
+        size            = size.map {|s| s - root.line_width / 2}
         if root.rect?
           @pdf.rect_like_ellipse(root.center, size, style)
         else
@@ -130,18 +133,18 @@ module Harpnotes
     def draw_glyph(root)
 
       style     = root.filled? :FD, :FD
-      @pdf.fill = (0...3).map { root.filled? ? 0 : 128 }
+      @pdf.fill = (0...3).map {root.filled? ? 0 : 128}
 
       center      = [root.center.first - root.size.first, root.center.last - root.size.last]
       center      = [root.center.first, root.center.last]
       size        = [root.size.first * 2, root.size.last * 2] # size to be treated as radius
       scalefactor = size.last / root.glyph[:h] # drawing = glyph * scalefactor
       boundingbox = [root.glyph[:w], root.glyph[:h]]
-      glyph_size  = [root.glyph[:w], root.glyph[:h]].map { |e| e/2 * scalefactor }
+      glyph_size  = [root.glyph[:w], root.glyph[:h]].map {|e| e/2 * scalefactor}
 
 
       # draw a white background
-      color = COLORS['white']
+      color       = COLORS['white']
       @pdf.fill   = color
       @pdf.stroke = color
       @pdf.rect_like_ellipse(root.center, root.size, :FD)
@@ -155,7 +158,7 @@ module Harpnotes
 
       # draw th path
 
-      color = COLORS[root.color]
+      color       = COLORS[root.color]
       @pdf.fill   = color
       @pdf.stroke = color
 
@@ -203,13 +206,13 @@ module Harpnotes
       #@pdf.ellipse(root.center.zip(root.size).map { |s| a, b = s; a + b + 0.7 }, [DOTTED_SIZE, DOTTED_SIZE], :F)
 
       color = COLORS[root.color]
-      ds1 = DOTTED_SIZE + root.line_width # distance of dot
-      ds2 = DOTTED_SIZE + root.line_width/2 # size of white dot
-      x   = root.center.first + (root.size.first + ds1)
-      y   = root.center.last
+      ds1   = DOTTED_SIZE + root.line_width # distance of dot
+      ds2   = DOTTED_SIZE + root.line_width/2 # size of white dot
+      x     = root.center.first + (root.size.first + ds1)
+      y     = root.center.last
 
       @pdf.line_width = 0
-      @pdf.fill       = [255, 255, 255]  # this needs to be white
+      @pdf.fill       = [255, 255, 255] # this needs to be white
       @pdf.stroke     = [255, 255, 255]
       @pdf.ellipse([x, y], [ds2, ds2], :FD)
 
@@ -236,8 +239,8 @@ module Harpnotes
     #
     # @return [type] [description]
     def draw_flowline(root)
-      color = COLORS[root.color]
-      @pdf.stroke = color
+      color          = COLORS[root.color]
+      @pdf.stroke    = color
       #@pdf.draw = (0...3).map { root.dashed? ? 128 : 0 }
       @pdf.line_dash = 3 if root.dashed?
       @pdf.line_dash = 6 if root.dotted?
@@ -266,7 +269,7 @@ module Harpnotes
         depth = 418.0 - (root.level * JUMPLINE_INDENT) #todo:replace literal
       end
 
-      @pdf.stroke = (0...3).map { 0 } # set the rgb color
+      @pdf.stroke = (0...3).map {0} # set the rgb color
       @pdf.line(endpoint, [depth, endpoint[1]])
       @pdf.line([depth, endpoint[1]], [depth, startpoint[1]])
       @pdf.line([depth, startpoint[1]], startpoint)
@@ -279,12 +282,12 @@ module Harpnotes
     # documentation see raphaeljs
     # todo: fully support absolute and relative commands
     def draw_path(root)
-      lines     = []
-      scale     = [1, 1]
-      start     = []
-      style     = root.filled? ? :FD : ""
-      color = COLORS[root.color]
-      @pdf.fill = root.filled? ? color : COLORS['white']
+      lines       = []
+      scale       = [1, 1]
+      start       = []
+      style       = root.filled? ? :FD : ""
+      color       = COLORS[root.color]
+      @pdf.fill   = root.filled? ? color : COLORS['white']
       @pdf.stroke = color
 
       root.path.each do |element|
@@ -294,7 +297,7 @@ module Harpnotes
             lines = []
             start = element[1 .. 2]
           when "L"
-            new_start = [[start], lines].flatten(1).inject([0, 0]) { |i, o| [o[0] + i[-2], o[1] + i[-1]] }
+            new_start = [[start], lines].flatten(1).inject([0, 0]) {|i, o| [o[0] + i[-2], o[1] + i[-1]]}
             @pdf.lines(lines, start.first, start.last, scale, style, false) unless lines.empty?
             lines = []
             start = new_start

@@ -141,12 +141,15 @@ Auszug 1 usw.
               "LINE_MEDIUM"       : 0.3,
               "LINE_THICK"        : 0.5,
               "LINE_THIN"         : 0.1,
+              "PITCH_OFFSET"      : -43,
               "REST_SIZE"         : [4, 2],
+              "X_SPACING"         : 11.5,
               "color"             : {
                 "color_default"  : "black",
                 "color_variant1" : "grey",
                 "color_variant2" : "darkgrey"
               },
+              "instrument"        : "37-strings-g-g",
               "jumpline_anchor"   : [3, 1],
               "limit_a3"          : true,
               "minc"              : {},
@@ -164,6 +167,7 @@ Auszug 1 usw.
             "printer"      : {
               "a3_offset"   : [0, 0],
               "a4_offset"   : [-5, 0],
+              "a4_pages"    : [0, 1, 2],
               "show_border" : false
             },
             "repeatsigns"  : {
@@ -331,12 +335,15 @@ Notenbild gezielt optimieren.
           "LINE_MEDIUM"       : 0.3,
           "LINE_THICK"        : 0.5,
           "LINE_THIN"         : 0.1,
+          "PITCH_OFFSET"      : -43,
           "REST_SIZE"         : [4, 2],
+          "X_SPACING"         : 11.5,
           "color"             : {
             "color_default"  : "black",
             "color_variant1" : "grey",
             "color_variant2" : "darkgrey"
           },
+          "instrument"        : "37-strings-g-g",
           "jumpline_anchor"   : [3, 1],
           "limit_a3"          : true,
           "minc"              : {},
@@ -393,6 +400,21 @@ Hier stellst du die Breite (in mm) von dünnen Linien ein.
         "LINE_THIN": 0.1
           
 
+## `extract.0.layout.PITCH_OFFSET` - PitchOffset {#extract.0.layout.PITCH_OFFSET}
+
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
+erscheint.
+
+Die Midi-Codes findest du auf
+[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+
+        "PITCH_OFFSET": -43
+          
+
 ## `extract.0.layout.REST_SIZE` - Pausengröße {#extract.0.layout.REST_SIZE}
 
 Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
@@ -402,6 +424,13 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 > berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
 
         "REST_SIZE": [4, 2]
+          
+
+## `extract.0.layout.X_SPACING` - Saitenabstand {#extract.0.layout.X_SPACING}
+
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+        "X_SPACING": 11.5
           
 
 ## `extract.0.layout.color` - Farbeinstellung {#extract.0.layout.color}
@@ -462,6 +491,23 @@ dargestellt werden.
 
         "color_variant2": "darkgrey"
           
+
+## `extract.0.layout.instrument` - Instrument {#extract.0.layout.instrument}
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
+        "instrument": "37-strings-g-g"
 
 ## `extract.0.layout.jumpline_anchor` - Sprungl.Anker {#extract.0.layout.jumpline_anchor}
 
@@ -674,6 +720,7 @@ Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
         "printer": {
           "a3_offset"   : [0, 0],
           "a4_offset"   : [-5, 0],
+          "a4_pages"    : [0, 1, 2],
           "show_border" : false
         }
           
@@ -707,7 +754,20 @@ vertikaler Position.
         "a4_offset": [-5, 0]
           
 
-## `extract.0.printer.show_border` - Blattbegrenzg. zeichnen {#extract.0.printer.show_border}
+## `extract.0.printer.a4_pages` - Seiten bei A4 {#extract.0.printer.a4_pages}
+
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
+
+        "a4_pages": [0, 1, 2]
+          
+
+## `extract.0.printer.show_border` - Blattbegr. zeich. {#extract.0.printer.show_border}
 
 Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
 Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
@@ -886,7 +946,7 @@ Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
         "marks": {"hpos": [43, 55, 79], "vpos": [11]}
           
 
-## `extract.0.stringnames.marks.hpos` - horizontale Position {#extract.0.stringnames.marks.hpos}
+## `extract.0.stringnames.marks.hpos` - horiz. Position {#extract.0.stringnames.marks.hpos}
 
 Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
 ist eine durch Komma getrennte liste von Midi-Pitches.
@@ -990,7 +1050,93 @@ von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
 TODO: Helptext für presets einfügen
 
         "presets": {
-          "layout"  : {
+          "instrument" : {
+            "18-strings-b-e" : {
+              "layout"      : {
+                "PITCH_OFFSET" : -59,
+                "X_SPACING"    : 11.5,
+                "instrument"   : "18-strings-b-e"
+              },
+              "printer"     : {
+                "a3_offset" : [5, 0],
+                "a4_offset" : [-25, 0],
+                "a4_pages"  : [0]
+              },
+              "stringnames" : {
+                "marks" : {"hpos": [59, 76]},
+                "text"  : "B C C# D D# E F F# G G# A A# B C C# D D# E  - - - - - - - - - - - - - - - - - -"
+              }
+            },
+            "21-strings-a-f" : {
+              "layout"      : {
+                "PITCH_OFFSET" : -43,
+                "X_SPACING"    : 11.5,
+                "instrument"   : "21-strings-a-f"
+              },
+              "printer"     : {
+                "a3_offset" : [15, 0],
+                "a4_offset" : "#<Proc:0x007fab7388ce00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:157 (lambda)>",
+                "a4_pages"  : [1, 2]
+              },
+              "stringnames" : {
+                "marks" : {"hpos": [57, 77]},
+                "text"  : "#<Proc:0x007fab7388d058@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>"
+              }
+            },
+            "25-strings-g-g" : {
+              "layout"      : {
+                "PITCH_OFFSET" : -43,
+                "X_SPACING"    : 11.5,
+                "instrument"   : "25-strings-g-g"
+              },
+              "printer"     : {
+                "a3_offset" : [-5, 0],
+                "a4_offset" : "#<Proc:0x007fab7388d350@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
+                "a4_pages"  : [1, 2]
+              },
+              "stringnames" : {
+                "marks" : {
+                  "hpos" : "#<Proc:0x007fab7388d508@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+                },
+                "text"  : "#<Proc:0x007fab7388d530@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>"
+              }
+            },
+            "37-strings-g-g" : {
+              "layout"      : {
+                "PITCH_OFFSET" : -43,
+                "X_SPACING"    : 11.5,
+                "instrument"   : "37-strings-g-g"
+              },
+              "printer"     : {
+                "a3_offset" : "#<Proc:0x007fab7388d6e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
+                "a4_offset" : "#<Proc:0x007fab7388d738@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+                "a4_pages"  : [0, 1, 2]
+              },
+              "stringnames" : {
+                "marks" : {
+                  "hpos" : "#<Proc:0x007fab7388d850@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+                },
+                "text"  : "#<Proc:0x007fab7388d878@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+              }
+            },
+            "saitenspiel"    : {
+              "layout"      : {
+                "PITCH_OFFSET" : -24,
+                "X_SPACING"    : 14.5,
+                "instrument"   : "saitenspiel"
+              },
+              "printer"     : {
+                "a3_offset" : [20, 0],
+                "a4_offset" : [-5, 0],
+                "a4_pages"  : [0]
+              },
+              "stringnames" : {
+                "marks" : {"hpos": [24]},
+                "text"  : "G C D E F G A B C D  - - - - - -"
+              }
+            }
+          },
+          "layout"     : {
             "-"               : {},
             "color_off"       : {
               "color" : {
@@ -1032,7 +1178,7 @@ TODO: Helptext für presets einfügen
             },
             "packer_regular"  : null
           },
-          "notes"   : {
+          "notes"      : {
             "T01_number"               : {
               "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
             },
@@ -1065,7 +1211,7 @@ TODO: Helptext für presets einfügen
               }
             }
           },
-          "printer" : {
+          "printer"    : {
             "printer_centric" : {
               "layout"  : {"limit_a3": true},
               "printer" : {
@@ -1093,6 +1239,1000 @@ TODO: Helptext für presets einfügen
           }
         }
           
+
+## `presets.instrument` - Instrument {#presets.instrument}
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
+        "instrument": {
+          "18-strings-b-e" : {
+            "layout"      : {
+              "PITCH_OFFSET" : -59,
+              "X_SPACING"    : 11.5,
+              "instrument"   : "18-strings-b-e"
+            },
+            "printer"     : {
+              "a3_offset" : [5, 0],
+              "a4_offset" : [-25, 0],
+              "a4_pages"  : [0]
+            },
+            "stringnames" : {
+              "marks" : {"hpos": [59, 76]},
+              "text"  : "B C C# D D# E F F# G G# A A# B C C# D D# E  - - - - - - - - - - - - - - - - - -"
+            }
+          },
+          "21-strings-a-f" : {
+            "layout"      : {
+              "PITCH_OFFSET" : -43,
+              "X_SPACING"    : 11.5,
+              "instrument"   : "21-strings-a-f"
+            },
+            "printer"     : {
+              "a3_offset" : [15, 0],
+              "a4_offset" : "#<Proc:0x007fab7388ce00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:157 (lambda)>",
+              "a4_pages"  : [1, 2]
+            },
+            "stringnames" : {
+              "marks" : {"hpos": [57, 77]},
+              "text"  : "#<Proc:0x007fab7388d058@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>"
+            }
+          },
+          "25-strings-g-g" : {
+            "layout"      : {
+              "PITCH_OFFSET" : -43,
+              "X_SPACING"    : 11.5,
+              "instrument"   : "25-strings-g-g"
+            },
+            "printer"     : {
+              "a3_offset" : [-5, 0],
+              "a4_offset" : "#<Proc:0x007fab7388d350@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
+              "a4_pages"  : [1, 2]
+            },
+            "stringnames" : {
+              "marks" : {
+                "hpos" : "#<Proc:0x007fab7388d508@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+              },
+              "text"  : "#<Proc:0x007fab7388d530@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>"
+            }
+          },
+          "37-strings-g-g" : {
+            "layout"      : {
+              "PITCH_OFFSET" : -43,
+              "X_SPACING"    : 11.5,
+              "instrument"   : "37-strings-g-g"
+            },
+            "printer"     : {
+              "a3_offset" : "#<Proc:0x007fab7388d6e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
+              "a4_offset" : "#<Proc:0x007fab7388d738@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+              "a4_pages"  : [0, 1, 2]
+            },
+            "stringnames" : {
+              "marks" : {
+                "hpos" : "#<Proc:0x007fab7388d850@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+              },
+              "text"  : "#<Proc:0x007fab7388d878@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+            }
+          },
+          "saitenspiel"    : {
+            "layout"      : {
+              "PITCH_OFFSET" : -24,
+              "X_SPACING"    : 14.5,
+              "instrument"   : "saitenspiel"
+            },
+            "printer"     : {
+              "a3_offset" : [20, 0],
+              "a4_offset" : [-5, 0],
+              "a4_pages"  : [0]
+            },
+            "stringnames" : {
+              "marks" : {"hpos": [24]},
+              "text"  : "G C D E F G A B C D  - - - - - -"
+            }
+          }
+        }
+
+## `presets.instrument.18-strings-b-e` - 18 Saiten b-e {#presets.instrument.18-strings-b-e}
+
+TODO: Helptext für presets.instrument.18-strings-b-e einfügen
+
+        "18-strings-b-e": {
+          "layout"      : {
+            "PITCH_OFFSET" : -59,
+            "X_SPACING"    : 11.5,
+            "instrument"   : "18-strings-b-e"
+          },
+          "printer"     : {
+            "a3_offset" : [5, 0],
+            "a4_offset" : [-25, 0],
+            "a4_pages"  : [0]
+          },
+          "stringnames" : {
+            "marks" : {"hpos": [59, 76]},
+            "text"  : "B C C# D D# E F F# G G# A A# B C C# D D# E  - - - - - - - - - - - - - - - - - -"
+          }
+        }
+          
+
+## `presets.instrument.18-strings-b-e.layout` - Layout {#presets.instrument.18-strings-b-e.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {
+          "PITCH_OFFSET" : -59,
+          "X_SPACING"    : 11.5,
+          "instrument"   : "18-strings-b-e"
+        }
+          
+
+## `presets.instrument.18-strings-b-e.layout.PITCH_OFFSET` - PitchOffset {#presets.instrument.18-strings-b-e.layout.PITCH_OFFSET}
+
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
+erscheint.
+
+Die Midi-Codes findest du auf
+[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+
+        "PITCH_OFFSET": -59
+          
+
+## `presets.instrument.18-strings-b-e.layout.X_SPACING` - Saitenabstand {#presets.instrument.18-strings-b-e.layout.X_SPACING}
+
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+        "X_SPACING": 11.5
+          
+
+## `presets.instrument.18-strings-b-e.layout.instrument` - Instrument {#presets.instrument.18-strings-b-e.layout.instrument}
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
+        "instrument": "18-strings-b-e"
+
+## `presets.instrument.18-strings-b-e.printer` - Drucker {#presets.instrument.18-strings-b-e.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset" : [5, 0],
+          "a4_offset" : [-25, 0],
+          "a4_pages"  : [0]
+        }
+          
+
+## `presets.instrument.18-strings-b-e.printer.a3_offset` - Offset für A3 {#presets.instrument.18-strings-b-e.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [5, 0]
+          
+
+## `presets.instrument.18-strings-b-e.printer.a4_offset` - Offset für A4 {#presets.instrument.18-strings-b-e.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": [-25, 0]
+          
+
+## `presets.instrument.18-strings-b-e.printer.a4_pages` - Seiten bei A4 {#presets.instrument.18-strings-b-e.printer.a4_pages}
+
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
+
+        "a4_pages": [0]
+          
+
+## `presets.instrument.18-strings-b-e.stringnames` - Saitennamen {#presets.instrument.18-strings-b-e.stringnames}
+
+Hier kannst du stueern, ob und wie Saitennamen auf das
+Unterlegnotenblatt gedruckt werden.
+
+        "stringnames": {
+          "marks" : {"hpos": [59, 76]},
+          "text"  : "B C C# D D# E F F# G G# A A# B C C# D D# E  - - - - - - - - - - - - - - - - - -"
+        }
+          
+
+## `presets.instrument.18-strings-b-e.stringnames.marks` - Saitenmarken {#presets.instrument.18-strings-b-e.stringnames.marks}
+
+Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
+
+        "marks": {"hpos": [59, 76]}
+          
+
+## `presets.instrument.18-strings-b-e.stringnames.marks.hpos` - horiz. Position {#presets.instrument.18-strings-b-e.stringnames.marks.hpos}
+
+Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
+ist eine durch Komma getrennte liste von Midi-Pitches.
+
+Die Angabe `[43, 55, 79]` druckt Saitenmarken bei `G, G, g'`. also bei
+den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
+
+        "hpos": [59, 76]
+          
+
+## `presets.instrument.18-strings-b-e.stringnames.text` - Text {#presets.instrument.18-strings-b-e.stringnames.text}
+
+Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
+Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
+bekommen.
+
+In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+
+**Beispiel:**
+
+-   `+ -` erzeugt `+ - +  + - + -`
+-   `C Cis D Dis E F Fis G Gis A Aia Bb B` erzeugt die regulären
+    Saitennamen
+
+        "text": "B C C# D D# E F F# G G# A A# B C C# D D# E  - - - - - - - - - - - - - - - - - -"
+
+## `presets.instrument.21-strings-a-f` - 21 Saiten a-f {#presets.instrument.21-strings-a-f}
+
+TODO: Helptext für presets.instrument.21-strings-a-f einfügen
+
+        "21-strings-a-f": {
+          "layout"      : {
+            "PITCH_OFFSET" : -43,
+            "X_SPACING"    : 11.5,
+            "instrument"   : "21-strings-a-f"
+          },
+          "printer"     : {
+            "a3_offset" : [15, 0],
+            "a4_offset" : "#<Proc:0x007fab7388ce00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:157 (lambda)>",
+            "a4_pages"  : [1, 2]
+          },
+          "stringnames" : {
+            "marks" : {"hpos": [57, 77]},
+            "text"  : "#<Proc:0x007fab7388d058@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>"
+          }
+        }
+          
+
+## `presets.instrument.21-strings-a-f.layout` - Layout {#presets.instrument.21-strings-a-f.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {
+          "PITCH_OFFSET" : -43,
+          "X_SPACING"    : 11.5,
+          "instrument"   : "21-strings-a-f"
+        }
+          
+
+## `presets.instrument.21-strings-a-f.layout.PITCH_OFFSET` - PitchOffset {#presets.instrument.21-strings-a-f.layout.PITCH_OFFSET}
+
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
+erscheint.
+
+Die Midi-Codes findest du auf
+[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+
+        "PITCH_OFFSET": -43
+          
+
+## `presets.instrument.21-strings-a-f.layout.X_SPACING` - Saitenabstand {#presets.instrument.21-strings-a-f.layout.X_SPACING}
+
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+        "X_SPACING": 11.5
+          
+
+## `presets.instrument.21-strings-a-f.layout.instrument` - Instrument {#presets.instrument.21-strings-a-f.layout.instrument}
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
+        "instrument": "21-strings-a-f"
+
+## `presets.instrument.21-strings-a-f.printer` - Drucker {#presets.instrument.21-strings-a-f.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset" : [15, 0],
+          "a4_offset" : "#<Proc:0x007fab7388ce00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:157 (lambda)>",
+          "a4_pages"  : [1, 2]
+        }
+          
+
+## `presets.instrument.21-strings-a-f.printer.a3_offset` - Offset für A3 {#presets.instrument.21-strings-a-f.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [15, 0]
+          
+
+## `presets.instrument.21-strings-a-f.printer.a4_offset` - Offset für A4 {#presets.instrument.21-strings-a-f.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": "#<Proc:0x007fab7388ce00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:157 (lambda)>"
+          
+
+## `presets.instrument.21-strings-a-f.printer.a4_pages` - Seiten bei A4 {#presets.instrument.21-strings-a-f.printer.a4_pages}
+
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
+
+        "a4_pages": [1, 2]
+          
+
+## `presets.instrument.21-strings-a-f.stringnames` - Saitennamen {#presets.instrument.21-strings-a-f.stringnames}
+
+Hier kannst du stueern, ob und wie Saitennamen auf das
+Unterlegnotenblatt gedruckt werden.
+
+        "stringnames": {
+          "marks" : {"hpos": [57, 77]},
+          "text"  : "#<Proc:0x007fab7388d058@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>"
+        }
+          
+
+## `presets.instrument.21-strings-a-f.stringnames.marks` - Saitenmarken {#presets.instrument.21-strings-a-f.stringnames.marks}
+
+Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
+
+        "marks": {"hpos": [57, 77]}
+          
+
+## `presets.instrument.21-strings-a-f.stringnames.marks.hpos` - horiz. Position {#presets.instrument.21-strings-a-f.stringnames.marks.hpos}
+
+Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
+ist eine durch Komma getrennte liste von Midi-Pitches.
+
+Die Angabe `[43, 55, 79]` druckt Saitenmarken bei `G, G, g'`. also bei
+den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
+
+        "hpos": [57, 77]
+          
+
+## `presets.instrument.21-strings-a-f.stringnames.text` - Text {#presets.instrument.21-strings-a-f.stringnames.text}
+
+Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
+Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
+bekommen.
+
+In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+
+**Beispiel:**
+
+-   `+ -` erzeugt `+ - +  + - + -`
+-   `C Cis D Dis E F Fis G Gis A Aia Bb B` erzeugt die regulären
+    Saitennamen
+
+        "text": "#<Proc:0x007fab7388d058@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>"
+
+## `presets.instrument.25-strings-g-g` - 25 Saiten g-g {#presets.instrument.25-strings-g-g}
+
+TODO: Helptext für presets.instrument.25-strings-g-g einfügen
+
+        "25-strings-g-g": {
+          "layout"      : {
+            "PITCH_OFFSET" : -43,
+            "X_SPACING"    : 11.5,
+            "instrument"   : "25-strings-g-g"
+          },
+          "printer"     : {
+            "a3_offset" : [-5, 0],
+            "a4_offset" : "#<Proc:0x007fab7388d350@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
+            "a4_pages"  : [1, 2]
+          },
+          "stringnames" : {
+            "marks" : {
+              "hpos" : "#<Proc:0x007fab7388d508@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+            },
+            "text"  : "#<Proc:0x007fab7388d530@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>"
+          }
+        }
+          
+
+## `presets.instrument.25-strings-g-g.layout` - Layout {#presets.instrument.25-strings-g-g.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {
+          "PITCH_OFFSET" : -43,
+          "X_SPACING"    : 11.5,
+          "instrument"   : "25-strings-g-g"
+        }
+          
+
+## `presets.instrument.25-strings-g-g.layout.PITCH_OFFSET` - PitchOffset {#presets.instrument.25-strings-g-g.layout.PITCH_OFFSET}
+
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
+erscheint.
+
+Die Midi-Codes findest du auf
+[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+
+        "PITCH_OFFSET": -43
+          
+
+## `presets.instrument.25-strings-g-g.layout.X_SPACING` - Saitenabstand {#presets.instrument.25-strings-g-g.layout.X_SPACING}
+
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+        "X_SPACING": 11.5
+          
+
+## `presets.instrument.25-strings-g-g.layout.instrument` - Instrument {#presets.instrument.25-strings-g-g.layout.instrument}
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
+        "instrument": "25-strings-g-g"
+
+## `presets.instrument.25-strings-g-g.printer` - Drucker {#presets.instrument.25-strings-g-g.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset" : [-5, 0],
+          "a4_offset" : "#<Proc:0x007fab7388d350@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
+          "a4_pages"  : [1, 2]
+        }
+          
+
+## `presets.instrument.25-strings-g-g.printer.a3_offset` - Offset für A3 {#presets.instrument.25-strings-g-g.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [-5, 0]
+          
+
+## `presets.instrument.25-strings-g-g.printer.a4_offset` - Offset für A4 {#presets.instrument.25-strings-g-g.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": "#<Proc:0x007fab7388d350@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>"
+          
+
+## `presets.instrument.25-strings-g-g.printer.a4_pages` - Seiten bei A4 {#presets.instrument.25-strings-g-g.printer.a4_pages}
+
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
+
+        "a4_pages": [1, 2]
+          
+
+## `presets.instrument.25-strings-g-g.stringnames` - Saitennamen {#presets.instrument.25-strings-g-g.stringnames}
+
+Hier kannst du stueern, ob und wie Saitennamen auf das
+Unterlegnotenblatt gedruckt werden.
+
+        "stringnames": {
+          "marks" : {
+            "hpos" : "#<Proc:0x007fab7388d508@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+          },
+          "text"  : "#<Proc:0x007fab7388d530@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>"
+        }
+          
+
+## `presets.instrument.25-strings-g-g.stringnames.marks` - Saitenmarken {#presets.instrument.25-strings-g-g.stringnames.marks}
+
+Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
+
+        "marks": {
+          "hpos" : "#<Proc:0x007fab7388d508@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+        }
+          
+
+## `presets.instrument.25-strings-g-g.stringnames.marks.hpos` - horiz. Position {#presets.instrument.25-strings-g-g.stringnames.marks.hpos}
+
+Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
+ist eine durch Komma getrennte liste von Midi-Pitches.
+
+Die Angabe `[43, 55, 79]` druckt Saitenmarken bei `G, G, g'`. also bei
+den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
+
+        "hpos": "#<Proc:0x007fab7388d508@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+          
+
+## `presets.instrument.25-strings-g-g.stringnames.text` - Text {#presets.instrument.25-strings-g-g.stringnames.text}
+
+Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
+Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
+bekommen.
+
+In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+
+**Beispiel:**
+
+-   `+ -` erzeugt `+ - +  + - + -`
+-   `C Cis D Dis E F Fis G Gis A Aia Bb B` erzeugt die regulären
+    Saitennamen
+
+        "text": "#<Proc:0x007fab7388d530@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>"
+
+## `presets.instrument.37-strings-g-g` - 37 Saiten g-g {#presets.instrument.37-strings-g-g}
+
+TODO: Helptext für presets.instrument.37-strings-g-g einfügen
+
+        "37-strings-g-g": {
+          "layout"      : {
+            "PITCH_OFFSET" : -43,
+            "X_SPACING"    : 11.5,
+            "instrument"   : "37-strings-g-g"
+          },
+          "printer"     : {
+            "a3_offset" : "#<Proc:0x007fab7388d6e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
+            "a4_offset" : "#<Proc:0x007fab7388d738@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+            "a4_pages"  : [0, 1, 2]
+          },
+          "stringnames" : {
+            "marks" : {
+              "hpos" : "#<Proc:0x007fab7388d850@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+            },
+            "text"  : "#<Proc:0x007fab7388d878@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+          }
+        }
+          
+
+## `presets.instrument.37-strings-g-g.layout` - Layout {#presets.instrument.37-strings-g-g.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {
+          "PITCH_OFFSET" : -43,
+          "X_SPACING"    : 11.5,
+          "instrument"   : "37-strings-g-g"
+        }
+          
+
+## `presets.instrument.37-strings-g-g.layout.PITCH_OFFSET` - PitchOffset {#presets.instrument.37-strings-g-g.layout.PITCH_OFFSET}
+
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
+erscheint.
+
+Die Midi-Codes findest du auf
+[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+
+        "PITCH_OFFSET": -43
+          
+
+## `presets.instrument.37-strings-g-g.layout.X_SPACING` - Saitenabstand {#presets.instrument.37-strings-g-g.layout.X_SPACING}
+
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+        "X_SPACING": 11.5
+          
+
+## `presets.instrument.37-strings-g-g.layout.instrument` - Instrument {#presets.instrument.37-strings-g-g.layout.instrument}
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
+        "instrument": "37-strings-g-g"
+
+## `presets.instrument.37-strings-g-g.printer` - Drucker {#presets.instrument.37-strings-g-g.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset" : "#<Proc:0x007fab7388d6e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
+          "a4_offset" : "#<Proc:0x007fab7388d738@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+          "a4_pages"  : [0, 1, 2]
+        }
+          
+
+## `presets.instrument.37-strings-g-g.printer.a3_offset` - Offset für A3 {#presets.instrument.37-strings-g-g.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": "#<Proc:0x007fab7388d6e8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>"
+          
+
+## `presets.instrument.37-strings-g-g.printer.a4_offset` - Offset für A4 {#presets.instrument.37-strings-g-g.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": "#<Proc:0x007fab7388d738@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>"
+          
+
+## `presets.instrument.37-strings-g-g.printer.a4_pages` - Seiten bei A4 {#presets.instrument.37-strings-g-g.printer.a4_pages}
+
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
+
+        "a4_pages": [0, 1, 2]
+          
+
+## `presets.instrument.37-strings-g-g.stringnames` - Saitennamen {#presets.instrument.37-strings-g-g.stringnames}
+
+Hier kannst du stueern, ob und wie Saitennamen auf das
+Unterlegnotenblatt gedruckt werden.
+
+        "stringnames": {
+          "marks" : {
+            "hpos" : "#<Proc:0x007fab7388d850@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+          },
+          "text"  : "#<Proc:0x007fab7388d878@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+        }
+          
+
+## `presets.instrument.37-strings-g-g.stringnames.marks` - Saitenmarken {#presets.instrument.37-strings-g-g.stringnames.marks}
+
+Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
+
+        "marks": {
+          "hpos" : "#<Proc:0x007fab7388d850@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+        }
+          
+
+## `presets.instrument.37-strings-g-g.stringnames.marks.hpos` - horiz. Position {#presets.instrument.37-strings-g-g.stringnames.marks.hpos}
+
+Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
+ist eine durch Komma getrennte liste von Midi-Pitches.
+
+Die Angabe `[43, 55, 79]` druckt Saitenmarken bei `G, G, g'`. also bei
+den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
+
+        "hpos": "#<Proc:0x007fab7388d850@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+          
+
+## `presets.instrument.37-strings-g-g.stringnames.text` - Text {#presets.instrument.37-strings-g-g.stringnames.text}
+
+Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
+Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
+bekommen.
+
+In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+
+**Beispiel:**
+
+-   `+ -` erzeugt `+ - +  + - + -`
+-   `C Cis D Dis E F Fis G Gis A Aia Bb B` erzeugt die regulären
+    Saitennamen
+
+        "text": "#<Proc:0x007fab7388d878@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+
+## `presets.instrument.saitenspiel` - Saitenspiel {#presets.instrument.saitenspiel}
+
+TODO: Helptext für presets.instrument.saitenspiel einfügen
+
+        "saitenspiel": {
+          "layout"      : {
+            "PITCH_OFFSET" : -24,
+            "X_SPACING"    : 14.5,
+            "instrument"   : "saitenspiel"
+          },
+          "printer"     : {
+            "a3_offset" : [20, 0],
+            "a4_offset" : [-5, 0],
+            "a4_pages"  : [0]
+          },
+          "stringnames" : {
+            "marks" : {"hpos": [24]},
+            "text"  : "G C D E F G A B C D  - - - - - -"
+          }
+        }
+          
+
+## `presets.instrument.saitenspiel.layout` - Layout {#presets.instrument.saitenspiel.layout}
+
+Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
+Notenbild gezielt optimieren.
+
+        "layout": {
+          "PITCH_OFFSET" : -24,
+          "X_SPACING"    : 14.5,
+          "instrument"   : "saitenspiel"
+        }
+          
+
+## `presets.instrument.saitenspiel.layout.PITCH_OFFSET` - PitchOffset {#presets.instrument.saitenspiel.layout.PITCH_OFFSET}
+
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
+erscheint.
+
+Die Midi-Codes findest du auf
+[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+
+        "PITCH_OFFSET": -24
+          
+
+## `presets.instrument.saitenspiel.layout.X_SPACING` - Saitenabstand {#presets.instrument.saitenspiel.layout.X_SPACING}
+
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+        "X_SPACING": 14.5
+          
+
+## `presets.instrument.saitenspiel.layout.instrument` - Instrument {#presets.instrument.saitenspiel.layout.instrument}
+
+Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
+spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
+(bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
+
+Es gibt folgende Einstellunge:
+
+-   **`37-string-g-g`**: das ist die 37-saitige Harfe
+-   **`25-string-g-g`**: das ist die 25-saitige Harfe
+-   **`18-string-b-e`**: das ist die 18-saitige Harfe gestimmt von B bis
+    e
+-   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+
+        "instrument": "saitenspiel"
+
+## `presets.instrument.saitenspiel.printer` - Drucker {#presets.instrument.saitenspiel.printer}
+
+Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
+
+> **Hinweis:** Durch Verwendung dieser Funktion passen die erstellten
+> PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
+> die Funktion also erst, wenn du keine geeigneten Einstellungen in
+> deinem Druckdialog findest.
+
+        "printer": {
+          "a3_offset" : [20, 0],
+          "a4_offset" : [-5, 0],
+          "a4_pages"  : [0]
+        }
+          
+
+## `presets.instrument.saitenspiel.printer.a3_offset` - Offset für A3 {#presets.instrument.saitenspiel.printer.a3_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+
+        "a3_offset": [20, 0]
+          
+
+## `presets.instrument.saitenspiel.printer.a4_offset` - Offset für A4 {#presets.instrument.saitenspiel.printer.a4_offset}
+
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+        "a4_offset": [-5, 0]
+          
+
+## `presets.instrument.saitenspiel.printer.a4_pages` - Seiten bei A4 {#presets.instrument.saitenspiel.printer.a4_pages}
+
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
+
+        "a4_pages": [0]
+          
+
+## `presets.instrument.saitenspiel.stringnames` - Saitennamen {#presets.instrument.saitenspiel.stringnames}
+
+Hier kannst du stueern, ob und wie Saitennamen auf das
+Unterlegnotenblatt gedruckt werden.
+
+        "stringnames": {
+          "marks" : {"hpos": [24]},
+          "text"  : "G C D E F G A B C D  - - - - - -"
+        }
+          
+
+## `presets.instrument.saitenspiel.stringnames.marks` - Saitenmarken {#presets.instrument.saitenspiel.stringnames.marks}
+
+Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
+
+        "marks": {"hpos": [24]}
+          
+
+## `presets.instrument.saitenspiel.stringnames.marks.hpos` - horiz. Position {#presets.instrument.saitenspiel.stringnames.marks.hpos}
+
+Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
+ist eine durch Komma getrennte liste von Midi-Pitches.
+
+Die Angabe `[43, 55, 79]` druckt Saitenmarken bei `G, G, g'`. also bei
+den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
+
+        "hpos": [24]
+          
+
+## `presets.instrument.saitenspiel.stringnames.text` - Text {#presets.instrument.saitenspiel.stringnames.text}
+
+Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
+Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
+bekommen.
+
+In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+
+**Beispiel:**
+
+-   `+ -` erzeugt `+ - +  + - + -`
+-   `C Cis D Dis E F Fis G Gis A Aia Bb B` erzeugt die regulären
+    Saitennamen
+
+        "text": "G C D E F G A B C D  - - - - - -"
 
 ## `presets.layout` - Layout {#presets.layout}
 
@@ -1589,7 +2729,7 @@ vertikaler Position.
         "a4_offset": [5, 0]
           
 
-## `presets.printer.printer_centric.printer.show_border` - Blattbegrenzg. zeichnen {#presets.printer.printer_centric.printer.show_border}
+## `presets.printer.printer_centric.printer.show_border` - Blattbegr. zeich. {#presets.printer.printer_centric.printer.show_border}
 
 Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
 Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
@@ -1683,7 +2823,7 @@ vertikaler Position.
         "a4_offset": [-5, 0]
           
 
-## `presets.printer.printer_left.printer.show_border` - Blattbegrenzg. zeichnen {#presets.printer.printer_left.printer.show_border}
+## `presets.printer.printer_left.printer.show_border` - Blattbegr. zeich. {#presets.printer.printer_left.printer.show_border}
 
 Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
 Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
@@ -1777,7 +2917,7 @@ vertikaler Position.
         "a4_offset": [5, 0]
           
 
-## `presets.printer.printer_right.printer.show_border` - Blattbegrenzg. zeichnen {#presets.printer.printer_right.printer.show_border}
+## `presets.printer.printer_right.printer.show_border` - Blattbegr. zeich. {#presets.printer.printer_right.printer.show_border}
 
 Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
 Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der

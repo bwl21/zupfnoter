@@ -342,7 +342,19 @@ gibt es folgende Elemente:
 
     Die Positionen deieser Linien werden als Zusatz vor den Taktstrich
     der ersten Variation geschrieben (Schaltfläche "Zusatz einfügen"
-    bzw. "Zusatz bearbeiten")
+    bzw. "Zusatz bearbeiten").
+
+    > **Hinweis:** Ab Zupfnoter 1.7 können diese Linien mit der Maus
+    > verschoben werden. Diese Verschiebungen werden in der
+    > Konfiguration gespeichert und von älteren Zupfnoter-Versionen
+    > nicht verarbeitet. Die Konfiguration über Zusaätze ist aus
+    > Kompatibilitätsgründen noch vorhanden.
+
+    > **Hinweis:** Zupfnoter stellt die Noten der verschiedenen
+    > Variationen in unterschiedlicen Grautönen dar. Die Farben können
+    > in der Konfigurationsmaske `Layout` über eine Schnelleinstellung
+    > ausgewählt werden (siehe Konfiguration
+    > [extract.x.layout.color](#extract.0.layout.color)).
 
 ### Elemente für das gesamte Musikstück bzw. Unterlegnotenblatt {#elemente-fuer-das-ganze-blatt}
 
@@ -651,8 +663,8 @@ aktuellen Arbeitsschrit besser zu unterstützen:
 -   Fenstergröße verstellen: Die Trennlinien zwischen den Fenstern
     können mit der MAus verschoben werden, um Platz für die aktuell
     wichtigen Elemente zu schaffen
--   Über das Menü "Ansicht" kann man einzelne Fenster ausblenden so dass
-    die anderen Fenster größer werden (Siehe Kapitel
+-   Über das Menü **"`Ansicht`"** kann man einzelne Fenster ausblenden
+    so dass die anderen Fenster größer werden (Siehe Kapitel
     \ref{menues-im-hauptfenster} [Werkzeugleiste für Schaltflächen und
     Menüs](#menues-im-hauptfenster))
 
@@ -724,9 +736,9 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
     > **Hinweis:** Solange man noch nichts abgespeichert hat, erscheint
     > das Wort "Speichern" in roter Schrift.
 
--   Menü **Drucken**: Damit kann man Druckvorschauen anzeigen, welche
-    auch über die Browser-Funktionen gedruckt werden können (siehe
-    Kapitel \ref{musikstueck-drucken} [Musikstück
+-   Menü **"`Drucken`"**: Damit kann man Druckvorschauen anzeigen,
+    welche auch über die Browser-Funktionen gedruckt werden können
+    (siehe Kapitel \ref{musikstueck-drucken} [Musikstück
     drucken](#musikstueck-drucken)).
 
     -   Schaltfläche **A3**: Es öffnet sich ein Browserfenster mit
@@ -1076,7 +1088,7 @@ Eingabemöglichkeiten nutze:
     die Konfiguration der Unterlegnoten (im JSON-Format) angezeigt und
     bearbeitet (siehe Kapitel \ref{texteditor}
     [Texteditor](#texteditor)). Für die ABC-Notation gibt es eine
-    separate Anleitung im Menü `Hilfe`
+    separate Anleitung im Menü **`Hilfe`**
 
 -   `Liedtextexte` für die Erfassung der Liedtexte (siehe Kapitel
     \ref{liedtexteditor} [Liedtexteditor](#liedtexteditor))
@@ -1364,7 +1376,7 @@ Für die grundsätzliche Bedienung gilt:
 -   Wenn du den Mauszeiger über ein solches Element bewegst, ändert
     dieser seine Form. Darüber hinaus zeigt die Statusleiste rechts
     unten, welcher Konfigurationsparamter verwändert wird.
--   Bei solchen Elementen ruft das Kontextmenü `Edit config` den
+-   Bei solchen Elementen ruft das Kontextmenü **`Edit config`** den
     entsprechenden Konfigurationseditor auf.
 -   Nach dem Beargbeiten des Elementes mit der Maus wird das Element
     rot. Bitte führe einen "Render" aus um die Unterlegnotenvorschau zu
@@ -1420,12 +1432,14 @@ zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
 
 ## Erstellung von Auszügen {#auszuege}
 
+### Funktionsweise von Auszügen
+
 Zupfnoter erfasst zunächst **alle Stimmen** eines Musikstückes als
 umfassendes Modell. Aus diesem kompletten Modell können Auszüge erstellt
 werden, welche spezifische Elemente darstellen. Damit kannst du Blätter
 für verschiedene Zielgruppen erstellen, z.B.:
 
--   Gesamtansicht für lektoren
+-   Gesamtansicht für Lektoren
 -   Einzelstimmen für Anfänger (z.B. nur die erste Stimme, Zählhilfen)
 -   Beliebige Kombinatinen von Stimmen für Leiter und Fortgeschrittene
     (z.B. zwei Stimmen, aber keine Zählhilfen mehr)
@@ -1493,7 +1507,94 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
 
 > **Hinweis**: Die Angaben der auszugebenden Stimmen könnte an sich
 > entfallen, da da sie der Voreinstellung in Zupfnoter entsprechen. Sie
-> sind hir nur zur Illustration sufgeüfhrt.
+> sind hir nur zur Illustration sufgeführt.
+
+### Praktisches Vorgehen bei der Erstellung von Auszügen
+
+Das Konzept der Auszüge in Zupfnoter ist ein mächtiges Werkzeug.
+Mächtige Werkzeuge müssen aber mit Bedacht eingesetzt werden, wenn man
+Verwirrung vermeiden will.
+
+Daher ist folgendes Reihenfolge zu empfehlen:
+
+1.  **Planung der Auszüge**: Die Konzeption der Auszüge hängt von der
+    Anzahl der Stimmen, der Überlagerungen (wie laufen die Stimmen in
+    einander) der Stimmen und den unterstützten Instrumenten ab. Die in
+    Zupfnoter eingebaute Voreinstellung ist:
+
+    -   **0 Alle Stimmen**: Stimmen 1,2,3,4; Auszgsnummer -S
+    -   **1 Sopran Alt**: Stimmen 1,2; Auszugsnummer -A
+    -   **2 Tenor Bass**: Stimmen 3,4; Auszugsnummer -B
+    -   **3 Melodie**: Stimme 1; Auszugsnummer -B
+
+2.  **Anlegen der Auszüge**: Ausgehend von der Planung sollte unter dem
+    Menü **`Konfig. bearbeiten / Auszugsbeschriftung`** alle geplanten
+    Auszüge angelegt werden. Dabei sollte "Titel", "Auzszugsnummer",
+    "Filenamezusatz" festegelegt werden. Der eingegebenen Titel wird nun
+    auch für das Menü zur Einstellung des Auszuges verwendet.
+
+    ![](../ZAUX_Images/040-041_Auszugsbeschriftung.jpg) 
+
+3.  **Bearbeitung der gemeinsamen Anteile**: Nun kannst du über das Menü
+    `Konfig. bearbeiten / Grundeinstellungen` Die Maske für die
+    Grundeinstellungen aufrufen. Die hier gesetzten Einstellungen wirke
+    **auf alle nachfolgenden** Auszuüge. Daher ist es sinnvoll, z.b.
+    Flusslinien, Synchronisationslinien, Wiederholungen usw. für alle
+    Stimmmen zu konfigurieren. Am besten konfiguriert man so weit, dass
+    das Blatt gut aussieht, d.h. Position der Legende und Liedtexte
+    sollte möglichst auf Auszug 0 erfolgen.
+
+    Auch die Sprunglinien sollten weitgehend in Auzszug 0 konfiguriert
+    werden. Nur in Ausnamefällen ist eine weitere Positionierung in
+    anderen Auszuügen notwendig.
+
+    Als Faustregel gilt, so viel wie möglich auf Auszug 0 zu
+    konfigurieren, so dass man im Grunde bei den Folgeauszügen nur noch
+    die Stimmen auswählen muss.
+
+4.  **Bearbeitung der folgenden Auszüge**: Wenn Auszug 0 gut
+    konfiguriert ist, dann kann man sich den anderen Auszügen zuwenden.
+    Dazu wird der zu bearbeitende Auszug im Menü rects oben eingestellt.
+    Die Konfigurationsmasken und Einstellungen mit der Maus wirken nun
+    auf den eingestellten Auszug.
+
+    > **Hinweis**: Es ist eine häufige Fehlerquelle, dass man nicht den
+    > richtigen Auszug eingestellt hat. Daher ist es wichtig den
+    > eingestellten Auszug immer wieder zu überprüfen.
+    > ![](../ZAUX_Images/040-042_Pruefen-Auszug-Grundeinstellungen.jpg) 
+    > Im vorliegenden Fall wird Auzug 0 konfiguriert.
+
+    In den weiteren Auszügen kann man sich konzentrieren auf:
+
+    -   Auswahl der Stimmen
+    -   Auszugsnummer
+    -   Feinjustierung der Liedtexte und sonstigen Beschriftungen
+    -   Einstellung von Instrumentenspezifika, wenn aus der gleichen
+        Stück, Auszüge für verschiedene Instrumente (z.b. 18 Saiten,
+        Saitenspiel) erstellt werden sollen
+
+### Instrumentenspezifika
+
+Die flexible Konfiguration von Zupfnoter erlaubt die Anpassung der
+Auasgabe auf viele verschiedene Instrumente. Allerdings führt hier meist
+eine Kombination verschiedener Parameter zu Ziel. Zur Vereinfachung sind
+diese Konmbinationen für gebräücliche Instrumente hinterlegt.
+
+Wähle das Menü **"`Konfig. bearbeiten > Instrument spez.`"**. Es
+erscheint eine Maske mit den Parametern deren Zusammenspiel die Ausgabe
+für diverse Instrumente optimiert.
+
+In dieser Maske kannst du aus den `Schnelleinstellungen` das gewünschte
+Instrument auswählen.
+
+![](../ZAUX_Images/040-043_Instrument-specific.jpg) 
+
+> **Hinweis**: Bitte beachte, dass es auch einen Parameter "Instrument"
+> gibt. Dieser ist nicht zu verwechseln mit der Schnelleinstellung, auch
+> wenn er zum Teil dieselben Bezeichungen verwendet. Der Parameter
+> `Instrument` veränderte Programminterne Abläufe welche sich nicht über
+> Konfiguration ausdrücken lässt (z.b. diatonische Stimmung bei
+> Saitenspiel)
 
 ## Sonstige Hinweise
 
@@ -1571,15 +1672,21 @@ Notenzeile im Notensystem hat.
 
 Dies erreicht man mit
 
-`%%score 1 2 3 4` Das bewirkt ein Notensystem mit einer Noteznzeile pro
-Stimme. Weitere Einzelheiten im nächsten Kapitel.
+`%%score 1 2 3 4`
+
+Das bewirkt ein Notensystem mit einer Noteznzeile pro Stimme. Weitere
+Einzelheiten im nächsten Kapitel.
 
 In diesem Zusammenhang ist es auch hilfreich, die Taktnummern
 einzuschalten.
 
-Um Taktnummern in den Noten darzustellen dient die Kopfzeile
+Taktnummern in den Noten sind standardmässig eingeschaltet. Um diese
+auszuschalten dient die Kopfzeile
 
-    I:measurenb 1
+    I:measurenb 0
+
+> **Hinweis** Bei zu kurzen Takten erscheint die Taktnummer nicht
+> korrekt.
 
 ### Mehrere Stimmen in ABC-Notation {#mherere-Stimmen-in-abc}
 
