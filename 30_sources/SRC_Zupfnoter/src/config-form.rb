@@ -230,7 +230,7 @@ class ConfstackEditor
       def self.to_w2uifield(key)
         {field:       key,
          type:        'list',
-         options:     {items: ['black', 'grey', 'darkgrey']},
+         options:     {items: ['black', 'grey', 'darkgrey', 'dimgrey']},
          required:    true,
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),

@@ -11,7 +11,7 @@ module Harpnotes
     ARROW_SIZE      = 1.0
     JUMPLINE_INDENT = 10
     DOTTED_SIZE     = 0.5 #radius of dot
-    COLORS          = {'black' => 'black', 'white' => 'white', 'grey' => 'grey', 'lightgrey' => 'lightgrey', 'darkgrey' => 'darkgrey'}
+    COLORS          = {'black' => 'black', 'white' => 'white', 'grey' => 'grey', 'lightgrey' => 'lightgrey', 'darkgrey' => 'darkgrey', 'dimgrey' => 'dimgrey'}
 
 
     def initialize(element_id, width, height)

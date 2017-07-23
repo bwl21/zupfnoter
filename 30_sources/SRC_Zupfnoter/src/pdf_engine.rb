@@ -12,7 +12,8 @@ module Harpnotes
     DOTTED_SIZE     = 0.5 # radius of dot
 
     # COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [0, 128, 128], 'lightgrey' => [211, 0, 211], 'darkgrey' => [169,169,0]}
-    COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [128, 128, 128], 'lightgrey' => [211, 211, 211], 'darkgrey' => [169, 169, 169]}
+    COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [128, 128, 128], 'lightgrey' => [211, 211, 211],
+              'darkgrey' => [169, 169, 169], 'dimgrey' => [105, 105, 105]}
 
     #X_SPACING = 115.0/10.0
 
