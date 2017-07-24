@@ -119,8 +119,9 @@ module InitConf
              instrument: {
                  '37-strings-g-g' => {
                      layout:      {instrument:   '37-strings-g-g',
-                                   PITCH_OFFSET: -43,
-                                   X_SPACING:    11.50 # just to be safe
+                                   PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
+                                   X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
+                                   X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
                      },
                      stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
                                    marks: {hpos: lambda {$conf['extract.0.stringnames.marks.hpos']}}
@@ -132,8 +133,9 @@ module InitConf
                  },
                  '25-strings-g-g' => {
                      layout:      {instrument:   '25-strings-g-g',
-                                   PITCH_OFFSET: -43,
-                                   X_SPACING:    11.50 # just to be safe
+                                   PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
+                                   X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
+                                   X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
                      },
                      stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
                                    marks: {hpos: lambda {$conf['extract.0.stringnames.marks.hpos']}
@@ -145,36 +147,43 @@ module InitConf
                  },
                  '21-strings-a-f' => {
                      layout:      {instrument:   '21-strings-a-f',
-                                   PITCH_OFFSET: -43,
-                                   X_SPACING:    11.50 # just to be safe
+                                   PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
+                                   X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
+                                   X_OFFSET:     23
                      },
                      stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
                                    marks: {hpos: [57, 77]
                                    }
                      },
                      printer:     {a4_pages:  [1, 2],
-                                   a3_offset: [15, 0],
+                                   a3_offset: [-5, 0],
                                    a4_offset: lambda {$conf['extract.0.printer.a4_offset']}}
                  },
                  '18-strings-b-e' => {
                      layout:      {instrument:   '18-strings-b-e',
-                                   PITCH_OFFSET: -43,
-                                   X_SPACING:    11.50 # just to be safe
+                                   PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
+                                   X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
+                                   X_OFFSET:     28.5
                      },
                      stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
                                    marks: {hpos: [59, 76]}
                      },
-                     printer:     {a4_pages: [2], a3_offset: [30,0], a4_offset: [65, 0]}
+                     printer:     {a4_pages: [2],
+                                   a3_offset: [0, 0],
+                                   a4_offset: [40, 0]}
                  },
                  'saitenspiel'    => {
                      layout:      {instrument:   'saitenspiel',
                                    PITCH_OFFSET: -24,
-                                   X_SPACING:    14.50
+                                   X_SPACING:    14.50,
+                                   X_OFFSET:    240
                      },
                      stringnames: {text:  'G C D E F G A B C D  - - - - - -',
-                                   marks: {hpos: [24]}
+                                   marks: {hpos: [55, 74]}
                      },
-                     printer:     {a4_pages: [0], a3_offset: [20, 0], a4_offset: [-5, 0]}
+                     printer:     {a4_pages: [2],
+                                   a3_offset: [0, 0],
+                                   a4_offset: [35, 0]}
                  },
              },
 
@@ -284,6 +293,7 @@ module InitConf
                                LINE_THICK:      0.5,
                                PITCH_OFFSET:    -43,
                                X_SPACING:       11.5,
+                               X_OFFSET:        2.8, ## todo: set this to laoyut.ELLIPSE_SIZE first
                                # all numbers in mm
                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                REST_SIZE:         [4, 2],
@@ -367,7 +377,8 @@ module InitConf
              X_SPACING: 11.5, # Distance of strings
 
              # X coordinate of the very first beat
-             X_OFFSET: 2.8, #ELLIPSE_SIZE.first,
+             # just to be safe; it will be overridden at least by extract.0.layout.X_OFFSET
+             X_OFFSET: 2.8, #ELLIPSE_SIZE.first, ## todo: strictly speaking, this should be adjusted to ELLIPSE_SIZE.first
 
              Y_SCALE: 4, # 4 mm per minimal
              DRAWING_AREA_SIZE: [400, 282], # Area in which Drawables can be placed

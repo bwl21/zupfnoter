@@ -322,7 +322,7 @@ class ConfstackEditor
           OneLineString   => ['title', 'filenamepart', 'url'],
           MultiLineString => ['text'],
           Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show", "fill", "grid"],
-          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f', "X_SPACING"],
+          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f', "X_SPACING", "X_OFFSET"],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],

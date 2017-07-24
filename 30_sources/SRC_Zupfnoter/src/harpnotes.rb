@@ -1175,19 +1175,19 @@ module Harpnotes
 
       def set_instrument_handlers
         @bottom_annotation_positions = [[150, 289], [325, 289], [380, 289]]
-        @pitch_to_xpos               = lambda {|root| ($conf.get('layout.PITCH_OFFSET') + root.pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')}
+        @pitch_to_xpos               = lambda {|pitch| ($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')}
 
         case $conf['layout.instrument']
           when "saitenspiel"
-            @pitch_to_xpos               = lambda {|root|
+            @pitch_to_xpos               = lambda {|pitch|
               #          G        c        d        e        f        g        a        b        c'       D'
               pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
-              pitch_to_stringpos = pitch_to_stringpos[root.pitch + $conf.get('layout.PITCH_OFFSET')]
+              pitch_to_stringpos = pitch_to_stringpos[pitch + $conf.get('layout.PITCH_OFFSET')]
               result             = 0
               result             = (pitch_to_stringpos) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') if pitch_to_stringpos
               result
             }
-            @bottom_annotation_positions = [[5, 287], [5, 290], [150, 290]]
+            @bottom_annotation_positions = [[$conf['layout.X_OFFSET'], 287], [$conf['layout.X_OFFSET'], 290], [$conf['layout.X_OFFSET'] + 100, 290]]
             @draw_instrument             = lambda {
               res            = Harpnotes::Drawing::Path.new([['M', 30, 6], ['L', 180, 81], ['L', 180, 216], ['L', 30, 291]], :open)
               res.line_width = $conf.get('layout.LINE_MEDIUM');
@@ -1199,7 +1199,7 @@ module Harpnotes
 
 
           when "18-strings-b-e"
-            @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
+            @bottom_annotation_positions = [[210, 287], [210, 290], [280, 290]]
           else
         end
       end
@@ -1488,7 +1488,7 @@ module Harpnotes
           sheet_marks += marks.inject([]) do |result, pitch|
 
             print_options_hash[:stringnames][:marks][:vpos].each do |mark_vpos|
-              markpath = make_sheetmark_path([($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET'), mark_vpos])
+              markpath = make_sheetmark_path([(@pitch_to_xpos.call(pitch)), mark_vpos])
               result << Harpnotes::Drawing::Path.new(markpath, :filled)
             end
             result
@@ -2267,7 +2267,7 @@ module Harpnotes
 
 
       def convert_pitch_to_xpos(root)
-        @pitch_to_xpos.call(root)
+        @pitch_to_xpos.call(root.pitch)
       end
 
       def compute_color_by_variant_no(variant_no)
