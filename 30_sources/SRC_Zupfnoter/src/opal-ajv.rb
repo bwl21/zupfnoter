@@ -33,7 +33,16 @@ module Ajv
 
 
     def validate_conf(conf)
-      validate('zupfnoter', conf.get)
+      resconf = Confstack.new()
+      resconf.strict=false
+      resconf.push(conf.get)
+      extract0 = resconf.get("extract.0")
+      resconf.get('extract').keys.each do |key|
+        resconf.push({'extract' => {key => extract0}})  # push extract 0 to all others
+      end
+      resconf.push({'extract' => conf.get('extract')})  # push extract-specific paramters
+
+      validate('zupfnoter', resconf.get)
     end
 
     def _schema
@@ -44,22 +53,72 @@ module Ajv
 
        :definitions => {
 
-           :pos         => {:type        => "array",
-                            :minItems    => 2,
-                            :uniqueItems => false,
-                            :items       => {:type => "number"}},
-           :notes_entry => {:type       => "object",
-                            :required   => ["pos", "text", "style"],
-                            :properties =>
-                                {:pos   => {:'$ref' => '#/definitions/pos'},
-                                 :text  => {:type => "string"},
-                                 :style => {:type => "string"}}},
-           :minc_entry  => {
+           :pos            => {:type        => "array",
+                               :minItems    => 2,
+                               :uniqueItems => false,
+                               :items       => {:type => "number"}},
+           :notes_entry    => {:type       => "object",
+                               :required   => ["pos", "text", "style"],
+                               :properties =>
+                                   {:pos   => {:'$ref' => '#/definitions/pos'},
+                                    :text  => {:type => "string"},
+                                    :style => {:type => "string"}}},
+           :minc_entry     => {
                :type                 => "object",
                :required             => [:minc_f],
                :additionalProperties => false,
                :properties           => {:minc_f => {:type => "number"}}
-           }
+           },
+           :extract_layout => {
+               :type                 => "object",
+               :requiredx            => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
+               :additionalProperties => false,
+               :properties           =>
+                   {:limit_a3          => {:type => "boolean"},
+                    :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},
+                    :manual_sheet      => {:type       => 'object',
+                                           required:   [:llpos, :trpos, :url],
+                                           :properties => {llpos: {:'$ref' => '#/definitions/pos'},
+                                                           trpos: {:'$ref' => '#/definitions/pos'},
+                                                           url:   {:type => 'string'}}},
+                    :LINE_THIN         => {:type => "number"},
+                    :LINE_MEDIUM       => {:type => "number"},
+                    :LINE_THICK        => {:type => "number"},
+                    :PITCH_OFFSET      => {:type => "integer"},
+                    :X_SPACING         => {:type => "number"},
+                    :X_OFFSET          => {:type => "number"},
+                    :instrument        => {:type => 'string'},
+
+                    :DRAWING_AREA_SIZE => {:type     => "array",
+                                           :minItems => 2,
+                                           :items    => {:type => "number"}},
+                    :ELLIPSE_SIZE      => {:type     => "array",
+                                           :minItems => 2,
+                                           :items    => {:type => "number"}},
+                    :REST_SIZE         => {:type     => "array",
+                                           :minItems => 2,
+                                           :items    => {:type => "number"}},
+                    :grid              => {:type => "boolean"},
+                    :jumpline_anchor   => {:"$ref" => "#/definitions/pos"},
+                    :color             => {:type       => 'object',
+                                           :properties => {:color_default  => {:type => 'string'},
+                                                           :color_variant1 => {:type => 'string'},
+                                                           :color_variant2 => {:type => 'string'}
+                                           }},
+                    :packer            => {:type       => 'object',
+                                           :properties => {
+                                               :pack_method            => {:type => 'integer'},
+                                               :pack_max_spread_factor => {:type => 'number'},
+                                               :pack_min_increment     => {:type => 'number'}
+                                           }},
+                    :minc              => {:type                 => "object",
+                                           :additionalProperties => false,
+                                           :patternProperties    => {
+                                               "\d*" => {:'$ref' => '#/definitions/minc_entry'}
+                                           }
+                    }
+                   }
+           },
        },
 
        :properties  => {
@@ -159,7 +218,7 @@ module Ajv
                                           :properties =>
                                               {:text => {:type => "string"},
                                                :pos  => {:'$ref' => '#/definitions/pos'}}}}},
-           :extract      => {:type              => "object",
+           :extract      => {:type => "object",
                              #:required          => ["0", "1", "2", "3"],
                              :patternProperties =>
                                  {:"\d*" => {:type       => "object",
@@ -228,50 +287,7 @@ module Ajv
                                                   :lyrics       => {:type       => "object",
                                                                     :properties =>
                                                                         {}},
-                                                  :layout       => {:type                 => "object",
-                                                                    :requiredx            => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
-                                                                    :additionalProperties => false,
-                                                                    :properties           =>
-                                                                        {:limit_a3          => {:type => "boolean"},
-                                                                         :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},
-                                                                         :manual_sheet      => {:type       => 'object',
-                                                                                                required:   [:llpos, :trpos, :url],
-                                                                                                :properties => {llpos: {:'$ref' => '#/definitions/pos'},
-                                                                                                                trpos: {:'$ref' => '#/definitions/pos'},
-                                                                                                                url:   {:type => 'string'}}},
-                                                                         :LINE_THIN         => {:type => "number"},
-                                                                         :LINE_MEDIUM       => {:type => "number"},
-                                                                         :LINE_THICK        => {:type => "number"},
-                                                                         :DRAWING_AREA_SIZE => {:type     => "array",
-                                                                                                :minItems => 2,
-                                                                                                :items    => {:type => "number"}},
-                                                                         :ELLIPSE_SIZE      => {:type     => "array",
-                                                                                                :minItems => 2,
-                                                                                                :items    => {:type => "number"}},
-                                                                         :REST_SIZE         => {:type     => "array",
-                                                                                                :minItems => 2,
-                                                                                                :items    => {:type => "number"}},
-                                                                         :grid              => {:type => "boolean"},
-                                                                         :jumpline_anchor   => {:"$ref" => "#/definitions/pos"},
-                                                                         :color             => {:type       => 'object',
-                                                                                                :properties => {:color_default  => {:type => 'string'},
-                                                                                                                :color_variant1 => {:type => 'string'},
-                                                                                                                :color_variant2 => {:type => 'string'}
-                                                                                                }},
-                                                                         :packer            => {:type       => 'object',
-                                                                                                :properties => {
-                                                                                                    :pack_method            => {:type => 'integer'},
-                                                                                                    :pack_max_spread_factor => {:type => 'number'},
-                                                                                                    :pack_min_increment     => {:type => 'number'}
-                                                                                                }},
-                                                                         :minc              => {:type                 => "object",
-                                                                                                :additionalProperties => false,
-                                                                                                :patternProperties    => {
-                                                                                                    "\d*" => {:'$ref' => '#/definitions/minc_entry'}
-                                                                                                }
-                                                                         }
-                                                                        }
-                                                  },
+                                                  :layout       => {:'$ref' => '#/definitions/extract_layout'},
                                                   :nonflowrest  => {:type => "boolean"},
                                                   :notes        => {:patternProperties => {'.*' => {:"$ref" => '#/definitions/notes_entry'}}},
                                                   :barnumbers   => {:type       => "object",
@@ -374,9 +390,9 @@ module Ajv
                                   :SHORTEST_NOTE     => {:type => "integer"},
                                   :BEAT_PER_DURATION => {:type => "integer"},
                                   :PITCH_OFFSET      => {:type => "integer"},
-                                  :FONT_STYLE_DEF    => {:type       => "object",
-                                                         :required   => ["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"],
-                                                         :properties =>
+                                  :FONT_STYLE_DEF    => {:type              => "object",
+                                                         :required          => ["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"],
+                                                         :patternProperties =>
                                                              {".*" => {:type       => "object",
                                                                        :required   => ["text_color", "font_size", "font_style"],
                                                                        :properties =>
@@ -508,7 +524,7 @@ module Ajv
                                                               #          :uniqueItems => true,
                                                               #          :items       => {:type => "number"}}}
                                                              }},
-                                  :REST_TO_GLYPH     => {:type              => "object",
+                                  :REST_TO_GLYPH     => {:type => "object",
                                                          # :required   => ["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"],
                                                          :patternProperties =>
                                                              {'.*' => {:type        => "array",
