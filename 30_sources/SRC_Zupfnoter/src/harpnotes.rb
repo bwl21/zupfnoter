@@ -1174,22 +1174,27 @@ module Harpnotes
       end
 
       def set_instrument_handlers
+
+        xoffset                      = $conf['layout.X_OFFSET']
+        xspacing                     = $conf['layout.X_SPACING']
+        pitchoffset                     = $conf.get('layout.PITCH_OFFSET')
         @bottom_annotation_positions = [[150, 289], [325, 289], [380, 289]]
-        @pitch_to_xpos               = lambda {|pitch| ($conf.get('layout.PITCH_OFFSET') + pitch) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET')}
+        @pitch_to_xpos               = lambda {|pitch| (pitchoffset + pitch) * xspacing + xoffset}
 
         case $conf['layout.instrument']
+
           when "saitenspiel"
             @pitch_to_xpos               = lambda {|pitch|
               #          G        c        d        e        f        g        a        b        c'       D'
               pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
-              pitch_to_stringpos = pitch_to_stringpos[pitch + $conf.get('layout.PITCH_OFFSET')]
+              pitch_to_stringpos = pitch_to_stringpos[pitch + pitchoffset]
               result             = 0
-              result             = (pitch_to_stringpos) * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') if pitch_to_stringpos
+              result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
               result
             }
-            @bottom_annotation_positions = [[$conf['layout.X_OFFSET'], 287], [$conf['layout.X_OFFSET'], 290], [$conf['layout.X_OFFSET'] + 100, 290]]
+            @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
             @draw_instrument             = lambda {
-              res            = Harpnotes::Drawing::Path.new([['M', 30, 6], ['L', 180, 81], ['L', 180, 216], ['L', 30, 291]], :open)
+              res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
               res.line_width = $conf.get('layout.LINE_MEDIUM');
               res
             }
