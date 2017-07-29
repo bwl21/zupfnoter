@@ -96,7 +96,7 @@ class Controller
 
     I18n.locale(zupfnoter_language) if browser_language
 
-    @version = VERSION
+    @version      = VERSION
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
@@ -137,8 +137,8 @@ class Controller
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
     # these methods are invoked here.
-    @commands    = CommandController::CommandStack.new
-    self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
+    @commands = CommandController::CommandStack.new
+    self.methods.select {|n| n =~ /__ic.*/}.each {|m| send(m)} # todo: what is this?
 
     setup_harpnote_preview
 
@@ -189,21 +189,21 @@ class Controller
   # this method invokes the system conumers
   def call_consumers(clazz)
     @systemstatus_consumers = {systemstatus: [
-                                                 lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                 lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
                                              ],
                                statusline:   [],
-                               error_alert:  [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
-                               play_start:   [lambda { `update_play_w2ui('start')` }],
-                               play_stop:    [lambda { `update_play_w2ui('stop')` }],
-                               disable_save: [lambda { `disable_save();` }],
-                               enable_save:  [lambda { `enable_save();` }],
-                               before_open:  [lambda { `before_open()`}],
-                               extracts:     [lambda { @extracts.each { |entry|
+                               error_alert:  [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
+                               play_start:   [lambda {`update_play_w2ui('start')`}],
+                               play_stop:    [lambda {`update_play_w2ui('stop')`}],
+                               disable_save: [lambda {`disable_save();`}],
+                               enable_save:  [lambda {`enable_save();`}],
+                               before_open:  [lambda {`before_open()`}],
+                               extracts:     [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
-                                 `set_extract_menu(#{entry.first}, #{title})` }
+                                 `set_extract_menu(#{entry.first}, #{title})`}
                                }]
     }
-    @systemstatus_consumers[clazz].each { |c| c.call() }
+    @systemstatus_consumers[clazz].each {|c| c.call()}
   end
 
   # this handles a command
@@ -224,8 +224,8 @@ class Controller
   # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
-                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key)
+    systemstatus = @systemstatus.select {|key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
+                                                   :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key)
     }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
@@ -257,7 +257,7 @@ class Controller
   # note that this is maintained from version to version
   def cleanup_localstorage
     keys             = `Object.keys(localStorage)`
-    dbx_apiv1_traces = keys.select { |k| k.match(/dropbox\-auth:default:/) }
+    dbx_apiv1_traces = keys.select {|k| k.match(/dropbox\-auth:default:/)}
     unless dbx_apiv1_traces.empty?
       # remove dropbox api-v1
       # remove systemstatus to get rid of the dropbox login status
@@ -416,7 +416,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
       if lyrics
         result           = lyrics.inject({}) do |ir, element|
-          verses                = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
+          verses                = element.first.gsub(",", " ").split(" ").map {|f| f.to_i}
           ir[(ir.count+1).to_s] = {"verses" => verses, "pos" => element.last}
           ir
         end
@@ -483,7 +483,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     begin
       abc_text = @editor.get_abc_part
-      abc_text = abc_text.split("\n").map { |line|
+      abc_text = abc_text.split("\n").map {|line|
         result = line
         result = result.gsub('~', ' ') if line.start_with? 'W:'
         result
@@ -604,7 +604,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     begin
 
       $log.benchmark("validate default conf") do
-        @json_validator.validate_conf($conf) if $log.loglevel == :debug
+        @validation_errors = []
+        @validation_errors = @json_validator.validate_conf($conf) if $log.loglevel == :debug
       end
 
       load_music_model
@@ -681,7 +682,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # note that previous selections are still maintained.
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
-    a         =Native(abcelement)
+    a =Native(abcelement)
     #$log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     startchar = a[:startChar]
@@ -746,7 +747,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       conf_key  = info[:conf_key]
       newcoords = info[:conf_value_new]
       unless newcoords
-        newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
+        newcoords = info[:conf_value][:pos].zip(info[:delta]).map {|i| i.first + i.last}
       end
 
       @editor.patch_config_part(conf_key, newcoords)
@@ -1038,7 +1039,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       # alert (" hat nicht gelesen gelesen")
     end
 
-    body = messages.map { |m|
+    body = messages.map {|m|
       nm      = Native(m)
       post_id = nm[:postId]
       desc    = nm[:description]
@@ -1046,21 +1047,21 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     }.join
 
     options = {
-        msg:      body,
-        title:    I18n.t('There is new unread information'),
-        width:    600, # width of the dialog
-        height:   200, # height of the dialog
+        msg:   body,
+        title: I18n.t('There is new unread information'),
+        width: 600, # width of the dialog
+        height: 200, # height of the dialog
         modal:    true,
         btn_yes:  {
-            text:     I18n.t('read now'), # text for yes button (or yes_text)
-            class:    '', # class for yes button (or yes_class)
-            style:    '', # style for yes button (or yes_style)
+            text: I18n.t('read now'), # text for yes button (or yes_text)
+            class: '', # class for yes button (or yes_class)
+            style: '', # style for yes button (or yes_style)
             callBack: have_read # callBack for yes button (or yes_callBack)
         },
         btn_no:   {
-            text:     I18n.t('read later'), # text for no button (or no_text)
-            class:    '', # class for no button (or no_class)
-            style:    '', # style for no button (or no_style)
+            text: I18n.t('read later'), # text for no button (or no_text)
+            class: '', # class for no button (or no_class)
+            style: '', # style for no button (or no_style)
             callBack: have_not_read # callBack for no button (or no_callBack)
         },
         callBack: nil # common callBack

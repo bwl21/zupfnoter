@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.7.0 dev ++
+Version 1.7.0 dev 3
 
 © 2017 https://www.zupfnoter.de
 
@@ -2318,6 +2318,24 @@ ist.
   \texttt{loglevel\ error} - Es werden nur noch schwerwiegende Fehler
   gemeldet. Das ist für die normale Anwendung ausreichend.
 \end{itemize}
+
+Die Konsole kann auch für eine bessere Fehlersuche in der Konfiguration
+verwendet werden. Selbst wenn Zupfnoter die Eingabe fehlerhafter
+Konfigurationsparamert eigentlich verhindern soll, so kann es trotzdem
+vorkommen. Wenn also schwer verständliche Meldungen erscheinen kann man
+den loglevel debug einschalten. Dann kann man in der Konsole mit
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{editconf\ errors} - die fehlerhaften Konfigurationsparameter
+  als Formular bearbeiten.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis}: Diese Funktion ist noch experimentell (1.7). Wenn es
+sich bewährt, wird sie in in die Menüs integriert.
+\end{quote}
 
 Eine Übersicht der Befehle für die Konsole gibt der Befehl
 

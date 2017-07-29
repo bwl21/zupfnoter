@@ -489,8 +489,10 @@ class Controller
             stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
             extract0:              {keys: ['extract.0']},
             extract_current:       {keys: expand_extract_keys($conf.keys.select {|k| k.start_with?('extract.0.')}.map {|k| k.split('extract.0.').last})},
+            errors:                {keys:  @validation_errors},
             xx:                    {keys: ['xx']}
         }
+
 
         # regular expression formsets match by a regular expression
         # this supports forms which start with a variable key.

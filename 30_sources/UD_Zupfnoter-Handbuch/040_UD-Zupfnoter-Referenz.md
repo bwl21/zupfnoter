@@ -1057,6 +1057,18 @@ hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
 -   `loglevel error` - Es werden nur noch schwerwiegende Fehler
     gemeldet. Das ist für die normale Anwendung ausreichend.
 
+Die Konsole kann auch für eine bessere Fehlersuche in der Konfiguration
+verwendet werden. Selbst wenn Zupfnoter die Eingabe fehlerhafter
+Konfigurationsparamert eigentlich verhindern soll, so kann es trotzdem
+vorkommen. Wenn also schwer verständliche Meldungen erscheinen kann man
+den loglevel debug einschalten. Dann kann man in der Konsole mit
+
+-   `editconf errors` - die fehlerhaften Konfigurationsparameter als
+    Formular bearbeiten.
+
+> **Hinweis**: Diese Funktion ist noch experimentell (1.7). Wenn es sich
+> bewährt, wird sie in in die Menüs integriert.
+
 Eine Übersicht der Befehle für die Konsole gibt der Befehl
 
 -   `help <thema>` - z.B. `help std` gibt aus

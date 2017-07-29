@@ -20,28 +20,30 @@ module Ajv
       %x{
       #{valid} = #{@root}.validate(#{schemaname}, #{data.to_n})
      }
+      result = []
       unless valid
         errors = %x{#{@root}.errors}
         errors.each do |error|
-          path    = `#{error}.dataPath`
-          path    = path[1 .. -1].gsub("/", '.') if path.start_with? "/"
+          path = `#{error}.dataPath`
+          path = path[1 .. -1].gsub("/", '.') if path.start_with? "/"
+          result.push path
           message = %x{#{path}+ ': ' + #{error}.message + "\n" + JSON.stringify(error.params, null, " ")}
           $log.error(message)
         end
       end
+      result
     end
 
-
     def validate_conf(conf)
-      resconf = Confstack.new()
+      resconf       = Confstack.new()
       resconf.strict=false
       resconf.push(conf.get)
       extract0 = resconf.get("extract.0")
       resconf.get('extract').keys.each do |key|
-        resconf.push({'extract' => {key => extract0}})  # push extract 0 to all others
+        resconf.push({'extract' => {key => extract0}}) # push extract 0 to all others
       end
-      resconf.push({'extract' => conf.get('extract')})  # push extract-specific paramters
-
+      resconf.push({'extract' => conf.get('extract')}) # push extract-specific paramters
+      x=resconf.get
       validate('zupfnoter', resconf.get)
     end
 
@@ -284,9 +286,13 @@ module Ajv
                                                                          :pos  => {:"$ref" => "#/definitions/pos"}
                                                                         }
                                                   },
-                                                  :lyrics       => {:type       => "object",
-                                                                    :properties =>
-                                                                        {}},
+                                                  :lyrics       => {:type              => "object",
+                                                                    :patternProperties =>
+                                                                        {".*" => {
+                                                                            :type      => "object",
+                                                                            :required => ["verses", "pos"]
+                                                                        }}
+                                                  },
                                                   :layout       => {:'$ref' => '#/definitions/extract_layout'},
                                                   :nonflowrest  => {:type => "boolean"},
                                                   :notes        => {:patternProperties => {'.*' => {:"$ref" => '#/definitions/notes_entry'}}},
@@ -344,8 +350,8 @@ module Ajv
                                                                                           :uniqueItems => false,
                                                                                           :items       => {:type => "integer"}},
                                                                          :show_border => {:type => "boolean"}}}}},
-                                  :"1"   => {:type       => "object",
-                                             :required   => ["title", "filenamepart", "voices"],
+                                  :"4"   => {:type       => "object",
+                                             :required   => ["title", "voices"],
                                              :properties =>
                                                  {:title        => {:type => "string"},
                                                   :filenamepart => {},
@@ -353,8 +359,8 @@ module Ajv
                                                                     :minItems    => 1,
                                                                     :uniqueItems => true,
                                                                     :items       => {:type => "integer"}}}},
-                                  :"2"   => {:type       => "object",
-                                             :required   => ["title", "filenamepart", "voices"],
+                                  :"5"   => {:type       => "object",
+                                             :required   => ["title", "voices"],
                                              :properties =>
                                                  {:title        => {:type => "string"},
                                                   :filenamepart => {},

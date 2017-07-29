@@ -31,6 +31,7 @@
 ## experimental feature
 
 * implemented a collision based packer (#89)
+* implemented validation of config parameters (#85) with result form
 
 ## backwards compatibility issues
 
