@@ -14,8 +14,8 @@ class Controller
       c.undoable = false
 
       c.add_parameter(:what, :string) do |parameter|
-        parameter.set_default { "" }
-        parameter.set_help { "filter string for help command" }
+        parameter.set_default {""}
+        parameter.set_help {"filter string for help command"}
       end
 
       c.set_help do
@@ -23,18 +23,18 @@ class Controller
       end
 
       c.as_action do |args|
-        $log.message("<pre>#{@commands.help_string_style.select { |i| i.include? args[:what] }.join("\n")}</pre>")
+        $log.message("<pre>#{@commands.help_string_style.select {|i| i.include? args[:what]}.join("\n")}</pre>")
       end
     end
 
     @commands.add_command(:view) do |command|
 
       command.add_parameter(:view, :integer) do |p|
-        p.set_default { @systemstatus[:view] }
-        p.set_help { "id of the view to be used for preview [#{@systemstatus[:view]}]" }
+        p.set_default {@systemstatus[:view]}
+        p.set_help {"id of the view to be used for preview [#{@systemstatus[:view]}]"}
       end
 
-      command.set_help { "set current view  #{command.parameter_help(0)} and redisplay" }
+      command.set_help {"set current view  #{command.parameter_help(0)} and redisplay"}
 
       command.undoable = false
 
@@ -48,10 +48,10 @@ class Controller
 
     @commands.add_command(:loglevel) do |c|
       c.undoable = false
-      c.set_help { "set log level to #{c.parameter_help(0)}" }
+      c.set_help {"set log level to #{c.parameter_help(0)}"}
       c.add_parameter(:level, :string) do |parameter|
-        parameter.set_default { "warning" }
-        parameter.set_help { "error | warning | info | debug" }
+        parameter.set_default {"warning"}
+        parameter.set_help {"error | warning | info | debug"}
       end
       c.as_action do |args|
         $log.loglevel=args[:level]
@@ -62,10 +62,10 @@ class Controller
 
     @commands.add_command(:autofold) do |c|
       c.undoable = false
-      c.set_help { "set automatic folding of config in editor #{c.parameter_help(0)}" }
+      c.set_help {"set automatic folding of config in editor #{c.parameter_help(0)}"}
       c.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_default { 'true' }
-        parameter.set_help { "true | false" }
+        parameter.set_default {'true'}
+        parameter.set_help {"true | false"}
       end
       c.as_action do |args|
         value = {'true' => true, 'false' => false}[args[:value]]
@@ -81,11 +81,11 @@ class Controller
 
     @commands.add_command(:autorefresh) do |c|
       c.undoable = false
-      c.set_help { "turnon autorefresh" }
+      c.set_help {"turnon autorefresh"}
       values = {on: :on, off: :off, remote: :remote}
       c.add_parameter(:value, :string) do |parameter|
-        parameter.set_default { :true }
-        parameter.set_help { "#{values.keys.join(" | ")}" }
+        parameter.set_default {:true}
+        parameter.set_help {"#{values.keys.join(" | ")}"}
       end
       c.as_action do |args|
 
@@ -100,7 +100,7 @@ class Controller
 
     @commands.add_command(:undo) do |c|
       c.undoable = false
-      c.set_help { "undo last command" }
+      c.set_help {"undo last command"}
       c.as_action do |a|
         @commands.undo
       end
@@ -108,7 +108,7 @@ class Controller
 
     @commands.add_command(:redo) do |c|
       c.undoable = false
-      c.set_help { "redo last command" }
+      c.set_help {"redo last command"}
       c.as_action do |a|
         @commands.redo
       end
@@ -116,9 +116,9 @@ class Controller
 
     @commands.add_command(:history) do |c|
       c.undoable = false
-      c.set_help { "show history" }
+      c.set_help {"show history"}
       c.as_action do |a|
-        history = @commands.history.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
+        history = @commands.history.map {|c| "#{c.first}: #{c[1].name}(#{c.last})"}
         $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
@@ -126,18 +126,18 @@ class Controller
 
     @commands.add_command(:showundo) do |c|
       c.undoable = false
-      c.set_help { "show undo stack" }
+      c.set_help {"show undo stack"}
       c.as_action do |a|
-        history = @commands.undostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
+        history = @commands.undostack.map {|c| "#{c.first}: #{c[1].name}(#{c.last})"}
         $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
 
     @commands.add_command(:showredo) do |c|
       c.undoable = false
-      c.set_help { "show redo stack" }
+      c.set_help {"show redo stack"}
       c.as_action do |a|
-        history = @commands.redostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
+        history = @commands.redostack.map {|c| "#{c.first}: #{c[1].name}(#{c.last})"}
         $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
@@ -146,10 +146,10 @@ class Controller
   def __ic_02_play_commands
     @commands.add_command(:p) do |c|
       c.undoable = false
-      c.set_help { "play song #{c.parameter_help(0)}" }
+      c.set_help {"play song #{c.parameter_help(0)}"}
       c.add_parameter(:range, :string) do |parameter|
-        parameter.set_default { "ff" }
-        parameter.set_help { "r(all | ff | sel): range to play" }
+        parameter.set_default {"ff"}
+        parameter.set_help {"r(all | ff | sel): range to play"}
       end
 
       c.as_action do |argument|
@@ -173,7 +173,7 @@ class Controller
 
     @commands.add_command(:stop) do |c|
       c.undoable = false
-      c.set_help { "stop playing" }
+      c.set_help {"stop playing"}
       c.as_action do |a|
         stop_play_abc
       end
@@ -181,7 +181,7 @@ class Controller
 
     @commands.add_command(:render) do |c|
       c.undoable = false
-      c.set_help { "refresh" }
+      c.set_help {"refresh"}
       c.as_action do |a|
         render_previews
       end
@@ -192,14 +192,14 @@ class Controller
   def __ic_03_create_commands
 
     @commands.add_command(:c) do |c|
-      c.set_help { "create song #{c.parameter_help(0)} #{c.parameter_help(1)}" }
+      c.set_help {"create song #{c.parameter_help(0)} #{c.parameter_help(1)}"}
       c.add_parameter(:id, :string) do |parameter|
-        parameter.set_help { "value for X: line, a unique id" }
+        parameter.set_help {"value for X: line, a unique id"}
       end
 
       c.add_parameter(:title, :string) do |parameter|
-        parameter.set_default { "untitled" }
-        parameter.set_help { "Title of the song" }
+        parameter.set_default {"untitled"}
+        parameter.set_help {"Title of the song"}
       end
 
       c.as_action do |args|
@@ -225,7 +225,7 @@ class Controller
 
 
     @commands.add_command(:drop) do |command|
-      command.set_help { "Handle a dropped _abc" }
+      command.set_help {"Handle a dropped _abc"}
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
@@ -243,15 +243,15 @@ class Controller
       command.undoable = false
 
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help { "parameter key" }
+        parameter.set_help {"parameter key"}
       end
 
       command.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_help { "parameter value (true | false" }
+        parameter.set_help {"parameter value (true | false"}
       end
 
 
-      command.set_help { "set configuration parameter true/false" }
+      command.set_help {"set configuration parameter true/false"}
 
       command.as_action do |args|
         value = {'true' => true, 'false' => false}[args[:value]]
@@ -271,7 +271,7 @@ class Controller
     @commands.add_command(:stdnotes) do |command|
       command.undoable = false
 
-      command.set_help { "configure extract with template from localstore" }
+      command.set_help {"configure extract with template from localstore"}
 
       command.as_action do |args|
         handle_command("addconf standardnotes")
@@ -282,7 +282,7 @@ class Controller
     @commands.add_command(:stdextract) do |command|
       command.undoable = false
 
-      command.set_help { "configure with template from localstore" }
+      command.set_help {"configure with template from localstore"}
 
       command.as_action do |args|
         handle_command("addconf standardextract")
@@ -292,7 +292,7 @@ class Controller
     @commands.add_command(:setstdnotes) do |command|
       command.undoable = false
 
-      command.set_help { "configure stdnotes in localstore" }
+      command.set_help {"configure stdnotes in localstore"}
 
       command.as_action do |args|
         template = @editor.get_config_part_value('extract.0').to_json
@@ -305,7 +305,7 @@ class Controller
     @commands.add_command(:setstdextract) do |command|
       command.undoable = false
 
-      command.set_help { "configure stdc onfig in localstore" }
+      command.set_help {"configure stdc onfig in localstore"}
 
       command.as_action do |args|
         template = @editor.get_config_part_value('extract').to_json
@@ -316,7 +316,7 @@ class Controller
 
     @commands.add_command(:settemplate) do |command|
       command.undoable = false
-      command.set_help { "set the current editor content as template" }
+      command.set_help {"set the current editor content as template"}
       command.as_action do |args|
         template = @editor.get_text('extract.0')
         if template.empty?
@@ -333,57 +333,57 @@ class Controller
       command.undoable = false
 
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help { "parameter key" }
+        parameter.set_help {"parameter key"}
       end
 
-      command.set_help { "add configuration parameter" }
+      command.set_help {"add configuration parameter"}
 
       command.as_action do |args|
 
         values = {
-            'title'            => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "ENTER_TITLE_EXTRACT_#{@systemstatus[:view]}"} },
-            'voices'           => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
-            'flowlines'        => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
-            'layoutlines'      => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
-            'jumplines'        => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
-            'repeatsigns.full' => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns", value: $conf['extract.0.repeatsigns']} },
-            'repeatsigns'      => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']} },
-            'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
-            'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
-            'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']} },
-            'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']} },
-            'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
-            'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
-            'subflowlines'     => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
-            'produce'          => lambda { {key: "produce", value: $conf['produce']} },
-            'annotations'      => lambda { {key: "annotations.x", value: $conf['templates.annotations']} },
-            'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
-                                            value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
-            'printer'          => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
-                                            value: $conf['extract.0.printer']} }, # radii of the largest Rest Glyph} },
-            'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
+            'title'            => lambda {{key: "extract.#{@systemstatus[:view]}.title", value: "ENTER_TITLE_EXTRACT_#{@systemstatus[:view]}"}},
+            'voices'           => lambda {{key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']}},
+            'flowlines'        => lambda {{key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']}},
+            'layoutlines'      => lambda {{key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']}},
+            'jumplines'        => lambda {{key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']}},
+            'repeatsigns.full' => lambda {{key: "extract.#{@systemstatus[:view]}.repeatsigns", value: $conf['extract.0.repeatsigns']}},
+            'repeatsigns'      => lambda {{key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']}},
+            'synchlines'       => lambda {{key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']}},
+            'legend'           => lambda {{key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']}},
+            'notes'            => lambda {{key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']}},
+            'lyrics'           => lambda {{key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']}},
+            'nonflowrest'      => lambda {{key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']}},
+            'startpos'         => lambda {{key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']}},
+            'subflowlines'     => lambda {{key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']}},
+            'produce'          => lambda {{key: "produce", value: $conf['produce']}},
+            'annotations'      => lambda {{key: "annotations.x", value: $conf['templates.annotations']}},
+            'layout'           => lambda {{key:   "extract.#{@systemstatus[:view]}.layout",
+                                           value: $conf['extract.0.layout']}}, # radii of the largest Rest Glyph} },
+            'printer' => lambda {{key:   "extract.#{@systemstatus[:view]}.printer",
+                                  value: $conf['extract.0.printer']}}, # radii of the largest Rest Glyph} },
+            'countnotes'       => lambda {{key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']}},
 
-            'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
-                                            value: {
-                                                voices: [],
-                                                pos:    [6, -4]
-                                            }} },
-            'barnumbers.full'  => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
+            'barnumbers'       => lambda {{key:   "extract.#{@systemstatus[:view]}.barnumbers",
+                                           value: {
+                                               voices: [],
+                                               pos:    [6, -4]
+                                           }}},
+            'barnumbers.full'  => lambda {{key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']}},
 
-            'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
-            'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
+            'stringnames.full' => lambda {{key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']}},
+            'stringnames'      => lambda {{key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']}},
 
-            'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
-            'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
-            'standardextract'  => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} },
-            'x1'               => lambda { {key: "xx", value: $conf[]} },
-            'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} },
-            'hugo'             => lambda { {key: "extract.#{@systemstatus[:view]}",
-                                            value:
-                                                 [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
-                                                   r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
-                                                   r
-                                                 end} }
+            'restpos_1.3'      => lambda {{key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}}},
+            'standardnotes'    => lambda {{key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)}},
+            'standardextract'  => lambda {{key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)}},
+            'x1'               => lambda {{key: "xx", value: $conf[]}},
+            'xx'               => lambda {{key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']}},
+            'hugo'             => lambda {{key: "extract.#{@systemstatus[:view]}",
+                                           value:
+                                                [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
+                                                  r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
+                                                  r
+                                                end}}
         }
 
         # create the commands for presets
@@ -392,15 +392,19 @@ class Controller
           entry                         = $conf["presets.notes.#{key}"]
           to_key                        = entry[:key] || key
           value                         = entry[:value]
-          values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
+          values["preset.notes.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch}}
         end
 
         $conf['presets.layout'].each do |key, preset_value|
-          values["preset.layout.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset} }
+          values["preset.layout.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset}}
         end
 
         $conf['presets.printer'].each do |key, preset_value|
-          values["preset.printer.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.printer.#{key}"], method: :preset} }
+          values["preset.printer.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}", value: $conf["presets.printer.#{key}"], method: :preset}}
+        end
+
+        $conf['presets.instrument'].each do |key, preset_value|
+          values["preset.instrument.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}", value: $conf["presets.instrument.#{key}"], method: :preset}}
         end
 
         # here we handle the menu stuff
@@ -423,7 +427,7 @@ class Controller
           # this computes the next key number
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0..-2].join(".")
-            next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
+            next_free  = localconf[parent_key].keys.map {|k| k.split('.').last.to_i}.sort.last + 1
             the_key    = %Q{#{parent_key}.#{next_free}}
           end
 
@@ -440,27 +444,27 @@ class Controller
     @commands.add_command(:editconf) do |command|
 
       def expand_extract_keys(keys)
-        keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
+        keys.map {|k| "extract.#{@systemstatus[:view]}.#{k}"}
       end
 
       def expand_extractnumbering(keys)
-        [0, 1, 2, 3, 4, 5].product(keys).map { |number, key| "extract.#{number}.#{key}" }
+        [0, 1, 2, 3, 4, 5].product(keys).map {|number, key| "extract.#{number}.#{key}"}
       end
 
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
-        parameter.set_help { "one of the editable keys" } #"#{sets.keys.to_s}" }
+        parameter.set_help {"one of the editable keys"} #"#{sets.keys.to_s}" }
       end
 
-      command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
+      command.set_help {"edit configuration parameters (#{command.parameter_help(0)})"}
 
       command.as_action do |args|
         $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
 
         # this is the set of predefined configuration pages
         # it is the argument of editconf {set} respectively addconf{set}
-        form_sets        = {
+        form_sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :nonflowrest,
                                                                             :startpos,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices',
@@ -470,17 +474,25 @@ class Controller
                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
             },
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
-            annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
-            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
-            lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
+            annotations:           {keys: [:annotations], newentry_handler: lambda {handle_command("addconf annotations")}},
+            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda {handle_command("addconf notes")}, quicksetting_commands: _get_quicksetting_commands('notes')},
+            lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
             minc:                  {keys: expand_extract_keys(['layout.minc'])},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
+
+            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
+                                                               'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'stringnames.marks.hpos']),
+                                    quicksetting_commands:
+                                          _get_quicksetting_commands('instrument')
+            },
             stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
             extract0:              {keys: ['extract.0']},
-            extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
+            extract_current:       {keys: expand_extract_keys($conf.keys.select {|k| k.start_with?('extract.0.')}.map {|k| k.split('extract.0.').last})},
+            errors:                {keys:  @validation_errors},
             xx:                    {keys: ['xx']}
         }
+
 
         # regular expression formsets match by a regular expression
         # this supports forms which start with a variable key.
@@ -491,14 +503,14 @@ class Controller
         }
 
         # see if we have a static form set
-        the_form         = form_sets[args[:set]]
+        the_form = form_sets[args[:set]]
 
         # see if we have a regular expression formset
         unless the_form
           regexp_form_sets.each do |pattern, entry|
             if match = args[:set].match(pattern)
               the_form        = entry
-              the_form[:keys] = the_form[:keys].map { |inner_key| "#{args[:set]}.#{inner_key}" }
+              the_form[:keys] = the_form[:keys].map {|inner_key| "#{args[:set]}.#{inner_key}"}
             end
           end
         end
@@ -553,8 +565,8 @@ class Controller
           handle_command("editconf #{args[:set]}")
         end
 
-        editor_title        = %Q{Extract #{@systemstatus[:view]}: #{args[:set]}}
-        editorparams        = {
+        editor_title = %Q{Extract #{@systemstatus[:view]}: #{args[:set]}}
+        editorparams = {
             title:                 editor_title,
             editor:                @editor,
             value_handler:         get_configvalues,
@@ -577,7 +589,7 @@ class Controller
 
     @commands.add_command(:editsnippet) do |command|
       command.undoable = false
-      command.set_help { "edit current snippet" }
+      command.set_help {"edit current snippet"}
 
       command.as_action do |args|
         sel = @editor.get_selection_info
@@ -590,10 +602,10 @@ class Controller
 
     @commands.add_command(:addsnippet) do |command|
       command.undoable = false
-      command.set_help { "edit current snippet" }
+      command.set_help {"edit current snippet"}
 
       command.add_parameter(:token, :string) do |parameter|
-        parameter.set_help { "parameter key" }
+        parameter.set_help {"parameter key"}
       end
 
       command.as_action do |args|
@@ -610,15 +622,15 @@ class Controller
       command.undoable = false
 
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help { "parameter key" }
+        parameter.set_help {"parameter key"}
       end
 
       command.add_parameter(:value, :string) do |parameter|
-        parameter.set_help { "parameter value as JSON" }
+        parameter.set_help {"parameter value as JSON"}
       end
 
 
-      command.set_help { "set configuration parameter" }
+      command.set_help {"set configuration parameter"}
 
       command.as_action do |args|
         value = JSON.parse(args[:value])
@@ -761,20 +773,20 @@ C
 
     @commands.add_command(:lls) do |c|
       c.undoable = false
-      c.set_help { "list files in localstore" }
+      c.set_help {"list files in localstore"}
       c.as_action do |a|
         # list the songbook
-        $log.message("<pre>" + @songbook.list.map { |k, v| "#{k}_#{v}" }.join("\n") + "</pre>")
+        $log.message("<pre>" + @songbook.list.map {|k, v| "#{k}_#{v}"}.join("\n") + "</pre>")
       end
     end
 
     @commands.add_command(:lopen) do |c|
       c.undoable = true
-      c.add_parameter(:id, :string) { |parameter|
-        parameter.set_help { "id of the song to be loaded" }
+      c.add_parameter(:id, :string) {|parameter|
+        parameter.set_help {"id of the song to be loaded"}
       }
 
-      c.set_help { "open song from local store  #{c.parameter_help(0)}" }
+      c.set_help {"open song from local store  #{c.parameter_help(0)}"}
 
       c.as_action do |args|
         # retrieve a song
@@ -810,7 +822,7 @@ C
 
     @commands.add_command (:dreconnect) do |command|
 
-      command.set_help { "INTERNAL: This performs a reconnect after restart of zupfnoter" }
+      command.set_help {"INTERNAL: This performs a reconnect after restart of zupfnoter"}
       command.as_action do
         if @systemstatus[:dropboxapp]
           handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true})
@@ -832,21 +844,21 @@ C
       command.undoable = false
 
       command.add_parameter(:scope, :string) do |parameter|
-        parameter.set_default { @systemstatus[:dropboxapp] || 'full' }
-        parameter.set_help { "(app | full) app: app only | full: full dropbox" }
+        parameter.set_default {@systemstatus[:dropboxapp] || 'full'}
+        parameter.set_help {"(app | full) app: app only | full: full dropbox"}
       end
 
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default { @systemstatus[:dropboxpath] || "/" }
-        parameter.set_help { "path to set in dropbox" }
+        parameter.set_default {@systemstatus[:dropboxpath] || "/"}
+        parameter.set_help {"path to set in dropbox"}
       end
 
       command.add_parameter(:reconnect, :boolean) do |parameter|
-        parameter.set_default { false }
-        parameter.set_help { "INTERNAL: true to reconnect" }
+        parameter.set_default {false}
+        parameter.set_help {"INTERNAL: true to reconnect"}
       end
 
-      command.set_help { "dropbox login for #{command.parameter_help(0)}" }
+      command.set_help {"dropbox login for #{command.parameter_help(0)}"}
 
       command.as_action do |args|
 
@@ -911,7 +923,7 @@ C
 
     @commands.add_command(:dlogout) do |command|
       command.undoable = false
-      command.set_help { "logout from dropbox" } # todo factor out to comman class
+      command.set_help {"logout from dropbox"} # todo factor out to comman class
 
       command.as_action do |args|
 
@@ -934,11 +946,11 @@ C
       command.undoable = false
 
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default { @dropboxpath || "/" }
-        parameter.set_help { "path in dropbox #{@dropboxclient.app_name}" }
+        parameter.set_default {@dropboxpath || "/"}
+        parameter.set_help {"path in dropbox #{@dropboxclient.app_name}"}
       end
 
-      command.set_help { "list files in #{command.parameter_help(0)}" } # todo factor out to comman class
+      command.set_help {"list files in #{command.parameter_help(0)}"} # todo factor out to comman class
 
       command.as_action do |args|
         rootpath = args[:path]
@@ -947,7 +959,7 @@ C
         @dropboxclient.authenticate().then do
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
-          $log.message("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
+          $log.message("<pre>" + entries.select {|entry| entry =~ /\.abc$/}.join("\n").to_s + "</pre>")
         end.fail do |err|
           _report_error_from_promise err
         end
@@ -956,11 +968,11 @@ C
 
     @commands.add_command(:dcd) do |command|
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default { @dropboxpath }
-        parameter.set_help { "path in dropbox #{@dropboxclient.app_name}" }
+        parameter.set_default {@dropboxpath}
+        parameter.set_help {"path in dropbox #{@dropboxclient.app_name}"}
       end
 
-      command.set_help { "dropbox change dir to #{command.parameter_help(0)}" }
+      command.set_help {"dropbox change dir to #{command.parameter_help(0)}"}
 
       command.as_action do |args|
         rootpath      = args[:path]
@@ -982,7 +994,7 @@ C
     @commands.add_command(:dpwd) do |command|
       command.undoable = false
 
-      command.set_help { "show drobox path" }
+      command.set_help {"show drobox path"}
 
       command.as_action do |args|
         $log.message("#{@dropboxclient.app_name}: #{@dropboxpath}")
@@ -993,16 +1005,16 @@ C
     @commands.add_command(:dchoose) do |command|
       command.undoable = false
 
-      command.set_help { "choose File from Dropbox" }
+      command.set_help {"choose File from Dropbox"}
 
       command.as_action do |args|
         @dropboxclient.choose_file({}).then do |files|
           chosenfile = files.first[:link]
           # Dropbox returns either https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
           # or https://dl.dropboxusercontent.com/1/view/offjt8qk520cywc/3010_counthints.abc
-          fileparts  = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
-          path       = "/#{fileparts[1]}"
-          filename   = `decodeURIComponent(#{fileparts.last})`
+          fileparts = chosenfile.match(/.*\/view\/[^\/]*\/(.+\/)?(.*)/).to_a
+          path      = "/#{fileparts[1]}"
+          filename  = `decodeURIComponent(#{fileparts.last})`
 
           newpath = "#{path}"
           handle_command("dlogin full #{path}")
@@ -1019,7 +1031,7 @@ C
     @commands.add_command(:download_abc) do |command|
       command.undoable = false ## todo make this undoable
 
-      command.set_help { "download as abc" }
+      command.set_help {"download as abc"}
 
       command.as_action do |args|
         abc_code = @editor.get_text
@@ -1045,13 +1057,13 @@ C
 
     @commands.add_command(:dsave) do |command|
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default { @dropboxpath }
-        parameter.set_help { "path to save in #{@dropboxclient.app_name}" }
+        parameter.set_default {@dropboxpath}
+        parameter.set_help {"path to save in #{@dropboxclient.app_name}"}
       end
 
       command.undoable = false ## todo make this undoable
 
-      command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
+      command.set_help {"save to dropbox {#{command.parameter_help(0)}}"}
 
       command.as_action do |args|
         unless @systemstatus[:mode] == :work
@@ -1108,11 +1120,11 @@ C
 
       command.add_parameter(:fileid, :string, "file id")
       command.add_parameter(:path, :string) do |p|
-        p.set_default { @dropboxpath }
-        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+        p.set_default {@dropboxpath}
+        p.set_help {"path to save in #{@dropboxclient.app_name}"}
       end
 
-      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+      command.set_help {"read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}"}
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
@@ -1125,7 +1137,7 @@ C
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.debug("#{entries} (#{__FILE__} #{__LINE__})")
-          fileidfound = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }
+          fileidfound = entries.select {|entry| entry =~ /^#{fileid}_.*\.abc$/}
           unless fileidfound
             result = Promise.new.reject(%Q{#{I18n.t("There is no file with this id")} in #{rootpath}})
           else
@@ -1164,11 +1176,11 @@ C
 
       command.add_parameter(:fileid, :string, "file id")
       command.add_parameter(:path, :string) do |p|
-        p.set_default { @dropboxpath }
-        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+        p.set_default {@dropboxpath}
+        p.set_help {"path to save in #{@dropboxclient.app_name}"}
       end
 
-      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+      command.set_help {"read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}"}
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text

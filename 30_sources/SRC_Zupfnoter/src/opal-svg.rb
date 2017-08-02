@@ -290,7 +290,7 @@ module ZnSvg
             delta: [ e.detail.p.x - sx, e.detail.p.y - sy],
             element: svg_element_id
           };
-            conf_value_new = Math.round(((vertical + dx ) / #{$conf['layout.X_SPACING']}))
+            conf_value_new = Math.round(((vertical + dx ) / #{$conf['layout.X_SPACING']}))  // todo: #154 this does not work for diatonic instruments
             if (conf_value_new <= 0) conf_value_new -= 1
             #{@draggable_dragend_handler}( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: this, conf_key: #{conf_key}, conf_value: #{conf_value}, conf_value_new: conf_value_new } )
         })
