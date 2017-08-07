@@ -39,6 +39,9 @@
 * layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
 * BWC Default for "filenamepart" is now as it was in 1.5 (#155)
 
+## known issues
+
+Dragging of jumpline does not work properly on Saitenspiel #158
 
 # V 1.6.1
 
