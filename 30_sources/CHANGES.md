@@ -12,6 +12,7 @@
 * BWC Default for "filenamepart" is now as it was in 1.5 (#155)
 * Config form is refreshed after loading another song (#156)
 * printer offset is no longer broken if user enters only one value (#157)
+* Dropbox-Path can now also have digits (#162)
 
 
 ## enhancement
