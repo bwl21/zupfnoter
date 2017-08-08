@@ -7,18 +7,44 @@ function init_w2ui(uicontroller) {
     $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
   };
 
+
+
+
   var zoomlevel = [1400, 2200];
   var current_perspective = 'tb_perspective:Alle';
   var isFullScreen = false;
 
+  function open_data_uri_window(url) {
+    var html = '<html>' +
+      '<style>html, body { padding: 0; margin: 0; } iframe { width: 100%; height: 100%; border: 0;}  </style>' +
+      '<body>' +
+      '<iframe src="' + url + '"></iframe>' +
+      '</body></html>';
+    a = window.open()
+    a.document.write(html)
+  }
+
   previews = {
     'tbPreview:tbPrintA3': function () {
       url = uicontroller.$render_a3().$output('datauristring')
-      window.open(url)
+      open_data_uri_window(url)
+
+      // // thos does a download
+      // var element = document.createElement('a');
+      // element.setAttribute('href', url);
+      // element.setAttribute('download', "hugo.pdf");
+      //
+      // element.style.display = 'none';
+      // document.body.appendChild(element);
+      //
+      // element.click();
+      //
+      // document.body.removeChild(element);
     },
+
     'tbPreview:tbPrintA4': function () {
       url = uicontroller.$render_a4().$output('datauristring')
-      window.open(url)
+      open_data_uri_window(url)
     },
     'tbPreview:tbPrintNotes': function () {
       a = window.open();
