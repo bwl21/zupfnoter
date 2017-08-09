@@ -15,13 +15,16 @@ function init_w2ui(uicontroller) {
   var isFullScreen = false;
 
   function open_data_uri_window(url) {
+    var url_with_name = url.replace("data:application/pdf;", "data:application/pdf;name=myname.pdf;")
+
     var html = '<html>' +
       '<style>html, body { padding: 0; margin: 0; } iframe { width: 100%; height: 100%; border: 0;}  </style>' +
       '<body>' +
-      '<iframe src="' + url + '"></iframe>' +
+      '<iframe type="application/pdf" src="' + url_with_name + '"></iframe>' +
       '</body></html>';
-    a = window.open()
-    a.document.write(html)
+    a = window.open("about:blank", "Zupfnoter");
+    a.document.write(html);
+    a.document.close();
   }
 
   previews = {
@@ -50,7 +53,8 @@ function init_w2ui(uicontroller) {
       a = window.open();
       //  a.document.write('<style type="text/css">rect.abcref {fill:grey;fill-opacity:0.01}</style>');
       //a.document.write($('#tunePreview').html());
-      a.document.write(uicontroller.tune_preview_printer.$get_html())
+      a.document.write(uicontroller.tune_preview_printer.$get_html());
+      a.document.close();
     }
   }
 
