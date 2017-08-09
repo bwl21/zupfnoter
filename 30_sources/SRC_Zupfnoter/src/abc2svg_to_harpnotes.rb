@@ -488,6 +488,9 @@ module Harpnotes
         duration = [128, ((raw_duration/ABC2SVG_DURATION_FACTOR) * @_shortest_note).round].min
       end
 
+      def _transform_staves(voice_element, index, voice_index)
+         $log.error("you have multiple %%score statments")
+      end
 
       # @param [Integer] index  - this is required to determine the pitch of the rest
       def _transform_rest(voice_element, index, voice_index)
@@ -887,7 +890,7 @@ module Harpnotes
       # every slur has 4 bits
       # so the slurs are parsed by shifting by 4 and masking 4 bits
       def _parse_slur(slurstart)
-        startvalue = slurstart
+        startvalue = slurstart || 0
         result     = []
         while startvalue > 0 do
           result.push startvalue & 0xf
