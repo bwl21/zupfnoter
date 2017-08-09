@@ -31,24 +31,13 @@ function init_w2ui(uicontroller) {
     'tbPreview:tbPrintA3': function () {
       url = uicontroller.$render_a3().$output('datauristring')
       open_data_uri_window(url)
-
-      // // thos does a download
-      // var element = document.createElement('a');
-      // element.setAttribute('href', url);
-      // element.setAttribute('download', "hugo.pdf");
-      //
-      // element.style.display = 'none';
-      // document.body.appendChild(element);
-      //
-      // element.click();
-      //
-      // document.body.removeChild(element);
     },
 
     'tbPreview:tbPrintA4': function () {
       url = uicontroller.$render_a4().$output('datauristring')
       open_data_uri_window(url)
     },
+    
     'tbPreview:tbPrintNotes': function () {
       a = window.open();
       //  a.document.write('<style type="text/css">rect.abcref {fill:grey;fill-opacity:0.01}</style>');
