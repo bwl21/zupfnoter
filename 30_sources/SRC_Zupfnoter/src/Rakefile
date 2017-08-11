@@ -60,6 +60,7 @@ task :updateAbc2svgDev do
   end
 
   File.open("#{VENDORFOLDER}/#{abc2svg_file}", "w") do |f|
+    f.puts "// compiled for Zupfnoter #{Time.now}"
     [sources].flatten.each do |s|
       puts "copying #{s}"
       f.puts File.read("#{abc2svgrepo}/#{s}")
