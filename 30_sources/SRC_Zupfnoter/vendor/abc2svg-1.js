@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2017-08-10 17:37:48 +0200
+// compiled for Zupfnoter 2017-08-12 13:51:10 +0200
 //#javascript
 // abc2svg - ABC to SVG translator
 // @source: http://moinejf.free.fr/js/abc2svg.tar.gz.php
@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-var abc2svg={version:"1.13.6-12-gb85eb72",vdate:"2017-08-10"}
+var abc2svg={version:"1.13.6-20-gdcdb8ba",vdate:"2017-08-12"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -124,6 +124,7 @@ function clone(obj) {
 		return obj
 	var tmp = new obj.constructor()
 	for (var k in obj)
+	    if (obj.hasOwnProperty(k))
 		tmp[k] = obj[k]
 	return tmp
 }
@@ -6359,6 +6360,8 @@ function get_font_scale(param) {
 	}
 	font_scale_tb[a[0]] = scale
 	for (var fn in font_tb) {
+		if (!font_tb.hasOwnProperty(fn))
+			continue
 		var font = font_tb[fn]
 		if (font.name == a[0])
 			font.swfac = font.size * scale
@@ -7550,6 +7553,7 @@ function tosvg(in_fname,		// file name
 			if (info.V) {
 				info_sav.V = {}
 				for (i in info.V)
+				    if (info.V.hasOwnProperty(i))
 					info_sav.V[i] = clone(info.V[i])
 			}
 			char_tb_sav = clone(char_tb);
@@ -12652,6 +12656,7 @@ function set_kv_parm(a) {	// array of items
 	if (pos) {
 		curvoice.pos = clone(curvoice.pos)
 		for (item in pos)
+		    if (pos.hasOwnProperty(item))
 			curvoice.pos[item] = pos[item]
 	}
 
@@ -14471,6 +14476,7 @@ function parse_music_line() {
 
 	// play the macro game
 	for (k in mac) {
+	    if (mac.hasOwnProperty(k))
 		if (k.indexOf('.') >= 0)		// dynamic
 			line.buffer = expand(line.buffer, k)
 		else
@@ -16828,10 +16834,13 @@ function voice_filter() {
 	var opt, sel, tmp, i
 
 	for (opt in parse.voice_opts) {
+		if (!parse.voice_opts.hasOwnProperty(opt))
+			continue
 		sel = new RegExp(opt)
 		if (sel.test(curvoice.id)
 		 || sel.test(curvoice.nm)) {
 			for (i in parse.voice_opts[opt])
+			    if (parse.voice_opts[opt].hasOwnProperty(i))
 				do_pscom(parse.voice_opts[opt][i])
 		}
 	}
@@ -17640,6 +17649,8 @@ function get_break(param) {
 
 	glovar.break = []
 	for (k in a) {
+		if (!a.hasOwnProperty(k))
+			continue
 		b = a[k];
 		i = b.indexOf(':')
 		if (i < 0) {
@@ -17789,6 +17800,9 @@ function set_transp() {
 //		return
 	if (curvoice.ckey.k_bagpipe || curvoice.ckey.k_drum)
 		return
+
+	if (cfmt.transp && (curvoice.transp || curvoice.shift))
+		syntax(0, "Mix of old and new transposition syntaxes");
 
 	transp = (cfmt.transp || 0) +		// %%transpose
 		(curvoice.transp || 0) +	// score= / sound=
@@ -19096,7 +19110,7 @@ function get_voice(parm) {
 	if (parse.state < 2) {
 		if (a.length != 0)
 			memo_kv_parm(vid, a)
-		if (parse.state == 1)
+		if (vid != '*' && parse.state == 1)
 			new_voice(vid)
 		return
 	}
@@ -19140,7 +19154,12 @@ function get_voice(parm) {
 // change state from 'tune header after K:' to 'in tune body'
 // curvoice is defined when called from get_voice()
 function goto_tune(is_K) {
-	var s, v, p_voice, transp;
+	var	v, p_voice, transp,
+		s = {
+			type: STAVES,
+			dur: 0,
+			sy: par_sy
+		}
 
 	parse.state = 3;			// in tune body
 
@@ -19154,16 +19173,6 @@ function goto_tune(is_K) {
 		curvoice.default = true
 	} else if (!curvoice) {
 		curvoice = voice_tb[staves_found < 0 ? 0 : par_sy.top_voice]
-	}
-
-	// link the first %%score
-	if (staves_found >= 0) {
-		s = {
-			type: STAVES,
-			dur: 0,
-			sy: par_sy
-		}
-		sym_link(s)
 	}
 
 	if (!curvoice.init && !is_K) {
@@ -19201,6 +19210,14 @@ function goto_tune(is_K) {
 		}
 		par_sy.nstaff = nstaff
 	}
+
+	// link the first %%score in the top voice
+	p_voice = curvoice;
+	curvoice = voice_tb[par_sy.top_voice];
+	sym_link(s)
+	if (staves_found < 0)
+		s.default = true;
+	curvoice = p_voice
 }
 // abc2svg - lyrics.js - lyrics
 //
@@ -20376,7 +20393,7 @@ if (typeof module == 'object') {
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// json-1.js for abc2svg-1.13.6-12-gb85eb72 (2017-08-10)
+// json-1.js for abc2svg-1.13.6-20-gdcdb8ba (2017-08-12)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20461,6 +20478,7 @@ function AbcJSON(nindent) {			// indentation level
 			} else {
 				h = '{\n'
 				for (i in val)
+				    if (val.hasOwnProperty(i))
 					attr_gen(indn, i, val[i]);
 				json += '\n' + ind + '}'
 			}
@@ -20498,6 +20516,7 @@ function AbcJSON(nindent) {			// indentation level
 		h += ind2 + '{\n' +
 			ind3 + '"voice_properties": {\n'
 		for (i in voice_tb[v])
+		    if (voice_tb[v].hasOwnProperty(i))
 			attr_gen(ind4, i, voice_tb[v][i]);
 
 		json += '\n' + ind3 + '},\n' +
@@ -20538,7 +20557,7 @@ function AbcJSON(nindent) {			// indentation level
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// midi-1.js for abc2svg-1.13.6-12-gb85eb72 (2017-08-10)
+// midi-1.js for abc2svg-1.13.6-20-gdcdb8ba (2017-08-12)
 //#javascript
 // Set the MIDI pitches in the notes
 //

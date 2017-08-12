@@ -220,7 +220,14 @@ module Harpnotes
         result = result.flatten.compact
 
         if (result.count == 0)
-          $log.error("#{I18n.t("Empty voice")} #{voice_index.gsub("v_", '')}:  V:#{voice_model[:voice_properties][:id]}")
+          num_voice_index = voice_index.gsub("v_", '').to_i
+
+          unless @score_statements.last[:sy][:voices][num_voice_index- 1][:range] == -1
+            $log.error("#{I18n.t("Empty voice")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}")
+                       # charpos_to_line_column(@score_statements.last[:istart] -1 ),
+                       # charpos_to_line_column(@score_statements.last[:iend] -1 )
+                       # )
+          end
           result = nil
         end
         result
@@ -489,12 +496,12 @@ module Harpnotes
       end
 
       def _transform_staves(voice_element, index, voice_index)
-        @score_statements = 0 unless @score_statements
-        @score_statements +=1
-        if @score_statements > 1
+        @score_statements = [] unless @score_statements
+        @score_statements.push voice_element
+        if @score_statements.length > 1
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
-          $log.error(I18n.t("you have multiple #{@score_statements} %%score statements"), start_pos, end_pos )
+          $log.error(%Q{#{I18n.t("you have multiple %%score statements")}: #{@score_statements.length}}, start_pos, end_pos)
         else
         end
       end
