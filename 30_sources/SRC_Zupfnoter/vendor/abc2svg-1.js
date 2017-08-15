@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2017-08-12 13:51:10 +0200
+// compiled for Zupfnoter 2017-08-15 09:42:38 +0200
 //#javascript
 // abc2svg - ABC to SVG translator
 // @source: http://moinejf.free.fr/js/abc2svg.tar.gz.php
@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-var abc2svg={version:"1.13.6-20-gdcdb8ba",vdate:"2017-08-12"}
+var abc2svg={version:"1.13.6-25-g09c322f",vdate:"2017-08-14"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -11910,13 +11910,17 @@ function set_sym_glue(width) {
 			if (s.wr > min)
 				min = s.wr
 		}
-		xmin += min + 3
+		xmin += min
 		if (tsnext && tsnext.space * .8 > s.wr + 4) {
 			x += tsnext.space * .8 * spafac;
 			xmax += tsnext.space * .8 * spafac * 1.8
+		} else if (s.dur) {
+			min += 10;
+			x += min + s.shrink;
+			xmax += min + s.space
 		} else {
-			x += min + 4;
-			xmax += min + 4
+			x += min;
+			xmax += min
 		}
 		break
 	}
@@ -17102,27 +17106,6 @@ function sort_all() {
 		}
 		fl = wmin		/* start a new sequence if some width */
 	}
-
-	if (!prev)
-		return
-
-	/* if no bar nor space at end of tune, add some space */
-	if (prev.dur) {
-		p_voice = prev.p_v;
-		p_voice.last_sym = prev;
-		s = sym_add(p_voice, SPACE);
-		s.time = prev.time + prev.dur;
-		s.seqst = true;
-		s.width = 6;
-		prev.ts_next = s;
-		s.ts_prev = prev
-		while (1) {
-			delete prev.eoln
-			if (prev.seqst)
-				break
-			prev = prev.ts_prev
-		}
-	}
 }
 
 // adjust some voice elements
@@ -18208,6 +18191,7 @@ function do_pscom(text) {
 			switch (s.type) {
 			case NOTE:		// insert a key
 				s = clone(curvoice.okey);
+				s.k_old_sf = curvoice.ckey.k_sf;
 				sym_link(s)
 				break
 			case KEY:
@@ -20393,7 +20377,7 @@ if (typeof module == 'object') {
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// json-1.js for abc2svg-1.13.6-20-gdcdb8ba (2017-08-12)
+// json-1.js for abc2svg-1.13.6-25-g09c322f (2017-08-14)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20557,7 +20541,7 @@ function AbcJSON(nindent) {			// indentation level
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// midi-1.js for abc2svg-1.13.6-20-gdcdb8ba (2017-08-12)
+// midi-1.js for abc2svg-1.13.6-25-g09c322f (2017-08-14)
 //#javascript
 // Set the MIDI pitches in the notes
 //
