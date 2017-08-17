@@ -7,6 +7,7 @@
 
     s.append_path 'public'
     s.append_path 'src'
+    s.append_path 'vendor'
 
     Opal.use_gem "vector2d"
     Opal::Config.source_map_enabled = true

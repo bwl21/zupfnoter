@@ -35,7 +35,8 @@ module Harpnotes
       # @param [Numeric] charpos character position in abc code
       # @return [Numeric] charpos, line_no
       def charpos_to_line_column(charpos)
-        lines    = @abc_code[1, charpos].split("\n")
+        cleancharpos = charpos || 1
+        lines    = @abc_code[1, cleancharpos].split("\n")
         line_no  = lines.count
         char_pos = lines.last.length()
         return line_no, char_pos

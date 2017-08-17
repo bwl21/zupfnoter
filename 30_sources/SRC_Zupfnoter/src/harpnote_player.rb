@@ -128,7 +128,7 @@ module Harpnotes
       def stop()
         @inst.each_with_index { |inst, index|
           begin
-            `#{inst}.silence()`
+            `#{inst}.silence()` if inst
           rescue Exception => e
             $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
           end
