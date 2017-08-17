@@ -12,6 +12,7 @@
 * BWC Default for "filenamepart" is now as it was in 1.5 (#155)
 * Config form is refreshed after loading another song (#156)
 * printer offset is no longer broken if user enters only one value (#157)
+* Dropbox-Path can now also have digits (#162)
 
 
 ## enhancement
@@ -38,13 +39,16 @@
 * layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
 * BWC Default for "filenamepart" is now as it was in 1.5 (#155)
 
+## known issues
+
+Dragging of jumpline does not work properly on Saitenspiel #158
 
 # V 1.6.1
 
 ## Fix
 
 * dragging of text now alsow works Firefox again  #102
-* Better note selection in the editor
+* Better note selection in note preview 
 * non BWC: now handle treble+8, treble-8 #104 provided by abc2svg 1.9.0
 * cutmarks only show up if rendered for A4 printing #100
 * do not show variation marks if jumplines are turned off #110

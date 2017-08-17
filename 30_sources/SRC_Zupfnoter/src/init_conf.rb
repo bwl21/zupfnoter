@@ -106,14 +106,7 @@ module InitConf
                          color_variant2: "black"
                      }
                  },
-                 jumpline_anchor: {jumpline_anchor: [3, 1]},
-                 manual_sheet:    {
-                     manual_sheet: {
-                         llpos: [0, 297],
-                         trpos: [420, 0],
-                         url:   ""
-                     }
-                 },
+                 jumpline_anchor: {jumpline_anchor: [3, 1]}
              },
 
              instrument: {

@@ -1219,7 +1219,7 @@ C
   def reconcile_dropbox_path(path)
     path        ="/#{path}" unless path.start_with? "/"
     path        ="#{path}/" unless path.end_with? "/"
-    path_pattern=/^\/([a-zA-z_^-]+\/)*$/
+    path_pattern=/^\/([a-zA-z0-9_\-]+\/)*$$/
     raise(%Q{"#{path}": #{I18n.t("does not match pattern:")} #{path_pattern.to_s} }) unless path.match(path_pattern)
     path
   end
