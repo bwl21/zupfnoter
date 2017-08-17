@@ -13,6 +13,8 @@
 * Config form is refreshed after loading another song (#156)
 * printer offset is no longer broken if user enters only one value (#157)
 * Dropbox-Path can now also have digits (#162)
+* Printer window show pdf on Chrome 60 (#160)
+
 
 
 ## enhancement
@@ -28,6 +30,10 @@
 * now have variant parts appear in grey (#151)
 * now menu supports extract 0 to extract 5 (#153)
 * now menu also shows title of extracts (#153)
+
+## internal stuff
+
+* updated to abc2svg 1.13.7 (#163)
 
 ## experimental feature
 
