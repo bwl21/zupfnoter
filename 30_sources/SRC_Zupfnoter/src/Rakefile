@@ -72,6 +72,7 @@ desc "Build our app to #{ZUPFNOTER_JS}"
 task :build => [:buildConfigDoc, :updateLocales] do
   #env = Sprockets::Environment.new
   Opal.append_path "."
+  Opal.append_path "../vendor"
   Opal.use_gem "vector2d"
 
   #Opal.paths.each { |p| env.append_path(p) }
@@ -161,7 +162,7 @@ task :deploy => [:build] do
   cp "../vendor/ace/ext-language_tools.js", "#{OUTFOLDER}/webserver/vendor/ace/ext-language_tools.js"
   cp("../vendor/ace/snippets/abc.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/abc.js")
   cp("../vendor/ace/snippets/markdown.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/markdown.js")
-  cp("../vendor/abc2svg-1.js", "#{OUTFOLDER}/vendor/abc2svg-1.js")
+  # cp("../vendor/abc2svg-1.js", "#{OUTFOLDER}/vendor/abc2svg-1.js")
   Dir['../vendor/ace/ext-*.*'].each {|f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}"}
 
   def javascript_include_tag(filename)

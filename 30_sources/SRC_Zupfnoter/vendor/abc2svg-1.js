@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2017-08-15 09:42:38 +0200
+// compiled for Zupfnoter 2017-08-17 16:50:24 +0200
 //#javascript
 // abc2svg - ABC to SVG translator
 // @source: http://moinejf.free.fr/js/abc2svg.tar.gz.php
@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-var abc2svg={version:"1.13.6-25-g09c322f",vdate:"2017-08-14"}
+var abc2svg={version:"1.13.7",vdate:"2017-08-16"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -17784,7 +17784,7 @@ function set_transp() {
 	if (curvoice.ckey.k_bagpipe || curvoice.ckey.k_drum)
 		return
 
-	if (cfmt.transp && (curvoice.transp || curvoice.shift))
+	if (cfmt.transp && curvoice.transp)	// if %%transpose and score=
 		syntax(0, "Mix of old and new transposition syntaxes");
 
 	transp = (cfmt.transp || 0) +		// %%transpose
@@ -20354,7 +20354,7 @@ function draw_gchord(s, gchy_min, gchy_max) {
 }	// end of Abc()
 
 // nodejs
-if (typeof module == 'object') {
+if (typeof module == 'object' && typeof exports == 'object') {
 	exports.abc2svg = abc2svg;
 	exports.Abc = Abc
 }
@@ -20377,7 +20377,7 @@ if (typeof module == 'object') {
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// json-1.js for abc2svg-1.13.6-25-g09c322f (2017-08-14)
+// json-1.js for abc2svg-1.13.7 (2017-08-16)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20541,7 +20541,7 @@ function AbcJSON(nindent) {			// indentation level
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// midi-1.js for abc2svg-1.13.6-25-g09c322f (2017-08-14)
+// midi-1.js for abc2svg-1.13.7 (2017-08-16)
 //#javascript
 // Set the MIDI pitches in the notes
 //
