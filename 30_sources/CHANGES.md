@@ -14,6 +14,8 @@
 * printer offset is no longer broken if user enters only one value (#157)
 * Dropbox-Path can now also have digits (#162)
 * Printer window show pdf on Chrome 60 (#160)
+* now invisible rests are supressed even on flowline (#166)
+* now handle multi measure rests (#166)
 
 
 

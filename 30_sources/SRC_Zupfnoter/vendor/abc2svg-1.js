@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2017-08-17 16:50:24 +0200
+// compiled for Zupfnoter 2017-08-18 09:14:06 +0200
 //#javascript
 // abc2svg - ABC to SVG translator
 // @source: http://moinejf.free.fr/js/abc2svg.tar.gz.php
@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-var abc2svg={version:"1.13.7",vdate:"2017-08-16"}
+var abc2svg={version:"1.13.7-2-g2e5cbb2",vdate:"2017-08-17"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -13802,13 +13802,13 @@ function parse_acc_pit(line) {
 	}
 
 	/* look for microtone value */
-	if (acc && (c >= '1' && c <= '9')
+	if (acc && acc != 3 && (c >= '1' && c <= '9')
 	 || c == '/') {				// compatibility
 		nd = parse_dur(line);
 		micro_n = nd[0];
 		micro_d = nd[1]
 		if (micro_d == 1)
-			micro_d = curvoice.uscale
+			micro_d = curvoice ? curvoice.uscale : 1
 		else
 			micro_d *= 2;	// 1/2 tone fraction -> tone fraction
 		c = line.char()
@@ -15915,8 +15915,6 @@ var glyphs = {
 	d="m0 0v12"/>',
   sphr: '<path id="sphr" class="stroke" stroke-width="1.2"\n\
 	d="m0 0v6"/>',
-  sfz: '<text id="sfz" x="-5" y="-7" style="font:italic 14px serif">\n\
-	s<tspan font-size="16" font-weight="bold">f</tspan>z</text>',
   trl: '<text id="trl" x="-2" y="-4"\n\
 	style="font:bold italic 16px serif">tr</text>',
   opend: '<circle id="opend" class="stroke"\n\
@@ -16514,6 +16512,12 @@ pf:	{
 		dx: 0,
 		dy: 5,
 		style: 'style="font:bold italic 16px serif"'
+	},
+sfz:
+	{
+		dx: 0,
+		dy: 5,
+		style: 'style="font:bold italic 14px serif"'
 	}
 }
 
@@ -16529,7 +16533,10 @@ function out_deco_str(x, y, name, str) {
 	y += a_deco.dy;
 	out_XYAB('<text x="X" y="Y" A>', x, y, a_deco.style);
 	set_font("annotation");
-	out_str(str);
+	if (name == "sfz")
+		output.push('s<tspan font-size="16" font-weight="bold">f</tspan>z')
+	else
+		out_str(str);
 	output.push('</text>\n')
 }
 
@@ -20377,7 +20384,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// json-1.js for abc2svg-1.13.7 (2017-08-16)
+// json-1.js for abc2svg-1.13.7-2-g2e5cbb2 (2017-08-17)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20541,7 +20548,7 @@ function AbcJSON(nindent) {			// indentation level
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// midi-1.js for abc2svg-1.13.7 (2017-08-16)
+// midi-1.js for abc2svg-1.13.7-2-g2e5cbb2 (2017-08-17)
 //#javascript
 // Set the MIDI pitches in the notes
 //
