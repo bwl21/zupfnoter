@@ -48,6 +48,12 @@ module InitConf
                              cp2: [5, -2], # second control point
                              shape: ['c'], # 'c' | 'l' => curve | line
                              show: true
+                         },
+                         flowline:     {
+                             cp1: [0, 10], # first control point positive x: point is east of flowline, positive y: point is south of note
+                             cp2: [0, -10], # second control point
+                             shape: ['c'], # 'c' | 'l' => curve | line
+                             show: true
                          }
              }
          },

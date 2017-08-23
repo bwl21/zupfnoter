@@ -108,9 +108,6 @@
     "Yesterday": "Gestern",
     "Your remote data source record count has changed, reloading from the first record.": "Die Datenquelle hat sich geändert, lade Daten ab erstem Eintrag neu.",
 
-
-    "flowline" : "Melodieliniexxx",
-    "subflowline" : "Hilfsmelodielinie",
-    "create": "erzeugen"
+    "---this-is-the -end": ""
   }
 }
