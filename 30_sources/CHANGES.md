@@ -16,7 +16,7 @@
 * Printer window show pdf on Chrome 60 (#160)
 * now invisible rests are supressed even on flowline (#166)
 * now handle multi measure rests (#166)
-
+* fix predefined annotations vt and vr
 * BWC: move Tuplet configuration to notebounds
 
 

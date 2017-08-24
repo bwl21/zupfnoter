@@ -261,8 +261,8 @@ module InitConf
          # these are the builtin notebound annotations
          annotations: {
              vl: {text: "v", pos: [-5, -5]},
-             vt: {text: "v", pos: [2, -5]},
-             vr: {text: "v", pos: [-1, -5]}
+             vt: {text: "v", pos: [-1, -5]},
+             vr: {text: "v", pos: [2, -5]}
          }, # default for note based annotations
 
          extract: {
