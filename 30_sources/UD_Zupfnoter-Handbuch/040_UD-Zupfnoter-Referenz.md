@@ -1083,13 +1083,18 @@ Eine Übersicht der Befehle für die Konsole gibt der Befehl
 Für eine flüssige Bedienung stellt Zupfnoter folgende
 Tastenkombinationen (Shortcuts) zur Verfügung:
 
--   "cmd - s": Speichern in der Dropbox
--   "cmd - k": Konsole anzeigen
--   "cmd - r": Rendern (aktualisieren der Unterlegnoten)
--   "cmd - p": Play (abspielen)
+-   'cmd + s': Speichern in der Dropbox
+-   'cmd + k': Konsole anzeigen
+-   'cmd + r': Rendern (aktualisieren der Unterlegnoten)
+-   'cmd + p': Play (abspielen)
+-   'cmd + alt + f': Fullscreen - Schaltet zwischen Ansicht
+    "Harfennoten" hin und her
 
 > **Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
 > "strg" - Taste
+
+> **Hinweis:** 'cmd + alt + f' bedeutet, dass die Tasten 'cmd', 'alt',
+> 'f' gleichzeitig gedrückt werden.
 
 ## Eingabe {#eingabefenster-details}
 
