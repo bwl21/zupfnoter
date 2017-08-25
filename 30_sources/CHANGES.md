@@ -17,6 +17,7 @@
 * now invisible rests are supressed even on flowline (#166)
 * now handle multi measure rests (#166)
 
+* BWC: move Tuplet configuration to notebounds
 
 
 ## enhancement
@@ -99,6 +100,7 @@ Dragging of jumpline does not work properly on Saitenspiel #158
 * in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
 * now get message if F: is missing
 * now get messaage Filename or path contains whitespace and special characters
+* you have to redo configuration for tuplets (#167   ) 
 
 ## known issues
 

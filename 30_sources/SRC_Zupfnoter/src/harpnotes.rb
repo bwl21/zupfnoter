@@ -1685,21 +1685,21 @@ module Harpnotes
 
         # draw the flowlines
         previous_note          = nil
-        do_flowconf            = show_options[:print_options_raw]["flowconf"] # this parameter turns flowconfiguraiton on/off
+        do_flowconf            = $conf["flowconf"] # this parameter turns flowconfiguraiton on/off
         default_tuplet_options = $conf['defaults.notebound.flowline']
         flowlines_conf_key     = "notebound.flowline.v_#{voice_nr}"
-        flowlines_conf         = show_options[:print_options_raw][flowlines_conf_key] || {}  # here we cache the configuration of flowlines
+        flowlines_conf         = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines
 
         res_flow = voice.select {|c| c.is_a? Playable}.map do |playable|
           res = nil
           unless previous_note.nil?
             # todo: remove this if clause or set to fals to turn flowline configuration off at all
-            if true   # do_flowconf == true
+            if true # do_flowconf == true
               flowline_conf_key = "#{playable.znid}"
               conf_from_options = flowlines_conf[flowline_conf_key]
               if conf_from_options or do_flowconf == true
-                conf_key          = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
-                conf_key_edit     = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+                conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
+                conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
 
                 p1 = Vector2d(lookuptable_drawing_by_playable[previous_note].center)
                 p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
@@ -1711,9 +1711,13 @@ module Harpnotes
 
                 tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
 
-                draginfo = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
-
+                if do_flowconf == true
+                  draginfo = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
+                else
+                  draginfo = nil
+                end
                 res = Harpnotes::Drawing::Path.new(tiepath).tap {|d| d.conf_key = conf_key_edit; d.draginfo = draginfo}
+
               end
             end
 
@@ -1769,7 +1773,7 @@ module Harpnotes
           tuplet_notes.push playable.time if tuplet_start
 
           if playable.tuplet_end?
-            tuplet_conf_key = "tuplet.#{tuplet_start.znid}"
+            tuplet_conf_key = "notebound.tuplet.v_#{voice_nr}.#{tuplet_start.znid}" # "tuplet.#{tuplet_start.znid}"
             conf_key        = "extract.#{print_variant_nr}.#{tuplet_conf_key}"
             conf_key_pos    = 'pos'
 
