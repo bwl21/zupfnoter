@@ -17,7 +17,7 @@
 * now invisible rests are supressed even on flowline (#166)
 * now handle multi measure rests (#166)
 * fix predefined annotations vt and vr
-* BWC: move Tuplet configuration to notebounds
+* BWC: move Tuplet configuration to notebounds (#168)
 
 
 ## enhancement
@@ -46,8 +46,10 @@
 
 ## backwards compatibility issues
 
-* layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
-* BWC Default for "filenamepart" is now as it was in 1.5 (#155)
+* layoutlines is now the combination of voices and layoutlines. 
+  It is no longer possible to show voices without considering them in the layout.
+* Default for "filenamepart" is now as it was in 1.5 (#155)
+* tuplet configuration is now under 'notebound': meed to rework in the sheets - sorry! (#168)
 
 ## known issues
 

@@ -1165,7 +1165,7 @@ module Harpnotes
         @slur_index           = {}
         @y_offset             = 5
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-        @layout_minc          = $conf.get('layout.minc')
+        @layout_minc          = {} # this is the lookup table for minc; it is populated in Default.layout
         @color_default        = $conf.get('layout.color.color_default')
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
@@ -1282,6 +1282,8 @@ module Harpnotes
         manual_sheet = layout_manual_sheet($conf['layout.manual_sheet'])
 
         initialize
+
+        @layout_minc = print_options_raw['notebound.minc'] || {}
 
         @y_offset = print_options_hash[:startpos]
 
@@ -1570,7 +1572,7 @@ module Harpnotes
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
-          decoration_root.conf_key = %Q{extract.#{print_variant_nr}.layout.minc.#{playable.time}.minc_f}
+          decoration_root.conf_key = %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f}
 
           [result]
         end.flatten.compact

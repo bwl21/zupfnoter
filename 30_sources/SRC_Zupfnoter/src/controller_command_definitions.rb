@@ -477,7 +477,7 @@ class Controller
             annotations:           {keys: [:annotations], newentry_handler: lambda {handle_command("addconf annotations")}},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda {handle_command("addconf notes")}, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
-            minc:                  {keys: expand_extract_keys(['layout.minc'])},
+            minc:                  {keys: expand_extract_keys(['notebound.minc'])},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
 
