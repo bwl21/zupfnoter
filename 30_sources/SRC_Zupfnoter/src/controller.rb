@@ -120,6 +120,8 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
+    $settings = {}    # this is te keep runtime settings
+
     @json_validator = Ajv::JsonValidator.new
 
     @editor            = Harpnotes::TextPane.new("abcEditor")

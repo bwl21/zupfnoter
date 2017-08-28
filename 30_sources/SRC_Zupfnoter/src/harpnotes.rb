@@ -1687,7 +1687,7 @@ module Harpnotes
 
         # draw the flowlines
         previous_note          = nil
-        do_flowconf            = $conf["flowconf"] # this parameter turns flowconfiguraiton on/off
+        do_flowconf            = $settings["flowconf"] == 'edit' # this parameter turns flowconfiguraiton on/off
         default_tuplet_options = $conf['defaults.notebound.flowline']
         flowlines_conf_key     = "notebound.flowline.v_#{voice_nr}"
         flowlines_conf         = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines

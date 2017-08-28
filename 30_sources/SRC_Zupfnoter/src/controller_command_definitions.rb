@@ -328,6 +328,29 @@ class Controller
       end
     end
 
+    @commands.add_command(:setsetting) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help {"parameter key"}
+      end
+
+      command.add_parameter(:value, :string) do |parameter|
+        parameter.set_help {"parameter value as JSON"}
+      end
+
+      command.set_help {"adjust settings (runtime only setting) parameter"}
+
+      command.as_action do |args|
+        $settings[args[:key]] = args[:value]
+        nil
+      end
+
+      command.as_inverse do |args|
+      end
+    end
+
+
 
     @commands.add_command(:addconf) do |command|
       command.undoable = false
@@ -499,7 +522,7 @@ class Controller
         # it is useful for extracts, notes, morincs etc.
         # todo: implement a more flexible replacement thatn simply prefixing
         regexp_form_sets = {
-            /extract.(\d+).layout.minc\.(\d+)/ => {keys: ["minc_f"]}
+            /extract.(\d+).notebound.minc\.(\d+)/ => {keys: ["minc_f"]}
         }
 
         # see if we have a static form set
@@ -602,7 +625,7 @@ class Controller
 
     @commands.add_command(:addsnippet) do |command|
       command.undoable = false
-      command.set_help {"edit current snippet"}
+      command.set_help {"add current snippet"}
 
       command.add_parameter(:token, :string) do |parameter|
         parameter.set_help {"parameter key"}

@@ -2290,19 +2290,37 @@ ist.
   der Blattbeschriftungen usw um sie auf ein anderes Stück zu
   übertragen.
 \item
-  \texttt{setstdextract}: kopiert dem aktuellen Stück die Konfiguration
-  der Auszüge, um sie auf ein anderes Stück zu übertragen.
-\item
   \texttt{stdnotes}: überträgt die zuletzt kopierte Konfiguration der
   Blattbeschriftungen auf das aktuelle Stück
 \item
   \texttt{stdectract}: überträgt die zuletzt kopierte Konfiguration der
   Auszüge auf das aktuelle Stück
+\item
+  \texttt{setstdextract}: kopiert aus dem aktuellen Stück die
+  Konfiguration der Auszüge, um sie auf ein anderes Stück zu übertragen.
 \end{itemize}
 
 \begin{quote}
 \textbf{Hinweis}: Diese Befehle sind hilfreich um schnell die
 Konfiguration eines aus MusicXml importierten Stückes einzustellen.
+\end{quote}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{setsetting\ flowconf\ edit}: Mit dieser Einstellung werden die
+  Flußlinen bearbeitbar, d.h. man kann die Flußlininen mit der Maus
+  verformen, (sozusagen verbiegen).
+\item
+  \texttt{setsetting\ flowconf\ none}: Mit dieser Einstellung werden die
+  Flußlinien nicht mehr bearbeitbar. Bearbeitete Flußlinien bleiben
+  weiterhin ``verbogen''.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis:} Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
+wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung beim
+Neuladen von Zupfnoter zurückgesetzt.
 \end{quote}
 
 Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
@@ -2798,6 +2816,8 @@ Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
   Anordnung von Sprunglinien
 \item
   Gestalt der Triolenbogen (Tuplet)
+\item
+  Gestalt der Flußlinien (experminetell)
 \end{itemize}
 
 Für die grundsätzliche Bedienung gilt:
@@ -2872,6 +2892,22 @@ und daher mit der Maus nicht erreichbar sind. In diesem Fall kannst du
 an der Triolenbeschriftung oder an einem andere Griff
 \texttt{Edit\ Cconfig} aufrufen und den Kontrollpunkt so ändern, dass er
 wireder sichtbar wird.
+\end{quote}
+
+\subsection{Flußlinien gestalten}\label{fluuxdflinien-gestalten}
+
+Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
+die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
+um die Begleitnonten ``herumbiegen''. Da zu gibt es eine experimentelle
+Möglichkeit die Flußlinine mit der Maus zu gestalten, ähnlich wie die
+Triolenbögen.
+
+Die Bearbeitungsmöglickeiten müssen in der
+\hyperref[konsole-fenster]{Konsole} eingeschaltet werden.
+
+\begin{quote}
+\textbf{Hinweis:} Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
+wird Zupfnoter deutlich langsamer.
 \end{quote}
 
 \clearpage
