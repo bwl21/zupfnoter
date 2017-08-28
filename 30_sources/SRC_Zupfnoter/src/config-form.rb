@@ -40,8 +40,10 @@ class ConfstackEditor
 
       def self.to_template(key)
         # handle the case notes.x
-        template = key.split('.')[-2] # templates are for "extract.x.<template>"
+        template = key.split('.')[-2] # templates are for "extract....<template>.x"
+        voice_template = key.split('.')[-3] # templates are for "extract.<template>.v_<voice>.x"
         a        = $conf.get("templates.#{template}") if template
+        a        = $conf.get("templates.#{voice_template}") unless a
 
         unless a
           help_key = key

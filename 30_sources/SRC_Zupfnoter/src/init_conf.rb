@@ -13,14 +13,15 @@ module InitConf
                      :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
                      :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                      #
-                     :annotation, :partname, :variantend, :countnotes, :stringnames, # sort within notebound
+                     :annotation, :decoration, :partname, :variantend, :countnotes, :c_jumplines, :tuplet, :minc, :flowline, # sort within notebound
+
+                     :stringnames,
 
                      # sort within layout
                      :limit_a3, :jumplineoffset, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
                      :instrument, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
                      :sortmark, :show, :fill, :size,
-                     :minc,
                      # sort within printer
                      :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
 
@@ -46,6 +47,12 @@ module InitConf
                          tuplet:     {
                              cp1: [5, 2], # first control point positive x: point is east of flowline, positive y: point is south of note
                              cp2: [5, -2], # second control point
+                             shape: ['c'], # 'c' | 'l' => curve | line
+                             show: true
+                         },
+                         flowline:     {
+                             cp1: [0, 10], # first control point positive x: point is east of flowline, positive y: point is south of note
+                             cp2: [0, -10], # second control point
                              shape: ['c'], # 'c' | 'l' => curve | line
                              show: true
                          }
@@ -255,8 +262,8 @@ module InitConf
          # these are the builtin notebound annotations
          annotations: {
              vl: {text: "v", pos: [-5, -5]},
-             vt: {text: "v", pos: [2, -5]},
-             vr: {text: "v", pos: [-1, -5]}
+             vt: {text: "v", pos: [-1, -5]},
+             vr: {text: "v", pos: [2, -5]}
          }, # default for note based annotations
 
          extract: {
@@ -291,7 +298,6 @@ module InitConf
                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                REST_SIZE:         [4, 2],
                                DRAWING_AREA_SIZE: [400, 282],
-                               minc:              {}, # moreinc
                                instrument: '37-strings-g-g',
                                packer:     {
                                    pack_method:           0,

@@ -16,7 +16,8 @@
 * Printer window show pdf on Chrome 60 (#160)
 * now invisible rests are supressed even on flowline (#166)
 * now handle multi measure rests (#166)
-
+* fix predefined annotations vt and vr
+* BWC: move Tuplet configuration to notebounds (#168)
 
 
 ## enhancement
@@ -32,6 +33,7 @@
 * now have variant parts appear in grey (#151)
 * now menu supports extract 0 to extract 5 (#153)
 * now menu also shows title of extracts (#153)
+* ctrl-alt 'F' now toggles harp preview
 
 ## internal stuff
 
@@ -44,8 +46,10 @@
 
 ## backwards compatibility issues
 
-* layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
-* BWC Default for "filenamepart" is now as it was in 1.5 (#155)
+* layoutlines is now the combination of voices and layoutlines. 
+  It is no longer possible to show voices without considering them in the layout.
+* Default for "filenamepart" is now as it was in 1.5 (#155)
+* tuplet configuration is now under 'notebound': meed to rework in the sheets - sorry! (#168)
 
 ## known issues
 
@@ -99,6 +103,7 @@ Dragging of jumpline does not work properly on Saitenspiel #158
 * in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
 * now get message if F: is missing
 * now get messaage Filename or path contains whitespace and special characters
+* you have to redo configuration for tuplets (#167   ) 
 
 ## known issues
 

@@ -218,6 +218,19 @@ function init_w2ui(uicontroller) {
   var tbstyle = 'background-color: #ffffff; padding: 0px; overflow:hidden; height:30px;'; // toolbar style
   var sbstyle = 'background-color: #ffffff; padding: 0  px; overflow:hidden; height:30px;border-top:1px solid black !important;'; // statusbar style
 
+  toggle_full_screen = function() {
+    if (isFullScreen) {
+      perspectives[current_perspective]();
+      isFullScreen = false;
+    }
+    else {
+      perspectives['tb_perspective:Harfe']();
+      isFullScreen = true;
+    }
+  }
+
+  this.toggle_full_screen = function(){toggle_full_screen();}
+
   var toolbar = {
     id: 'toolbar',
     name: 'toolbar',
@@ -414,14 +427,7 @@ function init_w2ui(uicontroller) {
 
       // handle full screen
       if (event.target == 'tbFullScreen') {
-        if (isFullScreen) {
-          perspectives[current_perspective]();
-          isFullScreen = false;
-        }
-        else {
-          perspectives['tb_perspective:Harfe']();
-          isFullScreen = true;
-        }
+        toggle_full_screen();
       }
 
       // handle previews

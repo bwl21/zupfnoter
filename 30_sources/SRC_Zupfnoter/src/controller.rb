@@ -120,6 +120,8 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
+    $settings = {}    # this is te keep runtime settings
+
     @json_validator = Ajv::JsonValidator.new
 
     @editor            = Harpnotes::TextPane.new("abcEditor")
@@ -986,6 +988,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           when 'K'.ord #k
             e.prevent
             toggle_console
+          when 'F'.ord
+            if e.alt_key
+              e.prevent
+              %x{#{@zupfnoter_ui}.toggle_full_screen();}
+            end
         end
       end
     end
