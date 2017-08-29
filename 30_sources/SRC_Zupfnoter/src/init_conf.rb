@@ -79,7 +79,12 @@ module InitConf
                      ELLIPSE_SIZE: [3.5, 1.3], # radii of the largest Ellipse
                      REST_SIZE: [4, 1.5]
                  },
-                 layout_regular:  lambda {$conf['extract.0.layout']},
+                 layout_regular:  {
+                     LINE_MEDIUM:  lambda {$conf['extract.0.layout.LINE_MEDIUM']},
+                     LINE_THICK:   lambda {$conf['extract.0.layout.LINE_THICK']},
+                     ELLIPSE_SIZE: lambda {$conf['extract.0.layout.ELLIPSE_SIZE']}, # radii of the largest Ellipse
+                     REST_SIZE: lambda {$conf['extract.0.layout.REST_SIZE']}
+                 },
                  layout_large:    {
                      LINE_MEDIUM:  0.3,
                      LINE_THICK:   0.7,
