@@ -576,6 +576,11 @@ function init_w2ui(uicontroller) {
             tooltip: "edit barnumbers or countnotes"
           },
           {
+            id: 'repeatsigns',
+            text: 'repeat signs',
+            tooltip: "edit shape of repeat signs"
+          },
+          {
             id: 'annotations',
             text: 'annotations',
             tooltip: "edit settings for sheet annotations\nin current extract"

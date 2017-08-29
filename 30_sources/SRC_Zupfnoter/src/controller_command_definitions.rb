@@ -503,6 +503,8 @@ class Controller
             minc:                  {keys: expand_extract_keys(['notebound.minc'])},
             layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
             printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
+            repeatsigns:           {keys: expand_extract_keys([:repeatsigns])},
+
 
             instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
                                                                'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'stringnames.marks.hpos']),
