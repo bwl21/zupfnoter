@@ -1165,7 +1165,7 @@ module Harpnotes
         @slur_index           = {}
         @y_offset             = 5
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-        @layout_minc          = $conf.get('layout.minc')
+        @layout_minc          = {} # this is the lookup table for minc; it is populated in Default.layout
         @color_default        = $conf.get('layout.color.color_default')
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
@@ -1177,7 +1177,7 @@ module Harpnotes
 
         xoffset                      = $conf['layout.X_OFFSET']
         xspacing                     = $conf['layout.X_SPACING']
-        pitchoffset                     = $conf.get('layout.PITCH_OFFSET')
+        pitchoffset                  = $conf.get('layout.PITCH_OFFSET')
         @bottom_annotation_positions = [[150, 289], [325, 289], [380, 289]]
         @pitch_to_xpos               = lambda {|pitch| (pitchoffset + pitch) * xspacing + xoffset}
 
@@ -1282,6 +1282,8 @@ module Harpnotes
         manual_sheet = layout_manual_sheet($conf['layout.manual_sheet'])
 
         initialize
+
+        @layout_minc = print_options_raw['notebound.minc'] || {}
 
         @y_offset = print_options_hash[:startpos]
 
@@ -1553,7 +1555,7 @@ module Harpnotes
 
             # turn previous note visible if the current playable is visible but not synchronized
             # which in turn means that it is part of a subflowline
-            if c.visible and not show_options[:synched_notes].include?(c.proxy_note)
+            if not show_options[:flowline] and c.visible and not show_options[:synched_notes].include?(c.proxy_note)
               previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
             end
             previous_note = c
@@ -1570,7 +1572,7 @@ module Harpnotes
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
-          decoration_root.conf_key = %Q{extract.#{print_variant_nr}.layout.minc.#{playable.time}.minc_f}
+          decoration_root.conf_key = %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f}
 
           [result]
         end.flatten.compact
@@ -1684,11 +1686,44 @@ module Harpnotes
         end
 
         # draw the flowlines
-        previous_note = nil
-        res_flow      = voice.select {|c| c.is_a? Playable}.map do |playable|
+        previous_note          = nil
+        do_flowconf            = $settings["flowconf"] == 'edit' # this parameter turns flowconfiguraiton on/off
+        default_tuplet_options = $conf['defaults.notebound.flowline']
+        flowlines_conf_key     = "notebound.flowline.v_#{voice_nr}"
+        flowlines_conf         = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines
+
+        res_flow = voice.select {|c| c.is_a? Playable}.map do |playable|
           res = nil
           unless previous_note.nil?
-            res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable])
+            # todo: remove this if clause or set to fals to turn flowline configuration off at all
+            if true # do_flowconf == true
+              flowline_conf_key = "#{playable.znid}"
+              conf_from_options = flowlines_conf[flowline_conf_key]
+              if conf_from_options or do_flowconf == true
+                conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
+                conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+
+                p1 = Vector2d(lookuptable_drawing_by_playable[previous_note].center)
+                p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
+
+                ## note we use the name tuplet_options since we steal the code from tuplet - handling
+                tuplet_options = Confstack.new()
+                tuplet_options.push(default_tuplet_options)
+                tuplet_options.push(conf_from_options) rescue nil
+
+                tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
+
+                if do_flowconf == true
+                  draginfo = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
+                else
+                  draginfo = nil
+                end
+                res = Harpnotes::Drawing::Path.new(tiepath).tap {|d| d.conf_key = conf_key_edit; d.draginfo = draginfo}
+
+              end
+            end
+
+            res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable]) unless res
             #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
@@ -1740,7 +1775,7 @@ module Harpnotes
           tuplet_notes.push playable.time if tuplet_start
 
           if playable.tuplet_end?
-            tuplet_conf_key = "tuplet.#{tuplet_start.znid}"
+            tuplet_conf_key = "notebound.tuplet.v_#{voice_nr}.#{tuplet_start.znid}" # "tuplet.#{tuplet_start.znid}"
             conf_key        = "extract.#{print_variant_nr}.#{tuplet_conf_key}"
             conf_key_pos    = 'pos'
 
@@ -1936,8 +1971,8 @@ module Harpnotes
 
             decoration_center = [decoration_root.center.first + annotationoffset.first, decoration_root.center.last + annotationoffset.last]
             r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, annotationoffset)
-            r.tap { |s| s.draginfo={handler: :annotation} }
-            r.is_note         = false
+            r.tap {|s| s.draginfo={handler: :annotation}}
+            r.is_note = false
             decoration_result.push [r]
           end
         end

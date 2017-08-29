@@ -1037,15 +1037,26 @@ ist.
 
 -   `setstdnotes`: kopiert dem aktuellen Stück die Konfiguration der
     Blattbeschriftungen usw um sie auf ein anderes Stück zu übertragen.
--   `setstdextract`: kopiert dem aktuellen Stück die Konfiguration der
-    Auszüge, um sie auf ein anderes Stück zu übertragen.
 -   `stdnotes`: überträgt die zuletzt kopierte Konfiguration der
     Blattbeschriftungen auf das aktuelle Stück
 -   `stdectract`: überträgt die zuletzt kopierte Konfiguration der
     Auszüge auf das aktuelle Stück
+-   `setstdextract`: kopiert aus dem aktuellen Stück die Konfiguration
+    der Auszüge, um sie auf ein anderes Stück zu übertragen.
 
 > **Hinweis**: Diese Befehle sind hilfreich um schnell die Konfiguration
 > eines aus MusicXml importierten Stückes einzustellen.
+
+-   `setsetting flowconf edit`: Mit dieser Einstellung werden die
+    Flußlinen bearbeitbar, d.h. man kann die Flußlininen mit der Maus
+    verformen, (sozusagen verbiegen).
+-   `setsetting flowconf none`: Mit dieser Einstellung werden die
+    Flußlinien nicht mehr bearbeitbar. Bearbeitete Flußlinien bleiben
+    weiterhin "verbogen".
+
+> **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
+> wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung beim
+> Neuladen von Zupfnoter zurückgesetzt.
 
 Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
 hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
@@ -1083,13 +1094,18 @@ Eine Übersicht der Befehle für die Konsole gibt der Befehl
 Für eine flüssige Bedienung stellt Zupfnoter folgende
 Tastenkombinationen (Shortcuts) zur Verfügung:
 
--   "cmd - s": Speichern in der Dropbox
--   "cmd - k": Konsole anzeigen
--   "cmd - r": Rendern (aktualisieren der Unterlegnoten)
--   "cmd - p": Play (abspielen)
+-   'cmd + s': Speichern in der Dropbox
+-   'cmd + k': Konsole anzeigen
+-   'cmd + r': Rendern (aktualisieren der Unterlegnoten)
+-   'cmd + p': Play (abspielen)
+-   'cmd + alt + f': Fullscreen - Schaltet zwischen Ansicht
+    "Harfennoten" hin und her
 
 > **Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
 > "strg" - Taste
+
+> **Hinweis:** 'cmd + alt + f' bedeutet, dass die Tasten 'cmd', 'alt',
+> 'f' gleichzeitig gedrückt werden.
 
 ## Eingabe {#eingabefenster-details}
 
@@ -1382,6 +1398,7 @@ Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
 -   Positionierung von Texten (Titel, Legende, Beschriftung usw.)
 -   Anordnung von Sprunglinien
 -   Gestalt der Triolenbogen (Tuplet)
+-   Gestalt der Flußlinien (experminetell)
 
 Für die grundsätzliche Bedienung gilt:
 
@@ -1438,6 +1455,20 @@ zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
 > der Triolenbeschriftung oder an einem andere Griff `Edit Cconfig`
 > aufrufen und den Kontrollpunkt so ändern, dass er wireder sichtbar
 > wird.
+
+## Flußlinien gestalten
+
+Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
+die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
+um die Begleitnonten "herumbiegen". Da zu gibt es eine experimentelle
+Möglichkeit die Flußlinine mit der Maus zu gestalten, ähnlich wie die
+Triolenbögen.
+
+Die Bearbeitungsmöglickeiten müssen in der [Konsole](#konsole-fenster)
+eingeschaltet werden.
+
+> **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
+> wird Zupfnoter deutlich langsamer.
 
 <!-- -->
 \clearpage

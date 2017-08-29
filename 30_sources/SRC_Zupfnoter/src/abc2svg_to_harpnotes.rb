@@ -534,8 +534,7 @@ module Harpnotes
 
         _transform_measure_start(voice_element)
 
-        the_note                         = voice_element[:notes].first
-        duration                         = _convert_duration(the_note[:dur])
+        duration                         = _convert_duration(voice_element[:dur])
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result               = Harpnotes::Music::Pause.new(pitch, duration)
@@ -554,7 +553,7 @@ module Harpnotes
         result.tuplet_start = tuplet_start
         result.tuplet_end   = tuplet_end
 
-        result.visible      = false if voice_element[:invisible]
+        result.visible      = false if voice_element[:invis]
 
         # the post processing
 

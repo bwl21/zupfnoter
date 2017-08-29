@@ -13,6 +13,11 @@
 * Config form is refreshed after loading another song (#156)
 * printer offset is no longer broken if user enters only one value (#157)
 * Dropbox-Path can now also have digits (#162)
+* Printer window show pdf on Chrome 60 (#160)
+* now invisible rests are supressed even on flowline (#166)
+* now handle multi measure rests (#166)
+* fix predefined annotations vt and vr
+* BWC: move Tuplet configuration to notebounds (#168)
 
 
 ## enhancement
@@ -28,6 +33,11 @@
 * now have variant parts appear in grey (#151)
 * now menu supports extract 0 to extract 5 (#153)
 * now menu also shows title of extracts (#153)
+* ctrl-alt 'F' now toggles harp preview
+
+## internal stuff
+
+* updated to abc2svg 1.13.7 (#163)
 
 ## experimental feature
 
@@ -36,8 +46,10 @@
 
 ## backwards compatibility issues
 
-* layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout.
-* BWC Default for "filenamepart" is now as it was in 1.5 (#155)
+* layoutlines is now the combination of voices and layoutlines. 
+  It is no longer possible to show voices without considering them in the layout.
+* Default for "filenamepart" is now as it was in 1.5 (#155)
+* tuplet configuration is now under 'notebound': meed to rework in the sheets - sorry! (#168)
 
 ## known issues
 
@@ -91,6 +103,7 @@ Dragging of jumpline does not work properly on Saitenspiel #158
 * in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
 * now get message if F: is missing
 * now get messaage Filename or path contains whitespace and special characters
+* you have to redo configuration for tuplets (#167   ) 
 
 ## known issues
 

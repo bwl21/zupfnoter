@@ -346,7 +346,9 @@ module Harpnotes
       attr                     = {stroke: color}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
-      @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
+      e = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
+      #push_element(root, e)
+      e
       # see http://stackoverflow.com/questions/10940316/how-to-use-attrs-stroke-dasharray-stroke-linecap-stroke-linejoin-in-raphaeljs
     end
 
