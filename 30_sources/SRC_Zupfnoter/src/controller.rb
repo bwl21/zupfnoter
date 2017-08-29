@@ -607,7 +607,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.benchmark("validate default conf") do
         @validation_errors = []
-        @validation_errors = @json_validator.validate_conf($conf) if $log.loglevel == :debug
+        @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
       end
 
       load_music_model
