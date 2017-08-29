@@ -2323,6 +2323,25 @@ wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung beim
 Neuladen von Zupfnoter zurückgesetzt.
 \end{quote}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{setsetting\ validate\ true}: Diese Einstellung bewirkt eine
+  extra Prüfung/Validierung der Konfigurationsparamter.
+\item
+  \texttt{setsetting\ validate\ false}: Diese Einstellung beendet eine
+  extra Prüfung/Validierung der Konfigurationsparamter.
+\item
+  \texttt{editconf\ errors}: Damit werden die fehlerhaften
+  Konfigurationsparameter in den Konfigurationseditor geladen.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis:} Diese Prüfungen sind noch nicht ausgereift und daher
+standardmässig ausgeschaltet. Auch zeigt der Editor noch nicht die
+Fehler noch nicht genau genug an.
+\end{quote}
+
 Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
 hilfreich sind. Insbesondere, wenn der ``debug'' - Modus eingestellt
 ist.
@@ -3372,7 +3391,7 @@ soll}\label{wenn-die-vertikale-anodrnung-optimiert-werden-soll}
 Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
 z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
 Stimme läüft. Die Möglichkeiten dazu sind in
-Kapitel~\ref{extract.0.layout.minc}~\hyperref[extract.0.layout.minc]{\texttt{minc}}
+Kapitel~\ref{extract.0.notebound.minc}~\hyperref[extract.0.notebound.minc]{\texttt{minc}}
 beschrieben.
 
 \subsubsection{Extra Einstellungen für die
@@ -3701,8 +3720,8 @@ Note verbinden (Notenbeschriftung).
 \begin{verbatim}
     "annotations": {
       "vl" : {"pos": [-5, -5], "text": "v"},
-      "vr" : {"pos": [-1, -5], "text": "v"},
-      "vt" : {"pos": [2, -5], "text": "v"}
+      "vr" : {"pos": [2, -5], "text": "v"},
+      "vt" : {"pos": [-1, -5], "text": "v"}
     }
       
 \end{verbatim}
@@ -3748,7 +3767,7 @@ rechts}{annotations.vr - V rechts}}\label{annotations.vr}
 TODO:\marginpar{TODO} Helptext für annotations.vr einfügen
 
 \begin{verbatim}
-    "vr": {"pos": [-1, -5], "text": "v"}
+    "vr": {"pos": [2, -5], "text": "v"}
       
 \end{verbatim}
 
@@ -3759,7 +3778,7 @@ Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
 \begin{verbatim}
-    "pos": [-1, -5]
+    "pos": [2, -5]
       
 \end{verbatim}
 
@@ -3780,7 +3799,7 @@ oben}{annotations.vt - V oben}}\label{annotations.vt}
 TODO:\marginpar{TODO} Helptext für annotations.vt einfügen
 
 \begin{verbatim}
-    "vt": {"pos": [2, -5], "text": "v"}
+    "vt": {"pos": [-1, -5], "text": "v"}
       
 \end{verbatim}
 
@@ -3791,7 +3810,7 @@ Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
 \begin{verbatim}
-    "pos": [2, -5]
+    "pos": [-1, -5]
       
 \end{verbatim}
 
@@ -3856,7 +3875,6 @@ spezifiziert den Auszug 1 usw.
           "instrument"        : "37-strings-g-g",
           "jumpline_anchor"   : [3, 1],
           "limit_a3"          : true,
-          "minc"              : {},
           "packer"            : {
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
@@ -4096,7 +4114,6 @@ Notenbild gezielt optimieren.
       "instrument"        : "37-strings-g-g",
       "jumpline_anchor"   : [3, 1],
       "limit_a3"          : true,
-      "minc"              : {},
       "packer"            : {
         "pack_max_spreadfactor" : 2,
         "pack_method"           : 0,
@@ -4362,40 +4379,6 @@ angeshnitten.
       
 \end{verbatim}
 
-\hyperdef{}{extract.0.layout.minc}{\subsection{\texorpdfstring{\texttt{extract.0.layout.minc}
-- extra
-Vorschub}{extract.0.layout.minc - extra Vorschub}}\label{extract.0.layout.minc}}
-
-Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
-
-\begin{quote}
-\textbf{Hinweis}: Diese Funktion ist nun wirklich für die ganzen
-Experten. Bitte verwende sie also nur, wenn du weißt, was du tust.
-Anwendungsfälle für diese Funktion:
-
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  Linien (z.B. Sprunglinien) gehen unglücklich durch andere Noten oder
-  Beschriftungen
-\item
-  Bei sehr dichten Layouts gehen Taktstriche in die vorherige Note
-\item
-  Man hat sehr viele Noten, könnte aber einen Teil in eine freie Fläche
-  schieben. In diesem fall würde die Flusslinie teilweise nach oben
-  gehen.
-\end{itemize}
-\end{quote}
-
-Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
-Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
-Zeitpunkt.
-
-\begin{verbatim}
-    "minc": {}
-      
-\end{verbatim}
-
 \subsection{\texorpdfstring{\texttt{extract.0.layout.packer} -
 Packer}{extract.0.layout.packer - Packer}}\label{extract.0.layout.packer}
 
@@ -4597,6 +4580,97 @@ orientiert.
     "nonflowrest": false
       
 \end{verbatim}
+
+\hyperdef{}{extract.0.notebound.minc}{\subsection{\texorpdfstring{\texttt{extract.0.notebound.minc}
+- extra
+Vorschub}{extract.0.notebound.minc - extra Vorschub}}\label{extract.0.notebound.minc}}
+
+Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
+
+\begin{quote}
+\textbf{Hinweis}: Diese Funktion ist nun wirklich für die ganzen
+Experten. Bitte verwende sie also nur, wenn du weißt, was du tust.
+Anwendungsfälle für diese Funktion:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Linien (z.B. Sprunglinien) gehen unglücklich durch andere Noten oder
+  Beschriftungen
+\item
+  Bei sehr dichten Layouts gehen Taktstriche in die vorherige Note
+\item
+  Man hat sehr viele Noten, könnte aber einen Teil in eine freie Fläche
+  schieben. In diesem fall würde die Flusslinie teilweise nach oben
+  gehen.
+\end{itemize}
+\end{quote}
+
+Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
+Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
+Zeitpunkt.
+
+\subsection{\texorpdfstring{\texttt{extract.0.notebound.minc.x.minc\_f}
+-
+Faktor}{extract.0.notebound.minc.x.minc\_f - Faktor}}\label{extract.0.notebound.minc.x.mincux5ff}
+
+Hier gibst du den Korrekturfaktor für den vertikalen Voreschub an.
+
+Die Angabe bestimmt, welcher Anteil am errechneten vertikalen Abstand
+als extra Abstand \textbf{hinzugefügt} wird.
+(\texttt{a\ =\ (a\ +\ minc\_f\ *\ a}))
+
+Im Beispiel
+
+\begin{verbatim}
+    "minc" : {
+       "2304": {"minc_f": 1}, 
+       "4224": {"minc_f": -0.25}
+       }
+\end{verbatim}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  bei 2304 wird der Abstand verdoppelt. Mit derm Faktor 1 wird ein
+  Normalabstand wird hinugefügt.
+\item
+  bei 4224 wird der abstand um 25\% reduziert. Mit dem Faktor -0.25 wird
+  ein Viertel des Maximalabstandes abgezogen
+\end{itemize}
+
+\textbf{Beispiele}:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{-1.0} würde den Vorschub um eine ganze Note zurück setzen
+\item
+  \texttt{0} ändert nichts am Vorschub. Damit kann man den Wert
+  zurücksetzen, falls er im Auszug 0 gesetzt wurde.
+\item
+  \texttt{0.5} vergrößert den Vorschub um die Hälfte einer ganzen Note.
+\end{itemize}
+
+\subsection{\texorpdfstring{\texttt{extract.0.notebound.tuplet} -
+Tuplet}{extract.0.notebound.tuplet - Tuplet}}\label{extract.0.notebound.tuplet}
+
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+steuern.
+
+\begin{quote}
+\textbf{Hinweis}:
+
+Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
+notwendig, eine ``Verschiebemarke'' vor die betroffene tuplet zu setzen.
+Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
+man die Verschiebemarken gleich benennt.
+
+Z.B. kann man eine Verschiebemarke \texttt{tpl\_links} an alle tuplets
+schreiben, deren Bogen links von der FLußlineie liegen soll. Diese
+können dann über den parameter \texttt{extract.0.tuplet.tpl\_links}
+gemeinsam konfiguriert werden
+\end{quote}
 
 \hyperdef{}{extract.0.notes}{\subsection{\texorpdfstring{\texttt{extract.0.notes}
 -
@@ -5089,9 +5163,9 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
       "instrument" : {
         "18-strings-b-e" : {
           "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fff491ccfa0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>",
+            "PITCH_OFFSET" : "#<Proc:0x007fb363854df0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
             "X_OFFSET"     : 28.5,
-            "X_SPACING"    : "#<Proc:0x007fff491ccf00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
+            "X_SPACING"    : "#<Proc:0x007fb363854dc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:165 (lambda)>",
             "instrument"   : "18-strings-b-e"
           },
           "printer"     : {
@@ -5101,62 +5175,62 @@ TODO:\marginpar{TODO} Helptext für presets einfügen
           },
           "stringnames" : {
             "marks" : {"hpos": [59, 76]},
-            "text"  : "#<Proc:0x007fff491cce88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:167 (lambda)>"
+            "text"  : "#<Proc:0x007fb363854d00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:168 (lambda)>"
           }
         },
         "21-strings-a-f" : {
           "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fff491cd248@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>",
+            "PITCH_OFFSET" : "#<Proc:0x007fb363855070@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
             "X_OFFSET"     : 23,
-            "X_SPACING"    : "#<Proc:0x007fff491cd220@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
+            "X_SPACING"    : "#<Proc:0x007fb363855048@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>",
             "instrument"   : "21-strings-a-f"
           },
           "printer"     : {
             "a3_offset" : [-5, 0],
-            "a4_offset" : "#<Proc:0x007fff491cd090@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
+            "a4_offset" : "#<Proc:0x007fb363854eb8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
             "a4_pages"  : [1, 2]
           },
           "stringnames" : {
             "marks" : {"hpos": [57, 77]},
-            "text"  : "#<Proc:0x007fff491cd1d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:153 (lambda)>"
+            "text"  : "#<Proc:0x007fb363854ff8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>"
           }
         },
         "25-strings-g-g" : {
           "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fff491cd4c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:135 (lambda)>",
-            "X_OFFSET"     : "#<Proc:0x007fff491cd478@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-            "X_SPACING"    : "#<Proc:0x007fff491cd4a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+            "PITCH_OFFSET" : "#<Proc:0x007fb363855458@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+            "X_OFFSET"     : "#<Proc:0x007fb363855408@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
+            "X_SPACING"    : "#<Proc:0x007fb363855430@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
             "instrument"   : "25-strings-g-g"
           },
           "printer"     : {
             "a3_offset" : [-5, 0],
-            "a4_offset" : "#<Proc:0x007fff491cd310@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
+            "a4_offset" : "#<Proc:0x007fb3638551b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
             "a4_pages"  : [1, 2]
           },
           "stringnames" : {
             "marks" : {
-              "hpos" : "#<Proc:0x007fff491cd400@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
+              "hpos" : "#<Proc:0x007fb363855340@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:141 (lambda)>"
             },
-            "text"  : "#<Proc:0x007fff491cd428@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+            "text"  : "#<Proc:0x007fb363855368@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
           }
         },
         "37-strings-g-g" : {
           "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fff491cd770@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:121 (lambda)>",
-            "X_OFFSET"     : "#<Proc:0x007fff491cd720@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
-            "X_SPACING"    : "#<Proc:0x007fff491cd748@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+            "PITCH_OFFSET" : "#<Proc:0x007fb3638558e0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+            "X_OFFSET"     : "#<Proc:0x007fb363855818@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:124 (lambda)>",
+            "X_SPACING"    : "#<Proc:0x007fb363855868@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
             "instrument"   : "37-strings-g-g"
           },
           "printer"     : {
-            "a3_offset" : "#<Proc:0x007fff491cd568@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-            "a4_offset" : "#<Proc:0x007fff491cd590@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+            "a3_offset" : "#<Proc:0x007fb363855598@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
+            "a4_offset" : "#<Proc:0x007fb3638555c0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
             "a4_pages"  : [0, 1, 2]
           },
           "stringnames" : {
             "marks" : {
-              "hpos" : "#<Proc:0x007fff491cd6a8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+              "hpos" : "#<Proc:0x007fb3638557a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:127 (lambda)>"
             },
-            "text"  : "#<Proc:0x007fff491cd6d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+            "text"  : "#<Proc:0x007fb3638557c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
           }
         },
         "saitenspiel"    : {
@@ -5305,9 +5379,9 @@ Es gibt folgende Einstellunge:
 "instrument": {
   "18-strings-b-e" : {
     "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491ccfa0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb363854df0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
       "X_OFFSET"     : 28.5,
-      "X_SPACING"    : "#<Proc:0x007fff491ccf00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363854dc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:165 (lambda)>",
       "instrument"   : "18-strings-b-e"
     },
     "printer"     : {
@@ -5317,62 +5391,62 @@ Es gibt folgende Einstellunge:
     },
     "stringnames" : {
       "marks" : {"hpos": [59, 76]},
-      "text"  : "#<Proc:0x007fff491cce88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:167 (lambda)>"
+      "text"  : "#<Proc:0x007fb363854d00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:168 (lambda)>"
     }
   },
   "21-strings-a-f" : {
     "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491cd248@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb363855070@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
       "X_OFFSET"     : 23,
-      "X_SPACING"    : "#<Proc:0x007fff491cd220@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363855048@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>",
       "instrument"   : "21-strings-a-f"
     },
     "printer"     : {
       "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fff491cd090@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
+      "a4_offset" : "#<Proc:0x007fb363854eb8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
       "a4_pages"  : [1, 2]
     },
     "stringnames" : {
       "marks" : {"hpos": [57, 77]},
-      "text"  : "#<Proc:0x007fff491cd1d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:153 (lambda)>"
+      "text"  : "#<Proc:0x007fb363854ff8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>"
     }
   },
   "25-strings-g-g" : {
     "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491cd4c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:135 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fff491cd478@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fff491cd4a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb363855458@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+      "X_OFFSET"     : "#<Proc:0x007fb363855408@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363855430@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
       "instrument"   : "25-strings-g-g"
     },
     "printer"     : {
       "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fff491cd310@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
+      "a4_offset" : "#<Proc:0x007fb3638551b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
       "a4_pages"  : [1, 2]
     },
     "stringnames" : {
       "marks" : {
-        "hpos" : "#<Proc:0x007fff491cd400@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
+        "hpos" : "#<Proc:0x007fb363855340@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:141 (lambda)>"
       },
-      "text"  : "#<Proc:0x007fff491cd428@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+      "text"  : "#<Proc:0x007fb363855368@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
     }
   },
   "37-strings-g-g" : {
     "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491cd770@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:121 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fff491cd720@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fff491cd748@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb3638558e0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+      "X_OFFSET"     : "#<Proc:0x007fb363855818@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:124 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363855868@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
       "instrument"   : "37-strings-g-g"
     },
     "printer"     : {
-      "a3_offset" : "#<Proc:0x007fff491cd568@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-      "a4_offset" : "#<Proc:0x007fff491cd590@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+      "a3_offset" : "#<Proc:0x007fb363855598@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
+      "a4_offset" : "#<Proc:0x007fb3638555c0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
       "a4_pages"  : [0, 1, 2]
     },
     "stringnames" : {
       "marks" : {
-        "hpos" : "#<Proc:0x007fff491cd6a8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+        "hpos" : "#<Proc:0x007fb3638557a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:127 (lambda)>"
       },
-      "text"  : "#<Proc:0x007fff491cd6d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+      "text"  : "#<Proc:0x007fb3638557c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
     }
   },
   "saitenspiel"    : {
@@ -5406,9 +5480,9 @@ einfügen
 \begin{verbatim}
     "18-strings-b-e": {
       "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fff491ccfa0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>",
+        "PITCH_OFFSET" : "#<Proc:0x007fb363854df0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
         "X_OFFSET"     : 28.5,
-        "X_SPACING"    : "#<Proc:0x007fff491ccf00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
+        "X_SPACING"    : "#<Proc:0x007fb363854dc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:165 (lambda)>",
         "instrument"   : "18-strings-b-e"
       },
       "printer"     : {
@@ -5418,7 +5492,7 @@ einfügen
       },
       "stringnames" : {
         "marks" : {"hpos": [59, 76]},
-        "text"  : "#<Proc:0x007fff491cce88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:167 (lambda)>"
+        "text"  : "#<Proc:0x007fb363854d00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:168 (lambda)>"
       }
     }
       
@@ -5433,9 +5507,9 @@ Notenbild gezielt optimieren.
 
 \begin{verbatim}
     "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491ccfa0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb363854df0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
       "X_OFFSET"     : 28.5,
-      "X_SPACING"    : "#<Proc:0x007fff491ccf00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363854dc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:165 (lambda)>",
       "instrument"   : "18-strings-b-e"
     }
       
@@ -5456,7 +5530,7 @@ Die Midi-Codes findest du auf
 \href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
 
 \begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fff491ccfa0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>"
+    "PITCH_OFFSET": "#<Proc:0x007fb363854df0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>"
       
 \end{verbatim}
 
@@ -5479,7 +5553,7 @@ Saitenabstand}{presets.instrument.18-strings-b-e.layout.X\_SPACING - Saitenabsta
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fff491ccf00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:164 (lambda)>"
+    "X_SPACING": "#<Proc:0x007fb363854dc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:165 (lambda)>"
       
 \end{verbatim}
 
@@ -5596,7 +5670,7 @@ Unterlegnotenblatt gedruckt werden.
 \begin{verbatim}
     "stringnames": {
       "marks" : {"hpos": [59, 76]},
-      "text"  : "#<Proc:0x007fff491cce88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:167 (lambda)>"
+      "text"  : "#<Proc:0x007fb363854d00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:168 (lambda)>"
     }
       
 \end{verbatim}
@@ -5648,7 +5722,7 @@ In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
   regulären Saitennamen
 
 \begin{verbatim}
-"text": "#<Proc:0x007fff491cce88@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:167 (lambda)>"
+"text": "#<Proc:0x007fb363854d00@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:168 (lambda)>"
 \end{verbatim}
 \end{itemize}
 
@@ -5662,19 +5736,19 @@ einfügen
 \begin{verbatim}
     "21-strings-a-f": {
       "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fff491cd248@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>",
+        "PITCH_OFFSET" : "#<Proc:0x007fb363855070@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
         "X_OFFSET"     : 23,
-        "X_SPACING"    : "#<Proc:0x007fff491cd220@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
+        "X_SPACING"    : "#<Proc:0x007fb363855048@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>",
         "instrument"   : "21-strings-a-f"
       },
       "printer"     : {
         "a3_offset" : [-5, 0],
-        "a4_offset" : "#<Proc:0x007fff491cd090@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
+        "a4_offset" : "#<Proc:0x007fb363854eb8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
         "a4_pages"  : [1, 2]
       },
       "stringnames" : {
         "marks" : {"hpos": [57, 77]},
-        "text"  : "#<Proc:0x007fff491cd1d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:153 (lambda)>"
+        "text"  : "#<Proc:0x007fb363854ff8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>"
       }
     }
       
@@ -5689,9 +5763,9 @@ Notenbild gezielt optimieren.
 
 \begin{verbatim}
     "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491cd248@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb363855070@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
       "X_OFFSET"     : 23,
-      "X_SPACING"    : "#<Proc:0x007fff491cd220@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363855048@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>",
       "instrument"   : "21-strings-a-f"
     }
       
@@ -5712,7 +5786,7 @@ Die Midi-Codes findest du auf
 \href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
 
 \begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fff491cd248@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>"
+    "PITCH_OFFSET": "#<Proc:0x007fb363855070@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>"
       
 \end{verbatim}
 
@@ -5735,7 +5809,7 @@ Saitenabstand}{presets.instrument.21-strings-a-f.layout.X\_SPACING - Saitenabsta
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fff491cd220@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:150 (lambda)>"
+    "X_SPACING": "#<Proc:0x007fb363855048@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:151 (lambda)>"
       
 \end{verbatim}
 
@@ -5783,7 +5857,7 @@ Druckdialog findest.
 \begin{verbatim}
     "printer": {
       "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fff491cd090@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
+      "a4_offset" : "#<Proc:0x007fb363854eb8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
       "a4_pages"  : [1, 2]
     }
       
@@ -5825,7 +5899,7 @@ Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
 vertikaler Position.
 
 \begin{verbatim}
-    "a4_offset": "#<Proc:0x007fff491cd090@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>"
+    "a4_offset": "#<Proc:0x007fb363854eb8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>"
       
 \end{verbatim}
 
@@ -5856,7 +5930,7 @@ Unterlegnotenblatt gedruckt werden.
 \begin{verbatim}
     "stringnames": {
       "marks" : {"hpos": [57, 77]},
-      "text"  : "#<Proc:0x007fff491cd1d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:153 (lambda)>"
+      "text"  : "#<Proc:0x007fb363854ff8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>"
     }
       
 \end{verbatim}
@@ -5908,7 +5982,7 @@ In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
   regulären Saitennamen
 
 \begin{verbatim}
-"text": "#<Proc:0x007fff491cd1d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:153 (lambda)>"
+"text": "#<Proc:0x007fb363854ff8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>"
 \end{verbatim}
 \end{itemize}
 
@@ -5922,21 +5996,21 @@ einfügen
 \begin{verbatim}
     "25-strings-g-g": {
       "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fff491cd4c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:135 (lambda)>",
-        "X_OFFSET"     : "#<Proc:0x007fff491cd478@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-        "X_SPACING"    : "#<Proc:0x007fff491cd4a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+        "PITCH_OFFSET" : "#<Proc:0x007fb363855458@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+        "X_OFFSET"     : "#<Proc:0x007fb363855408@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
+        "X_SPACING"    : "#<Proc:0x007fb363855430@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
         "instrument"   : "25-strings-g-g"
       },
       "printer"     : {
         "a3_offset" : [-5, 0],
-        "a4_offset" : "#<Proc:0x007fff491cd310@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
+        "a4_offset" : "#<Proc:0x007fb3638551b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
         "a4_pages"  : [1, 2]
       },
       "stringnames" : {
         "marks" : {
-          "hpos" : "#<Proc:0x007fff491cd400@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
+          "hpos" : "#<Proc:0x007fb363855340@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:141 (lambda)>"
         },
-        "text"  : "#<Proc:0x007fff491cd428@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+        "text"  : "#<Proc:0x007fb363855368@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
       }
     }
       
@@ -5951,9 +6025,9 @@ Notenbild gezielt optimieren.
 
 \begin{verbatim}
     "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491cd4c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:135 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fff491cd478@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fff491cd4a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb363855458@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>",
+      "X_OFFSET"     : "#<Proc:0x007fb363855408@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363855430@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
       "instrument"   : "25-strings-g-g"
     }
       
@@ -5974,7 +6048,7 @@ Die Midi-Codes findest du auf
 \href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
 
 \begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fff491cd4c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:135 (lambda)>"
+    "PITCH_OFFSET": "#<Proc:0x007fb363855458@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>"
       
 \end{verbatim}
 
@@ -5986,7 +6060,7 @@ TODO:\marginpar{TODO} Helptext für
 presets.instrument.25-strings-g-g.layout.X\_OFFSET einfügen
 
 \begin{verbatim}
-    "X_OFFSET": "#<Proc:0x007fff491cd478@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>"
+    "X_OFFSET": "#<Proc:0x007fb363855408@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>"
       
 \end{verbatim}
 
@@ -5997,7 +6071,7 @@ Saitenabstand}{presets.instrument.25-strings-g-g.layout.X\_SPACING - Saitenabsta
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fff491cd4a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:136 (lambda)>"
+    "X_SPACING": "#<Proc:0x007fb363855430@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>"
       
 \end{verbatim}
 
@@ -6045,7 +6119,7 @@ Druckdialog findest.
 \begin{verbatim}
     "printer": {
       "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fff491cd310@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
+      "a4_offset" : "#<Proc:0x007fb3638551b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
       "a4_pages"  : [1, 2]
     }
       
@@ -6087,7 +6161,7 @@ Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
 vertikaler Position.
 
 \begin{verbatim}
-    "a4_offset": "#<Proc:0x007fff491cd310@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>"
+    "a4_offset": "#<Proc:0x007fb3638551b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>"
       
 \end{verbatim}
 
@@ -6118,9 +6192,9 @@ Unterlegnotenblatt gedruckt werden.
 \begin{verbatim}
     "stringnames": {
       "marks" : {
-        "hpos" : "#<Proc:0x007fff491cd400@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
+        "hpos" : "#<Proc:0x007fb363855340@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:141 (lambda)>"
       },
-      "text"  : "#<Proc:0x007fff491cd428@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+      "text"  : "#<Proc:0x007fb363855368@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
     }
       
 \end{verbatim}
@@ -6133,7 +6207,7 @@ Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
 
 \begin{verbatim}
     "marks": {
-      "hpos" : "#<Proc:0x007fff491cd400@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
+      "hpos" : "#<Proc:0x007fb363855340@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:141 (lambda)>"
     }
       
 \end{verbatim}
@@ -6150,7 +6224,7 @@ Die Angabe \texttt{{[}43,\ 55,\ 79{]}} druckt Saitenmarken bei
 25-saitigen bzw. der 37-saitigen Tischharfe.
 
 \begin{verbatim}
-    "hpos": "#<Proc:0x007fff491cd400@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
+    "hpos": "#<Proc:0x007fb363855340@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:141 (lambda)>"
       
 \end{verbatim}
 
@@ -6174,7 +6248,7 @@ In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
   regulären Saitennamen
 
 \begin{verbatim}
-"text": "#<Proc:0x007fff491cd428@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:139 (lambda)>"
+"text": "#<Proc:0x007fb363855368@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:140 (lambda)>"
 \end{verbatim}
 \end{itemize}
 
@@ -6188,21 +6262,21 @@ einfügen
 \begin{verbatim}
     "37-strings-g-g": {
       "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fff491cd770@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:121 (lambda)>",
-        "X_OFFSET"     : "#<Proc:0x007fff491cd720@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
-        "X_SPACING"    : "#<Proc:0x007fff491cd748@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+        "PITCH_OFFSET" : "#<Proc:0x007fb3638558e0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+        "X_OFFSET"     : "#<Proc:0x007fb363855818@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:124 (lambda)>",
+        "X_SPACING"    : "#<Proc:0x007fb363855868@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
         "instrument"   : "37-strings-g-g"
       },
       "printer"     : {
-        "a3_offset" : "#<Proc:0x007fff491cd568@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-        "a4_offset" : "#<Proc:0x007fff491cd590@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+        "a3_offset" : "#<Proc:0x007fb363855598@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
+        "a4_offset" : "#<Proc:0x007fb3638555c0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
         "a4_pages"  : [0, 1, 2]
       },
       "stringnames" : {
         "marks" : {
-          "hpos" : "#<Proc:0x007fff491cd6a8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+          "hpos" : "#<Proc:0x007fb3638557a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:127 (lambda)>"
         },
-        "text"  : "#<Proc:0x007fff491cd6d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+        "text"  : "#<Proc:0x007fb3638557c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
       }
     }
       
@@ -6217,9 +6291,9 @@ Notenbild gezielt optimieren.
 
 \begin{verbatim}
     "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fff491cd770@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:121 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fff491cd720@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fff491cd748@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+      "PITCH_OFFSET" : "#<Proc:0x007fb3638558e0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>",
+      "X_OFFSET"     : "#<Proc:0x007fb363855818@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:124 (lambda)>",
+      "X_SPACING"    : "#<Proc:0x007fb363855868@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>",
       "instrument"   : "37-strings-g-g"
     }
       
@@ -6240,7 +6314,7 @@ Die Midi-Codes findest du auf
 \href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
 
 \begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fff491cd770@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:121 (lambda)>"
+    "PITCH_OFFSET": "#<Proc:0x007fb3638558e0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>"
       
 \end{verbatim}
 
@@ -6252,7 +6326,7 @@ TODO:\marginpar{TODO} Helptext für
 presets.instrument.37-strings-g-g.layout.X\_OFFSET einfügen
 
 \begin{verbatim}
-    "X_OFFSET": "#<Proc:0x007fff491cd720@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>"
+    "X_OFFSET": "#<Proc:0x007fb363855818@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:124 (lambda)>"
       
 \end{verbatim}
 
@@ -6263,7 +6337,7 @@ Saitenabstand}{presets.instrument.37-strings-g-g.layout.X\_SPACING - Saitenabsta
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fff491cd748@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:122 (lambda)>"
+    "X_SPACING": "#<Proc:0x007fb363855868@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:123 (lambda)>"
       
 \end{verbatim}
 
@@ -6310,8 +6384,8 @@ Druckdialog findest.
 
 \begin{verbatim}
     "printer": {
-      "a3_offset" : "#<Proc:0x007fff491cd568@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-      "a4_offset" : "#<Proc:0x007fff491cd590@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
+      "a3_offset" : "#<Proc:0x007fb363855598@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
+      "a4_offset" : "#<Proc:0x007fb3638555c0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
       "a4_pages"  : [0, 1, 2]
     }
       
@@ -6338,7 +6412,7 @@ auszuschalten.
 \end{quote}
 
 \begin{verbatim}
-    "a3_offset": "#<Proc:0x007fff491cd568@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>"
+    "a3_offset": "#<Proc:0x007fb363855598@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>"
       
 \end{verbatim}
 
@@ -6353,7 +6427,7 @@ Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
 vertikaler Position.
 
 \begin{verbatim}
-    "a4_offset": "#<Proc:0x007fff491cd590@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>"
+    "a4_offset": "#<Proc:0x007fb3638555c0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>"
       
 \end{verbatim}
 
@@ -6384,9 +6458,9 @@ Unterlegnotenblatt gedruckt werden.
 \begin{verbatim}
     "stringnames": {
       "marks" : {
-        "hpos" : "#<Proc:0x007fff491cd6a8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+        "hpos" : "#<Proc:0x007fb3638557a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:127 (lambda)>"
       },
-      "text"  : "#<Proc:0x007fff491cd6d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+      "text"  : "#<Proc:0x007fb3638557c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
     }
       
 \end{verbatim}
@@ -6399,7 +6473,7 @@ Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
 
 \begin{verbatim}
     "marks": {
-      "hpos" : "#<Proc:0x007fff491cd6a8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+      "hpos" : "#<Proc:0x007fb3638557a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:127 (lambda)>"
     }
       
 \end{verbatim}
@@ -6416,7 +6490,7 @@ Die Angabe \texttt{{[}43,\ 55,\ 79{]}} druckt Saitenmarken bei
 25-saitigen bzw. der 37-saitigen Tischharfe.
 
 \begin{verbatim}
-    "hpos": "#<Proc:0x007fff491cd6a8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
+    "hpos": "#<Proc:0x007fb3638557a0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:127 (lambda)>"
       
 \end{verbatim}
 
@@ -6440,7 +6514,7 @@ In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
   regulären Saitennamen
 
 \begin{verbatim}
-"text": "#<Proc:0x007fff491cd6d0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:125 (lambda)>"
+"text": "#<Proc:0x007fb3638557c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:126 (lambda)>"
 \end{verbatim}
 \end{itemize}
 
@@ -7897,13 +7971,12 @@ Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
 steuern.
 
 \begin{quote}
-\textbf{Hinweis}: diese Einstellungen wirken immer auf alle Tuplets
-aller Stimmen, die zum gleichen Zeitpunkt gespielt werden.
+\textbf{Hinweis}:
 
-Wenn du die Tuplets individuell konfigurieren möchtest, ist es
-notwendig, eine ``Verschiebemarke'' vor das tuplet zu setzen. Dabei ist
-es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn man die
-Verschiebemarken gleich benennt.
+Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
+notwendig, eine ``Verschiebemarke'' vor die betroffene tuplet zu setzen.
+Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
+man die Verschiebemarken gleich benennt.
 
 Z.B. kann man eine Verschiebemarke \texttt{tpl\_links} an alle tuplets
 schreiben, deren Bogen links von der FLußlineie liegen soll. Diese

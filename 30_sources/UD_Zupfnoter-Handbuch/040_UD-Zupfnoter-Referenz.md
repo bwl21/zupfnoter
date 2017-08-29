@@ -1058,6 +1058,17 @@ ist.
 > wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung beim
 > Neuladen von Zupfnoter zurückgesetzt.
 
+-   `setsetting validate true`: Diese Einstellung bewirkt eine extra
+    Prüfung/Validierung der Konfigurationsparamter.
+-   `setsetting validate false`: Diese Einstellung beendet eine extra
+    Prüfung/Validierung der Konfigurationsparamter.
+-   `editconf errors`: Damit werden die fehlerhaften
+    Konfigurationsparameter in den Konfigurationseditor geladen.
+
+> **Hinweis:** Diese Prüfungen sind noch nicht ausgereift und daher
+> standardmässig ausgeschaltet. Auch zeigt der Editor noch nicht die
+> Fehler noch nicht genau genug an.
+
 Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
 hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
 
@@ -1790,7 +1801,7 @@ relevante Beispiele
 Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
 z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
 Stimme läüft. Die Möglichkeiten dazu sind in
-Kapitel \ref{extract.0.layout.minc} [`minc`](#extract.0.layout.minc)
+Kapitel \ref{extract.0.notebound.minc} [`minc`](#extract.0.notebound.minc)
 beschrieben.
 
 ### Extra Einstellungen für die Notenvorschau
