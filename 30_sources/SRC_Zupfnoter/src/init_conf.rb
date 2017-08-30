@@ -13,7 +13,7 @@ module InitConf
                      :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
                      :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
                      #
-                     :annotation, :decoration, :partname, :variantend, :countnotes, :c_jumplines, :tuplet, :minc, :flowline, # sort within notebound
+                     :annotation, :decoration, :partname, :variantend, :countnote, :c_jumplines, :tuplet, :minc, :flowline, # sort within notebound
 
                      :stringnames,
 
@@ -25,7 +25,7 @@ module InitConf
                      # sort within printer
                      :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
 
-                     :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T99_do_not_copy,
+                     :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T05_printed_extracts, :T99_do_not_copy,
 
                      "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                      :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks # tuplets annotations
@@ -228,6 +228,12 @@ module InitConf
                          text:  I18n.t("provided by\n"),
                          style: "small"
                      }},
+                 T05_printed_extracts:             {
+                     value: {
+                         pos:   [393, 22],
+                         text:  I18n.t(""),
+                         style: "smaller"
+                     }},
                  T99_do_not_copy:          {
                      value: {
                          pos:   [380, 284],
@@ -419,37 +425,37 @@ module InitConf
              DURATION_TO_STYLE: {
                  #key      size   fill          dot                  abc duration
 
-                 :err => [2, :filled, FALSE], # 1      1
-                 :d64 => [1, :empty, FALSE], # 1      1
-                 :d48 => [0.75, :empty, TRUE], # 1/2 *
-                 :d32 => [0.75, :empty, FALSE], # 1/2
-                 :d24 => [0.75, :filled, TRUE], # 1/4 *
-                 :d16 => [0.75, :filled, FALSE], # 1/4
-                 :d12 => [0.5, :filled, TRUE], # 1/8 *
-                 :d8 => [0.5, :filled, FALSE], # 1/8
-                 :d6 => [0.3, :filled, TRUE], # 1/16 *
-                 :d4 => [0.3, :filled, FALSE], # 1/16
-                 :d3 => [0.1, :filled, TRUE], # 1/32 *
-                 :d2 => [0.1, :filled, FALSE], # 1/32
-                 :d1 => [0.05, :filled, FALSE] # 1/64
+                 :err => [2, :filled, false], # 1      1
+                 :d64 => [1, :empty, false], # 1      1
+                 :d48 => [0.75, :empty, true], # 1/2 *
+                 :d32 => [0.75, :empty, false], # 1/2
+                 :d24 => [0.75, :filled, true], # 1/4 *
+                 :d16 => [0.75, :filled, false], # 1/4
+                 :d12 => [0.5, :filled, true], # 1/8 *
+                 :d8 => [0.5, :filled, false], # 1/8
+                 :d6 => [0.3, :filled, true], # 1/16 *
+                 :d4 => [0.3, :filled, false], # 1/16
+                 :d3 => [0.1, :filled, true], # 1/32 *
+                 :d2 => [0.1, :filled, false], # 1/32
+                 :d1 => [0.05, :filled, false] # 1/64
              },
 
              REST_TO_GLYPH:     {
                  # this basically determines the white background rectangel
                  # [sizex, sizey], glyph, dot # note that sizex has no effect.
-                 :err => [[2, 2], :rest_1, FALSE], # 1      1
-                 :d64 => [[1, 0.8], :rest_1, FALSE], # 1      1   # make it a bit smaller than the note to improve visibility of barover
-                 :d48 => [[0.5, 0.4], :rest_1, TRUE], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
-                 :d32 => [[0.5, 0.4], :rest_1, FALSE], # 1/2      # make it a bit smaller than the note to improve visibility of barover
-                 :d24 => [[0.4, 0.75], :rest_4, TRUE], # 1/4 *
-                 :d16 => [[0.4, 0.75], :rest_4, FALSE], # 1/4
-                 :d12 => [[0.4, 0.5], :rest_8, TRUE], # 1/8 *
-                 :d8 => [[0.4, 0.5], :rest_8, FALSE], # 1/8
-                 :d6 => [[0.4, 0.3], :rest_16, TRUE], # 1/16 *
-                 :d4 => [[0.3, 0.3], :rest_16, FALSE], # 1/16
-                 :d3 => [[0.3, 0.5], :rest_32, TRUE], # 1/32 *
-                 :d2 => [[0.3, 0.5], :rest_32, FALSE], # 1/32
-                 :d1 => [[0.3, 0.5], :rest_64, FALSE] # 1/64
+                 :err => [[2, 2], :rest_1, false], # 1      1
+                 :d64 => [[1, 0.8], :rest_1, false], # 1      1   # make it a bit smaller than the note to improve visibility of barover
+                 :d48 => [[0.5, 0.4], :rest_1, true], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
+                 :d32 => [[0.5, 0.4], :rest_1, false], # 1/2      # make it a bit smaller than the note to improve visibility of barover
+                 :d24 => [[0.4, 0.75], :rest_4, true], # 1/4 *
+                 :d16 => [[0.4, 0.75], :rest_4, false], # 1/4
+                 :d12 => [[0.4, 0.5], :rest_8, true], # 1/8 *
+                 :d8 => [[0.4, 0.5], :rest_8, false], # 1/8
+                 :d6 => [[0.4, 0.3], :rest_16, true], # 1/16 *
+                 :d4 => [[0.3, 0.3], :rest_16, false], # 1/16
+                 :d3 => [[0.3, 0.5], :rest_32, true], # 1/32 *
+                 :d2 => [[0.3, 0.5], :rest_32, false], # 1/32
+                 :d1 => [[0.3, 0.5], :rest_64, false] # 1/64
              }
          },
 

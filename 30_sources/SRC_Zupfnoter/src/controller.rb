@@ -598,8 +598,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
     $conf.push(config) # in case of error, we hav the ensure close below
 
+    # prepare extract menu
+    printed_extracts = $conf['produce']
     @extracts = $conf.get('extract').inject([]) do |r, entry|
-      r.push([entry.first, entry.last[:title]])
+      extract_number = entry.last.dig(:notes, :T01_number_extract, :text)
+      print = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+      title = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+      r.push([entry.first, title])
     end
 
     call_consumers(:extracts)
