@@ -716,7 +716,7 @@ module Harpnotes
         result = []
         if entity.is_a? Harpnotes::Music::Playable
           chords =_extract_chord_lines(entity.origin[:raw])
-          chords.each do |name|
+          chords.each_with_index  do |name, index|
 
             match = name.match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
@@ -744,7 +744,8 @@ module Harpnotes
               if annotation
                 notepos  = [pos_x, pos_y].map {|p| p.to_f} if pos_x
                 position = notepos || annotation[:pos] || $conf['defaults.notebound.annotation.pos']
-                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid
+                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid  # todo: not sure if we really nedd this if; maybe it was before we compute znid by time
+                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.#{index}.pos" if index > 0
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {style: annotation[:style], pos: position, text: annotation[:text]}, conf_key)
               end
             else

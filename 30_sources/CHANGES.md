@@ -18,6 +18,7 @@
 * now handle multi measure rests (#166)
 * fix predefined annotations vt and vr
 * BWC: move Tuplet configuration to notebounds (#168)
+* Multiple notebound annotations can now be dragged individually (#170)
 
 
 ## enhancement

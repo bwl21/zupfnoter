@@ -1421,10 +1421,24 @@ Für die grundsätzliche Bedienung gilt:
 -   Nach dem Beargbeiten des Elementes mit der Maus wird das Element
     rot. Bitte führe einen "Render" aus um die Unterlegnotenvorschau zu
     aktualisieren.
--   Bitte beachte, dass manche Einstellungen am Zeitbezug der Note
-    hängen. Wenn du also dein Stück so überarbeitest, dass sich der
-    Zeitbezug einer Note ändert, musst du ggf. die Konfiguration erneut
-    durchführen.
+
+> **Hinweis**: Bitte beachte, dass manche Einstellungen am Zeitbezug der
+> Note hängen. Wenn du also dein Stück so überarbeitest, dass sich der
+> Zeitbezug einer Note ändert, musst du ggf. die Konfiguration erneut
+> durchführen.
+
+> **Hinweis**: Bitte beachte, dass Einstellungen von Dekorationen und
+> notenbezogenen Anmerkungen and der Reihenfolge im ABC code hängen.
+> Wenn du also z.b. von zwei aufeinanderfolgenden Anmerkungen die erste
+> löschst, dann wird die verbleibende Anmerkung an die Position der
+> gelöschten Anmerkung verschoben.
+
+> **Hinweis**: Es kann sein, dass beim Verändern deines Stückes nicht
+> mehr genutzte Konfigurationen übrig bleiben. Diese werden nicht
+> entfernt und könnten später zu unerwarteten Effekten führen. In diesem
+> Fall ist es am besten mit der rechten Maustaste in der
+> Harfennotenvorschau die entpreschende Konfiguration auzurufen, zu
+> löschen und neu zu erstellen.
 
 ### Texte verschieben
 
