@@ -506,7 +506,7 @@ class Controller
             repeatsigns:           {keys: expand_extract_keys([:repeatsigns])},
 
 
-            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
+            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
                                                                'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'stringnames.marks.hpos']),
                                     quicksetting_commands:
                                           _get_quicksetting_commands('instrument')

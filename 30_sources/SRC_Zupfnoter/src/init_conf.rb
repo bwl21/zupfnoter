@@ -124,6 +124,7 @@ module InitConf
              instrument: {
                  '37-strings-g-g' => {
                      layout:      {instrument:   '37-strings-g-g',
+                                   limit_a3: true,
                                    PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
                                    X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
                                    X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
@@ -138,6 +139,7 @@ module InitConf
                  },
                  '25-strings-g-g' => {
                      layout:      {instrument:   '25-strings-g-g',
+                                   limit_a3: false,
                                    PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
                                    X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
                                    X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
@@ -152,6 +154,7 @@ module InitConf
                  },
                  '21-strings-a-f' => {
                      layout:      {instrument:   '21-strings-a-f',
+                                   limit_a3: false,
                                    PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
                                    X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
                                    X_OFFSET:     23
@@ -166,6 +169,7 @@ module InitConf
                  },
                  '18-strings-b-e' => {
                      layout:      {instrument:   '18-strings-b-e',
+                                   limit_a3: false,
                                    PITCH_OFFSET: lambda {$conf['extract.0.layout.PITCH_OFFSET']},
                                    X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
                                    X_OFFSET:     28.5
@@ -179,6 +183,7 @@ module InitConf
                  },
                  'saitenspiel'    => {
                      layout:      {instrument:   'saitenspiel',
+                                   limit_a3: false,
                                    PITCH_OFFSET: -24,
                                    X_SPACING:    14.50,
                                    X_OFFSET:    240
