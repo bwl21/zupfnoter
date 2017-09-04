@@ -257,7 +257,7 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
-## layout.minc
+## notebound.minc
 
 Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
 
@@ -687,13 +687,12 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
 steuern.
 
-> **Hinweis**: diese Einstellungen wirken immer auf alle Tuplets aller
-> Stimmen, die zum gleichen Zeitpunkt gespielt werden.
+> **Hinweis**:
 >
-> Wenn du die Tuplets individuell konfigurieren möchtest, ist es
-> notwendig, eine "Verschiebemarke" vor das tuplet zu setzen. Dabei ist
-> es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn man die
-> Verschiebemarken gleich benennt.
+> Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor die betroffene tuplet zu setzen.
+> Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
+> man die Verschiebemarken gleich benennt.
 >
 > Z.B. kann man eine Verschiebemarke `tpl_links` an alle tuplets
 > schreiben, deren Bogen links von der FLußlineie liegen soll. Diese

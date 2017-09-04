@@ -43,13 +43,14 @@ class ConfstackEditor
         template = key.split('.')[-2] # templates are for "extract....<template>.x"
         voice_template = key.split('.')[-3] # templates are for "extract.<template>.v_<voice>.x"
         a        = $conf.get("templates.#{template}") if template
-        a        = $conf.get("templates.#{voice_template}") unless a
+        a        = $conf.get("templates.#{voice_template}") if voice_template and not a.nil?
 
-        unless a
+        if a.nil?
           help_key = key
           help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) {"#{$1}0#{$3}"}
           a        = $conf.get(help_key)
         end
+        puts help_key
 
         a
       end
@@ -221,6 +222,10 @@ class ConfstackEditor
 
       def self.to_value(key, string)
         string[:id]
+      end
+
+      def self.to_template(key)
+
       end
 
       def self.to_neutral

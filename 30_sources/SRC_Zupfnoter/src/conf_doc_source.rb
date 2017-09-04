@@ -77,7 +77,7 @@ ignore_patterns  = [/^neatjson.*/, /abc_parser.*/, /^extract\.[235].*/, /^defaul
                     /^layout.*/, /^extract\.0$/, /^presets\.layout\..*$/
 ]
 produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/, /^templates/, /^annotations/]
-
+extra_keys = ['extract.0.notebound.minc', 'extract.0.notebound.minc.x.minc_f', "extract.0.notebound.tuplet"]
 
 locale = JSON.parse(File.read('../public/locale/de-de.json'))
 
@@ -88,7 +88,7 @@ $conf['presets.layout.packer_regular'] = nil  # This is a lambda  which needs to
 
 ignore_keys  = $conf.keys.select { |k| ignore_patterns.select { |ik| k.match(ik) }.count > 0 }
 produce_keys = $conf.keys.select { |k| produce_patterns.select { |ik| k.match(ik) }.count > 0 }
-show_keys    = ($conf.keys - ignore_keys + produce_keys).uniq.sort_by { |k| k.gsub('templates', 'extract.0') }
+show_keys    = ($conf.keys - ignore_keys + produce_keys + extra_keys).uniq.sort_by { |k| k.gsub('templates', 'extract.0') }
 
 mdhelp = []
 show_keys.sort.each do |key|
@@ -109,7 +109,7 @@ show_keys.sort.each do |key|
 
   #{helptext}
 
-  #{get_example($conf, key)}
+  #{get_example($conf, key) rescue ""}
   }
   mdhelp.push result
 end

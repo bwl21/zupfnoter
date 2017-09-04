@@ -1058,6 +1058,17 @@ ist.
 > wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung beim
 > Neuladen von Zupfnoter zurückgesetzt.
 
+-   `setsetting validate true`: Diese Einstellung bewirkt eine extra
+    Prüfung/Validierung der Konfigurationsparamter.
+-   `setsetting validate false`: Diese Einstellung beendet eine extra
+    Prüfung/Validierung der Konfigurationsparamter.
+-   `editconf errors`: Damit werden die fehlerhaften
+    Konfigurationsparameter in den Konfigurationseditor geladen.
+
+> **Hinweis:** Diese Prüfungen sind noch nicht ausgereift und daher
+> standardmässig ausgeschaltet. Auch zeigt der Editor noch nicht die
+> Fehler noch nicht genau genug an.
+
 Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
 hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
 
@@ -1410,10 +1421,24 @@ Für die grundsätzliche Bedienung gilt:
 -   Nach dem Beargbeiten des Elementes mit der Maus wird das Element
     rot. Bitte führe einen "Render" aus um die Unterlegnotenvorschau zu
     aktualisieren.
--   Bitte beachte, dass manche Einstellungen am Zeitbezug der Note
-    hängen. Wenn du also dein Stück so überarbeitest, dass sich der
-    Zeitbezug einer Note ändert, musst du ggf. die Konfiguration erneut
-    durchführen.
+
+> **Hinweis**: Bitte beachte, dass manche Einstellungen am Zeitbezug der
+> Note hängen. Wenn du also dein Stück so überarbeitest, dass sich der
+> Zeitbezug einer Note ändert, musst du ggf. die Konfiguration erneut
+> durchführen.
+
+> **Hinweis**: Bitte beachte, dass Einstellungen von Dekorationen und
+> notenbezogenen Anmerkungen and der Reihenfolge im ABC code hängen.
+> Wenn du also z.b. von zwei aufeinanderfolgenden Anmerkungen die erste
+> löschst, dann wird die verbleibende Anmerkung an die Position der
+> gelöschten Anmerkung verschoben.
+
+> **Hinweis**: Es kann sein, dass beim Verändern deines Stückes nicht
+> mehr genutzte Konfigurationen übrig bleiben. Diese werden nicht
+> entfernt und könnten später zu unerwarteten Effekten führen. In diesem
+> Fall ist es am besten mit der rechten Maustaste in der
+> Harfennotenvorschau die entpreschende Konfiguration auzurufen, zu
+> löschen und neu zu erstellen.
 
 ### Texte verschieben
 
@@ -1568,7 +1593,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
     -   **0 Alle Stimmen**: Stimmen 1,2,3,4; Auszgsnummer -S
     -   **1 Sopran Alt**: Stimmen 1,2; Auszugsnummer -A
     -   **2 Tenor Bass**: Stimmen 3,4; Auszugsnummer -B
-    -   **3 Melodie**: Stimme 1; Auszugsnummer -B
+    -   **3 Melodie**: Stimme 1; Auszugsnummer -M
 
 2.  **Anlegen der Auszüge**: Ausgehend von der Planung sollte unter dem
     Menü **`Konfig. bearbeiten / Auszugsbeschriftung`** alle geplanten
@@ -1579,7 +1604,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
     ![](../ZAUX_Images/040-041_Auszugsbeschriftung.jpg) 
 
 3.  **Bearbeitung der gemeinsamen Anteile**: Nun kannst du über das Menü
-    `Konfig. bearbeiten / Grundeinstellungen` Die Maske für die
+    `Konfig. bearbeiten / Grundeinstellungen` die Maske für die
     Grundeinstellungen aufrufen. Die hier gesetzten Einstellungen wirke
     **auf alle nachfolgenden** Auszuüge. Daher ist es sinnvoll, z.b.
     Flusslinien, Synchronisationslinien, Wiederholungen usw. für alle
@@ -1790,7 +1815,7 @@ relevante Beispiele
 Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
 z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
 Stimme läüft. Die Möglichkeiten dazu sind in
-Kapitel \ref{extract.0.layout.minc} [`minc`](#extract.0.layout.minc)
+Kapitel \ref{extract.0.notebound.minc} [`minc`](#extract.0.notebound.minc)
 beschrieben.
 
 ### Extra Einstellungen für die Notenvorschau
