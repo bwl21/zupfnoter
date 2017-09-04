@@ -39,7 +39,7 @@ module InitConf
 
 
          # here are values for object which occur multiple times
-         # such that there i no expolicit default in the configuration
+         # such that there is no explicit default in the configuration
          defaults: {
              notebound: {annotation: {pos: [5, -7]},
                          partname:   {pos: [-4, -7]},
@@ -69,7 +69,8 @@ module InitConf
 
          # this is used to populate a QuickSettings menu
          # in configuration editor
-         # needs to be handled in contrller_command_definiitions
+         # needs to be handled in contrller_command_definiitions for
+         # commands.add_command(:addconf) do |command|
          presets: {
              layout:     {
                  layout_compact:  {

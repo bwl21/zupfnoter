@@ -1593,7 +1593,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
     -   **0 Alle Stimmen**: Stimmen 1,2,3,4; Auszgsnummer -S
     -   **1 Sopran Alt**: Stimmen 1,2; Auszugsnummer -A
     -   **2 Tenor Bass**: Stimmen 3,4; Auszugsnummer -B
-    -   **3 Melodie**: Stimme 1; Auszugsnummer -B
+    -   **3 Melodie**: Stimme 1; Auszugsnummer -M
 
 2.  **Anlegen der Auszüge**: Ausgehend von der Planung sollte unter dem
     Menü **`Konfig. bearbeiten / Auszugsbeschriftung`** alle geplanten
@@ -1604,7 +1604,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
     ![](../ZAUX_Images/040-041_Auszugsbeschriftung.jpg) 
 
 3.  **Bearbeitung der gemeinsamen Anteile**: Nun kannst du über das Menü
-    `Konfig. bearbeiten / Grundeinstellungen` Die Maske für die
+    `Konfig. bearbeiten / Grundeinstellungen` die Maske für die
     Grundeinstellungen aufrufen. Die hier gesetzten Einstellungen wirke
     **auf alle nachfolgenden** Auszuüge. Daher ist es sinnvoll, z.b.
     Flusslinien, Synchronisationslinien, Wiederholungen usw. für alle

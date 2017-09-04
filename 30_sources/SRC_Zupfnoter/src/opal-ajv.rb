@@ -146,6 +146,7 @@ module Ajv
                              :items       => {:type => "integer"}},
            :abc_parser   => {:type => "string"},
            :restposition => {:type       => "object",
+                             :additionalProperties => false,
                              :required   => ["default", "repeatstart", "repeatend"],
                              :properties =>
                                  {:default     => {:type => "string"},

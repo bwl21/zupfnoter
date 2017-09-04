@@ -351,7 +351,6 @@ class Controller
     end
 
 
-
     @commands.add_command(:addconf) do |command|
       command.undoable = false
 
@@ -409,14 +408,21 @@ class Controller
                                                 end}}
         }
 
-        # create the commands for presets
+        # create the commands for presets aka quicksettings
+        # note they must be added to the ui in
+        # command-definitions: for :editconf
+        # the quicksettings are invokked from editconf - therefore need to be registered there
 
+        all_value = {}
         $conf['presets.notes'].each do |key, preset_value|
           entry                         = $conf["presets.notes.#{key}"]
           to_key                        = entry[:key] || key
           value                         = entry[:value]
+          all_value[to_key]                = entry[:value]
           values["preset.notes.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch}}
         end
+
+        values["preset.notes.all"] = lambda {{key: "extract.#{@systemstatus[:view]}.notes", value: all_value, method: :patch}}
 
         $conf['presets.layout'].each do |key, preset_value|
           values["preset.layout.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset}}
@@ -501,20 +507,20 @@ class Controller
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda {handle_command("addconf notes")}, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
             minc:                  {keys: expand_extract_keys(['notebound.minc'])},
-            layout:                {keys: expand_extract_keys([:layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
-            printer:               {keys: expand_extract_keys([:printer, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
+            layout:                {keys: expand_extract_keys([:layoutlines, :layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
+            printer:               {keys: expand_extract_keys([:printer, 'printer.show_border', 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             repeatsigns:           {keys: expand_extract_keys([:repeatsigns])},
 
 
             instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
-                                                               'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'stringnames.marks.hpos']),
+                                                               'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'printer.show_border', 'stringnames.marks.hpos']),
                                     quicksetting_commands:
                                           _get_quicksetting_commands('instrument')
             },
             stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
             extract0:              {keys: ['extract.0']},
             extract_current:       {keys: expand_extract_keys($conf.keys.select {|k| k.start_with?('extract.0.')}.map {|k| k.split('extract.0.').last})},
-            errors:                {keys:  @validation_errors},
+            errors:                {keys: @validation_errors},
             xx:                    {keys: ['xx']}
         }
 

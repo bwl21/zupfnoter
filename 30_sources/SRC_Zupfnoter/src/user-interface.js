@@ -555,10 +555,7 @@ function init_w2ui(uicontroller) {
         icon: 'fa fa-pencil',
         tooltip: "Edit configuration with forms",
         items: [
-          {id: 'basic_settings', text: 'basic settings', icon: 'fa fa-heartbeat', tooltip: "Edit basic settings of extract"},
           {id: 'extract_annotation', text: 'Extract-Annotation', icon: 'fa fa-bars', tooltip: "Edit annotations of an extract"},
-          {id: 'lyrics', text: 'lyrics', icon: 'fa fa-font', tooltip: "edit settings for lyrics\nin current extract"},
-          {id: 'layout', text: 'layout', icon: 'fa fa-align-center', tooltip: "Edit layout paerameters\nin current extract"},
           {
             id: 'notes',
             text: 'page annotation',
@@ -566,12 +563,16 @@ function init_w2ui(uicontroller) {
             tooltip: "edit settings for sheet annotations\nin current extract"
           },
           {},
+          {id: 'basic_settings', text: 'basic settings', icon: 'fa fa-heartbeat', tooltip: "Edit basic settings of extract"},
+          {id: 'lyrics', text: 'lyrics', icon: 'fa fa-font', tooltip: "edit settings for lyrics\nin current extract"},
+          {id: 'layout', text: 'layout', icon: 'fa fa-align-center', tooltip: "Edit layout paerameters\nin current extract"},
           {
             id: 'instrument_specific',
             text: 'instrument specific',
             icon: 'fa fa-pie-chart',
             tooltip: "settings for specific instrument sizes"
           },
+          {},
           {
             id: 'barnumbers_countnotes',
             text: 'barnumbers and countnotes',
