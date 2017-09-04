@@ -35,6 +35,7 @@
 * now menu supports extract 0 to extract 5 (#153)
 * now menu also shows title of extracts (#153)
 * ctrl-alt 'F' now toggles harp preview
+* rearranged "Edit Configuration" Menu to improve configuration workflow (#171)
 
 ## internal stuff
 
@@ -44,6 +45,8 @@
 
 * implemented a collision based packer (#89)
 * implemented validation of config parameters (#85) with result form
+* Shape of Flowlines can be configured (#167)
+
 
 ## backwards compatibility issues
 
@@ -104,7 +107,7 @@ Dragging of jumpline does not work properly on Saitenspiel #158
 * in case of multiple `[P:]` respecitvly `[R:]` the now the last one is relevant - best to remove the other ones
 * now get message if F: is missing
 * now get messaage Filename or path contains whitespace and special characters
-* you have to redo configuration for tuplets (#167   ) 
+* you have to redo configuration for tuplets (#167) 
 
 ## known issues
 
