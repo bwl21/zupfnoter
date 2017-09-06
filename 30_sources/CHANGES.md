@@ -19,7 +19,7 @@
 * fix predefined annotations vt and vr
 * BWC: move Tuplet configuration to notebounds (#168)
 * Multiple notebound annotations can now be dragged individually (#170)
-
+* BWC: no longer show (Original in ) in case of transpositions (#174)
 
 ## enhancement
 
@@ -54,6 +54,7 @@
   It is no longer possible to show voices without considering them in the layout.
 * Default for "filenamepart" is now as it was in 1.5 (#155)
 * tuplet configuration is now under 'notebound': meed to rework in the sheets - sorry! (#168)
+* transposititions are no longer exposed in legend (#174)
 
 ## known issues
 

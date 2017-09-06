@@ -109,7 +109,8 @@ module Harpnotes
                       tempo:         {duration: duration, bpm: bpm, sym: tempo_note},
                       tempo_display: tempo_display,
                       meter:         @info_fields[:M],
-                      key:           "#{key} #{o_key_display}"
+                      key:           key,
+                      o_key:         o_key_display
         }
       end
 
