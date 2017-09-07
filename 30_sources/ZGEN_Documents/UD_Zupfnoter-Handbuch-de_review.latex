@@ -1519,6 +1519,12 @@ und das Einelgen in das Instrument zu vereinfachen:
   \ref{extract.0.stringnames}
   \hyperref[extract.0.stringnames]{extract.0.stringnames}).
   \end{quote}
+
+  \begin{quote}
+  \textbf{Hinweis}: Wenn einzelne Saiten nicht beschriftet werden
+  sollen, kann als Saitenname eine Tilde ('\textasciitilde{}) angegeben
+  werden. Diese erscheint dann als festes Leerzeichen.
+  \end{quote}
 \item
   \textbf{(38) marks - Saitenmarke} Die Saitenmarken sind eine Hilfe zum
   korrekten Einlegen der Unterlegnoten in die Tischharfe. Das Blatt muss
@@ -2932,7 +2938,7 @@ an der Triolenbeschriftung oder an einem andere Griff
 wireder sichtbar wird.
 \end{quote}
 
-\subsection{Flußlinien gestalten}\label{fluuxdflinien-gestalten}
+\hyperdef{}{flowconf}{\subsection{Flußlinien gestalten}\label{flowconf}}
 
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
 die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
@@ -3404,14 +3410,63 @@ Anweisungen. Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt
 ist und das Verhalten noch nicht ausgetestet ist.
 \end{quote}
 
-\subsubsection{Wenn die vertikale Anodrnung optimiert werden
-soll}\label{wenn-die-vertikale-anodrnung-optimiert-werden-soll}
+\subsubsection{Wenn die vertikale Anordnung optimiert werden
+soll}\label{wenn-die-vertikale-anordnung-optimiert-werden-soll}
 
-Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
-z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
-Stimme läüft. Die Möglichkeiten dazu sind in
-Kapitel~\ref{extract.0.notebound.minc}~\hyperref[extract.0.notebound.minc]{\texttt{minc}}
-beschrieben.
+Zupfnoter errechnet die vertikale Anordnung der Noten selbständig und
+erreicht auch gute Ergebnisse. In Grenzsituationen (z.B. bei langen
+Stücken) ist eine manuelle Korrektur sinnvoll. Diese Optimierungen
+sollten in folgender Reihenfolge ausgeführt werden.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  in \texttt{extract.0.layoutlines} über die Grundeinstellungen eine
+  \texttt{0} eintragen. Diese führt dazu, dass nur noch die Stimmen, die
+  auf dem Blatt dargestellt werden, auch für die Berechnung vertikalen
+  Anordnung berücksichtigt werden. Damit entstehen keine scheinbar
+  unmotivierten Vorschübe.
+\item
+  Synchronisationslinien abschalten (das Feld im Edior löschen oder
+  `0-1' eintragen). Bei shr vollen Blättern verwirren die
+  Synchronisationslinene mehr als sie helfen.
+\item
+  im Konfigurationsmenü \texttt{Layout} mit den Schnelleinstellungen
+  \texttt{layout}~\texttt{kompakt} bzw. \texttt{Packer}~\texttt{kompakt}
+  die beste Einstellung suchen
+\item
+  ggf. gebundene Noten zu einer Note zusammenfassen
+\item
+  Den vertikalen Vorschub manuell steuern. Die Möglichkeiten dazu sind
+  in
+  Kapitel~\ref{extract.0.notebound.minc}~\hyperref[extract.0.notebound.minc]{\texttt{minc}}
+  beschrieben.
+\item
+  Die Flußlinie gestalten (siehe Kapitel \ref{flowconf}
+  \hyperref[flowconf]{Flußlinien gestalten})
+\end{enumerate}
+
+\subsubsection{feste Leerzeichen in
+Texten}\label{feste-leerzeichen-in-texten}
+
+Zupfnoter wandelt eine Tilde (`\textasciitilde{}') in Texten in feste
+Leerzeichen um. Anwendungsfälle hierfür sind:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Einrückungen in Liedtexten, so dass Noten ggf. in den Text ragen
+  können
+\item
+  Besondere Saitenbeschriftungen, welche Leerzeichen enthalten sollen
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis}: Sollte je doch eine Tilde benötigt werden kann diese
+mit maskiert werden, z.B.
+`\texttt{das\textbackslash{}\textasciitilde{}ist}' ergibt
+`\texttt{das\textasciitilde{}ist}'.
+\end{quote}
 
 \subsubsection{Extra Einstellungen für die
 Notenvorschau}\label{extra-einstellungen-fuxfcr-die-notenvorschau}
@@ -4629,6 +4684,8 @@ Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
 Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
 Zeitpunkt.
 
+\ldots{} kein Beispiel verfügbar \ldots{}
+
 \subsection{\texorpdfstring{\texttt{extract.0.notebound.minc.x.minc\_f}
 -
 Faktor}{extract.0.notebound.minc.x.minc\_f - Faktor}}\label{extract.0.notebound.minc.x.mincux5ff}
@@ -4671,6 +4728,8 @@ Im Beispiel
   \texttt{0.5} vergrößert den Vorschub um die Hälfte einer ganzen Note.
 \end{itemize}
 
+\ldots{} kein Beispiel verfügbar \ldots{}
+
 \subsection{\texorpdfstring{\texttt{extract.0.notebound.tuplet} -
 Tuplet}{extract.0.notebound.tuplet - Tuplet}}\label{extract.0.notebound.tuplet}
 
@@ -4690,6 +4749,8 @@ schreiben, deren Bogen links von der FLußlineie liegen soll. Diese
 können dann über den parameter \texttt{extract.0.tuplet.tpl\_links}
 gemeinsam konfiguriert werden
 \end{quote}
+
+\ldots{} kein Beispiel verfügbar \ldots{}
 
 \hyperdef{}{extract.0.notes}{\subsection{\texorpdfstring{\texttt{extract.0.notes}
 -
@@ -5169,1763 +5230,6 @@ von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
 
 \begin{verbatim}
     "voices": [1, 2, 3, 4]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets} -
-Vorlagen}{presets - Vorlagen}}\label{presets}
-
-TODO:\marginpar{TODO} Helptext für presets einfügen
-
-\begin{verbatim}
-    "presets": {
-      "instrument" : {
-        "18-strings-b-e" : {
-          "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fd0a1214a70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:174 (lambda)>",
-            "X_OFFSET"     : 28.5,
-            "X_SPACING"    : "#<Proc:0x007fd0a1214a48@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:175 (lambda)>",
-            "instrument"   : "18-strings-b-e",
-            "limit_a3"     : false
-          },
-          "printer"     : {
-            "a3_offset" : [0, 0],
-            "a4_offset" : [40, 0],
-            "a4_pages"  : [2]
-          },
-          "stringnames" : {
-            "marks" : {"hpos": [59, 76]},
-            "text"  : "#<Proc:0x007fd0a12149f8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:178 (lambda)>"
-          }
-        },
-        "21-strings-a-f" : {
-          "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fd0a1214d40@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
-            "X_OFFSET"     : 23,
-            "X_SPACING"    : "#<Proc:0x007fd0a1214d18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
-            "instrument"   : "21-strings-a-f",
-            "limit_a3"     : false
-          },
-          "printer"     : {
-            "a3_offset" : [-5, 0],
-            "a4_offset" : "#<Proc:0x007fd0a1214b10@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:169 (lambda)>",
-            "a4_pages"  : [1, 2]
-          },
-          "stringnames" : {
-            "marks" : {"hpos": [57, 77]},
-            "text"  : "#<Proc:0x007fd0a1214cc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>"
-          }
-        },
-        "25-strings-g-g" : {
-          "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fd0a1214fe8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
-            "X_OFFSET"     : "#<Proc:0x007fd0a1214f70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
-            "X_SPACING"    : "#<Proc:0x007fd0a1214fc0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
-            "instrument"   : "25-strings-g-g",
-            "limit_a3"     : false
-          },
-          "printer"     : {
-            "a3_offset" : [-5, 0],
-            "a4_offset" : "#<Proc:0x007fd0a1214e08@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>",
-            "a4_pages"  : [1, 2]
-          },
-          "stringnames" : {
-            "marks" : {
-              "hpos" : "#<Proc:0x007fd0a1214ed0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>"
-            },
-            "text"  : "#<Proc:0x007fd0a1214f20@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:148 (lambda)>"
-          }
-        },
-        "37-strings-g-g" : {
-          "layout"      : {
-            "PITCH_OFFSET" : "#<Proc:0x007fd0a1215290@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
-            "X_OFFSET"     : "#<Proc:0x007fd0a12151c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
-            "X_SPACING"    : "#<Proc:0x007fd0a12151f0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-            "instrument"   : "37-strings-g-g",
-            "limit_a3"     : true
-          },
-          "printer"     : {
-            "a3_offset" : "#<Proc:0x007fd0a1215088@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
-            "a4_offset" : "#<Proc:0x007fd0a12150b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-            "a4_pages"  : [0, 1, 2]
-          },
-          "stringnames" : {
-            "marks" : {
-              "hpos" : "#<Proc:0x007fd0a1215150@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:134 (lambda)>"
-            },
-            "text"  : "#<Proc:0x007fd0a1215178@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:133 (lambda)>"
-          }
-        },
-        "saitenspiel"    : {
-          "layout"      : {
-            "PITCH_OFFSET" : -24,
-            "X_OFFSET"     : 240,
-            "X_SPACING"    : 14.5,
-            "instrument"   : "saitenspiel",
-            "limit_a3"     : false
-          },
-          "printer"     : {
-            "a3_offset" : [0, 0],
-            "a4_offset" : [35, 0],
-            "a4_pages"  : [2]
-          },
-          "stringnames" : {
-            "marks" : {"hpos": [55, 74]},
-            "text"  : "G C D E F G A B C D  - - - - - -"
-          }
-        }
-      },
-      "layout"     : {
-        "-"               : {},
-        "color_off"       : {
-          "color" : {
-            "color_default"  : "black",
-            "color_variant1" : "black",
-            "color_variant2" : "black"
-          }
-        },
-        "color_on"        : {
-          "color" : {
-            "color_default"  : "black",
-            "color_variant1" : "grey",
-            "color_variant2" : "darkgrey"
-          }
-        },
-        "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
-        "layout_compact"  : {
-          "ELLIPSE_SIZE" : [3.5, 1.3],
-          "LINE_MEDIUM"  : 0.2,
-          "LINE_THICK"   : 0.3,
-          "REST_SIZE"    : [4, 1.5]
-        },
-        "layout_large"    : {
-          "ELLIPSE_SIZE" : [4, 2],
-          "LINE_MEDIUM"  : 0.3,
-          "LINE_THICK"   : 0.7,
-          "REST_SIZE"    : [4, 2]
-        },
-        "layout_regular"  : null,
-        "packer_compact"  : {
-          "packer" : {
-            "pack_max_spreadfactor" : 2,
-            "pack_method"           : 1,
-            "pack_min_increment"    : 0.2
-          }
-        },
-        "packer_regular"  : null
-      },
-      "notes"      : {
-        "T01_number"               : {
-          "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
-        },
-        "T01_number_extract"       : {
-          "value" : {"pos": [411, 17], "style": "bold", "text": "-X"}
-        },
-        "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
-        "T02_copyright_music"      : {
-          "value" : {
-            "pos"   : [340, 251],
-            "style" : "small",
-            "text"  : "© 2017\n"
-          }
-        },
-        "T03_copyright_harpnotes"  : {
-          "value" : {
-            "pos"   : [340, 260],
-            "style" : "small",
-            "text"  : "© 2017 Notenbild: zupfnoter.de"
-          }
-        },
-        "T04_to_order"             : {
-          "value" : {"pos": [340, 242], "style": "small", "text": null}
-        },
-        "T05_printed_extracts"     : {
-          "value" : {"pos": [393, 22], "style": "smaller", "text": null}
-        },
-        "T99_do_not_copy"          : {
-          "value" : {
-            "pos"   : [380, 284],
-            "style" : "small_bold",
-            "text"  : null
-          }
-        }
-      },
-      "printer"    : {
-        "printer_centric" : {
-          "layout"  : {"limit_a3": true},
-          "printer" : {
-            "a3_offset"   : [0, 0],
-            "a4_offset"   : [5, 0],
-            "show_border" : false
-          }
-        },
-        "printer_left"    : {
-          "layout"  : {"limit_a3": false},
-          "printer" : {
-            "a3_offset"   : [-10, 0],
-            "a4_offset"   : [-5, 0],
-            "show_border" : false
-          }
-        },
-        "printer_right"   : {
-          "layout"  : {"limit_a3": false},
-          "printer" : {
-            "a3_offset"   : [10, 0],
-            "a4_offset"   : [5, 0],
-            "show_border" : false
-          }
-        }
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument} -
-Instrument}{presets.instrument - Instrument}}\label{presets.instrument}
-
-Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
-spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
-(bei \texttt{saitenspiel} als diatonischem Instrument ist das nicht
-linear).
-
-Es gibt folgende Einstellunge:
-
-\begin{itemize}
-\item
-  \textbf{\texttt{37-string-g-g}}: das ist die 37-saitige Harfe
-\item
-  \textbf{\texttt{25-string-g-g}}: das ist die 25-saitige Harfe
-\item
-  \textbf{\texttt{18-string-b-e}}: das ist die 18-saitige Harfe gestimmt
-  von B bis e
-\item
-  \textbf{\texttt{saitenspiel}}: das ist ein diatonisch gestimmtes
-  Saitenspiel mit einer G-Bass-Saite
-
-\begin{verbatim}
-"instrument": {
-  "18-strings-b-e" : {
-    "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1214a70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:174 (lambda)>",
-      "X_OFFSET"     : 28.5,
-      "X_SPACING"    : "#<Proc:0x007fd0a1214a48@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:175 (lambda)>",
-      "instrument"   : "18-strings-b-e",
-      "limit_a3"     : false
-    },
-    "printer"     : {
-      "a3_offset" : [0, 0],
-      "a4_offset" : [40, 0],
-      "a4_pages"  : [2]
-    },
-    "stringnames" : {
-      "marks" : {"hpos": [59, 76]},
-      "text"  : "#<Proc:0x007fd0a12149f8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:178 (lambda)>"
-    }
-  },
-  "21-strings-a-f" : {
-    "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1214d40@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
-      "X_OFFSET"     : 23,
-      "X_SPACING"    : "#<Proc:0x007fd0a1214d18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
-      "instrument"   : "21-strings-a-f",
-      "limit_a3"     : false
-    },
-    "printer"     : {
-      "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fd0a1214b10@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:169 (lambda)>",
-      "a4_pages"  : [1, 2]
-    },
-    "stringnames" : {
-      "marks" : {"hpos": [57, 77]},
-      "text"  : "#<Proc:0x007fd0a1214cc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>"
-    }
-  },
-  "25-strings-g-g" : {
-    "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1214fe8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fd0a1214f70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fd0a1214fc0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
-      "instrument"   : "25-strings-g-g",
-      "limit_a3"     : false
-    },
-    "printer"     : {
-      "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fd0a1214e08@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>",
-      "a4_pages"  : [1, 2]
-    },
-    "stringnames" : {
-      "marks" : {
-        "hpos" : "#<Proc:0x007fd0a1214ed0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>"
-      },
-      "text"  : "#<Proc:0x007fd0a1214f20@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:148 (lambda)>"
-    }
-  },
-  "37-strings-g-g" : {
-    "layout"      : {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1215290@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fd0a12151c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fd0a12151f0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-      "instrument"   : "37-strings-g-g",
-      "limit_a3"     : true
-    },
-    "printer"     : {
-      "a3_offset" : "#<Proc:0x007fd0a1215088@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
-      "a4_offset" : "#<Proc:0x007fd0a12150b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-      "a4_pages"  : [0, 1, 2]
-    },
-    "stringnames" : {
-      "marks" : {
-        "hpos" : "#<Proc:0x007fd0a1215150@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:134 (lambda)>"
-      },
-      "text"  : "#<Proc:0x007fd0a1215178@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:133 (lambda)>"
-    }
-  },
-  "saitenspiel"    : {
-    "layout"      : {
-      "PITCH_OFFSET" : -24,
-      "X_OFFSET"     : 240,
-      "X_SPACING"    : 14.5,
-      "instrument"   : "saitenspiel",
-      "limit_a3"     : false
-    },
-    "printer"     : {
-      "a3_offset" : [0, 0],
-      "a4_offset" : [35, 0],
-      "a4_pages"  : [2]
-    },
-    "stringnames" : {
-      "marks" : {"hpos": [55, 74]},
-      "text"  : "G C D E F G A B C D  - - - - - -"
-    }
-  }
-}
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e} -
-18 Saiten
-b-e}{presets.instrument.18-strings-b-e - 18 Saiten b-e}}\label{presets.instrument.18-strings-b-e}
-
-TODO:\marginpar{TODO} Helptext für presets.instrument.18-strings-b-e
-einfügen
-
-\begin{verbatim}
-    "18-strings-b-e": {
-      "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fd0a1214a70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:174 (lambda)>",
-        "X_OFFSET"     : 28.5,
-        "X_SPACING"    : "#<Proc:0x007fd0a1214a48@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:175 (lambda)>",
-        "instrument"   : "18-strings-b-e",
-        "limit_a3"     : false
-      },
-      "printer"     : {
-        "a3_offset" : [0, 0],
-        "a4_offset" : [40, 0],
-        "a4_pages"  : [2]
-      },
-      "stringnames" : {
-        "marks" : {"hpos": [59, 76]},
-        "text"  : "#<Proc:0x007fd0a12149f8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:178 (lambda)>"
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.layout}
--
-Layout}{presets.instrument.18-strings-b-e.layout - Layout}}\label{presets.instrument.18-strings-b-e.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1214a70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:174 (lambda)>",
-      "X_OFFSET"     : 28.5,
-      "X_SPACING"    : "#<Proc:0x007fd0a1214a48@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:175 (lambda)>",
-      "instrument"   : "18-strings-b-e",
-      "limit_a3"     : false
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.layout.PITCH\_OFFSET}
--
-PitchOffset}{presets.instrument.18-strings-b-e.layout.PITCH\_OFFSET - PitchOffset}}\label{presets.instrument.18-strings-b-e.layout.PITCHux5fOFFSET}
-
-Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
-Blattrand dargestellt wird.
-
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-\href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
-
-\begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fd0a1214a70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:174 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.layout.X\_OFFSET}
-- X -
-Offset}{presets.instrument.18-strings-b-e.layout.X\_OFFSET - X - Offset}}\label{presets.instrument.18-strings-b-e.layout.Xux5fOFFSET}
-
-TODO:\marginpar{TODO} Helptext für
-presets.instrument.18-strings-b-e.layout.X\_OFFSET einfügen
-
-\begin{verbatim}
-    "X_OFFSET": 28.5
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.layout.X\_SPACING}
--
-Saitenabstand}{presets.instrument.18-strings-b-e.layout.X\_SPACING - Saitenabstand}}\label{presets.instrument.18-strings-b-e.layout.Xux5fSPACING}
-
-Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
-
-\begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fd0a1214a48@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:175 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.layout.instrument}
--
-Instrument}{presets.instrument.18-strings-b-e.layout.instrument - Instrument}}\label{presets.instrument.18-strings-b-e.layout.instrument}
-
-Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
-spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
-(bei \texttt{saitenspiel} als diatonischem Instrument ist das nicht
-linear).
-
-Es gibt folgende Einstellunge:
-
-\begin{itemize}
-\item
-  \textbf{\texttt{37-string-g-g}}: das ist die 37-saitige Harfe
-\item
-  \textbf{\texttt{25-string-g-g}}: das ist die 25-saitige Harfe
-\item
-  \textbf{\texttt{18-string-b-e}}: das ist die 18-saitige Harfe gestimmt
-  von B bis e
-\item
-  \textbf{\texttt{saitenspiel}}: das ist ein diatonisch gestimmtes
-  Saitenspiel mit einer G-Bass-Saite
-
-\begin{verbatim}
-"instrument": "18-strings-b-e"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.instrument.18-strings-b-e.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.instrument.18-strings-b-e.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.printer}
--
-Drucker}{presets.instrument.18-strings-b-e.printer - Drucker}}\label{presets.instrument.18-strings-b-e.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {"a3_offset": [0, 0], "a4_offset": [40, 0], "a4_pages": [2]}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.printer.a3\_offset}
-- Offset für
-A3}{presets.instrument.18-strings-b-e.printer.a3\_offset - Offset für A3}}\label{presets.instrument.18-strings-b-e.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": [0, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.printer.a4\_offset}
-- Offset für
-A4}{presets.instrument.18-strings-b-e.printer.a4\_offset - Offset für A4}}\label{presets.instrument.18-strings-b-e.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": [40, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.printer.a4\_pages}
-- Seiten bei
-A4}{presets.instrument.18-strings-b-e.printer.a4\_pages - Seiten bei A4}}\label{presets.instrument.18-strings-b-e.printer.a4ux5fpages}
-
-Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
-ausgedruckt werden sollen. Die Zählung beginnt bei 0!
-Standardeinstellung ist \texttt{0,1,2}.
-
-Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
-25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
-auszugeben, und Seite 0 wegzulassen.
-
-\begin{verbatim}
-    "a4_pages": [2]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.stringnames}
--
-Saitennamen}{presets.instrument.18-strings-b-e.stringnames - Saitennamen}}\label{presets.instrument.18-strings-b-e.stringnames}
-
-Hier kannst du stueern, ob und wie Saitennamen auf das
-Unterlegnotenblatt gedruckt werden.
-
-\begin{verbatim}
-    "stringnames": {
-      "marks" : {"hpos": [59, 76]},
-      "text"  : "#<Proc:0x007fd0a12149f8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:178 (lambda)>"
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.stringnames.marks}
--
-Saitenmarken}{presets.instrument.18-strings-b-e.stringnames.marks - Saitenmarken}}\label{presets.instrument.18-strings-b-e.stringnames.marks}
-
-Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
-
-\begin{verbatim}
-    "marks": {"hpos": [59, 76]}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.stringnames.marks.hpos}
-- horiz.
-Position}{presets.instrument.18-strings-b-e.stringnames.marks.hpos - horiz. Position}}\label{presets.instrument.18-strings-b-e.stringnames.marks.hpos}
-
-Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
-ist eine durch Komma getrennte liste von Midi-Pitches.
-
-Die Angabe \texttt{{[}43,\ 55,\ 79{]}} druckt Saitenmarken bei
-\texttt{G,\ G,\ g\textquotesingle{}}. also bei den äußeren G-Saiten der
-25-saitigen bzw. der 37-saitigen Tischharfe.
-
-\begin{verbatim}
-    "hpos": [59, 76]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.18-strings-b-e.stringnames.text}
--
-Text}{presets.instrument.18-strings-b-e.stringnames.text - Text}}\label{presets.instrument.18-strings-b-e.stringnames.text}
-
-Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
-bekommen.
-
-In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
-
-\textbf{Beispiel:}
-
-\begin{itemize}
-\item
-  \texttt{+\ -} erzeugt \texttt{+\ -\ +\ \ +\ -\ +\ -}
-\item
-  \texttt{C\ Cis\ D\ Dis\ E\ F\ Fis\ G\ Gis\ A\ Aia\ Bb\ B} erzeugt die
-  regulären Saitennamen
-
-\begin{verbatim}
-"text": "#<Proc:0x007fd0a12149f8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:178 (lambda)>"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f} -
-21 Saiten
-a-f}{presets.instrument.21-strings-a-f - 21 Saiten a-f}}\label{presets.instrument.21-strings-a-f}
-
-TODO:\marginpar{TODO} Helptext für presets.instrument.21-strings-a-f
-einfügen
-
-\begin{verbatim}
-    "21-strings-a-f": {
-      "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fd0a1214d40@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
-        "X_OFFSET"     : 23,
-        "X_SPACING"    : "#<Proc:0x007fd0a1214d18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
-        "instrument"   : "21-strings-a-f",
-        "limit_a3"     : false
-      },
-      "printer"     : {
-        "a3_offset" : [-5, 0],
-        "a4_offset" : "#<Proc:0x007fd0a1214b10@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:169 (lambda)>",
-        "a4_pages"  : [1, 2]
-      },
-      "stringnames" : {
-        "marks" : {"hpos": [57, 77]},
-        "text"  : "#<Proc:0x007fd0a1214cc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>"
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.layout}
--
-Layout}{presets.instrument.21-strings-a-f.layout - Layout}}\label{presets.instrument.21-strings-a-f.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1214d40@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>",
-      "X_OFFSET"     : 23,
-      "X_SPACING"    : "#<Proc:0x007fd0a1214d18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>",
-      "instrument"   : "21-strings-a-f",
-      "limit_a3"     : false
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.layout.PITCH\_OFFSET}
--
-PitchOffset}{presets.instrument.21-strings-a-f.layout.PITCH\_OFFSET - PitchOffset}}\label{presets.instrument.21-strings-a-f.layout.PITCHux5fOFFSET}
-
-Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
-Blattrand dargestellt wird.
-
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-\href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
-
-\begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fd0a1214d40@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:159 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.layout.X\_OFFSET}
-- X -
-Offset}{presets.instrument.21-strings-a-f.layout.X\_OFFSET - X - Offset}}\label{presets.instrument.21-strings-a-f.layout.Xux5fOFFSET}
-
-TODO:\marginpar{TODO} Helptext für
-presets.instrument.21-strings-a-f.layout.X\_OFFSET einfügen
-
-\begin{verbatim}
-    "X_OFFSET": 23
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.layout.X\_SPACING}
--
-Saitenabstand}{presets.instrument.21-strings-a-f.layout.X\_SPACING - Saitenabstand}}\label{presets.instrument.21-strings-a-f.layout.Xux5fSPACING}
-
-Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
-
-\begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fd0a1214d18@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:160 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.layout.instrument}
--
-Instrument}{presets.instrument.21-strings-a-f.layout.instrument - Instrument}}\label{presets.instrument.21-strings-a-f.layout.instrument}
-
-Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
-spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
-(bei \texttt{saitenspiel} als diatonischem Instrument ist das nicht
-linear).
-
-Es gibt folgende Einstellunge:
-
-\begin{itemize}
-\item
-  \textbf{\texttt{37-string-g-g}}: das ist die 37-saitige Harfe
-\item
-  \textbf{\texttt{25-string-g-g}}: das ist die 25-saitige Harfe
-\item
-  \textbf{\texttt{18-string-b-e}}: das ist die 18-saitige Harfe gestimmt
-  von B bis e
-\item
-  \textbf{\texttt{saitenspiel}}: das ist ein diatonisch gestimmtes
-  Saitenspiel mit einer G-Bass-Saite
-
-\begin{verbatim}
-"instrument": "21-strings-a-f"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.instrument.21-strings-a-f.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.instrument.21-strings-a-f.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.printer}
--
-Drucker}{presets.instrument.21-strings-a-f.printer - Drucker}}\label{presets.instrument.21-strings-a-f.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {
-      "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fd0a1214b10@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:169 (lambda)>",
-      "a4_pages"  : [1, 2]
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.printer.a3\_offset}
-- Offset für
-A3}{presets.instrument.21-strings-a-f.printer.a3\_offset - Offset für A3}}\label{presets.instrument.21-strings-a-f.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": [-5, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.printer.a4\_offset}
-- Offset für
-A4}{presets.instrument.21-strings-a-f.printer.a4\_offset - Offset für A4}}\label{presets.instrument.21-strings-a-f.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": "#<Proc:0x007fd0a1214b10@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:169 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.printer.a4\_pages}
-- Seiten bei
-A4}{presets.instrument.21-strings-a-f.printer.a4\_pages - Seiten bei A4}}\label{presets.instrument.21-strings-a-f.printer.a4ux5fpages}
-
-Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
-ausgedruckt werden sollen. Die Zählung beginnt bei 0!
-Standardeinstellung ist \texttt{0,1,2}.
-
-Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
-25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
-auszugeben, und Seite 0 wegzulassen.
-
-\begin{verbatim}
-    "a4_pages": [1, 2]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.stringnames}
--
-Saitennamen}{presets.instrument.21-strings-a-f.stringnames - Saitennamen}}\label{presets.instrument.21-strings-a-f.stringnames}
-
-Hier kannst du stueern, ob und wie Saitennamen auf das
-Unterlegnotenblatt gedruckt werden.
-
-\begin{verbatim}
-    "stringnames": {
-      "marks" : {"hpos": [57, 77]},
-      "text"  : "#<Proc:0x007fd0a1214cc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>"
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.stringnames.marks}
--
-Saitenmarken}{presets.instrument.21-strings-a-f.stringnames.marks - Saitenmarken}}\label{presets.instrument.21-strings-a-f.stringnames.marks}
-
-Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
-
-\begin{verbatim}
-    "marks": {"hpos": [57, 77]}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.stringnames.marks.hpos}
-- horiz.
-Position}{presets.instrument.21-strings-a-f.stringnames.marks.hpos - horiz. Position}}\label{presets.instrument.21-strings-a-f.stringnames.marks.hpos}
-
-Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
-ist eine durch Komma getrennte liste von Midi-Pitches.
-
-Die Angabe \texttt{{[}43,\ 55,\ 79{]}} druckt Saitenmarken bei
-\texttt{G,\ G,\ g\textquotesingle{}}. also bei den äußeren G-Saiten der
-25-saitigen bzw. der 37-saitigen Tischharfe.
-
-\begin{verbatim}
-    "hpos": [57, 77]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.21-strings-a-f.stringnames.text}
--
-Text}{presets.instrument.21-strings-a-f.stringnames.text - Text}}\label{presets.instrument.21-strings-a-f.stringnames.text}
-
-Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
-bekommen.
-
-In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
-
-\textbf{Beispiel:}
-
-\begin{itemize}
-\item
-  \texttt{+\ -} erzeugt \texttt{+\ -\ +\ \ +\ -\ +\ -}
-\item
-  \texttt{C\ Cis\ D\ Dis\ E\ F\ Fis\ G\ Gis\ A\ Aia\ Bb\ B} erzeugt die
-  regulären Saitennamen
-
-\begin{verbatim}
-"text": "#<Proc:0x007fd0a1214cc8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:163 (lambda)>"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g} -
-25 Saiten
-g-g}{presets.instrument.25-strings-g-g - 25 Saiten g-g}}\label{presets.instrument.25-strings-g-g}
-
-TODO:\marginpar{TODO} Helptext für presets.instrument.25-strings-g-g
-einfügen
-
-\begin{verbatim}
-    "25-strings-g-g": {
-      "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fd0a1214fe8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
-        "X_OFFSET"     : "#<Proc:0x007fd0a1214f70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
-        "X_SPACING"    : "#<Proc:0x007fd0a1214fc0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
-        "instrument"   : "25-strings-g-g",
-        "limit_a3"     : false
-      },
-      "printer"     : {
-        "a3_offset" : [-5, 0],
-        "a4_offset" : "#<Proc:0x007fd0a1214e08@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>",
-        "a4_pages"  : [1, 2]
-      },
-      "stringnames" : {
-        "marks" : {
-          "hpos" : "#<Proc:0x007fd0a1214ed0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>"
-        },
-        "text"  : "#<Proc:0x007fd0a1214f20@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:148 (lambda)>"
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.layout}
--
-Layout}{presets.instrument.25-strings-g-g.layout - Layout}}\label{presets.instrument.25-strings-g-g.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1214fe8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fd0a1214f70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fd0a1214fc0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>",
-      "instrument"   : "25-strings-g-g",
-      "limit_a3"     : false
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.layout.PITCH\_OFFSET}
--
-PitchOffset}{presets.instrument.25-strings-g-g.layout.PITCH\_OFFSET - PitchOffset}}\label{presets.instrument.25-strings-g-g.layout.PITCHux5fOFFSET}
-
-Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
-Blattrand dargestellt wird.
-
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-\href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
-
-\begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fd0a1214fe8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:144 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.layout.X\_OFFSET}
-- X -
-Offset}{presets.instrument.25-strings-g-g.layout.X\_OFFSET - X - Offset}}\label{presets.instrument.25-strings-g-g.layout.Xux5fOFFSET}
-
-TODO:\marginpar{TODO} Helptext für
-presets.instrument.25-strings-g-g.layout.X\_OFFSET einfügen
-
-\begin{verbatim}
-    "X_OFFSET": "#<Proc:0x007fd0a1214f70@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:146 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.layout.X\_SPACING}
--
-Saitenabstand}{presets.instrument.25-strings-g-g.layout.X\_SPACING - Saitenabstand}}\label{presets.instrument.25-strings-g-g.layout.Xux5fSPACING}
-
-Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
-
-\begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fd0a1214fc0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:145 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.layout.instrument}
--
-Instrument}{presets.instrument.25-strings-g-g.layout.instrument - Instrument}}\label{presets.instrument.25-strings-g-g.layout.instrument}
-
-Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
-spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
-(bei \texttt{saitenspiel} als diatonischem Instrument ist das nicht
-linear).
-
-Es gibt folgende Einstellunge:
-
-\begin{itemize}
-\item
-  \textbf{\texttt{37-string-g-g}}: das ist die 37-saitige Harfe
-\item
-  \textbf{\texttt{25-string-g-g}}: das ist die 25-saitige Harfe
-\item
-  \textbf{\texttt{18-string-b-e}}: das ist die 18-saitige Harfe gestimmt
-  von B bis e
-\item
-  \textbf{\texttt{saitenspiel}}: das ist ein diatonisch gestimmtes
-  Saitenspiel mit einer G-Bass-Saite
-
-\begin{verbatim}
-"instrument": "25-strings-g-g"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.instrument.25-strings-g-g.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.instrument.25-strings-g-g.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.printer}
--
-Drucker}{presets.instrument.25-strings-g-g.printer - Drucker}}\label{presets.instrument.25-strings-g-g.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {
-      "a3_offset" : [-5, 0],
-      "a4_offset" : "#<Proc:0x007fd0a1214e08@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>",
-      "a4_pages"  : [1, 2]
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.printer.a3\_offset}
-- Offset für
-A3}{presets.instrument.25-strings-g-g.printer.a3\_offset - Offset für A3}}\label{presets.instrument.25-strings-g-g.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": [-5, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.printer.a4\_offset}
-- Offset für
-A4}{presets.instrument.25-strings-g-g.printer.a4\_offset - Offset für A4}}\label{presets.instrument.25-strings-g-g.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": "#<Proc:0x007fd0a1214e08@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:154 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.printer.a4\_pages}
-- Seiten bei
-A4}{presets.instrument.25-strings-g-g.printer.a4\_pages - Seiten bei A4}}\label{presets.instrument.25-strings-g-g.printer.a4ux5fpages}
-
-Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
-ausgedruckt werden sollen. Die Zählung beginnt bei 0!
-Standardeinstellung ist \texttt{0,1,2}.
-
-Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
-25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
-auszugeben, und Seite 0 wegzulassen.
-
-\begin{verbatim}
-    "a4_pages": [1, 2]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.stringnames}
--
-Saitennamen}{presets.instrument.25-strings-g-g.stringnames - Saitennamen}}\label{presets.instrument.25-strings-g-g.stringnames}
-
-Hier kannst du stueern, ob und wie Saitennamen auf das
-Unterlegnotenblatt gedruckt werden.
-
-\begin{verbatim}
-    "stringnames": {
-      "marks" : {
-        "hpos" : "#<Proc:0x007fd0a1214ed0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>"
-      },
-      "text"  : "#<Proc:0x007fd0a1214f20@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:148 (lambda)>"
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.stringnames.marks}
--
-Saitenmarken}{presets.instrument.25-strings-g-g.stringnames.marks - Saitenmarken}}\label{presets.instrument.25-strings-g-g.stringnames.marks}
-
-Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
-
-\begin{verbatim}
-    "marks": {
-      "hpos" : "#<Proc:0x007fd0a1214ed0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>"
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.stringnames.marks.hpos}
-- horiz.
-Position}{presets.instrument.25-strings-g-g.stringnames.marks.hpos - horiz. Position}}\label{presets.instrument.25-strings-g-g.stringnames.marks.hpos}
-
-Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
-ist eine durch Komma getrennte liste von Midi-Pitches.
-
-Die Angabe \texttt{{[}43,\ 55,\ 79{]}} druckt Saitenmarken bei
-\texttt{G,\ G,\ g\textquotesingle{}}. also bei den äußeren G-Saiten der
-25-saitigen bzw. der 37-saitigen Tischharfe.
-
-\begin{verbatim}
-    "hpos": "#<Proc:0x007fd0a1214ed0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:149 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.25-strings-g-g.stringnames.text}
--
-Text}{presets.instrument.25-strings-g-g.stringnames.text - Text}}\label{presets.instrument.25-strings-g-g.stringnames.text}
-
-Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
-bekommen.
-
-In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
-
-\textbf{Beispiel:}
-
-\begin{itemize}
-\item
-  \texttt{+\ -} erzeugt \texttt{+\ -\ +\ \ +\ -\ +\ -}
-\item
-  \texttt{C\ Cis\ D\ Dis\ E\ F\ Fis\ G\ Gis\ A\ Aia\ Bb\ B} erzeugt die
-  regulären Saitennamen
-
-\begin{verbatim}
-"text": "#<Proc:0x007fd0a1214f20@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:148 (lambda)>"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g} -
-37 Saiten
-g-g}{presets.instrument.37-strings-g-g - 37 Saiten g-g}}\label{presets.instrument.37-strings-g-g}
-
-TODO:\marginpar{TODO} Helptext für presets.instrument.37-strings-g-g
-einfügen
-
-\begin{verbatim}
-    "37-strings-g-g": {
-      "layout"      : {
-        "PITCH_OFFSET" : "#<Proc:0x007fd0a1215290@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
-        "X_OFFSET"     : "#<Proc:0x007fd0a12151c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
-        "X_SPACING"    : "#<Proc:0x007fd0a12151f0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-        "instrument"   : "37-strings-g-g",
-        "limit_a3"     : true
-      },
-      "printer"     : {
-        "a3_offset" : "#<Proc:0x007fd0a1215088@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
-        "a4_offset" : "#<Proc:0x007fd0a12150b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-        "a4_pages"  : [0, 1, 2]
-      },
-      "stringnames" : {
-        "marks" : {
-          "hpos" : "#<Proc:0x007fd0a1215150@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:134 (lambda)>"
-        },
-        "text"  : "#<Proc:0x007fd0a1215178@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:133 (lambda)>"
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.layout}
--
-Layout}{presets.instrument.37-strings-g-g.layout - Layout}}\label{presets.instrument.37-strings-g-g.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {
-      "PITCH_OFFSET" : "#<Proc:0x007fd0a1215290@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>",
-      "X_OFFSET"     : "#<Proc:0x007fd0a12151c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>",
-      "X_SPACING"    : "#<Proc:0x007fd0a12151f0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>",
-      "instrument"   : "37-strings-g-g",
-      "limit_a3"     : true
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.layout.PITCH\_OFFSET}
--
-PitchOffset}{presets.instrument.37-strings-g-g.layout.PITCH\_OFFSET - PitchOffset}}\label{presets.instrument.37-strings-g-g.layout.PITCHux5fOFFSET}
-
-Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
-Blattrand dargestellt wird.
-
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-\href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
-
-\begin{verbatim}
-    "PITCH_OFFSET": "#<Proc:0x007fd0a1215290@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:129 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.layout.X\_OFFSET}
-- X -
-Offset}{presets.instrument.37-strings-g-g.layout.X\_OFFSET - X - Offset}}\label{presets.instrument.37-strings-g-g.layout.Xux5fOFFSET}
-
-TODO:\marginpar{TODO} Helptext für
-presets.instrument.37-strings-g-g.layout.X\_OFFSET einfügen
-
-\begin{verbatim}
-    "X_OFFSET": "#<Proc:0x007fd0a12151c8@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:131 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.layout.X\_SPACING}
--
-Saitenabstand}{presets.instrument.37-strings-g-g.layout.X\_SPACING - Saitenabstand}}\label{presets.instrument.37-strings-g-g.layout.Xux5fSPACING}
-
-Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
-
-\begin{verbatim}
-    "X_SPACING": "#<Proc:0x007fd0a12151f0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:130 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.layout.instrument}
--
-Instrument}{presets.instrument.37-strings-g-g.layout.instrument - Instrument}}\label{presets.instrument.37-strings-g-g.layout.instrument}
-
-Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
-spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
-(bei \texttt{saitenspiel} als diatonischem Instrument ist das nicht
-linear).
-
-Es gibt folgende Einstellunge:
-
-\begin{itemize}
-\item
-  \textbf{\texttt{37-string-g-g}}: das ist die 37-saitige Harfe
-\item
-  \textbf{\texttt{25-string-g-g}}: das ist die 25-saitige Harfe
-\item
-  \textbf{\texttt{18-string-b-e}}: das ist die 18-saitige Harfe gestimmt
-  von B bis e
-\item
-  \textbf{\texttt{saitenspiel}}: das ist ein diatonisch gestimmtes
-  Saitenspiel mit einer G-Bass-Saite
-
-\begin{verbatim}
-"instrument": "37-strings-g-g"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.instrument.37-strings-g-g.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.instrument.37-strings-g-g.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": true
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.printer}
--
-Drucker}{presets.instrument.37-strings-g-g.printer - Drucker}}\label{presets.instrument.37-strings-g-g.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {
-      "a3_offset" : "#<Proc:0x007fd0a1215088@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>",
-      "a4_offset" : "#<Proc:0x007fd0a12150b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>",
-      "a4_pages"  : [0, 1, 2]
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.printer.a3\_offset}
-- Offset für
-A3}{presets.instrument.37-strings-g-g.printer.a3\_offset - Offset für A3}}\label{presets.instrument.37-strings-g-g.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": "#<Proc:0x007fd0a1215088@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:138 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.printer.a4\_offset}
-- Offset für
-A4}{presets.instrument.37-strings-g-g.printer.a4\_offset - Offset für A4}}\label{presets.instrument.37-strings-g-g.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": "#<Proc:0x007fd0a12150b0@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:137 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.printer.a4\_pages}
-- Seiten bei
-A4}{presets.instrument.37-strings-g-g.printer.a4\_pages - Seiten bei A4}}\label{presets.instrument.37-strings-g-g.printer.a4ux5fpages}
-
-Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
-ausgedruckt werden sollen. Die Zählung beginnt bei 0!
-Standardeinstellung ist \texttt{0,1,2}.
-
-Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
-25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
-auszugeben, und Seite 0 wegzulassen.
-
-\begin{verbatim}
-    "a4_pages": [0, 1, 2]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.stringnames}
--
-Saitennamen}{presets.instrument.37-strings-g-g.stringnames - Saitennamen}}\label{presets.instrument.37-strings-g-g.stringnames}
-
-Hier kannst du stueern, ob und wie Saitennamen auf das
-Unterlegnotenblatt gedruckt werden.
-
-\begin{verbatim}
-    "stringnames": {
-      "marks" : {
-        "hpos" : "#<Proc:0x007fd0a1215150@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:134 (lambda)>"
-      },
-      "text"  : "#<Proc:0x007fd0a1215178@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:133 (lambda)>"
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.stringnames.marks}
--
-Saitenmarken}{presets.instrument.37-strings-g-g.stringnames.marks - Saitenmarken}}\label{presets.instrument.37-strings-g-g.stringnames.marks}
-
-Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
-
-\begin{verbatim}
-    "marks": {
-      "hpos" : "#<Proc:0x007fd0a1215150@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:134 (lambda)>"
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.stringnames.marks.hpos}
-- horiz.
-Position}{presets.instrument.37-strings-g-g.stringnames.marks.hpos - horiz. Position}}\label{presets.instrument.37-strings-g-g.stringnames.marks.hpos}
-
-Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
-ist eine durch Komma getrennte liste von Midi-Pitches.
-
-Die Angabe \texttt{{[}43,\ 55,\ 79{]}} druckt Saitenmarken bei
-\texttt{G,\ G,\ g\textquotesingle{}}. also bei den äußeren G-Saiten der
-25-saitigen bzw. der 37-saitigen Tischharfe.
-
-\begin{verbatim}
-    "hpos": "#<Proc:0x007fd0a1215150@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:134 (lambda)>"
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.37-strings-g-g.stringnames.text}
--
-Text}{presets.instrument.37-strings-g-g.stringnames.text - Text}}\label{presets.instrument.37-strings-g-g.stringnames.text}
-
-Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
-bekommen.
-
-In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
-
-\textbf{Beispiel:}
-
-\begin{itemize}
-\item
-  \texttt{+\ -} erzeugt \texttt{+\ -\ +\ \ +\ -\ +\ -}
-\item
-  \texttt{C\ Cis\ D\ Dis\ E\ F\ Fis\ G\ Gis\ A\ Aia\ Bb\ B} erzeugt die
-  regulären Saitennamen
-
-\begin{verbatim}
-"text": "#<Proc:0x007fd0a1215178@/Users/beweiche/beweiche_noTimeMachine/200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb:133 (lambda)>"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel} -
-Saitenspiel}{presets.instrument.saitenspiel - Saitenspiel}}\label{presets.instrument.saitenspiel}
-
-TODO:\marginpar{TODO} Helptext für presets.instrument.saitenspiel
-einfügen
-
-\begin{verbatim}
-    "saitenspiel": {
-      "layout"      : {
-        "PITCH_OFFSET" : -24,
-        "X_OFFSET"     : 240,
-        "X_SPACING"    : 14.5,
-        "instrument"   : "saitenspiel",
-        "limit_a3"     : false
-      },
-      "printer"     : {
-        "a3_offset" : [0, 0],
-        "a4_offset" : [35, 0],
-        "a4_pages"  : [2]
-      },
-      "stringnames" : {
-        "marks" : {"hpos": [55, 74]},
-        "text"  : "G C D E F G A B C D  - - - - - -"
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.layout}
--
-Layout}{presets.instrument.saitenspiel.layout - Layout}}\label{presets.instrument.saitenspiel.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {
-      "PITCH_OFFSET" : -24,
-      "X_OFFSET"     : 240,
-      "X_SPACING"    : 14.5,
-      "instrument"   : "saitenspiel",
-      "limit_a3"     : false
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.layout.PITCH\_OFFSET}
--
-PitchOffset}{presets.instrument.saitenspiel.layout.PITCH\_OFFSET - PitchOffset}}\label{presets.instrument.saitenspiel.layout.PITCHux5fOFFSET}
-
-Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
-Blattrand dargestellt wird.
-
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-\href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
-
-\begin{verbatim}
-    "PITCH_OFFSET": -24
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.layout.X\_OFFSET}
-- X -
-Offset}{presets.instrument.saitenspiel.layout.X\_OFFSET - X - Offset}}\label{presets.instrument.saitenspiel.layout.Xux5fOFFSET}
-
-TODO:\marginpar{TODO} Helptext für
-presets.instrument.saitenspiel.layout.X\_OFFSET einfügen
-
-\begin{verbatim}
-    "X_OFFSET": 240
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.layout.X\_SPACING}
--
-Saitenabstand}{presets.instrument.saitenspiel.layout.X\_SPACING - Saitenabstand}}\label{presets.instrument.saitenspiel.layout.Xux5fSPACING}
-
-Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
-
-\begin{verbatim}
-    "X_SPACING": 14.5
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.layout.instrument}
--
-Instrument}{presets.instrument.saitenspiel.layout.instrument - Instrument}}\label{presets.instrument.saitenspiel.layout.instrument}
-
-Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
-spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
-(bei \texttt{saitenspiel} als diatonischem Instrument ist das nicht
-linear).
-
-Es gibt folgende Einstellunge:
-
-\begin{itemize}
-\item
-  \textbf{\texttt{37-string-g-g}}: das ist die 37-saitige Harfe
-\item
-  \textbf{\texttt{25-string-g-g}}: das ist die 25-saitige Harfe
-\item
-  \textbf{\texttt{18-string-b-e}}: das ist die 18-saitige Harfe gestimmt
-  von B bis e
-\item
-  \textbf{\texttt{saitenspiel}}: das ist ein diatonisch gestimmtes
-  Saitenspiel mit einer G-Bass-Saite
-
-\begin{verbatim}
-"instrument": "saitenspiel"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.instrument.saitenspiel.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.instrument.saitenspiel.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.printer}
--
-Drucker}{presets.instrument.saitenspiel.printer - Drucker}}\label{presets.instrument.saitenspiel.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {"a3_offset": [0, 0], "a4_offset": [35, 0], "a4_pages": [2]}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.printer.a3\_offset}
-- Offset für
-A3}{presets.instrument.saitenspiel.printer.a3\_offset - Offset für A3}}\label{presets.instrument.saitenspiel.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": [0, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.printer.a4\_offset}
-- Offset für
-A4}{presets.instrument.saitenspiel.printer.a4\_offset - Offset für A4}}\label{presets.instrument.saitenspiel.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": [35, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.printer.a4\_pages}
-- Seiten bei
-A4}{presets.instrument.saitenspiel.printer.a4\_pages - Seiten bei A4}}\label{presets.instrument.saitenspiel.printer.a4ux5fpages}
-
-Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
-ausgedruckt werden sollen. Die Zählung beginnt bei 0!
-Standardeinstellung ist \texttt{0,1,2}.
-
-Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
-25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
-auszugeben, und Seite 0 wegzulassen.
-
-\begin{verbatim}
-    "a4_pages": [2]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.stringnames}
--
-Saitennamen}{presets.instrument.saitenspiel.stringnames - Saitennamen}}\label{presets.instrument.saitenspiel.stringnames}
-
-Hier kannst du stueern, ob und wie Saitennamen auf das
-Unterlegnotenblatt gedruckt werden.
-
-\begin{verbatim}
-    "stringnames": {
-      "marks" : {"hpos": [55, 74]},
-      "text"  : "G C D E F G A B C D  - - - - - -"
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.stringnames.marks}
--
-Saitenmarken}{presets.instrument.saitenspiel.stringnames.marks - Saitenmarken}}\label{presets.instrument.saitenspiel.stringnames.marks}
-
-Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.
-
-\begin{verbatim}
-    "marks": {"hpos": [55, 74]}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.stringnames.marks.hpos}
-- horiz.
-Position}{presets.instrument.saitenspiel.stringnames.marks.hpos - horiz. Position}}\label{presets.instrument.saitenspiel.stringnames.marks.hpos}
-
-Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe
-ist eine durch Komma getrennte liste von Midi-Pitches.
-
-Die Angabe \texttt{{[}43,\ 55,\ 79{]}} druckt Saitenmarken bei
-\texttt{G,\ G,\ g\textquotesingle{}}. also bei den äußeren G-Saiten der
-25-saitigen bzw. der 37-saitigen Tischharfe.
-
-\begin{verbatim}
-    "hpos": [55, 74]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.instrument.saitenspiel.stringnames.text}
--
-Text}{presets.instrument.saitenspiel.stringnames.text - Text}}\label{presets.instrument.saitenspiel.stringnames.text}
-
-Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
-bekommen.
-
-In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
-
-\textbf{Beispiel:}
-
-\begin{itemize}
-\item
-  \texttt{+\ -} erzeugt \texttt{+\ -\ +\ \ +\ -\ +\ -}
-\item
-  \texttt{C\ Cis\ D\ Dis\ E\ F\ Fis\ G\ Gis\ A\ Aia\ Bb\ B} erzeugt die
-  regulären Saitennamen
-
-\begin{verbatim}
-"text": "G C D E F G A B C D  - - - - - -"
-\end{verbatim}
-\end{itemize}
-
-\subsection{\texorpdfstring{\texttt{presets.layout} -
-Layout}{presets.layout - Layout}}\label{presets.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {
-      "-"               : {},
-      "color_off"       : {
-        "color" : {
-          "color_default"  : "black",
-          "color_variant1" : "black",
-          "color_variant2" : "black"
-        }
-      },
-      "color_on"        : {
-        "color" : {
-          "color_default"  : "black",
-          "color_variant1" : "grey",
-          "color_variant2" : "darkgrey"
-        }
-      },
-      "jumpline_anchor" : {"jumpline_anchor": [3, 1]},
-      "layout_compact"  : {
-        "ELLIPSE_SIZE" : [3.5, 1.3],
-        "LINE_MEDIUM"  : 0.2,
-        "LINE_THICK"   : 0.3,
-        "REST_SIZE"    : [4, 1.5]
-      },
-      "layout_large"    : {
-        "ELLIPSE_SIZE" : [4, 2],
-        "LINE_MEDIUM"  : 0.3,
-        "LINE_THICK"   : 0.7,
-        "REST_SIZE"    : [4, 2]
-      },
-      "layout_regular"  : null,
-      "packer_compact"  : {
-        "packer" : {
-          "pack_max_spreadfactor" : 2,
-          "pack_method"           : 1,
-          "pack_min_increment"    : 0.2
-        }
-      },
-      "packer_regular"  : null
-    }
       
 \end{verbatim}
 
@@ -7481,432 +5785,6 @@ auch mehrzeilig sein
       
 \end{verbatim}
 
-\subsection{\texorpdfstring{\texttt{presets.printer} -
-Drucker}{presets.printer - Drucker}}\label{presets.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {
-      "printer_centric" : {
-        "layout"  : {"limit_a3": true},
-        "printer" : {
-          "a3_offset"   : [0, 0],
-          "a4_offset"   : [5, 0],
-          "show_border" : false
-        }
-      },
-      "printer_left"    : {
-        "layout"  : {"limit_a3": false},
-        "printer" : {
-          "a3_offset"   : [-10, 0],
-          "a4_offset"   : [-5, 0],
-          "show_border" : false
-        }
-      },
-      "printer_right"   : {
-        "layout"  : {"limit_a3": false},
-        "printer" : {
-          "a3_offset"   : [10, 0],
-          "a4_offset"   : [5, 0],
-          "show_border" : false
-        }
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_centric} -
-Druck
-zentieren}{presets.printer.printer\_centric - Druck zentieren}}\label{presets.printer.printerux5fcentric}
-
-TODO:\marginpar{TODO} Helptext für presets.printer.printer\_centric
-einfügen
-
-\begin{verbatim}
-    "printer_centric": {
-      "layout"  : {"limit_a3": true},
-      "printer" : {
-        "a3_offset"   : [0, 0],
-        "a4_offset"   : [5, 0],
-        "show_border" : false
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_centric.layout}
--
-Layout}{presets.printer.printer\_centric.layout - Layout}}\label{presets.printer.printerux5fcentric.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {"limit_a3": true}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_centric.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.printer.printer\_centric.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.printer.printerux5fcentric.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": true
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_centric.printer}
--
-Drucker}{presets.printer.printer\_centric.printer - Drucker}}\label{presets.printer.printerux5fcentric.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {
-      "a3_offset"   : [0, 0],
-      "a4_offset"   : [5, 0],
-      "show_border" : false
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_centric.printer.a3\_offset}
-- Offset für
-A3}{presets.printer.printer\_centric.printer.a3\_offset - Offset für A3}}\label{presets.printer.printerux5fcentric.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": [0, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_centric.printer.a4\_offset}
-- Offset für
-A4}{presets.printer.printer\_centric.printer.a4\_offset - Offset für A4}}\label{presets.printer.printerux5fcentric.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": [5, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_centric.printer.show\_border}
-- Blattbegr.
-zeich.}{presets.printer.printer\_centric.printer.show\_border - Blattbegr. zeich.}}\label{presets.printer.printerux5fcentric.printer.showux5fborder}
-
-Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
-Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
-Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
-auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
-Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
-
-Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
-Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
-unten ca. 10 mm.
-
-Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
-Situation verbessert.
-
-\begin{verbatim}
-    "show_border": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_left} -
-Druck nach links
-schieben}{presets.printer.printer\_left - Druck nach links schieben}}\label{presets.printer.printerux5fleft}
-
-TODO:\marginpar{TODO} Helptext für presets.printer.printer\_left
-einfügen
-
-\begin{verbatim}
-    "printer_left": {
-      "layout"  : {"limit_a3": false},
-      "printer" : {
-        "a3_offset"   : [-10, 0],
-        "a4_offset"   : [-5, 0],
-        "show_border" : false
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_left.layout}
--
-Layout}{presets.printer.printer\_left.layout - Layout}}\label{presets.printer.printerux5fleft.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {"limit_a3": false}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_left.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.printer.printer\_left.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.printer.printerux5fleft.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_left.printer}
--
-Drucker}{presets.printer.printer\_left.printer - Drucker}}\label{presets.printer.printerux5fleft.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {
-      "a3_offset"   : [-10, 0],
-      "a4_offset"   : [-5, 0],
-      "show_border" : false
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_left.printer.a3\_offset}
-- Offset für
-A3}{presets.printer.printer\_left.printer.a3\_offset - Offset für A3}}\label{presets.printer.printerux5fleft.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": [-10, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_left.printer.a4\_offset}
-- Offset für
-A4}{presets.printer.printer\_left.printer.a4\_offset - Offset für A4}}\label{presets.printer.printerux5fleft.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": [-5, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_left.printer.show\_border}
-- Blattbegr.
-zeich.}{presets.printer.printer\_left.printer.show\_border - Blattbegr. zeich.}}\label{presets.printer.printerux5fleft.printer.showux5fborder}
-
-Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
-Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
-Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
-auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
-Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
-
-Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
-Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
-unten ca. 10 mm.
-
-Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
-Situation verbessert.
-
-\begin{verbatim}
-    "show_border": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_right} -
-Druck nach rechts
-schieben}{presets.printer.printer\_right - Druck nach rechts schieben}}\label{presets.printer.printerux5fright}
-
-TODO:\marginpar{TODO} Helptext für presets.printer.printer\_right
-einfügen
-
-\begin{verbatim}
-    "printer_right": {
-      "layout"  : {"limit_a3": false},
-      "printer" : {
-        "a3_offset"   : [10, 0],
-        "a4_offset"   : [5, 0],
-        "show_border" : false
-      }
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_right.layout}
--
-Layout}{presets.printer.printer\_right.layout - Layout}}\label{presets.printer.printerux5fright.layout}
-
-Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das
-Notenbild gezielt optimieren.
-
-\begin{verbatim}
-    "layout": {"limit_a3": false}
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_right.layout.limit\_a3}
-- Begrenzung auf
-A3}{presets.printer.printer\_right.layout.limit\_a3 - Begrenzung auf A3}}\label{presets.printer.printerux5fright.layout.limitux5fa3}
-
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
-
-\begin{verbatim}
-    "limit_a3": false
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_right.printer}
--
-Drucker}{presets.printer.printer\_right.printer - Drucker}}\label{presets.printer.printerux5fright.printer}
-
-Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
-
-\begin{quote}
-\textbf{Hinweis:} Durch Verwendung dieser Funktion passen die erstellten
-PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende
-die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem
-Druckdialog findest.
-\end{quote}
-
-\begin{verbatim}
-    "printer": {
-      "a3_offset"   : [10, 0],
-      "a4_offset"   : [5, 0],
-      "show_border" : false
-    }
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_right.printer.a3\_offset}
-- Offset für
-A3}{presets.printer.printer\_right.printer.a3\_offset - Offset für A3}}\label{presets.printer.printerux5fright.printer.a3ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe
-auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
-
-\begin{verbatim}
-    "a3_offset": [10, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_right.printer.a4\_offset}
-- Offset für
-A4}{presets.printer.printer\_right.printer.a4\_offset - Offset für A4}}\label{presets.printer.printerux5fright.printer.a4ux5foffset}
-
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{verbatim}
-    "a4_offset": [5, 0]
-      
-\end{verbatim}
-
-\subsection{\texorpdfstring{\texttt{presets.printer.printer\_right.printer.show\_border}
-- Blattbegr.
-zeich.}{presets.printer.printer\_right.printer.show\_border - Blattbegr. zeich.}}\label{presets.printer.printerux5fright.printer.showux5fborder}
-
-Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
-Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
-Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
-auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
-Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
-
-Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
-Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
-unten ca. 10 mm.
-
-Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
-Situation verbessert.
-
-\begin{verbatim}
-    "show_border": false
-      
-\end{verbatim}
-
 \subsection{\texorpdfstring{\texttt{produce} -
 Auszüge}{produce - Auszüge}}\label{produce}
 
@@ -8234,6 +6112,143 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \section{Änderungshistorie von
 Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
+
+\subsection{V 1.7.0 2017-09-08}\label{v-1.7.0-2017-09-08}
+
+\section{v 1.7}\label{v-1.7}
+
+\subsection{Fehlerkorrekturen}\label{fehlerkorrekturen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Tuplet-Linien sind jetzt korrekt in pdf (\#139)
+\item
+  keine unerwarteten Subflowlinien mehr zu Unisons (\#140)
+\item
+  kleine Noten sind nun auch korrekt (\#143)
+\item
+  Wiedergabe spielt nun bis zum Ende der gebundenen Noten (\#147)
+\item
+  Dekorationen funktionieren nun auch bei Pausen (\#127)
+\item
+  shift funktioniert jetzt auch auf unisons (\#107)
+\item
+  abc2svg-Einstellungen nicht mehr nötig (aus Template entfernt) (\#71)
+\item
+  BWC Voreinstellung für ``filenamepart'' ist jetzt wie in 1.5 (\#155)
+\item
+  Config-Formular wird nach dem Laden eines anderen Stückes aktualisiert
+  (\#156)
+\item
+  Drucker offset wird nicht mehr zerstört, wenn der Benutzer nur einen
+  Wert der geforderten zwei Werten (\#157) eingibt.
+\item
+  Dropbox-Pfad kann jetzt auch Ziffern haben (\#162)
+\item
+  Druckerfenster zeigt pdf auf Chrome 60 wieder an (\#160)
+\item
+  jetzt werden auch auf Flowline zu unsichtbaren Pausen unterdrückt
+  (\#166)
+\item
+  Pausen über mehrere Takte funktionieren nun \texttt{Z} (\#166)
+\item
+  vt und vr vordefinierte Annotationen korrigiert
+\item
+  BWC: Tuplet-Konfiguration in Notebounds verschoben (\#168)
+\item
+  Mehrere Anmerkungen an einer Note können jetzt einzeln gezogen werden
+  (\#170)
+\item
+  BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
+  mehr angezeigt (\#174)
+\item
+  BWC: Layoutlines ist nun die Kombination von Stimmen und Layoutlines.
+  (\#175)
+\end{itemize}
+
+\subsection{Erweiterungen}\label{erweiterungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Sprunglinien können jetzt per Drag \& Drop konfiguriert werden (\#136)
+\item
+  Tuplets können jetzt per Drag \& Drop modelliert werden (\#138)
+\item
+  verbesserte Geschwindigkeit der Konfiguration (\#115)
+\item
+  verbesserte Geschwindigkeit der Harfennote-Vorschau (\#87)
+\item
+  verbesserte Geschwindigkeit des Vertikalpackers (\#87, \#89)
+\item
+  Editor klappt Konfigurationsparameter standardmäßig zu (\#144)
+\item
+  man kann jetzt einee Sortmark auf den Bogen drucken (\#145)
+\item
+  der Anker von Sprunglinien kann nun konfiguriert werden (\#150)
+\item
+  Variantenteile jetzt in Grau (\#151)
+\item
+  Menü unterstützt nun Extrakt 0 bis Extrakt 5 (\#153)
+\item
+  Menü zeigt jetzt auch Titel, Auszugsnummer und Ausgabesatatus von
+  Auszügen an (\#153)
+\item
+  Strg-Alt' F' schaltet jetzt Harfenvorschau um
+\item
+  Menü ``Konfiguration bearbeiten'' neu geordnet, um den
+  Konfigurations-Workflow zu verbessern (\#171)
+\item
+  jetzt kann die tilde als festes Leerzeichen in Liedtexten, Saitnnamen,
+  Anmerkungen etc. verwendet werden (\#113)
+\item
+  die Tilde kann nun maskiert werden
+  \texttt{\textbackslash{}\textbackslash{}\textasciitilde{}}, so dass
+  sie als Tile ausgegeben wird (\#113)
+\end{itemize}
+
+\subsection{Interne Änderungen}\label{interne-uxe4nderungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  aktualisiert auf abc2svg 1.13.7 (\#163)
+\end{itemize}
+
+\subsection{Experimentelle Funktion}\label{experimentelle-funktion}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  kollisionsbasierten Packer (\#89)
+\item
+  Validierung der Konfigurationsparameter (\#85) mit Ergebnisformular
+  implementiert
+\item
+  Form der Flußlinien konfigurierbar (\#167)
+\end{itemize}
+
+\subsection{Inkompatibile Änderungen zur
+Vorversion}\label{inkompatibile-uxe4nderungen-zur-vorversion}
+
+\begin{itemize}
+\item
+  Layoutlines ist nun die Kombination von Stimmen und Layoutlines. Es
+  ist nicht mehr möglich, Stimmen anzuzeigen, ohne sie im Layout zu
+  berücksichtigen. (\#175)
+\item
+  Default für ``filenamepart'' ist jetzt wie in 1.5 (\#155)
+\item
+  Tuplet-Konfiguration ist jetzt unter' notebound': muss also neu
+  gemacht werden (\#168)
+\item
+  BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
+  mehr angezeigt (\#174) \# bekannte Probleme
+\item
+  verschieben vonSprunglinien bei Saitenspiel funktioniert nicht richtig
+  (\#158)
+\end{itemize}
 
 \subsection{V 1.6.1 2017-05-17}\label{v-1.6.1-2017-05-17}
 

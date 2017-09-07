@@ -7,8 +7,33 @@ require 'i18n'
 require 'init_conf'
 require 'confstack'
 
-HELP_DE_INPUT = "localization/help_de-de.md"
+HELP_DE_INPUT     = "localization/help_de-de.md"
 HELP_DE_OUTPUT_MD = "../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md"
+
+
+# init_conf uses symbols. This does not matter in Opal
+# but ruby it is a difference. So we have to stringify the keys.
+class Hash
+  # Returns a deep copy of hash.
+  #
+  #   hash = { a: { b: 'b' } }
+  #   dup  = hash.deep_dup
+  #   dup[:a][:c] = 'c'
+  #
+  #   hash[:a][:c] # => nil
+  #   dup[:a][:c]  # => "c"
+  def stringify_keys
+    hash = {}
+    each_pair do |key, value|
+      if value.is_a? Hash
+        hash[key.to_s] = value.stringify_keys
+      else
+        hash[key.to_s] = value
+      end
+    end
+    hash
+  end
+end
 
 class ConfDocProvider
 
@@ -47,18 +72,19 @@ def get_example(conf, key)
                                        :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
-                                      ],
+                                      ].map{|i| i.to_s},
                                       []],
   }
   k                = key.split(".").last
+
   %Q{
 "#{k}": #{JSON.neat_generate(conf[key], neatjson_options)}
-  }.split("\n").map { |l| "        #{l}" }.join("\n")
+  }.split("\n").map {|l| "        #{l}"}.join("\n")
 end
 
 a=ConfDocProvider.new
 
-File.open(HELP_DE_INPUT).read.scan(/## ([^\n]*)([^#]*)/).sort_by{|i|i[0]}.each do |match|
+File.open(HELP_DE_INPUT).read.scan(/## ([^\n]*)([^#]*)/).sort_by {|i| i[0]}.each do |match|
   a.insert(match[0], match[1])
 end
 
@@ -74,34 +100,33 @@ end
 $conf_helptext = a.entries_html
 
 ignore_patterns  = [/^neatjson.*/, /abc_parser.*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
-                    /^layout.*/, /^extract\.0$/, /^presets\.layout\..*$/
+                    /^layout.*/, /^extract\.0$/,  /^presets$/, /^presets\..*$/
 ]
-produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/, /^templates/, /^annotations/]
-extra_keys = ['extract.0.notebound.minc', 'extract.0.notebound.minc.x.minc_f', "extract.0.notebound.tuplet"]
+produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/, /^templates/, /^annotations/, /^presets\.notes/]
+extra_keys       = ['extract.0.notebound.minc', 'extract.0.notebound.minc.x.minc_f', "extract.0.notebound.tuplet"]
 
 locale = JSON.parse(File.read('../public/locale/de-de.json'))
 
-$conf = Confstack.new(false)
-$conf.push(JSON.parse(InitConf.init_conf.to_json))
-$conf['presets.layout.layout_regular'] = nil  # This is a lambda  which needs to be suppressed for documentation
-$conf['presets.layout.packer_regular'] = nil  # This is a lambda  which needs to be suppressed for documentation
+$conf        = Confstack.new(false)
+$conf.push(InitConf.init_conf.stringify_keys)
 
-ignore_keys  = $conf.keys.select { |k| ignore_patterns.select { |ik| k.match(ik) }.count > 0 }
-produce_keys = $conf.keys.select { |k| produce_patterns.select { |ik| k.match(ik) }.count > 0 }
-show_keys    = ($conf.keys - ignore_keys + produce_keys + extra_keys).uniq.sort_by { |k| k.gsub('templates', 'extract.0') }
+ignore_keys  = $conf.keys.select {|k| ignore_patterns.select {|ik| k.match(ik)}.count > 0}
+produce_keys = $conf.keys.select {|k| produce_patterns.select {|ik| k.match(ik)}.count > 0}
+show_keys    = ($conf.keys - ignore_keys + produce_keys + extra_keys).uniq.sort_by {|k| k.gsub('templates', 'extract.0')}
 
 mdhelp = []
 show_keys.sort.each do |key|
   show_key = key #.gsub(/^templates\.([a-z]+)(\.)/){|m| "extract.0.#{$1}.0."}
 
   candidate_keys = I18n.get_candidate_keys(key)
-  candidates     = candidate_keys.map { |c| a.entries_md[c.join('.')] }
+  candidates     = candidate_keys.map {|c| a.entries_md[c.join('.')]}
 
   helptext = candidates.compact.first || %Q{TODO: Helptext für #{key} einfügen }
   keyparts = key.split(".")
 
   #\\index{#{keyparts.last.gsub("_", "-")}}\\index{#{keyparts.join(",").gsub("_", "-")}}
 
+  require 'pry'
 
   result   = %Q{
 
@@ -109,7 +134,7 @@ show_keys.sort.each do |key|
 
   #{helptext}
 
-  #{get_example($conf, key) rescue ""}
+  #{get_example($conf, key) rescue "... kein Beispiel verfügbar ..."}
   }
   mdhelp.push result
 end
@@ -178,5 +203,5 @@ b.keys.each do |key|
 end
 
 File.open("x.locales.template", "w") do |f|
-  f.puts keys.sort.to_a.map { |v| %Q{"#{v}": "**--#{v}"} }.uniq.sort_by { |i| i.upcase }.join(",\n")
+  f.puts keys.sort.to_a.map {|v| %Q{"#{v}": "**--#{v}"}}.uniq.sort_by {|i| i.upcase}.join(",\n")
 end
