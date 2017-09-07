@@ -36,6 +36,8 @@
 * now menu also shows title of extracts (#153)
 * ctrl-alt 'F' now toggles harp preview
 * rearranged "Edit Configuration" Menu to improve configuration workflow (#171)
+* now suppoert tilde as non braeking space in lyrics, stringnames, annotations #113
+* now suppoert quoted tilde as non braeking space in lyrics, stringnames, annotations #113
 
 ## internal stuff
 

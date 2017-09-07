@@ -387,7 +387,7 @@ module Harpnotes
       # activate to debug the positioning of text
       #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
 
-      text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n") #
+      text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n"). gsub(/(\\?)(~)/){|m| m[0]=='\\' ? m[1]: '&nbsp;'}
       attr                 = {}
       attr[:"font-size"]   = style[:font_size]/3 # literal by try and error
       attr[:"font-family"] = "Arial"

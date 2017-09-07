@@ -7,7 +7,14 @@ module InitConf
 # 5. update config-form.rb to attach a type
 # 6. update user-interface.js to add the menu entries
 # 7: update json schema in opal-ajv.rb
+
+  def self.cut_string_names(stringnames, from, to)
+    stringnames.split(' ').each_with_index.map{|v, index| index.between?(from, to) ? v : '~' }.join(' ')
+  end
+
   def self.init_conf()
+
+
 
     explicit_sort = [:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                      :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
@@ -145,7 +152,7 @@ module InitConf
                                    X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
                                    X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
                      },
-                     stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
+                     stringnames: {text:  lambda {self.cut_string_names($conf['extract.0.stringnames.text'], 12, 36)},
                                    marks: {hpos: lambda {$conf['extract.0.stringnames.marks.hpos']}
                                    }
                      },
@@ -160,7 +167,7 @@ module InitConf
                                    X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
                                    X_OFFSET:     23
                      },
-                     stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
+                     stringnames: {text:   lambda {self.cut_string_names($conf['extract.0.stringnames.text'], 14, 34)},
                                    marks: {hpos: [57, 77]
                                    }
                      },
@@ -175,7 +182,7 @@ module InitConf
                                    X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
                                    X_OFFSET:     28.5
                      },
-                     stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
+                     stringnames: {text:  lambda {self.cut_string_names($conf['extract.0.stringnames.text'], 16, 33)},
                                    marks: {hpos: [59, 76]}
                      },
                      printer:     {a4_pages: [2],
@@ -189,7 +196,7 @@ module InitConf
                                    X_SPACING:    14.50,
                                    X_OFFSET:    240
                      },
-                     stringnames: {text:  'G C D E F G A B C D  - - - - - -',
+                     stringnames: {text:  'G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~',
                                    marks: {hpos: [55, 74]}
                      },
                      printer:     {a4_pages: [2],
