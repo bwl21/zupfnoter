@@ -5,7 +5,7 @@
 * tuplet lines are now correct in pdf (#139)
 * no longer have unexpected subflowlines to unisons (#140)
 * fixed size of smaall notes (#143)
-* player also plays until tied notes edn (#147)
+* player also plays until end of tied notes (#147)
 * decorations now also work on rests (#127)
 * shift now also works on unisons (#107)
 * abc2svg settings no longer necessary in tunes (removed from Template) (#71)
@@ -19,7 +19,7 @@
 * fix predefined annotations vt and vr
 * BWC: move Tuplet configuration to notebounds (#168)
 * Multiple notebound annotations can now be dragged individually (#170)
-
+* BWC: no longer show (Original in ) in case of transpositions (#174)
 
 ## enhancement
 
@@ -36,6 +36,9 @@
 * now menu also shows title of extracts (#153)
 * ctrl-alt 'F' now toggles harp preview
 * rearranged "Edit Configuration" Menu to improve configuration workflow (#171)
+* now suppoert tilde as non braeking space in lyrics, stringnames, annotations #113
+* now suppoert quoted tilde as non braeking space in lyrics, stringnames, annotations #113
+* layoutlines is now the combination of voices and layoutlines (#175). 
 
 ## internal stuff
 
@@ -51,9 +54,10 @@
 ## backwards compatibility issues
 
 * layoutlines is now the combination of voices and layoutlines. 
-  It is no longer possible to show voices without considering them in the layout.
+  It is no longer possible to show voices without considering them in the layout (#175)
 * Default for "filenamepart" is now as it was in 1.5 (#155)
 * tuplet configuration is now under 'notebound': meed to rework in the sheets - sorry! (#168)
+* transposititions are no longer exposed in legend (#174)
 
 ## known issues
 

@@ -487,7 +487,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       abc_text = @editor.get_abc_part
       abc_text = abc_text.split("\n").map {|line|
         result = line
-        result = result.gsub('~', ' ') if line.start_with? 'W:'
+        result = result. gsub(/(\\?)(~)/){|m| m[0]=='\\' ? m[1] : ' '} if line.start_with? 'W:'
         result
       }.join("\n")
 

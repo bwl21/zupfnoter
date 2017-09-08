@@ -436,6 +436,10 @@ und das Einelgen in das Instrument zu vereinfachen:
     > \ref{extract.0.stringnames}
     > [extract.0.stringnames](#extract.0.stringnames)).
 
+    > **Hinweis**: Wenn einzelne Saiten nicht beschriftet werden sollen,
+    > kann als Saitenname eine Tilde ('\~) angegeben werden. Diese
+    > erscheint dann als festes Leerzeichen.
+
 -   **(38) marks - Saitenmarke** Die Saitenmarken sind eine Hilfe zum
     korrekten Einlegen der Unterlegnoten in die Tischharfe. Das Blatt
     muss so in die Tischharfe eingelegt werden, dass die Marken unter
@@ -1481,7 +1485,7 @@ zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
 > aufrufen und den Kontrollpunkt so ändern, dass er wireder sichtbar
 > wird.
 
-## Flußlinien gestalten
+## Flußlinien gestalten {#flowconf}
 
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
 die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
@@ -1810,13 +1814,48 @@ relevante Beispiele
 > Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das
 > Verhalten noch nicht ausgetestet ist.
 
-### Wenn die vertikale Anodrnung optimiert werden soll
+### Wenn die vertikale Anordnung optimiert werden soll
 
-Es kann vorkommen, dass man in das vertikale Layout eingreifen muss,
-z.B. wennd ie Flussline einer Stimme durch eine Noten einer anderen
-Stimme läüft. Die Möglichkeiten dazu sind in
-Kapitel \ref{extract.0.notebound.minc} [`minc`](#extract.0.notebound.minc)
-beschrieben.
+Zupfnoter errechnet die vertikale Anordnung der Noten selbständig und
+erreicht auch gute Ergebnisse. In Grenzsituationen (z.B. bei langen
+Stücken) ist eine manuelle Korrektur sinnvoll. Diese Optimierungen
+sollten in folgender Reihenfolge ausgeführt werden.
+
+1.  in `extract.0.layoutlines` über die Grundeinstellungen eine `0`
+    eintragen. Diese führt dazu, dass nur noch die Stimmen, die auf dem
+    Blatt dargestellt werden, auch für die Berechnung vertikalen
+    Anordnung berücksichtigt werden. Damit entstehen keine scheinbar
+    unmotivierten Vorschübe.
+
+2.  Synchronisationslinien abschalten (das Feld im Edior löschen oder
+    '0-1' eintragen). Bei shr vollen Blättern verwirren die
+    Synchronisationslinene mehr als sie helfen.
+
+3.  im Konfigurationsmenü `Layout` mit den Schnelleinstellungen
+    `layout` `kompakt` bzw. `Packer` `kompakt` die beste Einstellung
+    suchen
+
+4.  ggf. gebundene Noten zu einer Note zusammenfassen
+
+5.  Den vertikalen Vorschub manuell steuern. Die Möglichkeiten dazu sind
+    in
+    Kapitel \ref{extract.0.notebound.minc} [`minc`](#extract.0.notebound.minc)
+    beschrieben.
+
+6.  Die Flußlinie gestalten (siehe Kapitel \ref{flowconf} [Flußlinien
+    gestalten](#flowconf))
+
+### feste Leerzeichen in Texten
+
+Zupfnoter wandelt eine Tilde ('\~') in Texten in feste Leerzeichen um.
+Anwendungsfälle hierfür sind:
+
+-   Einrückungen in Liedtexten, so dass Noten ggf. in den Text ragen
+    können
+-   Besondere Saitenbeschriftungen, welche Leerzeichen enthalten sollen
+
+> **Hinweis**: Sollte je doch eine Tilde benötigt werden kann diese mit
+> maskiert werden, z.B. '`das\~ist`' ergibt '`das~ist`'.
 
 ### Extra Einstellungen für die Notenvorschau
 
