@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.7.0 dev 7
+Version 1.7.0
 
 \begin{verbatim}
 © 2017 https://www.zupfnoter.de
@@ -6115,9 +6115,7 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
 
 \subsection{V 1.7.0 2017-09-08}\label{v-1.7.0-2017-09-08}
 
-\section{v 1.7}\label{v-1.7}
-
-\subsection{Fehlerkorrekturen}\label{fehlerkorrekturen}
+\subsubsection{Fehlerkorrekturen}\label{fehlerkorrekturen}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6167,7 +6165,7 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
   (\#175)
 \end{itemize}
 
-\subsection{Erweiterungen}\label{erweiterungen}
+\subsubsection{Erweiterungen}\label{erweiterungen}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6208,7 +6206,7 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
   sie als Tile ausgegeben wird (\#113)
 \end{itemize}
 
-\subsection{Interne Änderungen}\label{interne-uxe4nderungen}
+\subsubsection{Interne Änderungen}\label{interne-uxe4nderungen}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6216,7 +6214,7 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
   aktualisiert auf abc2svg 1.13.7 (\#163)
 \end{itemize}
 
-\subsection{Experimentelle Funktion}\label{experimentelle-funktion}
+\subsubsection{Experimentelle Funktion}\label{experimentelle-funktion}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6229,10 +6227,11 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
   Form der Flußlinien konfigurierbar (\#167)
 \end{itemize}
 
-\subsection{Inkompatibile Änderungen zur
+\subsubsection{Inkompatibile Änderungen zur
 Vorversion}\label{inkompatibile-uxe4nderungen-zur-vorversion}
 
 \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
   Layoutlines ist nun die Kombination von Stimmen und Layoutlines. Es
   ist nicht mehr möglich, Stimmen anzuzeigen, ohne sie im Layout zu
@@ -6244,10 +6243,16 @@ Vorversion}\label{inkompatibile-uxe4nderungen-zur-vorversion}
   gemacht werden (\#168)
 \item
   BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-  mehr angezeigt (\#174) \# bekannte Probleme
+  mehr angezeigt (\#174)
+\end{itemize}
+
+\subsubsection{bekannte Probleme}\label{bekannte-probleme}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  verschieben vonSprunglinien bei Saitenspiel funktioniert nicht richtig
-  (\#158)
+  verschieben von Sprunglinien bei Saitenspiel funktioniert nicht
+  richtig (\#158)
 \end{itemize}
 
 \subsection{V 1.6.1 2017-05-17}\label{v-1.6.1-2017-05-17}

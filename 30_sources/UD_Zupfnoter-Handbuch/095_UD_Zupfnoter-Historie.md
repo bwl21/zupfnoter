@@ -4,9 +4,7 @@
 
 ## V 1.7.0 2017-09-08
 
-# v 1.7
-
-## Fehlerkorrekturen
+### Fehlerkorrekturen
 
 -   Tuplet-Linien sind jetzt korrekt in pdf (\#139)
 -   keine unerwarteten Subflowlinien mehr zu Unisons (\#140)
@@ -35,7 +33,7 @@
 -   BWC: Layoutlines ist nun die Kombination von Stimmen und
     Layoutlines. (\#175)
 
-## Erweiterungen
+### Erweiterungen
 
 -   Sprunglinien können jetzt per Drag & Drop konfiguriert werden
     (\#136)
@@ -58,18 +56,18 @@
 -   die Tilde kann nun maskiert werden `\\~`, so dass sie als Tile
     ausgegeben wird (\#113)
 
-## Interne Änderungen
+### Interne Änderungen
 
 -   aktualisiert auf abc2svg 1.13.7 (\#163)
 
-## Experimentelle Funktion
+### Experimentelle Funktion
 
 -   kollisionsbasierten Packer (\#89)
 -   Validierung der Konfigurationsparameter (\#85) mit Ergebnisformular
     implementiert
 -   Form der Flußlinien konfigurierbar (\#167)
 
-## Inkompatibile Änderungen zur Vorversion
+### Inkompatibile Änderungen zur Vorversion
 
 -   Layoutlines ist nun die Kombination von Stimmen und Layoutlines. Es
     ist nicht mehr möglich, Stimmen anzuzeigen, ohne sie im Layout zu
@@ -78,9 +76,11 @@
 -   Tuplet-Konfiguration ist jetzt unter' notebound': muss also neu
     gemacht werden (\#168)
 -   BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-    mehr angezeigt (\#174) \# bekannte Probleme
+    mehr angezeigt (\#174)
 
--   verschieben vonSprunglinien bei Saitenspiel funktioniert nicht
+### bekannte Probleme
+
+-   verschieben von Sprunglinien bei Saitenspiel funktioniert nicht
     richtig (\#158)
 
 ## V 1.6.1 2017-05-17
