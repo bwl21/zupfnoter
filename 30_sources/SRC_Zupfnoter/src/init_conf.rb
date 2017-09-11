@@ -138,7 +138,7 @@ module InitConf
                                    X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
                      },
                      stringnames: {text:  lambda {$conf['extract.0.stringnames.text']},
-                                   marks: {hpos: lambda {$conf['extract.0.stringnames.marks.hpos']}}
+                                   marks: {hpos: [43,79]}
                      },
                      printer:     {a4_pages:  [0, 1, 2],
                                    a4_offset: lambda {$conf['extract.0.printer.a4_offset']},
@@ -153,7 +153,7 @@ module InitConf
                                    X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
                      },
                      stringnames: {text:  lambda {self.cut_string_names($conf['extract.0.stringnames.text'], 12, 36)},
-                                   marks: {hpos: lambda {$conf['extract.0.stringnames.marks.hpos']}
+                                   marks: {hpos: [55,79]
                                    }
                      },
                      printer:     {a4_pages:  [1, 2],
