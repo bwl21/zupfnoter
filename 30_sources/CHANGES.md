@@ -1,3 +1,9 @@
+# v 1.8
+
+## fix
+
+* print preview no longer clears unsave indicator #176
+
 # v 1.7
 
 ## fix

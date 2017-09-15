@@ -203,6 +203,7 @@ class Controller
                                extracts:     [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})`}
+                                 call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }]
     }
     @systemstatus_consumers[clazz].each {|c| c.call()}
