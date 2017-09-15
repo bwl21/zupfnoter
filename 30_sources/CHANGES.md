@@ -1,8 +1,12 @@
 
+
 # v 1.7.1
+
+## fix
 
 * improved fermata symbol in pdf #178
 * turnoff flowconf edit for pdf. This avoids noise around very short vertical flowlines #167 
+* print preview no longer clears unsaved indicator #176
 
 # v 1.7
 
