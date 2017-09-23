@@ -76,7 +76,7 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -185,6 +185,21 @@ class Controller
     #
   end
 
+  def about_zupfnoter
+    %Q{<p>#{I18n.t("Free software to create sheets for table harps")}</p>
+         <table>
+          <tbody>
+          <tr><td>Zupfnoter:</td><td>#{VERSION}</td></tr>
+          <tr><td><a target="_blank" href="http://opalrb.com">Opal</a>:</td><td>#{RUBY_ENGINE_VERSION}</td></tr>
+          <tr><td>Ruby:</td><td>#{RUBY_VERSION}</td></tr>
+          <tr><td><a target="_blank" href="http://moinejf.free.fr/js/index.html">abc2svg</a>:</td><td>#{%x{abc2svg.version}}</td></tr>
+          <tr><td><a target="_blank" href="https://wim.vree.org/js/xml2abc-js_index.html">xml2abc.js</a>:</td><td>#{%x{xml2abc_VERSION}}</td></tr>
+         </tbody>
+        </table>
+        <p>© #{Time.now.year} Bernhard Weichel - info@zupfnoter.de</p>
+        <p><a target="_blank" href="https://www.zupfnoter.de">Website: https://www.zupfnoter.de</a></p>
+    }
+  end
 
   # this method invokes the system conumers
   def call_consumers(clazz)
@@ -819,7 +834,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def setup_ui_listener
 
     # activate drop of files
-    set_file_drop('layout');
+    # set_file_drop('layout'); this is now in userinterface.js
 
     # changes in the editor
     @editor.on_change do |e|

@@ -30,12 +30,14 @@ function init_w2ui(uicontroller) {
     var result = vertaal(xmldata, options);
 
 
+    debugger;
     uicontroller.dropped_abc = result[0]
-    uiocontroller.handle_command('drop')
+
+    uicontroller.$handle_command('drop')
   }
 
   function pasteMxl(text) {
-    zip = new JSZip(text);
+    zip = new JSZip(text)
     text = zip.file(/^[^/ ]*\.xml$/)[0].asText();
     pasteXml(text);
   }
@@ -48,7 +50,10 @@ function init_w2ui(uicontroller) {
   function handleDrop(event) {
     event.stopPropagation();
     event.preventDefault();
-    files = event.dataTransfer.files;
+    files = event.target.files;
+    if (!files) {
+      files = event.dataTransfer.files;
+    }
     reader = new FileReader();
 
     reader.onload = function (e) {
@@ -84,7 +89,24 @@ function init_w2ui(uicontroller) {
     a.addEventListener('drop', handleDrop);
   }
 
+  document.getElementById('file_input')
+    .addEventListener('change', function(event){debugger;handleDrop(event)}, false);
+
   initializeFileDrop('layout');
+
+  function readSingleFile(e) {
+    var file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      displayContents(contents);
+    };
+    reader.readAsText(file);
+  }
+
 
 
 // UI-Methods
@@ -92,6 +114,36 @@ function init_w2ui(uicontroller) {
     uicontroller.$set_harppreview_size(size);
     $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
   };
+
+  function createNewSheet() {
+    openPopup({
+      name: 'createNewSheetForm',
+      text: w2utils.lang('Create new Sheet'),
+      style: 'border: 0px; background-color: transparent;',
+      fields: [
+        {field: 'id', type: 'string', required: true, html: {caption: 'X:'}},
+        {
+          field: 'title',
+          type: 'text',
+          required: true,
+          tooltip: "Enter the title of your sheet",
+          html: {caption: w2utils.lang('Title'), attr: 'style="width: 300px"'}
+        }
+      ],
+      actions: {
+        "Ok": function () {
+          if (this.validate().length == 0) {
+            uicontroller.$handle_command("c " + this.record.id + '"' + this.record.title + '"');
+            w2popup.close();
+          }
+        },
+        "Cancel": function () {
+          w2popup.close();
+        }
+      }
+    })
+  }
+
 
   function open_data_uri_window(url) {
     var url_with_name = url.replace("data:application/pdf;", "data:application/pdf;name=myname.pdf;")
@@ -186,6 +238,10 @@ function init_w2ui(uicontroller) {
   }
 
   toolbarhandlers = {
+    'tb_file:tb_create': createNewSheet,
+    'tb_file:tb_import': function(){ $('#file_input').click()},
+    'tb_file:tb_export': function(){uicontroller.$handle_command("download_abc")},
+
     'tb_view:0': function () {
       uicontroller.$handle_command("view 0")
     },
@@ -213,34 +269,7 @@ function init_w2ui(uicontroller) {
       uicontroller.$render_previews();
     },
 
-    'tb_create': function () {
-      openPopup({
-        name: 'createNewSheetForm',
-        text: w2utils.lang('Create new Sheet'),
-        style: 'border: 0px; background-color: transparent;',
-        fields: [
-          {field: 'id', type: 'string', required: true, html: {caption: 'X:'}},
-          {
-            field: 'title',
-            type: 'text',
-            required: true,
-            tooltip: "Enter the title of your sheet",
-            html: {caption: w2utils.lang('Title'), attr: 'style="width: 300px"'}
-          }
-        ],
-        actions: {
-          "Ok": function () {
-            if (this.validate().length == 0) {
-              uicontroller.$handle_command("c " + this.record.id + '"' + this.record.title + '"');
-              w2popup.close();
-            }
-          },
-          "Cancel": function () {
-            w2popup.close();
-          }
-        }
-      })
-    },
+    'tb_create': createNewSheet,
 
     'tb_open': function () {
       uicontroller.$handle_command("dchoose")
@@ -319,6 +348,30 @@ function init_w2ui(uicontroller) {
     items: [
       {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: 'Zupfnoter'},
       {type: 'html', html: '<div style="width:25px"/>'},
+      {
+        type: 'menu',
+        id: 'tb_file',
+        text: 'File',
+        icon: 'fa fa-file',
+        tooltip: 'interact with local files',
+        items: [
+          {type: 'button', id: 'tb_create', text: 'New', icon: 'fa fa-file-o', tooltip: 'Create new sheet'},
+          {
+            type: 'button',
+            id: 'tb_import',
+            text: 'Import',
+            icon: 'fa fa-upload',
+            tooltip: 'import abc, xml from local system'
+          },
+          {
+            type: 'button',
+            id: 'tb_export',
+            text: 'Dl abc',
+            icon: 'fa fa-download',
+            tooltip: 'download abc to local system'
+          },
+        ]
+      },
       {type: 'button', id: 'tb_create', text: 'New', icon: 'fa fa-file-o', tooltip: 'Create new sheet'},
       {
         type: 'button',
@@ -533,7 +586,7 @@ function init_w2ui(uicontroller) {
 
 
       if (event.target == "tb_home") {
-        window.open("https://www.zupfnoter.de")
+        w2popup.open( {title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
       }
       if (event.target == "tbHelp:tbVersionInfo") {
         window.open(uicontroller.$info_url())
@@ -975,6 +1028,7 @@ function update_systemstatus_w2ui(systemstatus) {
   $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
   if (systemstatus.mode == 'demo') {
+    w2ui.layout_top_toolbar.disable('tb_file')
     w2ui.layout_top_toolbar.disable('tb_create')
     w2ui.layout_top_toolbar.disable('tb_open')
     w2ui.layout_top_toolbar.disable('tb_save')
@@ -982,6 +1036,7 @@ function update_systemstatus_w2ui(systemstatus) {
     w2ui.layout_top_toolbar.disable('tb_login')
   }
   else {
+    w2ui.layout_top_toolbar.enable('tb_file')
     w2ui.layout_top_toolbar.enable('tb_create')
     w2ui.layout_top_toolbar.enable('tb_open')
     // w2ui.layout_top_toolbar.enable('tb_save')

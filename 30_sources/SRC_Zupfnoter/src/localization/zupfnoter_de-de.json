@@ -72,8 +72,8 @@
     "configure your sheet": "Blatt konfigureren",
     "could not find extract with number": "Es gibt keinen Auszug mit nummer",
     "could not open file": "konnte Datei nicht öffnen",
-    "countnotes": "Zählmarken",
     "countnote": "Zählmarke",
+    "countnotes": "Zählmarken",
     "cp1": "cp1",
     "cp2": "cp2",
     "Create new sheet": "Neues Blatt erstellen",
@@ -148,6 +148,7 @@
     "Extract": "Auszug",
     "extract": "Auszug",
     "Extract-Annotation": "Auszugsbeschriftung",
+    "File": "Datei",
     "Filename not specified in song add an F: instruction": "Kein Filename angegeben. Bitte füge eine F: - Kopfzeile hinzu",
     "filenamepart": "Filename-Zusatz",
     "Files saved to dropbox": "Dateien in Dropbox gespeichert",
@@ -162,6 +163,7 @@
     "font_size": "Schriftgröße",
     "font_style": "Schriftstil",
     "FONT_STYLE_DEF": "Schriftstildefinition",
+    "Free software to create sheets for table harps": "Freies Programm zur Erstellung von Unterlegnoten für Tischharfen",
     "Get help": "Hilfe anzeigen",
     "global settings": "Globale Einstellungen",
     "Goto": "Sprung",
@@ -173,6 +175,8 @@
     "horizontal position": "horizontale Position (von links nach rechts)",
     "hpos": "horiz. Position",
     "Id": "Identifikationsnummer",
+    "import abc, xml from local system": "abc oder xml Datei importieren",
+    "Import": "Import",
     "in distance": "Abstand der Eingangslinie",
     "inject the default configuration (for development use only)": "inject the default configuration (for development use only)",
     "insert a title for the \ncurrent extract": "Titel für den aktuellen\n Auszug einfügen",
@@ -181,6 +185,7 @@
     "instrument specific": "Intrumentspezifika",
     "instrument": "Instrument",
     "Interact with dropbox": "Arbeiten mit Dropbox",
+    "interact with local files": "Arbeit mit lokalen Dateien",
     "italic": "kursiv",
     "jumpline_anchor": "Sprungl.Anker",
     "jumplineoffset": "Sprungl.Anker",
@@ -409,6 +414,7 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
+
 
 
     "_ende_der_liste": ""

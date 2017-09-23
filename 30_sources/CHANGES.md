@@ -8,6 +8,10 @@
   * bad pitches after ties and repeat
   * the accidentals must be reset on a measure bar
   
+## enhancement
+
+* now have menu to import from local disc #177  
+  
 # v 1.7
 
 ## fix
