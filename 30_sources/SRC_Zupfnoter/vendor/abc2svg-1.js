@@ -1,7 +1,7 @@
-// compiled for Zupfnoter 2017-08-18 09:14:06 +0200
+// compiled for Zupfnoter 2017-09-15 18:03:22 +0200
 //#javascript
 // abc2svg - ABC to SVG translator
-// @source: http://moinejf.free.fr/js/abc2svg.tar.gz.php
+// @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-var abc2svg={version:"1.13.7-2-g2e5cbb2",vdate:"2017-08-17"}
+var abc2svg={version:"1.14.1-1-gb9d3cab",vdate:"2017-09-13"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -115,7 +115,8 @@ var	glovar = {
 		prefix: '%',
 		state: 0,
 		line: new scanBuf()
-	}
+	},
+	psvg			// PostScript
 
 // utilities
 function clone(obj) {
@@ -195,13 +196,13 @@ function scanBuf() {
 //	this.buffer = buffer
 	this.index = 0;
 
-	this.char = function() {
+	scanBuf.prototype.char = function() {
 		return this.buffer[this.index]
 	}
-	this.next_char = function() {
+	scanBuf.prototype.next_char = function() {
 		return this.buffer[++this.index]
 	}
-	this.get_int = function() {
+	scanBuf.prototype.get_int = function() {
 		var	val = 0,
 			c = this.buffer[this.index]
 		while (c >= '0' && c <= '9') {
@@ -213,36 +214,12 @@ function scanBuf() {
 }
 
 function syntax(sev, msg, a1, a2, a3, a4) {
-	var regex, tmp
-
-	if (user.textrans) {
-		tmp = user.textrans[msg]
-		if (tmp)
-			msg = tmp
+    var	s = {
+		ctx: parse.ctx,
+		istart: parse.istart + parse.line.index
 	}
-	if (arguments.length > 2)
-		msg = msg.replace(/\$./g, function(a) {
-			switch (a) {
-			case '$1': return a1
-			case '$2': return a2
-			case '$3': return a3
-			default  : return a4
-			}
-		})
-	errbld(sev, msg, parse.ctx.fname, parse.istart + parse.line.index)
-}
 
-function empty_function() {
-}
-
-// general abc2svg initialization
-function abc2svg_init() {
-	font_init()
-	if (!user.anno_start)
-		anno_start = empty_function
-	if (!user.anno_stop)
-		anno_stop = empty_function
-	init_tune()
+	error(sev, s, msg, a1, a2, a3, a4)
 }
 // abc2svg - deco.js - decorations
 //
@@ -2154,7 +2131,7 @@ function draw_partempo(st, top) {
 						/* + cfmt.partsspace ?? */
 		}
 		w = strw(s.text);
-		y = y_get(st, true, s.x - 10, w + 15) + 5
+		y = y_get(st, true, s.x - 10, w + 3) + 5
 		if (ymin < y)
 			ymin = y
 	}
@@ -2248,9 +2225,7 @@ function b_pos(grace, stem, nflags, b) {
 
 	d1 = rnd6(top - BEAM_OFFSET);
 	d2 = rnd6(bot + BEAM_OFFSET)
-	if (d1 * d1 > d2 * d2)
-		return d2
-	return d1
+	return d1 * d1 > d2 * d2 ? d2 : d1
 }
 
 /* duplicate a note for beaming continuation */
@@ -2406,23 +2381,16 @@ function calculate_beam(bm, s1) {
 	b = (sy - a * sx) / notes
 
 	/* the next few lines modify the slope of the beam */
-//	if (!s1.grace) {
-		if (notes >= 3) {
-			hh = syy - a * sxy - b * sy /* flatten if notes not in line */
-			if (hh > 0
-			 && hh / (notes - 2) > .5)
-				a *= BEAM_FLATFAC
-		}
-		if (a >= 0)
-			a = BEAM_SLOPE * a / (BEAM_SLOPE + a) // max steepness for beam
-		else
-			a = BEAM_SLOPE * a / (BEAM_SLOPE - a);
-//	} else {
-//		if (a > BEAM_SLOPE)
-//			a = BEAM_SLOPE
-//		else if (a < -BEAM_SLOPE)
-//			a = -BEAM_SLOPE
-//	}
+	if (notes >= 3) {
+		hh = syy - a * sxy - b * sy /* flatten if notes not in line */
+		if (hh > 0
+		 && hh / (notes - 2) > .5)
+			a *= BEAM_FLATFAC
+	}
+	if (a >= 0)
+		a = BEAM_SLOPE * a / (BEAM_SLOPE + a) // max steepness for beam
+	else
+		a = BEAM_SLOPE * a / (BEAM_SLOPE - a);
 
 	/* to decide if to draw flat etc. use normalized slope a0 */
 	a0 = a * (s2.xs - s1.xs) / (20 * (notes - 1))
@@ -2672,6 +2640,7 @@ function draw_beams(bm) {
 		var	y1, dy2,
 			s = bm.s1,
 			nflags = s.nflags
+
 		if (s.ntrem)
 			nflags -= s.ntrem
 		if (s.trem2 && n > nflags) {
@@ -3119,11 +3088,8 @@ function draw_keysig(p_voice, x, s) {
 function bar_cnv(bar_type) {
 	switch (bar_type) {
 	case "[":
-//	case "]":
 	case "[]":
 		return ""			/* invisible */
-//	case ":":
-//		return "|"			/* dotted */
 	case "|:":
 	case "|::":
 	case "|:::":
@@ -3475,7 +3441,7 @@ function setdoty(s, y_tb) {
 // get the x and y position of a note head
 // (when the staves are defined)
 function x_head(s, note) {
-	return s.x + note.shhd // * stv_g.scale		// ??
+	return s.x + note.shhd
 }
 function y_head(s, note) {
 	return staff_tb[s.st].y + 3 * (note.pit - 18)
@@ -3493,9 +3459,6 @@ function draw_basic_note(x, s, m, y_tb) {
 		shhd = note.shhd * stv_g.scale,
 		x_note = x + shhd,
 		y_note = y + staffb
-
-	if (s.invis)
-		return
 
 //	/* special case for voice unison */
 //	if (s.nohdi1 != undefined
@@ -3603,7 +3566,6 @@ function draw_basic_note(x, s, m, y_tb) {
 
 	/* draw the accidental */
 	if (note.acc) {
-//	 && !s.perc) {
 		x -= note.shac * stv_g.scale
 		if (!s.grace) {
 			draw_acc(x, y + staffb,
@@ -3631,36 +3593,31 @@ function draw_note(s,
 
 	note = s.notes[s.stem < 0 ? s.nhd : 0];	// master note head
 	x = x_head(s, note);
-//?? what was this used for ??
-//	if (s.head == OVAL || s.head == SQUARE)
-//		x += 1;
 	staffb = staff_tb[s.st].y
 
 	/* output the ledger lines */
-	if (!s.invis) {
-		if (s.grace) {
-			hltype = "ghl"
-		} else {
-			switch (s.head) {
-			default:
-				hltype = "hl"
-				break
-			case OVAL:
-			case OVALBARS:
-				hltype = "hl1"
-				break
-			case SQUARE:
-				hltype = "hl2"
-				break
-			}
+	if (s.grace) {
+		hltype = "ghl"
+	} else {
+		switch (s.head) {
+		default:
+			hltype = "hl"
+			break
+		case OVAL:
+		case OVALBARS:
+			hltype = "hl1"
+			break
+		case SQUARE:
+			hltype = "hl2"
+			break
 		}
-		draw_hl(x, 3 * (s.notes[0].pit - 18), 3 * (s.notes[s.nhd].pit - 18),
-			s.st, hltype)
 	}
+	draw_hl(x, 3 * (s.notes[0].pit - 18), 3 * (s.notes[s.nhd].pit - 18),
+		s.st, hltype)
 
 	/* draw the stem and flags */
 	y = y_head(s, note)
-	if (!s.invis && !s.stemless) {
+	if (!s.stemless) {
 		slen = s.ys - s.y;
 		nflags = s.nflags
 		if (s.ntrem)
@@ -3687,9 +3644,7 @@ function draw_note(s,
 	}
 
 	/* draw the tremolo bars */
-	if (!s.invis
-	 && fl
-	 && s.trem1) {
+	if (fl && s.trem1) {
 		var	ntrem = s.ntrem || 0,
 			x1 = x;
 		slen = 3 * (s.notes[s.stem > 0 ? s.nhd : 0].pit - 18)
@@ -3720,11 +3675,6 @@ function next_scut(s) {
 	var prev = s
 
 	for (s = s.next; s; s = s.next) {
-//		if (s.type == BAR
-//		 && (s.bar_type[0] == ':'
-//			|| s.bar_type == "|]"
-//			|| s.bar_type == "[|"
-//			|| (s.text && s.text[0] != '1')))
 		if (s.rbstop)
 			return s
 		prev = s
@@ -3736,11 +3686,6 @@ function next_scut(s) {
 function prev_scut(s) {
 	while (s.prev) {
 		s = s.prev
-//		if (s.type == BAR
-//		 && (s.bar_type[0] == ':'
-//		  || s.bar_type == "|]"
-//		  || s.bar_type == "[|"
-//		  || (s.text && s.text[0] != '1')))
 		if (s.rbstart)
 			return s
 	}
@@ -3917,7 +3862,6 @@ function draw_slur(k1_o, k2, m1, m2, slur_type) {
 if (two_staves) error(2, k1, "*** multi-staves slurs not treated yet");
 
 	/* fix endpoints */
-//	x1 = k1.x + k1.xmx		/* take the max right side */
 	x1 = k1_o.x
 	if (k1_o.notes && k1_o.notes[0].shhd)
 		x1 += k1_o.notes[0].shhd
@@ -3928,7 +3872,6 @@ if (two_staves) error(2, k1, "*** multi-staves slurs not treated yet");
 	} else {		/* (the slur starts on last note of the line) */
 		for (k = k2.ts_next; k; k = k.ts_next)
 //fixme: must check if the staff continues
-//			if (k.new_sy)
 			if (k.type == STAVES)
 				break
 		x2 = k ? k.x : realwidth
@@ -4858,8 +4801,6 @@ function draw_note_ties(k1, k2, mhead1, mhead2, job) {
 				time = k1.time + k1.dur
 				for (k = k1.ts_next; k; k = k.ts_next)
 //(fixme: must check if the staff continues??)
-//					if (k.seqst || k.new_sy)
-//						break
 					if (k.time > time)
 						break
 				x2 = k ? k.x : realwidth
@@ -5008,7 +4949,7 @@ function tie_comb(s) {
 		if (s1.time > time)
 			return s		// bad tie
 	}
-	return null				// no ending tie
+	return //null				// no ending tie
 }
 
 /* -- draw all ties between neighboring notes -- */
@@ -5039,7 +4980,6 @@ function draw_all_ties(p_voice) {
 	}
 	s_rtie = p_voice.s_rtie			/* tie from 1st repeat bar */
 	for (s2 = s1; s2; s2 = s2.next) {
-//		if (s2.type == NOTE
 		if (s2.dur
 		 || s2.type == GRACE)
 			break
@@ -5058,7 +4998,6 @@ function draw_all_ties(p_voice) {
 		s1 = p_voice.s_tie;
 		p_voice.s_tie = null;
 		s1.st = s2.st;
-//		s1.ts_next = tsfirst.next;	/* (for tie to other voice) */
 		s1.ts_next = s2.ts_next;	/* (for tie to other voice) */
 		s1.time = s2.time - s1.dur;	/* (if after repeat sequence) */
 		draw_ties(s1, s2, 1)		/* tie to 1st note */
@@ -5081,9 +5020,6 @@ function draw_all_ties(p_voice) {
 			}
 			if (s1.bar_type == '|')
 				continue		// not a repeat
-//			if (s1.bar_type == '[')
-//			 && s1.prev.type != BAR)
-//				continue		// not a repeat
 			for (s2 = s1.next; s2; s2 = s2.next)
 				if (s2.type == NOTE)
 					break
@@ -5149,21 +5085,6 @@ function draw_all_ties(p_voice) {
 				clef_chg = true
 				continue
 			}
-//			if (s3.type == BAR) {
-//				if (s3.bar_type[0] == ':'
-//				 || s3.bar_type == "|]"
-//				 || s3.bar_type == "[|") {
-//					s2 = s3
-//					break
-//				}
-//				if (!s3.text)		// not a repeat bar
-//					continue
-//				if (s3.text[0] != '1') {
-//					s2 = s3
-//					break
-//				}
-//				s_rtie = s1		/* 1st repeat bar */
-//			}
 		}
 
 		/* ties with clef or staff change */
@@ -5273,6 +5194,7 @@ function draw_all_slurs(p_voice) {
  *   - guitar chords
  *   - staff decorations
  *   - lyrics
+ *   - measure numbers
  * The buffer output is delayed until the definition of the staff system
  */
 function draw_sym_near() {
@@ -5291,16 +5213,14 @@ function draw_sym_near() {
 					if (g.beam_st && !g.beam_end)
 						calculate_beam(bm, g)
 				}
-				continue
-			default:
-				continue
-			case NOTE:
 				break
-			}
-			if ((s.beam_st && !s.beam_end)
-			 || (first_note && !s.beam_st)) {
-				first_note = false;
-				calculate_beam(bm, s)
+			case NOTE:
+				if ((s.beam_st && !s.beam_end)
+				 || (first_note && !s.beam_st)) {
+					first_note = false;
+					calculate_beam(bm, s)
+				}
+				break
 			}
 		}
 	}
@@ -5466,8 +5386,6 @@ function draw_vname(indent) {
 		if (!p_voice.sym)
 			continue
 		st = cur_sy.voices[v].st
-//		if (!cur_sy.staves[st])
-//			continue
 		if (!cur_sy.st_print[st])
 			continue
 		if (p_voice.new_name) {
@@ -5484,8 +5402,6 @@ function draw_vname(indent) {
 		if (!p_voice.sym)
 			continue
 		st = cur_sy.voices[v].st
-//		if (!cur_sy.staves[st])
-//			continue
 		if (!cur_sy.st_print[st])
 			continue
 		if (p_voice.new_name)
@@ -5540,28 +5456,6 @@ function draw_vname(indent) {
 function set_staff() {
 	var	s, i, st, prev_staff, v,
 		y, staffsep, dy, maxsep, mbot, val, p_voice, p_staff
-//		empty = []
-
-//	/* search the empty staves in each parts */
-//	for (st = 0; st <= nstaff; st++) {
-//		staff_tb[st].empty = false;
-//		empty[st] = true
-//	}
-//	sy = cur_sy
-//	for (st = 0; st <= sy.nstaff; st++) {
-//		if (sy.st_print[st])
-//			empty[st] = false
-//	}
-////--fixme: could use sy.next with a stop flag
-//	for (s = tsfirst; s; s = s.ts_next) {
-//		if (s.type != STAVES)
-//			continue
-//		sy = sy.next
-//		for (st = 0; st <= sy.nstaff; st++) {
-//			if (sy.st_print[st])
-//				empty[st] = false
-//		}
-//	}
 
 	/* set the scale of the voices */
 	for (v = 0; v < voice_tb.length; v++) {
@@ -5573,10 +5467,8 @@ function set_staff() {
 
 	// search the top staff
 	for (st = 0; st <= nstaff; st++) {
-//		if (!empty[st])
 		if (gene.st_print[st])
 			break
-//		staff_tb[st].empty = true
 	}
 	y = 0
 	if (st > nstaff) {
@@ -5594,7 +5486,6 @@ function set_staff() {
 	/* draw the parts and tempo indications if any */
 	y += draw_partempo(st, y)
 
-//	if (empty[st])
 	if (!gene.st_print[st])
 		return y;
 
@@ -5613,10 +5504,6 @@ function set_staff() {
 	var sy_staff_prev = cur_sy.staves[prev_staff]
 	for (st++; st <= nstaff; st++) {
 		p_staff = staff_tb[st]
-//		if (empty[st]) {
-//			p_staff.empty = true
-//			continue
-//		}
 		if (!gene.st_print[st])
 			continue
 		staffsep = sy_staff_prev.sep || cfmt.sysstaffsep;
@@ -5676,7 +5563,6 @@ function set_staff() {
 
 	if (mbot == 0) {
 		for (st = nstaff; st >= 0; st--) {
-//			if (!empty[st])
 			if (gene.st_print[st])
 				break
 		}
@@ -5881,31 +5767,28 @@ function draw_systems(indent) {
 /* -- draw remaining symbols when the staves are defined -- */
 function draw_symbols(p_voice) {
 	var	bm = {},
-		s, g, x, y, st, first_note;
+		s, g, x, y, st;
 
 //	bm.s2 = undefined
-	first_note = true
 	for (s = p_voice.sym; s; s = s.next) {
 		if (s.invis
-		 && s.type != NOTE && s.type != REST
-		 && s.type != GRACE)
+		 && s.type != NOTE)	// (beams may start on invisible notes)
 			continue
 		x = s.x;
-//		if (s.color)
-			set_color(s.color)
+		set_color(s.color)
 		switch (s.type) {
 		case NOTE:
 //--fixme: recall set_scale if different staff
 			set_scale(s)
-			if ((s.beam_st && !s.beam_end)
-			 || (first_note && !s.beam_st)) {
-				first_note = false
+			if (s.beam_st && !s.beam_end) {
 				if (calculate_beam(bm, s))
 					draw_beams(bm)
 			}
-			anno_start(s);
-			draw_note(s, !bm.s2);
-			anno_stop(s)
+			if (!s.invis) {
+				anno_start(s);
+				draw_note(s, !bm.s2);
+				anno_stop(s)
+			}
 			if (s == bm.s2)
 				bm.s2 = null
 			break
@@ -5924,8 +5807,7 @@ function draw_symbols(p_voice) {
 			if (s.second)
 /*			 || p_voice.st != st)	*/
 				break		/* only one clef per staff */
-			if (s.invis
-			 || staff_tb[st].empty)
+			if (staff_tb[st].empty)
 				break
 			set_color(undefined);
 			set_sscale(st);
@@ -5951,7 +5833,6 @@ function draw_symbols(p_voice) {
 				xygl(x - 2, y, "oct")
 			}
 			anno_stop(s)
-//			set_scale(p_voice.sym)
 			break
 		case METER:
 			p_voice.meter = s
@@ -5965,7 +5846,6 @@ function draw_symbols(p_voice) {
 			anno_start(s);
 			draw_meter(x, s);
 			anno_stop(s)
-//			set_scale(p_voice.sym)
 			break
 		case KEY:
 			p_voice.key = s
@@ -5977,17 +5857,12 @@ function draw_symbols(p_voice) {
 			anno_start(s);
 			draw_keysig(p_voice, x, s);
 			anno_stop(s)
-//			set_scale(p_voice.sym)
 			break
 		case MREST:
 			set_scale(s);
 			x += 32;
 			anno_start(s);
 			xygl(x, staff_tb[s.st].y + 12, "mrest");
-//			output.push('<text style="font:bold 15px serif"\n\
-//	x ="');
-//			out_sxsy(x, '" y="', staff_tb[s.st].y + 28);
-//			output.push('" text-anchor="middle">' + s.nmes + '</text>\n')
 			out_XYAB('<text style="font:bold 15px serif"\n\
 	x ="X" y="Y" text-anchor="middle">A</text>\n',
 				x, staff_tb[s.st].y + 28, s.nmes);
@@ -6002,7 +5877,6 @@ function draw_symbols(p_voice) {
 			break			/* nothing */
 		case CUSTOS:
 			set_scale(s);
-//			s.stemless = true;
 			draw_note(s, 0)
 			break
 		case BLOCK:			// no width
@@ -6030,7 +5904,6 @@ function draw_all_sym() {
 	for (v = 0; v < n; v++) {
 		p_voice = voice_tb[v]
 		if (p_voice.sym
-//		 && !staff_tb[p_voice.st].empty)
 		 && p_voice.sym.x != undefined)
 			draw_symbols(p_voice)
 	}
@@ -6274,7 +6147,7 @@ Z "Transcription: "\n\
 H "History: "',
 	infospace: 0,
 	keywarn: true,
-	leftmargin: 1.7 * CM,
+	leftmargin: 1.4 * CM,
 	lineskipfac: 1.1,
 	linewarn: true,
 	maxshrink: .65,
@@ -6298,7 +6171,7 @@ H "History: "',
 //		vol: 0
 //	},
 	"print-leftmargin": 0,
-	rightmargin: 1.7 * CM,
+	rightmargin: 1.4 * CM,
 	rbdbstop: true,
 	rbmax: 4,
 	rbmin: 2,
@@ -6323,12 +6196,12 @@ H "History: "',
 	vocalspace: 10,
 //	voicecombine: 0,
 //	voicescale: 1,
-	writefields: "CMOPQTWw",
+	writefields: "CMOPQsTWw",
 	wordsspace: 5
 }
 
 // exported function: return a parameter value
-this.get_fmt = function(k) {
+Abc.prototype.get_fmt = function(k) {
 	return cfmt[k]
 }
 
@@ -7617,9 +7490,10 @@ function tosvg(in_fname,		// file name
 
 		// info fields in tune body only
 		case 's':
-			if (parse.state != 3)
+			if (parse.state != 3
+			 || cfmt.writefields.indexOf(line0) < 0)
 				break
-//--fixme: to do
+			get_sym(text, txt_add == ' ')
 			break
 		case 'w':
 			if (parse.state != 3
@@ -8727,7 +8601,8 @@ function set_space(s) {
 	while (!s.dur) {
 		switch (s.type) {
 		case BAR:
-			return space * .6
+			// (hack to have quite the same note widths between measures)
+			return space * .9 - 7
 		case CLEF:
 			return space - s.wl
 		case BLOCK:			// no space
@@ -8779,6 +8654,24 @@ function set_space(s) {
 	return space
 }
 
+// create an invisible bar for end of music lines
+function add_end_bar(s) {
+	return {
+		type: BAR,
+		bar_type: "|",
+		ctx: s.ctx,
+		istart: s.istart,
+		iend: s.iend,
+		v: s.v,
+		p_v: s.p_v,
+		st: s.st,
+		dur: 0,
+		seqst: true,
+		invis: true
+//,wl:0,wr:0
+	}
+}
+
 /* -- set the width and space of all symbols -- */
 /* this function is called once for the whole tune
  * then, once per music line up to the first sequence */
@@ -8795,10 +8688,7 @@ function set_allsymwidth(last_s) {
 
 		do {
 			set_width(s)
-			if (xl[s.st])
-				new_val = xl[s.st] + s.wl
-			else
-				new_val = s.wl
+			new_val = (xl[s.st] || 0) + s.wl
 			if (new_val > maxx)
 				maxx = new_val;
 			s = s.ts_next
@@ -8815,7 +8705,7 @@ function set_allsymwidth(last_s) {
 			s2.time = s2.ts_prev.time
 		}
 		if (s == last_s)
-			return
+			break
 
 		// update the min left space per staff
 		xa = maxx;
@@ -8826,6 +8716,28 @@ function set_allsymwidth(last_s) {
 			s = s.ts_next
 		} while (!s.seqst)
 	}
+
+	// if the last symbol of the tune is not a bar, add some extra space
+	if (last_s)
+		return
+	xa = 0
+	for (s = s2; ; s = s.ts_next) {
+		if (s.type == BAR)
+			return
+		if (s.wr > xa)
+			xa = s.wr
+		if (!s.ts_next)
+			break
+	}
+	if (s.wr > xa)
+		xa = s.wr;
+	s2 = add_end_bar(s);
+	s2.prev = s2.ts_prev = s;
+	s.ts_next = s.next = s2;
+	s2.time = s.time + s.dur;
+	s2.shrink = xa;
+	s.eoln = false;
+	s2.space = set_space(s2)
 }
 
 /* change a symbol into a rest */
@@ -9317,11 +9229,6 @@ function set_lines(	s,		/* first symbol */
 				s2 = s3
 			if (s2)
 				s = s2
-			while (!s.x || s.x + s.shrink * 2 >= xmax) {
-				if (!s.ts_prev || s.ts_prev.nl) // don't go backwards
-					break
-				s = s.ts_prev
-			}
 		}
 
 		if (s.nl) {		/* already set here - advance */
@@ -11795,6 +11702,21 @@ function set_piece() {
 		p_voice.s_next = p_voice.sym;
 		p_voice.sym = null
 	}
+
+	// if the last symbol is not a bar, add an invisible bar
+	if (tsnext.ts_prev.type != BAR) {
+	    var	s2 = tsnext.ts_prev;
+		while (!s2.seqst)
+			s2 = s2.ts_prev;
+		s = tsfirst;
+		tsfirst = s2;
+	    var sh = s2.shrink,
+		sp = s2.space;
+		set_allsymwidth();
+		s2.shrink = sh;
+		s2.space = sp;
+		tsfirst = s
+	}
 }
 
 /* -- position the symbols along the staff -- */
@@ -11808,8 +11730,8 @@ function set_sym_glue(width) {
 		x = 0
 
 	while (1) {
-		if (s.type == GRACE)
-			some_grace = true
+		if (s.type == GRACE && !some_grace)
+			some_grace = s
 		if (s.seqst) {
 			space = s.space;
 			xmin += s.shrink
@@ -11893,38 +11815,6 @@ function set_sym_glue(width) {
 		s = s.ts_next
 	}
 
-	/* if the last symbol is not a bar, add some extra space */
-	switch (s.type) {
-	case BAR:
-	case SPACE:
-		break
-	case CUSTOS:
-		x += s.wr;
-		xmin += s.wr;
-		xmax += s.wr
-		break
-	default:
-		min = s.wr
-		while (!s.seqst) {
-			s = s.ts_prev
-			if (s.wr > min)
-				min = s.wr
-		}
-		xmin += min
-		if (tsnext && tsnext.space * .8 > s.wr + 4) {
-			x += tsnext.space * .8 * spafac;
-			xmax += tsnext.space * .8 * spafac * 1.8
-		} else if (s.dur) {
-			min += 10;
-			x += min + s.shrink;
-			xmax += min + s.space
-		} else {
-			x += min;
-			xmax += min
-		}
-		break
-	}
-
 	/* calculate the exact glue */
 	if (x >= width) {
 		beta = 0
@@ -11986,18 +11876,16 @@ function set_sym_glue(width) {
 	}
 
 	/* set the x offsets of the grace notes */
-	if (some_grace) {
-		for (s = tsfirst; s; s = s.ts_next) {
-			if (s.type != GRACE)
-				continue
-			if (s.gr_shift)
-				x = s.prev.x + s.prev.wr
-					+ Number(cfmt.gracespace[0])
-			else
-				x = s.x - s.wl + Number(cfmt.gracespace[0])
-			for (g = s.extra; g; g = g.next)
-				g.x += x
-		}
+	for (s = some_grace; s; s = s.ts_next) {
+		if (s.type != GRACE)
+			continue
+		if (s.gr_shift)
+			x = s.prev.x + s.prev.wr
+				+ Number(cfmt.gracespace[0])
+		else
+			x = s.x - s.wl + Number(cfmt.gracespace[0])
+		for (g = s.extra; g; g = g.next)
+			g.x += x
 	}
 }
 
@@ -12044,9 +11932,11 @@ function gen_init(page_chg) {
 			return
 		}
 		switch (s.type) {
-//		case CLEF:
-//		case KEY:
-//		case METER:
+		case NOTE:
+		case REST:
+		case MREST:
+			set_page()
+			return
 		default:
 			continue
 		case STAVES:
@@ -12178,11 +12068,12 @@ function output_music() {
 		if (!tsnext)
 			break
 
+		blk_out();
+
 		// next line
 		gen_init()
 		if (!tsfirst)
 			break
-		blk_out();
 		tsfirst.ts_prev = null;
 		set_sym_line();
 		lwidth = get_lwidth()	// the image size may have changed
@@ -12318,7 +12209,7 @@ function new_clef(clef_def) {
 }
 
 // get a transposition value
-var pit_st = [0, 2, 4, 5, 7, 9, 11]
+var pit_st = new Int8Array([0, 2, 4, 5, 7, 9, 11])
 
 function get_transp(param,
 			type) {		// undefined or "instr"
@@ -12537,14 +12428,6 @@ function new_block(subtype) {
 	return s
 }
 
-function next_word(parm, i) {
-	while (parm[i] && parm[i] != ' ')
-		i++
-	while (parm[i] == ' ')
-		i++
-	return i
-}
-
 // set the K: / V: parameters
 function set_kv_parm(a) {	// array of items
 	var	s, item, pos, val
@@ -12702,9 +12585,7 @@ function new_key(param) {
 	switch (param[0]) {
 	case 'A': s.k_sf = 3; break
 	case 'B': s.k_sf = 5; break
-	case 'C':
-		s.k_sf = 0
-		break
+	case 'C': s.k_sf = 0; break
 	case 'D': s.k_sf = 2; break
 	case 'E': s.k_sf = 4; break
 	case 'F': s.k_sf = -1; break
@@ -12801,20 +12682,13 @@ function new_key(param) {
 				var note = parse_acc_pit(tmp)
 				if (!note)
 					return [s, null]
-//				var acc = {
-//					pit: note.pit,
-//					acc: note.acc
-//				}
 				s.k_a_acc.push(note);
-//				c = tmp.char()
 				c = param[tmp.index]
 				while (c == ' ')
-//					c = tmp.next_char()
 					c = param[++tmp.index]
 			} while (c == '^' || c == '_' || c == '=');
 			param = param.slice(tmp.index)
 		} else if (s.k_exp && param.indexOf("none") == 0) {
-//			s.k_a_acc = [];
 			s.k_sf = 0;
 			param = param.replace(/\w+\s*/, '')
 		}
@@ -12839,7 +12713,7 @@ function new_meter(text) {
 		i = 0, j,
 		wmeasure,
 		p = text,
-		in_parenth
+		in_parenth;
 
 	set_ref(s)
 
@@ -13032,31 +12906,24 @@ function new_tempo(text) {
 
 	/* tempo value */
 	if (c == '=') {
-//		c = tmp.next_char()
 		c = text[++tmp.index]
 		while (c == ' ')
-//			c = tmp.next_char();
-		c = text[++tmp.index];
+			c = text[++tmp.index];
 		i = tmp.index
 		if (c == 'c' && text[i + 1] == 'a'
 		 && text[i + 2] == '.' && text[i + 3] == ' ') {
 			s.tempo_ca = 'ca. ';
 			tmp.index += 4;
-//			c = tmp.char()
-			c = text[tmp.index]
+//			c = text[tmp.index]
 		}
-//		if (c > '0' && c <= '9') {
-//fixme: if "n/d", 'n' may be > 9 - not treated
 		if (text[tmp.index + 1] != '/') {
 			s.tempo = tmp.get_int()
 		} else {
 			nd = parse_dur(tmp);
 			s.new_beat = BASE_LEN * nd[0] / nd[1]
 		}
-//		c = tmp.char()
 		c = text[tmp.index]
 		while (c == ' ')
-//			c = tmp.next_char()
 			c = text[++tmp.index]
 	}
 
@@ -13286,7 +13153,6 @@ function new_bar() {
 			type: BAR,
 			ctx: parse.ctx,
 			istart: parse.bol + line.index,
-//			iend: parse.iend,
 			dur: 0,
 			multi: 0		// needed for decorations
 		}
@@ -13318,8 +13184,6 @@ function new_bar() {
 			s.rbstop = 2		// right repeat with end
 		}
 	}
-
-/*	curvoice.last_note = null; */
 
 	// set the guitar chord and the decorations
 	if (a_gch)
@@ -13406,7 +13270,6 @@ function new_bar() {
 
 		/* remove the invisible repeat bars when no shift is needed */
 		if (bar_type == "["
-//		 && (curvoice.v == par_sy.top_voice
 		 && !s2.text && !s2.a_gch
 		 && (curvoice.st == 0
 		  || (par_sy.staves[curvoice.st - 1].flags & STOP_BAR)
@@ -13465,6 +13328,8 @@ function new_bar() {
 	s.bar_type = bar_type
 	if (!curvoice.lyric_restart)
 		curvoice.lyric_restart = s
+	if (!curvoice.sym_restart)
+		curvoice.sym_restart = s
 
 	/* the bar must appear before a key signature */
 	if (s2 && s2.type == KEY
@@ -13486,8 +13351,6 @@ function new_bar() {
 	 && !curvoice.norepbra
 	 && curvoice.st > 0
 	 && !(par_sy.staves[curvoice.st - 1].flags & STOP_BAR)) {
-// ko: always shift!
-//	if (s.text) {
 		s2 = {
 			type: BAR,
 			ctx: s.ctx,
@@ -13638,7 +13501,7 @@ function parse_staves(p) {
 		err = true
 	}
 	if (err || a_vf.length == 0)
-		return null
+		return //null
 	return a_vf
 }
 
@@ -13658,8 +13521,6 @@ function info_split(text) {
 				break
 			}
 			item += '=';
-//			if (a.length < start)
-//				break
 			a.push(item);
 			item = ""
 			break
@@ -13709,7 +13570,6 @@ function identify_note(s, dur) {
 	if (dur % 12 != 0)
 		syntax(1, "Invalid note duration $1", dur);
 	dur /= 12			/* see BASE_LEN for values */
-//	dur = Math.round(dur / 12)
 	if (dur == 0)
 		syntax(1, "Note too short")
 	for (flags = 5; dur != 0; dur >>= 1, flags--) {
@@ -13896,7 +13756,7 @@ function parse_basic_note(line, ulen) {
 		note = parse_acc_pit(line)
 
 	if (!note)
-		return null
+		return //null
 
 	// duration
 	if (line.char() == '0') {		// compatibility
@@ -13926,9 +13786,9 @@ function parse_vpos() {
 	return ti1 + SL_AUTO
 }
 
-var	cde2fcg = [0, 2, 4, -1, 1, 3, 5],
-	cgd2cde = [0, 4, 1, 5, 2, 6, 3],
-	acc2 = [-2, -1, 3, 1, 2]
+var	cde2fcg = new Int8Array([0, 2, 4, -1, 1, 3, 5]),
+	cgd2cde = new Int8Array([0, 4, 1, 5, 2, 6, 3]),
+	acc2 = new Int8Array([-2, -1, 3, 1, 2])
 
 /* transpose a note / chord */
 function note_transp(s) {
@@ -13976,7 +13836,6 @@ function note_transp(s) {
 		if (a && a != 3)				// ! natural
 			i3 += a * 7;
 
-//		i1 = (Math.floor((i3 + 1 + 21) / 7) + 2 - 3 + 32 * 5) % 5;
 		i1 = ((((i3 + 1 + 21) / 7) | 0) + 2 - 3 + 32 * 5) % 5;
 		a = acc2[i1]
 		if (note.acc) {
@@ -13999,8 +13858,8 @@ function note_transp(s) {
 		}
 		i1 = note.acc;
 		d = note.micro_d
-		if (d					/* microtone */
-		 && i1 != a) {				/* different accidental type */
+		if (d				/* microtone */
+		 && i1 != a) {			/* different accidental type */
 			n = note.micro_n
 //fixme: double sharps/flats ?*/
 //fixme: does not work in all cases (tied notes, previous accidental)
@@ -14044,11 +13903,9 @@ function note_transp(s) {
 
 /* sort the notes of the chord by pitch (lowest first) */
 function sort_pitch(s) {
-	function pitch_compare(n1, n2) {
-		return n1.pit - n2.pit
-	}
-
-	s.notes = s.notes.sort(pitch_compare)
+	s.notes = s.notes.sort(function(n1, n2) {
+			return n1.pit - n2.pit
+		})
 }
 function new_note(grace, tp_fact) {
 	var	note, s, in_chord, c, dcn, type,
@@ -14062,14 +13919,11 @@ function new_note(grace, tp_fact) {
 	s = {
 		type: NOTE,
 		ctx: parse.ctx,
-//temporary
-//		istart: parse.istart,
 		stem: 0,
 		multi: 0,
 		nhd: 0,
 		xmx: 0
 	}
-//temporary
 	s.istart = parse.bol + line.index
 
 	if (curvoice.color)
@@ -14093,10 +13947,7 @@ function new_note(grace, tp_fact) {
 	case 'Z':
 		s.type = MREST;
 		c = line.next_char()
-		if (c > '0' && c <= '9')
-			s.nmes = line.get_int()
-		else
-			s.nmes = 1;
+		s.nmes = (c > '0' && c <= '9') ? line.get_int() : 1;
 		s.dur = curvoice.wmeasure * s.nmes
 
 		// ignore if in second voice
@@ -14169,7 +14020,7 @@ function new_note(grace, tp_fact) {
 								c = line.next_char()
 								if (!c || c == '%') {
 									syntax(1, "No end of decoration")
-									return null
+									return //null
 								}
 								if (c == '!')
 									break
@@ -14187,7 +14038,7 @@ function new_note(grace, tp_fact) {
 					(s.grace || curvoice.ulen < 0) ?
 						BASE_LEN / 4 : curvoice.ulen)
 			if (!note)
-				return null
+				return //null
 
 			// transpose
 			if (curvoice.octave)
@@ -14260,7 +14111,7 @@ function new_note(grace, tp_fact) {
 	}
 	if (s.grace && s.type != NOTE) {
 		syntax(1, "Not a note in grace note sequence")
-		return null
+		return //null
 	}
 
 	if (s.notes) {				// if note or rest
@@ -14371,18 +14222,17 @@ function new_note(grace, tp_fact) {
 
 	if (cfmt.shiftunison)
 		s.shiftunison = cfmt.shiftunison
-	if (!curvoice.lyric_restart && !s.grace)
-		curvoice.lyric_restart = s
-
-//	if (curvoice.clef.clef_type == 'p')
-//		s.perc = true
+	if (!grace) {
+		if (!curvoice.lyric_restart)
+			curvoice.lyric_restart = s
+		if (!curvoice.sym_restart)
+			curvoice.sym_restart = s
+	}
 
 	if (a_dcn_sav)
 		deco_cnv(a_dcn_sav, s, s.prev)
 	if (parse.stemless)
 		s.stemless = true
-//temporary
-//	s.iend = parse.iend
 	s.iend = parse.bol + line.index
 	return s
 }
@@ -14428,7 +14278,7 @@ var char_tb = [
 ]
 
 function parse_music_line() {
-	var	s, grace, sappo, dcn, i, c, idx, type, n, text,
+	var	s, grace, sappo, dcn, i, c, idx, type, n, text, k,
 		last_note_sav, a_dcn_sav, no_eol,
 		tp_a = [], tp,
 		tpn = -1,
@@ -14480,11 +14330,13 @@ function parse_music_line() {
 
 	// play the macro game
 	for (k in mac) {
-	    if (mac.hasOwnProperty(k))
+		if (!mac.hasOwnProperty(k)
+		 || line.buffer.indexOf(k[0]) < 0)
+			continue
 		if (k.indexOf('.') >= 0)		// dynamic
 			line.buffer = expand(line.buffer, k)
-		else
-			line.buffer = line.buffer.replace(k, mac[k])
+		else if (line.buffer.indexOf(k) >= 0)
+			line.buffer = line.buffer.replace(new RegExp(k, 'g'), mac[k])
 	}
 
 	while (1) {
@@ -14599,7 +14451,7 @@ function parse_music_line() {
 				}
 			}
 			if (!s) {
-				syntax(1, "Bad character ')'")
+				syntax(1, "Bad character '$1'", c)
 				break
 			}
 			if (s.slur_end)
@@ -14784,7 +14636,6 @@ function parse_music_line() {
 			grace = {
 				type: GRACE,
 				ctx: parse.ctx,
-//temporary
 				istart: parse.bol + line.index,
 				dur: 0,
 				multi: 0
@@ -14814,7 +14665,7 @@ function parse_music_line() {
 		case '}':
 			s = curvoice.last_note
 			if (!grace || !s) {
-				syntax(1, "Bad character '}'")
+				syntax(1, "Bad character '$1'", c)
 				break
 			}
 			if (a_dcn)
@@ -14915,7 +14766,7 @@ function parse_music_line() {
 /* these are the widths for Times-Roman, extracted from the 'a2ps' package */
 /*fixme-hack: set 500 to control characters for utf-8*/
 
-var cw_tb = [
+var cw_tb = new Float32Array([
 	.500,.500,.500,.500,.500,.500,.500,.500,	// 00
 	.500,.500,.500,.500,.500,.500,.500,.500,
 	.500,.500,.500,.500,.500,.500,.500,.500,	// 10
@@ -14932,7 +14783,7 @@ var cw_tb = [
 	.500,.278,.278,.500,.278,.778,.500,.500,
 	.500,.500,.333,.389,.278,.500,.500,.722,	// 70
 	.500,.500,.444,.480,.200,.480,.541,.500
-]
+])
 
 /* -- return the character width -- */
 function cwid(c) {
@@ -15143,7 +14994,7 @@ function write_text(text, action) {
 	var	strlw = get_lwidth(),
 		lineskip = gene.curfont.size * cfmt.lineskipfac,
 		parskip = gene.curfont.size * cfmt.parskipfac,
-		i, j, x
+		i, j, x, words, w, k, ww
 	switch (action) {
 	default:
 //	case 'c':
@@ -15181,7 +15032,6 @@ function write_text(text, action) {
 		break
 	case 'f':
 	case 'j':
-		var words
 		j = 0
 		while (1) {
 			i = text.indexOf('\n\n', j)
@@ -15189,17 +15039,18 @@ function write_text(text, action) {
 				words = text.slice(j)
 			else
 				words = text.slice(j, i);
-			words = words.split(/\s+/)
-			var w = 0, k = 0
+			words = words.split(/\s+/);
+			w = k = 0
 			for (j = 0; j < words.length; j++) {
-				w += strw(words[j] + ' ')
+				ww = strw(words[j] + ' ');
+				w += ww
 				if (w >= strlw) {
 					vskip(lineskip);
 					xy_str(0, 0,
 						words.slice(k, j).join(' '),
 						action, strlw);
 					k = j;
-					w = 0
+					w = ww
 				}
 			}
 			if (w != 0) {
@@ -15687,7 +15538,7 @@ function write_heading() {
 // generate a header/footer
 // (this function is not called from the core)
 // return an array of [left, center, right] texts
-this.header_footer = function(str) {
+Abc.prototype.header_footer = function(str) {
 	var	c, i,
 		j = 0,
 		r = ["", "", ""]
@@ -15786,59 +15637,59 @@ var	output = [],		// output buffer
 
 // glyphs in music font
 var tgls = {
-  sgno: {x: -6, y:4, c:"&#xe047;"},
-  coda: {x:-12, y:6, c:"&#xe048;"},
-  tclef: {x:-8, y:0, c:"&#xe050;"},
-  cclef: {x:-8, y:0, c:"&#xe05c;"},
-  bclef: {x:-8, y:0, c:"&#xe062;"},
-  pclef: {x:-6, y:0, c:"&#xe069;"},
-  stclef: {x:-8, y:0, c:"&#xe07a;"},
-  scclef: {x:-8, y:0, c:"&#xe07b;"},
-  sbclef: {x:-7, y:0, c:"&#xe07c;"},
-  csig: {x:0, y:0, c:"&#xe08a;"},
-  ctsig: {x:0, y:0, c:"&#xe08b;"},
-  HDD: {x:-7, y:0, c:"&#xe0a0;"},
-  breve: {x:-6, y:0, c:"&#xe0a1;"},
-  HD: {x:-5.2, y:0, c:"&#xe0a2;"},
-  Hd: {x:-3.8, y:0, c:"&#xe0a3;"},
-  hd: {x:-3.7, y:0, c:"&#xe0a4;"},
-  srep: {x:-5, y:0, c:"&#xe101;"},
-  dot: {x:-2, y:0, c:"&#xe1e7;"},
- "acc-1": {x:-3, y:0, c:"&#xe260;"},
-  acc3: {x:-2, y:0, c:"&#xe261;"},
-  acc1: {x:-3, y:0, c:"&#xe262;"},
-  acc2: {x:-3, y:0, c:"&#xe263;"},
-  pshhd: {x:-3, y:0, c:"&#xe263;"},
- "acc-2": {x:-3, y:0, c:"&#xe264;"},
-  accent: {x:-3, y:0, c:"&#xe4a0;"},
-  marcato: {x:-3, y:0, c:"&#xe4ac;"},
-  hld: {x:-7, y:0, c:"&#xe4c0;"},
-  r00: {x:-1.5, y:0, c:"&#xe4e1;"},
-  r0: {x:-1.5, y:0, c:"&#xe4e2;"},
-  r1: {x:-3.5, y:6, c:"&#xe4e3;"},
-  r2: {x:-3.2, y:0, c:"&#xe4e4;"},
-  r4: {x:-3, y:0, c:"&#xe4e5;"},
-  r8: {x:-3, y:0, c:"&#xe4e6;"},
-  r16: {x:-4, y:0, c:"&#xe4e7;"},
-  r32: {x:-4, y:0, c:"&#xe4e8;"},
-  r64: {x:-4, y:0, c:"&#xe4e9;"},
-  r128: {x:-4, y:0, c:"&#xe4ea;"},
-  mrest: {x:-10, y:0, c:"&#xe4ee;"},
-  mrep: {x:-6, y:0, c:"&#xe500;"},
-  mrep2: {x:-9, y:0, c:"&#xe501;"},
-  turn: {x:-5, y:4, c:"&#xe567;"},
-  umrd: {x:-7, y:2, c:"&#xe56c;"},
-  lmrd: {x:-7, y:2, c:"&#xe56d;"},
-  ped: {x:-10, y:0, c:"&#xe650;"},
-  pedoff: {x:-5, y:0, c:"&#xe655;"},
-  longa: {x:-6, y:0, c:"&#xe95c;"}
+  sgno: {x: -6, y:4, c:"\ue047"},
+  coda: {x:-12, y:6, c:"\ue048"},
+  tclef: {x:-8, y:0, c:"\ue050"},
+  cclef: {x:-8, y:0, c:"\ue05c"},
+  bclef: {x:-8, y:0, c:"\ue062"},
+  pclef: {x:-6, y:0, c:"\ue069"},
+  stclef: {x:-8, y:0, c:"\ue07a"},
+  scclef: {x:-8, y:0, c:"\ue07b"},
+  sbclef: {x:-7, y:0, c:"\ue07c"},
+  csig: {x:0, y:0, c:"\ue08a"},
+  ctsig: {x:0, y:0, c:"\ue08b"},
+  HDD: {x:-7, y:0, c:"\ue0a0"},
+  breve: {x:-6, y:0, c:"\ue0a1"},
+  HD: {x:-5.2, y:0, c:"\ue0a2"},
+  Hd: {x:-3.8, y:0, c:"\ue0a3"},
+  hd: {x:-3.7, y:0, c:"\ue0a4"},
+  srep: {x:-5, y:0, c:"\ue101"},
+  dot: {x:-2, y:0, c:"\ue1e7"},
+ "acc-1": {x:-3, y:0, c:"\ue260"},
+  acc3: {x:-2, y:0, c:"\ue261"},
+  acc1: {x:-3, y:0, c:"\ue262"},
+  acc2: {x:-3, y:0, c:"\ue263"},
+  pshhd: {x:-3, y:0, c:"\ue263"},
+ "acc-2": {x:-3, y:0, c:"\ue264"},
+  accent: {x:-3, y:0, c:"\ue4a0"},
+  marcato: {x:-3, y:0, c:"\ue4ac"},
+  hld: {x:-7, y:0, c:"\ue4c0"},
+  r00: {x:-1.5, y:0, c:"\ue4e1"},
+  r0: {x:-1.5, y:0, c:"\ue4e2"},
+  r1: {x:-3.5, y:6, c:"\ue4e3"},
+  r2: {x:-3.2, y:0, c:"\ue4e4"},
+  r4: {x:-3, y:0, c:"\ue4e5"},
+  r8: {x:-3, y:0, c:"\ue4e6"},
+  r16: {x:-4, y:0, c:"\ue4e7"},
+  r32: {x:-4, y:0, c:"\ue4e8"},
+  r64: {x:-4, y:0, c:"\ue4e9"},
+  r128: {x:-4, y:0, c:"\ue4ea"},
+  mrest: {x:-10, y:0, c:"\ue4ee"},
+  mrep: {x:-6, y:0, c:"\ue500"},
+  mrep2: {x:-9, y:0, c:"\ue501"},
+  turn: {x:-5, y:4, c:"\ue567"},
+  umrd: {x:-7, y:2, c:"\ue56c"},
+  lmrd: {x:-7, y:2, c:"\ue56d"},
+  ped: {x:-10, y:0, c:"\ue650"},
+  pedoff: {x:-5, y:0, c:"\ue655"},
+  longa: {x:-6, y:0, c:"\ue95c"}
 }
 
 // glyphs to put in <defs>
 var glyphs = {
-  brace: '<text id="brace">&#xe000;</text>',
+  brace: '<text id="brace">\ue000</text>',
   ghd: '<g id="ghd" transform="translate(4.5,0) scale(0.66)">\n\
-	<text x="-3.7">&#xe0a4;</text>\n\
+	<text x="-3.7">\ue0a4</text>\n\
 </g>',
   acc1_1_4: '<g id="acc1_1_4">\n\
 	<path d="m0 7.8v-15.4" class="stroke"/>\n\
@@ -15851,7 +15702,7 @@ var glyphs = {
 		M-3.7 -3.2l7.4 -2.2v2.2l-7.4 2.2v-2.2"/>\n\
 </g>',
  "acc-1_1_4": '<g id="acc-1_1_4" transform="scale(-1,1)">\n\
-	<text x="-3">&#xe260;</text>\n\
+	<text x="-3">\ue260</text>\n\
 </g>',
  "acc-1_3_4": '<g id="acc-1_3_4">\n\
     <path class="fill" d="m0.6 -2.7\n\
@@ -15860,11 +15711,11 @@ var glyphs = {
     <path d="m1.6 3.5v-13M0 3.5v-13" class="stroke" stroke-width=".6"/>\n\
 </g>',
   turnx: '<g id="turnx">\n\
-	<text x="-5" y="-4">&#xe567;</text>\n\
+	<text x="-5" y="-4">\ue567</text>\n\
 	<path class="stroke" d="m0 -1.5v-9"/>\n\
 </g>',
   pfthd: '<g id="pfthd">\n\
-	<text x="-3">&#xe263;</text>\n\
+	<text x="-3">\ue263</text>\n\
 	<circle r="4" class="stroke"/>\n\
 </g>',
   pmsig: '<path id="pmsig" class="stroke" stroke-width="0.8"\n\
@@ -16066,11 +15917,8 @@ function set_sscale(st) {
 	var	new_scale, dy
 
 	if (st != stv_g.st && stv_g.scale != 1)
-		stv_g.scale = 0
-	if (st >= 0)
-		new_scale = staff_tb[st].staffscale
-	else
-		new_scale = 1
+		stv_g.scale = 0;
+	new_scale = st >= 0 ? staff_tb[st].staffscale : 1
 	if (st >= 0 && new_scale != 1)
 		dy = staff_tb[st].y
 	else
@@ -16126,7 +15974,7 @@ function delayed_update() {
 					(posy - staff_tb[st].y).toFixed(2) +
 					') scale(' +
 					 staff_tb[st].staffscale.toFixed(2) +
-					')">\n')
+					')">\n');
 			output.push(staff_tb[st].sc_out.join(''));
 			output.push('</g>\n');
 			staff_tb[st].sc_out = []
@@ -16160,16 +16008,9 @@ function anno_out(s, t, f) {
 	if (s.grace)
 		type = GRACE
 
-//fixme: removed for bad x,y with %%voicescale
-//	if (stv_g.started) {		// protection against end of container
-//		stv_g.started = false;
-//		output.push("</g>\n")
-//	}
-
 	f(t || anno_type[type], s.istart, s.iend,
 		s.x - wl - 2, staff_tb[s.st].y + s.ymn + h - 2,
 		wl + wr + 4, h, s);
-//	set_g()
 }
 
 function a_start(s, t) {
@@ -16178,10 +16019,10 @@ function a_start(s, t) {
 function a_stop(s, t) {
 	anno_out(s, t, user.anno_stop)
 }
-// These pointers are reset to empty functions at init time
-// if no user.anno_{start,stop} (see abc2svg_init)
-var	anno_start = a_start,
-	anno_stop = a_stop
+function empty_function() {
+}
+var	anno_start = user.anno_start ? a_start : empty_function,
+	anno_stop = user.anno_stop ? a_stop : empty_function
 
 // output a string with x, y, a and b
 // In the string,
@@ -16190,7 +16031,7 @@ var	anno_start = a_start,
 //	F and G are replaced by a and b as float
 function out_XYAB(str, x, y, a, b) {
 	x = sx(x);
-	y = sy(y)
+	y = sy(y);
 	output.push(str.replace(/X|Y|A|B|F|G/g, function(c) {
 		switch (c) {
 		case 'X': return x.toFixed(2)
@@ -16518,6 +16359,11 @@ sfz:
 		dx: 0,
 		dy: 5,
 		style: 'style="font:bold italic 14px serif"'
+	},
+'@':	{
+		dx: 0,
+		dy: 5,
+		style: 'style="font:12px sans-serif"'
 	}
 }
 
@@ -16527,7 +16373,7 @@ function out_deco_str(x, y, name, str) {
 
 	if (!a_deco) {
 		error(1, null, 'no definition of $1', name);
-		a_deco = deco_str_style.fng
+		a_deco = deco_str_style['@']
 	}
 	x += a_deco.dx;
 	y += a_deco.dy;
@@ -16690,7 +16536,7 @@ function out_gliss(x2, y2, de) {
 
 	g_open(x1, y1, a);
 	x1 = de1.s.dots ? 13 + de1.s.xmx : 8;
-	len -= x1 + 8
+	len -= x1 + 8;
 	xypath(x1, 0);
 	output.push('l' + len.toFixed(2) + ' 0" stroke-width="1"/>\n');
 	g_close()
@@ -16717,19 +16563,10 @@ function vskip(h) {
 
 // create the SVG image of the block
 function svg_flush() {
-//	var img_title, head
 	var head
 
 	if (multicol || output.length == 0 || !user.img_out || posy == 0)
 		return
-//	if (info.X) {
-//		img_title = info.X + '.'
-//		if (info.T)
-//			img_title += ' ' + info.T.split('\n')[0]
-//		img_title = clean_txt(img_title)
-//	} else {
-//		img_title = 'noname'
-//	}
 	posy *= cfmt.scale
 
 	if (user.imagesize) {
@@ -16739,14 +16576,12 @@ function svg_flush() {
 			user.imagesize +
 			' viewBox="0 0 ' + cfmt.pagewidth.toFixed(0) + ' ' +
 			 posy.toFixed(0) + '">\n'
-//<title>abc2svg - ' + img_title + '</title>\n'
 	} else {
 		head = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
 	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
 	color="black"\n\
 	width="' + cfmt.pagewidth.toFixed(0) +
 			'px" height="' + posy.toFixed(0) + 'px">\n'
-//<title>abc2svg - ' + img_title + '</title>\n'
 	}
 
 	if (style || font_style || musicfont) {
@@ -16768,11 +16603,9 @@ function svg_flush() {
 		head += '<g class="music" stroke-width=".7" transform="scale(' +
 				cfmt.scale.toFixed(2) + ')">\n';
 
-	if (typeof svgobj == 'object') {	// if PostScript support
-		svgobj.setg(0);
-		output.push(svgbuf);
-		svgbuf = ''
-	}
+	if (psvg)			// if PostScript support
+		psvg.ps_flush(true);	// + setg(0)
+
 	user.img_out(head + output.join('') + "</g>\n</svg>");
 	output = []
 
@@ -16842,7 +16675,7 @@ var	par_sy,		// current staff system for parse
 
 /* apply the %%voice options of the current voice */
 function voice_filter() {
-	var opt, sel, tmp, i
+	var opt, sel, i
 
 	for (opt in parse.voice_opts) {
 		if (!parse.voice_opts.hasOwnProperty(opt))
@@ -17117,7 +16950,7 @@ function sort_all() {
 
 // adjust some voice elements
 function voice_adj() {
-	var p_voice, s, s2, s3, v
+	var p_voice, s, s2, v
 
 	// set the duration of the notes under a feathered beam
 	function set_feathered_beam(s1) {
@@ -17167,14 +17000,17 @@ function voice_adj() {
 	if (s && staves_found <= 0) {	// && !s.del) {		- play problem
 		v = par_sy.top_voice;
 		p_voice = voice_tb[v];
-		s.v = v;
-		s.p_v = p_voice;
-		s.st = p_voice.st;
-		s.time = 0;
-		s.next = p_voice.sym
-		if (s.next)
-			s.next.prev = s;
-		p_voice.sym = s
+		if (p_voice.sym && p_voice.sym.type != TEMPO) {
+			s = clone(s);
+			s.v = v;
+			s.p_v = p_voice;
+			s.st = p_voice.st;
+			s.time = 0;
+			s.next = p_voice.sym
+			if (s.next)
+				s.next.prev = s;
+			p_voice.sym = s
+		}
 	}
 
 	for (v = 0; v < voice_tb.length; v++) {
@@ -17187,33 +17023,6 @@ function voice_adj() {
 		}
 		for ( ; s; s = s.next) {
 			switch (s.type) {
-//			case CLEF:	// move the clefs before the measure bars
-//				for (s2 = s.prev; s2; s2 = s2.prev) {
-//					switch (s2.type) {
-//					case BAR:
-//						if (s2.time != s.time)
-//							break
-//
-//						/* move the clef */
-//						s.next.prev = s.prev;
-//						s.prev.next = s.next;
-//						s.next = s2;
-//						s.prev = s2.prev;
-//						s.prev.next = s;
-//						s2.prev = s
-//						break
-//					case MREST:
-//					case NOTE:
-//					case REST:
-//					case SPACE:
-//					case STBRK:
-//						break
-//					default:
-//						continue
-//					}
-//					break
-//				}
-//				continue
 			case GRACE:
 				// with w_tb[BAR] = 2,
 				// the grace notes go after the bar;
@@ -17350,7 +17159,6 @@ function go_global_time(s, symsel) {
 	var s2, bar_time, seq
 
 	if (symsel.bar <= 1) {		/* special case: there is no measure 0/1 */
-//	 && nbar == -1) {		/* see set_bar_num */
 		if (symsel.bar == 1) {
 			for (s2 = s; s2; s2 = s2.ts_next) {
 				if (s2.type == BAR
@@ -17367,7 +17175,7 @@ function go_global_time(s, symsel) {
 				break
 		}
 		if (!s)
-			return null
+			return // null
 		if (symsel.seq != 0) {
 			seq = symsel.seq
 			for (s = s.ts_next; s; s = s.ts_next) {
@@ -17378,7 +17186,7 @@ function go_global_time(s, symsel) {
 				}
 			}
 			if (!s)
-				return null
+				return // null
 		}
 	}
 
@@ -17472,7 +17280,7 @@ function do_clip() {
 
 /* -- set the bar numbers and treat %%clip / %%break -- */
 function set_bar_num() {
-	var	s, s2, s3, tim,
+	var	s, s2, tim,
 		v = cur_sy.top_voice,
 		wmeasure = voice_tb[v].meter.wmeasure,
 		bar_rep = gene.nbar
@@ -17534,51 +17342,11 @@ function set_bar_num() {
 	}
 
 	// set the measure number on the top bars
-//	// and move the clefs before the measure bars
 	var	bar_time = s.time + wmeasure, // for incomplete measure at start of tune
 		bar_num = gene.nbar
 
 	for ( ; s; s = s.ts_next) {
 		switch (s.type) {
-//		case CLEF:
-//			for (s2 = s.ts_prev; s2; s2 = s2.ts_prev) {
-//				switch (s2.type) {
-//				case BAR:
-//					if (s2.seqst)
-//						break
-//					continue
-//				case MREST:
-//				case NOTE:
-//				case REST:
-//				case SPACE:
-//				case STAVES:
-//				case STBRK:
-//					s2 = undefined
-//					break
-//				default:
-//					continue
-//				}
-//				break
-//			}
-//			if (!s2)
-//				break
-//
-//			/* move the clef */
-//			s.next.prev = s.prev;
-//			s.prev.next = s.next;
-//			s.ts_next.ts_prev = s.ts_prev;
-//			s.ts_prev.ts_next = s.ts_next;
-//			s.next = s2;
-//			s.prev = s2.prev;
-//			if s.prev)
-//				s.prev.next = s;
-//			s2.prev = s;
-//			s.ts_next = s2;
-//			s.ts_prev = s2.ts_prev;
-//			s.ts_prev.ts_next = s;
-//			s2.ts_prev = s
-//			s = s2
-//			break
 		case METER:
 			wmeasure = s.wmeasure
 			if (s.time < bar_time)
@@ -17786,8 +17554,6 @@ function get_midi(param) {
 function set_transp() {
 	var	s, transp, vtransp
 
-//	if (curvoice.clef.clef_type == "p")	// percussion
-//		return
 	if (curvoice.ckey.k_bagpipe || curvoice.ckey.k_drum)
 		return
 
@@ -17823,11 +17589,6 @@ function set_transp() {
 		}
 		s = s.prev
 	}
-//	s.k_sf = curvoice.okey.k_sf
-//	if (curvoice.okey.k_none)
-//		s.k_none = curvoice.okey.k_none
-//	if (curvoice.okey.k_a_acc)
-//		s.k_a_acc = curvoice.okey.k_a_acc;
 	key_transp(s);
 	curvoice.ckey = clone(s)
 	if (curvoice.key.k_none)
@@ -18023,7 +17784,7 @@ function do_pscom(text) {
 		return
 	case "repeat":
 		if (parse.state != 3)
-				return
+			return
 		if (!curvoice.last_sym) {
 			syntax(1, "%%repeat cannot start a tune")
 			return
@@ -18279,10 +18040,8 @@ function do_begin_end(type,
 	switch (type) {
 	default:
 //	case "ps":
-		if (typeof wpsobj == 'object') {
-			wpsobj.parse(text);
-			output.push(svgbuf)
-		}
+		if (psvg)
+			psvg.ps_eval(text)
 		break
 	case "js":
 		eval(text)
@@ -18446,14 +18205,6 @@ function acc_same_pitch(pitch) {
 	var	i, time,
 		s = curvoice.last_sym.prev
 
-	// the overlaid voices may have no measure bars
-//	if (curvoice.id[curvoice.id.length - 1] == 'o') {
-//		for (i = curvoice.v; --i > 0; )
-//			if (!voice_tb[i].second)
-//				break
-//		s = voice_tb[i].last_sym
-//	}
-
 	if (!s)
 		return //undefined;
 
@@ -18563,7 +18314,6 @@ function get_staves(cmd, parm) {
 		s.sy = par_sy
 	}
 
-//	staves_found = maxtime < 0 ? 0 : maxtime
 	staves_found = maxtime
 
 	/* initialize the (old) voices */
@@ -18572,7 +18322,6 @@ function get_staves(cmd, parm) {
 		delete p_voice.second
 		delete p_voice.ignore
 		delete p_voice.floating
-//		p_voice.time = maxtime
 	}
 	range = 0
 	for (i = 0; i < a_vf.length; i++) {
@@ -18699,18 +18448,13 @@ function get_staves(cmd, parm) {
 			continue
 		}
 		par_sy.voices[v].second = p_voice.second;
-//		par_sy.voices[v].clef = p_voice.clef;
 		st = p_voice.st
 		if (st > 0 && !p_voice.norepbra
 		 && !(par_sy.staves[st - 1].flags & STOP_BAR))
 			p_voice.norepbra = true
-//		par_sy.staves[st].clef = p_voice.clef
 	}
 
-	if (parse.state >= 2)
-		curvoice = voice_tb[par_sy.top_voice]
-	else
-		curvoice = null
+	curvoice = parse.state >= 2 ? voice_tb[par_sy.top_voice] : null
 }
 
 var err_no_strt_ov = "No note in voice overlay"
@@ -18734,11 +18478,14 @@ function get_vover(type) {
 		p_voice.id = id;
 		p_voice.sym = p_voice.last_sym = null;
 
-		p_voice.nm = null;
-		p_voice.snm = null;
-		p_voice.new_name = false;
-		p_voice.lyric_restart = p_voice.lyric_restart =
-			p_voice.lyric_cont = p_voice.ly_a_h = null;
+		delete p_voice.nm
+		delete p_voice.snm
+		delete p_voice.new_name
+		delete p_voice.lyric_restart
+		delete p_voice.lyric_cont
+		delete p_voice.ly_a_h;
+		delete p_voice.sym_restart
+		delete p_voice.sym_cont
 
 		voice_tb.push(p_voice)
 		return p_voice
@@ -18783,25 +18530,17 @@ function get_vover(type) {
 		syntax(1, err_no_strt_ov)
 		return
 	}
-//--fixme?
-//	curvoice.last_sym.beam_end = true
 	curvoice.last_note.beam_end = true;
 	p_voice2 = curvoice.voice_down
 	if (!p_voice2) {
 		p_voice2 = clone_voice(curvoice.id + 'o');
-//		p_voice2.voice_up = curvoice;
 		curvoice.voice_down = p_voice2;
 		p_voice2.time = 0;
 		p_voice2.second = true;
 		v2 = p_voice2.v;
 		par_sy.voices[v2] = {
 			st: curvoice.st,
-			second: true,
-			scale: curvoice.scale,
-			key: curvoice.key,
-			ckey: curvoice.ckey,
-			okey: curvoice.okey,
-			pos: p_voice2.pos
+			second: true
 		}
 		var f_clone = curvoice.clone != undefined ? 1 : 0;
 		range = par_sy.voices[curvoice.v].range
@@ -18816,29 +18555,15 @@ function get_vover(type) {
 			v3 = p_voice3.v;
 			par_sy.voices[v3] = {
 				second: true,
-				scale: curvoice.clone.scale,
 				range: range + 2
 			}
 			p_voice2.clone = p_voice3
 		}
 	}
-//--fixme: in abcparse.c curvoice ulen and microscale are forced here
 	p_voice2.ulen = curvoice.ulen
 	p_voice2.dur_fact = curvoice.dur_fact
 	if (curvoice.uscale)
 		p_voice2.uscale = curvoice.uscale
-//--fixme:, but not the scale, pos...
-	
-//	v = curvoice.v
-//	v2 = p_voice2.v
-//	p_voice2.cst = p_voice2.st = par_sy.voices[v2].st
-//			= par_sy.voices[v].st
-//	p_voice3 = p_voice2.clone
-//	if (p_voice3) {
-//		p_voice3.cst = p_voice3.st
-//				= par_sy.voices[p_voice3.v].st
-//				= par_sy.voices[curvoice.clone.v].st
-//	}
 
 	if (!vover) {				/* first '&' in a measure */
 		vover = {
@@ -18943,8 +18668,6 @@ function get_key(parm) {
 			p_voice.key = s_key;
 			p_voice.okey = clone(s_key);
 			p_voice.ckey = clone(s_key)
-//			if (s_key.k_none)
-//				p_voice.key.k_sf = 0
 		}
 		parse.okey = clone(s_key);
 		parse.ckey = s_key
@@ -18987,12 +18710,9 @@ function get_key(parm) {
 	curvoice.ckey = s_key
 
 	if (is_voice_sig()) {
-//		if (s_key.k_sf != undefined || s_key.k_a_acc) {
-//			curvoice.ckey = s_key;
-			curvoice.key = clone(s_key)
-			if (s_key.k_none)
-				curvoice.key.k_sf = 0
-//		}
+		curvoice.key = clone(s_key)
+		if (s_key.k_none)
+			curvoice.key.k_sf = 0
 		return
 	}
 
@@ -19106,6 +18826,10 @@ function get_voice(parm) {
 		return
 	}
 
+	if (vid == '*') {
+		syntax(1, "Cannot have V:* in tune body")
+		return
+	}
 	curvoice = new_voice(vid);
 	set_kv_parm(a)
 	if (parse.state == 2)			// if first voice
@@ -19145,7 +18869,7 @@ function get_voice(parm) {
 // change state from 'tune header after K:' to 'in tune body'
 // curvoice is defined when called from get_voice()
 function goto_tune(is_K) {
-	var	v, p_voice, transp,
+	var	v, p_voice,
 		s = {
 			type: STAVES,
 			dur: 0,
@@ -19180,8 +18904,6 @@ function goto_tune(is_K) {
 			p_voice.pos = clone(p_voice.pos);
 			p_voice.pos.stm = SL_BELOW
 		}
-//		if (p_voice.key.k_none)
-//			p_voice.key.k_sf = 0
 	}
 
 	// initialize the voices when no %%staves/score	
@@ -19190,7 +18912,7 @@ function goto_tune(is_K) {
 		for (v = 0; v <= nstaff; v++) {
 			p_voice = voice_tb[v];
 			p_voice.time = 0;		// old voice
-			p_voice.clef.time = 0
+			p_voice.clef.time = 0;
 			p_voice.st = p_voice.cst =
 				par_sy.voices[v].st =
 					par_sy.voices[v].range = v;
@@ -19228,6 +18950,110 @@ function goto_tune(is_K) {
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
+
+// parse a symbol line (s:)
+function get_sym(p, cont) {
+	var s, c, i, j, d
+
+	if (curvoice.ignore)
+		return
+
+	// get the starting symbol of the lyrics
+	if (cont) {					// +:
+		s = curvoice.sym_cont
+		if (!s) {
+			syntax(1, "+: symbol line without music")
+			return
+		}
+	} else {
+		if (curvoice.sym_restart) {		// new music
+			curvoice.sym_start = s = curvoice.sym_restart;
+			curvoice.sym_restart = null
+		} else {
+			s = curvoice.sym_start
+		}
+		if (!s)
+			s = curvoice.sym
+		if (!s) {
+			syntax(1, "s: without music")
+			return
+		}
+	}
+
+	/* scan the symbol line */
+	i = 0
+	while (1) {
+		while (p[i] == ' ' || p[i] == '\t')
+			i++;
+		c = p[i]
+		if (!c)
+			break
+		switch (c) {
+		case '|':
+			while (s && s.type != BAR)
+				s = s.next
+			if (!s) {
+				syntax(1, "Not enough measure bars for symbol line")
+				return
+			}
+			s = s.next;
+			i++
+			continue
+		case '!':
+		case '"':
+			j = ++i
+			i = p.indexOf(c, j)
+			if (i < 0) {
+				syntax(1, c == '!' ?
+					"No end of decoration" :
+					"No end of guitar chord");
+				i = p.length
+				continue
+			}
+			d = p.slice(j - 1, i + 1)
+			break
+		case '*':
+			break
+		default:
+			d = c.charCodeAt(0)
+			if (d < 128) {
+				d = char_tb[d]
+				if (d.length > 1
+				 && (d[0] == '!' || d[0] == '"')) {
+					c = d[0]
+					break
+				}
+			}
+			syntax(1, "Bad character '$1'", c)
+			break
+		}
+
+		/* store the element in the next note */
+		while (s && (s.type != NOTE || s.grace))
+			s = s.next
+		if (!s) {
+			syntax(1, "Too many elements in symbol line")
+			return
+		}
+		switch (c) {
+		default:
+//		case '*':
+			break
+		case '!':
+			deco_cnv([d.slice(1, -1)], s, s.prev)
+			break
+		case '"':
+			a_gch = s.a_gch;
+			parse_gchord(d)
+			if (a_gch)
+				gch_build(s)
+			break
+		}
+		s = s.next;
+		i++
+	}
+	curvoice.lyric_cont = s
+}
 
 /* -- parse a lyric (vocal) line (w:) -- */
 function get_lyrics(text, cont) {
@@ -19824,9 +19650,6 @@ function parse_gchord(type) {
 	if (curvoice.pos.gch == SL_HIDDEN)
 		return
 
-	if (!a_gch)
-		a_gch = []
-
 	i = 0;
 	type = 'g'
 	while (1) {
@@ -19905,6 +19728,8 @@ function parse_gchord(type) {
 			i++
 			break
 		}
+		if (!a_gch)
+			a_gch = []
 		a_gch.push(gch)
 	}
 }
@@ -19997,7 +19822,6 @@ function gch_transp(s) {
 			i3 = cde2fcg[n] + i2 + a * 7;
 			i4 = cgd2cde[(i3 + 16 * 7) % 7];	// note
 			i1 = ((((i3 + 22) / 7) | 0) + 159) % 5	// accidental
-//			   = ((((i3 + 1 + 21) / 7) | 0) + 2 - 3 + 32 * 5) % 5
 			if (latin == 0)
 				new_txt = note_names[i4] + acc_name[i1]
 			else
@@ -20312,9 +20136,6 @@ function draw_gchord(s, gchy_min, gchy_max) {
 				if (y2 < staff_tb[s.st].ann_bot)
 					staff_tb[s.st].ann_bot = y2
 			}
-//				y_set(s.st, 1, x, 1, y + h * .8 + 3)
-//			else
-//				y_set(s.st, 0, x, 1, y - h * .2)
 			break
 		}
 		y *= staff_tb[s.st].staffscale
@@ -20332,42 +20153,6 @@ function draw_gchord(s, gchy_min, gchy_max) {
 }
 // abc2svg - tail.js
 //
-// Copyright (C) 2014-2015 Jean-Francois Moine
-//
-// This file is part of abc2svg-core.
-//
-// abc2svg-core is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// abc2svg-core is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-
-// end of the Abc object
-// empty ps functions
-	function psdeco(f, x, y, de) { return false }
-	function psxygl(x, y, gl) { return false }
-
-// initialize
-	abc2svg_init()
-
-	return this
-}	// end of Abc()
-
-// nodejs
-if (typeof module == 'object' && typeof exports == 'object') {
-	exports.abc2svg = abc2svg;
-	exports.Abc = Abc
-}
-//#javascript
-// abc2svg - ABC to SVG translator
-// @source: http://moinejf.free.fr/js/abc2svg.tar.gz.php
 // Copyright (C) 2014-2017 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
@@ -20384,7 +20169,100 @@ if (typeof module == 'object' && typeof exports == 'object') {
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// json-1.js for abc2svg-1.13.7-2-g2e5cbb2 (2017-08-17)
+
+    var	psdeco = function(f, x, y, de) { return false },
+	psxygl = function(x, y, gl) { return false }
+
+// try to install PostScript support
+function ps_def(abcobj) {
+	if (psvg || typeof Psvg != "function")
+		return		// already installed or no support
+
+// ---- Abc functions called from the PS interpreter
+	function svgcall(f, x, y, v1, v2) {
+	    var	xy = psvg.getorig();
+		psvg.ps_flush();
+		f((x + xy[0]) * stv_g.scale, y - xy[1], v1, v2)
+	}
+
+	// output an arpeggio
+	Abc.prototype.arpps = function(val, x, y) {
+		svgcall(out_arp, x, y, val)
+	}
+
+	// output a long trill
+	Abc.prototype.ltrps = function(val, x, y) {
+		svgcall(out_ltr, x, y, val)
+	}
+
+	// output a deco with string
+	Abc.prototype.xyglsps = function(str, x, y, gl) {
+		svgcall(out_deco_str, x, y, gl, str)
+	}
+
+	// output a deco with value
+	Abc.prototype.xyglvps = function(val, x, y, gl) {
+		svgcall(out_deco_val, x, y, gl, val)
+	}
+
+	// output a glyph
+	Abc.prototype.xyglps = function(x, y, gl) {
+		svgcall(xygl, x, y, gl)
+	}
+
+	Abc.prototype.get_y = function(st, y) {
+		return y + staff_tb[st].y
+	}
+
+	Abc.prototype.set_ps = function(deco, xygl) {
+		psdeco = deco;
+		psxygl = xygl
+	}
+	Abc.prototype.stv_g = stv_g
+	Abc.prototype.psget_x = function() {
+		return posx / stv_g.scale
+	}
+	Abc.prototype.psget_y = function() {
+		return stv_g.started ? stv_g.dy : posy
+	}
+
+	psvg = new Psvg(abcobj)
+}
+
+	Abc.prototype.ps_def = ps_def;
+
+// initialize
+	ps_def(this);
+	font_init();
+	init_tune()
+
+}	// end of Abc()
+
+// nodejs
+if (typeof module == 'object' && typeof exports == 'object') {
+	exports.abc2svg = abc2svg;
+	exports.Abc = Abc
+}
+//#javascript
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine
+//
+// This file is part of abc2svg-core.
+//
+// abc2svg-core is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// abc2svg-core is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
+// json-1.js for abc2svg-1.14.1-1-gb9d3cab (2017-09-13)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20415,7 +20293,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 function AbcJSON(nindent) {			// indentation level
 	var inb = Array((nindent || 2) + 1).join(' ') // indentation base
 
-    this.gen_json = function (tsfirst, voice_tb, anno_type, info) {
+    AbcJSON.prototype.gen_json = function (tsfirst, voice_tb, anno_type, info) {
 	var	json, i, j, l, v, s, h,
 		ind2 = inb + inb,
 		ind3 = ind2 + inb,
@@ -20531,7 +20409,7 @@ function AbcJSON(nindent) {			// indentation level
 }
 //#javascript
 // abc2svg - ABC to SVG translator
-// @source: http://moinejf.free.fr/js/abc2svg.tar.gz.php
+// @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
@@ -20548,7 +20426,7 @@ function AbcJSON(nindent) {			// indentation level
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
-// midi-1.js for abc2svg-1.13.7-2-g2e5cbb2 (2017-08-17)
+// midi-1.js for abc2svg-1.14.1-1-gb9d3cab (2017-09-13)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20598,15 +20476,20 @@ function AbcMIDI() {
 		NOTE = 8
 
 	// add MIDI pitches
-	this.add = function(s,		// starting symbol
-			    voice_tb) {	// voice table
+	AbcMIDI.prototype.add = function(s,		// starting symbol
+					voice_tb) {	// voice table
 
-		var	scale = [0, 2, 4, 5, 7, 9, 11],	// note to pitch
-			bmap = [],			// measure base map
-			map = [],			// current map - 10 octaves
-			i, n, pit, lrep, g, v,
-			rep_en_map = [],
-			transp = []			// transposition per voice
+		var	scale = new Int8Array(		// note to pitch
+					[0, 2, 4, 5, 7, 9, 11]),
+			bmap = new Int8Array(7),	// measure base map
+			map = new Int8Array(70),	// current map - 10 octaves
+			i, n, g, v, p, a,
+			tie_map = [],			// index = MIDI pitch
+			tie_time= [],
+			rep_tie_map = [],
+			rep_tie_time = [],
+			transp = [],			// transposition per voice
+			note
 
 		// re-initialize the map on bar
 		function bar_map() {
@@ -20639,44 +20522,11 @@ function AbcMIDI() {
 		} // key_map()
 
 		// convert ABC pitch to MIDI
-		function pit2midi(s, i) {
-			var	p = s.notes[i].apit + 19,	// pitch from lowest C
-				a = s.notes[i].acc
-
-		if (transp[s.v])
-			p += transp[s.v]
-		if (a)
-			map[p] = a == 3 ? 0 : a; // (3 = natural)
-		return ((p / 7) | 0) * 12 + scale[p % 7] + map[p]
+		function pit2midi(p, a) {
+			if (a)
+				map[p] = a == 3 ? 0 : a; // (3 = natural)
+			return ((p / 7) | 0) * 12 + scale[p % 7] + map[p]
 		} // pit2midi()
-
-		// handle the ties
-		function do_tie(s, i) {
-			var	j, n, s2, note2, pit, str_tie,
-				note = s.notes[i],
-				tie = note.ti1,
-				end_time
-
-			pit = note.apit;			// absolute pitch
-			end_time = s.time + s.dur
-			for (s2 = s.next; ; s2 = s2.next) {
-				if (!s2
-				 || s2.time != end_time)
-					return
-				if (s2.type == NOTE)
-					break
-			}
-			n = s2.notes.length
-			for (j = 0; j < n; j++) {
-				note2 = s2.notes[j]
-				if (note2.apit == pit) {
-					note2.midi = note.midi
-					if (note2.ti1)
-						do_tie(s2, j)
-					break
-				}
-			}
-		} // do_tie()
 
 		// initialize the clefs and keys
 		for (v = 0; v < voice_tb.length; v++) {
@@ -20688,7 +20538,6 @@ function AbcMIDI() {
 				transp[v] = n.clef_octave
 		}
 		key_map(voice_tb[0].key);	// init acc. map from key sig.
-		lrep = false
 
 		while (s) {
 			switch (s.type) {
@@ -20696,28 +20545,26 @@ function AbcMIDI() {
 //fixme: handle different keys per staff
 				if (s.st != 0)
 					break
-//fixme: handle the ties on repeat
-				// left repeat
-				if (s.bar_type[s.bar_type.length - 1] == ':') {
-					lrep = false
-
-				// 1st time repeat
-				} else if (s.text && s.text[0] == '1') {
-					lrep = true;
-					bar_map()
-					for (i = 0; i < 7; i++)
-						rep_en_map[i] = bmap[i]
-					break
-
-				// right repeat
-				} else if (s.bar_type[0] == ':') {
-					if (lrep) {
-						for (i = 0; i < 7; i++)
-							bmap[i] = rep_en_map[i]
+				// x times repeat
+				if (s.text) {
+					if (s.text[0] == '1') {	// 1st time
+						rep_tie_map = [];
+						rep_tie_time = []
+						for (i in tie_map) {
+							rep_tie_map[i] = tie_map[i];
+							rep_tie_time[i] = tie_time[i]
+						}
+					} else if (rep_tie_map.length != 0) {
+						tie_map = []
+						tie_time = []
+						for (i in rep_tie_map) {
+							tie_map[i] = rep_tie_map[i];
+							tie_time[i] = rep_tie_time[i]
+						}
 					}
 				}
-
-				bar_map()
+				if (!s.invis)
+					bar_map()
 				break
 			case CLEF:
 				if (!s.clef_octave
@@ -20732,11 +20579,11 @@ function AbcMIDI() {
 					if (!g.type != NOTE)
 						continue
 					for (i = 0; i <= g.nhd; i++) {
-						if (g.notes[i].midi != undefined)
-							continue
-						pit = g.notes[i].apit;
-						str_tie = '_' + g.st + pit;
-						g.notes[i].midi = pit2midi(g, i)
+						note = g.notes[i];
+						p = note.apit + 19
+						if (transp[s.v])
+							p += transp[s.v];
+						note.midi = pit2midi(p, note.acc)
 					}
 				}
 				break
@@ -20748,13 +20595,24 @@ function AbcMIDI() {
 				break
 			case NOTE:
 				for (i = 0; i <= s.nhd; i++) {
-					if (s.notes[i].midi != undefined)
-						continue
-					pit = s.notes[i].apit;
-					str_tie = '_' + s.st + pit;
-					s.notes[i].midi = pit2midi(s, i)
-					if (s.notes[i].ti1)
-						do_tie(s, i)
+					note = s.notes[i];
+					p = note.apit + 19	// pitch from C-1
+					if (transp[s.v])
+						p += transp[s.v]
+					if (tie_map[p]) {
+						if (s.time > tie_time[p]) {
+							delete tie_map[p]
+							delete tie_time[p]
+						} else {
+							map[p] = tie_map[p]
+						}
+					}
+					note.midi = pit2midi(p, note.acc)
+					if (note.ti1) {
+						if (note.acc)
+							tie_map[p] = map[p];
+						tie_time[p] = s.time + s.dur
+					}
 				}
 				break
 			}
