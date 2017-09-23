@@ -76,9 +76,7 @@ end
 
 
 class Controller
-
-  attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
-  attr_accessor :zupfnoter_ui, :info_url
+  attr_accessor :dropped_abc, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -120,7 +118,7 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
-    $settings = {}    # this is te keep runtime settings
+    $settings = {} # this is te keep runtime settings
 
     @json_validator = Ajv::JsonValidator.new
 
@@ -488,7 +486,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       abc_text = @editor.get_abc_part
       abc_text = abc_text.split("\n").map {|line|
         result = line
-        result = result. gsub(/(\\?)(~)/){|m| m[0]=='\\' ? m[1] : ' '} if line.start_with? 'W:'
+        result = result.gsub(/(\\?)(~)/) {|m| m[0]=='\\' ? m[1] : ' '} if line.start_with? 'W:'
         result
       }.join("\n")
 
@@ -601,10 +599,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     # prepare extract menu
     printed_extracts = $conf['produce']
-    @extracts = $conf.get('extract').inject([]) do |r, entry|
+    @extracts        = $conf.get('extract').inject([]) do |r, entry|
       extract_number = entry.last.dig(:notes, :T01_number_extract, :text)
-      print = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
-      title = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+      print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+      title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
       r.push([entry.first, title])
     end
 
@@ -807,95 +805,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_preview_printer.set_canvas(size)
   end
 
-  def set_file_drop(dropzone)
-    %x{
-
-    function pasteXml(text){
-                            try{
-                              var xmldata = $.parseXML(text);
-                             }
-                            catch(ex){
-                              #{$log.error(`ex.message`)}
-                            }
-
-                            var options = {
-                                    'u': 0, 'b': 0, 'n': 0,    // unfold repeats (1), bars per line, chars per line
-                            'c': 0, 'v': 0, 'd': 0,    // credit text filter level (0-6), no volta on higher voice numbers (1), denominator unit length (L:)
-                            'm': 0, 'x': 0,           // with midi volume and panning (1), no line breaks (1)
-                            'p': 'f'
-                          };              // page format: scale (1.0), width, left- and right margin in cm
-
-                          result = vertaal(xmldata, options);
-                          #{
-    $log.info(`result[1]`)
-    @dropped_abc = `result[0]`
-    handle_command('drop')
-    }
-    }
-
-    function pasteMxl(text){
-       zip = new JSZip(text);
-       text = zip.file(/^[^/ ]*\.xml$/)[0].asText();
-       pasteXml(text);
-    }
-
-    function pasteAbc(text){
-       #{
-    @dropped_abc=`text`
-    handle_command('drop')
-    }
-    }
-
-
-    function initializeAbc2svg(element) {
-
-               //xml2abc = new ZnXml2Abc();
-
-               function handleDrop(event) {
-                          event.stopPropagation();
-                          event.preventDefault();
-                          files = event.dataTransfer.files;
-                          reader = new FileReader();
-
-                          reader.onload = function (e) {
-                             text = e.target.result;
-                             if (text[0] == '<'){
-                               pasteXml(text);
-                               }
-                             else if (files[0].name.endsWith(".mxl")) {
-                                pasteMxl(text)
-                               }
-                             else
-                               {
-                                pasteAbc(text);
-                               }
-                            }
-                          if (files[0].name.endsWith('.mxl')){
-                              reader.readAsBinaryString(files[0]);
-                             }
-                           else
-                             {
-                              reader.readAsText(files[0], "UTF-8");
-                             }
-
-             }
-
-    function handleDragover(event) {
-               event.stopPropagation();
-               event.preventDefault();
-               event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-             }
-
-    a = document.getElementById(element);
-    a.addEventListener('dragover', handleDragover, false);
-    a.addEventListener('drop', handleDrop);
-    }
-
-    initializeAbc2svg(#{dropzone});
-    }
-
-  end
-
+  # note the filedrop is not entirely initialized in user-interface.js
+  #
 
   def toggle_console
     %x{
@@ -958,12 +869,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @harpnote_player.on_noteon do |e|
-      $log.debug("noteon #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       highlight_abc_object(e)
     end
 
     @harpnote_player.on_noteoff do |e|
-      $log.debug("noteoff #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       unhighlight_abc_object(e)
     end
 
