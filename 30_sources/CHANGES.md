@@ -7,6 +7,7 @@
   * crash when bad value in transpose
   * bad pitches after ties and repeat
   * the accidentals must be reset on a measure bar
+* improved fermata symbol in pdf #178
   
 ## enhancement
 
