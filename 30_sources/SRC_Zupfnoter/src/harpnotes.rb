@@ -1292,7 +1292,7 @@ module Harpnotes
           layoutlines          = print_options_hash[:voices] + print_options_hash[:layoutlines].uniq
           beat_compression_map = compute_beat_compression(music, layoutlines)
         end
-        maximal_beat      = beat_compression_map.values.max
+        maximal_beat      = beat_compression_map.values.max || 0
         full_beat_spacing = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
 
         if full_beat_spacing < @beat_spacing

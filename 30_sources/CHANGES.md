@@ -8,6 +8,7 @@
   * bad pitches after ties and repeat
   * the accidentals must be reset on a measure bar
 * improved fermata symbol in pdf #178
+* crash when config references a non existing voice #179
   
 ## enhancement
 
