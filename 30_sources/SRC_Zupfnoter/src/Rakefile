@@ -10,6 +10,7 @@ require 'neatjson.rb'
 HTMLTEMPLATE = "../index_opal.html.erb"
 PACKAGE_JSON = "../package.json"
 ZUPFNOTER_JS = "build.js"
+ZUPFNOTER_CLI_JS = "zupfnoter-cli.js"
 OUTFOLDER    = "../deploy_files"
 INDEXFILE    = "index.html"
 LOCALEPATH   = "../public/locale/"
@@ -185,94 +186,21 @@ task :deploy => [:build] do
 end
 
 
-desc "build the desktop application"
-task :buildDesktop => [:build] do
-  desktop_folder = "#{OUTFOLDER}/desktop"
-  nodewebkit_app = "#{OUTFOLDER}/node-webkit.app"
-  zupfnoter_app  = "#{desktop_folder}/zupfnoter.app"
-  desktop_stage  = "#{desktop_folder}/zupfnoter.nw.stage"
+desc "build the cli application"
+task :build_cli do #=> [:build] do
 
-  rm_rf(desktop_folder)
-  mkdir_p("#{desktop_stage}/public")
-  mkdir_p("#{desktop_stage}/public/locale")
-  mkdir_p("#{desktop_stage}/vendor")
-  mkdir_p("#{desktop_stage}/vendor/ace")
-  mkdir_p("#{desktop_stage}/vendor/w2ui/dist")
+  #env = Sprockets::Environment.new
+  Opal.append_path "."
+  Opal.append_path "../vendor"
+  Opal.use_gem "vector2d"
 
 
-  # todo:this is not dry - see buildDesktop
-  ["vendor/ace", "vendor/ace/snippets", "public/icons", "vendor/w2ui", "vendor/w2ui/dist",
-   "vendor/font-awesome/css", "vendor/font-awesome/fonts"
-  ].each do |d|
-    puts "making #{d}"
-    mkdir_p("#{desktop_stage}/#{d}")
+  File.open(ZUPFNOTER_CLI_JS, "w+") do |out|
+    #   out << env["application"].to_s
+    #   out << Opal::Processor.load_asset_code(env, 'application')
+    out.puts(Opal::Builder::build("application-cli").to_s)
   end
 
-  nw_filename                     = "#{desktop_folder}/zupfnoter.nw"
-  index_filename                  = "#{desktop_stage}/index.html"
-  zupfnoter_compressedjs_filename = "#{desktop_stage}/public/#{ZUPFNOTER_JS}"
-
-  def javascript_include_tag(filename)
-    "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
-  end
-
-  def javascript_include_analytics()
-    result = "<!-- no analytics included -->"
-    result
-  end
-
-  File.open(index_filename, "w") do |f|
-    a = File.open(HTMLTEMPLATE).read
-    f.puts ERB.new(a).result
-  end
-
-  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
-  #copy(ZUPFNOTER_JS, zupfnoter_compressedjs_filename)
-
-  Dir["../vendor/*.*"].each {|f|
-    copy(f, "#{desktop_stage}/vendor/#{f}")
-  }
-
-  Dir['../vendor/font-awesome/css/*.*', '../vendor/font-awesome/fonts/*.*'].each {|f| cp f, "#{desktop_stage}/vendor/#{f.split('vendor/').last}"}
-
-  ['w2ui.min.css', 'w2ui.min.js'].each {|f| cp "../vendor/w2ui/dist/#{f}", "#{desktop_stage}/vendor/w2ui/dist/#{f}"}
-
-  Dir["../public/locale/*.*"].each {|f|
-    copy(f, "#{desktop_stage}/public/locale/")
-  }
-
-  ["vendor/ace", "vendor/ace/snippets", "public/icons"].each do |d|
-    mkdir_p("#{desktop_stage}/#{d}")
-  end
-
-  #todo improve handling of files
-  cp("../public/index.css", "#{desktop_stage}/public/index.css")
-  cp("../vendor/ace/ace.js", "#{desktop_stage}/vendor/ace/ace.js")
-  cp("../vendor/ace/mode-abc.js", "#{desktop_stage}/vendor/ace/mode-abc.js")
-  cp("../vendor/ace/ext-language_tools.js", "#{desktop_stage}/vendor/ace/ext-language_tools.js")
-  cp "../vendor/ace/theme-abc.js", "#{desktop_stage}/vendor/ace/theme-abc.js"
-  cp "../vendor/ace/snippets/text.js", "#{desktop_stage}/vendor/ace/snippets/text.js"
-  cp("../vendor/ace/snippets/abc.js", "#{desktop_stage}/vendor/ace/snippets/abc.js")
-  cp("../vendor/abc2svg-1.js", "#{desktop_stage}/vendor/abc2svg-1.js")
-  cp("../public/icons/favicon.gif", "#{desktop_stage}/public/icons/favicon.gif")
-
-  cp(PACKAGE_JSON, "#{desktop_stage}/package.json")
-
-  cd desktop_stage do
-    sh "zip -r ../zupfnoter.nw *"
-  end
-
-  cp_r(nodewebkit_app, zupfnoter_app)
-  cp("#{desktop_folder}/zupfnoter.nw", "#{zupfnoter_app}/Contents/Resources/App.nw")
-
-  cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-ia32" do
-    sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
-  end
-
-  cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-x64" do
-    sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
-  end
-  #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
 end
 
 desc "create user manual"
