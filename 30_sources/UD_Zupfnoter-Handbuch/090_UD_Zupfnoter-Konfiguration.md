@@ -402,8 +402,8 @@ Hier stellst du die Breite (in mm) von dünnen Linien ein.
 
 ## `extract.0.layout.PITCH_OFFSET` - PitchOffset {#extract.0.layout.PITCH_OFFSET}
 
-Dieser Parameter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Dieser Parameter justiert das Verhältnis von Tonhöhe und Position auf
+dem Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
 Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
@@ -1476,8 +1476,8 @@ auch mehrzeilig sein
 
 ## `produce` - Auszüge {#produce}
 
-Hier kannst du eine Liste der Auszüge angeben, für welche eine
-PDF-DAtei mit erzeugt werden soll.
+Hier kannst du eine Liste der Auszüge angeben, für welche eine PDF-DAtei
+mit erzeugt werden soll.
 
 > **Hinweis:** Manchmal ist es sinnvoll, Auszüge nur zur Bearbeitung
 > anzulegen, diese aber nicht zu drucken. Es kommt auch vor, dass Auszug

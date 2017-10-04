@@ -282,8 +282,8 @@ gibt es folgende Elemente:
 -   **(31) flowline - Flusslinie**: Die
     Flußlinie[^040_UD-Zupfnoter-Referenz.md_1] verbindet die Noten
     **einer** Stimme und markiert so die Führung innerhalb dieser
-    **einen** Stimme. Standardmäßig stellt Zupfnoter die Flußlinie in der
-    ersten und dritten Stimme dar.
+    **einen** Stimme. Standardmäßig stellt Zupfnoter die Flußlinie in
+    der ersten und dritten Stimme dar.
 
     Die Ausgabe von Flusslinien für die einzelnen Stimmen hängt von der
     aktuellen Konfiguration (siehe Kapitel
@@ -332,8 +332,8 @@ gibt es folgende Elemente:
         > **Hinweis**: Wenn die Varianten am Ende einer Wiederholung
         > stehen, entfällt die Ausgangslinie. Stattdessen wird eine
         > normale **(25) Sprunglinie für Wiederholung** verwendet. Die
-        > Positionsangabe der Ausgangslinie wird in diesem Fall ignoriert
-        > und die Positionsangabe der Sprunglinie am Ende der
+        > Positionsangabe der Ausgangslinie wird in diesem Fall
+        > ignoriert und die Positionsangabe der Sprunglinie am Ende der
         > Wiederholung verwendet.
 
     -   **(53) Folgelinie** ist die Ausgangslinie der letzten Variation.
@@ -397,11 +397,11 @@ darstellen zu können, gibt es folgende Elemente:
     > eingestellt werden (siehe Kapitel
     > \ref{extract.0.lyrics} [extract.x.lyrics](#extract.0.lyrics)).
 
-    > **Hinweis**: In der ABC-Notation kann man Liedtexte mit sowohl
-    > mit Kopfzeile `W:`(Großbuchstaben) als auch mit Kopfzeile `w:`
+    > **Hinweis**: In der ABC-Notation kann man Liedtexte mit sowohl mit
+    > Kopfzeile `W:`(Großbuchstaben) als auch mit Kopfzeile `w:`
     > (Kleinbuchstaben) eingeben. Die Variante mit Kleinbuchstaben wird
-    > verwendet, um die Liedtexte direkt in die Notensysteme zu schreiben.
-    > Zupfnoter ignoriert diese Liedtexte in den Notenlinien
+    > verwendet, um die Liedtexte direkt in die Notensysteme zu
+    > schreiben. Zupfnoter ignoriert diese Liedtexte in den Notenlinien
 
     > **Hinweis**: Auch wenn die ABC-Notation es erlaubt, die Kopfzeilen
     > `W:` im ganzen ABC-Text zu verteilen ist es wichtig, die Liedtexte
@@ -642,8 +642,7 @@ Zupfnoter kennt drei Fenster[^040_UD-Zupfnoter-Referenz.md_4]:
         Zupfnoter-Konfiguration.
 -   Im **rechten oberen Fenster** (Kapitel \ref{notenvorschau}
     [Eingabe](#notenvorschau)) wird in der herkömmlichen Notenschrift
-    das Musikstück gezeigt, und kann somit musikalisch überprüft
-    wreden.
+    das Musikstück gezeigt, und kann somit musikalisch überprüft wreden.
 
     Die Darstellung in herkömmlicher Notenschrift kann mehrstimmig
     erfolgen (gesteuert über die `%%score` - Anweisung in der
@@ -765,8 +764,8 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
 
         > **Hinweis**: Wenn du eine PDF - Datei davon haben möchtest,
         > musst diese mit "Bordmitteln" deines PC erstellen. Du kannst
-        > auch eines der gängigen ABC-Programme verwenden (z.B. Easy-ABC)
-        > um die Noten zu drucken.
+        > auch eines der gängigen ABC-Programme verwenden (z.B.
+        > Easy-ABC) um die Noten zu drucken.
 
 -   Menü **Ansicht** (Ansicht): Hiermit kann man festlegen, wie der
     Bildschirmaufbau des Zupfnoter gestaltet sein soll. Einige Fesnter
@@ -1020,8 +1019,8 @@ Einträgen
 -   Aktueller Modus von Zupfnoter. Hier gibt es `work` und `demo`. im
     Demo-Modus sind einge Menüpunkte nicht aktiv.
 -   Name des Konfigurationsparameters für das Element unter dem
-    Mauszeiger falls dieses mit der Maus verschoben werden kann oder über
-    das Kontext-Menü konfiguriert werden kann.
+    Mauszeiger falls dieses mit der Maus verschoben werden kann oder
+    über das Kontext-Menü konfiguriert werden kann.
 
 ### Konsole {#konsole-fenster}
 
@@ -1153,8 +1152,8 @@ kannst du die Konfigurationsparameter sehen und ggf. direkt (d.h. ohne
 Bildschirmmasken) sehen und ggf. korrigieren (für Experten).
 
 Im Texteditor kannst du die ABC-Notation erfassen. Elemente werden
-entsprechend ihrer Bedeutung farblich hervorgehoben (Syntax-Coloring). In
-der Statusleiste links unten zeigt Zupfnoter auch Hinweise über die
+entsprechend ihrer Bedeutung farblich hervorgehoben (Syntax-Coloring).
+In der Statusleiste links unten zeigt Zupfnoter auch Hinweise über die
 Bedeutung des Elementes links von der aktuellen Schreibmarke an.
 
 > **Hinweis**: Diese Anzeige ist noch sehr technisch, in manchen Fällen
@@ -1422,8 +1421,8 @@ Für die grundsätzliche Bedienung gilt:
     unten, welcher Konfigurationsparameter verändert wird.
 -   Bei solchen Elementen ruft das Kontextmenü **`Edit config`** den
     entsprechenden Konfigurationseditor auf.
--   Nach dem Bearbeiten des Elementes mit der Maus wird das Element
-    rot. Bitte führe einen "Render" aus um die Unterlegnotenvorschau zu
+-   Nach dem Bearbeiten des Elementes mit der Maus wird das Element rot.
+    Bitte führe einen "Render" aus um die Unterlegnotenvorschau zu
     aktualisieren.
 
 > **Hinweis**: Bitte beachte, dass manche Einstellungen am Zeitbezug der
@@ -1626,9 +1625,9 @@ Daher ist folgendes Reihenfolge zu empfehlen:
 
 4.  **Bearbeitung der folgenden Auszüge**: Wenn Auszug 0 gut
     konfiguriert ist, dann kann man sich den anderen Auszügen zuwenden.
-    Dazu wird der zu bearbeitende Auszug im Menü rechts oben eingestellt.
-    Die Konfigurationsmasken und Einstellungen mit der Maus wirken nun
-    auf den eingestellten Auszug.
+    Dazu wird der zu bearbeitende Auszug im Menü rechts oben
+    eingestellt. Die Konfigurationsmasken und Einstellungen mit der Maus
+    wirken nun auf den eingestellten Auszug.
 
     > **Hinweis**: Es ist eine häufige Fehlerquelle, dass man nicht den
     > richtigen Auszug eingestellt hat. Daher ist es wichtig den
@@ -1689,8 +1688,8 @@ kannst dann die Eingaben korrigieren bis "Rendern" wieder funktioniert.
 
 Wenn das Musikstück nicht auf die Harfe passt, kann man es ggf. durch
 transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B.
-die folgende Kopfzeile ein. Diese verschiebt das Stück drei Halbtöne nach
-unten (in den Unterlegnoten also nach links).
+die folgende Kopfzeile ein. Diese verschiebt das Stück drei Halbtöne
+nach unten (in den Unterlegnoten also nach links).
 
 > **Hinweis**: Zupfnoter gibt die Transponierung der ersten Stimme im
 > Unterlegnotenblatt aus. Abweichende Transponierungen in den anderen

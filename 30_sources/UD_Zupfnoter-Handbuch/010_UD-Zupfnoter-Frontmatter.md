@@ -47,8 +47,8 @@ Zielgruppen im Blick:
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 
 > **Hinweis**: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff. sind
-> nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit
-> TODOs und Zeilennummern.
+> nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit TODOs
+> und Zeilennummern.
 >
 > Für Hinweise auf Fehler oder Verbesserungsmöglichkeiten sind wir sehr
 > dankbar.

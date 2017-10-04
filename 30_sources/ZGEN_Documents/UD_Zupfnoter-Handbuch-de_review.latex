@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.7.0
+Version 1.8.0 dev 1
 
 \begin{verbatim}
 © 2017 https://www.zupfnoter.de
@@ -227,7 +227,7 @@ hat. Aber wie sagt man doch so schön: ``keine Panik!''. Ersteller
 einfacher Unterlegnoten kommen mit den ersten Kapiteln schon auf die
 Erfolgsstraße.
 
-Dieses Handbuch richtet sich an alle, die Zupfnoter vewenden und sich
+Dieses Handbuch richtet sich an alle, die Zupfnoter verwenden und sich
 selbst in den Zupfnoter einarbeiten wollen. Dabei haben wir folgende
 Zielgruppen im Blick:
 
@@ -246,17 +246,17 @@ Zielgruppen im Blick:
   begrenzt.
 \item
   \textbf{Lektoren} schreiben nicht selbst im Zupfnoter, sondern
-  redigieren Noten in Zpufnoter.
+  redigieren Noten in Zupfnoter.
 \end{itemize}
 
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 
 \begin{quote}
 \textbf{Hinweis}: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff.
-sind nur rudimentär. Wir veröffentlichen daher die Voreabversionen mit
+sind nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit
 TODOs und Zeilennummern.
 
-Für Hinweise auf Fehler oder Verbessrungsmöglichkeiten sind wir sehr
+Für Hinweise auf Fehler oder Verbesserungsmöglichkeiten sind wir sehr
 dankbar.
 \end{quote}
 
@@ -342,7 +342,7 @@ Zupfnoter}\label{erste-schritte-mit-zupfnoter}
 
 Mit dem Zupfnoter kannst du ganz schnell einfache Musikstücke eingeben
 und als Unterlegnoten darstellen. Mit der Zeit wirst du immer mehr
-Funktionen und Möglichkeiten von Zufnoter erobern, um auch komplexe
+Funktionen und Möglichkeiten von Zupfnoter erobern, um auch komplexe
 Musikstücke zu bearbeiten bzw. die Unterlegnoten im Detail nach deinen
 Wünschen zu gestalten.
 
@@ -547,7 +547,7 @@ Schwänzchen in die Höh
   \needspace{6cm}
 
   \begin{quote}
-  \textbf{Hinseis:} Leerzeichen in den Liedtexten werden komprimiert,
+  \textbf{Hinweis:} Leerzeichen in den Liedtexten werden komprimiert,
   d.h. zu einem Leerzeichen zusammengefasst. Leerzeichen am Anfang einer
   Zeile (führende Leerzeichen) werden ignoriert. Du kannst aber die
   Ausgabe eines Leerzeichens erzwingen, wenn du die Tilde
@@ -578,11 +578,11 @@ Schwänzchen in die Höh
 \item
   Klicke auf die Schaltfläche ``Neuer Eintrag'' um einen neuen
   Liedtextblock hinzuzufügen\footnote{man mag sich fragen, warum
-    Zupfnoter nicht einen Standard-Liedbock eingebaut hat. Ein solcher
-    Standard-Liedbock schlägt aber immer wieder durch und macht die
+    Zupfnoter nicht einen Standard-Liedblock eingebaut hat. Ein solcher
+    Standard-Liedblock schlägt aber immer wieder durch und macht die
     inidividuelle Anordnung von Strophen sehr komplex, da man nicht nur
     die Strophen hinzufügen, sondern auch die Wirkung des
-    Stnadard-Liedbocks neutralisieren muss.}
+    Standard-Liedblocks neutralisieren muss.}
 \item
   Trage im Feld ``Strophen'' ein: ``\texttt{1,\ 2}'', und bestätige die
   Eingabe durch Drücken der ``Tab'' - Taste.
@@ -682,7 +682,7 @@ Da du aber nicht nur ein Musikstück schreiben willst, solltest du
 natürlich dein Musikstück auf deinem Rechner so abspeichern, dass du es
 später wieder laden und weiter bearbeiten kannst.
 
-Zupfnoter bietet dazu zuwei Möglichkeiten:
+Zupfnoter bietet dazu zwei Möglichkeiten:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -739,7 +739,7 @@ diese weiter zu geben):
 Wenn du regelmäßig mit Zupfnoter arbeiten willst, bietet es sich an, zum
 Speichern der Muskstücke die Dropbox zu benutzen. Eine Dropbox ist ein
 Speicher außerhalb deines Rechners (in der ``Cloud''). Mit der Dropbox
-hast du viele Vorteile bei Zupfbnoter:
+hast du viele Vorteile bei Zupfnoter:
 
 \begin{itemize}
 \item
@@ -787,7 +787,7 @@ pro verwendetem Browser} mit diesem Dropbox-Konto verbinden:
   \textgreater{} Einloggen''
 \item
   es erscheint der Zupfnoter - Dialog ``Einloggen'' - gib dort bitte ein
-  Verezeichnis aus deiner Dropbox ein, in welcher du dein Musikstück
+  Verzeichnis aus deiner Dropbox ein, in welcher du dein Musikstück
   speichern möchtest
 
   \begin{quote}
@@ -844,7 +844,7 @@ pro verwendetem Browser} mit diesem Dropbox-Konto verbinden:
   Auszüge als PDF-Dateien in deiner Dropbox zu speichern.
 
   \begin{quote}
-  \textbf{HInweis}: Zupfnoter speichert in dem Verzeichnis, welches beim
+  \textbf{Hinweis}: Zupfnoter speichert in dem Verzeichnis, welches beim
   Einloggen angegeben wurde. Fall das Verzeichnis nicht existiert, wird
   es angelegt. Bitte achte auf also die richtige Schreibweise
   \end{quote}
@@ -878,7 +878,7 @@ Zupfnoter verwendet jedoch nur folgende Dateitypen in deiner Dropbox:
   Modus'' des Browsers zu arbeiten.
 \item
   Dropbox-Anwendungen speichern ein geheime Zeichenkette (auch
-  ``Accesstoken'' genannt) auf deineme lokalen Rechner. Wenn du
+  ``Accesstoken'' genannt) auf deinem lokalen Rechner. Wenn du
   vermutest, das dieses Token kompromittiert wurde, kannst du auf der
   Website von Dropbox die Verbindung zu Zupfnoter löschen. Dadurch wird
   bei der nächsten Anmeldung ein neues Token erzeugt.
@@ -901,7 +901,7 @@ Zupfnoter verwendet jedoch nur folgende Dateitypen in deiner Dropbox:
 laden}\label{musikstuxfcck-aus-dropbox-laden}
 
 Um das Musikstück wieder zu laden, klicke auf ``Öffnen'' bzw. wähle das
-Menü ``Dropbox \textgreater{} Öfnnen''. Es erscheint ein
+Menü ``Dropbox \textgreater{} Öffnen''. Es erscheint ein
 Datei-Auswahl-Dialog von Dropbox. Dort ist oben ein Suchfeld. Dort
 kannst du einen Teil des Dateinamens eingeben, um die gewünschte Datei
 zu suchen.
@@ -1024,7 +1024,7 @@ ABC-Notation:
   Kapitel~\ref{masken-fuer-zusaetze}~\hyperref[masken-fuer-zusaetze]{Zusätze}).
 \item
   \textbf{Konfiguration} der Unterlegnoten: Zupfnoter gewinnt seine
-  Leistungsfähigkit und \index{Konfiguration} Flexibilität durch
+  Leistungsfähigkeit und \index{Konfiguration} Flexibilität durch
   vielfältige Einstellmöglichkeiten - genannt Konfigurationsparameter.
   Diese Konfigurationsparameter wirken auf die Erstellung der
   Unterlegnotenblätter und steuern z.B:
@@ -1032,8 +1032,8 @@ ABC-Notation:
   \begin{itemize}
   \itemsep1pt\parskip0pt\parsep0pt
   \item
-    Stimmen, die ausgegeben werden; Stimmen durch
-    Synchronisiationslinien verbunden werden usw.
+    Stimmen, die ausgegeben werden; Stimmen durch Synchronisationslinien
+    verbunden werden usw.
   \item
     Größe von Notenelementen, Liniendicken
   \item
@@ -1088,7 +1088,7 @@ verwendet.
 In der ABC-Notation wird in den Kopfzeilen ein Standardnotenwert
 angegeben, z.B. \texttt{L:1/4}. Dies bedeutet, daß standardmäßig in
 Viertelnoten erfasst wird. Ausgehend von diesem Wert ergibt sich der
-Notenwert duch Multiplikation mit der angegebenen Länge. Diese
+Notenwert durch Multiplikation mit der angegebenen Länge. Diese
 Längenangaben wird an den Notennamen angehängt.
 
 TODO:\marginpar{TODO} verweise auf ABC-Kapitel
@@ -1217,7 +1217,7 @@ man sie ``notenbezogene Elemente'':
   verwendet werden.
 
   Ein Tuplet entsteht, wenn in der ABC-Notation den Noten der Tuplets
-  eine Klammer mit der Länge des Tupletes vorangestellt wird, z.B:
+  eine Klammer mit der Länge des Tuplets vorangestellt wird, z.B:
   ``\texttt{(3CCC}''.
 \item
   \textbf{(23) tie - Haltebogen}: Ein Haltebogen verbindet zwei Noten
@@ -1260,9 +1260,9 @@ man sie ``notenbezogene Elemente'':
 
   \begin{quote}
   \textbf{Hinweis:} Die Aufteilung in Abschnitte gilt für das gesamte
-  Musikstück. daher muss die Bezeichung von Abschnitten in der
+  Musikstück. daher muss die Bezeichnung von Abschnitten in der
   \textbf{ersten Stimme} erfolgen. Sie wirkt dann auf alle Stimmen.
-  Abschnittsbezeichungen in den folgenden Stimmen werden ignoriert.
+  Abschnittsbezeichnungen in den folgenden Stimmen werden ignoriert.
   \end{quote}
 \item
   \textbf{(28) countnotes - Zählhilfen}: Zupfnoter kann die Noten
@@ -1273,7 +1273,7 @@ man sie ``notenbezogene Elemente'':
 
   \begin{quote}
   \textbf{Hinweis} die Zählhilfen sind so gesataltet, dass man während
-  des Spields die Zeitachse durchzählt. Bei Noten mit mehreren Schlägen
+  des Spiels die Zeitachse durchzählt. Bei Noten mit mehreren Schlägen
   beginnt die Zählhilfe immer mit der Nummer des ersten Schlages (z.B.
   2-3 ist eine Note, die bei Schlag 2 beginnt und zwei Schläge lang
   gespielt wird, d.h. während diese Note klingt, zählt man 2 - 3)
@@ -1281,7 +1281,7 @@ man sie ``notenbezogene Elemente'':
 \item
   \textbf{(29) barnumbers - Taktnummer}: Zupfnoter kann die Takte
   automatisch durchnummerieren. Damit kann bei gemeinsamem Spiel auch
-  mitten im Musikstück wieder eingesetz werden. Diese Ausgabe ist
+  mitten im Musikstück wieder eingesetzt werden. Diese Ausgabe ist
   konfigurationsabhängig (\texttt{extract.0.barnumbers}.
 \item
   \textbf{(30) decoration - Dekoration}: Zupfnoter kann einzelne
@@ -1298,7 +1298,7 @@ gibt es folgende Elemente:
 
 \begin{itemize}
 \item
-  \textbf{(25) jumpline for repeat - Sprungline für Wiederholungen}:
+  \textbf{(25) jumpline for repeat - Sprunglinie für Wiederholungen}:
   Eine Wiederholung entsteht durch Beifügen eines Doppelpunktes an die
   Taktstriche in der ABC-Notation z.B.
   ``\texttt{\textbar{}:\ C4\ :\textbar{}}''.
@@ -1320,7 +1320,7 @@ gibt es folgende Elemente:
     nur korrekt, wenn es sich um die Flußlinie der Melodiestimme (meist
     der ersten Stimme) handelt.} verbindet die Noten \textbf{einer}
   Stimme und markiert so die Führung innerhalb dieser \textbf{einen}
-  Stimme. Standardmäßig stellt Zupfnoter die Flußline in der ersten und
+  Stimme. Standardmäßig stellt Zupfnoter die Flußlinie in der ersten und
   dritten Stimme dar.
 
   Die Ausgabe von Flusslinien für die einzelnen Stimmen hängt von der
@@ -1375,17 +1375,17 @@ gibt es folgende Elemente:
     \textbf{Hinweis}: Wenn die Varianten am Ende einer Wiederholung
     stehen, entfällt die Ausgangslinie. Stattdessen wird eine normale
     \textbf{(25) Sprunglinie für Wiederholung} verwendet. Die
-    Positionsangabe der Ausganslinie wird in diesem Fall ignoriert und
-    die Positionsangabe der Sprunglinie am Ender der Wiederholung
+    Positionsangabe der Ausgangslinie wird in diesem Fall ignoriert und
+    die Positionsangabe der Sprunglinie am Ende der Wiederholung
     verwendet.
     \end{quote}
   \item
     \textbf{(53) Folgelinie} ist die Ausgangslinie der letzten
-    Variation. Diese kann separat positioniert werden, um das gwünschte
+    Variation. Diese kann separat positioniert werden, um das gewünschte
     Notenbild zu erreichen.
   \end{itemize}
 
-  Die Positionen deieser Linien werden als Zusatz vor den Taktstrich der
+  Die Positionen dieser Linien werden als Zusatz vor den Taktstrich der
   ersten Variation geschrieben (Schaltfläche ``Zusatz einfügen'' bzw.
   ``Zusatz bearbeiten'').
 
@@ -1393,13 +1393,13 @@ gibt es folgende Elemente:
   \textbf{Hinweis:} Ab Zupfnoter 1.7 können diese Linien mit der Maus
   verschoben werden. Diese Verschiebungen werden in der Konfiguration
   gespeichert und von älteren Zupfnoter-Versionen nicht verarbeitet. Die
-  Konfiguration über Zusaätze ist aus Kompatibilitätsgründen noch
+  Konfiguration über Zusätze ist aus Kompatibilitätsgründen noch
   vorhanden.
   \end{quote}
 
   \begin{quote}
   \textbf{Hinweis:} Zupfnoter stellt die Noten der verschiedenen
-  Variationen in unterschiedlicen Grautönen dar. Die Farben können in
+  Variationen in unterschiedlichen Grautönen dar. Die Farben können in
   der Konfigurationsmaske \texttt{Layout} über eine Schnelleinstellung
   ausgewählt werden (siehe Konfiguration
   \hyperref[extract.0.layout.color]{extract.x.layout.color}).
@@ -1467,17 +1467,17 @@ W: Strophe 2 Zeile 2
   \end{quote}
 
   \begin{quote}
-  \textbf{Hinweis}: In der ABC-Notation kann man Liedtexte mit sowhohl
+  \textbf{Hinweis}: In der ABC-Notation kann man Liedtexte mit sowohl
   mit Kopfzeile \texttt{W:}(Großbuchstaben) als auch mit Kopfzeile
-  \texttt{w:} (Kleionbuchstaben) eingeben. Die Variante mot
-  Kleinbuchstaben wird verwendet, um die Lietexte direkt in die
-  Notensyteme zu schreiben. Zupfnoter ignoriert diese Liedtexte in den
+  \texttt{w:} (Kleinbuchstaben) eingeben. Die Variante mit
+  Kleinbuchstaben wird verwendet, um die Liedtexte direkt in die
+  Notensysteme zu schreiben. Zupfnoter ignoriert diese Liedtexte in den
   Notenlinien
   \end{quote}
 
   \begin{quote}
   \textbf{Hinweis}: Auch wenn die ABC-Notation es erlaubt, die
-  Kopfzeilen \texttt{W:} im ganezn ABC-Text zu verteilen ist es wichtig,
+  Kopfzeilen \texttt{W:} im ganzen ABC-Text zu verteilen ist es wichtig,
   die Liedtexte dennoch in einem Block zusammenzufassen. Sonst meldet
   Zupfnoter, dass es mehrere Liedtexte gibt. Der Editor fasst sie alle
   zusammen, löscht aber die anderen Blöcke nicht. Das muss manuell
@@ -1486,10 +1486,10 @@ W: Strophe 2 Zeile 2
 
   \begin{quote}
   \textbf{Hinweis}: Zupfnoter ignoriert Leerzeichen am Anfang von
-  Liedtexten. Macnhmal möchte man aber den Liedtext in bestimmten Zeilen
+  Liedtexten. Manchmal möchte man aber den Liedtext in bestimmten Zeilen
   etwas einrücken um den Text um eine Note im Unterlegnotenblatt
-  herumfließen zu lassen. Wenn aleo eine Textzeile mit einer Reihe Tilde
-  (\texttt{\textasciitilde{}}) - Zeichen beginnt werden diese in den
+  herumfließen zu lassen. Wenn also eine Textzeile mit einer Reihe Tilde
+  (\texttt{\textasciitilde{}}) - Zeichen beginnt, werden diese in den
   Unterlegnoten als Leerraum ausgegeben und so der Textbeginn nach
   rechts verschoben.
   \end{quote}
@@ -1591,8 +1591,8 @@ Unterlegnoten}\label{elemente-zur-organisation-von-unterlegnoten}
 \subsubsection{Vordefinierte
 Blattbeschriftungen}\label{vordefinierte-blattbeschriftungen}
 
-Zupfnoter bietet eine Reihe von Vorlagen für die Seitenbeschrifungen.
-Damit lässt sich ein einheitliches Vorgehen bei der Beschrifung der
+Zupfnoter bietet eine Reihe von Vorlagen für die Seitenbeschriftungen.
+Damit lässt sich ein einheitliches Vorgehen bei der Beschriftung der
 Unterlegnoten erreichen. Diese können in der Konfigurationsmaske
 ``Seitenbeschriftung'' eingegeben werden. Zupfnoter hat geeignete
 Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
@@ -1645,7 +1645,7 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
   \item
     \texttt{XXX} ist ein Kürzel für den Herausgeber, z.B. RBW für Ruth
     und Bernhard Weichel, ZNR - für Zupfnoter \footnote{Vielleicht
-      gelingt es eines Tages, ein Verzeichnis diser Kürzel zu erstellen
+      gelingt es eines Tages, ein Verzeichnis dieser Kürzel zu erstellen
       um so Kollisionen zu vermeiden}
   \item
     \texttt{999} eine Nummer für das Blatt
@@ -1691,7 +1691,7 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
   \ref{annotations} \hyperref[annotations]{annotations}
   \index{Notenbeschriftungsvorlage} mit Positionsangabe anlegen und über
   einen Zusatz (Schaltfläche ``Ref. Notenbeschriftung'') daraus eine
-  Notenbeschrifung erstellen.
+  Notenbeschriftung erstellen.
 
   \begin{quote}
   \textbf{Hinweis}: Zupfnoter kennt standardmäßig die
@@ -1777,7 +1777,7 @@ Zupfnoter kennt drei Fenster\footnote{Es gibt noch ein weiteres Fenster,
   \item
     \texttt{ABC}- Der Texteditor für die ABC-Notation
   \item
-    \texttt{Liedtextexte} für die Erfassung der Liedtexte
+    \texttt{Liedtexte} für die Erfassung der Liedtexte
   \item
     \texttt{Konfiguration} für die formulargeführte Bearbeitung der
     Zupfnoter-Konfiguration.
@@ -1785,7 +1785,7 @@ Zupfnoter kennt drei Fenster\footnote{Es gibt noch ein weiteres Fenster,
 \item
   Im \textbf{rechten oberen Fenster} (Kapitel \ref{notenvorschau}
   \hyperref[notenvorschau]{Eingabe}) wird in der herkömmlichen
-  Notenschrift das Musikstück gezeigt, und kann somit musikallisch
+  Notenschrift das Musikstück gezeigt, und kann somit musikalisch
   überprüft wreden.
 
   Die Darstellung in herkömmlicher Notenschrift kann mehrstimmig
@@ -1808,13 +1808,13 @@ Zupfnoter kennt drei Fenster\footnote{Es gibt noch ein weiteres Fenster,
 
 Die Anordnung dieser Fenster ist in Zupfnoter fest vorgegeben. Man kann
 aber während der Arbeit folgende Einstellungen vornehmen, um den
-aktuellen Arbeitsschrit besser zu unterstützen:
+aktuellen Arbeitsschritt besser zu unterstützen:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   Fenstergröße verstellen: Die Trennlinien zwischen den Fenstern können
-  mit der MAus verschoben werden, um Platz für die aktuell wichtigen
+  mit der Maus verschoben werden, um Platz für die aktuell wichtigen
   Elemente zu schaffen
 \item
   Über das Menü \textbf{``\texttt{Ansicht}''} kann man einzelne Fenster
@@ -1845,14 +1845,14 @@ eingeben}).
 
 \begin{quote}
 \textbf{Hinweis}: Der Begriff ``Fenster'' wird sowohl für die Fenster
-des Betriebssytems als auch die Fenster innerhalb Zupfnoter verwendet.
+des Betriebssystems als auch die Fenster innerhalb Zupfnoter verwendet.
 \end{quote}
 
 \hyperdef{}{menues-im-hauptfenster}{\subsubsection{Werkzeugleiste für
 Schaltflächen und Menüs}\label{menues-im-hauptfenster}}
 
 Die Zupfnoter - Werkzeugleiste ist immer sichtbar (also auch in allen
-Ansichten) und ersteckt sich über aller Fenster. In ihr befinden sich
+Ansichten) und erstreckt sich über aller Fenster. In ihr befinden sich
 Schaltflächen und Menüs die man während der Erstellung von Unterlegnoten
 benötigt. Nach einem Klick auf die Schaltflächen führt der Zupfnoter
 bestimmte Aktivitäten aus.
@@ -1862,7 +1862,7 @@ erreichbar (siehe Kapitel \ref{shortcuts}
 \hyperref[shortcuts]{Shortcuts})
 
 \begin{quote}
-\textbf{Hinweis}: Für die Vesrion 1.5 wird die Bedienungsoberfläche von
+\textbf{Hinweis}: Für die Version 1.5 wird die Bedienungsoberfläche von
 Zupfnoter verbessert. Daher sind die Informationen in diesem Kapitel
 vorläufig.
 \end{quote}
@@ -1937,9 +1937,9 @@ vorläufig.
     aber auch dann muss sie über den Browser gedruckt werden.
 
     \begin{quote}
-    \textbf{Hinweis}: Wenn du eine PDF - Datei davon haben möchest,
+    \textbf{Hinweis}: Wenn du eine PDF - Datei davon haben möchtest,
     musst diese mit ``Bordmitteln'' deines PC erstellen. Du kannst auch
-    eines der gänigen ABC-Programme verwenden (z.B. Easy-ABC) um die
+    eines der gängigen ABC-Programme verwenden (z.B. Easy-ABC) um die
     Noten zu drucken.
     \end{quote}
   \end{itemize}
@@ -1953,14 +1953,14 @@ vorläufig.
   \item
     Die Einstellung \textbf{Alle Fenster} ist der
     Standardbildschirmaufbau mit allen drei Fenstern (Eingabe,
-    herkömmliche Noten, Unterlegnoten). In dieser Enstellung wird
+    herkömmliche Noten, Unterlegnoten). In dieser Einstellung wird
     meistens gearbeitet, weil man eine schnelle Rückmeldung zu den
     Ergebnissen hat.
   \item
-    Die Einstellung \textbf{Noteneingabe} zeigt das Eingebaefenster
+    Die Einstellung \textbf{Noteneingabe} zeigt das Eingabefenster
     (linkes Fenster) und die Notenvorschau (Fenster rechts oben). Diese
     Einstellung ist hilfreich, wenn man sich zunächst auf die reine
-    Eingabe des Muskstücks konzentrieren will.
+    Eingabe des Musikstücks konzentrieren will.
   \item
     Die Einstellung \textbf{Harfeneingabe} zeigt das Eingabefenster
     (linkes Fenster) und die Harfennotenvorschau (Fenster rechts unten).
@@ -1977,7 +1977,7 @@ vorläufig.
     \end{quote}
   \item
     Mit der Einstellung \textbf{Harfennoten} (Harfe) sieht man nur eine
-    Vorschau der Unterlegnoten. Diese Einstellugn ist hilfreich zur
+    Vorschau der Unterlegnoten. Diese Einstellung ist hilfreich zur
     endgültigen Prüfung der erstellten Unterlegnoten z.B. durch einen
     Lektor.
 
@@ -2010,14 +2010,14 @@ vorläufig.
   der 3.ten und 4.ten Stimme dienen.
 
   TODO:\marginpar{TODO} Überarbeiten nach Verbesserung der Bedienung von
-  Auszuügen.
+  Auszügen.
 \item
   Schaltfläche \textbf{Rendern} (umwandeln): (alternativ
   Tastenkombination \texttt{cmd/ctrl\ -\ R} bzw.
   \texttt{cmd/ctrl\ -\ RETURN}.
 
   Mit Klick auf diese Schaltfläche werden die Ansicht der Unterlegnoten
-  und die Fehlermeldungen im Texteditor des Eingebefensters
+  und die Fehlermeldungen im Texteditor des Eingabefensters
   aktualisiert.
 
   \begin{quote}
@@ -2040,7 +2040,7 @@ vorläufig.
     kombiniert werden (z.B. nur Sopran und Alt).
   \item
     wenn mehrere Noten selektiert sind, spielt Zupfnoter nur genau die
-    selektierten Noten. Damit kann man eine Detailkontrolle errreichen.
+    selektierten Noten. Damit kann man eine Detailkontrolle erreichen.
   \end{itemize}
 
   \begin{quote}
@@ -2066,7 +2066,7 @@ vorläufig.
   \begin{quote}
   \textbf{Hinweis}': Über das Hilfe Menü kann man auch Beispiele
   aufrufen. Diese öffnen ein neues Zupfnoter-Fenster im Demo - Modus. In
-  desem Modus kann man nicht speichern oder öffen. Die entprschenden
+  desem Modus kann man nicht speichern oder öffnen. Die entsprechenden
   Menüpunkte sind inaktiv.
 
   Der aktuelle Modus wird in der Statuszeile angezeigt.
@@ -2075,7 +2075,7 @@ vorläufig.
 
 \subsubsection{Fenster links: Eingabe}\label{eingabefenster}
 
-Das Eingeabefenster enthält seinerseits
+Das Eingabefenster enthält seinerseits
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -2104,7 +2104,7 @@ des Eingabefensters}\label{werkzeugleiste-des-eingabefensters}}
   sie in der Konfiguration noch nicht vorhanden sind.
 
   Die Werte der eingefügten Parameter können dann über die
-  Konfigurationsmaken oder im Texteditor geändert werden.
+  Konfigurationsmasken oder im Texteditor geändert werden.
   \end{quote}
 
   Die Reihenfolge der Menüpunkte entspricht der Bearbeitungsabfolge,
@@ -2149,8 +2149,8 @@ des Eingabefensters}\label{werkzeugleiste-des-eingabefensters}}
   Position von Sprunglinien anzugeben oder notengebundene Anmerkungen zu
   erfassen. Diese Zusätze sind an eine Note bzw. an einen Taktstrich
   gebunden und werden in Form einer ABC-Anmerkung notiert
-  (z.B.\texttt{"\^{}@@3"\ :\textbar{}} für die Lage einer Sprungline für
-  eine Wiederholung).
+  (z.B.\texttt{"\^{}@@3"\ :\textbar{}} für die Lage einer Sprunglinie
+  für eine Wiederholung).
 
   \begin{quote}
   \textbf{Hinweis}: Dieses Menü wird daher erst dann aktiv, wenn die
@@ -2168,7 +2168,7 @@ des Eingabefensters}\label{werkzeugleiste-des-eingabefensters}}
 \item
   Schaltfläche \textbf{Zusatz bearbeiten}
 
-  Über diese Schalzfläche kann man die Bearbeitungsmasken für vorhandene
+  Über diese Schaltfläche kann man die Bearbeitungsmasken für vorhandene
   Zusätze erneut aufrufen.
 
   \begin{quote}
@@ -2215,7 +2215,7 @@ Texteditor der Eingabe und in der Unterlegnotenvorschau hervorgehoben.
 \textbf{Hinweis::} Wenn man zunächst eine Note anklickt, und dann mit
 gedrückter ``Shift''-Taste (``Umschalttaste'') eine zweite Note
 anklickt, dann werden die dazwischen liegenden Noten selektiert. Damit
-kannst du z.B. einen Auschnitt aus einer bestimmten Stimme über die
+kannst du z.B. einen Ausschnitt aus einer bestimmten Stimme über die
 Notenvorschau auswählen und anschließend abspielen lassen.
 \end{quote}
 
@@ -2260,14 +2260,14 @@ Einträgen
   Aktiver Filter für Meldungen in der Konsole (Loglevel). Das Filter
   kann über deen Eingebbefehl\texttt{loglevel\ error} in der Konsole
   umgestellt werden \footnote{Das Filter lässt man am besten auf
-    ``Error'' eingestellt, nur bei Problembehbungen bzw. Fehlersuche im
+    ``Error'' eingestellt, nur bei Problembehebungen bzw. Fehlersuche im
     Programm sind andere Einstellungen sinnvoll}.
 \item
   Aktueller Modus von Zupfnoter. Hier gibt es \texttt{work} und
   \texttt{demo}. im Demo-Modus sind einge Menüpunkte nicht aktiv.
 \item
   Name des Konfigurationsparameters für das Element unter dem Mauszeiger
-  falls dieses mit der Maus veschoben werden kann oder über das
+  falls dieses mit der Maus verschoben werden kann oder über das
   Kontext-Menü konfiguriert werden kann.
 \end{itemize}
 
@@ -2315,7 +2315,7 @@ Konfiguration eines aus MusicXml importierten Stückes einzustellen.
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   \texttt{setsetting\ flowconf\ edit}: Mit dieser Einstellung werden die
-  Flußlinen bearbeitbar, d.h. man kann die Flußlininen mit der Maus
+  Flußlinien bearbeitbar, d.h. man kann die Flußlinien mit der Maus
   verformen, (sozusagen verbiegen).
 \item
   \texttt{setsetting\ flowconf\ none}: Mit dieser Einstellung werden die
@@ -2333,10 +2333,10 @@ Neuladen von Zupfnoter zurückgesetzt.
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   \texttt{setsetting\ validate\ true}: Diese Einstellung bewirkt eine
-  extra Prüfung/Validierung der Konfigurationsparamter.
+  extra Prüfung/Validierung der Konfigurationsparameter.
 \item
   \texttt{setsetting\ validate\ false}: Diese Einstellung beendet eine
-  extra Prüfung/Validierung der Konfigurationsparamter.
+  extra Prüfung/Validierung der Konfigurationsparameter.
 \item
   \texttt{editconf\ errors}: Damit werden die fehlerhaften
   Konfigurationsparameter in den Konfigurationseditor geladen.
@@ -2366,7 +2366,7 @@ ist.
 
 Die Konsole kann auch für eine bessere Fehlersuche in der Konfiguration
 verwendet werden. Selbst wenn Zupfnoter die Eingabe fehlerhafter
-Konfigurationsparamert eigentlich verhindern soll, so kann es trotzdem
+Konfigurationsparameter eigentlich verhindern soll, so kann es trotzdem
 vorkommen. Wenn also schwer verständliche Meldungen erscheinen kann man
 den loglevel debug einschalten. Dann kann man in der Konsole mit
 
@@ -2460,13 +2460,13 @@ Eingabemöglichkeiten nutze:
 \hyperdef{}{texteditor}{\subsubsection{Erfassung der ABC-Notation im
 Texteditor}\label{texteditor}}
 
-Im Teexteditor kannst du die ABC-Notation bearbeiten. Darüberhinaus
+Im Texteditor kannst du die ABC-Notation bearbeiten. Darüberhinaus
 kannst du die Konfigurationsparameter sehen und ggf. direkt (d.h. ohne
 Bildschirmmasken) sehen und ggf. korrigieren (für Experten).
 
 Im Texteditor kannst du die ABC-Notation erfassen. Elemente werden
-entsprechend ihrer Bedetung farblich hervorgehoben (Syntax-Coloring). In
-der Statusleiste links unten zeigt Zupfnoter auch Hinweise über die
+entsprechend ihrer Bedeutung farblich hervorgehoben (Syntax-Coloring).
+In der Statusleiste links unten zeigt Zupfnoter auch Hinweise über die
 Bedeutung des Elementes links von der aktuellen Schreibmarke an.
 
 \begin{quote}
@@ -2511,8 +2511,8 @@ dies von Zupfnoter ignoriert.
 
 \begin{quote}
 \textbf{Hinweis}: Auch wenn der Texteditor die Zusätze, die Liedtexte
-und die Konfigurationsparamter anzeigt ist es doch besser, die
-grafischen Barbeitungsmöglichnkeiten zu nutzen:
+und die Konfigurationsparameter anzeigt ist es doch besser, die
+grafischen Barbeitungsmöglichkeiten zu nutzen:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -2695,7 +2695,7 @@ Parameter je eine Zeile mit den folgenden Elementen:
 
 \begin{itemize}
 \item
-  \texttt{Löschen} - Löscht den Paramter aus der Konfiguration
+  \texttt{Löschen} - Löscht den Parameter aus der Konfiguration
 
   \begin{quote}
   \textbf{Hinweis}: Diese Taste kann ggf. einen ganzen Auszug löschen
@@ -2717,7 +2717,7 @@ Parameter je eine Zeile mit den folgenden Elementen:
   \texttt{Hilfe} - zeigt eine spezifische Hilfe für diesen Parameter an
 \item
   \texttt{aktuell\ wirksamer\ Wert} - zeigt den Wert an, der für den
-  Paramter gerade gültig ist.
+  Parameter gerade gültig ist.
 
   \begin{quote}
   \textbf{Hinweis}: Hier wird ggf. der Wert aus \texttt{extract.0}
@@ -2752,13 +2752,13 @@ Für die Bedienung der Masken ist noch wichtig
   notwendigWenn der Konfigurationsparameer außerhalb der Maske geändert
   wird (z.B. im Texteditor).
 \item
-  Schalltfläche \texttt{Neuer\ Eintrag}: Diese Taste fügt eine neue
+  Schaltfläche \texttt{Neuer\ Eintrag}: Diese Taste fügt eine neue
   Instanz eines Parameters ein. Sie ist nur aktiv, wenn es für einen
   Parameter mehrere Instanzen geben kann (z.B.
   \index{Liedtexte}Liedtexte {[}lyrics.x{]},
-  \index{Seitenbeschriftung}Seitenbeschrifung {[}notes.x{]})
+  \index{Seitenbeschriftung}Seitenbeschriftung {[}notes.x{]})
 \item
-  Schalltfläche \texttt{Schnelleinstellungen}: Diese Taste öffnet ein
+  Schaltfläche \texttt{Schnelleinstellungen}: Diese Taste öffnet ein
   Menü, aus dem du für die aktuelle Maske eine Voreinstellung auswählen
   kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination von
   Parametern für einen bestimmten Fall (z.B. für ein ``kompaktes
@@ -2806,8 +2806,8 @@ Eingabefensters}).
 \textbf{Hinweis}: Der Aufruf von ``Zusatz einfügen'' und ``Zusatz
 bearbeiten'' liegt auf unterschiedlichen Schaltflächen, da beim
 ``Einfügen'' ein Menü erscheint über welches ausgewählt wird, ``was''
-eingefügt weden soll. Beim Bearbeiten ist diese Auswahl nicht mehr
-notwendig. Daher wird ``bearbeiten'' über eine Schaltflcähe direkt
+eingefügt werden soll. Beim Bearbeiten ist diese Auswahl nicht mehr
+notwendig. Daher wird ``bearbeiten'' über eine Schaltfläche direkt
 aufgerufen.
 \end{quote}
 
@@ -2842,7 +2842,7 @@ Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
 \item
   Gestalt der Triolenbogen (Tuplet)
 \item
-  Gestalt der Flußlinien (experminetell)
+  Gestalt der Flußlinien (experimentell)
 \end{itemize}
 
 Für die grundsätzliche Bedienung gilt:
@@ -2852,13 +2852,13 @@ Für die grundsätzliche Bedienung gilt:
 \item
   Wenn du den Mauszeiger über ein solches Element bewegst, ändert dieser
   seine Form. Darüber hinaus zeigt die Statusleiste rechts unten,
-  welcher Konfigurationsparamter verwändert wird.
+  welcher Konfigurationsparameter verändert wird.
 \item
   Bei solchen Elementen ruft das Kontextmenü
   \textbf{\texttt{Edit\ config}} den entsprechenden Konfigurationseditor
   auf.
 \item
-  Nach dem Beargbeiten des Elementes mit der Maus wird das Element rot.
+  Nach dem Bearbeiten des Elementes mit der Maus wird das Element rot.
   Bitte führe einen ``Render'' aus um die Unterlegnotenvorschau zu
   aktualisieren.
 \end{itemize}
@@ -2883,13 +2883,13 @@ gelöschten Anmerkung verschoben.
 mehr genutzte Konfigurationen übrig bleiben. Diese werden nicht entfernt
 und könnten später zu unerwarteten Effekten führen. In diesem Fall ist
 es am besten mit der rechten Maustaste in der Harfennotenvorschau die
-entpreschende Konfiguration auzurufen, zu löschen und neu zu erstellen.
+entsprechende Konfiguration aufzurufen, zu löschen und neu zu erstellen.
 \end{quote}
 
 \subsubsection{Texte verschieben}\label{texte-verschieben}
 
 Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
-Taktnummern, Zählhinweise, Variatnenbezeichenr, Bezeichner von Parts mit
+Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts mit
 der Maus verschieben.
 
 \subsubsection{Sprunglinien verschieben}\label{sprunglinien-verschieben}
@@ -2901,7 +2901,7 @@ Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
 \textbf{Hinweis}: Bei varianten Enden wirkt der selbe
 Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte drücke
 daher auf \texttt{Render} um das Endergebnis zu sehen. Danach sind auch
-die Pfeile an den Sprunglineine wieder korrekt.
+die Pfeile an den Sprunglinien wieder korrekt.
 \end{quote}
 
 \subsubsection{Triolenbogen gestalten}\label{triolenbogen-gestalten}
@@ -2916,16 +2916,16 @@ zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
 \item
   wenn man genau hinschaut, dann siehst du an den Triolenbögen zwei
   kleine Griffe. Wenn du die Maus darüber bewegst, kann due diese mit
-  gedrückter Maustaste bwegegen.
+  gedrückter Maustaste bewegen.
 \item
   wenn du die Maus bewegst, ändert sich das Bild zu einem Trapez. Der
-  entstezende Bogen wird durch zwei Kontrolpunkte (die oberen Ecken des
+  entstehende Bogen wird durch zwei Kontrollpunkte (die oberen Ecken des
   Trapezes) gestaltet. Im vorstehenden Bild wurde der linke Griff (d.h.
   der linke Kontrollpunkt) bewegt.
 \end{itemize}
 
 \begin{quote}
-\textbf{Hinweis}: Am besgten experimentierst du ein bisschen, um
+\textbf{Hinweis}: Am besten experimentierst du ein bisschen, um
 Erfahrung zu sammeln. Es würde zu weit führen, hier alle Möglichkeiten
 darzustellen.
 \end{quote}
@@ -2935,7 +2935,7 @@ darzustellen.
 und daher mit der Maus nicht erreichbar sind. In diesem Fall kannst du
 an der Triolenbeschriftung oder an einem andere Griff
 \texttt{Edit\ Cconfig} aufrufen und den Kontrollpunkt so ändern, dass er
-wireder sichtbar wird.
+wieder sichtbar wird.
 \end{quote}
 
 \hyperdef{}{flowconf}{\subsection{Flußlinien gestalten}\label{flowconf}}
@@ -2943,10 +2943,10 @@ wireder sichtbar wird.
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
 die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
 um die Begleitnonten ``herumbiegen''. Da zu gibt es eine experimentelle
-Möglichkeit die Flußlinine mit der Maus zu gestalten, ähnlich wie die
+Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die
 Triolenbögen.
 
-Die Bearbeitungsmöglickeiten müssen in der
+Die Bearbeitungsmöglichkeiten müssen in der
 \hyperref[konsole-fenster]{Konsole} eingeschaltet werden.
 
 \begin{quote}
@@ -2974,7 +2974,7 @@ für verschiedene Zielgruppen erstellen, z.B.:
 \item
   Einzelstimmen für Anfänger (z.B. nur die erste Stimme, Zählhilfen)
 \item
-  Beliebige Kombinatinen von Stimmen für Leiter und Fortgeschrittene
+  Beliebige Kombinationen von Stimmen für Leiter und Fortgeschrittene
   (z.B. zwei Stimmen, aber keine Zählhilfen mehr)
 \item
   verschiedene Hilfsinformationen (Zählhilfen, Taktnummern etc.)
@@ -2984,7 +2984,7 @@ für verschiedene Zielgruppen erstellen, z.B.:
 
 Für jeden Auszug gibt es einen Satz von Konfigurationsparameetern
 (\texttt{extract.0}, \texttt{extract.1}) usw. welcher den Inhalt des
-jeweiligen Auszuges bestimmt. Über die Schaltflcähe \texttt{Auzzug}
+jeweiligen Auszuges bestimmt. Über die Schaltfläche \texttt{Auszug}
 kannst aktuell aktiven Auuszug einstellen. Der aktive Auszug bestimmt,
 
 \begin{itemize}
@@ -2995,17 +2995,17 @@ kannst aktuell aktiven Auuszug einstellen. Der aktive Auszug bestimmt,
   auf welchen Auszug die Konfigurationsmasken wirken.
 \end{itemize}
 
-Die Auszuüge werden durchnummeriert\footnote{Zupfnoter kann über die
+Die Auszüge werden durchnummeriert\footnote{Zupfnoter kann über die
   Menüleiste die Auszüge 0-3 wählen. Braucht man mehr Auszüge, so ist
   das über die Konsole möglich.}.
 
 Der Auszug mit der \textbf{Nummer 0} hat eine besondere Rolle: Er gilt
-als Vorgabe für die anderen Auszuüge. Die im Auszug 0 angegebenen Werte
+als Vorgabe für die anderen Auszüge. Die im Auszug 0 angegebenen Werte
 für die Konfigurationsparameter wirken also auf die Auszüge mit höherer
 Nummer solange sie dort nicht überschrieben werden.
 
 Damit kannst du im Auszug 0 die grundlegenden Einstellungen vornehmen
-und in den höherern Auszügen spezifische Anforderungen erfüllen.
+und in den höheren Auszügen spezifische Anforderungen erfüllen.
 
 Einstellungen, die auch im Auszug 0 nicht definiert sind, belegt
 Zupfnoter mit programminternen Voreinstellungen. Diese Vorgabewerte sind
@@ -3022,7 +3022,7 @@ so, dass folgende Auszüge definiert entstehen.
 \end{itemize}
 
 Dabei wird von einem vierstimmigen Satz ausgegangen und Flusslinien,
-Synchronsiationslinen, Stimmenauswahl etc. darauf abgestimmt.
+Synchronisationslinien, Stimmenauswahl etc. darauf abgestimmt.
 
 \needspace{15cm}
 
@@ -3034,7 +3034,7 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
 
 \begin{itemize}
 \item
-  Auszug 0 ist hier so konifugriert
+  Auszug 0 ist hier so konfiguriert
 
   \begin{itemize}
   \itemsep1pt\parskip0pt\parsep0pt
@@ -3078,7 +3078,7 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
-      Alle Strphen in einem Block (Angabe
+      Alle Strophen in einem Block (Angabe
       \texttt{"verses":\ {[}1,2,3,4{]}})
     \item
       Liedtextblock 2 enthält keine Strophen mehr (Angabe
@@ -3092,7 +3092,7 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
 \begin{quote}
 \textbf{Hinweis}: Die Angaben der auszugebenden Stimmen könnte an sich
 entfallen, da da sie der Voreinstellung in Zupfnoter entsprechen. Sie
-sind hir nur zur Illustration sufgeführt.
+sind hir nur zur Illustration aufgeführt.
 \end{quote}
 
 \subsubsection{Praktisches Vorgehen bei der Erstellung von
@@ -3127,7 +3127,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
   \textbf{Anlegen der Auszüge}: Ausgehend von der Planung sollte unter
   dem Menü \textbf{\texttt{Konfig.\ bearbeiten\ /\ Auszugsbeschriftung}}
   alle geplanten Auszüge angelegt werden. Dabei sollte ``Titel'',
-  ``Auzszugsnummer'', ``Filenamezusatz'' festegelegt werden. Der
+  ``Auszugsnummer'', ``Filenamezusatz'' festgelegt werden. Der
   eingegebenen Titel wird nun auch für das Menü zur Einstellung des
   Auszuges verwendet.
 
@@ -3136,15 +3136,15 @@ Daher ist folgendes Reihenfolge zu empfehlen:
   \textbf{Bearbeitung der gemeinsamen Anteile}: Nun kannst du über das
   Menü \texttt{Konfig.\ bearbeiten\ /\ Grundeinstellungen} die Maske für
   die Grundeinstellungen aufrufen. Die hier gesetzten Einstellungen
-  wirke \textbf{auf alle nachfolgenden} Auszuüge. Daher ist es sinnvoll,
+  wirke \textbf{auf alle nachfolgenden} Auszüge. Daher ist es sinnvoll,
   z.b. Flusslinien, Synchronisationslinien, Wiederholungen usw. für alle
-  Stimmmen zu konfigurieren. Am besten konfiguriert man so weit, dass
-  das Blatt gut aussieht, d.h. Position der Legende und Liedtexte sollte
+  Stimmen zu konfigurieren. Am besten konfiguriert man so weit, dass das
+  Blatt gut aussieht, d.h. Position der Legende und Liedtexte sollte
   möglichst auf Auszug 0 erfolgen.
 
-  Auch die Sprunglinien sollten weitgehend in Auzszug 0 konfiguriert
-  werden. Nur in Ausnamefällen ist eine weitere Positionierung in
-  anderen Auszuügen notwendig.
+  Auch die Sprunglinien sollten weitgehend in Auszug 0 konfiguriert
+  werden. Nur in Ausnahmefällen ist eine weitere Positionierung in
+  anderen Auszügen notwendig.
 
   Als Faustregel gilt, so viel wie möglich auf Auszug 0 zu
   konfigurieren, so dass man im Grunde bei den Folgeauszügen nur noch
@@ -3152,7 +3152,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
 \item
   \textbf{Bearbeitung der folgenden Auszüge}: Wenn Auszug 0 gut
   konfiguriert ist, dann kann man sich den anderen Auszügen zuwenden.
-  Dazu wird der zu bearbeitende Auszug im Menü rects oben eingestellt.
+  Dazu wird der zu bearbeitende Auszug im Menü rechts oben eingestellt.
   Die Konfigurationsmasken und Einstellungen mit der Maus wirken nun auf
   den eingestellten Auszug.
 
@@ -3161,7 +3161,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
   richtigen Auszug eingestellt hat. Daher ist es wichtig den
   eingestellten Auszug immer wieder zu überprüfen.
   \includegraphics{../ZAUX_Images/040-042_Pruefen-Auszug-Grundeinstellungen.jpg}~
-  Im vorliegenden Fall wird Auzug 0 konfiguriert.
+  Im vorliegenden Fall wird Auszug 0 konfiguriert.
   \end{quote}
 
   In den weiteren Auszügen kann man sich konzentrieren auf:
@@ -3186,7 +3186,7 @@ Daher ist folgendes Reihenfolge zu empfehlen:
 Die flexible Konfiguration von Zupfnoter erlaubt die Anpassung der
 Auasgabe auf viele verschiedene Instrumente. Allerdings führt hier meist
 eine Kombination verschiedener Parameter zu Ziel. Zur Vereinfachung sind
-diese Konmbinationen für gebräücliche Instrumente hinterlegt.
+diese Kombinationen für gebräuchliche Instrumente hinterlegt.
 
 Wähle das Menü
 \textbf{``\texttt{Konfig.\ bearbeiten\ \textgreater{}\ Instrument\ spez.}''}.
@@ -3201,7 +3201,7 @@ gewünschte Instrument auswählen.
 \begin{quote}
 \textbf{Hinweis}: Bitte beachte, dass es auch einen Parameter
 ``Instrument'' gibt. Dieser ist nicht zu verwechseln mit der
-Schnelleinstellung, auch wenn er zum Teil dieselben Bezeichungen
+Schnelleinstellung, auch wenn er zum Teil dieselben Bezeichnungen
 verwendet. Der Parameter \texttt{Instrument} veränderte Programminterne
 Abläufe welche sich nicht über Konfiguration ausdrücken lässt (z.b.
 diatonische Stimmung bei Saitenspiel)
@@ -3232,12 +3232,12 @@ funktioniert.
 
 Wenn das Musikstück nicht auf die Harfe passt, kann man es ggf. durch
 transponieren zurecht schieben. Dazu gibt man in der ABC-Notation z.B.
-die folgende Kopfzeile ein. Diese veschiebt das Stück drei Halbtnach
-unten (in den Unterlegnoten also nach links).
+die folgende Kopfzeile ein. Diese verschiebt das Stück drei Halbtöne
+nach unten (in den Unterlegnoten also nach links).
 
 \begin{quote}
 \textbf{Hinweis}: Zupfnoter gibt die Transponierung der ersten Stimme im
-Unterlegnotenblatt aus. Abweichende Transpnierungen in den anderen
+Unterlegnotenblatt aus. Abweichende Transponierungen in den anderen
 Stimmen werden zwar ausgeführt, aber nicht vermerkt.
 \end{quote}
 
@@ -3288,7 +3288,7 @@ K:C shift=CG
 CDE
 \end{verbatim}
 
-is äquivalient zu
+is äquivalent zu
 
 \begin{verbatim}
 K:G
@@ -3309,7 +3309,7 @@ Dies erreicht man mit
 
 \texttt{\%\%score\ 1\ 2\ 3\ 4}
 
-Das bewirkt ein Notensystem mit einer Noteznzeile pro Stimme. Weitere
+Das bewirkt ein Notensystem mit einer Notenzeile pro Stimme. Weitere
 Einzelheiten im nächsten Kapitel.
 
 In diesem Zusammenhang ist es auch hilfreich, die Taktnummern
@@ -3328,7 +3328,7 @@ korrekt.
 \end{quote}
 
 \subsubsection{Mehrere Stimmen in
-ABC-Notation}\label{mherere-Stimmen-in-abc}
+ABC-Notation}\label{mehrere-Stimmen-in-abc}
 
 Da das im Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt
 es hier weitere Informationen.
@@ -3350,10 +3350,10 @@ Darin ist
 
 \begin{itemize}
 \item
-  \texttt{\textless{}ID\textgreater{}} eine Identifiaktion der Stimme,
+  \texttt{\textless{}ID\textgreater{}} eine Identifikation der Stimme,
   sie wird inder \texttt{\%\%score} - Anweisung referenziert. Es
-  empfhiehlt sich hier einfach ganze Zahlen zu verwenden un ddie Stimme
-  so durchzunumerieren.
+  empfiehlt sich hier einfach ganze Zahlen zu verwenden un die Stimme so
+  durchzunumerieren.
 \item
   \texttt{{[}clef={]}\textless{}clef\ name\textgreater{}} optionale
   Angabe des Notenschlüssels. Name ist
@@ -3400,7 +3400,7 @@ Zusammenhang von Zupfnoter relevante Beispiele
 \textbf{Hinweis}: In einigen Konfigurationseinstellungen von Zupfnoter
 werden Stimmen über eine Stimmen-Nummer angegeben. Die dabei relevante
 Nummerierung der Stimmem ergibt sich aus der Reihenfolge der Stimmen in
-der \texttt{\%\%score} - Anweisung im ABC-Notation (nicht zu verwecheln
+der \texttt{\%\%score} - Anweisung im ABC-Notation (nicht zu verwechseln
 mit der Identifikation der Stimme in der \texttt{V:} - Zeile.
 \end{quote}
 
@@ -3428,8 +3428,8 @@ sollten in folgender Reihenfolge ausgeführt werden.
   unmotivierten Vorschübe.
 \item
   Synchronisationslinien abschalten (das Feld im Edior löschen oder
-  `0-1' eintragen). Bei shr vollen Blättern verwirren die
-  Synchronisationslinene mehr als sie helfen.
+  `0-1' eintragen). Bei sehr vollen Blättern verwirren die
+  Synchronisationslinien mehr als sie helfen.
 \item
   im Konfigurationsmenü \texttt{Layout} mit den Schnelleinstellungen
   \texttt{layout}~\texttt{kompakt} bzw. \texttt{Packer}~\texttt{kompakt}
@@ -3490,8 +3490,8 @@ Häufige Einstellungen bei Zupfnoter sind:
   \texttt{I:staffnonote\ 2} - zeigt auch leere Notenlinien in der
   Notenvorschau
 \item
-  \texttt{I:linewarn\ 0} - unterdrückt Meldungenüber nicht gefüllte oder
-  zu volle Zeilen in der Notenvorschau
+  \texttt{I:linewarn\ 0} - unterdrückt Meldungen über nicht gefüllte
+  oder zu volle Zeilen in der Notenvorschau
 \end{itemize}
 
 Zupfnoter verwendet von sich aus die folgenden Einstellungen:
@@ -3593,7 +3593,7 @@ TODO:\marginpar{TODO} text überarbeiten
   Begleitnoten) {[}extract.x.synchlines{]}
 
   Diese Einstellung bestimmt, zwischen welchen Stimmen die
-  Synchronisiationslinien dargestellt werden.
+  Synchronisationslinien dargestellt werden.
 
   \textbf{Hinweise:} Synchronisationslinien für Mehrklänge werden immer
   dargestellt.
@@ -3604,8 +3604,8 @@ TODO:\marginpar{TODO} text überarbeiten
   Überschrift des Musikstückes und der Informationsblock separat
   positioniert werden.
 
-  \textbf{Hinweis:} durch Veschieben der Objekte mit der Maus wird diese
-  Einstellung automatisch eingefügt.
+  \textbf{Hinweis:} durch Verschieben der Objekte mit der Maus wird
+  diese Einstellung automatisch eingefügt.
 \item
   \textbf{Liedtexte:} (Liedtexte) {[}extract.x.lyrics{]}
 
@@ -3675,7 +3675,7 @@ Taktstrich auf den sie sich beziehen.
 
 Zupfnoter-Annotations beginnen mit einem der Zeichen \texttt{:},
 \texttt{@}, \texttt{!}, \texttt{\#}, \texttt{\textless{}},
-\texttt{\textgreater{}}. Beispielwesie bedeutets
+\texttt{\textgreater{}}. Beispielsweise bedeutet
 \texttt{"\^{}\textgreater{}"} dass das Notensymbol in den Unterlegnoten
 nach rechts verschoben werden.
 
@@ -3691,8 +3691,8 @@ Es gibt folgende Zusätze:
 \begin{itemize}
 \item
   \textbf{\texttt{\^{}:}} - Sprungziel: Damit kannst du ein Ziel
-  festelegen zu dem eine Sprunglinie gezeichnet werden kann. Damit
-  kannst du beliebige Sprünge darstellen.
+  festlegen zu dem eine Sprunglinie gezeichnet werden kann. Damit kannst
+  du beliebige Sprünge darstellen.
 \item
   \textbf{\texttt{\^{}@}} - Sprung: Damit kannst du eine Sprunglinie
   erzeugen. Beispiele: \texttt{@p1@3}, \texttt{@@-4}
@@ -4017,7 +4017,7 @@ pos.}{extract.0.barnumbers.autopos - autom. pos.}}\label{extract.0.barnumbers.au
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
 Wenn diese Option ausgeschaltet, gelten die Werte von \texttt{pos}. Dies
-kann bei manchen Stücken eine sinnvollere Einstellugn sein.
+kann bei manchen Stücken eine sinnvollere Einstellung sein.
 
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
@@ -4097,7 +4097,7 @@ pos.}{extract.0.countnotes.autopos - autom. pos.}}\label{extract.0.countnotes.au
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
 Wenn diese Option ausgeschaltet, gelten die Werte von \texttt{pos}. Dies
-kann bei manchen Stücken eine sinnvollere Einstellugn sein.
+kann bei manchen Stücken eine sinnvollere Einstellung sein.
 
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
@@ -4266,8 +4266,8 @@ Hier stellst du die Breite (in mm) von dünnen Linien ein.
 \subsection{\texorpdfstring{\texttt{extract.0.layout.PITCH\_OFFSET} -
 PitchOffset}{extract.0.layout.PITCH\_OFFSET - PitchOffset}}\label{extract.0.layout.PITCHux5fOFFSET}
 
-Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Dieser Parameter justiert das Verhältnis von Tonhöhe und Position auf
+dem Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
 Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
@@ -4518,7 +4518,7 @@ Hier kannst du die pack-Methode auswählen
   einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
   Stücken schnell verloren.
 
-  Bei dieser Methode sind die Synchronisiationslinien zwischen den
+  Bei dieser Methode sind die Synchronisationslinien zwischen den
   Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr flach
   sind.
   \end{quote}
@@ -5788,8 +5788,8 @@ auch mehrzeilig sein
 \subsection{\texorpdfstring{\texttt{produce} -
 Auszüge}{produce - Auszüge}}\label{produce}
 
-Hier kannst du eine Liste der Auszuüge angeben, für welche eine
-PDF-DAtei mit erzeugt werden soll.
+Hier kannst du eine Liste der Auszüge angeben, für welche eine PDF-DAtei
+mit erzeugt werden soll.
 
 \begin{quote}
 \textbf{Hinweis:} Manchmal ist es sinnvoll, Auszüge nur zur Bearbeitung
@@ -6270,7 +6270,7 @@ Vorversion}\label{inkompatibile-uxe4nderungen-zur-vorversion}
 \item
   Schneidemarken werden nur auch bei A4-Ausddruck ausgegeben
 \item
-  Beschrifungen für Variante Enden werden unterddrückt, wenn keine
+  Beschriftungen für Variante Enden werden unterddrückt, wenn keine
   Sprunglinien ausgegeben werden
 \item
   Taktnummern und Zählhinweise werden für unterdrückte Pause nicht mehr
@@ -6427,7 +6427,7 @@ issues}\label{backward-compatibility-issues}
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  now we have configuration paramters for printer optimimization \#82
+  now we have configuration parameters for printer optimimization \#82
 \item
   now have forms based configuration \#67
 \item
