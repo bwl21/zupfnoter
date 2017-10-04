@@ -25,7 +25,7 @@ hat. Aber wie sagt man doch so schön: "keine Panik!". Ersteller
 einfacher Unterlegnoten kommen mit den ersten Kapiteln schon auf die
 Erfolgsstraße.
 
-Dieses Handbuch richtet sich an alle, die Zupfnoter vewenden und sich
+Dieses Handbuch richtet sich an alle, die Zupfnoter verwenden und sich
 selbst in den Zupfnoter einarbeiten wollen. Dabei haben wir folgende
 Zielgruppen im Blick:
 
@@ -42,15 +42,15 @@ Zielgruppen im Blick:
     Phantasie begrenzt.
 
 -   **Lektoren** schreiben nicht selbst im Zupfnoter, sondern redigieren
-    Noten in Zpufnoter.
+    Noten in Zupfnoter.
 
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 
 > **Hinweis**: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff. sind
-> nur rudimentär. Wir veröffentlichen daher die Voreabversionen mit
+> nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit
 > TODOs und Zeilennummern.
 >
-> Für Hinweise auf Fehler oder Verbessrungsmöglichkeiten sind wir sehr
+> Für Hinweise auf Fehler oder Verbesserungsmöglichkeiten sind wir sehr
 > dankbar.
 
 TODO: markieren, für welche Zielgruppe welche Textabschnitte relevant
