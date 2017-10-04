@@ -354,14 +354,23 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # render the harpnotes to a3
   def render_a3(index = @systemstatus[:view])
-    printer = Harpnotes::PDFEngine.new
-    printer.draw(layout_harpnotes(index, 'A3'))
+    flowconf = $settings[:flowconf]
+    # turn of flowconf:  otherwise very short unconfigured undconfigured flowlines are
+    # longer because of the default values of the handles whihc make the curve from    +-+  to -+-+-
+    $settings[:flowconf] = false
+    result = Harpnotes::PDFEngine.new.draw(layout_harpnotes(index, 'A3'))
+    $settings[:flowconf] = flowconf
+    result
   end
 
 
   # render the harpnotes splitted on a4 pages
   def render_a4(index = @systemstatus[:view])
-    Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
+    flowconf = $settings[:flowconf]
+    $settings[:flowconf] = false
+    result = Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
+    $settings[:flowconf] = flowconf
+    result
   end
 
 
@@ -509,7 +518,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.benchmark("render_harpnotepreview_callback") do
       begin
         $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
-        @song_harpnotes = layout_harpnotes(@systemstatus[:view])
+        @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
 
         if @song_harpnotes
           # todo: not sure if it is good to pass active_voices via @song_harpnotes
