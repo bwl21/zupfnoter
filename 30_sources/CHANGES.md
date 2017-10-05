@@ -1,3 +1,9 @@
+
+# v 1.7.1
+
+* improved fermata symbol in pdf #178
+* turnoff flowconf edit for pdf. This avoids noise around very short vertical flowlines #167 
+
 # v 1.7
 
 ## fix
