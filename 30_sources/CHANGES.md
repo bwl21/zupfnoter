@@ -14,6 +14,7 @@
 ## enhancement
 
 * now have menu to import from local disc #177  
+* support for 25 string bass harp #180
   
 # v 1.7.1
 

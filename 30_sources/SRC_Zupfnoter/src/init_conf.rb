@@ -160,6 +160,21 @@ module InitConf
                                    a3_offset: [-5, 0],
                                    a4_offset: lambda {$conf['extract.0.printer.a4_offset']}}
                  },
+                 '25-strings-G-g Bass' => {
+                     layout:      {instrument:   '25-strings-g-g',
+                                   limit_a3: false,
+                                   PITCH_OFFSET: lambda {-31},
+                                   X_SPACING:    lambda {$conf['extract.0.layout.X_SPACING']},
+                                   X_OFFSET:     lambda {$conf['extract.0.layout.X_OFFSET']} # just to be safe
+                     },
+                     stringnames: {text:  lambda {self.cut_string_names($conf['extract.0.stringnames.text'], 12, 36)},
+                                   marks: {hpos: [43,67]
+                                   }
+                     },
+                     printer:     {a4_pages:  [1, 2],
+                                   a3_offset: [-5, 0],
+                                   a4_offset: lambda {$conf['extract.0.printer.a4_offset']}}
+                 },
                  '21-strings-a-f' => {
                      layout:      {instrument:   '21-strings-a-f',
                                    limit_a3: false,
