@@ -17,6 +17,7 @@
 * support for 25 string bass harp #180
 * strip =duration on meter "M:3/4 4/4 =3/4" #181
 * initial support to work with file templates #71
+* No initial render after a crash in previous session #103
   
 # v 1.7.1
 

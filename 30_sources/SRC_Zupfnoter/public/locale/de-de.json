@@ -305,6 +305,7 @@
     "label": "**--label",
     "large view\nto see all details": "große Darstellung\nzur Beurteilung\nvon Details",
     "large": "groß",
+    "last session failed. Did not render. Cleanup ABC, then render manually": "Fehler in letzter Sitzung. Bereinige ABC und drücke [rendern]",
     "layout": "Layout",
     "layout_compact": "Kompaktes Layout",
     "layout_large": "Großes Layout",

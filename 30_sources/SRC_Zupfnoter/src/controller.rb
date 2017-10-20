@@ -1,6 +1,24 @@
 # This is a wrapper class for local store
 
 
+class LastRenderMonitor
+  def ok?
+    result = %x{localStorage.getItem('lastrender')}
+    Native(result).nil?
+  end
+
+  def set_active
+    %x{localStorage.setItem('lastrender', #{Time.now()})  }
+    true
+  end
+
+  def clear
+    %x{localStorage.removeItem('lastrender')  }
+    false
+  end
+end
+
+
 class LocalStore
 
   def initialize(name)
@@ -44,7 +62,7 @@ class LocalStore
     if @directory[key]
       $log.warning("local storage: key '#{key}' does not exist")
     else
-      `localStorage.deleteItem(self.$mangle_key(key))`
+      `localStorage.removeItem(self.$mangle_key(key))`
       @directory[key] = nil
       save_dir
     end
@@ -165,9 +183,19 @@ class Controller
 
     if @systemstatus[:mode] == :demo
       handle_command("view 0")
+    else
+      @editor.get_lyrics
+
+      #$log.error(I189n.t("last session failed. Did not render"))
+      lastrender = LastRenderMonitor.new
+
+      if lastrender.ok?
+        render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
+      else
+        $log.error(I18n.t("last session failed. Did not render. Cleanup ABC, then render manually"))
+        call_consumers(:error_alert)
+      end
     end
-    @editor.get_lyrics
-    render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
     #
     #setup_nodewebkit
     # # now trigger the interactive UI
@@ -216,7 +244,7 @@ class Controller
                                extracts:     [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})`}
-                                 call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
+                               call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }]
     }
     @systemstatus_consumers[clazz].each {|c| c.call()}
@@ -372,7 +400,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # turn of flowconf:  otherwise very short unconfigured undconfigured flowlines are
     # longer because of the default values of the handles whihc make the curve from    +-+  to -+-+-
     $settings[:flowconf] = false
-    result = Harpnotes::PDFEngine.new.draw(layout_harpnotes(index, 'A3'))
+    result               = Harpnotes::PDFEngine.new.draw(layout_harpnotes(index, 'A3'))
     $settings[:flowconf] = flowconf
     result
   end
@@ -380,9 +408,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # render the harpnotes splitted on a4 pages
   def render_a4(index = @systemstatus[:view])
-    flowconf = $settings[:flowconf]
+    flowconf             = $settings[:flowconf]
     $settings[:flowconf] = false
-    result = Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
+    result               = Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
     $settings[:flowconf] = flowconf
     result
   end
@@ -571,6 +599,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # by calling setup_tune_preview
     # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
+      LastRenderMonitor.new.set_active
       set_active("#tunePreview")
       `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
     end.then do
@@ -583,11 +612,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           call_consumers(:error_alert)
           set_inactive("#harpPreview")
           @editor.set_annotations($log.annotations)
+          LastRenderMonitor.new.clear
           promise.resolve()
         end
       end
     end
-
 
     result
   end
