@@ -982,7 +982,7 @@ module Harpnotes
                          ["c", -0.09, -0.12, -0.09, -0.18, 0.03, -0.69],
                          ["c", 0.33, -1.62, 0.78, -3, 1.47, -4.38],
                          ["c", 1.77, -3.54, 4.44, -5.67, 7.56, -5.97], ["z"],
-                         ["M", -0.5, 1.5],    # don't know what I am doing, but "m" is not properly supported by opal-jspdf. So I do an sbsolute move
+                         ["M", -0.5, 1.5], # don't know what I am doing, but "m" is not properly supported by opal-jspdf. So I do an sbsolute move
                          ["c", 1.38, -0.3, 2.58, 0.9, 2.31, 2.25],
                          ["c", -0.15, 0.72, -0.78, 1.35, -1.47, 1.5],
                          ["c", -1.38, 0.27, -2.58, -0.93, -2.31, -2.31],
@@ -1384,6 +1384,7 @@ module Harpnotes
         title               = music.meta_data[:title] || "untitled"
         filename            = music.meta_data[:filename]
         meter               = music.meta_data[:meter]
+        meter               = meter.last.split("=").first if meter
         key                 = music.meta_data[:key]
         composer            = music.meta_data[:composer]
         tempo               = music.meta_data[:tempo_display]
