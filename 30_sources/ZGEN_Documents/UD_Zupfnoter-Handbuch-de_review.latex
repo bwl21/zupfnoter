@@ -2289,30 +2289,33 @@ Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
 
+Folgende Befehle zum Arbeiten mit voreingestellen Auszügen bzw.
+Beschriftungen
+
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
 \item
   \texttt{setstdnotes}: kopiert dem aktuellen Stück die Konfiguration
   der Blattbeschriftungen usw um sie auf ein anderes Stück zu
   übertragen.
 \item
   \texttt{stdnotes}: überträgt die zuletzt kopierte Konfiguration der
-  Blattbeschriftungen auf das aktuelle Stück
-\item
-  \texttt{stdectract}: überträgt die zuletzt kopierte Konfiguration der
-  Auszüge auf das aktuelle Stück
+  Blattbeschriftungen auf das aktuelle Stück in den aktuellen Auszug.
 \item
   \texttt{setstdextract}: kopiert aus dem aktuellen Stück die
   Konfiguration der Auszüge, um sie auf ein anderes Stück zu übertragen.
+\item
+  \texttt{stdectract}: überträgt die zuletzt kopierte Konfiguration der
+  Auszüge auf das aktuelle Stück
+
+  \begin{quote}
+  \textbf{Hinweis}: Diese Befehle sind hilfreich um schnell die
+  Konfiguration eines aus MusicXml importierten Stückes einzustellen.
+  \end{quote}
 \end{itemize}
 
-\begin{quote}
-\textbf{Hinweis}: Diese Befehle sind hilfreich um schnell die
-Konfiguration eines aus MusicXml importierten Stückes einzustellen.
-\end{quote}
+Über folgende Befehle können Flußlinien gestaltet werden:
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
 \item
   \texttt{setsetting\ flowconf\ edit}: Mit dieser Einstellung werden die
   Flußlinien bearbeitbar, d.h. man kann die Flußlinien mit der Maus
@@ -2321,16 +2324,20 @@ Konfiguration eines aus MusicXml importierten Stückes einzustellen.
   \texttt{setsetting\ flowconf\ none}: Mit dieser Einstellung werden die
   Flußlinien nicht mehr bearbeitbar. Bearbeitete Flußlinien bleiben
   weiterhin ``verbogen''.
+
+  \begin{quote}
+  \textbf{Hinweis:} Wenn die Bearbeitung der Flußlinien eingeschaltet
+  ist, wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung
+  beim Neuladen von Zupfnoter zurückgesetzt.
+  \end{quote}
 \end{itemize}
 
-\begin{quote}
-\textbf{Hinweis:} Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
-wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung beim
-Neuladen von Zupfnoter zurückgesetzt.
-\end{quote}
+Selbst wenn Zupfnoter die Eingabe fehlerhafter Konfigurationsparameter
+eigentlich verhindern soll, so kann es trotzdem vorkommen. Wenn also
+schwer verständliche Meldungen erscheinen kann man eine erweiterte
+Prüfung der Konfigurationsparameter vornehmen:
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
 \item
   \texttt{setsetting\ validate\ true}: Diese Einstellung bewirkt eine
   extra Prüfung/Validierung der Konfigurationsparameter.
@@ -2340,12 +2347,29 @@ Neuladen von Zupfnoter zurückgesetzt.
 \item
   \texttt{editconf\ errors}: Damit werden die fehlerhaften
   Konfigurationsparameter in den Konfigurationseditor geladen.
+
+  \begin{quote}
+  \textbf{Hinweis:} Diese Prüfungen sind noch nicht ausgereift und daher
+  standardmässig ausgeschaltet. Auch zeigt der Editor noch nicht die
+  Fehler noch nicht genau genug an.
+  \end{quote}
+\end{itemize}
+
+Folgende Befehle sind für die Arbeit mit Dateivorlagen:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{editconf\ template}: Damit kann man die Eigenschaften für ein
+  File-Template einstellen. Im Wesentlichen ist das der Dateiname.
+\item
+  \texttt{edittemplate}: Damit wird die aktuelle Dateivorlage zur
+  Bearbeitung geladen ()
 \end{itemize}
 
 \begin{quote}
-\textbf{Hinweis:} Diese Prüfungen sind noch nicht ausgereift und daher
-standardmässig ausgeschaltet. Auch zeigt der Editor noch nicht die
-Fehler noch nicht genau genug an.
+\textbf{Hinweis:} Weitere Informationen hierzu siehe
+\hyperref[filetemplates]{Arbeiten mit Dateivorlagen}
 \end{quote}
 
 Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
@@ -3095,8 +3119,8 @@ entfallen, da da sie der Voreinstellung in Zupfnoter entsprechen. Sie
 sind hir nur zur Illustration aufgeführt.
 \end{quote}
 
-\subsubsection{Praktisches Vorgehen bei der Erstellung von
-Auszügen}\label{praktisches-vorgehen-bei-der-erstellung-von-auszuxfcgen}
+\hyperdef{}{bestPracticeExtract}{\subsubsection{Praktisches Vorgehen bei
+der Erstellung von Auszügen}\label{bestPracticeExtract}}
 
 Das Konzept der Auszüge in Zupfnoter ist ein mächtiges Werkzeug.
 Mächtige Werkzeuge müssen aber mit Bedacht eingesetzt werden, wenn man
@@ -3503,6 +3527,79 @@ I:contbarnb 1
 I:linewarn 0
 I:staffnonote 2
 \end{verbatim}
+
+\hyperdef{}{filetemplates}{\subsubsection{Arbeiten mit
+Dateivorlagen}\label{filetemplates}}
+
+Erstellt man über das Menü ``Neu'' ein neues Stück, fügt Zupfnoter eine
+Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
+Stück. Dieses legt auch die Konfiguration an wie in Kapitel
+\hyperref[bestPracticeExtract]{Praktisches Vorgehen bei der Erstellung
+von Auszügen} beschrieben.
+
+Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen
+Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage
+durch eine projektspezifische Vorlage zu ersetzen, in der schon eineige
+Parameter (z.B. Blattbeschrifungen) vorausgefüllt sind.
+
+Zupfnoter bietet eine experimentelle Unterstützung über die
+\hyperref[konsole-fenster]{Konsole}. In folgenden Schritten kann ein
+eigene Vorlage eingerichtet werden:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \texttt{edittemplate}: Damit wird das aktuelle Template in den Editor
+  geladen und kann angepasst werden.
+\item
+  \texttt{editconf\ template}: Damit werde die Template-spezifischen
+  Eigenschaften (Dateiname und Titel) eingstellt.
+
+  \begin{quote}
+  \textbf{Hinweis}: Man muss von Hand auf den Reiter ``Konfiguration''
+  schalten um die Konfigurationsmaske zu sehen.
+
+  \textbf{Hinweis}: mit diesem Befehl kann man auch feststellen, welche
+  Vorlage gerade aktiv ist.
+  \end{quote}
+\item
+  \texttt{settemplate}: Damit wird der aktuelle Editor-Inhalt als
+  Template hinterlegt
+\item
+  Menüpunkt `Speichern': Damit wird der Editorinhalt gespeichert.
+
+  \begin{quote}
+  \textbf{Hinweis}: Dabei ist es wichtig, dass die Kopfzeile \texttt{F:}
+  einen Platzhalter - Zeichen \texttt{\{\{} enthält. Dadurch wird im
+  ``Template\_modus'' gespeichert, d.h. der Dateiname wird nicht aus der
+  \texttt{F:} - Zeile entnommen sondern aus \texttt{template.filebase}
+  \end{quote}
+
+  \begin{quote}
+  \textbf{Hinweis} Beim Bearbeiten des Templates kommt immer wieder die
+  Meldung
+
+  \texttt{"\{\{song\_id\}\}\_\{\{filename\}\}":\ Fehlerhafte\ Zeichen\ im\ Filenamen}
+
+  Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
+  aufgelöst sind.
+  \end{quote}
+\end{enumerate}
+
+Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
+eingefügt sind, welche beim erstellen eines neuen Stückes anhand der
+Benutzereingaben aufgelöst bzw. ausgefüllt werden. Folgende Platzhalter
+sind verfügbar:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\texttt{\{\{song\_id\}\}}]
+Das ist die Identifikationsnummer des Stückes
+\item[\texttt{\{\{filename\}\}}]
+Das ist die Basis für den Dateinamen
+\item[\texttt{\{\{song\_title\}\}}]
+Das ist der Titel des Stückes.
+\end{description}
 
 \subsubsection{Parameter in der
 Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}
@@ -4017,7 +4114,7 @@ pos.}{extract.0.barnumbers.autopos - autom. pos.}}\label{extract.0.barnumbers.au
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
 Wenn diese Option ausgeschaltet, gelten die Werte von \texttt{pos}. Dies
-kann bei manchen Stücken eine sinnvollere Einstellung sein.
+kann bei manchen Stücken eine sinnvollere Einstellugn sein.
 
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
@@ -4097,7 +4194,7 @@ pos.}{extract.0.countnotes.autopos - autom. pos.}}\label{extract.0.countnotes.au
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
 Wenn diese Option ausgeschaltet, gelten die Werte von \texttt{pos}. Dies
-kann bei manchen Stücken eine sinnvollere Einstellung sein.
+kann bei manchen Stücken eine sinnvollere Einstellugn sein.
 
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
@@ -4266,8 +4363,8 @@ Hier stellst du die Breite (in mm) von dünnen Linien ein.
 \subsection{\texorpdfstring{\texttt{extract.0.layout.PITCH\_OFFSET} -
 PitchOffset}{extract.0.layout.PITCH\_OFFSET - PitchOffset}}\label{extract.0.layout.PITCHux5fOFFSET}
 
-Dieser Parameter justiert das Verhältnis von Tonhöhe und Position auf
-dem Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
 Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
@@ -4518,7 +4615,7 @@ Hier kannst du die pack-Methode auswählen
   einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
   Stücken schnell verloren.
 
-  Bei dieser Methode sind die Synchronisationslinien zwischen den
+  Bei dieser Methode sind die Synchronisiationslinien zwischen den
   Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr flach
   sind.
   \end{quote}
@@ -5788,8 +5885,8 @@ auch mehrzeilig sein
 \subsection{\texorpdfstring{\texttt{produce} -
 Auszüge}{produce - Auszüge}}\label{produce}
 
-Hier kannst du eine Liste der Auszüge angeben, für welche eine PDF-DAtei
-mit erzeugt werden soll.
+Hier kannst du eine Liste der Auszuüge angeben, für welche eine
+PDF-DAtei mit erzeugt werden soll.
 
 \begin{quote}
 \textbf{Hinweis:} Manchmal ist es sinnvoll, Auszüge nur zur Bearbeitung
@@ -5861,6 +5958,36 @@ Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
 
 \begin{verbatim}
     "repeatstart": "next"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{template} -
+Dateivorlate}{template - Dateivorlate}}\label{template}
+
+TODO:\marginpar{TODO} Helptext für template einfügen
+
+\begin{verbatim}
+    "template": {"filebase": null, "title": "- no template -"}
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{template.filebase} -
+Dateibasis}{template.filebase - Dateibasis}}\label{template.filebase}
+
+TODO:\marginpar{TODO} Helptext für template.filebase einfügen
+
+\begin{verbatim}
+    "filebase": null
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{template.title} -
+Titel}{template.title - Titel}}\label{template.title}
+
+TODO:\marginpar{TODO} Helptext für template.title einfügen
+
+\begin{verbatim}
+    "title": "- no template -"
       
 \end{verbatim}
 

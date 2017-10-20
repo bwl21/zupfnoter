@@ -215,7 +215,7 @@ ausgegeben werden sollen.
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
 Wenn diese Option ausgeschaltet, gelten die Werte von `pos`. Dies kann
-bei manchen Stücken eine sinnvollere Einstellung sein.
+bei manchen Stücken eine sinnvollere Einstellugn sein.
 
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
@@ -276,7 +276,7 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 Hier kannst du die automatische Positionierung einschalten. Dabei werden
 Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
 Wenn diese Option ausgeschaltet, gelten die Werte von `pos`. Dies kann
-bei manchen Stücken eine sinnvollere Einstellung sein.
+bei manchen Stücken eine sinnvollere Einstellugn sein.
 
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
@@ -402,8 +402,8 @@ Hier stellst du die Breite (in mm) von dünnen Linien ein.
 
 ## `extract.0.layout.PITCH_OFFSET` - PitchOffset {#extract.0.layout.PITCH_OFFSET}
 
-Dieser Parameter justiert das Verhältnis von Tonhöhe und Position auf
-dem Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
 Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
@@ -583,7 +583,7 @@ Hier kannst du die pack-Methode auswählen
     > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
     > Stücken schnell verloren.
     >
-    > Bei dieser Methode sind die Synchronisationslinien zwischen den
+    > Bei dieser Methode sind die Synchronisiationslinien zwischen den
     > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
     > flach sind.
 
@@ -1476,8 +1476,8 @@ auch mehrzeilig sein
 
 ## `produce` - Auszüge {#produce}
 
-Hier kannst du eine Liste der Auszüge angeben, für welche eine PDF-DAtei
-mit erzeugt werden soll.
+Hier kannst du eine Liste der Auszuüge angeben, für welche eine
+PDF-DAtei mit erzeugt werden soll.
 
 > **Hinweis:** Manchmal ist es sinnvoll, Auszüge nur zur Bearbeitung
 > anzulegen, diese aber nicht zu drucken. Es kommt auch vor, dass Auszug
@@ -1527,6 +1527,27 @@ Hier kannst du die Pausenposition nach einer Wiederholung einstellen.
 Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
 
         "repeatstart": "next"
+          
+
+## `template` - Dateivorlate {#template}
+
+TODO: Helptext für template einfügen
+
+        "template": {"filebase": null, "title": "- no template -"}
+          
+
+## `template.filebase` - Dateibasis {#template.filebase}
+
+TODO: Helptext für template.filebase einfügen
+
+        "filebase": null
+          
+
+## `template.title` - Titel {#template.title}
+
+TODO: Helptext für template.title einfügen
+
+        "title": "- no template -"
           
 
 ## `templates` - Vorlagen {#templates}

@@ -1038,17 +1038,23 @@ Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
 
+Folgende Befehle zum Arbeiten mit voreingestellen Auszügen bzw.
+Beschriftungen
+
 -   `setstdnotes`: kopiert dem aktuellen Stück die Konfiguration der
     Blattbeschriftungen usw um sie auf ein anderes Stück zu übertragen.
 -   `stdnotes`: überträgt die zuletzt kopierte Konfiguration der
-    Blattbeschriftungen auf das aktuelle Stück
--   `stdectract`: überträgt die zuletzt kopierte Konfiguration der
-    Auszüge auf das aktuelle Stück
+    Blattbeschriftungen auf das aktuelle Stück in den aktuellen Auszug.
 -   `setstdextract`: kopiert aus dem aktuellen Stück die Konfiguration
     der Auszüge, um sie auf ein anderes Stück zu übertragen.
+-   `stdectract`: überträgt die zuletzt kopierte Konfiguration der
+    Auszüge auf das aktuelle Stück
 
-> **Hinweis**: Diese Befehle sind hilfreich um schnell die Konfiguration
-> eines aus MusicXml importierten Stückes einzustellen.
+    > **Hinweis**: Diese Befehle sind hilfreich um schnell die
+    > Konfiguration eines aus MusicXml importierten Stückes
+    > einzustellen.
+
+Über folgende Befehle können Flußlinien gestaltet werden:
 
 -   `setsetting flowconf edit`: Mit dieser Einstellung werden die
     Flußlinien bearbeitbar, d.h. man kann die Flußlinien mit der Maus
@@ -1057,9 +1063,14 @@ ist.
     Flußlinien nicht mehr bearbeitbar. Bearbeitete Flußlinien bleiben
     weiterhin "verbogen".
 
-> **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
-> wird Zupfnoter deutlich langsamer. Daher wird diese Einstellung beim
-> Neuladen von Zupfnoter zurückgesetzt.
+    > **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet
+    > ist, wird Zupfnoter deutlich langsamer. Daher wird diese
+    > Einstellung beim Neuladen von Zupfnoter zurückgesetzt.
+
+Selbst wenn Zupfnoter die Eingabe fehlerhafter Konfigurationsparameter
+eigentlich verhindern soll, so kann es trotzdem vorkommen. Wenn also
+schwer verständliche Meldungen erscheinen kann man eine erweiterte
+Prüfung der Konfigurationsparameter vornehmen:
 
 -   `setsetting validate true`: Diese Einstellung bewirkt eine extra
     Prüfung/Validierung der Konfigurationsparameter.
@@ -1068,9 +1079,19 @@ ist.
 -   `editconf errors`: Damit werden die fehlerhaften
     Konfigurationsparameter in den Konfigurationseditor geladen.
 
-> **Hinweis:** Diese Prüfungen sind noch nicht ausgereift und daher
-> standardmässig ausgeschaltet. Auch zeigt der Editor noch nicht die
-> Fehler noch nicht genau genug an.
+    > **Hinweis:** Diese Prüfungen sind noch nicht ausgereift und daher
+    > standardmässig ausgeschaltet. Auch zeigt der Editor noch nicht die
+    > Fehler noch nicht genau genug an.
+
+Folgende Befehle sind für die Arbeit mit Dateivorlagen:
+
+-   `editconf template`: Damit kann man die Eigenschaften für ein
+    File-Template einstellen. Im Wesentlichen ist das der Dateiname.
+-   `edittemplate`: Damit wird die aktuelle Dateivorlage zur Bearbeitung
+    geladen ()
+
+> **Hinweis:** Weitere Informationen hierzu siehe [Arbeiten mit
+> Dateivorlagen](#filetemplates)
 
 Weiterhin zeigt die Konsole einige Meldungen, die für die Fehleranalyse
 hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
@@ -1580,7 +1601,7 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
 > entfallen, da da sie der Voreinstellung in Zupfnoter entsprechen. Sie
 > sind hir nur zur Illustration aufgeführt.
 
-### Praktisches Vorgehen bei der Erstellung von Auszügen
+### Praktisches Vorgehen bei der Erstellung von Auszügen {#bestPracticeExtract}
 
 Das Konzept der Auszüge in Zupfnoter ist ein mächtiges Werkzeug.
 Mächtige Werkzeuge müssen aber mit Bedacht eingesetzt werden, wenn man
@@ -1880,6 +1901,65 @@ Zupfnoter verwendet von sich aus die folgenden Einstellungen:
     I:contbarnb 1
     I:linewarn 0
     I:staffnonote 2
+
+### Arbeiten mit Dateivorlagen {#filetemplates}
+
+Erstellt man über das Menü "Neu" ein neues Stück, fügt Zupfnoter eine
+Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
+Stück. Dieses legt auch die Konfiguration an wie in Kapitel [Praktisches
+Vorgehen bei der Erstellung von Auszügen](#bestPracticeExtract)
+beschrieben.
+
+Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen
+Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage
+durch eine projektspezifische Vorlage zu ersetzen, in der schon eineige
+Parameter (z.B. Blattbeschrifungen) vorausgefüllt sind.
+
+Zupfnoter bietet eine experimentelle Unterstützung über die
+[Konsole](#konsole-fenster). In folgenden Schritten kann ein eigene
+Vorlage eingerichtet werden:
+
+1.  `edittemplate`: Damit wird das aktuelle Template in den Editor
+    geladen und kann angepasst werden.
+2.  `editconf template`: Damit werde die Template-spezifischen
+    Eigenschaften (Dateiname und Titel) eingstellt.
+
+    > **Hinweis**: Man muss von Hand auf den Reiter "Konfiguration"
+    > schalten um die Konfigurationsmaske zu sehen.
+    >
+    > **Hinweis**: mit diesem Befehl kann man auch feststellen, welche
+    > Vorlage gerade aktiv ist.
+
+3.  `settemplate`: Damit wird der aktuelle Editor-Inhalt als Template
+    hinterlegt
+4.  Menüpunkt 'Speichern': Damit wird der Editorinhalt gespeichert.
+
+    > **Hinweis**: Dabei ist es wichtig, dass die Kopfzeile `F:` einen
+    > Platzhalter - Zeichen `{{` enthält. Dadurch wird im
+    > "Template_modus" gespeichert, d.h. der Dateiname wird nicht aus
+    > der `F:` - Zeile entnommen sondern aus `template.filebase`
+
+    > **Hinweis** Beim Bearbeiten des Templates kommt immer wieder die
+    > Meldung
+    >
+    > `"{{song_id}}_{{filename}}": Fehlerhafte Zeichen im Filenamen`
+    >
+    > Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
+    > aufgelöst sind.
+
+Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
+eingefügt sind, welche beim erstellen eines neuen Stückes anhand der
+Benutzereingaben aufgelöst bzw. ausgefüllt werden. Folgende Platzhalter
+sind verfügbar:
+
+`{{song_id}}`
+:   Das ist die Identifikationsnummer des Stückes
+
+`{{filename}}`
+:   Das ist die Basis für den Dateinamen
+
+`{{song_title}}`
+:   Das ist der Titel des Stückes.
 
 ### Parameter in der Zupfnoter-URL
 
