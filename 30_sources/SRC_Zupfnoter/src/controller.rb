@@ -106,11 +106,10 @@ class Controller
                           'en-us' => 'en-US'
     }
     browser_language   = `navigator.language`.downcase
-    zupfnoter_language = languages[browser_language]
+    zupfnoter_language = languages[browser_language] || 'de-de'
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
-    I18n.locale(zupfnoter_language) if browser_language
 
     @version      = VERSION
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
@@ -130,6 +129,9 @@ class Controller
     $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
     $log.info ("Ruby:     #{RUBY_VERSION}")
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
+
+    I18n.locale(zupfnoter_language) if browser_language
+
 
 
     $conf        = Confstack.new(nil)

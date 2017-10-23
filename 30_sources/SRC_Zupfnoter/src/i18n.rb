@@ -43,7 +43,11 @@ module I18n
       $conf_helptext = Native(response.body)
       $conf_helptext = JSON.parse($conf_helptext) if $conf_helptext.is_a? String
     end.fail do |response|
-      alert "could not loaad confhelp #{response}"
+     $log.error %Q{BUG: no language support for } + %Q{ "#{language}": #{response.body}"}
+     HTTP.get("public/locale/conf-help_de-de.json?#{Time.now.to_i}").then do |response|
+       $conf_helptext = Native(response.body)
+       $conf_helptext = JSON.parse($conf_helptext) if $conf_helptext.is_a? String
+     end
     end.always do |response|
     end
 
