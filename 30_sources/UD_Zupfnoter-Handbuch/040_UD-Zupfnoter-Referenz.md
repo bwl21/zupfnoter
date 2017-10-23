@@ -1906,14 +1906,14 @@ Zupfnoter verwendet von sich aus die folgenden Einstellungen:
 
 Erstellt man über das Menü "Neu" ein neues Stück, fügt Zupfnoter eine
 Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
-Stück. Dieses legt auch die Konfiguration an wie in Kapitel [Praktisches
-Vorgehen bei der Erstellung von Auszügen](#bestPracticeExtract)
-beschrieben.
+Stück. Dieses legt auch die Konfiguration an welche in Kapitel
+[Praktisches Vorgehen bei der Erstellung von
+Auszügen](#bestPracticeExtract) beschrieben ist.
 
 Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen
 Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage
 durch eine projektspezifische Vorlage zu ersetzen, in der schon eineige
-Parameter (z.B. Blattbeschrifungen) vorausgefüllt sind.
+Parameter (z.B. Blattbeschriftungen) vorausgefüllt sind.
 
 Zupfnoter bietet eine experimentelle Unterstützung über die
 [Konsole](#konsole-fenster). In folgenden Schritten kann ein eigene
@@ -1940,12 +1940,13 @@ Vorlage eingerichtet werden:
     > der `F:` - Zeile entnommen sondern aus `template.filebase`
 
     > **Hinweis** Beim Bearbeiten des Templates kommt immer wieder die
-    > Meldung
+    > Meldung wie
     >
     > `"{{song_id}}_{{filename}}": Fehlerhafte Zeichen im Filenamen`
     >
     > Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
-    > aufgelöst sind.
+    > aufgelöst sind, daher wird die F: - Kopfzeile als fehlerhaft
+    > markiert.
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der

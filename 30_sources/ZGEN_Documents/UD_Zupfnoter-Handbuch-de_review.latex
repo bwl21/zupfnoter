@@ -3533,14 +3533,14 @@ Dateivorlagen}\label{filetemplates}}
 
 Erstellt man über das Menü ``Neu'' ein neues Stück, fügt Zupfnoter eine
 Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
-Stück. Dieses legt auch die Konfiguration an wie in Kapitel
+Stück. Dieses legt auch die Konfiguration an welche in Kapitel
 \hyperref[bestPracticeExtract]{Praktisches Vorgehen bei der Erstellung
-von Auszügen} beschrieben.
+von Auszügen} beschrieben ist.
 
 Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen
 Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage
 durch eine projektspezifische Vorlage zu ersetzen, in der schon eineige
-Parameter (z.B. Blattbeschrifungen) vorausgefüllt sind.
+Parameter (z.B. Blattbeschriftungen) vorausgefüllt sind.
 
 Zupfnoter bietet eine experimentelle Unterstützung über die
 \hyperref[konsole-fenster]{Konsole}. In folgenden Schritten kann ein
@@ -3577,12 +3577,12 @@ eigene Vorlage eingerichtet werden:
 
   \begin{quote}
   \textbf{Hinweis} Beim Bearbeiten des Templates kommt immer wieder die
-  Meldung
+  Meldung wie
 
   \texttt{"\{\{song\_id\}\}\_\{\{filename\}\}":\ Fehlerhafte\ Zeichen\ im\ Filenamen}
 
   Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
-  aufgelöst sind.
+  aufgelöst sind, daher wird die F: - Kopfzeile als fehlerhaft markiert.
   \end{quote}
 \end{enumerate}
 
