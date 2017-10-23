@@ -23,7 +23,7 @@ module Harpnotes
       # This creates an instrument upon request
       def create_inst(instrument_id)
         unless @inst[instrument_id]
-          $log.debug "creating instrument #{instrument_id} "
+         # $log.debug "creating instrument #{instrument_id} "
           @inst[instrument_id] = %x{new Instrument("piano")}
           Native(@inst[instrument_id]).on(:noteon) do |element|
             abc_element = Native(element)[:origin]
