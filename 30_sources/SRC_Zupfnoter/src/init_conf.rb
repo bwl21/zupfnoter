@@ -42,7 +42,7 @@ module InitConf
         {produce:      [0],
          abc_parser:   'ABC2SVG',
          restposition: {default: :center, repeatstart: :next, repeatend: :default},
-         template: {filebase: nil, title: "- no template -"},
+         template: {filebase: "-no-template-", title: "- no template -"},
          wrap:         60,
 
 

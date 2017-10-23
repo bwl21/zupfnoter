@@ -1533,14 +1533,14 @@ Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
 
 TODO: Helptext für template einfügen
 
-        "template": {"filebase": null, "title": "- no template -"}
+        "template": {"filebase": "-no-template-", "title": "- no template -"}
           
 
 ## `template.filebase` - Dateibasis {#template.filebase}
 
 TODO: Helptext für template.filebase einfügen
 
-        "filebase": null
+        "filebase": "-no-template-"
           
 
 ## `template.title` - Titel {#template.title}
