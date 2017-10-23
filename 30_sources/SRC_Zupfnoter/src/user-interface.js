@@ -2,17 +2,148 @@ function init_w2ui(uicontroller) {
 
   w2popup.defaults.speed = 0;
 
+  var zoomlevel = [1400, 2200];
+  var current_perspective = 'tb_perspective:Alle';
+  var isFullScreen = false;
+
+
+// file import methods
+
+
+  function pasteXml(text) {
+    // try {
+    //   var xmldata = $.parseXML(text);
+    // }
+    // catch (ex) {
+    //   #{$log.error(`ex.message`)}
+    // }
+
+    var xmldata = $.parseXML(text);
+
+    var options = {
+      'u': 0, 'b': 0, 'n': 0,    // unfold repeats (1), bars per line, chars per line
+      'c': 0, 'v': 0, 'd': 0,    // credit text filter level (0-6), no volta on higher voice numbers (1), denominator unit length (L:)
+      'm': 0, 'x': 0,           // with midi volume and panning (1), no line breaks (1)
+      'p': 'f'
+    };              // page format: scale (1.0), width, left- and right margin in cm
+
+    var result = vertaal(xmldata, options);
+
+
+    debugger;
+    uicontroller.dropped_abc = result[0]
+
+    uicontroller.$handle_command('drop')
+  }
+
+  function pasteMxl(text) {
+    zip = new JSZip(text)
+    text = zip.file(/^[^/ ]*\.xml$/)[0].asText();
+    pasteXml(text);
+  }
+
+  function pasteAbc(text) {
+    uicontroller.dropped_abc = text
+    uicontroller.$handle_command('drop')
+  }
+
+  function handleDrop(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    files = event.target.files;
+    if (!files) {
+      files = event.dataTransfer.files;
+    }
+    reader = new FileReader();
+
+    reader.onload = function (e) {
+      text = e.target.result;
+      if (text[0] == '<') {
+        pasteXml(text);
+      }
+      else if (files[0].name.endsWith(".mxl")) {
+        pasteMxl(text)
+      }
+      else {
+        pasteAbc(text);
+      }
+    }
+    if (files[0].name.endsWith('.mxl')) {
+      reader.readAsBinaryString(files[0]);
+    }
+    else {
+      reader.readAsText(files[0], "UTF-8");
+    }
+  }
+
+
+  function handleDragover(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+  }
+
+  function initializeFileDrop(element) {
+    var a = document.getElementById(element);
+    a.addEventListener('dragover', handleDragover, false);
+    a.addEventListener('drop', handleDrop);
+  }
+
+  document.getElementById('file_input')
+    .addEventListener('change', function(event){debugger;handleDrop(event)}, false);
+
+  initializeFileDrop('layout');
+
+  function readSingleFile(e) {
+    var file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      displayContents(contents);
+    };
+    reader.readAsText(file);
+  }
+
+
+
+// UI-Methods
   function zoomHarpPreview(size) {
     uicontroller.$set_harppreview_size(size);
     $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
   };
 
+  function createNewSheet() {
+    openPopup({
+      name: 'createNewSheetForm',
+      text: w2utils.lang('Create new Sheet'),
+      style: 'border: 0px; background-color: transparent;',
+      fields: [
+        {field: 'id', type: 'string', required: true, html: {caption: 'X:'}},
+        {
+          field: 'title',
+          type: 'text',
+          required: true,
+          tooltip: "Enter the title of your sheet",
+          html: {caption: w2utils.lang('Title'), attr: 'style="width: 300px"'}
+        }
+      ],
+      actions: {
+        "Ok": function () {
+          if (this.validate().length == 0) {
+            uicontroller.$handle_command("c " + this.record.id + '"' + this.record.title + '"');
+            w2popup.close();
+          }
+        },
+        "Cancel": function () {
+          w2popup.close();
+        }
+      }
+    })
+  }
 
-
-
-  var zoomlevel = [1400, 2200];
-  var current_perspective = 'tb_perspective:Alle';
-  var isFullScreen = false;
 
   function open_data_uri_window(url) {
     var url_with_name = url.replace("data:application/pdf;", "data:application/pdf;name=myname.pdf;")
@@ -37,7 +168,7 @@ function init_w2ui(uicontroller) {
       url = uicontroller.$render_a4().$output('datauristring')
       open_data_uri_window(url)
     },
-    
+
     'tbPreview:tbPrintNotes': function () {
       a = window.open();
       //  a.document.write('<style type="text/css">rect.abcref {fill:grey;fill-opacity:0.01}</style>');
@@ -107,6 +238,10 @@ function init_w2ui(uicontroller) {
   }
 
   toolbarhandlers = {
+    'tb_file:tb_create': createNewSheet,
+    'tb_file:tb_import': function(){ $('#file_input').click()},
+    'tb_file:tb_export': function(){uicontroller.$handle_command("download_abc")},
+
     'tb_view:0': function () {
       uicontroller.$handle_command("view 0")
     },
@@ -134,34 +269,7 @@ function init_w2ui(uicontroller) {
       uicontroller.$render_previews();
     },
 
-    'tb_create': function () {
-      openPopup({
-        name: 'createNewSheetForm',
-        text: w2utils.lang('Create new Sheet'),
-        style: 'border: 0px; background-color: transparent;',
-        fields: [
-          {field: 'id', type: 'string', required: true, html: {caption: 'X:'}},
-          {
-            field: 'title',
-            type: 'text',
-            required: true,
-            tooltip: "Enter the title of your sheet",
-            html: {caption: w2utils.lang('Title'), attr: 'style="width: 300px"'}
-          }
-        ],
-        actions: {
-          "Ok": function () {
-            if (this.validate().length == 0) {
-              uicontroller.$handle_command("c " + this.record.id + '"' + this.record.title + '"');
-              w2popup.close();
-            }
-          },
-          "Cancel": function () {
-            w2popup.close();
-          }
-        }
-      })
-    },
+    'tb_create': createNewSheet,
 
     'tb_open': function () {
       uicontroller.$handle_command("dchoose")
@@ -218,7 +326,7 @@ function init_w2ui(uicontroller) {
   var tbstyle = 'background-color: #ffffff; padding: 0px; overflow:hidden; height:30px;'; // toolbar style
   var sbstyle = 'background-color: #ffffff; padding: 0  px; overflow:hidden; height:30px;border-top:1px solid black !important;'; // statusbar style
 
-  toggle_full_screen = function() {
+  function toggle_full_screen() {
     if (isFullScreen) {
       perspectives[current_perspective]();
       isFullScreen = false;
@@ -229,7 +337,9 @@ function init_w2ui(uicontroller) {
     }
   }
 
-  this.toggle_full_screen = function(){toggle_full_screen();}
+  this.toggle_full_screen = function () {
+    toggle_full_screen();
+  }
 
   var toolbar = {
     id: 'toolbar',
@@ -238,6 +348,30 @@ function init_w2ui(uicontroller) {
     items: [
       {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: 'Zupfnoter'},
       {type: 'html', html: '<div style="width:25px"/>'},
+      {
+        type: 'menu',
+        id: 'tb_file',
+        text: 'File',
+        icon: 'fa fa-file',
+        tooltip: 'interact with local files',
+        items: [
+          {type: 'button', id: 'tb_create', text: 'New', icon: 'fa fa-file-o', tooltip: 'Create new sheet'},
+          {
+            type: 'button',
+            id: 'tb_import',
+            text: 'Import',
+            icon: 'fa fa-upload',
+            tooltip: 'import abc, xml from local system'
+          },
+          {
+            type: 'button',
+            id: 'tb_export',
+            text: 'Dl abc',
+            icon: 'fa fa-download',
+            tooltip: 'download abc to local system'
+          },
+        ]
+      },
       {type: 'button', id: 'tb_create', text: 'New', icon: 'fa fa-file-o', tooltip: 'Create new sheet'},
       {
         type: 'button',
@@ -452,7 +586,7 @@ function init_w2ui(uicontroller) {
 
 
       if (event.target == "tb_home") {
-        window.open("https://www.zupfnoter.de")
+        w2popup.open( {title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
       }
       if (event.target == "tbHelp:tbVersionInfo") {
         window.open(uicontroller.$info_url())
@@ -555,7 +689,12 @@ function init_w2ui(uicontroller) {
         icon: 'fa fa-pencil',
         tooltip: "Edit configuration with forms",
         items: [
-          {id: 'extract_annotation', text: 'Extract-Annotation', icon: 'fa fa-bars', tooltip: "Edit annotations of an extract"},
+          {
+            id: 'extract_annotation',
+            text: 'Extract-Annotation',
+            icon: 'fa fa-bars',
+            tooltip: "Edit annotations of an extract"
+          },
           {
             id: 'notes',
             text: 'page annotation',
@@ -563,9 +702,19 @@ function init_w2ui(uicontroller) {
             tooltip: "edit settings for sheet annotations\nin current extract"
           },
           {},
-          {id: 'basic_settings', text: 'basic settings', icon: 'fa fa-heartbeat', tooltip: "Edit basic settings of extract"},
+          {
+            id: 'basic_settings',
+            text: 'basic settings',
+            icon: 'fa fa-heartbeat',
+            tooltip: "Edit basic settings of extract"
+          },
           {id: 'lyrics', text: 'lyrics', icon: 'fa fa-font', tooltip: "edit settings for lyrics\nin current extract"},
-          {id: 'layout', text: 'layout', icon: 'fa fa-align-center', tooltip: "Edit layout paerameters\nin current extract"},
+          {
+            id: 'layout',
+            text: 'layout',
+            icon: 'fa fa-align-center',
+            tooltip: "Edit layout paerameters\nin current extract"
+          },
           {
             id: 'instrument_specific',
             text: 'instrument specific',
@@ -593,7 +742,12 @@ function init_w2ui(uicontroller) {
             tooltip: "edit settings for sheet annotations\nin current extract"
           },
           {},
-          {id: 'stringnames', icon: 'fa fa-ellipsis-h', text: 'Stringnames', tooltip: "Edit presentation of stringanmes"},
+          {
+            id: 'stringnames',
+            icon: 'fa fa-ellipsis-h',
+            text: 'Stringnames',
+            tooltip: "Edit presentation of stringanmes"
+          },
           {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
           {},
           {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"}
@@ -722,11 +876,11 @@ function init_w2ui(uicontroller) {
 
 
   var editortabshtml = '<div id="editortabspanel" style="height:100%">'
-      + '<div id="abcEditor" class="tab" style="height:100%;"></div>'
-      + '<div id="abcLyrics" class="tab" style="height:100%;"></div>'
-      + '<div id="configtab" class="tab" style="height:100%;"></div>'
-      + '</div>'
-    ;
+    + '<div id="abcEditor" class="tab" style="height:100%;"></div>'
+    + '<div id="abcLyrics" class="tab" style="height:100%;"></div>'
+    + '<div id="configtab" class="tab" style="height:100%;"></div>'
+    + '</div>'
+  ;
 
   var editortabsconfig = {
     name: 'editortabs',
@@ -847,10 +1001,15 @@ function init_w2ui(uicontroller) {
 
   w2ui['layout'].onResize = function (event) {
     uicontroller.editor.$resize();
-  };
+  }
 }
 ;
 
+
+/*
+ here we have some entry points to be used by controller
+ TODO: refactor this?
+ */
 
 function set_tbitem_caption(item, caption) {
   w2ui.layout_top_toolbar.set(item, {text: caption});
@@ -869,6 +1028,7 @@ function update_systemstatus_w2ui(systemstatus) {
   $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
   if (systemstatus.mode == 'demo') {
+    w2ui.layout_top_toolbar.disable('tb_file')
     w2ui.layout_top_toolbar.disable('tb_create')
     w2ui.layout_top_toolbar.disable('tb_open')
     w2ui.layout_top_toolbar.disable('tb_save')
@@ -876,6 +1036,7 @@ function update_systemstatus_w2ui(systemstatus) {
     w2ui.layout_top_toolbar.disable('tb_login')
   }
   else {
+    w2ui.layout_top_toolbar.enable('tb_file')
     w2ui.layout_top_toolbar.enable('tb_create')
     w2ui.layout_top_toolbar.enable('tb_open')
     // w2ui.layout_top_toolbar.enable('tb_save')
@@ -943,12 +1104,15 @@ function update_play_w2ui(status) {
 function disable_save() {
   w2ui.layout_top_toolbar.disable('tb_save')
 };
+
 function enable_save() {
   w2ui.layout_top_toolbar.enable('tb_save')
 };
+
 function before_open() {
   w2ui.layout_left_tabs.click('abcEditor')
 };
+
 function set_extract_menu(id, text) {
   w2ui.layout_top_toolbar.set('tb_view:' + id, {text: text});
   w2ui.layout_top_toolbar.refresh();

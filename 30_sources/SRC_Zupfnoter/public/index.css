@@ -221,6 +221,9 @@ rect.highlight {
 .w2ui-button .active {
   background-color: #ffedf2; }
 
+.znconfig-button {
+  padding: 1px; }
+
 #statusbar-layout .w2ui-tb-caption {
   vertical-align: top; }
 

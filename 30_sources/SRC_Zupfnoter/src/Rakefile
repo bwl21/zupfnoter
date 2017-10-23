@@ -59,6 +59,14 @@ task :updateAbc2svgDev do
     sources.each {|f| sh  " rm #{f} ; NOMIN=1 ./ninja #{f}"}
   end
 
+  ["de", "en"].each do |lang|
+    File.open(%Q{localization/abc2svg_#{lang}-#{lang}.json}, "w") do |f|
+      f.puts ("{")
+      f.puts File.read(%Q{#{abc2svgrepo}/err-#{lang}.js}).gsub("user.textrans = ", %Q{"phrases":})
+      f.puts ("}")
+    end
+  end
+
   File.open("#{VENDORFOLDER}/#{abc2svg_file}", "w") do |f|
     f.puts "// compiled for Zupfnoter #{Time.now}"
     [sources].flatten.each do |s|
@@ -66,6 +74,8 @@ task :updateAbc2svgDev do
       f.puts File.read("#{abc2svgrepo}/#{s}")
     end
   end
+
+
 end
 
 desc "Build our app to #{ZUPFNOTER_JS}"

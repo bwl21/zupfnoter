@@ -2,7 +2,7 @@
 
 Mit dem Zupfnoter kannst du ganz schnell einfache Musikstücke eingeben
 und als Unterlegnoten darstellen. Mit der Zeit wirst du immer mehr
-Funktionen und Möglichkeiten von Zufnoter erobern, um auch komplexe
+Funktionen und Möglichkeiten von Zupfnoter erobern, um auch komplexe
 Musikstücke zu bearbeiten bzw. die Unterlegnoten im Detail nach deinen
 Wünschen zu gestalten.
 
@@ -150,7 +150,7 @@ Beispiel kannst du zunächst einen Liedtext hinzufügen:
 
     \needspace{6cm}
 
-    > **Hinseis:** Leerzeichen in den Liedtexten werden komprimiert,
+    > **Hinweis:** Leerzeichen in den Liedtexten werden komprimiert,
     > d.h. zu einem Leerzeichen zusammengefasst. Leerzeichen am Anfang
     > einer Zeile (führende Leerzeichen) werden ignoriert. Du kannst
     > aber die Ausgabe eines Leerzeichens erzwingen, wenn du die Tilde
@@ -259,7 +259,7 @@ Da du aber nicht nur ein Musikstück schreiben willst, solltest du
 natürlich dein Musikstück auf deinem Rechner so abspeichern, dass du es
 später wieder laden und weiter bearbeiten kannst.
 
-Zupfnoter bietet dazu zuwei Möglichkeiten:
+Zupfnoter bietet dazu zwei Möglichkeiten:
 
 -   Speichern per Download: Das läuft vollkommen lokal, ist aber nicht
     sehr komfortabel
@@ -302,7 +302,7 @@ diese weiter zu geben):
 Wenn du regelmäßig mit Zupfnoter arbeiten willst, bietet es sich an, zum
 Speichern der Muskstücke die Dropbox zu benutzen. Eine Dropbox ist ein
 Speicher außerhalb deines Rechners (in der "Cloud"). Mit der Dropbox
-hast du viele Vorteile bei Zupfbnoter:
+hast du viele Vorteile bei Zupfnoter:
 
 -   Zupfnoter speichert abc, pdf und Noten eines Musikstücks mit nur
     einem Klick
@@ -335,7 +335,7 @@ verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 -   klicke auf Schaltfläche "Einloggen" bzw. wähle das Menü "Dropbox \>
     Einloggen"
 -   es erscheint der Zupfnoter - Dialog "Einloggen" - gib dort bitte ein
-    Verezeichnis aus deiner Dropbox ein, in welcher du dein Musikstück
+    Verzeichnis aus deiner Dropbox ein, in welcher du dein Musikstück
     speichern möchtest
 
     > > > ![](../ZAUX_Images/030-041_Dropbox-step-01.jpg) 
@@ -364,7 +364,7 @@ verwendetem Browser** mit diesem Dropbox-Konto verbinden:
     "Dropbox \> Speichern" )um dein Musikstück und die Auszüge als
     PDF-Dateien in deiner Dropbox zu speichern.
 
-    > **HInweis**: Zupfnoter speichert in dem Verzeichnis, welches beim
+    > **Hinweis**: Zupfnoter speichert in dem Verzeichnis, welches beim
     > Einloggen angegeben wurde. Fall das Verzeichnis nicht existiert,
     > wird es angelegt. Bitte achte auf also die richtige Schreibweise
 
@@ -387,7 +387,7 @@ Zupfnoter verwendet jedoch nur folgende Dateitypen in deiner Dropbox:
 >     "inkognito - Modus" des Browsers zu arbeiten.
 >
 > -   Dropbox-Anwendungen speichern ein geheime Zeichenkette (auch
->     "Accesstoken" genannt) auf deineme lokalen Rechner. Wenn du
+>     "Accesstoken" genannt) auf deinem lokalen Rechner. Wenn du
 >     vermutest, das dieses Token kompromittiert wurde, kannst du auf
 >     der Website von Dropbox die Verbindung zu Zupfnoter löschen.
 >     Dadurch wird bei der nächsten Anmeldung ein neues Token erzeugt.
@@ -409,7 +409,7 @@ Zupfnoter verwendet jedoch nur folgende Dateitypen in deiner Dropbox:
 ## Musikstück aus Dropbox laden
 
 Um das Musikstück wieder zu laden, klicke auf "Öffnen" bzw. wähle das
-Menü "Dropbox \> Öfnnen". Es erscheint ein Datei-Auswahl-Dialog von
+Menü "Dropbox \> Öffnen". Es erscheint ein Datei-Auswahl-Dialog von
 Dropbox. Dort ist oben ein Suchfeld. Dort kannst du einen Teil des
 Dateinamens eingeben, um die gewünschte Datei zu suchen.
 
@@ -459,11 +459,11 @@ Musikstück für die Tischharfe anzupassen.
 > Musikstück speichern soll.
 
 [^030_UD_Zupfnoter-erste-schritte.md_1]: man mag sich fragen, warum
-    Zupfnoter nicht einen Standard-Liedbock eingebaut hat. Ein solcher
-    Standard-Liedbock schlägt aber immer wieder durch und macht die
+    Zupfnoter nicht einen Standard-Liedblock eingebaut hat. Ein solcher
+    Standard-Liedblock schlägt aber immer wieder durch und macht die
     inidividuelle Anordnung von Strophen sehr komplex, da man nicht nur
     die Strophen hinzufügen, sondern auch die Wirkung des
-    Stnadard-Liedbocks neutralisieren muss.
+    Standard-Liedblocks neutralisieren muss.
 
 [^030_UD_Zupfnoter-erste-schritte.md_2]: Für diese Funktion muss der
     "Dropbox client" installiert sein.

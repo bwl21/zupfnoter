@@ -1,5 +1,25 @@
 
+# v 1.8
 
+## fix
+
+* print preview no longer clears unsave indicator #176
+* update to abc2svg 1.14
+  * crash when bad value in transpose
+  * bad pitches after ties and repeat
+  * the accidentals must be reset on a measure bar
+* improved fermata symbol in pdf #178
+* crash when config references a non existing voice #179
+* improved localization #182
+  
+## enhancement
+
+* now have menu to import from local disc #177  
+* support for 25 string bass harp #180
+* strip =duration on meter "M:3/4 4/4 =3/4" #181
+* initial support to work with file templates #71
+* No initial render after a crash in previous session #103
+  
 # v 1.7.1
 
 ## fix
@@ -7,6 +27,7 @@
 * improved fermata symbol in pdf #178
 * turnoff flowconf edit for pdf. This avoids noise around very short vertical flowlines #167 
 * print preview no longer clears unsaved indicator #176
+
 
 # v 1.7
 

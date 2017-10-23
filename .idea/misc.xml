@@ -4,5 +4,7 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration" detection-enabled="false" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="false" assert-keyword="false" jdk-15="false" project-jdk-name="RVM: ruby-1.9.3-p448 [zupfnoter]" project-jdk-type="RUBY_SDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="false" project-jdk-name="RVM: ruby-2.4.1" project-jdk-type="RUBY_SDK">
+    <output url="file://out" />
+  </component>
 </project>

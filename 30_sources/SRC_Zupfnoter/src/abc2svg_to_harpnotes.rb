@@ -48,6 +48,7 @@ module Harpnotes
       def _make_harpnote_options
         result = {lyrics: {text: @info_fields[:W]}}
 
+        result[:template] = $conf.get('template')
         result[:print] = $conf.get("produce").map do |i|
           title = $conf.get("extract.#{i}.title")
           if title

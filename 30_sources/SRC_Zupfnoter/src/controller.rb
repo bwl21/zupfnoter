@@ -1,6 +1,24 @@
 # This is a wrapper class for local store
 
 
+class LastRenderMonitor
+  def ok?
+    result = %x{localStorage.getItem('lastrender')}
+    Native(result).nil?
+  end
+
+  def set_active
+    %x{localStorage.setItem('lastrender', #{Time.now()})  }
+    true
+  end
+
+  def clear
+    %x{localStorage.removeItem('lastrender')  }
+    false
+  end
+end
+
+
 class LocalStore
 
   def initialize(name)
@@ -44,7 +62,7 @@ class LocalStore
     if @directory[key]
       $log.warning("local storage: key '#{key}' does not exist")
     else
-      `localStorage.deleteItem(self.$mangle_key(key))`
+      `localStorage.removeItem(self.$mangle_key(key))`
       @directory[key] = nil
       save_dir
     end
@@ -76,9 +94,7 @@ end
 
 
 class Controller
-
-  attr :editor, :harpnote_preview_printer, :tune_preview_printer, :systemstatus
-  attr_accessor :zupfnoter_ui, :info_url
+  attr_accessor :dropped_abc, :dropboxclient, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -90,11 +106,10 @@ class Controller
                           'en-us' => 'en-US'
     }
     browser_language   = `navigator.language`.downcase
-    zupfnoter_language = languages[browser_language]
+    zupfnoter_language = languages[browser_language] || 'de-de'
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
-    I18n.locale(zupfnoter_language) if browser_language
 
     @version      = VERSION
     @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
@@ -115,12 +130,15 @@ class Controller
     $log.info ("Ruby:     #{RUBY_VERSION}")
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
 
+    I18n.locale(zupfnoter_language) if browser_language
+
+
 
     $conf        = Confstack.new(nil)
     $conf.strict = false
     $conf.push(_init_conf)
 
-    $settings = {}    # this is te keep runtime settings
+    $settings = {} # this is te keep runtime settings
 
     @json_validator = Ajv::JsonValidator.new
 
@@ -167,9 +185,19 @@ class Controller
 
     if @systemstatus[:mode] == :demo
       handle_command("view 0")
+    else
+      @editor.get_lyrics
+
+      #$log.error(I189n.t("last session failed. Did not render"))
+      lastrender = LastRenderMonitor.new
+
+      if lastrender.ok?
+        render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
+      else
+        $log.error(I18n.t("last session failed. Did not render. Cleanup ABC, then render manually"))
+        call_consumers(:error_alert)
+      end
     end
-    @editor.get_lyrics
-    render_previews unless uri[:parsed_search][:debug] # prevernt initial rendition in case of hangs caused by input
     #
     #setup_nodewebkit
     # # now trigger the interactive UI
@@ -187,6 +215,21 @@ class Controller
     #
   end
 
+  def about_zupfnoter
+    %Q{<p>#{I18n.t("Free software to create sheets for table harps")}</p>
+         <table>
+          <tbody>
+          <tr><td>Zupfnoter:</td><td>#{VERSION}</td></tr>
+          <tr><td><a target="_blank" href="http://opalrb.com">Opal</a>:</td><td>#{RUBY_ENGINE_VERSION}</td></tr>
+          <tr><td>Ruby:</td><td>#{RUBY_VERSION}</td></tr>
+          <tr><td><a target="_blank" href="http://moinejf.free.fr/js/index.html">abc2svg</a>:</td><td>#{%x{abc2svg.version}}</td></tr>
+          <tr><td><a target="_blank" href="https://wim.vree.org/js/xml2abc-js_index.html">xml2abc.js</a>:</td><td>#{%x{xml2abc_VERSION}}</td></tr>
+         </tbody>
+        </table>
+        <p>© #{Time.now.year} Bernhard Weichel - info@zupfnoter.de</p>
+        <p><a target="_blank" href="https://www.zupfnoter.de">Website: https://www.zupfnoter.de</a></p>
+    }
+  end
 
   # this method invokes the system conumers
   def call_consumers(clazz)
@@ -203,7 +246,7 @@ class Controller
                                extracts:     [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})`}
-                                 call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
+                               call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }]
     }
     @systemstatus_consumers[clazz].each {|c| c.call()}
@@ -359,7 +402,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # turn of flowconf:  otherwise very short unconfigured undconfigured flowlines are
     # longer because of the default values of the handles whihc make the curve from    +-+  to -+-+-
     $settings[:flowconf] = false
-    result = Harpnotes::PDFEngine.new.draw(layout_harpnotes(index, 'A3'))
+    result               = Harpnotes::PDFEngine.new.draw(layout_harpnotes(index, 'A3'))
     $settings[:flowconf] = flowconf
     result
   end
@@ -367,9 +410,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # render the harpnotes splitted on a4 pages
   def render_a4(index = @systemstatus[:view])
-    flowconf = $settings[:flowconf]
+    flowconf             = $settings[:flowconf]
     $settings[:flowconf] = false
-    result = Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
+    result               = Harpnotes::PDFEngine.new.draw_in_segments(layout_harpnotes(index, 'A4'))
     $settings[:flowconf] = flowconf
     result
   end
@@ -497,7 +540,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       abc_text = @editor.get_abc_part
       abc_text = abc_text.split("\n").map {|line|
         result = line
-        result = result. gsub(/(\\?)(~)/){|m| m[0]=='\\' ? m[1] : ' '} if line.start_with? 'W:'
+        result = result.gsub(/(\\?)(~)/) {|m| m[0]=='\\' ? m[1] : ' '} if line.start_with? 'W:'
         result
       }.join("\n")
 
@@ -558,6 +601,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # by calling setup_tune_preview
     # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
+      LastRenderMonitor.new.set_active
       set_active("#tunePreview")
       `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
     end.then do
@@ -570,11 +614,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           call_consumers(:error_alert)
           set_inactive("#harpPreview")
           @editor.set_annotations($log.annotations)
+          LastRenderMonitor.new.clear
           promise.resolve()
         end
       end
     end
-
 
     result
   end
@@ -610,10 +654,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     # prepare extract menu
     printed_extracts = $conf['produce']
-    @extracts = $conf.get('extract').inject([]) do |r, entry|
+    @extracts        = $conf.get('extract').inject([]) do |r, entry|
       extract_number = entry.last.dig(:notes, :T01_number_extract, :text)
-      print = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
-      title = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+      print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+      title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
       r.push([entry.first, title])
     end
 
@@ -816,95 +860,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_preview_printer.set_canvas(size)
   end
 
-  def set_file_drop(dropzone)
-    %x{
-
-    function pasteXml(text){
-                            try{
-                              var xmldata = $.parseXML(text);
-                             }
-                            catch(ex){
-                              #{$log.error(`ex.message`)}
-                            }
-
-                            var options = {
-                                    'u': 0, 'b': 0, 'n': 0,    // unfold repeats (1), bars per line, chars per line
-                            'c': 0, 'v': 0, 'd': 0,    // credit text filter level (0-6), no volta on higher voice numbers (1), denominator unit length (L:)
-                            'm': 0, 'x': 0,           // with midi volume and panning (1), no line breaks (1)
-                            'p': 'f'
-                          };              // page format: scale (1.0), width, left- and right margin in cm
-
-                          result = vertaal(xmldata, options);
-                          #{
-    $log.info(`result[1]`)
-    @dropped_abc = `result[0]`
-    handle_command('drop')
-    }
-    }
-
-    function pasteMxl(text){
-       zip = new JSZip(text);
-       text = zip.file(/^[^/ ]*\.xml$/)[0].asText();
-       pasteXml(text);
-    }
-
-    function pasteAbc(text){
-       #{
-    @dropped_abc=`text`
-    handle_command('drop')
-    }
-    }
-
-
-    function initializeAbc2svg(element) {
-
-               //xml2abc = new ZnXml2Abc();
-
-               function handleDrop(event) {
-                          event.stopPropagation();
-                          event.preventDefault();
-                          files = event.dataTransfer.files;
-                          reader = new FileReader();
-
-                          reader.onload = function (e) {
-                             text = e.target.result;
-                             if (text[0] == '<'){
-                               pasteXml(text);
-                               }
-                             else if (files[0].name.endsWith(".mxl")) {
-                                pasteMxl(text)
-                               }
-                             else
-                               {
-                                pasteAbc(text);
-                               }
-                            }
-                          if (files[0].name.endsWith('.mxl')){
-                              reader.readAsBinaryString(files[0]);
-                             }
-                           else
-                             {
-                              reader.readAsText(files[0], "UTF-8");
-                             }
-
-             }
-
-    function handleDragover(event) {
-               event.stopPropagation();
-               event.preventDefault();
-               event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-             }
-
-    a = document.getElementById(element);
-    a.addEventListener('dragover', handleDragover, false);
-    a.addEventListener('drop', handleDrop);
-    }
-
-    initializeAbc2svg(#{dropzone});
-    }
-
-  end
-
+  # note the filedrop is not entirely initialized in user-interface.js
+  #
 
   def toggle_console
     %x{
@@ -917,7 +874,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def setup_ui_listener
 
     # activate drop of files
-    set_file_drop('layout');
+    # set_file_drop('layout'); this is now in userinterface.js
 
     # changes in the editor
     @editor.on_change do |e|
@@ -967,12 +924,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @harpnote_player.on_noteon do |e|
-      $log.debug("noteon #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       highlight_abc_object(e)
     end
 
     @harpnote_player.on_noteoff do |e|
-      $log.debug("noteoff #{Native(e)[:startChar]} (#{__FILE__} #{__LINE__})")
       unhighlight_abc_object(e)
     end
 

@@ -91,7 +91,7 @@
 -   Sektieren von Noten in der Notenvorschau verbessert.
 -   non BWC: Oktavierte Notenschlüssel werden nun beachtet
 -   Schneidemarken werden nur auch bei A4-Ausddruck ausgegeben
--   Beschrifungen für Variante Enden werden unterddrückt, wenn keine
+-   Beschriftungen für Variante Enden werden unterddrückt, wenn keine
     Sprunglinien ausgegeben werden
 -   Taktnummern und Zählhinweise werden für unterdrückte Pause nicht
     mehr dargestellt
@@ -177,7 +177,7 @@
 
 ### Enhancement
 
--   now we have configuration paramters for printer optimimization \#82
+-   now we have configuration parameters for printer optimimization \#82
 -   now have forms based configuration \#67
 -   now have forms based editing of snippets (now called addons) \#83
 -   now have a lyrics editor tab \#8

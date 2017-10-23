@@ -318,7 +318,7 @@ class Controller
       command.undoable = false
       command.set_help {"set the current editor content as template"}
       command.as_action do |args|
-        template = @editor.get_text('extract.0')
+        template = @editor.get_text()
         if template.empty?
           `localStorage.removeItem(#{ZN_TEMPLATENAME})`
         else
@@ -327,6 +327,24 @@ class Controller
         nil
       end
     end
+
+    @commands.add_command(:edittemplate) do |command|
+      command.undoable = true
+      command.set_help {"load the current template to the editor"}
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text()
+        template = get_current_template
+        @editor.set_text(template)
+        nil
+      end
+
+      command.as_inverse do |args|
+        @editor.set_text(args[:oldval])
+      end
+
+    end
+
+
 
     @commands.add_command(:setsetting) do |command|
       command.undoable = false
@@ -418,7 +436,7 @@ class Controller
           entry                         = $conf["presets.notes.#{key}"]
           to_key                        = entry[:key] || key
           value                         = entry[:value]
-          all_value[to_key]                = entry[:value]
+          all_value[to_key]             = entry[:value]
           values["preset.notes.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch}}
         end
 
@@ -518,6 +536,7 @@ class Controller
                                           _get_quicksetting_commands('instrument')
             },
             stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
+            template:              {keys: ['template.filebase', 'template.title']},
             extract0:              {keys: ['extract.0']},
             extract_current:       {keys: expand_extract_keys($conf.keys.select {|k| k.start_with?('extract.0.')}.map {|k| k.split('extract.0.').last})},
             errors:                {keys: @validation_errors},
@@ -679,11 +698,11 @@ class Controller
 
   end
 
-  def create_from_current_template(parameters)
+
+  def get_current_template
     result = Native(`localStorage.getItem(#{ZN_TEMPLATENAME})`)
     unless `result`
-      result = %Q{
-X:{{song_id}}
+      result = %Q{X:{{song_id}}
 F:{{song_id}}_{{filename}}
 T:{{song_title}}
 C:
@@ -733,6 +752,12 @@ C
           "text"  : "© 2017 Notenbild: ",
           "style" : "small"
         },
+        "T04_to_order"            : {
+          "pos"   : [340, 242],
+          "text"  : "zu beziehen bei\n",
+          "style" : "small"
+        },
+        "T05_printed_extracts"    : {"pos": [393, 22], "text": "-A -B", "style": "smaller"},
         "T99_do_not_copy"         : {
           "pos"   : [380, 284],
           "text"  : "Bitte nicht kopieren",
@@ -752,10 +777,18 @@ C
     "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
   },
   "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
-  "$version" : "{{version}}"
+  "$version" : "{{version}}",
+  "template" : {"title": "Zupfnoter-default"}
  }
 }
     end
+
+    result
+  end
+
+  def create_from_current_template(parameters)
+
+    result = get_current_template
 
     parameters.each do |name, value|
       result = result.gsub("{{#{name}}}", value)
@@ -1085,7 +1118,6 @@ C
       end
     end
 
-
     @commands.add_command(:dsave) do |command|
       command.add_parameter(:path, :string) do |parameter|
         parameter.set_default {@dropboxpath}
@@ -1104,8 +1136,17 @@ C
         end
 
         layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
-        print_variants = @music_model.harpnote_options[:print]
-        filebase       = @music_model.meta_data[:filename]
+
+        if @music_model.meta_data[:filename].include?('{{')
+          is_template = true
+          filebase    = @music_model.harpnote_options.dig(:template, :filebase)
+          unless filebase
+            raise "no filebase given for template"
+          end
+        else
+          print_variants = @music_model.harpnote_options[:print]
+          filebase       = @music_model.meta_data[:filename]
+        end
 
         rootpath = args[:path]
         call_consumers(:disable_save)
@@ -1113,17 +1154,19 @@ C
         save_promises=[]
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
-          save_promises.push @dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)
-          pdfs = {}
-          print_variants.map do |print_variant|
-            index                                                                 = print_variant[:view_id]
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
-            pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
-            nil
-          end
+          unless is_template
+            save_promises.push @dropboxclient.write_file("#{rootpath}#{filebase}.html", @tune_preview_printer.get_html)
+            pdfs = {}
+            print_variants.map do |print_variant|
+              index                                                                 = print_variant[:view_id]
+              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
+              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
+              nil
+            end
 
-          pdfs.each do |name, pdfdata|
-            save_promises.push(@dropboxclient.write_file(name, pdfdata))
+            pdfs.each do |name, pdfdata|
+              save_promises.push(@dropboxclient.write_file(name, pdfdata))
+            end
           end
         end.fail do |err|
           _report_error_from_promise(err)
@@ -1144,7 +1187,6 @@ C
         end
       end
     end
-
 
     # todo this is obsolete ... use dopen_fn istead
     @commands.add_command(:dopen) do |command|
