@@ -107,6 +107,8 @@ class Controller
     }
     browser_language   = `navigator.language`.downcase
     zupfnoter_language = languages[browser_language] || 'de-de'
+    I18n.locale(zupfnoter_language) if browser_language
+
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
@@ -130,7 +132,6 @@ class Controller
     $log.info ("Ruby:     #{RUBY_VERSION}")
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
 
-    I18n.locale(zupfnoter_language) if browser_language
 
 
 
