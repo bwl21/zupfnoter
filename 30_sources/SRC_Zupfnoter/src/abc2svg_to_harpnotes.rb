@@ -643,6 +643,10 @@ module Harpnotes
         nil
       end
 
+      def _transform_block(voice_element)
+        nil
+      end
+
       def _transform_clef(voice_element)
         nil #`debugger`
       end
