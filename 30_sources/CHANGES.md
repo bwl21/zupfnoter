@@ -11,6 +11,7 @@
 * improved fermata symbol in pdf #178
 * crash when config references a non existing voice #179
 * improved localization #182
+* Error window now has an ok button #183
   
 ## enhancement
 
