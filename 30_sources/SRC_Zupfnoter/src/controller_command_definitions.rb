@@ -754,7 +754,7 @@ C
         },
         "T04_to_order"            : {
           "pos"   : [340, 242],
-          "text"  : "zu beziehen bei\n",
+          "text"  : "zu beziehen bei",
           "style" : "small"
         },
         "T05_printed_extracts"    : {"pos": [393, 22], "text": "-A -B", "style": "smaller"},
