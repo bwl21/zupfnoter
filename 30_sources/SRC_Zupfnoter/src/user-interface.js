@@ -1056,7 +1056,13 @@ function update_systemstatus_w2ui(systemstatus) {
 }
 
 function update_error_status_w2ui(errors) {
-  w2popup.open({title: w2utils.lang("Errors occurred"), body: errors, width: 700})
+  w2popup.open(
+    {
+      title: w2utils.lang("Errors occurred"),
+      body: errors,
+      width: 700,
+      buttons   : '<button class="w2ui-btn" onclick="w2popup.close();">OK</button> '
+  })
 }
 
 function update_editor_status_w2ui(editorstatus) {
