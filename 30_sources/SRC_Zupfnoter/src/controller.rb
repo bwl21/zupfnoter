@@ -701,7 +701,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     if status
       config, status = migrate_config(config)
       if status[:changed]
-        alert(status[:message])
+        $log.info(status[:message])
         @editor.set_config_part(config)
         # @editor.prepend_comment(status[:message])
       end
@@ -789,6 +789,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # this method sets systemstatus from the status of @dropboxclient
   def set_status_dropbox_status
     set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
+  end
+
+  def clear_status_dropbox_status
+    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: nil, dropboxpath: nil)
   end
 
   private
