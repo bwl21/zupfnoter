@@ -333,7 +333,7 @@ class Controller
       command.set_help {"load the current template to the editor"}
       command.as_action do |args|
         args[:oldval] = @editor.get_text()
-        template = get_current_template
+        template      = get_current_template
         @editor.set_text(template)
         nil
       end
@@ -343,7 +343,6 @@ class Controller
       end
 
     end
-
 
 
     @commands.add_command(:setsetting) do |command|
@@ -963,21 +962,25 @@ C
 
         if args[:reconnect]
           @dropboxclient.authenticate().then do
+            @dropboxloginstate = :loggedin
             set_status_dropbox_status
             $log.message("logged in at dropbox with #{args[:scope]} access")
           end.fail do |err|
             _report_error_from_promise err
           end
         else
-          set_status_dropbox_status
+          @dropboxloginstate = :requestlogin
+          set_status_dropbox_status # this is required for i_authenticated ...
           unless @dropboxclient.is_authenticated?
             # now trigger authentification
             @dropboxclient.login().then do
               $log.message("logged in at dropbox with #{args[:scope]} access")
             end.fail do |err|
+              # clear_status_dropbox_status unless err == "wait for Dropbox authentication"  # do not change this text.
               _report_error_from_promise err
             end
           else
+            #clear_status_dropbox_status
             # nothing else to do
           end
         end
@@ -996,10 +999,12 @@ C
           $log.message(message)
           @dropboxclient = Opal::DropboxJs::NilClient.new
           @dropboxpath   = nil
-          set_status_dropbox_status
+          clear_status_dropbox_status
           call_consumers(:systemstatus)
           `w2alert(#{message}, "Info")`
         end.fail do |err|
+          clear_status_dropbox_status
+          call_consumers(:systemstatus)
           _report_error_from_promise err
         end
       end

@@ -137,10 +137,12 @@ module Opal
             dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
             window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
             access_token_from_url = dropbox_answers.access_token;
+
             if (dropbox_answers.error)
                  {
                    #{remove_access_token_from_localstore}
-                   #{iblock.call(%x{dropbox_answers}, nil)}
+                   #{iblock.call(%x{{error: dropbox_answers.error_description}}, nil)}
+                   return ;
                  }
 
             access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
@@ -180,7 +182,7 @@ module Opal
                  }
                 else  // ! lost token
                  {
-                    message = #{I18n.t("Lost Access token. This should not happen. Please file a bug report.")}
+                    message = #{I18n.t("Access token lost; do note use browser back or refresh button in login procedure.")}
                     #{iblock.call(%x{{"error": message }}, nil)}
                  }
                }
@@ -297,7 +299,7 @@ module Opal
            var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin]+"/"});
            #{
             remove_access_token_from_localstore
-            iblock.call(`{error: "warte auf Authentifizierung"}`, nil)
+            iblock.call(`{error: #{I18n.t("wait for Dropbox authentication")}}`, nil)   # do not change this text
             }
            window.location.href=authUrl;
           }

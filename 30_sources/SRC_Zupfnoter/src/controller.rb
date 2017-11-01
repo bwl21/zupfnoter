@@ -94,7 +94,7 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -272,7 +272,7 @@ class Controller
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select {|key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
-                                                   :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key)
+                                                   :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :zoom].include?(key)
     }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
@@ -788,11 +788,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # this method sets systemstatus from the status of @dropboxclient
   def set_status_dropbox_status
-    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
+    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath, dropboxloginstate: @dropboxloginstate)
   end
 
   def clear_status_dropbox_status
-    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: nil, dropboxpath: nil)
+    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: nil, dropboxpath: nil, dropboxloginstate: nil)
   end
 
   private

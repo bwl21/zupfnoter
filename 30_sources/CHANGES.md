@@ -12,7 +12,8 @@
 * crash when config references a non existing voice #179
 * improved localization #182
 * Error window now has an ok button #183
-* improve Message "no ABC found"  #184  
+* improve Message "no ABC found"  #184 
+* Improve error reporting in context of dropbox #185
   
 ## enhancement
 
