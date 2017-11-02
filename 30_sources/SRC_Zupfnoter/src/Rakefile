@@ -54,7 +54,7 @@ desc "Update abc2svg from git clone"
 task :updateAbc2svgDev do
   abc2svgrepo = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_file = "abc2svg-1.js"
-  sources      = [abc2svg_file, "json-1.js", "midi-1.js"]
+  sources      = [abc2svg_file, "json-1.js", "midi-1.js", "play-1.js"]
   cd abc2svgrepo do
     sources.each {|f| sh  " rm #{f} ; NOMIN=1 ./ninja #{f}"}
   end

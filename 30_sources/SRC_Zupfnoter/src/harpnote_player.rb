@@ -9,7 +9,11 @@ module Harpnotes
 
 
       def initialize()
-        @inst           = []
+        %x{#{@abcplay} = new AbcPlay({
+             onends: function(){`debugger`;#{call_on_songoff}}, # todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
+             onnote: function(index, on){#{call_on_note(`index`, `on`)}}
+          })
+        } # the player engine
         @isplaying      = false
         @selection      = []
         @voices_to_play = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -20,29 +24,23 @@ module Harpnotes
         @isplaying
       end
 
-      # This creates an instrument upon request
-      def create_inst(instrument_id)
-        unless @inst[instrument_id]
-         # $log.debug "creating instrument #{instrument_id} "
-          @inst[instrument_id] = %x{new Instrument("piano")}
-          Native(@inst[instrument_id]).on(:noteon) do |element|
-            abc_element = Native(element)[:origin]
-            @noteon_callback.call(abc_element)
-            nil
-          end
-          Native(@inst[instrument_id]).on(:noteoff) do |element|
-            abc_element = Native(element)[:origin]
-            @noteoff_callback.call(abc_element)
-            nil
-          end
-        end
-        @inst[instrument_id]
+      def call_on_note(index, on)
+        $log.debug("on_note #{index} #{on}")
+         if on
+           @noteon_callback.call({startChar:index, endChar:index + 3});
+         else
+           @noteoff_callback.call({startChar:index, endChar:index + 3});
+         end
+      end
+
+      def call_on_songoff
+        $log.debug("songoff")
+        @songoff_callback.call
       end
 
       def on_noteon(&block)
         @noteon_callback = block
       end
-
 
       def on_noteoff(&block)
         @noteoff_callback = block
@@ -86,6 +84,9 @@ module Harpnotes
         play_notes(@voice_elements)
       end
 
+
+      # this does the ultimate playing of the notes
+
       def play_notes(the_notes)
         self.stop()
 
@@ -93,8 +94,7 @@ module Harpnotes
           #note schedule in secc, SetTimout in msec; finsh after last measure
           `clearTimeout(#{@song_off_timer})` if @song_off_timer
 
-          the_notes = the_notes.sort_by { |the_note| the_note[:delay] + the_note[:duration] }
-
+          the_notes = the_notes.sort_by { |the_note| the_note[:delay] }
 
           firstnote       = the_notes.first
           lastnote        = the_notes.last
@@ -104,20 +104,18 @@ module Harpnotes
           stop_time       = (lastnote[:delay] - firstnote[:delay] + lastnote[:duration] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
           @song_off_timer = `setTimeout(function(){#{@songoff_callback}.$call()}, #{stop_time} )`
 
-          idx = 0
-          the_notes.each do |the_note|
-            the_note_to_play         = the_note.clone
-            the_note_to_play[:delay] -= firstnote[:delay]
+          pe = the_notes.select{|i|i[:velocity] > 0.1}.map{|i| mk_to_play_1(i)}
 
-            note  = the_note_to_play.to_n
-            index = the_note_to_play[:index]
-            inst  = create_inst(index)
+          %x{
 
-            %x{
-            #{inst}.tone(#{note});
-           // #{inst}.schedule(#{note}.delay + #{note}.duration, function(){#{inst}._trigger("noteoff", #{note});});
-           }
-          end
+           #{@abcplay}.set_sfu("public/soundfont/FluidR3_GM")
+           #{@abcplay}.set_sft('js')
+           #{@abcplay}.set_follow(true)
+
+           #{@abcplay}.play(0, 1000000, #{pe})
+          }
+          ## todo add the player logic here
+
           @isplaying = true
         else
           $log.warning("nothing selected to play")
@@ -126,15 +124,8 @@ module Harpnotes
 
 
       def stop()
-        @inst.each_with_index { |inst, index|
-          begin
-            `#{inst}.silence()` if inst
-          rescue Exception => e
-            $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
-          end
-        }
+        %x{#{@abcplay}.stop()} if @isplaying
         @isplaying = false
-        @inst=[]
       end
 
       def unhighlight_all()
@@ -161,6 +152,7 @@ module Harpnotes
       end
 
 
+      # this loads a song from the zupfnoter music model.
       def load_song(music, active_voices)
         @active_voices = active_voices
         specduration   = music.meta_data[:tempo][:duration].reduce(:+)
@@ -218,11 +210,20 @@ module Harpnotes
             result
           end
         end.flatten.compact # note that we get three nil objects bcause of the voice filter
-
       end
 
 
-      # @param [Note] note - the note to play
+      def mk_to_play_1(note)
+        [
+            note[:origin][:startChar],                         #//		[0]: index of the note in the ABC source
+            note[:delay],              #//		[1]: time in seconds
+            25,                        #//		[2]: MIDI instrument
+            -note[:pitch],             #//		[3]: MIDI note pitch (with cents)
+            note[:duration]            #//		[4]: duration
+        ]
+      end
+
+        # @param [Note] note - the note to play
       # @param [Numerical] velocity - velocity to play the note
       # @param [Numericcal] index - the number of the voice
       # @return [Hash] information for the player to play the note
