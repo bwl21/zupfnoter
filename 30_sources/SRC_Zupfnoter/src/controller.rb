@@ -691,8 +691,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def load_music_model
     abc_parser = $conf.get('abc_parser')
     $log.timestamp_start
-    @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
-    @music_model.checksum = @editor.get_checksum
+    harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
+    harpnote_engine.abcplay           = @harpnote_player.abcplay # provide the abc player to convert the abc model for playing
+    @music_model                      = harpnote_engine.transform(@editor.get_abc_part)
+    @player_model_abc                 = harpnote_engine.player_model_abc # this is a model to be played directly from abc
+    @harpnote_player.player_model_abc = @player_model_abc
+    @music_model.checksum             = @editor.get_checksum
   end
 
   # this retrieves the current config from the editor
@@ -742,9 +746,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # highlight a particular abc element in all views
   # note that previous selections are still maintained.
+  # note that previous selections are still maintained.
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
-    a =Native(abcelement)
+    a = Native(abcelement)
     #$log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     startchar = a[:startChar]

@@ -23,6 +23,10 @@ module Harpnotes
 
     class AbstractAbcToHarpnotes
 
+      attr_accessor :abcplay
+      attr_reader :player_model_abc
+
+
       def initialize
         @abc_code          = nil
         @previous_new_part = []
@@ -36,9 +40,9 @@ module Harpnotes
       # @return [Numeric] charpos, line_no
       def charpos_to_line_column(charpos)
         cleancharpos = charpos || 1
-        lines    = @abc_code[1, cleancharpos].split("\n")
-        line_no  = lines.count
-        char_pos = lines.last.length()
+        lines        = @abc_code[1, cleancharpos].split("\n")
+        line_no      = lines.count
+        char_pos     = lines.last.length()
         return line_no, char_pos
       end
 
@@ -51,7 +55,7 @@ module Harpnotes
         hn_config_from_song = {}
         line_no             = 1
         abc_code.split("\n").each do |line|
-          entry = line.match(/^%%%%hn\.(print|legend|note|annotation|lyrics) (.*)/) { |m| [m[1], m[2]] }
+          entry = line.match(/^%%%%hn\.(print|legend|note|annotation|lyrics) (.*)/) {|m| [m[1], m[2]]}
           if entry
             begin
               parsed_entry                     = JSON.parse(entry.last)
@@ -78,7 +82,7 @@ module Harpnotes
       #
       def get_metadata(abc_code)
         retval = abc_code.split("\n").each_with_index.inject({}) do |result, (line, index)|
-          entry = line.match(/^([A-Z]):\s*(.*)/) { |m| [m[1], m[2]] }
+          entry = line.match(/^([A-Z]):\s*(.*)/) {|m| [m[1], m[2]]}
           if entry
             key = entry.first
             if result[key]
@@ -101,7 +105,7 @@ module Harpnotes
       #
       def add_metadata(abc_code, new_metadata)
         old_metadata  = get_metadata(abc_code)
-        more_metadata = new_metadata.select { |k, v| old_metadata[k].nil? }.map { |k, v| "#{k}:#{v}" }
+        more_metadata = new_metadata.select {|k, v| old_metadata[k].nil?}.map {|k, v| "#{k}:#{v}"}
         [more_metadata, abc_code].flatten.compact.join("\n")
       end
 
