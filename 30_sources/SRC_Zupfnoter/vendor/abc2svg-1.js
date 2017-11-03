@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2017-11-01 15:11:02 +0100
+// compiled for Zupfnoter 2017-11-03 12:58:35 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.14.6-12-ge141e78",vdate:"2017-10-31"}
+var abc2svg={version:"1.15.0-1-g96bc0d4",vdate:"2017-11-03"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -12052,7 +12052,7 @@ function output_music() {
 	if (cfmt.singleline) {
 		lwidth = get_ck_width() +
 				get_width(tsfirst, null) + indent;
-		cfmt.pagewidth = lwidth * cfmt.scale + img.lm + img.rm + 2
+		img.width = lwidth * cfmt.scale + img.lm + img.rm + 2
 	} else {
 
 	/* else, split the tune into music lines */
@@ -20349,7 +20349,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.14.6-12-ge141e78 (2017-10-31)
+// json-1.js for abc2svg-1.15.0-1-g96bc0d4 (2017-11-03)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20497,7 +20497,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.14.6-12-ge141e78 (2017-10-31)
+// midi-1.js for abc2svg-1.15.0-1-g96bc0d4 (2017-11-03)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20700,7 +20700,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.14.6-12-ge141e78 (2017-10-31)
+// play-1.js for abc2svg-1.15.0-1-g96bc0d4 (2017-11-03)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
@@ -21168,6 +21168,8 @@ if (typeof module == 'object' && typeof exports == 'object')
 //		[2]: MIDI instrument
 //		[3]: MIDI note pitch (with cents)
 //		[4]: duration
+//		[5]: volume (0..1 - optional)
+//		[6]: custom object to be passed to the onnote - optional
 //
 // stop() - stop playing
 //
@@ -21522,7 +21524,8 @@ function Audio5(i_conf) {
 		while (1) {
 			o = ac.createBufferSource();
 			o.buffer = sounds[e[2]][e[3] | 0];
-			o.connect(gain);
+			if (e[5] != 0)		// if no sound (rest), don't connect
+				o.connect(gain)
 			if (o.detune) {
 				d = (e[3] * 100) % 100
 				if (d)			// if micro-tone
@@ -21541,13 +21544,16 @@ function Audio5(i_conf) {
 			if (follow) {
 			    var	i = e[0];
 				st = (st - ac.currentTime) * 1000;
-				setTimeout(onnote, st, i, true);
-				setTimeout(onnote, st + d * 1000, i, false)
+				setTimeout(onnote, st, i, true, e[6]);
+				setTimeout(onnote, st + d * 1000, i, false, e[6])
 			}
 
 			e = a_e[++evt_idx]
-			if (!e)
-				break
+			if (!e) {
+				setTimeout(onend,
+					(t + stime - ac.currentTime + d) * 1000)
+				return
+			}
 			t = e[1] / speed
 			if (t > maxt)
 				break

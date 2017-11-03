@@ -13,12 +13,13 @@ module Harpnotes
 
       def initialize()
         %x{#{@abcplay} = new AbcPlay({
-             onends: function(){#{call_on_songoff}}, // todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
-             onnote: function(index, on){#{call_on_note(`index`, `on`)}}
+             onend: function(){#{call_on_songoff}}, // todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
+             onnote: function(index, on,  custom){#{call_on_note(`index`, `on`, `custom`)}}
           })
            #{@abcplay}.set_sfu("public/soundfont/FluidR3_GM")
            #{@abcplay}.set_sft('js')
            #{@abcplay}.set_follow(true)
+           #{@abcplay}.set_vol(0.5)
         } # the player engine
         @isplaying        = false
         @selection        = []
@@ -31,18 +32,26 @@ module Harpnotes
         @isplaying
       end
 
-      def call_on_note(index, on)
-        $log.debug("on_note #{index} #{on}")
-        if on
-          @noteon_callback.call({startChar: index-1, endChar: index+1 });
+      def call_on_note(index, on, custom = nil)
+
+        if custom
+          c         =Native(custom)
+          startChar = c[:origin][:startChar]
+          endChar   = c[:origin][:endChar]
         else
-          @noteoff_callback.call({startChar: index-1, endChar: index+1 });   #todo: don't manipulate index if https://github.com/moinejf/abc2svg/issues/42 is solved
+          startChar = index
+          endChar   = index + 1
+        end
+        if on
+          @noteon_callback.call({startChar: startChar, endChar: endChar});
+        else
+          @noteoff_callback.call({startChar: startChar, endChar: endChar}); #todo: don't manipulate index if https://github.com/moinejf/abc2svg/issues/42 is solved
         end
       end
 
       def call_on_songoff
-          %x{
-           setTimeout(function(){#{@songoff_callback.call}}, 500)
+        %x{
+           setTimeout(function(){#{@songoff_callback.call}}, 10)
           }
       end
 
@@ -59,7 +68,6 @@ module Harpnotes
       end
 
       def play_auto
-
         if @selection.count >= 0 and (counts = @selection.map {|i| i[:delay]}.uniq.count) > 1
           play_selection
         else
@@ -90,12 +98,12 @@ module Harpnotes
 
       def play_song
         play_from_abc
-       # play_notes(@voice_elements)
+        # play_notes(@voice_elements)
       end
 
       def play_from_abc
         %x{
-            #{@abcplay}.play(0, 1000000, #{@player_model_abc})
+        #{@abcplay}.play(0, 1000000, #{@player_model_abc})
           }
         @isplaying = true
       end
@@ -119,7 +127,7 @@ module Harpnotes
           stop_time       = (lastnote[:delay] - firstnote[:delay] + lastnote[:duration] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
           @song_off_timer = `setTimeout(function(){#{@songoff_callback}.$call()}, #{stop_time} )`
 
-          pe = the_notes.select {|i| i[:velocity] > 0.1}.map {|i| mk_to_play_1(i)}
+          pe = the_notes.map {|i| mk_to_play_1(i)}
 
           %x{
           #{@abcplay}.play(0, 1000000, #{pe})
@@ -145,6 +153,7 @@ module Harpnotes
 
       def range_highlight(from, to)
         @selection = []
+        `debugger`
         @voice_elements.sort {|a, b| a[:delay] <=> b[:delay]}.each do |element|
 
           origin = Native(element[:origin])
@@ -225,11 +234,13 @@ module Harpnotes
 
       def mk_to_play_1(note)
         [
-            note[:origin][:startChar], #//		[0]: index of the note in the ABC source
-            note[:delay], #//		[1]: time in seconds
-            25, #//		[2]: MIDI instrument 25: guitar steel
-            -note[:pitch], #//		[3]: MIDI note pitch (with cents)
-            note[:duration] #//		[4]: duration
+            note[:origin][:startChar], # [0]: index of the note in the ABC source
+            note[:delay], #[1]: time in seconds
+            25, #[2]: MIDI instrument 25: guitar steel
+            -note[:pitch], # [3]: MIDI note pitch (with cents)
+            note[:duration], # [4]: duration
+            ((note[:velocity] > 0.2) ? 1 : 0), # [5] volume
+            note.to_n # [6] custom object
         ]
       end
 
