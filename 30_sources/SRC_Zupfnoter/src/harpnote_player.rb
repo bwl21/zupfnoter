@@ -153,7 +153,6 @@ module Harpnotes
 
       def range_highlight(from, to)
         @selection = []
-        `debugger`
         @voice_elements.sort {|a, b| a[:delay] <=> b[:delay]}.each do |element|
 
           origin = Native(element[:origin])

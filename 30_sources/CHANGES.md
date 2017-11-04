@@ -14,6 +14,7 @@
 * Error window now has an ok button #183
 * improve Message "no ABC found"  #184 
 * Improve error reporting in context of dropbox #185
+* no longer crash with malformed K #172
   
 ## enhancement
 
@@ -22,6 +23,8 @@
 * strip =duration on meter "M:3/4 4/4 =3/4" #181
 * initial support to work with file templates #71
 * No initial render after a crash in previous session #103
+* now we have another player, with sampled sounds #126
+* the new player also can play with repeats and vertals #126
   
 # v 1.7.1
 
