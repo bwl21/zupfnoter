@@ -16,6 +16,7 @@
 * Improve error reporting in context of dropbox #185
 * no longer crash with malformed K #172
 * improve imports of xml with non playable parts #187
+* fixed "blues with accidentals" #188
   
 ## enhancement
 

@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2017-11-03 12:58:35 +0100
+// compiled for Zupfnoter 2017-11-04 10:45:07 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.0-1-g96bc0d4",vdate:"2017-11-03"}
+var abc2svg={version:"1.15.0-3-gcc75103",vdate:"2017-11-04"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -20349,7 +20349,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.0-1-g96bc0d4 (2017-11-03)
+// json-1.js for abc2svg-1.15.0-3-gcc75103 (2017-11-04)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20497,7 +20497,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.0-1-g96bc0d4 (2017-11-03)
+// midi-1.js for abc2svg-1.15.0-3-gcc75103 (2017-11-04)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20668,8 +20668,6 @@ function AbcMIDI() {
 				}
 				break
 			case KEY:
-				if (s.st != 0)
-					break
 				key_map(s)
 				break
 			case NOTE:
@@ -20700,7 +20698,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.0-1-g96bc0d4 (2017-11-03)
+// play-1.js for abc2svg-1.15.0-3-gcc75103 (2017-11-04)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
