@@ -628,15 +628,15 @@ module Harpnotes
       end
 
       def _transform_grace
-        nil # 'debugger'
+        nil #
       end
 
       def _transform_format(voice_element)
-        nil #`debugger`
+        nil
       end
 
       def _transform_key(voice_element)
-        nil #`debugger`
+        nil
       end
 
       def _transform_meter(voice_element)
@@ -651,7 +651,7 @@ module Harpnotes
       end
 
       def _transform_clef(voice_element)
-        nil #`debugger`
+        nil 
       end
 
       def _make_variant_ending_jumps(voice_id)
