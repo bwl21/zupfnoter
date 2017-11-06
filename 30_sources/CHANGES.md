@@ -27,6 +27,8 @@
 * No initial render after a crash in previous session #103
 * now we have another player, with sampled sounds #126
 * the new player also can play with repeats and vertals #126
+* player/selection now highlight in a different style #126
+* Improved toggle of play button #126
   
 # v 1.7.1
 

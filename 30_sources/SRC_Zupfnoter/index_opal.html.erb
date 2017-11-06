@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <%=
   def nc(name)
-    build = GITSHA rescue "dev"
+    build = GITSHA rescue Time.now().to_s
     %Q{#{name}?#{build}}
   end
 

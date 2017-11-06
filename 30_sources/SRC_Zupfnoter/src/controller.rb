@@ -237,13 +237,14 @@ class Controller
     @systemstatus_consumers = {systemstatus: [
                                                  lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
                                              ],
-                               statusline:   [],
-                               error_alert:  [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
-                               play_start:   [lambda {`update_play_w2ui('start')`}],
-                               play_stop:    [lambda {`update_play_w2ui('stop')`}],
-                               disable_save: [lambda {`disable_save();`}],
-                               enable_save:  [lambda {`enable_save();`}],
-                               before_open:  [lambda {`before_open()`}],
+                               statusline:    [],
+                               error_alert:   [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
+                               play_start:    [lambda {`update_play_w2ui('start')`}],
+                               play_stop:     [lambda {`update_play_w2ui('stop')`}],
+                               play_stopping: [lambda {`update_play_w2ui('stopping')`}],
+                               disable_save:  [lambda {`disable_save();`}],
+                               enable_save:   [lambda {`enable_save();`}],
+                               before_open:   [lambda {`before_open()`}],
                                extracts:     [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})`}
@@ -506,10 +507,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     else
       result = Promise.new.resolve()
     end
-
     result.then do
       Promise.new.tap do |promise|
         if @harpnote_player.is_playing?
+          call_consumers(:play_stopping)
           stop_play_abc
         else
           call_consumers(:play_start)
@@ -528,7 +529,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    call_consumers(:play_stop)
   end
 
 
@@ -752,7 +752,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     if on
 
       # highlight in tune and harp preview
-      elements.add_class('highlight')
+      elements.add_class('highlightplay')
 
       # scroll in tune preview
       @tune_preview_printer.scroll_into_view(elements.first)
@@ -761,7 +761,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       zn_element = elements.select{|i| i.has_class?('znref')}.last
       @harpnote_preview_printer.scroll_to_element(elements.select{|i| i.has_class?('znref')}.last) if zn_element
     else
-      elements.remove_class('highlight')
+      elements.remove_class('highlightplay')
     end
     nil
   end
@@ -965,6 +965,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @harpnote_player.on_songoff do
       stop_play_abc
+      call_consumers(:play_stop)
     end
 
     $window.on :mousedown do |e|

@@ -1102,7 +1102,13 @@ function update_play_w2ui(status) {
   if (status == "start") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon: "fa fa-stop"})
   }
+  else if (status == "stopping"){
+    w2ui.layout_top_toolbar.set('tbPlay', {text: "...", icon: "fa fa-stop-circle-o"})
+
+    w2ui.layout_top_toolbar.disable('tbPlay')
+  }
   else {
+    w2ui.layout_top_toolbar.enable('tbPlay')
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Play", icon: "fa fa-play"})
   }
 }
