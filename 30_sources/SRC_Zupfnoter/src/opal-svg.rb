@@ -297,9 +297,15 @@ module ZnSvg
       }
     end
 
-    def add_abcref(x, y, rx, ry)
+    def add_abcref(x, y, rx, ry, start_char=nil)
       id  = new_id!
-      svg =%Q{<rect class="abcref" id="#{id}" x="#{x - rx - 1.5}" y="#{y - ry - 1.5 }" width="#{2 * rx+3}" height="#{2 * ry + 3}"/>}
+      # classes:
+      # abcref - for global unhighlighting - name came from abc2svg
+      #        - to add a click handler
+      # znref  - for scroll_intoview while playing
+      # _(startchar)_ to hilight by player - approach comes from abc2svg
+      # zn
+      svg =%Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - 1.5}" y="#{y - ry - 1.5 }" width="#{2 * rx+3}" height="#{2 * ry + 3}"/>}
       @svgbuffer.push(svg)
       id
     end

@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2017-11-04 10:45:07 +0100
+// compiled for Zupfnoter 2017-11-05 18:41:17 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.0-3-gcc75103",vdate:"2017-11-04"}
+var abc2svg={version:"1.15.0-4-g0928c89",vdate:"2017-11-04"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -6546,6 +6546,7 @@ function set_format(cmd, param, lock) {
 	switch (cmd) {
 	case "aligncomposer":
 	case "barsperstaff":
+	case "capo":
 	case "infoline":
 	case "measurefirst":
 	case "measurenb":
@@ -18763,7 +18764,7 @@ function get_key(parm) {
 		}
 		for (v = 0; v < voice_tb.length; v++) {
 			p_voice = voice_tb[v];
-			p_voice.key = s_key;
+			p_voice.key = clone(s_key);
 			p_voice.okey = clone(s_key);
 			p_voice.ckey = clone(s_key)
 		}
@@ -18911,6 +18912,8 @@ function init_tune() {
 	gene = {}
 	a_de = []			// remove old decorations
 	od = {}				// no ottava decorations anymore
+	if (capo)
+		capo = false
 }
 
 // treat a 'V:' info
@@ -19704,7 +19707,9 @@ function draw_all_lyrics() {
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
 
-// -- parse a chord indication / annotation --
+var	capo			// capo indication
+
+// -- parse a chord symbol / annotation --
 // the result is added in the global variable a_gch
 // 'type' may be a single '"' or a string '"xxx"' created by U:
 function parse_gchord(type) {
@@ -19835,17 +19840,33 @@ function parse_gchord(type) {
 	}
 }
 
-// transpose a chord indication
+// create the guitar chords with capo
+function gch_capo(s) {
+    var	gch, gch2, i2,
+	i = 0
+
+	while (1) {
+		gch = s.a_gch[i++]
+		if (!gch)
+			return
+		if (gch.type == 'g')
+			break
+	}
+	gch2 = clone(gch);
+	gch2.text = gch_tr1(gch2.text, -cfmt.capo)
+	if (!capo) {
+		capo = true;
+		gch2.text += "  (capo: " + cfmt.capo.toString() + ")";
+	}
+	s.a_gch.splice(i, 0, gch2)
+}
+
+// transpose a chord symbol
 var	note_names = "CDEFGAB",
 	latin_names = [ "Do", "Ré", "Mi", "Fa", "Sol", "La", "Si" ],
 	acc_name = ["bb", "b", "", "#", "##"]
 
-function gch_transp(s) {
-	var	gch, p,
-		i = 0,
-		i2 = curvoice.ckey.k_sf - curvoice.okey.k_sf
-
-	function gch_tr1(p) {
+	function gch_tr1(p, i2) {
 		var	new_txt, l,
 			n, i1, i3, i4, ix, a, ip, ip2,
 			latin = 0
@@ -19903,30 +19924,21 @@ function gch_transp(s) {
 		a = 0;
 		ip = latin + 1
 		if (latin >= 0) {		// if some chord
-			if (p[ip] == '#') {
+			while (p[ip] == '#') {
 				a++;
 				ip++
-				if (p[ip] == '#') {
-					a++;
-					ip++
-				}
-			} else if (p[ip] == 'b') {
+			}
+			while (p[ip] == 'b') {
 				a--;
 				ip++
-				if (p[ip] == 'b') {
-					a--;
-					ip++
-				}
-			} else if (p[ip] == '=') {
-				ip++
 			}
-			i3 = cde2fcg[n] + i2 + a * 7;
-			i4 = cgd2cde[(i3 + 16 * 7) % 7];	// note
-			i1 = ((((i3 + 22) / 7) | 0) + 159) % 5	// accidental
-			if (latin == 0)
-				new_txt = note_names[i4] + acc_name[i1]
-			else
-				new_txt = latin_names[i4] + acc_name[i1]
+//			if (p[ip] == '=')
+//				ip++
+			i3 = ([0, 2, 4, 5, 7, 9, 11][n] + a + i2 + 12) % 12;
+			i4 = [0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6][i3];
+			i1 = [2, 3, 2, 1, 2, 2, 3, 2, 1, 2, 1, 2][i3];
+			new_txt = (latin ? latin_names[i4] : note_names[i4]) +
+					acc_name[i1]
 		} else {
 			new_txt = ''
 		}
@@ -19955,27 +19967,31 @@ function gch_transp(s) {
 				ip2++
 			}
 		}
-		i3 = cde2fcg[n] + i2 + a * 7;
-		i4 = cgd2cde[(i3 + 16 * 7) % 7];
-		i1 = ((((i3 + 1 + 21) / 7) | 0) + 2 - 3 + 32 * 5) % 5
+		i3 = ([0, 2, 4, 5, 7, 9, 11][n] + a + i2 + 12) % 12;
+		i4 = [0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6][i3];
+		i1 = [2, 3, 2, 1, 2, 2, 3, 2, 1, 2, 1, 2][i3]
 		return new_txt + note_names[i4] + acc_name[i1] + p.slice(ip2)
 	} // get_tr1
+
+function gch_transp(s) {
+	var	gch, p, j,
+		i = 0,
+		i2 = ((curvoice.ckey.k_sf - curvoice.okey.k_sf + 12) * 7) % 12
 
 	while (1) {
 		gch = s.a_gch[i++]
 		if (!gch)
 			return
-		if (gch.type == 'g')
-			break
+		if (gch.type != 'g')
+			continue
+		p = gch.text;
+		j = p.indexOf('\t')
+		if (j >= 0) {
+			j++;
+			p = p.slice(0, j) + gch_tr1(p.slice(j), i2)
+		}
+		gch.text = gch_tr1(p, i2)
 	}
-
-	p = gch.text;
-	i = p.indexOf('\t')
-	if (i >= 0) {
-		i++;
-		p = p.slice(0, i) + gch_tr1(p.slice(i))
-	}
-	gch.text = gch_tr1(p)
 }
 
 // -- build the chord indications / annotations --
@@ -19999,6 +20015,8 @@ function gch_build(s) {
 	s.a_gch = a_gch;
 	a_gch = null
 
+	if (cfmt.capo)
+		gch_capo(s)
 	if (curvoice.vtransp)
 		gch_transp(s)
 
@@ -20118,7 +20136,7 @@ function draw_gchord(s, gchy_min, gchy_max) {
 	var	w = s.a_gch[0].w,
 		y_above = y_get(s.st, 1, s.x - 2, w),
 		y_below = y_get(s.st, 0, s.x - 2, w),
-		yav = (s.ymx + s.ymn) >> 1
+		yav = (((s.notes[s.nhd].pit + s.notes[0].pit) >> 1) - 18) * 3
 
 	for (ix = 0; ix < s.a_gch.length; ix++) {
 		gch = s.a_gch[ix]
@@ -20349,7 +20367,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.0-3-gcc75103 (2017-11-04)
+// json-1.js for abc2svg-1.15.0-4-g0928c89 (2017-11-04)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20497,7 +20515,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.0-3-gcc75103 (2017-11-04)
+// midi-1.js for abc2svg-1.15.0-4-g0928c89 (2017-11-04)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20698,7 +20716,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.0-3-gcc75103 (2017-11-04)
+// play-1.js for abc2svg-1.15.0-4-g0928c89 (2017-11-04)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
@@ -21167,7 +21185,6 @@ if (typeof module == 'object' && typeof exports == 'object')
 //		[3]: MIDI note pitch (with cents)
 //		[4]: duration
 //		[5]: volume (0..1 - optional)
-//		[6]: custom object to be passed to the onnote - optional
 //
 // stop() - stop playing
 //
@@ -21542,8 +21559,8 @@ function Audio5(i_conf) {
 			if (follow) {
 			    var	i = e[0];
 				st = (st - ac.currentTime) * 1000;
-				setTimeout(onnote, st, i, true, e[6]);
-				setTimeout(onnote, st + d * 1000, i, false, e[6])
+				setTimeout(onnote, st, i, true);
+				setTimeout(onnote, st + d * 1000, i, false)
 			}
 
 			e = a_e[++evt_idx]

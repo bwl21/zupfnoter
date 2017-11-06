@@ -99,13 +99,16 @@ I:staffnonote 2
       nil
     end
 
+    def scroll_into_view(element)
+      %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
+    end
+
     def range_highlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
         element = Element.find("##{id}")
+        scroll_into_view(element)
 
-        %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
-        classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
-        element.attr('class', classes)
+        element.add_class('highlight')
       end
       nil
     end
@@ -113,13 +116,12 @@ I:staffnonote 2
     def range_unhighlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
         foo     = Element.find("##{id}")
-        classes = foo.attr('class').gsub("highlight", '')
-        foo.attr('class', classes)
+        foo.remove_class('highlight')
       end
     end
 
     def unhighlight_all()
-      Element.find("##{@printer.id} .highlight").attr('class', 'abcref')
+      Element.find("##{@printer.id} .highlight").remove_class('highlight')# .attr('class', 'abcref')
     end
 
 
@@ -185,14 +187,17 @@ I:staffnonote 2
     end
 
 
+    # this method returns a list of ids of elements which
+    # touch the given range [from, to]
     def get_elements_by_range(from, to)
-      range  = [from, to].sort
+      range  = [from, to].sort # get sorted interval for select range [lower, upper]
       result = []
       @element_to_position.each {|k, value|
-        noterange = [:startChar, :endChar].map {|c| value[c]}.sort
+        noterange = [:startChar, :endChar].map {|c| value[c]}.sort # [get sorted interval for note [lower, upper]]
 
+        # check if range and noterange overlap each other
         if (range.first - noterange.last) * (noterange.first - range.last) > 0
-          result.push(k)
+          result.push(k) # push the id of the element
         end
       }
       result
@@ -249,7 +254,7 @@ I:staffnonote 2
           // close the container
           #{@root}.out_svg('</g>\n');
           // create a rectangle
-          #{@root}.out_svg('<rect class="abcref" id="' + #{id} +'" x="');
+          #{@root}.out_svg('<rect class="abcref _' + #{start_offset} + '_" id="' + #{id} +'" x="');
           #{@root}.out_sxsy(#{x}, '" y="', #{y});
           #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
             '" height="' + #{h}.toFixed(2) + '"/>\n')

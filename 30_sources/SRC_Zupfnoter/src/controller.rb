@@ -744,6 +744,28 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Native(parser)
   end
 
+  # this is intended to be used for following the player only
+  # todo: not clear if it is ok, to deal with DOM-Elements here
+  # but this allows to hightliight tune and harp preview simultaneously
+  def highlight_abc_object_by_player_callback(startchar, on)
+    elements = Element.find("._#{startchar}_")
+    if on
+
+      # highlight in tune and harp preview
+      elements.add_class('highlight')
+
+      # scroll in tune preview
+      @tune_preview_printer.scroll_into_view(elements.first)
+
+      # scroll in harp preview
+      zn_element = elements.select{|i| i.has_class?('znref')}.last
+      @harpnote_preview_printer.scroll_to_element(elements.select{|i| i.has_class?('znref')}.last) if zn_element
+    else
+      elements.remove_class('highlight')
+    end
+    nil
+  end
+
   # highlight a particular abc element in all views
   # note that previous selections are still maintained.
   # note that previous selections are still maintained.
@@ -934,11 +956,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @harpnote_player.on_noteon do |e|
-      highlight_abc_object(e)
+      highlight_abc_object_by_player_callback(e[:startChar], true) unless $settings[:follow] == 'false'
     end
 
     @harpnote_player.on_noteoff do |e|
-      unhighlight_abc_object(e)
+      highlight_abc_object_by_player_callback(e[:startChar], false) unless $settings[:follow] == 'false'
     end
 
     @harpnote_player.on_songoff do

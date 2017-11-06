@@ -163,7 +163,7 @@ module Harpnotes
     def highlight_element(element)
       @highlighted.push(element)
       #classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
-      element.attr('class', ['highlight'])
+      element.add_class('highlight')
       nil
     end
 
@@ -173,7 +173,7 @@ module Harpnotes
 
 
     def unhighlight_element(element)
-      element.attr('class', ['abcref'])
+      element.remove_class('highlight')
 
       @highlighted -= [element]
       nil
@@ -266,7 +266,8 @@ module Harpnotes
         draw_the_barover(root)
       end
 
-      e = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last)
+      startChar = root.origin.origin[:startChar]
+      e = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last, startChar)
       push_element(root, e)
     end
 
@@ -306,7 +307,8 @@ module Harpnotes
       end
 
       if is_playable
-        e = @paper.add_abcref(root.center.first, root.center.last, 0.6 * root.size.first, 0.6 * root.size.last)
+        startChar = root.origin.origin[:startChar]
+        e = @paper.add_abcref(root.center.first, root.center.last, 0.6 * root.size.first, 0.6 * root.size.last, startChar)
         push_element(root, e)
       else
         push_element(root, e)

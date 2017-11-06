@@ -238,8 +238,8 @@ module Harpnotes
             25, #[2]: MIDI instrument 25: guitar steel
             -note[:pitch], # [3]: MIDI note pitch (with cents)
             note[:duration], # [4]: duration
-            ((note[:velocity] > 0.2) ? 1 : 0), # [5] volume
-            note.to_n # [6] custom object
+            ((note[:velocity] > 0.2) ? 1 : 0) # [5] volume
+            #note.to_n # [6] custom object
         ]
       end
 
