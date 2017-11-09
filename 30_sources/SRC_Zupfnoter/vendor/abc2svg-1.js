@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2017-11-05 18:41:17 +0100
+// compiled for Zupfnoter 2017-11-11 08:43:52 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.0-4-g0928c89",vdate:"2017-11-04"}
+var abc2svg={version:"1.15.0-9-geee5e5e",vdate:"2017-11-08"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -12233,8 +12233,6 @@ function new_clef(clef_def) {
 }
 
 // get a transposition value
-var pit_st = new Int8Array([0, 2, 4, 5, 7, 9, 11])
-
 function get_transp(param,
 			type) {		// undefined or "instr"
 	var	i, val, tmp, note,
@@ -12288,7 +12286,7 @@ function get_transp(param,
 			return
 		}
 		note.pit += 124;	// 126 - 2 for value > 0 and 'C' % 7 == 0
-		val = ((note.pit / 7) | 0) * 12 + pit_st[note.pit % 7]
+		val = ((note.pit / 7) | 0) * 12 + note_pit[note.pit % 7]
 		if (note.acc && note.acc != 3)		// if not natural
 			val += note.acc;
 		pit[i] = val
@@ -14008,7 +14006,8 @@ function new_note(grace, tp_fact) {
 		s.type = REST;
 		line.index++;
 		nd = parse_dur(line);
-		s.dur_orig = ((curvoice.ulen < 0) ? BASE_LEN / 4 :
+		s.dur_orig = ((curvoice.ulen < 0) ?
+					15120 :	// 2*2*2*2*3*3*3*5*7
 					curvoice.ulen) * nd[0] / nd[1];
 		s.dur = s.dur_orig * curvoice.dur_fact;
 		s.notes = [{
@@ -14071,8 +14070,10 @@ function new_note(grace, tp_fact) {
 				}
 			}
 			note = parse_basic_note(line,
-					(s.grace || curvoice.ulen < 0) ?
-						BASE_LEN / 4 : curvoice.ulen)
+					s.grace ? BASE_LEN / 4 :
+					curvoice.ulen < 0 ?
+						15120 :	// 2*2*2*2*3*3*3*5*7
+						curvoice.ulen)
 			if (!note)
 				return //null
 
@@ -19780,6 +19781,8 @@ function parse_gchord(type) {
 				if (c != ' ')
 					i--
 			}
+			gch.x = x_abs;
+			gch.y = y_abs - h_ann / 2
 			break
 		case '^':
 		case '_':
@@ -19790,11 +19793,6 @@ function parse_gchord(type) {
 			break
 		}
 		gch.type = type
-		if (type == '@') {
-			gch.x = x_abs;
-			gch.y = y_abs;
-			y_abs -= h_ann
-		}
 		while (1) {
 			c = text[i]
 			if (!c)
@@ -19864,7 +19862,10 @@ function gch_capo(s) {
 // transpose a chord symbol
 var	note_names = "CDEFGAB",
 	latin_names = [ "Do", "Ré", "Mi", "Fa", "Sol", "La", "Si" ],
-	acc_name = ["bb", "b", "", "#", "##"]
+	acc_name = ["bb", "b", "", "#", "##"],
+	note_pit = new Int8Array([0, 2, 4, 5, 7, 9, 11]),
+	pit_note = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
+	pit_acc = new Int8Array([2, 3, 2, 1, 2, 2, 3, 2, 1, 2, 1, 2])
 
 	function gch_tr1(p, i2) {
 		var	new_txt, l,
@@ -19934,9 +19935,9 @@ var	note_names = "CDEFGAB",
 			}
 //			if (p[ip] == '=')
 //				ip++
-			i3 = ([0, 2, 4, 5, 7, 9, 11][n] + a + i2 + 12) % 12;
-			i4 = [0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6][i3];
-			i1 = [2, 3, 2, 1, 2, 2, 3, 2, 1, 2, 1, 2][i3];
+			i3 = (note_pit[n] + a + i2 + 12) % 12;
+			i4 = pit_note[i3];
+			i1 = pit_acc[i3];
 			new_txt = (latin ? latin_names[i4] : note_names[i4]) +
 					acc_name[i1]
 		} else {
@@ -19967,9 +19968,9 @@ var	note_names = "CDEFGAB",
 				ip2++
 			}
 		}
-		i3 = ([0, 2, 4, 5, 7, 9, 11][n] + a + i2 + 12) % 12;
-		i4 = [0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6][i3];
-		i1 = [2, 3, 2, 1, 2, 2, 3, 2, 1, 2, 1, 2][i3]
+		i3 = (note_pit[n] + a + i2 + 12) % 12;
+		i4 = pit_note[i3];
+		i1 = pit_acc[i3]
 		return new_txt + note_names[i4] + acc_name[i1] + p.slice(ip2)
 	} // get_tr1
 
@@ -20070,12 +20071,12 @@ function gch_build(s) {
 		case '<':			/* left */
 			gch.x = -(w + 6);
 			y_left -= h_ann;
-			gch.y = y_left
+			gch.y = y_left + h_ann / 2
 			break
 		case '>':			/* right */
 			gch.x = 6;
 			y_right -= h_ann;
-			gch.y = y_right
+			gch.y = y_right + h_ann / 2
 			break
 		default:			// chord symbol
 			gch.box = box
@@ -20125,7 +20126,7 @@ function gch_build(s) {
 	}
 }
 
-/* -- draw the chord indications and annotations -- */
+// -- draw the chord symbols and annotations
 // (the staves are not yet defined)
 // (unscaled delayed output)
 function draw_gchord(s, gchy_min, gchy_max) {
@@ -20156,7 +20157,7 @@ function draw_gchord(s, gchy_min, gchy_max) {
 		}
 	}
 
-	set_dscale(s.st, true);
+	set_dscale(s.st);
 	for (ix = 0; ix < s.a_gch.length; ix++) {
 		gch = s.a_gch[ix];
 		use_font(gch.font);
@@ -20178,15 +20179,15 @@ function draw_gchord(s, gchy_min, gchy_max) {
 /*fixme: what symbol space?*/
 			if (s.notes[0].acc)
 				x -= s.notes[0].shac;
-			y = gch.y + yav
+			y = gch.y + yav - h / 2
 			break
 		case '>':			/* right */
 			x += s.xmx
 			if (s.dots > 0)
 				x += 1.5 + 3.5 * s.dots;
-			y = gch.y + yav
+			y = gch.y + yav - h / 2
 			break
-		default:			// chord indication
+		default:			// chord symbol
 			hbox = gch.box ? 3 : 2
 			if (gch.y >= 0) {
 				y = gch.y + y_above;
@@ -20222,7 +20223,7 @@ function draw_gchord(s, gchy_min, gchy_max) {
 				var expdx = (x - s.x) / j;
 
 				x = s.x;
-				y /= staff_tb[s.st].staffscale
+				y *= staff_tb[s.st].staffscale
 				if (user.anno_start)
 					user.anno_start("gchord", gch.istart, gch.iend,
 						x - 2, y + h + 2, w + 4, h + 4, s)
@@ -20247,17 +20248,15 @@ function draw_gchord(s, gchy_min, gchy_max) {
 		case '@':			/* absolute */
 			y = gch.y + yav
 			if (y > 0) {
-				y2 = y + h * .8 + 3
+				y2 = y + h
 				if (y2 > staff_tb[s.st].ann_top)
 					staff_tb[s.st].ann_top = y2
 			} else {
-				y2 = y - h * .2
-				if (y2 < staff_tb[s.st].ann_bot)
-					staff_tb[s.st].ann_bot = y2
+				if (y < staff_tb[s.st].ann_bot)
+					staff_tb[s.st].ann_bot = y
 			}
 			break
 		}
-		y *= staff_tb[s.st].staffscale
 		if (user.anno_start)
 			user.anno_start("annot", gch.istart, gch.iend,
 				x - 2, y + h + 2, w + 4, h + 4, s)
@@ -20367,7 +20366,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.0-4-g0928c89 (2017-11-04)
+// json-1.js for abc2svg-1.15.0-9-geee5e5e (2017-11-08)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20515,7 +20514,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.0-4-g0928c89 (2017-11-04)
+// midi-1.js for abc2svg-1.15.0-9-geee5e5e (2017-11-08)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20701,8 +20700,7 @@ function AbcMIDI() {
 					}
 					note.midi = pit2midi(p, note.acc)
 					if (note.ti1) {
-						if (note.acc)
-							tie_map[p] = map[p];
+						tie_map[p] = map[p];
 						tie_time[p] = s.time + s.dur
 					}
 				}
@@ -20716,7 +20714,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.0-4-g0928c89 (2017-11-04)
+// play-1.js for abc2svg-1.15.0-9-geee5e5e (2017-11-08)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine

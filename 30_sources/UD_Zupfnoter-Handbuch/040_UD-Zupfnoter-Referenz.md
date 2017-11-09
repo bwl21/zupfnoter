@@ -1124,6 +1124,36 @@ Eine Übersicht der Befehle für die Konsole gibt der Befehl
         setstdnotes  : configure stdnotes in localstore
         setstdextract  : configure stdc onfig in localstore
 
+Über folgende Befehle kann die Wiedergabe gesteuert werden.
+
+-   `p ff` - Wiedergabe des aktuellen Auszuges ab der selektierte Note.
+    Wenn keine Note selektiert ist, dann wirkt der Befehl wie `p all`
+
+-   `p sel` - Wiedergabe der ausgewählten Noten
+
+-   `p all` - Wiedergabe des kompletten Stückes mit alle Stimmen die im
+    ABC code angelegt sind. Dabei werden Wiederholungen und varianten
+    Enden ausgespielt. Mit dieser Funktion kan man sich einen
+    Gesamteindruck verschaffen.
+
+-   `p auto` - Wiedergabe
+    -   ab der ausgewählten Note wie `p ff`
+    -   der ausgewählten Noten wie `p sel` - falls mehrere Noten
+        ausgewählt sind
+    -   des kompletten Stückes wie `p all` - falls keine Note ausgewählt
+        ist
+
+`stop` - hält die Wiedergabe an
+
+-   `speed {factor>}` - damit kann man die Wiedergabegeschwindigkeit
+    verändern, ohne den ABC-Code ändern zu müssen.
+
+    > Hinweis: Die Einstellung bleibt über mehrere Abspielvorgänge
+    > erhalten. Sie kann auch währende des Abspielens verändert werden.
+    >
+    > Hinweis: um sicher mit der Einstellung aus dem ABC-Code
+    > abzuspielen sollte `speed 1` angegeben werden.
+
 ## Tastenkombinationen (Shortcuts) {#shortcuts}
 
 Für eine flüssige Bedienung stellt Zupfnoter folgende

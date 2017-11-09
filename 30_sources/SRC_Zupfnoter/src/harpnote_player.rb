@@ -19,7 +19,7 @@ module Harpnotes
            #{@abcplay}.set_sfu("public/soundfont/FluidR3_GM")
            #{@abcplay}.set_sft('js')
            #{@abcplay}.set_follow(true)
-           #{@abcplay}.set_vol(0.5)
+           #{@abcplay}.set_vol(1.0)
         } # the player engine
         @isplaying        = false
         @selection        = []
@@ -33,19 +33,10 @@ module Harpnotes
       end
 
       def call_on_note(index, on, custom = nil)
-
-        if custom
-          c         =Native(custom)
-          startChar = c[:origin][:startChar]
-          endChar   = c[:origin][:endChar]
-        else
-          startChar = index
-          endChar   = index + 1
-        end
         if on
-          @noteon_callback.call({startChar: startChar, endChar: endChar});
+          @noteon_callback.call({startChar: index, endChar: index});
         else
-          @noteoff_callback.call({startChar: startChar, endChar: endChar}); #todo: don't manipulate index if https://github.com/moinejf/abc2svg/issues/42 is solved
+          @noteoff_callback.call({startChar: index, endChar: index});
         end
       end
 
@@ -83,13 +74,10 @@ module Harpnotes
             n[:delay] >= @selection.first[:delay]
           end
           notes_to_play = notes_to_play.select {|v| @active_voices.include? v[:index]}
-
+          play_notes(notes_to_play)
         else
-          $log.error("please select at least one note")
-          notes_to_play = @voice_elements
+          play_from_abc # play from abc if no note is selected
         end
-
-        play_notes(notes_to_play)
       end
 
       def play_selection
@@ -140,6 +128,9 @@ module Harpnotes
         end
       end
 
+      def set_speed(speed)
+        %x{#{@abcplay}.set_speed(#{speed})}
+      end
 
       def stop()
         %x{#{@abcplay}.stop()} if @isplaying
@@ -210,7 +201,6 @@ module Harpnotes
                 to_play[:duration]           += tie_start[:duration]
                 to_play[:origin][:startChar] = tie_start[:origin][:startChar]
                 to_play[:delay]              = tie_start[:delay]
-                $log.debug("#{more_to_play} #{__FILE__} #{__LINE__}")
 
                 more_to_play.each do |p|
                   p[:duration] += tie_start[:duration]

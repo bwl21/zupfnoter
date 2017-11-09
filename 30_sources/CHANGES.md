@@ -29,6 +29,7 @@
 * the new player also can play with repeats and vertals #126
 * player/selection now highlight in a different style #126
 * Improved toggle of play button #126
+* we now can change the playback speed on the fly #126
   
 # v 1.7.1
 

@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.8.0 dev 1
+Version 1.8.0 dev 2
 
 \begin{verbatim}
 © 2017 https://www.zupfnoter.de
@@ -2419,6 +2419,53 @@ stdextract  : configure with template from localstore
 setstdnotes  : configure stdnotes in localstore
 setstdextract  : configure stdc onfig in localstore
 \end{verbatim}
+\end{itemize}
+
+Über folgende Befehle kann die Wiedergabe gesteuert werden.
+
+\begin{itemize}
+\item
+  \texttt{p\ ff} - Wiedergabe des aktuellen Auszuges ab der selektierte
+  Note. Wenn keine Note selektiert ist, dann wirkt der Befehl wie
+  \texttt{p\ all}
+\item
+  \texttt{p\ sel} - Wiedergabe der ausgewählten Noten
+\item
+  \texttt{p\ all} - Wiedergabe des kompletten Stückes mit alle Stimmen
+  die im ABC code angelegt sind. Dabei werden Wiederholungen und
+  varianten Enden ausgespielt. Mit dieser Funktion kan man sich einen
+  Gesamteindruck verschaffen.
+\item
+  \texttt{p\ auto} - Wiedergabe
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    ab der ausgewählten Note wie \texttt{p\ ff}
+  \item
+    der ausgewählten Noten wie \texttt{p\ sel} - falls mehrere Noten
+    ausgewählt sind
+  \item
+    des kompletten Stückes wie \texttt{p\ all} - falls keine Note
+    ausgewählt ist
+  \end{itemize}
+\end{itemize}
+
+\texttt{stop} - hält die Wiedergabe an
+
+\begin{itemize}
+\item
+  \texttt{speed\ \{factor\textgreater{}\}} - damit kann man die
+  Wiedergabegeschwindigkeit verändern, ohne den ABC-Code ändern zu
+  müssen.
+
+  \begin{quote}
+  Hinweis: Die Einstellung bleibt über mehrere Abspielvorgänge erhalten.
+  Sie kann auch währende des Abspielens verändert werden.
+
+  Hinweis: um sicher mit der Einstellung aus dem ABC-Code abzuspielen
+  sollte \texttt{speed\ 1} angegeben werden.
+  \end{quote}
 \end{itemize}
 
 \hyperdef{}{shortcuts}{\subsection{Tastenkombinationen
@@ -5967,7 +6014,7 @@ Dateivorlate}{template - Dateivorlate}}\label{template}
 TODO:\marginpar{TODO} Helptext für template einfügen
 
 \begin{verbatim}
-    "template": {"filebase": null, "title": "- no template -"}
+    "template": {"filebase": "-no-template-", "title": "- no template -"}
       
 \end{verbatim}
 
@@ -5977,7 +6024,7 @@ Dateibasis}{template.filebase - Dateibasis}}\label{template.filebase}
 TODO:\marginpar{TODO} Helptext für template.filebase einfügen
 
 \begin{verbatim}
-    "filebase": null
+    "filebase": "-no-template-"
       
 \end{verbatim}
 

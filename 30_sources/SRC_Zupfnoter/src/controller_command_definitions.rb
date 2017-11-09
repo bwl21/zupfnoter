@@ -171,6 +171,21 @@ class Controller
       end
     end
 
+    @commands.add_command(:speed) do |c|
+      c.undoable = false
+      c.set_help {"play song #{c.parameter_help(0)}"}
+      c.add_parameter(:speed, :float) do |parameter|
+        parameter.set_default {10}
+        parameter.set_help {"value = < 1 slower, > 1 faster"}
+      end
+      c.undoable = false
+      c.set_help {"set playing speed"}
+      c.as_action do |a|
+        `debugger`
+        @harpnote_player.set_speed(a[:speed].to_f)
+      end
+    end
+
     @commands.add_command(:stop) do |c|
       c.undoable = false
       c.set_help {"stop playing"}
