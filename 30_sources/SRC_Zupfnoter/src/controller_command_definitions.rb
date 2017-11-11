@@ -537,10 +537,22 @@ class Controller
             barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
             annotations:           {keys: [:annotations], newentry_handler: lambda {handle_command("addconf annotations")}},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda {handle_command("addconf notes")}, quicksetting_commands: _get_quicksetting_commands('notes')},
-            lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
-            minc:                  {keys: expand_extract_keys(['notebound.minc'])},
-            layout:                {keys: expand_extract_keys([:layoutlines, :layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
-            printer:               {keys: expand_extract_keys([:printer, 'printer.show_border', 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
+            lyrics:  {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
+            minc:    {keys: expand_extract_keys(['notebound.minc'])},
+            layout:  {keys: expand_extract_keys(
+                                [:layoutlines, :startpos,
+                                 'layout.LINE_THIN', 'layout.LINE_MEDIUM', 'layout.LINE_THICK',
+                                 'layout.ELLIPSE_SIZE', 'layout.REST_SIZE',
+                                 'layout.limit_a3', 'layout.DRAWING_AREA_SIZE',
+
+                                 'layout.packer.pack_method', 'layout.packer.pack_max_spreadfactor', 'layout.packer.pack_min_increment',
+                                 'layout.jumpline_anchor',
+                                 'layout.color.color_default', 'layout.color.color_variant1', 'layout.color.color_variant2',
+
+                                ]), quicksetting_commands: _get_quicksetting_commands('layout')},
+
+
+            printer: {keys: expand_extract_keys([:printer, 'printer.show_border', 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             repeatsigns:           {keys: expand_extract_keys([:repeatsigns])},
 
 
