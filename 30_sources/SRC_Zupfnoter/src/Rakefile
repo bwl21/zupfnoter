@@ -80,6 +80,7 @@ end
 
 desc "Build our app to #{ZUPFNOTER_JS}"
 task :build => [:buildConfigDoc, :updateLocales] do
+  git_describe
   #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.append_path "../vendor"
@@ -122,6 +123,12 @@ task :server do
   end
 end
 
+def git_describe
+  v = File.readlines("version.rb").map{|l|l.strip}
+  git_version = %x{git describe}.strip.gsub(/release|"xxx"\//, "")
+  v[0] = %Q{VERSION = "#{git_version}"}
+  File.open("version.rb", "w"){|f| f.puts v.join("\n")}
+end
 
 desc "Build a distribution for the server"
 task :deploy => [:build] do
