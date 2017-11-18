@@ -834,28 +834,28 @@ function init_w2ui(uicontroller) {
       {
         type: 'button',
         id: 'sb_cursorposition',
-        text: '<div style="padding: 0px !important;"><span class="editor-status-position" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="editor-status-position"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_tokeninfo',
         size: '50px',
-        text: '<div style="padding: 0px !important;"><span class="editor-status-tokeninfo" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="editor-status-tokeninfo"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_dropbox-status',
-        text: '<div style="padding: 0px !important;"><span class="dropbox-status" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="dropbox-status"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_loglevel',
-        text: '<div style="padding: 0px !important;"><span class="sb-loglevel" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="sb-loglevel"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_mode',
-        text: '<div style="padding: 0px !important;"><span class="sb-mode" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="sb-mode"></span></div>'
       },
       {type: 'spacer'},
       {
@@ -1025,7 +1025,7 @@ function update_systemstatus_w2ui(systemstatus) {
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
-  $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
+ // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
   if (systemstatus.mode == 'demo') {
     w2ui.layout_top_toolbar.disable('tb_file')

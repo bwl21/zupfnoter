@@ -158,8 +158,20 @@ module Harpnotes
             $log.error("BUG: note without origin #{element.class}")
           end
         end
+        get_notes
+        nil
       end
 
+      def pitch_to_note(pitch)
+        %W{C C# D D# E F F# G G# A A# B}[pitch % 12]
+      end
+
+      # this is experimental and puts the notes in the curren time to the logwindow
+      def get_notes
+        `debugger`
+        pitches = @selection.map{|i| @voice_elements_by_time[i[:delay]].map{|i| i[:pitch]}}.flatten.uniq.compact
+        $log.info(pitches.map{|i| i%12}.uniq.sort.map{|i| pitch_to_note(i)}.join(", "))
+      end
 
       # this loads a song from the zupfnoter music model.
       def load_song(music, active_voices)
@@ -177,7 +189,15 @@ module Harpnotes
         #todo duration_time_factor, beat_time_factor
 
         $log.debug("playing with tempo: #{tf} ticks per quarter #{__FILE__} #{__LINE__}")
+        _load_voice_elements_from_voices(music)
+        @voice_elements_by_time = @voice_elements.group_by{|element| element[:delay]}
+
+        self
+      end
+
+      def _load_voice_elements_from_voices(music)
         @voice_elements = music.voices.each_with_index.map do |voice, index|
+          next  if index == 0
           tie_start = {}
           voice.select {|c| c.is_a? Playable}.map do |root|
 
@@ -226,7 +246,7 @@ module Harpnotes
             note[:origin][:startChar], # [0]: index of the note in the ABC source
             note[:delay], #[1]: time in seconds
             25, #[2]: MIDI instrument 25: guitar steel
-            -note[:pitch], # [3]: MIDI note pitch (with cents)
+            note[:pitch], # [3]: MIDI note pitch (with cents)
             note[:duration], # [4]: duration
             ((note[:velocity] > 0.2) ? 1 : 0) # [5] volume
             #note.to_n # [6] custom object
@@ -240,7 +260,7 @@ module Harpnotes
       def mk_to_play(note, velocity, index)
         {
             delay: note.beat * @beat_timefactor,
-            pitch: -note.pitch, # todo: why -
+            pitch: note.pitch, # todo: why -
             duration: 1 * note.duration * @duration_timefactor, # todo: handle sustain of harp ...
             velocity: velocity,
             origin:   note.origin,

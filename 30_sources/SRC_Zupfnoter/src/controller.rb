@@ -919,13 +919,19 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       a              = @editor.get_selection_positions
       selection_info = @editor.get_selection_info
       ranges         = selection_info[:selection]
-      $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
+      # see https://github.com/ajaxorg/ace/issues/596
+      # this nly fires if selection really changes
+      unless @editor_selection_range == a
+        $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
-      $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-      unless false # @systemstatus[:harpnotes_dirty]
-        @harpnote_preview_printer.range_highlight(a.first, a.last)
-        @tune_preview_printer.range_highlight(a.first, a.last)
-        @harpnote_player.range_highlight(a.first, a.last)
+        $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
+        unless false # @systemstatus[:harpnotes_dirty]
+          @harpnote_preview_printer.range_highlight(a.first, a.last)
+          @tune_preview_printer.range_highlight(a.first, a.last)
+          @harpnote_player.range_highlight(a.first, a.last)
+        end
+
+        @editor_selection_range = a
       end
     end
 
