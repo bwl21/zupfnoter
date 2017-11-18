@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2017-11-11 08:43:52 +0100
+// compiled for Zupfnoter 2017-11-18 16:49:53 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.0-9-geee5e5e",vdate:"2017-11-08"}
+var abc2svg={version:"1.15.0-15-g2844008",vdate:"2017-11-13"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -1666,6 +1666,7 @@ function draw_deco_staff() {
 			 && !s.rbstop
 			 && !p_voice.bar_start) { // continue on next line
 				p_voice.bar_start = clone(s);
+				p_voice.bar_start.type = BAR;
 				p_voice.bar_start.bar_type = "["
 				delete p_voice.bar_start.text;
 				p_voice.bar_start.rbstart = 1
@@ -2201,9 +2202,7 @@ var	STEM_MIN	= 16,	/* min stem height under beams */
 	BEAM_DEPTH	= 3.2,	/* width of a beam stroke */
 	BEAM_OFFSET	= .25,	/* pos of flat beam relative to staff line */
 	BEAM_SHIFT	= 5,	/* shift of second and third beams */
-	BEAM_FLATFAC	= .6,	/* factor to decrease slope of long beams */
-	BEAM_THRESH	= .06,	/* flat beam if slope below this threshold */
-	BEAM_SLOPE	= .8,	/* max slope of a beam */
+	BEAM_SLOPE	= .4,	/* max slope of a beam */
 	BEAM_STUB	= 8,	/* length of stub for flag under beam */ 
 	SLUR_SLOPE	= .5,	/* max slope of a slur */
 	GSTEM		= 15,	/* grace note stem length */
@@ -2268,24 +2267,16 @@ var min_tb = [
 ]
 
 function calculate_beam(bm, s1) {
-	var	s, s2, notes, nflags, st, v, two_staves, two_dir, hh,
+	var	s, s2, notes, nflags, st, v, two_staves, two_dir,
 		x, y, ys, a, b, stem_err, max_stem_err,
-		sx, sy, sxx, sxy, syy, a0, stem_xoff, scale,
+		p_min, p_max, s_closest,
+		stem_xoff, scale,
 		visible, dy
 
 	if (!s1.beam_st) {	/* beam from previous music line */
 		s = sym_dup(s1);
-		s.prev = s1.prev
-		if (s.prev)
-			s.prev.next = s
-		else
-			s.p_v.sym = s;
-		s1.prev = s;
-		s.next = s1;
-		s1.ts_prev.ts_next = s;
-		s.ts_prev = s1.ts_prev;
-		s1.ts_prev = s;
-		s.ts_next = s1;
+		lkvsym(s, s1);
+		lktsym(s, s1);
 		s.x -= 12
 		if (s.x > s1.prev.x + 12)
 			s.x = s1.prev.x + 12;
@@ -2368,57 +2359,54 @@ function calculate_beam(bm, s1) {
 		}
 	}
 
-	sx = sy = sxx = sxy = syy = 0	/* linear fit through stem ends */
+	s_closest = s1;
+	p_min = 24;
+	p_max = 0
 	for (s = s1; ; s = s.next) {
 		if (s.type != NOTE)
 			continue
 		if ((scale = s.p_v.scale) == 1)
 			scale = staff_tb[s.st].staffscale
-		if (s.stem >= 0)
+		if (s.stem >= 0) {
 			x = stem_xoff + s.notes[0].shhd
-		else
-			x = -stem_xoff + s.notes[s.nhd].shhd;
-		x *= scale;
-		x += s.x;
-		s.xs = x;
-		y = s.ys + staff_tb[s.st].y;
-		sx += x; sy += y;
-		sxx += x * x; sxy += x * y; syy += y * y
+			if (s.notes[s.nhd].pit > p_max) {
+				p_max = s.notes[s.nhd].pit;
+				s_closest = s
+			}
+		} else {
+			x = -stem_xoff + s.notes[s.nhd].shhd
+			if (s.notes[0].pit < p_min) {
+				p_min = s.notes[0].pit;
+				s_closest = s
+			}
+		}
+		s.xs = s.x + x * scale;
 		if (s == s2)
 			break
 	}
 
-	/* beam fct: y=ax+b */
-	a = (sxy * notes - sx * sy) / (sxx * notes - sx * sx);
-	b = (sy - a * sx) / notes
-
-	/* the next few lines modify the slope of the beam */
-	if (notes >= 3) {
-		hh = syy - a * sxy - b * sy /* flatten if notes not in line */
-		if (hh > 0
-		 && hh / (notes - 2) > .5)
-			a *= BEAM_FLATFAC
-	}
-	if (a >= 0)
-		a = BEAM_SLOPE * a / (BEAM_SLOPE + a) // max steepness for beam
-	else
-		a = BEAM_SLOPE * a / (BEAM_SLOPE - a);
-
-	/* to decide if to draw flat etc. use normalized slope a0 */
-	a0 = a * (s2.xs - s1.xs) / (20 * (notes - 1))
-
-	if (a0 * a0 < BEAM_THRESH * BEAM_THRESH)
-		a = 0;			/* flat below threshhold */
-
-	b = (sy - a * sx) / notes	/* recalculate b for new slope */
-
-/*  if (nflags>1) b=b+2*stem*/	/* leave a bit more room if several beams */
-
-	/* have flat beams when asked */
-	if (cfmt.flatbeams) {
-		b = (s1.grace ? 35 : -11) + staff_tb[st].y;
+	// have flat beams when asked
+	if (cfmt.flatbeams)
 		a = 0
+
+	// if a note inside the beam is the closest to the beam, the beam is flat
+	else if (!two_dir
+	      && notes >= 3
+	      && s_closest != s1 && s_closest != s2)
+		a = 0
+
+	y = s1.ys + staff_tb[st].y
+	if (a == undefined)
+		a = (s2.ys + staff_tb[s2.st].y - y) / (s2.xs - s1.xs)
+
+	if (a != 0) {
+		if (a > 0)
+			a = BEAM_SLOPE * a / (BEAM_SLOPE + a) // max steepness for beam
+		else
+			a = BEAM_SLOPE * a / (BEAM_SLOPE - a);
 	}
+
+	b = y - a * s1.xs;
 
 /*fixme: have a look again*/
 	/* have room for the symbols in the staff */
@@ -4547,12 +4535,8 @@ function draw_tuplet(s1,
 	x1 = s1.x - 4;
 	y1 = 24
 	if (s1.st == upstaff) {
-		s3 = s1
-		if (s3.type != NOTE) {
-			for (s3 = s3.next; s3 != s2; s3 = s3.next)
-				if (s3.type == NOTE)
-					break
-		}
+		for (s3 = s1; s3.type != NOTE; s3 = s3.next)
+			;
 		ym = y_get(upstaff, 1, s3.x - 4, 8)
 		if (ym > y1)
 			y1 = ym
@@ -4561,12 +4545,8 @@ function draw_tuplet(s1,
 	}
 	y2 = 24
 	if (s2.st == upstaff) {
-		s3 = s2
-		if (s3.type != NOTE) {
-			for (s3 = s3.prev; s3 != s1; s3 = s3.prev)
-				if (s3.type == NOTE)
-					break
-		}
+		for (s3 = s2; s3.type != NOTE; s3 = s3.prev)
+			;
 		ym = y_get(upstaff, 1, s3.x - 4, 8)
 		if (ym > y2)
 			y2 = ym
@@ -4627,7 +4607,6 @@ function draw_tuplet(s1,
 	ym += dy + 2;
 	y1 = ym + a * (x1 - xm);
 	y2 = ym + a * (x2 - xm);
-	out_tubr(x1, y1 + 4, x2 - x1, y2 - y1, true);
 
 	/* shift the slurs / decorations */
 	ym += 8
@@ -4663,23 +4642,15 @@ function draw_tuplet(s1,
 	}
 
 	if (s1.st == upstaff) {
-		s3 = s1
-		if (s3.type != NOTE) {
-			for (s3 = s3.next; s3 != s2; s3 = s3.next)
-				if (s3.type == NOTE)
-					break
-		}
+		for (s3 = s1; s3.type != NOTE; s3 = s3.next)
+			;
 		y1 = y_get(upstaff, 0, s3.x - 4, 8)
 	} else {
 		y1 = 0
 	}
 	if (s2.st == upstaff) {
-		s3 = s2
-		if (s3.type != NOTE) {
-			for (s3 = s3.prev; s3 != s1; s3 = s3.prev)
-				if (s3.type == NOTE)
-					break
-		}
+		for (s3 = s2; s3.type != NOTE; s3 = s3.prev)
+			;
 		y2 = y_get(upstaff, 0, s3.x - 4, 8)
 	} else {
 		y2 = 0
@@ -4724,7 +4695,6 @@ function draw_tuplet(s1,
 	ym += dy - 10;
 	y1 = ym + a * (x1 - xm);
 	y2 = ym + a * (x2 - xm);
-	out_tubr(x1, y1 + 4, x2 - x1, y2 - y1);
 
 	/* shift the slurs / decorations */
 	ym -= 2
@@ -4742,24 +4712,18 @@ function draw_tuplet(s1,
 	}
     } /* lower voice */
 
-	if (s1.tf[2] == 1)			/* if 'which' == none */
+	if (s1.tf[2] == 1) {			/* if 'which' == none */
+		out_tubr(x1, y1 + 4, x2 - x1, y2 - y1, dir == SL_ABOVE);
 		return
-	yy = .5 * (y1 + y2)
-	if (s1.tf[2] == 0)			/* if 'which' == number */
-		out_bnum(xm, yy, p, true)
-	else
-		out_bnum(xm, yy, p + ':' +  q, true)
-	if (dir == SL_ABOVE) {
-//		yy += 8
-		yy += 9;
-//		if (s3.ymx < yy)
-//			s3.ymx = yy
-		y_set(upstaff, true, xm - 3, 6, yy)
-	} else {
-//		if (s3.ymn > yy)
-//			s3.ymn = yy
-		y_set(upstaff, false, xm - 3, 6, yy)
 	}
+	out_tubrn(x1, y1, x2 - x1, y2 - y1, dir == SL_ABOVE,
+		s1.tf[2] == 0 ? p.toString() : p + ':' +  q);
+
+	yy = .5 * (y1 + y2)
+	if (dir == SL_ABOVE)
+		y_set(upstaff, true, xm - 3, 6, yy + 9)
+	else
+		y_set(upstaff, false, xm - 3, 6, yy)
 }
 
 /* -- draw the ties between two notes/chords -- */
@@ -6433,6 +6397,7 @@ var posval = {
 	down: SL_BELOW,
 	hidden: SL_HIDDEN,
 	opposite: SL_HIDDEN,
+	under: SL_BELOW,
 	up: SL_ABOVE
 }
 
@@ -7176,7 +7141,6 @@ function tosvg(in_fname,		// file name
 		blk_flush();
 		parse.state = 0;		// file header
 		cfmt = cfmt_sav;
-		set_posx();
 		info = info_sav;
 		char_tb = char_tb_sav;
 		glovar = glovar_sav;
@@ -7184,6 +7148,8 @@ function tosvg(in_fname,		// file name
 		mac = mac_sav;
 		maci = maci_sav;
 		init_tune()
+		img.chg = true;
+		set_page();
 	} // end_tune()
 
 	// initialize
@@ -7792,10 +7758,25 @@ function set_acc_shft() {
 	}
 }
 
+// link a symbol before an other one
+function lkvsym(s, next) {	// voice linkage
+	s.next = next;
+	s.prev = next.prev
+	if (s.prev)
+		s.prev.next = s
+	else
+		s.p_v.sym = s;
+	next.prev = s
+}
+function lktsym(s, next) {	// time linkage
+	s.ts_next = next;
+	s.ts_prev = next.ts_prev;
+	s.ts_prev.ts_next = s;
+	next.ts_prev = s
+}
+
 /* -- unlink a symbol -- */
 function unlksym(s) {
-	var g
-
 	if (s.next)
 		s.next.prev = s.prev
 	if (s.prev)
@@ -8015,17 +7996,10 @@ function insert_clef(s, clef_type, clef_line) {
 
 	/* link in time */
 	while (!s.seqst)
-		s = s.ts_prev
-//	if (!s.ts_prev || s.ts_prev.type != CLEF)
-	if (s.ts_prev.type != CLEF)
-		new_s.seqst = true;
-	new_s.ts_prev = s.ts_prev;
-//	if (new_s.ts_prev)
-		new_s.ts_prev.ts_next = new_s;
-//	else
-//		tsfirst = new_s
-	new_s.ts_next = s;
-	s.ts_prev = new_s
+		s = s.ts_prev;
+	lktsym(new_s, s)
+	if (new_s.ts_prev.type != CLEF)
+		new_s.seqst = true
 	return new_s
 }
 
@@ -8709,7 +8683,11 @@ function add_end_bar(s) {
 		dur: 0,
 		seqst: true,
 		invis: true,
-		time: s.time + s.dur
+		time: s.time + s.dur,
+		nhd: 0,
+		notes: [{
+			pit: s.notes[0].pit
+		}]
 //,wl:0,wr:0
 	}
 }
@@ -9008,10 +8986,7 @@ function custos_add(s) {
 	new_s = sym_add(p_voice, CUSTOS);
 	new_s.next = s;
 	s.prev = new_s;
-	new_s.ts_prev = s.ts_prev;
-	new_s.ts_prev.ts_next = new_s;
-	new_s.ts_next = s;
-	s.ts_prev = new_s;
+	lktsym(new_s, s);
 
 	new_s.seqst = true;
 	new_s.shrink = s.shrink
@@ -10254,12 +10229,9 @@ function new_sym(type, p_voice,
 	s.prev = p_voice.last_sym;
 	p_voice.last_sym = s;
 
-	s.ts_next = last_s;
-	s.ts_prev = last_s.ts_prev;
-	s.ts_prev.ts_next = s
+	lktsym(s, last_s)
 	if (s.ts_prev.type != type)
-		s.seqst = true;
-	last_s.ts_prev = s
+		s.seqst = true
 	if (last_s.type == type && s.v != last_s.v) {
 		delete last_s.seqst;
 		last_s.shrink = 0
@@ -10412,18 +10384,20 @@ function init_music_line() {
 			continue
 		}
 
-		s = new_sym(BAR, p_voice, last_s);
-		s.istart = s2.istart;
-		s.iend = s2.iend;
-		s.bar_type = s2.bar_type
-		if (s2.invis)
-			s.invis = true
-		if (s2.norepbra)
-			s.norepbra = true;
-		s.text = s2.text;
-		s.a_gch = s2.a_gch
-		if (s2.rbstart)
-			s.rbstart = s2.rbstart
+		s2.next = p_voice.last_sym.next
+		if (s2.next)
+			s2.next.prev = s2;
+		p_voice.last_sym.next = s2;
+		s2.prev = p_voice.last_sym;
+		p_voice.last_sym = s2;
+		lktsym(s2, last_s);
+		s2.time = last_s.time
+		if (s2.ts_prev.type != s2.type)
+			s2.seqst = true;
+		if (last_s.type == s2.type && s2.v != last_s.v) {
+			delete last_s.seqst;
+			last_s.shrink = 0
+		}
 	}
 
 	/* if initialization of a new music line, compute the spacing,
@@ -15889,20 +15863,7 @@ var glyphs = {
 		-2 -2.5 -2 2.5 -2 -2.5 -2 2.5"/>\n\
 	<path class="stroke" d="m3.5 0l5 -7"/>\n\
 </g>',
-  oct: '<text id="oct" style="font:12px serif">8</text>',
-//  pltr: '<pattern id="pltr" width="6" height="10" y="5"\n\
-//	patternUnits="userSpaceOnUse" viewBox="0 -5 6 5">\n\
-//	<path fill="currentColor" stroke="none"\n\
-//		d="m0 -.4c2 -1.5 3.4 -1.9 3.9 .4\n\
-//		0.2 .8 .7 .7 2.1 -.4\n\
-//		v0.8c-2 1.5 -3.4 1.9 -3.9 -.4\n\
-//		-.2 -.8 -.7 -.7 -2.1 .4z"/>\n\
-//</pattern>',
-  clearbg: '<filter id="clearbg">\n\
-	<feComposite in="SourceGraphic" result="comp"/>\n\
-	<feFlood flood-color="white" result="flood"/>\n\
-	<feMerge><feMergeNode in="flood"/><feMergeNode in="comp"/></feMerge>\n\
-</filter>'
+  oct: '<text id="oct" style="font:12px serif">8</text>'
 }
 
 // mark a glyph as used and add it in <defs>
@@ -16243,17 +16204,10 @@ function out_bar(x, y, h, dotted) {
 		'"/>\n')
 }
 // tuplet value - the staves are not defined
-function out_bnum(x, y, str,
-		  erase) {	// erase under the value
-	if (erase) {
-		def_use('clearbg');
-		erase = ' filter="url(#clearbg)"'
-	} else {
-		erase = ''
-	}
+function out_bnum(x, y, str) {
 	out_XYAB('<text style="font:italic 12px serif"\n\
-	x="X" y="Y" text-anchor="middle"B>A</text>\n',
-		x, y, str.toString(), erase)
+	x="X" y="Y" text-anchor="middle">A</text>\n',
+		x, y, str.toString())
 }
 // staff system brace
 function out_brace(x, y, h) {
@@ -16429,6 +16383,30 @@ function out_tubr(x, y, dx, dy, up) {
 	output.push('v' + h.toFixed(2) +
 		'l' + dx.toFixed(2) + ' ' + (-dy).toFixed(2) +
 		'v' + (-h).toFixed(2) + '"/>\n')
+}
+// tuplet bracket with number - the staves are not defined
+function out_tubrn(x, y, dx, dy, up, str) {
+    var	sw = str.length * 10,
+	h = up ? -3 : 3;
+
+	dx /= stv_g.scale;
+	out_XYAB('<text style="font:italic 12px serif"\n\
+	x="X" y="Y" text-anchor="middle">A</text>\n',
+		x + dx / 2, y + dy / 2, str);
+
+	if (!up)
+		y += 6;
+	output.push('<path class="stroke" d="m');
+	out_sxsy(x, ' ', y);
+	output.push('v' + h.toFixed(2) +
+		'm' + dx.toFixed(2) + ' ' + (-dy).toFixed(2) +
+		'v' + (-h).toFixed(2) + '"/>\n')
+	output.push('<path class="stroke" stroke-dasharray="' +
+		((dx - sw) / 2).toFixed(2) + ' ' + sw.toFixed(2) +
+		'" d="m');
+	out_sxsy(x, ' ', y - h);
+	output.push('l' + dx.toFixed(2) + ' ' + (-dy).toFixed(2) + '"/>\n')
+
 }
 // underscore line
 function out_wln(x, y, w) {
@@ -20366,7 +20344,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.0-9-geee5e5e (2017-11-08)
+// json-1.js for abc2svg-1.15.0-15-g2844008 (2017-11-13)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20514,7 +20492,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.0-9-geee5e5e (2017-11-08)
+// midi-1.js for abc2svg-1.15.0-15-g2844008 (2017-11-13)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20714,7 +20692,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.0-9-geee5e5e (2017-11-08)
+// play-1.js for abc2svg-1.15.0-15-g2844008 (2017-11-13)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
