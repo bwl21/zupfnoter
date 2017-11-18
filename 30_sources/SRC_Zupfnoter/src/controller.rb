@@ -133,8 +133,6 @@ class Controller
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
 
 
-
-
     $conf        = Confstack.new(nil)
     $conf.strict = false
     $conf.push(_init_conf)
@@ -234,9 +232,9 @@ class Controller
 
   # this method invokes the system conumers
   def call_consumers(clazz)
-    @systemstatus_consumers = {systemstatus: [
-                                                 lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
-                                             ],
+    @systemstatus_consumers = {systemstatus:  [
+                                                  lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
+                                              ],
                                statusline:    [],
                                error_alert:   [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
                                play_start:    [lambda {`update_play_w2ui('start')`}],
@@ -245,7 +243,7 @@ class Controller
                                disable_save:  [lambda {`disable_save();`}],
                                enable_save:   [lambda {`enable_save();`}],
                                before_open:   [lambda {`before_open()`}],
-                               extracts:     [lambda {@extracts.each {|entry|
+                               extracts:      [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})`}
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
@@ -758,8 +756,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       @tune_preview_printer.scroll_into_view(elements.first)
 
       # scroll in harp preview
-      zn_element = elements.select{|i| i.has_class?('znref')}.last
-      @harpnote_preview_printer.scroll_to_element(elements.select{|i| i.has_class?('znref')}.last) if zn_element
+      zn_element = elements.select {|i| i.has_class?('znref')}.last
+      @harpnote_preview_printer.scroll_to_element(elements.select {|i| i.has_class?('znref')}.last) if zn_element
     else
       elements.remove_class('highlightplay')
     end
