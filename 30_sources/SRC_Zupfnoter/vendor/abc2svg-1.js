@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2017-11-18 16:49:53 +0100
+// compiled for Zupfnoter 2017-11-18 21:19:50 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.0-15-g2844008",vdate:"2017-11-13"}
+var abc2svg={version:"1.15.0-18-g216d084",vdate:"2017-11-18"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -4535,7 +4535,7 @@ function draw_tuplet(s1,
 	x1 = s1.x - 4;
 	y1 = 24
 	if (s1.st == upstaff) {
-		for (s3 = s1; s3.type != NOTE; s3 = s3.next)
+		for (s3 = s1; !s3.dur; s3 = s3.next)
 			;
 		ym = y_get(upstaff, 1, s3.x - 4, 8)
 		if (ym > y1)
@@ -4545,7 +4545,7 @@ function draw_tuplet(s1,
 	}
 	y2 = 24
 	if (s2.st == upstaff) {
-		for (s3 = s2; s3.type != NOTE; s3 = s3.prev)
+		for (s3 = s2; !s3.dur; s3 = s3.prev)
 			;
 		ym = y_get(upstaff, 1, s3.x - 4, 8)
 		if (ym > y2)
@@ -4642,14 +4642,14 @@ function draw_tuplet(s1,
 	}
 
 	if (s1.st == upstaff) {
-		for (s3 = s1; s3.type != NOTE; s3 = s3.next)
+		for (s3 = s1; !s3.dur; s3 = s3.next)
 			;
 		y1 = y_get(upstaff, 0, s3.x - 4, 8)
 	} else {
 		y1 = 0
 	}
 	if (s2.st == upstaff) {
-		for (s3 = s2; s3.type != NOTE; s3 = s3.prev)
+		for (s3 = s2; !s3.dur; s3 = s3.prev)
 			;
 		y2 = y_get(upstaff, 0, s3.x - 4, 8)
 	} else {
@@ -6548,10 +6548,14 @@ function set_format(cmd, param, lock) {
 			syntax(1, err_bad_val_s, '%%' + cmd)
 			break
 		}
-		if (cmd == "scale")	// old scale
+		switch (cmd) {
+		case "scale":			// old scale
 			f /= .75
-		else if (cmd == "pagescale")
+		case "pagescale":
 			cmd = "scale";
+			img.chg = true
+			break
+		}
 		cfmt[cmd] = f
 		break
 	case "bstemdown":
@@ -14291,7 +14295,7 @@ var char_tb = [
 ]
 
 function parse_music_line() {
-	var	grace, last_note_sav, a_dcn_sav, no_eol,
+	var	grace, last_note_sav, a_dcn_sav, no_eol, s,
 		tp_a = [], tp,
 		tpn = -1,
 		tp_fact = 1,
@@ -20344,7 +20348,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.0-15-g2844008 (2017-11-13)
+// json-1.js for abc2svg-1.15.0-18-g216d084 (2017-11-18)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20492,7 +20496,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.0-15-g2844008 (2017-11-13)
+// midi-1.js for abc2svg-1.15.0-18-g216d084 (2017-11-18)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20692,7 +20696,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.0-15-g2844008 (2017-11-13)
+// play-1.js for abc2svg-1.15.0-18-g216d084 (2017-11-18)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
