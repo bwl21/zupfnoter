@@ -158,7 +158,6 @@ module Harpnotes
             $log.error("BUG: note without origin #{element.class}")
           end
         end
-        get_notes
         nil
       end
 
@@ -168,9 +167,8 @@ module Harpnotes
 
       # this is experimental and puts the notes in the curren time to the logwindow
       def get_notes
-        `debugger`
         pitches = @selection.map{|i| @voice_elements_by_time[i[:delay]].map{|i| i[:pitch]}}.flatten.uniq.compact
-        $log.info(pitches.map{|i| i%12}.uniq.sort.map{|i| pitch_to_note(i)}.join(", "))
+        pitches.map{|i| i%12}.uniq.sort.map{|i| pitch_to_note(i)}
       end
 
       # this loads a song from the zupfnoter music model.

@@ -777,6 +777,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     endchar   = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(startchar, endchar, @expand_selection)
+      $log.info(@harpnote_player.get_notes.join(","))
     end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
@@ -918,21 +919,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @editor.on_selection_change do |e|
       a              = @editor.get_selection_positions
       selection_info = @editor.get_selection_info
-      ranges         = selection_info[:selection]
-      # see https://github.com/ajaxorg/ace/issues/596
-      # this nly fires if selection really changes
-      unless @editor_selection_range == a
-        $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
-        $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-        unless false # @systemstatus[:harpnotes_dirty]
-          @harpnote_preview_printer.range_highlight(a.first, a.last)
-          @tune_preview_printer.range_highlight(a.first, a.last)
-          @harpnote_player.range_highlight(a.first, a.last)
-        end
-
-        @editor_selection_range = a
-      end
+      #$log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
+      #$log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
+      @harpnote_preview_printer.range_highlight(a.first, a.last)
+      @tune_preview_printer.range_highlight(a.first, a.last)
+      @harpnote_player.range_highlight(a.first, a.last)
     end
 
     @editor.on_cursor_change do |e|
