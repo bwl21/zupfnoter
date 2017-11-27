@@ -840,10 +840,18 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
         vorhandenen Stimmen. Damit kann man einen Eindruck des
         Gesamtklanges gewinnen.
 
+        > **Hinweis:** Dabei wird mit einem Klavierklang gepsielt. Die
+        > Wiedergabe umfasst berücksichtigt auch Wiedrholungen und
+        > variante Enden.
+
     -   wenn eine einzelne Note selektiert ist, spielt Zupfnoter nur die
         Stimmen des aktuell eingestellten Auszugs. Damit kann man einen
         Eindruck gewinnen, wie das Stück klingt, wenn nur einzelne
         Stimmen kombiniert werden (z.B. nur Sopran und Alt).
+
+        > **Hinweis:** Dabei wird mit einem Harfenähnlichen Klang
+        > gespielt. Die Wiedergabe läuft einfch durch, ohne
+        > Wiederholungen und vairante Enden.
 
     -   wenn mehrere Noten selektiert sind, spielt Zupfnoter nur genau
         die selektierten Noten. Damit kann man eine Detailkontrolle

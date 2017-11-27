@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V1.8.0.2-15-gfaecf76
+Version dev/V\_1.8.0\_dev-2-24-ga7d7d06
 
 \begin{verbatim}
 © 2017 https://www.zupfnoter.de
@@ -2033,11 +2033,23 @@ vorläufig.
   \item
     wenn keine Noten selektiert sind, spielt Zupfnoter alle vorhandenen
     Stimmen. Damit kann man einen Eindruck des Gesamtklanges gewinnen.
+
+    \begin{quote}
+    \textbf{Hinweis:} Dabei wird mit einem Klavierklang gepsielt. Die
+    Wiedergabe umfasst berücksichtigt auch Wiedrholungen und variante
+    Enden.
+    \end{quote}
   \item
     wenn eine einzelne Note selektiert ist, spielt Zupfnoter nur die
     Stimmen des aktuell eingestellten Auszugs. Damit kann man einen
     Eindruck gewinnen, wie das Stück klingt, wenn nur einzelne Stimmen
     kombiniert werden (z.B. nur Sopran und Alt).
+
+    \begin{quote}
+    \textbf{Hinweis:} Dabei wird mit einem Harfenähnlichen Klang
+    gespielt. Die Wiedergabe läuft einfch durch, ohne Wiederholungen und
+    vairante Enden.
+    \end{quote}
   \item
     wenn mehrere Noten selektiert sind, spielt Zupfnoter nur genau die
     selektierten Noten. Damit kann man eine Detailkontrolle erreichen.
@@ -6287,146 +6299,70 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 \section{Änderungshistorie von
 Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
 
-\subsection{V 1.7.0 2017-09-08}\label{v-1.7.0-2017-09-08}
+\subsection{v 1.8 work in progress}\label{v-1.8-work-in-progress}
 
-\subsubsection{Fehlerkorrekturen}\label{fehlerkorrekturen}
+\subsubsection{fix}\label{fix}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Tuplet-Linien sind jetzt korrekt in pdf (\#139)
+  print preview no longer clears unsave indicator \#176
 \item
-  keine unerwarteten Subflowlinien mehr zu Unisons (\#140)
+  update to abc2svg 1.14
 \item
-  kleine Noten sind nun auch korrekt (\#143)
+  crash when bad value in transpose
 \item
-  Wiedergabe spielt nun bis zum Ende der gebundenen Noten (\#147)
+  bad pitches after ties and repeat
 \item
-  Dekorationen funktionieren nun auch bei Pausen (\#127)
+  the accidentals must be reset on a measure bar
 \item
-  shift funktioniert jetzt auch auf unisons (\#107)
+  improved fermata symbol in pdf \#178
 \item
-  abc2svg-Einstellungen nicht mehr nötig (aus Template entfernt) (\#71)
+  crash when config references a non existing voice \#179
 \item
-  BWC Voreinstellung für ``filenamepart'' ist jetzt wie in 1.5 (\#155)
+  improved localization \#182
 \item
-  Config-Formular wird nach dem Laden eines anderen Stückes aktualisiert
-  (\#156)
+  Error window now has an ok button \#183
 \item
-  Drucker offset wird nicht mehr zerstört, wenn der Benutzer nur einen
-  Wert der geforderten zwei Werten (\#157) eingibt.
+  improve Message ``no ABC found'' \#184
 \item
-  Dropbox-Pfad kann jetzt auch Ziffern haben (\#162)
+  Improve error reporting in context of dropbox \#185
 \item
-  Druckerfenster zeigt pdf auf Chrome 60 wieder an (\#160)
+  no longer crash with malformed K \#172
 \item
-  jetzt werden auch auf Flowline zu unsichtbaren Pausen unterdrückt
-  (\#166)
+  improve imports of xml with non playable parts \#187
 \item
-  Pausen über mehrere Takte funktionieren nun \texttt{Z} (\#166)
-\item
-  vt und vr vordefinierte Annotationen korrigiert
-\item
-  BWC: Tuplet-Konfiguration in Notebounds verschoben (\#168)
-\item
-  Mehrere Anmerkungen an einer Note können jetzt einzeln gezogen werden
-  (\#170)
-\item
-  BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-  mehr angezeigt (\#174)
-\item
-  BWC: Layoutlines ist nun die Kombination von Stimmen und Layoutlines.
-  (\#175)
+  fixed ``blues with accidentals'' \#188
 \end{itemize}
 
-\subsubsection{Erweiterungen}\label{erweiterungen}
+\subsubsection{enhancement}\label{enhancement}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Sprunglinien können jetzt per Drag \& Drop konfiguriert werden (\#136)
+  now have menu to import from local disc \#177\\
 \item
-  Tuplets können jetzt per Drag \& Drop modelliert werden (\#138)
+  support for 25 string bass harp \#180
 \item
-  verbesserte Geschwindigkeit der Konfiguration (\#115)
+  strip =duration on meter ``M:3/4 4/4 =3/4'' \#181
 \item
-  verbesserte Geschwindigkeit der Harfennote-Vorschau (\#87)
+  initial support to work with file templates \#71
 \item
-  verbesserte Geschwindigkeit des Vertikalpackers (\#87, \#89)
+  No initial render after a crash in previous session \#103
 \item
-  Editor klappt Konfigurationsparameter standardmäßig zu (\#144)
+  now we have another player, with sampled sounds \#126
 \item
-  man kann jetzt einee Sortmark auf den Bogen drucken (\#145)
+  the new player also can play with repeats and vertals \#126
 \item
-  der Anker von Sprunglinien kann nun konfiguriert werden (\#150)
+  player/selection now highlight in a different style \#126
 \item
-  Variantenteile jetzt in Grau (\#151)
+  Improved toggle of play button \#126
 \item
-  Menü unterstützt nun Extrakt 0 bis Extrakt 5 (\#153)
+  we now can change the playback speed on the fly \#126
 \item
-  Menü zeigt jetzt auch Titel, Auszugsnummer und Ausgabesatatus von
-  Auszügen an (\#153)
+  rearranged layaout form \#189
 \item
-  Strg-Alt' F' schaltet jetzt Harfenvorschau um
-\item
-  Menü ``Konfiguration bearbeiten'' neu geordnet, um den
-  Konfigurations-Workflow zu verbessern (\#171)
-\item
-  jetzt kann die tilde als festes Leerzeichen in Liedtexten, Saitnnamen,
-  Anmerkungen etc. verwendet werden (\#113)
-\item
-  die Tilde kann nun maskiert werden
-  \texttt{\textbackslash{}\textbackslash{}\textasciitilde{}}, so dass
-  sie als Tile ausgegeben wird (\#113)
-\end{itemize}
-
-\subsubsection{Interne Änderungen}\label{interne-uxe4nderungen}
-
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  aktualisiert auf abc2svg 1.13.7 (\#163)
-\end{itemize}
-
-\subsubsection{Experimentelle Funktion}\label{experimentelle-funktion}
-
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  kollisionsbasierten Packer (\#89)
-\item
-  Validierung der Konfigurationsparameter (\#85) mit Ergebnisformular
-  implementiert
-\item
-  Form der Flußlinien konfigurierbar (\#167)
-\end{itemize}
-
-\subsubsection{Inkompatibile Änderungen zur
-Vorversion}\label{inkompatibile-uxe4nderungen-zur-vorversion}
-
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  Layoutlines ist nun die Kombination von Stimmen und Layoutlines. Es
-  ist nicht mehr möglich, Stimmen anzuzeigen, ohne sie im Layout zu
-  berücksichtigen. (\#175)
-\item
-  Default für ``filenamepart'' ist jetzt wie in 1.5 (\#155)
-\item
-  Tuplet-Konfiguration ist jetzt unter' notebound': muss also neu
-  gemacht werden (\#168)
-\item
-  BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-  mehr angezeigt (\#174)
-\end{itemize}
-
-\subsubsection{bekannte Probleme}\label{bekannte-probleme}
-
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  verschieben von Sprunglinien bei Saitenspiel funktioniert nicht
-  richtig (\#158)
+  show notes in the current selection for harmonization \#190
 \end{itemize}
 
 \subsection{V 1.6.1 2017-05-17}\label{v-1.6.1-2017-05-17}
@@ -6560,7 +6496,7 @@ issues}\label{backward-compatibility-issues}
   in configuration \#95
 \end{itemize}
 
-\subsubsection{Fix}\label{fix}
+\subsubsection{Fix}\label{fix-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6596,7 +6532,7 @@ issues}\label{backward-compatibility-issues}
   Now yield 1.50 instead of 1.49999999 to minimize rounding effects \#95
 \end{itemize}
 
-\subsubsection{Enhancement}\label{enhancement}
+\subsubsection{Enhancement}\label{enhancement-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6628,7 +6564,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2}
 
-\subsubsection{Fix}\label{fix-1}
+\subsubsection{Fix}\label{fix-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6644,7 +6580,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2-1}
 
-\subsubsection{Fix}\label{fix-2}
+\subsubsection{Fix}\label{fix-3}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6652,7 +6588,7 @@ issues}\label{backward-compatibility-issues}
   remove copyright note from sheet annotation \#69
 \end{itemize}
 
-\subsubsection{enhancement}\label{enhancement-1}
+\subsubsection{enhancement}\label{enhancement-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
