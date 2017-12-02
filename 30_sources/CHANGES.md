@@ -1,3 +1,4 @@
+
 # v 1.8
 
 ## fix
@@ -8,11 +9,39 @@
   * bad pitches after ties and repeat
   * the accidentals must be reset on a measure bar
 * improved fermata symbol in pdf #178
+* crash when config references a non existing voice #179
+* improved localization #182
+* Error window now has an ok button #183
+* improve Message "no ABC found"  #184 
+* Improve error reporting in context of dropbox #185
+* no longer crash with malformed K #172
+* improve imports of xml with non playable parts #187
+* fixed "blues with accidentals" #188
   
 ## enhancement
 
 * now have menu to import from local disc #177  
+* support for 25 string bass harp #180
+* strip =duration on meter "M:3/4 4/4 =3/4" #181
+* initial support to work with file templates #71
+* No initial render after a crash in previous session #103
+* now we have another player, with sampled sounds #126
+* the new player also can play with repeats and vertals #126
+* player/selection now highlight in a different style #126
+* Improved toggle of play button #126
+* we now can change the playback speed on the fly #126
+* rearranged layaout form #189
+* show notes in the current selection for harmonization #190
   
+# v 1.7.1
+
+## fix
+
+* improved fermata symbol in pdf #178
+* turnoff flowconf edit for pdf. This avoids noise around very short vertical flowlines #167 
+* print preview no longer clears unsaved indicator #176
+
+
 # v 1.7
 
 ## fix

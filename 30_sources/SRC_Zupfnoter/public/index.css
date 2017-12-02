@@ -191,6 +191,10 @@ rect.highlight {
   fill: red;
   fill-opacity: 0.2; }
 
+rect.highlightplay {
+  fill: blue !important;
+  fill-opacity: 0.5; }
+
 .zn-nilfield {
   border: 1px solid #b5b4b6 !important;
   background-color: #b5b4b6 !important; }
@@ -220,6 +224,9 @@ rect.highlight {
 
 .w2ui-button .active {
   background-color: #ffedf2; }
+
+.znconfig-button {
+  padding: 1px; }
 
 #statusbar-layout .w2ui-tb-caption {
   vertical-align: top; }

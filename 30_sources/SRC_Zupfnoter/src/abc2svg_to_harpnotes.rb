@@ -12,6 +12,7 @@ module Harpnotes
 
       def initialize
         super
+        @abcplay           = nil # this is an instance of abcplay which we need to pass throug to load the player from abc
         @abc_code          = nil
         @previous_new_part = []
 
@@ -30,9 +31,11 @@ module Harpnotes
 
         @info_fields = get_metadata(@abc_code)
 
-        abc_parser = ABC2SVG::Abc2Svg.new(nil, {mode: :model}) # first argument is the container for SVG
-        @abc_model = abc_parser.get_abcmodel(zupfnoter_abc)
-        raise "no ABC found" if @abc_model.nil?
+        abc_parser                    = ABC2SVG::Abc2Svg.new(nil, {mode: :model}) # first argument is the container for SVG
+        abc_parser.abcplay            = @abcplay if @abcplay
+        @abc_model, @player_model_abc = abc_parser.get_abcmodel(zupfnoter_abc)
+
+        raise I18n.t("no suitable ABC found") if @abc_model.nil?
         _make_metadata
         result = _transform_voices
 
@@ -48,7 +51,8 @@ module Harpnotes
       def _make_harpnote_options
         result = {lyrics: {text: @info_fields[:W]}}
 
-        result[:print] = $conf.get("produce").map do |i|
+        result[:template] = $conf.get('template')
+        result[:print]    = $conf.get("produce").map do |i|
           title = $conf.get("extract.#{i}.title")
           if title
             filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
@@ -225,9 +229,9 @@ module Harpnotes
 
           unless @score_statements.last[:sy][:voices][num_voice_index- 1][:range] == -1
             $log.error("#{I18n.t("Empty voice")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}")
-                       # charpos_to_line_column(@score_statements.last[:istart] -1 ),
-                       # charpos_to_line_column(@score_statements.last[:iend] -1 )
-                       # )
+            # charpos_to_line_column(@score_statements.last[:istart] -1 ),
+            # charpos_to_line_column(@score_statements.last[:iend] -1 )
+            # )
           end
           result = nil
         end
@@ -624,15 +628,15 @@ module Harpnotes
       end
 
       def _transform_grace
-        nil # 'debugger'
+        nil #
       end
 
       def _transform_format(voice_element)
-        nil #`debugger`
+        nil
       end
 
       def _transform_key(voice_element)
-        nil #`debugger`
+        nil
       end
 
       def _transform_meter(voice_element)
@@ -642,8 +646,12 @@ module Harpnotes
         nil
       end
 
+      def _transform_block(voice_element)
+        nil
+      end
+
       def _transform_clef(voice_element)
-        nil #`debugger`
+        nil 
       end
 
       def _make_variant_ending_jumps(voice_id)
@@ -717,7 +725,7 @@ module Harpnotes
         result = []
         if entity.is_a? Harpnotes::Music::Playable
           chords =_extract_chord_lines(entity.origin[:raw])
-          chords.each_with_index  do |name, index|
+          chords.each_with_index do |name, index|
 
             match = name.match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
@@ -745,7 +753,7 @@ module Harpnotes
               if annotation
                 notepos  = [pos_x, pos_y].map {|p| p.to_f} if pos_x
                 position = notepos || annotation[:pos] || $conf['defaults.notebound.annotation.pos']
-                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid  # todo: not sure if we really nedd this if; maybe it was before we compute znid by time
+                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid # todo: not sure if we really nedd this if; maybe it was before we compute znid by time
                 conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.#{index}.pos" if index > 0
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {style: annotation[:style], pos: position, text: annotation[:text]}, conf_key)
               end

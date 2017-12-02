@@ -1529,6 +1529,27 @@ Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
         "repeatstart": "next"
           
 
+## `template` - Dateivorlate {#template}
+
+TODO: Helptext für template einfügen
+
+        "template": {"filebase": "-no-template-", "title": "- no template -"}
+          
+
+## `template.filebase` - Dateibasis {#template.filebase}
+
+TODO: Helptext für template.filebase einfügen
+
+        "filebase": "-no-template-"
+          
+
+## `template.title` - Titel {#template.title}
+
+TODO: Helptext für template.title einfügen
+
+        "title": "- no template -"
+          
+
 ## `templates` - Vorlagen {#templates}
 
 Dieser Parameter kann nicht vom Benutzer gesetzt werden sondern liefert

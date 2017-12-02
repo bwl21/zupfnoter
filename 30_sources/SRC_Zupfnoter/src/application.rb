@@ -13,7 +13,6 @@ require 'abc2svg_to_harpnotes'
 #require 'opal-raphael'
 require 'opal-jspdf'
 require 'opal-jszip'
-require 'opal-musicaljs'
 require 'svg_engine'
 require 'pdf_engine'
 require 'i18n'
@@ -34,6 +33,7 @@ require 'user-interface.js'
 require 'config-form'
 require 'snippet_editor'
 require 'abc2svg-1.js'
+require 'xml2abc.js'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"

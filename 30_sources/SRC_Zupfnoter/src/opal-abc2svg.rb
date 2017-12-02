@@ -16,15 +16,18 @@ module ABC2SVG
   #
   class Abc2Svg
 
+    attr_accessor :abcplay  # this is needed to produce player_model_abc
 
     def initialize(div, options={mode: :svg})
-      @on_select           = lambda { |element|}
+      @on_select           = lambda {|element|}
       @printer             = div
       @svgbuf              = []
       @abc_source          = ''
       @element_to_position = {} # mapping svg elements to position
-      @abc_model           = nil
+      @abc_model           = nil # the model being transformed to harpnotes
+      @player_model        = [] # the model to play the entire stuff
       @object_map          = {} # mapping objects to their Id
+      @abcplay              = nil; #used to extract the player_model
 
       @user = {img_out:     nil,
                errmsg:      nil,
@@ -74,7 +77,7 @@ module ABC2SVG
           $log.error("BUG: unsupported mode for abc2svg")
       end
 
-      @root = %x{new Abc(#{@user.to_n})}
+      @root    = %x{new Abc(#{@user.to_n})}
       defaults = %Q{
 I:titletrim 0
 I:measurenb 1
@@ -96,13 +99,16 @@ I:staffnonote 2
       nil
     end
 
+    def scroll_into_view(element)
+      %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
+    end
+
     def range_highlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
         element = Element.find("##{id}")
+        scroll_into_view(element)
 
-        %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
-        classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
-        element.attr('class', classes)
+        element.add_class('highlight')
       end
       nil
     end
@@ -110,13 +116,12 @@ I:staffnonote 2
     def range_unhighlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
         foo     = Element.find("##{id}")
-        classes = foo.attr('class').gsub("highlight", '')
-        foo.attr('class', classes)
+        foo.remove_class('highlight')
       end
     end
 
     def unhighlight_all()
-      Element.find("##{@printer.id} .highlight").attr('class', 'abcref')
+      Element.find("##{@printer.id} .highlight").remove_class('highlight')# .attr('class', 'abcref')
     end
 
 
@@ -146,7 +151,7 @@ I:staffnonote 2
 
     def get_abcmodel(abc_code)
       %x{#{@root}.tosvg("abc", #{abc_code})};
-      @abc_model
+      [@abc_model, @player_model]
     end
 
     # todo: mke private or even remove?
@@ -182,14 +187,17 @@ I:staffnonote 2
     end
 
 
+    # this method returns a list of ids of elements which
+    # touch the given range [from, to]
     def get_elements_by_range(from, to)
-      range  = [from, to].sort
+      range  = [from, to].sort # get sorted interval for select range [lower, upper]
       result = []
-      @element_to_position.each { |k, value|
-        noterange = [:startChar, :endChar].map { |c| value[c] }.sort
+      @element_to_position.each {|k, value|
+        noterange = [:startChar, :endChar].map {|c| value[c]}.sort # [get sorted interval for note [lower, upper]]
 
+        # check if range and noterange overlap each other
         if (range.first - noterange.last) * (noterange.first - range.last) > 0
-          result.push(k)
+          result.push(k) # push the id of the element
         end
       }
       result
@@ -209,6 +217,8 @@ I:staffnonote 2
           abcmidi.add(#{tsfirst}, #{voice_tb});
           to_json = new AbcJSON();
           #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
+          #{@abcplay}.add(#{tsfirst}, #{voice_tb})
+          #{@player_model} = #{@abcplay}.clear()
       }
 
       @abc_model = JSON.parse(json_model)
@@ -224,7 +234,7 @@ I:staffnonote 2
     # by abc2svg in case of errors
     def _get_charpos(abc_source, line, column)
       lines  = @abc_source.split("\n")
-      result = lines[0 .. line].inject(0) { |r, v| r += v.length }
+      result = lines[0 .. line].inject(0) {|r, v| r += v.length}
       result + column
     end
 
@@ -244,7 +254,7 @@ I:staffnonote 2
           // close the container
           #{@root}.out_svg('</g>\n');
           // create a rectangle
-          #{@root}.out_svg('<rect class="abcref" id="' + #{id} +'" x="');
+          #{@root}.out_svg('<rect class="abcref _' + #{start_offset} + '_" id="' + #{id} +'" x="');
           #{@root}.out_sxsy(#{x}, '" y="', #{y});
           #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
             '" height="' + #{h}.toFixed(2) + '"/>\n')

@@ -326,7 +326,7 @@ class ConfstackEditor
           FloatPair       => ['pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset', 'jumpline_anchor'],
           IntegerList     => ['a4_pages', 'voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
           Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow', 'PITCH_OFFSET'],
-          OneLineString   => ['title', 'filenamepart', 'url'],
+          OneLineString   => ['title', 'filenamepart', 'url', 'filebase'],
           MultiLineString => ['text'],
           Boolean         => ['limit_a3', 'autopos', 'show_border', 'nonflowrest', "show", "fill", "grid"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f', "X_SPACING", "X_OFFSET"],

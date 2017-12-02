@@ -55,9 +55,17 @@ desc "Update abc2svg from git clone"
 task :updateAbc2svgDev do
   abc2svgrepo = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_file = "abc2svg-1.js"
-  sources      = [abc2svg_file, "json-1.js", "midi-1.js"]
+  sources      = [abc2svg_file, "json-1.js", "midi-1.js", "play-1.js"]
   cd abc2svgrepo do
     sources.each {|f| sh  " rm #{f} ; NOMIN=1 ./ninja #{f}"}
+  end
+
+  ["de", "en"].each do |lang|
+    File.open(%Q{localization/abc2svg_#{lang}-#{lang}.json}, "w") do |f|
+      f.puts ("{")
+      f.puts File.read(%Q{#{abc2svgrepo}/err-#{lang}.js}).gsub("user.textrans = ", %Q{"phrases":})
+      f.puts ("}")
+    end
   end
 
   File.open("#{VENDORFOLDER}/#{abc2svg_file}", "w") do |f|
@@ -67,10 +75,13 @@ task :updateAbc2svgDev do
       f.puts File.read("#{abc2svgrepo}/#{s}")
     end
   end
+
+
 end
 
 desc "Build our app to #{ZUPFNOTER_JS}"
 task :build => [:buildConfigDoc, :updateLocales] do
+  git_describe
   #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.append_path "../vendor"
@@ -113,6 +124,12 @@ task :server do
   end
 end
 
+def git_describe
+  v = File.readlines("version.rb").map{|l|l.strip}
+  git_version = %x{git describe}.strip.gsub(/release|"xxx"\//, "")
+  v[0] = %Q{VERSION = "#{git_version}"}
+  File.open("version.rb", "w"){|f| f.puts v.join("\n")}
+end
 
 desc "Build a distribution for the server"
 task :deploy => [:build] do
@@ -120,7 +137,7 @@ task :deploy => [:build] do
 
   # prepare all requested folders
   # todo:this is not dry - see buildDesktop
-  ["public/icons", "public/demos", "public/locale",
+  ["public/icons", "public/demos", "public/locale", "public/soundfont/FluidR3_GM",
    "vendor/ace", "vendor/ace/snippets", "vendor/w2ui", "vendor/w2ui/dist",
    "vendor/font-awesome/css", "vendor/font-awesome/fonts",
   ].each do |d|
@@ -153,6 +170,10 @@ task :deploy => [:build] do
 
   Dir["../public/*.pdf"].each do |f|
     cp f, "#{OUTFOLDER}/webserver/public/#{File.basename(f)}"
+  end
+
+  Dir["../public/soundfont/FluidR3_GM/*"].each do |f|
+    cp f, "#{OUTFOLDER}/webserver/public/soundfont/FluidR3_GM/#{File.basename(f)}"
   end
 
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"

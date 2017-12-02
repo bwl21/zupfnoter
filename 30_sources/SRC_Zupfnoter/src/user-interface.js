@@ -834,28 +834,28 @@ function init_w2ui(uicontroller) {
       {
         type: 'button',
         id: 'sb_cursorposition',
-        text: '<div style="padding: 0px !important;"><span class="editor-status-position" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="editor-status-position"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_tokeninfo',
         size: '50px',
-        text: '<div style="padding: 0px !important;"><span class="editor-status-tokeninfo" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="editor-status-tokeninfo"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_dropbox-status',
-        text: '<div style="padding: 0px !important;"><span class="dropbox-status" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="dropbox-status"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_loglevel',
-        text: '<div style="padding: 0px !important;"><span class="sb-loglevel" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="sb-loglevel"></span></div>'
       },
       {
         type: 'button',
         id: 'sb_mode',
-        text: '<div style="padding: 0px !important;"><span class="sb-mode" "></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="sb-mode"></span></div>'
       },
       {type: 'spacer'},
       {
@@ -1025,7 +1025,7 @@ function update_systemstatus_w2ui(systemstatus) {
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
-  $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
+ // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
   if (systemstatus.mode == 'demo') {
     w2ui.layout_top_toolbar.disable('tb_file')
@@ -1056,7 +1056,13 @@ function update_systemstatus_w2ui(systemstatus) {
 }
 
 function update_error_status_w2ui(errors) {
-  w2popup.open({title: w2utils.lang("Errors occurred"), body: errors, width: 700})
+  w2popup.open(
+    {
+      title: w2utils.lang("Errors occurred"),
+      body: errors,
+      width: 700,
+      buttons   : '<button class="w2ui-btn" onclick="w2popup.close();">OK</button> '
+  })
 }
 
 function update_editor_status_w2ui(editorstatus) {
@@ -1096,7 +1102,13 @@ function update_play_w2ui(status) {
   if (status == "start") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon: "fa fa-stop"})
   }
+  else if (status == "stopping"){
+    w2ui.layout_top_toolbar.set('tbPlay', {text: "...", icon: "fa fa-stop-circle-o"})
+
+    w2ui.layout_top_toolbar.disable('tbPlay')
+  }
   else {
+    w2ui.layout_top_toolbar.enable('tbPlay')
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Play", icon: "fa fa-play"})
   }
 }

@@ -8,6 +8,7 @@
     "18-strings-b-e": "18 Saiten b-e",
     "2": "2",
     "21-strings-a-f": "21 Saiten a-f",
+    "25-strings-G-g Bass": "25 Saiten G-g Bass",
     "25-strings-g-g": "25 Saiten g-g",
     "3": "3",
     "37-strings-g-g": "37 Saiten g-g",
@@ -26,6 +27,7 @@
     "abc Tutorial": "ABC - Einführung",
     "abc": "ABC-Notation",
     "abc_parser": "abc_parser",
+    "Access token lost; do note use browser back or refresh button in login procedure.": "Zugriffstoken verloren.<br/>Bitte während der login - Prozedur <b>nicht auf Zurück oder Refresh im Brwoser drücken</b>.<br/>Bitte noch einmal Dropbox/Ausloggen, danach mit Dropbox/Einloggen wieder einloggen.",
     "Add a draggable mark": "Verschiebemarke einfügen",
     "Add a Jump": "Sprung einfügen",
     "Add a Jumptarget": "Sprungziel einfügen",
@@ -149,6 +151,7 @@
     "extract": "Auszug",
     "Extract-Annotation": "Auszugsbeschriftung",
     "File": "Datei",
+    "filebase": "Dateibasis",
     "Filename not specified in song add an F: instruction": "Kein Filename angegeben. Bitte füge eine F: - Kopfzeile hinzu",
     "filenamepart": "Filename-Zusatz",
     "Files saved to dropbox": "Dateien in Dropbox gespeichert",
@@ -196,6 +199,7 @@
     "label": "**--label",
     "large view\nto see all details": "große Darstellung\nzur Beurteilung\nvon Details",
     "large": "groß",
+    "last session failed. Did not render. Cleanup ABC, then render manually": "Fehler in letzter Sitzung. Bereinige ABC und drücke [rendern]",
     "layout": "Layout",
     "layout_compact": "Kompaktes Layout",
     "layout_large": "Großes Layout",
@@ -215,7 +219,6 @@
     "Login": "Einloggen",
     "Logout from Dropbox": "bei Dropbox ausloggen",
     "Logout": "Ausloggen",
-    "Lost Access token. This should not happen. Please file a bug report.": "Zugriffstoken verloren. \nDas sollte nicht passieren. Bitte kontaktiere Zupfnoter-Entwicklung\nBitte noch einmal Dropbox/Ausloggen, danach mit Dropbox/Einloggen wieder einloggen.",
     "lyrics": "Liedtexte",
     "Manual": "Benutzerhandbuch",
     "manual_sheet": "Manuelle Vorlage",
@@ -240,6 +243,7 @@
     "New": "Neu",
     "No access token to revoke": "Kein Zugriffstoken vorhanden, das gelöscht werden kann.",
     "no preview available yet": "Noch keine Vorschau verfügbar",
+    "no suitable ABC found": "keine passende ABC Eingabe gefunden",
     "nonflowrest": "Begleitpausen",
     "notebound annotation": "Notenbezogene Beschriftung",
     "notebound": "Notenbezogen",
@@ -370,6 +374,7 @@
     "T05_printed_extracts": "T05 verfügbare Auszüge",
     "T99_do_not_copy": "T99 bitte nicht kopieren",
     "target to jump to": "Sprungziel",
+    "template": "Dateivorlate",
     "templates": "Vorlagen",
     "tempo change not suported by zupfnoter": "Zupfnoter unterstüzt keine Tempoänderungen",
     "Text of annotation": "Text der Notenbeschriftung",
@@ -414,6 +419,7 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
+
 
 
 

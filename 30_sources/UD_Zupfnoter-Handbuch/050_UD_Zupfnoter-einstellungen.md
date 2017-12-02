@@ -62,7 +62,7 @@ TODO: text überarbeiten
     Begleitnoten) [extract.x.synchlines]
 
     Diese Einstellung bestimmt, zwischen welchen Stimmen die
-    Synchronisiationslinien dargestellt werden.
+    Synchronisationslinien dargestellt werden.
 
     **Hinweise:** Synchronisationslinien für Mehrklänge werden immer
     dargestellt.
@@ -73,7 +73,7 @@ TODO: text überarbeiten
     Überschrift des Musikstückes und der Informationsblock separat
     positioniert werden.
 
-    **Hinweis:** durch Veschieben der Objekte mit der Maus wird diese
+    **Hinweis:** durch Verschieben der Objekte mit der Maus wird diese
     Einstellung automatisch eingefügt.
 
 -   **Liedtexte:** (Liedtexte) [extract.x.lyrics]
@@ -140,7 +140,7 @@ spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
 Taktstrich auf den sie sich beziehen.
 
 Zupfnoter-Annotations beginnen mit einem der Zeichen `:`, `@`, `!`, `#`,
-`<`, `>`. Beispielwesie bedeutets `"^>"` dass das Notensymbol in den
+`<`, `>`. Beispielsweise bedeutet `"^>"` dass das Notensymbol in den
 Unterlegnoten nach rechts verschoben werden.
 
 > **Hinweis**: Dieses Zusätze können über Bildschirmmasken komfortabel
@@ -149,7 +149,7 @@ Unterlegnoten nach rechts verschoben werden.
 
 Es gibt folgende Zusätze:
 
--   **`^:`** - Sprungziel: Damit kannst du ein Ziel festelegen zu dem
+-   **`^:`** - Sprungziel: Damit kannst du ein Ziel festlegen zu dem
     eine Sprunglinie gezeichnet werden kann. Damit kannst du beliebige
     Sprünge darstellen.
 
