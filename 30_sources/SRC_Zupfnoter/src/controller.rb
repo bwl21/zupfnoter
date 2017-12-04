@@ -105,7 +105,7 @@ class Controller
                           'en'    => 'en-US',
                           'en-us' => 'en-US'
     }
-    browser_language   = `navigator.language`.downcase
+    browser_language   = `navigator.language`.downcase rescue "de-de"
     zupfnoter_language = languages[browser_language] || 'de-de'
     I18n.locale(zupfnoter_language) if browser_language
 
@@ -1127,12 +1127,4 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 end
 
-Document.ready? do
-  a = Controller.new
-  # provide access to  zupfnoter controller from browser console
-  # to suppert debuggeing
-  Element.find("html").append(%Q{ <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="#{DBX_APIKEY_FULL}"></script>
-})
-  `window.zupfnoter=#{a}`
-end
 
