@@ -1,3 +1,5 @@
+# This module serves for the internationalization
+# note that it highly depends on w2uitils
 module I18n
   def self.t(text)
     if RUBY_ENGINE=='opal'
@@ -52,5 +54,9 @@ module I18n
     end
 
     `w2utils.locale('public/locale/' + #{language} + '.json')`
+  end
+
+  def self.phrases
+    Native(`w2utils.settings.phrases`)
   end
 end

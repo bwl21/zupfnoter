@@ -35,7 +35,7 @@ module ABC2SVG
                annotate:    true,
                page_format: true,
                keep_remark: true,
-               textrans:    Native(`w2utils.settings.phrases`)
+               textrans:    I18n.phrases
       }
 
 
