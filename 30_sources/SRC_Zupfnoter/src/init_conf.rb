@@ -503,3 +503,5 @@ end
 
 DBX_APIKEY_FULL = "zwydv2vbgp30e05"
 DBX_APIKEY_APP  = "xr3zna7wrp75zax"
+
+CONFIG_SEPARATOR = "%%%%zupfnoter.config"
