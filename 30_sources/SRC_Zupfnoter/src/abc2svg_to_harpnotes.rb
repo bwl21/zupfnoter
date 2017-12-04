@@ -31,9 +31,9 @@ module Harpnotes
 
         @info_fields = get_metadata(@abc_code)
 
-        abc_parser                    = ABC2SVG::Abc2Svg.new(nil, {mode: :model}) # first argument is the container for SVG
-        abc_parser.abcplay            = @abcplay if @abcplay
-        @abc_model, @player_model_abc = abc_parser.get_abcmodel(zupfnoter_abc)
+        abc_parser                   = ABC2SVG::Abc2Svg.new(nil, {mode: :model}) # first argument is the container for SVG
+        abc_parser.abcplay           = @abcplay if @abcplay
+        @abc_model, player_model_abc = abc_parser.get_abcmodel(zupfnoter_abc)
 
         raise I18n.t("no suitable ABC found") if @abc_model.nil?
         _make_metadata
@@ -45,7 +45,7 @@ module Harpnotes
         filebase = result.meta_data[:filename]
         $log.error(I18n.t("Filename not specified in song add an F: instruction"), [1, 1]) if filebase.empty?
 
-        result
+        [result, player_model_abc]
       end
 
       def _make_harpnote_options
@@ -90,7 +90,7 @@ module Harpnotes
       def _make_metadata
         key           = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:key])
         o_key         = _get_key_by_accidentals(@abc_model[:voices].first[:voice_properties][:okey])
-        o_key_display =""
+        o_key_display = ""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
         tempo_id = @abc_model[:music_type_ids][:tempo].to_s
@@ -125,8 +125,8 @@ module Harpnotes
         result = @remark_table[voice_element[:time]]
         if result
           unless result.match(/[a-z][a-zA-Z0-9_]*/)
-            start_pos=charpos_to_line_column(voice_element[:istart])
-            end_pos  = charpos_to_line_column(voice_element[:iend])
+            start_pos = charpos_to_line_column(voice_element[:istart])
+            end_pos   = charpos_to_line_column(voice_element[:iend])
             $log.error("illegal character in of [r:] (must be of [a-z][a-z0.9_])", start_pos, end_pos)
             result = nil
           end
@@ -227,7 +227,7 @@ module Harpnotes
         if (result.count == 0)
           num_voice_index = voice_index.gsub("v_", '').to_i
 
-          unless @score_statements.last[:sy][:voices][num_voice_index- 1][:range] == -1
+          unless @score_statements.last[:sy][:voices][num_voice_index - 1][:range] == -1
             $log.error("#{I18n.t("Empty voice")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}")
             # charpos_to_line_column(@score_statements.last[:istart] -1 ),
             # charpos_to_line_column(@score_statements.last[:iend] -1 )
@@ -257,7 +257,7 @@ module Harpnotes
       end
 
       def _bar_is_repetition_end?(type)
-        type =~/^:.*$/
+        type =~ /^:.*$/
       end
 
       def _transform_bar(voice_element, index, voice_index)
@@ -268,7 +268,7 @@ module Harpnotes
         distance = _extract_goto_info_from_bar(voice_element).last[:distance] rescue [-10, 10, 15]
 
         @next_note_marks[:measure]      = true unless voice_element[:invisible]
-        @next_note_marks[:repeat_start] = true if type =~/^.*:$/
+        @next_note_marks[:repeat_start] = true if type =~ /^.*:$/
 
         if voice_element[:rbstart] == 2
           @variant_no                       += 1
@@ -430,7 +430,7 @@ module Harpnotes
         # note that rests do not have slurs in practise
         result.first.slur_starts = _parse_slur(voice_element[:slur_start]).map {|i| _push_slur()}
         amount_of_slur_ends      = (voice_element[:slur_end] or 0)
-        result.first.slur_ends   = (1 .. amount_of_slur_ends).map {_pop_slur} # pop_slur delivers an id.
+        result.first.slur_ends   = (1..amount_of_slur_ends).map {_pop_slur} # pop_slur delivers an id.
 
 
         #harpnote_elements = [harpnote_elements] # make it an array such that we can append further elements
@@ -471,10 +471,10 @@ module Harpnotes
           count_end   = count_start + 4 * voice_element[:dur] / count_base
 
           if (count_start % 1 == 0) and (count_end % 1) == 0
-            count_range = (count_start ... count_end).to_a.map {|i| @countnames[i]}.join
+            count_range = (count_start...count_end).to_a.map {|i| @countnames[i]}.join
           else
             if (count_start % 1) == 0 # start of tuplet
-              count_range = (count_start ... count_end.ceil).to_a.map {|i| @countnames[i]}.join('')
+              count_range = (count_start...count_end.ceil).to_a.map {|i| @countnames[i]}.join('')
             else
               count_range = '' #(count_start % 1).to_s[1..2] # we are out of sync, don't know what to do.
             end
@@ -497,7 +497,7 @@ module Harpnotes
 
       def _convert_duration(raw_duration)
         # 128 to limit the maximum duration to the error note
-        duration = [128, ((raw_duration/ABC2SVG_DURATION_FACTOR) * @_shortest_note).round].min
+        duration = [128, ((raw_duration / ABC2SVG_DURATION_FACTOR) * @_shortest_note).round].min
       end
 
       def _transform_staves(voice_element, index, voice_index)
@@ -517,7 +517,7 @@ module Harpnotes
         origin             = _parse_origin(voice_element)
         start_pos, end_pos = origin[:startChar], origin[:endChar]
 
-        pitch_notes = [@pitch_providers[0 .. index].compact.last, @pitch_providers[index .. -1].compact.first]
+        pitch_notes = [@pitch_providers[0..index].compact.last, @pitch_providers[index..-1].compact.first]
 
         pitch_notes = [(pitch_notes.first or pitch_notes.last)] if $conf['restposition.default'] == :previous
         pitch_notes = [(pitch_notes.last or pitch_notes.first)] if $conf['restposition.default'] == :next
@@ -651,13 +651,13 @@ module Harpnotes
       end
 
       def _transform_clef(voice_element)
-        nil 
+        nil
       end
 
       def _make_variant_ending_jumps(voice_id)
         result           = []
         lastvariantgroup = (@variant_endings.last.empty? ? -2 : -1)
-        @variant_endings[0 .. lastvariantgroup].each do |variant_ending_group|
+        @variant_endings[0..lastvariantgroup].each do |variant_ending_group|
           # variant ending startlines
 
           distance  = variant_ending_group[0][:distance]
@@ -673,7 +673,7 @@ module Harpnotes
 
 
           # variant ending startlines
-          variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
+          variant_ending_group[1..lastvariant].each_with_index do |variant_ending, index|
             result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], conf_key: conf_keys[0], distance: distance[0], from_anchor: :after, to_anchor: :before)
           end
 
@@ -724,7 +724,7 @@ module Harpnotes
       def _make_notebound_annotations(entity, voice_id)
         result = []
         if entity.is_a? Harpnotes::Music::Playable
-          chords =_extract_chord_lines(entity.origin[:raw])
+          chords = _extract_chord_lines(entity.origin[:raw])
           chords.each_with_index do |name, index|
 
             match = name.match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
@@ -837,7 +837,7 @@ module Harpnotes
         # collect chord based targets
         chords = _extract_chord_lines(voice_element)
         chords.select {|chord| chord[0] == ":"}.each do |name|
-          @jumptargets[name[1 .. -1]] = harpnote_elements.select {|n| n.is_a? Harpnotes::Music::Playable}.last
+          @jumptargets[name[1..-1]] = harpnote_elements.select {|n| n.is_a? Harpnotes::Music::Playable}.last
         end
       end
 
@@ -883,8 +883,8 @@ module Harpnotes
               distance = [2, 4, 5].map {|i| level[i] ? level[i].to_i : nil}.compact
               result.push({target: target, distance: distance})
             else
-              start_pos=charpos_to_line_column(bar[:istart])
-              end_pos  = charpos_to_line_column(bar[:iend])
+              start_pos = charpos_to_line_column(bar[:istart])
+              end_pos   = charpos_to_line_column(bar[:iend])
               $log.error("Syntax-Error in Jump anotation", start_pos, end_pos)
               #raise "Syntax-Error in Jump annotation: #{line}"
             end

@@ -23,10 +23,6 @@ module Harpnotes
 
     class AbstractAbcToHarpnotes
 
-      attr_accessor :abcplay
-      attr_reader :player_model_abc
-
-
       def initialize
         @abc_code          = nil
         @previous_new_part = []

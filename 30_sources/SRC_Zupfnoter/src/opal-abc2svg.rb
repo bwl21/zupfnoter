@@ -213,12 +213,14 @@ I:staffnonote 2
 
       json_model = ""
       %x{
-          abcmidi = new AbcMIDI();
+          var abcmidi = new AbcMIDI();
           abcmidi.add(#{tsfirst}, #{voice_tb});
-          to_json = new AbcJSON();
+          var to_json = new AbcJSON();
           #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
-          #{@abcplay}.add(#{tsfirst}, #{voice_tb})
-          #{@player_model} = #{@abcplay}.clear()
+
+          var to_audio = new ToAudio()
+          to_audio.add(#{tsfirst}, #{voice_tb})
+          #{@player_model} = to_audio.clear()
       }
 
       @abc_model = JSON.parse(json_model)
