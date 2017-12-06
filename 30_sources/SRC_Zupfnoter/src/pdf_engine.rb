@@ -88,7 +88,7 @@ module Harpnotes
       @pdf.font_size  = style[:font_size]
       @pdf.font_style = style[:font_style]
       # + style ... we shift it up by the fontsize converted from point to mm by mm_per_point
-      text = root.text.gsub(/(\\?)(~)/){|m| puts m; m[0]=='\\' ? m[1] : ' '}
+      text = root.text.gsub(/(\\?)(~)/){|m|  m[0]=='\\' ? m[1] : ' '}
       @pdf.text(root.center.first, root.center.last + style[:font_size] * mm_per_point, text)
     end
 
