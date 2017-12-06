@@ -276,7 +276,7 @@ class Controller
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
       abc = @editor.get_text
-      abc = `localStorage.setItem('abc_data', abc);`
+      abc = `localStorage.setItem('abc_data', abc)`
     end
   end
 
