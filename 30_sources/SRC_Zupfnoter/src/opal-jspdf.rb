@@ -9,7 +9,7 @@ jsPDF.API.setLineDash = function(dashArray, dashPhase) {
   }
 
   return this;
-};
+}
 }
 
 class JsPDF
@@ -22,6 +22,9 @@ class JsPDF
   def initialize(orientation = :p, unit = :mm, format = :a4)
     @x_offset     = 0
     @y_offset     = 0
+    # note that jsPDF.js and jspdf-cli.js delivers the jsPDF constructor in the global
+    # area. Don't relly know why it works, but we should take care
+    #
     @native_jspdf = `new jsPDF(orientation, unit, format)`
   end
 

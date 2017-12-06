@@ -1,10 +1,17 @@
 module Ajv
 
 # this class provides validation
-
   class JsonValidator
     def initialize
-      @root = `Ajv({allErrors: true, jsonPointers: true})`;
+
+      ajv = nil
+      if OPAL_PLATFORM == 'nodejs'
+        ajv = %x{module.exports.Ajv}
+      else
+        ajv = %x{Ajv}
+      end
+
+      @root = `#{ajv}({allErrors: true, jsonPointers: true})`;
       add_schema(_schema, 'zupfnoter');
     end
 
