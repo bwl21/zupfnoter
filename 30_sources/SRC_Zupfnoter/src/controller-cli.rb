@@ -1,9 +1,16 @@
-class CliController <  Controller
+class Controller
 
-  attr_accessor :cli_abc_input
+  def self.get_uri()
+    {hostname: "zupfnoter-cli"}
+  end
+end
+
+class CliController < Controller
+
   def initialize
 
     $log = NodeLogger.new("x.log")
+    $log.loglevel = :warning
     $log.info ("Welcome to Zupfnoter")
     $log.info ("Zupfnoter #{VERSION}")
     $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
@@ -17,22 +24,56 @@ class CliController <  Controller
 
     $settings = {} # this is te keep runtime settings
 
-    @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
+    @editor = TextPaneEmulatorForCli.new()
+    @json_validator = Ajv::JsonValidator.new
+
+
   end
 
-  def get_abc_part
-    @cli_abc_input.split(CONFIG_SEPARATOR).first
+  def set_abc_input(abc_input)
+    @editor.set_text(abc_input)
+  end
+
+  def call_consumers(clazz)
+    nil
   end
 
   def load_music_model
-    `debugger`
-    abc_parser = $conf.get('abc_parser')
-    $log.timestamp_start
-    harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
-    harpnote_engine.abcplay           = @harpnote_player.abcplay # provide the abc player to convert the abc model for playing
-    @music_model                      = harpnote_engine.transform(get_abc_part)
-    @music_model.checksum             = @editor.get_checksum
+    abc_parser                      = $conf.get('abc_parser')
+    harpnote_engine                 = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
+    @music_model, @player_model_abc = harpnote_engine.transform(@editor.get_abc_part)
+    @music_model.checksum           = @editor.get_checksum
   end
+
+  def produce_pdfs(folder)
+    layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
+    if @music_model.meta_data[:filename].include?('{{')
+      is_template = true
+      filebase    = @music_model.harpnote_options.dig(:template, :filebase)
+      unless filebase
+        raise "no filebase given for template"
+      end
+    else
+      print_variants = @music_model.harpnote_options[:print]
+      filebase       = @music_model.meta_data[:filename]
+    end
+
+
+    rootpath = folder
+
+    pdfs = {}
+    print_variants.each do |print_variant|
+
+      index = print_variant[:view_id]
+
+      pdfs["#{rootpath}/#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:raw)
+     # pdfs["#{rootpath}/#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
+      nil
+    end
+
+    pdfs
+  end
+
 
 end
 
@@ -48,8 +89,8 @@ module I18n
 
   def self.t_help(key)
     candidate_keys = get_candidate_keys(key)
-    candidates     = candidate_keys.map { |c| $conf_helptext[c.join('.')] }
-    candidate_keys = candidate_keys.map { |c| c.join(".") }.to_s
+    candidates     = candidate_keys.map {|c| $conf_helptext[c.join('.')]}
+    candidate_keys = candidate_keys.map {|c| c.join(".")}.to_s
 
     helptext = candidates.compact.first || "no help for #{candidate_keys}"
 
@@ -59,15 +100,15 @@ module I18n
 
   def self.get_candidate_keys(key)
     help_key  = key
-    help_key  = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
-    help_key  = help_key.gsub(/^(extract\.0\.lyrics\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
-    help_key  = help_key.gsub(/^(extract\.0\.notes\.)([a-zA-SU-Z_0-9]+)(.*)$/) { "#{$1}0#{$3}" }
-    help_key  = help_key.gsub(/^(extract\.0\.tuplet\.)([a-zA-SU-Z_0-9]+)(.*)$/) { "#{$1}0#{$3}" }
+    help_key  = help_key.gsub(/^(extract\.)(\d+)(.*)$/) {"#{$1}0#{$3}"}
+    help_key  = help_key.gsub(/^(extract\.0\.lyrics\.)(\d+)(.*)$/) {"#{$1}0#{$3}"}
+    help_key  = help_key.gsub(/^(extract\.0\.notes\.)([a-zA-SU-Z_0-9]+)(.*)$/) {"#{$1}0#{$3}"}
+    help_key  = help_key.gsub(/^(extract\.0\.tuplet\.)([a-zA-SU-Z_0-9]+)(.*)$/) {"#{$1}0#{$3}"}
     keyparts  = help_key.split(".")
     downwards = []; upwards = []
-    (0 .. keyparts.length - 1).each do |i|
+    (0..keyparts.length - 1).each do |i|
       #downwards.push(keyparts[0 .. i-1])
-      upwards.push(keyparts[i .. -1])
+      upwards.push(keyparts[i..-1])
     end
     candidate_keys = upwards + downwards.reverse
   end
@@ -75,6 +116,45 @@ module I18n
 
   def self.locale(language)
 
+  end
+
+  def self.phrases
+    nil
+  end
+end
+
+class TextPaneEmulatorForCli < Harpnotes::TextPane
+
+  def initialize
+    # this is pretty empty for the CLI
+    @abc_text = nil
+  end
+
+  def set_text(abctext)
+    @abc_text = abctext
+  end
+
+  def get_text
+    @abc_text
+  end
+
+  def set_config_part(config)
+    nil
+  end
+
+  def neat_config
+    nil
+  end
+
+  def clear_markers
+
+  end
+
+  def set_markers
+
+  end
+
+  def set_annotations
 
   end
 end
