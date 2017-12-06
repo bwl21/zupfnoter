@@ -232,18 +232,19 @@ class Controller
 
   # this method invokes the system conumers
   def call_consumers(clazz)
-    @systemstatus_consumers = {systemstatus:  [
-                                                  lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
-                                              ],
-                               statusline:    [],
-                               error_alert:   [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
-                               play_start:    [lambda {`update_play_w2ui('start')`}],
-                               play_stop:     [lambda {`update_play_w2ui('stop')`}],
-                               play_stopping: [lambda {`update_play_w2ui('stopping')`}],
-                               disable_save:  [lambda {`disable_save();`}],
-                               enable_save:   [lambda {`enable_save();`}],
-                               before_open:   [lambda {`before_open()`}],
-                               extracts:      [lambda {@extracts.each {|entry|
+    @systemstatus_consumers = {systemstatus:   [
+                                                   lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
+                                               ],
+                               statusline:     [],
+                               error_alert:    [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
+                               play_start:     [lambda {`update_play_w2ui('start')`}],
+                               play_stop:      [lambda {`update_play_w2ui('stop')`}],
+                               play_stopping:  [lambda {`update_play_w2ui('stopping')`}],
+                               disable_save:   [lambda {`disable_save();`}],
+                               enable_save:    [lambda {`enable_save();`}],
+                               before_open:    [lambda {`before_open()`}],
+                               document_title: [lambda {`document.title = #{@music_model.meta_data[:filename]}`}],
+                               extracts:       [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})`}
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
@@ -669,7 +670,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
 
       load_music_model
-      `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
+
+      call_consumers(:document_title)
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
       result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)
