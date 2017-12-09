@@ -4,6 +4,7 @@ require 'ajv.min.js'
 
 
 require 'nodejs'
+require 'nodejs/fileutils'
 #require 'opal-jquery'
 require 'vector2d'
 #require 'neatjson_js'
@@ -48,27 +49,39 @@ require 'abc2svg-1.js'
 
 # ----------------- move this to somewhere else
 #
-puts "processing #{ARGV.first}"
+sourcepattern = ARGV[0] || "*.abc"
+targetfolder  = ARGV[1] || "."
+#targetfolder  = File.realpath(targetfolder)
 
-begin
-  abctext = File.read(ARGV.first)
-rescue Exception => e
-  puts e
-end
+FileUtils.mkdir_p(targetfolder)
 
+puts "processing #{ARGV.first} to #{targetfolder}"
 
 controller = CliController.new
 
-controller.set_abc_input(abctext)
+sourcefiles = Dir[sourcepattern]
 
-controller.load_music_model
+sourcefiles.each do |sourcefile|
+  begin
+    abctext = File.read(sourcefile)
+    `debugger`
+  rescue Exception => e
+    puts e
+  end
 
-pdfs = controller.produce_pdfs(".")
+  $log.message("processing: #{sourcefile}")
 
-pdfs.each do |filename, content|
-  puts filename
-  File.open(filename, "w"){|f| f.puts content}
+  controller.set_abc_input(abctext, sourcefile)
+
+  controller.load_music_model
+
+  pdfs = controller.produce_pdfs(".")
+
+  pdfs.each do |filename, content|
+    outputname = %Q{#{targetfolder}/#{filename}}
+    puts filename
+    File.open(outputname, "w") {|f| f.write content}
+  end
 end
-
 nil
 
