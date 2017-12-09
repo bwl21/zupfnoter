@@ -33689,6 +33689,7 @@ Opal.modules["controller-cli"] = function(Opal) {
           } else {
           self.$raise("no filebase given for template")
         };
+        print_variants = [];
         } else {
         print_variants = self.music_model.$harpnote_options()['$[]']("print");
         filebase = self.music_model.$meta_data()['$[]']("filename");
@@ -34605,11 +34606,11 @@ Opal.modules["version"] = function(Opal) {
   return Opal.cdecl($scope, 'COPYRIGHT', "© " + ($scope.get('Time').$now().$year()) + " https://www.zupfnoter.de");
 };
 
-// compiled for Zupfnoter 2017-11-27 13:19:54 +0100
+// compiled for Zupfnoter 2017-12-09 16:45:28 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.2",vdate:"2017-11-27"}
+var abc2svg={version:"1.15.4",vdate:"2017-12-03"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -43631,7 +43632,7 @@ function set_nl(s) {
 
 	// set the eol on the next symbol
 	function set_eol_next(s) {
-		for (s = s.next; s; s = s.ts_prev) {
+		for (s = s.ts_next; s; s = s.ts_next) {
 			if (s.seqst) {
 				set_eol(s)
 				break
@@ -43759,13 +43760,13 @@ function get_width(s, last) {
 
 	do {
 		if (s.seqst) {
-			s.x = w;
 			shrink = s.shrink
 			if ((space = s.space) < shrink)
 				w += shrink
 			else
 				w += shrink * cfmt.maxshrink
 					+ space * sp_fac
+			s.x = w
 		}
 		if (s == last)
 			break
@@ -43779,7 +43780,7 @@ function set_lines(	s,		/* first symbol */
 			last,		/* last symbol / null */
 			lwidth,		/* w - (clef & key sig) */
 			indent) {	/* for start of tune */
-	var	first, s2, s3, x, xmin, xmax, wwidth, shrink, space,
+	var	first, s2, s3, x, xmin, xmid, xmax, wwidth, shrink, space,
 		nlines, cut_here;
 
 	for ( ; last; last = last.ts_next) {
@@ -43799,11 +43800,29 @@ function set_lines(	s,		/* first symbol */
 			return last
 		}
 
-		/* try to cut on a measure bar */
 		s2 = first = s;
-		xmin = s.x + wwidth / nlines * cfmt.breaklimit;
-		xmax = s.x + lwidth;
-		cut_here = false
+		xmin = s.x - s.shrink - indent;
+		xmax = xmin + lwidth;
+		xmid = xmin + wwidth / nlines;
+		xmin += wwidth / nlines * cfmt.breaklimit;
+		for (s = s.ts_next; s != last ; s = s.ts_next) {
+			if (!s.x)
+				continue
+			if (s.type == BAR)
+				s2 = s
+			if (s.x >= xmin)
+				break
+		}
+//fixme: can this occur?
+		if (s == last) {
+			if (last)
+				last = set_nl(last)
+			return last
+		}
+
+		/* try to cut on a measure bar */
+		cut_here = false;
+		s3 = null
 		for ( ; s != last; s = s.ts_next) {
 			x = s.x
 			if (!x)
@@ -43812,49 +43831,74 @@ function set_lines(	s,		/* first symbol */
 				break
 			if (s.type != BAR)
 				continue
-			if (x > xmin) {
-				cut_here = true
-				break
+			if (x < xmid) {
+				s3 = s		// keep the last bar
+				continue
 			}
-			s2 = s				// keep the last bar
-//fixme: might go further ?
+
+			// cut on the bar closest to the middle
+			if (!s3 || xmid - s3.x > s.x - xmid)
+				s3 = s
+			break
 		}
-		if (!s)
-			return	// undefined
 
 		/* if a bar, cut here */
-		if (s.type == BAR)
+		if (s3) {
+			s = s3;
 			cut_here = true
+		}
 
 		/* try to avoid to cut a beam or a tuplet */
 		if (!cut_here) {
-			var	beam = s2.dur &&
-					!s2.beam_st && !s2.beam_end,
+			var	beam = 0,
 				bar_time = s2.time;
 
+			xmax -= 8; // (left width of the inserted bar in set_allsymwidth)
 			s = s2;			// restart from start or last bar
-			s2 = s3 = null;
-			xmax -= 6
+			s3 = null
 			for ( ; s != last; s = s.ts_next) {
 				if (s.beam_st)
-					beam = true
-				if (s.beam_end)
-					beam = false;
+					beam++
+				if (s.beam_end && beam > 0)
+					beam--
 				x = s.x
-				if (!x || x < xmin)
+				if (!x)
 					continue
-				if (x + s.shrink >= xmax)
+				if (x + s.wr >= xmax)
 					break
 				if (beam || s.in_tuplet)
 					continue
-				s2 = s
-				if ((s.time - bar_time) % (BASE_LEN / 8) == 0)
+//fixme: this depends on the meter
+				if ((s.time - bar_time) % (BASE_LEN / 4) == 0) {
 					s3 = s
+					continue
+				}
+				if (!s3 || xmid - s3.x > s.x - xmid)
+					s3 = s
+				break
 			}
-			if (s3)
-				s2 = s3
-			if (s2)
-				s = s2
+			if (s3) {
+				s = s3;
+				cut_here = true
+			}
+		}
+
+		// cut anyhere
+		if (!cut_here) {
+			s3 = s = s2
+			for ( ; s != last; s = s.ts_next) {
+				x = s.x
+				if (!x)
+					continue
+				if (x < xmid) {
+					s3 = s
+					continue
+				}
+				if (xmid - s3.x > s.x - xmid)
+					s3 = s
+				break
+			}
+			s = s3
 		}
 
 		if (s.nl) {		/* already set here - advance */
@@ -43872,14 +43916,15 @@ function set_lines(	s,		/* first symbol */
 		if (!s
 		 || (last && s.time >= last.time))
 			break
-		wwidth -= s.x - first.x
+		wwidth -= s.x - first.x;
+		indent = 0
 	}
 	return s
 }
 
 /* -- cut the tune into music lines -- */
 function cut_tune(lwidth, indent) {
-	var	s, s2, i, xmin,
+	var	s, s2, s3, i, xmin,
 //fixme: not usable yet
 //		pg_sav = {
 //			leftmargin: cfmt.leftmargin,
@@ -43909,17 +43954,14 @@ function cut_tune(lwidth, indent) {
 	/* if asked, count the measures and set the EOLNs */
 	if (cfmt.barsperstaff) {
 		i = cfmt.barsperstaff;
-		s2 = s
-		for ( ; s; s = s.ts_next) {
-			if (s.type != BAR
-			 || !s.bar_num)
+		for (s2 = s; s2; s2 = s2.ts_next) {
+			if (s2.type != BAR
+			 || !s2.bar_num
+			 || --i > 0)
 				continue
-			if (--i > 0)
-				continue
-			s.eoln = true;
+			s2.eoln = true;
 			i = cfmt.barsperstaff
 		}
-		s = s2
 	}
 
 	/* cut at explicit end of line, checking the line width */
@@ -43943,13 +43985,28 @@ function cut_tune(lwidth, indent) {
 		if (!s.seqst && !s.eoln)
 			continue
 		xmin += s.shrink
-		if (xmin > lwidth) {
+		if (xmin > lwidth) {		// overflow
 			s2 = set_lines(s2, s, lwidth, indent)
 		} else {
 			if (!s.eoln)
 				continue
-			s2 = set_nl(s)
 			delete s.eoln
+
+			// if eoln on a note or a rest,
+			// check for a smaller duration in an other voice
+			if (s.dur) {
+				for (s3 = s.ts_next; s3; s3 = s3.ts_next) {
+					if (s3.seqst
+					 || s3.dur < s.dur)
+						break
+				}
+				if (s3 && !s3.seqst)
+					s2 = set_lines(s2, s, lwidth, indent)
+				else
+					s2 = set_nl(s)
+			} else {
+				s2 = set_nl(s)
+			}
 		}
 		if (!s2)
 			break
@@ -46351,7 +46408,7 @@ function set_piece() {
 		s = add_end_bar(s2)
 		s.prev = s.ts_prev = s2;
 		s2.ts_next = s2.next = s;
-		s.shrink = tsnext.shrink;
+		s.shrink = s2.wr + 8;
 		s.space = tsnext.space * .9 - 7
 	}
 }
@@ -46947,17 +47004,17 @@ function set_linebreak(param) {
 
 // set a new user character (U: or %%user)
 function set_user(parm) {
-	var	k,
-		a = parm.match(/(.*?)[= ]+(.*)/),
-		c = a[1],
-		v = a[2]
+    var	k, c, v,
+	a = parm.match(/(.*?)[= ]*([!"].*[!"])/)
 
-	if (!v || (v[0] != '!' && v[0] != '"')) {
+	if (!a) {
 		syntax(1, 'Lack of starting ! or " in U: / %%user')
 		return
 	}
+	c = a[1];
+	v = a[2]
 	if (v.slice(-1) != v[0]) {
-		syntax(1, "Lack of ending $1 in U:/%%user", c2)
+		syntax(1, "Lack of ending $1 in U:/%%user", v[0])
 		return
 	}
 	if (c[0] == '\\') {
@@ -47038,8 +47095,6 @@ function new_block(subtype) {
 		goto_tune()
 	var voice_s = curvoice;
 	curvoice = voice_tb[par_sy.top_voice]
-	if (curvoice.last_sym)
-		curvoice.last_sym.eoln = true;
 	sym_link(s);
 	curvoice = voice_s
 	return s
@@ -54966,7 +55021,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.2 (2017-11-27)
+// json-1.js for abc2svg-1.15.4 (2017-12-03)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -55114,7 +55169,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.2 (2017-11-27)
+// midi-1.js for abc2svg-1.15.4 (2017-12-03)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -55314,7 +55369,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.2 (2017-11-27)
+// play-1.js for abc2svg-1.15.4 (2017-12-03)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
@@ -55412,7 +55467,7 @@ var	BAR = 0,
 		i, n, dt, d, v,
 		top_v,			// top voice
 		rep_st_s,		// start of sequence to be repeated
-		rep_en_s,		// end
+		rep_en_s,		// end ("|1")
 		rep_nx_s,		// restart at end of repeat
 		rep_st_transp,		// transposition at start of repeat sequence
 		rep_st_map,		// and map
@@ -55633,8 +55688,8 @@ var	BAR = 0,
 				break
 
 			// right repeat
-			if (s.bar_type[0] == ':'
-			 && s != rep_nx_s) {		// (already done)
+			if (s.bar_type[0] == ':') {
+				s.bar_type = '|';	// don't repeat again
 				rep_nx_s = s		// repeat next
 				if (!rep_en_s)		// if no "|1"
 					rep_en_s = s	// repeat end

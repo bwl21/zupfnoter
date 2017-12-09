@@ -53,6 +53,7 @@ class CliController < Controller
       unless filebase
         raise "no filebase given for template"
       end
+      print_variants = []
     else
       print_variants = @music_model.harpnote_options[:print]
       filebase       = @music_model.meta_data[:filename]
