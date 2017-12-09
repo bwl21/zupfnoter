@@ -15,7 +15,7 @@ module Harpnotes
         @abcplay           = nil # this is an instance of abcplay which we need to pass throug to load the player from abc
         @abc_code          = nil
         @previous_new_part = []
-
+        @score_statements  = []  # need this to capture score statments in the header
         @part_table = {}
 
         @_shortest_note = $conf.get('layout.SHORTEST_NOTE')
@@ -93,7 +93,6 @@ module Harpnotes
         o_key_display = ""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
-        tempo_id = @abc_model[:music_type_ids][:tempo].to_s
         tempo_note = @abc_model[:voices].first[:voice_properties][:sym] rescue nil
 
         if tempo_note && tempo_note[:tempo_notes]
@@ -227,7 +226,7 @@ module Harpnotes
         if (result.count == 0)
           num_voice_index = voice_index.gsub("v_", '').to_i
 
-          unless @score_statements.last[:sy][:voices][num_voice_index - 1][:range] == -1
+          unless @score_statements.last && @score_statements.last[:sy][:voices][num_voice_index - 1][:range] == -1
             $log.error("#{I18n.t("Empty voice")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}")
             # charpos_to_line_column(@score_statements.last[:istart] -1 ),
             # charpos_to_line_column(@score_statements.last[:iend] -1 )
