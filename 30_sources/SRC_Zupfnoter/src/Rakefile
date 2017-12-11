@@ -215,12 +215,28 @@ task :build_cli do #=> [:build] do
   Opal.append_path "../vendor"
   Opal.use_gem "vector2d"
 
+  #
+  # you nedd npm install
+  # blob
+  # encoding
+  # browserify
+  # nexe
+  # jspdf
+  # uglify-js
+  # ajv
+
 
   File.open(ZUPFNOTER_CLI_JS, "w+") do |out|
     #   out << env["application"].to_s
     #   out << Opal::Processor.load_asset_code(env, 'application')
     out.puts(Opal::Builder::build("application-cli").to_s)
   end
+
+  # now pack into one bundle see
+  # https://stackoverflow.com/questions/14314038/how-do-i-deploy-node-js-applications-as-a-single-executable-file
+
+  cmd = "browserify --node --dg false #{ZUPFNOTER_CLI_JS} -o #{ZUPFNOTER_CLI_JS}"
+  sh cmd
 
 end
 
