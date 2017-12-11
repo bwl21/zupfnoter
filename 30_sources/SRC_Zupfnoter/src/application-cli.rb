@@ -61,27 +61,44 @@ controller = CliController.new
 
 sourcefiles = Dir[sourcepattern]
 
+# these requires are necessar yfor browserify
+# $encoding = node_require('encoding')
+%x{
+  glob = require('glob')
+  #{$fs} = require('fs')
+  #{$encoding} = require ("encoding")
+  }
+
+
 sourcefiles.each do |sourcefile|
+
+  $log.clear_errors
   begin
     abctext = File.read(sourcefile)
-    `debugger`
   rescue Exception => e
     puts e
   end
 
   $log.message("processing: #{sourcefile}")
 
-  controller.set_abc_input(abctext, sourcefile)
+  controller.set_abc_input(abctext)
 
   controller.load_music_model
 
   pdfs = controller.produce_pdfs(".")
 
+
   pdfs.each do |filename, content|
     outputname = %Q{#{targetfolder}/#{filename}}
     puts filename
-    File.open(outputname, "w") {|f| f.write content}
+
+    %x{
+       var buffer = #{$encoding}.convert(#{content}, 'Latin-1')
+       #{$fs}.writeFileSync(#{outputname}, buffer)
+    }
   end
+
+  File.write("#{targetfolder}/#{File.basename(sourcefile)}.err", $log.get_errors.join("\n"))
 end
 nil
 
