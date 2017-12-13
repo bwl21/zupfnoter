@@ -1,5 +1,5798 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
+
+var compileSchema = require('./compile')
+  , resolve = require('./compile/resolve')
+  , Cache = require('./cache')
+  , SchemaObject = require('./compile/schema_obj')
+  , stableStringify = require('json-stable-stringify')
+  , formats = require('./compile/formats')
+  , rules = require('./compile/rules')
+  , v5 = require('./v5')
+  , util = require('./compile/util')
+  , async = require('./async')
+  , co = require('co');
+
+module.exports = Ajv;
+
+Ajv.prototype.compileAsync = async.compile;
+
+var customKeyword = require('./keyword');
+Ajv.prototype.addKeyword = customKeyword.add;
+Ajv.prototype.getKeyword = customKeyword.get;
+Ajv.prototype.removeKeyword = customKeyword.remove;
+Ajv.ValidationError = require('./compile/validation_error');
+
+var META_SCHEMA_ID = 'http://json-schema.org/draft-04/schema';
+var SCHEMA_URI_FORMAT = /^(?:(?:[a-z][a-z0-9+-.]*:)?\/\/)?[^\s]*$/i;
+function SCHEMA_URI_FORMAT_FUNC(str) {
+  return SCHEMA_URI_FORMAT.test(str);
+}
+
+var META_IGNORE_OPTIONS = [ 'removeAdditional', 'useDefaults', 'coerceTypes' ];
+
+/**
+ * Creates validator instance.
+ * Usage: `Ajv(opts)`
+ * @param {Object} opts optional options
+ * @return {Object} ajv instance
+ */
+function Ajv(opts) {
+  if (!(this instanceof Ajv)) return new Ajv(opts);
+  var self = this;
+
+  opts = this._opts = util.copy(opts) || {};
+  this._schemas = {};
+  this._refs = {};
+  this._fragments = {};
+  this._formats = formats(opts.format);
+  this._cache = opts.cache || new Cache;
+  this._loadingSchemas = {};
+  this._compilations = [];
+  this.RULES = rules();
+
+  // this is done on purpose, so that methods are bound to the instance
+  // (without using bind) so that they can be used without the instance
+  this.validate = validate;
+  this.compile = compile;
+  this.addSchema = addSchema;
+  this.addMetaSchema = addMetaSchema;
+  this.validateSchema = validateSchema;
+  this.getSchema = getSchema;
+  this.removeSchema = removeSchema;
+  this.addFormat = addFormat;
+  this.errorsText = errorsText;
+
+  this._addSchema = _addSchema;
+  this._compile = _compile;
+
+  opts.loopRequired = opts.loopRequired || Infinity;
+  if (opts.async || opts.transpile) async.setup(opts);
+  if (opts.beautify === true) opts.beautify = { indent_size: 2 };
+  if (opts.errorDataPath == 'property') opts._errorDataPathProperty = true;
+  this._metaOpts = getMetaSchemaOptions();
+
+  if (opts.formats) addInitialFormats();
+  addDraft4MetaSchema();
+  if (opts.v5) v5.enable(this);
+  if (typeof opts.meta == 'object') addMetaSchema(opts.meta);
+  addInitialSchemas();
+
+
+  /**
+   * Validate data using schema
+   * Schema will be compiled and cached (using serialized JSON as key. [json-stable-stringify](https://github.com/substack/json-stable-stringify) is used to serialize.
+   * @param  {String|Object} schemaKeyRef key, ref or schema object
+   * @param  {Any} data to be validated
+   * @return {Boolean} validation result. Errors from the last validation will be available in `ajv.errors` (and also in compiled schema: `schema.errors`).
+   */
+  function validate(schemaKeyRef, data) {
+    var v;
+    if (typeof schemaKeyRef == 'string') {
+      v = getSchema(schemaKeyRef);
+      if (!v) throw new Error('no schema with key or ref "' + schemaKeyRef + '"');
+    } else {
+      var schemaObj = _addSchema(schemaKeyRef);
+      v = schemaObj.validate || _compile(schemaObj);
+    }
+
+    var valid = v(data);
+    if (v.$async === true)
+      return self._opts.async == '*' ? co(valid) : valid;
+    self.errors = v.errors;
+    return valid;
+  }
+
+
+  /**
+   * Create validating function for passed schema.
+   * @param  {Object} schema schema object
+   * @param  {Boolean} _meta true if schema is a meta-schema. Used internally to compile meta schemas of custom keywords.
+   * @return {Function} validating function
+   */
+  function compile(schema, _meta) {
+    var schemaObj = _addSchema(schema, undefined, _meta);
+    return schemaObj.validate || _compile(schemaObj);
+  }
+
+
+  /**
+   * Adds schema to the instance.
+   * @param {Object|Array} schema schema or array of schemas. If array is passed, `key` and other parameters will be ignored.
+   * @param {String} key Optional schema key. Can be passed to `validate` method instead of schema object or id/ref. One schema per instance can have empty `id` and `key`.
+   * @param {Boolean} _skipValidation true to skip schema validation. Used internally, option validateSchema should be used instead.
+   * @param {Boolean} _meta true if schema is a meta-schema. Used internally, addMetaSchema should be used instead.
+   */
+  function addSchema(schema, key, _skipValidation, _meta) {
+    if (Array.isArray(schema)){
+      for (var i=0; i<schema.length; i++) addSchema(schema[i], undefined, _skipValidation, _meta);
+      return;
+    }
+    // can key/id have # inside?
+    key = resolve.normalizeId(key || schema.id);
+    checkUnique(key);
+    self._schemas[key] = _addSchema(schema, _skipValidation, _meta, true);
+  }
+
+
+  /**
+   * Add schema that will be used to validate other schemas
+   * options in META_IGNORE_OPTIONS are alway set to false
+   * @param {Object} schema schema object
+   * @param {String} key optional schema key
+   * @param {Boolean} skipValidation true to skip schema validation, can be used to override validateSchema option for meta-schema
+   */
+  function addMetaSchema(schema, key, skipValidation) {
+    addSchema(schema, key, skipValidation, true);
+  }
+
+
+  /**
+   * Validate schema
+   * @param {Object} schema schema to validate
+   * @param {Boolean} throwOrLogError pass true to throw (or log) an error if invalid
+   * @return {Boolean} true if schema is valid
+   */
+  function validateSchema(schema, throwOrLogError) {
+    var $schema = schema.$schema || self._opts.defaultMeta || defaultMeta();
+    var currentUriFormat = self._formats.uri;
+    self._formats.uri = typeof currentUriFormat == 'function'
+                        ? SCHEMA_URI_FORMAT_FUNC
+                        : SCHEMA_URI_FORMAT;
+    var valid;
+    try { valid = validate($schema, schema); }
+    finally { self._formats.uri = currentUriFormat; }
+    if (!valid && throwOrLogError) {
+      var message = 'schema is invalid: ' + errorsText();
+      if (self._opts.validateSchema == 'log') console.error(message);
+      else throw new Error(message);
+    }
+    return valid;
+  }
+
+
+  function defaultMeta() {
+    var meta = self._opts.meta;
+    self._opts.defaultMeta = typeof meta == 'object'
+                              ? meta.id || meta
+                              : self._opts.v5
+                                ? v5.META_SCHEMA_ID
+                                : META_SCHEMA_ID;
+    return self._opts.defaultMeta;
+  }
+
+
+  /**
+   * Get compiled schema from the instance by `key` or `ref`.
+   * @param  {String} keyRef `key` that was passed to `addSchema` or full schema reference (`schema.id` or resolved id).
+   * @return {Function} schema validating function (with property `schema`).
+   */
+  function getSchema(keyRef) {
+    var schemaObj = _getSchemaObj(keyRef);
+    switch (typeof schemaObj) {
+      case 'object': return schemaObj.validate || _compile(schemaObj);
+      case 'string': return getSchema(schemaObj);
+      case 'undefined': return _getSchemaFragment(keyRef);
+    }
+  }
+
+
+  function _getSchemaFragment(ref) {
+    var res = resolve.schema.call(self, { schema: {} }, ref);
+    if (res) {
+      var schema = res.schema
+        , root = res.root
+        , baseId = res.baseId;
+      var v = compileSchema.call(self, schema, root, undefined, baseId);
+      self._fragments[ref] = new SchemaObject({
+        ref: ref,
+        fragment: true,
+        schema: schema,
+        root: root,
+        baseId: baseId,
+        validate: v
+      });
+      return v;
+    }
+  }
+
+
+  function _getSchemaObj(keyRef) {
+    keyRef = resolve.normalizeId(keyRef);
+    return self._schemas[keyRef] || self._refs[keyRef] || self._fragments[keyRef];
+  }
+
+
+  /**
+   * Remove cached schema(s).
+   * If no parameter is passed all schemas but meta-schemas are removed.
+   * If RegExp is passed all schemas with key/id matching pattern but meta-schemas are removed.
+   * Even if schema is referenced by other schemas it still can be removed as other schemas have local references.
+   * @param  {String|Object|RegExp} schemaKeyRef key, ref, pattern to match key/ref or schema object
+   */
+  function removeSchema(schemaKeyRef) {
+    if (schemaKeyRef instanceof RegExp) {
+      _removeAllSchemas(self._schemas, schemaKeyRef);
+      _removeAllSchemas(self._refs, schemaKeyRef);
+      return;
+    }
+    switch (typeof schemaKeyRef) {
+      case 'undefined':
+        _removeAllSchemas(self._schemas);
+        _removeAllSchemas(self._refs);
+        self._cache.clear();
+        return;
+      case 'string':
+        var schemaObj = _getSchemaObj(schemaKeyRef);
+        if (schemaObj) self._cache.del(schemaObj.jsonStr);
+        delete self._schemas[schemaKeyRef];
+        delete self._refs[schemaKeyRef];
+        return;
+      case 'object':
+        var jsonStr = stableStringify(schemaKeyRef);
+        self._cache.del(jsonStr);
+        var id = schemaKeyRef.id;
+        if (id) {
+          id = resolve.normalizeId(id);
+          delete self._schemas[id];
+          delete self._refs[id];
+        }
+    }
+  }
+
+
+  function _removeAllSchemas(schemas, regex) {
+    for (var keyRef in schemas) {
+      var schemaObj = schemas[keyRef];
+      if (!schemaObj.meta && (!regex || regex.test(keyRef))) {
+        self._cache.del(schemaObj.jsonStr);
+        delete schemas[keyRef];
+      }
+    }
+  }
+
+
+  function _addSchema(schema, skipValidation, meta, shouldAddSchema) {
+    if (typeof schema != 'object') throw new Error('schema should be object');
+    var jsonStr = stableStringify(schema);
+    var cached = self._cache.get(jsonStr);
+    if (cached) return cached;
+
+    shouldAddSchema = shouldAddSchema || self._opts.addUsedSchema !== false;
+
+    var id = resolve.normalizeId(schema.id);
+    if (id && shouldAddSchema) checkUnique(id);
+
+    var willValidate = self._opts.validateSchema !== false && !skipValidation;
+    var recursiveMeta;
+    if (willValidate && !(recursiveMeta = schema.id && schema.id == schema.$schema))
+      validateSchema(schema, true);
+
+    var localRefs = resolve.ids.call(self, schema);
+
+    var schemaObj = new SchemaObject({
+      id: id,
+      schema: schema,
+      localRefs: localRefs,
+      jsonStr: jsonStr,
+      meta: meta
+    });
+
+    if (id[0] != '#' && shouldAddSchema) self._refs[id] = schemaObj;
+    self._cache.put(jsonStr, schemaObj);
+
+    if (willValidate && recursiveMeta) validateSchema(schema, true);
+
+    return schemaObj;
+  }
+
+
+  function _compile(schemaObj, root) {
+    if (schemaObj.compiling) {
+      schemaObj.validate = callValidate;
+      callValidate.schema = schemaObj.schema;
+      callValidate.errors = null;
+      callValidate.root = root ? root : callValidate;
+      if (schemaObj.schema.$async === true)
+        callValidate.$async = true;
+      return callValidate;
+    }
+    schemaObj.compiling = true;
+
+    var currentOpts;
+    if (schemaObj.meta) {
+      currentOpts = self._opts;
+      self._opts = self._metaOpts;
+    }
+
+    var v;
+    try { v = compileSchema.call(self, schemaObj.schema, root, schemaObj.localRefs); }
+    finally {
+      schemaObj.compiling = false;
+      if (schemaObj.meta) self._opts = currentOpts;
+    }
+
+    schemaObj.validate = v;
+    schemaObj.refs = v.refs;
+    schemaObj.refVal = v.refVal;
+    schemaObj.root = v.root;
+    return v;
+
+
+    function callValidate() {
+      var _validate = schemaObj.validate;
+      var result = _validate.apply(null, arguments);
+      callValidate.errors = _validate.errors;
+      return result;
+    }
+  }
+
+
+  /**
+   * Convert array of error message objects to string
+   * @param  {Array<Object>} errors optional array of validation errors, if not passed errors from the instance are used.
+   * @param  {Object} options optional options with properties `separator` and `dataVar`.
+   * @return {String} human readable string with all errors descriptions
+   */
+  function errorsText(errors, options) {
+    errors = errors || self.errors;
+    if (!errors) return 'No errors';
+    options = options || {};
+    var separator = options.separator === undefined ? ', ' : options.separator;
+    var dataVar = options.dataVar === undefined ? 'data' : options.dataVar;
+
+    var text = '';
+    for (var i=0; i<errors.length; i++) {
+      var e = errors[i];
+      if (e) text += dataVar + e.dataPath + ' ' + e.message + separator;
+    }
+    return text.slice(0, -separator.length);
+  }
+
+
+  /**
+   * Add custom format
+   * @param {String} name format name
+   * @param {String|RegExp|Function} format string is converted to RegExp; function should return boolean (true when valid)
+   */
+  function addFormat(name, format) {
+    if (typeof format == 'string') format = new RegExp(format);
+    self._formats[name] = format;
+  }
+
+
+  function addDraft4MetaSchema() {
+    if (self._opts.meta !== false) {
+      var metaSchema = require('./refs/json-schema-draft-04.json');
+      addMetaSchema(metaSchema, META_SCHEMA_ID, true);
+      self._refs['http://json-schema.org/schema'] = META_SCHEMA_ID;
+    }
+  }
+
+
+  function addInitialSchemas() {
+    var optsSchemas = self._opts.schemas;
+    if (!optsSchemas) return;
+    if (Array.isArray(optsSchemas)) addSchema(optsSchemas);
+    else for (var key in optsSchemas) addSchema(optsSchemas[key], key);
+  }
+
+
+  function addInitialFormats() {
+    for (var name in self._opts.formats) {
+      var format = self._opts.formats[name];
+      addFormat(name, format);
+    }
+  }
+
+
+  function checkUnique(id) {
+    if (self._schemas[id] || self._refs[id])
+      throw new Error('schema with key or id "' + id + '" already exists');
+  }
+
+
+  function getMetaSchemaOptions() {
+    var metaOpts = util.copy(self._opts);
+    for (var i=0; i<META_IGNORE_OPTIONS.length; i++)
+      delete metaOpts[META_IGNORE_OPTIONS[i]];
+    return metaOpts;
+  }
+}
+
+},{"./async":2,"./cache":3,"./compile":7,"./compile/formats":6,"./compile/resolve":8,"./compile/rules":9,"./compile/schema_obj":10,"./compile/util":12,"./compile/validation_error":13,"./keyword":38,"./refs/json-schema-draft-04.json":39,"./v5":41,"co":44,"json-stable-stringify":77}],2:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  setup: setupAsync,
+  compile: compileAsync
+};
+
+
+var util = require('./compile/util');
+
+var ASYNC = {
+  '*': checkGenerators,
+  'co*': checkGenerators,
+  'es7': checkAsyncFunction
+};
+
+var TRANSPILE = {
+  'nodent': getNodent,
+  'regenerator': getRegenerator
+};
+
+var MODES = [
+  { async: 'co*' },
+  { async: 'es7', transpile: 'nodent' },
+  { async: 'co*', transpile: 'regenerator' }
+];
+
+
+var regenerator, nodent;
+
+
+function setupAsync(opts, required) {
+  if (required !== false) required = true;
+  var async = opts.async
+    , transpile = opts.transpile
+    , check;
+
+  switch (typeof transpile) {
+    case 'string':
+      var get = TRANSPILE[transpile];
+      if (!get) throw new Error('bad transpiler: ' + transpile);
+      return (opts._transpileFunc = get(opts, required));
+    case 'undefined':
+    case 'boolean':
+      if (typeof async == 'string') {
+        check = ASYNC[async];
+        if (!check) throw new Error('bad async mode: ' + async);
+        return (opts.transpile = check(opts, required));
+      }
+
+      for (var i=0; i<MODES.length; i++) {
+        var _opts = MODES[i];
+        if (setupAsync(_opts, false)) {
+          util.copy(_opts, opts);
+          return opts.transpile;
+        }
+      }
+      /* istanbul ignore next */
+      throw new Error('generators, nodent and regenerator are not available');
+    case 'function':
+      return (opts._transpileFunc = opts.transpile);
+    default:
+      throw new Error('bad transpiler: ' + transpile);
+  }
+}
+
+
+function checkGenerators(opts, required) {
+  /* jshint evil: true */
+  try {
+    (new Function('(function*(){})()'))();
+    return true;
+  } catch(e) {
+    /* istanbul ignore next */
+    if (required) throw new Error('generators not supported');
+  }
+}
+
+
+function checkAsyncFunction(opts, required) {
+  /* jshint evil: true */
+  try {
+    (new Function('(async function(){})()'))();
+    /* istanbul ignore next */
+    return true;
+  } catch(e) {
+    if (required) throw new Error('es7 async functions not supported');
+  }
+}
+
+
+function getRegenerator(opts, required) {
+  try {
+    if (!regenerator) {
+      var name = 'regenerator';
+      regenerator = require(name);
+      regenerator.runtime();
+    }
+    if (!opts.async || opts.async === true)
+      opts.async = 'es7';
+    return regeneratorTranspile;
+  } catch(e) {
+    /* istanbul ignore next */
+    if (required) throw new Error('regenerator not available');
+  }
+}
+
+
+function regeneratorTranspile(code) {
+  return regenerator.compile(code).code;
+}
+
+
+function getNodent(opts, required) {
+  /* jshint evil: true */
+  try {
+    if (!nodent) {
+      var name = 'nodent';
+      nodent = require(name)({ log: false, dontInstallRequireHook: true });
+    }
+    if (opts.async != 'es7') {
+      if (opts.async && opts.async !== true) console.warn('nodent transpiles only es7 async functions');
+      opts.async = 'es7';
+    }
+    return nodentTranspile;
+  } catch(e) {
+    /* istanbul ignore next */
+    if (required) throw new Error('nodent not available');
+  }
+}
+
+
+function nodentTranspile(code) {
+  return nodent.compile(code, '', { promises: true, sourcemap: false }).code;
+}
+
+
+/**
+ * Creates validating function for passed schema with asynchronous loading of missing schemas.
+ * `loadSchema` option should be a function that accepts schema uri and node-style callback.
+ * @this  Ajv
+ * @param {Object}   schema schema object
+ * @param {Function} callback node-style callback, it is always called with 2 parameters: error (or null) and validating function.
+ */
+function compileAsync(schema, callback) {
+  /* eslint no-shadow: 0 */
+  /* jshint validthis: true */
+  var schemaObj;
+  var self = this;
+  try {
+    schemaObj = this._addSchema(schema);
+  } catch(e) {
+    setTimeout(function() { callback(e); });
+    return;
+  }
+  if (schemaObj.validate) {
+    setTimeout(function() { callback(null, schemaObj.validate); });
+  } else {
+    if (typeof this._opts.loadSchema != 'function')
+      throw new Error('options.loadSchema should be a function');
+    _compileAsync(schema, callback, true);
+  }
+
+
+  function _compileAsync(schema, callback, firstCall) {
+    var validate;
+    try { validate = self.compile(schema); }
+    catch(e) {
+      if (e.missingSchema) loadMissingSchema(e);
+      else deferCallback(e);
+      return;
+    }
+    deferCallback(null, validate);
+
+    function loadMissingSchema(e) {
+      var ref = e.missingSchema;
+      if (self._refs[ref] || self._schemas[ref])
+        return callback(new Error('Schema ' + ref + ' is loaded but ' + e.missingRef + ' cannot be resolved'));
+      var _callbacks = self._loadingSchemas[ref];
+      if (_callbacks) {
+        if (typeof _callbacks == 'function')
+          self._loadingSchemas[ref] = [_callbacks, schemaLoaded];
+        else
+          _callbacks[_callbacks.length] = schemaLoaded;
+      } else {
+        self._loadingSchemas[ref] = schemaLoaded;
+        self._opts.loadSchema(ref, function (err, sch) {
+          var _callbacks = self._loadingSchemas[ref];
+          delete self._loadingSchemas[ref];
+          if (typeof _callbacks == 'function') {
+            _callbacks(err, sch);
+          } else {
+            for (var i=0; i<_callbacks.length; i++)
+              _callbacks[i](err, sch);
+          }
+        });
+      }
+
+      function schemaLoaded(err, sch) {
+        if (err) return callback(err);
+        if (!(self._refs[ref] || self._schemas[ref])) {
+          try {
+            self.addSchema(sch, ref);
+          } catch(e) {
+            callback(e);
+            return;
+          }
+        }
+        _compileAsync(schema, callback);
+      }
+    }
+
+    function deferCallback(err, validate) {
+      if (firstCall) setTimeout(function() { callback(err, validate); });
+      else return callback(err, validate);
+    }
+  }
+}
+
+},{"./compile/util":12}],3:[function(require,module,exports){
+'use strict';
+
+
+var Cache = module.exports = function Cache() {
+  this._cache = {};
+};
+
+
+Cache.prototype.put = function Cache_put(key, value) {
+  this._cache[key] = value;
+};
+
+
+Cache.prototype.get = function Cache_get(key) {
+  return this._cache[key];
+};
+
+
+Cache.prototype.del = function Cache_del(key) {
+  delete this._cache[key];
+};
+
+
+Cache.prototype.clear = function Cache_clear() {
+  this._cache = {};
+};
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+//all requires must be explicit because browserify won't work with dynamic requires
+module.exports = {
+  '$ref': require('../dotjs/ref'),
+  allOf: require('../dotjs/allOf'),
+  anyOf: require('../dotjs/anyOf'),
+  dependencies: require('../dotjs/dependencies'),
+  'enum': require('../dotjs/enum'),
+  format: require('../dotjs/format'),
+  items: require('../dotjs/items'),
+  maximum: require('../dotjs/_limit'),
+  minimum: require('../dotjs/_limit'),
+  maxItems: require('../dotjs/_limitItems'),
+  minItems: require('../dotjs/_limitItems'),
+  maxLength: require('../dotjs/_limitLength'),
+  minLength: require('../dotjs/_limitLength'),
+  maxProperties: require('../dotjs/_limitProperties'),
+  minProperties: require('../dotjs/_limitProperties'),
+  multipleOf: require('../dotjs/multipleOf'),
+  not: require('../dotjs/not'),
+  oneOf: require('../dotjs/oneOf'),
+  pattern: require('../dotjs/pattern'),
+  properties: require('../dotjs/properties'),
+  required: require('../dotjs/required'),
+  uniqueItems: require('../dotjs/uniqueItems'),
+  validate: require('../dotjs/validate')
+};
+
+},{"../dotjs/_limit":15,"../dotjs/_limitItems":16,"../dotjs/_limitLength":17,"../dotjs/_limitProperties":18,"../dotjs/allOf":19,"../dotjs/anyOf":20,"../dotjs/dependencies":23,"../dotjs/enum":24,"../dotjs/format":25,"../dotjs/items":26,"../dotjs/multipleOf":27,"../dotjs/not":28,"../dotjs/oneOf":29,"../dotjs/pattern":30,"../dotjs/properties":32,"../dotjs/ref":33,"../dotjs/required":34,"../dotjs/uniqueItems":36,"../dotjs/validate":37}],5:[function(require,module,exports){
+'use strict';
+
+/*eslint complexity: 0*/
+
+module.exports = function equal(a, b) {
+  if (a === b) return true;
+
+  var arrA = Array.isArray(a)
+    , arrB = Array.isArray(b)
+    , i;
+
+  if (arrA && arrB) {
+    if (a.length != b.length) return false;
+    for (i = 0; i < a.length; i++)
+      if (!equal(a[i], b[i])) return false;
+    return true;
+  }
+
+  if (arrA != arrB) return false;
+
+  if (a && b && typeof a === 'object' && typeof b === 'object') {
+    var keys = Object.keys(a);
+    if (keys.length !== Object.keys(b).length) return false;
+
+    var dateA = a instanceof Date
+      , dateB = b instanceof Date;
+    if (dateA && dateB) return a.getTime() == b.getTime();
+    if (dateA != dateB) return false;
+
+    var regexpA = a instanceof RegExp
+      , regexpB = b instanceof RegExp;
+    if (regexpA && regexpB) return a.toString() == b.toString();
+    if (regexpA != regexpB) return false;
+
+    for (i = 0; i < keys.length; i++)
+      if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+
+    for (i = 0; i < keys.length; i++)
+      if(!equal(a[keys[i]], b[keys[i]])) return false;
+
+    return true;
+  }
+
+  return false;
+};
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+var util = require('./util');
+
+var DATE = /^\d\d\d\d-(\d\d)-(\d\d)$/;
+var DAYS = [0,31,29,31,30,31,30,31,31,30,31,30,31];
+var TIME = /^(\d\d):(\d\d):(\d\d)(\.\d+)?(z|[+-]\d\d:\d\d)?$/i;
+var HOSTNAME = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*$/i;
+var URI = /^(?:[a-z][a-z0-9+\-.]*:)?(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@\/?]|%[0-9a-f]{2})*)?(?:\#(?:[a-z0-9\-._~!$&'()*+,;=:@\/?]|%[0-9a-f]{2})*)?$/i;
+var UUID = /^(?:urn\:uuid\:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+var JSON_POINTER = /^(?:\/(?:[^~\/]|~0|~1)*)*$|^\#(?:\/(?:[a-z0-9_\-\.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)*)*$/i;
+var RELATIVE_JSON_POINTER = /^(?:0|[1-9][0-9]*)(?:\#|(?:\/(?:[^~\/]|~0|~1)*)*)$/;
+
+
+module.exports = formats;
+
+function formats(mode) {
+  mode = mode == 'full' ? 'full' : 'fast';
+  var formatDefs = util.copy(formats[mode]);
+  for (var fName in formats.compare) {
+    formatDefs[fName] = {
+      validate: formatDefs[fName],
+      compare: formats.compare[fName]
+    };
+  }
+  return formatDefs;
+}
+
+
+formats.fast = {
+  // date: http://tools.ietf.org/html/rfc3339#section-5.6
+  date: /^\d\d\d\d-[0-1]\d-[0-3]\d$/,
+  // date-time: http://tools.ietf.org/html/rfc3339#section-5.6
+  time: /^[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?(?:z|[+-]\d\d:\d\d)?$/i,
+  'date-time': /^\d\d\d\d-[0-1]\d-[0-3]\d[t\s][0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?(?:z|[+-]\d\d:\d\d)$/i,
+  // uri: https://github.com/mafintosh/is-my-json-valid/blob/master/formats.js
+  uri: /^(?:[a-z][a-z0-9+-.]*)?(?:\:|\/)\/?[^\s]*$/i,
+  // email (sources from jsen validator):
+  // http://stackoverflow.com/questions/201323/using-a-regular-expression-to-validate-an-email-address#answer-8829363
+  // http://www.w3.org/TR/html5/forms.html#valid-e-mail-address (search for 'willful violation')
+  email: /^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,
+  hostname: HOSTNAME,
+  // optimized https://www.safaribooksonline.com/library/view/regular-expressions-cookbook/9780596802837/ch07s16.html
+  ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
+  // optimized http://stackoverflow.com/questions/53497/regular-expression-that-matches-valid-ipv6-addresses
+  ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
+  regex: regex,
+  // uuid: http://tools.ietf.org/html/rfc4122
+  uuid: UUID,
+  // JSON-pointer: https://tools.ietf.org/html/rfc6901
+  // uri fragment: https://tools.ietf.org/html/rfc3986#appendix-A
+  'json-pointer': JSON_POINTER,
+  // relative JSON-pointer: http://tools.ietf.org/html/draft-luff-relative-json-pointer-00
+  'relative-json-pointer': RELATIVE_JSON_POINTER
+};
+
+
+formats.full = {
+  date: date,
+  time: time,
+  'date-time': date_time,
+  uri: uri,
+  email: /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&''*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
+  hostname: hostname,
+  ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
+  ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
+  regex: regex,
+  uuid: UUID,
+  'json-pointer': JSON_POINTER,
+  'relative-json-pointer': RELATIVE_JSON_POINTER
+};
+
+
+formats.compare = {
+  date: compareDate,
+  time: compareTime,
+  'date-time': compareDateTime
+};
+
+
+function date(str) {
+  // full-date from http://tools.ietf.org/html/rfc3339#section-5.6
+  var matches = str.match(DATE);
+  if (!matches) return false;
+
+  var month = +matches[1];
+  var day = +matches[2];
+  return month >= 1 && month <= 12 && day >= 1 && day <= DAYS[month];
+}
+
+
+function time(str, full) {
+  var matches = str.match(TIME);
+  if (!matches) return false;
+
+  var hour = matches[1];
+  var minute = matches[2];
+  var second = matches[3];
+  var timeZone = matches[5];
+  return hour <= 23 && minute <= 59 && second <= 59 && (!full || timeZone);
+}
+
+
+var DATE_TIME_SEPARATOR = /t|\s/i;
+function date_time(str) {
+  // http://tools.ietf.org/html/rfc3339#section-5.6
+  var dateTime = str.split(DATE_TIME_SEPARATOR);
+  return dateTime.length == 2 && date(dateTime[0]) && time(dateTime[1], true);
+}
+
+
+function hostname(str) {
+  // https://tools.ietf.org/html/rfc1034#section-3.5
+  // https://tools.ietf.org/html/rfc1123#section-2
+  return str.length <= 255 && HOSTNAME.test(str);
+}
+
+
+var NOT_URI_FRAGMENT = /\/|\:/;
+function uri(str) {
+  // http://jmrware.com/articles/2009/uri_regexp/URI_regex.html + optional protocol + required "."
+  return NOT_URI_FRAGMENT.test(str) && URI.test(str);
+}
+
+
+function regex(str) {
+  try {
+    new RegExp(str);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+
+function compareDate(d1, d2) {
+  if (!(d1 && d2)) return;
+  if (d1 > d2) return 1;
+  if (d1 < d2) return -1;
+  if (d1 === d2) return 0;
+}
+
+
+function compareTime(t1, t2) {
+  if (!(t1 && t2)) return;
+  t1 = t1.match(TIME);
+  t2 = t2.match(TIME);
+  if (!(t1 && t2)) return;
+  t1 = t1[1] + t1[2] + t1[3] + (t1[4]||'');
+  t2 = t2[1] + t2[2] + t2[3] + (t2[4]||'');
+  if (t1 > t2) return 1;
+  if (t1 < t2) return -1;
+  if (t1 === t2) return 0;
+}
+
+
+function compareDateTime(dt1, dt2) {
+  if (!(dt1 && dt2)) return;
+  dt1 = dt1.split(DATE_TIME_SEPARATOR);
+  dt2 = dt2.split(DATE_TIME_SEPARATOR);
+  var res = compareDate(dt1[0], dt2[0]);
+  if (res === undefined) return;
+  return res || compareTime(dt1[1], dt2[1]);
+}
+
+},{"./util":12}],7:[function(require,module,exports){
+'use strict';
+
+var resolve = require('./resolve')
+  , util = require('./util')
+  , stableStringify = require('json-stable-stringify')
+  , async = require('../async');
+
+var beautify;
+
+function loadBeautify(){
+  if (beautify === undefined) {
+    var name = 'js-beautify';
+    try { beautify = require(name).js_beautify; }
+    catch(e) { beautify = false; }
+  }
+}
+
+var validateGenerator = require('../dotjs/validate');
+
+/**
+ * Functions below are used inside compiled validations function
+ */
+
+var co = require('co');
+var ucs2length = util.ucs2length;
+var equal = require('./equal');
+
+// this error is thrown by async schemas to return validation errors via exception
+var ValidationError = require('./validation_error');
+
+module.exports = compile;
+
+
+/**
+ * Compiles schema to validation function
+ * @this   Ajv
+ * @param  {Object} schema schema object
+ * @param  {Object} root object with information about the root schema for this schema
+ * @param  {Object} localRefs the hash of local references inside the schema (created by resolve.id), used for inline resolution
+ * @param  {String} baseId base ID for IDs in the schema
+ * @return {Function} validation function
+ */
+function compile(schema, root, localRefs, baseId) {
+  /* jshint validthis: true, evil: true */
+  /* eslint no-shadow: 0 */
+  var self = this
+    , opts = this._opts
+    , refVal = [ undefined ]
+    , refs = {}
+    , patterns = []
+    , patternsHash = {}
+    , defaults = []
+    , defaultsHash = {}
+    , customRules = []
+    , keepSourceCode = opts.sourceCode !== false;
+
+  root = root || { schema: schema, refVal: refVal, refs: refs };
+
+  var c = checkCompiling.call(this, schema, root, baseId);
+  var compilation = this._compilations[c.index];
+  if (c.compiling) return (compilation.callValidate = callValidate);
+
+  var formats = this._formats;
+  var RULES = this.RULES;
+
+  try {
+    var v = localCompile(schema, root, localRefs, baseId);
+    compilation.validate = v;
+    var cv = compilation.callValidate;
+    if (cv) {
+      cv.schema = v.schema;
+      cv.errors = null;
+      cv.refs = v.refs;
+      cv.refVal = v.refVal;
+      cv.root = v.root;
+      cv.$async = v.$async;
+      if (keepSourceCode) cv.sourceCode = v.sourceCode;
+    }
+    return v;
+  } finally {
+    endCompiling.call(this, schema, root, baseId);
+  }
+
+  function callValidate() {
+    var validate = compilation.validate;
+    var result = validate.apply(null, arguments);
+    callValidate.errors = validate.errors;
+    return result;
+  }
+
+  function localCompile(_schema, _root, localRefs, baseId) {
+    var isRoot = !_root || (_root && _root.schema == _schema);
+    if (_root.schema != root.schema)
+      return compile.call(self, _schema, _root, localRefs, baseId);
+
+    var $async = _schema.$async === true;
+    if ($async && !opts.transpile) async.setup(opts);
+
+    var sourceCode = validateGenerator({
+      isTop: true,
+      schema: _schema,
+      isRoot: isRoot,
+      baseId: baseId,
+      root: _root,
+      schemaPath: '',
+      errSchemaPath: '#',
+      errorPath: '""',
+      RULES: RULES,
+      validate: validateGenerator,
+      util: util,
+      resolve: resolve,
+      resolveRef: resolveRef,
+      usePattern: usePattern,
+      useDefault: useDefault,
+      useCustomRule: useCustomRule,
+      opts: opts,
+      formats: formats,
+      self: self
+    });
+
+    sourceCode = vars(refVal, refValCode) + vars(patterns, patternCode)
+                   + vars(defaults, defaultCode) + vars(customRules, customRuleCode)
+                   + sourceCode;
+
+    if (opts.beautify) {
+      loadBeautify();
+      /* istanbul ignore else */
+      if (beautify) sourceCode = beautify(sourceCode, opts.beautify);
+      else console.error('"npm install js-beautify" to use beautify option');
+    }
+    // console.log('\n\n\n *** \n', sourceCode);
+    var validate, validateCode
+      , transpile = opts._transpileFunc;
+    try {
+      validateCode = $async && transpile
+                      ? transpile(sourceCode)
+                      : sourceCode;
+
+      var makeValidate = new Function(
+        'self',
+        'RULES',
+        'formats',
+        'root',
+        'refVal',
+        'defaults',
+        'customRules',
+        'co',
+        'equal',
+        'ucs2length',
+        'ValidationError',
+        validateCode
+      );
+
+      validate = makeValidate(
+        self,
+        RULES,
+        formats,
+        root,
+        refVal,
+        defaults,
+        customRules,
+        co,
+        equal,
+        ucs2length,
+        ValidationError
+      );
+
+      refVal[0] = validate;
+    } catch(e) {
+      console.error('Error compiling schema, function code:', validateCode);
+      throw e;
+    }
+
+    validate.schema = _schema;
+    validate.errors = null;
+    validate.refs = refs;
+    validate.refVal = refVal;
+    validate.root = isRoot ? validate : _root;
+    if ($async) validate.$async = true;
+    if (keepSourceCode) validate.sourceCode = sourceCode;
+    if (opts.sourceCode === true) {
+      validate.source = {
+        patterns: patterns,
+        defaults: defaults
+      };
+    }
+
+    return validate;
+  }
+
+  function resolveRef(baseId, ref, isRoot) {
+    ref = resolve.url(baseId, ref);
+    var refIndex = refs[ref];
+    var _refVal, refCode;
+    if (refIndex !== undefined) {
+      _refVal = refVal[refIndex];
+      refCode = 'refVal[' + refIndex + ']';
+      return resolvedRef(_refVal, refCode);
+    }
+    if (!isRoot && root.refs) {
+      var rootRefId = root.refs[ref];
+      if (rootRefId !== undefined) {
+        _refVal = root.refVal[rootRefId];
+        refCode = addLocalRef(ref, _refVal);
+        return resolvedRef(_refVal, refCode);
+      }
+    }
+
+    refCode = addLocalRef(ref);
+    var v = resolve.call(self, localCompile, root, ref);
+    if (!v) {
+      var localSchema = localRefs && localRefs[ref];
+      if (localSchema) {
+        v = resolve.inlineRef(localSchema, opts.inlineRefs)
+            ? localSchema
+            : compile.call(self, localSchema, root, localRefs, baseId);
+      }
+    }
+
+    if (v) {
+      replaceLocalRef(ref, v);
+      return resolvedRef(v, refCode);
+    }
+  }
+
+  function addLocalRef(ref, v) {
+    var refId = refVal.length;
+    refVal[refId] = v;
+    refs[ref] = refId;
+    return 'refVal' + refId;
+  }
+
+  function replaceLocalRef(ref, v) {
+    var refId = refs[ref];
+    refVal[refId] = v;
+  }
+
+  function resolvedRef(refVal, code) {
+    return typeof refVal == 'object'
+            ? { code: code, schema: refVal, inline: true }
+            : { code: code, $async: refVal && refVal.$async };
+  }
+
+  function usePattern(regexStr) {
+    var index = patternsHash[regexStr];
+    if (index === undefined) {
+      index = patternsHash[regexStr] = patterns.length;
+      patterns[index] = regexStr;
+    }
+    return 'pattern' + index;
+  }
+
+  function useDefault(value) {
+    switch (typeof value) {
+      case 'boolean':
+      case 'number':
+        return '' + value;
+      case 'string':
+        return util.toQuotedString(value);
+      case 'object':
+        if (value === null) return 'null';
+        var valueStr = stableStringify(value);
+        var index = defaultsHash[valueStr];
+        if (index === undefined) {
+          index = defaultsHash[valueStr] = defaults.length;
+          defaults[index] = value;
+        }
+        return 'default' + index;
+    }
+  }
+
+  function useCustomRule(rule, schema, parentSchema, it) {
+    var validateSchema = rule.definition.validateSchema;
+    if (validateSchema && self._opts.validateSchema !== false) {
+      var valid = validateSchema(schema);
+      if (!valid) {
+        var message = 'keyword schema is invalid: ' + self.errorsText(validateSchema.errors);
+        if (self._opts.validateSchema == 'log') console.error(message);
+        else throw new Error(message);
+      }
+    }
+
+    var compile = rule.definition.compile
+      , inline = rule.definition.inline
+      , macro = rule.definition.macro;
+
+    var validate;
+    if (compile) {
+      validate = compile.call(self, schema, parentSchema, it);
+    } else if (macro) {
+      validate = macro.call(self, schema, parentSchema, it);
+      if (opts.validateSchema !== false) self.validateSchema(validate, true);
+    } else if (inline) {
+      validate = inline.call(self, it, rule.keyword, schema, parentSchema);
+    } else {
+      validate = rule.definition.validate;
+    }
+
+    var index = customRules.length;
+    customRules[index] = validate;
+
+    return {
+      code: 'customRule' + index,
+      validate: validate
+    };
+  }
+}
+
+
+/**
+ * Checks if the schema is currently compiled
+ * @this   Ajv
+ * @param  {Object} schema schema to compile
+ * @param  {Object} root root object
+ * @param  {String} baseId base schema ID
+ * @return {Object} object with properties "index" (compilation index) and "compiling" (boolean)
+ */
+function checkCompiling(schema, root, baseId) {
+  /* jshint validthis: true */
+  var index = compIndex.call(this, schema, root, baseId);
+  if (index >= 0) return { index: index, compiling: true };
+  index = this._compilations.length;
+  this._compilations[index] = {
+    schema: schema,
+    root: root,
+    baseId: baseId
+  };
+  return { index: index, compiling: false };
+}
+
+
+/**
+ * Removes the schema from the currently compiled list
+ * @this   Ajv
+ * @param  {Object} schema schema to compile
+ * @param  {Object} root root object
+ * @param  {String} baseId base schema ID
+ */
+function endCompiling(schema, root, baseId) {
+  /* jshint validthis: true */
+  var i = compIndex.call(this, schema, root, baseId);
+  if (i >= 0) this._compilations.splice(i, 1);
+}
+
+
+/**
+ * Index of schema compilation in the currently compiled list
+ * @this   Ajv
+ * @param  {Object} schema schema to compile
+ * @param  {Object} root root object
+ * @param  {String} baseId base schema ID
+ * @return {Integer} compilation index
+ */
+function compIndex(schema, root, baseId) {
+  /* jshint validthis: true */
+  for (var i=0; i<this._compilations.length; i++) {
+    var c = this._compilations[i];
+    if (c.schema == schema && c.root == root && c.baseId == baseId) return i;
+  }
+  return -1;
+}
+
+
+function patternCode(i, patterns) {
+  return 'var pattern' + i + ' = new RegExp(' + util.toQuotedString(patterns[i]) + ');';
+}
+
+
+function defaultCode(i) {
+  return 'var default' + i + ' = defaults[' + i + '];';
+}
+
+
+function refValCode(i, refVal) {
+  return refVal[i] ? 'var refVal' + i + ' = refVal[' + i + '];' : '';
+}
+
+
+function customRuleCode(i) {
+  return 'var customRule' + i + ' = customRules[' + i + '];';
+}
+
+
+function vars(arr, statement) {
+  if (!arr.length) return '';
+  var code = '';
+  for (var i=0; i<arr.length; i++)
+    code += statement(i, arr);
+  return code;
+}
+
+},{"../async":2,"../dotjs/validate":37,"./equal":5,"./resolve":8,"./util":12,"./validation_error":13,"co":44,"json-stable-stringify":77}],8:[function(require,module,exports){
+'use strict';
+
+var url = require('url')
+  , equal = require('./equal')
+  , util = require('./util')
+  , SchemaObject = require('./schema_obj');
+
+module.exports = resolve;
+
+resolve.normalizeId = normalizeId;
+resolve.fullPath = getFullPath;
+resolve.url = resolveUrl;
+resolve.ids = resolveIds;
+resolve.inlineRef = inlineRef;
+resolve.schema = resolveSchema;
+
+/**
+ * [resolve and compile the references ($ref)]
+ * @this   Ajv
+ * @param  {Function} compile reference to schema compilation funciton (localCompile)
+ * @param  {Object} root object with information about the root schema for the current schema
+ * @param  {String} ref reference to resolve
+ * @return {Object|Function} schema object (if the schema can be inlined) or validation function
+ */
+function resolve(compile, root, ref) {
+  /* jshint validthis: true */
+  var refVal = this._refs[ref];
+  if (typeof refVal == 'string') {
+    if (this._refs[refVal]) refVal = this._refs[refVal];
+    else return resolve.call(this, compile, root, refVal);
+  }
+
+  refVal = refVal || this._schemas[ref];
+  if (refVal instanceof SchemaObject) {
+    return inlineRef(refVal.schema, this._opts.inlineRefs)
+            ? refVal.schema
+            : refVal.validate || this._compile(refVal);
+  }
+
+  var res = resolveSchema.call(this, root, ref);
+  var schema, v, baseId;
+  if (res) {
+    schema = res.schema;
+    root = res.root;
+    baseId = res.baseId;
+  }
+
+  if (schema instanceof SchemaObject) {
+    v = schema.validate || compile.call(this, schema.schema, root, undefined, baseId);
+  } else if (schema) {
+    v = inlineRef(schema, this._opts.inlineRefs)
+        ? schema
+        : compile.call(this, schema, root, undefined, baseId);
+  }
+
+  return v;
+}
+
+
+/**
+ * Resolve schema, its root and baseId
+ * @this Ajv
+ * @param  {Object} root root object with properties schema, refVal, refs
+ * @param  {String} ref  reference to resolve
+ * @return {Object} object with properties schema, root, baseId
+ */
+function resolveSchema(root, ref) {
+  /* jshint validthis: true */
+  var p = url.parse(ref, false, true)
+    , refPath = _getFullPath(p)
+    , baseId = getFullPath(root.schema.id);
+  if (refPath !== baseId) {
+    var id = normalizeId(refPath);
+    var refVal = this._refs[id];
+    if (typeof refVal == 'string') {
+      return resolveRecursive.call(this, root, refVal, p);
+    } else if (refVal instanceof SchemaObject) {
+      if (!refVal.validate) this._compile(refVal);
+      root = refVal;
+    } else {
+      refVal = this._schemas[id];
+      if (refVal instanceof SchemaObject) {
+        if (!refVal.validate) this._compile(refVal);
+        if (id == normalizeId(ref))
+          return { schema: refVal, root: root, baseId: baseId };
+        root = refVal;
+      } else {
+        return;
+      }
+    }
+    if (!root.schema) return;
+    baseId = getFullPath(root.schema.id);
+  }
+  return getJsonPointer.call(this, p, baseId, root.schema, root);
+}
+
+
+/* @this Ajv */
+function resolveRecursive(root, ref, parsedRef) {
+  /* jshint validthis: true */
+  var res = resolveSchema.call(this, root, ref);
+  if (res) {
+    var schema = res.schema;
+    var baseId = res.baseId;
+    root = res.root;
+    if (schema.id) baseId = resolveUrl(baseId, schema.id);
+    return getJsonPointer.call(this, parsedRef, baseId, schema, root);
+  }
+}
+
+
+var PREVENT_SCOPE_CHANGE = util.toHash(['properties', 'patternProperties', 'enum', 'dependencies', 'definitions']);
+/* @this Ajv */
+function getJsonPointer(parsedRef, baseId, schema, root) {
+  /* jshint validthis: true */
+  parsedRef.hash = parsedRef.hash || '';
+  if (parsedRef.hash.slice(0,2) != '#/') return;
+  var parts = parsedRef.hash.split('/');
+
+  for (var i = 1; i < parts.length; i++) {
+    var part = parts[i];
+    if (part) {
+      part = util.unescapeFragment(part);
+      schema = schema[part];
+      if (!schema) break;
+      if (schema.id && !PREVENT_SCOPE_CHANGE[part]) baseId = resolveUrl(baseId, schema.id);
+      if (schema.$ref) {
+        var $ref = resolveUrl(baseId, schema.$ref);
+        var res = resolveSchema.call(this, root, $ref);
+        if (res) {
+          schema = res.schema;
+          root = res.root;
+          baseId = res.baseId;
+        }
+      }
+    }
+  }
+  if (schema && schema != root.schema)
+    return { schema: schema, root: root, baseId: baseId };
+}
+
+
+var SIMPLE_INLINED = util.toHash([
+  'type', 'format', 'pattern',
+  'maxLength', 'minLength',
+  'maxProperties', 'minProperties',
+  'maxItems', 'minItems',
+  'maximum', 'minimum',
+  'uniqueItems', 'multipleOf',
+  'required', 'enum'
+]);
+function inlineRef(schema, limit) {
+  if (limit === false) return false;
+  if (limit === undefined || limit === true) return checkNoRef(schema);
+  else if (limit) return countKeys(schema) <= limit;
+}
+
+
+function checkNoRef(schema) {
+  var item;
+  if (Array.isArray(schema)) {
+    for (var i=0; i<schema.length; i++) {
+      item = schema[i];
+      if (typeof item == 'object' && !checkNoRef(item)) return false;
+    }
+  } else {
+    for (var key in schema) {
+      if (key == '$ref') return false;
+      item = schema[key];
+      if (typeof item == 'object' && !checkNoRef(item)) return false;
+    }
+  }
+  return true;
+}
+
+
+function countKeys(schema) {
+  var count = 0, item;
+  if (Array.isArray(schema)) {
+    for (var i=0; i<schema.length; i++) {
+      item = schema[i];
+      if (typeof item == 'object') count += countKeys(item);
+      if (count == Infinity) return Infinity;
+    }
+  } else {
+    for (var key in schema) {
+      if (key == '$ref') return Infinity;
+      if (SIMPLE_INLINED[key]) {
+        count++;
+      } else {
+        item = schema[key];
+        if (typeof item == 'object') count += countKeys(item) + 1;
+        if (count == Infinity) return Infinity;
+      }
+    }
+  }
+  return count;
+}
+
+
+function getFullPath(id, normalize) {
+  if (normalize !== false) id = normalizeId(id);
+  var p = url.parse(id, false, true);
+  return _getFullPath(p);
+}
+
+
+function _getFullPath(p) {
+  var protocolSeparator = p.protocol || p.href.slice(0,2) == '//' ? '//' : '';
+  return (p.protocol||'') + protocolSeparator + (p.host||'') + (p.path||'')  + '#';
+}
+
+
+var TRAILING_SLASH_HASH = /#\/?$/;
+function normalizeId(id) {
+  return id ? id.replace(TRAILING_SLASH_HASH, '') : '';
+}
+
+
+function resolveUrl(baseId, id) {
+  id = normalizeId(id);
+  return url.resolve(baseId, id);
+}
+
+
+/* @this Ajv */
+function resolveIds(schema) {
+  /* eslint no-shadow: 0 */
+  /* jshint validthis: true */
+  var id = normalizeId(schema.id);
+  var localRefs = {};
+  _resolveIds.call(this, schema, getFullPath(id, false), id);
+  return localRefs;
+
+  /* @this Ajv */
+  function _resolveIds(schema, fullPath, baseId) {
+    /* jshint validthis: true */
+    if (Array.isArray(schema)) {
+      for (var i=0; i<schema.length; i++)
+        _resolveIds.call(this, schema[i], fullPath+'/'+i, baseId);
+    } else if (schema && typeof schema == 'object') {
+      if (typeof schema.id == 'string') {
+        var id = baseId = baseId
+                          ? url.resolve(baseId, schema.id)
+                          : schema.id;
+        id = normalizeId(id);
+
+        var refVal = this._refs[id];
+        if (typeof refVal == 'string') refVal = this._refs[refVal];
+        if (refVal && refVal.schema) {
+          if (!equal(schema, refVal.schema))
+            throw new Error('id "' + id + '" resolves to more than one schema');
+        } else if (id != normalizeId(fullPath)) {
+          if (id[0] == '#') {
+            if (localRefs[id] && !equal(schema, localRefs[id]))
+              throw new Error('id "' + id + '" resolves to more than one schema');
+            localRefs[id] = schema;
+          } else {
+            this._refs[id] = fullPath;
+          }
+        }
+      }
+      for (var key in schema)
+        _resolveIds.call(this, schema[key], fullPath+'/'+util.escapeFragment(key), baseId);
+    }
+  }
+}
+
+},{"./equal":5,"./schema_obj":10,"./util":12,"url":undefined}],9:[function(require,module,exports){
+'use strict';
+
+var ruleModules = require('./_rules')
+  , toHash = require('./util').toHash;
+
+module.exports = function rules() {
+  var RULES = [
+    { type: 'number',
+      rules: [ 'maximum', 'minimum', 'multipleOf'] },
+    { type: 'string',
+      rules: [ 'maxLength', 'minLength', 'pattern', 'format' ] },
+    { type: 'array',
+      rules: [ 'maxItems', 'minItems', 'uniqueItems', 'items' ] },
+    { type: 'object',
+      rules: [ 'maxProperties', 'minProperties', 'required', 'dependencies', 'properties' ] },
+    { rules: [ '$ref', 'enum', 'not', 'anyOf', 'oneOf', 'allOf' ] }
+  ];
+
+  var ALL = [ 'type', 'additionalProperties', 'patternProperties' ];
+  var KEYWORDS = [ 'additionalItems', '$schema', 'id', 'title', 'description', 'default' ];
+  var TYPES = [ 'number', 'integer', 'string', 'array', 'object', 'boolean', 'null' ];
+  RULES.all = toHash(ALL);
+
+  RULES.forEach(function (group) {
+    group.rules = group.rules.map(function (keyword) {
+      ALL.push(keyword);
+      var rule = RULES.all[keyword] = {
+        keyword: keyword,
+        code: ruleModules[keyword]
+      };
+      return rule;
+    });
+  });
+
+  RULES.keywords = toHash(ALL.concat(KEYWORDS));
+  RULES.types = toHash(TYPES);
+  RULES.custom = {};
+
+  return RULES;
+};
+
+},{"./_rules":4,"./util":12}],10:[function(require,module,exports){
+'use strict';
+
+var util = require('./util');
+
+module.exports = SchemaObject;
+
+function SchemaObject(obj) {
+  util.copy(obj, this);
+}
+
+},{"./util":12}],11:[function(require,module,exports){
+'use strict';
+
+// https://mathiasbynens.be/notes/javascript-encoding
+// https://github.com/bestiejs/punycode.js - punycode.ucs2.decode
+module.exports = function ucs2length(str) {
+  var length = 0
+    , len = str.length
+    , pos = 0
+    , value;
+  while (pos < len) {
+    length++;
+    value = str.charCodeAt(pos++);
+    if (value >= 0xD800 && value <= 0xDBFF && pos < len) {
+      // high surrogate, and there is a next character
+      value = str.charCodeAt(pos);
+      if ((value & 0xFC00) == 0xDC00) pos++; // low surrogate
+    }
+  }
+  return length;
+};
+
+},{}],12:[function(require,module,exports){
+'use strict';
+
+
+module.exports = {
+  copy: copy,
+  checkDataType: checkDataType,
+  checkDataTypes: checkDataTypes,
+  coerceToTypes: coerceToTypes,
+  toHash: toHash,
+  getProperty: getProperty,
+  escapeQuotes: escapeQuotes,
+  ucs2length: require('./ucs2length'),
+  varOccurences: varOccurences,
+  varReplace: varReplace,
+  cleanUpCode: cleanUpCode,
+  cleanUpVarErrors: cleanUpVarErrors,
+  schemaHasRules: schemaHasRules,
+  schemaHasRulesExcept: schemaHasRulesExcept,
+  stableStringify: require('json-stable-stringify'),
+  toQuotedString: toQuotedString,
+  getPathExpr: getPathExpr,
+  getPath: getPath,
+  getData: getData,
+  unescapeFragment: unescapeFragment,
+  escapeFragment: escapeFragment,
+  escapeJsonPointer: escapeJsonPointer
+};
+
+
+function copy(o, to) {
+  to = to || {};
+  for (var key in o) to[key] = o[key];
+  return to;
+}
+
+
+function checkDataType(dataType, data, negate) {
+  var EQUAL = negate ? ' !== ' : ' === '
+    , AND = negate ? ' || ' : ' && '
+    , OK = negate ? '!' : ''
+    , NOT = negate ? '' : '!';
+  switch (dataType) {
+    case 'null': return data + EQUAL + 'null';
+    case 'array': return OK + 'Array.isArray(' + data + ')';
+    case 'object': return '(' + OK + data + AND +
+                          'typeof ' + data + EQUAL + '"object"' + AND +
+                          NOT + 'Array.isArray(' + data + '))';
+    case 'integer': return '(typeof ' + data + EQUAL + '"number"' + AND +
+                           NOT + '(' + data + ' % 1)' +
+                           AND + data + EQUAL + data + ')';
+    default: return 'typeof ' + data + EQUAL + '"' + dataType + '"';
+  }
+}
+
+
+function checkDataTypes(dataTypes, data) {
+  switch (dataTypes.length) {
+    case 1: return checkDataType(dataTypes[0], data, true);
+    default:
+      var code = '';
+      var types = toHash(dataTypes);
+      if (types.array && types.object) {
+        code = types.null ? '(': '(!' + data + ' || ';
+        code += 'typeof ' + data + ' !== "object")';
+        delete types.null;
+        delete types.array;
+        delete types.object;
+      }
+      if (types.number) delete types.integer;
+      for (var t in types)
+        code += (code ? ' && ' : '' ) + checkDataType(t, data, true);
+
+      return code;
+  }
+}
+
+
+var COERCE_TO_TYPES = toHash([ 'string', 'number', 'integer', 'boolean', 'null' ]);
+function coerceToTypes(optionCoerceTypes, dataTypes) {
+  if (Array.isArray(dataTypes)) {
+    var types = [];
+    for (var i=0; i<dataTypes.length; i++) {
+      var t = dataTypes[i];
+      if (COERCE_TO_TYPES[t]) types[types.length] = t;
+      else if (optionCoerceTypes === 'array' && t === 'array') types[types.length] = t;
+    }
+    if (types.length) return types;
+  } else if (COERCE_TO_TYPES[dataTypes]) {
+    return [dataTypes];
+  } else if (optionCoerceTypes === 'array' && dataTypes === 'array') {
+    return ['array'];
+  }
+}
+
+
+function toHash(arr) {
+  var hash = {};
+  for (var i=0; i<arr.length; i++) hash[arr[i]] = true;
+  return hash;
+}
+
+
+var IDENTIFIER = /^[a-z$_][a-z$_0-9]*$/i;
+var SINGLE_QUOTE = /'|\\/g;
+function getProperty(key) {
+  return typeof key == 'number'
+          ? '[' + key + ']'
+          : IDENTIFIER.test(key)
+            ? '.' + key
+            : "['" + escapeQuotes(key) + "']";
+}
+
+
+function escapeQuotes(str) {
+  return str.replace(SINGLE_QUOTE, '\\$&')
+            .replace(/\n/g, '\\n')
+            .replace(/\r/g, '\\r')
+            .replace(/\f/g, '\\f')
+            .replace(/\t/g, '\\t');
+}
+
+
+function varOccurences(str, dataVar) {
+  dataVar += '[^0-9]';
+  var matches = str.match(new RegExp(dataVar, 'g'));
+  return matches ? matches.length : 0;
+}
+
+
+function varReplace(str, dataVar, expr) {
+  dataVar += '([^0-9])';
+  expr = expr.replace(/\$/g, '$$$$');
+  return str.replace(new RegExp(dataVar, 'g'), expr + '$1');
+}
+
+
+var EMPTY_ELSE = /else\s*{\s*}/g
+  , EMPTY_IF_NO_ELSE = /if\s*\([^)]+\)\s*\{\s*\}(?!\s*else)/g
+  , EMPTY_IF_WITH_ELSE = /if\s*\(([^)]+)\)\s*\{\s*\}\s*else(?!\s*if)/g;
+function cleanUpCode(out) {
+  return out.replace(EMPTY_ELSE, '')
+            .replace(EMPTY_IF_NO_ELSE, '')
+            .replace(EMPTY_IF_WITH_ELSE, 'if (!($1))');
+}
+
+
+var ERRORS_REGEXP = /[^v\.]errors/g
+  , REMOVE_ERRORS = /var errors = 0;|var vErrors = null;|validate.errors = vErrors;/g
+  , REMOVE_ERRORS_ASYNC = /var errors = 0;|var vErrors = null;/g
+  , RETURN_VALID = 'return errors === 0;'
+  , RETURN_TRUE = 'validate.errors = null; return true;'
+  , RETURN_ASYNC = /if \(errors === 0\) return true;\s*else throw new ValidationError\(vErrors\);/
+  , RETURN_TRUE_ASYNC = 'return true;';
+
+function cleanUpVarErrors(out, async) {
+  var matches = out.match(ERRORS_REGEXP);
+  if (!matches || matches.length !== 2) return out;
+  return async
+          ? out.replace(REMOVE_ERRORS_ASYNC, '')
+               .replace(RETURN_ASYNC, RETURN_TRUE_ASYNC)
+          : out.replace(REMOVE_ERRORS, '')
+               .replace(RETURN_VALID, RETURN_TRUE);
+}
+
+
+function schemaHasRules(schema, rules) {
+  for (var key in schema) if (rules[key]) return true;
+}
+
+
+function schemaHasRulesExcept(schema, rules, exceptKeyword) {
+  for (var key in schema) if (key != exceptKeyword && rules[key]) return true;
+}
+
+
+function toQuotedString(str) {
+  return '\'' + escapeQuotes(str) + '\'';
+}
+
+
+function getPathExpr(currentPath, expr, jsonPointers, isNumber) {
+  var path = jsonPointers // false by default
+              ? '\'/\' + ' + expr + (isNumber ? '' : '.replace(/~/g, \'~0\').replace(/\\//g, \'~1\')')
+              : (isNumber ? '\'[\' + ' + expr + ' + \']\'' : '\'[\\\'\' + ' + expr + ' + \'\\\']\'');
+  return joinPaths(currentPath, path);
+}
+
+
+function getPath(currentPath, prop, jsonPointers) {
+  var path = jsonPointers // false by default
+              ? toQuotedString('/' + escapeJsonPointer(prop))
+              : toQuotedString(getProperty(prop));
+  return joinPaths(currentPath, path);
+}
+
+
+var JSON_POINTER = /^\/(?:[^~]|~0|~1)*$/;
+var RELATIVE_JSON_POINTER = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/;
+function getData($data, lvl, paths) {
+  var up, jsonPointer, data, matches;
+  if ($data === '') return 'rootData';
+  if ($data[0] == '/') {
+    if (!JSON_POINTER.test($data)) throw new Error('Invalid JSON-pointer: ' + $data);
+    jsonPointer = $data;
+    data = 'rootData';
+  } else {
+    matches = $data.match(RELATIVE_JSON_POINTER);
+    if (!matches) throw new Error('Invalid JSON-pointer: ' + $data);
+    up = +matches[1];
+    jsonPointer = matches[2];
+    if (jsonPointer == '#') {
+      if (up >= lvl) throw new Error('Cannot access property/index ' + up + ' levels up, current level is ' + lvl);
+      return paths[lvl - up];
+    }
+
+    if (up > lvl) throw new Error('Cannot access data ' + up + ' levels up, current level is ' + lvl);
+    data = 'data' + ((lvl - up) || '');
+    if (!jsonPointer) return data;
+  }
+
+  var expr = data;
+  var segments = jsonPointer.split('/');
+  for (var i=0; i<segments.length; i++) {
+    var segment = segments[i];
+    if (segment) {
+      data += getProperty(unescapeJsonPointer(segment));
+      expr += ' && ' + data;
+    }
+  }
+  return expr;
+}
+
+
+function joinPaths (a, b) {
+  if (a == '""') return b;
+  return (a + ' + ' + b).replace(/' \+ '/g, '');
+}
+
+
+function unescapeFragment(str) {
+  return unescapeJsonPointer(decodeURIComponent(str));
+}
+
+
+function escapeFragment(str) {
+  return encodeURIComponent(escapeJsonPointer(str));
+}
+
+
+function escapeJsonPointer(str) {
+  return str.replace(/~/g, '~0').replace(/\//g, '~1');
+}
+
+
+function unescapeJsonPointer(str) {
+  return str.replace(/~1/g, '/').replace(/~0/g, '~');
+}
+
+},{"./ucs2length":11,"json-stable-stringify":77}],13:[function(require,module,exports){
+'use strict';
+
+module.exports = ValidationError;
+
+
+function ValidationError(errors) {
+  this.message = 'validation failed';
+  this.errors = errors;
+  this.ajv = this.validation = true;
+}
+
+
+ValidationError.prototype = Object.create(Error.prototype);
+ValidationError.prototype.constructor = ValidationError;
+
+},{}],14:[function(require,module,exports){
+'use strict';
+module.exports = function generate__formatLimit(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  out += 'var ' + ($valid) + ' = undefined;';
+  if (it.opts.format === false) {
+    out += ' ' + ($valid) + ' = true; ';
+    return out;
+  }
+  var $schemaFormat = it.schema.format,
+    $isDataFormat = it.opts.v5 && $schemaFormat.$data,
+    $closingBraces = '';
+  if ($isDataFormat) {
+    var $schemaValueFormat = it.util.getData($schemaFormat.$data, $dataLvl, it.dataPathArr),
+      $format = 'format' + $lvl,
+      $compare = 'compare' + $lvl;
+    out += ' var ' + ($format) + ' = formats[' + ($schemaValueFormat) + '] , ' + ($compare) + ' = ' + ($format) + ' && ' + ($format) + '.compare;';
+  } else {
+    var $format = it.formats[$schemaFormat];
+    if (!($format && $format.compare)) {
+      out += '  ' + ($valid) + ' = true; ';
+      return out;
+    }
+    var $compare = 'formats' + it.util.getProperty($schemaFormat) + '.compare';
+  }
+  var $isMax = $keyword == 'formatMaximum',
+    $exclusiveKeyword = 'formatExclusive' + ($isMax ? 'Maximum' : 'Minimum'),
+    $schemaExcl = it.schema[$exclusiveKeyword],
+    $isDataExcl = it.opts.v5 && $schemaExcl && $schemaExcl.$data,
+    $op = $isMax ? '<' : '>',
+    $result = 'result' + $lvl;
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if ($isDataExcl) {
+    var $schemaValueExcl = it.util.getData($schemaExcl.$data, $dataLvl, it.dataPathArr),
+      $exclusive = 'exclusive' + $lvl,
+      $opExpr = 'op' + $lvl,
+      $opStr = '\' + ' + $opExpr + ' + \'';
+    out += ' var schemaExcl' + ($lvl) + ' = ' + ($schemaValueExcl) + '; ';
+    $schemaValueExcl = 'schemaExcl' + $lvl;
+    out += ' if (typeof ' + ($schemaValueExcl) + ' != \'boolean\' && ' + ($schemaValueExcl) + ' !== undefined) { ' + ($valid) + ' = false; ';
+    var $errorKeyword = $exclusiveKeyword;
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ($errorKeyword || '_formatExclusiveLimit') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'' + ($exclusiveKeyword) + ' should be boolean\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' }  ';
+    if ($breakOnError) {
+      $closingBraces += '}';
+      out += ' else { ';
+    }
+    if ($isData) {
+      out += ' if (' + ($schemaValue) + ' === undefined) ' + ($valid) + ' = true; else if (typeof ' + ($schemaValue) + ' != \'string\') ' + ($valid) + ' = false; else { ';
+      $closingBraces += '}';
+    }
+    if ($isDataFormat) {
+      out += ' if (!' + ($compare) + ') ' + ($valid) + ' = true; else { ';
+      $closingBraces += '}';
+    }
+    out += ' var ' + ($result) + ' = ' + ($compare) + '(' + ($data) + ',  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += ' ); if (' + ($result) + ' === undefined) ' + ($valid) + ' = false; var ' + ($exclusive) + ' = ' + ($schemaValueExcl) + ' === true; if (' + ($valid) + ' === undefined) { ' + ($valid) + ' = ' + ($exclusive) + ' ? ' + ($result) + ' ' + ($op) + ' 0 : ' + ($result) + ' ' + ($op) + '= 0; } if (!' + ($valid) + ') var op' + ($lvl) + ' = ' + ($exclusive) + ' ? \'' + ($op) + '\' : \'' + ($op) + '=\';';
+  } else {
+    var $exclusive = $schemaExcl === true,
+      $opStr = $op;
+    if (!$exclusive) $opStr += '=';
+    var $opExpr = '\'' + $opStr + '\'';
+    if ($isData) {
+      out += ' if (' + ($schemaValue) + ' === undefined) ' + ($valid) + ' = true; else if (typeof ' + ($schemaValue) + ' != \'string\') ' + ($valid) + ' = false; else { ';
+      $closingBraces += '}';
+    }
+    if ($isDataFormat) {
+      out += ' if (!' + ($compare) + ') ' + ($valid) + ' = true; else { ';
+      $closingBraces += '}';
+    }
+    out += ' var ' + ($result) + ' = ' + ($compare) + '(' + ($data) + ',  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += ' ); if (' + ($result) + ' === undefined) ' + ($valid) + ' = false; if (' + ($valid) + ' === undefined) ' + ($valid) + ' = ' + ($result) + ' ' + ($op);
+    if (!$exclusive) {
+      out += '=';
+    }
+    out += ' 0;';
+  }
+  out += '' + ($closingBraces) + 'if (!' + ($valid) + ') { ';
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_formatLimit') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { comparison: ' + ($opExpr) + ', limit:  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += ' , exclusive: ' + ($exclusive) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be ' + ($opStr) + ' "';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + (it.util.escapeQuotes($schema));
+      }
+      out += '"\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + (it.util.toQuotedString($schema));
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '}';
+  return out;
+}
+
+},{}],15:[function(require,module,exports){
+'use strict';
+module.exports = function generate__limit(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $isMax = $keyword == 'maximum',
+    $exclusiveKeyword = $isMax ? 'exclusiveMaximum' : 'exclusiveMinimum',
+    $schemaExcl = it.schema[$exclusiveKeyword],
+    $isDataExcl = it.opts.v5 && $schemaExcl && $schemaExcl.$data,
+    $op = $isMax ? '<' : '>',
+    $notOp = $isMax ? '>' : '<';
+  if ($isDataExcl) {
+    var $schemaValueExcl = it.util.getData($schemaExcl.$data, $dataLvl, it.dataPathArr),
+      $exclusive = 'exclusive' + $lvl,
+      $opExpr = 'op' + $lvl,
+      $opStr = '\' + ' + $opExpr + ' + \'';
+    out += ' var schemaExcl' + ($lvl) + ' = ' + ($schemaValueExcl) + '; ';
+    $schemaValueExcl = 'schemaExcl' + $lvl;
+    out += ' var exclusive' + ($lvl) + '; if (typeof ' + ($schemaValueExcl) + ' != \'boolean\' && typeof ' + ($schemaValueExcl) + ' != \'undefined\') { ';
+    var $errorKeyword = $exclusiveKeyword;
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ($errorKeyword || '_exclusiveLimit') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'' + ($exclusiveKeyword) + ' should be boolean\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' } else if( ';
+    if ($isData) {
+      out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+    }
+    out += ' ((exclusive' + ($lvl) + ' = ' + ($schemaValueExcl) + ' === true) ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaValue) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ') || ' + ($data) + ' !== ' + ($data) + ') { var op' + ($lvl) + ' = exclusive' + ($lvl) + ' ? \'' + ($op) + '\' : \'' + ($op) + '=\';';
+  } else {
+    var $exclusive = $schemaExcl === true,
+      $opStr = $op;
+    if (!$exclusive) $opStr += '=';
+    var $opExpr = '\'' + $opStr + '\'';
+    out += ' if ( ';
+    if ($isData) {
+      out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+    }
+    out += ' ' + ($data) + ' ' + ($notOp);
+    if ($exclusive) {
+      out += '=';
+    }
+    out += ' ' + ($schemaValue) + ' || ' + ($data) + ' !== ' + ($data) + ') {';
+  }
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limit') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { comparison: ' + ($opExpr) + ', limit: ' + ($schemaValue) + ', exclusive: ' + ($exclusive) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be ' + ($opStr) + ' ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue);
+      } else {
+        out += '' + ($schema) + '\'';
+      }
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' } ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],16:[function(require,module,exports){
+'use strict';
+module.exports = function generate__limitItems(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $op = $keyword == 'maxItems' ? '>' : '<';
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+  }
+  out += ' ' + ($data) + '.length ' + ($op) + ' ' + ($schemaValue) + ') { ';
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limitItems') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should NOT have ';
+      if ($keyword == 'maxItems') {
+        out += 'more';
+      } else {
+        out += 'less';
+      }
+      out += ' than ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + ($schema);
+      }
+      out += ' items\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],17:[function(require,module,exports){
+'use strict';
+module.exports = function generate__limitLength(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $op = $keyword == 'maxLength' ? '>' : '<';
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+  }
+  if (it.opts.unicode === false) {
+    out += ' ' + ($data) + '.length ';
+  } else {
+    out += ' ucs2length(' + ($data) + ') ';
+  }
+  out += ' ' + ($op) + ' ' + ($schemaValue) + ') { ';
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limitLength') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should NOT be ';
+      if ($keyword == 'maxLength') {
+        out += 'longer';
+      } else {
+        out += 'shorter';
+      }
+      out += ' than ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + ($schema);
+      }
+      out += ' characters\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],18:[function(require,module,exports){
+'use strict';
+module.exports = function generate__limitProperties(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $op = $keyword == 'maxProperties' ? '>' : '<';
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+  }
+  out += ' Object.keys(' + ($data) + ').length ' + ($op) + ' ' + ($schemaValue) + ') { ';
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limitProperties') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should NOT have ';
+      if ($keyword == 'maxProperties') {
+        out += 'more';
+      } else {
+        out += 'less';
+      }
+      out += ' than ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + ($schema);
+      }
+      out += ' properties\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],19:[function(require,module,exports){
+'use strict';
+module.exports = function generate_allOf(it, $keyword) {
+  var out = ' ';
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $currentBaseId = $it.baseId,
+    $allSchemasEmpty = true;
+  var arr1 = $schema;
+  if (arr1) {
+    var $sch, $i = -1,
+      l1 = arr1.length - 1;
+    while ($i < l1) {
+      $sch = arr1[$i += 1];
+      if (it.util.schemaHasRules($sch, it.RULES.all)) {
+        $allSchemasEmpty = false;
+        $it.schema = $sch;
+        $it.schemaPath = $schemaPath + '[' + $i + ']';
+        $it.errSchemaPath = $errSchemaPath + '/' + $i;
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+        if ($breakOnError) {
+          out += ' if (' + ($nextValid) + ') { ';
+          $closingBraces += '}';
+        }
+      }
+    }
+  }
+  if ($breakOnError) {
+    if ($allSchemasEmpty) {
+      out += ' if (true) { ';
+    } else {
+      out += ' ' + ($closingBraces.slice(0, -1)) + ' ';
+    }
+  }
+  out = it.util.cleanUpCode(out);
+  return out;
+}
+
+},{}],20:[function(require,module,exports){
+'use strict';
+module.exports = function generate_anyOf(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $noEmptySchema = $schema.every(function($sch) {
+    return it.util.schemaHasRules($sch, it.RULES.all);
+  });
+  if ($noEmptySchema) {
+    var $currentBaseId = $it.baseId;
+    out += ' var ' + ($errs) + ' = errors; var ' + ($valid) + ' = false;  ';
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    var arr1 = $schema;
+    if (arr1) {
+      var $sch, $i = -1,
+        l1 = arr1.length - 1;
+      while ($i < l1) {
+        $sch = arr1[$i += 1];
+        $it.schema = $sch;
+        $it.schemaPath = $schemaPath + '[' + $i + ']';
+        $it.errSchemaPath = $errSchemaPath + '/' + $i;
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+        out += ' ' + ($valid) + ' = ' + ($valid) + ' || ' + ($nextValid) + '; if (!' + ($valid) + ') { ';
+        $closingBraces += '}';
+      }
+    }
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' ' + ($closingBraces) + ' if (!' + ($valid) + ') {  var err =   '; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('anyOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should match some schema in anyOf\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; } ';
+    if (it.opts.allErrors) {
+      out += ' } ';
+    }
+    out = it.util.cleanUpCode(out);
+  } else {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+  }
+  return out;
+}
+
+},{}],21:[function(require,module,exports){
+'use strict';
+module.exports = function generate_constant(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (!$isData) {
+    out += ' var schema' + ($lvl) + ' = validate.schema' + ($schemaPath) + ';';
+  }
+  out += 'var ' + ($valid) + ' = equal(' + ($data) + ', schema' + ($lvl) + '); if (!' + ($valid) + ') {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('constant') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be equal to constant\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' }';
+  return out;
+}
+
+},{}],22:[function(require,module,exports){
+'use strict';
+module.exports = function generate_custom(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $rule = this,
+    $definition = 'definition' + $lvl,
+    $rDef = $rule.definition;
+  var $compile, $inline, $macro, $ruleValidate, $validateCode;
+  if ($isData && $rDef.$data) {
+    $validateCode = 'keywordValidate' + $lvl;
+    var $validateSchema = $rDef.validateSchema;
+    out += ' var ' + ($definition) + ' = RULES.custom[\'' + ($keyword) + '\'].definition; var ' + ($validateCode) + ' = ' + ($definition) + '.validate;';
+  } else {
+    $ruleValidate = it.useCustomRule($rule, $schema, it.schema, it);
+    $schemaValue = 'validate.schema' + $schemaPath;
+    $validateCode = $ruleValidate.code;
+    $compile = $rDef.compile;
+    $inline = $rDef.inline;
+    $macro = $rDef.macro;
+  }
+  var $ruleErrs = $validateCode + '.errors',
+    $i = 'i' + $lvl,
+    $ruleErr = 'ruleErr' + $lvl,
+    $asyncKeyword = $rDef.async;
+  if ($asyncKeyword && !it.async) throw new Error('async keyword in sync schema');
+  if (!($inline || $macro)) {
+    out += '' + ($ruleErrs) + ' = null;';
+  }
+  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  if ($validateSchema) {
+    out += ' ' + ($valid) + ' = ' + ($definition) + '.validateSchema(' + ($schemaValue) + '); if (' + ($valid) + ') {';
+  }
+  if ($inline) {
+    if ($rDef.statements) {
+      out += ' ' + ($ruleValidate.validate) + ' ';
+    } else {
+      out += ' ' + ($valid) + ' = ' + ($ruleValidate.validate) + '; ';
+    }
+  } else if ($macro) {
+    var $it = it.util.copy(it);
+    $it.level++;
+    var $nextValid = 'valid' + $it.level;
+    $it.schema = $ruleValidate.validate;
+    $it.schemaPath = '';
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    var $code = it.validate($it).replace(/validate\.schema/g, $validateCode);
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' ' + ($code);
+  } else {
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = '';
+    out += '  ' + ($validateCode) + '.call( ';
+    if (it.opts.passContext) {
+      out += 'this';
+    } else {
+      out += 'self';
+    }
+    if ($compile || $rDef.schema === false) {
+      out += ' , ' + ($data) + ' ';
+    } else {
+      out += ' , ' + ($schemaValue) + ' , ' + ($data) + ' , validate.schema' + (it.schemaPath) + ' ';
+    }
+    out += ' , (dataPath || \'\')';
+    if (it.errorPath != '""') {
+      out += ' + ' + (it.errorPath);
+    }
+    var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+      $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
+    out += ' , ' + ($parentData) + ' , ' + ($parentDataProperty) + ' , rootData )  ';
+    var def_callRuleValidate = out;
+    out = $$outStack.pop();
+    if ($rDef.errors === false) {
+      out += ' ' + ($valid) + ' = ';
+      if ($asyncKeyword) {
+        out += '' + (it.yieldAwait);
+      }
+      out += '' + (def_callRuleValidate) + '; ';
+    } else {
+      if ($asyncKeyword) {
+        $ruleErrs = 'customErrors' + $lvl;
+        out += ' var ' + ($ruleErrs) + ' = null; try { ' + ($valid) + ' = ' + (it.yieldAwait) + (def_callRuleValidate) + '; } catch (e) { ' + ($valid) + ' = false; if (e instanceof ValidationError) ' + ($ruleErrs) + ' = e.errors; else throw e; } ';
+      } else {
+        out += ' ' + ($ruleErrs) + ' = null; ' + ($valid) + ' = ' + (def_callRuleValidate) + '; ';
+      }
+    }
+  }
+  if ($rDef.modifying) {
+    out += ' ' + ($data) + ' = ' + ($parentData) + '[' + ($parentDataProperty) + '];';
+  }
+  if ($validateSchema) {
+    out += ' }';
+  }
+  if ($rDef.valid) {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+  } else {
+    out += ' if ( ';
+    if ($rDef.valid === undefined) {
+      out += ' !';
+      if ($macro) {
+        out += '' + ($nextValid);
+      } else {
+        out += '' + ($valid);
+      }
+    } else {
+      out += ' ' + (!$rDef.valid) + ' ';
+    }
+    out += ') { ';
+    $errorKeyword = $rule.keyword;
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = '';
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ($errorKeyword || 'custom') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { keyword: \'' + ($rule.keyword) + '\' } ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should pass "' + ($rule.keyword) + '" keyword validation\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    var def_customError = out;
+    out = $$outStack.pop();
+    if ($inline) {
+      if ($rDef.errors) {
+        if ($rDef.errors != 'full') {
+          out += '  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
+          if (it.opts.verbose) {
+            out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
+          }
+          out += ' } ';
+        }
+      } else {
+        if ($rDef.errors === false) {
+          out += ' ' + (def_customError) + ' ';
+        } else {
+          out += ' if (' + ($errs) + ' == errors) { ' + (def_customError) + ' } else {  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
+          if (it.opts.verbose) {
+            out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
+          }
+          out += ' } } ';
+        }
+      }
+    } else if ($macro) {
+      out += '   var err =   '; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ($errorKeyword || 'custom') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { keyword: \'' + ($rule.keyword) + '\' } ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'should pass "' + ($rule.keyword) + '" keyword validation\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+        if (it.async) {
+          out += ' throw new ValidationError(vErrors); ';
+        } else {
+          out += ' validate.errors = vErrors; return false; ';
+        }
+      }
+    } else {
+      if ($rDef.errors === false) {
+        out += ' ' + (def_customError) + ' ';
+      } else {
+        out += ' if (Array.isArray(' + ($ruleErrs) + ')) { if (vErrors === null) vErrors = ' + ($ruleErrs) + '; else vErrors = vErrors.concat(' + ($ruleErrs) + '); errors = vErrors.length;  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + ';  ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '";  ';
+        if (it.opts.verbose) {
+          out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
+        }
+        out += ' } } else { ' + (def_customError) + ' } ';
+      }
+    }
+    out += ' } ';
+    if ($breakOnError) {
+      out += ' else { ';
+    }
+  }
+  return out;
+}
+
+},{}],23:[function(require,module,exports){
+'use strict';
+module.exports = function generate_dependencies(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $schemaDeps = {},
+    $propertyDeps = {};
+  for ($property in $schema) {
+    var $sch = $schema[$property];
+    var $deps = Array.isArray($sch) ? $propertyDeps : $schemaDeps;
+    $deps[$property] = $sch;
+  }
+  out += 'var ' + ($errs) + ' = errors;';
+  var $currentErrorPath = it.errorPath;
+  out += 'var missing' + ($lvl) + ';';
+  for (var $property in $propertyDeps) {
+    $deps = $propertyDeps[$property];
+    out += ' if (' + ($data) + (it.util.getProperty($property)) + ' !== undefined ';
+    if ($breakOnError) {
+      out += ' && ( ';
+      var arr1 = $deps;
+      if (arr1) {
+        var _$property, $i = -1,
+          l1 = arr1.length - 1;
+        while ($i < l1) {
+          _$property = arr1[$i += 1];
+          if ($i) {
+            out += ' || ';
+          }
+          var $prop = it.util.getProperty(_$property);
+          out += ' ( ' + ($data) + ($prop) + ' === undefined && (missing' + ($lvl) + ' = ' + (it.util.toQuotedString(it.opts.jsonPointers ? _$property : $prop)) + ') ) ';
+        }
+      }
+      out += ')) {  ';
+      var $propertyPath = 'missing' + $lvl,
+        $missingProperty = '\' + ' + $propertyPath + ' + \'';
+      if (it.opts._errorDataPathProperty) {
+        it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + ' + ' + $propertyPath;
+      }
+      var $$outStack = $$outStack || [];
+      $$outStack.push(out);
+      out = ''; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ('dependencies') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { property: \'' + (it.util.escapeQuotes($property)) + '\', missingProperty: \'' + ($missingProperty) + '\', depsCount: ' + ($deps.length) + ', deps: \'' + (it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", "))) + '\' } ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'should have ';
+          if ($deps.length == 1) {
+            out += 'property ' + (it.util.escapeQuotes($deps[0]));
+          } else {
+            out += 'properties ' + (it.util.escapeQuotes($deps.join(", ")));
+          }
+          out += ' when property ' + (it.util.escapeQuotes($property)) + ' is present\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      var __err = out;
+      out = $$outStack.pop();
+      if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+        if (it.async) {
+          out += ' throw new ValidationError([' + (__err) + ']); ';
+        } else {
+          out += ' validate.errors = [' + (__err) + ']; return false; ';
+        }
+      } else {
+        out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      }
+    } else {
+      out += ' ) { ';
+      var arr2 = $deps;
+      if (arr2) {
+        var $reqProperty, i2 = -1,
+          l2 = arr2.length - 1;
+        while (i2 < l2) {
+          $reqProperty = arr2[i2 += 1];
+          var $prop = it.util.getProperty($reqProperty),
+            $missingProperty = it.util.escapeQuotes($reqProperty);
+          if (it.opts._errorDataPathProperty) {
+            it.errorPath = it.util.getPath($currentErrorPath, $reqProperty, it.opts.jsonPointers);
+          }
+          out += ' if (' + ($data) + ($prop) + ' === undefined) {  var err =   '; /* istanbul ignore else */
+          if (it.createErrors !== false) {
+            out += ' { keyword: \'' + ('dependencies') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { property: \'' + (it.util.escapeQuotes($property)) + '\', missingProperty: \'' + ($missingProperty) + '\', depsCount: ' + ($deps.length) + ', deps: \'' + (it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", "))) + '\' } ';
+            if (it.opts.messages !== false) {
+              out += ' , message: \'should have ';
+              if ($deps.length == 1) {
+                out += 'property ' + (it.util.escapeQuotes($deps[0]));
+              } else {
+                out += 'properties ' + (it.util.escapeQuotes($deps.join(", ")));
+              }
+              out += ' when property ' + (it.util.escapeQuotes($property)) + ' is present\' ';
+            }
+            if (it.opts.verbose) {
+              out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+            }
+            out += ' } ';
+          } else {
+            out += ' {} ';
+          }
+          out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } ';
+        }
+      }
+    }
+    out += ' }   ';
+    if ($breakOnError) {
+      $closingBraces += '}';
+      out += ' else { ';
+    }
+  }
+  it.errorPath = $currentErrorPath;
+  var $currentBaseId = $it.baseId;
+  for (var $property in $schemaDeps) {
+    var $sch = $schemaDeps[$property];
+    if (it.util.schemaHasRules($sch, it.RULES.all)) {
+      out += ' ' + ($nextValid) + ' = true; if (' + ($data) + (it.util.getProperty($property)) + ' !== undefined) { ';
+      $it.schema = $sch;
+      $it.schemaPath = $schemaPath + it.util.getProperty($property);
+      $it.errSchemaPath = $errSchemaPath + '/' + it.util.escapeFragment($property);
+      out += '  ' + (it.validate($it)) + ' ';
+      $it.baseId = $currentBaseId;
+      out += ' }  ';
+      if ($breakOnError) {
+        out += ' if (' + ($nextValid) + ') { ';
+        $closingBraces += '}';
+      }
+    }
+  }
+  if ($breakOnError) {
+    out += '   ' + ($closingBraces) + ' if (' + ($errs) + ' == errors) {';
+  }
+  out = it.util.cleanUpCode(out);
+  return out;
+}
+
+},{}],24:[function(require,module,exports){
+'use strict';
+module.exports = function generate_enum(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $i = 'i' + $lvl,
+    $vSchema = 'schema' + $lvl;
+  if (!$isData) {
+    out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + ';';
+  }
+  out += 'var ' + ($valid) + ';';
+  if ($isData) {
+    out += ' if (schema' + ($lvl) + ' === undefined) ' + ($valid) + ' = true; else if (!Array.isArray(schema' + ($lvl) + ')) ' + ($valid) + ' = false; else {';
+  }
+  out += '' + ($valid) + ' = false;for (var ' + ($i) + '=0; ' + ($i) + '<' + ($vSchema) + '.length; ' + ($i) + '++) if (equal(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + '])) { ' + ($valid) + ' = true; break; }';
+  if ($isData) {
+    out += '  }  ';
+  }
+  out += ' if (!' + ($valid) + ') {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('enum') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { allowedValues: schema' + ($lvl) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be equal to one of the allowed values\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' }';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],25:[function(require,module,exports){
+'use strict';
+module.exports = function generate_format(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  if (it.opts.format === false) {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+    return out;
+  }
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $unknownFormats = it.opts.unknownFormats,
+    $allowUnknown = Array.isArray($unknownFormats);
+  if ($isData) {
+    var $format = 'format' + $lvl;
+    out += ' var ' + ($format) + ' = formats[' + ($schemaValue) + ']; var isObject' + ($lvl) + ' = typeof ' + ($format) + ' == \'object\' && !(' + ($format) + ' instanceof RegExp) && ' + ($format) + '.validate; if (isObject' + ($lvl) + ') { ';
+    if (it.async) {
+      out += ' var async' + ($lvl) + ' = ' + ($format) + '.async; ';
+    }
+    out += ' ' + ($format) + ' = ' + ($format) + '.validate; } if (  ';
+    if ($isData) {
+      out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'string\') || ';
+    }
+    out += ' (';
+    if ($unknownFormats === true || $allowUnknown) {
+      out += ' (' + ($schemaValue) + ' && !' + ($format) + ' ';
+      if ($allowUnknown) {
+        out += ' && self._opts.unknownFormats.indexOf(' + ($schemaValue) + ') == -1 ';
+      }
+      out += ') || ';
+    }
+    out += ' (' + ($format) + ' && !(typeof ' + ($format) + ' == \'function\' ? ';
+    if (it.async) {
+      out += ' (async' + ($lvl) + ' ? ' + (it.yieldAwait) + ' ' + ($format) + '(' + ($data) + ') : ' + ($format) + '(' + ($data) + ')) ';
+    } else {
+      out += ' ' + ($format) + '(' + ($data) + ') ';
+    }
+    out += ' : ' + ($format) + '.test(' + ($data) + '))))) {';
+  } else {
+    var $format = it.formats[$schema];
+    if (!$format) {
+      if ($unknownFormats === true || ($allowUnknown && $unknownFormats.indexOf($schema) == -1)) {
+        throw new Error('unknown format "' + $schema + '" is used in schema at path "' + it.errSchemaPath + '"');
+      } else {
+        if (!$allowUnknown) {
+          console.warn('unknown format "' + $schema + '" ignored in schema at path "' + it.errSchemaPath + '"');
+          if ($unknownFormats !== 'ignore') console.warn('In the next major version it will throw exception. See option unknownFormats for more information');
+        }
+        if ($breakOnError) {
+          out += ' if (true) { ';
+        }
+        return out;
+      }
+    }
+    var $isObject = typeof $format == 'object' && !($format instanceof RegExp) && $format.validate;
+    if ($isObject) {
+      var $async = $format.async === true;
+      $format = $format.validate;
+    }
+    if ($async) {
+      if (!it.async) throw new Error('async format in sync schema');
+      var $formatRef = 'formats' + it.util.getProperty($schema) + '.validate';
+      out += ' if (!(' + (it.yieldAwait) + ' ' + ($formatRef) + '(' + ($data) + '))) { ';
+    } else {
+      out += ' if (! ';
+      var $formatRef = 'formats' + it.util.getProperty($schema);
+      if ($isObject) $formatRef += '.validate';
+      if (typeof $format == 'function') {
+        out += ' ' + ($formatRef) + '(' + ($data) + ') ';
+      } else {
+        out += ' ' + ($formatRef) + '.test(' + ($data) + ') ';
+      }
+      out += ') { ';
+    }
+  }
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('format') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { format:  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += '  } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match format "';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + (it.util.escapeQuotes($schema));
+      }
+      out += '"\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + (it.util.toQuotedString($schema));
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' } ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],26:[function(require,module,exports){
+'use strict';
+module.exports = function generate_items(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $idx = 'i' + $lvl,
+    $dataNxt = $it.dataLevel = it.dataLevel + 1,
+    $nextData = 'data' + $dataNxt,
+    $currentBaseId = it.baseId;
+  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  if (Array.isArray($schema)) {
+    var $additionalItems = it.schema.additionalItems;
+    if ($additionalItems === false) {
+      out += ' ' + ($valid) + ' = ' + ($data) + '.length <= ' + ($schema.length) + '; ';
+      var $currErrSchemaPath = $errSchemaPath;
+      $errSchemaPath = it.errSchemaPath + '/additionalItems';
+      out += '  if (!' + ($valid) + ') {   ';
+      var $$outStack = $$outStack || [];
+      $$outStack.push(out);
+      out = ''; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ('additionalItems') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schema.length) + ' } ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'should NOT have more than ' + ($schema.length) + ' items\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: false , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      var __err = out;
+      out = $$outStack.pop();
+      if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+        if (it.async) {
+          out += ' throw new ValidationError([' + (__err) + ']); ';
+        } else {
+          out += ' validate.errors = [' + (__err) + ']; return false; ';
+        }
+      } else {
+        out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      }
+      out += ' } ';
+      $errSchemaPath = $currErrSchemaPath;
+      if ($breakOnError) {
+        $closingBraces += '}';
+        out += ' else { ';
+      }
+    }
+    var arr1 = $schema;
+    if (arr1) {
+      var $sch, $i = -1,
+        l1 = arr1.length - 1;
+      while ($i < l1) {
+        $sch = arr1[$i += 1];
+        if (it.util.schemaHasRules($sch, it.RULES.all)) {
+          out += ' ' + ($nextValid) + ' = true; if (' + ($data) + '.length > ' + ($i) + ') { ';
+          var $passData = $data + '[' + $i + ']';
+          $it.schema = $sch;
+          $it.schemaPath = $schemaPath + '[' + $i + ']';
+          $it.errSchemaPath = $errSchemaPath + '/' + $i;
+          $it.errorPath = it.util.getPathExpr(it.errorPath, $i, it.opts.jsonPointers, true);
+          $it.dataPathArr[$dataNxt] = $i;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          out += ' }  ';
+          if ($breakOnError) {
+            out += ' if (' + ($nextValid) + ') { ';
+            $closingBraces += '}';
+          }
+        }
+      }
+    }
+    if (typeof $additionalItems == 'object' && it.util.schemaHasRules($additionalItems, it.RULES.all)) {
+      $it.schema = $additionalItems;
+      $it.schemaPath = it.schemaPath + '.additionalItems';
+      $it.errSchemaPath = it.errSchemaPath + '/additionalItems';
+      out += ' ' + ($nextValid) + ' = true; if (' + ($data) + '.length > ' + ($schema.length) + ') {  for (var ' + ($idx) + ' = ' + ($schema.length) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+      $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
+      var $passData = $data + '[' + $idx + ']';
+      $it.dataPathArr[$dataNxt] = $idx;
+      var $code = it.validate($it);
+      $it.baseId = $currentBaseId;
+      if (it.util.varOccurences($code, $nextData) < 2) {
+        out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+      } else {
+        out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+      }
+      if ($breakOnError) {
+        out += ' if (!' + ($nextValid) + ') break; ';
+      }
+      out += ' } }  ';
+      if ($breakOnError) {
+        out += ' if (' + ($nextValid) + ') { ';
+        $closingBraces += '}';
+      }
+    }
+  } else if (it.util.schemaHasRules($schema, it.RULES.all)) {
+    $it.schema = $schema;
+    $it.schemaPath = $schemaPath;
+    $it.errSchemaPath = $errSchemaPath;
+    out += '  for (var ' + ($idx) + ' = ' + (0) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+    $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
+    var $passData = $data + '[' + $idx + ']';
+    $it.dataPathArr[$dataNxt] = $idx;
+    var $code = it.validate($it);
+    $it.baseId = $currentBaseId;
+    if (it.util.varOccurences($code, $nextData) < 2) {
+      out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+    } else {
+      out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+    }
+    if ($breakOnError) {
+      out += ' if (!' + ($nextValid) + ') break; ';
+    }
+    out += ' }  ';
+    if ($breakOnError) {
+      out += ' if (' + ($nextValid) + ') { ';
+      $closingBraces += '}';
+    }
+  }
+  if ($breakOnError) {
+    out += ' ' + ($closingBraces) + ' if (' + ($errs) + ' == errors) {';
+  }
+  out = it.util.cleanUpCode(out);
+  return out;
+}
+
+},{}],27:[function(require,module,exports){
+'use strict';
+module.exports = function generate_multipleOf(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  out += 'var division' + ($lvl) + ';if (';
+  if ($isData) {
+    out += ' ' + ($schemaValue) + ' !== undefined && ( typeof ' + ($schemaValue) + ' != \'number\' || ';
+  }
+  out += ' (division' + ($lvl) + ' = ' + ($data) + ' / ' + ($schemaValue) + ', ';
+  if (it.opts.multipleOfPrecision) {
+    out += ' Math.abs(Math.round(division' + ($lvl) + ') - division' + ($lvl) + ') > 1e-' + (it.opts.multipleOfPrecision) + ' ';
+  } else {
+    out += ' division' + ($lvl) + ' !== parseInt(division' + ($lvl) + ') ';
+  }
+  out += ' ) ';
+  if ($isData) {
+    out += '  )  ';
+  }
+  out += ' ) {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('multipleOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { multipleOf: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be multiple of ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue);
+      } else {
+        out += '' + ($schema) + '\'';
+      }
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],28:[function(require,module,exports){
+'use strict';
+module.exports = function generate_not(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  if (it.util.schemaHasRules($schema, it.RULES.all)) {
+    $it.schema = $schema;
+    $it.schemaPath = $schemaPath;
+    $it.errSchemaPath = $errSchemaPath;
+    out += ' var ' + ($errs) + ' = errors;  ';
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    $it.createErrors = false;
+    var $allErrorsOption;
+    if ($it.opts.allErrors) {
+      $allErrorsOption = $it.opts.allErrors;
+      $it.opts.allErrors = false;
+    }
+    out += ' ' + (it.validate($it)) + ' ';
+    $it.createErrors = true;
+    if ($allErrorsOption) $it.opts.allErrors = $allErrorsOption;
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' if (' + ($nextValid) + ') {   ';
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('not') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should NOT be valid\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' } else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; } ';
+    if (it.opts.allErrors) {
+      out += ' } ';
+    }
+  } else {
+    out += '  var err =   '; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('not') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should NOT be valid\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    if ($breakOnError) {
+      out += ' if (false) { ';
+    }
+  }
+  return out;
+}
+
+},{}],29:[function(require,module,exports){
+'use strict';
+module.exports = function generate_oneOf(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  out += 'var ' + ($errs) + ' = errors;var prevValid' + ($lvl) + ' = false;var ' + ($valid) + ' = false;';
+  var $currentBaseId = $it.baseId;
+  var $wasComposite = it.compositeRule;
+  it.compositeRule = $it.compositeRule = true;
+  var arr1 = $schema;
+  if (arr1) {
+    var $sch, $i = -1,
+      l1 = arr1.length - 1;
+    while ($i < l1) {
+      $sch = arr1[$i += 1];
+      if (it.util.schemaHasRules($sch, it.RULES.all)) {
+        $it.schema = $sch;
+        $it.schemaPath = $schemaPath + '[' + $i + ']';
+        $it.errSchemaPath = $errSchemaPath + '/' + $i;
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+      } else {
+        out += ' var ' + ($nextValid) + ' = true; ';
+      }
+      if ($i) {
+        out += ' if (' + ($nextValid) + ' && prevValid' + ($lvl) + ') ' + ($valid) + ' = false; else { ';
+        $closingBraces += '}';
+      }
+      out += ' if (' + ($nextValid) + ') ' + ($valid) + ' = prevValid' + ($lvl) + ' = true;';
+    }
+  }
+  it.compositeRule = $it.compositeRule = $wasComposite;
+  out += '' + ($closingBraces) + 'if (!' + ($valid) + ') {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('oneOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match exactly one schema in oneOf\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; }';
+  if (it.opts.allErrors) {
+    out += ' } ';
+  }
+  return out;
+}
+
+},{}],30:[function(require,module,exports){
+'use strict';
+module.exports = function generate_pattern(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $regexp = $isData ? '(new RegExp(' + $schemaValue + '))' : it.usePattern($schema);
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'string\') || ';
+  }
+  out += ' !' + ($regexp) + '.test(' + ($data) + ') ) {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('pattern') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { pattern:  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += '  } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match pattern "';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + (it.util.escapeQuotes($schema));
+      }
+      out += '"\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + (it.util.toQuotedString($schema));
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],31:[function(require,module,exports){
+'use strict';
+module.exports = function generate_patternRequired(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $key = 'key' + $lvl,
+    $matched = 'patternMatched' + $lvl,
+    $closingBraces = '',
+    $ownProperties = it.opts.ownProperties;
+  out += 'var ' + ($valid) + ' = true;';
+  var arr1 = $schema;
+  if (arr1) {
+    var $pProperty, i1 = -1,
+      l1 = arr1.length - 1;
+    while (i1 < l1) {
+      $pProperty = arr1[i1 += 1];
+      out += ' var ' + ($matched) + ' = false; for (var ' + ($key) + ' in ' + ($data) + ') {  ';
+      if ($ownProperties) {
+        out += ' if (!Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($key) + ')) continue; ';
+      }
+      out += ' ' + ($matched) + ' = ' + (it.usePattern($pProperty)) + '.test(' + ($key) + '); if (' + ($matched) + ') break; } ';
+      var $missingPattern = it.util.escapeQuotes($pProperty);
+      out += ' if (!' + ($matched) + ') { ' + ($valid) + ' = false;  var err =   '; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ('patternRequired') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingPattern: \'' + ($missingPattern) + '\' } ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'should have property matching pattern \\\'' + ($missingPattern) + '\\\'\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; }   ';
+      if ($breakOnError) {
+        $closingBraces += '}';
+        out += ' else { ';
+      }
+    }
+  }
+  out += '' + ($closingBraces);
+  return out;
+}
+
+},{}],32:[function(require,module,exports){
+'use strict';
+module.exports = function generate_properties(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $key = 'key' + $lvl,
+    $dataNxt = $it.dataLevel = it.dataLevel + 1,
+    $nextData = 'data' + $dataNxt;
+  var $schemaKeys = Object.keys($schema || {}),
+    $pProperties = it.schema.patternProperties || {},
+    $pPropertyKeys = Object.keys($pProperties),
+    $aProperties = it.schema.additionalProperties,
+    $someProperties = $schemaKeys.length || $pPropertyKeys.length,
+    $noAdditional = $aProperties === false,
+    $additionalIsSchema = typeof $aProperties == 'object' && Object.keys($aProperties).length,
+    $removeAdditional = it.opts.removeAdditional,
+    $checkAdditional = $noAdditional || $additionalIsSchema || $removeAdditional,
+    $ownProperties = it.opts.ownProperties,
+    $currentBaseId = it.baseId;
+  var $required = it.schema.required;
+  if ($required && !(it.opts.v5 && $required.$data) && $required.length < it.opts.loopRequired) var $requiredHash = it.util.toHash($required);
+  if (it.opts.v5) {
+    var $pgProperties = it.schema.patternGroups || {},
+      $pgPropertyKeys = Object.keys($pgProperties);
+  }
+  out += 'var ' + ($errs) + ' = errors;var ' + ($nextValid) + ' = true;';
+  if ($checkAdditional) {
+    out += ' for (var ' + ($key) + ' in ' + ($data) + ') {  ';
+    if ($ownProperties) {
+      out += ' if (!Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($key) + ')) continue; ';
+    }
+    if ($someProperties) {
+      out += ' var isAdditional' + ($lvl) + ' = !(false ';
+      if ($schemaKeys.length) {
+        if ($schemaKeys.length > 5) {
+          out += ' || validate.schema' + ($schemaPath) + '[' + ($key) + '] ';
+        } else {
+          var arr1 = $schemaKeys;
+          if (arr1) {
+            var $propertyKey, i1 = -1,
+              l1 = arr1.length - 1;
+            while (i1 < l1) {
+              $propertyKey = arr1[i1 += 1];
+              out += ' || ' + ($key) + ' == ' + (it.util.toQuotedString($propertyKey)) + ' ';
+            }
+          }
+        }
+      }
+      if ($pPropertyKeys.length) {
+        var arr2 = $pPropertyKeys;
+        if (arr2) {
+          var $pProperty, $i = -1,
+            l2 = arr2.length - 1;
+          while ($i < l2) {
+            $pProperty = arr2[$i += 1];
+            out += ' || ' + (it.usePattern($pProperty)) + '.test(' + ($key) + ') ';
+          }
+        }
+      }
+      if (it.opts.v5 && $pgPropertyKeys && $pgPropertyKeys.length) {
+        var arr3 = $pgPropertyKeys;
+        if (arr3) {
+          var $pgProperty, $i = -1,
+            l3 = arr3.length - 1;
+          while ($i < l3) {
+            $pgProperty = arr3[$i += 1];
+            out += ' || ' + (it.usePattern($pgProperty)) + '.test(' + ($key) + ') ';
+          }
+        }
+      }
+      out += ' ); if (isAdditional' + ($lvl) + ') { ';
+    }
+    if ($removeAdditional == 'all') {
+      out += ' delete ' + ($data) + '[' + ($key) + ']; ';
+    } else {
+      var $currentErrorPath = it.errorPath;
+      var $additionalProperty = '\' + ' + $key + ' + \'';
+      if (it.opts._errorDataPathProperty) {
+        it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+      }
+      if ($noAdditional) {
+        if ($removeAdditional) {
+          out += ' delete ' + ($data) + '[' + ($key) + ']; ';
+        } else {
+          out += ' ' + ($nextValid) + ' = false; ';
+          var $currErrSchemaPath = $errSchemaPath;
+          $errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          var $$outStack = $$outStack || [];
+          $$outStack.push(out);
+          out = ''; /* istanbul ignore else */
+          if (it.createErrors !== false) {
+            out += ' { keyword: \'' + ('additionalProperties') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { additionalProperty: \'' + ($additionalProperty) + '\' } ';
+            if (it.opts.messages !== false) {
+              out += ' , message: \'should NOT have additional properties\' ';
+            }
+            if (it.opts.verbose) {
+              out += ' , schema: false , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+            }
+            out += ' } ';
+          } else {
+            out += ' {} ';
+          }
+          var __err = out;
+          out = $$outStack.pop();
+          if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+            if (it.async) {
+              out += ' throw new ValidationError([' + (__err) + ']); ';
+            } else {
+              out += ' validate.errors = [' + (__err) + ']; return false; ';
+            }
+          } else {
+            out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          }
+          $errSchemaPath = $currErrSchemaPath;
+          if ($breakOnError) {
+            out += ' break; ';
+          }
+        }
+      } else if ($additionalIsSchema) {
+        if ($removeAdditional == 'failing') {
+          out += ' var ' + ($errs) + ' = errors;  ';
+          var $wasComposite = it.compositeRule;
+          it.compositeRule = $it.compositeRule = true;
+          $it.schema = $aProperties;
+          $it.schemaPath = it.schemaPath + '.additionalProperties';
+          $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          out += ' if (!' + ($nextValid) + ') { errors = ' + ($errs) + '; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete ' + ($data) + '[' + ($key) + ']; }  ';
+          it.compositeRule = $it.compositeRule = $wasComposite;
+        } else {
+          $it.schema = $aProperties;
+          $it.schemaPath = it.schemaPath + '.additionalProperties';
+          $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          if ($breakOnError) {
+            out += ' if (!' + ($nextValid) + ') break; ';
+          }
+        }
+      }
+      it.errorPath = $currentErrorPath;
+    }
+    if ($someProperties) {
+      out += ' } ';
+    }
+    out += ' }  ';
+    if ($breakOnError) {
+      out += ' if (' + ($nextValid) + ') { ';
+      $closingBraces += '}';
+    }
+  }
+  var $useDefaults = it.opts.useDefaults && !it.compositeRule;
+  if ($schemaKeys.length) {
+    var arr4 = $schemaKeys;
+    if (arr4) {
+      var $propertyKey, i4 = -1,
+        l4 = arr4.length - 1;
+      while (i4 < l4) {
+        $propertyKey = arr4[i4 += 1];
+        var $sch = $schema[$propertyKey];
+        if (it.util.schemaHasRules($sch, it.RULES.all)) {
+          var $prop = it.util.getProperty($propertyKey),
+            $passData = $data + $prop,
+            $hasDefault = $useDefaults && $sch.default !== undefined;
+          $it.schema = $sch;
+          $it.schemaPath = $schemaPath + $prop;
+          $it.errSchemaPath = $errSchemaPath + '/' + it.util.escapeFragment($propertyKey);
+          $it.errorPath = it.util.getPath(it.errorPath, $propertyKey, it.opts.jsonPointers);
+          $it.dataPathArr[$dataNxt] = it.util.toQuotedString($propertyKey);
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            $code = it.util.varReplace($code, $nextData, $passData);
+            var $useData = $passData;
+          } else {
+            var $useData = $nextData;
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ';
+          }
+          if ($hasDefault) {
+            out += ' ' + ($code) + ' ';
+          } else {
+            if ($requiredHash && $requiredHash[$propertyKey]) {
+              out += ' if (' + ($useData) + ' === undefined) { ' + ($nextValid) + ' = false; ';
+              var $currentErrorPath = it.errorPath,
+                $currErrSchemaPath = $errSchemaPath,
+                $missingProperty = it.util.escapeQuotes($propertyKey);
+              if (it.opts._errorDataPathProperty) {
+                it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
+              }
+              $errSchemaPath = it.errSchemaPath + '/required';
+              var $$outStack = $$outStack || [];
+              $$outStack.push(out);
+              out = ''; /* istanbul ignore else */
+              if (it.createErrors !== false) {
+                out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+                if (it.opts.messages !== false) {
+                  out += ' , message: \'';
+                  if (it.opts._errorDataPathProperty) {
+                    out += 'is a required property';
+                  } else {
+                    out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+                  }
+                  out += '\' ';
+                }
+                if (it.opts.verbose) {
+                  out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+                }
+                out += ' } ';
+              } else {
+                out += ' {} ';
+              }
+              var __err = out;
+              out = $$outStack.pop();
+              if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+                if (it.async) {
+                  out += ' throw new ValidationError([' + (__err) + ']); ';
+                } else {
+                  out += ' validate.errors = [' + (__err) + ']; return false; ';
+                }
+              } else {
+                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+              }
+              $errSchemaPath = $currErrSchemaPath;
+              it.errorPath = $currentErrorPath;
+              out += ' } else { ';
+            } else {
+              if ($breakOnError) {
+                out += ' if (' + ($useData) + ' === undefined) { ' + ($nextValid) + ' = true; } else { ';
+              } else {
+                out += ' if (' + ($useData) + ' !== undefined) { ';
+              }
+            }
+            out += ' ' + ($code) + ' } ';
+          }
+        }
+        if ($breakOnError) {
+          out += ' if (' + ($nextValid) + ') { ';
+          $closingBraces += '}';
+        }
+      }
+    }
+  }
+  var arr5 = $pPropertyKeys;
+  if (arr5) {
+    var $pProperty, i5 = -1,
+      l5 = arr5.length - 1;
+    while (i5 < l5) {
+      $pProperty = arr5[i5 += 1];
+      var $sch = $pProperties[$pProperty];
+      if (it.util.schemaHasRules($sch, it.RULES.all)) {
+        $it.schema = $sch;
+        $it.schemaPath = it.schemaPath + '.patternProperties' + it.util.getProperty($pProperty);
+        $it.errSchemaPath = it.errSchemaPath + '/patternProperties/' + it.util.escapeFragment($pProperty);
+        out += ' for (var ' + ($key) + ' in ' + ($data) + ') {  ';
+        if ($ownProperties) {
+          out += ' if (!Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($key) + ')) continue; ';
+        }
+        out += ' if (' + (it.usePattern($pProperty)) + '.test(' + ($key) + ')) { ';
+        $it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+        var $passData = $data + '[' + $key + ']';
+        $it.dataPathArr[$dataNxt] = $key;
+        var $code = it.validate($it);
+        $it.baseId = $currentBaseId;
+        if (it.util.varOccurences($code, $nextData) < 2) {
+          out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+        } else {
+          out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+        }
+        if ($breakOnError) {
+          out += ' if (!' + ($nextValid) + ') break; ';
+        }
+        out += ' } ';
+        if ($breakOnError) {
+          out += ' else ' + ($nextValid) + ' = true; ';
+        }
+        out += ' }  ';
+        if ($breakOnError) {
+          out += ' if (' + ($nextValid) + ') { ';
+          $closingBraces += '}';
+        }
+      }
+    }
+  }
+  if (it.opts.v5) {
+    var arr6 = $pgPropertyKeys;
+    if (arr6) {
+      var $pgProperty, i6 = -1,
+        l6 = arr6.length - 1;
+      while (i6 < l6) {
+        $pgProperty = arr6[i6 += 1];
+        var $pgSchema = $pgProperties[$pgProperty],
+          $sch = $pgSchema.schema;
+        if (it.util.schemaHasRules($sch, it.RULES.all)) {
+          $it.schema = $sch;
+          $it.schemaPath = it.schemaPath + '.patternGroups' + it.util.getProperty($pgProperty) + '.schema';
+          $it.errSchemaPath = it.errSchemaPath + '/patternGroups/' + it.util.escapeFragment($pgProperty) + '/schema';
+          out += ' var pgPropCount' + ($lvl) + ' = 0; for (var ' + ($key) + ' in ' + ($data) + ') {  ';
+          if ($ownProperties) {
+            out += ' if (!Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($key) + ')) continue; ';
+          }
+          out += ' if (' + (it.usePattern($pgProperty)) + '.test(' + ($key) + ')) { pgPropCount' + ($lvl) + '++; ';
+          $it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          if ($breakOnError) {
+            out += ' if (!' + ($nextValid) + ') break; ';
+          }
+          out += ' } ';
+          if ($breakOnError) {
+            out += ' else ' + ($nextValid) + ' = true; ';
+          }
+          out += ' }  ';
+          if ($breakOnError) {
+            out += ' if (' + ($nextValid) + ') { ';
+            $closingBraces += '}';
+          }
+          var $pgMin = $pgSchema.minimum,
+            $pgMax = $pgSchema.maximum;
+          if ($pgMin !== undefined || $pgMax !== undefined) {
+            out += ' var ' + ($valid) + ' = true; ';
+            var $currErrSchemaPath = $errSchemaPath;
+            if ($pgMin !== undefined) {
+              var $limit = $pgMin,
+                $reason = 'minimum',
+                $moreOrLess = 'less';
+              out += ' ' + ($valid) + ' = pgPropCount' + ($lvl) + ' >= ' + ($pgMin) + '; ';
+              $errSchemaPath = it.errSchemaPath + '/patternGroups/minimum';
+              out += '  if (!' + ($valid) + ') {   ';
+              var $$outStack = $$outStack || [];
+              $$outStack.push(out);
+              out = ''; /* istanbul ignore else */
+              if (it.createErrors !== false) {
+                out += ' { keyword: \'' + ('patternGroups') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { reason: \'' + ($reason) + '\', limit: ' + ($limit) + ', pattern: \'' + (it.util.escapeQuotes($pgProperty)) + '\' } ';
+                if (it.opts.messages !== false) {
+                  out += ' , message: \'should NOT have ' + ($moreOrLess) + ' than ' + ($limit) + ' properties matching pattern "' + (it.util.escapeQuotes($pgProperty)) + '"\' ';
+                }
+                if (it.opts.verbose) {
+                  out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+                }
+                out += ' } ';
+              } else {
+                out += ' {} ';
+              }
+              var __err = out;
+              out = $$outStack.pop();
+              if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+                if (it.async) {
+                  out += ' throw new ValidationError([' + (__err) + ']); ';
+                } else {
+                  out += ' validate.errors = [' + (__err) + ']; return false; ';
+                }
+              } else {
+                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+              }
+              out += ' } ';
+              if ($pgMax !== undefined) {
+                out += ' else ';
+              }
+            }
+            if ($pgMax !== undefined) {
+              var $limit = $pgMax,
+                $reason = 'maximum',
+                $moreOrLess = 'more';
+              out += ' ' + ($valid) + ' = pgPropCount' + ($lvl) + ' <= ' + ($pgMax) + '; ';
+              $errSchemaPath = it.errSchemaPath + '/patternGroups/maximum';
+              out += '  if (!' + ($valid) + ') {   ';
+              var $$outStack = $$outStack || [];
+              $$outStack.push(out);
+              out = ''; /* istanbul ignore else */
+              if (it.createErrors !== false) {
+                out += ' { keyword: \'' + ('patternGroups') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { reason: \'' + ($reason) + '\', limit: ' + ($limit) + ', pattern: \'' + (it.util.escapeQuotes($pgProperty)) + '\' } ';
+                if (it.opts.messages !== false) {
+                  out += ' , message: \'should NOT have ' + ($moreOrLess) + ' than ' + ($limit) + ' properties matching pattern "' + (it.util.escapeQuotes($pgProperty)) + '"\' ';
+                }
+                if (it.opts.verbose) {
+                  out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+                }
+                out += ' } ';
+              } else {
+                out += ' {} ';
+              }
+              var __err = out;
+              out = $$outStack.pop();
+              if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+                if (it.async) {
+                  out += ' throw new ValidationError([' + (__err) + ']); ';
+                } else {
+                  out += ' validate.errors = [' + (__err) + ']; return false; ';
+                }
+              } else {
+                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+              }
+              out += ' } ';
+            }
+            $errSchemaPath = $currErrSchemaPath;
+            if ($breakOnError) {
+              out += ' if (' + ($valid) + ') { ';
+              $closingBraces += '}';
+            }
+          }
+        }
+      }
+    }
+  }
+  if ($breakOnError) {
+    out += ' ' + ($closingBraces) + ' if (' + ($errs) + ' == errors) {';
+  }
+  out = it.util.cleanUpCode(out);
+  return out;
+}
+
+},{}],33:[function(require,module,exports){
+'use strict';
+module.exports = function generate_ref(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $async, $refCode;
+  if ($schema == '#' || $schema == '#/') {
+    if (it.isRoot) {
+      $async = it.async;
+      $refCode = 'validate';
+    } else {
+      $async = it.root.schema.$async === true;
+      $refCode = 'root.refVal[0]';
+    }
+  } else {
+    var $refVal = it.resolveRef(it.baseId, $schema, it.isRoot);
+    if ($refVal === undefined) {
+      var $message = 'can\'t resolve reference ' + $schema + ' from id ' + it.baseId;
+      if (it.opts.missingRefs == 'fail') {
+        console.log($message);
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('$ref') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { ref: \'' + (it.util.escapeQuotes($schema)) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'can\\\'t resolve reference ' + (it.util.escapeQuotes($schema)) + '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: ' + (it.util.toQuotedString($schema)) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+        if ($breakOnError) {
+          out += ' if (false) { ';
+        }
+      } else if (it.opts.missingRefs == 'ignore') {
+        console.log($message);
+        if ($breakOnError) {
+          out += ' if (true) { ';
+        }
+      } else {
+        var $error = new Error($message);
+        $error.missingRef = it.resolve.url(it.baseId, $schema);
+        $error.missingSchema = it.resolve.normalizeId(it.resolve.fullPath($error.missingRef));
+        throw $error;
+      }
+    } else if ($refVal.inline) {
+      var $it = it.util.copy(it);
+      $it.level++;
+      var $nextValid = 'valid' + $it.level;
+      $it.schema = $refVal.schema;
+      $it.schemaPath = '';
+      $it.errSchemaPath = $schema;
+      var $code = it.validate($it).replace(/validate\.schema/g, $refVal.code);
+      out += ' ' + ($code) + ' ';
+      if ($breakOnError) {
+        out += ' if (' + ($nextValid) + ') { ';
+      }
+    } else {
+      $async = $refVal.$async === true;
+      $refCode = $refVal.code;
+    }
+  }
+  if ($refCode) {
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = '';
+    if (it.opts.passContext) {
+      out += ' ' + ($refCode) + '.call(this, ';
+    } else {
+      out += ' ' + ($refCode) + '( ';
+    }
+    out += ' ' + ($data) + ', (dataPath || \'\')';
+    if (it.errorPath != '""') {
+      out += ' + ' + (it.errorPath);
+    }
+    var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+      $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
+    out += ' , ' + ($parentData) + ' , ' + ($parentDataProperty) + ', rootData)  ';
+    var __callValidate = out;
+    out = $$outStack.pop();
+    if ($async) {
+      if (!it.async) throw new Error('async schema referenced by sync schema');
+      out += ' try { ';
+      if ($breakOnError) {
+        out += 'var ' + ($valid) + ' =';
+      }
+      out += ' ' + (it.yieldAwait) + ' ' + (__callValidate) + '; } catch (e) { if (!(e instanceof ValidationError)) throw e; if (vErrors === null) vErrors = e.errors; else vErrors = vErrors.concat(e.errors); errors = vErrors.length; } ';
+      if ($breakOnError) {
+        out += ' if (' + ($valid) + ') { ';
+      }
+    } else {
+      out += ' if (!' + (__callValidate) + ') { if (vErrors === null) vErrors = ' + ($refCode) + '.errors; else vErrors = vErrors.concat(' + ($refCode) + '.errors); errors = vErrors.length; } ';
+      if ($breakOnError) {
+        out += ' else { ';
+      }
+    }
+  }
+  return out;
+}
+
+},{}],34:[function(require,module,exports){
+'use strict';
+module.exports = function generate_required(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $vSchema = 'schema' + $lvl;
+  if (!$isData) {
+    if ($schema.length < it.opts.loopRequired && it.schema.properties && Object.keys(it.schema.properties).length) {
+      var $required = [];
+      var arr1 = $schema;
+      if (arr1) {
+        var $property, i1 = -1,
+          l1 = arr1.length - 1;
+        while (i1 < l1) {
+          $property = arr1[i1 += 1];
+          var $propertySch = it.schema.properties[$property];
+          if (!($propertySch && it.util.schemaHasRules($propertySch, it.RULES.all))) {
+            $required[$required.length] = $property;
+          }
+        }
+      }
+    } else {
+      var $required = $schema;
+    }
+  }
+  if ($isData || $required.length) {
+    var $currentErrorPath = it.errorPath,
+      $loopRequired = $isData || $required.length >= it.opts.loopRequired;
+    if ($breakOnError) {
+      out += ' var missing' + ($lvl) + '; ';
+      if ($loopRequired) {
+        if (!$isData) {
+          out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
+        }
+        var $i = 'i' + $lvl,
+          $propertyPath = 'schema' + $lvl + '[' + $i + ']',
+          $missingProperty = '\' + ' + $propertyPath + ' + \'';
+        if (it.opts._errorDataPathProperty) {
+          it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
+        }
+        out += ' var ' + ($valid) + ' = true; ';
+        if ($isData) {
+          out += ' if (schema' + ($lvl) + ' === undefined) ' + ($valid) + ' = true; else if (!Array.isArray(schema' + ($lvl) + ')) ' + ($valid) + ' = false; else {';
+        }
+        out += ' for (var ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { ' + ($valid) + ' = ' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] !== undefined; if (!' + ($valid) + ') break; } ';
+        if ($isData) {
+          out += '  }  ';
+        }
+        out += '  if (!' + ($valid) + ') {   ';
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'';
+            if (it.opts._errorDataPathProperty) {
+              out += 'is a required property';
+            } else {
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+        out += ' } else { ';
+      } else {
+        out += ' if ( ';
+        var arr2 = $required;
+        if (arr2) {
+          var _$property, $i = -1,
+            l2 = arr2.length - 1;
+          while ($i < l2) {
+            _$property = arr2[$i += 1];
+            if ($i) {
+              out += ' || ';
+            }
+            var $prop = it.util.getProperty(_$property);
+            out += ' ( ' + ($data) + ($prop) + ' === undefined && (missing' + ($lvl) + ' = ' + (it.util.toQuotedString(it.opts.jsonPointers ? _$property : $prop)) + ') ) ';
+          }
+        }
+        out += ') {  ';
+        var $propertyPath = 'missing' + $lvl,
+          $missingProperty = '\' + ' + $propertyPath + ' + \'';
+        if (it.opts._errorDataPathProperty) {
+          it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + ' + ' + $propertyPath;
+        }
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'';
+            if (it.opts._errorDataPathProperty) {
+              out += 'is a required property';
+            } else {
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+        out += ' } else { ';
+      }
+    } else {
+      if ($loopRequired) {
+        if (!$isData) {
+          out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
+        }
+        var $i = 'i' + $lvl,
+          $propertyPath = 'schema' + $lvl + '[' + $i + ']',
+          $missingProperty = '\' + ' + $propertyPath + ' + \'';
+        if (it.opts._errorDataPathProperty) {
+          it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
+        }
+        if ($isData) {
+          out += ' if (' + ($vSchema) + ' && !Array.isArray(' + ($vSchema) + ')) {  var err =   '; /* istanbul ignore else */
+          if (it.createErrors !== false) {
+            out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+            if (it.opts.messages !== false) {
+              out += ' , message: \'';
+              if (it.opts._errorDataPathProperty) {
+                out += 'is a required property';
+              } else {
+                out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+              }
+              out += '\' ';
+            }
+            if (it.opts.verbose) {
+              out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+            }
+            out += ' } ';
+          } else {
+            out += ' {} ';
+          }
+          out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else if (' + ($vSchema) + ' !== undefined) { ';
+        }
+        out += ' for (var ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { if (' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] === undefined) {  var err =   '; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'';
+            if (it.opts._errorDataPathProperty) {
+              out += 'is a required property';
+            } else {
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } } ';
+        if ($isData) {
+          out += '  }  ';
+        }
+      } else {
+        var arr3 = $required;
+        if (arr3) {
+          var $reqProperty, i3 = -1,
+            l3 = arr3.length - 1;
+          while (i3 < l3) {
+            $reqProperty = arr3[i3 += 1];
+            var $prop = it.util.getProperty($reqProperty),
+              $missingProperty = it.util.escapeQuotes($reqProperty);
+            if (it.opts._errorDataPathProperty) {
+              it.errorPath = it.util.getPath($currentErrorPath, $reqProperty, it.opts.jsonPointers);
+            }
+            out += ' if (' + ($data) + ($prop) + ' === undefined) {  var err =   '; /* istanbul ignore else */
+            if (it.createErrors !== false) {
+              out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+              if (it.opts.messages !== false) {
+                out += ' , message: \'';
+                if (it.opts._errorDataPathProperty) {
+                  out += 'is a required property';
+                } else {
+                  out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+                }
+                out += '\' ';
+              }
+              if (it.opts.verbose) {
+                out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+              }
+              out += ' } ';
+            } else {
+              out += ' {} ';
+            }
+            out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } ';
+          }
+        }
+      }
+    }
+    it.errorPath = $currentErrorPath;
+  } else if ($breakOnError) {
+    out += ' if (true) {';
+  }
+  return out;
+}
+
+},{}],35:[function(require,module,exports){
+'use strict';
+module.exports = function generate_switch(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $ifPassed = 'ifPassed' + it.level,
+    $currentBaseId = $it.baseId,
+    $shouldContinue;
+  out += 'var ' + ($ifPassed) + ';';
+  var arr1 = $schema;
+  if (arr1) {
+    var $sch, $caseIndex = -1,
+      l1 = arr1.length - 1;
+    while ($caseIndex < l1) {
+      $sch = arr1[$caseIndex += 1];
+      if ($caseIndex && !$shouldContinue) {
+        out += ' if (!' + ($ifPassed) + ') { ';
+        $closingBraces += '}';
+      }
+      if ($sch.if && it.util.schemaHasRules($sch.if, it.RULES.all)) {
+        out += ' var ' + ($errs) + ' = errors;   ';
+        var $wasComposite = it.compositeRule;
+        it.compositeRule = $it.compositeRule = true;
+        $it.createErrors = false;
+        $it.schema = $sch.if;
+        $it.schemaPath = $schemaPath + '[' + $caseIndex + '].if';
+        $it.errSchemaPath = $errSchemaPath + '/' + $caseIndex + '/if';
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+        $it.createErrors = true;
+        it.compositeRule = $it.compositeRule = $wasComposite;
+        out += ' ' + ($ifPassed) + ' = ' + ($nextValid) + '; if (' + ($ifPassed) + ') {  ';
+        if (typeof $sch.then == 'boolean') {
+          if ($sch.then === false) {
+            var $$outStack = $$outStack || [];
+            $$outStack.push(out);
+            out = ''; /* istanbul ignore else */
+            if (it.createErrors !== false) {
+              out += ' { keyword: \'' + ('switch') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { caseIndex: ' + ($caseIndex) + ' } ';
+              if (it.opts.messages !== false) {
+                out += ' , message: \'should pass "switch" keyword validation\' ';
+              }
+              if (it.opts.verbose) {
+                out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+              }
+              out += ' } ';
+            } else {
+              out += ' {} ';
+            }
+            var __err = out;
+            out = $$outStack.pop();
+            if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+              if (it.async) {
+                out += ' throw new ValidationError([' + (__err) + ']); ';
+              } else {
+                out += ' validate.errors = [' + (__err) + ']; return false; ';
+              }
+            } else {
+              out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+            }
+          }
+          out += ' var ' + ($nextValid) + ' = ' + ($sch.then) + '; ';
+        } else {
+          $it.schema = $sch.then;
+          $it.schemaPath = $schemaPath + '[' + $caseIndex + '].then';
+          $it.errSchemaPath = $errSchemaPath + '/' + $caseIndex + '/then';
+          out += '  ' + (it.validate($it)) + ' ';
+          $it.baseId = $currentBaseId;
+        }
+        out += '  } else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; } } ';
+      } else {
+        out += ' ' + ($ifPassed) + ' = true;  ';
+        if (typeof $sch.then == 'boolean') {
+          if ($sch.then === false) {
+            var $$outStack = $$outStack || [];
+            $$outStack.push(out);
+            out = ''; /* istanbul ignore else */
+            if (it.createErrors !== false) {
+              out += ' { keyword: \'' + ('switch') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { caseIndex: ' + ($caseIndex) + ' } ';
+              if (it.opts.messages !== false) {
+                out += ' , message: \'should pass "switch" keyword validation\' ';
+              }
+              if (it.opts.verbose) {
+                out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+              }
+              out += ' } ';
+            } else {
+              out += ' {} ';
+            }
+            var __err = out;
+            out = $$outStack.pop();
+            if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+              if (it.async) {
+                out += ' throw new ValidationError([' + (__err) + ']); ';
+              } else {
+                out += ' validate.errors = [' + (__err) + ']; return false; ';
+              }
+            } else {
+              out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+            }
+          }
+          out += ' var ' + ($nextValid) + ' = ' + ($sch.then) + '; ';
+        } else {
+          $it.schema = $sch.then;
+          $it.schemaPath = $schemaPath + '[' + $caseIndex + '].then';
+          $it.errSchemaPath = $errSchemaPath + '/' + $caseIndex + '/then';
+          out += '  ' + (it.validate($it)) + ' ';
+          $it.baseId = $currentBaseId;
+        }
+      }
+      $shouldContinue = $sch.continue
+    }
+  }
+  out += '' + ($closingBraces) + 'var ' + ($valid) + ' = ' + ($nextValid) + '; ';
+  out = it.util.cleanUpCode(out);
+  return out;
+}
+
+},{}],36:[function(require,module,exports){
+'use strict';
+module.exports = function generate_uniqueItems(it, $keyword) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.v5 && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (($schema || $isData) && it.opts.uniqueItems !== false) {
+    if ($isData) {
+      out += ' var ' + ($valid) + '; if (' + ($schemaValue) + ' === false || ' + ($schemaValue) + ' === undefined) ' + ($valid) + ' = true; else if (typeof ' + ($schemaValue) + ' != \'boolean\') ' + ($valid) + ' = false; else { ';
+    }
+    out += ' var ' + ($valid) + ' = true; if (' + ($data) + '.length > 1) { var i = ' + ($data) + '.length, j; outer: for (;i--;) { for (j = i; j--;) { if (equal(' + ($data) + '[i], ' + ($data) + '[j])) { ' + ($valid) + ' = false; break outer; } } } } ';
+    if ($isData) {
+      out += '  }  ';
+    }
+    out += ' if (!' + ($valid) + ') {   ';
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('uniqueItems') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { i: i, j: j } ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should NOT have duplicate items (items ## \' + j + \' and \' + i + \' are identical)\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema:  ';
+        if ($isData) {
+          out += 'validate.schema' + ($schemaPath);
+        } else {
+          out += '' + ($schema);
+        }
+        out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' } ';
+    if ($breakOnError) {
+      out += ' else { ';
+    }
+  } else {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+  }
+  return out;
+}
+
+},{}],37:[function(require,module,exports){
+'use strict';
+module.exports = function generate_validate(it, $keyword) {
+  var out = '';
+  var $async = it.schema.$async === true;
+  if (it.isTop) {
+    var $top = it.isTop,
+      $lvl = it.level = 0,
+      $dataLvl = it.dataLevel = 0,
+      $data = 'data';
+    it.rootId = it.resolve.fullPath(it.root.schema.id);
+    it.baseId = it.baseId || it.rootId;
+    if ($async) {
+      it.async = true;
+      var $es7 = it.opts.async == 'es7';
+      it.yieldAwait = $es7 ? 'await' : 'yield';
+    }
+    delete it.isTop;
+    it.dataPathArr = [undefined];
+    out += ' var validate = ';
+    if ($async) {
+      if ($es7) {
+        out += ' (async function ';
+      } else {
+        if (it.opts.async == 'co*') {
+          out += 'co.wrap';
+        }
+        out += '(function* ';
+      }
+    } else {
+      out += ' (function ';
+    }
+    out += ' (data, dataPath, parentData, parentDataProperty, rootData) { \'use strict\'; var vErrors = null; ';
+    out += ' var errors = 0;     ';
+    out += ' if (rootData === undefined) rootData = data;';
+  } else {
+    var $lvl = it.level,
+      $dataLvl = it.dataLevel,
+      $data = 'data' + ($dataLvl || '');
+    if (it.schema.id) it.baseId = it.resolve.url(it.baseId, it.schema.id);
+    if ($async && !it.async) throw new Error('async schema in sync schema');
+    out += ' var errs_' + ($lvl) + ' = errors;';
+  }
+  var $valid = 'valid' + $lvl,
+    $breakOnError = !it.opts.allErrors,
+    $closingBraces1 = '',
+    $closingBraces2 = '';
+  var $typeSchema = it.schema.type,
+    $typeIsArray = Array.isArray($typeSchema);
+  if ($typeSchema && it.opts.coerceTypes) {
+    var $coerceToTypes = it.util.coerceToTypes(it.opts.coerceTypes, $typeSchema);
+    if ($coerceToTypes) {
+      var $schemaPath = it.schemaPath + '.type',
+        $errSchemaPath = it.errSchemaPath + '/type',
+        $method = $typeIsArray ? 'checkDataTypes' : 'checkDataType';
+      out += ' if (' + (it.util[$method]($typeSchema, $data, true)) + ') {  ';
+      var $dataType = 'dataType' + $lvl,
+        $coerced = 'coerced' + $lvl;
+      out += ' var ' + ($dataType) + ' = typeof ' + ($data) + '; ';
+      if (it.opts.coerceTypes == 'array') {
+        out += ' if (' + ($dataType) + ' == \'object\' && Array.isArray(' + ($data) + ')) ' + ($dataType) + ' = \'array\'; ';
+      }
+      out += ' var ' + ($coerced) + ' = undefined; ';
+      var $bracesCoercion = '';
+      var arr1 = $coerceToTypes;
+      if (arr1) {
+        var $type, $i = -1,
+          l1 = arr1.length - 1;
+        while ($i < l1) {
+          $type = arr1[$i += 1];
+          if ($i) {
+            out += ' if (' + ($coerced) + ' === undefined) { ';
+            $bracesCoercion += '}';
+          }
+          if (it.opts.coerceTypes == 'array' && $type != 'array') {
+            out += ' if (' + ($dataType) + ' == \'array\' && ' + ($data) + '.length == 1) { ' + ($coerced) + ' = ' + ($data) + ' = ' + ($data) + '[0]; ' + ($dataType) + ' = typeof ' + ($data) + ';  } ';
+          }
+          if ($type == 'string') {
+            out += ' if (' + ($dataType) + ' == \'number\' || ' + ($dataType) + ' == \'boolean\') ' + ($coerced) + ' = \'\' + ' + ($data) + '; else if (' + ($data) + ' === null) ' + ($coerced) + ' = \'\'; ';
+          } else if ($type == 'number' || $type == 'integer') {
+            out += ' if (' + ($dataType) + ' == \'boolean\' || ' + ($data) + ' === null || (' + ($dataType) + ' == \'string\' && ' + ($data) + ' && ' + ($data) + ' == +' + ($data) + ' ';
+            if ($type == 'integer') {
+              out += ' && !(' + ($data) + ' % 1)';
+            }
+            out += ')) ' + ($coerced) + ' = +' + ($data) + '; ';
+          } else if ($type == 'boolean') {
+            out += ' if (' + ($data) + ' === \'false\' || ' + ($data) + ' === 0 || ' + ($data) + ' === null) ' + ($coerced) + ' = false; else if (' + ($data) + ' === \'true\' || ' + ($data) + ' === 1) ' + ($coerced) + ' = true; ';
+          } else if ($type == 'null') {
+            out += ' if (' + ($data) + ' === \'\' || ' + ($data) + ' === 0 || ' + ($data) + ' === false) ' + ($coerced) + ' = null; ';
+          } else if (it.opts.coerceTypes == 'array' && $type == 'array') {
+            out += ' if (' + ($dataType) + ' == \'string\' || ' + ($dataType) + ' == \'number\' || ' + ($dataType) + ' == \'boolean\' || ' + ($data) + ' == null) ' + ($coerced) + ' = [' + ($data) + ']; ';
+          }
+        }
+      }
+      out += ' ' + ($bracesCoercion) + ' if (' + ($coerced) + ' === undefined) {   ';
+      var $$outStack = $$outStack || [];
+      $$outStack.push(out);
+      out = ''; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ('type') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { type: \'';
+        if ($typeIsArray) {
+          out += '' + ($typeSchema.join(","));
+        } else {
+          out += '' + ($typeSchema);
+        }
+        out += '\' } ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'should be ';
+          if ($typeIsArray) {
+            out += '' + ($typeSchema.join(","));
+          } else {
+            out += '' + ($typeSchema);
+          }
+          out += '\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      var __err = out;
+      out = $$outStack.pop();
+      if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+        if (it.async) {
+          out += ' throw new ValidationError([' + (__err) + ']); ';
+        } else {
+          out += ' validate.errors = [' + (__err) + ']; return false; ';
+        }
+      } else {
+        out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      }
+      out += ' } else {  ';
+      var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+        $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
+      out += ' ' + ($data) + ' = ' + ($coerced) + '; ';
+      if (!$dataLvl) {
+        out += 'if (' + ($parentData) + ' !== undefined)';
+      }
+      out += ' ' + ($parentData) + '[' + ($parentDataProperty) + '] = ' + ($coerced) + '; } } ';
+    }
+  }
+  var $refKeywords;
+  if (it.schema.$ref && ($refKeywords = it.util.schemaHasRulesExcept(it.schema, it.RULES.all, '$ref'))) {
+    if (it.opts.extendRefs == 'fail') {
+      throw new Error('$ref: validation keywords used in schema at path "' + it.errSchemaPath + '"');
+    } else if (it.opts.extendRefs == 'ignore') {
+      $refKeywords = false;
+      console.log('$ref: keywords ignored in schema at path "' + it.errSchemaPath + '"');
+    } else if (it.opts.extendRefs !== true) {
+      console.log('$ref: all keywords used in schema at path "' + it.errSchemaPath + '". It will change in the next major version, see issue #260. Use option { extendRefs: true } to keep current behaviour');
+    }
+  }
+  if (it.schema.$ref && !$refKeywords) {
+    out += ' ' + (it.RULES.all.$ref.code(it, '$ref')) + ' ';
+    if ($breakOnError) {
+      out += ' } if (errors === ';
+      if ($top) {
+        out += '0';
+      } else {
+        out += 'errs_' + ($lvl);
+      }
+      out += ') { ';
+      $closingBraces2 += '}';
+    }
+  } else {
+    var arr2 = it.RULES;
+    if (arr2) {
+      var $rulesGroup, i2 = -1,
+        l2 = arr2.length - 1;
+      while (i2 < l2) {
+        $rulesGroup = arr2[i2 += 1];
+        if ($shouldUseGroup($rulesGroup)) {
+          if ($rulesGroup.type) {
+            out += ' if (' + (it.util.checkDataType($rulesGroup.type, $data)) + ') { ';
+          }
+          if (it.opts.useDefaults && !it.compositeRule) {
+            if ($rulesGroup.type == 'object' && it.schema.properties) {
+              var $schema = it.schema.properties,
+                $schemaKeys = Object.keys($schema);
+              var arr3 = $schemaKeys;
+              if (arr3) {
+                var $propertyKey, i3 = -1,
+                  l3 = arr3.length - 1;
+                while (i3 < l3) {
+                  $propertyKey = arr3[i3 += 1];
+                  var $sch = $schema[$propertyKey];
+                  if ($sch.default !== undefined) {
+                    var $passData = $data + it.util.getProperty($propertyKey);
+                    out += '  if (' + ($passData) + ' === undefined) ' + ($passData) + ' = ';
+                    if (it.opts.useDefaults == 'shared') {
+                      out += ' ' + (it.useDefault($sch.default)) + ' ';
+                    } else {
+                      out += ' ' + (JSON.stringify($sch.default)) + ' ';
+                    }
+                    out += '; ';
+                  }
+                }
+              }
+            } else if ($rulesGroup.type == 'array' && Array.isArray(it.schema.items)) {
+              var arr4 = it.schema.items;
+              if (arr4) {
+                var $sch, $i = -1,
+                  l4 = arr4.length - 1;
+                while ($i < l4) {
+                  $sch = arr4[$i += 1];
+                  if ($sch.default !== undefined) {
+                    var $passData = $data + '[' + $i + ']';
+                    out += '  if (' + ($passData) + ' === undefined) ' + ($passData) + ' = ';
+                    if (it.opts.useDefaults == 'shared') {
+                      out += ' ' + (it.useDefault($sch.default)) + ' ';
+                    } else {
+                      out += ' ' + (JSON.stringify($sch.default)) + ' ';
+                    }
+                    out += '; ';
+                  }
+                }
+              }
+            }
+          }
+          var arr5 = $rulesGroup.rules;
+          if (arr5) {
+            var $rule, i5 = -1,
+              l5 = arr5.length - 1;
+            while (i5 < l5) {
+              $rule = arr5[i5 += 1];
+              if ($shouldUseRule($rule)) {
+                out += ' ' + ($rule.code(it, $rule.keyword)) + ' ';
+                if ($breakOnError) {
+                  $closingBraces1 += '}';
+                }
+              }
+            }
+          }
+          if ($breakOnError) {
+            out += ' ' + ($closingBraces1) + ' ';
+            $closingBraces1 = '';
+          }
+          if ($rulesGroup.type) {
+            out += ' } ';
+            if ($typeSchema && $typeSchema === $rulesGroup.type && !$coerceToTypes) {
+              var $typeChecked = true;
+              out += ' else { ';
+              var $schemaPath = it.schemaPath + '.type',
+                $errSchemaPath = it.errSchemaPath + '/type';
+              var $$outStack = $$outStack || [];
+              $$outStack.push(out);
+              out = ''; /* istanbul ignore else */
+              if (it.createErrors !== false) {
+                out += ' { keyword: \'' + ('type') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { type: \'';
+                if ($typeIsArray) {
+                  out += '' + ($typeSchema.join(","));
+                } else {
+                  out += '' + ($typeSchema);
+                }
+                out += '\' } ';
+                if (it.opts.messages !== false) {
+                  out += ' , message: \'should be ';
+                  if ($typeIsArray) {
+                    out += '' + ($typeSchema.join(","));
+                  } else {
+                    out += '' + ($typeSchema);
+                  }
+                  out += '\' ';
+                }
+                if (it.opts.verbose) {
+                  out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+                }
+                out += ' } ';
+              } else {
+                out += ' {} ';
+              }
+              var __err = out;
+              out = $$outStack.pop();
+              if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+                if (it.async) {
+                  out += ' throw new ValidationError([' + (__err) + ']); ';
+                } else {
+                  out += ' validate.errors = [' + (__err) + ']; return false; ';
+                }
+              } else {
+                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+              }
+              out += ' } ';
+            }
+          }
+          if ($breakOnError) {
+            out += ' if (errors === ';
+            if ($top) {
+              out += '0';
+            } else {
+              out += 'errs_' + ($lvl);
+            }
+            out += ') { ';
+            $closingBraces2 += '}';
+          }
+        }
+      }
+    }
+  }
+  if ($typeSchema && !$typeChecked && !$coerceToTypes) {
+    var $schemaPath = it.schemaPath + '.type',
+      $errSchemaPath = it.errSchemaPath + '/type',
+      $method = $typeIsArray ? 'checkDataTypes' : 'checkDataType';
+    out += ' if (' + (it.util[$method]($typeSchema, $data, true)) + ') {   ';
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('type') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { type: \'';
+      if ($typeIsArray) {
+        out += '' + ($typeSchema.join(","));
+      } else {
+        out += '' + ($typeSchema);
+      }
+      out += '\' } ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should be ';
+        if ($typeIsArray) {
+          out += '' + ($typeSchema.join(","));
+        } else {
+          out += '' + ($typeSchema);
+        }
+        out += '\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' }';
+  }
+  if ($breakOnError) {
+    out += ' ' + ($closingBraces2) + ' ';
+  }
+  if ($top) {
+    if ($async) {
+      out += ' if (errors === 0) return true;           ';
+      out += ' else throw new ValidationError(vErrors); ';
+    } else {
+      out += ' validate.errors = vErrors; ';
+      out += ' return errors === 0;       ';
+    }
+    out += ' }); return validate;';
+  } else {
+    out += ' var ' + ($valid) + ' = errors === errs_' + ($lvl) + ';';
+  }
+  out = it.util.cleanUpCode(out);
+  if ($top && $breakOnError) {
+    out = it.util.cleanUpVarErrors(out, $async);
+  }
+
+  function $shouldUseGroup($rulesGroup) {
+    for (var i = 0; i < $rulesGroup.rules.length; i++)
+      if ($shouldUseRule($rulesGroup.rules[i])) return true;
+  }
+
+  function $shouldUseRule($rule) {
+    return it.schema[$rule.keyword] !== undefined || ($rule.keyword == 'properties' && (it.schema.additionalProperties === false || typeof it.schema.additionalProperties == 'object' || (it.schema.patternProperties && Object.keys(it.schema.patternProperties).length) || (it.opts.v5 && it.schema.patternGroups && Object.keys(it.schema.patternGroups).length)));
+  }
+  return out;
+}
+
+},{}],38:[function(require,module,exports){
+'use strict';
+
+var IDENTIFIER = /^[a-z_$][a-z0-9_$\-]*$/i;
+var customRuleCode = require('./dotjs/custom');
+
+module.exports = {
+  add: addKeyword,
+  get: getKeyword,
+  remove: removeKeyword
+};
+
+/**
+ * Define custom keyword
+ * @this  Ajv
+ * @param {String} keyword custom keyword, should be unique (including different from all standard, custom and macro keywords).
+ * @param {Object} definition keyword definition object with properties `type` (type(s) which the keyword applies to), `validate` or `compile`.
+ */
+function addKeyword(keyword, definition) {
+  /* jshint validthis: true */
+  /* eslint no-shadow: 0 */
+  var RULES = this.RULES;
+
+  if (RULES.keywords[keyword])
+    throw new Error('Keyword ' + keyword + ' is already defined');
+
+  if (!IDENTIFIER.test(keyword))
+    throw new Error('Keyword ' + keyword + ' is not a valid identifier');
+
+  if (definition) {
+    if (definition.macro && definition.valid !== undefined)
+      throw new Error('"valid" option cannot be used with macro keywords');
+
+    var dataType = definition.type;
+    if (Array.isArray(dataType)) {
+      var i, len = dataType.length;
+      for (i=0; i<len; i++) checkDataType(dataType[i]);
+      for (i=0; i<len; i++) _addRule(keyword, dataType[i], definition);
+    } else {
+      if (dataType) checkDataType(dataType);
+      _addRule(keyword, dataType, definition);
+    }
+
+    var $data = definition.$data === true && this._opts.v5;
+    if ($data && !definition.validate)
+      throw new Error('$data support: "validate" function is not defined');
+
+    var metaSchema = definition.metaSchema;
+    if (metaSchema) {
+      if ($data) {
+        metaSchema = {
+          anyOf: [
+            metaSchema,
+            { '$ref': 'https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/json-schema-v5.json#/definitions/$data' }
+          ]
+        };
+      }
+      definition.validateSchema = this.compile(metaSchema, true);
+    }
+  }
+
+  RULES.keywords[keyword] = RULES.all[keyword] = true;
+
+
+  function _addRule(keyword, dataType, definition) {
+    var ruleGroup;
+    for (var i=0; i<RULES.length; i++) {
+      var rg = RULES[i];
+      if (rg.type == dataType) {
+        ruleGroup = rg;
+        break;
+      }
+    }
+
+    if (!ruleGroup) {
+      ruleGroup = { type: dataType, rules: [] };
+      RULES.push(ruleGroup);
+    }
+
+    var rule = {
+      keyword: keyword,
+      definition: definition,
+      custom: true,
+      code: customRuleCode
+    };
+    ruleGroup.rules.push(rule);
+    RULES.custom[keyword] = rule;
+  }
+
+
+  function checkDataType(dataType) {
+    if (!RULES.types[dataType]) throw new Error('Unknown type ' + dataType);
+  }
+}
+
+
+/**
+ * Get keyword
+ * @this  Ajv
+ * @param {String} keyword pre-defined or custom keyword.
+ * @return {Object|Boolean} custom keyword definition, `true` if it is a predefined keyword, `false` otherwise.
+ */
+function getKeyword(keyword) {
+  /* jshint validthis: true */
+  var rule = this.RULES.custom[keyword];
+  return rule ? rule.definition : this.RULES.keywords[keyword] || false;
+}
+
+
+/**
+ * Remove keyword
+ * @this  Ajv
+ * @param {String} keyword pre-defined or custom keyword.
+ */
+function removeKeyword(keyword) {
+  /* jshint validthis: true */
+  var RULES = this.RULES;
+  delete RULES.keywords[keyword];
+  delete RULES.all[keyword];
+  delete RULES.custom[keyword];
+  for (var i=0; i<RULES.length; i++) {
+    var rules = RULES[i].rules;
+    for (var j=0; j<rules.length; j++) {
+      if (rules[j].keyword == keyword) {
+        rules.splice(j, 1);
+        break;
+      }
+    }
+  }
+}
+
+},{"./dotjs/custom":22}],39:[function(require,module,exports){
+module.exports={
+    "id": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Core schema meta-schema",
+    "definitions": {
+        "schemaArray": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#" }
+        },
+        "positiveInteger": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "positiveIntegerDefault0": {
+            "allOf": [ { "$ref": "#/definitions/positiveInteger" }, { "default": 0 } ]
+        },
+        "simpleTypes": {
+            "enum": [ "array", "boolean", "integer", "null", "number", "object", "string" ]
+        },
+        "stringArray": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "uniqueItems": true
+        }
+    },
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "format": "uri"
+        },
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "default": {},
+        "multipleOf": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+        },
+        "maximum": {
+            "type": "number"
+        },
+        "exclusiveMaximum": {
+            "type": "boolean",
+            "default": false
+        },
+        "minimum": {
+            "type": "number"
+        },
+        "exclusiveMinimum": {
+            "type": "boolean",
+            "default": false
+        },
+        "maxLength": { "$ref": "#/definitions/positiveInteger" },
+        "minLength": { "$ref": "#/definitions/positiveIntegerDefault0" },
+        "pattern": {
+            "type": "string",
+            "format": "regex"
+        },
+        "additionalItems": {
+            "anyOf": [
+                { "type": "boolean" },
+                { "$ref": "#" }
+            ],
+            "default": {}
+        },
+        "items": {
+            "anyOf": [
+                { "$ref": "#" },
+                { "$ref": "#/definitions/schemaArray" }
+            ],
+            "default": {}
+        },
+        "maxItems": { "$ref": "#/definitions/positiveInteger" },
+        "minItems": { "$ref": "#/definitions/positiveIntegerDefault0" },
+        "uniqueItems": {
+            "type": "boolean",
+            "default": false
+        },
+        "maxProperties": { "$ref": "#/definitions/positiveInteger" },
+        "minProperties": { "$ref": "#/definitions/positiveIntegerDefault0" },
+        "required": { "$ref": "#/definitions/stringArray" },
+        "additionalProperties": {
+            "anyOf": [
+                { "type": "boolean" },
+                { "$ref": "#" }
+            ],
+            "default": {}
+        },
+        "definitions": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "patternProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "dependencies": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    { "$ref": "#" },
+                    { "$ref": "#/definitions/stringArray" }
+                ]
+            }
+        },
+        "enum": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "type": {
+            "anyOf": [
+                { "$ref": "#/definitions/simpleTypes" },
+                {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/simpleTypes" },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            ]
+        },
+        "allOf": { "$ref": "#/definitions/schemaArray" },
+        "anyOf": { "$ref": "#/definitions/schemaArray" },
+        "oneOf": { "$ref": "#/definitions/schemaArray" },
+        "not": { "$ref": "#" }
+    },
+    "dependencies": {
+        "exclusiveMaximum": [ "maximum" ],
+        "exclusiveMinimum": [ "minimum" ]
+    },
+    "default": {}
+}
+
+},{}],40:[function(require,module,exports){
+module.exports={
+    "id": "https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/json-schema-v5.json#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Core schema meta-schema (v5 proposals)",
+    "definitions": {
+        "schemaArray": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#" }
+        },
+        "positiveInteger": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "positiveIntegerDefault0": {
+            "allOf": [ { "$ref": "#/definitions/positiveInteger" }, { "default": 0 } ]
+        },
+        "simpleTypes": {
+            "enum": [ "array", "boolean", "integer", "null", "number", "object", "string" ]
+        },
+        "stringArray": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "$data": {
+            "type": "object",
+            "required": [ "$data" ],
+            "properties": {
+                "$data": {
+                    "type": "string",
+                    "anyOf": [
+                        { "format": "relative-json-pointer" }, 
+                        { "format": "json-pointer" }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "format": "uri"
+        },
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "default": {},
+        "multipleOf": {
+            "anyOf": [
+                {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "maximum": {
+            "anyOf": [
+                { "type": "number" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "exclusiveMaximum": {
+            "anyOf": [
+                {
+                    "type": "boolean",
+                    "default": false
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "minimum": {
+            "anyOf": [
+                { "type": "number" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "exclusiveMinimum": {
+            "anyOf": [
+                {
+                    "type": "boolean",
+                    "default": false
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "maxLength": {
+            "anyOf": [
+                { "$ref": "#/definitions/positiveInteger" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "minLength": {
+            "anyOf": [
+                { "$ref": "#/definitions/positiveIntegerDefault0" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "pattern": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "regex"
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "additionalItems": {
+            "anyOf": [
+                { "type": "boolean" },
+                { "$ref": "#" },
+                { "$ref": "#/definitions/$data" }
+            ],
+            "default": {}
+        },
+        "items": {
+            "anyOf": [
+                { "$ref": "#" },
+                { "$ref": "#/definitions/schemaArray" }
+            ],
+            "default": {}
+        },
+        "maxItems": {
+            "anyOf": [
+                { "$ref": "#/definitions/positiveInteger" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "minItems": {
+            "anyOf": [
+                { "$ref": "#/definitions/positiveIntegerDefault0" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "uniqueItems": {
+            "anyOf": [
+                {
+                    "type": "boolean",
+                    "default": false
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "maxProperties": {
+            "anyOf": [
+                { "$ref": "#/definitions/positiveInteger" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "minProperties": {
+            "anyOf": [
+                { "$ref": "#/definitions/positiveIntegerDefault0" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "required": {
+            "anyOf": [
+                { "$ref": "#/definitions/stringArray" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "additionalProperties": {
+            "anyOf": [
+                { "type": "boolean" },
+                { "$ref": "#" },
+                { "$ref": "#/definitions/$data" }
+            ],
+            "default": {}
+        },
+        "definitions": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "patternProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "dependencies": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    { "$ref": "#" },
+                    { "$ref": "#/definitions/stringArray" }
+                ]
+            }
+        },
+        "enum": {
+            "anyOf": [
+                {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "type": {
+            "anyOf": [
+                { "$ref": "#/definitions/simpleTypes" },
+                {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/simpleTypes" },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            ]
+        },
+        "allOf": { "$ref": "#/definitions/schemaArray" },
+        "anyOf": { "$ref": "#/definitions/schemaArray" },
+        "oneOf": { "$ref": "#/definitions/schemaArray" },
+        "not": { "$ref": "#" },
+        "format": {
+            "anyOf": [
+                { "type": "string" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "formatMaximum": {
+            "anyOf": [
+                { "type": "string" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "formatMinimum": {
+            "anyOf": [
+                { "type": "string" },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "formatExclusiveMaximum": {
+            "anyOf": [
+                {
+                    "type": "boolean",
+                    "default": false
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "formatExclusiveMinimum": {
+            "anyOf": [
+                {
+                    "type": "boolean",
+                    "default": false
+                },
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "constant": {
+            "anyOf": [
+                {},
+                { "$ref": "#/definitions/$data" }
+            ]
+        },
+        "contains": { "$ref": "#" },
+        "patternGroups": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "required": [ "schema" ],
+                "properties": {
+                    "maximum": {
+                        "anyOf": [
+                            { "$ref": "#/definitions/positiveInteger" },
+                            { "$ref": "#/definitions/$data" }
+                        ]
+                    },
+                    "minimum": {
+                        "anyOf": [
+                            { "$ref": "#/definitions/positiveIntegerDefault0" },
+                            { "$ref": "#/definitions/$data" }
+                        ]
+                    },
+                    "schema": { "$ref": "#" }
+                },
+                "additionalProperties": false
+            },
+            "default": {}
+        },
+        "switch": {
+            "type": "array",
+            "items": {
+                "required": [ "then" ],
+                "properties": {
+                    "if": { "$ref": "#" },
+                    "then": {
+                        "anyOf": [
+                            { "type": "boolean" },
+                            { "$ref": "#" }
+                        ]
+                    },
+                    "continue": { "type": "boolean" }
+                },
+                "additionalProperties": false,
+                "dependencies": {
+                    "continue": [ "if" ]
+                }
+            }
+        }
+    },
+    "dependencies": {
+        "exclusiveMaximum": [ "maximum" ],
+        "exclusiveMinimum": [ "minimum" ],
+        "formatMaximum": [ "format" ],
+        "formatMinimum": [ "format" ],
+        "formatExclusiveMaximum": [ "formatMaximum" ],
+        "formatExclusiveMinimum": [ "formatMinimum" ]
+    },
+    "default": {}
+}
+
+},{}],41:[function(require,module,exports){
+'use strict';
+
+var META_SCHEMA_ID = 'https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/json-schema-v5.json';
+
+module.exports = {
+  enable: enableV5,
+  META_SCHEMA_ID: META_SCHEMA_ID
+};
+
+
+function enableV5(ajv) {
+  var inlineFunctions = {
+    'switch': require('./dotjs/switch'),
+    'constant': require('./dotjs/constant'),
+    '_formatLimit': require('./dotjs/_formatLimit'),
+    'patternRequired': require('./dotjs/patternRequired')
+  };
+
+  if (ajv._opts.meta !== false) {
+    var metaSchema = require('./refs/json-schema-v5.json');
+    ajv.addMetaSchema(metaSchema, META_SCHEMA_ID);
+  }
+  _addKeyword('constant');
+  ajv.addKeyword('contains', { type: 'array', macro: containsMacro });
+
+  _addKeyword('formatMaximum', 'string', inlineFunctions._formatLimit);
+  _addKeyword('formatMinimum', 'string', inlineFunctions._formatLimit);
+  ajv.addKeyword('formatExclusiveMaximum');
+  ajv.addKeyword('formatExclusiveMinimum');
+
+  ajv.addKeyword('patternGroups'); // implemented in properties.jst
+  _addKeyword('patternRequired', 'object');
+  _addKeyword('switch');
+
+
+  function _addKeyword(keyword, types, inlineFunc) {
+    var definition = {
+      inline: inlineFunc || inlineFunctions[keyword],
+      statements: true,
+      errors: 'full'
+    };
+    if (types) definition.type = types;
+    ajv.addKeyword(keyword, definition);
+  }
+}
+
+
+function containsMacro(schema) {
+  return {
+    not: { items: { not: schema } }
+  };
+}
+
+},{"./dotjs/_formatLimit":14,"./dotjs/constant":21,"./dotjs/patternRequired":31,"./dotjs/switch":35,"./refs/json-schema-v5.json":40}],42:[function(require,module,exports){
+'use strict';
 module.exports = balanced;
 function balanced(a, b, str) {
   if (a instanceof RegExp) a = maybeMatch(a, str);
@@ -59,7 +5852,7 @@ function range(a, b, str) {
   return result;
 }
 
-},{}],2:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var concatMap = require('concat-map');
 var balanced = require('balanced-match');
 
@@ -262,7 +6055,246 @@ function expand(str, isTop) {
 }
 
 
-},{"balanced-match":1,"concat-map":3}],3:[function(require,module,exports){
+},{"balanced-match":42,"concat-map":45}],44:[function(require,module,exports){
+
+/**
+ * slice() reference.
+ */
+
+var slice = Array.prototype.slice;
+
+/**
+ * Expose `co`.
+ */
+
+module.exports = co['default'] = co.co = co;
+
+/**
+ * Wrap the given generator `fn` into a
+ * function that returns a promise.
+ * This is a separate function so that
+ * every `co()` call doesn't create a new,
+ * unnecessary closure.
+ *
+ * @param {GeneratorFunction} fn
+ * @return {Function}
+ * @api public
+ */
+
+co.wrap = function (fn) {
+  createPromise.__generatorFunction__ = fn;
+  return createPromise;
+  function createPromise() {
+    return co.call(this, fn.apply(this, arguments));
+  }
+};
+
+/**
+ * Execute the generator function or a generator
+ * and return a promise.
+ *
+ * @param {Function} fn
+ * @return {Promise}
+ * @api public
+ */
+
+function co(gen) {
+  var ctx = this;
+  var args = slice.call(arguments, 1)
+
+  // we wrap everything in a promise to avoid promise chaining,
+  // which leads to memory leak errors.
+  // see https://github.com/tj/co/issues/180
+  return new Promise(function(resolve, reject) {
+    if (typeof gen === 'function') gen = gen.apply(ctx, args);
+    if (!gen || typeof gen.next !== 'function') return resolve(gen);
+
+    onFulfilled();
+
+    /**
+     * @param {Mixed} res
+     * @return {Promise}
+     * @api private
+     */
+
+    function onFulfilled(res) {
+      var ret;
+      try {
+        ret = gen.next(res);
+      } catch (e) {
+        return reject(e);
+      }
+      next(ret);
+    }
+
+    /**
+     * @param {Error} err
+     * @return {Promise}
+     * @api private
+     */
+
+    function onRejected(err) {
+      var ret;
+      try {
+        ret = gen.throw(err);
+      } catch (e) {
+        return reject(e);
+      }
+      next(ret);
+    }
+
+    /**
+     * Get the next value in the generator,
+     * return a promise.
+     *
+     * @param {Object} ret
+     * @return {Promise}
+     * @api private
+     */
+
+    function next(ret) {
+      if (ret.done) return resolve(ret.value);
+      var value = toPromise.call(ctx, ret.value);
+      if (value && isPromise(value)) return value.then(onFulfilled, onRejected);
+      return onRejected(new TypeError('You may only yield a function, promise, generator, array, or object, '
+        + 'but the following object was passed: "' + String(ret.value) + '"'));
+    }
+  });
+}
+
+/**
+ * Convert a `yield`ed value into a promise.
+ *
+ * @param {Mixed} obj
+ * @return {Promise}
+ * @api private
+ */
+
+function toPromise(obj) {
+  if (!obj) return obj;
+  if (isPromise(obj)) return obj;
+  if (isGeneratorFunction(obj) || isGenerator(obj)) return co.call(this, obj);
+  if ('function' == typeof obj) return thunkToPromise.call(this, obj);
+  if (Array.isArray(obj)) return arrayToPromise.call(this, obj);
+  if (isObject(obj)) return objectToPromise.call(this, obj);
+  return obj;
+}
+
+/**
+ * Convert a thunk to a promise.
+ *
+ * @param {Function}
+ * @return {Promise}
+ * @api private
+ */
+
+function thunkToPromise(fn) {
+  var ctx = this;
+  return new Promise(function (resolve, reject) {
+    fn.call(ctx, function (err, res) {
+      if (err) return reject(err);
+      if (arguments.length > 2) res = slice.call(arguments, 1);
+      resolve(res);
+    });
+  });
+}
+
+/**
+ * Convert an array of "yieldables" to a promise.
+ * Uses `Promise.all()` internally.
+ *
+ * @param {Array} obj
+ * @return {Promise}
+ * @api private
+ */
+
+function arrayToPromise(obj) {
+  return Promise.all(obj.map(toPromise, this));
+}
+
+/**
+ * Convert an object of "yieldables" to a promise.
+ * Uses `Promise.all()` internally.
+ *
+ * @param {Object} obj
+ * @return {Promise}
+ * @api private
+ */
+
+function objectToPromise(obj){
+  var results = new obj.constructor();
+  var keys = Object.keys(obj);
+  var promises = [];
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var promise = toPromise.call(this, obj[key]);
+    if (promise && isPromise(promise)) defer(promise, key);
+    else results[key] = obj[key];
+  }
+  return Promise.all(promises).then(function () {
+    return results;
+  });
+
+  function defer(promise, key) {
+    // predefine the key in the result
+    results[key] = undefined;
+    promises.push(promise.then(function (res) {
+      results[key] = res;
+    }));
+  }
+}
+
+/**
+ * Check if `obj` is a promise.
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+function isPromise(obj) {
+  return 'function' == typeof obj.then;
+}
+
+/**
+ * Check if `obj` is a generator.
+ *
+ * @param {Mixed} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+function isGenerator(obj) {
+  return 'function' == typeof obj.next && 'function' == typeof obj.throw;
+}
+
+/**
+ * Check if `obj` is a generator function.
+ *
+ * @param {Mixed} obj
+ * @return {Boolean}
+ * @api private
+ */
+function isGeneratorFunction(obj) {
+  var constructor = obj.constructor;
+  if (!constructor) return false;
+  if ('GeneratorFunction' === constructor.name || 'GeneratorFunction' === constructor.displayName) return true;
+  return isGenerator(constructor.prototype);
+}
+
+/**
+ * Check for plain object.
+ *
+ * @param {Mixed} val
+ * @return {Boolean}
+ * @api private
+ */
+
+function isObject(val) {
+  return Object == val.constructor;
+}
+
+},{}],45:[function(require,module,exports){
 module.exports = function (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -277,7 +6309,7 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],4:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
 var iconvLite = require('iconv-lite');
@@ -392,7 +6424,7 @@ function checkEncoding(name) {
     toUpperCase();
 }
 
-},{"./iconv-loader":5,"iconv-lite":30}],5:[function(require,module,exports){
+},{"./iconv-loader":47,"iconv-lite":72}],47:[function(require,module,exports){
 'use strict';
 
 var iconv_package;
@@ -408,7 +6440,7 @@ try {
 
 module.exports = Iconv;
 
-},{}],6:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = realpath
 realpath.realpath = realpath
 realpath.sync = realpathSync
@@ -476,7 +6508,7 @@ function unmonkeypatch () {
   fs.realpathSync = origRealpathSync
 }
 
-},{"./old.js":7,"fs":undefined}],7:[function(require,module,exports){
+},{"./old.js":49,"fs":undefined}],49:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -781,7 +6813,7 @@ exports.realpath = function realpath(p, cache, cb) {
   }
 };
 
-},{"fs":undefined,"path":undefined}],8:[function(require,module,exports){
+},{"fs":undefined,"path":undefined}],50:[function(require,module,exports){
 exports.alphasort = alphasort
 exports.alphasorti = alphasorti
 exports.setopts = setopts
@@ -1023,7 +7055,7 @@ function childrenIgnored (self, path) {
   })
 }
 
-},{"minimatch":35,"path":undefined,"path-is-absolute":37}],9:[function(require,module,exports){
+},{"minimatch":82,"path":undefined,"path-is-absolute":84}],51:[function(require,module,exports){
 // Approach:
 //
 // 1. Get the minimatch set
@@ -1815,7 +7847,7 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
   return cb(null, c, stat)
 }
 
-},{"./common.js":8,"./sync.js":10,"assert":undefined,"events":undefined,"fs":undefined,"fs.realpath":6,"inflight":32,"inherits":33,"minimatch":35,"once":36,"path":undefined,"path-is-absolute":37,"util":undefined}],10:[function(require,module,exports){
+},{"./common.js":50,"./sync.js":52,"assert":undefined,"events":undefined,"fs":undefined,"fs.realpath":48,"inflight":74,"inherits":75,"minimatch":82,"once":83,"path":undefined,"path-is-absolute":84,"util":undefined}],52:[function(require,module,exports){
 module.exports = globSync
 globSync.GlobSync = GlobSync
 
@@ -2303,7 +8335,7 @@ GlobSync.prototype._makeAbs = function (f) {
   return common.makeAbs(this, f)
 }
 
-},{"./common.js":8,"./glob.js":9,"assert":undefined,"fs":undefined,"fs.realpath":6,"minimatch":35,"path":undefined,"path-is-absolute":37,"util":undefined}],11:[function(require,module,exports){
+},{"./common.js":50,"./glob.js":51,"assert":undefined,"fs":undefined,"fs.realpath":48,"minimatch":82,"path":undefined,"path-is-absolute":84,"util":undefined}],53:[function(require,module,exports){
 "use strict";
 var Buffer = require("buffer").Buffer;
 
@@ -2860,7 +8892,7 @@ function findIdx(table, val) {
 }
 
 
-},{"buffer":undefined}],12:[function(require,module,exports){
+},{"buffer":undefined}],54:[function(require,module,exports){
 "use strict";
 
 // Description of supported double byte encodings and aliases.
@@ -3038,7 +9070,7 @@ module.exports = {
     'xxbig5': 'big5hkscs',
 };
 
-},{"./tables/big5-added.json":18,"./tables/cp936.json":19,"./tables/cp949.json":20,"./tables/cp950.json":21,"./tables/eucjp.json":22,"./tables/gb18030-ranges.json":23,"./tables/gbk-added.json":24,"./tables/shiftjis.json":25}],13:[function(require,module,exports){
+},{"./tables/big5-added.json":60,"./tables/cp936.json":61,"./tables/cp949.json":62,"./tables/cp950.json":63,"./tables/eucjp.json":64,"./tables/gb18030-ranges.json":65,"./tables/gbk-added.json":66,"./tables/shiftjis.json":67}],55:[function(require,module,exports){
 "use strict";
 
 // Update this array if you add/rename/remove files in this directory.
@@ -3062,7 +9094,7 @@ for (var i = 0; i < modules.length; i++) {
             exports[enc] = module[enc];
 }
 
-},{"./dbcs-codec":11,"./dbcs-data":12,"./internal":14,"./sbcs-codec":15,"./sbcs-data":17,"./sbcs-data-generated":16,"./utf16":26,"./utf7":27}],14:[function(require,module,exports){
+},{"./dbcs-codec":53,"./dbcs-data":54,"./internal":56,"./sbcs-codec":57,"./sbcs-data":59,"./sbcs-data-generated":58,"./utf16":68,"./utf7":69}],56:[function(require,module,exports){
 "use strict";
 var Buffer = require("buffer").Buffer;
 
@@ -3252,7 +9284,7 @@ InternalDecoderCesu8.prototype.end = function() {
     return res;
 }
 
-},{"buffer":undefined,"string_decoder":undefined}],15:[function(require,module,exports){
+},{"buffer":undefined,"string_decoder":undefined}],57:[function(require,module,exports){
 "use strict";
 var Buffer = require("buffer").Buffer;
 
@@ -3327,7 +9359,7 @@ SBCSDecoder.prototype.write = function(buf) {
 SBCSDecoder.prototype.end = function() {
 }
 
-},{"buffer":undefined}],16:[function(require,module,exports){
+},{"buffer":undefined}],58:[function(require,module,exports){
 "use strict";
 
 // Generated data for sbcs codec. Don't edit manually. Regenerate using generation/gen-sbcs.js script.
@@ -3779,7 +9811,7 @@ module.exports = {
     "chars": "���������������������������������กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุู����฿เแโใไๅๆ็่้๊๋์ํ๎๏๐๑๒๓๔๕๖๗๘๙๚๛����"
   }
 }
-},{}],17:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 "use strict";
 
 // Manually added data to be used by sbcs codec in addition to generated one.
@@ -3950,7 +9982,7 @@ module.exports = {
 };
 
 
-},{}],18:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports=[
 ["8740","䏰䰲䘃䖦䕸𧉧䵷䖳𧲱䳢𧳅㮕䜶䝄䱇䱀𤊿𣘗𧍒𦺋𧃒䱗𪍑䝏䗚䲅𧱬䴇䪤䚡𦬣爥𥩔𡩣𣸆𣽡晍囻"],
 ["8767","綕夝𨮹㷴霴𧯯寛𡵞媤㘥𩺰嫑宷峼杮薓𩥅瑡璝㡵𡵓𣚞𦀡㻬"],
@@ -4074,7 +10106,7 @@ module.exports=[
 ["fea1","𤅟𤩹𨮏孆𨰃𡢞瓈𡦈甎瓩甞𨻙𡩋寗𨺬鎅畍畊畧畮𤾂㼄𤴓疎瑝疞疴瘂瘬癑癏癯癶𦏵皐臯㟸𦤑𦤎皡皥皷盌𦾟葢𥂝𥅽𡸜眞眦着撯𥈠睘𣊬瞯𨥤𨥨𡛁矴砉𡍶𤨒棊碯磇磓隥礮𥗠磗礴碱𧘌辸袄𨬫𦂃𢘜禆褀椂禀𥡗禝𧬹礼禩渪𧄦㺨秆𩄍秔"]
 ]
 
-},{}],19:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports=[
 ["0","\u0000",127,"€"],
 ["8140","丂丄丅丆丏丒丗丟丠両丣並丩丮丯丱丳丵丷丼乀乁乂乄乆乊乑乕乗乚乛乢乣乤乥乧乨乪",5,"乲乴",9,"乿",6,"亇亊"],
@@ -4340,7 +10372,7 @@ module.exports=[
 ["fe40","兀嗀﨎﨏﨑﨓﨔礼﨟蘒﨡﨣﨤﨧﨨﨩"]
 ]
 
-},{}],20:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports=[
 ["0","\u0000",127],
 ["8141","갂갃갅갆갋",4,"갘갞갟갡갢갣갥",6,"갮갲갳갴"],
@@ -4615,7 +10647,7 @@ module.exports=[
 ["fda1","爻肴酵驍侯候厚后吼喉嗅帿後朽煦珝逅勛勳塤壎焄熏燻薰訓暈薨喧暄煊萱卉喙毁彙徽揮暉煇諱輝麾休携烋畦虧恤譎鷸兇凶匈洶胸黑昕欣炘痕吃屹紇訖欠欽歆吸恰洽翕興僖凞喜噫囍姬嬉希憙憘戱晞曦熙熹熺犧禧稀羲詰"]
 ]
 
-},{}],21:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports=[
 ["0","\u0000",127],
 ["a140","　，、。．‧；：？！︰…‥﹐﹑﹒·﹔﹕﹖﹗｜–︱—︳╴︴﹏（）︵︶｛｝︷︸〔〕︹︺【】︻︼《》︽︾〈〉︿﹀「」﹁﹂『』﹃﹄﹙﹚"],
@@ -4794,7 +10826,7 @@ module.exports=[
 ["f9a1","龤灨灥糷虪蠾蠽蠿讞貜躩軉靋顳顴飌饡馫驤驦驧鬤鸕鸗齈戇欞爧虌躨钂钀钁驩驨鬮鸙爩虋讟钃鱹麷癵驫鱺鸝灩灪麤齾齉龘碁銹裏墻恒粧嫺╔╦╗╠╬╣╚╩╝╒╤╕╞╪╡╘╧╛╓╥╖╟╫╢╙╨╜║═╭╮╰╯▓"]
 ]
 
-},{}],22:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports=[
 ["0","\u0000",127],
 ["8ea1","｡",62],
@@ -4978,9 +11010,9 @@ module.exports=[
 ["8feda1","黸黿鼂鼃鼉鼏鼐鼑鼒鼔鼖鼗鼙鼚鼛鼟鼢鼦鼪鼫鼯鼱鼲鼴鼷鼹鼺鼼鼽鼿齁齃",4,"齓齕齖齗齘齚齝齞齨齩齭",4,"齳齵齺齽龏龐龑龒龔龖龗龞龡龢龣龥"]
 ]
 
-},{}],23:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 module.exports={"uChars":[128,165,169,178,184,216,226,235,238,244,248,251,253,258,276,284,300,325,329,334,364,463,465,467,469,471,473,475,477,506,594,610,712,716,730,930,938,962,970,1026,1104,1106,8209,8215,8218,8222,8231,8241,8244,8246,8252,8365,8452,8454,8458,8471,8482,8556,8570,8596,8602,8713,8720,8722,8726,8731,8737,8740,8742,8748,8751,8760,8766,8777,8781,8787,8802,8808,8816,8854,8858,8870,8896,8979,9322,9372,9548,9588,9616,9622,9634,9652,9662,9672,9676,9680,9702,9735,9738,9793,9795,11906,11909,11913,11917,11928,11944,11947,11951,11956,11960,11964,11979,12284,12292,12312,12319,12330,12351,12436,12447,12535,12543,12586,12842,12850,12964,13200,13215,13218,13253,13263,13267,13270,13384,13428,13727,13839,13851,14617,14703,14801,14816,14964,15183,15471,15585,16471,16736,17208,17325,17330,17374,17623,17997,18018,18212,18218,18301,18318,18760,18811,18814,18820,18823,18844,18848,18872,19576,19620,19738,19887,40870,59244,59336,59367,59413,59417,59423,59431,59437,59443,59452,59460,59478,59493,63789,63866,63894,63976,63986,64016,64018,64021,64025,64034,64037,64042,65074,65093,65107,65112,65127,65132,65375,65510,65536],"gbChars":[0,36,38,45,50,81,89,95,96,100,103,104,105,109,126,133,148,172,175,179,208,306,307,308,309,310,311,312,313,341,428,443,544,545,558,741,742,749,750,805,819,820,7922,7924,7925,7927,7934,7943,7944,7945,7950,8062,8148,8149,8152,8164,8174,8236,8240,8262,8264,8374,8380,8381,8384,8388,8390,8392,8393,8394,8396,8401,8406,8416,8419,8424,8437,8439,8445,8482,8485,8496,8521,8603,8936,8946,9046,9050,9063,9066,9076,9092,9100,9108,9111,9113,9131,9162,9164,9218,9219,11329,11331,11334,11336,11346,11361,11363,11366,11370,11372,11375,11389,11682,11686,11687,11692,11694,11714,11716,11723,11725,11730,11736,11982,11989,12102,12336,12348,12350,12384,12393,12395,12397,12510,12553,12851,12962,12973,13738,13823,13919,13933,14080,14298,14585,14698,15583,15847,16318,16434,16438,16481,16729,17102,17122,17315,17320,17402,17418,17859,17909,17911,17915,17916,17936,17939,17961,18664,18703,18814,18962,19043,33469,33470,33471,33484,33485,33490,33497,33501,33505,33513,33520,33536,33550,37845,37921,37948,38029,38038,38064,38065,38066,38069,38075,38076,38078,39108,39109,39113,39114,39115,39116,39265,39394,189000]}
-},{}],24:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports=[
 ["a140","",62],
 ["a180","",32],
@@ -5037,7 +11069,7 @@ module.exports=[
 ["fe80","䜣䜩䝼䞍⻊䥇䥺䥽䦂䦃䦅䦆䦟䦛䦷䦶䲣䲟䲠䲡䱷䲢䴓",6,"䶮",93]
 ]
 
-},{}],25:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports=[
 ["0","\u0000",128],
 ["a1","｡",62],
@@ -5164,7 +11196,7 @@ module.exports=[
 ["fc40","髜魵魲鮏鮱鮻鰀鵰鵫鶴鸙黑"]
 ]
 
-},{}],26:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 "use strict";
 var Buffer = require("buffer").Buffer;
 
@@ -5343,7 +11375,7 @@ function detectEncoding(buf, defaultEncoding) {
 
 
 
-},{"buffer":undefined}],27:[function(require,module,exports){
+},{"buffer":undefined}],69:[function(require,module,exports){
 "use strict";
 var Buffer = require("buffer").Buffer;
 
@@ -5635,7 +11667,7 @@ Utf7IMAPDecoder.prototype.end = function() {
 
 
 
-},{"buffer":undefined}],28:[function(require,module,exports){
+},{"buffer":undefined}],70:[function(require,module,exports){
 "use strict";
 
 var BOMChar = '\uFEFF';
@@ -5689,7 +11721,7 @@ StripBOMWrapper.prototype.end = function() {
 }
 
 
-},{}],29:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 "use strict";
 var Buffer = require("buffer").Buffer;
 
@@ -5906,7 +11938,7 @@ module.exports = function (iconv) {
     }
 }
 
-},{"buffer":undefined,"stream":undefined}],30:[function(require,module,exports){
+},{"buffer":undefined,"stream":undefined}],72:[function(require,module,exports){
 "use strict";
 
 // Some environments don't have global Buffer (e.g. React Native).
@@ -6056,7 +12088,7 @@ if ("Ā" != "\u0100") {
     console.error("iconv-lite warning: javascript files use encoding different from utf-8. See https://github.com/ashtuchkin/iconv-lite/wiki/Javascript-source-file-encodings for more info.");
 }
 
-},{"../encodings":13,"./bom-handling":28,"./extend-node":29,"./streams":31,"buffer":undefined}],31:[function(require,module,exports){
+},{"../encodings":55,"./bom-handling":70,"./extend-node":71,"./streams":73,"buffer":undefined}],73:[function(require,module,exports){
 "use strict";
 
 var Buffer = require("buffer").Buffer,
@@ -6179,7 +12211,7 @@ IconvLiteDecoderStream.prototype.collect = function(cb) {
 }
 
 
-},{"buffer":undefined,"stream":undefined}],32:[function(require,module,exports){
+},{"buffer":undefined,"stream":undefined}],74:[function(require,module,exports){
 var wrappy = require('wrappy')
 var reqs = Object.create(null)
 var once = require('once')
@@ -6235,7 +12267,7 @@ function slice (args) {
   return array
 }
 
-},{"once":36,"wrappy":38}],33:[function(require,module,exports){
+},{"once":83,"wrappy":85}],75:[function(require,module,exports){
 try {
   var util = require('util');
   if (typeof util.inherits !== 'function') throw '';
@@ -6244,7 +12276,7 @@ try {
   module.exports = require('./inherits_browser.js');
 }
 
-},{"./inherits_browser.js":34,"util":undefined}],34:[function(require,module,exports){
+},{"./inherits_browser.js":76,"util":undefined}],76:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -6269,7 +12301,701 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],35:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
+var json = typeof JSON !== 'undefined' ? JSON : require('jsonify');
+
+module.exports = function (obj, opts) {
+    if (!opts) opts = {};
+    if (typeof opts === 'function') opts = { cmp: opts };
+    var space = opts.space || '';
+    if (typeof space === 'number') space = Array(space+1).join(' ');
+    var cycles = (typeof opts.cycles === 'boolean') ? opts.cycles : false;
+    var replacer = opts.replacer || function(key, value) { return value; };
+
+    var cmp = opts.cmp && (function (f) {
+        return function (node) {
+            return function (a, b) {
+                var aobj = { key: a, value: node[a] };
+                var bobj = { key: b, value: node[b] };
+                return f(aobj, bobj);
+            };
+        };
+    })(opts.cmp);
+
+    var seen = [];
+    return (function stringify (parent, key, node, level) {
+        var indent = space ? ('\n' + new Array(level + 1).join(space)) : '';
+        var colonSeparator = space ? ': ' : ':';
+
+        if (node && node.toJSON && typeof node.toJSON === 'function') {
+            node = node.toJSON();
+        }
+
+        node = replacer.call(parent, key, node);
+
+        if (node === undefined) {
+            return;
+        }
+        if (typeof node !== 'object' || node === null) {
+            return json.stringify(node);
+        }
+        if (isArray(node)) {
+            var out = [];
+            for (var i = 0; i < node.length; i++) {
+                var item = stringify(node, i, node[i], level+1) || json.stringify(null);
+                out.push(indent + space + item);
+            }
+            return '[' + out.join(',') + indent + ']';
+        }
+        else {
+            if (seen.indexOf(node) !== -1) {
+                if (cycles) return json.stringify('__cycle__');
+                throw new TypeError('Converting circular structure to JSON');
+            }
+            else seen.push(node);
+
+            var keys = objectKeys(node).sort(cmp && cmp(node));
+            var out = [];
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var value = stringify(node, key, node[key], level+1);
+
+                if(!value) continue;
+
+                var keyValue = json.stringify(key)
+                    + colonSeparator
+                    + value;
+                ;
+                out.push(indent + space + keyValue);
+            }
+            seen.splice(seen.indexOf(node), 1);
+            return '{' + out.join(',') + indent + '}';
+        }
+    })({ '': obj }, '', obj, 0);
+};
+
+var isArray = Array.isArray || function (x) {
+    return {}.toString.call(x) === '[object Array]';
+};
+
+var objectKeys = Object.keys || function (obj) {
+    var has = Object.prototype.hasOwnProperty || function () { return true };
+    var keys = [];
+    for (var key in obj) {
+        if (has.call(obj, key)) keys.push(key);
+    }
+    return keys;
+};
+
+},{"jsonify":78}],78:[function(require,module,exports){
+exports.parse = require('./lib/parse');
+exports.stringify = require('./lib/stringify');
+
+},{"./lib/parse":79,"./lib/stringify":80}],79:[function(require,module,exports){
+var at, // The index of the current character
+    ch, // The current character
+    escapee = {
+        '"':  '"',
+        '\\': '\\',
+        '/':  '/',
+        b:    '\b',
+        f:    '\f',
+        n:    '\n',
+        r:    '\r',
+        t:    '\t'
+    },
+    text,
+
+    error = function (m) {
+        // Call error when something is wrong.
+        throw {
+            name:    'SyntaxError',
+            message: m,
+            at:      at,
+            text:    text
+        };
+    },
+    
+    next = function (c) {
+        // If a c parameter is provided, verify that it matches the current character.
+        if (c && c !== ch) {
+            error("Expected '" + c + "' instead of '" + ch + "'");
+        }
+        
+        // Get the next character. When there are no more characters,
+        // return the empty string.
+        
+        ch = text.charAt(at);
+        at += 1;
+        return ch;
+    },
+    
+    number = function () {
+        // Parse a number value.
+        var number,
+            string = '';
+        
+        if (ch === '-') {
+            string = '-';
+            next('-');
+        }
+        while (ch >= '0' && ch <= '9') {
+            string += ch;
+            next();
+        }
+        if (ch === '.') {
+            string += '.';
+            while (next() && ch >= '0' && ch <= '9') {
+                string += ch;
+            }
+        }
+        if (ch === 'e' || ch === 'E') {
+            string += ch;
+            next();
+            if (ch === '-' || ch === '+') {
+                string += ch;
+                next();
+            }
+            while (ch >= '0' && ch <= '9') {
+                string += ch;
+                next();
+            }
+        }
+        number = +string;
+        if (!isFinite(number)) {
+            error("Bad number");
+        } else {
+            return number;
+        }
+    },
+    
+    string = function () {
+        // Parse a string value.
+        var hex,
+            i,
+            string = '',
+            uffff;
+        
+        // When parsing for string values, we must look for " and \ characters.
+        if (ch === '"') {
+            while (next()) {
+                if (ch === '"') {
+                    next();
+                    return string;
+                } else if (ch === '\\') {
+                    next();
+                    if (ch === 'u') {
+                        uffff = 0;
+                        for (i = 0; i < 4; i += 1) {
+                            hex = parseInt(next(), 16);
+                            if (!isFinite(hex)) {
+                                break;
+                            }
+                            uffff = uffff * 16 + hex;
+                        }
+                        string += String.fromCharCode(uffff);
+                    } else if (typeof escapee[ch] === 'string') {
+                        string += escapee[ch];
+                    } else {
+                        break;
+                    }
+                } else {
+                    string += ch;
+                }
+            }
+        }
+        error("Bad string");
+    },
+
+    white = function () {
+
+// Skip whitespace.
+
+        while (ch && ch <= ' ') {
+            next();
+        }
+    },
+
+    word = function () {
+
+// true, false, or null.
+
+        switch (ch) {
+        case 't':
+            next('t');
+            next('r');
+            next('u');
+            next('e');
+            return true;
+        case 'f':
+            next('f');
+            next('a');
+            next('l');
+            next('s');
+            next('e');
+            return false;
+        case 'n':
+            next('n');
+            next('u');
+            next('l');
+            next('l');
+            return null;
+        }
+        error("Unexpected '" + ch + "'");
+    },
+
+    value,  // Place holder for the value function.
+
+    array = function () {
+
+// Parse an array value.
+
+        var array = [];
+
+        if (ch === '[') {
+            next('[');
+            white();
+            if (ch === ']') {
+                next(']');
+                return array;   // empty array
+            }
+            while (ch) {
+                array.push(value());
+                white();
+                if (ch === ']') {
+                    next(']');
+                    return array;
+                }
+                next(',');
+                white();
+            }
+        }
+        error("Bad array");
+    },
+
+    object = function () {
+
+// Parse an object value.
+
+        var key,
+            object = {};
+
+        if (ch === '{') {
+            next('{');
+            white();
+            if (ch === '}') {
+                next('}');
+                return object;   // empty object
+            }
+            while (ch) {
+                key = string();
+                white();
+                next(':');
+                if (Object.hasOwnProperty.call(object, key)) {
+                    error('Duplicate key "' + key + '"');
+                }
+                object[key] = value();
+                white();
+                if (ch === '}') {
+                    next('}');
+                    return object;
+                }
+                next(',');
+                white();
+            }
+        }
+        error("Bad object");
+    };
+
+value = function () {
+
+// Parse a JSON value. It could be an object, an array, a string, a number,
+// or a word.
+
+    white();
+    switch (ch) {
+    case '{':
+        return object();
+    case '[':
+        return array();
+    case '"':
+        return string();
+    case '-':
+        return number();
+    default:
+        return ch >= '0' && ch <= '9' ? number() : word();
+    }
+};
+
+// Return the json_parse function. It will have access to all of the above
+// functions and variables.
+
+module.exports = function (source, reviver) {
+    var result;
+    
+    text = source;
+    at = 0;
+    ch = ' ';
+    result = value();
+    white();
+    if (ch) {
+        error("Syntax error");
+    }
+
+    // If there is a reviver function, we recursively walk the new structure,
+    // passing each name/value pair to the reviver function for possible
+    // transformation, starting with a temporary root object that holds the result
+    // in an empty key. If there is not a reviver function, we simply return the
+    // result.
+
+    return typeof reviver === 'function' ? (function walk(holder, key) {
+        var k, v, value = holder[key];
+        if (value && typeof value === 'object') {
+            for (k in value) {
+                if (Object.prototype.hasOwnProperty.call(value, k)) {
+                    v = walk(value, k);
+                    if (v !== undefined) {
+                        value[k] = v;
+                    } else {
+                        delete value[k];
+                    }
+                }
+            }
+        }
+        return reviver.call(holder, key, value);
+    }({'': result}, '')) : result;
+};
+
+},{}],80:[function(require,module,exports){
+var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+    escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+    gap,
+    indent,
+    meta = {    // table of character substitutions
+        '\b': '\\b',
+        '\t': '\\t',
+        '\n': '\\n',
+        '\f': '\\f',
+        '\r': '\\r',
+        '"' : '\\"',
+        '\\': '\\\\'
+    },
+    rep;
+
+function quote(string) {
+    // If the string contains no control characters, no quote characters, and no
+    // backslash characters, then we can safely slap some quotes around it.
+    // Otherwise we must also replace the offending characters with safe escape
+    // sequences.
+    
+    escapable.lastIndex = 0;
+    return escapable.test(string) ? '"' + string.replace(escapable, function (a) {
+        var c = meta[a];
+        return typeof c === 'string' ? c :
+            '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+    }) + '"' : '"' + string + '"';
+}
+
+function str(key, holder) {
+    // Produce a string from holder[key].
+    var i,          // The loop counter.
+        k,          // The member key.
+        v,          // The member value.
+        length,
+        mind = gap,
+        partial,
+        value = holder[key];
+    
+    // If the value has a toJSON method, call it to obtain a replacement value.
+    if (value && typeof value === 'object' &&
+            typeof value.toJSON === 'function') {
+        value = value.toJSON(key);
+    }
+    
+    // If we were called with a replacer function, then call the replacer to
+    // obtain a replacement value.
+    if (typeof rep === 'function') {
+        value = rep.call(holder, key, value);
+    }
+    
+    // What happens next depends on the value's type.
+    switch (typeof value) {
+        case 'string':
+            return quote(value);
+        
+        case 'number':
+            // JSON numbers must be finite. Encode non-finite numbers as null.
+            return isFinite(value) ? String(value) : 'null';
+        
+        case 'boolean':
+        case 'null':
+            // If the value is a boolean or null, convert it to a string. Note:
+            // typeof null does not produce 'null'. The case is included here in
+            // the remote chance that this gets fixed someday.
+            return String(value);
+            
+        case 'object':
+            if (!value) return 'null';
+            gap += indent;
+            partial = [];
+            
+            // Array.isArray
+            if (Object.prototype.toString.apply(value) === '[object Array]') {
+                length = value.length;
+                for (i = 0; i < length; i += 1) {
+                    partial[i] = str(i, value) || 'null';
+                }
+                
+                // Join all of the elements together, separated with commas, and
+                // wrap them in brackets.
+                v = partial.length === 0 ? '[]' : gap ?
+                    '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']' :
+                    '[' + partial.join(',') + ']';
+                gap = mind;
+                return v;
+            }
+            
+            // If the replacer is an array, use it to select the members to be
+            // stringified.
+            if (rep && typeof rep === 'object') {
+                length = rep.length;
+                for (i = 0; i < length; i += 1) {
+                    k = rep[i];
+                    if (typeof k === 'string') {
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                        }
+                    }
+                }
+            }
+            else {
+                // Otherwise, iterate through all of the keys in the object.
+                for (k in value) {
+                    if (Object.prototype.hasOwnProperty.call(value, k)) {
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                        }
+                    }
+                }
+            }
+            
+        // Join all of the member texts together, separated with commas,
+        // and wrap them in braces.
+
+        v = partial.length === 0 ? '{}' : gap ?
+            '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}' :
+            '{' + partial.join(',') + '}';
+        gap = mind;
+        return v;
+    }
+}
+
+module.exports = function (value, replacer, space) {
+    var i;
+    gap = '';
+    indent = '';
+    
+    // If the space parameter is a number, make an indent string containing that
+    // many spaces.
+    if (typeof space === 'number') {
+        for (i = 0; i < space; i += 1) {
+            indent += ' ';
+        }
+    }
+    // If the space parameter is a string, it will be used as the indent string.
+    else if (typeof space === 'string') {
+        indent = space;
+    }
+
+    // If there is a replacer, it must be a function or an array.
+    // Otherwise, throw an error.
+    rep = replacer;
+    if (replacer && typeof replacer !== 'function'
+    && (typeof replacer !== 'object' || typeof replacer.length !== 'number')) {
+        throw new Error('JSON.stringify');
+    }
+    
+    // Make a fake root object containing our value under the key of ''.
+    // Return the result of stringifying the value.
+    return str('', {'': value});
+};
+
+},{}],81:[function(require,module,exports){
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):t.jspdf=e()}(this,function(){"use strict";var t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},e=(function(){function t(t){this.value=t}function e(e){function n(i,o){try{var a=e[i](o),s=a.value;s instanceof t?Promise.resolve(s.value).then(function(t){n("next",t)},function(t){n("throw",t)}):r(a.done?"return":"normal",a.value)}catch(t){r("throw",t)}}function r(t,e){switch(t){case"return":i.resolve({value:e,done:!0});break;case"throw":i.reject(e);break;default:i.resolve({value:e,done:!1})}(i=i.next)?n(i.key,i.arg):o=null}var i,o;this._invoke=function(t,e){return new Promise(function(r,a){var s={key:t,arg:e,resolve:r,reject:a,next:null};o?o=o.next=s:(i=o=s,n(t,e))})},"function"!=typeof e.return&&(this.return=void 0)}"function"==typeof Symbol&&Symbol.asyncIterator&&(e.prototype[Symbol.asyncIterator]=function(){return this}),e.prototype.next=function(t){return this._invoke("next",t)},e.prototype.throw=function(t){return this._invoke("throw",t)},e.prototype.return=function(t){return this._invoke("return",t)}}(),function(e){function n(t){var n={};this.subscribe=function(t,e,r){if("function"!=typeof e)return!1;n.hasOwnProperty(t)||(n[t]={});var i=Math.random().toString(35);return n[t][i]=[e,!!r],i},this.unsubscribe=function(t){for(var e in n)if(n[e][t])return delete n[e][t],!0;return!1},this.publish=function(r){if(n.hasOwnProperty(r)){var i=Array.prototype.slice.call(arguments,1),o=[];for(var a in n[r]){var s=n[r][a];try{s[0].apply(t,i)}catch(t){e.console&&console.error("jsPDF PubSub Error",t.message,t)}s[1]&&o.push(a)}o.length&&o.forEach(this.unsubscribe)}}}function i(c,l,u,h){var f={};"object"===(void 0===c?"undefined":t(c))&&(c=(f=c).orientation,l=f.unit||l,u=f.format||u,h=f.compress||f.compressPdf||h),l=l||"mm",u=u||"a4",c=(""+(c||"P")).toLowerCase();(""+u).toLowerCase();var d,p,m,g,w,y,v,b,x,k=!!h&&"function"==typeof Uint8Array,_=f.textColor||"0 g",C=f.drawColor||"0 G",A=f.fontSize||16,S=f.lineHeight||1.15,q=f.lineWidth||.200025,T=2,P=!1,I=[],E={},O={},F=0,B=[],R=[],D=[],j=[],z=[],N=0,L=0,M=0,U={title:"",subject:"",author:"",keywords:"",creator:""},H={},W=new n(H),X=f.hotfixes||[],V=function(t){return t.toFixed(2)},G=function(t){return t.toFixed(3)},Y=function(t){return("0"+parseInt(t)).slice(-2)},J=function(t){P?B[g].push(t):(M+=t.length+1,j.push(t))},Q=function(){return T++,I[T]=M,J(T+" 0 obj"),T},K=function(t){J("stream"),J(t),J("endstream")},$=function(){var t,n,r,a,s,c,l,u,h,f=[];for(l=e.adler32cs||i.adler32cs,k&&void 0===l&&(k=!1),t=1;t<=F;t++){if(f.push(Q()),u=(w=D[t].width)*p,h=(y=D[t].height)*p,J("<</Type /Page"),J("/Parent 1 0 R"),J("/Resources 2 0 R"),J("/MediaBox [0 0 "+V(u)+" "+V(h)+"]"),W.publish("putPage",{pageNumber:t,page:B[t]}),J("/Contents "+(T+1)+" 0 R"),J(">>"),J("endobj"),n=B[t].join("\n"),Q(),k){for(r=[],a=n.length;a--;)r[a]=n.charCodeAt(a);c=l.from(n),(s=new o(6)).append(new Uint8Array(r)),n=s.flush(),(r=new Uint8Array(n.length+6)).set(new Uint8Array([120,156])),r.set(n,2),r.set(new Uint8Array([255&c,c>>8&255,c>>16&255,c>>24&255]),n.length+2),n=String.fromCharCode.apply(null,r),J("<</Length "+n.length+" /Filter [/FlateDecode]>>")}else J("<</Length "+n.length+">>");K(n),J("endobj")}I[1]=M,J("1 0 obj"),J("<</Type /Pages");var d="/Kids [";for(a=0;a<F;a++)d+=f[a]+" 0 R ";J(d+"]"),J("/Count "+F),J(">>"),J("endobj"),W.publish("postPutPages")},Z=function(t){t.objectNumber=Q(),J("<</BaseFont/"+t.PostScriptName+"/Type/Font"),"string"==typeof t.encoding&&J("/Encoding/"+t.encoding),J("/Subtype/Type1>>"),J("endobj")},tt=function(){for(var t in E)E.hasOwnProperty(t)&&Z(E[t])},et=function(){W.publish("putXobjectDict")},nt=function(){J("/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]"),J("/Font <<");for(var t in E)E.hasOwnProperty(t)&&J("/"+t+" "+E[t].objectNumber+" 0 R");J(">>"),J("/XObject <<"),et(),J(">>")},rt=function(){tt(),W.publish("putResources"),I[2]=M,J("2 0 obj"),J("<<"),nt(),J(">>"),J("endobj"),W.publish("postPutResources")},it=function(){W.publish("putAdditionalObjects");for(var t=0;t<z.length;t++){var e=z[t];I[e.objId]=M,J(e.objId+" 0 obj"),J(e.content),J("endobj")}T+=z.length,W.publish("postPutAdditionalObjects")},ot=function(t,e,n){O.hasOwnProperty(e)||(O[e]={}),O[e][n]=t},at=function(t,e,n,r){var i="F"+(Object.keys(E).length+1).toString(10),o=E[i]={id:i,PostScriptName:t,fontName:e,fontStyle:n,encoding:r,metadata:{}};return ot(i,e,n),W.publish("addFont",o),i},st=function(t,e){var n,r,i,o,a,s,c,l,u;if(e=e||{},i=e.sourceEncoding||"Unicode",a=e.outputEncoding,(e.autoencode||a)&&E[d].metadata&&E[d].metadata[i]&&E[d].metadata[i].encoding&&(o=E[d].metadata[i].encoding,!a&&E[d].encoding&&(a=E[d].encoding),!a&&o.codePages&&(a=o.codePages[0]),"string"==typeof a&&(a=o[a]),a)){for(c=!1,s=[],n=0,r=t.length;n<r;n++)(l=a[t.charCodeAt(n)])?s.push(String.fromCharCode(l)):s.push(t[n]),s[n].charCodeAt(0)>>8&&(c=!0);t=s.join("")}for(n=t.length;void 0===c&&0!==n;)t.charCodeAt(n-1)>>8&&(c=!0),n--;if(!c)return t;for(s=e.noBOM?[]:[254,255],n=0,r=t.length;n<r;n++){if(l=t.charCodeAt(n),(u=l>>8)>>8)throw new Error("Character at position "+n+" of string '"+t+"' exceeds 16bits. Cannot be encoded into UCS-2 BE");s.push(u),s.push(l-(u<<8))}return String.fromCharCode.apply(void 0,s)},ct=function(t,e){return st(t,e).replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)")},lt=function(){J("/Producer (jsPDF "+i.version+")");for(var t in U)U.hasOwnProperty(t)&&U[t]&&J("/"+t.substr(0,1).toUpperCase()+t.substr(1)+" ("+ct(U[t])+")");var e=new Date,n=e.getTimezoneOffset(),r=n<0?"+":"-",o=Math.floor(Math.abs(n/60)),a=Math.abs(n%60),s=[r,Y(o),"'",Y(a),"'"].join("");J(["/CreationDate (D:",e.getFullYear(),Y(e.getMonth()+1),Y(e.getDate()),Y(e.getHours()),Y(e.getMinutes()),Y(e.getSeconds()),s,")"].join(""))},ut=function(){switch(J("/Type /Catalog"),J("/Pages 1 0 R"),b||(b="fullwidth"),b){case"fullwidth":J("/OpenAction [3 0 R /FitH null]");break;case"fullheight":J("/OpenAction [3 0 R /FitV null]");break;case"fullpage":J("/OpenAction [3 0 R /Fit]");break;case"original":J("/OpenAction [3 0 R /XYZ null null 1]");break;default:var t=""+b;"%"===t.substr(t.length-1)&&(b=parseInt(b)/100),"number"==typeof b&&J("/OpenAction [3 0 R /XYZ null null "+V(b)+"]")}switch(x||(x="continuous"),x){case"continuous":J("/PageLayout /OneColumn");break;case"single":J("/PageLayout /SinglePage");break;case"two":case"twoleft":J("/PageLayout /TwoColumnLeft");break;case"tworight":J("/PageLayout /TwoColumnRight")}v&&J("/PageMode /"+v),W.publish("putCatalog")},ht=function(){J("/Size "+(T+1)),J("/Root "+T+" 0 R"),J("/Info "+(T-1)+" 0 R")},ft=function(t,e){var n="string"==typeof e&&e.toLowerCase();if("string"==typeof t){var r=t.toLowerCase();s.hasOwnProperty(r)&&(t=s[r][0]/p,e=s[r][1]/p)}if(Array.isArray(t)&&(e=t[1],t=t[0]),n){switch(n.substr(0,1)){case"l":e>t&&(n="s");break;case"p":t>e&&(n="s")}"s"===n&&(m=t,t=e,e=m)}P=!0,B[++F]=[],D[F]={width:Number(t)||w,height:Number(e)||y},R[F]={},mt(F)},dt=function(){ft.apply(this,arguments),J(V(q*p)+" w"),J(C),0!==N&&J(N+" J"),0!==L&&J(L+" j"),W.publish("addPage",{pageNumber:F})},pt=function(t){t>0&&t<=F&&(B.splice(t,1),D.splice(t,1),g>--F&&(g=F),this.setPage(g))},mt=function(t){t>0&&t<=F&&(g=t,w=D[t].width,y=D[t].height)},gt=function(t,e){var n;switch(t=void 0!==t?t:E[d].fontName,e=void 0!==e?e:E[d].fontStyle,void 0!==t&&(t=t.toLowerCase()),t){case"sans-serif":case"verdana":case"arial":case"helvetica":t="helvetica";break;case"fixed":case"monospace":case"terminal":case"courier":t="courier";break;case"serif":case"cursive":case"fantasy":default:t="times"}try{n=O[t][e]}catch(t){}return n||null==(n=O.times[e])&&(n=O.times.normal),n},wt=function(){P=!1,T=2,M=0,j=[],I=[],z=[],W.publish("buildDocument"),J("%PDF-"+a),$(),it(),rt(),Q(),J("<<"),lt(),J(">>"),J("endobj"),Q(),J("<<"),ut(),J(">>"),J("endobj");var t,e=M,n="0000000000";for(J("xref"),J("0 "+(T+1)),J(n+" 65535 f "),t=1;t<=T;t++){var r=I[t];J("function"==typeof r?(n+I[t]()).slice(-10)+" 00000 n ":(n+I[t]).slice(-10)+" 00000 n ")}return J("trailer"),J("<<"),ht(),J(">>"),J("startxref"),J(""+e),J("%%EOF"),P=!0,j.join("\n")},yt=function(t){var e="S";return"F"===t?e="f":"FD"===t||"DF"===t?e="B":"f"!==t&&"f*"!==t&&"B"!==t&&"B*"!==t||(e=t),e},vt=function(){for(var t=wt(),e=t.length,n=new ArrayBuffer(e),r=new Uint8Array(n);e--;)r[e]=t.charCodeAt(e);return n},bt=function(){return new Blob([vt()],{type:"application/pdf"})},xt=function(t){return t.foo=function(){try{return t.apply(this,arguments)}catch(t){var n=t.stack||"";~n.indexOf(" at ")&&(n=n.split(" at ")[1]);var r="Error in function "+n.split("\n")[0].split("<")[0]+": "+t.message;if(!e.console)throw new Error(r);e.console.error(r,t),e.alert&&alert(r)}},t.foo.bar=t,t.foo}(function(t,n){var i="dataur"===(""+t).substr(0,6)?"data:application/pdf;base64,"+btoa(wt()):0;switch(t){case void 0:return wt();case"save":if(navigator.getUserMedia&&(void 0===e.URL||void 0===e.URL.createObjectURL))return H.output("dataurlnewwindow");r(bt(),n),"function"==typeof r.unload&&e.setTimeout&&setTimeout(r.unload,911);break;case"arraybuffer":return vt();case"blob":return bt();case"bloburi":case"bloburl":return e.URL&&e.URL.createObjectURL(bt())||void 0;case"datauristring":case"dataurlstring":return i;case"dataurlnewwindow":var o=e.open(i);if(o||"undefined"==typeof safari)return o;case"datauri":case"dataurl":return e.document.location.href=i;default:throw new Error('Output type "'+t+'" is not supported.')}}),kt=function(t){return!0===Array.isArray(X)&&X.indexOf(t)>-1};switch(l){case"pt":p=1;break;case"mm":p=72/25.4000508;break;case"cm":p=72/2.54000508;break;case"in":p=72;break;case"px":p=1==kt("px_scaling")?.75:96/72;break;case"pc":case"em":p=12;break;case"ex":p=6;break;default:throw"Invalid unit: "+l}H.internal={pdfEscape:ct,getStyle:yt,getFont:function(){return E[gt.apply(H,arguments)]},getFontSize:function(){return A},getLineHeight:function(){return A*S},write:function(t){J(1===arguments.length?t:Array.prototype.join.call(arguments," "))},getCoordinateString:function(t){return V(t*p)},getVerticalCoordinateString:function(t){return V((y-t)*p)},collections:{},newObject:Q,newAdditionalObject:function(){var t=2*B.length+1,e={objId:t+=z.length,content:""};return z.push(e),e},newObjectDeferred:function(){return T++,I[T]=function(){return M},T},newObjectDeferredBegin:function(t){I[t]=M},putStream:K,events:W,scaleFactor:p,pageSize:{get width(){return w},get height(){return y}},output:function(t,e){return xt(t,e)},getNumberOfPages:function(){return B.length-1},pages:B,out:J,f2:V,getPageInfo:function(t){return{objId:2*(t-1)+3,pageNumber:t,pageContext:R[t]}},getCurrentPageInfo:function(){return{objId:2*(g-1)+3,pageNumber:g,pageContext:R[g]}},getPDFVersion:function(){return a},hasHotfix:kt},H.addPage=function(){return dt.apply(this,arguments),this},H.setPage=function(){return mt.apply(this,arguments),this},H.insertPage=function(t){return this.addPage(),this.movePage(g,t),this},H.movePage=function(t,e){if(t>e){for(var n=B[t],r=D[t],i=R[t],o=t;o>e;o--)B[o]=B[o-1],D[o]=D[o-1],R[o]=R[o-1];B[e]=n,D[e]=r,R[e]=i,this.setPage(e)}else if(t<e){for(var n=B[t],r=D[t],i=R[t],o=t;o<e;o++)B[o]=B[o+1],D[o]=D[o+1],R[o]=R[o+1];B[e]=n,D[e]=r,R[e]=i,this.setPage(e)}return this},H.deletePage=function(){return pt.apply(this,arguments),this},H.setDisplayMode=function(t,e,n){if(b=t,x=e,v=n,-1==[void 0,null,"UseNone","UseOutlines","UseThumbs","FullScreen"].indexOf(n))throw new Error('Page mode must be one of UseNone, UseOutlines, UseThumbs, or FullScreen. "'+n+'" is not recognized.');return this},H.text=function(t,e,n,r,i,o){function a(t){return t=t.split("\t").join(Array(f.TabLen||9).join(" ")),ct(t,r)}"number"==typeof t&&(m=n,n=e,e=t,t=m),"string"==typeof t&&(t=t.match(/[\n\r]/)?t.split(/\r\n|\r|\n/g):[t]),"string"==typeof i&&(o=i,i=null),"string"==typeof r&&(o=r,r=null),"number"==typeof r&&(i=r,r=null);var s="",c="Td";if(i){i*=Math.PI/180;var l=Math.cos(i),u=Math.sin(i);s=[V(l),V(u),V(-1*u),V(l),""].join(" "),c="Tm"}"noBOM"in(r=r||{})||(r.noBOM=!0),"autoencode"in r||(r.autoencode=!0);var h="",g=this.internal.getCurrentPageInfo().pageContext;if(!0===r.stroke?!0!==g.lastTextWasStroke&&(h="1 Tr\n",g.lastTextWasStroke=!0):(g.lastTextWasStroke&&(h="0 Tr\n"),g.lastTextWasStroke=!1),void 0===this._runningPageHeight&&(this._runningPageHeight=0),"string"==typeof t)t=a(t);else{if("[object Array]"!==Object.prototype.toString.call(t))throw new Error('Type of text must be string or Array. "'+t+'" is not recognized.');for(var w=t.concat(),v=[],b=w.length;b--;)v.push(a(w.shift()));if(o){var x,k,C,q=A*S,T=t.map(function(t){return this.getStringUnitWidth(t)*A/p},this);if(C=Math.max.apply(Math,T),"center"===o)x=e-C/2,e-=T[0]/2;else{if("right"!==o)throw new Error('Unrecognized alignment option, use "center" or "right".');x=e-C,e-=T[0]}k=e,t=v[0];for(var P=1,b=v.length;P<b;P++){var I=C-T[P];"center"===o&&(I/=2),t+=") Tj\n"+(x-k+I)+" -"+q+" Td ("+v[P],k=x+I}}else t=v.join(") Tj\nT* (")}var E;return E=V((y-n)*p),J("BT\n/"+d+" "+A+" Tf\n"+A*S+" TL\n"+h+_+"\n"+s+V(e*p)+" "+E+" "+c+"\n("+t+") Tj\nET"),this},H.lstext=function(t,e,n,r){console.warn("jsPDF.lstext is deprecated");for(var i=0,o=t.length;i<o;i++,e+=r)this.text(t[i],e,n);return this},H.line=function(t,e,n,r){return this.lines([[n-t,r-e]],t,e)},H.clip=function(){J("W"),J("S")},H.clip_fixed=function(t){J("evenodd"===t?"W*":"W"),J("n")},H.lines=function(t,e,n,r,i,o){var a,s,c,l,u,h,f,d,g,w,v;for("number"==typeof t&&(m=n,n=e,e=t,t=m),r=r||[1,1],J(G(e*p)+" "+G((y-n)*p)+" m "),a=r[0],s=r[1],l=t.length,w=e,v=n,c=0;c<l;c++)2===(u=t[c]).length?(w=u[0]*a+w,v=u[1]*s+v,J(G(w*p)+" "+G((y-v)*p)+" l")):(h=u[0]*a+w,f=u[1]*s+v,d=u[2]*a+w,g=u[3]*s+v,w=u[4]*a+w,v=u[5]*s+v,J(G(h*p)+" "+G((y-f)*p)+" "+G(d*p)+" "+G((y-g)*p)+" "+G(w*p)+" "+G((y-v)*p)+" c"));return o&&J(" h"),null!==i&&J(yt(i)),this},H.rect=function(t,e,n,r,i){yt(i);return J([V(t*p),V((y-e)*p),V(n*p),V(-r*p),"re"].join(" ")),null!==i&&J(yt(i)),this},H.triangle=function(t,e,n,r,i,o,a){return this.lines([[n-t,r-e],[i-n,o-r],[t-i,e-o]],t,e,[1,1],a,!0),this},H.roundedRect=function(t,e,n,r,i,o,a){var s=4/3*(Math.SQRT2-1);return this.lines([[n-2*i,0],[i*s,0,i,o-o*s,i,o],[0,r-2*o],[0,o*s,-i*s,o,-i,o],[2*i-n,0],[-i*s,0,-i,-o*s,-i,-o],[0,2*o-r],[0,-o*s,i*s,-o,i,-o]],t+i,e,[1,1],a),this},H.ellipse=function(t,e,n,r,i){var o=4/3*(Math.SQRT2-1)*n,a=4/3*(Math.SQRT2-1)*r;return J([V((t+n)*p),V((y-e)*p),"m",V((t+n)*p),V((y-(e-a))*p),V((t+o)*p),V((y-(e-r))*p),V(t*p),V((y-(e-r))*p),"c"].join(" ")),J([V((t-o)*p),V((y-(e-r))*p),V((t-n)*p),V((y-(e-a))*p),V((t-n)*p),V((y-e)*p),"c"].join(" ")),J([V((t-n)*p),V((y-(e+a))*p),V((t-o)*p),V((y-(e+r))*p),V(t*p),V((y-(e+r))*p),"c"].join(" ")),J([V((t+o)*p),V((y-(e+r))*p),V((t+n)*p),V((y-(e+a))*p),V((t+n)*p),V((y-e)*p),"c"].join(" ")),null!==i&&J(yt(i)),this},H.circle=function(t,e,n,r){return this.ellipse(t,e,n,n,r)},H.setProperties=function(t){for(var e in U)U.hasOwnProperty(e)&&t[e]&&(U[e]=t[e]);return this},H.setFontSize=function(t){return A=t,this},H.setFont=function(t,e){return d=gt(t,e),this},H.setFontStyle=H.setFontType=function(t){return d=gt(void 0,t),this},H.getFontList=function(){var t,e,n,r={};for(t in O)if(O.hasOwnProperty(t)){r[t]=n=[];for(e in O[t])O[t].hasOwnProperty(e)&&n.push(e)}return r},H.addFont=function(t,e,n){at(t,e,n,"StandardEncoding")},H.setLineWidth=function(t){return J((t*p).toFixed(2)+" w"),this},H.setDrawColor=function(t,e,n,r){var i;return i=void 0===e||void 0===r&&t===e===n?"string"==typeof t?t+" G":V(t/255)+" G":void 0===r?"string"==typeof t?[t,e,n,"RG"].join(" "):[V(t/255),V(e/255),V(n/255),"RG"].join(" "):"string"==typeof t?[t,e,n,r,"K"].join(" "):[V(t),V(e),V(n),V(r),"K"].join(" "),J(i),this},H.setFillColor=function(e,n,r,i){var o;return void 0===n||void 0===i&&e===n===r?o="string"==typeof e?e+" g":V(e/255)+" g":void 0===i||"object"===(void 0===i?"undefined":t(i))?(o="string"==typeof e?[e,n,r,"rg"].join(" "):[V(e/255),V(n/255),V(r/255),"rg"].join(" "),i&&0===i.a&&(o=["255","255","255","rg"].join(" "))):o="string"==typeof e?[e,n,r,i,"k"].join(" "):[V(e),V(n),V(r),V(i),"k"].join(" "),J(o),this},H.setTextColor=function(t,e,n){if("string"==typeof t&&/^#[0-9A-Fa-f]{6}$/.test(t)){var r=parseInt(t.substr(1),16);t=r>>16&255,e=r>>8&255,n=255&r}return _=0===t&&0===e&&0===n||void 0===e?G(t/255)+" g":[G(t/255),G(e/255),G(n/255),"rg"].join(" "),this},H.CapJoinStyles={0:0,butt:0,but:0,miter:0,1:1,round:1,rounded:1,circle:1,2:2,projecting:2,project:2,square:2,bevel:2},H.setLineCap=function(t){var e=this.CapJoinStyles[t];if(void 0===e)throw new Error("Line cap style of '"+t+"' is not recognized. See or extend .CapJoinStyles property for valid styles");return N=e,J(e+" J"),this},H.setLineJoin=function(t){var e=this.CapJoinStyles[t];if(void 0===e)throw new Error("Line join style of '"+t+"' is not recognized. See or extend .CapJoinStyles property for valid styles");return L=e,J(e+" j"),this},H.output=xt,H.save=function(t){H.output("save",t)};for(var _t in i.API)i.API.hasOwnProperty(_t)&&("events"===_t&&i.API.events.length?function(t,e){var n,r,i;for(i=e.length-1;-1!==i;i--)n=e[i][0],r=e[i][1],t.subscribe.apply(t,[n].concat("function"==typeof r?[r]:r))}(W,i.API.events):H[_t]=i.API[_t]);return function(){for(var t=[["Helvetica","helvetica","normal"],["Helvetica-Bold","helvetica","bold"],["Helvetica-Oblique","helvetica","italic"],["Helvetica-BoldOblique","helvetica","bolditalic"],["Courier","courier","normal"],["Courier-Bold","courier","bold"],["Courier-Oblique","courier","italic"],["Courier-BoldOblique","courier","bolditalic"],["Times-Roman","times","normal"],["Times-Bold","times","bold"],["Times-Italic","times","italic"],["Times-BoldItalic","times","bolditalic"],["ZapfDingbats","zapfdingbats"]],e=0,n=t.length;e<n;e++){var r=at(t[e][0],t[e][1],t[e][2],"StandardEncoding"),i=t[e][0].split("-");ot(r,i[0],i[1]||"")}W.publish("addFonts",{fonts:E,dictionary:O})}(),d="F1",dt(u,c),W.publish("initialized"),H}var a="1.3",s={a0:[2383.94,3370.39],a1:[1683.78,2383.94],a2:[1190.55,1683.78],a3:[841.89,1190.55],a4:[595.28,841.89],a5:[419.53,595.28],a6:[297.64,419.53],a7:[209.76,297.64],a8:[147.4,209.76],a9:[104.88,147.4],a10:[73.7,104.88],b0:[2834.65,4008.19],b1:[2004.09,2834.65],b2:[1417.32,2004.09],b3:[1000.63,1417.32],b4:[708.66,1000.63],b5:[498.9,708.66],b6:[354.33,498.9],b7:[249.45,354.33],b8:[175.75,249.45],b9:[124.72,175.75],b10:[87.87,124.72],c0:[2599.37,3676.54],c1:[1836.85,2599.37],c2:[1298.27,1836.85],c3:[918.43,1298.27],c4:[649.13,918.43],c5:[459.21,649.13],c6:[323.15,459.21],c7:[229.61,323.15],c8:[161.57,229.61],c9:[113.39,161.57],c10:[79.37,113.39],dl:[311.81,623.62],letter:[612,792],"government-letter":[576,756],legal:[612,1008],"junior-legal":[576,360],ledger:[1224,792],tabloid:[792,1224],"credit-card":[153,243]};return i.API={events:[]},i.version="1.x-master","function"==typeof define&&define.amd?define("jsPDF",function(){return i}):"undefined"!=typeof module&&module.exports?module.exports=i:e.jsPDF=i,i}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||void 0));/**
+ * jsPDF AcroForm Plugin
+ * Copyright (c) 2016 Alexander Weidt, https://github.com/BiggA94
+ *
+ * Licensed under the MIT License.
+ * http://opensource.org/licenses/mit-license
+ */
+(window.AcroForm=function(t){var n=window.AcroForm;n.scale=function(t){return t*(r.internal.scaleFactor/1)},n.antiScale=function(t){return 1/r.internal.scaleFactor*t};var r={fields:[],xForms:[],acroFormDictionaryRoot:null,printedOut:!1,internal:null};e.API.acroformPlugin=r;var i=function(){for(var t in this.acroformPlugin.acroFormDictionaryRoot.Fields){var e=this.acroformPlugin.acroFormDictionaryRoot.Fields[t];e.hasAnnotation&&a.call(this,e)}},o=function(){if(this.acroformPlugin.acroFormDictionaryRoot)throw new Error("Exception while creating AcroformDictionary");this.acroformPlugin.acroFormDictionaryRoot=new n.AcroFormDictionary,this.acroformPlugin.internal=this.internal,this.acroformPlugin.acroFormDictionaryRoot._eventID=this.internal.events.subscribe("postPutResources",l),this.internal.events.subscribe("buildDocument",i),this.internal.events.subscribe("putCatalog",c),this.internal.events.subscribe("postPutPages",u)},a=function(t){var n={type:"reference",object:t};e.API.annotationPlugin.annotations[this.internal.getPageInfo(t.page).pageNumber].push(n)},s=function(t){this.acroformPlugin.printedOut&&(this.acroformPlugin.printedOut=!1,this.acroformPlugin.acroFormDictionaryRoot=null),this.acroformPlugin.acroFormDictionaryRoot||o.call(this),this.acroformPlugin.acroFormDictionaryRoot.Fields.push(t)},c=function(){void 0!==this.acroformPlugin.acroFormDictionaryRoot?this.internal.write("/AcroForm "+this.acroformPlugin.acroFormDictionaryRoot.objId+" 0 R"):console.log("Root missing...")},l=function(){this.internal.events.unsubscribe(this.acroformPlugin.acroFormDictionaryRoot._eventID),delete this.acroformPlugin.acroFormDictionaryRoot._eventID,this.acroformPlugin.printedOut=!0},u=function(t){var e=!t;t||(this.internal.newObjectDeferredBegin(this.acroformPlugin.acroFormDictionaryRoot.objId),this.internal.out(this.acroformPlugin.acroFormDictionaryRoot.getString()));var t=t||this.acroformPlugin.acroFormDictionaryRoot.Kids;for(var r in t){var i=t[r],o=i.Rect;i.Rect&&(i.Rect=n.internal.calculateCoordinates.call(this,i.Rect)),this.internal.newObjectDeferredBegin(i.objId);var a="";if(a+=i.objId+" 0 obj\n",a+="<<\n"+i.getContent(),i.Rect=o,i.hasAppearanceStream&&!i.appearanceStreamContent){var s=n.internal.calculateAppearanceStream.call(this,i);a+="/AP << /N "+s+" >>\n",this.acroformPlugin.xForms.push(s)}if(i.appearanceStreamContent){a+="/AP << ";for(var c in i.appearanceStreamContent){var l=i.appearanceStreamContent[c];if(a+="/"+c+" ",a+="<< ",Object.keys(l).length>=1||Array.isArray(l))for(var r in l)"function"==typeof(u=l[r])&&(u=u.call(this,i)),a+="/"+r+" "+u+" ",this.acroformPlugin.xForms.indexOf(u)>=0||this.acroformPlugin.xForms.push(u);else{var u=l;"function"==typeof u&&(u=u.call(this,i)),a+="/"+r+" "+u+" \n",this.acroformPlugin.xForms.indexOf(u)>=0||this.acroformPlugin.xForms.push(u)}a+=" >>\n"}a+=">>\n"}a+=">>\nendobj\n",this.internal.out(a)}e&&h.call(this,this.acroformPlugin.xForms)},h=function(t){for(var e in t){var n=e,r=t[e];this.internal.newObjectDeferredBegin(r&&r.objId);var i="";i+=r?r.getString():"",this.internal.out(i),delete t[n]}};t.addField=function(t){return t instanceof n.TextField?d.call(this,t):t instanceof n.ChoiceField?p.call(this,t):t instanceof n.Button?f.call(this,t):t instanceof n.ChildClass?s.call(this,t):t&&s.call(this,t),t.page=this.acroformPlugin.internal.getCurrentPageInfo().pageNumber,this};var f=function(t){(t=t||new n.Field).FT="/Btn";var e=t.Ff||0;t.pushbutton&&(e=n.internal.setBitPosition(e,17),delete t.pushbutton),t.radio&&(e=n.internal.setBitPosition(e,16),delete t.radio),t.noToggleToOff&&(e=n.internal.setBitPosition(e,15)),t.Ff=e,s.call(this,t)},d=function(t){(t=t||new n.Field).FT="/Tx";var e=t.Ff||0;t.multiline&&(e|=4096),t.password&&(e|=8192),t.fileSelect&&(e|=1<<20),t.doNotSpellCheck&&(e|=1<<22),t.doNotScroll&&(e|=1<<23),t.Ff=t.Ff||e,s.call(this,t)},p=function(t){var e=t||new n.Field;e.FT="/Ch";var r=e.Ff||0;e.combo&&(r=n.internal.setBitPosition(r,18),delete e.combo),e.edit&&(r=n.internal.setBitPosition(r,19),delete e.edit),e.sort&&(r=n.internal.setBitPosition(r,20),delete e.sort),e.multiSelect&&this.internal.getPDFVersion()>=1.4&&(r=n.internal.setBitPosition(r,22),delete e.multiSelect),e.doNotSpellCheck&&this.internal.getPDFVersion()>=1.4&&(r=n.internal.setBitPosition(r,23),delete e.doNotSpellCheck),e.Ff=r,s.call(this,e)}})(e.API);var n=window.AcroForm;n.internal={},n.createFormXObject=function(t){var e=new n.FormXObject,r=n.Appearance.internal.getHeight(t)||0,i=n.Appearance.internal.getWidth(t)||0;return e.BBox=[0,0,i,r],e},n.Appearance={CheckBox:{createAppearanceStream:function(){return{N:{On:n.Appearance.CheckBox.YesNormal},D:{On:n.Appearance.CheckBox.YesPushDown,Off:n.Appearance.CheckBox.OffPushDown}}},createMK:function(){return"<< /CA (3)>>"},YesPushDown:function(t){var e=n.createFormXObject(t),r="";t.Q=1;var i=n.internal.calculateX(t,"3","ZapfDingbats",50);return r+="0.749023 g\n             0 0 "+n.Appearance.internal.getWidth(t)+" "+n.Appearance.internal.getHeight(t)+" re\n             f\n             BMC\n             q\n             0 0 1 rg\n             /F13 "+i.fontSize+" Tf 0 g\n             BT\n",r+=i.text,r+="ET\n             Q\n             EMC\n",e.stream=r,e},YesNormal:function(t){var e=n.createFormXObject(t),r="";t.Q=1;var i=n.internal.calculateX(t,"3","ZapfDingbats",.9*n.Appearance.internal.getHeight(t));return r+="1 g\n0 0 "+n.Appearance.internal.getWidth(t)+" "+n.Appearance.internal.getHeight(t)+" re\nf\nq\n0 0 1 rg\n0 0 "+(n.Appearance.internal.getWidth(t)-1)+" "+(n.Appearance.internal.getHeight(t)-1)+" re\nW\nn\n0 g\nBT\n/F13 "+i.fontSize+" Tf 0 g\n",r+=i.text,r+="ET\n             Q\n",e.stream=r,e},OffPushDown:function(t){var e=n.createFormXObject(t),r="";return r+="0.749023 g\n            0 0 "+n.Appearance.internal.getWidth(t)+" "+n.Appearance.internal.getHeight(t)+" re\n            f\n",e.stream=r,e}},RadioButton:{Circle:{createAppearanceStream:function(t){var e={D:{Off:n.Appearance.RadioButton.Circle.OffPushDown},N:{}};return e.N[t]=n.Appearance.RadioButton.Circle.YesNormal,e.D[t]=n.Appearance.RadioButton.Circle.YesPushDown,e},createMK:function(){return"<< /CA (l)>>"},YesNormal:function(t){var e=n.createFormXObject(t),r="",i=n.Appearance.internal.getWidth(t)<=n.Appearance.internal.getHeight(t)?n.Appearance.internal.getWidth(t)/4:n.Appearance.internal.getHeight(t)/4;i*=.9;var o=n.Appearance.internal.Bezier_C;return r+="q\n1 0 0 1 "+n.Appearance.internal.getWidth(t)/2+" "+n.Appearance.internal.getHeight(t)/2+" cm\n"+i+" 0 m\n"+i+" "+i*o+" "+i*o+" "+i+" 0 "+i+" c\n-"+i*o+" "+i+" -"+i+" "+i*o+" -"+i+" 0 c\n-"+i+" -"+i*o+" -"+i*o+" -"+i+" 0 -"+i+" c\n"+i*o+" -"+i+" "+i+" -"+i*o+" "+i+" 0 c\nf\nQ\n",e.stream=r,e},YesPushDown:function(t){var e=n.createFormXObject(t),r="",i=n.Appearance.internal.getWidth(t)<=n.Appearance.internal.getHeight(t)?n.Appearance.internal.getWidth(t)/4:n.Appearance.internal.getHeight(t)/4,o=2*(i*=.9),a=o*n.Appearance.internal.Bezier_C,s=i*n.Appearance.internal.Bezier_C;return r+="0.749023 g\n            q\n           1 0 0 1 "+n.Appearance.internal.getWidth(t)/2+" "+n.Appearance.internal.getHeight(t)/2+" cm\n"+o+" 0 m\n"+o+" "+a+" "+a+" "+o+" 0 "+o+" c\n-"+a+" "+o+" -"+o+" "+a+" -"+o+" 0 c\n-"+o+" -"+a+" -"+a+" -"+o+" 0 -"+o+" c\n"+a+" -"+o+" "+o+" -"+a+" "+o+" 0 c\n            f\n            Q\n            0 g\n            q\n            1 0 0 1 "+n.Appearance.internal.getWidth(t)/2+" "+n.Appearance.internal.getHeight(t)/2+" cm\n"+i+" 0 m\n"+i+" "+s+" "+s+" "+i+" 0 "+i+" c\n-"+s+" "+i+" -"+i+" "+s+" -"+i+" 0 c\n-"+i+" -"+s+" -"+s+" -"+i+" 0 -"+i+" c\n"+s+" -"+i+" "+i+" -"+s+" "+i+" 0 c\n            f\n            Q\n",e.stream=r,e},OffPushDown:function(t){var e=n.createFormXObject(t),r="",i=n.Appearance.internal.getWidth(t)<=n.Appearance.internal.getHeight(t)?n.Appearance.internal.getWidth(t)/4:n.Appearance.internal.getHeight(t)/4,o=2*(i*=.9),a=o*n.Appearance.internal.Bezier_C;return r+="0.749023 g\n            q\n 1 0 0 1 "+n.Appearance.internal.getWidth(t)/2+" "+n.Appearance.internal.getHeight(t)/2+" cm\n"+o+" 0 m\n"+o+" "+a+" "+a+" "+o+" 0 "+o+" c\n-"+a+" "+o+" -"+o+" "+a+" -"+o+" 0 c\n-"+o+" -"+a+" -"+a+" -"+o+" 0 -"+o+" c\n"+a+" -"+o+" "+o+" -"+a+" "+o+" 0 c\n            f\n            Q\n",e.stream=r,e}},Cross:{createAppearanceStream:function(t){var e={D:{Off:n.Appearance.RadioButton.Cross.OffPushDown},N:{}};return e.N[t]=n.Appearance.RadioButton.Cross.YesNormal,e.D[t]=n.Appearance.RadioButton.Cross.YesPushDown,e},createMK:function(){return"<< /CA (8)>>"},YesNormal:function(t){var e=n.createFormXObject(t),r="",i=n.Appearance.internal.calculateCross(t);return r+="q\n            1 1 "+(n.Appearance.internal.getWidth(t)-2)+" "+(n.Appearance.internal.getHeight(t)-2)+" re\n            W\n            n\n            "+i.x1.x+" "+i.x1.y+" m\n            "+i.x2.x+" "+i.x2.y+" l\n            "+i.x4.x+" "+i.x4.y+" m\n            "+i.x3.x+" "+i.x3.y+" l\n            s\n            Q\n",e.stream=r,e},YesPushDown:function(t){var e=n.createFormXObject(t),r=n.Appearance.internal.calculateCross(t),i="";return i+="0.749023 g\n            0 0 "+n.Appearance.internal.getWidth(t)+" "+n.Appearance.internal.getHeight(t)+" re\n            f\n            q\n            1 1 "+(n.Appearance.internal.getWidth(t)-2)+" "+(n.Appearance.internal.getHeight(t)-2)+" re\n            W\n            n\n            "+r.x1.x+" "+r.x1.y+" m\n            "+r.x2.x+" "+r.x2.y+" l\n            "+r.x4.x+" "+r.x4.y+" m\n            "+r.x3.x+" "+r.x3.y+" l\n            s\n            Q\n",e.stream=i,e},OffPushDown:function(t){var e=n.createFormXObject(t),r="";return r+="0.749023 g\n            0 0 "+n.Appearance.internal.getWidth(t)+" "+n.Appearance.internal.getHeight(t)+" re\n            f\n",e.stream=r,e}}},createDefaultAppearanceStream:function(t){var e="";return e+="/Helv 0 Tf 0 g"}},n.Appearance.internal={Bezier_C:.551915024494,calculateCross:function(t){var e=n.Appearance.internal.getWidth(t),r=n.Appearance.internal.getHeight(t),i=function(t,e){return t>e?e:t}(e,r);return{x1:{x:(e-i)/2,y:(r-i)/2+i},x2:{x:(e-i)/2+i,y:(r-i)/2},x3:{x:(e-i)/2,y:(r-i)/2},x4:{x:(e-i)/2+i,y:(r-i)/2+i}}}},n.Appearance.internal.getWidth=function(t){return t.Rect[2]},n.Appearance.internal.getHeight=function(t){return t.Rect[3]},n.internal.inherit=function(t,e){t.prototype=Object.create(e.prototype),t.prototype.constructor=t},n.internal.arrayToPdfArray=function(t){if(Array.isArray(t)){var e=" [";for(var n in t)e+=t[n].toString(),e+=n<t.length-1?" ":"";return e+="]"}},n.internal.toPdfString=function(t){return 0!==(t=t||"").indexOf("(")&&(t="("+t),")"!=t.substring(t.length-1)&&(t+="("),t},n.PDFObject=function(){var t;Object.defineProperty(this,"objId",{get:function(){return t||(this.internal?t=this.internal.newObjectDeferred():e.API.acroformPlugin.internal&&(t=e.API.acroformPlugin.internal.newObjectDeferred())),t||console.log("Couldn't create Object ID"),t},configurable:!1})},n.PDFObject.prototype.toString=function(){return this.objId+" 0 R"},n.PDFObject.prototype.getString=function(){var t=this.objId+" 0 obj\n<<";return t+=this.getContent()+">>\n",this.stream&&(t+="stream\n",t+=this.stream,t+="endstream\n"),t+="endobj\n"},n.PDFObject.prototype.getContent=function(){var t="";return t+=function(t){var e="",r=Object.keys(t).filter(function(t){return"content"!=t&&"appearanceStreamContent"!=t&&"_"!=t.substring(0,1)});for(var i in r){var o=r[i],a=t[o];a&&(Array.isArray(a)?e+="/"+o+" "+n.internal.arrayToPdfArray(a)+"\n":a instanceof n.PDFObject?e+="/"+o+" "+a.objId+" 0 R\n":e+="/"+o+" "+a+"\n")}return e}(this)},n.FormXObject=function(){n.PDFObject.call(this),this.Type="/XObject",this.Subtype="/Form",this.FormType=1,this.BBox,this.Matrix,this.Resources="2 0 R",this.PieceInfo;var t;Object.defineProperty(this,"Length",{enumerable:!0,get:function(){return void 0!==t?t.length:0}}),Object.defineProperty(this,"stream",{enumerable:!1,set:function(e){t=e},get:function(){return t||null}})},n.internal.inherit(n.FormXObject,n.PDFObject),n.AcroFormDictionary=function(){n.PDFObject.call(this);var t=[];Object.defineProperty(this,"Kids",{enumerable:!1,configurable:!0,get:function(){return t.length>0?t:void 0}}),Object.defineProperty(this,"Fields",{enumerable:!0,configurable:!0,get:function(){return t}}),this.DA},n.internal.inherit(n.AcroFormDictionary,n.PDFObject),n.Field=function(){n.PDFObject.call(this);var t;Object.defineProperty(this,"Rect",{enumerable:!0,configurable:!1,get:function(){if(t)return t},set:function(e){t=e}});var e="";Object.defineProperty(this,"FT",{enumerable:!0,set:function(t){e=t},get:function(){return e}});var r;Object.defineProperty(this,"T",{enumerable:!0,configurable:!1,set:function(t){r=t},get:function(){if(!r||r.length<1){if(this instanceof n.ChildClass)return;return"(FieldObject"+n.Field.FieldNum+++")"}return"("==r.substring(0,1)&&r.substring(r.length-1)?r:"("+r+")"}});var i;Object.defineProperty(this,"DA",{enumerable:!0,get:function(){if(i)return"("+i+")"},set:function(t){i=t}});var o;Object.defineProperty(this,"DV",{enumerable:!0,configurable:!0,get:function(){if(o)return o},set:function(t){o=t}}),Object.defineProperty(this,"Type",{enumerable:!0,get:function(){return this.hasAnnotation?"/Annot":null}}),Object.defineProperty(this,"Subtype",{enumerable:!0,get:function(){return this.hasAnnotation?"/Widget":null}}),this.BG,Object.defineProperty(this,"hasAnnotation",{enumerable:!1,get:function(){return!!(this.Rect||this.BC||this.BG)}}),Object.defineProperty(this,"hasAppearanceStream",{enumerable:!1,configurable:!0,writable:!0}),Object.defineProperty(this,"page",{enumerable:!1,configurable:!0,writable:!0})},n.Field.FieldNum=0,n.internal.inherit(n.Field,n.PDFObject),n.ChoiceField=function(){n.Field.call(this),this.FT="/Ch",this.Opt=[],this.V="()",this.TI=0,this.combo=!1,Object.defineProperty(this,"edit",{enumerable:!0,set:function(t){1==t?(this._edit=!0,this.combo=!0):this._edit=!1},get:function(){return!!this._edit&&this._edit},configurable:!1}),this.hasAppearanceStream=!0,Object.defineProperty(this,"V",{get:function(){n.internal.toPdfString()}})},n.internal.inherit(n.ChoiceField,n.Field),window.ChoiceField=n.ChoiceField,n.ListBox=function(){n.ChoiceField.call(this)},n.internal.inherit(n.ListBox,n.ChoiceField),window.ListBox=n.ListBox,n.ComboBox=function(){n.ListBox.call(this),this.combo=!0},n.internal.inherit(n.ComboBox,n.ListBox),window.ComboBox=n.ComboBox,n.EditBox=function(){n.ComboBox.call(this),this.edit=!0},n.internal.inherit(n.EditBox,n.ComboBox),window.EditBox=n.EditBox,n.Button=function(){n.Field.call(this),this.FT="/Btn"},n.internal.inherit(n.Button,n.Field),window.Button=n.Button,n.PushButton=function(){n.Button.call(this),this.pushbutton=!0},n.internal.inherit(n.PushButton,n.Button),window.PushButton=n.PushButton,n.RadioButton=function(){n.Button.call(this),this.radio=!0;var t=[];Object.defineProperty(this,"Kids",{enumerable:!0,get:function(){if(t.length>0)return t}}),Object.defineProperty(this,"__Kids",{get:function(){return t}});var e;Object.defineProperty(this,"noToggleToOff",{enumerable:!1,get:function(){return e},set:function(t){e=t}})},n.internal.inherit(n.RadioButton,n.Button),window.RadioButton=n.RadioButton,n.ChildClass=function(t,e){n.Field.call(this),this.Parent=t,this._AppearanceType=n.Appearance.RadioButton.Circle,this.appearanceStreamContent=this._AppearanceType.createAppearanceStream(e),this.F=n.internal.setBitPosition(this.F,3,1),this.MK=this._AppearanceType.createMK(),this.AS="/Off",this._Name=e},n.internal.inherit(n.ChildClass,n.Field),n.RadioButton.prototype.setAppearance=function(t){if("createAppearanceStream"in t&&"createMK"in t)for(var e in this.__Kids){var n=this.__Kids[e];n.appearanceStreamContent=t.createAppearanceStream(n._Name),n.MK=t.createMK()}else console.log("Couldn't assign Appearance to RadioButton. Appearance was Invalid!")},n.RadioButton.prototype.createOption=function(t){var r=this,i=new n.ChildClass(r,t);return this.__Kids.push(i),e.API.addField(i),i},n.CheckBox=function(){Button.call(this),this.appearanceStreamContent=n.Appearance.CheckBox.createAppearanceStream(),this.MK=n.Appearance.CheckBox.createMK(),this.AS="/On",this.V="/On"},n.internal.inherit(n.CheckBox,n.Button),window.CheckBox=n.CheckBox,n.TextField=function(){n.Field.call(this),this.DA=n.Appearance.createDefaultAppearanceStream(),this.F=4;var t;Object.defineProperty(this,"V",{get:function(){return t?"("+t+")":t},enumerable:!0,set:function(e){t=e}});var e;Object.defineProperty(this,"DV",{get:function(){return e?"("+e+")":e},enumerable:!0,set:function(t){e=t}});var r=!1;Object.defineProperty(this,"multiline",{enumerable:!1,get:function(){return r},set:function(t){r=t}});var i=!1;Object.defineProperty(this,"MaxLen",{enumerable:!0,get:function(){return i},set:function(t){i=t}}),Object.defineProperty(this,"hasAppearanceStream",{enumerable:!1,get:function(){return this.V||this.DV}})},n.internal.inherit(n.TextField,n.Field),window.TextField=n.TextField,n.PasswordField=function(){TextField.call(this),Object.defineProperty(this,"password",{value:!0,enumerable:!1,configurable:!1,writable:!1})},n.internal.inherit(n.PasswordField,n.TextField),window.PasswordField=n.PasswordField,n.internal.calculateFontSpace=function(t,e,r){var r=r||"helvetica",i=n.internal.calculateFontSpace.canvas||(n.internal.calculateFontSpace.canvas=document.createElement("canvas"));(s=i.getContext("2d")).save();var o=e+" "+r;s.font=o;var a=s.measureText(t);s.fontcolor="black";var s=i.getContext("2d");return a.height=1.5*s.measureText("3").width,s.restore(),a},n.internal.calculateX=function(t,e,r,i){var i=i||12,r=r||"helvetica",o={text:"",fontSize:""},a=(e=")"==(e="("==e.substr(0,1)?e.substr(1):e).substr(e.length-1)?e.substr(0,e.length-1):e).split(" "),s=i,c=n.Appearance.internal.getHeight(t)||0;c=c<0?-c:c;var l=n.Appearance.internal.getWidth(t)||0;l=l<0?-l:l;s++;t:for(;;){var e="";s--;var u=n.internal.calculateFontSpace("3",s+"px",r).height,h=t.multiline?c-s:(c-u)/2,f=-2,d=h+=2,p=0,m=0,g=0;if(0==s){s=12,e="(...) Tj\n",e+="% Width of Text: "+n.internal.calculateFontSpace(e,"1px").width+", FieldWidth:"+l+"\n";break}g=n.internal.calculateFontSpace(a[0]+" ",s+"px",r).width;var w="",y=0;for(var v in a){w=" "==(w+=a[v]+" ").substr(w.length-1)?w.substr(0,w.length-1):w;var b=parseInt(v);g=n.internal.calculateFontSpace(w+" ",s+"px",r).width;var x=function(t,e,i){if(t+1<a.length){var o=e+" "+a[t+1];return n.internal.calculateFontSpace(o,i+"px",r).width<=l-4}return!1}(b,w,s),k=v>=a.length-1;if(!x||k){if(x||k){if(k)m=b;else if(t.multiline&&(u+2)*(y+2)+2>c)continue t}else{if(!t.multiline)continue t;if((u+2)*(y+2)+2>c)continue t;m=b}for(var _="",C=p;C<=m;C++)_+=a[C]+" ";switch(_=" "==_.substr(_.length-1)?_.substr(0,_.length-1):_,g=n.internal.calculateFontSpace(_,s+"px",r).width,t.Q){case 2:f=l-g-2;break;case 1:f=(l-g)/2;break;case 0:default:f=2}e+=f+" "+d+" Td\n",e+="("+_+") Tj\n",e+=-f+" 0 Td\n",d=-(s+2),g=0,p=m+1,y++,w=""}else w+=" "}break}return o.text=e,o.fontSize=s,o},n.internal.calculateAppearanceStream=function(t){if(t.appearanceStreamContent)return t.appearanceStreamContent;if(t.V||t.DV){var e="",r=t.V||t.DV,i=n.internal.calculateX(t,r);e+="/Tx BMC\nq\n/F1 "+i.fontSize+" Tf\n1 0 0 1 0 0 Tm\n",e+="BT\n",e+=i.text,e+="ET\n",e+="Q\nEMC\n";var o=new n.createFormXObject(t);return o.stream=e,o}},n.internal.calculateCoordinates=function(t,e,r,i){var o={};if(this.internal){var a=function(t){return t*this.internal.scaleFactor};Array.isArray(t)?(t[0]=n.scale(t[0]),t[1]=n.scale(t[1]),t[2]=n.scale(t[2]),t[3]=n.scale(t[3]),o.lowerLeft_X=t[0]||0,o.lowerLeft_Y=a.call(this,this.internal.pageSize.height)-t[3]-t[1]||0,o.upperRight_X=t[0]+t[2]||0,o.upperRight_Y=a.call(this,this.internal.pageSize.height)-t[1]||0):(t=n.scale(t),e=n.scale(e),r=n.scale(r),i=n.scale(i),o.lowerLeft_X=t||0,o.lowerLeft_Y=this.internal.pageSize.height-e||0,o.upperRight_X=t+r||0,o.upperRight_Y=this.internal.pageSize.height-e+i||0)}else Array.isArray(t)?(o.lowerLeft_X=t[0]||0,o.lowerLeft_Y=t[1]||0,o.upperRight_X=t[0]+t[2]||0,o.upperRight_Y=t[1]+t[3]||0):(o.lowerLeft_X=t||0,o.lowerLeft_Y=e||0,o.upperRight_X=t+r||0,o.upperRight_Y=e+i||0);return[o.lowerLeft_X,o.lowerLeft_Y,o.upperRight_X,o.upperRight_Y]},n.internal.calculateColor=function(t,e,n){var r=new Array(3);return r.r=0|t,r.g=0|e,r.b=0|n,r},n.internal.getBitPosition=function(t,e){var n=1;return n<<=e-1,(t=t||0)|n},n.internal.setBitPosition=function(t,e,n){t=t||0;var r=1;if(r<<=e-1,1==(n=n||1))t=t|r;else var t=t&~r;return t},e.API.addHTML=function(t,e,n,r,i){if("undefined"==typeof html2canvas&&"undefined"==typeof rasterizeHTML)throw new Error("You need either https://github.com/niklasvh/html2canvas or https://github.com/cburgmer/rasterizeHTML.js");"number"!=typeof e&&(r=e,i=n),"function"==typeof r&&(i=r,r=null);var o=this.internal,a=o.scaleFactor,s=o.pageSize.width,c=o.pageSize.height;if(r=r||{},r.onrendered=function(t){e=parseInt(e)||0,n=parseInt(n)||0;var o=r.dim||{},l=o.h||0,u=o.w||Math.min(s,t.width/a)-e,h="JPEG";if(r.format&&(h=r.format),t.height>c&&r.pagesplit){var f=function(){for(var r=0;;){var o=document.createElement("canvas");o.width=Math.min(s*a,t.width),o.height=Math.min(c*a,t.height-r),o.getContext("2d").drawImage(t,0,r,t.width,o.height,0,0,o.width,o.height);var l=[o,e,r?0:n,o.width/a,o.height/a,h,null,"SLOW"];if(this.addImage.apply(this,l),(r+=o.height)>=t.height)break;this.addPage()}i(u,r,null,l)}.bind(this);if("CANVAS"===t.nodeName){var d=new Image;d.onload=f,d.src=t.toDataURL("image/png"),t=d}else f()}else{var p=Math.random().toString(35),m=[t,e,n,u,l,h,p,"SLOW"];this.addImage.apply(this,m),i(u,l,p,m)}}.bind(this),"undefined"!=typeof html2canvas&&!r.rstz)return html2canvas(t,r);if("undefined"!=typeof rasterizeHTML){var l="drawDocument";return"string"==typeof t&&(l=/^http/.test(t)?"drawURL":"drawHTML"),r.width=r.width||s*a,rasterizeHTML[l](t,void 0,r).then(function(t){r.onrendered(t.image)},function(t){i(null,t)})}return null},/** @preserve
+ * jsPDF addImage plugin
+ * Copyright (c) 2012 Jason Siefken, https://github.com/siefkenj/
+ *               2013 Chris Dowling, https://github.com/gingerchris
+ *               2013 Trinh Ho, https://github.com/ineedfat
+ *               2013 Edwin Alejandro Perez, https://github.com/eaparango
+ *               2013 Norah Smith, https://github.com/burnburnrocket
+ *               2014 Diego Casorran, https://github.com/diegocr
+ *               2014 James Robb, https://github.com/jamesbrobb
+ *
+ * 
+ */
+function(e){var n=["jpeg","jpg","png"],r=function t(e){var n=this.internal.newObject(),r=this.internal.write,i=this.internal.putStream;if(e.n=n,r("<</Type /XObject"),r("/Subtype /Image"),r("/Width "+e.w),r("/Height "+e.h),e.cs===this.color_spaces.INDEXED?r("/ColorSpace [/Indexed /DeviceRGB "+(e.pal.length/3-1)+" "+("smask"in e?n+2:n+1)+" 0 R]"):(r("/ColorSpace /"+e.cs),e.cs===this.color_spaces.DEVICE_CMYK&&r("/Decode [1 0 1 0 1 0 1 0]")),r("/BitsPerComponent "+e.bpc),"f"in e&&r("/Filter /"+e.f),"dp"in e&&r("/DecodeParms <<"+e.dp+">>"),"trns"in e&&e.trns.constructor==Array){for(var o="",a=0,s=e.trns.length;a<s;a++)o+=e.trns[a]+" "+e.trns[a]+" ";r("/Mask ["+o+"]")}if("smask"in e&&r("/SMask "+(n+1)+" 0 R"),r("/Length "+e.data.length+">>"),i(e.data),r("endobj"),"smask"in e){var c="/Predictor "+e.p+" /Colors 1 /BitsPerComponent "+e.bpc+" /Columns "+e.w,l={w:e.w,h:e.h,cs:"DeviceGray",bpc:e.bpc,dp:c,data:e.smask};"f"in e&&(l.f=e.f),t.call(this,l)}e.cs===this.color_spaces.INDEXED&&(this.internal.newObject(),r("<< /Length "+e.pal.length+">>"),i(this.arrayBufferToBinaryString(new Uint8Array(e.pal))),r("endobj"))},i=function(){var t=this.internal.collections.addImage_images;for(var e in t)r.call(this,t[e])},o=function(){var t,e=this.internal.collections.addImage_images,n=this.internal.write;for(var r in e)n("/I"+(t=e[r]).i,t.n,"0","R")},a=function(t){return t&&"string"==typeof t&&(t=t.toUpperCase()),t in e.image_compression?t:e.image_compression.NONE},s=function(){var t=this.internal.collections.addImage_images;return t||(this.internal.collections.addImage_images=t={},this.internal.events.subscribe("putResources",i),this.internal.events.subscribe("putXobjectDict",o)),t},c=function(t){var e=0;return t&&(e=Object.keys?Object.keys(t).length:function(t){var e=0;for(var n in t)t.hasOwnProperty(n)&&e++;return e}(t)),e},l=function(t){return void 0===t||null===t},u=function(t){return"string"==typeof t&&e.sHashCode(t)},h=function(t){return-1===n.indexOf(t)},f=function(t){return"function"!=typeof e["process"+t.toUpperCase()]},d=function(e){return"object"===(void 0===e?"undefined":t(e))&&1===e.nodeType},p=function(e,n,r){if("IMG"===e.nodeName&&e.hasAttribute("src")){var i=""+e.getAttribute("src");if(!r&&0===i.indexOf("data:image/"))return i;!n&&/\.png(?:[?#].*)?$/i.test(i)&&(n="png")}if("CANVAS"===e.nodeName)var o=e;else{(o=document.createElement("canvas")).width=e.clientWidth||e.width,o.height=e.clientHeight||e.height;var a=o.getContext("2d");if(!a)throw"addImage requires canvas to be supported by browser.";if(r){var s,c,l,u,h,f,d,p,m=Math.PI/180;"object"===(void 0===r?"undefined":t(r))&&(s=r.x,c=r.y,l=r.bg,r=r.angle),p=r*m,u=Math.abs(Math.cos(p)),h=Math.abs(Math.sin(p)),f=o.width,d=o.height,o.width=d*h+f*u,o.height=d*u+f*h,isNaN(s)&&(s=o.width/2),isNaN(c)&&(c=o.height/2),a.clearRect(0,0,o.width,o.height),a.fillStyle=l||"white",a.fillRect(0,0,o.width,o.height),a.save(),a.translate(s,c),a.rotate(p),a.drawImage(e,-f/2,-d/2),a.rotate(-p),a.translate(-s,-c),a.restore()}else a.drawImage(e,0,0,o.width,o.height)}return o.toDataURL("png"==(""+n).toLowerCase()?"image/png":"image/jpeg")},m=function(t,e){var n;if(e)for(var r in e)if(t===e[r].alias){n=e[r];break}return n},g=function(t,e,n){return t||e||(t=-96,e=-96),t<0&&(t=-1*n.w*72/t/this.internal.scaleFactor),e<0&&(e=-1*n.h*72/e/this.internal.scaleFactor),0===t&&(t=e*n.w/n.h),0===e&&(e=t*n.h/n.w),[t,e]},w=function(t,e,n,r,i,o,a){var s=g.call(this,n,r,i),c=this.internal.getCoordinateString,l=this.internal.getVerticalCoordinateString;n=s[0],r=s[1],a[o]=i,this.internal.write("q",c(n),"0 0",c(r),c(t),l(e+r),"cm /I"+i.i,"Do Q")};e.color_spaces={DEVICE_RGB:"DeviceRGB",DEVICE_GRAY:"DeviceGray",DEVICE_CMYK:"DeviceCMYK",CAL_GREY:"CalGray",CAL_RGB:"CalRGB",LAB:"Lab",ICC_BASED:"ICCBased",INDEXED:"Indexed",PATTERN:"Pattern",SEPARATION:"Separation",DEVICE_N:"DeviceN"},e.decode={DCT_DECODE:"DCTDecode",FLATE_DECODE:"FlateDecode",LZW_DECODE:"LZWDecode",JPX_DECODE:"JPXDecode",JBIG2_DECODE:"JBIG2Decode",ASCII85_DECODE:"ASCII85Decode",ASCII_HEX_DECODE:"ASCIIHexDecode",RUN_LENGTH_DECODE:"RunLengthDecode",CCITT_FAX_DECODE:"CCITTFaxDecode"},e.image_compression={NONE:"NONE",FAST:"FAST",MEDIUM:"MEDIUM",SLOW:"SLOW"},e.sHashCode=function(t){return Array.prototype.reduce&&t.split("").reduce(function(t,e){return(t=(t<<5)-t+e.charCodeAt(0))&t},0)},e.isString=function(t){return"string"==typeof t},e.extractInfoFromBase64DataURI=function(t){return/^data:([\w]+?\/([\w]+?));base64,(.+?)$/g.exec(t)},e.supportsArrayBuffer=function(){return"undefined"!=typeof ArrayBuffer&&"undefined"!=typeof Uint8Array},e.isArrayBuffer=function(t){return!!this.supportsArrayBuffer()&&t instanceof ArrayBuffer},e.isArrayBufferView=function(t){return!!this.supportsArrayBuffer()&&("undefined"!=typeof Uint32Array&&(t instanceof Int8Array||t instanceof Uint8Array||"undefined"!=typeof Uint8ClampedArray&&t instanceof Uint8ClampedArray||t instanceof Int16Array||t instanceof Uint16Array||t instanceof Int32Array||t instanceof Uint32Array||t instanceof Float32Array||t instanceof Float64Array))},e.binaryStringToUint8Array=function(t){for(var e=t.length,n=new Uint8Array(e),r=0;r<e;r++)n[r]=t.charCodeAt(r);return n},e.arrayBufferToBinaryString=function(t){if("function"==typeof window.atob)return atob(this.arrayBufferToBase64(t));for(var e=this.isArrayBuffer(t)?t:new Uint8Array(t),n="",r=Math.round(e.byteLength/20480),i=0;i<r;i++)n+=String.fromCharCode.apply(null,e.slice(20480*i,20480*i+20480));return n},e.arrayBufferToBase64=function(t){for(var e,n,r,i,o="",a="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",s=new Uint8Array(t),c=s.byteLength,l=c%3,u=c-l,h=0;h<u;h+=3)e=(258048&(i=s[h]<<16|s[h+1]<<8|s[h+2]))>>12,n=(4032&i)>>6,r=63&i,o+=a[(16515072&i)>>18]+a[e]+a[n]+a[r];return 1==l?(e=(3&(i=s[u]))<<4,o+=a[(252&i)>>2]+a[e]+"=="):2==l&&(e=(1008&(i=s[u]<<8|s[u+1]))>>4,n=(15&i)<<2,o+=a[(64512&i)>>10]+a[e]+a[n]+"="),o},e.createImageInfo=function(t,e,n,r,i,o,a,s,c,l,u,h,f){var d={alias:s,w:e,h:n,cs:r,bpc:i,i:a,data:t};return o&&(d.f=o),c&&(d.dp=c),l&&(d.trns=l),u&&(d.pal=u),h&&(d.smask=h),f&&(d.p=f),d},e.addImage=function(e,r,i,o,g,y,v,b,x){if("string"!=typeof r){var k=y;y=g,g=o,o=i,i=r,r=k}if("object"===(void 0===e?"undefined":t(e))&&!d(e)&&"imageData"in e){var _=e;e=_.imageData,r=_.format||r,i=_.x||i||0,o=_.y||o||0,g=_.w||g,y=_.h||y,v=_.alias||v,b=_.compression||b,x=_.rotation||_.angle||x}if(isNaN(i)||isNaN(o))throw console.error("jsPDF.addImage: Invalid coordinates",arguments),new Error("Invalid coordinates passed to jsPDF.addImage");var C,A=s.call(this);if(!(C=m(e,A))){var S;if(d(e)&&(e=p(e,r,x)),l(v)&&(v=u(e)),!(C=m(v,A))){if(this.isString(e)){var q=this.extractInfoFromBase64DataURI(e);q?(r=q[2],e=atob(q[3])):137===e.charCodeAt(0)&&80===e.charCodeAt(1)&&78===e.charCodeAt(2)&&71===e.charCodeAt(3)&&(r="png")}if(r=(r||"JPEG").toLowerCase(),h(r))throw new Error("addImage currently only supports formats "+n+", not '"+r+"'");if(f(r))throw new Error("please ensure that the plugin for '"+r+"' support is added");if(this.supportsArrayBuffer()&&(e instanceof Uint8Array||(S=e,e=this.binaryStringToUint8Array(e))),!(C=this["process"+r.toUpperCase()](e,c(A),v,a(b),S)))throw new Error("An unkwown error occurred whilst processing the image")}}return w.call(this,i,o,g,y,C,C.i,A),this};var y=function(t){var e,n,r;if(255===!t.charCodeAt(0)||216===!t.charCodeAt(1)||255===!t.charCodeAt(2)||224===!t.charCodeAt(3)||!t.charCodeAt(6)==="J".charCodeAt(0)||!t.charCodeAt(7)==="F".charCodeAt(0)||!t.charCodeAt(8)==="I".charCodeAt(0)||!t.charCodeAt(9)==="F".charCodeAt(0)||0===!t.charCodeAt(10))throw new Error("getJpegSize requires a binary string jpeg file");for(var i=256*t.charCodeAt(4)+t.charCodeAt(5),o=4,a=t.length;o<a;){if(o+=i,255!==t.charCodeAt(o))throw new Error("getJpegSize could not find the size of the image");if(192===t.charCodeAt(o+1)||193===t.charCodeAt(o+1)||194===t.charCodeAt(o+1)||195===t.charCodeAt(o+1)||196===t.charCodeAt(o+1)||197===t.charCodeAt(o+1)||198===t.charCodeAt(o+1)||199===t.charCodeAt(o+1))return n=256*t.charCodeAt(o+5)+t.charCodeAt(o+6),e=256*t.charCodeAt(o+7)+t.charCodeAt(o+8),r=t.charCodeAt(o+9),[e,n,r];o+=2,i=256*t.charCodeAt(o)+t.charCodeAt(o+1)}},v=function(t){if(65496!==(t[0]<<8|t[1]))throw new Error("Supplied data is not a JPEG");for(var e,n,r,i,o=t.length,a=(t[4]<<8)+t[5],s=4;s<o;){if(s+=a,e=b(t,s),a=(e[2]<<8)+e[3],(192===e[1]||194===e[1])&&255===e[0]&&a>7)return e=b(t,s+5),n=(e[2]<<8)+e[3],r=(e[0]<<8)+e[1],i=e[4],{width:n,height:r,numcomponents:i};s+=2}throw new Error("getJpegSizeFromBytes could not find the size of the image")},b=function(t,e){return t.subarray(e,e+5)};e.processJPEG=function(t,e,n,r,i){var o,a=this.color_spaces.DEVICE_RGB,s=this.decode.DCT_DECODE;return this.isString(t)?(o=y(t),this.createImageInfo(t,o[0],o[1],1==o[3]?this.color_spaces.DEVICE_GRAY:a,8,s,e,n)):(this.isArrayBuffer(t)&&(t=new Uint8Array(t)),this.isArrayBufferView(t)?(o=v(t),t=i||this.arrayBufferToBinaryString(t),this.createImageInfo(t,o.width,o.height,1==o.numcomponents?this.color_spaces.DEVICE_GRAY:a,8,s,e,n)):null)},e.processJPG=function(){return this.processJPEG.apply(this,arguments)}}(e.API),/**
+ * jsPDF Annotations PlugIn
+ * Copyright (c) 2014 Steven Spungin (TwelveTone LLC)  steven@twelvetone.tv
+ *
+ * Licensed under the MIT License.
+ * http://opensource.org/licenses/mit-license
+ */
+function(t){var n={annotations:[],f2:function(t){return t.toFixed(2)},notEmpty:function(t){if(void 0!==t&&""!=t)return!0}};e.API.annotationPlugin=n,e.API.events.push(["addPage",function(t){this.annotationPlugin.annotations[t.pageNumber]=[]}]),t.events.push(["putPage",function(t){for(var e=this.annotationPlugin.annotations[t.pageNumber],r=!1,i=0;i<e.length&&!r;i++)switch((l=e[i]).type){case"link":if(n.notEmpty(l.options.url)||n.notEmpty(l.options.pageNumber)){r=!0;break}case"reference":case"text":case"freetext":r=!0}if(0!=r){this.internal.write("/Annots [");for(var o=this.annotationPlugin.f2,a=this.internal.scaleFactor,s=this.internal.pageSize.height,c=this.internal.getPageInfo(t.pageNumber),i=0;i<e.length;i++){var l=e[i];switch(l.type){case"reference":this.internal.write(" "+l.object.objId+" 0 R ");break;case"text":var u=this.internal.newAdditionalObject(),h=this.internal.newAdditionalObject(),f=l.title||"Note";w="<</Type /Annot /Subtype /Text "+(p="/Rect ["+o(l.bounds.x*a)+" "+o(s-(l.bounds.y+l.bounds.h)*a)+" "+o((l.bounds.x+l.bounds.w)*a)+" "+o((s-l.bounds.y)*a)+"] ")+"/Contents ("+l.contents+")",w+=" /Popup "+h.objId+" 0 R",w+=" /P "+c.objId+" 0 R",w+=" /T ("+f+") >>",u.content=w;var d=u.objId+" 0 R";w="<</Type /Annot /Subtype /Popup "+(p="/Rect ["+o((l.bounds.x+30)*a)+" "+o(s-(l.bounds.y+l.bounds.h)*a)+" "+o((l.bounds.x+l.bounds.w+30)*a)+" "+o((s-l.bounds.y)*a)+"] ")+" /Parent "+d,l.open&&(w+=" /Open true"),w+=" >>",h.content=w,this.internal.write(u.objId,"0 R",h.objId,"0 R");break;case"freetext":var p="/Rect ["+o(l.bounds.x*a)+" "+o((s-l.bounds.y)*a)+" "+o(l.bounds.x+l.bounds.w*a)+" "+o(s-(l.bounds.y+l.bounds.h)*a)+"] ",m=l.color||"#000000";w="<</Type /Annot /Subtype /FreeText "+p+"/Contents ("+l.contents+")",w+=" /DS(font: Helvetica,sans-serif 12.0pt; text-align:left; color:#"+m+")",w+=" /Border [0 0 0]",w+=" >>",this.internal.write(w);break;case"link":if(l.options.name){var g=this.annotations._nameMap[l.options.name];l.options.pageNumber=g.page,l.options.top=g.y}else l.options.top||(l.options.top=0);var p="/Rect ["+o(l.x*a)+" "+o((s-l.y)*a)+" "+o((l.x+l.w)*a)+" "+o((s-(l.y+l.h))*a)+"] ",w="";if(l.options.url)w="<</Type /Annot /Subtype /Link "+p+"/Border [0 0 0] /A <</S /URI /URI ("+l.options.url+") >>";else if(l.options.pageNumber)switch(w="<</Type /Annot /Subtype /Link "+p+"/Border [0 0 0] /Dest ["+(t=this.internal.getPageInfo(l.options.pageNumber)).objId+" 0 R",l.options.magFactor=l.options.magFactor||"XYZ",l.options.magFactor){case"Fit":w+=" /Fit]";break;case"FitH":w+=" /FitH "+l.options.top+"]";break;case"FitV":l.options.left=l.options.left||0,w+=" /FitV "+l.options.left+"]";break;case"XYZ":default:var y=o((s-l.options.top)*a);l.options.left=l.options.left||0,void 0===l.options.zoom&&(l.options.zoom=0),w+=" /XYZ "+l.options.left+" "+y+" "+l.options.zoom+"]"}""!=w&&(w+=" >>",this.internal.write(w))}}this.internal.write("]")}}]),t.createAnnotation=function(t){switch(t.type){case"link":this.link(t.bounds.x,t.bounds.y,t.bounds.w,t.bounds.h,t);break;case"text":case"freetext":this.annotationPlugin.annotations[this.internal.getCurrentPageInfo().pageNumber].push(t)}},t.link=function(t,e,n,r,i){this.annotationPlugin.annotations[this.internal.getCurrentPageInfo().pageNumber].push({x:t,y:e,w:n,h:r,options:i,type:"link"})},t.textWithLink=function(t,e,n,r){var i=this.getTextWidth(t),o=this.internal.getLineHeight()/this.internal.scaleFactor;return this.text(t,e,n),n+=.2*o,this.link(e,n-o,i,o,r),i},t.getTextWidth=function(t){var e=this.internal.getFontSize();return this.getStringUnitWidth(t)*e/this.internal.scaleFactor},t.getLineHeight=function(){return this.internal.getLineHeight()}}(e.API),e.API.autoPrint=function(){var t;return this.internal.events.subscribe("postPutResources",function(){t=this.internal.newObject(),this.internal.write("<< /S/Named /Type/Action /N/Print >>","endobj")}),this.internal.events.subscribe("putCatalog",function(){this.internal.write("/OpenAction "+t+" 0 R")}),this},/**
+ * jsPDF Canvas PlugIn
+ * Copyright (c) 2014 Steven Spungin (TwelveTone LLC)  steven@twelvetone.tv
+ *
+ * Licensed under the MIT License.
+ * http://opensource.org/licenses/mit-license
+ */
+function(t){t.events.push(["initialized",function(){this.canvas.pdf=this}]),t.canvas={getContext:function(t){return this.pdf.context2d._canvas=this,this.pdf.context2d},style:{}},Object.defineProperty(t.canvas,"width",{get:function(){return this._width},set:function(t){this._width=t,this.getContext("2d").pageWrapX=t+1}}),Object.defineProperty(t.canvas,"height",{get:function(){return this._height},set:function(t){this._height=t,this.getContext("2d").pageWrapY=t+1}})}(e.API),/** ====================================================================
+ * jsPDF Cell plugin
+ * Copyright (c) 2013 Youssef Beddad, youssef.beddad@gmail.com
+ *               2013 Eduardo Menezes de Morais, eduardo.morais@usp.br
+ *               2013 Lee Driscoll, https://github.com/lsdriscoll
+ *               2014 Juan Pablo Gaviria, https://github.com/juanpgaviria
+ *               2014 James Hall, james@parall.ax
+ *               2014 Diego Casorran, https://github.com/diegocr
+ *
+ * 
+ * ====================================================================
+ */
+function(t){var e,n,r,i,o={x:void 0,y:void 0,w:void 0,h:void 0,ln:void 0},a=1,s=function(t,e,n,r,i){o={x:t,y:e,w:n,h:r,ln:i}},c=function(){return o},l={left:0,top:0,bottom:0};t.setHeaderFunction=function(t){i=t},t.getTextDimensions=function(t){e=this.internal.getFont().fontName,n=this.table_font_size||this.internal.getFontSize(),r=this.internal.getFont().fontStyle;var i,o;(o=document.createElement("font")).id="jsPDFCell";try{o.style.fontStyle=r}catch(t){o.style.fontWeight=r}o.style.fontName=e,o.style.fontSize=n+"pt";try{o.textContent=t}catch(e){o.innerText=t}return document.body.appendChild(o),i={w:(o.offsetWidth+1)*(19.049976/25.4),h:(o.offsetHeight+1)*(19.049976/25.4)},document.body.removeChild(o),i},t.cellAddPage=function(){var t=this.margins||l;this.addPage(),s(t.left,t.top,void 0,void 0),a+=1},t.cellInitialize=function(){o={x:void 0,y:void 0,w:void 0,h:void 0,ln:void 0},a=1},t.cell=function(t,e,n,r,i,o,a){var u=c(),h=!1;if(void 0!==u.ln)if(u.ln===o)t=u.x+u.w,e=u.y;else{var f=this.margins||l;u.y+u.h+r+13>=this.internal.pageSize.height-f.bottom&&(this.cellAddPage(),h=!0,this.printHeaders&&this.tableHeaderRow&&this.printHeaderRow(o,!0)),e=c().y+c().h,h&&(e=23)}if(void 0!==i[0])if(this.printingHeaderRow?this.rect(t,e,n,r,"FD"):this.rect(t,e,n,r),"right"===a){i instanceof Array||(i=[i]);for(var d=0;d<i.length;d++){var p=i[d],m=this.getStringUnitWidth(p)*this.internal.getFontSize();this.text(p,t+n-m-3,e+this.internal.getLineHeight()*(d+1))}}else this.text(i,t+3,e+this.internal.getLineHeight());return s(t,e,n,r,o),this},t.arrayMax=function(t,e){var n,r,i,o=t[0];for(n=0,r=t.length;n<r;n+=1)i=t[n],e?-1===e(o,i)&&(o=i):i>o&&(o=i);return o},t.table=function(e,n,r,i,s){if(!r)throw"No data for PDF table";var c,u,h,f,d,p,m,g,w,y,v=[],b=[],x={},k={},_=[],C=[],A=!1,S=!0,q=12,T=l;if(T.width=this.internal.pageSize.width,s&&(!0===s.autoSize&&(A=!0),!1===s.printHeaders&&(S=!1),s.fontSize&&(q=s.fontSize),s.css&&void 0!==s.css["font-size"]&&(q=16*s.css["font-size"]),s.margins&&(T=s.margins)),this.lnMod=0,o={x:void 0,y:void 0,w:void 0,h:void 0,ln:void 0},a=1,this.printHeaders=S,this.margins=T,this.setFontSize(q),this.table_font_size=q,void 0===i||null===i)v=Object.keys(r[0]);else if(i[0]&&"string"!=typeof i[0]){for(u=0,h=i.length;u<h;u+=1)c=i[u],v.push(c.name),b.push(c.prompt),k[c.name]=c.width*(19.049976/25.4)}else v=i;if(A)for(y=function(t){return t[c]},u=0,h=v.length;u<h;u+=1){for(x[c=v[u]]=r.map(y),_.push(this.getTextDimensions(b[u]||c).w),m=0,f=(p=x[c]).length;m<f;m+=1)d=p[m],_.push(this.getTextDimensions(d).w);k[c]=t.arrayMax(_),_=[]}if(S){P=this.calculateLineHeight(v,k,b.length?b:v);for(u=0,h=v.length;u<h;u+=1)c=v[u],C.push([e,n,k[c],P,String(b.length?b[u]:c)]);this.setTableHeaderRow(C),this.printHeaderRow(1,!1)}for(u=0,h=r.length;u<h;u+=1){var P;for(g=r[u],P=this.calculateLineHeight(v,k,g),m=0,w=v.length;m<w;m+=1)c=v[m],this.cell(e,n,k[c],P,g[c],u+2,c.align)}return this.lastCellPos=o,this.table_x=e,this.table_y=n,this},t.calculateLineHeight=function(t,e,n){for(var r,i=0,o=0;o<t.length;o++){n[r=t[o]]=this.splitTextToSize(String(n[r]),e[r]-3);var a=this.internal.getLineHeight()*n[r].length+3;a>i&&(i=a)}return i},t.setTableHeaderRow=function(t){this.tableHeaderRow=t},t.printHeaderRow=function(t,e){if(!this.tableHeaderRow)throw"Property tableHeaderRow does not exist.";var n,r,o,c;if(this.printingHeaderRow=!0,void 0!==i){var l=i(this,a);s(l[0],l[1],l[2],l[3],-1)}this.setFontStyle("bold");var u=[];for(o=0,c=this.tableHeaderRow.length;o<c;o+=1)this.setFillColor(200,200,200),n=this.tableHeaderRow[o],e&&(this.margins.top=13,n[1]=this.margins&&this.margins.top||0,u.push(n)),r=[].concat(n),this.cell.apply(this,r.concat(t));u.length>0&&this.setTableHeaderRow(u),this.setFontStyle("normal"),this.printingHeaderRow=!1}}(e.API),/**
+ * jsPDF Context2D PlugIn Copyright (c) 2014 Steven Spungin (TwelveTone LLC) steven@twelvetone.tv
+ *
+ * Licensed under the MIT License. http://opensource.org/licenses/mit-license
+ */
+function(t){function e(){this._isStrokeTransparent=!1,this._strokeOpacity=1,this.strokeStyle="#000000",this.fillStyle="#000000",this._isFillTransparent=!1,this._fillOpacity=1,this.font="12pt times",this.textBaseline="alphabetic",this.textAlign="start",this.lineWidth=1,this.lineJoin="miter",this.lineCap="butt",this._transform=[1,0,0,1,0,0],this.globalCompositeOperation="normal",this.globalAlpha=1,this._clip_path=[],this.ignoreClearRect=!1,this.copy=function(t){this._isStrokeTransparent=t._isStrokeTransparent,this._strokeOpacity=t._strokeOpacity,this.strokeStyle=t.strokeStyle,this._isFillTransparent=t._isFillTransparent,this._fillOpacity=t._fillOpacity,this.fillStyle=t.fillStyle,this.font=t.font,this.lineWidth=t.lineWidth,this.lineJoin=t.lineJoin,this.lineCap=t.lineCap,this.textBaseline=t.textBaseline,this.textAlign=t.textAlign,this._fontSize=t._fontSize,this._transform=t._transform.slice(0),this.globalCompositeOperation=t.globalCompositeOperation,this.globalAlpha=t.globalAlpha,this._clip_path=t._clip_path.slice(0),this.ignoreClearRect=t.ignoreClearRect}}t.events.push(["initialized",function(){this.context2d.pdf=this,this.context2d.internal.pdf=this,this.context2d.ctx=new e,this.context2d.ctxStack=[],this.context2d.path=[]}]),t.context2d={pageWrapXEnabled:!1,pageWrapYEnabled:!1,pageWrapX:9999999,pageWrapY:9999999,ctx:new e,f2:function(t){return t.toFixed(2)},fillRect:function(t,e,n,r){if(!this._isFillTransparent()){t=this._wrapX(t),e=this._wrapY(e);var i=this._matrix_map_rect(this.ctx._transform,{x:t,y:e,w:n,h:r});this.pdf.rect(i.x,i.y,i.w,i.h,"f")}},strokeRect:function(t,e,n,r){if(!this._isStrokeTransparent()){t=this._wrapX(t),e=this._wrapY(e);var i=this._matrix_map_rect(this.ctx._transform,{x:t,y:e,w:n,h:r});this.pdf.rect(i.x,i.y,i.w,i.h,"s")}},clearRect:function(t,e,n,r){if(!this.ctx.ignoreClearRect){t=this._wrapX(t),e=this._wrapY(e);var i=this._matrix_map_rect(this.ctx._transform,{x:t,y:e,w:n,h:r});this.save(),this.setFillStyle("#ffffff"),this.pdf.rect(i.x,i.y,i.w,i.h,"f"),this.restore()}},save:function(){this.ctx._fontSize=this.pdf.internal.getFontSize();var t=new e;t.copy(this.ctx),this.ctxStack.push(this.ctx),this.ctx=t},restore:function(){this.ctx=this.ctxStack.pop(),this.setFillStyle(this.ctx.fillStyle),this.setStrokeStyle(this.ctx.strokeStyle),this.setFont(this.ctx.font),this.pdf.setFontSize(this.ctx._fontSize),this.setLineCap(this.ctx.lineCap),this.setLineWidth(this.ctx.lineWidth),this.setLineJoin(this.ctx.lineJoin)},rect:function(t,e,n,r){this.moveTo(t,e),this.lineTo(t+n,e),this.lineTo(t+n,e+r),this.lineTo(t,e+r),this.lineTo(t,e),this.closePath()},beginPath:function(){this.path=[]},closePath:function(){this.path.push({type:"close"})},_getRGBA:function(t){var e,n,r,o;if(!t)return{r:0,g:0,b:0,a:0,style:t};if(this.internal.rxTransparent.test(t))e=0,n=0,r=0,o=0;else{var a=this.internal.rxRgb.exec(t);null!=a?(e=parseInt(a[1]),n=parseInt(a[2]),r=parseInt(a[3]),o=1):null!=(a=this.internal.rxRgba.exec(t))?(e=parseInt(a[1]),n=parseInt(a[2]),r=parseInt(a[3]),o=parseFloat(a[4])):(o=1,"#"!=t.charAt(0)&&((t=i.colorNameToHex(t))||(t="#000000")),4===t.length?(e=t.substring(1,2),e+=e,n=t.substring(2,3),n+=n,r=t.substring(3,4),r+=r):(e=t.substring(1,3),n=t.substring(3,5),r=t.substring(5,7)),e=parseInt(e,16),n=parseInt(n,16),r=parseInt(r,16))}return{r:e,g:n,b:r,a:o,style:t}},setFillStyle:function(t){var e=this._getRGBA(t);this.ctx.fillStyle=t,this.ctx._isFillTransparent=0===e.a,this.ctx._fillOpacity=e.a,this.pdf.setFillColor(e.r,e.g,e.b,{a:e.a}),this.pdf.setTextColor(e.r,e.g,e.b,{a:e.a})},setStrokeStyle:function(t){var e=this._getRGBA(t);this.ctx.strokeStyle=e.style,this.ctx._isStrokeTransparent=0===e.a,this.ctx._strokeOpacity=e.a,0===e.a?this.pdf.setDrawColor(255,255,255):(e.a,this.pdf.setDrawColor(e.r,e.g,e.b))},fillText:function(t,e,n,r){if(!this._isFillTransparent()){e=this._wrapX(e),n=this._wrapY(n);var i=this._matrix_map_point(this.ctx._transform,[e,n]);e=i[0],n=i[1];var o=57.2958*this._matrix_rotation(this.ctx._transform);if(this.ctx._clip_path.length>0){var a;(a=window.outIntercept?"group"===window.outIntercept.type?window.outIntercept.stream:window.outIntercept:this.internal.getCurrentPage()).push("q");var s=this.path;this.path=this.ctx._clip_path,this.ctx._clip_path=[],this._fill(null,!0),this.ctx._clip_path=this.path,this.path=s}var c=1;try{c=this._matrix_decompose(this._getTransform()).scale[0]}catch(t){console.warn(t)}if(c<.01)this.pdf.text(t,e,this._getBaseline(n),null,o);else{var l=this.pdf.internal.getFontSize();this.pdf.setFontSize(l*c),this.pdf.text(t,e,this._getBaseline(n),null,o),this.pdf.setFontSize(l)}this.ctx._clip_path.length>0&&a.push("Q")}},strokeText:function(t,e,n,r){if(!this._isStrokeTransparent()){e=this._wrapX(e),n=this._wrapY(n);var i=this._matrix_map_point(this.ctx._transform,[e,n]);e=i[0],n=i[1];var o=57.2958*this._matrix_rotation(this.ctx._transform);if(this.ctx._clip_path.length>0){var a;(a=window.outIntercept?"group"===window.outIntercept.type?window.outIntercept.stream:window.outIntercept:this.internal.getCurrentPage()).push("q");var s=this.path;this.path=this.ctx._clip_path,this.ctx._clip_path=[],this._fill(null,!0),this.ctx._clip_path=this.path,this.path=s}var c=1;try{c=this._matrix_decompose(this._getTransform()).scale[0]}catch(t){console.warn(t)}if(1===c)this.pdf.text(t,e,this._getBaseline(n),{stroke:!0},o);else{var l=this.pdf.internal.getFontSize();this.pdf.setFontSize(l*c),this.pdf.text(t,e,this._getBaseline(n),{stroke:!0},o),this.pdf.setFontSize(l)}this.ctx._clip_path.length>0&&a.push("Q")}},setFont:function(t){this.ctx.font=t;var e=/\s*(\w+)\s+(\w+)\s+(\w+)\s+([\d\.]+)(px|pt|em)\s+(.*)?/;if(null!=(u=e.exec(t))){var n=u[1],r=u[3],i=u[4],o=u[5],a=u[6];i="px"===o?Math.floor(parseFloat(i)):"em"===o?Math.floor(parseFloat(i)*this.pdf.getFontSize()):Math.floor(parseFloat(i)),this.pdf.setFontSize(i),"bold"===r||"700"===r?this.pdf.setFontStyle("bold"):"italic"===n?this.pdf.setFontStyle("italic"):this.pdf.setFontStyle("normal");var s,c=(f=a).toLowerCase().split(/\s*,\s*/);s=-1!=c.indexOf("arial")?"Arial":-1!=c.indexOf("verdana")?"Verdana":-1!=c.indexOf("helvetica")?"Helvetica":-1!=c.indexOf("sans-serif")?"sans-serif":-1!=c.indexOf("fixed")?"Fixed":-1!=c.indexOf("monospace")?"Monospace":-1!=c.indexOf("terminal")?"Terminal":-1!=c.indexOf("courier")?"Courier":-1!=c.indexOf("times")?"Times":-1!=c.indexOf("cursive")?"Cursive":-1!=c.indexOf("fantasy")?"Fantasy":(c.indexOf("serif"),"Serif");var l;l="bold"===r?"bold":"normal",this.pdf.setFont(s,l)}else{var u=(e=/\s*(\d+)(pt|px|em)\s+([\w "]+)\s*([\w "]+)?/).exec(t);if(null!=u){var h=u[1],f=u[3];(l=u[4])||(l="normal"),h="em"===o?Math.floor(parseFloat(i)*this.pdf.getFontSize()):Math.floor(parseFloat(h)),this.pdf.setFontSize(h),this.pdf.setFont(f,l)}}},setTextBaseline:function(t){this.ctx.textBaseline=t},getTextBaseline:function(){return this.ctx.textBaseline},setTextAlign:function(t){this.ctx.textAlign=t},getTextAlign:function(){return this.ctx.textAlign},setLineWidth:function(t){this.ctx.lineWidth=t,this.pdf.setLineWidth(t)},setLineCap:function(t){this.ctx.lineCap=t,this.pdf.setLineCap(t)},setLineJoin:function(t){this.ctx.lineJoin=t,this.pdf.setLineJoin(t)},moveTo:function(t,e){t=this._wrapX(t),e=this._wrapY(e);var n=this._matrix_map_point(this.ctx._transform,[t,e]),r={type:"mt",x:t=n[0],y:e=n[1]};this.path.push(r)},_wrapX:function(t){return this.pageWrapXEnabled?t%this.pageWrapX:t},_wrapY:function(t){return this.pageWrapYEnabled?(this._gotoPage(this._page(t)),(t-this.lastBreak)%this.pageWrapY):t},transform:function(t,e,n,r,i,o){this.ctx._transform=[t,e,n,r,i,o]},setTransform:function(t,e,n,r,i,o){this.ctx._transform=[t,e,n,r,i,o]},_getTransform:function(){return this.ctx._transform},lastBreak:0,pageBreaks:[],_page:function(t){if(this.pageWrapYEnabled){this.lastBreak=0;for(var e=0,n=0,r=0;r<this.pageBreaks.length;r++)if(t>=this.pageBreaks[r]){e++,0===this.lastBreak&&n++;var i=this.pageBreaks[r]-this.lastBreak;this.lastBreak=this.pageBreaks[r],n+=o=Math.floor(i/this.pageWrapY)}if(0===this.lastBreak){var o=Math.floor(t/this.pageWrapY)+1;n+=o}return n+e}return this.pdf.internal.getCurrentPageInfo().pageNumber},_gotoPage:function(t){},lineTo:function(t,e){t=this._wrapX(t),e=this._wrapY(e);var n=this._matrix_map_point(this.ctx._transform,[t,e]),r={type:"lt",x:t=n[0],y:e=n[1]};this.path.push(r)},bezierCurveTo:function(t,e,n,r,i,o){t=this._wrapX(t),e=this._wrapY(e),n=this._wrapX(n),r=this._wrapY(r),i=this._wrapX(i),o=this._wrapY(o);var a;i=(a=this._matrix_map_point(this.ctx._transform,[i,o]))[0],o=a[1];var s={type:"bct",x1:t=(a=this._matrix_map_point(this.ctx._transform,[t,e]))[0],y1:e=a[1],x2:n=(a=this._matrix_map_point(this.ctx._transform,[n,r]))[0],y2:r=a[1],x:i,y:o};this.path.push(s)},quadraticCurveTo:function(t,e,n,r){t=this._wrapX(t),e=this._wrapY(e),n=this._wrapX(n),r=this._wrapY(r);var i;n=(i=this._matrix_map_point(this.ctx._transform,[n,r]))[0],r=i[1];var o={type:"qct",x1:t=(i=this._matrix_map_point(this.ctx._transform,[t,e]))[0],y1:e=i[1],x:n,y:r};this.path.push(o)},arc:function(t,e,n,r,i,o){if(t=this._wrapX(t),e=this._wrapY(e),!this._matrix_is_identity(this.ctx._transform)){var a=this._matrix_map_point(this.ctx._transform,[t,e]);t=a[0],e=a[1];var s=this._matrix_map_point(this.ctx._transform,[0,0]),c=this._matrix_map_point(this.ctx._transform,[0,n]);n=Math.sqrt(Math.pow(c[0]-s[0],2)+Math.pow(c[1]-s[1],2))}var l={type:"arc",x:t,y:e,radius:n,startAngle:r,endAngle:i,anticlockwise:o};this.path.push(l)},drawImage:function(t,e,n,r,i,o,a,s,c){void 0!==o&&(e=o,n=a,r=s,i=c),e=this._wrapX(e),n=this._wrapY(n);var l,u=this._matrix_map_rect(this.ctx._transform,{x:e,y:n,w:r,h:i}),h=(this._matrix_map_rect(this.ctx._transform,{x:o,y:a,w:s,h:c}),/data:image\/(\w+).*/i.exec(t));l=null!=h?h[1]:"png",this.pdf.addImage(t,l,u.x,u.y,u.w,u.h)},_matrix_multiply:function(t,e){var n=e[0],r=e[1],i=e[2],o=e[3],a=e[4],s=e[5],c=n*t[0]+r*t[2],l=i*t[0]+o*t[2],u=a*t[0]+s*t[2]+t[4];return r=n*t[1]+r*t[3],o=i*t[1]+o*t[3],s=a*t[1]+s*t[3]+t[5],n=c,i=l,a=u,[n,r,i,o,a,s]},_matrix_rotation:function(t){return Math.atan2(t[2],t[0])},_matrix_decompose:function(t){var e=t[0],n=t[1],r=t[2],i=t[3],o=Math.sqrt(e*e+n*n),a=(e/=o)*r+(n/=o)*i;r-=e*a,i-=n*a;var s=Math.sqrt(r*r+i*i);return r/=s,i/=s,a/=s,e*i<n*r&&(e=-e,n=-n,a=-a,o=-o),{scale:[o,0,0,s,0,0],translate:[1,0,0,1,t[4],t[5]],rotate:[e,n,-n,e,0,0],skew:[1,0,a,1,0,0]}},_matrix_map_point:function(t,e){var n=t[0],r=t[1],i=t[2],o=t[3],a=t[4],s=t[5],c=e[0],l=e[1];return[c*n+l*i+a,c*r+l*o+s]},_matrix_map_point_obj:function(t,e){var n=this._matrix_map_point(t,[e.x,e.y]);return{x:n[0],y:n[1]}},_matrix_map_rect:function(t,e){var n=this._matrix_map_point(t,[e.x,e.y]),r=this._matrix_map_point(t,[e.x+e.w,e.y+e.h]);return{x:n[0],y:n[1],w:r[0]-n[0],h:r[1]-n[1]}},_matrix_is_identity:function(t){return 1==t[0]&&(0==t[1]&&(0==t[2]&&(1==t[3]&&(0==t[4]&&0==t[5]))))},rotate:function(t){var e=[Math.cos(t),Math.sin(t),-Math.sin(t),Math.cos(t),0,0];this.ctx._transform=this._matrix_multiply(this.ctx._transform,e)},scale:function(t,e){var n=[t,0,0,e,0,0];this.ctx._transform=this._matrix_multiply(this.ctx._transform,n)},translate:function(t,e){var n=[1,0,0,1,t,e];this.ctx._transform=this._matrix_multiply(this.ctx._transform,n)},stroke:function(){if(this.ctx._clip_path.length>0){var t;(t=window.outIntercept?"group"===window.outIntercept.type?window.outIntercept.stream:window.outIntercept:this.internal.getCurrentPage()).push("q");var e=this.path;this.path=this.ctx._clip_path,this.ctx._clip_path=[],this._stroke(!0),this.ctx._clip_path=this.path,this.path=e,this._stroke(!1),t.push("Q")}else this._stroke(!1)},_stroke:function(t){if(t||!this._isStrokeTransparent()){for(var e=[],n=this.path,r=0;r<n.length;r++){var i=n[r];switch(i.type){case"mt":e.push({start:i,deltas:[],abs:[]});break;case"lt":h=[i.x-n[r-1].x,i.y-n[r-1].y];e[e.length-1].deltas.push(h),e[e.length-1].abs.push(i);break;case"bct":h=[i.x1-n[r-1].x,i.y1-n[r-1].y,i.x2-n[r-1].x,i.y2-n[r-1].y,i.x-n[r-1].x,i.y-n[r-1].y];e[e.length-1].deltas.push(h);break;case"qct":var o=n[r-1].x+2/3*(i.x1-n[r-1].x),a=n[r-1].y+2/3*(i.y1-n[r-1].y),s=i.x+2/3*(i.x1-i.x),c=i.y+2/3*(i.y1-i.y),l=i.x,u=i.y,h=[o-n[r-1].x,a-n[r-1].y,s-n[r-1].x,c-n[r-1].y,l-n[r-1].x,u-n[r-1].y];e[e.length-1].deltas.push(h);break;case"arc":0==e.length&&e.push({start:{x:0,y:0},deltas:[],abs:[]}),e[e.length-1].arc=!0,e[e.length-1].abs.push(i)}}for(r=0;r<e.length;r++){var f;if(f=r==e.length-1?"s":null,e[r].arc)for(var d=e[r].abs,p=0;p<d.length;p++){var m=d[p],g=360*m.startAngle/(2*Math.PI),w=360*m.endAngle/(2*Math.PI),y=m.x,v=m.y;this.internal.arc2(this,y,v,m.radius,g,w,m.anticlockwise,f,t)}else{var y=e[r].start.x,v=e[r].start.y;t?(this.pdf.lines(e[r].deltas,y,v,null,null),this.pdf.clip_fixed()):this.pdf.lines(e[r].deltas,y,v,null,f)}}}},_isFillTransparent:function(){return this.ctx._isFillTransparent||0==this.globalAlpha},_isStrokeTransparent:function(){return this.ctx._isStrokeTransparent||0==this.globalAlpha},fill:function(t){if(this.ctx._clip_path.length>0){var e;(e=window.outIntercept?"group"===window.outIntercept.type?window.outIntercept.stream:window.outIntercept:this.internal.getCurrentPage()).push("q");var n=this.path;this.path=this.ctx._clip_path,this.ctx._clip_path=[],this._fill(t,!0),this.ctx._clip_path=this.path,this.path=n,this._fill(t,!1),e.push("Q")}else this._fill(t,!1)},_fill:function(t,e){if(!this._isFillTransparent()){var r,i="function"==typeof this.pdf.internal.newObject2;r=window.outIntercept?"group"===window.outIntercept.type?window.outIntercept.stream:window.outIntercept:this.internal.getCurrentPage();var o=[],a=window.outIntercept;if(i)switch(this.ctx.globalCompositeOperation){case"normal":case"source-over":break;case"destination-in":case"destination-out":var s=this.pdf.internal.newStreamObject(),c=this.pdf.internal.newObject2();c.push("<</Type /ExtGState"),c.push("/SMask <</S /Alpha /G "+s.objId+" 0 R>>"),c.push(">>");d="MASK"+c.objId;this.pdf.internal.addGraphicsState(d,c.objId);var l="/"+d+" gs";r.splice(0,0,"q"),r.splice(1,0,l),r.push("Q"),window.outIntercept=s;break;default:var u="/"+this.pdf.internal.blendModeMap[this.ctx.globalCompositeOperation.toUpperCase()];u&&this.pdf.internal.out(u+" gs")}var h=this.ctx.globalAlpha;if(this.ctx._fillOpacity<1&&(h=this.ctx._fillOpacity),i){var f=this.pdf.internal.newObject2();f.push("<</Type /ExtGState"),f.push("/CA "+h),f.push("/ca "+h),f.push(">>");var d="GS_O_"+f.objId;this.pdf.internal.addGraphicsState(d,f.objId),this.pdf.internal.out("/"+d+" gs")}for(var p=this.path,m=0;m<p.length;m++){var g=p[m];switch(g.type){case"mt":o.push({start:g,deltas:[],abs:[]});break;case"lt":_=[g.x-p[m-1].x,g.y-p[m-1].y];o[o.length-1].deltas.push(_),o[o.length-1].abs.push(g);break;case"bct":_=[g.x1-p[m-1].x,g.y1-p[m-1].y,g.x2-p[m-1].x,g.y2-p[m-1].y,g.x-p[m-1].x,g.y-p[m-1].y];o[o.length-1].deltas.push(_);break;case"qct":var w=p[m-1].x+2/3*(g.x1-p[m-1].x),y=p[m-1].y+2/3*(g.y1-p[m-1].y),v=g.x+2/3*(g.x1-g.x),b=g.y+2/3*(g.y1-g.y),x=g.x,k=g.y,_=[w-p[m-1].x,y-p[m-1].y,v-p[m-1].x,b-p[m-1].y,x-p[m-1].x,k-p[m-1].y];o[o.length-1].deltas.push(_);break;case"arc":0===o.length&&o.push({deltas:[],abs:[]}),o[o.length-1].arc=!0,o[o.length-1].abs.push(g);break;case"close":o.push({close:!0})}}for(m=0;m<o.length;m++){var C;if(m==o.length-1?(C="f","evenodd"===t&&(C+="*")):C=null,o[m].close)this.pdf.internal.out("h"),this.pdf.internal.out("f");else if(o[m].arc){o[m].start&&this.internal.move2(this,o[m].start.x,o[m].start.y);for(var A=o[m].abs,S=0;S<A.length;S++){var q=A[S];if(void 0!==q.startAngle){var T=360*q.startAngle/(2*Math.PI),P=360*q.endAngle/(2*Math.PI),I=q.x,E=q.y;if(0===S&&this.internal.move2(this,I,E),this.internal.arc2(this,I,E,q.radius,T,P,q.anticlockwise,null,e),S===A.length-1&&o[m].start){var I=o[m].start.x,E=o[m].start.y;this.internal.line2(n,I,E)}}else this.internal.line2(n,q.x,q.y)}}else{var I=o[m].start.x,E=o[m].start.y;e?(this.pdf.lines(o[m].deltas,I,E,null,null),this.pdf.clip_fixed()):this.pdf.lines(o[m].deltas,I,E,null,C)}}window.outIntercept=a}},pushMask:function(){if("function"==typeof this.pdf.internal.newObject2){var t=this.pdf.internal.newStreamObject(),e=this.pdf.internal.newObject2();e.push("<</Type /ExtGState"),e.push("/SMask <</S /Alpha /G "+t.objId+" 0 R>>"),e.push(">>");var n="MASK"+e.objId;this.pdf.internal.addGraphicsState(n,e.objId);var r="/"+n+" gs";this.pdf.internal.out(r)}else console.log("jsPDF v2 not enabled")},clip:function(){if(this.ctx._clip_path.length>0)for(var t=0;t<this.path.length;t++)this.ctx._clip_path.push(this.path[t]);else this.ctx._clip_path=this.path;this.path=[]},measureText:function(t){var e=this.pdf;return{getWidth:function(){var n=e.internal.getFontSize(),r=e.getStringUnitWidth(t)*n/e.internal.scaleFactor;return r*=1.3333},get width(){return this.getWidth(t)}}},_getBaseline:function(t){var e=parseInt(this.pdf.internal.getFontSize()),n=.25*e;switch(this.ctx.textBaseline){case"bottom":return t-n;case"top":return t+e;case"hanging":return t+e-n;case"middle":return t+e/2-n;case"ideographic":return t;case"alphabetic":default:return t}}};var n=t.context2d;Object.defineProperty(n,"fillStyle",{set:function(t){this.setFillStyle(t)},get:function(){return this.ctx.fillStyle}}),Object.defineProperty(n,"strokeStyle",{set:function(t){this.setStrokeStyle(t)},get:function(){return this.ctx.strokeStyle}}),Object.defineProperty(n,"lineWidth",{set:function(t){this.setLineWidth(t)},get:function(){return this.ctx.lineWidth}}),Object.defineProperty(n,"lineCap",{set:function(t){this.setLineCap(t)},get:function(){return this.ctx.lineCap}}),Object.defineProperty(n,"lineJoin",{set:function(t){this.setLineJoin(t)},get:function(){return this.ctx.lineJoin}}),Object.defineProperty(n,"miterLimit",{set:function(t){this.ctx.miterLimit=t},get:function(){return this.ctx.miterLimit}}),Object.defineProperty(n,"textBaseline",{set:function(t){this.setTextBaseline(t)},get:function(){return this.getTextBaseline()}}),Object.defineProperty(n,"textAlign",{set:function(t){this.setTextAlign(t)},get:function(){return this.getTextAlign()}}),Object.defineProperty(n,"font",{set:function(t){this.setFont(t)},get:function(){return this.ctx.font}}),Object.defineProperty(n,"globalCompositeOperation",{set:function(t){this.ctx.globalCompositeOperation=t},get:function(){return this.ctx.globalCompositeOperation}}),Object.defineProperty(n,"globalAlpha",{set:function(t){this.ctx.globalAlpha=t},get:function(){return this.ctx.globalAlpha}}),Object.defineProperty(n,"ignoreClearRect",{set:function(t){this.ctx.ignoreClearRect=t},get:function(){return this.ctx.ignoreClearRect}}),n.internal={},n.internal.rxRgb=/rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/,n.internal.rxRgba=/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d\.]+)\s*\)/,n.internal.rxTransparent=/transparent|rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*0+\s*\)/,n.internal.arc=function(t,e,n,r,i,o,a,s){for(var c=this.pdf.internal.scaleFactor,l=this.pdf.internal.pageSize.height,u=this.pdf.internal.f2,h=i*(Math.PI/180),f=o*(Math.PI/180),d=this.createArc(r,h,f,a),p=0;p<d.length;p++){var m=d[p];0===p?this.pdf.internal.out([u((m.x1+e)*c),u((l-(m.y1+n))*c),"m",u((m.x2+e)*c),u((l-(m.y2+n))*c),u((m.x3+e)*c),u((l-(m.y3+n))*c),u((m.x4+e)*c),u((l-(m.y4+n))*c),"c"].join(" ")):this.pdf.internal.out([u((m.x2+e)*c),u((l-(m.y2+n))*c),u((m.x3+e)*c),u((l-(m.y3+n))*c),u((m.x4+e)*c),u((l-(m.y4+n))*c),"c"].join(" ")),t._lastPoint={x:e,y:n}}null!==s&&this.pdf.internal.out(this.pdf.internal.getStyle(s))},n.internal.arc2=function(t,e,n,r,i,o,a,s,c){var l=e,u=n;c?(this.arc(t,l,u,r,i,o,a,null),this.pdf.clip_fixed()):this.arc(t,l,u,r,i,o,a,s)},n.internal.move2=function(t,e,n){var r=this.pdf.internal.scaleFactor,i=this.pdf.internal.pageSize.height,o=this.pdf.internal.f2;this.pdf.internal.out([o(e*r),o((i-n)*r),"m"].join(" ")),t._lastPoint={x:e,y:n}},n.internal.line2=function(t,e,n){var r=this.pdf.internal.scaleFactor,i=this.pdf.internal.pageSize.height,o=this.pdf.internal.f2,a={x:e,y:n};this.pdf.internal.out([o(a.x*r),o((i-a.y)*r),"l"].join(" ")),t._lastPoint=a},n.internal.createArc=function(t,e,n,r){var i=2*Math.PI,o=Math.PI/2,a=e;for((a<i||a>i)&&(a%=i),a<0&&(a=i+a);e>n;)e-=i;var s=Math.abs(n-e);s<i&&r&&(s=i-s);for(var c=[],l=r?-1:1,u=a;s>1e-5;){var h=u+l*Math.min(s,o);c.push(this.createSmallArc(t,u,h)),s-=Math.abs(h-u),u=h}return c},n.internal.getCurrentPage=function(){return this.pdf.internal.pages[this.pdf.internal.getCurrentPageInfo().pageNumber]},n.internal.createSmallArc=function(t,e,n){var r=(n-e)/2,i=t*Math.cos(r),o=t*Math.sin(r),a=i,s=-o,c=a*a+s*s,l=c+a*i+s*o,u=4/3*(Math.sqrt(2*c*l)-l)/(a*o-s*i),h=a-u*s,f=s+u*a,d=h,p=-f,m=r+e,g=Math.cos(m),w=Math.sin(m);return{x1:t*Math.cos(e),y1:t*Math.sin(e),x2:h*g-f*w,y2:h*w+f*g,x3:d*g-p*w,y3:d*w+p*g,x4:t*Math.cos(n),y4:t*Math.sin(n)}}}(e.API),/** @preserve
+ * jsPDF fromHTML plugin. BETA stage. API subject to change. Needs browser
+ * Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
+ *               2014 Juan Pablo Gaviria, https://github.com/juanpgaviria
+ *               2014 Diego Casorran, https://github.com/diegocr
+ *               2014 Daniel Husar, https://github.com/danielhusar
+ *               2014 Wolfgang Gassler, https://github.com/woolfg
+ *               2014 Steven Spungin, https://github.com/flamenco
+ *
+ * 
+ * ====================================================================
+ */
+function(e){var n,r,o,a,s,c,l,u,h,f,d,p,m,g,w,y,v,b,x,k;n=function(){function t(){}return function(e){return t.prototype=e,new t}}(),f=function(t){var e,n,r,i,o,a,s;for(n=0,r=t.length,e=void 0,i=!1,a=!1;!i&&n!==r;)(e=t[n]=t[n].trimLeft())&&(i=!0),n++;for(n=r-1;r&&!a&&-1!==n;)(e=t[n]=t[n].trimRight())&&(a=!0),n--;for(o=/\s+$/g,s=!0,n=0;n!==r;)"\u2028"!=t[n]&&(e=t[n].replace(/\s+/g," "),s&&(e=e.trimLeft()),e&&(s=o.test(e)),t[n]=e),n++;return t},p=function(t){var e,n,r;for(e=void 0,n=(r=t.split(",")).shift();!e&&n;)e=o[n.trim().toLowerCase()],n=r.shift();return e},m=function(t){(t="auto"===t?"0px":t).indexOf("em")>-1&&!isNaN(Number(t.replace("em","")))&&(t=18.719*Number(t.replace("em",""))+"px"),t.indexOf("pt")>-1&&!isNaN(Number(t.replace("pt","")))&&(t=1.333*Number(t.replace("pt",""))+"px");var e;return void 0,16,(e=g[t])?e:void 0!==(e={"xx-small":9,"x-small":11,small:13,medium:16,large:19,"x-large":23,"xx-large":28,auto:0}[{css_line_height_string:t}])?g[t]=e/16:(e=parseFloat(t))?g[t]=e/16:3===(e=t.match(/([\d\.]+)(px)/)).length?g[t]=parseFloat(e[1])/16:g[t]=1},h=function(t){var e,n,r;return r=function(e){var n;return n=function(t){return document.defaultView&&document.defaultView.getComputedStyle?document.defaultView.getComputedStyle(t,null):t.currentStyle?t.currentStyle:t.style}(t),function(t){return t=t.replace(/-\D/g,function(t){return t.charAt(1).toUpperCase()}),n[t]}}(),e={},n=void 0,e["font-family"]=p(r("font-family"))||"times",e["font-style"]=a[r("font-style")]||"normal",e["text-align"]=s[r("text-align")]||"left","bold"===(n=c[r("font-weight")]||"normal")&&("normal"===e["font-style"]?e["font-style"]=n:e["font-style"]=n+e["font-style"]),e["font-size"]=m(r("font-size"))||1,e["line-height"]=m(r("line-height"))||1,e.display="inline"===r("display")?"inline":"block",n="block"===e.display,e["margin-top"]=n&&m(r("margin-top"))||0,e["margin-bottom"]=n&&m(r("margin-bottom"))||0,e["padding-top"]=n&&m(r("padding-top"))||0,e["padding-bottom"]=n&&m(r("padding-bottom"))||0,e["margin-left"]=n&&m(r("margin-left"))||0,e["margin-right"]=n&&m(r("margin-right"))||0,e["padding-left"]=n&&m(r("padding-left"))||0,e["padding-right"]=n&&m(r("padding-right"))||0,e["page-break-before"]=r("page-break-before")||"auto",e.float=l[r("cssFloat")]||"none",e.clear=u[r("clear")]||"none",e.color=r("color"),e},w=function(t,e,n){var r,i,o,a,s;if(o=!1,i=void 0,a=void 0,r=n["#"+t.id])if("function"==typeof r)o=r(t,e);else for(i=0,a=r.length;!o&&i!==a;)o=r[i](t,e),i++;if(r=n[t.nodeName],!o&&r)if("function"==typeof r)o=r(t,e);else for(i=0,a=r.length;!o&&i!==a;)o=r[i](t,e),i++;for(s=t.className?t.className.split(" "):[],i=0;i<s.length;i++)if(r=n["."+s[i]],!o&&r)if("function"==typeof r)o=r(t,e);else for(i=0,a=r.length;!o&&i!==a;)o=r[i](t,e),i++;return o},k=function(t,e){var n,r,i,o,a,s,c,l,u;for(n=[],r=[],i=0,u=t.rows[0].cells.length,c=t.clientWidth;i<u;)l=t.rows[0].cells[i],r[i]={name:l.textContent.toLowerCase().replace(/\s+/g,""),prompt:l.textContent.replace(/\r?\n/g,""),width:l.clientWidth/c*e.pdf.internal.pageSize.width},i++;for(i=1;i<t.rows.length;){for(s=t.rows[i],a={},o=0;o<s.cells.length;)a[r[o].name]=s.cells[o].textContent.replace(/\r?\n/g,""),o++;n.push(a),i++}return{rows:n,headers:r}};var _={SCRIPT:1,STYLE:1,NOSCRIPT:1,OBJECT:1,EMBED:1,SELECT:1},C=1;r=function(e,i,o){var a,s,c,l,u,f,d,p;for(s=e.childNodes,a=void 0,(u="block"===(c=h(e)).display)&&(i.setBlockBoundary(),i.setBlockStyle(c)),l=0,f=s.length;l<f;){if("object"===(void 0===(a=s[l])?"undefined":t(a))){if(i.executeWatchFunctions(a),1===a.nodeType&&"HEADER"===a.nodeName){var m=a,g=i.pdf.margins_doc.top;i.pdf.internal.events.subscribe("addPage",function(t){i.y=g,r(m,i,o),i.pdf.margins_doc.top=i.y+10,i.y+=10},!1)}if(8===a.nodeType&&"#comment"===a.nodeName)~a.textContent.indexOf("ADD_PAGE")&&(i.pdf.addPage(),i.y=i.pdf.margins_doc.top);else if(1!==a.nodeType||_[a.nodeName])if(3===a.nodeType){var v=a.nodeValue;if(a.nodeValue&&"LI"===a.parentNode.nodeName)if("OL"===a.parentNode.parentNode.nodeName)v=C+++". "+v;else{var b=c["font-size"],x=(3-.75*b)*i.pdf.internal.scaleFactor,A=.75*b*i.pdf.internal.scaleFactor,S=1.74*b/i.pdf.internal.scaleFactor;p=function(t,e){this.pdf.circle(t+x,e+A,S,"FD")}}16&a.ownerDocument.body.compareDocumentPosition(a)&&i.addText(v,c)}else"string"==typeof a&&i.addText(a,c);else{var q;if("IMG"===a.nodeName){var T=a.getAttribute("src");q=y[i.pdf.sHashCode(T)||T]}if(q){i.pdf.internal.pageSize.height-i.pdf.margins_doc.bottom<i.y+a.height&&i.y>i.pdf.margins_doc.top&&(i.pdf.addPage(),i.y=i.pdf.margins_doc.top,i.executeWatchFunctions(a));var P=h(a),I=i.x,E=12/i.pdf.internal.scaleFactor,O=(P["margin-left"]+P["padding-left"])*E,F=(P["margin-right"]+P["padding-right"])*E,B=(P["margin-top"]+P["padding-top"])*E,R=(P["margin-bottom"]+P["padding-bottom"])*E;void 0!==P.float&&"right"===P.float?I+=i.settings.width-a.width-F:I+=O,i.pdf.addImage(q,I,i.y+B,a.width,a.height),q=void 0,"right"===P.float||"left"===P.float?(i.watchFunctions.push(function(t,e,n,r){return i.y>=e?(i.x+=t,i.settings.width+=n,!0):!!(r&&1===r.nodeType&&!_[r.nodeName]&&i.x+r.width>i.pdf.margins_doc.left+i.pdf.margins_doc.width)&&(i.x+=t,i.y=e,i.settings.width+=n,!0)}.bind(this,"left"===P.float?-a.width-O-F:0,i.y+a.height+B+R,a.width)),i.watchFunctions.push(function(t,e,n){return!(i.y<t&&e===i.pdf.internal.getNumberOfPages())||1===n.nodeType&&"both"===h(n).clear&&(i.y=t,!0)}.bind(this,i.y+a.height,i.pdf.internal.getNumberOfPages())),i.settings.width-=a.width+O+F,"left"===P.float&&(i.x+=a.width+O+F)):i.y+=a.height+B+R}else if("TABLE"===a.nodeName)d=k(a,i),i.y+=10,i.pdf.table(i.x,i.y,d.rows,d.headers,{autoSize:!1,printHeaders:o.printHeaders,margins:i.pdf.margins_doc,css:h(a)}),i.y=i.pdf.lastCellPos.y+i.pdf.lastCellPos.h+20;else if("OL"===a.nodeName||"UL"===a.nodeName)C=1,w(a,i,o)||r(a,i,o),i.y+=10;else if("LI"===a.nodeName){var D=i.x;i.x+=20/i.pdf.internal.scaleFactor,i.y+=3,w(a,i,o)||r(a,i,o),i.x=D}else"BR"===a.nodeName?(i.y+=c["font-size"]*i.pdf.internal.scaleFactor,i.addText("\u2028",n(c))):w(a,i,o)||r(a,i,o)}}l++}if(o.outY=i.y,u)return i.setBlockBoundary(p)},y={},v=function(t,e,n,r){function i(){e.pdf.internal.events.publish("imagesLoaded"),r(o)}for(var o,a=t.getElementsByTagName("img"),s=a.length,c=0;s--;)!function(t,n,r){if(t){var a=new Image;o=++c,a.crossOrigin="",a.onerror=a.onload=function(){if(a.complete&&(0===a.src.indexOf("data:image/")&&(a.width=n||a.width||0,a.height=r||a.height||0),a.width+a.height)){var o=e.pdf.sHashCode(t)||t;y[o]=y[o]||a}--c||i()},a.src=t}}(a[s].getAttribute("src"),a[s].width,a[s].height);return c||i()},b=function(t,e,n){var i=t.getElementsByTagName("footer");if(i.length>0){i=i[0];var o=e.pdf.internal.write,a=e.y;e.pdf.internal.write=function(){},r(i,e,n);var s=Math.ceil(e.y-a)+5;e.y=a,e.pdf.internal.write=o,e.pdf.margins_doc.bottom+=s;for(var c=function(t){var o=void 0!==t?t.pageNumber:1,a=e.y;e.y=e.pdf.internal.pageSize.height-e.pdf.margins_doc.bottom,e.pdf.margins_doc.bottom-=s;for(var c=i.getElementsByTagName("span"),l=0;l<c.length;++l)(" "+c[l].className+" ").replace(/[\n\t]/g," ").indexOf(" pageCounter ")>-1&&(c[l].innerHTML=o),(" "+c[l].className+" ").replace(/[\n\t]/g," ").indexOf(" totalPages ")>-1&&(c[l].innerHTML="###jsPDFVarTotalPages###");r(i,e,n),e.pdf.margins_doc.bottom+=s,e.y=a},l=i.getElementsByTagName("span"),u=0;u<l.length;++u)(" "+l[u].className+" ").replace(/[\n\t]/g," ").indexOf(" totalPages ")>-1&&e.pdf.internal.events.subscribe("htmlRenderingFinished",e.pdf.putTotalPages.bind(e.pdf,"###jsPDFVarTotalPages###"),!0);e.pdf.internal.events.subscribe("addPage",c,!1),c(),_.FOOTER=1}},x=function(t,e,n,i,o,a){if(!e)return!1;"string"==typeof e||e.parentNode||(e=""+e.innerHTML),"string"==typeof e&&(e=function(t){var e,n,r,i;return r="jsPDFhtmlText"+Date.now().toString()+(1e3*Math.random()).toFixed(0),i="position: absolute !important;clip: rect(1px 1px 1px 1px); /* IE6, IE7 */clip: rect(1px, 1px, 1px, 1px);padding:0 !important;border:0 !important;height: 1px !important;width: 1px !important; top:auto;left:-100px;overflow: hidden;",n=document.createElement("div"),n.style.cssText=i,n.innerHTML='<iframe style="height:1px;width:1px" name="'+r+'" />',document.body.appendChild(n),(e=window.frames[r]).document.open(),e.document.writeln(t),e.document.close(),e.document.body}(e.replace(/<\/?script[^>]*?>/gi,"")));var s,c=new d(t,n,i,o);return v.call(this,e,c,o.elementHandlers,function(t){b(e,c,o.elementHandlers),r(e,c,o.elementHandlers),c.pdf.internal.events.publish("htmlRenderingFinished"),s=c.dispose(),"function"==typeof a?a(s):t&&console.error("jsPDF Warning: rendering issues? provide a callback to fromHTML!")}),s||{x:c.x,y:c.y}},(d=function(t,e,n,r){return this.pdf=t,this.x=e,this.y=n,this.settings=r,this.watchFunctions=[],this.init(),this}).prototype.init=function(){return this.paragraph={text:[],style:[]},this.pdf.internal.write("q")},d.prototype.dispose=function(){return this.pdf.internal.write("Q"),{x:this.x,y:this.y,ready:!0}},d.prototype.executeWatchFunctions=function(t){var e=!1,n=[];if(this.watchFunctions.length>0){for(var r=0;r<this.watchFunctions.length;++r)!0===this.watchFunctions[r](t)?e=!0:n.push(this.watchFunctions[r]);this.watchFunctions=n}return e},d.prototype.splitFragmentsIntoLines=function(t,e){var r,i,o,a,s,c,l,u,h,f,d,p,m,g;for(12,f=this.pdf.internal.scaleFactor,a={},i=void 0,h=void 0,o=void 0,s=void 0,g=void 0,u=void 0,l=void 0,c=void 0,p=[d=[]],r=0,m=this.settings.width;t.length;)if(s=t.shift(),g=e.shift(),s)if(i=g["font-family"],h=g["font-style"],(o=a[i+h])||(o=this.pdf.internal.getFont(i,h).metadata.Unicode,a[i+h]=o),u={widths:o.widths,kerning:o.kerning,fontSize:12*g["font-size"],textIndent:r},l=this.pdf.getStringUnitWidth(s,u)*u.fontSize/f,"\u2028"==s)d=[],p.push(d);else if(r+l>m){for(c=this.pdf.splitTextToSize(s,m,u),d.push([c.shift(),g]);c.length;)d=[[c.shift(),g]],p.push(d);r=this.pdf.getStringUnitWidth(d[0][0],u)*u.fontSize/f}else d.push([s,g]),r+=l;if(void 0!==g["text-align"]&&("center"===g["text-align"]||"right"===g["text-align"]||"justify"===g["text-align"]))for(var w=0;w<p.length;++w){var y=this.pdf.getStringUnitWidth(p[w][0][0],u)*u.fontSize/f;w>0&&(p[w][0][1]=n(p[w][0][1]));var v=m-y;if("right"===g["text-align"])p[w][0][1]["margin-left"]=v;else if("center"===g["text-align"])p[w][0][1]["margin-left"]=v/2;else if("justify"===g["text-align"]){var b=p[w][0][0].split(" ").length-1;p[w][0][1]["word-spacing"]=v/b,w===p.length-1&&(p[w][0][1]["word-spacing"]=0)}}return p},d.prototype.RenderTextFragment=function(t,e){var n,r;r=0,this.pdf.internal.pageSize.height-this.pdf.margins_doc.bottom<this.y+this.pdf.internal.getFontSize()&&(this.pdf.internal.write("ET","Q"),this.pdf.addPage(),this.y=this.pdf.margins_doc.top,this.pdf.internal.write("q","BT 0 g",this.pdf.internal.getCoordinateString(this.x),this.pdf.internal.getVerticalCoordinateString(this.y),e.color,"Td"),r=Math.max(r,e["line-height"],e["font-size"]),this.pdf.internal.write(0,(-12*r).toFixed(2),"Td")),n=this.pdf.internal.getFont(e["font-family"],e["font-style"]);var i=this.getPdfColor(e.color);i!==this.lastTextColor&&(this.pdf.internal.write(i),this.lastTextColor=i),void 0!==e["word-spacing"]&&e["word-spacing"]>0&&this.pdf.internal.write(e["word-spacing"].toFixed(2),"Tw"),this.pdf.internal.write("/"+n.id,(12*e["font-size"]).toFixed(2),"Tf","("+this.pdf.internal.pdfEscape(t)+") Tj"),void 0!==e["word-spacing"]&&this.pdf.internal.write(0,"Tw")},d.prototype.getPdfColor=function(t){var e,n,r,o=/rgb\s*\(\s*(\d+),\s*(\d+),\s*(\d+\s*)\)/.exec(t);if(null!=o?(e=parseInt(o[1]),n=parseInt(o[2]),r=parseInt(o[3])):("#"!=t.charAt(0)&&((t=i.colorNameToHex(t))||(t="#000000")),e=t.substring(1,3),e=parseInt(e,16),n=t.substring(3,5),n=parseInt(n,16),r=t.substring(5,7),r=parseInt(r,16)),"string"==typeof e&&/^#[0-9A-Fa-f]{6}$/.test(e)){var a=parseInt(e.substr(1),16);e=a>>16&255,n=a>>8&255,r=255&a}var s=this.f3;return 0===e&&0===n&&0===r||void 0===n?s(e/255)+" g":[s(e/255),s(n/255),s(r/255),"rg"].join(" ")},d.prototype.f3=function(t){return t.toFixed(3)},d.prototype.renderParagraph=function(t){var e,n,r,i,o,a,s,c,l,u,h,d,p;if(r=f(this.paragraph.text),d=this.paragraph.style,e=this.paragraph.blockstyle,this.paragraph={text:[],style:[],blockstyle:{},priorblockstyle:e},r.join("").trim()){s=this.splitFragmentsIntoLines(r,d),a=void 0,c=void 0,12,n=12/this.pdf.internal.scaleFactor,this.priorMarginBottom=this.priorMarginBottom||0,h=(Math.max((e["margin-top"]||0)-this.priorMarginBottom,0)+(e["padding-top"]||0))*n,u=((e["margin-bottom"]||0)+(e["padding-bottom"]||0))*n,this.priorMarginBottom=e["margin-bottom"]||0,"always"===e["page-break-before"]&&(this.pdf.addPage(),this.y=0,h=((e["margin-top"]||0)+(e["padding-top"]||0))*n),l=this.pdf.internal.write,i=void 0,o=void 0,this.y+=h,l("q","BT 0 g",this.pdf.internal.getCoordinateString(this.x),this.pdf.internal.getVerticalCoordinateString(this.y),"Td");for(var m=0;s.length;){for(c=0,i=0,o=(a=s.shift()).length;i!==o;)a[i][0].trim()&&(c=Math.max(c,a[i][1]["line-height"],a[i][1]["font-size"]),p=7*a[i][1]["font-size"]),i++;var g=0,w=0;for(void 0!==a[0][1]["margin-left"]&&a[0][1]["margin-left"]>0&&(g=(w=this.pdf.internal.getCoordinateString(a[0][1]["margin-left"]))-m,m=w),l(g+Math.max(e["margin-left"]||0,0)*n,(-12*c).toFixed(2),"Td"),i=0,o=a.length;i!==o;)a[i][0]&&this.RenderTextFragment(a[i][0],a[i][1]),i++;if(this.y+=c*n,this.executeWatchFunctions(a[0][1])&&s.length>0){var y=[],v=[];s.forEach(function(t){for(var e=0,n=t.length;e!==n;)t[e][0]&&(y.push(t[e][0]+" "),v.push(t[e][1])),++e}),s=this.splitFragmentsIntoLines(f(y),v),l("ET","Q"),l("q","BT 0 g",this.pdf.internal.getCoordinateString(this.x),this.pdf.internal.getVerticalCoordinateString(this.y),"Td")}}return t&&"function"==typeof t&&t.call(this,this.x-9,this.y-p/2),l("ET","Q"),this.y+=u}},d.prototype.setBlockBoundary=function(t){return this.renderParagraph(t)},d.prototype.setBlockStyle=function(t){return this.paragraph.blockstyle=t},d.prototype.addText=function(t,e){return this.paragraph.text.push(t),this.paragraph.style.push(e)},o={helvetica:"helvetica","sans-serif":"helvetica","times new roman":"times",serif:"times",times:"times",monospace:"courier",courier:"courier"},c={100:"normal",200:"normal",300:"normal",400:"normal",500:"bold",600:"bold",700:"bold",800:"bold",900:"bold",normal:"normal",bold:"bold",bolder:"bold",lighter:"normal"},a={normal:"normal",italic:"italic",oblique:"italic"},s={left:"left",right:"right",center:"center",justify:"justify"},l={none:"none",right:"right",left:"left"},u={none:"none",both:"both"},g={normal:1},e.fromHTML=function(t,e,n,r,i,o){return this.margins_doc=o||{top:0,bottom:0},r||(r={}),r.elementHandlers||(r.elementHandlers={}),x(this,t,isNaN(e)?4:e,isNaN(n)?4:n,r,i)}}(e.API),/** ==================================================================== 
+ * jsPDF JavaScript plugin
+ * Copyright (c) 2013 Youssef Beddad, youssef.beddad@gmail.com
+ * 
+ * 
+ * ====================================================================
+ */
+function(t){var n,r,i;e.API.addJS=function(t){return i=t,this.internal.events.subscribe("postPutResources",function(t){n=this.internal.newObject(),this.internal.write("<< /Names [(EmbeddedJS) "+(n+1)+" 0 R] >>","endobj"),r=this.internal.newObject(),this.internal.write("<< /S /JavaScript /JS (",i,") >>","endobj")}),this.internal.events.subscribe("putCatalog",function(){void 0!==n&&void 0!==r&&this.internal.write("/Names <</JavaScript "+n+" 0 R>>")}),this}}(),/**
+ * jsPDF Outline PlugIn
+ * Copyright (c) 2014 Steven Spungin (TwelveTone LLC)  steven@twelvetone.tv
+ *
+ * Licensed under the MIT License.
+ * http://opensource.org/licenses/mit-license
+ */
+function(t){t.events.push(["postPutResources",function(){var t=this,e=/^(\d+) 0 obj$/;if(this.outline.root.children.length>0)for(var n=t.outline.render().split(/\r\n/),r=0;r<n.length;r++){var i=n[r],o=e.exec(i);if(null!=o){var a=o[1];t.internal.newObjectDeferredBegin(a)}t.internal.write(i)}if(this.outline.createNamedDestinations){for(var s=this.internal.pages.length,c=[],r=0;r<s;r++){var l=t.internal.newObject();c.push(l);var u=t.internal.getPageInfo(r+1);t.internal.write("<< /D["+u.objId+" 0 R /XYZ null null null]>> endobj")}var h=t.internal.newObject();t.internal.write("<< /Names [ ");for(r=0;r<c.length;r++)t.internal.write("(page_"+(r+1)+")"+c[r]+" 0 R");t.internal.write(" ] >>","endobj");t.internal.newObject();t.internal.write("<< /Dests "+h+" 0 R"),t.internal.write(">>","endobj")}}]),t.events.push(["putCatalog",function(){var t=this;t.outline.root.children.length>0&&(t.internal.write("/Outlines",this.outline.makeRef(this.outline.root)),this.outline.createNamedDestinations&&t.internal.write("/Names "+namesOid+" 0 R"))}]),t.events.push(["initialized",function(){var t=this;t.outline={createNamedDestinations:!1,root:{children:[]}},t.outline.add=function(t,e,n){var r={title:e,options:n,children:[]};return null==t&&(t=this.root),t.children.push(r),r},t.outline.render=function(){return this.ctx={},this.ctx.val="",this.ctx.pdf=t,this.genIds_r(this.root),this.renderRoot(this.root),this.renderItems(this.root),this.ctx.val},t.outline.genIds_r=function(e){e.id=t.internal.newObjectDeferred();for(var n=0;n<e.children.length;n++)this.genIds_r(e.children[n])},t.outline.renderRoot=function(t){this.objStart(t),this.line("/Type /Outlines"),t.children.length>0&&(this.line("/First "+this.makeRef(t.children[0])),this.line("/Last "+this.makeRef(t.children[t.children.length-1]))),this.line("/Count "+this.count_r({count:0},t)),this.objEnd()},t.outline.renderItems=function(e){for(i=0;i<e.children.length;i++){o=e.children[i];this.objStart(o),this.line("/Title "+this.makeString(o.title)),this.line("/Parent "+this.makeRef(e)),i>0&&this.line("/Prev "+this.makeRef(e.children[i-1])),i<e.children.length-1&&this.line("/Next "+this.makeRef(e.children[i+1])),o.children.length>0&&(this.line("/First "+this.makeRef(o.children[0])),this.line("/Last "+this.makeRef(o.children[o.children.length-1])));var n=this.count=this.count_r({count:0},o);if(n>0&&this.line("/Count "+n),o.options&&o.options.pageNumber){var r=t.internal.getPageInfo(o.options.pageNumber);this.line("/Dest ["+r.objId+" 0 R /XYZ 0 "+this.ctx.pdf.internal.pageSize.height+" 0]")}this.objEnd()}for(var i=0;i<e.children.length;i++){var o=e.children[i];this.renderItems(o)}},t.outline.line=function(t){this.ctx.val+=t+"\r\n"},t.outline.makeRef=function(t){return t.id+" 0 R"},t.outline.makeString=function(e){return"("+t.internal.pdfEscape(e)+")"},t.outline.objStart=function(t){this.ctx.val+="\r\n"+t.id+" 0 obj\r\n<<\r\n"},t.outline.objEnd=function(t){this.ctx.val+=">> \r\nendobj\r\n"},t.outline.count_r=function(t,e){for(var n=0;n<e.children.length;n++)t.count++,this.count_r(t,e.children[n]);return t.count}}])}(e.API),/**@preserve
+ *  ====================================================================
+ * jsPDF PNG PlugIn
+ * Copyright (c) 2014 James Robb, https://github.com/jamesbrobb
+ *
+ * 
+ * ====================================================================
+ */
+function(t){var e=function(){return"function"!=typeof PNG||"function"!=typeof s},n=function(e){return e!==t.image_compression.NONE&&r()},r=function(){var t="function"==typeof o;if(!t)throw new Error("requires deflate.js for compression");return t},i=function(e,n,r,i){var s=5,u=f;switch(i){case t.image_compression.FAST:s=3,u=h;break;case t.image_compression.MEDIUM:s=6,u=d;break;case t.image_compression.SLOW:s=9,u=p}e=l(e,n,r,u);var m=new Uint8Array(a(s)),g=c(e),w=new o(s),y=w.append(e),v=w.flush(),b=m.length+y.length+v.length,x=new Uint8Array(b+4);return x.set(m),x.set(y,m.length),x.set(v,m.length+y.length),x[b++]=g>>>24&255,x[b++]=g>>>16&255,x[b++]=g>>>8&255,x[b++]=255&g,t.arrayBufferToBinaryString(x)},a=function(t,e){var n=Math.LOG2E*Math.log(32768)-8<<4|8,r=n<<8;return r|=Math.min(3,(e-1&255)>>1)<<6,r|=0,r+=31-r%31,[n,255&r]},c=function(t,e){for(var n,r=1,i=0,o=t.length,a=0;o>0;){o-=n=o>e?e:o;do{i+=r+=t[a++]}while(--n);r%=65521,i%=65521}return(i<<16|r)>>>0},l=function(t,e,n,r){for(var i,o,a,s=t.length/e,c=new Uint8Array(t.length+s),l=g(),u=0;u<s;u++){if(a=u*e,i=t.subarray(a,a+e),r)c.set(r(i,n,o),a+u);else{for(var h=0,f=l.length,d=[];h<f;h++)d[h]=l[h](i,n,o);var p=w(d.concat());c.set(d[p],a+u)}o=i}return c},u=function(t,e,n){var r=Array.apply([],t);return r.unshift(0),r},h=function(t,e,n){var r,i=[],o=0,a=t.length;for(i[0]=1;o<a;o++)r=t[o-e]||0,i[o+1]=t[o]-r+256&255;return i},f=function(t,e,n){var r,i=[],o=0,a=t.length;for(i[0]=2;o<a;o++)r=n&&n[o]||0,i[o+1]=t[o]-r+256&255;return i},d=function(t,e,n){var r,i,o=[],a=0,s=t.length;for(o[0]=3;a<s;a++)r=t[a-e]||0,i=n&&n[a]||0,o[a+1]=t[a]+256-(r+i>>>1)&255;return o},p=function(t,e,n){var r,i,o,a,s=[],c=0,l=t.length;for(s[0]=4;c<l;c++)r=t[c-e]||0,i=n&&n[c]||0,o=n&&n[c-e]||0,a=m(r,i,o),s[c+1]=t[c]-a+256&255;return s},m=function(t,e,n){var r=t+e-n,i=Math.abs(r-t),o=Math.abs(r-e),a=Math.abs(r-n);return i<=o&&i<=a?t:o<=a?e:n},g=function(){return[u,h,f,d,p]},w=function(t){for(var e,n,r,i=0,o=t.length;i<o;)((e=y(t[i].slice(1)))<n||!n)&&(n=e,r=i),i++;return r},y=function(t){for(var e=0,n=t.length,r=0;e<n;)r+=Math.abs(t[e++]);return r},v=function(e){var n;switch(e){case t.image_compression.FAST:n=11;break;case t.image_compression.MEDIUM:n=13;break;case t.image_compression.SLOW:n=14;break;default:n=12}return n};t.processPNG=function(t,r,o,a,s){var c,l,u,h,f,d,p=this.color_spaces.DEVICE_RGB,m=this.decode.FLATE_DECODE,g=8;if(this.isArrayBuffer(t)&&(t=new Uint8Array(t)),this.isArrayBufferView(t)){if(e())throw new Error("PNG support requires png.js and zlib.js");if(c=new PNG(t),t=c.imgData,g=c.bits,p=c.colorSpace,h=c.colors,-1!==[4,6].indexOf(c.colorType)){if(8===c.bits)for(var w,y=(I=32==c.pixelBitlength?new Uint32Array(c.decodePixels().buffer):16==c.pixelBitlength?new Uint16Array(c.decodePixels().buffer):new Uint8Array(c.decodePixels().buffer)).length,b=new Uint8Array(y*c.colors),x=new Uint8Array(y),k=c.pixelBitlength-c.bits,_=0,C=0;_<y;_++){for(A=I[_],w=0;w<k;)b[C++]=A>>>w&255,w+=c.bits;x[_]=A>>>w&255}if(16===c.bits){for(var A,y=(I=new Uint32Array(c.decodePixels().buffer)).length,b=new Uint8Array(y*(32/c.pixelBitlength)*c.colors),x=new Uint8Array(y*(32/c.pixelBitlength)),S=c.colors>1,_=0,C=0,q=0;_<y;)A=I[_++],b[C++]=A>>>0&255,S&&(b[C++]=A>>>16&255,A=I[_++],b[C++]=A>>>0&255),x[q++]=A>>>16&255;g=8}n(a)?(t=i(b,c.width*c.colors,c.colors,a),d=i(x,c.width,1,a)):(t=b,d=x,m=null)}if(3===c.colorType&&(p=this.color_spaces.INDEXED,f=c.palette,c.transparency.indexed)){for(var T=c.transparency.indexed,P=0,_=0,y=T.length;_<y;++_)P+=T[_];if((P/=255)===y-1&&-1!==T.indexOf(0))u=[T.indexOf(0)];else if(P!==y){for(var I=c.decodePixels(),x=new Uint8Array(I.length),_=0,y=I.length;_<y;_++)x[_]=T[I[_]];d=i(x,c.width,1)}}var E=v(a);return l=m===this.decode.FLATE_DECODE?"/Predictor "+E+" /Colors "+h+" /BitsPerComponent "+g+" /Columns "+c.width:"/Colors "+h+" /BitsPerComponent "+g+" /Columns "+c.width,(this.isArrayBuffer(t)||this.isArrayBufferView(t))&&(t=this.arrayBufferToBinaryString(t)),(d&&this.isArrayBuffer(d)||this.isArrayBufferView(d))&&(d=this.arrayBufferToBinaryString(d)),this.createImageInfo(t,c.width,c.height,p,g,m,r,o,l,u,f,d,E)}throw new Error("Unsupported PNG image data, try using JPEG instead.")}}(e.API),e.API.autoPrint=function(){var t;return this.internal.events.subscribe("postPutResources",function(){t=this.internal.newObject(),this.internal.write("<< /S/Named /Type/Action /N/Print >>","endobj")}),this.internal.events.subscribe("putCatalog",function(){this.internal.write("/OpenAction "+t+" 0 R")}),this},/** @preserve
+ * jsPDF split_text_to_size plugin - MIT license.
+ * Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
+ *               2014 Diego Casorran, https://github.com/diegocr
+ */
+function(t){var e=t.getCharWidthsArray=function(t,e){e||(e={});var n,r,i,o=e.widths?e.widths:this.internal.getFont().metadata.Unicode.widths,a=o.fof?o.fof:1,s=e.kerning?e.kerning:this.internal.getFont().metadata.Unicode.kerning,c=s.fof?s.fof:1,l=0,u=o[0]||a,h=[];for(n=0,r=t.length;n<r;n++)i=t.charCodeAt(n),h.push((o[i]||u)/a+(s[i]&&s[i][l]||0)/c),l=i;return h},n=function(t){for(var e=t.length,n=0;e;)n+=t[--e];return n},r=t.getStringUnitWidth=function(t,r){return n(e.call(this,t,r))},i=function(t,e,n,r){for(var i=[],o=0,a=t.length,s=0;o!==a&&s+e[o]<n;)s+=e[o],o++;i.push(t.slice(0,o));var c=o;for(s=0;o!==a;)s+e[o]>r&&(i.push(t.slice(c,o)),s=0,c=o),s+=e[o],o++;return c!==o&&i.push(t.slice(c,o)),i},o=function(t,o,a){a||(a={});var s,c,l,u,h,f,d=[],p=[d],m=a.textIndent||0,g=0,w=0,y=t.split(" "),v=e(" ",a)[0];if(f=-1===a.lineIndent?y[0].length+2:a.lineIndent||0){var b=Array(f).join(" "),x=[];y.map(function(t){(t=t.split(/\s*\n/)).length>1?x=x.concat(t.map(function(t,e){return(e&&t.length?"\n":"")+t})):x.push(t[0])}),y=x,f=r(b,a)}for(l=0,u=y.length;l<u;l++){var k=0;if(s=y[l],f&&"\n"==s[0]&&(s=s.substr(1),k=1),c=e(s,a),w=n(c),m+g+w>o||k){if(w>o){for(h=i(s,c,o-(m+g),o),d.push(h.shift()),d=[h.pop()];h.length;)p.push([h.shift()]);w=n(c.slice(s.length-d[0].length))}else d=[s];p.push(d),m=w+f,g=v}else d.push(s),m+=g+w,g=v}if(f)_=function(t,e){return(e?b:"")+t.join(" ")};else var _=function(t){return t.join(" ")};return p.map(_)};t.splitTextToSize=function(t,e,n){n||(n={});var r,i=n.fontSize||this.internal.getFontSize(),a=function(t){var e={0:1},n={};if(t.widths&&t.kerning)return{widths:t.widths,kerning:t.kerning};var r=this.internal.getFont(t.fontName,t.fontStyle);return r.metadata.Unicode?{widths:r.metadata.Unicode.widths||e,kerning:r.metadata.Unicode.kerning||n}:{widths:e,kerning:n}}.call(this,n);r=Array.isArray(t)?t:t.split(/\r?\n/);var s=1*this.internal.scaleFactor*e/i;a.textIndent=n.textIndent?1*n.textIndent*this.internal.scaleFactor/i:0,a.lineIndent=n.lineIndent;var c,l,u=[];for(c=0,l=r.length;c<l;c++)u=u.concat(o(r[c],s,a));return u}}(e.API),/** @preserve 
+jsPDF standard_fonts_metrics plugin
+Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
+MIT license.
+*/
+function(t){var e=function(t){for(var e={},n=0;n<"klmnopqrstuvwxyz".length;n++)e["klmnopqrstuvwxyz"[n]]="0123456789abcdef"[n];var r,i,o,a,s={},c=1,l=s,u=[],h="",f="",d=t.length-1;for(n=1;n!=d;)a=t[n],n+=1,"'"==a?r?(o=r.join(""),r=void 0):r=[]:r?r.push(a):"{"==a?(u.push([l,o]),l={},o=void 0):"}"==a?((i=u.pop())[0][i[1]]=l,o=void 0,l=i[0]):"-"==a?c=-1:void 0===o?e.hasOwnProperty(a)?(h+=e[a],o=parseInt(h,16)*c,c=1,h=""):h+=a:e.hasOwnProperty(a)?(f+=e[a],l[o]=parseInt(f,16)*c,c=1,o=void 0,f=""):f+=a;return s},n={codePages:["WinAnsiEncoding"],WinAnsiEncoding:e("{19m8n201n9q201o9r201s9l201t9m201u8m201w9n201x9o201y8o202k8q202l8r202m9p202q8p20aw8k203k8t203t8v203u9v2cq8s212m9t15m8w15n9w2dw9s16k8u16l9u17s9z17x8y17y9y}")},r={Unicode:{Courier:n,"Courier-Bold":n,"Courier-BoldOblique":n,"Courier-Oblique":n,Helvetica:n,"Helvetica-Bold":n,"Helvetica-BoldOblique":n,"Helvetica-Oblique":n,"Times-Roman":n,"Times-Bold":n,"Times-BoldItalic":n,"Times-Italic":n}},i={Unicode:{"Courier-Oblique":e("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}"),"Times-BoldItalic":e("{'widths'{k3o2q4ycx2r201n3m201o6o201s2l201t2l201u2l201w3m201x3m201y3m2k1t2l2r202m2n2n3m2o3m2p5n202q6o2r1w2s2l2t2l2u3m2v3t2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v2l3w3t3x3t3y3t3z3m4k5n4l4m4m4m4n4m4o4s4p4m4q4m4r4s4s4y4t2r4u3m4v4m4w3x4x5t4y4s4z4s5k3x5l4s5m4m5n3r5o3x5p4s5q4m5r5t5s4m5t3x5u3x5v2l5w1w5x2l5y3t5z3m6k2l6l3m6m3m6n2w6o3m6p2w6q2l6r3m6s3r6t1w6u1w6v3m6w1w6x4y6y3r6z3m7k3m7l3m7m2r7n2r7o1w7p3r7q2w7r4m7s3m7t2w7u2r7v2n7w1q7x2n7y3t202l3mcl4mal2ram3man3mao3map3mar3mas2lat4uau1uav3maw3way4uaz2lbk2sbl3t'fof'6obo2lbp3tbq3mbr1tbs2lbu1ybv3mbz3mck4m202k3mcm4mcn4mco4mcp4mcq5ycr4mcs4mct4mcu4mcv4mcw2r2m3rcy2rcz2rdl4sdm4sdn4sdo4sdp4sdq4sds4sdt4sdu4sdv4sdw4sdz3mek3mel3mem3men3meo3mep3meq4ser2wes2wet2weu2wev2wew1wex1wey1wez1wfl3rfm3mfn3mfo3mfp3mfq3mfr3tfs3mft3rfu3rfv3rfw3rfz2w203k6o212m6o2dw2l2cq2l3t3m3u2l17s3x19m3m}'kerning'{cl{4qu5kt5qt5rs17ss5ts}201s{201ss}201t{cks4lscmscnscoscpscls2wu2yu201ts}201x{2wu2yu}2k{201ts}2w{4qx5kx5ou5qx5rs17su5tu}2x{17su5tu5ou}2y{4qx5kx5ou5qx5rs17ss5ts}'fof'-6ofn{17sw5tw5ou5qw5rs}7t{cksclscmscnscoscps4ls}3u{17su5tu5os5qs}3v{17su5tu5os5qs}7p{17su5tu}ck{4qu5kt5qt5rs17ss5ts}4l{4qu5kt5qt5rs17ss5ts}cm{4qu5kt5qt5rs17ss5ts}cn{4qu5kt5qt5rs17ss5ts}co{4qu5kt5qt5rs17ss5ts}cp{4qu5kt5qt5rs17ss5ts}6l{4qu5ou5qw5rt17su5tu}5q{ckuclucmucnucoucpu4lu}5r{ckuclucmucnucoucpu4lu}7q{cksclscmscnscoscps4ls}6p{4qu5ou5qw5rt17sw5tw}ek{4qu5ou5qw5rt17su5tu}el{4qu5ou5qw5rt17su5tu}em{4qu5ou5qw5rt17su5tu}en{4qu5ou5qw5rt17su5tu}eo{4qu5ou5qw5rt17su5tu}ep{4qu5ou5qw5rt17su5tu}es{17ss5ts5qs4qu}et{4qu5ou5qw5rt17sw5tw}eu{4qu5ou5qw5rt17ss5ts}ev{17ss5ts5qs4qu}6z{17sw5tw5ou5qw5rs}fm{17sw5tw5ou5qw5rs}7n{201ts}fo{17sw5tw5ou5qw5rs}fp{17sw5tw5ou5qw5rs}fq{17sw5tw5ou5qw5rs}7r{cksclscmscnscoscps4ls}fs{17sw5tw5ou5qw5rs}ft{17su5tu}fu{17su5tu}fv{17su5tu}fw{17su5tu}fz{cksclscmscnscoscps4ls}}}"),"Helvetica-Bold":e("{'widths'{k3s2q4scx1w201n3r201o6o201s1w201t1w201u1w201w3m201x3m201y3m2k1w2l2l202m2n2n3r2o3r2p5t202q6o2r1s2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v2l3w3u3x3u3y3u3z3x4k6l4l4s4m4s4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3r4v4s4w3x4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v2l5w1w5x2l5y3u5z3r6k2l6l3r6m3x6n3r6o3x6p3r6q2l6r3x6s3x6t1w6u1w6v3r6w1w6x5t6y3x6z3x7k3x7l3x7m2r7n3r7o2l7p3x7q3r7r4y7s3r7t3r7u3m7v2r7w1w7x2r7y3u202l3rcl4sal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3xbq3rbr1wbs2lbu2obv3rbz3xck4s202k3rcm4scn4sco4scp4scq6ocr4scs4mct4mcu4mcv4mcw1w2m2zcy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3res3ret3reu3rev3rew1wex1wey1wez1wfl3xfm3xfn3xfo3xfp3xfq3xfr3ufs3xft3xfu3xfv3xfw3xfz3r203k6o212m6o2dw2l2cq2l3t3r3u2l17s4m19m3r}'kerning'{cl{4qs5ku5ot5qs17sv5tv}201t{2ww4wy2yw}201w{2ks}201x{2ww4wy2yw}2k{201ts201xs}2w{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}2x{5ow5qs}2y{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}'fof'-6o7p{17su5tu5ot}ck{4qs5ku5ot5qs17sv5tv}4l{4qs5ku5ot5qs17sv5tv}cm{4qs5ku5ot5qs17sv5tv}cn{4qs5ku5ot5qs17sv5tv}co{4qs5ku5ot5qs17sv5tv}cp{4qs5ku5ot5qs17sv5tv}6l{17st5tt5os}17s{2kwclvcmvcnvcovcpv4lv4wwckv}5o{2kucltcmtcntcotcpt4lt4wtckt}5q{2ksclscmscnscoscps4ls4wvcks}5r{2ks4ws}5t{2kwclvcmvcnvcovcpv4lv4wwckv}eo{17st5tt5os}fu{17su5tu5ot}6p{17ss5ts}ek{17st5tt5os}el{17st5tt5os}em{17st5tt5os}en{17st5tt5os}6o{201ts}ep{17st5tt5os}es{17ss5ts}et{17ss5ts}eu{17ss5ts}ev{17ss5ts}6z{17su5tu5os5qt}fm{17su5tu5os5qt}fn{17su5tu5os5qt}fo{17su5tu5os5qt}fp{17su5tu5os5qt}fq{17su5tu5os5qt}fs{17su5tu5os5qt}ft{17su5tu5ot}7m{5os}fv{17su5tu5ot}fw{17su5tu5ot}}}"),Courier:e("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}"),"Courier-BoldOblique":e("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}"),"Times-Bold":e("{'widths'{k3q2q5ncx2r201n3m201o6o201s2l201t2l201u2l201w3m201x3m201y3m2k1t2l2l202m2n2n3m2o3m2p6o202q6o2r1w2s2l2t2l2u3m2v3t2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v2l3w3t3x3t3y3t3z3m4k5x4l4s4m4m4n4s4o4s4p4m4q3x4r4y4s4y4t2r4u3m4v4y4w4m4x5y4y4s4z4y5k3x5l4y5m4s5n3r5o4m5p4s5q4s5r6o5s4s5t4s5u4m5v2l5w1w5x2l5y3u5z3m6k2l6l3m6m3r6n2w6o3r6p2w6q2l6r3m6s3r6t1w6u2l6v3r6w1w6x5n6y3r6z3m7k3r7l3r7m2w7n2r7o2l7p3r7q3m7r4s7s3m7t3m7u2w7v2r7w1q7x2r7y3o202l3mcl4sal2lam3man3mao3map3mar3mas2lat4uau1yav3maw3tay4uaz2lbk2sbl3t'fof'6obo2lbp3rbr1tbs2lbu2lbv3mbz3mck4s202k3mcm4scn4sco4scp4scq6ocr4scs4mct4mcu4mcv4mcw2r2m3rcy2rcz2rdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3rek3mel3mem3men3meo3mep3meq4ser2wes2wet2weu2wev2wew1wex1wey1wez1wfl3rfm3mfn3mfo3mfp3mfq3mfr3tfs3mft3rfu3rfv3rfw3rfz3m203k6o212m6o2dw2l2cq2l3t3m3u2l17s4s19m3m}'kerning'{cl{4qt5ks5ot5qy5rw17sv5tv}201t{cks4lscmscnscoscpscls4wv}2k{201ts}2w{4qu5ku7mu5os5qx5ru17su5tu}2x{17su5tu5ou5qs}2y{4qv5kv7mu5ot5qz5ru17su5tu}'fof'-6o7t{cksclscmscnscoscps4ls}3u{17su5tu5os5qu}3v{17su5tu5os5qu}fu{17su5tu5ou5qu}7p{17su5tu5ou5qu}ck{4qt5ks5ot5qy5rw17sv5tv}4l{4qt5ks5ot5qy5rw17sv5tv}cm{4qt5ks5ot5qy5rw17sv5tv}cn{4qt5ks5ot5qy5rw17sv5tv}co{4qt5ks5ot5qy5rw17sv5tv}cp{4qt5ks5ot5qy5rw17sv5tv}6l{17st5tt5ou5qu}17s{ckuclucmucnucoucpu4lu4wu}5o{ckuclucmucnucoucpu4lu4wu}5q{ckzclzcmzcnzcozcpz4lz4wu}5r{ckxclxcmxcnxcoxcpx4lx4wu}5t{ckuclucmucnucoucpu4lu4wu}7q{ckuclucmucnucoucpu4lu}6p{17sw5tw5ou5qu}ek{17st5tt5qu}el{17st5tt5ou5qu}em{17st5tt5qu}en{17st5tt5qu}eo{17st5tt5qu}ep{17st5tt5ou5qu}es{17ss5ts5qu}et{17sw5tw5ou5qu}eu{17sw5tw5ou5qu}ev{17ss5ts5qu}6z{17sw5tw5ou5qu5rs}fm{17sw5tw5ou5qu5rs}fn{17sw5tw5ou5qu5rs}fo{17sw5tw5ou5qu5rs}fp{17sw5tw5ou5qu5rs}fq{17sw5tw5ou5qu5rs}7r{cktcltcmtcntcotcpt4lt5os}fs{17sw5tw5ou5qu5rs}ft{17su5tu5ou5qu}7m{5os}fv{17su5tu5ou5qu}fw{17su5tu5ou5qu}fz{cksclscmscnscoscps4ls}}}"),Helvetica:e("{'widths'{k3p2q4mcx1w201n3r201o6o201s1q201t1q201u1q201w2l201x2l201y2l2k1w2l1w202m2n2n3r2o3r2p5t202q6o2r1n2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v1w3w3u3x3u3y3u3z3r4k6p4l4m4m4m4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3m4v4m4w3r4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v1w5w1w5x1w5y2z5z3r6k2l6l3r6m3r6n3m6o3r6p3r6q1w6r3r6s3r6t1q6u1q6v3m6w1q6x5n6y3r6z3r7k3r7l3r7m2l7n3m7o1w7p3r7q3m7r4s7s3m7t3m7u3m7v2l7w1u7x2l7y3u202l3rcl4mal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3rbr1wbs2lbu2obv3rbz3xck4m202k3rcm4mcn4mco4mcp4mcq6ocr4scs4mct4mcu4mcv4mcw1w2m2ncy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3mes3ret3reu3rev3rew1wex1wey1wez1wfl3rfm3rfn3rfo3rfp3rfq3rfr3ufs3xft3rfu3rfv3rfw3rfz3m203k6o212m6o2dw2l2cq2l3t3r3u1w17s4m19m3r}'kerning'{5q{4wv}cl{4qs5kw5ow5qs17sv5tv}201t{2wu4w1k2yu}201x{2wu4wy2yu}17s{2ktclucmucnu4otcpu4lu4wycoucku}2w{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}2x{17sy5ty5oy5qs}2y{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}'fof'-6o7p{17sv5tv5ow}ck{4qs5kw5ow5qs17sv5tv}4l{4qs5kw5ow5qs17sv5tv}cm{4qs5kw5ow5qs17sv5tv}cn{4qs5kw5ow5qs17sv5tv}co{4qs5kw5ow5qs17sv5tv}cp{4qs5kw5ow5qs17sv5tv}6l{17sy5ty5ow}do{17st5tt}4z{17st5tt}7s{fst}dm{17st5tt}dn{17st5tt}5o{ckwclwcmwcnwcowcpw4lw4wv}dp{17st5tt}dq{17st5tt}7t{5ow}ds{17st5tt}5t{2ktclucmucnu4otcpu4lu4wycoucku}fu{17sv5tv5ow}6p{17sy5ty5ow5qs}ek{17sy5ty5ow}el{17sy5ty5ow}em{17sy5ty5ow}en{5ty}eo{17sy5ty5ow}ep{17sy5ty5ow}es{17sy5ty5qs}et{17sy5ty5ow5qs}eu{17sy5ty5ow5qs}ev{17sy5ty5ow5qs}6z{17sy5ty5ow5qs}fm{17sy5ty5ow5qs}fn{17sy5ty5ow5qs}fo{17sy5ty5ow5qs}fp{17sy5ty5qs}fq{17sy5ty5ow5qs}7r{5ow}fs{17sy5ty5ow5qs}ft{17sv5tv5ow}7m{5ow}fv{17sv5tv5ow}fw{17sv5tv5ow}}}"),"Helvetica-BoldOblique":e("{'widths'{k3s2q4scx1w201n3r201o6o201s1w201t1w201u1w201w3m201x3m201y3m2k1w2l2l202m2n2n3r2o3r2p5t202q6o2r1s2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v2l3w3u3x3u3y3u3z3x4k6l4l4s4m4s4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3r4v4s4w3x4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v2l5w1w5x2l5y3u5z3r6k2l6l3r6m3x6n3r6o3x6p3r6q2l6r3x6s3x6t1w6u1w6v3r6w1w6x5t6y3x6z3x7k3x7l3x7m2r7n3r7o2l7p3x7q3r7r4y7s3r7t3r7u3m7v2r7w1w7x2r7y3u202l3rcl4sal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3xbq3rbr1wbs2lbu2obv3rbz3xck4s202k3rcm4scn4sco4scp4scq6ocr4scs4mct4mcu4mcv4mcw1w2m2zcy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3res3ret3reu3rev3rew1wex1wey1wez1wfl3xfm3xfn3xfo3xfp3xfq3xfr3ufs3xft3xfu3xfv3xfw3xfz3r203k6o212m6o2dw2l2cq2l3t3r3u2l17s4m19m3r}'kerning'{cl{4qs5ku5ot5qs17sv5tv}201t{2ww4wy2yw}201w{2ks}201x{2ww4wy2yw}2k{201ts201xs}2w{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}2x{5ow5qs}2y{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}'fof'-6o7p{17su5tu5ot}ck{4qs5ku5ot5qs17sv5tv}4l{4qs5ku5ot5qs17sv5tv}cm{4qs5ku5ot5qs17sv5tv}cn{4qs5ku5ot5qs17sv5tv}co{4qs5ku5ot5qs17sv5tv}cp{4qs5ku5ot5qs17sv5tv}6l{17st5tt5os}17s{2kwclvcmvcnvcovcpv4lv4wwckv}5o{2kucltcmtcntcotcpt4lt4wtckt}5q{2ksclscmscnscoscps4ls4wvcks}5r{2ks4ws}5t{2kwclvcmvcnvcovcpv4lv4wwckv}eo{17st5tt5os}fu{17su5tu5ot}6p{17ss5ts}ek{17st5tt5os}el{17st5tt5os}em{17st5tt5os}en{17st5tt5os}6o{201ts}ep{17st5tt5os}es{17ss5ts}et{17ss5ts}eu{17ss5ts}ev{17ss5ts}6z{17su5tu5os5qt}fm{17su5tu5os5qt}fn{17su5tu5os5qt}fo{17su5tu5os5qt}fp{17su5tu5os5qt}fq{17su5tu5os5qt}fs{17su5tu5os5qt}ft{17su5tu5ot}7m{5os}fv{17su5tu5ot}fw{17su5tu5ot}}}"),"Courier-Bold":e("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}"),"Times-Italic":e("{'widths'{k3n2q4ycx2l201n3m201o5t201s2l201t2l201u2l201w3r201x3r201y3r2k1t2l2l202m2n2n3m2o3m2p5n202q5t2r1p2s2l2t2l2u3m2v4n2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v2l3w4n3x4n3y4n3z3m4k5w4l3x4m3x4n4m4o4s4p3x4q3x4r4s4s4s4t2l4u2w4v4m4w3r4x5n4y4m4z4s5k3x5l4s5m3x5n3m5o3r5p4s5q3x5r5n5s3x5t3r5u3r5v2r5w1w5x2r5y2u5z3m6k2l6l3m6m3m6n2w6o3m6p2w6q1w6r3m6s3m6t1w6u1w6v2w6w1w6x4s6y3m6z3m7k3m7l3m7m2r7n2r7o1w7p3m7q2w7r4m7s2w7t2w7u2r7v2s7w1v7x2s7y3q202l3mcl3xal2ram3man3mao3map3mar3mas2lat4wau1vav3maw4nay4waz2lbk2sbl4n'fof'6obo2lbp3mbq3obr1tbs2lbu1zbv3mbz3mck3x202k3mcm3xcn3xco3xcp3xcq5tcr4mcs3xct3xcu3xcv3xcw2l2m2ucy2lcz2ldl4mdm4sdn4sdo4sdp4sdq4sds4sdt4sdu4sdv4sdw4sdz3mek3mel3mem3men3meo3mep3meq4mer2wes2wet2weu2wev2wew1wex1wey1wez1wfl3mfm3mfn3mfo3mfp3mfq3mfr4nfs3mft3mfu3mfv3mfw3mfz2w203k6o212m6m2dw2l2cq2l3t3m3u2l17s3r19m3m}'kerning'{cl{5kt4qw}201s{201sw}201t{201tw2wy2yy6q-t}201x{2wy2yy}2k{201tw}2w{7qs4qy7rs5ky7mw5os5qx5ru17su5tu}2x{17ss5ts5os}2y{7qs4qy7rs5ky7mw5os5qx5ru17su5tu}'fof'-6o6t{17ss5ts5qs}7t{5os}3v{5qs}7p{17su5tu5qs}ck{5kt4qw}4l{5kt4qw}cm{5kt4qw}cn{5kt4qw}co{5kt4qw}cp{5kt4qw}6l{4qs5ks5ou5qw5ru17su5tu}17s{2ks}5q{ckvclvcmvcnvcovcpv4lv}5r{ckuclucmucnucoucpu4lu}5t{2ks}6p{4qs5ks5ou5qw5ru17su5tu}ek{4qs5ks5ou5qw5ru17su5tu}el{4qs5ks5ou5qw5ru17su5tu}em{4qs5ks5ou5qw5ru17su5tu}en{4qs5ks5ou5qw5ru17su5tu}eo{4qs5ks5ou5qw5ru17su5tu}ep{4qs5ks5ou5qw5ru17su5tu}es{5ks5qs4qs}et{4qs5ks5ou5qw5ru17su5tu}eu{4qs5ks5qw5ru17su5tu}ev{5ks5qs4qs}ex{17ss5ts5qs}6z{4qv5ks5ou5qw5ru17su5tu}fm{4qv5ks5ou5qw5ru17su5tu}fn{4qv5ks5ou5qw5ru17su5tu}fo{4qv5ks5ou5qw5ru17su5tu}fp{4qv5ks5ou5qw5ru17su5tu}fq{4qv5ks5ou5qw5ru17su5tu}7r{5os}fs{4qv5ks5ou5qw5ru17su5tu}ft{17su5tu5qs}fu{17su5tu5qs}fv{17su5tu5qs}fw{17su5tu5qs}}}"),"Times-Roman":e("{'widths'{k3n2q4ycx2l201n3m201o6o201s2l201t2l201u2l201w2w201x2w201y2w2k1t2l2l202m2n2n3m2o3m2p5n202q6o2r1m2s2l2t2l2u3m2v3s2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v1w3w3s3x3s3y3s3z2w4k5w4l4s4m4m4n4m4o4s4p3x4q3r4r4s4s4s4t2l4u2r4v4s4w3x4x5t4y4s4z4s5k3r5l4s5m4m5n3r5o3x5p4s5q4s5r5y5s4s5t4s5u3x5v2l5w1w5x2l5y2z5z3m6k2l6l2w6m3m6n2w6o3m6p2w6q2l6r3m6s3m6t1w6u1w6v3m6w1w6x4y6y3m6z3m7k3m7l3m7m2l7n2r7o1w7p3m7q3m7r4s7s3m7t3m7u2w7v3k7w1o7x3k7y3q202l3mcl4sal2lam3man3mao3map3mar3mas2lat4wau1vav3maw3say4waz2lbk2sbl3s'fof'6obo2lbp3mbq2xbr1tbs2lbu1zbv3mbz2wck4s202k3mcm4scn4sco4scp4scq5tcr4mcs3xct3xcu3xcv3xcw2l2m2tcy2lcz2ldl4sdm4sdn4sdo4sdp4sdq4sds4sdt4sdu4sdv4sdw4sdz3mek2wel2wem2wen2weo2wep2weq4mer2wes2wet2weu2wev2wew1wex1wey1wez1wfl3mfm3mfn3mfo3mfp3mfq3mfr3sfs3mft3mfu3mfv3mfw3mfz3m203k6o212m6m2dw2l2cq2l3t3m3u1w17s4s19m3m}'kerning'{cl{4qs5ku17sw5ou5qy5rw201ss5tw201ws}201s{201ss}201t{ckw4lwcmwcnwcowcpwclw4wu201ts}2k{201ts}2w{4qs5kw5os5qx5ru17sx5tx}2x{17sw5tw5ou5qu}2y{4qs5kw5os5qx5ru17sx5tx}'fof'-6o7t{ckuclucmucnucoucpu4lu5os5rs}3u{17su5tu5qs}3v{17su5tu5qs}7p{17sw5tw5qs}ck{4qs5ku17sw5ou5qy5rw201ss5tw201ws}4l{4qs5ku17sw5ou5qy5rw201ss5tw201ws}cm{4qs5ku17sw5ou5qy5rw201ss5tw201ws}cn{4qs5ku17sw5ou5qy5rw201ss5tw201ws}co{4qs5ku17sw5ou5qy5rw201ss5tw201ws}cp{4qs5ku17sw5ou5qy5rw201ss5tw201ws}6l{17su5tu5os5qw5rs}17s{2ktclvcmvcnvcovcpv4lv4wuckv}5o{ckwclwcmwcnwcowcpw4lw4wu}5q{ckyclycmycnycoycpy4ly4wu5ms}5r{cktcltcmtcntcotcpt4lt4ws}5t{2ktclvcmvcnvcovcpv4lv4wuckv}7q{cksclscmscnscoscps4ls}6p{17su5tu5qw5rs}ek{5qs5rs}el{17su5tu5os5qw5rs}em{17su5tu5os5qs5rs}en{17su5qs5rs}eo{5qs5rs}ep{17su5tu5os5qw5rs}es{5qs}et{17su5tu5qw5rs}eu{17su5tu5qs5rs}ev{5qs}6z{17sv5tv5os5qx5rs}fm{5os5qt5rs}fn{17sv5tv5os5qx5rs}fo{17sv5tv5os5qx5rs}fp{5os5qt5rs}fq{5os5qt5rs}7r{ckuclucmucnucoucpu4lu5os}fs{17sv5tv5os5qx5rs}ft{17ss5ts5qs}fu{17sw5tw5qs}fv{17sw5tw5qs}fw{17ss5ts5qs}fz{ckuclucmucnucoucpu4lu5os5rs}}}"),"Helvetica-Oblique":e("{'widths'{k3p2q4mcx1w201n3r201o6o201s1q201t1q201u1q201w2l201x2l201y2l2k1w2l1w202m2n2n3r2o3r2p5t202q6o2r1n2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v1w3w3u3x3u3y3u3z3r4k6p4l4m4m4m4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3m4v4m4w3r4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v1w5w1w5x1w5y2z5z3r6k2l6l3r6m3r6n3m6o3r6p3r6q1w6r3r6s3r6t1q6u1q6v3m6w1q6x5n6y3r6z3r7k3r7l3r7m2l7n3m7o1w7p3r7q3m7r4s7s3m7t3m7u3m7v2l7w1u7x2l7y3u202l3rcl4mal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3rbr1wbs2lbu2obv3rbz3xck4m202k3rcm4mcn4mco4mcp4mcq6ocr4scs4mct4mcu4mcv4mcw1w2m2ncy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3mes3ret3reu3rev3rew1wex1wey1wez1wfl3rfm3rfn3rfo3rfp3rfq3rfr3ufs3xft3rfu3rfv3rfw3rfz3m203k6o212m6o2dw2l2cq2l3t3r3u1w17s4m19m3r}'kerning'{5q{4wv}cl{4qs5kw5ow5qs17sv5tv}201t{2wu4w1k2yu}201x{2wu4wy2yu}17s{2ktclucmucnu4otcpu4lu4wycoucku}2w{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}2x{17sy5ty5oy5qs}2y{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}'fof'-6o7p{17sv5tv5ow}ck{4qs5kw5ow5qs17sv5tv}4l{4qs5kw5ow5qs17sv5tv}cm{4qs5kw5ow5qs17sv5tv}cn{4qs5kw5ow5qs17sv5tv}co{4qs5kw5ow5qs17sv5tv}cp{4qs5kw5ow5qs17sv5tv}6l{17sy5ty5ow}do{17st5tt}4z{17st5tt}7s{fst}dm{17st5tt}dn{17st5tt}5o{ckwclwcmwcnwcowcpw4lw4wv}dp{17st5tt}dq{17st5tt}7t{5ow}ds{17st5tt}5t{2ktclucmucnu4otcpu4lu4wycoucku}fu{17sv5tv5ow}6p{17sy5ty5ow5qs}ek{17sy5ty5ow}el{17sy5ty5ow}em{17sy5ty5ow}en{5ty}eo{17sy5ty5ow}ep{17sy5ty5ow}es{17sy5ty5qs}et{17sy5ty5ow5qs}eu{17sy5ty5ow5qs}ev{17sy5ty5ow5qs}6z{17sy5ty5ow5qs}fm{17sy5ty5ow5qs}fn{17sy5ty5ow5qs}fo{17sy5ty5ow5qs}fp{17sy5ty5qs}fq{17sy5ty5ow5qs}7r{5ow}fs{17sy5ty5ow5qs}ft{17sv5tv5ow}7m{5ow}fv{17sv5tv5ow}fw{17sv5tv5ow}}}")}};t.events.push(["addFont",function(t){var e,n,o;(e=i.Unicode[t.PostScriptName])&&((n=t.metadata.Unicode?t.metadata.Unicode:t.metadata.Unicode={}).widths=e.widths,n.kerning=e.kerning),(o=r.Unicode[t.PostScriptName])&&((n=t.metadata.Unicode?t.metadata.Unicode:t.metadata.Unicode={}).encoding=o,o.codePages&&o.codePages.length&&(t.encoding=o.codePages[0]))}])}(e.API),e.API.addSVG=function(t,e,n,r,i){function o(t,e){var n=e.createElement("style");n.type="text/css",n.styleSheet?n.styleSheet.cssText=t:n.appendChild(e.createTextNode(t)),e.getElementsByTagName("head")[0].appendChild(n)}if(void 0===e||void 0===n)throw new Error("addSVG needs values for 'x' and 'y'");var a=function(t,e){var n=(e.contentWindow||e.contentDocument).document;return n.write(t),n.close(),n.getElementsByTagName("svg")[0]}(t,function(t){var e=t.createElement("iframe");return o(".jsPDF_sillysvg_iframe {display:none;position:absolute;}",t),e.name="childframe",e.setAttribute("width",0),e.setAttribute("height",0),e.setAttribute("frameborder","0"),e.setAttribute("scrolling","no"),e.setAttribute("seamless","seamless"),e.setAttribute("class","jsPDF_sillysvg_iframe"),t.body.appendChild(e),e}(document)),s=[1,1],c=parseFloat(a.getAttribute("width")),l=parseFloat(a.getAttribute("height"));c&&l&&(r&&i?s=[r/c,i/l]:r?s=[r/c,r/c]:i&&(s=[i/l,i/l]));var u,h,f,d,p=a.childNodes;for(u=0,h=p.length;u<h;u++)(f=p[u]).tagName&&"PATH"===f.tagName.toUpperCase()&&((d=function(t){for(var e=parseFloat(t[1]),n=parseFloat(t[2]),r=[],i=3,o=t.length;i<o;)"c"===t[i]?(r.push([parseFloat(t[i+1]),parseFloat(t[i+2]),parseFloat(t[i+3]),parseFloat(t[i+4]),parseFloat(t[i+5]),parseFloat(t[i+6])]),i+=7):"l"===t[i]?(r.push([parseFloat(t[i+1]),parseFloat(t[i+2])]),i+=3):i+=1;return[e,n,r]}(f.getAttribute("d").split(" ")))[0]=d[0]*s[0]+e,d[1]=d[1]*s[1]+n,this.lines.call(this,d[2],d[0],d[1],s));return this},e.API.putTotalPages=function(t){for(var e=new RegExp(t,"g"),n=1;n<=this.internal.getNumberOfPages();n++)for(var r=0;r<this.internal.pages[n].length;r++)this.internal.pages[n][r]=this.internal.pages[n][r].replace(e,this.internal.getNumberOfPages());return this},/** ==================================================================== 
+ * jsPDF XMP metadata plugin
+ * Copyright (c) 2016 Jussi Utunen, u-jussi@suomi24.fi
+ * 
+ * 
+ * ====================================================================
+ */
+function(t){var n="",r="",i="";e.API.addMetadata=function(t,e){return r=e||"http://jspdf.default.namespaceuri/",n=t,this.internal.events.subscribe("postPutResources",function(){if(n){var t='<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:jspdf="'+r+'"><jspdf:metadata>',e=unescape(encodeURIComponent('<x:xmpmeta xmlns:x="adobe:ns:meta/">')),o=unescape(encodeURIComponent(t)),a=unescape(encodeURIComponent(n)),s=unescape(encodeURIComponent("</jspdf:metadata></rdf:Description></rdf:RDF>")),c=unescape(encodeURIComponent("</x:xmpmeta>")),l=o.length+a.length+s.length+e.length+c.length;i=this.internal.newObject(),this.internal.write("<< /Type /Metadata /Subtype /XML /Length "+l+" >>"),this.internal.write("stream"),this.internal.write(e+o+a+s+c),this.internal.write("endstream"),this.internal.write("endobj")}else i=""}),this.internal.events.subscribe("putCatalog",function(){i&&this.internal.write("/Metadata "+i+" 0 R")}),this}}(),function(t){if(t.URL=t.URL||t.webkitURL,t.Blob&&t.URL)try{return void new Blob}catch(t){}var e=t.BlobBuilder||t.WebKitBlobBuilder||t.MozBlobBuilder||function(t){var e=function(t){return Object.prototype.toString.call(t).match(/^\[object\s(.*)\]$/)[1]},n=function(){this.data=[]},r=function(t,e,n){this.data=t,this.size=t.length,this.type=e,this.encoding=n},i=n.prototype,o=r.prototype,a=t.FileReaderSync,s=function(t){this.code=this[this.name=t]},c="NOT_FOUND_ERR SECURITY_ERR ABORT_ERR NOT_READABLE_ERR ENCODING_ERR NO_MODIFICATION_ALLOWED_ERR INVALID_STATE_ERR SYNTAX_ERR".split(" "),l=c.length,u=t.URL||t.webkitURL||t,h=u.createObjectURL,f=u.revokeObjectURL,d=u,p=t.btoa,m=t.atob,g=t.ArrayBuffer,w=t.Uint8Array,y=/^[\w-]+:\/*\[?[\w\.:-]+\]?(?::[0-9]+)?/;for(r.fake=o.fake=!0;l--;)s.prototype[c[l]]=l+1;return u.createObjectURL||(d=t.URL=function(t){var e,n=document.createElementNS("http://www.w3.org/1999/xhtml","a");return n.href=t,"origin"in n||("data:"===n.protocol.toLowerCase()?n.origin=null:(e=t.match(y),n.origin=e&&e[1])),n}),d.createObjectURL=function(t){var e,n=t.type;return null===n&&(n="application/octet-stream"),t instanceof r?(e="data:"+n,"base64"===t.encoding?e+";base64,"+t.data:"URI"===t.encoding?e+","+decodeURIComponent(t.data):p?e+";base64,"+p(t.data):e+","+encodeURIComponent(t.data)):h?h.call(u,t):void 0},d.revokeObjectURL=function(t){"data:"!==t.substring(0,5)&&f&&f.call(u,t)},i.append=function(t){var n=this.data;if(w&&(t instanceof g||t instanceof w)){for(var i="",o=new w(t),c=0,l=o.length;c<l;c++)i+=String.fromCharCode(o[c]);n.push(i)}else if("Blob"===e(t)||"File"===e(t)){if(!a)throw new s("NOT_READABLE_ERR");var u=new a;n.push(u.readAsBinaryString(t))}else t instanceof r?"base64"===t.encoding&&m?n.push(m(t.data)):"URI"===t.encoding?n.push(decodeURIComponent(t.data)):"raw"===t.encoding&&n.push(t.data):("string"!=typeof t&&(t+=""),n.push(unescape(encodeURIComponent(t))))},i.getBlob=function(t){return arguments.length||(t=null),new r(this.data.join(""),t,"raw")},i.toString=function(){return"[object BlobBuilder]"},o.slice=function(t,e,n){var i=arguments.length;return i<3&&(n=null),new r(this.data.slice(t,i>1?e:this.data.length),n,this.encoding)},o.toString=function(){return"[object Blob]"},o.close=function(){this.size=0,delete this.data},n}(t);t.Blob=function(t,n){var r=n?n.type||"":"",i=new e;if(t)for(var o=0,a=t.length;o<a;o++)Uint8Array&&t[o]instanceof Uint8Array?i.append(t[o].buffer):i.append(t[o]);var s=i.getBlob(r);return!s.slice&&s.webkitSlice&&(s.slice=s.webkitSlice),s};var n=Object.getPrototypeOf||function(t){return t.__proto__};t.Blob.prototype=n(new t.Blob)}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||(void 0).content||void 0);var r=r||function(t){if(!(void 0===t||"undefined"!=typeof navigator&&/MSIE [1-9]\./.test(navigator.userAgent))){var e=function(){return t.URL||t.webkitURL||t},n=t.document.createElementNS("http://www.w3.org/1999/xhtml","a"),r="download"in n,i=function(t){var e=new MouseEvent("click");t.dispatchEvent(e)},o=/constructor/i.test(t.HTMLElement)||t.safari,a=/CriOS\/[\d]+/.test(navigator.userAgent),s=function(e){(t.setImmediate||t.setTimeout)(function(){throw e},0)},c=function(t){setTimeout(function(){"string"==typeof t?e().revokeObjectURL(t):t.remove()},4e4)},l=function(t,e,n){for(var r=(e=[].concat(e)).length;r--;){var i=t["on"+e[r]];if("function"==typeof i)try{i.call(t,n||t)}catch(t){s(t)}}},u=function(t){return/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(t.type)?new Blob([String.fromCharCode(65279),t],{type:t.type}):t},h=function(s,h,f){f||(s=u(s));var d,p=this,m="application/octet-stream"===s.type,g=function(){l(p,"writestart progress write writeend".split(" "))};if(p.readyState=p.INIT,r)return d=e().createObjectURL(s),void setTimeout(function(){n.href=d,n.download=h,i(n),g(),c(d),p.readyState=p.DONE});!function(){if((a||m&&o)&&t.FileReader){var n=new FileReader;return n.onloadend=function(){var e=a?n.result:n.result.replace(/^data:[^;]*;/,"data:attachment/file;");t.open(e,"_blank")||(t.location.href=e),e=void 0,p.readyState=p.DONE,g()},n.readAsDataURL(s),void(p.readyState=p.INIT)}d||(d=e().createObjectURL(s)),m?t.location.href=d:t.open(d,"_blank")||(t.location.href=d),p.readyState=p.DONE,g(),c(d)}()},f=h.prototype;return"undefined"!=typeof navigator&&navigator.msSaveOrOpenBlob?function(t,e,n){return e=e||t.name||"download",n||(t=u(t)),navigator.msSaveOrOpenBlob(t,e)}:(f.abort=function(){},f.readyState=f.INIT=0,f.WRITING=1,f.DONE=2,f.error=f.onwritestart=f.onprogress=f.onwrite=f.onabort=f.onerror=f.onwriteend=null,function(t,e,n){return new h(t,e||t.name||"download",n)})}}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||(void 0).content);"undefined"!=typeof module&&module.exports?module.exports.saveAs=r:"undefined"!=typeof define&&null!==define&&null!==define.amd&&define("FileSaver.js",function(){return r}),function(t,e){"object"==typeof module?module.exports=e():"function"==typeof define?define(e):t.adler32cs=e()}(e,function(){var t="function"==typeof ArrayBuffer&&"function"==typeof Uint8Array,e=null,n=function(){if(!t)return function(){return!1};try{var n={};"function"==typeof n.Buffer&&(e=n.Buffer)}catch(t){}return function(t){return t instanceof ArrayBuffer||null!==e&&t instanceof e}}(),r=null!==e?function(t){return new e(t,"utf8").toString("binary")}:function(t){return unescape(encodeURIComponent(t))},i=function(t,e){for(var n=65535&t,r=t>>>16,i=0,o=e.length;i<o;i++)r=(r+(n=(n+(255&e.charCodeAt(i)))%65521))%65521;return(r<<16|n)>>>0},o=function(t,e){for(var n=65535&t,r=t>>>16,i=0,o=e.length;i<o;i++)r=(r+(n=(n+e[i])%65521))%65521;return(r<<16|n)>>>0},a={},s=a.Adler32=function(){var e=function(t){if(!(this instanceof e))throw new TypeError("Constructor cannot called be as a function.");if(!isFinite(t=null==t?1:+t))throw new Error("First arguments needs to be a finite number.");this.checksum=t>>>0},a=e.prototype={};return a.constructor=e,e.from=function(t){return t.prototype=a,t}(function(t){if(!(this instanceof e))throw new TypeError("Constructor cannot called be as a function.");if(null==t)throw new Error("First argument needs to be a string.");this.checksum=i(1,t.toString())}),e.fromUtf8=function(t){return t.prototype=a,t}(function(t){if(!(this instanceof e))throw new TypeError("Constructor cannot called be as a function.");if(null==t)throw new Error("First argument needs to be a string.");var n=r(t.toString());this.checksum=i(1,n)}),t&&(e.fromBuffer=function(t){return t.prototype=a,t}(function(t){if(!(this instanceof e))throw new TypeError("Constructor cannot called be as a function.");if(!n(t))throw new Error("First argument needs to be ArrayBuffer.");var r=new Uint8Array(t);return this.checksum=o(1,r)})),a.update=function(t){if(null==t)throw new Error("First argument needs to be a string.");return t=t.toString(),this.checksum=i(this.checksum,t)},a.updateUtf8=function(t){if(null==t)throw new Error("First argument needs to be a string.");var e=r(t.toString());return this.checksum=i(this.checksum,e)},t&&(a.updateBuffer=function(t){if(!n(t))throw new Error("First argument needs to be ArrayBuffer.");var e=new Uint8Array(t);return this.checksum=o(this.checksum,e)}),a.clone=function(){return new s(this.checksum)},e}();return a.from=function(t){if(null==t)throw new Error("First argument needs to be a string.");return i(1,t.toString())},a.fromUtf8=function(t){if(null==t)throw new Error("First argument needs to be a string.");var e=r(t.toString());return i(1,e)},t&&(a.fromBuffer=function(t){if(!n(t))throw new Error("First argument need to be ArrayBuffer.");var e=new Uint8Array(t);return o(1,e)}),a});/**
+ * CssColors
+ * Copyright (c) 2014 Steven Spungin (TwelveTone LLC)  steven@twelvetone.tv
+ *
+ * Licensed under the MIT License.
+ * http://opensource.org/licenses/mit-license
+ */
+var i={};i._colorsTable={aliceblue:"#f0f8ff",antiquewhite:"#faebd7",aqua:"#00ffff",aquamarine:"#7fffd4",azure:"#f0ffff",beige:"#f5f5dc",bisque:"#ffe4c4",black:"#000000",blanchedalmond:"#ffebcd",blue:"#0000ff",blueviolet:"#8a2be2",brown:"#a52a2a",burlywood:"#deb887",cadetblue:"#5f9ea0",chartreuse:"#7fff00",chocolate:"#d2691e",coral:"#ff7f50",cornflowerblue:"#6495ed",cornsilk:"#fff8dc",crimson:"#dc143c",cyan:"#00ffff",darkblue:"#00008b",darkcyan:"#008b8b",darkgoldenrod:"#b8860b",darkgray:"#a9a9a9",darkgreen:"#006400",darkkhaki:"#bdb76b",darkmagenta:"#8b008b",darkolivegreen:"#556b2f",darkorange:"#ff8c00",darkorchid:"#9932cc",darkred:"#8b0000",darksalmon:"#e9967a",darkseagreen:"#8fbc8f",darkslateblue:"#483d8b",darkslategray:"#2f4f4f",darkturquoise:"#00ced1",darkviolet:"#9400d3",deeppink:"#ff1493",deepskyblue:"#00bfff",dimgray:"#696969",dodgerblue:"#1e90ff",firebrick:"#b22222",floralwhite:"#fffaf0",forestgreen:"#228b22",fuchsia:"#ff00ff",gainsboro:"#dcdcdc",ghostwhite:"#f8f8ff",gold:"#ffd700",goldenrod:"#daa520",gray:"#808080",green:"#008000",greenyellow:"#adff2f",honeydew:"#f0fff0",hotpink:"#ff69b4","indianred ":"#cd5c5c",indigo:"#4b0082",ivory:"#fffff0",khaki:"#f0e68c",lavender:"#e6e6fa",lavenderblush:"#fff0f5",lawngreen:"#7cfc00",lemonchiffon:"#fffacd",lightblue:"#add8e6",lightcoral:"#f08080",lightcyan:"#e0ffff",lightgoldenrodyellow:"#fafad2",lightgrey:"#d3d3d3",lightgreen:"#90ee90",lightpink:"#ffb6c1",lightsalmon:"#ffa07a",lightseagreen:"#20b2aa",lightskyblue:"#87cefa",lightslategray:"#778899",lightsteelblue:"#b0c4de",lightyellow:"#ffffe0",lime:"#00ff00",limegreen:"#32cd32",linen:"#faf0e6",magenta:"#ff00ff",maroon:"#800000",mediumaquamarine:"#66cdaa",mediumblue:"#0000cd",mediumorchid:"#ba55d3",mediumpurple:"#9370d8",mediumseagreen:"#3cb371",mediumslateblue:"#7b68ee",mediumspringgreen:"#00fa9a",mediumturquoise:"#48d1cc",mediumvioletred:"#c71585",midnightblue:"#191970",mintcream:"#f5fffa",mistyrose:"#ffe4e1",moccasin:"#ffe4b5",navajowhite:"#ffdead",navy:"#000080",oldlace:"#fdf5e6",olive:"#808000",olivedrab:"#6b8e23",orange:"#ffa500",orangered:"#ff4500",orchid:"#da70d6",palegoldenrod:"#eee8aa",palegreen:"#98fb98",paleturquoise:"#afeeee",palevioletred:"#d87093",papayawhip:"#ffefd5",peachpuff:"#ffdab9",peru:"#cd853f",pink:"#ffc0cb",plum:"#dda0dd",powderblue:"#b0e0e6",purple:"#800080",red:"#ff0000",rosybrown:"#bc8f8f",royalblue:"#4169e1",saddlebrown:"#8b4513",salmon:"#fa8072",sandybrown:"#f4a460",seagreen:"#2e8b57",seashell:"#fff5ee",sienna:"#a0522d",silver:"#c0c0c0",skyblue:"#87ceeb",slateblue:"#6a5acd",slategray:"#708090",snow:"#fffafa",springgreen:"#00ff7f",steelblue:"#4682b4",tan:"#d2b48c",teal:"#008080",thistle:"#d8bfd8",tomato:"#ff6347",turquoise:"#40e0d0",violet:"#ee82ee",wheat:"#f5deb3",white:"#ffffff",whitesmoke:"#f5f5f5",yellow:"#ffff00",yellowgreen:"#9acd32"},i.colorNameToHex=function(t){return t=t.toLowerCase(),void 0!==this._colorsTable[t]&&this._colorsTable[t]};/*
+ Deflate.js - https://github.com/gildas-lormeau/zip.js
+ Copyright (c) 2013 Gildas Lormeau. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright 
+ notice, this list of conditions and the following disclaimer in 
+ the documentation and/or other materials provided with the distribution.
+
+ 3. The names of the authors may not be used to endorse or promote products
+ derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL JCRAFT,
+ INC. OR ANY CONTRIBUTORS TO THIS SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var o=function(t){function e(){function t(t){var e,n,i,o,a,c,l=r.dyn_tree,u=r.stat_desc.static_tree,h=r.stat_desc.extra_bits,d=r.stat_desc.extra_base,p=r.stat_desc.max_length,m=0;for(o=0;o<=s;o++)t.bl_count[o]=0;for(l[2*t.heap[t.heap_max]+1]=0,e=t.heap_max+1;e<f;e++)(o=l[2*l[2*(n=t.heap[e])+1]+1]+1)>p&&(o=p,m++),l[2*n+1]=o,n>r.max_code||(t.bl_count[o]++,a=0,n>=d&&(a=h[n-d]),c=l[2*n],t.opt_len+=c*(o+a),u&&(t.static_len+=c*(u[2*n+1]+a)));if(0!==m){do{for(o=p-1;0===t.bl_count[o];)o--;t.bl_count[o]--,t.bl_count[o+1]+=2,t.bl_count[p]--,m-=2}while(m>0);for(o=p;0!==o;o--)for(n=t.bl_count[o];0!==n;)(i=t.heap[--e])>r.max_code||(l[2*i+1]!=o&&(t.opt_len+=(o-l[2*i+1])*l[2*i],l[2*i+1]=o),n--)}}function e(t,e){var n=0;do{n|=1&t,t>>>=1,n<<=1}while(--e>0);return n>>>1}function n(t,n,r){var i,o,a,c=[],l=0;for(i=1;i<=s;i++)c[i]=l=l+r[i-1]<<1;for(o=0;o<=n;o++)0!==(a=t[2*o+1])&&(t[2*o]=e(c[a]++,a))}var r=this;r.build_tree=function(e){var i,o,a,s=r.dyn_tree,c=r.stat_desc.static_tree,l=r.stat_desc.elems,u=-1;for(e.heap_len=0,e.heap_max=f,i=0;i<l;i++)0!==s[2*i]?(e.heap[++e.heap_len]=u=i,e.depth[i]=0):s[2*i+1]=0;for(;e.heap_len<2;)s[2*(a=e.heap[++e.heap_len]=u<2?++u:0)]=1,e.depth[a]=0,e.opt_len--,c&&(e.static_len-=c[2*a+1]);for(r.max_code=u,i=Math.floor(e.heap_len/2);i>=1;i--)e.pqdownheap(s,i);a=l;do{i=e.heap[1],e.heap[1]=e.heap[e.heap_len--],e.pqdownheap(s,1),o=e.heap[1],e.heap[--e.heap_max]=i,e.heap[--e.heap_max]=o,s[2*a]=s[2*i]+s[2*o],e.depth[a]=Math.max(e.depth[i],e.depth[o])+1,s[2*i+1]=s[2*o+1]=a,e.heap[1]=a++,e.pqdownheap(s,1)}while(e.heap_len>=2);e.heap[--e.heap_max]=e.heap[1],t(e),n(s,r.max_code,e.bl_count)}}function n(t,e,n,r,i){var o=this;o.static_tree=t,o.extra_bits=e,o.extra_base=n,o.elems=r,o.max_length=i}function r(t,e,n,r,i){var o=this;o.good_length=t,o.max_lazy=e,o.nice_length=n,o.max_chain=r,o.func=i}function i(t,e,n,r){var i=t[2*e],o=t[2*n];return i<o||i==o&&r[e]<=r[n]}function o(){function t(){var t;for(Pt=2*At,Et[Ft-1]=0,t=0;t<Ft-1;t++)Et[t]=0;Vt=z[Gt].max_lazy,Jt=z[Gt].good_length,Qt=z[Gt].nice_length,Xt=z[Gt].max_chain,Mt=0,jt=0,Ht=0,zt=Wt=$-1,Lt=0,Ot=0}function r(){var t;for(t=0;t<h;t++)Kt[2*t]=0;for(t=0;t<c;t++)$t[2*t]=0;for(t=0;t<l;t++)Zt[2*t]=0;Kt[2*d]=1,te.opt_len=te.static_len=0,ae=ce=0}function o(){ee.dyn_tree=Kt,ee.stat_desc=n.static_l_desc,ne.dyn_tree=$t,ne.stat_desc=n.static_d_desc,re.dyn_tree=Zt,re.stat_desc=n.static_bl_desc,ue=0,he=0,le=8,r()}function a(t,e){var n,r,i=-1,o=t[1],a=0,s=7,c=4;for(0===o&&(s=138,c=3),t[2*(e+1)+1]=65535,n=0;n<=e;n++)r=o,o=t[2*(n+1)+1],++a<s&&r==o||(a<c?Zt[2*r]+=a:0!==r?(r!=i&&Zt[2*r]++,Zt[2*p]++):a<=10?Zt[2*m]++:Zt[2*g]++,a=0,i=r,0===o?(s=138,c=3):r==o?(s=6,c=3):(s=7,c=4))}function s(){var t;for(a(Kt,ee.max_code),a($t,ne.max_code),re.build_tree(te),t=l-1;t>=3&&0===Zt[2*e.bl_order[t]+1];t--);return te.opt_len+=3*(t+1)+5+5+4,t}function f(t){te.pending_buf[te.pending++]=t}function O(t){f(255&t),f(t>>>8&255)}function et(t){f(t>>8&255),f(255&t)}function nt(t,e){var n,r=e;he>w-r?(O(ue|=(n=t)<<he&65535),ue=n>>>w-he,he+=r-w):(ue|=t<<he&65535,he+=r)}function rt(t,e){var n=2*t;nt(65535&e[n],65535&e[n+1])}function it(t,e){var n,r,i=-1,o=t[1],a=0,s=7,c=4;for(0===o&&(s=138,c=3),n=0;n<=e;n++)if(r=o,o=t[2*(n+1)+1],!(++a<s&&r==o)){if(a<c)do{rt(r,Zt)}while(0!=--a);else 0!==r?(r!=i&&(rt(r,Zt),a--),rt(p,Zt),nt(a-3,2)):a<=10?(rt(m,Zt),nt(a-3,3)):(rt(g,Zt),nt(a-11,7));a=0,i=r,0===o?(s=138,c=3):r==o?(s=6,c=3):(s=7,c=4)}}function ot(t,n,r){var i;for(nt(t-257,5),nt(n-1,5),nt(r-4,4),i=0;i<r;i++)nt(Zt[2*e.bl_order[i]+1],3);it(Kt,t-1),it($t,n-1)}function at(){16==he?(O(ue),ue=0,he=0):he>=8&&(f(255&ue),ue>>>=8,he-=8)}function st(){nt(Q<<1,3),rt(d,n.static_ltree),at(),1+le+10-he<9&&(nt(Q<<1,3),rt(d,n.static_ltree),at()),le=7}function ct(t,n){var r,i,o;if(te.pending_buf[se+2*ae]=t>>>8&255,te.pending_buf[se+2*ae+1]=255&t,te.pending_buf[ie+ae]=255&n,ae++,0===t?Kt[2*n]++:(ce++,t--,Kt[2*(e._length_code[n]+u+1)]++,$t[2*e.d_code(t)]++),0==(8191&ae)&&Gt>2){for(r=8*ae,i=Mt-jt,o=0;o<c;o++)r+=$t[2*o]*(5+e.extra_dbits[o]);if(r>>>=3,ce<Math.floor(ae/2)&&r<Math.floor(i/2))return!0}return ae==oe-1}function lt(t,n){var r,i,o,a,s=0;if(0!==ae)do{r=te.pending_buf[se+2*s]<<8&65280|255&te.pending_buf[se+2*s+1],i=255&te.pending_buf[ie+s],s++,0===r?rt(i,t):(rt((o=e._length_code[i])+u+1,t),0!==(a=e.extra_lbits[o])&&nt(i-=e.base_length[o],a),r--,rt(o=e.d_code(r),n),0!==(a=e.extra_dbits[o])&&nt(r-=e.base_dist[o],a))}while(s<ae);rt(d,t),le=t[2*d+1]}function ut(){he>8?O(ue):he>0&&f(255&ue),ue=0,he=0}function ht(t,e,n){ut(),le=8,n&&(O(e),O(~e)),te.pending_buf.set(Tt.subarray(t,t+e),te.pending),te.pending+=e}function ft(t,e,n){nt((J<<1)+(n?1:0),3),ht(t,e,!0)}function dt(t,e,i){var o,a,c=0;Gt>0?(ee.build_tree(te),ne.build_tree(te),c=s(),o=te.opt_len+3+7>>>3,(a=te.static_len+3+7>>>3)<=o&&(o=a)):o=a=e+5,e+4<=o&&-1!=t?ft(t,e,i):a==o?(nt((Q<<1)+(i?1:0),3),lt(n.static_ltree,n.static_dtree)):(nt((K<<1)+(i?1:0),3),ot(ee.max_code+1,ne.max_code+1,c+1),lt(Kt,$t)),r(),i&&ut()}function pt(t){dt(jt>=0?jt:-1,Mt-jt,t),jt=Mt,xt.flush_pending()}function mt(){var t,e,n,r;do{if(0===(r=Pt-Ht-Mt)&&0===Mt&&0===Ht)r=At;else if(-1==r)r--;else if(Mt>=At+At-tt){Tt.set(Tt.subarray(At,At+At),0),Ut-=At,Mt-=At,jt-=At,n=t=Ft;do{e=65535&Et[--n],Et[n]=e>=At?e-At:0}while(0!=--t);n=t=At;do{e=65535&It[--n],It[n]=e>=At?e-At:0}while(0!=--t);r+=At}if(0===xt.avail_in)return;t=xt.read_buf(Tt,Mt+Ht,r),(Ht+=t)>=$&&(Ot=255&Tt[Mt],Ot=(Ot<<Dt^255&Tt[Mt+1])&Rt)}while(Ht<tt&&0!==xt.avail_in)}function gt(t){var e,n=65535;for(n>_t-5&&(n=_t-5);;){if(Ht<=1){if(mt(),0===Ht&&t==k)return L;if(0===Ht)break}if(Mt+=Ht,Ht=0,e=jt+n,(0===Mt||Mt>=e)&&(Ht=Mt-e,Mt=e,pt(!1),0===xt.avail_out))return L;if(Mt-jt>=At-tt&&(pt(!1),0===xt.avail_out))return L}return pt(t==A),0===xt.avail_out?t==A?U:L:t==A?H:M}function wt(t){var e,n,r=Xt,i=Mt,o=Wt,a=Mt>At-tt?Mt-(At-tt):0,s=Qt,c=qt,l=Mt+Z,u=Tt[i+o-1],h=Tt[i+o];Wt>=Jt&&(r>>=2),s>Ht&&(s=Ht);do{if(e=t,Tt[e+o]==h&&Tt[e+o-1]==u&&Tt[e]==Tt[i]&&Tt[++e]==Tt[i+1]){i+=2,e++;do{}while(Tt[++i]==Tt[++e]&&Tt[++i]==Tt[++e]&&Tt[++i]==Tt[++e]&&Tt[++i]==Tt[++e]&&Tt[++i]==Tt[++e]&&Tt[++i]==Tt[++e]&&Tt[++i]==Tt[++e]&&Tt[++i]==Tt[++e]&&i<l);if(n=Z-(l-i),i=l-Z,n>o){if(Ut=t,o=n,n>=s)break;u=Tt[i+o-1],h=Tt[i+o]}}}while((t=65535&It[t&c])>a&&0!=--r);return o<=Ht?o:Ht}function yt(t){for(var e,n=0;;){if(Ht<tt){if(mt(),Ht<tt&&t==k)return L;if(0===Ht)break}if(Ht>=$&&(Ot=(Ot<<Dt^255&Tt[Mt+($-1)])&Rt,n=65535&Et[Ot],It[Mt&qt]=Et[Ot],Et[Ot]=Mt),0!==n&&(Mt-n&65535)<=At-tt&&Yt!=b&&(zt=wt(n)),zt>=$)if(e=ct(Mt-Ut,zt-$),Ht-=zt,zt<=Vt&&Ht>=$){zt--;do{Ot=(Ot<<Dt^255&Tt[++Mt+($-1)])&Rt,n=65535&Et[Ot],It[Mt&qt]=Et[Ot],Et[Ot]=Mt}while(0!=--zt);Mt++}else Mt+=zt,zt=0,Ot=255&Tt[Mt],Ot=(Ot<<Dt^255&Tt[Mt+1])&Rt;else e=ct(0,255&Tt[Mt]),Ht--,Mt++;if(e&&(pt(!1),0===xt.avail_out))return L}return pt(t==A),0===xt.avail_out?t==A?U:L:t==A?H:M}function vt(t){for(var e,n,r=0;;){if(Ht<tt){if(mt(),Ht<tt&&t==k)return L;if(0===Ht)break}if(Ht>=$&&(Ot=(Ot<<Dt^255&Tt[Mt+($-1)])&Rt,r=65535&Et[Ot],It[Mt&qt]=Et[Ot],Et[Ot]=Mt),Wt=zt,Nt=Ut,zt=$-1,0!==r&&Wt<Vt&&(Mt-r&65535)<=At-tt&&(Yt!=b&&(zt=wt(r)),zt<=5&&(Yt==v||zt==$&&Mt-Ut>4096)&&(zt=$-1)),Wt>=$&&zt<=Wt){n=Mt+Ht-$,e=ct(Mt-1-Nt,Wt-$),Ht-=Wt-1,Wt-=2;do{++Mt<=n&&(Ot=(Ot<<Dt^255&Tt[Mt+($-1)])&Rt,r=65535&Et[Ot],It[Mt&qt]=Et[Ot],Et[Ot]=Mt)}while(0!=--Wt);if(Lt=0,zt=$-1,Mt++,e&&(pt(!1),0===xt.avail_out))return L}else if(0!==Lt){if((e=ct(0,255&Tt[Mt-1]))&&pt(!1),Mt++,Ht--,0===xt.avail_out)return L}else Lt=1,Mt++,Ht--}return 0!==Lt&&(e=ct(0,255&Tt[Mt-1]),Lt=0),pt(t==A),0===xt.avail_out?t==A?U:L:t==A?H:M}function bt(e){return e.total_in=e.total_out=0,e.msg=null,te.pending=0,te.pending_out=0,kt=V,Ct=k,o(),t(),S}var xt,kt,_t,Ct,At,St,qt,Tt,Pt,It,Et,Ot,Ft,Bt,Rt,Dt,jt,zt,Nt,Lt,Mt,Ut,Ht,Wt,Xt,Vt,Gt,Yt,Jt,Qt,Kt,$t,Zt,te=this,ee=new e,ne=new e,re=new e;te.depth=[];var ie,oe,ae,se,ce,le,ue,he;te.bl_count=[],te.heap=[],Kt=[],$t=[],Zt=[],te.pqdownheap=function(t,e){for(var n=te.heap,r=n[e],o=e<<1;o<=te.heap_len&&(o<te.heap_len&&i(t,n[o+1],n[o],te.depth)&&o++,!i(t,r,n[o],te.depth));)n[e]=n[o],e=o,o<<=1;n[e]=r},te.deflateInit=function(t,e,n,r,i,o){return r||(r=Y),i||(i=B),o||(o=x),t.msg=null,e==y&&(e=6),i<1||i>F||r!=Y||n<9||n>15||e<0||e>9||o<0||o>b?P:(t.dstate=te,St=n,At=1<<St,qt=At-1,Bt=i+7,Ft=1<<Bt,Rt=Ft-1,Dt=Math.floor((Bt+$-1)/$),Tt=new Uint8Array(2*At),It=[],Et=[],oe=1<<i+6,te.pending_buf=new Uint8Array(4*oe),_t=4*oe,se=Math.floor(oe/2),ie=3*oe,Gt=e,Yt=o,bt(t))},te.deflateEnd=function(){return kt!=X&&kt!=V&&kt!=G?P:(te.pending_buf=null,Et=null,It=null,Tt=null,te.dstate=null,kt==V?I:S)},te.deflateParams=function(t,e,n){var r=S;return e==y&&(e=6),e<0||e>9||n<0||n>b?P:(z[Gt].func!=z[e].func&&0!==t.total_in&&(r=t.deflate(_)),Gt!=e&&(Vt=z[Gt=e].max_lazy,Jt=z[Gt].good_length,Qt=z[Gt].nice_length,Xt=z[Gt].max_chain),Yt=n,r)},te.deflateSetDictionary=function(t,e,n){var r,i=n,o=0;if(!e||kt!=X)return P;if(i<$)return S;for(i>At-tt&&(o=n-(i=At-tt)),Tt.set(e.subarray(o,o+i),0),Mt=i,jt=i,Ot=255&Tt[0],Ot=(Ot<<Dt^255&Tt[1])&Rt,r=0;r<=i-$;r++)Ot=(Ot<<Dt^255&Tt[r+($-1)])&Rt,It[r&qt]=Et[Ot],Et[Ot]=r;return S},te.deflate=function(t,e){var n,r,i,o,a;if(e>A||e<0)return P;if(!t.next_out||!t.next_in&&0!==t.avail_in||kt==G&&e!=A)return t.msg=N[T-P],P;if(0===t.avail_out)return t.msg=N[T-E],E;if(xt=t,o=Ct,Ct=e,kt==X&&(r=Y+(St-8<<4)<<8,(i=(Gt-1&255)>>1)>3&&(i=3),r|=i<<6,0!==Mt&&(r|=W),kt=V,et(r+=31-r%31)),0!==te.pending){if(xt.flush_pending(),0===xt.avail_out)return Ct=-1,S}else if(0===xt.avail_in&&e<=o&&e!=A)return xt.msg=N[T-E],E;if(kt==G&&0!==xt.avail_in)return t.msg=N[T-E],E;if(0!==xt.avail_in||0!==Ht||e!=k&&kt!=G){switch(a=-1,z[Gt].func){case R:a=gt(e);break;case D:a=yt(e);break;case j:a=vt(e)}if(a!=U&&a!=H||(kt=G),a==L||a==U)return 0===xt.avail_out&&(Ct=-1),S;if(a==M){if(e==_)st();else if(ft(0,0,!1),e==C)for(n=0;n<Ft;n++)Et[n]=0;if(xt.flush_pending(),0===xt.avail_out)return Ct=-1,S}}return e!=A?S:q}}function a(){var t=this;t.next_in_index=0,t.next_out_index=0,t.avail_in=0,t.total_in=0,t.avail_out=0,t.total_out=0}var s=15,c=30,l=19,u=256,h=u+1+29,f=2*h+1,d=256,p=16,m=17,g=18,w=16,y=-1,v=1,b=2,x=0,k=0,_=1,C=3,A=4,S=0,q=1,T=2,P=-2,I=-3,E=-5,O=[0,1,2,3,4,4,5,5,6,6,6,6,7,7,7,7,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,0,0,16,17,18,18,19,19,20,20,20,20,21,21,21,21,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29];e._length_code=[0,1,2,3,4,5,6,7,8,8,9,9,10,10,11,11,12,12,12,12,13,13,13,13,14,14,14,14,15,15,15,15,16,16,16,16,16,16,16,16,17,17,17,17,17,17,17,17,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,28],e.base_length=[0,1,2,3,4,5,6,7,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,192,224,0],e.base_dist=[0,1,2,3,4,6,8,12,16,24,32,48,64,96,128,192,256,384,512,768,1024,1536,2048,3072,4096,6144,8192,12288,16384,24576],e.d_code=function(t){return t<256?O[t]:O[256+(t>>>7)]},e.extra_lbits=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0],e.extra_dbits=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13],e.extra_blbits=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,7],e.bl_order=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],n.static_ltree=[12,8,140,8,76,8,204,8,44,8,172,8,108,8,236,8,28,8,156,8,92,8,220,8,60,8,188,8,124,8,252,8,2,8,130,8,66,8,194,8,34,8,162,8,98,8,226,8,18,8,146,8,82,8,210,8,50,8,178,8,114,8,242,8,10,8,138,8,74,8,202,8,42,8,170,8,106,8,234,8,26,8,154,8,90,8,218,8,58,8,186,8,122,8,250,8,6,8,134,8,70,8,198,8,38,8,166,8,102,8,230,8,22,8,150,8,86,8,214,8,54,8,182,8,118,8,246,8,14,8,142,8,78,8,206,8,46,8,174,8,110,8,238,8,30,8,158,8,94,8,222,8,62,8,190,8,126,8,254,8,1,8,129,8,65,8,193,8,33,8,161,8,97,8,225,8,17,8,145,8,81,8,209,8,49,8,177,8,113,8,241,8,9,8,137,8,73,8,201,8,41,8,169,8,105,8,233,8,25,8,153,8,89,8,217,8,57,8,185,8,121,8,249,8,5,8,133,8,69,8,197,8,37,8,165,8,101,8,229,8,21,8,149,8,85,8,213,8,53,8,181,8,117,8,245,8,13,8,141,8,77,8,205,8,45,8,173,8,109,8,237,8,29,8,157,8,93,8,221,8,61,8,189,8,125,8,253,8,19,9,275,9,147,9,403,9,83,9,339,9,211,9,467,9,51,9,307,9,179,9,435,9,115,9,371,9,243,9,499,9,11,9,267,9,139,9,395,9,75,9,331,9,203,9,459,9,43,9,299,9,171,9,427,9,107,9,363,9,235,9,491,9,27,9,283,9,155,9,411,9,91,9,347,9,219,9,475,9,59,9,315,9,187,9,443,9,123,9,379,9,251,9,507,9,7,9,263,9,135,9,391,9,71,9,327,9,199,9,455,9,39,9,295,9,167,9,423,9,103,9,359,9,231,9,487,9,23,9,279,9,151,9,407,9,87,9,343,9,215,9,471,9,55,9,311,9,183,9,439,9,119,9,375,9,247,9,503,9,15,9,271,9,143,9,399,9,79,9,335,9,207,9,463,9,47,9,303,9,175,9,431,9,111,9,367,9,239,9,495,9,31,9,287,9,159,9,415,9,95,9,351,9,223,9,479,9,63,9,319,9,191,9,447,9,127,9,383,9,255,9,511,9,0,7,64,7,32,7,96,7,16,7,80,7,48,7,112,7,8,7,72,7,40,7,104,7,24,7,88,7,56,7,120,7,4,7,68,7,36,7,100,7,20,7,84,7,52,7,116,7,3,8,131,8,67,8,195,8,35,8,163,8,99,8,227,8],n.static_dtree=[0,5,16,5,8,5,24,5,4,5,20,5,12,5,28,5,2,5,18,5,10,5,26,5,6,5,22,5,14,5,30,5,1,5,17,5,9,5,25,5,5,5,21,5,13,5,29,5,3,5,19,5,11,5,27,5,7,5,23,5],n.static_l_desc=new n(n.static_ltree,e.extra_lbits,u+1,h,s),n.static_d_desc=new n(n.static_dtree,e.extra_dbits,0,c,s),n.static_bl_desc=new n(null,e.extra_blbits,0,l,7);var F=9,B=8,R=0,D=1,j=2,z=[new r(0,0,0,0,R),new r(4,4,8,4,D),new r(4,5,16,8,D),new r(4,6,32,32,D),new r(4,4,16,16,j),new r(8,16,32,32,j),new r(8,16,128,128,j),new r(8,32,128,256,j),new r(32,128,258,1024,j),new r(32,258,258,4096,j)],N=["need dictionary","stream end","","","stream error","data error","","buffer error","",""],L=0,M=1,U=2,H=3,W=32,X=42,V=113,G=666,Y=8,J=0,Q=1,K=2,$=3,Z=258,tt=Z+$+1;return a.prototype={deflateInit:function(t,e){var n=this;return n.dstate=new o,e||(e=s),n.dstate.deflateInit(n,t,e)},deflate:function(t){var e=this;return e.dstate?e.dstate.deflate(e,t):P},deflateEnd:function(){var t=this;if(!t.dstate)return P;var e=t.dstate.deflateEnd();return t.dstate=null,e},deflateParams:function(t,e){var n=this;return n.dstate?n.dstate.deflateParams(n,t,e):P},deflateSetDictionary:function(t,e){var n=this;return n.dstate?n.dstate.deflateSetDictionary(n,t,e):P},read_buf:function(t,e,n){var r=this,i=r.avail_in;return i>n&&(i=n),0===i?0:(r.avail_in-=i,t.set(r.next_in.subarray(r.next_in_index,r.next_in_index+i),e),r.next_in_index+=i,r.total_in+=i,i)},flush_pending:function(){var t=this,e=t.dstate.pending;e>t.avail_out&&(e=t.avail_out),0!==e&&(t.next_out.set(t.dstate.pending_buf.subarray(t.dstate.pending_out,t.dstate.pending_out+e),t.next_out_index),t.next_out_index+=e,t.dstate.pending_out+=e,t.total_out+=e,t.avail_out-=e,t.dstate.pending-=e,0===t.dstate.pending&&(t.dstate.pending_out=0))}},function(t){var e=this,n=new a,r=k,i=new Uint8Array(512);void 0===t&&(t=y),n.deflateInit(t),n.next_out=i,e.append=function(t,e){var o,a=[],s=0,c=0,l=0;if(t.length){n.next_in_index=0,n.next_in=t,n.avail_in=t.length;do{if(n.next_out_index=0,n.avail_out=512,n.deflate(r)!=S)throw"deflating: "+n.msg;n.next_out_index&&(512==n.next_out_index?a.push(new Uint8Array(i)):a.push(new Uint8Array(i.subarray(0,n.next_out_index)))),l+=n.next_out_index,e&&n.next_in_index>0&&n.next_in_index!=s&&(e(n.next_in_index),s=n.next_in_index)}while(n.avail_in>0||0===n.avail_out);return o=new Uint8Array(l),a.forEach(function(t){o.set(t,c),c+=t.length}),o}},e.flush=function(){var t,e,r=[],o=0,a=0;do{if(n.next_out_index=0,n.avail_out=512,(t=n.deflate(A))!=q&&t!=S)throw"deflating: "+n.msg;512-n.avail_out>0&&r.push(new Uint8Array(i.subarray(0,n.next_out_index))),a+=n.next_out_index}while(n.avail_in>0||0===n.avail_out);return n.deflateEnd(),e=new Uint8Array(a),r.forEach(function(t){e.set(t,o),o+=t.length}),e}}}();/*
+  html2canvas 0.5.0-beta3 <http://html2canvas.hertzen.com>
+  Copyright (c) 2016 Niklas von Hertzen
+
+  Released under  License
+*/
+!function(t){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=t();else if("function"==typeof define&&define.amd)define([],t);else{var e;"undefined"!=typeof window?e=window:"undefined"!=typeof global?e=global:"undefined"!=typeof self&&(e=self),e.html2canvas=t()}}(function(){return function t(e,n,r){function i(a,s){if(!n[a]){if(!e[a]){var c="function"==typeof require&&require;if(!s&&c)return c(a,!0);if(o)return o(a,!0);var l=new Error("Cannot find module '"+a+"'");throw l.code="MODULE_NOT_FOUND",l}var u=n[a]={exports:{}};e[a][0].call(u.exports,function(t){var n=e[a][1][t];return i(n||t)},u,u.exports,t,e,n,r)}return n[a].exports}for(var o="function"==typeof require&&require,a=0;a<r.length;a++)i(r[a]);return i}({1:[function(t,e,n){(function(t){!function(r){function i(t){throw RangeError(E[t])}function o(t,e){for(var n=t.length;n--;)t[n]=e(t[n]);return t}function a(t,e){return o(t.split(I),e).join(".")}function s(t){for(var e,n,r=[],i=0,o=t.length;i<o;)(e=t.charCodeAt(i++))>=55296&&e<=56319&&i<o?56320==(64512&(n=t.charCodeAt(i++)))?r.push(((1023&e)<<10)+(1023&n)+65536):(r.push(e),i--):r.push(e);return r}function c(t){return o(t,function(t){var e="";return t>65535&&(e+=B((t-=65536)>>>10&1023|55296),t=56320|1023&t),e+=B(t)}).join("")}function l(t){return t-48<10?t-22:t-65<26?t-65:t-97<26?t-97:b}function u(t,e){return t+22+75*(t<26)-((0!=e)<<5)}function h(t,e,n){var r=0;for(t=n?F(t/C):t>>1,t+=F(t/e);t>O*k>>1;r+=b)t=F(t/O);return F(r+(O+1)*t/(t+_))}function f(t){var e,n,r,o,a,s,u,f,d,p,m=[],g=t.length,w=0,y=S,_=A;for((n=t.lastIndexOf(q))<0&&(n=0),r=0;r<n;++r)t.charCodeAt(r)>=128&&i("not-basic"),m.push(t.charCodeAt(r));for(o=n>0?n+1:0;o<g;){for(a=w,s=1,u=b;o>=g&&i("invalid-input"),((f=l(t.charCodeAt(o++)))>=b||f>F((v-w)/s))&&i("overflow"),w+=f*s,d=u<=_?x:u>=_+k?k:u-_,!(f<d);u+=b)s>F(v/(p=b-d))&&i("overflow"),s*=p;_=h(w-a,e=m.length+1,0==a),F(w/e)>v-y&&i("overflow"),y+=F(w/e),w%=e,m.splice(w++,0,y)}return c(m)}function d(t){var e,n,r,o,a,c,l,f,d,p,m,g,w,y,_,C=[];for(g=(t=s(t)).length,e=S,n=0,a=A,c=0;c<g;++c)(m=t[c])<128&&C.push(B(m));for(r=o=C.length,o&&C.push(q);r<g;){for(l=v,c=0;c<g;++c)(m=t[c])>=e&&m<l&&(l=m);for(l-e>F((v-n)/(w=r+1))&&i("overflow"),n+=(l-e)*w,e=l,c=0;c<g;++c)if((m=t[c])<e&&++n>v&&i("overflow"),m==e){for(f=n,d=b;p=d<=a?x:d>=a+k?k:d-a,!(f<p);d+=b)_=f-p,y=b-p,C.push(B(u(p+_%y,0))),f=F(_/y);C.push(B(u(f,0))),a=h(n,w,r==o),n=0,++r}++n,++e}return C.join("")}var p="object"==typeof n&&n,m="object"==typeof e&&e&&e.exports==p&&e,g="object"==typeof t&&t;g.global!==g&&g.window!==g||(r=g);var w,y,v=2147483647,b=36,x=1,k=26,_=38,C=700,A=72,S=128,q="-",T=/^xn--/,P=/[^ -~]/,I=/\x2E|\u3002|\uFF0E|\uFF61/g,E={overflow:"Overflow: input needs wider integers to process","not-basic":"Illegal input >= 0x80 (not a basic code point)","invalid-input":"Invalid input"},O=b-x,F=Math.floor,B=String.fromCharCode;if(w={version:"1.2.4",ucs2:{decode:s,encode:c},decode:f,encode:d,toASCII:function(t){return a(t,function(t){return P.test(t)?"xn--"+d(t):t})},toUnicode:function(t){return a(t,function(t){return T.test(t)?f(t.slice(4).toLowerCase()):t})}},p&&!p.nodeType)if(m)m.exports=w;else for(y in w)w.hasOwnProperty(y)&&(p[y]=w[y]);else r.punycode=w}(this)}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}],2:[function(t,e,n){function r(t,e,n){!t.defaultView||e===t.defaultView.pageXOffset&&n===t.defaultView.pageYOffset||t.defaultView.scrollTo(e,n)}function i(t,e){try{e&&(e.width=t.width,e.height=t.height,e.getContext("2d").putImageData(t.getContext("2d").getImageData(0,0,t.width,t.height),0,0))}catch(e){s("Unable to copy canvas content from",t,e)}}function o(t,e){for(var n=3===t.nodeType?document.createTextNode(t.nodeValue):t.cloneNode(!1),r=t.firstChild;r;)!0!==e&&1===r.nodeType&&"SCRIPT"===r.nodeName||n.appendChild(o(r,e)),r=r.nextSibling;return 1===t.nodeType&&(n._scrollTop=t.scrollTop,n._scrollLeft=t.scrollLeft,"CANVAS"===t.nodeName?i(t,n):"TEXTAREA"!==t.nodeName&&"SELECT"!==t.nodeName||(n.value=t.value)),n}function a(t){if(1===t.nodeType){t.scrollTop=t._scrollTop,t.scrollLeft=t._scrollLeft;for(var e=t.firstChild;e;)a(e),e=e.nextSibling}}var s=t("./log");e.exports=function(t,e,n,i,s,c,l){var u=o(t.documentElement,s.javascriptEnabled),h=e.createElement("iframe");return h.className="html2canvas-container",h.style.visibility="hidden",h.style.position="fixed",h.style.left="-10000px",h.style.top="0px",h.style.border="0",h.width=n,h.height=i,h.scrolling="no",e.body.appendChild(h),new Promise(function(e){var n=h.contentWindow.document;h.contentWindow.onload=h.onload=function(){var t=setInterval(function(){n.body.childNodes.length>0&&(a(n.documentElement),clearInterval(t),"view"===s.type&&(h.contentWindow.scrollTo(c,l),!/(iPad|iPhone|iPod)/g.test(navigator.userAgent)||h.contentWindow.scrollY===l&&h.contentWindow.scrollX===c||(n.documentElement.style.top=-l+"px",n.documentElement.style.left=-c+"px",n.documentElement.style.position="absolute")),e(h))},50)},n.open(),n.write("<!DOCTYPE html><html></html>"),r(t,c,l),n.replaceChild(n.adoptNode(u),n.documentElement),n.close()})}},{"./log":13}],3:[function(t,e,n){function r(t){this.r=0,this.g=0,this.b=0,this.a=null;this.fromArray(t)||this.namedColor(t)||this.rgb(t)||this.rgba(t)||this.hex6(t)||this.hex3(t)}r.prototype.darken=function(t){var e=1-t;return new r([Math.round(this.r*e),Math.round(this.g*e),Math.round(this.b*e),this.a])},r.prototype.isTransparent=function(){return 0===this.a},r.prototype.isBlack=function(){return 0===this.r&&0===this.g&&0===this.b},r.prototype.fromArray=function(t){return Array.isArray(t)&&(this.r=Math.min(t[0],255),this.g=Math.min(t[1],255),this.b=Math.min(t[2],255),t.length>3&&(this.a=t[3])),Array.isArray(t)};var i=/^#([a-f0-9]{3})$/i;r.prototype.hex3=function(t){var e=null;return null!==(e=t.match(i))&&(this.r=parseInt(e[1][0]+e[1][0],16),this.g=parseInt(e[1][1]+e[1][1],16),this.b=parseInt(e[1][2]+e[1][2],16)),null!==e};var o=/^#([a-f0-9]{6})$/i;r.prototype.hex6=function(t){var e=null;return null!==(e=t.match(o))&&(this.r=parseInt(e[1].substring(0,2),16),this.g=parseInt(e[1].substring(2,4),16),this.b=parseInt(e[1].substring(4,6),16)),null!==e};var a=/^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/;r.prototype.rgb=function(t){var e=null;return null!==(e=t.match(a))&&(this.r=Number(e[1]),this.g=Number(e[2]),this.b=Number(e[3])),null!==e};var s=/^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d?\.?\d+)\s*\)$/;r.prototype.rgba=function(t){var e=null;return null!==(e=t.match(s))&&(this.r=Number(e[1]),this.g=Number(e[2]),this.b=Number(e[3]),this.a=Number(e[4])),null!==e},r.prototype.toString=function(){return null!==this.a&&1!==this.a?"rgba("+[this.r,this.g,this.b,this.a].join(",")+")":"rgb("+[this.r,this.g,this.b].join(",")+")"},r.prototype.namedColor=function(t){t=t.toLowerCase();var e=c[t];if(e)this.r=e[0],this.g=e[1],this.b=e[2];else if("transparent"===t)return this.r=this.g=this.b=this.a=0,!0;return!!e},r.prototype.isColor=!0;var c={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]};e.exports=r},{}],4:[function(t,e,n){function r(t,e){var n=k++;if((e=e||{}).logging&&(g.options.logging=!0,g.options.start=Date.now()),e.async=void 0===e.async||e.async,e.allowTaint=void 0!==e.allowTaint&&e.allowTaint,e.removeContainer=void 0===e.removeContainer||e.removeContainer,e.javascriptEnabled=void 0!==e.javascriptEnabled&&e.javascriptEnabled,e.imageTimeout=void 0===e.imageTimeout?1e4:e.imageTimeout,e.renderer="function"==typeof e.renderer?e.renderer:f,e.strict=!!e.strict,"string"==typeof t){if("string"!=typeof e.proxy)return Promise.reject("Proxy must be used when rendering url");var r=null!=e.width?e.width:window.innerWidth,a=null!=e.height?e.height:window.innerHeight;return v(u(t),e.proxy,document,r,a,e).then(function(t){return o(t.contentWindow.document.documentElement,t,e,r,a)})}var s=(void 0===t?[document.documentElement]:t.length?t:[t])[0];return s.setAttribute(x+n,n),i(s.ownerDocument,e,s.ownerDocument.defaultView.innerWidth,s.ownerDocument.defaultView.innerHeight,n).then(function(t){return"function"==typeof e.onrendered&&(g("options.onrendered is deprecated, html2canvas returns a Promise containing the canvas"),e.onrendered(t)),t})}function i(t,e,n,r,i){return y(t,t,n,r,e,t.defaultView.pageXOffset,t.defaultView.pageYOffset).then(function(a){g("Document cloned");var s=x+i,c="["+s+"='"+i+"']";t.querySelector(c).removeAttribute(s);var l=a.contentWindow,u=l.document.querySelector(c);return("function"==typeof e.onclone?Promise.resolve(e.onclone(l.document)):Promise.resolve(!0)).then(function(){return o(u,a,e,n,r)})})}function o(t,e,n,r,i){var o=e.contentWindow,u=new h(o.document),f=new d(n,u),m=b(t),w="view"===n.type?r:c(o.document),y="view"===n.type?i:l(o.document),v=new n.renderer(w,y,f,n,document);return new p(t,v,u,f,n).ready.then(function(){g("Finished rendering");var r;return r="view"===n.type?s(v.canvas,{width:v.canvas.width,height:v.canvas.height,top:0,left:0,x:0,y:0}):t===o.document.body||t===o.document.documentElement||null!=n.canvas?v.canvas:s(v.canvas,{width:null!=n.width?n.width:m.width,height:null!=n.height?n.height:m.height,top:m.top,left:m.left,x:0,y:0}),a(e,n),r})}function a(t,e){e.removeContainer&&(t.parentNode.removeChild(t),g("Cleaned up container"))}function s(t,e){var n=document.createElement("canvas"),r=Math.min(t.width-1,Math.max(0,e.left)),i=Math.min(t.width,Math.max(1,e.left+e.width)),o=Math.min(t.height-1,Math.max(0,e.top)),a=Math.min(t.height,Math.max(1,e.top+e.height));n.width=e.width,n.height=e.height;var s=i-r,c=a-o;return g("Cropping canvas at:","left:",e.left,"top:",e.top,"width:",s,"height:",c),g("Resulting crop with width",e.width,"and height",e.height,"with x",r,"and y",o),n.getContext("2d").drawImage(t,r,o,s,c,e.x,e.y,s,c),n}function c(t){return Math.max(Math.max(t.body.scrollWidth,t.documentElement.scrollWidth),Math.max(t.body.offsetWidth,t.documentElement.offsetWidth),Math.max(t.body.clientWidth,t.documentElement.clientWidth))}function l(t){return Math.max(Math.max(t.body.scrollHeight,t.documentElement.scrollHeight),Math.max(t.body.offsetHeight,t.documentElement.offsetHeight),Math.max(t.body.clientHeight,t.documentElement.clientHeight))}function u(t){var e=document.createElement("a");return e.href=t,e.href=e.href,e}var h=t("./support"),f=t("./renderers/canvas"),d=t("./imageloader"),p=t("./nodeparser"),m=t("./nodecontainer"),g=t("./log"),w=t("./utils"),y=t("./clone"),v=t("./proxy").loadUrlDocument,b=w.getBounds,x="data-html2canvas-node",k=0;r.CanvasRenderer=f,r.NodeContainer=m,r.log=g,r.utils=w;var _="undefined"==typeof document||"function"!=typeof Object.create||"function"!=typeof document.createElement("canvas").getContext?function(){return Promise.reject("No canvas support")}:r;e.exports=_},{"./clone":2,"./imageloader":11,"./log":13,"./nodecontainer":14,"./nodeparser":15,"./proxy":16,"./renderers/canvas":20,"./support":22,"./utils":26}],5:[function(t,e,n){function r(t){if(this.src=t,i("DummyImageContainer for",t),!this.promise||!this.image){i("Initiating DummyImageContainer"),r.prototype.image=new Image;var e=this.image;r.prototype.promise=new Promise(function(t,n){e.onload=t,e.onerror=n,e.src=o(),!0===e.complete&&t(e)})}}var i=t("./log"),o=t("./utils").smallImage;e.exports=r},{"./log":13,"./utils":26}],6:[function(t,e,n){var r=t("./utils").smallImage;e.exports=function(t,e){var n,i,o=document.createElement("div"),a=document.createElement("img"),s=document.createElement("span");o.style.visibility="hidden",o.style.fontFamily=t,o.style.fontSize=e,o.style.margin=0,o.style.padding=0,document.body.appendChild(o),a.src=r(),a.width=1,a.height=1,a.style.margin=0,a.style.padding=0,a.style.verticalAlign="baseline",s.style.fontFamily=t,s.style.fontSize=e,s.style.margin=0,s.style.padding=0,s.appendChild(document.createTextNode("Hidden Text")),o.appendChild(s),o.appendChild(a),n=a.offsetTop-s.offsetTop+1,o.removeChild(s),o.appendChild(document.createTextNode("Hidden Text")),o.style.lineHeight="normal",a.style.verticalAlign="super",i=a.offsetTop-o.offsetTop+1,document.body.removeChild(o),this.baseline=n,this.lineWidth=1,this.middle=i}},{"./utils":26}],7:[function(t,e,n){function r(){this.data={}}var i=t("./font");r.prototype.getMetrics=function(t,e){return void 0===this.data[t+"-"+e]&&(this.data[t+"-"+e]=new i(t,e)),this.data[t+"-"+e]},e.exports=r},{"./font":6}],8:[function(t,e,n){function r(e,n,r){this.image=null,this.src=e;var o=this,a=i(e);this.promise=(n?new Promise(function(t){"about:blank"===e.contentWindow.document.URL||null==e.contentWindow.document.documentElement?e.contentWindow.onload=e.onload=function(){t(e)}:t(e)}):this.proxyLoad(r.proxy,a,r)).then(function(e){return t("./core")(e.contentWindow.document.documentElement,{type:"view",width:e.width,height:e.height,proxy:r.proxy,javascriptEnabled:r.javascriptEnabled,removeContainer:r.removeContainer,allowTaint:r.allowTaint,imageTimeout:r.imageTimeout/2})}).then(function(t){return o.image=t})}var i=t("./utils").getBounds,o=t("./proxy").loadUrlDocument;r.prototype.proxyLoad=function(t,e,n){var r=this.src;return o(r.src,t,r.ownerDocument,e.width,e.height,n)},e.exports=r},{"./core":4,"./proxy":16,"./utils":26}],9:[function(t,e,n){function r(t){this.src=t.value,this.colorStops=[],this.type=null,this.x0=.5,this.y0=.5,this.x1=.5,this.y1=.5,this.promise=Promise.resolve(!0)}r.TYPES={LINEAR:1,RADIAL:2},r.REGEXP_COLORSTOP=/^\s*(rgba?\(\s*\d{1,3},\s*\d{1,3},\s*\d{1,3}(?:,\s*[0-9\.]+)?\s*\)|[a-z]{3,20}|#[a-f0-9]{3,6})(?:\s+(\d{1,3}(?:\.\d+)?)(%|px)?)?(?:\s|$)/i,e.exports=r},{}],10:[function(t,e,n){e.exports=function(t,e){this.src=t,this.image=new Image;var n=this;this.tainted=null,this.promise=new Promise(function(r,i){n.image.onload=r,n.image.onerror=i,e&&(n.image.crossOrigin="anonymous"),n.image.src=t,!0===n.image.complete&&r(n.image)})}},{}],11:[function(t,e,n){function r(t,e){this.link=null,this.options=t,this.support=e,this.origin=this.getOrigin(window.location.href)}var i=t("./log"),o=t("./imagecontainer"),a=t("./dummyimagecontainer"),s=t("./proxyimagecontainer"),c=t("./framecontainer"),l=t("./svgcontainer"),u=t("./svgnodecontainer"),h=t("./lineargradientcontainer"),f=t("./webkitgradientcontainer"),d=t("./utils").bind;r.prototype.findImages=function(t){var e=[];return t.reduce(function(t,e){switch(e.node.nodeName){case"IMG":return t.concat([{args:[e.node.src],method:"url"}]);case"svg":case"IFRAME":return t.concat([{args:[e.node],method:e.node.nodeName}])}return t},[]).forEach(this.addImage(e,this.loadImage),this),e},r.prototype.findBackgroundImage=function(t,e){return e.parseBackgroundImages().filter(this.hasImageBackground).forEach(this.addImage(t,this.loadImage),this),t},r.prototype.addImage=function(t,e){return function(n){n.args.forEach(function(r){this.imageExists(t,r)||(t.splice(0,0,e.call(this,n)),i("Added image #"+t.length,"string"==typeof r?r.substring(0,100):r))},this)}},r.prototype.hasImageBackground=function(t){return"none"!==t.method},r.prototype.loadImage=function(t){if("url"===t.method){var e=t.args[0];return!this.isSVG(e)||this.support.svg||this.options.allowTaint?e.match(/data:image\/.*;base64,/i)?new o(e.replace(/url\(['"]{0,}|['"]{0,}\)$/gi,""),!1):this.isSameOrigin(e)||!0===this.options.allowTaint||this.isSVG(e)?new o(e,!1):this.support.cors&&!this.options.allowTaint&&this.options.useCORS?new o(e,!0):this.options.proxy?new s(e,this.options.proxy):new a(e):new l(e)}return"linear-gradient"===t.method?new h(t):"gradient"===t.method?new f(t):"svg"===t.method?new u(t.args[0],this.support.svg):"IFRAME"===t.method?new c(t.args[0],this.isSameOrigin(t.args[0].src),this.options):new a(t)},r.prototype.isSVG=function(t){return"svg"===t.substring(t.length-3).toLowerCase()||l.prototype.isInline(t)},r.prototype.imageExists=function(t,e){return t.some(function(t){return t.src===e})},r.prototype.isSameOrigin=function(t){return this.getOrigin(t)===this.origin},r.prototype.getOrigin=function(t){var e=this.link||(this.link=document.createElement("a"));return e.href=t,e.href=e.href,e.protocol+e.hostname+e.port},r.prototype.getPromise=function(t){return this.timeout(t,this.options.imageTimeout).catch(function(){return new a(t.src).promise.then(function(e){t.image=e})})},r.prototype.get=function(t){var e=null;return this.images.some(function(n){return(e=n).src===t})?e:null},r.prototype.fetch=function(t){return this.images=t.reduce(d(this.findBackgroundImage,this),this.findImages(t)),this.images.forEach(function(t,e){t.promise.then(function(){i("Succesfully loaded image #"+(e+1),t)},function(n){i("Failed loading image #"+(e+1),t,n)})}),this.ready=Promise.all(this.images.map(this.getPromise,this)),i("Finished searching images"),this},r.prototype.timeout=function(t,e){var n,r=Promise.race([t.promise,new Promise(function(r,o){n=setTimeout(function(){i("Timed out loading image",t),o(t)},e)})]).then(function(t){return clearTimeout(n),t});return r.catch(function(){clearTimeout(n)}),r},e.exports=r},{"./dummyimagecontainer":5,"./framecontainer":8,"./imagecontainer":10,"./lineargradientcontainer":12,"./log":13,"./proxyimagecontainer":17,"./svgcontainer":23,"./svgnodecontainer":24,"./utils":26,"./webkitgradientcontainer":27}],12:[function(t,e,n){function r(t){i.apply(this,arguments),this.type=i.TYPES.LINEAR;var e=r.REGEXP_DIRECTION.test(t.args[0])||!i.REGEXP_COLORSTOP.test(t.args[0]);e?t.args[0].split(/\s+/).reverse().forEach(function(t,e){switch(t){case"left":this.x0=0,this.x1=1;break;case"top":this.y0=0,this.y1=1;break;case"right":this.x0=1,this.x1=0;break;case"bottom":this.y0=1,this.y1=0;break;case"to":var n=this.y0,r=this.x0;this.y0=this.y1,this.x0=this.x1,this.x1=r,this.y1=n;break;case"center":break;default:var i=.01*parseFloat(t,10);if(isNaN(i))break;0===e?(this.y0=i,this.y1=1-this.y0):(this.x0=i,this.x1=1-this.x0)}},this):(this.y0=0,this.y1=1),this.colorStops=t.args.slice(e?1:0).map(function(t){var e=t.match(i.REGEXP_COLORSTOP),n=+e[2],r=0===n?"%":e[3];return{color:new o(e[1]),stop:"%"===r?n/100:null}}),null===this.colorStops[0].stop&&(this.colorStops[0].stop=0),null===this.colorStops[this.colorStops.length-1].stop&&(this.colorStops[this.colorStops.length-1].stop=1),this.colorStops.forEach(function(t,e){null===t.stop&&this.colorStops.slice(e).some(function(n,r){return null!==n.stop&&(t.stop=(n.stop-this.colorStops[e-1].stop)/(r+1)+this.colorStops[e-1].stop,!0)},this)},this)}var i=t("./gradientcontainer"),o=t("./color");r.prototype=Object.create(i.prototype),r.REGEXP_DIRECTION=/^\s*(?:to|left|right|top|bottom|center|\d{1,3}(?:\.\d+)?%?)(?:\s|$)/i,e.exports=r},{"./color":3,"./gradientcontainer":9}],13:[function(t,e,n){var r=function(){r.options.logging&&window.console&&window.console.log&&Function.prototype.bind.call(window.console.log,window.console).apply(window.console,[Date.now()-r.options.start+"ms","html2canvas:"].concat([].slice.call(arguments,0)))};r.options={logging:!1},e.exports=r},{}],14:[function(t,e,n){function r(t,e){this.node=t,this.parent=e,this.stack=null,this.bounds=null,this.borders=null,this.clip=[],this.backgroundClip=[],this.offsetBounds=null,this.visible=null,this.computedStyles=null,this.colors={},this.styles={},this.backgroundImages=null,this.transformData=null,this.transformMatrix=null,this.isPseudoElement=!1,this.opacity=null}function i(t){var e=t.options[t.selectedIndex||0];return e?e.text||"":""}function o(t){if(t&&"matrix"===t[1])return t[2].split(",").map(function(t){return parseFloat(t.trim())});if(t&&"matrix3d"===t[1]){var e=t[2].split(",").map(function(t){return parseFloat(t.trim())});return[e[0],e[1],e[4],e[5],e[12],e[13]]}}function a(t){return-1!==t.toString().indexOf("%")}function s(t){return t.replace("px","")}function c(t){return parseFloat(t)}var l=t("./color"),u=t("./utils"),h=u.getBounds,f=u.parseBackgrounds,d=u.offsetBounds;r.prototype.cloneTo=function(t){t.visible=this.visible,t.borders=this.borders,t.bounds=this.bounds,t.clip=this.clip,t.backgroundClip=this.backgroundClip,t.computedStyles=this.computedStyles,t.styles=this.styles,t.backgroundImages=this.backgroundImages,t.opacity=this.opacity},r.prototype.getOpacity=function(){return null===this.opacity?this.opacity=this.cssFloat("opacity"):this.opacity},r.prototype.assignStack=function(t){this.stack=t,t.children.push(this)},r.prototype.isElementVisible=function(){return this.node.nodeType===Node.TEXT_NODE?this.parent.visible:"none"!==this.css("display")&&"hidden"!==this.css("visibility")&&!this.node.hasAttribute("data-html2canvas-ignore")&&("INPUT"!==this.node.nodeName||"hidden"!==this.node.getAttribute("type"))},r.prototype.css=function(t){return this.computedStyles||(this.computedStyles=this.isPseudoElement?this.parent.computedStyle(this.before?":before":":after"):this.computedStyle(null)),this.styles[t]||(this.styles[t]=this.computedStyles[t])},r.prototype.prefixedCss=function(t){var e=["webkit","moz","ms","o"],n=this.css(t);return void 0===n&&e.some(function(e){return void 0!==(n=this.css(e+t.substr(0,1).toUpperCase()+t.substr(1)))},this),void 0===n?null:n},r.prototype.computedStyle=function(t){return this.node.ownerDocument.defaultView.getComputedStyle(this.node,t)},r.prototype.cssInt=function(t){var e=parseInt(this.css(t),10);return isNaN(e)?0:e},r.prototype.color=function(t){return this.colors[t]||(this.colors[t]=new l(this.css(t)))},r.prototype.cssFloat=function(t){var e=parseFloat(this.css(t));return isNaN(e)?0:e},r.prototype.fontWeight=function(){var t=this.css("fontWeight");switch(parseInt(t,10)){case 401:t="bold";break;case 400:t="normal"}return t},r.prototype.parseClip=function(){var t=this.css("clip").match(this.CLIP);return t?{top:parseInt(t[1],10),right:parseInt(t[2],10),bottom:parseInt(t[3],10),left:parseInt(t[4],10)}:null},r.prototype.parseBackgroundImages=function(){return this.backgroundImages||(this.backgroundImages=f(this.css("backgroundImage")))},r.prototype.cssList=function(t,e){var n=(this.css(t)||"").split(",");return n=n[e||0]||n[0]||"auto",1===(n=n.trim().split(" ")).length&&(n=[n[0],a(n[0])?"auto":n[0]]),n},r.prototype.parseBackgroundSize=function(t,e,n){var r,i,o=this.cssList("backgroundSize",n);if(a(o[0]))r=t.width*parseFloat(o[0])/100;else{if(/contain|cover/.test(o[0])){var s=t.width/t.height,c=e.width/e.height;return s<c^"contain"===o[0]?{width:t.height*c,height:t.height}:{width:t.width,height:t.width/c}}r=parseInt(o[0],10)}return i="auto"===o[0]&&"auto"===o[1]?e.height:"auto"===o[1]?r/e.width*e.height:a(o[1])?t.height*parseFloat(o[1])/100:parseInt(o[1],10),"auto"===o[0]&&(r=i/e.height*e.width),{width:r,height:i}},r.prototype.parseBackgroundPosition=function(t,e,n,r){var i,o,s=this.cssList("backgroundPosition",n);return i=a(s[0])?(t.width-(r||e).width)*(parseFloat(s[0])/100):parseInt(s[0],10),o="auto"===s[1]?i/e.width*e.height:a(s[1])?(t.height-(r||e).height)*parseFloat(s[1])/100:parseInt(s[1],10),"auto"===s[0]&&(i=o/e.height*e.width),{left:i,top:o}},r.prototype.parseBackgroundRepeat=function(t){return this.cssList("backgroundRepeat",t)[0]},r.prototype.parseTextShadows=function(){var t=this.css("textShadow"),e=[];if(t&&"none"!==t)for(var n=t.match(this.TEXT_SHADOW_PROPERTY),r=0;n&&r<n.length;r++){var i=n[r].match(this.TEXT_SHADOW_VALUES);e.push({color:new l(i[0]),offsetX:i[1]?parseFloat(i[1].replace("px","")):0,offsetY:i[2]?parseFloat(i[2].replace("px","")):0,blur:i[3]?i[3].replace("px",""):0})}return e},r.prototype.parseTransform=function(){if(!this.transformData)if(this.hasTransform()){var t=this.parseBounds(),e=this.prefixedCss("transformOrigin").split(" ").map(s).map(c);e[0]+=t.left,e[1]+=t.top,this.transformData={origin:e,matrix:this.parseTransformMatrix()}}else this.transformData={origin:[0,0],matrix:[1,0,0,1,0,0]};return this.transformData},r.prototype.parseTransformMatrix=function(){if(!this.transformMatrix){var t=this.prefixedCss("transform"),e=t?o(t.match(this.MATRIX_PROPERTY)):null;this.transformMatrix=e||[1,0,0,1,0,0]}return this.transformMatrix},r.prototype.parseBounds=function(){return this.bounds||(this.bounds=this.hasTransform()?d(this.node):h(this.node))},r.prototype.hasTransform=function(){return"1,0,0,1,0,0"!==this.parseTransformMatrix().join(",")||this.parent&&this.parent.hasTransform()},r.prototype.getValue=function(){var t=this.node.value||"";return"SELECT"===this.node.tagName?t=i(this.node):"password"===this.node.type&&(t=Array(t.length+1).join("•")),0===t.length?this.node.placeholder||"":t},r.prototype.MATRIX_PROPERTY=/(matrix|matrix3d)\((.+)\)/,r.prototype.TEXT_SHADOW_PROPERTY=/((rgba|rgb)\([^\)]+\)(\s-?\d+px){0,})/g,r.prototype.TEXT_SHADOW_VALUES=/(-?\d+px)|(#.+)|(rgb\(.+\))|(rgba\(.+\))/g,r.prototype.CLIP=/^rect\((\d+)px,? (\d+)px,? (\d+)px,? (\d+)px\)$/,e.exports=r},{"./color":3,"./utils":26}],15:[function(t,e,n){function r(t,e,n,r,i){L("Starting NodeParser"),this.renderer=e,this.options=i,this.range=null,this.support=n,this.renderQueue=[],this.stack=new G(!0,1,t.ownerDocument,null);var o=new U(t,null);if(i.background&&e.rectangle(0,0,e.width,e.height,new V(i.background)),t===t.ownerDocument.documentElement){var a=new U(o.color("backgroundColor").isTransparent()?t.ownerDocument.body:t.ownerDocument.documentElement,null);e.rectangle(0,0,e.width,e.height,a.color("backgroundColor"))}o.visibile=o.isElementVisible(),this.createPseudoHideStyles(t.ownerDocument),this.disableAnimations(t.ownerDocument),this.nodes=R([o].concat(this.getChildren(o)).filter(function(t){return t.visible=t.isElementVisible()}).map(this.getPseudoElements,this)),this.fontMetrics=new X,L("Fetched nodes, total:",this.nodes.length),L("Calculate overflow clips"),this.calculateOverflowClips(),L("Start fetching images"),this.images=r.fetch(this.nodes.filter(q)),this.ready=this.images.ready.then(J(function(){return L("Images loaded, starting parsing"),L("Creating stacking contexts"),this.createStackingContexts(),L("Sorting stacking contexts"),this.sortStackingContexts(this.stack),this.parse(this.stack),L("Render queue created with "+this.renderQueue.length+" items"),new Promise(J(function(t){i.async?"function"==typeof i.async?i.async.call(this,this.renderQueue,t):this.renderQueue.length>0?(this.renderIndex=0,this.asyncRenderer(this.renderQueue,t)):t():(this.renderQueue.forEach(this.paint,this),t())},this))},this))}function i(t){return t.parent&&t.parent.clip.length}function o(t){return t.replace(/(\-[a-z])/g,function(t){return t.toUpperCase().replace("-","")})}function a(){}function s(t,e,n,r){return t.map(function(i,o){if(i.width>0){var a=e.left,s=e.top,c=e.width,l=e.height-t[2].width;switch(o){case 0:l=t[0].width,i.args=h({c1:[a,s],c2:[a+c,s],c3:[a+c-t[1].width,s+l],c4:[a+t[3].width,s+l]},r[0],r[1],n.topLeftOuter,n.topLeftInner,n.topRightOuter,n.topRightInner);break;case 1:a=e.left+e.width-t[1].width,c=t[1].width,i.args=h({c1:[a+c,s],c2:[a+c,s+l+t[2].width],c3:[a,s+l],c4:[a,s+t[0].width]},r[1],r[2],n.topRightOuter,n.topRightInner,n.bottomRightOuter,n.bottomRightInner);break;case 2:s=s+e.height-t[2].width,l=t[2].width,i.args=h({c1:[a+c,s+l],c2:[a,s+l],c3:[a+t[3].width,s],c4:[a+c-t[3].width,s]},r[2],r[3],n.bottomRightOuter,n.bottomRightInner,n.bottomLeftOuter,n.bottomLeftInner);break;case 3:c=t[3].width,i.args=h({c1:[a,s+l+t[2].width],c2:[a,s],c3:[a+c,s+t[0].width],c4:[a+c,s+l]},r[3],r[0],n.bottomLeftOuter,n.bottomLeftInner,n.topLeftOuter,n.topLeftInner)}}return i})}function c(t,e,n,r){var i=(Math.sqrt(2)-1)/3*4,o=n*i,a=r*i,s=t+n,c=e+r;return{topLeft:u({x:t,y:c},{x:t,y:c-a},{x:s-o,y:e},{x:s,y:e}),topRight:u({x:t,y:e},{x:t+o,y:e},{x:s,y:c-a},{x:s,y:c}),bottomRight:u({x:s,y:e},{x:s,y:e+a},{x:t+o,y:c},{x:t,y:c}),bottomLeft:u({x:s,y:c},{x:s-o,y:c},{x:t,y:e+a},{x:t,y:e})}}function l(t,e,n){var r=t.left,i=t.top,o=t.width,a=t.height,s=e[0][0]<o/2?e[0][0]:o/2,l=e[0][1]<a/2?e[0][1]:a/2,u=e[1][0]<o/2?e[1][0]:o/2,h=e[1][1]<a/2?e[1][1]:a/2,f=e[2][0]<o/2?e[2][0]:o/2,d=e[2][1]<a/2?e[2][1]:a/2,p=e[3][0]<o/2?e[3][0]:o/2,m=e[3][1]<a/2?e[3][1]:a/2,g=o-u,w=a-d,y=o-f,v=a-m;return{topLeftOuter:c(r,i,s,l).topLeft.subdivide(.5),topLeftInner:c(r+n[3].width,i+n[0].width,Math.max(0,s-n[3].width),Math.max(0,l-n[0].width)).topLeft.subdivide(.5),topRightOuter:c(r+g,i,u,h).topRight.subdivide(.5),topRightInner:c(r+Math.min(g,o+n[3].width),i+n[0].width,g>o+n[3].width?0:u-n[3].width,h-n[0].width).topRight.subdivide(.5),bottomRightOuter:c(r+y,i+w,f,d).bottomRight.subdivide(.5),bottomRightInner:c(r+Math.min(y,o-n[3].width),i+Math.min(w,a+n[0].width),Math.max(0,f-n[1].width),d-n[2].width).bottomRight.subdivide(.5),bottomLeftOuter:c(r,i+v,p,m).bottomLeft.subdivide(.5),bottomLeftInner:c(r+n[3].width,i+v,Math.max(0,p-n[3].width),m-n[2].width).bottomLeft.subdivide(.5)}}function u(t,e,n,r){var i=function(t,e,n){return{x:t.x+(e.x-t.x)*n,y:t.y+(e.y-t.y)*n}};return{start:t,startControl:e,endControl:n,end:r,subdivide:function(o){var a=i(t,e,o),s=i(e,n,o),c=i(n,r,o),l=i(a,s,o),h=i(s,c,o),f=i(l,h,o);return[u(t,a,l,f),u(f,h,c,r)]},curveTo:function(t){t.push(["bezierCurve",e.x,e.y,n.x,n.y,r.x,r.y])},curveToReversed:function(r){r.push(["bezierCurve",n.x,n.y,e.x,e.y,t.x,t.y])}}}function h(t,e,n,r,i,o,a){var s=[];return e[0]>0||e[1]>0?(s.push(["line",r[1].start.x,r[1].start.y]),r[1].curveTo(s)):s.push(["line",t.c1[0],t.c1[1]]),n[0]>0||n[1]>0?(s.push(["line",o[0].start.x,o[0].start.y]),o[0].curveTo(s),s.push(["line",a[0].end.x,a[0].end.y]),a[0].curveToReversed(s)):(s.push(["line",t.c2[0],t.c2[1]]),s.push(["line",t.c3[0],t.c3[1]])),e[0]>0||e[1]>0?(s.push(["line",i[1].end.x,i[1].end.y]),i[1].curveToReversed(s)):s.push(["line",t.c4[0],t.c4[1]]),s}function f(t,e,n,r,i,o,a){e[0]>0||e[1]>0?(t.push(["line",r[0].start.x,r[0].start.y]),r[0].curveTo(t),r[1].curveTo(t)):t.push(["line",o,a]),(n[0]>0||n[1]>0)&&t.push(["line",i[0].start.x,i[0].start.y])}function d(t){return t.cssInt("zIndex")<0}function p(t){return t.cssInt("zIndex")>0}function m(t){return 0===t.cssInt("zIndex")}function g(t){return-1!==["inline","inline-block","inline-table"].indexOf(t.css("display"))}function w(t){return t instanceof G}function y(t){return t.node.data.trim().length>0}function v(t){return/^(normal|none|0px)$/.test(t.parent.css("letterSpacing"))}function b(t){return["TopLeft","TopRight","BottomRight","BottomLeft"].map(function(e){var n=t.css("border"+e+"Radius").split(" ");return n.length<=1&&(n[1]=n[0]),n.map(O)})}function x(t){return t.nodeType===Node.TEXT_NODE||t.nodeType===Node.ELEMENT_NODE}function k(t){var e=t.css("position");return"auto"!==(-1!==["absolute","relative","fixed"].indexOf(e)?t.css("zIndex"):"auto")}function _(t){return"static"!==t.css("position")}function C(t){return"none"!==t.css("float")}function A(t){return-1!==["inline-block","inline-table"].indexOf(t.css("display"))}function S(t){var e=this;return function(){return!t.apply(e,arguments)}}function q(t){return t.node.nodeType===Node.ELEMENT_NODE}function T(t){return!0===t.isPseudoElement}function P(t){return t.node.nodeType===Node.TEXT_NODE}function I(t){return function(e,n){return e.cssInt("zIndex")+t.indexOf(e)/t.length-(n.cssInt("zIndex")+t.indexOf(n)/t.length)}}function E(t){return t.getOpacity()<1}function O(t){return parseInt(t,10)}function F(t){return t.width}function B(t){return t.node.nodeType!==Node.ELEMENT_NODE||-1===["SCRIPT","HEAD","TITLE","OBJECT","BR","OPTION"].indexOf(t.node.nodeName)}function R(t){return[].concat.apply([],t)}function D(t){var e=t.substr(0,1);return e===t.substr(t.length-1)&&e.match(/'|"/)?t.substr(1,t.length-2):t}function j(t){for(var e,n=[],r=0,i=!1;t.length;)z(t[r])===i?((e=t.splice(0,r)).length&&n.push(M.ucs2.encode(e)),i=!i,r=0):r++,r>=t.length&&(e=t.splice(0,r)).length&&n.push(M.ucs2.encode(e));return n}function z(t){return-1!==[32,13,10,9,45].indexOf(t)}function N(t){return/[^\u0000-\u00ff]/.test(t)}var L=t("./log"),M=t("punycode"),U=t("./nodecontainer"),H=t("./textcontainer"),W=t("./pseudoelementcontainer"),X=t("./fontmetrics"),V=t("./color"),G=t("./stackingcontext"),Y=t("./utils"),J=Y.bind,Q=Y.getBounds,K=Y.parseBackgrounds,$=Y.offsetBounds;r.prototype.calculateOverflowClips=function(){this.nodes.forEach(function(t){if(q(t)){T(t)&&t.appendToDOM(),t.borders=this.parseBorders(t);var e="hidden"===t.css("overflow")?[t.borders.clip]:[],n=t.parseClip();n&&-1!==["absolute","fixed"].indexOf(t.css("position"))&&e.push([["rect",t.bounds.left+n.left,t.bounds.top+n.top,n.right-n.left,n.bottom-n.top]]),t.clip=i(t)?t.parent.clip.concat(e):e,t.backgroundClip="hidden"!==t.css("overflow")?t.clip.concat([t.borders.clip]):t.clip,T(t)&&t.cleanDOM()}else P(t)&&(t.clip=i(t)?t.parent.clip:[]);T(t)||(t.bounds=null)},this)},r.prototype.asyncRenderer=function(t,e,n){n=n||Date.now(),this.paint(t[this.renderIndex++]),t.length===this.renderIndex?e():n+20>Date.now()?this.asyncRenderer(t,e,n):setTimeout(J(function(){this.asyncRenderer(t,e)},this),0)},r.prototype.createPseudoHideStyles=function(t){this.createStyles(t,"."+W.prototype.PSEUDO_HIDE_ELEMENT_CLASS_BEFORE+':before { content: "" !important; display: none !important; }.'+W.prototype.PSEUDO_HIDE_ELEMENT_CLASS_AFTER+':after { content: "" !important; display: none !important; }')},r.prototype.disableAnimations=function(t){this.createStyles(t,"* { -webkit-animation: none !important; -moz-animation: none !important; -o-animation: none !important; animation: none !important; -webkit-transition: none !important; -moz-transition: none !important; -o-transition: none !important; transition: none !important;}")},r.prototype.createStyles=function(t,e){var n=t.createElement("style");n.innerHTML=e,t.body.appendChild(n)},r.prototype.getPseudoElements=function(t){var e=[[t]];if(t.node.nodeType===Node.ELEMENT_NODE){var n=this.getPseudoElement(t,":before"),r=this.getPseudoElement(t,":after");n&&e.push(n),r&&e.push(r)}return R(e)},r.prototype.getPseudoElement=function(t,e){var n=t.computedStyle(e);if(!n||!n.content||"none"===n.content||"-moz-alt-content"===n.content||"none"===n.display)return null;for(var r=D(n.content),i="url"===r.substr(0,3),a=document.createElement(i?"img":"html2canvaspseudoelement"),s=new W(a,t,e),c=n.length-1;c>=0;c--){var l=o(n.item(c));a.style[l]=n[l]}if(a.className=W.prototype.PSEUDO_HIDE_ELEMENT_CLASS_BEFORE+" "+W.prototype.PSEUDO_HIDE_ELEMENT_CLASS_AFTER,i)return a.src=K(r)[0].args[0],[s];var u=document.createTextNode(r);return a.appendChild(u),[s,new H(u,s)]},r.prototype.getChildren=function(t){return R([].filter.call(t.node.childNodes,x).map(function(e){var n=[e.nodeType===Node.TEXT_NODE?new H(e,t):new U(e,t)].filter(B);return e.nodeType===Node.ELEMENT_NODE&&n.length&&"TEXTAREA"!==e.tagName?n[0].isElementVisible()?n.concat(this.getChildren(n[0])):[]:n},this))},r.prototype.newStackingContext=function(t,e){var n=new G(e,t.getOpacity(),t.node,t.parent);t.cloneTo(n),(e?n.getParentStack(this):n.parent.stack).contexts.push(n),t.stack=n},r.prototype.createStackingContexts=function(){this.nodes.forEach(function(t){q(t)&&(this.isRootElement(t)||E(t)||k(t)||this.isBodyWithTransparentRoot(t)||t.hasTransform())?this.newStackingContext(t,!0):q(t)&&(_(t)&&m(t)||A(t)||C(t))?this.newStackingContext(t,!1):t.assignStack(t.parent.stack)},this)},r.prototype.isBodyWithTransparentRoot=function(t){return"BODY"===t.node.nodeName&&t.parent.color("backgroundColor").isTransparent()},r.prototype.isRootElement=function(t){return null===t.parent},r.prototype.sortStackingContexts=function(t){t.contexts.sort(I(t.contexts.slice(0))),t.contexts.forEach(this.sortStackingContexts,this)},r.prototype.parseTextBounds=function(t){return function(e,n,r){if("none"!==t.parent.css("textDecoration").substr(0,4)||0!==e.trim().length){if(this.support.rangeBounds&&!t.parent.hasTransform()){var i=r.slice(0,n).join("").length;return this.getRangeBounds(t.node,i,e.length)}if(t.node&&"string"==typeof t.node.data){var o=t.node.splitText(e.length),a=this.getWrapperBounds(t.node,t.parent.hasTransform());return t.node=o,a}}else this.support.rangeBounds&&!t.parent.hasTransform()||(t.node=t.node.splitText(e.length));return{}}},r.prototype.getWrapperBounds=function(t,e){var n=t.ownerDocument.createElement("html2canvaswrapper"),r=t.parentNode,i=t.cloneNode(!0);n.appendChild(t.cloneNode(!0)),r.replaceChild(n,t);var o=e?$(n):Q(n);return r.replaceChild(i,n),o},r.prototype.getRangeBounds=function(t,e,n){var r=this.range||(this.range=t.ownerDocument.createRange());return r.setStart(t,e),r.setEnd(t,e+n),r.getBoundingClientRect()},r.prototype.parse=function(t){var e=t.contexts.filter(d),n=t.children.filter(q),r=n.filter(S(C)),i=r.filter(S(_)).filter(S(g)),o=n.filter(S(_)).filter(C),s=r.filter(S(_)).filter(g),c=t.contexts.concat(r.filter(_)).filter(m),l=t.children.filter(P).filter(y),u=t.contexts.filter(p);e.concat(i).concat(o).concat(s).concat(c).concat(l).concat(u).forEach(function(t){this.renderQueue.push(t),w(t)&&(this.parse(t),this.renderQueue.push(new a))},this)},r.prototype.paint=function(t){try{t instanceof a?this.renderer.ctx.restore():P(t)?(T(t.parent)&&t.parent.appendToDOM(),this.paintText(t),T(t.parent)&&t.parent.cleanDOM()):this.paintNode(t)}catch(t){if(L(t),this.options.strict)throw t}},r.prototype.paintNode=function(t){w(t)&&(this.renderer.setOpacity(t.opacity),this.renderer.ctx.save(),t.hasTransform()&&this.renderer.setTransform(t.parseTransform())),"INPUT"===t.node.nodeName&&"checkbox"===t.node.type?this.paintCheckbox(t):"INPUT"===t.node.nodeName&&"radio"===t.node.type?this.paintRadio(t):this.paintElement(t)},r.prototype.paintElement=function(t){var e=t.parseBounds();this.renderer.clip(t.backgroundClip,function(){this.renderer.renderBackground(t,e,t.borders.borders.map(F))},this),this.renderer.clip(t.clip,function(){this.renderer.renderBorders(t.borders.borders)},this),this.renderer.clip(t.backgroundClip,function(){switch(t.node.nodeName){case"svg":case"IFRAME":var n=this.images.get(t.node);n?this.renderer.renderImage(t,e,t.borders,n):L("Error loading <"+t.node.nodeName+">",t.node);break;case"IMG":var r=this.images.get(t.node.src);r?this.renderer.renderImage(t,e,t.borders,r):L("Error loading <img>",t.node.src);break;case"CANVAS":this.renderer.renderImage(t,e,t.borders,{image:t.node});break;case"SELECT":case"INPUT":case"TEXTAREA":this.paintFormValue(t)}},this)},r.prototype.paintCheckbox=function(t){var e=t.parseBounds(),n=Math.min(e.width,e.height),r={width:n-1,height:n-1,top:e.top,left:e.left},i=[3,3],o=[i,i,i,i],a=[1,1,1,1].map(function(t){return{color:new V("#A5A5A5"),width:t}}),c=l(r,o,a);this.renderer.clip(t.backgroundClip,function(){this.renderer.rectangle(r.left+1,r.top+1,r.width-2,r.height-2,new V("#DEDEDE")),this.renderer.renderBorders(s(a,r,c,o)),t.node.checked&&(this.renderer.font(new V("#424242"),"normal","normal","bold",n-3+"px","arial"),this.renderer.text("✔",r.left+n/6,r.top+n-1))},this)},r.prototype.paintRadio=function(t){var e=t.parseBounds(),n=Math.min(e.width,e.height)-2;this.renderer.clip(t.backgroundClip,function(){this.renderer.circleStroke(e.left+1,e.top+1,n,new V("#DEDEDE"),1,new V("#A5A5A5")),t.node.checked&&this.renderer.circle(Math.ceil(e.left+n/4)+1,Math.ceil(e.top+n/4)+1,Math.floor(n/2),new V("#424242"))},this)},r.prototype.paintFormValue=function(t){var e=t.getValue();if(e.length>0){var n=t.node.ownerDocument,r=n.createElement("html2canvaswrapper");["lineHeight","textAlign","fontFamily","fontWeight","fontSize","color","paddingLeft","paddingTop","paddingRight","paddingBottom","width","height","borderLeftStyle","borderTopStyle","borderLeftWidth","borderTopWidth","boxSizing","whiteSpace","wordWrap"].forEach(function(e){try{r.style[e]=t.css(e)}catch(t){L("html2canvas: Parse: Exception caught in renderFormValue: "+t.message)}});var i=t.parseBounds();r.style.position="fixed",r.style.left=i.left+"px",r.style.top=i.top+"px",r.textContent=e,n.body.appendChild(r),this.paintText(new H(r.firstChild,t)),n.body.removeChild(r)}},r.prototype.paintText=function(t){t.applyTextTransform();var e=M.ucs2.decode(t.node.data),n=this.options.letterRendering&&!v(t)||N(t.node.data)?e.map(function(t){return M.ucs2.encode([t])}):j(e),r=t.parent.fontWeight(),i=t.parent.css("fontSize"),o=t.parent.css("fontFamily"),a=t.parent.parseTextShadows();this.renderer.font(t.parent.color("color"),t.parent.css("fontStyle"),t.parent.css("fontVariant"),r,i,o),a.length?this.renderer.fontShadow(a[0].color,a[0].offsetX,a[0].offsetY,a[0].blur):this.renderer.clearShadow(),this.renderer.clip(t.parent.clip,function(){n.map(this.parseTextBounds(t),this).forEach(function(e,r){e&&(this.renderer.text(n[r],e.left,e.bottom),this.renderTextDecoration(t.parent,e,this.fontMetrics.getMetrics(o,i)))},this)},this)},r.prototype.renderTextDecoration=function(t,e,n){switch(t.css("textDecoration").split(" ")[0]){case"underline":this.renderer.rectangle(e.left,Math.round(e.top+n.baseline+n.lineWidth),e.width,1,t.color("color"));break;case"overline":this.renderer.rectangle(e.left,Math.round(e.top),e.width,1,t.color("color"));break;case"line-through":this.renderer.rectangle(e.left,Math.ceil(e.top+n.middle+n.lineWidth),e.width,1,t.color("color"))}};var Z={inset:[["darken",.6],["darken",.1],["darken",.1],["darken",.6]]};r.prototype.parseBorders=function(t){var e=t.parseBounds(),n=b(t),r=["Top","Right","Bottom","Left"].map(function(e,n){var r=t.css("border"+e+"Style"),i=t.color("border"+e+"Color");"inset"===r&&i.isBlack()&&(i=new V([255,255,255,i.a]));var o=Z[r]?Z[r][n]:null;return{width:t.cssInt("border"+e+"Width"),color:o?i[o[0]](o[1]):i,args:null}}),i=l(e,n,r);return{clip:this.parseBackgroundClip(t,i,r,n,e),borders:s(r,e,i,n)}},r.prototype.parseBackgroundClip=function(t,e,n,r,i){var o=[];switch(t.css("backgroundClip")){case"content-box":case"padding-box":f(o,r[0],r[1],e.topLeftInner,e.topRightInner,i.left+n[3].width,i.top+n[0].width),f(o,r[1],r[2],e.topRightInner,e.bottomRightInner,i.left+i.width-n[1].width,i.top+n[0].width),f(o,r[2],r[3],e.bottomRightInner,e.bottomLeftInner,i.left+i.width-n[1].width,i.top+i.height-n[2].width),f(o,r[3],r[0],e.bottomLeftInner,e.topLeftInner,i.left+n[3].width,i.top+i.height-n[2].width);break;default:f(o,r[0],r[1],e.topLeftOuter,e.topRightOuter,i.left,i.top),f(o,r[1],r[2],e.topRightOuter,e.bottomRightOuter,i.left+i.width,i.top),f(o,r[2],r[3],e.bottomRightOuter,e.bottomLeftOuter,i.left+i.width,i.top+i.height),f(o,r[3],r[0],e.bottomLeftOuter,e.topLeftOuter,i.left,i.top+i.height)}return o},e.exports=r},{"./color":3,"./fontmetrics":7,"./log":13,"./nodecontainer":14,"./pseudoelementcontainer":18,"./stackingcontext":21,"./textcontainer":25,"./utils":26,punycode:1}],16:[function(t,e,n){function r(t,e,n){var r="withCredentials"in new XMLHttpRequest;if(!e)return Promise.reject("No proxy configured");var s=o(r),l=a(e,t,s);return r?c(l):i(n,l,s).then(function(t){return f(t.content)})}function i(t,e,n){return new Promise(function(r,i){var o=t.createElement("script"),a=function(){delete window.html2canvas.proxy[n],t.body.removeChild(o)};window.html2canvas.proxy[n]=function(t){a(),r(t)},o.src=e,o.onerror=function(t){a(),i(t)},t.body.appendChild(o)})}function o(t){return t?"":"html2canvas_"+Date.now()+"_"+ ++d+"_"+Math.round(1e5*Math.random())}function a(t,e,n){return t+"?url="+encodeURIComponent(e)+(n.length?"&callback=html2canvas.proxy."+n:"")}function s(t){return function(e){var n,r=new DOMParser;try{n=r.parseFromString(e,"text/html")}catch(t){u("DOMParser not supported, falling back to createHTMLDocument"),n=document.implementation.createHTMLDocument("");try{n.open(),n.write(e),n.close()}catch(t){u("createHTMLDocument write not supported, falling back to document.body.innerHTML"),n.body.innerHTML=e}}var i=n.querySelector("base");if(!i||!i.href.host){var o=n.createElement("base");o.href=t,n.head.insertBefore(o,n.head.firstChild)}return n}}var c=t("./xhr"),l=t("./utils"),u=t("./log"),h=t("./clone"),f=l.decode64,d=0;n.Proxy=r,n.ProxyURL=function(t,e,n){var r="crossOrigin"in new Image,s=o(r),c=a(e,t,s);return r?Promise.resolve(c):i(n,c,s).then(function(t){return"data:"+t.type+";base64,"+t.content})},n.loadUrlDocument=function(t,e,n,i,o,a){return new r(t,e,window.document).then(s(t)).then(function(t){return h(t,n,i,o,a,0,0)})}},{"./clone":2,"./log":13,"./utils":26,"./xhr":28}],17:[function(t,e,n){var r=t("./proxy").ProxyURL;e.exports=function(t,e){var n=document.createElement("a");n.href=t,t=n.href,this.src=t,this.image=new Image;var i=this;this.promise=new Promise(function(n,o){i.image.crossOrigin="Anonymous",i.image.onload=n,i.image.onerror=o,new r(t,e,document).then(function(t){i.image.src=t}).catch(o)})}},{"./proxy":16}],18:[function(t,e,n){function r(t,e,n){i.call(this,t,e),this.isPseudoElement=!0,this.before=":before"===n}var i=t("./nodecontainer");r.prototype.cloneTo=function(t){r.prototype.cloneTo.call(this,t),t.isPseudoElement=!0,t.before=this.before},(r.prototype=Object.create(i.prototype)).appendToDOM=function(){this.before?this.parent.node.insertBefore(this.node,this.parent.node.firstChild):this.parent.node.appendChild(this.node),this.parent.node.className+=" "+this.getHideClass()},r.prototype.cleanDOM=function(){this.node.parentNode.removeChild(this.node),this.parent.node.className=this.parent.node.className.replace(this.getHideClass(),"")},r.prototype.getHideClass=function(){return this["PSEUDO_HIDE_ELEMENT_CLASS_"+(this.before?"BEFORE":"AFTER")]},r.prototype.PSEUDO_HIDE_ELEMENT_CLASS_BEFORE="___html2canvas___pseudoelement_before",r.prototype.PSEUDO_HIDE_ELEMENT_CLASS_AFTER="___html2canvas___pseudoelement_after",e.exports=r},{"./nodecontainer":14}],19:[function(t,e,n){function r(t,e,n,r,i){this.width=t,this.height=e,this.images=n,this.options=r,this.document=i}var i=t("./log");r.prototype.renderImage=function(t,e,n,r){var i=t.cssInt("paddingLeft"),o=t.cssInt("paddingTop"),a=t.cssInt("paddingRight"),s=t.cssInt("paddingBottom"),c=n.borders,l=e.width-(c[1].width+c[3].width+i+a),u=e.height-(c[0].width+c[2].width+o+s);this.drawImage(r,0,0,r.image.width||l,r.image.height||u,e.left+i+c[3].width,e.top+o+c[0].width,l,u)},r.prototype.renderBackground=function(t,e,n){e.height>0&&e.width>0&&(this.renderBackgroundColor(t,e),this.renderBackgroundImage(t,e,n))},r.prototype.renderBackgroundColor=function(t,e){var n=t.color("backgroundColor");n.isTransparent()||this.rectangle(e.left,e.top,e.width,e.height,n)},r.prototype.renderBorders=function(t){t.forEach(this.renderBorder,this)},r.prototype.renderBorder=function(t){t.color.isTransparent()||null===t.args||this.drawShape(t.args,t.color)},r.prototype.renderBackgroundImage=function(t,e,n){t.parseBackgroundImages().reverse().forEach(function(r,o,a){switch(r.method){case"url":var s=this.images.get(r.args[0]);s?this.renderBackgroundRepeating(t,e,s,a.length-(o+1),n):i("Error loading background-image",r.args[0]);break;case"linear-gradient":case"gradient":var c=this.images.get(r.value);c?this.renderBackgroundGradient(c,e,n):i("Error loading background-image",r.args[0]);break;case"none":break;default:i("Unknown background-image type",r.args[0])}},this)},r.prototype.renderBackgroundRepeating=function(t,e,n,r,i){var o=t.parseBackgroundSize(e,n.image,r),a=t.parseBackgroundPosition(e,n.image,r,o);switch(t.parseBackgroundRepeat(r)){case"repeat-x":case"repeat no-repeat":this.backgroundRepeatShape(n,a,o,e,e.left+i[3],e.top+a.top+i[0],99999,o.height,i);break;case"repeat-y":case"no-repeat repeat":this.backgroundRepeatShape(n,a,o,e,e.left+a.left+i[3],e.top+i[0],o.width,99999,i);break;case"no-repeat":this.backgroundRepeatShape(n,a,o,e,e.left+a.left+i[3],e.top+a.top+i[0],o.width,o.height,i);break;default:this.renderBackgroundRepeat(n,a,o,{top:e.top,left:e.left},i[3],i[0])}},e.exports=r},{"./log":13}],20:[function(t,e,n){function r(t,e){o.apply(this,arguments),this.canvas=this.options.canvas||this.document.createElement("canvas"),this.options.canvas||(this.canvas.width=t,this.canvas.height=e),this.ctx=this.canvas.getContext("2d"),this.taintCtx=this.document.createElement("canvas").getContext("2d"),this.ctx.textBaseline="bottom",this.variables={},s("Initialized CanvasRenderer with size",t,"x",e)}function i(t){return t.length>0}var o=t("../renderer"),a=t("../lineargradientcontainer"),s=t("../log");(r.prototype=Object.create(o.prototype)).setFillStyle=function(t){return this.ctx.fillStyle="object"==typeof t&&t.isColor?t.toString():t,this.ctx},r.prototype.rectangle=function(t,e,n,r,i){this.setFillStyle(i).fillRect(t,e,n,r)},r.prototype.circle=function(t,e,n,r){this.setFillStyle(r),this.ctx.beginPath(),this.ctx.arc(t+n/2,e+n/2,n/2,0,2*Math.PI,!0),this.ctx.closePath(),this.ctx.fill()},r.prototype.circleStroke=function(t,e,n,r,i,o){this.circle(t,e,n,r),this.ctx.strokeStyle=o.toString(),this.ctx.stroke()},r.prototype.drawShape=function(t,e){this.shape(t),this.setFillStyle(e).fill()},r.prototype.taints=function(t){if(null===t.tainted){this.taintCtx.drawImage(t.image,0,0);try{this.taintCtx.getImageData(0,0,1,1),t.tainted=!1}catch(e){this.taintCtx=document.createElement("canvas").getContext("2d"),t.tainted=!0}}return t.tainted},r.prototype.drawImage=function(t,e,n,r,i,o,a,s,c){this.taints(t)&&!this.options.allowTaint||this.ctx.drawImage(t.image,e,n,r,i,o,a,s,c)},r.prototype.clip=function(t,e,n){this.ctx.save(),t.filter(i).forEach(function(t){this.shape(t).clip()},this),e.call(n),this.ctx.restore()},r.prototype.shape=function(t){return this.ctx.beginPath(),t.forEach(function(t,e){"rect"===t[0]?this.ctx.rect.apply(this.ctx,t.slice(1)):this.ctx[0===e?"moveTo":t[0]+"To"].apply(this.ctx,t.slice(1))},this),this.ctx.closePath(),this.ctx},r.prototype.font=function(t,e,n,r,i,o){this.setFillStyle(t).font=[e,n,r,i,o].join(" ").split(",")[0]},r.prototype.fontShadow=function(t,e,n,r){this.setVariable("shadowColor",t.toString()).setVariable("shadowOffsetY",e).setVariable("shadowOffsetX",n).setVariable("shadowBlur",r)},r.prototype.clearShadow=function(){this.setVariable("shadowColor","rgba(0,0,0,0)")},r.prototype.setOpacity=function(t){this.ctx.globalAlpha=t},r.prototype.setTransform=function(t){this.ctx.translate(t.origin[0],t.origin[1]),this.ctx.transform.apply(this.ctx,t.matrix),this.ctx.translate(-t.origin[0],-t.origin[1])},r.prototype.setVariable=function(t,e){return this.variables[t]!==e&&(this.variables[t]=this.ctx[t]=e),this},r.prototype.text=function(t,e,n){this.ctx.fillText(t,e,n)},r.prototype.backgroundRepeatShape=function(t,e,n,r,i,o,a,s,c){var l=[["line",Math.round(i),Math.round(o)],["line",Math.round(i+a),Math.round(o)],["line",Math.round(i+a),Math.round(s+o)],["line",Math.round(i),Math.round(s+o)]];this.clip([l],function(){this.renderBackgroundRepeat(t,e,n,r,c[3],c[0])},this)},r.prototype.renderBackgroundRepeat=function(t,e,n,r,i,o){var a=Math.round(r.left+e.left+i),s=Math.round(r.top+e.top+o);this.setFillStyle(this.ctx.createPattern(this.resizeImage(t,n),"repeat")),this.ctx.translate(a,s),this.ctx.fill(),this.ctx.translate(-a,-s)},r.prototype.renderBackgroundGradient=function(t,e){if(t instanceof a){var n=this.ctx.createLinearGradient(e.left+e.width*t.x0,e.top+e.height*t.y0,e.left+e.width*t.x1,e.top+e.height*t.y1);t.colorStops.forEach(function(t){n.addColorStop(t.stop,t.color.toString())}),this.rectangle(e.left,e.top,e.width,e.height,n)}},r.prototype.resizeImage=function(t,e){var n=t.image;if(n.width===e.width&&n.height===e.height)return n;var r=document.createElement("canvas");return r.width=e.width,r.height=e.height,r.getContext("2d").drawImage(n,0,0,n.width,n.height,0,0,e.width,e.height),r},e.exports=r},{"../lineargradientcontainer":12,"../log":13,"../renderer":19}],21:[function(t,e,n){function r(t,e,n,r){i.call(this,n,r),this.ownStacking=t,this.contexts=[],this.children=[],this.opacity=(this.parent?this.parent.stack.opacity:1)*e}var i=t("./nodecontainer");(r.prototype=Object.create(i.prototype)).getParentStack=function(t){var e=this.parent?this.parent.stack:null;return e?e.ownStacking?e:e.getParentStack(t):t.stack},e.exports=r},{"./nodecontainer":14}],22:[function(t,e,n){function r(t){this.rangeBounds=this.testRangeBounds(t),this.cors=this.testCORS(),this.svg=this.testSVG()}r.prototype.testRangeBounds=function(t){var e,n,r=!1;return t.createRange&&(e=t.createRange()).getBoundingClientRect&&((n=t.createElement("boundtest")).style.height="123px",n.style.display="block",t.body.appendChild(n),e.selectNode(n),123===e.getBoundingClientRect().height&&(r=!0),t.body.removeChild(n)),r},r.prototype.testCORS=function(){return void 0!==(new Image).crossOrigin},r.prototype.testSVG=function(){var t=new Image,e=document.createElement("canvas"),n=e.getContext("2d");t.src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'></svg>";try{n.drawImage(t,0,0),e.toDataURL()}catch(t){return!1}return!0},e.exports=r},{}],23:[function(t,e,n){function r(t){this.src=t,this.image=null;var e=this;this.promise=this.hasFabric().then(function(){return e.isInline(t)?Promise.resolve(e.inlineFormatting(t)):i(t)}).then(function(t){return new Promise(function(n){window.html2canvas.svg.fabric.loadSVGFromString(t,e.createCanvas.call(e,n))})})}var i=t("./xhr"),o=t("./utils").decode64;r.prototype.hasFabric=function(){return window.html2canvas.svg&&window.html2canvas.svg.fabric?Promise.resolve():Promise.reject(new Error("html2canvas.svg.js is not loaded, cannot render svg"))},r.prototype.inlineFormatting=function(t){return/^data:image\/svg\+xml;base64,/.test(t)?this.decode64(this.removeContentType(t)):this.removeContentType(t)},r.prototype.removeContentType=function(t){return t.replace(/^data:image\/svg\+xml(;base64)?,/,"")},r.prototype.isInline=function(t){return/^data:image\/svg\+xml/i.test(t)},r.prototype.createCanvas=function(t){var e=this;return function(n,r){var i=new window.html2canvas.svg.fabric.StaticCanvas("c");e.image=i.lowerCanvasEl,i.setWidth(r.width).setHeight(r.height).add(window.html2canvas.svg.fabric.util.groupSVGElements(n,r)).renderAll(),t(i.lowerCanvasEl)}},r.prototype.decode64=function(t){return"function"==typeof window.atob?window.atob(t):o(t)},e.exports=r},{"./utils":26,"./xhr":28}],24:[function(t,e,n){function r(t,e){this.src=t,this.image=null;var n=this;this.promise=e?new Promise(function(e,r){n.image=new Image,n.image.onload=e,n.image.onerror=r,n.image.src="data:image/svg+xml,"+(new XMLSerializer).serializeToString(t),!0===n.image.complete&&e(n.image)}):this.hasFabric().then(function(){return new Promise(function(e){window.html2canvas.svg.fabric.parseSVGDocument(t,n.createCanvas.call(n,e))})})}var i=t("./svgcontainer");r.prototype=Object.create(i.prototype),e.exports=r},{"./svgcontainer":23}],25:[function(t,e,n){function r(t,e){o.call(this,t,e)}function i(t,e,n){if(t.length>0)return e+n.toUpperCase()}var o=t("./nodecontainer");(r.prototype=Object.create(o.prototype)).applyTextTransform=function(){this.node.data=this.transform(this.parent.css("textTransform"))},r.prototype.transform=function(t){var e=this.node.data;switch(t){case"lowercase":return e.toLowerCase();case"capitalize":return e.replace(/(^|\s|:|-|\(|\))([a-z])/g,i);case"uppercase":return e.toUpperCase();default:return e}},e.exports=r},{"./nodecontainer":14}],26:[function(t,e,n){n.smallImage=function(){return"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"},n.bind=function(t,e){return function(){return t.apply(e,arguments)}},/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+n.decode64=function(t){var e,n,r,i,o,a,s,c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",l=t.length,u="";for(e=0;e<l;e+=4)o=c.indexOf(t[e])<<2|(n=c.indexOf(t[e+1]))>>4,a=(15&n)<<4|(r=c.indexOf(t[e+2]))>>2,s=(3&r)<<6|(i=c.indexOf(t[e+3])),u+=64===r?String.fromCharCode(o):64===i||-1===i?String.fromCharCode(o,a):String.fromCharCode(o,a,s);return u},n.getBounds=function(t){if(t.getBoundingClientRect){var e=t.getBoundingClientRect(),n=null==t.offsetWidth?e.width:t.offsetWidth;return{top:e.top,bottom:e.bottom||e.top+e.height,right:e.left+n,left:e.left,width:n,height:null==t.offsetHeight?e.height:t.offsetHeight}}return{}},n.offsetBounds=function(t){var e=t.offsetParent?n.offsetBounds(t.offsetParent):{top:0,left:0};return{top:t.offsetTop+e.top,bottom:t.offsetTop+t.offsetHeight+e.top,right:t.offsetLeft+e.left+t.offsetWidth,left:t.offsetLeft+e.left,width:t.offsetWidth,height:t.offsetHeight}},n.parseBackgrounds=function(t){var e,n,r,i,o,a,s,c=[],l=0,u=0,h=function(){e&&('"'===n.substr(0,1)&&(n=n.substr(1,n.length-2)),n&&s.push(n),"-"===e.substr(0,1)&&(i=e.indexOf("-",1)+1)>0&&(r=e.substr(0,i),e=e.substr(i)),c.push({prefix:r,method:e.toLowerCase(),value:o,args:s,image:null})),s=[],e=r=n=o=""};return s=[],e=r=n=o="",t.split("").forEach(function(t){if(!(0===l&&" \r\n\t".indexOf(t)>-1)){switch(t){case'"':a?a===t&&(a=null):a=t;break;case"(":if(a)break;if(0===l)return l=1,void(o+=t);u++;break;case")":if(a)break;if(1===l){if(0===u)return l=0,o+=t,void h();u--}break;case",":if(a)break;if(0===l)return void h();if(1===l&&0===u&&!e.match(/^url$/i))return s.push(n),n="",void(o+=t)}o+=t,0===l?e+=t:n+=t}}),h(),c}},{}],27:[function(t,e,n){function r(t){i.apply(this,arguments),this.type="linear"===t.args[0]?i.TYPES.LINEAR:i.TYPES.RADIAL}var i=t("./gradientcontainer");r.prototype=Object.create(i.prototype),e.exports=r},{"./gradientcontainer":9}],28:[function(t,e,n){e.exports=function(t){return new Promise(function(e,n){var r=new XMLHttpRequest;r.open("GET",t),r.onload=function(){200===r.status?e(r.responseText):n(new Error(r.statusText))},r.onerror=function(){n(new Error("Network Error"))},r.send()})}},{}]},{},[4])(4)}),/*
+# PNG.js
+# Copyright (c) 2011 Devon Govett
+# MIT LICENSE
+# 
+# 
+*/
+function(t){var e;e=function(){function e(t){var e,n,r,i,o,a,s,c,l,u,h,f,d,p,m;for(this.data=t,this.pos=8,this.palette=[],this.imgData=[],this.transparency={},this.animation=null,this.text={},a=null;;){switch(e=this.readUInt32(),u=function(){var t,e;for(e=[],s=t=0;t<4;s=++t)e.push(String.fromCharCode(this.data[this.pos++]));return e}.call(this).join("")){case"IHDR":this.width=this.readUInt32(),this.height=this.readUInt32(),this.bits=this.data[this.pos++],this.colorType=this.data[this.pos++],this.compressionMethod=this.data[this.pos++],this.filterMethod=this.data[this.pos++],this.interlaceMethod=this.data[this.pos++];break;case"acTL":this.animation={numFrames:this.readUInt32(),numPlays:this.readUInt32()||1/0,frames:[]};break;case"PLTE":this.palette=this.read(e);break;case"fcTL":a&&this.animation.frames.push(a),this.pos+=4,a={width:this.readUInt32(),height:this.readUInt32(),xOffset:this.readUInt32(),yOffset:this.readUInt32()},o=this.readUInt16(),i=this.readUInt16()||100,a.delay=1e3*o/i,a.disposeOp=this.data[this.pos++],a.blendOp=this.data[this.pos++],a.data=[];break;case"IDAT":case"fdAT":for("fdAT"===u&&(this.pos+=4,e-=4),t=(null!=a?a.data:void 0)||this.imgData,s=d=0;0<=e?d<e:d>e;s=0<=e?++d:--d)t.push(this.data[this.pos++]);break;case"tRNS":switch(this.transparency={},this.colorType){case 3:if(r=this.palette.length/3,this.transparency.indexed=this.read(e),this.transparency.indexed.length>r)throw new Error("More transparent colors than palette size");if((h=r-this.transparency.indexed.length)>0)for(s=p=0;0<=h?p<h:p>h;s=0<=h?++p:--p)this.transparency.indexed.push(255);break;case 0:this.transparency.grayscale=this.read(e)[0];break;case 2:this.transparency.rgb=this.read(e)}break;case"tEXt":c=(f=this.read(e)).indexOf(0),l=String.fromCharCode.apply(String,f.slice(0,c)),this.text[l]=String.fromCharCode.apply(String,f.slice(c+1));break;case"IEND":return a&&this.animation.frames.push(a),this.colors=function(){switch(this.colorType){case 0:case 3:case 4:return 1;case 2:case 6:return 3}}.call(this),this.hasAlphaChannel=4===(m=this.colorType)||6===m,n=this.colors+(this.hasAlphaChannel?1:0),this.pixelBitlength=this.bits*n,this.colorSpace=function(){switch(this.colors){case 1:return"DeviceGray";case 3:return"DeviceRGB"}}.call(this),void(this.imgData=new Uint8Array(this.imgData));default:this.pos+=e}if(this.pos+=4,this.pos>this.data.length)throw new Error("Incomplete or corrupt PNG file")}}var n,r,i;e.load=function(t,n,r){var i;return"function"==typeof n&&(r=n),(i=new XMLHttpRequest).open("GET",t,!0),i.responseType="arraybuffer",i.onload=function(){var t,o;return t=new Uint8Array(i.response||i.mozResponseArrayBuffer),o=new e(t),"function"==typeof(null!=n?n.getContext:void 0)&&o.render(n),"function"==typeof r?r(o):void 0},i.send(null)},e.prototype.read=function(t){var e,n;for(n=[],e=0;0<=t?e<t:e>t;0<=t?++e:--e)n.push(this.data[this.pos++]);return n},e.prototype.readUInt32=function(){var t,e,n,r;return t=this.data[this.pos++]<<24,e=this.data[this.pos++]<<16,n=this.data[this.pos++]<<8,r=this.data[this.pos++],t|e|n|r},e.prototype.readUInt16=function(){var t,e;return t=this.data[this.pos++]<<8,e=this.data[this.pos++],t|e},e.prototype.decodePixels=function(t){var e,n,r,i,o,a,c,l,u,h,f,d,p,m,g,w,y,v,b,x,k,_,C;if(null==t&&(t=this.imgData),0===t.length)return new Uint8Array(0);for(t=(t=new s(t)).getBytes(),w=(d=this.pixelBitlength/8)*this.width,p=new Uint8Array(w*this.height),a=t.length,g=0,m=0,n=0;m<a;){switch(t[m++]){case 0:for(i=b=0;b<w;i=b+=1)p[n++]=t[m++];break;case 1:for(i=x=0;x<w;i=x+=1)e=t[m++],o=i<d?0:p[n-d],p[n++]=(e+o)%256;break;case 2:for(i=k=0;k<w;i=k+=1)e=t[m++],r=(i-i%d)/d,y=g&&p[(g-1)*w+r*d+i%d],p[n++]=(y+e)%256;break;case 3:for(i=_=0;_<w;i=_+=1)e=t[m++],r=(i-i%d)/d,o=i<d?0:p[n-d],y=g&&p[(g-1)*w+r*d+i%d],p[n++]=(e+Math.floor((o+y)/2))%256;break;case 4:for(i=C=0;C<w;i=C+=1)e=t[m++],r=(i-i%d)/d,o=i<d?0:p[n-d],0===g?y=v=0:(y=p[(g-1)*w+r*d+i%d],v=r&&p[(g-1)*w+(r-1)*d+i%d]),c=o+y-v,l=Math.abs(c-o),h=Math.abs(c-y),f=Math.abs(c-v),u=l<=h&&l<=f?o:h<=f?y:v,p[n++]=(e+u)%256;break;default:throw new Error("Invalid filter algorithm: "+t[m-1])}g++}return p},e.prototype.decodePalette=function(){var t,e,n,r,i,o,a,s,c;for(n=this.palette,o=this.transparency.indexed||[],i=new Uint8Array((o.length||0)+n.length),r=0,t=0,e=a=0,s=n.length;a<s;e=a+=3)i[r++]=n[e],i[r++]=n[e+1],i[r++]=n[e+2],i[r++]=null!=(c=o[t++])?c:255;return i},e.prototype.copyToImageData=function(t,e){var n,r,i,o,a,s,c,l,u,h,f;if(r=this.colors,u=null,n=this.hasAlphaChannel,this.palette.length&&(u=null!=(f=this._decodedPalette)?f:this._decodedPalette=this.decodePalette(),r=4,n=!0),i=t.data||t,l=i.length,a=u||e,o=s=0,1===r)for(;o<l;)c=u?4*e[o/4]:s,h=a[c++],i[o++]=h,i[o++]=h,i[o++]=h,i[o++]=n?a[c++]:255,s=c;else for(;o<l;)c=u?4*e[o/4]:s,i[o++]=a[c++],i[o++]=a[c++],i[o++]=a[c++],i[o++]=n?a[c++]:255,s=c},e.prototype.decode=function(){var t;return t=new Uint8Array(this.width*this.height*4),this.copyToImageData(t,this.decodePixels()),t};try{r=t.document.createElement("canvas"),i=r.getContext("2d")}catch(t){return-1}return n=function(t){var e;return i.width=t.width,i.height=t.height,i.clearRect(0,0,t.width,t.height),i.putImageData(t,0,0),e=new Image,e.src=r.toDataURL(),e},e.prototype.decodeFrames=function(t){var e,r,i,o,a,s,c,l;if(this.animation){for(l=[],r=a=0,s=(c=this.animation.frames).length;a<s;r=++a)e=c[r],i=t.createImageData(e.width,e.height),o=this.decodePixels(new Uint8Array(e.data)),this.copyToImageData(i,o),e.imageData=i,l.push(e.image=n(i));return l}},e.prototype.renderFrame=function(t,e){var n,r,i;return r=this.animation.frames,n=r[e],i=r[e-1],0===e&&t.clearRect(0,0,this.width,this.height),1===(null!=i?i.disposeOp:void 0)?t.clearRect(i.xOffset,i.yOffset,i.width,i.height):2===(null!=i?i.disposeOp:void 0)&&t.putImageData(i.imageData,i.xOffset,i.yOffset),0===n.blendOp&&t.clearRect(n.xOffset,n.yOffset,n.width,n.height),t.drawImage(n.image,n.xOffset,n.yOffset)},e.prototype.animate=function(t){var e,n,r,i,o,a,s=this;return n=0,a=this.animation,i=a.numFrames,r=a.frames,o=a.numPlays,(e=function(){var a,c;if(a=n++%i,c=r[a],s.renderFrame(t,a),i>1&&n/i<o)return s.animation._timeout=setTimeout(e,c.delay)})()},e.prototype.stopAnimation=function(){var t;return clearTimeout(null!=(t=this.animation)?t._timeout:void 0)},e.prototype.render=function(t){var e,n;return t._png&&t._png.stopAnimation(),t._png=this,t.width=this.width,t.height=this.height,e=t.getContext("2d"),this.animation?(this.decodeFrames(e),this.animate(e)):(n=e.createImageData(this.width,this.height),this.copyToImageData(n,this.decodePixels()),e.putImageData(n,0,0))},e}(),t.PNG=e}("undefined"!=typeof window&&window||void 0);/*
+ * Extracted from pdf.js
+ * https://github.com/andreasgal/pdf.js
+ *
+ * Copyright (c) 2011 Mozilla Foundation
+ *
+ * Contributors: Andreas Gal <gal@mozilla.com>
+ *               Chris G Jones <cjones@mozilla.com>
+ *               Shaon Barman <shaon.barman@gmail.com>
+ *               Vivien Nicolas <21@vingtetun.org>
+ *               Justin D'Arcangelo <justindarc@gmail.com>
+ *               Yury Delendik
+ *
+ * 
+ */
+var a=function(){function t(){this.pos=0,this.bufferLength=0,this.eof=!1,this.buffer=null}return t.prototype={ensureBuffer:function(t){var e=this.buffer,n=e?e.byteLength:0;if(t<n)return e;for(var r=512;r<t;)r<<=1;for(var i=new Uint8Array(r),o=0;o<n;++o)i[o]=e[o];return this.buffer=i},getByte:function(){for(var t=this.pos;this.bufferLength<=t;){if(this.eof)return null;this.readBlock()}return this.buffer[this.pos++]},getBytes:function(t){var e=this.pos;if(t){this.ensureBuffer(e+t);for(r=e+t;!this.eof&&this.bufferLength<r;)this.readBlock();var n=this.bufferLength;r>n&&(r=n)}else{for(;!this.eof;)this.readBlock();var r=this.bufferLength}return this.pos=r,this.buffer.subarray(e,r)},lookChar:function(){for(var t=this.pos;this.bufferLength<=t;){if(this.eof)return null;this.readBlock()}return String.fromCharCode(this.buffer[this.pos])},getChar:function(){for(var t=this.pos;this.bufferLength<=t;){if(this.eof)return null;this.readBlock()}return String.fromCharCode(this.buffer[this.pos++])},makeSubStream:function(t,e,n){for(var r=t+e;this.bufferLength<=r&&!this.eof;)this.readBlock();return new Stream(this.buffer,t,e,n)},skip:function(t){t||(t=1),this.pos+=t},reset:function(){this.pos=0}},t}(),s=function(){function t(t){throw new Error(t)}function e(e){var n=0,r=e[n++],i=e[n++];-1!=r&&-1!=i||t("Invalid header in flate stream"),8!=(15&r)&&t("Unknown compression method in flate stream"),((r<<8)+i)%31!=0&&t("Bad FCHECK in flate stream"),32&i&&t("FDICT bit set in flate stream"),this.bytes=e,this.bytesPos=n,this.codeSize=0,this.codeBuf=0,a.call(this)}if("undefined"!=typeof Uint32Array){var n=new Uint32Array([16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15]),r=new Uint32Array([3,4,5,6,7,8,9,10,65547,65549,65551,65553,131091,131095,131099,131103,196643,196651,196659,196667,262211,262227,262243,262259,327811,327843,327875,327907,258,258,258]),i=new Uint32Array([1,2,3,4,65541,65543,131081,131085,196625,196633,262177,262193,327745,327777,393345,393409,459009,459137,524801,525057,590849,591361,657409,658433,724993,727041,794625,798721,868353,876545]),o=[new Uint32Array([459008,524368,524304,524568,459024,524400,524336,590016,459016,524384,524320,589984,524288,524416,524352,590048,459012,524376,524312,589968,459028,524408,524344,590032,459020,524392,524328,59e4,524296,524424,524360,590064,459010,524372,524308,524572,459026,524404,524340,590024,459018,524388,524324,589992,524292,524420,524356,590056,459014,524380,524316,589976,459030,524412,524348,590040,459022,524396,524332,590008,524300,524428,524364,590072,459009,524370,524306,524570,459025,524402,524338,590020,459017,524386,524322,589988,524290,524418,524354,590052,459013,524378,524314,589972,459029,524410,524346,590036,459021,524394,524330,590004,524298,524426,524362,590068,459011,524374,524310,524574,459027,524406,524342,590028,459019,524390,524326,589996,524294,524422,524358,590060,459015,524382,524318,589980,459031,524414,524350,590044,459023,524398,524334,590012,524302,524430,524366,590076,459008,524369,524305,524569,459024,524401,524337,590018,459016,524385,524321,589986,524289,524417,524353,590050,459012,524377,524313,589970,459028,524409,524345,590034,459020,524393,524329,590002,524297,524425,524361,590066,459010,524373,524309,524573,459026,524405,524341,590026,459018,524389,524325,589994,524293,524421,524357,590058,459014,524381,524317,589978,459030,524413,524349,590042,459022,524397,524333,590010,524301,524429,524365,590074,459009,524371,524307,524571,459025,524403,524339,590022,459017,524387,524323,589990,524291,524419,524355,590054,459013,524379,524315,589974,459029,524411,524347,590038,459021,524395,524331,590006,524299,524427,524363,590070,459011,524375,524311,524575,459027,524407,524343,590030,459019,524391,524327,589998,524295,524423,524359,590062,459015,524383,524319,589982,459031,524415,524351,590046,459023,524399,524335,590014,524303,524431,524367,590078,459008,524368,524304,524568,459024,524400,524336,590017,459016,524384,524320,589985,524288,524416,524352,590049,459012,524376,524312,589969,459028,524408,524344,590033,459020,524392,524328,590001,524296,524424,524360,590065,459010,524372,524308,524572,459026,524404,524340,590025,459018,524388,524324,589993,524292,524420,524356,590057,459014,524380,524316,589977,459030,524412,524348,590041,459022,524396,524332,590009,524300,524428,524364,590073,459009,524370,524306,524570,459025,524402,524338,590021,459017,524386,524322,589989,524290,524418,524354,590053,459013,524378,524314,589973,459029,524410,524346,590037,459021,524394,524330,590005,524298,524426,524362,590069,459011,524374,524310,524574,459027,524406,524342,590029,459019,524390,524326,589997,524294,524422,524358,590061,459015,524382,524318,589981,459031,524414,524350,590045,459023,524398,524334,590013,524302,524430,524366,590077,459008,524369,524305,524569,459024,524401,524337,590019,459016,524385,524321,589987,524289,524417,524353,590051,459012,524377,524313,589971,459028,524409,524345,590035,459020,524393,524329,590003,524297,524425,524361,590067,459010,524373,524309,524573,459026,524405,524341,590027,459018,524389,524325,589995,524293,524421,524357,590059,459014,524381,524317,589979,459030,524413,524349,590043,459022,524397,524333,590011,524301,524429,524365,590075,459009,524371,524307,524571,459025,524403,524339,590023,459017,524387,524323,589991,524291,524419,524355,590055,459013,524379,524315,589975,459029,524411,524347,590039,459021,524395,524331,590007,524299,524427,524363,590071,459011,524375,524311,524575,459027,524407,524343,590031,459019,524391,524327,589999,524295,524423,524359,590063,459015,524383,524319,589983,459031,524415,524351,590047,459023,524399,524335,590015,524303,524431,524367,590079]),9],s=[new Uint32Array([327680,327696,327688,327704,327684,327700,327692,327708,327682,327698,327690,327706,327686,327702,327694,0,327681,327697,327689,327705,327685,327701,327693,327709,327683,327699,327691,327707,327687,327703,327695,0]),5];return e.prototype=Object.create(a.prototype),e.prototype.getBits=function(e){for(var n,r=this.codeSize,i=this.codeBuf,o=this.bytes,a=this.bytesPos;r<e;)void 0===(n=o[a++])&&t("Bad encoding in flate stream"),i|=n<<r,r+=8;return n=i&(1<<e)-1,this.codeBuf=i>>e,this.codeSize=r-=e,this.bytesPos=a,n},e.prototype.getCode=function(e){for(var n=e[0],r=e[1],i=this.codeSize,o=this.codeBuf,a=this.bytes,s=this.bytesPos;i<r;){var c;void 0===(c=a[s++])&&t("Bad encoding in flate stream"),o|=c<<i,i+=8}var l=n[o&(1<<r)-1],u=l>>16,h=65535&l;return(0==i||i<u||0==u)&&t("Bad encoding in flate stream"),this.codeBuf=o>>u,this.codeSize=i-u,this.bytesPos=s,h},e.prototype.generateHuffmanTable=function(t){for(var e=t.length,n=0,r=0;r<e;++r)t[r]>n&&(n=t[r]);for(var i=1<<n,o=new Uint32Array(i),a=1,s=0,c=2;a<=n;++a,s<<=1,c<<=1)for(var l=0;l<e;++l)if(t[l]==a){for(var u=0,h=s,r=0;r<a;++r)u=u<<1|1&h,h>>=1;for(r=u;r<i;r+=c)o[r]=a<<16|l;++s}return[o,n]},e.prototype.readBlock=function(){function e(t,e,n,r,i){for(var o=t.getBits(n)+r;o-- >0;)e[p++]=i}var a=this.getBits(3);if(1&a&&(this.eof=!0),0!=(a>>=1)){var c,l;if(1==a)c=o,l=s;else if(2==a){for(var u=this.getBits(5)+257,h=this.getBits(5)+1,f=this.getBits(4)+4,d=Array(n.length),p=0;p<f;)d[n[p++]]=this.getBits(3);for(var m=this.generateHuffmanTable(d),g=0,p=0,w=u+h,y=new Array(w);p<w;){var v=this.getCode(m);16==v?e(this,y,2,3,g):17==v?e(this,y,3,3,g=0):18==v?e(this,y,7,11,g=0):y[p++]=g=v}c=this.generateHuffmanTable(y.slice(0,u)),l=this.generateHuffmanTable(y.slice(u,w))}else t("Unknown block type in flate stream");for(var b=(O=this.buffer)?O.length:0,x=this.bufferLength;;){var k=this.getCode(c);if(k<256)x+1>=b&&(b=(O=this.ensureBuffer(x+1)).length),O[x++]=k;else{if(256==k)return void(this.bufferLength=x);var _=(k=r[k-=257])>>16;_>0&&(_=this.getBits(_));g=(65535&k)+_;k=this.getCode(l),(_=(k=i[k])>>16)>0&&(_=this.getBits(_));var C=(65535&k)+_;x+g>=b&&(b=(O=this.ensureBuffer(x+g)).length);for(var A=0;A<g;++A,++x)O[x]=O[x-C]}}}else{var S,q=this.bytes,T=this.bytesPos;void 0===(S=q[T++])&&t("Bad block header in flate stream");var P=S;void 0===(S=q[T++])&&t("Bad block header in flate stream"),P|=S<<8,void 0===(S=q[T++])&&t("Bad block header in flate stream");var I=S;void 0===(S=q[T++])&&t("Bad block header in flate stream"),(I|=S<<8)!=(65535&~P)&&t("Bad uncompressed block length in flate stream"),this.codeBuf=0,this.codeSize=0;var E=this.bufferLength,O=this.ensureBuffer(E+P),F=E+P;this.bufferLength=F;for(var B=E;B<F;++B){if(void 0===(S=q[T++])){this.eof=!0;break}O[B]=S}this.bytesPos=T}},e}}();return function(t){var e="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";void 0===t.btoa&&(t.btoa=function(t){var n,r,i,o,a,s=0,c=0,l="",u=[];if(!t)return t;do{n=(a=t.charCodeAt(s++)<<16|t.charCodeAt(s++)<<8|t.charCodeAt(s++))>>18&63,r=a>>12&63,i=a>>6&63,o=63&a,u[c++]=e.charAt(n)+e.charAt(r)+e.charAt(i)+e.charAt(o)}while(s<t.length);l=u.join("");var h=t.length%3;return(h?l.slice(0,h-3):l)+"===".slice(h||3)}),void 0===t.atob&&(t.atob=function(t){var n,r,i,o,a,s,c=0,l=0,u=[];if(!t)return t;t+="";do{n=(s=e.indexOf(t.charAt(c++))<<18|e.indexOf(t.charAt(c++))<<12|(o=e.indexOf(t.charAt(c++)))<<6|(a=e.indexOf(t.charAt(c++))))>>16&255,r=s>>8&255,i=255&s,u[l++]=64==o?String.fromCharCode(n):64==a?String.fromCharCode(n,r):String.fromCharCode(n,r,i)}while(c<t.length);return u.join("")}),Array.prototype.map||(Array.prototype.map=function(t){if(void 0===this||null===this||"function"!=typeof t)throw new TypeError;for(var e=Object(this),n=e.length>>>0,r=new Array(n),i=arguments.length>1?arguments[1]:void 0,o=0;o<n;o++)o in e&&(r[o]=t.call(i,e[o],o,e));return r}),Array.isArray||(Array.isArray=function(t){return"[object Array]"===Object.prototype.toString.call(t)}),Array.prototype.forEach||(Array.prototype.forEach=function(t,e){if(void 0===this||null===this||"function"!=typeof t)throw new TypeError;for(var n=Object(this),r=n.length>>>0,i=0;i<r;i++)i in n&&t.call(e,n[i],i,n)}),Object.keys||(Object.keys=function(){var t=Object.prototype.hasOwnProperty,e=!{toString:null}.propertyIsEnumerable("toString"),n=["toString","toLocaleString","valueOf","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","constructor"],r=n.length;return function(i){if("object"!=typeof i&&("function"!=typeof i||null===i))throw new TypeError;var o,a,s=[];for(o in i)t.call(i,o)&&s.push(o);if(e)for(a=0;a<r;a++)t.call(i,n[a])&&s.push(n[a]);return s}}()),String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")}),String.prototype.trimLeft||(String.prototype.trimLeft=function(){return this.replace(/^\s+/g,"")}),String.prototype.trimRight||(String.prototype.trimRight=function(){return this.replace(/\s+$/g,"")})}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||void 0),e});
+},{}],82:[function(require,module,exports){
 module.exports = minimatch
 minimatch.Minimatch = Minimatch
 
@@ -7194,7 +13920,7 @@ function regExpEscape (s) {
   return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
-},{"brace-expansion":2,"path":undefined}],36:[function(require,module,exports){
+},{"brace-expansion":43,"path":undefined}],83:[function(require,module,exports){
 var wrappy = require('wrappy')
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
@@ -7238,7 +13964,7 @@ function onceStrict (fn) {
   return f
 }
 
-},{"wrappy":38}],37:[function(require,module,exports){
+},{"wrappy":85}],84:[function(require,module,exports){
 'use strict';
 
 function posix(path) {
@@ -7260,7 +13986,7 @@ module.exports = process.platform === 'win32' ? win32 : posix;
 module.exports.posix = posix;
 module.exports.win32 = win32;
 
-},{}],38:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -7295,7 +14021,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],39:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 (function(undefined) {
   // @note
   //   A few conventions for the documentation of this file:
@@ -26840,2747 +33566,6 @@ Opal.modules["opal-platform"] = function(Opal) {
   return (function() {if (nashorn !== false && nashorn !== nil && nashorn != null) {return Opal.cdecl($scope, 'OPAL_PLATFORM', "nashorn")}else if (node !== false && node !== nil && node != null) {return Opal.cdecl($scope, 'OPAL_PLATFORM', "nodejs")}else if (headless_chrome !== false && headless_chrome !== nil && headless_chrome != null) {return Opal.cdecl($scope, 'OPAL_PLATFORM', "headless-chrome")}else {return Opal.cdecl($scope, 'OPAL_PLATFORM', nil)}})();
 };
 
-/**
- * this file is updated for zupfnoter-cli such that we have
- *
- * module.exports.Ajv = e();
- */
-
-/* ajv 4.8.2: Another JSON Schema Validator */
-!function (e) {
-  if ("object" == typeof exports && "undefined" != typeof module) module.exports.Ajv = e(); else if ("function" == typeof define && define.amd) define([], e); else {
-    var r;
-    r = "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this, r.Ajv = e()
-  }
-}(function () {
-  var e;
-  return function e(r, t, a) {
-    function s(i, n) {
-      if (!t[i]) {
-        if (!r[i]) {
-          var l = "function" == typeof require && require;
-          if (!n && l) return l(i, !0);
-          if (o) return o(i, !0);
-          var c = new Error("Cannot find module '" + i + "'");
-          throw c.code = "MODULE_NOT_FOUND", c
-        }
-        var h = t[i] = {exports: {}};
-        r[i][0].call(h.exports, function (e) {
-          var t = r[i][1][e];
-          return s(t ? t : e)
-        }, h, h.exports, e, r, t, a)
-      }
-      return t[i].exports
-    }
-
-    for (var o = "function" == typeof require && require, i = 0; i < a.length; i++) s(a[i]);
-    return s
-  }({
-    1: [function (e, r, t) {
-      "use strict";
-
-      function a(e, r) {
-        r !== !1 && (r = !0);
-        var t, s = e.async, o = e.transpile;
-        switch (typeof o) {
-          case"string":
-            var i = m[o];
-            if (!i) throw new Error("bad transpiler: " + o);
-            return e._transpileFunc = i(e, r);
-          case"undefined":
-          case"boolean":
-            if ("string" == typeof s) {
-              if (t = p[s], !t) throw new Error("bad async mode: " + s);
-              return e.transpile = t(e, r)
-            }
-            for (var n = 0; n < v.length; n++) {
-              var l = v[n];
-              if (a(l, !1)) return d.copy(l, e), e.transpile
-            }
-            throw new Error("generators, nodent and regenerator are not available");
-          case"function":
-            return e._transpileFunc = e.transpile;
-          default:
-            throw new Error("bad transpiler: " + o)
-        }
-      }
-
-      function s(e, r) {
-        try {
-          return new Function("(function*(){})()")(), !0
-        } catch (e) {
-          if (r) throw new Error("generators not supported")
-        }
-      }
-
-      function o(e, r) {
-        try {
-          return new Function("(async function(){})()")(), !0
-        } catch (e) {
-          if (r) throw new Error("es7 async functions not supported")
-        }
-      }
-
-      function i(r, t) {
-        try {
-          return u || (u = e("regenerator"), u.runtime()), r.async && r.async !== !0 || (r.async = "es7"), n
-        } catch (e) {
-          if (t) throw new Error("regenerator not available")
-        }
-      }
-
-      function n(e) {
-        return u.compile(e).code
-      }
-
-      function l(r, t) {
-        try {
-          return f || (f = e("nodent")({
-            log: !1,
-            dontInstallRequireHook: !0
-          })), "es7" != r.async && (r.async && r.async !== !0 && console.warn("nodent transpiles only es7 async functions"), r.async = "es7"), c
-        } catch (e) {
-          if (t) throw new Error("nodent not available")
-        }
-      }
-
-      function c(e) {
-        return f.compile(e, "", {promises: !0, sourcemap: !1}).code
-      }
-
-      function h(e, r) {
-        function t(e, r, a) {
-          function o(a) {
-            function o(a, o) {
-              if (a) return r(a);
-              if (!s._refs[i] && !s._schemas[i]) try {
-                s.addSchema(o, i)
-              } catch (e) {
-                return void r(e)
-              }
-              t(e, r)
-            }
-
-            var i = a.missingSchema;
-            if (s._refs[i] || s._schemas[i]) return r(new Error("Schema " + i + " is loaded but " + a.missingRef + " cannot be resolved"));
-            var n = s._loadingSchemas[i];
-            n ? "function" == typeof n ? s._loadingSchemas[i] = [n, o] : n[n.length] = o : (s._loadingSchemas[i] = o, s._opts.loadSchema(i, function (e, r) {
-              var t = s._loadingSchemas[i];
-              if (delete s._loadingSchemas[i], "function" == typeof t) t(e, r); else for (var a = 0; a < t.length; a++) t[a](e, r)
-            }))
-          }
-
-          function i(e, t) {
-            return a ? void setTimeout(function () {
-              r(e, t)
-            }) : r(e, t)
-          }
-
-          var n;
-          try {
-            n = s.compile(e)
-          } catch (e) {
-            return void(e.missingSchema ? o(e) : i(e))
-          }
-          i(null, n)
-        }
-
-        var a, s = this;
-        try {
-          a = this._addSchema(e)
-        } catch (e) {
-          return void setTimeout(function () {
-            r(e)
-          })
-        }
-        if (a.validate) setTimeout(function () {
-          r(null, a.validate)
-        }); else {
-          if ("function" != typeof this._opts.loadSchema) throw new Error("options.loadSchema should be a function");
-          t(e, r, !0)
-        }
-      }
-
-      r.exports = {setup: a, compile: h};
-      var u, f, d = e("./compile/util"), p = {"*": s, "co*": s, es7: o}, m = {nodent: l, regenerator: i},
-        v = [{async: "co*"}, {async: "es7", transpile: "nodent"}, {async: "co*", transpile: "regenerator"}]
-    }, {"./compile/util": 11}], 2: [function (e, r, t) {
-      "use strict";
-      var a = r.exports = function () {
-        this._cache = {}
-      };
-      a.prototype.put = function (e, r) {
-        this._cache[e] = r
-      }, a.prototype.get = function (e) {
-        return this._cache[e]
-      }, a.prototype.del = function (e) {
-        delete this._cache[e]
-      }, a.prototype.clear = function () {
-        this._cache = {}
-      }
-    }, {}], 3: [function (e, r, t) {
-      "use strict";
-      r.exports = {
-        $ref: e("../dotjs/ref"),
-        allOf: e("../dotjs/allOf"),
-        anyOf: e("../dotjs/anyOf"),
-        dependencies: e("../dotjs/dependencies"),
-        enum: e("../dotjs/enum"),
-        format: e("../dotjs/format"),
-        items: e("../dotjs/items"),
-        maximum: e("../dotjs/_limit"),
-        minimum: e("../dotjs/_limit"),
-        maxItems: e("../dotjs/_limitItems"),
-        minItems: e("../dotjs/_limitItems"),
-        maxLength: e("../dotjs/_limitLength"),
-        minLength: e("../dotjs/_limitLength"),
-        maxProperties: e("../dotjs/_limitProperties"),
-        minProperties: e("../dotjs/_limitProperties"),
-        multipleOf: e("../dotjs/multipleOf"),
-        not: e("../dotjs/not"),
-        oneOf: e("../dotjs/oneOf"),
-        pattern: e("../dotjs/pattern"),
-        properties: e("../dotjs/properties"),
-        required: e("../dotjs/required"),
-        uniqueItems: e("../dotjs/uniqueItems"),
-        validate: e("../dotjs/validate")
-      }
-    }, {
-      "../dotjs/_limit": 14,
-      "../dotjs/_limitItems": 15,
-      "../dotjs/_limitLength": 16,
-      "../dotjs/_limitProperties": 17,
-      "../dotjs/allOf": 18,
-      "../dotjs/anyOf": 19,
-      "../dotjs/dependencies": 22,
-      "../dotjs/enum": 23,
-      "../dotjs/format": 24,
-      "../dotjs/items": 25,
-      "../dotjs/multipleOf": 26,
-      "../dotjs/not": 27,
-      "../dotjs/oneOf": 28,
-      "../dotjs/pattern": 29,
-      "../dotjs/properties": 31,
-      "../dotjs/ref": 32,
-      "../dotjs/required": 33,
-      "../dotjs/uniqueItems": 35,
-      "../dotjs/validate": 36
-    }], 4: [function (e, r, t) {
-      "use strict";
-      r.exports = function e(r, t) {
-        if (r === t) return !0;
-        var a, s = Array.isArray(r), o = Array.isArray(t);
-        if (s && o) {
-          if (r.length != t.length) return !1;
-          for (a = 0; a < r.length; a++) if (!e(r[a], t[a])) return !1;
-          return !0
-        }
-        if (s != o) return !1;
-        if (r && t && "object" == typeof r && "object" == typeof t) {
-          var i = Object.keys(r);
-          if (i.length !== Object.keys(t).length) return !1;
-          for (a = 0; a < i.length; a++) if (void 0 === t[i[a]]) return !1;
-          for (a = 0; a < i.length; a++) if (!e(r[i[a]], t[i[a]])) return !1;
-          return !0
-        }
-        return !1
-      }
-    }, {}], 5: [function (e, r, t) {
-      "use strict";
-
-      function a(e) {
-        e = "full" == e ? "full" : "fast";
-        var r = d.copy(a[e]);
-        for (var t in a.compare) r[t] = {validate: r[t], compare: a.compare[t]};
-        return r
-      }
-
-      function s(e) {
-        var r = e.match(p);
-        if (!r) return !1;
-        var t = +r[1], a = +r[2];
-        return t >= 1 && t <= 12 && a >= 1 && a <= m[t]
-      }
-
-      function o(e, r) {
-        var t = e.match(v);
-        if (!t) return !1;
-        var a = t[1], s = t[2], o = t[3], i = t[5];
-        return a <= 23 && s <= 59 && o <= 59 && (!r || i)
-      }
-
-      function i(e) {
-        var r = e.split(w);
-        return 2 == r.length && s(r[0]) && o(r[1], !0)
-      }
-
-      function n(e) {
-        return e.length <= 255 && y.test(e)
-      }
-
-      function l(e) {
-        return j.test(e) && g.test(e)
-      }
-
-      function c(e) {
-        try {
-          return new RegExp(e), !0
-        } catch (e) {
-          return !1
-        }
-      }
-
-      function h(e, r) {
-        if (e && r) return e > r ? 1 : e < r ? -1 : e === r ? 0 : void 0
-      }
-
-      function u(e, r) {
-        if (e && r && (e = e.match(v), r = r.match(v), e && r)) return e = e[1] + e[2] + e[3] + (e[4] || ""), r = r[1] + r[2] + r[3] + (r[4] || ""), e > r ? 1 : e < r ? -1 : e === r ? 0 : void 0
-      }
-
-      function f(e, r) {
-        if (e && r) {
-          e = e.split(w), r = r.split(w);
-          var t = h(e[0], r[0]);
-          if (void 0 !== t) return t || u(e[1], r[1])
-        }
-      }
-
-      var d = e("./util"), p = /^\d\d\d\d-(\d\d)-(\d\d)$/, m = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-        v = /^(\d\d):(\d\d):(\d\d)(\.\d+)?(z|[+-]\d\d:\d\d)?$/i,
-        y = /^[0-9a-z](?:(?:[-0-9a-z]{0,61})?[0-9a-z])?(\.[0-9a-z](?:(?:[-0-9a-z]{0,61})?[0-9a-z])?)*$/i,
-        g = /^(?:[a-z][a-z0-9+\-.]*:)?(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@\/?]|%[0-9a-f]{2})*)?(?:\#(?:[a-z0-9\-._~!$&'()*+,;=:@\/?]|%[0-9a-f]{2})*)?$/i,
-        P = /^(?:urn\:uuid\:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i,
-        E = /^(?:\/(?:[^~\/]|~0|~1)+)*(?:\/)?$|^\#(?:\/(?:[a-z0-9_\-\.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)+)*(?:\/)?$/i,
-        b = /^(?:0|[1-9][0-9]*)(?:\#|(?:\/(?:[^~\/]|~0|~1)+)*(?:\/)?)$/;
-      r.exports = a, a.fast = {
-        date: /^\d\d\d\d-[0-1]\d-[0-3]\d$/,
-        time: /^[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?(?:z|[+-]\d\d:\d\d)?$/i,
-        "date-time": /^\d\d\d\d-[0-1]\d-[0-3]\d[t\s][0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?(?:z|[+-]\d\d:\d\d)$/i,
-        uri: /^(?:[a-z][a-z0-9+-.]*)?(?:\:|\/)\/?[^\s]*$/i,
-        email: /^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,
-        hostname: y,
-        ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
-        ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
-        regex: c,
-        uuid: P,
-        "json-pointer": E,
-        "relative-json-pointer": b
-      }, a.full = {
-        date: s,
-        time: o,
-        "date-time": i,
-        uri: l,
-        email: /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&''*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
-        hostname: n,
-        ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
-        ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
-        regex: c,
-        uuid: P,
-        "json-pointer": E,
-        "relative-json-pointer": b
-      }, a.compare = {date: h, time: u, "date-time": f};
-      var w = /t|\s/i, j = /\/|\:/
-    }, {"./util": 11}], 6: [function (e, r, t) {
-      "use strict";
-
-      function a() {
-        if (void 0 === d) try {
-          d = e("js-beautify").js_beautify
-        } catch (e) {
-          d = !1
-        }
-      }
-
-      function s(e, r, t, n) {
-        function j() {
-          var e = N.validate, r = e.apply(null, arguments);
-          return j.errors = e.errors, r
-        }
-
-        function S(e, t, o, i) {
-          var n = !t || t && t.schema == e;
-          if (t.schema != r.schema) return s.call(k, e, t, o, i);
-          var v = e.$async === !0;
-          v && !q.transpile && y.setup(q);
-          var j = g({
-            isTop: !0,
-            schema: e,
-            isRoot: n,
-            baseId: i,
-            root: t,
-            schemaPath: "",
-            errSchemaPath: "#",
-            errorPath: '""',
-            RULES: H,
-            validate: g,
-            util: m,
-            resolve: p,
-            resolveRef: $,
-            usePattern: R,
-            useDefault: I,
-            useCustomRule: A,
-            opts: q,
-            formats: F,
-            self: k
-          });
-          j = f(L, h) + f(Q, l) + f(U, c) + f(z, u) + j + "return validate;", q.beautify && (a(), d ? j = d(j, q.beautify) : console.error('"npm install js-beautify" to use beautify option'));
-          var S, x, _ = q._transpileFunc;
-          try {
-            x = v && _ ? _(j) : j;
-            var O = new Function("self", "RULES", "formats", "root", "refVal", "defaults", "customRules", "co", "equal", "ucs2length", "ValidationError", x);
-            S = O(k, H, F, r, L, U, z, P, b, E, w), L[0] = S
-          } catch (e) {
-            throw console.error("Error compiling schema, function code:", x), e
-          }
-          return S.schema = e, S.errors = null, S.refs = D, S.refVal = L, S.root = n ? S : t, v && (S.$async = !0), T && (S.sourceCode = j), q.sourceCode === !0 && (S.source = {
-            patterns: Q,
-            defaults: U
-          }), S
-        }
-
-        function $(e, a, o) {
-          a = p.url(e, a);
-          var i, n, l = D[a];
-          if (void 0 !== l) return i = L[l], n = "refVal[" + l + "]", O(i, n);
-          if (!o && r.refs) {
-            var c = r.refs[a];
-            if (void 0 !== c) return i = r.refVal[c], n = x(a, i), O(i, n)
-          }
-          n = x(a);
-          var h = p.call(k, S, r, a);
-          if (!h) {
-            var u = t && t[a];
-            u && (h = p.inlineRef(u, q.inlineRefs) ? u : s.call(k, u, r, t, e))
-          }
-          return h ? (_(a, h), O(h, n)) : void 0
-        }
-
-        function x(e, r) {
-          var t = L.length;
-          return L[t] = r, D[e] = t, "refVal" + t
-        }
-
-        function _(e, r) {
-          var t = D[e];
-          L[t] = r
-        }
-
-        function O(e, r) {
-          return "object" == typeof e ? {code: r, schema: e, inline: !0} : {code: r, $async: e && e.$async}
-        }
-
-        function R(e) {
-          var r = C[e];
-          return void 0 === r && (r = C[e] = Q.length, Q[r] = e), "pattern" + r
-        }
-
-        function I(e) {
-          switch (typeof e) {
-            case"boolean":
-            case"number":
-              return "" + e;
-            case"string":
-              return m.toQuotedString(e);
-            case"object":
-              if (null === e) return "null";
-              var r = v(e), t = V[r];
-              return void 0 === t && (t = V[r] = U.length, U[t] = e), "default" + t
-          }
-        }
-
-        function A(e, r, t, a) {
-          var s = e.definition.validateSchema;
-          if (s && k._opts.validateSchema !== !1) {
-            var o = s(r);
-            if (!o) {
-              var i = "keyword schema is invalid: " + k.errorsText(s.errors);
-              if ("log" != k._opts.validateSchema) throw new Error(i);
-              console.error(i)
-            }
-          }
-          var n, l = e.definition.compile, c = e.definition.inline, h = e.definition.macro;
-          l ? n = l.call(k, r, t, a) : h ? (n = h.call(k, r, t, a), q.validateSchema !== !1 && k.validateSchema(n, !0)) : n = c ? c.call(k, a, e.keyword, r, t) : e.definition.validate;
-          var u = z.length;
-          return z[u] = n, {code: "customRule" + u, validate: n}
-        }
-
-        var k = this, q = this._opts, L = [void 0], D = {}, Q = [], C = {}, U = [], V = {}, z = [],
-          T = q.sourceCode !== !1;
-        r = r || {schema: e, refVal: L, refs: D};
-        var M = o.call(this, e, r, n), N = this._compilations[M.index];
-        if (M.compiling) return N.callValidate = j;
-        var F = this._formats, H = this.RULES;
-        try {
-          var J = S(e, r, t, n);
-          N.validate = J;
-          var G = N.callValidate;
-          return G && (G.schema = J.schema, G.errors = null, G.refs = J.refs, G.refVal = J.refVal, G.root = J.root, G.$async = J.$async, T && (G.sourceCode = J.sourceCode)), J
-        } finally {
-          i.call(this, e, r, n)
-        }
-      }
-
-      function o(e, r, t) {
-        var a = n.call(this, e, r, t);
-        return a >= 0 ? {index: a, compiling: !0} : (a = this._compilations.length, this._compilations[a] = {
-          schema: e,
-          root: r,
-          baseId: t
-        }, {index: a, compiling: !1})
-      }
-
-      function i(e, r, t) {
-        var a = n.call(this, e, r, t);
-        a >= 0 && this._compilations.splice(a, 1)
-      }
-
-      function n(e, r, t) {
-        for (var a = 0; a < this._compilations.length; a++) {
-          var s = this._compilations[a];
-          if (s.schema == e && s.root == r && s.baseId == t) return a
-        }
-        return -1
-      }
-
-      function l(e, r) {
-        return "var pattern" + e + " = new RegExp(" + m.toQuotedString(r[e]) + ");"
-      }
-
-      function c(e) {
-        return "var default" + e + " = defaults[" + e + "];"
-      }
-
-      function h(e, r) {
-        return r[e] ? "var refVal" + e + " = refVal[" + e + "];" : ""
-      }
-
-      function u(e) {
-        return "var customRule" + e + " = customRules[" + e + "];"
-      }
-
-      function f(e, r) {
-        if (!e.length) return "";
-        for (var t = "", a = 0; a < e.length; a++) t += r(a, e);
-        return t
-      }
-
-      var d, p = e("./resolve"), m = e("./util"), v = e("json-stable-stringify"), y = e("../async"),
-        g = e("../dotjs/validate"), P = e("co"), E = m.ucs2length, b = e("./equal"), w = e("./validation_error");
-      r.exports = s
-    }, {
-      "../async": 1,
-      "../dotjs/validate": 36,
-      "./equal": 4,
-      "./resolve": 7,
-      "./util": 11,
-      "./validation_error": 12,
-      co: 41,
-      "json-stable-stringify": 42
-    }], 7: [function (e, r, t) {
-      "use strict";
-
-      function a(e, r, t) {
-        var o = this._refs[t];
-        if ("string" == typeof o) {
-          if (!this._refs[o]) return a.call(this, e, r, o);
-          o = this._refs[o]
-        }
-        if (o = o || this._schemas[t], o instanceof g) return n(o.schema, this._opts.inlineRefs) ? o.schema : o.validate || this._compile(o);
-        var i, l, c, h = s.call(this, r, t);
-        return h && (i = h.schema, r = h.root, c = h.baseId), i instanceof g ? l = i.validate || e.call(this, i.schema, r, void 0, c) : i && (l = n(i, this._opts.inlineRefs) ? i : e.call(this, i, r, void 0, c)), l
-      }
-
-      function s(e, r) {
-        var t = m.parse(r, !1, !0), a = u(t), s = h(e.schema.id);
-        if (a !== s) {
-          var n = f(a), l = this._refs[n];
-          if ("string" == typeof l) return o.call(this, e, l, t);
-          if (l instanceof g) l.validate || this._compile(l), e = l; else {
-            if (l = this._schemas[n], !(l instanceof g)) return;
-            if (l.validate || this._compile(l), n == f(r)) return {schema: l, root: e, baseId: s};
-            e = l
-          }
-          if (!e.schema) return;
-          s = h(e.schema.id)
-        }
-        return i.call(this, t, s, e.schema, e)
-      }
-
-      function o(e, r, t) {
-        var a = s.call(this, e, r);
-        if (a) {
-          var o = a.schema, n = a.baseId;
-          return e = a.root, o.id && (n = d(n, o.id)), i.call(this, t, n, o, e)
-        }
-      }
-
-      function i(e, r, t, a) {
-        if (e.hash = e.hash || "", "#/" == e.hash.slice(0, 2)) {
-          for (var o = e.hash.split("/"), i = 1; i < o.length; i++) {
-            var n = o[i];
-            if (n) {
-              if (n = y.unescapeFragment(n), t = t[n], !t) break;
-              if (t.id && !P[n] && (r = d(r, t.id)), t.$ref) {
-                var l = d(r, t.$ref), c = s.call(this, a, l);
-                c && (t = c.schema, a = c.root, r = c.baseId)
-              }
-            }
-          }
-          return t && t != a.schema ? {schema: t, root: a, baseId: r} : void 0
-        }
-      }
-
-      function n(e, r) {
-        return r !== !1 && (void 0 === r || r === !0 ? l(e) : r ? c(e) <= r : void 0)
-      }
-
-      function l(e) {
-        var r;
-        if (Array.isArray(e)) {
-          for (var t = 0; t < e.length; t++) if (r = e[t], "object" == typeof r && !l(r)) return !1
-        } else for (var a in e) {
-          if ("$ref" == a) return !1;
-          if (r = e[a], "object" == typeof r && !l(r)) return !1
-        }
-        return !0
-      }
-
-      function c(e) {
-        var r, t = 0;
-        if (Array.isArray(e)) {
-          for (var a = 0; a < e.length; a++) if (r = e[a], "object" == typeof r && (t += c(r)), t == 1 / 0) return 1 / 0
-        } else for (var s in e) {
-          if ("$ref" == s) return 1 / 0;
-          if (E[s]) t++; else if (r = e[s], "object" == typeof r && (t += c(r) + 1), t == 1 / 0) return 1 / 0
-        }
-        return t
-      }
-
-      function h(e, r) {
-        r !== !1 && (e = f(e));
-        var t = m.parse(e, !1, !0);
-        return u(t)
-      }
-
-      function u(e) {
-        var r = e.protocol || "//" == e.href.slice(0, 2) ? "//" : "";
-        return (e.protocol || "") + r + (e.host || "") + (e.path || "") + "#"
-      }
-
-      function f(e) {
-        return e ? e.replace(b, "") : ""
-      }
-
-      function d(e, r) {
-        return r = f(r), m.resolve(e, r)
-      }
-
-      function p(e) {
-        function r(e, t, s) {
-          if (Array.isArray(e)) for (var o = 0; o < e.length; o++) r.call(this, e[o], t + "/" + o, s); else if (e && "object" == typeof e) {
-            if ("string" == typeof e.id) {
-              var i = s = s ? m.resolve(s, e.id) : e.id;
-              i = f(i);
-              var n = this._refs[i];
-              if ("string" == typeof n && (n = this._refs[n]), n && n.schema) {
-                if (!v(e, n.schema)) throw new Error('id "' + i + '" resolves to more than one schema')
-              } else if (i != f(t)) if ("#" == i[0]) {
-                if (a[i] && !v(e, a[i])) throw new Error('id "' + i + '" resolves to more than one schema');
-                a[i] = e
-              } else this._refs[i] = t
-            }
-            for (var l in e) r.call(this, e[l], t + "/" + y.escapeFragment(l), s)
-          }
-        }
-
-        var t = f(e.id), a = {};
-        return r.call(this, e, h(t, !1), t), a
-      }
-
-      var m = e("url"), v = e("./equal"), y = e("./util"), g = e("./schema_obj");
-      r.exports = a, a.normalizeId = f, a.fullPath = h, a.url = d, a.ids = p, a.inlineRef = n, a.schema = s;
-      var P = y.toHash(["properties", "patternProperties", "enum", "dependencies", "definitions"]),
-        E = y.toHash(["type", "format", "pattern", "maxLength", "minLength", "maxProperties", "minProperties", "maxItems", "minItems", "maximum", "minimum", "uniqueItems", "multipleOf", "required", "enum"]),
-        b = /#\/?$/
-    }, {"./equal": 4, "./schema_obj": 9, "./util": 11, url: 50}], 8: [function (e, r, t) {
-      "use strict";
-      var a = e("./_rules"), s = e("./util").toHash;
-      r.exports = function () {
-        var e = [{type: "number", rules: ["maximum", "minimum", "multipleOf"]}, {
-            type: "string",
-            rules: ["maxLength", "minLength", "pattern", "format"]
-          }, {type: "array", rules: ["maxItems", "minItems", "uniqueItems", "items"]}, {
-            type: "object",
-            rules: ["maxProperties", "minProperties", "required", "dependencies", "properties"]
-          }, {rules: ["$ref", "enum", "not", "anyOf", "oneOf", "allOf"]}],
-          r = ["type", "additionalProperties", "patternProperties"],
-          t = ["additionalItems", "$schema", "id", "title", "description", "default"],
-          o = ["number", "integer", "string", "array", "object", "boolean", "null"];
-        return e.all = s(r), e.forEach(function (t) {
-          t.rules = t.rules.map(function (t) {
-            r.push(t);
-            var s = e.all[t] = {keyword: t, code: a[t]};
-            return s
-          })
-        }), e.keywords = s(r.concat(t)), e.types = s(o), e.custom = {}, e
-      }
-    }, {"./_rules": 3, "./util": 11}], 9: [function (e, r, t) {
-      "use strict";
-
-      function a(e) {
-        s.copy(e, this)
-      }
-
-      var s = e("./util");
-      r.exports = a
-    }, {"./util": 11}], 10: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e) {
-        for (var r, t = 0, a = e.length, s = 0; s < a;) t++, r = e.charCodeAt(s++), r >= 55296 && r <= 56319 && s < a && (r = e.charCodeAt(s), 56320 == (64512 & r) && s++);
-        return t
-      }
-    }, {}], 11: [function (e, r, t) {
-      "use strict";
-
-      function a(e, r) {
-        r = r || {};
-        for (var t in e) r[t] = e[t];
-        return r
-      }
-
-      function s(e, r, t) {
-        var a = t ? " !== " : " === ", s = t ? " || " : " && ", o = t ? "!" : "", i = t ? "" : "!";
-        switch (e) {
-          case"null":
-            return r + a + "null";
-          case"array":
-            return o + "Array.isArray(" + r + ")";
-          case"object":
-            return "(" + o + r + s + "typeof " + r + a + '"object"' + s + i + "Array.isArray(" + r + "))";
-          case"integer":
-            return "(typeof " + r + a + '"number"' + s + i + "(" + r + " % 1)" + s + r + a + r + ")";
-          default:
-            return "typeof " + r + a + '"' + e + '"'
-        }
-      }
-
-      function o(e, r) {
-        switch (e.length) {
-          case 1:
-            return s(e[0], r, !0);
-          default:
-            var t = "", a = n(e);
-            a.array && a.object && (t = a.null ? "(" : "(!" + r + " || ", t += "typeof " + r + ' !== "object")', delete a.null, delete a.array, delete a.object), a.number && delete a.integer;
-            for (var o in a) t += (t ? " && " : "") + s(o, r, !0);
-            return t
-        }
-      }
-
-      function i(e, r) {
-        if (Array.isArray(r)) {
-          for (var t = [], a = 0; a < r.length; a++) {
-            var s = r[a];
-            $[s] ? t[t.length] = s : "array" === e && "array" === s && (t[t.length] = s)
-          }
-          if (t.length) return t
-        } else {
-          if ($[r]) return [r];
-          if ("array" === e && "array" === r) return ["array"]
-        }
-      }
-
-      function n(e) {
-        for (var r = {}, t = 0; t < e.length; t++) r[e[t]] = !0;
-        return r
-      }
-
-      function l(e) {
-        return "number" == typeof e ? "[" + e + "]" : x.test(e) ? "." + e : "['" + c(e) + "']"
-      }
-
-      function c(e) {
-        return e.replace(_, "\\$&").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\f/g, "\\f").replace(/\t/g, "\\t")
-      }
-
-      function h(e, r) {
-        r += "[^0-9]";
-        var t = e.match(new RegExp(r, "g"));
-        return t ? t.length : 0
-      }
-
-      function u(e, r, t) {
-        return r += "([^0-9])", t = t.replace(/\$/g, "$$$$"), e.replace(new RegExp(r, "g"), t + "$1")
-      }
-
-      function f(e) {
-        return e.replace(O, "").replace(R, "").replace(I, "if (!($1))")
-      }
-
-      function d(e, r) {
-        var t = e.match(A);
-        return t && 2 === t.length ? r ? e.replace(q, "").replace(Q, C) : e.replace(k, "").replace(L, D) : e
-      }
-
-      function p(e, r) {
-        for (var t in e) if (r[t]) return !0
-      }
-
-      function m(e, r, t) {
-        for (var a in e) if (a != t && r[a]) return !0
-      }
-
-      function v(e) {
-        return "'" + c(e) + "'"
-      }
-
-      function y(e, r, t, a) {
-        var s = t ? "'/' + " + r + (a ? "" : ".replace(/~/g, '~0').replace(/\\//g, '~1')") : a ? "'[' + " + r + " + ']'" : "'[\\'' + " + r + " + '\\']'";
-        return E(e, s)
-      }
-
-      function g(e, r, t) {
-        var a = v(t ? "/" + j(r) : l(r));
-        return E(e, a)
-      }
-
-      function P(e, r, t) {
-        var a, s, o, i;
-        if ("" === e) return "rootData";
-        if ("/" == e[0]) {
-          if (!U.test(e)) throw new Error("Invalid JSON-pointer: " + e);
-          s = e, o = "rootData"
-        } else {
-          if (i = e.match(V), !i) throw new Error("Invalid JSON-pointer: " + e);
-          if (a = +i[1], s = i[2], "#" == s) {
-            if (a >= r) throw new Error("Cannot access property/index " + a + " levels up, current level is " + r);
-            return t[r - a]
-          }
-          if (a > r) throw new Error("Cannot access data " + a + " levels up, current level is " + r);
-          if (o = "data" + (r - a || ""), !s) return o
-        }
-        for (var n = o, c = s.split("/"), h = 0; h < c.length; h++) {
-          var u = c[h];
-          u && (o += l(S(u)), n += " && " + o)
-        }
-        return n
-      }
-
-      function E(e, r) {
-        return '""' == e ? r : (e + " + " + r).replace(/' \+ '/g, "")
-      }
-
-      function b(e) {
-        return S(decodeURIComponent(e))
-      }
-
-      function w(e) {
-        return encodeURIComponent(j(e))
-      }
-
-      function j(e) {
-        return e.replace(/~/g, "~0").replace(/\//g, "~1")
-      }
-
-      function S(e) {
-        return e.replace(/~1/g, "/").replace(/~0/g, "~")
-      }
-
-      r.exports = {
-        copy: a,
-        checkDataType: s,
-        checkDataTypes: o,
-        coerceToTypes: i,
-        toHash: n,
-        getProperty: l,
-        escapeQuotes: c,
-        ucs2length: e("./ucs2length"),
-        varOccurences: h,
-        varReplace: u,
-        cleanUpCode: f,
-        cleanUpVarErrors: d,
-        schemaHasRules: p,
-        schemaHasRulesExcept: m,
-        stableStringify: e("json-stable-stringify"),
-        toQuotedString: v,
-        getPathExpr: y,
-        getPath: g,
-        getData: P,
-        unescapeFragment: b,
-        escapeFragment: w,
-        escapeJsonPointer: j
-      };
-      var $ = n(["string", "number", "integer", "boolean", "null"]), x = /^[a-z$_][a-z$_0-9]*$/i, _ = /'|\\/g,
-        O = /else\s*{\s*}/g, R = /if\s*\([^)]+\)\s*\{\s*\}(?!\s*else)/g,
-        I = /if\s*\(([^)]+)\)\s*\{\s*\}\s*else(?!\s*if)/g, A = /[^v\.]errors/g,
-        k = /var errors = 0;|var vErrors = null;|validate.errors = vErrors;/g,
-        q = /var errors = 0;|var vErrors = null;/g, L = "return errors === 0;",
-        D = "validate.errors = null; return true;",
-        Q = /if \(errors === 0\) return true;\s*else throw new ValidationError\(vErrors\);/, C = "return true;",
-        U = /^\/(?:[^~]|~0|~1)*$/, V = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/
-    }, {"./ucs2length": 10, "json-stable-stringify": 42}], 12: [function (e, r, t) {
-      "use strict";
-
-      function a(e) {
-        this.message = "validation failed", this.errors = e, this.ajv = this.validation = !0
-      }
-
-      r.exports = a, a.prototype = Object.create(Error.prototype), a.prototype.constructor = a
-    }, {}], 13: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "valid" + s;
-        if (a += "var " + u + " = undefined;", e.opts.format === !1) return a += " " + u + " = true; ";
-        var f = e.schema.format, d = e.opts.v5 && f.$data, p = "";
-        if (d) {
-          var m = e.util.getData(f.$data, o, e.dataPathArr), v = "format" + s, y = "compare" + s;
-          a += " var " + v + " = formats[" + m + "] , " + y + " = " + v + " && " + v + ".compare;"
-        } else {
-          var v = e.formats[f];
-          if (!v || !v.compare) return a += "  " + u + " = true; ";
-          var y = "formats" + e.util.getProperty(f) + ".compare"
-        }
-        var g, P = "formatMaximum" == r, E = "formatExclusive" + (P ? "Maximum" : "Minimum"), b = e.schema[E],
-          w = e.opts.v5 && b && b.$data, j = P ? "<" : ">", S = "result" + s, $ = e.opts.v5 && i && i.$data;
-        if ($ ? (a += " var schema" + s + " = " + e.util.getData(i.$data, o, e.dataPathArr) + "; ", g = "schema" + s) : g = i, w) {
-          var x = e.util.getData(b.$data, o, e.dataPathArr), _ = "exclusive" + s, O = "op" + s, R = "' + " + O + " + '";
-          a += " var schemaExcl" + s + " = " + x + "; ", x = "schemaExcl" + s, a += " if (typeof " + x + " != 'boolean' && " + x + " !== undefined) { " + u + " = false; ";
-          var t = E, I = I || [];
-          I.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "_formatExclusiveLimit") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: {} ", e.opts.messages !== !1 && (a += " , message: '" + E + " should be boolean' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-          var A = a;
-          a = I.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + A + "]); " : " validate.errors = [" + A + "]; return false; " : " var err = " + A + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += " }  ", c && (p += "}", a += " else { "), $ && (a += " if (" + g + " === undefined) " + u + " = true; else if (typeof " + g + " != 'string') " + u + " = false; else { ", p += "}"), d && (a += " if (!" + y + ") " + u + " = true; else { ", p += "}"), a += " var " + S + " = " + y + "(" + h + ",  ", a += $ ? "" + g : "" + e.util.toQuotedString(i), a += " ); if (" + S + " === undefined) " + u + " = false; var " + _ + " = " + x + " === true; if (" + u + " === undefined) { " + u + " = " + _ + " ? " + S + " " + j + " 0 : " + S + " " + j + "= 0; } if (!" + u + ") var op" + s + " = " + _ + " ? '" + j + "' : '" + j + "=';"
-        } else {
-          var _ = b === !0, R = j;
-          _ || (R += "=");
-          var O = "'" + R + "'";
-          $ && (a += " if (" + g + " === undefined) " + u + " = true; else if (typeof " + g + " != 'string') " + u + " = false; else { ", p += "}"), d && (a += " if (!" + y + ") " + u + " = true; else { ", p += "}"), a += " var " + S + " = " + y + "(" + h + ",  ", a += $ ? "" + g : "" + e.util.toQuotedString(i), a += " ); if (" + S + " === undefined) " + u + " = false; if (" + u + " === undefined) " + u + " = " + S + " " + j, _ || (a += "="), a += " 0;"
-        }
-        a += "" + p + "if (!" + u + ") { ";
-        var t = r, I = I || [];
-        I.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "_formatLimit") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { comparison: " + O + ", limit:  ", a += $ ? "" + g : "" + e.util.toQuotedString(i), a += " , exclusive: " + _ + " } ", e.opts.messages !== !1 && (a += " , message: 'should be " + R + ' "', a += $ ? "' + " + g + " + '" : "" + e.util.escapeQuotes(i), a += "\"' "), e.opts.verbose && (a += " , schema:  ", a += $ ? "validate.schema" + n : "" + e.util.toQuotedString(i), a += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-        var A = a;
-        return a = I.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + A + "]); " : " validate.errors = [" + A + "]; return false; " : " var err = " + A + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += "}"
-      }
-    }, {}], 14: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = e.opts.v5 && n && n.$data;
-        f ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n;
-        var d = "maximum" == r, p = d ? "exclusiveMaximum" : "exclusiveMinimum", m = e.schema[p],
-          v = e.opts.v5 && m && m.$data, y = d ? "<" : ">", g = d ? ">" : "<";
-        if (v) {
-          var P = e.util.getData(m.$data, i, e.dataPathArr), E = "exclusive" + o, b = "op" + o, w = "' + " + b + " + '";
-          s += " var schemaExcl" + o + " = " + P + "; ", P = "schemaExcl" + o, s += " var exclusive" + o + "; if (typeof " + P + " != 'boolean' && typeof " + P + " != 'undefined') { ";
-          var t = p, j = j || [];
-          j.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "_exclusiveLimit") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: {} ", e.opts.messages !== !1 && (s += " , message: '" + p + " should be boolean' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-          var S = s;
-          s = j.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + S + "]); " : " validate.errors = [" + S + "]; return false; " : " var err = " + S + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " } else if( ", f && (s += " (" + a + " !== undefined && typeof " + a + " != 'number') || "), s += " ((exclusive" + o + " = " + P + " === true) ? " + u + " " + g + "= " + a + " : " + u + " " + g + " " + a + ") || " + u + " !== " + u + ") { var op" + o + " = exclusive" + o + " ? '" + y + "' : '" + y + "=';"
-        } else {
-          var E = m === !0, w = y;
-          E || (w += "=");
-          var b = "'" + w + "'";
-          s += " if ( ", f && (s += " (" + a + " !== undefined && typeof " + a + " != 'number') || "), s += " " + u + " " + g, E && (s += "="), s += " " + a + " || " + u + " !== " + u + ") {"
-        }
-        var t = r, j = j || [];
-        j.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "_limit") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { comparison: " + b + ", limit: " + a + ", exclusive: " + E + " } ", e.opts.messages !== !1 && (s += " , message: 'should be " + w + " ", s += f ? "' + " + a : "" + n + "'"), e.opts.verbose && (s += " , schema:  ", s += f ? "validate.schema" + l : "" + n, s += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var S = s;
-        return s = j.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + S + "]); " : " validate.errors = [" + S + "]; return false; " : " var err = " + S + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " } ", h && (s += " else { "), s
-      }
-    }, {}], 15: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = e.opts.v5 && n && n.$data;
-        f ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n;
-        var d = "maxItems" == r ? ">" : "<";
-        s += "if ( ", f && (s += " (" + a + " !== undefined && typeof " + a + " != 'number') || "), s += " " + u + ".length " + d + " " + a + ") { ";
-        var t = r, p = p || [];
-        p.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "_limitItems") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { limit: " + a + " } ", e.opts.messages !== !1 && (s += " , message: 'should NOT have ", s += "maxItems" == r ? "more" : "less", s += " than ", s += f ? "' + " + a + " + '" : "" + n, s += " items' "), e.opts.verbose && (s += " , schema:  ", s += f ? "validate.schema" + l : "" + n, s += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var m = s;
-        return s = p.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + m + "]); " : " validate.errors = [" + m + "]; return false; " : " var err = " + m + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += "} ", h && (s += " else { "), s
-      }
-    }, {}], 16: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = e.opts.v5 && n && n.$data;
-        f ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n;
-        var d = "maxLength" == r ? ">" : "<";
-        s += "if ( ", f && (s += " (" + a + " !== undefined && typeof " + a + " != 'number') || "), s += e.opts.unicode === !1 ? " " + u + ".length " : " ucs2length(" + u + ") ", s += " " + d + " " + a + ") { ";
-        var t = r, p = p || [];
-        p.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "_limitLength") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { limit: " + a + " } ", e.opts.messages !== !1 && (s += " , message: 'should NOT be ", s += "maxLength" == r ? "longer" : "shorter", s += " than ", s += f ? "' + " + a + " + '" : "" + n, s += " characters' "), e.opts.verbose && (s += " , schema:  ", s += f ? "validate.schema" + l : "" + n, s += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var m = s;
-        return s = p.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + m + "]); " : " validate.errors = [" + m + "]; return false; " : " var err = " + m + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ",
-          s += "} ", h && (s += " else { "), s
-      }
-    }, {}], 17: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = e.opts.v5 && n && n.$data;
-        f ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n;
-        var d = "maxProperties" == r ? ">" : "<";
-        s += "if ( ", f && (s += " (" + a + " !== undefined && typeof " + a + " != 'number') || "), s += " Object.keys(" + u + ").length " + d + " " + a + ") { ";
-        var t = r, p = p || [];
-        p.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "_limitProperties") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { limit: " + a + " } ", e.opts.messages !== !1 && (s += " , message: 'should NOT have ", s += "maxProperties" == r ? "more" : "less", s += " than ", s += f ? "' + " + a + " + '" : "" + n, s += " properties' "), e.opts.verbose && (s += " , schema:  ", s += f ? "validate.schema" + l : "" + n, s += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var m = s;
-        return s = p.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + m + "]); " : " validate.errors = [" + m + "]; return false; " : " var err = " + m + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += "} ", h && (s += " else { "), s
-      }
-    }, {}], 18: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t = " ", a = e.schema[r], s = e.schemaPath + "." + r, o = e.errSchemaPath + "/" + r, i = !e.opts.allErrors,
-          n = e.util.copy(e), l = "";
-        n.level++;
-        var c = n.baseId, h = a;
-        if (h) for (var u, f = -1, d = h.length - 1; f < d;) u = h[f += 1], e.util.schemaHasRules(u, e.RULES.all) && (n.schema = u, n.schemaPath = s + "[" + f + "]", n.errSchemaPath = o + "/" + f, t += "  " + e.validate(n) + " ", n.baseId = c, i && (t += " if (valid" + n.level + ") { ", l += "}"));
-        return i && (t += " " + l.slice(0, -1)), t = e.util.cleanUpCode(t)
-      }
-    }, {}], 19: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "valid" + s,
-          f = "errs__" + s, d = e.util.copy(e), p = "";
-        d.level++;
-        var m = i.every(function (r) {
-          return e.util.schemaHasRules(r, e.RULES.all)
-        });
-        if (m) {
-          var v = d.baseId;
-          a += " var " + f + " = errors; var " + u + " = false;  ";
-          var y = e.compositeRule;
-          e.compositeRule = d.compositeRule = !0;
-          var g = i;
-          if (g) for (var P, E = -1, b = g.length - 1; E < b;) P = g[E += 1], d.schema = P, d.schemaPath = n + "[" + E + "]", d.errSchemaPath = l + "/" + E, a += "  " + e.validate(d) + " ", d.baseId = v, a += " " + u + " = " + u + " || valid" + d.level + "; if (!" + u + ") { ", p += "}";
-          e.compositeRule = d.compositeRule = y, a += " " + p + " if (!" + u + ") {  var err =   ", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "anyOf") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: {} ", e.opts.messages !== !1 && (a += " , message: 'should match some schema in anyOf' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ", a += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else {  errors = " + f + "; if (vErrors !== null) { if (" + f + ") vErrors.length = " + f + "; else vErrors = null; } ", e.opts.allErrors && (a += " } "), a = e.util.cleanUpCode(a)
-        } else c && (a += " if (true) { ");
-        return a
-      }
-    }, {}], 20: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = "valid" + o,
-          d = e.opts.v5 && n && n.$data;
-        d ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n, d || (s += " var schema" + o + " = validate.schema" + l + ";"), s += "var " + f + " = equal(" + u + ", schema" + o + "); if (!" + f + ") {   ";
-        var p = p || [];
-        p.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "constant") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: {} ", e.opts.messages !== !1 && (s += " , message: 'should be equal to constant' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var m = s;
-        return s = p.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + m + "]); " : " validate.errors = [" + m + "]; return false; " : " var err = " + m + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " }"
-      }
-    }, {}], 21: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = "errs__" + o,
-          d = e.opts.v5 && n && n.$data;
-        d ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n;
-        var p, m, v, y, g, P = this, E = "definition" + o, b = P.definition;
-        if (d && b.$data) {
-          g = "keywordValidate" + o;
-          var w = b.validateSchema;
-          s += " var " + E + " = RULES.custom['" + r + "'].definition; var " + g + " = " + E + ".validate;"
-        } else y = e.useCustomRule(P, n, e.schema, e), a = "validate.schema" + l, g = y.code, p = b.compile, m = b.inline, v = b.macro;
-        var j = g + ".errors", S = "i" + o, $ = "ruleErr" + o, x = b.async;
-        if (x && !e.async) throw new Error("async keyword in sync schema");
-        if (m || v || (s += "" + j + " = null;"), s += "var " + f + " = errors;var valid" + o + ";", m && b.statements) s += " " + y.validate; else if (v) {
-          var _ = e.util.copy(e);
-          _.level++, _.schema = y.validate, _.schemaPath = "";
-          var O = e.compositeRule;
-          e.compositeRule = _.compositeRule = !0;
-          var R = e.validate(_).replace(/validate\.schema/g, g);
-          e.compositeRule = _.compositeRule = O, s += " " + R
-        } else if (!m) {
-          var I = I || [];
-          I.push(s), s = "", s += "  " + g + ".call( ", s += e.opts.passContext ? "this" : "self", s += p || b.schema === !1 ? " , " + u + " " : " , " + a + " , " + u + " , validate.schema" + e.schemaPath + " ", s += " , (dataPath || '')", '""' != e.errorPath && (s += " + " + e.errorPath), s += i ? " , data" + (i - 1 || "") + " , " + e.dataPathArr[i] + " " : " , parentData , parentDataProperty ", s += " , rootData )  ";
-          var A = s;
-          s = I.pop(), b.errors !== !1 && (x ? (j = "customErrors" + o, s += " var " + j + " = null; try { valid" + o + " = " + e.yieldAwait + A + "; } catch (e) { valid" + o + " = false; if (e instanceof ValidationError) " + j + " = e.errors; else throw e; } ") : s += " " + g + ".errors = null; ")
-        }
-        s += "if (", w && (s += " !" + E + ".validateSchema(" + a + ") || "), s += " ! ", s += m ? b.statements ? " valid" + o + " " : " (" + y.validate + ") " : v ? " valid" + _.level + " " : x ? b.errors === !1 ? " (" + e.yieldAwait + A + ") " : " valid" + o + " " : " " + A + " ", s += ") { ", t = P.keyword;
-        var I = I || [];
-        I.push(s), s = "";
-        var I = I || [];
-        I.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "custom") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { keyword: '" + P.keyword + "' } ", e.opts.messages !== !1 && (s += " , message: 'should pass \"" + P.keyword + "\" keyword validation' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var k = s;
-        s = I.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + k + "]); " : " validate.errors = [" + k + "]; return false; " : " var err = " + k + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
-        var q = s;
-        return s = I.pop(), m ? b.errors ? "full" != b.errors && (s += "  for (var " + S + "=" + f + "; " + S + "<errors; " + S + "++) { var " + $ + " = vErrors[" + S + "]; if (" + $ + ".dataPath === undefined) { " + $ + ".dataPath = (dataPath || '') + " + e.errorPath + "; } if (" + $ + ".schemaPath === undefined) { " + $ + '.schemaPath = "' + c + '"; } ', e.opts.verbose && (s += " " + $ + ".schema = " + a + "; " + $ + ".data = " + u + "; "), s += " } ") : b.errors === !1 ? s += " " + q + " " : (s += " if (" + f + " == errors) { " + q + " } else {  for (var " + S + "=" + f + "; " + S + "<errors; " + S + "++) { var " + $ + " = vErrors[" + S + "]; if (" + $ + ".dataPath === undefined) { " + $ + ".dataPath = (dataPath || '') + " + e.errorPath + "; } if (" + $ + ".schemaPath === undefined) { " + $ + '.schemaPath = "' + c + '"; } ', e.opts.verbose && (s += " " + $ + ".schema = " + a + "; " + $ + ".data = " + u + "; "), s += " } } ") : v ? (s += "   var err =   ", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "custom") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { keyword: '" + P.keyword + "' } ", e.opts.messages !== !1 && (s += " , message: 'should pass \"" + P.keyword + "\" keyword validation' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ", s += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", !e.compositeRule && h && (s += e.async ? " throw new ValidationError(vErrors); " : " validate.errors = vErrors; return false ")) : b.errors === !1 ? s += " " + q + " " : (s += " if (Array.isArray(" + j + ")) { if (vErrors === null) vErrors = " + j + "; else vErrors = vErrors.concat(" + j + "); errors = vErrors.length;  for (var " + S + "=" + f + "; " + S + "<errors; " + S + "++) { var " + $ + " = vErrors[" + S + "];  " + $ + ".dataPath = (dataPath || '') + " + e.errorPath + ";   " + $ + '.schemaPath = "' + c + '";  ', e.opts.verbose && (s += " " + $ + ".schema = " + a + "; " + $ + ".data = " + u + "; "), s += " } } else { " + q + " } "), s += " } ", h && (s += " else { "), s
-      }
-    }, {}], 22: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "errs__" + s,
-          f = e.util.copy(e), d = "";
-        f.level++;
-        var p = {}, m = {};
-        for (P in i) {
-          var v = i[P], y = Array.isArray(v) ? m : p;
-          y[P] = v
-        }
-        a += "var " + u + " = errors;";
-        var g = e.errorPath;
-        a += "var missing" + s + ";";
-        for (var P in m) {
-          if (y = m[P], a += " if (" + h + e.util.getProperty(P) + " !== undefined ", c) {
-            a += " && ( ";
-            var E = y;
-            if (E) for (var b, w = -1, j = E.length - 1; w < j;) {
-              b = E[w += 1], w && (a += " || ");
-              var S = e.util.getProperty(b);
-              a += " ( " + h + S + " === undefined && (missing" + s + " = " + e.util.toQuotedString(e.opts.jsonPointers ? b : S) + ") ) "
-            }
-            a += ")) {  ";
-            var $ = "missing" + s, x = "' + " + $ + " + '";
-            e.opts._errorDataPathProperty && (e.errorPath = e.opts.jsonPointers ? e.util.getPathExpr(g, $, !0) : g + " + " + $);
-            var _ = _ || [];
-            _.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "dependencies") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { property: '" + e.util.escapeQuotes(P) + "', missingProperty: '" + x + "', depsCount: " + y.length + ", deps: '" + e.util.escapeQuotes(1 == y.length ? y[0] : y.join(", ")) + "' } ", e.opts.messages !== !1 && (a += " , message: 'should have ", a += 1 == y.length ? "property " + e.util.escapeQuotes(y[0]) : "properties " + e.util.escapeQuotes(y.join(", ")), a += " when property " + e.util.escapeQuotes(P) + " is present' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-            var O = a;
-            a = _.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + O + "]); " : " validate.errors = [" + O + "]; return false; " : " var err = " + O + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; "
-          } else {
-            a += " ) { ";
-            var R = y;
-            if (R) for (var I, A = -1, k = R.length - 1; A < k;) {
-              I = R[A += 1];
-              var S = e.util.getProperty(I), x = e.util.escapeQuotes(I);
-              e.opts._errorDataPathProperty && (e.errorPath = e.util.getPath(g, I, e.opts.jsonPointers)), a += " if (" + h + S + " === undefined) {  var err =   ", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "dependencies") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { property: '" + e.util.escapeQuotes(P) + "', missingProperty: '" + x + "', depsCount: " + y.length + ", deps: '" + e.util.escapeQuotes(1 == y.length ? y[0] : y.join(", ")) + "' } ", e.opts.messages !== !1 && (a += " , message: 'should have ", a += 1 == y.length ? "property " + e.util.escapeQuotes(y[0]) : "properties " + e.util.escapeQuotes(y.join(", ")), a += " when property " + e.util.escapeQuotes(P) + " is present' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ", a += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } "
-            }
-          }
-          a += " }   ", c && (d += "}", a += " else { ")
-        }
-        e.errorPath = g;
-        var q = f.baseId;
-        for (var P in p) {
-          var v = p[P];
-          e.util.schemaHasRules(v, e.RULES.all) && (a += " valid" + f.level + " = true; if (" + h + "['" + P + "'] !== undefined) { ", f.schema = v, f.schemaPath = n + e.util.getProperty(P), f.errSchemaPath = l + "/" + e.util.escapeFragment(P), a += "  " + e.validate(f) + " ", f.baseId = q, a += " }  ", c && (a += " if (valid" + f.level + ") { ", d += "}"))
-        }
-        return c && (a += "   " + d + " if (" + u + " == errors) {"), a = e.util.cleanUpCode(a)
-      }
-    }, {}], 23: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = "valid" + o,
-          d = e.opts.v5 && n && n.$data;
-        d ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n;
-        var p = "i" + o;
-        d || (s += " var schema" + o + " = validate.schema" + l + ";"), s += "var " + f + ";", d && (s += " if (schema" + o + " === undefined) " + f + " = true; else if (!Array.isArray(schema" + o + ")) " + f + " = false; else {"), s += "" + f + " = false;for (var " + p + "=0; " + p + "<schema" + o + ".length; " + p + "++) if (equal(" + u + ", schema" + o + "[" + p + "])) { " + f + " = true; break; }", d && (s += "  }  "), s += " if (!" + f + ") {   ";
-        var m = m || [];
-        m.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "enum") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { allowedValues: schema" + o + " } ", e.opts.messages !== !1 && (s += " , message: 'should be equal to one of the allowed values' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var v = s;
-        return s = m.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + v + "]); " : " validate.errors = [" + v + "]; return false; " : " var err = " + v + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " }", h && (s += " else { "), s
-      }
-    }, {}], 24: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || "");
-        if (e.opts.format === !1) return c && (a += " if (true) { "), a;
-        var u, f = e.opts.v5 && i && i.$data;
-        f ? (a += " var schema" + s + " = " + e.util.getData(i.$data, o, e.dataPathArr) + "; ", u = "schema" + s) : u = i;
-        var d = e.opts.unknownFormats, p = Array.isArray(d);
-        if (f) {
-          var m = "format" + s;
-          a += " var " + m + " = formats[" + u + "]; var isObject" + s + " = typeof " + m + " == 'object' && !(" + m + " instanceof RegExp) && " + m + ".validate; if (isObject" + s + ") { ", e.async && (a += " var async" + s + " = " + m + ".async; "), a += " " + m + " = " + m + ".validate; } if (  ", f && (a += " (" + u + " !== undefined && typeof " + u + " != 'string') || "), a += " (", (d === !0 || p) && (a += " (" + u + " && !" + m + " ", p && (a += " && self._opts.unknownFormats.indexOf(" + u + ") == -1 "), a += ") || "), a += " (" + m + " && !(typeof " + m + " == 'function' ? ", a += e.async ? " (async" + s + " ? " + e.yieldAwait + " " + m + "(" + h + ") : " + m + "(" + h + ")) " : " " + m + "(" + h + ") ", a += " : " + m + ".test(" + h + "))))) {"
-        } else {
-          var m = e.formats[i];
-          if (!m) {
-            if (d === !0 || p && d.indexOf(i) == -1) throw new Error('unknown format "' + i + '" is used in schema at path "' + e.errSchemaPath + '"');
-            return p || (console.warn('unknown format "' + i + '" ignored in schema at path "' + e.errSchemaPath + '"'), "ignore" !== d && console.warn("In the next major version it will throw exception. See option unknownFormats for more information")), c && (a += " if (true) { "), a
-          }
-          var v = "object" == typeof m && !(m instanceof RegExp) && m.validate;
-          if (v) {
-            var y = m.async === !0;
-            m = m.validate
-          }
-          if (y) {
-            if (!e.async) throw new Error("async format in sync schema");
-            var g = "formats" + e.util.getProperty(i) + ".validate";
-            a += " if (!(" + e.yieldAwait + " " + g + "(" + h + "))) { "
-          } else {
-            a += " if (! ";
-            var g = "formats" + e.util.getProperty(i);
-            v && (g += ".validate"), a += "function" == typeof m ? " " + g + "(" + h + ") " : " " + g + ".test(" + h + ") ", a += ") { "
-          }
-        }
-        var P = P || [];
-        P.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "format") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { format:  ", a += f ? "" + u : "" + e.util.toQuotedString(i), a += "  } ", e.opts.messages !== !1 && (a += " , message: 'should match format \"", a += f ? "' + " + u + " + '" : "" + e.util.escapeQuotes(i), a += "\"' "), e.opts.verbose && (a += " , schema:  ", a += f ? "validate.schema" + n : "" + e.util.toQuotedString(i), a += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-        var E = a;
-        return a = P.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + E + "]); " : " validate.errors = [" + E + "]; return false; " : " var err = " + E + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += " } ", c && (a += " else { "), a
-      }
-    }, {}], 25: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "valid" + s,
-          f = "errs__" + s, d = e.util.copy(e), p = "";
-        d.level++;
-        var m = d.dataLevel = e.dataLevel + 1, v = "data" + m, y = e.baseId;
-        if (a += "var " + f + " = errors;var " + u + ";", Array.isArray(i)) {
-          var g = e.schema.additionalItems;
-          if (g === !1) {
-            a += " " + u + " = " + h + ".length <= " + i.length + "; ";
-            var P = l;
-            l = e.errSchemaPath + "/additionalItems", a += "  if (!" + u + ") {   ";
-            var E = E || [];
-            E.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "additionalItems") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { limit: " + i.length + " } ", e.opts.messages !== !1 && (a += " , message: 'should NOT have more than " + i.length + " items' "), e.opts.verbose && (a += " , schema: false , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-            var b = a;
-            a = E.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + b + "]); " : " validate.errors = [" + b + "]; return false; " : " var err = " + b + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += " } ", l = P, c && (p += "}", a += " else { ")
-          }
-          var w = i;
-          if (w) for (var j, S = -1, $ = w.length - 1; S < $;) if (j = w[S += 1], e.util.schemaHasRules(j, e.RULES.all)) {
-            a += " valid" + d.level + " = true; if (" + h + ".length > " + S + ") { ";
-            var x = h + "[" + S + "]";
-            d.schema = j, d.schemaPath = n + "[" + S + "]", d.errSchemaPath = l + "/" + S, d.errorPath = e.util.getPathExpr(e.errorPath, S, e.opts.jsonPointers, !0), d.dataPathArr[m] = S;
-            var _ = e.validate(d);
-            d.baseId = y, a += e.util.varOccurences(_, v) < 2 ? " " + e.util.varReplace(_, v, x) + " " : " var " + v + " = " + x + "; " + _ + " ", a += " }  ", c && (a += " if (valid" + d.level + ") { ", p += "}")
-          }
-          if ("object" == typeof g && e.util.schemaHasRules(g, e.RULES.all)) {
-            d.schema = g, d.schemaPath = e.schemaPath + ".additionalItems", d.errSchemaPath = e.errSchemaPath + "/additionalItems", a += " valid" + d.level + " = true; if (" + h + ".length > " + i.length + ") {  for (var i" + s + " = " + i.length + "; i" + s + " < " + h + ".length; i" + s + "++) { ", d.errorPath = e.util.getPathExpr(e.errorPath, "i" + s, e.opts.jsonPointers, !0);
-            var x = h + "[i" + s + "]";
-            d.dataPathArr[m] = "i" + s;
-            var _ = e.validate(d);
-            d.baseId = y, a += e.util.varOccurences(_, v) < 2 ? " " + e.util.varReplace(_, v, x) + " " : " var " + v + " = " + x + "; " + _ + " ", c && (a += " if (!valid" + d.level + ") break; "), a += " } }  ", c && (a += " if (valid" + d.level + ") { ", p += "}")
-          }
-        } else if (e.util.schemaHasRules(i, e.RULES.all)) {
-          d.schema = i, d.schemaPath = n, d.errSchemaPath = l, a += "  for (var i" + s + " = 0; i" + s + " < " + h + ".length; i" + s + "++) { ", d.errorPath = e.util.getPathExpr(e.errorPath, "i" + s, e.opts.jsonPointers, !0);
-          var x = h + "[i" + s + "]";
-          d.dataPathArr[m] = "i" + s;
-          var _ = e.validate(d);
-          d.baseId = y, a += e.util.varOccurences(_, v) < 2 ? " " + e.util.varReplace(_, v, x) + " " : " var " + v + " = " + x + "; " + _ + " ", c && (a += " if (!valid" + d.level + ") break; "), a += " }  ", c && (a += " if (valid" + d.level + ") { ", p += "}")
-        }
-        return c && (a += " " + p + " if (" + f + " == errors) {"), a = e.util.cleanUpCode(a)
-      }
-    }, {}], 26: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = e.opts.v5 && n && n.$data;
-        f ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n, s += "var division" + o + ";if (", f && (s += " " + a + " !== undefined && ( typeof " + a + " != 'number' || "), s += " (division" + o + " = " + u + " / " + a + ", ", s += e.opts.multipleOfPrecision ? " Math.abs(Math.round(division" + o + ") - division" + o + ") > 1e-" + e.opts.multipleOfPrecision + " " : " division" + o + " !== parseInt(division" + o + ") ", s += " ) ", f && (s += "  )  "), s += " ) {   ";
-        var d = d || [];
-        d.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "multipleOf") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { multipleOf: " + a + " } ", e.opts.messages !== !1 && (s += " , message: 'should be multiple of ", s += f ? "' + " + a : "" + n + "'"), e.opts.verbose && (s += " , schema:  ", s += f ? "validate.schema" + l : "" + n, s += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var p = s;
-        return s = d.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + p + "]); " : " validate.errors = [" + p + "]; return false; " : " var err = " + p + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += "} ", h && (s += " else { "), s
-      }
-    }, {}], 27: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "errs__" + s,
-          f = e.util.copy(e);
-        if (f.level++, e.util.schemaHasRules(i, e.RULES.all)) {
-          f.schema = i, f.schemaPath = n, f.errSchemaPath = l, a += " var " + u + " = errors;  ";
-          var d = e.compositeRule;
-          e.compositeRule = f.compositeRule = !0, f.createErrors = !1;
-          var p;
-          f.opts.allErrors && (p = f.opts.allErrors, f.opts.allErrors = !1), a += " " + e.validate(f) + " ", f.createErrors = !0, p && (f.opts.allErrors = p), e.compositeRule = f.compositeRule = d, a += " if (valid" + f.level + ") {   ";
-          var m = m || [];
-          m.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "not") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: {} ", e.opts.messages !== !1 && (a += " , message: 'should NOT be valid' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-          var v = a;
-          a = m.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + v + "]); " : " validate.errors = [" + v + "]; return false; " : " var err = " + v + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += " } else {  errors = " + u + "; if (vErrors !== null) { if (" + u + ") vErrors.length = " + u + "; else vErrors = null; } ", e.opts.allErrors && (a += " } ")
-        } else a += "  var err =   ", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "not") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: {} ", e.opts.messages !== !1 && (a += " , message: 'should NOT be valid' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ", a += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", c && (a += " if (false) { ");
-        return a
-      }
-    }, {}], 28: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "valid" + s,
-          f = "errs__" + s, d = e.util.copy(e), p = "";
-        d.level++, a += "var " + f + " = errors;var prevValid" + s + " = false;var " + u + " = false;";
-        var m = d.baseId, v = e.compositeRule;
-        e.compositeRule = d.compositeRule = !0;
-        var y = i;
-        if (y) for (var g, P = -1, E = y.length - 1; P < E;) g = y[P += 1], e.util.schemaHasRules(g, e.RULES.all) ? (d.schema = g, d.schemaPath = n + "[" + P + "]", d.errSchemaPath = l + "/" + P, a += "  " + e.validate(d) + " ", d.baseId = m) : a += " var valid" + d.level + " = true; ", P && (a += " if (valid" + d.level + " && prevValid" + s + ") " + u + " = false; else { ", p += "}"), a += " if (valid" + d.level + ") " + u + " = prevValid" + s + " = true;";
-        e.compositeRule = d.compositeRule = v, a += "" + p + "if (!" + u + ") {   ";
-        var b = b || [];
-        b.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "oneOf") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: {} ", e.opts.messages !== !1 && (a += " , message: 'should match exactly one schema in oneOf' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-        var w = a;
-        return a = b.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + w + "]); " : " validate.errors = [" + w + "]; return false; " : " var err = " + w + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += "} else {  errors = " + f + "; if (vErrors !== null) { if (" + f + ") vErrors.length = " + f + "; else vErrors = null; }", e.opts.allErrors && (a += " } "), a
-      }
-    }, {}], 29: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = e.opts.v5 && n && n.$data;
-        f ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n;
-        var d = f ? "(new RegExp(" + a + "))" : e.usePattern(n);
-        s += "if ( ", f && (s += " (" + a + " !== undefined && typeof " + a + " != 'string') || "), s += " !" + d + ".test(" + u + ") ) {   ";
-        var p = p || [];
-        p.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "pattern") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { pattern:  ", s += f ? "" + a : "" + e.util.toQuotedString(n), s += "  } ", e.opts.messages !== !1 && (s += " , message: 'should match pattern \"", s += f ? "' + " + a + " + '" : "" + e.util.escapeQuotes(n), s += "\"' "), e.opts.verbose && (s += " , schema:  ", s += f ? "validate.schema" + l : "" + e.util.toQuotedString(n), s += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-        var m = s;
-        return s = p.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + m + "]); " : " validate.errors = [" + m + "]; return false; " : " var err = " + m + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += "} ", h && (s += " else { "), s
-      }
-    }, {}], 30: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "valid" + s, f = "key" + s,
-          d = "patternMatched" + s, p = "", m = e.opts.ownProperties;
-        a += "var " + u + " = true;";
-        var v = i;
-        if (v) for (var y, g = -1, P = v.length - 1; g < P;) {
-          y = v[g += 1], a += " var " + d + " = false; for (var " + f + " in " + h + ") {  ", m && (a += " if (!Object.prototype.hasOwnProperty.call(" + h + ", " + f + ")) continue; "), a += " " + d + " = " + e.usePattern(y) + ".test(" + f + "); if (" + d + ") break; } ";
-          var E = e.util.escapeQuotes(y);
-          a += " if (!" + d + ") { " + u + " = false;  var err =   ", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "patternRequired") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { missingPattern: '" + E + "' } ", e.opts.messages !== !1 && (a += " , message: 'should have property matching pattern \\'" + E + "\\'' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ", a += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; }   ", c && (p += "}", a += " else { ")
-        }
-        return a += "" + p
-      }
-    }, {}], 31: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "valid" + s,
-          f = "errs__" + s, d = e.util.copy(e), p = "";
-        d.level++;
-        var m = "key" + s, v = d.dataLevel = e.dataLevel + 1, y = "data" + v, g = Object.keys(i || {}),
-          P = e.schema.patternProperties || {}, E = Object.keys(P), b = e.schema.additionalProperties,
-          w = g.length || E.length, j = b === !1, S = "object" == typeof b && Object.keys(b).length,
-          $ = e.opts.removeAdditional, x = j || S || $, _ = e.opts.ownProperties, O = e.baseId, R = e.schema.required;
-        if (R && (!e.opts.v5 || !R.$data) && R.length < e.opts.loopRequired) var I = e.util.toHash(R);
-        if (e.opts.v5) var A = e.schema.patternGroups || {}, k = Object.keys(A);
-        if (a += "var " + f + " = errors;var valid" + d.level + " = true;", x) {
-          if (a += " for (var " + m + " in " + h + ") {  ", _ && (a += " if (!Object.prototype.hasOwnProperty.call(" + h + ", " + m + ")) continue; "), w) {
-            if (a += " var isAdditional" + s + " = !(false ", g.length) if (g.length > 5) a += " || validate.schema" + n + "[" + m + "] "; else {
-              var q = g;
-              if (q) for (var L, D = -1, Q = q.length - 1; D < Q;) L = q[D += 1], a += " || " + m + " == " + e.util.toQuotedString(L) + " "
-            }
-            if (E.length) {
-              var C = E;
-              if (C) for (var U, V = -1, z = C.length - 1; V < z;) U = C[V += 1], a += " || " + e.usePattern(U) + ".test(" + m + ") "
-            }
-            if (e.opts.v5 && k && k.length) {
-              var T = k;
-              if (T) for (var M, V = -1, N = T.length - 1; V < N;) M = T[V += 1], a += " || " + e.usePattern(M) + ".test(" + m + ") "
-            }
-            a += " ); if (isAdditional" + s + ") { "
-          }
-          if ("all" == $) a += " delete " + h + "[" + m + "]; "; else {
-            var F = e.errorPath, H = "' + key" + s + " + '";
-            if (e.opts._errorDataPathProperty && (e.errorPath = e.util.getPathExpr(e.errorPath, "key" + s, e.opts.jsonPointers)), j) if ($) a += " delete " + h + "[" + m + "]; "; else {
-              a += " valid" + d.level + " = false; ";
-              var J = l;
-              l = e.errSchemaPath + "/additionalProperties";
-              var G = G || [];
-              G.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "additionalProperties") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { additionalProperty: '" + H + "' } ", e.opts.messages !== !1 && (a += " , message: 'should NOT have additional properties' "), e.opts.verbose && (a += " , schema: false , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-              var K = a;
-              a = G.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + K + "]); " : " validate.errors = [" + K + "]; return false; " : " var err = " + K + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", l = J, c && (a += " break; ")
-            } else if (S) if ("failing" == $) {
-              a += " var " + f + " = errors;  ";
-              var B = e.compositeRule;
-              e.compositeRule = d.compositeRule = !0, d.schema = b, d.schemaPath = e.schemaPath + ".additionalProperties", d.errSchemaPath = e.errSchemaPath + "/additionalProperties", d.errorPath = e.opts._errorDataPathProperty ? e.errorPath : e.util.getPathExpr(e.errorPath, "key" + s, e.opts.jsonPointers);
-              var Z = h + "[key" + s + "]";
-              d.dataPathArr[v] = "key" + s;
-              var Y = e.validate(d);
-              d.baseId = O, a += e.util.varOccurences(Y, y) < 2 ? " " + e.util.varReplace(Y, y, Z) + " " : " var " + y + " = " + Z + "; " + Y + " ", a += " if (!valid" + d.level + ") { errors = " + f + "; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete " + h + "[" + m + "]; }  ", e.compositeRule = d.compositeRule = B
-            } else {
-              d.schema = b, d.schemaPath = e.schemaPath + ".additionalProperties", d.errSchemaPath = e.errSchemaPath + "/additionalProperties", d.errorPath = e.opts._errorDataPathProperty ? e.errorPath : e.util.getPathExpr(e.errorPath, "key" + s, e.opts.jsonPointers);
-              var Z = h + "[key" + s + "]";
-              d.dataPathArr[v] = "key" + s;
-              var Y = e.validate(d);
-              d.baseId = O, a += e.util.varOccurences(Y, y) < 2 ? " " + e.util.varReplace(Y, y, Z) + " " : " var " + y + " = " + Z + "; " + Y + " ", c && (a += " if (!valid" + d.level + ") break; ")
-            }
-            e.errorPath = F
-          }
-          w && (a += " } "), a += " }  ", c && (a += " if (valid" + d.level + ") { ", p += "}")
-        }
-        var W = e.opts.useDefaults && !e.compositeRule;
-        if (g.length) {
-          var X = g;
-          if (X) for (var L, ee = -1, re = X.length - 1; ee < re;) {
-            L = X[ee += 1];
-            var te = i[L];
-            if (e.util.schemaHasRules(te, e.RULES.all)) {
-              var ae = e.util.getProperty(L), Z = h + ae, se = W && void 0 !== te.default;
-              d.schema = te, d.schemaPath = n + ae, d.errSchemaPath = l + "/" + e.util.escapeFragment(L), d.errorPath = e.util.getPath(e.errorPath, L, e.opts.jsonPointers), d.dataPathArr[v] = e.util.toQuotedString(L);
-              var Y = e.validate(d);
-              if (d.baseId = O, e.util.varOccurences(Y, y) < 2) {
-                Y = e.util.varReplace(Y, y, Z);
-                var oe = Z
-              } else {
-                var oe = y;
-                a += " var " + y + " = " + Z + "; "
-              }
-              if (se) a += " " + Y + " "; else {
-                if (I && I[L]) {
-                  a += " if (" + oe + " === undefined) { valid" + d.level + " = false; ";
-                  var F = e.errorPath, J = l, ie = e.util.escapeQuotes(L);
-                  e.opts._errorDataPathProperty && (e.errorPath = e.util.getPath(F, L, e.opts.jsonPointers)), l = e.errSchemaPath + "/required";
-                  var G = G || [];
-                  G.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "required") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { missingProperty: '" + ie + "' } ", e.opts.messages !== !1 && (a += " , message: '", a += e.opts._errorDataPathProperty ? "is a required property" : "should have required property \\'" + ie + "\\'", a += "' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-                  var K = a;
-                  a = G.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + K + "]); " : " validate.errors = [" + K + "]; return false; " : " var err = " + K + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", l = J, e.errorPath = F, a += " } else { "
-                } else a += c ? " if (" + oe + " === undefined) { valid" + d.level + " = true; } else { " : " if (" + oe + " !== undefined) { ";
-                a += " " + Y + " } "
-              }
-            }
-            c && (a += " if (valid" + d.level + ") { ", p += "}")
-          }
-        }
-        var ne = E;
-        if (ne) for (var U, le = -1, ce = ne.length - 1; le < ce;) {
-          U = ne[le += 1];
-          var te = P[U];
-          if (e.util.schemaHasRules(te, e.RULES.all)) {
-            d.schema = te, d.schemaPath = e.schemaPath + ".patternProperties" + e.util.getProperty(U), d.errSchemaPath = e.errSchemaPath + "/patternProperties/" + e.util.escapeFragment(U), a += " for (var " + m + " in " + h + ") {  ", _ && (a += " if (!Object.prototype.hasOwnProperty.call(" + h + ", " + m + ")) continue; "),
-              a += " if (" + e.usePattern(U) + ".test(" + m + ")) { ", d.errorPath = e.util.getPathExpr(e.errorPath, "key" + s, e.opts.jsonPointers);
-            var Z = h + "[key" + s + "]";
-            d.dataPathArr[v] = "key" + s;
-            var Y = e.validate(d);
-            d.baseId = O, a += e.util.varOccurences(Y, y) < 2 ? " " + e.util.varReplace(Y, y, Z) + " " : " var " + y + " = " + Z + "; " + Y + " ", c && (a += " if (!valid" + d.level + ") break; "), a += " } ", c && (a += " else valid" + d.level + " = true; "), a += " }  ", c && (a += " if (valid" + d.level + ") { ", p += "}")
-          }
-        }
-        if (e.opts.v5) {
-          var he = k;
-          if (he) for (var M, ue = -1, fe = he.length - 1; ue < fe;) {
-            M = he[ue += 1];
-            var de = A[M], te = de.schema;
-            if (e.util.schemaHasRules(te, e.RULES.all)) {
-              d.schema = te, d.schemaPath = e.schemaPath + ".patternGroups" + e.util.getProperty(M) + ".schema", d.errSchemaPath = e.errSchemaPath + "/patternGroups/" + e.util.escapeFragment(M) + "/schema", a += " var pgPropCount" + s + " = 0; for (var " + m + " in " + h + ") {  ", _ && (a += " if (!Object.prototype.hasOwnProperty.call(" + h + ", " + m + ")) continue; "), a += " if (" + e.usePattern(M) + ".test(" + m + ")) { pgPropCount" + s + "++; ", d.errorPath = e.util.getPathExpr(e.errorPath, "key" + s, e.opts.jsonPointers);
-              var Z = h + "[key" + s + "]";
-              d.dataPathArr[v] = "key" + s;
-              var Y = e.validate(d);
-              d.baseId = O, a += e.util.varOccurences(Y, y) < 2 ? " " + e.util.varReplace(Y, y, Z) + " " : " var " + y + " = " + Z + "; " + Y + " ", c && (a += " if (!valid" + d.level + ") break; "), a += " } ", c && (a += " else valid" + d.level + " = true; "), a += " }  ", c && (a += " if (valid" + d.level + ") { ", p += "}");
-              var pe = de.minimum, me = de.maximum;
-              if (void 0 !== pe || void 0 !== me) {
-                a += " var " + u + " = true; ";
-                var J = l;
-                if (void 0 !== pe) {
-                  var ve = pe, ye = "minimum", ge = "less";
-                  a += " " + u + " = pgPropCount" + s + " >= " + pe + "; ", l = e.errSchemaPath + "/patternGroups/minimum", a += "  if (!" + u + ") {   ";
-                  var G = G || [];
-                  G.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "patternGroups") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { reason: '" + ye + "', limit: " + ve + ", pattern: '" + e.util.escapeQuotes(M) + "' } ", e.opts.messages !== !1 && (a += " , message: 'should NOT have " + ge + " than " + ve + ' properties matching pattern "' + e.util.escapeQuotes(M) + "\"' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-                  var K = a;
-                  a = G.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + K + "]); " : " validate.errors = [" + K + "]; return false; " : " var err = " + K + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += " } ", void 0 !== me && (a += " else ")
-                }
-                if (void 0 !== me) {
-                  var ve = me, ye = "maximum", ge = "more";
-                  a += " " + u + " = pgPropCount" + s + " <= " + me + "; ", l = e.errSchemaPath + "/patternGroups/maximum", a += "  if (!" + u + ") {   ";
-                  var G = G || [];
-                  G.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "patternGroups") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { reason: '" + ye + "', limit: " + ve + ", pattern: '" + e.util.escapeQuotes(M) + "' } ", e.opts.messages !== !1 && (a += " , message: 'should NOT have " + ge + " than " + ve + ' properties matching pattern "' + e.util.escapeQuotes(M) + "\"' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-                  var K = a;
-                  a = G.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + K + "]); " : " validate.errors = [" + K + "]; return false; " : " var err = " + K + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", a += " } "
-                }
-                l = J, c && (a += " if (" + u + ") { ", p += "}")
-              }
-            }
-          }
-        }
-        return c && (a += " " + p + " if (" + f + " == errors) {"), a = e.util.cleanUpCode(a)
-      }
-    }, {}], 32: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s, o = " ", i = e.level, n = e.dataLevel, l = e.schema[r], c = e.errSchemaPath + "/" + r,
-          h = !e.opts.allErrors, u = "data" + (n || ""), f = "valid" + i;
-        if ("#" == l || "#/" == l) e.isRoot ? (a = e.async, s = "validate") : (a = e.root.schema.$async === !0, s = "root.refVal[0]"); else {
-          var d = e.resolveRef(e.baseId, l, e.isRoot);
-          if (void 0 === d) {
-            var p = "can't resolve reference " + l + " from id " + e.baseId;
-            if ("fail" == e.opts.missingRefs) {
-              console.log(p);
-              var m = m || [];
-              m.push(o), o = "", e.createErrors !== !1 ? (o += " { keyword: '" + (t || "$ref") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { ref: '" + e.util.escapeQuotes(l) + "' } ", e.opts.messages !== !1 && (o += " , message: 'can\\'t resolve reference " + e.util.escapeQuotes(l) + "' "), e.opts.verbose && (o += " , schema: " + e.util.toQuotedString(l) + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), o += " } ") : o += " {} ";
-              var v = o;
-              o = m.pop(), o += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + v + "]); " : " validate.errors = [" + v + "]; return false; " : " var err = " + v + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", h && (o += " if (false) { ")
-            } else {
-              if ("ignore" != e.opts.missingRefs) {
-                var y = new Error(p);
-                throw y.missingRef = e.resolve.url(e.baseId, l), y.missingSchema = e.resolve.normalizeId(e.resolve.fullPath(y.missingRef)), y
-              }
-              console.log(p), h && (o += " if (true) { ")
-            }
-          } else if (d.inline) {
-            var g = e.util.copy(e);
-            g.level++, g.schema = d.schema, g.schemaPath = "", g.errSchemaPath = l;
-            var P = e.validate(g).replace(/validate\.schema/g, d.code);
-            o += " " + P + " ", h && (o += " if (valid" + g.level + ") { ")
-          } else a = d.$async === !0, s = d.code
-        }
-        if (s) {
-          var m = m || [];
-          m.push(o), o = "", o += e.opts.passContext ? " " + s + ".call(this, " : " " + s + "( ", o += " " + u + ", (dataPath || '')", '""' != e.errorPath && (o += " + " + e.errorPath), o += n ? " , data" + (n - 1 || "") + " , " + e.dataPathArr[n] + " " : " , parentData , parentDataProperty ", o += ", rootData)  ";
-          var E = o;
-          if (o = m.pop(), a) {
-            if (!e.async) throw new Error("async schema referenced by sync schema");
-            o += " try { ", h && (o += "var " + f + " ="), o += " " + e.yieldAwait + " " + E + "; } catch (e) { if (!(e instanceof ValidationError)) throw e; if (vErrors === null) vErrors = e.errors; else vErrors = vErrors.concat(e.errors); errors = vErrors.length; } ", h && (o += " if (" + f + ") { ")
-          } else o += " if (!" + E + ") { if (vErrors === null) vErrors = " + s + ".errors; else vErrors = vErrors.concat(" + s + ".errors); errors = vErrors.length; } ", h && (o += " else { ")
-        }
-        return o
-      }
-    }, {}], 33: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = "valid" + o,
-          d = e.opts.v5 && n && n.$data;
-        if (d ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n, !d) if (n.length < e.opts.loopRequired && e.schema.properties && Object.keys(e.schema.properties).length) {
-          var p = [], m = n;
-          if (m) for (var v, y = -1, g = m.length - 1; y < g;) {
-            v = m[y += 1];
-            var P = e.schema.properties[v];
-            P && e.util.schemaHasRules(P, e.RULES.all) || (p[p.length] = v)
-          }
-        } else var p = n;
-        if (d || p.length) {
-          var E = e.errorPath, b = d || p.length >= e.opts.loopRequired;
-          if (h) if (s += " var missing" + o + "; ", b) {
-            d || (s += " var schema" + o + " = validate.schema" + l + "; ");
-            var w = "i" + o, j = "schema" + o + "[" + w + "]", S = "' + " + j + " + '";
-            e.opts._errorDataPathProperty && (e.errorPath = e.util.getPathExpr(E, j, e.opts.jsonPointers)), s += " var " + f + " = true; ", d && (s += " if (schema" + o + " === undefined) " + f + " = true; else if (!Array.isArray(schema" + o + ")) " + f + " = false; else {"), s += " for (var " + w + " = 0; " + w + " < schema" + o + ".length; " + w + "++) { " + f + " = " + u + "[schema" + o + "[" + w + "]] !== undefined; if (!" + f + ") break; } ", d && (s += "  }  "), s += "  if (!" + f + ") {   ";
-            var $ = $ || [];
-            $.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "required") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { missingProperty: '" + S + "' } ", e.opts.messages !== !1 && (s += " , message: '", s += e.opts._errorDataPathProperty ? "is a required property" : "should have required property \\'" + S + "\\'", s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-            var x = s;
-            s = $.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + x + "]); " : " validate.errors = [" + x + "]; return false; " : " var err = " + x + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " } else { "
-          } else {
-            s += " if ( ";
-            var _ = p;
-            if (_) for (var O, w = -1, R = _.length - 1; w < R;) {
-              O = _[w += 1], w && (s += " || ");
-              var I = e.util.getProperty(O);
-              s += " ( " + u + I + " === undefined && (missing" + o + " = " + e.util.toQuotedString(e.opts.jsonPointers ? O : I) + ") ) "
-            }
-            s += ") {  ";
-            var j = "missing" + o, S = "' + " + j + " + '";
-            e.opts._errorDataPathProperty && (e.errorPath = e.opts.jsonPointers ? e.util.getPathExpr(E, j, !0) : E + " + " + j);
-            var $ = $ || [];
-            $.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "required") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { missingProperty: '" + S + "' } ", e.opts.messages !== !1 && (s += " , message: '", s += e.opts._errorDataPathProperty ? "is a required property" : "should have required property \\'" + S + "\\'", s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-            var x = s;
-            s = $.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + x + "]); " : " validate.errors = [" + x + "]; return false; " : " var err = " + x + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " } else { "
-          } else if (b) {
-            d || (s += " var schema" + o + " = validate.schema" + l + "; ");
-            var w = "i" + o, j = "schema" + o + "[" + w + "]", S = "' + " + j + " + '";
-            e.opts._errorDataPathProperty && (e.errorPath = e.util.getPathExpr(E, j, e.opts.jsonPointers)), d && (s += " if (schema" + o + " && !Array.isArray(schema" + o + ")) {  var err =   ", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "required") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { missingProperty: '" + S + "' } ", e.opts.messages !== !1 && (s += " , message: '", s += e.opts._errorDataPathProperty ? "is a required property" : "should have required property \\'" + S + "\\'", s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ", s += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else if (schema" + o + " !== undefined) { "), s += " for (var " + w + " = 0; " + w + " < schema" + o + ".length; " + w + "++) { if (" + u + "[schema" + o + "[" + w + "]] === undefined) {  var err =   ", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "required") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { missingProperty: '" + S + "' } ", e.opts.messages !== !1 && (s += " , message: '", s += e.opts._errorDataPathProperty ? "is a required property" : "should have required property \\'" + S + "\\'", s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ", s += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } } ", d && (s += "  }  ")
-          } else {
-            var A = p;
-            if (A) for (var k, q = -1, L = A.length - 1; q < L;) {
-              k = A[q += 1];
-              var I = e.util.getProperty(k), S = e.util.escapeQuotes(k);
-              e.opts._errorDataPathProperty && (e.errorPath = e.util.getPath(E, k, e.opts.jsonPointers)), s += " if (" + u + I + " === undefined) {  var err =   ", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "required") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { missingProperty: '" + S + "' } ", e.opts.messages !== !1 && (s += " , message: '", s += e.opts._errorDataPathProperty ? "is a required property" : "should have required property \\'" + S + "\\'", s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + l + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ", s += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } "
-            }
-          }
-          e.errorPath = E
-        } else h && (s += " if (true) {");
-        return s
-      }
-    }, {}], 34: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a = " ", s = e.level, o = e.dataLevel, i = e.schema[r], n = e.schemaPath + "." + r,
-          l = e.errSchemaPath + "/" + r, c = !e.opts.allErrors, h = "data" + (o || ""), u = "valid" + s,
-          f = "errs__" + s, d = e.util.copy(e), p = "";
-        d.level++;
-        var m, v = "ifPassed" + e.level, y = d.baseId;
-        a += "var " + v + ";";
-        var g = i;
-        if (g) for (var P, E = -1, b = g.length - 1; E < b;) {
-          if (P = g[E += 1], E && !m && (a += " if (!" + v + ") { ", p += "}"), P.if && e.util.schemaHasRules(P.if, e.RULES.all)) {
-            a += " var " + f + " = errors;   ";
-            var w = e.compositeRule;
-            if (e.compositeRule = d.compositeRule = !0, d.createErrors = !1, d.schema = P.if, d.schemaPath = n + "[" + E + "].if", d.errSchemaPath = l + "/" + E + "/if", a += "  " + e.validate(d) + " ", d.baseId = y, d.createErrors = !0, e.compositeRule = d.compositeRule = w, a += " " + v + " = valid" + d.level + "; if (" + v + ") {  ", "boolean" == typeof P.then) {
-              if (P.then === !1) {
-                var j = j || [];
-                j.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "switch") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { caseIndex: " + E + " } ", e.opts.messages !== !1 && (a += " , message: 'should pass \"switch\" keyword validation' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-                var S = a;
-                a = j.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + S + "]); " : " validate.errors = [" + S + "]; return false; " : " var err = " + S + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; "
-              }
-              a += " var valid" + d.level + " = " + P.then + "; "
-            } else d.schema = P.then, d.schemaPath = n + "[" + E + "].then", d.errSchemaPath = l + "/" + E + "/then", a += "  " + e.validate(d) + " ", d.baseId = y;
-            a += "  } else {  errors = " + f + "; if (vErrors !== null) { if (" + f + ") vErrors.length = " + f + "; else vErrors = null; } } "
-          } else if (a += " " + v + " = true;  ", "boolean" == typeof P.then) {
-            if (P.then === !1) {
-              var j = j || [];
-              j.push(a), a = "", e.createErrors !== !1 ? (a += " { keyword: '" + (t || "switch") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(l) + " , params: { caseIndex: " + E + " } ", e.opts.messages !== !1 && (a += " , message: 'should pass \"switch\" keyword validation' "), e.opts.verbose && (a += " , schema: validate.schema" + n + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + h + " "), a += " } ") : a += " {} ";
-              var S = a;
-              a = j.pop(), a += !e.compositeRule && c ? e.async ? " throw new ValidationError([" + S + "]); " : " validate.errors = [" + S + "]; return false; " : " var err = " + S + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; "
-            }
-            a += " var valid" + d.level + " = " + P.then + "; "
-          } else d.schema = P.then, d.schemaPath = n + "[" + E + "].then", d.errSchemaPath = l + "/" + E + "/then", a += "  " + e.validate(d) + " ", d.baseId = y;
-          m = P.continue
-        }
-        return a += "" + p + "var " + u + " = valid" + d.level + "; ", a = e.util.cleanUpCode(a)
-      }
-    }, {}], 35: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        var t, a, s = " ", o = e.level, i = e.dataLevel, n = e.schema[r], l = e.schemaPath + "." + r,
-          c = e.errSchemaPath + "/" + r, h = !e.opts.allErrors, u = "data" + (i || ""), f = "valid" + o,
-          d = e.opts.v5 && n && n.$data;
-        if (d ? (s += " var schema" + o + " = " + e.util.getData(n.$data, i, e.dataPathArr) + "; ", a = "schema" + o) : a = n, (n || d) && e.opts.uniqueItems !== !1) {
-          d && (s += " var " + f + "; if (" + a + " === false || " + a + " === undefined) " + f + " = true; else if (typeof " + a + " != 'boolean') " + f + " = false; else { "), s += " var " + f + " = true; if (" + u + ".length > 1) { var i = " + u + ".length, j; outer: for (;i--;) { for (j = i; j--;) { if (equal(" + u + "[i], " + u + "[j])) { " + f + " = false; break outer; } } } } ", d && (s += "  }  "), s += " if (!" + f + ") {   ";
-          var p = p || [];
-          p.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (t || "uniqueItems") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(c) + " , params: { i: i, j: j } ", e.opts.messages !== !1 && (s += " , message: 'should NOT have duplicate items (items ## ' + j + ' and ' + i + ' are identical)' "), e.opts.verbose && (s += " , schema:  ", s += d ? "validate.schema" + l : "" + n, s += "         , parentSchema: validate.schema" + e.schemaPath + " , data: " + u + " "), s += " } ") : s += " {} ";
-          var m = s;
-          s = p.pop(), s += !e.compositeRule && h ? e.async ? " throw new ValidationError([" + m + "]); " : " validate.errors = [" + m + "]; return false; " : " var err = " + m + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " } ", h && (s += " else { ")
-        } else h && (s += " if (true) { ");
-        return s
-      }
-    }, {}], 36: [function (e, r, t) {
-      "use strict";
-      r.exports = function (e, r) {
-        function t(e) {
-          for (var r = 0; r < e.rules.length; r++) if (a(e.rules[r])) return !0
-        }
-
-        function a(r) {
-          return void 0 !== e.schema[r.keyword] || "properties" == r.keyword && (e.schema.additionalProperties === !1 || "object" == typeof e.schema.additionalProperties || e.schema.patternProperties && Object.keys(e.schema.patternProperties).length || e.opts.v5 && e.schema.patternGroups && Object.keys(e.schema.patternGroups).length)
-        }
-
-        var s = "", o = e.schema.$async === !0;
-        if (e.isTop) {
-          var i = e.isTop, n = e.level = 0, l = e.dataLevel = 0, c = "data";
-          if (e.rootId = e.resolve.fullPath(e.root.schema.id), e.baseId = e.baseId || e.rootId, o) {
-            e.async = !0;
-            var h = "es7" == e.opts.async;
-            e.yieldAwait = h ? "await" : "yield"
-          }
-          delete e.isTop, e.dataPathArr = [void 0], s += " var validate = ", o ? h ? s += " (async function " : ("co*" == e.opts.async && (s += "co.wrap"), s += "(function* ") : s += " (function ", s += " (data, dataPath, parentData, parentDataProperty, rootData) { 'use strict'; var vErrors = null; ", s += " var errors = 0;     ", s += " if (rootData === undefined) rootData = data;"
-        } else {
-          var n = e.level, l = e.dataLevel, c = "data" + (l || "");
-          if (e.schema.id && (e.baseId = e.resolve.url(e.baseId, e.schema.id)), o && !e.async) throw new Error("async schema in sync schema");
-          s += " var errs_" + n + " = errors;"
-        }
-        var u, f = "valid" + n, d = !e.opts.allErrors, p = "", m = "", v = e.schema.type, y = Array.isArray(v);
-        if (v && e.opts.coerceTypes) {
-          var g = e.util.coerceToTypes(e.opts.coerceTypes, v);
-          if (g) {
-            var P = e.schemaPath + ".type", E = e.errSchemaPath + "/type", b = y ? "checkDataTypes" : "checkDataType";
-            s += " if (" + e.util[b](v, c, !0) + ") {  ";
-            var w = "dataType" + n, j = "coerced" + n;
-            s += " var " + w + " = typeof " + c + "; ", "array" == e.opts.coerceTypes && (s += " if (" + w + " == 'object' && Array.isArray(" + c + ")) " + w + " = 'array'; "), s += " var " + j + " = undefined; ";
-            var S = "", $ = g;
-            if ($) for (var x, _ = -1, O = $.length - 1; _ < O;) x = $[_ += 1], _ && (s += " if (" + j + " === undefined) { ", S += "}"), "array" == e.opts.coerceTypes && "array" != x && (s += " if (" + w + " == 'array' && " + c + ".length == 1) { " + j + " = " + c + " = " + c + "[0]; " + w + " = typeof " + c + ";  } "), "string" == x ? s += " if (" + w + " == 'number' || " + w + " == 'boolean') " + j + " = '' + " + c + "; else if (" + c + " === null) " + j + " = ''; " : "number" == x || "integer" == x ? (s += " if (" + w + " == 'boolean' || " + c + " === null || (" + w + " == 'string' && " + c + " && " + c + " == +" + c + " ", "integer" == x && (s += " && !(" + c + " % 1)"), s += ")) " + j + " = +" + c + "; ") : "boolean" == x ? s += " if (" + c + " === 'false' || " + c + " === 0 || " + c + " === null) " + j + " = false; else if (" + c + " === 'true' || " + c + " === 1) " + j + " = true; " : "null" == x ? s += " if (" + c + " === '' || " + c + " === 0 || " + c + " === false) " + j + " = null; " : "array" == e.opts.coerceTypes && "array" == x && (s += " if (" + w + " == 'string' || " + w + " == 'number' || " + w + " == 'boolean' || " + c + " == null) " + j + " = [" + c + "]; ");
-            s += " " + S + " if (" + j + " === undefined) {   ";
-            var R = R || [];
-            R.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (u || "type") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(E) + " , params: { type: '", s += y ? "" + v.join(",") : "" + v, s += "' } ", e.opts.messages !== !1 && (s += " , message: 'should be ", s += y ? "" + v.join(",") : "" + v, s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + P + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + c + " "), s += " } ") : s += " {} ";
-            var I = s;
-            if (s = R.pop(), s += !e.compositeRule && d ? e.async ? " throw new ValidationError([" + I + "]); " : " validate.errors = [" + I + "]; return false; " : " var err = " + I + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " } else { ", l) {
-              var A = "data" + (l - 1 || ""), k = e.dataPathArr[l];
-              s += " " + c + " = " + A + "[" + k + "] = " + j + "; "
-            } else s += " data = " + j + "; if (parentData !== undefined) parentData[parentDataProperty] = " + j + "; ";
-            s += " } } "
-          }
-        }
-        var q;
-        if (e.schema.$ref && (q = e.util.schemaHasRulesExcept(e.schema, e.RULES.all, "$ref"))) {
-          if ("fail" == e.opts.extendRefs) throw new Error('$ref: validation keywords used in schema at path "' + e.errSchemaPath + '"');
-          "ignore" == e.opts.extendRefs ? (q = !1, console.log('$ref: keywords ignored in schema at path "' + e.errSchemaPath + '"')) : e.opts.extendRefs !== !0 && console.log('$ref: all keywords used in schema at path "' + e.errSchemaPath + '". It will change in the next major version, see issue #260. Use option { extendRefs: true } to keep current behaviour')
-        }
-        if (e.schema.$ref && !q) s += " " + e.RULES.all.$ref.code(e, "$ref") + " ", d && (s += " } if (errors === ", s += i ? "0" : "errs_" + n, s += ") { ", m += "}"); else {
-          var L = e.RULES;
-          if (L) for (var D, Q = -1, C = L.length - 1; Q < C;) if (D = L[Q += 1], t(D)) {
-            if (D.type && (s += " if (" + e.util.checkDataType(D.type, c) + ") { "), e.opts.useDefaults && !e.compositeRule) if ("object" == D.type && e.schema.properties) {
-              var U = e.schema.properties, V = Object.keys(U), z = V;
-              if (z) for (var T, M = -1, N = z.length - 1; M < N;) {
-                T = z[M += 1];
-                var F = U[T];
-                if (void 0 !== F.default) {
-                  var H = c + e.util.getProperty(T);
-                  s += "  if (" + H + " === undefined) " + H + " = ", s += "shared" == e.opts.useDefaults ? " " + e.useDefault(F.default) + " " : " " + JSON.stringify(F.default) + " ", s += "; "
-                }
-              }
-            } else if ("array" == D.type && Array.isArray(e.schema.items)) {
-              var J = e.schema.items;
-              if (J) for (var F, _ = -1, G = J.length - 1; _ < G;) if (F = J[_ += 1], void 0 !== F.default) {
-                var H = c + "[" + _ + "]";
-                s += "  if (" + H + " === undefined) " + H + " = ", s += "shared" == e.opts.useDefaults ? " " + e.useDefault(F.default) + " " : " " + JSON.stringify(F.default) + " ", s += "; "
-              }
-            }
-            var K = D.rules;
-            if (K) for (var B, Z = -1, Y = K.length - 1; Z < Y;) B = K[Z += 1], a(B) && (s += " " + B.code(e, B.keyword) + " ", d && (p += "}"));
-            if (d && (s += " " + p + " ", p = ""), D.type && (s += " } ", v && v === D.type)) {
-              var W = !0;
-              s += " else { ";
-              var P = e.schemaPath + ".type", E = e.errSchemaPath + "/type", R = R || [];
-              R.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (u || "type") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(E) + " , params: { type: '", s += y ? "" + v.join(",") : "" + v, s += "' } ", e.opts.messages !== !1 && (s += " , message: 'should be ", s += y ? "" + v.join(",") : "" + v, s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + P + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + c + " "), s += " } ") : s += " {} ";
-              var I = s;
-              s = R.pop(), s += !e.compositeRule && d ? e.async ? " throw new ValidationError([" + I + "]); " : " validate.errors = [" + I + "]; return false; " : " var err = " + I + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " } "
-            }
-            d && (s += " if (errors === ", s += i ? "0" : "errs_" + n, s += ") { ", m += "}")
-          }
-        }
-        if (v && !W && (!e.opts.coerceTypes || !g)) {
-          var P = e.schemaPath + ".type", E = e.errSchemaPath + "/type", b = y ? "checkDataTypes" : "checkDataType";
-          s += " if (" + e.util[b](v, c, !0) + ") {   ";
-          var R = R || [];
-          R.push(s), s = "", e.createErrors !== !1 ? (s += " { keyword: '" + (u || "type") + "' , dataPath: (dataPath || '') + " + e.errorPath + " , schemaPath: " + e.util.toQuotedString(E) + " , params: { type: '", s += y ? "" + v.join(",") : "" + v, s += "' } ", e.opts.messages !== !1 && (s += " , message: 'should be ", s += y ? "" + v.join(",") : "" + v, s += "' "), e.opts.verbose && (s += " , schema: validate.schema" + P + " , parentSchema: validate.schema" + e.schemaPath + " , data: " + c + " "), s += " } ") : s += " {} ";
-          var I = s;
-          s = R.pop(), s += !e.compositeRule && d ? e.async ? " throw new ValidationError([" + I + "]); " : " validate.errors = [" + I + "]; return false; " : " var err = " + I + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ", s += " }"
-        }
-        return d && (s += " " + m + " "), i ? (o ? (s += " if (errors === 0) return true;           ", s += " else throw new ValidationError(vErrors); ") : (s += " validate.errors = vErrors; ", s += " return errors === 0;       "), s += " }); return validate;") : s += " var " + f + " = errors === errs_" + n + ";", s = e.util.cleanUpCode(s), i && d && (s = e.util.cleanUpVarErrors(s, o)), s
-      }
-    }, {}], 37: [function (e, r, t) {
-      "use strict";
-      var a = /^[a-z_$][a-z0-9_$]*$/i, s = e("./dotjs/custom");
-      r.exports = function (e, r) {
-        function t(e, r, t) {
-          for (var a, o = 0; o < i.RULES.length; o++) {
-            var n = i.RULES[o];
-            if (n.type == r) {
-              a = n;
-              break
-            }
-          }
-          a || (a = {type: r, rules: []}, i.RULES.push(a));
-          var l = {keyword: e, definition: t, custom: !0, code: s};
-          a.rules.push(l), i.RULES.custom[e] = l
-        }
-
-        function o(e) {
-          if (!i.RULES.types[e]) throw new Error("Unknown type " + e)
-        }
-
-        var i = this;
-        if (this.RULES.keywords[e]) throw new Error("Keyword " + e + " is already defined");
-        if (!a.test(e)) throw new Error("Keyword " + e + " is not a valid identifier");
-        if (r) {
-          var n = r.type;
-          if (Array.isArray(n)) {
-            var l, c = n.length;
-            for (l = 0; l < c; l++) o(n[l]);
-            for (l = 0; l < c; l++) t(e, n[l], r)
-          } else n && o(n), t(e, n, r);
-          var h = r.$data === !0 && this._opts.v5;
-          if (h && !r.validate) throw new Error('$data support: neither "validate" nor "compile" functions are defined');
-          var u = r.metaSchema;
-          u && (h && (u = {anyOf: [u, {$ref: "https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/json-schema-v5.json#/definitions/$data"}]}), r.validateSchema = i.compile(u, !0))
-        }
-        this.RULES.keywords[e] = this.RULES.all[e] = !0
-      }
-    }, {"./dotjs/custom": 21}], 38: [function (e, r, t) {
-      r.exports = {
-        id: "http://json-schema.org/draft-04/schema#",
-        $schema: "http://json-schema.org/draft-04/schema#",
-        description: "Core schema meta-schema",
-        definitions: {
-          schemaArray: {type: "array", minItems: 1, items: {$ref: "#"}},
-          positiveInteger: {type: "integer", minimum: 0},
-          positiveIntegerDefault0: {allOf: [{$ref: "#/definitions/positiveInteger"}, {default: 0}]},
-          simpleTypes: {enum: ["array", "boolean", "integer", "null", "number", "object", "string"]},
-          stringArray: {type: "array", items: {type: "string"}, minItems: 1, uniqueItems: !0}
-        },
-        type: "object",
-        properties: {
-          id: {type: "string", format: "uri"},
-          $schema: {type: "string", format: "uri"},
-          title: {type: "string"},
-          description: {type: "string"},
-          default: {},
-          multipleOf: {type: "number", minimum: 0, exclusiveMinimum: !0},
-          maximum: {type: "number"},
-          exclusiveMaximum: {type: "boolean", default: !1},
-          minimum: {type: "number"},
-          exclusiveMinimum: {type: "boolean", default: !1},
-          maxLength: {$ref: "#/definitions/positiveInteger"},
-          minLength: {$ref: "#/definitions/positiveIntegerDefault0"},
-          pattern: {type: "string", format: "regex"},
-          additionalItems: {anyOf: [{type: "boolean"}, {$ref: "#"}], default: {}},
-          items: {anyOf: [{$ref: "#"}, {$ref: "#/definitions/schemaArray"}], default: {}},
-          maxItems: {$ref: "#/definitions/positiveInteger"},
-          minItems: {$ref: "#/definitions/positiveIntegerDefault0"},
-          uniqueItems: {type: "boolean", default: !1},
-          maxProperties: {$ref: "#/definitions/positiveInteger"},
-          minProperties: {$ref: "#/definitions/positiveIntegerDefault0"},
-          required: {$ref: "#/definitions/stringArray"},
-          additionalProperties: {anyOf: [{type: "boolean"}, {$ref: "#"}], default: {}},
-          definitions: {type: "object", additionalProperties: {$ref: "#"}, default: {}},
-          properties: {type: "object", additionalProperties: {$ref: "#"}, default: {}},
-          patternProperties: {type: "object", additionalProperties: {$ref: "#"}, default: {}},
-          dependencies: {
-            type: "object",
-            additionalProperties: {anyOf: [{$ref: "#"}, {$ref: "#/definitions/stringArray"}]}
-          },
-          enum: {type: "array", minItems: 1, uniqueItems: !0},
-          type: {
-            anyOf: [{$ref: "#/definitions/simpleTypes"}, {
-              type: "array",
-              items: {$ref: "#/definitions/simpleTypes"},
-              minItems: 1,
-              uniqueItems: !0
-            }]
-          },
-          allOf: {$ref: "#/definitions/schemaArray"},
-          anyOf: {$ref: "#/definitions/schemaArray"},
-          oneOf: {$ref: "#/definitions/schemaArray"},
-          not: {$ref: "#"}
-        },
-        dependencies: {exclusiveMaximum: ["maximum"], exclusiveMinimum: ["minimum"]},
-        default: {}
-      }
-    }, {}], 39: [function (e, r, t) {
-      r.exports = {
-        id: "https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/json-schema-v5.json#",
-        $schema: "http://json-schema.org/draft-04/schema#",
-        description: "Core schema meta-schema (v5 proposals)",
-        definitions: {
-          schemaArray: {type: "array", minItems: 1, items: {$ref: "#"}},
-          positiveInteger: {type: "integer", minimum: 0},
-          positiveIntegerDefault0: {allOf: [{$ref: "#/definitions/positiveInteger"}, {default: 0}]},
-          simpleTypes: {enum: ["array", "boolean", "integer", "null", "number", "object", "string"]},
-          stringArray: {type: "array", items: {type: "string"}, minItems: 1, uniqueItems: !0},
-          $data: {
-            type: "object",
-            required: ["$data"],
-            properties: {$data: {type: "string", anyOf: [{format: "relative-json-pointer"}, {format: "json-pointer"}]}},
-            additionalProperties: !1
-          }
-        },
-        type: "object",
-        properties: {
-          id: {type: "string", format: "uri"},
-          $schema: {type: "string", format: "uri"},
-          title: {type: "string"},
-          description: {type: "string"},
-          default: {},
-          multipleOf: {anyOf: [{type: "number", minimum: 0, exclusiveMinimum: !0}, {$ref: "#/definitions/$data"}]},
-          maximum: {anyOf: [{type: "number"}, {$ref: "#/definitions/$data"}]},
-          exclusiveMaximum: {anyOf: [{type: "boolean", default: !1}, {$ref: "#/definitions/$data"}]},
-          minimum: {anyOf: [{type: "number"}, {$ref: "#/definitions/$data"}]},
-          exclusiveMinimum: {anyOf: [{type: "boolean", default: !1}, {$ref: "#/definitions/$data"}]},
-          maxLength: {anyOf: [{$ref: "#/definitions/positiveInteger"}, {$ref: "#/definitions/$data"}]},
-          minLength: {anyOf: [{$ref: "#/definitions/positiveIntegerDefault0"}, {$ref: "#/definitions/$data"}]},
-          pattern: {anyOf: [{type: "string", format: "regex"}, {$ref: "#/definitions/$data"}]},
-          additionalItems: {anyOf: [{type: "boolean"}, {$ref: "#"}, {$ref: "#/definitions/$data"}], default: {}},
-          items: {anyOf: [{$ref: "#"}, {$ref: "#/definitions/schemaArray"}], default: {}},
-          maxItems: {anyOf: [{$ref: "#/definitions/positiveInteger"}, {$ref: "#/definitions/$data"}]},
-          minItems: {anyOf: [{$ref: "#/definitions/positiveIntegerDefault0"}, {$ref: "#/definitions/$data"}]},
-          uniqueItems: {anyOf: [{type: "boolean", default: !1}, {$ref: "#/definitions/$data"}]},
-          maxProperties: {anyOf: [{$ref: "#/definitions/positiveInteger"}, {$ref: "#/definitions/$data"}]},
-          minProperties: {anyOf: [{$ref: "#/definitions/positiveIntegerDefault0"}, {$ref: "#/definitions/$data"}]},
-          required: {anyOf: [{$ref: "#/definitions/stringArray"}, {$ref: "#/definitions/$data"}]},
-          additionalProperties: {anyOf: [{type: "boolean"}, {$ref: "#"}, {$ref: "#/definitions/$data"}], default: {}},
-          definitions: {type: "object", additionalProperties: {$ref: "#"}, default: {}},
-          properties: {type: "object", additionalProperties: {$ref: "#"}, default: {}},
-          patternProperties: {type: "object", additionalProperties: {$ref: "#"}, default: {}},
-          dependencies: {
-            type: "object",
-            additionalProperties: {anyOf: [{$ref: "#"}, {$ref: "#/definitions/stringArray"}]}
-          },
-          enum: {anyOf: [{type: "array", minItems: 1, uniqueItems: !0}, {$ref: "#/definitions/$data"}]},
-          type: {
-            anyOf: [{$ref: "#/definitions/simpleTypes"}, {
-              type: "array",
-              items: {$ref: "#/definitions/simpleTypes"},
-              minItems: 1,
-              uniqueItems: !0
-            }]
-          },
-          allOf: {$ref: "#/definitions/schemaArray"},
-          anyOf: {$ref: "#/definitions/schemaArray"},
-          oneOf: {$ref: "#/definitions/schemaArray"},
-          not: {$ref: "#"},
-          format: {anyOf: [{type: "string"}, {$ref: "#/definitions/$data"}]},
-          formatMaximum: {anyOf: [{type: "string"}, {$ref: "#/definitions/$data"}]},
-          formatMinimum: {anyOf: [{type: "string"}, {$ref: "#/definitions/$data"}]},
-          formatExclusiveMaximum: {anyOf: [{type: "boolean", default: !1}, {$ref: "#/definitions/$data"}]},
-          formatExclusiveMinimum: {anyOf: [{type: "boolean", default: !1}, {$ref: "#/definitions/$data"}]},
-          constant: {anyOf: [{}, {$ref: "#/definitions/$data"}]},
-          contains: {$ref: "#"},
-          patternGroups: {
-            type: "object",
-            additionalProperties: {
-              type: "object",
-              required: ["schema"],
-              properties: {
-                maximum: {anyOf: [{$ref: "#/definitions/positiveInteger"}, {$ref: "#/definitions/$data"}]},
-                minimum: {anyOf: [{$ref: "#/definitions/positiveIntegerDefault0"}, {$ref: "#/definitions/$data"}]},
-                schema: {$ref: "#"}
-              },
-              additionalProperties: !1
-            },
-            default: {}
-          },
-          switch: {
-            type: "array",
-            items: {
-              required: ["then"],
-              properties: {
-                if: {$ref: "#"},
-                then: {anyOf: [{type: "boolean"}, {$ref: "#"}]},
-                continue: {type: "boolean"}
-              },
-              additionalProperties: !1,
-              dependencies: {continue: ["if"]}
-            }
-          }
-        },
-        dependencies: {
-          exclusiveMaximum: ["maximum"],
-          exclusiveMinimum: ["minimum"],
-          formatMaximum: ["format"],
-          formatMinimum: ["format"],
-          formatExclusiveMaximum: ["formatMaximum"],
-          formatExclusiveMinimum: ["formatMinimum"]
-        },
-        default: {}
-      }
-    }, {}], 40: [function (e, r, t) {
-      "use strict";
-
-      function a(r) {
-        function t(e, t, s) {
-          var o = {inline: s || a[e], statements: !0, errors: "full"};
-          t && (o.type = t), r.addKeyword(e, o)
-        }
-
-        var a = {
-          switch: e("./dotjs/switch"),
-          constant: e("./dotjs/constant"),
-          _formatLimit: e("./dotjs/_formatLimit"),
-          patternRequired: e("./dotjs/patternRequired")
-        };
-        if (r._opts.meta !== !1) {
-          var i = e("./refs/json-schema-v5.json");
-          r.addMetaSchema(i, o)
-        }
-        t("constant"), r.addKeyword("contains", {
-          type: "array",
-          macro: s
-        }), t("formatMaximum", "string", a._formatLimit), t("formatMinimum", "string", a._formatLimit), r.addKeyword("formatExclusiveMaximum"), r.addKeyword("formatExclusiveMinimum"), r.addKeyword("patternGroups"), t("patternRequired", "object"), t("switch")
-      }
-
-      function s(e) {
-        return {not: {items: {not: e}}}
-      }
-
-      var o = "https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/json-schema-v5.json";
-      r.exports = {enable: a, META_SCHEMA_ID: o}
-    }, {
-      "./dotjs/_formatLimit": 13,
-      "./dotjs/constant": 20,
-      "./dotjs/patternRequired": 30,
-      "./dotjs/switch": 34,
-      "./refs/json-schema-v5.json": 39
-    }], 41: [function (e, r, t) {
-      function a(e) {
-        var r = this, t = f.call(arguments, 1);
-        return new Promise(function (a, o) {
-          function i(r) {
-            var t;
-            try {
-              t = e.next(r)
-            } catch (e) {
-              return o(e)
-            }
-            c(t)
-          }
-
-          function n(r) {
-            var t;
-            try {
-              t = e.throw(r)
-            } catch (e) {
-              return o(e)
-            }
-            c(t)
-          }
-
-          function c(e) {
-            if (e.done) return a(e.value);
-            var t = s.call(r, e.value);
-            return t && l(t) ? t.then(i, n) : n(new TypeError('You may only yield a function, promise, generator, array, or object, but the following object was passed: "' + String(e.value) + '"'))
-          }
-
-          return "function" == typeof e && (e = e.apply(r, t)),
-            e && "function" == typeof e.next ? void i() : a(e)
-        })
-      }
-
-      function s(e) {
-        return e ? l(e) ? e : h(e) || c(e) ? a.call(this, e) : "function" == typeof e ? o.call(this, e) : Array.isArray(e) ? i.call(this, e) : u(e) ? n.call(this, e) : e : e
-      }
-
-      function o(e) {
-        var r = this;
-        return new Promise(function (t, a) {
-          e.call(r, function (e, r) {
-            return e ? a(e) : (arguments.length > 2 && (r = f.call(arguments, 1)), void t(r))
-          })
-        })
-      }
-
-      function i(e) {
-        return Promise.all(e.map(s, this))
-      }
-
-      function n(e) {
-        function r(e, r) {
-          t[r] = void 0, o.push(e.then(function (e) {
-            t[r] = e
-          }))
-        }
-
-        for (var t = new e.constructor, a = Object.keys(e), o = [], i = 0; i < a.length; i++) {
-          var n = a[i], c = s.call(this, e[n]);
-          c && l(c) ? r(c, n) : t[n] = e[n]
-        }
-        return Promise.all(o).then(function () {
-          return t
-        })
-      }
-
-      function l(e) {
-        return "function" == typeof e.then
-      }
-
-      function c(e) {
-        return "function" == typeof e.next && "function" == typeof e.throw
-      }
-
-      function h(e) {
-        var r = e.constructor;
-        return !!r && ("GeneratorFunction" === r.name || "GeneratorFunction" === r.displayName || c(r.prototype))
-      }
-
-      function u(e) {
-        return Object == e.constructor
-      }
-
-      var f = Array.prototype.slice;
-      r.exports = a.default = a.co = a, a.wrap = function (e) {
-        function r() {
-          return a.call(this, e.apply(this, arguments))
-        }
-
-        return r.__generatorFunction__ = e, r
-      }
-    }, {}], 42: [function (e, r, t) {
-      var a = "undefined" != typeof JSON ? JSON : e("jsonify");
-      r.exports = function (e, r) {
-        r || (r = {}), "function" == typeof r && (r = {cmp: r});
-        var t = r.space || "";
-        "number" == typeof t && (t = Array(t + 1).join(" "));
-        var i = "boolean" == typeof r.cycles && r.cycles, n = r.replacer || function (e, r) {
-          return r
-        }, l = r.cmp && function (e) {
-          return function (r) {
-            return function (t, a) {
-              var s = {key: t, value: r[t]}, o = {key: a, value: r[a]};
-              return e(s, o)
-            }
-          }
-        }(r.cmp), c = [];
-        return function e(r, h, u, f) {
-          var d = t ? "\n" + new Array(f + 1).join(t) : "", p = t ? ": " : ":";
-          if (u && u.toJSON && "function" == typeof u.toJSON && (u = u.toJSON()), u = n.call(r, h, u), void 0 !== u) {
-            if ("object" != typeof u || null === u) return a.stringify(u);
-            if (s(u)) {
-              for (var m = [], v = 0; v < u.length; v++) {
-                var y = e(u, v, u[v], f + 1) || a.stringify(null);
-                m.push(d + t + y)
-              }
-              return "[" + m.join(",") + d + "]"
-            }
-            if (c.indexOf(u) !== -1) {
-              if (i) return a.stringify("__cycle__");
-              throw new TypeError("Converting circular structure to JSON")
-            }
-            c.push(u);
-            for (var g = o(u).sort(l && l(u)), m = [], v = 0; v < g.length; v++) {
-              var h = g[v], P = e(u, h, u[h], f + 1);
-              if (P) {
-                var E = a.stringify(h) + p + P;
-                m.push(d + t + E)
-              }
-            }
-            return c.splice(c.indexOf(u), 1), "{" + m.join(",") + d + "}"
-          }
-        }({"": e}, "", e, 0)
-      };
-      var s = Array.isArray || function (e) {
-        return "[object Array]" === {}.toString.call(e)
-      }, o = Object.keys || function (e) {
-        var r = Object.prototype.hasOwnProperty || function () {
-          return !0
-        }, t = [];
-        for (var a in e) r.call(e, a) && t.push(a);
-        return t
-      }
-    }, {jsonify: 43}], 43: [function (e, r, t) {
-      t.parse = e("./lib/parse"), t.stringify = e("./lib/stringify")
-    }, {"./lib/parse": 44, "./lib/stringify": 45}], 44: [function (e, r, t) {
-      var a, s, o, i, n = {'"': '"', "\\": "\\", "/": "/", b: "\b", f: "\f", n: "\n", r: "\r", t: "\t"},
-        l = function (e) {
-          throw{name: "SyntaxError", message: e, at: a, text: o}
-        }, c = function (e) {
-          return e && e !== s && l("Expected '" + e + "' instead of '" + s + "'"), s = o.charAt(a), a += 1, s
-        }, h = function () {
-          var e, r = "";
-          for ("-" === s && (r = "-", c("-")); s >= "0" && s <= "9";) r += s, c();
-          if ("." === s) for (r += "."; c() && s >= "0" && s <= "9";) r += s;
-          if ("e" === s || "E" === s) for (r += s, c(), "-" !== s && "+" !== s || (r += s, c()); s >= "0" && s <= "9";) r += s, c();
-          return e = +r, isFinite(e) ? e : void l("Bad number")
-        }, u = function () {
-          var e, r, t, a = "";
-          if ('"' === s) for (; c();) {
-            if ('"' === s) return c(), a;
-            if ("\\" === s) if (c(), "u" === s) {
-              for (t = 0, r = 0; r < 4 && (e = parseInt(c(), 16), isFinite(e)); r += 1) t = 16 * t + e;
-              a += String.fromCharCode(t)
-            } else {
-              if ("string" != typeof n[s]) break;
-              a += n[s]
-            } else a += s
-          }
-          l("Bad string")
-        }, f = function () {
-          for (; s && s <= " ";) c()
-        }, d = function () {
-          switch (s) {
-            case"t":
-              return c("t"), c("r"), c("u"), c("e"), !0;
-            case"f":
-              return c("f"), c("a"), c("l"), c("s"), c("e"), !1;
-            case"n":
-              return c("n"), c("u"), c("l"), c("l"), null
-          }
-          l("Unexpected '" + s + "'")
-        }, p = function () {
-          var e = [];
-          if ("[" === s) {
-            if (c("["), f(), "]" === s) return c("]"), e;
-            for (; s;) {
-              if (e.push(i()), f(), "]" === s) return c("]"), e;
-              c(","), f()
-            }
-          }
-          l("Bad array")
-        }, m = function () {
-          var e, r = {};
-          if ("{" === s) {
-            if (c("{"), f(), "}" === s) return c("}"), r;
-            for (; s;) {
-              if (e = u(), f(), c(":"), Object.hasOwnProperty.call(r, e) && l('Duplicate key "' + e + '"'), r[e] = i(), f(), "}" === s) return c("}"), r;
-              c(","), f()
-            }
-          }
-          l("Bad object")
-        };
-      i = function () {
-        switch (f(), s) {
-          case"{":
-            return m();
-          case"[":
-            return p();
-          case'"':
-            return u();
-          case"-":
-            return h();
-          default:
-            return s >= "0" && s <= "9" ? h() : d()
-        }
-      }, r.exports = function (e, r) {
-        var t;
-        return o = e, a = 0, s = " ", t = i(), f(), s && l("Syntax error"), "function" == typeof r ? function e(t, a) {
-          var s, o, i = t[a];
-          if (i && "object" == typeof i) for (s in i) Object.prototype.hasOwnProperty.call(i, s) && (o = e(i, s), void 0 !== o ? i[s] = o : delete i[s]);
-          return r.call(t, a, i)
-        }({"": t}, "") : t
-      }
-    }, {}], 45: [function (e, r, t) {
-      function a(e) {
-        return l.lastIndex = 0, l.test(e) ? '"' + e.replace(l, function (e) {
-          var r = c[e];
-          return "string" == typeof r ? r : "\\u" + ("0000" + e.charCodeAt(0).toString(16)).slice(-4)
-        }) + '"' : '"' + e + '"'
-      }
-
-      function s(e, r) {
-        var t, l, c, h, u, f = o, d = r[e];
-        switch (d && "object" == typeof d && "function" == typeof d.toJSON && (d = d.toJSON(e)), "function" == typeof n && (d = n.call(r, e, d)), typeof d) {
-          case"string":
-            return a(d);
-          case"number":
-            return isFinite(d) ? String(d) : "null";
-          case"boolean":
-          case"null":
-            return String(d);
-          case"object":
-            if (!d) return "null";
-            if (o += i, u = [], "[object Array]" === Object.prototype.toString.apply(d)) {
-              for (h = d.length, t = 0; t < h; t += 1) u[t] = s(t, d) || "null";
-              return c = 0 === u.length ? "[]" : o ? "[\n" + o + u.join(",\n" + o) + "\n" + f + "]" : "[" + u.join(",") + "]", o = f, c
-            }
-            if (n && "object" == typeof n) for (h = n.length, t = 0; t < h; t += 1) l = n[t], "string" == typeof l && (c = s(l, d), c && u.push(a(l) + (o ? ": " : ":") + c)); else for (l in d) Object.prototype.hasOwnProperty.call(d, l) && (c = s(l, d), c && u.push(a(l) + (o ? ": " : ":") + c));
-            return c = 0 === u.length ? "{}" : o ? "{\n" + o + u.join(",\n" + o) + "\n" + f + "}" : "{" + u.join(",") + "}", o = f, c
-        }
-      }
-
-      var o, i, n,
-        l = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-        c = {"\b": "\\b", "\t": "\\t", "\n": "\\n", "\f": "\\f", "\r": "\\r", '"': '\\"', "\\": "\\\\"};
-      r.exports = function (e, r, t) {
-        var a;
-        if (o = "", i = "", "number" == typeof t) for (a = 0; a < t; a += 1) i += " "; else "string" == typeof t && (i = t);
-        if (n = r, r && "function" != typeof r && ("object" != typeof r || "number" != typeof r.length)) throw new Error("JSON.stringify");
-        return s("", {"": e})
-      }
-    }, {}], 46: [function (r, t, a) {
-      (function (r) {
-        !function (s) {
-          function o(e) {
-            throw new RangeError(L[e])
-          }
-
-          function i(e, r) {
-            for (var t = e.length, a = []; t--;) a[t] = r(e[t]);
-            return a
-          }
-
-          function n(e, r) {
-            var t = e.split("@"), a = "";
-            t.length > 1 && (a = t[0] + "@", e = t[1]), e = e.replace(q, ".");
-            var s = e.split("."), o = i(s, r).join(".");
-            return a + o
-          }
-
-          function l(e) {
-            for (var r, t, a = [], s = 0, o = e.length; s < o;) r = e.charCodeAt(s++), r >= 55296 && r <= 56319 && s < o ? (t = e.charCodeAt(s++), 56320 == (64512 & t) ? a.push(((1023 & r) << 10) + (1023 & t) + 65536) : (a.push(r), s--)) : a.push(r);
-            return a
-          }
-
-          function c(e) {
-            return i(e, function (e) {
-              var r = "";
-              return e > 65535 && (e -= 65536, r += C(e >>> 10 & 1023 | 55296), e = 56320 | 1023 & e), r += C(e)
-            }).join("")
-          }
-
-          function h(e) {
-            return e - 48 < 10 ? e - 22 : e - 65 < 26 ? e - 65 : e - 97 < 26 ? e - 97 : j
-          }
-
-          function u(e, r) {
-            return e + 22 + 75 * (e < 26) - ((0 != r) << 5)
-          }
-
-          function f(e, r, t) {
-            var a = 0;
-            for (e = t ? Q(e / _) : e >> 1, e += Q(e / r); e > D * $ >> 1; a += j) e = Q(e / D);
-            return Q(a + (D + 1) * e / (e + x))
-          }
-
-          function d(e) {
-            var r, t, a, s, i, n, l, u, d, p, m = [], v = e.length, y = 0, g = R, P = O;
-            for (t = e.lastIndexOf(I), t < 0 && (t = 0), a = 0; a < t; ++a) e.charCodeAt(a) >= 128 && o("not-basic"), m.push(e.charCodeAt(a));
-            for (s = t > 0 ? t + 1 : 0; s < v;) {
-              for (i = y, n = 1, l = j; s >= v && o("invalid-input"), u = h(e.charCodeAt(s++)), (u >= j || u > Q((w - y) / n)) && o("overflow"), y += u * n, d = l <= P ? S : l >= P + $ ? $ : l - P, !(u < d); l += j) p = j - d, n > Q(w / p) && o("overflow"), n *= p;
-              r = m.length + 1, P = f(y - i, r, 0 == i), Q(y / r) > w - g && o("overflow"), g += Q(y / r), y %= r, m.splice(y++, 0, g)
-            }
-            return c(m)
-          }
-
-          function p(e) {
-            var r, t, a, s, i, n, c, h, d, p, m, v, y, g, P, E = [];
-            for (e = l(e), v = e.length, r = R, t = 0, i = O, n = 0; n < v; ++n) m = e[n], m < 128 && E.push(C(m));
-            for (a = s = E.length, s && E.push(I); a < v;) {
-              for (c = w, n = 0; n < v; ++n) m = e[n], m >= r && m < c && (c = m);
-              for (y = a + 1, c - r > Q((w - t) / y) && o("overflow"), t += (c - r) * y, r = c, n = 0; n < v; ++n) if (m = e[n], m < r && ++t > w && o("overflow"), m == r) {
-                for (h = t, d = j; p = d <= i ? S : d >= i + $ ? $ : d - i, !(h < p); d += j) P = h - p, g = j - p, E.push(C(u(p + P % g, 0))), h = Q(P / g);
-                E.push(C(u(h, 0))), i = f(t, y, a == s), t = 0, ++a
-              }
-              ++t, ++r
-            }
-            return E.join("")
-          }
-
-          function m(e) {
-            return n(e, function (e) {
-              return A.test(e) ? d(e.slice(4).toLowerCase()) : e
-            })
-          }
-
-          function v(e) {
-            return n(e, function (e) {
-              return k.test(e) ? "xn--" + p(e) : e
-            })
-          }
-
-          var y = "object" == typeof a && a && !a.nodeType && a, g = "object" == typeof t && t && !t.nodeType && t,
-            P = "object" == typeof r && r;
-          P.global !== P && P.window !== P && P.self !== P || (s = P);
-          var E, b, w = 2147483647, j = 36, S = 1, $ = 26, x = 38, _ = 700, O = 72, R = 128, I = "-", A = /^xn--/,
-            k = /[^\x20-\x7E]/, q = /[\x2E\u3002\uFF0E\uFF61]/g, L = {
-              overflow: "Overflow: input needs wider integers to process",
-              "not-basic": "Illegal input >= 0x80 (not a basic code point)",
-              "invalid-input": "Invalid input"
-            }, D = j - S, Q = Math.floor, C = String.fromCharCode;
-          if (E = {
-              version: "1.4.1",
-              ucs2: {decode: l, encode: c},
-              decode: d,
-              encode: p,
-              toASCII: v,
-              toUnicode: m
-            }, "function" == typeof e && "object" == typeof e.amd && e.amd) e("punycode", function () {
-            return E
-          }); else if (y && g) if (t.exports == y) g.exports = E; else for (b in E) E.hasOwnProperty(b) && (y[b] = E[b]); else s.punycode = E
-        }(this)
-      }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {})
-    }, {}], 47: [function (e, r, t) {
-      "use strict";
-
-      function a(e, r) {
-        return Object.prototype.hasOwnProperty.call(e, r)
-      }
-
-      r.exports = function (e, r, t, o) {
-        r = r || "&", t = t || "=";
-        var i = {};
-        if ("string" != typeof e || 0 === e.length) return i;
-        var n = /\+/g;
-        e = e.split(r);
-        var l = 1e3;
-        o && "number" == typeof o.maxKeys && (l = o.maxKeys);
-        var c = e.length;
-        l > 0 && c > l && (c = l);
-        for (var h = 0; h < c; ++h) {
-          var u, f, d, p, m = e[h].replace(n, "%20"), v = m.indexOf(t);
-          v >= 0 ? (u = m.substr(0, v), f = m.substr(v + 1)) : (u = m, f = ""), d = decodeURIComponent(u), p = decodeURIComponent(f), a(i, d) ? s(i[d]) ? i[d].push(p) : i[d] = [i[d], p] : i[d] = p
-        }
-        return i
-      };
-      var s = Array.isArray || function (e) {
-        return "[object Array]" === Object.prototype.toString.call(e)
-      }
-    }, {}], 48: [function (e, r, t) {
-      "use strict";
-
-      function a(e, r) {
-        if (e.map) return e.map(r);
-        for (var t = [], a = 0; a < e.length; a++) t.push(r(e[a], a));
-        return t
-      }
-
-      var s = function (e) {
-        switch (typeof e) {
-          case"string":
-            return e;
-          case"boolean":
-            return e ? "true" : "false";
-          case"number":
-            return isFinite(e) ? e : "";
-          default:
-            return ""
-        }
-      };
-      r.exports = function (e, r, t, n) {
-        return r = r || "&", t = t || "=", null === e && (e = void 0), "object" == typeof e ? a(i(e), function (i) {
-          var n = encodeURIComponent(s(i)) + t;
-          return o(e[i]) ? a(e[i], function (e) {
-            return n + encodeURIComponent(s(e))
-          }).join(r) : n + encodeURIComponent(s(e[i]))
-        }).join(r) : n ? encodeURIComponent(s(n)) + t + encodeURIComponent(s(e)) : ""
-      };
-      var o = Array.isArray || function (e) {
-        return "[object Array]" === Object.prototype.toString.call(e)
-      }, i = Object.keys || function (e) {
-        var r = [];
-        for (var t in e) Object.prototype.hasOwnProperty.call(e, t) && r.push(t);
-        return r
-      }
-    }, {}], 49: [function (e, r, t) {
-      "use strict";
-      t.decode = t.parse = e("./decode"), t.encode = t.stringify = e("./encode")
-    }, {"./decode": 47, "./encode": 48}], 50: [function (e, r, t) {
-      "use strict";
-
-      function a() {
-        this.protocol = null, this.slashes = null, this.auth = null, this.host = null, this.port = null, this.hostname = null, this.hash = null, this.search = null, this.query = null, this.pathname = null, this.path = null, this.href = null
-      }
-
-      function s(e, r, t) {
-        if (e && c.isObject(e) && e instanceof a) return e;
-        var s = new a;
-        return s.parse(e, r, t), s
-      }
-
-      function o(e) {
-        return c.isString(e) && (e = s(e)), e instanceof a ? e.format() : a.prototype.format.call(e)
-      }
-
-      function i(e, r) {
-        return s(e, !1, !0).resolve(r)
-      }
-
-      function n(e, r) {
-        return e ? s(e, !1, !0).resolveObject(r) : r
-      }
-
-      var l = e("punycode"), c = e("./util");
-      t.parse = s, t.resolve = i, t.resolveObject = n, t.format = o, t.Url = a;
-      var h = /^([a-z0-9.+-]+:)/i, u = /:[0-9]*$/, f = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
-        d = ["<", ">", '"', "`", " ", "\r", "\n", "\t"], p = ["{", "}", "|", "\\", "^", "`"].concat(d),
-        m = ["'"].concat(p), v = ["%", "/", "?", ";", "#"].concat(m), y = ["/", "?", "#"], g = 255,
-        P = /^[+a-z0-9A-Z_-]{0,63}$/, E = /^([+a-z0-9A-Z_-]{0,63})(.*)$/, b = {javascript: !0, "javascript:": !0},
-        w = {javascript: !0, "javascript:": !0}, j = {
-          http: !0,
-          https: !0,
-          ftp: !0,
-          gopher: !0,
-          file: !0,
-          "http:": !0,
-          "https:": !0,
-          "ftp:": !0,
-          "gopher:": !0,
-          "file:": !0
-        }, S = e("querystring");
-      a.prototype.parse = function (e, r, t) {
-        if (!c.isString(e)) throw new TypeError("Parameter 'url' must be a string, not " + typeof e);
-        var a = e.indexOf("?"), s = a !== -1 && a < e.indexOf("#") ? "?" : "#", o = e.split(s), i = /\\/g;
-        o[0] = o[0].replace(i, "/"), e = o.join(s);
-        var n = e;
-        if (n = n.trim(), !t && 1 === e.split("#").length) {
-          var u = f.exec(n);
-          if (u) return this.path = n, this.href = n, this.pathname = u[1], u[2] ? (this.search = u[2], this.query = r ? S.parse(this.search.substr(1)) : this.search.substr(1)) : r && (this.search = "", this.query = {}), this
-        }
-        var d = h.exec(n);
-        if (d) {
-          d = d[0];
-          var p = d.toLowerCase();
-          this.protocol = p, n = n.substr(d.length)
-        }
-        if (t || d || n.match(/^\/\/[^@\/]+@[^@\/]+/)) {
-          var $ = "//" === n.substr(0, 2);
-          !$ || d && w[d] || (n = n.substr(2), this.slashes = !0)
-        }
-        if (!w[d] && ($ || d && !j[d])) {
-          for (var x = -1, _ = 0; _ < y.length; _++) {
-            var O = n.indexOf(y[_]);
-            O !== -1 && (x === -1 || O < x) && (x = O)
-          }
-          var R, I;
-          I = x === -1 ? n.lastIndexOf("@") : n.lastIndexOf("@", x), I !== -1 && (R = n.slice(0, I), n = n.slice(I + 1), this.auth = decodeURIComponent(R)), x = -1;
-          for (var _ = 0; _ < v.length; _++) {
-            var O = n.indexOf(v[_]);
-            O !== -1 && (x === -1 || O < x) && (x = O)
-          }
-          x === -1 && (x = n.length), this.host = n.slice(0, x), n = n.slice(x), this.parseHost(), this.hostname = this.hostname || "";
-          var A = "[" === this.hostname[0] && "]" === this.hostname[this.hostname.length - 1];
-          if (!A) for (var k = this.hostname.split(/\./), _ = 0, q = k.length; _ < q; _++) {
-            var L = k[_];
-            if (L && !L.match(P)) {
-              for (var D = "", Q = 0, C = L.length; Q < C; Q++) D += L.charCodeAt(Q) > 127 ? "x" : L[Q];
-              if (!D.match(P)) {
-                var U = k.slice(0, _), V = k.slice(_ + 1), z = L.match(E);
-                z && (U.push(z[1]), V.unshift(z[2])), V.length && (n = "/" + V.join(".") + n), this.hostname = U.join(".");
-                break
-              }
-            }
-          }
-          this.hostname = this.hostname.length > g ? "" : this.hostname.toLowerCase(), A || (this.hostname = l.toASCII(this.hostname));
-          var T = this.port ? ":" + this.port : "", M = this.hostname || "";
-          this.host = M + T, this.href += this.host, A && (this.hostname = this.hostname.substr(1, this.hostname.length - 2), "/" !== n[0] && (n = "/" + n))
-        }
-        if (!b[p]) for (var _ = 0, q = m.length; _ < q; _++) {
-          var N = m[_];
-          if (n.indexOf(N) !== -1) {
-            var F = encodeURIComponent(N);
-            F === N && (F = escape(N)), n = n.split(N).join(F)
-          }
-        }
-        var H = n.indexOf("#");
-        H !== -1 && (this.hash = n.substr(H), n = n.slice(0, H));
-        var J = n.indexOf("?");
-        if (J !== -1 ? (this.search = n.substr(J), this.query = n.substr(J + 1), r && (this.query = S.parse(this.query)), n = n.slice(0, J)) : r && (this.search = "", this.query = {}), n && (this.pathname = n), j[p] && this.hostname && !this.pathname && (this.pathname = "/"), this.pathname || this.search) {
-          var T = this.pathname || "", G = this.search || "";
-          this.path = T + G
-        }
-        return this.href = this.format(), this
-      }, a.prototype.format = function () {
-        var e = this.auth || "";
-        e && (e = encodeURIComponent(e), e = e.replace(/%3A/i, ":"), e += "@");
-        var r = this.protocol || "", t = this.pathname || "", a = this.hash || "", s = !1, o = "";
-        this.host ? s = e + this.host : this.hostname && (s = e + (this.hostname.indexOf(":") === -1 ? this.hostname : "[" + this.hostname + "]"), this.port && (s += ":" + this.port)), this.query && c.isObject(this.query) && Object.keys(this.query).length && (o = S.stringify(this.query));
-        var i = this.search || o && "?" + o || "";
-        return r && ":" !== r.substr(-1) && (r += ":"), this.slashes || (!r || j[r]) && s !== !1 ? (s = "//" + (s || ""), t && "/" !== t.charAt(0) && (t = "/" + t)) : s || (s = ""), a && "#" !== a.charAt(0) && (a = "#" + a), i && "?" !== i.charAt(0) && (i = "?" + i), t = t.replace(/[?#]/g, function (e) {
-          return encodeURIComponent(e)
-        }), i = i.replace("#", "%23"), r + s + t + i + a
-      }, a.prototype.resolve = function (e) {
-        return this.resolveObject(s(e, !1, !0)).format()
-      }, a.prototype.resolveObject = function (e) {
-        if (c.isString(e)) {
-          var r = new a;
-          r.parse(e, !1, !0), e = r
-        }
-        for (var t = new a, s = Object.keys(this), o = 0; o < s.length; o++) {
-          var i = s[o];
-          t[i] = this[i]
-        }
-        if (t.hash = e.hash, "" === e.href) return t.href = t.format(), t;
-        if (e.slashes && !e.protocol) {
-          for (var n = Object.keys(e), l = 0; l < n.length; l++) {
-            var h = n[l];
-            "protocol" !== h && (t[h] = e[h])
-          }
-          return j[t.protocol] && t.hostname && !t.pathname && (t.path = t.pathname = "/"), t.href = t.format(), t
-        }
-        if (e.protocol && e.protocol !== t.protocol) {
-          if (!j[e.protocol]) {
-            for (var u = Object.keys(e), f = 0; f < u.length; f++) {
-              var d = u[f];
-              t[d] = e[d]
-            }
-            return t.href = t.format(), t
-          }
-          if (t.protocol = e.protocol, e.host || w[e.protocol]) t.pathname = e.pathname; else {
-            for (var p = (e.pathname || "").split("/"); p.length && !(e.host = p.shift());) ;
-            e.host || (e.host = ""), e.hostname || (e.hostname = ""), "" !== p[0] && p.unshift(""), p.length < 2 && p.unshift(""), t.pathname = p.join("/")
-          }
-          if (t.search = e.search, t.query = e.query, t.host = e.host || "", t.auth = e.auth, t.hostname = e.hostname || e.host, t.port = e.port, t.pathname || t.search) {
-            var m = t.pathname || "", v = t.search || "";
-            t.path = m + v
-          }
-          return t.slashes = t.slashes || e.slashes, t.href = t.format(), t
-        }
-        var y = t.pathname && "/" === t.pathname.charAt(0), g = e.host || e.pathname && "/" === e.pathname.charAt(0),
-          P = g || y || t.host && e.pathname, E = P, b = t.pathname && t.pathname.split("/") || [],
-          p = e.pathname && e.pathname.split("/") || [], S = t.protocol && !j[t.protocol];
-        if (S && (t.hostname = "", t.port = null, t.host && ("" === b[0] ? b[0] = t.host : b.unshift(t.host)), t.host = "", e.protocol && (e.hostname = null, e.port = null, e.host && ("" === p[0] ? p[0] = e.host : p.unshift(e.host)), e.host = null), P = P && ("" === p[0] || "" === b[0])), g) t.host = e.host || "" === e.host ? e.host : t.host, t.hostname = e.hostname || "" === e.hostname ? e.hostname : t.hostname, t.search = e.search, t.query = e.query, b = p; else if (p.length) b || (b = []), b.pop(), b = b.concat(p), t.search = e.search, t.query = e.query; else if (!c.isNullOrUndefined(e.search)) {
-          if (S) {
-            t.hostname = t.host = b.shift();
-            var $ = !!(t.host && t.host.indexOf("@") > 0) && t.host.split("@");
-            $ && (t.auth = $.shift(), t.host = t.hostname = $.shift())
-          }
-          return t.search = e.search, t.query = e.query, c.isNull(t.pathname) && c.isNull(t.search) || (t.path = (t.pathname ? t.pathname : "") + (t.search ? t.search : "")), t.href = t.format(), t
-        }
-        if (!b.length) return t.pathname = null, t.path = t.search ? "/" + t.search : null, t.href = t.format(), t;
-        for (var x = b.slice(-1)[0], _ = (t.host || e.host || b.length > 1) && ("." === x || ".." === x) || "" === x, O = 0, R = b.length; R >= 0; R--) x = b[R], "." === x ? b.splice(R, 1) : ".." === x ? (b.splice(R, 1), O++) : O && (b.splice(R, 1), O--);
-        if (!P && !E) for (; O--; O) b.unshift("..");
-        !P || "" === b[0] || b[0] && "/" === b[0].charAt(0) || b.unshift(""), _ && "/" !== b.join("/").substr(-1) && b.push("");
-        var I = "" === b[0] || b[0] && "/" === b[0].charAt(0);
-        if (S) {
-          t.hostname = t.host = I ? "" : b.length ? b.shift() : "";
-          var $ = !!(t.host && t.host.indexOf("@") > 0) && t.host.split("@");
-          $ && (t.auth = $.shift(), t.host = t.hostname = $.shift())
-        }
-        return P = P || t.host && b.length, P && !I && b.unshift(""), b.length ? t.pathname = b.join("/") : (t.pathname = null, t.path = null), c.isNull(t.pathname) && c.isNull(t.search) || (t.path = (t.pathname ? t.pathname : "") + (t.search ? t.search : "")), t.auth = e.auth || t.auth, t.slashes = t.slashes || e.slashes, t.href = t.format(), t
-      }, a.prototype.parseHost = function () {
-        var e = this.host, r = u.exec(e);
-        r && (r = r[0], ":" !== r && (this.port = r.substr(1)), e = e.substr(0, e.length - r.length)), e && (this.hostname = e)
-      }
-    }, {"./util": 51, punycode: 46, querystring: 49}], 51: [function (e, r, t) {
-      "use strict";
-      r.exports = {
-        isString: function (e) {
-          return "string" == typeof e
-        }, isObject: function (e) {
-          return "object" == typeof e && null !== e
-        }, isNull: function (e) {
-          return null === e
-        }, isNullOrUndefined: function (e) {
-          return null == e
-        }
-      }
-    }, {}], ajv: [function (e, r, t) {
-      "use strict";
-
-      function a(e) {
-        return v.test(e)
-      }
-
-      function Ajv(r) {
-        function t(e, r) {
-          var t;
-          if ("string" == typeof e) {
-            if (t = j(e), !t) throw new Error('no schema with key or ref "' + e + '"')
-          } else {
-            var a = O(e);
-            t = a.validate || R(a)
-          }
-          var s = t(r);
-          return t.$async === !0 ? "*" == C._opts.async ? p(s) : s : (C.errors = t.errors, s)
-        }
-
-        function g(e, r) {
-          var t = O(e, void 0, r);
-          return t.validate || R(t)
-        }
-
-        function P(e, r, t, a) {
-          if (Array.isArray(e)) for (var s = 0; s < e.length; s++) P(e[s], void 0, t, a); else r = o.normalizeId(r || e.id), D(r), C._schemas[r] = O(e, t, a, !0)
-        }
-
-        function E(e, r, t) {
-          P(e, r, t, !0)
-        }
-
-        function b(e, r) {
-          var s = e.$schema || C._opts.defaultMeta || w(), o = C._formats.uri;
-          C._formats.uri = "function" == typeof o ? a : v;
-          var i;
-          try {
-            i = t(s, e)
-          } finally {
-            C._formats.uri = o
-          }
-          if (!i && r) {
-            var n = "schema is invalid: " + I();
-            if ("log" != C._opts.validateSchema) throw new Error(n);
-            console.error(n)
-          }
-          return i
-        }
-
-        function w() {
-          var e = C._opts.meta;
-          return C._opts.defaultMeta = "object" == typeof e ? e.id || e : C._opts.v5 ? u.META_SCHEMA_ID : m
-        }
-
-        function j(e) {
-          var r = $(e);
-          switch (typeof r) {
-            case"object":
-              return r.validate || R(r);
-            case"string":
-              return j(r);
-            case"undefined":
-              return S(e)
-          }
-        }
-
-        function S(e) {
-          var r = o.schema.call(C, {schema: {}}, e);
-          if (r) {
-            var t = r.schema, a = r.root, i = r.baseId, l = s.call(C, t, a, void 0, i);
-            return C._fragments[e] = new n({ref: e, fragment: !0, schema: t, root: a, baseId: i, validate: l}), l
-          }
-        }
-
-        function $(e) {
-          return e = o.normalizeId(e), C._schemas[e] || C._refs[e] || C._fragments[e]
-        }
-
-        function x(e) {
-          if (e instanceof RegExp) return _(C._schemas, e), void _(C._refs, e);
-          switch (typeof e) {
-            case"undefined":
-              return _(C._schemas), _(C._refs), void C._cache.clear();
-            case"string":
-              var r = $(e);
-              return r && C._cache.del(r.jsonStr), delete C._schemas[e], void delete C._refs[e];
-            case"object":
-              var t = l(e);
-              C._cache.del(t);
-              var a = e.id;
-              a && (a = o.normalizeId(a), delete C._schemas[a], delete C._refs[a])
-          }
-        }
-
-        function _(e, r) {
-          for (var t in e) {
-            var a = e[t];
-            a.meta || r && !r.test(t) || (C._cache.del(a.jsonStr), delete e[t])
-          }
-        }
-
-        function O(e, r, t, a) {
-          if ("object" != typeof e) throw new Error("schema should be object");
-          var s = l(e), i = C._cache.get(s);
-          if (i) return i;
-          a = a || C._opts.addUsedSchema !== !1;
-          var c = o.normalizeId(e.id);
-          c && a && D(c);
-          var h, u = C._opts.validateSchema !== !1 && !r;
-          u && !(h = e.id && e.id == e.$schema) && b(e, !0);
-          var f = o.ids.call(C, e), d = new n({id: c, schema: e, localRefs: f, jsonStr: s, meta: t});
-          return "#" != c[0] && a && (C._refs[c] = d), C._cache.put(s, d), u && h && b(e, !0), d
-        }
-
-        function R(e, r) {
-          function t() {
-            var r = e.validate, a = r.apply(null, arguments);
-            return t.errors = r.errors, a
-          }
-
-          if (e.compiling) return e.validate = t, t.schema = e.schema, t.errors = null, t.root = r ? r : t, e.schema.$async === !0 && (t.$async = !0), t;
-          e.compiling = !0;
-          var a;
-          e.meta && (a = C._opts, C._opts = C._metaOpts);
-          var o;
-          try {
-            o = s.call(C, e.schema, r, e.localRefs)
-          } finally {
-            e.compiling = !1, e.meta && (C._opts = a)
-          }
-          return e.validate = o, e.refs = o.refs, e.refVal = o.refVal, e.root = o.root, o
-        }
-
-        function I(e, r) {
-          if (e = e || C.errors, !e) return "No errors";
-          r = r || {};
-          for (var t = void 0 === r.separator ? ", " : r.separator, a = void 0 === r.dataVar ? "data" : r.dataVar, s = "", o = 0; o < e.length; o++) {
-            var i = e[o];
-            i && (s += a + i.dataPath + " " + i.message + t)
-          }
-          return s.slice(0, -t.length)
-        }
-
-        function A(e, r) {
-          "string" == typeof r && (r = new RegExp(r)), C._formats[e] = r
-        }
-
-        function k() {
-          if (C._opts.meta !== !1) {
-            var r = e("./refs/json-schema-draft-04.json");
-            E(r, m, !0), C._refs["http://json-schema.org/schema"] = m
-          }
-        }
-
-        function q() {
-          var e = C._opts.schemas;
-          if (e) if (Array.isArray(e)) P(e); else for (var r in e) P(e[r], r)
-        }
-
-        function L() {
-          for (var e in C._opts.formats) {
-            var r = C._opts.formats[e];
-            A(e, r)
-          }
-        }
-
-        function D(e) {
-          if (C._schemas[e] || C._refs[e]) throw new Error('schema with key or id "' + e + '" already exists')
-        }
-
-        function Q() {
-          for (var e = f.copy(C._opts), r = 0; r < y.length; r++) delete e[y[r]];
-          return e
-        }
-
-        if (!(this instanceof Ajv)) return new Ajv(r);
-        var C = this;
-        r = this._opts = f.copy(r) || {}, this._schemas = {}, this._refs = {}, this._fragments = {}, this._formats = c(r.format), this._cache = r.cache || new i, this._loadingSchemas = {}, this._compilations = [], this.RULES = h(), this.validate = t, this.compile = g, this.addSchema = P, this.addMetaSchema = E, this.validateSchema = b, this.getSchema = j, this.removeSchema = x, this.addFormat = A, this.errorsText = I, this._addSchema = O, this._compile = R, r.loopRequired = r.loopRequired || 1 / 0, (r.async || r.transpile) && d.setup(r), r.beautify === !0 && (r.beautify = {indent_size: 2}), "property" == r.errorDataPath && (r._errorDataPathProperty = !0), this._metaOpts = Q(), r.formats && L(), k(), r.v5 && u.enable(this), "object" == typeof r.meta && E(r.meta), q()
-      }
-
-      var s = e("./compile"), o = e("./compile/resolve"), i = e("./cache"), n = e("./compile/schema_obj"),
-        l = e("json-stable-stringify"), c = e("./compile/formats"), h = e("./compile/rules"), u = e("./v5"),
-        f = e("./compile/util"), d = e("./async"), p = e("co");
-      r.exports = Ajv, Ajv.prototype.compileAsync = d.compile, Ajv.prototype.addKeyword = e("./keyword"), Ajv.ValidationError = e("./compile/validation_error");
-      var m = "http://json-schema.org/draft-04/schema", v = /^(?:(?:[a-z][a-z0-9+-.]*:)?\/\/)?[^\s]*$/i,
-        y = ["removeAdditional", "useDefaults", "coerceTypes"]
-    }, {
-      "./async": 1,
-      "./cache": 2,
-      "./compile": 6,
-      "./compile/formats": 5,
-      "./compile/resolve": 7,
-      "./compile/rules": 8,
-      "./compile/schema_obj": 9,
-      "./compile/util": 11,
-      "./compile/validation_error": 12,
-      "./keyword": 37,
-      "./refs/json-schema-draft-04.json": 38,
-      "./v5": 40,
-      co: 41,
-      "json-stable-stringify": 42
-    }]
-  }, {}, [])("ajv")
-});
-//# sourceMappingURL=dist/ajv.min.js.mapOpal.loaded(["ajv.min"]);
 /* Generated by Opal 0.10.5 */
 Opal.modules["nodejs/kernel"] = function(Opal) {
   var TMP_3, TMP_4, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module;
@@ -31121,7 +35106,7 @@ Opal.modules["opal-ajv"] = function(Opal) {
 
         ajv = nil;
         if ($scope.get('OPAL_PLATFORM')['$==']("nodejs")) {
-          ajv = module.exports.Ajv
+          ajv = Ajv
           } else {
           ajv = Ajv
         };
@@ -35811,2677 +39796,6 @@ if (i == null) i = nil;
   })($scope.base);
 };
 
-/**
- * This file is modified to be included in to zupfnoter-cli simply
- * by
- *
- * require 'jspdf-cli.js'
- *
- * The file is taken from https://github.com/MrRio/jsPDF/blob/master/jspdf.js
- * had to change it according to https://github.com/MrRio/jsPDF/issues/1533 comment by bwl21
- */
-
-
-/** @preserve
- * jsPDF - PDF Document creation from JavaScript
- * Version ${versionID}
- *                           CommitID ${commitID}
- *
- * Copyright (c) 2010-2016 James Hall <james@parall.ax>, https://github.com/MrRio/jsPDF
- *               2010 Aaron Spike, https://github.com/acspike
- *               2012 Willow Systems Corporation, willow-systems.com
- *               2012 Pablo Hess, https://github.com/pablohess
- *               2012 Florian Jenett, https://github.com/fjenett
- *               2013 Warren Weckesser, https://github.com/warrenweckesser
- *               2013 Youssef Beddad, https://github.com/lifof
- *               2013 Lee Driscoll, https://github.com/lsdriscoll
- *               2013 Stefan Slonevskiy, https://github.com/stefslon
- *               2013 Jeremy Morel, https://github.com/jmorel
- *               2013 Christoph Hartmann, https://github.com/chris-rock
- *               2014 Juan Pablo Gaviria, https://github.com/juanpgaviria
- *               2014 James Makes, https://github.com/dollaruw
- *               2014 Diego Casorran, https://github.com/diegocr
- *               2014 Steven Spungin, https://github.com/Flamenco
- *               2014 Kenneth Glassey, https://github.com/Gavvers
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * Contributor(s):
- *    siefkenj, ahwolf, rickygu, Midnith, saintclair, eaparango,
- *    kim3er, mfo, alnorth, Flamenco
- */
-
-/**
- * Creates new jsPDF document object instance.
- * @name jsPDF
- * @class
- * @param orientation One of "portrait" or "landscape" (or shortcuts "p" (Default), "l") <br />
- * Can also be an options object.
- * @param unit        Measurement unit to be used when coordinates are specified.
- *                    One of "pt" (points), "mm" (Default), "cm", "in"
- * @param format      One of 'pageFormats' as shown below, default: a4
- * @returns {jsPDF}
- * @description
- * If the first parameter (orientation) is an object, it will be interpreted as an object of named parameters
- * ```
- * {
- *  orientation: 'p',
- *  unit: 'mm',
- *  format: 'a4',
- *  hotfixes: [] // an array of hotfix strings to enable
- * }
- * ```
- */
-var jsPDF = (function(global) {
-  'use strict';
-  var pdfVersion = '1.3',
-    pageFormats = { // Size in pt of various paper formats
-      'a0': [2383.94, 3370.39],
-      'a1': [1683.78, 2383.94],
-      'a2': [1190.55, 1683.78],
-      'a3': [841.89, 1190.55],
-      'a4': [595.28, 841.89],
-      'a5': [419.53, 595.28],
-      'a6': [297.64, 419.53],
-      'a7': [209.76, 297.64],
-      'a8': [147.40, 209.76],
-      'a9': [104.88, 147.40],
-      'a10': [73.70, 104.88],
-      'b0': [2834.65, 4008.19],
-      'b1': [2004.09, 2834.65],
-      'b2': [1417.32, 2004.09],
-      'b3': [1000.63, 1417.32],
-      'b4': [708.66, 1000.63],
-      'b5': [498.90, 708.66],
-      'b6': [354.33, 498.90],
-      'b7': [249.45, 354.33],
-      'b8': [175.75, 249.45],
-      'b9': [124.72, 175.75],
-      'b10': [87.87, 124.72],
-      'c0': [2599.37, 3676.54],
-      'c1': [1836.85, 2599.37],
-      'c2': [1298.27, 1836.85],
-      'c3': [918.43, 1298.27],
-      'c4': [649.13, 918.43],
-      'c5': [459.21, 649.13],
-      'c6': [323.15, 459.21],
-      'c7': [229.61, 323.15],
-      'c8': [161.57, 229.61],
-      'c9': [113.39, 161.57],
-      'c10': [79.37, 113.39],
-      'dl': [311.81, 623.62],
-      'letter': [612, 792],
-      'government-letter': [576, 756],
-      'legal': [612, 1008],
-      'junior-legal': [576, 360],
-      'ledger': [1224, 792],
-      'tabloid': [792, 1224],
-      'credit-card': [153, 243]
-    };
-
-  /**
-   * jsPDF's Internal PubSub Implementation.
-   * See mrrio.github.io/jsPDF/doc/symbols/PubSub.html
-   * Backward compatible rewritten on 2014 by
-   * Diego Casorran, https://github.com/diegocr
-   *
-   * @class
-   * @name PubSub
-   * @ignore This should not be in the public docs.
-   */
-  function PubSub(context) {
-    var topics = {};
-
-    this.subscribe = function(topic, callback, once) {
-      if (typeof callback !== 'function') {
-        return false;
-      }
-
-      if (!topics.hasOwnProperty(topic)) {
-        topics[topic] = {};
-      }
-
-      var id = Math.random().toString(35);
-      topics[topic][id] = [callback, !!once];
-
-      return id;
-    };
-
-    this.unsubscribe = function(token) {
-      for (var topic in topics) {
-        if (topics[topic][token]) {
-          delete topics[topic][token];
-          return true;
-        }
-      }
-      return false;
-    };
-
-    this.publish = function(topic) {
-      if (topics.hasOwnProperty(topic)) {
-        var args = Array.prototype.slice.call(arguments, 1),
-          idr = [];
-
-        for (var id in topics[topic]) {
-          var sub = topics[topic][id];
-          try {
-            sub[0].apply(context, args);
-          } catch (ex) {
-            if (global.console) {
-              console.error('jsPDF PubSub Error', ex.message, ex);
-            }
-          }
-          if (sub[1]) idr.push(id);
-        }
-        if (idr.length) idr.forEach(this.unsubscribe);
-      }
-    };
-  }
-
-  /**
-   * @constructor
-   * @private
-   */
-  function jsPDF(orientation, unit, format, compressPdf) {
-    var options = {};
-
-    if (typeof orientation === 'object') {
-      options = orientation;
-
-      orientation = options.orientation;
-      unit = options.unit || unit;
-      format = options.format || format;
-      compressPdf = options.compress || options.compressPdf || compressPdf;
-    }
-
-    // Default options
-    unit = unit || 'mm';
-    format = format || 'a4';
-    orientation = ('' + (orientation || 'P')).toLowerCase();
-
-    var format_as_string = ('' + format).toLowerCase(),
-      compress = !!compressPdf && typeof Uint8Array === 'function',
-      textColor = options.textColor || '0 g',
-      drawColor = options.drawColor || '0 G',
-      activeFontSize = options.fontSize || 16,
-      lineHeightProportion = options.lineHeight || 1.15,
-      lineWidth = options.lineWidth || 0.200025, // 2mm
-      objectNumber = 2, // 'n' Current object number
-      outToPages = !1, // switches where out() prints. outToPages true = push to pages obj. outToPages false = doc builder content
-      offsets = [], // List of offsets. Activated and reset by buildDocument(). Pupulated by various calls buildDocument makes.
-      fonts = {}, // collection of font objects, where key is fontKey - a dynamically created label for a given font.
-      fontmap = {}, // mapping structure fontName > fontStyle > font key - performance layer. See addFont()
-      activeFontKey, // will be string representing the KEY of the font as combination of fontName + fontStyle
-      k, // Scale factor
-      tmp,
-      page = 0,
-      currentPage,
-      pages = [],
-      pagesContext = [], // same index as pages and pagedim
-      pagedim = [],
-      content = [],
-      additionalObjects = [],
-      lineCapID = 0,
-      lineJoinID = 0,
-      content_length = 0,
-      pageWidth,
-      pageHeight,
-      pageMode,
-      zoomMode,
-      layoutMode,
-      documentProperties = {
-        'title': '',
-        'subject': '',
-        'author': '',
-        'keywords': '',
-        'creator': ''
-      },
-      API = {},
-      events = new PubSub(API),
-      hotfixes = options.hotfixes || [],
-
-      /////////////////////
-      // Private functions
-      /////////////////////
-      f2 = function(number) {
-        return number.toFixed(2); // Ie, %.2f
-      },
-      f3 = function(number) {
-        return number.toFixed(3); // Ie, %.3f
-      },
-      padd2 = function(number) {
-        return ('0' + parseInt(number)).slice(-2);
-      },
-      out = function(string) {
-        if (outToPages) {
-          /* set by beginPage */
-          pages[currentPage].push(string);
-        } else {
-          // +1 for '\n' that will be used to join 'content'
-          content_length += string.length + 1;
-          content.push(string);
-        }
-      },
-      newObject = function() {
-        // Begin a new object
-        objectNumber++;
-        offsets[objectNumber] = content_length;
-        out(objectNumber + ' 0 obj');
-        return objectNumber;
-      },
-      // Does not output the object until after the pages have been output.
-      // Returns an object containing the objectId and content.
-      // All pages have been added so the object ID can be estimated to start right after.
-      // This does not modify the current objectNumber;  It must be updated after the newObjects are output.
-      newAdditionalObject = function() {
-        var objId = pages.length * 2 + 1;
-        objId += additionalObjects.length;
-        var obj = {
-          objId: objId,
-          content: ''
-        };
-        additionalObjects.push(obj);
-        return obj;
-      },
-      // Does not output the object.  The caller must call newObjectDeferredBegin(oid) before outputing any data
-      newObjectDeferred = function() {
-        objectNumber++;
-        offsets[objectNumber] = function() {
-          return content_length;
-        };
-        return objectNumber;
-      },
-      newObjectDeferredBegin = function(oid) {
-        offsets[oid] = content_length;
-      },
-      putStream = function(str) {
-        out('stream');
-        out(str);
-        out('endstream');
-      },
-      putPages = function() {
-        var n, p, arr, i, deflater, adler32, adler32cs, wPt, hPt,
-          pageObjectNumbers = [];
-
-        adler32cs = global.adler32cs || jsPDF.adler32cs;
-        if (compress && typeof adler32cs === 'undefined') {
-          compress = false;
-        }
-
-        // outToPages = false as set in endDocument(). out() writes to content.
-
-        for (n = 1; n <= page; n++) {
-          pageObjectNumbers.push(newObject());
-          wPt = (pageWidth = pagedim[n].width) * k;
-          hPt = (pageHeight = pagedim[n].height) * k;
-          out('<</Type /Page');
-          out('/Parent 1 0 R');
-          out('/Resources 2 0 R');
-          out('/MediaBox [0 0 ' + f2(wPt) + ' ' + f2(hPt) + ']');
-          // Added for annotation plugin
-          events.publish('putPage', {
-            pageNumber: n,
-            page: pages[n]
-          });
-          out('/Contents ' + (objectNumber + 1) + ' 0 R');
-          out('>>');
-          out('endobj');
-
-          // Page content
-          p = pages[n].join('\n');
-          newObject();
-          if (compress) {
-            arr = [];
-            i = p.length;
-            while (i--) {
-              arr[i] = p.charCodeAt(i);
-            }
-            adler32 = adler32cs.from(p);
-            deflater = new Deflater(6);
-            deflater.append(new Uint8Array(arr));
-            p = deflater.flush();
-            arr = new Uint8Array(p.length + 6);
-            arr.set(new Uint8Array([120, 156])),
-              arr.set(p, 2);
-            arr.set(new Uint8Array([adler32 & 0xFF, (adler32 >> 8) & 0xFF, (
-                adler32 >> 16) & 0xFF, (adler32 >> 24) & 0xFF]), p.length +
-              2);
-            p = String.fromCharCode.apply(null, arr);
-            out('<</Length ' + p.length + ' /Filter [/FlateDecode]>>');
-          } else {
-            out('<</Length ' + p.length + '>>');
-          }
-          putStream(p);
-          out('endobj');
-        }
-        offsets[1] = content_length;
-        out('1 0 obj');
-        out('<</Type /Pages');
-        var kids = '/Kids [';
-        for (i = 0; i < page; i++) {
-          kids += pageObjectNumbers[i] + ' 0 R ';
-        }
-        out(kids + ']');
-        out('/Count ' + page);
-        out('>>');
-        out('endobj');
-        events.publish('postPutPages');
-      },
-      putFont = function(font) {
-        font.objectNumber = newObject();
-        out('<</BaseFont/' + font.PostScriptName + '/Type/Font');
-        if (typeof font.encoding === 'string') {
-          out('/Encoding/' + font.encoding);
-        }
-        out('/Subtype/Type1>>');
-        out('endobj');
-      },
-      putFonts = function() {
-        for (var fontKey in fonts) {
-          if (fonts.hasOwnProperty(fontKey)) {
-            putFont(fonts[fontKey]);
-          }
-        }
-      },
-      putXobjectDict = function() {
-        // Loop through images, or other data objects
-        events.publish('putXobjectDict');
-      },
-      putResourceDictionary = function() {
-        out('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
-        out('/Font <<');
-
-        // Do this for each font, the '1' bit is the index of the font
-        for (var fontKey in fonts) {
-          if (fonts.hasOwnProperty(fontKey)) {
-            out('/' + fontKey + ' ' + fonts[fontKey].objectNumber + ' 0 R');
-          }
-        }
-        out('>>');
-        out('/XObject <<');
-        putXobjectDict();
-        out('>>');
-      },
-      putResources = function() {
-        putFonts();
-        events.publish('putResources');
-        // Resource dictionary
-        offsets[2] = content_length;
-        out('2 0 obj');
-        out('<<');
-        putResourceDictionary();
-        out('>>');
-        out('endobj');
-        events.publish('postPutResources');
-      },
-      putAdditionalObjects = function() {
-        events.publish('putAdditionalObjects');
-        for (var i = 0; i < additionalObjects.length; i++) {
-          var obj = additionalObjects[i];
-          offsets[obj.objId] = content_length;
-          out(obj.objId + ' 0 obj');
-          out(obj.content);;
-          out('endobj');
-        }
-        objectNumber += additionalObjects.length;
-        events.publish('postPutAdditionalObjects');
-      },
-      addToFontDictionary = function(fontKey, fontName, fontStyle) {
-        // this is mapping structure for quick font key lookup.
-        // returns the KEY of the font (ex: "F1") for a given
-        // pair of font name and type (ex: "Arial". "Italic")
-        if (!fontmap.hasOwnProperty(fontName)) {
-          fontmap[fontName] = {};
-        }
-        fontmap[fontName][fontStyle] = fontKey;
-      },
-      /**
-       * FontObject describes a particular font as member of an instnace of jsPDF
-       *
-       * It's a collection of properties like 'id' (to be used in PDF stream),
-       * 'fontName' (font's family name), 'fontStyle' (font's style variant label)
-       *
-       * @class
-       * @public
-       * @property id {String} PDF-document-instance-specific label assinged to the font.
-       * @property PostScriptName {String} PDF specification full name for the font
-       * @property encoding {Object} Encoding_name-to-Font_metrics_object mapping.
-       * @name FontObject
-       * @ignore This should not be in the public docs.
-       */
-      addFont = function(PostScriptName, fontName, fontStyle, encoding) {
-        var fontKey = 'F' + (Object.keys(fonts).length + 1).toString(10),
-          // This is FontObject
-          font = fonts[fontKey] = {
-            'id': fontKey,
-            'PostScriptName': PostScriptName,
-            'fontName': fontName,
-            'fontStyle': fontStyle,
-            'encoding': encoding,
-            'metadata': {}
-          };
-        addToFontDictionary(fontKey, fontName, fontStyle);
-        events.publish('addFont', font);
-
-        return fontKey;
-      },
-      addFonts = function() {
-
-        var HELVETICA = "helvetica",
-          TIMES = "times",
-          COURIER = "courier",
-          NORMAL = "normal",
-          BOLD = "bold",
-          ITALIC = "italic",
-          BOLD_ITALIC = "bolditalic",
-          encoding = 'StandardEncoding',
-          ZAPF = "zapfdingbats",
-          standardFonts = [
-            ['Helvetica', HELVETICA, NORMAL],
-            ['Helvetica-Bold', HELVETICA, BOLD],
-            ['Helvetica-Oblique', HELVETICA, ITALIC],
-            ['Helvetica-BoldOblique', HELVETICA, BOLD_ITALIC],
-            ['Courier', COURIER, NORMAL],
-            ['Courier-Bold', COURIER, BOLD],
-            ['Courier-Oblique', COURIER, ITALIC],
-            ['Courier-BoldOblique', COURIER, BOLD_ITALIC],
-            ['Times-Roman', TIMES, NORMAL],
-            ['Times-Bold', TIMES, BOLD],
-            ['Times-Italic', TIMES, ITALIC],
-            ['Times-BoldItalic', TIMES, BOLD_ITALIC],
-            ['ZapfDingbats', ZAPF]
-          ];
-
-        for (var i = 0, l = standardFonts.length; i < l; i++) {
-          var fontKey = addFont(
-            standardFonts[i][0],
-            standardFonts[i][1],
-            standardFonts[i][2],
-            encoding);
-
-          // adding aliases for standard fonts, this time matching the capitalization
-          var parts = standardFonts[i][0].split('-');
-          addToFontDictionary(fontKey, parts[0], parts[1] || '');
-        }
-        events.publish('addFonts', {
-          fonts: fonts,
-          dictionary: fontmap
-        });
-      },
-      SAFE = function __safeCall(fn) {
-        fn.foo = function __safeCallWrapper() {
-          try {
-            return fn.apply(this, arguments);
-          } catch (e) {
-            var stack = e.stack || '';
-            if (~stack.indexOf(' at ')) stack = stack.split(" at ")[1];
-            var m = "Error in function " + stack.split("\n")[0].split('<')[
-              0] + ": " + e.message;
-            if (global.console) {
-              global.console.error(m, e);
-              if (global.alert) alert(m);
-            } else {
-              throw new Error(m);
-            }
-          }
-        };
-        fn.foo.bar = fn;
-        return fn.foo;
-      },
-      to8bitStream = function(text, flags) {
-        /**
-         * PDF 1.3 spec:
-         * "For text strings encoded in Unicode, the first two bytes must be 254 followed by
-         * 255, representing the Unicode byte order marker, U+FEFF. (This sequence conflicts
-         * with the PDFDocEncoding character sequence thorn ydieresis, which is unlikely
-         * to be a meaningful beginning of a word or phrase.) The remainder of the
-         * string consists of Unicode character codes, according to the UTF-16 encoding
-         * specified in the Unicode standard, version 2.0. Commonly used Unicode values
-         * are represented as 2 bytes per character, with the high-order byte appearing first
-         * in the string."
-         *
-         * In other words, if there are chars in a string with char code above 255, we
-         * recode the string to UCS2 BE - string doubles in length and BOM is prepended.
-         *
-         * HOWEVER!
-         * Actual *content* (body) text (as opposed to strings used in document properties etc)
-         * does NOT expect BOM. There, it is treated as a literal GID (Glyph ID)
-         *
-         * Because of Adobe's focus on "you subset your fonts!" you are not supposed to have
-         * a font that maps directly Unicode (UCS2 / UTF16BE) code to font GID, but you could
-         * fudge it with "Identity-H" encoding and custom CIDtoGID map that mimics Unicode
-         * code page. There, however, all characters in the stream are treated as GIDs,
-         * including BOM, which is the reason we need to skip BOM in content text (i.e. that
-         * that is tied to a font).
-         *
-         * To signal this "special" PDFEscape / to8bitStream handling mode,
-         * API.text() function sets (unless you overwrite it with manual values
-         * given to API.text(.., flags) )
-         * flags.autoencode = true
-         * flags.noBOM = true
-         *
-         * ===================================================================================
-         * `flags` properties relied upon:
-         *   .sourceEncoding = string with encoding label.
-         *                     "Unicode" by default. = encoding of the incoming text.
-         *                     pass some non-existing encoding name
-         *                     (ex: 'Do not touch my strings! I know what I am doing.')
-         *                     to make encoding code skip the encoding step.
-         *   .outputEncoding = Either valid PDF encoding name
-         *                     (must be supported by jsPDF font metrics, otherwise no encoding)
-         *                     or a JS object, where key = sourceCharCode, value = outputCharCode
-         *                     missing keys will be treated as: sourceCharCode === outputCharCode
-         *   .noBOM
-         *       See comment higher above for explanation for why this is important
-         *   .autoencode
-         *       See comment higher above for explanation for why this is important
-         */
-
-        var i, l, sourceEncoding, encodingBlock, outputEncoding, newtext,
-          isUnicode, ch, bch;
-
-        flags = flags || {};
-        sourceEncoding = flags.sourceEncoding || 'Unicode';
-        outputEncoding = flags.outputEncoding;
-
-        // This 'encoding' section relies on font metrics format
-        // attached to font objects by, among others,
-        // "Willow Systems' standard_font_metrics plugin"
-        // see jspdf.plugin.standard_font_metrics.js for format
-        // of the font.metadata.encoding Object.
-        // It should be something like
-        //   .encoding = {'codePages':['WinANSI....'], 'WinANSI...':{code:code, ...}}
-        //   .widths = {0:width, code:width, ..., 'fof':divisor}
-        //   .kerning = {code:{previous_char_code:shift, ..., 'fof':-divisor},...}
-        if ((flags.autoencode || outputEncoding) &&
-          fonts[activeFontKey].metadata &&
-          fonts[activeFontKey].metadata[sourceEncoding] &&
-          fonts[activeFontKey].metadata[sourceEncoding].encoding) {
-          encodingBlock = fonts[activeFontKey].metadata[sourceEncoding].encoding;
-
-          // each font has default encoding. Some have it clearly defined.
-          if (!outputEncoding && fonts[activeFontKey].encoding) {
-            outputEncoding = fonts[activeFontKey].encoding;
-          }
-
-          // Hmmm, the above did not work? Let's try again, in different place.
-          if (!outputEncoding && encodingBlock.codePages) {
-            outputEncoding = encodingBlock.codePages[0]; // let's say, first one is the default
-          }
-
-          if (typeof outputEncoding === 'string') {
-            outputEncoding = encodingBlock[outputEncoding];
-          }
-          // we want output encoding to be a JS Object, where
-          // key = sourceEncoding's character code and
-          // value = outputEncoding's character code.
-          if (outputEncoding) {
-            isUnicode = false;
-            newtext = [];
-            for (i = 0, l = text.length; i < l; i++) {
-              ch = outputEncoding[text.charCodeAt(i)];
-              if (ch) {
-                newtext.push(
-                  String.fromCharCode(ch));
-              } else {
-                newtext.push(
-                  text[i]);
-              }
-
-              // since we are looping over chars anyway, might as well
-              // check for residual unicodeness
-              if (newtext[i].charCodeAt(0) >> 8) {
-                /* more than 255 */
-                isUnicode = true;
-              }
-            }
-            text = newtext.join('');
-          }
-        }
-
-        i = text.length;
-        // isUnicode may be set to false above. Hence the triple-equal to undefined
-        while (isUnicode === undefined && i !== 0) {
-          if (text.charCodeAt(i - 1) >> 8) {
-            /* more than 255 */
-            isUnicode = true;
-          }
-          i--;
-        }
-        if (!isUnicode) {
-          return text;
-        }
-
-        newtext = flags.noBOM ? [] : [254, 255];
-        for (i = 0, l = text.length; i < l; i++) {
-          ch = text.charCodeAt(i);
-          bch = ch >> 8; // divide by 256
-          if (bch >> 8) {
-            /* something left after dividing by 256 second time */
-            throw new Error("Character at position " + i + " of string '" +
-              text + "' exceeds 16bits. Cannot be encoded into UCS-2 BE");
-          }
-          newtext.push(bch);
-          newtext.push(ch - (bch << 8));
-        }
-        return String.fromCharCode.apply(undefined, newtext);
-      },
-      pdfEscape = function(text, flags) {
-        /**
-         * Replace '/', '(', and ')' with pdf-safe versions
-         *
-         * Doing to8bitStream does NOT make this PDF display unicode text. For that
-         * we also need to reference a unicode font and embed it - royal pain in the rear.
-         *
-         * There is still a benefit to to8bitStream - PDF simply cannot handle 16bit chars,
-         * which JavaScript Strings are happy to provide. So, while we still cannot display
-         * 2-byte characters property, at least CONDITIONALLY converting (entire string containing)
-         * 16bit chars to (USC-2-BE) 2-bytes per char + BOM streams we ensure that entire PDF
-         * is still parseable.
-         * This will allow immediate support for unicode in document properties strings.
-         */
-        return to8bitStream(text, flags).replace(/\\/g, '\\\\').replace(
-          /\(/g, '\\(').replace(/\)/g, '\\)');
-      },
-      putInfo = function() {
-        out('/Producer (jsPDF ' + jsPDF.version + ')');
-        for (var key in documentProperties) {
-          if (documentProperties.hasOwnProperty(key) && documentProperties[
-              key]) {
-            out('/' + key.substr(0, 1).toUpperCase() + key.substr(1) + ' (' +
-              pdfEscape(documentProperties[key]) + ')');
-          }
-        }
-        var created = new Date(),
-          tzoffset = created.getTimezoneOffset(),
-          tzsign = tzoffset < 0 ? '+' : '-',
-          tzhour = Math.floor(Math.abs(tzoffset / 60)),
-          tzmin = Math.abs(tzoffset % 60),
-          tzstr = [tzsign, padd2(tzhour), "'", padd2(tzmin), "'"].join('');
-        out(['/CreationDate (D:',
-          created.getFullYear(),
-          padd2(created.getMonth() + 1),
-          padd2(created.getDate()),
-          padd2(created.getHours()),
-          padd2(created.getMinutes()),
-          padd2(created.getSeconds()), tzstr, ')'
-        ].join(''));
-      },
-      putCatalog = function() {
-        out('/Type /Catalog');
-        out('/Pages 1 0 R');
-        // PDF13ref Section 7.2.1
-        if (!zoomMode) zoomMode = 'fullwidth';
-        switch (zoomMode) {
-          case 'fullwidth':
-            out('/OpenAction [3 0 R /FitH null]');
-            break;
-          case 'fullheight':
-            out('/OpenAction [3 0 R /FitV null]');
-            break;
-          case 'fullpage':
-            out('/OpenAction [3 0 R /Fit]');
-            break;
-          case 'original':
-            out('/OpenAction [3 0 R /XYZ null null 1]');
-            break;
-          default:
-            var pcn = '' + zoomMode;
-            if (pcn.substr(pcn.length - 1) === '%')
-              zoomMode = parseInt(zoomMode) / 100;
-            if (typeof zoomMode === 'number') {
-              out('/OpenAction [3 0 R /XYZ null null ' + f2(zoomMode) + ']');
-            }
-        }
-        if (!layoutMode) layoutMode = 'continuous';
-        switch (layoutMode) {
-          case 'continuous':
-            out('/PageLayout /OneColumn');
-            break;
-          case 'single':
-            out('/PageLayout /SinglePage');
-            break;
-          case 'two':
-          case 'twoleft':
-            out('/PageLayout /TwoColumnLeft');
-            break;
-          case 'tworight':
-            out('/PageLayout /TwoColumnRight');
-            break;
-        }
-        if (pageMode) {
-          /**
-           * A name object specifying how the document should be displayed when opened:
-           * UseNone      : Neither document outline nor thumbnail images visible -- DEFAULT
-           * UseOutlines  : Document outline visible
-           * UseThumbs    : Thumbnail images visible
-           * FullScreen   : Full-screen mode, with no menu bar, window controls, or any other window visible
-           */
-          out('/PageMode /' + pageMode);
-        }
-        events.publish('putCatalog');
-      },
-      putTrailer = function() {
-        out('/Size ' + (objectNumber + 1));
-        out('/Root ' + objectNumber + ' 0 R');
-        out('/Info ' + (objectNumber - 1) + ' 0 R');
-      },
-      beginPage = function(width, height) {
-        // Dimensions are stored as user units and converted to points on output
-        var orientation = typeof height === 'string' && height.toLowerCase();
-        if (typeof width === 'string') {
-          var format = width.toLowerCase();
-          if (pageFormats.hasOwnProperty(format)) {
-            width = pageFormats[format][0] / k;
-            height = pageFormats[format][1] / k;
-          }
-        }
-        if (Array.isArray(width)) {
-          height = width[1];
-          width = width[0];
-        }
-        if (orientation) {
-          switch (orientation.substr(0, 1)) {
-            case 'l':
-              if (height > width) orientation = 's';
-              break;
-            case 'p':
-              if (width > height) orientation = 's';
-              break;
-          }
-          if (orientation === 's') {
-            tmp = width;
-            width = height;
-            height = tmp;
-          }
-        }
-        outToPages = true;
-        pages[++page] = [];
-        pagedim[page] = {
-          width: Number(width) || pageWidth,
-          height: Number(height) || pageHeight
-        };
-        pagesContext[page] = {};
-        _setPage(page);
-      },
-      _addPage = function() {
-        beginPage.apply(this, arguments);
-        // Set line width
-        out(f2(lineWidth * k) + ' w');
-        // Set draw color
-        out(drawColor);
-        // resurrecting non-default line caps, joins
-        if (lineCapID !== 0) {
-          out(lineCapID + ' J');
-        }
-        if (lineJoinID !== 0) {
-          out(lineJoinID + ' j');
-        }
-        events.publish('addPage', {
-          pageNumber: page
-        });
-      },
-      _deletePage = function(n) {
-        if (n > 0 && n <= page) {
-          pages.splice(n, 1);
-          pagedim.splice(n, 1);
-          page--;
-          if (currentPage > page) {
-            currentPage = page;
-          }
-          this.setPage(currentPage);
-        }
-      },
-      _setPage = function(n) {
-        if (n > 0 && n <= page) {
-          currentPage = n;
-          pageWidth = pagedim[n].width;
-          pageHeight = pagedim[n].height;
-        }
-      },
-      /**
-       * Returns a document-specific font key - a label assigned to a
-       * font name + font type combination at the time the font was added
-       * to the font inventory.
-       *
-       * Font key is used as label for the desired font for a block of text
-       * to be added to the PDF document stream.
-       * @private
-       * @function
-       * @param fontName {String} can be undefined on "falthy" to indicate "use current"
-       * @param fontStyle {String} can be undefined on "falthy" to indicate "use current"
-       * @returns {String} Font key.
-       */
-      getFont = function(fontName, fontStyle) {
-        var key;
-
-        fontName = fontName !== undefined ? fontName : fonts[activeFontKey]
-          .fontName;
-        fontStyle = fontStyle !== undefined ? fontStyle : fonts[
-          activeFontKey].fontStyle;
-
-        if (fontName !== undefined) {
-          fontName = fontName.toLowerCase();
-        }
-        switch (fontName) {
-          case 'sans-serif':
-          case 'verdana':
-          case 'arial':
-          case 'helvetica':
-            fontName = 'helvetica';
-            break;
-          case 'fixed':
-          case 'monospace':
-          case 'terminal':
-          case 'courier':
-            fontName = 'courier';
-            break;
-          case 'serif':
-          case 'cursive':
-          case 'fantasy':
-          default:
-            fontName = 'times';
-            break;
-        }
-
-        try {
-          // get a string like 'F3' - the KEY corresponding tot he font + type combination.
-          key = fontmap[fontName][fontStyle];
-        } catch (e) {}
-
-        if (!key) {
-          //throw new Error("Unable to look up font label for font '" + fontName + "', '"
-          //+ fontStyle + "'. Refer to getFontList() for available fonts.");
-          key = fontmap['times'][fontStyle];
-          if (key == null) {
-            key = fontmap['times']['normal'];
-          }
-        }
-        return key;
-      },
-      buildDocument = function() {
-        outToPages = false; // switches out() to content
-
-        objectNumber = 2;
-        content_length = 0;
-        content = [];
-        offsets = [];
-        additionalObjects = [];
-        // Added for AcroForm
-        events.publish('buildDocument');
-
-        // putHeader()
-        out('%PDF-' + pdfVersion);
-
-        putPages();
-
-        // Must happen after putPages
-        // Modifies current object Id
-        putAdditionalObjects();
-
-        putResources();
-
-        // Info
-        newObject();
-        out('<<');
-        putInfo();
-        out('>>');
-        out('endobj');
-
-        // Catalog
-        newObject();
-        out('<<');
-        putCatalog();
-        out('>>');
-        out('endobj');
-
-        // Cross-ref
-        var o = content_length,
-          i, p = "0000000000";
-        out('xref');
-        out('0 ' + (objectNumber + 1));
-        out(p + ' 65535 f ');
-        for (i = 1; i <= objectNumber; i++) {
-          var offset = offsets[i];
-          if (typeof offset === 'function') {
-            out((p + offsets[i]()).slice(-10) + ' 00000 n ');
-          } else {
-            out((p + offsets[i]).slice(-10) + ' 00000 n ');
-          }
-        }
-        // Trailer
-        out('trailer');
-        out('<<');
-        putTrailer();
-        out('>>');
-        out('startxref');
-        out('' + o);
-        out('%%EOF');
-
-        outToPages = true;
-
-        return content.join('\n');
-      },
-      getStyle = function(style) {
-        // see path-painting operators in PDF spec
-        var op = 'S'; // stroke
-        if (style === 'F') {
-          op = 'f'; // fill
-        } else if (style === 'FD' || style === 'DF') {
-          op = 'B'; // both
-        } else if (style === 'f' || style === 'f*' || style === 'B' ||
-          style === 'B*') {
-          /*
-           Allow direct use of these PDF path-painting operators:
-           - f	fill using nonzero winding number rule
-           - f*	fill using even-odd rule
-           - B	fill then stroke with fill using non-zero winding number rule
-           - B*	fill then stroke with fill using even-odd rule
-           */
-          op = style;
-        }
-        return op;
-      },
-      getArrayBuffer = function() {
-        var data = buildDocument(),
-          len = data.length,
-          ab = new ArrayBuffer(len),
-          u8 = new Uint8Array(ab);
-
-        while (len--) u8[len] = data.charCodeAt(len);
-        return ab;
-      },
-      getBlob = function() {
-        return new Blob([getArrayBuffer()], {
-          type: "application/pdf"
-        });
-      },
-      /**
-       * Generates the PDF document.
-       *
-       * If `type` argument is undefined, output is raw body of resulting PDF returned as a string.
-       *
-       * @param {String} type A string identifying one of the possible output types.
-       * @param {Object} options An object providing some additional signalling to PDF generator.
-       * @function
-       * @returns {jsPDF}
-       * @methodOf jsPDF#
-       * @name output
-       */
-      output = SAFE(function(type, options) {
-        var datauri = ('' + type).substr(0, 6) === 'dataur' ?
-          'data:application/pdf;base64,' + btoa(buildDocument()) : 0;
-
-        switch (type) {
-          case undefined:
-            return buildDocument();
-          case 'save':
-            if (navigator.getUserMedia) {
-              if (global.URL === undefined || global.URL.createObjectURL ===
-                undefined) {
-                return API.output('dataurlnewwindow');
-              }
-            }
-            saveAs(getBlob(), options);
-            if (typeof saveAs.unload === 'function') {
-              if (global.setTimeout) {
-                setTimeout(saveAs.unload, 911);
-              }
-            }
-            break;
-          case 'arraybuffer':
-            return getArrayBuffer();
-          case 'blob':
-            return getBlob();
-          case 'bloburi':
-          case 'bloburl':
-            // User is responsible of calling revokeObjectURL
-            return global.URL && global.URL.createObjectURL(getBlob()) ||
-              void 0;
-          case 'datauristring':
-          case 'dataurlstring':
-            return datauri;
-          case 'dataurlnewwindow':
-            var nW = global.open(datauri);
-            if (nW || typeof safari === "undefined") return nW;
-            /* pass through */
-          case 'datauri':
-          case 'dataurl':
-            return global.document.location.href = datauri;
-          default:
-            throw new Error('Output type "' + type +
-              '" is not supported.');
-        }
-        // @TODO: Add different output options
-      }),
-
-     /**
-      * Used to see if a supplied hotfix was requested when the pdf instance was created.
-      * @param {String} hotfixName - The name of the hotfix to check.
-      * @returns {boolean}
-     */
-     hasHotfix = function(hotfixName) {
-       return (Array.isArray(hotfixes) === true
-       && hotfixes.indexOf(hotfixName) > -1);
-    };
-
-    switch (unit) {
-      case 'pt':
-        k = 1;
-        break;
-      case 'mm':
-        k = 72 / 25.4000508;
-        break;
-      case 'cm':
-        k = 72 / 2.54000508;
-        break;
-      case 'in':
-        k = 72;
-        break;
-      case 'px':
-        if (hasHotfix('px_scaling') == true) {
-          k = 72 / 96;
-        }
-        else {
-          k = 96 / 72;
-        }
-        break;
-      case 'pc':
-        k = 12;
-        break;
-      case 'em':
-        k = 12;
-        break;
-      case 'ex':
-        k = 6;
-        break;
-      default:
-        throw ('Invalid unit: ' + unit);
-    }
-
-    //---------------------------------------
-    // Public API
-
-    /**
-     * Object exposing internal API to plugins
-     * @public
-     */
-    API.internal = {
-      'pdfEscape': pdfEscape,
-      'getStyle': getStyle,
-      /**
-       * Returns {FontObject} describing a particular font.
-       * @public
-       * @function
-       * @param fontName {String} (Optional) Font's family name
-       * @param fontStyle {String} (Optional) Font's style variation name (Example:"Italic")
-       * @returns {FontObject}
-       */
-      'getFont': function() {
-        return fonts[getFont.apply(API, arguments)];
-      },
-      'getFontSize': function() {
-        return activeFontSize;
-      },
-      'getLineHeight': function() {
-        return activeFontSize * lineHeightProportion;
-      },
-      'write': function(string1 /*, string2, string3, etc */ ) {
-        out(arguments.length === 1 ? string1 : Array.prototype.join.call(
-          arguments, ' '));
-      },
-      'getCoordinateString': function(value) {
-        return f2(value * k);
-      },
-      'getVerticalCoordinateString': function(value) {
-        return f2((pageHeight - value) * k);
-      },
-      'collections': {},
-      'newObject': newObject,
-      'newAdditionalObject': newAdditionalObject,
-      'newObjectDeferred': newObjectDeferred,
-      'newObjectDeferredBegin': newObjectDeferredBegin,
-      'putStream': putStream,
-      'events': events,
-      // ratio that you use in multiplication of a given "size" number to arrive to 'point'
-      // units of measurement.
-      // scaleFactor is set at initialization of the document and calculated against the stated
-      // default measurement units for the document.
-      // If default is "mm", k is the number that will turn number in 'mm' into 'points' number.
-      // through multiplication.
-      'scaleFactor': k,
-      'pageSize': {
-        get width() {
-          return pageWidth
-        },
-        get height() {
-          return pageHeight
-        }
-      },
-      'output': function(type, options) {
-        return output(type, options);
-      },
-      'getNumberOfPages': function() {
-        return pages.length - 1;
-      },
-      'pages': pages,
-      'out': out,
-      'f2': f2,
-      'getPageInfo': function(pageNumberOneBased) {
-        var objId = (pageNumberOneBased - 1) * 2 + 3;
-        return {
-          objId: objId,
-          pageNumber: pageNumberOneBased,
-          pageContext: pagesContext[pageNumberOneBased]
-        };
-      },
-      'getCurrentPageInfo': function() {
-        var objId = (currentPage - 1) * 2 + 3;
-        return {
-          objId: objId,
-          pageNumber: currentPage,
-          pageContext: pagesContext[currentPage]
-        };
-      },
-      'getPDFVersion': function() {
-        return pdfVersion;
-       },
-      'hasHotfix': hasHotfix      //Expose the hasHotfix check so plugins can also check them.
-    };
-
-    /**
-     * Adds (and transfers the focus to) new page to the PDF document.
-     * @function
-     * @returns {jsPDF}
-     *
-     * @methodOf jsPDF#
-     * @name addPage
-     */
-    API.addPage = function() {
-      _addPage.apply(this, arguments);
-      return this;
-    };
-    /**
-     * Adds (and transfers the focus to) new page to the PDF document.
-     * @function
-     * @returns {jsPDF}
-     *
-     * @methodOf jsPDF#
-     * @name setPage
-     * @param {Number} page Switch the active page to the page number specified
-     * @example
-     * doc = jsPDF()
-     * doc.addPage()
-     * doc.addPage()
-     * doc.text('I am on page 3', 10, 10)
-     * doc.setPage(1)
-     * doc.text('I am on page 1', 10, 10)
-     */
-    API.setPage = function() {
-      _setPage.apply(this, arguments);
-      return this;
-    };
-    API.insertPage = function(beforePage) {
-      this.addPage();
-      this.movePage(currentPage, beforePage);
-      return this;
-    };
-    API.movePage = function(targetPage, beforePage) {
-      if (targetPage > beforePage) {
-        var tmpPages = pages[targetPage];
-        var tmpPagedim = pagedim[targetPage];
-        var tmpPagesContext = pagesContext[targetPage];
-        for (var i = targetPage; i > beforePage; i--) {
-          pages[i] = pages[i - 1];
-          pagedim[i] = pagedim[i - 1];
-          pagesContext[i] = pagesContext[i - 1];
-        }
-        pages[beforePage] = tmpPages;
-        pagedim[beforePage] = tmpPagedim;
-        pagesContext[beforePage] = tmpPagesContext;
-        this.setPage(beforePage);
-      } else if (targetPage < beforePage) {
-        var tmpPages = pages[targetPage];
-        var tmpPagedim = pagedim[targetPage];
-        var tmpPagesContext = pagesContext[targetPage];
-        for (var i = targetPage; i < beforePage; i++) {
-          pages[i] = pages[i + 1];
-          pagedim[i] = pagedim[i + 1];
-          pagesContext[i] = pagesContext[i + 1];
-        }
-        pages[beforePage] = tmpPages;
-        pagedim[beforePage] = tmpPagedim;
-        pagesContext[beforePage] = tmpPagesContext;
-        this.setPage(beforePage);
-      }
-      return this;
-    };
-
-    API.deletePage = function() {
-      _deletePage.apply(this, arguments);
-      return this;
-    };
-
-    /**
-     * Set the display mode options of the page like zoom and layout.
-     *
-     * @param {integer|String} zoom   You can pass an integer or percentage as
-     * a string. 2 will scale the document up 2x, '200%' will scale up by the
-     * same amount. You can also set it to 'fullwidth', 'fullheight',
-     * 'fullpage', or 'original'.
-     *
-     * Only certain PDF readers support this, such as Adobe Acrobat
-     *
-     * @param {String} layout Layout mode can be: 'continuous' - this is the
-     * default continuous scroll. 'single' - the single page mode only shows one
-     * page at a time. 'twoleft' - two column left mode, first page starts on
-     * the left, and 'tworight' - pages are laid out in two columns, with the
-     * first page on the right. This would be used for books.
-     * @param {String} pmode 'UseOutlines' - it shows the
-     * outline of the document on the left. 'UseThumbs' - shows thumbnails along
-     * the left. 'FullScreen' - prompts the user to enter fullscreen mode.
-     *
-     * @function
-     * @returns {jsPDF}
-     * @name setDisplayMode
-     */
-    API.setDisplayMode = function(zoom, layout, pmode) {
-        zoomMode = zoom;
-        layoutMode = layout;
-        pageMode = pmode;
-
-        var validPageModes = [undefined, null, 'UseNone', 'UseOutlines', 'UseThumbs', 'FullScreen'];
-        if (validPageModes.indexOf(pmode) == -1) {
-          throw new Error('Page mode must be one of UseNone, UseOutlines, UseThumbs, or FullScreen. "' + pmode + '" is not recognized.')
-        }
-        return this;
-      },
-
-      /**
-       * Adds text to page. Supports adding multiline text when 'text' argument is an Array of Strings.
-       *
-       * @function
-       * @param {String|Array} text String or array of strings to be added to the page. Each line is shifted one line down per font, spacing settings declared before this call.
-       * @param {Number} x Coordinate (in units declared at inception of PDF document) against left edge of the page
-       * @param {Number} y Coordinate (in units declared at inception of PDF document) against upper edge of the page
-       * @param {Object} flags Collection of settings signalling how the text must be encoded. Defaults are sane. If you think you want to pass some flags, you likely can read the source.
-       * @returns {jsPDF}
-       * @methodOf jsPDF#
-       * @name text
-       */
-      API.text = function(text, x, y, flags, angle, align) {
-        /**
-         * Inserts something like this into PDF
-         *   BT
-         *    /F1 16 Tf  % Font name + size
-         *    16 TL % How many units down for next line in multiline text
-         *    0 g % color
-         *    28.35 813.54 Td % position
-         *    (line one) Tj
-         *    T* (line two) Tj
-         *    T* (line three) Tj
-         *   ET
-         */
-        function ESC(s) {
-          s = s.split("\t").join(Array(options.TabLen || 9).join(" "));
-          return pdfEscape(s, flags);
-        }
-
-        // Pre-August-2012 the order of arguments was function(x, y, text, flags)
-        // in effort to make all calls have similar signature like
-        //   function(data, coordinates... , miscellaneous)
-        // this method had its args flipped.
-        // code below allows backward compatibility with old arg order.
-        if (typeof text === 'number') {
-          tmp = y;
-          y = x;
-          x = text;
-          text = tmp;
-        }
-
-        // If there are any newlines in text, we assume
-        // the user wanted to print multiple lines, so break the
-        // text up into an array.  If the text is already an array,
-        // we assume the user knows what they are doing.
-        // Convert text into an array anyway to simplify
-        // later code.
-        if (typeof text === 'string') {
-          if (text.match(/[\n\r]/)) {
-            text = text.split(/\r\n|\r|\n/g);
-          } else {
-            text = [text];
-          }
-        }
-        if (typeof angle === 'string') {
-          align = angle;
-          angle = null;
-        }
-        if (typeof flags === 'string') {
-          align = flags;
-          flags = null;
-        }
-        if (typeof flags === 'number') {
-          angle = flags;
-          flags = null;
-        }
-        var xtra = '',
-          mode = 'Td',
-          todo;
-        if (angle) {
-          angle *= (Math.PI / 180);
-          var c = Math.cos(angle),
-            s = Math.sin(angle);
-          xtra = [f2(c), f2(s), f2(s * -1), f2(c), ''].join(" ");
-          mode = 'Tm';
-        }
-        flags = flags || {};
-        if (!('noBOM' in flags))
-          flags.noBOM = true;
-        if (!('autoencode' in flags))
-          flags.autoencode = true;
-
-        var strokeOption = '';
-        var pageContext = this.internal.getCurrentPageInfo().pageContext;
-        if (true === flags.stroke) {
-          if (pageContext.lastTextWasStroke !== true) {
-            strokeOption = '1 Tr\n';
-            pageContext.lastTextWasStroke = true;
-          }
-        } else {
-          if (pageContext.lastTextWasStroke) {
-            strokeOption = '0 Tr\n';
-          }
-          pageContext.lastTextWasStroke = false;
-        }
-
-        if (typeof this._runningPageHeight === 'undefined') {
-          this._runningPageHeight = 0;
-        }
-
-        if (typeof text === 'string') {
-          text = ESC(text);
-        } else if (Object.prototype.toString.call(text) ===
-          '[object Array]') {
-          // we don't want to destroy  original text array, so cloning it
-          var sa = text.concat(),
-            da = [],
-            len = sa.length;
-          // we do array.join('text that must not be PDFescaped")
-          // thus, pdfEscape each component separately
-          while (len--) {
-            da.push(ESC(sa.shift()));
-          }
-          var linesLeft = Math.ceil((pageHeight - y - this._runningPageHeight) *
-            k / (activeFontSize * lineHeightProportion));
-          if (0 <= linesLeft && linesLeft < da.length + 1) {
-            //todo = da.splice(linesLeft-1);
-          }
-
-          if (align) {
-            var left,
-              prevX,
-              maxLineLength,
-              leading = activeFontSize * lineHeightProportion,
-              lineWidths = text.map(function(v) {
-                return this.getStringUnitWidth(v) * activeFontSize / k;
-              }, this);
-            maxLineLength = Math.max.apply(Math, lineWidths);
-            // The first line uses the "main" Td setting,
-            // and the subsequent lines are offset by the
-            // previous line's x coordinate.
-            if (align === "center") {
-              // The passed in x coordinate defines
-              // the center point.
-              left = x - maxLineLength / 2;
-              x -= lineWidths[0] / 2;
-            } else if (align === "right") {
-              // The passed in x coordinate defines the
-              // rightmost point of the text.
-              left = x - maxLineLength;
-              x -= lineWidths[0];
-            } else {
-              throw new Error(
-                'Unrecognized alignment option, use "center" or "right".'
-              );
-            }
-            prevX = x;
-            text = da[0];
-            for (var i = 1, len = da.length; i < len; i++) {
-              var delta = maxLineLength - lineWidths[i];
-              if (align === "center") delta /= 2;
-              // T* = x-offset leading Td ( text )
-              text += ") Tj\n" + ((left - prevX) + delta) + " -" + leading +
-                " Td (" + da[i];
-              prevX = left + delta;
-            }
-          } else {
-            text = da.join(") Tj\nT* (");
-          }
-        } else {
-          throw new Error('Type of text must be string or Array. "' + text +
-            '" is not recognized.');
-        }
-        // Using "'" ("go next line and render text" mark) would save space but would complicate our rendering code, templates
-
-        // BT .. ET does NOT have default settings for Tf. You must state that explicitely every time for BT .. ET
-        // if you want text transformation matrix (+ multiline) to work reliably (which reads sizes of things from font declarations)
-        // Thus, there is NO useful, *reliable* concept of "default" font for a page.
-        // The fact that "default" (reuse font used before) font worked before in basic cases is an accident
-        // - readers dealing smartly with brokenness of jsPDF's markup.
-
-        var curY;
-
-        if (todo) {
-          //this.addPage();
-          //this._runningPageHeight += y -  (activeFontSize * 1.7 / k);
-          //curY = f2(pageHeight - activeFontSize * 1.7 /k);
-        } else {
-          curY = f2((pageHeight - y) * k);
-        }
-        //curY = f2((pageHeight - (y - this._runningPageHeight)) * k);
-
-        //			if (curY < 0){
-        //				console.log('auto page break');
-        //				this.addPage();
-        //				this._runningPageHeight = y -  (activeFontSize * 1.7 / k);
-        //				curY = f2(pageHeight - activeFontSize * 1.7 /k);
-        //			}
-
-        out(
-          'BT\n/' +
-          activeFontKey + ' ' + activeFontSize + ' Tf\n' + // font face, style, size
-          (activeFontSize * lineHeightProportion) + ' TL\n' + // line spacing
-          strokeOption + // stroke option
-          textColor +
-          '\n' + xtra + f2(x * k) + ' ' + curY + ' ' + mode + '\n(' +
-          text +
-          ') Tj\nET');
-
-        if (todo) {
-          //this.text( todo, x, activeFontSize * 1.7 / k);
-          //this.text( todo, x, this._runningPageHeight + (activeFontSize * 1.7 / k));
-          this.text(todo, x, y); // + (activeFontSize * 1.7 / k));
-        }
-
-        return this;
-      };
-
-    /**
-     * Letter spacing method to print text with gaps
-     *
-     * @function
-     * @param {String|Array} text String to be added to the page.
-     * @param {Number} x Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} spacing Spacing (in units declared at inception)
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name lstext
-     * @deprecated We'll be removing this function. It doesn't take character width into account.
-     */
-    API.lstext = function(text, x, y, spacing) {
-      console.warn('jsPDF.lstext is deprecated');
-      for (var i = 0, len = text.length; i < len; i++, x += spacing) this
-        .text(text[i], x, y);
-      return this;
-    };
-
-    API.line = function(x1, y1, x2, y2) {
-      return this.lines([
-        [x2 - x1, y2 - y1]
-      ], x1, y1);
-    };
-
-    API.clip = function() {
-      // By patrick-roberts, github.com/MrRio/jsPDF/issues/328
-      // Call .clip() after calling .rect() with a style argument of null
-      out('W') // clip
-      out('S') // stroke path; necessary for clip to work
-    };
-
-    /**
-     * This fixes the previous function clip(). Perhaps the 'stroke path' hack was due to the missing 'n' instruction?
-     * We introduce the fixed version so as to not break API.
-     * @param fillRule
-     */
-    API.clip_fixed = function(fillRule) {
-      // Call .clip() after calling drawing ops with a style argument of null
-      // W is the PDF clipping op
-      if ('evenodd' === fillRule) {
-        out('W*');
-      } else {
-        out('W');
-      }
-      // End the path object without filling or stroking it.
-      // This operator is a path-painting no-op, used primarily for the side effect of changing the current clipping path
-      // (see Section 4.4.3, “Clipping Path Operators”)
-      out('n');
-    };
-
-    /**
-     * Adds series of curves (straight lines or cubic bezier curves) to canvas, starting at `x`, `y` coordinates.
-     * All data points in `lines` are relative to last line origin.
-     * `x`, `y` become x1,y1 for first line / curve in the set.
-     * For lines you only need to specify [x2, y2] - (ending point) vector against x1, y1 starting point.
-     * For bezier curves you need to specify [x2,y2,x3,y3,x4,y4] - vectors to control points 1, 2, ending point. All vectors are against the start of the curve - x1,y1.
-     *
-     * @example .lines([[2,2],[-2,2],[1,1,2,2,3,3],[2,1]], 212,110, 10) // line, line, bezier curve, line
-     * @param {Array} lines Array of *vector* shifts as pairs (lines) or sextets (cubic bezier curves).
-     * @param {Number} x Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} scale (Defaults to [1.0,1.0]) x,y Scaling factor for all vectors. Elements can be any floating number Sub-one makes drawing smaller. Over-one grows the drawing. Negative flips the direction.
-     * @param {String} style A string specifying the painting style or null.  Valid styles include: 'S' [default] - stroke, 'F' - fill,  and 'DF' (or 'FD') -  fill then stroke. A null value postpones setting the style so that a shape may be composed using multiple method calls. The last drawing method call used to define the shape should not have a null style argument.
-     * @param {Boolean} closed If true, the path is closed with a straight line from the end of the last curve to the starting point.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name lines
-     */
-    API.lines = function(lines, x, y, scale, style, closed) {
-      var scalex, scaley, i, l, leg, x2, y2, x3, y3, x4, y4;
-
-      // Pre-August-2012 the order of arguments was function(x, y, lines, scale, style)
-      // in effort to make all calls have similar signature like
-      //   function(content, coordinateX, coordinateY , miscellaneous)
-      // this method had its args flipped.
-      // code below allows backward compatibility with old arg order.
-      if (typeof lines === 'number') {
-        tmp = y;
-        y = x;
-        x = lines;
-        lines = tmp;
-      }
-
-      scale = scale || [1, 1];
-
-      // starting point
-      out(f3(x * k) + ' ' + f3((pageHeight - y) * k) + ' m ');
-
-      scalex = scale[0];
-      scaley = scale[1];
-      l = lines.length;
-      //, x2, y2 // bezier only. In page default measurement "units", *after* scaling
-      //, x3, y3 // bezier only. In page default measurement "units", *after* scaling
-      // ending point for all, lines and bezier. . In page default measurement "units", *after* scaling
-      x4 = x; // last / ending point = starting point for first item.
-      y4 = y; // last / ending point = starting point for first item.
-
-      for (i = 0; i < l; i++) {
-        leg = lines[i];
-        if (leg.length === 2) {
-          // simple line
-          x4 = leg[0] * scalex + x4; // here last x4 was prior ending point
-          y4 = leg[1] * scaley + y4; // here last y4 was prior ending point
-          out(f3(x4 * k) + ' ' + f3((pageHeight - y4) * k) + ' l');
-        } else {
-          // bezier curve
-          x2 = leg[0] * scalex + x4; // here last x4 is prior ending point
-          y2 = leg[1] * scaley + y4; // here last y4 is prior ending point
-          x3 = leg[2] * scalex + x4; // here last x4 is prior ending point
-          y3 = leg[3] * scaley + y4; // here last y4 is prior ending point
-          x4 = leg[4] * scalex + x4; // here last x4 was prior ending point
-          y4 = leg[5] * scaley + y4; // here last y4 was prior ending point
-          out(
-            f3(x2 * k) + ' ' +
-            f3((pageHeight - y2) * k) + ' ' +
-            f3(x3 * k) + ' ' +
-            f3((pageHeight - y3) * k) + ' ' +
-            f3(x4 * k) + ' ' +
-            f3((pageHeight - y4) * k) + ' c');
-        }
-      }
-
-      if (closed) {
-        out(' h');
-      }
-
-      // stroking / filling / both the path
-      if (style !== null) {
-        out(getStyle(style));
-      }
-      return this;
-    };
-
-    /**
-     * Adds a rectangle to PDF
-     *
-     * @param {Number} x Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} w Width (in units declared at inception of PDF document)
-     * @param {Number} h Height (in units declared at inception of PDF document)
-     * @param {String} style A string specifying the painting style or null.  Valid styles include: 'S' [default] - stroke, 'F' - fill,  and 'DF' (or 'FD') -  fill then stroke. A null value postpones setting the style so that a shape may be composed using multiple method calls. The last drawing method call used to define the shape should not have a null style argument.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name rect
-     */
-    API.rect = function(x, y, w, h, style) {
-      var op = getStyle(style);
-      out([
-        f2(x * k),
-        f2((pageHeight - y) * k),
-        f2(w * k),
-        f2(-h * k),
-        're'
-      ].join(' '));
-
-      if (style !== null) {
-        out(getStyle(style));
-      }
-
-      return this;
-    };
-
-    /**
-     * Adds a triangle to PDF
-     *
-     * @param {Number} x1 Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y1 Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} x2 Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y2 Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} x3 Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y3 Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {String} style A string specifying the painting style or null.  Valid styles include: 'S' [default] - stroke, 'F' - fill,  and 'DF' (or 'FD') -  fill then stroke. A null value postpones setting the style so that a shape may be composed using multiple method calls. The last drawing method call used to define the shape should not have a null style argument.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name triangle
-     */
-    API.triangle = function(x1, y1, x2, y2, x3, y3, style) {
-      this.lines(
-        [
-          [x2 - x1, y2 - y1], // vector to point 2
-          [x3 - x2, y3 - y2], // vector to point 3
-          [x1 - x3, y1 - y3] // closing vector back to point 1
-        ],
-        x1,
-        y1, // start of path
-        [1, 1],
-        style,
-        true);
-      return this;
-    };
-
-    /**
-     * Adds a rectangle with rounded corners to PDF
-     *
-     * @param {Number} x Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} w Width (in units declared at inception of PDF document)
-     * @param {Number} h Height (in units declared at inception of PDF document)
-     * @param {Number} rx Radius along x axis (in units declared at inception of PDF document)
-     * @param {Number} rx Radius along y axis (in units declared at inception of PDF document)
-     * @param {String} style A string specifying the painting style or null.  Valid styles include: 'S' [default] - stroke, 'F' - fill,  and 'DF' (or 'FD') -  fill then stroke. A null value postpones setting the style so that a shape may be composed using multiple method calls. The last drawing method call used to define the shape should not have a null style argument.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name roundedRect
-     */
-    API.roundedRect = function(x, y, w, h, rx, ry, style) {
-      var MyArc = 4 / 3 * (Math.SQRT2 - 1);
-      this.lines(
-        [
-          [(w - 2 * rx), 0],
-          [(rx * MyArc), 0, rx, ry - (ry * MyArc), rx, ry],
-          [0, (h - 2 * ry)],
-          [0, (ry * MyArc), -(rx * MyArc), ry, -rx, ry],
-          [(-w + 2 * rx), 0],
-          [-(rx * MyArc), 0, -rx, -(ry * MyArc), -rx, -ry],
-          [0, (-h + 2 * ry)],
-          [0, -(ry * MyArc), (rx * MyArc), -ry, rx, -ry]
-        ],
-        x + rx,
-        y, // start of path
-        [1, 1],
-        style);
-      return this;
-    };
-
-    /**
-     * Adds an ellipse to PDF
-     *
-     * @param {Number} x Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} rx Radius along x axis (in units declared at inception of PDF document)
-     * @param {Number} rx Radius along y axis (in units declared at inception of PDF document)
-     * @param {String} style A string specifying the painting style or null.  Valid styles include: 'S' [default] - stroke, 'F' - fill,  and 'DF' (or 'FD') -  fill then stroke. A null value postpones setting the style so that a shape may be composed using multiple method calls. The last drawing method call used to define the shape should not have a null style argument.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name ellipse
-     */
-    API.ellipse = function(x, y, rx, ry, style) {
-      var lx = 4 / 3 * (Math.SQRT2 - 1) * rx,
-        ly = 4 / 3 * (Math.SQRT2 - 1) * ry;
-
-      out([
-        f2((x + rx) * k),
-        f2((pageHeight - y) * k),
-        'm',
-        f2((x + rx) * k),
-        f2((pageHeight - (y - ly)) * k),
-        f2((x + lx) * k),
-        f2((pageHeight - (y - ry)) * k),
-        f2(x * k),
-        f2((pageHeight - (y - ry)) * k),
-        'c'
-      ].join(' '));
-      out([
-        f2((x - lx) * k),
-        f2((pageHeight - (y - ry)) * k),
-        f2((x - rx) * k),
-        f2((pageHeight - (y - ly)) * k),
-        f2((x - rx) * k),
-        f2((pageHeight - y) * k),
-        'c'
-      ].join(' '));
-      out([
-        f2((x - rx) * k),
-        f2((pageHeight - (y + ly)) * k),
-        f2((x - lx) * k),
-        f2((pageHeight - (y + ry)) * k),
-        f2(x * k),
-        f2((pageHeight - (y + ry)) * k),
-        'c'
-      ].join(' '));
-      out([
-        f2((x + lx) * k),
-        f2((pageHeight - (y + ry)) * k),
-        f2((x + rx) * k),
-        f2((pageHeight - (y + ly)) * k),
-        f2((x + rx) * k),
-        f2((pageHeight - y) * k),
-        'c'
-      ].join(' '));
-
-      if (style !== null) {
-        out(getStyle(style));
-      }
-
-      return this;
-    };
-
-    /**
-     * Adds an circle to PDF
-     *
-     * @param {Number} x Coordinate (in units declared at inception of PDF document) against left edge of the page
-     * @param {Number} y Coordinate (in units declared at inception of PDF document) against upper edge of the page
-     * @param {Number} r Radius (in units declared at inception of PDF document)
-     * @param {String} style A string specifying the painting style or null.  Valid styles include: 'S' [default] - stroke, 'F' - fill,  and 'DF' (or 'FD') -  fill then stroke. A null value postpones setting the style so that a shape may be composed using multiple method calls. The last drawing method call used to define the shape should not have a null style argument.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name circle
-     */
-    API.circle = function(x, y, r, style) {
-      return this.ellipse(x, y, r, r, style);
-    };
-
-    /**
-     * Adds a properties to the PDF document
-     *
-     * @param {Object} A property_name-to-property_value object structure.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setProperties
-     */
-    API.setProperties = function(properties) {
-      // copying only those properties we can render.
-      for (var property in documentProperties) {
-        if (documentProperties.hasOwnProperty(property) && properties[
-            property]) {
-          documentProperties[property] = properties[property];
-        }
-      }
-      return this;
-    };
-
-    /**
-     * Sets font size for upcoming text elements.
-     *
-     * @param {Number} size Font size in points.
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setFontSize
-     */
-    API.setFontSize = function(size) {
-      activeFontSize = size;
-      return this;
-    };
-
-    /**
-     * Sets text font face, variant for upcoming text elements.
-     * See output of jsPDF.getFontList() for possible font names, styles.
-     *
-     * @param {String} fontName Font name or family. Example: "times"
-     * @param {String} fontStyle Font style or variant. Example: "italic"
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setFont
-     */
-    API.setFont = function(fontName, fontStyle) {
-      activeFontKey = getFont(fontName, fontStyle);
-      // if font is not found, the above line blows up and we never go further
-      return this;
-    };
-
-    /**
-     * Switches font style or variant for upcoming text elements,
-     * while keeping the font face or family same.
-     * See output of jsPDF.getFontList() for possible font names, styles.
-     *
-     * @param {String} style Font style or variant. Example: "italic"
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setFontStyle
-     */
-    API.setFontStyle = API.setFontType = function(style) {
-      activeFontKey = getFont(undefined, style);
-      // if font is not found, the above line blows up and we never go further
-      return this;
-    };
-
-    /**
-     * Returns an object - a tree of fontName to fontStyle relationships available to
-     * active PDF document.
-     *
-     * @public
-     * @function
-     * @returns {Object} Like {'times':['normal', 'italic', ... ], 'arial':['normal', 'bold', ... ], ... }
-     * @methodOf jsPDF#
-     * @name getFontList
-     */
-    API.getFontList = function() {
-      // TODO: iterate over fonts array or return copy of fontmap instead in case more are ever added.
-      var list = {},
-        fontName, fontStyle, tmp;
-
-      for (fontName in fontmap) {
-        if (fontmap.hasOwnProperty(fontName)) {
-          list[fontName] = tmp = [];
-          for (fontStyle in fontmap[fontName]) {
-            if (fontmap[fontName].hasOwnProperty(fontStyle)) {
-              tmp.push(fontStyle);
-            }
-          }
-        }
-      }
-
-      return list;
-    };
-
-    /**
-     * Add a custom font.
-     *
-     * @param {String} Postscript name of the Font.  Example: "Menlo-Regular"
-     * @param {String} Name of font-family from @font-face definition.  Example: "Menlo Regular"
-     * @param {String} Font style.  Example: "normal"
-     * @function
-     * @returns the {fontKey} (same as the internal method)
-     * @methodOf jsPDF#
-     * @name addFont
-     */
-    API.addFont = function(postScriptName, fontName, fontStyle) {
-      addFont(postScriptName, fontName, fontStyle, 'StandardEncoding');
-    };
-
-    /**
-     * Sets line width for upcoming lines.
-     *
-     * @param {Number} width Line width (in units declared at inception of PDF document)
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setLineWidth
-     */
-    API.setLineWidth = function(width) {
-      out((width * k).toFixed(2) + ' w');
-      return this;
-    };
-
-    /**
-     * Sets the stroke color for upcoming elements.
-     *
-     * Depending on the number of arguments given, Gray, RGB, or CMYK
-     * color space is implied.
-     *
-     * When only ch1 is given, "Gray" color space is implied and it
-     * must be a value in the range from 0.00 (solid black) to to 1.00 (white)
-     * if values are communicated as String types, or in range from 0 (black)
-     * to 255 (white) if communicated as Number type.
-     * The RGB-like 0-255 range is provided for backward compatibility.
-     *
-     * When only ch1,ch2,ch3 are given, "RGB" color space is implied and each
-     * value must be in the range from 0.00 (minimum intensity) to to 1.00
-     * (max intensity) if values are communicated as String types, or
-     * from 0 (min intensity) to to 255 (max intensity) if values are communicated
-     * as Number types.
-     * The RGB-like 0-255 range is provided for backward compatibility.
-     *
-     * When ch1,ch2,ch3,ch4 are given, "CMYK" color space is implied and each
-     * value must be a in the range from 0.00 (0% concentration) to to
-     * 1.00 (100% concentration)
-     *
-     * Because JavaScript treats fixed point numbers badly (rounds to
-     * floating point nearest to binary representation) it is highly advised to
-     * communicate the fractional numbers as String types, not JavaScript Number type.
-     *
-     * @param {Number|String} ch1 Color channel value
-     * @param {Number|String} ch2 Color channel value
-     * @param {Number|String} ch3 Color channel value
-     * @param {Number|String} ch4 Color channel value
-     *
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setDrawColor
-     */
-    API.setDrawColor = function(ch1, ch2, ch3, ch4) {
-      var color;
-      if (ch2 === undefined || (ch4 === undefined && ch1 === ch2 === ch3)) {
-        // Gray color space.
-        if (typeof ch1 === 'string') {
-          color = ch1 + ' G';
-        } else {
-          color = f2(ch1 / 255) + ' G';
-        }
-      } else if (ch4 === undefined) {
-        // RGB
-        if (typeof ch1 === 'string') {
-          color = [ch1, ch2, ch3, 'RG'].join(' ');
-        } else {
-          color = [f2(ch1 / 255), f2(ch2 / 255), f2(ch3 / 255), 'RG'].join(
-            ' ');
-        }
-      } else {
-        // CMYK
-        if (typeof ch1 === 'string') {
-          color = [ch1, ch2, ch3, ch4, 'K'].join(' ');
-        } else {
-          color = [f2(ch1), f2(ch2), f2(ch3), f2(ch4), 'K'].join(' ');
-        }
-      }
-
-      out(color);
-      return this;
-    };
-
-    /**
-     * Sets the fill color for upcoming elements.
-     *
-     * Depending on the number of arguments given, Gray, RGB, or CMYK
-     * color space is implied.
-     *
-     * When only ch1 is given, "Gray" color space is implied and it
-     * must be a value in the range from 0.00 (solid black) to to 1.00 (white)
-     * if values are communicated as String types, or in range from 0 (black)
-     * to 255 (white) if communicated as Number type.
-     * The RGB-like 0-255 range is provided for backward compatibility.
-     *
-     * When only ch1,ch2,ch3 are given, "RGB" color space is implied and each
-     * value must be in the range from 0.00 (minimum intensity) to to 1.00
-     * (max intensity) if values are communicated as String types, or
-     * from 0 (min intensity) to to 255 (max intensity) if values are communicated
-     * as Number types.
-     * The RGB-like 0-255 range is provided for backward compatibility.
-     *
-     * When ch1,ch2,ch3,ch4 are given, "CMYK" color space is implied and each
-     * value must be a in the range from 0.00 (0% concentration) to to
-     * 1.00 (100% concentration)
-     *
-     * Because JavaScript treats fixed point numbers badly (rounds to
-     * floating point nearest to binary representation) it is highly advised to
-     * communicate the fractional numbers as String types, not JavaScript Number type.
-     *
-     * @param {Number|String} ch1 Color channel value
-     * @param {Number|String} ch2 Color channel value
-     * @param {Number|String} ch3 Color channel value
-     * @param {Number|String} ch4 Color channel value
-     *
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setFillColor
-     */
-    API.setFillColor = function(ch1, ch2, ch3, ch4) {
-      var color;
-
-      if (ch2 === undefined || (ch4 === undefined && ch1 === ch2 === ch3)) {
-        // Gray color space.
-        if (typeof ch1 === 'string') {
-          color = ch1 + ' g';
-        } else {
-          color = f2(ch1 / 255) + ' g';
-        }
-      } else if (ch4 === undefined || typeof ch4 === 'object') {
-        // RGB
-        if (typeof ch1 === 'string') {
-          color = [ch1, ch2, ch3, 'rg'].join(' ');
-        } else {
-          color = [f2(ch1 / 255), f2(ch2 / 255), f2(ch3 / 255), 'rg'].join(
-            ' ');
-        }
-        if (ch4 && ch4.a === 0) {
-          //TODO Implement transparency.
-          //WORKAROUND use white for now
-          color = ['255', '255', '255', 'rg'].join(' ');
-        }
-      } else {
-        // CMYK
-        if (typeof ch1 === 'string') {
-          color = [ch1, ch2, ch3, ch4, 'k'].join(' ');
-        } else {
-          color = [f2(ch1), f2(ch2), f2(ch3), f2(ch4), 'k'].join(' ');
-        }
-      }
-
-      out(color);
-      return this;
-    };
-
-    /**
-     * Sets the text color for upcoming elements.
-     * If only one, first argument is given,
-     * treats the value as gray-scale color value.
-     *
-     * @param {Number} r Red channel color value in range 0-255 or {String} r color value in hexadecimal, example: '#FFFFFF'
-     * @param {Number} g Green channel color value in range 0-255
-     * @param {Number} b Blue channel color value in range 0-255
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setTextColor
-     */
-    API.setTextColor = function(r, g, b) {
-      if ((typeof r === 'string') && /^#[0-9A-Fa-f]{6}$/.test(r)) {
-        var hex = parseInt(r.substr(1), 16);
-        r = (hex >> 16) & 255;
-        g = (hex >> 8) & 255;
-        b = (hex & 255);
-      }
-
-      if ((r === 0 && g === 0 && b === 0) || (typeof g === 'undefined')) {
-        textColor = f3(r / 255) + ' g';
-      } else {
-        textColor = [f3(r / 255), f3(g / 255), f3(b / 255), 'rg'].join(
-          ' ');
-      }
-      return this;
-    };
-
-    /**
-     * Is an Object providing a mapping from human-readable to
-     * integer flag values designating the varieties of line cap
-     * and join styles.
-     *
-     * @returns {Object}
-     * @fieldOf jsPDF#
-     * @name CapJoinStyles
-     */
-    API.CapJoinStyles = {
-      0: 0,
-      'butt': 0,
-      'but': 0,
-      'miter': 0,
-      1: 1,
-      'round': 1,
-      'rounded': 1,
-      'circle': 1,
-      2: 2,
-      'projecting': 2,
-      'project': 2,
-      'square': 2,
-      'bevel': 2
-    };
-
-    /**
-     * Sets the line cap styles
-     * See {jsPDF.CapJoinStyles} for variants
-     *
-     * @param {String|Number} style A string or number identifying the type of line cap
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setLineCap
-     */
-    API.setLineCap = function(style) {
-      var id = this.CapJoinStyles[style];
-      if (id === undefined) {
-        throw new Error("Line cap style of '" + style +
-          "' is not recognized. See or extend .CapJoinStyles property for valid styles"
-        );
-      }
-      lineCapID = id;
-      out(id + ' J');
-
-      return this;
-    };
-
-    /**
-     * Sets the line join styles
-     * See {jsPDF.CapJoinStyles} for variants
-     *
-     * @param {String|Number} style A string or number identifying the type of line join
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name setLineJoin
-     */
-    API.setLineJoin = function(style) {
-      var id = this.CapJoinStyles[style];
-      if (id === undefined) {
-        throw new Error("Line join style of '" + style +
-          "' is not recognized. See or extend .CapJoinStyles property for valid styles"
-        );
-      }
-      lineJoinID = id;
-      out(id + ' j');
-
-      return this;
-    };
-
-    // Output is both an internal (for plugins) and external function
-    API.output = output;
-
-    /**
-     * Saves as PDF document. An alias of jsPDF.output('save', 'filename.pdf')
-     * @param  {String} filename The filename including extension.
-     *
-     * @function
-     * @returns {jsPDF}
-     * @methodOf jsPDF#
-     * @name save
-     */
-    API.save = function(filename) {
-      API.output('save', filename);
-    };
-
-    // applying plugins (more methods) ON TOP of built-in API.
-    // this is intentional as we allow plugins to override
-    // built-ins
-    for (var plugin in jsPDF.API) {
-      if (jsPDF.API.hasOwnProperty(plugin)) {
-        if (plugin === 'events' && jsPDF.API.events.length) {
-          (function(events, newEvents) {
-
-            // jsPDF.API.events is a JS Array of Arrays
-            // where each Array is a pair of event name, handler
-            // Events were added by plugins to the jsPDF instantiator.
-            // These are always added to the new instance and some ran
-            // during instantiation.
-            var eventname, handler_and_args, i;
-
-            for (i = newEvents.length - 1; i !== -1; i--) {
-              // subscribe takes 3 args: 'topic', function, runonce_flag
-              // if undefined, runonce is false.
-              // users can attach callback directly,
-              // or they can attach an array with [callback, runonce_flag]
-              // that's what the "apply" magic is for below.
-              eventname = newEvents[i][0];
-              handler_and_args = newEvents[i][1];
-              events.subscribe.apply(
-                events, [eventname].concat(
-                  typeof handler_and_args === 'function' ? [
-                    handler_and_args
-                  ] : handler_and_args));
-            }
-          }(events, jsPDF.API.events));
-        } else {
-          API[plugin] = jsPDF.API[plugin];
-        }
-      }
-    }
-
-    //////////////////////////////////////////////////////
-    // continuing initialization of jsPDF Document object
-    //////////////////////////////////////////////////////
-    // Add the first page automatically
-    addFonts();
-    activeFontKey = 'F1';
-    _addPage(format, orientation);
-
-    events.publish('initialized');
-    return API;
-  }
-
-  /**
-   * jsPDF.API is a STATIC property of jsPDF class.
-   * jsPDF.API is an object you can add methods and properties to.
-   * The methods / properties you add will show up in new jsPDF objects.
-   *
-   * One property is prepopulated. It is the 'events' Object. Plugin authors can add topics,
-   * callbacks to this object. These will be reassigned to all new instances of jsPDF.
-   * Examples:
-   * jsPDF.API.events['initialized'] = function(){ 'this' is API object }
-   * jsPDF.API.events['addFont'] = function(added_font_object){ 'this' is API object }
-   *
-   * @static
-   * @public
-   * @memberOf jsPDF
-   * @name API
-   *
-   * @example
-   * jsPDF.API.mymethod = function(){
-   *   // 'this' will be ref to internal API object. see jsPDF source
-   *   // , so you can refer to built-in methods like so:
-   *   //     this.line(....)
-   *   //     this.text(....)
-   * }
-   * var pdfdoc = new jsPDF()
-   * pdfdoc.mymethod() // <- !!!!!!
-   */
-  jsPDF.API = {
-    events: []
-  };
-  jsPDF.version = "1.x-master";
-
-  if (typeof define === 'function' && define.amd) {
-    define('jsPDF', function() {
-      return jsPDF;
-    });
-  } else if (typeof module !== 'undefined' && module.exports) {
-    module.exports.jsPDF = jsPDF;
-  } else {
-    global.jsPDF = jsPDF;
-  }
-  return jsPDF;
-}(typeof self !== "undefined" && self || typeof window !== "undefined" &&
-  window || this));
-
-/** @preserve
- jsPDF standard_fonts_metrics plugin
- Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
- MIT license.
- */
-/**
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * ====================================================================
- */
-
-;(function(API) {
-  'use strict'
-
-  /*
-  # reference (Python) versions of 'compress' and 'uncompress'
-  # only 'uncompress' function is featured lower as JavaScript
-  # if you want to unit test "roundtrip", just transcribe the reference
-  # 'compress' function from Python into JavaScript
-
-  def compress(data):
-
-    keys =   '0123456789abcdef'
-    values = 'klmnopqrstuvwxyz'
-    mapping = dict(zip(keys, values))
-    vals = []
-    for key in data.keys():
-      value = data[key]
-      try:
-        keystring = hex(key)[2:]
-        keystring = keystring[:-1] + mapping[keystring[-1:]]
-      except:
-        keystring = key.join(["'","'"])
-        #print('Keystring is %s' % keystring)
-
-      try:
-        if value < 0:
-          valuestring = hex(value)[3:]
-          numberprefix = '-'
-        else:
-          valuestring = hex(value)[2:]
-          numberprefix = ''
-        valuestring = numberprefix + valuestring[:-1] + mapping[valuestring[-1:]]
-      except:
-        if type(value) == dict:
-          valuestring = compress(value)
-        else:
-          raise Exception("Don't know what to do with value type %s" % type(value))
-
-      vals.append(keystring+valuestring)
-
-    return '{' + ''.join(vals) + '}'
-
-  def uncompress(data):
-
-    decoded = '0123456789abcdef'
-    encoded = 'klmnopqrstuvwxyz'
-    mapping = dict(zip(encoded, decoded))
-
-    sign = +1
-    stringmode = False
-    stringparts = []
-
-    output = {}
-
-    activeobject = output
-    parentchain = []
-
-    keyparts = ''
-    valueparts = ''
-
-    key = None
-
-    ending = set(encoded)
-
-    i = 1
-    l = len(data) - 1 # stripping starting, ending {}
-    while i != l: # stripping {}
-      # -, {, }, ' are special.
-
-      ch = data[i]
-      i += 1
-
-      if ch == "'":
-        if stringmode:
-          # end of string mode
-          stringmode = False
-          key = ''.join(stringparts)
-        else:
-          # start of string mode
-          stringmode = True
-          stringparts = []
-      elif stringmode == True:
-        #print("Adding %s to stringpart" % ch)
-        stringparts.append(ch)
-
-      elif ch == '{':
-        # start of object
-        parentchain.append( [activeobject, key] )
-        activeobject = {}
-        key = None
-        #DEBUG = True
-      elif ch == '}':
-        # end of object
-        parent, key = parentchain.pop()
-        parent[key] = activeobject
-        key = None
-        activeobject = parent
-        #DEBUG = False
-
-      elif ch == '-':
-        sign = -1
-      else:
-        # must be number
-        if key == None:
-          #debug("In Key. It is '%s', ch is '%s'" % (keyparts, ch))
-          if ch in ending:
-            #debug("End of key")
-            keyparts += mapping[ch]
-            key = int(keyparts, 16) * sign
-            sign = +1
-            keyparts = ''
-          else:
-            keyparts += ch
-        else:
-          #debug("In value. It is '%s', ch is '%s'" % (valueparts, ch))
-          if ch in ending:
-            #debug("End of value")
-            valueparts += mapping[ch]
-            activeobject[key] = int(valueparts, 16) * sign
-            sign = +1
-            key = None
-            valueparts = ''
-          else:
-            valueparts += ch
-
-        #debug(activeobject)
-
-    return output
-
-  */
-
-  /**
-   Uncompresses data compressed into custom, base16-like format.
-   @public
-   @function
-   @param
-   @returns {Type}
-   */
-  var uncompress = function(data){
-
-    var decoded = '0123456789abcdef'
-      , encoded = 'klmnopqrstuvwxyz'
-      , mapping = {}
-
-    for (var i = 0; i < encoded.length; i++){
-      mapping[encoded[i]] = decoded[i]
-    }
-
-    var undef
-      , output = {}
-      , sign = 1
-      , stringparts // undef. will be [] in string mode
-
-      , activeobject = output
-      , parentchain = []
-      , parent_key_pair
-      , keyparts = ''
-      , valueparts = ''
-      , key // undef. will be Truthy when Key is resolved.
-      , datalen = data.length - 1 // stripping ending }
-      , ch
-
-    i = 1 // stripping starting {
-
-    while (i != datalen){
-      // - { } ' are special.
-
-      ch = data[i]
-      i += 1
-
-      if (ch == "'"){
-        if (stringparts){
-          // end of string mode
-          key = stringparts.join('')
-          stringparts = undef
-        } else {
-          // start of string mode
-          stringparts = []
-        }
-      } else if (stringparts){
-        stringparts.push(ch)
-      } else if (ch == '{'){
-        // start of object
-        parentchain.push( [activeobject, key] )
-        activeobject = {}
-        key = undef
-      } else if (ch == '}'){
-        // end of object
-        parent_key_pair = parentchain.pop()
-        parent_key_pair[0][parent_key_pair[1]] = activeobject
-        key = undef
-        activeobject = parent_key_pair[0]
-      } else if (ch == '-'){
-        sign = -1
-      } else {
-        // must be number
-        if (key === undef) {
-          if (mapping.hasOwnProperty(ch)){
-            keyparts += mapping[ch]
-            key = parseInt(keyparts, 16) * sign
-            sign = +1
-            keyparts = ''
-          } else {
-            keyparts += ch
-          }
-        } else {
-          if (mapping.hasOwnProperty(ch)){
-            valueparts += mapping[ch]
-            activeobject[key] = parseInt(valueparts, 16) * sign
-            sign = +1
-            key = undef
-            valueparts = ''
-          } else {
-            valueparts += ch
-          }
-        }
-      }
-    } // end while
-
-    return output
-  }
-
-// encoding = 'Unicode'
-// NOT UTF8, NOT UTF16BE/LE, NOT UCS2BE/LE. NO clever BOM behavior
-// Actual 16bit char codes used.
-// no multi-byte logic here
-
-// Unicode characters to WinAnsiEncoding:
-// {402: 131, 8211: 150, 8212: 151, 8216: 145, 8217: 146, 8218: 130, 8220: 147, 8221: 148, 8222: 132, 8224: 134, 8225: 135, 8226: 149, 8230: 133, 8364: 128, 8240:137, 8249: 139, 8250: 155, 710: 136, 8482: 153, 338: 140, 339: 156, 732: 152, 352: 138, 353: 154, 376: 159, 381: 142, 382: 158}
-// as you can see, all Unicode chars are outside of 0-255 range. No char code conflicts.
-// this means that you can give Win cp1252 encoded strings to jsPDF for rendering directly
-// as well as give strings with some (supported by these fonts) Unicode characters and
-// these will be mapped to win cp1252
-// for example, you can send char code (cp1252) 0x80 or (unicode) 0x20AC, getting "Euro" glyph displayed in both cases.
-
-  var encodingBlock = {
-      'codePages': ['WinAnsiEncoding']
-      , 'WinAnsiEncoding': uncompress("{19m8n201n9q201o9r201s9l201t9m201u8m201w9n201x9o201y8o202k8q202l8r202m9p202q8p20aw8k203k8t203t8v203u9v2cq8s212m9t15m8w15n9w2dw9s16k8u16l9u17s9z17x8y17y9y}")
-    }
-    , encodings = {'Unicode':{
-        'Courier': encodingBlock
-        , 'Courier-Bold': encodingBlock
-        , 'Courier-BoldOblique': encodingBlock
-        , 'Courier-Oblique': encodingBlock
-        , 'Helvetica': encodingBlock
-        , 'Helvetica-Bold': encodingBlock
-        , 'Helvetica-BoldOblique': encodingBlock
-        , 'Helvetica-Oblique': encodingBlock
-        , 'Times-Roman': encodingBlock
-        , 'Times-Bold': encodingBlock
-        , 'Times-BoldItalic': encodingBlock
-        , 'Times-Italic': encodingBlock
-//	, 'Symbol'
-//	, 'ZapfDingbats'
-      }}
-    /**
-     Resources:
-     Font metrics data is reprocessed derivative of contents of
-     "Font Metrics for PDF Core 14 Fonts" package, which exhibits the following copyright and license:
-
-     Copyright (c) 1989, 1990, 1991, 1992, 1993, 1997 Adobe Systems Incorporated. All Rights Reserved.
-
-     This file and the 14 PostScript(R) AFM files it accompanies may be used,
-     copied, and distributed for any purpose and without charge, with or without
-     modification, provided that all copyright notices are retained; that the AFM
-     files are not distributed without this file; that all modifications to this
-     file or any of the AFM files are prominently noted in the modified file(s);
-     and that this paragraph is not modified. Adobe Systems has no responsibility
-     or obligation to support the use of the AFM files.
-
-     */
-    , fontMetrics = {'Unicode':{
-        // all sizing numbers are n/fontMetricsFractionOf = one font size unit
-        // this means that if fontMetricsFractionOf = 1000, and letter A's width is 476, it's
-        // width is 476/1000 or 47.6% of its height (regardless of font size)
-        // At this time this value applies to "widths" and "kerning" numbers.
-
-        // char code 0 represents "default" (average) width - use it for chars missing in this table.
-        // key 'fof' represents the "fontMetricsFractionOf" value
-
-        'Courier-Oblique': uncompress("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}")
-        , 'Times-BoldItalic': uncompress("{'widths'{k3o2q4ycx2r201n3m201o6o201s2l201t2l201u2l201w3m201x3m201y3m2k1t2l2r202m2n2n3m2o3m2p5n202q6o2r1w2s2l2t2l2u3m2v3t2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v2l3w3t3x3t3y3t3z3m4k5n4l4m4m4m4n4m4o4s4p4m4q4m4r4s4s4y4t2r4u3m4v4m4w3x4x5t4y4s4z4s5k3x5l4s5m4m5n3r5o3x5p4s5q4m5r5t5s4m5t3x5u3x5v2l5w1w5x2l5y3t5z3m6k2l6l3m6m3m6n2w6o3m6p2w6q2l6r3m6s3r6t1w6u1w6v3m6w1w6x4y6y3r6z3m7k3m7l3m7m2r7n2r7o1w7p3r7q2w7r4m7s3m7t2w7u2r7v2n7w1q7x2n7y3t202l3mcl4mal2ram3man3mao3map3mar3mas2lat4uau1uav3maw3way4uaz2lbk2sbl3t'fof'6obo2lbp3tbq3mbr1tbs2lbu1ybv3mbz3mck4m202k3mcm4mcn4mco4mcp4mcq5ycr4mcs4mct4mcu4mcv4mcw2r2m3rcy2rcz2rdl4sdm4sdn4sdo4sdp4sdq4sds4sdt4sdu4sdv4sdw4sdz3mek3mel3mem3men3meo3mep3meq4ser2wes2wet2weu2wev2wew1wex1wey1wez1wfl3rfm3mfn3mfo3mfp3mfq3mfr3tfs3mft3rfu3rfv3rfw3rfz2w203k6o212m6o2dw2l2cq2l3t3m3u2l17s3x19m3m}'kerning'{cl{4qu5kt5qt5rs17ss5ts}201s{201ss}201t{cks4lscmscnscoscpscls2wu2yu201ts}201x{2wu2yu}2k{201ts}2w{4qx5kx5ou5qx5rs17su5tu}2x{17su5tu5ou}2y{4qx5kx5ou5qx5rs17ss5ts}'fof'-6ofn{17sw5tw5ou5qw5rs}7t{cksclscmscnscoscps4ls}3u{17su5tu5os5qs}3v{17su5tu5os5qs}7p{17su5tu}ck{4qu5kt5qt5rs17ss5ts}4l{4qu5kt5qt5rs17ss5ts}cm{4qu5kt5qt5rs17ss5ts}cn{4qu5kt5qt5rs17ss5ts}co{4qu5kt5qt5rs17ss5ts}cp{4qu5kt5qt5rs17ss5ts}6l{4qu5ou5qw5rt17su5tu}5q{ckuclucmucnucoucpu4lu}5r{ckuclucmucnucoucpu4lu}7q{cksclscmscnscoscps4ls}6p{4qu5ou5qw5rt17sw5tw}ek{4qu5ou5qw5rt17su5tu}el{4qu5ou5qw5rt17su5tu}em{4qu5ou5qw5rt17su5tu}en{4qu5ou5qw5rt17su5tu}eo{4qu5ou5qw5rt17su5tu}ep{4qu5ou5qw5rt17su5tu}es{17ss5ts5qs4qu}et{4qu5ou5qw5rt17sw5tw}eu{4qu5ou5qw5rt17ss5ts}ev{17ss5ts5qs4qu}6z{17sw5tw5ou5qw5rs}fm{17sw5tw5ou5qw5rs}7n{201ts}fo{17sw5tw5ou5qw5rs}fp{17sw5tw5ou5qw5rs}fq{17sw5tw5ou5qw5rs}7r{cksclscmscnscoscps4ls}fs{17sw5tw5ou5qw5rs}ft{17su5tu}fu{17su5tu}fv{17su5tu}fw{17su5tu}fz{cksclscmscnscoscps4ls}}}")
-        , 'Helvetica-Bold': uncompress("{'widths'{k3s2q4scx1w201n3r201o6o201s1w201t1w201u1w201w3m201x3m201y3m2k1w2l2l202m2n2n3r2o3r2p5t202q6o2r1s2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v2l3w3u3x3u3y3u3z3x4k6l4l4s4m4s4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3r4v4s4w3x4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v2l5w1w5x2l5y3u5z3r6k2l6l3r6m3x6n3r6o3x6p3r6q2l6r3x6s3x6t1w6u1w6v3r6w1w6x5t6y3x6z3x7k3x7l3x7m2r7n3r7o2l7p3x7q3r7r4y7s3r7t3r7u3m7v2r7w1w7x2r7y3u202l3rcl4sal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3xbq3rbr1wbs2lbu2obv3rbz3xck4s202k3rcm4scn4sco4scp4scq6ocr4scs4mct4mcu4mcv4mcw1w2m2zcy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3res3ret3reu3rev3rew1wex1wey1wez1wfl3xfm3xfn3xfo3xfp3xfq3xfr3ufs3xft3xfu3xfv3xfw3xfz3r203k6o212m6o2dw2l2cq2l3t3r3u2l17s4m19m3r}'kerning'{cl{4qs5ku5ot5qs17sv5tv}201t{2ww4wy2yw}201w{2ks}201x{2ww4wy2yw}2k{201ts201xs}2w{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}2x{5ow5qs}2y{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}'fof'-6o7p{17su5tu5ot}ck{4qs5ku5ot5qs17sv5tv}4l{4qs5ku5ot5qs17sv5tv}cm{4qs5ku5ot5qs17sv5tv}cn{4qs5ku5ot5qs17sv5tv}co{4qs5ku5ot5qs17sv5tv}cp{4qs5ku5ot5qs17sv5tv}6l{17st5tt5os}17s{2kwclvcmvcnvcovcpv4lv4wwckv}5o{2kucltcmtcntcotcpt4lt4wtckt}5q{2ksclscmscnscoscps4ls4wvcks}5r{2ks4ws}5t{2kwclvcmvcnvcovcpv4lv4wwckv}eo{17st5tt5os}fu{17su5tu5ot}6p{17ss5ts}ek{17st5tt5os}el{17st5tt5os}em{17st5tt5os}en{17st5tt5os}6o{201ts}ep{17st5tt5os}es{17ss5ts}et{17ss5ts}eu{17ss5ts}ev{17ss5ts}6z{17su5tu5os5qt}fm{17su5tu5os5qt}fn{17su5tu5os5qt}fo{17su5tu5os5qt}fp{17su5tu5os5qt}fq{17su5tu5os5qt}fs{17su5tu5os5qt}ft{17su5tu5ot}7m{5os}fv{17su5tu5ot}fw{17su5tu5ot}}}")
-        , 'Courier': uncompress("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}")
-        , 'Courier-BoldOblique': uncompress("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}")
-        , 'Times-Bold': uncompress("{'widths'{k3q2q5ncx2r201n3m201o6o201s2l201t2l201u2l201w3m201x3m201y3m2k1t2l2l202m2n2n3m2o3m2p6o202q6o2r1w2s2l2t2l2u3m2v3t2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v2l3w3t3x3t3y3t3z3m4k5x4l4s4m4m4n4s4o4s4p4m4q3x4r4y4s4y4t2r4u3m4v4y4w4m4x5y4y4s4z4y5k3x5l4y5m4s5n3r5o4m5p4s5q4s5r6o5s4s5t4s5u4m5v2l5w1w5x2l5y3u5z3m6k2l6l3m6m3r6n2w6o3r6p2w6q2l6r3m6s3r6t1w6u2l6v3r6w1w6x5n6y3r6z3m7k3r7l3r7m2w7n2r7o2l7p3r7q3m7r4s7s3m7t3m7u2w7v2r7w1q7x2r7y3o202l3mcl4sal2lam3man3mao3map3mar3mas2lat4uau1yav3maw3tay4uaz2lbk2sbl3t'fof'6obo2lbp3rbr1tbs2lbu2lbv3mbz3mck4s202k3mcm4scn4sco4scp4scq6ocr4scs4mct4mcu4mcv4mcw2r2m3rcy2rcz2rdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3rek3mel3mem3men3meo3mep3meq4ser2wes2wet2weu2wev2wew1wex1wey1wez1wfl3rfm3mfn3mfo3mfp3mfq3mfr3tfs3mft3rfu3rfv3rfw3rfz3m203k6o212m6o2dw2l2cq2l3t3m3u2l17s4s19m3m}'kerning'{cl{4qt5ks5ot5qy5rw17sv5tv}201t{cks4lscmscnscoscpscls4wv}2k{201ts}2w{4qu5ku7mu5os5qx5ru17su5tu}2x{17su5tu5ou5qs}2y{4qv5kv7mu5ot5qz5ru17su5tu}'fof'-6o7t{cksclscmscnscoscps4ls}3u{17su5tu5os5qu}3v{17su5tu5os5qu}fu{17su5tu5ou5qu}7p{17su5tu5ou5qu}ck{4qt5ks5ot5qy5rw17sv5tv}4l{4qt5ks5ot5qy5rw17sv5tv}cm{4qt5ks5ot5qy5rw17sv5tv}cn{4qt5ks5ot5qy5rw17sv5tv}co{4qt5ks5ot5qy5rw17sv5tv}cp{4qt5ks5ot5qy5rw17sv5tv}6l{17st5tt5ou5qu}17s{ckuclucmucnucoucpu4lu4wu}5o{ckuclucmucnucoucpu4lu4wu}5q{ckzclzcmzcnzcozcpz4lz4wu}5r{ckxclxcmxcnxcoxcpx4lx4wu}5t{ckuclucmucnucoucpu4lu4wu}7q{ckuclucmucnucoucpu4lu}6p{17sw5tw5ou5qu}ek{17st5tt5qu}el{17st5tt5ou5qu}em{17st5tt5qu}en{17st5tt5qu}eo{17st5tt5qu}ep{17st5tt5ou5qu}es{17ss5ts5qu}et{17sw5tw5ou5qu}eu{17sw5tw5ou5qu}ev{17ss5ts5qu}6z{17sw5tw5ou5qu5rs}fm{17sw5tw5ou5qu5rs}fn{17sw5tw5ou5qu5rs}fo{17sw5tw5ou5qu5rs}fp{17sw5tw5ou5qu5rs}fq{17sw5tw5ou5qu5rs}7r{cktcltcmtcntcotcpt4lt5os}fs{17sw5tw5ou5qu5rs}ft{17su5tu5ou5qu}7m{5os}fv{17su5tu5ou5qu}fw{17su5tu5ou5qu}fz{cksclscmscnscoscps4ls}}}")
-        //, 'Symbol': uncompress("{'widths'{k3uaw4r19m3m2k1t2l2l202m2y2n3m2p5n202q6o3k3m2s2l2t2l2v3r2w1t3m3m2y1t2z1wbk2sbl3r'fof'6o3n3m3o3m3p3m3q3m3r3m3s3m3t3m3u1w3v1w3w3r3x3r3y3r3z2wbp3t3l3m5v2l5x2l5z3m2q4yfr3r7v3k7w1o7x3k}'kerning'{'fof'-6o}}")
-        , 'Helvetica': uncompress("{'widths'{k3p2q4mcx1w201n3r201o6o201s1q201t1q201u1q201w2l201x2l201y2l2k1w2l1w202m2n2n3r2o3r2p5t202q6o2r1n2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v1w3w3u3x3u3y3u3z3r4k6p4l4m4m4m4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3m4v4m4w3r4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v1w5w1w5x1w5y2z5z3r6k2l6l3r6m3r6n3m6o3r6p3r6q1w6r3r6s3r6t1q6u1q6v3m6w1q6x5n6y3r6z3r7k3r7l3r7m2l7n3m7o1w7p3r7q3m7r4s7s3m7t3m7u3m7v2l7w1u7x2l7y3u202l3rcl4mal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3rbr1wbs2lbu2obv3rbz3xck4m202k3rcm4mcn4mco4mcp4mcq6ocr4scs4mct4mcu4mcv4mcw1w2m2ncy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3mes3ret3reu3rev3rew1wex1wey1wez1wfl3rfm3rfn3rfo3rfp3rfq3rfr3ufs3xft3rfu3rfv3rfw3rfz3m203k6o212m6o2dw2l2cq2l3t3r3u1w17s4m19m3r}'kerning'{5q{4wv}cl{4qs5kw5ow5qs17sv5tv}201t{2wu4w1k2yu}201x{2wu4wy2yu}17s{2ktclucmucnu4otcpu4lu4wycoucku}2w{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}2x{17sy5ty5oy5qs}2y{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}'fof'-6o7p{17sv5tv5ow}ck{4qs5kw5ow5qs17sv5tv}4l{4qs5kw5ow5qs17sv5tv}cm{4qs5kw5ow5qs17sv5tv}cn{4qs5kw5ow5qs17sv5tv}co{4qs5kw5ow5qs17sv5tv}cp{4qs5kw5ow5qs17sv5tv}6l{17sy5ty5ow}do{17st5tt}4z{17st5tt}7s{fst}dm{17st5tt}dn{17st5tt}5o{ckwclwcmwcnwcowcpw4lw4wv}dp{17st5tt}dq{17st5tt}7t{5ow}ds{17st5tt}5t{2ktclucmucnu4otcpu4lu4wycoucku}fu{17sv5tv5ow}6p{17sy5ty5ow5qs}ek{17sy5ty5ow}el{17sy5ty5ow}em{17sy5ty5ow}en{5ty}eo{17sy5ty5ow}ep{17sy5ty5ow}es{17sy5ty5qs}et{17sy5ty5ow5qs}eu{17sy5ty5ow5qs}ev{17sy5ty5ow5qs}6z{17sy5ty5ow5qs}fm{17sy5ty5ow5qs}fn{17sy5ty5ow5qs}fo{17sy5ty5ow5qs}fp{17sy5ty5qs}fq{17sy5ty5ow5qs}7r{5ow}fs{17sy5ty5ow5qs}ft{17sv5tv5ow}7m{5ow}fv{17sv5tv5ow}fw{17sv5tv5ow}}}")
-        , 'Helvetica-BoldOblique': uncompress("{'widths'{k3s2q4scx1w201n3r201o6o201s1w201t1w201u1w201w3m201x3m201y3m2k1w2l2l202m2n2n3r2o3r2p5t202q6o2r1s2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v2l3w3u3x3u3y3u3z3x4k6l4l4s4m4s4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3r4v4s4w3x4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v2l5w1w5x2l5y3u5z3r6k2l6l3r6m3x6n3r6o3x6p3r6q2l6r3x6s3x6t1w6u1w6v3r6w1w6x5t6y3x6z3x7k3x7l3x7m2r7n3r7o2l7p3x7q3r7r4y7s3r7t3r7u3m7v2r7w1w7x2r7y3u202l3rcl4sal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3xbq3rbr1wbs2lbu2obv3rbz3xck4s202k3rcm4scn4sco4scp4scq6ocr4scs4mct4mcu4mcv4mcw1w2m2zcy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3res3ret3reu3rev3rew1wex1wey1wez1wfl3xfm3xfn3xfo3xfp3xfq3xfr3ufs3xft3xfu3xfv3xfw3xfz3r203k6o212m6o2dw2l2cq2l3t3r3u2l17s4m19m3r}'kerning'{cl{4qs5ku5ot5qs17sv5tv}201t{2ww4wy2yw}201w{2ks}201x{2ww4wy2yw}2k{201ts201xs}2w{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}2x{5ow5qs}2y{7qs4qu5kw5os5qw5rs17su5tu7tsfzs}'fof'-6o7p{17su5tu5ot}ck{4qs5ku5ot5qs17sv5tv}4l{4qs5ku5ot5qs17sv5tv}cm{4qs5ku5ot5qs17sv5tv}cn{4qs5ku5ot5qs17sv5tv}co{4qs5ku5ot5qs17sv5tv}cp{4qs5ku5ot5qs17sv5tv}6l{17st5tt5os}17s{2kwclvcmvcnvcovcpv4lv4wwckv}5o{2kucltcmtcntcotcpt4lt4wtckt}5q{2ksclscmscnscoscps4ls4wvcks}5r{2ks4ws}5t{2kwclvcmvcnvcovcpv4lv4wwckv}eo{17st5tt5os}fu{17su5tu5ot}6p{17ss5ts}ek{17st5tt5os}el{17st5tt5os}em{17st5tt5os}en{17st5tt5os}6o{201ts}ep{17st5tt5os}es{17ss5ts}et{17ss5ts}eu{17ss5ts}ev{17ss5ts}6z{17su5tu5os5qt}fm{17su5tu5os5qt}fn{17su5tu5os5qt}fo{17su5tu5os5qt}fp{17su5tu5os5qt}fq{17su5tu5os5qt}fs{17su5tu5os5qt}ft{17su5tu5ot}7m{5os}fv{17su5tu5ot}fw{17su5tu5ot}}}")
-        //, 'ZapfDingbats': uncompress("{'widths'{k4u2k1w'fof'6o}'kerning'{'fof'-6o}}")
-        , 'Courier-Bold': uncompress("{'widths'{k3w'fof'6o}'kerning'{'fof'-6o}}")
-        , 'Times-Italic': uncompress("{'widths'{k3n2q4ycx2l201n3m201o5t201s2l201t2l201u2l201w3r201x3r201y3r2k1t2l2l202m2n2n3m2o3m2p5n202q5t2r1p2s2l2t2l2u3m2v4n2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v2l3w4n3x4n3y4n3z3m4k5w4l3x4m3x4n4m4o4s4p3x4q3x4r4s4s4s4t2l4u2w4v4m4w3r4x5n4y4m4z4s5k3x5l4s5m3x5n3m5o3r5p4s5q3x5r5n5s3x5t3r5u3r5v2r5w1w5x2r5y2u5z3m6k2l6l3m6m3m6n2w6o3m6p2w6q1w6r3m6s3m6t1w6u1w6v2w6w1w6x4s6y3m6z3m7k3m7l3m7m2r7n2r7o1w7p3m7q2w7r4m7s2w7t2w7u2r7v2s7w1v7x2s7y3q202l3mcl3xal2ram3man3mao3map3mar3mas2lat4wau1vav3maw4nay4waz2lbk2sbl4n'fof'6obo2lbp3mbq3obr1tbs2lbu1zbv3mbz3mck3x202k3mcm3xcn3xco3xcp3xcq5tcr4mcs3xct3xcu3xcv3xcw2l2m2ucy2lcz2ldl4mdm4sdn4sdo4sdp4sdq4sds4sdt4sdu4sdv4sdw4sdz3mek3mel3mem3men3meo3mep3meq4mer2wes2wet2weu2wev2wew1wex1wey1wez1wfl3mfm3mfn3mfo3mfp3mfq3mfr4nfs3mft3mfu3mfv3mfw3mfz2w203k6o212m6m2dw2l2cq2l3t3m3u2l17s3r19m3m}'kerning'{cl{5kt4qw}201s{201sw}201t{201tw2wy2yy6q-t}201x{2wy2yy}2k{201tw}2w{7qs4qy7rs5ky7mw5os5qx5ru17su5tu}2x{17ss5ts5os}2y{7qs4qy7rs5ky7mw5os5qx5ru17su5tu}'fof'-6o6t{17ss5ts5qs}7t{5os}3v{5qs}7p{17su5tu5qs}ck{5kt4qw}4l{5kt4qw}cm{5kt4qw}cn{5kt4qw}co{5kt4qw}cp{5kt4qw}6l{4qs5ks5ou5qw5ru17su5tu}17s{2ks}5q{ckvclvcmvcnvcovcpv4lv}5r{ckuclucmucnucoucpu4lu}5t{2ks}6p{4qs5ks5ou5qw5ru17su5tu}ek{4qs5ks5ou5qw5ru17su5tu}el{4qs5ks5ou5qw5ru17su5tu}em{4qs5ks5ou5qw5ru17su5tu}en{4qs5ks5ou5qw5ru17su5tu}eo{4qs5ks5ou5qw5ru17su5tu}ep{4qs5ks5ou5qw5ru17su5tu}es{5ks5qs4qs}et{4qs5ks5ou5qw5ru17su5tu}eu{4qs5ks5qw5ru17su5tu}ev{5ks5qs4qs}ex{17ss5ts5qs}6z{4qv5ks5ou5qw5ru17su5tu}fm{4qv5ks5ou5qw5ru17su5tu}fn{4qv5ks5ou5qw5ru17su5tu}fo{4qv5ks5ou5qw5ru17su5tu}fp{4qv5ks5ou5qw5ru17su5tu}fq{4qv5ks5ou5qw5ru17su5tu}7r{5os}fs{4qv5ks5ou5qw5ru17su5tu}ft{17su5tu5qs}fu{17su5tu5qs}fv{17su5tu5qs}fw{17su5tu5qs}}}")
-        , 'Times-Roman': uncompress("{'widths'{k3n2q4ycx2l201n3m201o6o201s2l201t2l201u2l201w2w201x2w201y2w2k1t2l2l202m2n2n3m2o3m2p5n202q6o2r1m2s2l2t2l2u3m2v3s2w1t2x2l2y1t2z1w3k3m3l3m3m3m3n3m3o3m3p3m3q3m3r3m3s3m203t2l203u2l3v1w3w3s3x3s3y3s3z2w4k5w4l4s4m4m4n4m4o4s4p3x4q3r4r4s4s4s4t2l4u2r4v4s4w3x4x5t4y4s4z4s5k3r5l4s5m4m5n3r5o3x5p4s5q4s5r5y5s4s5t4s5u3x5v2l5w1w5x2l5y2z5z3m6k2l6l2w6m3m6n2w6o3m6p2w6q2l6r3m6s3m6t1w6u1w6v3m6w1w6x4y6y3m6z3m7k3m7l3m7m2l7n2r7o1w7p3m7q3m7r4s7s3m7t3m7u2w7v3k7w1o7x3k7y3q202l3mcl4sal2lam3man3mao3map3mar3mas2lat4wau1vav3maw3say4waz2lbk2sbl3s'fof'6obo2lbp3mbq2xbr1tbs2lbu1zbv3mbz2wck4s202k3mcm4scn4sco4scp4scq5tcr4mcs3xct3xcu3xcv3xcw2l2m2tcy2lcz2ldl4sdm4sdn4sdo4sdp4sdq4sds4sdt4sdu4sdv4sdw4sdz3mek2wel2wem2wen2weo2wep2weq4mer2wes2wet2weu2wev2wew1wex1wey1wez1wfl3mfm3mfn3mfo3mfp3mfq3mfr3sfs3mft3mfu3mfv3mfw3mfz3m203k6o212m6m2dw2l2cq2l3t3m3u1w17s4s19m3m}'kerning'{cl{4qs5ku17sw5ou5qy5rw201ss5tw201ws}201s{201ss}201t{ckw4lwcmwcnwcowcpwclw4wu201ts}2k{201ts}2w{4qs5kw5os5qx5ru17sx5tx}2x{17sw5tw5ou5qu}2y{4qs5kw5os5qx5ru17sx5tx}'fof'-6o7t{ckuclucmucnucoucpu4lu5os5rs}3u{17su5tu5qs}3v{17su5tu5qs}7p{17sw5tw5qs}ck{4qs5ku17sw5ou5qy5rw201ss5tw201ws}4l{4qs5ku17sw5ou5qy5rw201ss5tw201ws}cm{4qs5ku17sw5ou5qy5rw201ss5tw201ws}cn{4qs5ku17sw5ou5qy5rw201ss5tw201ws}co{4qs5ku17sw5ou5qy5rw201ss5tw201ws}cp{4qs5ku17sw5ou5qy5rw201ss5tw201ws}6l{17su5tu5os5qw5rs}17s{2ktclvcmvcnvcovcpv4lv4wuckv}5o{ckwclwcmwcnwcowcpw4lw4wu}5q{ckyclycmycnycoycpy4ly4wu5ms}5r{cktcltcmtcntcotcpt4lt4ws}5t{2ktclvcmvcnvcovcpv4lv4wuckv}7q{cksclscmscnscoscps4ls}6p{17su5tu5qw5rs}ek{5qs5rs}el{17su5tu5os5qw5rs}em{17su5tu5os5qs5rs}en{17su5qs5rs}eo{5qs5rs}ep{17su5tu5os5qw5rs}es{5qs}et{17su5tu5qw5rs}eu{17su5tu5qs5rs}ev{5qs}6z{17sv5tv5os5qx5rs}fm{5os5qt5rs}fn{17sv5tv5os5qx5rs}fo{17sv5tv5os5qx5rs}fp{5os5qt5rs}fq{5os5qt5rs}7r{ckuclucmucnucoucpu4lu5os}fs{17sv5tv5os5qx5rs}ft{17ss5ts5qs}fu{17sw5tw5qs}fv{17sw5tw5qs}fw{17ss5ts5qs}fz{ckuclucmucnucoucpu4lu5os5rs}}}")
-        , 'Helvetica-Oblique': uncompress("{'widths'{k3p2q4mcx1w201n3r201o6o201s1q201t1q201u1q201w2l201x2l201y2l2k1w2l1w202m2n2n3r2o3r2p5t202q6o2r1n2s2l2t2l2u2r2v3u2w1w2x2l2y1w2z1w3k3r3l3r3m3r3n3r3o3r3p3r3q3r3r3r3s3r203t2l203u2l3v1w3w3u3x3u3y3u3z3r4k6p4l4m4m4m4n4s4o4s4p4m4q3x4r4y4s4s4t1w4u3m4v4m4w3r4x5n4y4s4z4y5k4m5l4y5m4s5n4m5o3x5p4s5q4m5r5y5s4m5t4m5u3x5v1w5w1w5x1w5y2z5z3r6k2l6l3r6m3r6n3m6o3r6p3r6q1w6r3r6s3r6t1q6u1q6v3m6w1q6x5n6y3r6z3r7k3r7l3r7m2l7n3m7o1w7p3r7q3m7r4s7s3m7t3m7u3m7v2l7w1u7x2l7y3u202l3rcl4mal2lam3ran3rao3rap3rar3ras2lat4tau2pav3raw3uay4taz2lbk2sbl3u'fof'6obo2lbp3rbr1wbs2lbu2obv3rbz3xck4m202k3rcm4mcn4mco4mcp4mcq6ocr4scs4mct4mcu4mcv4mcw1w2m2ncy1wcz1wdl4sdm4ydn4ydo4ydp4ydq4yds4ydt4sdu4sdv4sdw4sdz3xek3rel3rem3ren3reo3rep3req5ter3mes3ret3reu3rev3rew1wex1wey1wez1wfl3rfm3rfn3rfo3rfp3rfq3rfr3ufs3xft3rfu3rfv3rfw3rfz3m203k6o212m6o2dw2l2cq2l3t3r3u1w17s4m19m3r}'kerning'{5q{4wv}cl{4qs5kw5ow5qs17sv5tv}201t{2wu4w1k2yu}201x{2wu4wy2yu}17s{2ktclucmucnu4otcpu4lu4wycoucku}2w{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}2x{17sy5ty5oy5qs}2y{7qs4qz5k1m17sy5ow5qx5rsfsu5ty7tufzu}'fof'-6o7p{17sv5tv5ow}ck{4qs5kw5ow5qs17sv5tv}4l{4qs5kw5ow5qs17sv5tv}cm{4qs5kw5ow5qs17sv5tv}cn{4qs5kw5ow5qs17sv5tv}co{4qs5kw5ow5qs17sv5tv}cp{4qs5kw5ow5qs17sv5tv}6l{17sy5ty5ow}do{17st5tt}4z{17st5tt}7s{fst}dm{17st5tt}dn{17st5tt}5o{ckwclwcmwcnwcowcpw4lw4wv}dp{17st5tt}dq{17st5tt}7t{5ow}ds{17st5tt}5t{2ktclucmucnu4otcpu4lu4wycoucku}fu{17sv5tv5ow}6p{17sy5ty5ow5qs}ek{17sy5ty5ow}el{17sy5ty5ow}em{17sy5ty5ow}en{5ty}eo{17sy5ty5ow}ep{17sy5ty5ow}es{17sy5ty5qs}et{17sy5ty5ow5qs}eu{17sy5ty5ow5qs}ev{17sy5ty5ow5qs}6z{17sy5ty5ow5qs}fm{17sy5ty5ow5qs}fn{17sy5ty5ow5qs}fo{17sy5ty5ow5qs}fp{17sy5ty5qs}fq{17sy5ty5ow5qs}7r{5ow}fs{17sy5ty5ow5qs}ft{17sv5tv5ow}7m{5ow}fv{17sv5tv5ow}fw{17sv5tv5ow}}}")
-      }};
-
-  /*
-  This event handler is fired when a new jsPDF object is initialized
-  This event handler appends metrics data to standard fonts within
-  that jsPDF instance. The metrics are mapped over Unicode character
-  codes, NOT CIDs or other codes matching the StandardEncoding table of the
-  standard PDF fonts.
-  Future:
-  Also included is the encoding maping table, converting Unicode (UCS-2, UTF-16)
-  char codes to StandardEncoding character codes. The encoding table is to be used
-  somewhere around "pdfEscape" call.
-  */
-
-  API.events.push([
-    'addFont'
-    ,function(font) {
-      var metrics
-        , unicode_section
-        , encoding = 'Unicode'
-        , encodingBlock;
-
-      metrics = fontMetrics[encoding][font.PostScriptName];
-      if (metrics) {
-        if (font.metadata[encoding]) {
-          unicode_section = font.metadata[encoding];
-        } else {
-          unicode_section = font.metadata[encoding] = {};
-        }
-
-        unicode_section.widths = metrics.widths;
-        unicode_section.kerning = metrics.kerning;
-      }
-
-      encodingBlock = encodings[encoding][font.PostScriptName];
-      if (encodingBlock) {
-        if (font.metadata[encoding]) {
-          unicode_section = font.metadata[encoding];
-        } else {
-          unicode_section = font.metadata[encoding] = {};
-        }
-
-        unicode_section.encoding = encodingBlock;
-        if (encodingBlock.codePages && encodingBlock.codePages.length) {
-          font.encoding = encodingBlock.codePages[0];
-        }
-      }
-    }
-  ]) // end of adding event handler
-
-})(module.exports.jsPDF.API);
-Opal.loaded(["jspdf-cli"]);
 /* Generated by Opal 0.10.5 */
 Opal.modules["opal-jspdf"] = function(Opal) {
   function $rb_times(lhs, rhs) {
@@ -42272,7 +43586,7 @@ Opal.modules["version"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice;
 
   Opal.add_stubs(['$year', '$now']);
-  Opal.cdecl($scope, 'VERSION', "dev/V_1.8.0_dev-2-27-g7753fbf");
+  Opal.cdecl($scope, 'VERSION', "dev/V_1.8.0_dev-2-48-g96edebf");
   Opal.cdecl($scope, 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.cdecl($scope, 'COPYRIGHT', "© " + ($scope.get('Time').$now().$year()) + " https://www.zupfnoter.de");
 };
@@ -64067,13 +65381,22 @@ Opal.loaded(["abc2svg-1"]);
 /* Generated by Opal 0.10.5 */
 (function(Opal) {
   var $a, $b, TMP_1, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $gvars = Opal.gvars, sourcepattern = nil, targetfolder = nil, controller = nil, sourcefiles = nil;
-  if ($gvars.fs == null) $gvars.fs = nil;
-  if ($gvars.encoding == null) $gvars.encoding = nil;
+  if ($gvars.nodemodules == null) $gvars.nodemodules = nil;
 
   Opal.add_stubs(['$require', '$[]', '$mkdir_p', '$puts', '$first', '$new', '$each', '$clear_errors', '$read', '$message', '$set_abc_input', '$load_music_model', '$produce_pdfs', '$write', '$basename', '$join', '$get_errors']);
+  
+$gvars.nodemodules = {};
+  // see https://stackoverflow.com/questions/30694428/jspdf-server-side-node-js-usage-using-node-jspdf
+  global.window = {document: {createElementNS: () => {return {}} }};
+  global.navigator = {};
+  global.btoa = () => {};
+
+  jsPDF = require ("jspdf")
+  Ajv = require("ajv")
+  glob = require("glob")
+;
   self.$require("opal");
   self.$require("opal-platform");
-  self.$require("ajv.min.js");
   self.$require("nodejs");
   self.$require("nodejs/fileutils");
   self.$require("vector2d");
@@ -64083,7 +65406,6 @@ Opal.loaded(["abc2svg-1"]);
   self.$require("harpnotes");
   self.$require("abc_to_harpnotes_factory");
   self.$require("abc2svg_to_harpnotes");
-  self.$require("jspdf-cli.js");
   self.$require("opal-jspdf");
   self.$require("opal-jszip");
   self.$require("pdf_engine");
@@ -64102,11 +65424,6 @@ Opal.loaded(["abc2svg-1"]);
   self.$puts("processing " + ($scope.get('ARGV').$first()) + " to " + (targetfolder));
   controller = $scope.get('CliController').$new();
   sourcefiles = $scope.get('Dir')['$[]'](sourcepattern);
-  
-  glob = require('glob')
-  $gvars.fs = require('fs')
-  $gvars.encoding = require ("encoding")
-  ;
   ($a = ($b = sourcefiles).$each, $a.$$p = (TMP_1 = function(sourcefile){var self = TMP_1.$$s || this, $c, $d, TMP_2, abctext = nil, e = nil, pdfs = nil;
     if ($gvars.log == null) $gvars.log = nil;
 if (sourcefile == null) sourcefile = nil;
@@ -64125,17 +65442,17 @@ if (sourcefile == null) sourcefile = nil;
     controller.$load_music_model();
     pdfs = controller.$produce_pdfs(".");
     ($c = ($d = pdfs).$each, $c.$$p = (TMP_2 = function(filename, content){var self = TMP_2.$$s || this, outputname = nil;
-      if ($gvars.encoding == null) $gvars.encoding = nil;
-      if ($gvars.fs == null) $gvars.fs = nil;
 if (filename == null) filename = nil;if (content == null) content = nil;
     outputname = "" + (targetfolder) + "/" + (filename);
       self.$puts(filename);
       
-       var buffer = $gvars.encoding.convert(content, 'Latin-1')
-       $gvars.fs.writeFileSync(outputname, buffer)
+       var fs = require('fs')
+       var encoding = require ("encoding")
+       var buffer = encoding.convert(content, 'Latin-1')
+       fs.writeFileSync(outputname, buffer)
     ;}, TMP_2.$$s = self, TMP_2.$$arity = 2, TMP_2), $c).call($d);
     return $scope.get('File').$write("" + (targetfolder) + "/" + ($scope.get('File').$basename(sourcefile)) + ".err", $gvars.log.$get_errors().$join("\n"));}, TMP_1.$$s = self, TMP_1.$$arity = 1, TMP_1), $a).call($b);
   return nil;
 })(Opal);
 
-},{"encoding":4,"fs":undefined,"glob":9}]},{},[39]);
+},{"ajv":1,"encoding":46,"fs":undefined,"glob":51,"jspdf":81}]},{},[86]);

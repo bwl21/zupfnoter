@@ -1,6 +1,18 @@
+%x{
+#{$nodemodules} = {};
+  // see https://stackoverflow.com/questions/30694428/jspdf-server-side-node-js-usage-using-node-jspdf
+  global.window = {document: {createElementNS: () => {return {}} }};
+  global.navigator = {};
+  global.btoa = () => {};
+
+  jsPDF = require ("jspdf")
+  Ajv = require("ajv")
+  glob = require("glob")
+}
+
 require 'opal'
 require 'opal-platform'
-require 'ajv.min.js'
+#require 'ajv.min.js'
 
 
 require 'nodejs'
@@ -20,7 +32,7 @@ require 'abc_to_harpnotes_factory'
 require 'abc2svg_to_harpnotes'
 
 #require 'node_modules/jspdf/dist/jspdf.min'
-require 'jspdf-cli.js'
+#require 'jspdf-cli.js'
 require 'opal-jspdf'
 require 'opal-jszip'
 #require 'opal-musicaljs'
@@ -63,11 +75,7 @@ sourcefiles = Dir[sourcepattern]
 
 # these requires are necessar yfor browserify
 # $encoding = node_require('encoding')
-%x{
-  glob = require('glob')
-  #{$fs} = require('fs')
-  #{$encoding} = require ("encoding")
-  }
+
 
 
 sourcefiles.each do |sourcefile|
@@ -93,8 +101,10 @@ sourcefiles.each do |sourcefile|
     puts filename
 
     %x{
-       var buffer = #{$encoding}.convert(#{content}, 'Latin-1')
-       #{$fs}.writeFileSync(#{outputname}, buffer)
+       var fs = require('fs')
+       var encoding = require ("encoding")
+       var buffer = encoding.convert(#{content}, 'Latin-1')
+       fs.writeFileSync(#{outputname}, buffer)
     }
   end
 

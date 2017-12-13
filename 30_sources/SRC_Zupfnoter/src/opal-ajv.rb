@@ -6,11 +6,10 @@ module Ajv
 
       ajv = nil
       if OPAL_PLATFORM == 'nodejs'
-        ajv = %x{module.exports.Ajv}
+        ajv = %x{Ajv}
       else
         ajv = %x{Ajv}
       end
-
       @root = `#{ajv}({allErrors: true, jsonPointers: true})`;
       add_schema(_schema, 'zupfnoter');
     end
