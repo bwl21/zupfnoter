@@ -20,6 +20,7 @@
   
 ## enhancement
 
+* now have a linear packer #194
 * now have menu to import from local disc #177  
 * support for 25 string bass harp #180
 * strip =duration on meter "M:3/4 4/4 =3/4" #181

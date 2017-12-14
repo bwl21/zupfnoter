@@ -289,7 +289,7 @@ module Harpnotes
       #
       # @param notes [Array of Note] The particular notes of the chord
       # @param [Object] synched_notes the notes synched by this point
-      def initialize(notes, synched_notes=[])
+      def initialize(notes, synched_notes = [])
         super()
         raise "Notes must be an array" unless notes.is_a? Array
 
@@ -434,7 +434,7 @@ module Harpnotes
     class NoteBoundAnnotation < NonPlayable
       # @param [Object] companion the note which is annotated
       # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
-      def initialize(companion, annotation, conf_key=nil)
+      def initialize(companion, annotation, conf_key = nil)
         super()
         self.companion = companion # self: use the method companion=
         @conf_key      = conf_key
@@ -519,7 +519,7 @@ module Harpnotes
       # @param voices [Array of ABCVoice] The voices in the song
       # @param note_length_in_beats [Integer] the shortest note todo: not used?
       #
-      def initialize(voices = [], note_length_in_beats = 8, metadata={})
+      def initialize(voices = [], note_length_in_beats = 8, metadata = {})
         @voices               = voices
         @note_length_in_beats = note_length_in_beats
         @meta_data            = metadata
@@ -608,10 +608,10 @@ module Harpnotes
       #
       # @return nil
       def update_beats
-        @beat_maps= @voices.map do |voice|
+        @beat_maps = @voices.map do |voice|
           current_beat = 0
           voice_map    = voice.select {|e| e.is_a? Playable}.inject(BeatMap.new(voice.index)) do |map, playable|
-            current_beat       = playable.time/8
+            current_beat       = playable.time / 8
             current_beat_floor = current_beat.floor(0)
 
             beat_error = current_beat - current_beat_floor
@@ -643,7 +643,7 @@ module Harpnotes
       attr_accessor :index, :name, :show_voice, :show_flowline, :show_jumpline
 
       def initialize()
-        @show_voice    =true
+        @show_voice    = true
         @show_flowline = true
         @show_jumpline = true
         super
@@ -718,11 +718,11 @@ module Harpnotes
       end
 
       def visible=(v)
-        @visible=v
+        @visible = v
       end
 
       def line_width=(v)
-        @line_width=v
+        @line_width = v
       end
 
       def line_width
@@ -1161,7 +1161,7 @@ module Harpnotes
         # Spacing between two BeatTable increments
         # 1.0 = dureation of a whole note
         #
-        @beat_spacing         = $conf.get('layout.Y_SCALE') * 1.0/$conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
+        @beat_spacing         = $conf.get('layout.Y_SCALE') * 1.0 / $conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
         @slur_index           = {}
         @y_offset             = 5
         @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
@@ -1238,7 +1238,7 @@ module Harpnotes
 
         result = [];
 
-        (0 .. sheetsize.first/gridsize).map {|g| g * gridsize}.each do |g|
+        (0..sheetsize.first / gridsize).map {|g| g * gridsize}.each do |g|
           e = Harpnotes::Drawing::Path.new([['M', g, 0], ['l', 0, sheetsize.last]])
 
           e.line_width = the_options[:line]
@@ -1246,7 +1246,7 @@ module Harpnotes
           result << e
         end
 
-        (0 .. sheetsize.last/gridsize).map {|g| g * gridsize}.each do |g|
+        (0..sheetsize.last / gridsize).map {|g| g * gridsize}.each do |g|
           e = Harpnotes::Drawing::Path.new([['M', 0, g], ['l', sheetsize.first, 0]])
 
           e.line_width = the_options[:line]
@@ -1265,7 +1265,7 @@ module Harpnotes
       # @param [Integer] print_variant_nr = 0  If a song has multiple print_variants, this is the index of the one to be shown
       #
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
-      def layout(music, beat_layout = nil, print_variant_nr = 0, page_format='A4')
+      def layout(music, beat_layout = nil, print_variant_nr = 0, page_format = 'A4')
 
         print_options_raw = get_print_options(print_variant_nr)
 
@@ -1394,9 +1394,9 @@ module Harpnotes
         legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
-                                                          "extract.#{print_variant_nr}.legend.pos", title_pos).tap {|s| s.draginfo={handler: :annotation}}
+                                                          "extract.#{print_variant_nr}.legend.pos", title_pos).tap {|s| s.draginfo = {handler: :annotation}}
         annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
-                                                          "extract.#{print_variant_nr}.legend.spos", legend_pos).tap {|s| s.draginfo={handler: :annotation}}
+                                                          "extract.#{print_variant_nr}.legend.spos", legend_pos).tap {|s| s.draginfo = {handler: :annotation}}
 
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
@@ -1414,13 +1414,13 @@ module Harpnotes
             lyrics.each do |key, entry|
               pos      = entry[:pos]
               the_text = entry[:verses].map {|i|
-                j = 9999 if i==0 # this is a workaround, assuming that we do not have 1000 verses
+                j = 9999 if i == 0 # this is a workaround, assuming that we do not have 1000 verses
                 j = i if i < 0
                 j = i - 1 if i > 0
                 verses[j]
               }.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
-                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", pos).tap {|s| s.draginfo={handler: :annotation}}
+                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", pos).tap {|s| s.draginfo = {handler: :annotation}}
             end
           end
         end
@@ -1438,7 +1438,7 @@ module Harpnotes
             raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
             raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
             annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
-                                                              "#{conf_key}.pos", note[:pos]).tap {|s| s.draginfo={handler: :annotation}}
+                                                              "#{conf_key}.pos", note[:pos]).tap {|s| s.draginfo = {handler: :annotation}}
           end
         rescue Exception => e
           $log.error e.message
@@ -1475,13 +1475,13 @@ module Harpnotes
 
       def layout_sortmark(title, options)
         sortname = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
-        b        = (sortname+"AAAA").split('').map {|i| i.ord - "A".ord}
-        a        = b[0] + (0.1 * b[1] + 0.01 * b[2] + 0.001 * b[3]) * 0.5/2.4 # 0.5 cover half the stringdistance; 2.4 - 24 positions
+        b        = (sortname + "AAAA").split('').map {|i| i.ord - "A".ord}
+        a        = b[0] + (0.1 * b[1] + 0.01 * b[2] + 0.001 * b[3]) * 0.5 / 2.4 # 0.5 cover half the stringdistance; 2.4 - 24 positions
         w, h     = options['size']
         fill     = options['fill'] ? :filled : :open
         markpos  = (12.5 + a) * $conf.get('layout.X_SPACING') # 12 - 12 strings fro mleft border
 
-        markpath = [['M', markpos, 0], ['l', -w/2, h], ['l', w, 0], ['l', -w/2, -h], ['l', 0, h], ['l', 0, -h], ['z']]
+        markpath = [['M', markpos, 0], ['l', -w / 2, h], ['l', w, 0], ['l', -w / 2, -h], ['l', 0, h], ['l', 0, -h], ['z']]
         Harpnotes::Drawing::Path.new(markpath, fill)
       end
 
@@ -1509,13 +1509,13 @@ module Harpnotes
           scale       = scale * ((no_of_names) / scale.length + 1)
 
           start_scale = -$conf.get('layout.PITCH_OFFSET')
-          end_scale   = start_scale + no_of_names -1
+          end_scale   = start_scale + no_of_names - 1
           vpos        = print_options_hash[:stringnames][:vpos]
           style       = print_options_hash[:stringnames][:style]
           x_spacing   = $conf.get('layout.X_SPACING')
           x_offset    = $conf.get('layout.X_OFFSET') - 1
 
-          sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
+          sheet_marks += (start_scale..end_scale).to_a.inject([]) do |result, pitch|
             x = (-start_scale + pitch) * x_spacing + x_offset
             vpos.each do |vpos|
               result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style)
@@ -1634,7 +1634,7 @@ module Harpnotes
 
             position = Vector2d(the_playable.center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, count_note, style, playable.origin,
-                                                          conf_key, annotationoffset).tap {|s| s.draginfo={handler: :annotation}}
+                                                          conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
             result
           end
         end
@@ -1672,7 +1672,7 @@ module Harpnotes
                   autopos = :right
                 end
                 # 1 mm horizontal distance, 0.5 mm vertical
-                auto_x           = (autopos==:left ? (-barnumber.length - the_playable.size.first - 2) : (the_playable.size_with_dot.first + 1))
+                auto_x           = (autopos == :left ? (-barnumber.length - the_playable.size.first - 2) : (the_playable.size_with_dot.first + 1))
                 annotationoffset = [auto_x, -the_playable.size.last - 3] # todo derive "7" from style?
               else
                 annotationoffset = fixedpos
@@ -1681,7 +1681,7 @@ module Harpnotes
 
             position = Vector2d(lookuptable_drawing_by_playable[playable].center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, barnumber, style, playable.origin,
-                                                          conf_key, annotationoffset).tap {|s| s.draginfo={handler: :annotation}}
+                                                          conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
             result
           end
         end
@@ -1806,7 +1806,7 @@ module Harpnotes
                                                              nil,
                                                              conf_key + ".#{conf_key_pos}",
                                                              conf_value.to_a)
-                              .tap {|s| s.draginfo={handler: :annotation}}
+                              .tap {|s| s.draginfo = {handler: :annotation}}
               )
             end
             tuplet_notes = []
@@ -1935,8 +1935,8 @@ module Harpnotes
 
           position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
-                                                        conf_key, annotationoffset).tap {|s| s.draginfo={handler: :annotation}}
-          result   = nil if annotation.policy==:Goto and not show_options[:jumpline]
+                                                        conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
+          result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
           result
         end
 
@@ -1968,11 +1968,11 @@ module Harpnotes
             conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
 
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
-            annotationoffset = [0, (-decoration_root.size.last/decoration_scale - decoration_distance).round()] unless annotationoffset
+            annotationoffset = [0, (-decoration_root.size.last / decoration_scale - decoration_distance).round()] unless annotationoffset
 
             decoration_center = [decoration_root.center.first + annotationoffset.first, decoration_root.center.last + annotationoffset.last]
             r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, annotationoffset)
-            r.tap {|s| s.draginfo={handler: :annotation}}
+            r.tap {|s| s.draginfo = {handler: :annotation}}
             r.is_note = false
             decoration_result.push [r]
           end
@@ -2022,7 +2022,7 @@ module Harpnotes
         position = Vector2d(lookuptable_drawing_by_playable[companion_note].center) + annotationoffset
 
         Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
-                                           companion_note.origin, conf_key, annotationoffset).tap {|s| s.draginfo={handler: :annotation}}
+                                           companion_note.origin, conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
       end
 
 
@@ -2031,12 +2031,32 @@ module Harpnotes
 
       def compute_beat_compression(music, layout_lines)
         result = compute_beat_compression_1(music, layout_lines) if $conf.get('layout.packer.pack_method') == 1
+        result = compute_beat_compression_2(music, layout_lines) if $conf.get('layout.packer.pack_method') == 2
         result = compute_beat_compression_10(music, layout_lines) if $conf.get('layout.packer.pack_method') == 10
         result = compute_beat_compression_0(music, layout_lines) if ($conf.get('layout.packer.pack_method') || 0) == 0
         result
       end
 
-      # this is the legacy compressor kept for a while as fallback
+      # this is linear packer
+      def compute_beat_compression_2(music, layout_lines)
+        # find relevant notes for vertical layout
+        compression_map   = {}
+
+        relevant_notes = layout_lines.map {|voice_id| music.voices[voice_id]}.inject([]) {|result, voice| result.push(voice)}.flatten.select {|note| note.is_a? Harpnotes::Music::Playable}
+        relevant_sp    = relevant_notes.select {|note| note.is_a? Harpnotes::Music::SynchPoint}.map {|sp| sp.notes}
+        relevant_notes = relevant_notes.push(relevant_sp).flatten
+
+        relevant_beats = relevant_notes.group_by {|playable| playable.beat}
+
+        relevant_beats.keys.sort.each do |beat| # note that hashes are not sorted!
+          compression_map[beat] = beat * 8
+        end
+
+        compression_map
+      end
+
+
+      # this is the legacy c  ompressor kept for a while as fallback
       def compute_beat_compression_10(music, layout_lines)
         max_beat = music.beat_maps.map {|map| map.keys.max}.max
 
@@ -2064,7 +2084,7 @@ module Harpnotes
             end
 
             # we need to increment the position by the (radii[i] + radii[i-1])/2
-            increment = (size + last_size)/2
+            increment = (size + last_size) / 2
             last_size = size
 
             if measure_start
@@ -2155,7 +2175,7 @@ module Harpnotes
             $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
           end
 
-          defaultincrement = (size + last_size)/2
+          defaultincrement = (size + last_size) / 2
           last_size        = size
 
           # do the default incremnt in case of a collision
@@ -2209,7 +2229,7 @@ module Harpnotes
             $log.error("BUG: unsupported duration: #{max_duration_on_beat} on beat #{beat},  #{notes_on_beat.to_json}")
           end
 
-          defaultincrement = (size + last_size)/2
+          defaultincrement = (size + last_size) / 2
           last_size        = size
 
           # detect collisions
@@ -2238,7 +2258,7 @@ module Harpnotes
           if not collisions.empty?
             increment = defaultincrement
           elsif not inversions.empty? # perform half incremnet in case of inversion
-            nextincrement = defaultincrement/2 # other half comes in next seuqence
+            nextincrement = defaultincrement / 2 # other half comes in next seuqence
             increment     = nextincrement
           end
 
@@ -2523,11 +2543,11 @@ module Harpnotes
       #
       # @return [Array] of Path command arrays
       def make_sheetmark_path(note)
-        w     = 0.5; h=5
-        base  = Vector2d(note) - [w, h/2]
-        vpath = [Vector2d(w, -(2*w)), Vector2d(w, 2*w),
+        w     = 0.5; h = 5
+        base  = Vector2d(note) - [w, h / 2]
+        vpath = [Vector2d(w, -(2 * w)), Vector2d(w, 2 * w),
                  Vector2d(0, h),
-                 Vector2d(-(w), 2*w), Vector2d(-(w), -2*(w)),
+                 Vector2d(-(w), 2 * w), Vector2d(-(w), -2 * (w)),
                  Vector2d(0, -h)]
 
         path = [["M", base.x, base.y]]
@@ -2595,11 +2615,11 @@ module Harpnotes
         # see https://de.wikipedia.org/wiki/B%C3%A9zierkurve#Kubische_B.C3.A9zierkurven_.28n.3D3.29
         cpa1  = p1 + cp1 # absolute control point 1
         cpa2  = p1 + cp2 # absolute control point 2
-        cpm1  = (p1 + cpa1)/2 # middle of p1->cp1
-        cpm2  = (p2 + cpa2)/2 # middle of p2->cp2
-        cpmm  = (cpa1 + cpa2)/2 # middle between the control points
-        cpmm1 = (cpm1 + cpmm)/2 # start of tangent
-        cpmm2 = (cpm2 + cpmm)/2 # end of tangent
+        cpm1  = (p1 + cpa1) / 2 # middle of p1->cp1
+        cpm2  = (p2 + cpa2) / 2 # middle of p2->cp2
+        cpmm  = (cpa1 + cpa2) / 2 # middle between the control points
+        cpmm1 = (cpm1 + cpmm) / 2 # start of tangent
+        cpmm2 = (cpm2 + cpmm) / 2 # end of tangent
 
         unless cpmm1 == cpmm2 # see #57
           annotation_normal = (cpmm1 - cpmm2).perpendicular.normalize
