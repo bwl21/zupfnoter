@@ -1,6 +1,9 @@
+
 require 'opal'
+require 'opal-platform'
 require 'opal-jquery'
 require 'vector2d'
+require 'neatjson_js'
 require 'opal-neatjson'
 require 'opal-ajv'
 #require 'math'
@@ -37,3 +40,12 @@ require 'xml2abc.js'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"
+
+Document.ready? do
+  a = Controller.new
+  # provide access to  zupfnoter controller from browser console
+  # to suppert debuggeing
+  Element.find("html").append(%Q{ <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="#{DBX_APIKEY_FULL}"></script>
+})
+  `window.zupfnoter=#{a}`
+end

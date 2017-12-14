@@ -446,7 +446,7 @@ sequence of contact)
 
 This software is licensed under dual license GPL and Commercial
 
-# Contributing
+# Contributing (needs update)
 
 Your contributions are welcome. However, few things you need to know
 before contribution:
@@ -458,6 +458,15 @@ before contribution:
 -   goto 30_sources/SRC_Zupfnoter/src
 -   run `rake server`
 -   goto http://localhost:9292
+
+Install the following node modules - the node setting is not yet done properly ...
+
+- blob
+- encoding
+- browserify
+- jspdf
+- uglify-js
+- ajv
 
 Please check out latest code before changing anything. Please use
 Gitflow to prepare PRs

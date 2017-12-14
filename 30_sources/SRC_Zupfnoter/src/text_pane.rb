@@ -304,7 +304,6 @@ module Harpnotes
 
 
     # get the abc part of the stuff
-    CONFIG_SEPARATOR = "%%%%zupfnoter.config"
 
     def get_abc_part
       get_text.split(CONFIG_SEPARATOR).first

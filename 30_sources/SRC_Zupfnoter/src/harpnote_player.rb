@@ -7,8 +7,7 @@ module Harpnotes
 
     class HarpnotePlayer
 
-      attr_reader :abcplay # expose the abcplayer such that controller can use it to procude player_model_abc
-      attr_accessor :player_model_abc
+      attr_accessor :player_model_abc # This is to inject the player events created by abc2svg
 
 
       def initialize()

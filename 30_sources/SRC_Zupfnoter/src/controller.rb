@@ -100,12 +100,12 @@ class Controller
 
 
     # todo make this configurable by a preferences menu
-    languages          = {'de'    => 'de-de',
-                          'de-de' => 'de-de',
-                          'en'    => 'en-US',
-                          'en-us' => 'en-US'
+    languages = {'de'    => 'de-de',
+                 'de-de' => 'de-de',
+                 'en'    => 'en-US',
+                 'en-us' => 'en-US'
     }
-    browser_language   = `navigator.language`.downcase
+    browser_language = `navigator.language`.downcase rescue "de-de"
     zupfnoter_language = languages[browser_language] || 'de-de'
     I18n.locale(zupfnoter_language) if browser_language
 
@@ -151,7 +151,7 @@ class Controller
 
     @dropboxclient = Opal::DropboxJs::NilClient.new()
 
-    @systemstatus={version: VERSION}
+    @systemstatus = {version: VERSION}
 
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
@@ -232,18 +232,19 @@ class Controller
 
   # this method invokes the system conumers
   def call_consumers(clazz)
-    @systemstatus_consumers = {systemstatus:  [
-                                                  lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
-                                              ],
-                               statusline:    [],
-                               error_alert:   [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
-                               play_start:    [lambda {`update_play_w2ui('start')`}],
-                               play_stop:     [lambda {`update_play_w2ui('stop')`}],
-                               play_stopping: [lambda {`update_play_w2ui('stopping')`}],
-                               disable_save:  [lambda {`disable_save();`}],
-                               enable_save:   [lambda {`enable_save();`}],
-                               before_open:   [lambda {`before_open()`}],
-                               extracts:      [lambda {@extracts.each {|entry|
+    @systemstatus_consumers = {systemstatus:   [
+                                                   lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
+                                               ],
+                               statusline:     [],
+                               error_alert:    [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
+                               play_start:     [lambda {`update_play_w2ui('start')`}],
+                               play_stop:      [lambda {`update_play_w2ui('stop')`}],
+                               play_stopping:  [lambda {`update_play_w2ui('stopping')`}],
+                               disable_save:   [lambda {`disable_save();`}],
+                               enable_save:    [lambda {`enable_save();`}],
+                               before_open:    [lambda {`before_open()`}],
+                               document_title: [lambda {`document.title = #{@music_model.meta_data[:filename]}`}],
+                               extracts:       [lambda {@extracts.each {|entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})`}
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
@@ -276,7 +277,7 @@ class Controller
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
       abc = @editor.get_text
-      abc = `localStorage.setItem('abc_data', abc);`
+      abc = `localStorage.setItem('abc_data', abc)`
     end
   end
 
@@ -421,10 +422,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # migrate the configuration which is provided from textox
   # this method is necesary to upgrade existing sheets
   def migrate_config(config)
-    result           = Confstack.new(false)
-    result.strict    = false
-    old_config       = Confstack.new(false)
-    old_config.strict= false
+    result            = Confstack.new(false)
+    result.strict     = false
+    old_config        = Confstack.new(false)
+    old_config.strict = false
     old_config.push(config.clone)
     result.push(config)
 
@@ -471,8 +472,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
       if lyrics
         result           = lyrics.inject({}) do |ir, element|
-          verses                = element.first.gsub(",", " ").split(" ").map {|f| f.to_i}
-          ir[(ir.count+1).to_s] = {"verses" => verses, "pos" => element.last}
+          verses                  = element.first.gsub(",", " ").split(" ").map {|f| f.to_i}
+          ir[(ir.count + 1).to_s] = {"verses" => verses, "pos" => element.last}
           ir
         end
         r[element.first] = {"lyrics" => result}
@@ -488,7 +489,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       notes = element.last['notes']
       if notes.is_a? Array ## in the old version notes was an array
         result           = notes.inject({}) do |ir, element|
-          ir[(ir.count+1).to_s] = element
+          ir[(ir.count + 1).to_s] = element
           ir
         end
         r[element.first] = {'notes' => result}
@@ -539,7 +540,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       abc_text = @editor.get_abc_part
       abc_text = abc_text.split("\n").map {|line|
         result = line
-        result = result.gsub(/(\\?)(~)/) {|m| m[0]=='\\' ? m[1] : ' '} if line.start_with? 'W:'
+        result = result.gsub(/(\\?)(~)/) {|m| m[0] == '\\' ? m[1] : ' '} if line.start_with? 'W:'
         result
       }.join("\n")
 
@@ -643,7 +644,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # compute the layout of the harpnotes
   # @return [Happnotes::Layout] to be passed to one of the engines for output
-  def layout_harpnotes(print_variant = 0, page_format='A4')
+  def layout_harpnotes(print_variant = 0, page_format = 'A4')
 
     config = get_config_from_editor
     @editor.neat_config
@@ -669,7 +670,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
 
       load_music_model
-      `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
+
+      call_consumers(:document_title)
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
       result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)
@@ -690,10 +692,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     abc_parser = $conf.get('abc_parser')
     $log.timestamp_start
     harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
-    harpnote_engine.abcplay           = @harpnote_player.abcplay # provide the abc player to convert the abc model for playing
-    @music_model                      = harpnote_engine.transform(@editor.get_abc_part)
-    @player_model_abc                 = harpnote_engine.player_model_abc # this is a model to be played directly from abc
-    @harpnote_player.player_model_abc = @player_model_abc
+    @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
+    @harpnote_player.player_model_abc = player_model_abc
     @music_model.checksum             = @editor.get_checksum
   end
 
@@ -788,7 +788,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def unhighlight_abc_object(abcelement)
-    a=Native(abcelement) # remove me
+    a = Native(abcelement) # remove me
     @tune_preview_printer.range_unhighlight_more(a[:startChar], a[:endChar])
     #$log.debug("unselect_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
@@ -805,7 +805,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def set_status(status)
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
-    $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
+    $log.loglevel = (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
 
     save_to_localstorage
     call_consumers(:systemstatus)
@@ -882,7 +882,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
 
     @tune_preview_printer.on_select do |abcelement|
-      a=Native(abcelement) # todo remove me
+      a = Native(abcelement) # todo remove me
       select_abc_object(abcelement)
     end
   end
@@ -1127,12 +1127,4 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 end
 
-Document.ready? do
-  a = Controller.new
-  # provide access to  zupfnoter controller from browser console
-  # to suppert debuggeing
-  Element.find("html").append(%Q{ <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="#{DBX_APIKEY_FULL}"></script>
-})
-  `window.zupfnoter=#{a}`
-end
 

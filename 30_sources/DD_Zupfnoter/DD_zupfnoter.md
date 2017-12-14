@@ -103,4 +103,42 @@ Approach follows nodebob but uses rake to do this.
 3. create the binaries for windows and osx
 
 
+# notes how to include Javascript files
 
+Javascript files can be included on following ways:
+
+1. using a `<script>`
+
+1. using sprockets and ruby `require`
+
+    This only works e.g. for userinterface.js which global objects 
+    which are subsequently known in Opal.
+    
+2. using `require(xx)` on the JS side. This can be done in application.rb, for example
+
+This is used for node modules or js files following common module appraoch.
+
+``` ruby
+#
+%x{
+  // see https://stackoverflow.com/questions/30694428/jspdf-server-side-node-js-usage-using-node-jspdf
+  global.window = {document: {createElementNS: function(){return {}} }};
+  global.navigator = {};
+  global.btoa = function(){};
+
+  jsPDF = require ("jspdf")   // adapt in opal-jspdf.rb
+  Ajv = require("ajv")        // adapt in opal-ajv.rb
+  neatJSON = require("./neatjson_js") // adapt in opal-neatjson.rb
+
+  // these requires are requred by nodejs/dir, nodejs/file
+  fs = require('fs')
+  glob = require("glob")      // don't know who needs this
+}
+```
+
+With this appraoch, the resulting js file can be run by node. But it looks
+in the search paths of node.
+
+If you want to run it really standalone, then we need to use browserify.
+
+This thing resolves the requrires. 

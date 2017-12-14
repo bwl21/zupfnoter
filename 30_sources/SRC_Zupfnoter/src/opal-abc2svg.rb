@@ -35,7 +35,7 @@ module ABC2SVG
                annotate:    true,
                page_format: true,
                keep_remark: true,
-               textrans:    Native(`w2utils.settings.phrases`)
+               textrans:    I18n.phrases
       }
 
 
@@ -131,7 +131,10 @@ I:staffnonote 2
     end
 
     def draw(abc_code, checksum="")
+      # note that the blank line is requred make the text
+      # not appaear correct on the tune sheet
       abc_text_insert = %Q{
+
 %%textoption right
 %%textfont * * 8
 %%text #{checksum}
@@ -213,12 +216,14 @@ I:staffnonote 2
 
       json_model = ""
       %x{
-          abcmidi = new AbcMIDI();
+          var abcmidi = new AbcMIDI();
           abcmidi.add(#{tsfirst}, #{voice_tb});
-          to_json = new AbcJSON();
+          var to_json = new AbcJSON();
           #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
-          #{@abcplay}.add(#{tsfirst}, #{voice_tb})
-          #{@player_model} = #{@abcplay}.clear()
+
+          var to_audio = new ToAudio()
+          to_audio.add(#{tsfirst}, #{voice_tb})
+          #{@player_model} = to_audio.clear()
       }
 
       @abc_model = JSON.parse(json_model)

@@ -1063,14 +1063,14 @@ module Harpnotes
   # The layout algorithms transforming a music model into a drawing model
   #
   module Layout
-    include Harpnotes::Music
-    include Harpnotes::Drawing
-
     #
     # the default layout engine representing vanilla table harp sheets
     # This might be the only one at all ...
     #
     class Default
+      include Harpnotes::Music
+      include Harpnotes::Drawing
+
       MM_PER_POINT = 0.3
 
 =begin
