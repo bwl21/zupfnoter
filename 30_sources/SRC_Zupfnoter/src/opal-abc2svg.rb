@@ -131,7 +131,10 @@ I:staffnonote 2
     end
 
     def draw(abc_code, checksum="")
+      # note that the blank line is requred make the text
+      # not appaear correct on the tune sheet
       abc_text_insert = %Q{
+
 %%textoption right
 %%textfont * * 8
 %%text #{checksum}
