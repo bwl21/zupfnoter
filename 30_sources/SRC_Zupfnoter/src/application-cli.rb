@@ -1,13 +1,25 @@
+##
+# here we include the javascript modules
+# these modules shall follow the common JS model as usually node modules do
+# Note that we assign them to global objexts which need to be adapted in the
+# opal wrappers.
+#
+# note that the require here is basically node_require
+# we cannot use opal's node_require because browserify would not find the results
+#
 %x{
-#{$nodemodules} = {};
   // see https://stackoverflow.com/questions/30694428/jspdf-server-side-node-js-usage-using-node-jspdf
-  global.window = {document: {createElementNS: () => {return {}} }};
+  global.window = {document: {createElementNS: function(){return {}} }};
   global.navigator = {};
-  global.btoa = () => {};
+  global.btoa = function(){};
 
-  jsPDF = require ("jspdf")
-  Ajv = require("ajv")
-  glob = require("glob")
+  jsPDF = require ("jspdf")   // adapt in opal-jspdf.rb
+  Ajv = require("ajv")        // adapt in opal-ajv.rb
+  neatJSON = require("./neatjson_js") // adapt in opal-neatjson.rb
+
+  // these requires are requred by nodejs/dir, nodejs/file
+  fs = require('fs')
+  glob = require("glob")      // don't know who needs this
 }
 
 require 'opal'
@@ -101,7 +113,6 @@ sourcefiles.each do |sourcefile|
     puts filename
 
     %x{
-       var fs = require('fs')
        var encoding = require ("encoding")
        var buffer = encoding.convert(#{content}, 'Latin-1')
        fs.writeFileSync(#{outputname}, buffer)
