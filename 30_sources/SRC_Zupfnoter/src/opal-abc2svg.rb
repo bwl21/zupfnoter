@@ -134,7 +134,8 @@ I:staffnonote 2
       # note that the blank line is requred make the text
       # not appaear correct on the tune sheet
       abc_text_insert = %Q{
-
+I:linebreak $
+$
 %%textoption right
 %%textfont * * 8
 %%text #{checksum}
