@@ -17,6 +17,7 @@
 * no longer crash with malformed K #172
 * improve imports of xml with non playable parts #187
 * fixed "blues with accidentals" #188
+* fix handling of fingerprint with abc2svg 1.15.5 #195
   
 ## enhancement
 

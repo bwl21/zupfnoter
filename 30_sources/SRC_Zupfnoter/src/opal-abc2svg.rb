@@ -84,6 +84,7 @@ I:measurenb 1
 I:contbarnb 1
 I:linewarn 0
 I:staffnonote 2
+I:stretchlast 1
       }
       %x{#{@root}.tosvg("my_parameters",#{defaults});}
       @root
@@ -134,8 +135,6 @@ I:staffnonote 2
       # note that the blank line is requred make the text
       # not appaear correct on the tune sheet
       abc_text_insert = %Q{
-I:linebreak $
-$
 %%textoption right
 %%textfont * * 8
 %%text #{checksum}
