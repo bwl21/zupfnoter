@@ -1199,6 +1199,24 @@ module Harpnotes
               res
             }
 
+          when "okon-harfe"
+            string_by_pitch = "31 33 34 36 38 40 41 43 45 46 48 50 52 53 55 57 58 60".split(" ").each_with_index.map{|i,k|[i.to_i+12, k]}
+            string_by_pitch = Hash(string_by_pitch)
+            @pitch_to_xpos               = lambda {|pitch|
+              #                           G        c        d        e        f        g        a        b        c'       D'
+              pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
+              result             = 0
+              result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+              result
+            }
+            @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+
+            @draw_instrument = lambda {
+              res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
+              res.line_width = $conf.get('layout.LINE_MEDIUM');
+              res
+            }
+
           when "21-strings-a-f"
             @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
 
@@ -1286,6 +1304,7 @@ module Harpnotes
         @layout_minc = print_options_raw['notebound.minc'] || {}
 
         @y_offset = print_options_hash[:startpos]
+        @y_size = $conf.get('layout.DRAWING_AREA_SIZE').last
 
         beat_compression_map = nil
         $log.benchmark("compute beat compression map") do
@@ -1307,6 +1326,7 @@ module Harpnotes
           # todo: why -1
           # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
           %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
+           %x{#{@y_size} - #{beat} * #{@beat_spacing}}  if true  # $conf.get('layout.bottomup')
         end
 
         compressed_beat_layout_proc = Proc.new {|beat| beat_layout.call(beat_compression_map[beat])}
@@ -1618,7 +1638,7 @@ module Harpnotes
                   autopos = :right
                 elsif pitchoffset >= 36
                   autopos = :left
-                elsif (playable.next_pitch || playable.pitch) > playable.pitch
+                elsif (playable.next_pitch || playable.pitch) > playable.pitch   # # $conf.get('layout.bottomup')
                   autopos = :left
                 else
                   autopos = :right
@@ -1666,7 +1686,7 @@ module Harpnotes
                   autopos = :right
                 elsif pitchoffset >= 36
                   autopos = :left
-                elsif (playable.prev_pitch || playable.pitch) >= playable.pitch
+                elsif (playable.prev_pitch || playable.pitch) >= playable.pitch   # $conf.get('layout.bottomup')
                   autopos = :left
                 else
                   autopos = :right
@@ -2040,7 +2060,7 @@ module Harpnotes
       # this is linear packer
       def compute_beat_compression_2(music, layout_lines)
         # find relevant notes for vertical layout
-        compression_map   = {}
+        compression_map = {}
 
         relevant_notes = layout_lines.map {|voice_id| music.voices[voice_id]}.inject([]) {|result, voice| result.push(voice)}.flatten.select {|note| note.is_a? Harpnotes::Music::Playable}
         relevant_sp    = relevant_notes.select {|note| note.is_a? Harpnotes::Music::SynchPoint}.map {|sp| sp.notes}
@@ -2322,7 +2342,7 @@ module Harpnotes
         res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
         res.color      = compute_color_by_variant_no(root.variant)
         res.line_width = $conf.get('layout.LINE_THICK')
-        res.hasbarover = true if root.measure_start
+        res.hasbarover = true if root.measure_start   # $conf.get('layout.bottomup')
         res.is_note    = true
         res
       end
