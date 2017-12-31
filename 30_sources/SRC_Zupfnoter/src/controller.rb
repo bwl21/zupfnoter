@@ -674,9 +674,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       call_consumers(:document_title)
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
-      result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)
-
-      $log.timestamp("layout  #{__FILE__} #{__LINE__}")
+      result = nil
+      $log.benchmark("computing layout"){result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)}
 
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
