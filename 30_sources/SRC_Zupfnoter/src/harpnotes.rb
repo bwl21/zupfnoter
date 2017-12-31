@@ -92,22 +92,27 @@ module Harpnotes
     # Marks classes in this model
     #
     class MusicEntity
-      attr_accessor :beat,
-                    :box, # ??
+      attr_accessor :beat, # the beat: Todo: this correlates to time and should be removed
+                    #:box, # ?? todo remove this
                     :conf_key,
                     :count_note, # string to support count_notes need to be queried even for measuers ...
-                    :decorations,
-                    :end_pos,
-                    :next_pitch,
-                    :next_first_in_part,
-                    :pos,
-                    :prev_pitch,
-                    :start_pos,
-                    :time,
-                    :visible,
+                    :decorations, # decorations
+                    :end_pos, # end position in source
+                    :next_pitch, # pitch of next entity
+                    :next_first_in_part, # indicate if next note is first in part
+                    :next_playable, # next playable in voice
+                    :prev_pitch, # pitch of previous entity
+                    :prev_playable, # prev playable in voice
+                    :start_pos, # start postition in source
+                    :time, # position in time
+                    :visible, # boolean is visible
                     :variant, # the variant within a variant block
-                    :znid,
-                    :origin
+                    :znid, # id for zupfnoter
+                    :origin, # backtrace to abc2svg object
+                    #
+                    # note that these attributes are annotated in Layout
+                    :sheet_drawable # reference to the drawable
+
 
       def initialize
         @visible = true
@@ -268,8 +273,12 @@ module Harpnotes
       def initialize(pitch, duration)
         super()
         raise("trying to create a note with undefined pitch") if pitch.nil?
-        @pitch    = pitch
-        @duration = duration
+        @pitch         = pitch
+        @next_pitch    = pitch
+        @next_playable = self
+        @prev_pitch    = pitch
+        @prev_playable = self
+        @duration      = duration
       end
 
     end
@@ -611,7 +620,7 @@ module Harpnotes
         @beat_maps = @voices.map do |voice|
           current_beat = 0
           voice_map    = voice.select {|e| e.is_a? Playable}.inject(BeatMap.new(voice.index)) do |map, playable|
-            current_beat       = playable.time / 8
+            current_beat       = playable.time / 8 # todo: replace literal - replace beat by time
             current_beat_floor = current_beat.floor(0)
 
             beat_error = current_beat - current_beat_floor
@@ -1199,9 +1208,10 @@ module Harpnotes
               res
             }
 
-          when "okon-harfe"
-            string_by_pitch = "31 33 34 36 38 40 41 43 45 46 48 50 52 53 55 57 58 60".split(" ").each_with_index.map{|i,k|[i.to_i+12, k]}
-            string_by_pitch = Hash(string_by_pitch)
+          when "okon-f", "okon-g", "okon-c", "okon-d"
+            pitches                      = "43 45 46 48 50 52 53 55 57 58 60 62 64 65 67 69 70 72"
+            string_by_pitch              = pitches.split(" ").each_with_index.map {|i, k| [i.to_i, k]}
+            string_by_pitch              = Hash[string_by_pitch]
             @pitch_to_xpos               = lambda {|pitch|
               #                           G        c        d        e        f        g        a        b        c'       D'
               pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
@@ -1209,10 +1219,10 @@ module Harpnotes
               result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
               result
             }
-            @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+            @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 300, 290]]
 
             @draw_instrument = lambda {
-              res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
+              res            = Harpnotes::Drawing::Path.new([['M', xoffset + 125, 0], ['L', xoffset + 370, 165]], :open)
               res.line_width = $conf.get('layout.LINE_MEDIUM');
               res
             }
@@ -1304,7 +1314,7 @@ module Harpnotes
         @layout_minc = print_options_raw['notebound.minc'] || {}
 
         @y_offset = print_options_hash[:startpos]
-        @y_size = $conf.get('layout.DRAWING_AREA_SIZE').last
+        @y_size   = $conf.get('layout.DRAWING_AREA_SIZE').last
 
         beat_compression_map = nil
         $log.benchmark("compute beat compression map") do
@@ -1322,12 +1332,18 @@ module Harpnotes
 
         # first optimize the vertical arrangement of the notes
         # by analyzing the beat layout
-        beat_layout = beat_layout || Proc.new do |beat|
-          # todo: why -1
-          # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-          %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
-           %x{#{@y_size} - #{beat} * #{@beat_spacing}}  if true  # $conf.get('layout.bottomup')
+        unless $conf.get('layout.bottomup')
+          beat_layout = beat_layout || Proc.new do |beat|
+            # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
+            %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
+          end
+        else
+          beat_layout = beat_layout || Proc.new do |beat|
+            # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
+            %x{#{@y_size} - #{beat} * #{@beat_spacing}}
+          end
         end
+
 
         compressed_beat_layout_proc = Proc.new {|beat| beat_layout.call(beat_compression_map[beat])}
 
@@ -1369,14 +1385,11 @@ module Harpnotes
           end
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
-        # this is a lookup table to find the drawing symbol by a note
-        note_to_ellipse = Hash[voice_elements.select {|e| e.is_note?}.map {|e| [e.origin, e]}]
-
         # build synchlines between voices
         synch_lines = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
-            res       = FlowLine.new(note_to_ellipse[sp.notes.first], note_to_ellipse[sp.notes.last], :dashed, sp)
+            res       = FlowLine.new(sp.notes.first.sheet_drawable, sp.notes.last.sheet_drawable, :dashed, sp)
             res.color = compute_color_by_variant_no(sp.notes.first.variant)
             res
           end
@@ -1605,15 +1618,16 @@ module Harpnotes
         # as Syncpoints are renderd from first to last, the last note is the remaining
         # one in the Hash unless we revert.
         # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
-
-        lookuptable_drawing_by_playable = Hash[res_playables.select {|e| e.origin.is_a? Harpnotes::Music::Playable}.map {|e| [e.origin, e]}.reverse]
-
+        
         res_decorations = res_decorations.flatten.compact
 
 
         # draw the countnotes
         # todo: handle shift
         # todo: handle influence of style to position of text
+
+        limit_a3 = $conf['layout.limit_a3'] == true
+
         visible_playables = playables.select {|playable| playable.visible?}
         if show_options[:countnotes]
           countnotes_options = show_options[:countnotes]
@@ -1626,33 +1640,34 @@ module Harpnotes
             conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
             count_note        = playable.count_note || ""
 
-            the_playable = lookuptable_drawing_by_playable[playable]
+            the_drawable = playable.sheet_drawable #lookuptable_drawing_by_playable[playable]
 
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
 
             unless annotationoffset
-              tie_x = 0
+              x, y   = the_drawable.center
+              xp, yp = playable.prev_playable.sheet_drawable.center
+              xn, yn = playable.next_playable.sheet_drawable.center
+              tie_x  = 0
               if autopos
-                pitchoffset = playable.pitch + $conf['layout.PITCH_OFFSET']
-                if pitchoffset <= 0
+                if limit_a3 && (x <= 10) # 4 * the_drawable.size.first   # use 4 since it might  be shifted
                   autopos = :right
-                elsif pitchoffset >= 36
+                elsif limit_a3 && (x >= 410)
                   autopos = :left
-                elsif (playable.next_pitch || playable.pitch) > playable.pitch   # # $conf.get('layout.bottomup')
-                  autopos = :left
-                else
-                  autopos = :right
+                elsif yn > y # go downwards
+                  autopos = xn > x ? :left : :right # $conf.get('layout.bottomup')
+                else # go upwards
+                  autopos = xp > x ? :left : :right # $conf.get('layout.bottomup')
                 end
-
                 tie_x            = 1 if autopos == :right and playable.tie_start?
-                auto_x           = tie_x + (autopos == :left ? -count_note.length - the_playable.size.first - 1 : the_playable.size_with_dot.first + 1)
+                auto_x           = tie_x + (autopos == :left ? -count_note.length - the_drawable.size.first - 1 : the_drawable.size_with_dot.first + 1)
                 annotationoffset = [auto_x, 0] # todo derive "3" from style?
               else
                 annotationoffset = fixedpos
               end
             end
 
-            position = Vector2d(the_playable.center) + annotationoffset
+            position = Vector2d(the_drawable.center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, count_note, style, playable.origin,
                                                           conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
             result
@@ -1672,7 +1687,7 @@ module Harpnotes
 
           res_barnumbers = visible_playables.select {|p| p.measure_start?}.map do |playable|
 
-            the_playable = lookuptable_drawing_by_playable[playable]
+            the_drawable = playable.sheet_drawable # lookuptable_drawing_by_playable[playable]
 
             notebound_pos_key = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}.pos"
             conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
@@ -1680,26 +1695,29 @@ module Harpnotes
 
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
             unless annotationoffset
-              pitchoffset = playable.pitch + $conf['layout.PITCH_OFFSET']
+              x, y   = the_drawable.center
+              xp, yp = playable.prev_playable.sheet_drawable.center
+              xn, yn = playable.next_playable.sheet_drawable.center
               if autopos
-                if pitchoffset <= 0
+                if limit_a3 && (x <= 10) # 4 * the_drawable.size.first   # use 4 since it might  be shifted
                   autopos = :right
-                elsif pitchoffset >= 36
+                elsif limit_a3 && (x >= 410)
                   autopos = :left
-                elsif (playable.prev_pitch || playable.pitch) >= playable.pitch   # $conf.get('layout.bottomup')
-                  autopos = :left
-                else
-                  autopos = :right
+                elsif yn > y # go downwards
+                  autopos = xp >= x ? :left : :right # $conf.get('layout.bottomup')
+                else # go upwards
+                  autopos = xn >= x ? :left : :right # $conf.get('layout.bottomup')
                 end
+
                 # 1 mm horizontal distance, 0.5 mm vertical
-                auto_x           = (autopos == :left ? (-barnumber.length - the_playable.size.first - 2) : (the_playable.size_with_dot.first + 1))
-                annotationoffset = [auto_x, -the_playable.size.last - 3] # todo derive "7" from style?
+                auto_x           = (autopos == :left ? (-barnumber.length - the_drawable.size.first - 2) : (the_drawable.size_with_dot.first + 1))
+                annotationoffset = [auto_x, -the_drawable.size.last - 3] # todo derive "7" from style?
               else
                 annotationoffset = fixedpos
               end
             end
 
-            position = Vector2d(lookuptable_drawing_by_playable[playable].center) + annotationoffset
+            position = Vector2d(playable.sheet_drawable.center) + annotationoffset
             result   = Harpnotes::Drawing::Annotation.new(position.to_a, barnumber, style, playable.origin,
                                                           conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
             result
@@ -1724,8 +1742,8 @@ module Harpnotes
                 conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
                 conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
 
-                p1 = Vector2d(lookuptable_drawing_by_playable[previous_note].center)
-                p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
+                p1 = Vector2d(previous_note.sheet_drawable.center)
+                p2 = Vector2d(playable.sheet_drawable.center)
 
                 ## note we use the name tuplet_options since we steal the code from tuplet - handling
                 tuplet_options = Confstack.new()
@@ -1744,7 +1762,7 @@ module Harpnotes
               end
             end
 
-            res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable]) unless res
+            res = FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable) unless res
             #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
@@ -1767,7 +1785,7 @@ module Harpnotes
 
             # draw subflowline if both ends are visible
             if not previous_note.nil? and previous_note.visible and playable.visible
-              res = FlowLine.new(lookuptable_drawing_by_playable[previous_note], lookuptable_drawing_by_playable[playable], :dotted)
+              res = FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable, :dotted)
               #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             end
 
@@ -1805,8 +1823,8 @@ module Harpnotes
             tuplet_options.push(show_options[:print_options_raw][tuplet_conf_key]) rescue nil
 
 
-            p1 = Vector2d(lookuptable_drawing_by_playable[tuplet_start].center)
-            p2 = Vector2d(lookuptable_drawing_by_playable[playable].center)
+            p1 = Vector2d(tuplet_start.sheet_drawable.center)
+            p2 = Vector2d(playable.sheet_drawable.center)
 
             tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
             pos_from_conf = tuplet_options['pos'] rescue [0, 0]
@@ -1844,16 +1862,16 @@ module Harpnotes
           # so first we pick the ties
 
           if playable.tie_end?
-            p1      = Vector2d(lookuptable_drawing_by_playable[tie_start].center) + [3, 0]
-            p2      = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
+            p1      = Vector2d(tie_start.sheet_drawable.center) + [3, 0]
+            p2      = Vector2d(playable.sheet_drawable.center) + [3, 0]
             tiepath = make_slur_path(p1, p2)
             result.push(Harpnotes::Drawing::Path.new(tiepath).tap {|d| d.line_width = $conf.get('layout.LINE_MEDIUM')})
             if playable.is_a? Harpnotes::Music::SynchPoint
               playable.notes.each_with_index do |n, index|
                 begin
                   p1      = tie_start.notes[index]
-                  p1      = Vector2d(lookuptable_drawing_by_playable[p1].center) + [3, 0]
-                  p2      = Vector2d(lookuptable_drawing_by_playable[n].center) + [3, 0]
+                  p1      = Vector2d(p1.sheet_drawable.center) + [3, 0]
+                  p2      = Vector2d(n.sheet_drawable.center) + [3, 0]
                   tiepath = make_slur_path(p1, p2)
                   result.push(Harpnotes::Drawing::Path.new(tiepath).tap {|d| d.line_width = $conf.get('layout.LINE_MEDIUM')})
                 rescue Exception => e
@@ -1871,8 +1889,8 @@ module Harpnotes
           playable.slur_ends.each do |id|
             begin_slur = @slur_index[id] || @slur_index[:first_playable]
 
-            p1       = Vector2d(lookuptable_drawing_by_playable[begin_slur].center) + [3, 0]
-            p2       = Vector2d(lookuptable_drawing_by_playable[playable].center) + [3, 0]
+            p1       = Vector2d(begin_slur.sheet_drawable.center) + [3, 0]
+            p2       = Vector2d(playable.sheet_drawable.center) + [3, 0]
             slurpath = make_slur_path(p1, p2)
             result.push(Harpnotes::Drawing::Path.new(slurpath).tap {|d| d.line_width = $conf.get('layout.LINE_MEDIUM')}) if $conf.get('layout.SHOW_SLUR')
           end
@@ -1900,8 +1918,8 @@ module Harpnotes
           vertical = (distance + 0.5) * $conf.get('layout.X_SPACING')
 
 
-          from = lookuptable_drawing_by_playable[goto.from]
-          to   = lookuptable_drawing_by_playable[goto.to]
+          from = goto.from.sheet_drawable
+          to   = goto.to.sheet_drawable
 
           jumpline_info = {from:            {center: from.center, size: from.size, anchor: from_anchor},
                            to:              {center: to.center, size: to.size, anchor: to_anchor},
@@ -1931,8 +1949,8 @@ module Harpnotes
         if show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
           res_repeatmarks = voice.select {|c| c.is_a? Goto and c.policy[:is_repeat]}.map do |goto|
 
-            startbar = make_repeatsign_annotation(goto, lookuptable_drawing_by_playable, :begin, print_variant_nr, show_options, voice_nr)
-            endbar   = make_repeatsign_annotation(goto, lookuptable_drawing_by_playable, :end, print_variant_nr, show_options, voice_nr)
+            startbar = make_repeatsign_annotation(goto, :begin, print_variant_nr, show_options, voice_nr)
+            endbar   = make_repeatsign_annotation(goto, :end, print_variant_nr, show_options, voice_nr)
 
             [endbar, startbar]
           end.flatten
@@ -1953,7 +1971,7 @@ module Harpnotes
             conf_key         = nil
           end
 
-          position = Vector2d(lookuptable_drawing_by_playable[annotation.companion].center) + annotationoffset
+          position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
                                                         conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
           result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
@@ -2000,7 +2018,7 @@ module Harpnotes
         decoration_result
       end
 
-      def make_repeatsign_annotation(goto, lookuptable_drawing_by_playable, point_role, print_variant_nr, show_options, voice_nr)
+      def make_repeatsign_annotation(goto, point_role, print_variant_nr, show_options, voice_nr)
         from_anchor = goto.policy[:from_anchor] || :after
         to_anchor   = goto.policy[:to_anchor] || :before
 
@@ -2039,7 +2057,7 @@ module Harpnotes
 
         text = repeatsign_options[:text]
 
-        position = Vector2d(lookuptable_drawing_by_playable[companion_note].center) + annotationoffset
+        position = Vector2d(companion_note.sheet_drawable.center) + annotationoffset
 
         Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
                                            companion_note.origin, conf_key, annotationoffset).tap {|s| s.draginfo = {handler: :annotation}}
@@ -2339,11 +2357,12 @@ module Harpnotes
 
         shift = layout_note_shift(root, size, x_offset, dotted)
 
-        res            = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
-        res.color      = compute_color_by_variant_no(root.variant)
-        res.line_width = $conf.get('layout.LINE_THICK')
-        res.hasbarover = true if root.measure_start   # $conf.get('layout.bottomup')
-        res.is_note    = true
+        res                 = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
+        root.sheet_drawable = res # backannotate
+        res.color           = compute_color_by_variant_no(root.variant)
+        res.line_width      = $conf.get('layout.LINE_THICK')
+        res.hasbarover      = true if root.measure_start # $conf.get('layout.bottomup')
+        res.is_note         = true
         res
       end
 
@@ -2435,13 +2454,14 @@ module Harpnotes
 
         shift = layout_note_shift(root, size, x_offset, dotted)
 
-        res            = nil
-        res            = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
-        res.color      = compute_color_by_variant_no(root.variant)
-        res.line_width = $conf.get('layout.LINE_THICK')
-        res.visible    = false unless root.visible?
-        res.hasbarover = true if root.measure_start
-        res.is_note    = true
+        res                 = nil
+        res                 = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
+        root.sheet_drawable = res
+        res.color           = compute_color_by_variant_no(root.variant)
+        res.line_width      = $conf.get('layout.LINE_THICK')
+        res.visible         = false unless root.visible?
+        res.hasbarover      = true if root.measure_start
+        res.is_note         = true
         res
       end
 

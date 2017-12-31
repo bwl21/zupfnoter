@@ -781,8 +781,10 @@ module Harpnotes
         # repeatmarks, tuplets etc.
         if @previous_note
           @previous_note.next_pitch         = the_note.pitch
+          @previous_note.next_playable      = the_note
           @previous_note.next_first_in_part = true if part_label
           the_note.prev_pitch               = @previous_note.pitch
+          the_note.prev_playable            = @previous_note
         end
 
 
