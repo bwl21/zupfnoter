@@ -219,6 +219,20 @@ module InitConf
                                    a3_offset: [0, 0],
                                    a4_offset: [35, 0]}
                  },
+                 'Okon-Harfe'    => {
+                     layout:      {instrument:   'okon-f',
+                                   limit_a3: false,
+                                   PITCH_OFFSET: -24,
+                                   X_SPACING:    15,
+                                   X_OFFSET:    240
+                     },
+                     stringnames: {text:  'G A B C D E F G A B C D E F G A B C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~',
+                                   marks: {hpos: [55, 74]}
+                     },
+                     printer:     {a4_pages: [2],
+                                   a3_offset: [0, 0],
+                                   a4_offset: [35, 0]}
+                 },
              },
 
              notes:      {
