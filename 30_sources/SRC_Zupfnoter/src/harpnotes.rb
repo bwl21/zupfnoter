@@ -347,6 +347,18 @@ module Harpnotes
         proxy_note.variant
       end
 
+      def sheet_drawable
+        proxy_note.sheet_drawable
+      end
+
+      def prev_playable
+        proxy_note.prev_playable
+      end
+
+      def next_playable
+        proxy_note.next_playable
+      end
+
       # a Synchpoint is made of multiple notes
       # thse notes may be layouted
       # nevertheless, a synchpoint needs to be represented
@@ -393,6 +405,9 @@ module Harpnotes
 
         @pitch    = pitch
         @duration = duration
+        @next_playable = self
+        @prev_pitch    = pitch
+        @prev_playable = self
       end
 
 
@@ -1694,6 +1709,7 @@ module Harpnotes
             barnumber         = %Q{#{prefix}#{playable.measure_count.to_s}} || ""
 
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
+
             unless annotationoffset
               x, y   = the_drawable.center
               xp, yp = playable.prev_playable.sheet_drawable.center
