@@ -355,8 +355,16 @@ module Harpnotes
         proxy_note.prev_playable
       end
 
+      def prev_playable=(playable)
+        proxy_note.prev_playable = playable
+      end
+
       def next_playable
         proxy_note.next_playable
+      end
+
+      def next_playable=(playable)
+        proxy_note.next_playable = playable
       end
 
       # a Synchpoint is made of multiple notes
@@ -403,8 +411,8 @@ module Harpnotes
         super()
         raise("trying to create a rest with undefined pitch") if pitch.nil?
 
-        @pitch    = pitch
-        @duration = duration
+        @pitch         = pitch
+        @duration      = duration
         @next_playable = self
         @prev_pitch    = pitch
         @prev_playable = self
@@ -1633,7 +1641,7 @@ module Harpnotes
         # as Syncpoints are renderd from first to last, the last note is the remaining
         # one in the Hash unless we revert.
         # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
-        
+
         res_decorations = res_decorations.flatten.compact
 
 
@@ -1642,6 +1650,7 @@ module Harpnotes
         # todo: handle influence of style to position of text
 
         limit_a3 = $conf['layout.limit_a3'] == true
+        bottomup = $conf['layout.bottomup'] == true
 
         visible_playables = playables.select {|playable| playable.visible?}
         if show_options[:countnotes]
@@ -1669,10 +1678,10 @@ module Harpnotes
                   autopos = :right
                 elsif limit_a3 && (x >= 410)
                   autopos = :left
-                elsif yn > y # go downwards
-                  autopos = xn > x ? :left : :right # $conf.get('layout.bottomup')
-                else # go upwards
+                elsif bottomup
                   autopos = xp > x ? :left : :right # $conf.get('layout.bottomup')
+                else # go upwards
+                  autopos = xn > x ? :left : :right # $conf.get('layout.bottomup')
                 end
                 tie_x            = 1 if autopos == :right and playable.tie_start?
                 auto_x           = tie_x + (autopos == :left ? -count_note.length - the_drawable.size.first - 1 : the_drawable.size_with_dot.first + 1)
@@ -1710,19 +1719,21 @@ module Harpnotes
 
             annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
 
+
             unless annotationoffset
               x, y   = the_drawable.center
               xp, yp = playable.prev_playable.sheet_drawable.center
               xn, yn = playable.next_playable.sheet_drawable.center
+
               if autopos
                 if limit_a3 && (x <= 10) # 4 * the_drawable.size.first   # use 4 since it might  be shifted
                   autopos = :right
                 elsif limit_a3 && (x >= 410)
                   autopos = :left
-                elsif yn > y # go downwards
-                  autopos = xp >= x ? :left : :right # $conf.get('layout.bottomup')
-                else # go upwards
+                elsif bottomup #yn > y # go upwards
                   autopos = xn >= x ? :left : :right # $conf.get('layout.bottomup')
+                else # go upwards
+                  autopos = xp >= x ? :left : :right # $conf.get('layout.bottomup')
                 end
 
                 # 1 mm horizontal distance, 0.5 mm vertical
@@ -1936,6 +1947,13 @@ module Harpnotes
 
           from = goto.from.sheet_drawable
           to   = goto.to.sheet_drawable
+
+          # now swap before / after in case of bottomup
+          if $conf['layout.bottomup']
+            swap        = {before: :after, after: :before}
+            from_anchor = swap[from_anchor]
+            to_anchor   = swap[to_anchor]
+          end
 
           jumpline_info = {from:            {center: from.center, size: from.size, anchor: from_anchor},
                            to:              {center: to.center, size: to.size, anchor: to_anchor},
