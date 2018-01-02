@@ -540,7 +540,7 @@ class Controller
             lyrics:  {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
             minc:    {keys: expand_extract_keys(['notebound.minc'])},
             layout:  {keys: expand_extract_keys(
-                                [:layoutlines, :startpos, :botomup,
+                                [:layoutlines, :startpos,
                                  'layout.LINE_THIN', 'layout.LINE_MEDIUM', 'layout.LINE_THICK',
                                  'layout.ELLIPSE_SIZE', 'layout.REST_SIZE',
                                  'layout.limit_a3', 'layout.DRAWING_AREA_SIZE',
@@ -548,6 +548,7 @@ class Controller
                                  'layout.packer.pack_method', 'layout.packer.pack_max_spreadfactor', 'layout.packer.pack_min_increment',
                                  'layout.jumpline_anchor',
                                  'layout.color.color_default', 'layout.color.color_variant1', 'layout.color.color_variant2',
+                                 'layout.bottomup'
 
                                 ]), quicksetting_commands: _get_quicksetting_commands('layout')},
 

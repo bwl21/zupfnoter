@@ -1228,13 +1228,33 @@ module Harpnotes
             @draw_instrument             = lambda {
               res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
               res.line_width = $conf.get('layout.LINE_MEDIUM');
-              res
+              [res]
             }
 
           when "okon-f", "okon-g", "okon-c", "okon-d"
-            #                                G  A Bb C  D  E  F  G  A  Bb C  D  E  F  G  A  Bb C D E F G
-            pitches                      = "43 45 46 48 50 52 53 55 57 58 60 62 64 65 67 69 70 72"
-            string_by_pitch              = Hash[pitches.split(" ").each_with_index.map {|i, k| [i.to_i + 12 , k]}]
+            flaps = ""
+            pitches = ""
+            case $conf['layout.instrument']
+              when "okon-f"
+                #          G  A Bb C  D  E  F  G  A   Bb C  D  E  F  G  A  Bb C   D E F G
+                pitches = "55 57 58 60 62 64 65 67 69 70 72 74 76 77 79 81 82 84"
+                flaps   = ""
+              when "okon-g"
+                #          G  A  B  C  D  E  F# G  A  B  C  D  E  F# G  A  Bb C   D E F G
+                pitches = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79 81 83 84"
+                flaps   = "      59          66       71          78       83 "
+              when "okon-c"
+                #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+                pitches = "55 57 59 60 62 64 65 67 69 71 72 74 76 77 79 81 83 84"
+                flaps   = "      59                   71                   83"
+              when "okon-d"
+                #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+                pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
+                flaps   = "      59          66       71          78       83"
+            end
+
+            string_by_pitch              = Hash[pitches.split(" ").each_with_index.map {|i, k| [i.to_i, k]}]
+            flaps_by_pitch               = flaps.split(" ").map{|i|i.to_i}
             @pitch_to_xpos               = lambda {|pitch|
               #                           G        c        d        e        f        g        a        b        c'       D'
               pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
@@ -1245,9 +1265,14 @@ module Harpnotes
             @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 300, 290]]
 
             @draw_instrument = lambda {
+              result         = []
+              flaps_by_pitch.each do |f|
+                result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), 285], "*", :small))
+              end
+
               res            = Harpnotes::Drawing::Path.new([['M', xoffset + 125, 0], ['L', xoffset + 370, 165]], :open)
               res.line_width = $conf.get('layout.LINE_MEDIUM');
-              res
+              result.push(res)
             }
 
           when "21-strings-a-f"
@@ -1500,7 +1525,7 @@ module Harpnotes
           $log.error e.message
         end
 
-        sheet_marks.push(@draw_instrument.call) if @draw_instrument
+        @draw_instrument.call.each {|r| sheet_marks.push(r)} if @draw_instrument
 
         sheet_elements = manual_sheet + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 
