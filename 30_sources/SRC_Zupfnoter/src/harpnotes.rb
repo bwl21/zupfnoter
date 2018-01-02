@@ -1232,9 +1232,9 @@ module Harpnotes
             }
 
           when "okon-f", "okon-g", "okon-c", "okon-d"
+            #                                G  A Bb C  D  E  F  G  A  Bb C  D  E  F  G  A  Bb C D E F G
             pitches                      = "43 45 46 48 50 52 53 55 57 58 60 62 64 65 67 69 70 72"
-            string_by_pitch              = pitches.split(" ").each_with_index.map {|i, k| [i.to_i, k]}
-            string_by_pitch              = Hash[string_by_pitch]
+            string_by_pitch              = Hash[pitches.split(" ").each_with_index.map {|i, k| [i.to_i + 12 , k]}]
             @pitch_to_xpos               = lambda {|pitch|
               #                           G        c        d        e        f        g        a        b        c'       D'
               pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]

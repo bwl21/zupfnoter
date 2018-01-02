@@ -27,8 +27,8 @@ module InitConf
                      # sort within layout
                      :limit_a3, :jumplineoffset, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
-                     :instrument, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
-                     :sortmark, :show, :fill, :size,
+                     :instrument, :bottomup, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+                     :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING,
                      # sort within printer
                      :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
 
@@ -222,16 +222,16 @@ module InitConf
                  'Okon-Harfe'    => {
                      layout:      {instrument:   'okon-f',
                                    limit_a3: false,
-                                   PITCH_OFFSET: -24,
+                                   PITCH_OFFSET: 0,  # adapt if you pitches in
                                    X_SPACING:    15,
-                                   X_OFFSET:    240
+                                   X_OFFSET:    50
                      },
                      stringnames: {text:  'G A B C D E F G A B C D E F G A B C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~',
                                    marks: {hpos: [55, 74]}
                      },
-                     printer:     {a4_pages: [2],
+                     printer:     {a4_pages: [1,2,3],
                                    a3_offset: [0, 0],
-                                   a4_offset: [35, 0]}
+                                   a4_offset: [135, 0]}
                  },
              },
 
@@ -340,6 +340,7 @@ module InitConf
                  # this denotes the layout parameters which are intended to bne configured
                  # by the regular user
                  layout:      {limit_a3:        true,
+                               bottomup:        false,
                                jumpline_anchor: [3, 1],
                                color:           {color_default: 'black', color_variant1: 'grey', color_variant2: 'dimgrey'},
                                LINE_THIN:       0.1,

@@ -406,11 +406,19 @@ Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
 Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+> **Hinweis** Bei **chromatischen** Instrumenten wird die Stimmung der
+> Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43 dafür, dass
+> das G der Oktave 3 am linken Blattrand erscheint.
+>
+> Die Midi-Codes findest du auf
+> [hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+>
+> Bei **diatonischen** Instrumenten muss der Wert ggf. durch
+> Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
+> verdrahtet ist. Üblicherweise ist er 0. Man könnte aber durch Werte
+> von -12 bzw. +12 eine Art "Transponierung" errreichen. Das ist dann
+> sinnvoll, wenn die selben Eingabenoten für verschiedene Instrumente
+> verwendet werden sollen.
 
         "PITCH_OFFSET": -43
           
@@ -1128,14 +1136,14 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
             "value" : {
               "pos"   : [340, 251],
               "style" : "small",
-              "text"  : "© 2017\n"
+              "text"  : "© 2018\n"
             }
           },
           "T03_copyright_harpnotes"  : {
             "value" : {
               "pos"   : [340, 260],
               "style" : "small",
-              "text"  : "© 2017 Notenbild: zupfnoter.de"
+              "text"  : "© 2018 Notenbild: zupfnoter.de"
             }
           },
           "T04_to_order"             : {
@@ -1274,7 +1282,7 @@ Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
 das Copyright auf die Komposition angegeben.
 
         "T02_copyright_music": {
-          "value" : {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+          "value" : {"pos": [340, 251], "style": "small", "text": "© 2018\n"}
         }
           
 
@@ -1282,7 +1290,7 @@ das Copyright auf die Komposition angegeben.
 
 TODO: Helptext für presets.notes.T02_copyright_music.value einfügen
 
-        "value": {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+        "value": {"pos": [340, 251], "style": "small", "text": "© 2018\n"}
           
 
 ## `presets.notes.T02_copyright_music.value.pos` - Position {#presets.notes.T02_copyright_music.value.pos}
@@ -1306,7 +1314,7 @@ aus vordefinierten Stilen.
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
 
-        "text": "© 2017\n"
+        "text": "© 2018\n"
           
 
 ## `presets.notes.T03_copyright_harpnotes` - T03 Copyright Unterlegnoten {#presets.notes.T03_copyright_harpnotes}
@@ -1319,7 +1327,7 @@ Tischharfe
           "value" : {
             "pos"   : [340, 260],
             "style" : "small",
-            "text"  : "© 2017 Notenbild: zupfnoter.de"
+            "text"  : "© 2018 Notenbild: zupfnoter.de"
           }
         }
           
@@ -1332,7 +1340,7 @@ einfügen
         "value": {
           "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2017 Notenbild: zupfnoter.de"
+          "text"  : "© 2018 Notenbild: zupfnoter.de"
         }
           
 
@@ -1357,7 +1365,7 @@ aus vordefinierten Stilen.
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
 
-        "text": "© 2017 Notenbild: zupfnoter.de"
+        "text": "© 2018 Notenbild: zupfnoter.de"
           
 
 ## `presets.notes.T04_to_order` - T04 zu beziehen bei {#presets.notes.T04_to_order}

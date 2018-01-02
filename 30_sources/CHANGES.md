@@ -35,6 +35,10 @@
 * rearranged layaout form #189
 * show notes in the current selection for harmonization #190
   
+## exprimental
+
+* support for more diatonic instruments (e.g. OKON harp) #196
+
 # v 1.7.1
 
 ## fix

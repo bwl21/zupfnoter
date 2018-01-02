@@ -302,6 +302,16 @@ Im Beispiel
     falls er im Auszug 0 gesetzt wurde.
 -   `0.5` vergrößert den Vorschub um die Hälfte einer ganzen Note.
 
+## layout.bottomup
+
+Hier kannst du einstellen, ob die Noten von unten nach oben geschrieben
+werden. Manche Spieler (Spieler der Okon-Harfe) bevorzugen diese
+Darstellung, weil dabei die Hand nicht mehr die nächsten Noten verdeckt.
+
+> **Hinweis** Die Taktstriche werden weiterhin oberhalb der Noten
+> gezeichnet. Aber die Position von Taktnummern und Zählmarken wird
+> angepasst.
+
 ## layout.packer
 
 Hier kannst du weitere Einzelheiten für die vertikale Anordnung der
@@ -486,11 +496,19 @@ Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
 Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+> **Hinweis** Bei **chromatischen** Instrumenten wird die Stimmung der
+> Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43 dafür, dass
+> das G der Oktave 3 am linken Blattrand erscheint.
+>
+> Die Midi-Codes findest du auf
+> [hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+>
+> Bei **diatonischen** Instrumenten muss der Wert ggf. durch
+> Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
+> verdrahtet ist. Üblicherweise ist er 0. Man könnte aber durch Werte
+> von -12 bzw. +12 eine Art "Transponierung" errreichen. Das ist dann
+> sinnvoll, wenn die selben Eingabenoten für verschiedene Instrumente
+> verwendet werden sollen.
 
 ## pos
 
