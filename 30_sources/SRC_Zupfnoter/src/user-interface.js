@@ -1006,6 +1006,18 @@ function init_w2ui(uicontroller) {
 ;
 
 
+/**
+ * This updates the localized texts
+ * The method is called from callConsumers
+ */
+function update_localized_texts(){
+  w2ui.layout_top_toolbar.refresh();
+  w2ui.layout_left_toolbar.refresh();
+  w2ui.layout_left_tabs.refresh();
+  w2ui.layout_preview_tabs.refresh();
+}
+
+
 /*
  here we have some entry points to be used by controller
  TODO: refactor this?

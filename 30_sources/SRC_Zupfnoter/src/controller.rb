@@ -107,14 +107,13 @@ class Controller
     }
     browser_language = `navigator.language`.downcase rescue "de-de"
     zupfnoter_language = languages[browser_language] || 'de-de'
-    I18n.locale(zupfnoter_language) if browser_language
-
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
 
     @version      = VERSION
-    @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
+    @zupfnoter_ui = `new init_w2ui(#{self});`
+    I18n.locale(zupfnoter_language) { call_consumers(:localizedtexts) } if browser_language
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
@@ -137,6 +136,7 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
+
     $settings = {} # this is te keep runtime settings
 
     @json_validator = Ajv::JsonValidator.new
@@ -157,7 +157,7 @@ class Controller
     # note that CommandController has methods __ic_01 etc. to register the commands
     # these methods are invoked here.
     @commands = CommandController::CommandStack.new
-    self.methods.select {|n| n =~ /__ic.*/}.each {|m| send(m)} # todo: what is this?
+    self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
 
     setup_harpnote_preview
 
@@ -233,24 +233,25 @@ class Controller
   # this method invokes the system conumers
   def call_consumers(clazz)
     @systemstatus_consumers = {systemstatus:   [
-                                                   lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
+                                                   lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                                ],
+                               localizedtexts: [lambda { %x{update_localized_texts()} }],
                                statusline:     [],
-                               error_alert:    [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
-                               play_start:     [lambda {`update_play_w2ui('start')`}],
-                               play_stop:      [lambda {`update_play_w2ui('stop')`}],
-                               play_stopping:  [lambda {`update_play_w2ui('stopping')`}],
-                               disable_save:   [lambda {`disable_save();`}],
-                               enable_save:    [lambda {`enable_save();`}],
-                               before_open:    [lambda {`before_open()`}],
-                               document_title: [lambda {`document.title = #{@music_model.meta_data[:filename]}`}],
-                               extracts:       [lambda {@extracts.each {|entry|
+                               error_alert:    [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
+                               play_start:     [lambda { `update_play_w2ui('start')` }],
+                               play_stop:      [lambda { `update_play_w2ui('stop')` }],
+                               play_stopping:  [lambda { `update_play_w2ui('stopping')` }],
+                               disable_save:   [lambda { `disable_save();` }],
+                               enable_save:    [lambda { `enable_save();` }],
+                               before_open:    [lambda { `before_open()` }],
+                               document_title: [lambda { `document.title = #{@music_model.meta_data[:filename]}` }],
+                               extracts:       [lambda { @extracts.each { |entry|
                                  title = "#{entry.first}: #{entry.last}"
-                                 `set_extract_menu(#{entry.first}, #{title})`}
+                                 `set_extract_menu(#{entry.first}, #{title})` }
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }]
     }
-    @systemstatus_consumers[clazz].each {|c| c.call()}
+    @systemstatus_consumers[clazz].each { |c| c.call() }
   end
 
   # this handles a command
@@ -271,8 +272,8 @@ class Controller
   # only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select {|key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
-                                                   :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :zoom].include?(key)
+    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
+                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :zoom].include?(key)
     }.to_json
     if @systemstatus[:mode] == :work
       abc = `localStorage.setItem('systemstatus', #{systemstatus});`
@@ -304,7 +305,7 @@ class Controller
   # note that this is maintained from version to version
   def cleanup_localstorage
     keys             = `Object.keys(localStorage)`
-    dbx_apiv1_traces = keys.select {|k| k.match(/dropbox\-auth:default:/)}
+    dbx_apiv1_traces = keys.select { |k| k.match(/dropbox\-auth:default:/) }
     unless dbx_apiv1_traces.empty?
       # remove dropbox api-v1
       # remove systemstatus to get rid of the dropbox login status
@@ -472,7 +473,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
       if lyrics
         result           = lyrics.inject({}) do |ir, element|
-          verses                  = element.first.gsub(",", " ").split(" ").map {|f| f.to_i}
+          verses                  = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
           ir[(ir.count + 1).to_s] = {"verses" => verses, "pos" => element.last}
           ir
         end
@@ -538,9 +539,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     begin
       abc_text = @editor.get_abc_part
-      abc_text = abc_text.split("\n").map {|line|
+      abc_text = abc_text.split("\n").map { |line|
         result = line
-        result = result.gsub(/(\\?)(~)/) {|m| m[0] == '\\' ? m[1] : ' '} if line.start_with? 'W:'
+        result = result.gsub(/(\\?)(~)/) { |m| m[0] == '\\' ? m[1] : ' ' } if line.start_with? 'W:'
         result
       }.join("\n")
 
@@ -675,7 +676,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
       result = nil
-      $log.benchmark("computing layout"){result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)}
+      $log.benchmark("computing layout") { result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format) }
 
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
@@ -755,8 +756,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       @tune_preview_printer.scroll_into_view(elements.first)
 
       # scroll in harp preview
-      zn_element = elements.select {|i| i.has_class?('znref')}.last
-      @harpnote_preview_printer.scroll_to_element(elements.select {|i| i.has_class?('znref')}.last) if zn_element
+      zn_element = elements.select { |i| i.has_class?('znref') }.last
+      @harpnote_preview_printer.scroll_to_element(elements.select { |i| i.has_class?('znref') }.last) if zn_element
     else
       elements.remove_class('highlightplay')
     end
@@ -838,7 +839,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       conf_key  = info[:conf_key]
       newcoords = info[:conf_value_new]
       unless newcoords
-        newcoords = info[:conf_value][:pos].zip(info[:delta]).map {|i| i.first + i.last}
+        newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
       end
 
       @editor.patch_config_part(conf_key, newcoords)
@@ -1044,7 +1045,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       # alert (" hat nicht gelesen gelesen")
     end
 
-    body = messages.map {|m|
+    body = messages.map { |m|
       nm      = Native(m)
       post_id = nm[:postId]
       desc    = nm[:description]
