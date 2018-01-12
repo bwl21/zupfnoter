@@ -37,6 +37,7 @@ require 'config-form'
 require 'snippet_editor'
 require 'abc2svg-1.js'
 require 'xml2abc.js'
+require 'bowser.js'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"

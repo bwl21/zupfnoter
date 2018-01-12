@@ -2,7 +2,7 @@
 # note that it highly depends on w2uitils
 module I18n
   def self.t(text)
-    if RUBY_ENGINE=='opal'
+    if RUBY_ENGINE == 'opal'
       `w2utils.lang(#{text})`
     end
   end
@@ -40,20 +40,35 @@ module I18n
 
   def self.locale(language)
 
+    # load the localization
+    HTTP.get("public/locale/#{language}.json?#{Time.now.to_i}").then do |response|
+      # we use this pattern as different versions
+      # of opal-Jquery sometimes parse the body, and sometimes the deon't
+      locale = Native(response.body)
+      locale = JSON.parse(locale) if locale.is_a? String
+      `w2utils.locale(#{locale.to_n})`
+    end.fail do |response, error|
+      $log.error %Q{BUG: no language support for } + %Q{ "#{language}": #{response.body}"}
+      HTTP.get("public/locale/de-de.json?#{Time.now.to_i}") do |response|
+        locale = Native(response.body)
+        locale = JSON.parse(locale) if locale.is_a? String
+        `w2utils.locale(#{locale.to_n})`
+      end
+    end
+
+    # load the helptexts
     $conf_helptext = {}
     HTTP.get("public/locale/conf-help_#{language}.json?#{Time.now.to_i}").then do |response|
       $conf_helptext = Native(response.body)
       $conf_helptext = JSON.parse($conf_helptext) if $conf_helptext.is_a? String
     end.fail do |response|
-     $log.error %Q{BUG: no language support for } + %Q{ "#{language}": #{response.body}"}
-     HTTP.get("public/locale/conf-help_de-de.json?#{Time.now.to_i}").then do |response|
-       $conf_helptext = Native(response.body)
-       $conf_helptext = JSON.parse($conf_helptext) if $conf_helptext.is_a? String
-     end
+      $log.error %Q{BUG: no language support for } + %Q{ "#{language}": #{response.body}"}
+      HTTP.get("public/locale/conf-help_de-de.json?#{Time.now.to_i}").then do |response|
+        $conf_helptext = Native(response.body)
+        $conf_helptext = JSON.parse($conf_helptext) if $conf_helptext.is_a? String
+      end
     end.always do |response|
     end
-
-    `w2utils.locale('public/locale/' + #{language} + '.json')`
   end
 
   def self.phrases

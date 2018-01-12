@@ -130,7 +130,8 @@ class Controller
     $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
     $log.info ("Ruby:     #{RUBY_VERSION}")
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
-
+    $log.info ("Browser:  #{`bowser.name`}  #{`bowser.version`}");
+    $log.info ("Language: #{zupfnoter_language}");
 
     $conf        = Confstack.new(nil)
     $conf.strict = false
@@ -202,9 +203,8 @@ class Controller
     # # now trigger the interactive UI
     setup_ui_listener
 
-
     show_message_of_the_day
-
+    check_suppoerted_browser
 
     # todo
     # todo this completes the very first connection to dropbox
@@ -1117,7 +1117,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Element.find(ui_element).remove_class('spinner')
   end
 
-  private
+  def check_suppoerted_browser
+    supportedbrowsers = %W{Chrome Firefox Vivaldid Opera}
+    unless supportedbrowsers.include?(`bowser.name`)
+      message = I18n.t("Unsupported browser. Please use one of ") + supportedbrowsers.to_s
+      $log.warning(message)
+      `alert(#{message})`
+    end
+  end
 
 
   # returns a hash with the default values of configuration

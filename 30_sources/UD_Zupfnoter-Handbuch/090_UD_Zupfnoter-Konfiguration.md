@@ -145,6 +145,7 @@ Auszug 1 usw.
               "REST_SIZE"         : [4, 2],
               "X_OFFSET"          : 2.8,
               "X_SPACING"         : 11.5,
+              "bottomup"          : false,
               "color"             : {
                 "color_default"  : "black",
                 "color_variant1" : "grey",
@@ -339,6 +340,7 @@ Notenbild gezielt optimieren.
           "REST_SIZE"         : [4, 2],
           "X_OFFSET"          : 2.8,
           "X_SPACING"         : 11.5,
+          "bottomup"          : false,
           "color"             : {
             "color_default"  : "black",
             "color_variant1" : "grey",
@@ -446,6 +448,19 @@ TODO: Helptext für extract.0.layout.X_OFFSET einfügen
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
         "X_SPACING": 11.5
+          
+
+## `extract.0.layout.bottomup` - Spiel aufwärts {#extract.0.layout.bottomup}
+
+Hier kannst du einstellen, ob die Noten von unten nach oben geschrieben
+werden. Manche Spieler (Spieler der Okon-Harfe) bevorzugen diese
+Darstellung, weil dabei die Hand nicht mehr die nächsten Noten verdeckt.
+
+> **Hinweis** Die Taktstriche werden weiterhin oberhalb der Noten
+> gezeichnet. Aber die Position von Taktnummern und Zählmarken wird
+> angepasst.
+
+        "bottomup": false
           
 
 ## `extract.0.layout.color` - Farbeinstellung {#extract.0.layout.color}
