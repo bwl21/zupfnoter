@@ -1743,6 +1743,10 @@ z.B.
 Dann startet Zupfnoter, versucht aber nicht gleich ein "Rendern" . Damit
 kannst dann die Eingaben korrigieren bis "Rendern" wieder funktioniert.
 
+> **Hinweis**: Zupfnoter erkennt selbständig, dass beim letzten Rendern
+> ein Problem aufgetreten war und startet dann ohne automatisches\#
+> Rendern.
+
 ### Transponieren
 
 Wenn das Musikstück nicht auf die Harfe passt, kann man es ggf. durch
@@ -1817,6 +1821,30 @@ auszuschalten dient die Kopfzeile
 
 > **Hinweis** Bei zu kurzen Takten erscheint die Taktnummer nicht
 > korrekt.
+
+### Änderung der Takte im Stück
+
+Die ABC-Notation erlaubt es, in einem Stück die Takte zu ändern. Hierfür
+empfiehlt sich folgende Vorgehensweise:
+
+1.  in der `M:` - Kopfzeile werden alle Taktarten aufgeführt, die im
+    Stük vorkommen. Die Start-Taktart wird als erstes geschrieben.
+
+        M:4/4 3/4 =4/4
+
+Die Angabe `=4/4` wird zur Berechung des ersten Taktstriches
+herangezogen
+
+2.  in der Stimme kann nun eine eingebettete Kopfzeile zur
+    Taktumschaltung eingefügt werden. Soll die Taktänderung auch im
+    Blatt erscheinen, dann muss sie als notenbezogene Anmerkung
+    hinzugefügt werden.
+
+        M:3/4] "^!Takt: 3/4" f
+
+> **Hinweis**: Die manuelle Erzeugung der notenbezogenen Anmerkung zum
+> Taktwechsel ist flexibler als eine eventuelle Automatik. Daher bietet
+> Zupfnoter diese Automatik nicht an.
 
 ### Mehrere Stimmen in ABC-Notation {#mehrere-Stimmen-in-abc}
 

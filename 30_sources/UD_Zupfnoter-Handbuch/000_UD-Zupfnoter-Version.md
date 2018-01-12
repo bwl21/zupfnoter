@@ -1,5 +1,5 @@
 
-Version dev/V_1.8.0_dev-2-24-ga7d7d06
+Version dev/V_1.8.0_dev-2-67-g9f6b626
 
-    © 2017 https://www.zupfnoter.de
+    © 2018 https://www.zupfnoter.de
     

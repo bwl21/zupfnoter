@@ -204,10 +204,10 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-2-24-ga7d7d06
+Version dev/V\_1.8.0\_dev-2-67-g9f6b626
 
 \begin{verbatim}
-© 2017 https://www.zupfnoter.de
+© 2018 https://www.zupfnoter.de
 \end{verbatim}
 
 \clearpage
@@ -3311,6 +3311,12 @@ Dann startet Zupfnoter, versucht aber nicht gleich ein ``Rendern'' .
 Damit kannst dann die Eingaben korrigieren bis ``Rendern'' wieder
 funktioniert.
 
+\begin{quote}
+\textbf{Hinweis}: Zupfnoter erkennt selbständig, dass beim letzten
+Rendern ein Problem aufgetreten war und startet dann ohne
+automatisches\# Rendern.
+\end{quote}
+
 \hyperdef{}{transponieren}{\subsubsection{Transponieren}\label{transponieren}}
 
 Wenn das Musikstück nicht auf die Harfe passt, kann man es ggf. durch
@@ -3408,6 +3414,45 @@ I:measurenb 0
 \begin{quote}
 \textbf{Hinweis} Bei zu kurzen Takten erscheint die Taktnummer nicht
 korrekt.
+\end{quote}
+
+\subsubsection{Änderung der Takte im
+Stück}\label{uxe4nderung-der-takte-im-stuxfcck}
+
+Die ABC-Notation erlaubt es, in einem Stück die Takte zu ändern. Hierfür
+empfiehlt sich folgende Vorgehensweise:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  in der \texttt{M:} - Kopfzeile werden alle Taktarten aufgeführt, die
+  im Stük vorkommen. Die Start-Taktart wird als erstes geschrieben.
+
+\begin{verbatim}
+M:4/4 3/4 =4/4
+\end{verbatim}
+\end{enumerate}
+
+Die Angabe \texttt{=4/4} wird zur Berechung des ersten Taktstriches
+herangezogen
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  in der Stimme kann nun eine eingebettete Kopfzeile zur Taktumschaltung
+  eingefügt werden. Soll die Taktänderung auch im Blatt erscheinen, dann
+  muss sie als notenbezogene Anmerkung hinzugefügt werden.
+
+\begin{verbatim}
+M:3/4] "^!Takt: 3/4" f
+\end{verbatim}
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Die manuelle Erzeugung der notenbezogenen Anmerkung
+zum Taktwechsel ist flexibler als eine eventuelle Automatik. Daher
+bietet Zupfnoter diese Automatik nicht an.
 \end{quote}
 
 \subsubsection{Mehrere Stimmen in
@@ -4097,6 +4142,7 @@ spezifiziert den Auszug 1 usw.
           "REST_SIZE"         : [4, 2],
           "X_OFFSET"          : 2.8,
           "X_SPACING"         : 11.5,
+          "bottomup"          : false,
           "color"             : {
             "color_default"  : "black",
             "color_variant1" : "grey",
@@ -4336,6 +4382,7 @@ Notenbild gezielt optimieren.
       "REST_SIZE"         : [4, 2],
       "X_OFFSET"          : 2.8,
       "X_SPACING"         : 11.5,
+      "bottomup"          : false,
       "color"             : {
         "color_default"  : "black",
         "color_variant1" : "grey",
@@ -4426,11 +4473,21 @@ Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
 Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
+\begin{quote}
+\textbf{Hinweis} Bei \textbf{chromatischen} Instrumenten wird die
+Stimmung der Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43
+dafür, dass das G der Oktave 3 am linken Blattrand erscheint.
 
 Die Midi-Codes findest du auf
 \href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
+
+Bei \textbf{diatonischen} Instrumenten muss der Wert ggf. durch
+Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
+verdrahtet ist. Üblicherweise ist er 0. Man könnte aber durch Werte von
+-12 bzw. +12 eine Art ``Transponierung'' errreichen. Das ist dann
+sinnvoll, wenn die selben Eingabenoten für verschiedene Instrumente
+verwendet werden sollen.
+\end{quote}
 
 \begin{verbatim}
     "PITCH_OFFSET": -43
@@ -4470,6 +4527,24 @@ Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
     "X_SPACING": 11.5
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.bottomup} - Spiel
+aufwärts}{extract.0.layout.bottomup - Spiel aufwärts}}\label{extract.0.layout.bottomup}
+
+Hier kannst du einstellen, ob die Noten von unten nach oben geschrieben
+werden. Manche Spieler (Spieler der Okon-Harfe) bevorzugen diese
+Darstellung, weil dabei die Hand nicht mehr die nächsten Noten verdeckt.
+
+\begin{quote}
+\textbf{Hinweis} Die Taktstriche werden weiterhin oberhalb der Noten
+gezeichnet. Aber die Position von Taktnummern und Zählmarken wird
+angepasst.
+\end{quote}
+
+\begin{verbatim}
+    "bottomup": false
       
 \end{verbatim}
 
@@ -4678,6 +4753,14 @@ Hier kannst du die pack-Methode auswählen
   Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr flach
   sind.
   \end{quote}
+\item
+  \textbf{2} : linear: die Zeitachse wird linear auf das Blatt verteilt.
+  Bei kurzen Stücken entspricht der Abstand der Noten dann auch dem
+  Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber am
+  meisten Platz verbraucht.
+
+  Es wird auch kein extra Raum für Parts, Taktstriche und manuelle
+  Vorschübe erstellt.
 
 \begin{verbatim}
 "pack_method": 0
@@ -5416,14 +5499,14 @@ allerdings nur in der Textansicht möglich.
         "value" : {
           "pos"   : [340, 251],
           "style" : "small",
-          "text"  : "© 2017\n"
+          "text"  : "© 2018\n"
         }
       },
       "T03_copyright_harpnotes"  : {
         "value" : {
           "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2017 Notenbild: zupfnoter.de"
+          "text"  : "© 2018 Notenbild: zupfnoter.de"
         }
       },
       "T04_to_order"             : {
@@ -5630,7 +5713,7 @@ das Copyright auf die Komposition angegeben.
 
 \begin{verbatim}
     "T02_copyright_music": {
-      "value" : {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+      "value" : {"pos": [340, 251], "style": "small", "text": "© 2018\n"}
     }
       
 \end{verbatim}
@@ -5643,7 +5726,7 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T02\_copyright\_music.value einfügen
 
 \begin{verbatim}
-    "value": {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+    "value": {"pos": [340, 251], "style": "small", "text": "© 2018\n"}
       
 \end{verbatim}
 
@@ -5679,7 +5762,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
 
 \begin{verbatim}
-    "text": "© 2017\n"
+    "text": "© 2018\n"
       
 \end{verbatim}
 
@@ -5696,7 +5779,7 @@ Tischharfe
       "value" : {
         "pos"   : [340, 260],
         "style" : "small",
-        "text"  : "© 2017 Notenbild: zupfnoter.de"
+        "text"  : "© 2018 Notenbild: zupfnoter.de"
       }
     }
       
@@ -5713,7 +5796,7 @@ presets.notes.T03\_copyright\_harpnotes.value einfügen
     "value": {
       "pos"   : [340, 260],
       "style" : "small",
-      "text"  : "© 2017 Notenbild: zupfnoter.de"
+      "text"  : "© 2018 Notenbild: zupfnoter.de"
     }
       
 \end{verbatim}
@@ -5750,7 +5833,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
 
 \begin{verbatim}
-    "text": "© 2017 Notenbild: zupfnoter.de"
+    "text": "© 2018 Notenbild: zupfnoter.de"
       
 \end{verbatim}
 
