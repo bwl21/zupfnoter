@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2017-12-09 16:45:28 +0100
+// compiled for Zupfnoter 2018-01-11 10:37:34 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.4",vdate:"2017-12-03"}
+var abc2svg={version:"1.15.5-31-g479ba92",vdate:"2018-01-10"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -24,7 +24,11 @@ var abc2svg={version:"1.15.4",vdate:"2017-12-03"}
 
 // start of the Abc object
 function Abc(user) {
-"use strict"
+	"use strict";
+
+	// mask some unsafe functions
+    var	require = function(){return {}}
+
 	this.user = user
 
 // -- constants --
@@ -80,7 +84,7 @@ var	BAR = 0,
 	BASE_LEN = 1536,
 	IN = 96,		// resolution 96 PPI
 	CM = 37.8,		// 1 inch = 2.54 centimeter
-	YSTEP = 128		/* number of steps for y offsets */
+	YSTEP = 256		/* number of steps for y offsets */
 
 var	glovar = {
 		meter: {
@@ -983,7 +987,8 @@ function deco_cnv(a_dcn, s, prev) {
 		case 34:		/* trem1..trem4 */
 			if (s.type != NOTE
 			 || !prev
-			 || prev.type != NOTE) {
+			 || prev.type != NOTE
+			 || s.nflags != prev.nflags) {
 				error(1, s,
 					"!$1! must be on the last of a couple of notes",
 					dd.name)
@@ -996,19 +1001,18 @@ function deco_cnv(a_dcn, s, prev) {
 			prev.beam_st = true;
 //			prev.beam_end = false;
 			s.ntrem = prev.ntrem = Number(dd.name[4]);
-			s.nflags--;
-			prev.nflags--
+			prev.nflags = --s.nflags;
+			prev.head = ++s.head
 			if (s.nflags > 0) {
 				s.nflags += s.ntrem;
-				prev.nflags += s.ntrem
 			} else {
 				if (s.nflags <= -2) {
 					s.stemless = true;
 					prev.stemless = true
 				}
 				s.nflags = s.ntrem;
-				prev.nflags = s.ntrem
 			}
+			prev.nflags = s.nflags
 			for (j = 0; j <= s.nhd; j++)
 				s.notes[j].dur *= 2;
 			for (j = 0; j <= prev.nhd; j++)
@@ -2169,7 +2173,7 @@ function draw_partempo(st, top) {
 }
 // abc2svg - draw.js - draw functions
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -3501,15 +3505,11 @@ function draw_basic_note(x, s, m, y_tb) {
 	/* draw the head */
 	if (note.invis) {
 		;
-	} else if (note.head) {
-		p = note.head
 	} else if (s.grace) {			// don't apply %%map to grace notes
 		p = "ghd";
 		x_note -= 4.5 * stv_g.scale
 	} else if (note.map && note.map[0]) {
-		i = -s.nflags
-		if (i < 0)
-			i = 0;
+		i = s.head;
 		p = note.map[0][i]		// heads
 		if (!p)
 			p = note.map[0][note.map[0].length - 1]
@@ -5738,8 +5738,10 @@ function draw_systems(indent) {
 				bar_set()
 			}
 
+			set_sscale(st);		// (for symbol annotation)
 			anno_start(s);
 			draw_bar(s, bar_bot[st], bar_height[st]);
+			set_sscale(st);
 			anno_stop(s)
 			break
 		case STBRK:
@@ -5804,9 +5806,16 @@ function draw_symbols(p_voice) {
 
 //	bm.s2 = undefined
 	for (s = p_voice.sym; s; s = s.next) {
-		if (s.invis
-		 && s.type != NOTE)	// (beams may start on invisible notes)
-			continue
+		if (s.invis) {
+			switch (s.type) {
+			case KEY:
+				p_voice.key = s
+			default:
+				continue
+			case NOTE:	// (beams may start on invisible notes)
+				break
+			}
+		}
 		x = s.x;
 		set_color(s.color)
 		switch (s.type) {
@@ -6125,7 +6134,7 @@ function set_tie_room() {
 var musicfont = 'url("data:application/font-woff;base64,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")'
 // abc2svg - format.js - formatting functions
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -6149,7 +6158,7 @@ var	defined_font = {},
 		serif: 1.05,
 		serifBold: 1.05,
 		'sans-serif': 1.1,
-		'sans-serifBold': 1.15,
+		'sans-serifBold': 1.1,
 		Palatino: 1.1,
 		Mono: 1.35
 	},
@@ -6233,11 +6242,6 @@ H "History: "',
 	wordsspace: 5
 }
 
-// exported function: return a parameter value
-Abc.prototype.get_fmt = function(k) {
-	return cfmt[k]
-}
-
 function get_bool(param) {
 	return !param || !param.match(/^(0|n|f)/i) // accept void as true !
 }
@@ -6252,7 +6256,7 @@ function get_int(param) {
 	return v
 }
 
-// %%font <font> [<encoding>] <scale>]
+// %%font <font> [<encoding>] [<scale>]
 function get_font_scale(param) {
 	var	a = param.split(/\s+/)	// a[0] = font name
 
@@ -6596,6 +6600,12 @@ function set_format(cmd, param, lock) {
 	case "titletrim":
 		cfmt[cmd] = get_bool(param)
 		break
+	case "chordnames":
+		v = param.split(',')
+		cfmt.chordnames = {}
+		for (i = 0; i < v.length; i++)
+			cfmt.chordnames['CDEFGAB'[i]] = v[i]
+		break
 	case "composerspace":
 	case "indent":
 	case "infospace":
@@ -6845,7 +6855,7 @@ function get_font(xxx) {
 }
 // abc2svg - front.js - ABC parsing front-end
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -7153,7 +7163,6 @@ function tosvg(in_fname,		// file name
 		if (info.W)
 			put_words(info.W);
 		put_history();
-		blk_out();
 		blk_flush();
 		parse.state = 0;		// file header
 		cfmt = cfmt_sav;
@@ -7526,13 +7535,12 @@ function tosvg(in_fname,		// file name
 		return
 	if (parse.state >= 2)
 		end_tune();
-	blk_flush();
 	parse.state = 0
 }
 Abc.prototype.tosvg = tosvg
 // abc2svg - music.js - music generation
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -7800,12 +7808,10 @@ function unlksym(s) {
 	else
 		s.p_v.sym = s.next
 	if (s.ts_next) {
-		if (s.seqst) {
-			s.ts_next.seqst = true
-			if (s.ts_next.shrink < s.shrink)
-				s.ts_next.shrink = s.shrink
-			if (s.ts_next.space < s.space)
-				s.ts_next.space = s.space
+		if (s.seqst && !s.ts_next.seqst) {
+			s.ts_next.seqst = true;
+			s.ts_next.shrink = s.shrink;
+			s.ts_next.space = s.space
 		}
 		s.ts_next.ts_prev = s.ts_prev
 	}
@@ -7906,8 +7912,6 @@ function do_combine(s) {
 			combine_notes(s, s2)
 		}
 
-		if (s2.text)
-			s.text = s2.text
 		if (s2.a_gch)
 			s.a_gch = s2.a_gch;
 		if (s2.a_dd) {
@@ -8739,24 +8743,6 @@ function set_allsymwidth(last_s) {
 			s = s.ts_next
 		} while (!s.seqst)
 	}
-
-	// if the last symbol of the tune is not a bar, add some extra space
-	if (last_s)
-		return
-	xa = 0
-	for (s = s2; ; s = s.ts_next) {
-		if (s.type == BAR)
-			return
-		if (s.wr > xa)
-			xa = s.wr
-		if (!s.ts_next)
-			break
-	}
-	s2 = add_end_bar(s);
-	s2.prev = s2.ts_prev = s;
-	s.ts_next = s.next = s2;
-	s2.shrink = xa + 8;
-	s2.space = set_space(s2)
 }
 
 /* change a symbol into a rest */
@@ -8805,6 +8791,7 @@ function set_repeat(s) {	// first note
 			error(1, s, err_no_s)
 			return
 		}
+		dur = s.time - s3.time;
 
 		i = k * n		/* whole number of notes/rests to repeat */
 		for (s2 = s; s2; s2 = s2.next) {
@@ -8829,30 +8816,34 @@ function set_repeat(s) {	// first note
 				break
 			}
 		}
-		s3 = s
 		for (j = k; --j >= 0; ) {
 			i = n			/* number of notes/rests */
-			if (s3.dur)
+			if (s.dur)
 				i--;
-			s2 = s3.ts_next
+			s2 = s.ts_next
 			while (i > 0) {
-				if (s2.st != st)
-					continue
-				if (s2.v == v
-				 && s2.dur)
-					i--;
-				unlksym(s2);
+				if (s2.st == st) {
+					unlksym(s2)
+					if (s2.v == v
+					 && s2.dur)
+						i--
+				}
 				s2 = s2.ts_next
 			}
-			to_rest(s3);
-			s3.dur = s3.notes[0].dur = s2.time - s3.time;
-			s3.rep_nb = -1;		// single repeat
-			s3.beam_st = true;
-			set_width(s3)
-			if (s3.seqst)
-				s3.space = set_space(s3);
-			s3.head = SQUARE;
-			s3 = s2
+			to_rest(s);
+			s.dur = s.notes[0].dur = dur;
+			s.rep_nb = -1;		// single repeat
+			s.beam_st = true;
+			set_width(s)
+			if (s.seqst)
+				s.space = set_space(s);
+			s.head = SQUARE;
+			for (s = s2; s; s = s.ts_next) {
+				if (s.st == st
+				 && s.v == v
+				 && s.dur)
+					break
+			}
 		}
 		return
 	}
@@ -9024,6 +9015,10 @@ function set_nl(s) {
 
 	// set the eol on the next symbol
 	function set_eol_next(s) {
+		if (!s.next) {		// special case: the voice stops here
+			set_eol(s)
+			return s
+		}
 		for (s = s.ts_next; s; s = s.ts_next) {
 			if (s.seqst) {
 				set_eol(s)
@@ -9957,7 +9952,8 @@ function set_pitch(last_s) {
 			break
 		}
 	}
-	smallest_duration = dur
+	if (!last_s)
+		smallest_duration = dur
 }
 
 /* -- set the stem direction when multi-voices -- */
@@ -10441,7 +10437,15 @@ function init_music_line() {
 
 	/* add bar if needed (for repeat bracket) */
 	for (v = 0; v < nv; v++) {
+
+		// if bar already, keep it in sequence
 		p_voice = voice_tb[v];
+		if (last_s.v == v && last_s.type == BAR) {
+			p_voice.last_sym = last_s;
+			last_s = last_s.ts_next
+			continue
+		}
+
 		s2 = p_voice.bar_start
 		if (!s2)
 			continue
@@ -10449,13 +10453,6 @@ function init_music_line() {
 		if (cur_sy.voices[v].range < 0
 		 || !cur_sy.st_print[cur_sy.voices[v].st])
 			continue
-
-		// if bar already, ignore
-		if (last_s.v == v && last_s.type == BAR) {
-			p_voice.last_sym = last_s;
-			last_s = last_s.ts_next
-			continue
-		}
 
 		s2.next = p_voice.last_sym.next
 		if (s2.next)
@@ -10692,7 +10689,7 @@ function set_indent(first) {
 		st = cur_sy.voices[v].st
 //		if (!cur_sy.st_print[st])
 //			continue
-		p = (first && p_voice.new_name) ? p_voice.nm : p_voice.snm
+		p = (first || p_voice.new_name) ? p_voice.nm : p_voice.snm
 		if (!p)
 			continue
 		if (!font) {
@@ -11614,10 +11611,56 @@ function sym_staff_move(st) {
 	}
 }
 
+// generate a block symbol
+var blocks = []		// array of delayed block symbols
+
+function block_gen(s) {
+	switch (s.subtype) {
+	case "leftmargin":
+	case "rightmargin":
+	case "pagescale":
+	case "pagewidth":
+	case "scale":
+	case "staffwidth":
+		set_format(s.subtype, s.param);
+		break
+	case "ml":
+		svg_flush();
+		user.img_out(s.text)
+		break
+	case "newpage":
+		blk_flush();
+		block.newpage = true;
+		blk_out()
+		break
+	case "sep":
+		set_page();
+		vskip(s.sk1);
+		output.push('<path class="stroke"\n\td="M');
+		out_sxsy(s.x, ' ', 0);
+		output.push('h' + s.l.toFixed(2) + '"/>\n');
+		vskip(s.sk2);
+		break
+	case "text":
+		write_text(s.text, s.opt)
+		break
+	case "title":
+		write_title(s.text, true)
+		break
+	case "vskip":
+		vskip(s.sk);
+//		blk_out()
+		break
+	default:
+		error(2, s, 'Block $1 not treated', s.subtype)
+		break
+	}
+}
+
 /* -- define the start and end of a piece of tune -- */
 /* tsnext becomes the beginning of the next line */
 function set_piece() {
-	var	s, p_voice, st, v, nst, nv,
+	var	s, last, p_voice, st, v, nst, nv,
 		non_empty = [],
 		non_empty_gl = [],
 		sy = cur_sy
@@ -11694,9 +11737,20 @@ function set_piece() {
 	 * and mark the empty staves
 	 */
 	for (s = tsfirst; s; s = s.ts_next) {
-		if (s.nl)
+		if (s.nl) {
+//fixme: not useful
+//			// delay the next block symbols
+//			while (s && s.type == BLOCK) {
+//				blocks.push(s);
+//				unlksym(s);
+//				s = s.ts_next
+//			}
 			break
-		if (s.type == STAVES) {
+		}
+		if (!s.ts_next)
+			last = s		// keep the last symbol
+		switch (s.type) {
+		case STAVES:
 			set_brace();
 			sy.st_print = new Uint8Array(non_empty);
 			sy = s.sy;
@@ -11708,6 +11762,14 @@ function set_piece() {
 			}
 			non_empty = []
 			continue
+
+		// the block symbols will be treated after music line generation
+		case BLOCK:
+			blocks.push(s);
+			unlksym(s)
+			if (last)
+				last = s.ts_prev
+			continue
 		}
 		st = s.st
 		if (non_empty[st])
@@ -11715,7 +11777,7 @@ function set_piece() {
 		switch (s.type) {
 		case CLEF:
 			if (st > nstaff) {	// if clef warning/change for new staff
-				staff_tb[s.st].clef = s;
+				staff_tb[st].clef = s;
 				unlksym(s)
 			}
 			break
@@ -11764,44 +11826,44 @@ function set_piece() {
 	// keep the array of the staves to be printed
 	gene.st_print = new Uint8Array(non_empty_gl)
 
-	/* if last music line, nothing more to do */
-	if (!tsnext)
-		return
+	// if not the end of the tune, set the end of the music line
+	if (tsnext) {
+		s = tsnext;
+		delete s.nl;
+		last = s.ts_prev;
+		last.ts_next = null;
 
-	s = tsnext;
-	delete s.nl;
-	s = s.ts_prev;
-	s.ts_next = null;
-
-	/* set the end of the voices */
-	nv = voice_tb.length
-	for (v = 0; v < nv; v++) {
-		p_voice = voice_tb[v]
-		if (p_voice.sym
-		 && p_voice.sym.time <= tsnext.time) {
-			for (s = tsnext.ts_prev; s; s = s.ts_prev) {
-				if (s.v == v) {
-					p_voice.s_next = s.next;
-					s.next = null;
-					check_bar(s)
-					break
+		// and the end of the voices
+		nv = voice_tb.length
+		for (v = 0; v < nv; v++) {
+			p_voice = voice_tb[v]
+			if (p_voice.sym
+			 && p_voice.sym.time <= tsnext.time) {
+				for (s = tsnext.ts_prev; s; s = s.ts_prev) {
+					if (s.v == v) {
+						p_voice.s_next = s.next;
+						s.next = null;
+						check_bar(s)
+						break
+					}
 				}
+				if (s)
+					continue
 			}
-			if (s)
-				continue
+			p_voice.s_next = p_voice.sym;
+			p_voice.sym = null
 		}
-		p_voice.s_next = p_voice.sym;
-		p_voice.sym = null
 	}
 
 	// if the last symbol is not a bar, add an invisible bar
-	if (tsnext.ts_prev.type != BAR) {
-	    var	s2 = tsnext.ts_prev;
-		s = add_end_bar(s2)
-		s.prev = s.ts_prev = s2;
-		s2.ts_next = s2.next = s;
-		s.shrink = s2.wr + 8;
-		s.space = tsnext.space * .9 - 7
+	if (last.type != BAR) {
+		s = add_end_bar(last);
+		s.prev = s.ts_prev = last;
+		last.ts_next = last.next = s;
+		s.shrink = last.wr + 2;	// just a small space before end of staff
+		s.space = set_space(s)
+		if (s.space < s.shrink)
+			s.space = s.shrink
 	}
 }
 
@@ -11886,11 +11948,8 @@ function set_sym_glue(width) {
 	while (1) {
 		if (s.seqst) {
 			space = s.shrink
-			if (s.space != 0) {
-				if (space < s.space * spafac)
-					space = s.space * spafac;
-				xmax += s.space * spafac * 1.8
-			}
+			if (s.space != 0)
+				xmax += s.space * spafac * 1.8;
 			x += space;
 			xmax += space;
 			s.x = x;
@@ -12018,47 +12077,7 @@ function gen_init() {
 			cur_sy = s.sy
 			break
 		case BLOCK:
-			switch (s.subtype) {
-			case "leftmargin":
-			case "rightmargin":
-			case "pagescale":
-			case "pagewidth":
-			case "scale":
-			case "staffwidth":
-				set_format(s.subtype, s.param);
-				break
-			case "ml":
-				svg_flush();
-				user.img_out(s.text)
-				break
-			case "newpage":
-				blk_out();
-				blk_flush();
-				block.newpage = true
-				break
-			case "sep":
-				set_page();
-				vskip(s.sk1);
-				output.push('<path class="stroke"\n\td="M');
-				out_sxsy(s.x, ' ', 0);
-				output.push('h' + s.l.toFixed(2) + '"/>\n');
-				vskip(s.sk2);
-				blk_out()
-				break
-			case "text":
-				write_text(s.text, s.opt)
-				break
-			case "title":
-				write_title(s.text, true)
-				break
-			case "vskip":
-				vskip(s.sk);
-				blk_out()
-				break
-			default:
-				error(2, s, 'Block $1 not treated', s.subtype)
-				break
-			}
+			block_gen(s)
 			break
 		}
 		unlksym(s)
@@ -12128,13 +12147,14 @@ function output_music() {
 				posx -= indent;
 				insert_meter &= ~2	// no more indentation
 			}
+			while (blocks.length != 0)
+				block_gen(blocks.shift())
 		}
 
 		tsfirst = tsnext
+		svg_flush()
 		if (!tsnext)
 			break
-
-		blk_out();
 
 		// next line
 		gen_init()
@@ -12569,11 +12589,7 @@ function set_kv_parm(a) {	// array of items
 			pos[item] = val
 			break
 		case "scale=":			// %%voicescale
-			val = parseFloat(a.shift())
-			if (isNaN(val))
-				syntax(1, err_bad_val_s, item)
-			else
-				curvoice[item.slice(0, -1)] = val
+			do_pscom('voicescale ' + a.shift())
 			break
 		case "score=":
 			if (cfmt.sound)
@@ -12600,11 +12616,10 @@ function set_kv_parm(a) {	// array of items
 				curvoice.snm = curvoice.snm.slice(1, -1);
 			break
 		case "stafflines=":
-			val = get_st_lines(a.shift())
-			if (val == undefined)
-				syntax(1, err_bad_val_s, item)
-			else
-				curvoice.stafflines = val
+			do_pscom('stafflines ' + a.shift())
+			break
+		case "staffscale=":
+			do_pscom('staffscale ' + a.shift())
 			break
 		default:
 			switch (item.slice(0, 4)) {
@@ -13286,6 +13301,8 @@ function new_bar() {
 			s.text = ''
 			break
 		}
+		if (c > '0' && c <= '9')	// ":|[2"
+			break
 		bar_type = bar_type.slice(0, -1);
 		line.index--;
 		c = '['
@@ -13351,11 +13368,13 @@ function new_bar() {
 	s2 = curvoice.last_sym
 	if (s2 && s2.type == SPACE) {
 		s2.time--		// keep the space at the right place
-	} else if (s2 && s2.type == BAR) {
+	} else if (s2 && s2.type == BAR
+		&& !s2.a_gch && !s2.a_dd
+		&& !s.a_gch && !s.a_dd) {
 
 		/* remove the invisible repeat bars when no shift is needed */
 		if (bar_type == "["
-		 && !s2.text && !s2.a_gch
+		 && !s2.text
 		 && (curvoice.st == 0
 		  || (par_sy.staves[curvoice.st - 1].flags & STOP_BAR)
 		  || s.norepbra)) {
@@ -13374,8 +13393,7 @@ function new_bar() {
 		}
 
 		/* merge back-to-back repeat bars */
-		if (bar_type == "|:"
-		 && !s.text) {
+		if (bar_type == "|:") {
 			if (s2.bar_type == ":|") {
 				s2.bar_type = "::";
 				s2.rbstop = 2
@@ -14269,8 +14287,6 @@ function new_note(grace, tp_fact) {
 			s.head = res[0];
 			s.dots = res[1];
 			s.nflags = res[2]
-			if (s.xstem)
-				s.nflags = 0
 			if (s.nflags <= -2)
 				s.stemless = true
 		} else {					// rest
@@ -14879,7 +14895,7 @@ function parse_music_line() {
 }
 // abc2svg - subs.js - text output
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -14978,7 +14994,7 @@ function out_str(str) {
 		o_font = gene.curfont,
 		c_font = o_font;
 
-	output.push(str.replace(/<|>|&.*?;|&|\$./g, function(c){
+	output.push(str.replace(/<|>|&.*?;|&|  |\$./g, function(c){
 			switch (c[0]) {
 			case '<': return "&lt;"
 			case '>': return "&gt;"
@@ -14986,6 +15002,8 @@ function out_str(str) {
 				if (c == '&')
 					 return "&amp;"
 				return c
+			case ' ':
+				return '  '		// space + nbspace
 			case '$':
 				if (c[1] == '0') {
 					n_font = gene.deffont;
@@ -15134,7 +15152,11 @@ function write_text(text, action) {
 	var	strlw = get_lwidth(),
 		lineskip = gene.curfont.size * cfmt.lineskipfac,
 		parskip = gene.curfont.size * cfmt.parskipfac,
+		p_start = block.started ? function(){} : blk_out,
+		p_flush = block.started ? svg_flush : blk_flush,
 		i, j, x, words, w, k, ww
+
+	p_start()
 	switch (action) {
 	default:
 //	case 'c':
@@ -15154,7 +15176,7 @@ function write_text(text, action) {
 			}
 			if (i == j) {			// new paragraph
 				vskip(parskip);
-				blk_out()
+				p_flush();
 				use_font(gene.curfont)
 				while (text[i + 1] == '\n') {
 					vskip(lineskip);
@@ -15162,6 +15184,7 @@ function write_text(text, action) {
 				}
 				if (i == text.length)
 					break
+				p_start()
 			} else {
 				vskip(lineskip);
 				xy_str(x, 0, text.slice(j, i), action)
@@ -15169,7 +15192,7 @@ function write_text(text, action) {
 			j = i + 1
 		}
 		vskip(parskip);
-		blk_out()
+		p_flush()
 		break
 	case 'f':
 	case 'j':
@@ -15199,7 +15222,7 @@ function write_text(text, action) {
 				xy_str(0, 0, words.slice(k).join(' '))
 			}
 			vskip(parskip);
-			blk_out()
+			p_flush()
 			if (i < 0)
 				break
 			while (text[i + 2] == '\n') {
@@ -15208,6 +15231,7 @@ function write_text(text, action) {
 			}
 			if (i == text.length)
 				break
+			p_start();
 			use_font(gene.curfont);
 			j = i + 2
 		}
@@ -15569,6 +15593,7 @@ function write_heading() {
 	var	i, j, area, composer, origin, rhythm, down1, down2,
 		lwidth = get_lwidth()
 
+	blk_out();
 	vskip(cfmt.topspace)
 
 	if (cfmt.titleformat) {
@@ -15679,70 +15704,9 @@ function write_heading() {
 	}
 	vskip(down2 + cfmt.musicspace)
 }
-
-// generate a header/footer
-// (this function is not called from the core)
-// return an array of [left, center, right] texts
-Abc.prototype.header_footer = function(str) {
-	var	c, i,
-		j = 0,
-		r = ["", "", ""]
-
-	if (str[0] == '"')
-		str = str.slice(1, -1)
-	if (str.indexOf('\t') < 0)		// if no TAB
-		str = '\t' + str		// center
-	for (i = 0; i < str.length; i++) {
-		c = str[i]
-		switch (c) {
-		case '\t':
-			if (j < 2)
-				j++
-			continue
-		case '\\':			// hope '\n'
-			for (j = 0; j < 3; j++) {
-				if (r[j])
-					r[j] += '\n'
-			}
-			j = 0;
-			i++
-			continue
-		default:
-			r[j] += c
-			continue
-		case '$':
-			break
-		}
-		c = str[++i]
-		switch (c) {
-		case 'd':	// cannot know the modification date of the file
-			break
-		case 'D':
-			var now = new Date();
-			r[j] += now.toUTCString()
-			break
-		case 'F':
-			r[j] += parse.ctx.fname
-			break
-		case 'I':
-			c = str[++i]
-		case 'T':
-			if (info[c])
-				r[j] += info[c]
-			break
-		case 'P':
-			r[j] += '\x0c'	// form feed
-			break
-		case 'V':
-			r[j] += "abc2svg-" + abc2svg.version
-			break
-		}
-	}
-	return r
-}
 // abc2svg - svg.js - svg functions
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -15762,7 +15726,6 @@ Abc.prototype.header_footer = function(str) {
 var	output = [],		// output buffer
 	style = '\n.fill {fill: currentColor}\
 \n.stroke {stroke: currentColor; fill: none}\
-\ntext {white-space: pre}\
 \n.music text, .music tspan {fill:currentColor}',
 	font_style = '',
 	posx = cfmt.leftmargin / cfmt.scale,	// default x offset of the images
@@ -16728,24 +16691,25 @@ function vskip(h) {
 
 // create the SVG image of the block
 function svg_flush() {
-	var head
-
 	if (multicol || output.length == 0 || !user.img_out || posy == 0)
 		return
+
+    var	head = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
+	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
+	color="black"'
+
+	if (cfmt.bgcolor)
+		head += ' style="background-color: ' + cfmt.bgcolor + '"';
+
 	posy *= cfmt.scale
 
 	if (user.imagesize) {
-		head = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	color="black"\n' +
+		head += '\n' +
 			user.imagesize +
 			' viewBox="0 0 ' + img.width.toFixed(0) + ' ' +
 			 posy.toFixed(0) + '">\n'
 	} else {
-		head = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	color="black"\n\
-	width="' + img.width.toFixed(0) +
+		head += '\n\twidth="' + img.width.toFixed(0) +
 			'px" height="' + posy.toFixed(0) + 'px">\n'
 	}
 
@@ -16767,9 +16731,6 @@ function svg_flush() {
 	}
 	if (defs)
 		head += '<defs>' + defs + '\n</defs>\n'
-	if (cfmt.bgcolor)
-		head += '<rect width="100%" height="100%" fill="' +
-				cfmt.bgcolor + '"/>\n'
 	if (cfmt.scale == 1)
 		head += '<g class="music" stroke-width=".7">\n'
 	else
@@ -16789,15 +16750,16 @@ function svg_flush() {
 	} else {
 		musicfont = '';
 		style = '';
-		defs = ''
 	}
+	defs = '';
 	posy = 0
 }
 
 // output a part of a block of images
 function blk_out() {
-	if (multicol || !output || !user.img_out)
+	if (multicol || !user.img_out)
 		return
+	blk_flush()
 	if (user.page_format && !block.started) {
 		block.started = true
 		if (block.newpage) {
@@ -16807,12 +16769,12 @@ function blk_out() {
 			user.img_out('<div class="nobrk">')
 		}
 	}
-	svg_flush()
 }
 Abc.prototype.blk_out = blk_out
 
 // output the end of a block (or tune)
 function blk_flush() {
+	svg_flush()
 	if (block.started) {
 		block.started = false;
 		user.img_out('</div>')
@@ -16821,7 +16783,7 @@ function blk_flush() {
 Abc.prototype.blk_flush = blk_flush
 // abc2svg - tune.js - tune generation
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -17997,12 +17959,13 @@ function do_pscom(text) {
 			s.sk2 = h2
 			return
 		}
+		blk_out();
 		vskip(h1);
 		output.push('<path class="stroke"\n\td="M');
 		out_sxsy((lwidth - len) / 2 / cfmt.scale, ' ', 0);
 		output.push('h' + (len / cfmt.scale).toFixed(2) + '"/>\n');
 		vskip(h2);
-		blk_out()
+		blk_flush()
 		return
 	case "setbarnb":
 		val = parseInt(param)
@@ -18151,7 +18114,6 @@ function do_pscom(text) {
 			return
 		}
 		vskip(val);
-		blk_out()
 		return
 	case "newpage":
 	case "leftmargin":
@@ -18168,7 +18130,7 @@ function do_pscom(text) {
 		}
 		if (cmd == "newpage") {
 			blk_flush();
-			block.newpage = true
+			block.newpage = true;
 			return
 		}
 		break
@@ -18228,10 +18190,12 @@ function do_begin_end(type,
 		break
 	case "text":
 		action = get_textopt(opt);
+		if (!action)
+			action = cfmt.textoption
 		if (parse.state >= 2) {
 			s = new_block(type);
 			s.text = cnv_escape(text);
-			s.opt = get_textopt(opt)
+			s.opt = action
 			break
 		}
 		write_text(cnv_escape(text), action)
@@ -18258,10 +18222,8 @@ function generate() {
 	if (user.get_abcmodel)
 		user.get_abcmodel(tsfirst, voice_tb, anno_type, info)
 
-	if (!user.img_out)
-		return			// no SVG generation
-
-	output_music()
+	if (user.img_out)		// if SVG generation
+		output_music()
 
 	/* reset the parser */
 	for (v = 0; v < voice_tb.length; v++) {
@@ -18884,11 +18846,11 @@ function new_voice(id) {
 	var	p_voice, v, p_v_sav,
 		n = voice_tb.length
 
-	// if first explicit voice and no symbol, replace the default V:1
+	// if first explicit voice and no music, replace the default V:1
 	if (n == 1
 	 && voice_tb[0].default) {
-		voice_tb[0].default = false
-		if (!voice_tb[0].last_sym) {
+		delete voice_tb[0].default
+		if (voice_tb[0].time == 0) {
 			p_voice = voice_tb[0];
 			p_voice.id = id
 			if (cfmt.transp	// != undefined
@@ -18910,7 +18872,8 @@ function new_voice(id) {
 	p_voice = {
 		v: v,
 		id: id,
-//		time: 0,	// used to know if new voice
+		time: 0,
+		new: true,
 		pos: {
 			dyn: 0,
 			gch: 0,
@@ -18989,8 +18952,8 @@ function get_voice(parm) {
 	set_transp();
 
 	v = curvoice.v
-	if (curvoice.time == undefined) {	// if new voice
-		curvoice.time = 0
+	if (curvoice.new) {			// if new voice
+		delete curvoice.new
 		if (staves_found < 0) {		// if no %%score/%%staves
 			curvoice.st = curvoice.cst = ++nstaff;
 			par_sy.nstaff = nstaff;
@@ -19036,7 +18999,6 @@ function goto_tune(is_K) {
 		curvoice.clef.istart = curvoice.key.istart;
 		curvoice.clef.iend = curvoice.key.iend;
 //		nstaff = 0;
-//		curvoice.time = 0;
 		curvoice.default = true
 	} else if (!curvoice) {
 		curvoice = voice_tb[staves_found < 0 ? 0 : par_sy.top_voice]
@@ -19063,8 +19025,7 @@ function goto_tune(is_K) {
 		nstaff = voice_tb.length - 1
 		for (v = 0; v <= nstaff; v++) {
 			p_voice = voice_tb[v];
-			p_voice.time = 0;		// old voice
-			p_voice.clef.time = 0;
+			delete p_voice.new;		// old voice
 			p_voice.st = p_voice.cst =
 				par_sy.voices[v].st =
 					par_sy.voices[v].range = v;
@@ -19738,7 +19699,7 @@ function draw_all_lyrics() {
 }
 // abc2svg - gchord.js - chord symbols
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -20084,6 +20045,9 @@ function gch_build(s) {
 					}
 					return "&#x1d12b;"
 				});
+			if (cfmt.chordnames)
+				gch.text = gch.text.replace(/A|B|C|D|E|F|G/g,
+					function(c){return cfmt.chordnames[c]});
 			gch.font = gch_font
 		} else {
 			gch.text = cnv_escape(gch.text);
@@ -20413,7 +20377,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.4 (2017-12-03)
+// json-1.js for abc2svg-1.15.5-31-g479ba92 (2018-01-10)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20561,7 +20525,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.4 (2017-12-03)
+// midi-1.js for abc2svg-1.15.5-31-g479ba92 (2018-01-10)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20761,7 +20725,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.4 (2017-12-03)
+// play-1.js for abc2svg-1.15.5-31-g479ba92 (2018-01-10)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
