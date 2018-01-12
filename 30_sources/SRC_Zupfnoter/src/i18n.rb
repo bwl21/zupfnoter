@@ -38,8 +38,10 @@ module I18n
   end
 
 
+  # @return [nil]
+  # @param [String] language
+  # Block - a callback to be invoked after the translation table is loaded
   def self.locale(language)
-
     # load the localization
     HTTP.get("public/locale/#{language}.json?#{Time.now.to_i}").then do |response|
       # we use this pattern as different versions
@@ -47,6 +49,7 @@ module I18n
       locale = Native(response.body)
       locale = JSON.parse(locale) if locale.is_a? String
       `w2utils.locale(#{locale.to_n})`
+      yield if block_given?
     end.fail do |response, error|
       $log.error %Q{BUG: no language support for } + %Q{ "#{language}": #{response.body}"}
       HTTP.get("public/locale/de-de.json?#{Time.now.to_i}") do |response|
