@@ -22,7 +22,7 @@ module Ajv
 
     def validate(schemaname, data)
 
-      valid=false
+      valid = false
       %x{
       #{valid} = #{@root}.validate(#{schemaname}, #{data.to_n})
      }
@@ -41,15 +41,15 @@ module Ajv
     end
 
     def validate_conf(conf)
-      resconf       = Confstack.new()
-      resconf.strict=false
+      resconf        = Confstack.new()
+      resconf.strict = false
       resconf.push(conf.get)
       extract0 = resconf.get("extract.0")
       resconf.get('extract').keys.each do |key|
         resconf.push({'extract' => {key => extract0}}) # push extract 0 to all others
       end
       resconf.push({'extract' => conf.get('extract')}) # push extract-specific paramters
-      x=resconf.get
+      x = resconf.get
       validate('zupfnoter', resconf.get)
     end
 
@@ -58,7 +58,6 @@ module Ajv
        :description => "Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7",
        :type        => "object",
        :required    => ["produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
-
        :definitions => {
 
            :pos              => {:type        => "array",
@@ -141,6 +140,15 @@ module Ajv
                                            }}
                    }
            },
+           :resources        => {
+               :type                 => "object",
+               :additionalProperties => false,
+               :patternProperties    => {
+                   "^[a-zA-Z0-9_\-]+$" => {:type  => "array",
+                                         :items => {:type => "string"}
+                   },
+               }
+           }
        },
 
        :properties  => {
@@ -152,9 +160,9 @@ module Ajv
                              :minItems    => 1,
                              :uniqueItems => true,
                              :items       => {:type => "integer"}},
-           :template     => {:type       => "object",
+           :template     => {:type                 => "object",
                              :additionalProperties => false,
-                             :properties =>
+                             :properties           =>
                                  {
                                      :filebase => {:type => "string"},
                                      :title    => {:type => "string"}
@@ -623,6 +631,7 @@ module Ajv
                                  }
                                 }
            },
+           :resources   => {"$ref" => "#/definitions/resources"},
            :neatjson    => {:type       => "object",
                             :required   => ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "explicit_sort"],
                             :properties =>

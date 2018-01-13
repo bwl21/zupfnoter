@@ -10,6 +10,10 @@ function init_w2ui(uicontroller) {
 // file import methods
 
 
+  function pasteDatauri(name, datauri){
+    uicontroller.$handle_parsed_command("pasteDatauri", {"key": name, "value": datauri})
+  }
+
   function pasteXml(text) {
     // try {
     //   var xmldata = $.parseXML(text);
@@ -47,6 +51,10 @@ function init_w2ui(uicontroller) {
     uicontroller.$handle_command('drop')
   }
 
+  /**
+   * Hints: https://developer.mozilla.org/de/docs/Web/API/FileReader/readAsDataURL
+   * @param event
+   */
   function handleDrop(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -61,6 +69,9 @@ function init_w2ui(uicontroller) {
       if (text[0] == '<') {
         pasteXml(text);
       }
+      else if (files[0].type.startsWith("image")){
+        pasteDatauri(files[0].name, text)
+      }
       else if (files[0].name.endsWith(".mxl")) {
         pasteMxl(text)
       }
@@ -68,7 +79,11 @@ function init_w2ui(uicontroller) {
         pasteAbc(text);
       }
     }
-    if (files[0].name.endsWith('.mxl')) {
+
+    if (files[0].type.startsWith("image")){
+      reader.readAsDataURL(files[0]);
+    }
+    else if (files[0].name.endsWith('.mxl')) {
       reader.readAsBinaryString(files[0]);
     }
     else {
@@ -90,7 +105,7 @@ function init_w2ui(uicontroller) {
   }
 
   document.getElementById('file_input')
-    .addEventListener('change', function(event){debugger;handleDrop(event)}, false);
+    .addEventListener('change', function(event){handleDrop(event)}, false);
 
   initializeFileDrop('layout');
 

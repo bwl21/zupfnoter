@@ -268,6 +268,22 @@ class Controller
     call_consumers(:error_alert)
   end
 
+  # this handles a command which is already parsed
+  #
+  # @param [String] command the name of the command
+  # @param [Hash] args a hash with the arguments. May even be a JS object
+  def handle_parsed_command(command, args)
+    $log.clear_errors
+    begin
+      $log.timestamp_start
+      $log.timestamp(command)
+      @commands.run_parsed_command(command, Native(args))
+    rescue Exception => e
+      $log.error(%Q{#{e.message} in command "#{command}"}, nil, nil, e.backtrace)
+    end
+    call_consumers(:error_alert)
+  end
+
   # Save session to local store
   # only if in :work mode
   def save_to_localstorage

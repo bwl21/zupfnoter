@@ -254,34 +254,27 @@ class Controller
       end
     end
 
-    @commands.add_command(:conf) do |command|
+    @commands.add_command(:pasteDatauri) do |command|
       command.undoable = false
 
+      command.set_help {"handle a dropped resource by datauri"}
+
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help {"parameter key"}
+        parameter.set_help {"name of the ressource"}
       end
 
-      command.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_help {"parameter value (true | false"}
+      command.add_parameter(:value, :string) do |parameter|
+        parameter.set_help {"value of the ressource"}
       end
-
-
-      command.set_help {"set configuration parameter true/false"}
 
       command.as_action do |args|
-        value = {'true' => true, 'false' => false}[args[:value]]
-
-        raise "invalid key #{args[:key]}" unless $conf.keys.include?(args[:key])
-        raise "value must be true or false" if value.nil?
-        $conf[args[:key]] = value
-
-        nil
-      end
-
-      command.as_inverse do |args|
-        $conf.pop # todo: this is a bit risky
+        key = args[:key].gsub(/[^a-zA-Z0-9_]/, "_")
+        value = args[:value].scan(/.{1,60}/)
+        @editor.patch_config_part("resources.#{key}", value)
       end
     end
+
+
 
     @commands.add_command(:stdnotes) do |command|
       command.undoable = false
@@ -708,7 +701,7 @@ class Controller
       end
 
 
-      command.set_help {"set configuration parameter"}
+      command.set_help {"set configuration parameter in editor pane"}
 
       command.as_action do |args|
         value = JSON.parse(args[:value])
