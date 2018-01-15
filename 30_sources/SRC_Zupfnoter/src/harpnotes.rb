@@ -2531,7 +2531,9 @@ module Harpnotes
       # @return [Object] The generated drawing primitive
       def layout_accord(root, beat_layout)
         # draw the notes in the order of the notes in the Unison
-        resnotes   = root.notes.map { |c| layout_note(c, beat_layout).first }
+        resnotes_beams   = root.notes.map { |c| layout_note(c, beat_layout)}
+        resnotes = resnotes_beams.map{|note| note.first }
+        resbeams = resnotes_beams.map{|note| note[1..-1] }
         proxy_note = root.get_proxy_object(resnotes) # layout_note(root.proxy_note, beat_layout)
 
         # then we ensure that we draw the line from lowest to highest in order to cover all of them
@@ -2541,7 +2543,8 @@ module Harpnotes
         # todo: signature has center / size swapped
         # todo: we need a flowline in the result, otherwise the Syncpoint would not have proper origin
         res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, proxy_note.center, proxy_note.size) # Flowline is in fact a line
-        res << resnotes
+        res += resbeams
+        res += resnotes
         res
       end
 
