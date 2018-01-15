@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-01-11 10:37:34 +0100
+// compiled for Zupfnoter 2018-01-13 10:05:45 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.5-31-g479ba92",vdate:"2018-01-10"}
+var abc2svg={version:"1.15.7",vdate:"2018-01-12"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -3112,10 +3112,25 @@ function draw_bar(s, bot, h) {
 		st = s.st,
 		x = s.x
 
+	bar_type = bar_cnv(s.bar_type)
+	if (!bar_type)
+		return				/* invisible */
+
+	/* don't put a line between the staves if there is no bar above */
+	if (st != 0
+	 && s.ts_prev
+//fixme: 's.ts_prev.st != st - 1' when floating voice in lower staff
+//	 && (s.ts_prev.type != BAR || s.ts_prev.st != st - 1))
+	 && s.ts_prev.type != BAR)
+		h = staff_tb[st].topbar * staff_tb[st].staffscale;
+
+	s.ymx = s.ymn + h;
+	set_sscale(st);
+	anno_start(s)
+
 	/* if measure repeat, draw the '%' like glyphs */
 	if (s.bar_mrep) {
 		yb = staff_tb[st].y + 12;
-		set_scale(s)
 		if (s.bar_mrep == 1) {
 			for (s2 = s.prev; s2.type != REST; s2 = s2.prev)
 				;
@@ -3130,17 +3145,6 @@ function draw_bar(s, bot, h) {
 		}
 	}
 
-	/* don't put a line between the staves if there is no bar above */
-	if (st != 0
-	 && s.ts_prev
-//fixme: 's.ts_prev.st != st - 1' when floating voice in lower staff
-//	 && (s.ts_prev.type != BAR || s.ts_prev.st != st - 1))
-	 && s.ts_prev.type != BAR)
-		h = staff_tb[st].topbar * staff_tb[st].staffscale;
-
-	bar_type = bar_cnv(s.bar_type)
-	if (!bar_type)
-		return				/* invisible */
 	for (i = bar_type.length; --i >= 0; ) {
 		switch (bar_type[i]) {
 		case "|":
@@ -3162,6 +3166,8 @@ function draw_bar(s, bot, h) {
 		}
 		x -= 3
 	}
+	set_sscale(st);
+	anno_stop(s)
 }
 
 /* -- draw a rest -- */
@@ -5738,11 +5744,7 @@ function draw_systems(indent) {
 				bar_set()
 			}
 
-			set_sscale(st);		// (for symbol annotation)
-			anno_start(s);
 			draw_bar(s, bar_bot[st], bar_height[st]);
-			set_sscale(st);
-			anno_stop(s)
 			break
 		case STBRK:
 			if (cur_sy.voices[s.v].range == 0) {
@@ -16192,7 +16194,10 @@ function sy(y) {
 		return (posy - y) / stv_g.scale	// voice scale
 	return stv_g.dy - y			// staff scale
 }
-Abc.prototype.sy = sy
+Abc.prototype.sy = sy;
+// return absolute X,Y coordinates
+Abc.prototype.ax = function(x) { return x + posx }
+Abc.prototype.ay = function(y) { return posy - y }
 
 // output scaled (x + <sep> + y)
 function out_sxsy(x, sep, y) {
@@ -20035,6 +20040,12 @@ function gch_build(s) {
 	for (ix = 0; ix < s.a_gch.length; ix++) {
 		gch = s.a_gch[ix]
 		if (gch.type == 'g') {
+			if (cfmt.chordnames) {
+				gch.text = gch.text.replace(/A|B|C|D|E|F|G/g,
+					function(c){return cfmt.chordnames[c]})
+				if (cfmt.chordnames.B == 'H')
+					gch.text = gch.text.replace(/Hb/g, 'B')
+			}
 			gch.text = gch.text.replace(/##|#|=|bb|b/g,
 				function(x) {
 					switch (x) {
@@ -20045,9 +20056,6 @@ function gch_build(s) {
 					}
 					return "&#x1d12b;"
 				});
-			if (cfmt.chordnames)
-				gch.text = gch.text.replace(/A|B|C|D|E|F|G/g,
-					function(c){return cfmt.chordnames[c]});
 			gch.font = gch_font
 		} else {
 			gch.text = cnv_escape(gch.text);
@@ -20377,7 +20385,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.5-31-g479ba92 (2018-01-10)
+// json-1.js for abc2svg-1.15.7 (2018-01-12)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20525,7 +20533,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.5-31-g479ba92 (2018-01-10)
+// midi-1.js for abc2svg-1.15.7 (2018-01-12)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20725,7 +20733,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.5-31-g479ba92 (2018-01-10)
+// play-1.js for abc2svg-1.15.7 (2018-01-12)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
