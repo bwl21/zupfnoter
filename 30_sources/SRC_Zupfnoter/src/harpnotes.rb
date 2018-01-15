@@ -803,7 +803,7 @@ module Harpnotes
     # This represents a flowline
     #
     class FlowLine < Drawable
-      attr_reader :from, :to, :style, :origin, :center, :size
+      attr_reader :from, :to, :style
 
       # @param from [Drawable] the origin of the flow
       # @param to   [Drawable] the target of the flow
@@ -814,14 +814,11 @@ module Harpnotes
       #
       #
       # @return [type] [description]
-      def initialize(from, to, style = :solid, origin = nil, center = nil, size = nil)
+      def initialize(from, to, style = :solid)
         super()
-        @from   = from
-        @to     = to
-        @style  = style
-        @origin = origin
-        @size   = size
-        @center = center
+        @from  = from
+        @to    = to
+        @style = style
         # just to avoid runtime messages
       end
 
@@ -1437,7 +1434,7 @@ module Harpnotes
         synch_lines = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
           synch_points_to_show.map do |sp|
-            res       = FlowLine.new(sp.notes.first.sheet_drawable, sp.notes.last.sheet_drawable, :dashed, sp)
+            res       = FlowLine.new(sp.notes.first.sheet_drawable, sp.notes.last.sheet_drawable, :dashed)
             res.color = compute_color_by_variant_no(sp.notes.first.variant)
             res
           end
@@ -1649,14 +1646,14 @@ module Harpnotes
         res_decorations = []
         res_playables   = playables.map do |playable|
           result          = layout_playable(playable, beat_layout) # unless playable.is_a? Pause
-          decoration_root = [result].flatten.last # todo this is not DRY: see layout_accord which also selects the proxy note
+          decoration_root = result[:proxy]
 
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
           decoration_root.conf_key = %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f}
 
-          [result]
+          result[:shapes]
         end.flatten.compact
 
 
@@ -1810,11 +1807,12 @@ module Harpnotes
                   draginfo = nil
                 end
                 res = Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.draginfo = draginfo }
-
+              else
+                # draw the flowline as line if it is not a path
+                res = Harpnotes::Drawing::FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable)
               end
             end
 
-            res = FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable) unless res
             #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
@@ -2384,7 +2382,7 @@ module Harpnotes
       # @param root [Playable] the entity to be drawn on the sheet
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
-      # @return [type] [description]
+      # @return [Hash] {shapes: [], proxy: proxy_shape}[description]
       def layout_playable(root, beat_layout)
         result = if root.is_a? Note
                    layout_note(root, beat_layout)
@@ -2395,8 +2393,6 @@ module Harpnotes
                  else
                    $log.error("BUG: Missing Music -> Sheet transform: #{root}")
                  end
-
-
         result
       end
 
@@ -2428,11 +2424,13 @@ module Harpnotes
 
         if flag
           ## layout the flag
-          res = layout_note_flags(x_offset, y_offset, size, shift, color, flag)
-          result.push(res)
+          result.push(layout_note_flags(x_offset, y_offset, size, shift, color, flag))
         end
 
-        result
+        #todo
+        # draw the barovers and dots here
+
+        {shapes: result, proxy: res}
       end
 
       #**
@@ -2447,7 +2445,7 @@ module Harpnotes
       # @param [Boolean of Integer] number of flags: nil | false: no beam; 1-4 number of flags
       # @return [Array of Drawables]
       def layout_note_flags(x_offset, y_offset, size, shift, color, flag)
-        linewidth = $conf.get('layout.LINE_THICK')
+        linewidth  = $conf.get('layout.LINE_THICK')
         f_x        = x_offset + shift - linewidth / 2 + size.first
         f_size_x   = 0.7 * size.last
         f_size_y   = f_size_x / 2
@@ -2469,7 +2467,7 @@ module Harpnotes
 
         res            = Harpnotes::Drawing::Path.new(path, :open)
         res.line_width = linewidth
-        res.color = color
+        res.color      = color
         res
       end
 
@@ -2531,21 +2529,15 @@ module Harpnotes
       # @return [Object] The generated drawing primitive
       def layout_accord(root, beat_layout)
         # draw the notes in the order of the notes in the Unison
-        resnotes_beams   = root.notes.map { |c| layout_note(c, beat_layout)}
-        resnotes = resnotes_beams.map{|note| note.first }
-        resbeams = resnotes_beams.map{|note| note[1..-1] }
-        proxy_note = root.get_proxy_object(resnotes) # layout_note(root.proxy_note, beat_layout)
+        res            = root.notes.map { |c| layout_note(c, beat_layout) }
+        proxy_drawable = root.get_proxy_object(res)[:proxy] # layout_note(root.proxy_drawable, beat_layout)
 
         # then we ensure that we draw the line from lowest to highest in order to cover all of them
-        resnotes_sorted = resnotes.sort_by { |n| n.center.first }
+        resnotes_sorted = res.map { |n| n[:proxy] }.sort_by { |n| n.center.first }
 
-        res = []
-        # todo: signature has center / size swapped
-        # todo: we need a flowline in the result, otherwise the Syncpoint would not have proper origin
-        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed, root, proxy_note.center, proxy_note.size) # Flowline is in fact a line
-        res += resbeams
-        res += resnotes
-        res
+        res = res.map { |n| n[:shapes] }
+        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed)
+        {shapes: res, proxy: proxy_drawable}
       end
 
       #
@@ -2572,7 +2564,7 @@ module Harpnotes
         res.visible         = false unless root.visible?
         res.hasbarover      = true if root.measure_start
         res.is_note         = true
-        res
+        {shapes: [res], proxy: res}
       end
 
 
