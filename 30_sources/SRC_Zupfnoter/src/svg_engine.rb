@@ -20,9 +20,9 @@ module Harpnotes
       @preview_container = Element.find("##{@container_id}")
       @paper             = ZnSvg::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
-      @on_select         = nil
-      @elements          = {} # record all elements being on the sheet, using upstream object as key
-      @highlighted       = []
+      @on_select   = nil
+      @elements    = {} # record all elements being on the sheet, using upstream object as key
+      @highlighted = []
     end
 
     def set_view_box(x, y, width, height)
@@ -242,17 +242,20 @@ module Harpnotes
       attr[:stroke]     = color
       size              = root.size
       @paper.line_width = 0
+
+      #draw a white background first if not filled
       if root.rect?
-        e = @paper.rect(root.center.first - size.first, root.center.last - size.last, 2 * size.first, 2 * size.last)
+        e = @paper.rect(root.center.first - size.first, root.center.last - size.last, 2 * size.first, 2 * size.last, 0, attr)
       else
         e = @paper.ellipse(root.center.first, root.center.last, size.first, size.last, attr)
       end
 
+      # draw the border
       unless root.fill == :filled
         @paper.line_width = root.line_width
         size              = root.size.map { |s| s - root.line_width / 2 }
         if root.rect?
-          e = @paper.rect(root.center.first - size.first, root.center.last - size.last, 2 * size.first, 2 * size.last)
+          e = @paper.rect(root.center.first - size.first, root.center.last - size.last, 2 * size.first, 2 * size.last, 0, attr)
         else
           e = @paper.ellipse(root.center.first, root.center.last, size.first, size.last, attr)
         end
@@ -266,9 +269,11 @@ module Harpnotes
         draw_the_barover(root)
       end
 
-      startChar = root.origin.origin[:startChar]
-      e = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last, startChar)
-      push_element(root, e)
+      if root.origin
+        startChar = root.origin.origin[:startChar]
+        e         = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last, startChar)
+        push_element(root, e)
+      end
     end
 
     def draw_glyph(root)
@@ -284,10 +289,10 @@ module Harpnotes
       #path_spec = "M#{center.first} #{center.last}"
 
 
-      bgrect            = [root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0]
+      bgrect = [root.center.first - size.first / 2, root.center.last - size.last / 2, size.first, size.last, 0]
       # draw a white background if it is a playble
       if is_playable
-        e = @paper.rect(root.center.first - size.first/2, root.center.last - size.last/2, size.first, size.last, 0, {fill: "white", stroke: "white"})
+        e = @paper.rect(root.center.first - size.first / 2, root.center.last - size.last / 2, size.first, size.last, 0, {fill: "white", stroke: "white"})
       end
 
       # draw th path
@@ -308,7 +313,7 @@ module Harpnotes
 
       if is_playable
         startChar = root.origin.origin[:startChar]
-        e = @paper.add_abcref(root.center.first, root.center.last, 0.6 * root.size.first, 0.6 * root.size.last, startChar)
+        e         = @paper.add_abcref(root.center.first, root.center.last, 0.6 * root.size.first, 0.6 * root.size.last, startChar)
         push_element(root, e)
       else
         push_element(root, e)
@@ -327,7 +332,7 @@ module Harpnotes
     def draw_the_dot(root)
       @paper.line_width = 0
       ds1               = DOTTED_SIZE + root.line_width
-      ds2               = DOTTED_SIZE + root.line_width/2
+      ds2               = DOTTED_SIZE + root.line_width / 2
       x                 = root.center.first + (root.size.first + ds1)
       y                 = root.center.last
       white             = COLORS['white']
@@ -348,7 +353,7 @@ module Harpnotes
       attr                     = {stroke: color}
       attr["stroke-dasharray"] = "2,1" if root.style == :dashed
       attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
-      e = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
+      e                        = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
       #push_element(root, e)
       e
       # see http://stackoverflow.com/questions/10940316/how-to-use-attrs-stroke-dasharray-stroke-linecap-stroke-linejoin-in-raphaeljs
@@ -383,21 +388,21 @@ module Harpnotes
     # Draw an an annotation
     def draw_annotation(root)
 
-      style                = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
-      mm_per_point         = $conf.get('layout.MM_PER_POINT')
+      style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
+      mm_per_point = $conf.get('layout.MM_PER_POINT')
 
       # activate to debug the positioning of text
       #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
 
-      text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n"). gsub(/(\\?)(~)/){|m| m[0]=='\\' ? m[1]: '&nbsp;'}
+      text                 = root.text.gsub(/\ +\n/, "\n").gsub("\n\n", "\n \n").gsub(/(\\?)(~)/) { |m| m[0] == '\\' ? m[1] : '&nbsp;' }
       attr                 = {}
-      attr[:"font-size"]   = style[:font_size]/3 # literal by try and error
+      attr[:"font-size"]   = style[:font_size] / 3 # literal by try and error
       attr[:"font-family"] = "Arial"
-      attr[:transform]     = "scale(1.05, 1) translate(0,#{-style[:font_size]/8})" # literal by try and error
+      attr[:transform]     = "scale(1.05, 1) translate(0,#{-style[:font_size] / 8})" # literal by try and error
       attr[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
       attr[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
       attr[:"text-anchor"] = "start"
-      element              = @paper.text(root.center.first/1.05, root.center.last, text, attr) # literal by try and error
+      element              = @paper.text(root.center.first / 1.05, root.center.last, text, attr) # literal by try and error
 
       push_element(root, element)
       element

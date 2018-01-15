@@ -721,6 +721,29 @@ module Harpnotes
       end
     end
 
+    # this represents a drawable which is actually a compound
+    # of drawables.
+    class CompoundDrawable
+
+      attr_accessor :shapes, :proxy
+
+      def initialize(shapes, proxy)
+        @shapes = shapes
+        @proxy  = proxy
+      end
+
+      # push a single drawable
+      def push(drawable)
+        @shapes << drawable
+      end
+
+      # merge a compound drawable
+      def merge (compound_drawable)
+        @shapes += compound_drawable.shapes
+      end
+
+    end
+
     # this represetns objects which can be visible
     # draginfo {handler: :drag | jumpline | bezier,
     #           jumpline {p1: [x1, y1], pv: xv, p2: [x2, y1] } |
@@ -728,7 +751,7 @@ module Harpnotes
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :is_note, :draginfo, :color
+      attr_accessor :conf_key, :conf_value, :draginfo, :color
 
       def initialize
         @visible    = true
@@ -739,10 +762,6 @@ module Harpnotes
 
       def center
         raise "center not implemented for #{self.class}"
-      end
-
-      def is_note?
-        @is_note
       end
 
       def visible?
@@ -891,7 +910,8 @@ module Harpnotes
       # @param radii [Array] the radii of the ellipse as [width, height]
       # @param fill [Symbol] the fill style, either :filled or :empty
       # @param dotted [Boolean] true if the ellipse has a small companion dot, FALSE otherwise
-      # @param origin [Object] The source object of the upstream model
+      # @param origin [Object] The source object of the upstream model - to support upstream mapping
+      #                        if no origin is given, no clickhandler is created
       # @param rect [Boolean] true if the ellipse is in fact a rectangle
       #
       def initialize(center, radii, fill = :filled, dotted = false, origin = nil, rect = false)
@@ -1547,6 +1567,9 @@ module Harpnotes
         else
           print_options_raw.push(song_print_options)
         end
+
+        print_options_raw.push({'layout' => {"DURATION_TO_STYLE" => $conf['layout.DURATION_TO_BEAMS']}})  if print_options_raw['layout.beams']
+
         print_options_raw
       end
 
@@ -1646,14 +1669,14 @@ module Harpnotes
         res_decorations = []
         res_playables   = playables.map do |playable|
           result          = layout_playable(playable, beat_layout) # unless playable.is_a? Pause
-          decoration_root = result[:proxy]
+          decoration_root = result.proxy
 
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
           decoration_root.conf_key = %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f}
 
-          result[:shapes]
+          result.shapes
         end.flatten.compact
 
 
@@ -2068,7 +2091,6 @@ module Harpnotes
             decoration_center = [decoration_root.center.first + annotationoffset.first, decoration_root.center.last + annotationoffset.last]
             r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, annotationoffset)
             r.tap { |s| s.draginfo = {handler: :annotation} }
-            r.is_note = false
             decoration_result.push [r]
           end
         end
@@ -2413,24 +2435,34 @@ module Harpnotes
         shift = layout_note_shift(root, size, x_offset, dotted)
         color = compute_color_by_variant_no(root.variant)
 
-        result              = []
         res                 = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
         root.sheet_drawable = res # backannotate
         res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')
-        res.hasbarover      = true if root.measure_start # $conf.get('layout.bottomup')
-        res.is_note         = true
-        result.push res
+        #res.hasbarover      = true if root.measure_start # $conf.get('layout.bottomup')
+        result = CompoundDrawable.new([res], res)
 
+        ## layout the flag and beam
         if flag
-          ## layout the flag
           result.push(layout_note_flags(x_offset, y_offset, size, shift, color, flag))
         end
 
-        #todo
-        # draw the barovers and dots here
+        if root.measure_start
+          barover_y = size.last + $conf.get('layout.LINE_THICK')
+          barover_y = -barover_y if $conf.get('layout.bottomup')
 
-        {shapes: result, proxy: res}
+          reducer = flag && !$conf.get('layout.bottomup') ? $conf.get('layout.LINE_THICK') : 0 # reduce width of barover if we have a flag
+
+          res            = Ellipse.new([x_offset + shift - reducer, y_offset - barover_y], [size.first - reducer, $conf.get('layout.LINE_THICK') / 2], :filled, false, nil, true)
+          res.color      = :red
+          res.line_width = $conf.get('layout.LINE_THIN')
+          result.push res
+        end
+
+        #todo
+        # draw dots here
+
+        result
       end
 
       #**
@@ -2441,9 +2473,9 @@ module Harpnotes
       # 
       # @param [Numeric] x_offset x position of note
       # @param [Numeric] y_offset y position of of note
-      # @param [Arry of numeric] size - size of note
+      # @param [Array of numeric] size - size of note
       # @param [Boolean of Integer] number of flags: nil | false: no beam; 1-4 number of flags
-      # @return [Array of Drawables]
+      # @return [Harpnotes::Drawing::Path]
       def layout_note_flags(x_offset, y_offset, size, shift, color, flag)
         linewidth  = $conf.get('layout.LINE_THICK')
         f_x        = x_offset + shift - linewidth / 2 + size.first
@@ -2497,15 +2529,15 @@ module Harpnotes
       # @param [Object] root the object being layouted
       # @param [Object] size the size of the object
       # @param [Numerical] x_offset the unshifted horizontal position of the object
-      #
+      # @return [CompoundDrawable]
       def layout_note_shift(root, size, x_offset, dotted)
         shift = 0
         if $conf.get('layout.limit_a3')
-          if x_offset < 5
+          if x_offset < 5 # todo: this is still vague
             shift += size.first
           end
 
-          if x_offset > 415
+          if x_offset > 415 # dodo: this is still vague
             shift += -size.first
             shift -= 1.5 if dotted # todo: derive 1.5 from dotted size
           end
@@ -2526,18 +2558,19 @@ module Harpnotes
       # @param root [SynchPoint] The SynchPoint to be placed
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
-      # @return [Object] The generated drawing primitive
+      # @return [CompoundDrawable] The generated drawing primitive
       def layout_accord(root, beat_layout)
         # draw the notes in the order of the notes in the Unison
         res            = root.notes.map { |c| layout_note(c, beat_layout) }
-        proxy_drawable = root.get_proxy_object(res)[:proxy] # layout_note(root.proxy_drawable, beat_layout)
+        proxy_drawable = root.get_proxy_object(res).proxy # layout_note(root.proxy_drawable, beat_layout)
 
         # then we ensure that we draw the line from lowest to highest in order to cover all of them
-        resnotes_sorted = res.map { |n| n[:proxy] }.sort_by { |n| n.center.first }
+        resnotes_sorted = res.map { |n| n.proxy }.sort_by { |n| n.center.first }
 
-        res = res.map { |n| n[:shapes] }
-        res << FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed)
-        {shapes: res, proxy: proxy_drawable}
+        res = res.map { |n| n.shapes }
+        # add the synchline at the very beginning
+        res.unshift FlowLine.new(resnotes_sorted.first, resnotes_sorted.last, :dashed)
+        CompoundDrawable.new(res, proxy_drawable)
       end
 
       #
@@ -2545,26 +2578,39 @@ module Harpnotes
       # @param root [Pause] The Pause to be drawn
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
-      # @return [Object] The generated drawing primitive
+      # @return [CompoundDrawable] The generated drawing primitive
       def layout_pause(root, beat_layout)
         x_offset = convert_pitch_to_xpos(root)
         y_offset = beat_layout.call(root.beat)
-        check_duration(root)
+
         scale, glyph, dotted = $conf.get('layout.REST_TO_GLYPH')[check_duration(root)]
         rest_size            = $conf.get('layout.REST_SIZE')
         size                 = [rest_size.first * scale.first, rest_size.last * scale.last]
 
+        # handle shift left/right
         shift = layout_note_shift(root, size, x_offset, dotted)
 
+        # draw the rest
         res                 = nil
         res                 = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
         root.sheet_drawable = res
         res.color           = compute_color_by_variant_no(root.variant)
         res.line_width      = $conf.get('layout.LINE_THICK')
         res.visible         = false unless root.visible?
-        res.hasbarover      = true if root.measure_start
-        res.is_note         = true
-        {shapes: [res], proxy: res}
+        result = CompoundDrawable.new([res], res)
+
+        # draw the measure
+        if root.measure_start
+          barover_y = size.last + $conf.get('layout.LINE_THICK')
+          barover_y = -barover_y if $conf.get('layout.bottomup')
+
+          res            = Ellipse.new([x_offset + shift, y_offset - barover_y], [size.first, $conf.get('layout.LINE_THICK') / 2], :filled, false, nil, true)
+          res.color      = :red
+          res.line_width = $conf.get('layout.LINE_THIN')
+          result.push res
+        end
+
+        result
       end
 
 
