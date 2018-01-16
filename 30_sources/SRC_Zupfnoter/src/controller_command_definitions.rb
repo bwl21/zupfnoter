@@ -548,7 +548,7 @@ class Controller
                                  'layout.packer.pack_method', 'layout.packer.pack_max_spreadfactor', 'layout.packer.pack_min_increment',
                                  'layout.jumpline_anchor',
                                  'layout.color.color_default', 'layout.color.color_variant1', 'layout.color.color_variant2',
-                                 'layout.bottomup'
+                                 'layout.bottomup', 'layout.beams'
 
                                 ]), quicksetting_commands: _get_quicksetting_commands('layout')},
 
@@ -557,7 +557,7 @@ class Controller
             repeatsigns:           {keys: expand_extract_keys([:repeatsigns])},
 
 
-            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.bottomup', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
+            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.bottomup', 'layout.beams', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
                                                                'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'printer.show_border', 'stringnames.marks.hpos']),
                                     quicksetting_commands:
                                           _get_quicksetting_commands('instrument')

@@ -312,6 +312,13 @@ Darstellung, weil dabei die Hand nicht mehr die nächsten Noten verdeckt.
 > gezeichnet. Aber die Position von Taktnummern und Zählmarken wird
 > angepasst.
 
+## layout.beams
+
+Hier kannst du einstellen, ob die Noten mit Notenhälsen dargestellt
+werden. Noten mit Notenhälsen orientieren sich mehr an der
+traditionellen Notenschrift, brauchen aber mehr Plat. Alle Noten werden
+gleich groß dargeestellt.
+
 ## layout.packer
 
 Hier kannst du weitere Einzelheiten für die vertikale Anordnung der

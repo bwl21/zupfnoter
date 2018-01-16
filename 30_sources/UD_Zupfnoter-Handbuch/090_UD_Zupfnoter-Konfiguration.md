@@ -145,6 +145,7 @@ Auszug 1 usw.
               "REST_SIZE"         : [4, 2],
               "X_OFFSET"          : 2.8,
               "X_SPACING"         : 11.5,
+              "beams"             : false,
               "bottomup"          : false,
               "color"             : {
                 "color_default"  : "black",
@@ -340,6 +341,7 @@ Notenbild gezielt optimieren.
           "REST_SIZE"         : [4, 2],
           "X_OFFSET"          : 2.8,
           "X_SPACING"         : 11.5,
+          "beams"             : false,
           "bottomup"          : false,
           "color"             : {
             "color_default"  : "black",
@@ -448,6 +450,16 @@ TODO: Helptext für extract.0.layout.X_OFFSET einfügen
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
         "X_SPACING": 11.5
+          
+
+## `extract.0.layout.beams` - Notenhälse {#extract.0.layout.beams}
+
+Hier kannst du einstellen, ob die Noten mit Notenhälsen dargestellt
+werden. Noten mit Notenhälsen orientieren sich mehr an der
+traditionellen Notenschrift, brauchen aber mehr Plat. Alle Noten werden
+gleich groß dargeestellt.
+
+        "beams": false
           
 
 ## `extract.0.layout.bottomup` - Spiel aufwärts {#extract.0.layout.bottomup}

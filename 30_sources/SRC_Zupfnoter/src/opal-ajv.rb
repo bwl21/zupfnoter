@@ -101,6 +101,7 @@ module Ajv
                :additionalProperties => false,
                :properties           =>
                    {:limit_a3          => {:type => "boolean"},
+                    :beams             => {:type => "boolean"},
                     :bottomup          => {:type => "boolean"},
                     :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},
                     :manual_sheet      => {:type       => 'object',

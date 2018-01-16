@@ -56,6 +56,7 @@
     "barnumbers": "Taktnummern",
     "barnumbers.full": "Taktnummern.detail",
     "basic settings": "Grundeinstellungen",
+    "beams": "Notenhälse",
     "BEAT_PER_DURATION": "**--BEAT_PER_DURATION",
     "BEAT_RESOLUTION": "**--BEAT_RESOLUTION",
     "before_colon_n": "**--before_colon_n",
@@ -112,7 +113,8 @@
     "Draggable": "Verschiebemarke",
     "DRAWING_AREA_SIZE": "Zeichenfl.Größe",
     "Dropbox": "Dropbox",
-    "DURATION_TO_STYLE": "Dauer-zu-Zeit",
+    "DURATION_TO_BEAMS": "Notenstile mit Hälsen",
+    "DURATION_TO_STYLE": "Notenstile",
     "Edit addon on cursor position": "Zusatzinformation bearbeiten",
     "Edit Addon": "Zusatz bearbeiten ",
     "Edit annotations of an extract": "Beschriftung der Auszüge bearbeiten",
@@ -310,8 +312,10 @@
     "repeatsigns": "Wiederholungszeichen",
     "repeatsigns.full": "Wiederholugnszeichen.detail",
     "repeatstart": "Wiederholungsanfang",
+    "resources": "**--resources",
     "REST_SIZE": "Pausengröße",
-    "REST_TO_GLYPH": "**--REST_TO_GLYPH",
+    "REST_TO_GLYPH": "Pausensymbole",
+    "resources": "Resourcen",
     "restposition": "Position der Pausen",
     "rests as V 1.3": "Pausen wie in V. 1.3",
     "right": "rechts",
@@ -424,7 +428,6 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
-
 
 
 

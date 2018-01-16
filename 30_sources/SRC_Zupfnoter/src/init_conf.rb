@@ -26,7 +26,7 @@ module InitConf
                      # sort within layout
                      :limit_a3, :jumplineoffset, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
-                     :instrument, :bottomup, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
+                     :instrument, :bottomup, :beams, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
                      :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING,
                      # sort within printer
                      :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
@@ -129,13 +129,14 @@ module InitConf
                      }
                  },
                  jumpline_anchor: {jumpline_anchor: [3, 1]},
-                 '-_'             => {},
              },
 
              instrument: {
                  '37-strings-g-g'      => {
                      layout:      {instrument:   '37-strings-g-g',
                                    limit_a3:     true,
+                                   beams:        false,
+                                   bottomup:     false,
                                    PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
                                    X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
                                    X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
@@ -151,6 +152,8 @@ module InitConf
                  '25-strings-g-g'      => {
                      layout:      {instrument:   '25-strings-g-g',
                                    limit_a3:     false,
+                                   beams:        false,
+                                   bottomup:     false,
                                    PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
                                    X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
                                    X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
@@ -166,6 +169,8 @@ module InitConf
                  '25-strings-G-g Bass' => {
                      layout:      {instrument:   '25-strings-g-g',
                                    limit_a3:     false,
+                                   beams:        false,
+                                   bottomup:     false,
                                    PITCH_OFFSET: lambda { -31 },
                                    X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
                                    X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
@@ -181,6 +186,8 @@ module InitConf
                  '21-strings-a-f'      => {
                      layout:      {instrument:   '21-strings-a-f',
                                    limit_a3:     false,
+                                   beams:        false,
+                                   bottomup:     false,
                                    PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
                                    X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
                                    X_OFFSET:     23
@@ -196,6 +203,8 @@ module InitConf
                  '18-strings-b-e'      => {
                      layout:      {instrument:   '18-strings-b-e',
                                    limit_a3:     false,
+                                   beams:        false,
+                                   bottomup:     false,
                                    PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
                                    X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
                                    X_OFFSET:     28.5
@@ -210,6 +219,8 @@ module InitConf
                  'saitenspiel'         => {
                      layout:      {instrument:   'saitenspiel',
                                    limit_a3:     false,
+                                   beams:        false,
+                                   bottomup:     false,
                                    PITCH_OFFSET: -24,
                                    X_SPACING:    14.50,
                                    X_OFFSET:     240
@@ -223,6 +234,8 @@ module InitConf
                  },
                  'Okon-Harfe'          => {
                      layout:      {instrument:   'okon-f',
+                                   beams:        true,
+                                   bottomup:     true,
                                    limit_a3:     false,
                                    PITCH_OFFSET: 0, # adapt if you pitches in
                                    X_SPACING: 15,
@@ -343,6 +356,7 @@ module InitConf
                  # by the regular user
                  layout:      {limit_a3:        true,
                                bottomup:        false,
+                               beams:           false,
                                jumpline_anchor: [3, 1],
                                color:           {color_default: 'black', color_variant1: 'grey', color_variant2: 'dimgrey'},
                                LINE_THIN:       0.1,

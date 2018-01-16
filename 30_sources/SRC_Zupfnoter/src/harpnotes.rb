@@ -1568,7 +1568,7 @@ module Harpnotes
           print_options_raw.push(song_print_options)
         end
 
-        print_options_raw.push({'layout' => {"DURATION_TO_STYLE" => $conf['layout.DURATION_TO_BEAMS']}})  if print_options_raw['layout.beams']
+        print_options_raw.push({'layout' => {"DURATION_TO_STYLE" => $conf['layout.DURATION_TO_BEAMS']}}) if print_options_raw['layout.beams']
 
         print_options_raw
       end
@@ -1937,7 +1937,7 @@ module Harpnotes
           if playable.tie_end?
             p1      = Vector2d(tie_start.sheet_drawable.center) + [3, 0]
             p2      = Vector2d(playable.sheet_drawable.center) + [3, 0]
-            tiepath = make_slur_path(p1, p2)
+            tiepath = bottomup ? make_slur_path(p2, p1) : make_slur_path(p1, p2)
             result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
             if playable.is_a? Harpnotes::Music::SynchPoint
               playable.notes.each_with_index do |n, index|
@@ -2597,7 +2597,7 @@ module Harpnotes
         res.color           = compute_color_by_variant_no(root.variant)
         res.line_width      = $conf.get('layout.LINE_THICK')
         res.visible         = false unless root.visible?
-        result = CompoundDrawable.new([res], res)
+        result              = CompoundDrawable.new([res], res)
 
         # draw the measure
         if root.measure_start
