@@ -1627,6 +1627,36 @@ module Harpnotes
         sheet_marks
       end
 
+      NOTE_POSITION_LOOKUP = {
+          #         t   C
+          "11" => [:r, :r], # l l
+          "12" => [:r, :l], # l m
+          "13" => [:r, :l], # l r
+
+          "21" => [:l, :r], # m l
+          "22" => [:r, :l], # m m
+          "23" => [:r, :l], # m r
+
+          "31" => [:l, :r], # r l
+          "32" => [:l, :r], # r m
+          "33" => [:l, :l], # r r
+      }
+
+      def compute_note_position (xp, x, xn, limit_a3)
+
+        a = (xp <=> x) + 2
+        b = (xn <=> x) + 2
+
+        if limit_a3 && x < 10
+          [:r, :r]
+        elsif limit_a3 && x > 410
+          [:l, :l]
+        else
+          NOTE_POSITION_LOOKUP["#{a}#{b}"]
+        end
+      end
+
+
       #
       # compute the layout of a particular voice. It places flowlines playables and jumplines.
       # The vertical arrangement is goverend by the beat_layout, which actually maps the
@@ -1665,7 +1695,8 @@ module Harpnotes
 
         end
 
-        # now w handle decorations (!fermata! etc.)
+        # now we layout the playables
+        # thereby we collect decorations (!fermata! etc.)
         res_decorations = []
         res_playables   = playables.map do |playable|
           result          = layout_playable(playable, beat_layout) # unless playable.is_a? Pause
@@ -1679,122 +1710,12 @@ module Harpnotes
           result.shapes
         end.flatten.compact
 
-
-        # this is a lookup-Table to navigate from the drawing primitive (ellipse) to the origin
-        # todo make it a class variable, it is used in layout again
-        # need to reverse such that Unisons (SyncPoints) are bound to the first note
-        # as Syncpoints are renderd from first to last, the last note is the remaining
-        # one in the Hash unless we revert.
-        # res_playables.each { |e| $log.debug("#{e.origin.class} -> #{e.class}") }
-
+        # flatten the list of decorations
+        # it might be that there is more than one decoration per playable
         res_decorations = res_decorations.flatten.compact
 
-
-        # draw the countnotes
-        # todo: handle shift
-        # todo: handle influence of style to position of text
-
-        limit_a3 = $conf['layout.limit_a3'] == true
-        bottomup = $conf['layout.bottomup'] == true
-
-        visible_playables = playables.select { |playable| playable.visible? }
-        if show_options[:countnotes]
-          countnotes_options = show_options[:countnotes]
-          style              = countnotes_options[:style]
-          autopos            = countnotes_options[:autopos]
-          fixedpos           = countnotes_options[:pos]
-
-          res_countnotes = visible_playables.map do |playable|
-            notebound_pos_key = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}.pos"
-            conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
-            count_note        = playable.count_note || ""
-
-            the_drawable = playable.sheet_drawable #lookuptable_drawing_by_playable[playable]
-
-            annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
-
-            unless annotationoffset
-              x, y   = the_drawable.center
-              xp, yp = playable.prev_playable.sheet_drawable.center
-              xn, yn = playable.next_playable.sheet_drawable.center
-              tie_x  = 0
-              if autopos
-                if limit_a3 && (x <= 10) # 4 * the_drawable.size.first   # use 4 since it might  be shifted
-                  autopos = :right
-                elsif limit_a3 && (x >= 410)
-                  autopos = :left
-                elsif bottomup
-                  autopos = xp > x ? :left : :right # $conf.get('layout.bottomup')
-                else # go upwards
-                  autopos = xn > x ? :left : :right # $conf.get('layout.bottomup')
-                end
-                tie_x            = 1 if autopos == :right and playable.tie_start?
-                auto_x           = tie_x + (autopos == :left ? -count_note.length - the_drawable.size.first - 1 : the_drawable.size_with_dot.first + 1)
-                annotationoffset = [auto_x, 0] # todo derive "3" from style?
-              else
-                annotationoffset = fixedpos
-              end
-            end
-
-            position = Vector2d(the_drawable.center) + annotationoffset
-            result   = Harpnotes::Drawing::Annotation.new(position.to_a, count_note, style, playable.origin,
-                                                          conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
-            result
-          end
-        end
-
-
-        # draw the bar numbers
-        # todo: handle shift
-        # todo: handle influence of style to position of text
-        if show_options[:barnumbers]
-          barnumbers_options = show_options[:barnumbers]
-          style              = barnumbers_options[:style]
-          autopos            = barnumbers_options[:autopos]
-          fixedpos           = barnumbers_options[:pos]
-          prefix             = barnumbers_options[:prefix]
-
-          res_barnumbers = visible_playables.select { |p| p.measure_start? }.map do |playable|
-
-            the_drawable = playable.sheet_drawable # lookuptable_drawing_by_playable[playable]
-
-            notebound_pos_key = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}.pos"
-            conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
-            barnumber         = %Q{#{prefix}#{playable.measure_count.to_s}} || ""
-
-            annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
-
-
-            unless annotationoffset
-              x, y   = the_drawable.center
-              xp, yp = playable.prev_playable.sheet_drawable.center
-              xn, yn = playable.next_playable.sheet_drawable.center
-
-              if autopos
-                if limit_a3 && (x <= 10) # 4 * the_drawable.size.first   # use 4 since it might  be shifted
-                  autopos = :right
-                elsif limit_a3 && (x >= 410)
-                  autopos = :left
-                elsif bottomup #yn > y # go upwards
-                  autopos = xn >= x ? :left : :right # $conf.get('layout.bottomup')
-                else # go upwards
-                  autopos = xp >= x ? :left : :right # $conf.get('layout.bottomup')
-                end
-
-                # 1 mm horizontal distance, 0.5 mm vertical
-                auto_x           = (autopos == :left ? (-barnumber.length - the_drawable.size.first - 2) : (the_drawable.size_with_dot.first + 1))
-                annotationoffset = [auto_x, -the_drawable.size.last - 3] # todo derive "7" from style?
-              else
-                annotationoffset = fixedpos
-              end
-            end
-
-            position = Vector2d(playable.sheet_drawable.center) + annotationoffset
-            result   = Harpnotes::Drawing::Annotation.new(position.to_a, barnumber, style, playable.origin,
-                                                          conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
-            result
-          end
-        end
+        # draw barnumbers and countnotes
+        res_barnumbers, res_countnotes = $log.benchmark("countnotes / barnumbners") {layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)}
 
         # draw the flowlines
         previous_note          = nil
@@ -1937,7 +1858,7 @@ module Harpnotes
           if playable.tie_end?
             p1      = Vector2d(tie_start.sheet_drawable.center) + [3, 0]
             p2      = Vector2d(playable.sheet_drawable.center) + [3, 0]
-            tiepath = bottomup ? make_slur_path(p2, p1) : make_slur_path(p1, p2)
+            tiepath = $conf['layout.bottomup'] ? make_slur_path(p2, p1) : make_slur_path(p1, p2)
             result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
             if playable.is_a? Harpnotes::Music::SynchPoint
               playable.notes.each_with_index do |n, index|
@@ -2144,6 +2065,104 @@ module Harpnotes
 
 
       private
+
+      # This creates countnotes and barnumbers
+      def layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)
+        limit_a3 = $conf['layout.limit_a3'] == true
+        bottomup = $conf['layout.bottomup'] == true
+
+        # retrieve configuration for barnumbers and countnotes
+        cn_options = show_options[:countnotes]
+        bn_options = show_options[:barnumbers]
+
+
+        res_countnotes = []
+        res_barnumbers = []
+
+        # skip that stuff itf there is no barnumbers or count nots
+        if (cn_options || bn_options)
+
+          visible_playables = playables.select { |playable| playable.visible? }
+
+          if cn_options
+            cn_style    = cn_options[:style]
+            cn_autopos  = cn_options[:autopos]
+            cn_fixedpos = cn_options[:pos]
+          end
+          if bn_options
+            bn_style    = bn_options[:style]
+            bn_autopos  = bn_options[:autopos]
+            bn_fixedpos = bn_options[:pos]
+            bn_prefix   = bn_options[:prefix]
+          end
+
+          # now process all visible playables
+          visible_playables.each do |playable|
+            ## get the centers of previous, current, next
+            the_drawable = playable.sheet_drawable #lookuptable_drawing_by_playable[playable]
+            x, y         = the_drawable.center
+            xp, yp       = playable.prev_playable.sheet_drawable.center
+            xn, yn       = playable.next_playable.sheet_drawable.center
+
+            # compute the barnote/countnote positions
+            bn_position, cn_position = bottomup ? compute_note_position(xn, x, xp, limit_a3).reverse : compute_note_position(xp, x, xn, limit_a3)
+
+            #### now handle countnotes
+            # get the configurations for countnotes
+            if cn_options
+              cn_pos_key  = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}.pos"
+              cn_conf_key = "extract.#{print_variant_nr}.#{cn_pos_key}"
+              count_note  = playable.count_note || ""
+
+              # read countnote-configuration from extract
+              cn_offset = show_options[:print_options_raw][cn_pos_key] rescue nil
+
+              unless cn_offset
+                if cn_autopos
+                  tie_x     = (cn_position == :r and playable.tie_start?) ? 1 : 0
+                  auto_x    = tie_x + (cn_position == :l ? -count_note.length - the_drawable.size.first - 1 : the_drawable.size_with_dot.first + 1)
+                  auto_y    = bottomup ? -the_drawable.size.last - 1: 0   # -1 move it a bit upwords depend on font size
+                  cn_offset = [auto_x, auto_y]
+                else
+                  cn_offset = bn_fixedpos
+                end
+              end
+
+              cn_position = Vector2d(the_drawable.center) + cn_offset
+              res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a, count_note, cn_style, playable.origin,
+                                                                     cn_conf_key, cn_offset).tap { |s| s.draginfo = {handler: :annotation} }
+            end
+
+            #### now handle barnumbers
+            # get the configurations for barnumbers
+            if bn_options && playable.measure_start?
+              bn_pos_key  = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}.pos"
+              bn_conf_key = "extract.#{print_variant_nr}.#{bn_pos_key}"
+              barnumber   = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
+
+              # read countnote-configuration from extract
+              bn_offset = show_options[:print_options_raw][bn_pos_key] rescue nil
+
+              unless bn_offset
+                if bn_autopos
+                  bn_tie_x  = (bn_position == :r and playable.tie_start?) ? 1 : 0
+                  # todo: the literals are determined by try and error to fine tune the posiition.
+                  bn_auto_x = bn_tie_x + (bn_position == :l ? -barnumber.length - the_drawable.size.first - 2 : the_drawable.size_with_dot.first + 1)
+                  bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 2 # todo derive "3" from font style?
+                  bn_offset = [bn_auto_x, bn_auto_y]
+                else
+                  bn_offset = bn_fixedpos
+                end
+              end
+
+              bn_position = Vector2d(the_drawable.center) + bn_offset
+              res_barnumbers.push Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
+                                                                     bn_conf_key, bn_offset).tap { |s| s.draginfo = {handler: :annotation} }
+            end
+          end
+        end
+        return res_barnumbers, res_countnotes
+      end
 
 
       def compute_beat_compression(music, layout_lines)
