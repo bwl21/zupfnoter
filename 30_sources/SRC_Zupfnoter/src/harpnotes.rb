@@ -629,7 +629,6 @@ module Harpnotes
       end
 
       private
-
       #
       # Updates the beat map of the song.
       # A beat map of a voice is a hash (current_beat => playable).
@@ -1078,6 +1077,7 @@ module Harpnotes
         @filled     = true
         @conf_key   = conf_key
         @conf_value = conf_value
+        @coll_stack = []
       end
 
       #
@@ -1715,7 +1715,7 @@ module Harpnotes
         res_decorations = res_decorations.flatten.compact
 
         # draw barnumbers and countnotes
-        res_barnumbers, res_countnotes = $log.benchmark("countnotes / barnumbners") {layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)}
+        res_barnumbers, res_countnotes = $log.benchmark("countnotes / barnumbers") {layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)}
 
         # draw the flowlines
         previous_note          = nil
@@ -1833,6 +1833,7 @@ module Harpnotes
               conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
               draginfo      = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
               result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
+              check_annotationcollision(configured_anchor, conf_key, playable)
               result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
                                                              :small,
                                                              nil,
@@ -1973,6 +1974,7 @@ module Harpnotes
           end
 
           position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
+          position = check_annotationcollision(position, conf_key, annotation.companion) unless annotation.text.strip.empty?
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
                                                         conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
           result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
@@ -2059,12 +2061,29 @@ module Harpnotes
 
         position = Vector2d(companion_note.sheet_drawable.center) + annotationoffset
 
+        check_annotationcollision(position, conf_key, companion_note)
         Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
                                            companion_note.origin, conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
       end
 
 
       private
+
+
+
+      # this performs a heuristic check of annotatoin collisions
+      #
+      def check_annotationcollision(point, confkey, playable)
+        @coll_stack = [] unless @coll_stack
+
+        collision = @coll_stack.map{|i| ( x = (i - point).length) < 1.5  ? x : nil}.compact
+        $log.warning(I18n.t("collision of barnumber or countnote for ") + "#{collision} #{confkey}", playable.start_pos ) unless collision.empty?
+
+        @coll_stack.push(point)
+
+        point
+      end
+
 
       # This creates countnotes and barnumbers
       def layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)
@@ -2129,6 +2148,8 @@ module Harpnotes
               end
 
               cn_position = Vector2d(the_drawable.center) + cn_offset
+              cn_position = check_annotationcollision(cn_position, cn_conf_key, playable)
+
               res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a, count_note, cn_style, playable.origin,
                                                                      cn_conf_key, cn_offset).tap { |s| s.draginfo = {handler: :annotation} }
             end
@@ -2147,7 +2168,7 @@ module Harpnotes
                 if bn_autopos
                   bn_tie_x  = (bn_position == :r and playable.tie_start?) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
-                  bn_auto_x = bn_tie_x + (bn_position == :l ? -barnumber.length - the_drawable.size.first - 2 : the_drawable.size_with_dot.first + 1)
+                  bn_auto_x = bn_tie_x + (bn_position == :l ? -barnumber.length - the_drawable.size.first - 4 : the_drawable.size_with_dot.first + 3)
                   bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 2 # todo derive "3" from font style?
                   bn_offset = [bn_auto_x, bn_auto_y]
                 else
@@ -2156,6 +2177,7 @@ module Harpnotes
               end
 
               bn_position = Vector2d(the_drawable.center) + bn_offset
+              bn_position = check_annotationcollision(bn_position, bn_conf_key, playable)
               res_barnumbers.push Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
                                                                      bn_conf_key, bn_offset).tap { |s| s.draginfo = {handler: :annotation} }
             end
@@ -2626,6 +2648,7 @@ module Harpnotes
           res            = Ellipse.new([x_offset + shift, y_offset - barover_y], [size.first, $conf.get('layout.LINE_THICK') / 2], :filled, false, nil, true)
           res.color      = :red
           res.line_width = $conf.get('layout.LINE_THIN')
+          res.visible         = false unless root.visible?
           result.push res
         end
 

@@ -46,6 +46,7 @@
 * support to write notes bottom up #196
 * support to write notes with beams #196
 * show notes in the current selection for harmonization work-in-progress #190
+* heuristical detection of annotation collisions #200
 
 # v 1.7.1
 
