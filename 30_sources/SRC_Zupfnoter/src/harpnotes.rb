@@ -2517,12 +2517,12 @@ module Harpnotes
       # @param [Boolean of Integer] number of flags: nil | false: no beam; 1-4 number of flags
       # @return [Harpnotes::Drawing::Path]
       def layout_note_flags(x_offset, y_offset, size, shift, color, flag)
-        linewidth  = $conf.get('layout.LINE_THICK')
+        linewidth  = $conf.get('layout.LINE_MEDIUM')
         f_x        = x_offset + shift - linewidth / 2 + size.first
-        f_size_x   = 0.7 * size.last
-        f_size_y   = f_size_x / 2
+        f_size_x   = 1.5 * size.last
+        f_size_y   = 0.3  * f_size_x
         f_beamsize = 2 * size.last
-        f_delta    = size.last * 0.5
+        f_delta    = $conf.get('layout.LINE_THICK')
 
 
         path = [['M', f_x, y_offset],
