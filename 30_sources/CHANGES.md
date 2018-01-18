@@ -19,6 +19,7 @@
 * fixed "blues with accidentals" #188
 * fix handling of fingerprint with abc2svg 1.15.5 #195
 * vertaal is no longer limited by :|[ #192
+* reduce size of selection area to avoid overlap with barnumber etc #197
   
 ## enhancement
 

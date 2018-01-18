@@ -305,7 +305,8 @@ module ZnSvg
       # znref  - for scroll_intoview while playing
       # _(startchar)_ to hilight by player - approach comes from abc2svg
       # zn
-      svg =%Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - 1.5}" y="#{y - ry - 1.5 }" width="#{2 * rx+3}" height="#{2 * ry + 3}"/>}
+      padding = 2
+      svg =%Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - padding/2}" y="#{y - ry - padding/2}" width="#{2 * rx +  padding}" height="#{2 * ry + padding}"/>}
       @svgbuffer.push(svg)
       id
     end
