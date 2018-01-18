@@ -1715,7 +1715,7 @@ module Harpnotes
         res_decorations = res_decorations.flatten.compact
 
         # draw barnumbers and countnotes
-        res_barnumbers, res_countnotes = $log.benchmark("countnotes / barnumbers") {layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)}
+        res_barnumbers, res_countnotes = $log.benchmark("countnotes / barnumbers") { layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr) }
 
         # draw the flowlines
         previous_note          = nil
@@ -2070,14 +2070,13 @@ module Harpnotes
       private
 
 
-
       # this performs a heuristic check of annotatoin collisions
       #
       def check_annotationcollision(point, confkey, playable)
         @coll_stack = [] unless @coll_stack
 
-        collision = @coll_stack.map{|i| ( x = (i - point).length) < 1.5  ? x : nil}.compact
-        $log.warning(I18n.t("collision of barnumber or countnote for ") + "#{collision} #{confkey}", playable.start_pos ) unless collision.empty?
+        collision = @coll_stack.map { |i| (x = (i - point).length) < 1.5 ? x : nil }.compact
+        $log.warning(I18n.t("collision of barnumber or countnote for ") + "#{collision} #{confkey}", playable.start_pos) unless collision.empty?
 
         @coll_stack.push(point)
 
@@ -2140,7 +2139,7 @@ module Harpnotes
                 if cn_autopos
                   tie_x     = (cn_position == :r and playable.tie_start?) ? 1 : 0
                   auto_x    = tie_x + (cn_position == :l ? -count_note.length - the_drawable.size.first - 1 : the_drawable.size_with_dot.first + 1)
-                  auto_y    = bottomup ? -the_drawable.size.last - 1: 0   # -1 move it a bit upwords depend on font size
+                  auto_y    = bottomup ? -the_drawable.size.last - 1 : 0 # -1 move it a bit upwords depend on font size
                   cn_offset = [auto_x, auto_y]
                 else
                   cn_offset = bn_fixedpos
@@ -2166,7 +2165,7 @@ module Harpnotes
 
               unless bn_offset
                 if bn_autopos
-                  bn_tie_x  = (bn_position == :r and playable.tie_start?) ? 1 : 0
+                  bn_tie_x = (bn_position == :r and playable.tie_start?) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
                   bn_auto_x = bn_tie_x + (bn_position == :l ? -barnumber.length - the_drawable.size.first - 4 : the_drawable.size_with_dot.first + 3)
                   bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 2 # todo derive "3" from font style?
@@ -2495,7 +2494,7 @@ module Harpnotes
           reducer = flag && !$conf.get('layout.bottomup') ? $conf.get('layout.LINE_THICK') : 0 # reduce width of barover if we have a flag
 
           res            = Ellipse.new([x_offset + shift - reducer, y_offset - barover_y], [size.first - reducer, $conf.get('layout.LINE_THICK') / 2], :filled, false, nil, true)
-          res.color      = :red
+          res.color      = color
           res.line_width = $conf.get('layout.LINE_THIN')
           result.push res
         end
@@ -2630,12 +2629,13 @@ module Harpnotes
 
         # handle shift left/right
         shift = layout_note_shift(root, size, x_offset, dotted)
+        color = compute_color_by_variant_no(root.variant)
 
         # draw the rest
         res                 = nil
         res                 = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
         root.sheet_drawable = res
-        res.color           = compute_color_by_variant_no(root.variant)
+        res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')
         res.visible         = false unless root.visible?
         result              = CompoundDrawable.new([res], res)
@@ -2646,9 +2646,9 @@ module Harpnotes
           barover_y = -barover_y if $conf.get('layout.bottomup')
 
           res            = Ellipse.new([x_offset + shift, y_offset - barover_y], [size.first, $conf.get('layout.LINE_THICK') / 2], :filled, false, nil, true)
-          res.color      = :red
+          res.color      = color
           res.line_width = $conf.get('layout.LINE_THIN')
-          res.visible         = false unless root.visible?
+          res.visible    = false unless root.visible?
           result.push res
         end
 

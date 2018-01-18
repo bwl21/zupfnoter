@@ -236,7 +236,7 @@ module Harpnotes
     end
 
     def draw_ellipse(root)
-      color             = COLORS[root.color]
+      color             = COLORS[root.color] || $log.error("BUG - wrong color in Ellipse")
       attr              = {}
       attr["fill"]      = root.fill == :filled ? color : COLORS['white']
       attr[:stroke]     = color
