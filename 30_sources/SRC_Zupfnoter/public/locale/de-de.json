@@ -156,6 +156,7 @@
     "Annotation": "Notenbeschriftung",
     "annotation": "Notenbeschriftung",
     "AnnotationRef": "Ref. Notenbeschriftung",
+    "annotations too close [": "Beschriftungen zu dicht beianander [",
     "annotations": "Notenbeschriftungsvorlagen",
     "autopos": "autom. pos.",
     "bad characters in filename": "Fehlerhafte Zeichen im Filenamen",

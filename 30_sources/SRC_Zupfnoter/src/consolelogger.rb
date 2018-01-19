@@ -50,7 +50,7 @@ class Logger
 
   # for documentation see : error
   def warning(msg, start_pos = nil, end_pos = nil)
-    add_annotation(msg, start_pos, end_pos, :warning)
+    add_annotation(msg, start_pos, end_pos, :warning) if loglevel == :warning
     write(:warning, msg)
   end
 

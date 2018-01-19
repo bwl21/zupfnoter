@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-2-67-g9f6b626
+Version dev/V\_1.8.0\_dev-2-81-g95dc4ad
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2398,13 +2398,23 @@ ist.
 \item
   \texttt{loglevel\ error} - Es werden nur noch schwerwiegende Fehler
   gemeldet. Das ist für die normale Anwendung ausreichend.
+\item
+  \texttt{loglevel\ warning} - Es werden Fehler und Warnungen gemeldet.
+  In Einzelfällen kann man mit Warnungen leben. Ein Beispiel für eine
+  Warnung ist die Meldung
+  \texttt{Beschriftungen\ zu\ dicht\ beieinander}
+\item
+  \texttt{loglevel\ info} - Es werden Fehler, Warnungen und
+  Informationsmeldungen angezeigt. Informationsmeldungen betreffen
+  Versionsnummern und Laufzeitmessungen.
 \end{itemize}
 
 Die Konsole kann auch für eine bessere Fehlersuche in der Konfiguration
 verwendet werden. Selbst wenn Zupfnoter die Eingabe fehlerhafter
 Konfigurationsparameter eigentlich verhindern soll, so kann es trotzdem
 vorkommen. Wenn also schwer verständliche Meldungen erscheinen kann man
-den loglevel debug einschalten. Dann kann man in der Konsole mit
+den \texttt{loglevel\ debug} einschalten. Dann kann man in der Konsole
+mit
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -3705,6 +3715,35 @@ Das ist die Basis für den Dateinamen
 Das ist der Titel des Stückes.
 \end{description}
 
+\subsubsection{\texorpdfstring{Warnung: ``Beschriftung zu dicht
+beieinander''}{Warnung: Beschriftung zu dicht beieinander}}\label{warnung-beschriftung-zu-dicht-beieinander}
+
+Diese Warnungen sind experimentell. Sie kommen nur wenn
+\texttt{loglevel\ warning} eingestellt ist.
+
+\begin{quote}
+\textbf{Hinweis} Noch werden nicht alle Kollistion erkannt. Es kann auch
+sein dass Kollisionen gemeldet werden, die gerade noch gehen würden.
+\end{quote}
+
+Wenn man eine solche Warnung beseitigen will, geht man am besten
+folgende Schritte:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Situation feststellen - dazu selektiert man im Eingabefenster die
+  Note, die rot untertrichen ist.
+\item
+  In der Unterlegnotenvorschau wirde die betroffene Note rot
+  hervorgehoben.
+\item
+  Dann sieht man auch schon die Kollision. Diese kann man dann durch
+  Verschieben von einer der beteiligten Beschriftungen mit der Maus
+  bereinigen.
+\end{enumerate}
+
 \subsubsection{Parameter in der
 Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}
 
@@ -4142,6 +4181,7 @@ spezifiziert den Auszug 1 usw.
           "REST_SIZE"         : [4, 2],
           "X_OFFSET"          : 2.8,
           "X_SPACING"         : 11.5,
+          "beams"             : false,
           "bottomup"          : false,
           "color"             : {
             "color_default"  : "black",
@@ -4382,6 +4422,7 @@ Notenbild gezielt optimieren.
       "REST_SIZE"         : [4, 2],
       "X_OFFSET"          : 2.8,
       "X_SPACING"         : 11.5,
+      "beams"             : false,
       "bottomup"          : false,
       "color"             : {
         "color_default"  : "black",
@@ -4527,6 +4568,19 @@ Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
     "X_SPACING": 11.5
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.beams} -
+Notenhälse}{extract.0.layout.beams - Notenhälse}}\label{extract.0.layout.beams}
+
+Hier kannst du einstellen, ob die Noten mit Notenhälsen dargestellt
+werden. Noten mit Notenhälsen orientieren sich mehr an der
+traditionellen Notenschrift, brauchen aber mehr Plat. Alle Noten werden
+gleich groß dargeestellt.
+
+\begin{verbatim}
+    "beams": false
       
 \end{verbatim}
 

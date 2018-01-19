@@ -2075,8 +2075,8 @@ module Harpnotes
       def check_annotationcollision(point, confkey, playable)
         @coll_stack = [] unless @coll_stack
 
-        collision = @coll_stack.map { |i| (x = (i - point).length) < 1.5 ? x : nil }.compact
-        $log.warning(I18n.t("collision of barnumber or countnote for ") + "#{collision} #{confkey}", playable.start_pos) unless collision.empty?
+        collision = @coll_stack.map { |i| (x = (i - point).length) < 1.5 ? x.round(2) : nil }.compact
+        $log.warning(I18n.t("annotations too close [") + "#{collision.join(", ")} < 1.5] #{confkey}", playable.start_pos) unless collision.empty?
 
         @coll_stack.push(point)
 
@@ -2520,7 +2520,7 @@ module Harpnotes
         linewidth  = $conf.get('layout.LINE_MEDIUM')
         f_x        = x_offset + shift - linewidth / 2 + size.first
         f_size_x   = 1.5 * size.last
-        f_size_y   = 0.3  * f_size_x
+        f_size_y   = 0.3 * f_size_x
         f_beamsize = 2 * size.last
         f_delta    = $conf.get('layout.LINE_THICK')
 

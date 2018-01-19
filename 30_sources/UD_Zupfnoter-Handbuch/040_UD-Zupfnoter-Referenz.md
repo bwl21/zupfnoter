@@ -1110,12 +1110,18 @@ hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
     Problemen einzukreisen
 -   `loglevel error` - Es werden nur noch schwerwiegende Fehler
     gemeldet. Das ist für die normale Anwendung ausreichend.
+-   `loglevel warning` - Es werden Fehler und Warnungen gemeldet. In
+    Einzelfällen kann man mit Warnungen leben. Ein Beispiel für eine
+    Warnung ist die Meldung `Beschriftungen zu dicht beieinander`
+-   `loglevel info` - Es werden Fehler, Warnungen und
+    Informationsmeldungen angezeigt. Informationsmeldungen betreffen
+    Versionsnummern und Laufzeitmessungen.
 
 Die Konsole kann auch für eine bessere Fehlersuche in der Konfiguration
 verwendet werden. Selbst wenn Zupfnoter die Eingabe fehlerhafter
 Konfigurationsparameter eigentlich verhindern soll, so kann es trotzdem
 vorkommen. Wenn also schwer verständliche Meldungen erscheinen kann man
-den loglevel debug einschalten. Dann kann man in der Konsole mit
+den `loglevel debug` einschalten. Dann kann man in der Konsole mit
 
 -   `editconf errors` - die fehlerhaften Konfigurationsparameter als
     Formular bearbeiten.
@@ -2027,6 +2033,25 @@ sind verfügbar:
 
 `{{song_title}}`
 :   Das ist der Titel des Stückes.
+
+### Warnung: "Beschriftung zu dicht beieinander"
+
+Diese Warnungen sind experimentell. Sie kommen nur wenn
+`loglevel warning` eingestellt ist.
+
+> **Hinweis** Noch werden nicht alle Kollistion erkannt. Es kann auch
+> sein dass Kollisionen gemeldet werden, die gerade noch gehen würden.
+
+Wenn man eine solche Warnung beseitigen will, geht man am besten
+folgende Schritte:
+
+1.  Situation feststellen - dazu selektiert man im Eingabefenster die
+    Note, die rot untertrichen ist.
+2.  In der Unterlegnotenvorschau wirde die betroffene Note rot
+    hervorgehoben.
+3.  Dann sieht man auch schon die Kollision. Diese kann man dann durch
+    Verschieben von einer der beteiligten Beschriftungen mit der Maus
+    bereinigen.
 
 ### Parameter in der Zupfnoter-URL
 

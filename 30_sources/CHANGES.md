@@ -37,6 +37,9 @@
 * rearranged layaout form #189
 * show notes in the current selection for harmonization #190
 * now warn if browser is other than chrome, firefox, vivaldi, opera #186
+* BWC: improved layout of bars, barnumbers/countnotes #199
+    * barnumbers are now more far away from the note
+    * new algorithm to determine right/left position of barnumber/countnote
 
   
 ## exprimental
@@ -47,6 +50,11 @@
 * support to write notes with beams #196
 * show notes in the current selection for harmonization work-in-progress #190
 * heuristical detection of annotation collisions #200
+
+# Backwards compatibility issues
+
+* it might be that you need to rework manual positioning of barnumbers/countnotes #199
+
 
 # v 1.7.1
 
