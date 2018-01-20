@@ -1633,9 +1633,9 @@ module Harpnotes
           "12" => [:r, :l], # l m
           "13" => [:r, :l], # l r
 
-          "21" => [:l, :r], # m l
+          "21" => [:r, :r], # m l
           "22" => [:r, :l], # m m
-          "23" => [:r, :l], # m r
+          "23" => [:l, :l], # m r
 
           "31" => [:l, :r], # r l
           "32" => [:l, :r], # r m
@@ -2167,8 +2167,9 @@ module Harpnotes
                 if bn_autopos
                   bn_tie_x = (bn_position == :r and playable.tie_start?) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
+                  # todo: in case of left: barnumber.length is just a heuristic to geht the thing right justified
                   bn_auto_x = bn_tie_x + (bn_position == :l ? -barnumber.length - the_drawable.size.first - 4 : the_drawable.size_with_dot.first + 3)
-                  bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 2 # todo derive "3" from font style?
+                  bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 1 # todo derive "1" from font style?
                   bn_offset = [bn_auto_x, bn_auto_y]
                 else
                   bn_offset = bn_fixedpos
@@ -2403,6 +2404,7 @@ module Harpnotes
             result = false if note.next_first_in_part # this ignores cross part inversions
             result
           end
+          #inversions = []
 
           # detect parts and measure starts
           is_new_part   = notes.select { |n| n.first_in_part? }
