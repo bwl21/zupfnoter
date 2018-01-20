@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-2-81-g95dc4ad
+Version dev/V\_1.8.0\_dev-2-82-g85895c0
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3570,8 +3570,8 @@ sollten in folgender Reihenfolge ausgeführt werden.
   Synchronisationslinien mehr als sie helfen.
 \item
   im Konfigurationsmenü \texttt{Layout} mit den Schnelleinstellungen
-  \texttt{layout}~\texttt{kompakt} bzw. \texttt{Packer}~\texttt{kompakt}
-  die beste Einstellung suchen
+  \texttt{Noten\ klein} bzw. \texttt{Packer\ kompakt} die beste
+  Einstellung suchen
 \item
   ggf. gebundene Noten zu einer Note zusammenfassen
 \item

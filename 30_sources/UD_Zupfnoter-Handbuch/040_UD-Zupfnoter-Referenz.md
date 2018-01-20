@@ -1924,8 +1924,7 @@ sollten in folgender Reihenfolge ausgeführt werden.
     Synchronisationslinien mehr als sie helfen.
 
 3.  im Konfigurationsmenü `Layout` mit den Schnelleinstellungen
-    `layout` `kompakt` bzw. `Packer` `kompakt` die beste Einstellung
-    suchen
+    `Noten klein` bzw. `Packer kompakt` die beste Einstellung suchen
 
 4.  ggf. gebundene Noten zu einer Note zusammenfassen
 

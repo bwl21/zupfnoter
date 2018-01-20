@@ -82,38 +82,50 @@ module InitConf
          # commands.add_command(:addconf) do |command|
          presets: {
              layout:     {
-                 layout_compact:  {
+                 notes_small:            {
                      LINE_MEDIUM: 0.2,
                      LINE_THICK:  0.3,
                      # all numbers in mm
                      ELLIPSE_SIZE: [3.5, 1.3], # radii of the largest Ellipse
-                     REST_SIZE: [4, 1.5]
+                     REST_SIZE: [4, 1.5],
+                     beams:     false
                  },
-                 layout_regular:  {
+                 notes_regular:          {
                      LINE_MEDIUM:  lambda { $conf['extract.0.layout.LINE_MEDIUM'] },
                      LINE_THICK:   lambda { $conf['extract.0.layout.LINE_THICK'] },
                      ELLIPSE_SIZE: lambda { $conf['extract.0.layout.ELLIPSE_SIZE'] }, # radii of the largest Ellipse
-                     REST_SIZE: lambda { $conf['extract.0.layout.REST_SIZE'] }
+                     REST_SIZE: lambda { $conf['extract.0.layout.REST_SIZE'] },
+                     beams:     false
+
                  },
-                 layout_large:    {
+                 notes_large:            {
                      LINE_MEDIUM:  0.3,
                      LINE_THICK:   0.7,
                      ELLIPSE_SIZE: [4, 2], # radii of the largest Ellipse
-                     REST_SIZE: [4, 2]
+                     REST_SIZE: [4, 2],
+                     beams:     false
                  },
-                 packer_compact:  {
+                 notes_with_beams:       {
+                     LINE_MEDIUM:  0.5,
+                     LINE_THICK:   0.5,
+                     ELLIPSE_SIZE: [2, 1.3],
+                     REST_SIZE:    [2, 1.3],
+                     beams:        true
+                 },
+                 '-'                     => {},
+                 packer_compact:         {
                      packer: {
                          pack_method:           1,
                          pack_max_spreadfactor: 2,
                          pack_min_increment:    0.20
                      }
                  },
-                 packer_regular:  {
+                 packer_regular:         {
                      packer: lambda { $conf.get('extract.0.layout.packer') }
 
                  },
-                 '-'              => {},
-                 color_on:        {
+                 '--'                    => {},
+                 color_on:               {
                      color: {
                          color_default:  "black",
                          color_variant1: "grey",
@@ -121,14 +133,17 @@ module InitConf
                      }
 
                  },
-                 color_off:       {
+                 color_off:              {
                      color: {
                          color_default:  "black",
                          color_variant1: "black",
                          color_variant2: "black"
                      }
                  },
-                 jumpline_anchor: {jumpline_anchor: [3, 1]},
+                 '---'                   => {},
+                 jumpline_anchor_close:  {jumpline_anchor: [3, 1]},
+                 jumpline_anchor_medium: {jumpline_anchor: [5, 1]},
+                 jumpline_anchor_wide:   {jumpline_anchor: [10, 1]},
              },
 
              instrument: {

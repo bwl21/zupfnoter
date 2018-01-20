@@ -40,6 +40,7 @@
 * BWC: improved layout of bars, barnumbers/countnotes #199
     * barnumbers are now more far away from the note
     * new algorithm to determine right/left position of barnumber/countnote
+* changed name of some layout presets #196
 
   
 ## exprimental
