@@ -14,6 +14,7 @@ ZUPFNOTER_CLI_JS = "zupfnoter-cli.js"
 OUTFOLDER    = "../deploy_files"
 INDEXFILE    = "index.html"
 LOCALEPATH   = "../public/locale/"
+NINJAEXEC    = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
 
 GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
 
@@ -57,7 +58,7 @@ task :updateAbc2svgDev do
   abc2svg_file = "abc2svg-1.js"
   sources      = [abc2svg_file, "json-1.js", "midi-1.js", "play-1.js"]
   cd abc2svgrepo do
-    sources.each {|f| sh  " rm #{f} ; NOMIN=1 ./ninja #{f}"}
+    sources.each {|f| sh  " rm #{f} ; NOMIN=1 #{NINJAEXEC} #{f}"}
   end
 
   ["de", "en"].each do |lang|

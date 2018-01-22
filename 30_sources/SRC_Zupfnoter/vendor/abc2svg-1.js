@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-01-13 10:05:45 +0100
+// compiled for Zupfnoter 2018-01-20 14:35:20 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.15.7",vdate:"2018-01-12"}
+var abc2svg={version:"1.15.8",vdate:"2018-01-19"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2017 Jean-Francois Moine
@@ -208,7 +208,7 @@ function syntax(sev, msg, a1, a2, a3, a4) {
 }
 // abc2svg - deco.js - decorations
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -1964,9 +1964,6 @@ function draw_notempo(s, x, y, dur, sc) {
 		stv_g.started = false
 	}
 
-//	output.push('<g transform="translate(');
-//	out_sxsy(x + 8, ',', y + 3);
-//	output.push(') scale(' + sc + ')">\n')
 	out_XYAB('<g transform="translate(X,Y) scale(F)">\n',
 		x + 4, y + 2, sc)
 	switch (head) {
@@ -2014,7 +2011,7 @@ function draw_notempo(s, x, y, dur, sc) {
 				dx = 6
 		}
 	}
-	output.push('\n</g>\n')
+	output.push('</g>\n')
 	return (dx + 15) * sc
 }
 
@@ -2101,6 +2098,7 @@ function draw_partempo(st, top) {
 		x = s.x - 5 + w
 	}
 	if (some_tempo) {
+		set_sscale(-1);
 		set_font("tempo");
 		ht = gene.curfont.size + 2 + 2;
 		y = 2 - ht;
@@ -2147,6 +2145,7 @@ function draw_partempo(st, top) {
 			ymin = y
 	}
 	if (some_part) {
+		set_sscale(-1)
 		if (top < ymin + h + ht)
 			dy = ymin + h + ht - top
 
@@ -3125,12 +3124,13 @@ function draw_bar(s, bot, h) {
 		h = staff_tb[st].topbar * staff_tb[st].staffscale;
 
 	s.ymx = s.ymn + h;
-	set_sscale(st);
+	set_sscale(-1);
 	anno_start(s)
 
 	/* if measure repeat, draw the '%' like glyphs */
 	if (s.bar_mrep) {
 		yb = staff_tb[st].y + 12;
+		set_sscale(st)
 		if (s.bar_mrep == 1) {
 			for (s2 = s.prev; s2.type != REST; s2 = s2.prev)
 				;
@@ -3166,7 +3166,7 @@ function draw_bar(s, bot, h) {
 		}
 		x -= 3
 	}
-	set_sscale(st);
+	set_sscale(-1);
 	anno_stop(s)
 }
 
@@ -3216,6 +3216,8 @@ function draw_rest(s) {
 	staffb = p_staff.y			/* bottom of staff */
 
 	if (s.rep_nb) {
+		set_sscale(s.st);
+		anno_start(s);
 		staffb += 12
 		if (s.rep_nb < 0) {
 			xygl(x, staffb, "srep")
@@ -3227,8 +3229,12 @@ function draw_rest(s) {
 					s.rep_nb.toString(), "c")
 			}
 		}
+		anno_stop(s)
 		return
 	}
+
+	set_scale(s);
+	anno_start(s);
 
 	y = s.y;
 
@@ -3279,6 +3285,7 @@ function draw_rest(s) {
 		xygl(x, y, "dot");
 		x += 3.5
 	}
+	anno_stop(s)
 }
 
 /* -- draw grace notes -- */
@@ -5837,10 +5844,7 @@ function draw_symbols(p_voice) {
 				bm.s2 = null
 			break
 		case REST:
-			set_scale(s);
-			anno_start(s);
 			draw_rest(s);
-			anno_stop(s)
 			break
 		case BAR:
 			break			/* drawn in draw_systems */
@@ -6282,7 +6286,7 @@ function get_font_scale(param) {
 
 // %%xxxfont fontname|* [encoding] [size|*]
 function param_set_font(xxxfont, param) {
-	var font, fn, old_fn, n, a, new_name, new_fn, new_size, scale
+	var font, fn, old_fn, n, a, new_name, new_fn, new_size, scale, cl
 
 	// "setfont-<n>" goes to "u<n>font"
 	if (xxxfont[xxxfont.length - 2] == '-') {
@@ -6294,9 +6298,24 @@ function param_set_font(xxxfont, param) {
 	fn = cfmt[xxxfont]
 	if (fn) {
 		font = font_tb[fn]
-		if (font)
+		if (font) {
 			old_fn = font.name + "." + font.size
+			if (font.class)
+				old_fn += '.' + font.class
+		}
 	}
+
+	n = param.indexOf('class=')
+	if (n >= 0) {
+		n += 6;
+		a = param.indexOf(' ', n)
+		if (a > 0)
+			cl = param.slice(n, a)
+		else
+			cl = param.slice(n);
+		param = param.replace(new RegExp('class=' + cl), '').trim()
+	}
+
 	a = param.split(/\s+/);
 	new_name = a[0]
 	if (new_name == "*"
@@ -6320,6 +6339,8 @@ function param_set_font(xxxfont, param) {
 		return
 	}
 	new_fn = new_name + "." + new_size
+	if (cl)
+		new_fn += '.' + cl
 	if (new_fn == old_fn)
 		return
 	font = font_tb[new_fn]
@@ -6334,6 +6355,8 @@ function param_set_font(xxxfont, param) {
 		}
 		font_tb[new_fn] = font
 	}
+	if (cl)
+		font.class = cl;
 	cfmt[xxxfont] = new_fn
 }
 
@@ -6827,6 +6850,13 @@ function style_font(fn) {		// 'font_name'.'size'
 }
 Abc.prototype.style_font = style_font
 
+// build a font class
+function font_class(font) {
+	if (font.class)
+		return 'f' + font.fid + cfmt.fullsvg + ' ' + font.class
+	return 'f' + font.fid + cfmt.fullsvg
+}
+
 // output a font style
 function style_add_font(font) {
 	font_style += "\n.f" + font.fid + cfmt.fullsvg +
@@ -7093,7 +7123,7 @@ var	err_ign_s = "$1: inside tune - ignored",
 function tosvg(in_fname,		// file name
 		file) {			// file content
 	var	i, c, bol, eol, end,
-		ext, select, skip,
+		ext, select,
 		line0, line1,
 		last_info, opt, text, a, b, s,
 		cfmt_sav, info_sav, char_tb_sav, glovar_sav, maps_sav,
@@ -7130,31 +7160,16 @@ function tosvg(in_fname,		// file name
 
 		if (do_escape && src.indexOf('\\') >= 0)
 			src = cnv_escape(src);
-		l = src.length
-		for (i = 0; i < l; i++) {
-			c = src[i]
-			switch (c) {
-			case '\\':
-				i++
-				continue
-			case '%':
-				return src.slice(0, i).replace(/\s+$/, '')
-			case '"':
+		j = 0
+		while (1) {
+			i = src.indexOf('%', j)
+			if (i < 0)
 				break
-			default:
-				continue
+			if (src[i - 1] != '\\') {
+				src = src.slice(0, i)
+				break
 			}
 			j = i + 1
-			for (;;) {			// in ".." sequence
-				j = src.indexOf('"', j)
-				if (j < 0)
-					break		// fixme: no string end
-				if (src[j - 1] != '\\')
-					break
-			}
-			if (j < 0)
-				break
-			i = j
 		}
 		src = src.replace(/\s+$/, '');		// trimRight
 		return src.replace(/\\%/g,'%')
@@ -7204,17 +7219,19 @@ function tosvg(in_fname,		// file name
 			break
 		}
 		eol++
-		if (skip) {			// tune skip
-			if (eol != bol)
-				continue
-			skip = false
-		}
 		if (eol == bol) {		// empty line
 			if (parse.state == 1) {
 				parse.istart = bol;
 				syntax(1, "Empty line in tune header - ignored")
-			} else if (parse.state >= 2)
+			} else if (parse.state >= 2) {
 				end_tune()
+				if (parse.select) {	// skip to next tune
+					eol = file.indexOf('\nX:', parse.eol)
+					if (eol < 0)
+						eol = eof
+					parse.eol = eol
+				}
+			}
 			continue
 		}
 		parse.istart = parse.bol = bol;
@@ -7412,8 +7429,11 @@ function tosvg(in_fname,		// file name
 				continue
 			}
 			if (parse.select
-			 && !tune_selected()) {
-				skip = true
+			 && !tune_selected()) {	// skip to the next tune
+				eol = file.indexOf('\nX:', parse.eol)
+				if (eol < 0)
+					eol = eof;
+				parse.eol = eol
 				continue
 			}
 
@@ -7795,10 +7815,15 @@ function lkvsym(s, next) {	// voice linkage
 	next.prev = s
 }
 function lktsym(s, next) {	// time linkage
-	s.ts_next = next;
-	s.ts_prev = next.ts_prev;
-	s.ts_prev.ts_next = s;
-	next.ts_prev = s
+	if (next) {
+		s.ts_next = next;
+		s.ts_prev = next.ts_prev
+		if (s.ts_prev)
+			s.ts_prev.ts_next = s;
+		next.ts_prev = s
+	} else {
+		s.ts_next = s.ts_prev = null
+	}
 }
 
 /* -- unlink a symbol -- */
@@ -10357,7 +10382,7 @@ function init_music_line() {
 		s.v = v;
 		s.p_v = p_voice;
 		s.st = st;
-		s.time = last_s.time;
+		s.time = tsfirst.time;
 		s.prev = null;
 		s.next = p_voice.sym
 		if (s.next)
@@ -10365,7 +10390,10 @@ function init_music_line() {
 		p_voice.sym = s;
 		p_voice.last_sym = s;
 		s.ts_next = last_s;
-		s.ts_prev = last_s.ts_prev
+		if (last_s)
+			s.ts_prev = last_s.ts_prev
+		else
+			s.ts_prev = null
 		if (!s.ts_prev) {
 			tsfirst = s;
 			s.seqst = true
@@ -10373,9 +10401,11 @@ function init_music_line() {
 			s.ts_prev.ts_next = s
 			delete s.seqst
 		}
-		last_s.ts_prev = s
-		if (last_s.type == CLEF)
-			delete last_s.seqst
+		if (last_s) {
+			last_s.ts_prev = s
+			if (last_s.type == CLEF)
+				delete last_s.seqst
+		}
 		delete s.clef_small;
 		s.second = cur_sy.voices[v].second
 // (fixme: needed for sample5 X:3 Fugue & staffnonote.xhtml)
@@ -10390,7 +10420,7 @@ function init_music_line() {
 		 || !cur_sy.st_print[cur_sy.voices[v].st])
 			continue
 		p_voice = voice_tb[v]
-		if (last_s.v == v && last_s.type == KEY) {
+		if (last_s && last_s.v == v && last_s.type == KEY) {
 			p_voice.last_sym = last_s;
 			last_s.k_old_sf = last_s.k_sf;	// no key cancel
 			last_s = last_s.ts_next
@@ -10423,7 +10453,7 @@ function init_music_line() {
 			 || !cur_sy.st_print[cur_sy.voices[v].st]
 			 || s2.a_meter.length == 0)
 				continue
-			if (last_s.v == v && last_s.type == METER) {
+			if (last_s && last_s.v == v && last_s.type == METER) {
 				p_voice.last_sym = last_s;
 				last_s = last_s.ts_next
 				continue
@@ -10442,7 +10472,7 @@ function init_music_line() {
 
 		// if bar already, keep it in sequence
 		p_voice = voice_tb[v];
-		if (last_s.v == v && last_s.type == BAR) {
+		if (last_s && last_s.v == v && last_s.type == BAR) {
 			p_voice.last_sym = last_s;
 			last_s = last_s.ts_next
 			continue
@@ -10463,10 +10493,10 @@ function init_music_line() {
 		s2.prev = p_voice.last_sym;
 		p_voice.last_sym = s2;
 		lktsym(s2, last_s);
-		s2.time = last_s.time
+		s2.time = tsfirst.time
 		if (s2.ts_prev.type != s2.type)
 			s2.seqst = true;
-		if (last_s.type == s2.type && s2.v != last_s.v) {
+		if (last_s && last_s.type == s2.type && s2.v != last_s.v) {
 			delete last_s.seqst;
 			last_s.shrink = 0
 		}
@@ -11783,6 +11813,10 @@ function set_piece() {
 				unlksym(s)
 			}
 			break
+		case BAR:
+			if (cfmt.staffnonote <= 1)
+				break
+			// fall thru
 		case GRACE:
 			non_empty_gl[st] = non_empty[st] = true
 			break
@@ -12177,7 +12211,7 @@ function reset_gen() {
 }
 // abc2svg - parse.js - ABC parse
 //
-// Copyright (C) 2014-2017 Jean-Francois Moine
+// Copyright (C) 2014-2018 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -14352,15 +14386,15 @@ var char_tb = [
 	nil, nil, nil, nil,
 	nil, nil, nil, nil,
 	nil, nil, nil, nil,		/* .. - 1f */
-	" ", "!", '"', nil,		/* (sp) ! " # */
+	" ", "!", '"', "i",		/* (sp) ! " # */
 	"\n", nil, "&", nil,		/* $ % & ' */
-	"(", ")", nil, nil,		/* ( ) * + */
+	"(", ")", "i", nil,		/* ( ) * + */
 	nil, "-", "!dot!", nil,		/* , - . / */
 	nil, nil, nil, nil, 		/* 0 1 2 3 */
 	nil, nil, nil, nil, 		/* 4 5 6 7 */
-	nil, nil, "|", nil,		/* 8 9 : ; */
-	"<", "n", "<", nil,		/* < = > ? */
-	nil, "n", "n", "n",		/* @ A B C */
+	nil, nil, "|", "i",		/* 8 9 : ; */
+	"<", "n", "<", "i",		/* < = > ? */
+	"i", "n", "n", "n",		/* @ A B C */
 	"n", "n", "n", "n", 		/* D E F G */
 	"!fermata!", "d", "d", "d",	/* H I J K */
 	"!emphasis!", "!lowermordent!",
@@ -15022,8 +15056,8 @@ function out_str(str) {
 				c_font = n_font
 				if (c_font == o_font)
 					return c
-				return c + '<tspan\n\tclass="f' +
-					n_font.fid + cfmt.fullsvg + '">'
+				return c + '<tspan\n\tclass="' +
+						font_class(n_font) + '">'
 			}
 		}))
 	if (c_font != o_font) {
@@ -15042,7 +15076,7 @@ function out_str(str) {
 function xy_str(x, y, str,
 		 action,
 		 line_w) {
-	output.push('<text class="f' + gene.curfont.fid + cfmt.fullsvg + '" x="');
+	output.push('<text class="' + font_class(gene.curfont) + '" x="');
 	out_sxsy(x, '" y="', y)
 	switch (action) {
 	case 'c':
@@ -15740,6 +15774,7 @@ var	output = [],		// output buffer
 	},
 	defined_glyph = {},
 	defs = '',
+	fulldefs = '',		// unreferenced defs as <filter>
 	stv_g = {		/* staff/voice graphic parameters */
 		scale: 1,
 		dy: 0,
@@ -15942,16 +15977,13 @@ function defs_add(text) {
 	var	i, j, gl, tag, is,
 		ie = 0
 
+	// remove XML comments
+	text = text.replace(/<!--.*?-->/g, '')
+
 	while (1) {
 		is = text.indexOf('<', ie);
 		if (is < 0)
 			break
-		if (text.slice(is, is + 4) == "<!--") {
-			ie = text.indexOf('-->', is + 4)
-			if (ie < 0)
-				break
-			continue
-		}
 		i = text.indexOf('id="', is)
 		if (i < 0)
 			break
@@ -15975,7 +16007,10 @@ function defs_add(text) {
 				break
 			ie += 3 + tag.length
 		}
-		glyphs[gl] = text.slice(is, ie)
+		if (text.substr(is, 7) == '<filter')
+			fulldefs += '\n' + text.slice(is, ie)
+		else
+			glyphs[gl] = text.slice(is, ie)
 	}
 }
 
@@ -16195,10 +16230,23 @@ function sy(y) {
 	return stv_g.dy - y			// staff scale
 }
 Abc.prototype.sy = sy;
-// return absolute X,Y coordinates
+Abc.prototype.sh = function(h) {
+	if (stv_g.st < 0)
+		return h / stv_g.scale
+	return h
+}
+// for absolute X,Y coordinates
 Abc.prototype.ax = function(x) { return x + posx }
-Abc.prototype.ay = function(y) { return posy - y }
-
+Abc.prototype.ay = function(y) {
+	if (stv_g.st < 0)
+		return posy - y
+	return posy + (stv_g.dy - y) * stv_g.scale - stv_g.dy
+}
+Abc.prototype.ah = function(h) {
+	if (stv_g.st < 0)
+		return h
+	return h * stv_g.scale
+}
 // output scaled (x + <sep> + y)
 function out_sxsy(x, sep, y) {
 	x = sx(x);
@@ -16701,7 +16749,8 @@ function svg_flush() {
 
     var	head = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
 	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	color="black"'
+	color="black" class="music" stroke-width=".7"',
+	g = ''
 
 	if (cfmt.bgcolor)
 		head += ' style="background-color: ' + cfmt.bgcolor + '"';
@@ -16734,18 +16783,24 @@ function svg_flush() {
 		}
 		head += '\n</style>\n'
 	}
+	defs += fulldefs
 	if (defs)
 		head += '<defs>' + defs + '\n</defs>\n'
-	if (cfmt.scale == 1)
-		head += '<g class="music" stroke-width=".7">\n'
-	else
-		head += '<g class="music" stroke-width=".7" transform="scale(' +
-				cfmt.scale.toFixed(2) + ')">\n';
+
+	// if %%pagescale != 1, do a global scale
+	// (with a container: transform scale in <svg> does not work
+	//	the same in all browsers)
+	// the class is used to know that the container is global
+	if (cfmt.scale != 1) {
+		head += '<g class="g" transform="scale(' +
+			cfmt.scale.toFixed(2) + ')">\n';
+		g = '</g>\n'
+	}
 
 	if (psvg)			// if PostScript support
 		psvg.ps_flush(true);	// + setg(0)
 
-	user.img_out(head + output.join('') + "</g>\n</svg>");
+	user.img_out(head + output.join('') + g + "</svg>");
 	output = []
 
 	font_style = ''
@@ -16755,6 +16810,7 @@ function svg_flush() {
 	} else {
 		musicfont = '';
 		style = '';
+		fulldefs = ''
 	}
 	defs = '';
 	posy = 0
@@ -19869,6 +19925,7 @@ function gch_capo(s) {
 		capo = true;
 		gch2.text += "  (capo: " + cfmt.capo.toString() + ")";
 	}
+	gch2.type = "^";		// capo as annotation
 	s.a_gch.splice(i, 0, gch2)
 }
 
@@ -20044,7 +20101,7 @@ function gch_build(s) {
 				gch.text = gch.text.replace(/A|B|C|D|E|F|G/g,
 					function(c){return cfmt.chordnames[c]})
 				if (cfmt.chordnames.B == 'H')
-					gch.text = gch.text.replace(/Hb/g, 'B')
+					gch.text = gch.text.replace(/Hb/g, 'Bb')
 			}
 			gch.text = gch.text.replace(/##|#|=|bb|b/g,
 				function(x) {
@@ -20385,7 +20442,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.15.7 (2018-01-12)
+// json-1.js for abc2svg-1.15.8 (2018-01-19)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20533,7 +20590,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.15.7 (2018-01-12)
+// midi-1.js for abc2svg-1.15.8 (2018-01-19)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20733,7 +20790,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.15.7 (2018-01-12)
+// play-1.js for abc2svg-1.15.8 (2018-01-19)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2017 Jean-Francois Moine
