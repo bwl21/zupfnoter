@@ -474,7 +474,7 @@ module Harpnotes
       end
 
       def style
-        @annotations[:style]
+        @annotations[:style] || :regular # default styl of notebound annotations
       end
 
       def text
@@ -697,6 +697,65 @@ module Harpnotes
   # The drawing model
   module Drawing
 
+
+    # this class represents a collition detector
+    #
+    # whenver a #check is called, the objects are kept
+    # in an instance variable. By this subesequent check
+    # investigate the collision of objects with all previous ones
+    #
+    # usage pattern
+    #
+    # a = ColllisionDetector.new
+    # a.check(res_annoations)     # chec
+    # a.check(res_flowlines)
+    # a.reset                     # restart a check
+    # a.check(res_barnumbers + res_countnotes)
+    #
+    # Hint: be sure to perform a reset after all check
+    # in oder to free memory.
+    #
+    class CollisionDetector
+      def initialize
+        reset
+      end
+
+      def check_annotations(drawables)
+        drawables.select { |i| i.is_a? Annotation }.each do |drawable|
+          _check1(drawable.center, drawable.size, drawable.conf_key, drawable.origin)
+        end
+      end
+
+      def reset
+        @coll_stack = []
+      end
+
+      # this performs a heuristic check of annotatoin collisions
+      #
+      # todo: try to correct the point ...
+      def _check1(point, size, confkey, playable)
+        x, y         = point
+        xsize, ysize = size
+        rect         = [x, y, x + xsize, y + ysize]
+
+        collision = @coll_stack.select { |i| _rect_overlap?(i, rect) }
+        unless collision.empty?
+          $log.warning(I18n.t("annotations too close [") + "#{collision.count}] #{confkey}", playable[:start_pos])
+        end
+
+        @coll_stack.push(rect)
+        point
+      end
+
+
+      def _rect_overlap?(rect1, rect2)
+        left1, top1, right1, bottom1 = rect1
+        left2, top2, right2, bottom2 = rect2
+        (right1 > left2) and (right2 > left1) and (bottom1 > top2) and (bottom2 > top1)
+      end
+
+    end
+
     #
     # This is the drawing model of a tableharp sheet.
     # Note that this model is still independent from the rendering engine.
@@ -743,20 +802,21 @@ module Harpnotes
 
     end
 
-    # this represetns objects which can be visible
+    # this represents objects which can be visible
     # draginfo {handler: :drag | jumpline | bezier,
     #           jumpline {p1: [x1, y1], pv: xv, p2: [x2, y1] } |
     #           bezier: {cp1: [x1, y2], cp2: [x2, y2]}
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :draginfo, :color
+      attr_accessor :conf_key, :conf_value, :draginfo, :color, :size
 
       def initialize
         @visible    = true
         @line_width = $conf.get('layout.LINE_THIN')
         @conf_key   = nil
         @color      = $conf.get('layout.color.color_default')
+        @size       = [1, 1]
       end
 
       def center
@@ -786,7 +846,6 @@ module Harpnotes
       def color
         @color
       end
-
 
       def size_with_dot
         result = @size.clone
@@ -963,7 +1022,7 @@ module Harpnotes
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)
-      # @param [Object] origin # reference to the origin
+      # @param [Object] origin # reference to the origin (abc object)
       # @param [string] conf_key - the key for configuration (used for dragging annotation)
       # @param [Object] conf_value - the value for configuration (used for dragging annotation)
       def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
@@ -974,6 +1033,17 @@ module Harpnotes
         @origin     = origin
         @conf_key   = conf_key
         @conf_value = conf_value
+      end
+
+      # this estimates the size of an annotation
+      def size
+        if @text and @text.strip.length > 0
+          ysize = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size") * $conf.get("layout.MM_PER_POINT").to_f
+          xsize = @text.length * ysize # todo: this needs improvement (multiline texts, monospace fonts.)
+        else
+          xsize, ysize = 1.5, 2  # todo: this is pretty heuristic
+        end
+        [xsize, ysize]
       end
     end
 
@@ -1450,6 +1520,11 @@ module Harpnotes
           end
         }.flatten.compact # note that we get three nil objects bcause of the voice filter
 
+        if $log.loglevel? :warning
+          collisiondetector = CollisionDetector.new
+          collisiondetector.check_annotations(voice_elements)
+        end
+
         # build synchlines between voices
         synch_lines = required_synchlines.map do |selector|
           synch_points_to_show = music.build_synch_points(selector)
@@ -1833,7 +1908,6 @@ module Harpnotes
               conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
               draginfo      = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
               result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
-              check_annotationcollision(configured_anchor, conf_key, playable)
               result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
                                                              :small,
                                                              nil,
@@ -1974,7 +2048,6 @@ module Harpnotes
           end
 
           position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
-          position = check_annotationcollision(position, conf_key, annotation.companion) unless annotation.text.strip.empty?
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
                                                         conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
           result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
@@ -2061,28 +2134,12 @@ module Harpnotes
 
         position = Vector2d(companion_note.sheet_drawable.center) + annotationoffset
 
-        check_annotationcollision(position, conf_key, companion_note)
         Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
                                            companion_note.origin, conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
       end
 
 
       private
-
-
-      # this performs a heuristic check of annotatoin collisions
-      #
-      def check_annotationcollision(point, confkey, playable)
-        @coll_stack = [] unless @coll_stack
-
-        collision = @coll_stack.map { |i| (x = (i - point).length) < 1.5 ? x.round(2) : nil }.compact
-        $log.warning(I18n.t("annotations too close [") + "#{collision.join(", ")} < 1.5] #{confkey}", playable.start_pos) unless collision.empty?
-
-        @coll_stack.push(point)
-
-        point
-      end
-
 
       # This creates countnotes and barnumbers
       def layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)
@@ -2136,7 +2193,7 @@ module Harpnotes
               cn_offset = show_options[:print_options_raw][cn_pos_key] rescue nil
 
               unless cn_offset
-                if cn_autopos
+                if cn_autopos == true
                   tie_x     = (cn_position == :r and playable.tie_start?) ? 1 : 0
                   auto_x    = tie_x + (cn_position == :l ? -count_note.length - the_drawable.size.first - 1 : the_drawable.size_with_dot.first + 1)
                   auto_y    = bottomup ? -the_drawable.size.last - 1 : 0 # -1 move it a bit upwords depend on font size
@@ -2147,7 +2204,6 @@ module Harpnotes
               end
 
               cn_position = Vector2d(the_drawable.center) + cn_offset
-              cn_position = check_annotationcollision(cn_position, cn_conf_key, playable)
 
               res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a, count_note, cn_style, playable.origin,
                                                                      cn_conf_key, cn_offset).tap { |s| s.draginfo = {handler: :annotation} }
@@ -2164,12 +2220,12 @@ module Harpnotes
               bn_offset = show_options[:print_options_raw][bn_pos_key] rescue nil
 
               unless bn_offset
-                if bn_autopos
+                if bn_autopos == true
                   bn_tie_x = (bn_position == :r and playable.tie_start?) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
                   # todo: in case of left: barnumber.length is just a heuristic to geht the thing right justified
                   bn_auto_x = bn_tie_x + (bn_position == :l ? -barnumber.length - the_drawable.size.first - 4 : the_drawable.size_with_dot.first + 3)
-                  bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 1 # todo derive "1" from font style?
+                  bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 2 # todo derive "1" from font style?
                   bn_offset = [bn_auto_x, bn_auto_y]
                 else
                   bn_offset = bn_fixedpos
@@ -2177,7 +2233,6 @@ module Harpnotes
               end
 
               bn_position = Vector2d(the_drawable.center) + bn_offset
-              bn_position = check_annotationcollision(bn_position, bn_conf_key, playable)
               res_barnumbers.push Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
                                                                      bn_conf_key, bn_offset).tap { |s| s.draginfo = {handler: :annotation} }
             end
@@ -2511,8 +2566,8 @@ module Harpnotes
       # This computes the layout for note flags and beams
       # It is called from layout_note and depends on results
       # of layout_note
-      # 
-      # 
+      #
+      #
       # @param [Numeric] x_offset x position of note
       # @param [Numeric] y_offset y position of of note
       # @param [Array of numeric] size - size of note
