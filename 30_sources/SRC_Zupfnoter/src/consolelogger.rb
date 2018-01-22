@@ -19,9 +19,10 @@ class Logger
   def clear_annotations
     @annotations = []
   end
+
   def initialize(element_id)
-    @console = element_id # Element.find("##{element_id}")
-    @loglevel = LOGLEVELS[:info]
+    @console   = element_id # Element.find("##{element_id}")
+    @loglevel  = LOGLEVELS[:info]
     @timestamp = Time.now
     clear_errors
     clear_annotations
@@ -50,7 +51,7 @@ class Logger
 
   # for documentation see : error
   def warning(msg, start_pos = nil, end_pos = nil)
-    add_annotation(msg, start_pos, end_pos, :warning) if loglevel == :warning
+    add_annotation(msg, start_pos, end_pos, :warning) if loglevel?(:warning)
     write(:warning, msg)
   end
 
@@ -116,6 +117,11 @@ class Logger
     LOGLEVELS.invert[@loglevel]
   end
 
+  # this queries if a particular loglevel will be shown
+  def loglevel?(type)
+    (LOGLEVELS[type] || LOGLEVELS[:warning]) <= @loglevel
+  end
+
   private
 
   def add_annotation(msg, start_pos, end_pos, type)
@@ -128,11 +134,9 @@ class Logger
   end
 
   def write(type, msg)
-
-    current_level = LOGLEVELS[type] || LOGLEVELS[:warning]
-    if (current_level <= @loglevel)
+    if (loglevel?(type))
       time = Time.now.strftime("%H:%M:%S")
-     # @console.write_html "<li class='#{type}'><i class=\"#{LOGICONS[type]}\"><span class='time'>#{time}</span><span class='msg'>#{msg}</span></li>"
+      # @console.write_html "<li class='#{type}'><i class=\"#{LOGICONS[type]}\"><span class='time'>#{time}</span><span class='msg'>#{msg}</span></li>"
       puts msg
     end
   end
