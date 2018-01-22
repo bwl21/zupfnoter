@@ -191,6 +191,11 @@ module Harpnotes
         @countby = voice_model[:voice_properties][:meter][:a_meter].first[:bot].to_i rescue nil
         _investigate_first_bar(voice_model)
 
+        voice_model[:symbols].each do |voice_model_element|
+          voice_model_element[:start_pos] = charpos_to_line_column(voice_model_element[:istart])
+          voice_model_element[:end_pos]   = charpos_to_line_column(voice_model_element[:iend])
+        end
+
         @pitch_providers = voice_model[:symbols].map do |voice_model_element|
           voice_model_element if voice_model_element[:type].to_s == note_id
         end
@@ -906,8 +911,16 @@ module Harpnotes
         #[:fermata]
       end
 
+      # thie provides a minimized origin
+      # to be used for backannotation purposes
       def _parse_origin(voice_element)
-        {startChar: voice_element[:istart], endChar: voice_element[:iend], raw: voice_element}
+        {
+            startChar: voice_element[:istart],
+            endChar:   voice_element[:iend],
+            start_pos: voice_element[:start_pos],
+            end_pos:   voice_element[:end_pos],
+            raw_voice_element:       voice_element    # required extract_goto_info
+        }
       end
 
       # this parses the slur information from abc2svg
