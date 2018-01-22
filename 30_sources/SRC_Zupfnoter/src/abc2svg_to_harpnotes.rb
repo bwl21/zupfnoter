@@ -15,8 +15,8 @@ module Harpnotes
         @abcplay           = nil # this is an instance of abcplay which we need to pass throug to load the player from abc
         @abc_code          = nil
         @previous_new_part = []
-        @score_statements  = []  # need this to capture score statments in the header
-        @part_table = {}
+        @score_statements  = [] # need this to capture score statments in the header
+        @part_table        = {}
 
         @_shortest_note = $conf.get('layout.SHORTEST_NOTE')
         _reset_state
@@ -96,7 +96,7 @@ module Harpnotes
         tempo_note = @abc_model[:voices].first[:voice_properties][:sym] rescue nil
 
         if tempo_note && tempo_note[:tempo_notes]
-          duration      = tempo_note[:tempo_notes].map {|i| i / ABC2SVG_DURATION_FACTOR}
+          duration      = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           bpm           = tempo_note[:tempo].to_i
           tempo_display = @info_fields[:Q]
         else
@@ -140,7 +140,7 @@ module Harpnotes
       # to be called when beginning a new voice
       def _reset_state
 
-        @countnames = (1..32).to_a.map {|i| [i, 'e', 'u', 'e']}.flatten
+        @countnames = (1 .. 32).to_a.map { |i| [i, 'e', 'u', 'e'] }.flatten
 
         @jumptargets = {} # the lookup table for jumps
 
@@ -432,15 +432,15 @@ module Harpnotes
 
         # handle slurs
         # note that rests do not have slurs in practise
-        result.first.slur_starts = _parse_slur(voice_element[:slur_start]).map {|i| _push_slur()}
+        result.first.slur_starts = _parse_slur(voice_element[:slur_start]).map { |i| _push_slur() }
         amount_of_slur_ends      = (voice_element[:slur_end] or 0)
-        result.first.slur_ends   = (1..amount_of_slur_ends).map {_pop_slur} # pop_slur delivers an id.
+        result.first.slur_ends   = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
 
 
         #harpnote_elements = [harpnote_elements] # make it an array such that we can append further elements
 
         if @next_note_marks[:measure]
-          notes.each {|note| note.measure_start = true}
+          notes.each { |note| note.measure_start = true }
           @next_note_marks[:measure] = false
         end
 
@@ -475,10 +475,10 @@ module Harpnotes
           count_end   = count_start + 4 * voice_element[:dur] / count_base
 
           if (count_start % 1 == 0) and (count_end % 1) == 0
-            count_range = (count_start...count_end).to_a.map {|i| @countnames[i]}.join
+            count_range = (count_start ... count_end).to_a.map { |i| @countnames[i] }.join
           else
             if (count_start % 1) == 0 # start of tuplet
-              count_range = (count_start...count_end.ceil).to_a.map {|i| @countnames[i]}.join('')
+              count_range = (count_start ... count_end.ceil).to_a.map { |i| @countnames[i] }.join('')
             else
               count_range = '' #(count_start % 1).to_s[1..2] # we are out of sync, don't know what to do.
             end
@@ -492,7 +492,7 @@ module Harpnotes
 
           # now cleanup contnotes
           # todo:can we use regular expressions for this
-          fracts.each_with_index {|v, i| fracts[i] = nil if i >= 1}
+          fracts.each_with_index { |v, i| fracts[i] = nil if i >= 1 }
           count_range = fracts.zip(notes).flatten.compact.join(" ").strip.split.join("-")
           count_range = count_range.gsub('ue', 'u')
           count_range
@@ -521,7 +521,7 @@ module Harpnotes
         origin             = _parse_origin(voice_element)
         start_pos, end_pos = origin[:startChar], origin[:endChar]
 
-        pitch_notes = [@pitch_providers[0..index].compact.last, @pitch_providers[index..-1].compact.first]
+        pitch_notes = [@pitch_providers[0 .. index].compact.last, @pitch_providers[index .. -1].compact.first]
 
         pitch_notes = [(pitch_notes.first or pitch_notes.last)] if $conf['restposition.default'] == :previous
         pitch_notes = [(pitch_notes.last or pitch_notes.first)] if $conf['restposition.default'] == :next
@@ -530,7 +530,7 @@ module Harpnotes
 
         pitch_notes = pitch_notes.compact
         unless pitch_notes.empty?
-          pitch_notes = pitch_notes.map {|pitch_note| pitch_note[:notes].last[:midi]}
+          pitch_notes = pitch_notes.map { |pitch_note| pitch_note[:notes].last[:midi] }
           pitch       = (average_pitch = pitch_notes.inject(:+) / pitch_notes.length).floor.to_i
         else
           pitch = 60
@@ -589,7 +589,8 @@ module Harpnotes
 
         # note that abc2svd yields Tune based Tempo in voice_propoeties.sym as well as in symbols
         # therefore we need to filter the Tune based tempo ...
-        unless voice_element == @meta_data[:tempo][:sym]
+        unless voice_element[:istart] == @meta_data[:tempo][:sym][:istart]
+          `debugger`
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
           $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
@@ -661,12 +662,12 @@ module Harpnotes
       def _make_variant_ending_jumps(voice_id)
         result           = []
         lastvariantgroup = (@variant_endings.last.empty? ? -2 : -1)
-        @variant_endings[0..lastvariantgroup].each do |variant_ending_group|
+        @variant_endings[0 .. lastvariantgroup].each do |variant_ending_group|
           # variant ending startlines
 
           distance  = variant_ending_group[0][:distance]
           entity    = variant_ending_group.first[:rbstop]
-          conf_keys = ['p_begin', 'p_end', 'p_follow'].map {|p| "notebound.c_jumplines.#{voice_id}.#{entity.znid}.#{p}"}
+          conf_keys = ['p_begin', 'p_end', 'p_follow'].map { |p| "notebound.c_jumplines.#{voice_id}.#{entity.znid}.#{p}" }
 
 
           if variant_ending_group[-1][:is_followup]
@@ -677,12 +678,12 @@ module Harpnotes
 
 
           # variant ending startlines
-          variant_ending_group[1..lastvariant].each_with_index do |variant_ending, index|
+          variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
             result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], conf_key: conf_keys[0], distance: distance[0], from_anchor: :after, to_anchor: :before)
           end
 
           # variant ending endlines
-          variant_ending_group[1..-3].each_with_index do |variant_ending, index|
+          variant_ending_group[1 .. -3].each_with_index do |variant_ending, index|
             # note that the repeat line is drawn by the _transform_bar_repeat_end
             # so we do not have the variant end line in this case
             unless variant_ending[:repeat_end]
@@ -702,7 +703,7 @@ module Harpnotes
       # @param [Playable] element - an element of the converted voice
       def _make_jumplines(element, voice_id)
         if element.is_a?(Harpnotes::Music::Playable)
-          goto_infos = _extract_goto_info_from_bar(element.origin[:raw])
+          goto_infos = _extract_goto_info_from_bar(element.origin[:raw_voice_element])
           goto_infos.inject([]) do |result, goto_info|
             targetname = goto_info[:target]
             target     = @jumptargets[targetname]
@@ -728,7 +729,7 @@ module Harpnotes
       def _make_notebound_annotations(entity, voice_id)
         result = []
         if entity.is_a? Harpnotes::Music::Playable
-          chords = _extract_chord_lines(entity.origin[:raw])
+          chords = _extract_chord_lines(entity.origin[:raw_voice_element])
           chords.each_with_index do |name, index|
 
             match = name.match(/^([!#\<\>])([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
@@ -746,16 +747,16 @@ module Harpnotes
                   annotation = {text: text, style: :regular}
                 when "<"
                   entity.shift = {dir: :left, size: text, style: :regular}
-                  entity.notes.each {|note| note.shift = {dir: :left, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
+                  entity.notes.each { |note| note.shift = {dir: :left, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
                 when ">"
                   entity.shift = {dir: :right, size: text, style: :regular}
-                  entity.notes.each {|note| note.shift = {dir: :right, size: text, style: :regular}} if entity.is_a? Harpnotes::Music::SynchPoint
+                  entity.notes.each { |note| note.shift = {dir: :right, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
                 else
                   annotation = nil # it is not an annotation
               end
 
               if annotation
-                notepos  = [pos_x, pos_y].map {|p| p.to_f} if pos_x
+                notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || $conf['defaults.notebound.annotation.pos']
                 conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid # todo: not sure if we really nedd this if; maybe it was before we compute znid by time
                 conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.#{index}.pos" if index > 0
@@ -803,7 +804,7 @@ module Harpnotes
           position = $conf['defaults.notebound.partname.pos']
 
           harpnote_elements.first.first_in_part = true
-          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: part_label}, conf_key)
+          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {style: :regular, pos: position, text: part_label}, conf_key)
         end
 
         # handle repeats
@@ -824,7 +825,7 @@ module Harpnotes
           conf_key                              = "notebound.variantend.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
           position                              = $conf['defaults.notebound.variantend.pos']
           harpnote_elements.first.first_in_part = true
-          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {pos: position, text: text, policy: :Goto}, conf_key)
+          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {style: :regular, pos: position, text: text, policy: :Goto}, conf_key)
           @next_note_marks[:variant_ending] = nil
           @variant_endings.last.push({})
           @variant_endings.last.last[:rbstart] = @previous_note
@@ -842,8 +843,8 @@ module Harpnotes
 
         # collect chord based targets
         chords = _extract_chord_lines(voice_element)
-        chords.select {|chord| chord[0] == ":"}.each do |name|
-          @jumptargets[name[1..-1]] = harpnote_elements.select {|n| n.is_a? Harpnotes::Music::Playable}.last
+        chords.select { |chord| chord[0] == ":" }.each do |name|
+          @jumptargets[name[1 .. -1]] = harpnote_elements.select { |n| n.is_a? Harpnotes::Music::Playable }.last
         end
       end
 
@@ -853,7 +854,7 @@ module Harpnotes
       #
       # @return [Object] the _first_ extra element
       def _get_extra(voice_element, id)
-        r = (voice_element[:extra] and voice_element[:extra].select {|e| e[:type].to_s == id.to_s}.first) rescue nil
+        r = (voice_element[:extra] and voice_element[:extra].select { |e| e[:type].to_s == id.to_s }.first) rescue nil
         r
       end
 
@@ -871,7 +872,7 @@ module Harpnotes
       def _extract_chord_lines(voice_element)
         chords = voice_element[:a_gch]
         if chords
-          result = chords.select {|e| e[:type] = '^'}.map {|e| e[:text]}
+          result = chords.select { |e| e[:type] = '^' }.map { |e| e[:text] }
         else
           result = []
         end
@@ -886,7 +887,7 @@ module Harpnotes
             level = line.match(/^^@([^\@]*)@(\-?\d*)(,(\-?\d*),(\-?\d*))?$/)
             if level
               target   = level[1]
-              distance = [2, 4, 5].map {|i| level[i] ? level[i].to_i : nil}.compact
+              distance = [2, 4, 5].map { |i| level[i] ? level[i].to_i : nil }.compact
               result.push({target: target, distance: distance})
             else
               start_pos = charpos_to_line_column(bar[:istart])
@@ -907,7 +908,7 @@ module Harpnotes
           result = dd[:name].to_sym
         end
 
-        result.flatten.select {|i| [:fermata, :emphasis].include? i}
+        result.flatten.select { |i| [:fermata, :emphasis].include? i }
         #[:fermata]
       end
 
