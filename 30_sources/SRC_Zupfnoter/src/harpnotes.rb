@@ -1041,7 +1041,7 @@ module Harpnotes
           ysize = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size") * $conf.get("layout.MM_PER_POINT").to_f
           xsize = @text.length * ysize # todo: this needs improvement (multiline texts, monospace fonts.)
         else
-          xsize, ysize = 1.5, 2  # todo: this is pretty heuristic
+          xsize, ysize = 1.5, 2 # todo: this is pretty heuristic
         end
         [xsize, ysize]
       end
@@ -1958,7 +1958,7 @@ module Harpnotes
           playable.slur_ends.each do |id|
             begin_slur = @slur_index[id] || @slur_index[:first_playable]
 
-            p1       = Vector2d(begin_slur.sheet_drawable.center) + [3, 0]
+            p1       = Vector2d(begin_slur.sheet_drawable.center) + [3, 0]  # todo make tie configurable
             p2       = Vector2d(playable.sheet_drawable.center) + [3, 0]
             slurpath = make_slur_path(p1, p2)
             result.push(Harpnotes::Drawing::Path.new(slurpath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') }) if $conf.get('layout.SHOW_SLUR')
@@ -2160,24 +2160,32 @@ module Harpnotes
           visible_playables = playables.select { |playable| playable.visible? }
 
           if cn_options
-            cn_style    = cn_options[:style]
-            cn_autopos  = cn_options[:autopos]
-            cn_fixedpos = cn_options[:pos]
+            cn_style                     = cn_options[:style]
+            cn_fontsize_x, cn_fontsize_y = [1, 1]
+            cn_autopos                   = cn_options[:autopos]
+            cn_fixedpos                  = cn_options[:pos]
+            cn_apbase_x, cn_apbase_y     = cn_options[:apbase]
           end
           if bn_options
-            bn_style    = bn_options[:style]
-            bn_autopos  = bn_options[:autopos]
-            bn_fixedpos = bn_options[:pos]
-            bn_prefix   = bn_options[:prefix]
+            bn_style                     = bn_options[:style]
+            bn_fontsize_x, bn_fontsize_y = [2.7, 2.7]
+            bn_autopos                   = bn_options[:autopos]
+            bn_fixedpos                  = bn_options[:pos]
+            bn_apbase_x, bn_apbase_y     = bn_options[:apbase]
+            bn_prefix                    = bn_options[:prefix]
           end
 
           # now process all visible playables
           visible_playables.each do |playable|
-            ## get the centers of previous, current, next
-            the_drawable = playable.sheet_drawable #lookuptable_drawing_by_playable[playable]
-            x, y         = the_drawable.center
-            xp, yp       = playable.prev_playable.sheet_drawable.center
-            xn, yn       = playable.next_playable.sheet_drawable.center
+            ## do some caching
+            #
+            the_drawable         = playable.sheet_drawable #lookuptable_drawing_by_playable[playable]
+            dcenter              = the_drawable.center
+            x, y                 = dcenter
+            dsize_x, dsize_y     = the_drawable.size
+            dsize_d_x, dsize_d_y = the_drawable.size_with_dot
+            xp, yp               = playable.prev_playable.sheet_drawable.center
+            xn, yn               = playable.next_playable.sheet_drawable.center
 
             # compute the barnote/countnote positions
             bn_position, cn_position = bottomup ? compute_note_position(xn, x, xp, limit_a3).reverse : compute_note_position(xp, x, xn, limit_a3)
@@ -2194,16 +2202,16 @@ module Harpnotes
 
               unless cn_offset
                 if cn_autopos == true
-                  tie_x     = (cn_position == :r and playable.tie_start?) ? 1 : 0
-                  auto_x    = tie_x + (cn_position == :l ? -count_note.length - the_drawable.size.first - 1 : the_drawable.size_with_dot.first + 1)
-                  auto_y    = bottomup ? -the_drawable.size.last - 1 : 0 # -1 move it a bit upwords depend on font size
+                  cn_tie_x  = (cn_position == :r and playable.tie_start?) ? 1.5   : 0 # 1: this size of tie bow see line 1961
+                  auto_x    = cn_tie_x + (cn_position == :l ? -(count_note.length * cn_fontsize_x + dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
+                  auto_y    = bottomup ? -(dsize_y + cn_apbase_y + cn_fontsize_y) : dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
                   cn_offset = [auto_x, auto_y]
                 else
-                  cn_offset = bn_fixedpos
+                  cn_offset = cn_fixedpos
                 end
               end
 
-              cn_position = Vector2d(the_drawable.center) + cn_offset
+              cn_position = Vector2d(dcenter) + cn_offset
 
               res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a, count_note, cn_style, playable.origin,
                                                                      cn_conf_key, cn_offset).tap { |s| s.draginfo = {handler: :annotation} }
@@ -2224,15 +2232,15 @@ module Harpnotes
                   bn_tie_x = (bn_position == :r and playable.tie_start?) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
                   # todo: in case of left: barnumber.length is just a heuristic to geht the thing right justified
-                  bn_auto_x = bn_tie_x + (bn_position == :l ? -barnumber.length - the_drawable.size.first - 4 : the_drawable.size_with_dot.first + 3)
-                  bn_auto_y = bottomup ? 0 : -the_drawable.size.last - 2 # todo derive "1" from font style?
+                  bn_auto_x = bn_tie_x + (bn_position == :l ? -(barnumber.length * bn_fontsize_x + dsize_x + bn_apbase_x) : dsize_d_x + bn_apbase_x)
+                  bn_auto_y = bottomup ? dsize_y + bn_apbase_y : -(dsize_y + bn_apbase_y + bn_fontsize_y) # todo derive "1" from font style?
                   bn_offset = [bn_auto_x, bn_auto_y]
                 else
                   bn_offset = bn_fixedpos
                 end
               end
 
-              bn_position = Vector2d(the_drawable.center) + bn_offset
+              bn_position = Vector2d(dcenter) + bn_offset
               res_barnumbers.push Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
                                                                      bn_conf_key, bn_offset).tap { |s| s.draginfo = {handler: :annotation} }
             end

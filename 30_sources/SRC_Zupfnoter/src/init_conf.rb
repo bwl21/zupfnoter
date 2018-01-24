@@ -24,17 +24,17 @@ module InitConf
                      :stringnames,
 
                      # sort within layout
-                     :limit_a3, :jumplineoffset, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
+                     :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
                      :instrument, :bottomup, :beams, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
-                     :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING,
+                     :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING, :jumpline_anchor,
                      # sort within printer
                      :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
 
                      :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T05_printed_extracts, :T99_do_not_copy,
 
                      "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :text, :style, :marks, # tuplets annotations
+                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :apbase, :text, :style, :marks, # tuplets annotations
                      :resources,
                      :d64, :d48, :d32, :d24, :d16, :d12, :d8, :d6, :d4, :d3, :d2, :d1
     ]
@@ -398,10 +398,11 @@ module InitConf
                      voices:  [],
                      pos:     [6, -4],
                      autopos: true,
+                     apbase:  [4,1],
                      style:   "small_bold",
                      prefix:  ""
                  },
-                 countnotes:  {voices: [], pos: [3, -2], autopos: true, style: "smaller"},
+                 countnotes:  {voices: [], pos: [3, -2],  autopos: true, apbase: [1,-0.5], style: "smaller"},
                  stringnames: {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],

@@ -534,7 +534,8 @@ class Controller
             extract_annotation:    {keys: [:produce,
                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
             },
-            barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
+            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apbase', 'barnumbers.style',
+                                                               'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style'])},
             annotations:           {keys: [:annotations], newentry_handler: lambda {handle_command("addconf annotations")}},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda {handle_command("addconf notes")}, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:  {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},

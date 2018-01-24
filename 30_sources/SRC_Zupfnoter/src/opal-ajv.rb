@@ -103,7 +103,7 @@ module Ajv
                    {:limit_a3          => {:type => "boolean"},
                     :beams             => {:type => "boolean"},
                     :bottomup          => {:type => "boolean"},
-                    :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},
+                    :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},  # todo: remove this it is there again below
                     :manual_sheet      => {:type       => 'object',
                                            required:   [:llpos, :trpos, :url],
                                            :properties => {llpos: {:'$ref' => '#/definitions/pos'},
@@ -322,7 +322,7 @@ module Ajv
                                                      :properties           => {
                                                          :annotation   => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :barnumber    => {:'$ref' => '#/definitions/notebound_pos'},
-                                                         :c_jumplines  => {:type                 => 'object',
+                                                         :c_jumplines  => {:type                 => 'object',   # configuratoin of jumpline distances
                                                                            :additionalProperties => false,
                                                                            :patternProperties    => {
                                                                                "v_\d*" => {

@@ -115,6 +115,26 @@ bei manchen Stücken eine sinnvollere Einstellugn sein.
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
 
+## barnumbers.apbase
+
+Hier kannst du die Grundlage für die automatische Postiionierung von
+Taktnummern einstellen.
+
+Taktnummern werden am Anfang (also am oberen Rand wenn von oben nach
+unten gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
+poitioniert.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
+    der Note weg.
+
+-   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
+    Note heran.
+
+> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
+> Seite der Note Taktnummer angebracht wird.
+
 ## extract.0.barnumbers
 
 Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt
@@ -132,6 +152,26 @@ Unterlegnotenblatt ausgegeben werden sollen.
 
 Zählmarken sind hilfreich, um sich ein Stück erarbeiten. Sie geben
 Hilfestellung beim einhalten der vorgegebenen Notenweret.
+
+## countnotes.apbase
+
+Hier kannst du die Grundlage für die automatische Postiionierung von
+Zählmarken einstellen.
+
+Zählmarken werden am Ende (also am unteren Rand wenn von oben nach unten
+gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
+poitioniert.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
+    der Note weg.
+
+-   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
+    Note heran.
+
+> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
+> Seite der Note Zälmarke angebracht wird.
 
 ## extract.0.countnotes.voices
 

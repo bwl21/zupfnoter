@@ -1936,6 +1936,62 @@ sollten in folgender Reihenfolge ausgeführt werden.
 6.  Die Flußlinie gestalten (siehe Kapitel \ref{flowconf} [Flußlinien
     gestalten](#flowconf))
 
+7.  Positionierung von Taktnummern und Zählmarken optimieren
+
+### Positionierung von Taktnummern und Zählmarken optimieren {#barnumberautopos}
+
+> **Hinweis:** die feste, d.h. nicht automatisierte Positionierung kann
+> man zwar in der Konfiguration noch einstellen. Diese Möglichkeit führt
+> jedoch in der Praxis nicht zu befriedigenden Ergebnissen und wird also
+> bald entfernt.
+
+Die automatische Positionierung der Taktnummern bzw. Zählmarken
+geschieht wie folgt:
+
+1.  Taktnummern stehen am Anfang der Note in Spielrichtung (also oben
+    bei spiel von oben nach unten)
+
+2.  Zählmarken stehen am Ende der Noten in Spielrichtung (also unten bei
+    Spiel von oben nach ungen)
+
+3.  die horziontale Position errechnet sich aus dem Verlauf der
+    Flussinien
+
+4.  Taktnummern können über die Konfiguration (Kapitel
+    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase))
+    näher an Noten bzw. weiter von der Note verschoben werden.
+
+5.  Zählmarken können über die Konfiguration (Kapitel
+    \ref{extract.0.countnotes.apbase} [`extract.0.countnotes.apbase`](#extract.0.countnotes.apbase))
+    näher an Noten bzw. weiter von der Note verschoben werden.
+
+### Warnung: "Beschriftung zu dicht beieinander"
+
+Diese Warnungen sind experimentell. Sie kommen nur wenn
+`loglevel warning` eingestellt ist.
+
+> **Hinweis** Noch werden nicht alle Kollisionen sicher erkannt. Es kann
+> auch sein dass Kollisionen gemeldet werden, die gerade noch gehen
+> würden. Das liegt daran dass Zupfnoter die Größe der Texte nicht genau
+> abschätzen kann.
+
+Wenn man eine solche Warnung beseitigen will, geht man am besten
+folgende Schritte:
+
+1.  Situation feststellen - dazu selektiert man im Eingabefenster die
+    Note, die rot untertrichen ist.
+2.  In der Unterlegnotenvorschau wirde die betroffene Note rot
+    hervorgehoben.
+3.  Dann sieht man auch schon die Kollision. Diese kann man dann durch
+    Verschieben von einer der beteiligten Beschriftungen mit der Maus
+    bereinigen.
+
+> **Hinweis:** Man kann zunächst versuchen die Basis für die
+> Positionierung von Taktnummern / Zählmarken zu verändern. Manchmal
+> lässt sich dadurch die Anzahl der Warnungen zu reduzieren (siehe
+> Kapitel \ref{barnumberautopos} [Positionierung von Taktnummern und
+> Zählmarken optimieren](#barnumberautopos))
+
 ### feste Leerzeichen in Texten
 
 Zupfnoter wandelt eine Tilde ('\~') in Texten in feste Leerzeichen um.
@@ -2032,25 +2088,6 @@ sind verfügbar:
 
 `{{song_title}}`
 :   Das ist der Titel des Stückes.
-
-### Warnung: "Beschriftung zu dicht beieinander"
-
-Diese Warnungen sind experimentell. Sie kommen nur wenn
-`loglevel warning` eingestellt ist.
-
-> **Hinweis** Noch werden nicht alle Kollistion erkannt. Es kann auch
-> sein dass Kollisionen gemeldet werden, die gerade noch gehen würden.
-
-Wenn man eine solche Warnung beseitigen will, geht man am besten
-folgende Schritte:
-
-1.  Situation feststellen - dazu selektiert man im Eingabefenster die
-    Note, die rot untertrichen ist.
-2.  In der Unterlegnotenvorschau wirde die betroffene Note rot
-    hervorgehoben.
-3.  Dann sieht man auch schon die Kollision. Diese kann man dann durch
-    Verschieben von einer der beteiligten Beschriftungen mit der Maus
-    bereinigen.
 
 ### Parameter in der Zupfnoter-URL
 

@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-2-82-g85895c0
+Version dev/V\_1.8.0\_dev-2-89-g4379518
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3582,7 +3582,82 @@ sollten in folgender Reihenfolge ausgeführt werden.
 \item
   Die Flußlinie gestalten (siehe Kapitel \ref{flowconf}
   \hyperref[flowconf]{Flußlinien gestalten})
+\item
+  Positionierung von Taktnummern und Zählmarken optimieren
 \end{enumerate}
+
+\hyperdef{}{barnumberautopos}{\subsubsection{Positionierung von
+Taktnummern und Zählmarken optimieren}\label{barnumberautopos}}
+
+\begin{quote}
+\textbf{Hinweis:} die feste, d.h. nicht automatisierte Positionierung
+kann man zwar in der Konfiguration noch einstellen. Diese Möglichkeit
+führt jedoch in der Praxis nicht zu befriedigenden Ergebnissen und wird
+also bald entfernt.
+\end{quote}
+
+Die automatische Positionierung der Taktnummern bzw. Zählmarken
+geschieht wie folgt:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Taktnummern stehen am Anfang der Note in Spielrichtung (also oben bei
+  spiel von oben nach unten)
+\item
+  Zählmarken stehen am Ende der Noten in Spielrichtung (also unten bei
+  Spiel von oben nach ungen)
+\item
+  die horziontale Position errechnet sich aus dem Verlauf der Flussinien
+\item
+  Taktnummern können über die Konfiguration (Kapitel
+  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}})
+  näher an Noten bzw. weiter von der Note verschoben werden.
+\item
+  Zählmarken können über die Konfiguration (Kapitel
+  \ref{extract.0.countnotes.apbase}~\hyperref[extract.0.countnotes.apbase]{\texttt{extract.0.countnotes.apbase}})
+  näher an Noten bzw. weiter von der Note verschoben werden.
+\end{enumerate}
+
+\subsubsection{\texorpdfstring{Warnung: ``Beschriftung zu dicht
+beieinander''}{Warnung: Beschriftung zu dicht beieinander}}\label{warnung-beschriftung-zu-dicht-beieinander}
+
+Diese Warnungen sind experimentell. Sie kommen nur wenn
+\texttt{loglevel\ warning} eingestellt ist.
+
+\begin{quote}
+\textbf{Hinweis} Noch werden nicht alle Kollisionen sicher erkannt. Es
+kann auch sein dass Kollisionen gemeldet werden, die gerade noch gehen
+würden. Das liegt daran dass Zupfnoter die Größe der Texte nicht genau
+abschätzen kann.
+\end{quote}
+
+Wenn man eine solche Warnung beseitigen will, geht man am besten
+folgende Schritte:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Situation feststellen - dazu selektiert man im Eingabefenster die
+  Note, die rot untertrichen ist.
+\item
+  In der Unterlegnotenvorschau wirde die betroffene Note rot
+  hervorgehoben.
+\item
+  Dann sieht man auch schon die Kollision. Diese kann man dann durch
+  Verschieben von einer der beteiligten Beschriftungen mit der Maus
+  bereinigen.
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis:} Man kann zunächst versuchen die Basis für die
+Positionierung von Taktnummern / Zählmarken zu verändern. Manchmal lässt
+sich dadurch die Anzahl der Warnungen zu reduzieren (siehe
+Kapitel~\ref{barnumberautopos}
+\hyperref[barnumberautopos]{Positionierung von Taktnummern und
+Zählmarken optimieren})
+\end{quote}
 
 \subsubsection{feste Leerzeichen in
 Texten}\label{feste-leerzeichen-in-texten}
@@ -3714,35 +3789,6 @@ Das ist die Basis für den Dateinamen
 \item[\texttt{\{\{song\_title\}\}}]
 Das ist der Titel des Stückes.
 \end{description}
-
-\subsubsection{\texorpdfstring{Warnung: ``Beschriftung zu dicht
-beieinander''}{Warnung: Beschriftung zu dicht beieinander}}\label{warnung-beschriftung-zu-dicht-beieinander}
-
-Diese Warnungen sind experimentell. Sie kommen nur wenn
-\texttt{loglevel\ warning} eingestellt ist.
-
-\begin{quote}
-\textbf{Hinweis} Noch werden nicht alle Kollistion erkannt. Es kann auch
-sein dass Kollisionen gemeldet werden, die gerade noch gehen würden.
-\end{quote}
-
-Wenn man eine solche Warnung beseitigen will, geht man am besten
-folgende Schritte:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  Situation feststellen - dazu selektiert man im Eingabefenster die
-  Note, die rot untertrichen ist.
-\item
-  In der Unterlegnotenvorschau wirde die betroffene Note rot
-  hervorgehoben.
-\item
-  Dann sieht man auch schon die Kollision. Diese kann man dann durch
-  Verschieben von einer der beteiligten Beschriftungen mit der Maus
-  bereinigen.
-\end{enumerate}
 
 \subsubsection{Parameter in der
 Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}
@@ -4157,6 +4203,7 @@ spezifiziert den Auszug 1 usw.
     "extract": {
       "0" : {
         "barnumbers"   : {
+          "apbase"  : [4, 1],
           "autopos" : true,
           "pos"     : [6, -4],
           "prefix"  : "",
@@ -4164,6 +4211,7 @@ spezifiziert den Auszug 1 usw.
           "voices"  : []
         },
         "countnotes"   : {
+          "apbase"  : [1, -0.5],
           "autopos" : true,
           "pos"     : [3, -2],
           "style"   : "smaller",
@@ -4243,12 +4291,45 @@ ausgegeben werden sollen.
 
 \begin{verbatim}
     "barnumbers": {
+      "apbase"  : [4, 1],
       "autopos" : true,
       "pos"     : [6, -4],
       "prefix"  : "",
       "style"   : "small_bold",
       "voices"  : []
     }
+      
+\end{verbatim}
+
+\hyperdef{}{extract.0.barnumbers.apbase}{\subsection{\texorpdfstring{\texttt{extract.0.barnumbers.apbase}
+- autom. pos.
+Basis}{extract.0.barnumbers.apbase - autom. pos. Basis}}\label{extract.0.barnumbers.apbase}}
+
+Hier kannst du die Grundlage für die automatische Postiionierung von
+Taktnummern einstellen.
+
+Taktnummern werden am Anfang (also am oberen Rand wenn von oben nach
+unten gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
+poitioniert.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+\begin{itemize}
+\item
+  Positive Werte schieben die Taktnummer bzw. Zählmarke \textbf{weiter}
+  von der Note weg.
+\item
+  Negative Werte schieben Taktnummer bzw. Zählmarke \textbf{näher} an
+  die Note heran.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis;} Der Verlauf der Melodielinie entscheidet, auf welcher
+Seite der Note Taktnummer angebracht wird.
+\end{quote}
+
+\begin{verbatim}
+    "apbase": [4, 1]
       
 \end{verbatim}
 
@@ -4324,11 +4405,44 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 
 \begin{verbatim}
     "countnotes": {
+      "apbase"  : [1, -0.5],
       "autopos" : true,
       "pos"     : [3, -2],
       "style"   : "smaller",
       "voices"  : []
     }
+      
+\end{verbatim}
+
+\hyperdef{}{extract.0.countnotes.apbase}{\subsection{\texorpdfstring{\texttt{extract.0.countnotes.apbase}
+- autom. pos.
+Basis}{extract.0.countnotes.apbase - autom. pos. Basis}}\label{extract.0.countnotes.apbase}}
+
+Hier kannst du die Grundlage für die automatische Postiionierung von
+Zählmarken einstellen.
+
+Zählmarken werden am Ende (also am unteren Rand wenn von oben nach unten
+gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
+poitioniert.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+\begin{itemize}
+\item
+  Positive Werte schieben die Taktnummer bzw. Zählmarke \textbf{weiter}
+  von der Note weg.
+\item
+  Negative Werte schieben Taktnummer bzw. Zählmarke \textbf{näher} an
+  die Note heran.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis;} Der Verlauf der Melodielinie entscheidet, auf welcher
+Seite der Note Zälmarke angebracht wird.
+\end{quote}
+
+\begin{verbatim}
+    "apbase": [1, -0.5]
       
 \end{verbatim}
 

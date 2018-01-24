@@ -121,6 +121,7 @@ Auszug 1 usw.
         "extract": {
           "0" : {
             "barnumbers"   : {
+              "apbase"  : [4, 1],
               "autopos" : true,
               "pos"     : [6, -4],
               "prefix"  : "",
@@ -128,6 +129,7 @@ Auszug 1 usw.
               "voices"  : []
             },
             "countnotes"   : {
+              "apbase"  : [1, -0.5],
               "autopos" : true,
               "pos"     : [3, -2],
               "style"   : "smaller",
@@ -204,12 +206,36 @@ Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt
 ausgegeben werden sollen.
 
         "barnumbers": {
+          "apbase"  : [4, 1],
           "autopos" : true,
           "pos"     : [6, -4],
           "prefix"  : "",
           "style"   : "small_bold",
           "voices"  : []
         }
+          
+
+## `extract.0.barnumbers.apbase` - autom. pos. Basis {#extract.0.barnumbers.apbase}
+
+Hier kannst du die Grundlage für die automatische Postiionierung von
+Taktnummern einstellen.
+
+Taktnummern werden am Anfang (also am oberen Rand wenn von oben nach
+unten gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
+poitioniert.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
+    der Note weg.
+
+-   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
+    Note heran.
+
+> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
+> Seite der Note Taktnummer angebracht wird.
+
+        "apbase": [4, 1]
           
 
 ## `extract.0.barnumbers.autopos` - autom. pos. {#extract.0.barnumbers.autopos}
@@ -266,11 +292,35 @@ Zählmarken sind hilfreich, um sich ein Stück erarbeiten. Sie geben
 Hilfestellung beim einhalten der vorgegebenen Notenweret.
 
         "countnotes": {
+          "apbase"  : [1, -0.5],
           "autopos" : true,
           "pos"     : [3, -2],
           "style"   : "smaller",
           "voices"  : []
         }
+          
+
+## `extract.0.countnotes.apbase` - autom. pos. Basis {#extract.0.countnotes.apbase}
+
+Hier kannst du die Grundlage für die automatische Postiionierung von
+Zählmarken einstellen.
+
+Zählmarken werden am Ende (also am unteren Rand wenn von oben nach unten
+gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
+poitioniert.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
+    der Note weg.
+
+-   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
+    Note heran.
+
+> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
+> Seite der Note Zälmarke angebracht wird.
+
+        "apbase": [1, -0.5]
           
 
 ## `extract.0.countnotes.autopos` - autom. pos. {#extract.0.countnotes.autopos}
