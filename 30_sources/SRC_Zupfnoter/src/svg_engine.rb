@@ -419,10 +419,12 @@ module Harpnotes
 
     # draw a path
     def draw_path(root)
-      color       = COLORS[root.color]
-      attr        = {stroke: color, fill: 'none'}
-      attr[:fill] = color if root.filled?
-      e           = @paper.path(root.path, attr)
+      color                 = COLORS[root.color]
+      attr                  = {stroke: color, fill: 'none'}
+      attr[:fill]           = color if root.filled?
+      attr['stroke-linecap'] = :round
+
+      e = @paper.path(root.path, attr)
 
       draginfo = root.draginfo
       if draginfo

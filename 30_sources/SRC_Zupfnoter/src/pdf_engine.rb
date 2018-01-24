@@ -290,6 +290,7 @@ module Harpnotes
       color       = COLORS[root.color]
       @pdf.fill   = root.filled? ? color : COLORS['white']
       @pdf.stroke = color
+      @pdf.line_cap = "round"
 
       root.path.each do |element|
         case element.first

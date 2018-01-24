@@ -1958,7 +1958,7 @@ module Harpnotes
           playable.slur_ends.each do |id|
             begin_slur = @slur_index[id] || @slur_index[:first_playable]
 
-            p1       = Vector2d(begin_slur.sheet_drawable.center) + [3, 0]  # todo make tie configurable
+            p1       = Vector2d(begin_slur.sheet_drawable.center) + [3, 0] # todo make tie configurable
             p2       = Vector2d(playable.sheet_drawable.center) + [3, 0]
             slurpath = make_slur_path(p1, p2)
             result.push(Harpnotes::Drawing::Path.new(slurpath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') }) if $conf.get('layout.SHOW_SLUR')
@@ -2202,7 +2202,7 @@ module Harpnotes
 
               unless cn_offset
                 if cn_autopos == true
-                  cn_tie_x  = (cn_position == :r and playable.tie_start?) ? 1.5   : 0 # 1: this size of tie bow see line 1961
+                  cn_tie_x  = (cn_position == :r and playable.tie_start?) ? 1.5 : 0 # 1: this size of tie bow see line 1961
                   auto_x    = cn_tie_x + (cn_position == :l ? -(count_note.length * cn_fontsize_x + dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
                   auto_y    = bottomup ? -(dsize_y + cn_apbase_y + cn_fontsize_y) : dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
                   cn_offset = [auto_x, auto_y]
@@ -2582,25 +2582,24 @@ module Harpnotes
       # @param [Boolean of Integer] number of flags: nil | false: no beam; 1-4 number of flags
       # @return [Harpnotes::Drawing::Path]
       def layout_note_flags(x_offset, y_offset, size, shift, color, flag)
-        linewidth  = $conf.get('layout.LINE_MEDIUM')
-        f_x        = x_offset + shift - linewidth / 2 + size.first
-        f_size_x   = 1.5 * size.last
-        f_size_y   = 0.3 * f_size_x
-        f_beamsize = 2 * size.last
-        f_delta    = $conf.get('layout.LINE_THICK')
 
+        p_beam_x, p_beam_y = [0.1, 2 * size[1]]
+        p_flag_x, p_flag_y = [1.3 * size[1], 0.6 * size[1]]
 
+        linewidth = $conf.get('layout.LINE_MEDIUM')
+        f_x       = x_offset + shift + size[0] - linewidth / 2 # beam start: right border of beam shall be right border of note
+        f_delta_y = $conf.get('layout.LINE_THICK')
+        f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0
+
+        flagpath = ['l', p_flag_x, p_flag_y]
+
+        # calulate the beam
         path = [['M', f_x, y_offset],
-                ['l', 0, -f_beamsize], # hals
+                ['l', p_beam_x, -p_beam_y], # hals
         ]
 
-        path += [['l', f_size_x, f_size_y]] if flag > 0 # 1.fähnchen
-        path += [['M', f_x, y_offset -f_beamsize + f_delta],
-                 ['l', f_size_x, f_size_y]] if flag > 1 # 2.fähnchen
-        path += [['M', f_x, y_offset -f_beamsize + 2 * f_delta],
-                 ['l', f_size_x, f_size_y]] if flag > 2 # 3.fähnchen
-        path += [['M', f_x, y_offset -f_beamsize + 3 * f_delta],
-                 ['l', f_size_x, f_size_y]] if flag > 3 # 4.fähnchen
+        # add  the flags
+        flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y ], flagpath] }
 
         res            = Harpnotes::Drawing::Path.new(path, :open)
         res.line_width = linewidth
