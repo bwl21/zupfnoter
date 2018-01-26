@@ -399,6 +399,7 @@ class Controller
             'legend'           => lambda {{key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']}},
             'notes'            => lambda {{key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']}},
             'lyrics'           => lambda {{key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']}},
+            'images'           => lambda {{key: "extract.#{@systemstatus[:view]}.images.x", value: $conf['templates.images']}},
             'nonflowrest'      => lambda {{key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']}},
             'startpos'         => lambda {{key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']}},
             'subflowlines'     => lambda {{key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']}},
@@ -532,7 +533,8 @@ class Controller
             annotations:           {keys: [:annotations], newentry_handler: lambda {handle_command("addconf annotations")}},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda {handle_command("addconf notes")}, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:  {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
-            minc:    {keys: expand_extract_keys(['notebound.minc'])},
+            images:  {keys: expand_extract_keys([:images]), newentry_handler: lambda {handle_command("addconf images")}},
+            minc:    {keys: expand_extract_keys(['notebound'])},
             layout:  {keys: expand_extract_keys(
                                 [:layoutlines, :startpos,
                                  'layout.LINE_THIN', 'layout.LINE_MEDIUM', 'layout.LINE_THICK',

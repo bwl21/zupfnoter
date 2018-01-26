@@ -34,7 +34,6 @@ function init_w2ui(uicontroller) {
     var result = vertaal(xmldata, options);
 
 
-    debugger;
     uicontroller.dropped_abc = result[0]
 
     uicontroller.$handle_command('drop')
@@ -69,14 +68,17 @@ function init_w2ui(uicontroller) {
       if (text[0] == '<') {
         pasteXml(text);
       }
-      else if (files[0].type.startsWith("image")){
+      else if (files[0].type.startsWith("image/jpeg")){
         pasteDatauri(files[0].name, text)
       }
       else if (files[0].name.endsWith(".mxl")) {
         pasteMxl(text)
       }
-      else {
+      else if (files[0].name.endsWith(".abc")){
         pasteAbc(text);
+      }
+      else {
+         w2alert("import file format not supported","error")
       }
     }
 
@@ -759,7 +761,9 @@ function init_w2ui(uicontroller) {
           },
           {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
           {},
-          {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"}
+          {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"},
+          {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
+          {id: 'resources', icon: 'fa fa-image', text: 'resources', tooltip: "edit resources"}
         ]
       },
       {

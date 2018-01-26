@@ -410,10 +410,8 @@ module Harpnotes
     end
 
     def draw_image(root)
-      width    = ((@viewbox[2] - @viewbox[0]) ** 2) / (root.trpos.x - root.llpos.x)
-      height   = ((@viewbox[3] - @viewbox[1]) ** 2) / (root.llpos.y - root.trpos.y)
-      position = Vector2d([0, 0]) - [root.llpos.x, root.trpos.y]
-      e        = @paper.image(root.url, position.x, position.y, width, height)
+      position = Vector2d([0, 0]) + root.llpos + [0, root.height]
+      e        = @paper.image(root.url, position.x, position.y, root.height )
       e
     end
 

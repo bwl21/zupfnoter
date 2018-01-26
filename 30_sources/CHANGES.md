@@ -51,6 +51,7 @@
 * support to write notes with beams #196
 * show notes in the current selection for harmonization work-in-progress #190
 * heuristical detection of annotation collisions #200
+* support for illustrations #198
 
 # Backwards compatibility issues
 

@@ -136,6 +136,7 @@ Auszug 1 usw.
               "voices"  : []
             },
             "flowlines"    : [1, 3],
+            "images"       : {},
             "jumplines"    : [1, 3],
             "layout"       : {
               "DRAWING_AREA_SIZE" : [400, 282],
@@ -366,6 +367,13 @@ Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
 angeben, für die Flußlinien eingezeichnet werden sollen.
 
         "flowlines": [1, 3]
+          
+
+## `extract.0.images` - {#extract.0.images}
+
+TODO: Helptext für extract.0.images einfügen
+
+        "images": {}
           
 
 ## `extract.0.jumplines` - Sprunglinien {#extract.0.jumplines}
@@ -1653,6 +1661,7 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 
         "templates": {
           "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
+          "images"      : {"height": 100, "imagename": "", "pos": [10, 10]},
           "lyrics"      : {"pos": [350, 70], "verses": [1]},
           "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
           "tuplet"      : {
@@ -1690,6 +1699,35 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein
 
         "text": "_vorlage_"
+          
+
+## `templates.images` - {#templates.images}
+
+TODO: Helptext für templates.images einfügen
+
+        "images": {"height": 100, "imagename": "", "pos": [10, 10]}
+          
+
+## `templates.images.height` - {#templates.images.height}
+
+TODO: Helptext für templates.images.height einfügen
+
+        "height": 100
+          
+
+## `templates.images.imagename` - {#templates.images.imagename}
+
+TODO: Helptext für templates.images.imagename einfügen
+
+        "imagename": ""
+          
+
+## `templates.images.pos` - Position {#templates.images.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [10, 10]
           
 
 ## `templates.lyrics` - Liedtexte {#templates.lyrics}

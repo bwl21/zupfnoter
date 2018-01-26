@@ -240,7 +240,7 @@ module Harpnotes
     #                aguments defined by ace
     def set_annotations(annotations)
       editor_annotations = annotations.map do |annotation|
-        {row:  annotation[:start_pos].first - 1, # annotations count on row 0
+        {row: annotation[:start_pos].first - 1, # annotations count on row 0
          text: annotation[:text],
          type: annotation[:type]
         }
@@ -263,7 +263,7 @@ module Harpnotes
 
 
     def prepend_comment(message)
-      text =message.split(/\r?\n/).map { |l| "% #{l}" }.join("\n") + "\n%\n"
+      text = message.split(/\r?\n/).map { |l| "% #{l}" }.join("\n") + "\n%\n"
       %x{
       #{@editor}.selection.moveCursorFileStart();
       #{@editor}.insert(#{text});
@@ -355,24 +355,26 @@ module Harpnotes
     # this pushes the object to the config part of the editor
     #
     def set_config_part(object)
-      the_selection = get_selection_positions
-      options       = $conf[:neatjson]
+      $log.benchmark("set_config_part") do
+        the_selection = get_selection_positions
+        options       = $conf[:neatjson]
 
 
-      configjson = ""
-      $log.benchmark("neat_json", __LINE__, __FILE__) { configjson = JSON.neat_generate(object, options) }
+        configjson = ""
+        $log.benchmark("neat_json", __LINE__, __FILE__) { configjson = JSON.neat_generate(object, options) }
 
-      unless get_text.split(CONFIG_SEPARATOR)[1]
-        append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
+        unless get_text.split(CONFIG_SEPARATOR)[1]
+          append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
+        end
+
+        oldconfigpart      = get_config_part
+        @inhibit_callbacks = true
+        unless oldconfigpart.strip == configjson.strip
+          replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
+          select_range_by_position(the_selection.first, the_selection.last)
+        end
+        @inhibit_callbacks = false
       end
-
-      oldconfigpart      = get_config_part
-      @inhibit_callbacks = true
-      unless oldconfigpart.strip == configjson.strip
-        replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
-        select_range_by_position(the_selection.first, the_selection.last)
-      end
-      @inhibit_callbacks = false
     end
 
     # this applies the object to the config
@@ -399,7 +401,7 @@ module Harpnotes
     end
 
     def fold_all
-      lastline =  get_abc_part.lines.count
+      lastline = get_abc_part.lines.count
       %x{ setTimeout(function(){self.editor.getSession().foldAll(#{lastline})}, 100) } if @autofold
     end
 
@@ -480,7 +482,7 @@ module Harpnotes
 
     def get_lyrics
       retval = get_lyrics_raw
-      if retval.count >0
+      if retval.count > 0
         lyrics = retval.map { |r| r.first.gsub(/\nW\:[ \t]*/, "\n") }.join().strip
       else
         lyrics = nil
@@ -516,9 +518,9 @@ module Harpnotes
       # Ace fires the change handler twice
       # first when removing the old value
       # then when setting the new value
-      @handle_from_lyrics=false
+      @handle_from_lyrics = false
       %x{#{@lyrics_editor}.getSession().setValue(#{get_lyrics});}
-      @handle_from_lyrics=true
+      @handle_from_lyrics = true
 
       @controller.call_consumers(:error_alert)
       nil

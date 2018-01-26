@@ -921,14 +921,14 @@ module Harpnotes
 
 
     class Image < Drawable
-      attr_reader :url, :llpos, :trpos
+      attr_reader :url, :llpos, :height, :opacity
       # @param [String] url of imabge
       # @param [Vector2d] llpos lower left postion of crop in image
       # @param [Vector2d] trpos to right postion of crop in image
-      def initialize (url, llpos, trpos)
-        @url   = url
-        @llpos = llpos
-        @trpos = trpos
+      def initialize (url, llpos, height)
+        @url     = url
+        @llpos   = llpos
+        @height  = height
       end
     end
 
@@ -1373,10 +1373,17 @@ module Harpnotes
       end
 
 
-      def layout_manual_sheet(conf)
+      def layout_images(print_variant_nr)
         result = []
-        unless conf.nil?
-          result.push Harpnotes::Drawing::Image.new(conf['url'], Vector2d(conf['llpos']), Vector2d(conf['trpos']))
+        images = get_print_options(print_variant_nr)['images']
+        unless images.nil?
+          images.each do |number, image|
+            datauri = $conf["resources.#{image['imagename']}"]
+            datauri = datauri.join if datauri.is_a? Array
+            if datauri
+              result.push Harpnotes::Drawing::Image.new(datauri, Vector2d(image['pos']) - [0, image['height']], image['height'])
+            end
+          end
         end
         result
       end
@@ -1439,10 +1446,9 @@ module Harpnotes
         $conf.push({layout: layout_options})
         $conf.push({printer: print_options_hash[:printer] || {}})
 
-        debug_grid = [];
-        debug_grid = layout_debug_grid() if $conf['layout.grid']
-
-        manual_sheet = layout_manual_sheet($conf['layout.manual_sheet'])
+        debug_grid   = [];
+        debug_grid   = layout_debug_grid() if $conf['layout.grid']
+        manual_sheet = layout_images(print_options_raw, music)
 
         initialize
 

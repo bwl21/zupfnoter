@@ -67,6 +67,8 @@ module Harpnotes
           draw_path(child) if child.visible?
         elsif child.is_a? Harpnotes::Drawing::Annotation
           draw_annotation(child) if child.visible?
+        elsif child.is_a? Harpnotes::Drawing::Image
+          draw_image(child)
         else
           $log.error "BUG: don't know how to draw #{child.class} (#{__FILE__} #{__LINE__})"
           nil
@@ -278,6 +280,12 @@ module Harpnotes
       @pdf.left_arrowhead(startpoint[0], startpoint[1])
     end
 
+
+    def draw_image(root)
+      position = Vector2d([0, 0]) + root.llpos + [0, root.height]
+      e        = @pdf.image(root.url, position.x, position.y, root.height, root.opacity )
+      e
+    end
 
     # draw a path
     # documentation see raphaeljs

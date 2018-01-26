@@ -328,9 +328,9 @@ module ZnSvg
     end
 
 
-    def image(url, x, y, width, height)
-      @svgbuffer.push(%Q{  <image x="#{x}" y="#{y}" width="#{width}" height="#{height}"
-    preserveAspectRatio="none" opacity="0.4"
+    def image(url, x, y, height)
+      @svgbuffer.push(%Q{  <image x="#{x}" y="#{y}" height="#{height}"
+    preserveAspectRatio="none"
     xlink:href="#{url}">
   </image>})
 
