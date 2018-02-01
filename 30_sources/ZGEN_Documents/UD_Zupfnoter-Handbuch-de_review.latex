@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-2-89-g4379518
+Version dev/V\_1.8.0\_dev-2-92-gdf90576
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3279,7 +3279,8 @@ Daher ist folgendes Reihenfolge zu empfehlen:
 Die flexible Konfiguration von Zupfnoter erlaubt die Anpassung der
 Auasgabe auf viele verschiedene Instrumente. Allerdings führt hier meist
 eine Kombination verschiedener Parameter zu Ziel. Zur Vereinfachung sind
-diese Kombinationen für gebräuchliche Instrumente hinterlegt.
+diese Kombinationen für gebräuchliche Instrumente als
+``Schnelleinstellung'' hinterlegt.
 
 Wähle das Menü
 \textbf{``\texttt{Konfig.\ bearbeiten\ \textgreater{}\ Instrument\ spez.}''}.
@@ -3295,9 +3296,19 @@ gewünschte Instrument auswählen.
 \textbf{Hinweis}: Bitte beachte, dass es auch einen Parameter
 ``Instrument'' gibt. Dieser ist nicht zu verwechseln mit der
 Schnelleinstellung, auch wenn er zum Teil dieselben Bezeichnungen
-verwendet. Der Parameter \texttt{Instrument} veränderte Programminterne
-Abläufe welche sich nicht über Konfiguration ausdrücken lässt (z.b.
-diatonische Stimmung bei Saitenspiel)
+verwendet. Der Parameter \texttt{Instrument} veränderte programminterne
+Abläufe welche sich nicht über Konfiguration ausdrücken lassen (z.b.
+diatonische Stimmung bei Saitenspiel bzw. OKON-Harfe)
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Für Tischharfen mit Halbton-Klappen (z.B. OKON-Harfe)
+muss man zuächst die Schnelleinstellung für das Instrument aufrufen. Mit
+dem Paramter ``Instrument'' wählt man dann die Tonart aus, auf welche
+die Harfe eingestellt werden soll. Dann kann Zupfnoter die Tonhöhen den
+entsprechenden Saiten zuordnen und auch am unteren Rand anzeigen, welche
+Klappen aktiviert (bzw. welche Saiten einen Halbton hochgestimmt) werden
+sollen.
 \end{quote}
 
 \subsection{Sonstige Hinweise}\label{sonstige-hinweise}
@@ -3310,8 +3321,8 @@ In seltenen Fällen kann es vorkommen, dass die ABC-Noten oder die
 Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den
 gleichen Fehler läuft und keine Bearbeitung mehr möglich ist.
 
-In diesem Fall kannst du beim Aufruf von Zupfnoter /?debug anhängen,
-z.B.
+In diesem Fall kannst du beim Aufruf von Zupfnoter \texttt{/?debug}
+anhängen, z.B.
 
 \begin{verbatim}
 https://zupfnoter.weichel21.de/?debug
@@ -3323,8 +3334,8 @@ funktioniert.
 
 \begin{quote}
 \textbf{Hinweis}: Zupfnoter erkennt selbständig, dass beim letzten
-Rendern ein Problem aufgetreten war und startet dann ohne
-automatisches\# Rendern.
+Rendern ein Problem aufgetreten war und startet dann ohne automatisches
+Rendern. Daher sollte diese Schalter nicht mehr notwendig sein.
 \end{quote}
 
 \hyperdef{}{transponieren}{\subsubsection{Transponieren}\label{transponieren}}

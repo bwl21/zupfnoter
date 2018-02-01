@@ -528,12 +528,6 @@ function init_w2ui(uicontroller) {
         },
         {},
         {
-          text: 'abc Tutorial concise',
-          icon: 'fa fa-leanpub',
-          id: "tbAbcTutorial",
-          tooltip: 'Open an concise ABC tutorial (in German)'
-        },
-        {
           text: 'abc Tutorial detail',
           icon: 'fa fa-graduation-cap',
           id: "tbAbcTutorialSchacherl",

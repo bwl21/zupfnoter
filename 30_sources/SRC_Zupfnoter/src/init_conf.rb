@@ -106,9 +106,10 @@ module InitConf
                      beams:     false
                  },
                  notes_with_beams:       {
-                     LINE_MEDIUM:  0.5,
+                     LINE_THIN:    0.1,
+                     LINE_MEDIUM:  0.2,
                      LINE_THICK:   0.5,
-                     ELLIPSE_SIZE: [2, 1.3],
+                     ELLIPSE_SIZE: [1.3, 1],
                      REST_SIZE:    [2, 1.3],
                      beams:        true
                  },
@@ -259,9 +260,9 @@ module InitConf
                      stringnames: {text:  'G A B C D E F G A B C D E F G A B C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~',
                                    marks: {hpos: [55, 74]}
                      },
-                     printer:     {a4_pages:  [1, 2, 3],
-                                   a3_offset: [0, 0],
-                                   a4_offset: [135, 0]}
+                     printer:     {a4_pages:  [1, 2],
+                                   a3_offset: [-35, 0],
+                                   a4_offset: [70, 0]}
                  },
              },
 
@@ -398,11 +399,11 @@ module InitConf
                      voices:  [],
                      pos:     [6, -4],
                      autopos: true,
-                     apbase:  [4,1],
+                     apbase:  [4, 1],
                      style:   "small_bold",
                      prefix:  ""
                  },
-                 countnotes:  {voices: [], pos: [3, -2],  autopos: true, apbase: [1,-0.5], style: "smaller"},
+                 countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], style: "smaller"},
                  stringnames: {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],

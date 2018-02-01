@@ -1714,7 +1714,8 @@ Daher ist folgendes Reihenfolge zu empfehlen:
 Die flexible Konfiguration von Zupfnoter erlaubt die Anpassung der
 Auasgabe auf viele verschiedene Instrumente. Allerdings führt hier meist
 eine Kombination verschiedener Parameter zu Ziel. Zur Vereinfachung sind
-diese Kombinationen für gebräuchliche Instrumente hinterlegt.
+diese Kombinationen für gebräuchliche Instrumente als
+"Schnelleinstellung" hinterlegt.
 
 Wähle das Menü **"`Konfig. bearbeiten > Instrument spez.`"**. Es
 erscheint eine Maske mit den Parametern deren Zusammenspiel die Ausgabe
@@ -1728,9 +1729,17 @@ Instrument auswählen.
 > **Hinweis**: Bitte beachte, dass es auch einen Parameter "Instrument"
 > gibt. Dieser ist nicht zu verwechseln mit der Schnelleinstellung, auch
 > wenn er zum Teil dieselben Bezeichnungen verwendet. Der Parameter
-> `Instrument` veränderte Programminterne Abläufe welche sich nicht über
-> Konfiguration ausdrücken lässt (z.b. diatonische Stimmung bei
-> Saitenspiel)
+> `Instrument` veränderte programminterne Abläufe welche sich nicht über
+> Konfiguration ausdrücken lassen (z.b. diatonische Stimmung bei
+> Saitenspiel bzw. OKON-Harfe)
+
+> **Hinweis**: Für Tischharfen mit Halbton-Klappen (z.B. OKON-Harfe)
+> muss man zuächst die Schnelleinstellung für das Instrument aufrufen.
+> Mit dem Paramter "Instrument" wählt man dann die Tonart aus, auf
+> welche die Harfe eingestellt werden soll. Dann kann Zupfnoter die
+> Tonhöhen den entsprechenden Saiten zuordnen und auch am unteren Rand
+> anzeigen, welche Klappen aktiviert (bzw. welche Saiten einen Halbton
+> hochgestimmt) werden sollen.
 
 ## Sonstige Hinweise
 
@@ -1741,7 +1750,7 @@ In seltenen Fällen kann es vorkommen, dass die ABC-Noten oder die
 Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den
 gleichen Fehler läuft und keine Bearbeitung mehr möglich ist.
 
-In diesem Fall kannst du beim Aufruf von Zupfnoter /?debug anhängen,
+In diesem Fall kannst du beim Aufruf von Zupfnoter `/?debug` anhängen,
 z.B.
 
     https://zupfnoter.weichel21.de/?debug
@@ -1750,8 +1759,8 @@ Dann startet Zupfnoter, versucht aber nicht gleich ein "Rendern" . Damit
 kannst dann die Eingaben korrigieren bis "Rendern" wieder funktioniert.
 
 > **Hinweis**: Zupfnoter erkennt selbständig, dass beim letzten Rendern
-> ein Problem aufgetreten war und startet dann ohne automatisches\#
-> Rendern.
+> ein Problem aufgetreten war und startet dann ohne automatisches
+> Rendern. Daher sollte diese Schalter nicht mehr notwendig sein.
 
 ### Transponieren
 

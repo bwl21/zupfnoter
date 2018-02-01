@@ -1337,7 +1337,7 @@ module Harpnotes
               when "okon-d"
                 #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
                 pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
-                flaps   = "      59          66       71          78       83"
+                flaps   = "      59 61       66       71 73       78       83"
             end
 
             string_by_pitch              = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
@@ -1349,7 +1349,7 @@ module Harpnotes
               result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
               result
             }
-            @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 300, 290]]
+            @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
 
             @draw_instrument = lambda {
               result = []
@@ -1357,7 +1357,7 @@ module Harpnotes
                 result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), 285], "*", :small))
               end
 
-              res            = Harpnotes::Drawing::Path.new([['M', xoffset + 125, 0], ['L', xoffset + 370, 165]], :open)
+              res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)
               res.line_width = $conf.get('layout.LINE_MEDIUM');
               result.push(res)
             }
@@ -1643,7 +1643,9 @@ module Harpnotes
           print_options_raw.push(song_print_options)
         end
 
-        print_options_raw.push({'layout' => {"DURATION_TO_STYLE" => $conf['layout.DURATION_TO_BEAMS']}}) if print_options_raw['layout.beams']
+        if print_options_raw['layout.beams']
+          print_options_raw.push({'layout' => {"DURATION_TO_STYLE" => $conf['layout.DURATION_TO_BEAMS']}})
+        end
 
         print_options_raw
       end
@@ -2588,7 +2590,9 @@ module Harpnotes
 
         linewidth = $conf.get('layout.LINE_MEDIUM')
         f_x       = x_offset + shift + size[0] - linewidth / 2 # beam start: right border of beam shall be right border of note
-        f_delta_y = $conf.get('layout.LINE_THICK')
+        f_delta_y = $conf.get('layout.LINE_MEDIUM') * 3
+        f_delta_y = p_flag_y
+
         f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0
 
         flagpath = ['l', p_flag_x, p_flag_y]
@@ -2599,7 +2603,7 @@ module Harpnotes
         ]
 
         # add  the flags
-        flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y ], flagpath] }
+        flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y], flagpath] }
 
         res            = Harpnotes::Drawing::Path.new(path, :open)
         res.line_width = linewidth
