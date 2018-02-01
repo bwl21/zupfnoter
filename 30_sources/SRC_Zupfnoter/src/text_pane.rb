@@ -37,6 +37,7 @@ module Harpnotes
       @inhibit_callbacks = false
       @markers           = []
       @autofold          = true
+      @config_models     = {}
       create_lyrics_editor('abcLyrics')
     end
 
@@ -207,9 +208,11 @@ module Harpnotes
     def set_text(text)
       @inhibit_callbacks = true
       %x{
-         self.editor.getSession().setValue(text);
+         self.editor.getSession().setValue(#{text});
       }
       @inhibit_callbacks = false
+      _split_parts(text)
+      `debugger`
       fold_all
     end
 
@@ -537,6 +540,18 @@ module Harpnotes
         replace_text(oldtext, newtext)
       end
       nil
+    end
+
+
+    private
+
+    # this method splits the parts out of the given text
+    def _split_parts(fulltext)
+      fulltext.split('%%%%zupfnoter').each do |part|
+         x = /(\.([a-z]+))?(.*)\z/m .match(part)
+         `debugger`
+         @config_models[x[2]||"abc"] = x[3]
+      end
     end
 
   end
