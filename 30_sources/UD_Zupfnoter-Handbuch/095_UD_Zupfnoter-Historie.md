@@ -20,9 +20,14 @@
 -   no longer crash with malformed K \#172
 -   improve imports of xml with non playable parts \#187
 -   fixed "blues with accidentals" \#188
+-   fix handling of fingerprint with abc2svg 1.15.5 \#195
+-   vertaal is no longer limited by :|[ \#192
+-   reduce size of selection area to avoid overlap with barnumber etc
+    \#197
 
 ### enhancement
 
+-   now have a linear packer \#194
 -   now have menu to import from local disc \#177\
 -   support for 25 string bass harp \#180
 -   strip =duration on meter "M:3/4 4/4 =3/4" \#181
@@ -35,6 +40,28 @@
 -   we now can change the playback speed on the fly \#126
 -   rearranged layaout form \#189
 -   show notes in the current selection for harmonization \#190
+-   now warn if browser is other than chrome, firefox, vivaldi, opera
+    \#186
+-   BWC: improved layout of bars, barnumbers/countnotes \#199
+    -   barnumbers are now more far away from the note
+    -   new algorithm to determine right/left position of
+        barnumber/countnote
+-   changed name of some layout presets \#196
+
+### exprimental
+
+-   support for more diatonic instruments (e.g. OKON harp) \#196
+-   support of okon table harp \#196
+-   support to write notes bottom up \#196
+-   support to write notes with beams \#196
+-   show notes in the current selection for harmonization
+    work-in-progress \#190
+-   heuristical detection of annotation collisions \#200
+
+## Backwards compatibility issues
+
+-   it might be that you need to rework manual positioning of
+    barnumbers/countnotes \#199
 
 ## V 1.6.1 2017-05-17
 

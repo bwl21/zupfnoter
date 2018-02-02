@@ -6595,12 +6595,21 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
   improve imports of xml with non playable parts \#187
 \item
   fixed ``blues with accidentals'' \#188
+\item
+  fix handling of fingerprint with abc2svg 1.15.5 \#195
+\item
+  vertaal is no longer limited by :\textbar{}{[} \#192
+\item
+  reduce size of selection area to avoid overlap with barnumber etc
+  \#197
 \end{itemize}
 
 \subsubsection{enhancement}\label{enhancement}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
+\item
+  now have a linear packer \#194
 \item
   now have menu to import from local disc \#177\\
 \item
@@ -6625,6 +6634,51 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
   rearranged layaout form \#189
 \item
   show notes in the current selection for harmonization \#190
+\item
+  now warn if browser is other than chrome, firefox, vivaldi, opera
+  \#186
+\item
+  BWC: improved layout of bars, barnumbers/countnotes \#199
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    barnumbers are now more far away from the note
+  \item
+    new algorithm to determine right/left position of
+    barnumber/countnote
+  \end{itemize}
+\item
+  changed name of some layout presets \#196
+\end{itemize}
+
+\subsubsection{exprimental}\label{exprimental}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  support for more diatonic instruments (e.g.~OKON harp) \#196
+\item
+  support of okon table harp \#196
+\item
+  support to write notes bottom up \#196
+\item
+  support to write notes with beams \#196
+\item
+  show notes in the current selection for harmonization work-in-progress
+  \#190
+\item
+  heuristical detection of annotation collisions \#200
+\end{itemize}
+
+\subsection{Backwards compatibility
+issues}\label{backwards-compatibility-issues}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  it might be that you need to rework manual positioning of
+  barnumbers/countnotes \#199
 \end{itemize}
 
 \subsection{V 1.6.1 2017-05-17}\label{v-1.6.1-2017-05-17}
