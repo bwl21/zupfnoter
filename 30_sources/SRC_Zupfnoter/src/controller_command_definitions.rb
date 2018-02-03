@@ -60,25 +60,6 @@ class Controller
     end
 
 
-    @commands.add_command(:autofold) do |c|
-      c.undoable = false
-      c.set_help {"set automatic folding of config in editor #{c.parameter_help(0)}"}
-      c.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_default {'true'}
-        parameter.set_help {"true | false"}
-      end
-      c.as_action do |args|
-        value = {'true' => true, 'false' => false}[args[:value]]
-        if value
-          @editor.autofold = true
-          @editor.fold_all
-        else
-          @editor.autofold = false
-          @editor.unfold_all
-        end
-      end
-    end
-
     @commands.add_command(:autorefresh) do |c|
       c.undoable = false
       c.set_help {"turnon autorefresh"}
@@ -586,7 +567,7 @@ class Controller
         # see if we have a regular expression formset
         unless the_form
           regexp_form_sets.each do |pattern, entry|
-            if match = args[:set].match(pattern)
+            if (match = args[:set].match(pattern))
               the_form        = entry
               the_form[:keys] = the_form[:keys].map {|inner_key| "#{args[:set]}.#{inner_key}"}
             end

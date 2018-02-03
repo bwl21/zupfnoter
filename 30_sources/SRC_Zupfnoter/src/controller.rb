@@ -295,6 +295,7 @@ class Controller
   # load session from localstore
   def load_from_loacalstorage
     abc = Native(`localStorage.getItem('abc_data')`)
+    `debugger`
     @editor.set_text(abc) unless abc.nil?
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
@@ -605,11 +606,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       LastRenderMonitor.new.set_active
       set_active("#tunePreview")
       `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+    end.fail do
+      alert("fail")
     end.then do
       Promise.new.tap do |promise|
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
         `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
+      end.fail do
+        alert("fail")
       end.then do
         Promise.new.tap do |promise|
           call_consumers(:error_alert)
@@ -648,7 +653,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def layout_harpnotes(print_variant = 0, page_format = 'A4')
 
     config = get_config_from_editor
-    @editor.neat_config
 
     $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
     $conf.push(config) # in case of error, we hav the ensure close below
@@ -699,12 +703,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   # this retrieves the current config from the editor
   def get_config_from_editor
-    config, status = @editor.get_parsed_config
+    config, status = @editor.get_config_model
     if status
       config, status = migrate_config(config)
       if status[:changed]
         $log.info(status[:message])
-        @editor.set_config_part(config)
+        @editor.set_config_model(config)
         # @editor.prepend_comment(status[:message])
       end
     end
