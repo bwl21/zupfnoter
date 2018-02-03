@@ -515,7 +515,7 @@ class ConfstackEditor
           helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
           `$(#{evt}.target).w2overlay(#{helptext})`
         when 'default'
-          if a=@default_value[target.first]
+          if (a = @default_value[target.first])
             @editor.patch_config_part(target.first, a)
             refresh_form
             register_events

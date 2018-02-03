@@ -143,10 +143,6 @@ class TextPaneEmulatorForCli < Harpnotes::TextPane
     nil
   end
 
-  def neat_config
-    nil
-  end
-
   def clear_markers
 
   end

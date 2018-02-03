@@ -1,5 +1,6 @@
 module Harpnotes
 
+
   class TextPane
     attr_accessor :editor, :controller, :autofold
 
@@ -37,6 +38,9 @@ module Harpnotes
       @inhibit_callbacks = false
       @markers           = []
       @autofold          = true
+      @config_models     = {}
+      @config_separator  = '%%%%zupfnoter'
+
       create_lyrics_editor('abcLyrics')
     end
 
@@ -199,18 +203,14 @@ module Harpnotes
     #
     # @return [String] The content of the text field.
     def get_text
-      `self.editor.getSession().getValue()`
+      x = _get_abc_from_editor + %Q{\n#{@config_separator}.config\n} + _get_config_json
+      x
     end
 
-    # add new text to the editor
+    # add new text to the editor pane as loaded from file
     # @param text the text to be set to the editor
     def set_text(text)
-      @inhibit_callbacks = true
-      %x{
-         self.editor.getSession().setValue(text);
-      }
-      @inhibit_callbacks = false
-      fold_all
+      _split_parts(text)
     end
 
     # replaces the text of the range by
@@ -224,7 +224,6 @@ module Harpnotes
       therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
       #{editor}.getSession().replace(therange, #{text})
       }
-      fold_all
     end
 
     # replace a text in the editor
@@ -233,7 +232,6 @@ module Harpnotes
     # œparam newtext  the new tet to be entered
     def replace_text(oldtext, newtext)
       %x{self.editor.replace(#{newtext}, {needle: #{oldtext}}) }
-      fold_all
     end
 
     # @param [Array] annotations  array of {row: 1, text: "", type: "error" | "warning" | "info"}
@@ -306,35 +304,20 @@ module Harpnotes
     # get the abc part of the stuff
 
     def get_abc_part
-      get_text.split(CONFIG_SEPARATOR).first
+      `self.editor.getSession().getValue()`
     end
 
     # get the config part of the music
     def get_config_part
-      get_text.split(CONFIG_SEPARATOR)[1] || "{}"
+      @config_models[:config]
     end
 
-    def get_parsed_config
-      config_part = get_config_part
-      begin
-        config = JSON.parse(config_part)
-        status = true
-      rescue Exception => error
-        line_col = get_config_position(error.message.split.last.to_i)
-        $log.error("#{error.message} at #{line_col}", line_col)
-        config = {}
-        status = false
-      end
-      [config, status]
-    end
-
-    def neat_config
-      config, status = get_parsed_config
-      set_config_part(config) if status
+    def get_config_model
+      [_get_config_model, true]
     end
 
     def get_checksum
-      s = get_text
+      s = _get_abc_from_editor.strip
       %x{
             var i;
             var chk = 0x12345678;
@@ -343,7 +326,7 @@ module Harpnotes
               chk += (#{s}.charCodeAt(i) * (i + 1));
            }
          }
-      `chk`.to_s.scan(/...?/).join(' ')
+      `chk`.to_s.scan(/...?/).join(' ') # separate in three parts
     end
 
 
@@ -354,27 +337,8 @@ module Harpnotes
 
     # this pushes the object to the config part of the editor
     #
-    def set_config_part(object)
-      $log.benchmark("set_config_part") do
-        the_selection = get_selection_positions
-        options       = $conf[:neatjson]
-
-
-        configjson = ""
-        $log.benchmark("neat_json", __LINE__, __FILE__) { configjson = JSON.neat_generate(object, options) }
-
-        unless get_text.split(CONFIG_SEPARATOR)[1]
-          append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
-        end
-
-        oldconfigpart      = get_config_part
-        @inhibit_callbacks = true
-        unless oldconfigpart.strip == configjson.strip
-          replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
-          select_range_by_position(the_selection.first, the_selection.last)
-        end
-        @inhibit_callbacks = false
-      end
+    def set_config_model(object)
+      _set_config_model(object)
     end
 
     # this applies the object to the config
@@ -382,31 +346,11 @@ module Harpnotes
     def patch_config_part(key, object)
       pconfig       = Confstack::Confstack.new(false) # what we get from editor
       pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
-      config_part   = get_config_part
-      begin
-        config = JSON.parse(config_part)
-        pconfig.push(config)
+      pconfig.push(_get_config_model)
 
-        pconfig_patch[key] = object
-        pconfig.push(pconfig_patch.get)
-        set_config_part(pconfig.get)
-
-        fold_all
-
-      rescue Object => error
-        line_col = get_config_position(error.last)
-        $log.error("#{error.first} at #{line_col}", line_col)
-        set_annotations($log.annotations)
-      end
-    end
-
-    def fold_all
-      lastline = get_abc_part.lines.count
-      %x{ setTimeout(function(){self.editor.getSession().foldAll(#{lastline})}, 100) } if @autofold
-    end
-
-    def unfold_all
-      %x{ setTimeout(function(){self.editor.getSession().unfold()}, 100) }
+      pconfig_patch[key] = object
+      pconfig.push(pconfig_patch.get)
+      _set_config_model(pconfig.get)
     end
 
 
@@ -425,59 +369,30 @@ module Harpnotes
     def extend_config_part(key, object)
       pconfig       = Confstack::Confstack.new(false) # what we get from editor
       pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
-      config_part   = get_config_part
-      begin
-        config = JSON.parse(config_part)
-        pconfig.push(config)
 
-        pconfig_patch[key] = object
-        pconfig.push(pconfig_patch.get)
-        pconfig.push(config)
+      pconfig.push(_get_config_model)
+      pconfig_patch[key] = object
 
-        set_config_part(pconfig.get)
+      pconfig.push(pconfig_patch.get)
+      pconfig.push(_get_config_model)
 
-      rescue Object => error
-        line_col = get_config_position(error.last)
-        $log.error("#{error.first} at #{line_col}", line_col)
-        set_annotations($log.annotations)
-      end
+      _set_config_model(pconfig.get)
     end
 
     # deletes the entry of key in the config part
     def delete_config_part(key)
       pconfig     = Confstack::Confstack.new(false) # what we get from editor
-      config_part = get_config_part
-      config      = JSON.parse(config_part)
-      pconfig.push(config)
+      pconfig.push(_get_config_model)
       pconfig[key] = Confstack::DeleteMe
-      set_config_part(pconfig.get)
+      _set_config_model(pconfig.get)
     end
 
     # returns the value of key in in config part
     def get_config_part_value(key)
-      pconfig     = Confstack::Confstack.new(false)
-      config_part = get_config_part
-      begin
-        config = %x{json_parse(#{config_part})}
-        config = JSON.parse(config_part)
-        pconfig.push(config)
-        result = pconfig[key]
-      rescue Object => error
-        line_col = get_config_position(error.last)
-        $log.error("#{error.first} at #{line_col}", line_col)
-        set_annotations($log.annotations)
-      end
+      pconfig = Confstack::Confstack.new(false)
+      pconfig.push(_get_config_model)
+      result = pconfig[key]
       result
-    end
-
-    # get the line and column of an error in the config part
-    # @param [Numerical] charpos the position in the config part
-    def get_config_position(charpos)
-      cp       = charpos + (get_abc_part + CONFIG_SEPARATOR).length
-      lines    = get_text[0, cp].split("\n")
-      line_no  = lines.count
-      char_pos = lines.last.length()
-      return line_no, char_pos
     end
 
     def get_lyrics
@@ -539,6 +454,54 @@ module Harpnotes
         replace_text(oldtext, newtext)
       end
       nil
+    end
+
+
+    #####################################################################################
+    private
+
+    # this method splits the parts out of the given text
+    def _split_parts(fulltext)
+      fulltext.split(@config_separator).each_with_index do |part, i|
+        `debugger`
+        if i == 0
+          _set_abc_to_editor(part)
+        elsif part.start_with? ".config"
+          _set_config_json(part.split(".config").last)
+        elsif part.start_with? ".resources"
+          @config_models['resources'] = part.split(".resources").last
+        else
+          $log.error(I18n.t("unsupported section found in abc file: ") + part[0 .. 10])
+        end
+      end
+    end
+
+    def _set_abc_to_editor(abctext)
+      @inhibit_callbacks = true
+      %x{self.editor.getSession().setValue(#{abctext});}
+      @inhibit_callbacks = false
+    end
+
+    def _get_abc_from_editor
+      %x{self.editor.getSession().getValue()}
+    end
+
+    def _set_config_json(json)
+      @config_models['config'] = JSON.parse(json)
+    end
+
+    def _get_config_json
+      options = $conf[:neatjson]
+      result  = $log.benchmark("neat_json", __LINE__, __FILE__) { JSON.neat_generate(_get_config_model, options) }
+      result
+    end
+
+    def _get_config_model
+      @config_models['config']
+    end
+
+    def _set_config_model(object)
+      @config_models['config'] = object
     end
 
   end

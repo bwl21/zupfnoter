@@ -146,7 +146,7 @@ module ZnSvg
             conf_value_new[0] += deltax;
             conf_value_new[1] += deltay;
 
-             #{@draggable_dragend_handler.call( {element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`)} ) };
+             #{@draggable_dragend_handler.call( {element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`).map{|i|i.round(2)}} ) };
           })
       }
     end
