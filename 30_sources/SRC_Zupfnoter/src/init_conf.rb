@@ -21,6 +21,7 @@ module InitConf
                      #
                      :annotation, :decoration, :partname, :variantend, :countnote, :c_jumplines, :tuplet, :minc, :flowline, # sort within notebound
 
+                     :imagename,
                      :stringnames,
 
                      # sort within layout
@@ -34,7 +35,7 @@ module InitConf
                      :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T05_printed_extracts, :T99_do_not_copy,
 
                      "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                     :cp1, :cp2, :shape, :imagename, :pos, :hpos, :vpos, :spos, :autopos, :apbase, :text, :style, :marks, # tuplets annotations
+                     :cp1, :cp2, :shape, :pos, :hpos, :height, :vpos, :spos, :autopos, :apbase, :text, :style, :marks, # tuplets annotations
                      :resources,
                      :d64, :d48, :d32, :d24, :d16, :d12, :d8, :d6, :d4, :d3, :d2, :d1
     ]
@@ -72,7 +73,7 @@ module InitConf
          templates: {
              notes: {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
              lyrics:      {verses: [1], pos: [350, 70]},
-             images:      {pos: [10,10], height: 100,  imagename: ""},
+             images:      {imagename: "", show: true, pos: [10,10], height: 100,  },
              tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
              annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },

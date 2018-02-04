@@ -99,15 +99,10 @@ module Ajv
                :requiredx            => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
                :additionalProperties => false,
                :properties           =>
-                   {:limit_a3          => {:type => "boolean"},
-                    :beams             => {:type => "boolean"},
-                    :bottomup          => {:type => "boolean"},
-                    :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},  # todo: remove this it is there again below
-                    :manual_sheet      => {:type       => 'object',
-                                           required:   [:llpos, :trpos, :url],
-                                           :properties => {llpos: {:'$ref' => '#/definitions/pos'},
-                                                           trpos: {:'$ref' => '#/definitions/pos'},
-                                                           url:   {:type => 'string'}}},
+                   {:limit_a3        => {:type => "boolean"},
+                    :beams           => {:type => "boolean"},
+                    :bottomup        => {:type => "boolean"},
+                    :jumpline_anchor => {:'$ref' => '#/definitions/pos'}, # todo: remove this it is there again below
                     :LINE_THIN         => {:type => "number"},
                     :LINE_MEDIUM       => {:type => "number"},
                     :LINE_THICK        => {:type => "number"},
@@ -139,15 +134,6 @@ module Ajv
                                                :pack_min_increment     => {:type => 'number'}
                                            }}
                    }
-           },
-           :resources        => {
-               :type                 => "object",
-               :additionalProperties => false,
-               :patternProperties    => {
-                   "^[a-zA-Z0-9_\-]+$" => {:type  => "array",
-                                         :items => {:type => "string"}
-                   },
-               }
            }
        },
 
@@ -330,7 +316,7 @@ module Ajv
                                                      :properties           => {
                                                          :annotation   => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :barnumber    => {:'$ref' => '#/definitions/notebound_pos'},
-                                                         :c_jumplines  => {:type                 => 'object',   # configuratoin of jumpline distances
+                                                         :c_jumplines  => {:type => 'object', # configuratoin of jumpline distances
                                                                            :additionalProperties => false,
                                                                            :patternProperties    => {
                                                                                "v_\d*" => {
@@ -432,7 +418,24 @@ module Ajv
                                                                                          :minItems    => 2,
                                                                                          :uniqueItems => false,
                                                                                          :items       => {:type => "integer"}},
-                                                                        :show_border => {:type => "boolean"}}}}},
+                                                                        :show_border => {:type => "boolean"}
+                                                                       }
+                                                 },
+                                                 :images       => {:type              => "object",
+                                                                   :patternProperties => {
+                                                                       :"\d*" => {
+                                                                           :type       => "object",
+                                                                           :properties => {
+                                                                               :imagename => {:type => "string"},
+                                                                               :show      => {:type => "boolean"},
+                                                                               :pos       => {:'$ref' => '#/definitions/pos'},
+                                                                               :height    => {:type => "number"}
+                                                                           }
+                                                                       }
+                                                                   }
+                                                 }
+                                                }
+                                },
                                  :"4"   => {:type       => "object",
                                             :required   => ["title", "voices"],
                                             :properties =>
@@ -631,7 +634,6 @@ module Ajv
                                  }
                                 }
            },
-           :resources   => {"$ref" => "#/definitions/resources"},
            :neatjson    => {:type       => "object",
                             :required   => ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "explicit_sort"],
                             :properties =>

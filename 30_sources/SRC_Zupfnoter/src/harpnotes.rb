@@ -921,14 +921,15 @@ module Harpnotes
 
 
     class Image < Drawable
-      attr_reader :url, :llpos, :height, :opacity
+      attr_reader :url, :llpos, :height, :opacity, :origin
       # @param [String] url of imabge
       # @param [Vector2d] llpos lower left postion of crop in image
       # @param [Vector2d] trpos to right postion of crop in image
-      def initialize (url, llpos, height)
+      def initialize (url, llpos, height, origin = nil)
         @url    = url
         @llpos  = llpos
         @height = height
+        @origin = nil
       end
     end
 
@@ -1378,10 +1379,17 @@ module Harpnotes
         images = print_options_raw['images']
         unless images.nil?
           images.each do |number, image|
-            datauri = $resources[image['imagename']]
-            datauri = datauri.join if datauri.is_a? Array
-            if datauri
-              result.push Harpnotes::Drawing::Image.new(datauri, Vector2d(image['pos']) - [0, image['height']], image['height'])
+            if image[:show] == true
+              datauri = $resources[image['imagename']]
+              datauri = datauri.join if datauri.is_a? Array
+              if datauri
+                result.push Harpnotes::Drawing::Image.new(datauri, Vector2d(image['pos']) - [0, image['height']], image['height']).tap { |s|
+                  s.conf_key   = "extract.#{print_variant_nr}.images.#{number}.pos"
+                  s.conf_value = image['pos']
+                  s.draginfo   = {handler: :annotation}
+                }
+                ## todo insert a draghandle for dragging the height
+              end
             end
           end
         end

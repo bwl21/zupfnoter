@@ -44,7 +44,7 @@ module ZnSvg
     end
 
     def new_id!
-      "ZN_#{@id+=1}"
+      "ZN_#{@id += 1}"
     end
 
     # @return the resulting SVG
@@ -146,7 +146,7 @@ module ZnSvg
             conf_value_new[0] += deltax;
             conf_value_new[1] += deltay;
 
-             #{@draggable_dragend_handler.call( {element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`).map{|i|i.round(2)}} ) };
+             #{@draggable_dragend_handler.call({element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`).map { |i| i.round(2) }}) };
           })
       }
     end
@@ -262,7 +262,7 @@ module ZnSvg
       xx.draggable();
 
       xx.on('dragstart', function(e) {
-        #{vertical      = draginfo[:jumpline][:vertical]}
+        #{vertical = draginfo[:jumpline][:vertical]}
         sx = e.detail.p.x;
         sy = e.detail.p.y;
         this.stroke("blue");
@@ -297,8 +297,8 @@ module ZnSvg
       }
     end
 
-    def add_abcref(x, y, rx, ry, start_char=nil)
-      id  = new_id!
+    def add_abcref(x, y, rx, ry, start_char = nil)
+      id = new_id!
       # classes:
       # abcref - for global unhighlighting - name came from abc2svg
       #        - to add a click handler
@@ -306,7 +306,7 @@ module ZnSvg
       # _(startchar)_ to hilight by player - approach comes from abc2svg
       # zn
       padding = 2
-      svg =%Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - padding/2}" y="#{y - ry - padding/2}" width="#{2 * rx +  padding}" height="#{2 * ry + padding}"/>}
+      svg     = %Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - padding / 2}" y="#{y - ry - padding / 2}" width="#{2 * rx + padding}" height="#{2 * ry + padding}"/>}
       @svgbuffer.push(svg)
       id
     end
@@ -329,11 +329,13 @@ module ZnSvg
 
 
     def image(url, x, y, height)
-      @svgbuffer.push(%Q{  <image x="#{x}" y="#{y}" height="#{height}"
+      id = new_id!
+      @svgbuffer.push(%Q{  <image id = #{id} x="#{x}" y="#{y}" height="#{height}"
     preserveAspectRatio="none"
     xlink:href="#{url}">
   </image>})
 
+      id
     end
 
     #
@@ -344,7 +346,7 @@ module ZnSvg
     #
     #
     # @return [Element] The generated Element
-    def path(spec, attributes={}, bgrectspec=nil)
+    def path(spec, attributes = {}, bgrectspec = nil)
       thespec     = path_to_raphael(spec)
       id          = new_id!
       group_attrs = _attr_to_xml({fill: attributes[:fill], stroke: attributes[:stroke]}) # move fill attibute to the group such that drag drop can change the color
@@ -368,7 +370,7 @@ module ZnSvg
           result += element[1 .. -1].join(" ")
         end
       else
-        result=path
+        result = path
       end
       result
     end
@@ -383,7 +385,7 @@ module ZnSvg
     # @param radius [Numeric] radius for rounded corners, default is 0
     #
     # @return [element] The generated Element
-    def rect(x, y, rx, ry, radius = 0, attributes={fill: "none", stroke: "black", "stroke-width" => @line_width})
+    def rect(x, y, rx, ry, radius = 0, attributes = {fill: "none", stroke: "black", "stroke-width" => @line_width})
       id   = new_id!
       attr = _attr_to_xml(attributes)
       #@svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" style="fill:#{attr[:fill]};stroke-width:#{@line_width};stroke:#{attr[:stroke]}" />})
@@ -419,7 +421,7 @@ module ZnSvg
     # @param text [String] The text to be rendered
     #
     # @return [Element] The generated Element
-    def text(x, y, text, attributes={})
+    def text(x, y, text, attributes = {})
       id     = new_id!
       attrs  = _attr_to_xml(attributes)
       tspans = text.split("\n").map { |l| %Q{<tspan dy="1.2em" x="#{x}">#{l}</tspan>} }.join()

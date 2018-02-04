@@ -411,15 +411,21 @@ module Harpnotes
 
     def draw_image(root)
       position = Vector2d([0, 0]) + root.llpos + [0, root.height]
-      e        = @paper.image(root.url, position.x, position.y, root.height )
+      e        = @paper.image(root.url, position.x, position.y, root.height)
+
+      draginfo = root.draginfo
+      if draginfo
+        draginfo[:target_id] = e
+        push_element(root, e)
+      end
       e
     end
 
     # draw a path
     def draw_path(root)
-      color                 = COLORS[root.color]
-      attr                  = {stroke: color, fill: 'none'}
-      attr[:fill]           = color if root.filled?
+      color                  = COLORS[root.color]
+      attr                   = {stroke: color, fill: 'none'}
+      attr[:fill]            = color if root.filled?
       attr['stroke-linecap'] = :round
 
       e = @paper.path(root.path, attr)
