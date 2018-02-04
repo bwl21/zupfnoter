@@ -203,8 +203,10 @@ module Harpnotes
     #
     # @return [String] The content of the text field.
     def get_text
-      x = _get_abc_from_editor + %Q{\n#{@config_separator}.config\n} + _get_config_json
-      x
+      result = _get_abc_from_editor.strip
+      result += %Q{\n\n#{@config_separator}.config\n\n} + _get_config_json
+      result += %Q{\n\n#{@config_separator}.resources\n\n} + _get_resources_json
+      result
     end
 
     # add new text to the editor pane as loaded from file
@@ -354,6 +356,13 @@ module Harpnotes
     end
 
 
+    # @param [String] key the name of the resource
+    # @param [Object] value the value of the resource as object
+    def patch_resources(key, value)
+      $resources[key] = value
+    end
+
+
     # this methods patches a token
     # @param [Array] endpos [row, col]
     def patch_token(token, endpos, newvalue)
@@ -463,13 +472,12 @@ module Harpnotes
     # this method splits the parts out of the given text
     def _split_parts(fulltext)
       fulltext.split(@config_separator).each_with_index do |part, i|
-        `debugger`
         if i == 0
           _set_abc_to_editor(part)
         elsif part.start_with? ".config"
           _set_config_json(part.split(".config").last)
         elsif part.start_with? ".resources"
-          @config_models['resources'] = part.split(".resources").last
+          _set_resources_json(part.split(".resources").last)
         else
           $log.error(I18n.t("unsupported section found in abc file: ") + part[0 .. 10])
         end
@@ -502,6 +510,15 @@ module Harpnotes
 
     def _set_config_model(object)
       @config_models['config'] = object
+    end
+
+    def _set_resources_json(json)
+      $resources = JSON.parse(json)
+    end
+
+    def _get_resources_json
+      result = JSON.neat_generate($resources, $conf[:neatjson])
+      result
     end
 
   end

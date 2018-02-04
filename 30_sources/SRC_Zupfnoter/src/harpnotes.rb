@@ -926,9 +926,9 @@ module Harpnotes
       # @param [Vector2d] llpos lower left postion of crop in image
       # @param [Vector2d] trpos to right postion of crop in image
       def initialize (url, llpos, height)
-        @url     = url
-        @llpos   = llpos
-        @height  = height
+        @url    = url
+        @llpos  = llpos
+        @height = height
       end
     end
 
@@ -1373,12 +1373,12 @@ module Harpnotes
       end
 
 
-      def layout_images(print_variant_nr)
+      def layout_images(print_options_raw, print_variant_nr)
         result = []
-        images = get_print_options(print_variant_nr)['images']
+        images = print_options_raw['images']
         unless images.nil?
           images.each do |number, image|
-            datauri = $conf["resources.#{image['imagename']}"]
+            datauri = $resources[image['imagename']]
             datauri = datauri.join if datauri.is_a? Array
             if datauri
               result.push Harpnotes::Drawing::Image.new(datauri, Vector2d(image['pos']) - [0, image['height']], image['height'])
@@ -1446,9 +1446,9 @@ module Harpnotes
         $conf.push({layout: layout_options})
         $conf.push({printer: print_options_hash[:printer] || {}})
 
-        debug_grid   = [];
-        debug_grid   = layout_debug_grid() if $conf['layout.grid']
-        manual_sheet = layout_images(print_options_raw, music)
+        debug_grid = [];
+        debug_grid = layout_debug_grid() if $conf['layout.grid']
+        res_images = layout_images(print_options_hash, print_variant_nr)
 
         initialize
 
@@ -1625,7 +1625,7 @@ module Harpnotes
 
         @draw_instrument.call.each { |r| sheet_marks.push(r) } if @draw_instrument
 
-        sheet_elements = manual_sheet + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
+        sheet_elements = res_images + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 
         result                = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
         result.printer_config = $conf[:printer]

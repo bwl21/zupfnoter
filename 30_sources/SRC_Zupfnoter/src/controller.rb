@@ -137,6 +137,10 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
+    # this keeps  a hash of resources
+    # as resource thend to be big,
+    # we do not hold them in $conf
+    $resources = {} # this kees resources
 
     $settings = {} # this is te keep runtime settings
 
@@ -291,10 +295,12 @@ class Controller
     systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
                                                     :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :zoom].include?(key)
     }.to_json
-    if @systemstatus[:mode] == :work
-      abc = `localStorage.setItem('systemstatus', #{systemstatus});`
-      abc = @editor.get_text
-      abc = `localStorage.setItem('abc_data', abc)`
+    $log.benchmark("saving to localstore") do
+      if @systemstatus[:mode] == :work
+        abc = `localStorage.setItem('systemstatus', #{systemstatus});`
+        abc = @editor.get_text
+        abc = `localStorage.setItem('abc_data', #{abc})`
+      end
     end
   end
 
@@ -311,7 +317,6 @@ class Controller
   # load session from localstore
   def load_from_loacalstorage
     abc = Native(`localStorage.getItem('abc_data')`)
-    `debugger`
     @editor.set_text(abc) unless abc.nil?
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope

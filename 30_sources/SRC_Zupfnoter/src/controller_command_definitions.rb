@@ -251,7 +251,7 @@ class Controller
       command.as_action do |args|
         key = args[:key].gsub(/[^a-zA-Z0-9_]/, "_")
         value = args[:value].scan(/.{1,60}/)
-        @editor.patch_config_part("resources.#{key}", value)
+        @editor.patch_resources(key, value)
       end
     end
 

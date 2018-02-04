@@ -91,11 +91,12 @@ class JsPDF
   # @param [Float] height height of imaag
   def image(url, x, y, height)
 
+    nx, ny, = apply_offset_to_point([x, y])
     format = nil
     format = "jpeg" if url.start_with? "data:image/jpeg"
     format = "png" if url.start_with? "data:image/png"
     if format
-      `#{@native_jspdf}.addImage(#{url}, #{format}, #{x}, #{y}, 0, #{height})`
+      `#{@native_jspdf}.addImage(#{url}, #{format}, #{nx}, #{ny}, 0, #{height})`
     else
       raise "image format not supported for pdf: #{format}"
     end

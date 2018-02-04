@@ -34,20 +34,20 @@ class ConfstackEditor
         I18n.t(key)
       end
 
-      def self.to_neutral(key, string="")
+      def self.to_neutral(key, string = "")
         nil
       end
 
       def self.to_template(key)
         # handle the case notes.x
-        template = key.split('.')[-2] # templates are for "extract....<template>.x"
+        template       = key.split('.')[-2] # templates are for "extract....<template>.x"
         voice_template = key.split('.')[-3] # templates are for "extract.<template>.v_<voice>.x"
-        a        = $conf.get("templates.#{template}") if template
-        a        = $conf.get("templates.#{voice_template}") if voice_template and not a.nil?
+        a              = $conf.get("templates.#{template}") if template
+        a              = $conf.get("templates.#{voice_template}") if voice_template and not a.nil?
 
         if a.nil?
           help_key = key
-          help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) {"#{$1}0#{$3}"}
+          help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
           a        = $conf.get(help_key)
         end
         puts help_key
@@ -71,11 +71,11 @@ class ConfstackEditor
 
     class IntegerPairs < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map {|pair| values = pair.split('-'); [values[0] || 0, values[1] || 0].map {|i| i.to_i}}
+        string.split(",").map { |pair| values = pair.split('-'); [values[0] || 0, values[1] || 0].map { |i| i.to_i } }
       end
 
       def self.to_string(key, value)
-        a = value.map {|v| %Q{#{v.first}-#{v.last}}}.join(", ")
+        a = value.map { |v| %Q{#{v.first}-#{v.last}} }.join(", ")
       end
 
       def self.to_neutral(key)
@@ -86,7 +86,7 @@ class ConfstackEditor
     class FloatPair < ZnTypes
       def self.to_value(key, string)
         list = string.split(",")
-        [list[0] || 0, list[1] || 0].map {|i| i.to_f}
+        [list[0] || 0, list[1] || 0].map { |i| i.to_f }
       end
 
       def self.to_string(key, value)
@@ -177,11 +177,11 @@ class ConfstackEditor
 
     class IntegerList < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map {|i| i.to_i}
+        string.split(",").map { |i| i.to_i }
       end
 
       def self.to_string(key, value)
-        value.map {|i| i.to_s}.join(", ")
+        value.map { |i| i.to_s }.join(", ")
       end
 
       def self.to_neutral(key)
@@ -191,7 +191,7 @@ class ConfstackEditor
 
     class TupletShape < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map {|s| s.strip}
+        string.split(",").map { |s| s.strip }
       end
 
       def self.to_string(key, value)
@@ -266,7 +266,7 @@ class ConfstackEditor
       def self.to_w2uifield(key)
         {field:       key,
          type:        'list',
-         options:     {items: $image_list},
+         options:     {items: $resources.keys},
          required:    true,
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),
@@ -362,7 +362,7 @@ class ConfstackEditor
           Instrument      => ['instrument'],
           Imagename       => ['imagename'],
           Color           => ['color_default', 'color_variant1', 'color_variant2']
-      }.inject({}) {|r, (k, v)| v.each {|i| r[i] = k}; r}
+      }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil
     end
@@ -425,7 +425,7 @@ class ConfstackEditor
 
     $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
 
-    value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") {value_handler.call}
+    value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") { value_handler.call }
 
     $log.benchmark("process value handler result #{__FILE__} #{__LINE__}") do
       @value                = Confstack.new(false)
@@ -442,8 +442,8 @@ class ConfstackEditor
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
     @record = {} # hash to prepare the record for the form
 
-    @record          = @value.keys.inject({}) {|r, k| r[k] = @helper.to_string(k, @value[k]); r}
-    @effective_value = @effective_value_raw.keys.inject({}) {|r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r}
+    @record          = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
+    @effective_value = @effective_value_raw.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r }
     $log.timestamp("end initialize Form  #{__FILE__} #{__LINE__}")
     nil
   end
@@ -451,7 +451,7 @@ class ConfstackEditor
 
   def show_form
     $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
-    x=@form.to_n
+    x = @form.to_n
     %x{
     if (w2ui[#{x}.name]){w2ui[#{x}.name].destroy()};
     $('#configtab').w2form(#{x});
@@ -534,18 +534,18 @@ class ConfstackEditor
     $log.timestamp("generate Form  #{__FILE__} #{__LINE__}")
 
     presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
-                  items: @quicksetting_commands.map {|i| {id: i, text: i.split(".").last}}
+                  items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
     }
 
     @form = {
         name: "configform",
         #header:     I18n.t(@title),
         style:      'border: 0px; background-color: transparent;',
-        fields:     @value.keys.map {|key| @helper.to_w2uifield(key)}.flatten.compact,
+        fields:     @value.keys.map { |key| @helper.to_w2uifield(key) }.flatten.compact,
         record:     @record,
         focus:      -1,
-        onChange:   lambda {|event|
-          a=lambda {
+        onChange:   lambda { |event|
+          a = lambda {
             push_config_to_editor
             %x{
                document.getElementById(#{event}.target).focus()
@@ -582,7 +582,7 @@ class ConfstackEditor
                     <table>
                     <tr><th style="width:20em;">#{I18n.t("Name")}</th>
                     <th>#{I18n.t("Value")}</th><th/><th>#{I18n.t("Effective value")}</th></tr>
-                    #{@value.keys.map {|key| mk_fieldHTML(key, @value[key])}.join}
+                    #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>
                     }
     }
