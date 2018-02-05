@@ -16,6 +16,22 @@ Zupfnoter applies the following models
 * this is done by the method `javascript_include_analytics` which is defined in the related rake tasks.
 * for localhost, the method is not defined, and therefore the template does not include the script
 
+
+## handling drag and drop
+
+Drag and drop is implemented by opal_svg. There is a global drag_end-Handler installed in
+controller.rb ()  `@harpnote_preview_printer.on_annotation_drag_end do |info|`
+
+Info returns the key and the value of the configuration parameter to be changed.
+
+We uase the library svg.min.js (https://github.com/svgdotjs/svg.js) to manipulate the SVG nodes
+in partiucular we have draggable() from there.
+
+we get the nodes by SVG.get which itself finds them by id an subsequently adopts them.
+This allows to produce SVG using string operations.
+
+
+
 # build environments
 
 ## rvm ruby homebrew etc

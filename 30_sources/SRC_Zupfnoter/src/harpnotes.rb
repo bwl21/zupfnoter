@@ -1341,8 +1341,12 @@ module Harpnotes
                 flaps   = "      59 61       66       71 73       78       83"
             end
 
+            flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110 }
+
+
             string_by_pitch              = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
             flaps_by_pitch               = flaps.split(" ").map { |i| i.to_i }
+
             @pitch_to_xpos               = lambda { |pitch|
               #                           G        c        d        e        f        g        a        b        c'       D'
               pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
@@ -1355,7 +1359,7 @@ module Harpnotes
             @draw_instrument = lambda {
               result = []
               flaps_by_pitch.each do |f|
-                result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), 285], "*", :small))
+                result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
               end
 
               res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)

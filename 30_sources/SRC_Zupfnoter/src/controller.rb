@@ -861,6 +861,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     ## register handler for dragging annotations
+    # the handler is called with an info - hash
+    # conf_key: the key of configuration to be patched
+    # conf_value_new: the new value of configuration to be patched
+    #
+    # if conf_value_new is nil then process the following keys
+    # conf_value: {pos: []} old position
+    # delta: {delta: []} delta for positions
+    #
+    # Note: it is a matter of the draginfo[:handler] to select
+    # the correct draggable handler which has to handle
+    # drag operation as well as eventually compute the value for info
+    #
+    # see opal_svg: bind_elements for details
+    #
     @harpnote_preview_printer.on_annotation_drag_end do |info|
 
       conf_key  = info[:conf_key]

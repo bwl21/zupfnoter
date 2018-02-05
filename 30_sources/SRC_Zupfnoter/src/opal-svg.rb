@@ -1,11 +1,15 @@
 #
-# This module wraps the API for Raphael
+# This module implements the API as it was in Raphael
 # as long as we need it to render harpnotes
 #
-# note that the class variable @r is used by
-# `self.r` in the native javascript
-# of the methods
+# We uase the library svg.min.js (https://github.com/svgdotjs/svg.js) to manipulate the SVG nodes
+# in partiucular we have draggable() from there.#
 #
+#    we get the nodes by SVG.get which itself finds them by id an subsequently adopts them.
+#        This allows to produce SVG using string operations.
+#
+#
+
 module ZnSvg
 
   #
@@ -253,6 +257,15 @@ module ZnSvg
       }
     end
 
+    def set_draggable_imagesize(svg_element_id, conf_key, conf_value, draginfo)
+      %x{
+      var xx = SVG.get(#{svg_element_id});
+      xx.addClass("nn_draggable")
+
+      xx.draggable();
+      }
+    end
+
     def set_draggable_jumpline(svg_element_id, conf_key, conf_value, draginfo)
       %x{
 
@@ -440,12 +453,8 @@ module ZnSvg
     #
     # @return [Array of Numeric] The horizontal, vertical dimensions
     # of the canvas
-    def size
+    def size_outdated
       [`self.r.canvas.offsetWidth`, `self.r.canvas.offsetHeight`]
-    end
-
-    def enable_pan_zoom
-      `self.r.panzoom().enable()` if `self.r.panzoom != undefined`
     end
 
     def scroll_to_element(element)
