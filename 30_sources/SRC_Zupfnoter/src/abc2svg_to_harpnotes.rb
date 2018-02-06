@@ -590,7 +590,6 @@ module Harpnotes
         # note that abc2svd yields Tune based Tempo in voice_propoeties.sym as well as in symbols
         # therefore we need to filter the Tune based tempo ...
         unless voice_element[:istart] == @meta_data[:tempo][:sym][:istart]
-          `debugger`
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
           $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
