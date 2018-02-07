@@ -162,7 +162,6 @@ class Controller
       c.undoable = false
       c.set_help {"set playing speed"}
       c.as_action do |a|
-        `debugger`
         @harpnote_player.set_speed(a[:speed].to_f)
       end
     end

@@ -38,8 +38,9 @@ module Harpnotes
       @inhibit_callbacks = false
       @markers           = []
       @autofold          = true
-      @config_models     = {}
       @config_separator  = '%%%%zupfnoter'
+
+      _clean_models
 
       create_lyrics_editor('abcLyrics')
     end
@@ -87,6 +88,7 @@ module Harpnotes
     def on_change(&block)
       # changes in the editor
       Native(Native(@editor).getSession).on(:change) { |e|
+        save_to_localstore('zn_abc')
         clear_markers #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
         block.call(e) #unless @inhibit_callbacks
       }
@@ -205,7 +207,7 @@ module Harpnotes
     def get_text
       result = _get_abc_from_editor.strip
       result += %Q{\n\n#{@config_separator}.config\n\n} + _get_config_json
-      result += %Q{\n\n#{@config_separator}.resources\n\n} + _get_resources_json
+      result += %Q{\n\n#{@config_separator}.resources\n\n} + _get_resources_json if _has_resources?
       result
     end
 
@@ -315,7 +317,8 @@ module Harpnotes
     end
 
     def get_config_model
-      [_get_config_model, true]
+      config_model = _get_config_model
+      config_model ? [_get_config_model, true] : [{}, false]
     end
 
     def get_checksum
@@ -340,6 +343,7 @@ module Harpnotes
     # this pushes the object to the config part of the editor
     #
     def set_config_model(object)
+      @dirty['zn_config'] = true
       _set_config_model(object)
     end
 
@@ -359,7 +363,9 @@ module Harpnotes
     # @param [String] key the name of the resource
     # @param [Object] value the value of the resource as object
     def patch_resources(key, value)
-      $resources[key] = value
+      @dirty['zn_resources'] = true
+      $resources[key]        = value
+      save_to_localstore
     end
 
 
@@ -390,7 +396,7 @@ module Harpnotes
 
     # deletes the entry of key in the config part
     def delete_config_part(key)
-      pconfig     = Confstack::Confstack.new(false) # what we get from editor
+      pconfig = Confstack::Confstack.new(false) # what we get from editor
       pconfig.push(_get_config_model)
       pconfig[key] = Confstack::DeleteMe
       _set_config_model(pconfig.get)
@@ -466,11 +472,34 @@ module Harpnotes
     end
 
 
+    def restore_from_localstore
+      abctext = Native(`localStorage.getItem('zn_abc')`)
+      _set_abc_to_editor(abctext) if abctext
+
+      configjson = Native(`localStorage.getItem('zn_config')`) || {}
+      _set_config_json(configjson) if configjson
+
+      resources = Native(`localStorage.getItem('zn_resources')`)
+      _set_resources_json(resources) if resources
+      @dirty = {}
+    end
+
+    def save_to_localstore(dirty = nil)
+      @dirty[dirty] = true if dirty
+      `localStorage.setItem('zn_abc', #{_get_abc_from_editor})` if @dirty['zn_abc'] == true
+      `localStorage.setItem('zn_config', #{_get_config_json})` if @dirty['zn_config'] == true
+      `localStorage.setItem('zn_resources', #{_get_resources_json})` if @dirty['zn_resources'] == true
+      @dirty = {}
+    end
+
     #####################################################################################
-    private
+    #private
 
     # this method splits the parts out of the given text
     def _split_parts(fulltext)
+
+      _clean_models
+
       fulltext.split(@config_separator).each_with_index do |part, i|
         if i == 0
           _set_abc_to_editor(part)
@@ -495,7 +524,7 @@ module Harpnotes
     end
 
     def _set_config_json(json)
-      @config_models['config'] = JSON.parse(json)
+      _set_config_model(JSON.parse(json))
     end
 
     def _get_config_json
@@ -509,11 +538,15 @@ module Harpnotes
     end
 
     def _set_config_model(object)
+      @dirty['zn_config']      = true
       @config_models['config'] = object
+      save_to_localstore
     end
 
     def _set_resources_json(json)
-      $resources = JSON.parse(json)
+      @dirty['zn_resources'] = true
+      $resources             = JSON.parse(json)
+      save_to_localstore
     end
 
     def _get_resources_json
@@ -521,6 +554,15 @@ module Harpnotes
       result
     end
 
+    def _has_resources?
+      not $resources.empty?
+    end
+
+    def _clean_models
+      $resources     = {}
+      @config_models = {}
+      @dirty         = {}
+    end
   end
 
 end

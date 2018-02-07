@@ -140,7 +140,7 @@ class Controller
     # this keeps  a hash of resources
     # as resource thend to be big,
     # we do not hold them in $conf
-    $resources = {} # this kees resources
+    $resources = {} # this keeps resources
 
     $settings = {} # this is te keep runtime settings
 
@@ -298,9 +298,8 @@ class Controller
     $log.benchmark("saving to localstore") do
       if @systemstatus[:mode] == :work
         abc = `localStorage.setItem('systemstatus', #{systemstatus});`
-        abc = @editor.get_text
-        abc = `localStorage.setItem('abc_data', #{abc})`
       end
+      @editor.save_to_localstore
     end
   end
 
@@ -316,8 +315,10 @@ class Controller
 
   # load session from localstore
   def load_from_loacalstorage
-    abc = Native(`localStorage.getItem('abc_data')`)
-    @editor.set_text(abc) unless abc.nil?
+    # abc = Native(`localStorage.getItem('abc_data')`)
+    #@editor.set_text(abc) unless abc.nil?
+    @editor.restore_from_localstore
+
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
     nil
