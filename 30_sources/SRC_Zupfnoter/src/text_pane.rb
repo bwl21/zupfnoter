@@ -38,6 +38,7 @@ module Harpnotes
       @inhibit_callbacks = false
       @markers           = []
       @autofold          = true
+      @on_change          = lambda{}
       @config_separator  = '%%%%zupfnoter'
 
       _clean_models
@@ -86,11 +87,12 @@ module Harpnotes
     #
     # @return [type] [description]
     def on_change(&block)
+      @on_change = block
       # changes in the editor
       Native(Native(@editor).getSession).on(:change) { |e|
-        save_to_localstore('zn_abc')
+        save_to_localstorage('zn_abc')
         clear_markers #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
-        block.call(e) #unless @inhibit_callbacks
+        @on_change.call(e) #unless @inhibit_callbacks
       }
     end
 
@@ -365,7 +367,8 @@ module Harpnotes
     def patch_resources(key, value)
       @dirty['zn_resources'] = true
       $resources[key]        = value
-      save_to_localstore
+      save_to_localstorage('zn_resources')
+      @on_change.call(nil)
     end
 
 
@@ -472,24 +475,44 @@ module Harpnotes
     end
 
 
-    def restore_from_localstore
-      abctext = Native(`localStorage.getItem('zn_abc')`)
-      _set_abc_to_editor(abctext) if abctext
+    # this restores editor session from localstorage
+    #
+    # note we have all in one entry from 'abc_data'
+    # this is outdated and migrated to
+    # the new approach with 'zn_abc', 'zn_config', 'zn_resources'
+    #
+    def restore_from_localstorage
+      abc = Native(`localStorage.getItem('abc_data')`)
+      unless abc.nil?
+        `localstorage.removeItem('abc_data')`
+         @editor.set_text(abc) unless abc.nil?
+      else
+        abctext = Native(`localStorage.getItem('zn_abc')`)
+        _set_abc_to_editor(abctext) if abctext
 
-      configjson = Native(`localStorage.getItem('zn_config')`) || {}
-      _set_config_json(configjson) if configjson
+        configjson = Native(`localStorage.getItem('zn_config')`) || {}
+        _set_config_json(configjson) if configjson
 
-      resources = Native(`localStorage.getItem('zn_resources')`)
-      _set_resources_json(resources) if resources
+        resources = Native(`localStorage.getItem('zn_resources')`)
+        _set_resources_json(resources) if resources
+      end
+
       @dirty = {}
     end
 
-    def save_to_localstore(dirty = nil)
+    def save_to_localstorage(dirty = nil)
       @dirty[dirty] = true if dirty
       `localStorage.setItem('zn_abc', #{_get_abc_from_editor})` if @dirty['zn_abc'] == true
       `localStorage.setItem('zn_config', #{_get_config_json})` if @dirty['zn_config'] == true
       `localStorage.setItem('zn_resources', #{_get_resources_json})` if @dirty['zn_resources'] == true
       @dirty = {}
+    end
+
+    def clean_localstorage
+      `localStorage.removeItem('zn_abc')`
+      `localStorage.removeItem('zn_config')`
+      `localStorage.removeItem('zn_resources')`
+      nil
     end
 
     #####################################################################################
@@ -499,6 +522,7 @@ module Harpnotes
     def _split_parts(fulltext)
 
       _clean_models
+      clean_localstorage
 
       fulltext.split(@config_separator).each_with_index do |part, i|
         if i == 0
@@ -517,6 +541,7 @@ module Harpnotes
       @inhibit_callbacks = true
       %x{self.editor.getSession().setValue(#{abctext});}
       @inhibit_callbacks = false
+      save_to_localstorage('zn_abc')
     end
 
     def _get_abc_from_editor
@@ -538,15 +563,15 @@ module Harpnotes
     end
 
     def _set_config_model(object)
-      @dirty['zn_config']      = true
       @config_models['config'] = object
-      save_to_localstore
+      save_to_localstorage('zn_config')
+      @on_change.call(nil)  # fire dirty flag in contoller
     end
 
     def _set_resources_json(json)
-      @dirty['zn_resources'] = true
       $resources             = JSON.parse(json)
-      save_to_localstore
+      save_to_localstorage('zn_resources')
+      @on_change.call(nil) # fire dirty flag in contoller
     end
 
     def _get_resources_json

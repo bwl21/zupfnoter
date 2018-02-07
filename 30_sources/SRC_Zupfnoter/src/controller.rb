@@ -150,7 +150,7 @@ class Controller
     @editor.controller = self
 
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
-    @songbook        = LocalStore.new("songbook")
+    @songbook        = LocalStore.new("songbook")           # used to store songs in localstore
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
@@ -175,7 +175,7 @@ class Controller
 
     cleanup_localstorage
     load_from_loacalstorage
-    load_demo_tune unless @editor.get_abc_part
+    load_demo_tune if @editor.get_abc_part.empty?
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
 
@@ -297,9 +297,9 @@ class Controller
     }.to_json
     $log.benchmark("saving to localstore") do
       if @systemstatus[:mode] == :work
-        abc = `localStorage.setItem('systemstatus', #{systemstatus});`
+        `localStorage.setItem('systemstatus', #{systemstatus});`
       end
-      @editor.save_to_localstore
+      @editor.save_to_localstorage
     end
   end
 
@@ -315,16 +315,14 @@ class Controller
 
   # load session from localstore
   def load_from_loacalstorage
-    # abc = Native(`localStorage.getItem('abc_data')`)
-    #@editor.set_text(abc) unless abc.nil?
-    @editor.restore_from_localstore
+    @editor.restore_from_localstorage
 
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
     nil
   end
 
-  # this does a cleanip of localstorage
+  # this does a cleanup of localstorage
   # note that this is maintained from version to version
   def cleanup_localstorage
     keys             = `Object.keys(localStorage)`

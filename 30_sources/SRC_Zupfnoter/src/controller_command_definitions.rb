@@ -1109,21 +1109,12 @@ C
       command.as_action do |args|
         abc_code = @editor.get_text
         load_music_model
-        filebase = @music_model.meta_data[:filename]
+        filebase = %Q{#{@music_model.meta_data[:filename]}.abc}
 
         %x{
-          var element = document.createElement('a');
-          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(#{abc_code}));
-          element.setAttribute('download', #{filebase + ".abc"});
-
-          element.style.display = 'none';
-          document.body.appendChild(element);
-
-          element.click();
-
-          document.body.removeChild(element);
+        blob = new Blob([#{abc_code}]);
+        window.saveAs(blob, #{filebase})
         }
-
       end
     end
 
