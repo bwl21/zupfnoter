@@ -38,7 +38,7 @@ module Harpnotes
       @inhibit_callbacks = false
       @markers           = []
       @autofold          = true
-      @on_change          = lambda{}
+      @on_change         = lambda {}
       @config_separator  = '%%%%zupfnoter'
 
       _clean_models
@@ -399,10 +399,14 @@ module Harpnotes
 
     # deletes the entry of key in the config part
     def delete_config_part(key)
-      pconfig = Confstack::Confstack.new(false) # what we get from editor
-      pconfig.push(_get_config_model)
-      pconfig[key] = Confstack::DeleteMe
-      _set_config_model(pconfig.get)
+      if key.start_with? '$resources'
+        $resources.delete(key.split(".").last)
+      else
+        pconfig = Confstack::Confstack.new(false) # what we get from editor
+        pconfig.push(_get_config_model)
+        pconfig[key] = Confstack::DeleteMe
+        _set_config_model(pconfig.get)
+      end
     end
 
     # returns the value of key in in config part
@@ -485,7 +489,7 @@ module Harpnotes
       abc = Native(`localStorage.getItem('abc_data')`)
       unless abc.nil?
         `localstorage.removeItem('abc_data')`
-         @editor.set_text(abc) unless abc.nil?
+        @editor.set_text(abc) unless abc.nil?
       else
         abctext = Native(`localStorage.getItem('zn_abc')`)
         _set_abc_to_editor(abctext) if abctext
@@ -565,11 +569,11 @@ module Harpnotes
     def _set_config_model(object)
       @config_models['config'] = object
       save_to_localstorage('zn_config')
-      @on_change.call(nil)  # fire dirty flag in contoller
+      @on_change.call(nil) # fire dirty flag in contoller
     end
 
     def _set_resources_json(json)
-      $resources             = JSON.parse(json)
+      $resources = JSON.parse(json)
       save_to_localstorage('zn_resources')
       @on_change.call(nil) # fire dirty flag in contoller
     end

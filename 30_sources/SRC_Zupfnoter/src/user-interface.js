@@ -762,8 +762,8 @@ function init_w2ui(uicontroller) {
           {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
           {},
           {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"},
+          {},
           {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
-          {id: 'resources', icon: 'fa fa-image', text: 'resources', tooltip: "edit resources"}
         ]
       },
       {

@@ -513,7 +513,14 @@ class ConfstackEditor
           @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
         when 'help'
           helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
-          `$(#{evt}.target).w2overlay(#{helptext})`
+
+          if target.first.start_with? "$resources"
+            img = $resources[target.first.split('.').last]
+            helptext = %Q{<img style="width:300px;" src="#{img.join}"</img>} if img
+            `$(#{evt}.target).w2overlay(#{helptext})`
+          else
+            `$(#{evt}.target).w2overlay(#{helptext})`
+          end
         when 'default'
           if (a = @default_value[target.first])
             @editor.patch_config_part(target.first, a)
