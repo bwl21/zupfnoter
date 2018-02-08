@@ -239,14 +239,14 @@ module ZnSvg
       }
 
              if (cp_id == "cp1") {
-                 conf_value_new = #{np1.to_a}
+                 conf_value_new = #{np1.to_a.map { |i| i.round(2) }}
                   newpath = [['M', #{p1.x}, #{p1.y}], ['L', #{cp1.x}, #{cp1.y}]]
                   np = #{path_to_raphael(`newpath`)};
                   e.target.firstChild.setAttribute('d', np);
                 }
                  else
                 {
-                 conf_value_new = #{np2.to_a}
+                 conf_value_new = #{np2.to_a.map { |i| i.round(2) }}
                   newpath = [['M', #{p2.x}, #{p2.y}],  ['L', #{cp2.x}, #{cp2.y}]]
                   np = #{path_to_raphael(`newpath`)};
                   e.target.firstChild.setAttribute('d', np);
