@@ -150,7 +150,7 @@ class Controller
     @editor.controller = self
 
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
-    @songbook        = LocalStore.new("songbook")           # used to store songs in localstore
+    @songbook        = LocalStore.new("songbook") # used to store songs in localstore
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
@@ -239,6 +239,8 @@ class Controller
     @systemstatus_consumers = {systemstatus:   [
                                                    lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                                ],
+                               lock:           [lambda { `lockscreen()` }],
+                               unlock:         [lambda { `unlockscreen()`}],
                                localizedtexts: [lambda { %x{update_localized_texts()} }],
                                statusline:     [],
                                error_alert:    [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],

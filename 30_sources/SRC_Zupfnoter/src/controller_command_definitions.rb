@@ -479,7 +479,8 @@ class Controller
 
       def mk_image_edit_keys
         config_from_editor = get_config_from_editor
-        image_keys = config_from_editor.dig("extract","0", "images").keys
+        images = config_from_editor.dig("extract","0", "images")
+        image_keys =  images ? images.keys : []
         image_keys.map{|i| ["imagename", "show", "pos", "height"].map{|k| "extract.#{@systemstatus[:view]}.images.#{i}.#{k}"} }.flatten
       end
 
@@ -518,7 +519,8 @@ class Controller
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
             notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
-            images:                {keys: $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys, newentry_handler: lambda { handle_command("addconf images") }},
+            images:                {keys: $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys,
+                                    newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf images") }: nil) },
             minc:                  {keys: expand_extract_keys(['notebound'])},
             layout:                {keys: expand_extract_keys(
                                               [:layoutlines, :startpos,
@@ -1265,6 +1267,7 @@ C
         $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
 
         @dropboxclient.authenticate().then do |error, data|
+          call_consumers(:lock)
           @dropboxclient.read_file(filename)
         end.then do |abc_text|
           $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
@@ -1276,8 +1279,11 @@ C
           set_status(music_model: "loaded")
 
           handle_command("render")
+          call_consumers(:unlock)
+
 
         end.fail do |err|
+          call_consumers(:unlock)
           _report_error_from_promise %Q{#{I18n.t('could not open file')}: #{err} : "#{filename}"}
           nil
         end

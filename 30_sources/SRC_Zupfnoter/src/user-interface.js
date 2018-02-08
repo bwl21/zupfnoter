@@ -10,7 +10,7 @@ function init_w2ui(uicontroller) {
 // file import methods
 
 
-  function pasteDatauri(name, datauri){
+  function pasteDatauri(name, datauri) {
     uicontroller.$handle_parsed_command("pasteDatauri", {"key": name, "value": datauri})
   }
 
@@ -68,21 +68,21 @@ function init_w2ui(uicontroller) {
       if (text[0] == '<') {
         pasteXml(text);
       }
-      else if (files[0].type.startsWith("image/jpeg")){
+      else if (files[0].type.startsWith("image/jpeg")) {
         pasteDatauri(files[0].name, text)
       }
       else if (files[0].name.endsWith(".mxl")) {
         pasteMxl(text)
       }
-      else if (files[0].name.endsWith(".abc")){
+      else if (files[0].name.endsWith(".abc")) {
         pasteAbc(text);
       }
       else {
-         w2alert("import file format not supported","error")
+        w2alert("import file format not supported", "error")
       }
     }
 
-    if (files[0].type.startsWith("image")){
+    if (files[0].type.startsWith("image")) {
       reader.readAsDataURL(files[0]);
     }
     else if (files[0].name.endsWith('.mxl')) {
@@ -107,7 +107,9 @@ function init_w2ui(uicontroller) {
   }
 
   document.getElementById('file_input')
-    .addEventListener('change', function(event){handleDrop(event)}, false);
+    .addEventListener('change', function (event) {
+      handleDrop(event)
+    }, false);
 
   initializeFileDrop('layout');
 
@@ -117,13 +119,12 @@ function init_w2ui(uicontroller) {
       return;
     }
     var reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       var contents = e.target.result;
       displayContents(contents);
     };
     reader.readAsText(file);
   }
-
 
 
 // UI-Methods
@@ -256,8 +257,12 @@ function init_w2ui(uicontroller) {
 
   toolbarhandlers = {
     'tb_file:tb_create': createNewSheet,
-    'tb_file:tb_import': function(){ $('#file_input').click()},
-    'tb_file:tb_export': function(){uicontroller.$handle_command("download_abc")},
+    'tb_file:tb_import': function () {
+      $('#file_input').click()
+    },
+    'tb_file:tb_export': function () {
+      uicontroller.$handle_command("download_abc")
+    },
 
     'tb_view:0': function () {
       uicontroller.$handle_command("view 0")
@@ -521,37 +526,42 @@ function init_w2ui(uicontroller) {
       {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', tooltip: 'Play music'},
       {
         type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', tooltip: 'Get help', items: [
-        {
-          text: 'Version info',
-          icon: 'fa fa-tags',
-          id: "tbVersionInfo",
-          tooltip: 'Open the version information on website'
-        },
-        {text: 'Videos', icon: 'fa fa-youtube-play', id: "tbTutorials", tooltip: 'Open the video tutorials on youtube'},
-        {text: 'Manual', icon: 'fa fa-book', id: "tbManual", tooltip: 'Open the user manual'},
-        {text: 'Homepage', icon: 'fa fa-home', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
-        {text: ''},
-        {
-          text: 'Reference',
-          icon: 'fa fa-map-o',
-          id: "tbReference",
-          tooltip: 'Open a new Zupfnoter window\nwith the reference page'
-        },
-        {
-          text: 'Demo',
-          icon: 'fa fa-tags',
-          id: "tbDemo",
-          tooltip: 'Open a demo sheet\n(Ich steh an deiner Kripen hier)'
-        },
-        {},
-        {
-          text: 'abc Tutorial detail',
-          icon: 'fa fa-graduation-cap',
-          id: "tbAbcTutorialSchacherl",
-          tooltip: 'Open a detailed ABC tutorial (in German)'
-        },
+          {
+            text: 'Version info',
+            icon: 'fa fa-tags',
+            id: "tbVersionInfo",
+            tooltip: 'Open the version information on website'
+          },
+          {
+            text: 'Videos',
+            icon: 'fa fa-youtube-play',
+            id: "tbTutorials",
+            tooltip: 'Open the video tutorials on youtube'
+          },
+          {text: 'Manual', icon: 'fa fa-book', id: "tbManual", tooltip: 'Open the user manual'},
+          {text: 'Homepage', icon: 'fa fa-home', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
+          {text: ''},
+          {
+            text: 'Reference',
+            icon: 'fa fa-map-o',
+            id: "tbReference",
+            tooltip: 'Open a new Zupfnoter window\nwith the reference page'
+          },
+          {
+            text: 'Demo',
+            icon: 'fa fa-tags',
+            id: "tbDemo",
+            tooltip: 'Open a demo sheet\n(Ich steh an deiner Kripen hier)'
+          },
+          {},
+          {
+            text: 'abc Tutorial detail',
+            icon: 'fa fa-graduation-cap',
+            id: "tbAbcTutorialSchacherl",
+            tooltip: 'Open a detailed ABC tutorial (in German)'
+          },
 
-      ]
+        ]
       }
     ],
 
@@ -597,7 +607,7 @@ function init_w2ui(uicontroller) {
 
 
       if (event.target == "tb_home") {
-        w2popup.open( {title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
+        w2popup.open({title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
       }
       if (event.target == "tbHelp:tbVersionInfo") {
         window.open(uicontroller.$info_url())
@@ -1023,7 +1033,7 @@ function init_w2ui(uicontroller) {
  * This updates the localized texts
  * The method is called from callConsumers
  */
-function update_localized_texts(){
+function update_localized_texts() {
   w2ui.layout_top_toolbar.refresh();
   w2ui.layout_left_toolbar.refresh();
   w2ui.layout_left_tabs.refresh();
@@ -1050,7 +1060,7 @@ function update_systemstatus_w2ui(systemstatus) {
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
- // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
+  // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
   if (systemstatus.mode == 'demo') {
     w2ui.layout_top_toolbar.disable('tb_file')
@@ -1086,8 +1096,8 @@ function update_error_status_w2ui(errors) {
       title: w2utils.lang("Errors occurred"),
       body: errors,
       width: 700,
-      buttons   : '<button class="w2ui-btn" onclick="w2popup.close();">OK</button> '
-  })
+      buttons: '<button class="w2ui-btn" onclick="w2popup.close();">OK</button> '
+    })
 }
 
 function update_editor_status_w2ui(editorstatus) {
@@ -1127,7 +1137,7 @@ function update_play_w2ui(status) {
   if (status == "start") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon: "fa fa-stop"})
   }
-  else if (status == "stopping"){
+  else if (status == "stopping") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "...", icon: "fa fa-stop-circle-o"})
 
     w2ui.layout_top_toolbar.disable('tbPlay')
@@ -1156,6 +1166,15 @@ function set_extract_menu(id, text) {
 };
 
 ;
+
+function lockscreen(msg, mode) {
+  w2popup.open({modal: true, height:100})
+  w2popup.lock(msg, true)
+}
+
+function unlockscreen() {
+  w2popup.close()
+}
 
 function openPopup(theForm) {
 
