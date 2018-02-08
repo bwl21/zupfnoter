@@ -1310,6 +1310,9 @@ vor.
 > die dierekte Bearbeitung im Texteditor nur noch in besonderen Fällen
 > notwendig ist (siehe Kapitel \ref{konfigurationsmasken}
 > [Konfigurationsmasken](#konfigurationsmasken)).
+>
+> Dazu muss die ABC-Datei mit einem Texteditor ausserhalb von Zupfnoter
+> geöffnet und bearbeitet werden.
 
 Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
 verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
@@ -1322,13 +1325,6 @@ Kapitel \ref{konfiguration} [Konfiguration](#konfiguration).
 > **Hinweis**: Wichtig ist, nach einer Änderung in der Menüleiste immer
 > auf auf `Rendern` (ausführen) zu drücken, damit die Unterlegnoten
 > aktualisiert werden.
-
-> **Hinweis**: Wenn man im Vorschaufenster Elemente mit der Maus
-> verschiebt wird diese Änderung sofort in den Konfigurationsparametern
-> im Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher
-> kann man mit "Undo" (`cmd/ctrl - Z`) im Texteditor solche Änderungen
-> auch wieder rückgängig machen. Das gilt auch für die Bearbeitung der
-> Konfigurationsparameter über die Bildschirmmasken.
 
 ### Editor für Liedtexte {#liedtexteditor}
 
@@ -1469,12 +1465,55 @@ Es erscheint eine Maske nach folgendem Beispiel:
 
 > > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
 
+### Einfügen von Bildern zur Illustration des Notenblattes
+
+Zupfnoter kann Bilder in das Unterlegnotenblatt einfügen.
+
+> **Hinweis**: Bitte achte darauf dass die eingefügten Bilder insgesamt
+> nicht zu groß werden (getestet bis zu 600 kB). Sonst funktioniert ggf.
+> die Druckvorschau nicht mehr. Normalerweise hat man ein höchsten zwei
+> Bilder auf dem Blatt. Dann sollte diese Begrenzung kein Problem
+> darstellen. Man muss aber wissen, dass Lade - und Speichervorgänge
+> deutlich länger brauchen.
+
+Um Bilder zu verwenden geht man folgende Schritte:
+
+1.  Das Bild muss im "JPG" - Format vorliegen. Da Zupfnoter keine
+    Bildbearbeitungsfunktionen hat muss mit einem externen Programm das
+    Bild aufbereitet werden.
+
+2.  das Bild wird dann über `Datei / importieren` in den Zupfnoter
+    importiert.
+
+> **Hinweis**: Die Bilddatei kann auch in das Zupfnoter-Fenster
+> hineingezogen werden.
+
+3.  In der Konfigurationsmenü `Konfig bearbeiten / Bilder` können nun
+    die Bilder auf dem Blatt positioniert werden. Dabei kann man
+    Anzeige, Höhe und Position des Bildes angeben.
+
+    > **Hinweis**: Bitte lege alle Bilder zunächst im Auszug 0 an. Der
+    > Konfigurationseditor zeigt in den anderen Auszügen nur Einträge
+    > an, die auch im Auszug 0 vorhanden sind.
+
+    > ![Konfiguration der
+    > Bilder](../ZAUX_Images/040-044_Configuration-images.jpg) 
+
+    > **Hinweis**: Du kannst das Bild auch mit der Maus positionieren.
+
+    In dieser Konfigurationsmaske kann man oben im Abschnitt
+    `$ Ressourcen` auch sehen, welche Bilder bereits vorhenden sind.
+    Durch Klick auf den kleinen Papierkorb kannst du Bilder auch wieder
+    aus der Datei entfernen. Klick auf den Hilfe-Button zeigt eine
+    kleine Vorschau des Bildes.
+
 ## mit der Maus konfigurieren
 
 Einstellungen, welche die Position und Gestalt von Element im
 Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
 
--   Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+-   Positionierung von Texten und Bildern (Titel, Legende, Beschriftung
+    usw.)
 -   Anordnung von Sprunglinien
 -   Gestalt der Triolenbogen (Tuplet)
 -   Gestalt der Flußlinien (experimentell)
@@ -1508,11 +1547,11 @@ Für die grundsätzliche Bedienung gilt:
 > Harfennotenvorschau die entsprechende Konfiguration aufzurufen, zu
 > löschen und neu zu erstellen.
 
-### Texte verschieben
+### Texte und Bilder verschieben
 
 Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
-Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts mit
-der Maus verschieben.
+Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts
+sowie Bilder mit der Maus verschieben.
 
 ### Sprunglinien verschieben
 

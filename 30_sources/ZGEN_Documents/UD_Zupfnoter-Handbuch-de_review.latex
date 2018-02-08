@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-3
+Version dev/V\_1.8.0\_dev-3-12-g001c8e3
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2686,6 +2686,9 @@ Bildschirmmasken zur Bearbeitung der Konfigurationsparameter, so dass
 die dierekte Bearbeitung im Texteditor nur noch in besonderen Fällen
 notwendig ist (siehe Kapitel \ref{konfigurationsmasken}
 \hyperref[konfigurationsmasken]{Konfigurationsmasken}).
+
+Dazu muss die ABC-Datei mit einem Texteditor ausserhalb von Zupfnoter
+geöffnet und bearbeitet werden.
 \end{quote}
 
 Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
@@ -2700,15 +2703,6 @@ Kapitel~\ref{konfiguration} \hyperref[konfiguration]{Konfiguration}.
 \textbf{Hinweis}: Wichtig ist, nach einer Änderung in der Menüleiste
 immer auf auf \texttt{Rendern} (ausführen) zu drücken, damit die
 Unterlegnoten aktualisiert werden.
-\end{quote}
-
-\begin{quote}
-\textbf{Hinweis}: Wenn man im Vorschaufenster Elemente mit der Maus
-verschiebt wird diese Änderung sofort in den Konfigurationsparametern im
-Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher kann
-man mit ``Undo'' (\texttt{cmd/ctrl\ -\ Z}) im Texteditor solche
-Änderungen auch wieder rückgängig machen. Das gilt auch für die
-Bearbeitung der Konfigurationsparameter über die Bildschirmmasken.
 \end{quote}
 
 \hyperdef{}{liedtexteditor}{\subsubsection{Editor für
@@ -2920,6 +2914,67 @@ Es erscheint eine Maske nach folgendem Beispiel:
 \end{quote}
 \end{quote}
 
+\subsubsection{Einfügen von Bildern zur Illustration des
+Notenblattes}\label{einfuxfcgen-von-bildern-zur-illustration-des-notenblattes}
+
+Zupfnoter kann Bilder in das Unterlegnotenblatt einfügen.
+
+\begin{quote}
+\textbf{Hinweis}: Bitte achte darauf dass die eingefügten Bilder
+insgesamt nicht zu groß werden (getestet bis zu 600 kB). Sonst
+funktioniert ggf. die Druckvorschau nicht mehr. Normalerweise hat man
+ein höchsten zwei Bilder auf dem Blatt. Dann sollte diese Begrenzung
+kein Problem darstellen. Man muss aber wissen, dass Lade - und
+Speichervorgänge deutlich länger brauchen.
+\end{quote}
+
+Um Bilder zu verwenden geht man folgende Schritte:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Das Bild muss im ``JPG'' - Format vorliegen. Da Zupfnoter keine
+  Bildbearbeitungsfunktionen hat muss mit einem externen Programm das
+  Bild aufbereitet werden.
+\item
+  das Bild wird dann über \texttt{Datei\ /\ importieren} in den
+  Zupfnoter importiert.
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Die Bilddatei kann auch in das Zupfnoter-Fenster
+hineingezogen werden.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  In der Konfigurationsmenü \texttt{Konfig\ bearbeiten\ /\ Bilder}
+  können nun die Bilder auf dem Blatt positioniert werden. Dabei kann
+  man Anzeige, Höhe und Position des Bildes angeben.
+
+  \begin{quote}
+  \textbf{Hinweis}: Bitte lege alle Bilder zunächst im Auszug 0 an. Der
+  Konfigurationseditor zeigt in den anderen Auszügen nur Einträge an,
+  die auch im Auszug 0 vorhanden sind.
+  \end{quote}
+
+  \begin{quote}
+  \includegraphics{../ZAUX_Images/040-044_Configuration-images.jpg}~
+  \end{quote}
+
+  \begin{quote}
+  \textbf{Hinweis}: Du kannst das Bild auch mit der Maus positionieren.
+  \end{quote}
+
+  In dieser Konfigurationsmaske kann man oben im Abschnitt
+  \texttt{\$\ Ressouren} auch sehen, welche Bilder bereits vorhenden
+  sind. Durch Klick auf den kleinen Papierkorb kannst du Bilder auch
+  wieder aus der Datei entfernen. Klick auf den Hilfe-Button zeigt eine
+  kleine Vorschau des Bildes.
+\end{enumerate}
+
 \subsection{mit der Maus
 konfigurieren}\label{mit-der-maus-konfigurieren}
 
@@ -2929,7 +2984,8 @@ Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+  Positionierung von Texten und Bildern (Titel, Legende, Beschriftung
+  usw.)
 \item
   Anordnung von Sprunglinien
 \item
@@ -2979,11 +3035,12 @@ es am besten mit der rechten Maustaste in der Harfennotenvorschau die
 entsprechende Konfiguration aufzurufen, zu löschen und neu zu erstellen.
 \end{quote}
 
-\subsubsection{Texte verschieben}\label{texte-verschieben}
+\subsubsection{Texte und Bilder
+verschieben}\label{texte-und-bilder-verschieben}
 
 Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
-Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts mit
-der Maus verschieben.
+Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts
+sowie Bilder mit der Maus verschieben.
 
 \subsubsection{Sprunglinien verschieben}\label{sprunglinien-verschieben}
 
@@ -4229,6 +4286,7 @@ spezifiziert den Auszug 1 usw.
           "voices"  : []
         },
         "flowlines"    : [1, 3],
+        "images"       : {},
         "jumplines"    : [1, 3],
         "layout"       : {
           "DRAWING_AREA_SIZE" : [400, 282],
@@ -4516,6 +4574,16 @@ angeben, für die Flußlinien eingezeichnet werden sollen.
 
 \begin{verbatim}
     "flowlines": [1, 3]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.images} -
+Bilder}{extract.0.images - Bilder}}\label{extract.0.images}
+
+TODO:\marginpar{TODO} Helptext für extract.0.images einfügen
+
+\begin{verbatim}
+    "images": {}
       
 \end{verbatim}
 
@@ -6324,6 +6392,12 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 \begin{verbatim}
     "templates": {
       "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
+      "images"      : {
+        "height"    : 100,
+        "imagename" : "",
+        "pos"       : [10, 10],
+        "show"      : true
+      },
       "lyrics"      : {"pos": [350, 70], "verses": [1]},
       "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
       "tuplet"      : {
@@ -6370,6 +6444,65 @@ auch mehrzeilig sein
 
 \begin{verbatim}
     "text": "_vorlage_"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images} -
+Bilder}{templates.images - Bilder}}\label{templates.images}
+
+TODO:\marginpar{TODO} Helptext für templates.images einfügen
+
+\begin{verbatim}
+    "images": {
+      "height"    : 100,
+      "imagename" : "",
+      "pos"       : [10, 10],
+      "show"      : true
+    }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.height} -
+Bildhöhe}{templates.images.height - Bildhöhe}}\label{templates.images.height}
+
+TODO:\marginpar{TODO} Helptext für templates.images.height einfügen
+
+\begin{verbatim}
+    "height": 100
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.imagename} -
+Bildname}{templates.images.imagename - Bildname}}\label{templates.images.imagename}
+
+Hier kannst du das Bild auswählen, welches eingefügt werden soll. Die
+Auswahlliste zeigt die Zupfnoter-internen Namen an. Es werden nur Bilder
+gelistet, die dem ABC-File hinzugefügt wurde.
+
+\begin{verbatim}
+    "imagename": ""
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.pos} -
+Position}{templates.images.pos - Position}}\label{templates.images.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+\begin{verbatim}
+    "pos": [10, 10]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.show} -
+anzeigen}{templates.images.show - anzeigen}}\label{templates.images.show}
+
+Dieser Eisntellung steuert, ob das Objekt (z.B. das Bild) in der Ausgabe
+angezeigt werden soll.
+
+\begin{verbatim}
+    "show": true
       
 \end{verbatim}
 

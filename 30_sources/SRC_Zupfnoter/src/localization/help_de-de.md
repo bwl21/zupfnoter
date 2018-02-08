@@ -209,6 +209,10 @@ gezeichnet werden soll.
 > **Hinweis**:In der Texteingabe wird das als eine Liste von
 > zweiwertigen Listen dargestellt.
 
+## images.0.height
+
+Hier gibst du die Höhe des Objektes (z.b. des Bildes) in mm an.
+
 ## instrument
 
 Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
@@ -223,6 +227,12 @@ Es gibt folgende Einstellunge:
     e
 -   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
     einer G-Bass-Saite
+
+## imagename
+
+Hier kannst du das Bild auswählen, welches eingefügt werden soll. Die
+Auswahlliste zeigt die Zupfnoter-internen Namen an. Es werden nur Bilder
+gelistet, die dem ABC-File hinzugefügt wurde.
 
 ## layout
 
@@ -702,6 +712,11 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 > **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
 > berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
 
+## show
+
+Dieser Eisntellung steuert, ob das Objekt (z.B. das Bild) in der Ausgabe
+angezeigt werden soll.
+
 ## startpos
 
 Hier kannst du die Position von oben angeben, an welcher die Harfennoten
@@ -854,3 +869,17 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 ## X_SPACING
 
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+## \$resources
+
+Hier siehst du eine Liste alle Bilder, die du geladen hast.
+
+-   Du kannst sie löschen indem du auf den Papierkorb klickst.
+-   Du kannst eine kleine Vorschau sehen wenn du auf Hilfe (?) klickst.
+
+> **Hinweis**: Bitte beachte, dass die Bilder erst dann auf deinem Blatt
+> erscheinen, wenn du sie im entsprechenden Auszug anlegst.
+
+> **Hinweis**: Du kannst Bilder im JPG-Format hinzufügen über das Menü
+> `Datei / Import`. Alternativ kannst du eine JPG Datei in Zupfnoter
+> hineinziehen.

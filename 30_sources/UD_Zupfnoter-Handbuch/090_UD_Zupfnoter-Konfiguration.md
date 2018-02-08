@@ -369,7 +369,7 @@ angeben, für die Flußlinien eingezeichnet werden sollen.
         "flowlines": [1, 3]
           
 
-## `extract.0.images` - {#extract.0.images}
+## `extract.0.images` - Bilder {#extract.0.images}
 
 TODO: Helptext für extract.0.images einfügen
 
@@ -1661,7 +1661,12 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 
         "templates": {
           "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
-          "images"      : {"height": 100, "imagename": "", "pos": [10, 10]},
+          "images"      : {
+            "height"    : 100,
+            "imagename" : "",
+            "pos"       : [10, 10],
+            "show"      : true
+          },
           "lyrics"      : {"pos": [350, 70], "verses": [1]},
           "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
           "tuplet"      : {
@@ -1701,23 +1706,30 @@ auch mehrzeilig sein
         "text": "_vorlage_"
           
 
-## `templates.images` - {#templates.images}
+## `templates.images` - Bilder {#templates.images}
 
 TODO: Helptext für templates.images einfügen
 
-        "images": {"height": 100, "imagename": "", "pos": [10, 10]}
+        "images": {
+          "height"    : 100,
+          "imagename" : "",
+          "pos"       : [10, 10],
+          "show"      : true
+        }
           
 
-## `templates.images.height` - {#templates.images.height}
+## `templates.images.height` - Bildhöhe {#templates.images.height}
 
 TODO: Helptext für templates.images.height einfügen
 
         "height": 100
           
 
-## `templates.images.imagename` - {#templates.images.imagename}
+## `templates.images.imagename` - Bildname {#templates.images.imagename}
 
-TODO: Helptext für templates.images.imagename einfügen
+Hier kannst du das Bild auswählen, welches eingefügt werden soll. Die
+Auswahlliste zeigt die Zupfnoter-internen Namen an. Es werden nur Bilder
+gelistet, die dem ABC-File hinzugefügt wurde.
 
         "imagename": ""
           
@@ -1728,6 +1740,14 @@ Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
         "pos": [10, 10]
+          
+
+## `templates.images.show` - anzeigen {#templates.images.show}
+
+Dieser Eisntellung steuert, ob das Objekt (z.B. das Bild) in der Ausgabe
+angezeigt werden soll.
+
+        "show": true
           
 
 ## `templates.lyrics` - Liedtexte {#templates.lyrics}

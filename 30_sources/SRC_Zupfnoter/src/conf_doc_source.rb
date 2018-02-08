@@ -47,7 +47,9 @@ class ConfDocProvider
 
   def insert (key, markdown)
     @entries_md[key]   = markdown
-    @entries_html[key] = @renderer.render(markdown)
+    ## need to strip the escape characters from key. This suports "$resources". the escape key is introduced
+    # by wortsammler (pandoc)
+    @entries_html[key.gsub("\\", "")] = @renderer.render(markdown)
   end
 
   def to_json

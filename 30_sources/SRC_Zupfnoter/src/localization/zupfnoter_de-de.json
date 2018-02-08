@@ -1,6 +1,7 @@
 {
   "phrases": {
     "": "",
+    "$resources": "$ Resourcen",
     "-": "-",
     "...": "...",
     "0": "0",
@@ -407,6 +408,7 @@
     "Tune": "Noten",
     "tuplet": "Tuplet",
     "Unsupported browser. Please use one of ": "Ungeigneter Browser. Bitte benutze einen der folgenden Browser: ",
+    "unsupported section found in abc file: ": "Zupfnoter-Abschnitt in ABC-File nicht unterstützt: ",
     "url": "URL",
     "value": "Wert",
     "Value": "Wert",
