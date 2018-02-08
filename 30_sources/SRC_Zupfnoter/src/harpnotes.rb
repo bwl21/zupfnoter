@@ -1341,11 +1341,10 @@ module Harpnotes
                 flaps   = "      59 61       66       71 73       78       83"
             end
 
-            flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110 }
+            flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
 
-
-            string_by_pitch              = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
-            flaps_by_pitch               = flaps.split(" ").map { |i| i.to_i }
+            string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
+            flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
 
             @pitch_to_xpos               = lambda { |pitch|
               #                           G        c        d        e        f        g        a        b        c'       D'
