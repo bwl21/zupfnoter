@@ -240,7 +240,7 @@ class Controller
                                                    lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                                ],
                                lock:           [lambda { `lockscreen()` }],
-                               unlock:         [lambda { `unlockscreen()`}],
+                               unlock:         [lambda { `unlockscreen()` }],
                                localizedtexts: [lambda { %x{update_localized_texts()} }],
                                statusline:     [],
                                error_alert:    [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
@@ -721,6 +721,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.timestamp_start
     harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
     @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
+    @abc_model                        = harpnote_engine.abc_model
     @harpnote_player.player_model_abc = player_model_abc
     @music_model.checksum             = @editor.get_checksum
   end
@@ -808,9 +809,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.info(@harpnote_player.get_notes.join(","))
     end
 
-    @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
+     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
 
-    @harpnote_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
+     @harpnote_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
   end
 
 
@@ -828,6 +829,69 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
     highlight_abc_object(abcelement)
+  end
+
+  # this performs a selection based on time segements
+  # it will select all musical symbols which are in the
+  # given time range in any voice
+  #
+  # it can highlight multiple segments, even if there
+  # is no usecase yet
+  #
+  # @param [Array of Array of Integer] segments the list of segments which shall be highlighted
+  def select_by_time_segments(segments)
+    result = []
+
+    voice_map = @abc_model[:voices].map { |v| v[:symbols] }
+    segments.each do |segment|
+      voice_map.each do |voice|
+        selection = voice
+                        .select { |e| not [5, 6, 12, 14].include? e[:type] }
+                        .select { |element| element[:time].between? *segment }
+        result.push([selection.first, selection.last]) unless selection.empty?
+      end
+    end
+    result
+
+    #@editor.clear_selection
+    result.each do |range|
+      if range == result.first
+        @editor.select_range_by_position(range.first[:istart], range.last[:iend])
+      else
+        @editor.select_add_range_by_position(range.first[:istart], range.last[:iend])
+      end
+    end
+  end
+
+
+
+  # this returns a list of time ranges
+  # covered by the current selection in editor
+  #
+  # purpose is to select a given time range in
+  # all voices the result of this method
+  # can be used in select_by_time_segments
+  #
+  def get_selected_time_segments
+
+    ranges = @editor.get_selection_ranges
+    $log.info(ranges.to_json)
+
+    time_ranges = ranges.map do |erange|
+      range    = erange.to_a
+      range    = [range.first, range.last - 1] unless range.first == range.last
+      elements = @abc_model[:voices].map do |v|
+        v[:symbols]
+            .select { |e| ((e[:istart].between? *range) or (e[:iend].between? *range)) }
+      end
+      a        = elements.flatten.compact
+
+      $log.info(a.to_json)
+      result = [a.first, a.last].map { |e| e[:time] }
+      result
+    end
+
+    time_ranges
   end
 
   def set_status(status)
@@ -959,14 +1023,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     @editor.on_selection_change do |e|
-      a              = @editor.get_selection_positions
+      ranges         = @editor.get_selection_ranges
       selection_info = @editor.get_selection_info
 
       #$log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
       #$log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-      @harpnote_preview_printer.range_highlight(a.first, a.last)
-      @tune_preview_printer.range_highlight(a.first, a.last)
-      @harpnote_player.range_highlight(a.first, a.last)
+
+      @harpnote_preview_printer.unhighlight_all
+      @tune_preview_printer.unhighlight_all
+
+      ranges.each do |a|
+        @harpnote_preview_printer.range_highlight_more(a.first, a.last)
+        @tune_preview_printer.range_highlight_more(a.first, a.last)
+        @harpnote_player.range_highlight(a.first, a.last)
+      end
     end
 
     @editor.on_cursor_change do |e|

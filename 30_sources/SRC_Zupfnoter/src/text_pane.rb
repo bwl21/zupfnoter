@@ -103,7 +103,7 @@ module Harpnotes
     # @return [type] [description]
     def on_selection_change(&block)
       Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
-        block.call(e) unless @inhibit_callbacks
+        block.call(e) unless  @inhibit_callbacks
       end
     end
 
@@ -129,9 +129,8 @@ module Harpnotes
 
     #
     # Get the border of the current selection
-    # todo: this might be not enough in case of multiple selectios.
     #
-    # Note that it returnes [row, col] for start and end
+    # Note that it returns [row, col] for start and end
     # counting from "0"
     #
     # @return [Array of Number] [start, end] position of selection
@@ -143,6 +142,22 @@ module Harpnotes
         range_end = doc.positionToIndex(range.end, 0);
       }
       [`range_start`, `range_end`]
+    end
+
+    # Get all selections, even if they are not contiguous
+    #
+    # @retun [array of Array of numbers] it is the index in the editor (not row, col.)
+    def get_selection_ranges
+      %x{
+        var doc = self.editor.selection.doc;
+        var ranges = self.editor.selection.getAllRanges();
+        var result = ranges.map(function(therange){
+           var range_start = doc.positionToIndex(therange.start, 0);
+           var range_end = doc.positionToIndex(therange.end, 0);
+           return([range_start, range_end])
+        })
+      }
+      `result`
     end
 
     # This method provides information about the current selection
@@ -197,9 +212,41 @@ module Harpnotes
         range = new #{@range}(startrange.row, startrange.column, endrange.row, endrange.column);
         myrange = {start:startrange, end:endrange}
         #{@editor}.focus();
-        #{@editor}.selection.setSelectionRange(myrange, false);
+          #{@editor}.selection.setSelectionRange(myrange, false);
       }
     end
+
+    #
+    # Select by position (in opposite to row/column pairs)
+    # @param requested_selection_start [Numeric] Begin of the intended selection
+    # @param requested_selection_end [Numeric] End of intended selection
+    # @param [boolean] expand_selection - expand the selection if true
+    #
+    # @return [type] [description]
+    def select_add_range_by_position(requested_selection_start, requested_selection_end, expand_selection = false)
+      #$log.debug("set editor selection to #{selection_start}, #{selection_end} (#{__FILE__} #{__LINE__}) ")
+
+      if expand_selection
+        current_selection = get_selection_positions
+      else
+        current_selection = [requested_selection_start, requested_selection_end]
+      end
+      selection_newstart = [current_selection.first, requested_selection_start].min
+      selection_end      = [current_selection.last, requested_selection_end].max
+
+      %x{
+        doc = self.editor.selection.doc
+        startrange = doc.indexToPosition(#{selection_newstart});
+        endrange = doc.indexToPosition(#{selection_end});
+        range = new #{@range}(startrange.row, startrange.column, endrange.row, endrange.column);
+        myrange = {start:startrange, end:endrange}
+        #{@editor}.focus();
+        #{@editor}.selection.addRange(range, false);
+      }
+    end
+
+
+
 
 
     #
