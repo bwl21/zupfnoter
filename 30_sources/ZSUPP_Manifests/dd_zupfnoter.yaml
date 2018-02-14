@@ -22,7 +22,7 @@
       :html:  ../ZSUPP_Styles/default.wortsammler.css
 
     :input: 
-        - ../RS_Requirements/DD_zupfnoter.md
+        - ../DD_Zupfnoter/DD_zupfnoter.md
 
     :downstream_tracefile: ../ZGEN_RequirementsTracing/DD_zupfnoter.traces.md
 
