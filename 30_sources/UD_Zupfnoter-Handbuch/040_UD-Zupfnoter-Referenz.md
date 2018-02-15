@@ -1954,6 +1954,54 @@ relevante Beispiele
 > Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das
 > Verhalten noch nicht ausgetestet ist.
 
+### Bearbeiten von Takten in allen Stimmen
+
+Wenn man im das gesamte Musiktück Takte einfügen bzw. löschen will, ist
+es notwendig, an mehreren Stellen im ABC-Code zu editieren.
+
+Das ist eigentlich der Moment in dem man das Stück in ein
+Notensatzprogramm z.B. Musescore übernimmt, bearbeitet und dann in den
+Zupfnoter zurückbringt.
+
+Zupfnoter kann diesen Anwendungfall auch abdecken:
+
+.
+
+1.  wähle einen Abchnitt in der ersten Stimme
+2.  Benutze das Menü "Bearbeiten / Abschnitt in allen Stimmen auswählen"
+3.  Im ABC-Fenster siehst du nun, dass mehrere, nicht zusammen hängende
+    Abschnitte selektiert sind.
+
+    ![Auswahl in mehreren
+    Stimmen](../ZAUX_Images/040-055_select-multiple-measures.jpg) 
+
+4.  mit der Taste "Löschen" kannst du nu die gesamte Auswahl löschen.
+    Damit werden die ausgewählten Takte in allen Stimmen gelöscht.
+5.  mit der Taste "\<-" (Pfeiltaste nach links) kannst du die
+    Schreibmarke an den Anfang der Auswahl stellen und weitere Takte
+    eingeben.
+
+    > **Hinweis:** Es ist sinnvoll, hier zunächst Takte mit ganzen Noten
+    > einzugeben. Danach lassen sich neuen Takten in den einzelnen
+    > Stimmen bearbeiten.
+
+> **Hinweis:** das Verfahren ist etwas fragil und solte mit
+> entsprechender Vorsicht angewandt werden
+>
+> 1.  Das Verfahren funktioniert nur, jede Stimme in einem eigenen Block
+>     (mit genau einem "V:" pro Stimme) angegeben wird.
+> 2.  Das Verfahren basiert auf dem Zeitbezug der Noten. Dabei wird ein
+>     Taktstrich der folgenden Note zugeordnet. Wenn also die Auswahl
+>     mit einem Taktstich endet, dann wird die folgende Note in die
+>     Auswahl mit einbezogen.
+> 3.  Die Grenze der ursprünglichen Auswahl muss in allen Stimmen auch
+>     vorhanden sein. Wird z.B. eine **viertel** Note ausgewählt, in
+>     einer anderen Stimme fällt deren Ende aber in eine **halbe Note**,
+>     dann ist die Auswahl in den Stimmen nicht zeitsynchron und es kann
+>     zu Fehlern kommen.
+> 4.  Das Verfahren erfordert, dass die Harfennoten aktuell sind (d.h.
+>     seit dem letzten Rendern keine Bearbeitung mehr gemacht wurde), d
+
 ### Wenn die vertikale Anordnung optimiert werden soll
 
 Zupfnoter errechnet die vertikale Anordnung der Noten selbständig und

@@ -641,68 +641,18 @@ function init_w2ui(uicontroller) {
     name: 'editor-toolbar',
     style: tbstyle,
     items: [
-      {type: 'spacer'},
       {
-        type: 'menu', text: "Add Config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
+        type: 'menu', text: "Edit", id: "edit_actions", icon: "fa fa-pencil", tooltip: "edit functions",
         items: [
-          {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
-          {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
-          {text: 'flowlines', tooltip: "specify which voices \nshow the flowline"},
-          {text: 'jumplines', tooltip: "specify which voices \nshow the jumplines"},
-          {text: 'repeatsigns', tooltip: "specify which voices\nshow repeat signs instead of jumplines"},
-          {text: 'synchlines', tooltip: "specify which voices\nare connected by synchronization lines"},
           {
-            text: 'layoutlines',
-            tooltip: "specify which voides\nare considered to compute \nvertical spacing"
-          },
-          {text: 'subflowlines', tooltip: "specify which voices \nshow the subflowlines"},
-          {},
-
-          {text: 'legend', tooltip: "specify details for legend"},
-          {text: 'lyrics', tooltip: "specify details for lyrics"},
-          {id: 'notes', text: 'page annotation', tooltip: "enter a page bound annotation"},
-          {text: ''},
-
-          {text: 'nonflowrest', tooltip: "specify if rests are shown outside of flowlines"},
-          {text: 'startpos', tooltip: "specify the vertical start position of the notes"},
-          {
-            text: 'countnotes',
-            tooltip: "specify which voices\n shwow countnotes\n and appeareance of the same"
-          },
-          {
-            text: 'barnumbers',
-            tooltip: "specify which voices\n shwow bar numbers\n and appeareance of the same"
-          },
-          {text: 'layout', tooltip: "specify laoyut details \n(e.g. size of symbols)"},
-          {
-            text: 'stringnames',
-            tooltip: "specify output of stringnames.\n Stringnames help to tune the instrument"
-          },
-          {text: ''},
-          {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
-          {
-            id: 'annotations',
-            text: 'annotations',
-            tooltip: "specify temmplate for\n note bound annotations"
-          },
-          {text: ''},
-          {text: 'stringnames.full', tooltip: "specify full details for stringnams"},
-          {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
-          {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
-          {text: ''},
-          {
-            id: 'printer',
-            text: 'Printer adapt',
-            tooltip: "specify printer adaptations details \n(e.g. offsets)"
-          },
-          {
-            id: 'restpos_1.3',
-            text: 'rests as V 1.3',
-            tooltip: "configure positioning of rests\ncompatible to version 1.3"
-          },
-          {text: 'xx', tooltip: "inject the default configuration (for development use only)"},
+            id: "selectinallvoices",
+            text: "Select in all voices",
+            icon: "fa fa-bars",
+            tooltip: "select the current notes in all voices"
+          }
         ]
       },
+      {type: 'spacer'},
       {
         type: 'menu',
         text: "Edit Config",
@@ -818,10 +768,11 @@ function init_w2ui(uicontroller) {
         previews[event.target]();
       }
 
+      // handle edit toolbar
       config_event = event.target.split(":")
-      if (['config'].includes(config_event[0])) {
+      if (['edit_actions'].includes(config_event[0])) {
         if (config_event[1]) {
-          uicontroller.$handle_command("addconf " + event.target.split(":")[1])
+          uicontroller.$handle_command(event.target.split(":")[1])
         }
       }
 
@@ -915,6 +866,12 @@ function init_w2ui(uicontroller) {
     ],
     onClick: function (event) {
       $('#editortabspanel .tab').hide();
+      w2ui.layout_left_toolbar.disable('edit_actions');
+
+
+      if (event.target == "abcEditor") {
+        w2ui.layout_left_toolbar.enable('edit_actions');
+      }
       if (event.target == "abcLyrics") {
         uicontroller.editor.$to_lyrics()
       }
@@ -1101,17 +1058,18 @@ function update_error_status_w2ui(errors) {
 }
 
 function update_editor_status_w2ui(editorstatus) {
+  debugger
   $(".editor-status-position").html(editorstatus.position);
   $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
-  if (editorstatus.token.type.startsWith("zupfnoter.editable")) {
-    w2ui.layout_left_toolbar.enable('edit_snippet')
+  if (editorstatus.token.type.startsWith("zupfnoter.editable") && (editorstatus.selections.length == 1)) {
+      w2ui.layout_left_toolbar.enable('edit_snippet')
   }
   else {
-    w2ui.layout_left_toolbar.disable('edit_snippet')
+      w2ui.layout_left_toolbar.disable('edit_snippet')
   }
 
   // todo: implement a proper inhibit manager
-  if (editorstatus.token.type.startsWith("zupfnoter.editable.before")) {
+  if (editorstatus.token.type.startsWith("zupfnoter.editable.before") && (editorstatus.selections.length == 1)) {
     w2ui.layout_left_toolbar.enable('add_snippet');
     w2ui.layout_left_toolbar.enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
 
@@ -1168,7 +1126,7 @@ function set_extract_menu(id, text) {
 ;
 
 function lockscreen(msg, mode) {
-  w2popup.open({modal: true, height:100})
+  w2popup.open({modal: true, height: 100})
   w2popup.lock(msg, true)
 }
 

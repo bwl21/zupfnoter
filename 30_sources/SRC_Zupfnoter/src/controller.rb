@@ -809,9 +809,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       $log.info(@harpnote_player.get_notes.join(","))
     end
 
-     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
+    @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
 
-     @harpnote_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
+    @harpnote_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
   end
 
 
@@ -864,7 +864,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-
   # this returns a list of time ranges
   # covered by the current selection in editor
   #
@@ -879,7 +878,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     time_ranges = ranges.map do |erange|
       range    = erange.to_a
-      range    = [range.first, range.last - 1] unless range.first == range.last
+      range    = [range.first, range.last - 1] unless range.first == range.last # to make ?between ignore the upper limit
       elements = @abc_model[:voices].map do |v|
         v[:symbols]
             .select { |e| ((e[:istart].between? *range) or (e[:iend].between? *range)) }
@@ -887,7 +886,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       a        = elements.flatten.compact
 
       $log.info(a.to_json)
-      result = [a.first, a.last].map { |e| e[:time] }
+      if a.empty?
+        $log.error(I18n.t("your cursor is not within a voice"))
+        result = [0, 0]
+      else
+        result = [a.first[:time], a.last[:time] + a.last[:dur] - 1]  # expand the selection to the end of the last note
+      end
       result
     end
 
@@ -1043,6 +1047,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       request_refresh(false)
 
       selection_info = @editor.get_selection_info
+      selections     = @editor.get_selection_ranges
       ranges         = selection_info[:selection]
 
       position = "#{ranges.first.first}:#{ranges.first.last}"
@@ -1054,9 +1059,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         token = {type: "", value: ""}
       end
 
-      editorstatus = {position:  position,
-                      tokeninfo: "#{token[:type]} [#{token[:value]}]",
-                      token:     token
+      editorstatus = {position:   position,
+                      tokeninfo:  "#{token[:type]} [#{token[:value]}]",
+                      token:      token,
+                      selections: selections
       }
 
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...

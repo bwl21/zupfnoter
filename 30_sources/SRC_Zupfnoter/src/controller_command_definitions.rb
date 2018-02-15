@@ -124,7 +124,7 @@ class Controller
     end
 
 
-    @commands.add_command(:selectallvoices) do |c|
+    @commands.add_command(:selectinallvoices) do |c|
       c.undoable = false
       c.set_help { "select all voices" }
       c.as_action do |a|
