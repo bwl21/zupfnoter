@@ -145,7 +145,6 @@ class Controller
     $settings = {} # this is te keep runtime settings
 
     @json_validator = Ajv::JsonValidator.new
-
     @editor            = Harpnotes::TextPane.new("abcEditor")
     @editor.controller = self
 
@@ -258,6 +257,13 @@ class Controller
                                }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
+  end
+
+  # This provides the configuration form menue entries
+  # they are defined in ConfstackEditor and can be retrieved
+  # to be used e.g. in the editor toolbar as well.
+  def get_config_form_menu_entries
+    ConfstackEditor.get_config_form_menu_entries
   end
 
   # this handles a command
@@ -1064,9 +1070,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                       token:      token,
                       selections: selections
       }
-
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
-
     end
 
     @harpnote_player.on_noteon do |e|

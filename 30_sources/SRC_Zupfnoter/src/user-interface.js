@@ -344,7 +344,7 @@ function init_w2ui(uicontroller) {
     }
   }
 
-  var pstyle = 'background-color:  #f7f7f7; padding: 0px; overflow:hidden; '; // pajnel style
+  var pstyle = 'background-color:  #f7f7f7; padding: 0px; overflow:hidden; '; // panel style
   var tbstyle = 'background-color: #ffffff; padding: 0px; overflow:hidden; height:30px;'; // toolbar style
   var sbstyle = 'background-color: #ffffff; padding: 0  px; overflow:hidden; height:30px;border-top:1px solid black !important;'; // statusbar style
 
@@ -592,11 +592,7 @@ function init_w2ui(uicontroller) {
 
       // handle config
       config_event = event.target.split(":")
-      if (config_event[0] == 'config') {
-        if (config_event[1]) {
-          uicontroller.$handle_command("addconf " + event.target.split(":")[1])
-        }
-      }
+
 
       // handle dropbox menu
       if (config_event[0] == "tbDropbox") {
@@ -637,8 +633,8 @@ function init_w2ui(uicontroller) {
   }
 
   var editor_toolbar = {
-    id: 'toolbar',
-    name: 'editor-toolbar',
+    id: 'editor_toolbar',
+    name: 'editortoolbar',
     style: tbstyle,
     items: [
       {
@@ -659,72 +655,7 @@ function init_w2ui(uicontroller) {
         id: 'edit_config',
         icon: 'fa fa-pencil',
         tooltip: "Edit configuration with forms",
-        items: [
-          {
-            id: 'extract_annotation',
-            text: 'Extract-Annotation',
-            icon: 'fa fa-bars',
-            tooltip: "Edit annotations of an extract"
-          },
-          {
-            id: 'notes',
-            text: 'page annotation',
-            icon: 'fa fa-file-text-o',
-            tooltip: "edit settings for sheet annotations\nin current extract"
-          },
-          {},
-          {
-            id: 'basic_settings',
-            text: 'basic settings',
-            icon: 'fa fa-heartbeat',
-            tooltip: "Edit basic settings of extract"
-          },
-          {id: 'lyrics', text: 'lyrics', icon: 'fa fa-font', tooltip: "edit settings for lyrics\nin current extract"},
-          {
-            id: 'layout',
-            text: 'layout',
-            icon: 'fa fa-align-center',
-            tooltip: "Edit layout paerameters\nin current extract"
-          },
-          {
-            id: 'instrument_specific',
-            text: 'instrument specific',
-            icon: 'fa fa-pie-chart',
-            tooltip: "settings for specific instrument sizes"
-          },
-          {},
-          {
-            id: 'barnumbers_countnotes',
-            text: 'barnumbers and countnotes',
-            icon: 'fa fa-music',
-            icon: 'fa fa-list-ol',
-            tooltip: "edit barnumbers or countnotes"
-          },
-          {
-            id: 'repeatsigns',
-            text: 'repeat signs',
-            icon: 'fa fa-repeat',
-            tooltip: "edit shape of repeat signs"
-          },
-          {
-            id: 'annotations',
-            text: 'annotations',
-            icon: 'fa fa-commenting-o',
-            tooltip: "edit settings for sheet annotations\nin current extract"
-          },
-          {},
-          {
-            id: 'stringnames',
-            icon: 'fa fa-ellipsis-h',
-            text: 'Stringnames',
-            tooltip: "Edit presentation of stringanmes"
-          },
-          {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
-          {},
-          {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"},
-          {},
-          {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
-        ]
+        items: uicontroller.$get_config_form_menu_entries().$to_n()   // note that these items are a
       },
       {
         type: 'menu',
@@ -752,6 +683,73 @@ function init_w2ui(uicontroller) {
         icon: 'fa fa-pencil',
         tooltip: "Edit addon on cursor position"
       }
+    ],
+
+    onClick: function (event) {
+      // handle perspectives
+      if (perspectives[event.target]) {
+        perspectives[event.target]();
+        if (event.subItem) {
+          event.item.text = event.subItem.text
+        }
+      }
+
+      // handle previews
+      if (previews[event.target]) {
+        previews[event.target]();
+      }
+
+      // handle edit toolbar
+      config_event = event.target.split(":")
+      if (['edit_actions'].includes(config_event[0])) {
+        if (config_event[1]) {
+         uicontroller.$handle_command(event.target.split(":")[1])
+        }
+      }
+
+      // this event is fo the edit_config menu
+      // it is there as a specific
+      config_event2 = event.target.split(":")
+      if (['edit_config'].includes(config_event2[0])) {
+        if (config_event2[1]) {
+          w2ui.layout_left_tabs.click('configtab');
+          uicontroller.$handle_command("editconf " + config_event2[1])
+        }
+      }
+
+      config_event3 = event.target.split(":")
+      if (['edit_snippet'].includes(config_event3[0])) {
+        w2ui.layout_left_tabs.click('abcEditor');
+        uicontroller.$handle_command("editsnippet")
+      }
+
+      config_event4 = event.target.split(":")
+      if (['add_snippet'].includes(config_event4[0])) {
+        if (config_event4[1]) {
+          w2ui.layout_left_tabs.click('abcEditor');
+          uicontroller.$handle_command("addsnippet " + config_event4[1])
+        }
+      }
+    }
+
+  }
+
+  var lyrics_toolbar = {
+    id: 'lyrics_toolbar',
+    name: 'lyrics-toolbar',
+    style: tbstyle,
+    items:  [
+      {type: 'menu', text: "Edit", id: "lyrics_actions", icon: "fa fa-pencil", tooltip: "edit functions"}
+    ]
+  }
+
+
+  // this installs the handlers for the config_toolbar
+  // the toolbar is replaced in config-form.rb
+  var config_toolbar = {
+    name: 'configtoolbar',
+    style: tbstyle,
+    items: [
     ],
 
     onClick: function (event) {
@@ -800,6 +798,7 @@ function init_w2ui(uicontroller) {
     }
 
   }
+
   var statusbar = {
     id: 'statusbarbar',
     name: 'statusbar',
@@ -848,33 +847,44 @@ function init_w2ui(uicontroller) {
     }
   }
 
+  var editortabshtml =
+    '<div id="editortabspanel" style="height:100%">'
 
-  var editortabshtml = '<div id="editortabspanel" style="height:100%">'
-    + '<div id="abcEditor" class="tab" style="height:100%;"></div>'
-    + '<div id="abcLyrics" class="tab" style="height:100%;"></div>'
-    + '<div id="configtab" class="tab" style="height:100%;"></div>'
+    + '<div id="abceditortab" class="tab" style="height:100%;">'
+    + '<div id="abceditortoolbar"></div>'
+    + '<div id="abcEditor" style="height:100%;"></div>'
+    + '</div>' +
+
+    '<div id="lyricseditortab" class="tab" style="height:100%;"><div id="abcLyrics" style="height:100%;"></div></div>' +
+
+    '<div id="configtab" class="tab" style="height:100%;">'
+    + '<div id="configtoolbar" style="height:100%;"></div>'
+    + '<div id="configeditor" style="height:100%"></div>'
     + '</div>'
   ;
 
   var editortabsconfig = {
     name: 'editortabs',
-    active: 'abcEditor',
+    active: 'abceditortab',
     tabs: [
-      {id: 'abcEditor', text: w2utils.lang('abc')},
-      {id: 'abcLyrics', text: w2utils.lang('lyrics')},
+      {id: 'abceditortab', text: w2utils.lang('abc')},
+      {id: 'lyricseditortab', text: w2utils.lang('lyrics')},
       {id: 'configtab', text: w2utils.lang('Configuration')}
     ],
     onClick: function (event) {
       $('#editortabspanel .tab').hide();
-      w2ui.layout_left_toolbar.disable('edit_actions');
+      //w2ui.layout_left_toolbar.disable('edit_actions');
 
-
-      if (event.target == "abcEditor") {
-        w2ui.layout_left_toolbar.enable('edit_actions');
-      }
-      if (event.target == "abcLyrics") {
+      if (event.target == "lyricseditortab") {
         uicontroller.editor.$to_lyrics()
       }
+
+      if (event.target == "configtab"){
+        if (! w2ui.configformtoolbar){
+          uicontroller.$handle_command("editconf basic_settings")
+        }
+      }
+
       $('#' + event.target).show();
       $('#' + event.target).resize();
     }
@@ -934,7 +944,6 @@ function init_w2ui(uicontroller) {
         size: '50%',
         hidden: false,
         resizable: true,
-        toolbar: editor_toolbar,
         style: pstyle,
         tabs: editortabsconfig,
         content: editortabshtml
@@ -943,7 +952,6 @@ function init_w2ui(uicontroller) {
         type: 'main',
         style: pstyle,
         overflow: 'hidden',
-        //tabs: editortabsconfig,
         content: '<div id="tunePreview"  style="height:100%;" ></div>'
       },
       {
@@ -975,9 +983,11 @@ function init_w2ui(uicontroller) {
 
   });
 
-  w2ui['layout'].refresh();
+  w2ui['layout'].refresh()
+  $('#abceditortoolbar').w2toolbar(editor_toolbar)
+  $('#configtoolbar').w2toolbar(config_toolbar)  // we need this even if the config-toolbar is replaced in config-form.rb
   $('#editortabspanel .tab').hide();
-  $('#abcEditor').show();
+  $('#abceditortab').show();
 
   w2ui['layout'].onResize = function (event) {
     uicontroller.editor.$resize();
@@ -992,9 +1002,10 @@ function init_w2ui(uicontroller) {
  */
 function update_localized_texts() {
   w2ui.layout_top_toolbar.refresh();
-  w2ui.layout_left_toolbar.refresh();
   w2ui.layout_left_tabs.refresh();
   w2ui.layout_preview_tabs.refresh();
+  w2ui.editortoolbar.refresh();
+  w2ui.configtoolbar.refresh();
 }
 
 
@@ -1058,33 +1069,32 @@ function update_error_status_w2ui(errors) {
 }
 
 function update_editor_status_w2ui(editorstatus) {
-  debugger
   $(".editor-status-position").html(editorstatus.position);
   $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
   if (editorstatus.token.type.startsWith("zupfnoter.editable") && (editorstatus.selections.length == 1)) {
-      w2ui.layout_left_toolbar.enable('edit_snippet')
+      w2ui['editortoolbar'].enable('edit_snippet')
   }
   else {
-      w2ui.layout_left_toolbar.disable('edit_snippet')
+      w2ui['editortoolbar'].disable('edit_snippet')
   }
 
   // todo: implement a proper inhibit manager
   if (editorstatus.token.type.startsWith("zupfnoter.editable.before") && (editorstatus.selections.length == 1)) {
-    w2ui.layout_left_toolbar.enable('add_snippet');
-    w2ui.layout_left_toolbar.enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
+    w2ui['editortoolbar'].enable('add_snippet');
+    w2ui['editortoolbar'].enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
 
-    w2ui.layout_left_toolbar.disable('edit_snippet');
+    w2ui['editortoolbar'].disable('edit_snippet');
   }
   else {
-    w2ui.layout_left_toolbar.disable('add_snippet')
+    w2ui['editortoolbar'].disable('add_snippet')
   }
 
   if (editorstatus.token.type.startsWith("zupfnoter.editable.beforeBar")) {
-    w2ui.layout_left_toolbar.disable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
+    w2ui['editortoolbar'].disable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
   }
 
 
-  w2ui.layout_left_toolbar.refresh()
+  w2ui['editortoolbar'].refresh()
 }
 
 function update_mouseover_status_w2ui(element_info) {
@@ -1115,7 +1125,7 @@ function enable_save() {
 };
 
 function before_open() {
-  w2ui.layout_left_tabs.click('abcEditor')
+  w2ui.layout_left_tabs.click('abceditortab')
 };
 
 function set_extract_menu(id, text) {

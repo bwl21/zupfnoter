@@ -454,8 +454,10 @@ class ConfstackEditor
     x = @form.to_n
     %x{
     if (w2ui[#{x}.name]){w2ui[#{x}.name].destroy()};
-    $('#configtab').w2form(#{x});
-    $('#configtab #form').w2render(#{x}.name);
+    if (w2ui.configformtoolbar) w2ui.configformtoolbar.destroy();
+    $('#configtoolbar').w2toolbar(#{x}.toolbars);
+    $('#configeditor').w2form(#{x});
+    $('#configeditor #form').w2render(#{x}.name);
     }
     @live_record = Native(`w2ui['configform'].record`)
     register_events
@@ -537,6 +539,76 @@ class ConfstackEditor
     %x{$('.znconfig-button').click(#{handler})}
   end
 
+
+  def self.get_config_form_menu_entries
+    [
+        {
+            id:      'extract_annotation',
+            text:    'Extract-Annotation',
+            icon:    'fa fa-bars',
+            tooltip: "Edit annotations of an extract"
+        },
+        {
+            id:      'notes',
+            text:    'page annotation',
+            icon:    'fa fa-file-text-o',
+            tooltip: "edit settings for sheet annotations\nin current extract"
+        },
+        {},
+        {
+            id:      'basic_settings',
+            text:    'basic settings',
+            icon:    'fa fa-heartbeat',
+            tooltip: "Edit basic settings of extract"
+        },
+        {id: 'lyrics', text: 'lyrics', icon: 'fa fa-font', tooltip: "edit settings for lyrics\nin current extract"},
+        {
+            id:      'layout',
+            text:    'layout',
+            icon:    'fa fa-align-center',
+            tooltip: "Edit layout paerameters\nin current extract"
+        },
+        {
+            id:      'instrument_specific',
+            text:    'instrument specific',
+            icon:    'fa fa-pie-chart',
+            tooltip: "settings for specific instrument sizes"
+        },
+        {},
+        {
+            id:      'barnumbers_countnotes',
+            text:    'barnumbers and countnotes',
+            icon:    'fa fa-music',
+            icon:    'fa fa-list-ol',
+            tooltip: "edit barnumbers or countnotes"
+        },
+        {
+            id:      'repeatsigns',
+            text:    'repeat signs',
+            icon:    'fa fa-repeat',
+            tooltip: "edit shape of repeat signs"
+        },
+        {
+            id:      'annotations',
+            text:    'annotations',
+            icon:    'fa fa-commenting-o',
+            tooltip: "edit settings for sheet annotations\nin current extract"
+        },
+        {},
+        {
+            id:      'stringnames',
+            icon:    'fa fa-ellipsis-h',
+            text:    'Stringnames',
+            tooltip: "Edit presentation of stringanmes"
+        },
+        {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
+        {},
+        {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"},
+        {},
+        {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
+    ]
+  end
+
   def generate_form
     $log.timestamp("generate Form  #{__FILE__} #{__LINE__}")
 
@@ -563,11 +635,21 @@ class ConfstackEditor
             event.onComplete=#{a}
           }
         },
-        toolbar:    {
-            style: 'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;', #todo fix this
+        toolbars: {
+            name:    'configformtoolbar',
             items:   [
-                         {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<div style="font-size:120%;vertical-align:top;margin-bottom: 8px;">#{I18n.t(@title)}</div>}},
+                         {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<h4 style="color:black;margin-left:3pt;">#{I18n.t(@title)}</h4>}},
                          {id: 'bt3', type: 'spacer'},
+                         {
+                             type:    'menu',
+                             text:    "Edit Config",
+                             id:      'edit_config',
+                             icon:    'fa fa-pencil',
+                             tooltip: "Edit configuration with forms",
+                             items:   self.class.get_config_form_menu_entries
+                         },
+
+
                          presetmenu,
                          {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), icon: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
                          {id: 'refresh', type: 'button', caption: 'Refresh', icon: 'fa fa-refresh'},
@@ -579,6 +661,10 @@ class ConfstackEditor
                 @controller.handle_command (%Q{addconf "#{the_target.split('presets:').last}"})
               end
 
+              if the_target.start_with? 'edit_config' and the_target.split(':')[1]
+                @controller.handle_command (%Q{editconf #{the_target.split(':')[1]}})
+              end
+
               refresh_form if (the_target == 'refresh')
 
               @newentry_handler.call if (the_target == 'new_entry')
@@ -586,8 +672,8 @@ class ConfstackEditor
         },
         onValidate: nil,
         formHTML:   %Q{
-                    <table>
-                    <tr><th style="width:20em;">#{I18n.t("Name")}</th>
+                    <table >
+                    <tr><th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
                     <th>#{I18n.t("Value")}</th><th/><th>#{I18n.t("Effective value")}</th></tr>
                     #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>

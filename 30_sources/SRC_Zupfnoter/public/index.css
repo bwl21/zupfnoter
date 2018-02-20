@@ -208,6 +208,13 @@ rect.highlightplay {
 .w2ui-tb-caption {
   vertical-align: middle; }
 
+.w2ui-toolbar {
+  background-color: #ffffff;
+  padding: 0px;
+  overflow: hidden;
+  height: 30px;
+  border-bottom: 1px solid #b5b4b6; }
+
 .w2ui-overlay {
   color: black; }
   .w2ui-overlay p {

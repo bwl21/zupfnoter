@@ -42,7 +42,7 @@
     * new algorithm to determine right/left position of barnumber/countnote
 * changed name of some layout presets #196
 * you can now extend the selection to all voices in order to delete/insert measures in the entire piece #202
-
+* rearranged toolbar on left pane #202
   
 ## exprimental
 

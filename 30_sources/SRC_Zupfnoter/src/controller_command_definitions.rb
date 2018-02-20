@@ -588,10 +588,12 @@ class Controller
 
         # now handle the form
         if the_form
+          editor_title = %Q{#{args[:set]} [#{I18n.t("Extract")} #{@systemstatus[:view]}]}
           editable_keys         = the_form[:keys]
           newentry_handler      = the_form[:newentry_handler]
           quicksetting_commands = the_form[:quicksetting_commands] || []
         else # use the argument as key if there is no set.
+          editor_title = %Q{#{args[:set]}}
           quicksetting_commands = []
           editable_keys         = [args[:set]]
         end
@@ -633,7 +635,8 @@ class Controller
           handle_command("editconf #{args[:set]}")
         end
 
-        editor_title = %Q{Extract #{@systemstatus[:view]}: #{args[:set]}}
+        #editor_title = %Q{Extract #{@systemstatus[:view]}: #{args[:set]}}
+
         editorparams = {
             title:                 editor_title,
             editor:                @editor,
