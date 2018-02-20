@@ -30,7 +30,7 @@ module InitConf
                      :instrument, :bottomup, :beams, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
                      :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING, :jumpline_anchor,
                      # sort within printer
-                     :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
+                     :a3_offset, :a4_offset, :a4_pages, # sort within layout
 
                      :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T05_printed_extracts, :T99_do_not_copy,
 
@@ -383,7 +383,7 @@ module InitConf
                                LINE_THICK:      0.5,
                                PITCH_OFFSET:    -43,
                                X_SPACING:       11.5,
-                               X_OFFSET:        2.8, ## todo: set this to laoyut.ELLIPSE_SIZE first
+                               X_OFFSET:        2.8, ## todo: set this to layout.ELLIPSE_SIZE first
                                # all numbers in mm
                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                REST_SIZE:         [4, 2],

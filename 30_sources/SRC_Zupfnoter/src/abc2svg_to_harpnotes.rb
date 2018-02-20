@@ -784,7 +784,7 @@ module Harpnotes
         part_label = @part_table[voice_element[:time]]
 
         # we maintain the prev_pitch/next_pitch
-        # for more detailed laoyut control of
+        # for more detailed layout control of
         # repeatmarks, tuplets etc.
         if @previous_note
           @previous_note.next_pitch         = the_note.pitch

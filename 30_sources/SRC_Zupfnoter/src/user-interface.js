@@ -919,7 +919,7 @@ function init_w2ui(uicontroller) {
 
   $('#statusbar-layout').w2layout(
     {
-      name: 'statusbar-laoyut',
+      name: 'statusbar-layout',
       panels: [
         //{type: 'main', id: 'statusbar', resizable: false, style: pstyle, content: '<div id="statusbar" style="overflow:hidden;border: 1pt solid #000000;" class="zn-statusbar" >statusbar</div>',  hidden: false}
         {
