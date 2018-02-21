@@ -921,14 +921,15 @@ module Harpnotes
 
 
     class Image < Drawable
-      attr_reader :url, :llpos, :trpos
+      attr_reader :url, :llpos, :height, :opacity, :origin
       # @param [String] url of imabge
       # @param [Vector2d] llpos lower left postion of crop in image
       # @param [Vector2d] trpos to right postion of crop in image
-      def initialize (url, llpos, trpos)
-        @url   = url
-        @llpos = llpos
-        @trpos = trpos
+      def initialize (url, llpos, height, origin = nil)
+        @url    = url
+        @llpos  = llpos
+        @height = height
+        @origin = nil
       end
     end
 
@@ -1376,10 +1377,24 @@ module Harpnotes
       end
 
 
-      def layout_manual_sheet(conf)
+      def layout_images(print_options_raw, print_variant_nr)
         result = []
-        unless conf.nil?
-          result.push Harpnotes::Drawing::Image.new(conf['url'], Vector2d(conf['llpos']), Vector2d(conf['trpos']))
+        images = print_options_raw['images']
+        unless images.nil?
+          images.each do |number, image|
+            if image[:show] == true
+              datauri = $resources[image['imagename']]
+              datauri = datauri.join if datauri.is_a? Array
+              if datauri
+                result.push Harpnotes::Drawing::Image.new(datauri, Vector2d(image['pos']) - [0, image['height']], image['height']).tap { |s|
+                  s.conf_key   = "extract.#{print_variant_nr}.images.#{number}.pos"
+                  s.conf_value = image['pos']
+                  s.draginfo   = {handler: :annotation}
+                }
+                ## todo insert a draghandle for dragging the height
+              end
+            end
+          end
         end
         result
       end
@@ -1444,8 +1459,7 @@ module Harpnotes
 
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
-
-        manual_sheet = layout_manual_sheet($conf['layout.manual_sheet'])
+        res_images = layout_images(print_options_hash, print_variant_nr)
 
         initialize
 
@@ -1622,7 +1636,7 @@ module Harpnotes
 
         @draw_instrument.call.each { |r| sheet_marks.push(r) } if @draw_instrument
 
-        sheet_elements = manual_sheet + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
+        sheet_elements = res_images + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
 
         result                = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
         result.printer_config = $conf[:printer]

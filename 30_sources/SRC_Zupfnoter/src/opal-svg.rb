@@ -1,11 +1,15 @@
 #
-# This module wraps the API for Raphael
+# This module implements the API as it was in Raphael
 # as long as we need it to render harpnotes
 #
-# note that the class variable @r is used by
-# `self.r` in the native javascript
-# of the methods
+# We uase the library svg.min.js (https://github.com/svgdotjs/svg.js) to manipulate the SVG nodes
+# in partiucular we have draggable() from there.#
 #
+#    we get the nodes by SVG.get which itself finds them by id an subsequently adopts them.
+#        This allows to produce SVG using string operations.
+#
+#
+
 module ZnSvg
 
   #
@@ -44,7 +48,7 @@ module ZnSvg
     end
 
     def new_id!
-      "ZN_#{@id+=1}"
+      "ZN_#{@id += 1}"
     end
 
     # @return the resulting SVG
@@ -146,7 +150,7 @@ module ZnSvg
             conf_value_new[0] += deltax;
             conf_value_new[1] += deltay;
 
-             #{@draggable_dragend_handler.call( {element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`)} ) };
+             #{@draggable_dragend_handler.call({element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`).map { |i| i.round(2) }}) };
           })
       }
     end
@@ -235,14 +239,14 @@ module ZnSvg
       }
 
              if (cp_id == "cp1") {
-                 conf_value_new = #{np1.to_a}
+                 conf_value_new = #{np1.to_a.map { |i| i.round(2) }}
                   newpath = [['M', #{p1.x}, #{p1.y}], ['L', #{cp1.x}, #{cp1.y}]]
                   np = #{path_to_raphael(`newpath`)};
                   e.target.firstChild.setAttribute('d', np);
                 }
                  else
                 {
-                 conf_value_new = #{np2.to_a}
+                 conf_value_new = #{np2.to_a.map { |i| i.round(2) }}
                   newpath = [['M', #{p2.x}, #{p2.y}],  ['L', #{cp2.x}, #{cp2.y}]]
                   np = #{path_to_raphael(`newpath`)};
                   e.target.firstChild.setAttribute('d', np);
@@ -250,6 +254,15 @@ module ZnSvg
 
             #{@draggable_dragend_handler}( { conf_key: conf_key_to_change, conf_value_new: conf_value_new } )
         })
+      }
+    end
+
+    def set_draggable_imagesize(svg_element_id, conf_key, conf_value, draginfo)
+      %x{
+      var xx = SVG.get(#{svg_element_id});
+      xx.addClass("nn_draggable")
+
+      xx.draggable();
       }
     end
 
@@ -262,7 +275,7 @@ module ZnSvg
       xx.draggable();
 
       xx.on('dragstart', function(e) {
-        #{vertical      = draginfo[:jumpline][:vertical]}
+        #{vertical = draginfo[:jumpline][:vertical]}
         sx = e.detail.p.x;
         sy = e.detail.p.y;
         this.stroke("blue");
@@ -297,8 +310,8 @@ module ZnSvg
       }
     end
 
-    def add_abcref(x, y, rx, ry, start_char=nil)
-      id  = new_id!
+    def add_abcref(x, y, rx, ry, start_char = nil)
+      id = new_id!
       # classes:
       # abcref - for global unhighlighting - name came from abc2svg
       #        - to add a click handler
@@ -306,7 +319,7 @@ module ZnSvg
       # _(startchar)_ to hilight by player - approach comes from abc2svg
       # zn
       padding = 2
-      svg =%Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - padding/2}" y="#{y - ry - padding/2}" width="#{2 * rx +  padding}" height="#{2 * ry + padding}"/>}
+      svg     = %Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - padding / 2}" y="#{y - ry - padding / 2}" width="#{2 * rx + padding}" height="#{2 * ry + padding}"/>}
       @svgbuffer.push(svg)
       id
     end
@@ -328,12 +341,14 @@ module ZnSvg
     end
 
 
-    def image(url, x, y, width, height)
-      @svgbuffer.push(%Q{  <image x="#{x}" y="#{y}" width="#{width}" height="#{height}"
-    preserveAspectRatio="none" opacity="0.4"
+    def image(url, x, y, height)
+      id = new_id!
+      @svgbuffer.push(%Q{  <image id = #{id} x="#{x}" y="#{y}" height="#{height}"
+    preserveAspectRatio="none"
     xlink:href="#{url}">
   </image>})
 
+      id
     end
 
     #
@@ -344,7 +359,7 @@ module ZnSvg
     #
     #
     # @return [Element] The generated Element
-    def path(spec, attributes={}, bgrectspec=nil)
+    def path(spec, attributes = {}, bgrectspec = nil)
       thespec     = path_to_raphael(spec)
       id          = new_id!
       group_attrs = _attr_to_xml({fill: attributes[:fill], stroke: attributes[:stroke]}) # move fill attibute to the group such that drag drop can change the color
@@ -368,7 +383,7 @@ module ZnSvg
           result += element[1 .. -1].join(" ")
         end
       else
-        result=path
+        result = path
       end
       result
     end
@@ -383,7 +398,7 @@ module ZnSvg
     # @param radius [Numeric] radius for rounded corners, default is 0
     #
     # @return [element] The generated Element
-    def rect(x, y, rx, ry, radius = 0, attributes={fill: "none", stroke: "black", "stroke-width" => @line_width})
+    def rect(x, y, rx, ry, radius = 0, attributes = {fill: "none", stroke: "black", "stroke-width" => @line_width})
       id   = new_id!
       attr = _attr_to_xml(attributes)
       #@svgbuffer.push(%Q{<rect x="#{x}" y="#{y}" width="#{rx}" height="#{ry}" rx="#{radius}" ry="#{radius}" style="fill:#{attr[:fill]};stroke-width:#{@line_width};stroke:#{attr[:stroke]}" />})
@@ -419,7 +434,7 @@ module ZnSvg
     # @param text [String] The text to be rendered
     #
     # @return [Element] The generated Element
-    def text(x, y, text, attributes={})
+    def text(x, y, text, attributes = {})
       id     = new_id!
       attrs  = _attr_to_xml(attributes)
       tspans = text.split("\n").map { |l| %Q{<tspan dy="1.2em" x="#{x}">#{l}</tspan>} }.join()
@@ -438,12 +453,8 @@ module ZnSvg
     #
     # @return [Array of Numeric] The horizontal, vertical dimensions
     # of the canvas
-    def size
+    def size_outdated
       [`self.r.canvas.offsetWidth`, `self.r.canvas.offsetHeight`]
-    end
-
-    def enable_pan_zoom
-      `self.r.panzoom().enable()` if `self.r.panzoom != undefined`
     end
 
     def scroll_to_element(element)

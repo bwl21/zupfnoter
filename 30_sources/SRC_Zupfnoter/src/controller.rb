@@ -137,16 +137,19 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
+    # this keeps  a hash of resources
+    # as resource thend to be big,
+    # we do not hold them in $conf
+    $resources = {} # this keeps resources
 
     $settings = {} # this is te keep runtime settings
 
     @json_validator = Ajv::JsonValidator.new
-
     @editor            = Harpnotes::TextPane.new("abcEditor")
     @editor.controller = self
 
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
-    @songbook        = LocalStore.new("songbook")
+    @songbook        = LocalStore.new("songbook") # used to store songs in localstore
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
@@ -171,7 +174,7 @@ class Controller
 
     cleanup_localstorage
     load_from_loacalstorage
-    load_demo_tune unless @editor.get_abc_part
+    load_demo_tune if @editor.get_abc_part.empty?
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
 
@@ -235,6 +238,8 @@ class Controller
     @systemstatus_consumers = {systemstatus:   [
                                                    lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                                ],
+                               lock:           [lambda { `lockscreen()` }],
+                               unlock:         [lambda { `unlockscreen()` }],
                                localizedtexts: [lambda { %x{update_localized_texts()} }],
                                statusline:     [],
                                error_alert:    [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
@@ -254,6 +259,13 @@ class Controller
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
 
+  # This provides the configuration form menue entries
+  # they are defined in ConfstackEditor and can be retrieved
+  # to be used e.g. in the editor toolbar as well.
+  def get_config_form_menu_entries
+    ConfstackEditor.get_config_form_menu_entries
+  end
+
   # this handles a command
   # todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
@@ -268,6 +280,22 @@ class Controller
     call_consumers(:error_alert)
   end
 
+  # this handles a command which is already parsed
+  #
+  # @param [String] command the name of the command
+  # @param [Hash] args a hash with the arguments. May even be a JS object
+  def handle_parsed_command(command, args)
+    $log.clear_errors
+    begin
+      $log.timestamp_start
+      $log.timestamp(command)
+      @commands.run_parsed_command(command, Native(args))
+    rescue Exception => e
+      $log.error(%Q{#{e.message} in command "#{command}"}, nil, nil, e.backtrace)
+    end
+    call_consumers(:error_alert)
+  end
+
   # Save session to local store
   # only if in :work mode
   def save_to_localstorage
@@ -275,10 +303,11 @@ class Controller
     systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
                                                     :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :zoom].include?(key)
     }.to_json
-    if @systemstatus[:mode] == :work
-      abc = `localStorage.setItem('systemstatus', #{systemstatus});`
-      abc = @editor.get_text
-      abc = `localStorage.setItem('abc_data', abc)`
+    $log.benchmark("saving to localstore") do
+      if @systemstatus[:mode] == :work
+        `localStorage.setItem('systemstatus', #{systemstatus});`
+      end
+      @editor.save_to_localstorage
     end
   end
 
@@ -294,14 +323,14 @@ class Controller
 
   # load session from localstore
   def load_from_loacalstorage
-    abc = Native(`localStorage.getItem('abc_data')`)
-    @editor.set_text(abc) unless abc.nil?
+    @editor.restore_from_localstorage
+
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
     nil
   end
 
-  # this does a cleanip of localstorage
+  # this does a cleanup of localstorage
   # note that this is maintained from version to version
   def cleanup_localstorage
     keys             = `Object.keys(localStorage)`
@@ -605,11 +634,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       LastRenderMonitor.new.set_active
       set_active("#tunePreview")
       `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+    end.fail do
+      alert("fail")
     end.then do
       Promise.new.tap do |promise|
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
         `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
+      end.fail do
+        alert("fail")
       end.then do
         Promise.new.tap do |promise|
           call_consumers(:error_alert)
@@ -648,10 +681,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def layout_harpnotes(print_variant = 0, page_format = 'A4')
 
     config = get_config_from_editor
-    @editor.neat_config
 
     $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
     $conf.push(config) # in case of error, we hav the ensure close below
+
+    $image_list = $conf.get['resources'].keys rescue nil
 
     # prepare extract menu
     printed_extracts = $conf['produce']
@@ -693,18 +727,19 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.timestamp_start
     harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
     @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
+    @abc_model                        = harpnote_engine.abc_model
     @harpnote_player.player_model_abc = player_model_abc
     @music_model.checksum             = @editor.get_checksum
   end
 
   # this retrieves the current config from the editor
   def get_config_from_editor
-    config, status = @editor.get_parsed_config
+    config, status = @editor.get_config_model
     if status
       config, status = migrate_config(config)
       if status[:changed]
         $log.info(status[:message])
-        @editor.set_config_part(config)
+        @editor.set_config_model(config)
         # @editor.prepend_comment(status[:message])
       end
     end
@@ -802,6 +837,73 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     highlight_abc_object(abcelement)
   end
 
+  # this performs a selection based on time segements
+  # it will select all musical symbols which are in the
+  # given time range in any voice
+  #
+  # it can highlight multiple segments, even if there
+  # is no usecase yet
+  #
+  # @param [Array of Array of Integer] segments the list of segments which shall be highlighted
+  def select_by_time_segments(segments)
+    result = []
+
+    voice_map = @abc_model[:voices].map { |v| v[:symbols] }
+    segments.each do |segment|
+      voice_map.each do |voice|
+        selection = voice
+                        .select { |e| not [5, 6, 12, 14].include? e[:type] }
+                        .select { |element| element[:time].between? *segment }
+        result.push([selection.first, selection.last]) unless selection.empty?
+      end
+    end
+    result
+
+    #@editor.clear_selection
+    result.each do |range|
+      if range == result.first
+        @editor.select_range_by_position(range.first[:istart], range.last[:iend])
+      else
+        @editor.select_add_range_by_position(range.first[:istart], range.last[:iend])
+      end
+    end
+  end
+
+
+  # this returns a list of time ranges
+  # covered by the current selection in editor
+  #
+  # purpose is to select a given time range in
+  # all voices the result of this method
+  # can be used in select_by_time_segments
+  #
+  def get_selected_time_segments
+
+    ranges = @editor.get_selection_ranges
+    $log.info(ranges.to_json)
+
+    time_ranges = ranges.map do |erange|
+      range    = erange.to_a
+      range    = [range.first, range.last - 1] unless range.first == range.last # to make ?between ignore the upper limit
+      elements = @abc_model[:voices].map do |v|
+        v[:symbols]
+            .select { |e| ((e[:istart].between? *range) or (e[:iend].between? *range)) }
+      end
+      a        = elements.flatten.compact
+
+      $log.info(a.to_json)
+      if a.empty?
+        $log.error(I18n.t("your cursor is not within a voice"))
+        result = [0, 0]
+      else
+        result = [a.first[:time], a.last[:time] + a.last[:dur] - 1]  # expand the selection to the end of the last note
+      end
+      result
+    end
+
+    time_ranges
+  end
+
   def set_status(status)
     @systemstatus.merge!(status)
     $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
@@ -834,6 +936,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     ## register handler for dragging annotations
+    # the handler is called with an info - hash
+    # conf_key: the key of configuration to be patched
+    # conf_value_new: the new value of configuration to be patched
+    #
+    # if conf_value_new is nil then process the following keys
+    # conf_value: {pos: []} old position
+    # delta: {delta: []} delta for positions
+    #
+    # Note: it is a matter of the draginfo[:handler] to select
+    # the correct draggable handler which has to handle
+    # drag operation as well as eventually compute the value for info
+    #
+    # see opal_svg: bind_elements for details
+    #
     @harpnote_preview_printer.on_annotation_drag_end do |info|
 
       conf_key  = info[:conf_key]
@@ -917,20 +1033,27 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     @editor.on_selection_change do |e|
-      a              = @editor.get_selection_positions
+      ranges         = @editor.get_selection_ranges
       selection_info = @editor.get_selection_info
 
       #$log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
       #$log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-      @harpnote_preview_printer.range_highlight(a.first, a.last)
-      @tune_preview_printer.range_highlight(a.first, a.last)
-      @harpnote_player.range_highlight(a.first, a.last)
+
+      @harpnote_preview_printer.unhighlight_all
+      @tune_preview_printer.unhighlight_all
+
+      ranges.each do |a|
+        @harpnote_preview_printer.range_highlight_more(a.first, a.last)
+        @tune_preview_printer.range_highlight_more(a.first, a.last)
+        @harpnote_player.range_highlight(a.first, a.last)
+      end
     end
 
     @editor.on_cursor_change do |e|
       request_refresh(false)
 
       selection_info = @editor.get_selection_info
+      selections     = @editor.get_selection_ranges
       ranges         = selection_info[:selection]
 
       position = "#{ranges.first.first}:#{ranges.first.last}"
@@ -942,13 +1065,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         token = {type: "", value: ""}
       end
 
-      editorstatus = {position:  position,
-                      tokeninfo: "#{token[:type]} [#{token[:value]}]",
-                      token:     token
+      editorstatus = {position:   position,
+                      tokeninfo:  "#{token[:type]} [#{token[:value]}]",
+                      token:      token,
+                      selections: selections
       }
-
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
-
     end
 
     @harpnote_player.on_noteon do |e|

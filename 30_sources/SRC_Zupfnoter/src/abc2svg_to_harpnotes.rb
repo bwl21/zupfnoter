@@ -9,6 +9,7 @@ module Harpnotes
 
       ABC2SVG_DURATION_FACTOR = 1536 # a whole note is 1536 in the time domain of abc2svg
 
+      attr_reader :abc_model
 
       def initialize
         super
@@ -17,6 +18,7 @@ module Harpnotes
         @previous_new_part = []
         @score_statements  = [] # need this to capture score statments in the header
         @part_table        = {}
+        @abc_model         = {}
 
         @_shortest_note = $conf.get('layout.SHORTEST_NOTE')
         _reset_state
@@ -782,7 +784,7 @@ module Harpnotes
         part_label = @part_table[voice_element[:time]]
 
         # we maintain the prev_pitch/next_pitch
-        # for more detailed laoyut control of
+        # for more detailed layout control of
         # repeatmarks, tuplets etc.
         if @previous_note
           @previous_note.next_pitch         = the_note.pitch
@@ -915,11 +917,11 @@ module Harpnotes
       # to be used for backannotation purposes
       def _parse_origin(voice_element)
         {
-            startChar: voice_element[:istart],
-            endChar:   voice_element[:iend],
-            start_pos: voice_element[:start_pos],
-            end_pos:   voice_element[:end_pos],
-            raw_voice_element:       voice_element    # required extract_goto_info
+            startChar:         voice_element[:istart],
+            endChar:           voice_element[:iend],
+            start_pos:         voice_element[:start_pos],
+            end_pos:           voice_element[:end_pos],
+            raw_voice_element: voice_element # required extract_goto_info
         }
       end
 

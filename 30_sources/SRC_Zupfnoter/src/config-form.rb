@@ -34,20 +34,20 @@ class ConfstackEditor
         I18n.t(key)
       end
 
-      def self.to_neutral(key, string="")
+      def self.to_neutral(key, string = "")
         nil
       end
 
       def self.to_template(key)
         # handle the case notes.x
-        template = key.split('.')[-2] # templates are for "extract....<template>.x"
+        template       = key.split('.')[-2] # templates are for "extract....<template>.x"
         voice_template = key.split('.')[-3] # templates are for "extract.<template>.v_<voice>.x"
-        a        = $conf.get("templates.#{template}") if template
-        a        = $conf.get("templates.#{voice_template}") if voice_template and not a.nil?
+        a              = $conf.get("templates.#{template}") if template
+        a              = $conf.get("templates.#{voice_template}") if voice_template and not a.nil?
 
         if a.nil?
           help_key = key
-          help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) {"#{$1}0#{$3}"}
+          help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
           a        = $conf.get(help_key)
         end
         puts help_key
@@ -56,7 +56,7 @@ class ConfstackEditor
       end
 
       def self.to_html(key)
-        %Q{<input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="60"></input>}
+        %Q{<input name="#{key}"" title = "#{key}"" type="string" maxlength="100" size="40"></input>}
       end
 
       def self.to_w2uifield(key)
@@ -71,11 +71,11 @@ class ConfstackEditor
 
     class IntegerPairs < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map {|pair| values = pair.split('-'); [values[0] || 0, values[1] || 0].map {|i| i.to_i}}
+        string.split(",").map { |pair| values = pair.split('-'); [values[0] || 0, values[1] || 0].map { |i| i.to_i } }
       end
 
       def self.to_string(key, value)
-        a = value.map {|v| %Q{#{v.first}-#{v.last}}}.join(", ")
+        a = value.map { |v| %Q{#{v.first}-#{v.last}} }.join(", ")
       end
 
       def self.to_neutral(key)
@@ -86,7 +86,7 @@ class ConfstackEditor
     class FloatPair < ZnTypes
       def self.to_value(key, string)
         list = string.split(",")
-        [list[0] || 0, list[1] || 0].map {|i| i.to_f}
+        [list[0] || 0, list[1] || 0].map { |i| i.to_f }
       end
 
       def self.to_string(key, value)
@@ -137,7 +137,7 @@ class ConfstackEditor
       end
 
       def self.to_html(key)
-        %Q{<input name="#{key}"" type="checkbox" class="w2ui-input" title = "#{key}" size="60">&nbsp;#{I18n.t(key)}</input>}
+        %Q{<input name="#{key}"" type="checkbox" class="w2ui-input" title = "#{key}" size="40">&nbsp;#{I18n.t(key)}</input>}
       end
     end
 
@@ -171,17 +171,17 @@ class ConfstackEditor
 
     class MultiLineString < OneLineString
       def self.to_html(key)
-        %Q{<textarea name="#{key}" title = "#{key}" cols="60"></textarea>}
+        %Q{<textarea name="#{key}" title = "#{key}" cols="40"></textarea>}
       end
     end
 
     class IntegerList < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map {|i| i.to_i}
+        string.split(",").map { |i| i.to_i }
       end
 
       def self.to_string(key, value)
-        value.map {|i| i.to_s}.join(", ")
+        value.map { |i| i.to_s }.join(", ")
       end
 
       def self.to_neutral(key)
@@ -191,7 +191,7 @@ class ConfstackEditor
 
     class TupletShape < ZnTypes
       def self.to_value(key, string)
-        string.split(",").map {|s| s.strip}
+        string.split(",").map { |s| s.strip }
       end
 
       def self.to_string(key, value)
@@ -206,7 +206,7 @@ class ConfstackEditor
 
     class RestPosition < ZnTypes
       def self.to_html(key)
-        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
       end
 
       def self.to_w2uifield(key)
@@ -235,7 +235,7 @@ class ConfstackEditor
 
     class Color < ZnTypes
       def self.to_html(key)
-        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
       end
 
       def self.to_w2uifield(key)
@@ -258,9 +258,34 @@ class ConfstackEditor
       end
     end
 
+    class Imagename < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: $resources.keys},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_value(key, string)
+        string[:id]
+      end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Imagename.to_neutral #{__FILE__} #{__LINE__}")
+      end
+    end
+
     class Instrument < ZnTypes
       def self.to_html(key)
-        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
       end
 
       def self.to_w2uifield(key)
@@ -286,7 +311,7 @@ class ConfstackEditor
 
     class TextStyle < ZnTypes
       def self.to_html(key)
-        %Q{<input name="#{key}" title = "#{key}" type="list" size="60"></input>}
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
       end
 
       def self.to_w2uifield(key)
@@ -327,16 +352,17 @@ class ConfstackEditor
           FloatPair       => ['apbase', 'pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset', 'jumpline_anchor'],
           IntegerList     => ['a4_pages', 'voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
           Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow', 'PITCH_OFFSET'],
-          OneLineString   => ['title', 'filenamepart', 'url', 'filebase'],
+          OneLineString   => ['title', 'filenamepart', 'url', 'filebase', 'imagename'],
           MultiLineString => ['text'],
           Boolean         => ['limit_a3', 'autopos', 'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],
-          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f', "X_SPACING", "X_OFFSET"],
+          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
           Instrument      => ['instrument'],
+          Imagename       => ['imagename'],
           Color           => ['color_default', 'color_variant1', 'color_variant2']
-      }.inject({}) {|r, (k, v)| v.each {|i| r[i] = k}; r}
+      }.inject({}) { |r, (k, v)| v.each { |i| r[i] = k }; r }
 
       nil
     end
@@ -399,7 +425,7 @@ class ConfstackEditor
 
     $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
 
-    value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") {value_handler.call}
+    value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") { value_handler.call }
 
     $log.benchmark("process value handler result #{__FILE__} #{__LINE__}") do
       @value                = Confstack.new(false)
@@ -416,8 +442,8 @@ class ConfstackEditor
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
     @record = {} # hash to prepare the record for the form
 
-    @record          = @value.keys.inject({}) {|r, k| r[k] = @helper.to_string(k, @value[k]); r}
-    @effective_value = @effective_value_raw.keys.inject({}) {|r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r}
+    @record          = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
+    @effective_value = @effective_value_raw.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r }
     $log.timestamp("end initialize Form  #{__FILE__} #{__LINE__}")
     nil
   end
@@ -425,11 +451,13 @@ class ConfstackEditor
 
   def show_form
     $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
-    x=@form.to_n
+    x = @form.to_n
     %x{
     if (w2ui[#{x}.name]){w2ui[#{x}.name].destroy()};
-    $('#configtab').w2form(#{x});
-    $('#configtab #form').w2render(#{x}.name);
+    if (w2ui.configformtoolbar) w2ui.configformtoolbar.destroy();
+    $('#configtoolbar').w2toolbar(#{x}.toolbars);
+    $('#configeditor').w2form(#{x});
+    $('#configeditor #form').w2render(#{x}.name);
     }
     @live_record = Native(`w2ui['configform'].record`)
     register_events
@@ -487,9 +515,16 @@ class ConfstackEditor
           @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
         when 'help'
           helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
-          `$(#{evt}.target).w2overlay(#{helptext})`
+
+          if target.first.start_with? "$resources"
+            img = $resources[target.first.split('.').last]
+            helptext = %Q{<img style="width:300px;" src="#{img.join}"</img>} if img
+            `$(#{evt}.target).w2overlay(#{helptext})`
+          else
+            `$(#{evt}.target).w2overlay(#{helptext})`
+          end
         when 'default'
-          if a=@default_value[target.first]
+          if (a = @default_value[target.first])
             @editor.patch_config_part(target.first, a)
             refresh_form
             register_events
@@ -504,22 +539,92 @@ class ConfstackEditor
     %x{$('.znconfig-button').click(#{handler})}
   end
 
+
+  def self.get_config_form_menu_entries
+    [
+        {
+            id:      'extract_annotation',
+            text:    'Extract-Annotation',
+            icon:    'fa fa-bars',
+            tooltip: "Edit annotations of an extract"
+        },
+        {
+            id:      'notes',
+            text:    'page annotation',
+            icon:    'fa fa-file-text-o',
+            tooltip: "edit settings for sheet annotations\nin current extract"
+        },
+        {},
+        {
+            id:      'basic_settings',
+            text:    'basic settings',
+            icon:    'fa fa-heartbeat',
+            tooltip: "Edit basic settings of extract"
+        },
+        {id: 'lyrics', text: 'lyrics', icon: 'fa fa-font', tooltip: "edit settings for lyrics\nin current extract"},
+        {
+            id:      'layout',
+            text:    'layout',
+            icon:    'fa fa-align-center',
+            tooltip: "Edit layout paerameters\nin current extract"
+        },
+        {
+            id:      'instrument_specific',
+            text:    'instrument specific',
+            icon:    'fa fa-pie-chart',
+            tooltip: "settings for specific instrument sizes"
+        },
+        {},
+        {
+            id:      'barnumbers_countnotes',
+            text:    'barnumbers and countnotes',
+            icon:    'fa fa-music',
+            icon:    'fa fa-list-ol',
+            tooltip: "edit barnumbers or countnotes"
+        },
+        {
+            id:      'repeatsigns',
+            text:    'repeat signs',
+            icon:    'fa fa-repeat',
+            tooltip: "edit shape of repeat signs"
+        },
+        {
+            id:      'annotations',
+            text:    'annotations',
+            icon:    'fa fa-commenting-o',
+            tooltip: "edit settings for sheet annotations\nin current extract"
+        },
+        {},
+        {
+            id:      'stringnames',
+            icon:    'fa fa-ellipsis-h',
+            text:    'Stringnames',
+            tooltip: "Edit presentation of stringanmes"
+        },
+        {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
+        {},
+        {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"},
+        {},
+        {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
+    ]
+  end
+
   def generate_form
     $log.timestamp("generate Form  #{__FILE__} #{__LINE__}")
 
     presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
-                  items: @quicksetting_commands.map {|i| {id: i, text: i.split(".").last}}
+                  items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
     }
 
     @form = {
         name: "configform",
         #header:     I18n.t(@title),
         style:      'border: 0px; background-color: transparent;',
-        fields:     @value.keys.map {|key| @helper.to_w2uifield(key)}.flatten.compact,
+        fields:     @value.keys.map { |key| @helper.to_w2uifield(key) }.flatten.compact,
         record:     @record,
         focus:      -1,
-        onChange:   lambda {|event|
-          a=lambda {
+        onChange:   lambda { |event|
+          a = lambda {
             push_config_to_editor
             %x{
                document.getElementById(#{event}.target).focus()
@@ -530,11 +635,21 @@ class ConfstackEditor
             event.onComplete=#{a}
           }
         },
-        toolbar:    {
-            style: 'background-color: #f0f0f0; padding: 0px; overflow:hidden; height:30px;', #todo fix this
+        toolbars: {
+            name:    'configformtoolbar',
             items:   [
-                         {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<div style="font-size:120%;vertical-align:top;margin-bottom: 8px;">#{I18n.t(@title)}</div>}},
+                         {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<h4 style="color:black;margin-left:3pt;">#{I18n.t(@title)}</h4>}},
                          {id: 'bt3', type: 'spacer'},
+                         {
+                             type:    'menu',
+                             text:    "Edit Config",
+                             id:      'edit_config',
+                             icon:    'fa fa-pencil',
+                             tooltip: "Edit configuration with forms",
+                             items:   self.class.get_config_form_menu_entries
+                         },
+
+
                          presetmenu,
                          {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), icon: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
                          {id: 'refresh', type: 'button', caption: 'Refresh', icon: 'fa fa-refresh'},
@@ -546,6 +661,10 @@ class ConfstackEditor
                 @controller.handle_command (%Q{addconf "#{the_target.split('presets:').last}"})
               end
 
+              if the_target.start_with? 'edit_config' and the_target.split(':')[1]
+                @controller.handle_command (%Q{editconf #{the_target.split(':')[1]}})
+              end
+
               refresh_form if (the_target == 'refresh')
 
               @newentry_handler.call if (the_target == 'new_entry')
@@ -553,10 +672,10 @@ class ConfstackEditor
         },
         onValidate: nil,
         formHTML:   %Q{
-                    <table>
-                    <tr><th style="width:20em;">#{I18n.t("Name")}</th>
+                    <table >
+                    <tr><th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
                     <th>#{I18n.t("Value")}</th><th/><th>#{I18n.t("Effective value")}</th></tr>
-                    #{@value.keys.map {|key| mk_fieldHTML(key, @value[key])}.join}
+                    #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>
                     }
     }

@@ -108,7 +108,9 @@ module CommandController
       @inverse_action.call(arguments)
     end
 
-
+    #**
+    # 
+    # @param [Hash] arguments
     def get_clean_argument_values(arguments)
       result = {}
       @parameters.each do |p|
@@ -212,6 +214,11 @@ module CommandController
 
     def parse_string(command)
       r = command.scan(STRING_COMMAND_REGEX).map { |s| s.select { |x| not x.nil? }.first }
+    end
+
+    def run_parsed_command(command, arguments)
+      the_command = @commands[command.to_sym]
+      perform(the_command, arguments)
     end
 
     def run_string(command)

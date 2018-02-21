@@ -1310,6 +1310,9 @@ vor.
 > die dierekte Bearbeitung im Texteditor nur noch in besonderen Fällen
 > notwendig ist (siehe Kapitel \ref{konfigurationsmasken}
 > [Konfigurationsmasken](#konfigurationsmasken)).
+>
+> Dazu muss die ABC-Datei mit einem Texteditor ausserhalb von Zupfnoter
+> geöffnet und bearbeitet werden.
 
 Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
 verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
@@ -1322,13 +1325,6 @@ Kapitel \ref{konfiguration} [Konfiguration](#konfiguration).
 > **Hinweis**: Wichtig ist, nach einer Änderung in der Menüleiste immer
 > auf auf `Rendern` (ausführen) zu drücken, damit die Unterlegnoten
 > aktualisiert werden.
-
-> **Hinweis**: Wenn man im Vorschaufenster Elemente mit der Maus
-> verschiebt wird diese Änderung sofort in den Konfigurationsparametern
-> im Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher
-> kann man mit "Undo" (`cmd/ctrl - Z`) im Texteditor solche Änderungen
-> auch wieder rückgängig machen. Das gilt auch für die Bearbeitung der
-> Konfigurationsparameter über die Bildschirmmasken.
 
 ### Editor für Liedtexte {#liedtexteditor}
 
@@ -1469,12 +1465,55 @@ Es erscheint eine Maske nach folgendem Beispiel:
 
 > > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
 
+### Einfügen von Bildern zur Illustration des Notenblattes
+
+Zupfnoter kann Bilder in das Unterlegnotenblatt einfügen.
+
+> **Hinweis**: Bitte achte darauf dass die eingefügten Bilder insgesamt
+> nicht zu groß werden (getestet bis zu 600 kB). Sonst funktioniert ggf.
+> die Druckvorschau nicht mehr. Normalerweise hat man ein höchsten zwei
+> Bilder auf dem Blatt. Dann sollte diese Begrenzung kein Problem
+> darstellen. Man muss aber wissen, dass Lade - und Speichervorgänge
+> deutlich länger brauchen.
+
+Um Bilder zu verwenden geht man folgende Schritte:
+
+1.  Das Bild muss im "JPG" - Format vorliegen. Da Zupfnoter keine
+    Bildbearbeitungsfunktionen hat muss mit einem externen Programm das
+    Bild aufbereitet werden.
+
+2.  das Bild wird dann über `Datei / importieren` in den Zupfnoter
+    importiert.
+
+> **Hinweis**: Die Bilddatei kann auch in das Zupfnoter-Fenster
+> hineingezogen werden.
+
+3.  In der Konfigurationsmenü `Konfig bearbeiten / Bilder` können nun
+    die Bilder auf dem Blatt positioniert werden. Dabei kann man
+    Anzeige, Höhe und Position des Bildes angeben.
+
+    > **Hinweis**: Bitte lege alle Bilder zunächst im Auszug 0 an. Der
+    > Konfigurationseditor zeigt in den anderen Auszügen nur Einträge
+    > an, die auch im Auszug 0 vorhanden sind.
+
+    > ![Konfiguration der
+    > Bilder](../ZAUX_Images/040-044_Configuration-images.jpg) 
+
+    > **Hinweis**: Du kannst das Bild auch mit der Maus positionieren.
+
+    In dieser Konfigurationsmaske kann man oben im Abschnitt
+    `$ Ressourcen` auch sehen, welche Bilder bereits vorhenden sind.
+    Durch Klick auf den kleinen Papierkorb kannst du Bilder auch wieder
+    aus der Datei entfernen. Klick auf den Hilfe-Button zeigt eine
+    kleine Vorschau des Bildes.
+
 ## mit der Maus konfigurieren
 
 Einstellungen, welche die Position und Gestalt von Element im
 Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
 
--   Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+-   Positionierung von Texten und Bildern (Titel, Legende, Beschriftung
+    usw.)
 -   Anordnung von Sprunglinien
 -   Gestalt der Triolenbogen (Tuplet)
 -   Gestalt der Flußlinien (experimentell)
@@ -1508,11 +1547,11 @@ Für die grundsätzliche Bedienung gilt:
 > Harfennotenvorschau die entsprechende Konfiguration aufzurufen, zu
 > löschen und neu zu erstellen.
 
-### Texte verschieben
+### Texte und Bilder verschieben
 
 Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
-Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts mit
-der Maus verschieben.
+Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts
+sowie Bilder mit der Maus verschieben.
 
 ### Sprunglinien verschieben
 
@@ -1914,6 +1953,54 @@ relevante Beispiele
 > **Hinweis**: Die ABC-Notation erlaubt mehrere `%%score` - Anweisungen.
 > Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das
 > Verhalten noch nicht ausgetestet ist.
+
+### Bearbeiten von Takten in allen Stimmen
+
+Wenn man im das gesamte Musiktück Takte einfügen bzw. löschen will, ist
+es notwendig, an mehreren Stellen im ABC-Code zu editieren.
+
+Das ist eigentlich der Moment in dem man das Stück in ein
+Notensatzprogramm z.B. Musescore übernimmt, bearbeitet und dann in den
+Zupfnoter zurückbringt.
+
+Zupfnoter kann diesen Anwendungfall auch abdecken:
+
+.
+
+1.  wähle einen Abchnitt in der ersten Stimme
+2.  Benutze das Menü "Bearbeiten / Abschnitt in allen Stimmen auswählen"
+3.  Im ABC-Fenster siehst du nun, dass mehrere, nicht zusammen hängende
+    Abschnitte selektiert sind.
+
+    ![Auswahl in mehreren
+    Stimmen](../ZAUX_Images/040-055_select-multiple-measures.jpg) 
+
+4.  mit der Taste "Löschen" kannst du nu die gesamte Auswahl löschen.
+    Damit werden die ausgewählten Takte in allen Stimmen gelöscht.
+5.  mit der Taste "\<-" (Pfeiltaste nach links) kannst du die
+    Schreibmarke an den Anfang der Auswahl stellen und weitere Takte
+    eingeben.
+
+    > **Hinweis:** Es ist sinnvoll, hier zunächst Takte mit ganzen Noten
+    > einzugeben. Danach lassen sich neuen Takten in den einzelnen
+    > Stimmen bearbeiten.
+
+> **Hinweis:** das Verfahren ist etwas fragil und solte mit
+> entsprechender Vorsicht angewandt werden
+>
+> 1.  Das Verfahren funktioniert nur, jede Stimme in einem eigenen Block
+>     (mit genau einem "V:" pro Stimme) angegeben wird.
+> 2.  Das Verfahren basiert auf dem Zeitbezug der Noten. Dabei wird ein
+>     Taktstrich der folgenden Note zugeordnet. Wenn also die Auswahl
+>     mit einem Taktstich endet, dann wird die folgende Note in die
+>     Auswahl mit einbezogen.
+> 3.  Die Grenze der ursprünglichen Auswahl muss in allen Stimmen auch
+>     vorhanden sein. Wird z.B. eine **viertel** Note ausgewählt, in
+>     einer anderen Stimme fällt deren Ende aber in eine **halbe Note**,
+>     dann ist die Auswahl in den Stimmen nicht zeitsynchron und es kann
+>     zu Fehlern kommen.
+> 4.  Das Verfahren erfordert, dass die Harfennoten aktuell sind (d.h.
+>     seit dem letzten Rendern keine Bearbeitung mehr gemacht wurde), d
 
 ### Wenn die vertikale Anordnung optimiert werden soll
 

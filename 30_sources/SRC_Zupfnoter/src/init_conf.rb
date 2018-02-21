@@ -17,10 +17,11 @@ module InitConf
 
     explicit_sort = [:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                      :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
-                     :legend, :nonflowrest, :lyrics, :notes, :tuplet, :layout, :printer,
+                     :legend, :nonflowrest, :lyrics, :notes, :images, :tuplet, :layout, :printer,
                      #
                      :annotation, :decoration, :partname, :variantend, :countnote, :c_jumplines, :tuplet, :minc, :flowline, # sort within notebound
 
+                     :imagename,
                      :stringnames,
 
                      # sort within layout
@@ -29,12 +30,12 @@ module InitConf
                      :instrument, :bottomup, :beams, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
                      :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING, :jumpline_anchor,
                      # sort within printer
-                     :a3_offset, :a4_offset, :a4_pages, # sort within laoyut
+                     :a3_offset, :a4_offset, :a4_pages, # sort within layout
 
                      :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T05_printed_extracts, :T99_do_not_copy,
 
                      "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
-                     :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :autopos, :apbase, :text, :style, :marks, # tuplets annotations
+                     :cp1, :cp2, :shape, :pos, :hpos, :height, :vpos, :spos, :autopos, :apbase, :text, :style, :marks, # tuplets annotations
                      :resources,
                      :d64, :d48, :d32, :d24, :d16, :d12, :d8, :d6, :d4, :d3, :d2, :d1
     ]
@@ -72,6 +73,7 @@ module InitConf
          templates: {
              notes: {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
              lyrics:      {verses: [1], pos: [350, 70]},
+             images:      {imagename: "", show: true, pos: [10,10], height: 100,  },
              tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
              annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
@@ -367,6 +369,7 @@ module InitConf
                  layoutlines:  [1, 2, 3, 4],
                  legend:       {spos: [320, 27], pos: [320, 7]},
                  lyrics:       {},
+                 images:       {},
                  #
                  # this denotes the layout parameters which are intended to bne configured
                  # by the regular user
@@ -380,7 +383,7 @@ module InitConf
                                LINE_THICK:      0.5,
                                PITCH_OFFSET:    -43,
                                X_SPACING:       11.5,
-                               X_OFFSET:        2.8, ## todo: set this to laoyut.ELLIPSE_SIZE first
+                               X_OFFSET:        2.8, ## todo: set this to layout.ELLIPSE_SIZE first
                                # all numbers in mm
                                ELLIPSE_SIZE: [3.5, 1.7], # radii of the largest Ellipse
                                REST_SIZE:         [4, 2],

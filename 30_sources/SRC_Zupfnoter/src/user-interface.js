@@ -10,6 +10,10 @@ function init_w2ui(uicontroller) {
 // file import methods
 
 
+  function pasteDatauri(name, datauri) {
+    uicontroller.$handle_parsed_command("pasteDatauri", {"key": name, "value": datauri})
+  }
+
   function pasteXml(text) {
     // try {
     //   var xmldata = $.parseXML(text);
@@ -30,7 +34,6 @@ function init_w2ui(uicontroller) {
     var result = vertaal(xmldata, options);
 
 
-    debugger;
     uicontroller.dropped_abc = result[0]
 
     uicontroller.$handle_command('drop')
@@ -47,6 +50,10 @@ function init_w2ui(uicontroller) {
     uicontroller.$handle_command('drop')
   }
 
+  /**
+   * Hints: https://developer.mozilla.org/de/docs/Web/API/FileReader/readAsDataURL
+   * @param event
+   */
   function handleDrop(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -61,14 +68,24 @@ function init_w2ui(uicontroller) {
       if (text[0] == '<') {
         pasteXml(text);
       }
+      else if (files[0].type.startsWith("image/jpeg")) {
+        pasteDatauri(files[0].name, text)
+      }
       else if (files[0].name.endsWith(".mxl")) {
         pasteMxl(text)
       }
-      else {
+      else if (files[0].name.endsWith(".abc")) {
         pasteAbc(text);
       }
+      else {
+        w2alert("import file format not supported", "error")
+      }
     }
-    if (files[0].name.endsWith('.mxl')) {
+
+    if (files[0].type.startsWith("image")) {
+      reader.readAsDataURL(files[0]);
+    }
+    else if (files[0].name.endsWith('.mxl')) {
       reader.readAsBinaryString(files[0]);
     }
     else {
@@ -90,7 +107,9 @@ function init_w2ui(uicontroller) {
   }
 
   document.getElementById('file_input')
-    .addEventListener('change', function(event){debugger;handleDrop(event)}, false);
+    .addEventListener('change', function (event) {
+      handleDrop(event)
+    }, false);
 
   initializeFileDrop('layout');
 
@@ -100,13 +119,12 @@ function init_w2ui(uicontroller) {
       return;
     }
     var reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       var contents = e.target.result;
       displayContents(contents);
     };
     reader.readAsText(file);
   }
-
 
 
 // UI-Methods
@@ -239,8 +257,12 @@ function init_w2ui(uicontroller) {
 
   toolbarhandlers = {
     'tb_file:tb_create': createNewSheet,
-    'tb_file:tb_import': function(){ $('#file_input').click()},
-    'tb_file:tb_export': function(){uicontroller.$handle_command("download_abc")},
+    'tb_file:tb_import': function () {
+      $('#file_input').click()
+    },
+    'tb_file:tb_export': function () {
+      uicontroller.$handle_command("download_abc")
+    },
 
     'tb_view:0': function () {
       uicontroller.$handle_command("view 0")
@@ -322,7 +344,7 @@ function init_w2ui(uicontroller) {
     }
   }
 
-  var pstyle = 'background-color:  #f7f7f7; padding: 0px; overflow:hidden; '; // pajnel style
+  var pstyle = 'background-color:  #f7f7f7; padding: 0px; overflow:hidden; '; // panel style
   var tbstyle = 'background-color: #ffffff; padding: 0px; overflow:hidden; height:30px;'; // toolbar style
   var sbstyle = 'background-color: #ffffff; padding: 0  px; overflow:hidden; height:30px;border-top:1px solid black !important;'; // statusbar style
 
@@ -504,37 +526,42 @@ function init_w2ui(uicontroller) {
       {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', tooltip: 'Play music'},
       {
         type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', tooltip: 'Get help', items: [
-        {
-          text: 'Version info',
-          icon: 'fa fa-tags',
-          id: "tbVersionInfo",
-          tooltip: 'Open the version information on website'
-        },
-        {text: 'Videos', icon: 'fa fa-youtube-play', id: "tbTutorials", tooltip: 'Open the video tutorials on youtube'},
-        {text: 'Manual', icon: 'fa fa-book', id: "tbManual", tooltip: 'Open the user manual'},
-        {text: 'Homepage', icon: 'fa fa-home', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
-        {text: ''},
-        {
-          text: 'Reference',
-          icon: 'fa fa-map-o',
-          id: "tbReference",
-          tooltip: 'Open a new Zupfnoter window\nwith the reference page'
-        },
-        {
-          text: 'Demo',
-          icon: 'fa fa-tags',
-          id: "tbDemo",
-          tooltip: 'Open a demo sheet\n(Ich steh an deiner Kripen hier)'
-        },
-        {},
-        {
-          text: 'abc Tutorial detail',
-          icon: 'fa fa-graduation-cap',
-          id: "tbAbcTutorialSchacherl",
-          tooltip: 'Open a detailed ABC tutorial (in German)'
-        },
+          {
+            text: 'Version info',
+            icon: 'fa fa-tags',
+            id: "tbVersionInfo",
+            tooltip: 'Open the version information on website'
+          },
+          {
+            text: 'Videos',
+            icon: 'fa fa-youtube-play',
+            id: "tbTutorials",
+            tooltip: 'Open the video tutorials on youtube'
+          },
+          {text: 'Manual', icon: 'fa fa-book', id: "tbManual", tooltip: 'Open the user manual'},
+          {text: 'Homepage', icon: 'fa fa-home', id: "tbHomepage", tooltip: 'Open Zupfnoter website'},
+          {text: ''},
+          {
+            text: 'Reference',
+            icon: 'fa fa-map-o',
+            id: "tbReference",
+            tooltip: 'Open a new Zupfnoter window\nwith the reference page'
+          },
+          {
+            text: 'Demo',
+            icon: 'fa fa-tags',
+            id: "tbDemo",
+            tooltip: 'Open a demo sheet\n(Ich steh an deiner Kripen hier)'
+          },
+          {},
+          {
+            text: 'abc Tutorial detail',
+            icon: 'fa fa-graduation-cap',
+            id: "tbAbcTutorialSchacherl",
+            tooltip: 'Open a detailed ABC tutorial (in German)'
+          },
 
-      ]
+        ]
       }
     ],
 
@@ -565,11 +592,7 @@ function init_w2ui(uicontroller) {
 
       // handle config
       config_event = event.target.split(":")
-      if (config_event[0] == 'config') {
-        if (config_event[1]) {
-          uicontroller.$handle_command("addconf " + event.target.split(":")[1])
-        }
-      }
+
 
       // handle dropbox menu
       if (config_event[0] == "tbDropbox") {
@@ -580,7 +603,7 @@ function init_w2ui(uicontroller) {
 
 
       if (event.target == "tb_home") {
-        w2popup.open( {title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
+        w2popup.open({title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
       }
       if (event.target == "tbHelp:tbVersionInfo") {
         window.open(uicontroller.$info_url())
@@ -610,142 +633,29 @@ function init_w2ui(uicontroller) {
   }
 
   var editor_toolbar = {
-    id: 'toolbar',
-    name: 'editor-toolbar',
+    id: 'editor_toolbar',
+    name: 'editortoolbar',
     style: tbstyle,
     items: [
-      {type: 'spacer'},
       {
-        type: 'menu', text: "Add Config", id: 'config', icon: 'fa fa-gear', tooltip: "configure your sheet",
+        type: 'menu', text: "Edit", id: "edit_actions", icon: "fa fa-pencil", tooltip: "edit functions",
         items: [
-          {id: 'title', tooltip: "insert a title for the \ncurrent extract"},
-          {id: 'voices', tooltip: "specify voices to \nbe shown in current extract"},
-          {text: 'flowlines', tooltip: "specify which voices \nshow the flowline"},
-          {text: 'jumplines', tooltip: "specify which voices \nshow the jumplines"},
-          {text: 'repeatsigns', tooltip: "specify which voices\nshow repeat signs instead of jumplines"},
-          {text: 'synchlines', tooltip: "specify which voices\nare connected by synchronization lines"},
           {
-            text: 'layoutlines',
-            tooltip: "specify which voides\nare considered to compute \nvertical spacing"
-          },
-          {text: 'subflowlines', tooltip: "specify which voices \nshow the subflowlines"},
-          {},
-
-          {text: 'legend', tooltip: "specify details for legend"},
-          {text: 'lyrics', tooltip: "specify details for lyrics"},
-          {id: 'notes', text: 'page annotation', tooltip: "enter a page bound annotation"},
-          {text: ''},
-
-          {text: 'nonflowrest', tooltip: "specify if rests are shown outside of flowlines"},
-          {text: 'startpos', tooltip: "specify the vertical start position of the notes"},
-          {
-            text: 'countnotes',
-            tooltip: "specify which voices\n shwow countnotes\n and appeareance of the same"
-          },
-          {
-            text: 'barnumbers',
-            tooltip: "specify which voices\n shwow bar numbers\n and appeareance of the same"
-          },
-          {text: 'layout', tooltip: "specify laoyut details \n(e.g. size of symbols)"},
-          {
-            text: 'stringnames',
-            tooltip: "specify output of stringnames.\n Stringnames help to tune the instrument"
-          },
-          {text: ''},
-          {text: 'produce', tooltip: "specify which extracts shall be saved as PDF"},
-          {
-            id: 'annotations',
-            text: 'annotations',
-            tooltip: "specify temmplate for\n note bound annotations"
-          },
-          {text: ''},
-          {text: 'stringnames.full', tooltip: "specify full details for stringnams"},
-          {text: 'repeatsigns.full', tooltip: "specify all details for repeat signs"},
-          {text: 'barnumbers.full', tooltip: "specify all details for bar numbers"},
-          {text: ''},
-          {
-            id: 'printer',
-            text: 'Printer adapt',
-            tooltip: "specify printer adaptations details \n(e.g. offsets)"
-          },
-          {
-            id: 'restpos_1.3',
-            text: 'rests as V 1.3',
-            tooltip: "configure positioning of rests\ncompatible to version 1.3"
-          },
-          {text: 'xx', tooltip: "inject the default configuration (for development use only)"},
+            id: "selectinallvoices",
+            text: "Select in all voices",
+            icon: "fa fa-bars",
+            tooltip: "select the current notes in all voices"
+          }
         ]
       },
+      {type: 'spacer'},
       {
         type: 'menu',
         text: "Edit Config",
         id: 'edit_config',
         icon: 'fa fa-pencil',
         tooltip: "Edit configuration with forms",
-        items: [
-          {
-            id: 'extract_annotation',
-            text: 'Extract-Annotation',
-            icon: 'fa fa-bars',
-            tooltip: "Edit annotations of an extract"
-          },
-          {
-            id: 'notes',
-            text: 'page annotation',
-            icon: 'fa fa-file-text-o',
-            tooltip: "edit settings for sheet annotations\nin current extract"
-          },
-          {},
-          {
-            id: 'basic_settings',
-            text: 'basic settings',
-            icon: 'fa fa-heartbeat',
-            tooltip: "Edit basic settings of extract"
-          },
-          {id: 'lyrics', text: 'lyrics', icon: 'fa fa-font', tooltip: "edit settings for lyrics\nin current extract"},
-          {
-            id: 'layout',
-            text: 'layout',
-            icon: 'fa fa-align-center',
-            tooltip: "Edit layout paerameters\nin current extract"
-          },
-          {
-            id: 'instrument_specific',
-            text: 'instrument specific',
-            icon: 'fa fa-pie-chart',
-            tooltip: "settings for specific instrument sizes"
-          },
-          {},
-          {
-            id: 'barnumbers_countnotes',
-            text: 'barnumbers and countnotes',
-            icon: 'fa fa-music',
-            icon: 'fa fa-list-ol',
-            tooltip: "edit barnumbers or countnotes"
-          },
-          {
-            id: 'repeatsigns',
-            text: 'repeat signs',
-            icon: 'fa fa-repeat',
-            tooltip: "edit shape of repeat signs"
-          },
-          {
-            id: 'annotations',
-            text: 'annotations',
-            icon: 'fa fa-commenting-o',
-            tooltip: "edit settings for sheet annotations\nin current extract"
-          },
-          {},
-          {
-            id: 'stringnames',
-            icon: 'fa fa-ellipsis-h',
-            text: 'Stringnames',
-            tooltip: "Edit presentation of stringanmes"
-          },
-          {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
-          {},
-          {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"}
-        ]
+        items: uicontroller.$get_config_form_menu_entries().$to_n()   // note that these items are a
       },
       {
         type: 'menu',
@@ -789,10 +699,78 @@ function init_w2ui(uicontroller) {
         previews[event.target]();
       }
 
+      // handle edit toolbar
       config_event = event.target.split(":")
-      if (['config'].includes(config_event[0])) {
+      if (['edit_actions'].includes(config_event[0])) {
         if (config_event[1]) {
-          uicontroller.$handle_command("addconf " + event.target.split(":")[1])
+         uicontroller.$handle_command(event.target.split(":")[1])
+        }
+      }
+
+      // this event is fo the edit_config menu
+      // it is there as a specific
+      config_event2 = event.target.split(":")
+      if (['edit_config'].includes(config_event2[0])) {
+        if (config_event2[1]) {
+          w2ui.layout_left_tabs.click('configtab');
+          uicontroller.$handle_command("editconf " + config_event2[1])
+        }
+      }
+
+      config_event3 = event.target.split(":")
+      if (['edit_snippet'].includes(config_event3[0])) {
+        w2ui.layout_left_tabs.click('abcEditor');
+        uicontroller.$handle_command("editsnippet")
+      }
+
+      config_event4 = event.target.split(":")
+      if (['add_snippet'].includes(config_event4[0])) {
+        if (config_event4[1]) {
+          w2ui.layout_left_tabs.click('abcEditor');
+          uicontroller.$handle_command("addsnippet " + config_event4[1])
+        }
+      }
+    }
+
+  }
+
+  var lyrics_toolbar = {
+    id: 'lyrics_toolbar',
+    name: 'lyrics-toolbar',
+    style: tbstyle,
+    items:  [
+      {type: 'menu', text: "Edit", id: "lyrics_actions", icon: "fa fa-pencil", tooltip: "edit functions"}
+    ]
+  }
+
+
+  // this installs the handlers for the config_toolbar
+  // the toolbar is replaced in config-form.rb
+  var config_toolbar = {
+    name: 'configtoolbar',
+    style: tbstyle,
+    items: [
+    ],
+
+    onClick: function (event) {
+      // handle perspectives
+      if (perspectives[event.target]) {
+        perspectives[event.target]();
+        if (event.subItem) {
+          event.item.text = event.subItem.text
+        }
+      }
+
+      // handle previews
+      if (previews[event.target]) {
+        previews[event.target]();
+      }
+
+      // handle edit toolbar
+      config_event = event.target.split(":")
+      if (['edit_actions'].includes(config_event[0])) {
+        if (config_event[1]) {
+          uicontroller.$handle_command(event.target.split(":")[1])
         }
       }
 
@@ -820,6 +798,7 @@ function init_w2ui(uicontroller) {
     }
 
   }
+
   var statusbar = {
     id: 'statusbarbar',
     name: 'statusbar',
@@ -868,27 +847,44 @@ function init_w2ui(uicontroller) {
     }
   }
 
+  var editortabshtml =
+    '<div id="editortabspanel" style="height:100%">'
 
-  var editortabshtml = '<div id="editortabspanel" style="height:100%">'
-    + '<div id="abcEditor" class="tab" style="height:100%;"></div>'
-    + '<div id="abcLyrics" class="tab" style="height:100%;"></div>'
-    + '<div id="configtab" class="tab" style="height:100%;"></div>'
+    + '<div id="abceditortab" class="tab" style="height:100%;">'
+    + '<div id="abceditortoolbar"></div>'
+    + '<div id="abcEditor" style="height:100%;"></div>'
+    + '</div>' +
+
+    '<div id="lyricseditortab" class="tab" style="height:100%;"><div id="abcLyrics" style="height:100%;"></div></div>' +
+
+    '<div id="configtab" class="tab" style="height:100%;">'
+    + '<div id="configtoolbar" style="height:100%;"></div>'
+    + '<div id="configeditor" style="height:100%"></div>'
     + '</div>'
   ;
 
   var editortabsconfig = {
     name: 'editortabs',
-    active: 'abcEditor',
+    active: 'abceditortab',
     tabs: [
-      {id: 'abcEditor', text: w2utils.lang('abc')},
-      {id: 'abcLyrics', text: w2utils.lang('lyrics')},
+      {id: 'abceditortab', text: w2utils.lang('abc')},
+      {id: 'lyricseditortab', text: w2utils.lang('lyrics')},
       {id: 'configtab', text: w2utils.lang('Configuration')}
     ],
     onClick: function (event) {
       $('#editortabspanel .tab').hide();
-      if (event.target == "abcLyrics") {
+      //w2ui.layout_left_toolbar.disable('edit_actions');
+
+      if (event.target == "lyricseditortab") {
         uicontroller.editor.$to_lyrics()
       }
+
+      if (event.target == "configtab"){
+        if (! w2ui.configformtoolbar){
+          uicontroller.$handle_command("editconf basic_settings")
+        }
+      }
+
       $('#' + event.target).show();
       $('#' + event.target).resize();
     }
@@ -923,7 +919,7 @@ function init_w2ui(uicontroller) {
 
   $('#statusbar-layout').w2layout(
     {
-      name: 'statusbar-laoyut',
+      name: 'statusbar-layout',
       panels: [
         //{type: 'main', id: 'statusbar', resizable: false, style: pstyle, content: '<div id="statusbar" style="overflow:hidden;border: 1pt solid #000000;" class="zn-statusbar" >statusbar</div>',  hidden: false}
         {
@@ -948,7 +944,6 @@ function init_w2ui(uicontroller) {
         size: '50%',
         hidden: false,
         resizable: true,
-        toolbar: editor_toolbar,
         style: pstyle,
         tabs: editortabsconfig,
         content: editortabshtml
@@ -957,7 +952,6 @@ function init_w2ui(uicontroller) {
         type: 'main',
         style: pstyle,
         overflow: 'hidden',
-        //tabs: editortabsconfig,
         content: '<div id="tunePreview"  style="height:100%;" ></div>'
       },
       {
@@ -989,9 +983,11 @@ function init_w2ui(uicontroller) {
 
   });
 
-  w2ui['layout'].refresh();
+  w2ui['layout'].refresh()
+  $('#abceditortoolbar').w2toolbar(editor_toolbar)
+  $('#configtoolbar').w2toolbar(config_toolbar)  // we need this even if the config-toolbar is replaced in config-form.rb
   $('#editortabspanel .tab').hide();
-  $('#abcEditor').show();
+  $('#abceditortab').show();
 
   w2ui['layout'].onResize = function (event) {
     uicontroller.editor.$resize();
@@ -1004,11 +1000,12 @@ function init_w2ui(uicontroller) {
  * This updates the localized texts
  * The method is called from callConsumers
  */
-function update_localized_texts(){
+function update_localized_texts() {
   w2ui.layout_top_toolbar.refresh();
-  w2ui.layout_left_toolbar.refresh();
   w2ui.layout_left_tabs.refresh();
   w2ui.layout_preview_tabs.refresh();
+  w2ui.editortoolbar.refresh();
+  w2ui.configtoolbar.refresh();
 }
 
 
@@ -1031,7 +1028,7 @@ function update_systemstatus_w2ui(systemstatus) {
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
- // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
+  // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
   if (systemstatus.mode == 'demo') {
     w2ui.layout_top_toolbar.disable('tb_file')
@@ -1067,37 +1064,37 @@ function update_error_status_w2ui(errors) {
       title: w2utils.lang("Errors occurred"),
       body: errors,
       width: 700,
-      buttons   : '<button class="w2ui-btn" onclick="w2popup.close();">OK</button> '
-  })
+      buttons: '<button class="w2ui-btn" onclick="w2popup.close();">OK</button> '
+    })
 }
 
 function update_editor_status_w2ui(editorstatus) {
   $(".editor-status-position").html(editorstatus.position);
   $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
-  if (editorstatus.token.type.startsWith("zupfnoter.editable")) {
-    w2ui.layout_left_toolbar.enable('edit_snippet')
+  if (editorstatus.token.type.startsWith("zupfnoter.editable") && (editorstatus.selections.length == 1)) {
+      w2ui['editortoolbar'].enable('edit_snippet')
   }
   else {
-    w2ui.layout_left_toolbar.disable('edit_snippet')
+      w2ui['editortoolbar'].disable('edit_snippet')
   }
 
   // todo: implement a proper inhibit manager
-  if (editorstatus.token.type.startsWith("zupfnoter.editable.before")) {
-    w2ui.layout_left_toolbar.enable('add_snippet');
-    w2ui.layout_left_toolbar.enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
+  if (editorstatus.token.type.startsWith("zupfnoter.editable.before") && (editorstatus.selections.length == 1)) {
+    w2ui['editortoolbar'].enable('add_snippet');
+    w2ui['editortoolbar'].enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
 
-    w2ui.layout_left_toolbar.disable('edit_snippet');
+    w2ui['editortoolbar'].disable('edit_snippet');
   }
   else {
-    w2ui.layout_left_toolbar.disable('add_snippet')
+    w2ui['editortoolbar'].disable('add_snippet')
   }
 
   if (editorstatus.token.type.startsWith("zupfnoter.editable.beforeBar")) {
-    w2ui.layout_left_toolbar.disable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
+    w2ui['editortoolbar'].disable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
   }
 
 
-  w2ui.layout_left_toolbar.refresh()
+  w2ui['editortoolbar'].refresh()
 }
 
 function update_mouseover_status_w2ui(element_info) {
@@ -1108,7 +1105,7 @@ function update_play_w2ui(status) {
   if (status == "start") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon: "fa fa-stop"})
   }
-  else if (status == "stopping"){
+  else if (status == "stopping") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "...", icon: "fa fa-stop-circle-o"})
 
     w2ui.layout_top_toolbar.disable('tbPlay')
@@ -1128,7 +1125,7 @@ function enable_save() {
 };
 
 function before_open() {
-  w2ui.layout_left_tabs.click('abcEditor')
+  w2ui.layout_left_tabs.click('abceditortab')
 };
 
 function set_extract_menu(id, text) {
@@ -1137,6 +1134,15 @@ function set_extract_menu(id, text) {
 };
 
 ;
+
+function lockscreen(msg, mode) {
+  w2popup.open({modal: true, height: 100})
+  w2popup.lock(msg, true)
+}
+
+function unlockscreen() {
+  w2popup.close()
+}
 
 function openPopup(theForm) {
 

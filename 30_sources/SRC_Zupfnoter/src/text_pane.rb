@@ -1,5 +1,6 @@
 module Harpnotes
 
+
   class TextPane
     attr_accessor :editor, :controller, :autofold
 
@@ -37,6 +38,12 @@ module Harpnotes
       @inhibit_callbacks = false
       @markers           = []
       @autofold          = true
+      @on_change         = lambda {}
+      @config_separator  = '%%%%zupfnoter'
+      @dirty             = {}    # hash to maintain dirty flag for zn_abc, zn_config, zn_resources
+
+      _clean_models
+
       create_lyrics_editor('abcLyrics')
     end
 
@@ -81,10 +88,12 @@ module Harpnotes
     #
     # @return [type] [description]
     def on_change(&block)
+      @on_change = block
       # changes in the editor
       Native(Native(@editor).getSession).on(:change) { |e|
+        save_to_localstorage('zn_abc')
         clear_markers #todo:replace this by a routine to update markers if available https://github.com/ajaxorg/cloud9/blob/master/plugins-client/ext.language/marker.js#L137
-        block.call(e) #unless @inhibit_callbacks
+        @on_change.call(e) #unless @inhibit_callbacks
       }
     end
 
@@ -121,9 +130,8 @@ module Harpnotes
 
     #
     # Get the border of the current selection
-    # todo: this might be not enough in case of multiple selectios.
     #
-    # Note that it returnes [row, col] for start and end
+    # Note that it returns [row, col] for start and end
     # counting from "0"
     #
     # @return [Array of Number] [start, end] position of selection
@@ -135,6 +143,22 @@ module Harpnotes
         range_end = doc.positionToIndex(range.end, 0);
       }
       [`range_start`, `range_end`]
+    end
+
+    # Get all selections, even if they are not contiguous
+    #
+    # @retun [array of Array of numbers] it is the index in the editor (not row, col.)
+    def get_selection_ranges
+      %x{
+        var doc = self.editor.selection.doc;
+        var ranges = self.editor.selection.getAllRanges();
+        var result = ranges.map(function(therange){
+           var range_start = doc.positionToIndex(therange.start, 0);
+           var range_end = doc.positionToIndex(therange.end, 0);
+           return([range_start, range_end])
+        })
+      }
+      `result`
     end
 
     # This method provides information about the current selection
@@ -189,7 +213,36 @@ module Harpnotes
         range = new #{@range}(startrange.row, startrange.column, endrange.row, endrange.column);
         myrange = {start:startrange, end:endrange}
         #{@editor}.focus();
-        #{@editor}.selection.setSelectionRange(myrange, false);
+          #{@editor}.selection.setSelectionRange(myrange, false);
+      }
+    end
+
+    #
+    # Select by position (in opposite to row/column pairs)
+    # @param requested_selection_start [Numeric] Begin of the intended selection
+    # @param requested_selection_end [Numeric] End of intended selection
+    # @param [boolean] expand_selection - expand the selection if true
+    #
+    # @return [type] [description]
+    def select_add_range_by_position(requested_selection_start, requested_selection_end, expand_selection = false)
+      #$log.debug("set editor selection to #{selection_start}, #{selection_end} (#{__FILE__} #{__LINE__}) ")
+
+      if expand_selection
+        current_selection = get_selection_positions
+      else
+        current_selection = [requested_selection_start, requested_selection_end]
+      end
+      selection_newstart = [current_selection.first, requested_selection_start].min
+      selection_end      = [current_selection.last, requested_selection_end].max
+
+      %x{
+        doc = self.editor.selection.doc
+        startrange = doc.indexToPosition(#{selection_newstart});
+        endrange = doc.indexToPosition(#{selection_end});
+        range = new #{@range}(startrange.row, startrange.column, endrange.row, endrange.column);
+        myrange = {start:startrange, end:endrange}
+        #{@editor}.focus();
+        #{@editor}.selection.addRange(range, false);
       }
     end
 
@@ -199,18 +252,16 @@ module Harpnotes
     #
     # @return [String] The content of the text field.
     def get_text
-      `self.editor.getSession().getValue()`
+      result = _get_abc_from_editor.strip
+      result += %Q{\n\n#{@config_separator}.config\n\n} + _get_config_json
+      result += %Q{\n\n#{@config_separator}.resources\n\n} + _get_resources_json if _has_resources?
+      result
     end
 
-    # add new text to the editor
+    # add new text to the editor pane as loaded from file
     # @param text the text to be set to the editor
     def set_text(text)
-      @inhibit_callbacks = true
-      %x{
-         self.editor.getSession().setValue(text);
-      }
-      @inhibit_callbacks = false
-      fold_all
+      _split_parts(text)
     end
 
     # replaces the text of the range by
@@ -224,7 +275,6 @@ module Harpnotes
       therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
       #{editor}.getSession().replace(therange, #{text})
       }
-      fold_all
     end
 
     # replace a text in the editor
@@ -233,14 +283,13 @@ module Harpnotes
     # œparam newtext  the new tet to be entered
     def replace_text(oldtext, newtext)
       %x{self.editor.replace(#{newtext}, {needle: #{oldtext}}) }
-      fold_all
     end
 
     # @param [Array] annotations  array of {row: 1, text: "", type: "error" | "warning" | "info"}
     #                aguments defined by ace
     def set_annotations(annotations)
       editor_annotations = annotations.map do |annotation|
-        {row:  annotation[:start_pos].first - 1, # annotations count on row 0
+        {row: annotation[:start_pos].first - 1, # annotations count on row 0
          text: annotation[:text],
          type: annotation[:type]
         }
@@ -263,7 +312,7 @@ module Harpnotes
 
 
     def prepend_comment(message)
-      text =message.split(/\r?\n/).map { |l| "% #{l}" }.join("\n") + "\n%\n"
+      text = message.split(/\r?\n/).map { |l| "% #{l}" }.join("\n") + "\n%\n"
       %x{
       #{@editor}.selection.moveCursorFileStart();
       #{@editor}.insert(#{text});
@@ -306,35 +355,21 @@ module Harpnotes
     # get the abc part of the stuff
 
     def get_abc_part
-      get_text.split(CONFIG_SEPARATOR).first
+      `self.editor.getSession().getValue()`
     end
 
     # get the config part of the music
     def get_config_part
-      get_text.split(CONFIG_SEPARATOR)[1] || "{}"
+      @config_models[:config]
     end
 
-    def get_parsed_config
-      config_part = get_config_part
-      begin
-        config = JSON.parse(config_part)
-        status = true
-      rescue Exception => error
-        line_col = get_config_position(error.message.split.last.to_i)
-        $log.error("#{error.message} at #{line_col}", line_col)
-        config = {}
-        status = false
-      end
-      [config, status]
-    end
-
-    def neat_config
-      config, status = get_parsed_config
-      set_config_part(config) if status
+    def get_config_model
+      config_model = _get_config_model
+      config_model ? [_get_config_model, true] : [{}, false]
     end
 
     def get_checksum
-      s = get_text
+      s = _get_abc_from_editor.strip
       %x{
             var i;
             var chk = 0x12345678;
@@ -343,7 +378,7 @@ module Harpnotes
               chk += (#{s}.charCodeAt(i) * (i + 1));
            }
          }
-      `chk`.to_s.scan(/...?/).join(' ')
+      `chk`.to_s.scan(/...?/).join(' ') # separate in three parts
     end
 
 
@@ -354,25 +389,9 @@ module Harpnotes
 
     # this pushes the object to the config part of the editor
     #
-    def set_config_part(object)
-      the_selection = get_selection_positions
-      options       = $conf[:neatjson]
-
-
-      configjson = ""
-      $log.benchmark("neat_json", __LINE__, __FILE__) { configjson = JSON.neat_generate(object, options) }
-
-      unless get_text.split(CONFIG_SEPARATOR)[1]
-        append_text(%Q{\n\n#{CONFIG_SEPARATOR}\n\n\{\}})
-      end
-
-      oldconfigpart      = get_config_part
-      @inhibit_callbacks = true
-      unless oldconfigpart.strip == configjson.strip
-        replace_text(CONFIG_SEPARATOR + oldconfigpart, "#{CONFIG_SEPARATOR}\n\n#{configjson}")
-        select_range_by_position(the_selection.first, the_selection.last)
-      end
-      @inhibit_callbacks = false
+    def set_config_model(object)
+      @dirty['zn_config'] = true
+      _set_config_model(object)
     end
 
     # this applies the object to the config
@@ -380,31 +399,21 @@ module Harpnotes
     def patch_config_part(key, object)
       pconfig       = Confstack::Confstack.new(false) # what we get from editor
       pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
-      config_part   = get_config_part
-      begin
-        config = JSON.parse(config_part)
-        pconfig.push(config)
+      pconfig.push(_get_config_model)
 
-        pconfig_patch[key] = object
-        pconfig.push(pconfig_patch.get)
-        set_config_part(pconfig.get)
-
-        fold_all
-
-      rescue Object => error
-        line_col = get_config_position(error.last)
-        $log.error("#{error.first} at #{line_col}", line_col)
-        set_annotations($log.annotations)
-      end
+      pconfig_patch[key] = object
+      pconfig.push(pconfig_patch.get)
+      _set_config_model(pconfig.get)
     end
 
-    def fold_all
-      lastline =  get_abc_part.lines.count
-      %x{ setTimeout(function(){self.editor.getSession().foldAll(#{lastline})}, 100) } if @autofold
-    end
 
-    def unfold_all
-      %x{ setTimeout(function(){self.editor.getSession().unfold()}, 100) }
+    # @param [String] key the name of the resource
+    # @param [Object] value the value of the resource as object
+    def patch_resources(key, value)
+      @dirty['zn_resources'] = true
+      $resources[key]        = value
+      save_to_localstorage('zn_resources')
+      @on_change.call(nil)
     end
 
 
@@ -423,64 +432,39 @@ module Harpnotes
     def extend_config_part(key, object)
       pconfig       = Confstack::Confstack.new(false) # what we get from editor
       pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
-      config_part   = get_config_part
-      begin
-        config = JSON.parse(config_part)
-        pconfig.push(config)
 
-        pconfig_patch[key] = object
-        pconfig.push(pconfig_patch.get)
-        pconfig.push(config)
+      pconfig.push(_get_config_model)
+      pconfig_patch[key] = object
 
-        set_config_part(pconfig.get)
+      pconfig.push(pconfig_patch.get)
+      pconfig.push(_get_config_model)
 
-      rescue Object => error
-        line_col = get_config_position(error.last)
-        $log.error("#{error.first} at #{line_col}", line_col)
-        set_annotations($log.annotations)
-      end
+      _set_config_model(pconfig.get)
     end
 
     # deletes the entry of key in the config part
     def delete_config_part(key)
-      pconfig     = Confstack::Confstack.new(false) # what we get from editor
-      config_part = get_config_part
-      config      = JSON.parse(config_part)
-      pconfig.push(config)
-      pconfig[key] = Confstack::DeleteMe
-      set_config_part(pconfig.get)
+      if key.start_with? '$resources'
+        $resources.delete(key.split(".").last)
+      else
+        pconfig = Confstack::Confstack.new(false) # what we get from editor
+        pconfig.push(_get_config_model)
+        pconfig[key] = Confstack::DeleteMe
+        _set_config_model(pconfig.get)
+      end
     end
 
     # returns the value of key in in config part
     def get_config_part_value(key)
-      pconfig     = Confstack::Confstack.new(false)
-      config_part = get_config_part
-      begin
-        config = %x{json_parse(#{config_part})}
-        config = JSON.parse(config_part)
-        pconfig.push(config)
-        result = pconfig[key]
-      rescue Object => error
-        line_col = get_config_position(error.last)
-        $log.error("#{error.first} at #{line_col}", line_col)
-        set_annotations($log.annotations)
-      end
+      pconfig = Confstack::Confstack.new(false)
+      pconfig.push(_get_config_model)
+      result = pconfig[key]
       result
-    end
-
-    # get the line and column of an error in the config part
-    # @param [Numerical] charpos the position in the config part
-    def get_config_position(charpos)
-      cp       = charpos + (get_abc_part + CONFIG_SEPARATOR).length
-      lines    = get_text[0, cp].split("\n")
-      line_no  = lines.count
-      char_pos = lines.last.length()
-      return line_no, char_pos
     end
 
     def get_lyrics
       retval = get_lyrics_raw
-      if retval.count >0
+      if retval.count > 0
         lyrics = retval.map { |r| r.first.gsub(/\nW\:[ \t]*/, "\n") }.join().strip
       else
         lyrics = nil
@@ -516,9 +500,9 @@ module Harpnotes
       # Ace fires the change handler twice
       # first when removing the old value
       # then when setting the new value
-      @handle_from_lyrics=false
+      @handle_from_lyrics = false
       %x{#{@lyrics_editor}.getSession().setValue(#{get_lyrics});}
-      @handle_from_lyrics=true
+      @handle_from_lyrics = true
 
       @controller.call_consumers(:error_alert)
       nil
@@ -539,6 +523,122 @@ module Harpnotes
       nil
     end
 
+
+    # this restores editor session from localstorage
+    #
+    # note we have all in one entry from 'abc_data'
+    # this is outdated and migrated to
+    # the new approach with 'zn_abc', 'zn_config', 'zn_resources'
+    #
+    def restore_from_localstorage
+      abc = Native(`localStorage.getItem('abc_data')`)
+      unless abc.nil?
+        `localStorage.removeItem('abc_data')` # we convert localstorage so store abc, config and resoucres as three items
+        @editor.set_text(abc) unless abc.nil?
+      else
+        abctext = Native(`localStorage.getItem('zn_abc')`)
+        _set_abc_to_editor(abctext) if abctext
+
+        configjson = Native(`localStorage.getItem('zn_config')`) || {}
+        _set_config_json(configjson) if configjson
+
+        resources = Native(`localStorage.getItem('zn_resources')`)
+        _set_resources_json(resources) if resources
+      end
+
+      @dirty = {}
+    end
+
+
+    # @param [String] dirty_name  # name of localstore entry which shall be set to dirty and thus forcefully stored
+    def save_to_localstorage(dirty_name = nil)
+      @dirty[dirty_name] = true if dirty_name
+      `localStorage.setItem('zn_abc', #{_get_abc_from_editor})` if @dirty['zn_abc'] == true
+      `localStorage.setItem('zn_config', #{_get_config_json})` if @dirty['zn_config'] == true
+      `localStorage.setItem('zn_resources', #{_get_resources_json})` if @dirty['zn_resources'] == true
+      @dirty = {}
+    end
+
+    def clean_localstorage
+      `localStorage.removeItem('zn_abc')`
+      `localStorage.removeItem('zn_config')`
+      `localStorage.removeItem('zn_resources')`
+      nil
+    end
+
+    #####################################################################################
+    #private
+
+    # this method splits the parts out of the given text
+    def _split_parts(fulltext)
+
+      _clean_models
+      clean_localstorage
+
+      fulltext.split(@config_separator).each_with_index do |part, i|
+        if i == 0
+          _set_abc_to_editor(part)
+        elsif part.start_with? ".config"
+          _set_config_json(part.split(".config").last)
+        elsif part.start_with? ".resources"
+          _set_resources_json(part.split(".resources").last)
+        else
+          $log.error(I18n.t("unsupported section found in abc file: ") + part[0 .. 10])
+        end
+      end
+    end
+
+    def _set_abc_to_editor(abctext)
+      @inhibit_callbacks = true
+      %x{self.editor.getSession().setValue(#{abctext});}
+      @inhibit_callbacks = false
+      save_to_localstorage('zn_abc')
+    end
+
+    def _get_abc_from_editor
+      %x{self.editor.getSession().getValue()}
+    end
+
+    def _set_config_json(json)
+      _set_config_model(JSON.parse(json))
+    end
+
+    def _get_config_json
+      options = $conf[:neatjson]
+      result  = $log.benchmark("neat_json", __LINE__, __FILE__) { JSON.neat_generate(_get_config_model, options) }
+      result
+    end
+
+    def _get_config_model
+      @config_models['config'] || {}
+    end
+
+    def _set_config_model(object)
+      @config_models['config'] = object
+      save_to_localstorage('zn_config')
+      @on_change.call(nil) # fire dirty flag in contoller
+    end
+
+    def _set_resources_json(json)
+      $resources = JSON.parse(json)
+      save_to_localstorage('zn_resources')
+      @on_change.call(nil) # fire dirty flag in contoller
+    end
+
+    def _get_resources_json
+      result = JSON.neat_generate($resources, $conf[:neatjson])
+      result
+    end
+
+    def _has_resources?
+      not $resources.empty?
+    end
+
+    def _clean_models
+      $resources     = {}
+      @config_models = {}
+      @dirty         = {}
+    end
   end
 
 end
