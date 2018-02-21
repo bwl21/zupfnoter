@@ -40,6 +40,7 @@ module Harpnotes
       @autofold          = true
       @on_change         = lambda {}
       @config_separator  = '%%%%zupfnoter'
+      @dirty             = {}    # hash to maintain dirty flag for zn_abc, zn_config, zn_resources
 
       _clean_models
 
@@ -103,7 +104,7 @@ module Harpnotes
     # @return [type] [description]
     def on_selection_change(&block)
       Native(Native(@editor)[:selection]).on(:changeSelection) do |e|
-        block.call(e) unless  @inhibit_callbacks
+        block.call(e) unless @inhibit_callbacks
       end
     end
 
@@ -244,9 +245,6 @@ module Harpnotes
         #{@editor}.selection.addRange(range, false);
       }
     end
-
-
-
 
 
     #
@@ -535,7 +533,7 @@ module Harpnotes
     def restore_from_localstorage
       abc = Native(`localStorage.getItem('abc_data')`)
       unless abc.nil?
-        `localStorage.removeItem('abc_data')`    # we convert localstorage so store abc, config and resoucres as three items
+        `localStorage.removeItem('abc_data')` # we convert localstorage so store abc, config and resoucres as three items
         @editor.set_text(abc) unless abc.nil?
       else
         abctext = Native(`localStorage.getItem('zn_abc')`)
@@ -551,8 +549,10 @@ module Harpnotes
       @dirty = {}
     end
 
-    def save_to_localstorage(dirty = nil)
-      @dirty[dirty] = true if dirty
+
+    # @param [String] dirty_name  # name of localstore entry which shall be set to dirty and thus forcefully stored
+    def save_to_localstorage(dirty_name = nil)
+      @dirty[dirty_name] = true if dirty_name
       `localStorage.setItem('zn_abc', #{_get_abc_from_editor})` if @dirty['zn_abc'] == true
       `localStorage.setItem('zn_config', #{_get_config_json})` if @dirty['zn_config'] == true
       `localStorage.setItem('zn_resources', #{_get_resources_json})` if @dirty['zn_resources'] == true
@@ -610,7 +610,7 @@ module Harpnotes
     end
 
     def _get_config_model
-      @config_models['config']
+      @config_models['config'] || {}
     end
 
     def _set_config_model(object)
