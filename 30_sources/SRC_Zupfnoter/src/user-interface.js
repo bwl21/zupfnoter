@@ -858,8 +858,8 @@ function init_w2ui(uicontroller) {
     '<div id="lyricseditortab" class="tab" style="height:100%;"><div id="abcLyrics" style="height:100%;"></div></div>' +
 
     '<div id="configtab" class="tab" style="height:100%;">'
-    + '<div id="configtoolbar" style="height:100%;"></div>'
-    + '<div id="configeditor" style="height:100%"></div>'
+    + '<div style="height:30px;"><div id="configtoolbar"></div></div>'
+    + '<div id="configeditor" style="height: calc(100% - 30px);"></div>'
     + '</div>'
   ;
 
