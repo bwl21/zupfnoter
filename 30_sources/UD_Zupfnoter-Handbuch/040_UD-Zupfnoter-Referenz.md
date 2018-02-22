@@ -1849,6 +1849,29 @@ is äquivalent zu
     K:G
     GAB
 
+### wechselnde Taktlängen
+
+Es gibt Stück, mit wechslenden Taktlängen. Bei einzelnen Takten kanns du
+dasd mit einer eingebetteten Kopfnzeile machen `[M:3/2]`. Bei häufigen
+Taktwechwseln ist das aber recht umständlich. In diesem Fall kannst du
+z.B. die Kopfzeile so angeben:
+
+    M: 2/2 3/2=2/2
+
+Damit werden alle im Stück auftretenden Taktlängen angegeben. Nach dem
+Gleichheitszeichen kann die kürzeste Taktlänge angegeben werden. Die
+Notenvorschau schreibt nur dann eine Taktnummer, wenn der Takt
+ausgefüllt ist. Mit der Angabe der kürzesten Taktlänge bekommst du an
+allen Takten eine Nummer.
+
+### Variante Enden mitten im Takt
+
+Wenn eine Variation mitten in einem Takt beginnen soll, dann muss als
+"Taktstrich" eine rechte eckige Klammer (z.b. `]1` ) geschrieben werden.
+Zupfnoter stellt dann weder in der Notenvorschau noch in den
+Unterlegnoten einen Taktstrich dar. Auch die Zählung der Takte kommt
+nicht durcheinander.
+
 ### Wenn Takte nicht synchron sind
 
 Zupfnoter prüft nicht, ob die Takte in allen Stimmen synchron sind. Wenn

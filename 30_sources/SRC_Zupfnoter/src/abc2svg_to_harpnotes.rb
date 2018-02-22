@@ -273,7 +273,7 @@ module Harpnotes
         text = voice_element[:text]
         distance = _extract_goto_info_from_bar(voice_element).last[:distance] rescue [-10, 10, 15]
 
-        @next_note_marks[:measure]      = true unless voice_element[:invisible]
+        @next_note_marks[:measure]      = true unless  voice_element[:invisible] or type == "]" # "]" is not a visible bar - useful for variant ending between measures
         @next_note_marks[:repeat_start] = true if type =~ /^.*:$/
 
         if voice_element[:rbstart] == 2
