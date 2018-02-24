@@ -113,7 +113,7 @@ class Controller
 
     @version      = VERSION
     @zupfnoter_ui = `new init_w2ui(#{self});`
-    I18n.locale(zupfnoter_language) { call_consumers(:localizedtexts) } if browser_language
+    I18n.locale(zupfnoter_language) {  call_consumers(:localizedtexts) } if browser_language
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
@@ -303,12 +303,10 @@ class Controller
     systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
                                                     :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :zoom].include?(key)
     }.to_json
-    $log.benchmark("saving to localstore") do
-      if @systemstatus[:mode] == :work
-        `localStorage.setItem('systemstatus', #{systemstatus});`
-      end
-      @editor.save_to_localstorage
+    if @systemstatus[:mode] == :work
+      `localStorage.setItem('systemstatus', #{systemstatus});`
     end
+    @editor.save_to_localstorage
   end
 
 

@@ -128,9 +128,9 @@ class Controller
       c.undoable = false
       c.set_help { "select all voices" }
       c.as_action do |a|
-          time_ranges = []
-          $log.benchmark("get segments"){time_ranges = get_selected_time_segments}
-          $log.benchmark("set_segments"){select_by_time_segments(time_ranges)}
+        time_ranges = []
+        $log.benchmark("get segments") { time_ranges = get_selected_time_segments }
+        $log.benchmark("set_segments") { select_by_time_segments(time_ranges) }
       end
     end
   end
