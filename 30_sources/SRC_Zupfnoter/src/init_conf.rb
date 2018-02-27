@@ -40,6 +40,7 @@ module InitConf
                      :d64, :d48, :d32, :d24, :d16, :d12, :d8, :d6, :d4, :d3, :d2, :d1
     ]
 
+
     result =
         {produce:      [0],
          abc_parser:   'ABC2SVG',
@@ -73,7 +74,7 @@ module InitConf
          templates: {
              notes: {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
              lyrics:      {verses: [1], pos: [350, 70]},
-             images:      {imagename: "", show: true, pos: [10,10], height: 100,  },
+             images:      {imagename: "", show: true, pos: [10, 10], height: 100, },
              tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
              annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
          },
@@ -83,6 +84,7 @@ module InitConf
          # needs to be handled in contrller_command_definiitions for
          # commands.add_command(:addconf) do |command|
          presets: {
+             standardextract: {}, # this is to get a translation, the values
              layout:     {
                  notes_small:            {
                      LINE_MEDIUM: 0.2,
@@ -289,7 +291,7 @@ module InitConf
                  T02_copyright_music:      {
                      value: {
                          pos:   [340, 251],
-                         text:  "© #{Time.now.year}\n#{I18n.t("Private copy")}",
+                         text:  lambda{("© #{Time.now.year}\n#{I18n.t("Private copy")}")},
                          style: "small"
                      }},
                  T03_copyright_harpnotes:  {
@@ -301,7 +303,7 @@ module InitConf
                  T04_to_order:             {
                      value: {
                          pos:   [340, 242],
-                         text:  I18n.t("provided by\n"),
+                         text:  lambda{I18n.t("provided by\n")},
                          style: "small"
                      }},
                  T05_printed_extracts:     {
@@ -313,8 +315,13 @@ module InitConf
                  T99_do_not_copy:          {
                      value: {
                          pos:   [380, 284],
-                         text:  I18n.t("Please do not copy"),
+                         text:  lambda{I18n.t("Please do not copy")},
                          style: "small_bold"
+                     }},
+                 T01_T99:                  {
+                     value: {
+                         ## note we have no value here. This is computed in controller_command_definitions.rb
+                         # harddcoded - not really cool :-)
                      }}
              },
 
@@ -564,7 +571,6 @@ module InitConf
              explicit_sort: Hash[explicit_sort.each_with_index.to_a.map { |i| [i.first, '_' + "000#{i.last}"[-4 .. -1]] }]
          }
         }
-
     result
   end
 end

@@ -406,6 +406,9 @@ module Harpnotes
       _set_config_model(pconfig.get)
     end
 
+    def neat_config_part
+      _set_config_json(_get_config_json)   # _get_config_json performs the neat
+    end
 
     # @param [String] key the name of the resource
     # @param [Object] value the value of the resource as object

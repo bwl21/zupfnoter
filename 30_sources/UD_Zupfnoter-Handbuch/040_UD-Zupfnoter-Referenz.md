@@ -1054,13 +1054,18 @@ Beschriftungen
 -   `stdnotes`: überträgt die zuletzt kopierte Konfiguration der
     Blattbeschriftungen auf das aktuelle Stück in den aktuellen Auszug.
 -   `setstdextract`: kopiert aus dem aktuellen Stück die Konfiguration
-    der Auszüge, um sie auf ein anderes Stück zu übertragen.
+    der Auszüge, um sie auf ein anderes Stück zu übertragen. \>
+    **Hinweis**: diese Anwweisung wird ach ausgeführt bei `settemplate`
 -   `stdectract`: überträgt die zuletzt kopierte Konfiguration der
     Auszüge auf das aktuelle Stück
 
     > **Hinweis**: Diese Befehle sind hilfreich um schnell die
     > Konfiguration eines aus MusicXml importierten Stückes
     > einzustellen.
+
+-   `settemplate`: Damit wird der aktuelle Editor-Inhalt als Template
+    hinterlegt (siehe Kapitel \ref{filetemplates} [Arbeiten mit
+    Dateivorlagen](#filetemplates)).
 
 Über folgende Befehle können Flußlinien gestaltet werden:
 
@@ -2148,7 +2153,7 @@ Zupfnoter verwendet von sich aus die folgenden Einstellungen:
     I:linewarn 0
     I:staffnonote 2
 
-### Arbeiten mit Dateivorlagen {#filetemplates}
+### Arbeiten mit Dateivorlagen (Templates) {#filetemplates}
 
 Erstellt man über das Menü "Neu" ein neues Stück, fügt Zupfnoter eine
 Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
@@ -2165,8 +2170,9 @@ Zupfnoter bietet eine experimentelle Unterstützung über die
 [Konsole](#konsole-fenster). In folgenden Schritten kann ein eigene
 Vorlage eingerichtet werden:
 
-1.  `edittemplate`: Damit wird das aktuelle Template in den Editor
+1.  `edittemplate`: Damit wird das aktuell aktive Template in den Editor
     geladen und kann angepasst werden.
+
 2.  `editconf template`: Damit werde die Template-spezifischen
     Eigenschaften (Dateiname und Titel) eingstellt.
 
@@ -2178,21 +2184,14 @@ Vorlage eingerichtet werden:
 
 3.  `settemplate`: Damit wird der aktuelle Editor-Inhalt als Template
     hinterlegt
+
 4.  Menüpunkt 'Speichern': Damit wird der Editorinhalt gespeichert.
 
     > **Hinweis**: Dabei ist es wichtig, dass die Kopfzeile `F:` einen
     > Platzhalter - Zeichen `{{` enthält. Dadurch wird im
     > "Template_modus" gespeichert, d.h. der Dateiname wird nicht aus
-    > der `F:` - Zeile entnommen sondern aus `template.filebase`
-
-    > **Hinweis** Beim Bearbeiten des Templates kommt immer wieder die
-    > Meldung wie
-    >
-    > `"{{song_id}}_{{filename}}": Fehlerhafte Zeichen im Filenamen`
-    >
-    > Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
-    > aufgelöst sind, daher wird die F: - Kopfzeile als fehlerhaft
-    > markiert.
+    > der `F:` - Zeile entnommen sondern aus dem Konfigurationsparameter
+    > `template.filebase` entnommen.
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der

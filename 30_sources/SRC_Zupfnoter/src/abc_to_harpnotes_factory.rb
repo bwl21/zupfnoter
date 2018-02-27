@@ -51,7 +51,7 @@ module Harpnotes
         hn_config_from_song = {}
         line_no             = 1
         abc_code.split("\n").each do |line|
-          entry = line.match(/^%%%%hn\.(print|legend|note|annotation|lyrics) (.*)/) {|m| [m[1], m[2]]}
+          entry = line.match(/^%%%%hn\.(print|legend|note|annotation|lyrics) (.*)/) { |m| [m[1], m[2]] }
           if entry
             begin
               parsed_entry                     = JSON.parse(entry.last)
@@ -63,7 +63,7 @@ module Harpnotes
               $log.error(message, [line_no, 1], [line_no, 2])
             end
           end
-          line_no +=1
+          line_no += 1
         end
 
         # cleanups
@@ -78,16 +78,18 @@ module Harpnotes
       #
       def get_metadata(abc_code)
         retval = abc_code.split("\n").each_with_index.inject({}) do |result, (line, index)|
-          entry = line.match(/^([A-Z]):\s*(.*)/) {|m| [m[1], m[2]]}
+          entry = line.match(/^([A-Z]):\s*(.*)/) { |m| [m[1], m[2]] }
           if entry
             key = entry.first
             if result[key]
-              $log.error(%Q{#{I18n.t("more than one line found for ")} ':#{key}'}, [index+1, 1]) if ['F', 'X'].include?(key)
+              $log.error(%Q{#{I18n.t("more than one line found for ")} ':#{key}'}, [index + 1, 1]) if ['F', 'X'].include?(key)
               result[key] << entry.last.strip
             else
               if key == 'F'
                 filename = entry.last.strip
-                $log.error(%Q{"#{filename}": #{I18n.t("bad characters in filename")}}, [index+1, 1]) unless filename.match(/^[a-zA-z0-9_\-]+$/)
+                unless filename.include?('{{')  # do not check F: if we have placeholders
+                  $log.error(%Q{"#{filename}": #{I18n.t("bad characters in filename")}}, [index + 1, 1]) unless filename.match(/^[a-zA-z0-9_\-]+$/)
+                end
               end
               result[key] = [entry.last.strip]
             end
@@ -101,7 +103,7 @@ module Harpnotes
       #
       def add_metadata(abc_code, new_metadata)
         old_metadata  = get_metadata(abc_code)
-        more_metadata = new_metadata.select {|k, v| old_metadata[k].nil?}.map {|k, v| "#{k}:#{v}"}
+        more_metadata = new_metadata.select { |k, v| old_metadata[k].nil? }.map { |k, v| "#{k}:#{v}" }
         [more_metadata, abc_code].flatten.compact.join("\n")
       end
 

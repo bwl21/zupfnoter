@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-3-27-g171dc84
+Version dev/V\_1.8.0\_dev-3-29-gbfbe025
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2315,6 +2315,8 @@ Beschriftungen
 \item
   \texttt{setstdextract}: kopiert aus dem aktuellen Stück die
   Konfiguration der Auszüge, um sie auf ein anderes Stück zu übertragen.
+  \textgreater{} \textbf{Hinweis}: diese Anwweisung wird ach ausgeführt
+  bei \texttt{settemplate}
 \item
   \texttt{stdectract}: überträgt die zuletzt kopierte Konfiguration der
   Auszüge auf das aktuelle Stück
@@ -2323,6 +2325,11 @@ Beschriftungen
   \textbf{Hinweis}: Diese Befehle sind hilfreich um schnell die
   Konfiguration eines aus MusicXml importierten Stückes einzustellen.
   \end{quote}
+\item
+  \texttt{settemplate}: Damit wird der aktuelle Editor-Inhalt als
+  Template hinterlegt (siehe Kapitel
+  \ref{filetemplates}~\hyperref[filetemplates]{Arbeiten mit
+  Dateivorlagen}).
 \end{itemize}
 
 Über folgende Befehle können Flußlinien gestaltet werden:
@@ -3878,8 +3885,8 @@ I:linewarn 0
 I:staffnonote 2
 \end{verbatim}
 
-\hyperdef{}{filetemplates}{\subsubsection{Arbeiten mit
-Dateivorlagen}\label{filetemplates}}
+\hyperdef{}{filetemplates}{\subsubsection{Arbeiten mit Dateivorlagen
+(Templates)}\label{filetemplates}}
 
 Erstellt man über das Menü ``Neu'' ein neues Stück, fügt Zupfnoter eine
 Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
@@ -3899,8 +3906,8 @@ eigene Vorlage eingerichtet werden:
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \texttt{edittemplate}: Damit wird das aktuelle Template in den Editor
-  geladen und kann angepasst werden.
+  \texttt{edittemplate}: Damit wird das aktuell aktive Template in den
+  Editor geladen und kann angepasst werden.
 \item
   \texttt{editconf\ template}: Damit werde die Template-spezifischen
   Eigenschaften (Dateiname und Titel) eingstellt.
@@ -3922,17 +3929,8 @@ eigene Vorlage eingerichtet werden:
   \textbf{Hinweis}: Dabei ist es wichtig, dass die Kopfzeile \texttt{F:}
   einen Platzhalter - Zeichen \texttt{\{\{} enthält. Dadurch wird im
   ``Template\_modus'' gespeichert, d.h. der Dateiname wird nicht aus der
-  \texttt{F:} - Zeile entnommen sondern aus \texttt{template.filebase}
-  \end{quote}
-
-  \begin{quote}
-  \textbf{Hinweis} Beim Bearbeiten des Templates kommt immer wieder die
-  Meldung wie
-
-  \texttt{"\{\{song\_id\}\}\_\{\{filename\}\}":\ Fehlerhafte\ Zeichen\ im\ Filenamen}
-
-  Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
-  aufgelöst sind, daher wird die F: - Kopfzeile als fehlerhaft markiert.
+  \texttt{F:} - Zeile entnommen sondern aus dem Konfigurationsparameter
+  \texttt{template.filebase} entnommen.
   \end{quote}
 \end{enumerate}
 
@@ -6444,9 +6442,17 @@ Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{template} -
-Dateivorlate}{template - Dateivorlate}}\label{template}
+Dateivorlage}{template - Dateivorlage}}\label{template}
 
-TODO:\marginpar{TODO} Helptext für template einfügen
+Hier kannst du spezifische Eigenschaften des Template anpassen. Das ist
+nur relevant, wenn du ein Template bearbeitest.
+
+\begin{quote}
+\textbf{Hinweis} Diese Eigenschaften werden auch in abc dateien
+geschrieben welche auf Basis des vorhandenen Templates erstellt werden.
+Damit kann mnan feststellen, welches termplate der aktuell geöffnteten
+ABC - datei zu Grunde liegt.
+\end{quote}
 
 \begin{verbatim}
     "template": {"filebase": "-no-template-", "title": "- no template -"}
@@ -6454,9 +6460,12 @@ TODO:\marginpar{TODO} Helptext für template einfügen
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{template.filebase} -
-Dateibasis}{template.filebase - Dateibasis}}\label{template.filebase}
+Filename-Basis}{template.filebase - Filename-Basis}}\label{template.filebase}
 
-TODO:\marginpar{TODO} Helptext für template.filebase einfügen
+Hier kannst du den Dateinamen (ohne Erweiterung) des Templates angeben.
+Wenn die F-Kopfzeile eine Platzhalter-Startsquenz (\texttt{\{\{})
+enthält, wird der in diesem Parameter angegebenen Name zum Speichern
+verwendet
 
 \begin{verbatim}
     "filebase": "-no-template-"
@@ -6466,7 +6475,8 @@ TODO:\marginpar{TODO} Helptext für template.filebase einfügen
 \subsection{\texorpdfstring{\texttt{template.title} -
 Titel}{template.title - Titel}}\label{template.title}
 
-TODO:\marginpar{TODO} Helptext für template.title einfügen
+Hier kannst du einen informativen Titel für das Template angeben. Damit
+kannst du das Template identifizieren.
 
 \begin{verbatim}
     "title": "- no template -"

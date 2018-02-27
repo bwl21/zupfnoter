@@ -1210,6 +1210,7 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 > allerdings nur in der Textansicht möglich.
 
         "notes": {
+          "T01_T99"                  : {"value": {}},
           "T01_number"               : {
             "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
           },
@@ -1241,6 +1242,20 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
             "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
           }
         }
+          
+
+## `presets.notes.T01_T99` - {#presets.notes.T01_T99}
+
+TODO: Helptext für presets.notes.T01_T99 einfügen
+
+        "T01_T99": {"value": {}}
+          
+
+## `presets.notes.T01_T99.value` - Wert {#presets.notes.T01_T99.value}
+
+TODO: Helptext für presets.notes.T01_T99.value einfügen
+
+        "value": {}
           
 
 ## `presets.notes.T01_number` - T01 Nummer {#presets.notes.T01_number}
@@ -1630,23 +1645,32 @@ Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
         "repeatstart": "next"
           
 
-## `template` - Dateivorlate {#template}
+## `template` - Dateivorlage {#template}
 
-TODO: Helptext für template einfügen
+Hier kannst du spezifische Eigenschaften des Template anpassen. Das ist
+nur relevant, wenn du ein Template bearbeitest.
+
+> **Hinweis** Diese Eigenschaften werden auch in abc dateien geschrieben
+> welche auf Basis des vorhandenen Templates erstellt werden. Damit kann
+> mnan feststellen, welches termplate der aktuell geöffnteten ABC -
+> datei zu Grunde liegt.
 
         "template": {"filebase": "-no-template-", "title": "- no template -"}
           
 
-## `template.filebase` - Dateibasis {#template.filebase}
+## `template.filebase` - Filename-Basis {#template.filebase}
 
-TODO: Helptext für template.filebase einfügen
+Hier kannst du den Dateinamen (ohne Erweiterung) des Templates angeben.
+Wenn die F-Kopfzeile eine Platzhalter-Startsquenz (`{{`) enthält, wird
+der in diesem Parameter angegebenen Name zum Speichern verwendet
 
         "filebase": "-no-template-"
           
 
 ## `template.title` - Titel {#template.title}
 
-TODO: Helptext für template.title einfügen
+Hier kannst du einen informativen Titel für das Template angeben. Damit
+kannst du das Template identifizieren.
 
         "title": "- no template -"
           

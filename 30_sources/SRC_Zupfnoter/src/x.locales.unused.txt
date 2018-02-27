@@ -3,42 +3,25 @@ $resources
 abc Tutorial concise
 abc Tutorial
 Add Config
-barnumbers and countnotes
 barnumbers.full
-basic settings
 compact
 configure positioning of rests
 compatible to version 1.3
 configure your sheet
 create
 current extract
-Edit annotations of an extract
-edit barnumbers or countnotes
-Edit basic settings of extract
 Edit current extract
 edit extra increments
 edit global settings for the current song
-Edit layout paerameters
-in current extract
-edit placement of images
-Edit presentation of stringanmes
-Edit printer correction paerameters
 edit resources
-edit settings for lyrics
-in current extract
-edit settings for sheet annotations
-in current extract
-edit shape of repeat signs
 end-of-translagion
 enter a page bound annotation
-Extract-Annotation
 Flowline
 global settings
 Id
 inject the default configuration (for development use only)
 insert a title for the 
 current extract
-instrument specific
 label
 Leave Zupfnoter?
 really ...?
@@ -49,12 +32,8 @@ minc_f
 notebound annotation
 Notes
 Open an concise ABC tutorial (in German)
-page annotation
-Printer adapt
-repeat signs
 repeatsigns.full
 rests as V 1.3
-settings for specific instrument sizes
 SnippetEditor::Annotation
 sorted
 south
@@ -64,8 +43,6 @@ specify details for legend
 specify details for lyrics
 specify full details for stringnams
 specify if rests are shown outside of flowlines
-xxspecify layout details 
-(e.g. size of symbols)
 specify output of stringnames.
  Stringnames help to tune the instrument
 specify printer adaptations details 
@@ -95,10 +72,11 @@ show repeat signs instead of jumplines
 specify which voides
 are considered to compute 
 vertical spacing
-Stringnames
 stringnames.full
 trpos
 url
 xx
+xxspecify layout details 
+(e.g. size of symbols)
 zoom harpnote preview
 _ende_der_liste

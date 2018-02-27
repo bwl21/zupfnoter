@@ -540,6 +540,11 @@ class ConfstackEditor
   end
 
 
+  # this moves the configuration of the forms menu into
+  # config-form. This method is called from user-interface.js
+  #
+  # the id must match a parameter set specified in edit conf command
+  #
   def self.get_config_form_menu_entries
     [
         {
@@ -603,9 +608,12 @@ class ConfstackEditor
         },
         {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
         {},
-        {id: 'minc', icon: 'fa fa-adjust', text: 'minc', tooltip: "edit extra increments"},
+        {id: 'notebound', icon: 'fa fa-adjust', text: 'notebound', tooltip: "edit notebound settings"},
         {},
         {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
+         {},
+        # {id: 'template', icon: 'fa fa-file-code-o', text: 'template', tooltip:"edit Template properties"},
+         {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'}
     ]
   end
 

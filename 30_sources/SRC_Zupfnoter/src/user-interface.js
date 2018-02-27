@@ -565,6 +565,7 @@ function init_w2ui(uicontroller) {
       }
     ],
 
+    // handlers for the main toolbar
     onClick: function (event) {
       // handle perspectives
       if (perspectives[event.target]) {
@@ -699,16 +700,17 @@ function init_w2ui(uicontroller) {
         previews[event.target]();
       }
 
-      // handle edit toolbar
+      // handle  edit_action from edittoolbar
       config_event = event.target.split(":")
       if (['edit_actions'].includes(config_event[0])) {
         if (config_event[1]) {
-         uicontroller.$handle_command(event.target.split(":")[1])
+          uicontroller.$handle_command(event.target.split(":")[1])
         }
       }
 
-      // this event is fo the edit_config menu
+      // this event is for the edit_config menu from edit toolbar
       // it is there as a specific
+      // todo, the same handler is there in the config toolbar
       config_event2 = event.target.split(":")
       if (['edit_config'].includes(config_event2[0])) {
         if (config_event2[1]) {
@@ -717,12 +719,14 @@ function init_w2ui(uicontroller) {
         }
       }
 
+      // handle edit_snippet from edit toolbar
       config_event3 = event.target.split(":")
       if (['edit_snippet'].includes(config_event3[0])) {
         w2ui.layout_left_tabs.click('abcEditor');
         uicontroller.$handle_command("editsnippet")
       }
 
+      // handle add_snippet from edit toolbar
       config_event4 = event.target.split(":")
       if (['add_snippet'].includes(config_event4[0])) {
         if (config_event4[1]) {
@@ -738,19 +742,19 @@ function init_w2ui(uicontroller) {
     id: 'lyrics_toolbar',
     name: 'lyrics-toolbar',
     style: tbstyle,
-    items:  [
+    items: [
       {type: 'menu', text: "Edit", id: "lyrics_actions", icon: "fa fa-pencil", tooltip: "edit functions"}
     ]
   }
 
 
   // this installs the handlers for the config_toolbar
-  // the toolbar is replaced in config-form.rb
+  // the toolbar entries are replaced in config-form.rb
+  // this is just to install the toolbar handlers
   var config_toolbar = {
     name: 'configtoolbar',
     style: tbstyle,
-    items: [
-    ],
+    items: [],
 
     onClick: function (event) {
       // handle perspectives
@@ -761,38 +765,11 @@ function init_w2ui(uicontroller) {
         }
       }
 
-      // handle previews
-      if (previews[event.target]) {
-        previews[event.target]();
-      }
-
-      // handle edit toolbar
-      config_event = event.target.split(":")
-      if (['edit_actions'].includes(config_event[0])) {
-        if (config_event[1]) {
-          uicontroller.$handle_command(event.target.split(":")[1])
-        }
-      }
-
       config_event2 = event.target.split(":")
       if (['edit_config'].includes(config_event2[0])) {
         if (config_event2[1]) {
           w2ui.layout_left_tabs.click('configtab');
           uicontroller.$handle_command("editconf " + config_event2[1])
-        }
-      }
-
-      config_event3 = event.target.split(":")
-      if (['edit_snippet'].includes(config_event3[0])) {
-        w2ui.layout_left_tabs.click('abcEditor');
-        uicontroller.$handle_command("editsnippet")
-      }
-
-      config_event4 = event.target.split(":")
-      if (['add_snippet'].includes(config_event4[0])) {
-        if (config_event4[1]) {
-          w2ui.layout_left_tabs.click('abcEditor');
-          uicontroller.$handle_command("addsnippet " + config_event4[1])
         }
       }
     }
@@ -879,8 +856,8 @@ function init_w2ui(uicontroller) {
         uicontroller.editor.$to_lyrics()
       }
 
-      if (event.target == "configtab"){
-        if (! w2ui.configformtoolbar){
+      if (event.target == "configtab") {
+        if (!w2ui.configformtoolbar) {
           uicontroller.$handle_command("editconf basic_settings")
         }
       }
@@ -977,7 +954,7 @@ function init_w2ui(uicontroller) {
         resizable: true,
         hidden: true,
         style: pstyle,
-        content: '<div id="commandconsole"></div>'
+        content: '<div id="commandconsole" width="100%"></div>'
       }
     ]
 
@@ -1072,10 +1049,10 @@ function update_editor_status_w2ui(editorstatus) {
   $(".editor-status-position").html(editorstatus.position);
   $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
   if (editorstatus.token.type.startsWith("zupfnoter.editable") && (editorstatus.selections.length == 1)) {
-      w2ui['editortoolbar'].enable('edit_snippet')
+    w2ui['editortoolbar'].enable('edit_snippet')
   }
   else {
-      w2ui['editortoolbar'].disable('edit_snippet')
+    w2ui['editortoolbar'].disable('edit_snippet')
   }
 
   // todo: implement a proper inhibit manager

@@ -770,6 +770,27 @@ Seitenbeschriftungen etc.
 
 Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 
+## template
+
+Hier kannst du spezifische Eigenschaften des Template anpassen. Das ist
+nur relevant, wenn du ein Template bearbeitest.
+
+> **Hinweis** Diese Eigenschaften werden auch in abc dateien geschrieben
+> welche auf Basis des vorhandenen Templates erstellt werden. Damit kann
+> mnan feststellen, welches termplate der aktuell geöffnteten ABC -
+> datei zu Grunde liegt.
+
+## template.filebase
+
+Hier kannst du den Dateinamen (ohne Erweiterung) des Templates angeben.
+Wenn die F-Kopfzeile eine Platzhalter-Startsquenz (`{{`) enthält, wird
+der in diesem Parameter angegebenen Name zum Speichern verwendet
+
+## template.title
+
+Hier kannst du einen informativen Titel für das Template angeben. Damit
+kannst du das Template identifizieren.
+
 ## tuplet
 
 Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)

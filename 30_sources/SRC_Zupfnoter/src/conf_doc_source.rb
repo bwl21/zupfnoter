@@ -183,7 +183,7 @@ abc2svgkeys = JSON.parse(File.read("localization/abc2svg_de-de.json"))
 w2uikeys = JSON.parse(File.read("../vendor/w2ui/dist/de-de.json"))
 usedkeys  = []
 keys      = []
-Dir['user-interface.js', "config-form.js"].each do |file|
+Dir['user-interface.js', "config-form.rb"].each do |file|
   File.read(file).scan(/(caption|text|tooltip):\s*["']([^'"]*)["']/) do |clazz, key|
     key = key.gsub("\\n", "\n")
     usedkeys.push(key)

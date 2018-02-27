@@ -44,6 +44,8 @@
 * you can now extend the selection to all voices in order to delete/insert measures in the entire piece #202
 * rearranged toolbar on left pane #202
 * support variation within measure without measure bar #204
+* config-form now indicates if is extact specific #189
+
   
 ## exprimental
 

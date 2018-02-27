@@ -314,12 +314,18 @@ class Controller
 
     @commands.add_command(:settemplate) do |command|
       command.undoable = false
-      command.set_help { "set the current editor content as template" }
+      command.set_help { "set the current editor content as template (has no F:{{}} - line" }
       command.as_action do |args|
         template = @editor.get_text()
+
         if template.empty?
           `localStorage.removeItem(#{ZN_TEMPLATENAME})`
         else
+          layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
+          unless @music_model.meta_data[:filename].include?('{{')
+            raise "current file is not a template. It does not have a placeholder in F: line e.g. F:{{song_id}}"
+          end
+          handle_command('setstdextract')
           `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
         end
         nil
@@ -377,6 +383,12 @@ class Controller
 
       command.as_action do |args|
 
+
+        # key: the key which shall be inserted
+        #      note if it ends with '.x' we create a new entry and replace '.x' with a running number
+        #
+        # value: the value to be patched
+        # method: preset | patch  - decide if we replace existing values
         values = {
             'title'            => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "ENTER_TITLE_EXTRACT_#{@systemstatus[:view]}"} },
             'voices'           => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
@@ -413,32 +425,32 @@ class Controller
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
-            'standardextract'  => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} },
-            'x1'               => lambda { {key: "xx", value: $conf[]} },
-            'xx'               => lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']} },
-            'hugo'             => lambda { {key: "extract.#{@systemstatus[:view]}",
-                                            value:
-                                                 [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
-                                                   r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
-                                                   r
-                                                 end} }
+            'standardextract'  => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} }
         }
 
-        # create the commands for presets aka quicksettings
-        # note they must be added to the ui in
-        # command-definitions: for :editconf
-        # the quicksettings are invokked from editconf - therefore need to be registered there
+        # create the add_conf parameters for presets aka quicksettings
+        # note they must be added to the entry quicksetting_commands: in
+        # controller-command-definitions: for :editconf
+        # the quicksettings are invoked from editconf - therefore need to be registered there
+        #
+        # note that the method specifies
+        #    :preset : existing parameters are replaced
+        #    :patch  : existing parameters are untouched
 
+
+        ## here we compute the vallues for the quicksettings (prsets)
         all_value = {}
         $conf['presets.notes'].each do |key, preset_value|
-          entry                         = $conf["presets.notes.#{key}"]
-          to_key                        = entry[:key] || key
-          value                         = entry[:value]
-          all_value[to_key]             = entry[:value]
-          values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
+          entry             = $conf["presets.notes.#{key}"]
+          to_key            = entry[:key] || key
+          value             = entry[:value]
+          unless key == :T01_T99
+            all_value[to_key] = entry[:value]
+            values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
+          end
         end
+        values["preset.notes.T01_T99"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes", value: all_value, method: :patch} }
 
-        values["preset.notes.all"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes", value: all_value, method: :patch} }
 
         $conf['presets.layout'].each do |key, preset_value|
           values["preset.layout.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset} }
@@ -452,21 +464,28 @@ class Controller
           values["preset.instrument.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.instrument.#{key}"], method: :preset} }
         end
 
-        # here we handle the menu stuff
+        # here we compute the particular value to be stored in the configuration parameter
+        # note that args[:key] is not the key of the paramter but the name of the set.
+        # then we process the value
         value = values[args[:key]]
         if value
-
+          # peform the late binding of the values
           value = value.call
 
           localconf              = Confstack.new(false)
           localconf.strict       = false
           localconf[value[:key]] = value[:value]
-          keys_from_value        = localconf.keys
+
+          # handle preset / patch method
+          # {values from editor} # unless preset - overreide value from set
+          # {values from set}
 
           config_from_editor = get_config_from_editor
-          localconf.push(config_from_editor) unless value[:method] == :preset
-
+          localconf.push(config_from_editor) unless value[:method] == :preset # use unless, to replace parameters only for :preset
           patchvalue = localconf[value[:key]]
+
+          # handle new entry
+          # detect the need for a new entry from the end of the configuration parameter key
 
           the_key = value[:key]
           # this computes the next key number
@@ -476,7 +495,11 @@ class Controller
             the_key    = %Q{#{parent_key}.#{next_free}}
           end
 
+          # now we patch the configuration parameter
+
           @editor.patch_config_part(the_key, patchvalue)
+          #todo we need a neated config to ensure that the form show correct value. Clarify it this is generic enough
+          $log.benchmark("editor restore from local storage to get neated config"){@editor.neat_config_part}
           @config_form_editor.refresh_form if @config_form_editor
         else
           raise "unknown configuration parameter #{args[:key]}"
@@ -488,17 +511,25 @@ class Controller
 
     @commands.add_command(:editconf) do |command|
 
+      # some helper methods
+      # we compute the configuration parameter keys for images
+      # based on the available inmages
       def mk_image_edit_keys
         config_from_editor = get_config_from_editor
-        images = config_from_editor.dig("extract","0", "images")
-        image_keys =  images ? images.keys : []
-        image_keys.map{|i| ["imagename", "show", "pos", "height"].map{|k| "extract.#{@systemstatus[:view]}.images.#{i}.#{k}"} }.flatten
+        images             = config_from_editor.dig("extract", "0", "images")
+        image_keys         = images ? images.keys : []
+        image_keys.map { |i| ["imagename", "show", "pos", "height"].map { |k| "extract.#{@systemstatus[:view]}.images.#{i}.#{k}" } }.flatten
       end
 
+      # create keys for the current view
       def expand_extract_keys(keys)
         keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
       end
 
+
+      # preset keys for the extracts
+      # the inital array specifies the available
+      # extracts
       def expand_extractnumbering(keys)
         [0, 1, 2, 3, 4, 5].product(keys).map { |number, key| "extract.#{number}.#{key}" }
       end
@@ -515,24 +546,36 @@ class Controller
         $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
 
         # this is the set of predefined configuration pages
-        # it is the argument of editconf {set} respectively addconf{set}
+        # it is the argument of editconf {set}
+        #
+        # keys: the keys of the parameters in the form
+        # quicksetting_command: a n array of arguments for addconf
+        # newentry_handler: a lambda to handle a new entry
+        # scope: extract | global  defaults to extract
         form_sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :nonflowrest,
                                                                             :startpos,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices',
                                                                             'stringnames.vpos', 'sortmark.show',
                                                                            ]) + [:restposition]},
-            extract_annotation:    {keys: [:produce,
-                                           expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
+            extract_annotation:    {keys:                  [:produce,
+                                                            'extract.0.notes.T05_printed_extracts.text',
+                                                            'extract.0.notes.T01_number.text',
+                                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten,
+                                    quicksetting_commands: ['standardextract'],
+                                    scope:                 :global
             },
             barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apbase', 'barnumbers.style',
                                                                'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style'])},
-            annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }},
-            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") }, quicksetting_commands: _get_quicksetting_commands('notes')},
+            annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
+            notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
+                                    quicksetting_commands: _get_quicksetting_commands('notes')},
             lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
-            images:                {keys: $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys,
-                                    newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf images") }: nil) },
-            minc:                  {keys: expand_extract_keys(['notebound'])},
+            images:                {keys:             $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys,
+                                    newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf images") } : nil),
+                                    scope:            :global
+            },
+            notebound:             {keys: expand_extract_keys(['notebound'])},
             layout:                {keys: expand_extract_keys(
                                               [:layoutlines, :startpos,
                                                'layout.LINE_THIN', 'layout.LINE_MEDIUM', 'layout.LINE_THICK',
@@ -557,11 +600,11 @@ class Controller
                                           _get_quicksetting_commands('instrument')
             },
             stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
-            template:              {keys: ['template.filebase', 'template.title']},
-            extract0:              {keys: ['extract.0']},
+            template:              {keys: ['template.filebase', 'template.title'], scope: :global},
+            extract0:              {keys: ['extract.0'], scope: :global},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
-            errors:                {keys: @validation_errors},
-            xx:                    {keys: ['xx']}
+            errors:                {keys: @validation_errors, scope: :global},
+            all_parameters:        {keys: ['.'], scope: :global}
         }
 
 
@@ -586,16 +629,25 @@ class Controller
           end
         end
 
+        editor_title = ConfstackEditor.get_config_form_menu_entries.select { |i| i[:id] == args[:set] }.first
+
+        if editor_title
+          editor_title = I18n.t(editor_title[:text])
+        else
+          editor_title = I18n.t(args[:set])
+        end
+
         # now handle the form
         if the_form
-          editor_title = %Q{#{args[:set]} [#{I18n.t("Extract")} #{@systemstatus[:view]}]}
+          scope                 = the_form[:scope] || :extract
+          editor_title          = %Q{#{editor_title} [#{I18n.t("Extract")} #{@systemstatus[:view]}]} if scope == :extract
           editable_keys         = the_form[:keys]
           newentry_handler      = the_form[:newentry_handler]
           quicksetting_commands = the_form[:quicksetting_commands] || []
         else # use the argument as key if there is no set.
-          editor_title = %Q{#{args[:set]}}
+          editor_title          = %Q{#{args[:set]}}
           quicksetting_commands = []
-          editable_keys         = [args[:set]]
+          editable_keys         = [args[:set]] # use the parameter as key if there is no set.
         end
 
 
@@ -1159,7 +1211,7 @@ C
           is_template = true
           filebase    = @music_model.harpnote_options.dig(:template, :filebase)
           unless filebase
-            raise "no filebase given for template"
+            raise I18n.t("no filebase given for template. Please type  'editconf template' in console")
           end
         else
           print_variants = @music_model.harpnote_options[:print]
