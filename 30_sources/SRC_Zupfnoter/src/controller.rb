@@ -722,7 +722,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def load_music_model
     abc_parser = $conf.get('abc_parser')
-    $log.timestamp_start
     harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
     @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
     @abc_model                        = harpnote_engine.abc_model
