@@ -42,6 +42,12 @@ require 'bowser.js'
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"
 
+class Numeric
+  def clamp(min, max)
+    self < min ? min : self > max ? max : self
+  end
+end
+
 Document.ready? do
   a = Controller.new
   # provide access to  zupfnoter controller from browser console

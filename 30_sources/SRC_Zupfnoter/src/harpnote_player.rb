@@ -25,6 +25,7 @@ module Harpnotes
         @voices_to_play   = [1, 2, 3, 4, 5, 6, 7, 8]
         @voice_elements   = []
         @player_model_abc = []
+        @speed            = 1
       end
 
       def is_playing?
@@ -58,7 +59,7 @@ module Harpnotes
       end
 
       def play_auto
-        if @selection.count >= 0 and (counts = @selection.map {|i| i[:delay]}.uniq.count) > 1
+        if @selection.count >= 0 and (counts = @selection.map { |i| i[:delay] }.uniq.count) > 1
           play_selection
         else
           play_from_selection
@@ -72,7 +73,7 @@ module Harpnotes
           notes_to_play = @voice_elements.select do |n|
             n[:delay] >= @selection.first[:delay]
           end
-          notes_to_play = notes_to_play.select {|v| @active_voices.include? v[:index]}
+          notes_to_play = notes_to_play.select { |v| @active_voices.include? v[:index] }
           play_notes(notes_to_play)
         else
           play_from_abc # play from abc if no note is selected
@@ -104,7 +105,7 @@ module Harpnotes
           #note schedule in secc, SetTimout in msec; finsh after last measure
           `clearTimeout(#{@song_off_timer})` if @song_off_timer
 
-          the_notes = the_notes.sort_by {|the_note| the_note[:delay]}
+          the_notes = the_notes.sort_by { |the_note| the_note[:delay] }
 
           firstnote = the_notes.first
           lastnote  = the_notes.last
@@ -114,7 +115,9 @@ module Harpnotes
           stop_time       = (lastnote[:delay] - firstnote[:delay] + lastnote[:duration] + $conf.get('layout.SHORTEST_NOTE') * @duration_timefactor) * 1000 # todo factor out the literals
           @song_off_timer = `setTimeout(function(){#{@songoff_callback}.$call()}, #{stop_time} )`
 
-          pe = the_notes.map {|i| mk_to_play_1(i)}
+          start_offset = firstnote[:delay]
+
+          pe = the_notes.map { |i| mk_to_play_for_abc2svgplay(i, start_offset) }
 
           %x{
           #{@abcplay}.play(0, 1000000, #{pe})
@@ -128,7 +131,8 @@ module Harpnotes
       end
 
       def set_speed(speed)
-        %x{#{@abcplay}.set_speed(#{speed})}
+        @speed = speed.clamp(0.25, 4)
+        %x{#{@abcplay}.set_speed(#{@speed})}
       end
 
       def stop()
@@ -143,7 +147,7 @@ module Harpnotes
 
       def range_highlight(from, to)
         @selection = []
-        @voice_elements.sort {|a, b| a[:delay] <=> b[:delay]}.each do |element|
+        @voice_elements.sort { |a, b| a[:delay] <=> b[:delay] }.each do |element|
 
           origin = Native(element[:origin])
           unless origin.nil?
@@ -166,8 +170,8 @@ module Harpnotes
 
       # this is experimental and puts the notes in the curren time to the logwindow
       def get_notes
-        pitches = @selection.map{|i| @voice_elements_by_time[i[:delay]].map{|i| i[:pitch]}}.flatten.uniq.compact
-        pitches.map{|i| i%12}.uniq.sort.map{|i| pitch_to_note(i)}
+        pitches = @selection.map { |i| @voice_elements_by_time[i[:delay]].map { |i| i[:pitch] } }.flatten.uniq.compact
+        pitches.map { |i| i % 12 }.uniq.sort.map { |i| pitch_to_note(i) }
       end
 
       # this loads a song from the zupfnoter music model.
@@ -179,24 +183,24 @@ module Harpnotes
         spectf = (specduration * specbpm)
 
         # 1/4 = 120 bpm shall be  32 ticks per quarter: convert to 1/4 <-> 128:
-        tf                   = spectf * (128/120)
-        @duration_timefactor = 1/tf # convert music duration to musicaljs duration
-        @beat_timefactor     = 1/(tf * $conf.get('layout.BEAT_PER_DURATION')) # convert music beat to musicaljs delay
+        tf                   = spectf * (128 / 120)
+        @duration_timefactor = 1 / tf # convert music duration to musicaljs duration
+        @beat_timefactor     = 1 / (tf * $conf.get('layout.BEAT_PER_DURATION')) # convert music beat to musicaljs delay
 
         #todo duration_time_factor, beat_time_factor
 
         $log.debug("playing with tempo: #{tf} ticks per quarter #{__FILE__} #{__LINE__}")
         _load_voice_elements_from_voices(music)
-        @voice_elements_by_time = @voice_elements.group_by{|element| element[:delay]}
+        @voice_elements_by_time = @voice_elements.group_by { |element| element[:delay] }
 
         self
       end
 
       def _load_voice_elements_from_voices(music)
         @voice_elements = music.voices.each_with_index.map do |voice, index|
-          next  if index == 0
+          next if index == 0
           tie_start = {}
-          voice.select {|c| c.is_a? Playable}.map do |root|
+          voice.select { |c| c.is_a? Playable }.map do |root|
 
             velocity = 0.5
             velocity = 0.000011 if root.is_a? Pause # pause is highlighted but not to be heard
@@ -238,18 +242,23 @@ module Harpnotes
       end
 
 
-      def mk_to_play_1(note)
+      # convert the note from the structure for musical.js to the object for abc2svg player
+      # used to play from selection
+      # note that it depends on the current speed as the timing needs to be adapted
+      def mk_to_play_for_abc2svgplay(note, start_delay = 0)
         [
             note[:origin][:startChar], # [0]: index of the note in the ABC source
-            note[:delay], #[1]: time in seconds
+            (note[:delay] - start_delay)/@speed, #[1]: time in seconds
             25, #[2]: MIDI instrument 25: guitar steel
             note[:pitch], # [3]: MIDI note pitch (with cents)
-            note[:duration], # [4]: duration
+            note[:duration]/@speed, # [4]: duration
             ((note[:velocity] > 0.2) ? 1 : 0) # [5] volume
-            #note.to_n # [6] custom object
         ]
       end
 
+      # convert a note from harpnote-Model to structure required by musical.js
+      #
+      #
       # @param [Note] note - the note to play
       # @param [Numerical] velocity - velocity to play the note
       # @param [Numericcal] index - the number of the voice
@@ -258,7 +267,7 @@ module Harpnotes
         {
             delay: note.beat * @beat_timefactor,
             pitch: note.pitch, # todo: why -
-            duration: 1 * note.duration * @duration_timefactor, # todo: handle sustain of harp ...
+            duration: 1 * note.duration * @duration_timefactor, # todo: handle sustain of harp ... increase the 1
             velocity: velocity,
             origin:   note.origin,
             index:    index
