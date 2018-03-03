@@ -4,6 +4,74 @@ module Harpnotes
   class TextPane
     attr_accessor :editor, :controller, :autofold
 
+
+
+    # this is an undo manger used for the configuration only
+    # it applies the momento pattern
+    # it is used within TextPane only
+    #
+    # we do not have a class for momento it is a simple hash {title: "string", state: {}}
+    #
+    class UndoManager
+
+      # the constructor
+      def initialize
+        reset
+      end
+
+      # reset the undo manager
+      # used when a new music is loaded
+      def reset
+        @undostack    = []
+        @redostack    = []
+        @currentstate = {title: "init state", state: {}}
+      end
+
+      # register the execution of a command
+      #
+      # @param [Object] newstate the new state of the confi
+      # @param [String] title the title to be shown in the history
+      # @return [Object] the momento of the new state
+      def do(newstate, title)
+        @undostack.push(@currentstate)
+        @redostack    = []
+        @currentstate = {title: title, state: newstate}
+      end
+
+      # perform undo
+      #
+      # @return [Object] the momento of the new state or nil if there is no more undo
+      def undo
+        if @undostack[1]
+          momento = @undostack.pop
+          @redostack.push(@currentstate)
+          @currentstate = momento
+        end
+      end
+
+      # perform redo
+      #
+      # @return [Object] the momento of the new state or nil if there is no more redo
+      def redo
+        unless @redostack.empty?
+          momento = @redostack.pop
+          @undostack.push(@currentstate)
+          @currentstate = momento
+        end
+      end
+
+      # return the undo history as an array of momentos
+      def undo_history
+        [@undostack, @currentstate].flatten.reverse
+      end
+
+      # return the redo history as an array of momentos
+      def redo_history
+        [@redostack, @currentstate].flatten.reverse
+      end
+    end
+
+
     #
     # Initializes the text pane
     # @param div [String] The id of the div for the textpae
@@ -40,7 +108,8 @@ module Harpnotes
       @autofold          = true
       @on_change         = lambda {}
       @config_separator  = '%%%%zupfnoter'
-      @dirty             = {}    # hash to maintain dirty flag for zn_abc, zn_config, zn_resources
+      @dirty             = {} # hash to maintain dirty flag for zn_abc, zn_config, zn_resources
+      @config_undo       = UndoManager.new
 
       _clean_models
 
@@ -389,25 +458,28 @@ module Harpnotes
 
     # this pushes the object to the config part of the editor
     #
-    def set_config_model(object)
-      @dirty['zn_config'] = true
+    def set_config_model(object, desc = "no desc", handleundo = true)
+      @dirty['zn_config'] = true # used to decide if we save to localstore
+      @config_undo.do(object, desc) if handleundo == true
       _set_config_model(object)
     end
 
     # this applies the object to the config
     # values not in object are not changed in config
-    def patch_config_part(key, object)
+    # @param [string] desc bascially used for undo stack report
+    def patch_config_part(key, object, desc = key)
+      `debugger`
       pconfig       = Confstack::Confstack.new(false) # what we get from editor
       pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
       pconfig.push(_get_config_model)
 
       pconfig_patch[key] = object
       pconfig.push(pconfig_patch.get)
-      _set_config_model(pconfig.get)
+      set_config_model(pconfig.get, desc, true)
     end
 
     def neat_config_part
-      _set_config_json(_get_config_json)   # _get_config_json performs the neat
+      _set_config_json(_get_config_json, "neat config_part", false) # _get_config_json performs the neat
     end
 
     # @param [String] key the name of the resource
@@ -442,7 +514,7 @@ module Harpnotes
       pconfig.push(pconfig_patch.get)
       pconfig.push(_get_config_model)
 
-      _set_config_model(pconfig.get)
+      set_config_model(pconfig.get, key, true)
     end
 
     # deletes the entry of key in the config part
@@ -453,7 +525,7 @@ module Harpnotes
         pconfig = Confstack::Confstack.new(false) # what we get from editor
         pconfig.push(_get_config_model)
         pconfig[key] = Confstack::DeleteMe
-        _set_config_model(pconfig.get)
+        set_config_model(pconfig.get, key, true)
       end
     end
 
@@ -543,7 +615,8 @@ module Harpnotes
         _set_abc_to_editor(abctext) if abctext
 
         configjson = Native(`localStorage.getItem('zn_config')`) || {}
-        _set_config_json(configjson) if configjson
+        @config_undo.reset
+        _set_config_json(configjson, "from localstore zn_config", true) if configjson
 
         resources = Native(`localStorage.getItem('zn_resources')`)
         _set_resources_json(resources) if resources
@@ -582,7 +655,8 @@ module Harpnotes
         if i == 0
           _set_abc_to_editor(part)
         elsif part.start_with? ".config"
-          _set_config_json(part.split(".config").last)
+          @config_undo.reset
+          _set_config_json(part.split(".config").last, "from loaded abc", true)
         elsif part.start_with? ".resources"
           _set_resources_json(part.split(".resources").last)
         else
@@ -602,8 +676,8 @@ module Harpnotes
       %x{self.editor.getSession().getValue()}
     end
 
-    def _set_config_json(json)
-      _set_config_model(JSON.parse(json))
+    def _set_config_json(json, desc = "no desc", handleundo = true)
+      set_config_model(JSON.parse(json), desc, handleundo)
     end
 
     def _get_config_json
@@ -621,6 +695,27 @@ module Harpnotes
       save_to_localstorage('zn_config')
       @on_change.call(nil) # fire dirty flag in contoller
     end
+
+    def undo_config
+      momento = @config_undo.undo
+      if momento
+        $log.info("undo: #{momento[:title]}: #{momento[:state].dig('extract', '0', 'legend', 'pos')}")
+        set_config_model(momento[:state], momento[:title], false) if momento
+      end
+    end
+
+    def redo_config
+      momento = @config_undo.redo
+      if momento
+        $log.info("redo: #{momento[:title]}: #{momento[:state].dig('extract', '0', 'legend', 'pos')}")
+        set_config_model(momento[:state], momento[:title], false) if momento
+      end
+    end
+
+    def history_config
+      {undo: @config_undo.undo_history, redo: @config_undo.redo_history}
+    end
+
 
     def _set_resources_json(json)
       $resources = JSON.parse(json)

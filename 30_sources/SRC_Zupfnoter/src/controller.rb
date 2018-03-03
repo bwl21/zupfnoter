@@ -736,7 +736,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       config, status = migrate_config(config)
       if status[:changed]
         $log.info(status[:message])
-        @editor.set_config_model(config)
+        @editor.set_config_model(config, "{migrated config}", true)
         # @editor.prepend_comment(status[:message])
       end
     end

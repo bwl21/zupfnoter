@@ -473,7 +473,8 @@ class ConfstackEditor
   #   no nil     delete       actively delete the value from the editor
   # field had no value and does not provide one - don't do anything
   # filed
-  def push_config_to_editor
+  # @param [String] undo_title - if given it forwareded to @editor.patch_config_part for reference in undo manager
+  def push_config_to_editor(undo_title = nil)
     patchvalue = Confstack.new(false)
     @live_record.each do |k, v|
       value = Native(v)
@@ -495,7 +496,7 @@ class ConfstackEditor
     end
     patchvalue = patchvalue.get
     patchvalue.keys.each do |k|
-      @editor.patch_config_part(k, patchvalue[k])
+      @editor.patch_config_part(k, patchvalue[k], undo_title)
     end
     refresh_form
   end
@@ -517,7 +518,7 @@ class ConfstackEditor
           helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
 
           if target.first.start_with? "$resources"
-            img = $resources[target.first.split('.').last]
+            img      = $resources[target.first.split('.').last]
             helptext = %Q{<img style="width:300px;" src="#{img.join}"</img>} if img
             `$(#{evt}.target).w2overlay(#{helptext})`
           else
@@ -611,9 +612,9 @@ class ConfstackEditor
         {id: 'notebound', icon: 'fa fa-adjust', text: 'notebound', tooltip: "edit notebound settings"},
         {},
         {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
-         {},
+        {},
         # {id: 'template', icon: 'fa fa-file-code-o', text: 'template', tooltip:"edit Template properties"},
-         {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'}
+        {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'}
     ]
   end
 
@@ -624,6 +625,28 @@ class ConfstackEditor
                   items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
     }
 
+    undo_history = @editor.history_config[:undo]
+    if undo_history.count > 2
+      undo_button = {id:       'undo', type: 'button', icon: 'fa fa-undo',
+                     disabled: false,
+                     tooltip:  %Q{#{I18n.t("undo")} #{undo_history.first[:title]} },
+                     onClick:  lambda { |e| @controller.handle_command(%Q{undoconfig}); refresh_form }
+      }
+    else
+      undo_button = {id: 'un do', tooltip: "", type: 'button', icon: 'fa fa-undo', disabled: true}
+    end
+
+    redo_history = @editor.history_config[:redo]
+    if redo_history.count > 1
+      redo_button = {id:       'redo', type: 'button', icon: 'fa fa-repeat',
+                     disabled: false,
+                     tooltip:  %Q{#{I18n.t("redo")} #{redo_history.first[:title]} },
+                     onClick:  lambda { |e| @controller.handle_command(%Q{redoconfig}); refresh_form }
+      }
+    else
+      redo_button = {id: 'redo', tooltip: "", type: 'button', icon: 'fa fa-repeat', disabled: true}
+    end
+
     @form = {
         name: "configform",
         #header:     I18n.t(@title),
@@ -633,7 +656,7 @@ class ConfstackEditor
         focus:      -1,
         onChange:   lambda { |event|
           a = lambda {
-            push_config_to_editor
+            push_config_to_editor(`#{event}.target`)
             %x{
                document.getElementById(#{event}.target).focus()
               }
@@ -643,11 +666,15 @@ class ConfstackEditor
             event.onComplete=#{a}
           }
         },
-        toolbars: {
+        toolbars:   {
             name:    'configformtoolbar',
             items:   [
                          {id: 'title', class: 'foobar', style: "margin-top:0px", type: 'html', html: %Q{<h4 style="color:black;margin-left:3pt;">#{I18n.t(@title)}</h4>}},
                          {id: 'bt3', type: 'spacer'},
+                         {id: 'bt4', type: 'break'},
+                         undo_button,
+                         redo_button,
+                         {id: 'bt5', type: 'break'},
                          {
                              type:    'menu',
                              text:    "Edit Config",

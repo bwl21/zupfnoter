@@ -1244,7 +1244,7 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
         }
           
 
-## `presets.notes.T01_T99` - {#presets.notes.T01_T99}
+## `presets.notes.T01_T99` - T01 .. T99 Alle .. {#presets.notes.T01_T99}
 
 TODO: Helptext für presets.notes.T01_T99 einfügen
 

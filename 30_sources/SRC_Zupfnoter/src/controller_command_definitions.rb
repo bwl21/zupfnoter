@@ -345,7 +345,6 @@ class Controller
       command.as_inverse do |args|
         @editor.set_text(args[:oldval])
       end
-
     end
 
 
@@ -488,16 +487,18 @@ class Controller
           # detect the need for a new entry from the end of the configuration parameter key
 
           the_key = value[:key]
+          quicksetting_name = I18n.t("quicksetting: ") + args[:key]
           # this computes the next key number
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0 .. -2].join(".")
             next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
             the_key    = %Q{#{parent_key}.#{next_free}}
+            quicksetting_name = I18n.t("new")
           end
 
           # now we patch the configuration parameter
 
-          @editor.patch_config_part(the_key, patchvalue)
+          @editor.patch_config_part(the_key, patchvalue, "#{the_key} ->  #{quicksetting_name}")
           #todo we need a neated config to ensure that the form show correct value. Clarify it this is generic enough
           $log.benchmark("editor restore from local storage to get neated config"){@editor.neat_config_part}
           @config_form_editor.refresh_form if @config_form_editor
@@ -508,6 +509,28 @@ class Controller
       end
     end
 
+
+    @commands.add_command(:undoconfig) do |command|
+      command.as_action do |args|
+        @editor.undo_config
+      end
+      command.undoable = false
+      command.set_help { "undo last change of configuration (#{@editor.history_config[:undo].count})" }
+    end
+    @commands.add_command(:redoconfig) do |command|
+      command.as_action do |args|
+        @editor.redo_config
+      end
+      command.undoable = false
+      command.set_help { "redo last undone change of configuration" }
+    end
+    @commands.add_command(:hconfig) do |command|
+      command.as_action do |args|
+        $log.message(@editor.history_config[:undo].map{|i| i[:title] }.join("\n"))
+      end
+      command.undoable = false
+      command.set_help { "show undable changes of condfiguration" }
+    end
 
     @commands.add_command(:editconf) do |command|
 
