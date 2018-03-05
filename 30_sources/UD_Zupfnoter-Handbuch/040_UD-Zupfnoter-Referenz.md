@@ -1182,11 +1182,22 @@ Tastenkombinationen (Shortcuts) zur Verfügung:
 -   'cmd + k': Konsole anzeigen
 -   'cmd + r': Rendern (aktualisieren der Unterlegnoten)
 -   'cmd + p': Play (abspielen)
--   'cmd + alt + f': Fullscreen - Schaltet zwischen Ansicht
-    "Harfennoten" hin und her
+-   'cmd + l': Large - schaltet zwischen Ansicht "Harfennoten" hin und
+    her. Gut für eine schnelle Kontrolle
+-   'cmd + 0' .. cmd \# '9': Schalte auf Ansicht 0 .. 9
 
 > **Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
 > "strg" - Taste
+
+Im ABC-Editor gelten (nur die häufigsten Tasten ...)
+
+-   'cmd + z': letzte Eingabe rückgänig
+-   'shift cmd + z': letzte Eingabe wiederholen
+-   'cmd + f': Suchen
+-   'cmd + shift + f': Suchen / Ersetzen
+
+mehr unter <https://ace.c9.io/demo/keyboard_shortcuts.html> (das ist
+aber wirklich nur für die IT-Profis)
 
 > **Hinweis:** 'cmd + alt + f' bedeutet, dass die Tasten 'cmd', 'alt',
 > 'f' gleichzeitig gedrückt werden.
@@ -1266,8 +1277,6 @@ etwas hinzufügen möchtest.
 
 #### Anzeige von Fehlern im Texteditor
 
- 
-
 \index{Fehlermeldung}Zupfnoter zeigt im Texteditor über ein rotes
 Quadrat mit Kreuz links von den ABC-Notationszeilen oder den
 Zupfnoter-Einstellungen an, daß in der Zeile ein Fehler aufgetreten ist.
@@ -1293,8 +1302,6 @@ Umständen keine herkömmlichen Noten oder Unterlegnoten generiert werden.
 > ein Fenster mit den letzten Fehlermeldungen an.
 
 #### Darstellung der Konfigurationsparameter im Texteditor
-
- 
 
 Nach der ABC-Notation kommen die Zupfnoter-Einstellungen. Diese werden
 durch den Kommentar
@@ -1366,19 +1373,21 @@ eingestellten Auszug.
 > 3.  wenn auch der Auszug 0 keinen Wert enthält: der systeminterne
 >     Vorgabewert
 
-Dabei gibt es zwei Arten von Masken
+Dabei gibt es verschiedene Arten von Masken
 
--   vordefinierte Masken mit einem festen Aufbau. Diese zeigen
+-   **vordefinierte Masken** mit einem festen Aufbau. Diese zeigen
     Eingabefelder für Parameter auch dann, wenn sie im Musikstück noch
     nicht vorhanden sind. Wichtigstes Beispiel ist die Maske
-    "Grundeinstellungen"
--   dynamische Masken, welche nur die Parameter zeigen, die im
+    "Grundeinstellungen". Diese Masken verändern ihren Aufbau nicht.
+-   **dynamische Masken**, welche nur die Parameter zeigen, die im
     Musikstück auch wirklich vorhanden sind. Prominentestes Beispiel
-    hierfür ist die Maske "Liedtexte"
-
-    > **Hinweis**: Es kann durchaus sinnvoll sein, über das Menü
-    > "**Konfig. einfügen**" zusätzliche Parameter hinzuzufügen, während
-    > man in einer dynamischen Maske arbeitet.
+    hierfür ist die Maske "Liedtexte". Diese Maske verändern ihren
+    Aufbau, je nach dem, welche Paramter im Musikstück wirklich
+    vorhanden sind.
+-   **Auzugsbezogene Masken**: Diese Masken bearbeiten den aktuell
+    eingestellten Auszug. Dieser wird in der Maskenüberschrift links
+    angezeigt (z.B. `Grundeinstellungen [Auszug 2]`). Sie passen sich
+    an, wenn der aktuelle Auszug gewechselt wird.
 
 Da die Konfigurationsparameter an verschiedenen Stellen gesucht werden,
 muss auch das Einfügen / Löschen von Konfigurationsparametern über die
@@ -1429,14 +1438,14 @@ Für die Bedienung der Masken ist noch wichtig
     eines Parameters ein. Sie ist nur aktiv, wenn es für einen Parameter
     mehrere Instanzen geben kann (z.B. \index{Liedtexte}Liedtexte
     [lyrics.x], \index{Seitenbeschriftung}Seitenbeschriftung [notes.x])
--   Schaltfläche `Schnelleinstellungen`: Diese Taste öffnet ein Menü,
-    aus dem du für die aktuelle Maske eine Voreinstellung auswählen
-    kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination
-    von Parametern für einen bestimmten Fall (z.B. für ein "kompaktes
-    Layout"). Diese Schaltfläche ist nur für solche Masken aktiv, für
-    die es auch Voreinstellungen gibt.
+-   Schaltfläche `Schnelleinst.`: Diese Taste (Schnelleinstellungen)
+    öffnet ein Menü, aus dem du für die aktuelle Maske eine
+    Voreinstellung auswählen kannst. Eine solche Voreinstellung ist eine
+    sinnvolle Kombination von Parametern für einen bestimmten Fall (z.B.
+    für ein "kompaktes Layout"). Diese Schaltfläche ist nur für solche
+    Masken aktiv, für die es auch Voreinstellungen gibt.
 -   Feldeingabe mit der "TAB"-Taste bestätigen
--   `Rendern` nicht vergessen (**In der Maske drück erst TAB, dann geht
+-   `Rendern` nicht vergessen (**In der Maske drücke erst TAB, dann geht
     auch das "Rendern" ab**)
 
 ### Masken für Zupfnoter-spezifische Zusätze {#masken-fuer-zusaetze}

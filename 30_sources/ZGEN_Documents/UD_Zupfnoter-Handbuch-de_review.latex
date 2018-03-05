@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-3-29-gbfbe025
+Version dev/V\_1.8.0\_dev-3-33-gafe275f
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2514,14 +2514,33 @@ Tastenkombinationen (Shortcuts) zur Verfügung:
 \item
   `cmd + p': Play (abspielen)
 \item
-  `cmd + alt + f': Fullscreen - Schaltet zwischen Ansicht
-  ``Harfennoten'' hin und her
+  `cmd + l': Large - schaltet zwischen Ansicht ``Harfennoten'' hin und
+  her. Gut für eine schnelle Kontrolle
+\item
+  `cmd + 0' .. cmd \# `9': Schalte auf Ansicht 0 .. 9
 \end{itemize}
 
 \begin{quote}
 \textbf{Hinweis:} unter Windows / Linux entspricht ``cmd'' der ``ctrl''
 oder ``strg'' - Taste
 \end{quote}
+
+Im ABC-Editor gelten (nur die häufigsten Tasten \ldots{})
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  `cmd + z': letzte Eingabe rückgänig
+\item
+  `shift cmd + z': letzte Eingabe wiederholen
+\item
+  `cmd + f': Suchen
+\item
+  `cmd + shift + f': Suchen / Ersetzen
+\end{itemize}
+
+mehr unter \url{https://ace.c9.io/demo/keyboard_shortcuts.html} (das ist
+aber wirklich nur für die IT-Profis)
 
 \begin{quote}
 \textbf{Hinweis:} `cmd + alt + f' bedeutet, dass die Tasten `cmd',
@@ -2631,8 +2650,6 @@ grafischen Barbeitungsmöglichkeiten zu nutzen:
 \paragraph{Anzeige von Fehlern im
 Texteditor}\label{anzeige-von-fehlern-im-texteditor}
 
-~
-
 \index{Fehlermeldung}Zupfnoter zeigt im Texteditor über ein rotes
 Quadrat mit Kreuz links von den ABC-Notationszeilen oder den
 Zupfnoter-Einstellungen an, daß in der Zeile ein Fehler aufgetreten ist.
@@ -2668,8 +2685,6 @@ Zupfnoter auch ein Fenster mit den letzten Fehlermeldungen an.
 
 \paragraph{Darstellung der Konfigurationsparameter im
 Texteditor}\label{darstellung-der-konfigurationsparameter-im-texteditor}
-
-~
 
 Nach der ABC-Notation kommen die Zupfnoter-Einstellungen. Diese werden
 durch den Kommentar
@@ -2762,24 +2777,26 @@ Konfigurationsparameter einen Wert in folgender Reihenfolge
 \end{enumerate}
 \end{quote}
 
-Dabei gibt es zwei Arten von Masken
+Dabei gibt es verschiedene Arten von Masken
 
 \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  vordefinierte Masken mit einem festen Aufbau. Diese zeigen
+  \textbf{vordefinierte Masken} mit einem festen Aufbau. Diese zeigen
   Eingabefelder für Parameter auch dann, wenn sie im Musikstück noch
   nicht vorhanden sind. Wichtigstes Beispiel ist die Maske
-  ``Grundeinstellungen''
+  ``Grundeinstellungen''. Diese Masken verändern ihren Aufbau nicht.
 \item
-  dynamische Masken, welche nur die Parameter zeigen, die im Musikstück
-  auch wirklich vorhanden sind. Prominentestes Beispiel hierfür ist die
-  Maske ``Liedtexte''
-
-  \begin{quote}
-  \textbf{Hinweis}: Es kann durchaus sinnvoll sein, über das Menü
-  ``\textbf{Konfig. einfügen}'' zusätzliche Parameter hinzuzufügen,
-  während man in einer dynamischen Maske arbeitet.
-  \end{quote}
+  \textbf{dynamische Masken}, welche nur die Parameter zeigen, die im
+  Musikstück auch wirklich vorhanden sind. Prominentestes Beispiel
+  hierfür ist die Maske ``Liedtexte''. Diese Maske verändern ihren
+  Aufbau, je nach dem, welche Paramter im Musikstück wirklich vorhanden
+  sind.
+\item
+  \textbf{Auzugsbezogene Masken}: Diese Masken bearbeiten den aktuell
+  eingestellten Auszug. Dieser wird in der Maskenüberschrift links
+  angezeigt (z.B. \texttt{Grundeinstellungen\ {[}Auszug\ 2{]}}). Sie
+  passen sich an, wenn der aktuelle Auszug gewechselt wird.
 \end{itemize}
 
 Da die Konfigurationsparameter an verschiedenen Stellen gesucht werden,
@@ -2852,17 +2869,17 @@ Für die Bedienung der Masken ist noch wichtig
   \index{Liedtexte}Liedtexte {[}lyrics.x{]},
   \index{Seitenbeschriftung}Seitenbeschriftung {[}notes.x{]})
 \item
-  Schaltfläche \texttt{Schnelleinstellungen}: Diese Taste öffnet ein
-  Menü, aus dem du für die aktuelle Maske eine Voreinstellung auswählen
-  kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination von
-  Parametern für einen bestimmten Fall (z.B. für ein ``kompaktes
-  Layout''). Diese Schaltfläche ist nur für solche Masken aktiv, für die
-  es auch Voreinstellungen gibt.
+  Schaltfläche \texttt{Schnelleinst.}: Diese Taste
+  (Schnelleinstellungen) öffnet ein Menü, aus dem du für die aktuelle
+  Maske eine Voreinstellung auswählen kannst. Eine solche Voreinstellung
+  ist eine sinnvolle Kombination von Parametern für einen bestimmten
+  Fall (z.B. für ein ``kompaktes Layout''). Diese Schaltfläche ist nur
+  für solche Masken aktiv, für die es auch Voreinstellungen gibt.
 \item
   Feldeingabe mit der ``TAB''-Taste bestätigen
 \item
-  \texttt{Rendern} nicht vergessen (\textbf{In der Maske drück erst TAB,
-  dann geht auch das ``Rendern'' ab})
+  \texttt{Rendern} nicht vergessen (\textbf{In der Maske drücke erst
+  TAB, dann geht auch das ``Rendern'' ab})
 \end{itemize}
 
 \hyperdef{}{masken-fuer-zusaetze}{\subsubsection{Masken für
@@ -5826,6 +5843,7 @@ allerdings nur in der Textansicht möglich.
 
 \begin{verbatim}
     "notes": {
+      "T01_T99"                  : {"value": {}},
       "T01_number"               : {
         "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
       },
@@ -5857,6 +5875,27 @@ allerdings nur in der Textansicht möglich.
         "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
       }
     }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T01\_T99} - T01 .. T99
+Alle
+..}{presets.notes.T01\_T99 - T01 .. T99 Alle ..}}\label{presets.notes.T01ux5fT99}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T01\_T99 einfügen
+
+\begin{verbatim}
+    "T01_T99": {"value": {}}
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T01\_T99.value} -
+Wert}{presets.notes.T01\_T99.value - Wert}}\label{presets.notes.T01ux5fT99.value}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T01\_T99.value einfügen
+
+\begin{verbatim}
+    "value": {}
       
 \end{verbatim}
 

@@ -44,8 +44,9 @@
 * you can now extend the selection to all voices in order to delete/insert measures in the entire piece #202
 * rearranged toolbar on left pane #202
 * support variation within measure without measure bar #204
-* config-form now indicates if is extact specific #189
-
+* config-form now indicates if it is specific for a particular  #189
+* support undo/redo for config #201
+* improved shortcuts (cmd-L to toggle full screen)
   
 ## exprimental
 

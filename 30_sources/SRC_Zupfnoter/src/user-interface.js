@@ -352,6 +352,7 @@ function init_w2ui(uicontroller) {
     if (isFullScreen) {
       perspectives[current_perspective]();
       isFullScreen = false;
+      uicontroller.editor.$set_focus();
     }
     else {
       perspectives['tb_perspective:Harfe']();

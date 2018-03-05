@@ -85,6 +85,7 @@ module Harpnotes
         langTools.setCompleters([langTools.snippetCompleter])
 
         var editor = ace.edit(div);
+        editor.commands.bindKey("Cmd-L", null);
         editor.$blockScrolling = Infinity;
 
         editor.getSession().setMode("ace/mode/abc");
@@ -284,6 +285,10 @@ module Harpnotes
         #{@editor}.focus();
           #{@editor}.selection.setSelectionRange(myrange, false);
       }
+    end
+
+    def set_focus
+      `#{@editor}.focus();`
     end
 
     #

@@ -1106,11 +1106,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           when 'K'.ord #k
             e.prevent
             toggle_console
-          when 'F'.ord
-            if e.alt_key
-              e.prevent
-              %x{#{@zupfnoter_ui}.toggle_full_screen();}
-            end
+          when 'L'.ord
+            e.prevent
+            %x{#{@zupfnoter_ui}.toggle_full_screen();}
+          when *((0..9).map{|i|i.to_s.ord})
+            e.prevent
+            handle_command("view #{e.key_code.chr}")
         end
       end
     end
