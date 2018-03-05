@@ -1039,7 +1039,12 @@ module Harpnotes
       # this estimates the size of an annotation
       def size
         if @text and @text.strip.length > 0
-          ysize = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size") * $conf.get("layout.MM_PER_POINT").to_f
+          font_size = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size")
+          unless font_size
+            font_size = 10
+            $log.error("unsupported style for annotation: #{@style}")
+          end
+          ysize = font_size * $conf.get("layout.MM_PER_POINT").to_f
           xsize = @text.length * ysize # todo: this needs improvement (multiline texts, monospace fonts.)
         else
           xsize, ysize = 1.5, 2 # todo: this is pretty heuristic
