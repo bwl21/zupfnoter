@@ -739,8 +739,15 @@ module Harpnotes
         rect         = [x, y, x + xsize, y + ysize]
 
         collision = @coll_stack.select { |i| _rect_overlap?(i, rect) }
+        startpos  = [0, 0]
         unless collision.empty?
-          $log.warning(I18n.t("annotations too close [") + "#{collision.count}] #{confkey}", playable[:start_pos])
+          begin
+            startpos = playable[:start_pos]
+          rescue
+            $log.error("BUG: Annotation without origin #{__FILE__} #{__LINE__}")
+            [0, 0]
+          end
+          $log.warning(I18n.t("annotations too close [") + "#{collision.count}] #{confkey}", startpos)
         end
 
         @coll_stack.push(rect)
@@ -1608,12 +1615,12 @@ module Harpnotes
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
               pos      = entry[:pos]
-              the_text = entry[:verses].map { |i|
+              the_text = (entry[:verses] || []).map do |i|
                 j = 9999 if i == 0 # this is a workaround, assuming that we do not have 1000 verses
                 j = i if i < 0
                 j = i - 1 if i > 0
                 verses[j]
-              }.join("\n\n")
+              end.join("\n\n")
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
                                                                 "extract.#{print_variant_nr}.lyrics.#{key}.pos", pos).tap { |s| s.draginfo = {handler: :annotation} }
             end
@@ -1934,7 +1941,7 @@ module Harpnotes
               result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
               result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
                                                              :small,
-                                                             nil,
+                                                             tuplet_start.origin,
                                                              conf_key + ".#{conf_key_pos}",
                                                              conf_value.to_a)
                               .tap { |s| s.draginfo = {handler: :annotation} }
