@@ -130,29 +130,63 @@ class TextPaneEmulatorForCli < Harpnotes::TextPane
   def initialize
     # this is pretty empty for the CLI
     @abc_text = nil
+    @config_separator  = '%%%%zupfnoter'
+    @on_change         = lambda {}
+    @config_undo       = UndoManager.new
+
   end
 
-  def set_text(abctext)
-    @abc_text = abctext
+  def get_abc_part
+    @abc_part
   end
 
-  def get_text
-    @abc_text
+  # add new text to the editor pane as loaded from file
+  # @param text the text to be set to the editor
+  def set_text(text)
+    _split_parts(text)
   end
+
+
+  def _split_parts(fulltext)
+    _clean_models
+`debugger`
+    fulltext.split(@config_separator).each_with_index do |part, i|
+      if i == 0
+        @abc_part = part
+      elsif part.start_with? ".config"
+        _set_config_json(part.split(".config").last, "from loaded abc", true)
+      elsif part.start_with? ".resources"
+        _set_resources_json(part.split(".resources").last)
+      else
+        $log.error(I18n.t("unsupported section found in abc file: ") + part[0 .. 10])
+      end
+    end
+  end
+
+  def _get_abc_from_editor
+    @abc_part
+  end
+
 
   def set_config_part(config)
     nil
   end
 
   def clear_markers
-
   end
 
   def set_markers
-
   end
 
   def set_annotations
-
   end
+
+
+  def save_to_localstorage(dirty_name = nil)
+  end
+
+  def clean_localstorage
+  end
+
+
 end

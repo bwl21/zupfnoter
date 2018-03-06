@@ -473,7 +473,6 @@ module Harpnotes
     # values not in object are not changed in config
     # @param [string] desc bascially used for undo stack report
     def patch_config_part(key, object, desc = key)
-      `debugger`
       pconfig       = Confstack::Confstack.new(false) # what we get from editor
       pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
       pconfig.push(_get_config_model)

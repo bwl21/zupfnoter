@@ -76,6 +76,11 @@ require 'abc2svg-1.js'
 sourcepattern = ARGV[0] || "*.abc"
 targetfolder  = ARGV[1] || "."
 #targetfolder  = File.realpath(targetfolder)
+#
+unless ARGV.length == 2
+  puts %Q{usage: node --max_old_space_size=4096 zupfnoter-cli.js "/tmp/zntest/*.abc" /tmp/xxx}
+  exit(0)
+end
 
 FileUtils.mkdir_p(targetfolder)
 
@@ -83,7 +88,7 @@ puts "processing #{ARGV.first} to #{targetfolder}"
 
 controller = CliController.new
 
-sourcefiles = Dir[sourcepattern]
+sourcefiles = Dir[sourcepattern].sort
 
 # these requires are necessar yfor browserify
 # $encoding = node_require('encoding')
@@ -100,6 +105,8 @@ sourcefiles.each do |sourcefile|
   end
 
   $log.message("processing: #{sourcefile}")
+
+  controller = CliController.new
 
   controller.set_abc_input(abctext)
 
@@ -119,7 +126,7 @@ sourcefiles.each do |sourcefile|
     }
   end
 
-  File.write("#{targetfolder}/#{File.basename(sourcefile)}.err", $log.get_errors.join("\n"))
+  File.write("#{targetfolder}/#{File.basename(sourcefile)}.err.log", $log.get_errors.join("\n"))
 end
 nil
 
