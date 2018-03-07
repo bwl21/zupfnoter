@@ -513,7 +513,7 @@ class ConfstackEditor
           refresh_form
           register_events
         when 'neutral'
-          @editor.patch_config_part(target.first, @helper.to_neutral(target.first))
+          @editor.patch_config_part(target.first, @helper.to_neutral(target.first), %Q{neutral #{target.first}})
         when 'help'
           helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
 
@@ -526,7 +526,7 @@ class ConfstackEditor
           end
         when 'default'
           if (a = @default_value[target.first])
-            @editor.patch_config_part(target.first, a)
+            @editor.patch_config_part(target.first, a, %Q{to default #{target.first}})
             refresh_form
             register_events
           end
@@ -637,7 +637,7 @@ class ConfstackEditor
     end
 
     redo_history = @editor.history_config[:redo]
-    if redo_history.count > 1
+    unless redo_history.empty?
       redo_button = {id:       'redo', type: 'button', icon: 'fa fa-repeat',
                      disabled: false,
                      tooltip:  %Q{#{I18n.t("redo")} #{redo_history.first[:title]} },
@@ -656,7 +656,7 @@ class ConfstackEditor
         focus:      -1,
         onChange:   lambda { |event|
           a = lambda {
-            push_config_to_editor(`#{event}.target`)
+            push_config_to_editor(%Q{edit #{`#{event}.target`}})
             %x{
                document.getElementById(#{event}.target).focus()
               }

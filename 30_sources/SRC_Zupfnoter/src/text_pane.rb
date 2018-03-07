@@ -36,13 +36,14 @@ module Harpnotes
         @undostack.push(@currentstate)
         @redostack    = []
         @currentstate = {title: title, state: newstate}
+        @currentstate
       end
 
       # perform undo
       #
       # @return [Object] the momento of the new state or nil if there is no more undo
       def undo
-        if @undostack[1]
+        if @undostack[1]  # prevent from undogin initialization
           momento = @undostack.pop
           @redostack.push(@currentstate)
           @currentstate = momento
@@ -67,7 +68,7 @@ module Harpnotes
 
       # return the redo history as an array of momentos
       def redo_history
-        [@redostack, @currentstate].flatten.reverse
+        [@redostack].flatten.reverse
       end
     end
 
@@ -518,7 +519,7 @@ module Harpnotes
       pconfig.push(pconfig_patch.get)
       pconfig.push(_get_config_model)
 
-      set_config_model(pconfig.get, key, true)
+      set_config_model(pconfig.get, "extend #{key}", true)
     end
 
     # deletes the entry of key in the config part
@@ -527,9 +528,11 @@ module Harpnotes
         $resources.delete(key.split(".").last)
       else
         pconfig = Confstack::Confstack.new(false) # what we get from editor
-        pconfig.push(_get_config_model)
-        pconfig[key] = Confstack::DeleteMe
-        set_config_model(pconfig.get, key, true)
+        # need to deep dup of current config model since delete mutes the model, as a side effect it changes current state.
+        # as consequence, undo does not work properly
+        pconfig.push(_get_config_model.deep_dup)
+        pconfig[key] = Confstack::DeleteMe   # this is muting operation!
+        set_config_model(pconfig.get, "delete #{key}", true)
       end
     end
 

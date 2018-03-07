@@ -781,7 +781,7 @@ class Controller
       command.as_action do |args|
         value = JSON.parse(args[:value])
 
-        @editor.patch_config_part(args[:key], value)
+        @editor.patch_config_part(args[:key], value, %Q{cconf #{args[:key]}})
 
         nil
       end
