@@ -36140,7 +36140,7 @@ if (drawable == null) drawable = nil;
         }, TMP_73.$$arity = 0);
 
         Opal.defn(self, '$_check1', TMP_75 = function $$_check1(point, size, confkey, playable) {
-          var $a, $b, TMP_74, self = this, x = nil, y = nil, xsize = nil, ysize = nil, rect = nil, collision = nil;
+          var $a, $b, TMP_74, self = this, x = nil, y = nil, xsize = nil, ysize = nil, rect = nil, collision = nil, startpos = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           $b = point, $a = Opal.to_ary($b), x = ($a[0] == null ? nil : $a[0]), y = ($a[1] == null ? nil : $a[1]), $b;
@@ -36149,9 +36149,20 @@ if (drawable == null) drawable = nil;
           collision = ($a = ($b = self.coll_stack).$select, $a.$$p = (TMP_74 = function(i){var self = TMP_74.$$s || this;
 if (i == null) i = nil;
           return self['$_rect_overlap?'](i, rect)}, TMP_74.$$s = self, TMP_74.$$arity = 1, TMP_74), $a).call($b);
+          startpos = [0, 0];
           if ((($a = collision['$empty?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
             } else {
-            $gvars.log.$warning($rb_plus($scope.get('I18n').$t("annotations too close ["), "" + (collision.$count()) + "] " + (confkey)), playable['$[]']("start_pos"))
+            try {
+              startpos = playable['$[]']("start_pos")
+            } catch ($err) {
+              if (Opal.rescue($err, [$scope.get('StandardError')])) {
+                try {
+                  $gvars.log.$error("BUG: Annotation without origin " + ("harpnotes") + " " + (747));
+                  [0, 0];
+                } finally { Opal.pop_exception() }
+              } else { throw $err; }
+            };
+            $gvars.log.$warning($rb_plus($scope.get('I18n').$t("annotations too close ["), "" + (collision.$count()) + "] " + (confkey)), startpos);
           };
           self.coll_stack.$push(rect);
           return point;
@@ -36885,7 +36896,7 @@ if (s == null) s = nil;
               ($a = ($m = lyrics).$each, $a.$$p = (TMP_143 = function(key, entry){var self = TMP_143.$$s || this, $n, $o, TMP_144, $p, TMP_145, pos = nil, the_text = nil;
 if (key == null) key = nil;if (entry == null) entry = nil;
               pos = entry['$[]']("pos");
-                the_text = ($n = ($o = entry['$[]']("verses")).$map, $n.$$p = (TMP_144 = function(i){var self = TMP_144.$$s || this, $p, j = nil;
+                the_text = ($n = ($o = (((($p = entry['$[]']("verses")) !== false && $p !== nil && $p != null) ? $p : []))).$map, $n.$$p = (TMP_144 = function(i){var self = TMP_144.$$s || this, $p, j = nil;
 if (i == null) i = nil;
                 if (i['$=='](0)) {
                     j = 9999};
@@ -37202,7 +37213,7 @@ if (d == null) d = nil;
                 (($o = [conf_key_edit]), $p = d, $p['$conf_key='].apply($p, $o), $o[$o.length-1]);
                   (($o = [$gvars.conf.$get("layout.LINE_THIN")]), $p = d, $p['$line_width='].apply($p, $o), $o[$o.length-1]);
                   return (($o = [draginfo]), $p = d, $p['$draginfo='].apply($p, $o), $o[$o.length-1]);}, TMP_171.$$s = self, TMP_171.$$arity = 1, TMP_171), $k).call($n));
-                result.$push(($k = ($o = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Annotation')).$new(configured_anchor.$to_a(), playable.$tuplet().$to_s(), "small", nil, $rb_plus(conf_key, "." + (conf_key_pos)), conf_value.$to_a())).$tap, $k.$$p = (TMP_172 = function(s){var self = TMP_172.$$s || this, $p, $q;
+                result.$push(($k = ($o = (((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Annotation')).$new(configured_anchor.$to_a(), playable.$tuplet().$to_s(), "small", tuplet_start.$origin(), $rb_plus(conf_key, "." + (conf_key_pos)), conf_value.$to_a())).$tap, $k.$$p = (TMP_172 = function(s){var self = TMP_172.$$s || this, $p, $q;
 if (s == null) s = nil;
                 return (($p = [$hash2(["handler"], {"handler": "annotation"})]), $q = s, $q['$draginfo='].apply($q, $p), $p[$p.length-1])}, TMP_172.$$s = self, TMP_172.$$arity = 1, TMP_172), $k).call($o));
               };
@@ -37293,7 +37304,7 @@ if (goto$ == null) goto$ = nil;
             from_anchor = ((($m = goto$.$policy()['$[]']("from_anchor")) !== false && $m !== nil && $m != null) ? $m : "after");
             to_anchor = ((($m = goto$.$policy()['$[]']("to_anchor")) !== false && $m !== nil && $m != null) ? $m : "before");
             vertical_anchor = ((($m = goto$.$policy()['$[]']("vertical_anchor")) !== false && $m !== nil && $m != null) ? $m : "from");
-            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2015));
+            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2022));
             vertical = $rb_times(($rb_plus(distance, 0.5)), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -66181,7 +66192,10 @@ Opal.loaded(["abc2svg-1"]);
   // see https://stackoverflow.com/questions/30694428/jspdf-server-side-node-js-usage-using-node-jspdf
   global.window = {document: {createElementNS: function(){return {}} }};
   global.navigator = {};
-  global.btoa = function(){};
+
+  // polyfills from https://gist.github.com/jmshal/b14199f7402c8f3a4568733d8bed0f25
+  global.btoa = function btoa(b) {return new Buffer(b).toString('base64');};
+  global.atob = function atob(a) {return new Buffer(a, 'base64').toString('binary');};
 
   jsPDF = require ("jspdf")   // adapt in opal-jspdf.rb
   Ajv = require("ajv")        // adapt in opal-ajv.rb
