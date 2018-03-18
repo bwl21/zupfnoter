@@ -616,7 +616,7 @@ module Harpnotes
       abc = Native(`localStorage.getItem('abc_data')`)
       unless abc.nil?
         `localStorage.removeItem('abc_data')` # we convert localstorage so store abc, config and resoucres as three items
-        @editor.set_text(abc) unless abc.nil?
+        set_text(abc) unless abc.nil?
       else
         abctext = Native(`localStorage.getItem('zn_abc')`)
         _set_abc_to_editor(abctext) if abctext
