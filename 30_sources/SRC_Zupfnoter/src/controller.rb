@@ -1238,7 +1238,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def check_suppoerted_browser
-    supportedbrowsers = %W{Chrome Firefox Vivaldid Opera}
+    supportedbrowsers = %W{Chrome Firefox Vivaldi Opera}
     unless supportedbrowsers.include?(`bowser.name`)
       message = I18n.t("Unsupported browser. Please use one of ") + supportedbrowsers.to_s
       $log.warning(message)
