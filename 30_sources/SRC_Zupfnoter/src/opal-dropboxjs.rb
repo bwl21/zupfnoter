@@ -32,7 +32,7 @@ module Opal
 
         @accesstoken_key = "dbx_token"
 
-        @root = `new Dropbox({clientId: #{key}});`
+        @root = `new Dropbox({clientId: #{key}})`
 
         # %x{
         #    self.root.onError.addListener(function(error) {
