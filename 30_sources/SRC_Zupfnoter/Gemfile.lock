@@ -1,6 +1,14 @@
+GIT
+  remote: https://github.com/opal/opal-jquery
+  revision: f47a9b42da366cea270f743b05acf529f3077d35
+  specs:
+    opal-jquery (0.4.2)
+      opal (>= 0.10.0, < 0.12.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (2.4.0)
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
     diffy (2.1.4)
@@ -26,13 +34,17 @@ GEM
       mini_portile2 (~> 2.3.0)
     nokogiri (1.8.2-x86-mingw32)
       mini_portile2 (~> 2.3.0)
-    opal (0.10.6)
+    opal (0.11.1)
+      ast (>= 2.3.0)
       hike (~> 1.2)
+      parser (= 2.3.3.1)
       sourcemap (~> 0.1.0)
+    opal-sprockets (0.4.1.0.11.0.3.1)
+      opal (~> 0.11.0)
       sprockets (~> 3.1)
       tilt (>= 1.4)
-    opal-jquery (0.4.2)
-      opal (>= 0.7.0, < 0.11.0)
+    parser (2.3.3.1)
+      ast (~> 2.2)
     polyglot (0.3.5)
     process-group (1.1.0)
     process-pipeline (1.0.1)
@@ -83,8 +95,9 @@ DEPENDENCIES
   graphviz
   json-schema-generator
   neatjson
-  opal (~> 0.10.6)
-  opal-jquery (~> 0.4.2)
+  opal (~> 0.11)
+  opal-jquery!
+  opal-sprockets
   pry
   rake
   redcarpet
