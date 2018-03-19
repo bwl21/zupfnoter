@@ -10,7 +10,7 @@ module JqConsole
         @jqconsole.Write("no handler installed; -> #{cmd}\n")
       end
 
-      handler()
+      handler(nil)
       @jqconsole
     end
 
@@ -19,7 +19,7 @@ module JqConsole
     end
 
     def write *stuff
-      @jqconsole.Write *stuff
+      @jqconsole.Write(*stuff)
     end
 
     def write_html html_str

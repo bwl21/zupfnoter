@@ -855,7 +855,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       voice_map.each do |voice|
         selection = voice
                         .select { |e| not [5, 6, 12, 14].include? e[:type] }
-                        .select { |element| element[:time].between? *segment }
+                        .select { |element| element[:time].between?(*segment) }
         result.push([selection.first, selection.last]) unless selection.empty?
       end
     end
@@ -889,7 +889,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       range    = [range.first, range.last - 1] unless range.first == range.last # to make ?between ignore the upper limit
       elements = @abc_model[:voices].map do |v|
         v[:symbols]
-            .select { |e| ((e[:istart].between? *range) or (e[:iend].between? *range)) }
+            .select { |e| ((e[:istart].between?(*range)  ) or (e[:iend].between?(*range)  )) }
       end
       a        = elements.flatten.compact
 
