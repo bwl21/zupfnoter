@@ -3,7 +3,7 @@
   Bundler.require
 
   #Opal::Processor.inline_operators_enabled = true
-  run Opal::Server.new { |s|
+  run Opal::Sprockets::Server.new { |s|
 
     s.append_path 'public'
     s.append_path 'src'
