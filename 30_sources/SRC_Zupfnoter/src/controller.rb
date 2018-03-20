@@ -1088,9 +1088,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       true # meed this to continue processing of the mouse event
     end
 
+
     # key events in editor
-    $window.on :keydown do |e|
-      if (e.meta_key || e.ctrl_key) # Ctrl/Cmd
+    Element.find('body').on :keydown do |e|
+      # note that on windows some characters (eg "[") are entered as ctrl-alt-8
+      # this prevents the handler to fire ...
+      if (e.alt_key)
+
+      elsif (e.meta_key || e.ctrl_key) # Ctrl/Cmd
         case (e.key_code)
           when 'A'.ord
             @editor.select_range_by_position(0, 10000)
@@ -1107,9 +1112,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
             e.prevent
             toggle_console
           when 'L'.ord
-            e.prevent
             %x{#{@zupfnoter_ui}.toggle_full_screen();}
-          when *((0..9).map{|i|i.to_s.ord})
+            e.prevent
+          when *((0 .. 9).map { |i| i.to_s.ord })
             e.prevent
             handle_command("view #{e.key_code.chr}")
         end

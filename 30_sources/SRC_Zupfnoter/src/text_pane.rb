@@ -86,7 +86,12 @@ module Harpnotes
         langTools.setCompleters([langTools.snippetCompleter])
 
         var editor = ace.edit(div);
+
+        // clear shortcuts occupied by Zupfnoter
         editor.commands.bindKey("Cmd-L", null);
+        editor.commands.bindKey("Ctrl-L", null);
+        editor.commands.bindKey("Ctrl-P", null);
+        editor.commands.bindKey("Ctrl-K", null);
         editor.$blockScrolling = Infinity;
 
         editor.getSession().setMode("ace/mode/abc");
