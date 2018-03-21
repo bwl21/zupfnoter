@@ -1014,6 +1014,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       }
   end
 
+  def show_console
+    %x{
+       w2ui['layout'].show('bottom', window.instant);
+       #{@editor}.$resize();
+      }
+  end
+
   # this registers the listeners to ui-elements.
   def setup_ui_listener
 

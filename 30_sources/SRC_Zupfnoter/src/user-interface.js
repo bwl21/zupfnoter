@@ -439,6 +439,29 @@ function init_w2ui(uicontroller) {
       {type: 'button', id: 'tb_open', text: 'Open', icon: 'fa fa-dropbox', tooltip: 'Open ABC file in dropbox'},
       {type: 'button', id: 'tb_save', text: 'Save', icon: 'fa fa-dropbox', tooltip: 'Save ABC file in dropbox'},
 
+      {type: 'menu', icon: 'fa fa-cogs',  text: 'Extras', id: 'tbExtras',
+        items:[
+          { text: 'flowconf edit', icon: 'fa fa-toggle-on',onClick: function(){uicontroller.$handle_command('setsetting flowconf edit');uicontroller.$handle_command('render');}},
+          { text: 'flowconf off', icon: 'fa fa-toggle-off', onClick: function(){uicontroller.$handle_command('setsetting flowconf false');uicontroller.$handle_command('render');}},
+          {},
+          { text: 'validate on', icon: 'fa fa-check-square', onClick: function(){uicontroller.$handle_command('setsetting validate true')}},
+          { text: 'validate off', icon: 'fa fa-check-square-o', onClick: function(){uicontroller.$handle_command('setsetting validate false')}},
+          {},
+          { text: 'play fast', icon: 'fa fa-caret-square-o-up', onClick: function(){uicontroller.$handle_command('speed 2')}},
+          { text: 'play normal', icon: 'fa fa-caret-square-o-right ', onClick: function(){uicontroller.$handle_command('speed 1')}},
+          { text: 'play slow', icon: 'fa fa-caret-square-o-down', onClick: function(){uicontroller.$handle_command('speed 0.5')}},
+          {},
+          { text: 'console', icon: 'fa fa-terminal', onClick: function(){uicontroller.$toggle_console();}},
+          { text: 'loglevel error', icon: 'fa fa-exclamation-triangle', onClick: function(){uicontroller.$handle_command('loglevel error')}},
+          { text: 'loglevel warning', icon: 'fa fa-exclamation-circle', onClick: function(){uicontroller.$handle_command('loglevel warning')}},
+          { text: 'loglevel info', icon: 'fa fa-info-circle', onClick: function(){uicontroller.$handle_command('loglevel info')}},
+          {},
+          { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
+
+          { text: 'settemplate', icon: 'fa fa-file-o', onClick: function(){uicontroller.$handle_command('settemplate')}},
+          { text: 'edittemplate', icon: 'fa fa-pencil-square-o ', onClick: function(){uicontroller.$handle_command('edittemplate')}},
+        ]
+      },
 
       {type: 'spacer'},
 
@@ -630,6 +653,9 @@ function init_w2ui(uicontroller) {
       }
       if (event.target == "tbHelp:tbDemo") {
         window.open("?mode=demo&load=public/demos/21_Ich_steh_an_deiner_krippen_hier.abc")
+      }
+      if (event.subItem && event.subItem.onClick) {
+        event.subItem.onClick();
       }
     }
   }
