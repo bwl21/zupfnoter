@@ -15,7 +15,7 @@ module Harpnotes
              onend: function(){#{call_on_songoff}}, // todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
              onnote: function(index, on,  custom){#{call_on_note(`index`, `on`, `custom`)}}
           })
-           #{@abcplay}.set_sfu("public/soundfont/FluidR3_GM")
+           #{@abcplay}.set_sfu("public/soundfont/Scc1t2")
            #{@abcplay}.set_sft('js')
            #{@abcplay}.set_follow(true)
            #{@abcplay}.set_vol(1.0)

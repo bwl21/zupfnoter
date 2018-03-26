@@ -80,3 +80,4 @@ xxspecify layout details
 (e.g. size of symbols)
 zoom harpnote preview
 _ende_der_liste
+Erroneous end of voice overlap
