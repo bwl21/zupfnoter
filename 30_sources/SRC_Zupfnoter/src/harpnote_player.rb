@@ -7,15 +7,16 @@ module Harpnotes
 
     class HarpnotePlayer
 
-      attr_accessor :player_model_abc # This is to inject the player events created by abc2svg
+      attr_accessor :player_model_abc, :controller # This is to inject the player events created by abc2svg
 
 
       def initialize()
         %x{#{@abcplay} = new AbcPlay({
              onend: function(){#{call_on_songoff}}, // todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
-             onnote: function(index, on,  custom){#{call_on_note(`index`, `on`, `custom`)}}
+             onnote: function(index, on,  custom){#{call_on_note(`index`, `on`, `custom`)}},
+             errmsg: function(message){#{$log.error(`message`)};#{@controller.call_consumers(:error_alert)};}
           })
-           #{@abcplay}.set_sfu("public/soundfont/Scc1t2")
+           #{@abcplay}.set_sfu("public/soundfont/zupfnoter")  // Scct1t2
            #{@abcplay}.set_sft('js')
            #{@abcplay}.set_follow(true)
            #{@abcplay}.set_vol(1.0)
@@ -25,6 +26,7 @@ module Harpnotes
         @voices_to_play   = [1, 2, 3, 4, 5, 6, 7, 8]
         @voice_elements   = []
         @player_model_abc = []
+        @controller = nil
         @speed            = 1
       end
 

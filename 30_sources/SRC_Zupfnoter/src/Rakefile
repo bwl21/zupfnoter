@@ -43,7 +43,7 @@ end
 desc "Update abc2svg from Jean-Francois' website"
 task :updateAbc2svg do
   abc2svg_file = "abc2svg-1.js"
-  sources      = [abc2svg_file, "json-1.js", "midi-1.js"]
+  sources      = [abc2svg_file, "json-1.js", "setmidi-1.js", "MIDI-1.js"]
   abc2svg_js   = Net::HTTP.get(URI("http://moinejf.free.fr/js/#{abc2svg_file}"))
   File.open("#{VENDORFOLDER}/#{abc2svg_file}", "w") do |f|
     sources.each do |s|
@@ -56,7 +56,9 @@ desc "Update abc2svg from git clone"
 task :updateAbc2svgDev do
   abc2svgrepo = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_file = "abc2svg-1.js"
-  sources      = [abc2svg_file, "json-1.js", "midi-1.js", "play-1.js"]
+  sources      = [abc2svg_file, "json-1.js", "setmidi-1.js", "play-1.js"]
+  sources += Dir["#{abc2svgrepo}/modules/*.js"].map{|f| File.basename(f, '.js') + "-1.js"} - []  # add failing modules to [] to ignore them
+
   cd abc2svgrepo do
     sources.each {|f| sh  " rm #{f} ; NOMIN=1 #{NINJAEXEC} #{f}"}
   end
@@ -270,4 +272,22 @@ task :buildConfigDoc do
   sh 'wortsammler -bi localization/help_de-de.md'
   sh 'ruby conf_doc_source.rb'
   sh 'wortsammler -bi ../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md'
+end
+
+
+desc "compile zupfnoter soundfonts"
+task :buildSoundfonts do
+  Dir["../public/soundfont/zupfnoter/*.js"].each {|f| rm f}
+  sources = Dir["../sf2_sources/*.sf2"].reverse
+  i=0
+  sources.each do |sf|
+     outnumber = File.basename(sf).split("_").first
+     sfbase64 = Base64.encode64(File.read(sf)).split("\n").join("\\\n")
+     File.open("../public/soundfont/zupfnoter/#{outnumber}.js", "w") do |outfile|
+       outfile.puts (%Q{//ABC2SVG soundfont prepared for Zupfnoter
+//created #{Time.now} from #{sf} by zupfnoter rake
+abcsf2[#{outnumber}]='\\
+#{sfbase64}'})
+     end
+  end
 end

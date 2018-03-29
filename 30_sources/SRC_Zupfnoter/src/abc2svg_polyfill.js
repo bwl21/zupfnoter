@@ -4,19 +4,19 @@
 //
 // these settings were made in abcdoc-1.js which is not included in Zupfnoter
 // the settings (in particuler "jsdir" is also specific for Zupfnoter
-//
-// Todo: optimize the architecture
 
   var jsdir = '';
 
-  function loadjs(fn, relay) {
+  function loadjs(fn, relay, onerror) {
     var s = document.createElement('script');
     s.src = jsdir + fn;
-    s.type = 'text/javascript'
+    s.type = 'text/javascript';
     if (relay)
       s.onload = relay;
-    s.onerror = function() {
+    s.onerror = onerror || function() {
       alert('error loading ' + fn)
     }
     document.head.appendChild(s)
   }
+
+

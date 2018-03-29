@@ -465,4 +465,66 @@ If you want to run it really standalone, then we need to use browserify.
 
 This thing resolves the requrires.
 
+\section{building soundfonts}\label{building-soundfonts}
+
+Tools:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  polyphone http://polyphone-soundfonts.com/en/
+\item
+  audiacity
+\end{itemize}
+
+The following steps creates the soundfonts
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  download from https://stash.reaper.fm/v/23360/Scc1t2.sf2
+\item
+  open the file in polyphone
+\item
+  export instrument piano1 to 0\_GS sound set (16 bit).sf2
+\item
+  export instrument Steel guitar to 25\_GS sound set (16 bit).sf2
+\item
+  Open the two files again in polyphone
+\item
+  go to the instrument and set decay to 8sec in all columns of the
+  table, set sustain to 120db
+\item
+  save the files
+\item
+  convert to js files as specified by @moinejf in
+  https://github.com/moinejf/abc2svg/issues/84\#issuecomment-375979049 .
+  I did this using a rake task.
+\end{enumerate}
+
+copy the sf2 files to \texttt{30\_sources/SRC\_Zupfnoter/sf2\_sources}.
+File shall be nr\_name. \texttt{rake\ buildSoundfonts} converts t the
+file to e.g.
+\texttt{30\_sources/SRC\_Zupfnoter/public/soundfont/zupfnoter/0.js}
+
+To create a soundfont from our own recording:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  create wav files
+\item
+  clean up in audiacity
+\item
+  in poloyphone follow the instructions in
+  http://polyphone-soundfonts.com/en/documentation/tutorials/create-a-soundfont-from-scratch/119
+\item
+  name the preset to something like 01\_mysound
+\item
+  export the instrument 01\_mysound to
+  \texttt{30\_sources/SRC\_Zupfnoter/sf2\_sources}
+\end{enumerate}
+
 \end{document}

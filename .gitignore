@@ -43,3 +43,7 @@ launch.json
 .idea.outdated
 30_sources/SRC_Zupfnoter/src/version-prod.rb
 30_sources/UD_Zupfnoter-Handbuch/000_UD-Zupfnoter-Version.md
+30_sources/SRC_Zupfnoter/public/soundfont/Scc1t2/*
+30_sources/SRC_Zupfnoter/sf2_sources/backups/*
+30_sources/SRC_Zupfnoter/sf2_sources/wav/01_solo-G1.wav
+30_sources/SRC_Zupfnoter/sf2_sources/*/*

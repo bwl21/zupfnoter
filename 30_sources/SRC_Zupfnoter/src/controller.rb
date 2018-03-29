@@ -149,6 +149,8 @@ class Controller
     @editor.controller = self
 
     @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
+    @harpnote_player.controller = self
+
     @songbook        = LocalStore.new("songbook") # used to store songs in localstore
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.

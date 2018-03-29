@@ -170,3 +170,38 @@ looks in the search paths of node.
 If you want to run it really standalone, then we need to use browserify.
 
 This thing resolves the requrires.
+
+# building soundfonts
+
+Tools:
+
+-   polyphone http://polyphone-soundfonts.com/en/
+-   audiacity
+
+The following steps creates the soundfonts
+
+1.  download from https://stash.reaper.fm/v/23360/Scc1t2.sf2
+2.  open the file in polyphone
+3.  export instrument piano1 to 0_GS sound set (16 bit).sf2
+4.  export instrument Steel guitar to 25_GS sound set (16 bit).sf2
+5.  Open the two files again in polyphone
+6.  go to the instrument and set decay to 8sec in all columns of the
+    table, set sustain to 120db
+7.  save the files
+8.  convert to js files as specified by @moinejf in
+    https://github.com/moinejf/abc2svg/issues/84\#issuecomment-375979049
+    . I did this using a rake task.
+
+copy the sf2 files to `30_sources/SRC_Zupfnoter/sf2_sources`. File shall
+be nr_name. `rake buildSoundfonts` converts t the file to e.g.
+`30_sources/SRC_Zupfnoter/public/soundfont/zupfnoter/0.js`
+
+To create a soundfont from our own recording:
+
+1.  create wav files
+2.  clean up in audiacity
+3.  in poloyphone follow the instructions in
+    http://polyphone-soundfonts.com/en/documentation/tutorials/create-a-soundfont-from-scratch/119
+4.  name the preset to something like 01_mysound
+5.  export the instrument 01_mysound to
+    `30_sources/SRC_Zupfnoter/sf2_sources`

@@ -153,6 +153,7 @@ I:stretchlast 1
     end
 
     def get_abcmodel(abc_code)
+      %x{modules.load(#{abc_code}, #{@root}, function(){})};
       %x{#{@root}.tosvg("abc", #{abc_code})};
       [@abc_model, @player_model]
     end

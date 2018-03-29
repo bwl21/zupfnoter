@@ -46,6 +46,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <li><a href="#preparing-a-release"><span class="toc-section-number">3</span> preparing a release</a></li>
 <li><a href="#building-the-desktop-app"><span class="toc-section-number">4</span> building the desktop app</a></li>
 <li><a href="#notes-how-to-include-javascript-files"><span class="toc-section-number">5</span> notes how to include Javascript files</a></li>
+<li><a href="#building-soundfonts"><span class="toc-section-number">6</span> building soundfonts</a></li>
 </ul>
 </div>
 <h1 id="basic-architecture"><span class="header-section-number">1</span> Basic architecture</h1>
@@ -162,5 +163,31 @@ http://stackoverflow.com/questions/22459944/ruby-2-1-1-with-rvm-getting-libyaml-
 <p>With this appraoch, the resulting js file can be run by node. But it looks in the search paths of node.</p>
 <p>If you want to run it really standalone, then we need to use browserify.</p>
 <p>This thing resolves the requrires.</p>
+<h1 id="building-soundfonts"><span class="header-section-number">6</span> building soundfonts</h1>
+<p>Tools:</p>
+<ul>
+<li>polyphone http://polyphone-soundfonts.com/en/</li>
+<li>audiacity</li>
+</ul>
+<p>The following steps creates the soundfonts</p>
+<ol style="list-style-type: decimal">
+<li>download from https://stash.reaper.fm/v/23360/Scc1t2.sf2</li>
+<li>open the file in polyphone</li>
+<li>export instrument piano1 to 0_GS sound set (16 bit).sf2</li>
+<li>export instrument Steel guitar to 25_GS sound set (16 bit).sf2</li>
+<li>Open the two files again in polyphone</li>
+<li>go to the instrument and set decay to 8sec in all columns of the table, set sustain to 120db</li>
+<li>save the files</li>
+<li>convert to js files as specified by <span class="citation">@moinejf</span> in https://github.com/moinejf/abc2svg/issues/84#issuecomment-375979049 . I did this using a rake task.</li>
+</ol>
+<p>copy the sf2 files to <code>30_sources/SRC_Zupfnoter/sf2_sources</code>. File shall be nr_name. <code>rake buildSoundfonts</code> converts t the file to e.g. <code>30_sources/SRC_Zupfnoter/public/soundfont/zupfnoter/0.js</code></p>
+<p>To create a soundfont from our own recording:</p>
+<ol style="list-style-type: decimal">
+<li>create wav files</li>
+<li>clean up in audiacity</li>
+<li>in poloyphone follow the instructions in http://polyphone-soundfonts.com/en/documentation/tutorials/create-a-soundfont-from-scratch/119</li>
+<li>name the preset to something like 01_mysound</li>
+<li>export the instrument 01_mysound to <code>30_sources/SRC_Zupfnoter/sf2_sources</code></li>
+</ol>
 </body>
 </html>

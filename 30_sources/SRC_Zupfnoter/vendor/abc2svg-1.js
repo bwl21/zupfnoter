@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-03-26 12:30:13 +0200
+// compiled for Zupfnoter 2018-04-06 18:57:20 +0200
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.16.0-19-gca0ed08",vdate:"2018-03-25"}
+var abc2svg={version:"1.16.3-1-g3ab9b22",vdate:"2018-04-06"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2018 Jean-Francois Moine
@@ -212,7 +212,7 @@ function syntax(sev, msg, a1, a2, a3, a4) {
 
 // inject javascript code
 function js_inject(js) {
-	if (!js.match(/eval *\(|Function|setTimeout|setInterval/))
+	if (!/eval *\(|Function|setTimeout|setInterval/.test(js))
 		eval('"use strict"\n' + js)
 	else
 		syntax(1, "Unsecure code")
@@ -1934,9 +1934,7 @@ function draw_measnb() {
 		y = y_get(st, true, x, w)
 		if (y < staff_tb[st].topbar + 6)
 			y = staff_tb[st].topbar + 6
-//fixme: can s.next be null?
 		if (s.next.type == NOTE) {
-//		if (s.next && s.next.type == NOTE) {
 			if (s.next.stem > 0) {
 				if (y < s.next.ys - gene.curfont.size)
 					y = s.next.ys - gene.curfont.size
@@ -2674,7 +2672,7 @@ function draw_beams(bm) {
 		output.push('l' + x2.toFixed(2) + ' ' + (-dy2).toFixed(2) +
 			'v' + h.toFixed(2) +
 			'l' + (-x2).toFixed(2) + ' ' + dy2.toFixed(2) +
-			'"/>\n')
+			'z"/>\n')
 	} // draw_beam()
 
 	anno_start(s1, 'beam')
@@ -5649,7 +5647,7 @@ function draw_systems(indent) {
 			stafflines = staff_tb[st].stafflines,
 			l = stafflines.length
 
-		if (!stafflines.match(/[\[|]/))
+		if (!/[\[|]/.test(stafflines))
 			return				// no line
 		w = x2 - x1;
 		set_sscale(st);
@@ -6432,7 +6430,6 @@ H "History: "',
 	rbmin: 2,
 	scale: 1,
 	slurheight: 1.0,
-	staffnonote: 1,
 	staffsep: 46,
 	stemheight: 21,			// one octave
 	stretchlast: .25,
@@ -6449,14 +6446,13 @@ H "History: "',
 	topspace: 22,
 	tuplets: [0, 0, 0, 0],
 	vocalspace: 10,
-//	voicecombine: 0,
 //	voicescale: 1,
 	writefields: "CMOPQsTWw",
 	wordsspace: 5
 }
 
 function get_bool(param) {
-	return !param || !param.match(/^(0|n|f)/i) // accept void as true !
+	return !param || !/^(0|n|f)/i.test(param) // accept void as true !
 }
 
 // %%font <font> [<encoding>] [<scale>]
@@ -6699,8 +6695,7 @@ function set_format(cmd, param, lock) {
 	} else if (fmt_lock[cmd])
 		return
 
-	if (cmd.match(/.+font$/)
-	 || cmd.match(/.+font-[\d]$/)) {
+	if (/.+font(-[\d])?$/.test(cmd)) {
 		if (param.slice(-4) == " box") {
 			box = true;
 			param = param.slice(0, -4)
@@ -6732,7 +6727,6 @@ function set_format(cmd, param, lock) {
 	case "rbmax":
 	case "rbmin":
 	case "shiftunison":
-	case "staffnonote":
 		v = parseInt(param)
 		if (isNaN(v)) {
 			syntax(1, "Bad integer value");
@@ -6946,18 +6940,7 @@ function set_format(cmd, param, lock) {
 			cfmt[cmd] = v
 		break
 	case "combinevoices":
-	case "voicecombine":
-		v = parseInt(param)
-		if (isNaN(v)) {
-			syntax(1, err_bad_val_s, "%%" + cmd)
-			return
-		}
-		if (curvoice && cmd == "combinevoices") {
-			for (f = 0; f < voice_tb.length; f++)
-				voice_tb[f].combine = v
-			break
-		}
-		set_v_param("combine", v)
+		syntax("%%combinevoices is deprecated - use %%voicecombine instead")
 		break
 	case "voicemap":
 		set_v_param("map", param)
@@ -8006,167 +7989,6 @@ function unlksym(s) {
 		tsfirst = s.ts_next
 	if (tsnext == s)
 		tsnext = s.ts_next
-}
-
-/* -- check if voice combine may occur -- */
-function may_combine(s) {
-	var	nhd2,
-		s2 = s.ts_next
-
-	if (!s2 || (s2.type != NOTE && s2.type != REST))
-		return false
-	if (s2.v == s.v
-	 || s2.st != s.st
-	 || s2.time != s.time
-	 || s2.dur != s.dur)
-		return false
-	if (s.combine <= 0
-	 && s2.type != s.type)
-		return false
-//	if (s2.a_dd) { //fixme: should check the double decorations
-//		return false
-//	}
-	if (s.a_gch && s2.a_gch)
-		return false
-	if (s.type == REST) {
-		if (s.type == s2.type && s.invis && !s2.invis)
-			return false
-		return true
-	}
-	if (s2.a_ly
-	 || s2.sl1 || s2.sl2
-	 || s2.slur_start || s2.slur_end)
-		return false
-	if (s2.beam_st != s.beam_st
-	 || s2.beam_end != s.beam_end)
-		return false;
-	nhd2 = s2.nhd
-	if (s.combine <= 1
-	 && s.notes[0].pit <= s2.notes[nhd2].pit + 1)
-		return false
-	return true
-}
-
-/* combine two notes */
-function combine_notes(s, s2) {
-	var nhd, type, m
-
-	s.notes = s.notes.concat(s2.notes);
-	s.nhd = nhd = s.notes.length - 1;
-	sort_pitch(s)			/* sort the notes by pitch */
-
-	if (s.combine >= 3) {		// remove unison heads
-		for (m = nhd; m > 0; m--) {
-			if (s.notes[m].pit == s.notes[m - 1].pit
-			 && s.notes[m].acc == s.notes[m - 1].acc)
-				s.notes.splice(m, 1)
-		}
-		s.nhd = nhd = s.notes.length - 1
-	}
-
-	s.ymx = 3 * (s.notes[nhd].pit - 18) + 4;
-	s.ymn = 3 * (s.notes[0].pit - 18) - 4;
-
-	/* force the tie directions */
-	type = s.notes[0].ti1
-	if ((type & 0x0f) == SL_AUTO)
-		s.notes[0].ti1 = SL_BELOW | (type & ~SL_DOTTED);
-	type = s.notes[nhd].ti1
-	if ((type & 0x0f) == SL_AUTO)
-		s.notes[nhd].ti1 = SL_ABOVE | (type & ~SL_DOTTED)
-}
-
-/* -- combine 2 voices -- */
-function do_combine(s) {
-	var s2, nhd, nhd2, type
-
-	while (1) {
-		nhd = s.nhd;
-		s2 = s.ts_next;
-		nhd2 = s2.nhd
-		if (s.type != s2.type) {	/* if note and rest */
-			if (s2.type != REST) {
-				s2 = s;
-				s = s2.ts_next
-			}
-		} else if (s.type == REST) {
-			if (s.invis
-			 && !s2.invis)
-				delete s.invis
-		} else {
-			combine_notes(s, s2)
-		}
-
-		if (s2.a_gch)
-			s.a_gch = s2.a_gch;
-		if (s2.a_dd) {
-			if (!s.a_dd)
-				s.a_dd = s2.a_dd
-			else
-				s.a_dd = s.a_dd.concat(s2.a_dd)
-		}
-		unlksym(s2)			/* remove the next symbol */
-
-		/* there may be more voices */
-		if (s.in_tuplet || !may_combine(s))
-			break
-	}
-}
-
-/* try to combine voices */
-function combine_voices() {
-	var s, s2, g, i, r
-
-	for (s = tsfirst; s; s = s.ts_next) {
-		switch (s.type) {
-		case REST:
-			if (s.combine < 0)
-				continue
-			if (may_combine(s))
-				do_combine(s)
-			continue
-		default:
-			continue
-		case NOTE:
-			if (s.combine <= 0)
-				continue
-			break
-		}
-
-		if (!s.beam_st)
-			continue
-		if (s.beam_end) {
-			if (may_combine(s))
-				do_combine(s)
-			continue
-		}
-
-		s2 = s
-		while (1) {
-			if (!may_combine(s2)) {
-				s2 = null
-				break
-			}
-//fixme: may have rests in beam
-			if (s2.beam_end)
-				break
-			do {
-				s2 = s2.next
-			} while (s2.type != NOTE && s2.type != REST)
-		}
-		if (!s2)
-			continue
-		s2 = s
-		while (1) {
-			do_combine(s2)
-//fixme: may have rests in beam
-			if (s2.beam_end)
-				break
-			do {
-				s2 = s2.next
-			} while (s2.type != NOTE && s2.type != REST)
-		}
-	}
 }
 
 /* -- insert a clef change (treble or bass) before a symbol -- */
@@ -9870,6 +9692,8 @@ function set_clefs() {
 		if (!sy.voices[v].second) {		// main voices
 			if (p_voice.stafflines != undefined)
 				sy.staves[st].stafflines = p_voice.stafflines
+			if (p_voice.staffnonote != undefined)
+				sy.staves[st].staffnonote = p_voice.staffnonote
 			if (p_voice.staffscale)
 				sy.staves[st].staffscale = p_voice.staffscale
 			if (sy.voices[v].sep)
@@ -9916,6 +9740,8 @@ function set_clefs() {
 				if (!sy.voices[v].second) {
 					if (p_voice.stafflines != undefined)
 						sy.staves[st].stafflines = p_voice.stafflines
+					if (p_voice.staffnonote != undefined)
+						sy.staves[st].staffnonote = p_voice.staffnonote
 					if (p_voice.staffscale)
 						sy.staves[st].staffscale = p_voice.staffscale
 					if (sy.voices[v].sep)
@@ -12012,7 +11838,8 @@ function set_piece() {
 			}
 			break
 		case BAR:
-			if (cfmt.staffnonote <= 1)
+			if (!sy.staves[st].staffnonote	// default = 1
+			 || sy.staves[st].staffnonote <= 1)
 				break
 			// fall thru
 		case GRACE:
@@ -12022,10 +11849,10 @@ function set_piece() {
 		case REST:
 		case SPACE:
 		case MREST:
-			if (cfmt.staffnonote > 1) {
+			if (sy.staves[st].staffnonote > 1) {
 				non_empty_gl[st] = non_empty[st] = true
 			} else if (!s.invis) {
-				if (cfmt.staffnonote != 0
+				if (sy.staves[st].staffnonote != 0
 				 || s.type == NOTE)
 					non_empty_gl[st] = non_empty[st] = true
 			}
@@ -12332,7 +12159,6 @@ function output_music() {
 		return
 	set_global()
 	if (voice_tb.length > 1) {	/* if many voices */
-		combine_voices();
 		set_stem_dir()		/* set the stems direction in 'multi' */
 	}
 
@@ -12508,7 +12334,8 @@ function new_clef(clef_def) {
 		i = 4
 	case 'P':				// perc
 		s.clef_type = "p";
-		s.clef_line = 3
+		s.clef_line = 3;
+		curvoice.key.k_sf = 0		// no accidental
 		break
 	default:
 		syntax(1, "Unknown clef '$1'", clef_def)
@@ -12713,7 +12540,7 @@ function get_st_lines(param) {
 
 	if (!param)
 		return
-	if (param.match(/^[\]\[|.]+$/))
+	if (/^[\]\[|.]+$/.test(param))
 		return param.replace(/\]/g, '[')
 
 	n = parseInt(param)
@@ -12786,7 +12613,6 @@ function set_vp(a) {
 			}
 			syntax(1, err_bad_val_s, item)
 			break
-		case "combine=":		// %%voicecombine
 		case "octave=":
 		case "uscale=":			// %%microscale
 			val = parseInt(a.shift())
@@ -12828,12 +12654,11 @@ function set_vp(a) {
 			pos[item[0]] = val
 			break
 		case "scale=":			// %%voicescale
-			val = a.shift()
-			if (isNaN(val) || val < .6 || val > 1.5) {
-				syntax(1, err_bad_val_s, "%%" + cmd)
-				break
-			}
-			curvoice.scale = val
+			val = parseFloat(a.shift())
+			if (isNaN(val) || val < .6 || val > 1.5)
+				syntax(1, err_bad_val_s, "%%voicescale")
+			else
+				curvoice.scale = val
 			break
 		case "score=":
 			if (cfmt.sound)
@@ -12865,6 +12690,13 @@ function set_vp(a) {
 				syntax(1, "Bad %%stafflines value")
 			else
 				curvoice.stafflines = val
+			break
+		case "staffnonote=":
+			val = parseInt(a.shift())
+			if (isNaN(val))
+				syntax(1, "Bad %%staffnonote value")
+			else
+				curvoice.staffnonote = val
 			break
 		case "staffscale=":
 			val = parseFloat(a.shift())
@@ -13564,14 +13396,10 @@ function new_bar() {
 	}
 
 	/* if the last element is '[', it may start
-	 * a chord, an embedded header or an other bar */
+	 * a chord or an embedded header */
 	switch (bar_type.slice(-1)) {
 	case '[':
-		if (bar_type.length == 1) {
-			s.text = ''
-			break
-		}
-		if (c > '0' && c <= '9')	// ":|[2"
+		if (/[0-9" ]/.test(c))		// "
 			break
 		bar_type = bar_type.slice(0, -1);
 		line.index--;
@@ -13593,8 +13421,9 @@ function new_bar() {
 		}
 		s.rbstop = 2;
 		s.rbstart = 2
-	} else if (c == '"' && bar_type == "[") {
-//		s.text = ""
+	} else if (c == '"' && bar_type.slice(-1) == '[') {
+		bar_type = bar_type.slice(0, -1);
+		s.text = ""
 		while (1) {
 			c = line.next_char()
 			if (!c) {
@@ -13638,9 +13467,10 @@ function new_bar() {
 	s2 = curvoice.last_sym
 	if (s2 && s2.type == SPACE) {
 		s2.time--		// keep the space at the right place
-	} else if (s2 && s2.type == BAR
-		&& !s2.a_gch && !s2.a_dd
-		&& !s.a_gch && !s.a_dd) {
+	} else if (s2 && s2.type == BAR) {
+//fixme: why these next lines?
+//		&& !s2.a_gch && !s2.a_dd
+//		&& !s.a_gch && !s.a_dd) {
 
 		/* remove the invisible repeat bars when no shift is needed */
 		if (bar_type == "["
@@ -13804,7 +13634,7 @@ function parse_staves(p) {
 			flags |= MASTER_VOICE
 			break
 		default:
-			if (!p[i].match(/\w/)) {
+			if (!/\w/.test(p[i])) {
 				syntax(1, "Bad voice ID in %%staves");
 				err = true
 				break
@@ -13880,58 +13710,15 @@ function parse_staves(p) {
 
 // split an info string
 function info_split(text) {
-	var	a = [],
-		item = "",
-		i, j,
-		n = text.length
-
-	for (i = 0 ; i < n; i++) {
-		switch (text[i]) {
-		case '=':
-			if (!item) {
-				item = '='
-				break
-			}
-			item += '=';
-			a.push(item);
-			item = ""
-			break
-		case ' ':
-		case '\t':
-			if (!item)
-				break
-			a.push(item);
-			item = ""
-			break
-		case '"':
-			if (item) {
-				a.push(item);
-				item = ""
-			}
-			j = i++
-			while (i < n) {
-				if (text[i] == '"')
-					break
-				if (text[i] == '\\')
-					i++;
-				i++
-			}
-			if (text[i] != '"') {
-				syntax(1, "Unterminated string")
-				break
-			}
-			a.push(text.slice(j, i + 1))	// keep the '"'s
-			break
-		case '\\':
-			item += text[i++]
-			// fall thru
-		default:
-			item += text[i]
-			break
-		}
+	if (!text)
+		return []
+    var	a = text.match(/".+?"|.+?(\s+|=|$)/g)
+	if (!a) {
+		syntax(1, "Unterminated string")
+		return []
 	}
-	if (item)
-		a.push(item)
+	for (var i = 0; i < a.length; i++)
+		a[i] = a[i].trim()
 	return a
 }
 
@@ -14492,8 +14279,6 @@ function new_note(grace, tp_fact) {
 			case SL_BELOW: s.stem = -1; break
 			case SL_HIDDEN: s.stemless = true; break
 			}
-
-			s.combine = curvoice.combine
 
 			// adjust the symbol duration
 			s.dur *= tp_fact;
@@ -16070,6 +15855,8 @@ var tgls = {
   ghd: {x:2, y:0, c:"\ue0a4", sc:.66},
   pshhd: {x:-3.7, y:0, c:"\ue0a9"},
   pfthd: {x:-3.7, y:0, c:"\ue0b3"},
+  x: {x:-3.7, y:0, c:"\ue0a9"},
+  "circle-x": {x:-3.7, y:0, c:"\ue0b3"},
   srep: {x:-5, y:0, c:"\ue101"},
   dot: {x:-2, y:0, c:"\ue1e7"},
  "acc-1": {x:-3, y:0, c:"\ue260"},
@@ -16196,6 +15983,8 @@ font-style:italic; font-size:16px">tr</text>',
 		-2 -2.5 -2 2.5 -2 -2.5 -2 2.5"/>\n\
 	<path class="stroke" d="m3.5 0l5 -7"/>\n\
 </g>',
+  triangle: '<path id="triangle" class="fill" d="m-3.7 -3.2l7.4 0 -3.7 6.4 -3.7 -6.4"/>',
+  diamond: '<path id="diamond" class="fill" d="m0 3.5l-3.7 -3.5 3.7 -3.5 3.7 3.5z"/>',
   oct: '<text id="oct" style="font-family:serif; font-size:12px">8</text>'
 }
 
@@ -17584,6 +17373,8 @@ function new_syst(init) {
 			p_voice = voice_tb[v]
 		if (p_voice.stafflines != undefined)
 			sy_staff.stafflines = p_voice.stafflines
+		if (p_voice.staffnonote != undefined)
+			sy_staff.staffnonote = p_voice.staffnonote
 		if (p_voice.staffscale)
 			sy_staff.staffscale = p_voice.staffscale;
 		sy_new.voices[v] = clone(par_sy.voices[v]);
@@ -17598,163 +17389,12 @@ function new_syst(init) {
 	par_sy = sy_new
 }
 
-/* go to a global (measure + time) */
-function go_global_time(s, symsel) {
-	var s2, bar_time, seq
-
-	if (symsel.bar <= 1) {		/* special case: there is no measure 0/1 */
-		if (symsel.bar == 1) {
-			for (s2 = s; s2; s2 = s2.ts_next) {
-				if (s2.type == BAR
-				 && s2.time != 0)
-					break
-			}
-			if (s2.time < voice_tb[cur_sy.top_voice].meter.wmeasure)
-				s = s2
-		}
-	} else {
-		for ( ; s; s = s.ts_next) {
-			if (s.type == BAR
-			 && s.bar_num >= symsel.bar)
-				break
-		}
-		if (!s)
-			return // null
-		if (symsel.seq != 0) {
-			seq = symsel.seq
-			for (s = s.ts_next; s; s = s.ts_next) {
-				if (s.type == BAR
-				 && s.bar_num == symsel.bar) {
-					if (--seq == 0)
-						break
-				}
-			}
-			if (!s)
-				return // null
-		}
-	}
-
-	if (symsel.time == 0)
-		return s;
-	bar_time = s.time + symsel.time
-	while (s.time < bar_time) {
-		s = s.ts_next
-		if (!s)
-			return s
-	}
-	do {
-		s = s.ts_prev		/* go back to the previous sequence */
-	} while (!s.seqst)
-	return s
-}
-
-/* treat %%clip */
-function do_clip() {
-	var s, s2, sy, p_voice, v
-
-	/* remove the beginning of the tune */
-	s = tsfirst
-	if (clip_start.bar > 0
-	 || clip_start.time > 0) {
-		s = go_global_time(s, clip_start)
-		if (!s) {
-			tsfirst = null
-			return
-		}
-
-		/* update the start of voices */
-		sy = cur_sy
-		for (s2 = tsfirst; s2 != s; s2 = s2.ts_next) {
-			switch (s2.type) {
-			case CLEF:
-				s2.p_v.clef = s2
-				break
-			case KEY:
-				s2.p_v.key = clone(s2.as.u.key)
-				break
-			case METER:
-				s2.p_v.meter = clone(s2.as.u.meter)
-				break
-			case STAVES:
-				sy = s.sy
-				break
-			}
-		}
-		cur_sy = sy
-		for (v = 0; v < voice_tb.length; v++) {
-			p_voice = voice_tb[v]
-			for (s2 = s; s2; s2 = s2.ts_next) {
-				if (s2.v == v) {
-					delete s2.prev
-					break
-				}
-			}
-			p_voice.sym = s2
-		}
-		tsfirst = s
-		delete s.ts_prev
-	}
-
-	/* remove the end of the tune */
-	s = go_global_time(s, clip_end)
-	if (!s)
-		return
-
-	/* keep the current sequence */
-	do {
-		s = s.ts_next
-		if (!s)
-			return
-	} while (!s.seqst)
-
-	/* cut the voices */
-	for (v = 0; v < voice_tb.length; v++) {
-		p_voice = voice_tb[v]
-		for (s2 = s.ts_prev; s2; s2 = s2.ts_prev) {
-			if (s2.v == v) {
-				delete s2.next
-				break
-			}
-		}
-		if (!s2)
-			p_voice.sym = null
-	}
-	delete s.ts_prev.ts_next
-}
-
-/* -- set the bar numbers and treat %%clip / %%break -- */
+/* -- set the bar numbers -- */
 function set_bar_num() {
 	var	s, s2, tim, bar_time, bar_num, rep_dtime,
 		v = cur_sy.top_voice,
 		wmeasure = voice_tb[v].meter.wmeasure,
 		bar_rep = gene.nbar
-
-	// insert the EOL of %%break
-	function do_break() {
-		var s, i, m, n, d, t
-
-		for (i = 0; i < glovar.break.length; i++) {
-			m = glovar.break[i].m
-			n = glovar.break[i].n
-			d = glovar.break[i].d
-			for (s = voice_tb[v].sym; s; s = s.next) {
-				if (s.type == BAR && s.bar_num == m)
-					break
-			}
-			if (!s)
-				continue
-			if (n != 0) {
-				t = s.time + n / d
-				for ( ; s; s = s.next) {
-					if (s.time > t)
-						break
-				}
-				if (!s)
-					continue
-			}
-			s.eoln = true
-		}
-	} // do_break
 
 	/* don't count a bar at start of line */
 	for (s = tsfirst; ; s = s.ts_next) {
@@ -17786,8 +17426,21 @@ function set_bar_num() {
 		break
 	}
 
+	// at start of tune, check for an anacrusis
+	bar_time = s.time + wmeasure
+	if (s.time == 0) {
+		for (s2 = s.ts_next; s2; s2 = s2.ts_next) {
+			if (s2.type == BAR && s2.time) {
+				if (s2.time < bar_time) {	// if anacrusis
+					s = s2;
+					bar_time = s.time + wmeasure
+				}
+				break
+			}
+		}
+	}
+
 	// set the measure number on the top bars
-	bar_time = s.time + wmeasure; // for incomplete measure at start of tune
 	bar_num = gene.nbar
 
 	for ( ; s; s = s.ts_next) {
@@ -17831,11 +17484,13 @@ function set_bar_num() {
 			if (s2 && s2.type == BAR && s2.text) {
 				if (s2.text[0] == '1') {
 					rep_dtime = 0;
-					bar_rep = bar_num - 1
+					bar_rep = bar_num
 				} else {			// restart bar numbering
 					if (!cfmt.contbarnb)
 						bar_num = bar_rep
-					if (rep_dtime) {
+					if (rep_dtime) {	// [1 inside measure
+						if (cfmt.contbarnb)
+							bar_num--;
 						bar_time = tim + rep_dtime
 						break
 					}
@@ -17846,45 +17501,8 @@ function set_bar_num() {
 			break
 		}
 	}
-//fixme
-	/* do the %%clip stuff */
-	/* do the %%break stuff */
-	if (glovar.break)
-		do_break()
-
 	if (cfmt.measurenb < 0)		/* if no display of measure bar */
 		gene.nbar = bar_num	/* update in case of more music to come */
-}
-
-// %%break measure_nb [":" num "/" den] [" " measure ...]*
-function get_break(param) {
-	var a = param.split(' '), b, c, d, i, j, k, n
-
-	glovar.break = []
-	for (k in a) {
-		if (!a.hasOwnProperty(k))
-			continue
-		b = a[k];
-		i = b.indexOf(':')
-		if (i < 0) {
-			glovar.break.push({m: b, n: 0, d: 1})
-			continue
-		}
-		j = b.indexOf('/')
-		if (j < 0) {
-			syntax(1, "'/' missing in %%break")
-			break
-		}
-		d = parseInt(b.slice(j + 1))
-		if (isNaN(d) || d <= 1) {
-			syntax(1, "Bad denominator in %%break")
-			break
-		}
-		glovar.break.push({
-			m: b.slice(0, i - 1),
-			n: b.slice(i + 1, j - 1),
-			d: d})
-	}
 }
 
 // note mapping
@@ -18053,7 +17671,7 @@ function do_pscom(text) {
 	var	h1, val, s, cmd, param, n, k, b,
 		lock = false
 
-	if (text.match(/ lock$/)) {
+	if (text.slice(-5) == ' lock') {
 		lock = true;
 		text = text.slice(0, -5).trim()
 	}
@@ -18063,9 +17681,6 @@ function do_pscom(text) {
 	cmd = cmd[0];
 	param = text.replace(cmd, '').trim()
 	switch (cmd) {
-	case "break":
-		get_break(param)
-		return
 	case "center":
 		if (parse.state >= 2) {
 			s = new_block("text");
@@ -18083,9 +17698,6 @@ function do_pscom(text) {
 			if (s)
 				get_clef(s)
 		}
-		return
-	case "clip":
-//fixme: to do
 		return
 	case "deco":
 		deco_add(param)
@@ -18318,6 +17930,7 @@ function do_pscom(text) {
 		return
 	case "stafflines":
 	case "staffscale":
+	case "staffnonote":
 		set_v_param(cmd, param)
 		return
 	case "staves":
@@ -19173,7 +18786,6 @@ function new_voice(id) {
 			vol: 0
 		},
 		scale: 1,
-		combine: 0,
 //		st: 0,
 //		cst: 0,
 		ulen: glovar.ulen,
@@ -19213,11 +18825,47 @@ function init_tune() {
 	od = {}				// no ottava decorations anymore
 }
 
+// treat V: with many voices
+function do_cloning(vs) {
+    var	i, eol,
+	file = parse.file,
+	start = parse.eol + 1,		// next line after V:
+	bol = start
+
+	// search the end of the music to be cloned
+	while (1) {
+		eol = file.indexOf('\n', bol)
+		if (eol < 0) {
+			eol = 0
+			break
+		}
+
+		// stop on comment, or information field
+		if (/%.*|\n.*|.:.|\[.:/.test(file.slice(eol + 1, eol + 4)))
+			break
+		bol = eol + 1
+	}
+
+	// insert the music sequence in each voice
+	include++;
+	tosvg(parse.ctx.in_fname, file, start, eol)	// first voice
+	for (i = 0; i < vs.length; i++) {
+		get_voice(vs[i]);
+		tosvg(parse.ctx.in_fname, file, start, eol)
+	}
+	include--
+}
+
 // treat a 'V:' info
 function get_voice(parm) {
-	var	v, transp, vtransp,
+	var	v, transp, vtransp, vs,
 		a = info_split(parm, 1),
 		vid = a.shift();
+
+	if (vid.indexOf(',') > 0) {		// if many voices
+		vs = vid.split(',');
+		vid = vs.shift()
+	}
 
 	if (parse.state < 2) {
 		if (a.length != 0)
@@ -19265,6 +18913,9 @@ function get_voice(parm) {
 		curvoice.filtered = true;
 		voice_filter()
 	}
+
+	if (vs)
+		do_cloning(vs)
 }
 
 // change state from 'tune header after K:' to 'in tune body'
@@ -20611,12 +20262,16 @@ function Modules() {
     var modules = {
 		ambitus: { fn: 'ambitus-1.js', init: 'Ambitus' },
 		beginps: { fn: 'psvg-1.js', init: 'psvg_init' },
+		break: { fn: 'break-1.js', init: 'Break' },
 		capo: { fn: 'capo-1.js', init: 'Capo' },
+		clip: { fn: 'clip-1.js', init: 'Clip' },
+		voicecombine: { fn: 'combine-1.js', init: 'Combine' },
 		diagram: { fn: 'diag-1.js', init: 'Diag' },
 		grid: { fn: 'grid-1.js', init: 'Grid' },
-		MIDI: { fn: 'MIDI-1.js', init: 'MIDI' }
+		MIDI: { fn: 'MIDI-1.js', init: 'MIDI' },
+		percmap: { fn: 'perc-1.js', init: 'Perc' }
 	},
-	all_m = /ambitus|beginps|capo|diagram|grid|MIDI/g,
+	all_m = /ambitus|beginps|break|capo|clip|voicecombine|diagram|grid|MIDI|percmap/g,
 	nreq = 0,
 	cbf					// callback function
 
@@ -20654,16 +20309,23 @@ function Modules() {
 				loadRelativeToScript(m.fn)
 			} else {			// web
 				nreq++;
-				loadjs(m.fn, function() {
+				loadjs(m.fn,
+				    function() {	// if success
 					nreq--;
 					if (nreq == 0)
+						cbf()},
+				    function() {	// if error
+					user.errmsg('error loading ' + m.fn);
+					nreq--
+					if (nreq == 0)
 						cbf()
-				})
+				    })
 			}
 		}
 		if (relay)		// web
 			return nreq == nreq_i;
-		init(abc)		// batch
+		if (abc)
+			init(abc)	// batch
 		return true
 	}
 
@@ -20674,7 +20336,8 @@ function Modules() {
 	function init(abc) {
 		for (var i in modules) {
 			var m = modules[i]
-			if (!m.loaded || m.loaded === abc)
+			if (eval('typeof ' + m.init) != "function"
+			 || m.loaded === abc)
 				continue
 			m.loaded = abc;
 			eval(m.init + '(abc)')
@@ -20696,7 +20359,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.16.0-19-gca0ed08 (2018-03-25)
+// json-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20844,7 +20507,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// midi-1.js for abc2svg-1.16.0-19-gca0ed08 (2018-03-25)
+// setmidi-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -21044,7 +20707,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.16.0-19-gca0ed08 (2018-03-25)
+// play-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2018 Jean-Francois Moine
@@ -21510,6 +21173,7 @@ if (typeof module == 'object' && typeof exports == 'object')
 //		Arguments:
 //			i: start index of the note in the ABC source
 //			on: true on note start, false on note stop
+//	errmsg: function called on error (default: alert)
 
 // Audio5 methods
 
@@ -21543,14 +21207,13 @@ if (typeof module == 'object' && typeof exports == 'object')
     var	abcsf2 = []
 
 function Audio5(i_conf) {
-
 	var	conf = i_conf,		// configuration
-		onend = function() {},	// callback function on play end
-		onnote = function() {},	// callback function on note start/stop
+		onend = conf.onend || function() {},
+		onnote = conf.onnote || function() {},
+		errmsg = conf.errmsg || alert,
 		ac,			// audio context
 		gain,			// global gain
 		gain_val = 0.7,
-		timout,			// timer while playing
 		follow = true,		// follow the music
 		speed = 1,		// speed factor
 		new_speed,
@@ -21609,28 +21272,23 @@ function Audio5(i_conf) {
 		return a
 	}
 
-	// get the URL and the type of the soundfont from cookies
-	function get_cookies() {
-	    var	ac = document.cookie.split(';')
-		for (var i = 0; i < ac.length; i++) {
-			var c = ac[i].split('=')
-			switch (c[0].replace(/ */, '')) {
-			case "follow":
-				follow = c[1] == "true"
-				break
-			case "sfu":
-				if (!sfu)
-					sfu = c[1]
-				break
-//			case "speed":
-//			    var	v = Math.pow(3, (c[1] - 10) * .1);
-//				speed = v
-//				break
-			case "volume":
-				vol = Number(c[1])
-				break
-			}
+	// get the play parameters from localStorage
+	function get_param() {
+		try {
+			if (!localStorage)
+				return
+		} catch(e) {
+			return
 		}
+	    var	v = localStorage.getItem("follow")
+		if (v)
+			follow = v != "0";
+		v = localStorage.getItem("sfu")
+		if (v)
+			sfu = v;
+		v = localStorage.getItem("volume")
+		if (v)
+			gain_val = Number(v)
 	}
 
 	// copy a sf2 sample to an audio buffer
@@ -21641,7 +21299,7 @@ function Audio5(i_conf) {
 		a = b.getChannelData(0)		// destination = array of float32
 
 		for (i = 0; i < s.length; i++)
-			a[i] = s[i] / 131072	// volume divided by 4
+			a[i] = s[i] / 196608	// volume divided by 6
 	}
 
 	// create all notes of an instrument
@@ -21652,6 +21310,8 @@ function Audio5(i_conf) {
 		rates[instr] = []
 		for (i = 0; i < infos.length; i++) {
 			gen = infos[i].generator;
+			if (!gen.sampleID)	// (empty generator!)
+				continue
 			sid = gen.sampleID.amount;
 			sampleRate = parser.sampleHeader[sid].sampleRate;
 			sample = parser.sample[sid];
@@ -21715,6 +21375,12 @@ function Audio5(i_conf) {
 				parser.parse();
 				sf2_create(parser, instr);
 				w_instr--
+			},
+			function() {
+				errmsg('could not find the instrument ' +
+					((instr / 128) | 0).toString() + '-' +
+					(instr % 128).toString());
+				w_instr--
 			})
 	} // load_instr()
 
@@ -21746,6 +21412,8 @@ function Audio5(i_conf) {
 		parm = params[instr][key],
 		o = ac.createBufferSource();
 
+		if (!parm)		// if the instrument could not be loaded
+			return		// or if it has not this key
 		o.buffer = parm.buffer
 		if (parm.loopStart) {
 			o.loop = true;
@@ -21832,7 +21500,7 @@ function Audio5(i_conf) {
 		}
 
 		// delay before next sound generation
-		timout = setTimeout(play_next, (t + stime - ac.currentTime)
+		setTimeout(play_next, (t + stime - ac.currentTime)
 				* 1000 - 300,	// wake before end of playing
 				a_e)
 	} // play_next()
@@ -21844,7 +21512,7 @@ function Audio5(i_conf) {
 
 		// wait for instruments
 		if (w_instr != 0) {
-			timout = setTimeout(play_start, 300, a_e)
+			setTimeout(play_start, 300, a_e)
 			return
 		}
 
@@ -21855,26 +21523,14 @@ function Audio5(i_conf) {
 		play_next(a_e)
 	} // play_start()
 
-	function set_cookie(n, v) {
-	    var	d = new Date();
-		d.setTime(d.getTime() + 31536000000)	// one year
-//					365 * 24 * 60 * 60 * 1000
-		document.cookie = n + "=" + v + ";expires=" + d.toUTCString()
-	}
-
 // Audio5 object creation
 
 	init_b64d();			// initialize base64 decoding
 
-	get_cookies()			// get the user parameters
+	get_param()			// get the play parameters
 
 	if (!sfu)
 		sfu = "Scc1t2"		// set the default soundfont location
-
-	if (conf.onend)
-		onend = conf.onend
-	if (conf.onnote)
-		onnote = conf.onnote
 
     // external methods
     return {
@@ -21911,7 +21567,6 @@ function Audio5(i_conf) {
 
 	// stop playing
 	stop: function() {
-		clearTimeout(timout);
 		iend = 0
 		if (gain) {
 			gain.disconnect();
@@ -21924,7 +21579,6 @@ function Audio5(i_conf) {
 		if (v == undefined)
 			return follow
 		follow = v;
-		set_cookie("follow", v)
 	}, // set_follow()
 
 	// set soundfont URL
@@ -21932,7 +21586,6 @@ function Audio5(i_conf) {
 		if (v == undefined)
 			return sfu
 		sfu = v;
-		set_cookie("sfu", v)
 	}, // set_sfu()
 
 	// set speed (< 1 slower, > 1 faster)
@@ -21953,7 +21606,6 @@ function Audio5(i_conf) {
 			gain.gain.value = v
 		else
 			gain_val = v;
-		set_cookie("volume", v.toFixed(2))
 	} // set_vol()
     }
 } // end Audio5
@@ -22886,3 +22538,2157 @@ function Audio5(i_conf) {
 
     return sf2;
 }));
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// ambitus-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// ambitus.js - module to insert an ambitus at start of a voice
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%ambitus" appears in a ABC source.
+//
+// Parameters
+//	%%ambitus 1
+
+function Ambitus(i_abc) {
+    var	abc = i_abc
+
+// constants from the abc2svg core
+    var	BASE_LEN = 1536,
+	NOTE = 8,
+	FULL = 0
+
+    Ambitus.prototype.do_ambitus = function(voice_tb) {
+    var	s, v, p_v, min, max
+
+	for (v = 0; v < voice_tb.length; v++) {
+		p_v = voice_tb[v];
+		min = 100;
+		max = -100
+
+		// search the top and bottom pitches
+		for (s = p_v.sym; s; s = s.next) {
+			if (s.type != NOTE)
+				continue
+			if (s.notes[s.nhd].pit > max)
+				max = s.notes[s.nhd].pit
+			if (s.notes[0].pit < min)
+				min = s.notes[0].pit
+		}
+		if (min == 100)
+			continue			// no note
+
+		s = p_v.clef;
+		s.stem = 1;
+		s.head = FULL;
+		s.stemless = true;
+		s.nhd = 1;
+		s.notes = [{
+				dur: BASE_LEN / 4,
+				pit: min,
+				shhd: 0
+			},{
+				dur: BASE_LEN / 4,
+				pit: max,
+				shhd: 0
+			}]
+	}
+    } // do_ambitus()
+
+// Ambitus creation
+
+	//export some functions/variables
+	abc.tosvg('ambitus', '\
+%%beginjs\n\
+Abc.prototype.clone = clone\n\
+Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
+\
+var ambitus = {\n\
+	ds: draw_symbols,\n\
+	om: output_music,\n\
+	set_fmt: set_format,\n\
+	set_w: set_width\n\
+}\n\
+draw_symbols = function(p_voice) {\n\
+    var	d, s = p_voice.sym\n\
+	if (s.type == CLEF && s.notes) {\n\
+		d = delta_tb[s.clef_type] + s.clef_line * 2;\n\
+		s.notes[0].pit += d;\n\
+		s.notes[1].pit += d;\n\
+		s.x -= 26;\n\
+		draw_note(s);\n\
+		if (s.notes[1].pit - s.notes[0].pit > 4) {\n\
+			xypath(s.x, 3 * (s.notes[1].pit - 18) + staff_tb[s.st].y);\n\
+			output.push("v" +\n\
+				((s.notes[1].pit - s.notes[0].pit) * 3).toFixed(2) +\n\
+				\'" stroke-width=".6"/>\\\n\');\n\
+		}\n\
+		s.x += 26;\n\
+	}\n\
+	ambitus.ds(p_voice)\n\
+}\n\
+output_music = function() {\n\
+	if (cfmt.ambitus)\n\
+		Ambitus.prototype.do_ambitus(voice_tb)\n\
+	ambitus.om()\n\
+}\n\
+set_format = function(cmd, param, lock) {\n\
+	if (cmd == "ambitus") {\n\
+		cfmt.ambitus = param\n\
+		return\n\
+	}\n\
+	ambitus.set_fmt(cmd, param, lock)\n\
+}\n\
+set_width = function(s) {\n\
+	if (s.type == CLEF && s.notes) {\n\
+		s.wl = 40;\n\
+		s.wr = 12\n\
+	} else {\n\
+		ambitus.set_w(s)\n\
+	}\n\
+}\n\
+%%endjs\n\
+')
+
+} // Ambitus()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// break-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// break.js - module to handle the %%break command
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%break" appears in a ABC source.
+//
+// Parameters
+//	%%break measure_nb [":" num "/" den] [" " measure ...]*
+
+function Break(i_abc) {
+    var	abc = i_abc
+
+// constants from the abc2svg core
+    var	BAR = 0,
+	BASE_LEN = 1536
+
+	// %%break measure_nb [":" num "/" den] [" " measure ...]*
+	Break.prototype.get_break = function(parm) {
+	    var	b, c, d, sq,
+		a = parm.split(/[ ,]/);
+
+		abc.glovar.break = []
+		for (n = 1; n < a.length; n++) {
+			b = a[n];
+			c = b.match(/(\d)([a-z]?)(:\d\/\d)?/)
+			if (!c) {
+				abc.syntax(1, err_bad_val_s, "%%break")
+				continue
+			}
+			if (c[2])
+				sq = c[2].charCodeAt(0) - 0x61
+			if (!c[3]) {
+				abc.glovar.break.push({	// on measure bar
+						m: c[1],
+						t: 0,
+						sq: sq})
+				continue
+			}
+			d = c[3].match(/:(\d)\/(\d)/)
+			if (!d || d[2] < 1) {
+				abc.syntax(1, "Bad denominator in %%break")
+				continue
+			}
+			abc.glovar.break.push({
+					m: c[1],
+					t: d[1] * BASE_LEN / d[2],
+					sq: sq})
+		}
+	} // get_break()
+
+	// insert the EOLs of %%break
+	Break.prototype.do_break = function() {
+	    var	i, m, t, brk, seq,
+		v = abc.get_cur_sy().top_voice,
+		s1 = abc.voice_tb[v].sym
+
+		for (i = 0; i < abc.glovar.break.length; i++) {
+			brk = abc.glovar.break[i];
+			m = brk.m
+			for (s = s1; s; s = s.next) {
+				if (s.type == BAR && s.bar_num == m)
+					break
+			}
+			if (!s)
+				continue
+
+			if (brk.sq) {
+				seq = brk.sq
+				for (s = s.ts_next; s; s = s.ts_next) {
+					if (s.type == BAR
+					 && s.bar_num == m) {
+						if (--seq == 0)
+							break
+					}
+				}
+				if (!s)
+					continue
+			}
+
+			t = brk.t
+			if (t) {
+				t = s.time + t
+				for ( ; s; s = s.next) {
+					if (s.time >= t)
+						break
+				}
+				if (!s)
+					continue
+				s = s.prev
+			}
+			s.eoln = true
+		}
+	} // do_break()
+
+// Break creation
+
+	//export some functions/variables
+	abc.tosvg('break', '\
+%%beginjs\n\
+Abc.prototype.get_cur_sy = function() { return cur_sy }\n\
+Abc.prototype.glovar = glovar\n\
+Abc.prototype.syntax = syntax\n\
+Abc.prototype.voice_tb = voice_tb\n\
+\
+var brk = {\n\
+	psc: do_pscom,\n\
+	sbn: set_bar_num\n\
+}\n\
+do_pscom = function(text) {\n\
+	if (text.slice(0, 6) == "break ")\n\
+		Break.prototype.get_break(text)\n\
+	else\n\
+		brk.psc(text)\n\
+}\n\
+set_bar_num = function() {\n\
+	brk.sbn();\n\
+	if (glovar.break)\n\
+		Break.prototype.do_break()\n\
+}\n\
+%%endjs\n\
+')
+
+} // Break()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// capo-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// capo.js - module to add a capo chord line
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%capo" appears in a ABC source.
+//
+// Parameters
+//	%%capo n	'n' is the capo fret number
+
+function Capo(abc_i) {
+    var abc_capo,
+	abc = abc_i
+
+// function called when setting a chord symbol on a music element
+Capo.prototype.gch_capo = function(a_gch) {
+    var	gch, gch2, i2,
+	transp = abc.get_cfmt('capo'),
+	i = 0
+
+	while (1) {
+		gch = a_gch[i++]
+		if (!gch)
+			return
+		if (gch.type == 'g')
+			break
+	}
+	gch2 = Object.create(gch);
+	gch2.capo = false;		// (would be erased when setting gch)
+	gch2.text = abc.gch_tr1(gch2.text, -transp)
+	if (!abc_capo) {		// if start of tune
+		abc_capo = true;
+		gch2.text += "  (capo: " + transp.toString() + ")"
+	}
+
+	gch2.font = abc.get_font(abc.get_cfmt("capofont") ?
+					"capo" : "annotation")
+	a_gch.splice(i, 0, gch2)
+
+	// set a mark in the first chord symbol for %%diagram
+	gch.capo = true
+
+} // gch_capo()
+
+Capo.prototype.capo_reset = function() {
+	abc_capo = false
+}
+
+// Capo creation
+
+	//export some functions/variables
+	abc.tosvg('capo', '\
+%%beginjs\n\
+Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
+Abc.prototype.get_font = get_font;\n\
+Abc.prototype.gch_tr1 = gch_tr1;\n\
+\
+var capo = {\n\
+	gch_b: gch_build,\n\
+	om: output_music,\n\
+	set_fmt: set_format\n\
+}\n\
+gch_build = function(s) {\n\
+	if (cfmt.capo && a_gch)\n\
+		Capo.prototype.gch_capo(a_gch);\n\
+	capo.gch_b(s)\n\
+}\n\
+output_music = function() {\n\
+	Capo.prototype.capo_reset();\n\
+	capo.om()\n\
+}\n\
+set_format = function(cmd, param, lock) {\n\
+	if (cmd == "capo") {\n\
+		cfmt.capo = param\n\
+		return\n\
+	}\n\
+	capo.set_fmt(cmd, param, lock)\n\
+}\n\
+%%endjs\n\
+')
+
+} // Capo()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// clip-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// clip.js - module to handle the %%clip command
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%clip" appears in a ABC source.
+//
+// Parameters
+//	%%clip start_measure_nb [":" num "/" den] "-" end_measure_nb [":" num "/" den]
+
+function Clip(i_abc) {
+    var	abc = i_abc
+
+// constants from the abc2svg core
+    var	BAR = 0,
+	CLEF = 1,
+	KEY = 5,
+	METER = 6,
+	STAVES = 12,
+	BASE_LEN = 1536
+
+	// get the start/stop points
+	function get_symsel(a) {
+	    var	j, d, sq,
+		b = a.match(/(\d)([a-z]?)(:\d\/\d)?/)
+
+		if (!b)
+			return
+		if (b[2])
+			sq = b[2].charCodeAt(0) - 0x61
+		if (!b[3])
+			return {m: b[1], t: 0, sq: sq}	// on measure bar
+		a = b[3].match(/:(\d)\/(\d)/)
+		if (!a || a[2] < 1)
+			return
+		return {m: b[1], t: a[1] * BASE_LEN / a[2], sq: sq}
+	} // get_symsel()
+
+	// %%break start_measure [":" num "/" den] "-" end_measure ...
+	Clip.prototype.get_clip = function(parm) {
+	    var	b, c,
+		a = parm.split(/[ -]/)
+
+		if (a.length != 3) {
+			abc.syntax(1, abc.err_bad_val_s, "%%clip")
+			return
+		}
+		if (!b)
+			b = {m: 0, t: 0}
+		else
+			b = get_symsel(a[1]);
+		c = get_symsel(a[2])
+		if (!b || !c) {
+			abc.syntax(1, abc.err_bad_val_s, "%%clip")
+			return
+		}
+		abc.glovar.clip = [b, c]
+	} // get_clip()
+
+	// go to a global (measure + time)
+	function go_global_time(s, sel) {
+	    var	s2, bar_time, seq
+
+		if (sel.m <= 1) {	// special case: there is no measure 0/1
+			if (sel.m == 1) {
+				for (s2 = s; s2; s2 = s2.ts_next) {
+					if (s2.type == BAR
+					 && s2.time != 0)
+						break
+				}
+				if (s2.time < abc.voice_tb[abc.get_cur_sy().top_voice].
+								meter.wmeasure)
+					s = s2
+			}
+		} else {
+			for ( ; s; s = s.ts_next) {
+				if (s.type == BAR
+				 && s.bar_num >= sel.m)
+					break
+			}
+			if (!s)
+				return // null
+
+			if (sel.sq) {
+				seq = sel.sq
+				for (s = s.ts_next; s; s = s.ts_next) {
+					if (s.type == BAR
+					 && s.bar_num == sel.m) {
+						if (--seq == 0)
+							break
+					}
+				}
+				if (!s)
+					return // null
+			}
+		}
+
+		if (sel.t == 0)
+			return s;
+		bar_time = s.time + sel.t
+		while (s.time < bar_time) {
+			s = s.ts_next
+			if (!s)
+				return s
+		}
+		do {
+			s = s.ts_prev	// go back to the previous sequence
+		} while (!s.seqst)
+		return s
+	}
+
+	// cut the tune
+	Clip.prototype.do_clip = function() {
+	    var	s, s2, sy, p_voice, v
+
+		// remove the beginning of the tune
+		s = abc.get_tsfirst()
+		if (abc.glovar.clip[0].m > 0
+		 || abc.glovar.clip[0].t > 0) {
+			s = go_global_time(s, abc.glovar.clip[0])
+			if (!s) {
+				abc.set_tsfirst(null)
+				return
+			}
+
+			// update the start of voices
+			sy = abc.get_cur_sy()
+			for (s2 = abc.get_tsfirst(); s2 != s; s2 = s2.ts_next) {
+				switch (s2.type) {
+				case CLEF:
+					s2.p_v.clef = s2
+					break
+				case KEY:
+					s2.p_v.key = abc.clone(s2.as.u.key)
+					break
+				case METER:
+					s2.p_v.meter = abc.clone(s2.as.u.meter)
+					break
+				case STAVES:
+					sy = s2.sy;
+					abc.set_cur_sy(sy)
+					break
+				}
+			}
+			for (v = 0; v < abc.voice_tb.length; v++) {
+				p_voice = abc.voice_tb[v]
+				for (s2 = s; s2; s2 = s2.ts_next) {
+					if (s2.v == v) {
+						delete s2.prev
+						break
+					}
+				}
+				p_voice.sym = s2
+			}
+			abc.set_tsfirst(s)
+			delete s.ts_prev
+		}
+
+		/* remove the end of the tune */
+		s = go_global_time(s, abc.glovar.clip[1])
+		if (!s)
+			return
+
+		/* keep the current sequence */
+		do {
+			s = s.ts_next
+			if (!s)
+				return
+		} while (!s.seqst)
+
+		/* cut the voices */
+		for (v = 0; v < abc.voice_tb.length; v++) {
+			p_voice = abc.voice_tb[v]
+			for (s2 = s.ts_prev; s2; s2 = s2.ts_prev) {
+				if (s2.v == v) {
+					delete s2.next
+					break
+				}
+			}
+			if (!s2)
+				p_voice.sym = null
+		}
+		delete s.ts_prev.ts_next
+	} // do_clip()
+
+// Clip creation
+
+	//export some functions/variables
+	abc.tosvg('clip', '\
+%%beginjs\n\
+Abc.prototype.clone = clone\n\
+Abc.prototype.get_cur_sy = function() { return cur_sy }\n\
+Abc.prototype.err_bad_val_s = err_bad_val_s\n\
+Abc.prototype.get_tsfirst = function() { return tsfirst }\n\
+Abc.prototype.glovar = glovar\n\
+Abc.prototype.set_cur_sy = function(sy) { cur_sy = sy }\n\
+Abc.prototype.set_tsfirst = function(s) { tsfirst = s }\n\
+Abc.prototype.syntax = syntax\n\
+Abc.prototype.voice_tb = voice_tb\n\
+\
+var clip = {\n\
+	psc: do_pscom,\n\
+	sbn: set_bar_num\n\
+}\n\
+do_pscom = function(text) {\n\
+	if (text.slice(0, 5) == "clip ")\n\
+		Clip.prototype.get_clip(text)\n\
+	else\n\
+		clip.psc(text)\n\
+}\n\
+set_bar_num = function() {\n\
+	clip.sbn();\n\
+	if (glovar.clip)\n\
+		Clip.prototype.do_clip()\n\
+}\n\
+%%endjs\n\
+')
+
+} // Clip()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// combine-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// combine.js - module to add a combine chord line
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%voicecombine" appears in a ABC source.
+//
+// Parameters
+//	%%voicecombine n	'n' is the combine level
+
+function Combine(abc_i) {
+    var abc = abc_i
+
+    // constants from the abc2svg core
+    var	NOTE = 8,
+	REST = 10,
+	SL_ABOVE = 0x01,
+	SL_BELOW = 0x02,
+	SL_AUTO = 0x03,
+	SL_DOTTED = 0x08
+
+    // check if voice combine may occur
+    function may_combine(s) {
+    var	nhd2,
+	s2 = s.ts_next
+
+	if (!s2 || (s2.type != NOTE && s2.type != REST))
+		return false
+	if (s2.v == s.v
+	 || s2.st != s.st
+	 || s2.time != s.time
+	 || s2.dur != s.dur)
+		return false
+	if (s.combine <= 0
+	 && s2.type != s.type)
+		return false
+//	if (s2.a_dd) { //fixme: should check the double decorations
+//		return false
+//	}
+	if (s.a_gch && s2.a_gch)
+		return false
+	if (s.type == REST) {
+		if (s.type == s2.type && s.invis && !s2.invis)
+			return false
+		return true
+	}
+	if (s2.a_ly
+	 || s2.sl1 || s2.sl2
+	 || s2.slur_start || s2.slur_end)
+		return false
+	if (s2.beam_st != s.beam_st
+	 || s2.beam_end != s.beam_end)
+		return false;
+	nhd2 = s2.nhd
+	if (s.combine <= 1
+	 && s.notes[0].pit <= s2.notes[nhd2].pit + 1)
+		return false
+	return true
+    }
+
+    // combine two notes
+    function combine_notes(s, s2) {
+    var	nhd, type, m;
+
+	s.notes = s.notes.concat(s2.notes);
+	s.nhd = nhd = s.notes.length - 1;
+	abc.sort_pitch(s)		// sort the notes by pitch
+
+	if (s.combine >= 3) {		// remove unison heads
+		for (m = nhd; m > 0; m--) {
+			if (s.notes[m].pit == s.notes[m - 1].pit
+			 && s.notes[m].acc == s.notes[m - 1].acc)
+				s.notes.splice(m, 1)
+		}
+		s.nhd = nhd = s.notes.length - 1
+	}
+
+	s.ymx = 3 * (s.notes[nhd].pit - 18) + 4;
+	s.ymn = 3 * (s.notes[0].pit - 18) - 4;
+
+	// force the tie directions
+	type = s.notes[0].ti1
+	if ((type & 0x0f) == SL_AUTO)
+		s.notes[0].ti1 = SL_BELOW | (type & ~SL_DOTTED);
+	type = s.notes[nhd].ti1
+	if ((type & 0x0f) == SL_AUTO)
+		s.notes[nhd].ti1 = SL_ABOVE | (type & ~SL_DOTTED)
+}
+
+// combine 2 voices
+function do_combine(s) {
+	var s2, nhd, nhd2, type
+
+	while (1) {
+		nhd = s.nhd;
+		s2 = s.ts_next;
+		nhd2 = s2.nhd
+		if (s.type != s2.type) {	// if note and rest
+			if (s2.type != REST) {
+				s2 = s;
+				s = s2.ts_next
+			}
+		} else if (s.type == REST) {
+			if (s.invis
+			 && !s2.invis)
+				delete s.invis
+		} else {
+			combine_notes(s, s2)
+		}
+
+		if (s2.a_gch)
+			s.a_gch = s2.a_gch
+		if (s2.a_dd) {
+			if (!s.a_dd)
+				s.a_dd = s2.a_dd
+			else
+				s.a_dd = s.a_dd.concat(s2.a_dd)
+		}
+		abc.unlksym(s2)			// remove the next symbol
+
+		// there may be more voices
+		if (s.in_tuplet || !may_combine(s))
+			break
+	}
+}
+
+    // function called at start of the generation when multi-voices
+    Combine.prototype.comb_v = function() {
+	var s, s2, g, i, r
+
+	for (s = abc.get_tsfirst(); s; s = s.ts_next) {
+		switch (s.type) {
+		case REST:
+			if (s.combine == undefined || s.combine < 0)
+				continue
+			if (may_combine(s))
+				do_combine(s)
+			continue
+		default:
+			continue
+		case NOTE:
+			if (s.combine == undefined || s.combine <= 0)
+				continue
+			break
+		}
+
+		if (!s.beam_st)
+			continue
+		if (s.beam_end) {
+			if (may_combine(s))
+				do_combine(s)
+			continue
+		}
+
+		s2 = s
+		while (1) {
+			if (!may_combine(s2)) {
+				s2 = null
+				break
+			}
+//fixme: may have rests in beam
+			if (s2.beam_end)
+				break
+			do {
+				s2 = s2.next
+			} while (s2.type != NOTE && s2.type != REST)
+		}
+		if (!s2)
+			continue
+		s2 = s
+		while (1) {
+			do_combine(s2)
+//fixme: may have rests in beam
+			if (s2.beam_end)
+				break
+			do {
+				s2 = s2.next
+			} while (s2.type != NOTE && s2.type != REST)
+		}
+	}
+    } // comb_v()
+
+    // set the combine parameter in the current voice
+    Combine.prototype.set_comb = function(a) {
+    var	i,
+	curvoice = abc.get_curvoice()
+
+	for (i = 0; i < a.length; i++) {
+		switch (a[i]) {
+		case "combine=":			// %%voicecombine
+			curvoice.combine = a[i + 1]
+			break
+		}
+	}
+    } // set_comb()
+
+// Combine creation
+
+	// export some functions/variables
+	abc.tosvg('combine', '\
+%%beginjs\n\
+Abc.prototype.get_curvoice = function() { return curvoice }\n\
+Abc.prototype.get_tsfirst = function() { return tsfirst }\n\
+Abc.prototype.set_v_param = set_v_param\n\
+Abc.prototype.sort_pitch = sort_pitch\n\
+Abc.prototype.unlksym = unlksym\n\
+\
+var combine = {\n\
+	new_n: new_note,\n\
+	psc: do_pscom,\n\
+	set_sd: set_stem_dir,\n\
+	set_vp: set_vp\n\
+}\n\
+new_note = function(gr, tp) {\n\
+	var s = combine.new_n(gr, tp)\n\
+	if (s && s.notes && curvoice.combine != undefined)\n\
+		s.combine = curvoice.combine\n\
+	return s\n\
+}\n\
+do_pscom = function(text) {\n\
+	if (text.slice(0, 13) == "voicecombine ")\n\
+		set_v_param("combine", text.split(/[ \t]/)[1])\n\
+	else\n\
+		combine.psc(text)\n\
+}\n\
+set_stem_dir = function() {\n\
+	combine.set_sd();\n\
+	Combine.prototype.comb_v()\n\
+}\n\
+set_vp = function(a) {\n\
+	Combine.prototype.set_comb(a);\n\
+	combine.set_vp(a)\n\
+}\n\
+%%endjs\n\
+')
+
+} // Combine()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// diag-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// diag.js - module to insert guitar chord diagrams
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%diagram" appears in a ABC source.
+//
+// Parameters
+//	%%diagram 1
+
+function Diag(i_abc) {
+    var	abc = i_abc
+
+// function called before tune generation
+Diag.prototype.do_diag = function(voice_tb) {
+    var	s, i, gch, t
+
+	for (s = voice_tb[0].sym; s; s = s.next) {
+		if (!s.a_gch)
+			continue
+		for (i = 0; i < s.a_gch.length; i++) {
+			gch = s.a_gch[i]
+			if (!gch || gch.type != 'g' || gch.capo)
+				continue
+
+			t = gch.otext || gch.text
+
+			// insert the diagram as a decoration
+			abc.deco_cnv(t.split(/[ \t/]/, 1), s, null)
+		}
+	}
+    } // do_diag()
+
+// Diagram creation
+
+	//export some functions/variables
+	abc.tosvg('diag', '\
+%%beginjs\n\
+Abc.prototype.add_glyph = function(k, v) { glyphs[k] = v }\n\
+Abc.prototype.deco_cnv = deco_cnv\n\
+Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
+Abc.prototype.get_top_v = function() { return par_sy.top_voice }\n\
+\
+var diag = {\n\
+	om: output_music,\n\
+	set_fmt: set_format\n\
+}\n\
+output_music = function() {\n\
+	if (cfmt.diag)\n\
+		Diag.prototype.do_diag(voice_tb)\n\
+	diag.om()\n\
+}\n\
+set_format = function(cmd, param, lock) {\n\
+	if (cmd == "diagram") {\n\
+		cfmt.diag = param\n\
+		return\n\
+	}\n\
+	diag.set_fmt(cmd, param, lock)\n\
+}\n\
+\
+style += "\\n.diag {font-family:sansserif;font-size:6px}\
+\\n.frn {font-family:sansserif;font-style:italic;font-size:7px}"\n\
+%%endjs\n\
+\
+%%deco C     3 C     40 0 0\n\
+%%deco Cm    3 Cm    40 0 0\n\
+%%deco C7    3 C7    40 0 0\n\
+%%deco Cm7   3 Cm7   40 0 0\n\
+%%deco Cmaj7 3 Cmaj7 40 0 0\n\
+%%deco Csus4 3 Csus4 40 0 0\n\
+\
+%%deco D     3 D     40 0 0\n\
+%%deco Dm    3 Dm    40 0 0\n\
+%%deco D7    3 D7    40 0 0\n\
+%%deco Dm7   3 Dm7   40 0 0\n\
+%%deco Dmaj7 3 Dmaj7 40 0 0\n\
+%%deco Dsus4 3 Dsus4 40 0 0\n\
+\
+%%deco E     3 E     40 0 0\n\
+%%deco Em    3 Em    40 0 0\n\
+%%deco E7    3 E7    40 0 0\n\
+%%deco Em7   3 Em7   40 0 0\n\
+%%deco Emaj7 3 Emaj7 40 0 0\n\
+%%deco Esus4 3 Esus4 40 0 0\n\
+\
+%%deco F     3 F     40 0 0\n\
+%%deco Fm    3 Fm    40 0 0\n\
+%%deco F7    3 F7    40 0 0\n\
+%%deco Fm7   3 Fm7   40 0 0\n\
+%%deco Fmaj7 3 Fmaj7 40 0 0\n\
+%%deco Fsus4 3 Fsus4 40 0 0\n\
+\
+%%deco F♯     3 F#     40 0 0\n\
+%%deco F♯m    3 F#m    40 0 0\n\
+%%deco F♯7    3 F#7    40 0 0\n\
+%%deco F♯m7   3 F#m7   40 0 0\n\
+%%deco F♯maj7 3 F#maj7 40 0 0\n\
+%%deco F♯sus4 3 F#sus4 40 0 0\n\
+\
+%%deco G     3 G     40 0 0\n\
+%%deco Gm    3 Gm    40 0 0\n\
+%%deco G7    3 G7    40 0 0\n\
+%%deco Gm7   3 Gm7   40 0 0\n\
+%%deco Gmaj7 3 Gmaj7 40 0 0\n\
+%%deco Gsus4 3 Gsus4 40 0 0\n\
+\
+%%deco A     3 A     40 0 0\n\
+%%deco Am    3 Am    40 0 0\n\
+%%deco A7    3 A7    40 0 0\n\
+%%deco Am7   3 Am7   40 0 0\n\
+%%deco Amaj7 3 Amaj7 40 0 0\n\
+%%deco Asus4 3 Asus4 40 0 0\n\
+\
+%%deco B     3 B     40 0 0\n\
+%%deco Bm    3 Bm    40 0 0\n\
+%%deco B7    3 B7    40 0 0\n\
+%%deco Bm7   3 Bm7   40 0 0\n\
+%%deco Bmaj7 3 Bmaj7 40 0 0\n\
+%%deco Bsus4 3 Bsus4 40 0 0\n\
+')
+
+// add the glyphs (converted to SVG from Guido Gonzato PS)
+
+// fingerboard
+abc.add_glyph('fb', '<g id="fb">\n\
+<path class="stroke" stroke-width="0.4" d="\
+M-10 -34h20m0 6h-20\
+m0 6h20m0 6h-20\
+m0 6h20"/>\n\
+<path class="stroke" stroke-width="0.5" d="\
+M-10 -34v24m4 0v-24\
+m4 0v24m4 0v-24\
+m4 0v24m4 0v-24"/>\n\
+</g>\
+');
+
+// fret information
+abc.add_glyph('nut','<path id="nut" class="stroke" stroke-width="1.6" d="\
+M-10.2 -34.5h20.4"/>');
+abc.add_glyph('barre','<path id="barre" class="stroke" stroke-width=".9" d="\
+M-10.2 -31h20.4"/>');
+abc.add_glyph('fr1','<text id="fr1" x="-20" y="-29" class="frn">fr1</text>');
+abc.add_glyph('fr2','<text id="fr2" x="-20" y="-29" class="frn">fr2</text>');
+abc.add_glyph('fr3','<text id="fr3" x="-20" y="-29" class="frn">fr3</text>');
+abc.add_glyph('ddot','<circle id="ddot" class="fill" r="1.5"/>');
+
+// chords
+abc.add_glyph('C', '<g id="C">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-3,4" y="-36" class="diag">321</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Cm', '<g id="Cm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">342</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('C7', '<g id="C7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0,4" y="-36" class="diag">3241</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Cm7', '<g id="Cm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-4,4" y="-36" class="diag">x32</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Cmaj7', '<g id="Cmaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,-4" y="-36" class="diag">x21</text>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Csus4', '<g id="Csus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4" y="-36" class="diag">x34</text>\n\
+<use x="6" y="-13" xlink:href="#ddot"/>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+abc.add_glyph('D', '<g id="D">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4,8" y="-36" class="diag">x132</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Dm', '<g id="Dm">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4,8" y="-36" class="diag">x231</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="10" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('D7', '<g id="D7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4,8" y="-36" class="diag">x312</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Dm7', '<g id="Dm7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,0,4,8" y="-36" class="diag">xx211</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="10" y="-31" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Dmaj7', '<g id="Dmaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,0,4,8" y="-36" class="diag">xx123</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Dsus4', '<g id="Dsus4">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,0,4,8" y="-36" class="diag">xx123</text>\n\
+<use x="10" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+abc.add_glyph('E', '<g id="E">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">231</text>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Em', '<g id="Em">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">23</text>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('E7', '<g id="E7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,0" y="-36" class="diag">21</text>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Em7', '<g id="Em7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">1</text>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Emaj7', '<g id="Emaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">312</text>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Esus4', '<g id="Esus4">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">12</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+abc.add_glyph('F', '<g id="F">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">342</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Fm', '<g id="Fm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">34</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('F7', '<g id="F7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,0" y="-36" class="diag">32</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Fm7', '<g id="Fm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">3</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Fmaj7', '<g id="Fmaj7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">423</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Fsus4', '<g id="Fsus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">34</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+abc.add_glyph('F#', '<g id="F#">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">342</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('F#m', '<g id="F#m">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">34</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('F#7', '<g id="F#7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,0" y="-36" class="diag">32</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('F#m7', '<g id="F#m7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">3</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('F#maj7', '<g id="F#maj7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">423</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('F#sus4', '<g id="F#sus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">34</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+abc.add_glyph('G', '<g id="G">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,8" y="-36" class="diag">234</text>\n\
+<use x="10" y="-19" xlink:href="#ddot"/>\n\
+<use x="-10" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Gm', '<g id="Gm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">34</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('G7', '<g id="G7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,8" y="-36" class="diag">321</text>\n\
+<use x="-10" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="10" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Gm7', '<g id="Gm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">3</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Gmaj7', '<g id="Gmaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,8" y="-36" class="diag">312</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="-10" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Gsus4', '<g id="Gsus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">34</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+abc.add_glyph('A', '<g id="A">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">234</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Am', '<g id="Am">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">231</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('A7', '<g id="A7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,4" y="-36" class="diag">23</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Am7', '<g id="Am7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,4" y="-36" class="diag">21</text>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Amaj7', '<g id="Amaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-4,0,4" y="-36" class="diag">x213</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Asus4', '<g id="Asus4">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4" y="-36" class="diag">x12</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+abc.add_glyph('B', '<g id="B">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">234</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Bm', '<g id="Bm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">341</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('B7', '<g id="B7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,-4,0,8" y="-36" class="diag">x2134</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-31" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Bm7', '<g id="Bm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,8" y="-36" class="diag">x32</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Bmaj7', '<g id="Bmaj7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-4,0,4" y="-36" class="diag">x324</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>\
+');
+abc.add_glyph('Bsus4', '<g id="Bsus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4" y="-36" class="diag">x34</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>\
+');
+
+} //Diag()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// grid-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// grid.js - module to insert a chord grid before or after a tune
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%grid" appears in a ABC source.
+//
+// Parameters
+//	%%grid 1 | -1	(above the tune | below the tune)
+//	%%gridfont font_name size (default: 'serif 16')
+
+function Grid(i_abc) {
+    var	abc = i_abc
+
+// constants from the abc2svg core
+    var	BASE_LEN = 1536,
+	BAR = 0,
+	METER = 6,
+	NOTE = 8,
+	REST = 10,
+	BLOCK = 16
+
+    var	img, font_cl, cls
+
+function get_beat(s) {
+    var	beat = BASE_LEN / 4
+
+	if (!s.a_meter[0] || s.a_meter[0].top[0] == 'C' || !s.a_meter[0].bot)
+		return beat;
+	beat = BASE_LEN / s.a_meter[0].bot[0] |0
+	if (isNaN(beat)) {
+		abc.syntax(1, '** Cannot get the beat')
+		return BASE_LEN / 4
+	}
+	if (s.a_meter[0].bot[0] == 8
+	 && s.a_meter[0].top[0] % 3 == 0)
+		beat = BASE_LEN / 8 * 3
+	return beat
+} // get_beat()
+
+// generate the grid
+function build_grid(chords, bars, font) {
+    var	i, j, nr, line, bar, bar2, chord, cell, w, hr, x0, x, y,
+	wmx = 0,
+	cells = [],
+	nc = chords.length % 6 == 0 ? 6 : 8;	// number of columns
+
+	if (nc > chords.length)
+		nc = chords.length;
+
+	// build the content of the cells
+	nr = 0
+	for (i = 0; i < chords.length; i++) {
+		if (i % nc == 0)
+			nr++;			// number of rows
+		chord = chords[i]
+		if (chord.length == 0) {
+			cell = '%'
+		} else {
+			cell = ''
+			for (j = 0; j < chord.length; j++) {
+				if (chord[j]) {
+					if (j != 0)
+						cell += ' / ';
+					cell += chord[j]
+				} else if (j == 0) {
+					cell += '%'
+				}
+			}
+		}
+		bar = bars[i];
+		if (bar[bar.length - 1] == ':')
+			cell = '  ' + cell
+		bar2 = bars[i + 1]
+		if (bar2 && bar2[0] == ':')
+			cell += '  ';
+		cells.push(cell)
+
+		// and find their max width
+		if (bar[bar.length - 1] == ':')
+			cell += '  '
+		if (bar2 && bar2[0] == ':')
+			cell += '  ';
+		w = abc.strwh(cell)[0]
+		if (w > wmx)
+			wmx = w
+	}
+	if (wmx < 20)
+		wmx = 20;
+	w = wmx * nc
+	if (w > img.width) {
+		nc /= 2;
+		nr *= 2;
+		w /= 2
+	}
+
+	// build the SVG image
+	hr = font.size + 8;		// vert: 4 - cell - 4
+	line = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
+	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
+	color="black" width="' + img.width.toFixed(0) +
+			'px" height="' + (hr * nr + 6).toFixed(0) + 'px"'
+	i = abc.get_cfmt("bgcolor")
+	if (i)
+		line += ' style="background-color: ' + i + '"';
+	line += '>\n'
+
+	if (abc.get_cfmt('fullsvg')) {
+		line += '<style type="text/css">\n\
+.stroke {stroke: currentColor; fill: none}\n\
+.chmid {text-anchor:middle}\n\
+.' + font_cl + ' {' + style_font(font.name + '.' + font.size) +  '}\n\
+</style>\n'
+	}
+
+	// draw the lines
+	line += '<path class="stroke" d="\n';
+	x0 = (img.width - w) / 2;
+	y = 1
+	for (j = 0; j <= nr; j++) {
+		line += 'M' + x0.toFixed(2) + ' ' + y.toFixed(2) +
+			'h' + w.toFixed(2)+ '\n';
+		y += hr
+	}
+	x = x0
+	for (i = 0; i <= nc; i++) {
+		line += 'M' + x.toFixed(2) + ' 1v' + (hr * nr).toFixed(2) + '\n';
+		x += wmx
+	}
+	line += '"/>\n';
+
+	// insert the chords
+	y = -1 - hr * .2
+	for (i = 0; i < cells.length; i++) {
+		if (i % nc == 0) {
+			y += hr;			// new row
+			x = x0 + wmx / 2
+		}
+		line += '<text class="' + cls + '" x="' +
+			x.toFixed(2) + '" y="' + y.toFixed(2) + '">' +
+			cells[i] + '</text>\n';
+		x += wmx
+	}
+
+	// show the repeat signs
+	y = -1 - hr * .2;
+	x = x0
+	for (i = 0; i < bars.length; i++) {
+		bar = bars[i]
+		if (bar[0] == ':')
+			line += '<text class="' + cls + '" x="' +
+				(x - 5).toFixed(2) +
+				'" y="' + y.toFixed(2) +
+				'" style="font-weight:bold;font-size:' +
+			(font.size + 2).toFixed(2) + '">:|</text>\n'
+		if (i % nc == 0) {
+			y += hr;			// new row
+			x = x0
+		}
+		if (bar[bar.length - 1] == ':')
+			line += '<text class="' + cls + '" x="' +
+				(x + 5).toFixed(2) +
+				'" y="' + y.toFixed(2) +
+				'" style="font-weight:bold;font-size:' +
+			(font.size + 2).toFixed(2) + '">|:</text>\n'
+		x += wmx
+	}
+
+	return line + '</svg>'
+} // build_grid()
+
+// function called before tune generation
+Grid.prototype.do_grid = function(tsfirst, voice_tb) {
+    var	s, beat, cur_beat, i, beat_i, p_voice, n, font,
+	bars = [],
+	chords = [],
+	chord = []
+
+	img = abc.get_img();
+
+	// get the beat
+	beat = get_beat(voice_tb[0].meter);
+
+	// scan the tune
+	cur_beat = beat_i = n = 0;
+	bars.push('|')
+	for (s = voice_tb[0].sym; s; s = s.next) {
+		while (s.time > cur_beat) {
+			beat_i++;
+			cur_beat += beat
+		}
+		switch (s.type) {
+		case NOTE:
+		case REST:
+			if (s.a_gch) {		// search a chord symbol
+				for (i = 0; i < s.a_gch.length; i++) {
+					if (s.a_gch[i].type == 'g') {
+						if (!chord[beat_i]) {
+							chord[beat_i] = s.a_gch[i].text;
+							n++
+						}
+						break
+					}
+				}
+			}
+			break
+		case BAR:
+			if (s.time < beat) {		// if anacrusis
+				bars[0] = s.bar_type;
+//				chord = [];
+				beat_i = 0;
+				cur_beat = s.time	// re-synchronize
+				break
+			}
+			if (s.time != cur_beat)		// if out of time
+				break
+			chords.push(chord);
+			bars.push(s.bar_type);
+			chord = [];
+			beat_i = 0
+			break
+		case METER:
+			beat = get_beat(s)
+			break
+		}
+	}
+	if (n == 0)				// no chord in this tune
+		return
+
+	if (chord.length != 0) {
+		bars.push('')
+		chords.push(chord)
+	}
+
+	// set the text style
+	font = abc.get_font('grid');
+	font_cl = abc.font_class(font)
+	cls = font_cl + ' chmid';
+	abc.set_font('grid');		// (for strwh())
+
+	// create the grid
+	p_voice = voice_tb[abc.get_top_v()]
+	s = {
+		type: BLOCK,
+		subtype: 'ml',
+		dur: 0,
+		time: 0,
+		p_v: p_voice,
+		v: p_voice.v,
+		text: build_grid(chords, bars, font)
+	}
+
+	// and insert it in the tune
+	if (abc.get_cfmt('grid') < 0) {	// below
+		for (var s2 = tsfirst; s2.ts_next; s2 = s2.ts_next)
+			;
+		s.time = s2.time;
+		s.prev = p_voice.last_sym;
+		s.ts_prev = s2;
+		p_voice.last_sym.next = s;
+		s2.ts_next = s
+	} else {			// above
+		s.time = 0;
+		s.next = p_voice.sym;
+		s.ts_next = tsfirst;
+		tsfirst.ts_prev = s;
+		tsfirst = s;
+		abc.set_tsfirst(s);
+		p_voice.sym.prev = s;
+		p_voice.sym = s
+	}
+} // do_grid()
+
+// Grid creation
+
+	//export some functions/variables
+	abc.tosvg('grid', '\
+%%beginjs\n\
+Abc.prototype.font_class = font_class;\n\
+Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
+Abc.prototype.get_font = get_font;\n\
+Abc.prototype.get_top_v = function() { return par_sy.top_voice }\n\
+Abc.prototype.get_img = function() { return img }\n\
+Abc.prototype.set_font = set_font;\n\
+Abc.prototype.set_tsfirst = function(s) { tsfirst = s }\n\
+Abc.prototype.strwh = strwh;\n\
+Abc.prototype.syntax = syntax;\n\
+\
+var grid = {\n\
+	om: output_music,\n\
+	set_fmt: set_format\n\
+}\n\
+output_music = function() {\n\
+	if (cfmt.grid)\n\
+		Grid.prototype.do_grid(tsfirst, voice_tb)\n\
+	grid.om()\n\
+}\n\
+set_format = function(cmd, param, lock) {\n\
+	if (cmd == "grid") {\n\
+		cfmt.grid = param\n\
+		return\n\
+	}\n\
+	grid.set_fmt(cmd, param, lock)\n\
+}\n\
+\
+style += "\\\n.chmid {text-anchor:middle}";\n\
+param_set_font("gridfont", "serif 16")\n\
+%%endjs\n\
+')
+
+} //Grid()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// MIDI-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// MIDI.js - module to handle the %%MIDI parameters
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%MIDI" appears in a ABC source.
+//
+// Parameters (see abcMIDI for details)
+//	%%MIDI channel n
+//	%%MIDI program n
+//	%%MIDI control k v
+//	%%MIDI drummap ABC_note MIDI_pitch
+
+function MIDI(i_abc) {
+    var	abc = i_abc,
+	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
+	accs = new Int8Array([0, 1, 0, -1, 0, 0, 1, 0, -1, 0, -1, 0])
+
+    // convert a MIDI pitch to a note
+    function tonote(p) {
+    var	pit = Number(p)
+	if (isNaN(pit))
+		return
+	p = ((pit / 12) | 0) * 7 - 19;	// octave
+	pit = pit % 12;			// in octave
+	p += pits[pit]
+	note = {
+		pit: p,
+		apit: p,
+	}
+	if (accs[pit])
+		note.acc = accs[pit]
+	return note
+    }
+
+    // normalize a note for mapping
+    function norm(p) {
+    var	a = p.match(/^([_^]*)([A-Ga-g])([,']*)$/)	// '
+	if (!a) {
+		abc.syntax()
+		return
+	}
+	if (p.match(/[A-Z]/)) {
+		p = p.toLowerCase();
+		if (p.indexOf("'") > 0)
+			p = p.replace("'", '')
+		else
+			p += ','
+	}
+	return p
+    }
+
+    // parse %%MIDI commands
+    MIDI.prototype.do_midi = function(parm) {
+	var	n, v,
+		a = parm.split(/\s+/)
+
+	switch (a[1]) {
+	case "channel":
+		if (a[2] != "10")
+			break
+		abc.set_v_param("midictl", "0 1") // channel 10 is bank 128 program 0
+		break
+	case "drummap":
+		if (abc.get_cfmt("sound") != "play")
+			break
+//fixme: should have a 'MIDIdrum' per voice?
+		n = norm(a[2]);
+		v = tonote(a[3]);
+		if (!n || !v) {
+			abc.syntax(1, abc.err_bad_val_s, "%%MIDI drummap")
+			break
+		}
+		if (!abc.maps.MIDIdrum)
+			abc.maps.MIDIdrum = {}
+		abc.maps.MIDIdrum[n] = [null, v];
+		abc.set_v_param("mididrum", "MIDIdrum")
+		break
+	case "program":
+		if (a[3] != undefined)	// the channel is unused
+			v = a[3]
+		else
+			v = a[2];
+		v = parseInt(v)
+		if (isNaN(v) || v < 0 || v > 127) {
+			abc.syntax(1, "Bad program in %%MIDI")
+			return
+		}
+		abc.set_v_param("instr", v)
+		break
+	case "control":
+		n = parseInt(a[2])
+		if (isNaN(n) || n < 0 || n > 127) {
+			abc.syntax(1, "Bad controller number in %%MIDI")
+			return
+		}
+		v = parseInt(a[3])
+		if (isNaN(v) || v < 0 || v > 127) {
+			abc.syntax(1, "Bad controller value in %%MIDI")
+			return
+		}
+		abc.set_v_param("midictl", a[2] + ' ' + a[3])
+		break
+	}
+    } // do_midi()
+
+    // set the MIDI parameters in the current voice
+    MIDI.prototype.set_midi = function(a) {
+    var	i, item,
+	curvoice = abc.get_curvoice()
+
+	for (i = 0; i < a.length; i++) {
+		switch (a[i]) {
+		case "instr=":			// %%MIDI program
+			curvoice.instr = a[i + 1]
+			break
+		case "midictl=":		// %%MIDI control
+			if (!curvoice.midictl)
+				curvoice.midictl = {}
+			item = a[i + 1].split(' ');
+			curvoice.midictl[item[0]] = Number(item[1])
+			break
+		case "mididrum=":		// %%MIDI drummap note midipitch
+			if (!curvoice.map)
+				curvoice.map = {}
+			curvoice.map = a[i + 1]
+			break
+		}
+	}
+    } // set_midi()
+
+// MIDI creation
+
+	//export some functions/variables
+	abc.tosvg('MIDI', '\
+%%beginjs\n\
+Abc.prototype.err_bad_val_s = err_bad_val_s\n\
+Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
+Abc.prototype.get_curvoice = function() { return curvoice }\n\
+Abc.prototype.maps = maps\n\
+Abc.prototype.set_v_param = set_v_param\n\
+Abc.prototype.syntax = syntax\n\
+\
+var midi = {\n\
+	psc: do_pscom,\n\
+	svp: set_vp\n\
+}\n\
+do_pscom = function(text) {\n\
+	if (text.slice(0, 5) == "MIDI ")\n\
+		MIDI.prototype.do_midi(text)\n\
+	else\n\
+		midi.psc(text)\n\
+}\n\
+set_vp = function(a) {\n\
+	MIDI.prototype.set_midi(a);\n\
+	midi.svp(a)\n\
+}\n\
+%%endjs\n\
+')
+
+} //MIDI()
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// perc-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// perc.js - module to handle %%percmap
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%percmap" appears in a ABC source.
+//
+// Parameters (from W. Vree)
+//	%%percmap ABC_note percussion [note_head]
+// The percussion may be a number (MIDI percussion number range 35..81),
+// a ABC note or a possibly abbreviated percussion name.
+// See https://wim.vree.org/js2/tabDrumDoc.html for more information.
+
+function Perc(i_abc) {
+    var	abc = i_abc,
+	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
+	accs = new Int8Array([0, 1, 0, -1, 0, 0, 1, 0, -1, 0, -1, 0])
+
+// GM drum
+// 35 B,,,	Acoustic Bass Drum	a-b-d
+// 36 C,,	Bass Drum 1		b-d-1
+// 37 ^C,,	Side Stick		s-s
+// 38 D,,	Acoustic Snare		a-s
+// 39 ^D,,	Hand Clap		h-c
+// 40 E,,	Electric Snare		e-s
+// 41 F,,	Low Floor Tom		l-f-t
+// 42 ^F,,	Closed Hi Hat		c-h-h
+// 43 G,,	High Floor Tom		h-f-t
+// 44 ^G,,	Pedal Hi-Hat		p-h-h
+// 45 A,,	Low Tom			l-to
+// 46 ^A,,	Open Hi-Hat		o-h-h
+// 47 B,,	Low-Mid Tom		l-m-t
+// 48 C,	Hi Mid Tom		h-m-t
+// 49 ^C,	Crash Cymbal 1		c-c-1
+// 50 D,	High Tom		h-to
+// 51 ^D,	Ride Cymbal 1		r-c-1
+// 52 E,	Chinese Cymbal		c-c
+// 53 F,	Ride Bell		r-b
+// 54 ^F,	Tambourine		t
+// 55 G,	Splash Cymbal		s-c
+// 56 ^G,	Cowbell			co
+// 57 A,	Crash Cymbal 2		c-c-2
+// 58 ^A,	Vibraslap		v
+// 59 B,	Ride Cymbal 2		r-c-2
+// 60 C		Hi Bongo		h-b
+// 61 ^C	Low Bongo		l-b
+// 62 D		Mute Hi Conga		m-h-c
+// 63 ^D	Open Hi Conga		o-h-c
+// 64 E		Low Conga		l-c
+// 65 F		High Timbale		h-ti
+// 66 ^F	Low Timbale		l-ti
+// 67 G		High Agogo		h-a
+// 68 ^G	Low Agogo		l-a
+// 69 A		Cabasa			ca
+// 70 ^A	Maracas			m
+// 71 B		Short Whistle		s-w
+// 72 c		Long Whistle		l-w
+// 73 ^c	Short Guiro		s-g
+// 74 d		Long Guiro		l-g
+// 75 ^d	Claves			cl
+// 76 e		Hi Wood Block		h-w-b
+// 77 f		Low Wood Block		l-w-b
+// 78 ^f	Mute Cuica		m-c
+// 79 g		Open Cuica		o-c
+// 80 ^g	Mute Triangle		m-t
+// 81 a		Open Triangle		o-t
+
+// percussion reduced names (alphabetic order)
+var prn = {
+	"a-b-d": 35,
+	"a-s":   38,
+	"b-d-1": 36,
+	"ca":    69,
+	"cl":    75,
+	"co":    56,
+	"c-c":   52,
+	"c-c-1": 49,
+	"c-c-2": 57,
+	"c-h-h": 42,
+	"e-s":   40,
+	"h-a":   67,
+	"h-b":   60,
+	"h-c":   39,
+	"h-f-t": 43,
+	"h-m-t": 48,
+	"h-ti":  65,
+	"h-to":  50,
+	"h-w-b": 76,
+	"l-a":   68,
+	"l-b":   61,
+	"l-c":   64,
+	"l-f-t": 41,
+	"l-g":   74,
+	"l-m-t": 47,
+	"l-ti":  66,
+	"l-to":  45,
+	"l-w":   72,
+	"l-w-b": 77,
+	"m":     70,
+	"m-c":   78,
+	"m-h-c": 62,
+	"m-t":   80,
+	"o-c":   79,
+	"o-h-c": 63,
+	"o-h-h": 46,
+	"o-t":   81,
+	"p-h-h": 44,
+	"r-b":   53,
+	"r-c-1": 51,
+	"r-c-2": 59,
+	"s-c":   55,
+	"s-g":   73,
+	"s-s":   37,
+	"s-w":   71,
+	"t":     54,
+	"v":     58
+}
+
+    // convert a drum instrument to a note
+    function tonote(p) {
+    var	i, j, s,
+	pit = Number(p)
+
+	if (isNaN(pit)) {
+		s = p.match(/^([_^]*)([A-Ga-g])([,']*)$/)	// '
+		if (s) {				// note name
+			i = "CDEFGABcdefgab".indexOf(s[2]) + 16
+			switch(s[3]) {
+			case "'":
+				i += 7 * s[3].length
+				break
+			case ',':
+				i -= 7 * s[3].length
+				break
+			}
+			note = {
+				pit: i,
+				apit: i
+			}
+			switch (s[1]) {
+			case '^': note.acc = 1; break
+			case '_': note.acc = -1; break
+			}
+			return note
+		}
+
+		// drum instrument name
+		p = p.toLowerCase(p);
+		s = p[0];		// get the 1st letters after '-'
+		i = 0
+		while (1) {
+			j = p.indexOf('-', i)
+			if (j < 0)
+				break
+			i = j + 1;
+			s += '-' + p[i]
+		}
+		pit = prn[s]
+
+		// solve some specific cases
+		if (!pit) {
+			switch (p[0]) {
+			case 'c':
+				switch (p[1]) {
+				case 'a': pit = prn.ca; break
+				case 'l': pit = prn.cl; break
+				case 'o': pit = prn.co; break
+				}
+				break
+			case 'h':
+			case 'l':
+				i = p.indexOf('-')
+				if (p[i + 1] != 't')
+					break
+				switch (p[1]) {
+				case 'i':
+				case 'o':
+					pit = prn[s + p[1]]
+					break
+				}
+				break
+			}
+		}
+	}
+	if (!pit)
+		return
+
+	p = ((pit / 12) | 0) * 7 - 19;	// octave
+	pit = pit % 12;			// in octave
+	p += pits[pit];
+	note = {
+		pit: p,
+		apit: p
+	}
+	if (accs[pit])
+		note.acc = accs[pit]
+	return note
+    }
+
+    // normalize a note for mapping
+    function norm(p) {
+    var	a = p.match(/^([_^]*)([A-Ga-g])([,']*)$/)	// '
+	if (!a) {
+		abc.syntax()
+		return
+	}
+	if (p.match(/[A-Z]/)) {
+		p = p.toLowerCase();
+		if (p.indexOf("'") > 0)
+			p = p.replace("'", '')
+		else
+			p += ','
+	}
+	return p
+    }
+
+    // parse %%percmap
+    Perc.prototype.do_perc = function(parm) {
+    var	n, v,
+	a = parm.split(/\s+/);
+
+	n = norm(a[1])
+	if (!n) {
+		abc.syntax(1, abc.err_bad_val_s, "%%percmap")
+		return
+	}
+	if (abc.get_cfmt("sound") != "play") {		// !play
+		if (!a[3])
+			return
+		if (!abc.maps.MIDIdrum)
+			abc.maps.MIDIdrum = {}
+		v = tonote(n)
+		delete v.acc
+		abc.maps.MIDIdrum[n] = [[a[3]], v]
+	} else {					// play
+		v = tonote(a[2])
+		if (!v) {
+			abc.syntax(1, abc.err_bad_val_s, "%%percmap")
+			return
+		}
+		if (!abc.maps.MIDIdrum)
+			abc.maps.MIDIdrum = {}
+		abc.maps.MIDIdrum[n] = [null, v]
+	}
+	abc.set_v_param("perc", "MIDIdrum")
+    } // do_perc()
+
+    // set the MIDI parameters in the current voice
+    Perc.prototype.set_perc = function(a) {
+    var	i, item,
+	curvoice = abc.get_curvoice()
+
+	for (i = 0; i < a.length; i++) {
+		switch (a[i]) {
+		case "perc=":				// %%percmap
+			if (!curvoice.map)
+				curvoice.map = {}
+			curvoice.map = a[i + 1];
+			if (!curvoice.midictl)
+				curvoice.midictl = {}
+			curvoice.midictl[0] = 1		// bank 128
+			break
+		}
+	}
+    } // set_perc()
+
+// Perc creation
+
+	//export some functions/variables
+	abc.tosvg('perc', '\
+%%beginjs\n\
+Abc.prototype.err_bad_val_s = err_bad_val_s\n\
+Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
+Abc.prototype.get_curvoice = function() { return curvoice }\n\
+Abc.prototype.maps = maps\n\
+Abc.prototype.set_v_param = set_v_param\n\
+Abc.prototype.syntax = syntax\n\
+\
+var perc = {\n\
+	psc: do_pscom,\n\
+	svp: set_vp\n\
+}\n\
+do_pscom = function(text) {\n\
+	if (text.slice(0, 8) == "percmap ")\n\
+		Perc.prototype.do_perc(text)\n\
+	else\n\
+		perc.psc(text)\n\
+}\n\
+set_vp = function(a) {\n\
+	Perc.prototype.set_perc(a);\n\
+	perc.svp(a)\n\
+}\n\
+%%endjs\n\
+')
+
+} // Perc()
