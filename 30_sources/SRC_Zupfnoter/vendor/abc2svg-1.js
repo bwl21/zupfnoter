@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-04-06 18:57:20 +0200
+// compiled for Zupfnoter 2018-04-08 12:56:10 +0200
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.16.3-1-g3ab9b22",vdate:"2018-04-06"}
+var abc2svg={version:"1.16.4",vdate:"2018-04-08"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2018 Jean-Francois Moine
@@ -7591,9 +7591,7 @@ function tosvg(in_fname,		// file name
 			glovar_sav = clone(glovar);
 			maps_sav = maps;
 			mac_sav = clone(mac);
-			maci_sav = new Int8Array(128)
-			for (i = 0; i < 128; i++)
-				maci_sav[i] = maci[i];
+			maci_sav = new Int8Array(maci);
 			info.X = text;
 			parse.state = 1			// tune header
 			continue
@@ -11178,12 +11176,10 @@ function set_overlap() {
 		/* treat the stem on two staves with different directions */
 		if (s.xstem
 		 && s.ts_prev.stem < 0) {
-			s2 = s.ts_prev
-			for (m = 0; m <= s2.nhd; m++) {
-				s2.notes[m].shhd += 3.5 * 2;	// stem_xoff
-				s2.notes[m].shac -= 3.5 * 2
+			for (m = 0; m <= s.nhd; m++) {
+				s.notes[m].shhd -= 7;		// stem_xoff
+				s.notes[m].shac += 16
 			}
-			s2.xmx += 3.5 * 2
 		}
 
 		/* search the next note at the same time on the same staff */
@@ -20220,14 +20216,12 @@ function draw_gchord(s, gchy_min, gchy_max) {
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
 
-    var	psdeco = function(f, x, y, de) { return false },
-	psxygl = function(x, y, gl) { return false }
+function psdeco() { return false }
+function psxygl() { return false }
 
 // initialize
 	font_init();
 	init_tune()
-	for (var i = 0; i < 128; i++)
-		maci[i] = 0
 
 	if (modules)
 		modules.init(this)
@@ -20359,7 +20353,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// json-1.js for abc2svg-1.16.4 (2018-04-08)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20507,7 +20501,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// setmidi-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// setmidi-1.js for abc2svg-1.16.4 (2018-04-08)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20707,7 +20701,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// play-1.js for abc2svg-1.16.4 (2018-04-08)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2018 Jean-Francois Moine
@@ -22541,7 +22535,7 @@ function Audio5(i_conf) {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// ambitus-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// ambitus-1.js for abc2svg-1.16.4 (2018-04-08)
 // ambitus.js - module to insert an ambitus at start of a voice
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22655,7 +22649,7 @@ set_width = function(s) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// break-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// break-1.js for abc2svg-1.16.4 (2018-04-08)
 // break.js - module to handle the %%break command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22782,7 +22776,7 @@ set_bar_num = function() {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// capo-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// capo-1.js for abc2svg-1.16.4 (2018-04-08)
 // capo.js - module to add a capo chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22867,7 +22861,7 @@ set_format = function(cmd, param, lock) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// clip-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// clip-1.js for abc2svg-1.16.4 (2018-04-08)
 // clip.js - module to handle the %%clip command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23089,7 +23083,7 @@ set_bar_num = function() {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// combine-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// combine-1.js for abc2svg-1.16.4 (2018-04-08)
 // combine.js - module to add a combine chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23329,7 +23323,7 @@ set_vp = function(a) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// diag-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// diag-1.js for abc2svg-1.16.4 (2018-04-08)
 // diag.js - module to insert guitar chord diagrams
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23918,7 +23912,7 @@ abc.add_glyph('Bsus4', '<g id="Bsus4">\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// grid-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// grid-1.js for abc2svg-1.16.4 (2018-04-08)
 // grid.js - module to insert a chord grid before or after a tune
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24232,7 +24226,7 @@ param_set_font("gridfont", "serif 16")\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// MIDI-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// MIDI-1.js for abc2svg-1.16.4 (2018-04-08)
 // MIDI.js - module to handle the %%MIDI parameters
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24396,7 +24390,7 @@ set_vp = function(a) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// perc-1.js for abc2svg-1.16.3-1-g3ab9b22 (2018-04-06)
+// perc-1.js for abc2svg-1.16.4 (2018-04-08)
 // perc.js - module to handle %%percmap
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+

@@ -40,20 +40,8 @@ task :updateLocales do
   end
 end
 
-desc "Update abc2svg from Jean-Francois' website"
-task :updateAbc2svg do
-  abc2svg_file = "abc2svg-1.js"
-  sources      = [abc2svg_file, "json-1.js", "setmidi-1.js", "MIDI-1.js"]
-  abc2svg_js   = Net::HTTP.get(URI("http://moinejf.free.fr/js/#{abc2svg_file}"))
-  File.open("#{VENDORFOLDER}/#{abc2svg_file}", "w") do |f|
-    sources.each do |s|
-      f.puts Net::HTTP.get(URI("http://moinejf.free.fr/js/#{s}"))
-    end
-  end
-end
-
 desc "Update abc2svg from git clone"
-task :updateAbc2svgDev do
+task :updateAbc2svg do
   abc2svgrepo = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_file = "abc2svg-1.js"
   sources      = [abc2svg_file, "json-1.js", "setmidi-1.js", "play-1.js"]
@@ -82,7 +70,7 @@ task :updateAbc2svgDev do
 
 end
 
-desc "Build our app to #{ZUPFNOTER_JS}"
+desc "Build zupfnoter to #{ZUPFNOTER_JS}"
 task :build => [:buildConfigDoc, :updateLocales] do
   git_describe
   #env = Sprockets::Environment.new
@@ -146,7 +134,7 @@ task :deploy => [:build] do
 
   # prepare all requested folders
   # todo:this is not dry - see buildDesktop
-  ["public/icons", "public/demos", "public/locale", "public/soundfont/FluidR3_GM",
+  ["public/icons", "public/demos", "public/locale", "public/soundfont/zupfnoter",
    "vendor/ace", "vendor/ace/snippets", "vendor/w2ui", "vendor/w2ui/dist",
    "vendor/font-awesome/css", "vendor/font-awesome/fonts",
   ].each do |d|
@@ -181,8 +169,8 @@ task :deploy => [:build] do
     cp f, "#{OUTFOLDER}/webserver/public/#{File.basename(f)}"
   end
 
-  Dir["../public/soundfont/FluidR3_GM/*"].each do |f|
-    cp f, "#{OUTFOLDER}/webserver/public/soundfont/FluidR3_GM/#{File.basename(f)}"
+  Dir["../public/soundfont/zupfnoter/*"].each do |f|
+    cp f, "#{OUTFOLDER}/webserver/public/soundfont/zupfnoter/#{File.basename(f)}"
   end
 
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"

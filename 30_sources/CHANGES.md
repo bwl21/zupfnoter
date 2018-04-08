@@ -20,6 +20,7 @@
 * fix handling of fingerprint with abc2svg 1.15.5 #195
 * vertaal is no longer limited by :|[ #192
 * reduce size of selection area to avoid overlap with barnumber etc #197
+* improved player #210
   
 ## enhancement
 
@@ -57,6 +58,7 @@
 * show notes in the current selection for harmonization work-in-progress #190
 * heuristical detection of annotation collisions #200
 * support for illustrations #198
+* add an "Extras" Menu #71
 
 # Backwards compatibility issues
 
