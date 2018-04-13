@@ -5,9 +5,9 @@
 
 * print preview no longer clears unsave indicator #176
 * update to abc2svg 1.14
-  * crash when bad value in transpose
-  * bad pitches after ties and repeat
-  * the accidentals must be reset on a measure bar
+    * crash when bad value in transpose
+    * bad pitches after ties and repeat
+    * the accidentals must be reset on a measure bar
 * improved fermata symbol in pdf #178
 * crash when config references a non existing voice #179
 * improved localization #182
@@ -60,7 +60,7 @@
 * support for illustrations #198
 * add an "Extras" Menu #71
 
-# Backwards compatibility issues
+## Backwards compatibility issues
 
 * it might be that you need to rework manual positioning of barnumbers/countnotes #199
 

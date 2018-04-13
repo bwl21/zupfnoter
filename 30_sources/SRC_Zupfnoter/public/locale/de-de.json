@@ -176,7 +176,7 @@
     "beforeColonN": "beforeColonN",
     "bold": "fettdruck",
     "bottomup": "Spiel aufwärts",
-    "BUG: error while initializing Zupfnoter Controller": "**--BUG: Fehler beim initialisieren. Bitte informiere Zupfpnoter-Entwiclung",
+    "BUG: error while initializing Zupfnoter Controller": "BUG: Fehler beim initialisieren. Bitte informiere Zupfpnoter-Entwicklung",
     "CAUTION: your abc-code is vulnerable !!! removed beginjs / endjs": "ACHTUNG:: dein ABC-Code enthält ggf. Schadcode. beginjs / endjs entfernt",
     "c_jumplines": "Sprunglinien",
     "Choose extract": "Auszug wählen",

@@ -6838,50 +6838,206 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \cleardoublepage
 
-\section{Änderungshistorie von
-Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
+\subsection{v 1.8}\label{v-1.8}
 
-\subsection{v 1.8 work in progress}\label{v-1.8-work-in-progress}
+\subsection{Fehlerbehebungen}\label{fehlerbehebungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Druckvorschau löscht nicht mehr die Nicht-Speicherungsanzeige \#176
+\item
+  Update auf abc2svg 1.14
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Absturz bei fehlerhafter Transponierung
+  \item
+    fehlerhafte Tonhöhen bei überbundenen Noten in Wiederholung
+  \item
+    Vorzeichen nicht korrekt gelöscht am Taktende
+  \end{itemize}
+\item
+  verbessertes Fermatensymbol in pdf \#178
+\item
+  Absturz, wenn die Konfiguration auf eine nicht vorhandene Stimme
+  verweist \#179
+\item
+  verbesserte Lokalisierung \#182
+\item
+  Fehlerfenster hat jetzt eine ok-Taste \#183
+\item
+  verbesserte Meldung ``kein ABC gefunden'' \#184
+\item
+  Verbesserte Fehlerberichterstattung im Kontext der Dropbox \#185
+\item
+  Absturz bei fehlerhaftem K-Header \#172
+\item
+  Verbesserung der Importe von Xml mit nicht spielbaren Teilen \#187
+\item
+  fixed ``blues with accidentals'' \#188
+\item
+  Korrektur der Behandlung von Fingerabdrücken mit abc2svg 1.15.5 \#195
+\item
+  vertaal ist nicht mehr begrenzt durch :\textbar{}{[} \#192
+\item
+  Größe des Auswahlbereichs verkleinern, um Überschneidungen mit
+  Barnummer etc. zu vermeiden \#197
+\item
+  verbesserter Spieler \#210
+\end{itemize}
+
+\subsection{Erweiterungen}\label{erweiterungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  linear arbeitenden packer \#194
+\item
+  Menü zum Importieren von der lokalen Platte \#177\\
+\item
+  Unterstützung für 25saitige Bassharfe \#180
+\item
+  Angabe =Dauer am Takt wird entfernt ``M:3/4 4/4 4/4 =3/4'' \#181
+\item
+  Unterstützung bei der Arbeit mit Dateivorlagen \#71
+\item
+  Kein initiales Rendern nach einem Absturz in der vorherigen Sitzung
+  \#103
+\item
+  anderer Spieler, mit gesampelten Sounds \#126
+\item
+  der neue Spieler kann auch mit Wiederholungen und Varianten spielen
+  \#126
+\item
+  Auswahl (rot) und gespielte Noten (blau) unterschiedlich hervorgehoben
+  \#126
+\item
+  Verbessertes Umschalten der Wiedergabetaste \#126
+\item
+  Widergabegeschwindigkeit einstellbar \#126
+\item
+  umgestaltetes Layout-Formular \#189
+\item
+  Warnung bei nicht unterstütztem Browser \#186
+\item
+  BWC: Layout von Taktnummern und Zählmarken verbessert \#199
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Taktnummern weiter weg von der Note
+  \item
+    neue Algorithmus berücksichtigt den Verlauf der Flusslinie
+  \end{itemize}
+\item
+  Name einiger Layout-Schnelleinstellungen geändert \#196
+\item
+  Selektion auf alle Stimmen erweiterbar, um Takte im gesamten Stück zu
+  löschen/einzufügen. \#202
+\item
+  Symbolleiste im linken Bereich neu angeordnet \#202
+\item
+  Unterstützung der Variation innerhalb des Taktes ohne Taktstrich \#204
+\item
+  Das Config-Formular zeigt nun an, ob es spezifisch für eine bestimmten
+  Auszug ist \#189
+\item
+  Unterstützung von Undo/Redo für Config \#201
+\item
+  verbesserte Shortcuts (z.B. cmd-L zum Umschalten des Vollbilds, cmd-0
+  für Auszug 0)
+\end{itemize}
+
+\subsection{Experimentelles}\label{experimentelles}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  weitere diatonische Instrumente (z.B. OKON-Harfe) \#196
+\item
+  Layout von unten nach oben \#196
+\item
+  Notendarstellung mit Fähnchen \#196
+\item
+  Noten in der aktuellen Auswahl zur Harmonisierung anzeigen \#190
+\item
+  heuristische Erkennung von Überschneidungen von Anmerkungen \#200
+\item
+  Unterstützung für Illustrationen \#198
+\item
+  Menü ``Extras'' \#71
+\end{itemize}
+
+\subsection{Kompatibilität}\label{kompatibilituxe4t}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  es kann sein, dass manuelle Positionierung von notenbeozgenen
+  Elementen überarbeitet werden muss. \#199
+\end{itemize}
+
+\subsection{v 1.7.1}\label{v-1.7.1}
 
 \subsubsection{fix}\label{fix}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  print preview no longer clears unsave indicator \#176
-\item
-  update to abc2svg 1.14
-\item
-  crash when bad value in transpose
-\item
-  bad pitches after ties and repeat
-\item
-  the accidentals must be reset on a measure bar
-\item
   improved fermata symbol in pdf \#178
 \item
-  crash when config references a non existing voice \#179
+  turnoff flowconf edit for pdf. This avoids noise around very short
+  vertical flowlines \#167
 \item
-  improved localization \#182
+  print preview no longer clears unsaved indicator \#176
+\end{itemize}
+
+\subsection{v 1.7}\label{v-1.7}
+
+\subsubsection{fix}\label{fix-1}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  Error window now has an ok button \#183
+  tuplet lines are now correct in pdf (\#139)
 \item
-  improve Message ``no ABC found'' \#184
+  no longer have unexpected subflowlines to unisons (\#140)
 \item
-  Improve error reporting in context of dropbox \#185
+  fixed size of smaall notes (\#143)
 \item
-  no longer crash with malformed K \#172
+  player also plays until end of tied notes (\#147)
 \item
-  improve imports of xml with non playable parts \#187
+  decorations now also work on rests (\#127)
 \item
-  fixed ``blues with accidentals'' \#188
+  shift now also works on unisons (\#107)
 \item
-  fix handling of fingerprint with abc2svg 1.15.5 \#195
+  abc2svg settings no longer necessary in tunes (removed from Template)
+  (\#71)
 \item
-  vertaal is no longer limited by :\textbar{}{[} \#192
+  BWC Default for ``filenamepart'' is now as it was in 1.5 (\#155)
 \item
-  reduce size of selection area to avoid overlap with barnumber etc
-  \#197
+  Config form is refreshed after loading another song (\#156)
+\item
+  printer offset is no longer broken if user enters only one value
+  (\#157)
+\item
+  Dropbox-Path can now also have digits (\#162)
+\item
+  Printer window show pdf on Chrome 60 (\#160)
+\item
+  now invisible rests are supressed even on flowline (\#166)
+\item
+  now handle multi measure rests (\#166)
+\item
+  fix predefined annotations vt and vr
+\item
+  BWC: move Tuplet configuration to notebounds (\#168)
+\item
+  Multiple notebound annotations can now be dragged individually (\#170)
+\item
+  BWC: no longer show (Original in ) in case of transpositions (\#174)
 \end{itemize}
 
 \subsubsection{enhancement}\label{enhancement}
@@ -6889,81 +7045,87 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  now have a linear packer \#194
+  jumplines can now be configured by drag \& drop (\#136)
 \item
-  now have menu to import from local disc \#177\\
+  tuplets can now be sculptured by drag \& drop (\#138)
 \item
-  support for 25 string bass harp \#180
+  improved performance of configuration (\#115)
 \item
-  strip =duration on meter ``M:3/4 4/4 =3/4'' \#181
+  improved performance of harpnote preview (\#87)
 \item
-  initial support to work with file templates \#71
+  improved performance of vertical packer (\#87, \#89)
 \item
-  No initial render after a crash in previous session \#103
+  editor collapses config parameters by default (\#144)
 \item
-  now we have another player, with sampled sounds \#126
+  now can print a sortmark on top of the sheet (\#145)
 \item
-  the new player also can play with repeats and vertals \#126
+  the anchor of jumplines can now be configured (\#150)
 \item
-  player/selection now highlight in a different style \#126
+  now have variant parts appear in grey (\#151)
 \item
-  Improved toggle of play button \#126
+  now menu supports extract 0 to extract 5 (\#153)
 \item
-  we now can change the playback speed on the fly \#126
+  now menu also shows title of extracts (\#153)
 \item
-  rearranged layaout form \#189
+  ctrl-alt `F' now toggles harp preview
 \item
-  show notes in the current selection for harmonization \#190
+  rearranged ``Edit Configuration'' Menu to improve configuration
+  workflow (\#171)
 \item
-  now warn if browser is other than chrome, firefox, vivaldi, opera
-  \#186
+  now suppoert tilde as non braeking space in lyrics, stringnames,
+  annotations \#113
 \item
-  BWC: improved layout of bars, barnumbers/countnotes \#199
-
-  \begin{itemize}
-  \itemsep1pt\parskip0pt\parsep0pt
-  \item
-    barnumbers are now more far away from the note
-  \item
-    new algorithm to determine right/left position of
-    barnumber/countnote
-  \end{itemize}
+  now suppoert quoted tilde as non braeking space in lyrics,
+  stringnames, annotations \#113
 \item
-  changed name of some layout presets \#196
+  layoutlines is now the combination of voices and layoutlines (\#175).
 \end{itemize}
 
-\subsubsection{exprimental}\label{exprimental}
+\subsubsection{internal stuff}\label{internal-stuff}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  support for more diatonic instruments (e.g.~OKON harp) \#196
-\item
-  support of okon table harp \#196
-\item
-  support to write notes bottom up \#196
-\item
-  support to write notes with beams \#196
-\item
-  show notes in the current selection for harmonization work-in-progress
-  \#190
-\item
-  heuristical detection of annotation collisions \#200
+  updated to abc2svg 1.13.7 (\#163)
 \end{itemize}
 
-\subsection{Backwards compatibility
+\subsubsection{experimental feature}\label{experimental-feature}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  implemented a collision based packer (\#89)
+\item
+  implemented validation of config parameters (\#85) with result form
+\item
+  Shape of Flowlines can be configured (\#167)
+\end{itemize}
+
+\subsubsection{backwards compatibility
 issues}\label{backwards-compatibility-issues}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  it might be that you need to rework manual positioning of
-  barnumbers/countnotes \#199
+  layoutlines is now the combination of voices and layoutlines. It is no
+  longer possible to show voices without considering them in the layout
+  (\#175)
+\item
+  Default for ``filenamepart'' is now as it was in 1.5 (\#155)
+\item
+  tuplet configuration is now under `notebound': meed to rework in the
+  sheets - sorry! (\#168)
+\item
+  transposititions are no longer exposed in legend (\#174)
 \end{itemize}
+
+\subsubsection{known issues}\label{known-issues}
+
+Dragging of jumpline does not work properly on Saitenspiel \#158
 
 \subsection{V 1.6.1 2017-05-17}\label{v-1.6.1-2017-05-17}
 
-\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen}
+\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7092,7 +7254,7 @@ issues}\label{backward-compatibility-issues}
   in configuration \#95
 \end{itemize}
 
-\subsubsection{Fix}\label{fix-1}
+\subsubsection{Fix}\label{fix-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7160,7 +7322,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2}
 
-\subsubsection{Fix}\label{fix-2}
+\subsubsection{Fix}\label{fix-3}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7176,7 +7338,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2-1}
 
-\subsubsection{Fix}\label{fix-3}
+\subsubsection{Fix}\label{fix-4}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
