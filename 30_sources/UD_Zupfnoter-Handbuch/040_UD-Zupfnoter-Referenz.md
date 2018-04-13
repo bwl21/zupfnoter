@@ -1042,6 +1042,9 @@ mit dem Befehl `help` in der Konsole anzeigen.
 > Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
 > Regel nicht brauchen.
 
+> **Hinweis**: Diese Funktionen können teilweise über das Menü `Extras`
+> erreicht werden.
+
 Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
@@ -1063,7 +1066,7 @@ Beschriftungen
     > Konfiguration eines aus MusicXml importierten Stückes
     > einzustellen.
 
--   `settemplate`: Damit wird der aktuelle Editor-Inhalt als Template
+-   `settemplate`: Damit wird der aktuelle Editor-Inhalt als Vorlage
     hinterlegt (siehe Kapitel \ref{filetemplates} [Arbeiten mit
     Dateivorlagen](#filetemplates)).
 
@@ -2085,7 +2088,7 @@ geschieht wie folgt:
     bei spiel von oben nach unten)
 
 2.  Zählmarken stehen am Ende der Noten in Spielrichtung (also unten bei
-    Spiel von oben nach ungen)
+    Spiel von oben nach unten)
 
 3.  die horziontale Position errechnet sich aus dem Verlauf der
     Flussinien

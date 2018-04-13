@@ -9,6 +9,9 @@ function init_w2ui(uicontroller) {
 
 // file import methods
 
+  function get_zn_help(key){
+    Opal.I18n.$t_help(key)
+  }
 
   function pasteDatauri(name, datauri) {
     uicontroller.$handle_parsed_command("pasteDatauri", {"key": name, "value": datauri})
@@ -441,8 +444,8 @@ function init_w2ui(uicontroller) {
 
       {type: 'menu', icon: 'fa fa-cogs',  text: 'Extras', id: 'tbExtras',
         items:[
-          { text: 'flowconf edit', icon: 'fa fa-toggle-on',onClick: function(){uicontroller.$handle_command('setsetting flowconf edit');uicontroller.$handle_command('render');}},
-          { text: 'flowconf off', icon: 'fa fa-toggle-off', onClick: function(){uicontroller.$handle_command('setsetting flowconf false');uicontroller.$handle_command('render');}},
+          { text: 'flowconf edit', icon: 'fa fa-toggle-on', onClick: function(){uicontroller.$handle_command('setsetting flowconf edit');uicontroller.$handle_command('render');}},
+          { text: 'flowconf off',  icon: 'fa fa-toggle-off', onClick: function(){uicontroller.$handle_command('setsetting flowconf false');uicontroller.$handle_command('render');}},
           {},
           { text: 'validate on', icon: 'fa fa-check-square', onClick: function(){uicontroller.$handle_command('setsetting validate true')}},
           { text: 'validate off', icon: 'fa fa-check-square-o', onClick: function(){uicontroller.$handle_command('setsetting validate false')}},
@@ -456,7 +459,7 @@ function init_w2ui(uicontroller) {
           { text: 'loglevel warning', icon: 'fa fa-exclamation-circle', onClick: function(){uicontroller.$handle_command('loglevel warning')}},
           { text: 'loglevel info', icon: 'fa fa-info-circle', onClick: function(){uicontroller.$handle_command('loglevel info')}},
           {},
-          { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
+         // { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
 
           { text: 'settemplate', icon: 'fa fa-file-o', onClick: function(){uicontroller.$handle_command('settemplate')}},
           { text: 'edittemplate', icon: 'fa fa-pencil-square-o ', onClick: function(){uicontroller.$handle_command('edittemplate')}},
@@ -471,7 +474,7 @@ function init_w2ui(uicontroller) {
         id: 'tbPreview',
         text: 'Print',
         icon: 'fa fa-print',
-        hint: 'Open a preview and printz window',
+        hint: 'Open a preview and print window',
         items: [
           {
             type: 'button',

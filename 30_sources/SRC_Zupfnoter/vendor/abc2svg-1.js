@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-04-08 12:56:10 +0200
+// compiled for Zupfnoter 2018-04-12 14:00:27 +0200
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.16.4",vdate:"2018-04-08"}
+var abc2svg={version:"1.16.4-5-g0ea68e5",vdate:"2018-04-10"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2018 Jean-Francois Moine
@@ -6940,7 +6940,7 @@ function set_format(cmd, param, lock) {
 			cfmt[cmd] = v
 		break
 	case "combinevoices":
-		syntax("%%combinevoices is deprecated - use %%voicecombine instead")
+		syntax(1, "%%combinevoices is deprecated - use %%voicecombine instead")
 		break
 	case "voicemap":
 		set_v_param("map", param)
@@ -8282,7 +8282,7 @@ function set_width(s) {
 			}
 			if (s.notes[m].acc) {
 				var tmp = s.notes[m].shac +
-					(s.notes[m].micro ? 6.5 : 4.5)
+					(s.notes[m].micro ? 5.5 : 3.5)
 				if (wlnote < tmp)
 					wlnote = tmp
 			}
@@ -8324,8 +8324,8 @@ function set_width(s) {
 				s.xmx += 1
 				break
 			}
-			if (s.wr < s.xmx + 12)
-				s.wr = s.xmx + 12
+			if (s.wr < s.xmx + 8)
+				s.wr = s.xmx + 8
 			if (s.dots >= 2)
 				s.wr += 3.5 * (s.dots - 1)
 		}
@@ -8464,7 +8464,7 @@ function set_width(s) {
 			s.wl = s.wr = 1		// (!! not 0 !!)
 			return
 		}
-		s.wl = s.wr = s.clef_small ? 6 : 12
+		s.wl = s.wr = s.clef_small ? 8 : 12
 		return
 	case KEY:
 		var n1, n2, esp;
@@ -8651,7 +8651,7 @@ function set_space(s) {
 			// (hack to have quite the same note widths between measures)
 			return space * .9 - 7
 		case CLEF:
-			return space - s.wl
+			return space - s.wl - s.wr
 		case BLOCK:			// no space
 		case PART:
 		case REMARK:
@@ -20353,7 +20353,7 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.16.4 (2018-04-08)
+// json-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20501,7 +20501,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// setmidi-1.js for abc2svg-1.16.4 (2018-04-08)
+// setmidi-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20701,7 +20701,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.16.4 (2018-04-08)
+// play-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2018 Jean-Francois Moine
@@ -22535,7 +22535,7 @@ function Audio5(i_conf) {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// ambitus-1.js for abc2svg-1.16.4 (2018-04-08)
+// ambitus-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // ambitus.js - module to insert an ambitus at start of a voice
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22606,7 +22606,7 @@ var ambitus = {\n\
 }\n\
 draw_symbols = function(p_voice) {\n\
     var	d, s = p_voice.sym\n\
-	if (s.type == CLEF && s.notes) {\n\
+	if (s.type == CLEF && s.nhd > 0) {\n\
 		d = delta_tb[s.clef_type] + s.clef_line * 2;\n\
 		s.notes[0].pit += d;\n\
 		s.notes[1].pit += d;\n\
@@ -22619,6 +22619,7 @@ draw_symbols = function(p_voice) {\n\
 				\'" stroke-width=".6"/>\\\n\');\n\
 		}\n\
 		s.x += 26;\n\
+		p_voice.clef.nhd = 0\n\
 	}\n\
 	ambitus.ds(p_voice)\n\
 }\n\
@@ -22635,7 +22636,7 @@ set_format = function(cmd, param, lock) {\n\
 	ambitus.set_fmt(cmd, param, lock)\n\
 }\n\
 set_width = function(s) {\n\
-	if (s.type == CLEF && s.notes) {\n\
+	if (s.type == CLEF && s.nhd > 0) {\n\
 		s.wl = 40;\n\
 		s.wr = 12\n\
 	} else {\n\
@@ -22649,7 +22650,7 @@ set_width = function(s) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// break-1.js for abc2svg-1.16.4 (2018-04-08)
+// break-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // break.js - module to handle the %%break command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22776,7 +22777,7 @@ set_bar_num = function() {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// capo-1.js for abc2svg-1.16.4 (2018-04-08)
+// capo-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // capo.js - module to add a capo chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22861,7 +22862,7 @@ set_format = function(cmd, param, lock) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// clip-1.js for abc2svg-1.16.4 (2018-04-08)
+// clip-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // clip.js - module to handle the %%clip command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22908,7 +22909,7 @@ function Clip(i_abc) {
 			abc.syntax(1, abc.err_bad_val_s, "%%clip")
 			return
 		}
-		if (!b)
+		if (!a[1])
 			b = {m: 0, t: 0}
 		else
 			b = get_symsel(a[1]);
@@ -23083,7 +23084,7 @@ set_bar_num = function() {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// combine-1.js for abc2svg-1.16.4 (2018-04-08)
+// combine-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // combine.js - module to add a combine chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23323,7 +23324,7 @@ set_vp = function(a) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// diag-1.js for abc2svg-1.16.4 (2018-04-08)
+// diag-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // diag.js - module to insert guitar chord diagrams
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23912,7 +23913,7 @@ abc.add_glyph('Bsus4', '<g id="Bsus4">\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// grid-1.js for abc2svg-1.16.4 (2018-04-08)
+// grid-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // grid.js - module to insert a chord grid before or after a tune
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24226,7 +24227,7 @@ param_set_font("gridfont", "serif 16")\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// MIDI-1.js for abc2svg-1.16.4 (2018-04-08)
+// MIDI-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // MIDI.js - module to handle the %%MIDI parameters
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24390,7 +24391,7 @@ set_vp = function(a) {\n\
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// perc-1.js for abc2svg-1.16.4 (2018-04-08)
+// perc-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
 // perc.js - module to handle %%percmap
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
