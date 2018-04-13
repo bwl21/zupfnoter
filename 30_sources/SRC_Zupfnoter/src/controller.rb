@@ -112,8 +112,8 @@ class Controller
 
 
     @version      = VERSION
-    @zupfnoter_ui = `new init_w2ui(#{self});`
     I18n.locale(zupfnoter_language) {  call_consumers(:localizedtexts) } if browser_language
+    @zupfnoter_ui = `new init_w2ui(#{self});`
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage

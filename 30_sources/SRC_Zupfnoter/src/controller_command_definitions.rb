@@ -487,7 +487,7 @@ class Controller
           # detect the need for a new entry from the end of the configuration parameter key
 
           the_key = value[:key]
-          quicksetting_name = I18n.t("quicksetting: ") + args[:key]
+          quicksetting_name = %Q{#{I18n.t("Quick Setting")}: #{args[:key]}}
           # this computes the next key number
           if the_key.end_with?('.x')
             parent_key = the_key.split('.')[0 .. -2].join(".")

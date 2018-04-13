@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-4
+Version dev/V\_1.8.0\_dev-5
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2297,6 +2297,11 @@ Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
 Regel nicht brauchen.
 \end{quote}
 
+\begin{quote}
+\textbf{Hinweis}: Diese Funktionen können teilweise über das Menü
+\texttt{Extras} erreicht werden.
+\end{quote}
+
 Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
@@ -2327,7 +2332,7 @@ Beschriftungen
   \end{quote}
 \item
   \texttt{settemplate}: Damit wird der aktuelle Editor-Inhalt als
-  Template hinterlegt (siehe Kapitel
+  Vorlage hinterlegt (siehe Kapitel
   \ref{filetemplates}~\hyperref[filetemplates]{Arbeiten mit
   Dateivorlagen}).
 \end{itemize}
@@ -3791,7 +3796,7 @@ geschieht wie folgt:
   spiel von oben nach unten)
 \item
   Zählmarken stehen am Ende der Noten in Spielrichtung (also unten bei
-  Spiel von oben nach ungen)
+  Spiel von oben nach unten)
 \item
   die horziontale Position errechnet sich aus dem Verlauf der Flussinien
 \item
