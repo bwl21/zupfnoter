@@ -131,6 +131,12 @@ I:stretchlast 1
       _set_on_select()
     end
 
+    def strip_js(abc_code)
+      r = abc_code.gsub(/(I:|%%)(beginjs|endjs)/, "% removed ")
+      $log.error(I18n.t("CAUTION: your abc-code is vulnerable !!! removed beginjs / endjs"), [1,1]) unless abc_code == r
+      r
+    end
+
     def draw(abc_code, checksum="")
       # note that the blank line is requred make the text
       # not appaear correct on the tune sheet
@@ -140,7 +146,7 @@ I:stretchlast 1
 %%text #{checksum}
       }
 
-      @abc_source          = abc_code
+      @abc_source          = strip_js(abc_code)
       @element_to_position = {}
       @svgbuf              = []
       %x{
@@ -153,8 +159,9 @@ I:stretchlast 1
     end
 
     def get_abcmodel(abc_code)
-      %x{modules.load(#{abc_code}, #{@root}, function(){})};
-      %x{#{@root}.tosvg("abc", #{abc_code})};
+      stripped_abc_code = strip_js(abc_code)
+      %x{modules.load(#{stripped_abc_code}, #{@root}, function(){})};
+      %x{#{@root}.tosvg("abc", #{stripped_abc_code})};
       [@abc_model, @player_model]
     end
 
