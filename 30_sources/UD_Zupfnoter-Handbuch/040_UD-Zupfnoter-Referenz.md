@@ -1605,7 +1605,7 @@ zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
 > aufrufen und den Kontrollpunkt so ändern, dass er wieder sichtbar
 > wird.
 
-## Flußlinien gestalten {#flowconf}
+### Flußlinien gestalten {#flowconf}
 
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
 die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
@@ -1614,7 +1614,7 @@ Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die
 Triolenbögen.
 
 Die Bearbeitungsmöglichkeiten müssen in der [Konsole](#konsole-fenster)
-eingeschaltet werden.
+bzw. im Menü `Extras` eingeschaltet werden.
 
 > **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
 > wird Zupfnoter deutlich langsamer.
@@ -1958,7 +1958,7 @@ Aufbau
 
 Darin ist
 
--   `<ID>` eine Identifikation der Stimme, sie wird inder `%%score` -
+-   `<ID>` eine Identifikation der Stimme, sie wird in der `%%score` -
     Anweisung referenziert. Es empfiehlt sich hier einfach ganze Zahlen
     zu verwenden un die Stimme so durchzunumerieren.
 -   `[clef=]<clef name>` optionale Angabe des Notenschlüssels. Name ist
@@ -2005,8 +2005,6 @@ Zupfnoter zurückbringt.
 
 Zupfnoter kann diesen Anwendungfall auch abdecken:
 
-.
-
 1.  wähle einen Abchnitt in der ersten Stimme
 2.  Benutze das Menü "Bearbeiten / Abschnitt in allen Stimmen auswählen"
 3.  Im ABC-Fenster siehst du nun, dass mehrere, nicht zusammen hängende
@@ -2040,7 +2038,7 @@ Zupfnoter kann diesen Anwendungfall auch abdecken:
 >     dann ist die Auswahl in den Stimmen nicht zeitsynchron und es kann
 >     zu Fehlern kommen.
 > 4.  Das Verfahren erfordert, dass die Harfennoten aktuell sind (d.h.
->     seit dem letzten Rendern keine Bearbeitung mehr gemacht wurde), d
+>     seit dem letzten Rendern keine Bearbeitung mehr gemacht wurde),
 
 ### Wenn die vertikale Anordnung optimiert werden soll
 
@@ -2204,6 +2202,12 @@ Vorlage eingerichtet werden:
     > "Template_modus" gespeichert, d.h. der Dateiname wird nicht aus
     > der `F:` - Zeile entnommen sondern aus dem Konfigurationsparameter
     > `template.filebase` entnommen.
+
+> **Hinweis**: Diese Schritte sind auch im Menü `Extras` erreichbar
+
+> **Hinweis**: Die Konfigurationsparameter werden auch in die neuen
+> Stücke kopiert, haben dort aber keine Wirkung mehr. Sie sind jedoch
+> als Dokumentation hilfreich.
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der

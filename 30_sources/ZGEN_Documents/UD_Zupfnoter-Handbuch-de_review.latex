@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-5
+Version dev/V\_1.8.0\_dev-5-2-g65bb79e
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3117,7 +3117,8 @@ an der Triolenbeschriftung oder an einem andere Griff
 wieder sichtbar wird.
 \end{quote}
 
-\hyperdef{}{flowconf}{\subsection{Flußlinien gestalten}\label{flowconf}}
+\hyperdef{}{flowconf}{\subsubsection{Flußlinien
+gestalten}\label{flowconf}}
 
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
 die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
@@ -3126,7 +3127,8 @@ Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die
 Triolenbögen.
 
 Die Bearbeitungsmöglichkeiten müssen in der
-\hyperref[konsole-fenster]{Konsole} eingeschaltet werden.
+\hyperref[konsole-fenster]{Konsole} bzw. im Menü \texttt{Extras}
+eingeschaltet werden.
 
 \begin{quote}
 \textbf{Hinweis:} Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
@@ -3612,7 +3614,7 @@ Darin ist
 \begin{itemize}
 \item
   \texttt{\textless{}ID\textgreater{}} eine Identifikation der Stimme,
-  sie wird inder \texttt{\%\%score} - Anweisung referenziert. Es
+  sie wird in der \texttt{\%\%score} - Anweisung referenziert. Es
   empfiehlt sich hier einfach ganze Zahlen zu verwenden un die Stimme so
   durchzunumerieren.
 \item
@@ -3683,8 +3685,6 @@ Zupfnoter zurückbringt.
 
 Zupfnoter kann diesen Anwendungfall auch abdecken:
 
-.
-
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
@@ -3734,7 +3734,7 @@ entsprechender Vorsicht angewandt werden
   kann zu Fehlern kommen.
 \item
   Das Verfahren erfordert, dass die Harfennoten aktuell sind (d.h. seit
-  dem letzten Rendern keine Bearbeitung mehr gemacht wurde), d
+  dem letzten Rendern keine Bearbeitung mehr gemacht wurde),
 \end{enumerate}
 \end{quote}
 
@@ -3955,6 +3955,17 @@ eigene Vorlage eingerichtet werden:
   \texttt{template.filebase} entnommen.
   \end{quote}
 \end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Diese Schritte sind auch im Menü \texttt{Extras}
+erreichbar
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Die Konfigurationsparameter werden auch in die neuen
+Stücke kopiert, haben dort aber keine Wirkung mehr. Sie sind jedoch als
+Dokumentation hilfreich.
+\end{quote}
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der
@@ -5579,8 +5590,9 @@ ausgegeben werden soll.
 \subsection{\texorpdfstring{\texttt{extract.0.repeatsigns.voices} -
 Stimmen}{extract.0.repeatsigns.voices - Stimmen}}\label{extract.0.repeatsigns.voices}
 
-Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, für
-welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
+Hier gibst du eine Liste (durch Komma getrennt) der Stimmen an, für
+welche Wiederholungszeichen anstelle einer Sprunglinie ausgegeben
+werden.
 
 \begin{quote}
 Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine

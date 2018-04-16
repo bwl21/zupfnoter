@@ -657,8 +657,9 @@ Hier kannst du die Darstellung des linken Wiederholungszeichen steuern.
 
 ## repeatsigns.voices
 
-Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, für
-welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
+Hier gibst du eine Liste (durch Komma getrennt) der Stimmen an, für
+welche Wiederholungszeichen anstelle einer Sprunglinie ausgegeben
+werden.
 
 > Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine
 > Sprunglinien mehr dar.

@@ -84,7 +84,7 @@ module InitConf
          # needs to be handled in contrller_command_definiitions for
          # commands.add_command(:addconf) do |command|
          presets: {
-             standardextract: {}, # this is to get a translation, the values
+             stdextract: {}, # this is to get a translation, the values
              layout:     {
                  notes_small:            {
                      LINE_MEDIUM: 0.2,

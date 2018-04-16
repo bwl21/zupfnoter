@@ -283,7 +283,7 @@ class Controller
       command.set_help { "configure with template from localstore" }
 
       command.as_action do |args|
-        handle_command("addconf standardextract")
+        handle_command("addconf stdextract")
       end
     end
 
@@ -303,7 +303,7 @@ class Controller
     @commands.add_command(:setstdextract) do |command|
       command.undoable = false
 
-      command.set_help { "configure stdc onfig in localstore" }
+      command.set_help { "configure stdconfig in localstore" }
 
       command.as_action do |args|
         template = @editor.get_config_part_value('extract').to_json
@@ -424,7 +424,7 @@ class Controller
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
-            'standardextract'  => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} }
+            'stdextract'  => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} }
         }
 
         # create the add_conf parameters for presets aka quicksettings
@@ -549,6 +549,11 @@ class Controller
         keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
       end
 
+      def get_extract_keys(key)
+        result = $conf.keys.select { |k| k.start_with?("extract.0.#{key}") }.map { |k| k.split('extract.0.').last }
+        result
+      end
+
 
       # preset keys for the extracts
       # the inital array specifies the available
@@ -585,18 +590,20 @@ class Controller
                                                             'extract.0.notes.T05_printed_extracts.text',
                                                             'extract.0.notes.T01_number.text',
                                                             expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten,
-                                    quicksetting_commands: ['standardextract'],
+                                    quicksetting_commands: ['stdextract'],
                                     scope:                 :global
             },
-            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apbase', 'barnumbers.style',
-                                                               'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style'])},
+            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apbase', 'barnumbers.style',
+                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style'])},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
             notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
                                     quicksetting_commands: _get_quicksetting_commands('notes')},
-            lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda { handle_command("addconf lyrics") }},
+            lyrics:                {keys: expand_extract_keys([:lyrics]),
+                                    newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf lyrics") } : nil)
+            },
             images:                {keys:             $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys,
                                     newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf images") } : nil),
-                                    scope:            :global
+                                    scope:            nil
             },
             notebound:             {keys: expand_extract_keys(['notebound'])},
             layout:                {keys: expand_extract_keys(
@@ -614,7 +621,10 @@ class Controller
 
 
             printer:               {keys: expand_extract_keys([:printer, 'printer.show_border', 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
-            repeatsigns:           {keys: expand_extract_keys([:repeatsigns])},
+            repeatsigns:           {keys: expand_extract_keys(['repeatsigns.voices',
+                                                               'repeatsigns.left.pos', 'repeatsigns.left.text', 'repeatsigns.left.style',
+                                                               'repeatsigns.right.pos', 'repeatsigns.right.text', 'repeatsigns.right.style'
+                                                              ])},
 
 
             instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.bottomup', 'layout.beams', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
@@ -622,7 +632,7 @@ class Controller
                                     quicksetting_commands:
                                           _get_quicksetting_commands('instrument')
             },
-            stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
+            stringnames:           {keys: expand_extract_keys([get_extract_keys("stringnames"), :sortmark].flatten)},
             template:              {keys: ['template.filebase', 'template.title'], scope: :global},
             extract0:              {keys: ['extract.0'], scope: :global},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},

@@ -461,8 +461,13 @@ function init_w2ui(uicontroller) {
           {},
          // { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
 
+          { text: 'stdextract', icon: 'fa fa-clipboard', onClick: function(){uicontroller.$handle_command('stdextract')}},
           { text: 'settemplate', icon: 'fa fa-file-o', onClick: function(){uicontroller.$handle_command('settemplate')}},
-          { text: 'edittemplate', icon: 'fa fa-pencil-square-o ', onClick: function(){uicontroller.$handle_command('edittemplate')}},
+          { text: 'edittemplate', icon: 'fa fa-pencil', onClick: function(){uicontroller.$handle_command('edittemplate')}},
+          { text: 'configtemplate', icon: 'fa fa-pencil-square-o ', onClick: function(){
+              w2ui.layout_left_tabs.click('configtab');
+            uicontroller.$handle_command('editconf template')}
+            }
         ]
       },
 
@@ -587,6 +592,12 @@ function init_w2ui(uicontroller) {
             id: "tbAbcTutorialSchacherl",
             tooltip: 'Open a detailed ABC tutorial (in German)'
           },
+          {
+            text: 'abc standard 2.2',
+            icon: 'fa fa-graduation-cap',
+            id: "tbAbcStandard",
+            tooltip: 'Open the ABC-Standard (english)'
+          },
 
         ]
       }
@@ -644,6 +655,9 @@ function init_w2ui(uicontroller) {
       }
       if (event.target == "tbHelp:tbAbcTutorialSchacherl") {
         window.open("http://kurs.schacherl.info/ABC-Musiknotation/abc_syntax/abc_syntax.html")
+      }
+      if (event.target == "tbHelp:tbAbcStandard") {
+        window.open("http://abcnotation.com/wiki/abc:standard:v2.2")
       }
       if (event.target == "tbHelp:tbHomepage") {
         window.open("http://www.zupfnoter.de")
