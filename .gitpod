@@ -2,5 +2,4 @@ ports:
   - port: 9292
     protocol: "http"
 tasks:
-  - command: "cd 30_Sources/SRC_Zupfnoter && bundle install && cd src && rake server"
-image: "ruby:2.5.1"
+  - command: "apt-get update && apt-get install ruby rake && cd 30_Sources/SRC_Zupfnoter && bundle install && cd src && rake server"
