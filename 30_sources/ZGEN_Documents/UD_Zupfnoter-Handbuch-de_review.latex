@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version dev/V\_1.8.0\_dev-5-2-g65bb79e
+Version V\_1.8.0
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -6850,9 +6850,11 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \cleardoublepage
 
+\section{Änderungsgeschichte}\label{uxe4nderungsgeschichte}
+
 \subsection{v 1.8}\label{v-1.8}
 
-\subsection{Fehlerbehebungen}\label{fehlerbehebungen}
+\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6900,7 +6902,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   verbesserter Spieler \#210
 \end{itemize}
 
-\subsection{Erweiterungen}\label{erweiterungen}
+\subsubsection{Erweiterungen}\label{erweiterungen}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6962,7 +6964,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   für Auszug 0)
 \end{itemize}
 
-\subsection{Experimentelles}\label{experimentelles}
+\subsubsection{Experimentelles}\label{experimentelles}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6982,7 +6984,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   Menü ``Extras'' \#71
 \end{itemize}
 
-\subsection{Kompatibilität}\label{kompatibilituxe4t}
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt

@@ -1,8 +1,10 @@
 \cleardoublepage
 
+# Änderungsgeschichte
+
 ## v 1.8
 
-## Fehlerbehebungen
+### Fehlerbehebungen
 
 -   Druckvorschau löscht nicht mehr die Nicht-Speicherungsanzeige \#176
 -   Update auf abc2svg 1.14
@@ -26,7 +28,7 @@
     Barnummer etc. zu vermeiden \#197
 -   verbesserter Spieler \#210
 
-## Erweiterungen
+### Erweiterungen
 
 -   linear arbeitenden packer \#194
 -   Menü zum Importieren von der lokalen Platte \#177\
@@ -59,7 +61,7 @@
 -   verbesserte Shortcuts (z.B. cmd-L zum Umschalten des Vollbilds,
     cmd-0 für Auszug 0)
 
-## Experimentelles
+### Experimentelles
 
 -   weitere diatonische Instrumente (z.B. OKON-Harfe) \#196
 -   Layout von unten nach oben \#196
@@ -69,7 +71,7 @@
 -   Unterstützung für Illustrationen \#198
 -   Menü "Extras" \#71
 
-## Kompatibilität
+### Kompatibilität
 
 -   es kann sein, dass manuelle Positionierung von notenbeozgenen
     Elementen überarbeitet werden muss. \#199
