@@ -310,10 +310,10 @@ module Harpnotes
             @pushed_variant_ending_repeat = true
             @repetition_stack.push @repetition_stack.last
           else # variant does not end with a repeat; check if we have pushed a variant repetion and santize the same.
-            @repetition_stack.pop if @pushed_variant_ending_repeat
+            @repetition_stack.pop if @pushed_variant_ending_repeat and @repetition_stack.count > 1
           end
-
-          #prepare a new variant_ending group if there is only an rbstop
+          #prepare a new variant
+          # t_ending group if there is only an rbstop
           unless voice_element[:rbstart] == 2 # create a new group if the stop also starts a new one
             @next_note_marks[:variant_followup] = true
             @variant_endings.push([])
@@ -420,6 +420,7 @@ module Harpnotes
           result << synchpoint
         end
 
+        # if there is no (even virtual repetition start - declare one)
         if @repetition_stack.empty?
           @repetition_stack << result.last
         end

@@ -21,6 +21,7 @@
 * vertaal is no longer limited by :|[ #192
 * reduce size of selection area to avoid overlap with barnumber etc #197
 * improved player #210
+* improve handling of nested repetitions #213
   
 ## enhancement
 
