@@ -1666,9 +1666,14 @@ module Harpnotes
 
         song_print_options = $conf.get("extract.#{print_variant_nr}") #music.harpnote_options[:print][print_variant_nr]
 
+        super_options = $conf.get("extract.#{print_variant_nr}.super") || [0]
+
         unless song_print_options
           $log.warning("selected print variant [#{print_variant_nr}] not available using [0]: '#{print_options_raw.get('title')}'")
         else
+          super_options.each do |i|
+            print_options_raw.push($conf.get("extract.#{i}"))
+          end
           print_options_raw.push(song_print_options)
         end
 
