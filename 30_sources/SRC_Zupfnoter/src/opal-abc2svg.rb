@@ -77,7 +77,7 @@ module ABC2SVG
           $log.error("BUG: unsupported mode for abc2svg")
       end
 
-      @root    = %x{new Abc(#{@user.to_n})}
+      @root    = %x{new abc2svg.Abc(#{@user.to_n})}
       defaults = %Q{
 I:titletrim 0
 I:measurenb 1
@@ -160,7 +160,7 @@ I:stretchlast 1
 
     def get_abcmodel(abc_code)
       stripped_abc_code = strip_js(abc_code)
-      %x{modules.load(#{stripped_abc_code}, #{@root}, function(){})};
+      %x{abc2svg.modules.load(#{stripped_abc_code}, #{@root}, function(){})};
       %x{#{@root}.tosvg("abc", #{stripped_abc_code})};
       [@abc_model, @player_model]
     end

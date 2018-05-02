@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-04-12 14:00:27 +0200
+// compiled for Zupfnoter 2018-05-02 18:02:34 +0200
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.16.4-5-g0ea68e5",vdate:"2018-04-10"}
+var abc2svg={version:"1.17.0-12-g6444406",vdate:"2018-05-02"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2018 Jean-Francois Moine
@@ -23,7 +23,7 @@ var abc2svg={version:"1.16.4-5-g0ea68e5",vdate:"2018-04-10"}
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
 
 // start of the Abc object
-function Abc(user) {
+abc2svg.Abc = function(user) {
 	"use strict";
 
 	// mask some unsafe functions
@@ -240,8 +240,8 @@ var	dd_tb = {},		// definition of the decorations
 	a_de,			// array of the decoration elements
 	od		// ottava: index = type + staff, value = counter + voice number
 
-// standard decorations
-var std_deco = {
+// decorations - populate with standard decorations
+var decos = {
 	dot: "0 stc 5 1 1",
 	tenuto: "0 emb 5 3 3",
 	slide: "1 sld 3 7 0",
@@ -252,7 +252,7 @@ var std_deco = {
 	lowermordent: "3 lmrd 10 5 5",
 	coda: "3 coda 24 10 10",
 	uppermordent: "3 umrd 10 5 5",
-	segno: "3 sgno 20 8 8",
+	segno: "3 sgno 22 8 8",
 	trill: "3 trl 14 5 5",
 	upbow: "3 upb 10 5 5",
 	downbow: "3 dnb 9 5 5",
@@ -282,9 +282,15 @@ var std_deco = {
 	open: "3 opend 10 3 3",
 	snap: "3 snap 14 3 3",
 	thumb: "3 thumb 14 3 3",
+	dacapo: "3 dacs 16 20 20 Da Capo",
+	dacoda: "3 dacs 16 20 20 Da Coda",
 	"D.C.": "3 dacs 16 10 10 D.C.",
 	"D.S.": "3 dacs 16 10 10 D.S.",
-	fine: "3 dacs 16 10 10 FINE",
+	"D.C.alcoda": "3 dacs 16 38 38 D.C. al Coda",
+	"D.S.alcoda": "3 dacs 16 38 38 D.S. al Coda",
+	"D.C.alfine": "3 dacs 16 38 38 D.C. al Fine",
+	"D.S.alfine": "3 dacs 16 38 38 D.S. al Fine",
+	fine: "3 dacs 16 10 10 Fine",
 	turn: "3 turn 10 0 5",
 	"trill(": "3 ltr 8 0 0",
 	"trill)": "3 ltr 8 0 0",
@@ -346,8 +352,6 @@ var std_deco = {
 	f_near = [true, true, true],
 	f_note = [false, false, false, true, true, true, false, false, true],
 	f_staff = [false, false, false, false, false, false, true, true]
-
-var	user_deco = {}	/* user decorations */
 
 /* -- get the max/min vertical offset -- */
 function y_get(st, up, x, w) {
@@ -821,21 +825,28 @@ var func_tb = [
 	d_upstaff,	/* 4 (below the staff) */
 	d_trill,	/* 5 */
 	d_pf,		/* 6 - tied to staff (dynamic marks) */
-	d_cresc,	/* 7 */
+	d_cresc		/* 7 */
 ]
 
-/* -- add a decoration - from internal table or %%deco -- */
+// add a decoration
 /* syntax:
  *	%%deco <name> <c_func> <glyph> <h> <wl> <wr> [<str>]
  */
 function deco_add(param) {
 	var dv = param.match(/(\S*)\s+(.*)/);
-	user_deco[dv[1]] = dv[2]
+	decos[dv[1]] = dv[2]
 }
 
-// return the decoration
-function deco_build(nm, text) {
-	var a, dd, dd2, name2, c, i, elts, str
+// define a decoration
+function deco_def(nm) {
+    var a, dd, dd2, name2, c, i, elts, str,
+	text = decos[nm]
+
+	if (!text) {
+		if (cfmt.decoerr)
+			error(1, null, "Unknown decoration '$1'", nm)
+		return //undefined
+	}
 
 	// extract the values
 	a = text.match(/(\d+)\s+(.+?)\s+([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)/)
@@ -1080,17 +1091,6 @@ function deco_cnv(a_dcn, s, prev) {
 			s.a_dd = []
 		s.a_dd.push(dd)
 	}
-}
-
-/* -- define a decoration -- */
-function deco_def(nm) {
-	if (user_deco && user_deco[nm])
-		return deco_build(nm, user_deco[nm])
-	if (std_deco[nm])
-		return deco_build(nm, std_deco[nm])
-	if (cfmt.decoerr)
-		error(1, null, "Unknown decoration '$1'", nm)
-	return //undefined
 }
 
 /* -- update the x position of a decoration -- */
@@ -1394,11 +1394,12 @@ function draw_deco_near() {
 			case 1:
 			case 3:
 			case 4:
+			case 8:			// gliss
 				break
 			default:
-			case 2:			// arpeggio
-			case 5:			// trill
-			case 7:			// d_cresc
+//			case 2:			// arpeggio
+//			case 5:			// trill
+//			case 7:			// d_cresc
 				error(1, null, "Cannot have !$1! on a head", dd.name)
 				continue
 			case 9:			// head replacement
@@ -2593,8 +2594,8 @@ function calculate_beam(bm, s1) {
 				 && s.ts_prev.ymn < s.ymx
 				 && s.ts_prev.x == s.x
 				 && s.notes[0].shhd == 0) {
-					s.ts_prev.x -= 5;	/* fix stem clash */
-					s.ts_prev.xs -= 5
+					s.ts_prev.x -= 3;	/* fix stem clash */
+					s.ts_prev.xs -= 3
 				}
 			} else {
 				s.ymn = s.ys - 2.5
@@ -3178,7 +3179,7 @@ function draw_bar(s, bot, h) {
 		case ":":
 			x -= 2;
 			set_sscale(st);
-			xygl(x + 1, staff_tb[st].y, "rdots")
+			xygl(x + 1, bot, "rdots")
 			break
 		}
 		x -= 3
@@ -5302,10 +5303,10 @@ function draw_sym_near() {
 				dx = -8;
 				w = s.beam_end ? 11 : 16
 			}
-			y_set(s.st, true, s.x + dx, w, s.ymx + 2);
-			y_set(s.st, false, s.x - s.wl, s.wl + s.wr, s.ymn - 2)
+			y_set(s.st, true, s.x + dx, w, s.ymx);
+			y_set(s.st, false, s.x - s.wl, s.wl + s.wr, s.ymn)
 		} else {
-			y_set(s.st, true, s.x - s.wl, s.wl + s.wr, s.ymx + 2);
+			y_set(s.st, true, s.x - s.wl, s.wl + s.wr, s.ymx);
 			if (s.beam_st) {
 				dx = -6;
 				w = s.beam_end ? 4 : 10
@@ -5313,7 +5314,8 @@ function draw_sym_near() {
 				dx = -8;
 				w = s.beam_end ? 5 : 16
 			}
-			y_set(s.st, false, s.x + dx, w, s.ymn - 2)
+			dx += s.notes[0].shhd;
+			y_set(s.st, false, s.x + dx, w, s.ymn)
 		}
 
 		/* have room for the accidentals */
@@ -7253,18 +7255,16 @@ function do_include(fn) {
 		syntax(1, "Cannot read file '$1'", fn)
 		return
 	}
-	if (fn.slice(-3) == '.js') {
-		js_inject(file)
-	} else {
-		parse_sav = clone(parse);
-		tosvg(fn, file);
-		parse = parse_sav
-	}
+	parse_sav = clone(parse);
+	tosvg(fn, file);
+	parse = parse_sav;
 	include--
 }
 
 var	err_ign_s = "$1: inside tune - ignored",
 	err_bad_val_s = "Bad value in $1"
+
+    var	mod_init		// set when setting the module hooks
 
 // parse ABC code
 function tosvg(in_fname,		// file name
@@ -7278,6 +7278,24 @@ function tosvg(in_fname,		// file name
 		mac_sav, maci_sav,
 		pscom,
 		txt_add = '\n'		// for "+:"
+
+	// inject the module hooks
+	if (abc2svg.inject || abc2svg.g_inject) {
+		if (mod_init) {				// new modules
+		    if (abc2svg.inject) {
+			js_inject(abc2svg.inject);
+			abc2svg.g_inject += abc2svg.inject;
+			abc2svg.inject = ''
+		    }
+		} else {				// all modules
+			if (abc2svg.inject) {
+				abc2svg.g_inject += abc2svg.inject;
+				abc2svg.inject = ''
+			}
+			js_inject(abc2svg.g_inject);
+			mod_init = true
+		}
+	}
 
 	// check if a tune is selected
 	function tune_selected() {
@@ -7426,14 +7444,8 @@ function tosvg(in_fname,		// file name
 				continue
 			case "abc-include":
 				ext = a[1].match(/.*\.(.*)/)
-				if (!ext)
-					continue
-				switch (ext[1]) {
-				case "abc":
-				case "js":
+				if (ext && ext[1] == "abc")
 					do_include(a[1])
-					break
-				}
 				continue
 			}
 
@@ -7547,7 +7559,7 @@ function tosvg(in_fname,		// file name
 			last_info = undefined;
 			if (parse.state < 2)
 				continue
-			parse.line.buffer = file.slice(bol, eol);
+			parse.line.buffer = uncomment(file.slice(bol, eol), true);
 			parse_music_line()
 			continue
 		}
@@ -7667,7 +7679,7 @@ function tosvg(in_fname,		// file name
 		case '|':			// "|:" starts a music line
 			if (parse.state < 2)
 				continue
-			parse.line.buffer = file.slice(bol, eol);
+			parse.line.buffer = uncomment(file.slice(bol, eol), true);
 			parse_music_line()
 			continue
 		default:
@@ -9257,8 +9269,15 @@ function set_lines(	s,		/* first symbol */
 			}
 
 			// cut on the bar closest to the middle
-			if (!s3 || xmid - s3.x > s.x - xmid)
+			if (!s3 || s.x < xmid) {
 				s3 = s
+				continue
+			}
+			if (s3 > xmid)
+				break
+			if (xmid - s3.x < s.x - xmid)
+				break
+			s3 = s
 			break
 		}
 
@@ -9293,8 +9312,15 @@ function set_lines(	s,		/* first symbol */
 					s3 = s
 					continue
 				}
-				if (!s3 || xmid - s3.x > s.x - xmid)
+				if (!s3 || s.x < xmid) {
 					s3 = s
+					continue
+				}
+				if (s3 > xmid)
+					break
+				if (xmid - s3.x < s.x - xmid)
+					break
+				s3 = s
 				break
 			}
 			if (s3) {
@@ -9310,12 +9336,15 @@ function set_lines(	s,		/* first symbol */
 				x = s.x
 				if (!x)
 					continue
-				if (x < xmid) {
+				if (s.x < xmid) {
 					s3 = s
 					continue
 				}
-				if (xmid - s3.x > s.x - xmid)
-					s3 = s
+				if (s3 > xmid)
+					break
+				if (xmid - s3.x < s.x - xmid)
+					break
+				s3 = s
 				break
 			}
 			s = s3
@@ -10107,10 +10136,24 @@ if (st > nst) {
 		for ( ; s != u; s = s.ts_next) {
 			if (s.multi)
 				continue
-			if (s.type != NOTE
-			 && s.type != REST
-			 && s.type != GRACE)
+			switch (s.type) {
+			default:
 				continue
+			case REST:
+				// handle %%voicecombine 0
+				if ((s.combine != undefined && s.combine < 0)
+				 || !s.ts_next || s.ts_next.type != REST
+				 || s.time != s.ts_next.time
+				 || s.dur != s.ts_next.dur
+				 || s.invis)
+					break
+				unlksym(s.ts_next)
+				break
+			case NOTE:
+			case GRACE:
+				break
+			}
+
 			st = s.st;
 			v = s.v;
 			v_st = v_st_tb[v];
@@ -10360,6 +10403,7 @@ function init_music_line() {
 			continue
 		p_voice = voice_tb[v];
 		p_voice.second = cur_sy.voices[v].second;
+		p_voice.last_sym = p_voice.sym;
 
 		/* move the voice to a printed staff */
 		st = cur_sy.voices[v].st
@@ -13408,6 +13452,8 @@ function new_bar() {
 
 	// check if repeat bar
 	if (c > '0' && c <= '9') {
+		if (bar_type.slice(-1) == '[')
+			bar_type = bar_type.slice(0, -1);
 		s.text = c
 		while (1) {
 			c = line.next_char()
@@ -14147,7 +14193,7 @@ function new_note(grace, tp_fact) {
 			// when in chord, get the slurs and decorations
 			if (in_chord) {
 				while (1) {
-					if (!c || c == '%')
+					if (!c)
 						break
 					i = c.charCodeAt(0);
 					if (i >= 128) {
@@ -14170,7 +14216,7 @@ function new_note(grace, tp_fact) {
 							dcn = ""
 							while (1) {
 								c = line.next_char()
-								if (!c || c == '%') {
+								if (!c) {
 									syntax(1, "No end of decoration")
 									return //null
 								}
@@ -14510,7 +14556,7 @@ function parse_music_line() {
 
 		while (1) {
 			c = line.char()
-			if (!c || c == '%')
+			if (!c)
 				break
 
 			// special case for '.' (dot)
@@ -14574,6 +14620,10 @@ function parse_music_line() {
 					curvoice.last_sym.eoln = true
 				break
 			case '&':			// voice overlay
+				if (grace) {
+					syntax(1, "Bad character '$1'", c)
+					break
+				}
 				c = line.next_char()
 				if (c == ')') {
 					get_vover(')')
@@ -14621,6 +14671,10 @@ function parse_music_line() {
 					continue
 				}
 				if (c == '&') {		// voice overlay start
+					if (grace) {
+						syntax(1, "Bad character '$1'", c)
+						break
+					}
 					get_vover('(')
 					break
 				}
@@ -14662,8 +14716,6 @@ function parse_music_line() {
 					i = line.index		// in case no deco end
 					while (1) {
 						c = line.next_char()
-						if (c == '%')
-							c = 0
 						if (!c)
 							break
 						if (c == '!')
@@ -14716,7 +14768,6 @@ function parse_music_line() {
 					continue
 				}
 				if (line.buffer[line.index + 2] == ':') {
-//fixme: KO if no end of info and '%' followed by ']'
 					i = line.buffer.indexOf(']', line.index + 1)
 					if (i < 0) {
 						syntax(1, "Lack of ']'")
@@ -14881,23 +14932,11 @@ function parse_music_line() {
 				a_dcn = a_dcn_sav
 				break
 			case "\\":
-				for (i = line.index + 1; ; i++) { // check if some comment
-					switch (line.buffer[i]) {
-					case ' ':
-					case '\t':
-						continue
-					case '%':
-						line.index = line.buffer.length
-						// fall thru
-					case undefined:
-						c = undefined;
-						no_eol = true
-						break
-					}
+				c = line.buffer[line.index + 1]
+				if (!c) {
+					no_eol = true
 					break
 				}
-				if (!c)
-					break
 				// fall thru
 			default:
 				syntax(1, "Bad character '$1'", c)
@@ -18513,8 +18552,11 @@ function get_vover(type) {
 			syntax(1, "Erroneous end of voice overlay")
 			return
 		}
-		if (curvoice.time != vover.mxtime)
+		if (curvoice.time != vover.p_voice.time) {
 			syntax(1, "Wrong duration in voice overlay");
+			if (curvoice.time > vover.p_voice.time)
+				vover.p_voice.time = curvoice.time
+		}
 		curvoice = vover.p_voice;
 		vover = null
 		return
@@ -18577,7 +18619,6 @@ function get_vover(type) {
 	if (!vover) {				/* first '&' in a measure */
 		vover = {
 			bar: true,
-			mxtime: curvoice.time,
 			p_voice: curvoice
 		}
 		time = p_voice2.time
@@ -18588,10 +18629,12 @@ function get_vover(type) {
 		}
 		vover.time = s.time
 	} else {
-		if (!vover.mxtime)		// first '&' in '(&' sequence
-			vover.mxtime = curvoice.time
-		else if (curvoice.time != vover.mxtime)
+		if (curvoice != vover.p_voice
+		 && curvoice.time != vover.p_voice.time) {
 			syntax(1, "Wrong duration in voice overlay")
+			if (curvoice.time > vover.p_voice.time)
+				vover.p_voice.time = curvoice.time
+		}
 	}
 	p_voice2.time = vover.time;
 	curvoice = p_voice2
@@ -18857,6 +18900,9 @@ function get_voice(parm) {
 	var	v, transp, vtransp, vs,
 		a = info_split(parm, 1),
 		vid = a.shift();
+
+	if (!vid)
+		return				// empty V:
 
 	if (vid.indexOf(',') > 0) {		// if many voices
 		vs = vid.split(',');
@@ -19864,9 +19910,9 @@ var	note_names = "CDEFGAB",
 			}
 //			if (p[ip] == '=')
 //				ip++
-			i3 = (note_pit[n] + a + i2 + 12) % 12;
-			i4 = pit_note[i3];
-			i1 = pit_acc[i3];
+			i3 = cde2fcg[n] + i2 + a * 7;
+			i4 = cgd2cde[(i3 + 16 * 7) % 7];	// note
+			i1 = ((((i3 + 22) / 7) | 0) + 159) % 5;	// accidental
 			new_txt = (latin ? latin_names[i4] : note_names[i4]) +
 					acc_name[i1]
 		} else {
@@ -19906,7 +19952,7 @@ var	note_names = "CDEFGAB",
 function gch_transp(s) {
 	var	gch, p, j,
 		i = 0,
-		i2 = ((curvoice.ckey.k_sf - curvoice.okey.k_sf + 12) * 7) % 12
+		i2 = curvoice.ckey.k_sf - curvoice.okey.k_sf
 
 	while (1) {
 		gch = s.a_gch[i++]
@@ -20223,10 +20269,54 @@ function psxygl() { return false }
 	font_init();
 	init_tune()
 
-	if (modules)
-		modules.init(this)
+// export for modules
+Abc.prototype.clone = clone;
+Abc.prototype.deco_cnv = deco_cnv;
+Abc.prototype.err_bad_val_s = err_bad_val_s;
+Abc.prototype.font_class = font_class;
+Abc.prototype.gch_tr1 = gch_tr1;
+Abc.prototype.get_cfmt = function(k) { return cfmt[k] };
+Abc.prototype.get_cur_sy = function() { return cur_sy };
+Abc.prototype.get_curvoice = function() { return curvoice };
+Abc.prototype.get_fname = function() { return parse.ctx.fname };
+Abc.prototype.get_font = get_font;
+Abc.prototype.get_font_style = function() { return font_style };
+Abc.prototype.get_info = function(k) { return info[k] };
+Abc.prototype.get_img = function() { return img };
+Abc.prototype.get_multi = function() { return multicol };
+Abc.prototype.get_newpage = function() {
+	if (block.newpage) {
+		block.newpage = false;
+		return true
+	}
+};
+Abc.prototype.get_posy = function() { var t = posy; posy = 0; return t };
+Abc.prototype.get_top_v = function() { return par_sy.top_voice };
+Abc.prototype.get_tsfirst = function() { return tsfirst };
+Abc.prototype.set_font = set_font;
+Abc.prototype.set_tsfirst = function(s) { tsfirst = s };
+Abc.prototype.set_v_param = set_v_param;
+Abc.prototype.set_xhtml = function(wt) {
+    var wto = write_text;
+	write_text = wt
+	return wto
+};
+Abc.prototype.sort_pitch = sort_pitch;
+Abc.prototype.strwh = strwh;
+Abc.prototype.svg_flush = svg_flush;
+Abc.prototype.syntax = syntax;
+Abc.prototype.unlksym = unlksym;
+
+    var	self = this
 
 }	// end of Abc()
+
+// module hooks
+abc2svg.inject = ''	// new modules
+abc2svg.g_inject = ''	// all modules
+
+// compatibility
+var Abc = abc2svg.Abc
 
 // nodejs
 if (typeof module == 'object' && typeof exports == 'object') {
@@ -20252,108 +20342,74 @@ if (typeof module == 'object' && typeof exports == 'object') {
 // You should have received a copy of the GNU Lesser General Public License
 // along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
 
-function Modules() {
-    var modules = {
-		ambitus: { fn: 'ambitus-1.js', init: 'Ambitus' },
-		beginps: { fn: 'psvg-1.js', init: 'psvg_init' },
-		break: { fn: 'break-1.js', init: 'Break' },
-		capo: { fn: 'capo-1.js', init: 'Capo' },
-		clip: { fn: 'clip-1.js', init: 'Clip' },
-		voicecombine: { fn: 'combine-1.js', init: 'Combine' },
-		diagram: { fn: 'diag-1.js', init: 'Diag' },
-		grid: { fn: 'grid-1.js', init: 'Grid' },
-		MIDI: { fn: 'MIDI-1.js', init: 'MIDI' },
-		percmap: { fn: 'perc-1.js', init: 'Perc' }
-	},
-	all_m = /ambitus|beginps|break|capo|clip|voicecombine|diagram|grid|MIDI|percmap/g,
-	nreq = 0,
-	cbf					// callback function
+abc2svg.loadjs = function(fn, onsuccess, onerror) {
+	if (onerror)
+		onerror()
+}
+
+abc2svg.modules = {
+		ambitus: { fn: 'ambitus-1.js' },
+		beginps: { fn: 'psvg-1.js' },
+		break: { fn: 'break-1.js' },
+		capo: { fn: 'capo-1.js' },
+		clip: { fn: 'clip-1.js' },
+		voicecombine: { fn: 'combine-1.js' },
+		diagram: { fn: 'diag-1.js' },
+		grid: { fn: 'grid-1.js' },
+		MIDI: { fn: 'MIDI-1.js' },
+		percmap: { fn: 'perc-1.js' },
+	sth: { fn: 'sth-1.js' },
+	all_m:
+/ambitus|beginps|break|capo|clip|voicecombine|diagram|grid|MIDI|percmap|sth/g,
+	nreq: 0,
 
 	// scan the file and find the required modules
 	// @file: ABC file
-	// @abc: Abc instance - if undefined = web, otherwise = batch
 	// @relay: when web, callback function for continuing the treatment
 	// return true when all modules are loaded
-	function load(file, abc, relay) {
+	load: function(file, relay) {
 
 		// test if some keyword in the file
-	    var	m, r,nreq_i,
-		all = file.match(all_m)
+	    var	m, r, nreq_i,
+		all = file.match(this.all_m)
 
 		if (!all)
 			return true;
-		nreq_i = nreq;
-		cbf = relay			// (only one callback function)
+		nreq_i = this.nreq;
+		this.cbf = relay ||		// (only one callback function)
+			function(){}
 		for (var i = 0; i < all.length; i++) {
-			m = modules[all[i]]
+			m = abc2svg.modules[all[i]]
 			if (m.loaded)
 				continue
 
 			// check if really a command
-			r = new RegExp('(^|\\n)(%.|I:) *' + all[i] + '\\s')
+			r = new RegExp('(^|\\n)(%.|I:|\\[) *' + all[i] + '\\s')
 			if (!r.test(file))
 				continue
 
 			m.loaded = true
-			if (eval('typeof ' + m.init) == "function")
-				continue		// already loaded
 
 			// load the module
-			if (!relay) {			// batch
-				loadRelativeToScript(m.fn)
-			} else {			// web
-				nreq++;
-				loadjs(m.fn,
+				this.nreq++;
+				abc2svg.loadjs(m.fn,
 				    function() {	// if success
-					nreq--;
-					if (nreq == 0)
-						cbf()},
+					if (--abc2svg.modules.nreq == 0)
+						abc2svg.modules.cbf()
+				    },
 				    function() {	// if error
 					user.errmsg('error loading ' + m.fn);
-					nreq--
-					if (nreq == 0)
-						cbf()
+					if (--abc2svg.modules.nreq == 0)
+						abc2svg.modules.cbf()
 				    })
-			}
 		}
-		if (relay)		// web
-			return nreq == nreq_i;
-		if (abc)
-			init(abc)	// batch
-		return true
+		return this.nreq == nreq_i
 	}
-
-	// initialize all the modules
-	// This function is called
-	// - from the Abc instance on object creation
-	// - from modules.load when the Abc instance has already been created
-	function init(abc) {
-		for (var i in modules) {
-			var m = modules[i]
-			if (eval('typeof ' + m.init) != "function"
-			 || m.loaded === abc)
-				continue
-			m.loaded = abc;
-			eval(m.init + '(abc)')
-		}
-	}
-
-	return {
-		load: load,
-		init: init
-	}
-}
-
-var modules = Modules()
-
-// nodejs
-if (typeof module == 'object' && typeof exports == 'object') {
-	exports.modules = modules
-}
+} // modules
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// json-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20501,7 +20557,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// setmidi-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// setmidi-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20701,7 +20757,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// play-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2018 Jean-Francois Moine
@@ -20721,24 +20777,152 @@ function AbcMIDI() {
 // You should have received a copy of the GNU General Public License
 // along with abc2svg.  If not, see <http://www.gnu.org/licenses/>.
 
-// This file is just a wrapper around ToAudio (toaudio.js) and Audio5 (toaudio5.js)
+// This file is a wrapper around
+// - ToAudio (toaudio.js - convert ABC to audio sequences)
+// - Audio5 (toaudio5.js - play the audio sequences with webaudio and SF2)
+// - Midi5 (tomidi5.js - play the audio sequences with webmidi)
 
-function AbcPlay(conf) {
-var	audio = ToAudio(),
-	audio5 = Audio5(conf)
+// AbcPlay methods:
+//
+// get_outputs() - return an array of output devices
+//
+// set_output() - set the output type/port
+//
+// set_sfu() - get/set the soundfont URL
+// @url: URL - undefined = return current value
+//
+// set_speed() - get/set the play speed
+// @speed: < 1 slower, > 1 faster - undefined = return current value
+//
+// set_vol() - get/set the current sound volume
+// @volume: range [0..1] - undefined = return current value
+//
+// set_follow() - get/set the flag to call or not the 'onnote' callback
+// @follow: boolean - undefined = return current value
 
-	return {
+function AbcPlay(i_conf) {
+    var	conf = i_conf,
+	audio = ToAudio(),
+	audio5, midi5, current,
+	abcplay = {				// returned object (only instance)
+
+		// get the output type/ports
+		get_outputs: function() {
+		    var o,
+			outputs = []
+
+			if (midi5) {
+				o = midi5.get_outputs()
+				if (o)
+					outputs = o
+			}
+			if (audio5) {
+				o = audio5.get_outputs()
+				if (o)
+					outputs = outputs.concat(o)
+			}
+			return outputs
+		},
+		set_output: set_output,
 		clear: audio.clear,
 		add: audio.add,
-		play: audio5.play,
-		stop: audio5.stop,
-		get_vol: audio5.get_vol,
-		set_sft: function() {},
-		set_sfu: audio5.set_sfu,
-		set_speed: audio5.set_speed,
-		set_vol: audio5.set_vol,
-		set_follow: audio5.set_follow
+		set_sft: vf
+,
+		set_follow: function(v) {
+			if (v == undefined)
+				return conf.follow
+			conf.follow = v
+		},
+		set_sfu: function(v) {
+			if (v == undefined)
+				return conf.sfu
+			conf.sfu = v
+		},
+		set_speed: function(v) {
+			if (v == undefined)
+				return conf.speed
+			conf.new_speed = v
+		},
+		set_vol: function(v) {
+			if (v == undefined)
+				return conf.gain;
+			conf.gain = v
+			if (current && current.set_vol)
+				current.set_vol(v)
+		},
+		play: play,
+		stop: vf
 	}
+
+	function vf() {}			// void function
+
+	// start playing when no defined output
+	function play(istart, i_iend, a_e) {
+	    var o,
+		os = abcplay.get_outputs()
+		if (os.length == 1) {
+			o = 0
+		} else {
+			o = -1
+			var res = window.prompt('Use \n0: ' + os[0] +
+					'\n1: ' + os[1] + '?', '0')
+			if (res) {
+				o = Number(res)
+				if (isNaN(o) || o < 0 || o >= os.length)
+					o = -1
+			}
+			if (!res || o < 0) {
+				if (conf.onend)
+					conf.onend()
+				return
+			}
+		}
+		set_output(os[o]);
+		abcplay.play(istart, i_iend, a_e)
+	}
+
+	// set the current output changing the play functions
+	function set_output(name) {
+		current = name == 'sf2' ? audio5 : midi5
+		if (!current)
+			return
+		abcplay.play = current.play;
+		abcplay.stop = current.stop
+		if (current.set_output)
+			current.set_output(name)
+	} // set_output()
+
+	// set default configuration values
+	conf.follow = true;
+	conf.gain = 0.7;
+	conf.speed = 1;
+
+	// get the play parameters from localStorage
+	(function get_param() {
+		try {
+			if (!localStorage)
+				return
+		} catch (e) {
+			return
+		}
+	    var	v = localStorage.getItem("follow")
+		if (v)
+			conf.follow = v != "0";
+		v = localStorage.getItem("sfu")
+		if (v)
+			conf.sfu = v;
+		v = localStorage.getItem("volume")
+		if (v)
+			conf.gain = Number(v)
+	})()
+
+	// initialize the playing engines
+	if (typeof Midi5 == "function")
+		midi5 = Midi5(conf)
+	if (typeof Audio5 == "function")
+		audio5 = Audio5(conf);
+
+	return abcplay
 } // AbcPlay
 // toaudio.js - audio generation
 //
@@ -21171,6 +21355,9 @@ if (typeof module == 'object' && typeof exports == 'object')
 
 // Audio5 methods
 
+// get_outputs() - get the output devices
+//	return ['sf2'] or null
+//
 // play() - start playing
 // @start_index -
 // @stop_index: play the notes found in ABC source between
@@ -21186,19 +21373,10 @@ if (typeof module == 'object' && typeof exports == 'object')
 //
 // stop() - stop playing
 //
-// set_sfu() - get/set the soundfont URL
-// @url: URL - undefined = return current value
-//
-// set_speed() - get/set the play speed
-// @speed: < 1 slower, > 1 faster - undefined = return current value
-//
-// set_vol() - get/set the current sound volume
+// set_vol() - set the current sound volume
 // @volume: range [0..1] - undefined = return current value
-//
-// set_follow() - get/set the flag to call or not the 'onnote' callback
-// @follow: boolean - undefined = return current value
 
-    var	abcsf2 = []
+    var	abcsf2 = []			// SF2 instruments
 
 function Audio5(i_conf) {
 	var	conf = i_conf,		// configuration
@@ -21207,13 +21385,8 @@ function Audio5(i_conf) {
 		errmsg = conf.errmsg || alert,
 		ac,			// audio context
 		gain,			// global gain
-		gain_val = 0.7,
-		follow = true,		// follow the music
-		speed = 1,		// speed factor
-		new_speed,
 
 	// instruments/notes
-		sfu,			// soundfont URL
 		params = [],		// [instr][key] note parameters per instrument
 		rates = [],		// [instr][key] playback rates
 		w_instr = 0,		// number of instruments being loaded
@@ -21264,25 +21437,6 @@ function Audio5(i_conf) {
 				a[j++] = (t >> 8) & 0xff
 		}
 		return a
-	}
-
-	// get the play parameters from localStorage
-	function get_param() {
-		try {
-			if (!localStorage)
-				return
-		} catch(e) {
-			return
-		}
-	    var	v = localStorage.getItem("follow")
-		if (v)
-			follow = v != "0";
-		v = localStorage.getItem("sfu")
-		if (v)
-			sfu = v;
-		v = localStorage.getItem("volume")
-		if (v)
-			gain_val = Number(v)
 	}
 
 	// copy a sf2 sample to an audio buffer
@@ -21363,7 +21517,7 @@ function Audio5(i_conf) {
 	// load an instrument (.js file)
 	function load_instr(instr) {
 		w_instr++;
-		loadjs(sfu + '/' + instr + '.js',
+		abc2svg.loadjs(conf.sfu + '/' + instr + '.js',
 			function() {
 			    var	parser = new sf2.Parser(b64dcod(abcsf2[instr]));
 				parser.parse();
@@ -21459,22 +21613,23 @@ function Audio5(i_conf) {
 		}
 
 		// if speed change, shift the start time
-		if (new_speed) {
+		if (conf.new_speed) {
 			stime = ac.currentTime -
-					(ac.currentTime - stime) * speed / new_speed;
-			speed = new_speed;
-			new_speed = 0
+					(ac.currentTime - stime) *
+						conf.speed / conf.new_speed;
+			conf.speed = conf.new_speed;
+			conf.new_speed = 0
 		}
 
 //fixme: better, count the number of events?
-		t = e[1] / speed;		// start time
+		t = e[1] / conf.speed;		// start time
 		maxt = t + 3			// max time = evt time + 3 seconds
 		while (1) {
-			d = e[4] / speed
+			d = e[4] / conf.speed
 			if (e[5] != 0)		// if not a rest
 				note_run(e, t + stime, d)
 
-			if (follow) {
+			if (conf.follow) {
 			    var	i = e[0];
 
 				st = (t + stime - ac.currentTime) * 1000;
@@ -21488,7 +21643,7 @@ function Audio5(i_conf) {
 					(t + stime - ac.currentTime + d) * 1000)
 				return
 			}
-			t = e[1] / speed
+			t = e[1] / conf.speed
 			if (t > maxt)
 				break
 		}
@@ -21513,7 +21668,7 @@ function Audio5(i_conf) {
 		// all resources are there
 		gain.connect(ac.destination);
 		stime = ac.currentTime + .2		// start time + 0.2s
-			- a_e[evt_idx][1] * speed;
+			- a_e[evt_idx][1] * conf.speed;
 		play_next(a_e)
 	} // play_start()
 
@@ -21521,13 +21676,17 @@ function Audio5(i_conf) {
 
 	init_b64d();			// initialize base64 decoding
 
-	get_param()			// get the play parameters
-
-	if (!sfu)
-		sfu = "Scc1t2"		// set the default soundfont location
+	if (!conf.sfu)
+		conf.sfu = "Scc1t2"	// set the default soundfont location
 
     // external methods
     return {
+
+	// get outputs
+	get_outputs: function() {
+		return (window.AudioContext || window.webkitAudioContext) ?
+				['sf2'] : null
+	}, // get_outputs()
 
 	// play the events
 	play: function(istart, i_iend, a_e) {
@@ -21544,7 +21703,7 @@ function Audio5(i_conf) {
 				conf.ac = ac = new (window.AudioContext ||
 							window.webkitAudioContext);
 			gain = ac.createGain();
-			gain.gain.value = gain_val
+			gain.gain.value = conf.gain
 		}
 
 		iend = i_iend;
@@ -21568,38 +21727,10 @@ function Audio5(i_conf) {
 		}
 	}, // stop()
 
-	// get/set 'follow music'
-	set_follow: function(v) {
-		if (v == undefined)
-			return follow
-		follow = v;
-	}, // set_follow()
-
-	// set soundfont URL
-	set_sfu: function(v) {
-		if (v == undefined)
-			return sfu
-		sfu = v;
-	}, // set_sfu()
-
-	// set speed (< 1 slower, > 1 faster)
-	set_speed: function(v) {
-		if (v == undefined)
-			return speed
-		new_speed = v
-	}, // set_speed()
-
 	// set volume
 	set_vol: function(v) {
-		if (v == undefined) {
-			if (gain)
-				return gain.gain.value
-			return gain_val
-		}
 		if (gain)
 			gain.gain.value = v
-		else
-			gain_val = v;
 	} // set_vol()
     }
 } // end Audio5
@@ -22532,10 +22663,217 @@ function Audio5(i_conf) {
 
     return sf2;
 }));
+// tomidi5.js - audio output using HTML5 MIDI
+//
+// Copyright (C) 2018 Jean-Francois Moine
+//
+// This file is part of abc2svg.
+//
+// abc2svg is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// abc2svg is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with abc2svg.  If not, see <http://www.gnu.org/licenses/>.
+
+// Midi5 creation
+// one argument:
+// @conf: configuration object - all items are optional:
+//	onend: callback function called at end of playing
+//		(no arguments)
+//	onnote: callback function called on note start/stop playing
+//		Arguments:
+//			i: start index of the note in the ABC source
+//			on: true on note start, false on note stop
+
+// Midi5 methods
+
+// get_outputs() - get the output ports
+//
+// set_output() - set the output port
+//
+// play() - start playing
+// @start_index -
+// @stop_index: play the notes found in ABC source between
+//		the start and stop indexes
+// @play_event: optional (default: previous generated events)
+//	array of array
+//		[0]: index of the note in the ABC source
+//		[1]: time in seconds
+//		[2]: MIDI instrument (MIDI GM number - 1)
+//		[3]: MIDI note pitch (with cents)
+//		[4]: duration
+//		[5]: volume (0..1 - optional)
+//
+// stop() - stop playing
+
+function Midi5(i_conf) {
+    var	conf = i_conf,		// configuration
+	onend = conf.onend || function() {},
+	onnote = conf.onnote || function() {},
+
+// MIDI variables
+	op,			// output port
+	instr,			// instrument -> channel
+	ch,			// channel allocation
+
+// -- play the memorized events --
+	evt_idx,		// event index while playing
+	iend,			// source stop index
+	stime			// start playing time in ms
+
+// create a note
+// @e[2] = instrument index
+// @e[3] = MIDI key + detune
+// @t = audio start time (ms)
+// @d = duration adjusted for speed (ms)
+    function note_run(e, t, d) {
+    var	k = e[3] | 0,
+	i = e[2],
+	c = instr[i]
+
+	if (c == undefined) {
+		c = ch++;
+		instr[i] = c;
+		op.send(new Uint8Array([
+				0xb0 + c, 0, (i >> 14) & 0x7f,	// MSB bank
+				0xb0 + c, 32, (i >> 7) & 0x7f,	// LSB bank
+				0xc0 + c, i & 0x7f		// program
+			]))
+	}
+	op.send(new Uint8Array([0x90 + c, k, 127]), t);		// note on
+	op.send(new Uint8Array([0x80 + c, k, 0x40]), t + d - 20) // note off
+    } // note_run()
+
+// play the next time sequence
+    function play_next(a_e) {
+    var	t, e, e2, maxt, st, d
+
+	// play the next events
+	if (!op) {
+		onend()
+		return
+	}
+			
+	e = a_e[evt_idx]
+	if (!e
+	 || e[0] > iend) {		// if source ref > source end
+		onend()
+		return
+	}
+
+	// if speed change, shift the start time
+	if (conf.new_speed) {
+		stime = window-performance.now() -
+				(window.performance.now() - stime) *
+					conf.speed / conf.new_speed;
+		conf.speed = conf.new_speed;
+		conf.new_speed = 0
+	}
+
+	t = e[1] / conf.speed * 1000;	// start time
+	maxt = t + 3000			// max time = evt time + 3 seconds
+	while (1) {
+		d = e[4] / conf.speed * 1000
+		if (e[5] != 0)		// if not a rest
+			note_run(e, t + stime, d)
+
+		if (conf.follow) {
+			st = t + stime - window.performance.now();
+			setTimeout(onnote, st, e[0], true);
+			setTimeout(onnote, st + d, e[0], false)
+		}
+
+		e = a_e[++evt_idx]
+		if (!e) {
+			setTimeout(onend,
+				t + stime - window.performance.now() + d)
+			return
+		}
+		t = e[1] / conf.speed * 1000
+		if (t > maxt)
+			break
+	}
+
+	// delay before next sound generation
+	setTimeout(play_next, (t + stime - window.performance.now())
+			- 300,		// wake before end of playing
+			a_e)
+    } // play_next()
+
+// Midi5 object creation (only one instance)
+
+// public methods
+    return {
+
+	// get outputs
+	get_outputs: function() {
+//fixme: just the first output port for now...
+		if (Midi5.ma)
+			op = Midi5.ma.outputs.values().next().value
+			if (op)
+				return [op.name]
+	}, // get_outputs()
+
+	// set the output port
+	set_output: function(name) {
+//fixme: todo
+//		if (!Midi5.ma)
+//			return
+	},
+
+	// play the events
+	play: function(istart, i_iend, a_e) {
+		if (!a_e || !a_e.length) {
+			onend()			// nothing to play
+			return
+		}
+		iend = i_iend;
+		evt_idx = 0
+		while (a_e[evt_idx] && a_e[evt_idx][0] < istart)
+			evt_idx++
+		if (!a_e[evt_idx]) {
+			onend()			// nothing to play
+			return
+		}
+
+		stime = window.performance.now() + 200	// start time + 0.2s
+			- a_e[evt_idx][1] * conf.speed * 1000;
+		instr = [];
+		ch = 0;
+		play_next(a_e)
+	}, // play()
+
+	// stop playing
+	stop: function() {
+		iend = 0
+//fixme: op.clear() should exist...
+		if (op && op.clear)
+			op.clear()
+	} // stop()
+    }
+} // end Midi5
+
+// check MIDI access at script load time
+function onMIDISuccess(access) {
+	Midi5.ma = access	// store the MIDI access in the Midi5 function
+} // onMIDISuccess()
+
+function onMIDIFailure(msg) {
+} // onMIDIFailure()
+
+if (navigator.requestMIDIAccess)
+	navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// ambitus-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// ambitus-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // ambitus.js - module to insert an ambitus at start of a voice
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22545,15 +22883,13 @@ function Audio5(i_conf) {
 // Parameters
 //	%%ambitus 1
 
-function Ambitus(i_abc) {
-    var	abc = i_abc
+abc2svg.ambitus = {
+    do_ambitus: function(voice_tb) {
 
 // constants from the abc2svg core
     var	BASE_LEN = 1536,
 	NOTE = 8,
 	FULL = 0
-
-    Ambitus.prototype.do_ambitus = function(voice_tb) {
     var	s, v, p_v, min, max
 
 	for (v = 0; v < voice_tb.length; v++) {
@@ -22589,15 +22925,10 @@ function Ambitus(i_abc) {
 			}]
 	}
     } // do_ambitus()
+} // ambitus
 
-// Ambitus creation
-
-	//export some functions/variables
-	abc.tosvg('ambitus', '\
-%%beginjs\n\
-Abc.prototype.clone = clone\n\
-Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
 var ambitus = {\n\
 	ds: draw_symbols,\n\
 	om: output_music,\n\
@@ -22625,7 +22956,7 @@ draw_symbols = function(p_voice) {\n\
 }\n\
 output_music = function() {\n\
 	if (cfmt.ambitus)\n\
-		Ambitus.prototype.do_ambitus(voice_tb)\n\
+		abc2svg.ambitus.do_ambitus(voice_tb)\n\
 	ambitus.om()\n\
 }\n\
 set_format = function(cmd, param, lock) {\n\
@@ -22643,14 +22974,14 @@ set_width = function(s) {\n\
 		ambitus.set_w(s)\n\
 	}\n\
 }\n\
-%%endjs\n\
-')
+'
 
-} // Ambitus()
+// the module is loaded
+abc2svg.modules.ambitus.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// break-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// break-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // break.js - module to handle the %%break command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22660,19 +22991,15 @@ set_width = function(s) {\n\
 // Parameters
 //	%%break measure_nb [":" num "/" den] [" " measure ...]*
 
-function Break(i_abc) {
-    var	abc = i_abc
+abc2svg.break = {
 
-// constants from the abc2svg core
-    var	BAR = 0,
-	BASE_LEN = 1536
-
-	// %%break measure_nb [":" num "/" den] [" " measure ...]*
-	Break.prototype.get_break = function(parm) {
+	// get the %%break parameters
+	get_break: function(abc, abcbrk, parm) {
+	    var	BASE_LEN = 1536		// constant from the abc2svg core
 	    var	b, c, d, sq,
 		a = parm.split(/[ ,]/);
 
-		abc.glovar.break = []
+		abcbrk.break = []
 		for (n = 1; n < a.length; n++) {
 			b = a[n];
 			c = b.match(/(\d)([a-z]?)(:\d\/\d)?/)
@@ -22683,7 +23010,7 @@ function Break(i_abc) {
 			if (c[2])
 				sq = c[2].charCodeAt(0) - 0x61
 			if (!c[3]) {
-				abc.glovar.break.push({	// on measure bar
+				abcbrk.break.push({	// on measure bar
 						m: c[1],
 						t: 0,
 						sq: sq})
@@ -22694,21 +23021,22 @@ function Break(i_abc) {
 				abc.syntax(1, "Bad denominator in %%break")
 				continue
 			}
-			abc.glovar.break.push({
+			abcbrk.break.push({
 					m: c[1],
 					t: d[1] * BASE_LEN / d[2],
 					sq: sq})
 		}
-	} // get_break()
+	}, // get_break()
 
 	// insert the EOLs of %%break
-	Break.prototype.do_break = function() {
+	do_break: function(abc, abcbrk, voice_tb) {
+	    var BAR = 0			// constant from the abc2svg core
 	    var	i, m, t, brk, seq,
 		v = abc.get_cur_sy().top_voice,
-		s1 = abc.voice_tb[v].sym
+		s1 = voice_tb[v].sym
 
-		for (i = 0; i < abc.glovar.break.length; i++) {
-			brk = abc.glovar.break[i];
+		for (i = 0; i < abcbrk.break.length; i++) {
+			brk = abcbrk.break[i];
 			m = brk.m
 			for (s = s1; s; s = s.next) {
 				if (s.type == BAR && s.bar_num == m)
@@ -22744,40 +23072,33 @@ function Break(i_abc) {
 			s.eoln = true
 		}
 	} // do_break()
+} // break
 
-// Break creation
-
-	//export some functions/variables
-	abc.tosvg('break', '\
-%%beginjs\n\
-Abc.prototype.get_cur_sy = function() { return cur_sy }\n\
-Abc.prototype.glovar = glovar\n\
-Abc.prototype.syntax = syntax\n\
-Abc.prototype.voice_tb = voice_tb\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
 var brk = {\n\
 	psc: do_pscom,\n\
 	sbn: set_bar_num\n\
 }\n\
 do_pscom = function(text) {\n\
 	if (text.slice(0, 6) == "break ")\n\
-		Break.prototype.get_break(text)\n\
+		abc2svg.break.get_break(self, brk, text)\n\
 	else\n\
 		brk.psc(text)\n\
 }\n\
 set_bar_num = function() {\n\
 	brk.sbn();\n\
-	if (glovar.break)\n\
-		Break.prototype.do_break()\n\
+	if (brk.break)\n\
+		abc2svg.break.do_break(self, brk, voice_tb)\n\
 }\n\
-%%endjs\n\
-')
+'
 
-} // Break()
+// the module is loaded
+abc2svg.modules.break.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// capo-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// capo-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // capo.js - module to add a capo chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22787,12 +23108,11 @@ set_bar_num = function() {\n\
 // Parameters
 //	%%capo n	'n' is the capo fret number
 
-function Capo(abc_i) {
-    var abc_capo,
-	abc = abc_i
+abc2svg.capo = {
+   abc_capo: false,
 
 // function called when setting a chord symbol on a music element
-Capo.prototype.gch_capo = function(a_gch) {
+    gch_capo: function(abc, a_gch) {
     var	gch, gch2, i2,
 	transp = abc.get_cfmt('capo'),
 	i = 0
@@ -22806,9 +23126,10 @@ Capo.prototype.gch_capo = function(a_gch) {
 	}
 	gch2 = Object.create(gch);
 	gch2.capo = false;		// (would be erased when setting gch)
-	gch2.text = abc.gch_tr1(gch2.text, -transp)
-	if (!abc_capo) {		// if start of tune
-		abc_capo = true;
+	gch2.text = abc.gch_tr1(gch2.text,
+			[0, 5, -2, 3, -4, 1, -6, -1, 4, -3, 2, -5][transp % 12])
+	if (!abc2svg.capo.abc_capo) {		// if new tune
+		abc2svg.capo.abc_capo = true;
 		gch2.text += "  (capo: " + transp.toString() + ")"
 	}
 
@@ -22818,22 +23139,11 @@ Capo.prototype.gch_capo = function(a_gch) {
 
 	// set a mark in the first chord symbol for %%diagram
 	gch.capo = true
+    } // gch_capo()
+} // capo
 
-} // gch_capo()
-
-Capo.prototype.capo_reset = function() {
-	abc_capo = false
-}
-
-// Capo creation
-
-	//export some functions/variables
-	abc.tosvg('capo', '\
-%%beginjs\n\
-Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
-Abc.prototype.get_font = get_font;\n\
-Abc.prototype.gch_tr1 = gch_tr1;\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
 var capo = {\n\
 	gch_b: gch_build,\n\
 	om: output_music,\n\
@@ -22841,11 +23151,11 @@ var capo = {\n\
 }\n\
 gch_build = function(s) {\n\
 	if (cfmt.capo && a_gch)\n\
-		Capo.prototype.gch_capo(a_gch);\n\
+		abc2svg.capo.gch_capo(self, a_gch);\n\
 	capo.gch_b(s)\n\
 }\n\
 output_music = function() {\n\
-	Capo.prototype.capo_reset();\n\
+	abc2svg.capo.abc_capo = false;\n\
 	capo.om()\n\
 }\n\
 set_format = function(cmd, param, lock) {\n\
@@ -22855,14 +23165,14 @@ set_format = function(cmd, param, lock) {\n\
 	}\n\
 	capo.set_fmt(cmd, param, lock)\n\
 }\n\
-%%endjs\n\
-')
+'
 
-} // Capo()
+// the module is loaded
+abc2svg.modules.capo.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// clip-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// clip-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // clip.js - module to handle the %%clip command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22872,21 +23182,16 @@ set_format = function(cmd, param, lock) {\n\
 // Parameters
 //	%%clip start_measure_nb [":" num "/" den] "-" end_measure_nb [":" num "/" den]
 
-function Clip(i_abc) {
-    var	abc = i_abc
+abc2svg.clip = {
 
-// constants from the abc2svg core
-    var	BAR = 0,
-	CLEF = 1,
-	KEY = 5,
-	METER = 6,
-	STAVES = 12,
-	BASE_LEN = 1536
+	// %%break start_measure [":" num "/" den] "-" end_measure ...
+	get_clip: function(abc, abcclip, parm) {
+	    var	BASE_LEN = 1536		// constant from the abc2svg core
 
 	// get the start/stop points
 	function get_symsel(a) {
 	    var	j, d, sq,
-		b = a.match(/(\d)([a-z]?)(:\d\/\d)?/)
+		b = a.match(/(\d+)([a-z]?)(:\d+\/\d+)?/)
 
 		if (!b)
 			return
@@ -22900,8 +23205,6 @@ function Clip(i_abc) {
 		return {m: b[1], t: a[1] * BASE_LEN / a[2], sq: sq}
 	} // get_symsel()
 
-	// %%break start_measure [":" num "/" den] "-" end_measure ...
-	Clip.prototype.get_clip = function(parm) {
 	    var	b, c,
 		a = parm.split(/[ -]/)
 
@@ -22918,8 +23221,17 @@ function Clip(i_abc) {
 			abc.syntax(1, abc.err_bad_val_s, "%%clip")
 			return
 		}
-		abc.glovar.clip = [b, c]
-	} // get_clip()
+		abcclip.clip = [b, c]
+	}, // get_clip()
+
+	// cut the tune
+	do_clip: function(abc, abcclip, voice_tb) {
+
+	    var	BAR = 0,		// constants from the abc2svg core
+		CLEF = 1,
+		KEY = 5,
+		METER = 6,
+		STAVES = 12
 
 	// go to a global (measure + time)
 	function go_global_time(s, sel) {
@@ -22932,7 +23244,7 @@ function Clip(i_abc) {
 					 && s2.time != 0)
 						break
 				}
-				if (s2.time < abc.voice_tb[abc.get_cur_sy().top_voice].
+				if (s2.time < voice_tb[abc.get_cur_sy().top_voice].
 								meter.wmeasure)
 					s = s2
 			}
@@ -22973,15 +23285,13 @@ function Clip(i_abc) {
 		return s
 	}
 
-	// cut the tune
-	Clip.prototype.do_clip = function() {
 	    var	s, s2, sy, p_voice, v
 
 		// remove the beginning of the tune
 		s = abc.get_tsfirst()
-		if (abc.glovar.clip[0].m > 0
-		 || abc.glovar.clip[0].t > 0) {
-			s = go_global_time(s, abc.glovar.clip[0])
+		if (abcclip.clip[0].m > 0
+		 || abcclip.clip[0].t > 0) {
+			s = go_global_time(s, abcclip.clip[0])
 			if (!s) {
 				abc.set_tsfirst(null)
 				return
@@ -23006,8 +23316,8 @@ function Clip(i_abc) {
 					break
 				}
 			}
-			for (v = 0; v < abc.voice_tb.length; v++) {
-				p_voice = abc.voice_tb[v]
+			for (v = 0; v < voice_tb.length; v++) {
+				p_voice = voice_tb[v]
 				for (s2 = s; s2; s2 = s2.ts_next) {
 					if (s2.v == v) {
 						delete s2.prev
@@ -23021,7 +23331,7 @@ function Clip(i_abc) {
 		}
 
 		/* remove the end of the tune */
-		s = go_global_time(s, abc.glovar.clip[1])
+		s = go_global_time(s, abcclip.clip[1])
 		if (!s)
 			return
 
@@ -23033,8 +23343,8 @@ function Clip(i_abc) {
 		} while (!s.seqst)
 
 		/* cut the voices */
-		for (v = 0; v < abc.voice_tb.length; v++) {
-			p_voice = abc.voice_tb[v]
+		for (v = 0; v < voice_tb.length; v++) {
+			p_voice = voice_tb[v]
 			for (s2 = s.ts_prev; s2; s2 = s2.ts_prev) {
 				if (s2.v == v) {
 					delete s2.next
@@ -23046,45 +23356,33 @@ function Clip(i_abc) {
 		}
 		delete s.ts_prev.ts_next
 	} // do_clip()
+} // clip
 
-// Clip creation
-
-	//export some functions/variables
-	abc.tosvg('clip', '\
-%%beginjs\n\
-Abc.prototype.clone = clone\n\
-Abc.prototype.get_cur_sy = function() { return cur_sy }\n\
-Abc.prototype.err_bad_val_s = err_bad_val_s\n\
-Abc.prototype.get_tsfirst = function() { return tsfirst }\n\
-Abc.prototype.glovar = glovar\n\
-Abc.prototype.set_cur_sy = function(sy) { cur_sy = sy }\n\
-Abc.prototype.set_tsfirst = function(s) { tsfirst = s }\n\
-Abc.prototype.syntax = syntax\n\
-Abc.prototype.voice_tb = voice_tb\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
 var clip = {\n\
 	psc: do_pscom,\n\
 	sbn: set_bar_num\n\
 }\n\
 do_pscom = function(text) {\n\
 	if (text.slice(0, 5) == "clip ")\n\
-		Clip.prototype.get_clip(text)\n\
+		abc2svg.clip.get_clip(self, clip, text)\n\
 	else\n\
 		clip.psc(text)\n\
 }\n\
 set_bar_num = function() {\n\
 	clip.sbn();\n\
-	if (glovar.clip)\n\
-		Clip.prototype.do_clip()\n\
+	if (clip.clip)\n\
+		abc2svg.clip.do_clip(self, clip, voice_tb)\n\
 }\n\
-%%endjs\n\
-')
+'
 
-} // Clip()
+// the module is loaded
+abc2svg.modules.clip.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// combine-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// combine-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // combine.js - module to add a combine chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23094,11 +23392,11 @@ set_bar_num = function() {\n\
 // Parameters
 //	%%voicecombine n	'n' is the combine level
 
-function Combine(abc_i) {
-    var abc = abc_i
+abc2svg.combine = {
 
-    // constants from the abc2svg core
-    var	NOTE = 8,
+    // function called at start of the generation when multi-voices
+    comb_v: function(abc) {
+    var	NOTE = 8,		// constants from the abc2svg core
 	REST = 10,
 	SL_ABOVE = 0x01,
 	SL_BELOW = 0x02,
@@ -23142,7 +23440,7 @@ function Combine(abc_i) {
 	 && s.notes[0].pit <= s2.notes[nhd2].pit + 1)
 		return false
 	return true
-    }
+    } // may_combine()
 
     // combine two notes
     function combine_notes(s, s2) {
@@ -23171,7 +23469,7 @@ function Combine(abc_i) {
 	type = s.notes[nhd].ti1
 	if ((type & 0x0f) == SL_AUTO)
 		s.notes[nhd].ti1 = SL_ABOVE | (type & ~SL_DOTTED)
-}
+} // combine_notes()
 
 // combine 2 voices
 function do_combine(s) {
@@ -23208,10 +23506,8 @@ function do_combine(s) {
 		if (s.in_tuplet || !may_combine(s))
 			break
 	}
-}
+} // do_combine()
 
-    // function called at start of the generation when multi-voices
-    Combine.prototype.comb_v = function() {
 	var s, s2, g, i, r
 
 	for (s = abc.get_tsfirst(); s; s = s.ts_next) {
@@ -23264,10 +23560,10 @@ function do_combine(s) {
 			} while (s2.type != NOTE && s2.type != REST)
 		}
 	}
-    } // comb_v()
+    }, // comb_v()
 
     // set the combine parameter in the current voice
-    Combine.prototype.set_comb = function(a) {
+    set_comb: function(abc, a) {
     var	i,
 	curvoice = abc.get_curvoice()
 
@@ -23279,18 +23575,10 @@ function do_combine(s) {
 		}
 	}
     } // set_comb()
+} // combine
 
-// Combine creation
-
-	// export some functions/variables
-	abc.tosvg('combine', '\
-%%beginjs\n\
-Abc.prototype.get_curvoice = function() { return curvoice }\n\
-Abc.prototype.get_tsfirst = function() { return tsfirst }\n\
-Abc.prototype.set_v_param = set_v_param\n\
-Abc.prototype.sort_pitch = sort_pitch\n\
-Abc.prototype.unlksym = unlksym\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
 var combine = {\n\
 	new_n: new_note,\n\
 	psc: do_pscom,\n\
@@ -23311,20 +23599,20 @@ do_pscom = function(text) {\n\
 }\n\
 set_stem_dir = function() {\n\
 	combine.set_sd();\n\
-	Combine.prototype.comb_v()\n\
+	abc2svg.combine.comb_v(self)\n\
 }\n\
 set_vp = function(a) {\n\
-	Combine.prototype.set_comb(a);\n\
+	abc2svg.combine.set_comb(self, a);\n\
 	combine.set_vp(a)\n\
 }\n\
-%%endjs\n\
-')
+'
 
-} // Combine()
+// the module is loaded
+abc2svg.modules.voicecombine.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// diag-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// diag-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // diag.js - module to insert guitar chord diagrams
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23334,11 +23622,452 @@ set_vp = function(a) {\n\
 // Parameters
 //	%%diagram 1
 
-function Diag(i_abc) {
-    var	abc = i_abc
+abc2svg.diag = {
 
 // function called before tune generation
-Diag.prototype.do_diag = function(voice_tb) {
+    do_diag: function(abc, voice_tb) {
+    var	glyphs = abc.get_glyphs()
+
+	// create the decorations if not done yet
+	if (!glyphs['fb']) {
+	    var	i, j, d,
+		decos = abc.get_decos();
+		ns = "CDEFGAB",
+		ms = ["", "m", "7", "m7", "maj7", "sus4"]
+
+		for (i = 0; i < ns.length; i++) {
+			for (j = 0; j < ms.length; j++) {
+				d = ns[i] + ms[j];
+				decos[d] = "3 " + d + " 40 0 0"
+			}
+		}
+		for (j = 0; j < ms.length; j++) {
+			d = "F♯" + ms[j]
+			decos[d] = "3 F#" + ms[j] + " 40 0 0"
+		}
+
+	// add the glyphs (converted to SVG from Guido Gonzato PS)
+
+	// fingerboard
+		glyphs['fb'] = '<g id="fb">\n\
+<path class="stroke" stroke-width="0.4" d="\
+M-10 -34h20m0 6h-20\
+m0 6h20m0 6h-20\
+m0 6h20"/>\n\
+<path class="stroke" stroke-width="0.5" d="\
+M-10 -34v24m4 0v-24\
+m4 0v24m4 0v-24\
+m4 0v24m4 0v-24"/>\n\
+</g>';
+
+// fret information
+		glyphs['nut'] =
+			'<path id="nut" class="stroke" stroke-width="1.6" d="\
+M-10.2 -34.5h20.4"/>';
+		glyphs['barre'] =
+			'<path id="barre" class="stroke" stroke-width=".9" d="\
+M-10.2 -31h20.4"/>';
+		glyphs['fr1'] =
+			'<text id="fr1" x="-20" y="-29" class="frn">fr1</text>';
+		glyphs['fr2'] =
+			'<text id="fr2" x="-20" y="-29" class="frn">fr2</text>';
+		glyphs['fr3'] =
+			'<text id="fr3" x="-20" y="-29" class="frn">fr3</text>';
+		glyphs['ddot'] =
+			'<circle id="ddot" class="fill" r="1.5"/>';
+
+// chords
+		glyphs['C'] = '<g id="C">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-3,4" y="-36" class="diag">321</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Cm'] = '<g id="Cm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">342</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['C7'] = '<g id="C7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0,4" y="-36" class="diag">3241</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Cm7'] = '<g id="Cm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-4,4" y="-36" class="diag">x32</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Cmaj7'] = '<g id="Cmaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,-4" y="-36" class="diag">x21</text>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Csus4'] = '<g id="Csus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4" y="-36" class="diag">x34</text>\n\
+<use x="6" y="-13" xlink:href="#ddot"/>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+
+		glyphs['D'] = '<g id="D">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4,8" y="-36" class="diag">x132</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Dm'] = '<g id="Dm">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4,8" y="-36" class="diag">x231</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="10" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['D7'] = '<g id="D7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4,8" y="-36" class="diag">x312</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Dm7'] = '<g id="Dm7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,0,4,8" y="-36" class="diag">xx211</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="10" y="-31" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Dmaj7'] = '<g id="Dmaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,0,4,8" y="-36" class="diag">xx123</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Dsus4'] = '<g id="Dsus4">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,0,4,8" y="-36" class="diag">xx123</text>\n\
+<use x="10" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+
+		glyphs['E'] = '<g id="E">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">231</text>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Em'] = '<g id="Em">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">23</text>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['E7'] = '<g id="E7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,0" y="-36" class="diag">21</text>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Em7'] = '<g id="Em7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">1</text>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Emaj7'] = '<g id="Emaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">312</text>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Esus4'] = '<g id="Esus4">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">12</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+
+		glyphs['F'] = '<g id="F">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">342</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Fm'] = '<g id="Fm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">34</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['F7'] = '<g id="F7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,0" y="-36" class="diag">32</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Fm7'] = '<g id="Fm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">3</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Fmaj7'] = '<g id="Fmaj7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">423</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Fsus4'] = '<g id="Fsus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr1"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">34</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+
+		glyphs['F#'] = '<g id="F#">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">342</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['F#m'] = '<g id="F#m">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">34</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['F#7'] = '<g id="F#7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,0" y="-36" class="diag">32</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['F#m7'] = '<g id="F#m7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">3</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['F#maj7'] = '<g id="F#maj7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4,0" y="-36" class="diag">423</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['F#sus4'] = '<g id="F#sus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">34</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+
+		glyphs['G'] = '<g id="G">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,8" y="-36" class="diag">234</text>\n\
+<use x="10" y="-19" xlink:href="#ddot"/>\n\
+<use x="-10" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Gm'] = '<g id="Gm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8,-4" y="-36" class="diag">34</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['G7'] = '<g id="G7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,8" y="-36" class="diag">321</text>\n\
+<use x="-10" y="-19" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="10" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Gm7'] = '<g id="Gm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-8" y="-36" class="diag">3</text>\n\
+<use x="-6" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Gmaj7'] = '<g id="Gmaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,8" y="-36" class="diag">312</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="-10" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Gsus4'] = '<g id="Gsus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr3"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0" y="-36" class="diag">34</text>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+
+		glyphs['A'] = '<g id="A">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">234</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Am'] = '<g id="Am">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">231</text>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['A7'] = '<g id="A7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,4" y="-36" class="diag">23</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Am7'] = '<g id="Am7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,4" y="-36" class="diag">21</text>\n\
+<use x="6" y="-31" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+	glyphs['Amaj7'] = '<g id="Amaj7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-4,0,4" y="-36" class="diag">x213</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-31" xlink:href="#ddot"/>\n\
+<use x="-2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Asus4'] = '<g id="Asus4">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4" y="-36" class="diag">x12</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+
+		glyphs['B'] = '<g id="B">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">234</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Bm'] = '<g id="Bm">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-4,0,4" y="-36" class="diag">341</text>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-19" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['B7'] = '<g id="B7">\n\
+<use xlink:href="#nut"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-8,-4,0,8" y="-36" class="diag">x2134</text>\n\
+<use x="10" y="-25" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-6" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-31" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Bm7'] = '<g id="Bm7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,8" y="-36" class="diag">x32</text>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+<use x="6" y="-25" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Bmaj7'] = '<g id="Bmaj7">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,-4,0,4" y="-36" class="diag">x324</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+<use x="-2" y="-19" xlink:href="#ddot"/>\n\
+</g>';
+		glyphs['Bsus4'] = '<g id="Bsus4">\n\
+<use xlink:href="#barre"/>\n\
+<use xlink:href="#fr2"/>\n\
+<use xlink:href="#fb"/>\n\
+<text x="-12,0,4" y="-36" class="diag">x34</text>\n\
+<use x="6" y="-19" xlink:href="#ddot"/>\n\
+<use x="2" y="-25" xlink:href="#ddot"/>\n\
+</g>'
+	}
+
     var	s, i, gch, t
 
 	for (s = voice_tb[0].sym; s; s = s.next) {
@@ -23356,24 +24085,19 @@ Diag.prototype.do_diag = function(voice_tb) {
 		}
 	}
     } // do_diag()
+} // diag
 
-// Diagram creation
-
-	//export some functions/variables
-	abc.tosvg('diag', '\
-%%beginjs\n\
-Abc.prototype.add_glyph = function(k, v) { glyphs[k] = v }\n\
-Abc.prototype.deco_cnv = deco_cnv\n\
-Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
-Abc.prototype.get_top_v = function() { return par_sy.top_voice }\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
+Abc.prototype.get_decos = function() { return decos }\n\
+Abc.prototype.get_glyphs = function() { return glyphs }\n\
 var diag = {\n\
 	om: output_music,\n\
 	set_fmt: set_format\n\
 }\n\
 output_music = function() {\n\
 	if (cfmt.diag)\n\
-		Diag.prototype.do_diag(voice_tb)\n\
+		abc2svg.diag.do_diag(self, voice_tb)\n\
 	diag.om()\n\
 }\n\
 set_format = function(cmd, param, lock) {\n\
@@ -23386,534 +24110,14 @@ set_format = function(cmd, param, lock) {\n\
 \
 style += "\\n.diag {font-family:sansserif;font-size:6px}\
 \\n.frn {font-family:sansserif;font-style:italic;font-size:7px}"\n\
-%%endjs\n\
-\
-%%deco C     3 C     40 0 0\n\
-%%deco Cm    3 Cm    40 0 0\n\
-%%deco C7    3 C7    40 0 0\n\
-%%deco Cm7   3 Cm7   40 0 0\n\
-%%deco Cmaj7 3 Cmaj7 40 0 0\n\
-%%deco Csus4 3 Csus4 40 0 0\n\
-\
-%%deco D     3 D     40 0 0\n\
-%%deco Dm    3 Dm    40 0 0\n\
-%%deco D7    3 D7    40 0 0\n\
-%%deco Dm7   3 Dm7   40 0 0\n\
-%%deco Dmaj7 3 Dmaj7 40 0 0\n\
-%%deco Dsus4 3 Dsus4 40 0 0\n\
-\
-%%deco E     3 E     40 0 0\n\
-%%deco Em    3 Em    40 0 0\n\
-%%deco E7    3 E7    40 0 0\n\
-%%deco Em7   3 Em7   40 0 0\n\
-%%deco Emaj7 3 Emaj7 40 0 0\n\
-%%deco Esus4 3 Esus4 40 0 0\n\
-\
-%%deco F     3 F     40 0 0\n\
-%%deco Fm    3 Fm    40 0 0\n\
-%%deco F7    3 F7    40 0 0\n\
-%%deco Fm7   3 Fm7   40 0 0\n\
-%%deco Fmaj7 3 Fmaj7 40 0 0\n\
-%%deco Fsus4 3 Fsus4 40 0 0\n\
-\
-%%deco F♯     3 F#     40 0 0\n\
-%%deco F♯m    3 F#m    40 0 0\n\
-%%deco F♯7    3 F#7    40 0 0\n\
-%%deco F♯m7   3 F#m7   40 0 0\n\
-%%deco F♯maj7 3 F#maj7 40 0 0\n\
-%%deco F♯sus4 3 F#sus4 40 0 0\n\
-\
-%%deco G     3 G     40 0 0\n\
-%%deco Gm    3 Gm    40 0 0\n\
-%%deco G7    3 G7    40 0 0\n\
-%%deco Gm7   3 Gm7   40 0 0\n\
-%%deco Gmaj7 3 Gmaj7 40 0 0\n\
-%%deco Gsus4 3 Gsus4 40 0 0\n\
-\
-%%deco A     3 A     40 0 0\n\
-%%deco Am    3 Am    40 0 0\n\
-%%deco A7    3 A7    40 0 0\n\
-%%deco Am7   3 Am7   40 0 0\n\
-%%deco Amaj7 3 Amaj7 40 0 0\n\
-%%deco Asus4 3 Asus4 40 0 0\n\
-\
-%%deco B     3 B     40 0 0\n\
-%%deco Bm    3 Bm    40 0 0\n\
-%%deco B7    3 B7    40 0 0\n\
-%%deco Bm7   3 Bm7   40 0 0\n\
-%%deco Bmaj7 3 Bmaj7 40 0 0\n\
-%%deco Bsus4 3 Bsus4 40 0 0\n\
-')
+'
 
-// add the glyphs (converted to SVG from Guido Gonzato PS)
-
-// fingerboard
-abc.add_glyph('fb', '<g id="fb">\n\
-<path class="stroke" stroke-width="0.4" d="\
-M-10 -34h20m0 6h-20\
-m0 6h20m0 6h-20\
-m0 6h20"/>\n\
-<path class="stroke" stroke-width="0.5" d="\
-M-10 -34v24m4 0v-24\
-m4 0v24m4 0v-24\
-m4 0v24m4 0v-24"/>\n\
-</g>\
-');
-
-// fret information
-abc.add_glyph('nut','<path id="nut" class="stroke" stroke-width="1.6" d="\
-M-10.2 -34.5h20.4"/>');
-abc.add_glyph('barre','<path id="barre" class="stroke" stroke-width=".9" d="\
-M-10.2 -31h20.4"/>');
-abc.add_glyph('fr1','<text id="fr1" x="-20" y="-29" class="frn">fr1</text>');
-abc.add_glyph('fr2','<text id="fr2" x="-20" y="-29" class="frn">fr2</text>');
-abc.add_glyph('fr3','<text id="fr3" x="-20" y="-29" class="frn">fr3</text>');
-abc.add_glyph('ddot','<circle id="ddot" class="fill" r="1.5"/>');
-
-// chords
-abc.add_glyph('C', '<g id="C">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-3,4" y="-36" class="diag">321</text>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="6" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Cm', '<g id="Cm">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr3"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0,4" y="-36" class="diag">342</text>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('C7', '<g id="C7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4,0,4" y="-36" class="diag">3241</text>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="6" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Cm7', '<g id="Cm7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr3"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-4,4" y="-36" class="diag">x32</text>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Cmaj7', '<g id="Cmaj7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,-4" y="-36" class="diag">x21</text>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Csus4', '<g id="Csus4">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr3"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,0,4" y="-36" class="diag">x34</text>\n\
-<use x="6" y="-13" xlink:href="#ddot"/>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-abc.add_glyph('D', '<g id="D">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,0,4,8" y="-36" class="diag">x132</text>\n\
-<use x="6" y="-19" xlink:href="#ddot"/>\n\
-<use x="10" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Dm', '<g id="Dm">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,0,4,8" y="-36" class="diag">x231</text>\n\
-<use x="6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="10" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('D7', '<g id="D7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,0,4,8" y="-36" class="diag">x312</text>\n\
-<use x="10" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="6" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Dm7', '<g id="Dm7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,0,4,8" y="-36" class="diag">xx211</text>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="10" y="-31" xlink:href="#ddot"/>\n\
-<use x="6" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Dmaj7', '<g id="Dmaj7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,0,4,8" y="-36" class="diag">xx123</text>\n\
-<use x="10" y="-25" xlink:href="#ddot"/>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Dsus4', '<g id="Dsus4">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,0,4,8" y="-36" class="diag">xx123</text>\n\
-<use x="10" y="-19" xlink:href="#ddot"/>\n\
-<use x="6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-abc.add_glyph('E', '<g id="E">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4,0" y="-36" class="diag">231</text>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Em', '<g id="Em">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4" y="-36" class="diag">23</text>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('E7', '<g id="E7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,0" y="-36" class="diag">21</text>\n\
-<use x="2" y="-31" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Em7', '<g id="Em7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8" y="-36" class="diag">1</text>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Emaj7', '<g id="Emaj7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4,0" y="-36" class="diag">312</text>\n\
-<use x="2" y="-31" xlink:href="#ddot"/>\n\
-<use x="-2" y="-31" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Esus4', '<g id="Esus4">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0" y="-36" class="diag">12</text>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-abc.add_glyph('F', '<g id="F">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr1"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4,0" y="-36" class="diag">342</text>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Fm', '<g id="Fm">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr1"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4" y="-36" class="diag">34</text>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('F7', '<g id="F7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr1"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,0" y="-36" class="diag">32</text>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Fm7', '<g id="Fm7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr1"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8" y="-36" class="diag">3</text>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Fmaj7', '<g id="Fmaj7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr1"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4,0" y="-36" class="diag">423</text>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Fsus4', '<g id="Fsus4">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr1"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0" y="-36" class="diag">34</text>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-abc.add_glyph('F#', '<g id="F#">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4,0" y="-36" class="diag">342</text>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('F#m', '<g id="F#m">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4" y="-36" class="diag">34</text>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('F#7', '<g id="F#7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,0" y="-36" class="diag">32</text>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('F#m7', '<g id="F#m7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8" y="-36" class="diag">3</text>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('F#maj7', '<g id="F#maj7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4,0" y="-36" class="diag">423</text>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('F#sus4', '<g id="F#sus4">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0" y="-36" class="diag">34</text>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-abc.add_glyph('G', '<g id="G">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,8" y="-36" class="diag">234</text>\n\
-<use x="10" y="-19" xlink:href="#ddot"/>\n\
-<use x="-10" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Gm', '<g id="Gm">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr3"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8,-4" y="-36" class="diag">34</text>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('G7', '<g id="G7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,8" y="-36" class="diag">321</text>\n\
-<use x="-10" y="-19" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-<use x="10" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Gm7', '<g id="Gm7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr3"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-8" y="-36" class="diag">3</text>\n\
-<use x="-6" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Gmaj7', '<g id="Gmaj7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,8" y="-36" class="diag">312</text>\n\
-<use x="10" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-<use x="-10" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Gsus4', '<g id="Gsus4">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr3"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0" y="-36" class="diag">34</text>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-abc.add_glyph('A', '<g id="A">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0,4" y="-36" class="diag">234</text>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Am', '<g id="Am">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0,4" y="-36" class="diag">231</text>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-<use x="6" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('A7', '<g id="A7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,4" y="-36" class="diag">23</text>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Am7', '<g id="Am7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,4" y="-36" class="diag">21</text>\n\
-<use x="6" y="-31" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Amaj7', '<g id="Amaj7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-4,0,4" y="-36" class="diag">x213</text>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-31" xlink:href="#ddot"/>\n\
-<use x="-2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Asus4', '<g id="Asus4">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,0,4" y="-36" class="diag">x12</text>\n\
-<use x="6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-abc.add_glyph('B', '<g id="B">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0,4" y="-36" class="diag">234</text>\n\
-<use x="6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Bm', '<g id="Bm">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-4,0,4" y="-36" class="diag">341</text>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-19" xlink:href="#ddot"/>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('B7', '<g id="B7">\n\
-<use xlink:href="#nut"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-8,-4,0,8" y="-36" class="diag">x2134</text>\n\
-<use x="10" y="-25" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-6" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-31" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Bm7', '<g id="Bm7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,0,8" y="-36" class="diag">x32</text>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-<use x="6" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Bmaj7', '<g id="Bmaj7">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,-4,0,4" y="-36" class="diag">x324</text>\n\
-<use x="6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-<use x="-2" y="-19" xlink:href="#ddot"/>\n\
-</g>\
-');
-abc.add_glyph('Bsus4', '<g id="Bsus4">\n\
-<use xlink:href="#barre"/>\n\
-<use xlink:href="#fr2"/>\n\
-<use xlink:href="#fb"/>\n\
-<text x="-12,0,4" y="-36" class="diag">x34</text>\n\
-<use x="6" y="-19" xlink:href="#ddot"/>\n\
-<use x="2" y="-25" xlink:href="#ddot"/>\n\
-</g>\
-');
-
-} //Diag()
+// the module is loaded
+abc2svg.modules.diagram.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// grid-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// grid-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // grid.js - module to insert a chord grid before or after a tune
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23924,8 +24128,10 @@ abc.add_glyph('Bsus4', '<g id="Bsus4">\n\
 //	%%grid 1 | -1	(above the tune | below the tune)
 //	%%gridfont font_name size (default: 'serif 16')
 
-function Grid(i_abc) {
-    var	abc = i_abc
+abc2svg.grid = {
+
+// function called before tune generation
+    do_grid: function(abc, tsfirst, voice_tb) {
 
 // constants from the abc2svg core
     var	BASE_LEN = 1536,
@@ -24024,7 +24230,7 @@ function build_grid(chords, bars, font) {
 		line += '<style type="text/css">\n\
 .stroke {stroke: currentColor; fill: none}\n\
 .chmid {text-anchor:middle}\n\
-.' + font_cl + ' {' + style_font(font.name + '.' + font.size) +  '}\n\
+.' + font_cl + ' {' + abc.style_font(font.name + '.' + font.size) +  '}\n\
 </style>\n'
 	}
 
@@ -24084,8 +24290,6 @@ function build_grid(chords, bars, font) {
 	return line + '</svg>'
 } // build_grid()
 
-// function called before tune generation
-Grid.prototype.do_grid = function(tsfirst, voice_tb) {
     var	s, beat, cur_beat, i, beat_i, p_voice, n, font,
 	bars = [],
 	chords = [],
@@ -24185,29 +24389,17 @@ Grid.prototype.do_grid = function(tsfirst, voice_tb) {
 		p_voice.sym = s
 	}
 } // do_grid()
+} // grid
 
-// Grid creation
-
-	//export some functions/variables
-	abc.tosvg('grid', '\
-%%beginjs\n\
-Abc.prototype.font_class = font_class;\n\
-Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
-Abc.prototype.get_font = get_font;\n\
-Abc.prototype.get_top_v = function() { return par_sy.top_voice }\n\
-Abc.prototype.get_img = function() { return img }\n\
-Abc.prototype.set_font = set_font;\n\
-Abc.prototype.set_tsfirst = function(s) { tsfirst = s }\n\
-Abc.prototype.strwh = strwh;\n\
-Abc.prototype.syntax = syntax;\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
 var grid = {\n\
 	om: output_music,\n\
 	set_fmt: set_format\n\
 }\n\
 output_music = function() {\n\
 	if (cfmt.grid)\n\
-		Grid.prototype.do_grid(tsfirst, voice_tb)\n\
+		abc2svg.grid.do_grid(self, tsfirst, voice_tb)\n\
 	grid.om()\n\
 }\n\
 set_format = function(cmd, param, lock) {\n\
@@ -24220,14 +24412,14 @@ set_format = function(cmd, param, lock) {\n\
 \
 style += "\\\n.chmid {text-anchor:middle}";\n\
 param_set_font("gridfont", "serif 16")\n\
-%%endjs\n\
-')
+'
 
-} //Grid()
+// the module is loaded
+abc2svg.modules.grid.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// MIDI-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// MIDI-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // MIDI.js - module to handle the %%MIDI parameters
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24240,9 +24432,11 @@ param_set_font("gridfont", "serif 16")\n\
 //	%%MIDI control k v
 //	%%MIDI drummap ABC_note MIDI_pitch
 
-function MIDI(i_abc) {
-    var	abc = i_abc,
-	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
+abc2svg.MIDI = {
+
+    // parse %%MIDI commands
+    do_midi: function(abc, parm) {
+    var	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
 	accs = new Int8Array([0, 1, 0, -1, 0, 0, 1, 0, -1, 0, -1, 0])
 
     // convert a MIDI pitch to a note
@@ -24260,7 +24454,7 @@ function MIDI(i_abc) {
 	if (accs[pit])
 		note.acc = accs[pit]
 	return note
-    }
+    } // tonote()
 
     // normalize a note for mapping
     function norm(p) {
@@ -24277,11 +24471,10 @@ function MIDI(i_abc) {
 			p += ','
 	}
 	return p
-    }
+    } // norm()
 
-    // parse %%MIDI commands
-    MIDI.prototype.do_midi = function(parm) {
 	var	n, v,
+	maps = abc.get_maps(),
 		a = parm.split(/\s+/)
 
 	switch (a[1]) {
@@ -24300,9 +24493,9 @@ function MIDI(i_abc) {
 			abc.syntax(1, abc.err_bad_val_s, "%%MIDI drummap")
 			break
 		}
-		if (!abc.maps.MIDIdrum)
-			abc.maps.MIDIdrum = {}
-		abc.maps.MIDIdrum[n] = [null, v];
+		if (!maps.MIDIdrum)
+			maps.MIDIdrum = {}
+		maps.MIDIdrum[n] = [null, v];
 		abc.set_v_param("mididrum", "MIDIdrum")
 		break
 	case "program":
@@ -24331,10 +24524,10 @@ function MIDI(i_abc) {
 		abc.set_v_param("midictl", a[2] + ' ' + a[3])
 		break
 	}
-    } // do_midi()
+    }, // do_midi()
 
     // set the MIDI parameters in the current voice
-    MIDI.prototype.set_midi = function(a) {
+    set_midi: function(abc, a) {
     var	i, item,
 	curvoice = abc.get_curvoice()
 
@@ -24357,41 +24550,33 @@ function MIDI(i_abc) {
 		}
 	}
     } // set_midi()
+} // MIDI
 
-// MIDI creation
-
-	//export some functions/variables
-	abc.tosvg('MIDI', '\
-%%beginjs\n\
-Abc.prototype.err_bad_val_s = err_bad_val_s\n\
-Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
-Abc.prototype.get_curvoice = function() { return curvoice }\n\
-Abc.prototype.maps = maps\n\
-Abc.prototype.set_v_param = set_v_param\n\
-Abc.prototype.syntax = syntax\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
+Abc.prototype.get_maps = function maps() { return maps }\n\
 var midi = {\n\
 	psc: do_pscom,\n\
 	svp: set_vp\n\
 }\n\
 do_pscom = function(text) {\n\
 	if (text.slice(0, 5) == "MIDI ")\n\
-		MIDI.prototype.do_midi(text)\n\
+		abc2svg.MIDI.do_midi(self, text)\n\
 	else\n\
 		midi.psc(text)\n\
 }\n\
 set_vp = function(a) {\n\
-	MIDI.prototype.set_midi(a);\n\
+	abc2svg.MIDI.set_midi(self, a);\n\
 	midi.svp(a)\n\
 }\n\
-%%endjs\n\
-')
+'
 
-} //MIDI()
+// the module is loaded
+abc2svg.modules.MIDI.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// perc-1.js for abc2svg-1.16.4-5-g0ea68e5 (2018-04-10)
+// perc-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
 // perc.js - module to handle %%percmap
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24404,9 +24589,11 @@ set_vp = function(a) {\n\
 // a ABC note or a possibly abbreviated percussion name.
 // See https://wim.vree.org/js2/tabDrumDoc.html for more information.
 
-function Perc(i_abc) {
-    var	abc = i_abc,
-	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
+abc2svg.perc = {
+
+    // parse %%percmap
+    do_perc: function(abc, parm) {
+    var	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
 	accs = new Int8Array([0, 1, 0, -1, 0, 0, 1, 0, -1, 0, -1, 0])
 
 // GM drum
@@ -24588,7 +24775,7 @@ var prn = {
 	if (accs[pit])
 		note.acc = accs[pit]
 	return note
-    }
+    } // tonote()
 
     // normalize a note for mapping
     function norm(p) {
@@ -24605,11 +24792,10 @@ var prn = {
 			p += ','
 	}
 	return p
-    }
+    } // norm()
 
-    // parse %%percmap
-    Perc.prototype.do_perc = function(parm) {
     var	n, v,
+	maps = abc.get_maps(),
 	a = parm.split(/\s+/);
 
 	n = norm(a[1])
@@ -24620,26 +24806,26 @@ var prn = {
 	if (abc.get_cfmt("sound") != "play") {		// !play
 		if (!a[3])
 			return
-		if (!abc.maps.MIDIdrum)
-			abc.maps.MIDIdrum = {}
+		if (!maps.MIDIdrum)
+			maps.MIDIdrum = {}
 		v = tonote(n)
 		delete v.acc
-		abc.maps.MIDIdrum[n] = [[a[3]], v]
+		maps.MIDIdrum[n] = [[a[3]], v]
 	} else {					// play
 		v = tonote(a[2])
 		if (!v) {
 			abc.syntax(1, abc.err_bad_val_s, "%%percmap")
 			return
 		}
-		if (!abc.maps.MIDIdrum)
-			abc.maps.MIDIdrum = {}
-		abc.maps.MIDIdrum[n] = [null, v]
+		if (!maps.MIDIdrum)
+			maps.MIDIdrum = {}
+		maps.MIDIdrum[n] = [null, v]
 	}
 	abc.set_v_param("perc", "MIDIdrum")
-    } // do_perc()
+    }, // do_perc()
 
     // set the MIDI parameters in the current voice
-    Perc.prototype.set_perc = function(a) {
+    set_perc: function(abc, a) {
     var	i, item,
 	curvoice = abc.get_curvoice()
 
@@ -24656,34 +24842,144 @@ var prn = {
 		}
 	}
     } // set_perc()
+} // perc
 
-// Perc creation
-
-	//export some functions/variables
-	abc.tosvg('perc', '\
-%%beginjs\n\
-Abc.prototype.err_bad_val_s = err_bad_val_s\n\
-Abc.prototype.get_cfmt = function(k) { return cfmt[k] }\n\
-Abc.prototype.get_curvoice = function() { return curvoice }\n\
-Abc.prototype.maps = maps\n\
-Abc.prototype.set_v_param = set_v_param\n\
-Abc.prototype.syntax = syntax\n\
-\
+// inject code inside the core
+abc2svg.inject += '\
+Abc.prototype.get_maps = function maps() { return maps }\n\
 var perc = {\n\
 	psc: do_pscom,\n\
 	svp: set_vp\n\
 }\n\
 do_pscom = function(text) {\n\
 	if (text.slice(0, 8) == "percmap ")\n\
-		Perc.prototype.do_perc(text)\n\
+		abc2svg.perc.do_perc(self, text)\n\
 	else\n\
 		perc.psc(text)\n\
 }\n\
 set_vp = function(a) {\n\
-	Perc.prototype.set_perc(a);\n\
+	abc2svg.perc.set_perc(self, a);\n\
 	perc.svp(a)\n\
 }\n\
-%%endjs\n\
-')
+'
 
-} // Perc()
+// the module is loaded
+abc2svg.modules.percmap.loaded = true
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// sth-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// sth.js - module to set the stem heights
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%sth" appears in a ABC source.
+//
+// Parameters
+//	%%sth h1 h2 h3 ...
+// The values h1, h2, .. are applied to the following notes which
+// have a stem and which are not inside a beam.
+// The value may be '*' for keeping the original stem length.
+
+abc2svg.sth = {
+
+// function called after beam calculation
+    recal_beam: function(abc, bm, s) {
+    var staff_tb = abc.get_st_tb(),
+	st = s.st,
+	s2 = bm.s2
+	if (s.sth)
+		s.ys = s.sth
+	if (s2.sth)
+		s2.ys = s2.sth;
+	bm.a = (s.ys- s2.ys) / (s.xs - s2.xs);
+	bm.b = s.ys - s.xs * bm.a + staff_tb[st].y
+	while (1) {
+		s.ys = bm.a * s.xs + bm.b - staff_tb[st].y
+		if (s.stem > 0)
+			s.ymx = s.ys + 2.5
+		else
+			s.ymn = s.ys - 2.5;
+		s = s.next
+		if (s == s2)
+			break
+	}
+    },
+
+// function called after the stem heights have been computed
+    set_sth: function(abc, voice_tb) {
+    var s, h, v, sth_a, p_voice
+	for (v = 0; v < voice_tb.length; v++) {
+		p_voice = voice_tb[v]
+		if (p_voice.sth != null)	// if no stem length in this voice
+			continue
+		sth_a = []
+		for (s = p_voice.sym; s; s = s.next) {
+			if (s.sth) {
+				sth_a = s.sth;
+				s.sth = null
+			}
+			if (sth_a.length == 0
+			 || s.nflags <= -2 || s.stemless
+			 || !(s.beam_st || s.beam_end))
+				continue
+			h = sth_a.shift()
+			if (h == '*')
+				continue	// no change
+			h = Number(h)
+			if (isNaN(h))
+				continue	// fixme: error
+			if (s.stem >= 0) {
+				s.ys = s.y + h;
+				s.ymx = (s.ys + 2.5) | 0
+			} else {
+				s.ys = s.y - h;
+				s.ymn = (s.ys - 2.5) | 0
+			}
+			s.sth = s.ys
+		}
+	}
+    }
+} // sth
+
+// inject code inside the core
+abc2svg.inject += '\
+Abc.prototype.get_st_tb = function() {return staff_tb}\n\
+var sth = {\n\
+	cb: calculate_beam,\n\
+	nn: new_note,\n\
+	set_fmt: set_format,\n\
+	set_st: set_stems\n\
+}\n\
+calculate_beam = function(bm, s1) {\n\
+    var	done = sth.cb(bm, s1)\n\
+	if (done && bm.s2 && s1.sth)\n\
+		abc2svg.sth.recal_beam(self, bm, s1)\n\
+	return done\n\
+}\n\
+new_note = function(grace, tp_fact) {\n\
+   var	s = sth.nn(grace, tp_fact)\n\
+	if (curvoice.sth && s && s.type == NOTE) {\n\
+		s.sth = curvoice.sth;\n\
+		curvoice.sth = null\n\
+	}\n\
+	return s\n\
+}\n\
+set_format = function(cmd, param, lock) {\n\
+	if (cmd == "sth") {\n\
+		if (parse.state == 2)\n\
+			goto_tune()\n\
+		if (curvoice)\n\
+			curvoice.sth = param.split(/[ \t-]+/)\n\
+		return\n\
+	}\n\
+	sth.set_fmt(cmd, param, lock)\n\
+}\n\
+set_stems = function() {\n\
+	sth.set_st();\n\
+	abc2svg.sth.set_sth(self, voice_tb)\n\
+}\n\
+';
+
+// the module is loaded
+abc2svg.modules.sth.loaded = true
