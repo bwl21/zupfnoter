@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-05-02 18:02:34 +0200
+// compiled for Zupfnoter 2018-05-05 15:20:51 +0200
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.17.0-12-g6444406",vdate:"2018-05-02"}
+var abc2svg={version:"1.17.1",vdate:"2018-05-05"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2018 Jean-Francois Moine
@@ -2954,31 +2954,40 @@ function draw_acc(x, y, acc,
 
 // draw helper lines between yl and yu
 //fixme: double lines when needed for different voices
-//fixme: no helper inside staff when holes
 function draw_hl(x, yl, yu, st, hltype) {
-	var	i,
-		p_staff = staff_tb[st],
-		staffb = p_staff.y,
-//		stafflines = p_staff.stafflines,
-		top = (p_staff.stafflines.length - 1) * 6;
+    var	i, j,
+	p_staff = staff_tb[st],
+	staffb = p_staff.y,
+	stafflines = p_staff.stafflines,
+	top = (stafflines.length - 1) * 6,
+	bot = p_staff.botline
 
-//	if (top - p_staff.botline < 4)
-//		return			// no helper lines when staff < 4 lines
+	// no helper if no line
+	if (!/[\[|]/.test(stafflines))
+		return
 
-	yl = Math.ceil(yl / 6) * 6
-	for (; yl < p_staff.botline; yl += 6)
-		xygl(x, staffb + yl, hltype);
-	yu -= yu % 6
+	if (yl % 6)
+		yl += 3
+	if (yu % 6)
+		yu -= 3
+	if (stafflines.indexOf('-') >= 0	// if forced helper lines ('-')
+	 && ((yl > bot && yl < top) || (yu > bot && yu < top)
+	  || (yl <= bot && yu >= top))) {
+		i = yl;
+		j = yu
+		while (i > bot && stafflines[i / 6] == '-')
+			i -= 6
+		while (j < top && stafflines[j / 6] == '-')
+			j += 6
+		for ( ; i < j; i += 6) {
+			if (stafflines[i / 6] == '-')
+				xygl(x, staffb + i, hltype)	// hole
+		}
+	}
+	for (; yl < bot; yl += 6)
+		xygl(x, staffb + yl, hltype)
 	for (; yu > top; yu -= 6)
 		xygl(x, staffb + yu, hltype)
-//	if (yl > top)
-//		yl = top
-//	if (yu < p_staff.botline)
-//		yu = p_staff.botline;
-//	for (; yl <= yu; yl += 6) {
-//		if (stafflines[yl / 6] != '|')
-//			xygl(x, staffb + yl, hltype)	// hole
-//	}
 }
 
 /* -- draw a key signature -- */
@@ -5667,6 +5676,7 @@ function draw_systems(indent) {
 			for (; i < l; i++, y -= 6, dy -= 6) {
 				switch (stafflines[i]) {
 				case '.':
+				case '-':
 					continue
 				case ty:
 					ln += 'm-' + ws.toFixed(2) +
@@ -12580,7 +12590,7 @@ function get_st_lines(param) {
 
 	if (!param)
 		return
-	if (/^[\]\[|.]+$/.test(param))
+	if (/^[\]\[|.-]+$/.test(param))
 		return param.replace(/\]/g, '[')
 
 	n = parseInt(param)
@@ -20365,9 +20375,23 @@ abc2svg.modules = {
 
 	// scan the file and find the required modules
 	// @file: ABC file
-	// @relay: when web, callback function for continuing the treatment
+	// @relay: (optional) callback function for continuing the treatment
+	// @errmsg: (optional) function to display an error message if any
+	//	This function gets one argument: the message
 	// return true when all modules are loaded
-	load: function(file, relay) {
+	load: function(file, relay, errmsg) {
+
+		function get_errmsg() {
+			if (typeof user == 'object' && user.errmsg)
+				return user.errmsg
+			if (typeof printErr == 'function')
+				return printErr
+			if (typeof alert == 'function')
+				return alert
+			if (typeof console == 'object')
+				return console.log
+			return function(){}
+		}
 
 		// test if some keyword in the file
 	    var	m, r, nreq_i,
@@ -20378,6 +20402,8 @@ abc2svg.modules = {
 		nreq_i = this.nreq;
 		this.cbf = relay ||		// (only one callback function)
 			function(){}
+		this.errmsg = errmsg || get_errmsg()
+
 		for (var i = 0; i < all.length; i++) {
 			m = abc2svg.modules[all[i]]
 			if (m.loaded)
@@ -20398,7 +20424,7 @@ abc2svg.modules = {
 						abc2svg.modules.cbf()
 				    },
 				    function() {	// if error
-					user.errmsg('error loading ' + m.fn);
+					abc2svg.modules.errmsg('error loading ' + m.fn);
 					if (--abc2svg.modules.nreq == 0)
 						abc2svg.modules.cbf()
 				    })
@@ -20409,7 +20435,7 @@ abc2svg.modules = {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// json-1.js for abc2svg-1.17.1 (2018-05-05)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20557,7 +20583,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// setmidi-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// setmidi-1.js for abc2svg-1.17.1 (2018-05-05)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20757,7 +20783,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// play-1.js for abc2svg-1.17.1 (2018-05-05)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2018 Jean-Francois Moine
@@ -22873,7 +22899,7 @@ if (navigator.requestMIDIAccess)
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// ambitus-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// ambitus-1.js for abc2svg-1.17.1 (2018-05-05)
 // ambitus.js - module to insert an ambitus at start of a voice
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22981,7 +23007,7 @@ abc2svg.modules.ambitus.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// break-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// break-1.js for abc2svg-1.17.1 (2018-05-05)
 // break.js - module to handle the %%break command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23098,7 +23124,7 @@ abc2svg.modules.break.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// capo-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// capo-1.js for abc2svg-1.17.1 (2018-05-05)
 // capo.js - module to add a capo chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23172,7 +23198,7 @@ abc2svg.modules.capo.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// clip-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// clip-1.js for abc2svg-1.17.1 (2018-05-05)
 // clip.js - module to handle the %%clip command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23382,7 +23408,7 @@ abc2svg.modules.clip.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// combine-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// combine-1.js for abc2svg-1.17.1 (2018-05-05)
 // combine.js - module to add a combine chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23612,7 +23638,7 @@ abc2svg.modules.voicecombine.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// diag-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// diag-1.js for abc2svg-1.17.1 (2018-05-05)
 // diag.js - module to insert guitar chord diagrams
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24117,7 +24143,7 @@ abc2svg.modules.diagram.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// grid-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// grid-1.js for abc2svg-1.17.1 (2018-05-05)
 // grid.js - module to insert a chord grid before or after a tune
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24419,7 +24445,7 @@ abc2svg.modules.grid.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// MIDI-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// MIDI-1.js for abc2svg-1.17.1 (2018-05-05)
 // MIDI.js - module to handle the %%MIDI parameters
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24576,7 +24602,7 @@ abc2svg.modules.MIDI.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// perc-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// perc-1.js for abc2svg-1.17.1 (2018-05-05)
 // perc.js - module to handle %%percmap
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24868,7 +24894,7 @@ abc2svg.modules.percmap.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// sth-1.js for abc2svg-1.17.0-12-g6444406 (2018-05-02)
+// sth-1.js for abc2svg-1.17.1 (2018-05-05)
 // sth.js - module to set the stem heights
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24926,8 +24952,15 @@ abc2svg.sth = {
 			h = sth_a.shift()
 			if (h == '*')
 				continue	// no change
+			if (h == '|') {		// skip to the next measure bar
+				for (s = s.next; s; s = s.next) {
+					if (s.bar_type)
+						break
+				}
+				continue
+			}
 			h = Number(h)
-			if (isNaN(h))
+			if (isNaN(h) || !h)
 				continue	// fixme: error
 			if (s.stem >= 0) {
 				s.ys = s.y + h;
@@ -24970,7 +25003,7 @@ set_format = function(cmd, param, lock) {\n\
 		if (parse.state == 2)\n\
 			goto_tune()\n\
 		if (curvoice)\n\
-			curvoice.sth = param.split(/[ \t-]+/)\n\
+			curvoice.sth = param.split(/[ \t;-]+/)\n\
 		return\n\
 	}\n\
 	sth.set_fmt(cmd, param, lock)\n\

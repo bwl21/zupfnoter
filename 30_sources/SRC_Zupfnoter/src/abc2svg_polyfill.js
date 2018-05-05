@@ -7,7 +7,7 @@
 
   var jsdir = '';
 
-  function loadjs(fn, relay, onerror) {
+  abc2svg.loadjs = function (fn, relay, onerror) {
     var s = document.createElement('script');
     s.src = jsdir + fn;
     s.type = 'text/javascript';

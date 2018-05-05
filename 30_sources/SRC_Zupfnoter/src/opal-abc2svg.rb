@@ -160,7 +160,9 @@ I:stretchlast 1
 
     def get_abcmodel(abc_code)
       stripped_abc_code = strip_js(abc_code)
-      %x{abc2svg.modules.load(#{stripped_abc_code}, #{@root}, function(){})};
+      %x{abc2svg.modules.load(#{stripped_abc_code},
+                              function(){console.log("modules loaded")},
+                              function(msg){#{$log.error(`msg`)} } )     };
       %x{#{@root}.tosvg("abc", #{stripped_abc_code})};
       [@abc_model, @player_model]
     end
