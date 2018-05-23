@@ -1,8 +1,8 @@
-// compiled for Zupfnoter 2018-05-05 15:20:51 +0200
+// compiled for Zupfnoter 2018-05-23 17:07:08 +0200
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-var abc2svg={version:"1.17.1",vdate:"2018-05-05"}
+var abc2svg={version:"1.17.2",vdate:"2018-05-22"}
 // abc2svg - abc2svg.js
 //
 // Copyright (C) 2014-2018 Jean-Francois Moine
@@ -1583,9 +1583,9 @@ function draw_deco_note() {
 }
 
 // -- define the music elements tied to the staff --
-//	- repeat brackets
 //	- decoration tied to the staves
 //	- chord symbols
+//	- repeat brackets
 /* (the staves are not yet defined) */
 /* (unscaled delayed output) */
 function draw_deco_staff() {
@@ -1709,14 +1709,6 @@ function draw_deco_staff() {
 		}
 	} // draw_repbra()
 
-	/* draw the repeat brackets */
-	for (v = 0; v < voice_tb.length; v++) {
-		p_voice = voice_tb[v]
-		if (p_voice.second || !p_voice.sym)
-			continue
-		draw_repbra(p_voice)
-	}
-
 	/* create the decorations tied to the staves */
 	for (i = 0; i <= nstaff; i++)
 		minmax[i] = {
@@ -1820,6 +1812,13 @@ function draw_deco_staff() {
 		}
 	}
 
+	/* draw the repeat brackets */
+	for (v = 0; v < voice_tb.length; v++) {
+		p_voice = voice_tb[v]
+		if (p_voice.second || !p_voice.sym)
+			continue
+		draw_repbra(p_voice)
+	}
 }
 
 /* -- draw the measure bar numbers -- */
@@ -5174,9 +5173,6 @@ function draw_all_slurs(p_voice) {
 
 	/* do unbalanced slurs still left over */
 	for ( ; s; s = s.next) {
-		if (s.type != NOTE && s.type != REST
-		 && s.type != SPACE)
-			continue
 		while (s.slur_end || s.sl2) {
 			if (s.slur_end) {
 				s.slur_end--;
@@ -7274,8 +7270,6 @@ function do_include(fn) {
 var	err_ign_s = "$1: inside tune - ignored",
 	err_bad_val_s = "Bad value in $1"
 
-    var	mod_init		// set when setting the module hooks
-
 // parse ABC code
 function tosvg(in_fname,		// file name
 		file,			// file content
@@ -7288,24 +7282,6 @@ function tosvg(in_fname,		// file name
 		mac_sav, maci_sav,
 		pscom,
 		txt_add = '\n'		// for "+:"
-
-	// inject the module hooks
-	if (abc2svg.inject || abc2svg.g_inject) {
-		if (mod_init) {				// new modules
-		    if (abc2svg.inject) {
-			js_inject(abc2svg.inject);
-			abc2svg.g_inject += abc2svg.inject;
-			abc2svg.inject = ''
-		    }
-		} else {				// all modules
-			if (abc2svg.inject) {
-				abc2svg.g_inject += abc2svg.inject;
-				abc2svg.inject = ''
-			}
-			js_inject(abc2svg.g_inject);
-			mod_init = true
-		}
-	}
 
 	// check if a tune is selected
 	function tune_selected() {
@@ -7358,6 +7334,11 @@ function tosvg(in_fname,		// file name
 		img.chg = true;
 		set_page();
 	} // end_tune()
+
+	// export functions and/or set module hooks
+	if (abc2svg.modules
+	 && (abc2svg.modules.hooks.length || abc2svg.modules.g_hooks.length))
+		set_hooks()
 
 	// initialize
 	parse.file = file;		// used for errors
@@ -10795,7 +10776,7 @@ function set_indent(first) {
 			continue
 		if (!font) {
 			font = get_font("voice");
-			gene.curfont = gene.deffont = font
+			set_font(font);
 		}
 		i = 0
 		while (1) {
@@ -13764,7 +13745,7 @@ function parse_staves(p) {
 function info_split(text) {
 	if (!text)
 		return []
-    var	a = text.match(/".+?"|.+?(\s+|=|$)/g)
+    var	a = text.match(/(".+?"|.+?)(\s+|=|$)/g)
 	if (!a) {
 		syntax(1, "Unterminated string")
 		return []
@@ -15088,7 +15069,9 @@ function strwh(str) {
 
 // set the default and current font
 function set_font(xxx) {
-	gene.curfont = gene.deffont = get_font(xxx)
+	if (typeof xxx == "string")
+		xxx = get_font(xxx);
+	gene.curfont = gene.deffont = xxx
 }
 
 // output a string handling the font changes
@@ -15653,7 +15636,7 @@ function write_headform(lwidth) {
 			sz = font.size * 1.1
 			if (info_sz[c])
 				sz += info_sz[c];
-			set_font(font_name);
+			set_font(font);
 			x = xa[align];
 			y = ya[align] + sz
 
@@ -15682,7 +15665,7 @@ function write_headform(lwidth) {
 					sz = font.size * 1.1
 					if (info_sz[c])
 						sz += info_sz[c];
-					set_font(font_name)
+					set_font(font)
 				}
 				while (info_val[c].length > 0) {
 					y += sz;
@@ -15975,20 +15958,16 @@ var glyphs = {
 	<circle cx="0" cy="-15" r="1.2"/>\n\
 </g>',
   grm: '<path id="grm" class="fill" d="m-5 -2.5\n\
-	c5 -8.5 5.5 4.5 10 -2\n\
-	-5 8.5 -5.5 -4.5 -10 2"/>',
+	c5 -8.5 5.5 4.5 10 -2 -5 8.5 -5.5 -4.5 -10 2"/>',
   stc: '<circle id="stc" class="fill" cx="0" cy="-3" r="1.2"/>',
   sld: '<path id="sld" class="fill" d="m-7.2 4.8\n\
-	c1.8 .7 4.5 -.2 7.2 -4.8\n\
-	-2.1 5 -5.4 6.8 -7.6 6"/>',
+	c1.8 .7 4.5 -.2 7.2 -4.8 -2.1 5 -5.4 6.8 -7.6 6"/>',
   emb: '<path id="emb" class="stroke" stroke-width="1.2" stroke-linecap="round"\n\
 	d="m-2.5 -3h5"/>',
   roll: '<path id="roll" class="fill" d="m-6 0\n\
-	c0.4 -7.3 11.3 -7.3 11.7 0\n\
-	-1.3 -6 -10.4 -6 -11.7 0"/>',
+	c0.4 -7.3 11.3 -7.3 11.7 0 -1.3 -6 -10.4 -6 -11.7 0"/>',
   upb: '<path id="upb" class="stroke" d="m-2.6 -9.4\n\
-	l2.6 8.8\n\
-	l2.6 -8.8"/>',
+	l2.6 8.8 2.6 -8.8"/>',
   dnb: '<g id="dnb">\n\
 	<path d="M-3.2 -2v-7.2m6.4 0v7.2" class="stroke"/>\n\
 	<path d="M-3.2 -6.8v-2.4l6.4 0v2.4" class="fill"/>\n\
@@ -16010,19 +15989,15 @@ font-style:italic; font-size:16px">tr</text>',
   opend: '<circle id="opend" class="stroke"\n\
 	cx="0" cy="-3" r="2.5"/>',
   snap: '<path id="snap" class="stroke" d="m-3 -6\n\
-	c0 -5 6 -5 6 0\n\
-	0 5 -6 5 -6 0\n\
+	c0 -5 6 -5 6 0 0 5 -6 5 -6 0\n\
 	M0 -5v6"/>',
   thumb: '<path id="thumb" class="stroke" d="m-2.5 -7\n\
-	c0 -6 5 -6 5 0\n\
-	0 6 -5 6 -5 0\n\
+	c0 -6 5 -6 5 0 0 6 -5 6 -5 0\n\
 	M-2.5 -9v4"/>',
   wedge: '<path id="wedge" class="fill" d="m0 -1l-1.5 -5h3l-1.5 5"/>',
   ltr: '<path id="ltr" class="fill"\n\
-	d="m0 -.4c2 -1.5 3.4 -1.9 3.9 .4\n\
-	0.2 .8 .7 .7 2.1 -.4\n\
-	v0.8c-2 1.5 -3.4 1.9 -3.9 -.4\n\
-	-.2 -.8 -.7 -.7 -2.1 .4z"/>',
+	d="m0 -.4c2 -1.5 3.4 -1.9 3.9 .4 0.2 .8 .7 .7 2.1 -.4\n\
+	v0.8c-2 1.5 -3.4 1.9 -3.9 -.4 -.2 -.8 -.7 -.7 -2.1 .4z"/>',
   custos: '<g id="custos">\n\
 	<path class="fill" d="m-4 0l2 2.5 2 -2.5 2 2.5 2 -2.5\n\
 		-2 -2.5 -2 2.5 -2 -2.5 -2 2.5"/>\n\
@@ -18088,11 +18063,6 @@ function do_begin_end(type,
 	var i, j, action, s
 
 	switch (type) {
-	default:
-//	case "ps":
-		if (opt != 'nosvg' && psvg)
-			psvg.ps_eval(text)
-		break
 	case "js":
 		js_inject(text)
 		break
@@ -19319,7 +19289,7 @@ function ly_width(s, wlw) {
 				sz = cwid('(') * swfac
 			} else {
 				j = p.indexOf(' ');
-				gene.curfont = gene.deffont = ly.font
+				set_font(ly.font)
 				if (j > 0)
 					sz = strwh(p.slice(0, j))[0]
 				else
@@ -20146,7 +20116,7 @@ function draw_gchord(s, gchy_min, gchy_max) {
 	for (ix = 0; ix < s.a_gch.length; ix++) {
 		gch = s.a_gch[ix];
 		use_font(gch.font);
-		gene.curfont = gene.deffont = gch.font;
+		set_font(gch.font);
 		h = gch.font.size;
 		w = gch.w;
 		x = s.x + gch.x;
@@ -20279,20 +20249,20 @@ function psxygl() { return false }
 	font_init();
 	init_tune()
 
-// export for modules
-Abc.prototype.clone = clone;
-Abc.prototype.deco_cnv = deco_cnv;
-Abc.prototype.err_bad_val_s = err_bad_val_s;
-Abc.prototype.font_class = font_class;
-Abc.prototype.gch_tr1 = gch_tr1;
-Abc.prototype.get_cfmt = function(k) { return cfmt[k] };
+// Abc functions used by the modules
+Abc.prototype.add_style = function(s) { style += s };
+Abc.prototype.cfmt = function() { return cfmt };
+Abc.prototype.get_a_gch = function() { return a_gch };
 Abc.prototype.get_cur_sy = function() { return cur_sy };
 Abc.prototype.get_curvoice = function() { return curvoice };
+Abc.prototype.get_delta_tb = function() { return delta_tb };
+Abc.prototype.get_decos = function() { return decos };
 Abc.prototype.get_fname = function() { return parse.ctx.fname };
 Abc.prototype.get_font = get_font;
 Abc.prototype.get_font_style = function() { return font_style };
-Abc.prototype.get_info = function(k) { return info[k] };
+Abc.prototype.get_glyphs = function() { return glyphs };
 Abc.prototype.get_img = function() { return img };
+Abc.prototype.get_maps = function() { return maps };
 Abc.prototype.get_multi = function() { return multicol };
 Abc.prototype.get_newpage = function() {
 	if (block.newpage) {
@@ -20301,29 +20271,61 @@ Abc.prototype.get_newpage = function() {
 	}
 };
 Abc.prototype.get_posy = function() { var t = posy; posy = 0; return t };
+Abc.prototype.get_staff_tb = function() { return staff_tb };
 Abc.prototype.get_top_v = function() { return par_sy.top_voice };
 Abc.prototype.get_tsfirst = function() { return tsfirst };
-Abc.prototype.set_font = set_font;
+Abc.prototype.get_voice_tb = function() { return voice_tb };
+Abc.prototype.info = function() { return info };
 Abc.prototype.set_tsfirst = function(s) { tsfirst = s };
-Abc.prototype.set_v_param = set_v_param;
 Abc.prototype.set_xhtml = function(wt) {
     var wto = write_text;
 	write_text = wt
 	return wto
 };
 Abc.prototype.sort_pitch = sort_pitch;
-Abc.prototype.strwh = strwh;
+Abc.prototype.stv_g = function() { return stv_g };
 Abc.prototype.svg_flush = svg_flush;
-Abc.prototype.syntax = syntax;
-Abc.prototype.unlksym = unlksym;
+
+    var	hook_init		// set after setting the first module hooks
+
+    // export functions and/or set module hooks
+    function set_hooks() {
+    var	h = abc2svg.modules.hooks,
+	gh = abc2svg.modules.g_hooks
+
+	function set_hs(hs) {
+	    var	of, h
+		for (var k = 0; k < hs.length; k++) {
+			h = hs[k]
+			if (typeof h == "string") {
+				if (!Abc.prototype[h])
+					eval("Abc.prototype." + h + "=" + h)
+			} else {
+				eval("of=" + h[0] + ";" +
+					h[0] + "=" + h[1] + ".bind(self,of)")
+			}
+		}
+	} // set_hs()
+
+	if (hook_init) {			// if new modules
+		if (h.length) {
+			set_hs(h);
+			gh.push.apply(gh, h);
+			abc2svg.modules.hooks = []
+		}
+	} else {				// all modules
+		if (h.length) {
+			gh.push.apply(gh, h);
+			abc2svg.modules.hooks = []
+		}
+		set_hs(gh);
+		hook_init = true
+	}
+    } // set_hooks()
 
     var	self = this
 
 }	// end of Abc()
-
-// module hooks
-abc2svg.inject = ''	// new modules
-abc2svg.g_inject = ''	// all modules
 
 // compatibility
 var Abc = abc2svg.Abc
@@ -20366,12 +20368,15 @@ abc2svg.modules = {
 		voicecombine: { fn: 'combine-1.js' },
 		diagram: { fn: 'diag-1.js' },
 		grid: { fn: 'grid-1.js' },
+		grid2: { fn: 'grid2-1.js' },
 		MIDI: { fn: 'MIDI-1.js' },
 		percmap: { fn: 'perc-1.js' },
 	sth: { fn: 'sth-1.js' },
-	all_m:
-/ambitus|beginps|break|capo|clip|voicecombine|diagram|grid|MIDI|percmap|sth/g,
+	all_m: new RegExp("ambitus|beginps|break|capo|clip|voicecombine|diagram|\
+grid2|grid|MIDI|percmap|sth", 'g'),
 	nreq: 0,
+	hooks: [],
+	g_hooks: [],
 
 	// scan the file and find the required modules
 	// @file: ABC file
@@ -20387,7 +20392,7 @@ abc2svg.modules = {
 			if (typeof printErr == 'function')
 				return printErr
 			if (typeof alert == 'function')
-				return alert
+				return function(m) { alert(m) }
 			if (typeof console == 'object')
 				return console.log
 			return function(){}
@@ -20435,7 +20440,7 @@ abc2svg.modules = {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// json-1.js for abc2svg-1.17.1 (2018-05-05)
+// json-1.js for abc2svg-1.17.2 (2018-05-22)
 //#javascript
 // Generate a JSON representation of ABC
 //
@@ -20583,7 +20588,7 @@ function AbcJSON(nindent) {			// indentation level
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// setmidi-1.js for abc2svg-1.17.1 (2018-05-05)
+// setmidi-1.js for abc2svg-1.17.2 (2018-05-22)
 //#javascript
 // Set the MIDI pitches in the notes
 //
@@ -20783,7 +20788,7 @@ function AbcMIDI() {
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// play-1.js for abc2svg-1.17.1 (2018-05-05)
+// play-1.js for abc2svg-1.17.2 (2018-05-22)
 // play-1.js - file to include in html pages with abc2svg-1.js for playing
 //
 // Copyright (C) 2015-2018 Jean-Francois Moine
@@ -22899,7 +22904,7 @@ if (navigator.requestMIDIAccess)
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// ambitus-1.js for abc2svg-1.17.1 (2018-05-05)
+// ambitus-1.js for abc2svg-1.17.2 (2018-05-22)
 // ambitus.js - module to insert an ambitus at start of a voice
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -22910,13 +22915,14 @@ if (navigator.requestMIDIAccess)
 //	%%ambitus 1
 
 abc2svg.ambitus = {
-    do_ambitus: function(voice_tb) {
+    do_ambitus: function() {
 
 // constants from the abc2svg core
     var	BASE_LEN = 1536,
 	NOTE = 8,
 	FULL = 0
-    var	s, v, p_v, min, max
+    var	s, v, p_v, min, max,
+	voice_tb = this.get_voice_tb()
 
 	for (v = 0; v < voice_tb.length; v++) {
 		p_v = voice_tb[v];
@@ -22950,64 +22956,73 @@ abc2svg.ambitus = {
 				shhd: 0
 			}]
 	}
-    } // do_ambitus()
+    }, // do_ambitus()
+
+    draw_symbols: function(of, p_voice) {
+// constants from the abc2svg core
+    var	d,
+	delta_tb = this.get_delta_tb(),
+	staff_tb = this.get_staff_tb(),
+	s = p_voice.sym
+
+	if (s.clef_type != undefined && s.nhd > 0) {
+		d = delta_tb[s.clef_type] + s.clef_line * 2;
+		s.notes[0].pit += d;
+		s.notes[1].pit += d;
+		s.x -= 26;
+		this.draw_note(s)
+		if (s.notes[1].pit - s.notes[0].pit > 4) {
+			this.xypath(s.x, 3 * (s.notes[1].pit - 18) + staff_tb[s.st].y);
+			this.out_svg('v' +
+				((s.notes[1].pit - s.notes[0].pit) * 3).toFixed(2) +
+				'" stroke-width=".6"/>\n');
+		}
+		s.x += 26;
+		p_voice.clef.nhd = 0
+	}
+	of(p_voice)
+    }, // draw_symbols()
+
+    output_music: function(of) {
+	if (this.cfmt().ambitus)
+		abc2svg.ambitus.do_ambitus.call(this)
+	of()
+    },
+
+    set_fmt: function(of, cmd, param, lock) {
+	if (cmd == "ambitus") {
+		this.cfmt().ambitus = param
+		return
+	}
+	of(cmd, param, lock)
+    },
+
+    set_width: function(of, s) {
+	if (s.clef_type != undefined && s.nhd > 0) {
+		s.wl = 40;
+		s.wr = 12
+	} else {
+		of(s)
+	}
+    }
 } // ambitus
 
-// inject code inside the core
-abc2svg.inject += '\
-var ambitus = {\n\
-	ds: draw_symbols,\n\
-	om: output_music,\n\
-	set_fmt: set_format,\n\
-	set_w: set_width\n\
-}\n\
-draw_symbols = function(p_voice) {\n\
-    var	d, s = p_voice.sym\n\
-	if (s.type == CLEF && s.nhd > 0) {\n\
-		d = delta_tb[s.clef_type] + s.clef_line * 2;\n\
-		s.notes[0].pit += d;\n\
-		s.notes[1].pit += d;\n\
-		s.x -= 26;\n\
-		draw_note(s);\n\
-		if (s.notes[1].pit - s.notes[0].pit > 4) {\n\
-			xypath(s.x, 3 * (s.notes[1].pit - 18) + staff_tb[s.st].y);\n\
-			output.push("v" +\n\
-				((s.notes[1].pit - s.notes[0].pit) * 3).toFixed(2) +\n\
-				\'" stroke-width=".6"/>\\\n\');\n\
-		}\n\
-		s.x += 26;\n\
-		p_voice.clef.nhd = 0\n\
-	}\n\
-	ambitus.ds(p_voice)\n\
-}\n\
-output_music = function() {\n\
-	if (cfmt.ambitus)\n\
-		abc2svg.ambitus.do_ambitus(voice_tb)\n\
-	ambitus.om()\n\
-}\n\
-set_format = function(cmd, param, lock) {\n\
-	if (cmd == "ambitus") {\n\
-		cfmt.ambitus = param\n\
-		return\n\
-	}\n\
-	ambitus.set_fmt(cmd, param, lock)\n\
-}\n\
-set_width = function(s) {\n\
-	if (s.type == CLEF && s.nhd > 0) {\n\
-		s.wl = 40;\n\
-		s.wr = 12\n\
-	} else {\n\
-		ambitus.set_w(s)\n\
-	}\n\
-}\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"draw_note",
+// hooks
+	[ "draw_symbols", "abc2svg.ambitus.draw_symbols" ],
+	[ "output_music", "abc2svg.ambitus.output_music" ],
+	[ "set_format", "abc2svg.ambitus.set_fmt" ],
+	[ "set_width", "abc2svg.ambitus.set_width" ]
+)
 
 // the module is loaded
 abc2svg.modules.ambitus.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// break-1.js for abc2svg-1.17.1 (2018-05-05)
+// break-1.js for abc2svg-1.17.2 (2018-05-22)
 // break.js - module to handle the %%break command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23020,23 +23035,24 @@ abc2svg.modules.ambitus.loaded = true
 abc2svg.break = {
 
 	// get the %%break parameters
-	get_break: function(abc, abcbrk, parm) {
+	get_break: function(parm) {
 	    var	BASE_LEN = 1536		// constant from the abc2svg core
 	    var	b, c, d, sq,
 		a = parm.split(/[ ,]/);
 
-		abcbrk.break = []
+		if (!this.break)
+			this.break = []
 		for (n = 1; n < a.length; n++) {
 			b = a[n];
 			c = b.match(/(\d)([a-z]?)(:\d\/\d)?/)
 			if (!c) {
-				abc.syntax(1, err_bad_val_s, "%%break")
+				this.syntax(1, err_bad_val_s, "%%break")
 				continue
 			}
 			if (c[2])
 				sq = c[2].charCodeAt(0) - 0x61
 			if (!c[3]) {
-				abcbrk.break.push({	// on measure bar
+				this.break.push({	// on measure bar
 						m: c[1],
 						t: 0,
 						sq: sq})
@@ -23044,10 +23060,10 @@ abc2svg.break = {
 			}
 			d = c[3].match(/:(\d)\/(\d)/)
 			if (!d || d[2] < 1) {
-				abc.syntax(1, "Bad denominator in %%break")
+				this.syntax(1, "Bad denominator in %%break")
 				continue
 			}
-			abcbrk.break.push({
+			this.break.push({
 					m: c[1],
 					t: d[1] * BASE_LEN / d[2],
 					sq: sq})
@@ -23055,17 +23071,17 @@ abc2svg.break = {
 	}, // get_break()
 
 	// insert the EOLs of %%break
-	do_break: function(abc, abcbrk, voice_tb) {
-	    var BAR = 0			// constant from the abc2svg core
+	do_break: function() {
 	    var	i, m, t, brk, seq,
-		v = abc.get_cur_sy().top_voice,
+		voice_tb = this.get_voice_tb()
+		v = this.get_cur_sy().top_voice,
 		s1 = voice_tb[v].sym
 
-		for (i = 0; i < abcbrk.break.length; i++) {
-			brk = abcbrk.break[i];
+		for (i = 0; i < this.break.length; i++) {
+			brk = this.break[i];
 			m = brk.m
 			for (s = s1; s; s = s.next) {
-				if (s.type == BAR && s.bar_num == m)
+				if (s.bar_type && s.bar_num == m)
 					break
 			}
 			if (!s)
@@ -23074,7 +23090,7 @@ abc2svg.break = {
 			if (brk.sq) {
 				seq = brk.sq
 				for (s = s.ts_next; s; s = s.ts_next) {
-					if (s.type == BAR
+					if (s.bar_type
 					 && s.bar_num == m) {
 						if (--seq == 0)
 							break
@@ -23097,34 +23113,37 @@ abc2svg.break = {
 			}
 			s.eoln = true
 		}
-	} // do_break()
+	}, // do_break()
+
+    do_pscom: function (of, text) {
+	if (text.slice(0, 6) == "break ")
+		abc2svg.break.get_break.call(this, text)
+	else
+		of(text)
+    },
+
+    set_bar_num: function(of) {
+	of()
+	if (this.break)
+		abc2svg.break.do_break.call(this)
+    }
 } // break
 
-// inject code inside the core
-abc2svg.inject += '\
-var brk = {\n\
-	psc: do_pscom,\n\
-	sbn: set_bar_num\n\
-}\n\
-do_pscom = function(text) {\n\
-	if (text.slice(0, 6) == "break ")\n\
-		abc2svg.break.get_break(self, brk, text)\n\
-	else\n\
-		brk.psc(text)\n\
-}\n\
-set_bar_num = function() {\n\
-	brk.sbn();\n\
-	if (brk.break)\n\
-		abc2svg.break.do_break(self, brk, voice_tb)\n\
-}\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"err_bad_val_s",
+	"syntax",
+// hooks
+	[ "do_pscom", "abc2svg.break.do_pscom" ],
+	[ "set_bar_num", "abc2svg.break.set_bar_num" ]
+);
 
 // the module is loaded
 abc2svg.modules.break.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// capo-1.js for abc2svg-1.17.1 (2018-05-05)
+// capo-1.js for abc2svg-1.17.2 (2018-05-22)
 // capo.js - module to add a capo chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23135,12 +23154,12 @@ abc2svg.modules.break.loaded = true
 //	%%capo n	'n' is the capo fret number
 
 abc2svg.capo = {
-   abc_capo: false,
 
 // function called when setting a chord symbol on a music element
-    gch_capo: function(abc, a_gch) {
+    gch_capo: function(a_gch) {
     var	gch, gch2, i2,
-	transp = abc.get_cfmt('capo'),
+	cfmt = this.cfmt(),
+	transp = cfmt.capo,
 	i = 0
 
 	while (1) {
@@ -23152,53 +23171,59 @@ abc2svg.capo = {
 	}
 	gch2 = Object.create(gch);
 	gch2.capo = false;		// (would be erased when setting gch)
-	gch2.text = abc.gch_tr1(gch2.text,
+	gch2.text = this.gch_tr1(gch2.text,
 			[0, 5, -2, 3, -4, 1, -6, -1, 4, -3, 2, -5][transp % 12])
-	if (!abc2svg.capo.abc_capo) {		// if new tune
-		abc2svg.capo.abc_capo = true;
+	if (!this.capo_first) {			// if new tune
+		this.capo_first = true;
 		gch2.text += "  (capo: " + transp.toString() + ")"
 	}
 
-	gch2.font = abc.get_font(abc.get_cfmt("capofont") ?
-					"capo" : "annotation")
+	gch2.font = this.get_font(cfmt.capofont ? "capo" : "annotation");
 	a_gch.splice(i, 0, gch2)
 
 	// set a mark in the first chord symbol for %%diagram
 	gch.capo = true
-    } // gch_capo()
+    }, // gch_capo()
+
+    gch_build: function(of, s) {
+    var	a_gch = this.get_a_gch()
+	if (this.cfmt().capo && a_gch)
+		abc2svg.capo.gch_capo.call(this, a_gch);
+	of(s)
+    },
+
+    output_music: function(of) {
+	this.capo_first = false;
+	of()
+    },
+
+    set_fmt: function(of, cmd, param, lock) {
+	if (cmd == "capo") {
+		this.cfmt().capo = param
+		return
+	}
+	of(cmd, param, lock)
+    }
+
 } // capo
 
-// inject code inside the core
-abc2svg.inject += '\
-var capo = {\n\
-	gch_b: gch_build,\n\
-	om: output_music,\n\
-	set_fmt: set_format\n\
-}\n\
-gch_build = function(s) {\n\
-	if (cfmt.capo && a_gch)\n\
-		abc2svg.capo.gch_capo(self, a_gch);\n\
-	capo.gch_b(s)\n\
-}\n\
-output_music = function() {\n\
-	abc2svg.capo.abc_capo = false;\n\
-	capo.om()\n\
-}\n\
-set_format = function(cmd, param, lock) {\n\
-	if (cmd == "capo") {\n\
-		cfmt.capo = param\n\
-		return\n\
-	}\n\
-	capo.set_fmt(cmd, param, lock)\n\
-}\n\
-'
+
+abc2svg.modules.hooks.push(
+// export
+	"gch_tr1",
+	"get_font",
+// hooks
+	[ "set_format", "abc2svg.capo.set_fmt" ],
+	[ "gch_build", "abc2svg.capo.gch_build" ],
+	[ "output_music", "abc2svg.capo.output_music" ]
+)
 
 // the module is loaded
 abc2svg.modules.capo.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// clip-1.js for abc2svg-1.17.1 (2018-05-05)
+// clip-1.js for abc2svg-1.17.2 (2018-05-22)
 // clip.js - module to handle the %%clip command
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23210,9 +23235,8 @@ abc2svg.modules.capo.loaded = true
 
 abc2svg.clip = {
 
-	// %%break start_measure [":" num "/" den] "-" end_measure ...
-	get_clip: function(abc, abcclip, parm) {
-	    var	BASE_LEN = 1536		// constant from the abc2svg core
+    get_clip: function(parm) {
+    var	BASE_LEN = 1536		// constant from the abc2svg core
 
 	// get the start/stop points
 	function get_symsel(a) {
@@ -23235,7 +23259,7 @@ abc2svg.clip = {
 		a = parm.split(/[ -]/)
 
 		if (a.length != 3) {
-			abc.syntax(1, abc.err_bad_val_s, "%%clip")
+			this.syntax(1, this.err_bad_val_s, "%%clip")
 			return
 		}
 		if (!a[1])
@@ -23244,20 +23268,20 @@ abc2svg.clip = {
 			b = get_symsel(a[1]);
 		c = get_symsel(a[2])
 		if (!b || !c) {
-			abc.syntax(1, abc.err_bad_val_s, "%%clip")
+			this.syntax(1, this.err_bad_val_s, "%%clip")
 			return
 		}
-		abcclip.clip = [b, c]
-	}, // get_clip()
+		this.clip = [b, c]
+    }, // get_clip()
 
-	// cut the tune
-	do_clip: function(abc, abcclip, voice_tb) {
-
-	    var	BAR = 0,		// constants from the abc2svg core
-		CLEF = 1,
-		KEY = 5,
-		METER = 6,
-		STAVES = 12
+    // cut the tune
+    do_clip: function() {
+    var	BAR = 0,		// constants from the abc2svg core
+	CLEF = 1,
+	KEY = 5,
+	METER = 6,
+	STAVES = 12
+    var	voice_tb = this.get_voice_tb()
 
 	// go to a global (measure + time)
 	function go_global_time(s, sel) {
@@ -23270,7 +23294,7 @@ abc2svg.clip = {
 					 && s2.time != 0)
 						break
 				}
-				if (s2.time < voice_tb[abc.get_cur_sy().top_voice].
+				if (s2.time < voice_tb[this.get_cur_sy().top_voice].
 								meter.wmeasure)
 					s = s2
 			}
@@ -23314,31 +23338,31 @@ abc2svg.clip = {
 	    var	s, s2, sy, p_voice, v
 
 		// remove the beginning of the tune
-		s = abc.get_tsfirst()
-		if (abcclip.clip[0].m > 0
-		 || abcclip.clip[0].t > 0) {
-			s = go_global_time(s, abcclip.clip[0])
+		s = this.get_tsfirst()
+		if (this.clip[0].m > 0
+		 || this.clip[0].t > 0) {
+			s = go_global_time(s, this.clip[0])
 			if (!s) {
-				abc.set_tsfirst(null)
+				this.set_tsfirst(null)
 				return
 			}
 
 			// update the start of voices
-			sy = abc.get_cur_sy()
-			for (s2 = abc.get_tsfirst(); s2 != s; s2 = s2.ts_next) {
+			sy = this.get_cur_sy()
+			for (s2 = this.get_tsfirst(); s2 != s; s2 = s2.ts_next) {
 				switch (s2.type) {
 				case CLEF:
 					s2.p_v.clef = s2
 					break
 				case KEY:
-					s2.p_v.key = abc.clone(s2.as.u.key)
+					s2.p_v.key = this.clone(s2.as.u.key)
 					break
 				case METER:
-					s2.p_v.meter = abc.clone(s2.as.u.meter)
+					s2.p_v.meter = this.clone(s2.as.u.meter)
 					break
 				case STAVES:
 					sy = s2.sy;
-					abc.set_cur_sy(sy)
+					this.set_cur_sy(sy)
 					break
 				}
 			}
@@ -23352,12 +23376,12 @@ abc2svg.clip = {
 				}
 				p_voice.sym = s2
 			}
-			abc.set_tsfirst(s)
+			this.set_tsfirst(s)
 			delete s.ts_prev
 		}
 
 		/* remove the end of the tune */
-		s = go_global_time(s, abcclip.clip[1])
+		s = go_global_time(s, this.clip[1])
 		if (!s)
 			return
 
@@ -23381,34 +23405,38 @@ abc2svg.clip = {
 				p_voice.sym = null
 		}
 		delete s.ts_prev.ts_next
-	} // do_clip()
+	}, // do_clip()
+
+    do_pscom: function (of, text) {
+	if (text.slice(0, 5) == "clip ")
+		abc2svg.clip.get_clip.call(this, text)
+	else
+		of(text)
+    },
+
+    set_bar_num: function(of) {
+	of()
+	if (this.clip)
+		abc2svg.clip.do_clip.call(this)
+    }
 } // clip
 
-// inject code inside the core
-abc2svg.inject += '\
-var clip = {\n\
-	psc: do_pscom,\n\
-	sbn: set_bar_num\n\
-}\n\
-do_pscom = function(text) {\n\
-	if (text.slice(0, 5) == "clip ")\n\
-		abc2svg.clip.get_clip(self, clip, text)\n\
-	else\n\
-		clip.psc(text)\n\
-}\n\
-set_bar_num = function() {\n\
-	clip.sbn();\n\
-	if (clip.clip)\n\
-		abc2svg.clip.do_clip(self, clip, voice_tb)\n\
-}\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"clone",
+	"err_bad_val_s",
+	"syntax",
+// hooks
+	[ "do_pscom", "abc2svg.clip.do_pscom" ],
+	[ "set_bar_num", "abc2svg.clip.set_bar_num" ]
+);
 
 // the module is loaded
 abc2svg.modules.clip.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// combine-1.js for abc2svg-1.17.1 (2018-05-05)
+// combine-1.js for abc2svg-1.17.2 (2018-05-22)
 // combine.js - module to add a combine chord line
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23421,7 +23449,7 @@ abc2svg.modules.clip.loaded = true
 abc2svg.combine = {
 
     // function called at start of the generation when multi-voices
-    comb_v: function(abc) {
+    comb_v: function() {
     var	NOTE = 8,		// constants from the abc2svg core
 	REST = 10,
 	SL_ABOVE = 0x01,
@@ -23474,7 +23502,7 @@ abc2svg.combine = {
 
 	s.notes = s.notes.concat(s2.notes);
 	s.nhd = nhd = s.notes.length - 1;
-	abc.sort_pitch(s)		// sort the notes by pitch
+	this.sort_pitch(s)		// sort the notes by pitch
 
 	if (s.combine >= 3) {		// remove unison heads
 		for (m = nhd; m > 0; m--) {
@@ -23515,7 +23543,7 @@ function do_combine(s) {
 			 && !s2.invis)
 				delete s.invis
 		} else {
-			combine_notes(s, s2)
+			combine_notes.call(this, s, s2)
 		}
 
 		if (s2.a_gch)
@@ -23526,23 +23554,23 @@ function do_combine(s) {
 			else
 				s.a_dd = s.a_dd.concat(s2.a_dd)
 		}
-		abc.unlksym(s2)			// remove the next symbol
+		this.unlksym(s2)			// remove the next symbol
 
 		// there may be more voices
-		if (s.in_tuplet || !may_combine(s))
+		if (s.in_tuplet || !may_combine.call(this, s))
 			break
 	}
 } // do_combine()
 
 	var s, s2, g, i, r
 
-	for (s = abc.get_tsfirst(); s; s = s.ts_next) {
+	for (s = this.get_tsfirst(); s; s = s.ts_next) {
 		switch (s.type) {
 		case REST:
 			if (s.combine == undefined || s.combine < 0)
 				continue
-			if (may_combine(s))
-				do_combine(s)
+			if (may_combine.call(this, s))
+				do_combine.call(this, s)
 			continue
 		default:
 			continue
@@ -23555,14 +23583,14 @@ function do_combine(s) {
 		if (!s.beam_st)
 			continue
 		if (s.beam_end) {
-			if (may_combine(s))
-				do_combine(s)
+			if (may_combine.call(this, s))
+				do_combine.call(this, s)
 			continue
 		}
 
 		s2 = s
 		while (1) {
-			if (!may_combine(s2)) {
+			if (!may_combine.call(this, s2)) {
 				s2 = null
 				break
 			}
@@ -23577,7 +23605,7 @@ function do_combine(s) {
 			continue
 		s2 = s
 		while (1) {
-			do_combine(s2)
+			do_combine.call(this, s2)
 //fixme: may have rests in beam
 			if (s2.beam_end)
 				break
@@ -23588,57 +23616,59 @@ function do_combine(s) {
 	}
     }, // comb_v()
 
+    do_pscom: function(of, text) {
+	if (text.slice(0, 13) == "voicecombine ")
+		this.set_v_param("combine", text.split(/[ \t]/)[1])
+	else
+		of(text)
+    },
+
+    new_note: function(of, gr, tp) {
+    var curvoice = this.get_curvoice()
+    var s = of(gr, tp)
+	if (s && s.notes && curvoice.combine != undefined)
+		s.combine = curvoice.combine
+	return s
+    },
+
+    set_stem_dir: function(of) {
+	of();
+	abc2svg.combine.comb_v.call(this)
+    },
+
     // set the combine parameter in the current voice
-    set_comb: function(abc, a) {
+    set_vp: function(of, a) {
     var	i,
-	curvoice = abc.get_curvoice()
+	curvoice = this.get_curvoice()
 
 	for (i = 0; i < a.length; i++) {
-		switch (a[i]) {
-		case "combine=":			// %%voicecombine
+		if (a[i] == "combine=") {	// %%voicecombine
 			curvoice.combine = a[i + 1]
 			break
 		}
 	}
-    } // set_comb()
+	of(a)
+    }
 } // combine
 
-// inject code inside the core
-abc2svg.inject += '\
-var combine = {\n\
-	new_n: new_note,\n\
-	psc: do_pscom,\n\
-	set_sd: set_stem_dir,\n\
-	set_vp: set_vp\n\
-}\n\
-new_note = function(gr, tp) {\n\
-	var s = combine.new_n(gr, tp)\n\
-	if (s && s.notes && curvoice.combine != undefined)\n\
-		s.combine = curvoice.combine\n\
-	return s\n\
-}\n\
-do_pscom = function(text) {\n\
-	if (text.slice(0, 13) == "voicecombine ")\n\
-		set_v_param("combine", text.split(/[ \t]/)[1])\n\
-	else\n\
-		combine.psc(text)\n\
-}\n\
-set_stem_dir = function() {\n\
-	combine.set_sd();\n\
-	abc2svg.combine.comb_v(self)\n\
-}\n\
-set_vp = function(a) {\n\
-	abc2svg.combine.set_comb(self, a);\n\
-	combine.set_vp(a)\n\
-}\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"set_v_param",
+	"sort_pitch",
+	"unlksym",
+// hooks
+	[ "do_pscom", "abc2svg.combine.do_pscom" ],
+	[ "new_note", "abc2svg.combine.new_note" ],
+	[ "set_stem_dir", "abc2svg.combine.set_stem_dir" ],
+	[ "set_vp", "abc2svg.combine.set_vp" ]
+);
 
 // the module is loaded
 abc2svg.modules.voicecombine.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// diag-1.js for abc2svg-1.17.1 (2018-05-05)
+// diag-1.js for abc2svg-1.17.2 (2018-05-22)
 // diag.js - module to insert guitar chord diagrams
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -23651,15 +23681,20 @@ abc2svg.modules.voicecombine.loaded = true
 abc2svg.diag = {
 
 // function called before tune generation
-    do_diag: function(abc, voice_tb) {
-    var	glyphs = abc.get_glyphs()
+    do_diag: function() {
+    var	glyphs = this.get_glyphs(),
+	voice_tb = this.get_voice_tb()
 
 	// create the decorations if not done yet
 	if (!glyphs['fb']) {
 	    var	i, j, d,
-		decos = abc.get_decos();
+		decos = this.get_decos();
 		ns = "CDEFGAB",
 		ms = ["", "m", "7", "m7", "maj7", "sus4"]
+
+		this.add_style("\
+\n.diag {font:6px sans-serif}\
+\n.frn {font:italic 7px sans-serif}")
 
 		for (i = 0; i < ns.length; i++) {
 			for (j = 0; j < ms.length; j++) {
@@ -24107,43 +24142,40 @@ M-10.2 -31h20.4"/>';
 			t = gch.otext || gch.text
 
 			// insert the diagram as a decoration
-			abc.deco_cnv(t.split(/[ \t/]/, 1), s, null)
+			this.deco_cnv(t.split(/[ \t/]/, 1), s, null)
 		}
 	}
-    } // do_diag()
+    }, // do_diag()
+
+    output_music: function(of) {
+	if (this.cfmt().diag)
+		abc2svg.diag.do_diag.call(this)
+	of()
+    },
+
+    set_fmt: function(of, cmd, param, lock) {
+	if (cmd == "diagram") {
+		this.cfmt().diag = param
+		return
+	}
+	of(cmd, param, lock)
+    }
 } // diag
 
-// inject code inside the core
-abc2svg.inject += '\
-Abc.prototype.get_decos = function() { return decos }\n\
-Abc.prototype.get_glyphs = function() { return glyphs }\n\
-var diag = {\n\
-	om: output_music,\n\
-	set_fmt: set_format\n\
-}\n\
-output_music = function() {\n\
-	if (cfmt.diag)\n\
-		abc2svg.diag.do_diag(self, voice_tb)\n\
-	diag.om()\n\
-}\n\
-set_format = function(cmd, param, lock) {\n\
-	if (cmd == "diagram") {\n\
-		cfmt.diag = param\n\
-		return\n\
-	}\n\
-	diag.set_fmt(cmd, param, lock)\n\
-}\n\
-\
-style += "\\n.diag {font-family:sansserif;font-size:6px}\
-\\n.frn {font-family:sansserif;font-style:italic;font-size:7px}"\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"deco_cnv",
+// hooks
+	[ "output_music", "abc2svg.diag.output_music" ],
+	[ "set_format", "abc2svg.diag.set_fmt" ]
+);
 
 // the module is loaded
 abc2svg.modules.diagram.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// grid-1.js for abc2svg-1.17.1 (2018-05-05)
+// grid-1.js for abc2svg-1.17.2 (2018-05-22)
 // grid.js - module to insert a chord grid before or after a tune
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24157,7 +24189,9 @@ abc2svg.modules.diagram.loaded = true
 abc2svg.grid = {
 
 // function called before tune generation
-    do_grid: function(abc, tsfirst, voice_tb) {
+    do_grid: function() {
+    var	tsfirst = this.get_tsfirst(),
+	voice_tb = this.get_voice_tb()
 
 // constants from the abc2svg core
     var	BASE_LEN = 1536,
@@ -24167,7 +24201,8 @@ abc2svg.grid = {
 	REST = 10,
 	BLOCK = 16
 
-    var	img, font_cl, cls
+    var	img, font_cl, cls,
+	cfmt = this.cfmt()
 
 function get_beat(s) {
     var	beat = BASE_LEN / 4
@@ -24175,10 +24210,6 @@ function get_beat(s) {
 	if (!s.a_meter[0] || s.a_meter[0].top[0] == 'C' || !s.a_meter[0].bot)
 		return beat;
 	beat = BASE_LEN / s.a_meter[0].bot[0] |0
-	if (isNaN(beat)) {
-		abc.syntax(1, '** Cannot get the beat')
-		return BASE_LEN / 4
-	}
 	if (s.a_meter[0].bot[0] == 8
 	 && s.a_meter[0].top[0] % 3 == 0)
 		beat = BASE_LEN / 8 * 3
@@ -24228,7 +24259,7 @@ function build_grid(chords, bars, font) {
 			cell += '  '
 		if (bar2 && bar2[0] == ':')
 			cell += '  ';
-		w = abc.strwh(cell)[0]
+		w = this.strwh(cell)[0]
 		if (w > wmx)
 			wmx = w
 	}
@@ -24247,18 +24278,17 @@ function build_grid(chords, bars, font) {
 	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
 	color="black" width="' + img.width.toFixed(0) +
 			'px" height="' + (hr * nr + 6).toFixed(0) + 'px"'
-	i = abc.get_cfmt("bgcolor")
+	i = cfmt.bgcolor
 	if (i)
 		line += ' style="background-color: ' + i + '"';
-	line += '>\n'
+	line += '>\n<style type="text/css">\n\
+.mid {text-anchor:middle}\n'
 
-	if (abc.get_cfmt('fullsvg')) {
-		line += '<style type="text/css">\n\
+	if (cfmt.fullsvg)
+		line += '\
 .stroke {stroke: currentColor; fill: none}\n\
-.chmid {text-anchor:middle}\n\
-.' + font_cl + ' {' + abc.style_font(font.name + '.' + font.size) +  '}\n\
-</style>\n'
-	}
+.' + font_cl + ' {' + this.style_font(font.name + '.' + font.size) +  '}\n'
+	line += '</style>\n'
 
 	// draw the lines
 	line += '<path class="stroke" d="\n';
@@ -24321,7 +24351,7 @@ function build_grid(chords, bars, font) {
 	chords = [],
 	chord = []
 
-	img = abc.get_img();
+	img = this.get_img();
 
 	// get the beat
 	beat = get_beat(voice_tb[0].meter);
@@ -24378,13 +24408,15 @@ function build_grid(chords, bars, font) {
 	}
 
 	// set the text style
-	font = abc.get_font('grid');
-	font_cl = abc.font_class(font)
-	cls = font_cl + ' chmid';
-	abc.set_font('grid');		// (for strwh())
+	if (!this.cfmt().gridfont)
+		this.param_set_font("gridfont", "serif 16");
+	font = this.get_font('grid');
+	font_cl = this.font_class(font)
+	cls = font_cl + " mid";
+	this.set_font('grid');		// (for strwh())
 
 	// create the grid
-	p_voice = voice_tb[abc.get_top_v()]
+	p_voice = voice_tb[this.get_top_v()]
 	s = {
 		type: BLOCK,
 		subtype: 'ml',
@@ -24392,11 +24424,11 @@ function build_grid(chords, bars, font) {
 		time: 0,
 		p_v: p_voice,
 		v: p_voice.v,
-		text: build_grid(chords, bars, font)
+		text: build_grid.call(this, chords, bars, font)
 	}
 
 	// and insert it in the tune
-	if (abc.get_cfmt('grid') < 0) {	// below
+	if (cfmt.grid < 0) {		// below
 		for (var s2 = tsfirst; s2.ts_next; s2 = s2.ts_next)
 			;
 		s.time = s2.time;
@@ -24410,42 +24442,136 @@ function build_grid(chords, bars, font) {
 		s.ts_next = tsfirst;
 		tsfirst.ts_prev = s;
 		tsfirst = s;
-		abc.set_tsfirst(s);
+		this.set_tsfirst(s);
 		p_voice.sym.prev = s;
 		p_voice.sym = s
 	}
-} // do_grid()
+    }, // do_grid()
+
+    output_music: function(of) {
+	if (this.cfmt().grid)
+		abc2svg.grid.do_grid.call(this);
+	of()
+    },
+
+    set_fmt: function(of, cmd, param, lock) {
+	if (cmd == "grid") {
+		this.cfmt().grid = param
+		return
+	}
+	of(cmd, param, lock)
+    }
 } // grid
 
-// inject code inside the core
-abc2svg.inject += '\
-var grid = {\n\
-	om: output_music,\n\
-	set_fmt: set_format\n\
-}\n\
-output_music = function() {\n\
-	if (cfmt.grid)\n\
-		abc2svg.grid.do_grid(self, tsfirst, voice_tb)\n\
-	grid.om()\n\
-}\n\
-set_format = function(cmd, param, lock) {\n\
-	if (cmd == "grid") {\n\
-		cfmt.grid = param\n\
-		return\n\
-	}\n\
-	grid.set_fmt(cmd, param, lock)\n\
-}\n\
-\
-style += "\\\n.chmid {text-anchor:middle}";\n\
-param_set_font("gridfont", "serif 16")\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"font_class",
+	"get_font",
+	"param_set_font",
+	"set_font",
+	"strwh",
+// hooks
+	[ "output_music", "abc2svg.grid.output_music" ],
+	[ "set_format", "abc2svg.grid.set_fmt" ]
+)
 
 // the module is loaded
 abc2svg.modules.grid.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// MIDI-1.js for abc2svg-1.17.1 (2018-05-05)
+// grid2-1.js for abc2svg-1.17.2 (2018-05-22)
+// grid2.js - module to replace a voice in the music by a chord grid
+//
+// Copyright (C) 2018 Jean-Francois Moine - GPL3+
+//
+// This module is loaded when "%%grid2" appears in a ABC source.
+//
+// Parameters
+//	%%grid2 y
+// This command must appear in a voice.
+
+abc2svg.grid2 = {
+
+// function called before tune generation
+    do_grid: function() {
+    var s, v, p_v,
+	voice_tb = this.get_voice_tb()
+
+	for (v = 0; v < voice_tb.length; v++) {
+		p_v = voice_tb[v]
+		if (!p_v.grid2)
+			continue
+		p_v.stafflines = '...';		// no staff lines
+		p_v.clef.invis = true;		// no clef
+		p_v.key.k_sf = p_v.key.k_a_acc = 0; // no key signature
+		p_v.staffnonote = 2		// draw the staff
+		for (s = p_v.sym; s; s = s.next) {
+			if (s.dur) {		// set all notes
+				s.invis = true;	//  as invisible
+				delete s.sl1;	//  with no slur
+				s.ti1 = 0	//  and no tie
+			}
+		}
+	}
+    }, // do_grid()
+
+    // draw the chord symbol in the middle of the staff
+    draw_chosym: function(s) {
+    var	ix, gch;
+
+	this.set_dscale(s.st)
+	for (ix = 0; ix < s.a_gch.length; ix++) {
+		gch = s.a_gch[ix]
+		if (gch.type != 'g')
+			continue
+		this.use_font(gch.font);
+		this.set_font(gch.font);
+		this.xy_str(s.x + gch.x, gch.y + 6, gch.text)
+	}
+    }, // draw_chosym()
+
+    draw_gchord: function(of, s, gchy_min, gchy_max) {
+	if (s.p_v.grid2)
+		abc2svg.grid2.draw_chosym.call(this, s)
+	else
+		of(s, gchy_min, gchy_max)
+    },
+
+    output_music: function(of) {
+	abc2svg.grid2.do_grid.call(this);
+	of()
+    },
+
+    set_format: function(of, cmd, param, lock) {
+	if (cmd == "grid2") {
+	    var	curvoice = this.get_curvoice()
+		if (curvoice)
+			curvoice.grid2 = param
+		return
+	}
+	of(cmd, param, lock)
+    }
+} // grid2
+
+abc2svg.modules.hooks.push(
+// export
+	"set_dscale",
+	"set_font",
+	"use_font",
+	"xy_str",
+// hooks
+	[ "draw_gchord",  "abc2svg.grid2.draw_gchord" ],
+	[ "output_music", "abc2svg.grid2.output_music" ],
+	[ "set_format", "abc2svg.grid2.set_format" ]
+);
+
+// the module is loaded
+abc2svg.modules.grid2.loaded = true
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// MIDI-1.js for abc2svg-1.17.2 (2018-05-22)
 // MIDI.js - module to handle the %%MIDI parameters
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24461,7 +24587,7 @@ abc2svg.modules.grid.loaded = true
 abc2svg.MIDI = {
 
     // parse %%MIDI commands
-    do_midi: function(abc, parm) {
+    do_midi: function(parm) {
     var	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
 	accs = new Int8Array([0, 1, 0, -1, 0, 0, 1, 0, -1, 0, -1, 0])
 
@@ -24485,10 +24611,8 @@ abc2svg.MIDI = {
     // normalize a note for mapping
     function norm(p) {
     var	a = p.match(/^([_^]*)([A-Ga-g])([,']*)$/)	// '
-	if (!a) {
-		abc.syntax()
+	if (!a)
 		return
-	}
 	if (p.match(/[A-Z]/)) {
 		p = p.toLowerCase();
 		if (p.indexOf("'") > 0)
@@ -24500,29 +24624,29 @@ abc2svg.MIDI = {
     } // norm()
 
 	var	n, v,
-	maps = abc.get_maps(),
+	maps = this.get_maps(),
 		a = parm.split(/\s+/)
 
 	switch (a[1]) {
 	case "channel":
 		if (a[2] != "10")
 			break
-		abc.set_v_param("midictl", "0 1") // channel 10 is bank 128 program 0
+		this.set_v_param("midictl", "0 1") // channel 10 is bank 128 program 0
 		break
 	case "drummap":
-		if (abc.get_cfmt("sound") != "play")
+		if (this.cfmt().sound != "play")
 			break
 //fixme: should have a 'MIDIdrum' per voice?
 		n = norm(a[2]);
 		v = tonote(a[3]);
 		if (!n || !v) {
-			abc.syntax(1, abc.err_bad_val_s, "%%MIDI drummap")
+			this.syntax(1, abc.err_bad_val_s, "%%MIDI drummap")
 			break
 		}
 		if (!maps.MIDIdrum)
 			maps.MIDIdrum = {}
 		maps.MIDIdrum[n] = [null, v];
-		abc.set_v_param("mididrum", "MIDIdrum")
+		this.set_v_param("mididrum", "MIDIdrum")
 		break
 	case "program":
 		if (a[3] != undefined)	// the channel is unused
@@ -24531,31 +24655,31 @@ abc2svg.MIDI = {
 			v = a[2];
 		v = parseInt(v)
 		if (isNaN(v) || v < 0 || v > 127) {
-			abc.syntax(1, "Bad program in %%MIDI")
+			this.syntax(1, "Bad program in %%MIDI")
 			return
 		}
-		abc.set_v_param("instr", v)
+		this.set_v_param("instr", v)
 		break
 	case "control":
 		n = parseInt(a[2])
 		if (isNaN(n) || n < 0 || n > 127) {
-			abc.syntax(1, "Bad controller number in %%MIDI")
+			this.syntax(1, "Bad controller number in %%MIDI")
 			return
 		}
 		v = parseInt(a[3])
 		if (isNaN(v) || v < 0 || v > 127) {
-			abc.syntax(1, "Bad controller value in %%MIDI")
+			this.syntax(1, "Bad controller value in %%MIDI")
 			return
 		}
-		abc.set_v_param("midictl", a[2] + ' ' + a[3])
+		this.set_v_param("midictl", a[2] + ' ' + a[3])
 		break
 	}
     }, // do_midi()
 
     // set the MIDI parameters in the current voice
-    set_midi: function(abc, a) {
+    set_midi: function(a) {
     var	i, item,
-	curvoice = abc.get_curvoice()
+	curvoice = this.get_curvoice()
 
 	for (i = 0; i < a.length; i++) {
 		switch (a[i]) {
@@ -24575,34 +24699,37 @@ abc2svg.MIDI = {
 			break
 		}
 	}
-    } // set_midi()
+    }, // set_midi()
+
+    do_pscom: function(of, text) {
+	if (text.slice(0, 5) == "MIDI ")
+		abc2svg.MIDI.do_midi.call(this, text)
+	else
+		of(text)
+    },
+
+    set_vp: function(of, a) {
+	abc2svg.MIDI.set_midi.call(this, a);
+	of(a)
+    }
 } // MIDI
 
-// inject code inside the core
-abc2svg.inject += '\
-Abc.prototype.get_maps = function maps() { return maps }\n\
-var midi = {\n\
-	psc: do_pscom,\n\
-	svp: set_vp\n\
-}\n\
-do_pscom = function(text) {\n\
-	if (text.slice(0, 5) == "MIDI ")\n\
-		abc2svg.MIDI.do_midi(self, text)\n\
-	else\n\
-		midi.psc(text)\n\
-}\n\
-set_vp = function(a) {\n\
-	abc2svg.MIDI.set_midi(self, a);\n\
-	midi.svp(a)\n\
-}\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"err_bad_val_s",
+	"set_v_param",
+	"syntax",
+// hooks
+	[ "do_pscom", "abc2svg.MIDI.do_pscom" ],
+	[ "set_vp", "abc2svg.MIDI.set_vp" ]
+);
 
 // the module is loaded
 abc2svg.modules.MIDI.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// perc-1.js for abc2svg-1.17.1 (2018-05-05)
+// perc-1.js for abc2svg-1.17.2 (2018-05-22)
 // perc.js - module to handle %%percmap
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24618,7 +24745,7 @@ abc2svg.modules.MIDI.loaded = true
 abc2svg.perc = {
 
     // parse %%percmap
-    do_perc: function(abc, parm) {
+    do_perc: function(parm) {
     var	pits = new Int8Array([0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6]),
 	accs = new Int8Array([0, 1, 0, -1, 0, 0, 1, 0, -1, 0, -1, 0])
 
@@ -24806,10 +24933,8 @@ var prn = {
     // normalize a note for mapping
     function norm(p) {
     var	a = p.match(/^([_^]*)([A-Ga-g])([,']*)$/)	// '
-	if (!a) {
-		abc.syntax()
+	if (!a)
 		return
-	}
 	if (p.match(/[A-Z]/)) {
 		p = p.toLowerCase();
 		if (p.indexOf("'") > 0)
@@ -24821,39 +24946,43 @@ var prn = {
     } // norm()
 
     var	n, v,
-	maps = abc.get_maps(),
+	maps = this.get_maps(),
 	a = parm.split(/\s+/);
 
 	n = norm(a[1])
 	if (!n) {
-		abc.syntax(1, abc.err_bad_val_s, "%%percmap")
+		this.syntax(1, abc.err_bad_val_s, "%%percmap")
 		return
 	}
-	if (abc.get_cfmt("sound") != "play") {		// !play
+	if (this.cfmt().sound != "play") {		// !play
 		if (!a[3])
 			return
 		if (!maps.MIDIdrum)
 			maps.MIDIdrum = {}
 		v = tonote(n)
+		if (!v) {
+			this.syntax(1, abc.err_bad_val_s, "%%percmap")
+			return
+		}
 		delete v.acc
 		maps.MIDIdrum[n] = [[a[3]], v]
 	} else {					// play
 		v = tonote(a[2])
 		if (!v) {
-			abc.syntax(1, abc.err_bad_val_s, "%%percmap")
+			this.syntax(1, abc.err_bad_val_s, "%%percmap")
 			return
 		}
 		if (!maps.MIDIdrum)
 			maps.MIDIdrum = {}
 		maps.MIDIdrum[n] = [null, v]
 	}
-	abc.set_v_param("perc", "MIDIdrum")
+	this.set_v_param("perc", "MIDIdrum")
     }, // do_perc()
 
     // set the MIDI parameters in the current voice
-    set_perc: function(abc, a) {
+    set_perc: function(a) {
     var	i, item,
-	curvoice = abc.get_curvoice()
+	curvoice = this.get_curvoice()
 
 	for (i = 0; i < a.length; i++) {
 		switch (a[i]) {
@@ -24867,34 +24996,1354 @@ var prn = {
 			break
 		}
 	}
-    } // set_perc()
+    }, // set_perc()
+
+    do_pscom: function(of, text) {
+	if (text.slice(0, 8) == "percmap ")
+		abc2svg.perc.do_perc.call(this, text)
+	else
+		of(text)
+    },
+
+    set_vp: function(of, a) {
+	abc2svg.perc.set_perc.call(this, a);
+	of(a)
+    }
 } // perc
 
-// inject code inside the core
-abc2svg.inject += '\
-Abc.prototype.get_maps = function maps() { return maps }\n\
-var perc = {\n\
-	psc: do_pscom,\n\
-	svp: set_vp\n\
-}\n\
-do_pscom = function(text) {\n\
-	if (text.slice(0, 8) == "percmap ")\n\
-		abc2svg.perc.do_perc(self, text)\n\
-	else\n\
-		perc.psc(text)\n\
-}\n\
-set_vp = function(a) {\n\
-	abc2svg.perc.set_perc(self, a);\n\
-	perc.svp(a)\n\
-}\n\
-'
+abc2svg.modules.hooks.push(
+// export
+	"err_bad_val_s",
+	"syntax",
+// hooks
+	[ "do_pscom", "abc2svg.perc.do_pscom" ],
+	[ "set_vp", "abc2svg.perc.set_vp" ]
+);
 
 // the module is loaded
 abc2svg.modules.percmap.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://github.com/moinejf/abc2svg.git
 // Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
-// sth-1.js for abc2svg-1.17.1 (2018-05-05)
+// psvg-1.js for abc2svg-1.17.2 (2018-05-22)
+// wps.js
+// (c) 2009 Tomas Hlavaty
+
+function isQuoted(V) {
+  return V.q;
+}
+
+function quote(V) {
+  V.q = true;
+  return V;
+}
+
+function unquote(V) {
+  delete V.q;
+  return V;
+}
+
+function Symbol(N) {
+  this.nm = N;
+  return this;
+}
+
+function isSymbol(V) {
+  return V &&  V.constructor === Symbol;
+}
+
+function symbolName(V) {
+  return V.nm;
+}
+
+function isArray(V) {
+  return V &&  V.constructor === Array;
+}
+
+function inDs(Ds, K) {
+  for(var I = Ds.length - 1; 0 <= I; --I) {
+	if("undefined" != typeof Ds[I][K])
+	  return Ds[I];
+  }
+  return false;
+}
+
+function member(C, L) {
+  return 0 <= L.indexOf(C);
+}
+
+function PsParser() {
+  var Self = this;
+  function init(L) {
+    Self.L = L;
+    Self.N = L.length;
+    Self.I = 0;
+    Self.D = 0;
+  }
+  function peek() {return Self.I < Self.N && Self.L[Self.I];}
+  function xchar() {return Self.I < Self.N && Self.L[Self.I++];}
+  function skip() { // TODO white space ffeed + null???
+    while(Self.I < Self.N && member(Self.L[Self.I], " \t\n"))
+      Self.I++;
+  }
+  function comment() {
+    while("%" == peek()) {
+      while(peek() && "\n" != peek())
+        xchar();
+      skip();
+    }
+  }
+  function text() {
+    // TODO hex text in <>
+    // TODO ASCII base-85 <~ and ~>
+    xchar();
+    var L = [];
+    var N = 1;
+    while(0 < N && peek()) {
+      var C = xchar();
+      switch(C) {
+        case "(":
+          N++;
+          break;
+        case ")":
+          N--;
+          if(N <= 0) C = false;
+          break;
+        case "\\":
+          C = xchar();
+          switch(C) {
+            case "(": break;
+            case ")": break;
+            case "\\": break;
+            case "n": C = "\n"; break;
+            case "r": C = "\r"; break;
+            case "t": C = "\t"; break;
+            // TODO \n (ignore \n) \b \f \ddd octal
+            default:
+              C = false;
+          }
+          break;
+      }
+      if(C !== false) L.push(C);
+    }
+    return L.join("");
+  }
+  function symbol() {
+    // TODO 1e10 1E-5 real numbers
+    // TODO radix numbers 8#1777 16#FFFE 2#1000
+    var C = xchar();
+    if(member(C, "()<>/% \t\n")) throw new Error("Symbol expected, got " + C);
+    var N = member(C, "+-0123456789.");
+    var F = "." == C;
+    var L = [C];
+    while(peek() && !member(peek(), "()<>[]{}/% \t\n")) {
+      C = xchar();
+      L.push(C);
+      if(N && !member(C, "0123456789")) {
+        if(!F && "." == C) F = true;
+        else N = false;
+      }
+    }
+    L = L.join("");
+    if(1 == L.length && member(L, "+-.")) N = false;
+    return N ? (F ? parseFloat(L) : parseInt(L, 10)) : new Symbol(L);
+  }
+  function token() {
+    skip();
+    switch(peek()) { // TODO read dict in <> <~~> <<>> immediate literal //
+      case false: return undefined;
+      case "%": return comment();
+      case "[": return new Symbol(xchar());
+      case "]": return new Symbol(xchar());
+      case "{": Self.D++; return new Symbol(xchar());
+      case "}": Self.D--; return new Symbol(xchar());
+      case "/": xchar(); var X = symbol(); return quote(X);
+      case "(": return text();
+      case "<":
+        xchar();
+        if("<" != peek()) throw new Error("Encoded strings not implemented yet");
+        xchar();
+        return new Symbol("<<");
+      case ">":
+        xchar();
+        if(">" != peek()) throw new Error("Unexpected >");
+        xchar();
+        return new Symbol(">>");
+      default: return symbol();
+    }
+  }
+  PsParser.prototype.init = init;
+  PsParser.prototype.peek = peek;
+  PsParser.prototype.token = token;
+  return this;
+}
+
+function Ps0(Os, Ds, Es) {
+  function run(X, Z) {
+    if(isSymbol(X) && !isQuoted(X)) { // executable name
+      var K = symbolName(X);
+      var D = inDs(Ds, K);
+      if(!D)
+        throw new Error("bind error '" + K + "'");
+      Es.push([false, D[K]]);
+    } else if(Z && isArray(X) && isQuoted(X)) { // proc from Es
+      if(0 < X.length) {
+        var F = X[0];
+        var R = quote(X.slice(1));
+        if(0 < R.length) Es.push([false, R]);
+        run(F, false);
+      }
+    } else if("function" == typeof X) X(); // operator
+    else Os.push(X);
+  }
+  function exec() {
+    var X = Os.pop();
+    run(X, false);
+  }
+  function step() {
+    var C = Es.pop();
+    var L = C.shift(); // TODO use for 'exit'
+    var X = C.pop();
+    for(var I = 0; I < C.length; I++)
+      Os.push(C[I]);
+    run(X, true);
+  }
+  var PsP = new PsParser;
+  function parse(L) {
+    PsP.init(L);
+    while(PsP.peek()) {
+      var T = PsP.token();
+      if(T || T === 0) {
+        Os.push(T);
+        if(PsP.D <= 0 || isSymbol(T) &&
+           (member(symbolName(T), "[]{}") ||
+            "<<" == symbolName(T) || ">>" == symbolName(T))) {
+          exec();
+          while(0 < Es.length)
+            step();
+        }
+      }
+    }
+    return Os;
+  }
+  Ps0.prototype.run = run;
+  Ps0.prototype.exec = exec;
+  Ps0.prototype.step = step;
+  Ps0.prototype.parse = parse;
+  return this;
+}
+
+function Wps(psvg_i) {
+	var psvg = psvg_i;
+  var Os = [];
+  var Sd = {};
+  var Ds = [Sd];
+  var Es = [];
+  var Ps = new Ps0(Os, Ds, Es);
+
+  // trivial
+  Sd["true"] = function() {Os.push(true);};
+  Sd["false"] = function() {Os.push(false);};
+  Sd["null"] = function() {Os.push(null);};
+  // math
+  Sd["sub"] = function() {var X = Os.pop(); Os.push(Os.pop() - X);};
+  Sd["mul"] = function() {Os.push(Os.pop() * Os.pop());};
+  Sd["div"] = function() {var X = Os.pop(); Os.push(Os.pop() / X);};
+  Sd["mod"] = function() {var X = Os.pop(); Os.push(Os.pop() % X);};
+  // stack
+  var M = {};
+  Sd["mark"] = function() {Os.push(M);};
+  Sd["counttomark"] = function() {
+    var N = 0;
+    for(var I = Os.length - 1; 0 <= I; I--)
+      if(M === Os[I]) return Os.push(N);
+      else N++;
+    throw new Error("Mark not found");
+  };
+  Sd["<<"] = Sd["mark"]; // TODO doc
+  Sd[">>"] = function() { // TODO doc
+    var D = {};
+    while(0 < Os.length) {
+      var V = Os.pop();
+      if(M === V) return Os.push(D);
+      D[Os.pop()] = V;
+    }
+    throw new Error("Mark not found");
+  };
+  Sd["exch"] = function() {
+    var Y = Os.pop();
+    var X = Os.pop();
+    Os.push(Y);
+    Os.push(X);
+  };
+  Sd["clear"] = function() {Os.length = 0;};
+  Sd["pop"] = function() {Os.pop();};
+  Sd["index"] = function() {
+    Os.push(Os[Os.length - 2 - Os.pop()]);
+  };
+  Sd["roll"] = function() { // TODO in ps
+    var J = Os.pop();
+    var N = Os.pop();
+    var X = [];
+    var Y = [];
+//jfm patch
+    if (J < 0)
+    	J = N + J
+    for(var I = 0; I < N; I++)
+      if(I < J) X.unshift(Os.pop());
+      else Y.unshift(Os.pop());
+    for(I = 0; I < J; I++) Os.push(X.shift());
+    for(I = 0; I < N - J; I++) Os.push(Y.shift());
+  };
+  Sd["copy"] = function() {
+	var N = Os.pop();
+	if("object" == typeof N) {
+	  var X = Os.pop();
+	  for(var I in X)
+        N[I] = X[I];
+      Os.push(N);
+    } else {
+      var X = Os.length - N;
+      for(var I = 0; I < N; I++)
+        Os.push(Os[X + I]);
+    }
+  };
+  // array
+  Sd["length"] = function() {Os.push(Os.pop().length);};
+  Sd["astore"] = function() {
+    var A = Os.pop();
+    var N = A.length;
+    for(var I = N - 1; 0 <= I; I--)
+      A[I] = Os.pop();
+    Os.push(A);
+  };
+  Sd["array"] = function() {Os.push(new Array(Os.pop()));};
+  // conditionals
+  Sd["eq"] = function() {var Y = Os.pop(); var X = Os.pop(); Os.push(X == Y);};
+  Sd["lt"] = function() {var Y = Os.pop(); var X = Os.pop(); Os.push(X < Y);};
+  // control
+  Sd["ifelse"] = function() {
+    var N = Os.pop();
+    var P = Os.pop();
+    var C = Os.pop();
+    Es.push([false, C === true ? P : N]);
+  };
+//jfm++
+	Sd["and"] = function() {
+		var A = Os.pop();
+		var B = Os.pop();
+		if (true === A || false === A) {
+			Os.push(A == true && B === true)
+			return
+		}
+		Os.push(A & B)
+	}
+//jfm--
+  Sd["repeat"] = function Xrepeat() { // TODO in ps
+    var B = Os.pop();
+    var N = Os.pop();
+    if(1 < N) Es.push([true, N - 1, B, Xrepeat]);
+    if(0 < N) Es.push([false, B]);
+  };
+  Sd["for"] = function Xfor() { // TODO in ps
+    var B = Os.pop();
+    var L = Os.pop();
+    var K = Os.pop();
+    var J = Os.pop();
+    if(K < 0) {
+      if(L <= J + K) Es.push([true, J + K, K, L, B, Xfor]);
+      if(L <= J) Es.push([false, J, B]);
+    } else {
+      if(J + K <= L) Es.push([true, J + K, K, L, B, Xfor]);
+      if(J <= L) Es.push([false, J, B]);
+    }
+  };
+  Sd["exec"] = function() {Es.push([false, Os.pop()]);};
+  Sd["cvx"] = function() {
+    var X = Os.pop();
+    if(isSymbol(X) && isQuoted(X)) Os.push(unquote(X)); // executable name
+    else if(isArray(X) && !isQuoted(X)) Os.push(quote(X)); // proc
+    // TODO string -> parse
+    else Os.push(X);
+  };
+  // dictionary
+  Sd["dict"] = function() {Os.pop(); Os.push({});};
+  Sd["get"] = function() {
+    var K = Os.pop();
+    var D = Os.pop();
+    // TODO other datatypes
+    if(isSymbol(K)) Os.push(D[symbolName(K)]);
+    else Os.push(D[K]);
+  };
+  Sd["getinterval"] = function() {
+    var N = Os.pop(),
+	K = Os.pop() + N,
+	D = Os.pop(),
+	A = []
+	while (--N >= 0)
+		A.push(D[K++])
+	Os.push(A);
+  };
+  Sd["put"] = function() {
+    var V = Os.pop();
+    var K = Os.pop();
+    var D = Os.pop();
+    // TODO other datatypes
+    if(isSymbol(K)) D[symbolName(K)] = V;
+    else D[K] = V;
+  };
+  Sd["begin"] = function() {Ds.push(Os.pop());};
+  Sd["end"] = function() {Ds.pop();};
+  Sd["currentdict"] = function() {Os.push(Ds[Ds.length - 1]);};
+  Sd["where"] = function() {
+    var K = symbolName(Os.pop());
+    var D = inDs(Ds, K);
+	if(D) {
+	  Os.push(D);
+	  Os.push(true);
+	} else Os.push(false);
+  };
+  // miscellaneous
+  Sd["save"] = function() {
+    var X = Ds.slice();
+    for(var I = 0; I < X.length; I++) {
+      var A = X[I];
+      var B = {};
+      for(var J in A)
+        B[J] = A[J];
+      X[I] = B;
+    }
+    Os.push(X);
+  };
+  Sd["restore"] = function() {
+    var X = Os.pop();
+    while(0 < Ds.length)
+      Ds.pop();
+    while(0 < X.length)
+      Ds.unshift(X.pop());
+  };
+  Sd["type"] = function() {
+    var A = Os.pop();
+    var X;
+    if(null === A) X = "nulltype";
+    else if(true === A || false === A) X = "booleantype";
+    else if(M === A) X = "marktype";
+    else if("string" == typeof A) X = "stringtype";
+    else if(isSymbol(A)) X = isQuoted(A) ? "nametype" : "operatortype";
+    else if("function" == typeof A) X = "operatortype";
+    else if(isArray(A)) X = "arraytype";
+    else if("object" == typeof A) X = "dicttype";
+    else if(1 * A == A) X = A % 1 == 0 ? "integertype" : "realtype";
+    else throw new Error("Undefined type '" + A + "'");
+    Os.push(X);
+    // filetype
+    // packedarraytype (LanguageLevel 2)
+    // fonttype
+    // gstatetype (LanguageLevel 2)
+    // savetype
+  };
+  var Sb = true;
+  Sd[".strictBind"] = function() {Sb = true === Os.pop();};
+  Sd["bind"] = function() {Os.push(bind(Os.pop()));};
+  function bind(X) {
+    if(isSymbol(X) && !isQuoted(X)) {
+//jfm++
+//      var K = symbolName(X);
+//      var D = inDs(Ds, K);
+//      if(Sb) {
+//        if(!D)
+//          throw new Error("bind error '" + K + "'");
+//        return bind(D[K]);
+//      } else return !D ? X : bind(D[K]);
+	return X
+//jfm--
+    } else if(isArray(X) && isQuoted(X)) {
+      var N = X.length;
+      var A = [];
+      for(var I = 0; I < N; I++) {
+        var Xi = X[I];
+        var Xb = bind(Xi);
+        if(isArray(Xi))
+          A = A.concat(isQuoted(Xi) ? quote([Xb]) : [Xb]);
+        else
+          A = A.concat(Xb);
+      }
+      return quote(A);
+    }
+    return X;
+  }
+  // debugging
+  Sd["="] = function() {var X = Os.pop(); alert(X && X.nm || X);}; // TODO
+  Sd["=="] = function() {alert(Os.pop());}; // TODO
+  Sd["stack"] = function() {alert(Os);}; // TODO
+  Sd["pstack"] = function() {alert(Os);}; // TODO
+  // js ffi
+  Sd[".call"] = function() {
+    var N = Os.pop();
+    var K = Os.pop();
+    var D = Os.pop();
+    var X = [];
+    for(var I = 0; I < N; I++) X.unshift(Os.pop());
+    if (!D[K]) throw new Error(".call: " + K + " undef")
+    Os.push(D[K].apply(D, X));
+  };
+//jfm++
+  Sd[".call0"] = function() {
+    var N = Os.pop(),
+	K = Os.pop(),
+	D = Os.pop(),
+	X = []
+    for(var I = 0; I < N; I++) X.unshift(Os.pop());
+    if (!D[K]) throw new Error(".call0: " + K + " undef")
+    D[K].apply(D, X);
+  };
+  Sd[".svg"] = function() {Os.push(psvg)};
+//jfm--
+  Sd[".math"] = function() {Os.push(Math);};
+  Sd[".date"] = function() {Os.push(new Date());}; // TODO split new and Date
+  Sd[".window"] = function() {Os.push(window);};
+  Sd[".callback"] = function() { // TODO event arg?
+    var X = Os.pop();
+    Os.push(function() {
+              Ps.run(X, true);
+              while(0 < Es.length)
+                Ps.step();
+            });
+  };
+  // html5
+  Sd[".minv"] = function() { // TODO in ps
+    var M = Os.pop();
+    var a = M[0]; var b = M[1];
+    var d = M[2]; var e = M[3];
+    var g = M[4]; var h = M[5];
+    Os.push([e, b, d, a, d*h-e*g, b*g-a*h]);
+  };
+  Sd[".mmul"] = function() { // TODO in ps
+    var B = Os.pop();
+    var A = Os.pop();
+    var a = A[0]; var b = A[1];
+    var d = A[2]; var e = A[3];
+    var g = A[4]; var h = A[5];
+    var r = B[0]; var s = B[1];
+    var u = B[2]; var v = B[3];
+    var x = B[4]; var y = B[5];
+    Os.push([a*r+b*u, a*s+b*v, d*r+e*u, d*s+e*v, g*r+h*u+x, g*s+h*v+y]);
+  };
+  Sd[".xy"] = function() { // TODO in ps
+    var M = Os.pop();
+    var Y = Os.pop();
+    var X = Os.pop();
+    Os.push(M[0] * X + M[2] * Y + M[4]);
+    Os.push(M[1] * X + M[3] * Y + M[5]);
+  };
+  // TODO js ffi to manipulate strings so the following can be in ps
+  Sd[".rgb"] = function() { // TODO in ps
+    var B = Os.pop();
+    var G = Os.pop();
+    var R = Os.pop();
+    Os.push("rgb(" + R + "," + G + "," + B + ")");
+  };
+  Sd[".rgba"] = function() { // TODO in ps
+    var A = Os.pop();
+    var B = Os.pop();
+    var G = Os.pop();
+    var R = Os.pop();
+    Os.push("rgba(" + R + "," + G + "," + B + "," + A + ")");
+  };
+
+  function parse() {
+    var T = arguments;
+    if(T.length)
+      for(var I = 0; I < T.length; I++)
+        Ps.parse(T[I]);
+    else Ps.parse(T);
+    return Os;
+  }
+  Wps.prototype.parse = parse;
+  return this;
+}
+// psvg.js - small PS to SVG convertor for abc2svg
+
+// Copyright (C) 2014-2018 Jean-Francois Moine
+//
+// This file is part of abc2svg-core.
+//
+// abc2svg-core is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// abc2svg-core is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
+
+function Psvg(abcobj_r) {
+    var	svgbuf = '',
+
+// SVG functions - adapted from abcm2ps svg.c
+	abcobj = abcobj_r,
+	wps = new Wps(this),
+	g = 0,			// graphic state
+	gchg,			// graphic change
+	gcur = {		// current graphic context
+		cx:0,
+		cy:0,
+		xoffs:0,
+		yoffs:0,
+		xscale: 1,
+		yscale: 1,
+		rotate: 0,
+		sin: 0,
+		cos: 1,
+		linewidth: 0.7,
+		dash: ''
+	},
+	gc_stack = [],		// graphic stack
+	x_rot = 0,
+	y_rot = 0,
+	font_n = "",
+	font_n_old = "",
+	font_s = 0,
+	path;
+
+// function called from Abc
+    function getorig() {
+	setg(0);
+	return [gcur.xoffs - gcur.xorig, gcur.yoffs - gcur.yorig]
+    }
+
+    function defg1() {
+	gchg = false;
+	setg(0);
+	svgbuf += "<g"
+	if (gcur.xscale != 1 || gcur.yscale != 1 || gcur.rotate) {
+		svgbuf += ' transform="'
+		if (gcur.xscale != 1 || gcur.yscale != 1) {
+			if (gcur.xscale == gcur.yscale)
+				svgbuf += "scale(" + gcur.xscale.toFixed(3) + ")"
+			else
+				svgbuf += "scale(" + gcur.xscale.toFixed(3) +
+						"," + gcur.yscale.toFixed(3) + ")"
+		}
+		if (gcur.rotate) {
+			if (gcur.xoffs || gcur.yoffs) {
+				var	x, xtmp = gcur.xoffs,
+					y = gcur.yoffs,
+					_sin = gcur.sin,
+					_cos = gcur.cos;
+				x = xtmp * _cos - y * _sin;
+				y = xtmp * _sin + y * _cos;
+				svgbuf += " translate(" + x.toFixed(2) + "," +
+						y.toFixed(2) + ")";
+				x_rot = gcur.xoffs;
+				y_rot = gcur.yoffs;
+				gcur.xoffs = 0;
+				gcur.yoffs = 0
+			}
+			svgbuf += " rotate(" + gcur.rotate.toFixed(2) + ")"
+		}
+		svgbuf += '"'
+	}
+	output_font(false)
+	if (gcur.rgb)
+		svgbuf += ' style="color:' + gcur.rgb + '"';
+	svgbuf += ">\n";
+	g = 1
+    }
+
+    function objdup(obj) {
+	var	k, tmp = new obj.constructor()
+	for (k in obj)
+	    if (obj.hasOwnProperty(k))
+		tmp[k] = obj[k]
+	return tmp
+    }
+
+    function output_font(back) {
+	var	name = gcur.font_n
+	if (!name)
+		return
+	var	prop = "",
+		i = name.indexOf("Italic"),
+		j = 100,
+		o = name.indexOf("Oblique"),
+		b = name.indexOf("Bold"),
+		flags = 0
+	if (b > 0) {
+		prop = ' font-weight="bold"';
+		j = b;
+		flags = 2
+	}
+	if (i > 0 || o > 0) {
+		if (i > 0) {
+			prop += ' font-style="italic"';
+			if (i < j)
+				j = i;
+			flags |= 4
+		}
+		if (o > 0) {
+			prop += ' font-style="oblique"';
+			if (o < j)
+				j = o;
+			flags = 8
+		}
+	}
+	if (j != 100) {
+		if (name[j - 1] == '-')
+			j--;
+		name = name.slice(0, j)
+	}
+
+	if (back) {
+		if (!(flags & 2)
+		 && font_n_old.indexOf("Bold") >= 0)
+			prop += ' font-weight="normal"';
+		if (!(flags & 12)
+		 && (font_n_old.indexOf("Italic") >= 0
+		  || font_n_old.indexOf("Oblique") >= 0))
+			prop += ' font-style="normal"'
+	}
+	svgbuf += ' font-family="' + name + '"' +
+		prop + ' font-size="' + gcur.font_s + '"'
+    }
+
+    function path_def() {
+	if (path)
+		return
+	setg(1);
+	gcur.px = gcur.cx;
+	gcur.py = gcur.cy;
+	path = '<path d="m' + (gcur.xoffs + gcur.cx).toFixed(2) +
+		' ' + (gcur.yoffs - gcur.cy).toFixed(2) + '\n'
+    }
+
+    function path_end() {
+	svgbuf += path;
+	path = ''
+    }
+
+    function setg(newg) {
+	if (g == 2) {
+		svgbuf += "</text>\n";
+		g = 1
+	}
+	if (newg == 0) {
+		if (g) {
+			g = 0;
+			svgbuf += "</g>\n"
+			if (gcur.rotate) {
+				gcur.xoffs = x_rot;
+				gcur.yoffs = y_rot;
+				x_rot = 0;
+				y_rot = 0
+			}
+		}
+	} else if (gchg) {
+		defg1()
+	}
+    }
+
+    function strw(s) {
+	return s.length * gcur.font_s * 0.5	// fixme: approximate value
+    }
+    Psvg.prototype.strw = strw;
+
+// graphic functions called from wps.js
+    function arc(x, y, r, a1, a2, arcn) {
+	var x1, y1, x2, y2
+	if (a1 >= 360)
+		a1 -= 360
+	if (a2 >= 360)
+		a2 -= 360;
+	x1 = x + r * Math.cos(a1 * Math.PI / 180);
+	y1 = y + r * Math.sin(a1 * Math.PI / 180)
+
+	if (gcur.cx != undefined) {
+		if (path) {
+			if (x1 != gcur.cx || y1 != gcur.cy)
+				path += 'l'
+			else
+				path += 'm';
+			path += (x1 - gcur.cx).toFixed(2) + " " +
+				(-(y1 - gcur.cy)).toFixed(2)
+		} else {
+			gcur.cx = x1;
+			gcur.cy = y1;
+			path_def()
+		}
+	} else {
+		if (path)		// should not occur
+			path = ''
+		gcur.cx = x1;
+		gcur.cy = y1;
+		path_def()
+	}
+
+	if (a1 == a2) {			/* circle */
+		a2 = 180 - a1;
+		x2 = x + r * Math.cos(a2 * Math.PI / 180);
+		y2 = y + r * Math.sin(a2 * Math.PI / 180);
+		path += 'a' + r.toFixed(2) + ' ' + r.toFixed(2) + ' 0 0 ' +
+			(arcn ? '1 ' : '0 ') +
+			(x2 - x1).toFixed(2) + ' ' +
+			(y1 - y2).toFixed(2) + ' ' +
+			r.toFixed(2) + ' ' + r.toFixed(2) + ' 0 0 ' +
+			(arcn ? '1 ' : '0 ') +
+			(x1 - x2).toFixed(2) + ' ' +
+			(y2 - y1).toFixed(2) + '\n';
+		gcur.cx = x1;
+		gcur.cy = y1
+	} else {
+		x2 = x + r * Math.cos(a2 * Math.PI / 180);
+		y2 = y + r * Math.sin(a2 * Math.PI / 180);
+		path += 'a' + r.toFixed(2) + ' ' + r.toFixed(2) + ' 0 0 ' +
+			(arcn ? '1 ' : '0 ') +
+			(x2 - x1).toFixed(2) + ' ' +
+			(y1 - y2).toFixed(2) + '\n';
+		gcur.cx = x2;
+		gcur.cy = y2
+	}
+    }
+    Psvg.prototype.arc = arc
+
+    Psvg.prototype.arcn = function(x, y, r, a1, a2) {
+	arc(x, y, r, a1, a2, true)
+    }
+
+    Psvg.prototype.closepath = function() {
+	if (path && gcur.cx)
+		rlineto(gcur.px - gcur.cx, gcur.py - gcur.cy)
+    }
+
+    Psvg.prototype.cx = function() {
+	return gcur.cx
+    }
+
+    Psvg.prototype.cy = function() {
+	return gcur.cy
+    }
+
+    Psvg.prototype.curveto = function(x1, y1, x2, y2, x, y) {
+	path_def();
+	path += "\tC" + 
+		(gcur.xoffs + x1).toFixed(2) + " " + (gcur.yoffs - y1).toFixed(2) + " " +
+		(gcur.xoffs + x2).toFixed(2) + " " + (gcur.yoffs - y2).toFixed(2) + " " +
+		(gcur.xoffs + x).toFixed(2) + " " + (gcur.yoffs - y).toFixed(2) + "\n";
+	gcur.cx = x;
+	gcur.cy = y
+    }
+
+    Psvg.prototype.eofill = function() {
+	path_end();
+	svgbuf += '" fill-rule="evenodd" fill="currentColor"/>\n'
+    }
+
+    Psvg.prototype.fill = function() {
+	path_end();
+	svgbuf += '" fill="currentColor"/>\n'
+    }
+
+    Psvg.prototype.gsave = function() {
+	gc_stack.push(objdup(gcur))
+    }
+
+    Psvg.prototype.grestore = function() {
+	gcur = gc_stack.pop();
+	gchg = true
+    }
+
+    Psvg.prototype.lineto = function(x, y) {
+	path_def()
+	if (x == gcur.cx)
+		path += "\tv" + (gcur.cy - y).toFixed(2) + "\n"
+	else if (y == gcur.cy)
+		path += "\th" + (x - gcur.cx).toFixed(2) + "\n"
+	else
+		path += "\tl" + (x - gcur.cx).toFixed(2) + " " +
+			(gcur.cy - y).toFixed(2) + "\n";
+	gcur.cx = x;
+	gcur.cy = y
+    }
+
+    Psvg.prototype.moveto = function(x, y) {
+	gcur.cx = x;
+	gcur.cy = y
+	if (path) {
+		path += "\tM" + (gcur.xoffs + gcur.cx).toFixed(2) + " " +
+				(gcur.yoffs - gcur.cy).toFixed(2) + "\n"
+	} else if (g == 2) {
+		svgbuf += "</text>\n";
+		g = 1
+	}
+    }
+
+    Psvg.prototype.newpath = function() {
+	gcur.cx = gcur.cy = undefined
+    }
+
+    Psvg.prototype.rcurveto = function(x1, y1, x2, y2, x, y) {
+	path_def();
+	path += "\tc" + 
+		x1.toFixed(2) + " " + (-y1).toFixed(2) + " " +
+		x2.toFixed(2) + " " + (-y2).toFixed(2) + " " +
+		x.toFixed(2) + " " + (-y).toFixed(2) + "\n";
+	gcur.cx += x;
+	gcur.cy += y
+    }
+
+    function rlineto(x, y) {
+	path_def()
+	if (x == 0)
+		path += "\tv" + (-y).toFixed(2) + "\n"
+	else if (y == 0)
+		path += "\th" + x.toFixed(2) + "\n"
+	else
+		path += "\tl" + x.toFixed(2) + " " +
+			(-y).toFixed(2) + "\n";
+	gcur.cx += x;
+	gcur.cy += y
+    }
+    Psvg.prototype.rlineto = rlineto;
+
+    Psvg.prototype.rmoveto = function(x, y) {
+	if (path) {
+		path += "\tm" + x.toFixed(2) + " " +
+				(-y).toFixed(2) + "\n"
+	} else if (g == 2) {
+		svgbuf += "</text>\n";
+		g = 1
+	}
+	gcur.cx += x;
+	gcur.cy += y
+    }
+
+    Psvg.prototype.rotate = function(a) {
+	setg(0)
+
+	// convert orig and currentpoint coord to absolute coord
+	var	x, xtmp = gcur.xoffs,
+		y = gcur.yoffs,
+		_sin = gcur.sin,
+		_cos = gcur.cos;
+	x = xtmp * _cos - y * _sin;
+	y = xtmp * _sin + y * _cos;
+	gcur.xoffs = x / gcur.xscale;
+	gcur.yoffs = y / gcur.yscale;
+
+	xtmp = gcur.cx;
+	y = gcur.cy;
+	x = xtmp * _cos - y * _sin;
+	y = -xtmp * _sin + y * _cos;
+	gcur.cx = x / gcur.xscale;
+	gcur.cy = y / gcur.yscale;
+
+	// rotate
+	a = 360 - a;
+	gcur.rotate += a
+	if (gcur.rotate > 180)
+		gcur.rotate -= 360
+	else if (gcur.rotate <= -180)
+		gcur.rotate += 360
+	a = gcur.rotate * Math.PI / 180;
+	gcur.sin = _sin = Math.sin(a);
+	gcur.cos = _cos = Math.cos(a);
+	x = gcur.cx;
+	gcur.cx = (x * _cos + gcur.cy * _sin) * gcur.xscale;
+	gcur.cy = (-x * _sin + gcur.cy * _cos) * gcur.yscale;
+	x = gcur.xoffs;
+	gcur.xoffs = (x * _cos + gcur.yoffs * _sin) *
+			gcur.xscale;
+	gcur.yoffs = (-x * _sin + gcur.yoffs * _cos) *
+			gcur.yscale;
+	gchg = true
+    }
+
+    Psvg.prototype.scale = function(sx, sy) {
+	gcur.xoffs /= sx;
+	gcur.yoffs /= sy;
+	gcur.cx /= sx;
+	gcur.cy /= sy;
+	gcur.xscale *= sx;
+	gcur.yscale *= sy;
+	gchg = true
+    }
+
+    Psvg.prototype.selectfont = function(s, h) {
+	s = s.nm;			// Symbol
+	if (font_s != h || s != font_n) {
+		gcur.font_n_old = gcur.font_n;
+		gcur.font_n = s;
+		gcur.font_s = h;
+		gchg = true
+	}
+    }
+
+    Psvg.prototype.setdash = function(a, o) {
+	var n = a.length, i
+	if (n == 0) {
+		gcur.dash= ''
+		return
+	}
+	gcur.dash = ' stroke-dashoffset="' + o + '"  stroke-dasharray="';
+	i = 0
+	while (1) {
+		gcur.dash += a[i]
+		if (--n == 0)
+			break
+		gcur.dash += ' '
+	}
+	gcur.dash += '"'
+    }
+
+    Psvg.prototype.setlinewidth = function(w) {
+	gcur.linewidth = w
+    }
+
+    Psvg.prototype.setrgbcolor = function(r, g, b) {
+	var rgb = 0x1000000 +
+		(Math.floor(r * 255) << 16) +
+		(Math.floor(g * 255) << 8) +
+		Math.floor(b * 255);
+	rgb = rgb.toString(16);
+	rgb = rgb.replace('1', '#')
+	if (rgb != gcur.rgb) {
+		gcur.rgb = rgb;
+		gchg = true
+	}
+    }
+
+    Psvg.prototype.show = function(s) {
+	var span, x, y
+	if (gchg) {
+		if (g == 2)
+			span = true
+		else
+			defg1()
+	}
+	x = gcur.cx;
+	y = gcur.cy
+	if (span) {
+		svgbuf += "<tspan\n\t";
+		output_font(true);
+		svgbuf += ">"
+	} else if (g != 2) {
+		svgbuf += '<text x="' + (x + gcur.xoffs).toFixed(2) + '" y="' +
+				(gcur.yoffs - y).toFixed(2) + '">';
+		g = 2
+	}
+	svgbuf += s.replace(/<|>|&|  /g, function(c){
+			switch (c) {
+			case '<': return "&lt;"
+			case '>': return "&gt;"
+			case '&': return "&amp;"
+			case '  ': return '  '		// space + nbspace
+			}
+		})
+	if (span)
+		svgbuf += "</tspan>";
+	gcur.cx = x + strw(s)
+    }
+
+    Psvg.prototype.stroke = function() {
+	path_end()
+	if (gcur.linewidth != 0.7)
+		svgbuf += '" stroke-width="' + gcur.linewidth.toFixed(2);
+	svgbuf += '" stroke="currentColor" fill="none"' + gcur.dash + '/>\n'
+    }
+
+    Psvg.prototype.translate = function(x, y) {
+	gcur.xoffs += x;
+	gcur.yoffs -= y;
+	gcur.cx -= x;
+	gcur.cy -= y
+    }
+
+// abcm2ps functions
+    Psvg.prototype.arp = function(val, x, y) {
+    var	xy = getorig();
+	ps_flush();
+	abcobj.out_arp((x + xy[0]) * abcobj.stv_g().scale, y - xy[1], val)
+    }
+    Psvg.prototype.ltr = function(val, x, y) {
+    var	xy = getorig();
+	ps_flush();
+	abcobj.out_ltr((x + xy[0]) * abcobj.stv_g().scale, y - xy[1], val)
+    }
+    Psvg.prototype.xygl = function(x, y, gl) {
+    var	xy = getorig();
+	ps_flush();
+	abcobj.xygl((x + xy[0]) * abcobj.stv_g().scale, y - xy[1], gl)
+    }
+    Psvg.prototype.xygls = function(str, x, y, gl) {
+    var	xy = getorig();
+	ps_flush();
+	abcobj.out_deco_str((x + xy[0]) * abcobj.stv_g().scale, y - xy[1], gl, str)
+    }
+    Psvg.prototype.xyglv = function(val, x, y, gl) {
+    var	xy = getorig();
+	ps_flush();
+	abcobj.out_deco_val((x + xy[0]) * abcobj.stv_g().scale, y - xy[1], gl, val)
+    }
+    Psvg.prototype.y0 = function(y) {
+    var	staff_tb = abcobj.get_staff_tb()
+	return y + staff_tb[0].y
+    }
+    Psvg.prototype.y1 = function(y) {
+    var	staff_tb = abcobj.get_staff_tb()
+	return y + staff_tb[1].y
+    }
+
+// flush the PS buffer
+function ps_flush(g0) {
+	if (g0)
+		setg(0);
+	if (!svgbuf)
+		return
+	abcobj.out_svg(svgbuf);
+	svgbuf = ''
+}
+Psvg.prototype.ps_flush = ps_flush
+
+// evaluate a PS user sequence (%beginps .. %%endps)
+Psvg.prototype.ps_eval = function(txt) {
+	wps.parse(txt);
+	ps_flush()
+}
+
+// ------ output builtin decorations
+// common part
+function pscall(f, x, y, script) {
+	gcur.xorig = gcur.xoffs = abcobj.sx(0);
+	gcur.yorig = gcur.yoffs = abcobj.sy(0);
+	gcur.cx = 0;
+	gcur.cy = 0;
+	wps.parse(script +
+		(x / abcobj.stv_g().scale).toFixed(2) + ' ' + y.toFixed(2) + ' ' + f);
+	ps_flush(true)			// + setg(0)
+	return true
+}
+
+// try to generate a decoration by PS
+Psvg.prototype.psdeco = function(f, x, y, de) {
+	var	dd, de2, script, defl,
+		Os = wps.parse('/' + f + ' where'),
+		A = Os.pop(),
+	staff_tb = abcobj.get_staff_tb()
+
+	if (!A)
+		return false;
+	defl = 0
+	if (de.defl.nost)
+		defl = 1
+	if (de.defl.noen)
+		defl |= 2
+	if (de.s.stem >= 0)
+		defl |= 4;
+
+	Os.pop();
+	script = '/defl ' + defl + ' def '
+	if (de.lden) {
+		script += x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+		de2 = de.start;
+		x = de2.x;
+		y = de2.y + staff_tb[de2.st].y
+		if (x > de.x - 20)
+			x = de.x - 20
+	}
+	dd = de.dd
+	if (de.has_val) {
+		script += de.val + ' '
+	} else if (dd.str) {
+		script += '(' + dd.str + ') ';
+		y += dd.h * 0.2
+	}
+	return pscall(f, x, y, script)
+}
+
+// try to generate a glyph by PS
+Psvg.prototype.psxygl = function(x, y, gl) {
+	var	Os = wps.parse('/' + gl + ' where'),
+		A = Os.pop()
+	if (!A)
+		return false
+	Os.pop()
+	return pscall(gl, x, y, 'dlw ')
+}
+
+Psvg.prototype.svgcall = function(f, x, y, v1, v2) {
+    var	xy = getorig();
+	ps_flush();
+	f((x + xy[0]) * abcobj.stv_g().scale, y - xy[1], v1, v2)
+}
+
+//  initialize the PostScript functions
+	wps.parse("\
+currentdict/systemdict currentdict put\n\
+systemdict/{/mark cvx put\n\
+systemdict/[/mark cvx put\n\
+systemdict/]\n\
+/counttomark cvx\n\
+/array cvx\n\
+/astore cvx\n\
+/exch cvx\n\
+/pop cvx\n\
+5 array astore cvx put\n\
+systemdict/}/] cvx/cvx cvx 2 array astore cvx put\n\
+systemdict/def{currentdict 2 index 2 index put pop pop}put\n\
+\n\
+/maxlength 1000 def % TODO\n\
+/.bdef{bind def}bind def\n\
+/.xdef{exch def}.bdef\n\
+/dup{0 index}.bdef\n\
+/load{dup where pop exch get}.bdef\n\
+/.ldef{load def}.bdef\n\
+/if{{}ifelse}.bdef\n\
+/cleartomark{array pop}.bdef\n\
+/known{exch begin where{currentdict eq}{false}if end}.bdef\n\
+/store{1 index where{3 1 roll put}{def}ifelse}.bdef\n\
+/not{{false}{true}ifelse}.bdef\n\
+%/.logand{{{true}{false}ifelse}{pop false}ifelse}.bdef\n\
+%/and/.logand .ldef % TODO numeric and\n\
+/.logor{{pop true}{{true}{false}ifelse}ifelse}.bdef\n\
+/or/.logor .ldef % TODO numeric or\n\
+/ne{eq not}.bdef\n\
+/ge{lt not}.bdef\n\
+/le{1 index 1 index eq 3 1 roll lt or}.bdef\n\
+/gt{le not}.bdef\n\
+/.repeat{1 1 4 2 roll for}.bdef\n\
+\n\
+%% math\n\
+\n\
+/floor{.math(floor)1 .call}.bdef\n\
+\n\
+/neg{0 exch sub}.bdef\n\
+/add{neg sub}.bdef\n\
+/idiv{div floor}.bdef\n\
+\n\
+/.pi{.math(PI)get}.bdef\n\
+\n\
+/abs{.math(abs)1 .call}.bdef\n\
+%/.acos{.math(acos)1 .call}.bdef\n\
+%/.asin{.math(asin)1 .call}.bdef\n\
+/atan{.math(atan2)2 .call 180 mul .pi div}.bdef\n\
+%/.atan2{.math(atan2)2 .call}.bdef\n\
+%/ceiling{.math(ceil)1 .call}.bdef\n\
+/cos{.pi mul 180 div .math(cos)1 .call}.bdef\n\
+%/.exp{.math(exp)1 .call}.bdef\n\
+%/log{.math(log)1 .call}.bdef\n\
+%/.max{.math(max)2 .call}.bdef\n\
+%/.min{.math(min)2 .call}.bdef\n\
+%/.pow{.math(pow)2 .call}.bdef\n\
+%/.random{.math(random)0 .call}.bdef\n\
+%/rand{.random}.bdef % TODO follow spec\n\
+%/round{.math(round)1 .call}.bdef\n\
+%/sin{.math(sin)1 .call}.bdef\n\
+%/sqrt{.math(sqrt)1 .call}.bdef\n\
+%/.tan{.math(tan)1 .call}.bdef\n\
+%/truncate{.math(truncate)1 .call}.bdef % TODO Math.truncate does not exist!\n\
+\n\
+% graphic\n\
+/arc{.svg(arc)5 .call0}.bdef\n\
+/arcn{.svg(arcn)5 .call0}.bdef\n\
+/closepath{.svg(closepath)0 .call}.bdef\n\
+/currentpoint{.svg(cx)0 .call .svg(cy)0 .call}.bdef\n\
+/curveto{.svg(curveto)6 .call0}.bdef\n\
+/eofill{.svg(eofill)0 .call0}.bdef\n\
+/fill{.svg(fill)0 .call0}.bdef\n\
+/grestore{.svg(grestore)0 .call0}.bdef\n\
+/gsave{.svg(gsave)0 .call0}.bdef\n\
+/lineto{.svg(lineto)2 .call0}.bdef\n\
+/moveto{.svg(moveto)2 .call0}.bdef\n\
+/newpath{.svg(newpath)0 .call0}.bdef\n\
+/rcurveto{.svg(rcurveto)6 .call0}.bdef\n\
+/rlineto{.svg(rlineto)2 .call0}.bdef\n\
+/rmoveto{.svg(rmoveto)2 .call0}.bdef\n\
+/rotate{.svg(rotate)1 .call0}.bdef\n\
+/scale{.svg(scale)2 .call0}.bdef\n\
+/selectfont{.svg(selectfont)2 .call0}.bdef\n\
+/setdash{.svg(setdash)2 .call0}.bdef\n\
+/setlinewidth{.svg(setlinewidth)1 .call0}.bdef\n\
+/setrgbcolor{.svg(setrgbcolor)3 .call0}.bdef\n\
+/show{.svg(show)1 .call0}.bdef\n\
+/stroke{.svg(stroke)0 .call0}.bdef\n\
+/stringwidth{.svg(strw)1 .call 1}.bdef		%fixme: height KO\n\
+/translate{.svg(translate)2 .call0}.bdef\n\
+\n\
+/setgray{255 mul dup dup setrgbcolor}.bdef\n\
+% abcm2ps syms.c\n\
+/!{bind def}bind def\n\
+/T/translate load def\n\
+/M/moveto load def\n\
+/RM/rmoveto load def\n\
+/L/lineto load def\n\
+/RL/rlineto load def\n\
+/C/curveto load def\n\
+/RC/rcurveto load def\n\
+/SLW/setlinewidth load def\n\
+/defl 0 def\n\
+/dlw{0.7 SLW}!\n\
+/xymove{/x 2 index def/y 1 index def M}!\n\
+/showc{dup stringwidth pop .5 mul neg 0 RM show}!\n\
+%\n\
+% abcm2ps internal glyphs\n\
+/arp{.svg(arp)3 .call0}.bdef\n\
+/ltr{.svg(ltr)3 .call0}.bdef\n\
+/ft0{(acc-1).svg(xygl)3 .call0}.bdef\n\
+/nt0{(acc3).svg(xygl)3 .call0}.bdef\n\
+/sh0{(acc1).svg(xygl)3 .call0}.bdef\n\
+/dsh0{(acc2).svg(xygl)3 .call0}.bdef\n\
+/trl{(trl).svg(xygl)3 .call0}.bdef\n\
+/lmrd{(lmrd).svg(xygl)3 .call0}.bdef\n\
+/turn{(turn).svg(xygl)3 .call0}.bdef\n\
+/umrd{(umrd).svg(xygl)3 .call0}.bdef\n\
+/y0{.svg(y0)1 .call}.bdef\n\
+/y1{.svg(y1)1 .call}.bdef\n")
+
+} // Psvg()
+
+abc2svg.modules.psvg = {
+	do_begin_end: function(of, type, opt, text) {
+		if (type != "ps") {
+			of(type, opt, text)
+			return
+		}
+		if (opt == 'nosvg')
+			return
+		if (!this.psvg)
+			this.psvg = new Psvg(this);
+		this.psvg.ps_eval.call(this.psvg, text)
+	},
+	psdeco: function(of, f, x, y, de) {
+		return this.psvg.psdeco.call(this.psvg, f, x, y, de)
+	},
+	psxygl: function(of, x, y, gl) {
+		return this.psvg.psxygl.call(this.psvg, x, y, gl)
+	}
+}
+
+abc2svg.modules.hooks.push(
+// export
+	"out_arp",
+	"out_deco_str",
+	"out_deco_val",
+	"out_ltr",
+	"xygl",
+// hooks
+	[ "do_begin_end", "abc2svg.modules.psvg.do_begin_end" ],
+	[ "psdeco", "abc2svg.modules.psvg.psdeco" ],
+	[ "psxygl", "abc2svg.modules.psvg.psxygl" ]
+);
+
+// the module is loaded
+abc2svg.modules.beginps.loaded = true
+// abc2svg - ABC to SVG translator
+// @source: https://github.com/moinejf/abc2svg.git
+// Copyright (C) 2014-2017 Jean-Francois Moine - LGPL3+
+// sth-1.js for abc2svg-1.17.2 (2018-05-22)
 // sth.js - module to set the stem heights
 //
 // Copyright (C) 2018 Jean-Francois Moine - GPL3+
@@ -24910,8 +26359,8 @@ abc2svg.modules.percmap.loaded = true
 abc2svg.sth = {
 
 // function called after beam calculation
-    recal_beam: function(abc, bm, s) {
-    var staff_tb = abc.get_st_tb(),
+    recal_beam: function(bm, s) {
+    var staff_tb = this.get_staff_tb(),
 	st = s.st,
 	s2 = bm.s2
 	if (s.sth)
@@ -24933,8 +26382,10 @@ abc2svg.sth = {
     },
 
 // function called after the stem heights have been computed
-    set_sth: function(abc, voice_tb) {
-    var s, h, v, sth_a, p_voice
+    set_sth: function() {
+    var s, h, v, sth_a, p_voice,
+	voice_tb = this.get_voice_tb()
+
 	for (v = 0; v < voice_tb.length; v++) {
 		p_voice = voice_tb[v]
 		if (p_voice.sth != null)	// if no stem length in this voice
@@ -24972,47 +26423,54 @@ abc2svg.sth = {
 			s.sth = s.ys
 		}
 	}
+    }, // set_sth()
+
+    calculate_beam: function(of, bm, s1) {
+    var	done = of(bm, s1)
+	if (done && bm.s2 && s1.sth)
+		abc2svg.sth.recal_beam.call(this, bm, s1)
+	return done
+    },
+
+    new_note: function(of, grace, tp_fact) {
+    var	NOTE = 8		// constant from the abc2svg core
+    var	s = of(grace, tp_fact),
+	curvoice = this.get_curvoice()
+	if (curvoice.sth && s && s.type == NOTE) {
+		s.sth = curvoice.sth;
+		curvoice.sth = null
+	}
+	return s
+    },
+
+    set_format: function(of, cmd, param, lock) {
+	if (cmd == "sth") {
+	    var	curvoice = this.get_curvoice()
+		if (parse.state == 2)
+			this.goto_tune()
+		if (curvoice)
+			curvoice.sth = param.split(/[ \t;-]+/)
+		return
+	}
+	of(cmd, param, lock)
+    },
+
+    set_stems: function(of) {
+	of();
+	abc2svg.sth.set_sth.call(this)
     }
+
 } // sth
 
-// inject code inside the core
-abc2svg.inject += '\
-Abc.prototype.get_st_tb = function() {return staff_tb}\n\
-var sth = {\n\
-	cb: calculate_beam,\n\
-	nn: new_note,\n\
-	set_fmt: set_format,\n\
-	set_st: set_stems\n\
-}\n\
-calculate_beam = function(bm, s1) {\n\
-    var	done = sth.cb(bm, s1)\n\
-	if (done && bm.s2 && s1.sth)\n\
-		abc2svg.sth.recal_beam(self, bm, s1)\n\
-	return done\n\
-}\n\
-new_note = function(grace, tp_fact) {\n\
-   var	s = sth.nn(grace, tp_fact)\n\
-	if (curvoice.sth && s && s.type == NOTE) {\n\
-		s.sth = curvoice.sth;\n\
-		curvoice.sth = null\n\
-	}\n\
-	return s\n\
-}\n\
-set_format = function(cmd, param, lock) {\n\
-	if (cmd == "sth") {\n\
-		if (parse.state == 2)\n\
-			goto_tune()\n\
-		if (curvoice)\n\
-			curvoice.sth = param.split(/[ \t;-]+/)\n\
-		return\n\
-	}\n\
-	sth.set_fmt(cmd, param, lock)\n\
-}\n\
-set_stems = function() {\n\
-	sth.set_st();\n\
-	abc2svg.sth.set_sth(self, voice_tb)\n\
-}\n\
-';
+abc2svg.modules.hooks.push(
+// export
+	"goto_tune",
+// hooks
+	[ "calculate_beam", "abc2svg.sth.calculate_beam" ],
+	[ "new_note", "abc2svg.sth.new_note" ],
+	[ "set_format", "abc2svg.sth.set_format" ],
+	[ "set_stems", "abc2svg.sth.set_stems" ]
+);
 
 // the module is loaded
 abc2svg.modules.sth.loaded = true
