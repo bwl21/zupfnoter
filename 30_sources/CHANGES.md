@@ -4,9 +4,15 @@
 
 * supress bar in in measure repeats even after a meter change #216
 
+## enhancement
+
+* make variation lines more flexible #215
+* change default for barnumber ap_base #218
+
 ## BWC issues
 
 * change default for barnumber ap_base #218
+
 # v 1.8
 
 ## fix

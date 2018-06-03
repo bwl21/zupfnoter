@@ -105,6 +105,7 @@ module Harpnotes
                     :prev_playable, # prev playable in voice
                     :start_pos, # start postition in source
                     :time, # position in time
+                    :endtime, # end position in time we need this to get a time base for meter symbols.
                     :visible, # boolean is visible
                     :variant, # the variant within a variant block
                     :znid, # id for zupfnoter
@@ -2003,6 +2004,12 @@ module Harpnotes
           if goto.conf_key
             conf_key = "extract.#{print_variant_nr}.#{goto.conf_key}"
             distance = show_options[:print_options_raw][goto.conf_key]
+
+            unless distance
+              old_conf_key = conf_key.gsub(/(.*)\.(\d+)\.(\d+)\.(\w+)/, '\1.\2.\4')
+              distance = show_options[:print_options_raw][old_conf_key]
+            end
+
           end
 
           distance = goto.policy[:distance] unless distance

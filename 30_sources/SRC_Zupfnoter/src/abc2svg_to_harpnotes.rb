@@ -272,7 +272,7 @@ module Harpnotes
 
         text = voice_element[:text]
         distance = _extract_goto_info_from_bar(voice_element).last[:distance] rescue [-10, 10, 15]
-        @next_note_marks[:measure]      = true unless  voice_element[:invisible] or type =~ /^\:?([\[\]]+)$/ # "]" is not a visible bar - useful for variant ending between measures
+        @next_note_marks[:measure]      = true unless voice_element[:invisible] or type =~ /^\:?([\[\]]+)$/ # "]" is not a visible bar - useful for variant ending between measures
         @next_note_marks[:repeat_start] = true if type =~ /^.*:$/
 
         if voice_element[:rbstart] == 2
@@ -675,8 +675,7 @@ module Harpnotes
 
           distance  = variant_ending_group[0][:distance]
           entity    = variant_ending_group.first[:rbstop]
-          conf_keys = ['p_begin', 'p_end', 'p_follow'].map { |p| "notebound.c_jumplines.#{voice_id}.#{entity.znid}.#{p}" }
-
+          conf_base = "notebound.c_jumplines.#{voice_id}.#{entity.znid}"
 
           if variant_ending_group[-1][:is_followup]
             lastvariant = -2 # need to suppres startlines for the pseudo variation caused by followup notes
@@ -687,7 +686,8 @@ module Harpnotes
 
           # variant ending startlines
           variant_ending_group[1 .. lastvariant].each_with_index do |variant_ending, index|
-            result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], conf_key: conf_keys[0], distance: distance[0], from_anchor: :after, to_anchor: :before)
+            conf_key = %Q{#{conf_base}.#{index}.p_begin}
+            result << Harpnotes::Music::Goto.new(variant_ending_group[0][:rbstop], variant_ending[:rbstart], conf_key: conf_key, distance: distance[0], from_anchor: :after, to_anchor: :before)
           end
 
           # variant ending endlines
@@ -695,13 +695,16 @@ module Harpnotes
             # note that the repeat line is drawn by the _transform_bar_repeat_end
             # so we do not have the variant end line in this case
             unless variant_ending[:repeat_end]
-              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], conf_key: conf_keys[1], distance: distance[1], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
+              #  conf_key = %Q{#{conf_base}.#{index}.p_end}
+              conf_key = %Q{#{conf_base}.p_end}
+              result << Harpnotes::Music::Goto.new(variant_ending[:rbstop], variant_ending_group[-1][:rbstart], conf_key: conf_key, distance: distance[1], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
             end
           end
 
           # variant ending followupliens
           if variant_ending_group[-1][:is_followup]
-            result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], conf_key: conf_keys[2], distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
+            conf_key = %Q{#{conf_base}.p_follow}
+            result << Harpnotes::Music::Goto.new(variant_ending_group[-2][:rbstop], variant_ending_group[-1][:rbstart], conf_key: conf_key, distance: distance[2], from_anchor: :after, to_anchor: :before, vertical_anchor: :to)
           end
         end
         result
