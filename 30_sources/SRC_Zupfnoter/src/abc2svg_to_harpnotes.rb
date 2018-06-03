@@ -327,7 +327,7 @@ module Harpnotes
         # here we handle the case that a repeat is within a measure (textcase 3016 in measure repeats)
         # it shall not create a bar in harpnotes
         if type.include? ':'
-          unless @is_first_measure ## first measure after a meter statment cannot suppress bar
+          unless false # @is_first_measure ## first measure after a meter statment cannot suppress bar
             @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
           end
         end
@@ -645,10 +645,17 @@ module Harpnotes
         nil
       end
 
+
+      # here we handle meter changes
+      # there are some special cases to consider
+      # * meter changes within ia measure - ensure that countnotes are computed correctly
+      # * meter changes before a in measuer repeat - so we have a bar which is not a relevant one
       def _transform_meter(voice_element)
         @is_first_measure = true
+        
         @wmeasure         = voice_element[:wmeasure]
         @countby = voice_element[:a_meter].first[:bot].to_i rescue nil
+
         nil
       end
 

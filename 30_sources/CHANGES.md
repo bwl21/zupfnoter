@@ -1,3 +1,8 @@
+# v 1.9
+
+## fix
+
+* supress bar in in measure repeats even after a meter change #216
 
 # v 1.8
 
