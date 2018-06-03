@@ -409,7 +409,7 @@ module InitConf
                      voices:  [],
                      pos:     [6, -4],
                      autopos: true,
-                     apbase:  [4, 1],
+                     apbase:  [1, 1],
                      style:   "small_bold",
                      prefix:  ""
                  },

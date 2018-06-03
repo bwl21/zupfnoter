@@ -4,6 +4,9 @@
 
 * supress bar in in measure repeats even after a meter change #216
 
+## BWC issues
+
+* change default for barnumber ap_base #218
 # v 1.8
 
 ## fix
