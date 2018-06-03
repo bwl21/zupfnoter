@@ -45,8 +45,11 @@ task :updateAbc2svg do
   abc2svgrepo  = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_file = "abc2svg-1.js"
   sources      = [abc2svg_file, "json-1.js", "setmidi-1.js", "play-1.js"]
-  ignore       = ['wps-1.js']
-  temp_ignore  = ['psvg-1.js']
+  # ignore some modules (not working, not relevant for zupfnoter audience)
+  # permap does not work in zupfnoter
+  # ps-interpreter will not be used by zupfnoter audience
+  ignore       = ['wps-1.js', 'perc-1.js']
+  temp_ignore  = ['psvg-1.jsx']
   sources      += Dir["#{abc2svgrepo}/modules/*.js"].map { |f| File.basename(f, '.js') + "-1.js" } - temp_ignore - ignore # add failing modules to [] to ignore them
 
   cd abc2svgrepo do
