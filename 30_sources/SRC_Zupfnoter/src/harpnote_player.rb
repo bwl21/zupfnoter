@@ -18,7 +18,6 @@ module Harpnotes
           })
            #{@abcplay}.set_sfu("public/soundfont/zupfnoter")  // Scct1t2
            #{@abcplay}.set_sft('js')
-           #{@abcplay}.set_follow(true)
            #{@abcplay}.set_vol(1.0)
         } # the player engine
         @isplaying        = false
