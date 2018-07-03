@@ -857,6 +857,12 @@ function init_w2ui(uicontroller) {
         id: 'sb_confkey',
         text: '<div style="padding: 0px !important;"><span class="mouseover-conf-key"></span></div>'
       },
+      {
+        type: 'button',
+        id: 'sb_current-notes',
+        size: '50px',
+        text: '<div style="padding: 0px !important;"><span class="current-notes"></span></div>'
+      },
 
     ],
 
@@ -1088,6 +1094,11 @@ function update_error_status_w2ui(errors) {
       buttons: '<button class="w2ui-btn" onclick="w2popup.close();">OK</button> '
     })
 }
+
+function update_current_notes_w2ui(notes){
+  $(".current-notes").html(notes)
+}
+
 
 function update_editor_status_w2ui(editorstatus) {
   $(".editor-status-position").html(editorstatus.position);
