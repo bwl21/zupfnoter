@@ -252,6 +252,7 @@ class Controller
                                enable_save:    [lambda { `enable_save();` }],
                                before_open:    [lambda { `before_open()` }],
                                document_title: [lambda { `document.title = #{@music_model.meta_data[:filename]}` }],
+                               current_notes:  [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});`}],
                                extracts:       [lambda { @extracts.each { |entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})` }
@@ -811,7 +812,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     endchar   = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(startchar, endchar, @expand_selection)
-      $log.info(@harpnote_player.get_notes.join(","))
+      call_consumers(:current_notes)
     end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])

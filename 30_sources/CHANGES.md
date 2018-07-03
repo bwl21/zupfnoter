@@ -8,6 +8,7 @@
 
 * make variation lines more flexible #215
 * change default for barnumber ap_base #218
+* show currently selected notes in status bar #220
 
 ## BWC issues
 
