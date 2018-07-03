@@ -813,7 +813,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(startchar, endchar, @expand_selection)
       call_consumers(:current_notes)
-      $log.info(@harpnote_player.get_notes.join(","))
     end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
