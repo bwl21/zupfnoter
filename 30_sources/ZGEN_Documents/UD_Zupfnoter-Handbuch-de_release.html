@@ -1081,6 +1081,13 @@ W: Strophe 2 Zeile 2</code></pre>
 </blockquote></li>
 <li><p><code>settemplate</code>: Damit wird der aktuelle Editor-Inhalt als Vorlage hinterlegt (siehe Kapitel &#160;<a href="#filetemplates">Arbeiten mit Dateivorlagen</a>).</p></li>
 </ul>
+<p>&#220;ber folgende Befehle kann eingestellt werden, ob die Vorschaufenster zur aktuellen Note scrollen bzw. der Wiedergabe folgen</p>
+<ul>
+<li>setsetting autoscroll true` - Vorschaufenster scrollen automatisch</li>
+<li>setsetting autoscroll false` - Vorschaufenster scrollen nicht</li>
+<li>setsetting follow true` - Vorschaufenster folgen der Wiedergabe</li>
+<li>setsetting follow false` - Vorschaufenster folgen <strong>nicht</strong> der Wiedergabe</li>
+</ul>
 <p>&#220;ber folgende Befehle k&#246;nnen Flu&#223;linien gestaltet werden:</p>
 <ul>
 <li><code>setsetting flowconf edit</code>: Mit dieser Einstellung werden die Flu&#223;linien bearbeitbar, d.h. man kann die Flu&#223;linien mit der Maus verformen, (sozusagen verbiegen).</li>
@@ -1378,7 +1385,7 @@ setstdextract  : configure stdc onfig in localstore</code></pre></li>
 <p><strong>Hinweis</strong>: Bei varianten Enden wirkt der selbe Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte dr&#252;cke daher auf <code>Render</code> um das Endergebnis zu sehen. Danach sind auch die Pfeile an den Sprunglinien wieder korrekt.</p>
 </blockquote>
 <blockquote>
-<p><strong>Hinweis</strong>: man kann Sprunglinien unterdr&#252;cken, indem man im Kontext-Men&#252; Kontextmen&#252; <strong><code>Edit config</code></strong> w&#228;hlt, und dann den paramteter auf <code>0</code> stellt. Die linie verschwindet dann, und kann nur schwer wieder sichtbar gemacht werden: <code>Konfig.Bearb / Notenbeezogen</code>, dann den paramter suchen (<code>p_begin</code>, <code>p_end</code>, <code>p_follow</code>, <code>p_repeat</code>) und den Wert auf ungleich 0 setzen.</p>
+<p><strong>Hinweis</strong>: man kann Sprunglinien unterdr&#252;cken, indem man im Kontext-Men&#252; Kontextmen&#252; <strong><code>Edit config</code></strong> w&#228;hlt, und dann den paramteter auf <code>0</code> stellt. Die linie verschwindet dann, und kann nur schwer wieder sichtbar gemacht werden: <code>Konfig.Bearb / Notenbeezogen</code>, dann den Parameter suchen (<code>p_begin</code>, <code>p_end</code>, <code>p_follow</code>, <code>p_repeat</code>) und den Wert auf ungleich 0 setzen.</p>
 </blockquote>
 <h3 id="triolenbogen-gestalten"><span class="header-section-number">4.6.3</span> Triolenbogen gestalten</h3>
 <p>Das Gestalten von Triolenbogen ist etwas vom komplexesten, was Zupfnoter zu bieten hat :-). Aber mit der Maus geht es ganz einfach:</p>

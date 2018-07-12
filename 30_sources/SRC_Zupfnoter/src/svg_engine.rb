@@ -130,7 +130,7 @@ module Harpnotes
     def range_highlight_more(from, to)
       elements = get_elements_by_range(from, to)
       elements.each { |element| highlight_element(element) }
-      scroll_to_element(elements.first) unless elements.empty?
+      scroll_to_element(elements.first) unless elements.empty? unless $settings[:autoscroll] == "false"
     end
 
     # hightlights the drawn elements driven by the selection range in the abc text

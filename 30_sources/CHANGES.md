@@ -9,6 +9,7 @@
 * make variation lines more flexible #215
 * change default for barnumber ap_base #218
 * show currently selected notes in status bar #220
+* supress jumplines by configjration #222
 * disable autoscroll trhough setsetting #221
 
 ## BWC issues

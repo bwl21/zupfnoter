@@ -2337,6 +2337,22 @@ Beschriftungen
   Dateivorlagen}).
 \end{itemize}
 
+Über folgende Befehle kann eingestellt werden, ob die Vorschaufenster
+zur aktuellen Note scrollen bzw. der Wiedergabe folgen
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  setsetting autoscroll true` - Vorschaufenster scrollen automatisch
+\item
+  setsetting autoscroll false` - Vorschaufenster scrollen nicht
+\item
+  setsetting follow true` - Vorschaufenster folgen der Wiedergabe
+\item
+  setsetting follow false` - Vorschaufenster folgen \textbf{nicht} der
+  Wiedergabe
+\end{itemize}
+
 Über folgende Befehle können Flußlinien gestaltet werden:
 
 \begin{itemize}
@@ -3088,7 +3104,7 @@ die Pfeile an den Sprunglinien wieder korrekt.
 Kontext-Menü Kontextmenü \textbf{\texttt{Edit\ config}} wählt, und dann
 den paramteter auf \texttt{0} stellt. Die linie verschwindet dann, und
 kann nur schwer wieder sichtbar gemacht werden:
-\texttt{Konfig.Bearb\ /\ Notenbeezogen}, dann den paramter suchen
+\texttt{Konfig.Bearb\ /\ Notenbeezogen}, dann den Parameter suchen
 (\texttt{p\_begin}, \texttt{p\_end}, \texttt{p\_follow},
 \texttt{p\_repeat}) und den Wert auf ungleich 0 setzen.
 \end{quote}
