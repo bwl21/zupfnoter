@@ -352,7 +352,7 @@ class Controller
       command.undoable = false
 
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help { "parameter key" }
+        parameter.set_help { "parameter key (autoscroll, flowconf, follow, validate ...)" }
       end
 
       command.add_parameter(:value, :string) do |parameter|

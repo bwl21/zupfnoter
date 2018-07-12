@@ -107,8 +107,7 @@ I:stretchlast 1
     def range_highlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
         element = Element.find("##{id}")
-        scroll_into_view(element)
-
+        scroll_into_view(element) unless $settings[:autoscroll] == "false"
         element.add_class('highlight')
       end
       nil

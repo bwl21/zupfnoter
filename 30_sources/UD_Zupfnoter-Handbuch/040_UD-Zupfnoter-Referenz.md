@@ -1070,6 +1070,15 @@ Beschriftungen
     hinterlegt (siehe Kapitel \ref{filetemplates} [Arbeiten mit
     Dateivorlagen](#filetemplates)).
 
+Über folgende Befehle kann eingestellt werden, ob die Vorschaufenster
+zur aktuellen Note scrollen bzw. der Wiedergabe folgen
+
+-   setsetting autoscroll true\` - Vorschaufenster scrollen automatisch
+-   setsetting autoscroll false\` - Vorschaufenster scrollen nicht
+-   setsetting follow true\` - Vorschaufenster folgen der Wiedergabe
+-   setsetting follow false\` - Vorschaufenster folgen **nicht** der
+    Wiedergabe
+
 Über folgende Befehle können Flußlinien gestaltet werden:
 
 -   `setsetting flowconf edit`: Mit dieser Einstellung werden die
