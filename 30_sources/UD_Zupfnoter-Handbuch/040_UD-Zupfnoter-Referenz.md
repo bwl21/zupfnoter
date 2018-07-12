@@ -1580,6 +1580,13 @@ Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
 > daher auf `Render` um das Endergebnis zu sehen. Danach sind auch die
 > Pfeile an den Sprunglinien wieder korrekt.
 
+> **Hinweis**: man kann Sprunglinien unterdrücken, indem man im
+> Kontext-Menü Kontextmenü **`Edit config`** wählt, und dann den
+> paramteter auf `0` stellt. Die linie verschwindet dann, und kann nur
+> schwer wieder sichtbar gemacht werden: `Konfig.Bearb / Notenbeezogen`,
+> dann den Parameter suchen (`p_begin`, `p_end`, `p_follow`, `p_repeat`)
+> und den Wert auf ungleich 0 setzen.
+
 ### Triolenbogen gestalten
 
 Das Gestalten von Triolenbogen ist etwas vom komplexesten, was Zupfnoter
