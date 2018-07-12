@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.8.0
+Version V\_1.8.0-12-g9735bde
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3081,6 +3081,16 @@ Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
 Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte drücke
 daher auf \texttt{Render} um das Endergebnis zu sehen. Danach sind auch
 die Pfeile an den Sprunglinien wieder korrekt.
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: man kann Sprunglinien unterdrücken, indem man im
+Kontext-Menü Kontextmenü \textbf{\texttt{Edit\ config}} wählt, und dann
+den paramteter auf \texttt{0} stellt. Die linie verschwindet dann, und
+kann nur schwer wieder sichtbar gemacht werden:
+\texttt{Konfig.Bearb\ /\ Notenbeezogen}, dann den paramter suchen
+(\texttt{p\_begin}, \texttt{p\_end}, \texttt{p\_follow},
+\texttt{p\_repeat}) und den Wert auf ungleich 0 setzen.
 \end{quote}
 
 \subsubsection{Triolenbogen gestalten}\label{triolenbogen-gestalten}
