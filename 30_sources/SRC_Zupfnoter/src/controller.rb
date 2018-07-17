@@ -142,7 +142,8 @@ class Controller
     # we do not hold them in $conf
     $resources = {} # this keeps resources
 
-    $settings = {} # this is te keep runtime settings
+    $settings = {autoscroll: 'true', follow: 'true'} # this is te keep runtime settings
+    call_consumers(:settings_menu)
 
     @json_validator = Ajv::JsonValidator.new
     @editor            = Harpnotes::TextPane.new("abcEditor")
@@ -253,6 +254,7 @@ class Controller
                                before_open:    [lambda { `before_open()` }],
                                document_title: [lambda { `document.title = #{@music_model.meta_data[:filename]}` }],
                                current_notes:  [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});`}],
+                               settings_menu:  [lambda { `update_settings_menu(#{$settings.to_n})`}],
                                extracts:       [lambda { @extracts.each { |entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})` }

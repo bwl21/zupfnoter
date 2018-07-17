@@ -353,6 +353,7 @@ class Controller
 
       command.add_parameter(:key, :string) do |parameter|
         parameter.set_help { "parameter key (autoscroll, flowconf, follow, validate ...)" }
+        parameter.set_help { "parameter key (autoscroll, flowconf, follow, validate ...)" }
       end
 
       command.add_parameter(:value, :string) do |parameter|
@@ -363,6 +364,27 @@ class Controller
 
       command.as_action do |args|
         $settings[args[:key]] = args[:value]
+        call_consumers(:settings_menu)
+        nil
+      end
+
+      command.as_inverse do |args|
+      end
+    end
+
+
+    @commands.add_command(:togglesetting) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key (autoscroll, flowconf, follow, validate ...)" }
+      end
+
+      command.set_help { "toggle settings (runtime only setting) parameter" }
+
+      command.as_action do |args|
+        $settings[args[:key]] = $settings[args[:key]] == "true" ? "false": "true";
+        call_consumers(:settings_menu)
         nil
       end
 
