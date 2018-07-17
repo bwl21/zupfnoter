@@ -15,6 +15,7 @@
 ## BWC issues
 
 * change default for barnumber ap_base #218
+* configuration of variation lines is not recognized by earlier Versions of Zupfnoter
 
 # v 1.8
 

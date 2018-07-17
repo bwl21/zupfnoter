@@ -121,7 +121,7 @@ Auszug 1 usw.
         "extract": {
           "0" : {
             "barnumbers"   : {
-              "apbase"  : [4, 1],
+              "apbase"  : [1, 1],
               "autopos" : true,
               "pos"     : [6, -4],
               "prefix"  : "",
@@ -207,7 +207,7 @@ Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt
 ausgegeben werden sollen.
 
         "barnumbers": {
-          "apbase"  : [4, 1],
+          "apbase"  : [1, 1],
           "autopos" : true,
           "pos"     : [6, -4],
           "prefix"  : "",
@@ -236,7 +236,7 @@ Es werden zwei Werte erwartet: horizontal, vertikal.
 > **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
 > Seite der Note Taktnummer angebracht wird.
 
-        "apbase": [4, 1]
+        "apbase": [1, 1]
           
 
 ## `extract.0.barnumbers.autopos` - autom. pos. {#extract.0.barnumbers.autopos}
