@@ -9,7 +9,7 @@ function init_w2ui(uicontroller) {
 
 // file import methods
 
-  function get_zn_help(key){
+  function get_zn_help(key) {
     Opal.I18n.$t_help(key)
   }
 
@@ -442,32 +442,81 @@ function init_w2ui(uicontroller) {
       {type: 'button', id: 'tb_open', text: 'Open', icon: 'fa fa-dropbox', tooltip: 'Open ABC file in dropbox'},
       {type: 'button', id: 'tb_save', text: 'Save', icon: 'fa fa-dropbox', tooltip: 'Save ABC file in dropbox'},
 
-      {type: 'menu', icon: 'fa fa-cogs',  text: 'Extras', id: 'tbExtras',
-        items:[
-          { text: 'flowconf edit', icon: 'fa fa-toggle-on', onClick: function(){uicontroller.$handle_command('setsetting flowconf edit');uicontroller.$handle_command('render');}},
-          { text: 'flowconf off',  icon: 'fa fa-toggle-off', onClick: function(){uicontroller.$handle_command('setsetting flowconf false');uicontroller.$handle_command('render');}},
-          {},
-          { text: 'validate on', icon: 'fa fa-check-square', onClick: function(){uicontroller.$handle_command('setsetting validate true')}},
-          { text: 'validate off', icon: 'fa fa-check-square-o', onClick: function(){uicontroller.$handle_command('setsetting validate false')}},
-          {},
-          { text: 'play fast', icon: 'fa fa-caret-square-o-up', onClick: function(){uicontroller.$handle_command('speed 2')}},
-          { text: 'play normal', icon: 'fa fa-caret-square-o-right ', onClick: function(){uicontroller.$handle_command('speed 1')}},
-          { text: 'play slow', icon: 'fa fa-caret-square-o-down', onClick: function(){uicontroller.$handle_command('speed 0.5')}},
-          {},
-          { text: 'console', icon: 'fa fa-terminal', onClick: function(){uicontroller.$toggle_console();}},
-          { text: 'loglevel error', icon: 'fa fa-exclamation-triangle', onClick: function(){uicontroller.$handle_command('loglevel error')}},
-          { text: 'loglevel warning', icon: 'fa fa-exclamation-circle', onClick: function(){uicontroller.$handle_command('loglevel warning')}},
-          { text: 'loglevel info', icon: 'fa fa-info-circle', onClick: function(){uicontroller.$handle_command('loglevel info')}},
-          {},
-         // { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
-
-          { text: 'stdextract', icon: 'fa fa-clipboard', onClick: function(){uicontroller.$handle_command('stdextract')}},
-          { text: 'settemplate', icon: 'fa fa-file-o', onClick: function(){uicontroller.$handle_command('settemplate')}},
-          { text: 'edittemplate', icon: 'fa fa-pencil', onClick: function(){uicontroller.$handle_command('edittemplate')}},
-          { text: 'configtemplate', icon: 'fa fa-pencil-square-o ', onClick: function(){
-              w2ui.layout_left_tabs.click('configtab');
-            uicontroller.$handle_command('editconf template')}
+      {
+        type: 'menu', icon: 'fa fa-cogs', text: 'Extras', id: 'tbExtras',
+        items: [
+          {
+            setting: 'flowconf', text: 'flowconf', icon: 'fa fa-toggle-on', onClick: function () {
+              uicontroller.$handle_command('togglesetting flowconf');
+              uicontroller.$handle_command('render');
             }
+          },
+          {
+            setting: 'validate', text: 'validate', icon: 'fa fa-check-square', onClick: function () {
+              uicontroller.$handle_command('togglesetting validate')
+            }
+          },
+          {},
+          {
+            text: 'play fast', icon: 'fa fa-caret-square-o-up', onClick: function () {
+              uicontroller.$handle_command('speed 2')
+            }
+          },
+          {
+            text: 'play normal', icon: 'fa fa-caret-square-o-right ', onClick: function () {
+              uicontroller.$handle_command('speed 1')
+            }
+          },
+          {
+            text: 'play slow', icon: 'fa fa-caret-square-o-down', onClick: function () {
+              uicontroller.$handle_command('speed 0.5')
+            }
+          },
+          {},
+          {
+            text: 'console', icon: 'fa fa-terminal', onClick: function () {
+              uicontroller.$toggle_console();
+            }
+          },
+          {
+            text: 'loglevel error', icon: 'fa fa-exclamation-triangle', onClick: function () {
+              uicontroller.$handle_command('loglevel error')
+            }
+          },
+          {
+            text: 'loglevel warning', icon: 'fa fa-exclamation-circle', onClick: function () {
+              uicontroller.$handle_command('loglevel warning')
+            }
+          },
+          {
+            text: 'loglevel info', icon: 'fa fa-info-circle', onClick: function () {
+              uicontroller.$handle_command('loglevel info')
+            }
+          },
+          {},
+          // { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
+
+          {
+            text: 'stdextract', icon: 'fa fa-clipboard', onClick: function () {
+              uicontroller.$handle_command('stdextract')
+            }
+          },
+          {
+            text: 'settemplate', icon: 'fa fa-file-o', onClick: function () {
+              uicontroller.$handle_command('settemplate')
+            }
+          },
+          {
+            text: 'edittemplate', icon: 'fa fa-pencil', onClick: function () {
+              uicontroller.$handle_command('edittemplate')
+            }
+          },
+          {
+            text: 'configtemplate', icon: 'fa fa-pencil-square-o ', onClick: function () {
+              w2ui.layout_left_tabs.click('configtab');
+              uicontroller.$handle_command('editconf template')
+            }
+          }
         ]
       },
 
@@ -1045,6 +1094,22 @@ function set_tbitem_caption(item, caption) {
   w2ui.layout_top_toolbar.set(item, {text: caption});
 }
 
+function update_settings_menu(settings) {
+  settings_menu_items = w2ui.layout_top_toolbar.get('tbExtras').items.filter(function (item) {
+    return item.setting
+  });
+  settings_menu_items.forEach(function (item) {
+    if (settings[item.setting] == 'true') {
+      item.icon = 'fa fa-check-square-o'
+    }
+    else {
+      item.icon = 'a fa-square-o'
+    }
+  });
+  w2ui.layout_top_toolbar.refresh();
+}
+
+
 function update_systemstatus_w2ui(systemstatus) {
   $(".dropbox-status").html(systemstatus.dropbox);
   w2ui.layout_top_toolbar.set('tb_home', {text: "Zupfnoter" + " " + systemstatus.version})
@@ -1095,7 +1160,7 @@ function update_error_status_w2ui(errors) {
     })
 }
 
-function update_current_notes_w2ui(notes){
+function update_current_notes_w2ui(notes) {
   $(".current-notes").html(notes)
 }
 
