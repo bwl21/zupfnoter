@@ -456,6 +456,15 @@ function init_w2ui(uicontroller) {
               uicontroller.$handle_command('togglesetting validate')
             }
           },
+          {
+            setting: 'autoscroll', text: 'autoscroll', icon: 'fa fa-check-square', onClick: function () {
+              uicontroller.$handle_command('togglesetting autoscroll')
+            }
+          },          {
+            setting: 'follow', text: 'follow', icon: 'fa fa-check-square', onClick: function () {
+              uicontroller.$handle_command('togglesetting follow')
+            }
+          },
           {},
           {
             text: 'play fast', icon: 'fa fa-caret-square-o-up', onClick: function () {

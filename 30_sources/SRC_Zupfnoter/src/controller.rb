@@ -142,7 +142,7 @@ class Controller
     # we do not hold them in $conf
     $resources = {} # this keeps resources
 
-    $settings = {} # this is te keep runtime settings
+    $settings = {autoscroll: 'true', follow: 'true'} # this is te keep runtime settings
     call_consumers(:settings_menu)
 
     @json_validator = Ajv::JsonValidator.new
