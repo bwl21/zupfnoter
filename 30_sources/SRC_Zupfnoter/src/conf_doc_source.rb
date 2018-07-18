@@ -10,6 +10,8 @@ require 'confstack'
 HELP_DE_INPUT     = "localization/help_de-de.md"
 HELP_DE_OUTPUT_MD = "../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md"
 
+Encoding.default_internal = Encoding::UTF_8
+Encoding.default_external = Encoding::UTF_8
 
 # init_conf uses symbols. This does not matter in Opal
 # but ruby it is a difference. So we have to stringify the keys.
