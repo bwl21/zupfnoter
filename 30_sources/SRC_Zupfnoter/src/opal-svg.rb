@@ -178,6 +178,7 @@ module ZnSvg
     def set_draggable_tuplet(svg_element_id, conf_key, conf_value, draginfo)
       %x{
       var xx = SVG.get(#{svg_element_id});
+      var cp_id = "to be set after dragging"
       xx.addClass("zn_draggable");
       xx.draggable();
 
@@ -241,7 +242,7 @@ module ZnSvg
       draginfo[:cp2] = cp2.to_a
       }
           this.stroke("red");
-            conf_key_to_change = #{draginfo[:conf_key]} + "." + cp_id
+            conf_key_to_change = #{draginfo[:conf_key]} + "." + cp_id;
 
             #{
       rotate_by = Math::PI * 0.5
