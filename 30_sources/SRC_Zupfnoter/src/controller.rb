@@ -707,10 +707,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
       end
 
-      load_music_model
+      $log.benchmark("transforming music model"){load_music_model}
 
       call_consumers(:document_title)
-      $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
       result = nil
       $log.benchmark("computing layout") { result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format) }

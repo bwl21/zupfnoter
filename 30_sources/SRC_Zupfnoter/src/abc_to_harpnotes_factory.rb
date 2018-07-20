@@ -88,7 +88,7 @@ module Harpnotes
               if key == 'F'
                 filename = entry.last.strip
                 unless filename.include?('{{')  # do not check F: if we have placeholders
-                  $log.error(%Q{"#{filename}": #{I18n.t("bad characters in filename")}}, [index + 1, 1]) unless filename.match(/^[a-zA-z0-9_\-]+$/)
+                  $log.error(%Q{"#{filename}": #{I18n.t("bad characters in filename")}}, [index + 1, 1]) unless filename.match(/^[a-zA-z0-9_\-\.]+$/)
                 end
               end
               result[key] = [entry.last.strip]
