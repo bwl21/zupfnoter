@@ -839,7 +839,20 @@ Hier gibst du an, ob das Tuplet ausgegeben werden soll.
 ## text
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
 ## sortmark
 
@@ -853,7 +866,7 @@ ob der Stapel sortiert ist.
 > **Hinweis**: Leider kann auf haushaltsüblichen Druckern nicht bis zum
 > Rand gedrukht werden. Daher muss man die Sortiermake mit einem
 > Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
-> Stapels kontrollieren, in dem man auf die Schnittkan des Stapels
+> Stapels kontrollieren, in dem man auf die Schnittkante des Stapels
 > schaut.
 
 ## sortmark.fill

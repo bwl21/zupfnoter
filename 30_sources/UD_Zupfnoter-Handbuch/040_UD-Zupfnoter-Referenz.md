@@ -486,13 +486,25 @@ und das Einelgen in das Instrument zu vereinfachen:
     > **Hinweis:** Der Fingerabdruck wird aus dem ABC-Text errechnet und
     > ist daher nicht im ABC-Text enthalten.
 
-### Vordefinierte Blattbeschriftungen
+### Vordefinierte Seitenbeschriftungen
 
 Zupfnoter bietet eine Reihe von Vorlagen für die Seitenbeschriftungen.
 Damit lässt sich ein einheitliches Vorgehen bei der Beschriftung der
 Unterlegnoten erreichen. Diese können in der Konfigurationsmaske
 "Seitenbeschriftung" eingegeben werden. Zupfnoter hat geeignete
 Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
+
+-   **(34) T05 legend - Legende**: Hier kann eine Legende eingefügt
+    werden, welche mal selbst gestalten kann.
+
+    > **Hinweis:** Wenn dieser Eintrag vorhanden ist, wird die in
+    > Zupfnoter eingebaute Legende unterdrückt.
+    >
+    > Für eine eigenen Legende ist es sinnvoll mit Platzhaltern zu
+    > arbeiten. Die Schnelleinstellung in der Seitenbeschriftung fügt
+    > eine Legende ein, gleich aussieht wie die in Zupfnoter eingebaute
+    > version. Sie ist daher ein guter Startpunkt für eine selbst
+    > gestaltete Legende.
 
 -   **(74) T04 to order - zu beziehen bei**: Hier kann man angeben, über
     welche Adresse das Unterlegnotenblatt bezogen werden kann
@@ -601,6 +613,12 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
     den Seitenrand. Der Schriftstil kann gewählt werden (siehe auch
     Kapitel \ref{elemente-fuer-das-ganze-blatt} [Elemente für das
     gesamte Musikstück](#elemente-fuer-das-ganze-blatt)).
+
+    In den Seitenbeschrifungen können Informationen eingefügt werden,
+    welche in Zupfnoter schon vorhanden sind. Hierzu werden Platzhalter
+    eingefügt, welche bei der Ausgabe durch die entsprechende
+    Information ersetzt werden. Die möglichen Platzhalter findest du in
+    der Hilfe zu den Parametern.
 
 -   **Liedtexte**
 
@@ -1497,7 +1515,7 @@ Zupfnoter kann Bilder in das Unterlegnotenblatt einfügen.
 
 > **Hinweis**: Bitte achte darauf dass die eingefügten Bilder insgesamt
 > nicht zu groß werden (getestet bis zu 600 kB). Sonst funktioniert ggf.
-> die Druckvorschau nicht mehr. Normalerweise hat man ein höchsten zwei
+> die Druckvorschau nicht mehr. Normalerweise hat man ein höchstens zwei
 > Bilder auf dem Blatt. Dann sollte diese Begrenzung kein Problem
 > darstellen. Man muss aber wissen, dass Lade - und Speichervorgänge
 > deutlich länger brauchen.
@@ -1734,6 +1752,17 @@ Daher ist folgendes Reihenfolge zu empfehlen:
     -   **1 Sopran Alt**: Stimmen 1,2; Auszugsnummer -A
     -   **2 Tenor Bass**: Stimmen 3,4; Auszugsnummer -B
     -   **3 Melodie**: Stimme 1; Auszugsnummer -M
+
+    > **Hinweis:** Bei Verwendung von Platzhalten in den
+    > Seitenbeschriftungen ist es sinnvoll die Auszugsnummer im
+    > Parameter "extract.\*.filenamepart" einzutragen. Der Eintrag kann
+    > über den Plathalter `{{extract_filename}}` dann die
+    > Seitenbeschriftungen eingetragen werden. Der Plathalter
+    > `{{printed_extracts}}` entnimmt die auszugsbezeichnungen ebenfalls
+    > aus "extract.\*.filenamepart".
+    >
+    > Auf diese Weise wird erreicht, dass die Filenamen der Auzüge und
+    > die Blattbeschrifungen für die Auszüge konsistent sind.
 
 2.  **Anlegen der Auszüge**: Ausgehend von der Planung sollte unter dem
     Menü **`Konfig. bearbeiten / Auszugsbeschriftung`** alle geplanten
@@ -2221,9 +2250,9 @@ Vorlage eingerichtet werden:
 
 > **Hinweis**: Diese Schritte sind auch im Menü `Extras` erreichbar
 
-> **Hinweis**: Die Konfigurationsparameter werden auch in die neuen
-> Stücke kopiert, haben dort aber keine Wirkung mehr. Sie sind jedoch
-> als Dokumentation hilfreich.
+> **Hinweis**: Die Konfigurationsparameter `template.filebase` werden
+> auch in die neuen Stücke kopiert, haben dort aber keine Wirkung mehr.
+> Sie sind jedoch als Dokumentation hilfreich.
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der
@@ -2238,6 +2267,11 @@ sind verfügbar:
 
 `{{song_title}}`
 :   Das ist der Titel des Stückes.
+
+> **Hinweis:** In den Seitenbeschrifungen gibt es weitere Platzhalter,
+> welche jedoch erst bei der Erzeugung der Unterlegnoten aufgelöst
+> werden. Die möglichen Platzhalter werden in der Hilfe bei den
+> Konfigurationsparametern angezeigt.
 
 ### Parameter in der Zupfnoter-URL
 

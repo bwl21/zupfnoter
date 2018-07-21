@@ -11,6 +11,7 @@
 * show currently selected notes in status bar #220
 * supress jumplines by configjration #222
 * disable autoscroll trhough setsetting #221
+* now support placeholders in page annotations #223
 
 ## BWC issues
 

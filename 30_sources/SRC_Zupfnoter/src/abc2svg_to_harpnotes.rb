@@ -100,7 +100,7 @@ module Harpnotes
         if tempo_note && tempo_note[:tempo_notes]
           duration      = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           bpm           = tempo_note[:tempo].to_i
-          tempo_display = @info_fields[:Q]
+          tempo_display = @info_fields[:Q].join(" ")
         else
           duration      = [0.25]
           bpm           = 120
@@ -108,7 +108,8 @@ module Harpnotes
         end
         bpm = 120 unless bpm >= 1
 
-        @meta_data = {composer:      (@info_fields[:C] or []).join("\n"),
+        @meta_data = {number:        (@info_fields[:X].first),
+                      composer:      (@info_fields[:C] or []).join("\n"),
                       title:         (@info_fields[:T] or []).join("\n"),
                       filename:      (@info_fields[:F] or []).join("\n"),
                       tempo:         {duration: duration, bpm: bpm, sym: tempo_note},

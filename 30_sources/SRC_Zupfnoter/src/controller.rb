@@ -111,8 +111,8 @@ class Controller
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
 
-    @version      = VERSION
-    I18n.locale(zupfnoter_language) {  call_consumers(:localizedtexts) } if browser_language
+    @version = VERSION
+    I18n.locale(zupfnoter_language) { call_consumers(:localizedtexts) } if browser_language
     @zupfnoter_ui = `new init_w2ui(#{self});`
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
@@ -145,14 +145,14 @@ class Controller
     $settings = {autoscroll: 'true', follow: 'true'} # this is te keep runtime settings
     call_consumers(:settings_menu)
 
-    @json_validator = Ajv::JsonValidator.new
+    @json_validator    = Ajv::JsonValidator.new
     @editor            = Harpnotes::TextPane.new("abcEditor")
     @editor.controller = self
 
-    @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
+    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
     @harpnote_player.controller = self
 
-    @songbook        = LocalStore.new("songbook") # used to store songs in localstore
+    @songbook = LocalStore.new("songbook") # used to store songs in localstore
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
@@ -253,8 +253,8 @@ class Controller
                                enable_save:    [lambda { `enable_save();` }],
                                before_open:    [lambda { `before_open()` }],
                                document_title: [lambda { `document.title = #{@music_model.meta_data[:filename]}` }],
-                               current_notes:  [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});`}],
-                               settings_menu:  [lambda { `update_settings_menu(#{$settings.to_n})`}],
+                               current_notes:  [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
+                               settings_menu:  [lambda { `update_settings_menu(#{$settings.to_n})` }],
                                extracts:       [lambda { @extracts.each { |entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})` }
@@ -707,12 +707,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
       end
 
-      $log.benchmark("transforming music model"){load_music_model}
+      $log.benchmark("transforming music model") { load_music_model }
 
       call_consumers(:document_title)
 
       result = nil
-      $log.benchmark("computing layout") { result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format) }
+      $log.benchmark("computing layout") do
+        layouter              = Harpnotes::Layout::Default.new
+        layouter.placeholders = get_placeholder_replacers(print_variant)
+        result                = layouter.layout(@music_model, nil, print_variant, page_format)
+      end
 
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
@@ -724,8 +728,35 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result
   end
 
+  def get_placeholder_replacers(print_variant_nr)
+    # keys for musid_model see _mk_meta_data
+    # @meta_data = {number:        (@info_fields[:X]),
+    # composer:      (@info_fields[:C] or []).join("\n"),
+    #     title:         (@info_fields[:T] or []).join("\n"),
+    #     filename:      (@info_fields[:F] or []).join("\n"),
+    #     tempo:         {duration: duration, bpm: bpm, sym: tempo_note},
+    #     tempo_display: tempo_display,
+    #     meter:         @info_fields[:M],
+    #     key:           key,
+    #     o_key:         o_key_display
+    # }
+
+    {
+        composer:         lambda { @music_model.meta_data[:composer] },
+        key:              lambda { @music_model.meta_data[:key] },
+        meter:            lambda { @music_model.meta_data[:meter].join(" ") },
+        number:           lambda { @music_model.meta_data[:number] },
+        o_key:            lambda { @music_model.meta_data[:o_key] },
+        tempo:            lambda { @music_model.meta_data[:tempo_display]},
+        title:            lambda { @music_model.meta_data[:title] },
+        extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
+        extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
+        printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") }
+    }
+  end
+
   def load_music_model
-    abc_parser = $conf.get('abc_parser')
+    abc_parser                        = $conf.get('abc_parser')
     harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
     @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
     @abc_model                        = harpnote_engine.abc_model
@@ -897,7 +928,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         $log.error(I18n.t("your cursor is not within a voice"))
         result = [0, 0]
       else
-        result = [a.first[:time], a.last[:time] + a.last[:dur] - 1]  # expand the selection to the end of the last note
+        result = [a.first[:time], a.last[:time] + a.last[:dur] - 1] # expand the selection to the end of the last note
       end
       result
     end

@@ -271,22 +271,23 @@ module InitConf
              },
 
              notes:      {
+
                  T01_number:               {
                      value: {
                          pos:   [393, 17],
-                         text:  "XXX-999",
+                         text:  "XXX-{{number}}",
                          style: "bold"
                      }},
                  T01_number_extract:       {
                      value: {
                          pos:   [411, 17],
-                         text:  "-X",
+                         text:  "{{extract_filename}}",
                          style: "bold"
                      }},
                  T01_number_extract_value: {
                      key:   :T01_number_extract,
                      value: {
-                         text: "-X",
+                         text: "{{extract_filename}}",
                      }},
                  T02_copyright_music:      {
                      value: {
@@ -309,8 +310,14 @@ module InitConf
                  T05_printed_extracts:     {
                      value: {
                          pos:   [393, 22],
-                         text:  I18n.t(""),
+                         text:  I18n.t("{{printed_extracts}}"),
                          style: "smaller"
+                     }},
+                 T06_legend:               {
+                     value: {
+                         pos:   [360, 30],
+                         text:  %Q{{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}},
+                         style: "small"
                      }},
                  T99_do_not_copy:          {
                      value: {

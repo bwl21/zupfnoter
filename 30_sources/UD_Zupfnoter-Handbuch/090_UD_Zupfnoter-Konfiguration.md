@@ -56,10 +56,22 @@ Liste von horizontaler / vertikaler Position.
 ## `annotations.vl.text` - Text {#annotations.vl.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": "v"
-          
 
 ## `annotations.vr` - 'V' rechts {#annotations.vr}
 
@@ -79,10 +91,22 @@ Liste von horizontaler / vertikaler Position.
 ## `annotations.vr.text` - Text {#annotations.vr.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": "v"
-          
 
 ## `annotations.vt` - 'V' oben {#annotations.vt}
 
@@ -102,10 +126,22 @@ Liste von horizontaler / vertikaler Position.
 ## `annotations.vt.text` - Text {#annotations.vt.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": "v"
-          
 
 ## `extract` - Auszug {#extract}
 
@@ -1039,7 +1075,7 @@ ob der Stapel sortiert ist.
 > **Hinweis**: Leider kann auf haushaltsüblichen Druckern nicht bis zum
 > Rand gedrukht werden. Daher muss man die Sortiermake mit einem
 > Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
-> Stapels kontrollieren, in dem man auf die Schnittkan des Stapels
+> Stapels kontrollieren, in dem man auf die Schnittkante des Stapels
 > schaut.
 
         "sortmark": {"fill": true, "show": false, "size": [2, 4]}
@@ -1213,12 +1249,23 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
         "notes": {
           "T01_T99"                  : {"value": {}},
           "T01_number"               : {
-            "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+            "value" : {
+              "pos"   : [393, 17],
+              "style" : "bold",
+              "text"  : "XXX-{{number}}"
+            }
           },
           "T01_number_extract"       : {
-            "value" : {"pos": [411, 17], "style": "bold", "text": "-X"}
+            "value" : {
+              "pos"   : [411, 17],
+              "style" : "bold",
+              "text"  : "{{extract_filename}}"
+            }
           },
-          "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
+          "T01_number_extract_value" : {
+            "key"   : "T01_number_extract",
+            "value" : {"text": "{{extract_filename}}"}
+          },
           "T02_copyright_music"      : {
             "value" : {
               "pos"   : [340, 251],
@@ -1238,6 +1285,13 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
           },
           "T05_printed_extracts"     : {
             "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+          },
+          "T06_legend"               : {
+            "value" : {
+              "pos"   : [360, 30],
+              "style" : "small",
+              "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+            }
           },
           "T99_do_not_copy"          : {
             "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
@@ -1264,7 +1318,11 @@ TODO: Helptext für presets.notes.T01_T99.value einfügen
 TODO: Helptext für presets.notes.T01_number einfügen
 
         "T01_number": {
-          "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+          "value" : {
+            "pos"   : [393, 17],
+            "style" : "bold",
+            "text"  : "XXX-{{number}}"
+          }
         }
           
 
@@ -1272,7 +1330,11 @@ TODO: Helptext für presets.notes.T01_number einfügen
 
 TODO: Helptext für presets.notes.T01_number.value einfügen
 
-        "value": {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+        "value": {
+          "pos"   : [393, 17],
+          "style" : "bold",
+          "text"  : "XXX-{{number}}"
+        }
           
 
 ## `presets.notes.T01_number.value.pos` - Position {#presets.notes.T01_number.value.pos}
@@ -1294,10 +1356,22 @@ aus vordefinierten Stilen.
 ## `presets.notes.T01_number.value.text` - Text {#presets.notes.T01_number.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
-        "text": "XXX-999"
-          
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+
+        "text": "XXX-{{number}}"
 
 ## `presets.notes.T01_number_extract` - T01 Auszug-Nummer {#presets.notes.T01_number_extract}
 
@@ -1313,13 +1387,23 @@ Ein sinnvolles schema ist:
 -   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
     aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
-        "T01_number_extract": {"value": {"pos": [411, 17], "style": "bold", "text": "-X"}}
+        "T01_number_extract": {
+          "value" : {
+            "pos"   : [411, 17],
+            "style" : "bold",
+            "text"  : "{{extract_filename}}"
+          }
+        }
 
 ## `presets.notes.T01_number_extract.value` - Wert {#presets.notes.T01_number_extract.value}
 
 TODO: Helptext für presets.notes.T01_number_extract.value einfügen
 
-        "value": {"pos": [411, 17], "style": "bold", "text": "-X"}
+        "value": {
+          "pos"   : [411, 17],
+          "style" : "bold",
+          "text"  : "{{extract_filename}}"
+        }
           
 
 ## `presets.notes.T01_number_extract.value.pos` - Position {#presets.notes.T01_number_extract.value.pos}
@@ -1341,16 +1425,31 @@ aus vordefinierten Stilen.
 ## `presets.notes.T01_number_extract.value.text` - Text {#presets.notes.T01_number_extract.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
-        "text": "-X"
-          
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+
+        "text": "{{extract_filename}}"
 
 ## `presets.notes.T01_number_extract_value` - T01 Auszugn Nummer Wert {#presets.notes.T01_number_extract_value}
 
 TODO: Helptext für presets.notes.T01_number_extract_value einfügen
 
-        "T01_number_extract_value": {"key": "T01_number_extract", "value": {"text": "-X"}}
+        "T01_number_extract_value": {
+          "key"   : "T01_number_extract",
+          "value" : {"text": "{{extract_filename}}"}
+        }
           
 
 ## `presets.notes.T01_number_extract_value.key` - schlüssel {#presets.notes.T01_number_extract_value.key}
@@ -1366,16 +1465,28 @@ einfügen
 TODO: Helptext für presets.notes.T01_number_extract_value.value
 einfügen
 
-        "value": {"text": "-X"}
+        "value": {"text": "{{extract_filename}}"}
           
 
 ## `presets.notes.T01_number_extract_value.value.text` - Text {#presets.notes.T01_number_extract_value.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
-        "text": "-X"
-          
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+
+        "text": "{{extract_filename}}"
 
 ## `presets.notes.T02_copyright_music` - T02 Copyright Musik {#presets.notes.T02_copyright_music}
 
@@ -1413,10 +1524,22 @@ aus vordefinierten Stilen.
 ## `presets.notes.T02_copyright_music.value.text` - Text {#presets.notes.T02_copyright_music.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": "© 2018\n"
-          
 
 ## `presets.notes.T03_copyright_harpnotes` - T03 Copyright Unterlegnoten {#presets.notes.T03_copyright_harpnotes}
 
@@ -1464,10 +1587,22 @@ aus vordefinierten Stilen.
 ## `presets.notes.T03_copyright_harpnotes.value.text` - Text {#presets.notes.T03_copyright_harpnotes.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": "© 2018 Notenbild: zupfnoter.de"
-          
 
 ## `presets.notes.T04_to_order` - T04 zu beziehen bei {#presets.notes.T04_to_order}
 
@@ -1506,10 +1641,22 @@ aus vordefinierten Stilen.
 ## `presets.notes.T04_to_order.value.text` - Text {#presets.notes.T04_to_order.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": null
-          
 
 ## `presets.notes.T05_printed_extracts` - T05 verfügbare Auszüge {#presets.notes.T05_printed_extracts}
 
@@ -1546,10 +1693,82 @@ aus vordefinierten Stilen.
 ## `presets.notes.T05_printed_extracts.value.text` - Text {#presets.notes.T05_printed_extracts.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": null
+
+## `presets.notes.T06_legend` - {#presets.notes.T06_legend}
+
+TODO: Helptext für presets.notes.T06_legend einfügen
+
+        "T06_legend": {
+          "value" : {
+            "pos"   : [360, 30],
+            "style" : "small",
+            "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+          }
+        }
           
+
+## `presets.notes.T06_legend.value` - Wert {#presets.notes.T06_legend.value}
+
+TODO: Helptext für presets.notes.T06_legend.value einfügen
+
+        "value": {
+          "pos"   : [360, 30],
+          "style" : "small",
+          "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+        }
+          
+
+## `presets.notes.T06_legend.value.pos` - Position {#presets.notes.T06_legend.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [360, 30]
+          
+
+## `presets.notes.T06_legend.value.style` - Stil {#presets.notes.T06_legend.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "small"
+          
+
+## `presets.notes.T06_legend.value.text` - Text {#presets.notes.T06_legend.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+
+        "text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
 
 ## `presets.notes.T99_do_not_copy` - T99 bitte nicht kopieren {#presets.notes.T99_do_not_copy}
 
@@ -1586,10 +1805,22 @@ aus vordefinierten Stilen.
 ## `presets.notes.T99_do_not_copy.value.text` - Text {#presets.notes.T99_do_not_copy.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": null
-          
 
 ## `produce` - Auszüge {#produce}
 
@@ -1726,10 +1957,22 @@ Liste von horizontaler / vertikaler Position.
 ## `templates.annotations.text` - Text {#templates.annotations.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": "_vorlage_"
-          
 
 ## `templates.images` - Bilder {#templates.images}
 
@@ -1835,10 +2078,22 @@ aus vordefinierten Stilen.
 ## `templates.notes.text` - Text {#templates.notes.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
 
         "text": "ENTER_NOTE"
-          
 
 ## `templates.tuplet` - Tuplet {#templates.tuplet}
 

@@ -1204,6 +1204,8 @@ module Harpnotes
       include Harpnotes::Music
       include Harpnotes::Drawing
 
+      attr_accessor :placeholders
+
       MM_PER_POINT = 0.3
 
 =begin
@@ -1290,6 +1292,11 @@ module Harpnotes
 
 =end
 
+      # note that initiallize is called in method layout once more
+      # in order to get the correct configuration values
+      # this is because the print variant changes the configuration parameters
+      # of laoyut
+      # todo: fix handling of layout config parameters
       def initialize
         # Spacing between two BeatTable increments
         # 1.0 = dureation of a whole note
@@ -1302,7 +1309,8 @@ module Harpnotes
         @color_default        = $conf.get('layout.color.color_default')
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
-        @draw_instrument      = nil;
+        @draw_instrument      = nil
+        @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholde=
         set_instrument_handlers
       end
 
@@ -1598,9 +1606,10 @@ module Harpnotes
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
                                                           "extract.#{print_variant_nr}.legend.pos", title_pos).tap { |s| s.draginfo = {handler: :annotation} }
-        annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
-                                                          "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
-
+        unless $conf["extract.#{print_variant_nr}.T06_legend"].nil?
+          annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
+                                                            "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
+        end
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
         annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[1], "Zupfnoter: https://www.zupfnoter.de", :smaller)
@@ -1640,7 +1649,7 @@ module Harpnotes
             conf_key = "extract.#{print_variant_nr}.notes.#{k}"
             raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
             raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
-            annotations << Harpnotes::Drawing::Annotation.new(note[:pos], note[:text], note[:style], nil,
+            annotations << Harpnotes::Drawing::Annotation.new(note[:pos], resolve_placeholder(note[:text], conf_key), note[:style], nil,
                                                               "#{conf_key}.pos", note[:pos]).tap { |s| s.draginfo = {handler: :annotation} }
           end
         rescue Exception => e
@@ -2986,6 +2995,27 @@ module Harpnotes
         slurpath += start + line if tuplet_options[:shape].include? 'l'
 
         [slurpath, annotation_anchor, cpa1, cpa2]
+      end
+
+
+      # this is used to resolve placeholders in annotations
+      #
+      # @param [String] text the text to be resolveld
+      # @param [String] parameter the name of the configuration parameter for backtracking purposes
+      # @return [String] the resolved text
+      def resolve_placeholder(text, parameter)
+        result = text
+        keys   = result.scan(/\{\{([^\}]+)\}\}/)
+        keys.each do |key|
+          value = @placeholders[key.first]
+          if value
+            result = result.gsub("{{#{key}}}", value.call)
+          else
+            debugger
+            $log.error(%Q{#{I18n.t("wrong placeholder: ")} #{key.first} in #{parameter}})
+          end
+        end
+        result
       end
 
     end

@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.8.0-12-g9735bde
+Version V\_1.8.0-18-g70d4ebc
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -1589,7 +1589,7 @@ Unterlegnoten}\label{elemente-zur-organisation-von-unterlegnoten}
 \end{itemize}
 
 \subsubsection{Vordefinierte
-Blattbeschriftungen}\label{vordefinierte-blattbeschriftungen}
+Seitenbeschriftungen}\label{vordefinierte-seitenbeschriftungen}
 
 Zupfnoter bietet eine Reihe von Vorlagen für die Seitenbeschriftungen.
 Damit lässt sich ein einheitliches Vorgehen bei der Beschriftung der
@@ -1598,6 +1598,19 @@ Unterlegnoten erreichen. Diese können in der Konfigurationsmaske
 Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
 
 \begin{itemize}
+\item
+  \textbf{(34) T05 legend - Legende}: Hier kann eine Legende eingefügt
+  werden, welche mal selbst gestalten kann.
+
+  \begin{quote}
+  \textbf{Hinweis:} Wenn dieser Eintrag vorhanden ist, wird die in
+  Zupfnoter eingebaute Legende unterdrückt.
+
+  Für eine eigenen Legende ist es sinnvoll mit Platzhaltern zu arbeiten.
+  Die Schnelleinstellung in der Seitenbeschriftung fügt eine Legende
+  ein, gleich aussieht wie die in Zupfnoter eingebaute version. Sie ist
+  daher ein guter Startpunkt für eine selbst gestaltete Legende.
+  \end{quote}
 \item
   \textbf{(74) T04 to order - zu beziehen bei}: Hier kann man angeben,
   über welche Adresse das Unterlegnotenblatt bezogen werden kann
@@ -1724,6 +1737,12 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
   auch Kapitel \ref{elemente-fuer-das-ganze-blatt}
   \hyperref[elemente-fuer-das-ganze-blatt]{Elemente für das gesamte
   Musikstück}).
+
+  In den Seitenbeschrifungen können Informationen eingefügt werden,
+  welche in Zupfnoter schon vorhanden sind. Hierzu werden Platzhalter
+  eingefügt, welche bei der Ausgabe durch die entsprechende Information
+  ersetzt werden. Die möglichen Platzhalter findest du in der Hilfe zu
+  den Parametern.
 \item
   \textbf{Liedtexte}
 
@@ -2968,7 +2987,7 @@ Zupfnoter kann Bilder in das Unterlegnotenblatt einfügen.
 \textbf{Hinweis}: Bitte achte darauf dass die eingefügten Bilder
 insgesamt nicht zu groß werden (getestet bis zu 600 kB). Sonst
 funktioniert ggf. die Druckvorschau nicht mehr. Normalerweise hat man
-ein höchsten zwei Bilder auf dem Blatt. Dann sollte diese Begrenzung
+ein höchstens zwei Bilder auf dem Blatt. Dann sollte diese Begrenzung
 kein Problem darstellen. Man muss aber wissen, dass Lade - und
 Speichervorgänge deutlich länger brauchen.
 \end{quote}
@@ -3330,6 +3349,19 @@ Daher ist folgendes Reihenfolge zu empfehlen:
   \item
     \textbf{3 Melodie}: Stimme 1; Auszugsnummer -M
   \end{itemize}
+
+  \begin{quote}
+  \textbf{Hinweis:} Bei Verwendung von Platzhalten in den
+  Seitenbeschriftungen ist es sinnvoll die Auszugsnummer im Parameter
+  ``extract.*.filenamepart'' einzutragen. Der Eintrag kann über den
+  Plathalter \texttt{\{\{extract\_filename\}\}} dann die
+  Seitenbeschriftungen eingetragen werden. Der Plathalter
+  \texttt{\{\{printed\_extracts\}\}} entnimmt die auszugsbezeichnungen
+  ebenfalls aus ``extract.*.filenamepart''.
+
+  Auf diese Weise wird erreicht, dass die Filenamen der Auzüge und die
+  Blattbeschrifungen für die Auszüge konsistent sind.
+  \end{quote}
 \item
   \textbf{Anlegen der Auszüge}: Ausgehend von der Planung sollte unter
   dem Menü \textbf{\texttt{Konfig.\ bearbeiten\ /\ Auszugsbeschriftung}}
@@ -3988,9 +4020,9 @@ erreichbar
 \end{quote}
 
 \begin{quote}
-\textbf{Hinweis}: Die Konfigurationsparameter werden auch in die neuen
-Stücke kopiert, haben dort aber keine Wirkung mehr. Sie sind jedoch als
-Dokumentation hilfreich.
+\textbf{Hinweis}: Die Konfigurationsparameter \texttt{template.filebase}
+werden auch in die neuen Stücke kopiert, haben dort aber keine Wirkung
+mehr. Sie sind jedoch als Dokumentation hilfreich.
 \end{quote}
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
@@ -4007,6 +4039,13 @@ Das ist die Basis für den Dateinamen
 \item[\texttt{\{\{song\_title\}\}}]
 Das ist der Titel des Stückes.
 \end{description}
+
+\begin{quote}
+\textbf{Hinweis:} In den Seitenbeschrifungen gibt es weitere
+Platzhalter, welche jedoch erst bei der Erzeugung der Unterlegnoten
+aufgelöst werden. Die möglichen Platzhalter werden in der Hilfe bei den
+Konfigurationsparametern angezeigt.
+\end{quote}
 
 \subsubsection{Parameter in der
 Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}
@@ -4332,12 +4371,37 @@ Liste von horizontaler / vertikaler Position.
 Text}{annotations.vl.text - Text}}\label{annotations.vl.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "v"
-      
+"text": "v"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{annotations.vr} - `V'
 rechts}{annotations.vr - V rechts}}\label{annotations.vr}
@@ -4364,12 +4428,37 @@ Liste von horizontaler / vertikaler Position.
 Text}{annotations.vr.text - Text}}\label{annotations.vr.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "v"
-      
+"text": "v"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{annotations.vt} - `V'
 oben}{annotations.vt - V oben}}\label{annotations.vt}
@@ -4396,12 +4485,37 @@ Liste von horizontaler / vertikaler Position.
 Text}{annotations.vt.text - Text}}\label{annotations.vt.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "v"
-      
+"text": "v"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{extract} -
 Auszug}{extract - Auszug}}\label{extract}
@@ -4421,7 +4535,7 @@ spezifiziert den Auszug 1 usw.
     "extract": {
       "0" : {
         "barnumbers"   : {
-          "apbase"  : [4, 1],
+          "apbase"  : [1, 1],
           "autopos" : true,
           "pos"     : [6, -4],
           "prefix"  : "",
@@ -4510,7 +4624,7 @@ ausgegeben werden sollen.
 
 \begin{verbatim}
     "barnumbers": {
-      "apbase"  : [4, 1],
+      "apbase"  : [1, 1],
       "autopos" : true,
       "pos"     : [6, -4],
       "prefix"  : "",
@@ -4548,7 +4662,7 @@ Seite der Note Taktnummer angebracht wird.
 \end{quote}
 
 \begin{verbatim}
-    "apbase": [4, 1]
+    "apbase": [1, 1]
       
 \end{verbatim}
 
@@ -5644,7 +5758,8 @@ ob der Stapel sortiert ist.
 \textbf{Hinweis}: Leider kann auf haushaltsüblichen Druckern nicht bis
 zum Rand gedrukht werden. Daher muss man die Sortiermake mit einem
 Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
-Stapels kontrollieren, in dem man auf die Schnittkan des Stapels schaut.
+Stapels kontrollieren, in dem man auf die Schnittkante des Stapels
+schaut.
 \end{quote}
 
 \begin{verbatim}
@@ -5888,12 +6003,23 @@ allerdings nur in der Textansicht möglich.
     "notes": {
       "T01_T99"                  : {"value": {}},
       "T01_number"               : {
-        "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+        "value" : {
+          "pos"   : [393, 17],
+          "style" : "bold",
+          "text"  : "XXX-{{number}}"
+        }
       },
       "T01_number_extract"       : {
-        "value" : {"pos": [411, 17], "style": "bold", "text": "-X"}
+        "value" : {
+          "pos"   : [411, 17],
+          "style" : "bold",
+          "text"  : "{{extract_filename}}"
+        }
       },
-      "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
+      "T01_number_extract_value" : {
+        "key"   : "T01_number_extract",
+        "value" : {"text": "{{extract_filename}}"}
+      },
       "T02_copyright_music"      : {
         "value" : {
           "pos"   : [340, 251],
@@ -5913,6 +6039,13 @@ allerdings nur in der Textansicht möglich.
       },
       "T05_printed_extracts"     : {
         "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+      },
+      "T06_legend"               : {
+        "value" : {
+          "pos"   : [360, 30],
+          "style" : "small",
+          "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+        }
       },
       "T99_do_not_copy"          : {
         "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
@@ -5950,7 +6083,11 @@ TODO:\marginpar{TODO} Helptext für presets.notes.T01\_number einfügen
 
 \begin{verbatim}
     "T01_number": {
-      "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+      "value" : {
+        "pos"   : [393, 17],
+        "style" : "bold",
+        "text"  : "XXX-{{number}}"
+      }
     }
       
 \end{verbatim}
@@ -5962,7 +6099,11 @@ TODO:\marginpar{TODO} Helptext für presets.notes.T01\_number.value
 einfügen
 
 \begin{verbatim}
-    "value": {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+    "value": {
+      "pos"   : [393, 17],
+      "style" : "bold",
+      "text"  : "XXX-{{number}}"
+    }
       
 \end{verbatim}
 
@@ -5995,12 +6136,37 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T01\_number.value.text - Text}}\label{presets.notes.T01ux5fnumber.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "XXX-999"
-      
+"text": "XXX-{{number}}"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T01ux5fnumberux5fextract}{\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract}
 - T01
@@ -6024,7 +6190,13 @@ Ein sinnvolles schema ist:
   Regel aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
 \begin{verbatim}
-"T01_number_extract": {"value": {"pos": [411, 17], "style": "bold", "text": "-X"}}
+"T01_number_extract": {
+  "value" : {
+    "pos"   : [411, 17],
+    "style" : "bold",
+    "text"  : "{{extract_filename}}"
+  }
+}
 \end{verbatim}
 \end{itemize}
 
@@ -6036,7 +6208,11 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T01\_number\_extract.value einfügen
 
 \begin{verbatim}
-    "value": {"pos": [411, 17], "style": "bold", "text": "-X"}
+    "value": {
+      "pos"   : [411, 17],
+      "style" : "bold",
+      "text"  : "{{extract_filename}}"
+    }
       
 \end{verbatim}
 
@@ -6069,12 +6245,37 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T01\_number\_extract.value.text - Text}}\label{presets.notes.T01ux5fnumberux5fextract.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "-X"
-      
+"text": "{{extract_filename}}"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract\_value}
 - T01 Auszugn Nummer
@@ -6084,7 +6285,10 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T01\_number\_extract\_value einfügen
 
 \begin{verbatim}
-    "T01_number_extract_value": {"key": "T01_number_extract", "value": {"text": "-X"}}
+    "T01_number_extract_value": {
+      "key"   : "T01_number_extract",
+      "value" : {"text": "{{extract_filename}}"}
+    }
       
 \end{verbatim}
 
@@ -6108,7 +6312,7 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T01\_number\_extract\_value.value einfügen
 
 \begin{verbatim}
-    "value": {"text": "-X"}
+    "value": {"text": "{{extract_filename}}"}
       
 \end{verbatim}
 
@@ -6117,12 +6321,37 @@ presets.notes.T01\_number\_extract\_value.value einfügen
 Text}{presets.notes.T01\_number\_extract\_value.value.text - Text}}\label{presets.notes.T01ux5fnumberux5fextractux5fvalue.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "-X"
-      
+"text": "{{extract_filename}}"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T02ux5fcopyrightux5fmusic}{\subsection{\texorpdfstring{\texttt{presets.notes.T02\_copyright\_music}
 - T02 Copyright
@@ -6179,12 +6408,37 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T02\_copyright\_music.value.text - Text}}\label{presets.notes.T02ux5fcopyrightux5fmusic.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "© 2018\n"
-      
+"text": "© 2018\n"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T03ux5fcopyrightux5fharpnotes}{\subsection{\texorpdfstring{\texttt{presets.notes.T03\_copyright\_harpnotes}
 - T03 Copyright
@@ -6250,12 +6504,37 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T03\_copyright\_harpnotes.value.text - Text}}\label{presets.notes.T03ux5fcopyrightux5fharpnotes.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "© 2018 Notenbild: zupfnoter.de"
-      
+"text": "© 2018 Notenbild: zupfnoter.de"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T04ux5ftoux5forder}{\subsection{\texorpdfstring{\texttt{presets.notes.T04\_to\_order}
 - T04 zu beziehen
@@ -6313,12 +6592,37 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T04\_to\_order.value.text - Text}}\label{presets.notes.T04ux5ftoux5forder.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": null
-      
+"text": null
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts}
 - T05 verfügbare
@@ -6375,12 +6679,129 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T05\_printed\_extracts.value.text - Text}}\label{presets.notes.T05ux5fprintedux5fextracts.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": null
+"text": null
+\end{verbatim}
+\end{itemize}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend}
+-}{presets.notes.T06\_legend -}}\label{presets.notes.T06ux5flegend}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T06\_legend einfügen
+
+\begin{verbatim}
+    "T06_legend": {
+      "value" : {
+        "pos"   : [360, 30],
+        "style" : "small",
+        "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+      }
+    }
       
 \end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value} -
+Wert}{presets.notes.T06\_legend.value - Wert}}\label{presets.notes.T06ux5flegend.value}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T06\_legend.value
+einfügen
+
+\begin{verbatim}
+    "value": {
+      "pos"   : [360, 30],
+      "style" : "small",
+      "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+    }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.pos}
+-
+Position}{presets.notes.T06\_legend.value.pos - Position}}\label{presets.notes.T06ux5flegend.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+\begin{verbatim}
+    "pos": [360, 30]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.style}
+-
+Stil}{presets.notes.T06\_legend.value.style - Stil}}\label{presets.notes.T06ux5flegend.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "style": "small"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.text}
+-
+Text}{presets.notes.T06\_legend.value.text - Text}}\label{presets.notes.T06ux5flegend.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+
+\begin{verbatim}
+"text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+\end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T99ux5fdoux5fnotux5fcopy}{\subsection{\texorpdfstring{\texttt{presets.notes.T99\_do\_not\_copy}
 - T99 bitte nicht
@@ -6437,12 +6858,37 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T99\_do\_not\_copy.value.text - Text}}\label{presets.notes.T99ux5fdoux5fnotux5fcopy.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": null
-      
+"text": null
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{produce} -
 Auszüge}{produce - Auszüge}}\label{produce}
@@ -6625,12 +7071,37 @@ Liste von horizontaler / vertikaler Position.
 Text}{templates.annotations.text - Text}}\label{templates.annotations.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "_vorlage_"
-      
+"text": "_vorlage_"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{templates.images} -
 Bilder}{templates.images - Bilder}}\label{templates.images}
@@ -6773,12 +7244,37 @@ aus vordefinierten Stilen.
 Text}{templates.notes.text - Text}}\label{templates.notes.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-    "text": "ENTER_NOTE"
-      
+"text": "ENTER_NOTE"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{templates.tuplet} -
 Tuplet}{templates.tuplet - Tuplet}}\label{templates.tuplet}
