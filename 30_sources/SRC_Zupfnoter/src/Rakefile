@@ -231,7 +231,8 @@ task :build_cli do #=> [:build] do
   File.open(ZUPFNOTER_CLI_JS, "w+") do |out|
     #   out << env["application"].to_s
     #   out << Opal::Processor.load_asset_code(env, 'application')
-    out.puts(Opal::Builder::build("application-cli").to_s)
+    polyfill = File.read("polyfill-cil_js.js")
+    out.puts(polyfill + Opal::Builder::build("application-cli").to_s)
   end
 
   # now pack into one bundle see
