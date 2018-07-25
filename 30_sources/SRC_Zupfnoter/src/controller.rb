@@ -125,6 +125,7 @@ class Controller
     @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
+
     $log.info ("Welcome to Zupfnoter")
     $log.info ("Zupfnoter #{VERSION}")
     $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
@@ -132,10 +133,13 @@ class Controller
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
     $log.info ("Browser:  #{`bowser.name`}  #{`bowser.version`}");
     $log.info ("Language: #{zupfnoter_language}");
+    check_suppoerted_browser
 
     $conf        = Confstack.new(nil)
     $conf.strict = false
     $conf.push(_init_conf)
+
+
 
     # this keeps  a hash of resources
     # as resource thend to be big,
@@ -210,7 +214,6 @@ class Controller
     setup_ui_listener
 
     show_message_of_the_day
-    check_suppoerted_browser
 
     # todo
     # todo this completes the very first connection to dropbox
