@@ -1606,7 +1606,7 @@ module Harpnotes
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
                                                           "extract.#{print_variant_nr}.legend.pos", title_pos).tap { |s| s.draginfo = {handler: :annotation} }
-        unless $conf["extract.#{print_variant_nr}.T06_legend"].nil?
+        if $conf["extract.#{print_variant_nr}.T06_legend"].nil?
           annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
                                                             "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
         end

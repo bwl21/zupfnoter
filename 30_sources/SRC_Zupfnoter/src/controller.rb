@@ -256,6 +256,7 @@ class Controller
                                current_notes:  [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
                                settings_menu:  [lambda { `update_settings_menu(#{$settings.to_n})` }],
                                extracts:       [lambda { @extracts.each { |entry|
+                                 `debugger`
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})` }
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
@@ -693,13 +694,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # prepare extract menu
     printed_extracts = $conf['produce']
     @extracts        = $conf.get('extract').inject([]) do |r, entry|
-      extract_number = entry.last.dig(:notes, :T01_number_extract, :text)
+      extract_number = entry.last.dig(:filenamepart)
       print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
       title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
       r.push([entry.first, title])
     end
-
     call_consumers(:extracts)
+    
     begin
 
       $log.benchmark("validate default conf") do
