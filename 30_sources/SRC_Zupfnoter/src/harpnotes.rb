@@ -2023,6 +2023,7 @@ module Harpnotes
 
           distance = goto.policy[:distance] unless distance
           distance = 1 unless distance
+          is_visible = distance == 0 ? false : true;
           distance = distance - 1 if distance > 0 # make distancebeh  symmetric  -1 0 1
 
           from_anchor     = goto.policy[:from_anchor] || :after # after -> reight
@@ -2055,7 +2056,7 @@ module Harpnotes
           path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
           draginfo = {handler: :jumpline, jumpline: jumpline_info, xspacing: $conf.get('layout.X_SPACING')}
 
-          unless distance == 0
+          if is_visible
             unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
               [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
                Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]

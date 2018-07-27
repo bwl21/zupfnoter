@@ -149,7 +149,6 @@ class TextPaneEmulatorForCli < Harpnotes::TextPane
 
   def _split_parts(fulltext)
     _clean_models
-`debugger`
     fulltext.split(@config_separator).each_with_index do |part, i|
       if i == 0
         @abc_part = part

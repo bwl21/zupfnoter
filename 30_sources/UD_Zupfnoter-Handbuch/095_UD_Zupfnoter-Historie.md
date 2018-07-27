@@ -2,6 +2,34 @@
 
 # Änderungsgeschichte
 
+## v 1.9
+
+## Fehlerbehebungen
+
+-   Taktstrich bei Wiederholungsgrenzen innerhalb eines Takts sind nun
+    unterdrückt \#216
+
+## Erweiterungen
+
+-   Sprunglinien für Variationen können einzeln konfiguriert werden
+    \#215
+-   Voreinstellung für Basis von Taktnummernpoistionen verändert
+    ap_base \#218
+-   Anzeige der klingenden Töne für einen Zeitpunkt in der Statusleiste
+    \#220
+-   Sprunglinien können per Konfiguration unterdrückt werden (Pos: 0)
+    \#222
+-   automaitsches Scrollen kann abgeschaltet werden \#221
+-   Platzhalter in Seitenbeschriftungen, so dass manche Werte nicht
+    mehrfach eingegeben werden müssen \#223
+
+## Kompatibilität
+
+-   Voreinstellung für Basis von Taktnummernpoistionen verändert
+    ap_base \#218
+-   Konfiguration der Sprunglinien für Variationen wird von führeren
+    Zupfnoter-Versionen nicht erkannt
+
 ## v 1.8
 
 ### Fehlerbehebungen
