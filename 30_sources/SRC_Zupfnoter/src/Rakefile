@@ -48,9 +48,9 @@ task :updateAbc2svg do
   # ignore some modules (not working, not relevant for zupfnoter audience)
   # permap does not work in zupfnoter
   # ps-interpreter will not be used by zupfnoter audience
-  ignore       = ['wps-1.js', 'perc-1.js']
-  temp_ignore  = ['psvg-1.jsx']
-  sources      += Dir["#{abc2svgrepo}/modules/*.js"].map { |f| File.basename(f, '.js') + "-1.js" } - temp_ignore - ignore # add failing modules to [] to ignore them
+  ignore      = ['wps-1.js', 'perc-1.js']
+  temp_ignore = ['psvg-1.jsx']
+  sources     += Dir["#{abc2svgrepo}/modules/*.js"].map { |f| File.basename(f, '.js') + "-1.js" } - temp_ignore - ignore # add failing modules to [] to ignore them
 
   cd abc2svgrepo do
     sources.each { |f| sh " rm #{f} ; NOMIN=1 #{NINJAEXEC} #{f}" }
@@ -121,6 +121,14 @@ task :server do
   end
 end
 
+desc "start deployment server"
+task :servedeploy do
+  cd "#{OUTFOLDER}/webserver/" do
+    # see http://www.benjaminoakes.com/2013/09/13/ruby-simple-http-server-minimalist-rake/
+    sh "ruby -run -e httpd . -p 9292"
+  end
+end
+
 def git_describe
   v           = File.readlines("version.rb").map { |l| l.strip }
   git_version = %x{git describe}.strip.gsub(/release\/|"xxx"\//, "")
@@ -134,7 +142,7 @@ def git_describe
 end
 
 desc "Build a distribution for the server"
-task :deploy => [:build] do
+task :deploy => [:build, :buildUserManual] do
 
 
   # prepare all requested folders
@@ -244,7 +252,7 @@ task :build_cli do #=> [:build] do
 end
 
 desc "create user manual"
-task :buildUserManual do
+task :buildUserManual => [:build] do
 
   require "#{File.dirname(__FILE__)}/version-prod.rb"
   File.open("../../UD_Zupfnoter-Handbuch/000_UD-Zupfnoter-Version.md", "w") do |f|
