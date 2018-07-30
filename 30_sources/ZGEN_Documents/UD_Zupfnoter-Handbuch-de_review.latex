@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.8.0-18-g70d4ebc
+Version V\_1.9.0
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -7374,9 +7374,54 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \section{Änderungsgeschichte}\label{uxe4nderungsgeschichte}
 
+\subsection{v 1.9}\label{v-1.9}
+
+\subsection{Fehlerbehebungen}\label{fehlerbehebungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Taktstrich bei Wiederholungsgrenzen innerhalb eines Takts sind nun
+  unterdrückt \#216
+\end{itemize}
+
+\subsection{Erweiterungen}\label{erweiterungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Sprunglinien für Variationen können einzeln konfiguriert werden \#215
+\item
+  Voreinstellung für Basis von Taktnummernpoistionen verändert ap\_base
+  \#218
+\item
+  Anzeige der klingenden Töne für einen Zeitpunkt in der Statusleiste
+  \#220
+\item
+  Sprunglinien können per Konfiguration unterdrückt werden (Pos: 0)
+  \#222
+\item
+  automaitsches Scrollen kann abgeschaltet werden \#221
+\item
+  Platzhalter in Seitenbeschriftungen, so dass manche Werte nicht
+  mehrfach eingegeben werden müssen \#223
+\end{itemize}
+
+\subsection{Kompatibilität}\label{kompatibilituxe4t}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Voreinstellung für Basis von Taktnummernpoistionen verändert ap\_base
+  \#218
+\item
+  Konfiguration der Sprunglinien für Variationen wird von führeren
+  Zupfnoter-Versionen nicht erkannt
+\end{itemize}
+
 \subsection{v 1.8}\label{v-1.8}
 
-\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen}
+\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7424,7 +7469,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   verbesserter Spieler \#210
 \end{itemize}
 
-\subsubsection{Erweiterungen}\label{erweiterungen}
+\subsubsection{Erweiterungen}\label{erweiterungen-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7506,7 +7551,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   Menü ``Extras'' \#71
 \end{itemize}
 
-\subsubsection{Kompatibilität}\label{kompatibilituxe4t}
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7661,7 +7706,7 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
 
 \subsection{V 1.6.1 2017-05-17}\label{v-1.6.1-2017-05-17}
 
-\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen-1}
+\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
