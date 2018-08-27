@@ -346,7 +346,7 @@ module Harpnotes
     def draw_the_dot(root)
       @paper.line_width = 0
       ds1               = DOTTED_SIZE + root.line_width
-      ds2               = DOTTED_SIZE + root.line_width / 2
+      ds2               = DOTTED_SIZE + root.line_width
       x                 = root.center.first + (root.size.first + ds1)
       y                 = root.center.last
       white             = COLORS['white']

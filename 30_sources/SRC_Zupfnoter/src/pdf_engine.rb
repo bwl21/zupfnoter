@@ -210,7 +210,7 @@ module Harpnotes
 
       color = COLORS[root.color]
       ds1   = DOTTED_SIZE + root.line_width # distance of dot
-      ds2   = DOTTED_SIZE + root.line_width/2 # size of white dot
+      ds2   = DOTTED_SIZE + root.line_width  # size of white dot
       x     = root.center.first + (root.size.first + ds1)
       y     = root.center.last
 

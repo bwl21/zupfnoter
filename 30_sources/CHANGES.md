@@ -1,3 +1,9 @@
+# V 1.9.1
+
+## fix
+
+* increase white border around dot #224
+
 # v 1.9
 
 ## fix
