@@ -817,7 +817,7 @@ module Harpnotes
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :draginfo, :color, :size
+      attr_accessor :conf_key, :conf_value, :draginfo, :color, :size, :note_conf_base
 
       def initialize
         @visible    = true
@@ -1785,7 +1785,7 @@ module Harpnotes
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
       def layout_voice(voice, beat_layout, print_variant_nr, show_options)
-
+        @print_options_raw = show_options[:print_options_raw]  # todo this is a bad hack but we need it to get the note configuration within layout_playable
         # draw the playables
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
         voice_nr  = show_options[:voice_nr]
@@ -1815,13 +1815,16 @@ module Harpnotes
         # thereby we collect decorations (!fermata! etc.)
         res_decorations = []
         res_playables   = playables.map do |playable|
-          result          = layout_playable(playable, beat_layout) # unless playable.is_a? Pause
+          note_conf_base_tail = %Q{notebound.nconf.v_#{voice_nr}.t_#{playable.time}}
+          note_conf_base = %Q{extract.#{print_variant_nr}.#{note_conf_base_tail}}
+          result          = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
           decoration_root = result.proxy
 
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
           decoration_root.conf_key = %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f}
+         # decoration_root.conf_key = note_conf_base
 
           result.shapes
         end.flatten.compact
@@ -2021,10 +2024,10 @@ module Harpnotes
 
           end
 
-          distance = goto.policy[:distance] unless distance
-          distance = 1 unless distance
+          distance   = goto.policy[:distance] unless distance
+          distance   = 1 unless distance
           is_visible = distance == 0 ? false : true;
-          distance = distance - 1 if distance > 0 # make distancebeh  symmetric  -1 0 1
+          distance   = distance - 1 if distance > 0 # make distancebeh  symmetric  -1 0 1
 
           from_anchor     = goto.policy[:from_anchor] || :after # after -> reight
           to_anchor       = goto.policy[:to_anchor] || :before # before -> left
@@ -2558,15 +2561,17 @@ module Harpnotes
       #
       # @param root [Playable] the entity to be drawn on the sheet
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
+      # @param [Object] note_conf_base base for note configuration
       #
       # @return [Hash] {shapes: [], proxy: proxy_shape}[description]
-      def layout_playable(root, beat_layout)
+      def layout_playable(root, beat_layout, note_conf_base)
+
         result = if root.is_a? Note
-                   layout_note(root, beat_layout)
+                   layout_note(root, beat_layout, "#{note_conf_base}.n_0")
                  elsif root.is_a? SynchPoint
-                   layout_accord(root, beat_layout)
+                   layout_accord(root, beat_layout, note_conf_base)  # layout_accord adds its own note index
                  elsif root.is_a? Pause
-                   layout_pause(root, beat_layout)
+                   layout_pause(root, beat_layout, "#{note_conf_base}.n_0")
                  else
                    $log.error("BUG: Missing Music -> Sheet transform: #{root}")
                  end
@@ -2580,21 +2585,23 @@ module Harpnotes
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
       # @return [Object] The generated drawing primitive
-      def layout_note(root, beat_layout)
+      # @param [string] note_conf_base - the base of configuration details for this note
+      def layout_note(root, beat_layout, note_conf_base)
         #               shift to left   pitch          space     stay away from border
         x_offset = convert_pitch_to_xpos(root)
         y_offset = beat_layout.call(root.beat)
 
         dotted, fill, size, flag = compute_ellipse_properties_from_note(root)
 
-        shift = layout_note_shift(root, size, x_offset, dotted)
+        shift = layout_note_shift(root, size, x_offset, dotted, note_conf_base)
         color = compute_color_by_variant_no(root.variant)
 
         res                 = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
+        res.note_conf_base  = note_conf_base
         root.sheet_drawable = res # backannotate
         res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')
-        #res.hasbarover      = true if root.measure_start # $conf.get('layout.bottomup')
+        #res.hasbarover     = true if root.measure_start # $conf.get('layout.bottomup')
         result = CompoundDrawable.new([res], res)
 
         ## layout the flag and beam
@@ -2686,7 +2693,7 @@ module Harpnotes
       # @param [Object] size the size of the object
       # @param [Numerical] x_offset the unshifted horizontal position of the object
       # @return [CompoundDrawable]
-      def layout_note_shift(root, size, x_offset, dotted)
+      def layout_note_shift(root, size, x_offset, dotted, note_conf_base)
         shift = 0
         if $conf.get('layout.limit_a3')
           if x_offset < 5 # todo: this is still vague
@@ -2700,12 +2707,23 @@ module Harpnotes
         end
 
         if root.shift
-          if root.shift[:dir] == :left
+          if root.shift[:dir] == -1
             shift += -size.first
           else
             shift += size.first
           end
         end
+
+        if note_conf_base
+          # todo: get from print_options_raw here
+          local_key = note_conf_base.gsub(/extract\.(\d+)\./, '')
+          nshift = @print_options_raw["#{local_key}.nshift"]
+         # nshift = $conf["#{note_conf_base}.nshift"]
+          if nshift
+            shift = size.first * 2 * nshift
+          end
+        end
+
         shift
       end
 
@@ -2713,11 +2731,12 @@ module Harpnotes
       # Place a SynchPoint on the Sheet
       # @param root [SynchPoint] The SynchPoint to be placed
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
+      # @param [Object] note_conf_base base for note configuration
       #
       # @return [CompoundDrawable] The generated drawing primitive
-      def layout_accord(root, beat_layout)
+      def layout_accord(root, beat_layout, note_conf_base)
         # draw the notes in the order of the notes in the Unison
-        res            = root.notes.map { |c| layout_note(c, beat_layout) }
+        res            = root.notes.reverse.each_with_index.map { |c, i| layout_note(c, beat_layout, "#{note_conf_base}.n_#{i}") }
         proxy_drawable = root.get_proxy_object(res).proxy # layout_note(root.proxy_drawable, beat_layout)
 
         # then we ensure that we draw the line from lowest to highest in order to cover all of them
@@ -2735,7 +2754,7 @@ module Harpnotes
       # @param beat_layout [lambda] procedure to compute the y_offset of a given beat
       #
       # @return [CompoundDrawable] The generated drawing primitive
-      def layout_pause(root, beat_layout)
+      def layout_pause(root, beat_layout, note_conf_base)
         x_offset = convert_pitch_to_xpos(root)
         y_offset = beat_layout.call(root.beat)
 
@@ -2744,12 +2763,13 @@ module Harpnotes
         size                 = [rest_size.first * scale.first, rest_size.last * scale.last]
 
         # handle shift left/right
-        shift = layout_note_shift(root, size, x_offset, dotted)
+        shift = layout_note_shift(root, size, x_offset, dotted, note_conf_base)
         color = compute_color_by_variant_no(root.variant)
 
         # draw the rest
         res                 = nil
         res                 = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
+        res.note_conf_base  = note_conf_base
         root.sheet_drawable = res
         res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')
@@ -3012,7 +3032,6 @@ module Harpnotes
           if value
             result = result.gsub("{{#{key}}}", value.call)
           else
-            debugger
             $log.error(%Q{#{I18n.t("wrong placeholder: ")} #{key.first} in #{parameter}})
           end
         end

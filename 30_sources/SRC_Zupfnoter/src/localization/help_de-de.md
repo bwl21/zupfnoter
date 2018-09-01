@@ -352,6 +352,22 @@ Im Beispiel
     falls er im Auszug 0 gesetzt wurde.
 -   `0.5` vergrößert den Vorschub um die Hälfte einer ganzen Note.
 
+## nconf
+
+Hier kannst due Darstellung einer einzelnen Note konfigurieren.
+
+## nshift
+
+Hier kannst du konfigieren, wie die Note/Pause horizontal verschobnen
+wird. Die Angabe ist ein Fakter der mit der Notenbreite multipliziert
+wird.
+
+-   `+1.0` verschiebt die Note um eine Notenbreite nach rechts
+-   `-1.0` verschiebt die Note um eine Notenbreite nach links
+
+> **Hinweis**: diese Konfiguration überschreibt eventuell vorhandene
+> Verschiebungen über `Zusätze`.
+
 ## layout.bottomup
 
 Hier kannst du einstellen, ob die Noten von unten nach oben geschrieben
@@ -598,7 +614,7 @@ Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
 
 ## printer.a3_offset
 
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
 verschoben werden soll.
 
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /

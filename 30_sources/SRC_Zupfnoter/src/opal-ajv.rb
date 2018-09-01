@@ -76,6 +76,20 @@ module Ajv
                :additionalProperties => false,
                :properties           => {:minc_f => {:type => "number"}}
            },
+           :nconf_entry      => {
+               :type                 => "object",
+               :additionalProperties => false,
+               :patternProperties    => {
+                   "t_\d*" => {:type                 => "object",
+                               :additionalProperties => false,
+                               :patternProperties    => {
+                                   "n_\d*" => {:type                 => "object",
+                                               :additionalProperties => false,
+                                               :properties           => {:nshift => {:type => 'number'}}}
+                               }
+                   }
+               }
+           },
            :notebound_pos    => {:type                 => "object",
                                  :additionalProperties => false,
                                  :patternProperties    => {
@@ -330,7 +344,7 @@ module Ajv
                                                          :decoration   => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :flowline     => {:type              => 'object',
                                                                            :patternProperties => {
-                                                                               "v_\d*" => {
+                                                                               "v_\d+" => {
                                                                                    :type              => 'object',
                                                                                    :patternProperties => {
                                                                                        "\d*" => {'$ref' => '#/definitions/annotated_bezier'}
@@ -342,6 +356,12 @@ module Ajv
                                                                            :additionalProperties => false,
                                                                            :patternProperties    => {
                                                                                "\d*" => {:'$ref' => '#/definitions/minc_entry'}
+                                                                           }
+                                                         },
+                                                         :nconf        => {:type                 => 'object',
+                                                                           :additionalProperties => false,
+                                                                           :patternProperties    => {
+                                                                               "v_\d*" => {:'$ref' => '#/definitions/nconf_entry'}
                                                                            }
                                                          },
                                                          :partname     => {:'$ref' => '#/definitions/notebound_pos'},

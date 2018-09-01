@@ -140,7 +140,6 @@ class Controller
     $conf.push(_init_conf)
 
 
-
     # this keeps  a hash of resources
     # as resource thend to be big,
     # we do not hold them in $conf
@@ -702,7 +701,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       r.push([entry.first, title])
     end
     call_consumers(:extracts)
-    
+
     begin
 
       $log.benchmark("validate default conf") do
@@ -750,7 +749,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         meter:            lambda { @music_model.meta_data[:meter].join(" ") },
         number:           lambda { @music_model.meta_data[:number] },
         o_key:            lambda { @music_model.meta_data[:o_key] },
-        tempo:            lambda { @music_model.meta_data[:tempo_display]},
+        tempo:            lambda { @music_model.meta_data[:tempo_display] },
         title:            lambda { @music_model.meta_data[:title] },
         extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
         extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
@@ -1006,15 +1005,35 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     # info: see ZnSvg::Paper
+    # info: see opal-svg.rb line 116
+    # todo: this is not prepared for more than two context menu items
+    # this is a bit a hack to create the context menu for harp preview
+    # Approach:
+    #   minc is a menu entry of its own
+    #   config distinguishes between config_note and default config.
+    # it would be possible to
+    #   * add more menu items by more entries in info (see opal-svg.rb set_conf_editable)
+    #   * make specifici menu item text depending on connf_key
+    # no - it is not really elegant :-)
     @harpnote_preview_printer.on_draggable_rightcklick do |info|
+      items = []
+      if (info[:conf_key]||"").include?("minc")
+        items.push({id: 'config', text: I18n.t('Edit Minc'), icon: 'fa fa-arrows-v'}) if info[:conf_key]
+      end
+      if info[:note_conf_base]
+        items.push({id: 'config_note', text: I18n.t('Edit Config'), icon: 'fa fa-gear'}) if info[:note_conf_base]
+      else
+        items.push({id: 'config', text: I18n.t('Edit Config'), icon: 'fa fa-gear'}) if info[:conf_key]
+      end
+
       %x{
           $(#{info.element}).w2menu({
-                                       items: [
-                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' }
-                                              ],
+                                       items: #{items.to_n},
+
                                        onSelect: function (event) {
                                            w2ui.layout_left_tabs.click('configtab');
-                                           #{handle_command(%Q{editconf #{info[:conf_key].gsub(/\.[^\.]+$/, '') }})}
+                                           if (event.item.id == 'config_note') {#{handle_command(%Q{editconf #{info[:note_conf_base] }})}}
+                                           else {#{handle_command(%Q{editconf #{info[:conf_key].gsub(/\.[^\.]+$/, '') }})}}
                                        }
                                    });
           return false ;

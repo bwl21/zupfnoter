@@ -227,7 +227,7 @@
 <li><a href="#presets.notes.T05_printed_extracts.value.pos"><span class="toc-section-number">8.126</span> <code>presets.notes.T05_printed_extracts.value.pos</code> - Position</a></li>
 <li><a href="#presets.notes.T05_printed_extracts.value.style"><span class="toc-section-number">8.127</span> <code>presets.notes.T05_printed_extracts.value.style</code> - Stil</a></li>
 <li><a href="#presets.notes.T05_printed_extracts.value.text"><span class="toc-section-number">8.128</span> <code>presets.notes.T05_printed_extracts.value.text</code> - Text</a></li>
-<li><a href="#presets.notes.T06_legend"><span class="toc-section-number">8.129</span> <code>presets.notes.T06_legend</code> -</a></li>
+<li><a href="#presets.notes.T06_legend"><span class="toc-section-number">8.129</span> <code>presets.notes.T06_legend</code> - T06 Legende</a></li>
 <li><a href="#presets.notes.T06_legend.value"><span class="toc-section-number">8.130</span> <code>presets.notes.T06_legend.value</code> - Wert</a></li>
 <li><a href="#presets.notes.T06_legend.value.pos"><span class="toc-section-number">8.131</span> <code>presets.notes.T06_legend.value.pos</code> - Position</a></li>
 <li><a href="#presets.notes.T06_legend.value.style"><span class="toc-section-number">8.132</span> <code>presets.notes.T06_legend.value.style</code> - Stil</a></li>
@@ -1321,10 +1321,11 @@ setstdextract  : configure stdc onfig in localstore</code></pre></li>
 <p>Um notenbezogene Zusatzinformation f&#252;r Zupfnoter direkt zu erfassen, verwendetZupfnoter &#8220;Annotations&#8221; der ABC-Notation mit spezifischen Konventionen. Diese Zus&#228;tze stehen vor der Note bzw. dem Taktstrich auf den sie sich beziehen. Beispiel f&#252;r solche Zus&#228;tze sind</p>
 <ul>
 <li>Positionierung von Sprunglinien <code>&quot;^@da cape@10&quot; C</code> oder <code>&quot;@@4&quot; :|</code></li>
-<li>Verschiebung von Noten nach links/rechts <code>&quot;^&gt;!&quot; C</code></li>
+<li><p>Verschiebung von Noten nach links/rechts <code>&quot;^&gt;!&quot; C</code></p>
+<p><strong>Hinweis</strong>: diese Methode ist veraltet. Stattdessen verwende bitte die &#252;ber das Kontextmen&#252; in der Harfenvorschau erreichbare notenbezogene Konfiguration <code>notebound.nconf</code> bzw. <code>nshift</code>.</p></li>
 <li>Notenbeschriftung <code>&quot;^!fine@1,1&quot;</code></li>
 <li>Sprungziele <code>&quot;^:fine&quot;</code></li>
-<li>Verschiebemarken <code>[r: hugo]</code></li>
+<li><p>Verschiebemarken <code>[r: hugo]</code></p></li>
 </ul>
 <p>Zupfnoter unterst&#252;tzt die Pflege diese Zus&#228;tze &#252;ber Bildschirmmasken. Diese kannst du &#252;ber Schaltfl&#228;chen bzw. Men&#252;s in der Werkzeugleiste des Eingabefensters aufrufen (siehe Kapitel&#160; <a href="#werkzeugleiste-des-eingabefensters">Werkzeugleiste des Eingabefensters</a>).</p>
 <blockquote>
@@ -2398,7 +2399,7 @@ maintain the keys to be shown here in conf_doc_source.rb
     }
       </code></pre>
 <h2 id="extract.0.printer.a3_offset"><span class="header-section-number">8.62</span> <code>extract.0.printer.a3_offset</code> - Offset f&#252;r A3</h2>
-<p>Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier verschoben werden soll.</p>
+<p>Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier verschoben werden soll.</p>
 <p>Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Wenn ein Unterlegnotenblatt f&#252;r eine 25 saitige Harfe auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht mehr angeschnitten.</p>
@@ -2601,7 +2602,11 @@ maintain the keys to be shown here in conf_doc_source.rb
         &quot;value&quot; : {&quot;pos&quot;: [340, 242], &quot;style&quot;: &quot;small&quot;, &quot;text&quot;: null}
       },
       &quot;T05_printed_extracts&quot;     : {
-        &quot;value&quot; : {&quot;pos&quot;: [393, 22], &quot;style&quot;: &quot;smaller&quot;, &quot;text&quot;: null}
+        &quot;value&quot; : {
+          &quot;pos&quot;   : [393, 22],
+          &quot;style&quot; : &quot;smaller&quot;,
+          &quot;text&quot;  : &quot;{{printed_extracts}}&quot;
+        }
       },
       &quot;T06_legend&quot;               : {
         &quot;value&quot; : {
@@ -2851,12 +2856,20 @@ maintain the keys to be shown here in conf_doc_source.rb
 <h2 id="presets.notes.T05_printed_extracts"><span class="header-section-number">8.124</span> <code>presets.notes.T05_printed_extracts</code> - T05 verf&#252;gbare Ausz&#252;ge</h2>
 <p>TODO: Helptext f&#252;r presets.notes.T05_printed_extracts einf&#252;gen</p>
 <pre><code>    &quot;T05_printed_extracts&quot;: {
-      &quot;value&quot; : {&quot;pos&quot;: [393, 22], &quot;style&quot;: &quot;smaller&quot;, &quot;text&quot;: null}
+      &quot;value&quot; : {
+        &quot;pos&quot;   : [393, 22],
+        &quot;style&quot; : &quot;smaller&quot;,
+        &quot;text&quot;  : &quot;{{printed_extracts}}&quot;
+      }
     }
       </code></pre>
 <h2 id="presets.notes.T05_printed_extracts.value"><span class="header-section-number">8.125</span> <code>presets.notes.T05_printed_extracts.value</code> - Wert</h2>
 <p>TODO: Helptext f&#252;r presets.notes.T05_printed_extracts.value einf&#252;gen</p>
-<pre><code>    &quot;value&quot;: {&quot;pos&quot;: [393, 22], &quot;style&quot;: &quot;smaller&quot;, &quot;text&quot;: null}
+<pre><code>    &quot;value&quot;: {
+      &quot;pos&quot;   : [393, 22],
+      &quot;style&quot; : &quot;smaller&quot;,
+      &quot;text&quot;  : &quot;{{printed_extracts}}&quot;
+    }
       </code></pre>
 <h2 id="presets.notes.T05_printed_extracts.value.pos"><span class="header-section-number">8.126</span> <code>presets.notes.T05_printed_extracts.value.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
@@ -2879,9 +2892,9 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
 <li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
-<pre><code>&quot;text&quot;: null</code></pre></li>
+<pre><code>&quot;text&quot;: &quot;{{printed_extracts}}&quot;</code></pre></li>
 </ul>
-<h2 id="presets.notes.T06_legend"><span class="header-section-number">8.129</span> <code>presets.notes.T06_legend</code> -</h2>
+<h2 id="presets.notes.T06_legend"><span class="header-section-number">8.129</span> <code>presets.notes.T06_legend</code> - T06 Legende</h2>
 <p>TODO: Helptext f&#252;r presets.notes.T06_legend einf&#252;gen</p>
 <pre><code>    &quot;T06_legend&quot;: {
       &quot;value&quot; : {

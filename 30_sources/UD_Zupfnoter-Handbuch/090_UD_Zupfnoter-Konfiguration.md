@@ -917,7 +917,7 @@ Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
 
 ## `extract.0.printer.a3_offset` - Offset für A3 {#extract.0.printer.a3_offset}
 
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
 verschoben werden soll.
 
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
@@ -1284,7 +1284,11 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
             "value" : {"pos": [340, 242], "style": "small", "text": null}
           },
           "T05_printed_extracts"     : {
-            "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+            "value" : {
+              "pos"   : [393, 22],
+              "style" : "smaller",
+              "text"  : "{{printed_extracts}}"
+            }
           },
           "T06_legend"               : {
             "value" : {
@@ -1663,7 +1667,11 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 TODO: Helptext für presets.notes.T05_printed_extracts einfügen
 
         "T05_printed_extracts": {
-          "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+          "value" : {
+            "pos"   : [393, 22],
+            "style" : "smaller",
+            "text"  : "{{printed_extracts}}"
+          }
         }
           
 
@@ -1671,7 +1679,11 @@ TODO: Helptext für presets.notes.T05_printed_extracts einfügen
 
 TODO: Helptext für presets.notes.T05_printed_extracts.value einfügen
 
-        "value": {"pos": [393, 22], "style": "smaller", "text": null}
+        "value": {
+          "pos"   : [393, 22],
+          "style" : "smaller",
+          "text"  : "{{printed_extracts}}"
+        }
           
 
 ## `presets.notes.T05_printed_extracts.value.pos` - Position {#presets.notes.T05_printed_extracts.value.pos}
@@ -1708,9 +1720,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
 
-        "text": null
+        "text": "{{printed_extracts}}"
 
-## `presets.notes.T06_legend` - {#presets.notes.T06_legend}
+## `presets.notes.T06_legend` - T06 Legende {#presets.notes.T06_legend}
 
 TODO: Helptext für presets.notes.T06_legend einfügen
 

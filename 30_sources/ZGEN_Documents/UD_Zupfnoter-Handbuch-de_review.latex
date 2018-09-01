@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.0
+Version V\_1.9.0-7-ge90730a
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2931,13 +2931,17 @@ spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
 Taktstrich auf den sie sich beziehen. Beispiel für solche Zusätze sind
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
 \item
   Positionierung von Sprunglinien \texttt{"\^{}@da\ cape@10"\ C} oder
   \texttt{"@@4"\ :\textbar{}}
 \item
   Verschiebung von Noten nach links/rechts
   \texttt{"\^{}\textgreater{}!"\ C}
+
+  \textbf{Hinweis}: diese Methode ist veraltet. Stattdessen verwende
+  bitte die über das Kontextmenü in der Harfenvorschau erreichbare
+  notenbezogene Konfiguration \texttt{notebound.nconf} bzw.
+  \texttt{nshift}.
 \item
   Notenbeschriftung \texttt{"\^{}!fine@1,1"}
 \item
@@ -5548,7 +5552,7 @@ Druckdialog findest.
 Offset für
 A3}{extract.0.printer.a3\_offset - Offset für A3}}\label{extract.0.printer.a3ux5foffset}
 
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
 verschoben werden soll.
 
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
@@ -6038,7 +6042,11 @@ allerdings nur in der Textansicht möglich.
         "value" : {"pos": [340, 242], "style": "small", "text": null}
       },
       "T05_printed_extracts"     : {
-        "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+        "value" : {
+          "pos"   : [393, 22],
+          "style" : "smaller",
+          "text"  : "{{printed_extracts}}"
+        }
       },
       "T06_legend"               : {
         "value" : {
@@ -6633,7 +6641,11 @@ einfügen
 
 \begin{verbatim}
     "T05_printed_extracts": {
-      "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+      "value" : {
+        "pos"   : [393, 22],
+        "style" : "smaller",
+        "text"  : "{{printed_extracts}}"
+      }
     }
       
 \end{verbatim}
@@ -6646,7 +6658,11 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T05\_printed\_extracts.value einfügen
 
 \begin{verbatim}
-    "value": {"pos": [393, 22], "style": "smaller", "text": null}
+    "value": {
+      "pos"   : [393, 22],
+      "style" : "smaller",
+      "text"  : "{{printed_extracts}}"
+    }
       
 \end{verbatim}
 
@@ -6707,12 +6723,12 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
 
 \begin{verbatim}
-"text": null
+"text": "{{printed_extracts}}"
 \end{verbatim}
 \end{itemize}
 
-\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend}
--}{presets.notes.T06\_legend -}}\label{presets.notes.T06ux5flegend}
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend} - T06
+Legende}{presets.notes.T06\_legend - T06 Legende}}\label{presets.notes.T06ux5flegend}
 
 TODO:\marginpar{TODO} Helptext für presets.notes.T06\_legend einfügen
 

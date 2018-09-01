@@ -310,7 +310,7 @@ module InitConf
                  T05_printed_extracts:     {
                      value: {
                          pos:   [393, 22],
-                         text:  I18n.t("{{printed_extracts}}"),
+                         text:  "{{printed_extracts}}",
                          style: "smaller"
                      }},
                  T06_legend:               {

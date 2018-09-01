@@ -1487,6 +1487,11 @@ Taktstrich auf den sie sich beziehen. Beispiel für solche Zusätze sind
 
 -   Positionierung von Sprunglinien `"^@da cape@10" C` oder `"@@4" :|`
 -   Verschiebung von Noten nach links/rechts `"^>!" C`
+
+    **Hinweis**: diese Methode ist veraltet. Stattdessen verwende bitte
+    die über das Kontextmenü in der Harfenvorschau erreichbare
+    notenbezogene Konfiguration `notebound.nconf` bzw. `nshift`.
+
 -   Notenbeschriftung `"^!fine@1,1"`
 -   Sprungziele `"^:fine"`
 -   Verschiebemarken `[r: hugo]`

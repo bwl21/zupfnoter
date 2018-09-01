@@ -50,7 +50,6 @@ class ConfstackEditor
           help_key = help_key.gsub(/^(extract\.)(\d+)(.*)$/) { "#{$1}0#{$3}" }
           a        = $conf.get(help_key)
         end
-        puts help_key
 
         a
       end
@@ -355,7 +354,7 @@ class ConfstackEditor
           OneLineString   => ['title', 'filenamepart', 'url', 'filebase', 'imagename'],
           MultiLineString => ['text'],
           Boolean         => ['limit_a3', 'autopos', 'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],
-          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
+          Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'nshift', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
