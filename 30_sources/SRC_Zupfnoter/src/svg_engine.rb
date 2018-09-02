@@ -209,7 +209,7 @@ module Harpnotes
           svg_node = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
 
           # bind context menus
-          @paper.set_conf_editable(svg_node, layout_model_element.conf_key, layout_model_element.note_conf_base)
+          @paper.set_conf_editable(svg_node, layout_model_element.conf_key, layout_model_element.more_conf_keys)
 
           # bind draggable elements
           draginfo = layout_model_element.draginfo

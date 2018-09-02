@@ -817,14 +817,19 @@ module Harpnotes
     #
     # }
     class Drawable
-      attr_accessor :conf_key, :conf_value, :draginfo, :color, :size, :note_conf_base
+
+      # more_conf_keys is an array of hash which eventurally introduces more context menu entries
+      # see   controller.rb  @harpnote_preview_printer.on_draggable_rightcklick do |info|
+      
+      attr_accessor :conf_key, :conf_value, :draginfo, :color, :size, :more_conf_keys
 
       def initialize
-        @visible    = true
-        @line_width = $conf.get('layout.LINE_THIN')
-        @conf_key   = nil
-        @color      = $conf.get('layout.color.color_default')
-        @size       = [1, 1]
+        @visible        = true
+        @line_width     = $conf.get('layout.LINE_THIN')
+        @conf_key       = nil
+        @more_conf_keys = []
+        @color          = $conf.get('layout.color.color_default')
+        @size           = [1, 1]
       end
 
       def center
@@ -1785,7 +1790,7 @@ module Harpnotes
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
       def layout_voice(voice, beat_layout, print_variant_nr, show_options)
-        @print_options_raw = show_options[:print_options_raw]  # todo this is a bad hack but we need it to get the note configuration within layout_playable
+        @print_options_raw = show_options[:print_options_raw] # todo this is a bad hack but we need it to get the note configuration within layout_playable
         # draw the playables
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
         voice_nr  = show_options[:voice_nr]
@@ -1816,15 +1821,18 @@ module Harpnotes
         res_decorations = []
         res_playables   = playables.map do |playable|
           note_conf_base_tail = %Q{notebound.nconf.v_#{voice_nr}.t_#{playable.time}}
-          note_conf_base = %Q{extract.#{print_variant_nr}.#{note_conf_base_tail}}
-          result          = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
-          decoration_root = result.proxy
+          note_conf_base      = %Q{extract.#{print_variant_nr}.#{note_conf_base_tail}}
+          result              = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
+          decoration_root     = result.proxy
 
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
-          decoration_root.conf_key = %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f}
-         # decoration_root.conf_key = note_conf_base
+          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
+                                               text:     I18n.t("Edit Minc"),
+                                               icon:     "fa fa-arrows-v"
+                                              })
+          # decoration_root.conf_key = note_conf_base
 
           result.shapes
         end.flatten.compact
@@ -2569,7 +2577,7 @@ module Harpnotes
         result = if root.is_a? Note
                    layout_note(root, beat_layout, "#{note_conf_base}.n_0")
                  elsif root.is_a? SynchPoint
-                   layout_accord(root, beat_layout, note_conf_base)  # layout_accord adds its own note index
+                   layout_accord(root, beat_layout, note_conf_base) # layout_accord adds its own note index
                  elsif root.is_a? Pause
                    layout_pause(root, beat_layout, "#{note_conf_base}.n_0")
                  else
@@ -2597,7 +2605,7 @@ module Harpnotes
         color = compute_color_by_variant_no(root.variant)
 
         res                 = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
-        res.note_conf_base  = note_conf_base
+        res.conf_key        = note_conf_base + ".nconf"
         root.sheet_drawable = res # backannotate
         res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')
@@ -2717,8 +2725,8 @@ module Harpnotes
         if note_conf_base
           # todo: get from print_options_raw here
           local_key = note_conf_base.gsub(/extract\.(\d+)\./, '')
-          nshift = @print_options_raw["#{local_key}.nshift"]
-         # nshift = $conf["#{note_conf_base}.nshift"]
+          nshift    = @print_options_raw["#{local_key}.nshift"]
+          # nshift = $conf["#{note_conf_base}.nshift"]
           if nshift
             shift = size.first * 2 * nshift
           end
@@ -2736,7 +2744,8 @@ module Harpnotes
       # @return [CompoundDrawable] The generated drawing primitive
       def layout_accord(root, beat_layout, note_conf_base)
         # draw the notes in the order of the notes in the Unison
-        res            = root.notes.reverse.each_with_index.map { |c, i| layout_note(c, beat_layout, "#{note_conf_base}.n_#{i}") }
+        # we reverse it such that the proxy note has index 0
+        res            = root.notes.reverse.each_with_index.map { |c, i| layout_note(c, beat_layout, "#{note_conf_base}.n_#{i}") }.reverse
         proxy_drawable = root.get_proxy_object(res).proxy # layout_note(root.proxy_drawable, beat_layout)
 
         # then we ensure that we draw the line from lowest to highest in order to cover all of them
@@ -2769,7 +2778,7 @@ module Harpnotes
         # draw the rest
         res                 = nil
         res                 = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
-        res.note_conf_base  = note_conf_base
+        res.conf_key        = note_conf_base + ".nconf"
         root.sheet_drawable = res
         res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')

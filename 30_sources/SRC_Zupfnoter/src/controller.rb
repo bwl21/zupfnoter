@@ -1013,17 +1013,19 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     #   config distinguishes between config_note and default config.
     # it would be possible to
     #   * add more menu items by more entries in info (see opal-svg.rb set_conf_editable)
-    #   * make specifici menu item text depending on connf_key
+    #   * make specificic menu item text depending on connf_key
     # no - it is not really elegant :-)
     @harpnote_preview_printer.on_draggable_rightcklick do |info|
       items = []
-      if (info[:conf_key]||"").include?("minc")
-        items.push({id: 'config', text: I18n.t('Edit Minc'), icon: 'fa fa-arrows-v'}) if info[:conf_key]
+      if (info[:conf_key])
+        items.push({id: info[:conf_key], text: I18n.t('Edit Config'), icon: 'fa fa-gear'})
       end
-      if info[:note_conf_base]
-        items.push({id: 'config_note', text: I18n.t('Edit Config'), icon: 'fa fa-gear'}) if info[:note_conf_base]
-      else
-        items.push({id: 'config', text: I18n.t('Edit Config'), icon: 'fa fa-gear'}) if info[:conf_key]
+
+      info[:more_conf_keys].each do |entry|
+        id = entry[:conf_key]
+        text = entry[:text]
+        icon = entry[:icon]
+        items.push({id: id, text: text, icon: icon})
       end
 
       %x{
@@ -1032,8 +1034,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
                                        onSelect: function (event) {
                                            w2ui.layout_left_tabs.click('configtab');
-                                           if (event.item.id == 'config_note') {#{handle_command(%Q{editconf #{info[:note_conf_base] }})}}
-                                           else {#{handle_command(%Q{editconf #{info[:conf_key].gsub(/\.[^\.]+$/, '') }})}}
+                                           #{handle_command(%Q{editconf #{`event.item.id`.gsub(/\.[^\.]+$/, '') }})}
                                        }
                                    });
           return false ;

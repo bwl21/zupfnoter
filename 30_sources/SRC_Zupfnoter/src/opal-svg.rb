@@ -98,7 +98,7 @@ module ZnSvg
 
     # this attaches the context menu only
 
-    def set_conf_editable(svg_element, conf_key, note_conf_base)
+    def set_conf_editable(svg_element, conf_key, more_conf_keys)
       %x{
           var me = #{svg_element};
           mouseoverFnc = function(){
@@ -111,7 +111,7 @@ module ZnSvg
           me.mouseover(mouseoverFnc);
           me.mouseout(mouseoutFnc);
 
-          me[0].oncontextmenu = function(){ return #{@draggable_rightclick_handler}({element: svg_element, conf_key: #{conf_key}, note_conf_base: #{note_conf_base}});};
+          me[0].oncontextmenu = function(){ return #{@draggable_rightclick_handler}({element: svg_element, conf_key: #{conf_key}, more_conf_keys: #{more_conf_keys}});};
       }
     end
 
