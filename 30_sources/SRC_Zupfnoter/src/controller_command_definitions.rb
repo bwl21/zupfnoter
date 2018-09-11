@@ -668,6 +668,7 @@ class Controller
         # it is useful for extracts, notes, morincs etc.
         # todo: implement a more flexible replacement thatn simply prefixing
         regexp_form_sets = {
+            /extract.(\d+).notebound.tuplet\.v_(\d+)\.(\w+)/ => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
             /extract.(\d+).notebound.minc\.(\d+)/ => {keys: ["minc_f"]},
             /extract.(\d+).notebound.nconf\.v_(\d+).t_(\d+).n_(\d+)/ => {keys: ["nshift"]}
         }

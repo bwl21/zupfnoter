@@ -380,6 +380,10 @@ module Ajv
                                                          :variantend   => {:'$ref' => '#/definitions/notebound_pos'},
                                                      }
                                                  },
+                                                 :tuplets      => {:type       => "object",
+                                                                   :properties =>
+                                                                       {:text => {:type => "string"}}
+                                                 },
                                                  :barnumbers   => {:type       => "object",
                                                                    :required   => ["voices", "pos", "autopos", "style", "prefix"],
                                                                    :properties =>
