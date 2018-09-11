@@ -227,6 +227,7 @@ Auszug 1 usw.
             "subflowlines" : [2, 4],
             "synchlines"   : [[1, 2], [3, 4]],
             "title"        : "alle Stimmen",
+            "tuplets"      : {"text": "{{tuplet}}"},
             "voices"       : [1, 2, 3, 4]
           },
           "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
@@ -866,15 +867,15 @@ Im Beispiel
 
 ... kein Beispiel verfügbar ...
 
-## `extract.0.notebound.tuplet` - Tuplet {#extract.0.notebound.tuplet}
+## `extract.0.notebound.tuplet` - n-tole {#extract.0.notebound.tuplet}
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 > **Hinweis**:
 >
-> Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-> notwendig, eine "Verschiebemarke" vor die betroffene tuplet zu setzen.
+> Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor die betroffene n-Tole zu setzen.
 > Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 > man die Verschiebemarken gleich benennt.
 >
@@ -1225,6 +1226,25 @@ ausgegeben.
 > spezifiziert ist.
 
         "title": "alle Stimmen"
+          
+
+## `extract.0.tuplets` - n-tolen {#extract.0.tuplets}
+
+Hier kannst du die generelle Darstellung von n-Tolen konfigurieren.
+
+        "tuplets": {"text": "{{tuplet}}"}
+          
+
+## `extract.0.tuplets.text` - Text {#extract.0.tuplets.text}
+
+Hier kannst du die Darstellung der n-Tolen - Nummer konfigurieren. Der
+Wert ist ein Text, in welchem der Platzhalter `{{tuplet}}` durch die
+n-Tolen - Nummer ersetzt wird.
+
+So wird beispielsweise mit `- {{tuplet}} -` die n-Tolen - Nummer als
+`- 3 -` dargestellt.
+
+        "text": "{{tuplet}}"
           
 
 ## `extract.0.voices` - Stimmen {#extract.0.voices}
@@ -2107,15 +2127,15 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
         "text": "ENTER_NOTE"
 
-## `templates.tuplet` - Tuplet {#templates.tuplet}
+## `templates.tuplet` - n-tole {#templates.tuplet}
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 > **Hinweis**:
 >
-> Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-> notwendig, eine "Verschiebemarke" vor die betroffene tuplet zu setzen.
+> Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor die betroffene n-Tole zu setzen.
 > Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 > man die Verschiebemarken gleich benennt.
 >
@@ -2148,7 +2168,7 @@ Hier gibst du den Kontrollpunkt für die letzte Note an.
 
 ## `templates.tuplet.shape` - Linienform {#templates.tuplet.shape}
 
-Hier gibst du eine Liste von Linienformen für das Tuplet an.
+Hier gibst du eine Liste von Linienformen für die n-tole an.
 
 -   `c`: Kurve
 -   `l`: Linie
@@ -2161,7 +2181,7 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 
 ## `templates.tuplet.show` - anzeigen {#templates.tuplet.show}
 
-Hier gibst du an, ob das Tuplet ausgegeben werden soll.
+Hier gibst du an, ob die n-Tole ausgegeben werden soll.
 
         "show": true
           

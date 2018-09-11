@@ -18,6 +18,7 @@
 * supress jumplines by configuration #222
 * disable autoscroll trhough setsetting #221
 * now support placeholders in page annotations #223
+* improve configuration of tuplets #225
 
 ## BWC issues
 

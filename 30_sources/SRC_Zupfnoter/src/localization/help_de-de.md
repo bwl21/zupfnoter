@@ -810,13 +810,13 @@ kannst du das Template identifizieren.
 
 ## tuplet
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 > **Hinweis**:
 >
-> Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-> notwendig, eine "Verschiebemarke" vor die betroffene tuplet zu setzen.
+> Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor die betroffene n-Tole zu setzen.
 > Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 > man die Verschiebemarken gleich benennt.
 >
@@ -827,8 +827,21 @@ steuern.
 
 ## tuplet.0
 
-Hier kannst du die Darstellung einer Triole (genauer gesagt, eines
-Tuplets) steuern.
+Hier kannst du die Darstellung einer Triole (genauer gesagt, einer
+n-tole) steuern.
+
+## tuplets
+
+Hier kannst du die generelle Darstellung von n-Tolen konfigurieren.
+
+## tuplets.text
+
+Hier kannst du die Darstellung der n-Tolen - Nummer konfigurieren. Der
+Wert ist ein Text, in welchem der Platzhalter `{{tuplet}}` durch die
+n-Tolen - Nummer ersetzt wird.
+
+So wird beispielsweise mit `- {{tuplet}} -` die n-Tolen - Nummer als
+`- 3 -` dargestellt.
 
 ## cp1
 
@@ -840,7 +853,7 @@ Hier gibst du den Kontrollpunkt für die letzte Note an.
 
 ## shape
 
-Hier gibst du eine Liste von Linienformen für das Tuplet an.
+Hier gibst du eine Liste von Linienformen für die n-tole an.
 
 -   `c`: Kurve
 -   `l`: Linie
@@ -850,7 +863,7 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 
 ## tuplet.show
 
-Hier gibst du an, ob das Tuplet ausgegeben werden soll.
+Hier gibst du an, ob die n-Tole ausgegeben werden soll.
 
 ## text
 

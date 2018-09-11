@@ -820,7 +820,7 @@ module Harpnotes
 
       # more_conf_keys is an array of hash which eventurally introduces more context menu entries
       # see   controller.rb  @harpnote_preview_printer.on_draggable_rightcklick do |info|
-      
+
       attr_accessor :conf_key, :conf_value, :draginfo, :color, :size, :more_conf_keys
 
       def initialize
@@ -1959,8 +1959,10 @@ module Harpnotes
             unless tuplet_options[:show] == false
               conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
               draginfo      = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
+              text          = show_options[:print_options_raw]["tuplets.text"] || playable.tuplet.to_s
+              text          = text.gsub('{{tuplet}}', playable.tuplet.to_s)
               result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
-              result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, playable.tuplet.to_s,
+              result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, text,
                                                              :small,
                                                              tuplet_start.origin,
                                                              conf_key + ".#{conf_key_pos}",

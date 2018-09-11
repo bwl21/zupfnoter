@@ -17,7 +17,7 @@ module InitConf
 
     explicit_sort = [:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                      :title, :filenamepart, :startpos, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes,
-                     :legend, :nonflowrest, :lyrics, :notes, :images, :tuplet, :layout, :printer,
+                     :legend, :nonflowrest, :lyrics, :notes, :images, :tuplets, :layout, :printer,
                      #
                      :annotation, :decoration, :partname, :variantend, :countnote, :c_jumplines, :tuplet, :minc, :flowline, # sort within notebound
 
@@ -412,6 +412,7 @@ module InitConf
                  sortmark:    {size: [2, 4], fill: true, show: false},
                  nonflowrest: false,
                  notes:       {},
+                 tuplets:     {text: "{{tuplet}}"},
                  barnumbers:  {
                      voices:  [],
                      pos:     [6, -4],

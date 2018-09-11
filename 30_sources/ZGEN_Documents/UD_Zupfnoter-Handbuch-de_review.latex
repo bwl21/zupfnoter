@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.0-7-ge90730a
+Version V\_1.9.0-9-g477a2c5
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -4609,6 +4609,7 @@ spezifiziert den Auszug 1 usw.
         "subflowlines" : [2, 4],
         "synchlines"   : [[1, 2], [3, 4]],
         "title"        : "alle Stimmen",
+        "tuplets"      : {"text": "{{tuplet}}"},
         "voices"       : [1, 2, 3, 4]
       },
       "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
@@ -5485,16 +5486,16 @@ Im Beispiel
 \ldots{} kein Beispiel verfügbar \ldots{}
 
 \subsection{\texorpdfstring{\texttt{extract.0.notebound.tuplet} -
-Tuplet}{extract.0.notebound.tuplet - Tuplet}}\label{extract.0.notebound.tuplet}
+n-tole}{extract.0.notebound.tuplet - n-tole}}\label{extract.0.notebound.tuplet}
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 \begin{quote}
 \textbf{Hinweis}:
 
-Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-notwendig, eine ``Verschiebemarke'' vor die betroffene tuplet zu setzen.
+Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+notwendig, eine ``Verschiebemarke'' vor die betroffene n-Tole zu setzen.
 Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 man die Verschiebemarken gleich benennt.
 
@@ -5974,6 +5975,31 @@ spezifiziert ist.
 
 \begin{verbatim}
     "title": "alle Stimmen"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.tuplets} -
+n-tolen}{extract.0.tuplets - n-tolen}}\label{extract.0.tuplets}
+
+Hier kannst du die generelle Darstellung von n-Tolen konfigurieren.
+
+\begin{verbatim}
+    "tuplets": {"text": "{{tuplet}}"}
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.tuplets.text} -
+Text}{extract.0.tuplets.text - Text}}\label{extract.0.tuplets.text}
+
+Hier kannst du die Darstellung der n-Tolen - Nummer konfigurieren. Der
+Wert ist ein Text, in welchem der Platzhalter \texttt{\{\{tuplet\}\}}
+durch die n-Tolen - Nummer ersetzt wird.
+
+So wird beispielsweise mit \texttt{-\ \{\{tuplet\}\}\ -} die n-Tolen -
+Nummer als \texttt{-\ 3\ -} dargestellt.
+
+\begin{verbatim}
+    "text": "{{tuplet}}"
       
 \end{verbatim}
 
@@ -7293,16 +7319,16 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \end{itemize}
 
 \subsection{\texorpdfstring{\texttt{templates.tuplet} -
-Tuplet}{templates.tuplet - Tuplet}}\label{templates.tuplet}
+n-tole}{templates.tuplet - n-tole}}\label{templates.tuplet}
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 \begin{quote}
 \textbf{Hinweis}:
 
-Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-notwendig, eine ``Verschiebemarke'' vor die betroffene tuplet zu setzen.
+Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+notwendig, eine ``Verschiebemarke'' vor die betroffene n-Tole zu setzen.
 Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 man die Verschiebemarken gleich benennt.
 
@@ -7345,7 +7371,7 @@ Hier gibst du den Kontrollpunkt für die letzte Note an.
 \subsection{\texorpdfstring{\texttt{templates.tuplet.shape} -
 Linienform}{templates.tuplet.shape - Linienform}}\label{templates.tuplet.shape}
 
-Hier gibst du eine Liste von Linienformen für das Tuplet an.
+Hier gibst du eine Liste von Linienformen für die n-tole an.
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7368,7 +7394,7 @@ Kontrollpunkte (als Ecken im Linienzug) sehen.
 \subsection{\texorpdfstring{\texttt{templates.tuplet.show} -
 anzeigen}{templates.tuplet.show - anzeigen}}\label{templates.tuplet.show}
 
-Hier gibst du an, ob das Tuplet ausgegeben werden soll.
+Hier gibst du an, ob die n-Tole ausgegeben werden soll.
 
 \begin{verbatim}
     "show": true
