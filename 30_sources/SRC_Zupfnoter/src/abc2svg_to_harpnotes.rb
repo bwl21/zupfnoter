@@ -770,8 +770,8 @@ module Harpnotes
               if annotation
                 notepos  = [pos_x, pos_y].map { |p| p.to_f } if pos_x
                 position = notepos || annotation[:pos] || $conf['defaults.notebound.annotation.pos']
-                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.pos" if entity.znid # todo: not sure if we really nedd this if; maybe it was before we compute znid by time
-                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.#{index}.pos" if index > 0
+                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}" if entity.znid # this is for backwards conpatibility reasons
+                conf_key = "notebound.annotation.#{voice_id}.#{entity.znid}.#{index}" if index > 0
                 result << Harpnotes::Music::NoteBoundAnnotation.new(entity, {style: annotation[:style], pos: position, text: annotation[:text]}, conf_key)
               end
             else
@@ -812,7 +812,7 @@ module Harpnotes
         # handle parts as annotation
 
         if part_label
-          conf_key = "notebound.partname.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
+          conf_key = "notebound.partname.#{voice_id}.#{znid}" if znid #$conf['defaults.notebound.variantend.pos']
           position = $conf['defaults.notebound.partname.pos']
 
           harpnote_elements.first.first_in_part = true

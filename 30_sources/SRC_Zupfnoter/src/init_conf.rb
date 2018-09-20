@@ -73,7 +73,7 @@ module InitConf
          # this is used to upddate / create new objects
          templates: {
              notes: {"pos" => [320, 6], "text" => "ENTER_NOTE", "style" => "large"}, # Seitenbeschriftung
-             lyrics:      {verses: [1], pos: [350, 70]},
+             lyrics:      {verses: [1], pos: [350, 70], style: :regular},
              images:      {imagename: "", show: true, pos: [10, 10], height: 100, },
              tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
              annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage

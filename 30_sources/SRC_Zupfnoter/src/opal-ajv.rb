@@ -105,7 +105,8 @@ module Ajv
                                                  :minItems    => 0,
                                                  :uniqueItems => true,
                                                  :items       => {:type => "string"}},
-                                      :show  => {:type => 'boolean'}
+                                      :show  => {:type => 'boolean'},
+                                      :style => {:type => "string"}
                                      }
            },
            :extract_layout   => {
@@ -157,7 +158,7 @@ module Ajv
                              :properties =>
                                  {:env => {:type => "string"}}},
            :produce      => {:type        => "array",
-                             :minItems    => 1,
+                             :minItems    => 0,
                              :uniqueItems => true,
                              :items       => {:type => "integer"}},
            :template     => {:type                 => "object",
@@ -186,15 +187,18 @@ module Ajv
                                                      {:annotation => {:type       => "object",
                                                                       :required   => ["pos"],
                                                                       :properties =>
-                                                                          {:pos => {:'$ref' => '#/definitions/pos'}}},
+                                                                          {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                           :style => {:type => "string"}}},
                                                       :partname   => {:type       => "object",
                                                                       :required   => ["pos"],
                                                                       :properties =>
-                                                                          {:pos => {:'$ref' => '#/definitions/pos'}}},
+                                                                          {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                           :style => {:type => "string"}}},
                                                       :variantend => {:type       => "object",
                                                                       :required   => ["pos"],
                                                                       :properties =>
-                                                                          {:pos => {:'$ref' => '#/definitions/pos'}}},
+                                                                          {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                           :style => {:type => "string"}}},
                                                       :tuplet     => {'$ref'    => '#/definitions/annotated_bezier',
                                                                       :required => ["cp1", "cp2", "shape"]
                                                       }
@@ -202,7 +206,7 @@ module Ajv
                                  }
                                  }
            },
-           # eend of defaults
+           # end of defaults
            :templates   => {:type       => "object",
                             :required   => ["notes", "lyrics", "tuplet", "annotations"],
                             :properties =>
@@ -214,7 +218,8 @@ module Ajv
                                                                    :minItems    => 1,
                                                                    :uniqueItems => true,
                                                                    :items       => {:type => "integer"}},
-                                                       :pos    => {:'$ref' => '#/definitions/pos'}}},
+                                                       :pos    => {:'$ref' => '#/definitions/pos'},
+                                                       :style  => {:type => "string"}}},
                                  :tuplet      => {:type       => "object",
                                                   :required   => ["cp1", "cp2", "shape"],
                                                   :properties =>
@@ -227,8 +232,9 @@ module Ajv
                                  :annotations => {:type       => "object",
                                                   :required   => ["text", "pos"],
                                                   :properties =>
-                                                      {:text => {:type => "string"},
-                                                       :pos  => {:'$ref' => '#/definitions/pos'}}}}},
+                                                      {:text  => {:type => "string"},
+                                                       :pos   => {:'$ref' => '#/definitions/pos'},
+                                                       :style => {:type => "string"}}}}},
            :annotations => {:type       => "object",
                             :required   => ["vl", "vt", "vr"],
                             :properties =>
@@ -304,14 +310,15 @@ module Ajv
                                                                                          :text  => {:type => "string"},
                                                                                          :style => {:type => "string"}}}}},
                                                  :layoutlines  => {:type        => "array",
-                                                                   :minItems    => 1,
+                                                                   :minItems    => 0,
                                                                    :uniqueItems => true,
                                                                    :items       => {:type => "integer"}},
                                                  :legend       => {:type       => "object",
                                                                    :required   => ["spos", "pos"],
                                                                    :properties =>
-                                                                       {:spos => {:"$ref" => "#/definitions/pos"},
-                                                                        :pos  => {:"$ref" => "#/definitions/pos"}
+                                                                       {:spos  => {:"$ref" => "#/definitions/pos"},
+                                                                        :pos   => {:"$ref" => "#/definitions/pos"},
+                                                                        :style => {:type => "string"}
                                                                        }
                                                  },
                                                  :lyrics       => {:type              => "object",

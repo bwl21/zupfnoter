@@ -1580,7 +1580,7 @@ module Harpnotes
 
 
         # build Scalebar
-        sheet_marks = layout_stringnames(print_options_hash)
+        sheet_marks = layout_stringnames(print_options_hash, print_variant_nr)
 
         # build cutmarks
         if page_format == 'A4' and $conf['printer.a4_pages'].length > 1
@@ -1609,13 +1609,14 @@ module Harpnotes
         title_pos  = print_options_hash[:legend][:pos]
         legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
+        style      = $conf.get("extract.#{print_variant_nr}.legend.style") || :regular
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
                                                           "extract.#{print_variant_nr}.legend.pos", title_pos).tap { |s| s.draginfo = {handler: :annotation} }
         if $conf["extract.#{print_variant_nr}.notes.T06_legend"].nil?
-          annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, :regular, nil,
+          annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, style, nil,
                                                             "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
         end
-        datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")
+        datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S")
         annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[1], "Zupfnoter: https://www.zupfnoter.de", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[2], music.checksum, :smaller)
@@ -1629,15 +1630,17 @@ module Harpnotes
             verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/)
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
-              pos      = entry[:pos]
-              the_text = (entry[:verses] || []).map do |i|
+              pos       = entry[:pos]
+              the_text  = (entry[:verses] || []).map do |i|
                 j = 9999 if i == 0 # this is a workaround, assuming that we do not have 1000 verses
                 j = i if i < 0
                 j = i - 1 if i > 0
                 verses[j]
               end.join("\n\n")
-              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, nil, nil,
-                                                                "extract.#{print_variant_nr}.lyrics.#{key}.pos", pos).tap { |s| s.draginfo = {handler: :annotation} }
+              conf_base = "extract.#{print_variant_nr}.lyrics.#{key}"
+              style     = $conf.get("#{conf_base}.style") || regular
+              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, style, nil,
+                                                                "#{conf_base}.pos", pos).tap { |s| s.draginfo = {handler: :annotation} }
             end
           end
         end
@@ -1709,9 +1712,10 @@ module Harpnotes
 
       # this creates a scale bar
       # todo: make it moveaeable by mouse
-      def layout_stringnames(print_options_hash)
-        vpos  = print_options_hash[:stringnames][:vpos]
-        marks = print_options_hash[:stringnames][:marks][:hpos]
+      def layout_stringnames(print_options_hash, print_variant_nr)
+        vpos     = print_options_hash[:stringnames][:vpos]
+        marks    = print_options_hash[:stringnames][:marks][:hpos]
+        conf_key = "stringnames"
 
         sheet_marks = []
         unless marks.empty?
@@ -1740,7 +1744,7 @@ module Harpnotes
           sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
             x = (-start_scale + pitch) * x_spacing + x_offset
             vpos.each do |vpos|
-              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style)
+              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style, nil, conf_key)
             end
             result
           end
@@ -1958,12 +1962,13 @@ module Harpnotes
 
             unless tuplet_options[:show] == false
               conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+              style         = show_options[:print_options_raw]["tuplets.style"] || :small
               draginfo      = {handler: :tuplet, p1: p1, p2: p2, cp1: cp1, cp2: cp2, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
               text          = show_options[:print_options_raw]["tuplets.text"] || playable.tuplet.to_s
               text          = text.gsub('{{tuplet}}', playable.tuplet.to_s)
               result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
               result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, text,
-                                                             :small,
+                                                             style,
                                                              tuplet_start.origin,
                                                              conf_key + ".#{conf_key_pos}",
                                                              conf_value.to_a)
@@ -2100,7 +2105,8 @@ module Harpnotes
         # draw note bound annotations
 
         res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
-          notebound_pos_key = annotation.conf_key
+          notebound_pos_key = annotation.conf_key + ".pos"
+          show  = show_options[:print_options_raw].get(annotation.conf_key + ".show") || true
           if notebound_pos_key
             conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
             annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
@@ -2110,10 +2116,13 @@ module Harpnotes
             conf_key         = nil
           end
 
+          style = show_options[:print_options_raw].get(annotation.conf_key + ".style") || annotation.style
+
           position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
-          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, annotation.style, annotation.companion.origin,
+          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, style, annotation.companion.origin,
                                                         conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
           result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
+          result   = nil if show == false
           result
         end
 

@@ -616,7 +616,8 @@ class Controller
                                     scope:                 :global
             },
             barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apbase', 'barnumbers.style',
-                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style'])},
+                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style',
+                                                              "tuplets.text", "tuplets.style"])},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
             notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
                                     quicksetting_commands: _get_quicksetting_commands('notes')},
