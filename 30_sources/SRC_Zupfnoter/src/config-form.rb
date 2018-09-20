@@ -519,9 +519,9 @@ class ConfstackEditor
           if target.first.start_with? "$resources"
             img      = $resources[target.first.split('.').last]
             helptext = %Q{<img style="width:300px;" src="#{img.join}"</img>} if img
-            `$(#{evt}.target).w2overlay(#{helptext})`
+            `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: false})`
           else
-            `$(#{evt}.target).w2overlay(#{helptext})`
+            `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: true})`
           end
         when 'default'
           if (a = @default_value[target.first])

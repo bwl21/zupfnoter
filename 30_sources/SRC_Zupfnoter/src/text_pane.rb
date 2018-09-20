@@ -488,6 +488,17 @@ module Harpnotes
       set_config_model(pconfig.get, desc, true)
     end
 
+    def copy_config_part_to_extract(key, targetid, desc = key)
+      pconfig       = Confstack::Confstack.new(false) # what we get from editor
+      pconfig_patch = Confstack::Confstack.new(false) # how we patch the editor
+      pconfig.push(_get_config_model)
+
+      key0 = key.gsub(/^extract\.\d+/, "extract.#{targetid}")
+      pconfig_patch[key0] = pconfig.get(key)
+      pconfig.push(pconfig_patch.get)
+      set_config_model(pconfig.get, desc, true)
+    end
+
     def neat_config_part
       _set_config_json(_get_config_json, "neat config_part", false) # _get_config_json performs the neat
     end

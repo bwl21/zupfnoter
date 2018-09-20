@@ -668,9 +668,14 @@ class Controller
         # it is useful for extracts, notes, morincs etc.
         # todo: implement a more flexible replacement thatn simply prefixing
         regexp_form_sets = {
-            /extract.(\d+).notebound.tuplet\.v_(\d+)\.(\w+)/ => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /extract.(\d+).notebound.minc\.(\d+)/ => {keys: ["minc_f"]},
-            /extract.(\d+).notebound.nconf\.v_(\d+).t_(\d+).n_(\d+)/ => {keys: ["nshift"]}
+            /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/ => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
+            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/ => {keys: ["show", "pos", "style"]},
+            /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos"]},
+            /extract\.(\d+)\.notebound\.minc\.(\d+)/ => {keys: ["minc_f"]},
+            /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/ => {keys: ["cp1", "cp2"]},
+            /extract\.(\d+)\.legend/ => {keys: ["pos", "spos", "style"]},
+            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/ => {keys: ["nshift"]
+            }
         }
 
         # see if we have a static form set
@@ -824,6 +829,30 @@ class Controller
         $conf.pop # todo: this is a bit risky
       end
     end
+
+
+    @commands.add_command(:cpconfig) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :integer) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.add_parameter(:targetid, :string) do |parameter|
+        parameter.set_help { "number of target extract" }
+      end
+
+      command.set_help { "copy config parameter to other extract " }
+
+      command.as_action do |args|
+        @editor.copy_config_part_to_extract(args[:key], args[:targetid], %Q{cpconfig #{args[:key]} #{args[:key]}})
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
+    end
+
 
 
   end
