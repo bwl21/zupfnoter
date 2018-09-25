@@ -1794,7 +1794,8 @@ module Harpnotes
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
       def layout_voice(voice, beat_layout, print_variant_nr, show_options)
-        @print_options_raw = show_options[:print_options_raw] # todo this is a bad hack but we need it to get the note configuration within layout_playable
+        @print_options_raw  = show_options[:print_options_raw] # todo this is a bad hack but we need it to get the note configuration within layout_playable
+        @print_options_keys = @print_options_raw.keys
         # draw the playables
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
         voice_nr  = show_options[:voice_nr]
@@ -2106,7 +2107,7 @@ module Harpnotes
 
         res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           notebound_pos_key = annotation.conf_key + ".pos"
-          show  = show_options[:print_options_raw].get(annotation.conf_key + ".show") || true
+          show              = show_options[:print_options_raw].get(annotation.conf_key + ".show") || true
           if notebound_pos_key
             conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
             annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
@@ -2270,7 +2271,7 @@ module Harpnotes
               count_note  = playable.count_note || ""
 
               # read countnote-configuration from extract
-              cn_offset = show_options[:print_options_raw][cn_pos_key] rescue nil
+              cn_offset = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
 
               unless cn_offset
                 if cn_autopos == true
@@ -2297,7 +2298,7 @@ module Harpnotes
               barnumber   = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
 
               # read countnote-configuration from extract
-              bn_offset = show_options[:print_options_raw][bn_pos_key] rescue nil
+              bn_offset = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
 
               unless bn_offset
                 if bn_autopos == true
@@ -2736,9 +2737,9 @@ module Harpnotes
         if note_conf_base
           # todo: get from print_options_raw here
           local_key = note_conf_base.gsub(/extract\.(\d+)\./, '')
-          nshift    = @print_options_raw["#{local_key}.nshift"]
-          # nshift = $conf["#{note_conf_base}.nshift"]
-          if nshift
+          if @print_options_keys.include? "#{local_key}.nshift"
+            nshift = @print_options_raw["#{local_key}.nshift"]
+            # nshift = $conf["#{note_conf_base}.nshift"]
             shift = size.first * 2 * nshift
           end
         end
