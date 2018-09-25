@@ -233,7 +233,11 @@ rect.highlightplay {
   background-color: #ffedf2; }
 
 .znconfig-button {
-  padding: 1px; }
+  padding: 1px;
+  width: 1.2em;
+  box-shadow: none; }
+  .znconfig-button::before {
+    margin: -5px; }
 
 #statusbar-layout .w2ui-tb-caption {
   vertical-align: top; }
