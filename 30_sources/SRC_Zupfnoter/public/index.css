@@ -237,6 +237,7 @@ rect.highlightplay {
   width: 1.2em;
   box-shadow: none; }
   .znconfig-button::before {
+    font-size: 90%;
     margin: -5px; }
 
 #statusbar-layout .w2ui-tb-caption {

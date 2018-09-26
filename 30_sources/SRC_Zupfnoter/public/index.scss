@@ -333,6 +333,7 @@ rect.highlightplay {
   width: 1.2em;
   box-shadow: none;
   &::before {
+    font-size: 90%;
     margin: -5px;
   }
 }

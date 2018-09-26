@@ -501,9 +501,33 @@ class ConfstackEditor
   end
 
 
-  # this registers the events for fields
-  # as of now it is only config button
+  # this registers the events for field related buttons
+  #
   def register_events
+
+    # this handles entries of field related "burger menu"
+    entry_menu_handler = lambda do |evt|
+      target = Native(evt)[:item][:id].split(':')
+      case target.last
+        when 'delete'
+          @editor.delete_config_part(target.first)
+          refresh_form
+          register_events
+        when 'push0'
+          @controller.handle_command(%Q{cpconfig #{target.first} 0})
+          refresh_form
+          register_events
+        when 'pop0'
+          current_view = target.first.match(/extract\.(\d+).*/)[1]
+          key0         = target.first.gsub(/extract.(\d+)/, "extract.0")
+          @controller.handle_command(%Q{cpconfig #{key0} #{current_view}})
+          refresh_form
+          register_events
+      end
+    end
+
+
+    # this handles config form buttons
     handler = lambda do |evt|
       target = Native(evt).target[:name].split(':')
       case target.last
@@ -533,6 +557,20 @@ class ConfstackEditor
           @editor.extend_config_part(target.first, @helper.to_template(target.first))
           refresh_form
           register_events
+        when 'menu'
+          items = []
+          if target.first.start_with? "extract."
+            items.push({id: %Q{#{target.first}:push0}, text: %Q{#{I18n.t("push to extract 0")} "#{target.first}"}, icon: 'fa fa-level-down'})
+            items.push({id: %Q{#{target.first}:pop0}, text: %Q{#{I18n.t("pop from extract 0")} "#{target.first}"}, icon: 'fa fa-level-up'})
+          end
+          %x{
+          $(#{evt}.target).w2menu({
+                          left          : -20,
+                          onSelect: #{entry_menu_handler},
+                          items: #{items.to_n}
+            })
+          }
+
       end
     end
 
@@ -708,7 +746,9 @@ class ConfstackEditor
         formHTML:   %Q{
                     <table >
                     <tr><th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
-                    <th>#{I18n.t("Value")}</th><th/><th>#{I18n.t("Effective value")}</th></tr>
+                         <th>#{I18n.t("Value")}</th>
+                         <th>d</th><th>m</th><th>#{I18n.t("Effective value")}</th>
+                    </tr>
                     #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>
                     }
@@ -726,6 +766,7 @@ class ConfstackEditor
   # @param [Object] value - the current value from editor basically used to determin the icon on the delete button
   def mk_fieldHTML(key, value)
     help_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
+    menu_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
     delete_icon   = value.nil? ? 'fa-minus' : 'fa-trash'
     delete_button = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
     padding       = 1.5 * (key.split(".").count - 1)
@@ -743,6 +784,7 @@ class ConfstackEditor
       #{fillup_button}
            <strong>#{ I18n.t_key(key)}</strong>
            </td>
+           <td style="vertical-align: top;">#{menu_button}</td>
            <td style="vertical-align: top;">#{help_button}</td>
          </tr>
         }
@@ -760,6 +802,7 @@ class ConfstackEditor
             #{@helper.to_html(key)}
          </div>
         </td>
+        <td style="vertical-align: top;">#{menu_button}</td>
         <td style="vertical-align: top;">#{help_button}</td>
         <td style="vertical-align: top;">#{@effective_value[key]}</td>
        </tr>
