@@ -383,7 +383,7 @@ class Controller
       command.set_help { "toggle settings (runtime only setting) parameter" }
 
       command.as_action do |args|
-        $settings[args[:key]] = $settings[args[:key]] == "true" ? "false": "true";
+        $settings[args[:key]] = $settings[args[:key]] == "true" ? "false" : "true";
         call_consumers(:settings_menu)
         nil
       end
@@ -446,7 +446,7 @@ class Controller
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)} },
-            'stdextract'  => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} }
+            'stdextract'       => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)} }
         }
 
         # create the add_conf parameters for presets aka quicksettings
@@ -462,11 +462,11 @@ class Controller
         ## here we compute the vallues for the quicksettings (prsets)
         all_value = {}
         $conf['presets.notes'].each do |key, preset_value|
-          entry             = $conf["presets.notes.#{key}"]
-          to_key            = entry[:key] || key
-          value             = entry[:value]
+          entry  = $conf["presets.notes.#{key}"]
+          to_key = entry[:key] || key
+          value  = entry[:value]
           unless key == :T01_T99
-            all_value[to_key] = entry[:value]
+            all_value[to_key]             = entry[:value]
             values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
           end
         end
@@ -508,13 +508,13 @@ class Controller
           # handle new entry
           # detect the need for a new entry from the end of the configuration parameter key
 
-          the_key = value[:key]
+          the_key           = value[:key]
           quicksetting_name = %Q{#{I18n.t("Quick Setting")}: #{args[:key]}}
           # this computes the next key number
           if the_key.end_with?('.x')
-            parent_key = the_key.split('.')[0 .. -2].join(".")
-            next_free  = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
-            the_key    = %Q{#{parent_key}.#{next_free}}
+            parent_key        = the_key.split('.')[0 .. -2].join(".")
+            next_free         = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
+            the_key           = %Q{#{parent_key}.#{next_free}}
             quicksetting_name = I18n.t("new")
           end
 
@@ -522,7 +522,7 @@ class Controller
 
           @editor.patch_config_part(the_key, patchvalue, "#{the_key} ->  #{quicksetting_name}")
           #todo we need a neated config to ensure that the form show correct value. Clarify it this is generic enough
-          $log.benchmark("editor restore from local storage to get neated config"){@editor.neat_config_part}
+          $log.benchmark("editor restore from local storage to get neated config") { @editor.neat_config_part }
           @config_form_editor.refresh_form if @config_form_editor
         else
           raise "unknown configuration parameter #{args[:key]}"
@@ -548,7 +548,7 @@ class Controller
     end
     @commands.add_command(:hconfig) do |command|
       command.as_action do |args|
-        $log.message(@editor.history_config[:undo].map{|i| i[:title] }.join("\n"))
+        $log.message(@editor.history_config[:undo].map { |i| i[:title] }.join("\n"))
       end
       command.undoable = false
       command.set_help { "show undable changes of condfiguration" }
@@ -617,11 +617,11 @@ class Controller
             },
             barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apbase', 'barnumbers.style',
                                                                'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style',
-                                                              "tuplets.text", "tuplets.style"])},
+                                                               "tuplets.text", "tuplets.style"])},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
             notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
                                     quicksetting_commands: _get_quicksetting_commands('notes')},
-            lyrics:                {keys: expand_extract_keys([:lyrics]),
+            lyrics:                {keys:             expand_extract_keys([:lyrics]),
                                     newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf lyrics") } : nil)
             },
             images:                {keys:             $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys,
@@ -669,13 +669,14 @@ class Controller
         # it is useful for extracts, notes, morincs etc.
         # todo: implement a more flexible replacement thatn simply prefixing
         regexp_form_sets = {
-            /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/ => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/ => {keys: ["show", "pos", "style"]},
+            /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
+            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style"]},
             /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos"]},
-            /extract\.(\d+)\.notebound\.minc\.(\d+)/ => {keys: ["minc_f"]},
-            /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/ => {keys: ["cp1", "cp2"]},
-            /extract\.(\d+)\.legend/ => {keys: ["pos", "spos", "style"]},
-            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/ => {keys: ["nshift"]
+            /extract\.(\d+)\.notebound\.minc\.(\d+)/                              => {keys: ["minc_f"]},
+            /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
+            /extract\.(\d+)\.legend/                                              => {keys: ["pos", "spos", "style"]},
+            /extract\.(\d+)\.lyrics\.(\d)/                                        => {keys: ["verses", "pos", "style"]},
+            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]
             }
         }
 
@@ -853,7 +854,6 @@ class Controller
         $conf.pop # todo: this is a bit risky
       end
     end
-
 
 
   end

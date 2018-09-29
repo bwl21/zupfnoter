@@ -1483,11 +1483,13 @@ module Harpnotes
         $conf.push({layout: layout_options})
         $conf.push({printer: print_options_hash[:printer] || {}})
 
+
+        initialize
+
         debug_grid = [];
         debug_grid = layout_debug_grid() if $conf['layout.grid']
         res_images = layout_images(print_options_hash, print_variant_nr)
 
-        initialize
 
         @layout_minc = print_options_raw['notebound.minc'] || {}
 
@@ -1609,7 +1611,7 @@ module Harpnotes
         title_pos  = print_options_hash[:legend][:pos]
         legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
-        style      = $conf.get("extract.#{print_variant_nr}.legend.style") || :regular
+        style      = @print_options_raw.get("legend.style") || :regular
         annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
                                                           "extract.#{print_variant_nr}.legend.pos", title_pos).tap { |s| s.draginfo = {handler: :annotation} }
         if $conf["extract.#{print_variant_nr}.notes.T06_legend"].nil?
@@ -1637,8 +1639,9 @@ module Harpnotes
                 j = i - 1 if i > 0
                 verses[j]
               end.join("\n\n")
-              conf_base = "extract.#{print_variant_nr}.lyrics.#{key}"
-              style     = $conf.get("#{conf_base}.style") || regular
+              conf_key  = "lyrics.#{key}"
+              conf_base = "extract.#{print_variant_nr}.#{conf_key}"
+              style     = @print_options_raw.get("#{conf_key}.style") || :regular
               annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, style, nil,
                                                                 "#{conf_base}.pos", pos).tap { |s| s.draginfo = {handler: :annotation} }
             end
@@ -2271,7 +2274,7 @@ module Harpnotes
               count_note  = playable.count_note || ""
 
               # read countnote-configuration from extract
-              cn_offset = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
+              cn_offset   = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
 
               unless cn_offset
                 if cn_autopos == true
@@ -2298,7 +2301,7 @@ module Harpnotes
               barnumber   = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
 
               # read countnote-configuration from extract
-              bn_offset = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
+              bn_offset   = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
 
               unless bn_offset
                 if bn_autopos == true

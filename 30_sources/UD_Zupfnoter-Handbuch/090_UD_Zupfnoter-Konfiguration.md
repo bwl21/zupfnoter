@@ -1955,7 +1955,7 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
             "pos"       : [10, 10],
             "show"      : true
           },
-          "lyrics"      : {"pos": [350, 70], "verses": [1]},
+          "lyrics"      : {"pos": [350, 70], "style": "regular", "verses": [1]},
           "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
           "tuplet"      : {
             "cp1"   : [5, 2],
@@ -2058,7 +2058,7 @@ Liedtext auf mehrer Blöcke aufteilen.
 Ein einzelner Block listet die Strophen auf, die er enthält, und die
 gemeinsam poitioniert werden.
 
-        "lyrics": {"pos": [350, 70], "verses": [1]}
+        "lyrics": {"pos": [350, 70], "style": "regular", "verses": [1]}
           
 
 ## `templates.lyrics.pos` - Position {#templates.lyrics.pos}
@@ -2068,6 +2068,14 @@ ausgegeben werden soll. Angabe erfolgt in mm als kommagetrennte Liste
 von horizontaler / vertikaler Position.
 
         "pos": [350, 70]
+          
+
+## `templates.lyrics.style` - Stil {#templates.lyrics.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "regular"
           
 
 ## `templates.lyrics.verses` - Strophen {#templates.lyrics.verses}
