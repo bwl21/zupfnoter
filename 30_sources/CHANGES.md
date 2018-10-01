@@ -9,6 +9,7 @@
 ## fix
 
 * supress bar in in measure repeats even after a meter change #216
+* improve behavior when switching perspectives #230
 
 ## enhancement
 
@@ -19,6 +20,7 @@
 * disable autoscroll trhough setsetting #221
 * now support placeholders in page annotations #223
 * improve configuration of tuplets #225
+* allow to control which files are saved #229
 
 ## BWC issues
 

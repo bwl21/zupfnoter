@@ -202,42 +202,42 @@ function init_w2ui(uicontroller) {
 
   perspectives = {
     'tb_perspective:Alle': function () {
-      w2ui['layout'].show('left', window.instant);
-      w2ui['layout'].hide('bottom', window.instant);
-      w2ui['layout'].show('main', window.instant);
-      w2ui['layout'].show('preview', window.instant);
-      w2ui['layout'].sizeTo('preview', "50%");
+      w2ui['layout'].show('left', true);
+      w2ui['layout'].hide('bottom', true);
+      w2ui['layout'].show('main', true);
+      w2ui['layout'].show('preview', true);
+      w2ui['layout'].sizeTo('preview', "50%", true);
       zoomHarpPreview(zoomlevel);
     },
     'tb_perspective:NotenEingabe': function () {
-      w2ui['layout'].show('left', window.instant);
-      w2ui['layout'].hide('bottom', window.instant);
-      w2ui['layout'].show('main', window.instant);
-      w2ui['layout'].hide('preview', window.instant);
-      w2ui['layout'].sizeTo('preview', "50%");
+      w2ui['layout'].show('left', true);
+      w2ui['layout'].hide('bottom', true);
+      w2ui['layout'].show('main', true);
+      w2ui['layout'].hide('preview', true);
+      w2ui['layout'].sizeTo('preview', "50%", true);
     },
     'tb_perspective:HarfenEingabe': function () {
-      w2ui['layout'].show('left', window.instant);
-      w2ui['layout'].hide('bottom', window.instant);
-      w2ui['layout'].hide('main', window.instant);
-      w2ui['layout'].show('preview', window.instant);
-      w2ui['layout'].sizeTo('preview', "100%");
+      w2ui['layout'].show('left', true);
+      w2ui['layout'].hide('bottom', true);
+      w2ui['layout'].hide('main', true);
+      w2ui['layout'].show('preview', true);
+      w2ui['layout'].sizeTo('preview', "100%", true);
       zoomHarpPreview(zoomlevel);
     },
     'tb_perspective:Noten': function () {
-      w2ui['layout'].hide('left', window.instant);
-      w2ui['layout'].hide('bottom', window.instant);
-      w2ui['layout'].show('main', window.instant);
-      w2ui['layout'].hide('preview', window.instant);
+      w2ui['layout'].hide('left', true);
+      w2ui['layout'].hide('bottom', true);
+      w2ui['layout'].show('main', true);
+      w2ui['layout'].hide('preview', true);
       $("#tunePreview").attr('width', '25cm');
     },
     'tb_perspective:Harfe': function () {
-      w2ui['layout'].sizeTo('preview', "100%");
-      w2ui['layout'].show('preview', window.instant);
-      w2ui['layout'].hide('left', window.instant);
-      w2ui['layout'].hide('bottom', window.instant);
-      w2ui['layout'].hide('main', window.instant);
-      zoomHarpPreview(['98%', '100%'])
+      w2ui['layout'].show('preview', true);
+      w2ui['layout'].sizeTo('preview', "100%", true);
+      w2ui['layout'].hide('left', true);
+      w2ui['layout'].hide('bottom', true);
+      w2ui['layout'].hide('main', true);
+      zoomHarpPreview(zoomlevel);
     }
   }
   scalehandlers = {
