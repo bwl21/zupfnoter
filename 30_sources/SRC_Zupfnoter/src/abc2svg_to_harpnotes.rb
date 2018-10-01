@@ -834,7 +834,7 @@ module Harpnotes
         # handle variant endings
         if @next_note_marks[:variant_ending]
           text                                  = @next_note_marks[:variant_ending][:text]
-          conf_key                              = "notebound.variantend.#{voice_id}.#{znid}.pos" if znid #$conf['defaults.notebound.variantend.pos']
+          conf_key                              = "notebound.variantend.#{voice_id}.#{znid}" if znid #$conf['defaults.notebound.variantend.pos']
           position                              = $conf['defaults.notebound.variantend.pos']
           harpnote_elements.first.first_in_part = true
           harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {style: :regular, pos: position, text: text, policy: :Goto}, conf_key)

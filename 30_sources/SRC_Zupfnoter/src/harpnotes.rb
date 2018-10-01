@@ -2199,18 +2199,20 @@ module Harpnotes
           end
         end
 
-        pos_key  = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{companion_note.znid}.pos"
+        repeat_key = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{companion_note.znid}"
+        pos_key  = "#{repeat_key}.pos"
         conf_key = "extract.#{print_variant_nr}.#{pos_key}"
 
         repeatsign_options = show_options[:repeatsigns][attach_side]
         annotationoffset = show_options[:print_options_raw][pos_key] rescue nil
         annotationoffset = repeatsign_options[:pos] unless annotationoffset
 
-        text = repeatsign_options[:text]
+        text = show_options[:print_options_raw]["#{repeat_key}.text"] || repeatsign_options[:text]
+        style = show_options[:print_options_raw]["#{repeat_key}.style"] || repeatsign_options[:style]
 
         position = Vector2d(companion_note.sheet_drawable.center) + annotationoffset
 
-        Harpnotes::Drawing::Annotation.new(position.to_a, text, repeatsign_options[:style],
+        Harpnotes::Drawing::Annotation.new(position.to_a, text, style,
                                            companion_note.origin, conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
       end
 

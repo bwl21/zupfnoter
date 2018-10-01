@@ -93,7 +93,27 @@ module Ajv
            :notebound_pos    => {:type                 => "object",
                                  :additionalProperties => false,
                                  :patternProperties    => {
-                                     "v_\d*" => {pos: {:'$ref' => '#/definitions/pos'}}
+                                     "v_\d*" => {:type                 => "object",
+                                                 :additionalProperties => false,
+                                                 :patternProperties    => {
+                                                     "t_\d*|\d*" => {
+                                                         :type                 => "object",
+                                                         :additionalProperties => false,
+                                                         :properties           => {
+                                                             pos: {:'$ref' => '#/definitions/pos'}}
+                                                     }
+                                                 }
+                                     }
+
+                                 }
+           },
+           :notebound_repeat => {:type                 => "object",
+                                 :additionalProperties => false,
+                                 :patternProperties    => {
+                                     "v_\d*" => {:text  => "integer",
+                                                 :style => {:type => "string"},
+                                                 pos:   {:'$ref' => '#/definitions/pos'}
+                                     }
                                  }
            },
            :annotated_bezier => {:type       => "object",
@@ -373,7 +393,7 @@ module Ajv
                                                          },
                                                          :partname     => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :repeat_begin => {:'$ref' => '#/definitions/notebound_pos'},
-                                                         :repeat_end   => {:'$ref' => '#/definitions/notebound_pos'},
+                                                         :repeat_end   => {:'$ref' => '#/definitions/notebound_repeat'},
                                                          :tuplet       => {:type              => 'object',
                                                                            :patternProperties => {
                                                                                "v_\d*" => {

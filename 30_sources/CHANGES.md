@@ -3,7 +3,11 @@
 ## fix
 
 * increase white border around dot #224
+* allow to control which files are saved #229
+* Support generation of a watermark #231
+* allow to refine generated repeat marks #232
 
+## BW
 # v 1.9
 
 ## fix
@@ -20,11 +24,6 @@
 * disable autoscroll trhough setsetting #221
 * now support placeholders in page annotations #223
 * improve configuration of tuplets #225
-* allow to control which files are saved #229
-* Support generation of a watermark #231
-
-## BWC issues
-
 * change default for barnumber ap_base #218
 * configuration of variation lines is not recognized by earlier Versions of Zupfnoter
 

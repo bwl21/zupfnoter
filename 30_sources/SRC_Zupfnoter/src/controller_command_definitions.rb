@@ -691,6 +691,7 @@ class Controller
             /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
             /extract\.(\d+)\.legend/                                              => {keys: ["pos", "spos", "style"]},
             /extract\.(\d+)\.lyrics\.(\d)/                                        => {keys: ["verses", "pos", "style"]},
+            /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/       => {keys: ['text', 'pos', 'style']},
             /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]
             }
         }
