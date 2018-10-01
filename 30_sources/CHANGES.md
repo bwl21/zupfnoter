@@ -21,6 +21,7 @@
 * now support placeholders in page annotations #223
 * improve configuration of tuplets #225
 * allow to control which files are saved #229
+* Support generation of a watermark #231
 
 ## BWC issues
 

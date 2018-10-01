@@ -1112,6 +1112,10 @@ W: Strophe 2 Zeile 2</code></pre>
 <li><code>setsetting follow true</code> - Vorschaufenster folgen der Wiedergabe</li>
 <li><code>setsetting follow false</code> - Vorschaufenster folgen der Wiedergabe <strong>nicht mehr</strong></li>
 </ul>
+<p>Weitere Laufzeiteinstellungen sind:</p>
+<ul>
+<li><code>setsetting watermark &quot;text&quot;</code> - Damit kann ein Text eingestellt werden, welcher &#252;ber den Platzhalter <code>{{watermark}}</code> in die Seitenbeschriftung eingef&#252;gt werden kann. Damit kann man z.b. f&#252;r ein bestimmtest Projekt Anmerkungen einf&#252;gen, ohne den ABC-Code zu &#228;ndern.</li>
+</ul>
 <p>&#220;ber folgende Befehle k&#246;nnen Flu&#223;linien gestaltet werden:</p>
 <ul>
 <li><code>setsetting flowconf edit</code>: Mit dieser Einstellung werden die Flu&#223;linien bearbeitbar, d.h. man kann die Flu&#223;linien mit der Maus verformen, (sozusagen verbiegen).</li>
@@ -1895,7 +1899,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
 </ul>
 <h2 id="annotations.vr"><span class="header-section-number">8.5</span> <code>annotations.vr</code> - &#8216;V&#8217; rechts</h2>
@@ -1918,7 +1923,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
 </ul>
 <h2 id="annotations.vt"><span class="header-section-number">8.8</span> <code>annotations.vt</code> - &#8216;V&#8217; oben</h2>
@@ -1941,7 +1947,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
 </ul>
 <h2 id="extract"><span class="header-section-number">8.11</span> <code>extract</code> - Auszug</h2>
@@ -2685,7 +2692,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;XXX-{{number}}&quot;</code></pre></li>
 </ul>
 <h2 id="presets.notes.T01_number_extract"><span class="header-section-number">8.102</span> <code>presets.notes.T01_number_extract</code> - T01 Auszug-Nummer</h2>
@@ -2732,7 +2740,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;{{extract_filename}}&quot;</code></pre></li>
 </ul>
 <h2 id="presets.notes.T01_number_extract_value"><span class="header-section-number">8.107</span> <code>presets.notes.T01_number_extract_value</code> - T01 Auszugn Nummer Wert</h2>
@@ -2762,7 +2771,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;{{extract_filename}}&quot;</code></pre></li>
 </ul>
 <h2 id="presets.notes.T02_copyright_music"><span class="header-section-number">8.111</span> <code>presets.notes.T02_copyright_music</code> - T02 Copyright Musik</h2>
@@ -2795,7 +2805,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;&#169; 2018\n&quot;</code></pre></li>
 </ul>
 <h2 id="presets.notes.T03_copyright_harpnotes"><span class="header-section-number">8.116</span> <code>presets.notes.T03_copyright_harpnotes</code> - T03 Copyright Unterlegnoten</h2>
@@ -2836,7 +2847,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;&#169; 2018 Notenbild: zupfnoter.de&quot;</code></pre></li>
 </ul>
 <h2 id="presets.notes.T04_to_order"><span class="header-section-number">8.121</span> <code>presets.notes.T04_to_order</code> - T04 zu beziehen bei</h2>
@@ -2869,7 +2881,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: null</code></pre></li>
 </ul>
 <h2 id="presets.notes.T05_printed_extracts"><span class="header-section-number">8.126</span> <code>presets.notes.T05_printed_extracts</code> - T05 verf&#252;gbare Ausz&#252;ge</h2>
@@ -2910,7 +2923,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;{{printed_extracts}}&quot;</code></pre></li>
 </ul>
 <h2 id="presets.notes.T06_legend"><span class="header-section-number">8.131</span> <code>presets.notes.T06_legend</code> - T06 Legende</h2>
@@ -2951,7 +2965,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}&quot;</code></pre></li>
 </ul>
 <h2 id="presets.notes.T99_do_not_copy"><span class="header-section-number">8.136</span> <code>presets.notes.T99_do_not_copy</code> - T99 bitte nicht kopieren</h2>
@@ -2984,7 +2999,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: null</code></pre></li>
 </ul>
 <h2 id="produce"><span class="header-section-number">8.141</span> <code>produce</code> - Ausz&#252;ge</h2>
@@ -3079,7 +3095,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;_vorlage_&quot;</code></pre></li>
 </ul>
 <h2 id="templates.images"><span class="header-section-number">8.153</span> <code>templates.images</code> - Bilder</h2>
@@ -3151,7 +3168,8 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
 <li><code>{{extract_title}}</code>: titel des auszgs aus &#8220;extract.*.title&#8221;,</li>
 <li><code>{{extract_filename}}</code>: Filenamenszusatz aus &#8220;extract.*.filenamepart&#8221;},</li>
-<li><p><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</p>
+<li><code>{{printed_extracts}}</code>: erstellte Ausz&#252;ge aus &#8220;produce&#8221;. Es werden die entsprechneden Filenamenzus&#228;tze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;ENTER_NOTE&quot;</code></pre></li>
 </ul>
 <h2 id="templates.tuplet"><span class="header-section-number">8.166</span> <code>templates.tuplet</code> - n-Tole</h2>

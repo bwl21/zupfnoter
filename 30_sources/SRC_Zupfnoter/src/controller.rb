@@ -755,8 +755,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         tempo:            lambda { @music_model.meta_data[:tempo_display] },
         title:            lambda { @music_model.meta_data[:title] },
         extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
-        extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
-        printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") }
+        extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"]  },
+        printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") },
+        watermark:        lambda { $settings[:watermark] || "" }
     }
   end
 

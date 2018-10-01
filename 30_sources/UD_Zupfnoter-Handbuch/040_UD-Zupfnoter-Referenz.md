@@ -1106,6 +1106,14 @@ zur aktuellen Note scrollen bzw. der Wiedergabe folgen
 -   `setsetting follow false` - Vorschaufenster folgen der Wiedergabe
     **nicht mehr**
 
+Weitere Laufzeiteinstellungen sind:
+
+-   `setsetting watermark "text"` - Damit kann ein Text eingestellt
+    werden, welcher über den Platzhalter `{{watermark}}` in die
+    Seitenbeschriftung eingefügt werden kann. Damit kann man z.b. für
+    ein bestimmtest Projekt Anmerkungen einfügen, ohne den ABC-Code zu
+    ändern.
+
 Über folgende Befehle können Flußlinien gestaltet werden:
 
 -   `setsetting flowconf edit`: Mit dieser Einstellung werden die

@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.1-10-g6e22db2
+Version V\_1.9.1-11-g50168e5
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2392,6 +2392,18 @@ zur aktuellen Note scrollen bzw. der Wiedergabe folgen
   Wiedergabe \textbf{nicht mehr}
 \end{itemize}
 
+Weitere Laufzeiteinstellungen sind:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{setsetting\ watermark\ "text"} - Damit kann ein Text
+  eingestellt werden, welcher über den Platzhalter
+  \texttt{\{\{watermark\}\}} in die Seitenbeschriftung eingefügt werden
+  kann. Damit kann man z.b. für ein bestimmtest Projekt Anmerkungen
+  einfügen, ohne den ABC-Code zu ändern.
+\end{itemize}
+
 Über folgende Befehle können Flußlinien gestaltet werden:
 
 \begin{itemize}
@@ -4421,6 +4433,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "v"
@@ -4478,6 +4493,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "v"
@@ -4535,6 +4553,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "v"
@@ -6216,6 +6237,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "XXX-{{number}}"
@@ -6325,6 +6349,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "{{extract_filename}}"
@@ -6401,6 +6428,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "{{extract_filename}}"
@@ -6488,6 +6518,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "© 2018\n"
@@ -6584,6 +6617,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "© 2018 Notenbild: zupfnoter.de"
@@ -6672,6 +6708,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": null
@@ -6767,6 +6806,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "{{printed_extracts}}"
@@ -6859,6 +6901,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
@@ -6946,6 +6991,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": null
@@ -7159,6 +7207,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "_vorlage_"
@@ -7343,6 +7394,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \item
   \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
   Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
 "text": "ENTER_NOTE"

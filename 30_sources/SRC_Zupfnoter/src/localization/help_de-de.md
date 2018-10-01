@@ -882,6 +882,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
 ## sortmark
 

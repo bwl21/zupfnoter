@@ -3054,9 +3054,14 @@ module Harpnotes
         keys.each do |key|
           value = @placeholders[key.first]
           if value
-            result = result.gsub("{{#{key}}}", value.call)
+            text = value.call
+            unless text
+              $log.error(%Q{#{I18n.t("no placeholder value found in  ")} in '#{parameter}': '#{key.first}'})
+              text = ""
+            end
+            result = result.gsub("{{#{key}}}", text)
           else
-            $log.error(%Q{#{I18n.t("wrong placeholder: ")} #{key.first} in #{parameter}})
+            $log.error(%Q{#{I18n.t("wrong placeholder: ")} in '#{parameter}': '#{key.first}'})
           end
         end
         result

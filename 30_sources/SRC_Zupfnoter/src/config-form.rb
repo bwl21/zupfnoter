@@ -747,7 +747,7 @@ class ConfstackEditor
                     <table >
                     <tr><th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
                          <th>#{I18n.t("Value")}</th>
-                         <th>d</th><th>m</th><th>#{I18n.t("Effective value")}</th>
+                         <th></th><th></th><th>#{I18n.t("Effective value")}</th>
                     </tr>
                     #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>

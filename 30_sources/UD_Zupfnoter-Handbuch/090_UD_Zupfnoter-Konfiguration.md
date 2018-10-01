@@ -70,6 +70,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "v"
 
@@ -105,6 +107,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "v"
 
@@ -140,6 +144,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "v"
 
@@ -1394,6 +1400,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "XXX-{{number}}"
 
@@ -1463,6 +1471,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "{{extract_filename}}"
 
@@ -1509,6 +1519,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "{{extract_filename}}"
 
@@ -1562,6 +1574,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "© 2018\n"
 
@@ -1625,6 +1639,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "© 2018 Notenbild: zupfnoter.de"
 
@@ -1679,6 +1695,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": null
 
@@ -1739,6 +1757,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "{{printed_extracts}}"
 
@@ -1799,6 +1819,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
 
@@ -1851,6 +1873,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": null
 
@@ -2003,6 +2027,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "_vorlage_"
 
@@ -2132,6 +2158,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "ENTER_NOTE"
 
