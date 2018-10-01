@@ -1070,14 +1070,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def toggle_console
     %x{
-       w2ui['layout'].toggle('bottom', window.instant);
+       w2ui['layout'].toggle('bottom', true);
        #{@editor}.$resize();
       }
   end
 
   def show_console
     %x{
-       w2ui['layout'].show('bottom', window.instant);
+       w2ui['layout'].show('bottom', true);
        #{@editor}.$resize();
       }
   end
