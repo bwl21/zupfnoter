@@ -181,8 +181,11 @@ class Controller
     cleanup_localstorage
     load_from_loacalstorage
     load_demo_tune if @editor.get_abc_part.empty?
-    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0,
+               mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
+    `debugger`
+    set_status(saveformat: "A3-A4-HTML") unless @systemstatus[:saveformat]
 
     #
     # load from previous session
@@ -308,7 +311,7 @@ class Controller
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
-                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :zoom].include?(key)
+                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :saveformat, :zoom].include?(key)
     }.to_json
     if @systemstatus[:mode] == :work
       `localStorage.setItem('systemstatus', #{systemstatus});`

@@ -30,9 +30,9 @@ logged out
 manual_sheet
 minc_f
 nconf
-nshift
 notebound annotation
 Notes
+nshift
 Open an concise ABC tutorial (in German)
 repeatsigns.full
 rests as V 1.3

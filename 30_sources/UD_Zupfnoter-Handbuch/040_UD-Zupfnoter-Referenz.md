@@ -1067,7 +1067,15 @@ Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
 
-Folgende Befehle zum Arbeiten mit voreingestellen Auszügen bzw.
+Folgende Befehle steuern, welche Files in der Dropbox gespeichert
+werden:
+
+-   `saveformat A3` - Es werden nur die A3-Druckdateien gespeichert
+-   `saveformat A4` - Es werden nur die A4-Druckdateien gespeichert
+-   `saveformat A3-A4` - Es werden die A3 und A4-Druckdateien
+    gespeichert
+
+Folgende Befehle dienen zum Arbeiten mit voreingestellen Auszügen bzw.
 Beschriftungen
 
 -   `setstdnotes`: kopiert dem aktuellen Stück die Konfiguration der
@@ -1076,13 +1084,14 @@ Beschriftungen
     Blattbeschriftungen auf das aktuelle Stück in den aktuellen Auszug.
 -   `setstdextract`: kopiert aus dem aktuellen Stück die Konfiguration
     der Auszüge, um sie auf ein anderes Stück zu übertragen. \>
-    **Hinweis**: diese Anwweisung wird ach ausgeführt bei `settemplate`
+    **Hinweis**: diese Anwweisung wird auch ausgeführt bei `settemplate`
 -   `stdectract`: überträgt die zuletzt kopierte Konfiguration der
     Auszüge auf das aktuelle Stück
 
     > **Hinweis**: Diese Befehle sind hilfreich um schnell die
     > Konfiguration eines aus MusicXml importierten Stückes
-    > einzustellen.
+    > einzustellen. 'stdextract' wird automatisch beim import aus
+    > MusicXml ausgeführt.
 
 -   `settemplate`: Damit wird der aktuelle Editor-Inhalt als Vorlage
     hinterlegt (siehe Kapitel \ref{filetemplates} [Arbeiten mit
@@ -1091,11 +1100,11 @@ Beschriftungen
 Über folgende Befehle kann eingestellt werden, ob die Vorschaufenster
 zur aktuellen Note scrollen bzw. der Wiedergabe folgen
 
--   setsetting autoscroll true\` - Vorschaufenster scrollen automatisch
--   setsetting autoscroll false\` - Vorschaufenster scrollen nicht
--   setsetting follow true\` - Vorschaufenster folgen der Wiedergabe
--   setsetting follow false\` - Vorschaufenster folgen **nicht** der
-    Wiedergabe
+-   `setsetting autoscroll true` - Vorschaufenster scrollen automatisch
+-   `setsetting autoscroll false` - Vorschaufenster scrollen nicht
+-   `setsetting follow true` - Vorschaufenster folgen der Wiedergabe
+-   `setsetting follow false` - Vorschaufenster folgen der Wiedergabe
+    **nicht mehr**
 
 Über folgende Befehle können Flußlinien gestaltet werden:
 

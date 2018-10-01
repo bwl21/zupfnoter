@@ -45,6 +45,21 @@ class Controller
       end
     end
 
+    @commands.add_command(:saveformat) do |command|
+
+      command.add_parameter(:saveformat, :string) do |p|
+        p.set_default { @systemstatus[:saveformat] }
+        p.set_help { "List of paperformats separated by hyphen (e.g. 'A3-A4') [#{@systemstatus[:saveformat]}]" }
+      end
+
+      command.set_help { "set current fileformats for saving  #{command.parameter_help(0)} used when saving" }
+
+      command.undoable = false
+
+      command.as_action do |args|
+        set_status(saveformat: args[:saveformat].upcase)
+      end
+    end
 
     @commands.add_command(:loglevel) do |c|
       c.undoable = false
@@ -1316,8 +1331,8 @@ C
             pdfs = {}
             print_variants.map do |print_variant|
               index                                                                 = print_variant[:view_id]
-              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
-              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
+              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob) if @systemstatus[:saveformat].include?("A3")
+              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob) if @systemstatus[:saveformat].include?("A4")
               nil
             end
 

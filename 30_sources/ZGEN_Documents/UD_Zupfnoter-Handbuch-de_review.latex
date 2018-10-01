@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.0-9-g477a2c5
+Version V\_1.9.1-10-g6e22db2
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2325,7 +2325,23 @@ Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
 
-Folgende Befehle zum Arbeiten mit voreingestellen Auszügen bzw.
+Folgende Befehle steuern, welche Files in der Dropbox gespeichert
+werden:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{saveformat\ A3} - Es werden nur die A3-Druckdateien
+  gespeichert
+\item
+  \texttt{saveformat\ A4} - Es werden nur die A4-Druckdateien
+  gespeichert
+\item
+  \texttt{saveformat\ A3-A4} - Es werden die A3 und A4-Druckdateien
+  gespeichert
+\end{itemize}
+
+Folgende Befehle dienen zum Arbeiten mit voreingestellen Auszügen bzw.
 Beschriftungen
 
 \begin{itemize}
@@ -2339,7 +2355,7 @@ Beschriftungen
 \item
   \texttt{setstdextract}: kopiert aus dem aktuellen Stück die
   Konfiguration der Auszüge, um sie auf ein anderes Stück zu übertragen.
-  \textgreater{} \textbf{Hinweis}: diese Anwweisung wird ach ausgeführt
+  \textgreater{} \textbf{Hinweis}: diese Anwweisung wird auch ausgeführt
   bei \texttt{settemplate}
 \item
   \texttt{stdectract}: überträgt die zuletzt kopierte Konfiguration der
@@ -2348,6 +2364,7 @@ Beschriftungen
   \begin{quote}
   \textbf{Hinweis}: Diese Befehle sind hilfreich um schnell die
   Konfiguration eines aus MusicXml importierten Stückes einzustellen.
+  `stdextract' wird automatisch beim import aus MusicXml ausgeführt.
   \end{quote}
 \item
   \texttt{settemplate}: Damit wird der aktuelle Editor-Inhalt als
@@ -2362,14 +2379,17 @@ zur aktuellen Note scrollen bzw. der Wiedergabe folgen
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  setsetting autoscroll true` - Vorschaufenster scrollen automatisch
+  \texttt{setsetting\ autoscroll\ true} - Vorschaufenster scrollen
+  automatisch
 \item
-  setsetting autoscroll false` - Vorschaufenster scrollen nicht
+  \texttt{setsetting\ autoscroll\ false} - Vorschaufenster scrollen
+  nicht
 \item
-  setsetting follow true` - Vorschaufenster folgen der Wiedergabe
-\item
-  setsetting follow false` - Vorschaufenster folgen \textbf{nicht} der
+  \texttt{setsetting\ follow\ true} - Vorschaufenster folgen der
   Wiedergabe
+\item
+  \texttt{setsetting\ follow\ false} - Vorschaufenster folgen der
+  Wiedergabe \textbf{nicht mehr}
 \end{itemize}
 
 Über folgende Befehle können Flußlinien gestaltet werden:
@@ -5486,7 +5506,7 @@ Im Beispiel
 \ldots{} kein Beispiel verfügbar \ldots{}
 
 \subsection{\texorpdfstring{\texttt{extract.0.notebound.tuplet} -
-n-tole}{extract.0.notebound.tuplet - n-tole}}\label{extract.0.notebound.tuplet}
+n-Tole}{extract.0.notebound.tuplet - n-Tole}}\label{extract.0.notebound.tuplet}
 
 Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
@@ -5979,7 +5999,7 @@ spezifiziert ist.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{extract.0.tuplets} -
-n-tolen}{extract.0.tuplets - n-tolen}}\label{extract.0.tuplets}
+n-Tolen}{extract.0.tuplets - n-Tolen}}\label{extract.0.tuplets}
 
 Hier kannst du die generelle Darstellung von n-Tolen konfigurieren.
 
@@ -7071,7 +7091,7 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
         "pos"       : [10, 10],
         "show"      : true
       },
-      "lyrics"      : {"pos": [350, 70], "verses": [1]},
+      "lyrics"      : {"pos": [350, 70], "style": "regular", "verses": [1]},
       "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
       "tuplet"      : {
         "cp1"   : [5, 2],
@@ -7214,7 +7234,7 @@ Ein einzelner Block listet die Strophen auf, die er enthält, und die
 gemeinsam poitioniert werden.
 
 \begin{verbatim}
-    "lyrics": {"pos": [350, 70], "verses": [1]}
+    "lyrics": {"pos": [350, 70], "style": "regular", "verses": [1]}
       
 \end{verbatim}
 
@@ -7227,6 +7247,17 @@ von horizontaler / vertikaler Position.
 
 \begin{verbatim}
     "pos": [350, 70]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.lyrics.style} -
+Stil}{templates.lyrics.style - Stil}}\label{templates.lyrics.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "style": "regular"
       
 \end{verbatim}
 
@@ -7319,7 +7350,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \end{itemize}
 
 \subsection{\texorpdfstring{\texttt{templates.tuplet} -
-n-tole}{templates.tuplet - n-tole}}\label{templates.tuplet}
+n-Tole}{templates.tuplet - n-Tole}}\label{templates.tuplet}
 
 Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
