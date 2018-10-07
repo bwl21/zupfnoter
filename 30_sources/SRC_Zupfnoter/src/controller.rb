@@ -110,6 +110,7 @@ class Controller
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
+    @refresh_timer = []
 
     @version = VERSION
     I18n.locale(zupfnoter_language) { call_consumers(:localizedtexts) } if browser_language
@@ -582,11 +583,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         result
       }.join("\n")
 
-      @tune_preview_printer.draw(abc_text, @editor.get_checksum)
+      $log.benchmark("render tune preview"){@tune_preview_printer.draw(abc_text, @editor.get_checksum)}
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
-    $log.debug("finished render tune #{__FILE__} #{__LINE__}")
     set_inactive("#tunePreview")
 
     @editor.set_annotations($log.annotations)
@@ -1279,9 +1279,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def request_refresh(init)
     set_status({refresh: true}) if init
 
-    $log.debug("request refresh #{@systemstatus[:refresh]} #{init} #{__FILE__} #{__LINE__}")
-    if @refresh_timer
-      `clearTimeout(self.refresh_timer)`
+    unless @refresh_timer.empty?
+      @refresh_timer.each do |i|
+        `clearTimeout(#{i})`
+        @refresh_timer.pop
+      end
     end
 
     if @systemstatus[:refresh]
@@ -1289,11 +1291,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       case @systemstatus[:autorefresh]
         when :on
-          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 100)`
+          @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 2000)`
         when :off # off means it relies on remote rendering
-          @refresh_timer = `setTimeout(function(){#{render_remote()}}, 300)`
+          @refresh_timer.push `setTimeout(function(){#{render_remote()}},  300)`
         when :remote # this means that the current instance runs in remote mode
-          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 500)`
+       #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
       end
     end
   end
