@@ -1475,7 +1475,7 @@ module Harpnotes
       def layout(music, beat_layout = nil, print_variant_nr = 0, page_format = 'A4')
 
         print_options_raw = get_print_options(print_variant_nr)
-
+        @print_options_raw = print_options_raw  # todo refactor handling of print_options_raw
         print_options_hash = print_options_raw.get
 
         # push view specific configuration
@@ -1797,7 +1797,6 @@ module Harpnotes
       # @return [Array of Element] the list of elements to be drawn. It consists of flowlines, playables and jumplines.
       #                            note that these shall be rendered in the given order.
       def layout_voice(voice, beat_layout, print_variant_nr, show_options)
-        @print_options_raw  = show_options[:print_options_raw] # todo this is a bad hack but we need it to get the note configuration within layout_playable
         @print_options_keys = @print_options_raw.keys
         # draw the playables
         # note that the resulting playables are even flattened (e.g. syncpoints appear as individual playables)
