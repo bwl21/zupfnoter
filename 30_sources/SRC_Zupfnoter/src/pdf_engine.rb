@@ -87,7 +87,7 @@ module Harpnotes
       mm_per_point = $conf.get('layout.MM_PER_POINT')
 
       @pdf.text_color = style[:text_color]
-      @pdf.font_size  = style[:font_size]
+      @pdf.font_size  = style[:font_size] * 0.983 # todo: why do we need to tweak this size difference betwee svg and pdf
       @pdf.font_style = style[:font_style]
       # + style ... we shift it up by the fontsize converted from point to mm by mm_per_point
       text = root.text.gsub(/(\\?)(~)/){|m|  m[0]=='\\' ? m[1] : ' '}
