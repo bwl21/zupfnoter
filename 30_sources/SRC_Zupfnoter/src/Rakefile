@@ -7,14 +7,14 @@ require 'net/http'
 require 'pry'
 require 'neatjson.rb'
 
-HTMLTEMPLATE     = "../index_opal.html.erb"
-PACKAGE_JSON     = "../package.json"
-ZUPFNOTER_JS     = "build.js"
-ZUPFNOTER_CLI_JS = "zupfnoter-cli.js"
-OUTFOLDER        = "../deploy_files"
-INDEXFILE        = "index.html"
-LOCALEPATH       = "../public/locale/"
-NINJAEXEC        = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
+HTMLTEMPLATE         = "../index_opal.html.erb"
+PACKAGE_JSON         = "../package.json"
+ZUPFNOTER_JS         = "build.js"
+ZUPFNOTER_CLI_JS     = "zupfnoter-cli.js"
+ZUPFNOTER_CLI_MIN_JS = "zupfnoter-cli.min.js"
+OUTFOLDER            = "../deploy_files"
+LOCALEPATH           = "../public/locale/"
+NINJAEXEC            = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
 
 GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
 
@@ -248,7 +248,7 @@ task :build_cli do #=> [:build] do
 
   cmd = "browserify --node --dg false #{ZUPFNOTER_CLI_JS} -o #{ZUPFNOTER_CLI_JS}"
   sh cmd
-
+  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{ZUPFNOTER_CLI_MIN_JS} #{ZUPFNOTER_CLI_JS}"
 end
 
 desc "create user manual"
