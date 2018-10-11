@@ -38,6 +38,10 @@ class CliController < Controller
     nil
   end
 
+  def apply_config(config)
+    @editor.patch_config_part("" ,config, "from json file")
+  end
+
   def load_music_model
     abc_parser                      = $conf.get('abc_parser')
     harpnote_engine                 = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)

@@ -78,10 +78,12 @@ require 'abc2svg-1.js'
 #
 sourcepattern = ARGV[0] || "*.abc"
 targetfolder  = ARGV[1] || "."
+configfile    = ARGV[2]
+
 #targetfolder  = File.realpath(targetfolder)
 #
-unless ARGV.length == 2
-  puts %Q{usage: node --max_old_space_size=4096 zupfnoter-cli.js "/tmp/zntest/*.abc" /tmp/xxx}
+unless ARGV.length >= 2
+  puts %Q{usage: node --max_old_space_size=4096 zupfnoter-cli.js "/tmp/zntest/*.abc" /tmp/xxxd}
   exit(0)
 end
 
@@ -112,6 +114,14 @@ sourcefiles.each do |sourcefile|
   controller = CliController.new
 
   controller.set_abc_input(abctext)
+
+  if File.exist?(configfile)
+    puts "reading config"
+    config = JSON.parse(File.read(configfile))
+    controller.apply_config(config)
+  end
+
+
 
   controller.load_music_model
 
