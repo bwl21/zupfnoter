@@ -1051,10 +1051,11 @@ Einträgen
 ### Konsole {#konsole-fenster}
 
 Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination
-`cmd/ctrl-K` eingeschaltet wurde. Sie stellt die letzten Meldungen von
-Zupfnoter dar. Experten können in der Konsole auch weitere Befehle
-eingeben, die Zupfnoter direkt steuern. Die möglichen Befehle kann man
-mit dem Befehl `help` in der Konsole anzeigen.
+`cmd/ctrl-K` (bzw. durch klick auf den loglevel in der Statusleiste)
+eingeschaltet wurde. Sie stellt die letzten Meldungen von Zupfnoter dar.
+Experten können in der Konsole auch weitere Befehle eingeben, die
+Zupfnoter direkt steuern. Die möglichen Befehle kann man mit dem Befehl
+`help` in der Konsole anzeigen.
 
 > **Hinweis**: Die Zupfnoter-Menüs lösen letztendlich solche
 > Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
@@ -1074,6 +1075,10 @@ werden:
 -   `saveformat A4` - Es werden nur die A4-Druckdateien gespeichert
 -   `saveformat A3-A4` - Es werden die A3 und A4-Druckdateien
     gespeichert
+
+> **Hinweis:** Diese Einstellung wird in der Statusleiste angezeigt.
+> Duch klicken auf diese Anzeige kann die einstellung einfach geändert
+> werden.
 
 Folgende Befehle dienen zum Arbeiten mit voreingestellen Auszügen bzw.
 Beschriftungen

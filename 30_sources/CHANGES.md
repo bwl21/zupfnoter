@@ -1,14 +1,38 @@
-# V 1.9.1
+# V 1.9.2
 
 ## fix
 
 * increase white border around dot #224
-* allow to control which files are saved #229
 * Support generation of a watermark #231
 * allow to refine generated repeat marks #232
+* BWC lyrics size and position is different in svg resp. pdf #235
+* improve deferred rendering on editor change #223
+* improve behavior when switching perspectives #230
+* mprove buttons in config forms for chrome / firefox
+* some performance optimizations #225
 
-## BW
-# v 1.9
+## enhancement
+
+* allow to control which files are saved #229
+* Improve configuration of annotations #227
+* allow to refine generated repeat marks #232
+* Apply current template after dropping an xml file 
+* copy parameters from/to extract 0   #228
+
+## experimental
+
+* modify configuration when generating pdf with cli - eg. for watermark #231
+
+
+## BWC
+
+* BWC lyrics size and position is different in svg resp. pdf #235
+
+# v 1.9.1
+
+internal release
+
+# v 1.9.0
 
 ## fix
 

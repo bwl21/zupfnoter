@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.1-11-g50168e5
+Version V\_1.9.1-18-ge433d3d
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -2305,10 +2305,11 @@ Einträgen
 \hyperdef{}{konsole-fenster}{\subsubsection{Konsole}\label{konsole-fenster}}
 
 Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination
-\texttt{cmd/ctrl-K} eingeschaltet wurde. Sie stellt die letzten
-Meldungen von Zupfnoter dar. Experten können in der Konsole auch weitere
-Befehle eingeben, die Zupfnoter direkt steuern. Die möglichen Befehle
-kann man mit dem Befehl \texttt{help} in der Konsole anzeigen.
+\texttt{cmd/ctrl-K} (bzw. durch klick auf den loglevel in der
+Statusleiste) eingeschaltet wurde. Sie stellt die letzten Meldungen von
+Zupfnoter dar. Experten können in der Konsole auch weitere Befehle
+eingeben, die Zupfnoter direkt steuern. Die möglichen Befehle kann man
+mit dem Befehl \texttt{help} in der Konsole anzeigen.
 
 \begin{quote}
 \textbf{Hinweis}: Die Zupfnoter-Menüs lösen letztendlich solche
@@ -2340,6 +2341,12 @@ werden:
   \texttt{saveformat\ A3-A4} - Es werden die A3 und A4-Druckdateien
   gespeichert
 \end{itemize}
+
+\begin{quote}
+\textbf{Hinweis:} Diese Einstellung wird in der Statusleiste angezeigt.
+Duch klicken auf diese Anzeige kann die einstellung einfach geändert
+werden.
+\end{quote}
 
 Folgende Befehle dienen zum Arbeiten mit voreingestellen Auszügen bzw.
 Beschriftungen
@@ -7501,6 +7508,61 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \section{Änderungsgeschichte}\label{uxe4nderungsgeschichte}
 
+\subsection{V 1.9.1}\label{v-1.9.1}
+
+\subsubsection{Fehlerbehbungen}\label{fehlerbehbungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Sichtbarkeit von punktierungen verbessert \#224
+\item
+  Position von Liedtexten nun gleich in Vorschau bzw. Ausdruck \#235
+\item
+  Notenvorschau wurde zu oft berechnet \#223
+\item
+  Verbesserung beim Umschalten von Ansichten \#230
+\item
+  Bessere Darstellung der Konfigurationsbuttons in chrome / firefox
+\item
+  Geschwindikgeitsverbesserungen \#225
+\end{itemize}
+
+\subsubsection{Erweiterungen}\label{erweiterungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  die zu speichenden Dateien können nun eingestellt werden (seaveformat)
+  \#229
+\item
+  Konfiguration von Beschriftungen verbessert \#227
+\item
+  Wiederholungszeichen können individuell konfiguriert werden \#232
+\item
+  Aktuelles Template wird beim import einer xml-Datei angewandt
+\item
+  Parameter können nun von und nach Auzug 0 kopiert werden \#228
+\end{itemize}
+
+\subsubsection{experimental}\label{experimental}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  modify configuration when generating pdf with cli - eg. for watermark
+  \#231
+\end{itemize}
+
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  BWC Position und Größe von Liedtexten könnte sich geringfügig ändern
+  \#235
+\end{itemize}
+
 \subsection{v 1.9}\label{v-1.9}
 
 \subsection{Fehlerbehebungen}\label{fehlerbehebungen}
@@ -7512,7 +7574,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   unterdrückt \#216
 \end{itemize}
 
-\subsection{Erweiterungen}\label{erweiterungen}
+\subsection{Erweiterungen}\label{erweiterungen-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7534,7 +7596,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   mehrfach eingegeben werden müssen \#223
 \end{itemize}
 
-\subsection{Kompatibilität}\label{kompatibilituxe4t}
+\subsection{Kompatibilität}\label{kompatibilituxe4t-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7596,7 +7658,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   verbesserter Spieler \#210
 \end{itemize}
 
-\subsubsection{Erweiterungen}\label{erweiterungen-1}
+\subsubsection{Erweiterungen}\label{erweiterungen-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7678,7 +7740,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   Menü ``Extras'' \#71
 \end{itemize}
 
-\subsubsection{Kompatibilität}\label{kompatibilituxe4t-1}
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt

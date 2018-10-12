@@ -2,7 +2,41 @@
 
 # Änderungsgeschichte
 
-## v 1.9
+## V 1.9.2
+
+### Fehlerbehbungen
+
+-   Sichtbarkeit von punktierungen verbessert \#224
+-   Position von Liedtexten nun gleich in Vorschau bzw. Ausdruck \#235
+-   Notenvorschau wurde zu oft berechnet \#223
+-   Verbesserung beim Umschalten von Ansichten \#230
+-   Bessere Darstellung der Konfigurationsbuttons in chrome / firefox
+-   Geschwindikgeitsverbesserungen \#225
+
+### Erweiterungen
+
+-   die zu speichenden Dateien können nun eingestellt werden
+    (seaveformat) \#229
+-   Konfiguration von Beschriftungen verbessert \#227
+-   Wiederholungszeichen können individuell konfiguriert werden \#232
+-   Aktuelles Template wird beim import einer xml-Datei angewandt
+-   Parameter können nun von und nach Auzug 0 kopiert werden \#228
+
+### experimental
+
+-   modify configuration when generating pdf with cli - eg. for
+    watermark \#231
+
+### Kompatibilität
+
+-   BWC Position und Größe von Liedtexten könnte sich geringfügig ändern
+    \#235
+
+## v.1.9.1
+
+internal release 
+
+## v 1.9.0
 
 ## Fehlerbehebungen
 
