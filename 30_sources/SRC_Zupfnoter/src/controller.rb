@@ -186,7 +186,7 @@ class Controller
                mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
 
-    set_status(saveformat: "A3-A4-HTML") unless @systemstatus[:saveformat]
+    set_status(saveformat: "A3-A4") unless @systemstatus[:saveformat]
 
     #
     # load from previous session

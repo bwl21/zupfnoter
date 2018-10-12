@@ -902,8 +902,15 @@ function init_w2ui(uicontroller) {
       },
       {
         type: 'button',
+        id: 'sb_saveformat',
+        text: '<div style="padding: 0px !important;"><span class="sb-saveformat"></span></div>',
+        onClick: function(event){uicontroller.$toggle_saveformat()}
+      },
+      {
+        type: 'button',
         id: 'sb_loglevel',
-        text: '<div style="padding: 0px !important;"><span class="sb-loglevel"></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="sb-loglevel"></span></div>',
+        onClick: function(event){uicontroller.$toggle_console()}
       },
       {
         type: 'button',
@@ -925,12 +932,6 @@ function init_w2ui(uicontroller) {
 
     ],
 
-    onClick: function (event) {
-      sb_event = event.target.split(":")
-      if (sb_event[0] == 'sb_loglevel') {
-        uicontroller.$toggle_console()
-      }
-    }
   }
 
   var editortabshtml =
@@ -1129,8 +1130,11 @@ function update_systemstatus_w2ui(systemstatus) {
 
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
+  $(".sb-saveformat").html("[" + systemstatus.saveformat + "]")
+
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
   // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
+
 
   if (systemstatus.mode == 'demo') {
     w2ui.layout_top_toolbar.disable('tb_file')

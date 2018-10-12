@@ -1837,7 +1837,6 @@ module Harpnotes
           note_conf_base      = %Q{extract.#{print_variant_nr}.#{note_conf_base_tail}}
           result              = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
           decoration_root     = result.proxy
-          `debugger`
 
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
