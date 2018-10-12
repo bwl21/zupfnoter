@@ -307,6 +307,15 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
+## notebound
+
+Hier stehen alle Konfigurationsparameter, welche an den **Zeitpunkt**
+einer Note gebunden sind (z.B für Taktzahlen, Triolen usw.)
+
+> **Hinweis:** Wenn das Musikstück so bearbeitet wird, dass das
+> Zeitschema verändert wird (z.b. Noten einfügen) kann es sinnvoll sein,
+> diesen Zweig komplett zu löschen und neu aufzubauen.
+
 ## notebound.minc
 
 Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
@@ -354,7 +363,7 @@ Im Beispiel
 
 ## nconf
 
-Hier kannst due Darstellung einer einzelnen Note konfigurieren.
+Hier kannst du die Darstellung einer einzelnen Note konfigurieren.
 
 ## nshift
 

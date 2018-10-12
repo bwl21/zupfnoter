@@ -110,6 +110,7 @@
     "d8": "**--d8",
     "decimals": "Dezimalstellen",
     "decoration": "Dekoration",
+    "decrease Minc": "kleinerer Vorschub",
     "default": "Vorgabewert",
     "defaults": "Vorgabewerte",
     "Demo": "Demonstration",
@@ -212,6 +213,7 @@
     "import abc, xml from local system": "abc oder xml Datei importieren",
     "Import": "Import",
     "in distance": "Abstand der Eingangslinie",
+    "increase Minc": "größerer Vorschub",
     "inject the default configuration (for development use only)": "inject the default configuration (for development use only)",
     "insert a title for the \ncurrent extract": "Titel für den aktuellen\n Auszug einfügen",
     "Insert addon at cursor position": "Zusatzinformation an der Cursor-Position einfügen",
@@ -278,6 +280,7 @@
     "new": "Neu",
     "No access token to revoke": "Kein Zugriffstoken vorhanden, das gelöscht werden kann.",
     "no filebase given for template. Please type  ": "**--no filebase given for template. Please type  ",
+    "no placeholder value found in  ": "kein Platzhalter gefunden in   ",
     "no preview available yet": "Noch keine Vorschau verfügbar",
     "no suitable ABC found": "keine passende ABC Eingabe gefunden",
     "nonflowrest": "Begleitpausen",
@@ -372,6 +375,8 @@
     "settemplate": "Vorlage aktivieren",
     "settings for specific instrument sizes": "Instrument spezifischen Einstellungen",
     "shape": "Linienform",
+    "shift left": "links schieben",
+    "shift right": "rechts schieben",
     "Shifter": "links/rechts Verschiebung",
     "short": "short",
     "SHORTEST_NOTE": "kürzeste Note",
@@ -484,6 +489,7 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
+
 
     "_ende_der_liste": ""
   }

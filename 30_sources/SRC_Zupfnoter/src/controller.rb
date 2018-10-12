@@ -185,7 +185,7 @@ class Controller
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0,
                mode: mode) unless @systemstatus[:view]
     set_status(mode: mode)
-    `debugger`
+
     set_status(saveformat: "A3-A4-HTML") unless @systemstatus[:saveformat]
 
     #
@@ -1029,7 +1029,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         id = entry[:conf_key]
         text = entry[:text]
         icon = entry[:icon]
-        items.push({id: id, text: text, icon: icon})
+        value = entry[:value]
+        items.push({id: id, text: text, icon: icon, value: value})
       end
 
       %x{
@@ -1038,7 +1039,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
                                        onSelect: function (event) {
                                            w2ui.layout_left_tabs.click('configtab');
-                                           #{handle_command(%Q{editconf #{`event.item.id`.gsub(/\.[^\.]+$/, '') }})}
+                                           if (event.item.value != null ) #{handle_command(%Q{cconf #{`event.item.id`} #{`event.item.value`}})}
+                                           #{handle_command(%Q{editconf #{`event.item.id`.gsub(/\.[^\.]+$/, '') }})}  // we strip the particular parameter to get all params of the object
                                        }
                                    });
           return false ;
@@ -1074,6 +1076,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
        w2ui['layout'].toggle('bottom', true);
        #{@editor}.$resize();
       }
+  end
+
+  def toggle_saveformat
+    formats = ["A3-A4", 'A3', 'A4']
+    index = (formats.index(systemstatus[:saveformat]) + 1) % formats.size rescue 1
+    handle_command("saveformat #{formats[index]}")
+
   end
 
   def show_console

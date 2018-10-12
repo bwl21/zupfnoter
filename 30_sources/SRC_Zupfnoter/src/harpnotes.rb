@@ -819,6 +819,12 @@ module Harpnotes
     class Drawable
 
       # more_conf_keys is an array of hash which eventurally introduces more context menu entries
+      # respectively drag-drop synchronization
+      #
+      # note that for context menu entry the handler goes one level up in order to edit all parameters not only the
+      # position (as it is done in drag/drop). For this reason, we sometimes add .*** to the conf-key
+      # for notes etc. wihich are not yet draggable
+      #
       # see   controller.rb  @harpnote_preview_printer.on_draggable_rightcklick do |info|
 
       attr_accessor :conf_key, :conf_value, :draginfo, :color, :size, :more_conf_keys
@@ -827,7 +833,7 @@ module Harpnotes
         @visible        = true
         @line_width     = $conf.get('layout.LINE_THIN')
         @conf_key       = nil
-        @more_conf_keys = []
+        @more_conf_keys = [] #
         @color          = $conf.get('layout.color.color_default')
         @size           = [1, 1]
       end
@@ -1474,8 +1480,8 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0, page_format = 'A4')
 
-        print_options_raw = get_print_options(print_variant_nr)
-        @print_options_raw = print_options_raw  # todo refactor handling of print_options_raw
+        print_options_raw  = get_print_options(print_variant_nr)
+        @print_options_raw = print_options_raw # todo refactor handling of print_options_raw
         print_options_hash = print_options_raw.get
 
         # push view specific configuration
@@ -1629,7 +1635,7 @@ module Harpnotes
           text = lyric_text.join("\n")
 
           if lyrics
-            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map{|i|i.strip}
+            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map { |i| i.strip }
             lyrics.delete("versepos")
             lyrics.each do |key, entry|
               pos       = entry[:pos]
@@ -1831,15 +1837,42 @@ module Harpnotes
           note_conf_base      = %Q{extract.#{print_variant_nr}.#{note_conf_base_tail}}
           result              = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
           decoration_root     = result.proxy
+          `debugger`
 
           res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
+
+          decoration_root.more_conf_keys.push({conf_key: %Q{#{decoration_root.conf_key.gsub(/\.[^\.]+$/, '')}.nshift},
+                                               text:     I18n.t("shift left"),
+                                               icon:     "fa fa-arrow-left",
+                                               value:    -0.5
+                                              })
+          decoration_root.more_conf_keys.push({conf_key: %Q{#{decoration_root.conf_key.gsub(/\.[^\.]+$/, '')}.nshift},
+                                               text:     I18n.t("shift right"),
+                                               icon:     "fa fa-arrow-right",
+                                               value:    0.5
+                                              })
+          decoration_root.more_conf_keys.push({
+                                                  text:  "---",
+                                                  icon:  "fa fa-arrows-v",
+                                                  value: 0.5
+                                              })
           decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
                                                text:     I18n.t("Edit Minc"),
                                                icon:     "fa fa-arrows-v"
                                               })
-          # decoration_root.conf_key = note_conf_base
+          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
+                                               text:     I18n.t("increase Minc"),
+                                               icon:     "fa fa-arrow-down",
+                                               value:    0.5
+                                              })
+          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
+                                               text:     I18n.t("decrease Minc"),
+                                               icon:     "fa fa-arrow-up",
+                                               value:    -0.5
+                                              })
+
 
           result.shapes
         end.flatten.compact
@@ -2199,14 +2232,14 @@ module Harpnotes
         end
 
         repeat_key = "notebound.repeat_#{point_role.to_s}.v_#{voice_nr}.#{companion_note.znid}"
-        pos_key  = "#{repeat_key}.pos"
-        conf_key = "extract.#{print_variant_nr}.#{pos_key}"
+        pos_key    = "#{repeat_key}.pos"
+        conf_key   = "extract.#{print_variant_nr}.#{pos_key}"
 
         repeatsign_options = show_options[:repeatsigns][attach_side]
         annotationoffset = show_options[:print_options_raw][pos_key] rescue nil
         annotationoffset = repeatsign_options[:pos] unless annotationoffset
 
-        text = show_options[:print_options_raw]["#{repeat_key}.text"] || repeatsign_options[:text]
+        text  = show_options[:print_options_raw]["#{repeat_key}.text"] || repeatsign_options[:text]
         style = show_options[:print_options_raw]["#{repeat_key}.style"] || repeatsign_options[:style]
 
         position = Vector2d(companion_note.sheet_drawable.center) + annotationoffset
@@ -2412,7 +2445,7 @@ module Harpnotes
       def get_minc_factor(time, increment = @conf_beat_resolution)
         minc = @layout_minc[time.to_s]
         if minc
-          minc[:minc_f] * increment
+          minc[:minc_f] * increment rescue 0 # incase there is a minc entry without minc_f
         else
           0
         end
@@ -2621,7 +2654,7 @@ module Harpnotes
         color = compute_color_by_variant_no(root.variant)
 
         res                 = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
-        res.conf_key        = note_conf_base + ".nconf"
+        res.conf_key        = note_conf_base + ".***" # we need to add .*** for context menu which goes one level up
         root.sheet_drawable = res # backannotate
         res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')
@@ -2794,7 +2827,7 @@ module Harpnotes
         # draw the rest
         res                 = nil
         res                 = Harpnotes::Drawing::Glyph.new([x_offset + shift, y_offset], size, glyph, dotted, root)
-        res.conf_key        = note_conf_base + ".nconf"
+        res.conf_key        = note_conf_base + ".***" # we need to add .*** for context menu which goes one level up
         root.sheet_drawable = res
         res.color           = color
         res.line_width      = $conf.get('layout.LINE_THICK')

@@ -844,6 +844,26 @@ class Controller
       end
 
       command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risk
+      end
+    end
+
+    @commands.add_command(:delconfig) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.set_help { "delete configuration parameter in editor pane" }
+
+      command.as_action do |args|
+        @editor.delete_config_part(args[:key])
+
+        nil
+      end
+
+      command.as_inverse do |args|
         $conf.pop # todo: this is a bit risky
       end
     end
