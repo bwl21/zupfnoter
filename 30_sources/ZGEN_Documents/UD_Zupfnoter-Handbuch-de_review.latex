@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.1-18-ge433d3d
+Version V\_1.9.2
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -7508,7 +7508,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \section{Änderungsgeschichte}\label{uxe4nderungsgeschichte}
 
-\subsection{V 1.9.1}\label{v-1.9.1}
+\subsection{V 1.9.2}\label{v-1.9.2}
 
 \subsubsection{Fehlerbehbungen}\label{fehlerbehbungen}
 
@@ -7563,7 +7563,11 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   \#235
 \end{itemize}
 
-\subsection{v 1.9}\label{v-1.9}
+\subsection{v.1.9.1}\label{v.1.9.1}
+
+internal release
+
+\subsection{v 1.9.0}\label{v-1.9.0}
 
 \subsection{Fehlerbehebungen}\label{fehlerbehebungen}
 
