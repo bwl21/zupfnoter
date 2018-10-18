@@ -104,7 +104,7 @@ class JsPDF
 
   def text(x, y, text, flags = nil)
     nx, ny = apply_offset_to_point([x, y])
-    `#{@native_jspdf}.text(#{nx}, #{ny}, #{text}, #{flags})`
+    `#{@native_jspdf}.text(#{nx}, #{ny}, #{text}, #{flags.to_n})`
   end
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
