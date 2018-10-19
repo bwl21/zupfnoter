@@ -415,7 +415,7 @@ module Harpnotes
       attr[:transform]     = "scale(1.05, 1) translate(0,#{-style[:font_size] / 8})" # literal by try and error
       attr[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
       attr[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
-      attr[:"text-anchor"] = "start"
+      attr[:"text-anchor"] = (root.align == 'right') ? "end" : 'start '
       element              = @paper.text(root.center.first / 1.05, root.center.last, text, attr) # literal by try and error
 
       push_element(root, element)

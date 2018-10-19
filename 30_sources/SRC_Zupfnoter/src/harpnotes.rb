@@ -1037,7 +1037,7 @@ module Harpnotes
     #
     class Annotation < Drawable
       attr_reader :center, :text, :style, :origin
-      attr_accessor :conf_key, :conf_value
+      attr_accessor :conf_key, :conf_value, :align, :baseline
 
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
@@ -1050,6 +1050,8 @@ module Harpnotes
         @center     = center
         @text       = text
         @style      = style
+        @align      = :left
+        @baseline   = :alphabetic #
         @origin     = origin
         @conf_key   = conf_key
         @conf_value = conf_value
@@ -2306,14 +2308,18 @@ module Harpnotes
               cn_conf_key = "extract.#{print_variant_nr}.#{cn_pos_key}"
               count_note  = playable.count_note || ""
 
+              cn_dsize_y = 0 # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
+
               # read countnote-configuration from extract
-              cn_offset   = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
+              cn_offset  = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
 
               unless cn_offset
                 if cn_autopos == true
-                  cn_tie_x  = (cn_position == :r and playable.tie_start?) ? 1.5 : 0 # 1: this size of tie bow see line 1961
-                  auto_x    = cn_tie_x + (cn_position == :l ? -(count_note.length * cn_fontsize_x + dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
-                  auto_y    = bottomup ? -(dsize_y + cn_apbase_y + cn_fontsize_y) : dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
+                  cn_tie_x = (cn_position == :r and playable.tie_start?) ? 1.5 : 0 # 1: this size of tie bow see line 1961
+                  auto_x   = cn_tie_x + (cn_position == :l ? -(dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
+                  cn_align = ((cn_position == :l) ? :right : :left)
+                  # todo: remove dependencay of cn_fonttsize_y
+                  auto_y    = bottomup ? -(cn_dsize_y + cn_apbase_y + cn_fontsize_y) : cn_dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
                   cn_offset = [auto_x, auto_y]
                 else
                   cn_offset = cn_fixedpos
@@ -2322,8 +2328,11 @@ module Harpnotes
 
               cn_position = Vector2d(dcenter) + cn_offset
 
-              res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a, count_note, cn_style, playable.origin,
-                                                                     cn_conf_key, cn_offset).tap { |s| s.draginfo = {handler: :annotation} }
+              # todo: pass more attributes by an object instead of using tap
+              res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a,
+                                                                     count_note, cn_style, playable.origin,
+                                                                     cn_conf_key, cn_offset)
+                                      .tap { |s| s.align = cn_align; s.draginfo = {handler: :annotation} }
             end
 
             #### now handle barnumbers
@@ -2333,16 +2342,18 @@ module Harpnotes
               bn_conf_key = "extract.#{print_variant_nr}.#{bn_pos_key}"
               barnumber   = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
 
+              bn_dsize_y = 0 # this adjusts the postion for autopos. prepare for using baseline=hanging
               # read countnote-configuration from extract
-              bn_offset   = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
+              bn_offset  = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
 
               unless bn_offset
                 if bn_autopos == true
                   bn_tie_x = (bn_position == :r and playable.tie_start?) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
                   # todo: in case of left: barnumber.length is just a heuristic to geht the thing right justified
-                  bn_auto_x = bn_tie_x + (bn_position == :l ? -(barnumber.length * bn_fontsize_x + dsize_x + bn_apbase_x) : dsize_d_x + bn_apbase_x)
-                  bn_auto_y = bottomup ? dsize_y + bn_apbase_y : -(dsize_y + bn_apbase_y + bn_fontsize_y) # todo derive "1" from font style?
+                  bn_auto_x = bn_tie_x + (bn_position == :l ? -(dsize_x + bn_apbase_x) : dsize_d_x + bn_apbase_x)
+                  bn_align  = ((bn_position == :l) ? :right : :left)
+                  bn_auto_y = bottomup ? bn_dsize_y + bn_apbase_y : -(bn_dsize_y + bn_apbase_y + bn_fontsize_y) # todo derive "1" from font style?
                   bn_offset = [bn_auto_x, bn_auto_y]
                 else
                   bn_offset = bn_fixedpos
@@ -2351,7 +2362,8 @@ module Harpnotes
 
               bn_position = Vector2d(dcenter) + bn_offset
               res_barnumbers.push Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
-                                                                     bn_conf_key, bn_offset).tap { |s| s.draginfo = {handler: :annotation} }
+                                                                     bn_conf_key, bn_offset)
+                                      .tap { |s| s.align = bn_align; s.draginfo = {handler: :annotation} }
             end
           end
         end
