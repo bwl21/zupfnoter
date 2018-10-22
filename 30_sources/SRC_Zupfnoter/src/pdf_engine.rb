@@ -92,6 +92,8 @@ module Harpnotes
       align = root.align || 'left'
       # + style ... we shift it up by the fontsize converted from point to mm by mm_per_point
       text = root.text.gsub(/(\\?)(~)/){|m|  m[0]=='\\' ? m[1] : ' '}
+      text = text.gsub(/[„“‚’]/, {'„' => '"',   '“' => '"',  '‚' => "'", '’' =>  "'"} )
+      text = text.split("\n")
       @pdf.text(root.center.first, root.center.last + style[:font_size] * mm_per_point, text, {align:align})
     end
 
