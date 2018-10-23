@@ -44593,7 +44593,7 @@ Opal.modules["version-prod"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice;
 
   Opal.add_stubs(['$year', '$now']);
-  Opal.cdecl($scope, 'VERSION', "V_1.9.2");
+  Opal.cdecl($scope, 'VERSION', "V_1.9.2-3-g73d63e7");
   Opal.cdecl($scope, 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.cdecl($scope, 'COPYRIGHT', "© " + ($scope.get('Time').$now().$year()) + " https://www.zupfnoter.de");
 };
