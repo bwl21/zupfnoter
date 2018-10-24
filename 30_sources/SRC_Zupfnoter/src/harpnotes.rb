@@ -2273,6 +2273,7 @@ module Harpnotes
           if cn_options
             cn_style                     = cn_options[:style]
             cn_fontsize_x, cn_fontsize_y = [1, 1]
+            cn_autoposanchor             = cn_options[:autoposanchor]
             cn_autopos                   = cn_options[:autopos]
             cn_fixedpos                  = cn_options[:pos]
             cn_apbase_x, cn_apbase_y     = cn_options[:apbase]
@@ -2280,6 +2281,7 @@ module Harpnotes
           if bn_options
             bn_style                     = bn_options[:style]
             bn_fontsize_x, bn_fontsize_y = [2.7, 2.7]
+            bn_autoposanchor             = bn_options[:autoposanchor]
             bn_autopos                   = bn_options[:autopos]
             bn_fixedpos                  = bn_options[:pos]
             bn_apbase_x, bn_apbase_y     = bn_options[:apbase]
@@ -2301,17 +2303,20 @@ module Harpnotes
             # compute the barnote/countnote positions
             bn_position, cn_position = bottomup ? compute_note_position(xn, x, xp, limit_a3).reverse : compute_note_position(xp, x, xn, limit_a3)
 
+
             #### now handle countnotes
             # get the configurations for countnotes
             if cn_options
-              cn_pos_key  = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}.pos"
-              cn_conf_key = "extract.#{print_variant_nr}.#{cn_pos_key}"
-              count_note  = playable.count_note || ""
+              cn_base_key  = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}"
+              cn_pos_key   = "#{cn_base_key}.pos"
+              cn_align_key = "#{cn_base_key}.align"
+              count_note   = playable.count_note || ""
 
-              cn_dsize_y = 0 # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
+              cn_dsize_y  = (:center == cn_autoposanchor) ? 0 : dsize_y # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
 
               # read countnote-configuration from extract
-              cn_offset  = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
+              cn_offset   = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
+              cn_position = @print_options_raw[cn_align_key] if @print_options_keys.include? cn_align_key
 
               unless cn_offset
                 if cn_autopos == true
@@ -2331,20 +2336,41 @@ module Harpnotes
               # todo: pass more attributes by an object instead of using tap
               res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a,
                                                                      count_note, cn_style, playable.origin,
-                                                                     cn_conf_key, cn_offset)
-                                      .tap { |s| s.align = cn_align; s.draginfo = {handler: :annotation} }
+                                                                     "extract.#{print_variant_nr}.#{cn_pos_key}", cn_offset)
+                                      .tap { |s| s.align = cn_align; s.draginfo = {handler: :annotation}
+                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{cn_align_key}",
+                                                             text:     I18n.t("countnote left"),
+                                                             icon:     "fa fa-arrow-left",
+                                                             value:    "l"
+                                                            })
+                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{cn_align_key}",
+                                                             text:     I18n.t("countnote right"),
+                                                             icon:     "fa fa-arrow-right",
+                                                             value:    "r"
+                                                            })
+                                      }
             end
 
             #### now handle barnumbers
             # get the configurations for barnumbers
             if bn_options && playable.measure_start?
-              bn_pos_key  = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}.pos"
-              bn_conf_key = "extract.#{print_variant_nr}.#{bn_pos_key}"
-              barnumber   = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
 
-              bn_dsize_y = 0 # this adjusts the postion for autopos. prepare for using baseline=hanging
+              cn_base_key  = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}"
+              cn_pos_key   = "#{cn_base_key}.pos"
+              cn_align_key = "#{cn_base_key}.align"
+              cn_conf_base = "extract.#{print_variant_nr}.#{cn_base_key}"
+              count_note   = playable.count_note || ""
+
+              bn_base_key  = "notebound.barnumber.v_#{voice_nr}.t_#{playable.time}"
+              bn_pos_key   = "#{bn_base_key}.pos"
+              bn_align_key = "#{bn_base_key}.align"
+              bn_conf_key  = "extract.#{print_variant_nr}.#{bn_pos_key}"
+              barnumber    = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
+
+              bn_dsize_y  = (:center == bn_autoposanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
-              bn_offset  = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
+              bn_offset   = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
+              bn_position = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key
 
               unless bn_offset
                 if bn_autopos == true
@@ -2362,8 +2388,18 @@ module Harpnotes
 
               bn_position = Vector2d(dcenter) + bn_offset
               res_barnumbers.push Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
-                                                                     bn_conf_key, bn_offset)
-                                      .tap { |s| s.align = bn_align; s.draginfo = {handler: :annotation} }
+                                                                     "extract.#{print_variant_nr}.#{bn_pos_key}", bn_offset)
+                                      .tap { |s| s.align = bn_align; s.draginfo = {handler: :annotation}
+                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{bn_align_key}",
+                                                             text:     I18n.t("barnumber left"),
+                                                             icon:     "fa fa-arrow-left",
+                                                             value:    "l"
+                                                            })
+                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{bn_align_key}",
+                                                             text:     I18n.t("barnumber right"),
+                                                             icon:     "fa fa-arrow-right",
+                                                             value:    "r"
+                                                            }) }
             end
           end
         end

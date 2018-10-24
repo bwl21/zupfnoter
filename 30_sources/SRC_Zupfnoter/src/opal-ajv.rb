@@ -60,6 +60,8 @@ module Ajv
        :required    => ["produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
        :definitions => {
 
+           :autoposanchor    => {:type => "string",
+                                            :enum => ['manual', 'box', 'center']},
            :pos              => {:type        => "array",
                                  :minItems    => 2,
                                  :uniqueItems => false,
@@ -100,7 +102,10 @@ module Ajv
                                                          :type                 => "object",
                                                          :additionalProperties => false,
                                                          :properties           => {
-                                                             pos: {:'$ref' => '#/definitions/pos'}}
+                                                             pos:    {:'$ref' => '#/definitions/pos'},
+                                                             anchor: {:type => 'string',
+                                                                      :enum => ['l', 'r', 'c']}
+                                                         }
                                                      }
                                                  }
                                      }
@@ -414,24 +419,25 @@ module Ajv
                                                  :barnumbers   => {:type       => "object",
                                                                    :required   => ["voices", "pos", "autopos", "style", "prefix"],
                                                                    :properties =>
-                                                                       {:voices  => {:type        => "array",
-                                                                                     :minItems    => 0,
-                                                                                     :uniqueItems => true,
-                                                                                     :items       => {}},
-                                                                        :pos     => {:'$ref' => '#/definitions/pos'},
-                                                                        :autopos => {:type => "boolean"},
-                                                                        :style   => {:type => "string"},
-                                                                        :prefix  => {:type => "string"}}},
+                                                                       {:voices        => {:type        => "array",
+                                                                                           :minItems    => 0,
+                                                                                           :uniqueItems => true,
+                                                                                           :items       => {}},
+                                                                        :pos           => {:'$ref' => '#/definitions/pos'},
+                                                                        :autopos       => {:type => "boolean"},
+                                                                        :autoposanchor => {"$ref" => "#/definitions/autoposanchor"}, :style => {:type => "string"},
+                                                                        :prefix        => {:type => "string"}}},
                                                  :countnotes   => {:type       => "object",
                                                                    :required   => ["voices", "pos", "autopos", "style"],
                                                                    :properties =>
-                                                                       {:voices  => {:type        => "array",
-                                                                                     :minItems    => 0,
-                                                                                     :uniqueItems => true,
-                                                                                     :items       => {}},
-                                                                        :pos     => {:'$ref' => '#/definitions/pos'},
-                                                                        :autopos => {:type => "boolean"},
-                                                                        :style   => {:type => "string"}}},
+                                                                       {:voices        => {:type        => "array",
+                                                                                           :minItems    => 0,
+                                                                                           :uniqueItems => true,
+                                                                                           :items       => {}},
+                                                                        :pos           => {:'$ref' => '#/definitions/pos'},
+                                                                        :autopos       => {:type => "boolean"},
+                                                                        :autoposanchor => {"$ref" => "#/definitions/autoposanchor"},
+                                                                        :style         => {:type => "string"}}},
                                                  :stringnames  => {:type       => "object",
                                                                    :required   => ["text", "vpos", "style", "marks"],
                                                                    :properties =>
