@@ -1041,6 +1041,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                                            w2ui.layout_left_tabs.click('configtab');
                                            if (event.item.value != null ) #{handle_command(%Q{cconf #{`event.item.id`} #{`event.item.value`}})}
                                            #{handle_command(%Q{editconf #{`event.item.id`.gsub(/\.[^\.]+$/, '') }})}  // we strip the particular parameter to get all params of the object
+                                           if (event.item.value != null ) #{handle_command(%Q{render})}
                                        }
                                    });
           return false ;

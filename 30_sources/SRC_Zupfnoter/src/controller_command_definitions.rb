@@ -630,8 +630,8 @@ class Controller
                                     quicksetting_commands: ['stdextract'],
                                     scope:                 :global
             },
-            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apbase', 'barnumbers.style',
-                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apbase', 'countnotes.style',
+            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.autoposanchor', 'barnumbers.apbase', 'barnumbers.style',
+                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.autoposanchor', 'countnotes.apbase', 'countnotes.style',
                                                                "tuplets.text", "tuplets.style"])},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
             notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
@@ -685,13 +685,13 @@ class Controller
         # todo: implement a more flexible replacement thatn simply prefixing
         regexp_form_sets = {
             /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style"]},
-            /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos"]},
+            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style" "align"]},
+            /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos", "align"]},
             /extract\.(\d+)\.notebound\.minc\.(\d+)/                              => {keys: ["minc_f"]},
             /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
             /extract\.(\d+)\.legend/                                              => {keys: ["pos", "spos", "style"]},
             /extract\.(\d+)\.lyrics\.(\d)/                                        => {keys: ["verses", "pos", "style"]},
-            /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/       => {keys: ['text', 'pos', 'style']},
+            /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/                 => {keys: ['text', 'pos', 'style']},
             /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]
             }
         }
@@ -835,9 +835,19 @@ class Controller
 
       command.set_help { "set configuration parameter in editor pane" }
 
-      command.as_action do |args|
-        value = JSON.parse(args[:value])
+      def regex_is_number? string
+        no_commas = string.gsub(',', '')
+        matches   = no_commas.match(/-?\d+(?:\.\d+)?/)
+        if !matches.nil? && matches.size == 1 && matches[0] == no_commas
+          true
+        else
+          false
+        end
+      end
 
+      command.as_action do |args|
+        value = args[:value]
+        value = JSON.parse(args[:value]) if ((value.start_with?("{")) or (regex_is_number?(value)))
         @editor.patch_config_part(args[:key], value, %Q{cconf #{args[:key]}})
 
         nil
