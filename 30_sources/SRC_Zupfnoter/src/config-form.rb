@@ -203,6 +203,65 @@ class ConfstackEditor
     end
 
 
+    class NoteAnchor < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['box', 'center']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_value(key, string)
+        string[:id]
+      end
+
+      def self.to_template(key)
+
+      end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral RestPosition #{__FILE__} #{__LINE__}")
+      end
+    end
+
+
+    class NoteAlign < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['l', 'r', 'auto']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_value(key, string)
+        string[:id]
+      end
+
+      def self.to_template(key)
+
+      end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral RestPosition #{__FILE__} #{__LINE__}")
+      end
+    end
+
     class RestPosition < ZnTypes
       def self.to_html(key)
         %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
@@ -351,8 +410,10 @@ class ConfstackEditor
           FloatPair       => ['apbase', 'pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset', 'jumpline_anchor'],
           IntegerList     => ['a4_pages', 'voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
           Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow', 'PITCH_OFFSET'],
-          OneLineString   => ['title', 'filenamepart', 'url', 'filebase', 'imagename', 'autoposanchor', 'align'],
+          OneLineString   => ['title', 'filenamepart', 'url', 'filebase', 'imagename'],
           MultiLineString => ['text'],
+          NoteAlign       => ['align'],
+          NoteAnchor      => ['apanchor'],
           Boolean         => ['autopos', 'limit_a3',  'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'nshift', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
           TupletShape     => ['shape'],

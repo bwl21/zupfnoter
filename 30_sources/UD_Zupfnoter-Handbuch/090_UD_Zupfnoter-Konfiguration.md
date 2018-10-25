@@ -261,23 +261,22 @@ ausgegeben werden sollen.
 
 ## `extract.0.barnumbers.apbase` - autom. pos. Basis {#extract.0.barnumbers.apbase}
 
-Hier kannst du die Grundlage für die automatische Postiionierung von
+Hier kannst du die Grundlage für die automatische Positionierung von
 Taktnummern einstellen.
-
-Taktnummern werden am Anfang (also am oberen Rand wenn von oben nach
-unten gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
-poitioniert.
 
 Es werden zwei Werte erwartet: horizontal, vertikal.
 
--   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
-    der Note weg.
+-   Positive Werte schieben die Taktnummer **weiter** von der Note weg.
+-   Negative Werte schieben die Taktnummer **näher** an die Note heran.
 
--   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
-    Note heran.
-
-> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
-> Seite der Note Taktnummer angebracht wird.
+> **Hinweise**: Die horizontale Verankerung der Taktnummer wird
+> automatisch so berechet, dass die Taktnummer gegenüber der ausgehenden
+> Flusslinie steht.
+>
+> Eine bewährte Eingabe ist:
+>
+> -   `center`: `1,0`
+> -   `box`: `1,-1`
 
         "apbase": [1, 1]
           
@@ -346,23 +345,22 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 
 ## `extract.0.countnotes.apbase` - autom. pos. Basis {#extract.0.countnotes.apbase}
 
-Hier kannst du die Grundlage für die automatische Postiionierung von
+Hier kannst du die Grundlage für die automatische Positionierung von
 Zählmarken einstellen.
-
-Zählmarken werden am Ende (also am unteren Rand wenn von oben nach unten
-gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
-poitioniert.
 
 Es werden zwei Werte erwartet: horizontal, vertikal.
 
--   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
-    der Note weg.
+-   Positive Werte schieben die Zählmarke **weiter** von der Note weg.
+-   Negative Werte schieben die Zählmarke **näher** an die Note heran.
 
--   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
-    Note heran.
-
-> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
-> Seite der Note Zälmarke angebracht wird.
+> **Hinweise**: Die horizontale Verankerung der Zählmarke wird
+> automatisch so berechet, dass die Zählmarke gegenüber der eingehenden
+> Flusslinie steht.
+>
+> Eine bewährte Eingabe ist:
+>
+> -   `center`: `1,0`
+> -   `box`: `1,-0.5`
 
         "apbase": [1, -0.5]
           

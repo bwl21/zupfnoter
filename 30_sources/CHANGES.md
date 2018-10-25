@@ -1,3 +1,15 @@
+# V.1.10
+
+## fix
+
+## enhancement
+
+* BWC: Barnumbers / countnotes are now aligned relative to the center of the note #237
+
+##
+
+## BWC
+
 # V 1.9.2
 
 ## fix

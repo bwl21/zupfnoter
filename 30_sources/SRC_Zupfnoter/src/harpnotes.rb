@@ -2273,7 +2273,7 @@ module Harpnotes
           if cn_options
             cn_style                     = cn_options[:style]
             cn_fontsize_x, cn_fontsize_y = [1, 1]
-            cn_autoposanchor             = cn_options[:autoposanchor]
+            cn_apanchor             = cn_options[:apanchor]
             cn_autopos                   = cn_options[:autopos]
             cn_fixedpos                  = cn_options[:pos]
             cn_apbase_x, cn_apbase_y     = cn_options[:apbase]
@@ -2281,7 +2281,7 @@ module Harpnotes
           if bn_options
             bn_style                     = bn_options[:style]
             bn_fontsize_x, bn_fontsize_y = [2.7, 2.7]
-            bn_autoposanchor             = bn_options[:autoposanchor]
+            bn_apanchor             = bn_options[:apanchor]
             bn_autopos                   = bn_options[:autopos]
             bn_fixedpos                  = bn_options[:pos]
             bn_apbase_x, bn_apbase_y     = bn_options[:apbase]
@@ -2312,11 +2312,11 @@ module Harpnotes
               cn_align_key = "#{cn_base_key}.align"
               count_note   = playable.count_note || ""
 
-              cn_dsize_y  = (:center == cn_autoposanchor) ? 0 : dsize_y # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
+              cn_dsize_y  = (:center == cn_apanchor) ? 0 : dsize_y # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
 
               # read countnote-configuration from extract
               cn_offset   = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
-              cn_position = @print_options_raw[cn_align_key] if @print_options_keys.include? cn_align_key
+              cn_position = @print_options_raw[cn_align_key] if (@print_options_keys.include? cn_align_key) and (@print_options_raw[cn_align_key] != :auto)
 
               unless cn_offset
                 if cn_autopos == true
@@ -2367,10 +2367,11 @@ module Harpnotes
               bn_conf_key  = "extract.#{print_variant_nr}.#{bn_pos_key}"
               barnumber    = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
 
-              bn_dsize_y  = (:center == bn_autoposanchor) ? 0 : dsize_y
+              bn_dsize_y  = (:center == bn_apanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
               bn_offset   = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
-              bn_position = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key
+              bn_position = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
+
 
               unless bn_offset
                 if bn_autopos == true

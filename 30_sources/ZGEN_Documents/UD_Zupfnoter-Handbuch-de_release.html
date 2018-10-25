@@ -1689,7 +1689,8 @@ GAB</code></pre>
 <ol style="list-style-type: decimal">
 <li><p>Taktnummern stehen am Anfang der Note in Spielrichtung (also oben bei spiel von oben nach unten)</p></li>
 <li><p>Z&#228;hlmarken stehen am Ende der Noten in Spielrichtung (also unten bei Spiel von oben nach unten)</p></li>
-<li><p>die horziontale Position errechnet sich aus dem Verlauf der Flussinien</p></li>
+<li><p>die horziontale Position errechnet sich aus dem Verlauf der Flussinien. Man kann aber &#252;ber das Kontextmen&#252; f&#252;r jede Taktnummer / Z&#228;hlmarke einstellen, ob sie links oder rechts von der Note platziert wird.</p></li>
+<li><p>Man kann einstellen, ob die Taktnummben / Z&#228;hlmarken bezogen auf die Notenmitte oder den Notenrand positioniert werden (Kapitel &#160;<a href="#extract.0.barnumbers.apbase"><code>extract.0.barnumbers.apbase</code></a>)</p></li>
 <li><p>Taktnummern k&#246;nnen &#252;ber die Konfiguration (Kapitel &#160;<a href="#extract.0.barnumbers.apbase"><code>extract.0.barnumbers.apbase</code></a>) n&#228;her an Noten bzw. weiter von der Note verschoben werden.</p></li>
 <li><p>Z&#228;hlmarken k&#246;nnen &#252;ber die Konfiguration (Kapitel &#160;<a href="#extract.0.countnotes.apbase"><code>extract.0.countnotes.apbase</code></a>) n&#228;her an Noten bzw. weiter von der Note verschoben werden.</p></li>
 </ol>
@@ -1702,7 +1703,7 @@ GAB</code></pre>
 <ol style="list-style-type: decimal">
 <li>Situation feststellen - dazu selektiert man im Eingabefenster die Note, die rot untertrichen ist.</li>
 <li>In der Unterlegnotenvorschau wirde die betroffene Note rot hervorgehoben.</li>
-<li>Dann sieht man auch schon die Kollision. Diese kann man dann durch Verschieben von einer der beteiligten Beschriftungen mit der Maus bereinigen.</li>
+<li>Dann sieht man auch schon die Kollision. Zun&#228;chst sollte man versuchen, &#252;ber das Kontextmen&#252; die Beschreiftung auf die andere Seite der Note zu schieben. Dann kann man dann durch Verschieben von einer der beteiligten Beschriftungen mit der Maus bereinigen.</li>
 </ol>
 <blockquote>
 <p><strong>Hinweis:</strong> Man kann zun&#228;chst versuchen die Basis f&#252;r die Positionierung von Taktnummern / Z&#228;hlmarken zu ver&#228;ndern. Manchmal l&#228;sst sich dadurch die Anzahl der Warnungen zu reduzieren (siehe Kapitel&#160; <a href="#barnumberautopos">Positionierung von Taktnummern und Z&#228;hlmarken optimieren</a>)</p>
@@ -2062,15 +2063,19 @@ maintain the keys to be shown here in conf_doc_source.rb
     }
       </code></pre>
 <h2 id="extract.0.barnumbers.apbase"><span class="header-section-number">8.13</span> <code>extract.0.barnumbers.apbase</code> - autom. pos. Basis</h2>
-<p>Hier kannst du die Grundlage f&#252;r die automatische Postiionierung von Taktnummern einstellen.</p>
-<p>Taktnummern werden am Anfang (also am oberen Rand wenn von oben nach unten gespielt wird) der Note positioniert. Z&#228;hlmarken am Ende der Noten poitioniert.</p>
+<p>Hier kannst du die Grundlage f&#252;r die automatische Positionierung von Taktnummern einstellen.</p>
 <p>Es werden zwei Werte erwartet: horizontal, vertikal.</p>
 <ul>
-<li><p>Positive Werte schieben die Taktnummer bzw. Z&#228;hlmarke <strong>weiter</strong> von der Note weg.</p></li>
-<li><p>Negative Werte schieben Taktnummer bzw. Z&#228;hlmarke <strong>n&#228;her</strong> an die Note heran.</p></li>
+<li>Positive Werte schieben die Taktnummer <strong>weiter</strong> von der Note weg.</li>
+<li>Negative Werte schieben die Taktnummer <strong>n&#228;her</strong> an die Note heran.</li>
 </ul>
 <blockquote>
-<p><strong>Hinweis;</strong> Der Verlauf der Melodielinie entscheidet, auf welcher Seite der Note Taktnummer angebracht wird.</p>
+<p><strong>Hinweise</strong>: Die horizontale Verankerung der Taktnummer wird automatisch so berechet, dass die Taktnummer gegen&#252;ber der ausgehenden Flusslinie steht.</p>
+<p>Eine bew&#228;hrte Eingabe ist:</p>
+<ul>
+<li><code>center</code>: <code>1,0</code></li>
+<li><code>box</code>: <code>1,-1</code></li>
+</ul>
 </blockquote>
 <pre><code>    &quot;apbase&quot;: [1, 1]
       </code></pre>
@@ -2107,15 +2112,19 @@ maintain the keys to be shown here in conf_doc_source.rb
     }
       </code></pre>
 <h2 id="extract.0.countnotes.apbase"><span class="header-section-number">8.20</span> <code>extract.0.countnotes.apbase</code> - autom. pos. Basis</h2>
-<p>Hier kannst du die Grundlage f&#252;r die automatische Postiionierung von Z&#228;hlmarken einstellen.</p>
-<p>Z&#228;hlmarken werden am Ende (also am unteren Rand wenn von oben nach unten gespielt wird) der Note positioniert. Z&#228;hlmarken am Ende der Noten poitioniert.</p>
+<p>Hier kannst du die Grundlage f&#252;r die automatische Positionierung von Z&#228;hlmarken einstellen.</p>
 <p>Es werden zwei Werte erwartet: horizontal, vertikal.</p>
 <ul>
-<li><p>Positive Werte schieben die Taktnummer bzw. Z&#228;hlmarke <strong>weiter</strong> von der Note weg.</p></li>
-<li><p>Negative Werte schieben Taktnummer bzw. Z&#228;hlmarke <strong>n&#228;her</strong> an die Note heran.</p></li>
+<li>Positive Werte schieben die Z&#228;hlmarke <strong>weiter</strong> von der Note weg.</li>
+<li>Negative Werte schieben die Z&#228;hlmarke <strong>n&#228;her</strong> an die Note heran.</li>
 </ul>
 <blockquote>
-<p><strong>Hinweis;</strong> Der Verlauf der Melodielinie entscheidet, auf welcher Seite der Note Z&#228;lmarke angebracht wird.</p>
+<p><strong>Hinweise</strong>: Die horizontale Verankerung der Z&#228;hlmarke wird automatisch so berechet, dass die Z&#228;hlmarke gegen&#252;ber der eingehenden Flusslinie steht.</p>
+<p>Eine bew&#228;hrte Eingabe ist:</p>
+<ul>
+<li><code>center</code>: <code>1,0</code></li>
+<li><code>box</code>: <code>1,-0.5</code></li>
+</ul>
 </blockquote>
 <pre><code>    &quot;apbase&quot;: [1, -0.5]
       </code></pre>

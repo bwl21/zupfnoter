@@ -1,8 +1,7 @@
 $resources
-<span id=
-abc Tutorial concise
 abc Tutorial
-Add Config
+align
+barnumber
 barnumbers.full
 compact
 configure positioning of rests

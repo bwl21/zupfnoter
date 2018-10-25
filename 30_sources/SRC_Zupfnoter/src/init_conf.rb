@@ -81,10 +81,25 @@ module InitConf
 
          # this is used to populate a QuickSettings menu
          # in configuration editor
-         # needs to be handled in contrller_command_definiitions for
+         # needs to be handled in controller_command_definiitions for
+         # commands.add_command(:editconf)
          # commands.add_command(:addconf) do |command|
          presets: {
-             stdextract: {}, # this is to get a translation, the values
+             barnumbers_countnotes: {
+                 'anchor_at_box'=>     {
+                     barnumbers: {apanchor: "box",
+                                  apbase:   [1, 1]},
+                     countnotes: {apanchor: "box",
+                                  apbase:   [1, -0.5]}
+                 },
+                 "anchor_at_center" => {
+                     barnumbers: {apanchor: "center",
+                                  apbase:   [1, 0]},
+                     countnotes: {apanchor: "center",
+                                  apbase:   [1, 0]}
+                 }
+             },
+             stdextract:            {}, # this is to get a translation, the values
              layout:     {
                  notes_small:            {
                      LINE_MEDIUM: 0.2,
@@ -292,7 +307,7 @@ module InitConf
                  T02_copyright_music:      {
                      value: {
                          pos:   [340, 251],
-                         text:  lambda{("© #{Time.now.year}\n#{I18n.t("Private copy")}")},
+                         text:  lambda { ("© #{Time.now.year}\n#{I18n.t("Private copy")}") },
                          style: "small"
                      }},
                  T03_copyright_harpnotes:  {
@@ -304,7 +319,7 @@ module InitConf
                  T04_to_order:             {
                      value: {
                          pos:   [340, 242],
-                         text:  lambda{I18n.t("provided by\n")},
+                         text:  lambda { I18n.t("provided by\n") },
                          style: "small"
                      }},
                  T05_printed_extracts:     {
@@ -322,7 +337,7 @@ module InitConf
                  T99_do_not_copy:          {
                      value: {
                          pos:   [380, 284],
-                         text:  lambda{I18n.t("Please do not copy")},
+                         text:  lambda { I18n.t("Please do not copy") },
                          style: "small_bold"
                      }},
                  T01_T99:                  {
@@ -417,11 +432,12 @@ module InitConf
                      voices:  [],
                      pos:     [6, -4],
                      autopos: true,
-                     apbase:  [1, 1],
+                     apanchor: 'center',
+                     apbase:  [1, 0],
                      style:   "small_bold",
                      prefix:  ""
                  },
-                 countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], style: "smaller"},
+                 countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, 0], apanchor: 'center', style: "smaller"},
                  stringnames: {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
