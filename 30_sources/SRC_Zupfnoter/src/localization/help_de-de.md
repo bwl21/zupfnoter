@@ -1,3 +1,15 @@
+## align
+
+Hier kannst du die Ausrichtung des Textes bezogen auf den Bezugspunkt,
+(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
+Ausrichtung automatisch errechnet
+
+-   `l`: der Text steht links vom Bezugspunkt (und ist daher
+    rechtsbündig)
+-   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+    linksbündig)
+-   `auto`: die Ausrichtung wird automatisch errechnet
+
 ## annotations
 
 Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
@@ -115,25 +127,43 @@ bei manchen Stücken eine sinnvollere Einstellugn sein.
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
 
-## barnumbers.apbase
+## bar
 
-Hier kannst du die Grundlage für die automatische Postiionierung von
+# barnumbers.apanchor
+
+Hier kannst du die vertikale Verankerung der Taktnummer an der Note
+einstellen.
+
+-   `center`: die Taktnummer wird an der Mitte der Note verankert
+-   `box`: die Taktnummer wird am unteren Rand der Note verankert
+
+> **Hinweise**:
+>
+> -   Dieser Parameter wirkt nur bei automatischer Positionierung der
+>     Taktnummern.
+>
+> -   Die horizontale Verankerung der Taktnummer wird automatisch so
+>     berechet, dass die Taktnummer gegenüber der eingehenden Flusslinie
+>     steht.
+>
+> ## barnumbers.apbase
+
+Hier kannst du die Grundlage für die automatische Positionierung von
 Taktnummern einstellen.
-
-Taktnummern werden am Anfang (also am oberen Rand wenn von oben nach
-unten gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
-poitioniert.
 
 Es werden zwei Werte erwartet: horizontal, vertikal.
 
--   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
-    der Note weg.
+-   Positive Werte schieben die Taktnummer **weiter** von der Note weg.
+-   Negative Werte schieben die Taktnummer **näher** an die Note heran.
 
--   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
-    Note heran.
-
-> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
-> Seite der Note Taktnummer angebracht wird.
+> **Hinweise**: Die horizontale Verankerung der Taktnummer wird
+> automatisch so berechet, dass die Taktnummer gegenüber der ausgehenden
+> Flusslinie steht.
+>
+> Eine bewährte Eingabe ist:
+>
+> -   `center`: `1,0`
+> -   `box`: `1,-1`
 
 ## extract.0.barnumbers
 
@@ -153,25 +183,41 @@ Unterlegnotenblatt ausgegeben werden sollen.
 Zählmarken sind hilfreich, um sich ein Stück erarbeiten. Sie geben
 Hilfestellung beim einhalten der vorgegebenen Notenweret.
 
-## countnotes.apbase
+## countnotes.apanchor
 
-Hier kannst du die Grundlage für die automatische Postiionierung von
+Hier kannst du die vertikale Verankerung der Zählmarke an der Note
+einstellen.
+
+-   `center`: die Zählmarke wird an der Mitte der Note verankert
+-   `box`: die Zählmarke wird am unteren Rand der Note verankert
+
+> **Hinweise**:
+>
+> -   Dieser Parameter wirkt nur bei automatischer Positionierung der
+>     Zählmarken.
+>
+> -   Die horizontale Verankerung der Zählmarke wird automatisch so
+>     berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
+>     steht.
+>
+> ## countnotes.apbase
+
+Hier kannst du die Grundlage für die automatische Positionierung von
 Zählmarken einstellen.
-
-Zählmarken werden am Ende (also am unteren Rand wenn von oben nach unten
-gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
-poitioniert.
 
 Es werden zwei Werte erwartet: horizontal, vertikal.
 
--   Positive Werte schieben die Taktnummer bzw. Zählmarke **weiter** von
-    der Note weg.
+-   Positive Werte schieben die Zählmarke **weiter** von der Note weg.
+-   Negative Werte schieben die Zählmarke **näher** an die Note heran.
 
--   Negative Werte schieben Taktnummer bzw. Zählmarke **näher** an die
-    Note heran.
-
-> **Hinweis;** Der Verlauf der Melodielinie entscheidet, auf welcher
-> Seite der Note Zälmarke angebracht wird.
+> **Hinweise**: Die horizontale Verankerung der Zählmarke wird
+> automatisch so berechet, dass die Zählmarke gegenüber der eingehenden
+> Flusslinie steht.
+>
+> Eine bewährte Eingabe ist:
+>
+> -   `center`: `1,0`
+> -   `box`: `1,-0.5`
 
 ## extract.0.countnotes.voices
 

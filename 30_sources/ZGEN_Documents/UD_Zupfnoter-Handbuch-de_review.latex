@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.2
+Version V\_1.9.2-5-g8116ca0
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3899,7 +3899,14 @@ geschieht wie folgt:
   Zählmarken stehen am Ende der Noten in Spielrichtung (also unten bei
   Spiel von oben nach unten)
 \item
-  die horziontale Position errechnet sich aus dem Verlauf der Flussinien
+  die horziontale Position errechnet sich aus dem Verlauf der
+  Flussinien. Man kann aber über das Kontextmenü für jede Taktnummer /
+  Zählmarke einstellen, ob sie links oder rechts von der Note platziert
+  wird.
+\item
+  Man kann einstellen, ob die Taktnummben / Zählmarken bezogen auf die
+  Notenmitte oder den Notenrand positioniert werden (Kapitel
+  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}})
 \item
   Taktnummern können über die Konfiguration (Kapitel
   \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}})
@@ -3936,9 +3943,10 @@ folgende Schritte:
   In der Unterlegnotenvorschau wirde die betroffene Note rot
   hervorgehoben.
 \item
-  Dann sieht man auch schon die Kollision. Diese kann man dann durch
-  Verschieben von einer der beteiligten Beschriftungen mit der Maus
-  bereinigen.
+  Dann sieht man auch schon die Kollision. Zunächst sollte man
+  versuchen, über das Kontextmenü die Beschreiftung auf die andere Seite
+  der Note zu schieben. Dann kann man dann durch Verschieben von einer
+  der beteiligten Beschriftungen mit der Maus bereinigen.
 \end{enumerate}
 
 \begin{quote}
@@ -4691,27 +4699,35 @@ ausgegeben werden sollen.
 - autom. pos.
 Basis}{extract.0.barnumbers.apbase - autom. pos. Basis}}\label{extract.0.barnumbers.apbase}}
 
-Hier kannst du die Grundlage für die automatische Postiionierung von
+Hier kannst du die Grundlage für die automatische Positionierung von
 Taktnummern einstellen.
-
-Taktnummern werden am Anfang (also am oberen Rand wenn von oben nach
-unten gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
-poitioniert.
 
 Es werden zwei Werte erwartet: horizontal, vertikal.
 
 \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  Positive Werte schieben die Taktnummer bzw. Zählmarke \textbf{weiter}
-  von der Note weg.
+  Positive Werte schieben die Taktnummer \textbf{weiter} von der Note
+  weg.
 \item
-  Negative Werte schieben Taktnummer bzw. Zählmarke \textbf{näher} an
-  die Note heran.
+  Negative Werte schieben die Taktnummer \textbf{näher} an die Note
+  heran.
 \end{itemize}
 
 \begin{quote}
-\textbf{Hinweis;} Der Verlauf der Melodielinie entscheidet, auf welcher
-Seite der Note Taktnummer angebracht wird.
+\textbf{Hinweise}: Die horizontale Verankerung der Taktnummer wird
+automatisch so berechet, dass die Taktnummer gegenüber der ausgehenden
+Flusslinie steht.
+
+Eine bewährte Eingabe ist:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: \texttt{1,0}
+\item
+  \texttt{box}: \texttt{1,-1}
+\end{itemize}
 \end{quote}
 
 \begin{verbatim}
@@ -4804,27 +4820,35 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 - autom. pos.
 Basis}{extract.0.countnotes.apbase - autom. pos. Basis}}\label{extract.0.countnotes.apbase}}
 
-Hier kannst du die Grundlage für die automatische Postiionierung von
+Hier kannst du die Grundlage für die automatische Positionierung von
 Zählmarken einstellen.
-
-Zählmarken werden am Ende (also am unteren Rand wenn von oben nach unten
-gespielt wird) der Note positioniert. Zählmarken am Ende der Noten
-poitioniert.
 
 Es werden zwei Werte erwartet: horizontal, vertikal.
 
 \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  Positive Werte schieben die Taktnummer bzw. Zählmarke \textbf{weiter}
-  von der Note weg.
+  Positive Werte schieben die Zählmarke \textbf{weiter} von der Note
+  weg.
 \item
-  Negative Werte schieben Taktnummer bzw. Zählmarke \textbf{näher} an
-  die Note heran.
+  Negative Werte schieben die Zählmarke \textbf{näher} an die Note
+  heran.
 \end{itemize}
 
 \begin{quote}
-\textbf{Hinweis;} Der Verlauf der Melodielinie entscheidet, auf welcher
-Seite der Note Zälmarke angebracht wird.
+\textbf{Hinweise}: Die horizontale Verankerung der Zählmarke wird
+automatisch so berechet, dass die Zählmarke gegenüber der eingehenden
+Flusslinie steht.
+
+Eine bewährte Eingabe ist:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: \texttt{1,0}
+\item
+  \texttt{box}: \texttt{1,-0.5}
+\end{itemize}
 \end{quote}
 
 \begin{verbatim}

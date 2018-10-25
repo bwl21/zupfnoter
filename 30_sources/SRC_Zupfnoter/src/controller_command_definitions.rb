@@ -476,6 +476,11 @@ class Controller
 
         ## here we compute the vallues for the quicksettings (prsets)
         all_value = {}
+
+        $conf['presets.barnumbers_countnotes'].each do |key, preset_value|
+          values["preset.barnumbers_countnotes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.barnumbers_countnotes.#{key}"], method: :preset} }
+        end
+
         $conf['presets.notes'].each do |key, preset_value|
           entry  = $conf["presets.notes.#{key}"]
           to_key = entry[:key] || key
@@ -630,9 +635,10 @@ class Controller
                                     quicksetting_commands: ['stdextract'],
                                     scope:                 :global
             },
-            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.autoposanchor', 'barnumbers.apbase', 'barnumbers.style',
-                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.autoposanchor', 'countnotes.apbase', 'countnotes.style',
-                                                               "tuplets.text", "tuplets.style"])},
+            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apanchor', 'barnumbers.apbase', 'barnumbers.style',
+                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apanchor', 'countnotes.apbase', 'countnotes.style',
+                                                               "tuplets.text", "tuplets.style"]),
+                                    quicksetting_commands: _get_quicksetting_commands('barnumbers_countnotes')},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
             notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
                                     quicksetting_commands: _get_quicksetting_commands('notes')},

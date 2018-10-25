@@ -2161,13 +2161,19 @@ geschieht wie folgt:
     Spiel von oben nach unten)
 
 3.  die horziontale Position errechnet sich aus dem Verlauf der
-    Flussinien
+    Flussinien. Man kann aber über das Kontextmenü für jede Taktnummer /
+    Zählmarke einstellen, ob sie links oder rechts von der Note
+    platziert wird.
 
-4.  Taktnummern können über die Konfiguration (Kapitel
+4.  Man kann einstellen, ob die Taktnummben / Zählmarken bezogen auf die
+    Notenmitte oder den Notenrand positioniert werden (Kapitel
+    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase))
+
+5.  Taktnummern können über die Konfiguration (Kapitel
     \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase))
     näher an Noten bzw. weiter von der Note verschoben werden.
 
-5.  Zählmarken können über die Konfiguration (Kapitel
+6.  Zählmarken können über die Konfiguration (Kapitel
     \ref{extract.0.countnotes.apbase} [`extract.0.countnotes.apbase`](#extract.0.countnotes.apbase))
     näher an Noten bzw. weiter von der Note verschoben werden.
 
@@ -2188,9 +2194,10 @@ folgende Schritte:
     Note, die rot untertrichen ist.
 2.  In der Unterlegnotenvorschau wirde die betroffene Note rot
     hervorgehoben.
-3.  Dann sieht man auch schon die Kollision. Diese kann man dann durch
-    Verschieben von einer der beteiligten Beschriftungen mit der Maus
-    bereinigen.
+3.  Dann sieht man auch schon die Kollision. Zunächst sollte man
+    versuchen, über das Kontextmenü die Beschreiftung auf die andere
+    Seite der Note zu schieben. Dann kann man dann durch Verschieben von
+    einer der beteiligten Beschriftungen mit der Maus bereinigen.
 
 > **Hinweis:** Man kann zunächst versuchen die Basis für die
 > Positionierung von Taktnummern / Zählmarken zu verändern. Manchmal
