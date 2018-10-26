@@ -161,7 +161,6 @@ module Ajv
                                            :minItems => 2,
                                            :items    => {:type => "number"}},
                     :grid              => {:type => "boolean"},
-                    :jumpline_anchor   => {:"$ref" => "#/definitions/pos"},
                     :color             => {:type       => 'object',
                                            :properties => {:color_default  => {:type => 'string'},
                                                            :color_variant1 => {:type => 'string'},
