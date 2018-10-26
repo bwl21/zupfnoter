@@ -116,7 +116,7 @@ task :build => [:buildConfigDoc, :updateLocales] do
 
   Dir.glob "../public/*.scss" do |f|
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
-    puts sh cmd
+    puts sh cmd  # todo: improve error messages
   end
 end
 
