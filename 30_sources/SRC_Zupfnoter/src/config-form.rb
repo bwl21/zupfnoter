@@ -679,7 +679,6 @@ class ConfstackEditor
         {
             id:      'barnumbers_countnotes',
             text:    'barnumbers and countnotes',
-            icon:    'fa fa-music',
             icon:    'fa fa-list-ol',
             tooltip: "edit barnumbers or countnotes"
         },
