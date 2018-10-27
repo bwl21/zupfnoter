@@ -133,11 +133,13 @@ module Harpnotes
       def set_speed(speed)
         @speed = speed.clamp(0.25, 4)
         %x{#{@abcplay}.set_speed(#{@speed})}
+        nil # no %x at the end of the method
       end
 
       def stop()
         %x{#{@abcplay}.stop()} if @isplaying
         @isplaying = false
+        nil # no %x at the end of the method
       end
 
       def unhighlight_all()

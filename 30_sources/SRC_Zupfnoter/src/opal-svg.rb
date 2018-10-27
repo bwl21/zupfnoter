@@ -123,6 +123,7 @@ module ZnSvg
 
           me[0].oncontextmenu = function(){ return #{@draggable_rightclick_handler}({element: svg_element, conf_key: #{conf_key}, more_conf_keys: #{more_conf_keys}});};
       }
+      nil
     end
 
     # mkake the svg_emeent with svg_element_id draggable
@@ -163,6 +164,7 @@ module ZnSvg
              #{@draggable_dragend_handler.call({element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`).map { |i| i.round(2) }}) };
           })
       }
+      nil
     end
 
 
