@@ -11,10 +11,11 @@ module W2ui
     end
 
     def open2()
-       %x{openPopup(#{@the_form})}
+      %x{openPopup(#{@the_form})}
+      nil
     end
-    def open()
 
+    def open()
       %x{
       w2popup.open( {
           title: #{@theForm}.text,
@@ -40,7 +41,7 @@ module W2ui
           }
       })
      }
-
+      nil
     end
 
   end
