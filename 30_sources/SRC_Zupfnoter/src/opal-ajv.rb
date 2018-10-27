@@ -18,6 +18,7 @@ module Ajv
       %x{
       #{@root}.addSchema(#{schema.to_n}, #{schemaname})
       }
+      nil
     end
 
     def validate(schemaname, data)

@@ -137,6 +137,7 @@ sourcefiles.each do |sourcefile|
        var buffer = encoding.convert(#{content}, 'Latin-1')
        fs.writeFileSync(#{outputname}, buffer)
     }
+    nil
   end
 
   File.write("#{targetfolder}/#{File.basename(sourcefile)}.err.log", $log.get_errors.join("\n"))

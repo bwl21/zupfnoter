@@ -633,6 +633,7 @@ class ConfstackEditor
     end
 
     %x{$('.znconfig-button').click(#{handler})}
+    nil # no %x at the end of the method
   end
 
 
