@@ -1524,12 +1524,14 @@ module Harpnotes
         unless $conf.get('layout.bottomup')
           beat_layout = beat_layout || Proc.new do |beat|
             # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-            %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
+            # assign to sanitizex %x string at end of function
+            r = %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
           end
         else
           beat_layout = beat_layout || Proc.new do |beat|
             # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-            %x{#{@y_size} - #{beat} * #{@beat_spacing}}
+            # assign to sanitizex %x string at end of function
+            r = %x{#{@y_size} - #{beat} * #{@beat_spacing}}
           end
         end
 
