@@ -363,6 +363,7 @@ module Harpnotes
     # œparam newtext  the new tet to be entered
     def replace_text(oldtext, newtext)
       %x{self.editor.replace(#{newtext}, {needle: #{oldtext}}) }
+      nil
     end
 
     # @param [Array] annotations  array of {row: 1, text: "", type: "error" | "warning" | "info"}
@@ -376,6 +377,7 @@ module Harpnotes
       end
       set_markers(annotations)
       %x{#{@editor}.getSession().setAnnotations(#{editor_annotations.to_n})}
+      nil
     end
 
 
@@ -696,7 +698,8 @@ module Harpnotes
     end
 
     def _get_abc_from_editor
-      %x{self.editor.getSession().getValue()}
+      %x{return self.editor.getSession().getValue()}
+      nil
     end
 
     def _set_config_json(json, desc = "no desc", handleundo = true)
