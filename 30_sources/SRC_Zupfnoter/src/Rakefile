@@ -236,6 +236,8 @@ task :build_cli do #=> [:build] do
   # ajv
 
 
+  sh 'npm install'
+
   File.open(ZUPFNOTER_CLI_JS, "w+") do |out|
     #   out << env["application"].to_s
     #   out << Opal::Processor.load_asset_code(env, 'application')
