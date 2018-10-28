@@ -26,6 +26,7 @@ class JsPDF
     # area. Don't relly know why it works, but we should take care
     #
     @native_jspdf = `new jsPDF(orientation, unit, format)`
+    @native_js_pdf
   end
 
   def line(from, to)
