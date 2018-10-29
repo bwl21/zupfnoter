@@ -432,12 +432,12 @@ module InitConf
                      voices:  [],
                      pos:     [6, -4],
                      autopos: true,
-                     apanchor: 'center',
-                     apbase:  [1, 0],
+                     apanchor: 'box',
+                     apbase:  [1, 1],
                      style:   "small_bold",
                      prefix:  ""
                  },
-                 countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, 0], apanchor: 'center', style: "smaller"},
+                 countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], apanchor: 'box', style: "smaller"},
                  stringnames: {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
@@ -530,7 +530,7 @@ module InitConf
                  smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
              },
 
-             MM_PER_POINT:   0.3,
+             MM_PER_POINT:   0.3,  # todo: got bny try/error - should be refactored and ba 0.358
 
              # This is a lookup table to map durations to giraphical representation
              DURATION_TO_STYLE: {
