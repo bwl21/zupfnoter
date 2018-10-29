@@ -403,7 +403,6 @@ module Harpnotes
     def draw_annotation(root)
 
       style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
-      mm_per_point = $conf.get('layout.MM_PER_POINT')
 
       # activate to debug the positioning of text
       #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
