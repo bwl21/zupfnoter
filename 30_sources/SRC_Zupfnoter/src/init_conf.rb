@@ -86,7 +86,7 @@ module InitConf
          # commands.add_command(:addconf) do |command|
          presets: {
              barnumbers_countnotes: {
-                 'anchor_at_box'=>     {
+                 'anchor_at_box'    => {
                      barnumbers: {apanchor: "box",
                                   apbase:   [1, 1]},
                      countnotes: {apanchor: "box",
@@ -94,7 +94,7 @@ module InitConf
                  },
                  "anchor_at_center" => {
                      barnumbers: {apanchor: "center",
-                                  apbase:   [1, 0]},
+                                  apbase:   [1, 0.3]},
                      countnotes: {apanchor: "center",
                                   apbase:   [1, 0]}
                  }
@@ -429,13 +429,13 @@ module InitConf
                  notes:       {},
                  tuplets:     {text: "{{tuplet}}"},
                  barnumbers:  {
-                     voices:  [],
-                     pos:     [6, -4],
-                     autopos: true,
+                     voices:   [],
+                     pos:      [6, -4],
+                     autopos:  true,
                      apanchor: 'box',
-                     apbase:  [1, 1],
-                     style:   "small_bold",
-                     prefix:  ""
+                     apbase:   [1, 1],
+                     style:    "small_bold",
+                     prefix:   ""
                  },
                  countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], apanchor: 'box', style: "smaller"},
                  stringnames: {
@@ -530,7 +530,7 @@ module InitConf
                  smaller:      {text_color: [0, 0, 0], font_size: 6, font_style: "normal"}
              },
 
-             MM_PER_POINT:   0.3,  # todo: got bny try/error - should be refactored and ba 0.358
+             MM_PER_POINT:   0.3, # todo: got bny try/error - should be refactored and ba 0.358
 
              # This is a lookup table to map durations to giraphical representation
              DURATION_TO_STYLE: {
