@@ -16,10 +16,10 @@ module ABC2SVG
   #
   class Abc2Svg
 
-    attr_accessor :abcplay  # this is needed to produce player_model_abc
+    attr_accessor :abcplay # this is needed to produce player_model_abc
 
-    def initialize(div, options={mode: :svg})
-      @on_select           = lambda {|element|}
+    def initialize(div, options = {mode: :svg})
+      @on_select           = lambda { |element|}
       @printer             = div
       @svgbuf              = []
       @abc_source          = ''
@@ -27,7 +27,7 @@ module ABC2SVG
       @abc_model           = nil # the model being transformed to harpnotes
       @player_model        = [] # the model to play the entire stuff
       @object_map          = {} # mapping objects to their Id
-      @abcplay              = nil; #used to extract the player_model
+      @abcplay             = nil; #used to extract the player_model
 
       @user = {img_out:     nil,
                errmsg:      nil,
@@ -41,7 +41,7 @@ module ABC2SVG
 
       set_callback(:errmsg) do |message, line_number, column_number|
         if line_number
-          $log.error(message, [line_number+1, column_number+1])
+          $log.error(message, [line_number + 1, column_number + 1])
         else
           $log.error(message)
         end
@@ -115,13 +115,13 @@ I:stretchlast 1
 
     def range_unhighlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
-        foo     = Element.find("##{id}")
+        foo = Element.find("##{id}")
         foo.remove_class('highlight')
       end
     end
 
     def unhighlight_all()
-      Element.find("##{@printer.id} .highlight").remove_class('highlight')# .attr('class', 'abcref')
+      Element.find("##{@printer.id} .highlight").remove_class('highlight') # .attr('class', 'abcref')
     end
 
 
@@ -132,11 +132,11 @@ I:stretchlast 1
 
     def strip_js(abc_code)
       r = abc_code.gsub(/(I:|%%)(beginjs|endjs)/, "% removed ")
-      $log.error(I18n.t("CAUTION: your abc-code is vulnerable !!! removed beginjs / endjs"), [1,1]) unless abc_code == r
+      $log.error(I18n.t("CAUTION: your abc-code is vulnerable !!! removed beginjs / endjs"), [1, 1]) unless abc_code == r
       r
     end
 
-    def draw(abc_code, checksum="")
+    def compute_tune_preview(abc_code, checksum = "")
       # note that the blank line is requred make the text
       # not appaear correct on the tune sheet
       abc_text_insert = %Q{
@@ -152,8 +152,18 @@ I:stretchlast 1
       #{@root}.tosvg(#{"abc"}, #{@abc_source + abc_text_insert});
       }
 
-      @printer.html(get_svg())
-      _set_on_select();
+      {svg: get_svg(), element_to_position: @element_to_position}
+    end
+
+    def draw(abc_code, checksum = "")
+      svg_and_positions = compute_tune_preview(abc_code, checksum = "")
+      set_svg(svg_and_positions)
+    end
+
+    def set_svg(svg_and_positions)
+      @element_to_position = svg_and_positions[:element_to_position]
+      @printer.html(svg_and_positions[:svg])
+      _set_on_select()
       nil
     end
 
@@ -204,8 +214,9 @@ I:stretchlast 1
     def get_elements_by_range(from, to)
       range  = [from, to].sort # get sorted interval for select range [lower, upper]
       result = []
-      @element_to_position.each {|k, value|
-        noterange = [:startChar, :endChar].map {|c| value[c]}.sort # [get sorted interval for note [lower, upper]]
+      @element_to_position.each { |k, value|
+
+        noterange = [:startChar, :endChar].map { |c| value[c] }.sort # [get sorted interval for note [lower, upper]]
 
         # check if range and noterange overlap each other
         if (range.first - noterange.last) * (noterange.first - range.last) > 0
@@ -248,7 +259,7 @@ I:stretchlast 1
     # by abc2svg in case of errors
     def _get_charpos(abc_source, line, column)
       lines  = @abc_source.split("\n")
-      result = lines[0 .. line].inject(0) {|r, v| r += v.length}
+      result = lines[0 .. line].inject(0) { |r, v| r += v.length }
       result + column
     end
 
