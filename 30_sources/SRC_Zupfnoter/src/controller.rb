@@ -98,6 +98,14 @@ class Controller
 
   def initialize
 
+    @worker = %x{new Worker('assets/znworker.rb')}
+    %x{#{@worker}.postMessage("w"); // Start the worker.}
+
+    %x{ #{@worker}.addEventListener('message', function(e) {
+      debugger;
+      console.log('Worker said: ', e.data);
+    }, false);
+    }
 
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',

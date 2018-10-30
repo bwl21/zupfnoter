@@ -92,6 +92,18 @@ task :build => [:buildConfigDoc, :updateLocales] do
     out.puts(Opal::Builder::build("application").to_s)
   end
 
+
+  ZNWORKER_JS = "../assets/znworker.js"
+  File.open("../assets/znworker.js", "w+") do |out|
+    #   out << env["application"].to_s
+    #   out << Opal::Processor.load_asset_code(env, 'application')
+    out.puts(Opal::Builder::build("znworker").to_s)
+  end
+
+  cmd = "browserify --node --dg false #{ZNWORKER_JS} -o #{ZNWORKER_JS}"
+  sh cmd
+
+
   Dir.glob "../public/*.scss" do |f|
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
     puts sh cmd
