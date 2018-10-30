@@ -163,19 +163,21 @@ Auszug 1 usw.
         "extract": {
           "0" : {
             "barnumbers"   : {
-              "apbase"  : [1, 1],
-              "autopos" : true,
-              "pos"     : [6, -4],
-              "prefix"  : "",
-              "style"   : "small_bold",
-              "voices"  : []
+              "apanchor" : "box",
+              "apbase"   : [1, 1],
+              "autopos"  : true,
+              "pos"      : [6, -4],
+              "prefix"   : "",
+              "style"    : "small_bold",
+              "voices"   : []
             },
             "countnotes"   : {
-              "apbase"  : [1, -0.5],
-              "autopos" : true,
-              "pos"     : [3, -2],
-              "style"   : "smaller",
-              "voices"  : []
+              "apanchor" : "box",
+              "apbase"   : [1, -0.5],
+              "autopos"  : true,
+              "pos"      : [3, -2],
+              "style"    : "smaller",
+              "voices"   : []
             },
             "flowlines"    : [1, 3],
             "images"       : {},
@@ -250,13 +252,21 @@ Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt
 ausgegeben werden sollen.
 
         "barnumbers": {
-          "apbase"  : [1, 1],
-          "autopos" : true,
-          "pos"     : [6, -4],
-          "prefix"  : "",
-          "style"   : "small_bold",
-          "voices"  : []
+          "apanchor" : "box",
+          "apbase"   : [1, 1],
+          "autopos"  : true,
+          "pos"      : [6, -4],
+          "prefix"   : "",
+          "style"    : "small_bold",
+          "voices"   : []
         }
+          
+
+## `extract.0.barnumbers.apanchor` - autom. pos. Anker {#extract.0.barnumbers.apanchor}
+
+TODO: Helptext für extract.0.barnumbers.apanchor einfügen
+
+        "apanchor": "box"
           
 
 ## `extract.0.barnumbers.apbase` - autom. pos. Basis {#extract.0.barnumbers.apbase}
@@ -335,12 +345,33 @@ Zählmarken sind hilfreich, um sich ein Stück erarbeiten. Sie geben
 Hilfestellung beim einhalten der vorgegebenen Notenweret.
 
         "countnotes": {
-          "apbase"  : [1, -0.5],
-          "autopos" : true,
-          "pos"     : [3, -2],
-          "style"   : "smaller",
-          "voices"  : []
+          "apanchor" : "box",
+          "apbase"   : [1, -0.5],
+          "autopos"  : true,
+          "pos"      : [3, -2],
+          "style"    : "smaller",
+          "voices"   : []
         }
+          
+
+## `extract.0.countnotes.apanchor` - autom. pos. Anker {#extract.0.countnotes.apanchor}
+
+Hier kannst du die vertikale Verankerung der Zählmarke an der Note
+einstellen.
+
+-   `center`: die Zählmarke wird an der Mitte der Note verankert
+-   `box`: die Zählmarke wird am unteren Rand der Note verankert
+
+> **Hinweise**:
+>
+> -   Dieser Parameter wirkt nur bei automatischer Positionierung der
+>     Zählmarken.
+>
+> -   Die horizontale Verankerung der Zählmarke wird automatisch so
+>     berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
+>     steht.
+>
+        "apanchor": "box"
           
 
 ## `extract.0.countnotes.apbase` - autom. pos. Basis {#extract.0.countnotes.apbase}

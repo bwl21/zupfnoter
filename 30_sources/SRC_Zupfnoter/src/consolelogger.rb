@@ -95,6 +95,15 @@ class Logger
     @captured_errors
   end
 
+
+  def get_status
+     {annotations: @annotations, captured_errors: @captured_errors}
+  end
+
+  def set_status(status)
+    @annotations = status[:annotations]
+    @captured_errors = status[:captured_errors]
+  end
   # executes the block and outputs n info entry with the duration
   # returns the result of the block
   def benchmark(msg, &block)
