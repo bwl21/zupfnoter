@@ -15,6 +15,7 @@ ZUPFNOTER_CLI_MIN_JS = "zupfnoter-cli.min.js"
 OUTFOLDER            = "../deploy_files"
 LOCALEPATH           = "../public/locale/"
 NINJAEXEC            = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
+INDEXFILE            = "index.html"
 
 GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
 
