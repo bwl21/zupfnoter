@@ -98,6 +98,15 @@ class Controller
 
   def initialize
 
+      x = {cmd: "render_harpnotepreview", abc_code: "hallo"}
+      @worker = %x{new Worker('assets/znworker.rb')}
+      %x{#{@worker}.postMessage(#{x.to_n}); // Start the worker.}
+      %x{#{@worker}.postMessage({cmd: "second"}); }
+
+      %x{ #{@worker}.addEventListener('message', function(e) {
+        console.log('Worker said: ', e.data);
+      }, false);
+      }
 
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',
@@ -606,7 +615,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           # todo: not sure if it is good to pass active_voices via @song_harpnotes
           # todo: refactor better moove that part of the code out here
           @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
-          @harpnote_preview_printer.draw(@song_harpnotes)
+          $log.benchmark("draing preview sheet") {@harpnote_preview_printer.draw(@song_harpnotes)}
           set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
