@@ -16,6 +16,8 @@ OUTFOLDER            = "../deploy_files"
 LOCALEPATH           = "../public/locale/"
 NINJAEXEC            = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
 INDEXFILE            = "index.html"
+ZNWORKER_JS          = "../public/znworker.js"
+
 
 GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
 
@@ -76,6 +78,21 @@ task :updateAbc2svg do
 
 end
 
+desc "Build Worker"
+task :build_worker do
+
+  File.open(ZNWORKER_JS, "w+") do |out|
+    Opal.append_path "."
+    Opal.append_path "../vendor"
+    Opal.use_gem "vector2d"
+
+    compiled_js = Opal::Builder::build("znworker").to_s
+
+    compiled_js = compiled_js.gsub(%Q{Opal.loaded(["corelib/runtime"]);}, %Q{var Opal=this.Opal;Opal.loaded(["corelib/runtime"]);})
+    out.puts(compiled_js)
+  end
+end
+
 desc "Build zupfnoter to #{ZUPFNOTER_JS}"
 task :build => [:buildConfigDoc, :updateLocales] do
   git_describe
@@ -91,6 +108,11 @@ task :build => [:buildConfigDoc, :updateLocales] do
     #   out << Opal::Processor.load_asset_code(env, 'application')
     out.puts(Opal::Builder::build("application").to_s)
   end
+
+
+  cmd = "browserify --node --dg false #{ZNWORKER_JS} -o #{ZNWORKER_JS}"
+  sh cmd
+
 
   Dir.glob "../public/*.scss" do |f|
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
