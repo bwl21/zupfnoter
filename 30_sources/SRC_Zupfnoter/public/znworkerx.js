@@ -27010,7 +27010,7 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars, $range = Opal.range;
 
-  Opal.add_stubs(['$attr_accessor', '$lambda', '$phrases', '$set_callback', '$error', '$+', '$[]', '$===', '$_anno_start', '$_anno_stop', '$push', '$_callback_get_abcmodel', '$to_n', '$unhighlight_all', '$range_highlight_more', '$each', '$find', '$==', '$scroll_into_view', '$add_class', '$get_elements_by_range', '$remove_class', '$id', '$_set_on_select', '$gsub', '$t', '$strip_js', '$get_svg', '$compute_tune_preview', '$set_svg', '$html', '$join', '$[]=', '$sort', '$map', '$Native', '$>', '$*', '$-', '$first', '$last', '$private', '$parse', '$loglevel', '$debug', '$to_json', '$split', '$inject', '$length', '$_mk_id', '$on', '$stop_propagation', '$call', '$current_target']);
+  Opal.add_stubs(['$attr_accessor', '$lambda', '$phrases', '$set_callback', '$error', '$+', '$[]', '$===', '$_anno_start', '$_anno_stop', '$push', '$_callback_get_abcmodel', '$to_n', '$unhighlight_all', '$range_highlight_more', '$each', '$find', '$==', '$scroll_into_view', '$add_class', '$get_elements_by_range', '$remove_class', '$id', '$_set_on_select', '$gsub', '$t', '$strip_js', '$html', '$get_svg', '$join', '$[]=', '$sort', '$map', '$>', '$*', '$-', '$first', '$last', '$private', '$parse', '$loglevel', '$debug', '$to_json', '$split', '$inject', '$length', '$_mk_id', '$on', '$stop_propagation', '$call', '$current_target']);
   return (function($base) {
     var $ABC2SVG, self = $ABC2SVG = $module($base, 'ABC2SVG');
 
@@ -27020,9 +27020,9 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
       function $Abc2Svg(){};
       var self = $Abc2Svg = $klass($base, $super, 'Abc2Svg', $Abc2Svg);
 
-      var def = self.$$proto, $scope = self.$$scope, TMP_8, TMP_9, TMP_10, TMP_12, TMP_14, TMP_15, TMP_16, TMP_17, TMP_18, TMP_19, TMP_20, TMP_21, TMP_22, TMP_23, TMP_24, TMP_27, TMP_28, TMP_30, TMP_31, TMP_32, TMP_33, TMP_35;
+      var def = self.$$proto, $scope = self.$$scope, TMP_8, TMP_9, TMP_10, TMP_12, TMP_14, TMP_15, TMP_16, TMP_17, TMP_18, TMP_19, TMP_20, TMP_21, TMP_22, TMP_25, TMP_26, TMP_28, TMP_29, TMP_30, TMP_31, TMP_33;
 
-      def.user = def.root = def.printer = def.abc_source = def.element_to_position = def.abc_model = def.player_model = def.svgbuf = nil;
+      def.user = def.root = def.printer = def.abc_source = def.abc_model = def.player_model = def.svgbuf = def.element_to_position = nil;
       self.$attr_accessor("abcplay");
 
       Opal.defn(self, '$initialize', TMP_8 = function $$initialize(div, options) {
@@ -27137,7 +27137,7 @@ if (id == null) id = nil;
         return r;
       }, TMP_17.$$arity = 1);
 
-      Opal.defn(self, '$compute_tune_preview', TMP_18 = function $$compute_tune_preview(abc_code, checksum) {
+      Opal.defn(self, '$draw', TMP_18 = function $$draw(abc_code, checksum) {
         var self = this, abc_text_insert = nil;
 
         if (checksum == null) {
@@ -27150,29 +27150,12 @@ if (id == null) id = nil;
         
       self.root.tosvg("abc", $rb_plus(self.abc_source, abc_text_insert));
       ;
-        return $hash2(["svg", "element_to_position"], {"svg": self.$get_svg(), "element_to_position": self.element_to_position});
-      }, TMP_18.$$arity = -2);
-
-      Opal.defn(self, '$draw', TMP_19 = function $$draw(abc_code, checksum) {
-        var self = this, svg_and_positions = nil;
-
-        if (checksum == null) {
-          checksum = "";
-        }
-        svg_and_positions = self.$compute_tune_preview(abc_code, checksum = "");
-        return self.$set_svg(svg_and_positions);
-      }, TMP_19.$$arity = -2);
-
-      Opal.defn(self, '$set_svg', TMP_20 = function $$set_svg(svg_and_positions) {
-        var self = this;
-
-        self.element_to_position = svg_and_positions['$[]']("element_to_position");
-        self.printer.$html(svg_and_positions['$[]']("svg"));
+        self.printer.$html(self.$get_svg());
         self.$_set_on_select();
         return nil;
-      }, TMP_20.$$arity = 1);
+      }, TMP_18.$$arity = -2);
 
-      Opal.defn(self, '$get_abcmodel', TMP_21 = function $$get_abcmodel(abc_code) {
+      Opal.defn(self, '$get_abcmodel', TMP_19 = function $$get_abcmodel(abc_code) {
         var self = this, stripped_abc_code = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
@@ -27182,51 +27165,51 @@ if (id == null) id = nil;
                               function(msg){$gvars.log.$error(msg) } )     ;
         self.root.tosvg("abc", stripped_abc_code);
         return [self.abc_model, self.player_model];
-      }, TMP_21.$$arity = 1);
+      }, TMP_19.$$arity = 1);
 
-      Opal.defn(self, '$get_svg', TMP_22 = function $$get_svg() {
+      Opal.defn(self, '$get_svg', TMP_20 = function $$get_svg() {
         var self = this, result = nil;
 
         result = self.svgbuf.$join("\n");
         result = result.$gsub("<svg ", "<div class=\"svg_block\"><svg ");
         result = result.$gsub("</svg>", "</svg></div>");
         return result;
-      }, TMP_22.$$arity = 0);
+      }, TMP_20.$$arity = 0);
 
-      Opal.defn(self, '$get_html', TMP_23 = function $$get_html() {
+      Opal.defn(self, '$get_html', TMP_21 = function $$get_html() {
         var self = this;
 
         return "\n      <html>\n      <head>\n        <meta charset=\"utf-8\"/>\n        <style type=\"text/css\">\n           rect.abcref {fill-opacity:0.0}\n          .nobrk s\t{ white-space:nowrap; }\n          svg {display:block}\n        </style>\n      </head>\n      <body>\n         " + (self.$get_svg()) + "\n      </body>\n      ";
-      }, TMP_23.$$arity = 0);
+      }, TMP_21.$$arity = 0);
 
-      Opal.defn(self, '$set_callback', TMP_24 = function $$set_callback(event) {
-        var self = this, $iter = TMP_24.$$p, block = $iter || nil;
+      Opal.defn(self, '$set_callback', TMP_22 = function $$set_callback(event) {
+        var self = this, $iter = TMP_22.$$p, block = $iter || nil;
 
-        TMP_24.$$p = null;
+        TMP_22.$$p = null;
         return self.user['$[]='](event, block);
-      }, TMP_24.$$arity = 1);
+      }, TMP_22.$$arity = 1);
 
-      Opal.defn(self, '$get_elements_by_range', TMP_27 = function $$get_elements_by_range(from, to) {
-        var $a, $b, TMP_25, self = this, range = nil, result = nil;
+      Opal.defn(self, '$get_elements_by_range', TMP_25 = function $$get_elements_by_range(from, to) {
+        var $a, $b, TMP_23, self = this, range = nil, result = nil;
 
         range = [from, to].$sort();
         result = [];
-        ($a = ($b = self.element_to_position).$each, $a.$$p = (TMP_25 = function(k, value){var self = TMP_25.$$s || this, $c, $d, TMP_26, noterange = nil;
+        ($a = ($b = self.element_to_position).$each, $a.$$p = (TMP_23 = function(k, value){var self = TMP_23.$$s || this, $c, $d, TMP_24, noterange = nil;
 if (k == null) k = nil;if (value == null) value = nil;
-        noterange = ($c = ($d = ["startChar", "endChar"]).$map, $c.$$p = (TMP_26 = function(c){var self = TMP_26.$$s || this;
+        noterange = ($c = ($d = ["startChar", "endChar"]).$map, $c.$$p = (TMP_24 = function(c){var self = TMP_24.$$s || this;
 if (c == null) c = nil;
-          return self.$Native(value)['$[]'](c)}, TMP_26.$$s = self, TMP_26.$$arity = 1, TMP_26), $c).call($d).$sort();
+          return value['$[]'](c)}, TMP_24.$$s = self, TMP_24.$$arity = 1, TMP_24), $c).call($d).$sort();
           if ((($c = $rb_gt($rb_times(($rb_minus(range.$first(), noterange.$last())), ($rb_minus(noterange.$first(), range.$last()))), 0)) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
             return result.$push(k)
             } else {
             return nil
-          };}, TMP_25.$$s = self, TMP_25.$$arity = 2, TMP_25), $a).call($b);
+          };}, TMP_23.$$s = self, TMP_23.$$arity = 2, TMP_23), $a).call($b);
         return result;
-      }, TMP_27.$$arity = 2);
+      }, TMP_25.$$arity = 2);
 
       self.$private();
 
-      Opal.defn(self, '$_callback_get_abcmodel', TMP_28 = function $$_callback_get_abcmodel(tsfirst, voice_tb, music_types, info) {
+      Opal.defn(self, '$_callback_get_abcmodel', TMP_26 = function $$_callback_get_abcmodel(tsfirst, voice_tb, music_types, info) {
         var self = this, json_model = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
@@ -27245,28 +27228,28 @@ if (c == null) c = nil;
         if ($gvars.log.$loglevel()['$==']("debug")) {
           $gvars.log.$debug(self.abc_model.$to_json())};
         return self.abc_model;
-      }, TMP_28.$$arity = 4);
+      }, TMP_26.$$arity = 4);
 
-      Opal.defn(self, '$_get_charpos', TMP_30 = function $$_get_charpos(abc_source, line, column) {
-        var $a, $b, TMP_29, self = this, lines = nil, result = nil;
+      Opal.defn(self, '$_get_charpos', TMP_28 = function $$_get_charpos(abc_source, line, column) {
+        var $a, $b, TMP_27, self = this, lines = nil, result = nil;
 
         lines = self.abc_source.$split("\n");
-        result = ($a = ($b = lines['$[]']($range(0, line, false))).$inject, $a.$$p = (TMP_29 = function(r, v){var self = TMP_29.$$s || this;
+        result = ($a = ($b = lines['$[]']($range(0, line, false))).$inject, $a.$$p = (TMP_27 = function(r, v){var self = TMP_27.$$s || this;
 if (r == null) r = nil;if (v == null) v = nil;
-        return r = $rb_plus(r, v.$length())}, TMP_29.$$s = self, TMP_29.$$arity = 2, TMP_29), $a).call($b, 0);
+        return r = $rb_plus(r, v.$length())}, TMP_27.$$s = self, TMP_27.$$arity = 2, TMP_27), $a).call($b, 0);
         return $rb_plus(result, column);
-      }, TMP_30.$$arity = 3);
+      }, TMP_28.$$arity = 3);
 
-      Opal.defn(self, '$_anno_start', TMP_31 = function $$_anno_start(music_type, start_offset, stop_offset, x, y, w, h) {
+      Opal.defn(self, '$_anno_start', TMP_29 = function $$_anno_start(music_type, start_offset, stop_offset, x, y, w, h) {
         var self = this, id = nil;
 
         id = self.$_mk_id(music_type, start_offset, stop_offset);
         
       self.root.out_svg('<g class="' + id +'">\n')
       ;
-      }, TMP_31.$$arity = 7);
+      }, TMP_29.$$arity = 7);
 
-      Opal.defn(self, '$_anno_stop', TMP_32 = function $$_anno_stop(music_type, start_offset, stop_offset, x, y, w, h) {
+      Opal.defn(self, '$_anno_stop', TMP_30 = function $$_anno_stop(music_type, start_offset, stop_offset, x, y, w, h) {
         var self = this, id = nil;
 
         id = self.$_mk_id(music_type, start_offset, stop_offset);
@@ -27280,25 +27263,25 @@ if (r == null) r = nil;if (v == null) v = nil;
             '" height="' + h.toFixed(2) + '"/>\n')
         ;
         return self.element_to_position['$[]='](id, $hash2(["startChar", "endChar"], {"startChar": start_offset, "endChar": stop_offset}));
-      }, TMP_32.$$arity = 7);
+      }, TMP_30.$$arity = 7);
 
-      Opal.defn(self, '$_mk_id', TMP_33 = function $$_mk_id(music_type, start_offset, end_offset) {
+      Opal.defn(self, '$_mk_id', TMP_31 = function $$_mk_id(music_type, start_offset, end_offset) {
         var self = this;
 
         return "_" + (music_type) + "_" + (start_offset) + "_" + (end_offset) + "_";
-      }, TMP_33.$$arity = 3);
+      }, TMP_31.$$arity = 3);
 
-      return (Opal.defn(self, '$_set_on_select', TMP_35 = function $$_set_on_select() {
-        var $a, $b, TMP_34, self = this;
+      return (Opal.defn(self, '$_set_on_select', TMP_33 = function $$_set_on_select() {
+        var $a, $b, TMP_32, self = this;
 
-        return ($a = ($b = $scope.get('Element').$find(".abcref")).$on, $a.$$p = (TMP_34 = function(evt){var self = TMP_34.$$s || this;
+        return ($a = ($b = $scope.get('Element').$find(".abcref")).$on, $a.$$p = (TMP_32 = function(evt){var self = TMP_32.$$s || this;
           if (self.on_select == null) self.on_select = nil;
           if (self.element_to_position == null) self.element_to_position = nil;
 if (evt == null) evt = nil;
         evt.$stop_propagation();
           self.on_select.$call(self.element_to_position['$[]'](evt.$current_target().$id()));
-          return nil;}, TMP_34.$$s = self, TMP_34.$$arity = 1, TMP_34), $a).call($b, "click");
-      }, TMP_35.$$arity = 0), nil) && '_set_on_select';
+          return nil;}, TMP_32.$$s = self, TMP_32.$$arity = 1, TMP_32), $a).call($b, "click");
+      }, TMP_33.$$arity = 0), nil) && '_set_on_select';
     })($scope.base, null)
   })($scope.base)
 };
@@ -53730,7 +53713,7 @@ Opal.loaded(["abc2svg-1"]);
 Opal.modules["opal-webworker"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2;
 
-  Opal.add_stubs(['$is_a?', '$Native', '$to_n', '$post_message', '$empty?', '$on_message', '$[]', '$call', '$[]=']);
+  Opal.add_stubs(['$Native', '$puts', '$class', '$to_n', '$post_message', '$empty?', '$on_message', '$[]', '$call', '$[]=']);
   (function($base, $super) {
     function $Webworker(){};
     var self = $Webworker = $klass($base, $super, 'Webworker', $Webworker);
@@ -53739,10 +53722,12 @@ Opal.modules["opal-webworker"] = function(Opal) {
 
     def.worker = nil;
     Opal.defn(self, '$initialize', TMP_1 = function $$initialize(parent) {
-      var $a, self = this;
+      var $a, self = this, a = nil;
 
       self.handlers = $hash2([], {});
-      if ((($a = self.$Native(parent)['$is_a?']($scope.get('String'))) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
+      a = self.$Native(parent);
+      self.$puts("parent class " + (a.$class()));
+      if ((($a = typeof(parent) == 'string') !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
         return self.worker = new Worker(parent)
         } else {
         return self.worker = parent
@@ -53803,14 +53788,11 @@ if (event == null) event = nil;
 
 /* Generated by Opal 0.10.6 */
 (function(Opal) {
-  function $rb_le(lhs, rhs) {
-    return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs <= rhs : lhs['$<='](rhs);
-  }
-  var $a, $b, TMP_4, $c, TMP_5, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $gvars = Opal.gvars;
+  var $a, $b, TMP_1, $c, TMP_2, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $hash2 = Opal.hash2;
   if (self.worker == null) self.worker = nil;
   if (self.namedworker == null) self.namedworker = nil;
 
-  Opal.add_stubs(['$require', '$[]', '$<=', '$strftime', '$now', '$puts', '$new', '$post_message', '$on_message', '$to_json', '$Native', '$on_named_message', '$compute_tune_preview', '$post_named_message']);
+  Opal.add_stubs(['$require', '$new', '$on_', '$puts', '$post_message', '$post_named_message', '$message', '$on_named_message']);
   
 
   // polyfills from https://gist.github.com/jmshal/b14199f7402c8f3a4568733d8bed0f25
@@ -53840,55 +53822,19 @@ if (event == null) event = nil;
   self.$require("version-prod");
   self.$require("abc2svg-1.js");
   self.$require("opal-webworker");
-  (function($base) {
-    var $I18n, self = $I18n = $module($base, 'I18n');
-
-    var def = self.$$proto, $scope = self.$$scope, TMP_1, TMP_2;
-
-    Opal.defs(self, '$t', TMP_1 = function $$t(text) {
-      var self = this;
-
-      return text;
-    }, TMP_1.$$arity = 1);
-
-    Opal.defs(self, '$phrases', TMP_2 = function $$phrases() {
-      var self = this;
-
-      return nil;
-    }, TMP_2.$$arity = 0);
-  })($scope.base);
-  (function($base, $super) {
-    function $WorkerLogger(){};
-    var self = $WorkerLogger = $klass($base, $super, 'WorkerLogger', $WorkerLogger);
-
-    var def = self.$$proto, $scope = self.$$scope, TMP_3;
-
-    def.loglevel = nil;
-    return (Opal.defn(self, '$write', TMP_3 = function $$write(type, msg) {
-      var $a, self = this, current_level = nil, time = nil;
-
-      current_level = ((($a = $scope.get('LOGLEVELS')['$[]'](type)) !== false && $a !== nil && $a != null) ? $a : $scope.get('LOGLEVELS')['$[]']("warning"));
-      if ((($a = ($rb_le(current_level, self.loglevel))) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
-        time = $scope.get('Time').$now().$strftime("%H:%M:%S");
-        return self.$puts(msg);
-        } else {
-        return nil
-      };
-    }, TMP_3.$$arity = 2), nil) && 'write'
-  })($scope.base, $scope.get('Logger'));
-  $gvars.log = $scope.get('WorkerLogger').$new("x.log");
   self.worker = $scope.get('Webworker').$new(this);
   self.namedworker = $scope.get('NamedWebworker').$new(this);
-  self.worker.$post_message("worker started " + ("znworker"));
-  ($a = ($b = self.worker).$on_message, $a.$$p = (TMP_4 = function(e){var self = TMP_4.$$s || this;
+  ($a = ($b = self.worker).$on_, $a.$$p = (TMP_1 = function(e){var self = TMP_1.$$s || this;
+    if (self.worker == null) self.worker = nil;
+    if (self.namedworker == null) self.namedworker = nil;
 if (e == null) e = nil;
-  return self.$puts("worker received message " + (self.$Native(e.data).$to_json()))}, TMP_4.$$s = self, TMP_4.$$arity = 1, TMP_4), $a).call($b);
-  return ($a = ($c = self.namedworker).$on_named_message, $a.$$p = (TMP_5 = function(data){var self = TMP_5.$$s || this, payload = nil, svg_and_position = nil;
-    if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
+  debugger;
+    self.$puts("worker received message cc");
+    self.worker.$post_message($hash2(["message", "payload"], {"message": "foobar xx", "payload": $hash2(["source", "a", "b"], {"source": e.data, "a": 1, "b": 2})}));
+    self.namedworker.$post_named_message("foo", $hash2(["source", "a", "b"], {"source": e.data, "a": 1, "b": 2}));
+    return self.namedworker.$post_named_message("bar", $hash2(["source", "a", "b"], {"source": e.data, "a": "bar", "b": "bar"}));}, TMP_1.$$s = self, TMP_1.$$arity = 1, TMP_1), $a).call($b, self.$message());
+  return ($a = ($c = self.namedworker).$on_named_message, $a.$$p = (TMP_2 = function(data){var self = TMP_2.$$s || this;
     if (self.namedworker == null) self.namedworker = nil;
 if (data == null) data = nil;
-  self.tune_preview_printer = (($scope.get('ABC2SVG')).$$scope.get('Abc2Svg')).$new(nil);
-    payload = data['$[]']("payload");
-    svg_and_position = self.tune_preview_printer.$compute_tune_preview(payload['$[]']("abc"), payload['$[]']("checksum"));
-    return self.namedworker.$post_named_message(data['$[]']("name"), svg_and_position);}, TMP_5.$$s = self, TMP_5.$$arity = 1, TMP_5), $a).call($c, "compute_tune_preview");
+  return self.namedworker.$post_named_message("render_harpnotepreview", data)}, TMP_2.$$s = self, TMP_2.$$arity = 1, TMP_2), $a).call($c, "render_harpnotepreview");
 })(Opal);

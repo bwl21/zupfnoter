@@ -98,15 +98,29 @@ class Controller
 
   def initialize
 
-      x = {cmd: "render_harpnotepreview", abc_code: "hallo"}
-      @worker = %x{new Worker('assets/znworker.rb')}
-      %x{#{@worker}.postMessage(#{x.to_n}); // Start the worker.}
-      %x{#{@worker}.postMessage({cmd: "second"}); }
+    x = {name: "render_harpnotepreview", abc_code: "hallo"}
+    # @worker = %x{new Worker('assets/znworker.rb')}
+    # %x{#{@worker}.postMessage(#{x.to_n}); // Start the worker.}
+    # %x{#{@worker}.postMessage({cmd: "second"}); }
+    #
+    # %x{ #{@worker}.addEventListener('message', function(e) {
+    #   console.log('Worker said: ', e.data);
+    # }, false);
+    # }
 
-      %x{ #{@worker}.addEventListener('message', function(e) {
-        console.log('Worker said: ', e.data);
-      }, false);
-      }
+    @worker = NamedWebworker.new("public/znworker.js?buster=#{Time.now}")
+    x       = {name: "render_harpnotepreview", abc_code: "X:1"}
+    @worker.on_message do |e|
+      `console.log('zn_worker said: ', #{e}.data)`;
+    end
+
+
+    @worker.on_named_message(:bar) do |e|
+      `console.log('named message bar: ', #{e})`;
+    end
+
+    # @worker.post_message(x)
+    # # @worker.post_named_message(:render_harpnotepreview, x)
 
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',
@@ -192,7 +206,7 @@ class Controller
     load_from_loacalstorage
     load_demo_tune if @editor.get_abc_part.empty?
     set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0,
-               mode: mode) unless @systemstatus[:view]
+               mode:    mode) unless @systemstatus[:view]
     set_status(mode: mode)
 
     set_status(saveformat: "A3-A4") unless @systemstatus[:saveformat]
@@ -592,7 +606,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         result
       }.join("\n")
 
-      $log.benchmark("render tune preview"){@tune_preview_printer.draw(abc_text, @editor.get_checksum)}
+      $log.benchmark("render tune preview") do
+        #svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
+        #@tune_preview_printer.set_svg(svg_and_positions)
+
+        @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor_get_checksum})
+      end
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
@@ -615,7 +634,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           # todo: not sure if it is good to pass active_voices via @song_harpnotes
           # todo: refactor better moove that part of the code out here
           @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
-          $log.benchmark("draing preview sheet") {@harpnote_preview_printer.draw(@song_harpnotes)}
+          $log.benchmark("drawing preview sheet") { @harpnote_preview_printer.draw(@song_harpnotes) }
           set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
@@ -764,7 +783,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         tempo:            lambda { @music_model.meta_data[:tempo_display] },
         title:            lambda { @music_model.meta_data[:title] },
         extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
-        extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"]  },
+        extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
         printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") },
         watermark:        lambda { $settings[:watermark] || "" }
     }
@@ -1035,9 +1054,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
 
       info[:more_conf_keys].each do |entry|
-        id = entry[:conf_key]
-        text = entry[:text]
-        icon = entry[:icon]
+        id    = entry[:conf_key]
+        text  = entry[:text]
+        icon  = entry[:icon]
         value = entry[:value]
         items.push({id: id, text: text, icon: icon, value: value})
       end
@@ -1049,7 +1068,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
                                        onSelect: function (event) {
                                            w2ui.layout_left_tabs.click('configtab');
                                            if (event.item.value != null ) #{handle_command(%Q{cconf #{`event.item.id`} #{`event.item.value`}})}
-                                           #{handle_command(%Q{editconf #{`event.item.id`.gsub(/\.[^\.]+$/, '') }})}  // we strip the particular parameter to get all params of the object
+      #{handle_command(%Q{editconf #{`event.item.id`.gsub(/\.[^\.]+$/, '') }})}  // we strip the particular parameter to get all params of the object
                                            if (event.item.value != null ) #{handle_command(%Q{render})}
                                        }
                                    });
@@ -1071,6 +1090,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @tune_preview_printer.on_select do |abcelement|
       a = Native(abcelement) # todo remove me
       select_abc_object(abcelement)
+    end
+
+    @worker.on_named_message(:compute_tune_preview) do |e|
+      $log.debug("got tunel preview from worker")
+      svg_and_position = Native(e[:payload])
+      @tune_preview_printer.set_svg(svg_and_position)
     end
   end
 
@@ -1314,7 +1339,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         when :off # off means it relies on remote rendering
           @refresh_timer.push `setTimeout(function(){#{render_remote()}},  300)`
         when :remote # this means that the current instance runs in remote mode
-       #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
+          #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
       end
     end
   end

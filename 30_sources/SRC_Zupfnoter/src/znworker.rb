@@ -1,4 +1,3 @@
-
 ##
 # here we include the javascript modules
 # these modules shall follow the common JS model as usually node modules do
@@ -22,6 +21,7 @@
   // fs = require('fs')
   // glob = require("glob")      // don't know who needs this
 }
+
 
 require 'opal'
 require 'opal-platform'
@@ -67,21 +67,60 @@ require 'version-prod'
 # require 'config-form'
 # require 'snippet_editor'
 require 'abc2svg-1.js'
+require 'opal-webworker'
 
 
-# installing the nandlers
+module I18n
+  def self.t(text)
+    text
+  end
 
-handle_message = lambda do |e|
-  puts ("worker received message")
-  post_message({message: "foobar", payload: {source: `e.data`, a: 1, b: 2}})
+  def self.phrases
+    nil
+  end
 end
 
-def post_message(object)
-  `postMessage(#{object.to_n})`
+
+class WorkerLogger < Logger
+
+  def write(type, msg)
+
+    current_level = LOGLEVELS[type] || LOGLEVELS[:warning]
+    if (current_level <= @loglevel)
+      time = Time.now.strftime("%H:%M:%S")
+      puts msg
+    end
+  end
 end
 
-%x{
-  addEventListener('message', #{handle_message})
-}
+
+## preparing environment
+#
+
+$log=WorkerLogger.new("x.log")
+
+
+
+
+# installing the handlers
+
+@worker      = Webworker.new(`this`)
+@namedworker = NamedWebworker.new(`this`)
+
+@worker.post_message("worker started #{__FILE__}")
+
+@worker.on_message do |e|
+  puts ("worker received message #{Native(`e.data`).to_json}")
+  #@worker.post_message({message: "foobar xx", payload: {source: `e.data`, a: 1, b: 2}})
+  #@namedworker.post_named_message(:foo, {source: `e.data`, a: 1, b: 2})
+  #@namedworker.post_named_message(:bar, {source: `e.data`, a: :bar, b: :bar})
+end
+
+@namedworker.on_named_message(:compute_tune_preview) do |data|
+  @tune_preview_printer = ABC2SVG::Abc2Svg.new(nil) # note that we do not provide a div, so set_svg will fail
+  payload          = data[:payload]
+  svg_and_position = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
+  @namedworker.post_named_message(data[:name], svg_and_position)
+end
 
 
