@@ -669,7 +669,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result = Promise.new.tap do |promise|
       LastRenderMonitor.new.set_active
       set_active("#tunePreview")
-      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+      #`setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+      render_tunepreview_callback()
+      promise.resolve()
     end.fail do
       alert("fail")
     end.then do
@@ -1092,10 +1094,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       select_abc_object(abcelement)
     end
 
-    @worker.on_named_message(:compute_tune_preview) do |e|
+    @worker.on_named_message(:compute_tune_preview) do |data|
       $log.debug("got tunel preview from worker")
-      svg_and_position = Native(e[:payload])
-      @tune_preview_printer.set_svg(svg_and_position)
+      svg_and_position = data[:payload]
+      $log.benchmark("show comput_turne_preview"){@tune_preview_printer.set_svg(svg_and_position)}
+    end
+
+    @worker.on_named_message(:set_logger_status) do |data|
+      $log.set_status(data[:payload])
+      @editor.set_annotations($log.annotations)
+      #call_consumers(:error_alert)
     end
   end
 
