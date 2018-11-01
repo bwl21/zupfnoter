@@ -117,10 +117,13 @@ $log=WorkerLogger.new("x.log")
 end
 
 @namedworker.on_named_message(:compute_tune_preview) do |data|
+  $log.clear_errors
+  $log.clear_annotations
   @tune_preview_printer = ABC2SVG::Abc2Svg.new(nil) # note that we do not provide a div, so set_svg will fail
   payload          = data[:payload]
   svg_and_position = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
   @namedworker.post_named_message(data[:name], svg_and_position)
+  @namedworker.post_named_message(:set_logger_status, $log.get_status)
 end
 
 

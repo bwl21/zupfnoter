@@ -26,19 +26,28 @@ end
 
 class NamedWebworker < Webworker
   def post_named_message(cmd, object)
-    post_message({name: cmd, payload: object})
+    r = {name: cmd, payload: object}.to_json
+    post_message(r)
   end
 
   def on_named_message(cmd, &block)
+    # if there is no handler, we have to
+    # install a generic on_message handler
+    #
     if @handlers.empty?
       on_message do |event|
-        data    = Native(event)[:data]
-        handler = @handlers[data[:name]]
-        if handler
-          handler.call(data)
+        data = Native(event)[:data]
+        if data.start_with?("{")
+          data = JSON.parse(data)
+          handler = @handlers[data[:name]]
+          if handler
+            handler.call(data)
+          end
         end
       end
     end
+
+    # now we register the handler
     @handlers[cmd] = block
   end
 
