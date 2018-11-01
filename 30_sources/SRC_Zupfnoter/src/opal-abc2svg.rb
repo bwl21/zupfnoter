@@ -216,7 +216,7 @@ I:stretchlast 1
       result = []
       @element_to_position.each { |k, value|
 
-        noterange = [:startChar, :endChar].map { |c| Native(value)[c] }.sort # [get sorted interval for note [lower, upper]]
+        noterange = [:startChar, :endChar].map { |c| value[c] }.sort # [get sorted interval for note [lower, upper]]
 
         # check if range and noterange overlap each other
         if (range.first - noterange.last) * (noterange.first - range.last) > 0
