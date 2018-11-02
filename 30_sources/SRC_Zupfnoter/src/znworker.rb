@@ -76,7 +76,7 @@ module I18n
   end
 
   def self.phrases
-    nil
+    #$lang.phrases
   end
 end
 
@@ -109,13 +109,6 @@ $log=WorkerLogger.new("x.log")
 
 @worker.post_message("worker started #{__FILE__}")
 
-@worker.on_message do |e|
-  puts ("worker received message #{Native(`e.data`).to_json}")
-  #@worker.post_message({message: "foobar xx", payload: {source: `e.data`, a: 1, b: 2}})
-  #@namedworker.post_named_message(:foo, {source: `e.data`, a: 1, b: 2})
-  #@namedworker.post_named_message(:bar, {source: `e.data`, a: :bar, b: :bar})
-end
-
 @namedworker.on_named_message(:compute_tune_preview) do |data|
   $log.clear_errors
   $log.clear_annotations
@@ -126,4 +119,6 @@ end
   @namedworker.post_named_message(:set_logger_status, $log.get_status)
 end
 
-
+@namedworker.on_named_message(:load_locales) do | data |
+  $lang = data[:payload]
+end

@@ -3,10 +3,10 @@ class Webworker
   def initialize(parent) #
 
     @handlers = {}
-    if Native(parent).is_a?(String)
+    if Native(parent).is_a?(String) # this is the name of the worker script - when used in the main script
       @worker = %x{new Worker(#{parent})}
     else
-      @worker = parent
+      @worker = parent # now I am in the worker script
     end
   end
 
@@ -15,19 +15,22 @@ class Webworker
   end
 
   def post_message(object)
-    %x{#{@worker}.postMessage(#{object.to_n});}
+    %x{#{@worker}.postMessage(#{object.to_json});}
   end
 
   def on_message(&block)
-    %x{ #{@worker}.addEventListener('message', #{block}, false);}
+    listener = lambda do |event|
+      payload = Native(event)[:data]
+      block.call(JSON.parse(payload))
+    end
+    %x{ #{@worker}.addEventListener('message', #{listener}, false);}
   end
 
 end
 
 class NamedWebworker < Webworker
   def post_named_message(cmd, object)
-    r = {name: cmd, payload: object}.to_json
-    post_message(r)
+    post_message({name: cmd, payload: object})
   end
 
   def on_named_message(cmd, &block)
@@ -35,14 +38,10 @@ class NamedWebworker < Webworker
     # install a generic on_message handler
     #
     if @handlers.empty?
-      on_message do |event|
-        data = Native(event)[:data]
-        if data.start_with?("{")
-          data = JSON.parse(data)
-          handler = @handlers[data[:name]]
-          if handler
-            handler.call(data)
-          end
+      on_message do |object|
+        if object.is_a? Hash
+          handler = @handlers[object[:name]]
+          handler.call(object) if handler
         end
       end
     end

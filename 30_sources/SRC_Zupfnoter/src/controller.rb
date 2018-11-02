@@ -109,18 +109,9 @@ class Controller
     # }
 
     @worker = NamedWebworker.new("public/znworker.js?buster=#{Time.now}")
-    x       = {name: "render_harpnotepreview", abc_code: "X:1"}
-    @worker.on_message do |e|
-      `console.log('zn_worker said: ', #{e}.data)`;
-    end
 
 
-    @worker.on_named_message(:bar) do |e|
-      `console.log('named message bar: ', #{e})`;
-    end
 
-    # @worker.post_message(x)
-    # # @worker.post_named_message(:render_harpnotepreview, x)
 
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',
@@ -193,6 +184,8 @@ class Controller
     @commands = CommandController::CommandStack.new
     self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
 
+    ## setup preview panes
+    setup_tune_preview
     setup_harpnote_preview
 
     # initialize virgin zupfnoter
@@ -265,7 +258,7 @@ class Controller
     }
   end
 
-  # this method invokes the system conumers
+# this method invokes the system conumers
   def call_consumers(clazz)
     @systemstatus_consumers = {systemstatus:   [
                                                    lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
@@ -293,15 +286,15 @@ class Controller
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
 
-  # This provides the configuration form menue entries
-  # they are defined in ConfstackEditor and can be retrieved
-  # to be used e.g. in the editor toolbar as well.
+# This provides the configuration form menue entries
+# they are defined in ConfstackEditor and can be retrieved
+# to be used e.g. in the editor toolbar as well.
   def get_config_form_menu_entries
     ConfstackEditor.get_config_form_menu_entries
   end
 
-  # this handles a command
-  # todo: this is a temporary hack until we have a proper ui
+# this handles a command
+# todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
     $log.clear_errors
     begin
@@ -314,10 +307,10 @@ class Controller
     call_consumers(:error_alert)
   end
 
-  # this handles a command which is already parsed
-  #
-  # @param [String] command the name of the command
-  # @param [Hash] args a hash with the arguments. May even be a JS object
+# this handles a command which is already parsed
+#
+# @param [String] command the name of the command
+# @param [Hash] args a hash with the arguments. May even be a JS object
   def handle_parsed_command(command, args)
     $log.clear_errors
     begin
@@ -330,8 +323,8 @@ class Controller
     call_consumers(:error_alert)
   end
 
-  # Save session to local store
-  # only if in :work mode
+# Save session to local store
+# only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
@@ -353,7 +346,7 @@ class Controller
     end
   end
 
-  # load session from localstore
+# load session from localstore
   def load_from_loacalstorage
     @editor.restore_from_localstorage
 
@@ -362,8 +355,8 @@ class Controller
     nil
   end
 
-  # this does a cleanup of localstorage
-  # note that this is maintained from version to version
+# this does a cleanup of localstorage
+# note that this is maintained from version to version
   def cleanup_localstorage
     keys             = `Object.keys(localStorage)`
     dbx_apiv1_traces = keys.select { |k| k.match(/dropbox\-auth:default:/) }
@@ -381,7 +374,7 @@ class Controller
     nil
   end
 
-  # this loads a demo song
+# this loads a demo song
   def load_demo_tune
     abc = %Q{X:21
 F:21_Ich_steh_an_deiner_krippen_hier
@@ -459,7 +452,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @editor.set_text(abc)
   end
 
-  # render the harpnotes to a3
+# render the harpnotes to a3
   def render_a3(index = @systemstatus[:view])
     flowconf = $settings[:flowconf]
     # turn of flowconf:  otherwise very short unconfigured undconfigured flowlines are
@@ -471,7 +464,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # render the harpnotes splitted on a4 pages
+# render the harpnotes splitted on a4 pages
   def render_a4(index = @systemstatus[:view])
     flowconf             = $settings[:flowconf]
     $settings[:flowconf] = false
@@ -481,8 +474,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # migrate the configuration which is provided from textox
-  # this method is necesary to upgrade existing sheets
+# migrate the configuration which is provided from textox
+# this method is necesary to upgrade existing sheets
   def migrate_config(config)
     result            = Confstack.new(false)
     result.strict     = false
@@ -593,9 +586,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # render the previews
-  # also saves abc in localstore()
+# render the previews
+# also saves abc in localstore()
   def render_tunepreview_callback
+    set_active("#tunePreview")
     setup_tune_preview
 
     begin
@@ -607,23 +601,28 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       }.join("\n")
 
       $log.benchmark("render tune preview") do
-        #svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
-        #@tune_preview_printer.set_svg(svg_and_positions)
+
+=begin
+        # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
+        # before comuputing the tune_preview
+        @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
+        svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
+        @tune_preview_printer.set_svg(svg_and_positions)
+        set_inactive("#tunePreview")
+=end
 
         @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor_get_checksum})
       end
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
-    set_inactive("#tunePreview")
 
-    @editor.set_annotations($log.annotations)
 
     nil
   end
 
-  # render the previews
-  # also saves abc in localstore()
+# render the previews
+# also saves abc in localstore()
   def render_harpnotepreview_callback
     $log.benchmark("render_harpnotepreview_callback") do
       begin
@@ -648,7 +647,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # @return [Promise] promise such that it can be chained e.g. in play.
+# @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
 
     @editor.resize();
@@ -702,8 +701,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     send_remote_command('render')
   end
 
-  # download abc + pdfs as a zip archive
-  # todo: determine filename from abc header
+# download abc + pdfs as a zip archive
+# todo: determine filename from abc header
   def save_file
     zip = JSZip::ZipFile.new
     zip.file("song.abc", @editor.get_text)
@@ -714,8 +713,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     `window.saveAs(blob, filename)`
   end
 
-  # compute the layout of the harpnotes
-  # @return [Happnotes::Layout] to be passed to one of the engines for output
+# compute the layout of the harpnotes
+# @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0, page_format = 'A4')
 
     config = get_config_from_editor
@@ -800,7 +799,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @music_model.checksum             = @editor.get_checksum
   end
 
-  # this retrieves the current config from the editor
+# this retrieves the current config from the editor
   def get_config_from_editor
     config, status = @editor.get_config_model
     if status
@@ -845,9 +844,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Native(parser)
   end
 
-  # this is intended to be used for following the player only
-  # todo: not clear if it is ok, to deal with DOM-Elements here
-  # but this allows to hightliight tune and harp preview simultaneously
+# this is intended to be used for following the player only
+# todo: not clear if it is ok, to deal with DOM-Elements here
+# but this allows to hightliight tune and harp preview simultaneously
   def highlight_abc_object_by_player_callback(startchar, on)
     elements = Element.find("._#{startchar}_")
     if on
@@ -867,10 +866,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     nil
   end
 
-  # highlight a particular abc element in all views
-  # note that previous selections are still maintained.
-  # note that previous selections are still maintained.
-  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
+# highlight a particular abc element in all views
+# note that previous selections are still maintained.
+# note that previous selections are still maintained.
+# @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
     a = Native(abcelement)
     #$log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
@@ -889,7 +888,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
+# @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def unhighlight_abc_object(abcelement)
     a = Native(abcelement) # remove me
     @tune_preview_printer.range_unhighlight_more(a[:startChar], a[:endChar])
@@ -898,21 +897,21 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_preview_printer.range_unhighlight(a[:startChar], a[:endChar])
   end
 
-  # select a particular abcelement in all views
-  # previous selections are removed
-  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
+# select a particular abcelement in all views
+# previous selections are removed
+# @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
     highlight_abc_object(abcelement)
   end
 
-  # this performs a selection based on time segements
-  # it will select all musical symbols which are in the
-  # given time range in any voice
-  #
-  # it can highlight multiple segments, even if there
-  # is no usecase yet
-  #
-  # @param [Array of Array of Integer] segments the list of segments which shall be highlighted
+# this performs a selection based on time segements
+# it will select all musical symbols which are in the
+# given time range in any voice
+#
+# it can highlight multiple segments, even if there
+# is no usecase yet
+#
+# @param [Array of Array of Integer] segments the list of segments which shall be highlighted
   def select_by_time_segments(segments)
     result = []
 
@@ -938,13 +937,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # this returns a list of time ranges
-  # covered by the current selection in editor
-  #
-  # purpose is to select a given time range in
-  # all voices the result of this method
-  # can be used in select_by_time_segments
-  #
+# this returns a list of time ranges
+# covered by the current selection in editor
+#
+# purpose is to select a given time range in
+# all voices the result of this method
+# can be used in select_by_time_segments
+#
   def get_selected_time_segments
 
     ranges = @editor.get_selection_ranges
@@ -982,7 +981,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     nil
   end
 
-  # this method sets systemstatus from the status of @dropboxclient
+# this method sets systemstatus from the status of @dropboxclient
   def set_status_dropbox_status
     set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath, dropboxloginstate: @dropboxloginstate)
   end
@@ -994,7 +993,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   private
 
 
-  # setup the harpnote prviewer
+# setup the harpnote prviewer
   def setup_harpnote_preview
 
     @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
@@ -1081,7 +1080,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # setup tune preview
+# setup tune preview
   def setup_tune_preview
     # todo: remove
     # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
@@ -1095,9 +1094,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @worker.on_named_message(:compute_tune_preview) do |data|
-      $log.debug("got tunel preview from worker")
       svg_and_position = data[:payload]
-      $log.benchmark("show comput_turne_preview"){@tune_preview_printer.set_svg(svg_and_position)}
+      set_inactive("#tunePreview")
+      $log.benchmark("show compute_tune_preview") { @tune_preview_printer.set_svg(svg_and_position) }
     end
 
     @worker.on_named_message(:set_logger_status) do |data|
@@ -1111,8 +1110,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_preview_printer.set_canvas(size)
   end
 
-  # note the filedrop is not entirely initialized in user-interface.js
-  #
+# note the filedrop is not entirely initialized in user-interface.js
+#
 
   def toggle_console
     %x{
@@ -1135,7 +1134,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       }
   end
 
-  # this registers the listeners to ui-elements.
+# this registers the listeners to ui-elements.
   def setup_ui_listener
 
     # activate drop of files
@@ -1327,7 +1326,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
   end
 
-  # @param [Boolean] init if true triggers a new refresh request; if false restarts a running request
+# @param [Boolean] init if true triggers a new refresh request; if false restarts a running request
   def request_refresh(init)
     set_status({refresh: true}) if init
 
@@ -1375,7 +1374,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # returns a hash with the default values of configuration
+# returns a hash with the default values of configuration
   def _init_conf()
     InitConf.init_conf()
   end
