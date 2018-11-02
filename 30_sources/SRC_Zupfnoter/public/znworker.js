@@ -25284,7 +25284,7 @@ if (v == null) v = nil;if (index == null) index = nil;
       var $a, $b, TMP_3, $c, TMP_4, $d, TMP_5, $e, TMP_6, $f, TMP_7, $g, TMP_8, $h, TMP_9, $i, TMP_10, $j, TMP_11, $k, TMP_12, $l, TMP_13, $m, TMP_14, $n, TMP_15, $o, TMP_16, $p, TMP_17, $q, TMP_18, $r, TMP_19, $s, TMP_20, $t, TMP_21, $u, TMP_22, $v, TMP_23, $w, TMP_24, $x, TMP_25, $y, TMP_26, $z, TMP_27, $aa, TMP_28, $ab, TMP_29, $ac, TMP_30, $ad, TMP_31, $ae, TMP_32, $af, TMP_33, $ag, TMP_34, self = this, explicit_sort = nil, result = nil;
 
       explicit_sort = ["produce", "annotations", "restposition", "default", "repeatstart", "repeatend", "extract", "title", "filenamepart", "startpos", "voices", "flowlines", "subflowlines", "synchlines", "jumplines", "repeatsigns", "layoutlines", "barnumbers", "countnotes", "legend", "nonflowrest", "lyrics", "notes", "images", "tuplets", "layout", "printer", "annotation", "decoration", "partname", "variantend", "countnote", "c_jumplines", "tuplet", "minc", "flowline", "imagename", "stringnames", "limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "bottomup", "beams", "packer", "pack_method", "pack_max_spreadfactor", "pack_min_increment", "sortmark", "show", "fill", "size", "PITCH_OFFSET", "X_OFFSET", "X_SPACING", "jumpline_anchor", "a3_offset", "a4_offset", "a4_pages", "T01_number", "T01_number_extract", "T02_copyright_music", "T03_copyright_harpnotes", "T04_to_order", "T05_printed_extracts", "T99_do_not_copy", "0", "1", "2", "3", "4", "5", "6", "verses", "cp1", "cp2", "shape", "pos", "hpos", "height", "vpos", "spos", "autopos", "apbase", "text", "style", "marks", "resources", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"];
-      result = $hash2(["produce", "abc_parser", "restposition", "template", "wrap", "defaults", "templates", "presets", "annotations", "extract", "layout", "neatjson"], {"produce": [0], "abc_parser": "ABC2SVG", "restposition": $hash2(["default", "repeatstart", "repeatend"], {"default": "center", "repeatstart": "next", "repeatend": "default"}), "template": $hash2(["filebase", "title"], {"filebase": "-no-template-", "title": "- no template -"}), "wrap": 60, "defaults": $hash2(["notebound"], {"notebound": $hash2(["annotation", "partname", "variantend", "tuplet", "flowline"], {"annotation": $hash2(["pos"], {"pos": [5, -7]}), "partname": $hash2(["pos"], {"pos": [-4, -7]}), "variantend": $hash2(["pos"], {"pos": [-4, -7]}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "flowline": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [0, 10], "cp2": [0, -10], "shape": ["c"], "show": true})})}), "templates": $hash2(["notes", "lyrics", "images", "tuplet", "annotations"], {"notes": $hash2(["pos", "text", "style"], {"pos": [320, 6], "text": "ENTER_NOTE", "style": "large"}), "lyrics": $hash2(["verses", "pos", "style"], {"verses": [1], "pos": [350, 70], "style": "regular"}), "images": $hash2(["imagename", "show", "pos", "height"], {"imagename": "", "show": true, "pos": [10, 10], "height": 100}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "annotations": $hash2(["text", "pos"], {"text": "_vorlage_", "pos": [-5, -6]})}), "presets": $hash2(["barnumbers_countnotes", "stdextract", "layout", "instrument", "notes", "printer"], {"barnumbers_countnotes": $hash2(["anchor_at_box", "anchor_at_center"], {"anchor_at_box": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, 1]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, -0.5]})}), "anchor_at_center": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0]})})}), "stdextract": $hash2([], {}), "layout": $hash2(["notes_small", "notes_regular", "notes_large", "notes_with_beams", "-", "packer_compact", "packer_regular", "--", "color_on", "color_off", "---", "jumpline_anchor_close", "jumpline_anchor_medium", "jumpline_anchor_wide"], {"notes_small": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": 0.2, "LINE_THICK": 0.3, "ELLIPSE_SIZE": [3.5, 1.3], "REST_SIZE": [4, 1.5], "beams": false}), "notes_regular": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": ($a = ($b = self).$lambda, $a.$$p = (TMP_3 = function(){var self = TMP_3.$$s || this;
+      result = $hash2(["produce", "abc_parser", "restposition", "template", "wrap", "defaults", "templates", "presets", "annotations", "extract", "layout", "neatjson"], {"produce": [0], "abc_parser": "ABC2SVG", "restposition": $hash2(["default", "repeatstart", "repeatend"], {"default": "center", "repeatstart": "next", "repeatend": "default"}), "template": $hash2(["filebase", "title"], {"filebase": "-no-template-", "title": "- no template -"}), "wrap": 60, "defaults": $hash2(["notebound"], {"notebound": $hash2(["annotation", "partname", "variantend", "tuplet", "flowline"], {"annotation": $hash2(["pos"], {"pos": [5, -7]}), "partname": $hash2(["pos"], {"pos": [-4, -7]}), "variantend": $hash2(["pos"], {"pos": [-4, -7]}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "flowline": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [0, 10], "cp2": [0, -10], "shape": ["c"], "show": true})})}), "templates": $hash2(["notes", "lyrics", "images", "tuplet", "annotations"], {"notes": $hash2(["pos", "text", "style"], {"pos": [320, 6], "text": "ENTER_NOTE", "style": "large"}), "lyrics": $hash2(["verses", "pos", "style"], {"verses": [1], "pos": [350, 70], "style": "regular"}), "images": $hash2(["imagename", "show", "pos", "height"], {"imagename": "", "show": true, "pos": [10, 10], "height": 100}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "annotations": $hash2(["text", "pos"], {"text": "_vorlage_", "pos": [-5, -6]})}), "presets": $hash2(["barnumbers_countnotes", "stdextract", "layout", "instrument", "notes", "printer"], {"barnumbers_countnotes": $hash2(["anchor_at_box", "anchor_at_center"], {"anchor_at_box": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, 1]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, -0.5]})}), "anchor_at_center": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0.3]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0]})})}), "stdextract": $hash2([], {}), "layout": $hash2(["notes_small", "notes_regular", "notes_large", "notes_with_beams", "-", "packer_compact", "packer_regular", "--", "color_on", "color_off", "---", "jumpline_anchor_close", "jumpline_anchor_medium", "jumpline_anchor_wide"], {"notes_small": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": 0.2, "LINE_THICK": 0.3, "ELLIPSE_SIZE": [3.5, 1.3], "REST_SIZE": [4, 1.5], "beams": false}), "notes_regular": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": ($a = ($b = self).$lambda, $a.$$p = (TMP_3 = function(){var self = TMP_3.$$s || this;
         if ($gvars.conf == null) $gvars.conf = nil;
 
       return $gvars.conf['$[]']("extract.0.layout.LINE_MEDIUM")}, TMP_3.$$s = self, TMP_3.$$arity = 0, TMP_3), $a).call($b), "LINE_THICK": ($a = ($c = self).$lambda, $a.$$p = (TMP_4 = function(){var self = TMP_4.$$s || this;
@@ -53743,7 +53743,7 @@ Opal.loaded(["abc2svg-1"]);
 Opal.modules["opal-webworker"] = function(Opal) {
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2;
 
-  Opal.add_stubs(['$is_a?', '$Native', '$to_n', '$to_json', '$post_message', '$empty?', '$on_message', '$[]', '$start_with?', '$parse', '$call', '$[]=']);
+  Opal.add_stubs(['$is_a?', '$Native', '$to_json', '$lambda', '$[]', '$call', '$parse', '$post_message', '$empty?', '$on_message', '$[]=']);
   (function($base, $super) {
     function $Webworker(){};
     var self = $Webworker = $klass($base, $super, 'Webworker', $Webworker);
@@ -53771,52 +53771,53 @@ Opal.modules["opal-webworker"] = function(Opal) {
     Opal.defn(self, '$post_message', TMP_3 = function $$post_message(object) {
       var self = this;
 
-      return self.worker.postMessage(object.$to_n());;
+      return self.worker.postMessage(object.$to_json());;
     }, TMP_3.$$arity = 1);
 
     return (Opal.defn(self, '$on_message', TMP_4 = function $$on_message() {
-      var self = this, $iter = TMP_4.$$p, block = $iter || nil;
+      var $a, $b, TMP_5, self = this, $iter = TMP_4.$$p, block = $iter || nil, listener = nil;
 
       TMP_4.$$p = null;
-      return  self.worker.addEventListener('message', block, false);;
+      listener = ($a = ($b = self).$lambda, $a.$$p = (TMP_5 = function(event){var self = TMP_5.$$s || this, payload = nil;
+if (event == null) event = nil;
+      payload = self.$Native(event)['$[]']("data");
+        return block.$call($scope.get('JSON').$parse(payload));}, TMP_5.$$s = self, TMP_5.$$arity = 1, TMP_5), $a).call($b);
+      return  self.worker.addEventListener('message', listener, false);;
     }, TMP_4.$$arity = 0), nil) && 'on_message';
   })($scope.base, null);
   return (function($base, $super) {
     function $NamedWebworker(){};
     var self = $NamedWebworker = $klass($base, $super, 'NamedWebworker', $NamedWebworker);
 
-    var def = self.$$proto, $scope = self.$$scope, TMP_5, TMP_6;
+    var def = self.$$proto, $scope = self.$$scope, TMP_6, TMP_7;
 
     def.handlers = nil;
-    Opal.defn(self, '$post_named_message', TMP_5 = function $$post_named_message(cmd, object) {
-      var self = this, r = nil;
+    Opal.defn(self, '$post_named_message', TMP_6 = function $$post_named_message(cmd, object) {
+      var self = this;
 
-      r = $hash2(["name", "payload"], {"name": cmd, "payload": object}).$to_json();
-      return self.$post_message(r);
-    }, TMP_5.$$arity = 2);
+      return self.$post_message($hash2(["name", "payload"], {"name": cmd, "payload": object}));
+    }, TMP_6.$$arity = 2);
 
-    return (Opal.defn(self, '$on_named_message', TMP_6 = function $$on_named_message(cmd) {
-      var $a, $b, TMP_7, self = this, $iter = TMP_6.$$p, block = $iter || nil;
+    return (Opal.defn(self, '$on_named_message', TMP_7 = function $$on_named_message(cmd) {
+      var $a, $b, TMP_8, self = this, $iter = TMP_7.$$p, block = $iter || nil;
 
-      TMP_6.$$p = null;
+      TMP_7.$$p = null;
       if ((($a = self.handlers['$empty?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
-        ($a = ($b = self).$on_message, $a.$$p = (TMP_7 = function(event){var self = TMP_7.$$s || this, $c, data = nil, handler = nil;
+        ($a = ($b = self).$on_message, $a.$$p = (TMP_8 = function(object){var self = TMP_8.$$s || this, $c, handler = nil;
           if (self.handlers == null) self.handlers = nil;
-if (event == null) event = nil;
-        data = self.$Native(event)['$[]']("data");
-          if ((($c = data['$start_with?']("{")) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
-            data = $scope.get('JSON').$parse(data);
-            handler = self.handlers['$[]'](data['$[]']("name"));
+if (object == null) object = nil;
+        if ((($c = object['$is_a?']($scope.get('Hash'))) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
+            handler = self.handlers['$[]'](object['$[]']("name"));
             if (handler !== false && handler !== nil && handler != null) {
-              return handler.$call(data)
+              return handler.$call(object)
               } else {
               return nil
             };
             } else {
             return nil
-          };}, TMP_7.$$s = self, TMP_7.$$arity = 1, TMP_7), $a).call($b)};
+          }}, TMP_8.$$s = self, TMP_8.$$arity = 1, TMP_8), $a).call($b)};
       return self.handlers['$[]='](cmd, block);
-    }, TMP_6.$$arity = 1), nil) && 'on_named_message';
+    }, TMP_7.$$arity = 1), nil) && 'on_named_message';
   })($scope.base, $scope.get('Webworker'));
 };
 
@@ -53829,7 +53830,7 @@ if (event == null) event = nil;
   if (self.worker == null) self.worker = nil;
   if (self.namedworker == null) self.namedworker = nil;
 
-  Opal.add_stubs(['$require', '$[]', '$<=', '$strftime', '$now', '$puts', '$new', '$post_message', '$on_message', '$to_json', '$Native', '$on_named_message', '$clear_errors', '$clear_annotations', '$compute_tune_preview', '$post_named_message', '$get_status']);
+  Opal.add_stubs(['$require', '$[]', '$<=', '$strftime', '$now', '$puts', '$new', '$post_message', '$on_named_message', '$clear_errors', '$clear_annotations', '$compute_tune_preview', '$post_named_message', '$get_status']);
   
 
   // polyfills from https://gist.github.com/jmshal/b14199f7402c8f3a4568733d8bed0f25
@@ -53899,10 +53900,7 @@ if (event == null) event = nil;
   self.worker = $scope.get('Webworker').$new(this);
   self.namedworker = $scope.get('NamedWebworker').$new(this);
   self.worker.$post_message("worker started " + ("znworker"));
-  ($a = ($b = self.worker).$on_message, $a.$$p = (TMP_4 = function(e){var self = TMP_4.$$s || this;
-if (e == null) e = nil;
-  return self.$puts("worker received message " + (self.$Native(e.data).$to_json()))}, TMP_4.$$s = self, TMP_4.$$arity = 1, TMP_4), $a).call($b);
-  return ($a = ($c = self.namedworker).$on_named_message, $a.$$p = (TMP_5 = function(data){var self = TMP_5.$$s || this, payload = nil, svg_and_position = nil;
+  ($a = ($b = self.namedworker).$on_named_message, $a.$$p = (TMP_4 = function(data){var self = TMP_4.$$s || this, payload = nil, svg_and_position = nil;
     if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
     if (self.namedworker == null) self.namedworker = nil;
     if ($gvars.log == null) $gvars.log = nil;
@@ -53913,5 +53911,8 @@ if (data == null) data = nil;
     payload = data['$[]']("payload");
     svg_and_position = self.tune_preview_printer.$compute_tune_preview(payload['$[]']("abc"), payload['$[]']("checksum"));
     self.namedworker.$post_named_message(data['$[]']("name"), svg_and_position);
-    return self.namedworker.$post_named_message("set_logger_status", $gvars.log.$get_status());}, TMP_5.$$s = self, TMP_5.$$arity = 1, TMP_5), $a).call($c, "compute_tune_preview");
+    return self.namedworker.$post_named_message("set_logger_status", $gvars.log.$get_status());}, TMP_4.$$s = self, TMP_4.$$arity = 1, TMP_4), $a).call($b, "compute_tune_preview");
+  return ($a = ($c = self.namedworker).$on_named_message, $a.$$p = (TMP_5 = function(data){var self = TMP_5.$$s || this;
+if (data == null) data = nil;
+  return $gvars.lang = data['$[]']("payload")}, TMP_5.$$s = self, TMP_5.$$arity = 1, TMP_5), $a).call($c, "load_locales");
 })(Opal);
