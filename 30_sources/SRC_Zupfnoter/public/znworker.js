@@ -53826,11 +53826,11 @@ if (object == null) object = nil;
   function $rb_le(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs <= rhs : lhs['$<='](rhs);
   }
-  var $a, $b, TMP_4, $c, TMP_5, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $gvars = Opal.gvars;
+  var $a, $b, TMP_5, $c, TMP_6, self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $gvars = Opal.gvars;
   if (self.worker == null) self.worker = nil;
   if (self.namedworker == null) self.namedworker = nil;
 
-  Opal.add_stubs(['$require', '$[]', '$<=', '$strftime', '$now', '$puts', '$new', '$post_message', '$on_named_message', '$clear_errors', '$clear_annotations', '$compute_tune_preview', '$post_named_message', '$get_status']);
+  Opal.add_stubs(['$require', '$[]', '$Native', '$<=', '$strftime', '$now', '$puts', '$new', '$post_message', '$on_named_message', '$clear_errors', '$clear_annotations', '$compute_tune_preview', '$post_named_message', '$get_status', '$phrases=', '$t']);
   
 
   // polyfills from https://gist.github.com/jmshal/b14199f7402c8f3a4568733d8bed0f25
@@ -53863,28 +53863,37 @@ if (object == null) object = nil;
   (function($base) {
     var $I18n, self = $I18n = $module($base, 'I18n');
 
-    var def = self.$$proto, $scope = self.$$scope, TMP_1, TMP_2;
+    var def = self.$$proto, $scope = self.$$scope, TMP_1, TMP_2, TMP_3;
 
     Opal.defs(self, '$t', TMP_1 = function $$t(text) {
-      var self = this;
+      var $a, self = this;
+      if (self.phrasesOpal == null) self.phrasesOpal = nil;
 
-      return text;
+      return ((($a = self.phrasesOpal['$[]'](text)) !== false && $a !== nil && $a != null) ? $a : text);
     }, TMP_1.$$arity = 1);
 
     Opal.defs(self, '$phrases', TMP_2 = function $$phrases() {
       var self = this;
+      if (self.phrases == null) self.phrases = nil;
 
-      return nil;
+      return self.phrases;
     }, TMP_2.$$arity = 0);
+
+    Opal.defs(self, '$phrases=', TMP_3 = function(phrases) {
+      var self = this;
+
+      self.phrases = phrases;
+      return self.phrasesOpal = self.$Native(phrases);
+    }, TMP_3.$$arity = 1);
   })($scope.base);
   (function($base, $super) {
     function $WorkerLogger(){};
     var self = $WorkerLogger = $klass($base, $super, 'WorkerLogger', $WorkerLogger);
 
-    var def = self.$$proto, $scope = self.$$scope, TMP_3;
+    var def = self.$$proto, $scope = self.$$scope, TMP_4;
 
     def.loglevel = nil;
-    return (Opal.defn(self, '$write', TMP_3 = function $$write(type, msg) {
+    return (Opal.defn(self, '$write', TMP_4 = function $$write(type, msg) {
       var $a, self = this, current_level = nil, time = nil;
 
       current_level = ((($a = $scope.get('LOGLEVELS')['$[]'](type)) !== false && $a !== nil && $a != null) ? $a : $scope.get('LOGLEVELS')['$[]']("warning"));
@@ -53894,13 +53903,13 @@ if (object == null) object = nil;
         } else {
         return nil
       };
-    }, TMP_3.$$arity = 2), nil) && 'write'
+    }, TMP_4.$$arity = 2), nil) && 'write'
   })($scope.base, $scope.get('Logger'));
   $gvars.log = $scope.get('WorkerLogger').$new("x.log");
   self.worker = $scope.get('Webworker').$new(this);
   self.namedworker = $scope.get('NamedWebworker').$new(this);
   self.worker.$post_message("worker started " + ("znworker"));
-  ($a = ($b = self.namedworker).$on_named_message, $a.$$p = (TMP_4 = function(data){var self = TMP_4.$$s || this, payload = nil, svg_and_position = nil;
+  ($a = ($b = self.namedworker).$on_named_message, $a.$$p = (TMP_5 = function(data){var self = TMP_5.$$s || this, payload = nil, svg_and_position = nil;
     if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
     if (self.namedworker == null) self.namedworker = nil;
     if ($gvars.log == null) $gvars.log = nil;
@@ -53911,8 +53920,9 @@ if (data == null) data = nil;
     payload = data['$[]']("payload");
     svg_and_position = self.tune_preview_printer.$compute_tune_preview(payload['$[]']("abc"), payload['$[]']("checksum"));
     self.namedworker.$post_named_message(data['$[]']("name"), svg_and_position);
-    return self.namedworker.$post_named_message("set_logger_status", $gvars.log.$get_status());}, TMP_4.$$s = self, TMP_4.$$arity = 1, TMP_4), $a).call($b, "compute_tune_preview");
-  return ($a = ($c = self.namedworker).$on_named_message, $a.$$p = (TMP_5 = function(data){var self = TMP_5.$$s || this;
+    return self.namedworker.$post_named_message("set_logger_status", $gvars.log.$get_status());}, TMP_5.$$s = self, TMP_5.$$arity = 1, TMP_5), $a).call($b, "compute_tune_preview");
+  return ($a = ($c = self.namedworker).$on_named_message, $a.$$p = (TMP_6 = function(data){var self = TMP_6.$$s || this, $d, $e;
 if (data == null) data = nil;
-  return $gvars.lang = data['$[]']("payload")}, TMP_5.$$s = self, TMP_5.$$arity = 1, TMP_5), $a).call($c, "load_locales");
+  (($d = [JSON.parse(data['$[]']("payload"))]), $e = $scope.get('I18n'), $e['$phrases='].apply($e, $d), $d[$d.length-1]);
+    return $scope.get('I18n').$t("locales loaed");}, TMP_6.$$s = self, TMP_6.$$arity = 1, TMP_6), $a).call($c, "i18n_set_locale");
 })(Opal);
