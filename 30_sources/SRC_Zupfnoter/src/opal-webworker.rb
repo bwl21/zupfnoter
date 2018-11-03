@@ -42,6 +42,8 @@ class NamedWebworker < Webworker
         if object.is_a? Hash
           handler = @handlers[object[:name]]
           handler.call(object) if handler
+        else
+          # todo handle else part
         end
       end
     end
