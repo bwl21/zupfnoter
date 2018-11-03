@@ -111,8 +111,6 @@ class Controller
     @worker = NamedWebworker.new("public/znworker.js?buster=#{Time.now}")
 
 
-
-
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',
                  'de-de' => 'de-de',
@@ -127,7 +125,14 @@ class Controller
     @refresh_timer = []
 
     @version = VERSION
-    I18n.locale(zupfnoter_language) { call_consumers(:localizedtexts) } if browser_language
+    if browser_language
+      I18n.locale(zupfnoter_language) do
+        call_consumers(:localizedtexts)
+        object = `JSON.stringify(#{I18n.phrases.to_n})`
+        @worker.post_named_message(:i18n_set_locale, object)
+      end
+    end
+
     @zupfnoter_ui = `new init_w2ui(#{self});`
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
@@ -602,16 +607,16 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.benchmark("render tune preview") do
 
-=begin
-        # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
-        # before comuputing the tune_preview
-        @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
-        svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
-        @tune_preview_printer.set_svg(svg_and_positions)
-        set_inactive("#tunePreview")
-=end
-
-        @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor_get_checksum})
+        if (false)
+          # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
+          # before comuputing the tune_preview
+          @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
+          svg_and_positions     = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
+          @tune_preview_printer.set_svg(svg_and_positions)
+          set_inactive("#tunePreview")
+        else
+          @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor_get_checksum})
+        end
       end
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
