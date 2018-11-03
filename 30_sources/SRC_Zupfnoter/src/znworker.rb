@@ -72,11 +72,16 @@ require 'opal-webworker'
 
 module I18n
   def self.t(text)
-    text
+    @phrasesOpal[text] || text
   end
 
   def self.phrases
-    #$lang.phrases
+    @phrases
+  end
+
+  def self.phrases=(phrases)
+    @phrases     = phrases
+    @phrasesOpal = Native(phrases)
   end
 end
 
@@ -97,9 +102,7 @@ end
 ## preparing environment
 #
 
-$log=WorkerLogger.new("x.log")
-
-
+$log = WorkerLogger.new("x.log")
 
 
 # installing the handlers
@@ -113,12 +116,15 @@ $log=WorkerLogger.new("x.log")
   $log.clear_errors
   $log.clear_annotations
   @tune_preview_printer = ABC2SVG::Abc2Svg.new(nil) # note that we do not provide a div, so set_svg will fail
-  payload          = data[:payload]
-  svg_and_position = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
+  payload               = data[:payload]
+  svg_and_position      = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
   @namedworker.post_named_message(data[:name], svg_and_position)
   @namedworker.post_named_message(:set_logger_status, $log.get_status)
 end
 
-@namedworker.on_named_message(:load_locales) do | data |
-  $lang = data[:payload]
+@namedworker.on_named_message(:i18n_set_locale) do |data|
+  # note taht this method sends a POJO object
+  # so we need to user JS json handling here
+  I18n.phrases = %x{JSON.parse(#{data[:payload]})}
+  I18n.t("locales loaed")
 end
