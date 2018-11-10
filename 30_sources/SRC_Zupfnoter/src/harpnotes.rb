@@ -1047,7 +1047,7 @@ module Harpnotes
       # @param [Object] conf_value - the value for configuration (used for dragging annotation)
       def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
         super()
-        _text = text.gsub(/[„“‚’—]/, {'„' => '"',   '“' => '"',  '‚' => "'", '’' =>  "'", '—' => '-'} )
+        _text       = text.gsub(/[„“‚’—]/, {'„' => '"', '“' => '"', '‚' => "'", '’' => "'", '—' => '-'})
         @center     = center
         @text       = _text
         @style      = style
@@ -1218,7 +1218,7 @@ module Harpnotes
       include Harpnotes::Music
       include Harpnotes::Drawing
 
-      attr_accessor :placeholders
+      attr_accessor :uri, :placeholders
 
       MM_PER_POINT = 0.3
 
@@ -1543,12 +1543,15 @@ module Harpnotes
         }
 
         # determine the synchronized notes
-        synched_notes = required_synchlines.map do |selector|
-          synch_points_to_show = $log.benchmark("build_syncpoints") { music.build_synch_points(selector) }
-          synch_points_to_show.map do |sp|
-            sp.synched_notes
-          end
-        end.flatten
+        synched_notes = []
+        $log.benchmark("build_syncpoints") {
+          synched_notes = required_synchlines.map do |selector|
+            synch_points_to_show = music.build_synch_points(selector)
+            synch_points_to_show.map do |sp|
+              sp.synched_notes
+            end
+          end.flatten
+        }
 
         # sheet_elements derived from the voices
         active_voices  = print_options_hash[:voices]
@@ -1628,9 +1631,9 @@ module Harpnotes
                                                             "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
         end
         datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{Controller::get_uri[:hostname]}]", :smaller)
+        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{@uri[:hostname]}]", :smaller)
         annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[1], "Zupfnoter: https://www.zupfnoter.de", :smaller)
-        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[2], music.checksum, :smaller)
+        #### todo annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[2], music.checksum, :smaller)
 
         lyrics     = print_options_hash[:lyrics]
         lyric_text = music.harpnote_options[:lyrics][:text]
@@ -1679,7 +1682,6 @@ module Harpnotes
         @draw_instrument.call.each { |r| sheet_marks.push(r) } if @draw_instrument
 
         sheet_elements = res_images + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
-
         result                = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
         result.printer_config = $conf[:printer]
 
@@ -2274,7 +2276,7 @@ module Harpnotes
           if cn_options
             cn_style                     = cn_options[:style]
             cn_fontsize_x, cn_fontsize_y = [1, 1]
-            cn_apanchor             = cn_options[:apanchor]
+            cn_apanchor                  = cn_options[:apanchor]
             cn_autopos                   = cn_options[:autopos]
             cn_fixedpos                  = cn_options[:pos]
             cn_apbase_x, cn_apbase_y     = cn_options[:apbase]
@@ -2282,7 +2284,7 @@ module Harpnotes
           if bn_options
             bn_style                     = bn_options[:style]
             bn_fontsize_x, bn_fontsize_y = [2.7, 2.7]
-            bn_apanchor             = bn_options[:apanchor]
+            bn_apanchor                  = bn_options[:apanchor]
             bn_autopos                   = bn_options[:autopos]
             bn_fixedpos                  = bn_options[:pos]
             bn_apbase_x, bn_apbase_y     = bn_options[:apbase]
@@ -3139,10 +3141,10 @@ module Harpnotes
           if value
             text = value.call
             unless text
-              $log.error(%Q{#{I18n.t("no placeholder value found in  ")} in '#{parameter}': '#{key.first}'})
+              $log.error(%Q{#{I18n.t("no placeholder value found in ")} in '#{parameter}': '#{key.first}'})
               text = ""
             end
-            result = result.gsub("{{#{key}}}", text)
+            result   = result.gsub("{{#{key}}}", text)
           else
             $log.error(%Q{#{I18n.t("wrong placeholder: ")} in '#{parameter}': '#{key.first}'})
           end
