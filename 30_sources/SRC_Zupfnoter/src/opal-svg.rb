@@ -191,16 +191,16 @@ module ZnSvg
 
       // *******************************************************************************************
       xx.on('dragmove', function(e){
+
         e.preventDefault();
 
         dx = e.detail.p.x - sx; // dx = dx - dx % 5;
         dy = e.detail.p.y - sy; // dy = dy - dy % 5;
-
         #{
-      p1  = draginfo[:p1]
-      p2  = draginfo[:p2]
-      cp1 = draginfo[:cp1]
-      cp2 = draginfo[:cp2]
+      p1  = Vector2d(draginfo[:p1])
+      p2  = Vector2d(draginfo[:p2])
+      cp1 = Vector2d(draginfo[:cp1])
+      cp2 = Vector2d(draginfo[:cp2])
 
       deltap = p2 - p1
       }
@@ -225,8 +225,8 @@ module ZnSvg
       // *************************************************************************************************************
         xx.on('dragend', function(e) {
       #{
-      draginfo[:cp1] = cp1
-      draginfo[:cp2] = cp2
+      draginfo[:cp1] = cp1.to_a
+      draginfo[:cp2] = cp2.to_a
       }
           this.stroke("red");
             conf_key_to_change = #{draginfo[:conf_key]} + "." + cp_id

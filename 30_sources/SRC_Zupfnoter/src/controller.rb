@@ -598,7 +598,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.benchmark("render tune preview") do
 
-        if (false)
+        if (false)  # sst to run this in the main thread
           # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
           # before comuputing the tune_preview
           @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
@@ -619,13 +619,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 # render the previews
 # also saves abc in localstore()
-  def render_harpnotepreview_callback
+  def render_harpnotepreview_callback_by_worker
     $log.benchmark("render_harpnotepreview_callback") do
       @worker.post_named_message(:compute_harpnotes_preview, {
           conf:                 $conf.get,
           settings:             $settings,
           systemstatus:         @systemstatus,
-          uri:                  {hostname: Controller.get_uri[:hostname]},
+          uri:                  {hostname: self.class.get_uri[:hostname]},
           config_from_editor:   get_config_from_editor,
           page_format:          "A3",
           abc_part_from_editor: @editor.get_abc_part
@@ -637,7 +637,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 # render the previews
 # also saves abc in localstore()
-  def render_harpnotepreview_callback_out
+  def render_harpnotepreview_callback
     $log.benchmark("render_harpnotepreview_callback") do
       begin
         $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
@@ -669,7 +669,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
-
     @editor.resize();
     $log.info("rendering")
     set_status(harpnotes_dirty: true)
@@ -688,17 +687,25 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result = Promise.new.tap do |promise|
       LastRenderMonitor.new.set_active
       set_active("#tunePreview")
-      #`setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
-      render_tunepreview_callback()
-      promise.resolve()
+      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+      #render_tunepreview_callback()
+      #set_inactive("#tunePreview")
+
     end.fail do
       alert("fail")
     end.then do
       Promise.new.tap do |promise|
+        `debugger`
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
         @harpnote_preview_printer.display_no_preview_available
-        `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
+        if @systemstatus[:autorefresh] == :on
+          render_harpnotepreview_callback_by_worker()
+        else
+          render_harpnotepreview_callback()
+        end
+
+        promise.resolve()
       end.fail do
         alert("fail")
       end.then do
@@ -737,7 +744,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 # compute the layout of the harpnotes
 # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0, page_format = 'A4')
-
     config = get_config_from_editor
 
     $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
@@ -759,7 +765,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     begin
-
       $log.benchmark("validate default conf") do
         @validation_errors = []
         @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
@@ -771,9 +776,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       result = nil
       $log.benchmark("computing layout") do
-        layouter = Harpnotes::Layout::Default.new
-        `debugger`
-        layouter.uri          = self.get_uri
+        layouter              = Harpnotes::Layout::Default.new
+        layouter.uri          = self.class.get_uri
         layouter.placeholders = get_placeholder_replacers(print_variant)
         result                = layouter.layout(@music_model, nil, print_variant, page_format)
       end
@@ -1024,7 +1028,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
     @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
     @harpnote_preview_printer.on_select do |harpnote|
-      select_abc_object(harpnote.origin)
+      select_abc_object(harpnote[:origin])
     end
 
     ## register handler for dragging annotations
@@ -1132,11 +1136,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @worker.on_named_message(:compute_harpnotes_preview) do |data|
       result = data[:payload]
-      `debugger`
       @harpnote_preview_printer.display_results(result)
       set_status(harpnotes_dirty: false)
       set_status(refresh: false)
-      `debugger`
       call_consumers(:harp_preview_size)
       nil
     end
