@@ -60,7 +60,7 @@ module Harpnotes
       #{@preview_container}.scrollTop(#{@preview_scroll.last});
       }
 
-      #$log.benchmark("binding elements") { bind_elements }
+      $log.benchmark("binding elements") { bind_elements }
       nil
     end
 
@@ -155,9 +155,9 @@ module Harpnotes
       result = []
       range  = [from, to].sort()
       @elements.each_key { |k|
-        origin = Native(k.origin)
+        origin = k[:origin]
         unless origin.nil?
-          noterange = [:startChar, :endChar].map { |c| Native(k.origin)[c] }.sort # todo: this should be done in abc2harpnotes
+          noterange = [:startChar, :endChar].map { |c| origin[c] }.sort # todo: this should be done in abc2harpnotes
           if (range.first - noterange.last) * (noterange.first - range.last) > 0
             @elements[k].each do |e|
               result.push(e)
@@ -210,39 +210,37 @@ module Harpnotes
     # establish all drag-operations for even complex usecases (objects which have multiple dragging zones)
     #
     def bind_elements
-      @interactive_elements.keys.each do |layout_model_element|
-        music_model_element = layout_model_element.origin
 
-        svg_nodes = @interactive_elements[layout_model_element].map do |svg_id|
-          svg_node = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
+      @interactive_elements.each do |svg_id, drawing_element|
+        svg_node = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
 
-          # bind context menus
-          @paper.set_conf_editable(svg_node, layout_model_element.conf_key, layout_model_element.more_conf_keys)
+        # bind context menus
+        conf_key = drawing_element[:conf_key]
+        @paper.set_conf_editable(svg_node, conf_key, drawing_element[:more_conf_keys])
 
-          # bind draggable elements
-          draginfo = layout_model_element.draginfo
-          if draginfo
-            case draginfo[:handler]
-              when :annotation
-                @paper.set_draggable_pos(svg_id, layout_model_element.conf_key, layout_model_element.conf_value) # annotations do not have a ddraghandler
-              when :jumpline
-                @paper.set_draggable_jumpline(svg_id, layout_model_element.conf_key, layout_model_element.conf_value, draginfo)
-              when :tuplet
-                @paper.set_draggable_tuplet(svg_id, layout_model_element.conf_key, layout_model_element.conf_value, draginfo)
-            end
+        # bind draggable elements
+        draginfo = drawing_element[:draginfo]
+        if draginfo
+          conf_value = drawing_element[:conf_value]
+          case draginfo[:handler]
+            when :annotation
+              @paper.set_draggable_pos(svg_id, conf_key, conf_value) # annotations do not have a ddraghandler
+            when :jumpline
+              @paper.set_draggable_jumpline(svg_id, conf_key, conf_value, draginfo)
+            when :tuplet
+              `debugger`
+              @paper.set_draggable_tuplet(svg_id, conf_key, conf_value, draginfo)
           end
-
-          svg_node
         end
 
 
+        music_model_element = drawing_element[:music_model_elemment_origin]
         # bind elements to be selectable - this has the chanin abc <- Music <- Layout <- SVG
-        if music_model_element.is_a? Harpnotes::Music::Playable and !layout_model_element.is_a? Harpnotes::Drawing::Path # only music elements can be highlighted
-          @elements[music_model_element] = svg_nodes.map do |svg_node|
-            svg_node.on(:click) do
-              @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
-            end
-            svg_node
+        if music_model_element
+          @elements[music_model_element] ||= []
+          @elements[music_model_element].push(svg_node)
+          svg_node.on(:click) do
+            @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
           end
         end
 
@@ -252,9 +250,26 @@ module Harpnotes
 
     # this method collects the drawing model elements and the associatited svg element ids.
     # see bind_elements how the music-model-elements are bound to the svg-nodes
-    def push_element(drawing_model_element, svg_id)
-      @interactive_elements[drawing_model_element] ||= []
-      @interactive_elements[drawing_model_element] << svg_id
+    def push_element(layout_model_element, svg_id)
+
+      # only playable elements can be highlighted
+      # path derived from playable elements are not highlighted (e.g. Ties)
+      music_model_element = layout_model_element.origin
+      if music_model_element.is_a? Harpnotes::Music::Playable and !layout_model_element.is_a? Harpnotes::Drawing::Path
+        music_model_element_hash = {origin: music_model_element.origin.tap { |x| x.delete(:raw_voice_element) }}
+      else
+        music_model_element_hash = nil
+      end
+
+      drawing_element = {
+          music_model_elemment_origin: music_model_element_hash,
+          conf_key:                    layout_model_element.conf_key,
+          conf_value:                  layout_model_element.conf_value,
+          more_conf_keys:              layout_model_element.more_conf_keys,
+          draginfo:                    layout_model_element.draginfo
+      }
+
+      @interactive_elements[svg_id] = drawing_element
     end
 
     def draw_ellipse(root)
@@ -458,9 +473,9 @@ module Harpnotes
           when :jumpline
             push_element(root, e)
           when :tuplet
-            e = @paper.line(draginfo[:p1].x, draginfo[:p1].y, draginfo[:cp1].x, draginfo[:cp1].y, {'data-cp' => "cp1", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
+            e = @paper.line(draginfo[:p1][0], draginfo[:p1][1], draginfo[:cp1][0], draginfo[:cp1][1], {'data-cp' => "cp1", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
             push_element(root, e)
-            e = @paper.line(draginfo[:p2].x, draginfo[:p2].y, draginfo[:cp2].x, draginfo[:cp2].y, {'data-cp' => "cp2", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
+            e = @paper.line(draginfo[:p2][0], draginfo[:p2][1], draginfo[:cp2][0], draginfo[:cp2][1], {'data-cp' => "cp2", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
             push_element(root, e)
             nil
         end
