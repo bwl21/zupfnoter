@@ -46,7 +46,7 @@ require 'abc2svg_to_harpnotes'
 #require 'opal-jspdf'
 #require 'opal-jszip'
 #require 'opal-musicaljs'
-#require 'svg_engine'
+require 'svg_engine'
 #require 'pdf_engine'
 #require 'i18n'
 require 'init_conf'
@@ -105,6 +105,123 @@ end
 $log = WorkerLogger.new("x.log")
 
 
+# worker routines
+#
+# # compute the layout of the harpnotes
+# @return [Happnotes::Layout] to be passed to one of the engines for output
+#
+
+class WorkerController
+
+  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus
+
+  def initialize
+    $conf        = Confstack.new(nil)
+    $conf.strict = false
+    $conf.push(InitConf.init_conf())
+  end
+
+
+  def get_placeholder_replacers(print_variant_nr)
+    # keys for musid_model see _mk_meta_data
+    # @meta_data = {number:        (@info_fields[:X]),
+    # composer:      (@info_fields[:C] or []).join("\n"),
+    #     title:         (@info_fields[:T] or []).join("\n"),
+    #     filename:      (@info_fields[:F] or []).join("\n"),
+    #     tempo:         {duration: duration, bpm: bpm, sym: tempo_note},
+    #     tempo_display: tempo_display,
+    #     meter:         @info_fields[:M],
+    #     key:           key,
+    #     o_key:         o_key_display
+    # }
+
+    {
+        composer:         lambda { @music_model.meta_data[:composer] },
+        key:              lambda { @music_model.meta_data[:key] },
+        meter:            lambda { @music_model.meta_data[:meter].join(" ") },
+        number:           lambda { @music_model.meta_data[:number] },
+        o_key:            lambda { @music_model.meta_data[:o_key] },
+        tempo:            lambda { @music_model.meta_data[:tempo_display] },
+        title:            lambda { @music_model.meta_data[:title] },
+        extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
+        extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
+        printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") },
+        watermark:        lambda { $settings[:watermark] || "" }
+    }
+  end
+
+  def load_music_model
+    harpnote_engine                = Harpnotes::Input::Abc2svgToHarpnotes.new
+    @music_model, player_model_abc = harpnote_engine.transform(@abc_part_from_editor)
+    @abc_model                     = harpnote_engine.abc_model
+    #@harpnote_player.player_model_abc = player_model_abc
+    #@music_model.checksum             = @editor.get_checksum
+  end
+
+  def compute_harpnotes_preview
+    result = {svg: "", interactive_elements: []}
+    load_music_model
+    begin
+      $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
+      @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
+
+      if @song_harpnotes
+
+        # todo: not sure if it is good to pass active_voices via @song_harpnotes
+        # todo: refactor better moove that part of the code out here
+        #$log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
+        @harpnote_preview_printer = Harpnotes::SvgEngine.new(nil, 2200, 1400) # size of canvas in pixels
+        @harpnote_preview_printer.clear
+        @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
+        result = @harpnote_preview_printer.draw(@song_harpnotes)
+      end
+    rescue Exception => e
+      $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
+    end
+
+    result
+  end
+
+  def layout_harpnotes(print_variant = 0, page_format = 'A4')
+    config = @config_from_editor
+
+    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
+    $conf.push(config) # in case of error, we hav the ensure close below
+
+    $image_list = $conf.get['resources'].keys rescue nil
+    begin
+      $log.benchmark("validate default conf") do
+        @validation_errors = []
+        @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
+      end
+
+      $log.benchmark("transforming music model") do
+      end
+
+      #call_consumers(:document_title)
+
+      result = nil
+      $log.benchmark("computing layout") do
+        layouter = Harpnotes::Layout::Default.new
+        layouter.uri          = $uri
+        layouter.placeholders = get_placeholder_replacers(print_variant)
+        result                = layouter.layout(@music_model, nil, print_variant, page_format)
+      end
+
+        #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
+        #@editor.set_annotations($log.annotations)
+    rescue Exception => e
+      $log.error(%Q{#{e.message}}, nil, nil, e.backtrace)
+    ensure
+      $conf.pop
+    end
+    result
+  end
+end
+
+
+
+
 # installing the handlers
 
 @worker      = Webworker.new(`this`)
@@ -127,4 +244,20 @@ end
   # so we need to user JS json handling here
   I18n.phrases = %x{JSON.parse(#{data[:payload]})}
   I18n.t("locales loaed")
+end
+
+@namedworker.on_named_message(:compute_harpnotes_preview) do |data|
+
+  controller = WorkerController.new
+
+  $conf.push(data[:payload][:conf])
+  $settings = data[:payload][:settings]
+  $uri      = data[:payload][:uri]
+
+  controller.systemstatus         = data[:payload][:systemstatus]
+  controller.config_from_editor   = data[:payload][:config_from_editor]
+  controller.abc_part_from_editor = data[:payload][:abc_part_from_editor]
+
+  result = controller.compute_harpnotes_preview
+  @namedworker.post_named_message(:compute_harpnotes_preview, result)
 end
