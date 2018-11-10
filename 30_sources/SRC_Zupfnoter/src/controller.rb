@@ -98,16 +98,6 @@ class Controller
 
   def initialize
 
-    x = {name: "render_harpnotepreview", abc_code: "hallo"}
-    # @worker = %x{new Worker('assets/znworker.rb')}
-    # %x{#{@worker}.postMessage(#{x.to_n}); // Start the worker.}
-    # %x{#{@worker}.postMessage({cmd: "second"}); }
-    #
-    # %x{ #{@worker}.addEventListener('message', function(e) {
-    #   console.log('Worker said: ', e.data);
-    # }, false);
-    # }
-
     @worker = NamedWebworker.new("public/znworker.js?buster=#{Time.now}")
 
 
@@ -265,28 +255,29 @@ class Controller
 
 # this method invokes the system conumers
   def call_consumers(clazz)
-    @systemstatus_consumers = {systemstatus:   [
-                                                   lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
-                                               ],
-                               lock:           [lambda { `lockscreen()` }],
-                               unlock:         [lambda { `unlockscreen()` }],
-                               localizedtexts: [lambda { %x{update_localized_texts()} }],
-                               statusline:     [],
-                               error_alert:    [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
-                               play_start:     [lambda { `update_play_w2ui('start')` }],
-                               play_stop:      [lambda { `update_play_w2ui('stop')` }],
-                               play_stopping:  [lambda { `update_play_w2ui('stopping')` }],
-                               disable_save:   [lambda { `disable_save();` }],
-                               enable_save:    [lambda { `enable_save();` }],
-                               before_open:    [lambda { `before_open()` }],
-                               document_title: [lambda { `document.title = #{@music_model.meta_data[:filename]}` }],
-                               current_notes:  [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
-                               settings_menu:  [lambda { `update_settings_menu(#{$settings.to_n})` }],
-                               extracts:       [lambda { @extracts.each { |entry|
+    @systemstatus_consumers = {systemstatus:      [
+                                                      lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                  ],
+                               lock:              [lambda { `lockscreen()` }],
+                               unlock:            [lambda { `unlockscreen()` }],
+                               localizedtexts:    [lambda { %x{update_localized_texts()} }],
+                               statusline:        [],
+                               error_alert:       [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
+                               play_start:        [lambda { `update_play_w2ui('start')` }],
+                               play_stop:         [lambda { `update_play_w2ui('stop')` }],
+                               play_stopping:     [lambda { `update_play_w2ui('stopping')` }],
+                               disable_save:      [lambda { `disable_save();` }],
+                               enable_save:       [lambda { `enable_save();` }],
+                               before_open:       [lambda { `before_open()` }],
+                               document_title:    [lambda { `document.title = #{@music_model.meta_data[:filename]}` }],
+                               current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
+                               settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
+                               extracts:          [lambda { @extracts.each { |entry|
                                  title = "#{entry.first}: #{entry.last}"
                                  `set_extract_menu(#{entry.first}, #{title})` }
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
-                               }]
+                               }],
+                               harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -630,15 +621,39 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 # also saves abc in localstore()
   def render_harpnotepreview_callback
     $log.benchmark("render_harpnotepreview_callback") do
+      @worker.post_named_message(:compute_harpnotes_preview, {
+          conf:                 $conf.get,
+          settings:             $settings,
+          systemstatus:         @systemstatus,
+          uri:                  {hostname: Controller.get_uri[:hostname]},
+          config_from_editor:   get_config_from_editor,
+          page_format:          "A3",
+          abc_part_from_editor: @editor.get_abc_part
+      })
+    end
+    nil
+  end
+
+
+# render the previews
+# also saves abc in localstore()
+  def render_harpnotepreview_callback_out
+    $log.benchmark("render_harpnotepreview_callback") do
       begin
         $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
         @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
 
         if @song_harpnotes
+
           # todo: not sure if it is good to pass active_voices via @song_harpnotes
           # todo: refactor better moove that part of the code out here
-          @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
-          $log.benchmark("drawing preview sheet") { @harpnote_preview_printer.draw(@song_harpnotes) }
+          $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
+
+          $log.benchmark("drawing preview sheet") {
+            result = @harpnote_preview_printer.draw(@song_harpnotes)
+            @harpnote_preview_printer.display_results(result)
+            harpnote_preview_printer.draw(@song_harpnotes)
+          }
           set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
@@ -682,6 +697,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       Promise.new.tap do |promise|
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
+        @harpnote_preview_printer.display_no_preview_available
         `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
       end.fail do
         alert("fail")
@@ -730,14 +746,17 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $image_list = $conf.get['resources'].keys rescue nil
 
     # prepare extract menu
-    printed_extracts = $conf['produce']
-    @extracts        = $conf.get('extract').inject([]) do |r, entry|
-      extract_number = entry.last.dig(:filenamepart)
-      print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
-      title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
-      r.push([entry.first, title])
+    $log.benchmark("prepare extract menu") do
+      printed_extracts = $conf['produce']
+      @extracts        = $conf.get('extract').inject([]) do |r, entry|
+        extract_number = entry.last.dig(:filenamepart)
+        print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+        title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+        r.push([entry.first, title])
+      end
+      call_consumers(:extracts)
     end
-    call_consumers(:extracts)
+
 
     begin
 
@@ -752,7 +771,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       result = nil
       $log.benchmark("computing layout") do
-        layouter              = Harpnotes::Layout::Default.new
+        layouter = Harpnotes::Layout::Default.new
+        `debugger`
+        layouter.uri          = self.get_uri
         layouter.placeholders = get_placeholder_replacers(print_variant)
         result                = layouter.layout(@music_model, nil, print_variant, page_format)
       end
@@ -796,8 +817,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def load_music_model
-    abc_parser                        = $conf.get('abc_parser')
-    harpnote_engine                   = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
+    harpnote_engine                   = Harpnotes::Input::Abc2svgToHarpnotes.new
     @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
     @abc_model                        = harpnote_engine.abc_model
     @harpnote_player.player_model_abc = player_model_abc
@@ -1109,10 +1129,24 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       @editor.set_annotations($log.annotations)
       #call_consumers(:error_alert)
     end
+
+    @worker.on_named_message(:compute_harpnotes_preview) do |data|
+      result = data[:payload]
+      `debugger`
+      @harpnote_preview_printer.display_results(result)
+      set_status(harpnotes_dirty: false)
+      set_status(refresh: false)
+      `debugger`
+      call_consumers(:harp_preview_size)
+      nil
+    end
+
   end
 
   def set_harppreview_size(size)
+    @harp_preview_size = size
     @harpnote_preview_printer.set_canvas(size)
+    call_consumers(:harp_preview_size)
   end
 
 # note the filedrop is not entirely initialized in user-interface.js
@@ -1347,7 +1381,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       case @systemstatus[:autorefresh]
         when :on
-          @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 2000)`
+          @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 300)`
         when :off # off means it relies on remote rendering
           @refresh_timer.push `setTimeout(function(){#{render_remote()}},  300)`
         when :remote # this means that the current instance runs in remote mode

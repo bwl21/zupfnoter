@@ -7,7 +7,7 @@ function init_w2ui(uicontroller) {
   var isFullScreen = false;
 
 
-// file import methods
+// file import methodet
 
   function get_zn_help(key) {
     Opal.I18n.$t_help(key)
@@ -134,7 +134,6 @@ function init_w2ui(uicontroller) {
 // UI-Methods
   function zoomHarpPreview(size) {
     uicontroller.$set_harppreview_size(size);
-    $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
   };
 
   function createNewSheet() {
@@ -1101,6 +1100,11 @@ function update_localized_texts() {
  TODO: refactor this?
  */
 
+
+function set_harp_preview_size(size){
+  $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
+}
+
 function set_tbitem_caption(item, caption) {
   w2ui.layout_top_toolbar.set(item, {text: caption});
 }
@@ -1241,7 +1245,8 @@ function before_open() {
 
 function set_extract_menu(id, text) {
   w2ui.layout_top_toolbar.set('tb_view:' + id, {text: text});
-  w2ui.layout_top_toolbar.refresh();
+  // w2ui.layout_top_toolbar.refresh();  we do not need this, in the reas application as we subsequentlcy  redraw the toolbar
+  // by call_consumers(:extracts)
 };
 
 ;
