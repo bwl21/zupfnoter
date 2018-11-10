@@ -15,10 +15,12 @@ module Harpnotes
 
 
     def initialize(element_id, width, height)
-      @viewbox           = [0, 0, 100, 100] # todo: do we need these defaults?
-      @container_id      = element_id
-      @preview_container = Element.find("##{@container_id}")
-      @paper             = ZnSvg::Paper.new(element_id, width, height)
+      @viewbox = [0, 0, 100, 100] # todo: do we need these defaults?
+      unless element_id.nil?
+        @container_id      = element_id
+        @preview_container = Element.find("##{@container_id}")
+      end
+      @paper = ZnSvg::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select   = nil
       @elements    = {} # record all elements being on the sheet, using upstream object as key
@@ -37,22 +39,28 @@ module Harpnotes
     def clear
       @elements             = {} # here we collect the interactive music_model_elements
       @interactive_elements = {} # here we collect the interactive layout_model_elements
-
-      @preview_scroll = [`#{@preview_container}.scrollLeft()`, `#{@preview_container}.scrollTop()`];
-
-      @preview_container.html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
     end
 
     def flush
       svg = @paper.get_svg
-      @preview_container.html(svg)
+      {svg: @paper.get_svg, interactive_elements: @interactive_elements}
+    end
+
+    def display_no_preview_available
+      @preview_scroll = [`#{@preview_container}.scrollLeft()`, `#{@preview_container}.scrollTop()`];
+      @preview_container.html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
+    end
+
+    def display_results(result)
+      @preview_container.html(result[:svg])
+      @interactive_elements = result[:interactive_elements]
 
       %x{
       #{@preview_container}.scrollLeft(#{@preview_scroll.first});
       #{@preview_container}.scrollTop(#{@preview_scroll.last});
       }
 
-      $log.benchmark("binding elements") { bind_elements }
+      #$log.benchmark("binding elements") { bind_elements }
       nil
     end
 
@@ -402,7 +410,7 @@ module Harpnotes
     # Draw an an annotation
     def draw_annotation(root)
 
-      style        = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
+      style = $conf.get('layout.FONT_STYLE_DEF')[root.style] || $conf.get('layout.FONT_STYLE_DEF')[:regular]
 
       # activate to debug the positioning of text
       #@paper.rect(root.center.first, root.center.last, 20, 5, 0, {stroke: "red", fill: "none", "stroke-width" => "0.2"}) if $log.loglevel == :debug
