@@ -35610,7 +35610,7 @@ Opal.modules["harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $range = Opal.range, $gvars = Opal.gvars, $hash = Opal.hash;
 
-  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$instance_variable_get', '$-', '$instance_variables', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$uniq', '$flatten', '$measure_start', '$proxy_note', '$alias_method', '$each', '$beat=', '$get_proxy_object', '$variant', '$sheet_drawable', '$prev_playable', '$prev_playable=', '$next_playable', '$next_playable=', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$select', '$left', '$right', '$product', '$min_by', '$abs', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$/', '$time', '$floor', '$>', '$start_pos', '$error', '$tuplet', '$[]=', '$index=', '$index', '$==', '$reset', '$_check1', '$center', '$size', '$conf_key', '$origin', '$_rect_overlap?', '$empty?', '$warning', '$t', '$count', '$push', '$shapes', '$get', '$clone', '$dotted?', '$dotted', '$gsub', '$length', '$strip', '$*', '$to_f', '$include', '$set_instrument_handlers', '$lambda', '$===', '$line_width=', '$to_i', '$each_with_index', '$split', '$call', '$join', '$tap', '$conf_key=', '$conf_value=', '$draginfo=', '$Vector2d', '$%', '$get_print_options', '$initialize', '$layout_debug_grid', '$layout_images', '$benchmark', '$compute_beat_compression', '$values', '$<', '$min', '$include?', '$build_synch_points', '$synched_notes', '$layout_voice', '$voices', '$loglevel?', '$check_annotations', '$notes', '$color=', '$compute_color_by_variant_no', '$layout_stringnames', '$meta_data', '$strftime', '$now', '$get_uri', '$checksum', '$harpnote_options', '$squeeze', '$delete', '$layout_sortmark', '$resolve_placeholder', '$message', '$printer_config=', '$pop', '$strict=', '$upcase', '$ord', '$-@', '$make_sheetmark_path', '$to_a', '$<=>', '$!', '$visible=', '$visible', '$layout_playable', '$proxy', '$decorations', '$make_decorations_per_playable', '$more_conf_keys', '$layout_barnumbers_countnotes', '$znid', '$make_annotated_bezier_path', '$first_in_part?', '$tuplet_start?', '$tuplet_end?', '$round', '$to_s', '$tie_end?', '$make_slur_path', '$tie_start?', '$slur_starts', '$slur_ends', '$policy', '$debug', '$from', '$to', '$make_path_from_jumpline', '$make_repeatsign_annotation', '$position', '$style', '$companion', '$text', '$<=', '$next_pitch', '$prev_pitch', '$size_with_dot', '$reverse', '$compute_note_position', '$count_note', '$!=', '$align=', '$measure_start?', '$measure_count', '$compute_beat_compression_1', '$compute_beat_compression_2', '$compute_beat_compression_10', '$compute_beat_compression_0', '$group_by', '$sort', '$beat_maps', '$duration_to_id', '$get_minc_factor', '$notes_on_beat', '$>=', '$next_first_in_part', '$layout_note', '$layout_accord', '$layout_pause', '$convert_pitch_to_xpos', '$compute_ellipse_properties_from_note', '$layout_note_shift', '$sheet_drawable=', '$layout_note_flags', '$times', '$odd?', '$check_duration', '$shift', '$sort_by', '$unshift', '$x', '$y', '$normalize', '$to_sym', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular', '$scan']);
+  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$instance_variable_get', '$-', '$instance_variables', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$uniq', '$flatten', '$measure_start', '$proxy_note', '$alias_method', '$each', '$beat=', '$get_proxy_object', '$variant', '$sheet_drawable', '$prev_playable', '$prev_playable=', '$next_playable', '$next_playable=', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$select', '$left', '$right', '$product', '$min_by', '$abs', '$new', '$expanded_beat_maps', '$max', '$keys', '$last_beat', '$private', '$inject', '$/', '$time', '$floor', '$>', '$start_pos', '$error', '$tuplet', '$[]=', '$index=', '$index', '$==', '$reset', '$_check1', '$center', '$size', '$conf_key', '$origin', '$_rect_overlap?', '$empty?', '$warning', '$t', '$count', '$push', '$shapes', '$get', '$clone', '$dotted?', '$dotted', '$gsub', '$length', '$strip', '$*', '$to_f', '$include', '$set_instrument_handlers', '$lambda', '$===', '$line_width=', '$to_i', '$each_with_index', '$split', '$call', '$join', '$tap', '$conf_key=', '$conf_value=', '$draginfo=', '$Vector2d', '$%', '$get_print_options', '$initialize', '$layout_debug_grid', '$layout_images', '$benchmark', '$compute_beat_compression', '$values', '$<', '$min', '$include?', '$build_synch_points', '$synched_notes', '$layout_voice', '$voices', '$loglevel?', '$check_annotations', '$notes', '$color=', '$compute_color_by_variant_no', '$layout_stringnames', '$meta_data', '$strftime', '$now', '$harpnote_options', '$squeeze', '$delete', '$layout_sortmark', '$resolve_placeholder', '$message', '$printer_config=', '$pop', '$strict=', '$upcase', '$ord', '$-@', '$make_sheetmark_path', '$to_a', '$<=>', '$!', '$visible=', '$visible', '$layout_playable', '$proxy', '$decorations', '$make_decorations_per_playable', '$more_conf_keys', '$layout_barnumbers_countnotes', '$znid', '$make_annotated_bezier_path', '$first_in_part?', '$tuplet_start?', '$tuplet_end?', '$round', '$to_s', '$tie_end?', '$make_slur_path', '$tie_start?', '$slur_starts', '$slur_ends', '$policy', '$debug', '$from', '$to', '$make_path_from_jumpline', '$make_repeatsign_annotation', '$position', '$style', '$companion', '$text', '$<=', '$next_pitch', '$prev_pitch', '$size_with_dot', '$reverse', '$compute_note_position', '$count_note', '$!=', '$align=', '$measure_start?', '$measure_count', '$compute_beat_compression_1', '$compute_beat_compression_2', '$compute_beat_compression_10', '$compute_beat_compression_0', '$group_by', '$sort', '$beat_maps', '$duration_to_id', '$get_minc_factor', '$notes_on_beat', '$>=', '$next_first_in_part', '$layout_note', '$layout_accord', '$layout_pause', '$convert_pitch_to_xpos', '$compute_ellipse_properties_from_note', '$layout_note_shift', '$sheet_drawable=', '$layout_note_flags', '$times', '$odd?', '$check_duration', '$shift', '$sort_by', '$unshift', '$x', '$y', '$normalize', '$to_sym', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular', '$scan']);
   return (function($base) {
     var $Harpnotes, self = $Harpnotes = $module($base, 'Harpnotes');
 
@@ -36771,12 +36771,12 @@ if (i == null) i = nil;
 
         var def = self.$$proto, $scope = self.$$scope, TMP_110, TMP_119, TMP_122, TMP_127, TMP_150, TMP_151, TMP_153, TMP_158, TMP_159, TMP_190, TMP_194, TMP_196, TMP_201, TMP_202, TMP_210, TMP_219, TMP_220, TMP_231, TMP_245, TMP_246, TMP_247, TMP_249, TMP_250, TMP_251, TMP_253, TMP_254, TMP_259, TMP_260, TMP_261, TMP_262, TMP_263, TMP_265, TMP_266, TMP_267, TMP_269;
 
-        def.placeholders = def.y_offset = def.beat_spacing = def.print_options_raw = def.bottom_annotation_positions = def.draw_instrument = def.slur_index = def.color_default = def.layout_minc = def.conf_beat_resolution = def.pitch_to_xpos = def.color_variant1 = def.color_variant2 = def.print_options_keys = nil;
+        def.placeholders = def.y_offset = def.beat_spacing = def.print_options_raw = def.bottom_annotation_positions = def.uri = def.draw_instrument = def.slur_index = def.color_default = def.layout_minc = def.conf_beat_resolution = def.pitch_to_xpos = def.color_variant1 = def.color_variant2 = def.print_options_keys = nil;
         self.$include((($scope.get('Harpnotes')).$$scope.get('Music')));
 
         self.$include((($scope.get('Harpnotes')).$$scope.get('Drawing')));
 
-        self.$attr_accessor("placeholders");
+        self.$attr_accessor("uri", "placeholders");
 
         Opal.cdecl($scope, 'MM_PER_POINT', 0.3);
 
@@ -36977,15 +36977,15 @@ if (beat == null) beat = nil;
           required_synchlines = ($a = ($f = print_options_hash['$[]']("synchlines")).$select, $a.$$p = (TMP_132 = function(sl){var self = TMP_132.$$s || this, $g;
 if (sl == null) sl = nil;
           return ($g = print_options_hash['$[]']("voices")['$include?'](sl.$first()), $g !== false && $g !== nil && $g != null ?print_options_hash['$[]']("voices")['$include?'](sl.$last()) : $g)}, TMP_132.$$s = self, TMP_132.$$arity = 1, TMP_132), $a).call($f);
-          synched_notes = ($a = ($g = required_synchlines).$map, $a.$$p = (TMP_133 = function(selector){var self = TMP_133.$$s || this, $h, $i, TMP_134, $j, TMP_135, synch_points_to_show = nil;
-            if ($gvars.log == null) $gvars.log = nil;
-if (selector == null) selector = nil;
-          synch_points_to_show = ($h = ($i = $gvars.log).$benchmark, $h.$$p = (TMP_134 = function(){var self = TMP_134.$$s || this;
+          synched_notes = [];
+          ($a = ($g = $gvars.log).$benchmark, $a.$$p = (TMP_133 = function(){var self = TMP_133.$$s || this, $h, $i, TMP_134;
 
-            return music.$build_synch_points(selector)}, TMP_134.$$s = self, TMP_134.$$arity = 0, TMP_134), $h).call($i, "build_syncpoints");
-            return ($h = ($j = synch_points_to_show).$map, $h.$$p = (TMP_135 = function(sp){var self = TMP_135.$$s || this;
+          return synched_notes = ($h = ($i = required_synchlines).$map, $h.$$p = (TMP_134 = function(selector){var self = TMP_134.$$s || this, $j, $k, TMP_135, synch_points_to_show = nil;
+if (selector == null) selector = nil;
+            synch_points_to_show = music.$build_synch_points(selector);
+              return ($j = ($k = synch_points_to_show).$map, $j.$$p = (TMP_135 = function(sp){var self = TMP_135.$$s || this;
 if (sp == null) sp = nil;
-            return sp.$synched_notes()}, TMP_135.$$s = self, TMP_135.$$arity = 1, TMP_135), $h).call($j);}, TMP_133.$$s = self, TMP_133.$$arity = 1, TMP_133), $a).call($g).$flatten();
+              return sp.$synched_notes()}, TMP_135.$$s = self, TMP_135.$$arity = 1, TMP_135), $j).call($k);}, TMP_134.$$s = self, TMP_134.$$arity = 1, TMP_134), $h).call($i).$flatten()}, TMP_133.$$s = self, TMP_133.$$arity = 0, TMP_133), $a).call($g, "build_syncpoints");
           active_voices = print_options_hash['$[]']("voices");
           voice_elements = ($a = ($h = music.$voices().$each_with_index()).$map, $a.$$p = (TMP_136 = function(v, index){var self = TMP_136.$$s || this, $i, countnotes_options = nil, barnumbers_options = nil;
 if (v == null) v = nil;if (index == null) index = nil;
@@ -37046,9 +37046,8 @@ if (s == null) s = nil;
 if (s == null) s = nil;
             return (($m = [$hash2(["handler"], {"handler": "annotation"})]), $n = s, $n['$draginfo='].apply($n, $m), $m[$m.length-1])}, TMP_142.$$s = self, TMP_142.$$arity = 1, TMP_142), $a).call($l))};
           datestring = $scope.get('Time').$now().$strftime("%Y-%m-%d %H:%M:%S");
-          annotations['$<<']((((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Annotation')).$new(self.bottom_annotation_positions['$[]'](0), "" + (filename) + " - created " + (datestring) + " by Zupfnoter " + ($scope.get('VERSION')) + " [" + ($scope.get('Controller').$get_uri()['$[]']("hostname")) + "]", "smaller"));
+          annotations['$<<']((((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Annotation')).$new(self.bottom_annotation_positions['$[]'](0), "" + (filename) + " - created " + (datestring) + " by Zupfnoter " + ($scope.get('VERSION')) + " [" + (self.uri['$[]']("hostname")) + "]", "smaller"));
           annotations['$<<']((((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Annotation')).$new(self.bottom_annotation_positions['$[]'](1), "Zupfnoter: https://www.zupfnoter.de", "smaller"));
-          annotations['$<<']((((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Annotation')).$new(self.bottom_annotation_positions['$[]'](2), music.$checksum(), "smaller"));
           lyrics = print_options_hash['$[]']("lyrics");
           lyric_text = music.$harpnote_options()['$[]']("lyrics")['$[]']("text");
           if (lyric_text !== false && lyric_text !== nil && lyric_text != null) {
@@ -37495,7 +37494,7 @@ if (goto$ == null) goto$ = nil;
             from_anchor = ((($m = goto$.$policy()['$[]']("from_anchor")) !== false && $m !== nil && $m != null) ? $m : "after");
             to_anchor = ((($m = goto$.$policy()['$[]']("to_anchor")) !== false && $m !== nil && $m != null) ? $m : "before");
             vertical_anchor = ((($m = goto$.$policy()['$[]']("vertical_anchor")) !== false && $m !== nil && $m != null) ? $m : "from");
-            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2095));
+            $gvars.log.$debug("vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2097));
             vertical = $rb_times(($rb_plus(distance, 0.5)), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -38424,7 +38423,7 @@ if (key == null) key = nil;
               text = value.$call();
               if (text !== false && text !== nil && text != null) {
                 } else {
-                $gvars.log.$error("" + ($scope.get('I18n').$t("no placeholder value found in  ")) + " in '" + (parameter) + "': '" + (key.$first()) + "'");
+                $gvars.log.$error("" + ($scope.get('I18n').$t("no placeholder value found in ")) + " in '" + (parameter) + "': '" + (key.$first()) + "'");
                 text = "";
               };
               return result = result.$gsub("{{" + (key) + "}}", text);
@@ -42408,7 +42407,7 @@ Opal.modules["controller"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars, $range = Opal.range;
 
-  Opal.add_stubs(['$nil?', '$Native', '$now', '$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$clone', '$private', '$attr_accessor', '$new', '$downcase', '$locale', '$call_consumers', '$to_n', '$phrases', '$post_named_message', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$check_suppoerted_browser', '$strict=', '$push', '$_init_conf', '$controller=', '$each', '$send', '$select', '$=~', '$methods', '$setup_tune_preview', '$setup_harpnote_preview', '$get_uri', '$class', '$last', '$cleanup_localstorage', '$empty?', '$get_abc_part', '$load_demo_tune', '$set_status', '$loglevel', '$load_from_uri', '$==', '$get_lyrics', '$ok?', '$render_previews', '$error', '$t', '$setup_ui_listener', '$show_message_of_the_day', '$year', '$lambda', '$has_errors?', '$join', '$get_errors', '$meta_data', '$get_notes', '$first', '$call', '$get_config_form_menu_entries', '$clear_errors', '$timestamp_start', '$timestamp', '$run_string', '$message', '$backtrace', '$run_parsed_command', '$include?', '$always', '$fail', '$alert', '$then', '$set_text', '$body', '$get', '$restore_from_localstorage', '$match', '$draw', '$layout_harpnotes', '$draw_in_segments', '$migrate_config_lyrics', '$migrate_notes', '$migrate_config_cleanup', '$delete', '$inject', '$map', '$to_i', '$split', '$gsub', '$to_s', '$+', '$count', '$is_a?', '$resolve', '$tap', '$is_playing?', '$stop_play_abc', '$play_auto', '$play_song', '$play_selection', '$play_from_selection', '$stop', '$set_active', '$start_with?', '$benchmark', '$find', '$compute_tune_preview', '$get_checksum', '$set_svg', '$set_inactive', '$debug', '$load_song', '$active_voices', '$resize', '$clear_annotations', '$send_remote_command', '$set_annotations', '$annotations', '$clear', '$render_harpnotepreview_callback', '$render_tunepreview_callback', '$file', '$get_text', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$get_config_from_editor', '$reset_to', '$keys', '$dig', '$validate_conf', '$load_music_model', '$placeholders=', '$get_placeholder_replacers', '$layout', '$pop', '$transform', '$abc_model', '$player_model_abc=', '$checksum=', '$get_config_model', '$migrate_config', '$set_config_model', '$add_class', '$scroll_into_view', '$has_class?', '$scroll_to_element', '$remove_class', '$-', '$select_range_by_position', '$range_highlight_more', '$range_unhighlight_more', '$range_unhighlight', '$highlight_abc_object', '$between?', '$!', '$select_add_range_by_position', '$get_selection_ranges', '$to_a', '$compact', '$flatten', '$merge!', '$loglevel=', '$app_name', '$app_id', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$on_annotation_drag_end', '$zip', '$patch_config_part', '$refresh_form', '$on_mouseover', '$conf_key', '$on_mouseout', '$on_draggable_rightcklick', '$element', '$on_named_message', '$set_canvas', '$%', '$index', '$systemstatus', '$size', '$on_change', '$request_refresh', '$on_selection_change', '$get_selection_info', '$unhighlight_all', '$range_highlight', '$on_cursor_change', '$on_noteon', '$highlight_abc_object_by_player_callback', '$on_noteoff', '$on_songoff', '$on', '$shift_key', '$alt_key', '$meta_key', '$ctrl_key', '$key_code', '$===', '$ord', '$prevent', '$play_abc', '$toggle_console', '$chr', '$key', '$newValue', '$present_message_of_the_day', '$>', '$render_remote', '$init_conf']);
+  Opal.add_stubs(['$nil?', '$Native', '$now', '$load_dir', '$save_dir', '$[]', '$warning', '$update', '$to_json', '$[]=', '$parse', '$clone', '$private', '$attr_accessor', '$new', '$downcase', '$locale', '$call_consumers', '$to_n', '$phrases', '$post_named_message', '$load_from_loacalstorage', '$on_command', '$save_to_localstorage', '$handle_command', '$info', '$check_suppoerted_browser', '$strict=', '$push', '$_init_conf', '$controller=', '$each', '$send', '$select', '$=~', '$methods', '$setup_tune_preview', '$setup_harpnote_preview', '$get_uri', '$class', '$last', '$cleanup_localstorage', '$empty?', '$get_abc_part', '$load_demo_tune', '$set_status', '$loglevel', '$load_from_uri', '$==', '$get_lyrics', '$ok?', '$render_previews', '$error', '$t', '$setup_ui_listener', '$show_message_of_the_day', '$year', '$lambda', '$has_errors?', '$join', '$get_errors', '$meta_data', '$get_notes', '$first', '$call', '$get_config_form_menu_entries', '$clear_errors', '$timestamp_start', '$timestamp', '$run_string', '$message', '$backtrace', '$run_parsed_command', '$include?', '$always', '$fail', '$alert', '$then', '$set_text', '$body', '$get', '$restore_from_localstorage', '$match', '$draw', '$layout_harpnotes', '$draw_in_segments', '$migrate_config_lyrics', '$migrate_notes', '$migrate_config_cleanup', '$delete', '$inject', '$map', '$to_i', '$split', '$gsub', '$to_s', '$+', '$count', '$is_a?', '$resolve', '$tap', '$is_playing?', '$stop_play_abc', '$play_auto', '$play_song', '$play_selection', '$play_from_selection', '$stop', '$set_active', '$start_with?', '$benchmark', '$find', '$compute_tune_preview', '$get_checksum', '$set_svg', '$set_inactive', '$get_config_from_editor', '$debug', '$load_song', '$active_voices', '$display_results', '$harpnote_preview_printer', '$resize', '$clear_annotations', '$send_remote_command', '$set_annotations', '$annotations', '$clear', '$display_no_preview_available', '$render_harpnotepreview_callback', '$render_tunepreview_callback', '$file', '$get_text', '$output', '$render_a4', '$render_a3', '$to_blob', '$strftime', '$reset_to', '$keys', '$dig', '$validate_conf', '$load_music_model', '$uri=', '$placeholders=', '$get_placeholder_replacers', '$layout', '$pop', '$transform', '$abc_model', '$player_model_abc=', '$checksum=', '$get_config_model', '$migrate_config', '$set_config_model', '$add_class', '$scroll_into_view', '$has_class?', '$scroll_to_element', '$remove_class', '$-', '$select_range_by_position', '$range_highlight_more', '$range_unhighlight_more', '$range_unhighlight', '$highlight_abc_object', '$between?', '$!', '$select_add_range_by_position', '$get_selection_ranges', '$to_a', '$compact', '$flatten', '$merge!', '$loglevel=', '$app_name', '$app_id', '$set_view_box', '$on_select', '$select_abc_object', '$origin', '$on_annotation_drag_end', '$zip', '$patch_config_part', '$refresh_form', '$on_mouseover', '$conf_key', '$on_mouseout', '$on_draggable_rightcklick', '$element', '$on_named_message', '$set_canvas', '$%', '$index', '$systemstatus', '$size', '$on_change', '$request_refresh', '$on_selection_change', '$get_selection_info', '$unhighlight_all', '$range_highlight', '$on_cursor_change', '$on_noteon', '$highlight_abc_object_by_player_callback', '$on_noteoff', '$on_songoff', '$on', '$shift_key', '$alt_key', '$meta_key', '$ctrl_key', '$key_code', '$===', '$ord', '$prevent', '$play_abc', '$toggle_console', '$chr', '$key', '$newValue', '$present_message_of_the_day', '$>', '$render_remote', '$init_conf']);
   (function($base, $super) {
     function $LastRenderMonitor(){};
     var self = $LastRenderMonitor = $klass($base, $super, 'LastRenderMonitor', $LastRenderMonitor);
@@ -42545,17 +42544,16 @@ Opal.modules["controller"] = function(Opal) {
     function $Controller(){};
     var self = $Controller = $klass($base, $super, 'Controller', $Controller);
 
-    var def = self.$$proto, $scope = self.$$scope, TMP_17, TMP_18, TMP_36, TMP_37, TMP_38, TMP_39, TMP_41, TMP_45, TMP_46, TMP_48, TMP_49, TMP_50, TMP_51, TMP_52, TMP_54, TMP_58, TMP_61, TMP_65, TMP_66, TMP_70, TMP_73, TMP_81, TMP_82, TMP_83, TMP_88, TMP_101, TMP_102, TMP_103, TMP_104, TMP_107, TMP_108, TMP_109, TMP_110, TMP_117, TMP_121, TMP_122, TMP_123, TMP_124, TMP_132, TMP_137, TMP_138, TMP_139, TMP_140, TMP_141, TMP_153, TMP_154, TMP_158, TMP_160, TMP_161, TMP_162, TMP_163, TMP_164, TMP_165;
+    var def = self.$$proto, $scope = self.$$scope, TMP_17, TMP_18, TMP_37, TMP_38, TMP_39, TMP_40, TMP_42, TMP_46, TMP_47, TMP_49, TMP_50, TMP_51, TMP_52, TMP_53, TMP_55, TMP_59, TMP_62, TMP_66, TMP_67, TMP_71, TMP_73, TMP_77, TMP_85, TMP_86, TMP_87, TMP_93, TMP_106, TMP_107, TMP_108, TMP_109, TMP_112, TMP_113, TMP_114, TMP_115, TMP_122, TMP_126, TMP_127, TMP_128, TMP_129, TMP_137, TMP_143, TMP_144, TMP_145, TMP_146, TMP_147, TMP_159, TMP_160, TMP_164, TMP_166, TMP_167, TMP_168, TMP_169, TMP_170, TMP_171;
 
     def.console = def.editor = def.harpnote_player = def.systemstatus = def.systemstatus_consumers = def.commands = def.music_model = def.tune_preview_printer = def.harpnote_preview_printer = def.expand_selection = def.abc_model = def.dropboxclient = def.dropboxpath = def.dropboxloginstate = def.worker = def.info_url = def.refresh_timer = nil;
     self.$attr_accessor("dropped_abc", "dropboxclient", "dropboxpath", "editor", "harpnote_preview_printer", "info_url", "tune_preview_printer", "systemstatus", "zupfnoter_ui");
 
     Opal.defn(self, '$initialize', TMP_17 = function $$initialize() {
-      var $a, $b, TMP_13, $c, TMP_14, $d, TMP_15, $e, $f, TMP_16, self = this, x = nil, languages = nil, browser_language = nil, zupfnoter_language = nil, uri = nil, mode = nil, demo_uri = nil, lastrender = nil;
+      var $a, $b, TMP_13, $c, TMP_14, $d, TMP_15, $e, $f, TMP_16, self = this, languages = nil, browser_language = nil, zupfnoter_language = nil, uri = nil, mode = nil, demo_uri = nil, lastrender = nil;
       if ($gvars.log == null) $gvars.log = nil;
       if ($gvars.conf == null) $gvars.conf = nil;
 
-      x = $hash2(["name", "abc_code"], {"name": "render_harpnotepreview", "abc_code": "hallo"});
       self.worker = $scope.get('NamedWebworker').$new("public/znworker.js?buster=" + ($scope.get('Time').$now()));
       languages = $hash2(["de", "de-de", "en", "en-us"], {"de": "de-de", "de-de": "de-de", "en": "en-US", "en-us": "en-US"});
       browser_language = (function() {
@@ -42667,10 +42665,10 @@ if (m == null) m = nil;
       return "<p>" + ($scope.get('I18n').$t("Free software to create sheets for table harps")) + "</p>\n         <table>\n          <tbody>\n          <tr><td>Zupfnoter:</td><td>" + ($scope.get('VERSION')) + "</td></tr>\n          <tr><td><a target=\"_blank\" href=\"http://opalrb.com\">Opal</a>:</td><td>" + ($scope.get('RUBY_ENGINE_VERSION')) + "</td></tr>\n          <tr><td>Ruby:</td><td>" + ($scope.get('RUBY_VERSION')) + "</td></tr>\n          <tr><td><a target=\"_blank\" href=\"http://moinejf.free.fr/js/index.html\">abc2svg</a>:</td><td>" + (abc2svg.version) + "</td></tr>\n          <tr><td><a target=\"_blank\" href=\"https://wim.vree.org/js/xml2abc-js_index.html\">xml2abc.js</a>:</td><td>" + (xml2abc_VERSION) + "</td></tr>\n         </tbody>\n        </table>\n        <p>© " + ($scope.get('Time').$now().$year()) + " Bernhard Weichel - info@zupfnoter.de</p>\n        <p><a target=\"_blank\" href=\"https://www.zupfnoter.de\">Website: https://www.zupfnoter.de</a></p>\n    ";
     }, TMP_18.$$arity = 0);
 
-    Opal.defn(self, '$call_consumers', TMP_36 = function $$call_consumers(clazz) {
-      var $a, $b, TMP_19, $c, TMP_20, $d, TMP_21, $e, TMP_22, $f, TMP_23, $g, TMP_24, $h, TMP_25, $i, TMP_26, $j, TMP_27, $k, TMP_28, $l, TMP_29, $m, TMP_30, $n, TMP_31, $o, TMP_32, $p, TMP_33, $q, TMP_35, self = this;
+    Opal.defn(self, '$call_consumers', TMP_37 = function $$call_consumers(clazz) {
+      var $a, $b, TMP_19, $c, TMP_20, $d, TMP_21, $e, TMP_22, $f, TMP_23, $g, TMP_24, $h, TMP_25, $i, TMP_26, $j, TMP_27, $k, TMP_28, $l, TMP_29, $m, TMP_30, $n, TMP_31, $o, TMP_32, $p, TMP_33, $q, TMP_35, $r, TMP_36, self = this;
 
-      self.systemstatus_consumers = $hash2(["systemstatus", "lock", "unlock", "localizedtexts", "statusline", "error_alert", "play_start", "play_stop", "play_stopping", "disable_save", "enable_save", "before_open", "document_title", "current_notes", "settings_menu", "extracts"], {"systemstatus": [($a = ($b = self).$lambda, $a.$$p = (TMP_19 = function(){var self = TMP_19.$$s || this;
+      self.systemstatus_consumers = $hash2(["systemstatus", "lock", "unlock", "localizedtexts", "statusline", "error_alert", "play_start", "play_stop", "play_stopping", "disable_save", "enable_save", "before_open", "document_title", "current_notes", "settings_menu", "extracts", "harp_preview_size"], {"systemstatus": [($a = ($b = self).$lambda, $a.$$p = (TMP_19 = function(){var self = TMP_19.$$s || this;
         if (self.systemstatus == null) self.systemstatus = nil;
 
       return update_systemstatus_w2ui(self.systemstatus.$to_n());}, TMP_19.$$s = self, TMP_19.$$arity = 0, TMP_19), $a).call($b)], "lock": [($a = ($c = self).$lambda, $a.$$p = (TMP_20 = function(){var self = TMP_20.$$s || this;
@@ -42714,19 +42712,22 @@ if (m == null) m = nil;
 if (entry == null) entry = nil;
         title = "" + (entry.$first()) + ": " + (entry.$last());
           return set_extract_menu(entry.$first(), title);}, TMP_34.$$s = self, TMP_34.$$arity = 1, TMP_34), $q).call($r);
-        return self.$call_consumers("systemstatus");}, TMP_33.$$s = self, TMP_33.$$arity = 0, TMP_33), $a).call($p)]});
-      return ($a = ($q = self.systemstatus_consumers['$[]'](clazz)).$each, $a.$$p = (TMP_35 = function(c){var self = TMP_35.$$s || this;
-if (c == null) c = nil;
-      return c.$call()}, TMP_35.$$s = self, TMP_35.$$arity = 1, TMP_35), $a).call($q);
-    }, TMP_36.$$arity = 1);
+        return self.$call_consumers("systemstatus");}, TMP_33.$$s = self, TMP_33.$$arity = 0, TMP_33), $a).call($p)], "harp_preview_size": [($a = ($q = self).$lambda, $a.$$p = (TMP_35 = function(){var self = TMP_35.$$s || this;
+        if (self.harp_preview_size == null) self.harp_preview_size = nil;
 
-    Opal.defn(self, '$get_config_form_menu_entries', TMP_37 = function $$get_config_form_menu_entries() {
+      return set_harp_preview_size(self.harp_preview_size);}, TMP_35.$$s = self, TMP_35.$$arity = 0, TMP_35), $a).call($q)]});
+      return ($a = ($r = self.systemstatus_consumers['$[]'](clazz)).$each, $a.$$p = (TMP_36 = function(c){var self = TMP_36.$$s || this;
+if (c == null) c = nil;
+      return c.$call()}, TMP_36.$$s = self, TMP_36.$$arity = 1, TMP_36), $a).call($r);
+    }, TMP_37.$$arity = 1);
+
+    Opal.defn(self, '$get_config_form_menu_entries', TMP_38 = function $$get_config_form_menu_entries() {
       var self = this;
 
       return $scope.get('ConfstackEditor').$get_config_form_menu_entries();
-    }, TMP_37.$$arity = 0);
+    }, TMP_38.$$arity = 0);
 
-    Opal.defn(self, '$handle_command', TMP_38 = function $$handle_command(command) {
+    Opal.defn(self, '$handle_command', TMP_39 = function $$handle_command(command) {
       var self = this, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
@@ -42743,9 +42744,9 @@ if (c == null) c = nil;
         } else { throw $err; }
       };
       return self.$call_consumers("error_alert");
-    }, TMP_38.$$arity = 1);
+    }, TMP_39.$$arity = 1);
 
-    Opal.defn(self, '$handle_parsed_command', TMP_39 = function $$handle_parsed_command(command, args) {
+    Opal.defn(self, '$handle_parsed_command', TMP_40 = function $$handle_parsed_command(command, args) {
       var self = this, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
@@ -42762,33 +42763,33 @@ if (c == null) c = nil;
         } else { throw $err; }
       };
       return self.$call_consumers("error_alert");
-    }, TMP_39.$$arity = 2);
+    }, TMP_40.$$arity = 2);
 
-    Opal.defn(self, '$save_to_localstorage', TMP_41 = function $$save_to_localstorage() {
-      var $a, $b, TMP_40, self = this, systemstatus = nil;
+    Opal.defn(self, '$save_to_localstorage', TMP_42 = function $$save_to_localstorage() {
+      var $a, $b, TMP_41, self = this, systemstatus = nil;
 
-      systemstatus = ($a = ($b = self.systemstatus).$select, $a.$$p = (TMP_40 = function(key, _){var self = TMP_40.$$s || this;
+      systemstatus = ($a = ($b = self.systemstatus).$select, $a.$$p = (TMP_41 = function(key, _){var self = TMP_41.$$s || this;
 if (key == null) key = nil;if (_ == null) _ = nil;
-      return ["last_read_info_id", "zndropboxlogincmd", "music_model", "view", "autorefresh", "loglevel", "nwworkingdir", "dropboxapp", "dropboxpath", "dropboxloginstate", "perspective", "saveformat", "zoom"]['$include?'](key)}, TMP_40.$$s = self, TMP_40.$$arity = 2, TMP_40), $a).call($b).$to_json();
+      return ["last_read_info_id", "zndropboxlogincmd", "music_model", "view", "autorefresh", "loglevel", "nwworkingdir", "dropboxapp", "dropboxpath", "dropboxloginstate", "perspective", "saveformat", "zoom"]['$include?'](key)}, TMP_41.$$s = self, TMP_41.$$arity = 2, TMP_41), $a).call($b).$to_json();
       if (self.systemstatus['$[]']("mode")['$==']("work")) {
         localStorage.setItem('systemstatus', systemstatus);;};
       return self.editor.$save_to_localstorage();
-    }, TMP_41.$$arity = 0);
+    }, TMP_42.$$arity = 0);
 
-    Opal.defn(self, '$load_from_uri', TMP_45 = function $$load_from_uri(url) {
-      var $a, $b, TMP_42, $c, $d, TMP_43, $e, $f, TMP_44, self = this;
+    Opal.defn(self, '$load_from_uri', TMP_46 = function $$load_from_uri(url) {
+      var $a, $b, TMP_43, $c, $d, TMP_44, $e, $f, TMP_45, self = this;
 
-      return ($a = ($b = ($c = ($d = ($e = ($f = $scope.get('HTTP').$get(url)).$then, $e.$$p = (TMP_44 = function(response){var self = TMP_44.$$s || this;
+      return ($a = ($b = ($c = ($d = ($e = ($f = $scope.get('HTTP').$get(url)).$then, $e.$$p = (TMP_45 = function(response){var self = TMP_45.$$s || this;
         if (self.editor == null) self.editor = nil;
 if (response == null) response = nil;
-      return self.editor.$set_text(response.$body())}, TMP_44.$$s = self, TMP_44.$$arity = 1, TMP_44), $e).call($f)).$fail, $c.$$p = (TMP_43 = function(response){var self = TMP_43.$$s || this;
+      return self.editor.$set_text(response.$body())}, TMP_45.$$s = self, TMP_45.$$arity = 1, TMP_45), $e).call($f)).$fail, $c.$$p = (TMP_44 = function(response){var self = TMP_44.$$s || this;
 if (response == null) response = nil;
-      return self.$alert("could not load from URL: " + (url))}, TMP_43.$$s = self, TMP_43.$$arity = 1, TMP_43), $c).call($d)).$always, $a.$$p = (TMP_42 = function(response){var self = TMP_42.$$s || this;
+      return self.$alert("could not load from URL: " + (url))}, TMP_44.$$s = self, TMP_44.$$arity = 1, TMP_44), $c).call($d)).$always, $a.$$p = (TMP_43 = function(response){var self = TMP_43.$$s || this;
 if (response == null) response = nil;
-      return nil}, TMP_42.$$s = self, TMP_42.$$arity = 1, TMP_42), $a).call($b);
-    }, TMP_45.$$arity = 1);
+      return nil}, TMP_43.$$s = self, TMP_43.$$arity = 1, TMP_43), $a).call($b);
+    }, TMP_46.$$arity = 1);
 
-    Opal.defn(self, '$load_from_loacalstorage', TMP_46 = function $$load_from_loacalstorage() {
+    Opal.defn(self, '$load_from_loacalstorage', TMP_47 = function $$load_from_loacalstorage() {
       var self = this, envelope = nil;
 
       self.editor.$restore_from_localstorage();
@@ -42796,15 +42797,15 @@ if (response == null) response = nil;
       if (envelope !== false && envelope !== nil && envelope != null) {
         self.$set_status(envelope)};
       return nil;
-    }, TMP_46.$$arity = 0);
+    }, TMP_47.$$arity = 0);
 
-    Opal.defn(self, '$cleanup_localstorage', TMP_48 = function $$cleanup_localstorage() {
-      var $a, $b, TMP_47, self = this, keys = nil, dbx_apiv1_traces = nil;
+    Opal.defn(self, '$cleanup_localstorage', TMP_49 = function $$cleanup_localstorage() {
+      var $a, $b, TMP_48, self = this, keys = nil, dbx_apiv1_traces = nil;
 
       keys = Object.keys(localStorage);
-      dbx_apiv1_traces = ($a = ($b = keys).$select, $a.$$p = (TMP_47 = function(k){var self = TMP_47.$$s || this;
+      dbx_apiv1_traces = ($a = ($b = keys).$select, $a.$$p = (TMP_48 = function(k){var self = TMP_48.$$s || this;
 if (k == null) k = nil;
-      return k.$match(/dropbox\-auth:default:/)}, TMP_47.$$s = self, TMP_47.$$arity = 1, TMP_47), $a).call($b);
+      return k.$match(/dropbox\-auth:default:/)}, TMP_48.$$s = self, TMP_48.$$arity = 1, TMP_48), $a).call($b);
       if ((($a = dbx_apiv1_traces['$empty?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
         } else {
         
@@ -42814,16 +42815,16 @@ if (k == null) k = nil;
       };
       localStorage.setItem('zupfnoterVersion', $scope.get('VERSION'));
       return nil;
-    }, TMP_48.$$arity = 0);
+    }, TMP_49.$$arity = 0);
 
-    Opal.defn(self, '$load_demo_tune', TMP_49 = function $$load_demo_tune() {
+    Opal.defn(self, '$load_demo_tune', TMP_50 = function $$load_demo_tune() {
       var self = this, abc = nil;
 
       abc = "X:21\nF:21_Ich_steh_an_deiner_krippen_hier\nT:Ich steh an deiner Krippen hier\nC:Nr. 59 aus dem Weihnachtsoratorium\nC:Joh. Seb. Bach\nC:Kirchenchor Mattighofen\n%%score ( 1 2 ) ( 3 4 )\nL:1/4\nQ:1/4=80.00\nM:4/4\nI:linebreak $\nK:G\nV:1 treble nm=\"Sopran Alt\"\nV:2 treble\nV:3 bass nm=\"Tenor Bass\"\nV:4 bass\nV:1\nG | G/A/ B A G | A A !fermata!B G/A/ |\nB c d c/B/ | A/G/ A !fermata!G :| B | B A G F |\nG/A/ B !fermata!A A | G F G D | G A !fermata!B G/A/ |\nB c d c/B/ | A/G/ A !fermata!G z |]\nV:2\nD | E/F/ G G/F/ G | G F G E/F/ |\nG/ B A/4G/4 F G | G F D :| z | G3/2 F/ F/E/ E/^D/ |\nE D D D | D/C/ D D/C/ B, | B, E ^D B, |\nE E D/E/2 G | G F D z |]\nV:3\nB, | B, E E/D/ D | E/C/ A,/D/ !fermata!D E |\nD G,/A,/ B,/C/ D | D C/B,/ !fermata!B, :| D | D D/C/ B,/C/ F,/B,/ |\nB,/A,/ A,/G,/ !fermata!F, F, | G,/A,/ B,/C/ B,/A,/ G, | G, F,/E,/ !fermata!F, E,/F,/ |\nG,3/2 A,/ B,/C/ D | D C/B,/ !fermata!B, z |]\nV:4\nG,/F,/ | E,3/2 D,/ C,3/2 B,,/ | C,/A,,/ D, G,, C, |\nG,/F,/ E, B,/A,/ G, | D D, G, :| z | B,/C/ D/2-D/2 G,/A,/ B, |\nE,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |\nE,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]\n\n%%%%zupfnoter.config\n\n{\n  \"produce\"     : [1],\n  \"annotations\" : {\n    \"refn\" : {\n      \"pos\"  : [20, 10],\n      \"text\" : \"referenced note\",\n      \"id\"   : \"refn\"\n    }\n  },\n  \"extract\"     : {\n    \"0\" : {\n      \"voices\"      : [1, 2, 3, 4],\n      \"flowlines\"   : [1, 3],\n      \"layoutlines\" : [1, 2, 3, 4],\n      \"legend\"      : {\"pos\": [310, 175], \"spos\": [310, 182]},\n      \"notes\"       : {\n        \"1\" : {\n          \"pos\"   : [340, 10],\n          \"text\"  : \"Ich steh an deiner Krippen hier\",\n          \"style\" : \"strong\"\n        }\n      },\n      \"lyrics\"      : {\n        \"1\" : {\n          \"verses\" : [1, 2, 3, 4, 5, 6, 7, 8],\n          \"pos\"    : [10, 100]\n        }\n      }\n    }\n  },\n  \"$schema\"     : \"https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json\",\n  \"$version\"    : \"1.4.0 beta 2\"\n}\n";
       return self.editor.$set_text(abc);
-    }, TMP_49.$$arity = 0);
+    }, TMP_50.$$arity = 0);
 
-    Opal.defn(self, '$render_a3', TMP_50 = function $$render_a3(index) {
+    Opal.defn(self, '$render_a3', TMP_51 = function $$render_a3(index) {
       var self = this, flowconf = nil, result = nil;
       if ($gvars.settings == null) $gvars.settings = nil;
 
@@ -42835,9 +42836,9 @@ if (k == null) k = nil;
       result = (($scope.get('Harpnotes')).$$scope.get('PDFEngine')).$new().$draw(self.$layout_harpnotes(index, "A3"));
       $gvars.settings['$[]=']("flowconf", flowconf);
       return result;
-    }, TMP_50.$$arity = -1);
+    }, TMP_51.$$arity = -1);
 
-    Opal.defn(self, '$render_a4', TMP_51 = function $$render_a4(index) {
+    Opal.defn(self, '$render_a4', TMP_52 = function $$render_a4(index) {
       var self = this, flowconf = nil, result = nil;
       if ($gvars.settings == null) $gvars.settings = nil;
 
@@ -42849,9 +42850,9 @@ if (k == null) k = nil;
       result = (($scope.get('Harpnotes')).$$scope.get('PDFEngine')).$new().$draw_in_segments(self.$layout_harpnotes(index, "A4"));
       $gvars.settings['$[]=']("flowconf", flowconf);
       return result;
-    }, TMP_51.$$arity = -1);
+    }, TMP_52.$$arity = -1);
 
-    Opal.defn(self, '$migrate_config', TMP_52 = function $$migrate_config(config) {
+    Opal.defn(self, '$migrate_config', TMP_53 = function $$migrate_config(config) {
       var $a, $b, self = this, result = nil, old_config = nil, new_lyrics = nil, sheetnotes = nil, new_config = nil, status = nil;
       if ($gvars.version == null) $gvars.version = nil;
 
@@ -42875,62 +42876,62 @@ if (k == null) k = nil;
       };
       new_config['$[]=']("$version", $scope.get('VERSION'));
       return [new_config, status];
-    }, TMP_52.$$arity = 1);
+    }, TMP_53.$$arity = 1);
 
-    Opal.defn(self, '$migrate_config_cleanup', TMP_54 = function $$migrate_config_cleanup(config) {
-      var $a, $b, TMP_53, self = this;
+    Opal.defn(self, '$migrate_config_cleanup', TMP_55 = function $$migrate_config_cleanup(config) {
+      var $a, $b, TMP_54, self = this;
 
       if ((($a = config['$[]']("extract")) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
-        ($a = ($b = config['$[]']("extract")).$each, $a.$$p = (TMP_53 = function(k, element){var self = TMP_53.$$s || this, lyrics = nil;
+        ($a = ($b = config['$[]']("extract")).$each, $a.$$p = (TMP_54 = function(k, element){var self = TMP_54.$$s || this, lyrics = nil;
 if (k == null) k = nil;if (element == null) element = nil;
         lyrics = element['$[]']("lyrics");
           if (lyrics !== false && lyrics !== nil && lyrics != null) {
             return lyrics.$delete("versepos")
             } else {
             return nil
-          };}, TMP_53.$$s = self, TMP_53.$$arity = 2, TMP_53), $a).call($b)};
+          };}, TMP_54.$$s = self, TMP_54.$$arity = 2, TMP_54), $a).call($b)};
       return config;
-    }, TMP_54.$$arity = 1);
+    }, TMP_55.$$arity = 1);
 
-    Opal.defn(self, '$migrate_config_lyrics', TMP_58 = function $$migrate_config_lyrics(config) {
-      var $a, $b, TMP_55, self = this, new_lyrics = nil;
+    Opal.defn(self, '$migrate_config_lyrics', TMP_59 = function $$migrate_config_lyrics(config) {
+      var $a, $b, TMP_56, self = this, new_lyrics = nil;
 
-      new_lyrics = ($a = ($b = config['$[]']("extract")).$inject, $a.$$p = (TMP_55 = function(r, element){var self = TMP_55.$$s || this, $c, $d, TMP_56, lyrics = nil, result = nil;
+      new_lyrics = ($a = ($b = config['$[]']("extract")).$inject, $a.$$p = (TMP_56 = function(r, element){var self = TMP_56.$$s || this, $c, $d, TMP_57, lyrics = nil, result = nil;
 if (r == null) r = nil;if (element == null) element = nil;
       lyrics = element.$last()['$[]']("lyrics");
         if (lyrics !== false && lyrics !== nil && lyrics != null) {
           lyrics = lyrics['$[]']("versepos")};
         if (lyrics !== false && lyrics !== nil && lyrics != null) {
-          result = ($c = ($d = lyrics).$inject, $c.$$p = (TMP_56 = function(ir, element){var self = TMP_56.$$s || this, $e, $f, TMP_57, verses = nil;
+          result = ($c = ($d = lyrics).$inject, $c.$$p = (TMP_57 = function(ir, element){var self = TMP_57.$$s || this, $e, $f, TMP_58, verses = nil;
 if (ir == null) ir = nil;if (element == null) element = nil;
-          verses = ($e = ($f = element.$first().$gsub(",", " ").$split(" ")).$map, $e.$$p = (TMP_57 = function(f){var self = TMP_57.$$s || this;
+          verses = ($e = ($f = element.$first().$gsub(",", " ").$split(" ")).$map, $e.$$p = (TMP_58 = function(f){var self = TMP_58.$$s || this;
 if (f == null) f = nil;
-            return f.$to_i()}, TMP_57.$$s = self, TMP_57.$$arity = 1, TMP_57), $e).call($f);
+            return f.$to_i()}, TMP_58.$$s = self, TMP_58.$$arity = 1, TMP_58), $e).call($f);
             ir['$[]='](($rb_plus(ir.$count(), 1)).$to_s(), $hash2(["verses", "pos"], {"verses": verses, "pos": element.$last()}));
-            return ir;}, TMP_56.$$s = self, TMP_56.$$arity = 2, TMP_56), $c).call($d, $hash2([], {}));
+            return ir;}, TMP_57.$$s = self, TMP_57.$$arity = 2, TMP_57), $c).call($d, $hash2([], {}));
           r['$[]='](element.$first(), $hash2(["lyrics"], {"lyrics": result}));};
-        return r;}, TMP_55.$$s = self, TMP_55.$$arity = 2, TMP_55), $a).call($b, $hash2([], {}));
+        return r;}, TMP_56.$$s = self, TMP_56.$$arity = 2, TMP_56), $a).call($b, $hash2([], {}));
       return $hash2(["extract"], {"extract": new_lyrics});
-    }, TMP_58.$$arity = 1);
+    }, TMP_59.$$arity = 1);
 
-    Opal.defn(self, '$migrate_notes', TMP_61 = function $$migrate_notes(config) {
-      var $a, $b, TMP_59, self = this, sheetnotes = nil;
+    Opal.defn(self, '$migrate_notes', TMP_62 = function $$migrate_notes(config) {
+      var $a, $b, TMP_60, self = this, sheetnotes = nil;
 
-      sheetnotes = ($a = ($b = config['$[]']("extract")).$inject, $a.$$p = (TMP_59 = function(r, element){var self = TMP_59.$$s || this, $c, $d, TMP_60, notes = nil, result = nil;
+      sheetnotes = ($a = ($b = config['$[]']("extract")).$inject, $a.$$p = (TMP_60 = function(r, element){var self = TMP_60.$$s || this, $c, $d, TMP_61, notes = nil, result = nil;
 if (r == null) r = nil;if (element == null) element = nil;
       notes = element.$last()['$[]']("notes");
         if ((($c = notes['$is_a?']($scope.get('Array'))) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
-          result = ($c = ($d = notes).$inject, $c.$$p = (TMP_60 = function(ir, element){var self = TMP_60.$$s || this;
+          result = ($c = ($d = notes).$inject, $c.$$p = (TMP_61 = function(ir, element){var self = TMP_61.$$s || this;
 if (ir == null) ir = nil;if (element == null) element = nil;
           ir['$[]='](($rb_plus(ir.$count(), 1)).$to_s(), element);
-            return ir;}, TMP_60.$$s = self, TMP_60.$$arity = 2, TMP_60), $c).call($d, $hash2([], {}));
+            return ir;}, TMP_61.$$s = self, TMP_61.$$arity = 2, TMP_61), $c).call($d, $hash2([], {}));
           r['$[]='](element.$first(), $hash2(["notes"], {"notes": result}));};
-        return r;}, TMP_59.$$s = self, TMP_59.$$arity = 2, TMP_59), $a).call($b, $hash2([], {}));
+        return r;}, TMP_60.$$s = self, TMP_60.$$arity = 2, TMP_60), $a).call($b, $hash2([], {}));
       return $hash2(["extract"], {"extract": sheetnotes});
-    }, TMP_61.$$arity = 1);
+    }, TMP_62.$$arity = 1);
 
-    Opal.defn(self, '$play_abc', TMP_65 = function $$play_abc(mode) {
-      var $a, $b, TMP_62, $c, $d, TMP_63, self = this, result = nil;
+    Opal.defn(self, '$play_abc', TMP_66 = function $$play_abc(mode) {
+      var $a, $b, TMP_63, $c, $d, TMP_64, self = this, result = nil;
 
       if (mode == null) {
         mode = "music_model";
@@ -42940,9 +42941,9 @@ if (ir == null) ir = nil;if (element == null) element = nil;
         } else {
         result = $scope.get('Promise').$new().$resolve()
       };
-      return ($a = ($b = ($c = ($d = result).$then, $c.$$p = (TMP_63 = function(){var self = TMP_63.$$s || this, $e, $f, TMP_64;
+      return ($a = ($b = ($c = ($d = result).$then, $c.$$p = (TMP_64 = function(){var self = TMP_64.$$s || this, $e, $f, TMP_65;
 
-      return ($e = ($f = $scope.get('Promise').$new()).$tap, $e.$$p = (TMP_64 = function(promise){var self = TMP_64.$$s || this, $g;
+      return ($e = ($f = $scope.get('Promise').$new()).$tap, $e.$$p = (TMP_65 = function(promise){var self = TMP_65.$$s || this, $g;
           if (self.harpnote_player == null) self.harpnote_player = nil;
 if (promise == null) promise = nil;
         if ((($g = self.harpnote_player['$is_playing?']()) !== nil && $g != null && (!$g.$$is_boolean || $g == true))) {
@@ -42959,40 +42960,40 @@ if (promise == null) promise = nil;
             if (mode['$==']("selection_ff")) {
               self.harpnote_player.$play_from_selection()};
           };
-          return promise.$resolve();}, TMP_64.$$s = self, TMP_64.$$arity = 1, TMP_64), $e).call($f)}, TMP_63.$$s = self, TMP_63.$$arity = 0, TMP_63), $c).call($d)).$fail, $a.$$p = (TMP_62 = function(message){var self = TMP_62.$$s || this;
+          return promise.$resolve();}, TMP_65.$$s = self, TMP_65.$$arity = 1, TMP_65), $e).call($f)}, TMP_64.$$s = self, TMP_64.$$arity = 0, TMP_64), $c).call($d)).$fail, $a.$$p = (TMP_63 = function(message){var self = TMP_63.$$s || this;
         if ($gvars.log == null) $gvars.log = nil;
 if (message == null) message = nil;
-      $gvars.log.$error("bug: Error in player " + (message), "controller", 588);
-        return self.$call_consumers("error_alert");}, TMP_62.$$s = self, TMP_62.$$arity = 1, TMP_62), $a).call($b);
-    }, TMP_65.$$arity = -1);
+      $gvars.log.$error("bug: Error in player " + (message), "controller", 579);
+        return self.$call_consumers("error_alert");}, TMP_63.$$s = self, TMP_63.$$arity = 1, TMP_63), $a).call($b);
+    }, TMP_66.$$arity = -1);
 
-    Opal.defn(self, '$stop_play_abc', TMP_66 = function $$stop_play_abc() {
+    Opal.defn(self, '$stop_play_abc', TMP_67 = function $$stop_play_abc() {
       var self = this;
 
       return self.harpnote_player.$stop();
-    }, TMP_66.$$arity = 0);
+    }, TMP_67.$$arity = 0);
 
-    Opal.defn(self, '$render_tunepreview_callback', TMP_70 = function $$render_tunepreview_callback() {
-      var $a, $b, TMP_67, $c, TMP_69, self = this, abc_text = nil, e = nil;
+    Opal.defn(self, '$render_tunepreview_callback', TMP_71 = function $$render_tunepreview_callback() {
+      var $a, $b, TMP_68, $c, TMP_70, self = this, abc_text = nil, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       self.$set_active("#tunePreview");
       self.$setup_tune_preview();
       try {
         abc_text = self.editor.$get_abc_part();
-        abc_text = ($a = ($b = abc_text.$split("\n")).$map, $a.$$p = (TMP_67 = function(line){var self = TMP_67.$$s || this, $c, $d, TMP_68, result = nil;
+        abc_text = ($a = ($b = abc_text.$split("\n")).$map, $a.$$p = (TMP_68 = function(line){var self = TMP_68.$$s || this, $c, $d, TMP_69, result = nil;
 if (line == null) line = nil;
         result = line;
           if ((($c = line['$start_with?']("W:")) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
-            result = ($c = ($d = result).$gsub, $c.$$p = (TMP_68 = function(m){var self = TMP_68.$$s || this;
+            result = ($c = ($d = result).$gsub, $c.$$p = (TMP_69 = function(m){var self = TMP_69.$$s || this;
 if (m == null) m = nil;
             if (m['$[]'](0)['$==']("\\")) {
                 return m['$[]'](1)
                 } else {
                 return " "
-              }}, TMP_68.$$s = self, TMP_68.$$arity = 1, TMP_68), $c).call($d, /(\\?)(~)/)};
-          return result;}, TMP_67.$$s = self, TMP_67.$$arity = 1, TMP_67), $a).call($b).$join("\n");
-        ($a = ($c = $gvars.log).$benchmark, $a.$$p = (TMP_69 = function(){var self = TMP_69.$$s || this, $d, svg_and_positions = nil;
+              }}, TMP_69.$$s = self, TMP_69.$$arity = 1, TMP_69), $c).call($d, /(\\?)(~)/)};
+          return result;}, TMP_68.$$s = self, TMP_68.$$arity = 1, TMP_68), $a).call($b).$join("\n");
+        ($a = ($c = $gvars.log).$benchmark, $a.$$p = (TMP_70 = function(){var self = TMP_70.$$s || this, $d, svg_and_positions = nil;
           if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
           if (self.editor == null) self.editor = nil;
           if (self.worker == null) self.worker = nil;
@@ -43005,7 +43006,7 @@ if (m == null) m = nil;
             return self.$set_inactive("#tunePreview");
             } else {
             return self.worker.$post_named_message("compute_tune_preview", $hash2(["abc", "checksum"], {"abc": abc_text, "checksum": self.editor_get_checksum}))
-          }}, TMP_69.$$s = self, TMP_69.$$arity = 0, TMP_69), $a).call($c, "render tune preview");
+          }}, TMP_70.$$s = self, TMP_70.$$arity = 0, TMP_70), $a).call($c, "render tune preview");
       } catch ($err) {
         if (Opal.rescue($err, [$scope.get('Exception')])) {e = $err;
           try {
@@ -43014,29 +43015,49 @@ if (m == null) m = nil;
         } else { throw $err; }
       };
       return nil;
-    }, TMP_70.$$arity = 0);
+    }, TMP_71.$$arity = 0);
 
     Opal.defn(self, '$render_harpnotepreview_callback', TMP_73 = function $$render_harpnotepreview_callback() {
-      var $a, $b, TMP_71, self = this;
+      var $a, $b, TMP_72, self = this;
       if ($gvars.log == null) $gvars.log = nil;
 
-      ($a = ($b = $gvars.log).$benchmark, $a.$$p = (TMP_71 = function(){var self = TMP_71.$$s || this, $c, $d, TMP_72, e = nil;
+      ($a = ($b = $gvars.log).$benchmark, $a.$$p = (TMP_72 = function(){var self = TMP_72.$$s || this;
+        if (self.worker == null) self.worker = nil;
+        if (self.systemstatus == null) self.systemstatus = nil;
+        if (self.editor == null) self.editor = nil;
+        if ($gvars.conf == null) $gvars.conf = nil;
+        if ($gvars.settings == null) $gvars.settings = nil;
+
+      return self.worker.$post_named_message("compute_harpnotes_preview", $hash2(["conf", "settings", "systemstatus", "uri", "config_from_editor", "page_format", "abc_part_from_editor"], {"conf": $gvars.conf.$get(), "settings": $gvars.settings, "systemstatus": self.systemstatus, "uri": $hash2(["hostname"], {"hostname": $scope.get('Controller').$get_uri()['$[]']("hostname")}), "config_from_editor": self.$get_config_from_editor(), "page_format": "A3", "abc_part_from_editor": self.editor.$get_abc_part()}))}, TMP_72.$$s = self, TMP_72.$$arity = 0, TMP_72), $a).call($b, "render_harpnotepreview_callback");
+      return nil;
+    }, TMP_73.$$arity = 0);
+
+    Opal.defn(self, '$render_harpnotepreview_callback_out', TMP_77 = function $$render_harpnotepreview_callback_out() {
+      var $a, $b, TMP_74, self = this;
+      if ($gvars.log == null) $gvars.log = nil;
+
+      ($a = ($b = $gvars.log).$benchmark, $a.$$p = (TMP_74 = function(){var self = TMP_74.$$s || this, $c, $d, TMP_75, $e, TMP_76, e = nil;
         if (self.systemstatus == null) self.systemstatus = nil;
         if (self.song_harpnotes == null) self.song_harpnotes = nil;
-        if (self.harpnote_player == null) self.harpnote_player = nil;
-        if (self.music_model == null) self.music_model = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
       try {
-          $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (640));
+          $gvars.log.$debug("viewid: " + (self.systemstatus['$[]']("view")) + " " + ("controller") + " " + (649));
           self.song_harpnotes = self.$layout_harpnotes(self.systemstatus['$[]']("view"), "A3");
           if ((($c = self.song_harpnotes) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
-            self.harpnote_player.$load_song(self.music_model, self.song_harpnotes.$active_voices());
-            ($c = ($d = $gvars.log).$benchmark, $c.$$p = (TMP_72 = function(){var self = TMP_72.$$s || this;
+            ($c = ($d = $gvars.log).$benchmark, $c.$$p = (TMP_75 = function(){var self = TMP_75.$$s || this;
+              if (self.harpnote_player == null) self.harpnote_player = nil;
+              if (self.music_model == null) self.music_model = nil;
+              if (self.song_harpnotes == null) self.song_harpnotes = nil;
+
+            return self.harpnote_player.$load_song(self.music_model, self.song_harpnotes.$active_voices())}, TMP_75.$$s = self, TMP_75.$$arity = 0, TMP_75), $c).call($d, "loading music to player");
+            ($c = ($e = $gvars.log).$benchmark, $c.$$p = (TMP_76 = function(){var self = TMP_76.$$s || this, result = nil;
               if (self.harpnote_preview_printer == null) self.harpnote_preview_printer = nil;
               if (self.song_harpnotes == null) self.song_harpnotes = nil;
 
-            return self.harpnote_preview_printer.$draw(self.song_harpnotes)}, TMP_72.$$s = self, TMP_72.$$arity = 0, TMP_72), $c).call($d, "drawing preview sheet");
+            result = self.harpnote_preview_printer.$draw(self.song_harpnotes);
+              self.harpnote_preview_printer.$display_results(result);
+              return self.$harpnote_preview_printer().$draw(self.song_harpnotes);}, TMP_76.$$s = self, TMP_76.$$arity = 0, TMP_76), $c).call($e, "drawing preview sheet");
             self.$set_status($hash2(["harpnotes_dirty"], {"harpnotes_dirty": false}));};
         } catch ($err) {
           if (Opal.rescue($err, [$scope.get('Exception')])) {e = $err;
@@ -43045,12 +43066,12 @@ if (m == null) m = nil;
             } finally { Opal.pop_exception() }
           } else { throw $err; }
         };
-        return self.$set_status($hash2(["refresh"], {"refresh": false}));}, TMP_71.$$s = self, TMP_71.$$arity = 0, TMP_71), $a).call($b, "render_harpnotepreview_callback");
+        return self.$set_status($hash2(["refresh"], {"refresh": false}));}, TMP_74.$$s = self, TMP_74.$$arity = 0, TMP_74), $a).call($b, "render_harpnotepreview_callback");
       return nil;
-    }, TMP_73.$$arity = 0);
+    }, TMP_77.$$arity = 0);
 
-    Opal.defn(self, '$render_previews', TMP_81 = function $$render_previews() {
-      var $a, $b, TMP_74, $c, $d, TMP_79, $e, $f, TMP_80, self = this, result = nil;
+    Opal.defn(self, '$render_previews', TMP_85 = function $$render_previews() {
+      var $a, $b, TMP_78, $c, $d, TMP_83, $e, $f, TMP_84, self = this, result = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       self.editor.$resize();
@@ -43063,25 +43084,26 @@ if (m == null) m = nil;
         self.$save_to_localstorage();
         self.$send_remote_command("render");
       };
-      result = ($a = ($b = ($c = ($d = ($e = ($f = $scope.get('Promise').$new()).$tap, $e.$$p = (TMP_80 = function(promise){var self = TMP_80.$$s || this;
+      result = ($a = ($b = ($c = ($d = ($e = ($f = $scope.get('Promise').$new()).$tap, $e.$$p = (TMP_84 = function(promise){var self = TMP_84.$$s || this;
 if (promise == null) promise = nil;
       $scope.get('LastRenderMonitor').$new().$set_active();
         self.$set_active("#tunePreview");
         self.$render_tunepreview_callback();
-        return promise.$resolve();}, TMP_80.$$s = self, TMP_80.$$arity = 1, TMP_80), $e).call($f)).$fail, $c.$$p = (TMP_79 = function(){var self = TMP_79.$$s || this;
+        return promise.$resolve();}, TMP_84.$$s = self, TMP_84.$$arity = 1, TMP_84), $e).call($f)).$fail, $c.$$p = (TMP_83 = function(){var self = TMP_83.$$s || this;
 
-      return self.$alert("fail")}, TMP_79.$$s = self, TMP_79.$$arity = 0, TMP_79), $c).call($d)).$then, $a.$$p = (TMP_74 = function(){var self = TMP_74.$$s || this, $c, $d, TMP_75, $e, $f, TMP_77, $g, $h, TMP_78;
+      return self.$alert("fail")}, TMP_83.$$s = self, TMP_83.$$arity = 0, TMP_83), $c).call($d)).$then, $a.$$p = (TMP_78 = function(){var self = TMP_78.$$s || this, $c, $d, TMP_79, $e, $f, TMP_81, $g, $h, TMP_82;
 
-      return ($c = ($d = ($e = ($f = ($g = ($h = $scope.get('Promise').$new()).$tap, $g.$$p = (TMP_78 = function(promise){var self = TMP_78.$$s || this;
+      return ($c = ($d = ($e = ($f = ($g = ($h = $scope.get('Promise').$new()).$tap, $g.$$p = (TMP_82 = function(promise){var self = TMP_82.$$s || this;
           if (self.harpnote_preview_printer == null) self.harpnote_preview_printer = nil;
 if (promise == null) promise = nil;
         self.$set_active("#harpPreview");
           self.harpnote_preview_printer.$clear();
-          return setTimeout(function(){self.$render_harpnotepreview_callback();promise.$resolve()}, 50);}, TMP_78.$$s = self, TMP_78.$$arity = 1, TMP_78), $g).call($h)).$fail, $e.$$p = (TMP_77 = function(){var self = TMP_77.$$s || this;
+          self.harpnote_preview_printer.$display_no_preview_available();
+          return setTimeout(function(){self.$render_harpnotepreview_callback();promise.$resolve()}, 50);}, TMP_82.$$s = self, TMP_82.$$arity = 1, TMP_82), $g).call($h)).$fail, $e.$$p = (TMP_81 = function(){var self = TMP_81.$$s || this;
 
-        return self.$alert("fail")}, TMP_77.$$s = self, TMP_77.$$arity = 0, TMP_77), $e).call($f)).$then, $c.$$p = (TMP_75 = function(){var self = TMP_75.$$s || this, $e, $f, TMP_76;
+        return self.$alert("fail")}, TMP_81.$$s = self, TMP_81.$$arity = 0, TMP_81), $e).call($f)).$then, $c.$$p = (TMP_79 = function(){var self = TMP_79.$$s || this, $e, $f, TMP_80;
 
-        return ($e = ($f = $scope.get('Promise').$new()).$tap, $e.$$p = (TMP_76 = function(promise){var self = TMP_76.$$s || this;
+        return ($e = ($f = $scope.get('Promise').$new()).$tap, $e.$$p = (TMP_80 = function(promise){var self = TMP_80.$$s || this;
             if (self.editor == null) self.editor = nil;
             if ($gvars.log == null) $gvars.log = nil;
 if (promise == null) promise = nil;
@@ -43089,20 +43111,20 @@ if (promise == null) promise = nil;
             self.$set_inactive("#harpPreview");
             self.editor.$set_annotations($gvars.log.$annotations());
             $scope.get('LastRenderMonitor').$new().$clear();
-            return promise.$resolve();}, TMP_76.$$s = self, TMP_76.$$arity = 1, TMP_76), $e).call($f)}, TMP_75.$$s = self, TMP_75.$$arity = 0, TMP_75), $c).call($d)}, TMP_74.$$s = self, TMP_74.$$arity = 0, TMP_74), $a).call($b);
+            return promise.$resolve();}, TMP_80.$$s = self, TMP_80.$$arity = 1, TMP_80), $e).call($f)}, TMP_79.$$s = self, TMP_79.$$arity = 0, TMP_79), $c).call($d)}, TMP_78.$$s = self, TMP_78.$$arity = 0, TMP_78), $a).call($b);
       return result;
-    }, TMP_81.$$arity = 0);
+    }, TMP_85.$$arity = 0);
 
-    Opal.defn(self, '$render_remote', TMP_82 = function $$render_remote() {
+    Opal.defn(self, '$render_remote', TMP_86 = function $$render_remote() {
       var self = this;
 
       self.$set_status($hash2(["refresh"], {"refresh": false}));
       self.$save_to_localstorage();
       self.$render_tunepreview_callback();
       return self.$send_remote_command("render");
-    }, TMP_82.$$arity = 0);
+    }, TMP_86.$$arity = 0);
 
-    Opal.defn(self, '$save_file', TMP_83 = function $$save_file() {
+    Opal.defn(self, '$save_file', TMP_87 = function $$save_file() {
       var self = this, zip = nil, blob = nil, filename = nil;
 
       zip = (($scope.get('JSZip')).$$scope.get('ZipFile')).$new();
@@ -43112,10 +43134,10 @@ if (promise == null) promise = nil;
       blob = zip.$to_blob();
       filename = "song" + ($scope.get('Time').$now().$strftime("%d%m%Y%H%M%S")) + ".zip";
       return window.saveAs(blob, filename);
-    }, TMP_83.$$arity = 0);
+    }, TMP_87.$$arity = 0);
 
-    Opal.defn(self, '$layout_harpnotes', TMP_88 = function $$layout_harpnotes(print_variant, page_format) {
-      var $a, $b, TMP_84, $c, TMP_85, $d, TMP_86, $e, TMP_87, self = this, config = nil, printed_extracts = nil, result = nil, e = nil;
+    Opal.defn(self, '$layout_harpnotes', TMP_93 = function $$layout_harpnotes(print_variant, page_format) {
+      var $a, $b, TMP_88, $c, TMP_90, $d, TMP_91, $e, TMP_92, self = this, config = nil, result = nil, e = nil;
       if ($gvars.conf == null) $gvars.conf = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
@@ -43133,21 +43155,24 @@ if (promise == null) promise = nil;
         if (Opal.rescue($err, [$scope.get('StandardError')])) {
         return nil
         } else { throw $err; } }})();
+      ($a = ($b = $gvars.log).$benchmark, $a.$$p = (TMP_88 = function(){var self = TMP_88.$$s || this, $c, $d, TMP_89, printed_extracts = nil;
+        if ($gvars.conf == null) $gvars.conf = nil;
+
       printed_extracts = $gvars.conf['$[]']("produce");
-      self.extracts = ($a = ($b = $gvars.conf.$get("extract")).$inject, $a.$$p = (TMP_84 = function(r, entry){var self = TMP_84.$$s || this, $c, extract_number = nil, print = nil, title = nil;
+        self.extracts = ($c = ($d = $gvars.conf.$get("extract")).$inject, $c.$$p = (TMP_89 = function(r, entry){var self = TMP_89.$$s || this, $e, extract_number = nil, print = nil, title = nil;
 if (r == null) r = nil;if (entry == null) entry = nil;
-      extract_number = entry.$last().$dig("filenamepart");
-        print = ((function() {if ((($c = printed_extracts['$include?'](entry.$first().$to_i())) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
-          return "*  "
-          } else {
-          return " "
-        }; return nil; })());
-        title = "" + (print) + (extract_number) + " " + (entry.$last()['$[]']("title")) + " ";
-        return r.$push([entry.$first(), title]);}, TMP_84.$$s = self, TMP_84.$$arity = 2, TMP_84), $a).call($b, []);
-      self.$call_consumers("extracts");
+        extract_number = entry.$last().$dig("filenamepart");
+          print = ((function() {if ((($e = printed_extracts['$include?'](entry.$first().$to_i())) !== nil && $e != null && (!$e.$$is_boolean || $e == true))) {
+            return "*  "
+            } else {
+            return " "
+          }; return nil; })());
+          title = "" + (print) + (extract_number) + " " + (entry.$last()['$[]']("title")) + " ";
+          return r.$push([entry.$first(), title]);}, TMP_89.$$s = self, TMP_89.$$arity = 2, TMP_89), $c).call($d, []);
+        return self.$call_consumers("extracts");}, TMP_88.$$s = self, TMP_88.$$arity = 0, TMP_88), $a).call($b, "prepare extract menu");
       try {
       try {
-        ($a = ($c = $gvars.log).$benchmark, $a.$$p = (TMP_85 = function(){var self = TMP_85.$$s || this, $d, $e;
+        ($a = ($c = $gvars.log).$benchmark, $a.$$p = (TMP_90 = function(){var self = TMP_90.$$s || this, $d, $e;
           if (self.json_validator == null) self.json_validator = nil;
           if ($gvars.log == null) $gvars.log = nil;
           if ($gvars.settings == null) $gvars.settings = nil;
@@ -43158,18 +43183,20 @@ if (r == null) r = nil;if (entry == null) entry = nil;
             return self.validation_errors = self.json_validator.$validate_conf($gvars.conf)
             } else {
             return nil
-          };}, TMP_85.$$s = self, TMP_85.$$arity = 0, TMP_85), $a).call($c, "validate default conf");
-        ($a = ($d = $gvars.log).$benchmark, $a.$$p = (TMP_86 = function(){var self = TMP_86.$$s || this;
+          };}, TMP_90.$$s = self, TMP_90.$$arity = 0, TMP_90), $a).call($c, "validate default conf");
+        ($a = ($d = $gvars.log).$benchmark, $a.$$p = (TMP_91 = function(){var self = TMP_91.$$s || this;
 
-        return self.$load_music_model()}, TMP_86.$$s = self, TMP_86.$$arity = 0, TMP_86), $a).call($d, "transforming music model");
+        return self.$load_music_model()}, TMP_91.$$s = self, TMP_91.$$arity = 0, TMP_91), $a).call($d, "transforming music model");
         self.$call_consumers("document_title");
         result = nil;
-        ($a = ($e = $gvars.log).$benchmark, $a.$$p = (TMP_87 = function(){var self = TMP_87.$$s || this, $f, $g, layouter = nil;
+        ($a = ($e = $gvars.log).$benchmark, $a.$$p = (TMP_92 = function(){var self = TMP_92.$$s || this, $f, $g, layouter = nil;
           if (self.music_model == null) self.music_model = nil;
 
         layouter = (((($scope.get('Harpnotes')).$$scope.get('Layout'))).$$scope.get('Default')).$new();
+          debugger;
+          (($f = [self.$get_uri()]), $g = layouter, $g['$uri='].apply($g, $f), $f[$f.length-1]);
           (($f = [self.$get_placeholder_replacers(print_variant)]), $g = layouter, $g['$placeholders='].apply($g, $f), $f[$f.length-1]);
-          return result = layouter.$layout(self.music_model, nil, print_variant, page_format);}, TMP_87.$$s = self, TMP_87.$$arity = 0, TMP_87), $a).call($e, "computing layout");
+          return result = layouter.$layout(self.music_model, nil, print_variant, page_format);}, TMP_92.$$s = self, TMP_92.$$arity = 0, TMP_92), $a).call($e, "computing layout");
         self.editor.$set_annotations($gvars.log.$annotations());
       } catch ($err) {
         if (Opal.rescue($err, [$scope.get('Exception')])) {e = $err;
@@ -43182,51 +43209,51 @@ if (r == null) r = nil;if (entry == null) entry = nil;
         $gvars.conf.$pop()
       };
       return result;
-    }, TMP_88.$$arity = -1);
+    }, TMP_93.$$arity = -1);
 
-    Opal.defn(self, '$get_placeholder_replacers', TMP_101 = function $$get_placeholder_replacers(print_variant_nr) {
-      var $a, $b, TMP_89, $c, TMP_90, $d, TMP_91, $e, TMP_92, $f, TMP_93, $g, TMP_94, $h, TMP_95, $i, TMP_96, $j, TMP_97, $k, TMP_98, $l, TMP_100, self = this;
+    Opal.defn(self, '$get_placeholder_replacers', TMP_106 = function $$get_placeholder_replacers(print_variant_nr) {
+      var $a, $b, TMP_94, $c, TMP_95, $d, TMP_96, $e, TMP_97, $f, TMP_98, $g, TMP_99, $h, TMP_100, $i, TMP_101, $j, TMP_102, $k, TMP_103, $l, TMP_105, self = this;
 
-      return $hash2(["composer", "key", "meter", "number", "o_key", "tempo", "title", "extract_title", "extract_filename", "printed_extracts", "watermark"], {"composer": ($a = ($b = self).$lambda, $a.$$p = (TMP_89 = function(){var self = TMP_89.$$s || this;
+      return $hash2(["composer", "key", "meter", "number", "o_key", "tempo", "title", "extract_title", "extract_filename", "printed_extracts", "watermark"], {"composer": ($a = ($b = self).$lambda, $a.$$p = (TMP_94 = function(){var self = TMP_94.$$s || this;
         if (self.music_model == null) self.music_model = nil;
 
-      return self.music_model.$meta_data()['$[]']("composer")}, TMP_89.$$s = self, TMP_89.$$arity = 0, TMP_89), $a).call($b), "key": ($a = ($c = self).$lambda, $a.$$p = (TMP_90 = function(){var self = TMP_90.$$s || this;
+      return self.music_model.$meta_data()['$[]']("composer")}, TMP_94.$$s = self, TMP_94.$$arity = 0, TMP_94), $a).call($b), "key": ($a = ($c = self).$lambda, $a.$$p = (TMP_95 = function(){var self = TMP_95.$$s || this;
         if (self.music_model == null) self.music_model = nil;
 
-      return self.music_model.$meta_data()['$[]']("key")}, TMP_90.$$s = self, TMP_90.$$arity = 0, TMP_90), $a).call($c), "meter": ($a = ($d = self).$lambda, $a.$$p = (TMP_91 = function(){var self = TMP_91.$$s || this;
+      return self.music_model.$meta_data()['$[]']("key")}, TMP_95.$$s = self, TMP_95.$$arity = 0, TMP_95), $a).call($c), "meter": ($a = ($d = self).$lambda, $a.$$p = (TMP_96 = function(){var self = TMP_96.$$s || this;
         if (self.music_model == null) self.music_model = nil;
 
-      return self.music_model.$meta_data()['$[]']("meter").$join(" ")}, TMP_91.$$s = self, TMP_91.$$arity = 0, TMP_91), $a).call($d), "number": ($a = ($e = self).$lambda, $a.$$p = (TMP_92 = function(){var self = TMP_92.$$s || this;
+      return self.music_model.$meta_data()['$[]']("meter").$join(" ")}, TMP_96.$$s = self, TMP_96.$$arity = 0, TMP_96), $a).call($d), "number": ($a = ($e = self).$lambda, $a.$$p = (TMP_97 = function(){var self = TMP_97.$$s || this;
         if (self.music_model == null) self.music_model = nil;
 
-      return self.music_model.$meta_data()['$[]']("number")}, TMP_92.$$s = self, TMP_92.$$arity = 0, TMP_92), $a).call($e), "o_key": ($a = ($f = self).$lambda, $a.$$p = (TMP_93 = function(){var self = TMP_93.$$s || this;
+      return self.music_model.$meta_data()['$[]']("number")}, TMP_97.$$s = self, TMP_97.$$arity = 0, TMP_97), $a).call($e), "o_key": ($a = ($f = self).$lambda, $a.$$p = (TMP_98 = function(){var self = TMP_98.$$s || this;
         if (self.music_model == null) self.music_model = nil;
 
-      return self.music_model.$meta_data()['$[]']("o_key")}, TMP_93.$$s = self, TMP_93.$$arity = 0, TMP_93), $a).call($f), "tempo": ($a = ($g = self).$lambda, $a.$$p = (TMP_94 = function(){var self = TMP_94.$$s || this;
+      return self.music_model.$meta_data()['$[]']("o_key")}, TMP_98.$$s = self, TMP_98.$$arity = 0, TMP_98), $a).call($f), "tempo": ($a = ($g = self).$lambda, $a.$$p = (TMP_99 = function(){var self = TMP_99.$$s || this;
         if (self.music_model == null) self.music_model = nil;
 
-      return self.music_model.$meta_data()['$[]']("tempo_display")}, TMP_94.$$s = self, TMP_94.$$arity = 0, TMP_94), $a).call($g), "title": ($a = ($h = self).$lambda, $a.$$p = (TMP_95 = function(){var self = TMP_95.$$s || this;
+      return self.music_model.$meta_data()['$[]']("tempo_display")}, TMP_99.$$s = self, TMP_99.$$arity = 0, TMP_99), $a).call($g), "title": ($a = ($h = self).$lambda, $a.$$p = (TMP_100 = function(){var self = TMP_100.$$s || this;
         if (self.music_model == null) self.music_model = nil;
 
-      return self.music_model.$meta_data()['$[]']("title")}, TMP_95.$$s = self, TMP_95.$$arity = 0, TMP_95), $a).call($h), "extract_title": ($a = ($i = self).$lambda, $a.$$p = (TMP_96 = function(){var self = TMP_96.$$s || this;
+      return self.music_model.$meta_data()['$[]']("title")}, TMP_100.$$s = self, TMP_100.$$arity = 0, TMP_100), $a).call($h), "extract_title": ($a = ($i = self).$lambda, $a.$$p = (TMP_101 = function(){var self = TMP_101.$$s || this;
         if ($gvars.conf == null) $gvars.conf = nil;
 
-      return $gvars.conf['$[]']("extract." + (print_variant_nr) + ".title")}, TMP_96.$$s = self, TMP_96.$$arity = 0, TMP_96), $a).call($i), "extract_filename": ($a = ($j = self).$lambda, $a.$$p = (TMP_97 = function(){var self = TMP_97.$$s || this;
+      return $gvars.conf['$[]']("extract." + (print_variant_nr) + ".title")}, TMP_101.$$s = self, TMP_101.$$arity = 0, TMP_101), $a).call($i), "extract_filename": ($a = ($j = self).$lambda, $a.$$p = (TMP_102 = function(){var self = TMP_102.$$s || this;
         if ($gvars.conf == null) $gvars.conf = nil;
 
-      return $gvars.conf['$[]']("extract." + (print_variant_nr) + ".filenamepart")}, TMP_97.$$s = self, TMP_97.$$arity = 0, TMP_97), $a).call($j), "printed_extracts": ($a = ($k = self).$lambda, $a.$$p = (TMP_98 = function(){var self = TMP_98.$$s || this, $l, $m, TMP_99;
+      return $gvars.conf['$[]']("extract." + (print_variant_nr) + ".filenamepart")}, TMP_102.$$s = self, TMP_102.$$arity = 0, TMP_102), $a).call($j), "printed_extracts": ($a = ($k = self).$lambda, $a.$$p = (TMP_103 = function(){var self = TMP_103.$$s || this, $l, $m, TMP_104;
         if ($gvars.conf == null) $gvars.conf = nil;
 
-      return ($l = ($m = $gvars.conf['$[]']("produce")).$map, $l.$$p = (TMP_99 = function(k){var self = TMP_99.$$s || this;
+      return ($l = ($m = $gvars.conf['$[]']("produce")).$map, $l.$$p = (TMP_104 = function(k){var self = TMP_104.$$s || this;
           if ($gvars.conf == null) $gvars.conf = nil;
 if (k == null) k = nil;
-        return $gvars.conf['$[]']("extract." + (k) + ".filenamepart")}, TMP_99.$$s = self, TMP_99.$$arity = 1, TMP_99), $l).call($m).$join(" ")}, TMP_98.$$s = self, TMP_98.$$arity = 0, TMP_98), $a).call($k), "watermark": ($a = ($l = self).$lambda, $a.$$p = (TMP_100 = function(){var self = TMP_100.$$s || this, $m;
+        return $gvars.conf['$[]']("extract." + (k) + ".filenamepart")}, TMP_104.$$s = self, TMP_104.$$arity = 1, TMP_104), $l).call($m).$join(" ")}, TMP_103.$$s = self, TMP_103.$$arity = 0, TMP_103), $a).call($k), "watermark": ($a = ($l = self).$lambda, $a.$$p = (TMP_105 = function(){var self = TMP_105.$$s || this, $m;
         if ($gvars.settings == null) $gvars.settings = nil;
 
-      return ((($m = $gvars.settings['$[]']("watermark")) !== false && $m !== nil && $m != null) ? $m : "")}, TMP_100.$$s = self, TMP_100.$$arity = 0, TMP_100), $a).call($l)});
-    }, TMP_101.$$arity = 1);
+      return ((($m = $gvars.settings['$[]']("watermark")) !== false && $m !== nil && $m != null) ? $m : "")}, TMP_105.$$s = self, TMP_105.$$arity = 0, TMP_105), $a).call($l)});
+    }, TMP_106.$$arity = 1);
 
-    Opal.defn(self, '$load_music_model', TMP_102 = function $$load_music_model() {
+    Opal.defn(self, '$load_music_model', TMP_107 = function $$load_music_model() {
       var $a, $b, self = this, harpnote_engine = nil, player_model_abc = nil;
 
       harpnote_engine = (((($scope.get('Harpnotes')).$$scope.get('Input'))).$$scope.get('Abc2svgToHarpnotes')).$new();
@@ -43234,9 +43261,9 @@ if (k == null) k = nil;
       self.abc_model = harpnote_engine.$abc_model();
       (($a = [player_model_abc]), $b = self.harpnote_player, $b['$player_model_abc='].apply($b, $a), $a[$a.length-1]);
       return (($a = [self.editor.$get_checksum()]), $b = self.music_model, $b['$checksum='].apply($b, $a), $a[$a.length-1]);
-    }, TMP_102.$$arity = 0);
+    }, TMP_107.$$arity = 0);
 
-    Opal.defn(self, '$get_config_from_editor', TMP_103 = function $$get_config_from_editor() {
+    Opal.defn(self, '$get_config_from_editor', TMP_108 = function $$get_config_from_editor() {
       var $a, $b, self = this, config = nil, status = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
@@ -43247,9 +43274,9 @@ if (k == null) k = nil;
           $gvars.log.$info(status['$[]']("message"));
           self.editor.$set_config_model(config, "{migrated config}", true);};};
       return config;
-    }, TMP_103.$$arity = 0);
+    }, TMP_108.$$arity = 0);
 
-    Opal.defs(self, '$get_uri', TMP_104 = function $$get_uri() {
+    Opal.defs(self, '$get_uri', TMP_109 = function $$get_uri() {
       var self = this, parser = nil;
 
       parser = nil;
@@ -43267,29 +43294,29 @@ if (k == null) k = nil;
          parser.parsed_search = qd
       ;
       return self.$Native(parser);
-    }, TMP_104.$$arity = 0);
+    }, TMP_109.$$arity = 0);
 
-    Opal.defn(self, '$highlight_abc_object_by_player_callback', TMP_107 = function $$highlight_abc_object_by_player_callback(startchar, on) {
-      var $a, $b, TMP_105, $c, TMP_106, self = this, elements = nil, zn_element = nil;
+    Opal.defn(self, '$highlight_abc_object_by_player_callback', TMP_112 = function $$highlight_abc_object_by_player_callback(startchar, on) {
+      var $a, $b, TMP_110, $c, TMP_111, self = this, elements = nil, zn_element = nil;
 
       elements = $scope.get('Element').$find("._" + (startchar) + "_");
       if (on !== false && on !== nil && on != null) {
         elements.$add_class("highlightplay");
         self.tune_preview_printer.$scroll_into_view(elements.$first());
-        zn_element = ($a = ($b = elements).$select, $a.$$p = (TMP_105 = function(i){var self = TMP_105.$$s || this;
+        zn_element = ($a = ($b = elements).$select, $a.$$p = (TMP_110 = function(i){var self = TMP_110.$$s || this;
 if (i == null) i = nil;
-        return i['$has_class?']("znref")}, TMP_105.$$s = self, TMP_105.$$arity = 1, TMP_105), $a).call($b).$last();
+        return i['$has_class?']("znref")}, TMP_110.$$s = self, TMP_110.$$arity = 1, TMP_110), $a).call($b).$last();
         if (zn_element !== false && zn_element !== nil && zn_element != null) {
-          self.harpnote_preview_printer.$scroll_to_element(($a = ($c = elements).$select, $a.$$p = (TMP_106 = function(i){var self = TMP_106.$$s || this;
+          self.harpnote_preview_printer.$scroll_to_element(($a = ($c = elements).$select, $a.$$p = (TMP_111 = function(i){var self = TMP_111.$$s || this;
 if (i == null) i = nil;
-          return i['$has_class?']("znref")}, TMP_106.$$s = self, TMP_106.$$arity = 1, TMP_106), $a).call($c).$last())};
+          return i['$has_class?']("znref")}, TMP_111.$$s = self, TMP_111.$$arity = 1, TMP_111), $a).call($c).$last())};
         } else {
         elements.$remove_class("highlightplay")
       };
       return nil;
-    }, TMP_107.$$arity = 2);
+    }, TMP_112.$$arity = 2);
 
-    Opal.defn(self, '$highlight_abc_object', TMP_108 = function $$highlight_abc_object(abcelement) {
+    Opal.defn(self, '$highlight_abc_object', TMP_113 = function $$highlight_abc_object(abcelement) {
       var $a, self = this, a = nil, startchar = nil, endchar = nil;
 
       a = self.$Native(abcelement);
@@ -43304,61 +43331,61 @@ if (i == null) i = nil;
       };
       self.tune_preview_printer.$range_highlight_more(a['$[]']("startChar"), a['$[]']("endChar"));
       return self.harpnote_preview_printer.$range_highlight_more(a['$[]']("startChar"), a['$[]']("endChar"));
-    }, TMP_108.$$arity = 1);
+    }, TMP_113.$$arity = 1);
 
-    Opal.defn(self, '$unhighlight_abc_object', TMP_109 = function $$unhighlight_abc_object(abcelement) {
+    Opal.defn(self, '$unhighlight_abc_object', TMP_114 = function $$unhighlight_abc_object(abcelement) {
       var self = this, a = nil;
 
       a = self.$Native(abcelement);
       self.tune_preview_printer.$range_unhighlight_more(a['$[]']("startChar"), a['$[]']("endChar"));
       return self.harpnote_preview_printer.$range_unhighlight(a['$[]']("startChar"), a['$[]']("endChar"));
-    }, TMP_109.$$arity = 1);
+    }, TMP_114.$$arity = 1);
 
-    Opal.defn(self, '$select_abc_object', TMP_110 = function $$select_abc_object(abcelement) {
+    Opal.defn(self, '$select_abc_object', TMP_115 = function $$select_abc_object(abcelement) {
       var self = this;
 
       return self.$highlight_abc_object(abcelement);
-    }, TMP_110.$$arity = 1);
+    }, TMP_115.$$arity = 1);
 
-    Opal.defn(self, '$select_by_time_segments', TMP_117 = function $$select_by_time_segments(segments) {
-      var $a, $b, TMP_111, $c, TMP_112, $d, TMP_116, self = this, result = nil, voice_map = nil;
+    Opal.defn(self, '$select_by_time_segments', TMP_122 = function $$select_by_time_segments(segments) {
+      var $a, $b, TMP_116, $c, TMP_117, $d, TMP_121, self = this, result = nil, voice_map = nil;
 
       result = [];
-      voice_map = ($a = ($b = self.abc_model['$[]']("voices")).$map, $a.$$p = (TMP_111 = function(v){var self = TMP_111.$$s || this;
+      voice_map = ($a = ($b = self.abc_model['$[]']("voices")).$map, $a.$$p = (TMP_116 = function(v){var self = TMP_116.$$s || this;
 if (v == null) v = nil;
-      return v['$[]']("symbols")}, TMP_111.$$s = self, TMP_111.$$arity = 1, TMP_111), $a).call($b);
-      ($a = ($c = segments).$each, $a.$$p = (TMP_112 = function(segment){var self = TMP_112.$$s || this, $d, $e, TMP_113;
+      return v['$[]']("symbols")}, TMP_116.$$s = self, TMP_116.$$arity = 1, TMP_116), $a).call($b);
+      ($a = ($c = segments).$each, $a.$$p = (TMP_117 = function(segment){var self = TMP_117.$$s || this, $d, $e, TMP_118;
 if (segment == null) segment = nil;
-      return ($d = ($e = voice_map).$each, $d.$$p = (TMP_113 = function(voice){var self = TMP_113.$$s || this, $f, $g, TMP_114, $h, $i, TMP_115, selection = nil;
+      return ($d = ($e = voice_map).$each, $d.$$p = (TMP_118 = function(voice){var self = TMP_118.$$s || this, $f, $g, TMP_119, $h, $i, TMP_120, selection = nil;
 if (voice == null) voice = nil;
-        selection = ($f = ($g = ($h = ($i = voice).$select, $h.$$p = (TMP_115 = function(e){var self = TMP_115.$$s || this;
+        selection = ($f = ($g = ($h = ($i = voice).$select, $h.$$p = (TMP_120 = function(e){var self = TMP_120.$$s || this;
 if (e == null) e = nil;
-          return [5, 6, 12, 14]['$include?'](e['$[]']("type"))['$!']()}, TMP_115.$$s = self, TMP_115.$$arity = 1, TMP_115), $h).call($i)).$select, $f.$$p = (TMP_114 = function(element){var self = TMP_114.$$s || this, $h;
+          return [5, 6, 12, 14]['$include?'](e['$[]']("type"))['$!']()}, TMP_120.$$s = self, TMP_120.$$arity = 1, TMP_120), $h).call($i)).$select, $f.$$p = (TMP_119 = function(element){var self = TMP_119.$$s || this, $h;
 if (element == null) element = nil;
-          return ($h = element['$[]']("time"))['$between?'].apply($h, Opal.to_a(segment))}, TMP_114.$$s = self, TMP_114.$$arity = 1, TMP_114), $f).call($g);
+          return ($h = element['$[]']("time"))['$between?'].apply($h, Opal.to_a(segment))}, TMP_119.$$s = self, TMP_119.$$arity = 1, TMP_119), $f).call($g);
           if ((($f = selection['$empty?']()) !== nil && $f != null && (!$f.$$is_boolean || $f == true))) {
             return nil
             } else {
             return result.$push([selection.$first(), selection.$last()])
-          };}, TMP_113.$$s = self, TMP_113.$$arity = 1, TMP_113), $d).call($e)}, TMP_112.$$s = self, TMP_112.$$arity = 1, TMP_112), $a).call($c);
+          };}, TMP_118.$$s = self, TMP_118.$$arity = 1, TMP_118), $d).call($e)}, TMP_117.$$s = self, TMP_117.$$arity = 1, TMP_117), $a).call($c);
       result;
-      return ($a = ($d = result).$each, $a.$$p = (TMP_116 = function(range){var self = TMP_116.$$s || this;
+      return ($a = ($d = result).$each, $a.$$p = (TMP_121 = function(range){var self = TMP_121.$$s || this;
         if (self.editor == null) self.editor = nil;
 if (range == null) range = nil;
       if (range['$=='](result.$first())) {
           return self.editor.$select_range_by_position(range.$first()['$[]']("istart"), range.$last()['$[]']("iend"))
           } else {
           return self.editor.$select_add_range_by_position(range.$first()['$[]']("istart"), range.$last()['$[]']("iend"))
-        }}, TMP_116.$$s = self, TMP_116.$$arity = 1, TMP_116), $a).call($d);
-    }, TMP_117.$$arity = 1);
+        }}, TMP_121.$$s = self, TMP_121.$$arity = 1, TMP_121), $a).call($d);
+    }, TMP_122.$$arity = 1);
 
-    Opal.defn(self, '$get_selected_time_segments', TMP_121 = function $$get_selected_time_segments() {
-      var $a, $b, TMP_118, self = this, ranges = nil, time_ranges = nil;
+    Opal.defn(self, '$get_selected_time_segments', TMP_126 = function $$get_selected_time_segments() {
+      var $a, $b, TMP_123, self = this, ranges = nil, time_ranges = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       ranges = self.editor.$get_selection_ranges();
       $gvars.log.$info(ranges.$to_json());
-      time_ranges = ($a = ($b = ranges).$map, $a.$$p = (TMP_118 = function(erange){var self = TMP_118.$$s || this, $c, $d, TMP_119, range = nil, elements = nil, a = nil, result = nil;
+      time_ranges = ($a = ($b = ranges).$map, $a.$$p = (TMP_123 = function(erange){var self = TMP_123.$$s || this, $c, $d, TMP_124, range = nil, elements = nil, a = nil, result = nil;
         if (self.abc_model == null) self.abc_model = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (erange == null) erange = nil;
@@ -43367,11 +43394,11 @@ if (erange == null) erange = nil;
           } else {
           range = [range.$first(), $rb_minus(range.$last(), 1)]
         };
-        elements = ($c = ($d = self.abc_model['$[]']("voices")).$map, $c.$$p = (TMP_119 = function(v){var self = TMP_119.$$s || this, $e, $f, TMP_120;
+        elements = ($c = ($d = self.abc_model['$[]']("voices")).$map, $c.$$p = (TMP_124 = function(v){var self = TMP_124.$$s || this, $e, $f, TMP_125;
 if (v == null) v = nil;
-        return ($e = ($f = v['$[]']("symbols")).$select, $e.$$p = (TMP_120 = function(e){var self = TMP_120.$$s || this, $g, $h, $i;
+        return ($e = ($f = v['$[]']("symbols")).$select, $e.$$p = (TMP_125 = function(e){var self = TMP_125.$$s || this, $g, $h, $i;
 if (e == null) e = nil;
-          return (((($g = (($h = e['$[]']("istart"))['$between?'].apply($h, Opal.to_a(range)))) !== false && $g !== nil && $g != null) ? $g : (($i = e['$[]']("iend"))['$between?'].apply($i, Opal.to_a(range)))))}, TMP_120.$$s = self, TMP_120.$$arity = 1, TMP_120), $e).call($f)}, TMP_119.$$s = self, TMP_119.$$arity = 1, TMP_119), $c).call($d);
+          return (((($g = (($h = e['$[]']("istart"))['$between?'].apply($h, Opal.to_a(range)))) !== false && $g !== nil && $g != null) ? $g : (($i = e['$[]']("iend"))['$between?'].apply($i, Opal.to_a(range)))))}, TMP_125.$$s = self, TMP_125.$$arity = 1, TMP_125), $e).call($f)}, TMP_124.$$s = self, TMP_124.$$arity = 1, TMP_124), $c).call($d);
         a = elements.$flatten().$compact();
         $gvars.log.$info(a.$to_json());
         if ((($c = a['$empty?']()) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
@@ -43380,16 +43407,16 @@ if (e == null) e = nil;
           } else {
           result = [a.$first()['$[]']("time"), $rb_minus($rb_plus(a.$last()['$[]']("time"), a.$last()['$[]']("dur")), 1)]
         };
-        return result;}, TMP_118.$$s = self, TMP_118.$$arity = 1, TMP_118), $a).call($b);
+        return result;}, TMP_123.$$s = self, TMP_123.$$arity = 1, TMP_123), $a).call($b);
       return time_ranges;
-    }, TMP_121.$$arity = 0);
+    }, TMP_126.$$arity = 0);
 
-    Opal.defn(self, '$set_status', TMP_122 = function $$set_status(status) {
+    Opal.defn(self, '$set_status', TMP_127 = function $$set_status(status) {
       var $a, $b, self = this;
       if ($gvars.log == null) $gvars.log = nil;
 
       self.systemstatus['$merge!'](status);
-      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (986));
+      $gvars.log.$debug("" + (self.systemstatus.$to_s()) + " " + ("controller") + " " + (1007));
       if (self.systemstatus['$[]']("loglevel")['$==']($gvars.log.$loglevel())) {
         } else {
         (($a = [(self.systemstatus['$[]']("loglevel"))]), $b = $gvars.log, $b['$loglevel='].apply($b, $a), $a[$a.length-1])
@@ -43397,31 +43424,31 @@ if (e == null) e = nil;
       self.$save_to_localstorage();
       self.$call_consumers("systemstatus");
       return nil;
-    }, TMP_122.$$arity = 1);
+    }, TMP_127.$$arity = 1);
 
-    Opal.defn(self, '$set_status_dropbox_status', TMP_123 = function $$set_status_dropbox_status() {
+    Opal.defn(self, '$set_status_dropbox_status', TMP_128 = function $$set_status_dropbox_status() {
       var self = this;
 
       return self.$set_status($hash2(["dropbox", "dropboxapp", "dropboxpath", "dropboxloginstate"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath), "dropboxapp": self.dropboxclient.$app_id(), "dropboxpath": self.dropboxpath, "dropboxloginstate": self.dropboxloginstate}));
-    }, TMP_123.$$arity = 0);
+    }, TMP_128.$$arity = 0);
 
-    Opal.defn(self, '$clear_status_dropbox_status', TMP_124 = function $$clear_status_dropbox_status() {
+    Opal.defn(self, '$clear_status_dropbox_status', TMP_129 = function $$clear_status_dropbox_status() {
       var self = this;
 
       return self.$set_status($hash2(["dropbox", "dropboxapp", "dropboxpath", "dropboxloginstate"], {"dropbox": "" + (self.dropboxclient.$app_name()) + ": " + (self.dropboxpath), "dropboxapp": nil, "dropboxpath": nil, "dropboxloginstate": nil}));
-    }, TMP_124.$$arity = 0);
+    }, TMP_129.$$arity = 0);
 
     self.$private();
 
-    Opal.defn(self, '$setup_harpnote_preview', TMP_132 = function $$setup_harpnote_preview() {
-      var $a, $b, TMP_125, $c, TMP_126, $d, TMP_128, $e, TMP_129, $f, TMP_130, self = this;
+    Opal.defn(self, '$setup_harpnote_preview', TMP_137 = function $$setup_harpnote_preview() {
+      var $a, $b, TMP_130, $c, TMP_131, $d, TMP_133, $e, TMP_134, $f, TMP_135, self = this;
 
       self.harpnote_preview_printer = (($scope.get('Harpnotes')).$$scope.get('SvgEngine')).$new("harpPreview", 2200, 1400);
       self.harpnote_preview_printer.$set_view_box(0, 0, 420, 297);
-      ($a = ($b = self.harpnote_preview_printer).$on_select, $a.$$p = (TMP_125 = function(harpnote){var self = TMP_125.$$s || this;
+      ($a = ($b = self.harpnote_preview_printer).$on_select, $a.$$p = (TMP_130 = function(harpnote){var self = TMP_130.$$s || this;
 if (harpnote == null) harpnote = nil;
-      return self.$select_abc_object(harpnote.$origin())}, TMP_125.$$s = self, TMP_125.$$arity = 1, TMP_125), $a).call($b);
-      ($a = ($c = self.harpnote_preview_printer).$on_annotation_drag_end, $a.$$p = (TMP_126 = function(info){var self = TMP_126.$$s || this, $d, $e, TMP_127, conf_key = nil, newcoords = nil;
+      return self.$select_abc_object(harpnote.$origin())}, TMP_130.$$s = self, TMP_130.$$arity = 1, TMP_130), $a).call($b);
+      ($a = ($c = self.harpnote_preview_printer).$on_annotation_drag_end, $a.$$p = (TMP_131 = function(info){var self = TMP_131.$$s || this, $d, $e, TMP_132, conf_key = nil, newcoords = nil;
         if (self.editor == null) self.editor = nil;
         if (self.config_form_editor == null) self.config_form_editor = nil;
 if (info == null) info = nil;
@@ -43429,34 +43456,34 @@ if (info == null) info = nil;
         newcoords = info['$[]']("conf_value_new");
         if (newcoords !== false && newcoords !== nil && newcoords != null) {
           } else {
-          newcoords = ($d = ($e = info['$[]']("conf_value")['$[]']("pos").$zip(info['$[]']("delta"))).$map, $d.$$p = (TMP_127 = function(i){var self = TMP_127.$$s || this;
+          newcoords = ($d = ($e = info['$[]']("conf_value")['$[]']("pos").$zip(info['$[]']("delta"))).$map, $d.$$p = (TMP_132 = function(i){var self = TMP_132.$$s || this;
 if (i == null) i = nil;
-          return $rb_plus(i.$first(), i.$last())}, TMP_127.$$s = self, TMP_127.$$arity = 1, TMP_127), $d).call($e)
+          return $rb_plus(i.$first(), i.$last())}, TMP_132.$$s = self, TMP_132.$$arity = 1, TMP_132), $d).call($e)
         };
         self.editor.$patch_config_part(conf_key, newcoords, "drag " + (conf_key));
         if ((($d = self.config_form_editor) !== nil && $d != null && (!$d.$$is_boolean || $d == true))) {
           return self.config_form_editor.$refresh_form()
           } else {
           return nil
-        };}, TMP_126.$$s = self, TMP_126.$$arity = 1, TMP_126), $a).call($c);
-      ($a = ($d = self.harpnote_preview_printer).$on_mouseover, $a.$$p = (TMP_128 = function(info){var self = TMP_128.$$s || this;
+        };}, TMP_131.$$s = self, TMP_131.$$arity = 1, TMP_131), $a).call($c);
+      ($a = ($d = self.harpnote_preview_printer).$on_mouseover, $a.$$p = (TMP_133 = function(info){var self = TMP_133.$$s || this;
 if (info == null) info = nil;
-      return update_mouseover_status_w2ui(info.$conf_key());}, TMP_128.$$s = self, TMP_128.$$arity = 1, TMP_128), $a).call($d);
-      ($a = ($e = self.harpnote_preview_printer).$on_mouseout, $a.$$p = (TMP_129 = function(info){var self = TMP_129.$$s || this;
+      return update_mouseover_status_w2ui(info.$conf_key());}, TMP_133.$$s = self, TMP_133.$$arity = 1, TMP_133), $a).call($d);
+      ($a = ($e = self.harpnote_preview_printer).$on_mouseout, $a.$$p = (TMP_134 = function(info){var self = TMP_134.$$s || this;
 if (info == null) info = nil;
-      return update_mouseover_status_w2ui('');}, TMP_129.$$s = self, TMP_129.$$arity = 1, TMP_129), $a).call($e);
-      return ($a = ($f = self.harpnote_preview_printer).$on_draggable_rightcklick, $a.$$p = (TMP_130 = function(info){var self = TMP_130.$$s || this, $g, $h, TMP_131, items = nil;
+      return update_mouseover_status_w2ui('');}, TMP_134.$$s = self, TMP_134.$$arity = 1, TMP_134), $a).call($e);
+      return ($a = ($f = self.harpnote_preview_printer).$on_draggable_rightcklick, $a.$$p = (TMP_135 = function(info){var self = TMP_135.$$s || this, $g, $h, TMP_136, items = nil;
 if (info == null) info = nil;
       items = [];
         if ((($g = (info['$[]']("conf_key"))) !== nil && $g != null && (!$g.$$is_boolean || $g == true))) {
           items.$push($hash2(["id", "text", "icon"], {"id": info['$[]']("conf_key"), "text": $scope.get('I18n').$t("Edit Config"), "icon": "fa fa-gear"}))};
-        ($g = ($h = info['$[]']("more_conf_keys")).$each, $g.$$p = (TMP_131 = function(entry){var self = TMP_131.$$s || this, id = nil, text = nil, icon = nil, value = nil;
+        ($g = ($h = info['$[]']("more_conf_keys")).$each, $g.$$p = (TMP_136 = function(entry){var self = TMP_136.$$s || this, id = nil, text = nil, icon = nil, value = nil;
 if (entry == null) entry = nil;
         id = entry['$[]']("conf_key");
           text = entry['$[]']("text");
           icon = entry['$[]']("icon");
           value = entry['$[]']("value");
-          return items.$push($hash2(["id", "text", "icon", "value"], {"id": id, "text": text, "icon": icon, "value": value}));}, TMP_131.$$s = self, TMP_131.$$arity = 1, TMP_131), $g).call($h);
+          return items.$push($hash2(["id", "text", "icon", "value"], {"id": id, "text": text, "icon": icon, "value": value}));}, TMP_136.$$s = self, TMP_136.$$arity = 1, TMP_136), $g).call($h);
         
           $(info.$element()).w2menu({
                                        items: items.$to_n(),
@@ -43469,50 +43496,61 @@ if (entry == null) entry = nil;
                                        }
                                    });
           return false ;
-        ;}, TMP_130.$$s = self, TMP_130.$$arity = 1, TMP_130), $a).call($f);
-    }, TMP_132.$$arity = 0);
+        ;}, TMP_135.$$s = self, TMP_135.$$arity = 1, TMP_135), $a).call($f);
+    }, TMP_137.$$arity = 0);
 
-    Opal.defn(self, '$setup_tune_preview', TMP_137 = function $$setup_tune_preview() {
-      var $a, $b, TMP_133, $c, TMP_134, $d, TMP_136, self = this;
+    Opal.defn(self, '$setup_tune_preview', TMP_143 = function $$setup_tune_preview() {
+      var $a, $b, TMP_138, $c, TMP_139, $d, TMP_141, $e, TMP_142, self = this;
 
       self.tune_preview_printer = (($scope.get('ABC2SVG')).$$scope.get('Abc2Svg')).$new($scope.get('Element').$find("#tunePreview"));
-      ($a = ($b = self.tune_preview_printer).$on_select, $a.$$p = (TMP_133 = function(abcelement){var self = TMP_133.$$s || this, a = nil;
+      ($a = ($b = self.tune_preview_printer).$on_select, $a.$$p = (TMP_138 = function(abcelement){var self = TMP_138.$$s || this, a = nil;
 if (abcelement == null) abcelement = nil;
       a = self.$Native(abcelement);
-        return self.$select_abc_object(abcelement);}, TMP_133.$$s = self, TMP_133.$$arity = 1, TMP_133), $a).call($b);
-      ($a = ($c = self.worker).$on_named_message, $a.$$p = (TMP_134 = function(data){var self = TMP_134.$$s || this, $d, $e, TMP_135, svg_and_position = nil;
+        return self.$select_abc_object(abcelement);}, TMP_138.$$s = self, TMP_138.$$arity = 1, TMP_138), $a).call($b);
+      ($a = ($c = self.worker).$on_named_message, $a.$$p = (TMP_139 = function(data){var self = TMP_139.$$s || this, $d, $e, TMP_140, svg_and_position = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (data == null) data = nil;
       svg_and_position = data['$[]']("payload");
         self.$set_inactive("#tunePreview");
-        return ($d = ($e = $gvars.log).$benchmark, $d.$$p = (TMP_135 = function(){var self = TMP_135.$$s || this;
+        return ($d = ($e = $gvars.log).$benchmark, $d.$$p = (TMP_140 = function(){var self = TMP_140.$$s || this;
           if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
 
-        return self.tune_preview_printer.$set_svg(svg_and_position)}, TMP_135.$$s = self, TMP_135.$$arity = 0, TMP_135), $d).call($e, "show compute_tune_preview");}, TMP_134.$$s = self, TMP_134.$$arity = 1, TMP_134), $a).call($c, "compute_tune_preview");
-      return ($a = ($d = self.worker).$on_named_message, $a.$$p = (TMP_136 = function(data){var self = TMP_136.$$s || this;
+        return self.tune_preview_printer.$set_svg(svg_and_position)}, TMP_140.$$s = self, TMP_140.$$arity = 0, TMP_140), $d).call($e, "show compute_tune_preview");}, TMP_139.$$s = self, TMP_139.$$arity = 1, TMP_139), $a).call($c, "compute_tune_preview");
+      ($a = ($d = self.worker).$on_named_message, $a.$$p = (TMP_141 = function(data){var self = TMP_141.$$s || this;
         if (self.editor == null) self.editor = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (data == null) data = nil;
       $gvars.log.$set_status(data['$[]']("payload"));
-        return self.editor.$set_annotations($gvars.log.$annotations());}, TMP_136.$$s = self, TMP_136.$$arity = 1, TMP_136), $a).call($d, "set_logger_status");
-    }, TMP_137.$$arity = 0);
+        return self.editor.$set_annotations($gvars.log.$annotations());}, TMP_141.$$s = self, TMP_141.$$arity = 1, TMP_141), $a).call($d, "set_logger_status");
+      return ($a = ($e = self.worker).$on_named_message, $a.$$p = (TMP_142 = function(data){var self = TMP_142.$$s || this, result = nil;
+        if (self.harpnote_preview_printer == null) self.harpnote_preview_printer = nil;
+if (data == null) data = nil;
+      result = data['$[]']("payload");
+        self.harpnote_preview_printer.$display_results(result);
+        self.$set_status($hash2(["harpnotes_dirty"], {"harpnotes_dirty": false}));
+        self.$set_status($hash2(["refresh"], {"refresh": false}));
+        self.$call_consumers("harp_preview_size");
+        return nil;}, TMP_142.$$s = self, TMP_142.$$arity = 1, TMP_142), $a).call($e, "compute_harpnotes_preview");
+    }, TMP_143.$$arity = 0);
 
-    Opal.defn(self, '$set_harppreview_size', TMP_138 = function $$set_harppreview_size(size) {
+    Opal.defn(self, '$set_harppreview_size', TMP_144 = function $$set_harppreview_size(size) {
       var self = this;
 
-      return self.harpnote_preview_printer.$set_canvas(size);
-    }, TMP_138.$$arity = 1);
+      self.harp_preview_size = size;
+      self.harpnote_preview_printer.$set_canvas(size);
+      return self.$call_consumers("harp_preview_size");
+    }, TMP_144.$$arity = 1);
 
-    Opal.defn(self, '$toggle_console', TMP_139 = function $$toggle_console() {
+    Opal.defn(self, '$toggle_console', TMP_145 = function $$toggle_console() {
       var self = this;
 
       
        w2ui['layout'].toggle('bottom', true);
        self.editor.$resize();
       
-    }, TMP_139.$$arity = 0);
+    }, TMP_145.$$arity = 0);
 
-    Opal.defn(self, '$toggle_saveformat', TMP_140 = function $$toggle_saveformat() {
+    Opal.defn(self, '$toggle_saveformat', TMP_146 = function $$toggle_saveformat() {
       var self = this, formats = nil, index = nil;
 
       formats = ["A3-A4", "A3", "A4"];
@@ -43522,28 +43560,28 @@ if (data == null) data = nil;
         return 1
         } else { throw $err; } }})();
       return self.$handle_command("saveformat " + (formats['$[]'](index)));
-    }, TMP_140.$$arity = 0);
+    }, TMP_146.$$arity = 0);
 
-    Opal.defn(self, '$show_console', TMP_141 = function $$show_console() {
+    Opal.defn(self, '$show_console', TMP_147 = function $$show_console() {
       var self = this;
 
       
        w2ui['layout'].show('bottom', true);
        self.editor.$resize();
       
-    }, TMP_141.$$arity = 0);
+    }, TMP_147.$$arity = 0);
 
-    Opal.defn(self, '$setup_ui_listener', TMP_153 = function $$setup_ui_listener() {
-      var $a, $b, TMP_142, $c, TMP_143, $d, TMP_145, $e, TMP_146, $f, TMP_147, $g, TMP_148, $h, TMP_149, $i, TMP_150, $j, TMP_152, self = this;
+    Opal.defn(self, '$setup_ui_listener', TMP_159 = function $$setup_ui_listener() {
+      var $a, $b, TMP_148, $c, TMP_149, $d, TMP_151, $e, TMP_152, $f, TMP_153, $g, TMP_154, $h, TMP_155, $i, TMP_156, $j, TMP_158, self = this;
       if ($gvars.window == null) $gvars.window = nil;
 
-      ($a = ($b = self.editor).$on_change, $a.$$p = (TMP_142 = function(e){var self = TMP_142.$$s || this;
+      ($a = ($b = self.editor).$on_change, $a.$$p = (TMP_148 = function(e){var self = TMP_148.$$s || this;
 if (e == null) e = nil;
       self.$set_status($hash2(["music_model"], {"music_model": "changed"}));
         self.$set_status($hash2(["harpnotes_dirty"], {"harpnotes_dirty": true}));
         self.$request_refresh(true);
-        return nil;}, TMP_142.$$s = self, TMP_142.$$arity = 1, TMP_142), $a).call($b);
-      ($a = ($c = self.editor).$on_selection_change, $a.$$p = (TMP_143 = function(e){var self = TMP_143.$$s || this, $d, $e, TMP_144, ranges = nil, selection_info = nil;
+        return nil;}, TMP_148.$$s = self, TMP_148.$$arity = 1, TMP_148), $a).call($b);
+      ($a = ($c = self.editor).$on_selection_change, $a.$$p = (TMP_149 = function(e){var self = TMP_149.$$s || this, $d, $e, TMP_150, ranges = nil, selection_info = nil;
         if (self.editor == null) self.editor = nil;
         if (self.harpnote_preview_printer == null) self.harpnote_preview_printer = nil;
         if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
@@ -43552,15 +43590,15 @@ if (e == null) e = nil;
         selection_info = self.editor.$get_selection_info();
         self.harpnote_preview_printer.$unhighlight_all();
         self.tune_preview_printer.$unhighlight_all();
-        return ($d = ($e = ranges).$each, $d.$$p = (TMP_144 = function(a){var self = TMP_144.$$s || this;
+        return ($d = ($e = ranges).$each, $d.$$p = (TMP_150 = function(a){var self = TMP_150.$$s || this;
           if (self.harpnote_preview_printer == null) self.harpnote_preview_printer = nil;
           if (self.tune_preview_printer == null) self.tune_preview_printer = nil;
           if (self.harpnote_player == null) self.harpnote_player = nil;
 if (a == null) a = nil;
         self.harpnote_preview_printer.$range_highlight_more(a.$first(), a.$last());
           self.tune_preview_printer.$range_highlight_more(a.$first(), a.$last());
-          return self.harpnote_player.$range_highlight(a.$first(), a.$last());}, TMP_144.$$s = self, TMP_144.$$arity = 1, TMP_144), $d).call($e);}, TMP_143.$$s = self, TMP_143.$$arity = 1, TMP_143), $a).call($c);
-      ($a = ($d = self.editor).$on_cursor_change, $a.$$p = (TMP_145 = function(e){var self = TMP_145.$$s || this, $e, selection_info = nil, selections = nil, ranges = nil, position = nil, token = nil, editorstatus = nil;
+          return self.harpnote_player.$range_highlight(a.$first(), a.$last());}, TMP_150.$$s = self, TMP_150.$$arity = 1, TMP_150), $d).call($e);}, TMP_149.$$s = self, TMP_149.$$arity = 1, TMP_149), $a).call($c);
+      ($a = ($d = self.editor).$on_cursor_change, $a.$$p = (TMP_151 = function(e){var self = TMP_151.$$s || this, $e, selection_info = nil, selections = nil, ranges = nil, position = nil, token = nil, editorstatus = nil;
         if (self.editor == null) self.editor = nil;
 if (e == null) e = nil;
       self.$request_refresh(false);
@@ -43578,32 +43616,32 @@ if (e == null) e = nil;
           token = $hash2(["type", "value"], {"type": "", "value": ""})
         };
         editorstatus = $hash2(["position", "tokeninfo", "token", "selections"], {"position": position, "tokeninfo": "" + (token['$[]']("type")) + " [" + (token['$[]']("value")) + "]", "token": token, "selections": selections});
-        return update_editor_status_w2ui(editorstatus.$to_n());}, TMP_145.$$s = self, TMP_145.$$arity = 1, TMP_145), $a).call($d);
-      ($a = ($e = self.harpnote_player).$on_noteon, $a.$$p = (TMP_146 = function(e){var self = TMP_146.$$s || this;
+        return update_editor_status_w2ui(editorstatus.$to_n());}, TMP_151.$$s = self, TMP_151.$$arity = 1, TMP_151), $a).call($d);
+      ($a = ($e = self.harpnote_player).$on_noteon, $a.$$p = (TMP_152 = function(e){var self = TMP_152.$$s || this;
         if ($gvars.settings == null) $gvars.settings = nil;
 if (e == null) e = nil;
       if ($gvars.settings['$[]']("follow")['$==']("false")) {
           return nil
           } else {
           return self.$highlight_abc_object_by_player_callback(e['$[]']("startChar"), true)
-        }}, TMP_146.$$s = self, TMP_146.$$arity = 1, TMP_146), $a).call($e);
-      ($a = ($f = self.harpnote_player).$on_noteoff, $a.$$p = (TMP_147 = function(e){var self = TMP_147.$$s || this;
+        }}, TMP_152.$$s = self, TMP_152.$$arity = 1, TMP_152), $a).call($e);
+      ($a = ($f = self.harpnote_player).$on_noteoff, $a.$$p = (TMP_153 = function(e){var self = TMP_153.$$s || this;
         if ($gvars.settings == null) $gvars.settings = nil;
 if (e == null) e = nil;
       if ($gvars.settings['$[]']("follow")['$==']("false")) {
           return nil
           } else {
           return self.$highlight_abc_object_by_player_callback(e['$[]']("startChar"), false)
-        }}, TMP_147.$$s = self, TMP_147.$$arity = 1, TMP_147), $a).call($f);
-      ($a = ($g = self.harpnote_player).$on_songoff, $a.$$p = (TMP_148 = function(){var self = TMP_148.$$s || this;
+        }}, TMP_153.$$s = self, TMP_153.$$arity = 1, TMP_153), $a).call($f);
+      ($a = ($g = self.harpnote_player).$on_songoff, $a.$$p = (TMP_154 = function(){var self = TMP_154.$$s || this;
 
       self.$stop_play_abc();
-        return self.$call_consumers("play_stop");}, TMP_148.$$s = self, TMP_148.$$arity = 0, TMP_148), $a).call($g);
-      ($a = ($h = $gvars.window).$on, $a.$$p = (TMP_149 = function(e){var self = TMP_149.$$s || this;
+        return self.$call_consumers("play_stop");}, TMP_154.$$s = self, TMP_154.$$arity = 0, TMP_154), $a).call($g);
+      ($a = ($h = $gvars.window).$on, $a.$$p = (TMP_155 = function(e){var self = TMP_155.$$s || this;
 if (e == null) e = nil;
       self.expand_selection = e.$shift_key();
-        return true;}, TMP_149.$$s = self, TMP_149.$$arity = 1, TMP_149), $a).call($h, "mousedown");
-      ($a = ($i = $scope.get('Element').$find("body")).$on, $a.$$p = (TMP_150 = function(e){var self = TMP_150.$$s || this, $j, $k, TMP_151, $case = nil;
+        return true;}, TMP_155.$$s = self, TMP_155.$$arity = 1, TMP_155), $a).call($h, "mousedown");
+      ($a = ($i = $scope.get('Element').$find("body")).$on, $a.$$p = (TMP_156 = function(e){var self = TMP_156.$$s || this, $j, $k, TMP_157, $case = nil;
         if (self.editor == null) self.editor = nil;
         if (self.zupfnoter_ui == null) self.zupfnoter_ui = nil;
 if (e == null) e = nil;
@@ -43615,28 +43653,28 @@ if (e == null) e = nil;
           return self.$handle_command("dsave");}else if ("P".$ord()['$===']($case)) {e.$prevent();
           return self.$play_abc("auto");}else if ("K".$ord()['$===']($case)) {e.$prevent();
           return self.$toggle_console();}else if ("L".$ord()['$===']($case)) {self.zupfnoter_ui.toggle_full_screen();;
-          return e.$prevent();}else if ((function($splt) { for (var i = 0; i < $splt.length; i++) {if ($splt[i]['$===']($case)) { return true; }} return false; })((($j = ($k = ($range(0, 9, false))).$map, $j.$$p = (TMP_151 = function(i){var self = TMP_151.$$s || this;
+          return e.$prevent();}else if ((function($splt) { for (var i = 0; i < $splt.length; i++) {if ($splt[i]['$===']($case)) { return true; }} return false; })((($j = ($k = ($range(0, 9, false))).$map, $j.$$p = (TMP_157 = function(i){var self = TMP_157.$$s || this;
 if (i == null) i = nil;
-          return i.$to_s().$ord()}, TMP_151.$$s = self, TMP_151.$$arity = 1, TMP_151), $j).call($k)))) {e.$prevent();
+          return i.$to_s().$ord()}, TMP_157.$$s = self, TMP_157.$$arity = 1, TMP_157), $j).call($k)))) {e.$prevent();
           return self.$handle_command("view " + (e.$key_code().$chr()));}else { return nil }})()
           } else {
           return nil
-        }}, TMP_150.$$s = self, TMP_150.$$arity = 1, TMP_150), $a).call($i, "keydown");
-      return ($a = ($j = $scope.get('Element').$find(window)).$on, $a.$$p = (TMP_152 = function(evt){var self = TMP_152.$$s || this, $k, $l, $m, key = nil, value = nil;
+        }}, TMP_156.$$s = self, TMP_156.$$arity = 1, TMP_156), $a).call($i, "keydown");
+      return ($a = ($j = $scope.get('Element').$find(window)).$on, $a.$$p = (TMP_158 = function(evt){var self = TMP_158.$$s || this, $k, $l, $m, key = nil, value = nil;
         if (self.systemstatus == null) self.systemstatus = nil;
         if ($gvars.log == null) $gvars.log = nil;
 if (evt == null) evt = nil;
       key = self.$Native(evt['$[]']("originalEvent")).$key();
         value = self.$Native(evt['$[]']("originalEvent")).$newValue();
-        $gvars.log.$debug("got storage event " + (key) + ": " + (value) + " (" + ("controller") + " " + (1258) + ")");
+        $gvars.log.$debug("got storage event " + (key) + ": " + (value) + " (" + ("controller") + " " + (1291) + ")");
         if ((($k = ($l = (($m = self.systemstatus['$[]']("autorefresh")['$==']("remote")) ? key['$==']("command") : self.systemstatus['$[]']("autorefresh")['$==']("remote")), $l !== false && $l !== nil && $l != null ?value['$==']("render") : $l)) !== nil && $k != null && (!$k.$$is_boolean || $k == true))) {
           return self.$load_from_loacalstorage()
           } else {
           return nil
-        };}, TMP_152.$$s = self, TMP_152.$$arity = 1, TMP_152), $a).call($j, "storage");
-    }, TMP_153.$$arity = 0);
+        };}, TMP_158.$$s = self, TMP_158.$$arity = 1, TMP_158), $a).call($j, "storage");
+    }, TMP_159.$$arity = 0);
 
-    Opal.defn(self, '$show_message_of_the_day', TMP_154 = function $$show_message_of_the_day() {
+    Opal.defn(self, '$show_message_of_the_day', TMP_160 = function $$show_message_of_the_day() {
       var self = this, messages = nil, info_feed_url = nil;
 
       messages = [];
@@ -43657,27 +43695,27 @@ if (evt == null) evt = nil;
           self.$present_message_of_the_day(messages)
         });
     ;
-    }, TMP_154.$$arity = 0);
+    }, TMP_160.$$arity = 0);
 
-    Opal.defn(self, '$present_message_of_the_day', TMP_158 = function $$present_message_of_the_day(messages) {
-      var $a, $b, TMP_155, $c, TMP_156, $d, TMP_157, self = this, last_info_id = nil, last_read_info_id = nil, have_read = nil, have_not_read = nil, body = nil, options = nil;
+    Opal.defn(self, '$present_message_of_the_day', TMP_164 = function $$present_message_of_the_day(messages) {
+      var $a, $b, TMP_161, $c, TMP_162, $d, TMP_163, self = this, last_info_id = nil, last_read_info_id = nil, have_read = nil, have_not_read = nil, body = nil, options = nil;
 
       last_info_id = self.$Native(messages.$first())['$[]']("postId").$to_i();
       last_read_info_id = ((($a = self.$systemstatus()['$[]']("last_read_info_id")) !== false && $a !== nil && $a != null) ? $a : 0);
-      have_read = ($a = ($b = self).$lambda, $a.$$p = (TMP_155 = function(){var self = TMP_155.$$s || this;
+      have_read = ($a = ($b = self).$lambda, $a.$$p = (TMP_161 = function(){var self = TMP_161.$$s || this;
         if (self.info_url == null) self.info_url = nil;
 
       window.open(self.info_url);
-        return self.$set_status($hash2(["last_read_info_id"], {"last_read_info_id": last_info_id}));}, TMP_155.$$s = self, TMP_155.$$arity = 0, TMP_155), $a).call($b);
-      have_not_read = ($a = ($c = self).$lambda, $a.$$p = (TMP_156 = function(){var self = TMP_156.$$s || this;
+        return self.$set_status($hash2(["last_read_info_id"], {"last_read_info_id": last_info_id}));}, TMP_161.$$s = self, TMP_161.$$arity = 0, TMP_161), $a).call($b);
+      have_not_read = ($a = ($c = self).$lambda, $a.$$p = (TMP_162 = function(){var self = TMP_162.$$s || this;
 
-      return nil}, TMP_156.$$s = self, TMP_156.$$arity = 0, TMP_156), $a).call($c);
-      body = ($a = ($d = messages).$map, $a.$$p = (TMP_157 = function(m){var self = TMP_157.$$s || this, nm = nil, post_id = nil, desc = nil;
+      return nil}, TMP_162.$$s = self, TMP_162.$$arity = 0, TMP_162), $a).call($c);
+      body = ($a = ($d = messages).$map, $a.$$p = (TMP_163 = function(m){var self = TMP_163.$$s || this, nm = nil, post_id = nil, desc = nil;
 if (m == null) m = nil;
       nm = self.$Native(m);
         post_id = nm['$[]']("postId");
         desc = nm['$[]']("description");
-        return "<div style=\"text-align:left;\"><p>" + (post_id) + ": " + (nm['$[]']("title")) + "</p></div>";}, TMP_157.$$s = self, TMP_157.$$arity = 1, TMP_157), $a).call($d).$join();
+        return "<div style=\"text-align:left;\"><p>" + (post_id) + ": " + (nm['$[]']("title")) + "</p></div>";}, TMP_163.$$s = self, TMP_163.$$arity = 1, TMP_163), $a).call($d).$join();
       options = $hash2(["msg", "title", "width", "height", "modal", "btn_yes", "btn_no", "callBack"], {"msg": body, "title": $scope.get('I18n').$t("There is new unread information"), "width": 600, "height": 200, "modal": true, "btn_yes": $hash2(["text", "class", "style", "callBack"], {"text": $scope.get('I18n').$t("read now"), "class": "", "style": "", "callBack": have_read}), "btn_no": $hash2(["text", "class", "style", "callBack"], {"text": $scope.get('I18n').$t("read later"), "class": "", "style": "", "callBack": have_not_read}), "callBack": nil});
       if ((($a = $rb_gt(last_info_id, last_read_info_id)) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
         
@@ -43686,49 +43724,49 @@ if (m == null) m = nil;
         } else {
         return nil
       };
-    }, TMP_158.$$arity = 1);
+    }, TMP_164.$$arity = 1);
 
-    Opal.defn(self, '$request_refresh', TMP_160 = function $$request_refresh(init) {
-      var $a, $b, TMP_159, self = this, $case = nil;
+    Opal.defn(self, '$request_refresh', TMP_166 = function $$request_refresh(init) {
+      var $a, $b, TMP_165, self = this, $case = nil;
 
       if (init !== false && init !== nil && init != null) {
         self.$set_status($hash2(["refresh"], {"refresh": true}))};
       if ((($a = self.refresh_timer['$empty?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
         } else {
-        ($a = ($b = self.refresh_timer).$each, $a.$$p = (TMP_159 = function(i){var self = TMP_159.$$s || this;
+        ($a = ($b = self.refresh_timer).$each, $a.$$p = (TMP_165 = function(i){var self = TMP_165.$$s || this;
           if (self.refresh_timer == null) self.refresh_timer = nil;
 if (i == null) i = nil;
         clearTimeout(i);
-          return self.refresh_timer.$pop();}, TMP_159.$$s = self, TMP_159.$$arity = 1, TMP_159), $a).call($b)
+          return self.refresh_timer.$pop();}, TMP_165.$$s = self, TMP_165.$$arity = 1, TMP_165), $a).call($b)
       };
       if ((($a = self.systemstatus['$[]']("refresh")) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
         self.$stop_play_abc();
-        return (function() {$case = self.systemstatus['$[]']("autorefresh");if ("on"['$===']($case)) {return self.refresh_timer.$push(setTimeout(function(){self.$render_previews()}, 2000))}else if ("off"['$===']($case)) {return self.refresh_timer.$push(setTimeout(function(){self.$render_remote()},  300))}else if ("remote"['$===']($case)) {return nil}else { return nil }})();
+        return (function() {$case = self.systemstatus['$[]']("autorefresh");if ("on"['$===']($case)) {return self.refresh_timer.$push(setTimeout(function(){self.$render_previews()}, 300))}else if ("off"['$===']($case)) {return self.refresh_timer.$push(setTimeout(function(){self.$render_remote()},  300))}else if ("remote"['$===']($case)) {return nil}else { return nil }})();
         } else {
         return nil
       };
-    }, TMP_160.$$arity = 1);
+    }, TMP_166.$$arity = 1);
 
-    Opal.defn(self, '$send_remote_command', TMP_161 = function $$send_remote_command(command) {
+    Opal.defn(self, '$send_remote_command', TMP_167 = function $$send_remote_command(command) {
       var self = this;
 
       localStorage.setItem('command', '');
       return localStorage.setItem('command', command);;
-    }, TMP_161.$$arity = 1);
+    }, TMP_167.$$arity = 1);
 
-    Opal.defn(self, '$set_active', TMP_162 = function $$set_active(ui_element) {
+    Opal.defn(self, '$set_active', TMP_168 = function $$set_active(ui_element) {
       var self = this;
 
       return $scope.get('Element').$find(ui_element).$add_class("spinner");
-    }, TMP_162.$$arity = 1);
+    }, TMP_168.$$arity = 1);
 
-    Opal.defn(self, '$set_inactive', TMP_163 = function $$set_inactive(ui_element) {
+    Opal.defn(self, '$set_inactive', TMP_169 = function $$set_inactive(ui_element) {
       var self = this;
 
       return $scope.get('Element').$find(ui_element).$remove_class("spinner");
-    }, TMP_163.$$arity = 1);
+    }, TMP_169.$$arity = 1);
 
-    Opal.defn(self, '$check_suppoerted_browser', TMP_164 = function $$check_suppoerted_browser() {
+    Opal.defn(self, '$check_suppoerted_browser', TMP_170 = function $$check_suppoerted_browser() {
       var $a, self = this, supportedbrowsers = nil, message = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
@@ -43740,13 +43778,13 @@ if (i == null) i = nil;
         $gvars.log.$warning(message);
         return alert(message);
       };
-    }, TMP_164.$$arity = 0);
+    }, TMP_170.$$arity = 0);
 
-    return (Opal.defn(self, '$_init_conf', TMP_165 = function $$_init_conf() {
+    return (Opal.defn(self, '$_init_conf', TMP_171 = function $$_init_conf() {
       var self = this;
 
       return $scope.get('InitConf').$init_conf();
-    }, TMP_165.$$arity = 0), nil) && '_init_conf';
+    }, TMP_171.$$arity = 0), nil) && '_init_conf';
   })($scope.base, null);
 };
 
