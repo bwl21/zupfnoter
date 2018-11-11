@@ -9,7 +9,6 @@ module Harpnotes
 
       attr_accessor :player_model_abc, :controller # This is to inject the player events created by abc2svg
 
-
       def initialize()
         %x{#{@abcplay} = new AbcPlay({
              onend: function(){#{call_on_songoff}}, // todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
@@ -25,7 +24,7 @@ module Harpnotes
         @voices_to_play   = [1, 2, 3, 4, 5, 6, 7, 8]
         @voice_elements   = []
         @player_model_abc = []
-        @controller = nil
+        @controller       = nil
         @speed            = 1
       end
 
@@ -60,6 +59,7 @@ module Harpnotes
       end
 
       def play_auto
+        `debugger`
         if @selection.count >= 0 and (counts = @selection.map { |i| i[:delay] }.uniq.count) > 1
           play_selection
         else
@@ -82,6 +82,7 @@ module Harpnotes
       end
 
       def play_selection
+        `debugger`
         play_notes(@selection)
       end
 
@@ -197,6 +198,19 @@ module Harpnotes
         self
       end
 
+      def get_worker_model
+        {voice_elements: @voice_elements, active_voices: @active_voices, duration_timefactor: @duration_timefactor, beat_timefactor: @beat_timefactor}
+      end
+
+      def set_worker_model(worker_model)
+        @duration_timefactor    = worker_model[:duration_timefactor]
+        @beat_timefactor        = worker_model[:beat_timefactor]
+        @voice_elements         = worker_model[:voice_elements]
+        @active_voices          = worker_model[:active_voices]
+        @voice_elements_by_time = @voice_elements.group_by { |element| element[:delay] }
+        nil
+      end
+
       def _load_voice_elements_from_voices(music)
         @voice_elements = music.voices.each_with_index.map do |voice, index|
           next if index == 0
@@ -249,10 +263,10 @@ module Harpnotes
       def mk_to_play_for_abc2svgplay(note, start_delay = 0)
         [
             note[:origin][:startChar], # [0]: index of the note in the ABC source
-            (note[:delay] - start_delay)/@speed, #[1]: time in seconds
+            (note[:delay] - start_delay) / @speed, #[1]: time in seconds
             25, #[2]: MIDI instrument 25: guitar steel
             note[:pitch], # [3]: MIDI note pitch (with cents)
-            note[:duration]/@speed, # [4]: duration
+            note[:duration] / @speed, # [4]: duration
             ((note[:velocity] > 0.2) ? 1 : 0) # [5] volume
         ]
       end
