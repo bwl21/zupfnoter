@@ -598,7 +598,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.benchmark("render tune preview") do
 
-        if (false)  # sst to run this in the main thread
+        if (false) # sst to run this in the main thread
           # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
           # before comuputing the tune_preview
           @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
@@ -620,9 +620,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 # render the previews
 # also saves abc in localstore()
   def render_harpnotepreview_callback_by_worker
-    $log.benchmark("render_harpnotepreview_callback") do
+    $log.benchmark("render_harpnotepreview_callback_by_worker") do
       @worker.post_named_message(:compute_harpnotes_preview, {
-          conf:                 $conf.get,
           settings:             $settings,
           systemstatus:         @systemstatus,
           uri:                  {hostname: self.class.get_uri[:hostname]},
@@ -695,7 +694,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       alert("fail")
     end.then do
       Promise.new.tap do |promise|
-        `debugger`
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
         @harpnote_preview_printer.display_no_preview_available
@@ -703,6 +701,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           render_harpnotepreview_callback_by_worker()
         else
           render_harpnotepreview_callback()
+          @harpnote_preview_printer.bind_elements
         end
 
         promise.resolve()
@@ -1123,9 +1122,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @worker.on_named_message(:compute_tune_preview) do |data|
-      svg_and_position = data[:payload]
-      set_inactive("#tunePreview")
-      $log.benchmark("show compute_tune_preview") { @tune_preview_printer.set_svg(svg_and_position) }
+      $log.benchmark("preocessing reply from compute_tune_preview") do
+        svg_and_position = data[:payload]
+        set_inactive("#tunePreview")
+        @tune_preview_printer.set_svg(svg_and_position)
+      end
     end
 
     @worker.on_named_message(:set_logger_status) do |data|
@@ -1135,11 +1136,19 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @worker.on_named_message(:compute_harpnotes_preview) do |data|
+      $log.benchmark("processing reply from compute_harpnotes_preview") do
+        result = data[:payload]
+        @harpnote_preview_printer.display_results(result)
+        set_status(harpnotes_dirty: false)
+        set_status(refresh: false)
+        call_consumers(:harp_preview_size)
+        nil
+      end
+    end
+
+    @worker.on_named_message(:bind_drawing_element) do |data|
       result = data[:payload]
-      @harpnote_preview_printer.display_results(result)
-      set_status(harpnotes_dirty: false)
-      set_status(refresh: false)
-      call_consumers(:harp_preview_size)
+      @harpnote_preview_printer.bind_the_element(result)
       nil
     end
 
