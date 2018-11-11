@@ -59,8 +59,6 @@ module Harpnotes
       #{@preview_container}.scrollLeft(#{@preview_scroll.first});
       #{@preview_container}.scrollTop(#{@preview_scroll.last});
       }
-
-      $log.benchmark("binding elements") { bind_elements }
       nil
     end
 
@@ -209,41 +207,45 @@ module Harpnotes
     # There is a meethod set_draggable_{usecase} for the various drag usescases. This has to
     # establish all drag-operations for even complex usecases (objects which have multiple dragging zones)
     #
-    def bind_elements
-
+    def bind_elements()
       @interactive_elements.each do |svg_id, drawing_element|
-        svg_node = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
+        bind_the_element(svg_id)
+      end
+    end
 
-        # bind context menus
-        conf_key = drawing_element[:conf_key]
-        @paper.set_conf_editable(svg_node, conf_key, drawing_element[:more_conf_keys])
+    # this binds one particular element
+    def bind_the_element(svg_id)
+      drawing_element=@interactive_elements[svg_id]
+      svg_node = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
 
-        # bind draggable elements
-        draginfo = drawing_element[:draginfo]
-        if draginfo
-          conf_value = drawing_element[:conf_value]
-          case draginfo[:handler]
-            when :annotation
-              @paper.set_draggable_pos(svg_id, conf_key, conf_value) # annotations do not have a ddraghandler
-            when :jumpline
-              @paper.set_draggable_jumpline(svg_id, conf_key, conf_value, draginfo)
-            when :tuplet
-              `debugger`
-              @paper.set_draggable_tuplet(svg_id, conf_key, conf_value, draginfo)
-          end
+      # bind context menus
+      conf_key = drawing_element[:conf_key]
+      @paper.set_conf_editable(svg_node, conf_key, drawing_element[:more_conf_keys])
+
+      # bind draggable elements
+      draginfo = drawing_element[:draginfo]
+      if draginfo
+        conf_value = drawing_element[:conf_value]
+        case draginfo[:handler]
+          when :annotation
+            @paper.set_draggable_pos(svg_id, conf_key, conf_value) # annotations do not have a ddraghandler
+          when :jumpline
+            @paper.set_draggable_jumpline(svg_id, conf_key, conf_value, draginfo)
+          when :tuplet
+            `debugger`
+            @paper.set_draggable_tuplet(svg_id, conf_key, conf_value, draginfo)
         end
+      end
 
 
-        music_model_element = drawing_element[:music_model_elemment_origin]
-        # bind elements to be selectable - this has the chanin abc <- Music <- Layout <- SVG
-        if music_model_element
-          @elements[music_model_element] ||= []
-          @elements[music_model_element].push(svg_node)
-          svg_node.on(:click) do
-            @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
-          end
+      music_model_element = drawing_element[:music_model_elemment_origin]
+      # bind elements to be selectable - this has the chanin abc <- Music <- Layout <- SVG
+      if music_model_element
+        @elements[music_model_element] ||= []
+        @elements[music_model_element].push(svg_node)
+        svg_node.on(:click) do
+          @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
         end
-
       end
     end
 
