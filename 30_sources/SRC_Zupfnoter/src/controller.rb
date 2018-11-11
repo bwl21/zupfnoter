@@ -162,9 +162,6 @@ class Controller
     @editor            = Harpnotes::TextPane.new("abcEditor")
     @editor.controller = self
 
-    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
-    @harpnote_player.controller = self
-
     @songbook = LocalStore.new("songbook") # used to store songs in localstore
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
@@ -182,6 +179,7 @@ class Controller
     ## setup preview panes
     setup_tune_preview
     setup_harpnote_preview
+    setup_harpnote_player
 
     # initialize virgin zupfnoter
 
@@ -696,10 +694,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       Promise.new.tap do |promise|
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
-        @harpnote_preview_printer.display_no_preview_available
         if @systemstatus[:autorefresh] == :on
+          @harpnote_preview_printer.save_scroll_position
           render_harpnotepreview_callback_by_worker()
         else
+          @harpnote_preview_printer.display_no_preview_available
           render_harpnotepreview_callback()
           @harpnote_preview_printer.bind_elements
         end
@@ -1150,6 +1149,31 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       result = data[:payload]
       @harpnote_preview_printer.bind_the_element(result)
       nil
+    end
+
+  end
+
+# setup harpnotre_playxer
+  def setup_harpnote_player
+    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
+    @harpnote_player.controller = self
+
+    @worker.on_named_message(:load_player_model_abc) do |data|
+      $log.benchmark("preocessing reply from load_player_model_abc") do
+        @harpnote_player.player_model_abc = %x{JSON.parse(#{data[:payload]})}
+      end
+    end
+
+    @worker.on_named_message(:load_player_from_worker) do |data|
+      $log.benchmark("preocessing reply from load_player_model") do
+        @harpnote_player.set_worker_model(data[:payload])
+      end
+    end
+
+    @worker.on_named_message(:load_abc_model) do |data|
+      $log.benchmark("preocessing reply from load_player_model") do
+        @abc_model = data[:payload]
+      end
     end
 
   end
