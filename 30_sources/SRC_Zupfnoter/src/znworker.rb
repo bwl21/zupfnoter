@@ -247,10 +247,8 @@ end
 end
 
 @namedworker.on_named_message(:compute_harpnotes_preview) do |data|
-
   controller = WorkerController.new
 
-  $conf.push(data[:payload][:conf])
   $settings = data[:payload][:settings]
   $uri      = data[:payload][:uri]
 
@@ -260,4 +258,8 @@ end
 
   result = controller.compute_harpnotes_preview
   @namedworker.post_named_message(:compute_harpnotes_preview, result)
+  `debugger`
+  result[:interactive_elements].each do |zn_id, drawing_element|
+    @namedworker.post_named_message(:bind_drawing_element, zn_id)
+  end
 end
