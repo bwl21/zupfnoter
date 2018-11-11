@@ -47,8 +47,12 @@ module Harpnotes
     end
 
     def display_no_preview_available
-      @preview_scroll = [`#{@preview_container}.scrollLeft()`, `#{@preview_container}.scrollTop()`];
+     save_scroll_position
       @preview_container.html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
+    end
+
+    def save_scroll_position
+      @preview_scroll = [`#{@preview_container}.scrollLeft()`, `#{@preview_container}.scrollTop()`];
     end
 
     def display_results(result)

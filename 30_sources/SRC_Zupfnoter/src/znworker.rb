@@ -56,7 +56,7 @@ require 'text_pane'
 #require 'controller-cli'
 
 # require 'controller_command_definitions'
-# require 'harpnote_player'
+require 'harpnote_player'
 # require 'opal-dropboxjs'
 # require 'opal-jqconsole'
 require 'confstack2'
@@ -113,12 +113,14 @@ $log = WorkerLogger.new("x.log")
 
 class WorkerController
 
-  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus
+  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus, :harpnote_player, :abc_model
 
   def initialize
     $conf        = Confstack.new(nil)
     $conf.strict = false
     $conf.push(InitConf.init_conf())
+    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
+    @harpnote_player.controller = self
   end
 
 
@@ -154,7 +156,7 @@ class WorkerController
     harpnote_engine                = Harpnotes::Input::Abc2svgToHarpnotes.new
     @music_model, player_model_abc = harpnote_engine.transform(@abc_part_from_editor)
     @abc_model                     = harpnote_engine.abc_model
-    #@harpnote_player.player_model_abc = player_model_abc
+    @harpnote_player.player_model_abc = player_model_abc
     #@music_model.checksum             = @editor.get_checksum
   end
 
@@ -169,7 +171,7 @@ class WorkerController
 
         # todo: not sure if it is good to pass active_voices via @song_harpnotes
         # todo: refactor better moove that part of the code out here
-        #$log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
+        $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
         @harpnote_preview_printer = Harpnotes::SvgEngine.new(nil, 2200, 1400) # size of canvas in pixels
         @harpnote_preview_printer.clear
         @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
@@ -257,9 +259,19 @@ end
   controller.abc_part_from_editor = data[:payload][:abc_part_from_editor]
 
   result = controller.compute_harpnotes_preview
+
+  # send ressults to the main script
+  #
   @namedworker.post_named_message(:compute_harpnotes_preview, result)
-  `debugger`
+  @namedworker.post_named_message(:load_abc_model, controller.abc_model)
+
+
   result[:interactive_elements].each do |zn_id, drawing_element|
     @namedworker.post_named_message(:bind_drawing_element, zn_id)
   end
+
+  @namedworker.post_named_message(:load_player_model_abc, `JSON.stringify(#{controller.harpnote_player.player_model_abc})`)
+  @namedworker.post_named_message(:load_player_from_worker, controller.harpnote_player.get_worker_model)
+
+
 end
