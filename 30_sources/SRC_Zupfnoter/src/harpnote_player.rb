@@ -59,7 +59,6 @@ module Harpnotes
       end
 
       def play_auto
-        `debugger`
         if @selection.count >= 0 and (counts = @selection.map { |i| i[:delay] }.uniq.count) > 1
           play_selection
         else
@@ -82,7 +81,6 @@ module Harpnotes
       end
 
       def play_selection
-        `debugger`
         play_notes(@selection)
       end
 
