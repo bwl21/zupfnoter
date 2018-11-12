@@ -1047,7 +1047,7 @@ module Harpnotes
       # @param [Object] conf_value - the value for configuration (used for dragging annotation)
       def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
         super()
-        _text       = text.gsub(/[„“‚’—]/, {'„' => '"', '“' => '"', '‚' => "'", '’' => "'", '—' => '-'})
+        _text       = text.gsub(/[„“‚’—–]/, {'„' => '"', '“' => '"', '‚' => "'", '’' => "'", '—' => '-', "–" => "-"})
         @center     = center
         @text       = _text
         @style      = style
