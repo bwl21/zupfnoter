@@ -691,7 +691,7 @@ class Controller
         # todo: implement a more flexible replacement thatn simply prefixing
         regexp_form_sets = {
             /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style" "align"]},
+            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style", "align"]},
             /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos", "align"]},
             /extract\.(\d+)\.notebound\.minc\.(\d+)/                              => {keys: ["minc_f"]},
             /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
