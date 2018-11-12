@@ -236,7 +236,6 @@ module Harpnotes
           when :jumpline
             @paper.set_draggable_jumpline(svg_id, conf_key, conf_value, draginfo)
           when :tuplet
-            `debugger`
             @paper.set_draggable_tuplet(svg_id, conf_key, conf_value, draginfo)
         end
       end
