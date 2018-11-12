@@ -112,7 +112,8 @@ class Controller
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
-    @refresh_timer = []
+    @refresh_timer = []  # this is used to contron time based renderin
+    @render_stack  = []  # this is to prevent a restart of rendering in a rendering is already running
 
     @version = VERSION
     if browser_language
@@ -695,8 +696,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
         if @systemstatus[:autorefresh] == :on
-          @harpnote_preview_printer.save_scroll_position
-          render_harpnotepreview_callback_by_worker()
+          @render_stack.push(Time.now)
+          if @render_stack.size == 1
+            @harpnote_preview_printer.save_scroll_position
+            render_harpnotepreview_callback_by_worker()
+          end
         else
           @harpnote_preview_printer.display_no_preview_available
           render_harpnotepreview_callback()
@@ -1137,20 +1141,36 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @worker.on_named_message(:compute_harpnotes_preview) do |data|
       $log.benchmark("processing reply from compute_harpnotes_preview") do
         result = data[:payload]
-        @harpnote_preview_printer.display_results(result)
-        set_status(harpnotes_dirty: false)
-        set_status(refresh: false)
-        call_consumers(:harp_preview_size)
+        if @render_stack.size <= 1
+          @harpnote_preview_printer.display_results(result)
+          set_status(harpnotes_dirty: false)
+          set_status(refresh: false)
+          call_consumers(:harp_preview_size)
+        end
         nil
       end
     end
 
+    # this allows to bind one particular element
+    # we do not use it since it would throw loads of communications
+    # in the end it was much more inconvenient
     @worker.on_named_message(:bind_drawing_element) do |data|
       result = data[:payload]
       @harpnote_preview_printer.bind_the_element(result)
       nil
     end
 
+    @worker.on_named_message(:bind_drawing_elements) do |data|
+      @harpnote_preview_printer.bind_elements
+
+      # double check if there are more render requests
+      @render_stack.shift
+      unless @render_stack.empty?
+        @render_stack.clear
+        render_previews
+      end
+      nil
+    end
   end
 
 # setup harpnotre_playxer
@@ -1158,20 +1178,26 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
     @harpnote_player.controller = self
 
+    # this receiges the player_model_abc to play
+    # alogn the tune
     @worker.on_named_message(:load_player_model_abc) do |data|
       $log.benchmark("preocessing reply from load_player_model_abc") do
         @harpnote_player.player_model_abc = %x{JSON.parse(#{data[:payload]})}
       end
     end
 
+    # this receives the player_model to play according
+    # to harpnotes
     @worker.on_named_message(:load_player_from_worker) do |data|
       $log.benchmark("preocessing reply from load_player_model") do
         @harpnote_player.set_worker_model(data[:payload])
       end
     end
 
+    # this retrieves the abc model from worker
+    # required for select in multiple voices
     @worker.on_named_message(:load_abc_model) do |data|
-      $log.benchmark("preocessing reply from load_player_model") do
+      $log.benchmark("preocessing reply from load_abc_model") do
         @abc_model = data[:payload]
       end
     end

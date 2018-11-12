@@ -21,7 +21,9 @@ class Webworker
   def on_message(&block)
     listener = lambda do |event|
       payload = Native(event)[:data]
-      block.call(JSON.parse(payload))
+      $log.benchmark("Received #{payload[0 .. 30]} in #{__FILE__}") do
+        block.call(JSON.parse(payload))
+      end
     end
     %x{ #{@worker}.addEventListener('message', #{listener}, false);}
   end
