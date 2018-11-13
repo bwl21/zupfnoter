@@ -112,8 +112,8 @@ class Controller
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
-    @refresh_timer = []  # this is used to contron time based renderin
-    @render_stack  = []  # this is to prevent a restart of rendering in a rendering is already running
+    @refresh_timer = [] # this is used to contron time based renderin
+    @render_stack  = [] # this is to prevent a restart of rendering in a rendering is already running
 
     @version = VERSION
     if browser_language
@@ -136,6 +136,7 @@ class Controller
     @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
+    setup_logger_from_worker
 
     $log.info ("Welcome to Zupfnoter")
     $log.info ("Zupfnoter #{VERSION}")
@@ -276,7 +277,8 @@ class Controller
                                  `set_extract_menu(#{entry.first}, #{title})` }
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }],
-                               harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }]
+                               harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
+                               render_status:     [lambda { %x{set_render_status(#{@render_stack.to_s})} }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -696,7 +698,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
         if @systemstatus[:autorefresh] == :on
-          @render_stack.push(Time.now)
+          @render_stack.push(@render_stack.count+1)
+          call_consumers(:render_status)
           if @render_stack.size == 1
             @harpnote_preview_printer.save_scroll_position
             render_harpnotepreview_callback_by_worker()
@@ -1133,18 +1136,19 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @worker.on_named_message(:set_logger_status) do |data|
-      $log.set_status(data[:payload])
+      #$log.set_status(data[:payload])
       @editor.set_annotations($log.annotations)
-      #call_consumers(:error_alert)
     end
 
     @worker.on_named_message(:compute_harpnotes_preview) do |data|
       $log.benchmark("processing reply from compute_harpnotes_preview") do
         result = data[:payload]
-        if @render_stack.size <= 1
+        if @render_stack.size <= 1 # if there is no other rendering active?
           @harpnote_preview_printer.display_results(result)
           set_status(harpnotes_dirty: false)
           set_status(refresh: false)
+          @editor.set_annotations($log.annotations)
+          call_consumers(:error_alert)
           call_consumers(:harp_preview_size)
         end
         nil
@@ -1161,13 +1165,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @worker.on_named_message(:bind_drawing_elements) do |data|
-      @harpnote_preview_printer.bind_elements
 
       # double check if there are more render requests
       @render_stack.shift
+      call_consumers(:render_status)
       unless @render_stack.empty?
         @render_stack.clear
         render_previews
+      else
+        @harpnote_preview_printer.bind_elements
       end
       nil
     end
@@ -1232,6 +1238,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
        w2ui['layout'].show('bottom', true);
        #{@editor}.$resize();
       }
+  end
+
+  def setup_logger_from_worker
+    @worker.on_named_message('log') do |data|
+      $log.log_from_worker(data[:payload])
+    end
   end
 
 # this registers the listeners to ui-elements.
