@@ -921,7 +921,8 @@ function init_w2ui(uicontroller) {
       },
       { type: 'button',
         id: 'sb_render_status',
-        text: '<div style="padding: 0px !important;"><span class="sb-render-status"></span></div>'
+        text: '<div style="padding: 0px !important;"><span class="sb-autorefresh">??</span><span class="sb-render-status">[]</span></div>',
+        onClick: function(event){uicontroller.$toggle_autorefresh()}
       },
       {type: 'spacer'},
       {
@@ -1143,6 +1144,7 @@ function update_systemstatus_w2ui(systemstatus) {
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
 
   $(".sb-saveformat").html("[" + systemstatus.saveformat + "]")
+  $(".sb-autorefresh").html("Auto-Render " + systemstatus.autorefresh + " ")
 
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
   // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
