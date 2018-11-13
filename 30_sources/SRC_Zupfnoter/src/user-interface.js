@@ -2,7 +2,7 @@ function init_w2ui(uicontroller) {
 
   w2popup.defaults.speed = 0;
 
-  var zoomlevel = [1400, 2200];
+ // var zoomlevel = [2200, 1400];   // initialize zoomlevel; todo: should be done by scalehandlers
   var current_perspective = 'tb_perspective:Alle';
   var isFullScreen = false;
 
@@ -257,6 +257,9 @@ function init_w2ui(uicontroller) {
       zoomHarpPreview(zoomlevel);
     }
   }
+
+  // ensure that oomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
+  zoomlevel = scalehandlers['tb_scale:groß'].zoomlevel
 
   toolbarhandlers = {
     'tb_file:tb_create': createNewSheet,
@@ -916,6 +919,10 @@ function init_w2ui(uicontroller) {
         id: 'sb_mode',
         text: '<div style="padding: 0px !important;"><span class="sb-mode"></span></div>'
       },
+      { type: 'button',
+        id: 'sb_render_status',
+        text: '<div style="padding: 0px !important;"><span class="sb-render-status"></span></div>'
+      },
       {type: 'spacer'},
       {
         type: 'button',
@@ -1075,6 +1082,7 @@ function init_w2ui(uicontroller) {
   $('#editortabspanel .tab').hide();
   $('#abceditortab').show();
 
+
   w2ui['layout'].onResize = function (event) {
     uicontroller.editor.$resize();
   }
@@ -1185,7 +1193,7 @@ function update_current_notes_w2ui(notes) {
 
 function update_editor_status_w2ui(editorstatus) {
   $(".editor-status-position").html(editorstatus.position);
-  $(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
+  //$(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
   if (editorstatus.token.type.startsWith("zupfnoter.editable") && (editorstatus.selections.length == 1)) {
     w2ui['editortoolbar'].enable('edit_snippet')
   }
@@ -1249,7 +1257,9 @@ function set_extract_menu(id, text) {
   // by call_consumers(:extracts)
 };
 
-;
+function set_render_status(status){
+  $(".sb-render-status").html(status);
+}
 
 function lockscreen(msg, mode) {
   w2popup.open({modal: true, height: 100})
