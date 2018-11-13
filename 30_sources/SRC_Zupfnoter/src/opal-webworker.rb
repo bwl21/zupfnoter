@@ -5,8 +5,10 @@ class Webworker
     @handlers = {}
     if Native(parent).is_a?(String) # this is the name of the worker script - when used in the main script
       @worker = %x{new Worker(#{parent})}
+      @name   = "main script"
     else
       @worker = parent # now I am in the worker script
+      @name   = "worker"
     end
   end
 
@@ -21,9 +23,14 @@ class Webworker
   def on_message(&block)
     listener = lambda do |event|
       payload = Native(event)[:data]
-      $log.benchmark("Received #{payload[0 .. 30]} in #{__FILE__}") do
-        block.call(JSON.parse(payload))
-      end
+      result  = nil
+      # $log.benchmark("parsing  #{payload[0 .. 30]} in #{@name}") do
+      result = JSON.parse(payload)
+      # end
+      # $log.benchmark("Received #{payload[0 .. 30]} in #{@name}") do
+      block.call(result)
+      nil
+      # end
     end
     %x{ #{@worker}.addEventListener('message', #{listener}, false);}
   end
@@ -41,12 +48,14 @@ class NamedWebworker < Webworker
     #
     if @handlers.empty?
       on_message do |object|
+        # $log.benchmark(object[:name]) do
         if object.is_a? Hash
           handler = @handlers[object[:name]]
           handler.call(object) if handler
         else
           # todo handle else part
         end
+          # end
       end
     end
 
