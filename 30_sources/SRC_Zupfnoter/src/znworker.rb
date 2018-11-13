@@ -131,7 +131,7 @@ $log = WorkerLogger.new(nil)
 
 class WorkerController
 
-  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus, :harpnote_player, :abc_model
+  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus, :harpnote_player, :abc_model, :extracts, :music_model
 
   def initialize
     $conf        = Confstack.new(nil)
@@ -219,7 +219,7 @@ class WorkerController
       $log.benchmark("transforming music model") do
       end
 
-      #call_consumers(:document_title)
+      set_extracts_menu
 
       result = nil
       $log.benchmark("computing layout") do
@@ -237,6 +237,18 @@ class WorkerController
       $conf.pop
     end
     result
+  end
+
+  def set_extracts_menu
+    $log.benchmark("prepare extract menu") do
+      printed_extracts = $conf['produce']
+      @extracts        = $conf.get('extract').inject([]) do |r, entry|
+        extract_number = entry.last.dig(:filenamepart)
+        print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+        title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+        r.push([entry.first, title])
+      end
+    end
   end
 end
 
@@ -285,6 +297,7 @@ end
 
   # send ressults to the main script
   #
+  @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: controller.music_model.meta_data[:filename]})
   @namedworker.post_named_message(:compute_harpnotes_preview, result)
   @namedworker.post_named_message(:load_abc_model, controller.abc_model)
 
