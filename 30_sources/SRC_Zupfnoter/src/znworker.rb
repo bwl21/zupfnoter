@@ -25,7 +25,7 @@
 
 require 'opal'
 require 'opal-platform'
-#require 'ajv.min.js'
+require 'ajv.min.js'
 
 #require 'opal-jquery'
 require 'vector2d'
@@ -88,8 +88,21 @@ end
 
 class WorkerLogger < Logger
 
-  def write(type, msg)
+  attr_accessor :worker
 
+  def error(*args)
+    @worker.post_named_message(:log, {type: :error, args: args})
+  end
+
+  def info(*args)
+    @worker.post_named_message(:log, {type: :info, args: args})
+  end
+
+  def  warning(*args)
+    @worker.post_named_message(:log, {type: :warning, args: args})
+  end
+
+  def write(type, msg)
     current_level = LOGLEVELS[type] || LOGLEVELS[:warning]
     if (current_level <= @loglevel)
       time = Time.now.strftime("%H:%M:%S")
@@ -102,8 +115,7 @@ end
 ## preparing environment
 #
 
-$log = WorkerLogger.new("x.log")
-
+$log = WorkerLogger.new(nil)
 
 # worker routines
 #
@@ -121,6 +133,7 @@ class WorkerController
     $conf.push(InitConf.init_conf())
     @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
     @harpnote_player.controller = self
+    @json_validator             = Ajv::JsonValidator.new
   end
 
 
@@ -153,9 +166,9 @@ class WorkerController
   end
 
   def load_music_model
-    harpnote_engine                = Harpnotes::Input::Abc2svgToHarpnotes.new
-    @music_model, player_model_abc = harpnote_engine.transform(@abc_part_from_editor)
-    @abc_model                     = harpnote_engine.abc_model
+    harpnote_engine                   = Harpnotes::Input::Abc2svgToHarpnotes.new
+    @music_model, player_model_abc    = harpnote_engine.transform(@abc_part_from_editor)
+    @abc_model                        = harpnote_engine.abc_model
     @harpnote_player.player_model_abc = player_model_abc
     #@music_model.checksum             = @editor.get_checksum
   end
@@ -204,7 +217,7 @@ class WorkerController
 
       result = nil
       $log.benchmark("computing layout") do
-        layouter = Harpnotes::Layout::Default.new
+        layouter              = Harpnotes::Layout::Default.new
         layouter.uri          = $uri
         layouter.placeholders = get_placeholder_replacers(print_variant)
         result                = layouter.layout(@music_model, nil, print_variant, page_format)
@@ -222,12 +235,12 @@ class WorkerController
 end
 
 
-
-
 # installing the handlers
 
 @worker      = Webworker.new(`this`)
 @namedworker = NamedWebworker.new(`this`)
+$log.worker = @namedworker
+
 
 @worker.post_message("worker started #{__FILE__}")
 
