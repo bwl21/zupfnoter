@@ -70,6 +70,7 @@ class Controller
       end
       c.as_action do |args|
         $log.loglevel = args[:level]
+        @worker.post_named_message(:set_loglevel, args[:level])
         set_status(loglevel: $log.loglevel)
       end
     end
