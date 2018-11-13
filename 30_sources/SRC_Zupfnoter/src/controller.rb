@@ -269,7 +269,7 @@ class Controller
                                disable_save:      [lambda { `disable_save();` }],
                                enable_save:       [lambda { `enable_save();` }],
                                before_open:       [lambda { `before_open()` }],
-                               document_title:    [lambda { `document.title = #{@music_model.meta_data[:filename]}` }],
+                               document_title:    [lambda { `document.title = #{@music_model ? @music_model.meta_data[:filename] : @document_title}` }],
                                current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
                                settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
                                extracts:          [lambda { @extracts.each { |entry|
@@ -698,7 +698,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         set_active("#harpPreview")
         @harpnote_preview_printer.clear
         if @systemstatus[:autorefresh] == :on
-          @render_stack.push(@render_stack.count+1)
+          @render_stack.push(@render_stack.count + 1)
           call_consumers(:render_status)
           if @render_stack.size == 1
             @harpnote_preview_printer.save_scroll_position
@@ -752,21 +752,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     config = get_config_from_editor
 
     $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
-    $conf.push(config) # in case of error, we hav the ensure close below
+    $conf.push(config) # in case of error, we have the ensure close below
 
     $image_list = $conf.get['resources'].keys rescue nil
 
     # prepare extract menu
-    $log.benchmark("prepare extract menu") do
-      printed_extracts = $conf['produce']
-      @extracts        = $conf.get('extract').inject([]) do |r, entry|
-        extract_number = entry.last.dig(:filenamepart)
-        print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
-        title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
-        r.push([entry.first, title])
-      end
-      call_consumers(:extracts)
-    end
+    set_extracts_menu
 
 
     begin
@@ -1007,7 +998,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def set_status(status)
     @systemstatus.merge!(status)
-    $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
+    $log.debug("sytemstatus: #{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
     $log.loglevel = (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
 
     save_to_localstorage
@@ -1024,7 +1015,18 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: nil, dropboxpath: nil, dropboxloginstate: nil)
   end
 
-  private
+  def set_extracts_menu
+    $log.benchmark("prepare extract menu") do
+      printed_extracts = $conf['produce']
+      @extracts        = $conf.get('extract').inject([]) do |r, entry|
+        extract_number = entry.last.dig(:filenamepart)
+        print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+        title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+        r.push([entry.first, title])
+      end
+      call_consumers(:extracts)
+    end
+  end
 
 
 # setup the harpnote prviewer
@@ -1155,17 +1157,14 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
     end
 
-    # this allows to bind one particular element
-    # we do not use it since it would throw loads of communications
-    # in the end it was much more inconvenient
-    @worker.on_named_message(:bind_drawing_element) do |data|
-      result = data[:payload]
-      @harpnote_preview_printer.bind_the_element(result)
-      nil
+    @worker.on_named_message(:update_ui) do |data|
+      @extracts = data[:payload][:extracts]
+      call_consumers(:extracts)
+      @document_title = data[:payload][:document_title]
+      call_consumers(:document_title)
     end
 
     @worker.on_named_message(:bind_drawing_elements) do |data|
-
       # double check if there are more render requests
       @render_stack.shift
       call_consumers(:render_status)
@@ -1218,6 +1217,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 # note the filedrop is not entirely initialized in user-interface.js
 #
+#
+  def toggle_autorefresh
+    if @systemstatus[:autorefresh] == :on
+      handle_command('autorefresh off')
+    else
+      handle_command('autorefresh on')
+    end
+    call_consumers(:render_status)
+  end
 
   def toggle_console
     %x{
@@ -1230,7 +1238,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     formats = ["A3-A4", 'A3', 'A4']
     index = (formats.index(systemstatus[:saveformat]) + 1) % formats.size rescue 1
     handle_command("saveformat #{formats[index]}")
-
   end
 
   def show_console
