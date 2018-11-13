@@ -87,27 +87,33 @@ end
 
 
 class WorkerLogger < Logger
-
   attr_accessor :worker
 
   def error(*args)
-    @worker.post_named_message(:log, {type: :error, args: args})
+    write_worker(:error, *args)
   end
 
   def info(*args)
-    @worker.post_named_message(:log, {type: :info, args: args})
+    write_worker(:info, *args)
   end
 
-  def  warning(*args)
-    @worker.post_named_message(:log, {type: :warning, args: args})
+  def warning(*args)
+    write_worker(:warning, *args)
   end
 
-  def write(type, msg)
-    current_level = LOGLEVELS[type] || LOGLEVELS[:warning]
-    if (current_level <= @loglevel)
-      time = Time.now.strftime("%H:%M:%S")
-      puts msg
-    end
+  def message(*args)
+    write_worker(:message, *args)
+  end
+
+  def debug(*args)
+    write_worker(:debug, *args)
+  end
+
+
+  def write_worker(type, *args)
+    the_args    = args
+    the_args[0] = "worker: #{args[0]}"
+    @worker.post_named_message(:log, {type: type, args: the_args})
   end
 end
 
@@ -239,10 +245,14 @@ end
 
 @worker      = Webworker.new(`this`)
 @namedworker = NamedWebworker.new(`this`)
-$log.worker = @namedworker
+$log.worker  = @namedworker
 
 
 @worker.post_message("worker started #{__FILE__}")
+
+@namedworker.on_named_message(:set_loglevel) do |data|
+  $log.loglevel = (data[:payload])
+end
 
 @namedworker.on_named_message(:compute_tune_preview) do |data|
   $log.clear_errors
