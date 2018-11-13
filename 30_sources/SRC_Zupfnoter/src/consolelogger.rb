@@ -33,6 +33,10 @@ class Logger
   end
 
 
+  def log_from_worker(payload)
+    send(payload[:type], *payload[:args])
+  end
+
   # emit an error message and record an annoation to mark the error position
   # in a source text
   #
