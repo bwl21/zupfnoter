@@ -1,14 +1,19 @@
 ## align
 
-Hier kannst du die Ausrichtung des Textes bezogen auf den Bezugspunkt,
+Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
 (z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
-Ausrichtung automatisch errechnet
+Anordnung automatisch errechnet
 
 -   `l`: der Text steht links vom Bezugspunkt (und ist daher
     rechtsbündig)
 -   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
     linksbündig)
 -   `auto`: die Ausrichtung wird automatisch errechnet
+
+> **Hinweis**: Auch beim manuellen Verschieben wird die Anodnung der Nummer (links/rechts der Note)
+> berücksichtigt und die Ausrichtung (linksbündig/rechtsbündig) entsprechend errechnet. 
+> Damit können die Nummern auch bei unterschiedlicher Länge sehr präzise positioniert werden.
+
 
 ## annotations
 
