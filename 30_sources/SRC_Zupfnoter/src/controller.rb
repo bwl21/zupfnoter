@@ -100,7 +100,6 @@ class Controller
 
     @worker = NamedWebworker.new("public/znworker.js?buster=#{Time.now}")
 
-
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',
                  'de-de' => 'de-de',
@@ -136,7 +135,6 @@ class Controller
     @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
-    setup_logger_from_worker
 
     $log.info ("Welcome to Zupfnoter")
     $log.info ("Zupfnoter #{VERSION}")
@@ -182,6 +180,7 @@ class Controller
     setup_tune_preview
     setup_harpnote_preview
     setup_harpnote_player
+    setup_worker_listners
 
     # initialize virgin zupfnoter
 
@@ -599,7 +598,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.benchmark("render tune preview") do
 
-        if (false) # sst to run this in the main thread
+        if false # sst to run this in the main thread
           # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
           # before comuputing the tune_preview
           @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
@@ -607,7 +606,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           @tune_preview_printer.set_svg(svg_and_positions)
           set_inactive("#tunePreview")
         else
-          @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor_get_checksum})
+          @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor.get_checksum})
         end
       end
     rescue Exception => e
@@ -628,7 +627,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           uri:                  {hostname: self.class.get_uri[:hostname]},
           config_from_editor:   get_config_from_editor,
           page_format:          "A3",
-          abc_part_from_editor: @editor.get_abc_part
+          abc_part_from_editor: @editor.get_abc_part,
+          checksum:             @editor.get_checksum
       })
     end
     nil
@@ -1128,7 +1128,53 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       a = Native(abcelement) # todo remove me
       select_abc_object(abcelement)
     end
+  end
 
+# setup harpnotre_playxer
+  def setup_harpnote_player
+    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
+    @harpnote_player.controller = self
+  end
+
+  def set_harppreview_size(size)
+    @harp_preview_size = size
+    @harpnote_preview_printer.set_canvas(size)
+    call_consumers(:harp_preview_size)
+  end
+
+# note the filedrop is not entirely initialized in user-interface.js
+#
+#
+  def toggle_autorefresh
+    if @systemstatus[:autorefresh] == :on
+      handle_command('autorefresh off')
+    else
+      handle_command('autorefresh on')
+    end
+    call_consumers(:render_status)
+  end
+
+  def toggle_console
+    %x{
+       w2ui['layout'].toggle('bottom', true);
+       #{@editor}.$resize();
+      }
+  end
+
+  def toggle_saveformat
+    formats = ["A3-A4", 'A3', 'A4']
+    index = (formats.index(systemstatus[:saveformat]) + 1) % formats.size rescue 1
+    handle_command("saveformat #{formats[index]}")
+  end
+
+  def show_console
+    %x{
+       w2ui['layout'].show('bottom', true);
+       #{@editor}.$resize();
+      }
+  end
+
+  def setup_worker_listners
     @worker.on_named_message(:compute_tune_preview) do |data|
       $log.benchmark("preocessing reply from compute_tune_preview") do
         svg_and_position = data[:payload]
@@ -1176,12 +1222,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
       nil
     end
-  end
 
-# setup harpnotre_playxer
-  def setup_harpnote_player
-    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
-    @harpnote_player.controller = self
 
     # this receiges the player_model_abc to play
     # alogn the tune
@@ -1207,47 +1248,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
     end
 
-  end
-
-  def set_harppreview_size(size)
-    @harp_preview_size = size
-    @harpnote_preview_printer.set_canvas(size)
-    call_consumers(:harp_preview_size)
-  end
-
-# note the filedrop is not entirely initialized in user-interface.js
-#
-#
-  def toggle_autorefresh
-    if @systemstatus[:autorefresh] == :on
-      handle_command('autorefresh off')
-    else
-      handle_command('autorefresh on')
-    end
-    call_consumers(:render_status)
-  end
-
-  def toggle_console
-    %x{
-       w2ui['layout'].toggle('bottom', true);
-       #{@editor}.$resize();
-      }
-  end
-
-  def toggle_saveformat
-    formats = ["A3-A4", 'A3', 'A4']
-    index = (formats.index(systemstatus[:saveformat]) + 1) % formats.size rescue 1
-    handle_command("saveformat #{formats[index]}")
-  end
-
-  def show_console
-    %x{
-       w2ui['layout'].show('bottom', true);
-       #{@editor}.$resize();
-      }
-  end
-
-  def setup_logger_from_worker
     @worker.on_named_message('log') do |data|
       $log.log_from_worker(data[:payload])
     end
