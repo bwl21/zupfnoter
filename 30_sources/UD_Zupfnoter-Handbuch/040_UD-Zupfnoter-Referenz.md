@@ -2165,17 +2165,32 @@ geschieht wie folgt:
     Zählmarke einstellen, ob sie links oder rechts von der Note
     platziert wird.
 
-4.  Man kann einstellen, ob die Taktnummben / Zählmarken bezogen auf die
-    Notenmitte oder den Notenrand positioniert werden (Kapitel
-    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase))
+4.  Man kann einstellen, ob die Taktnummern / Zählmarken bezogen auf die
+    **Notenmitte oder den Notenrand** positioniert werden (Kapitel
+    \ref{extract.0.barnumbers.apanchor} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apanchor) bzw.
+    \ref{extract.0.barnumbers.cpanchor} [`extract.0.barnumbers.apbase`](#extract.0.countnotes.appanchor) )
 
-5.  Taktnummern können über die Konfiguration (Kapitel
-    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase))
-    näher an Noten bzw. weiter von der Note verschoben werden.
+4.  Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken bezogen auf die
+    **Notenmitte oder den Notenrand** positioniert werden (Kapitel
+    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase) bzw.
+    \ref{extract.0.barnumbers.cpbase} [`extract.0.barnumbers.apbase`](#extract.0.countnotes.apbase) )
 
-6.  Zählmarken können über die Konfiguration (Kapitel
-    \ref{extract.0.countnotes.apbase} [`extract.0.countnotes.apbase`](#extract.0.countnotes.apbase))
-    näher an Noten bzw. weiter von der Note verschoben werden.
+> **Hinweis**: Die Positionierung der Taktnummern / Zählmarken kann für jede einzeln über die rechte Maustaste
+>beeinflusst werden.
+>
+> * `Konfig bearb.` Da kann man einige Parameter in der Notenbezogenen Konfiguration einstellen
+> * `... rechts` Nummer wird rechts von der Note geschrieben. Sie wird dadurch linksbündig. 
+> * `... links` Nummer wird links von der Note geschrieben. Sie wird dadurch rechtsbündig.
+> * verschieben mit der Maus
+>
+> Zunächst sollte man versuchen, die Nummer auf die andere Seite der Note zu schieben. Damit 
+> ergibt sich immer noch eine exakte Ausrichtung und ein bessers Notenbild. Erst dann ist eine
+> manuelle Positionierung mit der Maus sinnvoll.
+
+> **Hinweis**: Auch beim manuellen Verschieben wird die Anodnung der Nummer (links/rechts der Note)
+> berücksichtigt und die Ausrichtung (linksbündig/rechtsbündig) entsprechend errechnet. 
+> Damit können die Nummern auch bei unterschiedlicher Länge sehr präzise positioniert werden.
+
 
 ### Warnung: "Beschriftung zu dicht beieinander"
 
