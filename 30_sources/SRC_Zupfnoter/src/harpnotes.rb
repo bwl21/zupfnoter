@@ -1681,7 +1681,7 @@ module Harpnotes
 
         @draw_instrument.call.each { |r| sheet_marks.push(r) } if @draw_instrument
 
-        sheet_elements = res_images + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
+        sheet_elements        = res_images + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
         result                = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
         result.printer_config = $conf[:printer]
 
@@ -2304,7 +2304,7 @@ module Harpnotes
             xn, yn               = playable.next_playable.sheet_drawable.center
 
             # compute the barnote/countnote positions
-            bn_position, cn_position = bottomup ? compute_note_position(xn, x, xp, limit_a3).reverse : compute_note_position(xp, x, xn, limit_a3)
+            bn_side, cn_side = bottomup ? compute_note_position(xn, x, xp, limit_a3).reverse : compute_note_position(xp, x, xn, limit_a3)
 
 
             #### now handle countnotes
@@ -2315,25 +2315,28 @@ module Harpnotes
               cn_align_key = "#{cn_base_key}.align"
               count_note   = playable.count_note || ""
 
-              cn_dsize_y  = (:center == cn_apanchor) ? 0 : dsize_y # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
+              cn_dsize_y = (:center == cn_apanchor) ? 0 : dsize_y # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
 
               # read countnote-configuration from extract
-              cn_offset   = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key
-              cn_position = @print_options_raw[cn_align_key] if (@print_options_keys.include? cn_align_key) and (@print_options_raw[cn_align_key] != :auto)
+              cn_offset  = @print_options_raw[cn_pos_key] if @print_options_keys.include? cn_pos_key # offset entered by drag & drep
+              cn_side    = @print_options_raw[cn_align_key] if (@print_options_keys.include? cn_align_key) and (@print_options_raw[cn_align_key] != :auto) # on which side of th enote
 
-              unless cn_offset
-                if cn_autopos == true
-                  cn_tie_x = (cn_position == :r and playable.tie_start?) ? 1.5 : 0 # 1: this size of tie bow see line 1961
-                  auto_x   = cn_tie_x + (cn_position == :l ? -(dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
-                  cn_align = ((cn_position == :l) ? :right : :left)
-                  # todo: remove dependencay of cn_fonttsize_y
+              # if we have autopos, we need to compute the align
+              # even if there is a cnoffset, we need to consider the side of the note
+              # otherwise drag/drop does not work properly
+              cn_align = cn_autopos == true ? ((cn_side == :l) ? :right : :left) : :left
+
+              unless cn_offset # unless no offest is specified in config
+                if cn_autopos == true # global autopositioning
+                  cn_tie_x = (cn_side == :r and playable.tie_start?) ? 1.5 : 0 # 1: this size of tie bow see line 1961
+                  auto_x   = cn_tie_x + (cn_side == :l ? -(dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
+                  # todo: remove dependency of cn_fontsize_y
                   auto_y    = bottomup ? -(cn_dsize_y + cn_apbase_y + cn_fontsize_y) : cn_dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
                   cn_offset = [auto_x, auto_y]
                 else
                   cn_offset = cn_fixedpos
                 end
               end
-
               cn_position = Vector2d(dcenter) + cn_offset
 
               # todo: pass more attributes by an object instead of using tap
@@ -2373,16 +2376,20 @@ module Harpnotes
               bn_dsize_y  = (:center == bn_apanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
               bn_offset   = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
-              bn_position = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
+              bn_side = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
+
+              # if we have autopos, we need to compute the align
+              # even if there is a cnoffset, we need to consider the side of the note
+              # otherwise drag/drop does not work properly
+              bn_align = bn_autopos == true ? ((bn_side == :l) ? :right : :left) : :left
 
 
               unless bn_offset
                 if bn_autopos == true
-                  bn_tie_x = (bn_position == :r and playable.tie_start?) ? 1 : 0
+                  bn_tie_x = (bn_side == :r and playable.tie_start?) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
                   # todo: in case of left: barnumber.length is just a heuristic to geht the thing right justified
-                  bn_auto_x = bn_tie_x + (bn_position == :l ? -(dsize_x + bn_apbase_x) : dsize_d_x + bn_apbase_x)
-                  bn_align  = ((bn_position == :l) ? :right : :left)
+                  bn_auto_x = bn_tie_x + (bn_side == :l ? -(dsize_x + bn_apbase_x) : dsize_d_x + bn_apbase_x)
                   bn_auto_y = bottomup ? bn_dsize_y + bn_apbase_y : -(bn_dsize_y + bn_apbase_y + bn_fontsize_y) # todo derive "1" from font style?
                   bn_offset = [bn_auto_x, bn_auto_y]
                 else
@@ -3144,7 +3151,7 @@ module Harpnotes
               $log.error(%Q{#{I18n.t("no placeholder value found in ")} in '#{parameter}': '#{key.first}'})
               text = ""
             end
-            result   = result.gsub("{{#{key}}}", text)
+            result = result.gsub("{{#{key}}}", text)
           else
             $log.error(%Q{#{I18n.t("wrong placeholder: ")} in '#{parameter}': '#{key.first}'})
           end
