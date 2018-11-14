@@ -131,7 +131,7 @@ $log = WorkerLogger.new(nil)
 
 class WorkerController
 
-  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus, :harpnote_player, :abc_model, :extracts, :music_model
+  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus, :harpnote_player, :abc_model, :extracts, :music_model, :checksum
 
   def initialize
     $conf        = Confstack.new(nil)
@@ -176,7 +176,7 @@ class WorkerController
     @music_model, player_model_abc    = harpnote_engine.transform(@abc_part_from_editor)
     @abc_model                        = harpnote_engine.abc_model
     @harpnote_player.player_model_abc = player_model_abc
-    #@music_model.checksum             = @editor.get_checksum
+    @music_model.checksum             = @checksum
   end
 
   def compute_harpnotes_preview
@@ -289,6 +289,7 @@ end
   $settings = data[:payload][:settings]
   $uri      = data[:payload][:uri]
 
+  controller.checksum             = data[:payload][:checksum]
   controller.systemstatus         = data[:payload][:systemstatus]
   controller.config_from_editor   = data[:payload][:config_from_editor]
   controller.abc_part_from_editor = data[:payload][:abc_part_from_editor]
