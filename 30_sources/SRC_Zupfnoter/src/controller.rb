@@ -272,7 +272,7 @@ class Controller
                                disable_save:      [lambda { `disable_save();` }],
                                enable_save:       [lambda { `enable_save();` }],
                                before_open:       [lambda { `before_open()` }],
-                               document_title:    [lambda { `document.title = #{@music_model ? @music_model.meta_data[:filename] : @document_title}` }],
+                               document_title:    [lambda { `document.title = #{@document_title}` }],
                                current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
                                settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
                                extracts:          [lambda { @extracts.each { |entry|
@@ -827,6 +827,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @abc_model                        = harpnote_engine.abc_model
     @harpnote_player.player_model_abc = player_model_abc
     @music_model.checksum             = @editor.get_checksum
+    @document_title                   = @music_model.meta_data[:filename]
   end
 
 # this retrieves the current config from the editor
@@ -1135,7 +1136,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
   end
 
-# setup harpnotre_playxer
+# setup harpnote_playxer
   def setup_harpnote_player
     @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
     @harpnote_player.controller = self
