@@ -1,7 +1,7 @@
 ##
 # here we include the javascript modules
 # these modules shall follow the common JS model as usually node modules do
-# Note that we assign them to global objexts which need to be adapted in the
+# Note that we assign them to global objects which need to be adapted in the
 # opal wrappers.
 #
 # note that the require here is basically node_require
@@ -17,7 +17,7 @@
   // Ajv = require("ajv")        // adapt in opal-ajv.rb
   //neatJSON = require("./neatjson_js") // adapt in opal-neatjson.rb
 
-  // these requires are requred by nodejs/dir, nodejs/file
+  // these requires are required by nodejs/dir, nodejs/file
   // fs = require('fs')
   // glob = require("glob")      // don't know who needs this
 }
@@ -136,8 +136,8 @@ class WorkerController
   def initialize
     $conf        = Confstack.new(nil)
     $conf.strict = false
-    $conf.push(InitConf.init_conf())
-    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
+    $conf.push(InitConf.init_conf)
+    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new
     @harpnote_player.controller = self
     @json_validator             = Ajv::JsonValidator.new
   end
@@ -216,9 +216,6 @@ class WorkerController
         @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
       end
 
-      $log.benchmark("transforming music model") do
-      end
-
       set_extracts_menu
 
       result = nil
@@ -277,10 +274,10 @@ end
 end
 
 @namedworker.on_named_message(:i18n_set_locale) do |data|
-  # note taht this method sends a POJO object
+  # note that this method sends a POJO object
   # so we need to user JS json handling here
   I18n.phrases = %x{JSON.parse(#{data[:payload]})}
-  I18n.t("locales loaed")
+  I18n.t("locales loaded")
 end
 
 @namedworker.on_named_message(:compute_harpnotes_preview) do |data|
@@ -296,7 +293,7 @@ end
 
   result = controller.compute_harpnotes_preview
 
-  # send ressults to the main script
+  # send results to the main script
   #
   @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: controller.music_model.meta_data[:filename]})
   @namedworker.post_named_message(:compute_harpnotes_preview, result)
