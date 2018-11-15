@@ -371,9 +371,8 @@ einstellen.
 >     berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
 >     steht.
 >
-        "apanchor": "box"
-          
-
+>         "apanchor": "box"
+>
 ## `extract.0.countnotes.apbase` - autom. pos. Basis {#extract.0.countnotes.apbase}
 
 Hier kannst du die Grundlage für die automatische Positionierung von
