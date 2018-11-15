@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.2-5-g8116ca0
+Version V\_1.9.2-33-g519a82f
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3904,18 +3904,54 @@ geschieht wie folgt:
   Zählmarke einstellen, ob sie links oder rechts von der Note platziert
   wird.
 \item
-  Man kann einstellen, ob die Taktnummben / Zählmarken bezogen auf die
-  Notenmitte oder den Notenrand positioniert werden (Kapitel
-  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}})
+  Man kann einstellen, ob die Taktnummern / Zählmarken bezogen auf die
+  \textbf{Notenmitte oder den Notenrand} positioniert werden (Kapitel
+  \ref{extract.0.barnumbers.apanchor}~\hyperref[extract.0.barnumbers.apanchor]{\texttt{extract.0.barnumbers.apbase}}
+  bzw.
+  \ref{extract.0.barnumbers.cpanchor}~\hyperref[extract.0.countnotes.appanchor]{\texttt{extract.0.barnumbers.apbase}}
+  )
 \item
-  Taktnummern können über die Konfiguration (Kapitel
-  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}})
-  näher an Noten bzw. weiter von der Note verschoben werden.
-\item
-  Zählmarken können über die Konfiguration (Kapitel
-  \ref{extract.0.countnotes.apbase}~\hyperref[extract.0.countnotes.apbase]{\texttt{extract.0.countnotes.apbase}})
-  näher an Noten bzw. weiter von der Note verschoben werden.
+  Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken
+  bezogen auf die \textbf{Notenmitte oder den Notenrand} positioniert
+  werden (Kapitel
+  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}}
+  bzw.
+  \ref{extract.0.barnumbers.cpbase}~\hyperref[extract.0.countnotes.apbase]{\texttt{extract.0.barnumbers.apbase}}
+  )
 \end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Die Positionierung der Taktnummern / Zählmarken kann
+für jede einzeln über die rechte Maustaste beeinflusst werden.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{Konfig\ bearb.} Da kann man einige Parameter in der
+  Notenbezogenen Konfiguration einstellen
+\item
+  \texttt{...\ rechts} Nummer wird rechts von der Note geschrieben. Sie
+  wird dadurch linksbündig.
+\item
+  \texttt{...\ links} Nummer wird links von der Note geschrieben. Sie
+  wird dadurch rechtsbündig.
+\item
+  verschieben mit der Maus
+\end{itemize}
+
+Zunächst sollte man versuchen, die Nummer auf die andere Seite der Note
+zu schieben. Damit ergibt sich immer noch eine exakte Ausrichtung und
+ein bessers Notenbild. Erst dann ist eine manuelle Positionierung mit
+der Maus sinnvoll.
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Auch beim manuellen Verschieben wird die Anodnung der
+Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
+(linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
+Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
+werden.
+\end{quote}
 
 \subsubsection{\texorpdfstring{Warnung: ``Beschriftung zu dicht
 beieinander''}{Warnung: Beschriftung zu dicht beieinander}}\label{warnung-beschriftung-zu-dicht-beieinander}
@@ -4595,19 +4631,21 @@ spezifiziert den Auszug 1 usw.
     "extract": {
       "0" : {
         "barnumbers"   : {
-          "apbase"  : [1, 1],
-          "autopos" : true,
-          "pos"     : [6, -4],
-          "prefix"  : "",
-          "style"   : "small_bold",
-          "voices"  : []
+          "apanchor" : "box",
+          "apbase"   : [1, 1],
+          "autopos"  : true,
+          "pos"      : [6, -4],
+          "prefix"   : "",
+          "style"    : "small_bold",
+          "voices"   : []
         },
         "countnotes"   : {
-          "apbase"  : [1, -0.5],
-          "autopos" : true,
-          "pos"     : [3, -2],
-          "style"   : "smaller",
-          "voices"  : []
+          "apanchor" : "box",
+          "apbase"   : [1, -0.5],
+          "autopos"  : true,
+          "pos"      : [3, -2],
+          "style"    : "smaller",
+          "voices"   : []
         },
         "flowlines"    : [1, 3],
         "images"       : {},
@@ -4685,13 +4723,26 @@ ausgegeben werden sollen.
 
 \begin{verbatim}
     "barnumbers": {
-      "apbase"  : [1, 1],
-      "autopos" : true,
-      "pos"     : [6, -4],
-      "prefix"  : "",
-      "style"   : "small_bold",
-      "voices"  : []
+      "apanchor" : "box",
+      "apbase"   : [1, 1],
+      "autopos"  : true,
+      "pos"      : [6, -4],
+      "prefix"   : "",
+      "style"    : "small_bold",
+      "voices"   : []
     }
+      
+\end{verbatim}
+
+\hyperdef{}{extract.0.barnumbers.apanchor}{\subsection{\texorpdfstring{\texttt{extract.0.barnumbers.apanchor}
+- autom. pos.
+Anker}{extract.0.barnumbers.apanchor - autom. pos. Anker}}\label{extract.0.barnumbers.apanchor}}
+
+TODO:\marginpar{TODO} Helptext für extract.0.barnumbers.apanchor
+einfügen
+
+\begin{verbatim}
+    "apanchor": "box"
       
 \end{verbatim}
 
@@ -4807,18 +4858,52 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 
 \begin{verbatim}
     "countnotes": {
-      "apbase"  : [1, -0.5],
-      "autopos" : true,
-      "pos"     : [3, -2],
-      "style"   : "smaller",
-      "voices"  : []
+      "apanchor" : "box",
+      "apbase"   : [1, -0.5],
+      "autopos"  : true,
+      "pos"      : [3, -2],
+      "style"    : "smaller",
+      "voices"   : []
     }
       
 \end{verbatim}
 
+\subsection{\texorpdfstring{\texttt{extract.0.countnotes.apanchor} -
+autom. pos.
+Anker}{extract.0.countnotes.apanchor - autom. pos. Anker}}\label{extract.0.countnotes.apanchor}
+
+Hier kannst du die vertikale Verankerung der Zählmarke an der Note
+einstellen.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: die Zählmarke wird an der Mitte der Note verankert
+\item
+  \texttt{box}: die Zählmarke wird am unteren Rand der Note verankert
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweise}:
+
+\begin{itemize}
+\item
+  Dieser Parameter wirkt nur bei automatischer Positionierung der
+  Zählmarken.
+\item
+  Die horizontale Verankerung der Zählmarke wird automatisch so
+  berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
+  steht.
+
+\begin{verbatim}
+"apanchor": "box"
+\end{verbatim}
+\end{itemize}
+
 \hyperdef{}{extract.0.countnotes.apbase}{\subsection{\texorpdfstring{\texttt{extract.0.countnotes.apbase}
 - autom. pos.
 Basis}{extract.0.countnotes.apbase - autom. pos. Basis}}\label{extract.0.countnotes.apbase}}
+\end{quote}
 
 Hier kannst du die Grundlage für die automatische Positionierung von
 Zählmarken einstellen.
