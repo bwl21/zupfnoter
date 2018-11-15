@@ -98,7 +98,11 @@ class Controller
 
   def initialize
 
-    @worker = NamedWebworker.new("public/znworker.js?buster=#{Time.now}")
+    buster = Time.now
+    buster = Element.find("#buster").html
+    buster = JSON.parse(buster)[:buster]
+
+    @worker = NamedWebworker.new("public/znworker.js#{buster}")
 
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',
