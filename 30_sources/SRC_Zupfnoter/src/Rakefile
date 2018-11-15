@@ -10,13 +10,13 @@ require 'neatjson.rb'
 HTMLTEMPLATE         = "../index_opal.html.erb"
 PACKAGE_JSON         = "../package.json"
 ZUPFNOTER_JS         = "build.js"
+ZNWORKER_JS          = "../public/znworker.js"
 ZUPFNOTER_CLI_JS     = "zupfnoter-cli.js"
 ZUPFNOTER_CLI_MIN_JS = "zupfnoter-cli.min.js"
 OUTFOLDER            = "../deploy_files"
 LOCALEPATH           = "../public/locale/"
 NINJAEXEC            = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
 INDEXFILE            = "index.html"
-ZNWORKER_JS          = "../public/znworker.js"
 
 
 GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
@@ -165,7 +165,7 @@ def git_describe
 end
 
 desc "Build a distribution for the server"
-task :deploy => [:build, :buildUserManual] do
+task :deploy => [:build, :build_worker, :buildUserManual] do
 
 
   # prepare all requested folders
@@ -182,6 +182,7 @@ task :deploy => [:build, :buildUserManual] do
   }
 
   sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
+  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZNWORKER_JS} #{ZNWORKER_JS}"
   #cp ZUPFNOTER_JS, "#{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS}"
 
 
@@ -221,7 +222,7 @@ task :deploy => [:build, :buildUserManual] do
   Dir['../vendor/ace/ext-*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
   def javascript_include_tag(filename)
-    "<script src = \"public/#{ZUPFNOTER_JS}?#{GITSHA}\" type=\"application/javascript\"></script>"
+    %Q{<script src = "public/#{ZUPFNOTER_JS}?#{GITSHA}" type="application/javascript"></script>}
   end
 
   def javascript_include_analytics()
