@@ -749,10 +749,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 # compute the layout of the harpnotes
 # @return [Happnotes::Layout] to be passed to one of the engines for output
   def layout_harpnotes(print_variant = 0, page_format = 'A4')
-    config = get_config_from_editor
-
-    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
-    $conf.push(config) # in case of error, we have the ensure close below
+    $log.benchmark("transforming music model") { load_music_model }
 
     $image_list = $conf.get['resources'].keys rescue nil
 
@@ -766,7 +763,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
       end
 
-      $log.benchmark("transforming music model") { load_music_model }
 
       call_consumers(:document_title)
 
@@ -817,6 +813,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def load_music_model
+    config = get_config_from_editor
+
+    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
+    $conf.push(config) # in case of error, we have the ensure close below
+
     harpnote_engine                   = Harpnotes::Input::Abc2svgToHarpnotes.new
     @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
     @abc_model                        = harpnote_engine.abc_model

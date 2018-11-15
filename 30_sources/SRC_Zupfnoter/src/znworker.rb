@@ -172,6 +172,15 @@ class WorkerController
   end
 
   def load_music_model
+
+    # need this to get configs required by abc2svg
+    # todo: move restposition to extract configs
+    # transfer all restpositions in the music model
+
+    config = @config_from_editor
+    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
+    $conf.push(config) # in case of error, we hav the ensure close below
+
     harpnote_engine                   = Harpnotes::Input::Abc2svgToHarpnotes.new
     @music_model, player_model_abc    = harpnote_engine.transform(@abc_part_from_editor)
     @abc_model                        = harpnote_engine.abc_model
@@ -204,10 +213,6 @@ class WorkerController
   end
 
   def layout_harpnotes(print_variant = 0, page_format = 'A4')
-    config = @config_from_editor
-
-    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
-    $conf.push(config) # in case of error, we hav the ensure close below
 
     $image_list = $conf.get['resources'].keys rescue nil
     begin
