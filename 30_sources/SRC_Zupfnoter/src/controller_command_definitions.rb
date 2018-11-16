@@ -205,7 +205,11 @@ class Controller
       c.undoable = false
       c.set_help { "refresh" }
       c.as_action do |a|
-        render_previews
+        refresh = @systemstatus[:autorefresh]
+        handle_command("autorefresh off")
+        render_previews.then do
+          handle_command("autorefresh #{refresh}")
+        end
       end
     end
 
@@ -636,9 +640,9 @@ class Controller
                                     quicksetting_commands: ['stdextract'],
                                     scope:                 :global
             },
-            barnumbers_countnotes: {keys: expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apanchor', 'barnumbers.apbase', 'barnumbers.style',
-                                                               'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apanchor', 'countnotes.apbase', 'countnotes.style',
-                                                               "tuplets.text", "tuplets.style"]),
+            barnumbers_countnotes: {keys:                  expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apanchor', 'barnumbers.apbase', 'barnumbers.style',
+                                                                                'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apanchor', 'countnotes.apbase', 'countnotes.style',
+                                                                                "tuplets.text", "tuplets.style"]),
                                     quicksetting_commands: _get_quicksetting_commands('barnumbers_countnotes')},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
             notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
