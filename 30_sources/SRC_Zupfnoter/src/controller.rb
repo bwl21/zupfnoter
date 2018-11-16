@@ -1038,7 +1038,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 # setup the harpnote prviewer
   def setup_harpnote_preview
 
-    @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
+    @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 10, 10) # size of canvas in pixels
+    # todo: DRY 2200, 1400 is also defined in userinterface.js
+    set_harppreview_size([2200,1400])
     @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote[:origin])
