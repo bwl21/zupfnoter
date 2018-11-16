@@ -2,6 +2,8 @@
 
 ## fix
 
+* rests in tuplets no longer throw "unsupported duration" #240
+
 ## enhancement
 
 * BWC: Barnumbers / countnotes are now aligned relative to the center of the note #237
