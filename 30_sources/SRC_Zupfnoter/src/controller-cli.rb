@@ -43,6 +43,11 @@ class CliController < Controller
   end
 
   def load_music_model
+    config = get_config_from_editor
+
+    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
+    $conf.push(config) # in case of error, we have the ensure close below
+
     abc_parser                      = $conf.get('abc_parser')
     harpnote_engine                 = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser)
     @music_model, @player_model_abc = harpnote_engine.transform(@editor.get_abc_part)
