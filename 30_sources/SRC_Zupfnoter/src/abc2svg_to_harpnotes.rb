@@ -505,6 +505,7 @@ module Harpnotes
       def _convert_duration(raw_duration)
         # 128 to limit the maximum duration to the error note
         duration = [128, ((raw_duration / ABC2SVG_DURATION_FACTOR) * @_shortest_note).round].min
+        duration
       end
 
       def _transform_staves(voice_element, index, voice_index)
@@ -545,8 +546,8 @@ module Harpnotes
         end
 
         _transform_measure_start(voice_element)
+        duration = _convert_duration(voice_element[:notes].first[:dur])
 
-        duration                         = _convert_duration(voice_element[:dur])
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
         result               = Harpnotes::Music::Pause.new(pitch, duration)
@@ -653,8 +654,8 @@ module Harpnotes
       # * meter changes before a in measuer repeat - so we have a bar which is not a relevant one
       def _transform_meter(voice_element)
         @is_first_measure = true
-        
-        @wmeasure         = voice_element[:wmeasure]
+
+        @wmeasure = voice_element[:wmeasure]
         @countby = voice_element[:a_meter].first[:bot].to_i rescue nil
 
         nil
