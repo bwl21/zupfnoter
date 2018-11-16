@@ -692,8 +692,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       LastRenderMonitor.new.set_active
       set_active("#tunePreview")
       `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
-      #render_tunepreview_callback()
-      #set_inactive("#tunePreview")
 
     end.fail do
       alert("fail")
@@ -716,7 +714,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
         promise.resolve()
       end.fail do
-        alert("fail")
+        alert("BUG - This should never happen in render Previews #{__FILE__} #{__LINE__}")
       end.then do
         Promise.new.tap do |promise|
           call_consumers(:error_alert)
@@ -1144,6 +1142,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_player.controller = self
   end
 
+  # this is used by ui, so intellj does not find the usage
   def set_harppreview_size(size)
     @harp_preview_size = size
     @harpnote_preview_printer.set_canvas(size)
@@ -1204,8 +1203,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           set_status(harpnotes_dirty: false)
           set_status(refresh: false)
           @editor.set_annotations($log.annotations)
-          call_consumers(:error_alert)
-          call_consumers(:harp_preview_size)
         end
         nil
       end
@@ -1348,7 +1345,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
             @editor.select_range_by_position(0, 10000)
           when 'R'.ord, 13
             e.prevent
-            render_previews()
+            handle_command('render')
           when 'S'.ord #s
             e.prevent
             handle_command("dsave")
@@ -1469,9 +1466,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       case @systemstatus[:autorefresh]
         when :on
-          @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 300)`
+          @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 600)`
         when :off # off means it relies on remote rendering
-          @refresh_timer.push `setTimeout(function(){#{render_remote()}},  300)`
+          @refresh_timer.push `setTimeout(function(){#{render_remote()}},  600)`
         when :remote # this means that the current instance runs in remote mode
           #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
       end
