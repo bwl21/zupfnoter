@@ -294,7 +294,7 @@ function init_w2ui(uicontroller) {
 
     'tbRender': function () {
       uicontroller.editor.$resize();
-      uicontroller.$render_previews();
+      uicontroller.$handle_command("render");
     },
 
     'tb_create': createNewSheet,
