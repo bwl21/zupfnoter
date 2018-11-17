@@ -982,7 +982,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       range    = [range.first, range.last - 1] unless range.first == range.last # to make ?between ignore the upper limit
       elements = @abc_model[:voices].map do |v|
         v[:symbols]
-            .select { |e| ((e[:istart].between? *range) or (e[:iend].between? *range)) }
+            .select { |e| !(e[:iend].nil? or e[:istart].nil?) and ((e[:istart].between? *range) or (e[:iend].between? *range)) }
       end
       a        = elements.flatten.compact
 
