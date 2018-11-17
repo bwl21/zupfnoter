@@ -27543,7 +27543,8 @@ if (v == null) v = nil;if (i == null) i = nil;
         Opal.defn(self, '$_convert_duration', TMP_35 = function $$_convert_duration(raw_duration) {
           var self = this, duration = nil;
 
-          return duration = [128, ($rb_times(($rb_divide(raw_duration, $scope.get('ABC2SVG_DURATION_FACTOR'))), self._shortest_note)).$round()].$min();
+          duration = [128, ($rb_times(($rb_divide(raw_duration, $scope.get('ABC2SVG_DURATION_FACTOR'))), self._shortest_note)).$round()].$min();
+          return duration;
         }, TMP_35.$$arity = 1);
 
         Opal.defn(self, '$_transform_staves', TMP_36 = function $$_transform_staves(voice_element, index, voice_index) {
@@ -27589,7 +27590,7 @@ if (pitch_note == null) pitch_note = nil;
             self.$raise("undefined pitch");
             pitch = 60;};
           self.$_transform_measure_start(voice_element);
-          duration = self.$_convert_duration(voice_element['$[]']("dur"));
+          duration = self.$_convert_duration(voice_element['$[]']("notes").$first()['$[]']("dur"));
           $c = self.$_parse_tuplet_info(voice_element), $a = Opal.to_ary($c), tuplet = ($a[0] == null ? nil : $a[0]), tuplet_end = ($a[1] == null ? nil : $a[1]), tuplet_start = ($a[2] == null ? nil : $a[2]), $c;
           result = (((($scope.get('Harpnotes')).$$scope.get('Music'))).$$scope.get('Pause')).$new(pitch, duration);
           (($a = [self.measure_count]), $c = result, $c['$measure_count='].apply($c, $a), $a[$a.length-1]);
@@ -58328,8 +58329,10 @@ if (data == null) data = nil;
   return ($a = ($e = self.namedworker).$on_named_message, $a.$$p = (TMP_36 = function(data){var self = TMP_36.$$s || this, $f, $g, controller = nil, result = nil;
     if (self.namedworker == null) self.namedworker = nil;
 if (data == null) data = nil;
-  controller = $scope.get('WorkerController').$new();
+  debugger;
+    controller = $scope.get('WorkerController').$new();
     $gvars.settings = data['$[]']("payload")['$[]']("settings");
+    $gvars.resources = data['$[]']("payload")['$[]']("resources");
     $gvars.uri = data['$[]']("payload")['$[]']("uri");
     (($f = [data['$[]']("payload")['$[]']("checksum")]), $g = controller, $g['$checksum='].apply($g, $f), $f[$f.length-1]);
     (($f = [data['$[]']("payload")['$[]']("systemstatus")]), $g = controller, $g['$systemstatus='].apply($g, $f), $f[$f.length-1]);
