@@ -974,7 +974,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 # can be used in select_by_time_segments
 #
   def get_selected_time_segments
-
     ranges = @editor.get_selection_ranges
     $log.info(ranges.to_json)
 
@@ -1038,7 +1037,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 10, 10) # size of canvas in pixels
     # todo: DRY 2200, 1400 is also defined in userinterface.js
-    set_harppreview_size([2200,1400])
+    set_harppreview_size([2200, 1400])
     @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
     @harpnote_preview_printer.on_select do |harpnote|
       select_abc_object(harpnote[:origin])
@@ -1142,7 +1141,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @harpnote_player.controller = self
   end
 
-  # this is used by ui, so intellj does not find the usage
+# this is used by ui, so intellj does not find the usage
   def set_harppreview_size(size)
     @harp_preview_size = size
     @harpnote_preview_printer.set_canvas(size)
@@ -1200,6 +1199,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         result = data[:payload]
         if @render_stack.size <= 1 # if there is no other rendering active?
           @harpnote_preview_printer.display_results(result)
+          set_harppreview_size(@harp_preview_size)
           set_status(harpnotes_dirty: false)
           set_status(refresh: false)
           @editor.set_annotations($log.annotations)
