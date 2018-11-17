@@ -627,6 +627,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.benchmark("render_harpnotepreview_callback_by_worker") do
       @worker.post_named_message(:compute_harpnotes_preview, {
           settings:             $settings,
+          resources:            $resources,
           systemstatus:         @systemstatus,
           uri:                  {hostname: self.class.get_uri[:hostname]},
           config_from_editor:   get_config_from_editor,
