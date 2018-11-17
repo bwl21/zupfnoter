@@ -288,8 +288,9 @@ end
 @namedworker.on_named_message(:compute_harpnotes_preview) do |data|
   controller = WorkerController.new
 
-  $settings = data[:payload][:settings]
-  $uri      = data[:payload][:uri]
+  $settings  = data[:payload][:settings]
+  $resources = data[:payload][:resources]
+  $uri       = data[:payload][:uri]
 
   controller.checksum             = data[:payload][:checksum]
   controller.systemstatus         = data[:payload][:systemstatus]
