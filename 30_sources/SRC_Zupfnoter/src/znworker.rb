@@ -191,24 +191,19 @@ class WorkerController
   def compute_harpnotes_preview
     result = {svg: "", interactive_elements: []}
     load_music_model
-    begin
-      $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
-      @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
+    $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
+    @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
 
-      if @song_harpnotes
+    if @song_harpnotes
 
-        # todo: not sure if it is good to pass active_voices via @song_harpnotes
-        # todo: refactor better moove that part of the code out here
-        $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
-        @harpnote_preview_printer = Harpnotes::SvgEngine.new(nil, 2200, 1400) # size of canvas in pixels
-        @harpnote_preview_printer.clear
-        @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
-        result = @harpnote_preview_printer.draw(@song_harpnotes)
-      end
-    rescue Exception => e
-      $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
+      # todo: not sure if it is good to pass active_voices via @song_harpnotes
+      # todo: refactor better moove that part of the code out here
+      $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
+      @harpnote_preview_printer = Harpnotes::SvgEngine.new(nil, 2200, 1400) # size of canvas in pixels
+      @harpnote_preview_printer.clear
+      @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
+      result = @harpnote_preview_printer.draw(@song_harpnotes)
     end
-
     result
   end
 
@@ -254,6 +249,14 @@ class WorkerController
   end
 end
 
+def perform_worker_task(title = nil, &block)
+  begin
+    block.call
+  rescue Exception => e
+    $log.error(%Q{#{title}: #{e.message}}, nil, nil, e.backtrace)
+    @namedworker.post_named_message(:rescue_from_worker_error, nil)
+  end
+end
 
 # installing the handlers
 
@@ -264,18 +267,30 @@ $log.worker  = @namedworker
 
 @worker.post_message("worker started #{__FILE__}")
 
+@namedworker.on_named_message(:abort) do |data|
+  # note that this method sends a POJO object
+  # so we need to user JS json handling here
+  $log.error("aborting worker: #{data[:payload][:render_stack].to_s}")
+end
+
 @namedworker.on_named_message(:set_loglevel) do |data|
-  $log.loglevel = (data[:payload])
+  perform_worker_task(data[:cmd]) do
+    $log.loglevel = (data[:payload])
+  end
 end
 
 @namedworker.on_named_message(:compute_tune_preview) do |data|
-  $log.clear_errors
-  $log.clear_annotations
-  @tune_preview_printer = ABC2SVG::Abc2Svg.new(nil) # note that we do not provide a div, so set_svg will fail
-  payload               = data[:payload]
-  svg_and_position      = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
-  @namedworker.post_named_message(data[:name], svg_and_position)
-  @namedworker.post_named_message(:set_logger_status, $log.get_status)
+  perform_worker_task(data[:name]) do
+    $log.clear_errors
+    $log.clear_annotations
+    @tune_preview_printer = ABC2SVG::Abc2Svg.new(nil) # note that we do not provide a div, so set_svg will fail
+    payload               = data[:payload]
+
+    #todo: error handling
+    svg_and_position      = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
+    @namedworker.post_named_message(data[:name], svg_and_position)
+    @namedworker.post_named_message(:set_logger_status, $log.get_status)
+  end
 end
 
 @namedworker.on_named_message(:i18n_set_locale) do |data|
@@ -286,34 +301,34 @@ end
 end
 
 @namedworker.on_named_message(:compute_harpnotes_preview) do |data|
-  controller = WorkerController.new
+  perform_worker_task(data[:name]) do
+    controller = WorkerController.new
 
-  $settings  = data[:payload][:settings]
-  $resources = data[:payload][:resources]
-  $uri       = data[:payload][:uri]
+    $settings  = data[:payload][:settings]
+    $resources = data[:payload][:resources]
+    $uri       = data[:payload][:uri]
 
-  controller.checksum             = data[:payload][:checksum]
-  controller.systemstatus         = data[:payload][:systemstatus]
-  controller.config_from_editor   = data[:payload][:config_from_editor]
-  controller.abc_part_from_editor = data[:payload][:abc_part_from_editor]
+    controller.checksum             = data[:payload][:checksum]
+    controller.systemstatus         = data[:payload][:systemstatus]
+    controller.config_from_editor   = data[:payload][:config_from_editor]
+    controller.abc_part_from_editor = data[:payload][:abc_part_from_editor]
 
-  result = controller.compute_harpnotes_preview
+    result = controller.compute_harpnotes_preview
 
-  # send results to the main script
-  #
-  @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: controller.music_model.meta_data[:filename]})
-  @namedworker.post_named_message(:compute_harpnotes_preview, result)
-  @namedworker.post_named_message(:load_abc_model, controller.abc_model)
-
-
-  # result[:interactive_elements].each do |zn_id, drawing_element|
-  #   @namedworker.post_named_message(:bind_drawing_element, zn_id)
-  # end
-
-  @namedworker.post_named_message(:bind_drawing_elements, nil)
-
-  @namedworker.post_named_message(:load_player_model_abc, `JSON.stringify(#{controller.harpnote_player.player_model_abc})`)
-  @namedworker.post_named_message(:load_player_from_worker, controller.harpnote_player.get_worker_model)
+    # send results to the main script
+    #
+    @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: controller.music_model.meta_data[:filename]})
+    @namedworker.post_named_message(:compute_harpnotes_preview, result)
+    @namedworker.post_named_message(:load_abc_model, controller.abc_model)
 
 
+    # result[:interactive_elements].each do |zn_id, drawing_element|
+    #   @namedworker.post_named_message(:bind_drawing_element, zn_id)
+    # end
+
+    @namedworker.post_named_message(:bind_drawing_elements, nil)
+
+    @namedworker.post_named_message(:load_player_model_abc, `JSON.stringify(#{controller.harpnote_player.player_model_abc})`)
+    @namedworker.post_named_message(:load_player_from_worker, controller.harpnote_player.get_worker_model)
+  end
 end
