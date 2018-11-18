@@ -1229,7 +1229,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       nil
     end
 
-
     # this receiges the player_model_abc to play
     # alogn the tune
     @worker.on_named_message(:load_player_model_abc) do |data|
@@ -1256,6 +1255,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @worker.on_named_message('log') do |data|
       $log.log_from_worker(data[:payload])
+    end
+
+    @worker.on_named_message(:rescue_from_worker_error) do |data|
+      @render_stack.clear
+      call_consumers(:error_alert)
+      call_consumers(:render_status)
     end
   end
 
