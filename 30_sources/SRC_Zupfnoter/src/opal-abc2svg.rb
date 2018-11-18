@@ -127,7 +127,7 @@ I:stretchlast 1
 
     def on_select(&block)
       @on_select = block
-      _set_on_select()
+      #_set_on_select()
     end
 
     def strip_js(abc_code)
@@ -136,6 +136,10 @@ I:stretchlast 1
       r
     end
 
+
+    # this purely computes tune_preview
+    # note that it does not process the results
+    # so it can also be used in the worker
     def compute_tune_preview(abc_code, checksum = "")
       # note that the blank line is requred make the text
       # not appaear correct on the tune sheet
@@ -155,15 +159,21 @@ I:stretchlast 1
       {svg: get_svg(), element_to_position: @element_to_position}
     end
 
+
+    # this draws the tune preivew and also
+    # pushes html and positions
     def draw(abc_code, checksum = "")
       svg_and_positions = compute_tune_preview(abc_code, checksum = "")
       set_svg(svg_and_positions)
     end
 
+
+    # this stores svg and note positions
+    # as computed by compute_tune_preview
+    # it can also be used in a worker event handler
     def set_svg(svg_and_positions)
       @element_to_position = svg_and_positions[:element_to_position]
       @printer.html(svg_and_positions[:svg])
-      _set_on_select()
       nil
     end
 
@@ -273,33 +283,36 @@ I:stretchlast 1
     end
 
 
+    # this method is used in _anno_stop
+    # as a click handler fore the abcref - rectangles
+    # so do not change it without knowing, what you are doing
+    def _clickabcnote(evt, id)
+      Native(evt).stopPropagation
+      @on_select.call(@element_to_position[id])
+    end
+
     def _anno_stop(music_type, start_offset, stop_offset, x, y, w, h)
       id = _mk_id(music_type, start_offset, stop_offset)
+      #
+      # figured out the path zupfnoter is defined in controller on document loaded event
+      #                      zupfnoter.tune_preview_printer is the @tune_preview_printer in Controller
+      onclick = %Q{onclick="Opal.top.uicontroller.tune_preview_printer.$_clickabcnote(evt, '#{id}')"}
+
       %x{
           // close the container
           #{@root}.out_svg('</g>\n');
           // create a rectangle
-          #{@root}.out_svg('<rect class="abcref _' + #{start_offset} + '_" id="' + #{id} +'" x="');
+          #{@root}.out_svg('<rect ' + #{onclick} + ' class="abcref _' + #{start_offset} + '_" id="' + #{id} +'" x="');
           #{@root}.out_sxsy(#{x}, '" y="', #{y});
           #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
             '" height="' + #{h}.toFixed(2) + '"/>\n')
         }
       @element_to_position[id] = {startChar: start_offset, endChar: stop_offset}
-
     end
 
 
     def _mk_id(music_type, start_offset, end_offset)
       "_#{music_type}_#{start_offset}_#{end_offset}_"
-    end
-
-
-    def _set_on_select()
-      Element.find('.abcref').on(:click) do |evt|
-        evt.stop_propagation
-        @on_select.call(@element_to_position[evt.current_target.id])
-        nil
-      end
     end
 
   end
