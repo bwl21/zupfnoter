@@ -52,7 +52,7 @@ end
 
 # use promise to initializes
 Document.ready.then do |ready|
-  uicontroller = Controller.new
+  @uicontroller = Controller.new
   # provide access to  zupfnoter controller from browser console
   # to suppert debuggeing
   Element.find("html")
@@ -61,7 +61,7 @@ Document.ready.then do |ready|
 
   # see https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload
   %x{
-     window.zupfnoter=#{uicontroller};
+     window.zupfnoter=#{@uicontroller};
   }
 end.fail do |a,b|
   %x{
