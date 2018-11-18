@@ -605,7 +605,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         if false # sst to run this in the main thread
           # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
           # before comuputing the tune_preview
-          @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
+          setup_tune_preview
           svg_and_positions     = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
           @tune_preview_printer.set_svg(svg_and_positions)
           set_inactive("#tunePreview")
