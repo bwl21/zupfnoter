@@ -96,25 +96,6 @@ module ZnSvg
       nil
     end
 
-    # this attaches the context menu only
-
-    def set_conf_editable(svg_element, conf_key, more_conf_keys)
-      %x{
-          var me = #{svg_element};
-          mouseoverFnc = function(){
-            #{@on_mouseover_handler}({element: me, conf_key: #{conf_key}})
-          }
-
-          mouseoutFnc = function(){
-            #{@on_mouseout_handler}({element: me, conf_key: #{conf_key}})
-          }
-          me.mouseover(mouseoverFnc);
-          me.mouseout(mouseoutFnc);
-
-          me[0].oncontextmenu = function(){ return #{@draggable_rightclick_handler}({element: svg_element, conf_key: #{conf_key}, more_conf_keys: #{more_conf_keys}});};
-      }
-    end
-
     # mkake the svg_emeent with svg_element_id draggable
     # pass conf_key and conf_value to the drag handler
     def set_draggable_pos(svg_element_id, conf_key, conf_value)
@@ -168,10 +149,9 @@ module ZnSvg
       %x{
       var xx = SVG.get(#{svg_element_id});
       xx.addClass("zn_draggable");
-
       xx.draggable();
 
-      var sx = 0,                // initialize the outer variables for the closures
+      var sx = 0,                 // initialize the outer variables for the closures
           sy = 0,
           target_id = null,
           target_curve=null;
@@ -260,7 +240,6 @@ module ZnSvg
       %x{
       var xx = SVG.get(#{svg_element_id});
       xx.addClass("nn_draggable")
-
       xx.draggable();
       }
     end
@@ -309,7 +288,8 @@ module ZnSvg
       }
     end
 
-    def add_abcref(x, y, rx, ry, start_char = nil)
+    def add_abcref(x, y, rx, ry, start_char = nil, attributes={})
+      attr = _attr_to_xml(attributes)
       id = new_id!
       # classes:
       # abcref - for global unhighlighting - name came from abc2svg
@@ -318,7 +298,7 @@ module ZnSvg
       # _(startchar)_ to hilight by player - approach comes from abc2svg
       # zn
       padding = 2
-      svg     = %Q{<rect class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - padding / 2}" y="#{y - ry - padding / 2}" width="#{2 * rx + padding}" height="#{2 * ry + padding}"/>}
+      svg     = %Q{<rect #{attr} class="abcref znref _#{start_char}_" id="#{id}" x="#{x - rx - padding / 2}" y="#{y - ry - padding / 2}" width="#{2 * rx + padding}" height="#{2 * ry + padding}"/>}
       @svgbuffer.push(svg)
       id
     end
@@ -368,10 +348,12 @@ module ZnSvg
 
       attrs  = _attr_to_xml(attributes)
 
-      # recte a transparent background rectangle to make selection easier
+      # rect a transparent background rectangle to make selection easier
+      # note that this does not require a click handler
+      # the class "abcref" is assigned to make it transparent
       bgrect = %Q{<rect class="abcref" x="#{bgrectspec[0]}" y="#{bgrectspec[1]}" width="#{bgrectspec[2]}" height="#{bgrectspec[3]}" />} if bgrectspec
 
-      @svgbuffer.push %Q{<g id="#{id}" #{group_attrs} >#{bgrect}<path #{attrs} d="#{thespec}"/></g>}
+      @svgbuffer.push %Q{<g id="#{id}" #{group_attrs} >#{bgrect}<path id="#{id}" #{attrs} d="#{thespec}"/></g>}
       id
     end
 

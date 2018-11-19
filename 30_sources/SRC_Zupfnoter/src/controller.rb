@@ -1073,7 +1073,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     @harpnote_preview_printer.on_mouseover do |info|
-      `update_mouseover_status_w2ui(#{info.conf_key})`
+      `update_mouseover_status_w2ui(#{info[:conf_key]})`
     end
 
     @harpnote_preview_printer.on_mouseout do |info|
@@ -1106,7 +1106,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
 
       %x{
-          $(#{info.element}).w2menu({
+          $(#{info[:element]}).w2menu({
                                        items: #{items.to_n},
 
                                        onSelect: function (event) {
