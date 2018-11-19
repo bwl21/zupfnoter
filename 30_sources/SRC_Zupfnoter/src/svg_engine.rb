@@ -23,8 +23,16 @@ module Harpnotes
       @paper = ZnSvg::Paper.new(element_id, width, height)
       #@paper.enable_pan_zoom
       @on_select   = nil
-      @elements    = {} # record all elements being on the sheet, using upstream object as key
       @highlighted = []
+
+      # the following srtings can be used to
+      # inject handlers in the svg
+      # todo: remove dependency from Opal internals
+      @onmouseover_for_svg     = "Opal.top.uicontroller.harpnote_preview_printer.$_mouseoveronsvg(evt, id)"
+      @onmouseout_for_svg      = "Opal.top.uicontroller.harpnote_preview_printer.$_mouseoutonsvg(evt, id)"
+      @oncontextmenu_for_svg   = "Opal.top.uicontroller.harpnote_preview_printer.$_rightclickonsvg(evt, id)"
+      @onclick_for_svg         = "Opal.top.uicontroller.harpnote_preview_printer.$_clickabcnote(evt, id)"
+      @attr_for_on_contextmenu = {oncontextmenu: @oncontextmenu_for_svg, onmouseover: @onmouseover_for_svg, onmouseout: @onmouseout_for_svg}
     end
 
     def set_view_box(x, y, width, height)
@@ -37,7 +45,6 @@ module Harpnotes
     end
 
     def clear
-      @elements             = {} # here we collect the interactive music_model_elements
       @interactive_elements = {} # here we collect the interactive layout_model_elements
     end
 
@@ -47,7 +54,7 @@ module Harpnotes
     end
 
     def display_no_preview_available
-     save_scroll_position
+      save_scroll_position
       @preview_container.html(%Q{<h1>#{I18n.t("no preview available yet")}</h1>})
     end
 
@@ -68,7 +75,6 @@ module Harpnotes
 
     def draw(sheet)
       @paper.clear
-      @elements    = {} # record all elements being on the sheet, using upstream object as key
       @highlighted = []
       @paper.rect(@viewbox[0] + 1, @viewbox[1] + 1, @viewbox[2] - 2, @viewbox[3] - 2)
       @paper.rect(@viewbox[0], @viewbox[1], @viewbox[2], @viewbox[3])
@@ -102,15 +108,11 @@ module Harpnotes
     end
 
     def on_mouseover(&block)
-      @paper.on_mouseover do |info|
-        block.call(Native(info))
-      end
+      @on_mouseover = block
     end
 
     def on_mouseout(&block)
-      @paper.on_mouseout do |info|
-        block.call(Native(info))
-      end
+      @on_mouseout = block
     end
 
     def on_annotation_drag_end(&block)
@@ -120,7 +122,8 @@ module Harpnotes
     end
 
     def on_draggable_rightcklick(&block)
-      @paper.on_draggable_rightclick do |info|
+      @on_draggable_rightclick = block
+      @paper.on_draggable_rightclick do |info| # todo: remove this,
         block.call(Native(info))
       end
     end
@@ -156,17 +159,17 @@ module Harpnotes
     def get_elements_by_range(from, to)
       result = []
       range  = [from, to].sort()
-      @elements.each_key { |k|
-        origin = k[:origin]
+
+      @interactive_elements.each do |k, value|
+        origin = value.dig(:music_model_elemment_origin, :origin)
         unless origin.nil?
           noterange = [:startChar, :endChar].map { |c| origin[c] }.sort # todo: this should be done in abc2harpnotes
           if (range.first - noterange.last) * (noterange.first - range.last) > 0
-            @elements[k].each do |e|
-              result.push(e)
-            end
+            result.push(Element.find("##{k}"))
           end
         end
-      }
+      end
+
       result
     end
 
@@ -219,12 +222,11 @@ module Harpnotes
 
     # this binds one particular element
     def bind_the_element(svg_id)
-      drawing_element=@interactive_elements[svg_id]
-      svg_node = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
+      drawing_element = @interactive_elements[svg_id]
+      svg_node        = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
 
       # bind context menus
       conf_key = drawing_element[:conf_key]
-      @paper.set_conf_editable(svg_node, conf_key, drawing_element[:more_conf_keys])
 
       # bind draggable elements
       draginfo = drawing_element[:draginfo]
@@ -240,18 +242,46 @@ module Harpnotes
         end
       end
 
-
-      music_model_element = drawing_element[:music_model_elemment_origin]
-      # bind elements to be selectable - this has the chanin abc <- Music <- Layout <- SVG
-      if music_model_element
-        @elements[music_model_element] ||= []
-        @elements[music_model_element].push(svg_node)
-        svg_node.on(:click) do
-          @on_select.call(music_model_element) unless svg_node.nil? or @on_select.nil?
-        end
-      end
     end
 
+
+    # these methods is hardocded in the generated svg.
+
+
+    def _mouseoutonsvg(evt, id)
+      Native(evt).stopPropagation
+      Native(evt).preventDefault
+      harpnote_model_element = @interactive_elements.dig(id)
+      info                   = {element: Element.find("##{id}"), conf_key: harpnote_model_element[:conf_key], more_conf_keys: harpnote_model_element[:more_conf_keys], originalevent: evt}
+      @on_mouseout.call(info)
+    end
+
+
+    def _mouseoveronsvg(evt, id)
+      Native(evt).stopPropagation
+      Native(evt).preventDefault
+      harpnote_model_element = @interactive_elements.dig(id)
+      info                   = {element: Element.find("##{id}"), conf_key: harpnote_model_element[:conf_key], more_conf_keys: harpnote_model_element[:more_conf_keys], originalevent: evt}
+      @on_mouseover.call(info)
+    end
+
+    def _rightclickonsvg(evt, id)
+      Native(evt).stopPropagation
+      Native(evt).preventDefault
+      harpnote_model_element = @interactive_elements.dig(id)
+      info                   = {element: Element.find("##{id}"), conf_key: harpnote_model_element[:conf_key], more_conf_keys: harpnote_model_element[:more_conf_keys], originalevent: evt}
+      @on_draggable_rightclick.call(info)
+      false
+    end
+
+    # the name of this  methhod is hardcoded in opal-svg
+    # in <rect onclick = ...
+    #
+    def _clickabcnote(evt, id)
+      Native(evt).stopPropagation
+      music_model_element = @interactive_elements.dig(id, :music_model_elemment_origin)
+      @on_select.call(music_model_element) unless music_model_element.nil? or @on_select.nil?
+    end
 
     # this method collects the drawing model elements and the associatited svg element ids.
     # see bind_elements how the music-model-elements are bound to the svg-nodes
@@ -313,7 +343,8 @@ module Harpnotes
 
       if root.origin
         startChar = root.origin.origin[:startChar]
-        e         = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last, startChar)
+        e         = @paper.add_abcref(root.center.first, root.center.last, 0.75 * root.size.first, 0.75 * root.size.last, startChar,
+                                      {onclick: @onclick_for_svg}.merge(@attr_for_on_contextmenu))
         push_element(root, e)
       end
     end
@@ -354,8 +385,9 @@ module Harpnotes
       end
 
       if is_playable
+        attr      = {onclick: @onclick_for_svg}.merge(@attr_for_on_contextmenu)
         startChar = root.origin.origin[:startChar]
-        e         = @paper.add_abcref(root.center.first, root.center.last, 0.6 * root.size.first, 0.6 * root.size.last, startChar)
+        e         = @paper.add_abcref(root.center.first, root.center.last, 0.6 * root.size.first, 0.6 * root.size.last, startChar, attr)
         push_element(root, e)
       else
         push_element(root, e)
@@ -443,7 +475,9 @@ module Harpnotes
       attr[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
       attr[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
       attr[:"text-anchor"] = (root.align == 'right') ? "end" : 'start '
-      element              = @paper.text(root.center.first / 1.05, root.center.last, text, attr) # literal by try and error
+
+      attr    = attr.merge(@attr_for_on_contextmenu)
+      element = @paper.text(root.center.first / 1.05, root.center.last, text, attr) # literal by try and error
 
       push_element(root, element)
       element
@@ -468,6 +502,7 @@ module Harpnotes
       attr                   = {stroke: color, fill: 'none'}
       attr[:fill]            = color if root.filled?
       attr['stroke-linecap'] = :round
+      attr                   = attr.merge(@attr_for_on_contextmenu) # this is necessary for jumplines
 
       e = @paper.path(root.path, attr)
 
@@ -478,10 +513,14 @@ module Harpnotes
           when :jumpline
             push_element(root, e)
           when :tuplet
-            e = @paper.line(draginfo[:p1][0], draginfo[:p1][1], draginfo[:cp1][0], draginfo[:cp1][1], {'data-cp' => "cp1", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
+            attr = {stroke: :grey, class: "zncontrol", "stroke-width" => "1"}.merge(@attr_for_on_contextmenu)
+
+            e = @paper.line(draginfo[:p1][0], draginfo[:p1][1], draginfo[:cp1][0], draginfo[:cp1][1], attr.merge({'data-cp' => 'cp1'}))
             push_element(root, e)
-            e = @paper.line(draginfo[:p2][0], draginfo[:p2][1], draginfo[:cp2][0], draginfo[:cp2][1], {'data-cp' => "cp2", stroke: :grey, class: "zncontrol", "stroke-width" => "1"})
+
+            e = @paper.line(draginfo[:p2][0], draginfo[:p2][1], draginfo[:cp2][0], draginfo[:cp2][1], attr.merge({'data-cp' => 'cp2'}))
             push_element(root, e)
+
             nil
         end
       end
