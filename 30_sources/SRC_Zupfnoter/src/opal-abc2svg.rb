@@ -19,15 +19,15 @@ module ABC2SVG
     attr_accessor :abcplay # this is needed to produce player_model_abc
 
     def initialize(div, options = {mode: :svg})
-      @on_select           = lambda { |element|}
-      @printer             = div
-      @svgbuf              = []
-      @abc_source          = ''
-      @element_to_position = {} # mapping svg elements to position
-      @abc_model           = nil # the model being transformed to harpnotes
-      @player_model        = [] # the model to play the entire stuff
-      @object_map          = {} # mapping objects to their Id
-      @abcplay             = nil; #used to extract the player_model
+      @on_select            = lambda { |element|}
+      @printer              = div
+      @svgbuf               = []
+      @abc_source           = ''
+      @interactive_elements = {} # mapping svg elements to position
+      @abc_model            = nil # the model being transformed to harpnotes
+      @player_model         = [] # the model to play the entire stuff
+      @object_map           = {} # mapping objects to their Id
+      @abcplay              = nil; #used to extract the player_model
 
       @user = {img_out:     nil,
                errmsg:      nil,
@@ -149,14 +149,14 @@ I:stretchlast 1
 %%text #{checksum}
       }
 
-      @abc_source          = strip_js(abc_code)
-      @element_to_position = {}
-      @svgbuf              = []
+      @abc_source           = strip_js(abc_code)
+      @interactive_elements = {}
+      @svgbuf               = []
       %x{
       #{@root}.tosvg(#{"abc"}, #{@abc_source + abc_text_insert});
       }
 
-      {svg: get_svg(), element_to_position: @element_to_position}
+      {svg: get_svg(), interactive_elements: @interactive_elements}
     end
 
 
@@ -172,7 +172,7 @@ I:stretchlast 1
     # as computed by compute_tune_preview
     # it can also be used in a worker event handler
     def set_svg(svg_and_positions)
-      @element_to_position = svg_and_positions[:element_to_position]
+      @interactive_elements = svg_and_positions[:interactive_elements]
       @printer.html(svg_and_positions[:svg])
       nil
     end
@@ -224,7 +224,7 @@ I:stretchlast 1
     def get_elements_by_range(from, to)
       range  = [from, to].sort # get sorted interval for select range [lower, upper]
       result = []
-      @element_to_position.each { |k, value|
+      @interactive_elements.each { |k, value|
 
         noterange = [:startChar, :endChar].map { |c| value[c] }.sort # [get sorted interval for note [lower, upper]]
 
@@ -288,7 +288,7 @@ I:stretchlast 1
     # so do not change it without knowing, what you are doing
     def _clickabcnote(evt, id)
       Native(evt).stopPropagation
-      @on_select.call(@element_to_position[id])
+      @on_select.call(@interactive_elements[id])
     end
 
     def _anno_stop(music_type, start_offset, stop_offset, x, y, w, h)
@@ -307,7 +307,7 @@ I:stretchlast 1
           #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
             '" height="' + #{h}.toFixed(2) + '"/>\n')
         }
-      @element_to_position[id] = {startChar: start_offset, endChar: stop_offset}
+      @interactive_elements[id] = {startChar: start_offset, endChar: stop_offset}
     end
 
 
