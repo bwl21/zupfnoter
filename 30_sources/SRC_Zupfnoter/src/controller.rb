@@ -606,7 +606,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
           # before comuputing the tune_preview
           setup_tune_preview
-          svg_and_positions     = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
+          svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
           @tune_preview_printer.set_svg(svg_and_positions)
           set_inactive("#tunePreview")
         else
@@ -655,14 +655,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
 
           $log.benchmark("drawing preview sheet") {
-            result = @harpnote_preview_printer.draw(@song_harpnotes)
-            @harpnote_preview_printer.display_results(result)
+            svg_and_positions = @harpnote_preview_printer.draw(@song_harpnotes)
+            @harpnote_preview_printer.set_svg(svg_and_positions)
             harpnote_preview_printer.draw(@song_harpnotes)
           }
           set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
         $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
+
       end
 
       set_status(refresh: false)
@@ -1129,7 +1130,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     # $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     # printerparams = {staffwidth: width} #todo compute the staffwidth
     @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
-
     @tune_preview_printer.on_select do |abcelement|
       a = Native(abcelement) # todo remove me
       select_abc_object(abcelement)
@@ -1184,9 +1184,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   def setup_worker_listners
     @worker.on_named_message(:compute_tune_preview) do |data|
       $log.benchmark("preocessing reply from compute_tune_preview") do
-        svg_and_position = data[:payload]
+        svg_and_positions = data[:payload]
         set_inactive("#tunePreview")
-        @tune_preview_printer.set_svg(svg_and_position)
+        @tune_preview_printer.set_svg(svg_and_positions)
       end
     end
 
@@ -1197,9 +1197,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
     @worker.on_named_message(:compute_harpnotes_preview) do |data|
       $log.benchmark("processing reply from compute_harpnotes_preview") do
-        result = data[:payload]
+        svg_and_positions = data[:payload]
         if @render_stack.size <= 1 # if there is no other rendering active?
-          @harpnote_preview_printer.display_results(result)
+          @harpnote_preview_printer.set_svg(svg_and_positions)
           set_harppreview_size(@harp_preview_size)
           set_status(harpnotes_dirty: false)
           set_status(refresh: false)

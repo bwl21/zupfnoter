@@ -55,9 +55,9 @@ module Harpnotes
       @preview_scroll = [`#{@preview_container}.scrollLeft()`, `#{@preview_container}.scrollTop()`];
     end
 
-    def display_results(result)
-      @preview_container.html(result[:svg])
-      @interactive_elements = result[:interactive_elements]
+    def set_svg(svg_and_positions)
+      @preview_container.html(svg_and_positions[:svg])
+      @interactive_elements = svg_and_positions[:interactive_elements]
 
       %x{
       #{@preview_container}.scrollLeft(#{@preview_scroll.first});
