@@ -31,7 +31,8 @@ module ZnSvg
     # @return [type] [description]
     def initialize(container_id, width, height)
       @container_id                 = container_id
-      @draggable_dragend_handler    = lambda { |dropinfo| $log.info(dropinfo) }
+      @draggable_dragstart_handler  = lambda { |dropinfo|}
+      @draggable_dragend_handler    = lambda { |dropinfo|}
       @on_mouseover_handler         = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
       @on_mouseout_handler          = lambda { |dropinfo| $log.info(Native(dropinfo).conf_key) }
       @draggable_rightclick_handler = lambda { |dropinfo|}
@@ -81,7 +82,11 @@ module ZnSvg
       @on_mouseout_handler = block
     end
 
-    def on_annotation_drag_end(&block)
+    def on_drag_start(&block)
+      @draggable_dragstart_handler = block
+    end
+
+    def on_drag_end(&block)
       @draggable_dragend_handler = block
     end
 
@@ -94,6 +99,30 @@ module ZnSvg
     def set_canvas(size)
       @canvas = size;
       nil
+    end
+
+    # this attaches the context menu only
+
+    def set_conf_editable(svg_element, conf_key, more_conf_keys)
+      %x{
+          var me = #{svg_element};
+          mouseoverFnc = function(){
+            #{@on_mouseover_handler}({element: me, conf_key: #{conf_key}})
+          }
+
+          mouseoutFnc = function(){
+            #{@on_mouseout_handler}({element: me, conf_key: #{conf_key}})
+          }
+          me.mouseover(mouseoverFnc);
+          me.mouseout(mouseoutFnc);
+
+          // as we bind the handler on a mouseover, the event does not fire on very first mouseover
+          // so we call it here to display the conf_key even on the first move
+          // todo: do not know why it worked on draggable elements
+          mouseoverFnc({element:me, conf_key: #{conf_key}});
+
+          me[0].oncontextmenu = function(){ return #{@draggable_rightclick_handler}({element: svg_element, conf_key: #{conf_key}, more_conf_keys: #{more_conf_keys}});};
+      }
     end
 
     # mkake the svg_emeent with svg_element_id draggable
@@ -114,6 +143,7 @@ module ZnSvg
           });
 
           xx.on('dragstart', function(e) {
+             #{@draggable_dragstart_handler.call({element: `this`, conf_key: conf_key, conf_value_new: Native(`conf_value_new`).map { |i| i.round(2) }}) };
             ismoved = false;
             sx = e.detail.p.x;
             sy = e.detail.p.y;
@@ -159,6 +189,8 @@ module ZnSvg
 
       // *******************************************************************************************
       xx.on('dragstart', function(e) {
+
+        #{@draggable_dragstart_handler.call({element: `this`, conf_key: conf_key}) };
 
         sx = e.detail.p.x;
         sy = e.detail.p.y;
@@ -253,6 +285,7 @@ module ZnSvg
       xx.draggable();
 
       xx.on('dragstart', function(e) {
+        #{@draggable_dragstart_handler.call({element: `this`, conf_key: conf_key})};
         #{vertical = draginfo[:jumpline][:vertical]}
         sx = e.detail.p.x;
         sy = e.detail.p.y;
@@ -288,9 +321,9 @@ module ZnSvg
       }
     end
 
-    def add_abcref(x, y, rx, ry, start_char = nil, attributes={})
+    def add_abcref(x, y, rx, ry, start_char = nil, attributes = {})
       attr = _attr_to_xml(attributes)
-      id = new_id!
+      id   = new_id!
       # classes:
       # abcref - for global unhighlighting - name came from abc2svg
       #        - to add a click handler
