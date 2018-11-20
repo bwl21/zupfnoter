@@ -321,13 +321,6 @@ end
     @namedworker.post_named_message(:compute_harpnotes_preview, result)
     @namedworker.post_named_message(:load_abc_model, controller.abc_model)
 
-
-    # result[:interactive_elements].each do |zn_id, drawing_element|
-    #   @namedworker.post_named_message(:bind_drawing_element, zn_id)
-    # end
-
-    @namedworker.post_named_message(:bind_drawing_elements, nil)
-
     @namedworker.post_named_message(:load_player_model_abc, `JSON.stringify(#{controller.harpnote_player.player_model_abc})`)
     @namedworker.post_named_message(:load_player_from_worker, controller.harpnote_player.get_worker_model)
   end

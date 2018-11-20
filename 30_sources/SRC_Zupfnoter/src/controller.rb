@@ -1060,8 +1060,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     #
     # see opal_svg: bind_elements for details
     #
-    @harpnote_preview_printer.on_annotation_drag_end do |info|
+    #
 
+    @harpnote_preview_printer.on_drag_start do |info|
+    end
+
+    @harpnote_preview_printer.on_drag_end do |info|
       conf_key  = info[:conf_key]
       newcoords = info[:conf_value_new]
       unless newcoords
@@ -1205,6 +1209,15 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           set_status(refresh: false)
           @editor.set_annotations($log.annotations)
         end
+
+        @render_stack.shift
+        call_consumers(:render_status)
+        unless @render_stack.empty?
+          @render_stack.clear
+          render_previews
+        end
+
+
         nil
       end
     end
@@ -1215,22 +1228,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       @document_title = data[:payload][:document_title]
       call_consumers(:document_title)
     end
-
-    @worker.on_named_message(:bind_drawing_elements) do |data|
-      # double check if there are more render requests
-      @render_stack.shift
-      call_consumers(:render_status)
-      unless @render_stack.empty?
-        @render_stack.clear
-        render_previews
-      else
-        @harpnote_preview_printer.bind_elements
-      end
-      nil
-    end
-
+    
     # this receiges the player_model_abc to play
-    # alogn the tune
+    # along the tune
     @worker.on_named_message(:load_player_model_abc) do |data|
       $log.benchmark("preocessing reply from load_player_model_abc") do
         @harpnote_player.player_model_abc = %x{JSON.parse(#{data[:payload]})}
@@ -1253,10 +1253,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
     end
 
+    # this lets the worker send a message to the logger
     @worker.on_named_message('log') do |data|
       $log.log_from_worker(data[:payload])
     end
 
+    # this rescues from fatal worker errors
     @worker.on_named_message(:rescue_from_worker_error) do |data|
       @render_stack.clear
       call_consumers(:error_alert)
