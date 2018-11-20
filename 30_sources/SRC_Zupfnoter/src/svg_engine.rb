@@ -28,12 +28,34 @@ module Harpnotes
       # the following srtings can be used to
       # inject handlers in the svg
       # todo: remove dependency from Opal internals
-      @onmouseover_for_svg     = "Opal.top.uicontroller.harpnote_preview_printer.$_mouseoveronsvg(evt, id)"
-      @onmouseout_for_svg      = "Opal.top.uicontroller.harpnote_preview_printer.$_mouseoutonsvg(evt, id)"
-      @oncontextmenu_for_svg   = "Opal.top.uicontroller.harpnote_preview_printer.$_rightclickonsvg(evt, id)"
-      @onclick_for_svg         = "Opal.top.uicontroller.harpnote_preview_printer.$_clickabcnote(evt, id)"
-      @attr_for_on_contextmenu = {oncontextmenu: @oncontextmenu_for_svg, onmouseover: @onmouseover_for_svg, onmouseout: @onmouseout_for_svg}
+      ## here we attatch handlers directly in the SVG string. Note that thye need
+      # to be in sync with the methods below
+      harpnote_preview_printer = "Opal.top.uicontroller.harpnote_preview_printer"
+      @onclick_for_svg         = "#{harpnote_preview_printer}.$_clickabcnote(evt, id)"
+      @attr_for_on_contextmenu = {onmouseover: "#{harpnote_preview_printer}.$_bind_on_mouseover(evt, id)"}
+      @attr_for_draggable      = {onmouseover: "#{harpnote_preview_printer}.$_bind_on_mouseover(evt, id)"}
     end
+
+    # the name of this  methhod is hardcoded in opal-svg
+    # in <rect onclick = ...
+    #
+    def _bind_on_mouseover(evt, id)
+      @bound_elements ||= []
+      unless @bound_elements.include?(id)
+        bind_the_element(id)
+        @bound_elements.push(id)
+      end
+    end
+
+    #
+    def _clickabcnote(evt, id)
+      Native(evt).stopPropagation
+      music_model_element = @interactive_elements.dig(id, :music_model_elemment_origin)
+      @on_select.call(music_model_element) unless music_model_element.nil? or @on_select.nil?
+    end
+
+    ###########################################################################################
+
 
     def set_view_box(x, y, width, height)
       @viewbox = [x, y, width, height]
@@ -63,6 +85,7 @@ module Harpnotes
     end
 
     def set_svg(svg_and_positions)
+      @bound_elements = [] # we need to clear the bound elements
       @preview_container.html(svg_and_positions[:svg])
       @interactive_elements = svg_and_positions[:interactive_elements]
 
@@ -109,14 +132,26 @@ module Harpnotes
 
     def on_mouseover(&block)
       @on_mouseover = block
+      @paper.on_mouseover do |info|
+        block.call(Native(info))
+      end
     end
 
     def on_mouseout(&block)
       @on_mouseout = block
+      @paper.on_mouseout do |info|
+        block.call(Native(info))
+      end
     end
 
-    def on_annotation_drag_end(&block)
-      @paper.on_annotation_drag_end do |info|
+    def on_drag_start(&block)
+      @paper.on_drag_start do |info|
+        block.call(Native(info))
+      end
+    end
+
+    def on_drag_end(&block)
+      @paper.on_drag_end do |info|
         block.call(Native(info))
       end
     end
@@ -227,6 +262,7 @@ module Harpnotes
 
       # bind context menus
       conf_key = drawing_element[:conf_key]
+      @paper.set_conf_editable(svg_node, conf_key, drawing_element[:more_conf_keys])
 
       # bind draggable elements
       draginfo = drawing_element[:draginfo]
@@ -242,45 +278,6 @@ module Harpnotes
         end
       end
 
-    end
-
-
-    # these methods is hardocded in the generated svg.
-
-
-    def _mouseoutonsvg(evt, id)
-      Native(evt).stopPropagation
-      Native(evt).preventDefault
-      harpnote_model_element = @interactive_elements.dig(id)
-      info                   = {element: Element.find("##{id}"), conf_key: harpnote_model_element[:conf_key], more_conf_keys: harpnote_model_element[:more_conf_keys], originalevent: evt}
-      @on_mouseout.call(info)
-    end
-
-
-    def _mouseoveronsvg(evt, id)
-      Native(evt).stopPropagation
-      Native(evt).preventDefault
-      harpnote_model_element = @interactive_elements.dig(id)
-      info                   = {element: Element.find("##{id}"), conf_key: harpnote_model_element[:conf_key], more_conf_keys: harpnote_model_element[:more_conf_keys], originalevent: evt}
-      @on_mouseover.call(info)
-    end
-
-    def _rightclickonsvg(evt, id)
-      Native(evt).stopPropagation
-      Native(evt).preventDefault
-      harpnote_model_element = @interactive_elements.dig(id)
-      info                   = {element: Element.find("##{id}"), conf_key: harpnote_model_element[:conf_key], more_conf_keys: harpnote_model_element[:more_conf_keys], originalevent: evt}
-      @on_draggable_rightclick.call(info)
-      false
-    end
-
-    # the name of this  methhod is hardcoded in opal-svg
-    # in <rect onclick = ...
-    #
-    def _clickabcnote(evt, id)
-      Native(evt).stopPropagation
-      music_model_element = @interactive_elements.dig(id, :music_model_elemment_origin)
-      @on_select.call(music_model_element) unless music_model_element.nil? or @on_select.nil?
     end
 
     # this method collects the drawing model elements and the associatited svg element ids.
@@ -365,7 +362,8 @@ module Harpnotes
       bgrect = [root.center.first - size.first / 2, root.center.last - size.last / 2, size.first, size.last, 0]
       # draw a white background if it is a playble
       if is_playable
-        e = @paper.rect(root.center.first - size.first / 2, root.center.last - size.last / 2, size.first, size.last, 0, {fill: "white", stroke: "white"})
+        e = @paper.rect(root.center.first - size.first / 2, root.center.last - size.last / 2, size.first, size.last, 0,
+                        {fill: "white", stroke: "white"})
       end
 
       # draw th path
@@ -374,7 +372,9 @@ module Harpnotes
       attr              = {}
       attr[:fill]       = color
       attr[:transform]  = "translate(#{(center.first)},#{(center.last)}) scale(#{scalefactor})"
-      e                 = @paper.path(root.glyph[:d], attr, bgrect)
+      attr              = attr.merge(@attr_for_draggable)
+
+      e = @paper.path(root.glyph[:d], attr, bgrect)
 
       if root.dotted?
         draw_the_dot(root)
@@ -476,7 +476,7 @@ module Harpnotes
       attr[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
       attr[:"text-anchor"] = (root.align == 'right') ? "end" : 'start '
 
-      attr    = attr.merge(@attr_for_on_contextmenu)
+      attr    = attr.merge(@attr_for_on_contextmenu).merge(@attr_for_draggable)
       element = @paper.text(root.center.first / 1.05, root.center.last, text, attr) # literal by try and error
 
       push_element(root, element)
