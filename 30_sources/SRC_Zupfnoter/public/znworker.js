@@ -28037,28 +28037,30 @@ Opal.modules["opal-svg"] = function(Opal) {
       function $Paper(){};
       var self = $Paper = $klass($base, $super, 'Paper', $Paper);
 
-      var def = self.$$proto, $scope = self.$$scope, TMP_5, TMP_6, TMP_7, TMP_8, TMP_9, TMP_10, TMP_11, TMP_12, TMP_13, TMP_14, TMP_16, TMP_19, TMP_20, TMP_21, TMP_22, TMP_23, TMP_24, TMP_25, TMP_27, TMP_28, TMP_29, TMP_30, TMP_32, TMP_34, TMP_35, TMP_36;
+      var def = self.$$proto, $scope = self.$$scope, TMP_6, TMP_7, TMP_8, TMP_9, TMP_10, TMP_11, TMP_12, TMP_13, TMP_14, TMP_15, TMP_16, TMP_17, TMP_20, TMP_23, TMP_24, TMP_25, TMP_26, TMP_27, TMP_28, TMP_29, TMP_31, TMP_32, TMP_33, TMP_34, TMP_36, TMP_38, TMP_39, TMP_40;
 
-      def.id = def.svgbuffer = def.canvas = def.viewbox = def.draggable_dragend_handler = def.line_width = def.container_id = nil;
-      Opal.defn(self, '$initialize', TMP_5 = function $$initialize(container_id, width, height) {
-        var $a, $b, TMP_1, $c, TMP_2, $d, TMP_3, $e, TMP_4, self = this;
+      def.id = def.svgbuffer = def.canvas = def.viewbox = def.on_mouseover_handler = def.on_mouseout_handler = def.draggable_rightclick_handler = def.draggable_dragstart_handler = def.draggable_dragend_handler = def.line_width = def.container_id = nil;
+      Opal.defn(self, '$initialize', TMP_6 = function $$initialize(container_id, width, height) {
+        var $a, $b, TMP_1, $c, TMP_2, $d, TMP_3, $e, TMP_4, $f, TMP_5, self = this;
 
         self.container_id = container_id;
-        self.draggable_dragend_handler = ($a = ($b = self).$lambda, $a.$$p = (TMP_1 = function(dropinfo){var self = TMP_1.$$s || this;
-          if ($gvars.log == null) $gvars.log = nil;
+        self.draggable_dragstart_handler = ($a = ($b = self).$lambda, $a.$$p = (TMP_1 = function(dropinfo){var self = TMP_1.$$s || this;
 if (dropinfo == null) dropinfo = nil;
-        return $gvars.log.$info(dropinfo)}, TMP_1.$$s = self, TMP_1.$$arity = 1, TMP_1), $a).call($b);
-        self.on_mouseover_handler = ($a = ($c = self).$lambda, $a.$$p = (TMP_2 = function(dropinfo){var self = TMP_2.$$s || this;
-          if ($gvars.log == null) $gvars.log = nil;
+        return nil}, TMP_1.$$s = self, TMP_1.$$arity = 1, TMP_1), $a).call($b);
+        self.draggable_dragend_handler = ($a = ($c = self).$lambda, $a.$$p = (TMP_2 = function(dropinfo){var self = TMP_2.$$s || this;
 if (dropinfo == null) dropinfo = nil;
-        return $gvars.log.$info(self.$Native(dropinfo).$conf_key())}, TMP_2.$$s = self, TMP_2.$$arity = 1, TMP_2), $a).call($c);
-        self.on_mouseout_handler = ($a = ($d = self).$lambda, $a.$$p = (TMP_3 = function(dropinfo){var self = TMP_3.$$s || this;
+        return nil}, TMP_2.$$s = self, TMP_2.$$arity = 1, TMP_2), $a).call($c);
+        self.on_mouseover_handler = ($a = ($d = self).$lambda, $a.$$p = (TMP_3 = function(dropinfo){var self = TMP_3.$$s || this;
           if ($gvars.log == null) $gvars.log = nil;
 if (dropinfo == null) dropinfo = nil;
         return $gvars.log.$info(self.$Native(dropinfo).$conf_key())}, TMP_3.$$s = self, TMP_3.$$arity = 1, TMP_3), $a).call($d);
-        self.draggable_rightclick_handler = ($a = ($e = self).$lambda, $a.$$p = (TMP_4 = function(dropinfo){var self = TMP_4.$$s || this;
+        self.on_mouseout_handler = ($a = ($e = self).$lambda, $a.$$p = (TMP_4 = function(dropinfo){var self = TMP_4.$$s || this;
+          if ($gvars.log == null) $gvars.log = nil;
 if (dropinfo == null) dropinfo = nil;
-        return nil}, TMP_4.$$s = self, TMP_4.$$arity = 1, TMP_4), $a).call($e);
+        return $gvars.log.$info(self.$Native(dropinfo).$conf_key())}, TMP_4.$$s = self, TMP_4.$$arity = 1, TMP_4), $a).call($e);
+        self.draggable_rightclick_handler = ($a = ($f = self).$lambda, $a.$$p = (TMP_5 = function(dropinfo){var self = TMP_5.$$s || this;
+if (dropinfo == null) dropinfo = nil;
+        return nil}, TMP_5.$$s = self, TMP_5.$$arity = 1, TMP_5), $a).call($f);
         self.canvas = [width, height];
         self.scale = 1;
         self.viewbox = [0, 0, 420, 297];
@@ -28066,72 +28068,103 @@ if (dropinfo == null) dropinfo = nil;
         self.id = 0;
         self.line_width = 0.2;
         return self.$clear();
-      }, TMP_5.$$arity = 3);
+      }, TMP_6.$$arity = 3);
 
-      Opal.defn(self, '$new_id!', TMP_6 = function() {
+      Opal.defn(self, '$new_id!', TMP_7 = function() {
         var self = this;
 
         return "ZN_" + (self.id = $rb_plus(self.id, 1));
-      }, TMP_6.$$arity = 0);
+      }, TMP_7.$$arity = 0);
 
-      Opal.defn(self, '$get_svg', TMP_7 = function $$get_svg() {
+      Opal.defn(self, '$get_svg', TMP_8 = function $$get_svg() {
         var self = this;
 
         self.svgbuffer.$push("</svg>");
         return self.svgbuffer.$join();
-      }, TMP_7.$$arity = 0);
+      }, TMP_8.$$arity = 0);
 
-      Opal.defn(self, '$line_width=', TMP_8 = function(width) {
+      Opal.defn(self, '$line_width=', TMP_9 = function(width) {
         var self = this;
 
         return self.line_width = width;
-      }, TMP_8.$$arity = 1);
+      }, TMP_9.$$arity = 1);
 
-      Opal.defn(self, '$clear', TMP_9 = function $$clear() {
+      Opal.defn(self, '$clear', TMP_10 = function $$clear() {
         var self = this;
 
         self.id = 0;
         self.svgbuffer = [];
         return self.svgbuffer.$push("<svg width=\"" + (self.canvas.$first()) + "\" height=\"" + (self.canvas.$last()) + "\" viewBox=\"" + (self.viewbox.$join(", ")) + "\" > ");
-      }, TMP_9.$$arity = 0);
-
-      Opal.defn(self, '$on_mouseover', TMP_10 = function $$on_mouseover() {
-        var self = this, $iter = TMP_10.$$p, block = $iter || nil;
-
-        TMP_10.$$p = null;
-        return self.on_mouseover_handler = block;
       }, TMP_10.$$arity = 0);
 
-      Opal.defn(self, '$on_mouseout', TMP_11 = function $$on_mouseout() {
+      Opal.defn(self, '$on_mouseover', TMP_11 = function $$on_mouseover() {
         var self = this, $iter = TMP_11.$$p, block = $iter || nil;
 
         TMP_11.$$p = null;
-        return self.on_mouseout_handler = block;
+        return self.on_mouseover_handler = block;
       }, TMP_11.$$arity = 0);
 
-      Opal.defn(self, '$on_annotation_drag_end', TMP_12 = function $$on_annotation_drag_end() {
+      Opal.defn(self, '$on_mouseout', TMP_12 = function $$on_mouseout() {
         var self = this, $iter = TMP_12.$$p, block = $iter || nil;
 
         TMP_12.$$p = null;
-        return self.draggable_dragend_handler = block;
+        return self.on_mouseout_handler = block;
       }, TMP_12.$$arity = 0);
 
-      Opal.defn(self, '$on_draggable_rightclick', TMP_13 = function $$on_draggable_rightclick() {
+      Opal.defn(self, '$on_drag_start', TMP_13 = function $$on_drag_start() {
         var self = this, $iter = TMP_13.$$p, block = $iter || nil;
 
         TMP_13.$$p = null;
-        return self.draggable_rightclick_handler = block;
+        return self.draggable_dragstart_handler = block;
       }, TMP_13.$$arity = 0);
 
-      Opal.defn(self, '$set_canvas', TMP_14 = function $$set_canvas(size) {
+      Opal.defn(self, '$on_drag_end', TMP_14 = function $$on_drag_end() {
+        var self = this, $iter = TMP_14.$$p, block = $iter || nil;
+
+        TMP_14.$$p = null;
+        return self.draggable_dragend_handler = block;
+      }, TMP_14.$$arity = 0);
+
+      Opal.defn(self, '$on_draggable_rightclick', TMP_15 = function $$on_draggable_rightclick() {
+        var self = this, $iter = TMP_15.$$p, block = $iter || nil;
+
+        TMP_15.$$p = null;
+        return self.draggable_rightclick_handler = block;
+      }, TMP_15.$$arity = 0);
+
+      Opal.defn(self, '$set_canvas', TMP_16 = function $$set_canvas(size) {
         var self = this;
 
         self.canvas = size;
         return nil;
-      }, TMP_14.$$arity = 1);
+      }, TMP_16.$$arity = 1);
 
-      Opal.defn(self, '$set_draggable_pos', TMP_16 = function $$set_draggable_pos(svg_element_id, conf_key, conf_value) {
-        var $a, $b, TMP_15, self = this, conf_value_new = nil;
+      Opal.defn(self, '$set_conf_editable', TMP_17 = function $$set_conf_editable(svg_element, conf_key, more_conf_keys) {
+        var self = this;
+
+        
+          var me = svg_element;
+          mouseoverFnc = function(){
+            self.on_mouseover_handler({element: me, conf_key: conf_key})
+          }
+
+          mouseoutFnc = function(){
+            self.on_mouseout_handler({element: me, conf_key: conf_key})
+          }
+          me.mouseover(mouseoverFnc);
+          me.mouseout(mouseoutFnc);
+
+          // as we bind the handler on a mouseover, the event does not fire on very first mouseover
+          // so we call it here to display the conf_key even on the first move
+          // todo: do not know why it worked on draggable elements
+          mouseoverFnc({element:me, conf_key: conf_key});
+
+          me[0].oncontextmenu = function(){ return self.draggable_rightclick_handler({element: svg_element, conf_key: conf_key, more_conf_keys: more_conf_keys});};
+      ;
+      }, TMP_17.$$arity = 3);
+
+      Opal.defn(self, '$set_draggable_pos', TMP_20 = function $$set_draggable_pos(svg_element_id, conf_key, conf_value) {
+        var $a, $b, TMP_18, $c, TMP_19, self = this, conf_value_new = nil;
 
         conf_value_new = conf_value.$to_n();
         
@@ -28148,6 +28181,9 @@ if (dropinfo == null) dropinfo = nil;
           });
 
           xx.on('dragstart', function(e) {
+             self.draggable_dragstart_handler.$call($hash2(["element", "conf_key", "conf_value_new"], {"element": this, "conf_key": conf_key, "conf_value_new": ($a = ($b = self.$Native(conf_value_new)).$map, $a.$$p = (TMP_18 = function(i){var self = TMP_18.$$s || this;
+if (i == null) i = nil;
+        return i.$round(2)}, TMP_18.$$s = self, TMP_18.$$arity = 1, TMP_18), $a).call($b)}));
             ismoved = false;
             sx = e.detail.p.x;
             sy = e.detail.p.y;
@@ -28164,15 +28200,15 @@ if (dropinfo == null) dropinfo = nil;
             conf_value_new[0] += deltax;
             conf_value_new[1] += deltay;
 
-             self.draggable_dragend_handler.$call($hash2(["element", "conf_key", "conf_value_new"], {"element": this, "conf_key": conf_key, "conf_value_new": ($a = ($b = self.$Native(conf_value_new)).$map, $a.$$p = (TMP_15 = function(i){var self = TMP_15.$$s || this;
+             self.draggable_dragend_handler.$call($hash2(["element", "conf_key", "conf_value_new"], {"element": this, "conf_key": conf_key, "conf_value_new": ($a = ($c = self.$Native(conf_value_new)).$map, $a.$$p = (TMP_19 = function(i){var self = TMP_19.$$s || this;
 if (i == null) i = nil;
-        return i.$round(2)}, TMP_15.$$s = self, TMP_15.$$arity = 1, TMP_15), $a).call($b)}));
+        return i.$round(2)}, TMP_19.$$s = self, TMP_19.$$arity = 1, TMP_19), $a).call($c)}));
           })
       ;
-      }, TMP_16.$$arity = 3);
+      }, TMP_20.$$arity = 3);
 
-      Opal.defn(self, '$set_draggable_tuplet', TMP_19 = function $$set_draggable_tuplet(svg_element_id, conf_key, conf_value, draginfo) {
-        var $a, $b, TMP_17, $c, TMP_18, self = this, p1 = nil, p2 = nil, cp1 = nil, cp2 = nil, deltap = nil, rotate_by = nil, np1 = nil, np2 = nil;
+      Opal.defn(self, '$set_draggable_tuplet', TMP_23 = function $$set_draggable_tuplet(svg_element_id, conf_key, conf_value, draginfo) {
+        var $a, $b, TMP_21, $c, TMP_22, self = this, p1 = nil, p2 = nil, cp1 = nil, cp2 = nil, deltap = nil, rotate_by = nil, np1 = nil, np2 = nil;
 
         
       var xx = SVG.get(svg_element_id);
@@ -28187,6 +28223,8 @@ if (i == null) i = nil;
 
       // *******************************************************************************************
       xx.on('dragstart', function(e) {
+
+        self.draggable_dragstart_handler.$call($hash2(["element", "conf_key"], {"element": this, "conf_key": conf_key}));
 
         sx = e.detail.p.x;
         sy = e.detail.p.y;
@@ -28239,18 +28277,18 @@ if (i == null) i = nil;
         np2 = ($rb_minus(p2, cp2)).$rotate(deltap.$angle()['$-@']()).$rotate(rotate_by['$-@']())
 
              if (cp_id == "cp1") {
-                 conf_value_new = ($a = ($b = np1.$to_a()).$map, $a.$$p = (TMP_17 = function(i){var self = TMP_17.$$s || this;
+                 conf_value_new = ($a = ($b = np1.$to_a()).$map, $a.$$p = (TMP_21 = function(i){var self = TMP_21.$$s || this;
 if (i == null) i = nil;
-        return i.$round(2)}, TMP_17.$$s = self, TMP_17.$$arity = 1, TMP_17), $a).call($b)
+        return i.$round(2)}, TMP_21.$$s = self, TMP_21.$$arity = 1, TMP_21), $a).call($b)
                   newpath = [['M', p1.$x(), p1.$y()], ['L', cp1.$x(), cp1.$y()]]
                   np = self.$path_to_raphael(newpath);
                   e.target.firstChild.setAttribute('d', np);
                 }
                  else
                 {
-                 conf_value_new = ($a = ($c = np2.$to_a()).$map, $a.$$p = (TMP_18 = function(i){var self = TMP_18.$$s || this;
+                 conf_value_new = ($a = ($c = np2.$to_a()).$map, $a.$$p = (TMP_22 = function(i){var self = TMP_22.$$s || this;
 if (i == null) i = nil;
-        return i.$round(2)}, TMP_18.$$s = self, TMP_18.$$arity = 1, TMP_18), $a).call($c)
+        return i.$round(2)}, TMP_22.$$s = self, TMP_22.$$arity = 1, TMP_22), $a).call($c)
                   newpath = [['M', p2.$x(), p2.$y()],  ['L', cp2.$x(), cp2.$y()]]
                   np = self.$path_to_raphael(newpath);
                   e.target.firstChild.setAttribute('d', np);
@@ -28259,9 +28297,9 @@ if (i == null) i = nil;
             self.draggable_dragend_handler( { conf_key: conf_key_to_change, conf_value_new: conf_value_new } )
         })
       ;
-      }, TMP_19.$$arity = 4);
+      }, TMP_23.$$arity = 4);
 
-      Opal.defn(self, '$set_draggable_imagesize', TMP_20 = function $$set_draggable_imagesize(svg_element_id, conf_key, conf_value, draginfo) {
+      Opal.defn(self, '$set_draggable_imagesize', TMP_24 = function $$set_draggable_imagesize(svg_element_id, conf_key, conf_value, draginfo) {
         var self = this;
 
         
@@ -28269,9 +28307,9 @@ if (i == null) i = nil;
       xx.addClass("nn_draggable")
       xx.draggable();
       ;
-      }, TMP_20.$$arity = 4);
+      }, TMP_24.$$arity = 4);
 
-      Opal.defn(self, '$set_draggable_jumpline', TMP_21 = function $$set_draggable_jumpline(svg_element_id, conf_key, conf_value, draginfo) {
+      Opal.defn(self, '$set_draggable_jumpline', TMP_25 = function $$set_draggable_jumpline(svg_element_id, conf_key, conf_value, draginfo) {
         var self = this, vertical = nil, newpath = nil;
         if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -28283,6 +28321,7 @@ if (i == null) i = nil;
       xx.draggable();
 
       xx.on('dragstart', function(e) {
+        self.draggable_dragstart_handler.$call($hash2(["element", "conf_key"], {"element": this, "conf_key": conf_key}));
         vertical = draginfo['$[]']("jumpline")['$[]']("vertical")
         sx = e.detail.p.x;
         sy = e.detail.p.y;
@@ -28314,9 +28353,9 @@ if (i == null) i = nil;
             self.draggable_dragend_handler( { delta: [e.detail.p.x - sx, e.detail.p.y - sy], element: this, conf_key: conf_key, conf_value: conf_value, conf_value_new: conf_value_new } )
         })
       ;
-      }, TMP_21.$$arity = 4);
+      }, TMP_25.$$arity = 4);
 
-      Opal.defn(self, '$add_abcref', TMP_22 = function $$add_abcref(x, y, rx, ry, start_char, attributes) {
+      Opal.defn(self, '$add_abcref', TMP_26 = function $$add_abcref(x, y, rx, ry, start_char, attributes) {
         var self = this, attr = nil, id = nil, padding = nil, svg = nil;
 
         if (start_char == null) {
@@ -28331,9 +28370,9 @@ if (i == null) i = nil;
         svg = "<rect " + (attr) + " class=\"abcref znref _" + (start_char) + "_\" id=\"" + (id) + "\" x=\"" + ($rb_minus($rb_minus(x, rx), $rb_divide(padding, 2))) + "\" y=\"" + ($rb_minus($rb_minus(y, ry), $rb_divide(padding, 2))) + "\" width=\"" + ($rb_plus($rb_times(2, rx), padding)) + "\" height=\"" + ($rb_plus($rb_times(2, ry), padding)) + "\"/>";
         self.svgbuffer.$push(svg);
         return id;
-      }, TMP_22.$$arity = -5);
+      }, TMP_26.$$arity = -5);
 
-      Opal.defn(self, '$ellipse', TMP_23 = function $$ellipse(x, y, rx, ry, attributes) {
+      Opal.defn(self, '$ellipse', TMP_27 = function $$ellipse(x, y, rx, ry, attributes) {
         var self = this, attr = nil, svg = nil;
 
         if (attributes == null) {
@@ -28343,17 +28382,17 @@ if (i == null) i = nil;
         svg = "<ellipse  cx=\"" + (x) + "\" cy=\"" + (y) + "\" rx=\"" + (rx) + "\" ry=\"" + (ry) + "\" stroke-width=\"" + (self.line_width) + "\" " + (attr) + "/>";
         self.svgbuffer.$push(svg);
         return nil;
-      }, TMP_23.$$arity = -5);
+      }, TMP_27.$$arity = -5);
 
-      Opal.defn(self, '$image', TMP_24 = function $$image(url, x, y, height) {
+      Opal.defn(self, '$image', TMP_28 = function $$image(url, x, y, height) {
         var self = this, id = nil;
 
         id = self['$new_id!']();
         self.svgbuffer.$push("  <image id = " + (id) + " x=\"" + (x) + "\" y=\"" + (y) + "\" height=\"" + (height) + "\"\n    preserveAspectRatio=\"none\"\n    xlink:href=\"" + (url) + "\">\n  </image>");
         return id;
-      }, TMP_24.$$arity = 4);
+      }, TMP_28.$$arity = 4);
 
-      Opal.defn(self, '$path', TMP_25 = function $$path(spec, attributes, bgrectspec) {
+      Opal.defn(self, '$path', TMP_29 = function $$path(spec, attributes, bgrectspec) {
         var $a, self = this, thespec = nil, id = nil, group_attrs = nil, attrs = nil, bgrect = nil;
 
         if (attributes == null) {
@@ -28376,23 +28415,23 @@ if (i == null) i = nil;
           bgrect = "<rect class=\"abcref\" x=\"" + (bgrectspec['$[]'](0)) + "\" y=\"" + (bgrectspec['$[]'](1)) + "\" width=\"" + (bgrectspec['$[]'](2)) + "\" height=\"" + (bgrectspec['$[]'](3)) + "\" />"};
         self.svgbuffer.$push("<g id=\"" + (id) + "\" " + (group_attrs) + " >" + (bgrect) + "<path id=\"" + (id) + "\" " + (attrs) + " d=\"" + (thespec) + "\"/></g>");
         return id;
-      }, TMP_25.$$arity = -2);
+      }, TMP_29.$$arity = -2);
 
-      Opal.defn(self, '$path_to_raphael', TMP_27 = function $$path_to_raphael(path) {
-        var $a, $b, TMP_26, self = this, result = nil;
+      Opal.defn(self, '$path_to_raphael', TMP_31 = function $$path_to_raphael(path) {
+        var $a, $b, TMP_30, self = this, result = nil;
 
         if ((($a = path['$is_a?']($scope.get('Array'))) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
-          result = ($a = ($b = path).$inject, $a.$$p = (TMP_26 = function(result, element){var self = TMP_26.$$s || this;
+          result = ($a = ($b = path).$inject, $a.$$p = (TMP_30 = function(result, element){var self = TMP_30.$$s || this;
 if (result == null) result = nil;if (element == null) element = nil;
           result = $rb_plus(result, element.$first());
-            return result = $rb_plus(result, element['$[]']($range(1, -1, false)).$join(" "));}, TMP_26.$$s = self, TMP_26.$$arity = 2, TMP_26), $a).call($b, "")
+            return result = $rb_plus(result, element['$[]']($range(1, -1, false)).$join(" "));}, TMP_30.$$s = self, TMP_30.$$arity = 2, TMP_30), $a).call($b, "")
           } else {
           result = path
         };
         return result;
-      }, TMP_27.$$arity = 1);
+      }, TMP_31.$$arity = 1);
 
-      Opal.defn(self, '$rect', TMP_28 = function $$rect(x, y, rx, ry, radius, attributes) {
+      Opal.defn(self, '$rect', TMP_32 = function $$rect(x, y, rx, ry, radius, attributes) {
         var self = this, id = nil, attr = nil;
 
         if (radius == null) {
@@ -28405,16 +28444,16 @@ if (result == null) result = nil;if (element == null) element = nil;
         attr = self.$_attr_to_xml(attributes);
         self.svgbuffer.$push("<rect id=\"" + (id) + "\" x=\"" + (x) + "\" y=\"" + (y) + "\" width=\"" + (rx) + "\" height=\"" + (ry) + "\" rx=\"" + (radius) + "\" ry=\"" + (radius) + "\"  stroke-width=\"" + (self.line_width) + "\" " + (attr) + " />");
         return id;
-      }, TMP_28.$$arity = -5);
+      }, TMP_32.$$arity = -5);
 
-      Opal.defn(self, '$set_view_box', TMP_29 = function $$set_view_box(x, y, width, height, fit) {
+      Opal.defn(self, '$set_view_box', TMP_33 = function $$set_view_box(x, y, width, height, fit) {
         var self = this;
 
         self.viewbox = [x, y, width, height];
         return self.scale = $rb_divide(self.canvas.$last(), height);
-      }, TMP_29.$$arity = 5);
+      }, TMP_33.$$arity = 5);
 
-      Opal.defn(self, '$line', TMP_30 = function $$line(x1, y1, x2, y2, attributes, draginfo) {
+      Opal.defn(self, '$line', TMP_34 = function $$line(x1, y1, x2, y2, attributes, draginfo) {
         var self = this;
 
         if (attributes == null) {
@@ -28424,38 +28463,38 @@ if (result == null) result = nil;if (element == null) element = nil;
           draginfo = nil;
         }
         return self.$path("M" + (x1) + "," + (y1) + "L" + (x2) + "," + (y2), attributes);
-      }, TMP_30.$$arity = -5);
+      }, TMP_34.$$arity = -5);
 
-      Opal.defn(self, '$text', TMP_32 = function $$text(x, y, text, attributes) {
-        var $a, $b, TMP_31, self = this, id = nil, attrs = nil, tspans = nil;
+      Opal.defn(self, '$text', TMP_36 = function $$text(x, y, text, attributes) {
+        var $a, $b, TMP_35, self = this, id = nil, attrs = nil, tspans = nil;
 
         if (attributes == null) {
           attributes = $hash2([], {});
         }
         id = self['$new_id!']();
         attrs = self.$_attr_to_xml(attributes);
-        tspans = ($a = ($b = text.$split("\n")).$map, $a.$$p = (TMP_31 = function(l){var self = TMP_31.$$s || this;
+        tspans = ($a = ($b = text.$split("\n")).$map, $a.$$p = (TMP_35 = function(l){var self = TMP_35.$$s || this;
 if (l == null) l = nil;
-        return "<tspan dy=\"1.2em\" x=\"" + (x) + "\">" + (l) + "</tspan>"}, TMP_31.$$s = self, TMP_31.$$arity = 1, TMP_31), $a).call($b).$join();
+        return "<tspan dy=\"1.2em\" x=\"" + (x) + "\">" + (l) + "</tspan>"}, TMP_35.$$s = self, TMP_35.$$arity = 1, TMP_35), $a).call($b).$join();
         self.svgbuffer.$push("<g id=\"" + (id) + "\" x=\"" + (x) + "\" y=\"" + (y) + "\"><text x=\"" + (x) + "\" y=\"" + (y) + "\" id=\"" + (id) + "\" " + (attrs) + ">" + (tspans) + "</text></g>");
         return id;
-      }, TMP_32.$$arity = -4);
+      }, TMP_36.$$arity = -4);
 
-      Opal.defn(self, '$_attr_to_xml', TMP_34 = function $$_attr_to_xml(attributes) {
-        var $a, $b, TMP_33, self = this;
+      Opal.defn(self, '$_attr_to_xml', TMP_38 = function $$_attr_to_xml(attributes) {
+        var $a, $b, TMP_37, self = this;
 
-        return ($a = ($b = attributes).$map, $a.$$p = (TMP_33 = function(k, v){var self = TMP_33.$$s || this;
+        return ($a = ($b = attributes).$map, $a.$$p = (TMP_37 = function(k, v){var self = TMP_37.$$s || this;
 if (k == null) k = nil;if (v == null) v = nil;
-        return "" + (k) + "=\"" + (v) + "\""}, TMP_33.$$s = self, TMP_33.$$arity = 2, TMP_33), $a).call($b).$join(" ");
-      }, TMP_34.$$arity = 1);
+        return "" + (k) + "=\"" + (v) + "\""}, TMP_37.$$s = self, TMP_37.$$arity = 2, TMP_37), $a).call($b).$join(" ");
+      }, TMP_38.$$arity = 1);
 
-      Opal.defn(self, '$size_outdated', TMP_35 = function $$size_outdated() {
+      Opal.defn(self, '$size_outdated', TMP_39 = function $$size_outdated() {
         var self = this;
 
         return [self.r.canvas.offsetWidth, self.r.canvas.offsetHeight];
-      }, TMP_35.$$arity = 0);
+      }, TMP_39.$$arity = 0);
 
-      return (Opal.defn(self, '$scroll_to_element', TMP_36 = function $$scroll_to_element(element) {
+      return (Opal.defn(self, '$scroll_to_element', TMP_40 = function $$scroll_to_element(element) {
         var self = this;
 
         
@@ -28464,7 +28503,7 @@ if (k == null) k = nil;if (v == null) v = nil;
         thetop = thetopraw * (height / self.viewbox['$[]'](3)) - 100;  // keep 110 px from top border
         $("#"+self.container_id).get(0).scrollTop = thetop;
       ;
-      }, TMP_36.$$arity = 1), nil) && 'scroll_to_element';
+      }, TMP_40.$$arity = 1), nil) && 'scroll_to_element';
     })($scope.base, null)
   })($scope.base)
 };
@@ -28488,7 +28527,7 @@ Opal.modules["svg_engine"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$require', '$include', '$attr_reader', '$nil?', '$find', '$new', '$set_view_box', '$set_canvas', '$get_svg', '$save_scroll_position', '$html', '$t', '$[]', '$first', '$last', '$clear', '$rect', '$+', '$-', '$each', '$line_width=', '$line_width', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$draw_image', '$error', '$class', '$children', '$flush', '$on_annotation_drag_end', '$call', '$Native', '$on_draggable_rightclick', '$unhighlight_element', '$unhighlight_all', '$range_highlight_more', '$get_elements_by_range', '$highlight_element', '$==', '$empty?', '$scroll_to_element', '$private', '$sort', '$dig', '$map', '$>', '$*', '$push', '$add_class', '$remove_class', '$bind_the_element', '$===', '$set_draggable_pos', '$set_draggable_jumpline', '$set_draggable_tuplet', '$stopPropagation', '$preventDefault', '$origin', '$!', '$tap', '$delete', '$conf_key', '$conf_value', '$more_conf_keys', '$draginfo', '$[]=', '$color', '$fill', '$size', '$rect?', '$center', '$ellipse', '$/', '$dotted?', '$draw_the_dot', '$hasbarover?', '$draw_the_barover', '$add_abcref', '$merge', '$push_element', '$glyph', '$path', '$style', '$line', '$from', '$to', '$distance', '$level', '$get', '$gsub', '$text', '$-@', '$include?', '$to_s', '$align', '$Vector2d', '$llpos', '$height', '$image', '$url', '$x', '$y', '$filled?']);
+  Opal.add_stubs(['$require', '$include', '$attr_reader', '$nil?', '$find', '$new', '$include?', '$bind_the_element', '$push', '$stopPropagation', '$Native', '$dig', '$call', '$set_view_box', '$set_canvas', '$get_svg', '$save_scroll_position', '$html', '$t', '$[]', '$first', '$last', '$clear', '$rect', '$+', '$-', '$each', '$line_width=', '$line_width', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$draw_image', '$error', '$class', '$children', '$flush', '$on_mouseover', '$on_mouseout', '$on_drag_start', '$on_drag_end', '$on_draggable_rightclick', '$unhighlight_element', '$unhighlight_all', '$range_highlight_more', '$get_elements_by_range', '$highlight_element', '$==', '$empty?', '$scroll_to_element', '$private', '$sort', '$map', '$>', '$*', '$add_class', '$remove_class', '$set_conf_editable', '$===', '$set_draggable_pos', '$set_draggable_jumpline', '$set_draggable_tuplet', '$origin', '$!', '$tap', '$delete', '$conf_key', '$conf_value', '$more_conf_keys', '$draginfo', '$[]=', '$color', '$fill', '$size', '$rect?', '$center', '$ellipse', '$/', '$dotted?', '$draw_the_dot', '$hasbarover?', '$draw_the_barover', '$add_abcref', '$merge', '$push_element', '$glyph', '$path', '$style', '$line', '$from', '$to', '$distance', '$level', '$get', '$gsub', '$text', '$-@', '$to_s', '$align', '$Vector2d', '$llpos', '$height', '$image', '$url', '$x', '$y', '$filled?']);
   self.$require("opal-svg");
   self.$require("harpnotes");
   return (function($base) {
@@ -28500,9 +28539,9 @@ Opal.modules["svg_engine"] = function(Opal) {
       function $SvgEngine(){};
       var self = $SvgEngine = $klass($base, $super, 'SvgEngine', $SvgEngine);
 
-      var def = self.$$proto, $scope = self.$$scope, TMP_1, TMP_2, TMP_3, TMP_4, TMP_5, TMP_6, TMP_7, TMP_8, TMP_10, TMP_11, TMP_12, TMP_13, TMP_14, TMP_16, TMP_19, TMP_20, TMP_22, TMP_24, TMP_27, TMP_28, TMP_29, TMP_30, TMP_32, TMP_33, TMP_34, TMP_35, TMP_36, TMP_37, TMP_39, TMP_41, TMP_42, TMP_43, TMP_44, TMP_45, TMP_46, TMP_48, TMP_49, TMP_50;
+      var def = self.$$proto, $scope = self.$$scope, TMP_1, TMP_2, TMP_3, TMP_4, TMP_5, TMP_6, TMP_7, TMP_8, TMP_9, TMP_10, TMP_12, TMP_13, TMP_14, TMP_16, TMP_18, TMP_20, TMP_22, TMP_25, TMP_26, TMP_28, TMP_30, TMP_33, TMP_34, TMP_35, TMP_36, TMP_38, TMP_39, TMP_41, TMP_43, TMP_44, TMP_45, TMP_46, TMP_47, TMP_48, TMP_50, TMP_51, TMP_52;
 
-      def.container_id = def.oncontextmenu_for_svg = def.onmouseover_for_svg = def.onmouseout_for_svg = def.paper = def.interactive_elements = def.preview_container = def.preview_scroll = def.viewbox = def.highlighted = def.on_mouseout = def.on_mouseover = def.on_draggable_rightclick = def.on_select = def.onclick_for_svg = def.attr_for_on_contextmenu = nil;
+      def.container_id = def.bound_elements = def.interactive_elements = def.on_select = def.paper = def.preview_container = def.preview_scroll = def.viewbox = def.highlighted = def.onclick_for_svg = def.attr_for_on_contextmenu = def.attr_for_draggable = nil;
       self.$include((($scope.get('Harpnotes')).$$scope.get('Drawing')));
 
       self.$attr_reader("paper");
@@ -28518,7 +28557,7 @@ Opal.modules["svg_engine"] = function(Opal) {
       Opal.cdecl($scope, 'COLORS', $hash2(["black", "white", "grey", "lightgrey", "darkgrey", "dimgrey"], {"black": "black", "white": "white", "grey": "grey", "lightgrey": "lightgrey", "darkgrey": "darkgrey", "dimgrey": "dimgrey"}));
 
       Opal.defn(self, '$initialize', TMP_1 = function $$initialize(element_id, width, height) {
-        var $a, self = this;
+        var $a, self = this, harpnote_preview_printer = nil;
 
         self.viewbox = [0, 0, 100, 100];
         if ((($a = element_id['$nil?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
@@ -28529,55 +28568,79 @@ Opal.modules["svg_engine"] = function(Opal) {
         self.paper = (($scope.get('ZnSvg')).$$scope.get('Paper')).$new(element_id, width, height);
         self.on_select = nil;
         self.highlighted = [];
-        self.onmouseover_for_svg = "Opal.top.uicontroller.harpnote_preview_printer.$_mouseoveronsvg(evt, id)";
-        self.onmouseout_for_svg = "Opal.top.uicontroller.harpnote_preview_printer.$_mouseoutonsvg(evt, id)";
-        self.oncontextmenu_for_svg = "Opal.top.uicontroller.harpnote_preview_printer.$_rightclickonsvg(evt, id)";
-        self.onclick_for_svg = "Opal.top.uicontroller.harpnote_preview_printer.$_clickabcnote(evt, id)";
-        return self.attr_for_on_contextmenu = $hash2(["oncontextmenu", "onmouseover", "onmouseout"], {"oncontextmenu": self.oncontextmenu_for_svg, "onmouseover": self.onmouseover_for_svg, "onmouseout": self.onmouseout_for_svg});
+        harpnote_preview_printer = "Opal.top.uicontroller.harpnote_preview_printer";
+        self.onclick_for_svg = "" + (harpnote_preview_printer) + ".$_clickabcnote(evt, id)";
+        self.attr_for_on_contextmenu = $hash2(["onmouseover"], {"onmouseover": "" + (harpnote_preview_printer) + ".$_bind_on_mouseover(evt, id)"});
+        return self.attr_for_draggable = $hash2(["onmouseover"], {"onmouseover": "" + (harpnote_preview_printer) + ".$_bind_on_mouseover(evt, id)"});
       }, TMP_1.$$arity = 3);
 
-      Opal.defn(self, '$set_view_box', TMP_2 = function $$set_view_box(x, y, width, height) {
+      Opal.defn(self, '$_bind_on_mouseover', TMP_2 = function $$_bind_on_mouseover(evt, id) {
+        var $a, self = this;
+
+        ((($a = self.bound_elements) !== false && $a !== nil && $a != null) ? $a : self.bound_elements = []);
+        if ((($a = self.bound_elements['$include?'](id)) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
+          return nil
+          } else {
+          self.$bind_the_element(id);
+          return self.bound_elements.$push(id);
+        };
+      }, TMP_2.$$arity = 2);
+
+      Opal.defn(self, '$_clickabcnote', TMP_3 = function $$_clickabcnote(evt, id) {
+        var $a, $b, self = this, music_model_element = nil;
+
+        self.$Native(evt).$stopPropagation();
+        music_model_element = self.interactive_elements.$dig(id, "music_model_elemment_origin");
+        if ((($a = ((($b = music_model_element['$nil?']()) !== false && $b !== nil && $b != null) ? $b : self.on_select['$nil?']())) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
+          return nil
+          } else {
+          return self.on_select.$call(music_model_element)
+        };
+      }, TMP_3.$$arity = 2);
+
+      Opal.defn(self, '$set_view_box', TMP_4 = function $$set_view_box(x, y, width, height) {
         var self = this;
 
         self.viewbox = [x, y, width, height];
         return self.paper.$set_view_box(x, y, width, height, true);
-      }, TMP_2.$$arity = 4);
+      }, TMP_4.$$arity = 4);
 
-      Opal.defn(self, '$set_canvas', TMP_3 = function $$set_canvas(size) {
+      Opal.defn(self, '$set_canvas', TMP_5 = function $$set_canvas(size) {
         var self = this;
 
         return self.paper.$set_canvas(size);
-      }, TMP_3.$$arity = 1);
+      }, TMP_5.$$arity = 1);
 
-      Opal.defn(self, '$clear', TMP_4 = function $$clear() {
+      Opal.defn(self, '$clear', TMP_6 = function $$clear() {
         var self = this;
 
         return self.interactive_elements = $hash2([], {});
-      }, TMP_4.$$arity = 0);
+      }, TMP_6.$$arity = 0);
 
-      Opal.defn(self, '$flush', TMP_5 = function $$flush() {
+      Opal.defn(self, '$flush', TMP_7 = function $$flush() {
         var self = this, svg = nil;
 
         svg = self.paper.$get_svg();
         return $hash2(["svg", "interactive_elements"], {"svg": self.paper.$get_svg(), "interactive_elements": self.interactive_elements});
-      }, TMP_5.$$arity = 0);
+      }, TMP_7.$$arity = 0);
 
-      Opal.defn(self, '$display_no_preview_available', TMP_6 = function $$display_no_preview_available() {
+      Opal.defn(self, '$display_no_preview_available', TMP_8 = function $$display_no_preview_available() {
         var self = this;
 
         self.$save_scroll_position();
         return self.preview_container.$html("<h1>" + ($scope.get('I18n').$t("no preview available yet")) + "</h1>");
-      }, TMP_6.$$arity = 0);
+      }, TMP_8.$$arity = 0);
 
-      Opal.defn(self, '$save_scroll_position', TMP_7 = function $$save_scroll_position() {
+      Opal.defn(self, '$save_scroll_position', TMP_9 = function $$save_scroll_position() {
         var self = this;
 
         return self.preview_scroll = [self.preview_container.scrollLeft(), self.preview_container.scrollTop()];
-      }, TMP_7.$$arity = 0);
+      }, TMP_9.$$arity = 0);
 
-      Opal.defn(self, '$set_svg', TMP_8 = function $$set_svg(svg_and_positions) {
+      Opal.defn(self, '$set_svg', TMP_10 = function $$set_svg(svg_and_positions) {
         var self = this;
 
+        self.bound_elements = [];
         self.preview_container.$html(svg_and_positions['$[]']("svg"));
         self.interactive_elements = svg_and_positions['$[]']("interactive_elements");
         
@@ -28585,16 +28648,16 @@ Opal.modules["svg_engine"] = function(Opal) {
       self.preview_container.scrollTop(self.preview_scroll.$last());
       ;
         return nil;
-      }, TMP_8.$$arity = 1);
+      }, TMP_10.$$arity = 1);
 
-      Opal.defn(self, '$draw', TMP_10 = function $$draw(sheet) {
-        var $a, $b, TMP_9, self = this;
+      Opal.defn(self, '$draw', TMP_12 = function $$draw(sheet) {
+        var $a, $b, TMP_11, self = this;
 
         self.paper.$clear();
         self.highlighted = [];
         self.paper.$rect($rb_plus(self.viewbox['$[]'](0), 1), $rb_plus(self.viewbox['$[]'](1), 1), $rb_minus(self.viewbox['$[]'](2), 2), $rb_minus(self.viewbox['$[]'](3), 2));
         self.paper.$rect(self.viewbox['$[]'](0), self.viewbox['$[]'](1), self.viewbox['$[]'](2), self.viewbox['$[]'](3));
-        ($a = ($b = sheet.$children()).$each, $a.$$p = (TMP_9 = function(child){var self = TMP_9.$$s || this, $c, $d;
+        ($a = ($b = sheet.$children()).$each, $a.$$p = (TMP_11 = function(child){var self = TMP_11.$$s || this, $c, $d;
           if (self.paper == null) self.paper = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (child == null) child = nil;
@@ -28632,75 +28695,90 @@ if (child == null) child = nil;
           } else if ((($c = child['$is_a?']((((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Image')))) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
             return self.$draw_image(child)
             } else {
-            $gvars.log.$error("BUG:don't know how to draw " + (child.$class()) + " (" + ("svg_engine") + " " + (98) + ")");
+            $gvars.log.$error("BUG:don't know how to draw " + (child.$class()) + " (" + ("svg_engine") + " " + (121) + ")");
             return nil;
-          };}, TMP_9.$$s = self, TMP_9.$$arity = 1, TMP_9), $a).call($b);
+          };}, TMP_11.$$s = self, TMP_11.$$arity = 1, TMP_11), $a).call($b);
         return self.$flush();
-      }, TMP_10.$$arity = 1);
+      }, TMP_12.$$arity = 1);
 
-      Opal.defn(self, '$on_select', TMP_11 = function $$on_select() {
-        var self = this, $iter = TMP_11.$$p, block = $iter || nil;
-
-        TMP_11.$$p = null;
-        return self.on_select = block;
-      }, TMP_11.$$arity = 0);
-
-      Opal.defn(self, '$on_mouseover', TMP_12 = function $$on_mouseover() {
-        var self = this, $iter = TMP_12.$$p, block = $iter || nil;
-
-        TMP_12.$$p = null;
-        return self.on_mouseover = block;
-      }, TMP_12.$$arity = 0);
-
-      Opal.defn(self, '$on_mouseout', TMP_13 = function $$on_mouseout() {
+      Opal.defn(self, '$on_select', TMP_13 = function $$on_select() {
         var self = this, $iter = TMP_13.$$p, block = $iter || nil;
 
         TMP_13.$$p = null;
-        return self.on_mouseout = block;
+        return self.on_select = block;
       }, TMP_13.$$arity = 0);
 
-      Opal.defn(self, '$on_annotation_drag_end', TMP_14 = function $$on_annotation_drag_end() {
+      Opal.defn(self, '$on_mouseover', TMP_14 = function $$on_mouseover() {
         var $a, $b, TMP_15, self = this, $iter = TMP_14.$$p, block = $iter || nil;
 
         TMP_14.$$p = null;
-        return ($a = ($b = self.paper).$on_annotation_drag_end, $a.$$p = (TMP_15 = function(info){var self = TMP_15.$$s || this;
+        self.on_mouseover = block;
+        return ($a = ($b = self.paper).$on_mouseover, $a.$$p = (TMP_15 = function(info){var self = TMP_15.$$s || this;
 if (info == null) info = nil;
         return block.$call(self.$Native(info))}, TMP_15.$$s = self, TMP_15.$$arity = 1, TMP_15), $a).call($b);
       }, TMP_14.$$arity = 0);
 
-      Opal.defn(self, '$on_draggable_rightcklick', TMP_16 = function $$on_draggable_rightcklick() {
+      Opal.defn(self, '$on_mouseout', TMP_16 = function $$on_mouseout() {
         var $a, $b, TMP_17, self = this, $iter = TMP_16.$$p, block = $iter || nil;
 
         TMP_16.$$p = null;
-        self.on_draggable_rightclick = block;
-        return ($a = ($b = self.paper).$on_draggable_rightclick, $a.$$p = (TMP_17 = function(info){var self = TMP_17.$$s || this;
+        self.on_mouseout = block;
+        return ($a = ($b = self.paper).$on_mouseout, $a.$$p = (TMP_17 = function(info){var self = TMP_17.$$s || this;
 if (info == null) info = nil;
         return block.$call(self.$Native(info))}, TMP_17.$$s = self, TMP_17.$$arity = 1, TMP_17), $a).call($b);
       }, TMP_16.$$arity = 0);
 
-      Opal.defn(self, '$unhighlight_all', TMP_19 = function $$unhighlight_all() {
-        var $a, $b, TMP_18, self = this;
+      Opal.defn(self, '$on_drag_start', TMP_18 = function $$on_drag_start() {
+        var $a, $b, TMP_19, self = this, $iter = TMP_18.$$p, block = $iter || nil;
 
-        return ($a = ($b = self.highlighted).$each, $a.$$p = (TMP_18 = function(e){var self = TMP_18.$$s || this;
+        TMP_18.$$p = null;
+        return ($a = ($b = self.paper).$on_drag_start, $a.$$p = (TMP_19 = function(info){var self = TMP_19.$$s || this;
+if (info == null) info = nil;
+        return block.$call(self.$Native(info))}, TMP_19.$$s = self, TMP_19.$$arity = 1, TMP_19), $a).call($b);
+      }, TMP_18.$$arity = 0);
+
+      Opal.defn(self, '$on_drag_end', TMP_20 = function $$on_drag_end() {
+        var $a, $b, TMP_21, self = this, $iter = TMP_20.$$p, block = $iter || nil;
+
+        TMP_20.$$p = null;
+        return ($a = ($b = self.paper).$on_drag_end, $a.$$p = (TMP_21 = function(info){var self = TMP_21.$$s || this;
+if (info == null) info = nil;
+        return block.$call(self.$Native(info))}, TMP_21.$$s = self, TMP_21.$$arity = 1, TMP_21), $a).call($b);
+      }, TMP_20.$$arity = 0);
+
+      Opal.defn(self, '$on_draggable_rightcklick', TMP_22 = function $$on_draggable_rightcklick() {
+        var $a, $b, TMP_23, self = this, $iter = TMP_22.$$p, block = $iter || nil;
+
+        TMP_22.$$p = null;
+        self.on_draggable_rightclick = block;
+        return ($a = ($b = self.paper).$on_draggable_rightclick, $a.$$p = (TMP_23 = function(info){var self = TMP_23.$$s || this;
+if (info == null) info = nil;
+        return block.$call(self.$Native(info))}, TMP_23.$$s = self, TMP_23.$$arity = 1, TMP_23), $a).call($b);
+      }, TMP_22.$$arity = 0);
+
+      Opal.defn(self, '$unhighlight_all', TMP_25 = function $$unhighlight_all() {
+        var $a, $b, TMP_24, self = this;
+
+        return ($a = ($b = self.highlighted).$each, $a.$$p = (TMP_24 = function(e){var self = TMP_24.$$s || this;
 if (e == null) e = nil;
-        return self.$unhighlight_element(e)}, TMP_18.$$s = self, TMP_18.$$arity = 1, TMP_18), $a).call($b);
-      }, TMP_19.$$arity = 0);
+        return self.$unhighlight_element(e)}, TMP_24.$$s = self, TMP_24.$$arity = 1, TMP_24), $a).call($b);
+      }, TMP_25.$$arity = 0);
 
-      Opal.defn(self, '$range_highlight', TMP_20 = function $$range_highlight(from, to) {
+      Opal.defn(self, '$range_highlight', TMP_26 = function $$range_highlight(from, to) {
         var self = this;
 
         self.$unhighlight_all();
         return self.$range_highlight_more(from, to);
-      }, TMP_20.$$arity = 2);
+      }, TMP_26.$$arity = 2);
 
-      Opal.defn(self, '$range_highlight_more', TMP_22 = function $$range_highlight_more(from, to) {
-        var $a, $b, TMP_21, self = this, elements = nil;
+      Opal.defn(self, '$range_highlight_more', TMP_28 = function $$range_highlight_more(from, to) {
+        var $a, $b, TMP_27, self = this, elements = nil;
         if ($gvars.settings == null) $gvars.settings = nil;
 
         elements = self.$get_elements_by_range(from, to);
-        ($a = ($b = elements).$each, $a.$$p = (TMP_21 = function(element){var self = TMP_21.$$s || this;
+        ($a = ($b = elements).$each, $a.$$p = (TMP_27 = function(element){var self = TMP_27.$$s || this;
 if (element == null) element = nil;
-        return self.$highlight_element(element)}, TMP_21.$$s = self, TMP_21.$$arity = 1, TMP_21), $a).call($b);
+        return self.$highlight_element(element)}, TMP_27.$$s = self, TMP_27.$$arity = 1, TMP_27), $a).call($b);
         if ($gvars.settings['$[]']("autoscroll")['$==']("false")) {
           return nil
         } else if ((($a = elements['$empty?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
@@ -28708,79 +28786,80 @@ if (element == null) element = nil;
           } else {
           return self.$scroll_to_element(elements.$first())
         };
-      }, TMP_22.$$arity = 2);
+      }, TMP_28.$$arity = 2);
 
-      Opal.defn(self, '$range_unhighlight', TMP_24 = function $$range_unhighlight(from, to) {
-        var $a, $b, TMP_23, self = this, elements = nil;
+      Opal.defn(self, '$range_unhighlight', TMP_30 = function $$range_unhighlight(from, to) {
+        var $a, $b, TMP_29, self = this, elements = nil;
 
         elements = self.$get_elements_by_range(from, to);
-        ($a = ($b = elements).$each, $a.$$p = (TMP_23 = function(element){var self = TMP_23.$$s || this;
+        ($a = ($b = elements).$each, $a.$$p = (TMP_29 = function(element){var self = TMP_29.$$s || this;
 if (element == null) element = nil;
-        return self.$unhighlight_element(element)}, TMP_23.$$s = self, TMP_23.$$arity = 1, TMP_23), $a).call($b);
+        return self.$unhighlight_element(element)}, TMP_29.$$s = self, TMP_29.$$arity = 1, TMP_29), $a).call($b);
         return nil;
-      }, TMP_24.$$arity = 2);
+      }, TMP_30.$$arity = 2);
 
       self.$private();
 
-      Opal.defn(self, '$get_elements_by_range', TMP_27 = function $$get_elements_by_range(from, to) {
-        var $a, $b, TMP_25, self = this, result = nil, range = nil;
+      Opal.defn(self, '$get_elements_by_range', TMP_33 = function $$get_elements_by_range(from, to) {
+        var $a, $b, TMP_31, self = this, result = nil, range = nil;
 
         result = [];
         range = [from, to].$sort();
-        ($a = ($b = self.interactive_elements).$each, $a.$$p = (TMP_25 = function(k, value){var self = TMP_25.$$s || this, $c, $d, TMP_26, origin = nil, noterange = nil;
+        ($a = ($b = self.interactive_elements).$each, $a.$$p = (TMP_31 = function(k, value){var self = TMP_31.$$s || this, $c, $d, TMP_32, origin = nil, noterange = nil;
 if (k == null) k = nil;if (value == null) value = nil;
         origin = value.$dig("music_model_elemment_origin", "origin");
           if ((($c = origin['$nil?']()) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
             return nil
             } else {
-            noterange = ($c = ($d = ["startChar", "endChar"]).$map, $c.$$p = (TMP_26 = function(c){var self = TMP_26.$$s || this;
+            noterange = ($c = ($d = ["startChar", "endChar"]).$map, $c.$$p = (TMP_32 = function(c){var self = TMP_32.$$s || this;
 if (c == null) c = nil;
-            return origin['$[]'](c)}, TMP_26.$$s = self, TMP_26.$$arity = 1, TMP_26), $c).call($d).$sort();
+            return origin['$[]'](c)}, TMP_32.$$s = self, TMP_32.$$arity = 1, TMP_32), $c).call($d).$sort();
             if ((($c = $rb_gt($rb_times(($rb_minus(range.$first(), noterange.$last())), ($rb_minus(noterange.$first(), range.$last()))), 0)) !== nil && $c != null && (!$c.$$is_boolean || $c == true))) {
               return result.$push($scope.get('Element').$find("#" + (k)))
               } else {
               return nil
             };
-          };}, TMP_25.$$s = self, TMP_25.$$arity = 2, TMP_25), $a).call($b);
+          };}, TMP_31.$$s = self, TMP_31.$$arity = 2, TMP_31), $a).call($b);
         return result;
-      }, TMP_27.$$arity = 2);
+      }, TMP_33.$$arity = 2);
 
-      Opal.defn(self, '$highlight_element', TMP_28 = function $$highlight_element(element) {
+      Opal.defn(self, '$highlight_element', TMP_34 = function $$highlight_element(element) {
         var self = this;
 
         self.highlighted.$push(element);
         element.$add_class("highlight");
         return nil;
-      }, TMP_28.$$arity = 1);
+      }, TMP_34.$$arity = 1);
 
-      Opal.defn(self, '$scroll_to_element', TMP_29 = function $$scroll_to_element(element) {
+      Opal.defn(self, '$scroll_to_element', TMP_35 = function $$scroll_to_element(element) {
         var self = this;
 
         return self.paper.$scroll_to_element(element);
-      }, TMP_29.$$arity = 1);
+      }, TMP_35.$$arity = 1);
 
-      Opal.defn(self, '$unhighlight_element', TMP_30 = function $$unhighlight_element(element) {
+      Opal.defn(self, '$unhighlight_element', TMP_36 = function $$unhighlight_element(element) {
         var self = this;
 
         element.$remove_class("highlight");
         self.highlighted = $rb_minus(self.highlighted, [element]);
         return nil;
-      }, TMP_30.$$arity = 1);
+      }, TMP_36.$$arity = 1);
 
-      Opal.defn(self, '$bind_elements', TMP_32 = function $$bind_elements() {
-        var $a, $b, TMP_31, self = this;
+      Opal.defn(self, '$bind_elements', TMP_38 = function $$bind_elements() {
+        var $a, $b, TMP_37, self = this;
 
-        return ($a = ($b = self.interactive_elements).$each, $a.$$p = (TMP_31 = function(svg_id, drawing_element){var self = TMP_31.$$s || this;
+        return ($a = ($b = self.interactive_elements).$each, $a.$$p = (TMP_37 = function(svg_id, drawing_element){var self = TMP_37.$$s || this;
 if (svg_id == null) svg_id = nil;if (drawing_element == null) drawing_element = nil;
-        return self.$bind_the_element(svg_id)}, TMP_31.$$s = self, TMP_31.$$arity = 2, TMP_31), $a).call($b);
-      }, TMP_32.$$arity = 0);
+        return self.$bind_the_element(svg_id)}, TMP_37.$$s = self, TMP_37.$$arity = 2, TMP_37), $a).call($b);
+      }, TMP_38.$$arity = 0);
 
-      Opal.defn(self, '$bind_the_element', TMP_33 = function $$bind_the_element(svg_id) {
+      Opal.defn(self, '$bind_the_element', TMP_39 = function $$bind_the_element(svg_id) {
         var self = this, drawing_element = nil, svg_node = nil, conf_key = nil, draginfo = nil, conf_value = nil, $case = nil;
 
         drawing_element = self.interactive_elements['$[]'](svg_id);
         svg_node = $scope.get('Element').$find("#" + (svg_id));
         conf_key = drawing_element['$[]']("conf_key");
+        self.paper.$set_conf_editable(svg_node, conf_key, drawing_element['$[]']("more_conf_keys"));
         draginfo = drawing_element['$[]']("draginfo");
         if (draginfo !== false && draginfo !== nil && draginfo != null) {
           conf_value = drawing_element['$[]']("conf_value");
@@ -28788,67 +28867,25 @@ if (svg_id == null) svg_id = nil;if (drawing_element == null) drawing_element = 
           } else {
           return nil
         };
-      }, TMP_33.$$arity = 1);
+      }, TMP_39.$$arity = 1);
 
-      Opal.defn(self, '$_mouseoutonsvg', TMP_34 = function $$_mouseoutonsvg(evt, id) {
-        var self = this, harpnote_model_element = nil, info = nil;
-
-        self.$Native(evt).$stopPropagation();
-        self.$Native(evt).$preventDefault();
-        harpnote_model_element = self.interactive_elements.$dig(id);
-        info = $hash2(["element", "conf_key", "more_conf_keys", "originalevent"], {"element": $scope.get('Element').$find("#" + (id)), "conf_key": harpnote_model_element['$[]']("conf_key"), "more_conf_keys": harpnote_model_element['$[]']("more_conf_keys"), "originalevent": evt});
-        return self.on_mouseout.$call(info);
-      }, TMP_34.$$arity = 2);
-
-      Opal.defn(self, '$_mouseoveronsvg', TMP_35 = function $$_mouseoveronsvg(evt, id) {
-        var self = this, harpnote_model_element = nil, info = nil;
-
-        self.$Native(evt).$stopPropagation();
-        self.$Native(evt).$preventDefault();
-        harpnote_model_element = self.interactive_elements.$dig(id);
-        info = $hash2(["element", "conf_key", "more_conf_keys", "originalevent"], {"element": $scope.get('Element').$find("#" + (id)), "conf_key": harpnote_model_element['$[]']("conf_key"), "more_conf_keys": harpnote_model_element['$[]']("more_conf_keys"), "originalevent": evt});
-        return self.on_mouseover.$call(info);
-      }, TMP_35.$$arity = 2);
-
-      Opal.defn(self, '$_rightclickonsvg', TMP_36 = function $$_rightclickonsvg(evt, id) {
-        var self = this, harpnote_model_element = nil, info = nil;
-
-        self.$Native(evt).$stopPropagation();
-        harpnote_model_element = self.interactive_elements.$dig(id);
-        info = $hash2(["element", "conf_key", "more_conf_keys", "originalevent"], {"element": $scope.get('Element').$find("#" + (id)), "conf_key": harpnote_model_element['$[]']("conf_key"), "more_conf_keys": harpnote_model_element['$[]']("more_conf_keys"), "originalevent": evt});
-        self.on_draggable_rightclick.$call(info);
-        return false;
-      }, TMP_36.$$arity = 2);
-
-      Opal.defn(self, '$_clickabcnote', TMP_37 = function $$_clickabcnote(evt, id) {
-        var $a, $b, self = this, music_model_element = nil;
-
-        self.$Native(evt).$stopPropagation();
-        music_model_element = self.interactive_elements.$dig(id, "music_model_elemment_origin");
-        if ((($a = ((($b = music_model_element['$nil?']()) !== false && $b !== nil && $b != null) ? $b : self.on_select['$nil?']())) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
-          return nil
-          } else {
-          return self.on_select.$call(music_model_element)
-        };
-      }, TMP_37.$$arity = 2);
-
-      Opal.defn(self, '$push_element', TMP_39 = function $$push_element(layout_model_element, svg_id) {
-        var $a, $b, TMP_38, self = this, music_model_element = nil, music_model_element_hash = nil, drawing_element = nil;
+      Opal.defn(self, '$push_element', TMP_41 = function $$push_element(layout_model_element, svg_id) {
+        var $a, $b, TMP_40, self = this, music_model_element = nil, music_model_element_hash = nil, drawing_element = nil;
 
         music_model_element = layout_model_element.$origin();
         if ((($a = ($b = music_model_element['$is_a?']((((($scope.get('Harpnotes')).$$scope.get('Music'))).$$scope.get('Playable'))), $b !== false && $b !== nil && $b != null ?layout_model_element['$is_a?']((((($scope.get('Harpnotes')).$$scope.get('Drawing'))).$$scope.get('Path')))['$!']() : $b)) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
-          music_model_element_hash = $hash2(["origin"], {"origin": ($a = ($b = music_model_element.$origin()).$tap, $a.$$p = (TMP_38 = function(x){var self = TMP_38.$$s || this;
+          music_model_element_hash = $hash2(["origin"], {"origin": ($a = ($b = music_model_element.$origin()).$tap, $a.$$p = (TMP_40 = function(x){var self = TMP_40.$$s || this;
 if (x == null) x = nil;
-          return x.$delete("raw_voice_element")}, TMP_38.$$s = self, TMP_38.$$arity = 1, TMP_38), $a).call($b)})
+          return x.$delete("raw_voice_element")}, TMP_40.$$s = self, TMP_40.$$arity = 1, TMP_40), $a).call($b)})
           } else {
           music_model_element_hash = nil
         };
         drawing_element = $hash2(["music_model_elemment_origin", "conf_key", "conf_value", "more_conf_keys", "draginfo"], {"music_model_elemment_origin": music_model_element_hash, "conf_key": layout_model_element.$conf_key(), "conf_value": layout_model_element.$conf_value(), "more_conf_keys": layout_model_element.$more_conf_keys(), "draginfo": layout_model_element.$draginfo()});
         return self.interactive_elements['$[]='](svg_id, drawing_element);
-      }, TMP_39.$$arity = 2);
+      }, TMP_41.$$arity = 2);
 
-      Opal.defn(self, '$draw_ellipse', TMP_41 = function $$draw_ellipse(root) {
-        var $a, $b, TMP_40, self = this, color = nil, attr = nil, size = nil, e = nil, startChar = nil;
+      Opal.defn(self, '$draw_ellipse', TMP_43 = function $$draw_ellipse(root) {
+        var $a, $b, TMP_42, self = this, color = nil, attr = nil, size = nil, e = nil, startChar = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
         color = ((($a = $scope.get('COLORS')['$[]'](root.$color())) !== false && $a !== nil && $a != null) ? $a : $gvars.log.$error("BUG - wrong color in Ellipse"));
@@ -28869,9 +28906,9 @@ if (x == null) x = nil;
         if (root.$fill()['$==']("filled")) {
           } else {
           (($a = [root.$line_width()]), $b = self.paper, $b['$line_width='].apply($b, $a), $a[$a.length-1]);
-          size = ($a = ($b = root.$size()).$map, $a.$$p = (TMP_40 = function(s){var self = TMP_40.$$s || this;
+          size = ($a = ($b = root.$size()).$map, $a.$$p = (TMP_42 = function(s){var self = TMP_42.$$s || this;
 if (s == null) s = nil;
-          return $rb_minus(s, $rb_divide(root.$line_width(), 2))}, TMP_40.$$s = self, TMP_40.$$arity = 1, TMP_40), $a).call($b);
+          return $rb_minus(s, $rb_divide(root.$line_width(), 2))}, TMP_42.$$s = self, TMP_42.$$arity = 1, TMP_42), $a).call($b);
           if ((($a = root['$rect?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
             e = self.paper.$rect($rb_minus(root.$center().$first(), size.$first()), $rb_minus(root.$center().$last(), size.$last()), $rb_times(2, size.$first()), $rb_times(2, size.$last()), 0, attr)
             } else {
@@ -28889,9 +28926,9 @@ if (s == null) s = nil;
           } else {
           return nil
         };
-      }, TMP_41.$$arity = 1);
+      }, TMP_43.$$arity = 1);
 
-      Opal.defn(self, '$draw_glyph', TMP_42 = function $$draw_glyph(root) {
+      Opal.defn(self, '$draw_glyph', TMP_44 = function $$draw_glyph(root) {
         var $a, $b, self = this, center = nil, size = nil, color = nil, is_playable = nil, bgrect = nil, e = nil, scalefactor = nil, attr = nil, startChar = nil;
 
         center = [root.$center().$first(), root.$center().$last()];
@@ -28907,6 +28944,7 @@ if (s == null) s = nil;
         attr = $hash2([], {});
         attr['$[]=']("fill", color);
         attr['$[]=']("transform", "translate(" + ((center.$first())) + "," + ((center.$last())) + ") scale(" + (scalefactor) + ")");
+        attr = attr.$merge(self.attr_for_draggable);
         e = self.paper.$path(root.$glyph()['$[]']("d"), attr, bgrect);
         if ((($a = root['$dotted?']()) !== nil && $a != null && (!$a.$$is_boolean || $a == true))) {
           self.$draw_the_dot(root)};
@@ -28920,15 +28958,15 @@ if (s == null) s = nil;
           } else {
           return self.$push_element(root, e)
         };
-      }, TMP_42.$$arity = 1);
+      }, TMP_44.$$arity = 1);
 
-      Opal.defn(self, '$draw_the_barover', TMP_43 = function $$draw_the_barover(root) {
+      Opal.defn(self, '$draw_the_barover', TMP_45 = function $$draw_the_barover(root) {
         var self = this, e_bar = nil;
 
         return e_bar = self.paper.$rect($rb_minus(root.$center().$first(), root.$size().$first()), $rb_minus($rb_minus(root.$center().$last(), root.$size().$last()), $rb_times(1.5, root.$line_width())), $rb_times(2, root.$size().$first()), 0.5, 0, $hash2(["fill"], {"fill": $scope.get('COLORS')['$[]'](root.$color())}));
-      }, TMP_43.$$arity = 1);
+      }, TMP_45.$$arity = 1);
 
-      Opal.defn(self, '$draw_the_dot', TMP_44 = function $$draw_the_dot(root) {
+      Opal.defn(self, '$draw_the_dot', TMP_46 = function $$draw_the_dot(root) {
         var $a, $b, self = this, ds1 = nil, ds2 = nil, x = nil, y = nil, white = nil, e_dot = nil;
 
         (($a = [0]), $b = self.paper, $b['$line_width='].apply($b, $a), $a[$a.length-1]);
@@ -28939,9 +28977,9 @@ if (s == null) s = nil;
         white = $scope.get('COLORS')['$[]']("white");
         e_dot = self.paper.$ellipse(x, y, ds2, ds2, $hash2(["stroke", "fill"], {"stroke": white, "fill": white}));
         return e_dot = self.paper.$ellipse(x, y, $scope.get('DOTTED_SIZE'), $scope.get('DOTTED_SIZE'), $hash2(["fill"], {"fill": $scope.get('COLORS')['$[]'](root.$color())}));
-      }, TMP_44.$$arity = 1);
+      }, TMP_46.$$arity = 1);
 
-      Opal.defn(self, '$draw_flowline', TMP_45 = function $$draw_flowline(root) {
+      Opal.defn(self, '$draw_flowline', TMP_47 = function $$draw_flowline(root) {
         var self = this, color = nil, attr = nil, e = nil;
 
         color = $scope.get('COLORS')['$[]'](root.$color());
@@ -28952,9 +28990,9 @@ if (s == null) s = nil;
           attr['$[]=']("stroke-dasharray", "0.5,1")};
         e = self.paper.$line(root.$from().$center()['$[]'](0), root.$from().$center()['$[]'](1), root.$to().$center()['$[]'](0), root.$to().$center()['$[]'](1), attr);
         return e;
-      }, TMP_45.$$arity = 1);
+      }, TMP_47.$$arity = 1);
 
-      Opal.defn(self, '$draw_jumpline_outdated', TMP_46 = function $$draw_jumpline_outdated(root) {
+      Opal.defn(self, '$draw_jumpline_outdated', TMP_48 = function $$draw_jumpline_outdated(root) {
         var $a, $b, self = this, startpoint = nil, endpoint = nil, distance = nil, depth = nil, path = nil, attr = nil, arrow = nil;
 
         startpoint = root.$from().$center();
@@ -28971,20 +29009,20 @@ if (s == null) s = nil;
         self.paper.$path(path);
         attr = $hash2(["fill", "transform"], {"fill": "red", "transform": "t" + (startpoint['$[]'](0)) + "," + (startpoint['$[]'](1))});
         return arrow = self.paper.$path("M0,0L" + ($scope.get('ARROW_SIZE')) + "," + ($rb_times(-0.5, $scope.get('ARROW_SIZE'))) + "L" + ($scope.get('ARROW_SIZE')) + "," + ($rb_times(0.5, $scope.get('ARROW_SIZE'))) + "L0,0", attr);
-      }, TMP_46.$$arity = 1);
+      }, TMP_48.$$arity = 1);
 
-      Opal.defn(self, '$draw_annotation', TMP_48 = function $$draw_annotation(root) {
-        var $a, $b, TMP_47, self = this, style = nil, text = nil, attr = nil, element = nil;
+      Opal.defn(self, '$draw_annotation', TMP_50 = function $$draw_annotation(root) {
+        var $a, $b, TMP_49, self = this, style = nil, text = nil, attr = nil, element = nil;
         if ($gvars.conf == null) $gvars.conf = nil;
 
         style = ((($a = $gvars.conf.$get("layout.FONT_STYLE_DEF")['$[]'](root.$style())) !== false && $a !== nil && $a != null) ? $a : $gvars.conf.$get("layout.FONT_STYLE_DEF")['$[]']("regular"));
-        text = ($a = ($b = root.$text().$gsub(/\ +\n/, "\n").$gsub("\n\n", "\n \n")).$gsub, $a.$$p = (TMP_47 = function(m){var self = TMP_47.$$s || this;
+        text = ($a = ($b = root.$text().$gsub(/\ +\n/, "\n").$gsub("\n\n", "\n \n")).$gsub, $a.$$p = (TMP_49 = function(m){var self = TMP_49.$$s || this;
 if (m == null) m = nil;
         if (m['$[]'](0)['$==']("\\")) {
             return m['$[]'](1)
             } else {
             return "&nbsp;"
-          }}, TMP_47.$$s = self, TMP_47.$$arity = 1, TMP_47), $a).call($b, /(\\?)(~)/);
+          }}, TMP_49.$$s = self, TMP_49.$$arity = 1, TMP_49), $a).call($b, /(\\?)(~)/);
         attr = $hash2([], {});
         attr['$[]=']("font-size", $rb_divide(style['$[]']("font_size"), 3));
         attr['$[]=']("font-family", "Arial");
@@ -28998,13 +29036,13 @@ if (m == null) m = nil;
           } else {
           return "start "
         }; return nil; })());
-        attr = attr.$merge(self.attr_for_on_contextmenu);
+        attr = attr.$merge(self.attr_for_on_contextmenu).$merge(self.attr_for_draggable);
         element = self.paper.$text($rb_divide(root.$center().$first(), 1.05), root.$center().$last(), text, attr);
         self.$push_element(root, element);
         return element;
-      }, TMP_48.$$arity = 1);
+      }, TMP_50.$$arity = 1);
 
-      Opal.defn(self, '$draw_image', TMP_49 = function $$draw_image(root) {
+      Opal.defn(self, '$draw_image', TMP_51 = function $$draw_image(root) {
         var self = this, position = nil, e = nil, draginfo = nil;
 
         position = $rb_plus($rb_plus(self.$Vector2d([0, 0]), root.$llpos()), [0, root.$height()]);
@@ -29014,9 +29052,9 @@ if (m == null) m = nil;
           draginfo['$[]=']("target_id", e);
           self.$push_element(root, e);};
         return e;
-      }, TMP_49.$$arity = 1);
+      }, TMP_51.$$arity = 1);
 
-      return (Opal.defn(self, '$draw_path', TMP_50 = function $$draw_path(root) {
+      return (Opal.defn(self, '$draw_path', TMP_52 = function $$draw_path(root) {
         var $a, self = this, color = nil, attr = nil, e = nil, draginfo = nil, $case = nil;
 
         color = $scope.get('COLORS')['$[]'](root.$color());
@@ -29038,7 +29076,7 @@ if (m == null) m = nil;
           } else {
           return nil
         };
-      }, TMP_50.$$arity = 1), nil) && 'draw_path';
+      }, TMP_52.$$arity = 1), nil) && 'draw_path';
     })($scope.base, null)
   })($scope.base);
 };
