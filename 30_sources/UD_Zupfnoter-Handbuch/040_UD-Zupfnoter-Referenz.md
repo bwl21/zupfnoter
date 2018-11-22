@@ -2167,9 +2167,9 @@ geschieht wie folgt:
 
 4.  Man kann einstellen, ob die Taktnummern / Zählmarken bezogen auf die
     **Notenmitte oder den Notenrand** positioniert werden (Kapitel
-    \ref{extract.0.barnumbers.apanchor} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apanchor)
+    \ref{extract.0.barnumbers.apanchor} [`extract.0.barnumbers.apanchor`](#extract.0.barnumbers.apanchor)
     bzw.
-    \ref{extract.0.barnumbers.cpanchor} [`extract.0.barnumbers.apbase`](#extract.0.countnotes.appanchor)
+    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbasera)
     )
 
 5.  Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken
