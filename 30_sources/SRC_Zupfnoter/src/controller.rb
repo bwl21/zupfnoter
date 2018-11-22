@@ -602,7 +602,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       $log.benchmark("render tune preview") do
 
-        if false # sst to run this in the main thread
+        unless systemstatus[:autorefresh] == :on # sst to run this in the main thread
           # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
           # before comuputing the tune_preview
           setup_tune_preview
@@ -951,7 +951,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       voice_map.each do |voice|
         selection = voice
                         .select { |e| not [5, 6, 12, 14].include? e[:type] }
-                        .select { |element| element[:time].between? *segment }
+                        .select { |element| element[:time].between?(*segment) }
         result.push([selection.first, selection.last]) unless selection.empty?
       end
     end
@@ -984,7 +984,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       range    = [range.first, range.last - 1] unless range.first == range.last # to make ?between ignore the upper limit
       elements = @abc_model[:voices].map do |v|
         v[:symbols]
-            .select { |e| !(e[:iend].nil? or e[:istart].nil?) and ((e[:istart].between? *range) or (e[:iend].between? *range)) }
+            .select { |e| !(e[:iend].nil? or e[:istart].nil?) and ((e[:istart].between?(*range)) or (e[:iend].between?(*range)  )) }
       end
       a        = elements.flatten.compact
 
@@ -1228,7 +1228,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       @document_title = data[:payload][:document_title]
       call_consumers(:document_title)
     end
-    
+
     # this receiges the player_model_abc to play
     # along the tune
     @worker.on_named_message(:load_player_model_abc) do |data|
@@ -1349,26 +1349,26 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
       elsif (e.meta_key || e.ctrl_key) # Ctrl/Cmd
         case (e.key_code)
-          when 'A'.ord
-            @editor.select_range_by_position(0, 10000)
-          when 'R'.ord, 13
-            e.prevent
-            handle_command('render')
-          when 'S'.ord #s
-            e.prevent
-            handle_command("dsave")
-          when 'P'.ord #p
-            e.prevent
-            play_abc('auto')
-          when 'K'.ord #k
-            e.prevent
-            toggle_console
-          when 'L'.ord
-            %x{#{@zupfnoter_ui}.toggle_full_screen();}
-            e.prevent
-          when *((0 .. 9).map { |i| i.to_s.ord })
-            e.prevent
-            handle_command("view #{e.key_code.chr}")
+        when 'A'.ord
+          @editor.select_range_by_position(0, 10000)
+        when 'R'.ord, 13
+          e.prevent
+          handle_command('render')
+        when 'S'.ord #s
+          e.prevent
+          handle_command("dsave")
+        when 'P'.ord #p
+          e.prevent
+          play_abc('auto')
+        when 'K'.ord #k
+          e.prevent
+          toggle_console
+        when 'L'.ord
+          %x{#{@zupfnoter_ui}.toggle_full_screen();}
+          e.prevent
+        when *((0 .. 9).map { |i| i.to_s.ord })
+          e.prevent
+          handle_command("view #{e.key_code.chr}")
         end
       end
     end
@@ -1473,12 +1473,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       stop_play_abc # stop player since the model has poentially changed
 
       case @systemstatus[:autorefresh]
-        when :on
-          @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 600)`
-        when :off # off means it relies on remote rendering
-          @refresh_timer.push `setTimeout(function(){#{render_remote()}},  600)`
-        when :remote # this means that the current instance runs in remote mode
-          #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
+      when :on
+        @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 600)`
+      when :off # off means it relies on remote rendering
+        @refresh_timer.push `setTimeout(function(){#{render_remote()}},  600)`
+      when :remote # this means that the current instance runs in remote mode
+        #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
       end
     end
   end
