@@ -207,7 +207,7 @@ I:stretchlast 1
         </style>
       </head>
       <body>
-         #{get_svg}
+         #{@printer.html}
       </body>
       }
     end
@@ -277,9 +277,8 @@ I:stretchlast 1
     # such that is fulfils the needs of zupfnoter cross - highlighting
     def _anno_start(music_type, start_offset, stop_offset, x, y, w, h)
       id = _mk_id(music_type, start_offset, stop_offset)
-      %x{
-      #{@root}.out_svg('<g class="' + #{id} +'">\n')
-      }
+      %x{#{@root}.out_svg('<g class="' + #{id} +'">\n')}
+      nil
     end
 
 
@@ -297,15 +296,13 @@ I:stretchlast 1
       # figured out the path zupfnoter is defined in controller on document loaded event
       #                      zupfnoter.tune_preview_printer is the @tune_preview_printer in Controller
       onclick = %Q{onclick="Opal.top.uicontroller.tune_preview_printer.$_clickabcnote(evt, '#{id}')"}
-
       %x{
           // close the container
           #{@root}.out_svg('</g>\n');
           // create a rectangle
           #{@root}.out_svg('<rect ' + #{onclick} + ' class="abcref _' + #{start_offset} + '_" id="' + #{id} +'" x="');
           #{@root}.out_sxsy(#{x}, '" y="', #{y});
-          #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
-            '" height="' + #{h}.toFixed(2) + '"/>\n')
+          #{@root}.out_svg('" width="' + #{w}.toFixed(2) + '" height="' + #{h}.toFixed(2) + '"/>\n');
         }
       @interactive_elements[id] = {startChar: start_offset, endChar: stop_offset}
     end
