@@ -483,7 +483,6 @@ class ConfstackEditor
 
     value_handler = editorparams[:value_handler]
 
-    $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
 
     value_handler_result = $log.benchmark("value handler #{__FILE__} #{__LINE__}") { value_handler.call }
 
@@ -504,13 +503,11 @@ class ConfstackEditor
 
     @record          = @value.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @value[k]); r }
     @effective_value = @effective_value_raw.keys.inject({}) { |r, k| r[k] = @helper.to_string(k, @effective_value_raw[k]); r }
-    $log.timestamp("end initialize Form  #{__FILE__} #{__LINE__}")
     nil
   end
 
 
   def show_form
-    $log.timestamp("initialize Form  #{__FILE__} #{__LINE__}")
     x = @form.to_n
     %x{
     if (w2ui[#{x}.name]){w2ui[#{x}.name].destroy()};
@@ -717,7 +714,6 @@ class ConfstackEditor
   end
 
   def generate_form
-    $log.timestamp("generate Form  #{__FILE__} #{__LINE__}")
 
     presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
                   items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
@@ -814,12 +810,12 @@ class ConfstackEditor
                     </table>
                     }
     }
-    show_form
+    $log.benchmark("showing form #{__FILE__}:#{__LINE__}"){show_form}
     self
   end
 
   def refresh_form
-    @refresh_handler.call
+    $log.benchmark("refreshing form #{__FILE__}:#{__LINE__}"){@refresh_handler.call}
   end
 
 
