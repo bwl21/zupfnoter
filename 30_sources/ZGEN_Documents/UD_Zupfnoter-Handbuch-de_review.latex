@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version V\_1.9.2-33-g519a82f
+Version backup/experiment/worker-11-22-51-6-g0877bec
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -3906,9 +3906,9 @@ geschieht wie folgt:
 \item
   Man kann einstellen, ob die Taktnummern / Zählmarken bezogen auf die
   \textbf{Notenmitte oder den Notenrand} positioniert werden (Kapitel
-  \ref{extract.0.barnumbers.apanchor}~\hyperref[extract.0.barnumbers.apanchor]{\texttt{extract.0.barnumbers.apbase}}
+  \ref{extract.0.barnumbers.apanchor}~\hyperref[extract.0.barnumbers.apanchor]{\texttt{extract.0.barnumbers.apanchor}}
   bzw.
-  \ref{extract.0.barnumbers.cpanchor}~\hyperref[extract.0.countnotes.appanchor]{\texttt{extract.0.barnumbers.apbase}}
+  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}}
   )
 \item
   Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken
