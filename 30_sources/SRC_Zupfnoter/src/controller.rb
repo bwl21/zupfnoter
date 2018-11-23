@@ -604,7 +604,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         unless systemstatus[:autorefresh] == :on # sst to run this in the main thread
           # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
           # before comuputing the tune_preview
-          setup_tune_preview
+          #todo: do we need this
+          # setup_tune_preview
           svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
           @tune_preview_printer.set_svg(svg_and_positions)
           set_inactive("#tunePreview")
@@ -669,9 +670,11 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     nil
   end
 
-
-# @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
+    LastRenderMonitor.new.set_active
+
+    save_to_localstorage
+    
     @harpnote_preview_printer.save_scroll_position
     @editor.resize();
     $log.info("rendering")
@@ -680,10 +683,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.clear_errors
     $log.clear_annotations
 
-    unless @systemstatus[:autorefresh] == :remote
-      save_to_localstorage
-      send_remote_command('render')
+
+
+    if @systemstatus[:autorefresh] == :on
+      render_previews_in_worker()
+    else
+      render_previews_in_uithread()
     end
+  end
+
+  def render_previews_in_worker()
+    render_previews_in_uithread()
+  end
+
+
+# @return [Promise] promise such that it can be chained e.g. in play.
+  def render_previews_in_uithread()
 
     # note that render_tunepreview_callback also initializes the previewPrinter
     # by calling setup_tune_preview
@@ -691,7 +706,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result = Promise.new.tap do |promise|
       LastRenderMonitor.new.set_active
       set_active("#tunePreview")
-
       `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
     end.fail do
       alert("fail")
@@ -709,7 +723,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         else
           # we need to call render_harpnotepreview_callbac in a setTimeout
           # othewise the busy-indicator set_active is not rendered by the UI
-           set_active("#harpPreview")
+          set_active("#harpPreview")
           `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 0)`
 
           #render_harpnotepreview_callback()
@@ -729,13 +743,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     result
-  end
-
-  def render_remote
-    set_status(refresh: false)
-    save_to_localstorage
-    render_tunepreview_callback()
-    send_remote_command('render')
   end
 
 # download abc + pdfs as a zip archive
@@ -984,7 +991,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       range    = [range.first, range.last - 1] unless range.first == range.last # to make ?between ignore the upper limit
       elements = @abc_model[:voices].map do |v|
         v[:symbols]
-            .select { |e| !(e[:iend].nil? or e[:istart].nil?) and ((e[:istart].between?(*range)) or (e[:iend].between?(*range)  )) }
+            .select { |e| !(e[:iend].nil? or e[:istart].nil?) and ((e[:istart].between?(*range)) or (e[:iend].between?(*range))) }
       end
       a        = elements.flatten.compact
 
@@ -1483,7 +1490,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       when :on
         @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 600)`
       when :off # off means it relies on remote rendering
-        @refresh_timer.push `setTimeout(function(){#{render_remote()}},  600)`
+        @refresh_timer.push `setTimeout(function(){#{render_tunepreview_callback()}},  600)`
       when :remote # this means that the current instance runs in remote mode
         #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
       end
