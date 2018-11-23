@@ -586,8 +586,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-# render the previews
-# also saves abc in localstore()
+# render the tune previews
   def render_tunepreview_callback
     set_active("#tunePreview")
     setup_tune_preview
@@ -616,15 +615,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
-
-
     nil
   end
 
-# render the previews
-# also saves abc in localstore()
+# render the harpnote previews in a worker
   def render_harpnotepreview_callback_by_worker
     $log.benchmark("render_harpnotepreview_callback_by_worker") do
+      set_active("#harpPreview")
       @worker.post_named_message(:compute_harpnotes_preview, {
           settings:             $settings,
           resources:            $resources,
@@ -640,8 +637,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-# render the previews
-# also saves abc in localstore()
+# render the harpnote-previews in the main thread
   def render_harpnotepreview_callback
     $log.benchmark("render_harpnotepreview_callback") do
       begin
@@ -658,6 +654,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
             svg_and_positions = @harpnote_preview_printer.draw(@song_harpnotes)
             @harpnote_preview_printer.set_svg(svg_and_positions)
             harpnote_preview_printer.draw(@song_harpnotes)
+            set_inactive("#harpPreview")
           }
           set_status(harpnotes_dirty: false)
         end
@@ -675,6 +672,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
+    @harpnote_preview_printer.save_scroll_position
     @editor.resize();
     $log.info("rendering")
     set_status(harpnotes_dirty: true)
@@ -693,34 +691,36 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result = Promise.new.tap do |promise|
       LastRenderMonitor.new.set_active
       set_active("#tunePreview")
-      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
 
+      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
     end.fail do
       alert("fail")
     end.then do
       Promise.new.tap do |promise|
-        set_active("#harpPreview")
+
         @harpnote_preview_printer.clear
         if @systemstatus[:autorefresh] == :on
           @render_stack.push(@render_stack.count + 1)
           call_consumers(:render_status)
           if @render_stack.size == 1
-            @harpnote_preview_printer.save_scroll_position
             render_harpnotepreview_callback_by_worker()
           end
+          promise.resolve()
         else
-          @harpnote_preview_printer.display_no_preview_available
-          render_harpnotepreview_callback()
+          # we need to call render_harpnotepreview_callbac in a setTimeout
+          # othewise the busy-indicator set_active is not rendered by the UI
+           set_active("#harpPreview")
+          `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 0)`
+
+          #render_harpnotepreview_callback()
           @harpnote_preview_printer.bind_elements
         end
 
-        promise.resolve()
       end.fail do
         alert("BUG - This should never happen in render Previews #{__FILE__} #{__LINE__}")
       end.then do
         Promise.new.tap do |promise|
           call_consumers(:error_alert)
-          set_inactive("#harpPreview")
           @editor.set_annotations($log.annotations)
           LastRenderMonitor.new.clear
           promise.resolve()
@@ -1213,6 +1213,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           set_harppreview_size(@harp_preview_size)
           set_status(harpnotes_dirty: false)
           set_status(refresh: false)
+          set_inactive("#harpPreview")
           @editor.set_annotations($log.annotations)
         end
 
