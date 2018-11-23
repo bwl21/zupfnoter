@@ -9,7 +9,7 @@ gem 'zip'
 
 gem 'opal', '~> 0.11'
 gem 'opal-sprockets'
-gem 'opal-jquery', git: "https://github.com/opal/opal-jquery"
+gem 'opal-jquery'#, git: "https://github.com/opal/opal-jquery"
 
 gem 'vector2d', "~> 2.1.0"
 gem 'pry'
