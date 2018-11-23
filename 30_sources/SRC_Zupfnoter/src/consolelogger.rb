@@ -135,6 +135,10 @@ class Logger
     (LOGLEVELS[type] || LOGLEVELS[:warning]) <= @loglevel
   end
 
+  def loglevels
+    LOGLEVELS.keys
+  end
+
   private
 
   def add_annotation(msg, start_pos, end_pos, type)
