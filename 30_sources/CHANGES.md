@@ -7,6 +7,7 @@
 ## enhancement
 
 * BWC: Barnumbers / countnotes are now aligned relative to the center of the note #237
+* loglevel can be changed by click in statusbar #242
 
 ##
 
