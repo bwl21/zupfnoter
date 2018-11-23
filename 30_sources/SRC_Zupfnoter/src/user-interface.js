@@ -912,7 +912,7 @@ function init_w2ui(uicontroller) {
         type: 'button',
         id: 'sb_loglevel',
         text: '<div style="padding: 0px !important;"><span class="sb-loglevel"></span></div>',
-        onClick: function(event){uicontroller.$toggle_console()}
+        onClick: function(event){uicontroller.$cycle_loglevel()}
       },
       {
         type: 'button',
