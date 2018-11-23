@@ -2169,7 +2169,7 @@ geschieht wie folgt:
     **Notenmitte oder den Notenrand** positioniert werden (Kapitel
     \ref{extract.0.barnumbers.apanchor} [`extract.0.barnumbers.apanchor`](#extract.0.barnumbers.apanchor)
     bzw.
-    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase)
+    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbasera)
     )
 
 5.  Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken
