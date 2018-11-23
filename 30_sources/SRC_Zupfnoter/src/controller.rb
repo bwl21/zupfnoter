@@ -1034,6 +1034,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
+  def cycle_loglevel
+    loglevels = $log.loglevels
+    nextlevel = loglevels[(loglevels.index($log.loglevel) + 1) % loglevels.length]
+    handle_command("loglevel #{nextlevel}")
+  end
+
 # setup the harpnote prviewer
   def setup_harpnote_preview
 
