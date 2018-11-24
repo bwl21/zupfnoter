@@ -76,6 +76,7 @@
     "bold": "fettdruck",
     "bottomup": "Spiel aufwärts",
     "BUG: error while initializing Zupfnoter Controller": "BUG: Fehler beim initialisieren. Bitte informiere Zupfpnoter-Entwicklung",
+    "BUG: worker did not finsh": "**Fehler: Hintergrundberechnung nicht richtig beendet",
     "c_jumplines": "Sprunglinien",
     "CAUTION: your abc-code is vulnerable !!! removed beginjs / endjs": "ACHTUNG:: dein ABC-Code enthält ggf. Schadcode. beginjs / endjs entfernt",
     "Choose extract": "Auszug wählen",
@@ -252,6 +253,7 @@
     "LINE_THICK": "Linienstärke dick",
     "LINE_THIN": "Linienstärke dünn",
     "llpos": "unten links",
+    "locales loaded": "Sprachdaten geladen",
     "logged out from dropbox": "Du hast dich aus Dropbox ausgeloggt",
     "logged out": "ausgeloggt",
     "Login in dropbox;\nchoose folder in Dropbox": "In Dropbox einloggen;\nOrdner in Dropbox wählen",
@@ -287,7 +289,7 @@
     "new": "Neu",
     "No access token to revoke": "Kein Zugriffstoken vorhanden, das gelöscht werden kann.",
     "no filebase given for template. Please type  ": "**--no filebase given for template. Please type  ",
-    "no placeholder value found in  ": "kein Platzhalter gefunden in   ",
+    "no placeholder value found in ": "kein Platzhalter gefunden in ",
     "no preview available yet": "Noch keine Vorschau verfügbar",
     "no suitable ABC found": "keine passende ABC Eingabe gefunden",
     "nonflowrest": "Begleitpausen",
@@ -496,6 +498,7 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
+
 
 
     "_ende_der_liste": ""

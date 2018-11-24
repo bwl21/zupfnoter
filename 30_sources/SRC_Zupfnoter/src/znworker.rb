@@ -72,7 +72,10 @@ require 'opal-webworker'
 
 module I18n
   def self.t(text)
-    @phrasesOpal[text] || text
+    # it might be that the phrases are not yet loaded
+    # controller loads them by ajax, wich might not be ready
+    # on the very first render tasks
+    @phrasesOpal[text] rescue text
   end
 
   def self.phrases
@@ -189,21 +192,25 @@ class WorkerController
   end
 
   def compute_harpnotes_preview
-    result = {svg: "", interactive_elements: []}
-    load_music_model
-    $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
-    @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
+    result = {svg: I18n.t("BUG: worker did not finsh"), interactive_elements: []}
+    begin
+      load_music_model
+      $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
+      @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
 
-    if @song_harpnotes
-
-      # todo: not sure if it is good to pass active_voices via @song_harpnotes
-      # todo: refactor better moove that part of the code out here
-      $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
-      @harpnote_preview_printer = Harpnotes::SvgEngine.new(nil, 2200, 1400) # size of canvas in pixels
-      @harpnote_preview_printer.clear
-      @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
-      result = @harpnote_preview_printer.draw(@song_harpnotes)
+      if @song_harpnotes
+        # todo: not sure if it is good to pass active_voices via @song_harpnotes
+        # todo: refactor better moove that part of the code out here
+        $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
+        @harpnote_preview_printer = Harpnotes::SvgEngine.new(nil, 2200, 1400) # size of canvas in pixels
+        @harpnote_preview_printer.clear
+        @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
+        result = @harpnote_preview_printer.draw(@song_harpnotes)
+      end
+    rescue Exception => e
+      $log.error(%Q{#{e.message}}, nil, nil, e.backtrace)
     end
+
     result
   end
 
@@ -226,8 +233,6 @@ class WorkerController
         result                = layouter.layout(@music_model, nil, print_variant, page_format)
       end
 
-        #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
-        #@editor.set_annotations($log.annotations)
     rescue Exception => e
       $log.error(%Q{#{e.message}}, nil, nil, e.backtrace)
     ensure
@@ -287,7 +292,7 @@ end
     payload               = data[:payload]
 
     #todo: error handling
-    svg_and_position      = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
+    svg_and_position = @tune_preview_printer.compute_tune_preview(payload[:abc], payload[:checksum])
     @namedworker.post_named_message(data[:name], svg_and_position)
     @namedworker.post_named_message(:set_logger_status, $log.get_status)
   end

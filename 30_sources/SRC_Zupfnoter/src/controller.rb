@@ -587,31 +587,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
 # render the tune previews
-  def render_tunepreview_callback
+  def render_tunepreview_in_uithread
     set_active("#tunePreview")
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
+
     setup_tune_preview
 
     begin
-      abc_text = @editor.get_abc_part
-      abc_text = abc_text.split("\n").map { |line|
-        result = line
-        result = result.gsub(/(\\?)(~)/) { |m| m[0] == '\\' ? m[1] : ' ' } if line.start_with? 'W:'
-        result
-      }.join("\n")
+      abc_text = tweak_abc_text
 
       $log.benchmark("render tune preview") do
-
-        unless systemstatus[:autorefresh] == :on # sst to run this in the main thread
-          # note that tune_preview_printer (in particular abc2svg) needs to be reinitialized
-          # before comuputing the tune_preview
-          #todo: do we need this
-          # setup_tune_preview
-          svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
-          @tune_preview_printer.set_svg(svg_and_positions)
-          set_inactive("#tunePreview")
-        else
-          @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor.get_checksum})
-        end
+        svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
+        @tune_preview_printer.set_svg(svg_and_positions)
+        set_inactive("#tunePreview")
       end
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
@@ -619,8 +608,35 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     nil
   end
 
+  def render_tunepreview__in_worker
+    set_active("#tunePreview")
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
+    setup_tune_preview
+
+    begin
+      abc_text = tweak_abc_text
+
+      $log.benchmark("render tune preview by worker") do
+        @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor.get_checksum})
+      end
+    rescue Exception => e
+      $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
+    end
+    nil
+  end
+
+  def tweak_abc_text
+    abc_text = @editor.get_abc_part
+    abc_text = abc_text.split("\n").map { |line|
+      result = line
+      result = result.gsub(/(\\?)(~)/) { |m| m[0] == '\\' ? m[1] : ' ' } if line.start_with? 'W:'
+      result
+    }.join("\n")
+  end
+
 # render the harpnote previews in a worker
-  def render_harpnotepreview_callback_by_worker
+  def render_harpnotepreview_in_worker
     $log.benchmark("render_harpnotepreview_callback_by_worker") do
       set_active("#harpPreview")
       @worker.post_named_message(:compute_harpnotes_preview, {
@@ -674,7 +690,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     LastRenderMonitor.new.set_active
 
     save_to_localstorage
-    
+
     @harpnote_preview_printer.save_scroll_position
     @editor.resize();
     $log.info("rendering")
@@ -683,7 +699,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.clear_errors
     $log.clear_annotations
 
-
+    # now handle harp previews
 
     if @systemstatus[:autorefresh] == :on
       render_previews_in_worker()
@@ -693,52 +709,63 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def render_previews_in_worker()
-    render_previews_in_uithread()
+    render_tunepreview__in_worker
+
+    result = Promise.new.tap do |promise|
+      #set_active("#tunePreview")
+      #`setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+      #  `setTimeout(function(){#{promise.resolve}}, 0)`
+      promise.resolve()
+      # nil
+    end.fail do
+      alert("fail")
+    end.then do
+      Promise.new.tap do |promise|
+        @harpnote_preview_printer.clear
+        @render_stack.push(@render_stack.count + 1)
+        call_consumers(:render_status)
+        if @render_stack.size == 1
+          render_harpnotepreview_in_worker()
+        end
+        promise.resolve()
+      end.fail do
+        alert("BUG - This should never happen in render Previews #{__FILE__} #{__LINE__}")
+      end
+    end
+
+    result
   end
 
 
 # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews_in_uithread()
+    render_tunepreview_in_uithread
 
     # note that render_tunepreview_callback also initializes the previewPrinter
     # by calling setup_tune_preview
     # todo: clarfiy why setup_tune_preview needs to be called on every preview
     result = Promise.new.tap do |promise|
-      LastRenderMonitor.new.set_active
-      set_active("#tunePreview")
-      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
-    end.fail do
-      alert("fail")
+      promise.resolve()
     end.then do
       Promise.new.tap do |promise|
-
         @harpnote_preview_printer.clear
-        if @systemstatus[:autorefresh] == :on
-          @render_stack.push(@render_stack.count + 1)
-          call_consumers(:render_status)
-          if @render_stack.size == 1
-            render_harpnotepreview_callback_by_worker()
-          end
-          promise.resolve()
-        else
-          # we need to call render_harpnotepreview_callbac in a setTimeout
-          # othewise the busy-indicator set_active is not rendered by the UI
-          set_active("#harpPreview")
-          `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 0)`
 
-          #render_harpnotepreview_callback()
-          @harpnote_preview_printer.bind_elements
-        end
+        # we need to call render_harpnotepreview_callbac in a setTimeout
+        # othewise the busy-indicator set_active is not rendered by the UI
+        set_active("#harpPreview")
+        `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 0)`
 
+        #render_harpnotepreview_callback()
       end.fail do
         alert("BUG - This should never happen in render Previews #{__FILE__} #{__LINE__}")
-      end.then do
-        Promise.new.tap do |promise|
-          call_consumers(:error_alert)
-          @editor.set_annotations($log.annotations)
-          LastRenderMonitor.new.clear
-          promise.resolve()
-        end
+      end
+    end.then do
+      Promise.new.tap do |promise|
+        @harpnote_preview_printer.bind_elements
+        call_consumers(:error_alert)
+        @editor.set_annotations($log.annotations)
+        LastRenderMonitor.new.clear
+        promise.resolve()
       end
     end
 
@@ -1221,6 +1248,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           set_status(harpnotes_dirty: false)
           set_status(refresh: false)
           set_inactive("#harpPreview")
+          LastRenderMonitor.new.clear
           @editor.set_annotations($log.annotations)
         end
 
@@ -1230,7 +1258,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
           @render_stack.clear
           render_previews
         end
-
 
         nil
       end
@@ -1489,8 +1516,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       case @systemstatus[:autorefresh]
       when :on
         @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 600)`
-      when :off # off means it relies on remote rendering
-        @refresh_timer.push `setTimeout(function(){#{render_tunepreview_callback()}},  600)`
+      when :off
+        # off still renders tune_preview
+        @refresh_timer.push `setTimeout(function(){#{render_tunepreview_in_uithread()}},  600)`
       when :remote # this means that the current instance runs in remote mode
         #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
       end

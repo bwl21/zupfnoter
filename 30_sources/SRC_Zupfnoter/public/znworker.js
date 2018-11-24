@@ -1,7 +1,3 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function(undefined) {
   // @note
   //   A few conventions for the documentation of this file:
@@ -25047,7 +25043,7 @@ Opal.modules["consolelogger"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $hash2 = Opal.hash2, $klass = Opal.klass, $send = Opal.send, $truthy = Opal.truthy, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$attr_reader', '$[]', '$now', '$clear_errors', '$clear_annotations', '$send', '$push', '$add_annotation', '$==', '$loglevel', '$join', '$write', '$loglevel?', '$info', '$-', '$>', '$count', '$call', '$to_sym', '$message', '$invert', '$<=', '$private', '$first', '$+', '$last', '$<<', '$strftime', '$puts', '$write_html']);
+  Opal.add_stubs(['$attr_reader', '$[]', '$now', '$clear_errors', '$clear_annotations', '$send', '$push', '$add_annotation', '$==', '$loglevel', '$join', '$write', '$loglevel?', '$info', '$-', '$>', '$count', '$call', '$to_sym', '$message', '$invert', '$<=', '$keys', '$private', '$first', '$+', '$last', '$<<', '$strftime', '$puts', '$write_html']);
   
   Opal.const_set($nesting[0], 'LOGLEVELS', $hash2(["message", "error", "warning", "info", "debug"], {"message": 0, "error": 1, "warning": 2, "info": 3, "debug": 4}));
   Opal.const_set($nesting[0], 'LOGICONS', $hash2(["message", "error", "warning", "info", "debug"], {"message": "icon-info-circled", "error": "icon-error-alt", "warning": "icon-attention", "info": "icon-info-circled", "debug": "icon-minus-squared"}));
@@ -25055,7 +25051,7 @@ Opal.modules["consolelogger"] = function(Opal) {
     function $Logger(){};
     var self = $Logger = $klass($base, $super, 'Logger', $Logger);
 
-    var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_Logger_clear_annotations_1, TMP_Logger_initialize_2, TMP_Logger_clear_annotations_3, TMP_Logger_log_from_worker_4, TMP_Logger_error_5, TMP_Logger_warning_6, TMP_Logger_info_7, TMP_Logger_debug_8, TMP_Logger_message_9, TMP_Logger_timestamp_10, TMP_Logger_timestamp_start_11, TMP_Logger_clear_errors_12, TMP_Logger_has_errors$q_13, TMP_Logger_get_errors_14, TMP_Logger_get_status_15, TMP_Logger_set_status_16, TMP_Logger_benchmark_17, TMP_Logger_loglevel$eq_18, TMP_Logger_loglevel_19, TMP_Logger_loglevel$q_20, TMP_Logger_add_annotation_21, TMP_Logger_write_22;
+    var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_Logger_clear_annotations_1, TMP_Logger_initialize_2, TMP_Logger_clear_annotations_3, TMP_Logger_log_from_worker_4, TMP_Logger_error_5, TMP_Logger_warning_6, TMP_Logger_info_7, TMP_Logger_debug_8, TMP_Logger_message_9, TMP_Logger_timestamp_10, TMP_Logger_timestamp_start_11, TMP_Logger_clear_errors_12, TMP_Logger_has_errors$q_13, TMP_Logger_get_errors_14, TMP_Logger_get_status_15, TMP_Logger_set_status_16, TMP_Logger_benchmark_17, TMP_Logger_loglevel$eq_18, TMP_Logger_loglevel_19, TMP_Logger_loglevel$q_20, TMP_Logger_loglevels_21, TMP_Logger_add_annotation_22, TMP_Logger_write_23;
 
     def.captured_errors = def.timestamp = def.annotations = def.loglevel = nil;
     
@@ -25250,9 +25246,15 @@ Opal.modules["consolelogger"] = function(Opal) {
 
       return $rb_le(($truthy($a = Opal.const_get_relative($nesting, 'LOGLEVELS')['$[]'](type)) ? $a : Opal.const_get_relative($nesting, 'LOGLEVELS')['$[]']("warning")), self.loglevel)
     }, TMP_Logger_loglevel$q_20.$$arity = 1);
+    
+    Opal.defn(self, '$loglevels', TMP_Logger_loglevels_21 = function $$loglevels() {
+      var self = this;
+
+      return Opal.const_get_relative($nesting, 'LOGLEVELS').$keys()
+    }, TMP_Logger_loglevels_21.$$arity = 0);
     self.$private();
     
-    Opal.defn(self, '$add_annotation', TMP_Logger_add_annotation_21 = function $$add_annotation(msg, start_pos, end_pos, type) {
+    Opal.defn(self, '$add_annotation', TMP_Logger_add_annotation_22 = function $$add_annotation(msg, start_pos, end_pos, type) {
       var $a, self = this, the_start = nil, the_end = nil;
 
       
@@ -25262,8 +25264,8 @@ Opal.modules["consolelogger"] = function(Opal) {
         the_end = ($truthy($a = end_pos) ? $a : [the_start.$first(), $rb_plus(the_start.$last(), 1)]);
         self.annotations['$<<']($hash2(["start_pos", "end_pos", "text", "type"], {"start_pos": the_start, "end_pos": the_end, "text": msg, "type": type}));};
       return nil;
-    }, TMP_Logger_add_annotation_21.$$arity = 4);
-    return (Opal.defn(self, '$write', TMP_Logger_write_22 = function $$write(type, msg) {
+    }, TMP_Logger_add_annotation_22.$$arity = 4);
+    return (Opal.defn(self, '$write', TMP_Logger_write_23 = function $$write(type, msg) {
       var self = this, time = nil;
 
       if ($truthy(self['$loglevel?'](type))) {
@@ -25273,16 +25275,16 @@ Opal.modules["consolelogger"] = function(Opal) {
         } else {
         return nil
       }
-    }, TMP_Logger_write_22.$$arity = 2), nil) && 'write';
+    }, TMP_Logger_write_23.$$arity = 2), nil) && 'write';
   })($nesting[0], null, $nesting);
   (function($base, $super, $parent_nesting) {
     function $NodeLogger(){};
     var self = $NodeLogger = $klass($base, $super, 'NodeLogger', $NodeLogger);
 
-    var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_NodeLogger_write_23;
+    var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_NodeLogger_write_24;
 
     def.loglevel = nil;
-    return (Opal.defn(self, '$write', TMP_NodeLogger_write_23 = function $$write(type, msg) {
+    return (Opal.defn(self, '$write', TMP_NodeLogger_write_24 = function $$write(type, msg) {
       var $a, self = this, current_level = nil, time = nil;
 
       
@@ -25294,30 +25296,30 @@ Opal.modules["consolelogger"] = function(Opal) {
         } else {
         return nil
       };
-    }, TMP_NodeLogger_write_23.$$arity = 2), nil) && 'write'
+    }, TMP_NodeLogger_write_24.$$arity = 2), nil) && 'write'
   })($nesting[0], Opal.const_get_relative($nesting, 'Logger'), $nesting);
   return (function($base, $super, $parent_nesting) {
     function $ConsoleLogger(){};
     var self = $ConsoleLogger = $klass($base, $super, 'ConsoleLogger', $ConsoleLogger);
 
-    var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_ConsoleLogger_initialize_24, TMP_ConsoleLogger_write_25;
+    var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_ConsoleLogger_initialize_25, TMP_ConsoleLogger_write_26;
 
     def.loglevel = def.console = nil;
     
     
-    Opal.defn(self, '$initialize', TMP_ConsoleLogger_initialize_24 = function $$initialize(element_id) {
-      var self = this, $iter = TMP_ConsoleLogger_initialize_24.$$p, $yield = $iter || nil, $zuper = nil, $zuper_i = nil, $zuper_ii = nil;
+    Opal.defn(self, '$initialize', TMP_ConsoleLogger_initialize_25 = function $$initialize(element_id) {
+      var self = this, $iter = TMP_ConsoleLogger_initialize_25.$$p, $yield = $iter || nil, $zuper = nil, $zuper_i = nil, $zuper_ii = nil;
 
-      if ($iter) TMP_ConsoleLogger_initialize_24.$$p = null;
+      if ($iter) TMP_ConsoleLogger_initialize_25.$$p = null;
       // Prepare super implicit arguments
       for($zuper_i = 0, $zuper_ii = arguments.length, $zuper = new Array($zuper_ii); $zuper_i < $zuper_ii; $zuper_i++) {
         $zuper[$zuper_i] = arguments[$zuper_i];
       }
       
-      $send(self, Opal.find_super_dispatcher(self, 'initialize', TMP_ConsoleLogger_initialize_24, false), $zuper, $iter);
+      $send(self, Opal.find_super_dispatcher(self, 'initialize', TMP_ConsoleLogger_initialize_25, false), $zuper, $iter);
       return (self.console = element_id);
-    }, TMP_ConsoleLogger_initialize_24.$$arity = 1);
-    return (Opal.defn(self, '$write', TMP_ConsoleLogger_write_25 = function $$write(type, msg) {
+    }, TMP_ConsoleLogger_initialize_25.$$arity = 1);
+    return (Opal.defn(self, '$write', TMP_ConsoleLogger_write_26 = function $$write(type, msg) {
       var $a, self = this, current_level = nil, time = nil;
 
       
@@ -25330,7 +25332,7 @@ Opal.modules["consolelogger"] = function(Opal) {
         } else {
         return nil
       };
-    }, TMP_ConsoleLogger_write_25.$$arity = 2), nil) && 'write';
+    }, TMP_ConsoleLogger_write_26.$$arity = 2), nil) && 'write';
   })($nesting[0], Opal.const_get_relative($nesting, 'Logger'), $nesting);
 };
 
@@ -34865,7 +34867,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "backup/experiment/worker-11-22-51-6-g0877bec");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.9.2-58-g2d6867a");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
@@ -61391,12 +61393,12 @@ if (object == null) object = nil;
   function $rb_minus(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs - rhs : lhs['$-'](rhs);
   }
-  var TMP_perform_worker_task_33, TMP_34, TMP_35, TMP_37, TMP_39, TMP_40, self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $truthy = Opal.truthy, $klass = Opal.klass, $send = Opal.send, $hash2 = Opal.hash2, $gvars = Opal.gvars, $writer = nil;
+  var TMP_perform_worker_task_33, TMP_34, TMP_35, TMP_37, TMP_39, TMP_40, self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $send = Opal.send, $hash2 = Opal.hash2, $gvars = Opal.gvars, $truthy = Opal.truthy, $writer = nil;
   if (self.namedworker == null) self.namedworker = nil;
   if (self.worker == null) self.worker = nil;
   if ($gvars.log == null) $gvars.log = nil;
 
-  Opal.add_stubs(['$require', '$[]', '$Native', '$attr_accessor', '$write_worker', '$[]=', '$-', '$post_named_message', '$new', '$strict=', '$push', '$init_conf', '$controller=', '$lambda', '$meta_data', '$join', '$map', '$reset_to', '$transform', '$abc_model', '$player_model_abc=', '$checksum=', '$load_music_model', '$debug', '$layout_harpnotes', '$benchmark', '$load_song', '$active_voices', '$clear', '$set_view_box', '$draw', '$keys', '$get', '$==', '$loglevel', '$validate_conf', '$set_extracts_menu', '$uri=', '$get_placeholder_replacers', '$placeholders=', '$layout', '$error', '$message', '$backtrace', '$pop', '$inject', '$dig', '$last', '$include?', '$to_i', '$first', '$call', '$worker=', '$post_message', '$on_named_message', '$to_s', '$perform_worker_task', '$loglevel=', '$clear_errors', '$clear_annotations', '$compute_tune_preview', '$get_status', '$phrases=', '$t', '$systemstatus=', '$config_from_editor=', '$abc_part_from_editor=', '$compute_harpnotes_preview', '$extracts', '$music_model', '$player_model_abc', '$harpnote_player', '$get_worker_model']);
+  Opal.add_stubs(['$require', '$[]', '$Native', '$attr_accessor', '$write_worker', '$[]=', '$-', '$post_named_message', '$new', '$strict=', '$push', '$init_conf', '$controller=', '$lambda', '$meta_data', '$join', '$map', '$reset_to', '$transform', '$abc_model', '$player_model_abc=', '$checksum=', '$t', '$load_music_model', '$debug', '$layout_harpnotes', '$benchmark', '$load_song', '$active_voices', '$clear', '$set_view_box', '$draw', '$error', '$message', '$backtrace', '$keys', '$get', '$==', '$loglevel', '$validate_conf', '$set_extracts_menu', '$uri=', '$get_placeholder_replacers', '$placeholders=', '$layout', '$pop', '$inject', '$dig', '$last', '$include?', '$to_i', '$first', '$call', '$worker=', '$post_message', '$on_named_message', '$to_s', '$perform_worker_task', '$loglevel=', '$clear_errors', '$clear_annotations', '$compute_tune_preview', '$get_status', '$phrases=', '$systemstatus=', '$config_from_editor=', '$abc_part_from_editor=', '$compute_harpnotes_preview', '$extracts', '$music_model', '$player_model_abc', '$harpnote_player', '$get_worker_model']);
   
   
 
@@ -61437,10 +61439,18 @@ if (object == null) object = nil;
 
     
     Opal.defs(self, '$t', TMP_I18n_t_1 = function $$t(text) {
-      var $a, self = this;
+      var self = this;
       if (self.phrasesOpal == null) self.phrasesOpal = nil;
 
-      return ($truthy($a = self.phrasesOpal['$[]'](text)) ? $a : text)
+      try {
+        return self.phrasesOpal['$[]'](text)
+      } catch ($err) {
+        if (Opal.rescue($err, [Opal.const_get_relative($nesting, 'StandardError')])) {
+          try {
+            return text
+          } finally { Opal.pop_exception() }
+        } else { throw $err; }
+      }
     }, TMP_I18n_t_1.$$arity = 1);
     Opal.defs(self, '$phrases', TMP_I18n_phrases_2 = function $$phrases() {
       var self = this;
@@ -61637,26 +61647,36 @@ if (k == null) k = nil;
     }, TMP_WorkerController_load_music_model_24.$$arity = 0);
     
     Opal.defn(self, '$compute_harpnotes_preview', TMP_WorkerController_compute_harpnotes_preview_26 = function $$compute_harpnotes_preview() {
-      var TMP_25, self = this, result = nil;
+      var TMP_25, self = this, result = nil, e = nil;
       if ($gvars.log == null) $gvars.log = nil;
 
       
-      result = $hash2(["svg", "interactive_elements"], {"svg": "", "interactive_elements": []});
-      self.$load_music_model();
-      $gvars.log.$debug("" + "viewid: " + (self.systemstatus['$[]']("view")) + " " + ("znworker") + " " + (194));
-      self.song_harpnotes = self.$layout_harpnotes(self.systemstatus['$[]']("view"), "A3");
-      if ($truthy(self.song_harpnotes)) {
+      result = $hash2(["svg", "interactive_elements"], {"svg": Opal.const_get_relative($nesting, 'I18n').$t("BUG: worker did not finsh"), "interactive_elements": []});
+      
+      try {
         
-        $send($gvars.log, 'benchmark', ["loading music to player"], (TMP_25 = function(){var self = TMP_25.$$s || this;
-          if (self.harpnote_player == null) self.harpnote_player = nil;
-          if (self.music_model == null) self.music_model = nil;
-          if (self.song_harpnotes == null) self.song_harpnotes = nil;
+        self.$load_music_model();
+        $gvars.log.$debug("" + "viewid: " + (self.systemstatus['$[]']("view")) + " " + ("znworker") + " " + (198));
+        self.song_harpnotes = self.$layout_harpnotes(self.systemstatus['$[]']("view"), "A3");
+        if ($truthy(self.song_harpnotes)) {
+          
+          $send($gvars.log, 'benchmark', ["loading music to player"], (TMP_25 = function(){var self = TMP_25.$$s || this;
+            if (self.harpnote_player == null) self.harpnote_player = nil;
+            if (self.music_model == null) self.music_model = nil;
+            if (self.song_harpnotes == null) self.song_harpnotes = nil;
 
-        return self.harpnote_player.$load_song(self.music_model, self.song_harpnotes.$active_voices())}, TMP_25.$$s = self, TMP_25.$$arity = 0, TMP_25));
-        self.harpnote_preview_printer = Opal.const_get_qualified(Opal.const_get_relative($nesting, 'Harpnotes'), 'SvgEngine').$new(nil, 2200, 1400);
-        self.harpnote_preview_printer.$clear();
-        self.harpnote_preview_printer.$set_view_box(0, 0, 420, 297);
-        result = self.harpnote_preview_printer.$draw(self.song_harpnotes);};
+          return self.harpnote_player.$load_song(self.music_model, self.song_harpnotes.$active_voices())}, TMP_25.$$s = self, TMP_25.$$arity = 0, TMP_25));
+          self.harpnote_preview_printer = Opal.const_get_qualified(Opal.const_get_relative($nesting, 'Harpnotes'), 'SvgEngine').$new(nil, 2200, 1400);
+          self.harpnote_preview_printer.$clear();
+          self.harpnote_preview_printer.$set_view_box(0, 0, 420, 297);
+          result = self.harpnote_preview_printer.$draw(self.song_harpnotes);};
+      } catch ($err) {
+        if (Opal.rescue($err, [Opal.const_get_relative($nesting, 'Exception')])) {e = $err;
+          try {
+            $gvars.log.$error("" + (e.$message()), nil, nil, e.$backtrace())
+          } finally { Opal.pop_exception() }
+        } else { throw $err; }
+      };;
       return result;
     }, TMP_WorkerController_compute_harpnotes_preview_26.$$arity = 0);
     
@@ -61848,11 +61868,3 @@ if (data == null) data = nil;
       self.namedworker.$post_named_message("load_player_model_abc", JSON.stringify(controller.$harpnote_player().$player_model_abc()));
       return self.namedworker.$post_named_message("load_player_from_worker", controller.$harpnote_player().$get_worker_model());}, TMP_41.$$s = self, TMP_41.$$arity = 0, TMP_41))}, TMP_40.$$s = self, TMP_40.$$arity = 1, TMP_40));
 })(Opal);
-
-},{"crypto":undefined}]},{},[1]);
-
-},{"crypto":undefined}]},{},[1]);
-
-},{"crypto":undefined}]},{},[1]);
-
-},{"crypto":undefined}]},{},[1]);
