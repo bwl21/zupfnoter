@@ -2,7 +2,7 @@ function init_w2ui(uicontroller) {
 
   w2popup.defaults.speed = 0;
 
- // var zoomlevel = [2200, 1400];   // initialize zoomlevel; todo: should be done by scalehandlers
+  // var zoomlevel = [2200, 1400];   // initialize zoomlevel; todo: should be done by scalehandlers
   var current_perspective = 'tb_perspective:Alle';
   var isFullScreen = false;
 
@@ -463,51 +463,13 @@ function init_w2ui(uicontroller) {
             setting: 'autoscroll', text: 'autoscroll', icon: 'fa fa-check-square', onClick: function () {
               uicontroller.$handle_command('togglesetting autoscroll')
             }
-          },          {
+          }, {
             setting: 'follow', text: 'follow', icon: 'fa fa-check-square', onClick: function () {
               uicontroller.$handle_command('togglesetting follow')
             }
           },
           {},
-          {
-            text: 'play fast', icon: 'fa fa-caret-square-o-up', onClick: function () {
-              uicontroller.$handle_command('speed 2')
-            }
-          },
-          {
-            text: 'play normal', icon: 'fa fa-caret-square-o-right ', onClick: function () {
-              uicontroller.$handle_command('speed 1')
-            }
-          },
-          {
-            text: 'play slow', icon: 'fa fa-caret-square-o-down', onClick: function () {
-              uicontroller.$handle_command('speed 0.5')
-            }
-          },
-          {},
-          {
-            text: 'console', icon: 'fa fa-terminal', onClick: function () {
-              uicontroller.$toggle_console();
-            }
-          },
-          {
-            text: 'loglevel error', icon: 'fa fa-exclamation-triangle', onClick: function () {
-              uicontroller.$handle_command('loglevel error')
-            }
-          },
-          {
-            text: 'loglevel warning', icon: 'fa fa-exclamation-circle', onClick: function () {
-              uicontroller.$handle_command('loglevel warning')
-            }
-          },
-          {
-            text: 'loglevel info', icon: 'fa fa-info-circle', onClick: function () {
-              uicontroller.$handle_command('loglevel info')
-            }
-          },
-          {},
           // { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
-
           {
             text: 'stdextract', icon: 'fa fa-clipboard', onClick: function () {
               uicontroller.$handle_command('stdextract')
@@ -885,6 +847,12 @@ function init_w2ui(uicontroller) {
     id: 'statusbarbar',
     name: 'statusbar',
     style: sbstyle,
+    onClick: function (event) {
+      if (event.subItem && event.subItem.onClick) {
+        event.preventDefault();
+        event.subItem.onClick();
+      }
+    },
     items: [
       {
         type: 'button',
@@ -899,46 +867,112 @@ function init_w2ui(uicontroller) {
       },
       {
         type: 'button',
+        id: 'sb_mode',
+        text: '<div style="padding: 0px !important;"><span class="sb-mode"></span></div>'
+      },
+      {
+        type: 'button',
         id: 'sb_dropbox-status',
         text: '<div style="padding: 0px !important;"><span class="dropbox-status"></span></div>'
       },
       {
-        type: 'button',
+        type: 'menu',
         id: 'sb_saveformat',
-        text: '<div style="padding: 0px !important;"><span class="sb-saveformat"></span></div>',
-        onClick: function(event){uicontroller.$toggle_saveformat()}
+        text: '<div style="padding: 0px !important;"><span class="sb-saveformat">' + w2utils.lang("Saveformat") + '</span></div>',
+        items: [
+          {
+            text: "A3", onClick: function () {
+              uicontroller.$handle_command("saveformat A3")
+            }
+          },
+          {
+            text: "A4", onClick: function () {
+              uicontroller.$handle_command("saveformat A4")
+            }
+          },
+          {
+            text: "A3-A4", onClick: function () {
+              uicontroller.$handle_command("saveformat A3-A4")
+            }
+          }
+        ]
+      },
+      {
+        type: 'menu',
+        id: 'sb_loglevels',
+        text: '<div style="padding: 0px !important;"><span class="sb-loglevel">Loglevel</span></div>',
+        items: [
+          {
+            text: 'loglevel error', icon: 'fa fa-exclamation-triangle', onClick: function (event) {
+              uicontroller.$handle_command('loglevel error');
+            }
+          },
+          {
+            text: 'loglevel warning', icon: 'fa fa-exclamation-circle', onClick: function (event) {
+              uicontroller.$handle_command('loglevel warning');
+            }
+          },
+          {
+            text: 'loglevel info', icon: 'fa fa-info-circle', onClick: function (event) {
+              uicontroller.$handle_command('loglevel info');
+            }
+          }
+        ]
+      },
+      {
+        type: 'menu',
+        text: '<div style="padding: 0px !important;"><span class="sb-speed"> ' + w2utils.lang("Play") + '</span></div>',
+        items: [{
+          text: 'play fast', icon: 'fa fa-caret-square-o-up', onClick: function () {
+            uicontroller.$handle_command('speed 2')
+          }
+        },
+          {
+            text: 'play normal', icon: 'fa fa-caret-square-o-right ', onClick: function () {
+              uicontroller.$handle_command('speed 1')
+            }
+          },
+          {
+            text: 'play slow', icon: 'fa fa-caret-square-o-down', onClick: function () {
+              uicontroller.$handle_command('speed 0.5')
+            }
+          }
+        ]
       },
       {
         type: 'button',
-        id: 'sb_loglevel',
-        text: '<div style="padding: 0px !important;"><span class="sb-loglevel"></span></div>',
-        onClick: function(event){uicontroller.$cycle_loglevel()}
+        text: ">_",
+        tooltip: "console",
+        onClick: function () {
+          uicontroller.$toggle_console();
+        }
       },
       {
         type: 'button',
-        id: 'sb_mode',
-        text: '<div style="padding: 0px !important;"><span class="sb-mode"></span></div>'
-      },
-      { type: 'button',
         id: 'sb_render_status',
         text: '<div style="padding: 0px !important;"><span class="sb-autorefresh">??</span><span class="sb-render-status">[]</span></div>',
-        onClick: function(event){uicontroller.$toggle_autorefresh()}
-      },
-      {type: 'spacer'},
-      {
-        type: 'button',
-        id: 'sb_confkey',
-        text: '<div style="padding: 0px !important;"><span class="mouseover-conf-key"></span></div>'
+        onClick: function
+          (event) {
+          uicontroller.$toggle_autorefresh()
+        }
       },
       {
         type: 'button',
-        id: 'sb_current-notes',
-        size: '50px',
-        text: '<div style="padding: 0px !important;"><span class="current-notes"></span></div>'
+        id:
+          'sb_confkey',
+        text:
+          '<div style="padding: 0px !important;"><span class="mouseover-conf-key"></span></div>'
       },
-
-    ],
-
+      {
+        type: 'button',
+        id:
+          'sb_current-notes',
+        size:
+          '50px',
+        text:
+          '<div style="padding: 0px !important;"><span class="current-notes"></span></div>'
+      },
+    ]
   }
 
   var editortabshtml =
@@ -1110,7 +1144,7 @@ function update_localized_texts() {
  */
 
 
-function set_harp_preview_size(size){
+function set_harp_preview_size(size) {
   $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
 }
 
@@ -1145,7 +1179,6 @@ function update_systemstatus_w2ui(systemstatus) {
 
   $(".sb-saveformat").html("[" + systemstatus.saveformat + "]")
   $(".sb-autorefresh").html("Auto-Render " + systemstatus.autorefresh + " ")
-
   $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
   // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
@@ -1259,7 +1292,7 @@ function set_extract_menu(id, text) {
   // by call_consumers(:extracts)
 };
 
-function set_render_status(status){
+function set_render_status(status) {
   $(".sb-render-status").html(status);
 }
 

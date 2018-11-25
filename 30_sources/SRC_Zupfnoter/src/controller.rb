@@ -1068,12 +1068,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  def cycle_loglevel
-    loglevels = $log.loglevels
-    nextlevel = loglevels[(loglevels.index($log.loglevel) + 1) % loglevels.length]
-    handle_command("loglevel #{nextlevel}")
-  end
-
 # setup the harpnote prviewer
   def setup_harpnote_preview
 
@@ -1210,12 +1204,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
        w2ui['layout'].toggle('bottom', true);
        #{@editor}.$resize();
       }
-  end
-
-  def toggle_saveformat
-    formats = ["A3-A4", 'A3', 'A4']
-    index = (formats.index(systemstatus[:saveformat]) + 1) % formats.size rescue 1
-    handle_command("saveformat #{formats[index]}")
   end
 
   def show_console
