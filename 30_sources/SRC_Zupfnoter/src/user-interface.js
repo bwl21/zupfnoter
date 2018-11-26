@@ -261,6 +261,10 @@ function init_w2ui(uicontroller) {
   // ensure that oomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
   zoomlevel = scalehandlers['tb_scale:groß'].zoomlevel
 
+  // where we create an object with tooblarhandlers
+  // this approach does not splash the menu definition
+  // but is harder to maintain.
+  // to be honest, today
   toolbarhandlers = {
     'tb_file:tb_create': createNewSheet,
     'tb_file:tb_import': function () {
@@ -268,6 +272,11 @@ function init_w2ui(uicontroller) {
     },
     'tb_file:tb_export': function () {
       uicontroller.$handle_command("download_abc")
+    },
+
+    // handle full screen
+    'tbFullScreen': function () {
+      toggle_full_screen();
     },
 
     'tb_view:0': function () {
@@ -299,11 +308,11 @@ function init_w2ui(uicontroller) {
 
     'tb_create': createNewSheet,
 
-    'tb_open': function () {
+    'tb_open': function () {   // tbDropbox:tb_open
       uicontroller.$handle_command("dchoose")
     },
 
-    'tb_save': function () {
+    'tb_save': function () {    // tbDropbox:tb_save
       $("#tb_layout_top_toolbar_item_tb_save table").removeClass("alert")
       disable_save();
       setTimeout(function () {
@@ -316,7 +325,7 @@ function init_w2ui(uicontroller) {
       uicontroller.$handle_command("download_abc")
     },
 
-    'tb_logout': function () {
+    'tb_logout': function () { // tbDropbox:tb_logout
       uicontroller.$handle_command("dlogout")
     },
 
@@ -628,6 +637,7 @@ function init_w2ui(uicontroller) {
 
     // handlers for the main toolbar
     onClick: function (event) {
+      debugger;
       // handle perspectives
       if (perspectives[event.target]) {
         perspectives[event.target]();
@@ -642,10 +652,6 @@ function init_w2ui(uicontroller) {
         toolbarhandlers[event.target]();
       }
 
-      // handle full screen
-      if (event.target == 'tbFullScreen') {
-        toggle_full_screen();
-      }
 
       // handle previews
       if (previews[event.target]) {
@@ -656,6 +662,8 @@ function init_w2ui(uicontroller) {
       config_event = event.target.split(":")
 
 
+      // this matches the dropbox - menus
+      // to the dropbox buttons
       // handle dropbox menu
       if (config_event[0] == "tbDropbox") {
         if (toolbarhandlers[config_event[1]]) {
@@ -664,6 +672,7 @@ function init_w2ui(uicontroller) {
       }
 
 
+      // todo: move these entries to toolbarhandlers
       if (event.target == "tb_home") {
         w2popup.open({title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
       }
@@ -878,7 +887,8 @@ function init_w2ui(uicontroller) {
       {
         type: 'menu',
         id: 'sb_saveformat',
-        text: '<div style="padding: 0px !important;"><span class="sb-saveformat">' + w2utils.lang("Saveformat") + '</span></div>',
+        tooltip: 'setup output page format',
+        text: 'saveformat',
         items: [
           {
             text: "A3", onClick: function () {
@@ -899,8 +909,9 @@ function init_w2ui(uicontroller) {
       },
       {
         type: 'menu',
-        id: 'sb_loglevels',
-        text: '<div style="padding: 0px !important;"><span class="sb-loglevel">Loglevel</span></div>',
+        id: 'sb_loglevel',
+        tooltip: 'adjust logelevel',
+        text: 'Loglevel',
         items: [
           {
             text: 'loglevel error', icon: 'fa fa-exclamation-triangle', onClick: function (event) {
@@ -921,6 +932,7 @@ function init_w2ui(uicontroller) {
       },
       {
         type: 'menu',
+        tooltip: 'adjust play speed',
         text: '<div style="padding: 0px !important;"><span class="sb-speed"> ' + w2utils.lang("Play") + '</span></div>',
         items: [{
           text: 'play fast', icon: 'fa fa-caret-square-o-up', onClick: function () {
@@ -942,7 +954,7 @@ function init_w2ui(uicontroller) {
       {
         type: 'button',
         text: ">_",
-        tooltip: "console",
+        tooltip: "Toggle console",
         onClick: function () {
           uicontroller.$toggle_console();
         }
@@ -950,12 +962,14 @@ function init_w2ui(uicontroller) {
       {
         type: 'button',
         id: 'sb_render_status',
+        tooltip: 'admust automatic rendering',
         text: '<div style="padding: 0px !important;"><span class="sb-autorefresh">??</span><span class="sb-render-status">[]</span></div>',
         onClick: function
           (event) {
           uicontroller.$toggle_autorefresh()
         }
       },
+      {type: 'spacer'},
       {
         type: 'button',
         id:
@@ -1047,7 +1061,7 @@ function init_w2ui(uicontroller) {
 
   $('#statusbar-layout').w2layout(
     {
-      name: 'statusbar-layout',
+      name: 'layout_statusbar',
       panels: [
         //{type: 'main', id: 'statusbar', resizable: false, style: pstyle, content: '<div id="statusbar" style="overflow:hidden;border: 1pt solid #000000;" class="zn-statusbar" >statusbar</div>',  hidden: false}
         {
@@ -1152,6 +1166,10 @@ function set_tbitem_caption(item, caption) {
   w2ui.layout_top_toolbar.set(item, {text: caption});
 }
 
+function set_sbitem_caption(item, caption) {
+  w2ui.layout_statusbar_main_toolbar.set(item, {text: caption});
+}
+
 function update_settings_menu(settings) {
   settings_menu_items = w2ui.layout_top_toolbar.get('tbExtras').items.filter(function (item) {
     return item.setting
@@ -1176,10 +1194,10 @@ function update_systemstatus_w2ui(systemstatus) {
   tb_view_title = (tb_view_title ? tb_view_title.text : systemstatus.view)
 
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
-
-  $(".sb-saveformat").html("[" + systemstatus.saveformat + "]")
+  set_sbitem_caption('sb_saveformat', "[" + systemstatus.saveformat + "]")
   $(".sb-autorefresh").html("Auto-Render " + systemstatus.autorefresh + " ")
-  $(".sb-loglevel").html('Loglevel: ' + systemstatus.loglevel);
+  set_sbitem_caption('sb_loglevel', 'Loglevel: ' + systemstatus.loglevel)
+
   // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
 
 
