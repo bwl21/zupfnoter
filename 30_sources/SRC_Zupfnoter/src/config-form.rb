@@ -414,7 +414,7 @@ class ConfstackEditor
           MultiLineString => ['text'],
           NoteAlign       => ['align'],
           NoteAnchor      => ['apanchor'],
-          Boolean         => ['autopos', 'limit_a3',  'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],
+          Boolean         => ['autopos', 'limit_a3', 'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'nshift', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
@@ -567,20 +567,20 @@ class ConfstackEditor
     entry_menu_handler = lambda do |evt|
       target = Native(evt)[:item][:id].split(':')
       case target.last
-        when 'delete'
-          @editor.delete_config_part(target.first)
-          refresh_form
-          register_events
-        when 'push0'
-          @controller.handle_command(%Q{cpconfig #{target.first} 0})
-          refresh_form
-          register_events
-        when 'pop0'
-          current_view = target.first.match(/extract\.(\d+).*/)[1]
-          key0         = target.first.gsub(/extract.(\d+)/, "extract.0")
-          @controller.handle_command(%Q{cpconfig #{key0} #{current_view}})
-          refresh_form
-          register_events
+      when 'delete'
+        @editor.delete_config_part(target.first)
+        refresh_form
+        register_events
+      when 'push0'
+        @controller.handle_command(%Q{cpconfig #{target.first} 0})
+        refresh_form
+        register_events
+      when 'pop0'
+        current_view = target.first.match(/extract\.(\d+).*/)[1]
+        key0         = target.first.gsub(/extract.(\d+)/, "extract.0")
+        @controller.handle_command(%Q{cpconfig #{key0} #{current_view}})
+        refresh_form
+        register_events
       end
     end
 
@@ -589,46 +589,46 @@ class ConfstackEditor
     handler = lambda do |evt|
       target = Native(evt).target[:name].split(':')
       case target.last
-        when 'delete'
-          @editor.delete_config_part(target.first)
-          refresh_form
-          register_events
-        when 'neutral'
-          @editor.patch_config_part(target.first, @helper.to_neutral(target.first), %Q{neutral #{target.first}})
-        when 'help'
-          helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
+      when 'delete'
+        @editor.delete_config_part(target.first)
+        refresh_form
+        register_events
+      when 'neutral'
+        @editor.patch_config_part(target.first, @helper.to_neutral(target.first), %Q{neutral #{target.first}})
+      when 'help'
+        helptext = I18n.t_help(target.first) #%Q{<div style="padding:1em"><p>das ist der hilfetext zu #{target.first}</p></div>}
 
-          if target.first.start_with? "$resources"
-            img      = $resources[target.first.split('.').last]
-            helptext = %Q{<img style="width:300px;" src="#{img.join}"</img>} if img
-            `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: false})`
-          else
-            `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: true})`
-          end
-        when 'default'
-          if (a = @default_value[target.first])
-            @editor.patch_config_part(target.first, a, %Q{to default #{target.first}})
-            refresh_form
-            register_events
-          end
-        when 'fillup'
-          @editor.extend_config_part(target.first, @helper.to_template(target.first))
+        if target.first.start_with? "$resources"
+          img      = $resources[target.first.split('.').last]
+          helptext = %Q{<img style="width:300px;" src="#{img.join}"</img>} if img
+          `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: false})`
+        else
+          `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: true})`
+        end
+      when 'default'
+        if (a = @default_value[target.first])
+          @editor.patch_config_part(target.first, a, %Q{to default #{target.first}})
           refresh_form
           register_events
-        when 'menu'
-          items = []
-          if target.first.start_with? "extract."
-            items.push({id: %Q{#{target.first}:push0}, text: %Q{#{I18n.t("push to extract 0")} "#{target.first}"}, icon: 'fa fa-level-down'})
-            items.push({id: %Q{#{target.first}:pop0}, text: %Q{#{I18n.t("pop from extract 0")} "#{target.first}"}, icon: 'fa fa-level-up'})
-          end
-          %x{
+        end
+      when 'fillup'
+        @editor.extend_config_part(target.first, @helper.to_template(target.first))
+        refresh_form
+        register_events
+      when 'menu'
+        items = []
+        if target.first.start_with? "extract."
+          items.push({id: %Q{#{target.first}:push0}, text: %Q{#{I18n.t("push to extract 0")} "#{target.first}"}, icon: 'fa fa-level-down'})
+          items.push({id: %Q{#{target.first}:pop0}, text: %Q{#{I18n.t("pop from extract 0")} "#{target.first}"}, icon: 'fa fa-level-up'})
+        end
+        %x{
           $(#{evt}.target).w2menu({
                           left          : -20,
                           onSelect: #{entry_menu_handler},
                           items: #{items.to_n}
             })
           }
-
+        nil
       end
     end
 
@@ -754,11 +754,10 @@ class ConfstackEditor
             %x{
                document.getElementById(#{event}.target).focus()
               }
-            #nil
+            nil
           }
-          %x{
-            event.onComplete=#{a}
-          }
+          %x{ event.onComplete=#{a}}
+          nil
         },
         toolbars:   {
             name:    'configformtoolbar',
@@ -810,12 +809,12 @@ class ConfstackEditor
                     </table>
                     }
     }
-    $log.benchmark("showing form #{__FILE__}:#{__LINE__}"){show_form}
+    $log.benchmark("showing form #{__FILE__}:#{__LINE__}") { show_form }
     self
   end
 
   def refresh_form
-    $log.benchmark("refreshing form #{__FILE__}:#{__LINE__}"){@refresh_handler.call}
+    $log.benchmark("refreshing form #{__FILE__}:#{__LINE__}") { @refresh_handler.call }
   end
 
 
