@@ -104,6 +104,8 @@ class Controller
 
     @worker             = NamedWebworker.new("public/znworker.js#{buster}")
     @worker_tunepreview = @worker #NamedWebworker.new("public/znworker.js#{buster}")
+    @worker_info        = {version: 'unknown'}
+    @worker.post_named_message(:get_worker_info, nil)
 
 
     # todo make this configurable by a preferences menu
@@ -247,6 +249,7 @@ class Controller
          <table>
           <tbody>
           <tr><td>Zupfnoter:</td><td>#{VERSION}</td></tr>
+          <tr><td>Worker:</td><td>#{@worker_info[:version]}</td></tr>
           <tr><td><a target="_blank" href="http://opalrb.com">Opal</a>:</td><td>#{RUBY_ENGINE_VERSION}</td></tr>
           <tr><td>Ruby:</td><td>#{RUBY_VERSION}</td></tr>
           <tr><td><a target="_blank" href="http://moinejf.free.fr/js/index.html">abc2svg</a>:</td><td>#{%x{abc2svg.version}}</td></tr>
@@ -1224,6 +1227,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       end
     end
 
+    @worker.on_named_message(:get_worker_info) do |data|
+      @worker_info = data[:payload]
+    end
+
     @worker.on_named_message(:set_logger_status) do |data|
       #$log.set_status(data[:payload])
       @editor.set_annotations($log.annotations)
@@ -1260,36 +1267,36 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       call_consumers(:document_title)
     end
 
-    # this receiges the player_model_abc to play
-    # along the tune
+# this receiges the player_model_abc to play
+# along the tune
     @worker.on_named_message(:load_player_model_abc) do |data|
       $log.benchmark("preocessing reply from load_player_model_abc") do
         @harpnote_player.player_model_abc = %x{JSON.parse(#{data[:payload]})}
       end
     end
 
-    # this receives the player_model to play according
-    # to harpnotes
+# this receives the player_model to play according
+# to harpnotes
     @worker.on_named_message(:load_player_from_worker) do |data|
       $log.benchmark("preocessing reply from load_player_model") do
         @harpnote_player.set_worker_model(data[:payload])
       end
     end
 
-    # this retrieves the abc model from worker
-    # required for select in multiple voices
+# this retrieves the abc model from worker
+# required for select in multiple voices
     @worker.on_named_message(:load_abc_model) do |data|
       $log.benchmark("preocessing reply from load_abc_model") do
         @abc_model = data[:payload]
       end
     end
 
-    # this lets the worker send a message to the logger
+# this lets the worker send a message to the logger
     @worker.on_named_message('log') do |data|
       $log.log_from_worker(data[:payload])
     end
 
-    # this rescues from fatal worker errors
+# this rescues from fatal worker errors
     @worker.on_named_message(:rescue_from_worker_error) do |data|
       @render_stack.clear
       call_consumers(:error_alert)

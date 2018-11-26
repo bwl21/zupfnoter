@@ -330,3 +330,11 @@ end
     @namedworker.post_named_message(:load_player_from_worker, controller.harpnote_player.get_worker_model)
   end
 end
+
+
+@namedworker.on_named_message(:get_worker_info) do |data|
+  result = {
+      version: VERSION
+  }
+  @namedworker.post_named_message(:get_worker_info, result)
+end

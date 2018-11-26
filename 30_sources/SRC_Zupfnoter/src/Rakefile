@@ -88,6 +88,7 @@ task :build_worker do
 
     compiled_js = Opal::Builder::build("znworker").to_s
 
+    ## this patches the worker according to the discussion in
     compiled_js = compiled_js.gsub(%Q{Opal.loaded(["corelib/runtime"]);}, %Q{var Opal=this.Opal;Opal.loaded(["corelib/runtime"]);})
     out.puts(compiled_js)
   end
