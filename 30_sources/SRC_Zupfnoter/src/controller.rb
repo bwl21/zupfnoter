@@ -102,7 +102,9 @@ class Controller
     buster = Element.find("#buster").html
     buster = JSON.parse(buster)[:buster]
 
-    @worker = NamedWebworker.new("public/znworker.js#{buster}")
+    @worker             = NamedWebworker.new("public/znworker.js#{buster}")
+    @worker_tunepreview = @worker #NamedWebworker.new("public/znworker.js#{buster}")
+
 
     # todo make this configurable by a preferences menu
     languages = {'de'    => 'de-de',
@@ -618,7 +620,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       abc_text = tweak_abc_text
 
       $log.benchmark("render tune preview by worker") do
-        @worker.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor.get_checksum})
+        @worker_tunepreview.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor.get_checksum})
       end
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
@@ -1214,7 +1216,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
   def setup_worker_listners
-    @worker.on_named_message(:compute_tune_preview) do |data|
+    @worker_tunepreview.on_named_message(:compute_tune_preview) do |data|
       $log.benchmark("preocessing reply from compute_tune_preview") do
         svg_and_positions = data[:payload]
         set_inactive("#tunePreview")
