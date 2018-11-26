@@ -637,7 +637,6 @@ function init_w2ui(uicontroller) {
 
     // handlers for the main toolbar
     onClick: function (event) {
-      debugger;
       // handle perspectives
       if (perspectives[event.target]) {
         perspectives[event.target]();
