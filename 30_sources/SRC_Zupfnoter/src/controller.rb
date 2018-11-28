@@ -286,7 +286,7 @@ class Controller
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }],
                                harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
-                               render_status:     [lambda { %x{set_render_status(#{@render_stack.to_s})} }]
+                               render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -1452,7 +1452,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     last_read_info_id = systemstatus[:last_read_info_id] || 0
 
     have_read = lambda do
-      %x{window.open(#{@info_url})}
       set_status({last_read_info_id: last_info_id})
     end
 
@@ -1460,32 +1459,35 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       # alert (" hat nicht gelesen gelesen")
     end
 
-    body = messages.map { |m|
+    body = %Q{<h3><a href="#{@info_url}" target="_blank">#{I18n.t("read now")}</a></h3>}
+
+    body += messages.map { |m|
       nm      = Native(m)
       post_id = nm[:postId]
       desc    = nm[:description]
       %Q{<div style="text-align:left;"><p>#{post_id}: #{nm[:title]}</p></div>}
     }.join
 
+
     options = {
         msg:   body,
         title: I18n.t('There is new unread information'),
         width: 600, # width of the dialog
         height: 200, # height of the dialog
-        modal:    true,
-        btn_yes:  {
-            text: I18n.t('read now'), # text for yes button (or yes_text)
+        modal:       true,
+        btn_yes:     {
+            text: I18n.t('already read'), # text for yes button (or yes_text)
             class: '', # class for yes button (or yes_class)
             style: '', # style for yes button (or yes_style)
             callBack: have_read # callBack for yes button (or yes_callBack)
         },
-        btn_no:   {
+        btn_no:      {
             text: I18n.t('read later'), # text for no button (or no_text)
             class: '', # class for no button (or no_class)
             style: '', # style for no button (or no_style)
             callBack: have_not_read # callBack for no button (or no_callBack)
         },
-        callBack: nil # common callBack
+        callBack:    nil # common callBack
     };
 
     # todo: w2confirm might be in conflict with other popus
