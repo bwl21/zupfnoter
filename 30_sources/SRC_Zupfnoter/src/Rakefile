@@ -95,7 +95,7 @@ task :build_worker do
 end
 
 desc "Build zupfnoter to #{ZUPFNOTER_JS}"
-task :build => [:buildConfigDoc, :updateLocales] do
+task :build => [:buildConfigDoc, :updateLocales, :build_worker] do
   git_describe
   #env = Sprockets::Environment.new
   Opal.append_path "."
@@ -109,11 +109,6 @@ task :build => [:buildConfigDoc, :updateLocales] do
     #   out << Opal::Processor.load_asset_code(env, 'application')
     out.puts(Opal::Builder::build("application").to_s)
   end
-
-
-  cmd = "browserify --node --dg false #{ZNWORKER_JS} -o #{ZNWORKER_JS}"
-  sh cmd
-
 
   Dir.glob "../public/*.scss" do |f|
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
