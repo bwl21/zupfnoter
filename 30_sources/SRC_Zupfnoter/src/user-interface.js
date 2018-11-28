@@ -959,14 +959,24 @@ function init_w2ui(uicontroller) {
         }
       },
       {
-        type: 'button',
-        id: 'sb_render_status',
-        tooltip: 'admust automatic rendering',
-        text: '<div style="padding: 0px !important;"><span class="sb-autorefresh">??</span><span class="sb-render-status">[]</span></div>',
-        onClick: function
-          (event) {
-          uicontroller.$toggle_autorefresh()
-        }
+        type: 'menu',
+        id: 'sb_autorefresh',
+        tooltip: 'adjust automatic rendering',
+        text: 'Auto Render',
+        items: [
+          {
+            text: 'Auto Render on ', icon: 'fa fa-toggle-on', onClick: function (event) {
+              uicontroller.$handle_command('autorefresh on')
+
+            }
+          },
+          {
+            text: 'Auto Render off', icon: 'fa fa-toggle-off', onClick: function (event) {
+              uicontroller.$handle_command('autorefresh off')
+
+            }
+          }
+        ]
       },
       {type: 'spacer'},
       {
@@ -1194,7 +1204,7 @@ function update_systemstatus_w2ui(systemstatus) {
 
   set_tbitem_caption('tb_view', 'Extract ' + tb_view_title);
   set_sbitem_caption('sb_saveformat', "[" + systemstatus.saveformat + "]")
-  $(".sb-autorefresh").html("Auto-Render " + systemstatus.autorefresh + " ")
+  set_sbitem_caption('sb_autorefresh', w2utils.lang("Auto-Render ") + systemstatus.autorefresh + ' []')
   set_sbitem_caption('sb_loglevel', 'Loglevel: ' + systemstatus.loglevel)
 
   // $(".sb-mode").html(w2utils.lang('Mode') + ': ' + systemstatus.mode);
@@ -1310,7 +1320,7 @@ function set_extract_menu(id, text) {
 };
 
 function set_render_status(status) {
-  $(".sb-render-status").html(status);
+  set_sbitem_caption('sb_autorefresh', w2utils.lang("Auto-Render ") + status)
 }
 
 function lockscreen(msg, mode) {
