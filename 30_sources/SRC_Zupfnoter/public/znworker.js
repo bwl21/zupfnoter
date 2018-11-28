@@ -34867,7 +34867,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.9.2-60-gb2b1963");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.9.2-67-g66bdea1");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
@@ -61872,6 +61872,5 @@ if (data == null) data = nil;
 if (data == null) data = nil;
   
     result = $hash2(["version"], {"version": Opal.const_get_relative($nesting, 'VERSION')});
-    debugger;
     return self.namedworker.$post_named_message("get_worker_info", result);}, TMP_42.$$s = self, TMP_42.$$arity = 1, TMP_42));
 })(Opal);

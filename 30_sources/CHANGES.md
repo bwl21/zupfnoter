@@ -4,8 +4,8 @@
 
 * rests in tuplets no longer throw "unsupported duration" #240
 * select in all voices now works if there are grace notes #243
-* replace unicode charactes with ascii equivalents #238
-* import in a fresh zupfnoter without user defined templatss see #239
+* replace unicode characters with ascii equivalents #238
+* import in a fresh zupfnoter without user defined templats see #239
   
 
 ## enhancement
@@ -13,11 +13,14 @@
 * BWC: Barnumbers / countnotes are now aligned relative to the center of the note #237
 * loglevel can be changed by click in statusbar #242
 * Performance: tune preview and harpreview can be rendered in background #241
-* 
+* moved some Menus from "Extras" to Statusbar #242
+* Improvee "message of the day" handling #244
 
 ##
 
 ## BWC
+
+* Edit Configuration / "Barnumbers / and countnotes" , choose "anchor_at_box"
 
 # V 1.9.2
 

@@ -264,7 +264,22 @@ ausgegeben werden sollen.
 
 ## `extract.0.barnumbers.apanchor` - autom. pos. Anker {#extract.0.barnumbers.apanchor}
 
-TODO: Helptext für extract.0.barnumbers.apanchor einfügen
+Hier kannst du die vertikale Verankerung der Taktnummer an der Note
+einstellen.
+
+-   `center`: die Taktnummer wird an der Mitte der Note verankert
+-   `box`: die Taktnummer wird am unteren Rand der Note verankert
+
+> **Hinweise**:
+>
+> -   Dieser Parameter wirkt nur bei automatischer Positionierung der
+>     Taktnummern.
+>
+> -   Die horizontale Verankerung der Taktnummer wird automatisch so
+>     berechet, dass die Taktnummer gegenüber der eingehenden Flusslinie
+>     steht.
+>
+> <!-- -->
 
         "apanchor": "box"
           
@@ -366,11 +381,10 @@ einstellen.
 >
 > -   Dieser Parameter wirkt nur bei automatischer Positionierung der
 >     Zählmarken.
->
 > -   Die horizontale Verankerung der Zählmarke wird automatisch so
 >     berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
 >     steht.
->
+
         "apanchor": "box"
           
 

@@ -1044,6 +1044,10 @@ Einträgen
     umgestellt werden [^040_UD-Zupfnoter-Referenz.md_5].
 -   Aktueller Modus von Zupfnoter. Hier gibt es `work` und `demo`. im
     Demo-Modus sind einge Menüpunkte nicht aktiv.
+-   Menü zur Auswahl der Papierformate beim Speichern
+-   Menü zur Auswahl der Meldungen (Fehler / Warnung / Info)\
+-   Menü zur Auswahl von Auto-Render\
+-   Button zum Ein- Ausblenden der Konsole
 -   Name des Konfigurationsparameters für das Element unter dem
     Mauszeiger falls dieses mit der Maus verschoben werden kann oder
     über das Kontext-Menü konfiguriert werden kann.
@@ -1051,7 +1055,7 @@ Einträgen
 ### Konsole {#konsole-fenster}
 
 Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination
-`cmd/ctrl-K` (bzw. durch klick auf den loglevel in der Statusleiste)
+`cmd/ctrl-K` (bzw. durch klick auf den Button `>_` in der Statusleiste)
 eingeschaltet wurde. Sie stellt die letzten Meldungen von Zupfnoter dar.
 Experten können in der Konsole auch weitere Befehle eingeben, die
 Zupfnoter direkt steuern. Die möglichen Befehle kann man mit dem Befehl

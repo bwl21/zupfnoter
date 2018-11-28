@@ -135,7 +135,7 @@ verschieben.
 
 ## bar
 
-# barnumbers.apanchor
+## barnumbers.apanchor
 
 Hier kannst du die vertikale Verankerung der Taktnummer an der Note
 einstellen.
@@ -152,6 +152,7 @@ einstellen.
 >     berechet, dass die Taktnummer gegenüber der eingehenden Flusslinie
 >     steht.
 >
+> <!-- -->
 > ## barnumbers.apbase
 
 Hier kannst du die Grundlage für die automatische Positionierung von
@@ -201,12 +202,11 @@ einstellen.
 >
 > -   Dieser Parameter wirkt nur bei automatischer Positionierung der
 >     Zählmarken.
->
 > -   Die horizontale Verankerung der Zählmarke wird automatisch so
 >     berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
 >     steht.
->
-> ## countnotes.apbase
+
+## countnotes.apbase
 
 Hier kannst du die Grundlage für die automatische Positionierung von
 Zählmarken einstellen.

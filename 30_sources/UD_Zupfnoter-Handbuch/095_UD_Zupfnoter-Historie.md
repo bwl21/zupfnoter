@@ -2,6 +2,34 @@
 
 # Änderungsgeschichte
 
+# V.1.10 Nov 2018
+
+## fix
+
+-   Pausen in n-tolen \#240
+-   "Abschnitt in allen Stimmen auswählen" funktionier tauch mit
+    Ziernoten im ABC\#243
+-   mehr Sonderzeichen ersetzt (z.b. aus Word) \#238
+-   XML-Import funktioniert nun auch wenn keine Vorlage definiert ist
+    \#239
+
+## enhancement
+
+-   BWC: Taktnummern und Zählmarken können nun an der Notenmitte
+    ausgerichtet werden \#237
+-   Performance: Notenvorschau und Harfennvorschau können nun im
+    Hintergrund gerechnet werden \#241
+-   Einige Menü-Einträge von "Extras" in die Statusleiste unten verlegt
+    \#242
+-   Dialog "Es gibt neue Informationen" verbessert \#244
+
+## 
+
+## Kompatibilität
+
+-   "Konfig. bearb." / "Taknummern und Zählmarken" , Schnelleinstellung
+    "an der Mitte der Note verankern"
+
 ## V 1.9.2
 
 ### Fehlerbehbungen

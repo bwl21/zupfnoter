@@ -204,7 +204,7 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version backup/experiment/worker-11-22-51-6-g0877bec
+Version V\_1.9.2-68-gc7d325a
 
 \begin{verbatim}
 © 2018 https://www.zupfnoter.de
@@ -222,7 +222,7 @@ Version backup/experiment/worker-11-22-51-6-g0877bec
 
 \section{Über dieses Handbuch}\label{uxfcber-dieses-handbuch}
 
-Du siehst dieses Handbuch und bist schockiert, dass es über 50 Seiten
+Du siehst dieses Handbuch und bist schockiert, dass es über 120 Seiten
 hat. Aber wie sagt man doch so schön: ``keine Panik!''. Ersteller
 einfacher Unterlegnoten kommen mit den ersten Kapiteln schon auf die
 Erfolgsstraße.
@@ -244,9 +244,6 @@ Zielgruppen im Blick:
   und mehr die vielfältigen Möglichkeiten von Zupfnoter und ist im
   Wesentlichen durch die Größe des Instrumentes und die eigene Phantasie
   begrenzt.
-\item
-  \textbf{Lektoren} schreiben nicht selbst im Zupfnoter, sondern
-  redigieren Noten in Zupfnoter.
 \end{itemize}
 
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
@@ -256,8 +253,14 @@ Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 sind nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit
 TODOs und Zeilennummern.
 
+Das Handbuch wird während der Weiterentwicklung von Zupfnoter laufend
+aktualisiert.
+
 Für Hinweise auf Fehler oder Verbesserungsmöglichkeiten sind wir sehr
 dankbar.
+
+``Do not complain about this manual, be glad that there are page numbers
+:-)''
 \end{quote}
 
 TODO:\marginpar{TODO} markieren, für welche Zielgruppe welche
@@ -2297,6 +2300,14 @@ Einträgen
   Aktueller Modus von Zupfnoter. Hier gibt es \texttt{work} und
   \texttt{demo}. im Demo-Modus sind einge Menüpunkte nicht aktiv.
 \item
+  Menü zur Auswahl der Papierformate beim Speichern
+\item
+  Menü zur Auswahl der Meldungen (Fehler / Warnung / Info)\\
+\item
+  Menü zur Auswahl von Auto-Render\\
+\item
+  Button zum Ein- Ausblenden der Konsole
+\item
   Name des Konfigurationsparameters für das Element unter dem Mauszeiger
   falls dieses mit der Maus verschoben werden kann oder über das
   Kontext-Menü konfiguriert werden kann.
@@ -2305,11 +2316,12 @@ Einträgen
 \hyperdef{}{konsole-fenster}{\subsubsection{Konsole}\label{konsole-fenster}}
 
 Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination
-\texttt{cmd/ctrl-K} (bzw. durch klick auf den loglevel in der
-Statusleiste) eingeschaltet wurde. Sie stellt die letzten Meldungen von
-Zupfnoter dar. Experten können in der Konsole auch weitere Befehle
-eingeben, die Zupfnoter direkt steuern. Die möglichen Befehle kann man
-mit dem Befehl \texttt{help} in der Konsole anzeigen.
+\texttt{cmd/ctrl-K} (bzw. durch klick auf den Button
+\texttt{\textgreater{}\_} in der Statusleiste) eingeschaltet wurde. Sie
+stellt die letzten Meldungen von Zupfnoter dar. Experten können in der
+Konsole auch weitere Befehle eingeben, die Zupfnoter direkt steuern. Die
+möglichen Befehle kann man mit dem Befehl \texttt{help} in der Konsole
+anzeigen.
 
 \begin{quote}
 \textbf{Hinweis}: Die Zupfnoter-Menüs lösen letztendlich solche
@@ -3908,7 +3920,7 @@ geschieht wie folgt:
   \textbf{Notenmitte oder den Notenrand} positioniert werden (Kapitel
   \ref{extract.0.barnumbers.apanchor}~\hyperref[extract.0.barnumbers.apanchor]{\texttt{extract.0.barnumbers.apanchor}}
   bzw.
-  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}}
+  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbasera]{\texttt{extract.0.barnumbers.apbase}}
   )
 \item
   Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken
@@ -4738,8 +4750,30 @@ ausgegeben werden sollen.
 - autom. pos.
 Anker}{extract.0.barnumbers.apanchor - autom. pos. Anker}}\label{extract.0.barnumbers.apanchor}}
 
-TODO:\marginpar{TODO} Helptext für extract.0.barnumbers.apanchor
-einfügen
+Hier kannst du die vertikale Verankerung der Taktnummer an der Note
+einstellen.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: die Taktnummer wird an der Mitte der Note verankert
+\item
+  \texttt{box}: die Taktnummer wird am unteren Rand der Note verankert
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweise}:
+
+\begin{itemize}
+\item
+  Dieser Parameter wirkt nur bei automatischer Positionierung der
+  Taktnummern.
+\item
+  Die horizontale Verankerung der Taktnummer wird automatisch so
+  berechet, dass die Taktnummer gegenüber der eingehenden Flusslinie
+  steht.
+\end{itemize}
+\end{quote}
 
 \begin{verbatim}
     "apanchor": "box"
@@ -4887,6 +4921,7 @@ einstellen.
 \textbf{Hinweise}:
 
 \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
   Dieser Parameter wirkt nur bei automatischer Positionierung der
   Zählmarken.
@@ -4894,16 +4929,17 @@ einstellen.
   Die horizontale Verankerung der Zählmarke wird automatisch so
   berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
   steht.
+\end{itemize}
+\end{quote}
 
 \begin{verbatim}
-"apanchor": "box"
+    "apanchor": "box"
+      
 \end{verbatim}
-\end{itemize}
 
 \hyperdef{}{extract.0.countnotes.apbase}{\subsection{\texorpdfstring{\texttt{extract.0.countnotes.apbase}
 - autom. pos.
 Basis}{extract.0.countnotes.apbase - autom. pos. Basis}}\label{extract.0.countnotes.apbase}}
-\end{quote}
 
 Hier kannst du die Grundlage für die automatische Positionierung von
 Zählmarken einstellen.
@@ -7617,6 +7653,50 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \section{Änderungsgeschichte}\label{uxe4nderungsgeschichte}
 
+\section{V.1.10 Nov 2018}\label{v.1.10-nov-2018}
+
+\subsection{fix}\label{fix}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Pausen in n-tolen \#240
+\item
+  ``Abschnitt in allen Stimmen auswählen'' funktionier tauch mit
+  Ziernoten im ABC\#243
+\item
+  mehr Sonderzeichen ersetzt (z.b. aus Word) \#238
+\item
+  XML-Import funktioniert nun auch wenn keine Vorlage definiert ist
+  \#239
+\end{itemize}
+
+\subsection{enhancement}\label{enhancement}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  BWC: Taktnummern und Zählmarken können nun an der Notenmitte
+  ausgerichtet werden \#237
+\item
+  Performance: Notenvorschau und Harfennvorschau können nun im
+  Hintergrund gerechnet werden \#241
+\item
+  Einige Menü-Einträge von ``Extras'' in die Statusleiste unten verlegt
+  \#242
+\item
+  Dialog ``Es gibt neue Informationen'' verbessert \#244
+\end{itemize}
+
+\subsection{Kompatibilität}\label{kompatibilituxe4t}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  ``Konfig. bearb.'' / ``Taknummern und Zählmarken'' ,
+  Schnelleinstellung ``an der Mitte der Note verankern''
+\end{itemize}
+
 \subsection{V 1.9.2}\label{v-1.9.2}
 
 \subsubsection{Fehlerbehbungen}\label{fehlerbehbungen}
@@ -7663,7 +7743,7 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
   \#231
 \end{itemize}
 
-\subsubsection{Kompatibilität}\label{kompatibilituxe4t}
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7709,7 +7789,7 @@ internal release
   mehrfach eingegeben werden müssen \#223
 \end{itemize}
 
-\subsection{Kompatibilität}\label{kompatibilituxe4t-1}
+\subsection{Kompatibilität}\label{kompatibilituxe4t-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7853,7 +7933,7 @@ internal release
   Menü ``Extras'' \#71
 \end{itemize}
 
-\subsubsection{Kompatibilität}\label{kompatibilituxe4t-2}
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t-3}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7864,7 +7944,7 @@ internal release
 
 \subsection{v 1.7.1}\label{v-1.7.1}
 
-\subsubsection{fix}\label{fix}
+\subsubsection{fix}\label{fix-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7879,7 +7959,7 @@ internal release
 
 \subsection{v 1.7}\label{v-1.7}
 
-\subsubsection{fix}\label{fix-1}
+\subsubsection{fix}\label{fix-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -7923,7 +8003,7 @@ internal release
   BWC: no longer show (Original in ) in case of transpositions (\#174)
 \end{itemize}
 
-\subsubsection{enhancement}\label{enhancement}
+\subsubsection{enhancement}\label{enhancement-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -8137,7 +8217,7 @@ issues}\label{backward-compatibility-issues}
   in configuration \#95
 \end{itemize}
 
-\subsubsection{Fix}\label{fix-2}
+\subsubsection{Fix}\label{fix-3}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -8173,7 +8253,7 @@ issues}\label{backward-compatibility-issues}
   Now yield 1.50 instead of 1.49999999 to minimize rounding effects \#95
 \end{itemize}
 
-\subsubsection{Enhancement}\label{enhancement-1}
+\subsubsection{Enhancement}\label{enhancement-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -8205,7 +8285,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2}
 
-\subsubsection{Fix}\label{fix-3}
+\subsubsection{Fix}\label{fix-4}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -8221,7 +8301,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2-1}
 
-\subsubsection{Fix}\label{fix-4}
+\subsubsection{Fix}\label{fix-5}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -8229,7 +8309,7 @@ issues}\label{backward-compatibility-issues}
   remove copyright note from sheet annotation \#69
 \end{itemize}
 
-\subsubsection{enhancement}\label{enhancement-2}
+\subsubsection{enhancement}\label{enhancement-3}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
