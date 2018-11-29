@@ -80,6 +80,7 @@ end
 
 desc "Build Worker"
 task :build_worker do
+  git_describe
 
   File.open(ZNWORKER_JS, "w+") do |out|
     Opal.append_path "."
