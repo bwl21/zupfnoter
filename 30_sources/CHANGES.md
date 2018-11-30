@@ -16,8 +16,6 @@
 * moved some Menus from "Extras" to Statusbar #242
 * Improvee "message of the day" handling #244
 
-##
-
 ## BWC
 
 * Edit Configuration / "Barnumbers / and countnotes" , choose "anchor_at_box"
