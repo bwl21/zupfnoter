@@ -425,8 +425,8 @@ module Harpnotes
     def draw_flowline(root)
       color                    = COLORS[root.color]
       attr                     = {stroke: color}
-      attr["stroke-dasharray"] = "2,1" if root.style == :dashed
-      attr["stroke-dasharray"] = "0.5,1" if root.style == :dotted
+      attr["stroke-dasharray"] = "2 2" if root.style == :dashed
+      attr["stroke-dasharray"] = "1 1" if root.style == :dotted
       e                        = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
       #push_element(root, e)
       e

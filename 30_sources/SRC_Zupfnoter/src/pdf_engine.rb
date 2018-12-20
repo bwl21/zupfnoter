@@ -9,6 +9,7 @@ module Harpnotes
 
     PADDING         = 4.0
     JUMPLINE_INDENT = 10.0
+    JUMPLINE_INDENT = 10.0
     DOTTED_SIZE     = 0.5 # radius of dot
 
     # COLORS = {'black' => [0, 0, 0], 'white' => [255, 255, 255], 'grey' => [0, 128, 128], 'lightgrey' => [211, 0, 211], 'darkgrey' => [169,169,0]}
@@ -93,6 +94,7 @@ module Harpnotes
       # + style ... we shift it up by the fontsize converted from point to mm by mm_per_point
       text = root.text.gsub(/(\\?)(~)/) { |m| m[0] == '\\' ? m[1] : ' ' }
       text = text.split("\n")
+      text = [""] if text.empty?
       @pdf.text(root.center.first, root.center.last + style[:font_size] * mm_per_point, text, {align:align})
     end
 
@@ -296,7 +298,7 @@ module Harpnotes
       lines         = []
       scale         = [1, 1]
       start         = []
-      style         = root.filled? ? :FD : ""
+      style         = root.filled? ? :FD : "S"
       color         = COLORS[root.color]
       @pdf.fill     = root.filled? ? color : COLORS['white']
       @pdf.stroke   = color

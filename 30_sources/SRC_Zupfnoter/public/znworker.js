@@ -32065,12 +32065,12 @@ if (s == null) s = nil;
         attr = $hash2(["stroke"], {"stroke": color});
         if (root.$style()['$==']("dashed")) {
           
-          $writer = ["stroke-dasharray", "2,1"];
+          $writer = ["stroke-dasharray", "2 2"];
           $send(attr, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];};
         if (root.$style()['$==']("dotted")) {
           
-          $writer = ["stroke-dasharray", "0.5,1"];
+          $writer = ["stroke-dasharray", "1 1"];
           $send(attr, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];};
         e = self.paper.$line(root.$from().$center()['$[]'](0), root.$from().$center()['$[]'](1), root.$to().$center()['$[]'](0), root.$to().$center()['$[]'](1), attr);
@@ -34867,7 +34867,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "version/V_1.10.0");
+  Opal.const_set($nesting[0], 'VERSION', "version/V_1.10.0-6-g8e622c1");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

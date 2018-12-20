@@ -1,17 +1,5 @@
 require 'native'
 
-%x{
-jsPDF.API.setLineDash = function(dashArray, dashPhase) {
-  if(dashArray == undefined) {
-    this.internal.write('[] 0 d')
-  } else {
-    this.internal.write('[' + dashArray + '] ' + dashPhase + ' d')
-  }
-
-  return this;
-}
-}
-
 class JsPDF
 
   attr_accessor :x_offset, :y_offset
@@ -60,7 +48,7 @@ class JsPDF
 
   def line_dash=(dist = 3)
     dist = `undefined` if dist.nil?
-    `#{@native_jspdf}.setLineDash(#{dist}, #{dist})`
+    `#{@native_jspdf}.setLineDash([#{dist}, #{dist}], 0)`
   end
 
 
