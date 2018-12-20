@@ -162,19 +162,19 @@ class Controller
 
       c.as_action do |argument|
         case argument[:range]
-          when "auto"
-            play_abc(:auto)
+        when "auto"
+          play_abc(:auto)
 
-          when "sel"
-            play_abc(:selection)
+        when "sel"
+          play_abc(:selection)
 
-          when "ff"
-            play_abc(:selection_ff)
+        when "ff"
+          play_abc(:selection_ff)
 
-          when "all"
-            play_abc
-          else
-            $log.error("wrong range to play")
+        when "all"
+          play_abc
+        else
+          $log.error("wrong range to play")
         end
       end
     end
@@ -466,8 +466,8 @@ class Controller
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             # see https://github.com/bwl21/zupfnoter/issues/239
-            'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`) || {} } },
-            'stdextract'       => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`) || {}} }
+            'standardnotes' => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`) || {}} },
+            'stdextract'    => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`) || {}} }
         }
 
         # create the add_conf parameters for presets aka quicksettings
@@ -673,7 +673,8 @@ class Controller
             printer:               {keys: expand_extract_keys([:printer, 'printer.show_border', 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             repeatsigns:           {keys: expand_extract_keys(['repeatsigns.voices',
                                                                'repeatsigns.left.pos', 'repeatsigns.left.text', 'repeatsigns.left.style',
-                                                               'repeatsigns.right.pos', 'repeatsigns.right.text', 'repeatsigns.right.style'
+                                                               'repeatsigns.right.pos', 'repeatsigns.right.text', 'repeatsigns.right.style',
+                                                               'layout.jumpline_anchor'
                                                               ])},
 
 
@@ -721,7 +722,21 @@ class Controller
           end
         end
 
-        editor_title = ConfstackEditor.get_config_form_menu_entries.select { |i| i[:id] == args[:set] }.first
+        # see if wie find a matching key
+        #
+        unless the_form
+          keys         = $conf.keys.select do |k|
+            pattern = "Auszug.*#{args[:set]}.*".downcase
+            tk = k.split(".").map { |k| I18n.t(k) }.join(".").downcase
+            k.match("extract.*#{args[:set]}.*") || tk.match(pattern)
+          end.map { |k| k.gsub("extract.0", "extract.#{@systemstatus[:view]}") }
+          editor_title = "wildcard"
+          unless keys.empty?
+            the_form = {keys: keys}
+          end
+        end
+
+        editor_title = ConfstackEditor.get_config_form_menu_entries.select { |i| i[:id] == args[:set] }.first || editor_title
 
         if editor_title
           editor_title = I18n.t(editor_title[:text])
@@ -790,6 +805,7 @@ class Controller
             quicksetting_commands: quicksetting_commands,
             controller:            self
         }
+        `debugger`
         #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
         @config_form_editor = ConfstackEditor.new(editorparams)
         @config_form_editor.generate_form
@@ -1149,20 +1165,20 @@ C
 
         unless @dropboxclient.is_authenticated?
           case args[:scope]
-            when "full"
-              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_FULL)
-              @dropboxclient.app_name = "DrBx"
-              @dropboxclient.app_id   = "full"
-              @dropboxpath            = path
+          when "full"
+            @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_FULL)
+            @dropboxclient.app_name = "DrBx"
+            @dropboxclient.app_id   = "full"
+            @dropboxpath            = path
 
-            when "app"
-              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_APP)
-              @dropboxclient.app_name = "App"
-              @dropboxclient.app_id   = "app"
-              @dropboxpath            = path
+          when "app"
+            @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_APP)
+            @dropboxclient.app_name = "App"
+            @dropboxclient.app_id   = "app"
+            @dropboxpath            = path
 
-            else
-              $log.error("select app | full")
+          else
+            $log.error("select app | full")
           end
         else
           @dropboxpath = path
