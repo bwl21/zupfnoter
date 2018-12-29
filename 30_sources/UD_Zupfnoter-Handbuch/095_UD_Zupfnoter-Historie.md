@@ -1,87 +1,252 @@
 \cleardoublepage
 
-# Änderungshistorie von Zupfnoter
+# Änderungsgeschichte
 
-## V 1.7.0 2017-09-08
+# V.1.10 Nov 2018
 
-### Fehlerkorrekturen
+## fix
 
--   Tuplet-Linien sind jetzt korrekt in pdf (\#139)
--   keine unerwarteten Subflowlinien mehr zu Unisons (\#140)
--   kleine Noten sind nun auch korrekt (\#143)
--   Wiedergabe spielt nun bis zum Ende der gebundenen Noten (\#147)
--   Dekorationen funktionieren nun auch bei Pausen (\#127)
--   shift funktioniert jetzt auch auf unisons (\#107)
--   abc2svg-Einstellungen nicht mehr nötig (aus Template entfernt)
-    (\#71)
--   BWC Voreinstellung für "filenamepart" ist jetzt wie in 1.5 (\#155)
--   Config-Formular wird nach dem Laden eines anderen Stückes
-    aktualisiert (\#156)
--   Drucker offset wird nicht mehr zerstört, wenn der Benutzer nur einen
-    Wert der geforderten zwei Werten (\#157) eingibt.
--   Dropbox-Pfad kann jetzt auch Ziffern haben (\#162)
--   Druckerfenster zeigt pdf auf Chrome 60 wieder an (\#160)
--   jetzt werden auch auf Flowline zu unsichtbaren Pausen unterdrückt
-    (\#166)
--   Pausen über mehrere Takte funktionieren nun `Z` (\#166)
--   vt und vr vordefinierte Annotationen korrigiert
--   BWC: Tuplet-Konfiguration in Notebounds verschoben (\#168)
--   Mehrere Anmerkungen an einer Note können jetzt einzeln gezogen
-    werden (\#170)
--   BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-    mehr angezeigt (\#174)
--   BWC: Layoutlines ist nun die Kombination von Stimmen und
-    Layoutlines. (\#175)
+-   Pausen in n-tolen \#240
+-   "Abschnitt in allen Stimmen auswählen" funktionier tauch mit
+    Ziernoten im ABC\#243
+-   mehr Sonderzeichen ersetzt (z.b. aus Word) \#238
+-   XML-Import funktioniert nun auch wenn keine Vorlage definiert ist
+    \#239
+
+## enhancement
+
+-   BWC: Taktnummern und Zählmarken können nun an der Notenmitte
+    ausgerichtet werden \#237
+-   Performance: Notenvorschau und Harfennvorschau können nun im
+    Hintergrund gerechnet werden \#241
+-   Einige Menü-Einträge von "Extras" in die Statusleiste unten verlegt
+    \#242
+-   Dialog "Es gibt neue Informationen" verbessert \#244
+
+## 
+
+## Kompatibilität
+
+-   "Konfig. bearb." / "Taknummern und Zählmarken" , Schnelleinstellung
+    "an der Mitte der Note verankern"
+
+## V 1.9.2
+
+### Fehlerbehbungen
+
+-   Sichtbarkeit von punktierungen verbessert \#224
+-   Position von Liedtexten nun gleich in Vorschau bzw. Ausdruck \#235
+-   Notenvorschau wurde zu oft berechnet \#223
+-   Verbesserung beim Umschalten von Ansichten \#230
+-   Bessere Darstellung der Konfigurationsbuttons in chrome / firefox
+-   Geschwindikgeitsverbesserungen \#225
 
 ### Erweiterungen
 
--   Sprunglinien können jetzt per Drag & Drop konfiguriert werden
-    (\#136)
--   Tuplets können jetzt per Drag & Drop modelliert werden (\#138)
--   verbesserte Geschwindigkeit der Konfiguration (\#115)
--   verbesserte Geschwindigkeit der Harfennote-Vorschau (\#87)
--   verbesserte Geschwindigkeit des Vertikalpackers (\#87, \#89)
--   Editor klappt Konfigurationsparameter standardmäßig zu (\#144)
--   man kann jetzt einee Sortmark auf den Bogen drucken (\#145)
--   der Anker von Sprunglinien kann nun konfiguriert werden (\#150)
--   Variantenteile jetzt in Grau (\#151)
--   Menü unterstützt nun Extrakt 0 bis Extrakt 5 (\#153)
--   Menü zeigt jetzt auch Titel, Auszugsnummer und Ausgabesatatus von
-    Auszügen an (\#153)
--   Strg-Alt' F' schaltet jetzt Harfenvorschau um
--   Menü "Konfiguration bearbeiten" neu geordnet, um den
-    Konfigurations-Workflow zu verbessern (\#171)
--   jetzt kann die tilde als festes Leerzeichen in Liedtexten,
-    Saitnnamen, Anmerkungen etc. verwendet werden (\#113)
--   die Tilde kann nun maskiert werden `\\~`, so dass sie als Tile
-    ausgegeben wird (\#113)
+-   die zu speichenden Dateien können nun eingestellt werden
+    (seaveformat) \#229
+-   Konfiguration von Beschriftungen verbessert \#227
+-   Wiederholungszeichen können individuell konfiguriert werden \#232
+-   Aktuelles Template wird beim import einer xml-Datei angewandt
+-   Parameter können nun von und nach Auzug 0 kopiert werden \#228
 
-### Interne Änderungen
+### experimental
 
--   aktualisiert auf abc2svg 1.13.7 (\#163)
+-   modify configuration when generating pdf with cli - eg. for
+    watermark \#231
 
-### Experimentelle Funktion
+### Kompatibilität
 
--   kollisionsbasierten Packer (\#89)
--   Validierung der Konfigurationsparameter (\#85) mit Ergebnisformular
-    implementiert
--   Form der Flußlinien konfigurierbar (\#167)
+-   BWC Position und Größe von Liedtexten könnte sich geringfügig ändern
+    \#235
 
-### Inkompatibile Änderungen zur Vorversion
+## v.1.9.1
 
--   Layoutlines ist nun die Kombination von Stimmen und Layoutlines. Es
-    ist nicht mehr möglich, Stimmen anzuzeigen, ohne sie im Layout zu
-    berücksichtigen. (\#175)
--   Default für "filenamepart" ist jetzt wie in 1.5 (\#155)
--   Tuplet-Konfiguration ist jetzt unter' notebound': muss also neu
-    gemacht werden (\#168)
--   BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-    mehr angezeigt (\#174)
+internal release
 
-### bekannte Probleme
+## v 1.9.0
 
--   verschieben von Sprunglinien bei Saitenspiel funktioniert nicht
-    richtig (\#158)
+## Fehlerbehebungen
+
+-   Taktstrich bei Wiederholungsgrenzen innerhalb eines Takts sind nun
+    unterdrückt \#216
+
+## Erweiterungen
+
+-   Sprunglinien für Variationen können einzeln konfiguriert werden
+    \#215
+-   Voreinstellung für Basis von Taktnummernpoistionen verändert
+    ap_base \#218
+-   Anzeige der klingenden Töne für einen Zeitpunkt in der Statusleiste
+    \#220
+-   Sprunglinien können per Konfiguration unterdrückt werden (Pos: 0)
+    \#222
+-   automaitsches Scrollen kann abgeschaltet werden \#221
+-   Platzhalter in Seitenbeschriftungen, so dass manche Werte nicht
+    mehrfach eingegeben werden müssen \#223
+
+## Kompatibilität
+
+-   Voreinstellung für Basis von Taktnummernpoistionen verändert
+    ap_base \#218
+-   Konfiguration der Sprunglinien für Variationen wird von führeren
+    Zupfnoter-Versionen nicht erkannt
+
+## v 1.8
+
+### Fehlerbehebungen
+
+-   Druckvorschau löscht nicht mehr die Nicht-Speicherungsanzeige \#176
+-   Update auf abc2svg 1.14
+    -   Absturz bei fehlerhafter Transponierung
+    -   fehlerhafte Tonhöhen bei überbundenen Noten in Wiederholung
+    -   Vorzeichen nicht korrekt gelöscht am Taktende
+-   verbessertes Fermatensymbol in pdf \#178
+-   Absturz, wenn die Konfiguration auf eine nicht vorhandene Stimme
+    verweist \#179
+-   verbesserte Lokalisierung \#182
+-   Fehlerfenster hat jetzt eine ok-Taste \#183
+-   verbesserte Meldung "kein ABC gefunden" \#184
+-   Verbesserte Fehlerberichterstattung im Kontext der Dropbox \#185
+-   Absturz bei fehlerhaftem K-Header \#172
+-   Verbesserung der Importe von Xml mit nicht spielbaren Teilen \#187
+-   fixed "blues with accidentals" \#188
+-   Korrektur der Behandlung von Fingerabdrücken mit abc2svg 1.15.5
+    \#195
+-   vertaal ist nicht mehr begrenzt durch :|[ \#192
+-   Größe des Auswahlbereichs verkleinern, um Überschneidungen mit
+    Barnummer etc. zu vermeiden \#197
+-   verbesserter Spieler \#210
+
+### Erweiterungen
+
+-   linear arbeitenden packer \#194
+-   Menü zum Importieren von der lokalen Platte \#177\
+-   Unterstützung für 25saitige Bassharfe \#180
+-   Angabe =Dauer am Takt wird entfernt "M:3/4 4/4 4/4 =3/4" \#181
+-   Unterstützung bei der Arbeit mit Dateivorlagen \#71
+-   Kein initiales Rendern nach einem Absturz in der vorherigen Sitzung
+    \#103
+-   anderer Spieler, mit gesampelten Sounds \#126
+-   der neue Spieler kann auch mit Wiederholungen und Varianten spielen
+    \#126
+-   Auswahl (rot) und gespielte Noten (blau) unterschiedlich
+    hervorgehoben \#126
+-   Verbessertes Umschalten der Wiedergabetaste \#126
+-   Widergabegeschwindigkeit einstellbar \#126
+-   umgestaltetes Layout-Formular \#189
+-   Warnung bei nicht unterstütztem Browser \#186
+-   BWC: Layout von Taktnummern und Zählmarken verbessert \#199
+    -   Taktnummern weiter weg von der Note
+    -   neue Algorithmus berücksichtigt den Verlauf der Flusslinie
+-   Name einiger Layout-Schnelleinstellungen geändert \#196
+-   Selektion auf alle Stimmen erweiterbar, um Takte im gesamten Stück
+    zu löschen/einzufügen. \#202
+-   Symbolleiste im linken Bereich neu angeordnet \#202
+-   Unterstützung der Variation innerhalb des Taktes ohne Taktstrich
+    \#204
+-   Das Config-Formular zeigt nun an, ob es spezifisch für eine
+    bestimmten Auszug ist \#189
+-   Unterstützung von Undo/Redo für Config \#201
+-   verbesserte Shortcuts (z.B. cmd-L zum Umschalten des Vollbilds,
+    cmd-0 für Auszug 0)
+
+### Experimentelles
+
+-   weitere diatonische Instrumente (z.B. OKON-Harfe) \#196
+-   Layout von unten nach oben \#196
+-   Notendarstellung mit Fähnchen \#196
+-   Noten in der aktuellen Auswahl zur Harmonisierung anzeigen \#190
+-   heuristische Erkennung von Überschneidungen von Anmerkungen \#200
+-   Unterstützung für Illustrationen \#198
+-   Menü "Extras" \#71
+
+### Kompatibilität
+
+-   es kann sein, dass manuelle Positionierung von notenbeozgenen
+    Elementen überarbeitet werden muss. \#199
+
+## v 1.7.1
+
+### fix
+
+-   improved fermata symbol in pdf \#178
+-   turnoff flowconf edit for pdf. This avoids noise around very short
+    vertical flowlines \#167
+-   print preview no longer clears unsaved indicator \#176
+
+## v 1.7
+
+### fix
+
+-   tuplet lines are now correct in pdf (\#139)
+-   no longer have unexpected subflowlines to unisons (\#140)
+-   fixed size of smaall notes (\#143)
+-   player also plays until end of tied notes (\#147)
+-   decorations now also work on rests (\#127)
+-   shift now also works on unisons (\#107)
+-   abc2svg settings no longer necessary in tunes (removed from
+    Template) (\#71)
+-   BWC Default for "filenamepart" is now as it was in 1.5 (\#155)
+-   Config form is refreshed after loading another song (\#156)
+-   printer offset is no longer broken if user enters only one value
+    (\#157)
+-   Dropbox-Path can now also have digits (\#162)
+-   Printer window show pdf on Chrome 60 (\#160)
+-   now invisible rests are supressed even on flowline (\#166)
+-   now handle multi measure rests (\#166)
+-   fix predefined annotations vt and vr
+-   BWC: move Tuplet configuration to notebounds (\#168)
+-   Multiple notebound annotations can now be dragged individually
+    (\#170)
+-   BWC: no longer show (Original in ) in case of transpositions (\#174)
+
+### enhancement
+
+-   jumplines can now be configured by drag & drop (\#136)
+-   tuplets can now be sculptured by drag & drop (\#138)
+-   improved performance of configuration (\#115)
+-   improved performance of harpnote preview (\#87)
+-   improved performance of vertical packer (\#87, \#89)
+-   editor collapses config parameters by default (\#144)
+-   now can print a sortmark on top of the sheet (\#145)
+-   the anchor of jumplines can now be configured (\#150)
+-   now have variant parts appear in grey (\#151)
+-   now menu supports extract 0 to extract 5 (\#153)
+-   now menu also shows title of extracts (\#153)
+-   ctrl-alt 'F' now toggles harp preview
+-   rearranged "Edit Configuration" Menu to improve configuration
+    workflow (\#171)
+-   now suppoert tilde as non braeking space in lyrics, stringnames,
+    annotations \#113
+-   now suppoert quoted tilde as non braeking space in lyrics,
+    stringnames, annotations \#113
+-   layoutlines is now the combination of voices and layoutlines
+    (\#175).
+
+### internal stuff
+
+-   updated to abc2svg 1.13.7 (\#163)
+
+### experimental feature
+
+-   implemented a collision based packer (\#89)
+-   implemented validation of config parameters (\#85) with result form
+-   Shape of Flowlines can be configured (\#167)
+
+### backwards compatibility issues
+
+-   layoutlines is now the combination of voices and layoutlines. It is
+    no longer possible to show voices without considering them in the
+    layout (\#175)
+-   Default for "filenamepart" is now as it was in 1.5 (\#155)
+-   tuplet configuration is now under 'notebound': meed to rework in the
+    sheets - sorry! (\#168)
+-   transposititions are no longer exposed in legend (\#174)
+
+### known issues
+
+Dragging of jumpline does not work properly on Saitenspiel \#158
 
 ## V 1.6.1 2017-05-17
 

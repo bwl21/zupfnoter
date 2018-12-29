@@ -36,9 +36,9 @@ module Harpnotes
       # @return [Numeric] charpos, line_no
       def charpos_to_line_column(charpos)
         cleancharpos = charpos || 1
-        lines    = @abc_code[1, cleancharpos].split("\n")
-        line_no  = lines.count
-        char_pos = lines.last.length()
+        lines        = @abc_code[1, cleancharpos].split("\n")
+        line_no      = lines.count
+        char_pos     = lines.last.length()
         return line_no, char_pos
       end
 
@@ -63,7 +63,7 @@ module Harpnotes
               $log.error(message, [line_no, 1], [line_no, 2])
             end
           end
-          line_no +=1
+          line_no += 1
         end
 
         # cleanups
@@ -82,12 +82,14 @@ module Harpnotes
           if entry
             key = entry.first
             if result[key]
-              $log.error(%Q{#{I18n.t("more than one line found for ")} ':#{key}'}, [index+1, 1]) if ['F', 'X'].include?(key)
+              $log.error(%Q{#{I18n.t("more than one line found for ")} ':#{key}'}, [index + 1, 1]) if ['F', 'X'].include?(key)
               result[key] << entry.last.strip
             else
               if key == 'F'
                 filename = entry.last.strip
-                $log.error(%Q{"#{filename}": #{I18n.t("bad characters in filename")}}, [index+1, 1]) unless filename.match(/^[a-zA-z0-9_\-]+$/)
+                unless filename.include?('{{')  # do not check F: if we have placeholders
+                  $log.error(%Q{"#{filename}": #{I18n.t("bad characters in filename")}}, [index + 1, 1]) unless filename.match(/^[a-zA-z0-9_\-\.]+$/)
+                end
               end
               result[key] = [entry.last.strip]
             end

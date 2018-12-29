@@ -1,0 +1,25 @@
+{
+  "name": "zupfnoter",
+  "version": "1.9.2",
+  "description": "This is the commandline zupfnoter",
+  "main": "zupfnoter-cli.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "dependencies": {
+    "ajv": "^4.8.2",
+    "blob": "^0.0.4",
+    "encoding": "^0.1.12",
+    "glob": "^7.1.2",
+    "jspdf": "^1.4.1"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "uglify-js": "^2.8.29"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bernhard Weichel",
+  "license": "ISC"
+}

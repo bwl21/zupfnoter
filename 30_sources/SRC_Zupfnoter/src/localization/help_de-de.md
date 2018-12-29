@@ -1,3 +1,21 @@
+## align
+
+Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
+(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
+Anordnung automatisch errechnet
+
+-   `l`: der Text steht links vom Bezugspunkt (und ist daher
+    rechtsbündig)
+-   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+    linksbündig)
+-   `auto`: die Ausrichtung wird automatisch errechnet
+
+> **Hinweis**: Auch beim manuellen Verschieben wird die Anodnung der
+> Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
+> (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
+> Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
+> werden.
+
 ## annotations
 
 Hier kannst du eine Liste von Beschriftungsvorlagen angeben.
@@ -115,6 +133,45 @@ bei manchen Stücken eine sinnvollere Einstellugn sein.
 Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
 verschieben.
 
+## bar
+
+## barnumbers.apanchor
+
+Hier kannst du die vertikale Verankerung der Taktnummer an der Note
+einstellen.
+
+-   `center`: die Taktnummer wird an der Mitte der Note verankert
+-   `box`: die Taktnummer wird am unteren Rand der Note verankert
+
+> **Hinweise**:
+>
+> -   Dieser Parameter wirkt nur bei automatischer Positionierung der
+>     Taktnummern.
+>
+> -   Die horizontale Verankerung der Taktnummer wird automatisch so
+>     berechet, dass die Taktnummer gegenüber der eingehenden Flusslinie
+>     steht.
+>
+> <!-- -->
+> ## barnumbers.apbase
+
+Hier kannst du die Grundlage für die automatische Positionierung von
+Taktnummern einstellen.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben die Taktnummer **weiter** von der Note weg.
+-   Negative Werte schieben die Taktnummer **näher** an die Note heran.
+
+> **Hinweise**: Die horizontale Verankerung der Taktnummer wird
+> automatisch so berechet, dass die Taktnummer gegenüber der ausgehenden
+> Flusslinie steht.
+>
+> Eine bewährte Eingabe ist:
+>
+> -   `center`: `1,0`
+> -   `box`: `1,-1`
+
 ## extract.0.barnumbers
 
 Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt
@@ -132,6 +189,41 @@ Unterlegnotenblatt ausgegeben werden sollen.
 
 Zählmarken sind hilfreich, um sich ein Stück erarbeiten. Sie geben
 Hilfestellung beim einhalten der vorgegebenen Notenweret.
+
+## countnotes.apanchor
+
+Hier kannst du die vertikale Verankerung der Zählmarke an der Note
+einstellen.
+
+-   `center`: die Zählmarke wird an der Mitte der Note verankert
+-   `box`: die Zählmarke wird am unteren Rand der Note verankert
+
+> **Hinweise**:
+>
+> -   Dieser Parameter wirkt nur bei automatischer Positionierung der
+>     Zählmarken.
+> -   Die horizontale Verankerung der Zählmarke wird automatisch so
+>     berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
+>     steht.
+
+## countnotes.apbase
+
+Hier kannst du die Grundlage für die automatische Positionierung von
+Zählmarken einstellen.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben die Zählmarke **weiter** von der Note weg.
+-   Negative Werte schieben die Zählmarke **näher** an die Note heran.
+
+> **Hinweise**: Die horizontale Verankerung der Zählmarke wird
+> automatisch so berechet, dass die Zählmarke gegenüber der eingehenden
+> Flusslinie steht.
+>
+> Eine bewährte Eingabe ist:
+>
+> -   `center`: `1,0`
+> -   `box`: `1,-0.5`
 
 ## extract.0.countnotes.voices
 
@@ -169,6 +261,10 @@ gezeichnet werden soll.
 > **Hinweis**:In der Texteingabe wird das als eine Liste von
 > zweiwertigen Listen dargestellt.
 
+## images.0.height
+
+Hier gibst du die Höhe des Objektes (z.b. des Bildes) in mm an.
+
 ## instrument
 
 Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
@@ -183,6 +279,12 @@ Es gibt folgende Einstellunge:
     e
 -   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
     einer G-Bass-Saite
+
+## imagename
+
+Hier kannst du das Bild auswählen, welches eingefügt werden soll. Die
+Auswahlliste zeigt die Zupfnoter-internen Namen an. Es werden nur Bilder
+gelistet, die dem ABC-File hinzugefügt wurde.
 
 ## layout
 
@@ -257,6 +359,15 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
+## notebound
+
+Hier stehen alle Konfigurationsparameter, welche an den **Zeitpunkt**
+einer Note gebunden sind (z.B für Taktzahlen, Triolen usw.)
+
+> **Hinweis:** Wenn das Musikstück so bearbeitet wird, dass das
+> Zeitschema verändert wird (z.b. Noten einfügen) kann es sinnvoll sein,
+> diesen Zweig komplett zu löschen und neu aufzubauen.
+
 ## notebound.minc
 
 Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:
@@ -302,6 +413,39 @@ Im Beispiel
     falls er im Auszug 0 gesetzt wurde.
 -   `0.5` vergrößert den Vorschub um die Hälfte einer ganzen Note.
 
+## nconf
+
+Hier kannst du die Darstellung einer einzelnen Note konfigurieren.
+
+## nshift
+
+Hier kannst du konfigieren, wie die Note/Pause horizontal verschobnen
+wird. Die Angabe ist ein Fakter der mit der Notenbreite multipliziert
+wird.
+
+-   `+1.0` verschiebt die Note um eine Notenbreite nach rechts
+-   `-1.0` verschiebt die Note um eine Notenbreite nach links
+
+> **Hinweis**: diese Konfiguration überschreibt eventuell vorhandene
+> Verschiebungen über `Zusätze`.
+
+## layout.bottomup
+
+Hier kannst du einstellen, ob die Noten von unten nach oben geschrieben
+werden. Manche Spieler (Spieler der Okon-Harfe) bevorzugen diese
+Darstellung, weil dabei die Hand nicht mehr die nächsten Noten verdeckt.
+
+> **Hinweis** Die Taktstriche werden weiterhin oberhalb der Noten
+> gezeichnet. Aber die Position von Taktnummern und Zählmarken wird
+> angepasst.
+
+## layout.beams
+
+Hier kannst du einstellen, ob die Noten mit Notenhälsen dargestellt
+werden. Noten mit Notenhälsen orientieren sich mehr an der
+traditionellen Notenschrift, brauchen aber mehr Plat. Alle Noten werden
+gleich groß dargeestellt.
+
 ## layout.packer
 
 Hier kannst du weitere Einzelheiten für die vertikale Anordnung der
@@ -330,6 +474,14 @@ Hier kannst du die pack-Methode auswählen
     > Bei dieser Methode sind die Synchronisiationslinien zwischen den
     > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
     > flach sind.
+
+-   **2** : linear: die Zeitachse wird linear auf das Blatt verteilt.
+    Bei kurzen Stücken entspricht der Abstand der Noten dann auch dem
+    Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber
+    am meisten Platz verbraucht.
+
+    Es wird auch kein extra Raum für Parts, Taktstriche und manuelle
+    Vorschübe erstellt.
 
 ## layout.packer.pack_min_increment
 
@@ -478,11 +630,19 @@ Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
 Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
-
-Die Midi-Codes findest du auf
-[hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+> **Hinweis** Bei **chromatischen** Instrumenten wird die Stimmung der
+> Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43 dafür, dass
+> das G der Oktave 3 am linken Blattrand erscheint.
+>
+> Die Midi-Codes findest du auf
+> [hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+>
+> Bei **diatonischen** Instrumenten muss der Wert ggf. durch
+> Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
+> verdrahtet ist. Üblicherweise ist er 0. Man könnte aber durch Werte
+> von -12 bzw. +12 eine Art "Transponierung" errreichen. Das ist dann
+> sinnvoll, wenn die selben Eingabenoten für verschiedene Instrumente
+> verwendet werden sollen.
 
 ## pos
 
@@ -515,7 +675,7 @@ Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
 
 ## printer.a3_offset
 
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
 verschoben werden soll.
 
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
@@ -574,8 +734,9 @@ Hier kannst du die Darstellung des linken Wiederholungszeichen steuern.
 
 ## repeatsigns.voices
 
-Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, für
-welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
+Hier gibst du eine Liste (durch Komma getrennt) der Stimmen an, für
+welche Wiederholungszeichen anstelle einer Sprunglinie ausgegeben
+werden.
 
 > Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine
 > Sprunglinien mehr dar.
@@ -628,6 +789,11 @@ Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 
 > **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
 > berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
+
+## show
+
+Dieser Eisntellung steuert, ob das Objekt (z.B. das Bild) in der Ausgabe
+angezeigt werden soll.
 
 ## startpos
 
@@ -682,15 +848,36 @@ Seitenbeschriftungen etc.
 
 Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 
+## template
+
+Hier kannst du spezifische Eigenschaften des Template anpassen. Das ist
+nur relevant, wenn du ein Template bearbeitest.
+
+> **Hinweis** Diese Eigenschaften werden auch in abc dateien geschrieben
+> welche auf Basis des vorhandenen Templates erstellt werden. Damit kann
+> mnan feststellen, welches termplate der aktuell geöffnteten ABC -
+> datei zu Grunde liegt.
+
+## template.filebase
+
+Hier kannst du den Dateinamen (ohne Erweiterung) des Templates angeben.
+Wenn die F-Kopfzeile eine Platzhalter-Startsquenz (`{{`) enthält, wird
+der in diesem Parameter angegebenen Name zum Speichern verwendet
+
+## template.title
+
+Hier kannst du einen informativen Titel für das Template angeben. Damit
+kannst du das Template identifizieren.
+
 ## tuplet
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 > **Hinweis**:
 >
-> Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-> notwendig, eine "Verschiebemarke" vor die betroffene tuplet zu setzen.
+> Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+> notwendig, eine "Verschiebemarke" vor die betroffene n-Tole zu setzen.
 > Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 > man die Verschiebemarken gleich benennt.
 >
@@ -701,8 +888,21 @@ steuern.
 
 ## tuplet.0
 
-Hier kannst du die Darstellung einer Triole (genauer gesagt, eines
-Tuplets) steuern.
+Hier kannst du die Darstellung einer Triole (genauer gesagt, einer
+n-tole) steuern.
+
+## tuplets
+
+Hier kannst du die generelle Darstellung von n-Tolen konfigurieren.
+
+## tuplets.text
+
+Hier kannst du die Darstellung der n-Tolen - Nummer konfigurieren. Der
+Wert ist ein Text, in welchem der Platzhalter `{{tuplet}}` durch die
+n-Tolen - Nummer ersetzt wird.
+
+So wird beispielsweise mit `- {{tuplet}} -` die n-Tolen - Nummer als
+`- 3 -` dargestellt.
 
 ## cp1
 
@@ -714,7 +914,7 @@ Hier gibst du den Kontrollpunkt für die letzte Note an.
 
 ## shape
 
-Hier gibst du eine Liste von Linienformen für das Tuplet an.
+Hier gibst du eine Liste von Linienformen für die n-tole an.
 
 -   `c`: Kurve
 -   `l`: Linie
@@ -724,12 +924,27 @@ Hier gibst du eine Liste von Linienformen für das Tuplet an.
 
 ## tuplet.show
 
-Hier gibst du an, ob das Tuplet ausgegeben werden soll.
+Hier gibst du an, ob die n-Tole ausgegeben werden soll.
 
 ## text
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
 
 ## sortmark
 
@@ -743,7 +958,7 @@ ob der Stapel sortiert ist.
 > **Hinweis**: Leider kann auf haushaltsüblichen Druckern nicht bis zum
 > Rand gedrukht werden. Daher muss man die Sortiermake mit einem
 > Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
-> Stapels kontrollieren, in dem man auf die Schnittkan des Stapels
+> Stapels kontrollieren, in dem man auf die Schnittkante des Stapels
 > schaut.
 
 ## sortmark.fill
@@ -781,3 +996,17 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 ## X_SPACING
 
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+
+## \$resources
+
+Hier siehst du eine Liste alle Bilder, die du geladen hast.
+
+-   Du kannst sie löschen indem du auf den Papierkorb klickst.
+-   Du kannst eine kleine Vorschau sehen wenn du auf Hilfe (?) klickst.
+
+> **Hinweis**: Bitte beachte, dass die Bilder erst dann auf deinem Blatt
+> erscheinen, wenn du sie im entsprechenden Auszug anlegst.
+
+> **Hinweis**: Du kannst Bilder im JPG-Format hinzufügen über das Menü
+> `Datei / Import`. Alternativ kannst du eine JPG Datei in Zupfnoter
+> hineinziehen.

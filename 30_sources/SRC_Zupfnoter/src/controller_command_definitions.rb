@@ -14,8 +14,8 @@ class Controller
       c.undoable = false
 
       c.add_parameter(:what, :string) do |parameter|
-        parameter.set_default {""}
-        parameter.set_help {"filter string for help command"}
+        parameter.set_default { "" }
+        parameter.set_help { "filter string for help command" }
       end
 
       c.set_help do
@@ -23,18 +23,18 @@ class Controller
       end
 
       c.as_action do |args|
-        $log.message("<pre>#{@commands.help_string_style.select {|i| i.include? args[:what]}.join("\n")}</pre>")
+        $log.message("<pre>#{@commands.help_string_style.select { |i| i.include? args[:what] }.join("\n")}</pre>")
       end
     end
 
     @commands.add_command(:view) do |command|
 
       command.add_parameter(:view, :integer) do |p|
-        p.set_default {@systemstatus[:view]}
-        p.set_help {"id of the view to be used for preview [#{@systemstatus[:view]}]"}
+        p.set_default { @systemstatus[:view] }
+        p.set_help { "id of the view to be used for preview [#{@systemstatus[:view]}]" }
       end
 
-      command.set_help {"set current view  #{command.parameter_help(0)} and redisplay"}
+      command.set_help { "set current view  #{command.parameter_help(0)} and redisplay" }
 
       command.undoable = false
 
@@ -45,47 +45,44 @@ class Controller
       end
     end
 
+    @commands.add_command(:saveformat) do |command|
+
+      command.add_parameter(:saveformat, :string) do |p|
+        p.set_default { @systemstatus[:saveformat] }
+        p.set_help { "List of paperformats separated by hyphen (e.g. 'A3-A4') [#{@systemstatus[:saveformat]}]" }
+      end
+
+      command.set_help { "set current fileformats for saving  #{command.parameter_help(0)} used when saving" }
+
+      command.undoable = false
+
+      command.as_action do |args|
+        set_status(saveformat: args[:saveformat].upcase)
+      end
+    end
 
     @commands.add_command(:loglevel) do |c|
       c.undoable = false
-      c.set_help {"set log level to #{c.parameter_help(0)}"}
+      c.set_help { "set log level to #{c.parameter_help(0)}" }
       c.add_parameter(:level, :string) do |parameter|
-        parameter.set_default {"warning"}
-        parameter.set_help {"error | warning | info | debug"}
+        parameter.set_default { "warning" }
+        parameter.set_help { "error | warning | info | debug" }
       end
       c.as_action do |args|
-        $log.loglevel=args[:level]
+        $log.loglevel = args[:level]
+        @worker.post_named_message(:set_loglevel, args[:level])
         set_status(loglevel: $log.loglevel)
       end
     end
 
 
-    @commands.add_command(:autofold) do |c|
-      c.undoable = false
-      c.set_help {"set automatic folding of config in editor #{c.parameter_help(0)}"}
-      c.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_default {'true'}
-        parameter.set_help {"true | false"}
-      end
-      c.as_action do |args|
-        value = {'true' => true, 'false' => false}[args[:value]]
-        if value
-          @editor.autofold = true
-          @editor.fold_all
-        else
-          @editor.autofold = false
-          @editor.unfold_all
-        end
-      end
-    end
-
     @commands.add_command(:autorefresh) do |c|
       c.undoable = false
-      c.set_help {"turnon autorefresh"}
+      c.set_help { "turnon autorefresh" }
       values = {on: :on, off: :off, remote: :remote}
       c.add_parameter(:value, :string) do |parameter|
-        parameter.set_default {:true}
-        parameter.set_help {"#{values.keys.join(" | ")}"}
+        parameter.set_default { :true }
+        parameter.set_help { "#{values.keys.join(" | ")}" }
       end
       c.as_action do |args|
 
@@ -100,7 +97,7 @@ class Controller
 
     @commands.add_command(:undo) do |c|
       c.undoable = false
-      c.set_help {"undo last command"}
+      c.set_help { "undo last command" }
       c.as_action do |a|
         @commands.undo
       end
@@ -108,7 +105,7 @@ class Controller
 
     @commands.add_command(:redo) do |c|
       c.undoable = false
-      c.set_help {"redo last command"}
+      c.set_help { "redo last command" }
       c.as_action do |a|
         @commands.redo
       end
@@ -116,9 +113,9 @@ class Controller
 
     @commands.add_command(:history) do |c|
       c.undoable = false
-      c.set_help {"show history"}
+      c.set_help { "show history" }
       c.as_action do |a|
-        history = @commands.history.map {|c| "#{c.first}: #{c[1].name}(#{c.last})"}
+        history = @commands.history.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
         $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
@@ -126,19 +123,30 @@ class Controller
 
     @commands.add_command(:showundo) do |c|
       c.undoable = false
-      c.set_help {"show undo stack"}
+      c.set_help { "show undo stack" }
       c.as_action do |a|
-        history = @commands.undostack.map {|c| "#{c.first}: #{c[1].name}(#{c.last})"}
+        history = @commands.undostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
         $log.message("<pre>#{history.join("\n")}</pre>")
       end
     end
 
     @commands.add_command(:showredo) do |c|
       c.undoable = false
-      c.set_help {"show redo stack"}
+      c.set_help { "show redo stack" }
       c.as_action do |a|
-        history = @commands.redostack.map {|c| "#{c.first}: #{c[1].name}(#{c.last})"}
+        history = @commands.redostack.map { |c| "#{c.first}: #{c[1].name}(#{c.last})" }
         $log.message("<pre>#{history.join("\n")}</pre>")
+      end
+    end
+
+
+    @commands.add_command(:selectinallvoices) do |c|
+      c.undoable = false
+      c.set_help { "select all voices" }
+      c.as_action do |a|
+        time_ranges = []
+        $log.benchmark("get segments") { time_ranges = get_selected_time_segments }
+        $log.benchmark("set_segments") { select_by_time_segments(time_ranges) }
       end
     end
   end
@@ -146,10 +154,10 @@ class Controller
   def __ic_02_play_commands
     @commands.add_command(:p) do |c|
       c.undoable = false
-      c.set_help {"play song #{c.parameter_help(0)}"}
+      c.set_help { "play song #{c.parameter_help(0)}" }
       c.add_parameter(:range, :string) do |parameter|
-        parameter.set_default {"ff"}
-        parameter.set_help {"r(all | ff | sel): range to play"}
+        parameter.set_default { "ff" }
+        parameter.set_help { "r(all | ff | sel): range to play" }
       end
 
       c.as_action do |argument|
@@ -171,9 +179,23 @@ class Controller
       end
     end
 
+    @commands.add_command(:speed) do |c|
+      c.undoable = false
+      c.set_help { "play song #{c.parameter_help(0)}" }
+      c.add_parameter(:speed, :float) do |parameter|
+        parameter.set_default { 10 }
+        parameter.set_help { "value = < 1 slower, > 1 faster" }
+      end
+      c.undoable = false
+      c.set_help { "set playing speed" }
+      c.as_action do |a|
+        @harpnote_player.set_speed(a[:speed].to_f)
+      end
+    end
+
     @commands.add_command(:stop) do |c|
       c.undoable = false
-      c.set_help {"stop playing"}
+      c.set_help { "stop playing" }
       c.as_action do |a|
         stop_play_abc
       end
@@ -181,9 +203,13 @@ class Controller
 
     @commands.add_command(:render) do |c|
       c.undoable = false
-      c.set_help {"refresh"}
+      c.set_help { "refresh" }
       c.as_action do |a|
-        render_previews
+        refresh = @systemstatus[:autorefresh]
+        handle_command("autorefresh off")
+        render_previews.then do
+          handle_command("autorefresh #{refresh}")
+        end
       end
     end
 
@@ -192,14 +218,14 @@ class Controller
   def __ic_03_create_commands
 
     @commands.add_command(:c) do |c|
-      c.set_help {"create song #{c.parameter_help(0)} #{c.parameter_help(1)}"}
+      c.set_help { "create song #{c.parameter_help(0)} #{c.parameter_help(1)}" }
       c.add_parameter(:id, :string) do |parameter|
-        parameter.set_help {"value for X: line, a unique id"}
+        parameter.set_help { "value for X: line, a unique id" }
       end
 
       c.add_parameter(:title, :string) do |parameter|
-        parameter.set_default {"untitled"}
-        parameter.set_help {"Title of the song"}
+        parameter.set_default { "untitled" }
+        parameter.set_help { "Title of the song" }
       end
 
       c.as_action do |args|
@@ -225,7 +251,7 @@ class Controller
 
 
     @commands.add_command(:drop) do |command|
-      command.set_help {"Handle a dropped _abc"}
+      command.set_help { "Handle a dropped _abc" }
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
@@ -239,39 +265,31 @@ class Controller
       end
     end
 
-    @commands.add_command(:conf) do |command|
+    @commands.add_command(:pasteDatauri) do |command|
       command.undoable = false
 
+      command.set_help { "handle a dropped resource by datauri" }
+
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help {"parameter key"}
+        parameter.set_help { "name of the ressource" }
       end
 
-      command.add_parameter(:value, :boolean) do |parameter|
-        parameter.set_help {"parameter value (true | false"}
+      command.add_parameter(:value, :string) do |parameter|
+        parameter.set_help { "value of the ressource" }
       end
-
-
-      command.set_help {"set configuration parameter true/false"}
 
       command.as_action do |args|
-        value = {'true' => true, 'false' => false}[args[:value]]
-
-        raise "invalid key #{args[:key]}" unless $conf.keys.include?(args[:key])
-        raise "value must be true or false" if value.nil?
-        $conf[args[:key]] = value
-
-        nil
-      end
-
-      command.as_inverse do |args|
-        $conf.pop # todo: this is a bit risky
+        key   = args[:key].gsub(/[^a-zA-Z0-9_]/, "_")
+        value = args[:value].scan(/.{1,60}/)
+        @editor.patch_resources(key, value)
       end
     end
+
 
     @commands.add_command(:stdnotes) do |command|
       command.undoable = false
 
-      command.set_help {"configure extract with template from localstore"}
+      command.set_help { "configure extract with template from localstore" }
 
       command.as_action do |args|
         handle_command("addconf standardnotes")
@@ -282,17 +300,17 @@ class Controller
     @commands.add_command(:stdextract) do |command|
       command.undoable = false
 
-      command.set_help {"configure with template from localstore"}
+      command.set_help { "configure with template from localstore" }
 
       command.as_action do |args|
-        handle_command("addconf standardextract")
+        handle_command("addconf stdextract")
       end
     end
 
     @commands.add_command(:setstdnotes) do |command|
       command.undoable = false
 
-      command.set_help {"configure stdnotes in localstore"}
+      command.set_help { "configure stdnotes in localstore" }
 
       command.as_action do |args|
         template = @editor.get_config_part_value('extract.0').to_json
@@ -305,7 +323,7 @@ class Controller
     @commands.add_command(:setstdextract) do |command|
       command.undoable = false
 
-      command.set_help {"configure stdc onfig in localstore"}
+      command.set_help { "configure stdconfig in localstore" }
 
       command.as_action do |args|
         template = @editor.get_config_part_value('extract').to_json
@@ -316,12 +334,18 @@ class Controller
 
     @commands.add_command(:settemplate) do |command|
       command.undoable = false
-      command.set_help {"set the current editor content as template"}
+      command.set_help { "set the current editor content as template (has no F:{{}} - line" }
       command.as_action do |args|
         template = @editor.get_text()
+
         if template.empty?
           `localStorage.removeItem(#{ZN_TEMPLATENAME})`
         else
+          layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
+          unless @music_model.meta_data[:filename].include?('{{')
+            raise "current file is not a template. It does not have a placeholder in F: line e.g. F:{{song_id}}"
+          end
+          handle_command('setstdextract')
           `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
         end
         nil
@@ -330,10 +354,10 @@ class Controller
 
     @commands.add_command(:edittemplate) do |command|
       command.undoable = true
-      command.set_help {"load the current template to the editor"}
+      command.set_help { "load the current template to the editor" }
       command.as_action do |args|
         args[:oldval] = @editor.get_text()
-        template = get_current_template
+        template      = get_current_template
         @editor.set_text(template)
         nil
       end
@@ -341,26 +365,46 @@ class Controller
       command.as_inverse do |args|
         @editor.set_text(args[:oldval])
       end
-
     end
-
 
 
     @commands.add_command(:setsetting) do |command|
       command.undoable = false
 
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help {"parameter key"}
+        parameter.set_help { "parameter key (autoscroll, flowconf, follow, validate ...)" }
+        parameter.set_help { "parameter key (autoscroll, flowconf, follow, validate ...)" }
       end
 
       command.add_parameter(:value, :string) do |parameter|
-        parameter.set_help {"parameter value as JSON"}
+        parameter.set_help { "parameter value as JSON" }
       end
 
-      command.set_help {"adjust settings (runtime only setting) parameter"}
+      command.set_help { "adjust settings (runtime only setting) parameter" }
 
       command.as_action do |args|
         $settings[args[:key]] = args[:value]
+        call_consumers(:settings_menu)
+        nil
+      end
+
+      command.as_inverse do |args|
+      end
+    end
+
+
+    @commands.add_command(:togglesetting) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key (autoscroll, flowconf, follow, validate ...)" }
+      end
+
+      command.set_help { "toggle settings (runtime only setting) parameter" }
+
+      command.as_action do |args|
+        $settings[args[:key]] = $settings[args[:key]] == "true" ? "false" : "true";
+        call_consumers(:settings_menu)
         nil
       end
 
@@ -373,112 +417,138 @@ class Controller
       command.undoable = false
 
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help {"parameter key"}
+        parameter.set_help { "parameter key" }
       end
 
-      command.set_help {"add configuration parameter"}
+      command.set_help { "add configuration parameter" }
 
       command.as_action do |args|
 
+
+        # key: the key which shall be inserted
+        #      note if it ends with '.x' we create a new entry and replace '.x' with a running number
+        #
+        # value: the value to be patched
+        # method: preset | patch  - decide if we replace existing values
         values = {
-            'title'            => lambda {{key: "extract.#{@systemstatus[:view]}.title", value: "ENTER_TITLE_EXTRACT_#{@systemstatus[:view]}"}},
-            'voices'           => lambda {{key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']}},
-            'flowlines'        => lambda {{key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']}},
-            'layoutlines'      => lambda {{key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']}},
-            'jumplines'        => lambda {{key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']}},
-            'repeatsigns.full' => lambda {{key: "extract.#{@systemstatus[:view]}.repeatsigns", value: $conf['extract.0.repeatsigns']}},
-            'repeatsigns'      => lambda {{key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']}},
-            'synchlines'       => lambda {{key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']}},
-            'legend'           => lambda {{key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']}},
-            'notes'            => lambda {{key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']}},
-            'lyrics'           => lambda {{key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']}},
-            'nonflowrest'      => lambda {{key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']}},
-            'startpos'         => lambda {{key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']}},
-            'subflowlines'     => lambda {{key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']}},
-            'produce'          => lambda {{key: "produce", value: $conf['produce']}},
-            'annotations'      => lambda {{key: "annotations.x", value: $conf['templates.annotations']}},
-            'layout'           => lambda {{key:   "extract.#{@systemstatus[:view]}.layout",
-                                           value: $conf['extract.0.layout']}}, # radii of the largest Rest Glyph} },
-            'printer' => lambda {{key:   "extract.#{@systemstatus[:view]}.printer",
-                                  value: $conf['extract.0.printer']}}, # radii of the largest Rest Glyph} },
-            'countnotes'       => lambda {{key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']}},
+            'title'            => lambda { {key: "extract.#{@systemstatus[:view]}.title", value: "ENTER_TITLE_EXTRACT_#{@systemstatus[:view]}"} },
+            'voices'           => lambda { {key: "extract.#{@systemstatus[:view]}.voices", value: $conf['extract.0.voices']} },
+            'flowlines'        => lambda { {key: "extract.#{@systemstatus[:view]}.flowlines", value: $conf['extract.0.flowlines']} },
+            'layoutlines'      => lambda { {key: "extract.#{@systemstatus[:view]}.layoutlines", value: $conf['extract.0.layoutlines']} },
+            'jumplines'        => lambda { {key: "extract.#{@systemstatus[:view]}.jumplines", value: $conf['extract.0.jumplines']} },
+            'repeatsigns.full' => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns", value: $conf['extract.0.repeatsigns']} },
+            'repeatsigns'      => lambda { {key: "extract.#{@systemstatus[:view]}.repeatsigns.voices", value: $conf['extract.0.repeatsigns.voices']} },
+            'synchlines'       => lambda { {key: "extract.#{@systemstatus[:view]}.synchlines", value: $conf['extract.0.synchlines']} },
+            'legend'           => lambda { {key: "extract.#{@systemstatus[:view]}.legend", value: $conf['extract.0.legend']} },
+            'notes'            => lambda { {key: "extract.#{@systemstatus[:view]}.notes.x", value: $conf['templates.notes']} },
+            'lyrics'           => lambda { {key: "extract.#{@systemstatus[:view]}.lyrics.x", value: $conf['templates.lyrics']} },
+            'images'           => lambda { {key: "extract.#{@systemstatus[:view]}.images.x", value: $conf['templates.images']} },
+            'nonflowrest'      => lambda { {key: "extract.#{@systemstatus[:view]}.nonflowrest", value: $conf['extract.0.nonflowrest']} },
+            'startpos'         => lambda { {key: "extract.#{@systemstatus[:view]}.startpos", value: $conf['extract.0.startpos']} },
+            'subflowlines'     => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
+            'produce'          => lambda { {key: "produce", value: $conf['produce']} },
+            'annotations'      => lambda { {key: "annotations.x", value: $conf['templates.annotations']} },
+            'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
+                                            value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
+            'printer' => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
+                                   value: $conf['extract.0.printer']} }, # radii of the largest Rest Glyph} },
+            'countnotes'       => lambda { {key: "extract.#{@systemstatus[:view]}.countnotes", value: $conf['extract.0.countnotes']} },
 
-            'barnumbers'       => lambda {{key:   "extract.#{@systemstatus[:view]}.barnumbers",
-                                           value: {
-                                               voices: [],
-                                               pos:    [6, -4]
-                                           }}},
-            'barnumbers.full'  => lambda {{key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']}},
+            'barnumbers'       => lambda { {key:   "extract.#{@systemstatus[:view]}.barnumbers",
+                                            value: {
+                                                voices: [],
+                                                pos:    [6, -4]
+                                            }} },
+            'barnumbers.full'  => lambda { {key: "extract.#{@systemstatus[:view]}.barnumbers", value: $conf['extract.0.barnumbers']} },
 
-            'stringnames.full' => lambda {{key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']}},
-            'stringnames'      => lambda {{key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']}},
+            'stringnames.full' => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames", value: $conf['extract.0.stringnames']} },
+            'stringnames'      => lambda { {key: "extract.#{@systemstatus[:view]}.stringnames.vpos", value: $conf['extract.0.stringnames.vpos']} },
 
-            'restpos_1.3'      => lambda {{key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}}},
-            'standardnotes'    => lambda {{key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`)}},
-            'standardextract'  => lambda {{key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`)}},
-            'x1'               => lambda {{key: "xx", value: $conf[]}},
-            'xx'               => lambda {{key: "extract.#{@systemstatus[:view]}", value: $conf['extract.0']}},
-            'hugo'             => lambda {{key: "extract.#{@systemstatus[:view]}",
-                                           value:
-                                                [:title, :voices, :flowlines, :synchlines, :jumplines].inject({}) do |r, k|
-                                                  r[k] = $conf["extract.#{@systemstatus[:view]}.#{k}"]
-                                                  r
-                                                end}}
+            'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
+            # see https://github.com/bwl21/zupfnoter/issues/239
+            'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`) || {} } },
+            'stdextract'       => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`) || {}} }
         }
 
-        # create the commands for presets aka quicksettings
-        # note they must be added to the ui in
-        # command-definitions: for :editconf
-        # the quicksettings are invokked from editconf - therefore need to be registered there
+        # create the add_conf parameters for presets aka quicksettings
+        # note they must be added to the entry quicksetting_commands: in
+        # controller-command-definitions: for :editconf
+        # the quicksettings are invoked from editconf - therefore need to be registered there
+        #
+        # note that the method specifies
+        #    :preset : existing parameters are replaced
+        #    :patch  : existing parameters are untouched
 
+
+        ## here we compute the vallues for the quicksettings (prsets)
         all_value = {}
-        $conf['presets.notes'].each do |key, preset_value|
-          entry                         = $conf["presets.notes.#{key}"]
-          to_key                        = entry[:key] || key
-          value                         = entry[:value]
-          all_value[to_key]             = entry[:value]
-          values["preset.notes.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch}}
+
+        $conf['presets.barnumbers_countnotes'].each do |key, preset_value|
+          values["preset.barnumbers_countnotes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.barnumbers_countnotes.#{key}"], method: :preset} }
         end
 
-        values["preset.notes.all"] = lambda {{key: "extract.#{@systemstatus[:view]}.notes", value: all_value, method: :patch}}
+        $conf['presets.notes'].each do |key, preset_value|
+          entry  = $conf["presets.notes.#{key}"]
+          to_key = entry[:key] || key
+          value  = entry[:value]
+          unless key == :T01_T99
+            all_value[to_key]             = entry[:value]
+            values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
+          end
+        end
+        values["preset.notes.T01_T99"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes", value: all_value, method: :patch} }
+
 
         $conf['presets.layout'].each do |key, preset_value|
-          values["preset.layout.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset}}
+          values["preset.layout.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.layout", value: $conf["presets.layout.#{key}"], method: :preset} }
         end
 
         $conf['presets.printer'].each do |key, preset_value|
-          values["preset.printer.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}", value: $conf["presets.printer.#{key}"], method: :preset}}
+          values["preset.printer.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.printer.#{key}"], method: :preset} }
         end
 
         $conf['presets.instrument'].each do |key, preset_value|
-          values["preset.instrument.#{key}"] = lambda {{key: "extract.#{@systemstatus[:view]}", value: $conf["presets.instrument.#{key}"], method: :preset}}
+          values["preset.instrument.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}", value: $conf["presets.instrument.#{key}"], method: :preset} }
         end
 
-        # here we handle the menu stuff
+        # here we compute the particular value to be stored in the configuration parameter
+        # note that args[:key] is not the key of the paramter but the name of the set.
+        # then we process the value
         value = values[args[:key]]
         if value
-
+          # peform the late binding of the values
           value = value.call
 
           localconf              = Confstack.new(false)
           localconf.strict       = false
           localconf[value[:key]] = value[:value]
-          keys_from_value        = localconf.keys
+
+          # handle preset / patch method
+          # {values from editor} # unless preset - overreide value from set
+          # {values from set}
 
           config_from_editor = get_config_from_editor
-          localconf.push(config_from_editor) unless value[:method] == :preset
-
+          localconf.push(config_from_editor) unless value[:method] == :preset # use unless, to replace parameters only for :preset
           patchvalue = localconf[value[:key]]
 
-          the_key = value[:key]
+          # handle new entry
+          # detect the need for a new entry from the end of the configuration parameter key
+
+          the_key           = value[:key]
+          quicksetting_name = %Q{#{I18n.t("Quick Setting")}: #{args[:key]}}
           # this computes the next key number
           if the_key.end_with?('.x')
-            parent_key = the_key.split('.')[0..-2].join(".")
-            next_free  = localconf[parent_key].keys.map {|k| k.split('.').last.to_i}.sort.last + 1
-            the_key    = %Q{#{parent_key}.#{next_free}}
+            parent_key        = the_key.split('.')[0 .. -2].join(".")
+            next_free         = localconf[parent_key].keys.map { |k| k.split('.').last.to_i }.sort.last + 1
+            the_key           = %Q{#{parent_key}.#{next_free}}
+            quicksetting_name = I18n.t("new")
           end
 
-          @editor.patch_config_part(the_key, patchvalue)
+          # now we patch the configuration parameter
+
+          @editor.patch_config_part(the_key, patchvalue, "#{the_key} ->  #{quicksetting_name}")
+          #todo we need a neated config to ensure that the form show correct value. Clarify it this is generic enough
+          $log.benchmark("editor restore from local storage to get neated config") { @editor.neat_config_part }
           @config_form_editor.refresh_form if @config_form_editor
         else
           raise "unknown configuration parameter #{args[:key]}"
@@ -488,59 +558,136 @@ class Controller
     end
 
 
+    @commands.add_command(:undoconfig) do |command|
+      command.as_action do |args|
+        @editor.undo_config
+      end
+      command.undoable = false
+      command.set_help { "undo last change of configuration (#{@editor.history_config[:undo].count})" }
+    end
+    @commands.add_command(:redoconfig) do |command|
+      command.as_action do |args|
+        @editor.redo_config
+      end
+      command.undoable = false
+      command.set_help { "redo last undone change of configuration" }
+    end
+    @commands.add_command(:hconfig) do |command|
+      command.as_action do |args|
+        $log.message(@editor.history_config[:undo].map { |i| i[:title] }.join("\n"))
+      end
+      command.undoable = false
+      command.set_help { "show undable changes of condfiguration" }
+    end
+
     @commands.add_command(:editconf) do |command|
 
-      def expand_extract_keys(keys)
-        keys.map {|k| "extract.#{@systemstatus[:view]}.#{k}"}
+      # some helper methods
+      # we compute the configuration parameter keys for images
+      # based on the available inmages
+      def mk_image_edit_keys
+        config_from_editor = get_config_from_editor
+        images             = config_from_editor.dig("extract", "0", "images")
+        image_keys         = images ? images.keys : []
+        image_keys.map { |i| ["imagename", "show", "pos", "height"].map { |k| "extract.#{@systemstatus[:view]}.images.#{i}.#{k}" } }.flatten
       end
 
+      # create keys for the current view
+      def expand_extract_keys(keys)
+        keys.map { |k| "extract.#{@systemstatus[:view]}.#{k}" }
+      end
+
+      def get_extract_keys(key)
+        result = $conf.keys.select { |k| k.start_with?("extract.0.#{key}") }.map { |k| k.split('extract.0.').last }
+        result
+      end
+
+
+      # preset keys for the extracts
+      # the inital array specifies the available
+      # extracts
       def expand_extractnumbering(keys)
-        [0, 1, 2, 3, 4, 5].product(keys).map {|number, key| "extract.#{number}.#{key}"}
+        [0, 1, 2, 3, 4, 5].product(keys).map { |number, key| "extract.#{number}.#{key}" }
       end
 
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
-        parameter.set_help {"one of the editable keys"} #"#{sets.keys.to_s}" }
+        parameter.set_help { "one of the editable keys" } #"#{sets.keys.to_s}" }
       end
 
-      command.set_help {"edit configuration parameters (#{command.parameter_help(0)})"}
+      command.set_help { "edit configuration parameters (#{command.parameter_help(0)})" }
 
       command.as_action do |args|
         $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
 
         # this is the set of predefined configuration pages
-        # it is the argument of editconf {set} respectively addconf{set}
+        # it is the argument of editconf {set}
+        #
+        # keys: the keys of the parameters in the form
+        # quicksetting_command: a n array of arguments for addconf
+        # newentry_handler: a lambda to handle a new entry
+        # scope: extract | global  defaults to extract
         form_sets = {
             basic_settings:        {keys: [:produce] + expand_extract_keys([:title, :filenamepart, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :layoutlines, :nonflowrest,
                                                                             :startpos,
                                                                             'repeatsigns.voices', 'barnumbers.voices', 'countnotes.voices',
                                                                             'stringnames.vpos', 'sortmark.show',
                                                                            ]) + [:restposition]},
-            extract_annotation:    {keys: [:produce,
-                                           expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten
+            extract_annotation:    {keys:                  [:produce,
+                                                            'extract.0.notes.T05_printed_extracts.text',
+                                                            'extract.0.notes.T01_number.text',
+                                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten,
+                                    quicksetting_commands: ['stdextract'],
+                                    scope:                 :global
             },
-            barnumbers_countnotes: {keys: expand_extract_keys([:barnumbers, :countnotes])},
-            annotations:           {keys: [:annotations], newentry_handler: lambda {handle_command("addconf annotations")}},
-            notes:                 {keys: expand_extract_keys([:notes]), newentry_handler: lambda {handle_command("addconf notes")}, quicksetting_commands: _get_quicksetting_commands('notes')},
-            lyrics:                {keys: expand_extract_keys([:lyrics]), newentry_handler: lambda {handle_command("addconf lyrics")}},
-            minc:                  {keys: expand_extract_keys(['notebound.minc'])},
-            layout:                {keys: expand_extract_keys([:layoutlines, :layout, 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('layout')},
+            barnumbers_countnotes: {keys:                  expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apanchor', 'barnumbers.apbase', 'barnumbers.style',
+                                                                                'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apanchor', 'countnotes.apbase', 'countnotes.style',
+                                                                                "tuplets.text", "tuplets.style"]),
+                                    quicksetting_commands: _get_quicksetting_commands('barnumbers_countnotes')},
+            annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
+            notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
+                                    quicksetting_commands: _get_quicksetting_commands('notes')},
+            lyrics:                {keys:             expand_extract_keys([:lyrics]),
+                                    newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf lyrics") } : nil)
+            },
+            images:                {keys:             $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys,
+                                    newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf images") } : nil),
+                                    scope:            nil
+            },
+            notebound:             {keys: expand_extract_keys(['notebound'])},
+            layout:                {keys: expand_extract_keys(
+                                              [:layoutlines, :startpos,
+                                               'layout.LINE_THIN', 'layout.LINE_MEDIUM', 'layout.LINE_THICK',
+                                               'layout.ELLIPSE_SIZE', 'layout.REST_SIZE',
+                                               'layout.limit_a3', 'layout.DRAWING_AREA_SIZE',
+
+                                               'layout.packer.pack_method', 'layout.packer.pack_max_spreadfactor', 'layout.packer.pack_min_increment',
+                                               'layout.jumpline_anchor',
+                                               'layout.color.color_default', 'layout.color.color_variant1', 'layout.color.color_variant2',
+                                               'layout.bottomup', 'layout.beams'
+
+                                              ]), quicksetting_commands: _get_quicksetting_commands('layout')},
+
+
             printer:               {keys: expand_extract_keys([:printer, 'printer.show_border', 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
-            repeatsigns:           {keys: expand_extract_keys([:repeatsigns])},
+            repeatsigns:           {keys: expand_extract_keys(['repeatsigns.voices',
+                                                               'repeatsigns.left.pos', 'repeatsigns.left.text', 'repeatsigns.left.style',
+                                                               'repeatsigns.right.pos', 'repeatsigns.right.text', 'repeatsigns.right.style'
+                                                              ])},
 
 
-            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
+            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.bottomup', 'layout.beams', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
                                                                'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'printer.show_border', 'stringnames.marks.hpos']),
                                     quicksetting_commands:
                                           _get_quicksetting_commands('instrument')
             },
-            stringnames:           {keys: expand_extract_keys([:stringnames, :sortmark])},
-            template:              {keys: ['template.filebase', 'template.title']},
-            extract0:              {keys: ['extract.0']},
-            extract_current:       {keys: expand_extract_keys($conf.keys.select {|k| k.start_with?('extract.0.')}.map {|k| k.split('extract.0.').last})},
-            errors:                {keys: @validation_errors},
-            xx:                    {keys: ['xx']}
+            stringnames:           {keys: expand_extract_keys([get_extract_keys("stringnames"), :sortmark].flatten)},
+            template:              {keys: ['template.filebase', 'template.title'], scope: :global},
+            extract0:              {keys: ['extract.0'], scope: :global},
+            extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
+            errors:                {keys: @validation_errors, scope: :global},
+            all_parameters:        {keys: ['.'], scope: :global}
         }
 
 
@@ -549,7 +696,16 @@ class Controller
         # it is useful for extracts, notes, morincs etc.
         # todo: implement a more flexible replacement thatn simply prefixing
         regexp_form_sets = {
-            /extract.(\d+).notebound.minc\.(\d+)/ => {keys: ["minc_f"]}
+            /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
+            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style", "align"]},
+            /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos", "align"]},
+            /extract\.(\d+)\.notebound\.minc\.(\d+)/                              => {keys: ["minc_f"]},
+            /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
+            /extract\.(\d+)\.legend/                                              => {keys: ["pos", "spos", "style"]},
+            /extract\.(\d+)\.lyrics\.(\d)/                                        => {keys: ["verses", "pos", "style"]},
+            /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/                 => {keys: ['text', 'pos', 'style']},
+            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]
+            }
         }
 
         # see if we have a static form set
@@ -558,21 +714,32 @@ class Controller
         # see if we have a regular expression formset
         unless the_form
           regexp_form_sets.each do |pattern, entry|
-            if match = args[:set].match(pattern)
+            if (match = args[:set].match(pattern))
               the_form        = entry
-              the_form[:keys] = the_form[:keys].map {|inner_key| "#{args[:set]}.#{inner_key}"}
+              the_form[:keys] = the_form[:keys].map { |inner_key| "#{args[:set]}.#{inner_key}" }
             end
           end
         end
 
+        editor_title = ConfstackEditor.get_config_form_menu_entries.select { |i| i[:id] == args[:set] }.first
+
+        if editor_title
+          editor_title = I18n.t(editor_title[:text])
+        else
+          editor_title = I18n.t(args[:set])
+        end
+
         # now handle the form
         if the_form
+          scope                 = the_form[:scope] || :extract
+          editor_title          = %Q{#{editor_title} [#{I18n.t("Extract")} #{@systemstatus[:view]}]} if scope == :extract
           editable_keys         = the_form[:keys]
           newentry_handler      = the_form[:newentry_handler]
           quicksetting_commands = the_form[:quicksetting_commands] || []
         else # use the argument as key if there is no set.
+          editor_title          = %Q{#{args[:set]}}
           quicksetting_commands = []
-          editable_keys         = [args[:set]]
+          editable_keys         = [args[:set]] # use the parameter as key if there is no set.
         end
 
 
@@ -580,12 +747,6 @@ class Controller
         # the current value
 
         get_configvalues = lambda do
-          $log.timestamp("1 #{__FILE__} #{__LINE__}")
-
-
-          $log.timestamp("5  #{__FILE__} #{__LINE__}")
-
-
           editor_conf        = Confstack.new(false)
           editor_conf.strict = false
           editor_conf.push(get_config_from_editor)
@@ -601,8 +762,11 @@ class Controller
             value               = editor_conf[zerokey] if value.nil?
             value               = $conf[zerokey] if value.nil?
             effective_values[k] = value
-            if k.end_with? '.filenamepart'
+            if k.end_with? '.filenamepart' # there is no static default value for filename
               effective_values[k] = "< see help > " if not editable_values[k]
+            end
+            if k.start_with? '$resources'
+              editable_values[k] = "dummy value"
             end
           end
 
@@ -615,7 +779,8 @@ class Controller
           handle_command("editconf #{args[:set]}")
         end
 
-        editor_title = %Q{Extract #{@systemstatus[:view]}: #{args[:set]}}
+        #editor_title = %Q{Extract #{@systemstatus[:view]}: #{args[:set]}}
+
         editorparams = {
             title:                 editor_title,
             editor:                @editor,
@@ -639,7 +804,7 @@ class Controller
 
     @commands.add_command(:editsnippet) do |command|
       command.undoable = false
-      command.set_help {"edit current snippet"}
+      command.set_help { "edit current snippet" }
 
       command.as_action do |args|
         sel = @editor.get_selection_info
@@ -652,10 +817,10 @@ class Controller
 
     @commands.add_command(:addsnippet) do |command|
       command.undoable = false
-      command.set_help {"add current snippet"}
+      command.set_help { "add current snippet" }
 
       command.add_parameter(:token, :string) do |parameter|
-        parameter.set_help {"parameter key"}
+        parameter.set_help { "parameter key" }
       end
 
       command.as_action do |args|
@@ -672,22 +837,75 @@ class Controller
       command.undoable = false
 
       command.add_parameter(:key, :string) do |parameter|
-        parameter.set_help {"parameter key"}
+        parameter.set_help { "parameter key" }
       end
 
       command.add_parameter(:value, :string) do |parameter|
-        parameter.set_help {"parameter value as JSON"}
+        parameter.set_help { "parameter value as JSON" }
       end
 
 
-      command.set_help {"set configuration parameter"}
+      command.set_help { "set configuration parameter in editor pane" }
+
+      def regex_is_number? string
+        no_commas = string.gsub(',', '')
+        matches   = no_commas.match(/-?\d+(?:\.\d+)?/)
+        if !matches.nil? && matches.size == 1 && matches[0] == no_commas
+          true
+        else
+          false
+        end
+      end
 
       command.as_action do |args|
-        value = JSON.parse(args[:value])
-
-        @editor.patch_config_part(args[:key], value)
+        value = args[:value]
+        value = JSON.parse(args[:value]) if ((value.start_with?("{")) or (regex_is_number?(value)))
+        @editor.patch_config_part(args[:key], value, %Q{cconf #{args[:key]}})
 
         nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risk
+      end
+    end
+
+    @commands.add_command(:delconfig) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.set_help { "delete configuration parameter in editor pane" }
+
+      command.as_action do |args|
+        @editor.delete_config_part(args[:key])
+
+        nil
+      end
+
+      command.as_inverse do |args|
+        $conf.pop # todo: this is a bit risky
+      end
+    end
+
+
+    @commands.add_command(:cpconfig) do |command|
+      command.undoable = false
+
+      command.add_parameter(:key, :integer) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.add_parameter(:targetid, :string) do |parameter|
+        parameter.set_help { "number of target extract" }
+      end
+
+      command.set_help { "copy config parameter to other extract " }
+
+      command.as_action do |args|
+        @editor.copy_config_part_to_extract(args[:key], args[:targetid], %Q{cpconfig #{args[:key]} #{args[:key]}})
       end
 
       command.as_inverse do |args|
@@ -798,8 +1016,8 @@ C
 
   def get_conf_value_from_editor_for_current_view(key)
 
-    localconf       = Confstack.new
-    localconf.strict=false
+    localconf        = Confstack.new
+    localconf.strict = false
 
     config_from_editor = get_config_from_editor
     localconf.push(config_from_editor)
@@ -837,20 +1055,20 @@ C
 
     @commands.add_command(:lls) do |c|
       c.undoable = false
-      c.set_help {"list files in localstore"}
+      c.set_help { "list files in localstore" }
       c.as_action do |a|
         # list the songbook
-        $log.message("<pre>" + @songbook.list.map {|k, v| "#{k}_#{v}"}.join("\n") + "</pre>")
+        $log.message("<pre>" + @songbook.list.map { |k, v| "#{k}_#{v}" }.join("\n") + "</pre>")
       end
     end
 
     @commands.add_command(:lopen) do |c|
       c.undoable = true
-      c.add_parameter(:id, :string) {|parameter|
-        parameter.set_help {"id of the song to be loaded"}
+      c.add_parameter(:id, :string) { |parameter|
+        parameter.set_help { "id of the song to be loaded" }
       }
 
-      c.set_help {"open song from local store  #{c.parameter_help(0)}"}
+      c.set_help { "open song from local store  #{c.parameter_help(0)}" }
 
       c.as_action do |args|
         # retrieve a song
@@ -886,7 +1104,7 @@ C
 
     @commands.add_command (:dreconnect) do |command|
 
-      command.set_help {"INTERNAL: This performs a reconnect after restart of zupfnoter"}
+      command.set_help { "INTERNAL: This performs a reconnect after restart of zupfnoter" }
       command.as_action do
         if @systemstatus[:dropboxapp]
           handle_command(%Q{dlogin #{@systemstatus[:dropboxapp]} "#{@systemstatus[:dropboxpath]}" true})
@@ -908,21 +1126,21 @@ C
       command.undoable = false
 
       command.add_parameter(:scope, :string) do |parameter|
-        parameter.set_default {@systemstatus[:dropboxapp] || 'full'}
-        parameter.set_help {"(app | full) app: app only | full: full dropbox"}
+        parameter.set_default { @systemstatus[:dropboxapp] || 'full' }
+        parameter.set_help { "(app | full) app: app only | full: full dropbox" }
       end
 
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default {@systemstatus[:dropboxpath] || "/"}
-        parameter.set_help {"path to set in dropbox"}
+        parameter.set_default { @systemstatus[:dropboxpath] || "/" }
+        parameter.set_help { "path to set in dropbox" }
       end
 
       command.add_parameter(:reconnect, :boolean) do |parameter|
-        parameter.set_default {false}
-        parameter.set_help {"INTERNAL: true to reconnect"}
+        parameter.set_default { false }
+        parameter.set_help { "INTERNAL: true to reconnect" }
       end
 
-      command.set_help {"dropbox login for #{command.parameter_help(0)}"}
+      command.set_help { "dropbox login for #{command.parameter_help(0)}" }
 
       command.as_action do |args|
 
@@ -963,21 +1181,25 @@ C
 
         if args[:reconnect]
           @dropboxclient.authenticate().then do
+            @dropboxloginstate = :loggedin
             set_status_dropbox_status
             $log.message("logged in at dropbox with #{args[:scope]} access")
           end.fail do |err|
             _report_error_from_promise err
           end
         else
-          set_status_dropbox_status
+          @dropboxloginstate = :requestlogin
+          set_status_dropbox_status # this is required for i_authenticated ...
           unless @dropboxclient.is_authenticated?
             # now trigger authentification
             @dropboxclient.login().then do
               $log.message("logged in at dropbox with #{args[:scope]} access")
             end.fail do |err|
+              # clear_status_dropbox_status unless err == "wait for Dropbox authentication"  # do not change this text.
               _report_error_from_promise err
             end
           else
+            #clear_status_dropbox_status
             # nothing else to do
           end
         end
@@ -987,7 +1209,7 @@ C
 
     @commands.add_command(:dlogout) do |command|
       command.undoable = false
-      command.set_help {"logout from dropbox"} # todo factor out to comman class
+      command.set_help { "logout from dropbox" } # todo factor out to comman class
 
       command.as_action do |args|
 
@@ -996,10 +1218,12 @@ C
           $log.message(message)
           @dropboxclient = Opal::DropboxJs::NilClient.new
           @dropboxpath   = nil
-          set_status_dropbox_status
+          clear_status_dropbox_status
           call_consumers(:systemstatus)
           `w2alert(#{message}, "Info")`
         end.fail do |err|
+          clear_status_dropbox_status
+          call_consumers(:systemstatus)
           _report_error_from_promise err
         end
       end
@@ -1010,11 +1234,11 @@ C
       command.undoable = false
 
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default {@dropboxpath || "/"}
-        parameter.set_help {"path in dropbox #{@dropboxclient.app_name}"}
+        parameter.set_default { @dropboxpath || "/" }
+        parameter.set_help { "path in dropbox #{@dropboxclient.app_name}" }
       end
 
-      command.set_help {"list files in #{command.parameter_help(0)}"} # todo factor out to comman class
+      command.set_help { "list files in #{command.parameter_help(0)}" } # todo factor out to comman class
 
       command.as_action do |args|
         rootpath = args[:path]
@@ -1023,7 +1247,7 @@ C
         @dropboxclient.authenticate().then do
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
-          $log.message("<pre>" + entries.select {|entry| entry =~ /\.abc$/}.join("\n").to_s + "</pre>")
+          $log.message("<pre>" + entries.select { |entry| entry =~ /\.abc$/ }.join("\n").to_s + "</pre>")
         end.fail do |err|
           _report_error_from_promise err
         end
@@ -1032,11 +1256,11 @@ C
 
     @commands.add_command(:dcd) do |command|
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default {@dropboxpath}
-        parameter.set_help {"path in dropbox #{@dropboxclient.app_name}"}
+        parameter.set_default { @dropboxpath }
+        parameter.set_help { "path in dropbox #{@dropboxclient.app_name}" }
       end
 
-      command.set_help {"dropbox change dir to #{command.parameter_help(0)}"}
+      command.set_help { "dropbox change dir to #{command.parameter_help(0)}" }
 
       command.as_action do |args|
         rootpath      = args[:path]
@@ -1058,7 +1282,7 @@ C
     @commands.add_command(:dpwd) do |command|
       command.undoable = false
 
-      command.set_help {"show drobox path"}
+      command.set_help { "show drobox path" }
 
       command.as_action do |args|
         $log.message("#{@dropboxclient.app_name}: #{@dropboxpath}")
@@ -1069,7 +1293,7 @@ C
     @commands.add_command(:dchoose) do |command|
       command.undoable = false
 
-      command.set_help {"choose File from Dropbox"}
+      command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
         @dropboxclient.choose_file({}).then do |files|
@@ -1095,38 +1319,29 @@ C
     @commands.add_command(:download_abc) do |command|
       command.undoable = false ## todo make this undoable
 
-      command.set_help {"download as abc"}
+      command.set_help { "download as abc" }
 
       command.as_action do |args|
         abc_code = @editor.get_text
         load_music_model
-        filebase = @music_model.meta_data[:filename]
+        filebase = %Q{#{@music_model.meta_data[:filename]}.abc}
 
         %x{
-          var element = document.createElement('a');
-          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(#{abc_code}));
-          element.setAttribute('download', #{filebase + ".abc"});
-
-          element.style.display = 'none';
-          document.body.appendChild(element);
-
-          element.click();
-
-          document.body.removeChild(element);
+        blob = new Blob([#{abc_code}]);
+        window.saveAs(blob, #{filebase})
         }
-
       end
     end
 
     @commands.add_command(:dsave) do |command|
       command.add_parameter(:path, :string) do |parameter|
-        parameter.set_default {@dropboxpath}
-        parameter.set_help {"path to save in #{@dropboxclient.app_name}"}
+        parameter.set_default { @dropboxpath }
+        parameter.set_help { "path to save in #{@dropboxclient.app_name}" }
       end
 
       command.undoable = false ## todo make this undoable
 
-      command.set_help {"save to dropbox {#{command.parameter_help(0)}}"}
+      command.set_help { "save to dropbox {#{command.parameter_help(0)}}" }
 
       command.as_action do |args|
         unless @systemstatus[:mode] == :work
@@ -1141,7 +1356,7 @@ C
           is_template = true
           filebase    = @music_model.harpnote_options.dig(:template, :filebase)
           unless filebase
-            raise "no filebase given for template"
+            raise I18n.t("no filebase given for template. Please type  'editconf template' in console")
           end
         else
           print_variants = @music_model.harpnote_options[:print]
@@ -1151,7 +1366,7 @@ C
         rootpath = args[:path]
         call_consumers(:disable_save)
 
-        save_promises=[]
+        save_promises = []
         @dropboxclient.authenticate().then do
           save_promises = [@dropboxclient.write_file("#{rootpath}#{filebase}.abc", @editor.get_text)]
           unless is_template
@@ -1159,8 +1374,8 @@ C
             pdfs = {}
             print_variants.map do |print_variant|
               index                                                                 = print_variant[:view_id]
-              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob)
-              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob)
+              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a3.pdf"] = render_a3(index).output(:blob) if @systemstatus[:saveformat].include?("A3")
+              pdfs["#{rootpath}#{filebase}_#{print_variant[:filenamepart]}_a4.pdf"] = render_a4(index).output(:blob) if @systemstatus[:saveformat].include?("A4")
               nil
             end
 
@@ -1193,11 +1408,11 @@ C
 
       command.add_parameter(:fileid, :string, "file id")
       command.add_parameter(:path, :string) do |p|
-        p.set_default {@dropboxpath}
-        p.set_help {"path to save in #{@dropboxclient.app_name}"}
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
       end
 
-      command.set_help {"read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}"}
+      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
@@ -1210,7 +1425,7 @@ C
           @dropboxclient.read_dir(rootpath)
         end.then do |entries|
           $log.debug("#{entries} (#{__FILE__} #{__LINE__})")
-          fileidfound = entries.select {|entry| entry =~ /^#{fileid}_.*\.abc$/}
+          fileidfound = entries.select { |entry| entry =~ /^#{fileid}_.*\.abc$/ }
           unless fileidfound
             result = Promise.new.reject(%Q{#{I18n.t("There is no file with this id")} in #{rootpath}})
           else
@@ -1249,11 +1464,11 @@ C
 
       command.add_parameter(:fileid, :string, "file id")
       command.add_parameter(:path, :string) do |p|
-        p.set_default {@dropboxpath}
-        p.set_help {"path to save in #{@dropboxclient.app_name}"}
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
       end
 
-      command.set_help {"read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}"}
+      command.set_help { "read file with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
@@ -1263,6 +1478,7 @@ C
         $log.message("get from Dropbox path #{rootpath}#{fileid}_ ...:")
 
         @dropboxclient.authenticate().then do |error, data|
+          call_consumers(:lock)
           @dropboxclient.read_file(filename)
         end.then do |abc_text|
           $log.debug "loaded #{fileid} (#{__FILE__} #{__LINE__})"
@@ -1274,8 +1490,11 @@ C
           set_status(music_model: "loaded")
 
           handle_command("render")
+          call_consumers(:unlock)
+
 
         end.fail do |err|
+          call_consumers(:unlock)
           _report_error_from_promise %Q{#{I18n.t('could not open file')}: #{err} : "#{filename}"}
           nil
         end
@@ -1290,9 +1509,9 @@ C
   end
 
   def reconcile_dropbox_path(path)
-    path        ="/#{path}" unless path.start_with? "/"
-    path        ="#{path}/" unless path.end_with? "/"
-    path_pattern=/^\/([a-zA-z0-9_\-]+\/)*$$/
+    path         = "/#{path}" unless path.start_with? "/"
+    path         = "#{path}/" unless path.end_with? "/"
+    path_pattern = /^\/([a-zA-z0-9_\-]+\/)*$$/
     raise(%Q{"#{path}": #{I18n.t("does not match pattern:")} #{path_pattern.to_s} }) unless path.match(path_pattern)
     path
   end

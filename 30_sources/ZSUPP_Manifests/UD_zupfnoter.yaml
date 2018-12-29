@@ -4,6 +4,7 @@
     :outname: UD_Zupfnoter-Handbuch-de
     :format:
         - pdf
+        - html
 
     :vars: 
         :lang: german

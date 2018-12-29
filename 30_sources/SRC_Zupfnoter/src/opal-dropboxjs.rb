@@ -32,7 +32,7 @@ module Opal
 
         @accesstoken_key = "dbx_token"
 
-        @root = `new Dropbox({clientId: #{key}});`
+        @root = `new Dropbox({clientId: #{key}})`
 
         # %x{
         #    self.root.onError.addListener(function(error) {
@@ -42,15 +42,15 @@ module Opal
       end
 
       def get_access_token_from_localstore
-        %x{ localStorage.getItem(#{@accesstoken_key}) }
+        r = %x{ localStorage.getItem(#{@accesstoken_key}) }
       end
 
       def save_access_token_to_localstore(token)
-        %x{ localStorage.setItem(#{@accesstoken_key}, #{token}) }
+        r = %x{ localStorage.setItem(#{@accesstoken_key}, #{token}) }
       end
 
       def remove_access_token_from_localstore
-        %x{ localStorage.removeItem(#{@accesstoken_key}) }
+        r = %x{ localStorage.removeItem( #{@accesstoken_key}) }
       end
 
 
@@ -67,6 +67,7 @@ module Opal
            }
           );
         }
+        nil
       end
 
       def revoke_access_token()
@@ -87,9 +88,9 @@ module Opal
            else
             {
              #{
-               message = I18n.t("No access token to revoke")
-               iblock.call(`{error: #{message}}`, nil)
-              }
+          message = I18n.t("No access token to revoke")
+          iblock.call(`{error: #{message}}`, nil)
+          }
             }
          }
         end
@@ -137,10 +138,12 @@ module Opal
             dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
             window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
             access_token_from_url = dropbox_answers.access_token;
+
             if (dropbox_answers.error)
                  {
                    #{remove_access_token_from_localstore}
-                   #{iblock.call(%x{dropbox_answers}, nil)}
+        #{iblock.call(%x{{error: dropbox_answers.error_description}}, nil)}
+                   return ;
                  }
 
             access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
@@ -167,7 +170,7 @@ module Opal
               else
                {
                  message = #{I18n.t("Zombie token or zombie login occured. Maybe you hit the back button in the browser.")}
-                 #{iblock.call(%x{{"error": message }}, nil)}
+        #{iblock.call(%x{{"error": message }}, nil)}
                }
              }
             else
@@ -176,22 +179,22 @@ module Opal
                 if (access_token_from_url) {   // new login
                     #{@root} = new Dropbox({accessToken: access_token_from_url})
                     #{save_access_token_to_localstore(`access_token_from_url`)}
-                    #{iblock.call(nil, true)}
+        #{iblock.call(nil, true)}
                  }
                 else  // ! lost token
                  {
-                    message = #{I18n.t("Lost Access token. This should not happen. Please file a bug report.")}
-                    #{iblock.call(%x{{"error": message }}, nil)}
+                    message = #{I18n.t("Access token lost; do note use browser back or refresh button in login procedure.")}
+        #{iblock.call(%x{{"error": message }}, nil)}
                  }
                }
              else  // has token
               {
                 if (access_token_from_url){ // zombie token
                   message = #{I18n.t("Zombie Accesstoken revoked; do not use Browser back after login to dropbox")}
-                  #{
-                    revoke_zombie_access_token(`access_token_from_url`)
-                    iblock.call(%x{{"error": message }}, nil)
-                   }
+        #{
+        revoke_zombie_access_token(`access_token_from_url`)
+        iblock.call(%x{{"error": message }}, nil)
+        }
                  }
               else  // already logged in
                {
@@ -245,7 +248,7 @@ module Opal
       def with_promise_chooser(&block)
         Promise.new.tap do |promise|
           block.call(lambda { |data|
-            if data==false
+            if data == false
               promise.reject(I18n.t("you are not logged in to dropbox"))
             else
               promise.resolve(Native(data))
@@ -257,7 +260,7 @@ module Opal
 
       # this is like with_promie, but
       # does a bunch of retries
-      def with_promise_retry(info= "", retries = 2, &block)
+      def with_promise_retry(info = "", retries = 2, &block)
         Promise.new.tap do |promise|
           remaining = retries
           handler   = lambda { |error, data|
@@ -294,18 +297,18 @@ module Opal
 
         with_promise() do |iblock|
           %x{
-           var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin]+"/"});
+           var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin] + "/"});
            #{
-            remove_access_token_from_localstore
-            iblock.call(`{error: "warte auf Authentifizierung"}`, nil)
-            }
+          remove_access_token_from_localstore
+          iblock.call(`{error: #{I18n.t("wait for Dropbox authentication")}}`, nil) # do not change this text
+          }
            window.location.href=authUrl;
           }
         end
       end
 
       def reconnect()
-        access_token = get_access_token_from_localstore  # try to get an accesstoken from previous session
+        access_token = get_access_token_from_localstore # try to get an accesstoken from previous session
         if access_token
           @root = %x{new Dropbox({accessToken: #{access_token}})}
         end

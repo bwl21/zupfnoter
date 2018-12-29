@@ -204,10 +204,10 @@
 
 \hyphenation{Zupf-noter} \hyphenation{Fen-ster}
 
-Version 1.8.0 dev 1
+Version version/V\_1.10.0
 
 \begin{verbatim}
-© 2017 https://www.zupfnoter.de
+© 2018 https://www.zupfnoter.de
 \end{verbatim}
 
 \clearpage
@@ -222,7 +222,7 @@ Version 1.8.0 dev 1
 
 \section{Über dieses Handbuch}\label{uxfcber-dieses-handbuch}
 
-Du siehst dieses Handbuch und bist schockiert, dass es über 50 Seiten
+Du siehst dieses Handbuch und bist schockiert, dass es über 120 Seiten
 hat. Aber wie sagt man doch so schön: ``keine Panik!''. Ersteller
 einfacher Unterlegnoten kommen mit den ersten Kapiteln schon auf die
 Erfolgsstraße.
@@ -244,9 +244,6 @@ Zielgruppen im Blick:
   und mehr die vielfältigen Möglichkeiten von Zupfnoter und ist im
   Wesentlichen durch die Größe des Instrumentes und die eigene Phantasie
   begrenzt.
-\item
-  \textbf{Lektoren} schreiben nicht selbst im Zupfnoter, sondern
-  redigieren Noten in Zupfnoter.
 \end{itemize}
 
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
@@ -256,8 +253,14 @@ Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 sind nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit
 TODOs und Zeilennummern.
 
+Das Handbuch wird während der Weiterentwicklung von Zupfnoter laufend
+aktualisiert.
+
 Für Hinweise auf Fehler oder Verbesserungsmöglichkeiten sind wir sehr
 dankbar.
+
+``Do not complain about this manual, be glad that there are page numbers
+:-)''
 \end{quote}
 
 TODO:\marginpar{TODO} markieren, für welche Zielgruppe welche
@@ -1589,7 +1592,7 @@ Unterlegnoten}\label{elemente-zur-organisation-von-unterlegnoten}
 \end{itemize}
 
 \subsubsection{Vordefinierte
-Blattbeschriftungen}\label{vordefinierte-blattbeschriftungen}
+Seitenbeschriftungen}\label{vordefinierte-seitenbeschriftungen}
 
 Zupfnoter bietet eine Reihe von Vorlagen für die Seitenbeschriftungen.
 Damit lässt sich ein einheitliches Vorgehen bei der Beschriftung der
@@ -1598,6 +1601,19 @@ Unterlegnoten erreichen. Diese können in der Konfigurationsmaske
 Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
 
 \begin{itemize}
+\item
+  \textbf{(34) T05 legend - Legende}: Hier kann eine Legende eingefügt
+  werden, welche mal selbst gestalten kann.
+
+  \begin{quote}
+  \textbf{Hinweis:} Wenn dieser Eintrag vorhanden ist, wird die in
+  Zupfnoter eingebaute Legende unterdrückt.
+
+  Für eine eigenen Legende ist es sinnvoll mit Platzhaltern zu arbeiten.
+  Die Schnelleinstellung in der Seitenbeschriftung fügt eine Legende
+  ein, gleich aussieht wie die in Zupfnoter eingebaute version. Sie ist
+  daher ein guter Startpunkt für eine selbst gestaltete Legende.
+  \end{quote}
 \item
   \textbf{(74) T04 to order - zu beziehen bei}: Hier kann man angeben,
   über welche Adresse das Unterlegnotenblatt bezogen werden kann
@@ -1724,6 +1740,12 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
   auch Kapitel \ref{elemente-fuer-das-ganze-blatt}
   \hyperref[elemente-fuer-das-ganze-blatt]{Elemente für das gesamte
   Musikstück}).
+
+  In den Seitenbeschrifungen können Informationen eingefügt werden,
+  welche in Zupfnoter schon vorhanden sind. Hierzu werden Platzhalter
+  eingefügt, welche bei der Ausgabe durch die entsprechende Information
+  ersetzt werden. Die möglichen Platzhalter findest du in der Hilfe zu
+  den Parametern.
 \item
   \textbf{Liedtexte}
 
@@ -2033,11 +2055,23 @@ vorläufig.
   \item
     wenn keine Noten selektiert sind, spielt Zupfnoter alle vorhandenen
     Stimmen. Damit kann man einen Eindruck des Gesamtklanges gewinnen.
+
+    \begin{quote}
+    \textbf{Hinweis:} Dabei wird mit einem Klavierklang gepsielt. Die
+    Wiedergabe umfasst berücksichtigt auch Wiedrholungen und variante
+    Enden.
+    \end{quote}
   \item
     wenn eine einzelne Note selektiert ist, spielt Zupfnoter nur die
     Stimmen des aktuell eingestellten Auszugs. Damit kann man einen
     Eindruck gewinnen, wie das Stück klingt, wenn nur einzelne Stimmen
     kombiniert werden (z.B. nur Sopran und Alt).
+
+    \begin{quote}
+    \textbf{Hinweis:} Dabei wird mit einem Harfenähnlichen Klang
+    gespielt. Die Wiedergabe läuft einfch durch, ohne Wiederholungen und
+    vairante Enden.
+    \end{quote}
   \item
     wenn mehrere Noten selektiert sind, spielt Zupfnoter nur genau die
     selektierten Noten. Damit kann man eine Detailkontrolle erreichen.
@@ -2266,6 +2300,14 @@ Einträgen
   Aktueller Modus von Zupfnoter. Hier gibt es \texttt{work} und
   \texttt{demo}. im Demo-Modus sind einge Menüpunkte nicht aktiv.
 \item
+  Menü zur Auswahl der Papierformate beim Speichern
+\item
+  Menü zur Auswahl der Meldungen (Fehler / Warnung / Info)\\
+\item
+  Menü zur Auswahl von Auto-Render\\
+\item
+  Button zum Ein- Ausblenden der Konsole
+\item
   Name des Konfigurationsparameters für das Element unter dem Mauszeiger
   falls dieses mit der Maus verschoben werden kann oder über das
   Kontext-Menü konfiguriert werden kann.
@@ -2274,10 +2316,12 @@ Einträgen
 \hyperdef{}{konsole-fenster}{\subsubsection{Konsole}\label{konsole-fenster}}
 
 Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination
-\texttt{cmd/ctrl-K} eingeschaltet wurde. Sie stellt die letzten
-Meldungen von Zupfnoter dar. Experten können in der Konsole auch weitere
-Befehle eingeben, die Zupfnoter direkt steuern. Die möglichen Befehle
-kann man mit dem Befehl \texttt{help} in der Konsole anzeigen.
+\texttt{cmd/ctrl-K} (bzw. durch klick auf den Button
+\texttt{\textgreater{}\_} in der Statusleiste) eingeschaltet wurde. Sie
+stellt die letzten Meldungen von Zupfnoter dar. Experten können in der
+Konsole auch weitere Befehle eingeben, die Zupfnoter direkt steuern. Die
+möglichen Befehle kann man mit dem Befehl \texttt{help} in der Konsole
+anzeigen.
 
 \begin{quote}
 \textbf{Hinweis}: Die Zupfnoter-Menüs lösen letztendlich solche
@@ -2285,11 +2329,38 @@ Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
 Regel nicht brauchen.
 \end{quote}
 
+\begin{quote}
+\textbf{Hinweis}: Diese Funktionen können teilweise über das Menü
+\texttt{Extras} erreicht werden.
+\end{quote}
+
 Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
 
-Folgende Befehle zum Arbeiten mit voreingestellen Auszügen bzw.
+Folgende Befehle steuern, welche Files in der Dropbox gespeichert
+werden:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{saveformat\ A3} - Es werden nur die A3-Druckdateien
+  gespeichert
+\item
+  \texttt{saveformat\ A4} - Es werden nur die A4-Druckdateien
+  gespeichert
+\item
+  \texttt{saveformat\ A3-A4} - Es werden die A3 und A4-Druckdateien
+  gespeichert
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweis:} Diese Einstellung wird in der Statusleiste angezeigt.
+Duch klicken auf diese Anzeige kann die einstellung einfach geändert
+werden.
+\end{quote}
+
+Folgende Befehle dienen zum Arbeiten mit voreingestellen Auszügen bzw.
 Beschriftungen
 
 \begin{itemize}
@@ -2303,6 +2374,8 @@ Beschriftungen
 \item
   \texttt{setstdextract}: kopiert aus dem aktuellen Stück die
   Konfiguration der Auszüge, um sie auf ein anderes Stück zu übertragen.
+  \textgreater{} \textbf{Hinweis}: diese Anwweisung wird auch ausgeführt
+  bei \texttt{settemplate}
 \item
   \texttt{stdectract}: überträgt die zuletzt kopierte Konfiguration der
   Auszüge auf das aktuelle Stück
@@ -2310,7 +2383,44 @@ Beschriftungen
   \begin{quote}
   \textbf{Hinweis}: Diese Befehle sind hilfreich um schnell die
   Konfiguration eines aus MusicXml importierten Stückes einzustellen.
+  `stdextract' wird automatisch beim import aus MusicXml ausgeführt.
   \end{quote}
+\item
+  \texttt{settemplate}: Damit wird der aktuelle Editor-Inhalt als
+  Vorlage hinterlegt (siehe Kapitel
+  \ref{filetemplates}~\hyperref[filetemplates]{Arbeiten mit
+  Dateivorlagen}).
+\end{itemize}
+
+Über folgende Befehle kann eingestellt werden, ob die Vorschaufenster
+zur aktuellen Note scrollen bzw. der Wiedergabe folgen
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{setsetting\ autoscroll\ true} - Vorschaufenster scrollen
+  automatisch
+\item
+  \texttt{setsetting\ autoscroll\ false} - Vorschaufenster scrollen
+  nicht
+\item
+  \texttt{setsetting\ follow\ true} - Vorschaufenster folgen der
+  Wiedergabe
+\item
+  \texttt{setsetting\ follow\ false} - Vorschaufenster folgen der
+  Wiedergabe \textbf{nicht mehr}
+\end{itemize}
+
+Weitere Laufzeiteinstellungen sind:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{setsetting\ watermark\ "text"} - Damit kann ein Text
+  eingestellt werden, welcher über den Platzhalter
+  \texttt{\{\{watermark\}\}} in die Seitenbeschriftung eingefügt werden
+  kann. Damit kann man z.b. für ein bestimmtest Projekt Anmerkungen
+  einfügen, ohne den ABC-Code zu ändern.
 \end{itemize}
 
 Über folgende Befehle können Flußlinien gestaltet werden:
@@ -2386,13 +2496,23 @@ ist.
 \item
   \texttt{loglevel\ error} - Es werden nur noch schwerwiegende Fehler
   gemeldet. Das ist für die normale Anwendung ausreichend.
+\item
+  \texttt{loglevel\ warning} - Es werden Fehler und Warnungen gemeldet.
+  In Einzelfällen kann man mit Warnungen leben. Ein Beispiel für eine
+  Warnung ist die Meldung
+  \texttt{Beschriftungen\ zu\ dicht\ beieinander}
+\item
+  \texttt{loglevel\ info} - Es werden Fehler, Warnungen und
+  Informationsmeldungen angezeigt. Informationsmeldungen betreffen
+  Versionsnummern und Laufzeitmessungen.
 \end{itemize}
 
 Die Konsole kann auch für eine bessere Fehlersuche in der Konfiguration
 verwendet werden. Selbst wenn Zupfnoter die Eingabe fehlerhafter
 Konfigurationsparameter eigentlich verhindern soll, so kann es trotzdem
 vorkommen. Wenn also schwer verständliche Meldungen erscheinen kann man
-den loglevel debug einschalten. Dann kann man in der Konsole mit
+den \texttt{loglevel\ debug} einschalten. Dann kann man in der Konsole
+mit
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -2421,6 +2541,53 @@ setstdextract  : configure stdc onfig in localstore
 \end{verbatim}
 \end{itemize}
 
+Über folgende Befehle kann die Wiedergabe gesteuert werden.
+
+\begin{itemize}
+\item
+  \texttt{p\ ff} - Wiedergabe des aktuellen Auszuges ab der selektierte
+  Note. Wenn keine Note selektiert ist, dann wirkt der Befehl wie
+  \texttt{p\ all}
+\item
+  \texttt{p\ sel} - Wiedergabe der ausgewählten Noten
+\item
+  \texttt{p\ all} - Wiedergabe des kompletten Stückes mit alle Stimmen
+  die im ABC code angelegt sind. Dabei werden Wiederholungen und
+  varianten Enden ausgespielt. Mit dieser Funktion kan man sich einen
+  Gesamteindruck verschaffen.
+\item
+  \texttt{p\ auto} - Wiedergabe
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    ab der ausgewählten Note wie \texttt{p\ ff}
+  \item
+    der ausgewählten Noten wie \texttt{p\ sel} - falls mehrere Noten
+    ausgewählt sind
+  \item
+    des kompletten Stückes wie \texttt{p\ all} - falls keine Note
+    ausgewählt ist
+  \end{itemize}
+\end{itemize}
+
+\texttt{stop} - hält die Wiedergabe an
+
+\begin{itemize}
+\item
+  \texttt{speed\ \{factor\textgreater{}\}} - damit kann man die
+  Wiedergabegeschwindigkeit verändern, ohne den ABC-Code ändern zu
+  müssen.
+
+  \begin{quote}
+  Hinweis: Die Einstellung bleibt über mehrere Abspielvorgänge erhalten.
+  Sie kann auch währende des Abspielens verändert werden.
+
+  Hinweis: um sicher mit der Einstellung aus dem ABC-Code abzuspielen
+  sollte \texttt{speed\ 1} angegeben werden.
+  \end{quote}
+\end{itemize}
+
 \hyperdef{}{shortcuts}{\subsection{Tastenkombinationen
 (Shortcuts)}\label{shortcuts}}
 
@@ -2438,14 +2605,33 @@ Tastenkombinationen (Shortcuts) zur Verfügung:
 \item
   `cmd + p': Play (abspielen)
 \item
-  `cmd + alt + f': Fullscreen - Schaltet zwischen Ansicht
-  ``Harfennoten'' hin und her
+  `cmd + l': Large - schaltet zwischen Ansicht ``Harfennoten'' hin und
+  her. Gut für eine schnelle Kontrolle
+\item
+  `cmd + 0' .. cmd \# `9': Schalte auf Ansicht 0 .. 9
 \end{itemize}
 
 \begin{quote}
 \textbf{Hinweis:} unter Windows / Linux entspricht ``cmd'' der ``ctrl''
 oder ``strg'' - Taste
 \end{quote}
+
+Im ABC-Editor gelten (nur die häufigsten Tasten \ldots{})
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  `cmd + z': letzte Eingabe rückgänig
+\item
+  `shift cmd + z': letzte Eingabe wiederholen
+\item
+  `cmd + f': Suchen
+\item
+  `cmd + shift + f': Suchen / Ersetzen
+\end{itemize}
+
+mehr unter \url{https://ace.c9.io/demo/keyboard_shortcuts.html} (das ist
+aber wirklich nur für die IT-Profis)
 
 \begin{quote}
 \textbf{Hinweis:} `cmd + alt + f' bedeutet, dass die Tasten `cmd',
@@ -2555,8 +2741,6 @@ grafischen Barbeitungsmöglichkeiten zu nutzen:
 \paragraph{Anzeige von Fehlern im
 Texteditor}\label{anzeige-von-fehlern-im-texteditor}
 
-~
-
 \index{Fehlermeldung}Zupfnoter zeigt im Texteditor über ein rotes
 Quadrat mit Kreuz links von den ABC-Notationszeilen oder den
 Zupfnoter-Einstellungen an, daß in der Zeile ein Fehler aufgetreten ist.
@@ -2593,8 +2777,6 @@ Zupfnoter auch ein Fenster mit den letzten Fehlermeldungen an.
 \paragraph{Darstellung der Konfigurationsparameter im
 Texteditor}\label{darstellung-der-konfigurationsparameter-im-texteditor}
 
-~
-
 Nach der ABC-Notation kommen die Zupfnoter-Einstellungen. Diese werden
 durch den Kommentar
 
@@ -2617,6 +2799,9 @@ Bildschirmmasken zur Bearbeitung der Konfigurationsparameter, so dass
 die dierekte Bearbeitung im Texteditor nur noch in besonderen Fällen
 notwendig ist (siehe Kapitel \ref{konfigurationsmasken}
 \hyperref[konfigurationsmasken]{Konfigurationsmasken}).
+
+Dazu muss die ABC-Datei mit einem Texteditor ausserhalb von Zupfnoter
+geöffnet und bearbeitet werden.
 \end{quote}
 
 Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
@@ -2631,15 +2816,6 @@ Kapitel~\ref{konfiguration} \hyperref[konfiguration]{Konfiguration}.
 \textbf{Hinweis}: Wichtig ist, nach einer Änderung in der Menüleiste
 immer auf auf \texttt{Rendern} (ausführen) zu drücken, damit die
 Unterlegnoten aktualisiert werden.
-\end{quote}
-
-\begin{quote}
-\textbf{Hinweis}: Wenn man im Vorschaufenster Elemente mit der Maus
-verschiebt wird diese Änderung sofort in den Konfigurationsparametern im
-Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher kann
-man mit ``Undo'' (\texttt{cmd/ctrl\ -\ Z}) im Texteditor solche
-Änderungen auch wieder rückgängig machen. Das gilt auch für die
-Bearbeitung der Konfigurationsparameter über die Bildschirmmasken.
 \end{quote}
 
 \hyperdef{}{liedtexteditor}{\subsubsection{Editor für
@@ -2692,24 +2868,26 @@ Konfigurationsparameter einen Wert in folgender Reihenfolge
 \end{enumerate}
 \end{quote}
 
-Dabei gibt es zwei Arten von Masken
+Dabei gibt es verschiedene Arten von Masken
 
 \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  vordefinierte Masken mit einem festen Aufbau. Diese zeigen
+  \textbf{vordefinierte Masken} mit einem festen Aufbau. Diese zeigen
   Eingabefelder für Parameter auch dann, wenn sie im Musikstück noch
   nicht vorhanden sind. Wichtigstes Beispiel ist die Maske
-  ``Grundeinstellungen''
+  ``Grundeinstellungen''. Diese Masken verändern ihren Aufbau nicht.
 \item
-  dynamische Masken, welche nur die Parameter zeigen, die im Musikstück
-  auch wirklich vorhanden sind. Prominentestes Beispiel hierfür ist die
-  Maske ``Liedtexte''
-
-  \begin{quote}
-  \textbf{Hinweis}: Es kann durchaus sinnvoll sein, über das Menü
-  ``\textbf{Konfig. einfügen}'' zusätzliche Parameter hinzuzufügen,
-  während man in einer dynamischen Maske arbeitet.
-  \end{quote}
+  \textbf{dynamische Masken}, welche nur die Parameter zeigen, die im
+  Musikstück auch wirklich vorhanden sind. Prominentestes Beispiel
+  hierfür ist die Maske ``Liedtexte''. Diese Maske verändern ihren
+  Aufbau, je nach dem, welche Paramter im Musikstück wirklich vorhanden
+  sind.
+\item
+  \textbf{Auzugsbezogene Masken}: Diese Masken bearbeiten den aktuell
+  eingestellten Auszug. Dieser wird in der Maskenüberschrift links
+  angezeigt (z.B. \texttt{Grundeinstellungen\ {[}Auszug\ 2{]}}). Sie
+  passen sich an, wenn der aktuelle Auszug gewechselt wird.
 \end{itemize}
 
 Da die Konfigurationsparameter an verschiedenen Stellen gesucht werden,
@@ -2782,17 +2960,17 @@ Für die Bedienung der Masken ist noch wichtig
   \index{Liedtexte}Liedtexte {[}lyrics.x{]},
   \index{Seitenbeschriftung}Seitenbeschriftung {[}notes.x{]})
 \item
-  Schaltfläche \texttt{Schnelleinstellungen}: Diese Taste öffnet ein
-  Menü, aus dem du für die aktuelle Maske eine Voreinstellung auswählen
-  kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination von
-  Parametern für einen bestimmten Fall (z.B. für ein ``kompaktes
-  Layout''). Diese Schaltfläche ist nur für solche Masken aktiv, für die
-  es auch Voreinstellungen gibt.
+  Schaltfläche \texttt{Schnelleinst.}: Diese Taste
+  (Schnelleinstellungen) öffnet ein Menü, aus dem du für die aktuelle
+  Maske eine Voreinstellung auswählen kannst. Eine solche Voreinstellung
+  ist eine sinnvolle Kombination von Parametern für einen bestimmten
+  Fall (z.B. für ein ``kompaktes Layout''). Diese Schaltfläche ist nur
+  für solche Masken aktiv, für die es auch Voreinstellungen gibt.
 \item
   Feldeingabe mit der ``TAB''-Taste bestätigen
 \item
-  \texttt{Rendern} nicht vergessen (\textbf{In der Maske drück erst TAB,
-  dann geht auch das ``Rendern'' ab})
+  \texttt{Rendern} nicht vergessen (\textbf{In der Maske drücke erst
+  TAB, dann geht auch das ``Rendern'' ab})
 \end{itemize}
 
 \hyperdef{}{masken-fuer-zusaetze}{\subsubsection{Masken für
@@ -2804,13 +2982,17 @@ spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem
 Taktstrich auf den sie sich beziehen. Beispiel für solche Zusätze sind
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
 \item
   Positionierung von Sprunglinien \texttt{"\^{}@da\ cape@10"\ C} oder
   \texttt{"@@4"\ :\textbar{}}
 \item
   Verschiebung von Noten nach links/rechts
   \texttt{"\^{}\textgreater{}!"\ C}
+
+  \textbf{Hinweis}: diese Methode ist veraltet. Stattdessen verwende
+  bitte die über das Kontextmenü in der Harfenvorschau erreichbare
+  notenbezogene Konfiguration \texttt{notebound.nconf} bzw.
+  \texttt{nshift}.
 \item
   Notenbeschriftung \texttt{"\^{}!fine@1,1"}
 \item
@@ -2851,6 +3033,67 @@ Es erscheint eine Maske nach folgendem Beispiel:
 \end{quote}
 \end{quote}
 
+\subsubsection{Einfügen von Bildern zur Illustration des
+Notenblattes}\label{einfuxfcgen-von-bildern-zur-illustration-des-notenblattes}
+
+Zupfnoter kann Bilder in das Unterlegnotenblatt einfügen.
+
+\begin{quote}
+\textbf{Hinweis}: Bitte achte darauf dass die eingefügten Bilder
+insgesamt nicht zu groß werden (getestet bis zu 600 kB). Sonst
+funktioniert ggf. die Druckvorschau nicht mehr. Normalerweise hat man
+ein höchstens zwei Bilder auf dem Blatt. Dann sollte diese Begrenzung
+kein Problem darstellen. Man muss aber wissen, dass Lade - und
+Speichervorgänge deutlich länger brauchen.
+\end{quote}
+
+Um Bilder zu verwenden geht man folgende Schritte:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Das Bild muss im ``JPG'' - Format vorliegen. Da Zupfnoter keine
+  Bildbearbeitungsfunktionen hat muss mit einem externen Programm das
+  Bild aufbereitet werden.
+\item
+  das Bild wird dann über \texttt{Datei\ /\ importieren} in den
+  Zupfnoter importiert.
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Die Bilddatei kann auch in das Zupfnoter-Fenster
+hineingezogen werden.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  In der Konfigurationsmenü \texttt{Konfig\ bearbeiten\ /\ Bilder}
+  können nun die Bilder auf dem Blatt positioniert werden. Dabei kann
+  man Anzeige, Höhe und Position des Bildes angeben.
+
+  \begin{quote}
+  \textbf{Hinweis}: Bitte lege alle Bilder zunächst im Auszug 0 an. Der
+  Konfigurationseditor zeigt in den anderen Auszügen nur Einträge an,
+  die auch im Auszug 0 vorhanden sind.
+  \end{quote}
+
+  \begin{quote}
+  \includegraphics{../ZAUX_Images/040-044_Configuration-images.jpg}~
+  \end{quote}
+
+  \begin{quote}
+  \textbf{Hinweis}: Du kannst das Bild auch mit der Maus positionieren.
+  \end{quote}
+
+  In dieser Konfigurationsmaske kann man oben im Abschnitt
+  \texttt{\$\ Ressourcen} auch sehen, welche Bilder bereits vorhenden
+  sind. Durch Klick auf den kleinen Papierkorb kannst du Bilder auch
+  wieder aus der Datei entfernen. Klick auf den Hilfe-Button zeigt eine
+  kleine Vorschau des Bildes.
+\end{enumerate}
+
 \subsection{mit der Maus
 konfigurieren}\label{mit-der-maus-konfigurieren}
 
@@ -2860,7 +3103,8 @@ Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+  Positionierung von Texten und Bildern (Titel, Legende, Beschriftung
+  usw.)
 \item
   Anordnung von Sprunglinien
 \item
@@ -2910,11 +3154,12 @@ es am besten mit der rechten Maustaste in der Harfennotenvorschau die
 entsprechende Konfiguration aufzurufen, zu löschen und neu zu erstellen.
 \end{quote}
 
-\subsubsection{Texte verschieben}\label{texte-verschieben}
+\subsubsection{Texte und Bilder
+verschieben}\label{texte-und-bilder-verschieben}
 
 Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
-Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts mit
-der Maus verschieben.
+Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts
+sowie Bilder mit der Maus verschieben.
 
 \subsubsection{Sprunglinien verschieben}\label{sprunglinien-verschieben}
 
@@ -2926,6 +3171,16 @@ Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
 Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte drücke
 daher auf \texttt{Render} um das Endergebnis zu sehen. Danach sind auch
 die Pfeile an den Sprunglinien wieder korrekt.
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: man kann Sprunglinien unterdrücken, indem man im
+Kontext-Menü Kontextmenü \textbf{\texttt{Edit\ config}} wählt, und dann
+den paramteter auf \texttt{0} stellt. Die linie verschwindet dann, und
+kann nur schwer wieder sichtbar gemacht werden:
+\texttt{Konfig.Bearb\ /\ Notenbeezogen}, dann den Parameter suchen
+(\texttt{p\_begin}, \texttt{p\_end}, \texttt{p\_follow},
+\texttt{p\_repeat}) und den Wert auf ungleich 0 setzen.
 \end{quote}
 
 \subsubsection{Triolenbogen gestalten}\label{triolenbogen-gestalten}
@@ -2962,7 +3217,8 @@ an der Triolenbeschriftung oder an einem andere Griff
 wieder sichtbar wird.
 \end{quote}
 
-\hyperdef{}{flowconf}{\subsection{Flußlinien gestalten}\label{flowconf}}
+\hyperdef{}{flowconf}{\subsubsection{Flußlinien
+gestalten}\label{flowconf}}
 
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
 die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
@@ -2971,7 +3227,8 @@ Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die
 Triolenbögen.
 
 Die Bearbeitungsmöglichkeiten müssen in der
-\hyperref[konsole-fenster]{Konsole} eingeschaltet werden.
+\hyperref[konsole-fenster]{Konsole} bzw. im Menü \texttt{Extras}
+eingeschaltet werden.
 
 \begin{quote}
 \textbf{Hinweis:} Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
@@ -3147,6 +3404,19 @@ Daher ist folgendes Reihenfolge zu empfehlen:
   \item
     \textbf{3 Melodie}: Stimme 1; Auszugsnummer -M
   \end{itemize}
+
+  \begin{quote}
+  \textbf{Hinweis:} Bei Verwendung von Platzhalten in den
+  Seitenbeschriftungen ist es sinnvoll die Auszugsnummer im Parameter
+  ``extract.*.filenamepart'' einzutragen. Der Eintrag kann über den
+  Plathalter \texttt{\{\{extract\_filename\}\}} dann die
+  Seitenbeschriftungen eingetragen werden. Der Plathalter
+  \texttt{\{\{printed\_extracts\}\}} entnimmt die auszugsbezeichnungen
+  ebenfalls aus ``extract.*.filenamepart''.
+
+  Auf diese Weise wird erreicht, dass die Filenamen der Auzüge und die
+  Blattbeschrifungen für die Auszüge konsistent sind.
+  \end{quote}
 \item
   \textbf{Anlegen der Auszüge}: Ausgehend von der Planung sollte unter
   dem Menü \textbf{\texttt{Konfig.\ bearbeiten\ /\ Auszugsbeschriftung}}
@@ -3210,7 +3480,8 @@ Daher ist folgendes Reihenfolge zu empfehlen:
 Die flexible Konfiguration von Zupfnoter erlaubt die Anpassung der
 Auasgabe auf viele verschiedene Instrumente. Allerdings führt hier meist
 eine Kombination verschiedener Parameter zu Ziel. Zur Vereinfachung sind
-diese Kombinationen für gebräuchliche Instrumente hinterlegt.
+diese Kombinationen für gebräuchliche Instrumente als
+``Schnelleinstellung'' hinterlegt.
 
 Wähle das Menü
 \textbf{``\texttt{Konfig.\ bearbeiten\ \textgreater{}\ Instrument\ spez.}''}.
@@ -3226,9 +3497,19 @@ gewünschte Instrument auswählen.
 \textbf{Hinweis}: Bitte beachte, dass es auch einen Parameter
 ``Instrument'' gibt. Dieser ist nicht zu verwechseln mit der
 Schnelleinstellung, auch wenn er zum Teil dieselben Bezeichnungen
-verwendet. Der Parameter \texttt{Instrument} veränderte Programminterne
-Abläufe welche sich nicht über Konfiguration ausdrücken lässt (z.b.
-diatonische Stimmung bei Saitenspiel)
+verwendet. Der Parameter \texttt{Instrument} veränderte programminterne
+Abläufe welche sich nicht über Konfiguration ausdrücken lassen (z.b.
+diatonische Stimmung bei Saitenspiel bzw. OKON-Harfe)
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Für Tischharfen mit Halbton-Klappen (z.B. OKON-Harfe)
+muss man zuächst die Schnelleinstellung für das Instrument aufrufen. Mit
+dem Paramter ``Instrument'' wählt man dann die Tonart aus, auf welche
+die Harfe eingestellt werden soll. Dann kann Zupfnoter die Tonhöhen den
+entsprechenden Saiten zuordnen und auch am unteren Rand anzeigen, welche
+Klappen aktiviert (bzw. welche Saiten einen Halbton hochgestimmt) werden
+sollen.
 \end{quote}
 
 \subsection{Sonstige Hinweise}\label{sonstige-hinweise}
@@ -3241,8 +3522,8 @@ In seltenen Fällen kann es vorkommen, dass die ABC-Noten oder die
 Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den
 gleichen Fehler läuft und keine Bearbeitung mehr möglich ist.
 
-In diesem Fall kannst du beim Aufruf von Zupfnoter /?debug anhängen,
-z.B.
+In diesem Fall kannst du beim Aufruf von Zupfnoter \texttt{/?debug}
+anhängen, z.B.
 
 \begin{verbatim}
 https://zupfnoter.weichel21.de/?debug
@@ -3251,6 +3532,12 @@ https://zupfnoter.weichel21.de/?debug
 Dann startet Zupfnoter, versucht aber nicht gleich ein ``Rendern'' .
 Damit kannst dann die Eingaben korrigieren bis ``Rendern'' wieder
 funktioniert.
+
+\begin{quote}
+\textbf{Hinweis}: Zupfnoter erkennt selbständig, dass beim letzten
+Rendern ein Problem aufgetreten war und startet dann ohne automatisches
+Rendern. Daher sollte diese Schalter nicht mehr notwendig sein.
+\end{quote}
 
 \hyperdef{}{transponieren}{\subsubsection{Transponieren}\label{transponieren}}
 
@@ -3319,6 +3606,32 @@ K:G
 GAB
 \end{verbatim}
 
+\subsubsection{wechselnde Taktlängen}\label{wechselnde-taktluxe4ngen}
+
+Es gibt Stück, mit wechslenden Taktlängen. Bei einzelnen Takten kanns du
+dasd mit einer eingebetteten Kopfnzeile machen \texttt{{[}M:3/2{]}}. Bei
+häufigen Taktwechwseln ist das aber recht umständlich. In diesem Fall
+kannst du z.B. die Kopfzeile so angeben:
+
+\begin{verbatim}
+M: 2/2 3/2=2/2
+\end{verbatim}
+
+Damit werden alle im Stück auftretenden Taktlängen angegeben. Nach dem
+Gleichheitszeichen kann die kürzeste Taktlänge angegeben werden. Die
+Notenvorschau schreibt nur dann eine Taktnummer, wenn der Takt
+ausgefüllt ist. Mit der Angabe der kürzesten Taktlänge bekommst du an
+allen Takten eine Nummer.
+
+\subsubsection{Variante Enden mitten im
+Takt}\label{variante-enden-mitten-im-takt}
+
+Wenn eine Variation mitten in einem Takt beginnen soll, dann muss als
+``Taktstrich'' eine rechte eckige Klammer (z.b. \texttt{{]}1} )
+geschrieben werden. Zupfnoter stellt dann weder in der Notenvorschau
+noch in den Unterlegnoten einen Taktstrich dar. Auch die Zählung der
+Takte kommt nicht durcheinander.
+
 \subsubsection{Wenn Takte nicht synchron
 sind}\label{wenn-takte-nicht-synchron-sind}
 
@@ -3351,6 +3664,45 @@ I:measurenb 0
 korrekt.
 \end{quote}
 
+\subsubsection{Änderung der Takte im
+Stück}\label{uxe4nderung-der-takte-im-stuxfcck}
+
+Die ABC-Notation erlaubt es, in einem Stück die Takte zu ändern. Hierfür
+empfiehlt sich folgende Vorgehensweise:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  in der \texttt{M:} - Kopfzeile werden alle Taktarten aufgeführt, die
+  im Stük vorkommen. Die Start-Taktart wird als erstes geschrieben.
+
+\begin{verbatim}
+M:4/4 3/4 =4/4
+\end{verbatim}
+\end{enumerate}
+
+Die Angabe \texttt{=4/4} wird zur Berechung des ersten Taktstriches
+herangezogen
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  in der Stimme kann nun eine eingebettete Kopfzeile zur Taktumschaltung
+  eingefügt werden. Soll die Taktänderung auch im Blatt erscheinen, dann
+  muss sie als notenbezogene Anmerkung hinzugefügt werden.
+
+\begin{verbatim}
+M:3/4] "^!Takt: 3/4" f
+\end{verbatim}
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Die manuelle Erzeugung der notenbezogenen Anmerkung
+zum Taktwechsel ist flexibler als eine eventuelle Automatik. Daher
+bietet Zupfnoter diese Automatik nicht an.
+\end{quote}
+
 \subsubsection{Mehrere Stimmen in
 ABC-Notation}\label{mehrere-Stimmen-in-abc}
 
@@ -3375,7 +3727,7 @@ Darin ist
 \begin{itemize}
 \item
   \texttt{\textless{}ID\textgreater{}} eine Identifikation der Stimme,
-  sie wird inder \texttt{\%\%score} - Anweisung referenziert. Es
+  sie wird in der \texttt{\%\%score} - Anweisung referenziert. Es
   empfiehlt sich hier einfach ganze Zahlen zu verwenden un die Stimme so
   durchzunumerieren.
 \item
@@ -3434,6 +3786,71 @@ Anweisungen. Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt
 ist und das Verhalten noch nicht ausgetestet ist.
 \end{quote}
 
+\subsubsection{Bearbeiten von Takten in allen
+Stimmen}\label{bearbeiten-von-takten-in-allen-stimmen}
+
+Wenn man im das gesamte Musiktück Takte einfügen bzw. löschen will, ist
+es notwendig, an mehreren Stellen im ABC-Code zu editieren.
+
+Das ist eigentlich der Moment in dem man das Stück in ein
+Notensatzprogramm z.B. Musescore übernimmt, bearbeitet und dann in den
+Zupfnoter zurückbringt.
+
+Zupfnoter kann diesen Anwendungfall auch abdecken:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  wähle einen Abchnitt in der ersten Stimme
+\item
+  Benutze das Menü ``Bearbeiten / Abschnitt in allen Stimmen auswählen''
+\item
+  Im ABC-Fenster siehst du nun, dass mehrere, nicht zusammen hängende
+  Abschnitte selektiert sind.
+
+  \includegraphics{../ZAUX_Images/040-055_select-multiple-measures.jpg}~
+\item
+  mit der Taste ``Löschen'' kannst du nu die gesamte Auswahl löschen.
+  Damit werden die ausgewählten Takte in allen Stimmen gelöscht.
+\item
+  mit der Taste ``\textless{}-'' (Pfeiltaste nach links) kannst du die
+  Schreibmarke an den Anfang der Auswahl stellen und weitere Takte
+  eingeben.
+
+  \begin{quote}
+  \textbf{Hinweis:} Es ist sinnvoll, hier zunächst Takte mit ganzen
+  Noten einzugeben. Danach lassen sich neuen Takten in den einzelnen
+  Stimmen bearbeiten.
+  \end{quote}
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis:} das Verfahren ist etwas fragil und solte mit
+entsprechender Vorsicht angewandt werden
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Das Verfahren funktioniert nur, jede Stimme in einem eigenen Block
+  (mit genau einem ``V:'' pro Stimme) angegeben wird.
+\item
+  Das Verfahren basiert auf dem Zeitbezug der Noten. Dabei wird ein
+  Taktstrich der folgenden Note zugeordnet. Wenn also die Auswahl mit
+  einem Taktstich endet, dann wird die folgende Note in die Auswahl mit
+  einbezogen.
+\item
+  Die Grenze der ursprünglichen Auswahl muss in allen Stimmen auch
+  vorhanden sein. Wird z.B. eine \textbf{viertel} Note ausgewählt, in
+  einer anderen Stimme fällt deren Ende aber in eine \textbf{halbe
+  Note}, dann ist die Auswahl in den Stimmen nicht zeitsynchron und es
+  kann zu Fehlern kommen.
+\item
+  Das Verfahren erfordert, dass die Harfennoten aktuell sind (d.h. seit
+  dem letzten Rendern keine Bearbeitung mehr gemacht wurde),
+\end{enumerate}
+\end{quote}
+
 \subsubsection{Wenn die vertikale Anordnung optimiert werden
 soll}\label{wenn-die-vertikale-anordnung-optimiert-werden-soll}
 
@@ -3456,8 +3873,8 @@ sollten in folgender Reihenfolge ausgeführt werden.
   Synchronisationslinien mehr als sie helfen.
 \item
   im Konfigurationsmenü \texttt{Layout} mit den Schnelleinstellungen
-  \texttt{layout}~\texttt{kompakt} bzw. \texttt{Packer}~\texttt{kompakt}
-  die beste Einstellung suchen
+  \texttt{Noten\ klein} bzw. \texttt{Packer\ kompakt} die beste
+  Einstellung suchen
 \item
   ggf. gebundene Noten zu einer Note zusammenfassen
 \item
@@ -3468,7 +3885,126 @@ sollten in folgender Reihenfolge ausgeführt werden.
 \item
   Die Flußlinie gestalten (siehe Kapitel \ref{flowconf}
   \hyperref[flowconf]{Flußlinien gestalten})
+\item
+  Positionierung von Taktnummern und Zählmarken optimieren
 \end{enumerate}
+
+\hyperdef{}{barnumberautopos}{\subsubsection{Positionierung von
+Taktnummern und Zählmarken optimieren}\label{barnumberautopos}}
+
+\begin{quote}
+\textbf{Hinweis:} die feste, d.h. nicht automatisierte Positionierung
+kann man zwar in der Konfiguration noch einstellen. Diese Möglichkeit
+führt jedoch in der Praxis nicht zu befriedigenden Ergebnissen und wird
+also bald entfernt.
+\end{quote}
+
+Die automatische Positionierung der Taktnummern bzw. Zählmarken
+geschieht wie folgt:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Taktnummern stehen am Anfang der Note in Spielrichtung (also oben bei
+  spiel von oben nach unten)
+\item
+  Zählmarken stehen am Ende der Noten in Spielrichtung (also unten bei
+  Spiel von oben nach unten)
+\item
+  die horziontale Position errechnet sich aus dem Verlauf der
+  Flussinien. Man kann aber über das Kontextmenü für jede Taktnummer /
+  Zählmarke einstellen, ob sie links oder rechts von der Note platziert
+  wird.
+\item
+  Man kann einstellen, ob die Taktnummern / Zählmarken bezogen auf die
+  \textbf{Notenmitte oder den Notenrand} positioniert werden (Kapitel
+  \ref{extract.0.barnumbers.apanchor}~\hyperref[extract.0.barnumbers.apanchor]{\texttt{extract.0.barnumbers.apanchor}}
+  bzw.
+  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbasera]{\texttt{extract.0.barnumbers.apbase}}
+  )
+\item
+  Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken
+  bezogen auf die \textbf{Notenmitte oder den Notenrand} positioniert
+  werden (Kapitel
+  \ref{extract.0.barnumbers.apbase}~\hyperref[extract.0.barnumbers.apbase]{\texttt{extract.0.barnumbers.apbase}}
+  bzw.
+  \ref{extract.0.barnumbers.cpbase}~\hyperref[extract.0.countnotes.apbase]{\texttt{extract.0.barnumbers.apbase}}
+  )
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Die Positionierung der Taktnummern / Zählmarken kann
+für jede einzeln über die rechte Maustaste beeinflusst werden.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{Konfig\ bearb.} Da kann man einige Parameter in der
+  Notenbezogenen Konfiguration einstellen
+\item
+  \texttt{...\ rechts} Nummer wird rechts von der Note geschrieben. Sie
+  wird dadurch linksbündig.
+\item
+  \texttt{...\ links} Nummer wird links von der Note geschrieben. Sie
+  wird dadurch rechtsbündig.
+\item
+  verschieben mit der Maus
+\end{itemize}
+
+Zunächst sollte man versuchen, die Nummer auf die andere Seite der Note
+zu schieben. Damit ergibt sich immer noch eine exakte Ausrichtung und
+ein bessers Notenbild. Erst dann ist eine manuelle Positionierung mit
+der Maus sinnvoll.
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Auch beim manuellen Verschieben wird die Anodnung der
+Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
+(linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
+Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
+werden.
+\end{quote}
+
+\subsubsection{\texorpdfstring{Warnung: ``Beschriftung zu dicht
+beieinander''}{Warnung: Beschriftung zu dicht beieinander}}\label{warnung-beschriftung-zu-dicht-beieinander}
+
+Diese Warnungen sind experimentell. Sie kommen nur wenn
+\texttt{loglevel\ warning} eingestellt ist.
+
+\begin{quote}
+\textbf{Hinweis} Noch werden nicht alle Kollisionen sicher erkannt. Es
+kann auch sein dass Kollisionen gemeldet werden, die gerade noch gehen
+würden. Das liegt daran dass Zupfnoter die Größe der Texte nicht genau
+abschätzen kann.
+\end{quote}
+
+Wenn man eine solche Warnung beseitigen will, geht man am besten
+folgende Schritte:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Situation feststellen - dazu selektiert man im Eingabefenster die
+  Note, die rot untertrichen ist.
+\item
+  In der Unterlegnotenvorschau wirde die betroffene Note rot
+  hervorgehoben.
+\item
+  Dann sieht man auch schon die Kollision. Zunächst sollte man
+  versuchen, über das Kontextmenü die Beschreiftung auf die andere Seite
+  der Note zu schieben. Dann kann man dann durch Verschieben von einer
+  der beteiligten Beschriftungen mit der Maus bereinigen.
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis:} Man kann zunächst versuchen die Basis für die
+Positionierung von Taktnummern / Zählmarken zu verändern. Manchmal lässt
+sich dadurch die Anzahl der Warnungen zu reduzieren (siehe
+Kapitel~\ref{barnumberautopos}
+\hyperref[barnumberautopos]{Positionierung von Taktnummern und
+Zählmarken optimieren})
+\end{quote}
 
 \subsubsection{feste Leerzeichen in
 Texten}\label{feste-leerzeichen-in-texten}
@@ -3528,8 +4064,8 @@ I:linewarn 0
 I:staffnonote 2
 \end{verbatim}
 
-\hyperdef{}{filetemplates}{\subsubsection{Arbeiten mit
-Dateivorlagen}\label{filetemplates}}
+\hyperdef{}{filetemplates}{\subsubsection{Arbeiten mit Dateivorlagen
+(Templates)}\label{filetemplates}}
 
 Erstellt man über das Menü ``Neu'' ein neues Stück, fügt Zupfnoter eine
 Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
@@ -3549,8 +4085,8 @@ eigene Vorlage eingerichtet werden:
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \texttt{edittemplate}: Damit wird das aktuelle Template in den Editor
-  geladen und kann angepasst werden.
+  \texttt{edittemplate}: Damit wird das aktuell aktive Template in den
+  Editor geladen und kann angepasst werden.
 \item
   \texttt{editconf\ template}: Damit werde die Template-spezifischen
   Eigenschaften (Dateiname und Titel) eingstellt.
@@ -3572,19 +4108,21 @@ eigene Vorlage eingerichtet werden:
   \textbf{Hinweis}: Dabei ist es wichtig, dass die Kopfzeile \texttt{F:}
   einen Platzhalter - Zeichen \texttt{\{\{} enthält. Dadurch wird im
   ``Template\_modus'' gespeichert, d.h. der Dateiname wird nicht aus der
-  \texttt{F:} - Zeile entnommen sondern aus \texttt{template.filebase}
-  \end{quote}
-
-  \begin{quote}
-  \textbf{Hinweis} Beim Bearbeiten des Templates kommt immer wieder die
-  Meldung wie
-
-  \texttt{"\{\{song\_id\}\}\_\{\{filename\}\}":\ Fehlerhafte\ Zeichen\ im\ Filenamen}
-
-  Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
-  aufgelöst sind, daher wird die F: - Kopfzeile als fehlerhaft markiert.
+  \texttt{F:} - Zeile entnommen sondern aus dem Konfigurationsparameter
+  \texttt{template.filebase} entnommen.
   \end{quote}
 \end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Diese Schritte sind auch im Menü \texttt{Extras}
+erreichbar
+\end{quote}
+
+\begin{quote}
+\textbf{Hinweis}: Die Konfigurationsparameter \texttt{template.filebase}
+werden auch in die neuen Stücke kopiert, haben dort aber keine Wirkung
+mehr. Sie sind jedoch als Dokumentation hilfreich.
+\end{quote}
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der
@@ -3600,6 +4138,13 @@ Das ist die Basis für den Dateinamen
 \item[\texttt{\{\{song\_title\}\}}]
 Das ist der Titel des Stückes.
 \end{description}
+
+\begin{quote}
+\textbf{Hinweis:} In den Seitenbeschrifungen gibt es weitere
+Platzhalter, welche jedoch erst bei der Erzeugung der Unterlegnoten
+aufgelöst werden. Die möglichen Platzhalter werden in der Hilfe bei den
+Konfigurationsparametern angezeigt.
+\end{quote}
 
 \subsubsection{Parameter in der
 Zupfnoter-URL}\label{parameter-in-der-zupfnoter-url}
@@ -3925,12 +4470,40 @@ Liste von horizontaler / vertikaler Position.
 Text}{annotations.vl.text - Text}}\label{annotations.vl.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "v"
-      
+"text": "v"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{annotations.vr} - `V'
 rechts}{annotations.vr - V rechts}}\label{annotations.vr}
@@ -3957,12 +4530,40 @@ Liste von horizontaler / vertikaler Position.
 Text}{annotations.vr.text - Text}}\label{annotations.vr.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "v"
-      
+"text": "v"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{annotations.vt} - `V'
 oben}{annotations.vt - V oben}}\label{annotations.vt}
@@ -3989,12 +4590,40 @@ Liste von horizontaler / vertikaler Position.
 Text}{annotations.vt.text - Text}}\label{annotations.vt.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "v"
-      
+"text": "v"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{extract} -
 Auszug}{extract - Auszug}}\label{extract}
@@ -4014,19 +4643,24 @@ spezifiziert den Auszug 1 usw.
     "extract": {
       "0" : {
         "barnumbers"   : {
-          "autopos" : true,
-          "pos"     : [6, -4],
-          "prefix"  : "",
-          "style"   : "small_bold",
-          "voices"  : []
+          "apanchor" : "box",
+          "apbase"   : [1, 1],
+          "autopos"  : true,
+          "pos"      : [6, -4],
+          "prefix"   : "",
+          "style"    : "small_bold",
+          "voices"   : []
         },
         "countnotes"   : {
-          "autopos" : true,
-          "pos"     : [3, -2],
-          "style"   : "smaller",
-          "voices"  : []
+          "apanchor" : "box",
+          "apbase"   : [1, -0.5],
+          "autopos"  : true,
+          "pos"      : [3, -2],
+          "style"    : "smaller",
+          "voices"   : []
         },
         "flowlines"    : [1, 3],
+        "images"       : {},
         "jumplines"    : [1, 3],
         "layout"       : {
           "DRAWING_AREA_SIZE" : [400, 282],
@@ -4038,6 +4672,8 @@ spezifiziert den Auszug 1 usw.
           "REST_SIZE"         : [4, 2],
           "X_OFFSET"          : 2.8,
           "X_SPACING"         : 11.5,
+          "beams"             : false,
+          "bottomup"          : false,
           "color"             : {
             "color_default"  : "black",
             "color_variant1" : "grey",
@@ -4079,6 +4715,7 @@ spezifiziert den Auszug 1 usw.
         "subflowlines" : [2, 4],
         "synchlines"   : [[1, 2], [3, 4]],
         "title"        : "alle Stimmen",
+        "tuplets"      : {"text": "{{tuplet}}"},
         "voices"       : [1, 2, 3, 4]
       },
       "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
@@ -4098,12 +4735,88 @@ ausgegeben werden sollen.
 
 \begin{verbatim}
     "barnumbers": {
-      "autopos" : true,
-      "pos"     : [6, -4],
-      "prefix"  : "",
-      "style"   : "small_bold",
-      "voices"  : []
+      "apanchor" : "box",
+      "apbase"   : [1, 1],
+      "autopos"  : true,
+      "pos"      : [6, -4],
+      "prefix"   : "",
+      "style"    : "small_bold",
+      "voices"   : []
     }
+      
+\end{verbatim}
+
+\hyperdef{}{extract.0.barnumbers.apanchor}{\subsection{\texorpdfstring{\texttt{extract.0.barnumbers.apanchor}
+- autom. pos.
+Anker}{extract.0.barnumbers.apanchor - autom. pos. Anker}}\label{extract.0.barnumbers.apanchor}}
+
+Hier kannst du die vertikale Verankerung der Taktnummer an der Note
+einstellen.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: die Taktnummer wird an der Mitte der Note verankert
+\item
+  \texttt{box}: die Taktnummer wird am unteren Rand der Note verankert
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweise}:
+
+\begin{itemize}
+\item
+  Dieser Parameter wirkt nur bei automatischer Positionierung der
+  Taktnummern.
+\item
+  Die horizontale Verankerung der Taktnummer wird automatisch so
+  berechet, dass die Taktnummer gegenüber der eingehenden Flusslinie
+  steht.
+\end{itemize}
+\end{quote}
+
+\begin{verbatim}
+    "apanchor": "box"
+      
+\end{verbatim}
+
+\hyperdef{}{extract.0.barnumbers.apbase}{\subsection{\texorpdfstring{\texttt{extract.0.barnumbers.apbase}
+- autom. pos.
+Basis}{extract.0.barnumbers.apbase - autom. pos. Basis}}\label{extract.0.barnumbers.apbase}}
+
+Hier kannst du die Grundlage für die automatische Positionierung von
+Taktnummern einstellen.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Positive Werte schieben die Taktnummer \textbf{weiter} von der Note
+  weg.
+\item
+  Negative Werte schieben die Taktnummer \textbf{näher} an die Note
+  heran.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweise}: Die horizontale Verankerung der Taktnummer wird
+automatisch so berechet, dass die Taktnummer gegenüber der ausgehenden
+Flusslinie steht.
+
+Eine bewährte Eingabe ist:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: \texttt{1,0}
+\item
+  \texttt{box}: \texttt{1,-1}
+\end{itemize}
+\end{quote}
+
+\begin{verbatim}
+    "apbase": [1, 1]
       
 \end{verbatim}
 
@@ -4179,11 +4892,88 @@ Hilfestellung beim einhalten der vorgegebenen Notenweret.
 
 \begin{verbatim}
     "countnotes": {
-      "autopos" : true,
-      "pos"     : [3, -2],
-      "style"   : "smaller",
-      "voices"  : []
+      "apanchor" : "box",
+      "apbase"   : [1, -0.5],
+      "autopos"  : true,
+      "pos"      : [3, -2],
+      "style"    : "smaller",
+      "voices"   : []
     }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.countnotes.apanchor} -
+autom. pos.
+Anker}{extract.0.countnotes.apanchor - autom. pos. Anker}}\label{extract.0.countnotes.apanchor}
+
+Hier kannst du die vertikale Verankerung der Zählmarke an der Note
+einstellen.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: die Zählmarke wird an der Mitte der Note verankert
+\item
+  \texttt{box}: die Zählmarke wird am unteren Rand der Note verankert
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweise}:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Dieser Parameter wirkt nur bei automatischer Positionierung der
+  Zählmarken.
+\item
+  Die horizontale Verankerung der Zählmarke wird automatisch so
+  berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
+  steht.
+\end{itemize}
+\end{quote}
+
+\begin{verbatim}
+    "apanchor": "box"
+      
+\end{verbatim}
+
+\hyperdef{}{extract.0.countnotes.apbase}{\subsection{\texorpdfstring{\texttt{extract.0.countnotes.apbase}
+- autom. pos.
+Basis}{extract.0.countnotes.apbase - autom. pos. Basis}}\label{extract.0.countnotes.apbase}}
+
+Hier kannst du die Grundlage für die automatische Positionierung von
+Zählmarken einstellen.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Positive Werte schieben die Zählmarke \textbf{weiter} von der Note
+  weg.
+\item
+  Negative Werte schieben die Zählmarke \textbf{näher} an die Note
+  heran.
+\end{itemize}
+
+\begin{quote}
+\textbf{Hinweise}: Die horizontale Verankerung der Zählmarke wird
+automatisch so berechet, dass die Zählmarke gegenüber der eingehenden
+Flusslinie steht.
+
+Eine bewährte Eingabe ist:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{center}: \texttt{1,0}
+\item
+  \texttt{box}: \texttt{1,-0.5}
+\end{itemize}
+\end{quote}
+
+\begin{verbatim}
+    "apbase": [1, -0.5]
       
 \end{verbatim}
 
@@ -4249,6 +5039,16 @@ angeben, für die Flußlinien eingezeichnet werden sollen.
       
 \end{verbatim}
 
+\subsection{\texorpdfstring{\texttt{extract.0.images} -
+Bilder}{extract.0.images - Bilder}}\label{extract.0.images}
+
+TODO:\marginpar{TODO} Helptext für extract.0.images einfügen
+
+\begin{verbatim}
+    "images": {}
+      
+\end{verbatim}
+
 \subsection{\texorpdfstring{\texttt{extract.0.jumplines} -
 Sprunglinien}{extract.0.jumplines - Sprunglinien}}\label{extract.0.jumplines}
 
@@ -4277,6 +5077,8 @@ Notenbild gezielt optimieren.
       "REST_SIZE"         : [4, 2],
       "X_OFFSET"          : 2.8,
       "X_SPACING"         : 11.5,
+      "beams"             : false,
+      "bottomup"          : false,
       "color"             : {
         "color_default"  : "black",
         "color_variant1" : "grey",
@@ -4367,11 +5169,21 @@ Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
 Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
 Blattrand dargestellt wird.
 
-Der Wert -43 sorgt dafür, dass der G der Oktave 3 am linken Blattrand
-erscheint.
+\begin{quote}
+\textbf{Hinweis} Bei \textbf{chromatischen} Instrumenten wird die
+Stimmung der Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43
+dafür, dass das G der Oktave 3 am linken Blattrand erscheint.
 
 Die Midi-Codes findest du auf
 \href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
+
+Bei \textbf{diatonischen} Instrumenten muss der Wert ggf. durch
+Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
+verdrahtet ist. Üblicherweise ist er 0. Man könnte aber durch Werte von
+-12 bzw. +12 eine Art ``Transponierung'' errreichen. Das ist dann
+sinnvoll, wenn die selben Eingabenoten für verschiedene Instrumente
+verwendet werden sollen.
+\end{quote}
 
 \begin{verbatim}
     "PITCH_OFFSET": -43
@@ -4411,6 +5223,37 @@ Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
     "X_SPACING": 11.5
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.beams} -
+Notenhälse}{extract.0.layout.beams - Notenhälse}}\label{extract.0.layout.beams}
+
+Hier kannst du einstellen, ob die Noten mit Notenhälsen dargestellt
+werden. Noten mit Notenhälsen orientieren sich mehr an der
+traditionellen Notenschrift, brauchen aber mehr Plat. Alle Noten werden
+gleich groß dargeestellt.
+
+\begin{verbatim}
+    "beams": false
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.layout.bottomup} - Spiel
+aufwärts}{extract.0.layout.bottomup - Spiel aufwärts}}\label{extract.0.layout.bottomup}
+
+Hier kannst du einstellen, ob die Noten von unten nach oben geschrieben
+werden. Manche Spieler (Spieler der Okon-Harfe) bevorzugen diese
+Darstellung, weil dabei die Hand nicht mehr die nächsten Noten verdeckt.
+
+\begin{quote}
+\textbf{Hinweis} Die Taktstriche werden weiterhin oberhalb der Noten
+gezeichnet. Aber die Position von Taktnummern und Zählmarken wird
+angepasst.
+\end{quote}
+
+\begin{verbatim}
+    "bottomup": false
       
 \end{verbatim}
 
@@ -4619,6 +5462,14 @@ Hier kannst du die pack-Methode auswählen
   Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr flach
   sind.
   \end{quote}
+\item
+  \textbf{2} : linear: die Zeitachse wird linear auf das Blatt verteilt.
+  Bei kurzen Stücken entspricht der Abstand der Noten dann auch dem
+  Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber am
+  meisten Platz verbraucht.
+
+  Es wird auch kein extra Raum für Parts, Taktstriche und manuelle
+  Vorschübe erstellt.
 
 \begin{verbatim}
 "pack_method": 0
@@ -4828,16 +5679,16 @@ Im Beispiel
 \ldots{} kein Beispiel verfügbar \ldots{}
 
 \subsection{\texorpdfstring{\texttt{extract.0.notebound.tuplet} -
-Tuplet}{extract.0.notebound.tuplet - Tuplet}}\label{extract.0.notebound.tuplet}
+n-Tole}{extract.0.notebound.tuplet - n-Tole}}\label{extract.0.notebound.tuplet}
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 \begin{quote}
 \textbf{Hinweis}:
 
-Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-notwendig, eine ``Verschiebemarke'' vor die betroffene tuplet zu setzen.
+Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+notwendig, eine ``Verschiebemarke'' vor die betroffene n-Tole zu setzen.
 Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 man die Verschiebemarken gleich benennt.
 
@@ -4895,7 +5746,7 @@ Druckdialog findest.
 Offset für
 A3}{extract.0.printer.a3\_offset - Offset für A3}}\label{extract.0.printer.a3ux5foffset}
 
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
 verschoben werden soll.
 
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
@@ -5077,8 +5928,9 @@ ausgegeben werden soll.
 \subsection{\texorpdfstring{\texttt{extract.0.repeatsigns.voices} -
 Stimmen}{extract.0.repeatsigns.voices - Stimmen}}\label{extract.0.repeatsigns.voices}
 
-Hier gibst du eine Liste (durch Komma getrenn) der Stimmen and, für
-welche Wiederholungszeichen anstelle von Sprunglinie ausgegeben werden.
+Hier gibst du eine Liste (durch Komma getrennt) der Stimmen an, für
+welche Wiederholungszeichen anstelle einer Sprunglinie ausgegeben
+werden.
 
 \begin{quote}
 Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine
@@ -5104,7 +5956,8 @@ ob der Stapel sortiert ist.
 \textbf{Hinweis}: Leider kann auf haushaltsüblichen Druckern nicht bis
 zum Rand gedrukht werden. Daher muss man die Sortiermake mit einem
 Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens
-Stapels kontrollieren, in dem man auf die Schnittkan des Stapels schaut.
+Stapels kontrollieren, in dem man auf die Schnittkante des Stapels
+schaut.
 \end{quote}
 
 \begin{verbatim}
@@ -5318,6 +6171,31 @@ spezifiziert ist.
       
 \end{verbatim}
 
+\subsection{\texorpdfstring{\texttt{extract.0.tuplets} -
+n-Tolen}{extract.0.tuplets - n-Tolen}}\label{extract.0.tuplets}
+
+Hier kannst du die generelle Darstellung von n-Tolen konfigurieren.
+
+\begin{verbatim}
+    "tuplets": {"text": "{{tuplet}}"}
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{extract.0.tuplets.text} -
+Text}{extract.0.tuplets.text - Text}}\label{extract.0.tuplets.text}
+
+Hier kannst du die Darstellung der n-Tolen - Nummer konfigurieren. Der
+Wert ist ein Text, in welchem der Platzhalter \texttt{\{\{tuplet\}\}}
+durch die n-Tolen - Nummer ersetzt wird.
+
+So wird beispielsweise mit \texttt{-\ \{\{tuplet\}\}\ -} die n-Tolen -
+Nummer als \texttt{-\ 3\ -} dargestellt.
+
+\begin{verbatim}
+    "text": "{{tuplet}}"
+      
+\end{verbatim}
+
 \subsection{\texorpdfstring{\texttt{extract.0.voices} -
 Stimmen}{extract.0.voices - Stimmen}}\label{extract.0.voices}
 
@@ -5346,37 +6224,81 @@ allerdings nur in der Textansicht möglich.
 
 \begin{verbatim}
     "notes": {
+      "T01_T99"                  : {"value": {}},
       "T01_number"               : {
-        "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+        "value" : {
+          "pos"   : [393, 17],
+          "style" : "bold",
+          "text"  : "XXX-{{number}}"
+        }
       },
       "T01_number_extract"       : {
-        "value" : {"pos": [411, 17], "style": "bold", "text": "-X"}
+        "value" : {
+          "pos"   : [411, 17],
+          "style" : "bold",
+          "text"  : "{{extract_filename}}"
+        }
       },
-      "T01_number_extract_value" : {"key": "T01_number_extract", "value": {"text": "-X"}},
+      "T01_number_extract_value" : {
+        "key"   : "T01_number_extract",
+        "value" : {"text": "{{extract_filename}}"}
+      },
       "T02_copyright_music"      : {
         "value" : {
           "pos"   : [340, 251],
           "style" : "small",
-          "text"  : "© 2017\n"
+          "text"  : "© 2018\n"
         }
       },
       "T03_copyright_harpnotes"  : {
         "value" : {
           "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2017 Notenbild: zupfnoter.de"
+          "text"  : "© 2018 Notenbild: zupfnoter.de"
         }
       },
       "T04_to_order"             : {
         "value" : {"pos": [340, 242], "style": "small", "text": null}
       },
       "T05_printed_extracts"     : {
-        "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+        "value" : {
+          "pos"   : [393, 22],
+          "style" : "smaller",
+          "text"  : "{{printed_extracts}}"
+        }
+      },
+      "T06_legend"               : {
+        "value" : {
+          "pos"   : [360, 30],
+          "style" : "small",
+          "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+        }
       },
       "T99_do_not_copy"          : {
         "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
       }
     }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T01\_T99} - T01 .. T99
+Alle
+..}{presets.notes.T01\_T99 - T01 .. T99 Alle ..}}\label{presets.notes.T01ux5fT99}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T01\_T99 einfügen
+
+\begin{verbatim}
+    "T01_T99": {"value": {}}
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T01\_T99.value} -
+Wert}{presets.notes.T01\_T99.value - Wert}}\label{presets.notes.T01ux5fT99.value}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T01\_T99.value einfügen
+
+\begin{verbatim}
+    "value": {}
       
 \end{verbatim}
 
@@ -5388,7 +6310,11 @@ TODO:\marginpar{TODO} Helptext für presets.notes.T01\_number einfügen
 
 \begin{verbatim}
     "T01_number": {
-      "value" : {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+      "value" : {
+        "pos"   : [393, 17],
+        "style" : "bold",
+        "text"  : "XXX-{{number}}"
+      }
     }
       
 \end{verbatim}
@@ -5400,7 +6326,11 @@ TODO:\marginpar{TODO} Helptext für presets.notes.T01\_number.value
 einfügen
 
 \begin{verbatim}
-    "value": {"pos": [393, 17], "style": "bold", "text": "XXX-999"}
+    "value": {
+      "pos"   : [393, 17],
+      "style" : "bold",
+      "text"  : "XXX-{{number}}"
+    }
       
 \end{verbatim}
 
@@ -5433,12 +6363,40 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T01\_number.value.text - Text}}\label{presets.notes.T01ux5fnumber.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "XXX-999"
-      
+"text": "XXX-{{number}}"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T01ux5fnumberux5fextract}{\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract}
 - T01
@@ -5462,7 +6420,13 @@ Ein sinnvolles schema ist:
   Regel aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
 \begin{verbatim}
-"T01_number_extract": {"value": {"pos": [411, 17], "style": "bold", "text": "-X"}}
+"T01_number_extract": {
+  "value" : {
+    "pos"   : [411, 17],
+    "style" : "bold",
+    "text"  : "{{extract_filename}}"
+  }
+}
 \end{verbatim}
 \end{itemize}
 
@@ -5474,7 +6438,11 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T01\_number\_extract.value einfügen
 
 \begin{verbatim}
-    "value": {"pos": [411, 17], "style": "bold", "text": "-X"}
+    "value": {
+      "pos"   : [411, 17],
+      "style" : "bold",
+      "text"  : "{{extract_filename}}"
+    }
       
 \end{verbatim}
 
@@ -5507,12 +6475,40 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T01\_number\_extract.value.text - Text}}\label{presets.notes.T01ux5fnumberux5fextract.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "-X"
-      
+"text": "{{extract_filename}}"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract\_value}
 - T01 Auszugn Nummer
@@ -5522,7 +6518,10 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T01\_number\_extract\_value einfügen
 
 \begin{verbatim}
-    "T01_number_extract_value": {"key": "T01_number_extract", "value": {"text": "-X"}}
+    "T01_number_extract_value": {
+      "key"   : "T01_number_extract",
+      "value" : {"text": "{{extract_filename}}"}
+    }
       
 \end{verbatim}
 
@@ -5546,7 +6545,7 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T01\_number\_extract\_value.value einfügen
 
 \begin{verbatim}
-    "value": {"text": "-X"}
+    "value": {"text": "{{extract_filename}}"}
       
 \end{verbatim}
 
@@ -5555,12 +6554,40 @@ presets.notes.T01\_number\_extract\_value.value einfügen
 Text}{presets.notes.T01\_number\_extract\_value.value.text - Text}}\label{presets.notes.T01ux5fnumberux5fextractux5fvalue.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "-X"
-      
+"text": "{{extract_filename}}"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T02ux5fcopyrightux5fmusic}{\subsection{\texorpdfstring{\texttt{presets.notes.T02\_copyright\_music}
 - T02 Copyright
@@ -5571,7 +6598,7 @@ das Copyright auf die Komposition angegeben.
 
 \begin{verbatim}
     "T02_copyright_music": {
-      "value" : {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+      "value" : {"pos": [340, 251], "style": "small", "text": "© 2018\n"}
     }
       
 \end{verbatim}
@@ -5584,7 +6611,7 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T02\_copyright\_music.value einfügen
 
 \begin{verbatim}
-    "value": {"pos": [340, 251], "style": "small", "text": "© 2017\n"}
+    "value": {"pos": [340, 251], "style": "small", "text": "© 2018\n"}
       
 \end{verbatim}
 
@@ -5617,12 +6644,40 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T02\_copyright\_music.value.text - Text}}\label{presets.notes.T02ux5fcopyrightux5fmusic.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "© 2017\n"
-      
+"text": "© 2018\n"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T03ux5fcopyrightux5fharpnotes}{\subsection{\texorpdfstring{\texttt{presets.notes.T03\_copyright\_harpnotes}
 - T03 Copyright
@@ -5637,7 +6692,7 @@ Tischharfe
       "value" : {
         "pos"   : [340, 260],
         "style" : "small",
-        "text"  : "© 2017 Notenbild: zupfnoter.de"
+        "text"  : "© 2018 Notenbild: zupfnoter.de"
       }
     }
       
@@ -5654,7 +6709,7 @@ presets.notes.T03\_copyright\_harpnotes.value einfügen
     "value": {
       "pos"   : [340, 260],
       "style" : "small",
-      "text"  : "© 2017 Notenbild: zupfnoter.de"
+      "text"  : "© 2018 Notenbild: zupfnoter.de"
     }
       
 \end{verbatim}
@@ -5688,12 +6743,40 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T03\_copyright\_harpnotes.value.text - Text}}\label{presets.notes.T03ux5fcopyrightux5fharpnotes.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "© 2017 Notenbild: zupfnoter.de"
-      
+"text": "© 2018 Notenbild: zupfnoter.de"
 \end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T04ux5ftoux5forder}{\subsection{\texorpdfstring{\texttt{presets.notes.T04\_to\_order}
 - T04 zu beziehen
@@ -5751,12 +6834,40 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T04\_to\_order.value.text - Text}}\label{presets.notes.T04ux5ftoux5forder.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": null
-      
+"text": null
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts}
 - T05 verfügbare
@@ -5767,7 +6878,11 @@ einfügen
 
 \begin{verbatim}
     "T05_printed_extracts": {
-      "value" : {"pos": [393, 22], "style": "smaller", "text": null}
+      "value" : {
+        "pos"   : [393, 22],
+        "style" : "smaller",
+        "text"  : "{{printed_extracts}}"
+      }
     }
       
 \end{verbatim}
@@ -5780,7 +6895,11 @@ TODO:\marginpar{TODO} Helptext für
 presets.notes.T05\_printed\_extracts.value einfügen
 
 \begin{verbatim}
-    "value": {"pos": [393, 22], "style": "smaller", "text": null}
+    "value": {
+      "pos"   : [393, 22],
+      "style" : "smaller",
+      "text"  : "{{printed_extracts}}"
+    }
       
 \end{verbatim}
 
@@ -5813,12 +6932,135 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T05\_printed\_extracts.value.text - Text}}\label{presets.notes.T05ux5fprintedux5fextracts.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": null
+"text": "{{printed_extracts}}"
+\end{verbatim}
+\end{itemize}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend} - T06
+Legende}{presets.notes.T06\_legend - T06 Legende}}\label{presets.notes.T06ux5flegend}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T06\_legend einfügen
+
+\begin{verbatim}
+    "T06_legend": {
+      "value" : {
+        "pos"   : [360, 30],
+        "style" : "small",
+        "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+      }
+    }
       
 \end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value} -
+Wert}{presets.notes.T06\_legend.value - Wert}}\label{presets.notes.T06ux5flegend.value}
+
+TODO:\marginpar{TODO} Helptext für presets.notes.T06\_legend.value
+einfügen
+
+\begin{verbatim}
+    "value": {
+      "pos"   : [360, 30],
+      "style" : "small",
+      "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+    }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.pos}
+-
+Position}{presets.notes.T06\_legend.value.pos - Position}}\label{presets.notes.T06ux5flegend.value.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+\begin{verbatim}
+    "pos": [360, 30]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.style}
+-
+Stil}{presets.notes.T06\_legend.value.style - Stil}}\label{presets.notes.T06ux5flegend.value.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "style": "small"
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.text}
+-
+Text}{presets.notes.T06\_legend.value.text - Text}}\label{presets.notes.T06ux5flegend.value.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
+
+\begin{verbatim}
+"text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
+\end{verbatim}
+\end{itemize}
 
 \hyperdef{}{presets.notes.T99ux5fdoux5fnotux5fcopy}{\subsection{\texorpdfstring{\texttt{presets.notes.T99\_do\_not\_copy}
 - T99 bitte nicht
@@ -5875,12 +7117,40 @@ aus vordefinierten Stilen.
 Text}{presets.notes.T99\_do\_not\_copy.value.text - Text}}\label{presets.notes.T99ux5fdoux5fnotux5fcopy.value.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": null
-      
+"text": null
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{produce} -
 Auszüge}{produce - Auszüge}}\label{produce}
@@ -5962,29 +7232,41 @@ Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{template} -
-Dateivorlate}{template - Dateivorlate}}\label{template}
+Dateivorlage}{template - Dateivorlage}}\label{template}
 
-TODO:\marginpar{TODO} Helptext für template einfügen
+Hier kannst du spezifische Eigenschaften des Template anpassen. Das ist
+nur relevant, wenn du ein Template bearbeitest.
+
+\begin{quote}
+\textbf{Hinweis} Diese Eigenschaften werden auch in abc dateien
+geschrieben welche auf Basis des vorhandenen Templates erstellt werden.
+Damit kann mnan feststellen, welches termplate der aktuell geöffnteten
+ABC - datei zu Grunde liegt.
+\end{quote}
 
 \begin{verbatim}
-    "template": {"filebase": null, "title": "- no template -"}
+    "template": {"filebase": "-no-template-", "title": "- no template -"}
       
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{template.filebase} -
-Dateibasis}{template.filebase - Dateibasis}}\label{template.filebase}
+Filename-Basis}{template.filebase - Filename-Basis}}\label{template.filebase}
 
-TODO:\marginpar{TODO} Helptext für template.filebase einfügen
+Hier kannst du den Dateinamen (ohne Erweiterung) des Templates angeben.
+Wenn die F-Kopfzeile eine Platzhalter-Startsquenz (\texttt{\{\{})
+enthält, wird der in diesem Parameter angegebenen Name zum Speichern
+verwendet
 
 \begin{verbatim}
-    "filebase": null
+    "filebase": "-no-template-"
       
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{template.title} -
 Titel}{template.title - Titel}}\label{template.title}
 
-TODO:\marginpar{TODO} Helptext für template.title einfügen
+Hier kannst du einen informativen Titel für das Template angeben. Damit
+kannst du das Template identifizieren.
 
 \begin{verbatim}
     "title": "- no template -"
@@ -6003,7 +7285,13 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 \begin{verbatim}
     "templates": {
       "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
-      "lyrics"      : {"pos": [350, 70], "verses": [1]},
+      "images"      : {
+        "height"    : 100,
+        "imagename" : "",
+        "pos"       : [10, 10],
+        "show"      : true
+      },
+      "lyrics"      : {"pos": [350, 70], "style": "regular", "verses": [1]},
       "notes"       : {"pos": [320, 6], "style": "large", "text": "ENTER_NOTE"},
       "tuplet"      : {
         "cp1"   : [5, 2],
@@ -6045,10 +7333,97 @@ Liste von horizontaler / vertikaler Position.
 Text}{templates.annotations.text - Text}}\label{templates.annotations.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "_vorlage_"
+"text": "_vorlage_"
+\end{verbatim}
+\end{itemize}
+
+\subsection{\texorpdfstring{\texttt{templates.images} -
+Bilder}{templates.images - Bilder}}\label{templates.images}
+
+TODO:\marginpar{TODO} Helptext für templates.images einfügen
+
+\begin{verbatim}
+    "images": {
+      "height"    : 100,
+      "imagename" : "",
+      "pos"       : [10, 10],
+      "show"      : true
+    }
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.height} -
+Bildhöhe}{templates.images.height - Bildhöhe}}\label{templates.images.height}
+
+TODO:\marginpar{TODO} Helptext für templates.images.height einfügen
+
+\begin{verbatim}
+    "height": 100
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.imagename} -
+Bildname}{templates.images.imagename - Bildname}}\label{templates.images.imagename}
+
+Hier kannst du das Bild auswählen, welches eingefügt werden soll. Die
+Auswahlliste zeigt die Zupfnoter-internen Namen an. Es werden nur Bilder
+gelistet, die dem ABC-File hinzugefügt wurde.
+
+\begin{verbatim}
+    "imagename": ""
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.pos} -
+Position}{templates.images.pos - Position}}\label{templates.images.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+\begin{verbatim}
+    "pos": [10, 10]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.images.show} -
+anzeigen}{templates.images.show - anzeigen}}\label{templates.images.show}
+
+Dieser Eisntellung steuert, ob das Objekt (z.B. das Bild) in der Ausgabe
+angezeigt werden soll.
+
+\begin{verbatim}
+    "show": true
       
 \end{verbatim}
 
@@ -6062,7 +7437,7 @@ Ein einzelner Block listet die Strophen auf, die er enthält, und die
 gemeinsam poitioniert werden.
 
 \begin{verbatim}
-    "lyrics": {"pos": [350, 70], "verses": [1]}
+    "lyrics": {"pos": [350, 70], "style": "regular", "verses": [1]}
       
 \end{verbatim}
 
@@ -6075,6 +7450,17 @@ von horizontaler / vertikaler Position.
 
 \begin{verbatim}
     "pos": [350, 70]
+      
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{templates.lyrics.style} -
+Stil}{templates.lyrics.style - Stil}}\label{templates.lyrics.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "style": "regular"
       
 \end{verbatim}
 
@@ -6134,24 +7520,52 @@ aus vordefinierten Stilen.
 Text}{templates.notes.text - Text}}\label{templates.notes.text}
 
 Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Auszüge aus ``produce''.
+  Es werden die entsprechneden Filenamenzusätze ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
 
 \begin{verbatim}
-    "text": "ENTER_NOTE"
-      
+"text": "ENTER_NOTE"
 \end{verbatim}
+\end{itemize}
 
 \subsection{\texorpdfstring{\texttt{templates.tuplet} -
-Tuplet}{templates.tuplet - Tuplet}}\label{templates.tuplet}
+n-Tole}{templates.tuplet - n-Tole}}\label{templates.tuplet}
 
-Hier kannst du die Darstellung von Triolen (genauer gesagt, von Tuplets)
+Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen)
 steuern.
 
 \begin{quote}
 \textbf{Hinweis}:
 
-Wenn du mehrere Tuplets gemeinsam konfigurieren möchtest, ist es
-notwendig, eine ``Verschiebemarke'' vor die betroffene tuplet zu setzen.
+Wenn du mehrere n-Tolen gemeinsam konfigurieren möchtest, ist es
+notwendig, eine ``Verschiebemarke'' vor die betroffene n-Tole zu setzen.
 Dabei ist es möglich, mehrere Tuplets gemeinsam zu konfigurieren wenn
 man die Verschiebemarken gleich benennt.
 
@@ -6194,7 +7608,7 @@ Hier gibst du den Kontrollpunkt für die letzte Note an.
 \subsection{\texorpdfstring{\texttt{templates.tuplet.shape} -
 Linienform}{templates.tuplet.shape - Linienform}}\label{templates.tuplet.shape}
 
-Hier gibst du eine Liste von Linienformen für das Tuplet an.
+Hier gibst du eine Liste von Linienformen für die n-tole an.
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6217,7 +7631,7 @@ Kontrollpunkte (als Ecken im Linienzug) sehen.
 \subsection{\texorpdfstring{\texttt{templates.tuplet.show} -
 anzeigen}{templates.tuplet.show - anzeigen}}\label{templates.tuplet.show}
 
-Hier gibst du an, ob das Tuplet ausgegeben werden soll.
+Hier gibst du an, ob die n-Tole ausgegeben werden soll.
 
 \begin{verbatim}
     "show": true
@@ -6237,59 +7651,70 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 \cleardoublepage
 
-\section{Änderungshistorie von
-Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
+\section{Änderungsgeschichte}\label{uxe4nderungsgeschichte}
 
-\subsection{V 1.7.0 2017-09-08}\label{v-1.7.0-2017-09-08}
+\section{V.1.10 Nov 2018}\label{v.1.10-nov-2018}
 
-\subsubsection{Fehlerkorrekturen}\label{fehlerkorrekturen}
+\subsection{fix}\label{fix}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Tuplet-Linien sind jetzt korrekt in pdf (\#139)
+  Pausen in n-tolen \#240
 \item
-  keine unerwarteten Subflowlinien mehr zu Unisons (\#140)
+  ``Abschnitt in allen Stimmen auswählen'' funktionier tauch mit
+  Ziernoten im ABC\#243
 \item
-  kleine Noten sind nun auch korrekt (\#143)
+  mehr Sonderzeichen ersetzt (z.b. aus Word) \#238
 \item
-  Wiedergabe spielt nun bis zum Ende der gebundenen Noten (\#147)
+  XML-Import funktioniert nun auch wenn keine Vorlage definiert ist
+  \#239
+\end{itemize}
+
+\subsection{enhancement}\label{enhancement}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  Dekorationen funktionieren nun auch bei Pausen (\#127)
+  BWC: Taktnummern und Zählmarken können nun an der Notenmitte
+  ausgerichtet werden \#237
 \item
-  shift funktioniert jetzt auch auf unisons (\#107)
+  Performance: Notenvorschau und Harfennvorschau können nun im
+  Hintergrund gerechnet werden \#241
 \item
-  abc2svg-Einstellungen nicht mehr nötig (aus Template entfernt) (\#71)
+  Einige Menü-Einträge von ``Extras'' in die Statusleiste unten verlegt
+  \#242
 \item
-  BWC Voreinstellung für ``filenamepart'' ist jetzt wie in 1.5 (\#155)
+  Dialog ``Es gibt neue Informationen'' verbessert \#244
+\end{itemize}
+
+\subsection{Kompatibilität}\label{kompatibilituxe4t}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  Config-Formular wird nach dem Laden eines anderen Stückes aktualisiert
-  (\#156)
+  ``Konfig. bearb.'' / ``Taknummern und Zählmarken'' ,
+  Schnelleinstellung ``an der Mitte der Note verankern''
+\end{itemize}
+
+\subsection{V 1.9.2}\label{v-1.9.2}
+
+\subsubsection{Fehlerbehbungen}\label{fehlerbehbungen}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
-  Drucker offset wird nicht mehr zerstört, wenn der Benutzer nur einen
-  Wert der geforderten zwei Werten (\#157) eingibt.
+  Sichtbarkeit von punktierungen verbessert \#224
 \item
-  Dropbox-Pfad kann jetzt auch Ziffern haben (\#162)
+  Position von Liedtexten nun gleich in Vorschau bzw. Ausdruck \#235
 \item
-  Druckerfenster zeigt pdf auf Chrome 60 wieder an (\#160)
+  Notenvorschau wurde zu oft berechnet \#223
 \item
-  jetzt werden auch auf Flowline zu unsichtbaren Pausen unterdrückt
-  (\#166)
+  Verbesserung beim Umschalten von Ansichten \#230
 \item
-  Pausen über mehrere Takte funktionieren nun \texttt{Z} (\#166)
+  Bessere Darstellung der Konfigurationsbuttons in chrome / firefox
 \item
-  vt und vr vordefinierte Annotationen korrigiert
-\item
-  BWC: Tuplet-Konfiguration in Notebounds verschoben (\#168)
-\item
-  Mehrere Anmerkungen an einer Note können jetzt einzeln gezogen werden
-  (\#170)
-\item
-  BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-  mehr angezeigt (\#174)
-\item
-  BWC: Layoutlines ist nun die Kombination von Stimmen und Layoutlines.
-  (\#175)
+  Geschwindikgeitsverbesserungen \#225
 \end{itemize}
 
 \subsubsection{Erweiterungen}\label{erweiterungen}
@@ -6297,94 +7722,373 @@ Zupfnoter}\label{uxe4nderungshistorie-von-zupfnoter}
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Sprunglinien können jetzt per Drag \& Drop konfiguriert werden (\#136)
+  die zu speichenden Dateien können nun eingestellt werden (seaveformat)
+  \#229
 \item
-  Tuplets können jetzt per Drag \& Drop modelliert werden (\#138)
+  Konfiguration von Beschriftungen verbessert \#227
 \item
-  verbesserte Geschwindigkeit der Konfiguration (\#115)
+  Wiederholungszeichen können individuell konfiguriert werden \#232
 \item
-  verbesserte Geschwindigkeit der Harfennote-Vorschau (\#87)
+  Aktuelles Template wird beim import einer xml-Datei angewandt
 \item
-  verbesserte Geschwindigkeit des Vertikalpackers (\#87, \#89)
-\item
-  Editor klappt Konfigurationsparameter standardmäßig zu (\#144)
-\item
-  man kann jetzt einee Sortmark auf den Bogen drucken (\#145)
-\item
-  der Anker von Sprunglinien kann nun konfiguriert werden (\#150)
-\item
-  Variantenteile jetzt in Grau (\#151)
-\item
-  Menü unterstützt nun Extrakt 0 bis Extrakt 5 (\#153)
-\item
-  Menü zeigt jetzt auch Titel, Auszugsnummer und Ausgabesatatus von
-  Auszügen an (\#153)
-\item
-  Strg-Alt' F' schaltet jetzt Harfenvorschau um
-\item
-  Menü ``Konfiguration bearbeiten'' neu geordnet, um den
-  Konfigurations-Workflow zu verbessern (\#171)
-\item
-  jetzt kann die tilde als festes Leerzeichen in Liedtexten, Saitnnamen,
-  Anmerkungen etc. verwendet werden (\#113)
-\item
-  die Tilde kann nun maskiert werden
-  \texttt{\textbackslash{}\textbackslash{}\textasciitilde{}}, so dass
-  sie als Tile ausgegeben wird (\#113)
+  Parameter können nun von und nach Auzug 0 kopiert werden \#228
 \end{itemize}
 
-\subsubsection{Interne Änderungen}\label{interne-uxe4nderungen}
+\subsubsection{experimental}\label{experimental}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  aktualisiert auf abc2svg 1.13.7 (\#163)
+  modify configuration when generating pdf with cli - eg. for watermark
+  \#231
 \end{itemize}
 
-\subsubsection{Experimentelle Funktion}\label{experimentelle-funktion}
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  kollisionsbasierten Packer (\#89)
-\item
-  Validierung der Konfigurationsparameter (\#85) mit Ergebnisformular
-  implementiert
-\item
-  Form der Flußlinien konfigurierbar (\#167)
+  BWC Position und Größe von Liedtexten könnte sich geringfügig ändern
+  \#235
 \end{itemize}
 
-\subsubsection{Inkompatibile Änderungen zur
-Vorversion}\label{inkompatibile-uxe4nderungen-zur-vorversion}
+\subsection{v.1.9.1}\label{v.1.9.1}
+
+internal release
+
+\subsection{v 1.9.0}\label{v-1.9.0}
+
+\subsection{Fehlerbehebungen}\label{fehlerbehebungen}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Layoutlines ist nun die Kombination von Stimmen und Layoutlines. Es
-  ist nicht mehr möglich, Stimmen anzuzeigen, ohne sie im Layout zu
-  berücksichtigen. (\#175)
-\item
-  Default für ``filenamepart'' ist jetzt wie in 1.5 (\#155)
-\item
-  Tuplet-Konfiguration ist jetzt unter' notebound': muss also neu
-  gemacht werden (\#168)
-\item
-  BWC: Originaltonart (Original in) wird bei bei Transpositionen nicht
-  mehr angezeigt (\#174)
+  Taktstrich bei Wiederholungsgrenzen innerhalb eines Takts sind nun
+  unterdrückt \#216
 \end{itemize}
 
-\subsubsection{bekannte Probleme}\label{bekannte-probleme}
+\subsection{Erweiterungen}\label{erweiterungen-1}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  verschieben von Sprunglinien bei Saitenspiel funktioniert nicht
-  richtig (\#158)
+  Sprunglinien für Variationen können einzeln konfiguriert werden \#215
+\item
+  Voreinstellung für Basis von Taktnummernpoistionen verändert ap\_base
+  \#218
+\item
+  Anzeige der klingenden Töne für einen Zeitpunkt in der Statusleiste
+  \#220
+\item
+  Sprunglinien können per Konfiguration unterdrückt werden (Pos: 0)
+  \#222
+\item
+  automaitsches Scrollen kann abgeschaltet werden \#221
+\item
+  Platzhalter in Seitenbeschriftungen, so dass manche Werte nicht
+  mehrfach eingegeben werden müssen \#223
 \end{itemize}
+
+\subsection{Kompatibilität}\label{kompatibilituxe4t-2}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Voreinstellung für Basis von Taktnummernpoistionen verändert ap\_base
+  \#218
+\item
+  Konfiguration der Sprunglinien für Variationen wird von führeren
+  Zupfnoter-Versionen nicht erkannt
+\end{itemize}
+
+\subsection{v 1.8}\label{v-1.8}
+
+\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen-1}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Druckvorschau löscht nicht mehr die Nicht-Speicherungsanzeige \#176
+\item
+  Update auf abc2svg 1.14
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Absturz bei fehlerhafter Transponierung
+  \item
+    fehlerhafte Tonhöhen bei überbundenen Noten in Wiederholung
+  \item
+    Vorzeichen nicht korrekt gelöscht am Taktende
+  \end{itemize}
+\item
+  verbessertes Fermatensymbol in pdf \#178
+\item
+  Absturz, wenn die Konfiguration auf eine nicht vorhandene Stimme
+  verweist \#179
+\item
+  verbesserte Lokalisierung \#182
+\item
+  Fehlerfenster hat jetzt eine ok-Taste \#183
+\item
+  verbesserte Meldung ``kein ABC gefunden'' \#184
+\item
+  Verbesserte Fehlerberichterstattung im Kontext der Dropbox \#185
+\item
+  Absturz bei fehlerhaftem K-Header \#172
+\item
+  Verbesserung der Importe von Xml mit nicht spielbaren Teilen \#187
+\item
+  fixed ``blues with accidentals'' \#188
+\item
+  Korrektur der Behandlung von Fingerabdrücken mit abc2svg 1.15.5 \#195
+\item
+  vertaal ist nicht mehr begrenzt durch :\textbar{}{[} \#192
+\item
+  Größe des Auswahlbereichs verkleinern, um Überschneidungen mit
+  Barnummer etc. zu vermeiden \#197
+\item
+  verbesserter Spieler \#210
+\end{itemize}
+
+\subsubsection{Erweiterungen}\label{erweiterungen-2}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  linear arbeitenden packer \#194
+\item
+  Menü zum Importieren von der lokalen Platte \#177\\
+\item
+  Unterstützung für 25saitige Bassharfe \#180
+\item
+  Angabe =Dauer am Takt wird entfernt ``M:3/4 4/4 4/4 =3/4'' \#181
+\item
+  Unterstützung bei der Arbeit mit Dateivorlagen \#71
+\item
+  Kein initiales Rendern nach einem Absturz in der vorherigen Sitzung
+  \#103
+\item
+  anderer Spieler, mit gesampelten Sounds \#126
+\item
+  der neue Spieler kann auch mit Wiederholungen und Varianten spielen
+  \#126
+\item
+  Auswahl (rot) und gespielte Noten (blau) unterschiedlich hervorgehoben
+  \#126
+\item
+  Verbessertes Umschalten der Wiedergabetaste \#126
+\item
+  Widergabegeschwindigkeit einstellbar \#126
+\item
+  umgestaltetes Layout-Formular \#189
+\item
+  Warnung bei nicht unterstütztem Browser \#186
+\item
+  BWC: Layout von Taktnummern und Zählmarken verbessert \#199
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Taktnummern weiter weg von der Note
+  \item
+    neue Algorithmus berücksichtigt den Verlauf der Flusslinie
+  \end{itemize}
+\item
+  Name einiger Layout-Schnelleinstellungen geändert \#196
+\item
+  Selektion auf alle Stimmen erweiterbar, um Takte im gesamten Stück zu
+  löschen/einzufügen. \#202
+\item
+  Symbolleiste im linken Bereich neu angeordnet \#202
+\item
+  Unterstützung der Variation innerhalb des Taktes ohne Taktstrich \#204
+\item
+  Das Config-Formular zeigt nun an, ob es spezifisch für eine bestimmten
+  Auszug ist \#189
+\item
+  Unterstützung von Undo/Redo für Config \#201
+\item
+  verbesserte Shortcuts (z.B. cmd-L zum Umschalten des Vollbilds, cmd-0
+  für Auszug 0)
+\end{itemize}
+
+\subsubsection{Experimentelles}\label{experimentelles}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  weitere diatonische Instrumente (z.B. OKON-Harfe) \#196
+\item
+  Layout von unten nach oben \#196
+\item
+  Notendarstellung mit Fähnchen \#196
+\item
+  Noten in der aktuellen Auswahl zur Harmonisierung anzeigen \#190
+\item
+  heuristische Erkennung von Überschneidungen von Anmerkungen \#200
+\item
+  Unterstützung für Illustrationen \#198
+\item
+  Menü ``Extras'' \#71
+\end{itemize}
+
+\subsubsection{Kompatibilität}\label{kompatibilituxe4t-3}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  es kann sein, dass manuelle Positionierung von notenbeozgenen
+  Elementen überarbeitet werden muss. \#199
+\end{itemize}
+
+\subsection{v 1.7.1}\label{v-1.7.1}
+
+\subsubsection{fix}\label{fix-1}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  improved fermata symbol in pdf \#178
+\item
+  turnoff flowconf edit for pdf. This avoids noise around very short
+  vertical flowlines \#167
+\item
+  print preview no longer clears unsaved indicator \#176
+\end{itemize}
+
+\subsection{v 1.7}\label{v-1.7}
+
+\subsubsection{fix}\label{fix-2}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  tuplet lines are now correct in pdf (\#139)
+\item
+  no longer have unexpected subflowlines to unisons (\#140)
+\item
+  fixed size of smaall notes (\#143)
+\item
+  player also plays until end of tied notes (\#147)
+\item
+  decorations now also work on rests (\#127)
+\item
+  shift now also works on unisons (\#107)
+\item
+  abc2svg settings no longer necessary in tunes (removed from Template)
+  (\#71)
+\item
+  BWC Default for ``filenamepart'' is now as it was in 1.5 (\#155)
+\item
+  Config form is refreshed after loading another song (\#156)
+\item
+  printer offset is no longer broken if user enters only one value
+  (\#157)
+\item
+  Dropbox-Path can now also have digits (\#162)
+\item
+  Printer window show pdf on Chrome 60 (\#160)
+\item
+  now invisible rests are supressed even on flowline (\#166)
+\item
+  now handle multi measure rests (\#166)
+\item
+  fix predefined annotations vt and vr
+\item
+  BWC: move Tuplet configuration to notebounds (\#168)
+\item
+  Multiple notebound annotations can now be dragged individually (\#170)
+\item
+  BWC: no longer show (Original in ) in case of transpositions (\#174)
+\end{itemize}
+
+\subsubsection{enhancement}\label{enhancement-1}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  jumplines can now be configured by drag \& drop (\#136)
+\item
+  tuplets can now be sculptured by drag \& drop (\#138)
+\item
+  improved performance of configuration (\#115)
+\item
+  improved performance of harpnote preview (\#87)
+\item
+  improved performance of vertical packer (\#87, \#89)
+\item
+  editor collapses config parameters by default (\#144)
+\item
+  now can print a sortmark on top of the sheet (\#145)
+\item
+  the anchor of jumplines can now be configured (\#150)
+\item
+  now have variant parts appear in grey (\#151)
+\item
+  now menu supports extract 0 to extract 5 (\#153)
+\item
+  now menu also shows title of extracts (\#153)
+\item
+  ctrl-alt `F' now toggles harp preview
+\item
+  rearranged ``Edit Configuration'' Menu to improve configuration
+  workflow (\#171)
+\item
+  now suppoert tilde as non braeking space in lyrics, stringnames,
+  annotations \#113
+\item
+  now suppoert quoted tilde as non braeking space in lyrics,
+  stringnames, annotations \#113
+\item
+  layoutlines is now the combination of voices and layoutlines (\#175).
+\end{itemize}
+
+\subsubsection{internal stuff}\label{internal-stuff}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  updated to abc2svg 1.13.7 (\#163)
+\end{itemize}
+
+\subsubsection{experimental feature}\label{experimental-feature}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  implemented a collision based packer (\#89)
+\item
+  implemented validation of config parameters (\#85) with result form
+\item
+  Shape of Flowlines can be configured (\#167)
+\end{itemize}
+
+\subsubsection{backwards compatibility
+issues}\label{backwards-compatibility-issues}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  layoutlines is now the combination of voices and layoutlines. It is no
+  longer possible to show voices without considering them in the layout
+  (\#175)
+\item
+  Default for ``filenamepart'' is now as it was in 1.5 (\#155)
+\item
+  tuplet configuration is now under `notebound': meed to rework in the
+  sheets - sorry! (\#168)
+\item
+  transposititions are no longer exposed in legend (\#174)
+\end{itemize}
+
+\subsubsection{known issues}\label{known-issues}
+
+Dragging of jumpline does not work properly on Saitenspiel \#158
 
 \subsection{V 1.6.1 2017-05-17}\label{v-1.6.1-2017-05-17}
 
-\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen}
+\subsubsection{Fehlerbehebungen}\label{fehlerbehebungen-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6513,7 +8217,7 @@ issues}\label{backward-compatibility-issues}
   in configuration \#95
 \end{itemize}
 
-\subsubsection{Fix}\label{fix}
+\subsubsection{Fix}\label{fix-3}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6549,7 +8253,7 @@ issues}\label{backward-compatibility-issues}
   Now yield 1.50 instead of 1.49999999 to minimize rounding effects \#95
 \end{itemize}
 
-\subsubsection{Enhancement}\label{enhancement}
+\subsubsection{Enhancement}\label{enhancement-2}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6581,7 +8285,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2}
 
-\subsubsection{Fix}\label{fix-1}
+\subsubsection{Fix}\label{fix-4}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6597,7 +8301,7 @@ issues}\label{backward-compatibility-issues}
 
 \subsection{V 1.4.2}\label{v-1.4.2-1}
 
-\subsubsection{Fix}\label{fix-2}
+\subsubsection{Fix}\label{fix-5}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -6605,7 +8309,7 @@ issues}\label{backward-compatibility-issues}
   remove copyright note from sheet annotation \#69
 \end{itemize}
 
-\subsubsection{enhancement}\label{enhancement-1}
+\subsubsection{enhancement}\label{enhancement-3}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt

@@ -1,26 +1,28 @@
-require 'opal-jquery'
+LOGLEVELS = {message: 0,
+             error:   1,
+             warning: 2,
+             info:    3,
+             debug:   4
+}
+LOGICONS  = {
+    :message => :"icon-info-circled",
+    :error   => :"icon-error-alt",
+    :warning => :"icon-attention",
+    :info    => :"icon-info-circled",
+    :debug   => :"icon-minus-squared"
+}
 
-class ConsoleLogger
-
-  LOGLEVELS = {message: 0,
-               error: 1,
-               warning: 2,
-               info: 3,
-               debug: 4
-  }
-  LOGICONS = {
-      :message => :"icon-info-circled",
-      :error => :"icon-error-alt",
-      :warning => :"icon-attention",
-      :info => :"icon-info-circled",
-      :debug => :"icon-minus-squared"
-  }
+class Logger
 
   attr_reader :annotations
 
+  def clear_annotations
+    @annotations = []
+  end
+
   def initialize(element_id)
-    @console = element_id # Element.find("##{element_id}")
-    @loglevel = LOGLEVELS[:info]
+    @console   = element_id # Element.find("##{element_id}")
+    @loglevel  = LOGLEVELS[:info]
     @timestamp = Time.now
     clear_errors
     clear_annotations
@@ -30,6 +32,10 @@ class ConsoleLogger
     @annotations = []
   end
 
+
+  def log_from_worker(payload)
+    send(payload[:type], *payload[:args])
+  end
 
   # emit an error message and record an annoation to mark the error position
   # in a source text
@@ -49,7 +55,7 @@ class ConsoleLogger
 
   # for documentation see : error
   def warning(msg, start_pos = nil, end_pos = nil)
-    add_annotation(msg, start_pos, end_pos, :warning)
+    add_annotation(msg, start_pos, end_pos, :warning) if loglevel?(:warning)
     write(:warning, msg)
   end
 
@@ -78,7 +84,7 @@ class ConsoleLogger
 
   # resets the timestamp. subsequent calls to timestamp are based on this time
   def timestamp_start()
-     @timestamp = Time.now
+    @timestamp = Time.now
   end
 
   def clear_errors
@@ -86,19 +92,28 @@ class ConsoleLogger
   end
 
   def has_errors?
-      @captured_errors.count > 0
+    @captured_errors.count > 0
   end
 
   def get_errors
     @captured_errors
   end
 
+
+  def get_status
+     {annotations: @annotations, captured_errors: @captured_errors}
+  end
+
+  def set_status(status)
+    @annotations = status[:annotations]
+    @captured_errors = status[:captured_errors]
+  end
   # executes the block and outputs n info entry with the duration
   # returns the result of the block
   def benchmark(msg, &block)
-    s = Time.now
+    s      = Time.now
     result = block.call
-    $log.info("  elapsed #{Time.now() -s} sec for #{msg}")
+    $log.info("  elapsed #{Time.now() - s} sec for #{msg}")
     result
   end
 
@@ -115,15 +130,53 @@ class ConsoleLogger
     LOGLEVELS.invert[@loglevel]
   end
 
+  # this queries if a particular loglevel will be shown
+  def loglevel?(type)
+    (LOGLEVELS[type] || LOGLEVELS[:warning]) <= @loglevel
+  end
+
+  def loglevels
+    LOGLEVELS.keys
+  end
+
   private
 
   def add_annotation(msg, start_pos, end_pos, type)
     if start_pos
       the_start = start_pos
-      the_end = end_pos || [the_start.first, the_start.last + 1]
+      the_end   = end_pos || [the_start.first, the_start.last + 1]
       @annotations << {start_pos: the_start, end_pos: the_end, text: msg, type: type}
     end
     nil
+  end
+
+  def write(type, msg)
+    if (loglevel?(type))
+      time = Time.now.strftime("%H:%M:%S")
+      # @console.write_html "<li class='#{type}'><i class=\"#{LOGICONS[type]}\"><span class='time'>#{time}</span><span class='msg'>#{msg}</span></li>"
+      puts msg
+    end
+  end
+
+end
+
+class NodeLogger < Logger
+
+  def write(type, msg)
+
+    current_level = LOGLEVELS[type] || LOGLEVELS[:warning]
+    if (current_level <= @loglevel)
+      time = Time.now.strftime("%H:%M:%S")
+      puts msg
+    end
+  end
+end
+
+class ConsoleLogger < Logger
+
+  def initialize(element_id)
+    super
+    @console = element_id
   end
 
   def write(type, msg)

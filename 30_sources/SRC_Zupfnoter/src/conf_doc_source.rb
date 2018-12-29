@@ -10,6 +10,8 @@ require 'confstack'
 HELP_DE_INPUT     = "localization/help_de-de.md"
 HELP_DE_OUTPUT_MD = "../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md"
 
+Encoding.default_internal = Encoding::UTF_8
+Encoding.default_external = Encoding::UTF_8
 
 # init_conf uses symbols. This does not matter in Opal
 # but ruby it is a difference. So we have to stringify the keys.
@@ -47,7 +49,9 @@ class ConfDocProvider
 
   def insert (key, markdown)
     @entries_md[key]   = markdown
-    @entries_html[key] = @renderer.render(markdown)
+    ## need to strip the escape characters from key. This suports "$resources". the escape key is introduced
+    # by wortsammler (pandoc)
+    @entries_html[key.gsub("\\", "")] = @renderer.render(markdown)
   end
 
   def to_json
@@ -69,7 +73,7 @@ def get_example(conf, key)
                       explicit_sort: [[:produce, :annotations, :restposition, :default, :repeatstart, :repeatend, :extract,
                                        :title, :voices, :flowlines, :subflowlines, :synchlines, :jumplines, :repeatsigns, :layoutlines, :barnumbers, :countnotes, :legend, :notes, :lyrics, :nonflowrest, :tuplet, :layout,
                                        :annotation, :partname, :variantend, :countnote, :stringnames, # sort within notebound
-                                       :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within laoyut
+                                       :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE, # sort within layout
                                        "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                                        :cp1, :cp2, :shape, :pos, :hpos, :vpos, :spos, :text, :style, :marks # tuplets annotations
                                       ].map{|i| i.to_s},
@@ -177,14 +181,19 @@ b = Confstack.new(false)
 b.push(JSON.parse(a.to_json))
 
 knownkeys = JSON.parse(File.read("../public/locale/de-de.json"))
+abc2svgkeys = JSON.parse(File.read("localization/abc2svg_de-de.json"))
+w2uikeys = JSON.parse(File.read("../vendor/w2ui/dist/de-de.json"))
+usedkeys  = []
 keys      = []
-Dir['user-interface.js'].each do |file|
+Dir['user-interface.js', "config-form.rb"].each do |file|
   File.read(file).scan(/(caption|text|tooltip):\s*["']([^'"]*)["']/) do |clazz, key|
     key = key.gsub("\\n", "\n")
+    usedkeys.push(key)
     keys.push(key) unless knownkeys['phrases'].has_key? key
   end
   File.read(file).scan(/(w2utils\.lang\()["']([^'"]*)["']\)/) do |clazz, key|
     key = key.gsub("\\n", "\n")
+    usedkeys.push(key)
     keys.push(key) unless knownkeys['phrases'].has_key? key
   end
 end
@@ -192,16 +201,22 @@ end
 Dir['*.rb'].each do |file|
   File.read(file).scan(/(I18n\.t)\(['"]([^'"]+)['"]/) do |clazz, key|
     key = key.gsub("\\n", "\n")
+    usedkeys.push(key)
     keys.push(key) unless knownkeys['phrases'].has_key? key
   end
 end
 
 b.keys.each do |key|
   key.split(".").each do |key|
+    usedkeys.push(key)
     keys.push(key) unless knownkeys['phrases'].has_key? key
   end
 end
 
 File.open("x.locales.template", "w") do |f|
   f.puts keys.sort.to_a.map {|v| %Q{"#{v}": "**--#{v}"}}.uniq.sort_by {|i| i.upcase}.join(",\n")
+end
+
+File.open("x.locales.unused.txt", "w") do |f|
+  f.puts knownkeys['phrases'].keys - usedkeys - abc2svgkeys['phrases'].keys - w2uikeys['phrases'].keys
 end

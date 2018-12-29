@@ -19,6 +19,27 @@
     \setsansfont{Calibri}
 \fi
 \usepackage[a4paper]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
 \usepackage{longtable}
 \usepackage{float} % provides the H option for float placement
 \usepackage{graphicx}
@@ -199,121 +220,311 @@
 \newpage
 }
 
-\subsection{sample websites}\label{sample-websites}
+\section{Basic architecture}\label{basic-architecture}
 
-http://wfiedler-online.de/musikblog3/abc.php
-
-http://de.wikipedia.org/wiki/ABC\_(Musiknotation)
-
-https://code.google.com/p/abcjs/
-
-http://thesession.org/discussions/24614
-
-http://drawthedots.com/abcjs - einfacher abc editor
-
-http://normanschmidt.net/abc/index.php - choräle in abc
-
-http://penzeng.de/Geige/Abc.htm - Deutsche Anleitung
-
-http://abcplus.sourceforge.net/ABCPlus.pdf - Deutsche Anleitung
-
-https://github.com/MrRio/jsPDF
-
-https://github.com/paulrosen/abcjs
-
-http://trillian.mit.edu/\textasciitilde{}jc/cgi/abc/tunefind -
-tunefinder
-
-http://homepage.bnv-bamberg.de/flg-blw-partnerschaft/musik-facharbeit-eva-klein.pdf
-
-\subsection{useful links}\label{useful-links}
-
-https://github.com/paulrosen/abcjs - the abcjs package
-
-http://www.musicxml.com/ - detailled information about musicxml
-
-https://github.com/paulrosen/abcjs the sourcecode of an abcprocessor in
-js
-
-https://github.com/mudcube/MIDI.js - wie man midi im browser spielen
-kann
-
-http://threejs.org/ - webgl library
-
-http://raphaeljs.com/ - JS vector library
-
-https://github.com/dr-skot/abc \# ruby/treetop parser
-
-https://github.com/PencilCode/musical.js \# javascript player for ABC
-
-\subsection{choosing a vector-gem}\label{choosing-a-vector-gem}
-
-In order to compute the l ayout slurs and triplets we need a 2d vector
-library with :
+Zupfnoter applies the following models
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  add, subtract
+  \textbf{abctext} this is entered by user and maintained in textpane.rb
 \item
-  rotate
+  \textbf{abcmodel} this is created by abc2svg
 \item
-  angle
+  \textbf{musicmodel} this is created by transform. Model elements are
+  such as Playable, Note, Rest, Goto etc. This conceptualizes the
+  Harpnote Elements.
 \item
-  create from array
+  \textbf{drawingmodel} this represents the layout independent of the
+  target format. Model elements are such asl ``Ellipse, Path,
+  (FlowLine)''. This conceptualizes graphical terms.
 \item
-  to\_a
+  \textbf{svg} created from drawingmodel by svgengine
+\item
+  \textbf{pdf} created from drawingmodel by pdfengine
+\item
+  \textbf{harpnoteplayer} created from musicmodel
 \end{itemize}
 
-nice to have
+\subsection{Handling google analytics}\label{handling-google-analytics}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  various constructors
+  Analytics ia applied for webserver-installation only, not for
+  localhost nor desktop
 \item
-  inspect
+  this is done by the method \texttt{javascript\_include\_analytics}
+  which is defined in the related rake tasks.
+\item
+  for localhost, the method is not defined, and therefore the template
+  does not include the script
 \end{itemize}
 
-special
+\subsection{handling drag and drop}\label{handling-drag-and-drop}
 
-.to\_path
+Drag and drop is implemented by opal\_svg. There is a global
+drag\_end-Handler installed in controller.rb ()
+\texttt{@harpnote\_preview\_printer.on\_annotation\_drag\_end\ do\ \textbar{}info\textbar{}}
+
+Info returns the key and the value of the configuration parameter to be
+changed.
+
+We uase the library svg.min.js (https://github.com/svgdotjs/svg.js) to
+manipulate the SVG nodes in partiucular we have draggable() from there.
+
+we get the nodes by SVG.get which itself finds them by id an
+subsequently adopts them. This allows to produce SVG using string
+operations.
+
+\subsection{Render flow}\label{render-flow}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../ZGEN_uml/zn_render-and-select.png}
+\caption{Render Flor}
+\end{figure}
+
+\section{build environments}\label{build-environments}
+
+\subsection{rvm ruby homebrew etc}\label{rvm-ruby-homebrew-etc}
+
+\subsubsection{having some trouble with
+SIP}\label{having-some-trouble-with-sip}
+
+\begin{verbatim}
+https://digitizor.com/fix-homebrew-permissions-osx-el-capitan/
+
+https://www.computersnyou.com/5307/setup-homebrew-and-rvm-on-mac-osx-10-11-ei-capitan/
+
+http://stackoverflow.com/questions/22459944/ruby-2-1-1-with-rvm-getting-libyaml-errors
+\end{verbatim}
+
+\subsubsection{my setup on osx}\label{my-setup-on-osx}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  install homebrew locally
+
+  https://github.com/Homebrew/brew/blob/master/docs/Installation.md\#installation
+
+  cd \textasciitilde{} git clone https://github.com/Homebrew/brew.git
+  export PATH=\({HOME}/brew/bin:\)\{PATH\}
+\item
+  update \textasciitilde{}/.bashrc
+
+  \section{Add RVM to PATH for scripting. Make sure this is the last
+  PATH variable
+  change.}\label{add-rvm-to-path-for-scripting.-make-sure-this-is-the-last-path-variable-change.}
+
+  export PATH=\({HOME}/brew/bin:\)\{PATH\} export
+  PATH=``\(PATH:\)HOME/.rvm/bin''
+\item
+  install rvm
+
+  https://rvm.io/rvm/install
+\end{enumerate}
+
+\subsection{project documentation}\label{project-documentation}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  goto \texttt{30\_source/ZSUPP\_Tools}
+\item
+  \texttt{rake}
+\end{itemize}
+
+\subsection{maintain the application}\label{maintain-the-application}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  goto \texttt{30\_source/SRC\_Zupfnoter/src}
+\item
+  \texttt{rake}
+\end{itemize}
+
+\subsection{updating syntax
+highlighting}\label{updating-syntax-highlighting}
 
 \begin{itemize}
 \item
-  vector2d
-
-  \begin{itemize}
-  \itemsep1pt\parskip0pt\parsep0pt
-  \item
-    big
-  \item
-    well documented
-  \item
-    actively maintained
-  \end{itemize}
-
-  The library of choice. Maybe I strip it down if it is too big.
+  goto your clone of the ace reporitory
+  (../200\_zupfnoter\_external\_components/ace)
 \item
-  vector2d-ruby
-
-  \begin{itemize}
-  \itemsep1pt\parskip0pt\parsep0pt
-  \item
-    small
-  \item
-    not documented
-  \item
-    acively maintained
-  \end{itemize}
+  update the files as described in
+  \url{http://ace.c9.io/\#nav=higlighter}
 \item
-  uzi-vector
+  run \texttt{node\ static.js\ -\/-allow-save} .
+\item
+  navigate to http://localhost:8888/tool/mode\_creator.html
+\item
+  perform necessary changes
+\item
+  perform
 
-  \begin{itemize}
-  \itemsep1pt\parskip0pt\parsep0pt
-  \item
-    not actively maintained
-  \end{itemize}
+  node Makefile.dryice.js -nc -m full
+\item
+  copy the contents of
+  \texttt{200\_zupfnoter\_external\_components/ace/build/src-min-noconflict}
+  to \texttt{30\_sources/SRC\_Zupfnoter/vendor/ace}
 \end{itemize}
+
+\section{preparing a release}\label{preparing-a-release}
+
+Zupfnoter uses gitflow
+http://nvie.com/posts/a-successful-git-branching-model/
+
+Before preparing a release, everything that should go to this release
+shall be committed to the develop branch.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Gitflow: Start new release Pattern: V\_1.4.0\_RC2
+\item
+  adjust version.rb
+\item
+  perform all the builds \texttt{rake\ build} \texttt{rake\ deploy}
+\item
+  Gitflow: finish the release
+\item
+  switch back to the development branch
+\item
+  bump version in src/version.rb, add ``.dev''
+\end{itemize}
+
+\section{building the desktop app}\label{building-the-desktop-app}
+
+The desktop app is built based on node-webkit. The major steps to build
+it are described in
+
+https://github.com/rogerwang/node-webkit/wiki/How-to-package-and-distribute-your-apps
+
+Approach follows nodebob but uses rake to do this.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  create the webapp
+\item
+  create zupfnoter.nw
+\item
+  create the binaries for windows and osx
+\end{enumerate}
+
+\section{notes how to include Javascript
+files}\label{notes-how-to-include-javascript-files}
+
+Javascript files can be included on following ways:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  using a \texttt{\textless{}script\textgreater{}}
+\item
+  using sprockets and ruby \texttt{require}
+
+  This only works e.g.~for userinterface.js which global objects which
+  are subsequently known in Opal.
+\item
+  using \texttt{require(xx)} on the JS side. This can be done in
+  application.rb, for example
+\end{enumerate}
+
+This is used for node modules or js files following common module
+appraoch.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#}
+\OtherTok{%x\{}
+\StringTok{  // see https://stackoverflow.com/questions/30694428/jspdf-server-side-node-js-usage-using-node-jspdf}
+\StringTok{  global.window = \{document: \{createElementNS: function()\{return \{\}\} \}\};}
+\StringTok{  global.navigator = \{\};}
+\StringTok{  global.btoa = function()\{\};}
+
+\StringTok{  jsPDF = require ("jspdf")   // adapt in opal-jspdf.rb}
+\StringTok{  Ajv = require("ajv")        // adapt in opal-ajv.rb}
+\StringTok{  neatJSON = require("./neatjson_js") // adapt in opal-neatjson.rb}
+
+\StringTok{  // these requires are requred by nodejs/dir, nodejs/file}
+\StringTok{  fs = require('fs')}
+\StringTok{  glob = require("glob")      // don't know who needs this}
+\OtherTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+With this appraoch, the resulting js file can be run by node. But it
+looks in the search paths of node.
+
+If you want to run it really standalone, then we need to use browserify.
+
+This thing resolves the requrires.
+
+\section{building soundfonts}\label{building-soundfonts}
+
+Tools:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  polyphone http://polyphone-soundfonts.com/en/
+\item
+  audiacity
+\end{itemize}
+
+The following steps creates the soundfonts
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  download from https://stash.reaper.fm/v/23360/Scc1t2.sf2
+\item
+  open the file in polyphone
+\item
+  export instrument piano1 to 0\_GS sound set (16 bit).sf2
+\item
+  export instrument Steel guitar to 25\_GS sound set (16 bit).sf2
+\item
+  Open the two files again in polyphone
+\item
+  go to the instrument and set decay to 8sec in all columns of the
+  table, set sustain to 120db
+\item
+  save the files
+\item
+  convert to js files as specified by @moinejf in
+  https://github.com/moinejf/abc2svg/issues/84\#issuecomment-375979049 .
+  I did this using a rake task.
+\end{enumerate}
+
+copy the sf2 files to \texttt{30\_sources/SRC\_Zupfnoter/sf2\_sources}.
+File shall be nr\_name. \texttt{rake\ buildSoundfonts} converts t the
+file to e.g.
+\texttt{30\_sources/SRC\_Zupfnoter/public/soundfont/zupfnoter/0.js}
+
+To create a soundfont from our own recording:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  create wav files
+\item
+  clean up in audiacity
+\item
+  in poloyphone follow the instructions in
+  http://polyphone-soundfonts.com/en/documentation/tutorials/create-a-soundfont-from-scratch/119
+\item
+  name the preset to something like 01\_mysound
+\item
+  export the instrument 01\_mysound to
+  \texttt{30\_sources/SRC\_Zupfnoter/sf2\_sources}
+\end{enumerate}
 
 \end{document}

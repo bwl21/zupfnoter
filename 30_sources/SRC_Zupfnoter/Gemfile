@@ -1,12 +1,16 @@
 #Gemfile
 source 'https://rubygems.org'
+ruby "~>2.4.1"
 
 gem 'rake'
 gem 'sass'
 gem 'zip'
 #gem 'prmd'
-gem 'opal', '~> 0.9.0'
-gem 'opal-jquery', '~> 0.4.0'
+
+gem 'opal', '~> 0.11'
+gem 'opal-sprockets'
+gem 'opal-jquery'#, git: "https://github.com/opal/opal-jquery"
+
 gem 'vector2d', "~> 2.1.0"
 gem 'pry'
 #gem 'pry-byebug'  # for debugging on ruby lavel
@@ -14,5 +18,11 @@ gem 'graphviz'
 gem 'bundler'
 gem 'redcarpet'
 gem 'json-schema-generator'
-gem 'wortsammler', "~> 1.0.2"
 gem 'neatjson'
+
+
+# had trouble to install nokogiri on windows
+# so I build the manual on mac os only
+install_if -> { RUBY_PLATFORM =~ /darwin/ } do
+  gem 'wortsammler', "~> 1.0.3"
+end

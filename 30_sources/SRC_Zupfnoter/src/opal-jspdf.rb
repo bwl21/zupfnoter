@@ -1,17 +1,5 @@
 require 'native'
 
-%x{
-jsPDF.API.setLineDash = function(dashArray, dashPhase) {
-  if(dashArray == undefined) {
-    this.internal.write('[] 0 d')
-  } else {
-    this.internal.write('[' + dashArray + '] ' + dashPhase + ' d')
-  }
-
-  return this;
-};
-}
-
 class JsPDF
 
   attr_accessor :x_offset, :y_offset
@@ -20,8 +8,11 @@ class JsPDF
   # @param unit Symbol the unit of measurement, :mm (default), :pt, :cm, :in
   # @param format Symbol page format, :a3, :a4 (default), :a5, :letter, :legal
   def initialize(orientation = :p, unit = :mm, format = :a4)
-    @x_offset     = 0
-    @y_offset     = 0
+    @x_offset = 0
+    @y_offset = 0
+    # note that jsPDF.js and jspdf-cli.js delivers the jsPDF constructor in the global
+    # area. Don't relly know why it works, but we should take care
+    #
     @native_jspdf = `new jsPDF(orientation, unit, format)`
   end
 
@@ -57,7 +48,7 @@ class JsPDF
 
   def line_dash=(dist = 3)
     dist = `undefined` if dist.nil?
-    `#{@native_jspdf}.setLineDash(#{dist}, #{dist})`
+    `#{@native_jspdf}.setLineDash([#{dist}, #{dist}], 0)`
   end
 
 
@@ -79,9 +70,29 @@ class JsPDF
     `#{@native_jspdf}.setLineDash('', 0)`
   end
 
-  def text(x, y, text, flags=nil)
+
+  # draw an image 
+  # @param [String] url mainly data uri
+  # 
+  # @param [Float] x horizontal
+  # @param [Float] y vertical
+  # @param [Float] height height of imaag
+  def image(url, x, y, height)
+
+    nx, ny, = apply_offset_to_point([x, y])
+    format = nil
+    format = "jpeg" if url.start_with? "data:image/jpeg"
+    format = "png" if url.start_with? "data:image/png"
+    if format
+      `#{@native_jspdf}.addImage(#{url}, #{format}, #{nx}, #{ny}, 0, #{height})`
+    else
+      raise "image format not supported for pdf: #{format}"
+    end
+  end
+
+  def text(x, y, text, flags = nil)
     nx, ny = apply_offset_to_point([x, y])
-    `#{@native_jspdf}.text(#{nx}, #{ny}, #{text}, #{flags})`
+    `#{@native_jspdf}.text(#{nx}, #{ny}, #{text}, #{flags.to_n})`
   end
 
   # @param style Symbol the style of the ellipse, :F for filled, :D for outlined, :FD for both
@@ -120,8 +131,8 @@ class JsPDF
     nx, ny   = apply_offset_to_point([x, y])
     x0       = nx
     x1       = nx + delta
-    y_top    = ny + delta/2.0
-    y_bottom = ny - delta/2.0
+    y_top    = ny + delta / 2.0
+    y_bottom = ny - delta / 2.0
 
     `#{@native_jspdf}.triangle(#{x0}, #{ny}, #{x1}, #{y_top}, #{x1}, #{y_bottom}, #{x0}, #{ny}, 'FD')`
   end

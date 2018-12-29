@@ -20,7 +20,7 @@ title: Zupfnoter Benutzerhandbuch
 
 # Über dieses Handbuch
 
-Du siehst dieses Handbuch und bist schockiert, dass es über 50 Seiten
+Du siehst dieses Handbuch und bist schockiert, dass es über 120 Seiten
 hat. Aber wie sagt man doch so schön: "keine Panik!". Ersteller
 einfacher Unterlegnoten kommen mit den ersten Kapiteln schon auf die
 Erfolgsstraße.
@@ -41,17 +41,20 @@ Zielgruppen im Blick:
     Wesentlichen durch die Größe des Instrumentes und die eigene
     Phantasie begrenzt.
 
--   **Lektoren** schreiben nicht selbst im Zupfnoter, sondern redigieren
-    Noten in Zupfnoter.
-
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 
 > **Hinweis**: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff. sind
 > nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit TODOs
 > und Zeilennummern.
 >
+> Das Handbuch wird während der Weiterentwicklung von Zupfnoter laufend
+> aktualisiert.
+>
 > Für Hinweise auf Fehler oder Verbesserungsmöglichkeiten sind wir sehr
 > dankbar.
+>
+> "Do not complain about this manual, be glad that there are page
+> numbers :-)"
 
 TODO: markieren, für welche Zielgruppe welche Textabschnitte relevant
 sind.

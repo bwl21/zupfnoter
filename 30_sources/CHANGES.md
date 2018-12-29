@@ -1,3 +1,77 @@
+# V.1.10
+
+## fix
+
+* rests in tuplets no longer throw "unsupported duration" #240
+* select in all voices now works if there are grace notes #243
+* replace unicode characters with ascii equivalents #238
+* import in a fresh zupfnoter without user defined templats see #239
+  
+
+## enhancement
+
+* BWC: Barnumbers / countnotes are now aligned relative to the center of the note #237
+* loglevel can be changed by click in statusbar #242
+* Performance: tune preview and harpreview can be rendered in background #241
+* moved some Menus from "Extras" to Statusbar #242
+* Improvee "message of the day" handling #244
+
+## BWC
+
+* Edit Configuration / "Barnumbers / and countnotes" , choose "anchor_at_box"
+
+# V 1.9.2
+
+## fix
+
+* increase white border around dot #224
+* Support generation of a watermark #231
+* allow to refine generated repeat marks #232
+* BWC lyrics size and position is different in svg resp. pdf #235
+* improve deferred rendering on editor change #223
+* improve behavior when switching perspectives #230
+* mprove buttons in config forms for chrome / firefox
+* some performance optimizations #225
+
+## enhancement
+
+* allow to control which files are saved #229
+* Improve configuration of annotations #227
+* allow to refine generated repeat marks #232
+* Apply current template after dropping an xml file 
+* copy parameters from/to extract 0   #228
+
+## experimental
+
+* modify configuration when generating pdf with cli - eg. for watermark #231
+
+
+## BWC
+
+* BWC lyrics size and position is different in svg resp. pdf #235
+
+# v 1.9.1
+
+internal release
+
+# v 1.9.0
+
+## fix
+
+* supress bar in in measure repeats even after a meter change #216
+* improve behavior when switching perspectives #230
+
+## enhancement
+
+* make variation lines more flexible #215
+* change default for barnumber ap_base #218
+* show currently selected notes in status bar #220
+* supress jumplines by configuration #222
+* disable autoscroll trhough setsetting #221
+* now support placeholders in page annotations #223
+* improve configuration of tuplets #225
+* change default for barnumber ap_base #218
+* configuration of variation lines is not recognized by earlier Versions of Zupfnoter
 
 # v 1.8
 
@@ -5,22 +79,67 @@
 
 * print preview no longer clears unsave indicator #176
 * update to abc2svg 1.14
-  * crash when bad value in transpose
-  * bad pitches after ties and repeat
-  * the accidentals must be reset on a measure bar
+    * crash when bad value in transpose
+    * bad pitches after ties and repeat
+    * the accidentals must be reset on a measure bar
 * improved fermata symbol in pdf #178
 * crash when config references a non existing voice #179
 * improved localization #182
 * Error window now has an ok button #183
+* improve Message "no ABC found"  #184 
+* Improve error reporting in context of dropbox #185
+* no longer crash with malformed K #172
+* improve imports of xml with non playable parts #187
+* fixed "blues with accidentals" #188
+* fix handling of fingerprint with abc2svg 1.15.5 #195
+* vertaal is no longer limited by :|[ #192
+* reduce size of selection area to avoid overlap with barnumber etc #197
+* improved player #210
+* improve handling of nested repetitions #213
   
 ## enhancement
 
+* now have a linear packer #194
 * now have menu to import from local disc #177  
 * support for 25 string bass harp #180
 * strip =duration on meter "M:3/4 4/4 =3/4" #181
 * initial support to work with file templates #71
 * No initial render after a crash in previous session #103
+* now we have another player, with sampled sounds #126
+* the new player also can play with repeats and vertals #126
+* player/selection now highlight in a different style #126
+* Improved toggle of play button #126
+* we now can change the playback speed on the fly #126
+* rearranged layaout form #189
+* show notes in the current selection for harmonization #190
+* now warn if browser is other than chrome, firefox, vivaldi, opera #186
+* BWC: improved layout of bars, barnumbers/countnotes #199
+    * barnumbers are now more far away from the note
+    * new algorithm to determine right/left position of barnumber/countnote
+* changed name of some layout presets #196
+* you can now extend the selection to all voices in order to delete/insert measures in the entire piece #202
+* rearranged toolbar on left pane #202
+* support variation within measure without measure bar #204
+* config-form now indicates if it is specific for a particular  #189
+* support undo/redo for config #201
+* improved shortcuts (cmd-L to toggle full screen)
   
+## exprimental
+
+* support for more diatonic instruments (e.g. OKON harp) #196
+* support of okon table harp #196
+* support to write notes bottom up #196
+* support to write notes with beams #196
+* show notes in the current selection for harmonization work-in-progress #190
+* heuristical detection of annotation collisions #200
+* support for illustrations #198
+* add an "Extras" Menu #71
+
+## Backwards compatibility issues
+
+* it might be that you need to rework manual positioning of barnumbers/countnotes #199
+
+
 # v 1.7.1
 
 ## fix

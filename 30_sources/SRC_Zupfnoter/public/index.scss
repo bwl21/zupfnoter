@@ -271,6 +271,13 @@ rect.highlight {
   fill-opacity: 0.2
 }
 
+rect.highlightplay {
+  fill: blue !important;
+  fill-opacity: 0.5;
+
+}
+
+
 .zn-nilfield {
   border: 1px solid #b5b4b6 !important;
   background-color: #b5b4b6 !important;
@@ -286,6 +293,14 @@ rect.highlight {
 
 .w2ui-tb-caption {
   vertical-align: middle;
+}
+
+.w2ui-toolbar {
+  background-color: #ffffff;
+  padding: 0px;
+  overflow:hidden;
+  height:30px;
+  border-bottom: 1px solid #b5b4b6;
 }
 
 .w2ui-overlay {
@@ -315,6 +330,12 @@ rect.highlight {
 
 .znconfig-button{
   padding: 1px;
+  width: 1.2em;
+  box-shadow: none;
+  &::before {
+    font-size: 90%;
+    margin: -5px;
+  }
 }
 
 #statusbar-layout .w2ui-tb-caption {

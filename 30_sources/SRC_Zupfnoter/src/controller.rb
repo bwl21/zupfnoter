@@ -94,27 +94,44 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
+    buster = Time.now
+    buster = Element.find("#buster").html
+    buster = JSON.parse(buster)[:buster]
+
+    @worker             = NamedWebworker.new("public/znworker.js#{buster}")
+    @worker_tunepreview = @worker #NamedWebworker.new("public/znworker.js#{buster}")
+    @worker_info        = {version: 'unknown'}
+    @worker.post_named_message(:get_worker_info, nil)
+
 
     # todo make this configurable by a preferences menu
-    languages          = {'de'    => 'de-de',
-                          'de-de' => 'de-de',
-                          'en'    => 'en-US',
-                          'en-us' => 'en-US'
+    languages = {'de'    => 'de-de',
+                 'de-de' => 'de-de',
+                 'en'    => 'en-US',
+                 'en-us' => 'en-US'
     }
-    browser_language   = `navigator.language`.downcase
+    browser_language = `navigator.language`.downcase rescue "de-de"
     zupfnoter_language = languages[browser_language] || 'de-de'
-    I18n.locale(zupfnoter_language) if browser_language
-
 
     @info_url = "https://www.zupfnoter.de/category/info_#{zupfnoter_language}"
 
+    @refresh_timer = [] # this is used to contron time based renderin
+    @render_stack  = [] # this is to prevent a restart of rendering in a rendering is already running
 
-    @version      = VERSION
-    @zupfnoter_ui = `window.hugo = new init_w2ui(#{self});`
+    @version = VERSION
+    if browser_language
+      I18n.locale(zupfnoter_language) do
+        call_consumers(:localizedtexts)
+        object = `JSON.stringify(#{I18n.phrases.to_n})`
+        @worker.post_named_message(:i18n_set_locale, object)
+      end
+    end
+
+    @zupfnoter_ui = `new init_w2ui(#{self});`
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
@@ -126,42 +143,52 @@ class Controller
     @dropped_abc = "T: nothing dropped yet"
 
     $log = ConsoleLogger.new(@console)
+
     $log.info ("Welcome to Zupfnoter")
     $log.info ("Zupfnoter #{VERSION}")
     $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
     $log.info ("Ruby:     #{RUBY_VERSION}")
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
-
-
-
+    $log.info ("Browser:  #{`bowser.name`}  #{`bowser.version`}");
+    $log.info ("Language: #{zupfnoter_language}");
+    check_suppoerted_browser
 
     $conf        = Confstack.new(nil)
     $conf.strict = false
     $conf.push(_init_conf)
 
-    $settings = {} # this is te keep runtime settings
 
-    @json_validator = Ajv::JsonValidator.new
+    # this keeps  a hash of resources
+    # as resource thend to be big,
+    # we do not hold them in $conf
+    $resources = {} # this keeps resources
 
+    $settings = {autoscroll: 'true', follow: 'true'} # this is te keep runtime settings
+    call_consumers(:settings_menu)
+
+    @json_validator    = Ajv::JsonValidator.new
     @editor            = Harpnotes::TextPane.new("abcEditor")
     @editor.controller = self
 
-    @harpnote_player = Harpnotes::Music::HarpnotePlayer.new()
-    @songbook        = LocalStore.new("songbook")
+    @songbook = LocalStore.new("songbook") # used to store songs in localstore
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
     @dropboxclient = Opal::DropboxJs::NilClient.new()
 
-    @systemstatus={version: VERSION}
+    @systemstatus = {version: VERSION}
 
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
     # these methods are invoked here.
     @commands = CommandController::CommandStack.new
-    self.methods.select {|n| n =~ /__ic.*/}.each {|m| send(m)} # todo: what is this?
+    self.methods.select { |n| n =~ /__ic.*/ }.each { |m| send(m) } # todo: what is this?
 
+    ## setup preview panes
+    setup_tune_preview
     setup_harpnote_preview
+    setup_harpnote_player
+    setup_worker_listners
 
     # initialize virgin zupfnoter
 
@@ -172,9 +199,12 @@ class Controller
 
     cleanup_localstorage
     load_from_loacalstorage
-    load_demo_tune unless @editor.get_abc_part
-    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0, mode: mode) unless @systemstatus[:view]
+    load_demo_tune if @editor.get_abc_part.empty?
+    set_status(dropbox: "not connected", music_model: "unchanged", loglevel: $log.loglevel, autorefresh: :off, view: 0,
+               mode:    mode) unless @systemstatus[:view]
     set_status(mode: mode)
+
+    set_status(saveformat: "A3-A4") unless @systemstatus[:saveformat]
 
     #
     # load from previous session
@@ -204,9 +234,7 @@ class Controller
     # # now trigger the interactive UI
     setup_ui_listener
 
-
     show_message_of_the_day
-
 
     # todo
     # todo this completes the very first connection to dropbox
@@ -221,6 +249,7 @@ class Controller
          <table>
           <tbody>
           <tr><td>Zupfnoter:</td><td>#{VERSION}</td></tr>
+          <tr><td>Worker:</td><td>#{@worker_info[:version]}</td></tr>
           <tr><td><a target="_blank" href="http://opalrb.com">Opal</a>:</td><td>#{RUBY_ENGINE_VERSION}</td></tr>
           <tr><td>Ruby:</td><td>#{RUBY_VERSION}</td></tr>
           <tr><td><a target="_blank" href="http://moinejf.free.fr/js/index.html">abc2svg</a>:</td><td>#{%x{abc2svg.version}}</td></tr>
@@ -232,29 +261,45 @@ class Controller
     }
   end
 
-  # this method invokes the system conumers
+# this method invokes the system conumers
   def call_consumers(clazz)
-    @systemstatus_consumers = {systemstatus: [
-                                                 lambda {`update_systemstatus_w2ui(#{@systemstatus.to_n})`}
-                                             ],
-                               statusline:   [],
-                               error_alert:  [lambda {`window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors?}],
-                               play_start:   [lambda {`update_play_w2ui('start')`}],
-                               play_stop:    [lambda {`update_play_w2ui('stop')`}],
-                               disable_save: [lambda {`disable_save();`}],
-                               enable_save:  [lambda {`enable_save();`}],
-                               before_open:  [lambda {`before_open()`}],
-                               extracts:     [lambda {@extracts.each {|entry|
+    @systemstatus_consumers = {systemstatus:      [
+                                                      lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                  ],
+                               lock:              [lambda { `lockscreen()` }],
+                               unlock:            [lambda { `unlockscreen()` }],
+                               localizedtexts:    [lambda { %x{update_localized_texts()} }],
+                               statusline:        [],
+                               error_alert:       [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
+                               play_start:        [lambda { `update_play_w2ui('start')` }],
+                               play_stop:         [lambda { `update_play_w2ui('stop')` }],
+                               play_stopping:     [lambda { `update_play_w2ui('stopping')` }],
+                               disable_save:      [lambda { `disable_save();` }],
+                               enable_save:       [lambda { `enable_save();` }],
+                               before_open:       [lambda { `before_open()` }],
+                               document_title:    [lambda { `document.title = #{@document_title}` }],
+                               current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
+                               settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
+                               extracts:          [lambda { @extracts.each { |entry|
                                  title = "#{entry.first}: #{entry.last}"
-                                 `set_extract_menu(#{entry.first}, #{title})`}
+                                 `set_extract_menu(#{entry.first}, #{title})` }
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
-                               }]
+                               }],
+                               harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
+                               render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }]
     }
-    @systemstatus_consumers[clazz].each {|c| c.call()}
+    @systemstatus_consumers[clazz].each { |c| c.call() }
   end
 
-  # this handles a command
-  # todo: this is a temporary hack until we have a proper ui
+# This provides the configuration form menue entries
+# they are defined in ConfstackEditor and can be retrieved
+# to be used e.g. in the editor toolbar as well.
+  def get_config_form_menu_entries
+    ConfstackEditor.get_config_form_menu_entries
+  end
+
+# this handles a command
+# todo: this is a temporary hack until we have a proper ui
   def handle_command(command)
     $log.clear_errors
     begin
@@ -267,18 +312,33 @@ class Controller
     call_consumers(:error_alert)
   end
 
-  # Save session to local store
-  # only if in :work mode
+# this handles a command which is already parsed
+#
+# @param [String] command the name of the command
+# @param [Hash] args a hash with the arguments. May even be a JS object
+  def handle_parsed_command(command, args)
+    $log.clear_errors
+    begin
+      $log.timestamp_start
+      $log.timestamp(command)
+      @commands.run_parsed_command(command, Native(args))
+    rescue Exception => e
+      $log.error(%Q{#{e.message} in command "#{command}"}, nil, nil, e.backtrace)
+    end
+    call_consumers(:error_alert)
+  end
+
+# Save session to local store
+# only if in :work mode
   def save_to_localstorage
     # todo. better maintenance of persistent keys
-    systemstatus = @systemstatus.select {|key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
-                                                   :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :perspective, :zoom].include?(key)
+    systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
+                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :saveformat, :zoom].include?(key)
     }.to_json
     if @systemstatus[:mode] == :work
-      abc = `localStorage.setItem('systemstatus', #{systemstatus});`
-      abc = @editor.get_text
-      abc = `localStorage.setItem('abc_data', abc);`
+      `localStorage.setItem('systemstatus', #{systemstatus});`
     end
+    @editor.save_to_localstorage
   end
 
 
@@ -291,20 +351,20 @@ class Controller
     end
   end
 
-  # load session from localstore
+# load session from localstore
   def load_from_loacalstorage
-    abc = Native(`localStorage.getItem('abc_data')`)
-    @editor.set_text(abc) unless abc.nil?
+    @editor.restore_from_localstorage
+
     envelope = JSON.parse(`localStorage.getItem('systemstatus')`)
     set_status(envelope) if envelope
     nil
   end
 
-  # this does a cleanip of localstorage
-  # note that this is maintained from version to version
+# this does a cleanup of localstorage
+# note that this is maintained from version to version
   def cleanup_localstorage
     keys             = `Object.keys(localStorage)`
-    dbx_apiv1_traces = keys.select {|k| k.match(/dropbox\-auth:default:/)}
+    dbx_apiv1_traces = keys.select { |k| k.match(/dropbox\-auth:default:/) }
     unless dbx_apiv1_traces.empty?
       # remove dropbox api-v1
       # remove systemstatus to get rid of the dropbox login status
@@ -319,7 +379,7 @@ class Controller
     nil
   end
 
-  # this loads a demo song
+# this loads a demo song
   def load_demo_tune
     abc = %Q{X:21
 F:21_Ich_steh_an_deiner_krippen_hier
@@ -397,7 +457,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     @editor.set_text(abc)
   end
 
-  # render the harpnotes to a3
+# render the harpnotes to a3
   def render_a3(index = @systemstatus[:view])
     flowconf = $settings[:flowconf]
     # turn of flowconf:  otherwise very short unconfigured undconfigured flowlines are
@@ -409,7 +469,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # render the harpnotes splitted on a4 pages
+# render the harpnotes splitted on a4 pages
   def render_a4(index = @systemstatus[:view])
     flowconf             = $settings[:flowconf]
     $settings[:flowconf] = false
@@ -419,13 +479,13 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # migrate the configuration which is provided from textox
-  # this method is necesary to upgrade existing sheets
+# migrate the configuration which is provided from textox
+# this method is necesary to upgrade existing sheets
   def migrate_config(config)
-    result           = Confstack.new(false)
-    result.strict    = false
-    old_config       = Confstack.new(false)
-    old_config.strict= false
+    result            = Confstack.new(false)
+    result.strict     = false
+    old_config        = Confstack.new(false)
+    old_config.strict = false
     old_config.push(config.clone)
     result.push(config)
 
@@ -472,8 +532,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       lyrics = lyrics['versepos'] if lyrics # old version had everything in versepos
       if lyrics
         result           = lyrics.inject({}) do |ir, element|
-          verses                = element.first.gsub(",", " ").split(" ").map {|f| f.to_i}
-          ir[(ir.count+1).to_s] = {"verses" => verses, "pos" => element.last}
+          verses                  = element.first.gsub(",", " ").split(" ").map { |f| f.to_i }
+          ir[(ir.count + 1).to_s] = {"verses" => verses, "pos" => element.last}
           ir
         end
         r[element.first] = {"lyrics" => result}
@@ -489,7 +549,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       notes = element.last['notes']
       if notes.is_a? Array ## in the old version notes was an array
         result           = notes.inject({}) do |ir, element|
-          ir[(ir.count+1).to_s] = element
+          ir[(ir.count + 1).to_s] = element
           ir
         end
         r[element.first] = {'notes' => result}
@@ -506,10 +566,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     else
       result = Promise.new.resolve()
     end
-
     result.then do
       Promise.new.tap do |promise|
         if @harpnote_player.is_playing?
+          call_consumers(:play_stopping)
           stop_play_abc
         else
           call_consumers(:play_start)
@@ -528,37 +588,78 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
   def stop_play_abc
     @harpnote_player.stop()
-    call_consumers(:play_stop)
   end
 
 
-  # render the previews
-  # also saves abc in localstore()
-  def render_tunepreview_callback
+# render the tune previews
+  def render_tunepreview_in_uithread
+    set_active("#tunePreview")
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
+
     setup_tune_preview
 
     begin
-      abc_text = @editor.get_abc_part
-      abc_text = abc_text.split("\n").map {|line|
-        result = line
-        result = result.gsub(/(\\?)(~)/) {|m| m[0]=='\\' ? m[1] : ' '} if line.start_with? 'W:'
-        result
-      }.join("\n")
+      abc_text = tweak_abc_text
 
-      @tune_preview_printer.draw(abc_text, @editor.get_checksum)
+      $log.benchmark("render tune preview") do
+        svg_and_positions = @tune_preview_printer.compute_tune_preview(abc_text, @editor.get_checksum)
+        @tune_preview_printer.set_svg(svg_and_positions)
+        set_inactive("#tunePreview")
+      end
     rescue Exception => e
       $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
     end
-    $log.debug("finished render tune #{__FILE__} #{__LINE__}")
-    set_inactive("#tunePreview")
-
-    @editor.set_annotations($log.annotations)
-
     nil
   end
 
-  # render the previews
-  # also saves abc in localstore()
+  def render_tunepreview__in_worker
+    set_active("#tunePreview")
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
+    setup_tune_preview
+
+    begin
+      abc_text = tweak_abc_text
+
+      $log.benchmark("render tune preview by worker") do
+        @worker_tunepreview.post_named_message(:compute_tune_preview, {abc: abc_text, checksum: @editor.get_checksum})
+      end
+    rescue Exception => e
+      $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
+    end
+    nil
+  end
+
+  def tweak_abc_text
+    abc_text = @editor.get_abc_part
+    abc_text = abc_text.split("\n").map { |line|
+      result = line
+      result = result.gsub(/(\\?)(~)/) { |m| m[0] == '\\' ? m[1] : ' ' } if line.start_with? 'W:'
+      result
+    }.join("\n")
+  end
+
+# render the harpnote previews in a worker
+  def render_harpnotepreview_in_worker
+    $log.benchmark("render_harpnotepreview_callback_by_worker") do
+      set_active("#harpPreview")
+      @worker.post_named_message(:compute_harpnotes_preview, {
+          settings:             $settings,
+          resources:            $resources,
+          systemstatus:         @systemstatus,
+          uri:                  {hostname: self.class.get_uri[:hostname]},
+          config_from_editor:   get_config_from_editor,
+          page_format:          "A3",
+          abc_part_from_editor: @editor.get_abc_part,
+          checksum:             @editor.get_checksum
+      })
+    end
+    nil
+  end
+
+
+# render the harpnote-previews in the main thread
   def render_harpnotepreview_callback
     $log.benchmark("render_harpnotepreview_callback") do
       begin
@@ -566,14 +667,22 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         @song_harpnotes = layout_harpnotes(@systemstatus[:view], "A3")
 
         if @song_harpnotes
+
           # todo: not sure if it is good to pass active_voices via @song_harpnotes
           # todo: refactor better moove that part of the code out here
-          @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices)
-          @harpnote_preview_printer.draw(@song_harpnotes)
+          $log.benchmark("loading music to player") { @harpnote_player.load_song(@music_model, @song_harpnotes.active_voices) }
+
+          $log.benchmark("drawing preview sheet") {
+            svg_and_positions = @harpnote_preview_printer.draw(@song_harpnotes)
+            @harpnote_preview_printer.set_svg(svg_and_positions)
+            harpnote_preview_printer.draw(@song_harpnotes)
+            set_inactive("#harpPreview")
+          }
           set_status(harpnotes_dirty: false)
         end
       rescue Exception => e
         $log.error(%Q{Bug #{e.message}}, nil, nil, e.backtrace)
+
       end
 
       set_status(refresh: false)
@@ -582,10 +691,12 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     nil
   end
 
-
-  # @return [Promise] promise such that it can be chained e.g. in play.
   def render_previews()
+    LastRenderMonitor.new.set_active
 
+    save_to_localstorage
+
+    @harpnote_preview_printer.save_scroll_position
     @editor.resize();
     $log.info("rendering")
     set_status(harpnotes_dirty: true)
@@ -593,46 +704,81 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     $log.clear_errors
     $log.clear_annotations
 
-    unless @systemstatus[:autorefresh] == :remote
-      save_to_localstorage
-      send_remote_command('render')
-    end
+    # now handle harp previews
 
-    # note that render_tunepreview_callback also initializes the previewPrinter
-    # by calling setup_tune_preview
-    # todo: clarfiy why setup_tune_preview needs to be called on every preview
+    if @systemstatus[:autorefresh] == :on
+      render_previews_in_worker()
+    else
+      render_previews_in_uithread()
+    end
+  end
+
+  def render_previews_in_worker()
+    render_tunepreview__in_worker
+
     result = Promise.new.tap do |promise|
-      LastRenderMonitor.new.set_active
-      set_active("#tunePreview")
-      `setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+      #set_active("#tunePreview")
+      #`setTimeout(function(){#{render_tunepreview_callback()};#{promise}.$resolve()}, 0)`
+      #  `setTimeout(function(){#{promise.resolve}}, 0)`
+      promise.resolve()
+      # nil
+    end.fail do
+      alert("fail")
     end.then do
       Promise.new.tap do |promise|
-        set_active("#harpPreview")
         @harpnote_preview_printer.clear
-        `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 50)`
-      end.then do
-        Promise.new.tap do |promise|
-          call_consumers(:error_alert)
-          set_inactive("#harpPreview")
-          @editor.set_annotations($log.annotations)
-          LastRenderMonitor.new.clear
-          promise.resolve()
+        @render_stack.push(@render_stack.count + 1)
+        call_consumers(:render_status)
+        if @render_stack.size == 1
+          render_harpnotepreview_in_worker()
         end
+        promise.resolve()
+      end.fail do
+        alert("BUG - This should never happen in render Previews #{__FILE__} #{__LINE__}")
       end
     end
 
     result
   end
 
-  def render_remote
-    set_status(refresh: false)
-    save_to_localstorage
-    render_tunepreview_callback()
-    send_remote_command('render')
+
+# @return [Promise] promise such that it can be chained e.g. in play.
+  def render_previews_in_uithread()
+    render_tunepreview_in_uithread
+
+    # note that render_tunepreview_callback also initializes the previewPrinter
+    # by calling setup_tune_preview
+    # todo: clarfiy why setup_tune_preview needs to be called on every preview
+    result = Promise.new.tap do |promise|
+      promise.resolve()
+    end.then do
+      Promise.new.tap do |promise|
+        @harpnote_preview_printer.clear
+
+        # we need to call render_harpnotepreview_callbac in a setTimeout
+        # othewise the busy-indicator set_active is not rendered by the UI
+        set_active("#harpPreview")
+        `setTimeout(function(){#{render_harpnotepreview_callback()};#{promise}.$resolve()}, 0)`
+
+        #render_harpnotepreview_callback()
+      end.fail do
+        alert("BUG - This should never happen in render Previews #{__FILE__} #{__LINE__}")
+      end
+    end.then do
+      Promise.new.tap do |promise|
+        @harpnote_preview_printer.bind_elements
+        call_consumers(:error_alert)
+        @editor.set_annotations($log.annotations)
+        LastRenderMonitor.new.clear
+        promise.resolve()
+      end
+    end
+
+    result
   end
 
-  # download abc + pdfs as a zip archive
-  # todo: determine filename from abc header
+# download abc + pdfs as a zip archive
+# todo: determine filename from abc header
   def save_file
     zip = JSZip::ZipFile.new
     zip.file("song.abc", @editor.get_text)
@@ -643,40 +789,33 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     `window.saveAs(blob, filename)`
   end
 
-  # compute the layout of the harpnotes
-  # @return [Happnotes::Layout] to be passed to one of the engines for output
-  def layout_harpnotes(print_variant = 0, page_format='A4')
+# compute the layout of the harpnotes
+# @return [Happnotes::Layout] to be passed to one of the engines for output
+  def layout_harpnotes(print_variant = 0, page_format = 'A4')
+    $log.benchmark("transforming music model") { load_music_model }
 
-    config = get_config_from_editor
-    @editor.neat_config
-
-    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
-    $conf.push(config) # in case of error, we hav the ensure close below
+    $image_list = $conf.get['resources'].keys rescue nil
 
     # prepare extract menu
-    printed_extracts = $conf['produce']
-    @extracts        = $conf.get('extract').inject([]) do |r, entry|
-      extract_number = entry.last.dig(:notes, :T01_number_extract, :text)
-      print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
-      title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
-      r.push([entry.first, title])
-    end
+    set_extracts_menu
 
-    call_consumers(:extracts)
+
     begin
-
       $log.benchmark("validate default conf") do
         @validation_errors = []
         @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
       end
 
-      load_music_model
-      `document.title = #{@music_model.meta_data[:filename]}` ## todo: move this to a call back.
-      $log.timestamp("transform  #{__FILE__} #{__LINE__}")
 
-      result = Harpnotes::Layout::Default.new.layout(@music_model, nil, print_variant, page_format)
+      call_consumers(:document_title)
 
-      $log.timestamp("layout  #{__FILE__} #{__LINE__}")
+      result = nil
+      $log.benchmark("computing layout") do
+        layouter              = Harpnotes::Layout::Default.new
+        layouter.uri          = self.class.get_uri
+        layouter.placeholders = get_placeholder_replacers(print_variant)
+        result                = layouter.layout(@music_model, nil, print_variant, page_format)
+      end
 
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
@@ -688,21 +827,56 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result
   end
 
-  def load_music_model
-    abc_parser = $conf.get('abc_parser')
-    $log.timestamp_start
-    @music_model          = Harpnotes::Input::ABCToHarpnotesFactory.create_engine(abc_parser).transform(@editor.get_abc_part)
-    @music_model.checksum = @editor.get_checksum
+  def get_placeholder_replacers(print_variant_nr)
+    # keys for musid_model see _mk_meta_data
+    # @meta_data = {number:        (@info_fields[:X]),
+    # composer:      (@info_fields[:C] or []).join("\n"),
+    #     title:         (@info_fields[:T] or []).join("\n"),
+    #     filename:      (@info_fields[:F] or []).join("\n"),
+    #     tempo:         {duration: duration, bpm: bpm, sym: tempo_note},
+    #     tempo_display: tempo_display,
+    #     meter:         @info_fields[:M],
+    #     key:           key,
+    #     o_key:         o_key_display
+    # }
+
+    {
+        composer:         lambda { @music_model.meta_data[:composer] },
+        key:              lambda { @music_model.meta_data[:key] },
+        meter:            lambda { @music_model.meta_data[:meter].join(" ") },
+        number:           lambda { @music_model.meta_data[:number] },
+        o_key:            lambda { @music_model.meta_data[:o_key] },
+        tempo:            lambda { @music_model.meta_data[:tempo_display] },
+        title:            lambda { @music_model.meta_data[:title] },
+        extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
+        extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
+        printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") },
+        watermark:        lambda { $settings[:watermark] || "" }
+    }
   end
 
-  # this retrieves the current config from the editor
+  def load_music_model
+    config = get_config_from_editor
+
+    $conf.reset_to(1) # todo: verify this: reset in case we had errors in previous runs
+    $conf.push(config) # in case of error, we have the ensure close below
+
+    harpnote_engine                   = Harpnotes::Input::Abc2svgToHarpnotes.new
+    @music_model, player_model_abc    = harpnote_engine.transform(@editor.get_abc_part)
+    @abc_model                        = harpnote_engine.abc_model
+    @harpnote_player.player_model_abc = player_model_abc
+    @music_model.checksum             = @editor.get_checksum
+    @document_title                   = @music_model.meta_data[:filename]
+  end
+
+# this retrieves the current config from the editor
   def get_config_from_editor
-    config, status = @editor.get_parsed_config
+    config, status = @editor.get_config_model
     if status
       config, status = migrate_config(config)
       if status[:changed]
-        alert(status[:message])
-        @editor.set_config_part(config)
+        $log.info(status[:message])
+        @editor.set_config_model(config, "{migrated config}", true)
         # @editor.prepend_comment(status[:message])
       end
     end
@@ -740,11 +914,34 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Native(parser)
   end
 
-  # highlight a particular abc element in all views
-  # note that previous selections are still maintained.
-  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
+# this is intended to be used for following the player only
+# todo: not clear if it is ok, to deal with DOM-Elements here
+# but this allows to hightliight tune and harp preview simultaneously
+  def highlight_abc_object_by_player_callback(startchar, on)
+    elements = Element.find("._#{startchar}_")
+    if on
+
+      # highlight in tune and harp preview
+      elements.add_class('highlightplay')
+
+      # scroll in tune preview
+      @tune_preview_printer.scroll_into_view(elements.first)
+
+      # scroll in harp preview
+      zn_element = elements.select { |i| i.has_class?('znref') }.last
+      @harpnote_preview_printer.scroll_to_element(elements.select { |i| i.has_class?('znref') }.last) if zn_element
+    else
+      elements.remove_class('highlightplay')
+    end
+    nil
+  end
+
+# highlight a particular abc element in all views
+# note that previous selections are still maintained.
+# note that previous selections are still maintained.
+# @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def highlight_abc_object(abcelement)
-    a =Native(abcelement)
+    a = Native(abcelement)
     #$log.debug("select_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     startchar = a[:startChar]
@@ -752,6 +949,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     endchar   = endchar - 5 if endchar == startchar # workaround bug https://github.com/paulrosen/abcjs/issues/22
     unless @harpnote_player.is_playing?
       @editor.select_range_by_position(startchar, endchar, @expand_selection)
+      call_consumers(:current_notes)
     end
 
     @tune_preview_printer.range_highlight_more(a[:startChar], a[:endChar])
@@ -760,64 +958,165 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
+# @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def unhighlight_abc_object(abcelement)
-    a=Native(abcelement) # remove me
+    a = Native(abcelement) # remove me
     @tune_preview_printer.range_unhighlight_more(a[:startChar], a[:endChar])
     #$log.debug("unselect_abc_element #{a[:startChar]} (#{__FILE__} #{__LINE__})")
 
     @harpnote_preview_printer.range_unhighlight(a[:startChar], a[:endChar])
   end
 
-  # select a particular abcelement in all views
-  # previous selections are removed
-  # @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
+# select a particular abcelement in all views
+# previous selections are removed
+# @param [Hash] abcelement : [{startChar: xx, endChar: yy}]
   def select_abc_object(abcelement)
     highlight_abc_object(abcelement)
   end
 
+# this performs a selection based on time segements
+# it will select all musical symbols which are in the
+# given time range in any voice
+#
+# it can highlight multiple segments, even if there
+# is no usecase yet
+#
+# @param [Array of Array of Integer] segments the list of segments which shall be highlighted
+  def select_by_time_segments(segments)
+    result = []
+
+    voice_map = @abc_model[:voices].map { |v| v[:symbols] }
+    segments.each do |segment|
+      voice_map.each do |voice|
+        selection = voice
+                        .select { |e| not [5, 6, 12, 14].include? e[:type] }
+                        .select { |element| element[:time].between?(*segment) }
+        result.push([selection.first, selection.last]) unless selection.empty?
+      end
+    end
+    result
+
+    #@editor.clear_selection
+    result.each do |range|
+      if range == result.first
+        @editor.select_range_by_position(range.first[:istart], range.last[:iend])
+      else
+        @editor.select_add_range_by_position(range.first[:istart], range.last[:iend])
+      end
+    end
+  end
+
+
+# this returns a list of time ranges
+# covered by the current selection in editor
+#
+# purpose is to select a given time range in
+# all voices the result of this method
+# can be used in select_by_time_segments
+#
+  def get_selected_time_segments
+    ranges = @editor.get_selection_ranges
+    $log.info(ranges.to_json)
+
+    time_ranges = ranges.map do |erange|
+      range    = erange.to_a
+      range    = [range.first, range.last - 1] unless range.first == range.last # to make ?between ignore the upper limit
+      elements = @abc_model[:voices].map do |v|
+        v[:symbols]
+            .select { |e| !(e[:iend].nil? or e[:istart].nil?) and ((e[:istart].between?(*range)) or (e[:iend].between?(*range))) }
+      end
+      a        = elements.flatten.compact
+
+      $log.info(a.to_json)
+      if a.empty?
+        $log.error(I18n.t("your cursor is not within a voice"))
+        result = [0, 0]
+      else
+        result = [a.first[:time], a.last[:time] + a.last[:dur] - 1] # expand the selection to the end of the last note
+      end
+      result
+    end
+
+    time_ranges
+  end
+
   def set_status(status)
     @systemstatus.merge!(status)
-    $log.debug("#{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
-    $log.loglevel= (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
+    $log.debug("sytemstatus: #{@systemstatus.to_s} #{__FILE__} #{__LINE__}")
+    $log.loglevel = (@systemstatus[:loglevel]) unless @systemstatus[:loglevel] == $log.loglevel
 
     save_to_localstorage
     call_consumers(:systemstatus)
     nil
   end
 
-  # this method sets systemstatus from the status of @dropboxclient
+# this method sets systemstatus from the status of @dropboxclient
   def set_status_dropbox_status
-    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath)
+    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath, dropboxloginstate: @dropboxloginstate)
   end
 
-  private
+  def clear_status_dropbox_status
+    set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: nil, dropboxpath: nil, dropboxloginstate: nil)
+  end
+
+  def set_extracts_menu
+    $log.benchmark("prepare extract menu") do
+      printed_extracts = $conf['produce']
+      @extracts        = $conf.get('extract').inject([]) do |r, entry|
+        extract_number = entry.last.dig(:filenamepart)
+        print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+        title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+        r.push([entry.first, title])
+      end
+      call_consumers(:extracts)
+    end
+  end
 
 
-  # setup the harpnote prviewer
+# setup the harpnote prviewer
   def setup_harpnote_preview
 
-    @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 2200, 1400) # size of canvas in pixels
+    @harpnote_preview_printer = Harpnotes::SvgEngine.new("harpPreview", 10, 10) # size of canvas in pixels
+    # todo: DRY 2200, 1400 is also defined in userinterface.js
+    set_harppreview_size([2200, 1400])
     @harpnote_preview_printer.set_view_box(0, 0, 420, 297) # todo: configure ? this scales the whole thing such that we can draw in mm
     @harpnote_preview_printer.on_select do |harpnote|
-      select_abc_object(harpnote.origin)
+      select_abc_object(harpnote[:origin])
     end
 
     ## register handler for dragging annotations
-    @harpnote_preview_printer.on_annotation_drag_end do |info|
+    # the handler is called with an info - hash
+    # conf_key: the key of configuration to be patched
+    # conf_value_new: the new value of configuration to be patched
+    #
+    # if conf_value_new is nil then process the following keys
+    # conf_value: {pos: []} old position
+    # delta: {delta: []} delta for positions
+    #
+    # Note: it is a matter of the draginfo[:handler] to select
+    # the correct draggable handler which has to handle
+    # drag operation as well as eventually compute the value for info
+    #
+    # see opal_svg: bind_elements for details
+    #
+    #
 
+    @harpnote_preview_printer.on_drag_start do |info|
+    end
+
+    @harpnote_preview_printer.on_drag_end do |info|
       conf_key  = info[:conf_key]
       newcoords = info[:conf_value_new]
       unless newcoords
-        newcoords = info[:conf_value][:pos].zip(info[:delta]).map {|i| i.first + i.last}
+        newcoords = info[:conf_value][:pos].zip(info[:delta]).map { |i| i.first + i.last }
       end
 
-      @editor.patch_config_part(conf_key, newcoords)
+      @editor.patch_config_part(conf_key, newcoords, "drag #{conf_key}")
       @config_form_editor.refresh_form if @config_form_editor
     end
 
     @harpnote_preview_printer.on_mouseover do |info|
-      `update_mouseover_status_w2ui(#{info.conf_key})`
+      `update_mouseover_status_w2ui(#{info[:conf_key]})`
     end
 
     @harpnote_preview_printer.on_mouseout do |info|
@@ -825,15 +1124,39 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
 
     # info: see ZnSvg::Paper
+    # info: see opal-svg.rb line 116
+    # todo: this is not prepared for more than two context menu items
+    # this is a bit a hack to create the context menu for harp preview
+    # Approach:
+    #   minc is a menu entry of its own
+    #   config distinguishes between config_note and default config.
+    # it would be possible to
+    #   * add more menu items by more entries in info (see opal-svg.rb set_conf_editable)
+    #   * make specificic menu item text depending on connf_key
+    # no - it is not really elegant :-)
     @harpnote_preview_printer.on_draggable_rightcklick do |info|
+      items = []
+      if (info[:conf_key])
+        items.push({id: info[:conf_key], text: I18n.t('Edit Config'), icon: 'fa fa-gear'})
+      end
+
+      info[:more_conf_keys].each do |entry|
+        id    = entry[:conf_key]
+        text  = entry[:text]
+        icon  = entry[:icon]
+        value = entry[:value]
+        items.push({id: id, text: text, icon: icon, value: value})
+      end
+
       %x{
-          $(#{info.element}).w2menu({
-                                       items: [
-                                                  { id: 'config', text: 'Edit config', icon: 'fa fa-gear' }
-                                              ],
+          $(#{info[:element]}).w2menu({
+                                       items: #{items.to_n},
+
                                        onSelect: function (event) {
                                            w2ui.layout_left_tabs.click('configtab');
-                                           #{handle_command(%Q{editconf #{info[:conf_key].gsub(/\.[^\.]+$/, '') }})}
+                                           if (event.item.value != null ) #{handle_command(%Q{cconf #{`event.item.id`} #{`event.item.value`}})}
+      #{handle_command(%Q{editconf #{`event.item.id`.gsub(/\.[^\.]+$/, '') }})}  // we strip the particular parameter to get all params of the object
+                                           if (event.item.value != null ) #{handle_command(%Q{render})}
                                        }
                                    });
           return false ;
@@ -843,35 +1166,145 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
   end
 
 
-  # setup tune preview
+# setup tune preview
   def setup_tune_preview
     # todo: remove
     # width = Native(Element.find("#tunePreviewContainer").width) - 50 # todo: 70 determined by experiement
     # $log.debug("tune preview-width #{width} #{__FILE__}:#{__LINE__}")
     # printerparams = {staffwidth: width} #todo compute the staffwidth
     @tune_preview_printer = ABC2SVG::Abc2Svg.new(Element.find('#tunePreview'))
-
     @tune_preview_printer.on_select do |abcelement|
-      a=Native(abcelement) # todo remove me
+      a = Native(abcelement) # todo remove me
       select_abc_object(abcelement)
     end
   end
 
-  def set_harppreview_size(size)
-    @harpnote_preview_printer.set_canvas(size)
+# setup harpnote_playxer
+  def setup_harpnote_player
+    @harpnote_player            = Harpnotes::Music::HarpnotePlayer.new()
+    @harpnote_player.controller = self
   end
 
-  # note the filedrop is not entirely initialized in user-interface.js
-  #
+# this is used by ui, so intellj does not find the usage
+  def set_harppreview_size(size)
+    @harp_preview_size = size
+    @harpnote_preview_printer.set_canvas(size)
+    call_consumers(:harp_preview_size)
+  end
+
+# note the filedrop is not entirely initialized in user-interface.js
+#
+#
+  def toggle_autorefresh
+    if @systemstatus[:autorefresh] == :on
+      handle_command('autorefresh off')
+    else
+      handle_command('autorefresh on')
+    end
+    call_consumers(:render_status)
+  end
 
   def toggle_console
     %x{
-       w2ui['layout'].toggle('bottom', window.instant);
+       w2ui['layout'].toggle('bottom', true);
        #{@editor}.$resize();
       }
   end
 
-  # this registers the listeners to ui-elements.
+  def show_console
+    %x{
+       w2ui['layout'].show('bottom', true);
+       #{@editor}.$resize();
+      }
+  end
+
+  def setup_worker_listners
+    @worker_tunepreview.on_named_message(:compute_tune_preview) do |data|
+      $log.benchmark("preocessing reply from compute_tune_preview") do
+        svg_and_positions = data[:payload]
+        set_inactive("#tunePreview")
+        @tune_preview_printer.set_svg(svg_and_positions)
+      end
+    end
+
+    @worker.on_named_message(:get_worker_info) do |data|
+      @worker_info = data[:payload]
+    end
+
+    @worker.on_named_message(:set_logger_status) do |data|
+      #$log.set_status(data[:payload])
+      @editor.set_annotations($log.annotations)
+    end
+
+    @worker.on_named_message(:compute_harpnotes_preview) do |data|
+      $log.benchmark("processing reply from compute_harpnotes_preview") do
+        svg_and_positions = data[:payload]
+        if @render_stack.size <= 1 # if there is no other rendering active?
+          @harpnote_preview_printer.set_svg(svg_and_positions)
+          set_harppreview_size(@harp_preview_size)
+          set_status(harpnotes_dirty: false)
+          set_status(refresh: false)
+          set_inactive("#harpPreview")
+          LastRenderMonitor.new.clear
+          @editor.set_annotations($log.annotations)
+        end
+
+        @render_stack.shift
+        call_consumers(:render_status)
+        unless @render_stack.empty?
+          @render_stack.clear
+          render_previews
+        end
+
+        nil
+      end
+    end
+
+    @worker.on_named_message(:update_ui) do |data|
+      @extracts = data[:payload][:extracts]
+      call_consumers(:extracts)
+      @document_title = data[:payload][:document_title]
+      call_consumers(:document_title)
+    end
+
+# this receiges the player_model_abc to play
+# along the tune
+    @worker.on_named_message(:load_player_model_abc) do |data|
+      $log.benchmark("preocessing reply from load_player_model_abc") do
+        @harpnote_player.player_model_abc = %x{JSON.parse(#{data[:payload]})}
+      end
+    end
+
+# this receives the player_model to play according
+# to harpnotes
+    @worker.on_named_message(:load_player_from_worker) do |data|
+      $log.benchmark("preocessing reply from load_player_model") do
+        @harpnote_player.set_worker_model(data[:payload])
+      end
+    end
+
+# this retrieves the abc model from worker
+# required for select in multiple voices
+    @worker.on_named_message(:load_abc_model) do |data|
+      $log.benchmark("preocessing reply from load_abc_model") do
+        @abc_model = data[:payload]
+      end
+    end
+
+# this lets the worker send a message to the logger
+    @worker.on_named_message('log') do |data|
+      $log.log_from_worker(data[:payload])
+    end
+
+# this rescues from fatal worker errors
+    @worker.on_named_message(:rescue_from_worker_error) do |data|
+      @render_stack.clear
+      call_consumers(:error_alert)
+      call_consumers(:render_status)
+    end
+  end
+
+# this registers the listeners to ui-elements.
   def setup_ui_listener
 
     # activate drop of files
@@ -887,15 +1320,18 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
 
     @editor.on_selection_change do |e|
-      a              = @editor.get_selection_positions
+      ranges         = @editor.get_selection_ranges
       selection_info = @editor.get_selection_info
-      ranges         = selection_info[:selection]
-      $log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
 
-      $log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
-      unless false # @systemstatus[:harpnotes_dirty]
-        @harpnote_preview_printer.range_highlight(a.first, a.last)
-        @tune_preview_printer.range_highlight(a.first, a.last)
+      #$log.debug("editor selecton #{a.first} to #{a.last} (#{__FILE__}:#{__LINE__})")
+      #$log.debug "dirtyflag: #{@systemstatus[:harpnotes_dirty]}"
+
+      @harpnote_preview_printer.unhighlight_all
+      @tune_preview_printer.unhighlight_all
+
+      ranges.each do |a|
+        @harpnote_preview_printer.range_highlight_more(a.first, a.last)
+        @tune_preview_printer.range_highlight_more(a.first, a.last)
         @harpnote_player.range_highlight(a.first, a.last)
       end
     end
@@ -904,6 +1340,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       request_refresh(false)
 
       selection_info = @editor.get_selection_info
+      selections     = @editor.get_selection_ranges
       ranges         = selection_info[:selection]
 
       position = "#{ranges.first.first}:#{ranges.first.last}"
@@ -915,25 +1352,25 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         token = {type: "", value: ""}
       end
 
-      editorstatus = {position:  position,
-                      tokeninfo: "#{token[:type]} [#{token[:value]}]",
-                      token:     token
+      editorstatus = {position:   position,
+                      tokeninfo:  "#{token[:type]} [#{token[:value]}]",
+                      token:      token,
+                      selections: selections
       }
-
       `update_editor_status_w2ui(#{editorstatus.to_n})` # todo: use a listener here ...
-
     end
 
     @harpnote_player.on_noteon do |e|
-      highlight_abc_object(e)
+      highlight_abc_object_by_player_callback(e[:startChar], true) unless $settings[:follow] == 'false'
     end
 
     @harpnote_player.on_noteoff do |e|
-      unhighlight_abc_object(e)
+      highlight_abc_object_by_player_callback(e[:startChar], false) unless $settings[:follow] == 'false'
     end
 
     @harpnote_player.on_songoff do
       stop_play_abc
+      call_consumers(:play_stop)
     end
 
     $window.on :mousedown do |e|
@@ -941,29 +1378,35 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       true # meed this to continue processing of the mouse event
     end
 
+
     # key events in editor
-    $window.on :keydown do |e|
-      if (e.meta_key || e.ctrl_key) # Ctrl/Cmd
+    Element.find('body').on :keydown do |e|
+      # note that on windows some characters (eg "[") are entered as ctrl-alt-8
+      # this prevents the handler to fire ...
+      if (e.alt_key)
+
+      elsif (e.meta_key || e.ctrl_key) # Ctrl/Cmd
         case (e.key_code)
-          when 'A'.ord
-            @editor.select_range_by_position(0, 10000)
-          when 'R'.ord, 13
-            e.prevent
-            render_previews()
-          when 'S'.ord #s
-            e.prevent
-            handle_command("dsave")
-          when 'P'.ord #p
-            e.prevent
-            play_abc('auto')
-          when 'K'.ord #k
-            e.prevent
-            toggle_console
-          when 'F'.ord
-            if e.alt_key
-              e.prevent
-              %x{#{@zupfnoter_ui}.toggle_full_screen();}
-            end
+        when 'A'.ord
+          @editor.select_range_by_position(0, 10000)
+        when 'R'.ord, 13
+          e.prevent
+          handle_command('render')
+        when 'S'.ord #s
+          e.prevent
+          handle_command("dsave")
+        when 'P'.ord #p
+          e.prevent
+          play_abc('auto')
+        when 'K'.ord #k
+          e.prevent
+          toggle_console
+        when 'L'.ord
+          %x{#{@zupfnoter_ui}.toggle_full_screen();}
+          e.prevent
+        when *((0 .. 9).map { |i| i.to_s.ord })
+          e.prevent
+          handle_command("view #{e.key_code.chr}")
         end
       end
     end
@@ -1009,7 +1452,6 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     last_read_info_id = systemstatus[:last_read_info_id] || 0
 
     have_read = lambda do
-      %x{window.open(#{@info_url})}
       set_status({last_read_info_id: last_info_id})
     end
 
@@ -1017,32 +1459,35 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
       # alert (" hat nicht gelesen gelesen")
     end
 
-    body = messages.map {|m|
+    body = %Q{<h3><a href="#{@info_url}" target="_blank">#{I18n.t("read now")}</a></h3>}
+
+    body += messages.map { |m|
       nm      = Native(m)
       post_id = nm[:postId]
       desc    = nm[:description]
       %Q{<div style="text-align:left;"><p>#{post_id}: #{nm[:title]}</p></div>}
     }.join
 
+
     options = {
         msg:   body,
         title: I18n.t('There is new unread information'),
         width: 600, # width of the dialog
         height: 200, # height of the dialog
-        modal:    true,
-        btn_yes:  {
-            text: I18n.t('read now'), # text for yes button (or yes_text)
+        modal:       true,
+        btn_yes:     {
+            text: I18n.t('already read'), # text for yes button (or yes_text)
             class: '', # class for yes button (or yes_class)
             style: '', # style for yes button (or yes_style)
             callBack: have_read # callBack for yes button (or yes_callBack)
         },
-        btn_no:   {
+        btn_no:      {
             text: I18n.t('read later'), # text for no button (or no_text)
             class: '', # class for no button (or no_class)
             style: '', # style for no button (or no_style)
             callBack: have_not_read # callBack for no button (or no_callBack)
         },
-        callBack: nil # common callBack
+        callBack:    nil # common callBack
     };
 
     # todo: w2confirm might be in conflict with other popus
@@ -1053,25 +1498,28 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
   end
 
-  # @param [Boolean] init if true triggers a new refresh request; if false restarts a running request
+# @param [Boolean] init if true triggers a new refresh request; if false restarts a running request
   def request_refresh(init)
     set_status({refresh: true}) if init
 
-    $log.debug("request refresh #{@systemstatus[:refresh]} #{init} #{__FILE__} #{__LINE__}")
-    if @refresh_timer
-      `clearTimeout(self.refresh_timer)`
+    unless @refresh_timer.empty?
+      @refresh_timer.each do |i|
+        `clearTimeout(#{i})`
+        @refresh_timer.pop
+      end
     end
 
     if @systemstatus[:refresh]
       stop_play_abc # stop player since the model has poentially changed
 
       case @systemstatus[:autorefresh]
-        when :on
-          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 100)`
-        when :off # off means it relies on remote rendering
-          @refresh_timer = `setTimeout(function(){#{render_remote()}}, 300)`
-        when :remote # this means that the current instance runs in remote mode
-          @refresh_timer = `setTimeout(function(){#{render_previews()}}, 500)`
+      when :on
+        @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 600)`
+      when :off
+        # off still renders tune_preview
+        @refresh_timer.push `setTimeout(function(){#{render_tunepreview_in_uithread()}},  600)`
+      when :remote # this means that the current instance runs in remote mode
+        #   @refresh_timer.push `setTimeout(function(){#{render_previews()}}, 500)`
       end
     end
   end
@@ -1089,22 +1537,21 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     Element.find(ui_element).remove_class('spinner')
   end
 
-  private
+  def check_suppoerted_browser
+    supportedbrowsers = %W{Chrome Firefox Vivaldi Opera}
+    unless supportedbrowsers.include?(`bowser.name`)
+      message = I18n.t("Unsupported browser. Please use one of ") + supportedbrowsers.to_s
+      $log.warning(message)
+      `alert(#{message})`
+    end
+  end
 
 
-  # returns a hash with the default values of configuration
+# returns a hash with the default values of configuration
   def _init_conf()
     InitConf.init_conf()
   end
 
 end
 
-Document.ready? do
-  a = Controller.new
-  # provide access to  zupfnoter controller from browser console
-  # to suppert debuggeing
-  Element.find("html").append(%Q{ <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="#{DBX_APIKEY_FULL}"></script>
-})
-  `window.zupfnoter=#{a}`
-end
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <%=
   def nc(name)
-    build = GITSHA rescue "dev"
+    build = GITSHA rescue Time.now().to_s
     %Q{#{name}?#{build}}
   end
 
@@ -35,14 +35,12 @@
   <script src="<%=nc("vendor/jszip.min.js")%>" type="application/javascript"></script>
   <script src="<%=nc("vendor/Dropbox-sdk.min.js")%>" type="application/javascript"></script>
 
-  <script src="<%=nc("vendor/xml2abc-bw.js")%>" type="application/javascript"></script>
-
-
   <link rel="stylesheet" type="text/css" href="<%=nc("vendor/w2ui/dist/w2ui.min.css")%>"/>
   <link rel="stylesheet" type="text/css" href="<%=nc("vendor/font-awesome/css/font-awesome.min.css")%>"/>
   <link rel="stylesheet" type="text/css" href="<%=nc("public/index.css")%>"/>
 
   <script type="text/javascript" src="<%=nc("vendor/w2ui/dist/w2ui.min.js")%>"></script>
+  <script id="buster" type="text/json">{"buster":"<%=nc('')%>"}</script>
 
   <style>
     .spinner {
@@ -59,7 +57,7 @@
 </div>
 <div id="statusbar-layout" style="height:25px">
 </div>
-<input id="file_input" style="display:none;" type="file" accept=".abc, .mxl, .xml"/>
+<input id="file_input" style="display:none;" type="file" accept=".abc, .mxl, .xml, .jpg"/>
 
 <%= begin
       result = javascript_include_analytics()

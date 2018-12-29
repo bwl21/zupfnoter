@@ -16,15 +16,18 @@ module ABC2SVG
   #
   class Abc2Svg
 
+    attr_accessor :abcplay # this is needed to produce player_model_abc
 
-    def initialize(div, options={mode: :svg})
-      @on_select           = lambda { |element|}
-      @printer             = div
-      @svgbuf              = []
-      @abc_source          = ''
-      @element_to_position = {} # mapping svg elements to position
-      @abc_model           = nil
-      @object_map          = {} # mapping objects to their Id
+    def initialize(div, options = {mode: :svg})
+      @on_select            = lambda { |element|}
+      @printer              = div
+      @svgbuf               = []
+      @abc_source           = ''
+      @interactive_elements = {} # mapping svg elements to position
+      @abc_model            = nil # the model being transformed to harpnotes
+      @player_model         = [] # the model to play the entire stuff
+      @object_map           = {} # mapping objects to their Id
+      @abcplay              = nil; #used to extract the player_model
 
       @user = {img_out:     nil,
                errmsg:      nil,
@@ -32,13 +35,13 @@ module ABC2SVG
                annotate:    true,
                page_format: true,
                keep_remark: true,
-               textrans:    Native(`w2utils.settings.phrases`)
+               textrans:    I18n.phrases
       }
 
 
       set_callback(:errmsg) do |message, line_number, column_number|
         if line_number
-          $log.error(message, [line_number+1, column_number+1])
+          $log.error(message, [line_number + 1, column_number + 1])
         else
           $log.error(message)
         end
@@ -74,13 +77,14 @@ module ABC2SVG
           $log.error("BUG: unsupported mode for abc2svg")
       end
 
-      @root = %x{new Abc(#{@user.to_n})}
+      @root    = %x{new abc2svg.Abc(#{@user.to_n})}
       defaults = %Q{
 I:titletrim 0
 I:measurenb 1
 I:contbarnb 1
 I:linewarn 0
 I:staffnonote 2
+I:stretchlast 1
       }
       %x{#{@root}.tosvg("my_parameters",#{defaults});}
       @root
@@ -96,57 +100,90 @@ I:staffnonote 2
       nil
     end
 
+    def scroll_into_view(element)
+      %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
+    end
+
     def range_highlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
         element = Element.find("##{id}")
-
-        %x{#{element}.parents('.svg_block').get(0).scrollIntoView(true)}
-        classes = [element.attr('class').split(" "), 'highlight'].flatten.uniq.join(" ")
-        element.attr('class', classes)
+        scroll_into_view(element) unless $settings[:autoscroll] == "false"
+        element.add_class('highlight')
       end
       nil
     end
 
     def range_unhighlight_more(from, to)
       get_elements_by_range(from, to).each do |id|
-        foo     = Element.find("##{id}")
-        classes = foo.attr('class').gsub("highlight", '')
-        foo.attr('class', classes)
+        foo = Element.find("##{id}")
+        foo.remove_class('highlight')
       end
     end
 
     def unhighlight_all()
-      Element.find("##{@printer.id} .highlight").attr('class', 'abcref')
+      Element.find("##{@printer.id} .highlight").remove_class('highlight') # .attr('class', 'abcref')
     end
 
 
     def on_select(&block)
       @on_select = block
-      _set_on_select()
+      #_set_on_select()
     end
 
-    def draw(abc_code, checksum="")
+    def strip_js(abc_code)
+      r = abc_code.gsub(/(I:|%%)(beginjs|endjs)/, "% removed ")
+      $log.error(I18n.t("CAUTION: your abc-code is vulnerable !!! removed beginjs / endjs"), [1, 1]) unless abc_code == r
+      r
+    end
+
+
+    # this purely computes tune_preview
+    # note that it does not process the results
+    # so it can also be used in the worker
+    def compute_tune_preview(abc_code, checksum = "")
+      # note that the blank line is requred make the text
+      # not appaear correct on the tune sheet
       abc_text_insert = %Q{
 %%textoption right
 %%textfont * * 8
 %%text #{checksum}
       }
 
-      @abc_source          = abc_code
-      @element_to_position = {}
-      @svgbuf              = []
+      @abc_source           = strip_js(abc_code)
+      @interactive_elements = {}
+      @svgbuf               = []
       %x{
       #{@root}.tosvg(#{"abc"}, #{@abc_source + abc_text_insert});
       }
 
-      @printer.html(get_svg())
-      _set_on_select();
+      {svg: get_svg(), interactive_elements: @interactive_elements}
+    end
+
+
+    # this draws the tune preivew and also
+    # pushes html and positions
+    def draw(abc_code, checksum = "")
+      svg_and_positions = compute_tune_preview(abc_code, checksum = "")
+      set_svg(svg_and_positions)
+    end
+
+
+    # this stores svg and note positions
+    # as computed by compute_tune_preview
+    # it can also be used in a worker event handler
+    def set_svg(svg_and_positions)
+      @interactive_elements = svg_and_positions[:interactive_elements]
+      @printer.html(svg_and_positions[:svg])
       nil
     end
 
     def get_abcmodel(abc_code)
-      %x{#{@root}.tosvg("abc", #{abc_code})};
-      @abc_model
+      stripped_abc_code = strip_js(abc_code)
+      %x{abc2svg.modules.load(#{stripped_abc_code},
+                              function(){console.log("modules loaded")},
+                              function(msg){#{$log.error(`msg`)} } )     };
+      %x{#{@root}.tosvg("abc", #{stripped_abc_code})};
+      [@abc_model, @player_model]
     end
 
     # todo: mke private or even remove?
@@ -170,7 +207,7 @@ I:staffnonote 2
         </style>
       </head>
       <body>
-         #{get_svg}
+         #{@printer.html}
       </body>
       }
     end
@@ -182,14 +219,18 @@ I:staffnonote 2
     end
 
 
+    # this method returns a list of ids of elements which
+    # touch the given range [from, to]
     def get_elements_by_range(from, to)
-      range  = [from, to].sort
+      range  = [from, to].sort # get sorted interval for select range [lower, upper]
       result = []
-      @element_to_position.each { |k, value|
-        noterange = [:startChar, :endChar].map { |c| value[c] }.sort
+      @interactive_elements.each { |k, value|
 
+        noterange = [:startChar, :endChar].map { |c| value[c] }.sort # [get sorted interval for note [lower, upper]]
+
+        # check if range and noterange overlap each other
         if (range.first - noterange.last) * (noterange.first - range.last) > 0
-          result.push(k)
+          result.push(k) # push the id of the element
         end
       }
       result
@@ -205,10 +246,14 @@ I:staffnonote 2
 
       json_model = ""
       %x{
-          abcmidi = new AbcMIDI();
+          var abcmidi = new AbcMIDI();
           abcmidi.add(#{tsfirst}, #{voice_tb});
-          to_json = new AbcJSON();
+          var to_json = new AbcJSON();
           #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
+
+          var to_audio = new ToAudio()
+          to_audio.add(#{tsfirst}, #{voice_tb})
+          #{@player_model} = to_audio.clear()
       }
 
       @abc_model = JSON.parse(json_model)
@@ -232,39 +277,39 @@ I:staffnonote 2
     # such that is fulfils the needs of zupfnoter cross - highlighting
     def _anno_start(music_type, start_offset, stop_offset, x, y, w, h)
       id = _mk_id(music_type, start_offset, stop_offset)
-      %x{
-      #{@root}.out_svg('<g class="' + #{id} +'">\n')
-      }
+      %x{#{@root}.out_svg('<g class="' + #{id} +'">\n')}
+      nil
     end
 
 
+    # this method is used in _anno_stop
+    # as a click handler fore the abcref - rectangles
+    # so do not change it without knowing, what you are doing
+    def _clickabcnote(evt, id)
+      Native(evt).stopPropagation
+      @on_select.call(@interactive_elements[id])
+    end
+
     def _anno_stop(music_type, start_offset, stop_offset, x, y, w, h)
       id = _mk_id(music_type, start_offset, stop_offset)
+      #
+      # figured out the path zupfnoter is defined in controller on document loaded event
+      #                      zupfnoter.tune_preview_printer is the @tune_preview_printer in Controller
+      onclick = %Q{onclick="Opal.top.uicontroller.tune_preview_printer.$_clickabcnote(evt, '#{id}')"}
       %x{
           // close the container
           #{@root}.out_svg('</g>\n');
           // create a rectangle
-          #{@root}.out_svg('<rect class="abcref" id="' + #{id} +'" x="');
+          #{@root}.out_svg('<rect ' + #{onclick} + ' class="abcref _' + #{start_offset} + '_" id="' + #{id} +'" x="');
           #{@root}.out_sxsy(#{x}, '" y="', #{y});
-          #{@root}.out_svg('" width="' + #{w}.toFixed(2) +
-            '" height="' + #{h}.toFixed(2) + '"/>\n')
+          #{@root}.out_svg('" width="' + #{w}.toFixed(2) + '" height="' + #{h}.toFixed(2) + '"/>\n');
         }
-      @element_to_position[id] = {startChar: start_offset, endChar: stop_offset}
-
+      @interactive_elements[id] = {startChar: start_offset, endChar: stop_offset}
     end
 
 
     def _mk_id(music_type, start_offset, end_offset)
       "_#{music_type}_#{start_offset}_#{end_offset}_"
-    end
-
-
-    def _set_on_select()
-      Element.find('.abcref').on(:click) do |evt|
-        evt.stop_propagation
-        @on_select.call(@element_to_position[evt.current_target.id])
-        nil
-      end
     end
 
   end

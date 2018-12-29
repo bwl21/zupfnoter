@@ -486,13 +486,25 @@ und das Einelgen in das Instrument zu vereinfachen:
     > **Hinweis:** Der Fingerabdruck wird aus dem ABC-Text errechnet und
     > ist daher nicht im ABC-Text enthalten.
 
-### Vordefinierte Blattbeschriftungen
+### Vordefinierte Seitenbeschriftungen
 
 Zupfnoter bietet eine Reihe von Vorlagen für die Seitenbeschriftungen.
 Damit lässt sich ein einheitliches Vorgehen bei der Beschriftung der
 Unterlegnoten erreichen. Diese können in der Konfigurationsmaske
 "Seitenbeschriftung" eingegeben werden. Zupfnoter hat geeignete
 Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
+
+-   **(34) T05 legend - Legende**: Hier kann eine Legende eingefügt
+    werden, welche mal selbst gestalten kann.
+
+    > **Hinweis:** Wenn dieser Eintrag vorhanden ist, wird die in
+    > Zupfnoter eingebaute Legende unterdrückt.
+    >
+    > Für eine eigenen Legende ist es sinnvoll mit Platzhaltern zu
+    > arbeiten. Die Schnelleinstellung in der Seitenbeschriftung fügt
+    > eine Legende ein, gleich aussieht wie die in Zupfnoter eingebaute
+    > version. Sie ist daher ein guter Startpunkt für eine selbst
+    > gestaltete Legende.
 
 -   **(74) T04 to order - zu beziehen bei**: Hier kann man angeben, über
     welche Adresse das Unterlegnotenblatt bezogen werden kann
@@ -601,6 +613,12 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
     den Seitenrand. Der Schriftstil kann gewählt werden (siehe auch
     Kapitel \ref{elemente-fuer-das-ganze-blatt} [Elemente für das
     gesamte Musikstück](#elemente-fuer-das-ganze-blatt)).
+
+    In den Seitenbeschrifungen können Informationen eingefügt werden,
+    welche in Zupfnoter schon vorhanden sind. Hierzu werden Platzhalter
+    eingefügt, welche bei der Ausgabe durch die entsprechende
+    Information ersetzt werden. Die möglichen Platzhalter findest du in
+    der Hilfe zu den Parametern.
 
 -   **Liedtexte**
 
@@ -840,10 +858,18 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
         vorhandenen Stimmen. Damit kann man einen Eindruck des
         Gesamtklanges gewinnen.
 
+        > **Hinweis:** Dabei wird mit einem Klavierklang gepsielt. Die
+        > Wiedergabe umfasst berücksichtigt auch Wiedrholungen und
+        > variante Enden.
+
     -   wenn eine einzelne Note selektiert ist, spielt Zupfnoter nur die
         Stimmen des aktuell eingestellten Auszugs. Damit kann man einen
         Eindruck gewinnen, wie das Stück klingt, wenn nur einzelne
         Stimmen kombiniert werden (z.B. nur Sopran und Alt).
+
+        > **Hinweis:** Dabei wird mit einem Harfenähnlichen Klang
+        > gespielt. Die Wiedergabe läuft einfch durch, ohne
+        > Wiederholungen und vairante Enden.
 
     -   wenn mehrere Noten selektiert sind, spielt Zupfnoter nur genau
         die selektierten Noten. Damit kann man eine Detailkontrolle
@@ -1018,6 +1044,10 @@ Einträgen
     umgestellt werden [^040_UD-Zupfnoter-Referenz.md_5].
 -   Aktueller Modus von Zupfnoter. Hier gibt es `work` und `demo`. im
     Demo-Modus sind einge Menüpunkte nicht aktiv.
+-   Menü zur Auswahl der Papierformate beim Speichern
+-   Menü zur Auswahl der Meldungen (Fehler / Warnung / Info)\
+-   Menü zur Auswahl von Auto-Render\
+-   Button zum Ein- Ausblenden der Konsole
 -   Name des Konfigurationsparameters für das Element unter dem
     Mauszeiger falls dieses mit der Maus verschoben werden kann oder
     über das Kontext-Menü konfiguriert werden kann.
@@ -1025,20 +1055,36 @@ Einträgen
 ### Konsole {#konsole-fenster}
 
 Die Konsole ist nur sichtbar, wenn sie mit der Tastenkombination
-`cmd/ctrl-K` eingeschaltet wurde. Sie stellt die letzten Meldungen von
-Zupfnoter dar. Experten können in der Konsole auch weitere Befehle
-eingeben, die Zupfnoter direkt steuern. Die möglichen Befehle kann man
-mit dem Befehl `help` in der Konsole anzeigen.
+`cmd/ctrl-K` (bzw. durch klick auf den Button `>_` in der Statusleiste)
+eingeschaltet wurde. Sie stellt die letzten Meldungen von Zupfnoter dar.
+Experten können in der Konsole auch weitere Befehle eingeben, die
+Zupfnoter direkt steuern. Die möglichen Befehle kann man mit dem Befehl
+`help` in der Konsole anzeigen.
 
 > **Hinweis**: Die Zupfnoter-Menüs lösen letztendlich solche
 > Konsolenbefehle aus. Daher werden selbst Experten diese Befehle in der
 > Regel nicht brauchen.
 
+> **Hinweis**: Diese Funktionen können teilweise über das Menü `Extras`
+> erreicht werden.
+
 Andererseits gibt es gerade in der Konsole manche experimentelle
 Zusatzfunktion, die noch nicht an die grafische Oberfläche angeschlossen
 ist.
 
-Folgende Befehle zum Arbeiten mit voreingestellen Auszügen bzw.
+Folgende Befehle steuern, welche Files in der Dropbox gespeichert
+werden:
+
+-   `saveformat A3` - Es werden nur die A3-Druckdateien gespeichert
+-   `saveformat A4` - Es werden nur die A4-Druckdateien gespeichert
+-   `saveformat A3-A4` - Es werden die A3 und A4-Druckdateien
+    gespeichert
+
+> **Hinweis:** Diese Einstellung wird in der Statusleiste angezeigt.
+> Duch klicken auf diese Anzeige kann die einstellung einfach geändert
+> werden.
+
+Folgende Befehle dienen zum Arbeiten mit voreingestellen Auszügen bzw.
 Beschriftungen
 
 -   `setstdnotes`: kopiert dem aktuellen Stück die Konfiguration der
@@ -1046,13 +1092,36 @@ Beschriftungen
 -   `stdnotes`: überträgt die zuletzt kopierte Konfiguration der
     Blattbeschriftungen auf das aktuelle Stück in den aktuellen Auszug.
 -   `setstdextract`: kopiert aus dem aktuellen Stück die Konfiguration
-    der Auszüge, um sie auf ein anderes Stück zu übertragen.
+    der Auszüge, um sie auf ein anderes Stück zu übertragen. \>
+    **Hinweis**: diese Anwweisung wird auch ausgeführt bei `settemplate`
 -   `stdectract`: überträgt die zuletzt kopierte Konfiguration der
     Auszüge auf das aktuelle Stück
 
     > **Hinweis**: Diese Befehle sind hilfreich um schnell die
     > Konfiguration eines aus MusicXml importierten Stückes
-    > einzustellen.
+    > einzustellen. 'stdextract' wird automatisch beim import aus
+    > MusicXml ausgeführt.
+
+-   `settemplate`: Damit wird der aktuelle Editor-Inhalt als Vorlage
+    hinterlegt (siehe Kapitel \ref{filetemplates} [Arbeiten mit
+    Dateivorlagen](#filetemplates)).
+
+Über folgende Befehle kann eingestellt werden, ob die Vorschaufenster
+zur aktuellen Note scrollen bzw. der Wiedergabe folgen
+
+-   `setsetting autoscroll true` - Vorschaufenster scrollen automatisch
+-   `setsetting autoscroll false` - Vorschaufenster scrollen nicht
+-   `setsetting follow true` - Vorschaufenster folgen der Wiedergabe
+-   `setsetting follow false` - Vorschaufenster folgen der Wiedergabe
+    **nicht mehr**
+
+Weitere Laufzeiteinstellungen sind:
+
+-   `setsetting watermark "text"` - Damit kann ein Text eingestellt
+    werden, welcher über den Platzhalter `{{watermark}}` in die
+    Seitenbeschriftung eingefügt werden kann. Damit kann man z.b. für
+    ein bestimmtest Projekt Anmerkungen einfügen, ohne den ABC-Code zu
+    ändern.
 
 Über folgende Befehle können Flußlinien gestaltet werden:
 
@@ -1102,12 +1171,18 @@ hilfreich sind. Insbesondere, wenn der "debug" - Modus eingestellt ist.
     Problemen einzukreisen
 -   `loglevel error` - Es werden nur noch schwerwiegende Fehler
     gemeldet. Das ist für die normale Anwendung ausreichend.
+-   `loglevel warning` - Es werden Fehler und Warnungen gemeldet. In
+    Einzelfällen kann man mit Warnungen leben. Ein Beispiel für eine
+    Warnung ist die Meldung `Beschriftungen zu dicht beieinander`
+-   `loglevel info` - Es werden Fehler, Warnungen und
+    Informationsmeldungen angezeigt. Informationsmeldungen betreffen
+    Versionsnummern und Laufzeitmessungen.
 
 Die Konsole kann auch für eine bessere Fehlersuche in der Konfiguration
 verwendet werden. Selbst wenn Zupfnoter die Eingabe fehlerhafter
 Konfigurationsparameter eigentlich verhindern soll, so kann es trotzdem
 vorkommen. Wenn also schwer verständliche Meldungen erscheinen kann man
-den loglevel debug einschalten. Dann kann man in der Konsole mit
+den `loglevel debug` einschalten. Dann kann man in der Konsole mit
 
 -   `editconf errors` - die fehlerhaften Konfigurationsparameter als
     Formular bearbeiten.
@@ -1124,6 +1199,36 @@ Eine Übersicht der Befehle für die Konsole gibt der Befehl
         setstdnotes  : configure stdnotes in localstore
         setstdextract  : configure stdc onfig in localstore
 
+Über folgende Befehle kann die Wiedergabe gesteuert werden.
+
+-   `p ff` - Wiedergabe des aktuellen Auszuges ab der selektierte Note.
+    Wenn keine Note selektiert ist, dann wirkt der Befehl wie `p all`
+
+-   `p sel` - Wiedergabe der ausgewählten Noten
+
+-   `p all` - Wiedergabe des kompletten Stückes mit alle Stimmen die im
+    ABC code angelegt sind. Dabei werden Wiederholungen und varianten
+    Enden ausgespielt. Mit dieser Funktion kan man sich einen
+    Gesamteindruck verschaffen.
+
+-   `p auto` - Wiedergabe
+    -   ab der ausgewählten Note wie `p ff`
+    -   der ausgewählten Noten wie `p sel` - falls mehrere Noten
+        ausgewählt sind
+    -   des kompletten Stückes wie `p all` - falls keine Note ausgewählt
+        ist
+
+`stop` - hält die Wiedergabe an
+
+-   `speed {factor>}` - damit kann man die Wiedergabegeschwindigkeit
+    verändern, ohne den ABC-Code ändern zu müssen.
+
+    > Hinweis: Die Einstellung bleibt über mehrere Abspielvorgänge
+    > erhalten. Sie kann auch währende des Abspielens verändert werden.
+    >
+    > Hinweis: um sicher mit der Einstellung aus dem ABC-Code
+    > abzuspielen sollte `speed 1` angegeben werden.
+
 ## Tastenkombinationen (Shortcuts) {#shortcuts}
 
 Für eine flüssige Bedienung stellt Zupfnoter folgende
@@ -1133,11 +1238,22 @@ Tastenkombinationen (Shortcuts) zur Verfügung:
 -   'cmd + k': Konsole anzeigen
 -   'cmd + r': Rendern (aktualisieren der Unterlegnoten)
 -   'cmd + p': Play (abspielen)
--   'cmd + alt + f': Fullscreen - Schaltet zwischen Ansicht
-    "Harfennoten" hin und her
+-   'cmd + l': Large - schaltet zwischen Ansicht "Harfennoten" hin und
+    her. Gut für eine schnelle Kontrolle
+-   'cmd + 0' .. cmd \# '9': Schalte auf Ansicht 0 .. 9
 
 > **Hinweis:** unter Windows / Linux entspricht "cmd" der "ctrl" oder
 > "strg" - Taste
+
+Im ABC-Editor gelten (nur die häufigsten Tasten ...)
+
+-   'cmd + z': letzte Eingabe rückgänig
+-   'shift cmd + z': letzte Eingabe wiederholen
+-   'cmd + f': Suchen
+-   'cmd + shift + f': Suchen / Ersetzen
+
+mehr unter <https://ace.c9.io/demo/keyboard_shortcuts.html> (das ist
+aber wirklich nur für die IT-Profis)
 
 > **Hinweis:** 'cmd + alt + f' bedeutet, dass die Tasten 'cmd', 'alt',
 > 'f' gleichzeitig gedrückt werden.
@@ -1217,8 +1333,6 @@ etwas hinzufügen möchtest.
 
 #### Anzeige von Fehlern im Texteditor
 
- 
-
 \index{Fehlermeldung}Zupfnoter zeigt im Texteditor über ein rotes
 Quadrat mit Kreuz links von den ABC-Notationszeilen oder den
 Zupfnoter-Einstellungen an, daß in der Zeile ein Fehler aufgetreten ist.
@@ -1245,8 +1359,6 @@ Umständen keine herkömmlichen Noten oder Unterlegnoten generiert werden.
 
 #### Darstellung der Konfigurationsparameter im Texteditor
 
- 
-
 Nach der ABC-Notation kommen die Zupfnoter-Einstellungen. Diese werden
 durch den Kommentar
 
@@ -1266,6 +1378,9 @@ vor.
 > die dierekte Bearbeitung im Texteditor nur noch in besonderen Fällen
 > notwendig ist (siehe Kapitel \ref{konfigurationsmasken}
 > [Konfigurationsmasken](#konfigurationsmasken)).
+>
+> Dazu muss die ABC-Datei mit einem Texteditor ausserhalb von Zupfnoter
+> geöffnet und bearbeitet werden.
 
 Über die Zupfnoter-Einstellungen wird das Design der Unterlegnoten
 verfeinert. So können zum Beispiel repeat lines (Wiederholungslinien)
@@ -1278,13 +1393,6 @@ Kapitel \ref{konfiguration} [Konfiguration](#konfiguration).
 > **Hinweis**: Wichtig ist, nach einer Änderung in der Menüleiste immer
 > auf auf `Rendern` (ausführen) zu drücken, damit die Unterlegnoten
 > aktualisiert werden.
-
-> **Hinweis**: Wenn man im Vorschaufenster Elemente mit der Maus
-> verschiebt wird diese Änderung sofort in den Konfigurationsparametern
-> im Textfenster gespeichert. Eine andere Ablage gibt es nicht. Daher
-> kann man mit "Undo" (`cmd/ctrl - Z`) im Texteditor solche Änderungen
-> auch wieder rückgängig machen. Das gilt auch für die Bearbeitung der
-> Konfigurationsparameter über die Bildschirmmasken.
 
 ### Editor für Liedtexte {#liedtexteditor}
 
@@ -1321,19 +1429,21 @@ eingestellten Auszug.
 > 3.  wenn auch der Auszug 0 keinen Wert enthält: der systeminterne
 >     Vorgabewert
 
-Dabei gibt es zwei Arten von Masken
+Dabei gibt es verschiedene Arten von Masken
 
--   vordefinierte Masken mit einem festen Aufbau. Diese zeigen
+-   **vordefinierte Masken** mit einem festen Aufbau. Diese zeigen
     Eingabefelder für Parameter auch dann, wenn sie im Musikstück noch
     nicht vorhanden sind. Wichtigstes Beispiel ist die Maske
-    "Grundeinstellungen"
--   dynamische Masken, welche nur die Parameter zeigen, die im
+    "Grundeinstellungen". Diese Masken verändern ihren Aufbau nicht.
+-   **dynamische Masken**, welche nur die Parameter zeigen, die im
     Musikstück auch wirklich vorhanden sind. Prominentestes Beispiel
-    hierfür ist die Maske "Liedtexte"
-
-    > **Hinweis**: Es kann durchaus sinnvoll sein, über das Menü
-    > "**Konfig. einfügen**" zusätzliche Parameter hinzuzufügen, während
-    > man in einer dynamischen Maske arbeitet.
+    hierfür ist die Maske "Liedtexte". Diese Maske verändern ihren
+    Aufbau, je nach dem, welche Paramter im Musikstück wirklich
+    vorhanden sind.
+-   **Auzugsbezogene Masken**: Diese Masken bearbeiten den aktuell
+    eingestellten Auszug. Dieser wird in der Maskenüberschrift links
+    angezeigt (z.B. `Grundeinstellungen [Auszug 2]`). Sie passen sich
+    an, wenn der aktuelle Auszug gewechselt wird.
 
 Da die Konfigurationsparameter an verschiedenen Stellen gesucht werden,
 muss auch das Einfügen / Löschen von Konfigurationsparametern über die
@@ -1384,14 +1494,14 @@ Für die Bedienung der Masken ist noch wichtig
     eines Parameters ein. Sie ist nur aktiv, wenn es für einen Parameter
     mehrere Instanzen geben kann (z.B. \index{Liedtexte}Liedtexte
     [lyrics.x], \index{Seitenbeschriftung}Seitenbeschriftung [notes.x])
--   Schaltfläche `Schnelleinstellungen`: Diese Taste öffnet ein Menü,
-    aus dem du für die aktuelle Maske eine Voreinstellung auswählen
-    kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination
-    von Parametern für einen bestimmten Fall (z.B. für ein "kompaktes
-    Layout"). Diese Schaltfläche ist nur für solche Masken aktiv, für
-    die es auch Voreinstellungen gibt.
+-   Schaltfläche `Schnelleinst.`: Diese Taste (Schnelleinstellungen)
+    öffnet ein Menü, aus dem du für die aktuelle Maske eine
+    Voreinstellung auswählen kannst. Eine solche Voreinstellung ist eine
+    sinnvolle Kombination von Parametern für einen bestimmten Fall (z.B.
+    für ein "kompaktes Layout"). Diese Schaltfläche ist nur für solche
+    Masken aktiv, für die es auch Voreinstellungen gibt.
 -   Feldeingabe mit der "TAB"-Taste bestätigen
--   `Rendern` nicht vergessen (**In der Maske drück erst TAB, dann geht
+-   `Rendern` nicht vergessen (**In der Maske drücke erst TAB, dann geht
     auch das "Rendern" ab**)
 
 ### Masken für Zupfnoter-spezifische Zusätze {#masken-fuer-zusaetze}
@@ -1403,6 +1513,11 @@ Taktstrich auf den sie sich beziehen. Beispiel für solche Zusätze sind
 
 -   Positionierung von Sprunglinien `"^@da cape@10" C` oder `"@@4" :|`
 -   Verschiebung von Noten nach links/rechts `"^>!" C`
+
+    **Hinweis**: diese Methode ist veraltet. Stattdessen verwende bitte
+    die über das Kontextmenü in der Harfenvorschau erreichbare
+    notenbezogene Konfiguration `notebound.nconf` bzw. `nshift`.
+
 -   Notenbeschriftung `"^!fine@1,1"`
 -   Sprungziele `"^:fine"`
 -   Verschiebemarken `[r: hugo]`
@@ -1425,12 +1540,55 @@ Es erscheint eine Maske nach folgendem Beispiel:
 
 > > ![](../ZAUX_Images/040-060_Maske-fuer-zusatz.jpg) 
 
+### Einfügen von Bildern zur Illustration des Notenblattes
+
+Zupfnoter kann Bilder in das Unterlegnotenblatt einfügen.
+
+> **Hinweis**: Bitte achte darauf dass die eingefügten Bilder insgesamt
+> nicht zu groß werden (getestet bis zu 600 kB). Sonst funktioniert ggf.
+> die Druckvorschau nicht mehr. Normalerweise hat man ein höchstens zwei
+> Bilder auf dem Blatt. Dann sollte diese Begrenzung kein Problem
+> darstellen. Man muss aber wissen, dass Lade - und Speichervorgänge
+> deutlich länger brauchen.
+
+Um Bilder zu verwenden geht man folgende Schritte:
+
+1.  Das Bild muss im "JPG" - Format vorliegen. Da Zupfnoter keine
+    Bildbearbeitungsfunktionen hat muss mit einem externen Programm das
+    Bild aufbereitet werden.
+
+2.  das Bild wird dann über `Datei / importieren` in den Zupfnoter
+    importiert.
+
+> **Hinweis**: Die Bilddatei kann auch in das Zupfnoter-Fenster
+> hineingezogen werden.
+
+3.  In der Konfigurationsmenü `Konfig bearbeiten / Bilder` können nun
+    die Bilder auf dem Blatt positioniert werden. Dabei kann man
+    Anzeige, Höhe und Position des Bildes angeben.
+
+    > **Hinweis**: Bitte lege alle Bilder zunächst im Auszug 0 an. Der
+    > Konfigurationseditor zeigt in den anderen Auszügen nur Einträge
+    > an, die auch im Auszug 0 vorhanden sind.
+
+    > ![Konfiguration der
+    > Bilder](../ZAUX_Images/040-044_Configuration-images.jpg) 
+
+    > **Hinweis**: Du kannst das Bild auch mit der Maus positionieren.
+
+    In dieser Konfigurationsmaske kann man oben im Abschnitt
+    `$ Ressourcen` auch sehen, welche Bilder bereits vorhenden sind.
+    Durch Klick auf den kleinen Papierkorb kannst du Bilder auch wieder
+    aus der Datei entfernen. Klick auf den Hilfe-Button zeigt eine
+    kleine Vorschau des Bildes.
+
 ## mit der Maus konfigurieren
 
 Einstellungen, welche die Position und Gestalt von Element im
 Unterlegnotenblatt betreffen, lassen sich auch mit der Maus vornehmen:
 
--   Positionierung von Texten (Titel, Legende, Beschriftung usw.)
+-   Positionierung von Texten und Bildern (Titel, Legende, Beschriftung
+    usw.)
 -   Anordnung von Sprunglinien
 -   Gestalt der Triolenbogen (Tuplet)
 -   Gestalt der Flußlinien (experimentell)
@@ -1464,11 +1622,11 @@ Für die grundsätzliche Bedienung gilt:
 > Harfennotenvorschau die entsprechende Konfiguration aufzurufen, zu
 > löschen und neu zu erstellen.
 
-### Texte verschieben
+### Texte und Bilder verschieben
 
 Du kannst Titel, Legende, Notenbeschriftungen, Blattbeschriftungen,
-Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts mit
-der Maus verschieben.
+Taktnummern, Zählhinweise, Variantenbezeichner, Bezeichner von Parts
+sowie Bilder mit der Maus verschieben.
 
 ### Sprunglinien verschieben
 
@@ -1479,6 +1637,13 @@ Linen rasten beim ziehen mit der Maus zwischen den Saiten ein.
 > Konfigurationsparameter ggf. auf mehrere Sprunglinien. Bitte drücke
 > daher auf `Render` um das Endergebnis zu sehen. Danach sind auch die
 > Pfeile an den Sprunglinien wieder korrekt.
+
+> **Hinweis**: man kann Sprunglinien unterdrücken, indem man im
+> Kontext-Menü Kontextmenü **`Edit config`** wählt, und dann den
+> paramteter auf `0` stellt. Die linie verschwindet dann, und kann nur
+> schwer wieder sichtbar gemacht werden: `Konfig.Bearb / Notenbeezogen`,
+> dann den Parameter suchen (`p_begin`, `p_end`, `p_follow`, `p_repeat`)
+> und den Wert auf ungleich 0 setzen.
 
 ### Triolenbogen gestalten
 
@@ -1505,7 +1670,7 @@ zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
 > aufrufen und den Kontrollpunkt so ändern, dass er wieder sichtbar
 > wird.
 
-## Flußlinien gestalten {#flowconf}
+### Flußlinien gestalten {#flowconf}
 
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
 die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
@@ -1514,7 +1679,7 @@ Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die
 Triolenbögen.
 
 Die Bearbeitungsmöglichkeiten müssen in der [Konsole](#konsole-fenster)
-eingeschaltet werden.
+bzw. im Menü `Extras` eingeschaltet werden.
 
 > **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
 > wird Zupfnoter deutlich langsamer.
@@ -1619,6 +1784,17 @@ Daher ist folgendes Reihenfolge zu empfehlen:
     -   **2 Tenor Bass**: Stimmen 3,4; Auszugsnummer -B
     -   **3 Melodie**: Stimme 1; Auszugsnummer -M
 
+    > **Hinweis:** Bei Verwendung von Platzhalten in den
+    > Seitenbeschriftungen ist es sinnvoll die Auszugsnummer im
+    > Parameter "extract.\*.filenamepart" einzutragen. Der Eintrag kann
+    > über den Plathalter `{{extract_filename}}` dann die
+    > Seitenbeschriftungen eingetragen werden. Der Plathalter
+    > `{{printed_extracts}}` entnimmt die auszugsbezeichnungen ebenfalls
+    > aus "extract.\*.filenamepart".
+    >
+    > Auf diese Weise wird erreicht, dass die Filenamen der Auzüge und
+    > die Blattbeschrifungen für die Auszüge konsistent sind.
+
 2.  **Anlegen der Auszüge**: Ausgehend von der Planung sollte unter dem
     Menü **`Konfig. bearbeiten / Auszugsbeschriftung`** alle geplanten
     Auszüge angelegt werden. Dabei sollte "Titel", "Auszugsnummer",
@@ -1670,7 +1846,8 @@ Daher ist folgendes Reihenfolge zu empfehlen:
 Die flexible Konfiguration von Zupfnoter erlaubt die Anpassung der
 Auasgabe auf viele verschiedene Instrumente. Allerdings führt hier meist
 eine Kombination verschiedener Parameter zu Ziel. Zur Vereinfachung sind
-diese Kombinationen für gebräuchliche Instrumente hinterlegt.
+diese Kombinationen für gebräuchliche Instrumente als
+"Schnelleinstellung" hinterlegt.
 
 Wähle das Menü **"`Konfig. bearbeiten > Instrument spez.`"**. Es
 erscheint eine Maske mit den Parametern deren Zusammenspiel die Ausgabe
@@ -1684,9 +1861,17 @@ Instrument auswählen.
 > **Hinweis**: Bitte beachte, dass es auch einen Parameter "Instrument"
 > gibt. Dieser ist nicht zu verwechseln mit der Schnelleinstellung, auch
 > wenn er zum Teil dieselben Bezeichnungen verwendet. Der Parameter
-> `Instrument` veränderte Programminterne Abläufe welche sich nicht über
-> Konfiguration ausdrücken lässt (z.b. diatonische Stimmung bei
-> Saitenspiel)
+> `Instrument` veränderte programminterne Abläufe welche sich nicht über
+> Konfiguration ausdrücken lassen (z.b. diatonische Stimmung bei
+> Saitenspiel bzw. OKON-Harfe)
+
+> **Hinweis**: Für Tischharfen mit Halbton-Klappen (z.B. OKON-Harfe)
+> muss man zuächst die Schnelleinstellung für das Instrument aufrufen.
+> Mit dem Paramter "Instrument" wählt man dann die Tonart aus, auf
+> welche die Harfe eingestellt werden soll. Dann kann Zupfnoter die
+> Tonhöhen den entsprechenden Saiten zuordnen und auch am unteren Rand
+> anzeigen, welche Klappen aktiviert (bzw. welche Saiten einen Halbton
+> hochgestimmt) werden sollen.
 
 ## Sonstige Hinweise
 
@@ -1697,13 +1882,17 @@ In seltenen Fällen kann es vorkommen, dass die ABC-Noten oder die
 Konfiguration so fehlerhaft ist, dass Zupfnoter beim Start sofort in den
 gleichen Fehler läuft und keine Bearbeitung mehr möglich ist.
 
-In diesem Fall kannst du beim Aufruf von Zupfnoter /?debug anhängen,
+In diesem Fall kannst du beim Aufruf von Zupfnoter `/?debug` anhängen,
 z.B.
 
     https://zupfnoter.weichel21.de/?debug
 
 Dann startet Zupfnoter, versucht aber nicht gleich ein "Rendern" . Damit
 kannst dann die Eingaben korrigieren bis "Rendern" wieder funktioniert.
+
+> **Hinweis**: Zupfnoter erkennt selbständig, dass beim letzten Rendern
+> ein Problem aufgetreten war und startet dann ohne automatisches
+> Rendern. Daher sollte diese Schalter nicht mehr notwendig sein.
 
 ### Transponieren
 
@@ -1753,6 +1942,29 @@ is äquivalent zu
     K:G
     GAB
 
+### wechselnde Taktlängen
+
+Es gibt Stück, mit wechslenden Taktlängen. Bei einzelnen Takten kanns du
+dasd mit einer eingebetteten Kopfnzeile machen `[M:3/2]`. Bei häufigen
+Taktwechwseln ist das aber recht umständlich. In diesem Fall kannst du
+z.B. die Kopfzeile so angeben:
+
+    M: 2/2 3/2=2/2
+
+Damit werden alle im Stück auftretenden Taktlängen angegeben. Nach dem
+Gleichheitszeichen kann die kürzeste Taktlänge angegeben werden. Die
+Notenvorschau schreibt nur dann eine Taktnummer, wenn der Takt
+ausgefüllt ist. Mit der Angabe der kürzesten Taktlänge bekommst du an
+allen Takten eine Nummer.
+
+### Variante Enden mitten im Takt
+
+Wenn eine Variation mitten in einem Takt beginnen soll, dann muss als
+"Taktstrich" eine rechte eckige Klammer (z.b. `]1` ) geschrieben werden.
+Zupfnoter stellt dann weder in der Notenvorschau noch in den
+Unterlegnoten einen Taktstrich dar. Auch die Zählung der Takte kommt
+nicht durcheinander.
+
 ### Wenn Takte nicht synchron sind
 
 Zupfnoter prüft nicht, ob die Takte in allen Stimmen synchron sind. Wenn
@@ -1780,6 +1992,30 @@ auszuschalten dient die Kopfzeile
 > **Hinweis** Bei zu kurzen Takten erscheint die Taktnummer nicht
 > korrekt.
 
+### Änderung der Takte im Stück
+
+Die ABC-Notation erlaubt es, in einem Stück die Takte zu ändern. Hierfür
+empfiehlt sich folgende Vorgehensweise:
+
+1.  in der `M:` - Kopfzeile werden alle Taktarten aufgeführt, die im
+    Stük vorkommen. Die Start-Taktart wird als erstes geschrieben.
+
+        M:4/4 3/4 =4/4
+
+Die Angabe `=4/4` wird zur Berechung des ersten Taktstriches
+herangezogen
+
+2.  in der Stimme kann nun eine eingebettete Kopfzeile zur
+    Taktumschaltung eingefügt werden. Soll die Taktänderung auch im
+    Blatt erscheinen, dann muss sie als notenbezogene Anmerkung
+    hinzugefügt werden.
+
+        M:3/4] "^!Takt: 3/4" f
+
+> **Hinweis**: Die manuelle Erzeugung der notenbezogenen Anmerkung zum
+> Taktwechsel ist flexibler als eine eventuelle Automatik. Daher bietet
+> Zupfnoter diese Automatik nicht an.
+
 ### Mehrere Stimmen in ABC-Notation {#mehrere-Stimmen-in-abc}
 
 Da das im Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt
@@ -1798,7 +2034,7 @@ Aufbau
 
 Darin ist
 
--   `<ID>` eine Identifikation der Stimme, sie wird inder `%%score` -
+-   `<ID>` eine Identifikation der Stimme, sie wird in der `%%score` -
     Anweisung referenziert. Es empfiehlt sich hier einfach ganze Zahlen
     zu verwenden un die Stimme so durchzunumerieren.
 -   `[clef=]<clef name>` optionale Angabe des Notenschlüssels. Name ist
@@ -1834,6 +2070,52 @@ relevante Beispiele
 > Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das
 > Verhalten noch nicht ausgetestet ist.
 
+### Bearbeiten von Takten in allen Stimmen
+
+Wenn man im das gesamte Musiktück Takte einfügen bzw. löschen will, ist
+es notwendig, an mehreren Stellen im ABC-Code zu editieren.
+
+Das ist eigentlich der Moment in dem man das Stück in ein
+Notensatzprogramm z.B. Musescore übernimmt, bearbeitet und dann in den
+Zupfnoter zurückbringt.
+
+Zupfnoter kann diesen Anwendungfall auch abdecken:
+
+1.  wähle einen Abchnitt in der ersten Stimme
+2.  Benutze das Menü "Bearbeiten / Abschnitt in allen Stimmen auswählen"
+3.  Im ABC-Fenster siehst du nun, dass mehrere, nicht zusammen hängende
+    Abschnitte selektiert sind.
+
+    ![Auswahl in mehreren
+    Stimmen](../ZAUX_Images/040-055_select-multiple-measures.jpg) 
+
+4.  mit der Taste "Löschen" kannst du nu die gesamte Auswahl löschen.
+    Damit werden die ausgewählten Takte in allen Stimmen gelöscht.
+5.  mit der Taste "\<-" (Pfeiltaste nach links) kannst du die
+    Schreibmarke an den Anfang der Auswahl stellen und weitere Takte
+    eingeben.
+
+    > **Hinweis:** Es ist sinnvoll, hier zunächst Takte mit ganzen Noten
+    > einzugeben. Danach lassen sich neuen Takten in den einzelnen
+    > Stimmen bearbeiten.
+
+> **Hinweis:** das Verfahren ist etwas fragil und solte mit
+> entsprechender Vorsicht angewandt werden
+>
+> 1.  Das Verfahren funktioniert nur, jede Stimme in einem eigenen Block
+>     (mit genau einem "V:" pro Stimme) angegeben wird.
+> 2.  Das Verfahren basiert auf dem Zeitbezug der Noten. Dabei wird ein
+>     Taktstrich der folgenden Note zugeordnet. Wenn also die Auswahl
+>     mit einem Taktstich endet, dann wird die folgende Note in die
+>     Auswahl mit einbezogen.
+> 3.  Die Grenze der ursprünglichen Auswahl muss in allen Stimmen auch
+>     vorhanden sein. Wird z.B. eine **viertel** Note ausgewählt, in
+>     einer anderen Stimme fällt deren Ende aber in eine **halbe Note**,
+>     dann ist die Auswahl in den Stimmen nicht zeitsynchron und es kann
+>     zu Fehlern kommen.
+> 4.  Das Verfahren erfordert, dass die Harfennoten aktuell sind (d.h.
+>     seit dem letzten Rendern keine Bearbeitung mehr gemacht wurde),
+
 ### Wenn die vertikale Anordnung optimiert werden soll
 
 Zupfnoter errechnet die vertikale Anordnung der Noten selbständig und
@@ -1852,8 +2134,7 @@ sollten in folgender Reihenfolge ausgeführt werden.
     Synchronisationslinien mehr als sie helfen.
 
 3.  im Konfigurationsmenü `Layout` mit den Schnelleinstellungen
-    `layout` `kompakt` bzw. `Packer` `kompakt` die beste Einstellung
-    suchen
+    `Noten klein` bzw. `Packer kompakt` die beste Einstellung suchen
 
 4.  ggf. gebundene Noten zu einer Note zusammenfassen
 
@@ -1864,6 +2145,94 @@ sollten in folgender Reihenfolge ausgeführt werden.
 
 6.  Die Flußlinie gestalten (siehe Kapitel \ref{flowconf} [Flußlinien
     gestalten](#flowconf))
+
+7.  Positionierung von Taktnummern und Zählmarken optimieren
+
+### Positionierung von Taktnummern und Zählmarken optimieren {#barnumberautopos}
+
+> **Hinweis:** die feste, d.h. nicht automatisierte Positionierung kann
+> man zwar in der Konfiguration noch einstellen. Diese Möglichkeit führt
+> jedoch in der Praxis nicht zu befriedigenden Ergebnissen und wird also
+> bald entfernt.
+
+Die automatische Positionierung der Taktnummern bzw. Zählmarken
+geschieht wie folgt:
+
+1.  Taktnummern stehen am Anfang der Note in Spielrichtung (also oben
+    bei spiel von oben nach unten)
+
+2.  Zählmarken stehen am Ende der Noten in Spielrichtung (also unten bei
+    Spiel von oben nach unten)
+
+3.  die horziontale Position errechnet sich aus dem Verlauf der
+    Flussinien. Man kann aber über das Kontextmenü für jede Taktnummer /
+    Zählmarke einstellen, ob sie links oder rechts von der Note
+    platziert wird.
+
+4.  Man kann einstellen, ob die Taktnummern / Zählmarken bezogen auf die
+    **Notenmitte oder den Notenrand** positioniert werden (Kapitel
+    \ref{extract.0.barnumbers.apanchor} [`extract.0.barnumbers.apanchor`](#extract.0.barnumbers.apanchor)
+    bzw.
+    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbasera)
+    )
+
+5.  Man kann einstellen, wie weit entfgernt Taktnummern / Zählmarken
+    bezogen auf die **Notenmitte oder den Notenrand** positioniert
+    werden (Kapitel
+    \ref{extract.0.barnumbers.apbase} [`extract.0.barnumbers.apbase`](#extract.0.barnumbers.apbase)
+    bzw.
+    \ref{extract.0.barnumbers.cpbase} [`extract.0.barnumbers.apbase`](#extract.0.countnotes.apbase)
+    )
+
+> **Hinweis**: Die Positionierung der Taktnummern / Zählmarken kann für
+> jede einzeln über die rechte Maustaste beeinflusst werden.
+>
+> -   `Konfig bearb.` Da kann man einige Parameter in der Notenbezogenen
+>     Konfiguration einstellen
+> -   `... rechts` Nummer wird rechts von der Note geschrieben. Sie wird
+>     dadurch linksbündig.
+> -   `... links` Nummer wird links von der Note geschrieben. Sie wird
+>     dadurch rechtsbündig.
+> -   verschieben mit der Maus
+>
+> Zunächst sollte man versuchen, die Nummer auf die andere Seite der
+> Note zu schieben. Damit ergibt sich immer noch eine exakte Ausrichtung
+> und ein bessers Notenbild. Erst dann ist eine manuelle Positionierung
+> mit der Maus sinnvoll.
+
+> **Hinweis**: Auch beim manuellen Verschieben wird die Anodnung der
+> Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
+> (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
+> Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
+> werden.
+
+### Warnung: "Beschriftung zu dicht beieinander"
+
+Diese Warnungen sind experimentell. Sie kommen nur wenn
+`loglevel warning` eingestellt ist.
+
+> **Hinweis** Noch werden nicht alle Kollisionen sicher erkannt. Es kann
+> auch sein dass Kollisionen gemeldet werden, die gerade noch gehen
+> würden. Das liegt daran dass Zupfnoter die Größe der Texte nicht genau
+> abschätzen kann.
+
+Wenn man eine solche Warnung beseitigen will, geht man am besten
+folgende Schritte:
+
+1.  Situation feststellen - dazu selektiert man im Eingabefenster die
+    Note, die rot untertrichen ist.
+2.  In der Unterlegnotenvorschau wirde die betroffene Note rot
+    hervorgehoben.
+3.  Dann sieht man auch schon die Kollision. Zunächst sollte man
+    versuchen, über das Kontextmenü die Beschreiftung auf die andere
+    Seite der Note zu schieben. Dann kann man dann durch Verschieben von
+    einer der beteiligten Beschriftungen mit der Maus bereinigen.
+
+> **Hinweis:** Man kann zunächst versuchen die Basis für die
+> Positionierung von Taktnummern / Zählmarken zu verändern. Manchmal
+> lässt sich dadurch die Anzahl der Warnungen zu reduzieren (siehe
+> Kapitel \ref{barnumberautopos} [Positionierung von Taktnummern und
+> Zählmarken optimieren](#barnumberautopos))
 
 ### feste Leerzeichen in Texten
 
@@ -1902,7 +2271,7 @@ Zupfnoter verwendet von sich aus die folgenden Einstellungen:
     I:linewarn 0
     I:staffnonote 2
 
-### Arbeiten mit Dateivorlagen {#filetemplates}
+### Arbeiten mit Dateivorlagen (Templates) {#filetemplates}
 
 Erstellt man über das Menü "Neu" ein neues Stück, fügt Zupfnoter eine
 Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges
@@ -1919,8 +2288,9 @@ Zupfnoter bietet eine experimentelle Unterstützung über die
 [Konsole](#konsole-fenster). In folgenden Schritten kann ein eigene
 Vorlage eingerichtet werden:
 
-1.  `edittemplate`: Damit wird das aktuelle Template in den Editor
+1.  `edittemplate`: Damit wird das aktuell aktive Template in den Editor
     geladen und kann angepasst werden.
+
 2.  `editconf template`: Damit werde die Template-spezifischen
     Eigenschaften (Dateiname und Titel) eingstellt.
 
@@ -1932,21 +2302,20 @@ Vorlage eingerichtet werden:
 
 3.  `settemplate`: Damit wird der aktuelle Editor-Inhalt als Template
     hinterlegt
+
 4.  Menüpunkt 'Speichern': Damit wird der Editorinhalt gespeichert.
 
     > **Hinweis**: Dabei ist es wichtig, dass die Kopfzeile `F:` einen
     > Platzhalter - Zeichen `{{` enthält. Dadurch wird im
     > "Template_modus" gespeichert, d.h. der Dateiname wird nicht aus
-    > der `F:` - Zeile entnommen sondern aus `template.filebase`
+    > der `F:` - Zeile entnommen sondern aus dem Konfigurationsparameter
+    > `template.filebase` entnommen.
 
-    > **Hinweis** Beim Bearbeiten des Templates kommt immer wieder die
-    > Meldung wie
-    >
-    > `"{{song_id}}_{{filename}}": Fehlerhafte Zeichen im Filenamen`
-    >
-    > Das kommt daher dass die Platzhalter in der Dateivorlage ja nicht
-    > aufgelöst sind, daher wird die F: - Kopfzeile als fehlerhaft
-    > markiert.
+> **Hinweis**: Diese Schritte sind auch im Menü `Extras` erreichbar
+
+> **Hinweis**: Die Konfigurationsparameter `template.filebase` werden
+> auch in die neuen Stücke kopiert, haben dort aber keine Wirkung mehr.
+> Sie sind jedoch als Dokumentation hilfreich.
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der
@@ -1961,6 +2330,11 @@ sind verfügbar:
 
 `{{song_title}}`
 :   Das ist der Titel des Stückes.
+
+> **Hinweis:** In den Seitenbeschrifungen gibt es weitere Platzhalter,
+> welche jedoch erst bei der Erzeugung der Unterlegnoten aufgelöst
+> werden. Die möglichen Platzhalter werden in der Hilfe bei den
+> Konfigurationsparametern angezeigt.
 
 ### Parameter in der Zupfnoter-URL
 

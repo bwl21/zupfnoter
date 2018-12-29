@@ -7,22 +7,27 @@ require 'net/http'
 require 'pry'
 require 'neatjson.rb'
 
-HTMLTEMPLATE = "../index_opal.html.erb"
-PACKAGE_JSON = "../package.json"
-ZUPFNOTER_JS = "build.js"
-OUTFOLDER    = "../deploy_files"
-INDEXFILE    = "index.html"
-LOCALEPATH   = "../public/locale/"
+HTMLTEMPLATE         = "../index_opal.html.erb"
+PACKAGE_JSON         = "../package.json"
+ZUPFNOTER_JS         = "build.js"
+ZNWORKER_JS          = "../public/znworker.js"
+ZUPFNOTER_CLI_JS     = "zupfnoter-cli.js"
+ZUPFNOTER_CLI_MIN_JS = "zupfnoter-cli.min.js"
+OUTFOLDER            = "../deploy_files"
+LOCALEPATH           = "../public/locale/"
+NINJAEXEC            = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
+INDEXFILE            = "index.html"
+
 
 GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
 
-VENDORFOLDER ="../vendor"
+VENDORFOLDER = "../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
 desc "update public/locale"
 task :updateLocales do
   puts "updating locales"
-  locales = Dir["#{LOCALEPATH}??-??.json"].map {|f| f.split(LOCALEPATH).last}
+  locales = Dir["#{LOCALEPATH}??-??.json"].map { |f| f.split(LOCALEPATH).last }
   locales.each do |locale|
     w2uilocalefile    = File.open("#{VENDORFOLDER}/w2ui/dist/#{locale}")
     znlocalefile      = File.open("localization/zupfnoter_#{locale}")
@@ -34,29 +39,24 @@ task :updateLocales do
 
     w2uilocales['phrases'].merge!(znlocales['phrases'])
     w2uilocales['phrases'].merge!(abc2svglocales['phrases'])
-    File.open("#{LOCALEPATH}/#{locale}", "w") {|f| f.puts JSON.neat_generate(w2uilocales, {wrap: 180, after_colon: 1})}
-  end
-end
-
-desc "Update abc2svg from Jean-Francois' website"
-task :updateAbc2svg do
-  abc2svg_file = "abc2svg-1.js"
-  sources      = [abc2svg_file, "json-1.js", "midi-1.js"]
-  abc2svg_js   = Net::HTTP.get(URI("http://moinejf.free.fr/js/#{abc2svg_file}"))
-  File.open("#{VENDORFOLDER}/#{abc2svg_file}", "w") do |f|
-    sources.each do |s|
-      f.puts Net::HTTP.get(URI("http://moinejf.free.fr/js/#{s}"))
-    end
+    File.open("#{LOCALEPATH}/#{locale}", "w") { |f| f.puts JSON.neat_generate(w2uilocales, {wrap: 180, after_colon: 1}) }
   end
 end
 
 desc "Update abc2svg from git clone"
-task :updateAbc2svgDev do
-  abc2svgrepo = "../../../../200_zupfnoter_external_components/abc2svg"
+task :updateAbc2svg do
+  abc2svgrepo  = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_file = "abc2svg-1.js"
-  sources      = [abc2svg_file, "json-1.js", "midi-1.js"]
+  sources      = [abc2svg_file, "json-1.js", "setmidi-1.js", "play-1.js"]
+  # ignore some modules (not working, not relevant for zupfnoter audience)
+  # permap does not work in zupfnoter
+  # ps-interpreter will not be used by zupfnoter audience
+  ignore      = ['wps-1.js', 'perc-1.js']
+  temp_ignore = ['psvg-1.jsx']
+  sources     += Dir["#{abc2svgrepo}/modules/*.js"].map { |f| File.basename(f, '.js') + "-1.js" } - temp_ignore - ignore # add failing modules to [] to ignore them
+
   cd abc2svgrepo do
-    sources.each {|f| sh  " rm #{f} ; NOMIN=1 ./ninja #{f}"}
+    sources.each { |f| sh " rm #{f} ; NOMIN=1 #{NINJAEXEC} #{f}" }
   end
 
   ["de", "en"].each do |lang|
@@ -78,8 +78,26 @@ task :updateAbc2svgDev do
 
 end
 
-desc "Build our app to #{ZUPFNOTER_JS}"
-task :build => [:buildConfigDoc, :updateLocales] do
+desc "Build Worker"
+task :build_worker do
+  git_describe
+
+  File.open(ZNWORKER_JS, "w+") do |out|
+    Opal.append_path "."
+    Opal.append_path "../vendor"
+    Opal.use_gem "vector2d"
+
+    compiled_js = Opal::Builder::build("znworker").to_s
+
+    ## this patches the worker according to the discussion in
+    compiled_js = compiled_js.gsub(%Q{Opal.loaded(["corelib/runtime"]);}, %Q{var Opal=this.Opal;Opal.loaded(["corelib/runtime"]);})
+    out.puts(compiled_js)
+  end
+end
+
+desc "Build zupfnoter to #{ZUPFNOTER_JS}"
+task :build => [:buildConfigDoc, :updateLocales, :build_worker] do
+  git_describe
   #env = Sprockets::Environment.new
   Opal.append_path "."
   Opal.append_path "../vendor"
@@ -95,7 +113,7 @@ task :build => [:buildConfigDoc, :updateLocales] do
 
   Dir.glob "../public/*.scss" do |f|
     cmd = "sass #{f} > #{File.dirname(f)}/#{File.basename(f, ".scss")}.css"
-    puts sh cmd
+    puts sh cmd  # todo: improve error messages
   end
 end
 
@@ -117,36 +135,57 @@ end
 
 desc "start the development server"
 task :server do
+  git_describe
   cd "../" do
     sh "bundle exec rackup"
   end
 end
 
+desc "start deployment server"
+task :servedeploy do
+  cd "#{OUTFOLDER}/webserver/" do
+    # see http://www.benjaminoakes.com/2013/09/13/ruby-simple-http-server-minimalist-rake/
+    sh "ruby -run -e httpd . -p 9292"
+  end
+end
+
+def git_describe
+  v           = File.readlines("version.rb").map { |l| l.strip }
+  git_version = %x{git describe}.strip.gsub(/release\/|"xxx"\//, "")
+  v[0]        = %Q{VERSION = "#{git_version}"}
+  File.open("version-prod.rb", "w") do |f|
+    f.puts "## do not edit this file"
+    f.puts "# it is crated by Rakefile based on version.rb"
+    f.puts ""
+    f.puts v.join("\n")
+  end
+end
 
 desc "Build a distribution for the server"
-task :deploy => [:build] do
+task :deploy => [:build, :build_worker, :buildUserManual] do
 
 
   # prepare all requested folders
   # todo:this is not dry - see buildDesktop
-  ["public/icons", "public/demos", "public/locale",
+  ["public/icons", "public/demos", "public/locale", "public/soundfont/zupfnoter",
    "vendor/ace", "vendor/ace/snippets", "vendor/w2ui", "vendor/w2ui/dist",
    "vendor/font-awesome/css", "vendor/font-awesome/fonts",
   ].each do |d|
     mkdir_p("#{OUTFOLDER}/webserver/#{d}")
   end
 
-  Dir["../vendor/*.*"].each {|f|
+  Dir["../vendor/*.*"].each { |f|
     cp f, "#{OUTFOLDER}/webserver/vendor/#{f}" unless File.directory?(f)
   }
 
   sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS} #{ZUPFNOTER_JS}"
+  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{OUTFOLDER}/webserver/public/#{ZNWORKER_JS} #{ZNWORKER_JS}"
   #cp ZUPFNOTER_JS, "#{OUTFOLDER}/webserver/public/#{ZUPFNOTER_JS}"
 
 
-  Dir['../vendor/font-awesome/css/*.*', '../vendor/font-awesome/fonts/*.*'].each {|f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}"}
+  Dir['../vendor/font-awesome/css/*.*', '../vendor/font-awesome/fonts/*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
-  ['w2ui.min.css', 'w2ui.min.js'].each {|f| cp "../vendor/w2ui/dist/#{f}", "#{OUTFOLDER}/webserver/vendor/w2ui/dist/#{f}"}
+  ['w2ui.min.css', 'w2ui.min.js'].each { |f| cp "../vendor/w2ui/dist/#{f}", "#{OUTFOLDER}/webserver/vendor/w2ui/dist/#{f}" }
 
 
   cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
@@ -164,6 +203,10 @@ task :deploy => [:build] do
     cp f, "#{OUTFOLDER}/webserver/public/#{File.basename(f)}"
   end
 
+  Dir["../public/soundfont/zupfnoter/*"].each do |f|
+    cp f, "#{OUTFOLDER}/webserver/public/soundfont/zupfnoter/#{File.basename(f)}"
+  end
+
   cp "../vendor/ace/ace.js", "#{OUTFOLDER}/webserver/vendor/ace/ace.js"
   cp "../vendor/ace/mode-abc.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-abc.js"
   cp "../vendor/ace/mode-markdown.js", "#{OUTFOLDER}/webserver/vendor/ace/mode-markdown.js"
@@ -173,10 +216,10 @@ task :deploy => [:build] do
   cp("../vendor/ace/snippets/abc.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/abc.js")
   cp("../vendor/ace/snippets/markdown.js", "#{OUTFOLDER}/webserver/vendor/ace/snippets/markdown.js")
   # cp("../vendor/abc2svg-1.js", "#{OUTFOLDER}/vendor/abc2svg-1.js")
-  Dir['../vendor/ace/ext-*.*'].each {|f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}"}
+  Dir['../vendor/ace/ext-*.*'].each { |f| cp f, "#{OUTFOLDER}/webserver/vendor/#{f.split('vendor/').last}" }
 
   def javascript_include_tag(filename)
-    "<script src = \"public/#{ZUPFNOTER_JS}?#{GITSHA}\" type=\"application/javascript\"></script>"
+    %Q{<script src = "public/#{ZUPFNOTER_JS}?#{GITSHA}" type="application/javascript"></script>}
   end
 
   def javascript_include_analytics()
@@ -195,100 +238,46 @@ task :deploy => [:build] do
 end
 
 
-desc "build the desktop application"
-task :buildDesktop => [:build] do
-  desktop_folder = "#{OUTFOLDER}/desktop"
-  nodewebkit_app = "#{OUTFOLDER}/node-webkit.app"
-  zupfnoter_app  = "#{desktop_folder}/zupfnoter.app"
-  desktop_stage  = "#{desktop_folder}/zupfnoter.nw.stage"
+desc "build the cli application"
+task :build_cli do #=> [:build] do
 
-  rm_rf(desktop_folder)
-  mkdir_p("#{desktop_stage}/public")
-  mkdir_p("#{desktop_stage}/public/locale")
-  mkdir_p("#{desktop_stage}/vendor")
-  mkdir_p("#{desktop_stage}/vendor/ace")
-  mkdir_p("#{desktop_stage}/vendor/w2ui/dist")
+  #env = Sprockets::Environment.new
+  Opal.append_path "."
+  Opal.append_path "../vendor"
+  Opal.use_gem "vector2d"
+
+  #
+  # you nedd npm install
+  # blob
+  # encoding
+  # browserify
+  # nexe
+  # jspdf
+  # uglify-js
+  # ajv
 
 
-  # todo:this is not dry - see buildDesktop
-  ["vendor/ace", "vendor/ace/snippets", "public/icons", "vendor/w2ui", "vendor/w2ui/dist",
-   "vendor/font-awesome/css", "vendor/font-awesome/fonts"
-  ].each do |d|
-    puts "making #{d}"
-    mkdir_p("#{desktop_stage}/#{d}")
+  sh 'npm install'
+
+  File.open(ZUPFNOTER_CLI_JS, "w+") do |out|
+    #   out << env["application"].to_s
+    #   out << Opal::Processor.load_asset_code(env, 'application')
+    polyfill = File.read("polyfill-cil_js.js")
+    out.puts(polyfill + Opal::Builder::build("application-cli").to_s)
   end
 
-  nw_filename                     = "#{desktop_folder}/zupfnoter.nw"
-  index_filename                  = "#{desktop_stage}/index.html"
-  zupfnoter_compressedjs_filename = "#{desktop_stage}/public/#{ZUPFNOTER_JS}"
+  # now pack into one bundle see
+  # https://stackoverflow.com/questions/14314038/how-do-i-deploy-node-js-applications-as-a-single-executable-file
 
-  def javascript_include_tag(filename)
-    "<script src = \"public/#{ZUPFNOTER_JS}\" type=\"application/javascript\"></script>"
-  end
-
-  def javascript_include_analytics()
-    result = "<!-- no analytics included -->"
-    result
-  end
-
-  File.open(index_filename, "w") do |f|
-    a = File.open(HTMLTEMPLATE).read
-    f.puts ERB.new(a).result
-  end
-
-  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{zupfnoter_compressedjs_filename} #{ZUPFNOTER_JS}"
-  #copy(ZUPFNOTER_JS, zupfnoter_compressedjs_filename)
-
-  Dir["../vendor/*.*"].each {|f|
-    copy(f, "#{desktop_stage}/vendor/#{f}")
-  }
-
-  Dir['../vendor/font-awesome/css/*.*', '../vendor/font-awesome/fonts/*.*'].each {|f| cp f, "#{desktop_stage}/vendor/#{f.split('vendor/').last}"}
-
-  ['w2ui.min.css', 'w2ui.min.js'].each {|f| cp "../vendor/w2ui/dist/#{f}", "#{desktop_stage}/vendor/w2ui/dist/#{f}"}
-
-  Dir["../public/locale/*.*"].each {|f|
-    copy(f, "#{desktop_stage}/public/locale/")
-  }
-
-  ["vendor/ace", "vendor/ace/snippets", "public/icons"].each do |d|
-    mkdir_p("#{desktop_stage}/#{d}")
-  end
-
-  #todo improve handling of files
-  cp("../public/index.css", "#{desktop_stage}/public/index.css")
-  cp("../vendor/ace/ace.js", "#{desktop_stage}/vendor/ace/ace.js")
-  cp("../vendor/ace/mode-abc.js", "#{desktop_stage}/vendor/ace/mode-abc.js")
-  cp("../vendor/ace/ext-language_tools.js", "#{desktop_stage}/vendor/ace/ext-language_tools.js")
-  cp "../vendor/ace/theme-abc.js", "#{desktop_stage}/vendor/ace/theme-abc.js"
-  cp "../vendor/ace/snippets/text.js", "#{desktop_stage}/vendor/ace/snippets/text.js"
-  cp("../vendor/ace/snippets/abc.js", "#{desktop_stage}/vendor/ace/snippets/abc.js")
-  cp("../vendor/abc2svg-1.js", "#{desktop_stage}/vendor/abc2svg-1.js")
-  cp("../public/icons/favicon.gif", "#{desktop_stage}/public/icons/favicon.gif")
-
-  cp(PACKAGE_JSON, "#{desktop_stage}/package.json")
-
-  cd desktop_stage do
-    sh "zip -r ../zupfnoter.nw *"
-  end
-
-  cp_r(nodewebkit_app, zupfnoter_app)
-  cp("#{desktop_folder}/zupfnoter.nw", "#{zupfnoter_app}/Contents/Resources/App.nw")
-
-  cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-ia32" do
-    sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
-  end
-
-  cd "#{OUTFOLDER}/node-webkit-v0.11.1-win-x64" do
-    sh "cat nw.exe ../desktop/zupfnoter.nw > zupfnoter.exe"
-  end
-  #nw_file.add "../public/icons/favicon.gif", "#{OUTFOLDER}/webserver/public/icons/favicon.gif"
+  cmd = "browserify --node --dg false #{ZUPFNOTER_CLI_JS} -o #{ZUPFNOTER_CLI_JS}"
+  sh cmd
+  sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{ZUPFNOTER_CLI_MIN_JS} #{ZUPFNOTER_CLI_JS}"
 end
 
 desc "create user manual"
-task :buildUserManual do
+task :buildUserManual => [:build] do
 
-  require "#{File.dirname(__FILE__)}/version.rb"
+  require "#{File.dirname(__FILE__)}/version-prod.rb"
   File.open("../../UD_Zupfnoter-Handbuch/000_UD-Zupfnoter-Version.md", "w") do |f|
     f.puts (%Q{
 Version #{VERSION}
@@ -308,4 +297,22 @@ task :buildConfigDoc do
   sh 'wortsammler -bi localization/help_de-de.md'
   sh 'ruby conf_doc_source.rb'
   sh 'wortsammler -bi ../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md'
+end
+
+
+desc "compile zupfnoter soundfonts"
+task :buildSoundfonts do
+  Dir["../public/soundfont/zupfnoter/*.js"].each { |f| rm f }
+  sources = Dir["../sf2_sources/*.sf2"].reverse
+  i       = 0
+  sources.each do |sf|
+    outnumber = File.basename(sf).split("_").first
+    sfbase64  = Base64.encode64(File.read(sf)).split("\n").join("\\\n")
+    File.open("../public/soundfont/zupfnoter/#{outnumber}.js", "w") do |outfile|
+      outfile.puts (%Q{//ABC2SVG soundfont prepared for Zupfnoter
+//created #{Time.now} from #{sf} by zupfnoter rake
+abcsf2[#{outnumber}]='\\
+      #{sfbase64}'})
+    end
+  end
 end
