@@ -14,8 +14,8 @@
     "jspdf": "^1.4.1"
   },
   "devDependencies": {
-    "uglify-js": "^2.8.29",
-    "browserify": "^14.5.0"
+    "browserify": "^16.2.3",
+    "uglify-js": "^2.8.29"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
