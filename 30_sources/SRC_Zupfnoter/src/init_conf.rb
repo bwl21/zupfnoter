@@ -267,6 +267,22 @@ module InitConf
                                    a3_offset: [0, 0],
                                    a4_offset: [35, 0]}
                  },
+                 'Zipino'         => {
+                     layout:      {instrument:   'Zipino',
+                                   limit_a3:     true,
+                                   beams:        false,
+                                   bottomup:     true,
+                                   PITCH_OFFSET: 0,
+                                   X_SPACING:    14.50,
+                                   X_OFFSET:     215
+                     },
+                     stringnames: {text:  'G A B C D E Fis G A B C D E Fis G ~ ~ ~ ~ ~ ~  ~',
+                                   marks: {hpos: [55, 79]}
+                     },
+                     printer:     {a4_pages:  [2],
+                                   a3_offset: [0, 0],
+                                   a4_offset: [35, 0]}
+                 },
                  'Okon-Harfe'          => {
                      layout:      {instrument:   'okon-f',
                                    beams:        true,

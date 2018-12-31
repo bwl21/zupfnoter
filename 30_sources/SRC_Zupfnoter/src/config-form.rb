@@ -349,7 +349,7 @@ class ConfstackEditor
       def self.to_w2uifield(key)
         {field:       key,
          type:        'list',
-         options:     {items: ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel',
+         options:     {items: ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel', 'Zipino',
                                'okon-f', 'okon-g', 'okon-c', 'okon-d']},
          required:    true,
          text:        I18n.t("#{key}.text"),

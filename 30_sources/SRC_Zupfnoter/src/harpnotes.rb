@@ -630,6 +630,7 @@ module Harpnotes
       end
 
       private
+
       #
       # Updates the beat map of the song.
       # A beat map of a voice is a hash (current_beat => playable).
@@ -1338,76 +1339,96 @@ module Harpnotes
 
         case $conf['layout.instrument']
 
-          when "saitenspiel"
-            @pitch_to_xpos               = lambda { |pitch|
-              #          G        c        d        e        f        g        a        b        c'       D'
-              pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
-              pitch_to_stringpos = pitch_to_stringpos[pitch + pitchoffset]
-              result             = 0
-              result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
-              result
-            }
-            @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
-            @draw_instrument             = lambda {
-              res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
-              res.line_width = $conf.get('layout.LINE_MEDIUM');
-              [res]
-            }
+        when "Zipino"
+          #                  G  A  B  C  D  E  F# G  A  B  C  D  E  F# G
+          pitches         = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79"
+          string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
 
-          when "okon-f", "okon-g", "okon-c", "okon-d"
+          @pitch_to_xpos               = lambda { |pitch|
+            #                           G        c        d        e        f        g        a        b        c'       D'
+            pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
+            result             = 0
+            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+            result
+          }
+          @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+          @draw_instrument             = lambda {
+            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
+            [res]
+          }
+
+
+        when "saitenspiel"
+          @pitch_to_xpos               = lambda { |pitch|
+            #          G        c        d        e        f        g        a        b        c'       D'
+            pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
+            pitch_to_stringpos = pitch_to_stringpos[pitch + pitchoffset]
+            result             = 0
+            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+            result
+          }
+          @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+          @draw_instrument             = lambda {
+            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
+            [res]
+          }
+
+        when "okon-f", "okon-g", "okon-c", "okon-d"
+          flaps   = ""
+          pitches = ""
+          case $conf['layout.instrument']
+          when "okon-f"
+            #          G  A Bb C  D  E  F  G  A   Bb C  D  E  F  G  A  Bb C   D E F G
+            pitches = "55 57 58 60 62 64 65 67 69 70 72 74 76 77 79 81 82 84"
             flaps   = ""
-            pitches = ""
-            case $conf['layout.instrument']
-              when "okon-f"
-                #          G  A Bb C  D  E  F  G  A   Bb C  D  E  F  G  A  Bb C   D E F G
-                pitches = "55 57 58 60 62 64 65 67 69 70 72 74 76 77 79 81 82 84"
-                flaps   = ""
-              when "okon-g"
-                #          G  A  B  C  D  E  F# G  A  B  C  D  E  F# G  A  Bb C   D E F G
-                pitches = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79 81 83 84"
-                flaps   = "      59          66       71          78       83 "
-              when "okon-c"
-                #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
-                pitches = "55 57 59 60 62 64 65 67 69 71 72 74 76 77 79 81 83 84"
-                flaps   = "      59                   71                   83"
-              when "okon-d"
-                #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
-                pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
-                flaps   = "      59 61       66       71 73       78       83"
+          when "okon-g"
+            #          G  A  B  C  D  E  F# G  A  B  C  D  E  F# G  A  Bb C   D E F G
+            pitches = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79 81 83 84"
+            flaps   = "      59          66       71          78       83 "
+          when "okon-c"
+            #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+            pitches = "55 57 59 60 62 64 65 67 69 71 72 74 76 77 79 81 83 84"
+            flaps   = "      59                   71                   83"
+          when "okon-d"
+            #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+            pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
+            flaps   = "      59 61       66       71 73       78       83"
+          end
+
+          flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
+
+          string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
+          flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
+
+          @pitch_to_xpos               = lambda { |pitch|
+            #                           G        c        d        e        f        g        a        b        c'       D'
+            pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
+            result             = 0
+            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+            result
+          }
+          @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
+
+          @draw_instrument = lambda {
+            result = []
+            flaps_by_pitch.each do |f|
+              result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
             end
 
-            flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
+            res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
+            result.push(res)
+          }
 
-            string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
-            flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
-
-            @pitch_to_xpos               = lambda { |pitch|
-              #                           G        c        d        e        f        g        a        b        c'       D'
-              pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
-              result             = 0
-              result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
-              result
-            }
-            @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
-
-            @draw_instrument = lambda {
-              result = []
-              flaps_by_pitch.each do |f|
-                result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
-              end
-
-              res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)
-              res.line_width = $conf.get('layout.LINE_MEDIUM');
-              result.push(res)
-            }
-
-          when "21-strings-a-f"
-            @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
+        when "21-strings-a-f"
+          @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
 
 
-          when "18-strings-b-e"
-            @bottom_annotation_positions = [[210, 287], [210, 290], [280, 290]]
-          else
+        when "18-strings-b-e"
+          @bottom_annotation_positions = [[210, 287], [210, 290], [280, 290]]
+        else
         end
       end
 
@@ -1531,7 +1552,7 @@ module Harpnotes
           beat_layout = beat_layout || Proc.new do |beat|
             # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
             # assign to sanitizex %x string at end of function
-            r = %x{#{@y_size} - #{beat} * #{@beat_spacing}}
+            r = %x{#{@y_size} - #{beat} * #{@beat_spacing} - #{@y_offset}}
           end
         end
 
@@ -2375,10 +2396,10 @@ module Harpnotes
               bn_conf_key  = "extract.#{print_variant_nr}.#{bn_pos_key}"
               barnumber    = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
 
-              bn_dsize_y  = (:center == bn_apanchor) ? 0 : dsize_y
+              bn_dsize_y = (:center == bn_apanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
-              bn_offset   = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
-              bn_side = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
+              bn_offset  = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
+              bn_side    = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
 
               # if we have autopos, we need to compute the align
               # even if there is a cnoffset, we need to consider the side of the note
