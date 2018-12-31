@@ -352,8 +352,8 @@ module Harpnotes
     # @param [String] text
     def replace_range(startpos, endpos, text)
       %x{
-      therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
-      #{editor}.getSession().replace(therange, #{text})
+      therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1]);
+      #{editor}.getSession().replace(therange, #{text});
       }
     end
 
@@ -521,7 +521,6 @@ module Harpnotes
       oldtoken = get_selection_info.token
       raise "cannot patch token if there is a name mismatch '#{oldtoken.type}' - '#{token}'" unless oldtoken.type.to_s == token.to_s
       #raise "cannot patch token if in wrong position" if oldtoken.endpos != endpos
-
       replace_range(oldtoken.startpos, oldtoken.endpos, newvalue)
     end
 
