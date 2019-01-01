@@ -248,9 +248,10 @@ module Harpnotes
     def draw_flowline(root)
       color          = COLORS[root.color]
       @pdf.stroke    = color
-      #@pdf.draw = (0...3).map { root.dashed? ? 128 : 0 }
-      @pdf.line_dash = 3 if root.dashed?
-      @pdf.line_dash = 6 if root.dotted?
+
+      # these numbers ensure the same layout as before 1.10
+      @pdf.line_dash = 3/2.84 if root.dashed?
+      @pdf.line_dash = 1.5/2.84 if root.dotted?
       @pdf.line(root.from.center, root.to.center)
       @pdf.use_solid_lines #if root.dashed? # reset dashing
     end

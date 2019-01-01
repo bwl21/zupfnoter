@@ -32089,12 +32089,12 @@ if (s == null) s = nil;
         attr = $hash2(["stroke"], {"stroke": color});
         if (root.$style()['$==']("dashed")) {
           
-          $writer = ["stroke-dasharray", "2 2"];
+          $writer = ["stroke-dasharray", "" + ($rb_divide(3, 2.84)) + " " + ($rb_divide(3, 2.84))];
           $send(attr, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];};
         if (root.$style()['$==']("dotted")) {
           
-          $writer = ["stroke-dasharray", "1 1"];
+          $writer = ["stroke-dasharray", "" + ($rb_divide(1.5, 2.84)) + " " + ($rb_divide(1.5, 2.84))];
           $send(attr, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];};
         e = self.paper.$line(root.$from().$center()['$[]'](0), root.$from().$center()['$[]'](1), root.$to().$center()['$[]'](0), root.$to().$center()['$[]'](1), attr);
@@ -32349,7 +32349,7 @@ if (v == null) v = nil;if (index == null) index = nil;
       return $gvars.conf['$[]']("extract.0.layout.X_SPACING")}, TMP_29.$$s = self, TMP_29.$$arity = 0, TMP_29)), "X_OFFSET": 28.5}), "stringnames": $hash2(["text", "marks"], {"text": $send(self, 'lambda', [], (TMP_30 = function(){var self = TMP_30.$$s || this;
         if ($gvars.conf == null) $gvars.conf = nil;
 
-      return self.$cut_string_names($gvars.conf['$[]']("extract.0.stringnames.text"), 16, 33)}, TMP_30.$$s = self, TMP_30.$$arity = 0, TMP_30)), "marks": $hash2(["hpos"], {"hpos": [59, 76]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [40, 0]})}), "saitenspiel": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "saitenspiel", "limit_a3": false, "beams": false, "bottomup": false, "PITCH_OFFSET": -24, "X_SPACING": 14.5, "X_OFFSET": 240}), "stringnames": $hash2(["text", "marks"], {"text": "G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Zipino": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "Zipino", "limit_a3": true, "beams": false, "bottomup": true, "PITCH_OFFSET": 0, "X_SPACING": 14.5, "X_OFFSET": 240}), "stringnames": $hash2(["text", "marks"], {"text": "G A B C D E Fis G A B C D E Fis G ~ ~ ~ ~ ~ ~  ~", "marks": $hash2(["hpos"], {"hpos": [55, 79]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Okon-Harfe": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "beams", "bottomup", "limit_a3", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "okon-f", "beams": true, "bottomup": true, "limit_a3": false, "PITCH_OFFSET": 0, "X_SPACING": 15, "X_OFFSET": 50}), "stringnames": $hash2(["text", "marks"], {"text": "G A B C D E F G A B C D E F G A B C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [1, 2], "a3_offset": [-35, 0], "a4_offset": [70, 0]})})}), "notes": $hash2(["T01_number", "T01_number_extract", "T01_number_extract_value", "T02_copyright_music", "T03_copyright_harpnotes", "T04_to_order", "T05_printed_extracts", "T06_legend", "T99_do_not_copy", "T01_T99"], {"T01_number": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [393, 17], "text": "XXX-{{number}}", "style": "bold"})}), "T01_number_extract": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [411, 17], "text": "{{extract_filename}}", "style": "bold"})}), "T01_number_extract_value": $hash2(["key", "value"], {"key": "T01_number_extract", "value": $hash2(["text"], {"text": "{{extract_filename}}"})}), "T02_copyright_music": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 251], "text": $send(self, 'lambda', [], (TMP_31 = function(){var self = TMP_31.$$s || this;
+      return self.$cut_string_names($gvars.conf['$[]']("extract.0.stringnames.text"), 16, 33)}, TMP_30.$$s = self, TMP_30.$$arity = 0, TMP_30)), "marks": $hash2(["hpos"], {"hpos": [59, 76]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [40, 0]})}), "saitenspiel": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "saitenspiel", "limit_a3": false, "beams": false, "bottomup": false, "PITCH_OFFSET": -24, "X_SPACING": 14.5, "X_OFFSET": 240}), "stringnames": $hash2(["text", "marks"], {"text": "G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Zipino": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "Zipino", "limit_a3": true, "beams": false, "bottomup": true, "PITCH_OFFSET": 0, "X_SPACING": 14.5, "X_OFFSET": 215}), "stringnames": $hash2(["text", "marks"], {"text": "G A B C D E Fis G A B C D E Fis G ~ ~ ~ ~ ~ ~  ~", "marks": $hash2(["hpos"], {"hpos": [55, 79]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Okon-Harfe": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "beams", "bottomup", "limit_a3", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "okon-f", "beams": true, "bottomup": true, "limit_a3": false, "PITCH_OFFSET": 0, "X_SPACING": 15, "X_OFFSET": 50}), "stringnames": $hash2(["text", "marks"], {"text": "G A B C D E F G A B C D E F G A B C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [1, 2], "a3_offset": [-35, 0], "a4_offset": [70, 0]})})}), "notes": $hash2(["T01_number", "T01_number_extract", "T01_number_extract_value", "T02_copyright_music", "T03_copyright_harpnotes", "T04_to_order", "T05_printed_extracts", "T06_legend", "T99_do_not_copy", "T01_T99"], {"T01_number": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [393, 17], "text": "XXX-{{number}}", "style": "bold"})}), "T01_number_extract": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [411, 17], "text": "{{extract_filename}}", "style": "bold"})}), "T01_number_extract_value": $hash2(["key", "value"], {"key": "T01_number_extract", "value": $hash2(["text"], {"text": "{{extract_filename}}"})}), "T02_copyright_music": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 251], "text": $send(self, 'lambda', [], (TMP_31 = function(){var self = TMP_31.$$s || this;
 
       
         return "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + "\n" + (Opal.const_get_relative($nesting, 'I18n').$t("Private copy"));}, TMP_31.$$s = self, TMP_31.$$arity = 0, TMP_31)), "style": "small"})}), "T03_copyright_harpnotes": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 260], "text": "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " Notenbild: zupfnoter.de", "style": "small"})}), "T04_to_order": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 242], "text": $send(self, 'lambda', [], (TMP_32 = function(){var self = TMP_32.$$s || this;
@@ -32726,9 +32726,9 @@ if (e == null) e = nil;
       Opal.defn(self, '$replace_range', TMP_TextPane_replace_range_26 = function $$replace_range(startpos, endpos, text) {
         var self = this;
 
-        return 
-      therange = new self.range(startpos[0], startpos[1], endpos[0], endpos[1])
-      self.$editor().getSession().replace(therange, text)
+        
+      therange = new self.range(startpos[0], startpos[1], endpos[0], endpos[1]);
+      self.$editor().getSession().replace(therange, text);
       
       }, TMP_TextPane_replace_range_26.$$arity = 3);
       
@@ -33176,7 +33176,7 @@ if (part == null) part = nil;if (i == null) i = nil;
 
         
         options = $gvars.conf['$[]']("neatjson");
-        result = $send($gvars.log, 'benchmark', ["neat_json", 711, "text_pane"], (TMP_66 = function(){var self = TMP_66.$$s || this;
+        result = $send($gvars.log, 'benchmark', ["neat_json", 710, "text_pane"], (TMP_66 = function(){var self = TMP_66.$$s || this;
 
         return Opal.const_get_relative($nesting, 'JSON').$neat_generate(self.$_get_config_model(), options)}, TMP_66.$$s = self, TMP_66.$$arity = 0, TMP_66));
         return result;
@@ -34891,7 +34891,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "version/V_1.10.0-3-gaa6dc27");
+  Opal.const_set($nesting[0], 'VERSION', "version/V_1.10.0-5-gd70f3af");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

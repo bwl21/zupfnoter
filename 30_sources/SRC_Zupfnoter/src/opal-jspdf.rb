@@ -48,7 +48,7 @@ class JsPDF
 
   def line_dash=(dist = 3)
     dist = `undefined` if dist.nil?
-    `#{@native_jspdf}.setLineDash([#{dist}, #{dist}], 0)`
+    `#{@native_jspdf}.setLineDash([#{dist}, #{dist}], #{dist})`
   end
 
 
