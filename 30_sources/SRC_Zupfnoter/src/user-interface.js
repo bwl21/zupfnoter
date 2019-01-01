@@ -2,7 +2,6 @@ function init_w2ui(uicontroller) {
 
   w2popup.defaults.speed = 0;
 
-  // var zoomlevel = [2200, 1400];   // initialize zoomlevel; todo: should be done by scalehandlers
   var current_perspective = 'tb_perspective:Alle';
   var isFullScreen = false;
 
@@ -239,9 +238,14 @@ function init_w2ui(uicontroller) {
       zoomHarpPreview(zoomlevel);
     }
   }
+
+
+  // ensure that zoomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
+  const init_zoomlevel = [2200, 1400]
+  var zoomlevel = init_zoomlevel;
   scalehandlers = {
     'tb_scale:groß': function () {
-      zoomlevel = [2200, 1400];
+      zoomlevel = init_zoomlevel;
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:mittel': function () {
@@ -257,9 +261,6 @@ function init_w2ui(uicontroller) {
       zoomHarpPreview(zoomlevel);
     }
   }
-
-  // ensure that oomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
-  zoomlevel = scalehandlers['tb_scale:groß'].zoomlevel
 
   // where we create an object with tooblarhandlers
   // this approach does not splash the menu definition

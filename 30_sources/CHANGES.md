@@ -6,7 +6,8 @@
 * select in all voices now works if there are grace notes #243
 * replace unicode characters with ascii equivalents #238
 * import in a fresh zupfnoter without user defined templats see #239
-  
+* update jspdf 1.4.++ #247
+* Bug Cannot read property '$first' of undefined #251
 
 ## enhancement
 
