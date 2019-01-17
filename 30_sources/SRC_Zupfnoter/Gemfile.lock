@@ -52,6 +52,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
+    rb-readline (0.5.5)
     redcarpet (3.4.0)
     rubyXL (3.3.31)
       nokogiri (>= 1.4.4)
@@ -95,6 +96,7 @@ DEPENDENCIES
   opal-sprockets
   pry
   rake
+  rb-readline
   redcarpet
   sass
   vector2d (~> 2.1.0)
@@ -105,4 +107,4 @@ RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.16.1
+   2.0.1

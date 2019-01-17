@@ -19,6 +19,7 @@ gem 'bundler'
 gem 'redcarpet'
 gem 'json-schema-generator'
 gem 'neatjson'
+gem 'rb-readline'
 
 
 # had trouble to install nokogiri on windows
