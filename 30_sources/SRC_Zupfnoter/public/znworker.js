@@ -31563,9 +31563,9 @@ Opal.modules["svg_engine"] = function(Opal) {
   function $rb_divide(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs / rhs : lhs['$/'](rhs);
   }
-  var self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $truthy = Opal.truthy, $send = Opal.send, $gvars = Opal.gvars;
+  var self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $truthy = Opal.truthy, $gvars = Opal.gvars, $send = Opal.send;
 
-  Opal.add_stubs(['$require', '$include', '$attr_reader', '$nil?', '$find', '$new', '$include?', '$bind_the_element', '$push', '$stopPropagation', '$Native', '$dig', '$call', '$set_view_box', '$set_canvas', '$get_svg', '$save_scroll_position', '$html', '$t', '$[]', '$first', '$last', '$clear', '$rect', '$+', '$-', '$each', '$children', '$line_width', '$line_width=', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$draw_image', '$error', '$class', '$flush', '$on_mouseover', '$on_mouseout', '$on_drag_start', '$on_drag_end', '$on_draggable_rightclick', '$unhighlight_element', '$unhighlight_all', '$range_highlight_more', '$get_elements_by_range', '$highlight_element', '$==', '$empty?', '$scroll_to_element', '$private', '$sort', '$map', '$>', '$*', '$add_class', '$remove_class', '$set_conf_editable', '$===', '$set_draggable_pos', '$set_draggable_jumpline', '$set_draggable_tuplet', '$origin', '$!', '$tap', '$delete', '$conf_key', '$conf_value', '$more_conf_keys', '$draginfo', '$[]=', '$color', '$fill', '$size', '$rect?', '$center', '$ellipse', '$/', '$dotted?', '$draw_the_dot', '$hasbarover?', '$draw_the_barover', '$add_abcref', '$merge', '$push_element', '$glyph', '$path', '$style', '$line', '$from', '$to', '$distance', '$level', '$get', '$gsub', '$text', '$-@', '$to_s', '$align', '$Vector2d', '$llpos', '$height', '$image', '$url', '$x', '$y', '$filled?']);
+  Opal.add_stubs(['$require', '$include', '$attr_reader', '$nil?', '$find', '$new', '$include?', '$bind_the_element', '$push', '$stopPropagation', '$Native', '$dig', '$call', '$set_view_box', '$set_canvas', '$get_svg', '$save_scroll_position', '$html', '$t', '$[]', '$first', '$last', '$warn', '$clear', '$rect', '$+', '$-', '$each', '$children', '$line_width', '$line_width=', '$is_a?', '$visible?', '$draw_ellipse', '$draw_flowline', '$draw_glyph', '$draw_annotation', '$draw_path', '$draw_image', '$error', '$class', '$flush', '$on_mouseover', '$on_mouseout', '$on_drag_start', '$on_drag_end', '$on_draggable_rightclick', '$unhighlight_element', '$unhighlight_all', '$range_highlight_more', '$get_elements_by_range', '$highlight_element', '$==', '$empty?', '$scroll_to_element', '$private', '$sort', '$map', '$>', '$*', '$add_class', '$remove_class', '$set_conf_editable', '$===', '$set_draggable_pos', '$set_draggable_jumpline', '$set_draggable_tuplet', '$origin', '$!', '$tap', '$delete', '$conf_key', '$conf_value', '$more_conf_keys', '$draginfo', '$[]=', '$color', '$fill', '$size', '$rect?', '$center', '$ellipse', '$/', '$dotted?', '$draw_the_dot', '$hasbarover?', '$draw_the_barover', '$add_abcref', '$merge', '$push_element', '$glyph', '$path', '$style', '$line', '$from', '$to', '$distance', '$level', '$get', '$gsub', '$text', '$-@', '$to_s', '$align', '$Vector2d', '$llpos', '$height', '$image', '$url', '$x', '$y', '$filled?']);
   
   self.$require("opal-svg");
   self.$require("harpnotes");
@@ -31681,15 +31681,20 @@ Opal.modules["svg_engine"] = function(Opal) {
       
       Opal.defn(self, '$set_svg', TMP_SvgEngine_set_svg_10 = function $$set_svg(svg_and_positions) {
         var self = this;
+        if ($gvars.log == null) $gvars.log = nil;
 
         
         self.bound_elements = [];
         self.preview_container.$html(svg_and_positions['$[]']("svg"));
         self.interactive_elements = svg_and_positions['$[]']("interactive_elements");
+        if ($truthy(self.preview_scroll)) {
+          
+        self.preview_container.scrollLeft(self.preview_scroll.$first());
+        self.preview_container.scrollTop(self.preview_scroll.$last());
         
-      self.preview_container.scrollLeft(self.preview_scroll.$first());
-      self.preview_container.scrollTop(self.preview_scroll.$last());
-      ;
+          } else {
+          $gvars.log.$warn("BUG: preview Scroll empty")
+        };
         return nil;
       }, TMP_SvgEngine_set_svg_10.$$arity = 1);
       
@@ -31744,7 +31749,7 @@ if (child == null) child = nil;
             return self.$draw_image(child)
             } else {
             
-            $gvars.log.$error("" + "BUG:don't know how to draw " + (child.$class()) + " (" + ("svg_engine") + " " + (121) + ")");
+            $gvars.log.$error("" + "BUG:don't know how to draw " + (child.$class()) + " (" + ("svg_engine") + " " + (127) + ")");
             return nil;
           };}, TMP_11.$$s = self, TMP_11.$$arity = 1, TMP_11));
         return self.$flush();
@@ -34891,7 +34896,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "version/V_1.10.0-5-gd70f3af");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-9-g02eabce");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

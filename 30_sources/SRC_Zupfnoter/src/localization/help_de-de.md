@@ -41,7 +41,7 @@ großen Stücken noch ein bisschen mehr Platz ausreizen.
 ## ELLIPSE_SIZE
 
 Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
-sind [2-4, 1.2-2].
+sind \[2-4, 1.2-2\].
 
 > **Hinweis**: Die Größe der anderen Noten werden ausgehend von diesem
 > Wert berechnet.
@@ -153,6 +153,7 @@ einstellen.
 >     steht.
 >
 > <!-- -->
+>
 > ## barnumbers.apbase
 
 Hier kannst du die Grundlage für die automatische Positionierung von
@@ -785,7 +786,7 @@ Hier kannst du die Pausenposition nach einer Wiederholung einstellen.
 ## REST_SIZE
 
 Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
-[2-4, 1.2-2]
+\[2-4, 1.2-2\]
 
 > **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
 > berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
@@ -970,7 +971,7 @@ empfunden werden.
 ## sortmark.size
 
 Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von
-[2,4] hat sich als praktikabel erwiesen.
+\[2,4\] hat sich als praktikabel erwiesen.
 
 ## sortmark.show
 
