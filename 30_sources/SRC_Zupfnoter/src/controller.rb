@@ -149,6 +149,7 @@ class Controller
     $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
     $log.info ("Ruby:     #{RUBY_VERSION}")
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
+    $log.info ("JsPdf:    #{JsPDF.jspdfversion}")
     $log.info ("Browser:  #{`bowser.name`}  #{`bowser.version`}");
     $log.info ("Language: #{zupfnoter_language}");
     check_suppoerted_browser
@@ -254,6 +255,7 @@ class Controller
           <tr><td>Ruby:</td><td>#{RUBY_VERSION}</td></tr>
           <tr><td><a target="_blank" href="http://moinejf.free.fr/js/index.html">abc2svg</a>:</td><td>#{%x{abc2svg.version}}</td></tr>
           <tr><td><a target="_blank" href="https://wim.vree.org/js/xml2abc-js_index.html">xml2abc.js</a>:</td><td>#{%x{xml2abc_VERSION}}</td></tr>
+          <tr><td><a target="_blank" href="https://parall.ax/products/jspdf">jsPDF</a>:</td><td>#{JsPDF.jspdfversion}</td></tr>
          </tbody>
         </table>
         <p>© #{Time.now.year} Bernhard Weichel - info@zupfnoter.de</p>

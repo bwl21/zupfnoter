@@ -16,6 +16,10 @@ class JsPDF
     @native_jspdf = `new jsPDF(orientation, unit, format)`
   end
 
+  def self.jspdfversion()
+    %x{jsPDF.version}
+  end
+
   def line(from, to)
     nfrom = apply_offset_to_point(from)
     nto   = apply_offset_to_point(to)
