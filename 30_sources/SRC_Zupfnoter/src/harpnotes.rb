@@ -1643,12 +1643,22 @@ module Harpnotes
         tempo               = music.meta_data[:tempo_display]
         print_variant_title = print_options_hash[:title]
 
-        title_pos  = print_options_hash[:legend][:pos]
+        title_pos = print_options_hash[:legend][:pos]
+
+        title_align = @print_options_raw.get("legend.align") || :r
+        title_align = (title_align == :l) ? :right : :left
+
         legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         style      = @print_options_raw.get("legend.style") || :regular
-        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
-                                                          "extract.#{print_variant_nr}.legend.pos", title_pos).tap { |s| s.draginfo = {handler: :annotation} }
+        annotations << Harpnotes::Drawing::Annotation.new(
+            title_pos, title, :large, nil,
+            "extract.#{print_variant_nr}.legend.pos",
+            title_pos).tap do |s|
+          s.draginfo = {handler: :annotation}
+          s.align    = title_align
+        end
+
         if $conf["extract.#{print_variant_nr}.notes.T06_legend"].nil?
           annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, style, nil,
                                                             "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
@@ -1693,10 +1703,16 @@ module Harpnotes
           print_options_hash[:notes].each do |k, note|
             #note is an array [center, text, style] todo: refactor this
             conf_key = "extract.#{print_variant_nr}.notes.#{k}"
+            align    = note[:align] || :r
+            align    = (align == :r) ? :left : :right;
             raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
             raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
-            annotations << Harpnotes::Drawing::Annotation.new(note[:pos], resolve_placeholder(note[:text], conf_key), note[:style], nil,
-                                                              "#{conf_key}.pos", note[:pos]).tap { |s| s.draginfo = {handler: :annotation} }
+            annotations << Harpnotes::Drawing::Annotation.new(
+                note[:pos], resolve_placeholder(note[:text], conf_key), note[:style], nil,
+                "#{conf_key}.pos", note[:pos]).tap do |s|
+              s.align    = align
+              s.draginfo = {handler: :annotation}
+            end
           end
         rescue Exception => e
           $log.error e.message

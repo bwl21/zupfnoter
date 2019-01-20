@@ -701,12 +701,12 @@ class Controller
             /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos", "align"]},
             /extract\.(\d+)\.notebound\.minc\.(\d+)/                              => {keys: ["minc_f"]},
             /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
-            /extract\.(\d+)\.legend/                                              => {keys: ["pos", "spos", "style"]},
+            /extract\.(\d+)\.legend/                                              => {keys: ["pos", "align", "spos", "style"]},
             /extract\.(\d+)\.lyrics\.(\d)/                                        => {keys: ["verses", "pos", "style"]},
             /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/                 => {keys: ['text', 'pos', 'style']},
-            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]
-            }
-        }
+            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]},
+            /extract\.(\d+)\.notes\.(\w+)/                                        => {keys: ["pos", "text", "style", "align"]}
+          }
 
         # see if we have a static form set
         the_form = form_sets[args[:set]]

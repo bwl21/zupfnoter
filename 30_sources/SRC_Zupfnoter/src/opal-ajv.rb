@@ -72,6 +72,7 @@ module Ajv
                                  :properties =>
                                      {:pos   => {:'$ref' => '#/definitions/pos'},
                                       :text  => {:type => "string"},
+                                      :align => {:'$ref' => '#/definitions/pos'},
                                       :style => {:type => "string"}}},
            :minc_entry       => {
                :type                 => "object",
@@ -93,6 +94,8 @@ module Ajv
                    }
                }
            },
+           align:            {:type => 'string',
+                              :enum => ['l', 'r', 'auto']},
            :notebound_pos    => {:type                 => "object",
                                  :additionalProperties => false,
                                  :patternProperties    => {
@@ -103,9 +106,8 @@ module Ajv
                                                          :type                 => "object",
                                                          :additionalProperties => false,
                                                          :properties           => {
-                                                             pos:    {:'$ref' => '#/definitions/pos'},
-                                                             align: {:type => 'string',
-                                                                      :enum => ['l', 'r', 'auto']}
+                                                             pos:   {:'$ref' => '#/definitions/pos'},
+                                                             align: {:'$ref' => '#/definitions/align'}
                                                          }
                                                      }
                                                  }
@@ -343,7 +345,8 @@ module Ajv
                                                                    :properties =>
                                                                        {:spos  => {:"$ref" => "#/definitions/pos"},
                                                                         :pos   => {:"$ref" => "#/definitions/pos"},
-                                                                        :style => {:type => "string"}
+                                                                        :align => {:'$ref' => '#/definitions/notebound_pos'}, # this targets the header
+                                                                        :style => {:type => "string"}  # this targetsd the legend
                                                                        }
                                                  },
                                                  :lyrics       => {:type              => "object",
@@ -362,7 +365,7 @@ module Ajv
                                                      :properties           => {
                                                          :annotation   => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :barnumber    => {:'$ref' => '#/definitions/notebound_pos',
-                                                                           :align  => {type: 'string'}},
+                                                                           :align  => {:'$ref' => '#/definitions/notebound_pos'}},
                                                          :c_jumplines  => {:type => 'object', # configuratoin of jumpline distances
                                                                            :additionalProperties => false,
                                                                            :patternProperties    => {
