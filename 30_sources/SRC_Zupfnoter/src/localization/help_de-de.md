@@ -10,7 +10,7 @@ Anordnung automatisch errechnet
     linksbündig)
 -   `auto`: die Ausrichtung wird automatisch errechnet
 
-> **Hinweis**: Auch beim manuellen Verschieben wird die Anodnung der
+> **Hinweis**: Auch beim manuellen Verschieben wird die Anordnung der
 > Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
 > (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
 > Nummern auch bei unterschiedlicher Länge sehr präzise positioniert

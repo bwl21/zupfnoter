@@ -1,4 +1,18 @@
-# V.1.10
+# V 1.10.1
+
+## fix
+
+* Bug Cannot read property '$first' of undefined #251
+* Addon dialog does not close #249
+* subflowlines are now dahed in 1.5 mm while synchlines are 3 mm #247
+
+## enhancement
+
+* provide a dropbox path menu in the statusbar #252
+* report jspdf version #241
+* now support align for title and notes #237
+
+# V.1.10.0
 
 ## fix
 
@@ -7,7 +21,6 @@
 * replace unicode characters with ascii equivalents #238
 * import in a fresh zupfnoter without user defined templats see #239
 * update jspdf 1.4.++ #247
-* Bug Cannot read property '$first' of undefined #251
 
 ## enhancement
 
@@ -15,7 +28,7 @@
 * loglevel can be changed by click in statusbar #242
 * Performance: tune preview and harpreview can be rendered in background #241
 * moved some Menus from "Extras" to Statusbar #242
-* Improvee "message of the day" handling #244
+* Improve "message of the day" handling #244
 
 ## BWC
 

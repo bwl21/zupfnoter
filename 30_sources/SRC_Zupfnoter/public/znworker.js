@@ -27010,7 +27010,6 @@ if (k == null) k = nil;if (note == null) note = nil;
                 } else {
                 return "right"
               }; return nil; })();
-              debugger;
               if ($truthy(note['$[]']("pos"))) {
                 } else {
                 self.$raise("" + (Opal.const_get_relative($nesting, 'I18n').$t("missing pos")) + " in " + (conf_key))
@@ -27526,7 +27525,7 @@ if (goto$ == null) goto$ = nil;
             from_anchor = ($truthy($c = goto$.$policy()['$[]']("from_anchor")) ? $c : "after");
             to_anchor = ($truthy($c = goto$.$policy()['$[]']("to_anchor")) ? $c : "before");
             vertical_anchor = ($truthy($c = goto$.$policy()['$[]']("vertical_anchor")) ? $c : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2131));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2130));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -34919,7 +34918,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-10-g8b4e2ee");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-12-gd157c64");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
