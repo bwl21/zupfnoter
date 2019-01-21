@@ -339,7 +339,13 @@ function init_w2ui(uicontroller) {
         fields: [
           {
             field: 'folder',
-            type: 'text',
+            type: 'combo',
+            options: {
+              items: uicontroller.systemstatus.$to_n().dropboxpathlist,
+              compare: function (a, b) {
+                return a.text.includes(b)
+              }
+            },
             required: true,
             html: {caption: 'Folder in Dropbox', attr: 'style="width: 300px"'}
           },
@@ -861,6 +867,13 @@ function init_w2ui(uicontroller) {
         event.preventDefault();
         event.subItem.onClick();
       }
+      if (event.item && event.item.onClick) {  // used to handle dropbox path
+        event.preventDefault
+        if (event.subItem) {
+          event.item.onClick(event)
+        }
+      }
+      ;
     },
     items: [
       {
@@ -883,6 +896,17 @@ function init_w2ui(uicontroller) {
         type: 'button',
         id: 'sb_dropbox-status',
         text: '<div style="padding: 0px !important;"><span class="dropbox-status"></span></div>'
+      },
+      {
+        type: 'menu',
+        id: 'sb_setdropboxpath',
+        tooltip: "choose drobox path",
+        onClick: function (event) {
+          if (event.subItem) {
+            uicontroller.$handle_command("dcd \"" + event.subItem.text + "\"")
+          }
+        },
+        items: []
       },
       {
         type: 'menu',
@@ -1236,6 +1260,13 @@ function update_systemstatus_w2ui(systemstatus) {
   }
   ;
 
+// update dropbox path menu
+
+  var dropbox_path_menu_items = systemstatus.dropboxpathlist.map(function (i) {
+    return {text: i}
+  });
+
+  w2ui.layout_statusbar_main_toolbar.get("sb_setdropboxpath").items = dropbox_path_menu_items;
 
 }
 

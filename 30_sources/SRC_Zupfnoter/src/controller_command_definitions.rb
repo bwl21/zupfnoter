@@ -1171,6 +1171,8 @@ C
           end
         end
 
+        push_to_dropboxpathlist
+
 
         # notes
         # the login approach in dropbox redirects to login-pages from dropbix which eventually
@@ -1267,6 +1269,8 @@ C
         rootpath      = reconcile_dropbox_path(rootpath)
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
+
+        push_to_dropboxpathlist
 
         set_status_dropbox_status
         $log.message("dropbox path changed to #{@dropboxpath}")

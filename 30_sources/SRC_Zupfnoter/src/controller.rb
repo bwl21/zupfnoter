@@ -94,7 +94,7 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath,  :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -175,7 +175,7 @@ class Controller
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
-    @dropboxclient = Opal::DropboxJs::NilClient.new()
+    @dropboxclient   = Opal::DropboxJs::NilClient.new()
 
     @systemstatus = {version: VERSION}
 
@@ -335,7 +335,7 @@ class Controller
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
-                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :saveformat, :zoom].include?(key)
+                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxpathlist, :dropboxloginstate, :perspective, :saveformat, :zoom].include?(key)
     }.to_json
     if @systemstatus[:mode] == :work
       `localStorage.setItem('systemstatus', #{systemstatus});`
@@ -343,6 +343,12 @@ class Controller
     @editor.save_to_localstorage
   end
 
+  def push_to_dropboxpathlist()
+    dropboxpathlist = systemstatus[:dropboxpathlist] || []
+    dropboxpathlist.push(@dropboxpath)
+    dropboxpathlist = dropboxpathlist.uniq[-10 .. -1]
+    set_status(dropboxpathlist: dropboxpathlist)
+  end
 
   def load_from_uri(url)
     HTTP.get(url).then do |response|
@@ -1476,20 +1482,20 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         title: I18n.t('There is new unread information'),
         width: 600, # width of the dialog
         height: 200, # height of the dialog
-        modal:       true,
-        btn_yes:     {
+        modal:    true,
+        btn_yes:  {
             text: I18n.t('already read'), # text for yes button (or yes_text)
             class: '', # class for yes button (or yes_class)
             style: '', # style for yes button (or yes_style)
             callBack: have_read # callBack for yes button (or yes_callBack)
         },
-        btn_no:      {
+        btn_no:   {
             text: I18n.t('read later'), # text for no button (or no_text)
             class: '', # class for no button (or no_class)
             style: '', # style for no button (or no_style)
             callBack: have_not_read # callBack for no button (or no_callBack)
         },
-        callBack:    nil # common callBack
+        callBack: nil # common callBack
     };
 
     # todo: w2confirm might be in conflict with other popus
