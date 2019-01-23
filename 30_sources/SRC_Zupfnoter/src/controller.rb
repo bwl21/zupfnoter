@@ -94,7 +94,7 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath,  :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -175,8 +175,9 @@ class Controller
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
-    @dropboxclient = Opal::DropboxJs::NilClient.new()
+    @dropboxclient   = Opal::DropboxJs::NilClient.new()
 
+    # initialize the sytemstatus entries which are absolutely necessary
     @systemstatus = {version: VERSION, dropboxpathlist: []}
 
     # initialize the commandstack

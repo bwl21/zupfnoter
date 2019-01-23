@@ -715,11 +715,7 @@ class ConfstackEditor
 
   def generate_form
 
-    presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
-                  items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
-    }
-
-    undo_history = @editor.history_config[:undo]
+    undo_history   = @editor.history_config[:undo]
     if undo_history.count > 2
       undo_button = {id:       'undo', type: 'button', icon: 'fa fa-undo',
                      disabled: false,
@@ -740,6 +736,15 @@ class ConfstackEditor
     else
       redo_button = {id: 'redo', tooltip: "", type: 'button', icon: 'fa fa-repeat', disabled: true}
     end
+
+
+
+    unless false#@quicksetting_commands.empty?
+      presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
+                    items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
+      }
+    end
+
 
     @form = {
         name: "configform",
@@ -767,7 +772,14 @@ class ConfstackEditor
                          {id: 'bt4', type: 'break'},
                          undo_button,
                          redo_button,
+
                          {id: 'bt5', type: 'break'},
+                         {type: 'html',
+                          html: %Q{
+                         <input size="10" placeholder="search" onchange="zupfnoter.$handle_command('editconf &quot;' + this.value + '&quot;')"
+                               style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
+                              }
+                         },
                          {
                              type:    'menu',
                              text:    "Edit Config",
@@ -777,10 +789,9 @@ class ConfstackEditor
                              items:   self.class.get_config_form_menu_entries
                          },
 
-
                          presetmenu,
                          {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), icon: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
-                         {id: 'refresh', type: 'button', caption: 'Refresh', icon: 'fa fa-refresh'},
+                         {id: 'refresh', type: 'button', caption: '', icon: 'fa fa-refresh'},
                      ],
             onClick: lambda do |event|
               the_target = Native(event).target

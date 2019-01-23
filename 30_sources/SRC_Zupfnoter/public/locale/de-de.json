@@ -408,7 +408,7 @@
     "new": "Neu",
     "No access token to revoke": "Kein Zugriffstoken vorhanden, das gelöscht werden kann.",
     "no filebase given for template. Please type  ": "**--no filebase given for template. Please type  ",
-    "no placeholder value found in ": "kein Platzhalter gefunden in ",
+    "no placeholder value found in ": "kein Wert für Platzhalter gefunden in ",
     "no preview available yet": "Noch keine Vorschau verfügbar",
     "no suitable ABC found": "keine passende ABC Eingabe gefunden",
     "nonflowrest": "Begleitpausen",

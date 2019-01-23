@@ -725,18 +725,23 @@ class Controller
         # see if wie find a matching key
         #
         unless the_form
-          keys = $conf.keys.reject{|i |i.match(/^(templates|defaults|presets|neatjson)/)}
+
+          econf = Confstack.new
+          econf.push(get_config_from_editor)
+
+          keys         = [$conf.keys, econf.keys].flatten.reject { |i| i.match(/^(templates|defaults|presets|neatjson|wrap|layout)/) }
           keys         = keys.select do |k|
             pattern = "Auszug.*#{args[:set]}.*".downcase
-            tk = k.split(".").map { |k| I18n.t(k) }.join(".").downcase
-            k.match("extract.*#{args[:set]}.*") || tk.match(pattern) || I18n.t_help(k).downcase.match(".*#{args[:set]}.*")
+            tk      = k.split(".").map { |k| I18n.t(k) }.join(".").downcase
+            k.match("^extract.*#{args[:set]}.*") || tk.match(pattern) || I18n.t_help(k).downcase.match(".*#{args[:set]}.*")
           end.map { |k| k.gsub("extract.0", "extract.#{@systemstatus[:view]}") }
-          editor_title = "wildcard"
+          editor_title = {text: %Q{#{I18n.t("wildcard")}: #{args[:set]}}}
           unless keys.empty?
             the_form = {keys: keys}
           end
         end
 
+        # get the form title from the config_form_memu
         editor_title = ConfstackEditor.get_config_form_menu_entries.select { |i| i[:id] == args[:set] }.first || editor_title
 
         if editor_title
