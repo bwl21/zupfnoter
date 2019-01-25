@@ -488,10 +488,11 @@ class Controller
         end
 
         $conf['presets.notes'].each do |key, preset_value|
+          puts key
           entry  = $conf["presets.notes.#{key}"]
           to_key = entry[:key] || key
           value  = entry[:value]
-          unless key == :T01_T99
+          unless [:T01_T99, :T01_number_extract_value].include? key # do not override T01_number_extract by the alternative preset T01_number_extract_value
             all_value[to_key]             = entry[:value]
             values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
           end
@@ -707,7 +708,7 @@ class Controller
             /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/                 => {keys: ['text', 'pos', 'style']},
             /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]},
             /extract\.(\d+)\.notes\.(\w+)/                                        => {keys: ["pos", "text", "style", "align"]}
-          }
+        }
 
         # see if we have a static form set
         the_form = form_sets[args[:set]]
@@ -811,7 +812,6 @@ class Controller
             quicksetting_commands: quicksetting_commands,
             controller:            self
         }
-        `debugger`
         #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
         @config_form_editor = ConfstackEditor.new(editorparams)
         @config_form_editor.generate_form
@@ -939,88 +939,20 @@ class Controller
   end
 
 
+  def get_builtin_template
+    result = I18n.t("no template found")
+    url    = "public/demos/9999_Zupfnoter_standard-template.abc"
+    HTTP.get(url, {async: false}) do |response|
+      result = response.body
+      `localStorage.setItem(#{ZN_TEMPLATENAME}, #{result})`
+    end
+    result
+  end
+
   def get_current_template
     result = Native(`localStorage.getItem(#{ZN_TEMPLATENAME})`)
     unless `result`
-      result = %Q{X:{{song_id}}
-F:{{song_id}}_{{filename}}
-T:{{song_title}}
-C:
-S:
-M:4/4
-L:1/4
-Q:1/4=120
-K:C
-%
-%
-%%score 1
-%
-V:1 clef=treble name="Sopran" snm="S"
-C
-
-%%%%zupfnoter.config
-
-{
-  "produce"  : [1, 2],
-  "extract"  : {
-    "0" : {
-      "voices"      : [1, 2, 3, 4],
-      "flowlines"   : [1, 3],
-      "repeatsigns" : {"voices": [1, 2, 3, 4]},
-      "layoutlines" : [1, 2, 3, 4],
-      "barnumbers"  : {
-        "voices"  : [1, 3],
-        "pos"     : [6, -4],
-        "autopos" : true,
-        "style"   : "small_bold",
-        "prefix"  : ""
-      },
-      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
-      "lyrics"      : {
-        "1" : {"verses": [1, 2], "pos": [8, 102]},
-        "2" : {"verses": [3, 4], "pos": [347, 118]}
-      },
-      "notes"       : {
-        "T01_number"              : {
-          "pos"   : [393, 17],
-          "text"  : "XXX-{{song_id}}",
-          "style" : "bold"
-        },
-        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
-        "T03_copyright_harpnotes" : {
-          "pos"   : [340, 272],
-          "text"  : "© 2017 Notenbild: ",
-          "style" : "small"
-        },
-        "T04_to_order"            : {
-          "pos"   : [340, 242],
-          "text"  : "zu beziehen bei",
-          "style" : "small"
-        },
-        "T05_printed_extracts"    : {"pos": [393, 22], "text": "-A -B", "style": "smaller"},
-        "T99_do_not_copy"         : {
-          "pos"   : [380, 284],
-          "text"  : "Bitte nicht kopieren",
-          "style" : "small_bold"
-        }
-      },
-      "countnotes"  : {
-        "voices"  : [1, 3],
-        "pos"     : [3, -2],
-        "autopos" : true,
-        "style"   : "smaller"
-      },
-      "stringnames" : {"vpos": [4]}
-    },
-    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
-    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
-    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
-  },
-  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
-  "$version" : "{{version}}",
-  "template" : {"title": "Zupfnoter-default"}
- }
-}
+      result = get_builtin_template
     end
 
     result
