@@ -94,7 +94,7 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath,  :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -175,9 +175,9 @@ class Controller
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
-    @dropboxclient   = Opal::DropboxJs::NilClient.new()
+    @dropboxclient = Opal::DropboxJs::NilClient.new()
 
-    @systemstatus = {version: VERSION}
+    @systemstatus = {version: VERSION, dropboxpathlist: []}
 
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
@@ -346,7 +346,7 @@ class Controller
   def push_to_dropboxpathlist()
     dropboxpathlist = systemstatus[:dropboxpathlist] || []
     dropboxpathlist.push(@dropboxpath)
-    dropboxpathlist = dropboxpathlist.uniq[-10 .. -1]
+    dropboxpathlist = dropboxpathlist.uniq.last(10) # get the last 10 elements
     set_status(dropboxpathlist: dropboxpathlist)
   end
 
