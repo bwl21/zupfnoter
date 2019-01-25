@@ -1325,7 +1325,7 @@ module Harpnotes
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
         @draw_instrument      = nil
-        @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholde=
+        @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholder=
         set_instrument_handlers
       end
 

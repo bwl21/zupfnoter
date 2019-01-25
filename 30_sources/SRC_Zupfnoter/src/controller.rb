@@ -836,6 +836,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result
   end
 
+
+## todo: this is not DRY, we define this method
+# in controller.rb as well
   def get_placeholder_replacers(print_variant_nr)
     # keys for musid_model see _mk_meta_data
     # @meta_data = {number:        (@info_fields[:X]),
@@ -860,7 +863,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
         extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
         printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") },
-        watermark:        lambda { $settings[:watermark] || "" }
+        watermark:        lambda { $settings[:watermark] || "" },
+        current_year:     lambda { Time.now.year.to_s }
     }
   end
 

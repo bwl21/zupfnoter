@@ -60,6 +60,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -97,6 +98,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -134,6 +136,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1433,6 +1436,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1504,6 +1508,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1552,6 +1557,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1607,6 +1613,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1672,6 +1679,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1728,6 +1736,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1790,6 +1799,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1852,6 +1862,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -1906,6 +1917,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -2060,6 +2072,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile
@@ -2191,6 +2204,7 @@ Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
 auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 -   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
 -   `{{key}}`: Tonart aus `K:` Zeile
 -   `{{meter}}`: Taktart aus `M:` Zeile
 -   `{{number}}`: Nummer aus `X:` Zeile

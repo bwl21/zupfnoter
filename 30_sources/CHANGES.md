@@ -11,6 +11,7 @@
 * provide a dropbox path menu in the statusbar #252
 * report jspdf version #241
 * now support align for title and notes #237
+* now have {{current_year}} placeholder #223
 
 # V.1.10.0
 
