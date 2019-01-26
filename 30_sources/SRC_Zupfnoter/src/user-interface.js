@@ -707,7 +707,7 @@ function init_w2ui(uicontroller) {
         window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
       }
       if (event.target == "tbHelp:tbDemo") {
-        window.open("?mode=demo&load=public/demos/21_Ich_steh_an_deiner_krippen_hier.abc")
+        window.open("?mode=demo&load=public/demos/zndemo_42_Ich_steh_an_deiner_krippen_hier.abc")
       }
       if (event.subItem && event.subItem.onClick) {
         event.subItem.onClick();

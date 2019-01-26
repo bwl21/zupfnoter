@@ -267,7 +267,7 @@ module InitConf
                                    a3_offset: [0, 0],
                                    a4_offset: [35, 0]}
                  },
-                 'Zipino'         => {
+                 'Zipino'              => {
                      layout:      {instrument:   'Zipino',
                                    limit_a3:     true,
                                    beams:        false,
@@ -305,9 +305,10 @@ module InitConf
 
                  T01_number:               {
                      value: {
-                         pos:   [393, 17],
+                         pos:   [410, 17],
                          text:  "XXX-{{number}}",
-                         style: "bold"
+                         style: "bold",
+                         align: "l"
                      }},
                  T01_number_extract:       {
                      value: {
@@ -340,9 +341,10 @@ module InitConf
                      }},
                  T05_printed_extracts:     {
                      value: {
-                         pos:   [393, 22],
+                         pos:   [410, 22],
                          text:  "{{printed_extracts}}",
-                         style: "smaller"
+                         style: "smaller",
+                         align: "l"
                      }},
                  T06_legend:               {
                      value: {

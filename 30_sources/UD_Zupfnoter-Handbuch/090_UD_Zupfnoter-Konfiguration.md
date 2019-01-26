@@ -1323,7 +1323,8 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
           "T01_T99"                  : {"value": {}},
           "T01_number"               : {
             "value" : {
-              "pos"   : [393, 17],
+              "align" : "l",
+              "pos"   : [410, 17],
               "style" : "bold",
               "text"  : "XXX-{{number}}"
             }
@@ -1358,7 +1359,8 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
           },
           "T05_printed_extracts"     : {
             "value" : {
-              "pos"   : [393, 22],
+              "align" : "l",
+              "pos"   : [410, 22],
               "style" : "smaller",
               "text"  : "{{printed_extracts}}"
             }
@@ -1396,7 +1398,8 @@ TODO: Helptext für presets.notes.T01_number einfügen
 
         "T01_number": {
           "value" : {
-            "pos"   : [393, 17],
+            "align" : "l",
+            "pos"   : [410, 17],
             "style" : "bold",
             "text"  : "XXX-{{number}}"
           }
@@ -1408,10 +1411,32 @@ TODO: Helptext für presets.notes.T01_number einfügen
 TODO: Helptext für presets.notes.T01_number.value einfügen
 
         "value": {
-          "pos"   : [393, 17],
+          "align" : "l",
+          "pos"   : [410, 17],
           "style" : "bold",
           "text"  : "XXX-{{number}}"
         }
+          
+
+## `presets.notes.T01_number.value.align` - Ausrichtung {#presets.notes.T01_number.value.align}
+
+Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
+(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
+Anordnung automatisch errechnet
+
+-   `l`: der Text steht links vom Bezugspunkt (und ist daher
+    rechtsbündig)
+-   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+    linksbündig)
+-   `auto`: die Ausrichtung wird automatisch errechnet
+
+> **Hinweis**: Auch beim manuellen Verschieben wird die Anordnung der
+> Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
+> (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
+> Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
+> werden.
+
+        "align": "l"
           
 
 ## `presets.notes.T01_number.value.pos` - Position {#presets.notes.T01_number.value.pos}
@@ -1419,7 +1444,7 @@ TODO: Helptext für presets.notes.T01_number.value einfügen
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [393, 17]
+        "pos": [410, 17]
           
 
 ## `presets.notes.T01_number.value.style` - Stil {#presets.notes.T01_number.value.style}
@@ -1759,7 +1784,8 @@ TODO: Helptext für presets.notes.T05_printed_extracts einfügen
 
         "T05_printed_extracts": {
           "value" : {
-            "pos"   : [393, 22],
+            "align" : "l",
+            "pos"   : [410, 22],
             "style" : "smaller",
             "text"  : "{{printed_extracts}}"
           }
@@ -1771,10 +1797,32 @@ TODO: Helptext für presets.notes.T05_printed_extracts einfügen
 TODO: Helptext für presets.notes.T05_printed_extracts.value einfügen
 
         "value": {
-          "pos"   : [393, 22],
+          "align" : "l",
+          "pos"   : [410, 22],
           "style" : "smaller",
           "text"  : "{{printed_extracts}}"
         }
+          
+
+## `presets.notes.T05_printed_extracts.value.align` - Ausrichtung {#presets.notes.T05_printed_extracts.value.align}
+
+Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
+(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
+Anordnung automatisch errechnet
+
+-   `l`: der Text steht links vom Bezugspunkt (und ist daher
+    rechtsbündig)
+-   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+    linksbündig)
+-   `auto`: die Ausrichtung wird automatisch errechnet
+
+> **Hinweis**: Auch beim manuellen Verschieben wird die Anordnung der
+> Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
+> (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
+> Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
+> werden.
+
+        "align": "l"
           
 
 ## `presets.notes.T05_printed_extracts.value.pos` - Position {#presets.notes.T05_printed_extracts.value.pos}
@@ -1782,7 +1830,7 @@ TODO: Helptext für presets.notes.T05_printed_extracts.value einfügen
 Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
 Liste von horizontaler / vertikaler Position.
 
-        "pos": [393, 22]
+        "pos": [410, 22]
           
 
 ## `presets.notes.T05_printed_extracts.value.style` - Stil {#presets.notes.T05_printed_extracts.value.style}

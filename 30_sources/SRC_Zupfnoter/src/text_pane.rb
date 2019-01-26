@@ -632,7 +632,7 @@ module Harpnotes
     def restore_from_localstorage
       abc = Native(`localStorage.getItem('abc_data')`)
       unless abc.nil?
-        `localStorage.removeItem('abc_data')` # we convert localstorage so store abc, config and resoucres as three items
+        `localStorage.removeItem('abc_data')` # we convert localstorage so store abc, config and resources as three items
         set_text(abc) unless abc.nil?
       else
         abctext = Native(`localStorage.getItem('zn_abc')`)
