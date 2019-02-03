@@ -145,7 +145,6 @@ $endif$
 \author{$for(author)$$author$$sep$ \and $endfor$}
 \date{$date$}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Wortsammler specific settings
@@ -213,9 +212,9 @@ $endif$
 \setlength{\oddsidemargin}{-0.5cm}
 \setlength{\evensidemargin}{-0.5cm}
 \setlength{\textwidth}{17cm}
-\setlength{\topmargin}{-2.0cm}
-\setlength{\headheight}{53pt}
-\setlength{\headsep}{0.5cm}
+\setlength{\topmargin}{-2.5cm}
+\setlength{\headheight}{2cm}
+\setlength{\headsep}{1cm}
 \setlength{\textheight}{25cm}
 \setlength{\footskip}{1cm}
 
@@ -257,10 +256,11 @@ $if(linenumbers)$
 \setlength\linenumbersep{1mm}
 \modulolinenumbers[5]
 $endif$
-
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \usepackage{makeidx}
 \makeindex
-
+%
 %
 %\renewcommand{Befehl der Gliederungsebene z.B. \chapter}{\@startsection{Name z.B. chapter}{Ebene z.B. 0}{Einrückung z.B. 0pt}{Abstand zum vorigen Text z.B. 3.5ex plus 1ex minus 0pt\relax}{Abstand zum nachfolgenden Text z.B. 2.5ex plus 0.5ex minus 0pt\relax}{Schrift z.B. \normalfont\Large\bfseries}}
 %
@@ -287,7 +287,7 @@ $endif$
 $if(toc)$
 {
 \hypersetup{linkcolor=black}
-\setcounter{tocdepth}{3}
+\setcounter{tocdepth}{1}
 \tableofcontents
 \newpage
 }

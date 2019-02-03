@@ -1202,7 +1202,7 @@ den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
         "hpos": [43, 55, 79]
           
 
-## `extract.0.stringnames.marks.vpos` - vertikale Position {#extract.0.stringnames.marks.vpos}
+## `extract.0.stringnames.marks.vpos` - vert. Position {#extract.0.stringnames.marks.vpos}
 
 Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in
 mm.
@@ -1234,7 +1234,7 @@ In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
 
         "text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G"
 
-## `extract.0.stringnames.vpos` - vertikale Position {#extract.0.stringnames.vpos}
+## `extract.0.stringnames.vpos` - vert. Position {#extract.0.stringnames.vpos}
 
 Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in
 mm.
@@ -2061,8 +2061,8 @@ der in diesem Parameter angegebenen Name zum Speichern verwendet
 
 ## `template.title` - Titel {#template.title}
 
-Hier kannst du einen informativen Titel für das Template angeben. Damit
-kannst du das Template identifizieren.
+Hier kannst du einen informativen Titel für die Vorlage angeben. Damit
+kannst du die Vorlage identifizieren.
 
         "title": "- no template -"
           

@@ -7,7 +7,7 @@
         - html
 
     :vars: 
-        :lang: german
+        :lang: de-de
         :fontsize: 12pt
         :mainfont: Calibri
         :sansfont: Calibri

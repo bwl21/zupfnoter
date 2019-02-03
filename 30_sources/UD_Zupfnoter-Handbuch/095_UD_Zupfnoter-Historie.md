@@ -2,9 +2,9 @@
 
 # Änderungsgeschichte
 
-# V.1.10 Nov 2018
+## V.1.10 Nov 2018
 
-## fix
+### fix
 
 -   Pausen in n-tolen \#240
 -   "Abschnitt in allen Stimmen auswählen" funktionier tauch mit
@@ -13,7 +13,7 @@
 -   XML-Import funktioniert nun auch wenn keine Vorlage definiert ist
     \#239
 
-## enhancement
+### enhancement
 
 -   BWC: Taktnummern und Zählmarken können nun an der Notenmitte
     ausgerichtet werden \#237
@@ -23,9 +23,7 @@
     \#242
 -   Dialog "Es gibt neue Informationen" verbessert \#244
 
-## 
-
-## Kompatibilität
+### Kompatibilität
 
 -   "Konfig. bearb." / "Taknummern und Zählmarken" , Schnelleinstellung
     "an der Mitte der Note verankern"
@@ -66,12 +64,12 @@ internal release
 
 ## v 1.9.0
 
-## Fehlerbehebungen
+### Fehlerbehebungen
 
 -   Taktstrich bei Wiederholungsgrenzen innerhalb eines Takts sind nun
     unterdrückt \#216
 
-## Erweiterungen
+### Erweiterungen
 
 -   Sprunglinien für Variationen können einzeln konfiguriert werden
     \#215
@@ -85,7 +83,7 @@ internal release
 -   Platzhalter in Seitenbeschriftungen, so dass manche Werte nicht
     mehrfach eingegeben werden müssen \#223
 
-## Kompatibilität
+### Kompatibilität
 
 -   Voreinstellung für Basis von Taktnummernpoistionen verändert
     ap_base \#218
@@ -113,7 +111,7 @@ internal release
 -   fixed "blues with accidentals" \#188
 -   Korrektur der Behandlung von Fingerabdrücken mit abc2svg 1.15.5
     \#195
--   vertaal ist nicht mehr begrenzt durch :|[ \#192
+-   vertaal ist nicht mehr begrenzt durch :\|\[ \#192
 -   Größe des Auswahlbereichs verkleinern, um Überschneidungen mit
     Barnummer etc. zu vermeiden \#197
 -   verbesserter Spieler \#210
@@ -362,7 +360,7 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
 
 -   barnumbers are small_bold again \#60
 -   optimized placement of cutmarks \#74
--   fixed tempo note for e.g. 3/8= 120 \#79
+-   fixed tempo note for e.g. 3/8= 120 \#79
 -   fix countnotes \#78
 
 ## V 1.4.2
@@ -410,7 +408,7 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
 -   non BWC: unisons are nore connected to their last note (\#32);
     migrate by inverting the unisons
 -   non BWC: restructure of notebound annotations (\#33); migrate by
-    delete notebound configuration and reposition [r:] needs to start
+    delete notebound configuration and reposition \[r:\] needs to start
     with lowercase letter, all now works per voice only;
 -   update favorite icon to Zupfnoter logo
 -   now can print a scalebar with very flexible configuration \#18
@@ -448,11 +446,11 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
 -   initial support of voice overlays (bars do not always show up)
 -   raise an alert before unloading Zupfnoter
 -   indicate draggable text by "pointer" cursors
--   notebound annotations can be dragged if the note has an [r:] remark
-    which serves as note-id.
+-   notebound annotations can be dragged if the note has an \[r:\]
+    remark which serves as note-id.
 -   config menu now injects some layout options
 
--   no error message on [r:] - remarks
+-   no error message on \[r:\] - remarks
 -   some refactorings (abc2svg-json)
 -   update to abc2svg 1.5.22
 

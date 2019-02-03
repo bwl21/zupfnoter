@@ -12,22 +12,22 @@ see https://github.com/bwl21/zupfnoter/issues/71
 
 TODO: text überarbeiten
 
--   **Titel**: [extract.x.title]
+-   **Titel**: \[extract.x.title\]
 
     Spezifizert den Titel des Auszugs
 
     > **Hinweis:** Der Titel des Auszug ist nicht zu verwechseln mit dem
     > Titel des Musikstücks ( ABC-Kopfzeite "´T:\`")
 
--   **Stimmen**: [extract.x.voices]
+-   **Stimmen**: \[extract.x.voices\]
 
     Spezifiziert, welche Stimmen in dem Auszug dargestellt werden.
 
--   **Flusslinien** [extract.x.flowlines]
+-   **Flusslinien** \[extract.x.flowlines\]
 
     Spezifiziert, welche Stimmen eine Flusslinie erhalten sollen.
 
--   **Stimmen für layout**: [extract.x.layoutlines]
+-   **Stimmen für layout**: \[extract.x.layoutlines\]
 
     Zupfnoter errechnet die vertikale Anordnung der Noten aus den
     einzelnen Notenlängen. Über diese Einstellung wird bestimmt, welche
@@ -38,7 +38,7 @@ TODO: text überarbeiten
     > Unterlegnoten dargestellt wird. Auf diese Weise kann man man das
     > layout vollständig manuell steuern.
 
--   **Sprunglinien:** [extract.x.jumplines]
+-   **Sprunglinien:** \[extract.x.jumplines\]
 
     Diese Einstellung wird bestimmt, für welche Stimmen die Sprunglinien
     dargestellt werden.
@@ -59,7 +59,7 @@ TODO: text überarbeiten
     Halbtonschritte **links** von der letzten Note des Abschnittes
 
 -   **Synchronisationslinien:** (Synchronisationslinie, Querlinie zu
-    Begleitnoten) [extract.x.synchlines]
+    Begleitnoten) \[extract.x.synchlines\]
 
     Diese Einstellung bestimmt, zwischen welchen Stimmen die
     Synchronisationslinien dargestellt werden.
@@ -67,7 +67,7 @@ TODO: text überarbeiten
     **Hinweise:** Synchronisationslinien für Mehrklänge werden immer
     dargestellt.
 
--   **Legende**: [extract.x.legend]
+-   **Legende**: \[extract.x.legend\]
 
     Diese Einstellung bestimmt die Position der Legende. Dabei kann die
     Überschrift des Musikstückes und der Informationsblock separat
@@ -76,7 +76,7 @@ TODO: text überarbeiten
     **Hinweis:** durch Verschieben der Objekte mit der Maus wird diese
     Einstellung automatisch eingefügt.
 
--   **Liedtexte:** (Liedtexte) [extract.x.lyrics]
+-   **Liedtexte:** (Liedtexte) \[extract.x.lyrics\]
 
     Diese Einstellung bstimmt, wie die Liedtexte im Unterlegnotenblatt
     positioniert werden.
@@ -87,32 +87,32 @@ TODO: text überarbeiten
     > anzuordnen. Mit bestimmten Symbolen werden Wörter oder Silben den
     > herkömmlichen Noten zugeordnet.
 
--   **Seitenbeschriftung:** [extract.x.notes]
+-   **Seitenbeschriftung:** \[extract.x.notes\]
 
     TODO Sachverhalte: steht für Noten und für Notizen im Zupfnoter.
     Vorschlag hier umbenennen in notice oder comment???.
 
--   **Begleitpausen:** [extact.x.nonflowrest]
+-   **Begleitpausen:** \[extact.x.nonflowrest\]
 
     Generell werden Pausen in den Begleitnoten (Stimmen ohne Flusslinie)
     der herkömmlichen Noten und Tisch-Harfen-Noten unterdrückt. Wenn du
     die Pausen auch in den Begleitstimmen darstellen möchtest, kannst du
     sie mit dieser Einstellung einschalten.
 
--   **Startposition:** [extract.x.startpos]
+-   **Startposition:** \[extract.x.startpos\]
 
     Mit dieser Einstellung kann man die Startposition der Unterlegnoten
     festlegen. Die Angabe erfolgt in Millimeter und wird vom oberen
     Blattrand gemessen.
 
--   **Unterflusslinien**: [extract.x.subflowlines]
+-   **Unterflusslinien**: \[extract.x.subflowlines\]
 
     Diese Einstellung bestimmt, für welche Stimmen die Unterflusslinien
     ausgegeben werden. Dies kann sinnvoll bei Begleitnoten sein, die in
     der Melodie keiner Note zugeordnet werden können oder bei
     Verzierungsnoten.
 
--   **Ausgabe:** [produce]
+-   **Ausgabe:** \[produce\]
 
     Diese Einstellung bestimmt, welche Auszüge gedruckt werden sollen.
     Oft wird z.B. der Auszug 0 nur zur Bearbeitung verwendet, aber nicht
@@ -120,15 +120,15 @@ TODO: text überarbeiten
 
     Stimmen (Auszug 0 beinhaltet 100 %)
 
--   **Layout:** (Gestaltung oder Anordnung) [extract.x.layout]
+-   **Layout:** (Gestaltung oder Anordnung) \[extract.x.layout\]
 
--   **Zählmarken:** [extraxt.x.coountnotes]
+-   **Zählmarken:** \[extraxt.x.coountnotes\]
 
     Es werden unter jeder Note, abhängig von der Taktart, Zahlen
     zugeordnet, die die Zählung des Taktes darstellen. Bei einem 4/4
     Takt kann das also (1 2 3 4) oder (1 und 2 und 3 und 4 und) sein.
 
--   **Taktnummern:** [extract.x.barnumbers]
+-   **Taktnummern:** \[extract.x.barnumbers\]
 
     Diese Einstellung bestimmt, an welchen Stimmen die Takte numeriert
     werden. Ebenso wird Position und Darstellung bestimmt.
@@ -173,8 +173,8 @@ Es gibt folgende Zusätze:
 -   **`^<`** - Linksverschiebung: Verschiebt das Notensybmol in den
     Unterlegnoten nach links
 
--   **[r:n_11]** - Verschiebemarke: Das ist eine eingebettete Kopfzeile
-    der ABC-Notation. Wenn man mit der Maus Elemente im
+-   **\[r:n_11\]** - Verschiebemarke: Das ist eine eingebettete
+    Kopfzeile der ABC-Notation. Wenn man mit der Maus Elemente im
     Unterlegnotenblatt verschiebt, wird diese Verschiebung in der
     Konfiguration abgespeichert (`notebound`). Die Referenz wird dann
     über den Namen der Verschiebemarke hergestellt.

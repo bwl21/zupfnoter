@@ -70,6 +70,7 @@ ABC-Notation:
     abgesetzt ist.
 
 <!-- das erstellte blatt in Vorschau drehen und als PDF wieder exportieren -->
+
 ![Zupfnoter Elemente](../ZAUX_images/3015_reference_sheet_doc_a3.pdf)
 
 ## Elemente der von Zupfnoter erstellten Unterlegnoten
@@ -239,7 +240,7 @@ man sie "notenbezogene Elemente":
 
 -   **(28) countnotes - Zählhilfen**: Zupfnoter kann die Noten
     automatisch mit Zählhilfen beschriften. Die Zählweise ergibt sich
-    aus der Taktangabe. Beispiel siehe Abbildung [Zupfnoter Elemente].
+    aus der Taktangabe. Beispiel siehe Abbildung \[Zupfnoter Elemente\].
     Diese Ausgabe (für welche Stimmen, Position) ist
     konfigurationsabhängig (`extract.0.countnotes`).
 
@@ -431,7 +432,7 @@ und das Einelgen in das Instrument zu vereinfachen:
 -   **(37) stringnames - Saitennamen**: Zupfnoter kann die Namen der
     Saiten auf den Unterlegnoten ausgeben.
 
-    > **Hinweis**: Über die [Einstellungen in der Konfiguration] kann
+    > **Hinweis**: Über die \[Einstellungen in der Konfiguration\] kann
     > die Ausgabe von Saitennamen eingestellt werden (siehe Kapitel
     > \ref{extract.0.stringnames}
     > [extract.0.stringnames](#extract.0.stringnames)).
@@ -445,7 +446,7 @@ und das Einelgen in das Instrument zu vereinfachen:
     muss so in die Tischharfe eingelegt werden, dass die Marken unter
     den G-Saiten liegen.
 
-    > **Hinweis:** Über die [Einstellungen in der Konfiguration] kann
+    > **Hinweis:** Über die \[Einstellungen in der Konfiguration\] kann
     > die Ausgabe der Saitenmarken beeinflusst werden (siehe Kapitel
     > \ref{extract.0.stringnames.marks}
     > [extract.0.stringnames.marks](#extract.0.stringnames.marks)).
@@ -472,6 +473,7 @@ und das Einelgen in das Instrument zu vereinfachen:
         "*C*entral *E*uropean *S*ummer *T*ime")
     -   Software-Version von Zupfnoter
     -   Server von welchem der Zupfnoter geladen wurde
+
 -   **(72) reference to zupfnoter website - Referenz auf Zupfnoter
     Website**: Dies ist die Referenz auf Zupf-\
     noter als Werkzeug zur Erstellung des Unterlegnotenblattes, also
@@ -603,7 +605,7 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
     > Konfiguration gespeichert und ist an die die Startzeit der Note
     > gebunden, solange keine Verschiebemarke \index{Verschiebemarke} in
     > der ABC-Notation eingefügt ist
-    > ([extract.x.notebound.annotation.v\_{voice}.{time}]).
+    > (\[extract.x.notebound.annotation.v\_{voice}.{time}\]).
 
 -   **Seitenbeschriftung**
 
@@ -658,6 +660,7 @@ Zupfnoter kennt drei Fenster[^040_UD-Zupfnoter-Referenz.md_4]:
     -   `Liedtexte` für die Erfassung der Liedtexte
     -   `Konfiguration` für die formulargeführte Bearbeitung der
         Zupfnoter-Konfiguration.
+
 -   Im **rechten oberen Fenster** (Kapitel \ref{notenvorschau}
     [Eingabe](#notenvorschau)) wird in der herkömmlichen Notenschrift
     das Musikstück gezeigt, und kann somit musikalisch überprüft wreden.
@@ -719,7 +722,7 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
 > Zupfnoter verbessert. Daher sind die Informationen in diesem Kapitel
 > vorläufig.
 
--   Schaltfläche **Zupfnoter**: TODO: – Detailinfo als Popup darstellen
+-   Schaltfläche **Zupfnoter**: TODO: -- Detailinfo als Popup darstellen
 
 -   Schaltfläche **Neu** (erstellen): Es wird ein leerer Bildschirm ohne
     Inhalte erstellt und man kann ein neues Musikstück erstellen (siehe
@@ -1493,7 +1496,8 @@ Für die Bedienung der Masken ist noch wichtig
 -   Schaltfläche `Neuer Eintrag`: Diese Taste fügt eine neue Instanz
     eines Parameters ein. Sie ist nur aktiv, wenn es für einen Parameter
     mehrere Instanzen geben kann (z.B. \index{Liedtexte}Liedtexte
-    [lyrics.x], \index{Seitenbeschriftung}Seitenbeschriftung [notes.x])
+    \[lyrics.x\], \index{Seitenbeschriftung}Seitenbeschriftung
+    \[notes.x\])
 -   Schaltfläche `Schnelleinst.`: Diese Taste (Schnelleinstellungen)
     öffnet ein Menü, aus dem du für die aktuelle Maske eine
     Voreinstellung auswählen kannst. Eine solche Voreinstellung ist eine
@@ -1747,10 +1751,12 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
     -   Aufteilung der Liedtexte auf zwei Blöcke
         -   Block 1: Strophe 1 und 2
         -   Block 2: Strophe 3 und 4
+
 -   Auszug 1 hat gegenüber Auszug 0:
 
     -   nur Stimme 1 und 2
     -   andere Position der Liedtexte
+
 -   Auszug 2 gat gegenüber Auszug 0:
 
     -   nur Stimme 3 und 4 Voreinstellung in Zupfnoter entspricht.)
@@ -2324,10 +2330,8 @@ sind verfügbar:
 
 `{{song_id}}`
 :   Das ist die Identifikationsnummer des Stückes
-
 `{{filename}}`
 :   Das ist die Basis für den Dateinamen
-
 `{{song_title}}`
 :   Das ist der Titel des Stückes.
 

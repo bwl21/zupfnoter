@@ -867,8 +867,8 @@ der in diesem Parameter angegebenen Name zum Speichern verwendet
 
 ## template.title
 
-Hier kannst du einen informativen Titel für das Template angeben. Damit
-kannst du das Template identifizieren.
+Hier kannst du einen informativen Titel für die Vorlage angeben. Damit
+kannst du die Vorlage identifizieren.
 
 ## tuplet
 
