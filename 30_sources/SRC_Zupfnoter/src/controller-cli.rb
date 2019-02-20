@@ -84,6 +84,17 @@ class CliController < Controller
     pdfs
   end
 
+  def about_zupfnoter
+    %Q{#{I18n.t("Free software to create sheets for table harps")}
+          Zupfnoter: #{VERSION}
+          Opal     : #{RUBY_ENGINE_VERSION}
+          Ruby     : #{RUBY_VERSION}
+          abc2svg  : #{%x{abc2svg.version}}
+          jsPD     : #{JsPDF.jspdfversion}
+          Website  : https://www.zupfnoter.de
+    }
+  end
+
 
 end
 

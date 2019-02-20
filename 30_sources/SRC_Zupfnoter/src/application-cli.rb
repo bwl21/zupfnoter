@@ -16,7 +16,7 @@
   global.btoa = function btoa(b) {return new Buffer(b).toString('base64');};
   global.atob = function atob(a) {return new Buffer(a, 'base64').toString('binary');};
 
-  jsPDF = require ("jspdf")   // adapt in opal-jspdf.rb
+  jsPDF = require ("../vendor/jspdf.node.debug.js")   // adapt in opal-jspdf.rb
   Ajv = require("ajv")        // adapt in opal-ajv.rb
   neatJSON = require("./neatjson_js") // adapt in opal-neatjson.rb
 
@@ -84,6 +84,7 @@ configfile    = ARGV[2]
 #
 unless ARGV.length >= 2
   puts %Q{usage: node --max_old_space_size=4096 zupfnoter-cli.js "/tmp/zntest/*.abc" /tmp/xxxd}
+  puts CliController.new.about_zupfnoter
   exit(0)
 end
 
@@ -134,7 +135,7 @@ sourcefiles.each do |sourcefile|
 
     %x{
        var encoding = require ("encoding")
-       var buffer = encoding.convert(#{content}, 'Latin-1')
+       var buffer = content; encoding.convert(#{content}, 'Latin-1')
        fs.writeFileSync(#{outputname}, buffer)
     }
     nil
