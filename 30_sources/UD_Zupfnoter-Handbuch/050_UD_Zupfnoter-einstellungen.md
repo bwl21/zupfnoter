@@ -173,7 +173,7 @@ Es gibt folgende Zusätze:
 -   **`^<`** - Linksverschiebung: Verschiebt das Notensybmol in den
     Unterlegnoten nach links
 
--   **\[r:n_11\]** - Verschiebemarke: Das ist eine eingebettete
+-   **\[r:n\_11\]** - Verschiebemarke: Das ist eine eingebettete
     Kopfzeile der ABC-Notation. Wenn man mit der Maus Elemente im
     Unterlegnotenblatt verschiebt, wird diese Verschiebung in der
     Konfiguration abgespeichert (`notebound`). Die Referenz wird dann

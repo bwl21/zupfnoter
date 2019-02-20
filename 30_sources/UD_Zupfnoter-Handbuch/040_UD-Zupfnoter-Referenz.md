@@ -510,15 +510,15 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
 
 -   **(74) T04 to order - zu beziehen bei**: Hier kann man angeben, über
     welche Adresse das Unterlegnotenblatt bezogen werden kann
-    (Konfiguration siehe Kapitel
-    \ref{presets.notes.T04ux5ftoux5forder}[presets.notes.T04_to_order](#presets.notes.T04_to_order)).
-    Das ist natürlich nur sinnvoll, wenn es für die erstellen
-    Unterlegnoten einen Vertriebsweg gibt.
+    (Konfiguration siehe Kapitel \ref{presets.notes.T04_fto_forder}
+    [presets.notes.T04\_to\_order](#presets.notes.T04_to_order)). Das
+    ist natürlich nur sinnvoll, wenn es für die erstellen Unterlegnoten
+    einen Vertriebsweg gibt.
 
 -   **(75) T02 Copryright music - Urheberrechte für das Stück**: Hier
     kann mam die Urheberrechte für das Musikstück angeben (Konfiguration
-    siehe Kapitel
-    \ref{presets.notes.T02ux5fcopyrightux5fmusic}[presets.notes.T02_copyright_music](#presets.notes.T02_copyright_music)).
+    siehe Kapitel \ref{presets.notes.T02_fcopyright_fmusic}
+    [presets.notes.T02\_copyright\_music](#presets.notes.T02_copyright_music)).
     Es wird empfohlen, diese Rechte immer anzugeben und den Satz
     "Privatkopie" hinzuzufügen, wenn mit dem Rechteinhaber keine
     Vereinbarung geschlossen wurde.
@@ -531,20 +531,22 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
     von den Urheberrechten am Stück entsteht auch ein Urheberrecht an
     den erstellen Unterlegnoten. Hier kannst du diese Rechte
     beanspruchen (Konfiguration siehe Kapitel
-    \ref{presets.notes.T03ux5fcopyrightux5fharpnotes}[extract.0.synchlines](#presets.notes.T03_copyright_harpnotes)).
+    \ref{presets.notes.T03_fcopyright_fharpnotes}
+    [extract.0.synchlines](#presets.notes.T03_copyright_harpnotes)).
 
 -   **(77) T99 do not copy - Bitte nicht kopieren**: Diese Beschriftung
     soll den Blick dafür schärfen, das die erstellen Unterlegnoten nicht
     einfach wild kopiert werden dürfen, sondern die Urheberrechte zu
     bachten sind (Konfiguration siehe Kapitel
-    \ref{presets.notes.T99ux5fdoux5fnotux5fcopy}[presets.notes.T99_do_not_copy](#presets.notes.T99_do_not_copy)).
+    \ref{presets.notes.T99_fdo_fnot_fcopy}
+    [presets.notes.T99\_do\_not\_copy](#presets.notes.T99_do_not_copy)).
 
 -   **(78) T01 Number - Nummer**: Hier kannst du eine Nummer angeben,
     welche das Unterlegnotenblatt eindeutig und schnell identifizierbar
-    macht(Konfiguration siehe Kapitel
-    \ref{presets.notes.T01ux5fnumber}[presets.notes.T01_number](#presets.notes.T01_number)).
-    Im Grunde ist das wie eine Bestellnummer. Es wird empfohlen, die
-    Nummer nach folgendem Schema zu gestalten:
+    macht(Konfiguration siehe Kapitel \ref{presets.notes.T01_fnumber}
+    [presets.notes.T01\_number](#presets.notes.T01_number)). Im Grunde
+    ist das wie eine Bestellnummer. Es wird empfohlen, die Nummer nach
+    folgendem Schema zu gestalten:
 
     `XXX-999` darin ist
 
@@ -559,7 +561,8 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
 
 -   **(79) T01 Number extract - Kürzel für den Auszug**: Hier kannst du
     ein Kürzel für den Auszug angebeen (Konfiguration siehe Kapitel
-    \ref{presets.notes.T01ux5fnumberux5fextract}[presets.notes.T01_number_extract](#presets.notes.T01_number_extract))
+    \ref{presets.notes.T01_fnumber_fextract}
+    [presets.notes.T01\_number\_extract](#presets.notes.T01_number_extract))
 
 ### Zusammenfassung der Beschriftungen in Zupfnoter
 
@@ -726,7 +729,7 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
 
 -   Schaltfläche **Neu** (erstellen): Es wird ein leerer Bildschirm ohne
     Inhalte erstellt und man kann ein neues Musikstück erstellen (siehe
-    Kapitel \ref{dein-erstes-musikstueck-eingeben}[Dein erstes
+    Kapitel \ref{dein-erstes-musikstueck-eingeben} [Dein erstes
     Musikstück eingeben](#dein-erstes-musikstueck-eingeben)).
 
 -   Schaltfläche **Einloggen**: TODO: -
@@ -2313,7 +2316,7 @@ Vorlage eingerichtet werden:
 
     > **Hinweis**: Dabei ist es wichtig, dass die Kopfzeile `F:` einen
     > Platzhalter - Zeichen `{{` enthält. Dadurch wird im
-    > "Template_modus" gespeichert, d.h. der Dateiname wird nicht aus
+    > "Template\_modus" gespeichert, d.h. der Dateiname wird nicht aus
     > der `F:` - Zeile entnommen sondern aus dem Konfigurationsparameter
     > `template.filebase` entnommen.
 

@@ -32,13 +32,13 @@ Namen `vl`).\
 Diese dient dazu ein "V" an die Harfennote zu drucken um anzudeuten,
 dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.
 
-## DRAWING_AREA_SIZE
+## DRAWING\_AREA\_SIZE
 
 Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
 aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
 großen Stücken noch ein bisschen mehr Platz ausreizen.
 
-## ELLIPSE_SIZE
+## ELLIPSE\_SIZE
 
 Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
 sind \[2-4, 1.2-2\].
@@ -306,12 +306,12 @@ Hier kannst du die Farbe für verschiedene Elemente einstellen.
 > Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
 > variante Abschnitte nicht mehr durch Farbe abgesetzt.
 
-## layout.color.color_default
+## layout.color.color\_default
 
 Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen
 Elementen verwendet, die keine spzeifische Farbeinstellung haben.
 
-## layout.color.color_variant1
+## layout.color.color\_variant1
 
 Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
 dargestellt werden.
@@ -323,7 +323,7 @@ dargestellt werden.
 > Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
 > variante Abschnitte nicht mehr durch Farbe abgesetzt.
 
-## layout.color.color_variant2
+## layout.color.color\_variant2
 
 Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc.
 dargestellt werden.
@@ -335,28 +335,28 @@ dargestellt werden.
 > Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
 > variante Abschnitte nicht mehr durch Farbe abgesetzt.
 
-## layout.jumpline_anchor
+## layout.jumpline\_anchor
 
 Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
 verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
 an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
 gesagt, das umhüllende Rechteck) der entsprechende Note.
 
-## layout.limit_a3
+## layout.limit\_a3
 
 Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
 Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
 angeshnitten.
 
-## layout.LINE_THIN
+## layout.LINE\_THIN
 
 Hier stellst du die Breite (in mm) von dünnen Linien ein.
 
-## layout.LINE_MEDIUM
+## layout.LINE\_MEDIUM
 
 Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
-## layout.LINE_THICK
+## layout.LINE\_THICK
 
 Hier stellst du die Breite (in mm) von dicken Linien ein.
 
@@ -388,7 +388,7 @@ Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder
 Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten
 Zeitpunkt.
 
-## minc_f
+## minc\_f
 
 Hier gibst du den Korrekturfaktor für den vertikalen Voreschub an.
 
@@ -453,7 +453,7 @@ Hier kannst du weitere Einzelheiten für die vertikale Anordnung der
 Noten konfigurieren. Es sind subtile Feinheiten, welche den Unterschied
 ausmachen. Daher sind diese Funktionen noch experimentell.
 
-## layout.packer.pack_method
+## layout.packer.pack\_method
 
 Hier kannst du die pack-Methode auswählen
 
@@ -484,7 +484,7 @@ Hier kannst du die pack-Methode auswählen
     Es wird auch kein extra Raum für Parts, Taktstriche und manuelle
     Vorschübe erstellt.
 
-## layout.packer.pack_min_increment
+## layout.packer.pack\_min\_increment
 
 Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt
 wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
@@ -497,7 +497,7 @@ geschaltet.
 -   **0.2**: es wird um 20% einer ganzen Note weiter geschaltet. Dies
     liefert angenehme Ergebnisse.
 
-## layout.packer.pack_max_spreadfactor
+## layout.packer.pack\_max\_spreadfactor
 
 Nach der Berechnung des maximal komprimierten Layouts versucht
 Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfläche voll
@@ -570,7 +570,7 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 > spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
 > allerdings nur in der Textansicht möglich.
 
-## notes.0.T01_number
+## notes.0.T01\_number
 
 Dieses Template fügt eine Nummer im Notenblatt ein. Damit kannst du
 deine eigenen Ordnungskriterien realiseren.
@@ -583,7 +583,7 @@ Das vorgesehene Numernschema setzt sich aus zwei Blöcken zusammen
 
 Beispiel: `BWL-001` - Bernhard Weichel - Blatt 001
 
-## notes.T01_number_extract
+## notes.T01\_number\_extract
 
 Dieses Template fügt zwei Zeichem am Ende der Nummer an. Damit kann man
 den jeweiligen Auszug kennzeichen.
@@ -597,24 +597,24 @@ Ein sinnvolles schema ist:
 -   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
     aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
-## notes.T02_copyright_music
+## notes.T02\_copyright\_music
 
 Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
 das Copyright auf die Komposition angegeben.
 
-## notes.T03_copyright_harpnotes
+## notes.T03\_copyright\_harpnotes
 
 Dieses Template fügt einen Copyrightvermerk für das Unterlgnotenbild
 ein. Damit reklamierst du ein Copyright für die Umsetzung auf die
 Tischharfe
 
-## notes.T04_to_order
+## notes.T04\_to\_order
 
 Dieses Template fügt eine Notiz ein wo man das Unterlegnotenblatt
 beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
 Weise vertrieben werden.
 
-## notes.T09_do_not_copy
+## notes.T09\_do\_not\_copy
 
 Dieses Template fügt eine Notiz ein, die darauf hinweist, dass das Blatt
 nicht ohne Erlaubnis kopiert werden darf.
@@ -625,7 +625,7 @@ Hier gibst du die Position der Seitenbeschriftung an, an welcher der
 Liedtext-Block ausgegeben werden soll. Angabe erfolgt in mm als
 kommagetrennte Liste von horizontaler / vertikaler Position.
 
-## PITCH_OFFSET
+## PITCH\_OFFSET
 
 Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
 Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
@@ -674,7 +674,7 @@ Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
 > die Funktion also erst, wenn du keine geeigneten Einstellungen in
 > deinem Druckdialog findest.
 
-## printer.a3_offset
+## printer.a3\_offset
 
 Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
 verschoben werden soll.
@@ -689,7 +689,7 @@ vertikaler Position.
 >
 > In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
 
-## printer.a4_offset
+## printer.a4\_offset
 
 Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
 verschoben werden soll.
@@ -697,7 +697,7 @@ verschoben werden soll.
 Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
 vertikaler Position.
 
-## printer.a4_pages
+## printer.a4\_pages
 
 Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
 ausgedruckt werden sollen. Die Zählung beginnt bei 0!
@@ -707,7 +707,7 @@ Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
 25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
 auszugeben, und Seite 0 wegzulassen.
 
-## printer.show_border
+## printer.show\_border
 
 Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
 Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
@@ -783,7 +783,7 @@ Hier kannst du die Pausenposition vor einer Wiederholung einstellen.
 
 Hier kannst du die Pausenposition nach einer Wiederholung einstellen.
 
-## REST_SIZE
+## REST\_SIZE
 
 Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
 \[2-4, 1.2-2\]
@@ -995,7 +995,7 @@ Hier kannst du angeben, in welcher Spalte der Zeilenumbruch im
 Konfigurationsabschnitt erfolgen soll. Das kann bei komplexen
 Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
-## X_SPACING
+## X\_SPACING
 
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 

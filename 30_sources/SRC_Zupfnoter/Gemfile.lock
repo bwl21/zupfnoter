@@ -72,7 +72,7 @@ GEM
     treetop (1.6.10)
       polyglot (~> 0.3)
     vector2d (2.1.0)
-    wortsammler (2.0.0.dev1)
+    wortsammler (2.0.0.dev4)
       diffy (~> 2.1.3)
       logger
       nokogiri (= 1.8.2)
@@ -100,7 +100,7 @@ DEPENDENCIES
   redcarpet
   sass
   vector2d (~> 2.1.0)
-  wortsammler (~> 2.0.0.dev1)
+  wortsammler (~> 2.0.0.dev2)
   zip
 
 RUBY VERSION

@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.10.0-21-g8cbaaa4
+Version V\_1.10.0-22-gbb4a7ef
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -1660,15 +1660,16 @@ dieser Beschriftungen.
 \item
   \textbf{(74) T04 to order - zu beziehen bei}: Hier kann man angeben,
   \"{u}ber welche Adresse das Unterlegnotenblatt bezogen werden kann
-  (Konfiguration siehe Kapitel
-  \ref{presets.notes.T04ux5ftoux5forder}\protect\hyperlink{presets.notes.T04_to_order}{presets.notes.T04\_to\_order}).
+  (Konfiguration siehe Kapitel \ref{presets.notes.T04_fto_forder}
+  \protect\hyperlink{presets.notes.T04_to_order}{presets.notes.T04\_to\_order}).
   Das ist nat\"{u}rlich nur sinnvoll, wenn es f\"{u}r die erstellen
   Unterlegnoten einen Vertriebsweg gibt.
 \item
   \textbf{(75) T02 Copryright music - Urheberrechte f\"{u}r das
   St\"{u}ck}: Hier kann mam die Urheberrechte f\"{u}r das Musikst\"{u}ck
   angeben (Konfiguration siehe Kapitel
-  \ref{presets.notes.T02ux5fcopyrightux5fmusic}\protect\hyperlink{presets.notes.T02_copyright_music}{presets.notes.T02\_copyright\_music}).
+  \ref{presets.notes.T02_fcopyright_fmusic}
+  \protect\hyperlink{presets.notes.T02_copyright_music}{presets.notes.T02\_copyright\_music}).
   Es wird empfohlen, diese Rechte immer anzugeben und den Satz
   ``Privatkopie'' hinzuzuf\"{u}gen, wenn mit dem Rechteinhaber keine
   Vereinbarung geschlossen wurde.
@@ -1683,18 +1684,20 @@ dieser Beschriftungen.
   Unabh\"{a}ngig von den Urheberrechten am St\"{u}ck entsteht auch ein
   Urheberrecht an den erstellen Unterlegnoten. Hier kannst du diese
   Rechte beanspruchen (Konfiguration siehe Kapitel
-  \ref{presets.notes.T03ux5fcopyrightux5fharpnotes}\protect\hyperlink{presets.notes.T03_copyright_harpnotes}{extract.0.synchlines}).
+  \ref{presets.notes.T03_fcopyright_fharpnotes}
+  \protect\hyperlink{presets.notes.T03_copyright_harpnotes}{extract.0.synchlines}).
 \item
   \textbf{(77) T99 do not copy - Bitte nicht kopieren}: Diese
   Beschriftung soll den Blick daf\"{u}r sch\"{a}rfen, das die erstellen
   Unterlegnoten nicht einfach wild kopiert werden d\"{u}rfen, sondern
   die Urheberrechte zu bachten sind (Konfiguration siehe Kapitel
-  \ref{presets.notes.T99ux5fdoux5fnotux5fcopy}\protect\hyperlink{presets.notes.T99_do_not_copy}{presets.notes.T99\_do\_not\_copy}).
+  \ref{presets.notes.T99_fdo_fnot_fcopy}
+  \protect\hyperlink{presets.notes.T99_do_not_copy}{presets.notes.T99\_do\_not\_copy}).
 \item
   \textbf{(78) T01 Number - Nummer}: Hier kannst du eine Nummer angeben,
   welche das Unterlegnotenblatt eindeutig und schnell identifizierbar
-  macht(Konfiguration siehe Kapitel
-  \ref{presets.notes.T01ux5fnumber}\protect\hyperlink{presets.notes.T01_number}{presets.notes.T01\_number}).
+  macht(Konfiguration siehe Kapitel \ref{presets.notes.T01_fnumber}
+  \protect\hyperlink{presets.notes.T01_number}{presets.notes.T01\_number}).
   Im Grunde ist das wie eine Bestellnummer. Es wird empfohlen, die
   Nummer nach folgendem Schema zu gestalten:
 
@@ -1715,8 +1718,8 @@ dieser Beschriftungen.
 \item
   \textbf{(79) T01 Number extract - K\"{u}rzel f\"{u}r den Auszug}: Hier
   kannst du ein K\"{u}rzel f\"{u}r den Auszug angebeen (Konfiguration
-  siehe Kapitel
-  \ref{presets.notes.T01ux5fnumberux5fextract}\protect\hyperlink{presets.notes.T01_number_extract}{presets.notes.T01\_number\_extract})
+  siehe Kapitel \ref{presets.notes.T01_fnumber_fextract}
+  \protect\hyperlink{presets.notes.T01_number_extract}{presets.notes.T01\_number\_extract})
 \end{itemize}
 
 \hypertarget{zusammenfassung-der-beschriftungen-in-zupfnoter}{%
@@ -1950,9 +1953,9 @@ Informationen in diesem Kapitel vorl\"{a}ufig.
 \item
   Schaltfl\"{a}che \textbf{Neu} (erstellen): Es wird ein leerer
   Bildschirm ohne Inhalte erstellt und man kann ein neues Musikst\"{u}ck
-  erstellen (siehe Kapitel
-  \ref{dein-erstes-musikstueck-eingeben}\protect\hyperlink{dein-erstes-musikstueck-eingeben}{Dein
-  erstes Musikst\"{u}ck eingeben}).
+  erstellen (siehe Kapitel \ref{dein-erstes-musikstueck-eingeben}
+  \protect\hyperlink{dein-erstes-musikstueck-eingeben}{Dein erstes
+  Musikst\"{u}ck eingeben}).
 \item
   Schaltfl\"{a}che \textbf{Einloggen}: TODO:\marginpar{TODO} -
   https://github.com/bwl21/zupfnoter/issues/75
@@ -4263,10 +4266,9 @@ Platzhalter sind verf\"{u}gbar:
 \tightlist
 \item[\texttt{\{\{song\_id\}\}}]
 Das ist die Identifikationsnummer des St\"{u}ckes
-\texttt{\{\{filename\}\}}
-
-Das ist die Basis f\"{u}r den Dateinamen \texttt{\{\{song\_title\}\}}
-
+\item[\texttt{\{\{filename\}\}}]
+Das ist die Basis f\"{u}r den Dateinamen
+\item[\texttt{\{\{song\_title\}\}}]
 Das ist der Titel des St\"{u}ckes.
 \end{description}
 
@@ -5282,10 +5284,8 @@ l\"{a}sst das Notenbild gezielt optimieren.
 -
 Zeichenfl.Gr\"{o}\ss e}{extract.0.layout.DRAWING\_AREA\_SIZE - Zeichenfl.Gr\"{o}\ss e}}\label{extract.0.layout.DRAWING_AREA_SIZE}}
 
-Hier kannst du die Gr\"{o}\ss e der Zeichenfl\"{a}che einstellen.
-Allerdings hat aktuell nur die vertikale Gr\"{o}\ss e einen Einfluss.
-Damit kann man bei gro\ss en St\"{u}cken noch ein bisschen mehr Platz
-ausreizen.
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.layout.DRAWING\_AREA\_SIZE einf\"{u}gen
 
 \begin{verbatim}
     "DRAWING_AREA_SIZE": [400, 282]
@@ -5296,17 +5296,8 @@ ausreizen.
 \subsection{\texorpdfstring{\texttt{extract.0.layout.ELLIPSE\_SIZE} -
 Notengr\"{o}\ss e}{extract.0.layout.ELLIPSE\_SIZE - Notengr\"{o}\ss e}}\label{extract.0.layout.ELLIPSE_SIZE}}
 
-Hier kannst du die Gr\"{o}\ss e der ganzen Noten einstellen. Sinnvolle
-Werte sind {[}2-4, 1.2-2{]}.
-
-\begin{quote}
-\textbf{Hinweis}: Die Gr\"{o}\ss e der anderen Noten werden ausgehend
-von diesem Wert berechnet.
-
-Da die Noten auch mit der dicken Linie umrandet werden, kann auch die
-``Linienst\"{a}rke \texttt{dick}'' reeduziert werden, um ein
-filigraneres Notenbild zu erhalten.
-\end{quote}
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.ELLIPSE\_SIZE
+einf\"{u}gen
 
 \begin{verbatim}
     "ELLIPSE_SIZE": [3.5, 1.7]
@@ -5318,7 +5309,8 @@ filigraneres Notenbild zu erhalten.
 Linienst\"{a}rke
 mittel}{extract.0.layout.LINE\_MEDIUM - Linienst\"{a}rke mittel}}\label{extract.0.layout.LINE_MEDIUM}}
 
-Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.LINE\_MEDIUM
+einf\"{u}gen
 
 \begin{verbatim}
     "LINE_MEDIUM": 0.3
@@ -5330,7 +5322,8 @@ Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 Linienst\"{a}rke
 dick}{extract.0.layout.LINE\_THICK - Linienst\"{a}rke dick}}\label{extract.0.layout.LINE_THICK}}
 
-Hier stellst du die Breite (in mm) von dicken Linien ein.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.LINE\_THICK
+einf\"{u}gen
 
 \begin{verbatim}
     "LINE_THICK": 0.5
@@ -5342,7 +5335,8 @@ Hier stellst du die Breite (in mm) von dicken Linien ein.
 Linienst\"{a}rke
 d\"{u}nn}{extract.0.layout.LINE\_THIN - Linienst\"{a}rke d\"{u}nn}}\label{extract.0.layout.LINE_THIN}}
 
-Hier stellst du die Breite (in mm) von d\"{u}nnen Linien ein.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.LINE\_THIN
+einf\"{u}gen
 
 \begin{verbatim}
     "LINE_THIN": 0.1
@@ -5353,25 +5347,8 @@ Hier stellst du die Breite (in mm) von d\"{u}nnen Linien ein.
 \subsection{\texorpdfstring{\texttt{extract.0.layout.PITCH\_OFFSET} -
 PitchOffset}{extract.0.layout.PITCH\_OFFSET - PitchOffset}}\label{extract.0.layout.PITCH_OFFSET}}
 
-Dieser Paramter justiert das Verh\"{a}ltnis von Tonh\"{o}he und Position
-auf dem Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am
-linken Blattrand dargestellt wird.
-
-\begin{quote}
-\textbf{Hinweis} Bei \textbf{chromatischen} Instrumenten wird die
-Stimmung der Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43
-daf\"{u}r, dass das G der Oktave 3 am linken Blattrand erscheint.
-
-Die Midi-Codes findest du auf
-\href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
-
-Bei \textbf{diatonischen} Instrumenten muss der Wert ggf. durch
-Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
-verdrahtet ist. \"{U}blicherweise ist er 0. Man k\"{o}nnte aber durch
-Werte von -12 bzw. +12 eine Art ``Transponierung'' errreichen. Das ist
-dann sinnvoll, wenn die selben Eingabenoten f\"{u}r verschiedene
-Instrumente verwendet werden sollen.
-\end{quote}
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.PITCH\_OFFSET
+einf\"{u}gen
 
 \begin{verbatim}
     "PITCH_OFFSET": -43
@@ -5382,13 +5359,8 @@ Instrumente verwendet werden sollen.
 \subsection{\texorpdfstring{\texttt{extract.0.layout.REST\_SIZE} -
 Pausengr\"{o}\ss e}{extract.0.layout.REST\_SIZE - Pausengr\"{o}\ss e}}\label{extract.0.layout.REST_SIZE}}
 
-Hier kannst du die Gr\"{o}\ss e der Pausen einstellen. Sinnvolle Werte
-sind {[}2-4, 1.2-2{]}
-
-\begin{quote}
-\textbf{Hinweis}:Bitte beachte, dass nur die Angabe der H\"{o}he von
-ber\"{u}cksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
-\end{quote}
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.REST\_SIZE
+einf\"{u}gen
 
 \begin{verbatim}
     "REST_SIZE": [4, 2]
@@ -5411,7 +5383,8 @@ einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{extract.0.layout.X\_SPACING} -
 Saitenabstand}{extract.0.layout.X\_SPACING - Saitenabstand}}\label{extract.0.layout.X_SPACING}}
 
-Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.X\_SPACING
+einf\"{u}gen
 
 \begin{verbatim}
     "X_SPACING": 11.5
@@ -5487,8 +5460,8 @@ variante Abschnitte nicht mehr durch Farbe abgesetzt.
 -
 Sonstiges}{extract.0.layout.color.color\_default - Sonstiges}}\label{extract.0.layout.color.color_default}}
 
-Hier w\"{a}hlst die Grundfarbe f\"{u}r die Ausgabe. Diese Farbe wird bei
-allen Elementen verwendet, die keine spzeifische Farbeinstellung haben.
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.layout.color.color\_default einf\"{u}gen
 
 \begin{verbatim}
     "color_default": "black"
@@ -5500,17 +5473,8 @@ allen Elementen verwendet, die keine spzeifische Farbeinstellung haben.
 -
 Variante1}{extract.0.layout.color.color\_variant1 - Variante1}}\label{extract.0.layout.color.color_variant1}}
 
-Hier w\"{a}hlst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
-dargestellt werden.
-
-\begin{quote}
-\textbf{Hinweis} Die Farbe von varianten Abnschnitten alterniert
-zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann
-werden die varianten Abschnitte gleichermassen eingef\"{a}rbt.
-
-Wenn du beide auf den gleichen wert wie ``default'' stellst, dann werden
-variante Abschnitte nicht mehr durch Farbe abgesetzt.
-\end{quote}
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.layout.color.color\_variant1 einf\"{u}gen
 
 \begin{verbatim}
     "color_variant1": "grey"
@@ -5522,17 +5486,8 @@ variante Abschnitte nicht mehr durch Farbe abgesetzt.
 -
 Variante2}{extract.0.layout.color.color\_variant2 - Variante2}}\label{extract.0.layout.color.color_variant2}}
 
-Hier w\"{a}hlst du die Farbe in der variante Abschnitte 2,4,6 etc.
-dargestellt werden.
-
-\begin{quote}
-\textbf{Hinweis} Die Farbe von varianten Abnschnitten alterniert
-zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann
-werden die varianten Abschnitte gleichermassen eingef\"{a}rbt.
-
-Wenn du beide auf den gleichen wert wie ``default'' stellst, dann werden
-variante Abschnitte nicht mehr durch Farbe abgesetzt.
-\end{quote}
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.layout.color.color\_variant2 einf\"{u}gen
 
 \begin{verbatim}
     "color_variant2": "dimgrey"
@@ -5571,10 +5526,8 @@ Es gibt folgende Einstellunge:
 \subsection{\texorpdfstring{\texttt{extract.0.layout.jumpline\_anchor} -
 Sprungl.Anker}{extract.0.layout.jumpline\_anchor - Sprungl.Anker}}\label{extract.0.layout.jumpline_anchor}}
 
-Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
-verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
-an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
-gesagt, das umh\"{u}llende Rechteck) der entsprechende Note.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.jumpline\_anchor
+einf\"{u}gen
 
 \begin{verbatim}
     "jumpline_anchor": [3, 1]
@@ -5586,9 +5539,8 @@ gesagt, das umh\"{u}llende Rechteck) der entsprechende Note.
 Begrenzung auf
 A3}{extract.0.layout.limit\_a3 - Begrenzung auf A3}}\label{extract.0.layout.limit_a3}}
 
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas gr\"{o}\ss er ist als A3 w\"{u}rde sonst die
-Note angeshnitten.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.limit\_a3
+einf\"{u}gen
 
 \begin{verbatim}
     "limit_a3": true
@@ -5617,16 +5569,8 @@ ausmachen. Daher sind diese Funktionen noch experimentell.
 - max.
 Spreizung}{extract.0.layout.packer.pack\_max\_spreadfactor - max. Spreizung}}\label{extract.0.layout.packer.pack_max_spreadfactor}}
 
-Nach der Berechnung des maximal komprimierten Layouts versucht
-Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfl\"{a}che voll
-ausgef\"{u}llt wird.
-
-Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der
-Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen St\"{u}cken
-aus, welche das Blatt nicht vollst\"{a}ndig ausf\"{u}llen.
-
-Bei sehr kurzen St\"{u}cken ist es sinnvoll, die Spreizung zu begrenzen,
-weil sonst die Noten sehr weit auseinander liegen.
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.layout.packer.pack\_max\_spreadfactor einf\"{u}gen
 
 \begin{verbatim}
     "pack_max_spreadfactor": 2
@@ -5638,73 +5582,26 @@ weil sonst die Noten sehr weit auseinander liegen.
 -
 Packmethode}{extract.0.layout.packer.pack\_method - Packmethode}}\label{extract.0.layout.packer.pack_method}}
 
-Hier kannst du die pack-Methode ausw\"{a}hlen
-
-\begin{itemize}
-\item
-  \textbf{0} : Die bisherige Methode: diese geht nach jedem Schritt um
-  die H\"{o}he der gr\"{o}\ss ten Note weiter
-\item
-  \textbf{1} : Kopmpakt: diese geht nur dann weiter, wenn
-
-  \begin{itemize}
-  \tightlist
-  \item
-    ein Richtungswechsel der Melodie vorliegt
-  \item
-    Noten \"{u}bereinander gezeichnet w\"{u}rden
-  \end{itemize}
-
-  Das bedeutet dass bei monotonen Melodien die Noten enger gesetzt
-  werden.
-
-  \begin{quote}
-  \textbf{Hinweis}: Diese Methode eignet sich am besten f\"{u}r lange,
-  einstimmige St\"{u}cke. Die Platzeinsparung geht bei mehrstimmmigen
-  St\"{u}cken schnell verloren.
-
-  Bei dieser Methode sind die Synchronisiationslinien zwischen den
-  Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr flach
-  sind.
-  \end{quote}
-\item
-  \textbf{2} : linear: die Zeitachse wird linear auf das Blatt verteilt.
-  Bei kurzen St\"{u}cken entspricht der Abstand der Noten dann auch dem
-  Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber am
-  meisten Platz verbraucht.
-
-  Es wird auch kein extra Raum f\"{u}r Parts, Taktstriche und manuelle
-  Vorsch\"{u}be erstellt.
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.layout.packer.pack\_method einf\"{u}gen
 
 \begin{verbatim}
-"pack_method": 0
+    "pack_method": 0
+      
 \end{verbatim}
-\end{itemize}
 
 \hypertarget{extract.0.layout.packer.pack_min_increment}{%
 \subsection{\texorpdfstring{\texttt{extract.0.layout.packer.pack\_min\_increment}
 - min.
 Inkrement}{extract.0.layout.packer.pack\_min\_increment - min. Inkrement}}\label{extract.0.layout.packer.pack_min_increment}}
 
-Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter
-ger\"{u}ckt wird. Pro Note wird mindestens um diesen Anteil einer
-Maximalnote weiter geschaltet.
-
-\textbf{Beispiele}:
-
-\begin{itemize}
-\item
-  \textbf{0.0}: es entstehen horizontale Flu\ss linien
-\item
-  \textbf{1.0}: es wird mindests um eine ganze Note weiter geschaltet
-\item
-  \textbf{0.2}: es wird um 20\% einer ganzen Note weiter geschaltet.
-  Dies liefert angenehme Ergebnisse.
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.layout.packer.pack\_min\_increment einf\"{u}gen
 
 \begin{verbatim}
-"pack_min_increment": 0.2
+    "pack_min_increment": 0.2
+      
 \end{verbatim}
-\end{itemize}
 
 \hypertarget{extract.0.layoutlines}{%
 \subsection{\texorpdfstring{\texttt{extract.0.layoutlines} - Stimmen
@@ -5852,45 +5749,8 @@ bestimmten Zeitpunkt.
 -
 Faktor}{extract.0.notebound.minc.x.minc\_f - Faktor}}\label{extract.0.notebound.minc.x.minc_f}}
 
-Hier gibst du den Korrekturfaktor f\"{u}r den vertikalen Voreschub an.
-
-Die Angabe bestimmt, welcher Anteil am errechneten vertikalen Abstand
-als extra Abstand \textbf{hinzugef\"{u}gt} wird.
-(\texttt{a\ =\ (a\ +\ minc\_f\ *\ a}))
-
-Im Beispiel
-
-\begin{verbatim}
-    "minc" : {
-       "2304": {"minc_f": 1}, 
-       "4224": {"minc_f": -0.25}
-       }
-\end{verbatim}
-
-\begin{itemize}
-\tightlist
-\item
-  bei 2304 wird der Abstand verdoppelt. Mit derm Faktor 1 wird ein
-  Normalabstand wird hinugef\"{u}gt.
-\item
-  bei 4224 wird der abstand um 25\% reduziert. Mit dem Faktor -0.25 wird
-  ein Viertel des Maximalabstandes abgezogen
-\end{itemize}
-
-\textbf{Beispiele}:
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{-1.0} w\"{u}rde den Vorschub um eine ganze Note zur\"{u}ck
-  setzen
-\item
-  \texttt{0} \"{a}ndert nichts am Vorschub. Damit kann man den Wert
-  zur\"{u}cksetzen, falls er im Auszug 0 gesetzt wurde.
-\item
-  \texttt{0.5} vergr\"{o}\ss ert den Vorschub um die H\"{a}lfte einer
-  ganzen Note.
-\end{itemize}
+TODO:\marginpar{TODO} Helptext f\"{u}r
+extract.0.notebound.minc.x.minc\_f einf\"{u}gen
 
 \ldots{} kein Beispiel verf\"{u}gbar \ldots{}
 
@@ -5965,21 +5825,8 @@ Druckdialog findest.
 Offset f\"{u}r
 A3}{extract.0.printer.a3\_offset - Offset f\"{u}r A3}}\label{extract.0.printer.a3_offset}}
 
-Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-\begin{quote}
-\textbf{Hinweis}: Wenn ein Unterlegnotenblatt f\"{u}r eine 25 saitige
-Harfe auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um
-10 mm nach links zu verschieben. Dadurch werden die Noten vom Drucker
-nicht mehr angeschnitten.
-
-In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
-auszuschalten.
-\end{quote}
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.a3\_offset
+einf\"{u}gen
 
 \begin{verbatim}
     "a3_offset": [0, 0]
@@ -5991,11 +5838,8 @@ auszuschalten.
 Offset f\"{u}r
 A4}{extract.0.printer.a4\_offset - Offset f\"{u}r A4}}\label{extract.0.printer.a4_offset}}
 
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.a4\_offset
+einf\"{u}gen
 
 \begin{verbatim}
     "a4_offset": [-5, 0]
@@ -6007,13 +5851,8 @@ vertikaler Position.
 Seiten bei
 A4}{extract.0.printer.a4\_pages - Seiten bei A4}}\label{extract.0.printer.a4_pages}}
 
-Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
-ausgedruckt werden sollen. Die Z\"{a}hlung beginnt bei 0!
-Standardeinstellung ist \texttt{0,1,2}.
-
-Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
-25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
-auszugeben, und Seite 0 wegzulassen.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.a4\_pages
+einf\"{u}gen
 
 \begin{verbatim}
     "a4_pages": [0, 1, 2]
@@ -6025,18 +5864,8 @@ auszugeben, und Seite 0 wegzulassen.
 Blattbegr.
 zeich.}{extract.0.printer.show\_border - Blattbegr. zeich.}}\label{extract.0.printer.show_border}}
 
-Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
-Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
-Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
-auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
-Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
-
-Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
-Papier. Dadurch wird die Blattbegrenzung gedruckt, daf\"{u}r fehlen dann
-unten ca. 10 mm.
-
-Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
-Situation verbessert.
+TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.show\_border
+einf\"{u}gen
 
 \begin{verbatim}
     "show_border": false
@@ -6699,33 +6528,19 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 - T01
 Auszug-Nummer}{presets.notes.T01\_number\_extract - T01 Auszug-Nummer}}\label{presets.notes.T01_number_extract}}
 
-Dieses Template f\"{u}gt zwei Zeichem am Ende der Nummer an. Damit kann
-man den jeweiligen Auszug kennzeichen.
-
-Ein sinnvolles schema ist:
-
-\begin{itemize}
-\item
-  \texttt{-A} - Sopran Alt - per default Auszug 1
-\item
-  \texttt{-B} - Tenor Bass - per default Auszug 2
-\item
-  \texttt{-M} - Nur Melodie - am besten Auszug 3 - ist aber nicht per
-  default konfiguriert
-\item
-  \texttt{-S} - Alle Stimmen - per default Auszug 0; dieser wird in der
-  Regel aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
+TODO:\marginpar{TODO} Helptext f\"{u}r
+presets.notes.T01\_number\_extract einf\"{u}gen
 
 \begin{verbatim}
-"T01_number_extract": {
-  "value" : {
-    "pos"   : [411, 17],
-    "style" : "bold",
-    "text"  : "{{extract_filename}}"
-  }
-}
+    "T01_number_extract": {
+      "value" : {
+        "pos"   : [411, 17],
+        "style" : "bold",
+        "text"  : "{{extract_filename}}"
+      }
+    }
+      
 \end{verbatim}
-\end{itemize}
 
 \hypertarget{presets.notes.T01_number_extract.value}{%
 \subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract.value}
@@ -6905,8 +6720,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 - T02 Copyright
 Musik}{presets.notes.T02\_copyright\_music - T02 Copyright Musik}}\label{presets.notes.T02_copyright_music}}
 
-Dieses Template f\"{u}gt einen Copyrightvermerk f\"{u}r die Musik ein.
-Hier wird das Copyright auf die Komposition angegeben.
+TODO:\marginpar{TODO} Helptext f\"{u}r
+presets.notes.T02\_copyright\_music einf\"{u}gen
 
 \begin{verbatim}
     "T02_copyright_music": {
@@ -7003,9 +6818,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 - T03 Copyright
 Unterlegnoten}{presets.notes.T03\_copyright\_harpnotes - T03 Copyright Unterlegnoten}}\label{presets.notes.T03_copyright_harpnotes}}
 
-Dieses Template f\"{u}gt einen Copyrightvermerk f\"{u}r das
-Unterlgnotenbild ein. Damit reklamierst du ein Copyright f\"{u}r die
-Umsetzung auf die Tischharfe
+TODO:\marginpar{TODO} Helptext f\"{u}r
+presets.notes.T03\_copyright\_harpnotes einf\"{u}gen
 
 \begin{verbatim}
     "T03_copyright_harpnotes": {
@@ -7110,9 +6924,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 zu beziehen
 bei}{presets.notes.T04\_to\_order - T04 zu beziehen bei}}\label{presets.notes.T04_to_order}}
 
-Dieses Template f\"{u}gt eine Notiz ein wo man das Unterlegnotenblatt
-beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
-Weise vertrieben werden.
+TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T04\_to\_order
+einf\"{u}gen
 
 \begin{verbatim}
     "T04_to_order": {

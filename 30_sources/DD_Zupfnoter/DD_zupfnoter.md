@@ -25,8 +25,8 @@ Zupfnoter applies the following models
 
 ## handling drag and drop
 
-Drag and drop is implemented by opal_svg. There is a global
-drag_end-Handler installed in controller.rb ()
+Drag and drop is implemented by opal\_svg. There is a global
+drag\_end-Handler installed in controller.rb ()
 `@harpnote_preview_printer.on_annotation_drag_end do |info|`
 
 Info returns the key and the value of the configuration parameter to be
@@ -88,10 +88,10 @@ operations.
 ## updating syntax highlighting
 
 -   goto your clone of the ace reporitory
-    (../200_zupfnoter_external_components/ace)
+    (../200\_zupfnoter\_external\_components/ace)
 -   update the files as described in <http://ace.c9.io/#nav=higlighter>
 -   run `node static.js --allow-save` .
--   navigate to http://localhost:8888/tool/mode_creator.html
+-   navigate to http://localhost:8888/tool/mode\_creator.html
 -   perform necessary changes
 -   perform
 
@@ -109,7 +109,7 @@ http://nvie.com/posts/a-successful-git-branching-model/
 Before preparing a release, everything that should go to this release
 shall be committed to the develop branch.
 
--   Gitflow: Start new release Pattern: V_1.4.0_RC2
+-   Gitflow: Start new release Pattern: V\_1.4.0\_RC2
 -   adjust version.rb
 -   perform all the builds `rake build` `rake deploy`
 -   Gitflow: finish the release
@@ -137,7 +137,7 @@ Javascript files can be included on following ways:
 
 2.  using sprockets and ruby `require`
 
-    This only works e.g. for userinterface.js which global objects which
+    This only works e.g. for userinterface.js which global objects which
     are subsequently known in Opal.
 
 3.  using `require(xx)` on the JS side. This can be done in
@@ -182,8 +182,8 @@ The following steps creates the soundfonts
 
 1.  download from https://stash.reaper.fm/v/23360/Scc1t2.sf2
 2.  open the file in polyphone
-3.  export instrument piano1 to 0_GS sound set (16 bit).sf2
-4.  export instrument Steel guitar to 25_GS sound set (16 bit).sf2
+3.  export instrument piano1 to 0\_GS sound set (16 bit).sf2
+4.  export instrument Steel guitar to 25\_GS sound set (16 bit).sf2
 5.  Open the two files again in polyphone
 6.  go to the instrument and set decay to 8sec in all columns of the
     table, set sustain to 120db
@@ -193,7 +193,7 @@ The following steps creates the soundfonts
     . I did this using a rake task.
 
 copy the sf2 files to `30_sources/SRC_Zupfnoter/sf2_sources`. File shall
-be nr_name. `rake buildSoundfonts` converts t the file to e.g.
+be nr\_name. `rake buildSoundfonts` converts t the file to e.g.
 `30_sources/SRC_Zupfnoter/public/soundfont/zupfnoter/0.js`
 
 To create a soundfont from our own recording:
@@ -202,6 +202,6 @@ To create a soundfont from our own recording:
 2.  clean up in audiacity
 3.  in poloyphone follow the instructions in
     http://polyphone-soundfonts.com/en/documentation/tutorials/create-a-soundfont-from-scratch/119
-4.  name the preset to something like 01_mysound
-5.  export the instrument 01_mysound to
+4.  name the preset to something like 01\_mysound
+5.  export the instrument 01\_mysound to
     `30_sources/SRC_Zupfnoter/sf2_sources`

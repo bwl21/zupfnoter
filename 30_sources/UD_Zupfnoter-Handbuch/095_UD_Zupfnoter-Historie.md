@@ -74,7 +74,7 @@ internal release
 -   Sprunglinien für Variationen können einzeln konfiguriert werden
     \#215
 -   Voreinstellung für Basis von Taktnummernpoistionen verändert
-    ap_base \#218
+    ap\_base \#218
 -   Anzeige der klingenden Töne für einen Zeitpunkt in der Statusleiste
     \#220
 -   Sprunglinien können per Konfiguration unterdrückt werden (Pos: 0)
@@ -86,7 +86,7 @@ internal release
 ### Kompatibilität
 
 -   Voreinstellung für Basis von Taktnummernpoistionen verändert
-    ap_base \#218
+    ap\_base \#218
 -   Konfiguration der Sprunglinien für Variationen wird von führeren
     Zupfnoter-Versionen nicht erkannt
 
@@ -358,7 +358,7 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
 
 ### Fix
 
--   barnumbers are small_bold again \#60
+-   barnumbers are small\_bold again \#60
 -   optimized placement of cutmarks \#74
 -   fixed tempo note for e.g. 3/8= 120 \#79
 -   fix countnotes \#78
@@ -371,7 +371,7 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
 
 ### enhancement
 
--   add textstyles: italic, small_bold, small_italic
+-   add textstyles: italic, small\_bold, small\_italic
 
 ## V 1.4.1
 
@@ -474,7 +474,7 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
 
 -   refinements of toolbar: login, new, open, save
 -   add a dialog for create and login
--   invoke render_previews on new, open, drag
+-   invoke render\_previews on new, open, drag
 -   Improved report of coordinates for dragging annotations
 
 ## V 1.0.0 2016-04-03

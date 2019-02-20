@@ -509,93 +509,63 @@ Notenbild gezielt optimieren.
 
 ## `extract.0.layout.DRAWING_AREA_SIZE` - Zeichenfl.Größe {#extract.0.layout.DRAWING_AREA_SIZE}
 
-Hier kannst du die Größe der Zeichenfläche einstellen. Allerdings hat
-aktuell nur die vertikale Größe einen Einfluss. Damit kann man bei
-großen Stücken noch ein bisschen mehr Platz ausreizen.
+TODO: Helptext für extract.0.layout.DRAWING\_AREA\_SIZE einfügen
 
         "DRAWING_AREA_SIZE": [400, 282]
           
 
 ## `extract.0.layout.ELLIPSE_SIZE` - Notengröße {#extract.0.layout.ELLIPSE_SIZE}
 
-Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
-sind \[2-4, 1.2-2\].
-
-> **Hinweis**: Die Größe der anderen Noten werden ausgehend von diesem
-> Wert berechnet.
->
-> Da die Noten auch mit der dicken Linie umrandet werden, kann auch die
-> "Linienstärke `dick`" reeduziert werden, um ein filigraneres Notenbild
-> zu erhalten.
+TODO: Helptext für extract.0.layout.ELLIPSE\_SIZE einfügen
 
         "ELLIPSE_SIZE": [3.5, 1.7]
           
 
 ## `extract.0.layout.LINE_MEDIUM` - Linienstärke mittel {#extract.0.layout.LINE_MEDIUM}
 
-Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
+TODO: Helptext für extract.0.layout.LINE\_MEDIUM einfügen
 
         "LINE_MEDIUM": 0.3
           
 
 ## `extract.0.layout.LINE_THICK` - Linienstärke dick {#extract.0.layout.LINE_THICK}
 
-Hier stellst du die Breite (in mm) von dicken Linien ein.
+TODO: Helptext für extract.0.layout.LINE\_THICK einfügen
 
         "LINE_THICK": 0.5
           
 
 ## `extract.0.layout.LINE_THIN` - Linienstärke dünn {#extract.0.layout.LINE_THIN}
 
-Hier stellst du die Breite (in mm) von dünnen Linien ein.
+TODO: Helptext für extract.0.layout.LINE\_THIN einfügen
 
         "LINE_THIN": 0.1
           
 
 ## `extract.0.layout.PITCH_OFFSET` - PitchOffset {#extract.0.layout.PITCH_OFFSET}
 
-Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
-Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
-Blattrand dargestellt wird.
-
-> **Hinweis** Bei **chromatischen** Instrumenten wird die Stimmung der
-> Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43 dafür, dass
-> das G der Oktave 3 am linken Blattrand erscheint.
->
-> Die Midi-Codes findest du auf
-> [hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
->
-> Bei **diatonischen** Instrumenten muss der Wert ggf. durch
-> Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
-> verdrahtet ist. Üblicherweise ist er 0. Man könnte aber durch Werte
-> von -12 bzw. +12 eine Art "Transponierung" errreichen. Das ist dann
-> sinnvoll, wenn die selben Eingabenoten für verschiedene Instrumente
-> verwendet werden sollen.
+TODO: Helptext für extract.0.layout.PITCH\_OFFSET einfügen
 
         "PITCH_OFFSET": -43
           
 
 ## `extract.0.layout.REST_SIZE` - Pausengröße {#extract.0.layout.REST_SIZE}
 
-Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
-\[2-4, 1.2-2\]
-
-> **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
-> berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
+TODO: Helptext für extract.0.layout.REST\_SIZE einfügen
 
         "REST_SIZE": [4, 2]
           
 
 ## `extract.0.layout.X_OFFSET` - X - Offset {#extract.0.layout.X_OFFSET}
 
-TODO: Helptext für extract.0.layout.X_OFFSET einfügen
+TODO: Helptext für extract.0.layout.X\_OFFSET einfügen
 
         "X_OFFSET": 2.8
           
 
 ## `extract.0.layout.X_SPACING` - Saitenabstand {#extract.0.layout.X_SPACING}
 
-Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
+TODO: Helptext für extract.0.layout.X\_SPACING einfügen
 
         "X_SPACING": 11.5
           
@@ -646,38 +616,21 @@ Hier kannst du die Farbe für verschiedene Elemente einstellen.
 
 ## `extract.0.layout.color.color_default` - Sonstiges {#extract.0.layout.color.color_default}
 
-Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen
-Elementen verwendet, die keine spzeifische Farbeinstellung haben.
+TODO: Helptext für extract.0.layout.color.color\_default einfügen
 
         "color_default": "black"
           
 
 ## `extract.0.layout.color.color_variant1` - Variante1 {#extract.0.layout.color.color_variant1}
 
-Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
-dargestellt werden.
-
-> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
-> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
-> die varianten Abschnitte gleichermassen eingefärbt.
->
-> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
-> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+TODO: Helptext für extract.0.layout.color.color\_variant1 einfügen
 
         "color_variant1": "grey"
           
 
 ## `extract.0.layout.color.color_variant2` - Variante2 {#extract.0.layout.color.color_variant2}
 
-Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc.
-dargestellt werden.
-
-> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
-> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
-> die varianten Abschnitte gleichermassen eingefärbt.
->
-> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
-> variante Abschnitte nicht mehr durch Farbe abgesetzt.
+TODO: Helptext für extract.0.layout.color.color\_variant2 einfügen
 
         "color_variant2": "dimgrey"
           
@@ -701,19 +654,14 @@ Es gibt folgende Einstellunge:
 
 ## `extract.0.layout.jumpline_anchor` - Sprungl.Anker {#extract.0.layout.jumpline_anchor}
 
-Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
-verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
-an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
-gesagt, das umhüllende Rechteck) der entsprechende Note.
+TODO: Helptext für extract.0.layout.jumpline\_anchor einfügen
 
         "jumpline_anchor": [3, 1]
           
 
 ## `extract.0.layout.limit_a3` - Begrenzung auf A3 {#extract.0.layout.limit_a3}
 
-Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
-Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
-angeshnitten.
+TODO: Helptext für extract.0.layout.limit\_a3 einfügen
 
         "limit_a3": true
           
@@ -733,67 +681,25 @@ ausmachen. Daher sind diese Funktionen noch experimentell.
 
 ## `extract.0.layout.packer.pack_max_spreadfactor` - max. Spreizung {#extract.0.layout.packer.pack_max_spreadfactor}
 
-Nach der Berechnung des maximal komprimierten Layouts versucht
-Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfläche voll
-ausgefüllt wird.
-
-Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der
-Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen Stücken aus,
-welche das Blatt nicht vollständig ausfüllen.
-
-Bei sehr kurzen Stücken ist es sinnvoll, die Spreizung zu begrenzen,
-weil sonst die Noten sehr weit auseinander liegen.
+TODO: Helptext für extract.0.layout.packer.pack\_max\_spreadfactor
+einfügen
 
         "pack_max_spreadfactor": 2
           
 
 ## `extract.0.layout.packer.pack_method` - Packmethode {#extract.0.layout.packer.pack_method}
 
-Hier kannst du die pack-Methode auswählen
-
--   **0** : Die bisherige Methode: diese geht nach jedem Schritt um die
-    Höhe der größten Note weiter
-
--   **1** : Kopmpakt: diese geht nur dann weiter, wenn
-
-    -   ein Richtungswechsel der Melodie vorliegt
-    -   Noten übereinander gezeichnet würden
-
-    Das bedeutet dass bei monotonen Melodien die Noten enger gesetzt
-    werden.
-
-    > **Hinweis**: Diese Methode eignet sich am besten für lange,
-    > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
-    > Stücken schnell verloren.
-    >
-    > Bei dieser Methode sind die Synchronisiationslinien zwischen den
-    > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
-    > flach sind.
-
--   **2** : linear: die Zeitachse wird linear auf das Blatt verteilt.
-    Bei kurzen Stücken entspricht der Abstand der Noten dann auch dem
-    Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber
-    am meisten Platz verbraucht.
-
-    Es wird auch kein extra Raum für Parts, Taktstriche und manuelle
-    Vorschübe erstellt.
+TODO: Helptext für extract.0.layout.packer.pack\_method einfügen
 
         "pack_method": 0
+          
 
 ## `extract.0.layout.packer.pack_min_increment` - min. Inkrement {#extract.0.layout.packer.pack_min_increment}
 
-Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt
-wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
-geschaltet.
-
-**Beispiele**:
-
--   **0.0**: es entstehen horizontale Flußlinien
--   **1.0**: es wird mindests um eine ganze Note weiter geschaltet
--   **0.2**: es wird um 20% einer ganzen Note weiter geschaltet. Dies
-    liefert angenehme Ergebnisse.
+TODO: Helptext für extract.0.layout.packer.pack\_min\_increment einfügen
 
         "pack_min_increment": 0.2
+          
 
 ## `extract.0.layoutlines` - Stimmen für Layout {#extract.0.layoutlines}
 
@@ -894,29 +800,7 @@ Zeitpunkt.
 
 ## `extract.0.notebound.minc.x.minc_f` - Faktor {#extract.0.notebound.minc.x.minc_f}
 
-Hier gibst du den Korrekturfaktor für den vertikalen Voreschub an.
-
-Die Angabe bestimmt, welcher Anteil am errechneten vertikalen Abstand
-als extra Abstand **hinzugefügt** wird. (`a = (a + minc_f * a`))
-
-Im Beispiel
-
-        "minc" : {
-           "2304": {"minc_f": 1}, 
-           "4224": {"minc_f": -0.25}
-           }
-
--   bei 2304 wird der Abstand verdoppelt. Mit derm Faktor 1 wird ein
-    Normalabstand wird hinugefügt.
--   bei 4224 wird der abstand um 25% reduziert. Mit dem Faktor -0.25
-    wird ein Viertel des Maximalabstandes abgezogen
-
-**Beispiele**:
-
--   `-1.0` würde den Vorschub um eine ganze Note zurück setzen
--   `0` ändert nichts am Vorschub. Damit kann man den Wert zurücksetzen,
-    falls er im Auszug 0 gesetzt wurde.
--   `0.5` vergrößert den Vorschub um die Hälfte einer ganzen Note.
+TODO: Helptext für extract.0.notebound.minc.x.minc\_f einfügen
 
 ... kein Beispiel verfügbar ...
 
@@ -971,60 +855,28 @@ Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
 
 ## `extract.0.printer.a3_offset` - Offset für A3 {#extract.0.printer.a3_offset}
 
-Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
-
-> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
-> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
-> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
-> mehr angeschnitten.
->
-> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
+TODO: Helptext für extract.0.printer.a3\_offset einfügen
 
         "a3_offset": [0, 0]
           
 
 ## `extract.0.printer.a4_offset` - Offset für A4 {#extract.0.printer.a4_offset}
 
-Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
-verschoben werden soll.
-
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
-vertikaler Position.
+TODO: Helptext für extract.0.printer.a4\_offset einfügen
 
         "a4_offset": [-5, 0]
           
 
 ## `extract.0.printer.a4_pages` - Seiten bei A4 {#extract.0.printer.a4_pages}
 
-Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
-ausgedruckt werden sollen. Die Zählung beginnt bei 0!
-Standardeinstellung ist `0,1,2`.
-
-Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
-25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
-auszugeben, und Seite 0 wegzulassen.
+TODO: Helptext für extract.0.printer.a4\_pages einfügen
 
         "a4_pages": [0, 1, 2]
           
 
 ## `extract.0.printer.show_border` - Blattbegr. zeich. {#extract.0.printer.show_border}
 
-Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
-Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
-Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
-auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
-Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
-
-Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
-Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
-unten ca. 10 mm.
-
-Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
-Situation verbessert.
+TODO: Helptext für extract.0.printer.show\_border einfügen
 
         "show_border": false
           
@@ -1380,21 +1232,21 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 
 ## `presets.notes.T01_T99` - T01 .. T99 Alle .. {#presets.notes.T01_T99}
 
-TODO: Helptext für presets.notes.T01_T99 einfügen
+TODO: Helptext für presets.notes.T01\_T99 einfügen
 
         "T01_T99": {"value": {}}
           
 
 ## `presets.notes.T01_T99.value` - Wert {#presets.notes.T01_T99.value}
 
-TODO: Helptext für presets.notes.T01_T99.value einfügen
+TODO: Helptext für presets.notes.T01\_T99.value einfügen
 
         "value": {}
           
 
 ## `presets.notes.T01_number` - T01 Nummer {#presets.notes.T01_number}
 
-TODO: Helptext für presets.notes.T01_number einfügen
+TODO: Helptext für presets.notes.T01\_number einfügen
 
         "T01_number": {
           "value" : {
@@ -1408,7 +1260,7 @@ TODO: Helptext für presets.notes.T01_number einfügen
 
 ## `presets.notes.T01_number.value` - Wert {#presets.notes.T01_number.value}
 
-TODO: Helptext für presets.notes.T01_number.value einfügen
+TODO: Helptext für presets.notes.T01\_number.value einfügen
 
         "value": {
           "align" : "l",
@@ -1480,17 +1332,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T01_number_extract` - T01 Auszug-Nummer {#presets.notes.T01_number_extract}
 
-Dieses Template fügt zwei Zeichem am Ende der Nummer an. Damit kann man
-den jeweiligen Auszug kennzeichen.
-
-Ein sinnvolles schema ist:
-
--   `-A` - Sopran Alt - per default Auszug 1
--   `-B` - Tenor Bass - per default Auszug 2
--   `-M` - Nur Melodie - am besten Auszug 3 - ist aber nicht per default
-    konfiguriert
--   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
-    aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
+TODO: Helptext für presets.notes.T01\_number\_extract einfügen
 
         "T01_number_extract": {
           "value" : {
@@ -1499,10 +1341,11 @@ Ein sinnvolles schema ist:
             "text"  : "{{extract_filename}}"
           }
         }
+          
 
 ## `presets.notes.T01_number_extract.value` - Wert {#presets.notes.T01_number_extract.value}
 
-TODO: Helptext für presets.notes.T01_number_extract.value einfügen
+TODO: Helptext für presets.notes.T01\_number\_extract.value einfügen
 
         "value": {
           "pos"   : [411, 17],
@@ -1552,7 +1395,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T01_number_extract_value` - T01 Auszugn Nummer Wert {#presets.notes.T01_number_extract_value}
 
-TODO: Helptext für presets.notes.T01_number_extract_value einfügen
+TODO: Helptext für presets.notes.T01\_number\_extract\_value einfügen
 
         "T01_number_extract_value": {
           "key"   : "T01_number_extract",
@@ -1562,7 +1405,7 @@ TODO: Helptext für presets.notes.T01_number_extract_value einfügen
 
 ## `presets.notes.T01_number_extract_value.key` - schlüssel {#presets.notes.T01_number_extract_value.key}
 
-TODO: Helptext für presets.notes.T01_number_extract_value.key
+TODO: Helptext für presets.notes.T01\_number\_extract\_value.key
 einfügen
 
         "key": "T01_number_extract"
@@ -1570,7 +1413,7 @@ einfügen
 
 ## `presets.notes.T01_number_extract_value.value` - Wert {#presets.notes.T01_number_extract_value.value}
 
-TODO: Helptext für presets.notes.T01_number_extract_value.value
+TODO: Helptext für presets.notes.T01\_number\_extract\_value.value
 einfügen
 
         "value": {"text": "{{extract_filename}}"}
@@ -1601,8 +1444,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T02_copyright_music` - T02 Copyright Musik {#presets.notes.T02_copyright_music}
 
-Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
-das Copyright auf die Komposition angegeben.
+TODO: Helptext für presets.notes.T02\_copyright\_music einfügen
 
         "T02_copyright_music": {
           "value" : {"pos": [340, 251], "style": "small", "text": "© 2019\n"}
@@ -1611,7 +1453,7 @@ das Copyright auf die Komposition angegeben.
 
 ## `presets.notes.T02_copyright_music.value` - Wert {#presets.notes.T02_copyright_music.value}
 
-TODO: Helptext für presets.notes.T02_copyright_music.value einfügen
+TODO: Helptext für presets.notes.T02\_copyright\_music.value einfügen
 
         "value": {"pos": [340, 251], "style": "small", "text": "© 2019\n"}
           
@@ -1657,9 +1499,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T03_copyright_harpnotes` - T03 Copyright Unterlegnoten {#presets.notes.T03_copyright_harpnotes}
 
-Dieses Template fügt einen Copyrightvermerk für das Unterlgnotenbild
-ein. Damit reklamierst du ein Copyright für die Umsetzung auf die
-Tischharfe
+TODO: Helptext für presets.notes.T03\_copyright\_harpnotes einfügen
 
         "T03_copyright_harpnotes": {
           "value" : {
@@ -1672,7 +1512,7 @@ Tischharfe
 
 ## `presets.notes.T03_copyright_harpnotes.value` - Wert {#presets.notes.T03_copyright_harpnotes.value}
 
-TODO: Helptext für presets.notes.T03_copyright_harpnotes.value
+TODO: Helptext für presets.notes.T03\_copyright\_harpnotes.value
 einfügen
 
         "value": {
@@ -1723,9 +1563,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T04_to_order` - T04 zu beziehen bei {#presets.notes.T04_to_order}
 
-Dieses Template fügt eine Notiz ein wo man das Unterlegnotenblatt
-beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
-Weise vertrieben werden.
+TODO: Helptext für presets.notes.T04\_to\_order einfügen
 
         "T04_to_order": {
           "value" : {"pos": [340, 242], "style": "small", "text": null}
@@ -1734,7 +1572,7 @@ Weise vertrieben werden.
 
 ## `presets.notes.T04_to_order.value` - Wert {#presets.notes.T04_to_order.value}
 
-TODO: Helptext für presets.notes.T04_to_order.value einfügen
+TODO: Helptext für presets.notes.T04\_to\_order.value einfügen
 
         "value": {"pos": [340, 242], "style": "small", "text": null}
           
@@ -1780,7 +1618,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T05_printed_extracts` - T05 verfügbare Auszüge {#presets.notes.T05_printed_extracts}
 
-TODO: Helptext für presets.notes.T05_printed_extracts einfügen
+TODO: Helptext für presets.notes.T05\_printed\_extracts einfügen
 
         "T05_printed_extracts": {
           "value" : {
@@ -1794,7 +1632,7 @@ TODO: Helptext für presets.notes.T05_printed_extracts einfügen
 
 ## `presets.notes.T05_printed_extracts.value` - Wert {#presets.notes.T05_printed_extracts.value}
 
-TODO: Helptext für presets.notes.T05_printed_extracts.value einfügen
+TODO: Helptext für presets.notes.T05\_printed\_extracts.value einfügen
 
         "value": {
           "align" : "l",
@@ -1866,7 +1704,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T06_legend` - T06 Legende {#presets.notes.T06_legend}
 
-TODO: Helptext für presets.notes.T06_legend einfügen
+TODO: Helptext für presets.notes.T06\_legend einfügen
 
         "T06_legend": {
           "value" : {
@@ -1879,7 +1717,7 @@ TODO: Helptext für presets.notes.T06_legend einfügen
 
 ## `presets.notes.T06_legend.value` - Wert {#presets.notes.T06_legend.value}
 
-TODO: Helptext für presets.notes.T06_legend.value einfügen
+TODO: Helptext für presets.notes.T06\_legend.value einfügen
 
         "value": {
           "pos"   : [360, 30],
@@ -1929,7 +1767,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `presets.notes.T99_do_not_copy` - T99 bitte nicht kopieren {#presets.notes.T99_do_not_copy}
 
-TODO: Helptext für presets.notes.T99_do_not_copy einfügen
+TODO: Helptext für presets.notes.T99\_do\_not\_copy einfügen
 
         "T99_do_not_copy": {
           "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
@@ -1938,7 +1776,7 @@ TODO: Helptext für presets.notes.T99_do_not_copy einfügen
 
 ## `presets.notes.T99_do_not_copy.value` - Wert {#presets.notes.T99_do_not_copy.value}
 
-TODO: Helptext für presets.notes.T99_do_not_copy.value einfügen
+TODO: Helptext für presets.notes.T99\_do\_not\_copy.value einfügen
 
         "value": {"pos": [380, 284], "style": "small_bold", "text": null}
           
