@@ -48519,7 +48519,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-21-g9acaedd");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-23-g76630e3");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
@@ -75032,7 +75032,7 @@ if (filename == null) filename = nil;if (content == null) content = nil;
       self.$puts(filename);
       
        var encoding = require ("encoding")
-       var buffer = content; encoding.convert(content, 'Latin-1')
+       var buffer = encoding.convert(content, 'Latin-1')
        fs.writeFileSync(outputname, buffer)
     ;
       return nil;}, TMP_2.$$s = self, TMP_2.$$arity = 2, TMP_2));
