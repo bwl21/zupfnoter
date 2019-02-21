@@ -828,6 +828,11 @@ class ConfstackEditor
     $log.benchmark("refreshing form #{__FILE__}:#{__LINE__}") { @refresh_handler.call }
   end
 
+  def _mk_classnames(key)
+    parts = key.split(".")
+    result = (0 .. parts.length-2).map{|i| parts[0 .. i].join("_")}.join(" ")
+    return result
+  end
 
   # @param [String] key the key of the field
   # @param [Object] value - the current value from editor basically used to determin the icon on the delete button
@@ -842,11 +847,15 @@ class ConfstackEditor
 
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
       fillup_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
+      togglecommand = %Q{$('.#{key.split(".").join("_")}').toggle()}
+      toggle_button = key.match(/extract\.\d+$/) ? %Q{<input type="checkbox" tabIndex="-1" checked  name="#{key}:toggle" onclick="#{togglecommand}"></button >} : ""
+
       %Q{
-         <tr style="border:1pt solid blue;">
+         <tr class="#{_mk_classnames(key)}">
 
            <td  colspan="2" >
             #{first_indent}
+      #{toggle_button}
       #{delete_button}
       #{fillup_button}
            <strong>#{ I18n.t_key(key)}</strong>
@@ -858,8 +867,9 @@ class ConfstackEditor
     else
       default_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{@effective_value[key]}" name="#{key}:fillup"></button>}
       %Q{
-        <tr>
+        <tr class="#{_mk_classnames(key)}">
          <td style="vertical-align: top;">#{first_indent}
+      &nbsp;&nbsp;
       #{delete_button}
       #{default_button}
            <strong>#{ I18n.t_key(key)}</strong>
