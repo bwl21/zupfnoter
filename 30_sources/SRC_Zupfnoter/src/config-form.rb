@@ -471,6 +471,16 @@ class ConfstackEditor
     end
   end
 
+  # compute the parent of a key appended with '.'
+  # foo.bar.foobar -> foo.bar.
+  def parent_key(key)
+    key.rpartition(/\..+/).first
+  end
+
+  #investigate if child is a child of parent
+  def is_child_key?(parent, child)
+    child.start_with?(parent + '.')
+  end
   #
   #def initialize(title, editor, value_handler, refresh_handler)
   def initialize(editorparams)
@@ -496,6 +506,12 @@ class ConfstackEditor
       @effective_value_raw.push(value_handler_result[:effective])
       #@default_value.push($log.benchmark("getvalues #{__FILE__} #{__LINE__}") { value_handler_result[:default] })
     end
+    # here we treat on childers and oneliners
+    valuekeys = @value.keys
+
+    onechilders = valuekeys.select { |parent| valuekeys.count { |child| is_child_key?(parent, child)} == 1 } # need to append "."
+    @oneliners   = valuekeys.select { |i| onechilders.include?(parent_key(i) )}
+    @formkeys   = valuekeys - onechilders
 
     @form   = nil # Form object to be passed to w2ui
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
@@ -715,7 +731,7 @@ class ConfstackEditor
 
   def generate_form
 
-    undo_history   = @editor.history_config[:undo]
+    undo_history = @editor.history_config[:undo]
     if undo_history.count > 2
       undo_button = {id:       'undo', type: 'button', icon: 'fa fa-undo',
                      disabled: false,
@@ -738,8 +754,7 @@ class ConfstackEditor
     end
 
 
-
-    unless false#@quicksetting_commands.empty?
+    unless false #@quicksetting_commands.empty?
       presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
                     items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
       }
@@ -812,11 +827,14 @@ class ConfstackEditor
         onValidate: nil,
         formHTML:   %Q{
                     <table >
-                    <tr><th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
+
+                    <tr>
+                      <th>X</th>
+                      <th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
                          <th>#{I18n.t("Value")}</th>
                          <th></th><th></th><th>#{I18n.t("Effective value")}</th>
                     </tr>
-                    #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
+                    #{@formkeys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>
                     }
     }
@@ -829,8 +847,8 @@ class ConfstackEditor
   end
 
   def _mk_classnames(key)
-    parts = key.split(".")
-    result = (0 .. parts.length-2).map{|i| parts[0 .. i].join("_")}.join(" ")
+    parts  = key.split(".")
+    result = (0 .. parts.length - 2).map { |i| parts[0 .. i].join("_") }.join(" ")
     return result
   end
 
@@ -841,24 +859,38 @@ class ConfstackEditor
     menu_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
     delete_icon   = value.nil? ? 'fa-minus' : 'fa-trash'
     delete_button = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
-    padding       = 1.5 * (key.split(".").count - 1)
+
+    if @oneliners.include? key
+      labelkey = key.rpartition(/\../).first
+    else
+      labelkey = key
+    end
+
+    padding       = 1.5 * (labelkey.split(".").count - 1)
     first_indent  = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
     last_indent   = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
+
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
+
+
       fillup_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
       togglecommand = %Q{$('.#{key.split(".").join("_")}').toggle()}
-      toggle_button = key.match(/extract\.\d+$/) ? %Q{<input type="checkbox" tabIndex="-1" checked  name="#{key}:toggle" onclick="#{togglecommand}"></button >} : ""
+
+      children      = @value.keys.select { |i| i.start_with? key }
+      toggle_button = children[2] ? %Q{<input type="checkbox" tabIndex="-1" checked  name="#{key}:toggle" onclick="#{togglecommand}"></button > &nbsp;} : ""
 
       %Q{
          <tr class="#{_mk_classnames(key)}">
+           <td>
+             #{toggle_button}
+           </td>
 
            <td  colspan="2" >
             #{first_indent}
-      #{toggle_button}
       #{delete_button}
       #{fillup_button}
-           <strong>#{ I18n.t_key(key)}</strong>
+           <strong>#{ I18n.t_key(labelkey)}</strong>
            </td>
            <td style="vertical-align: top;">#{menu_button}</td>
            <td style="vertical-align: top;">#{help_button}</td>
@@ -868,11 +900,11 @@ class ConfstackEditor
       default_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{@effective_value[key]}" name="#{key}:fillup"></button>}
       %Q{
         <tr class="#{_mk_classnames(key)}">
+         <td></td>
          <td style="vertical-align: top;">#{first_indent}
-      &nbsp;&nbsp;
       #{delete_button}
       #{default_button}
-           <strong>#{ I18n.t_key(key)}</strong>
+           <strong>#{ I18n.t_key(labelkey)}</strong>
         </td>
         <td style="vertical-align: top;">
          <div class="w2ui-field" style="padding:1pt;">
