@@ -692,54 +692,67 @@ class Controller
             all_parameters:        {keys: ['.'], scope: :global}
         }
 
-
         # regular expression formsets match by a regular expression
         # this supports forms which start with a variable key.
         # it is useful for extracts, notes, morincs etc.
-        # todo: implement a more flexible replacement thatn simply prefixing
+        # note that we need to match the entire key such that
+        # search-keys are not covered by accident
+        # todo: implement a more flexible replacement that simplifies prefixing
         regexp_form_sets = {
-            /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style", "align"]},
-            /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos", "align"]},
-            /extract\.(\d+)\.notebound\.minc\.(\d+)/                              => {keys: ["minc_f"]},
-            /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
-            /extract\.(\d+)\.legend/                                              => {keys: ["pos", "align", "spos", "style"]},
-            /extract\.(\d+)\.lyrics\.(\d)/                                        => {keys: ["verses", "pos", "style"]},
-            /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/                 => {keys: ['text', 'pos', 'style']},
-            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]},
-            /extract\.(\d+)\.notes\.(\w+)/                                        => {keys: ["pos", "text", "style", "align"]}
+            /^extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)$/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
+            /^extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)$/   => {keys: ["show", "pos", "style", "align"]},
+            /^extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)$/ => {keys: ["pos", "align"]},
+            /^extract\.(\d+)\.notebound\.minc\.(\d+)$/                              => {keys: ["minc_f"]},
+            /^extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)$/                 => {keys: ["cp1", "cp2"]},
+            /^extract\.(\d+)\.legend$/                                              => {keys: ["pos", "align", "spos", "style"]},
+            /^extract\.(\d+)\.lyrics\.(\d)$/                                        => {keys: ["verses", "pos", "style"]},
+            /^extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)$/                 => {keys: ['text', 'pos', 'style']},
+            /^extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)$/           => {keys: ["nshift"]},
+            /^extract\.(\d+)\.notes\.(\w+)$/                                        => {keys: ["pos", "text", "style", "align"]}
         }
 
-        # see if we have a static form set
+        # see if we have a static form set  --------------------------------------------------
         the_form = form_sets[args[:set]]
+        editor_title=nil;
 
-        # see if we have a regular expression formset
+        # see if we have a regular expression formset ----------------------------------------
         unless the_form
           regexp_form_sets.each do |pattern, entry|
             if (match = args[:set].match(pattern))
               the_form        = entry
+              editor_title    = args[:set]
               the_form[:keys] = the_form[:keys].map { |inner_key| "#{args[:set]}.#{inner_key}" }
             end
           end
         end
 
-        # see if wie find a matching key
-        #
+        # see if we have a search form set ---------------------------------------------------
         unless the_form
-
           econf = Confstack.new
           econf.push(get_config_from_editor)
 
-          keys         = [$conf.keys, econf.keys].flatten.reject { |i| i.match(/^(templates|defaults|presets|neatjson|wrap|layout)/) }
-          keys         = keys.select do |k|
+          keys = [$conf.keys, econf.keys].flatten.reject { |i| i.match(/^(templates|defaults|presets|neatjson|wrap|layout)/) }
+          keys = keys.select do |k|
             pattern = "Auszug.*#{args[:set]}.*".downcase
             tk      = k.split(".").map { |k| I18n.t(k) }.join(".").downcase
             k.match("^extract.*#{args[:set]}.*") || tk.match(pattern) || I18n.t_help(k).downcase.match(".*#{args[:set]}.*")
-          end.map { |k| k.gsub("extract.0", "extract.#{@systemstatus[:view]}") }
+          end
+
+          keys = keys.map { |k| k.gsub("extract.0", "extract.#{@systemstatus[:view]}") }
+
           editor_title = {text: %Q{#{I18n.t("wildcard")}: #{args[:set]}}}
           unless keys.empty?
             the_form = {keys: keys}
           end
+        end
+
+        # use the given key as form -----------------------------------------------------------
+
+        unless the_form
+          the_form              = {keys: [args[:set]]}
+          editor_title          = %Q{#{args[:set]}}
+          quicksetting_commands = []
+          editable_keys         = [args[:set]] # use the parameter as key if there is no set.
         end
 
         # get the form title from the config_form_memu
@@ -748,10 +761,10 @@ class Controller
         if editor_title
           editor_title = I18n.t(editor_title[:text])
         else
-          editor_title = I18n.t(args[:set])
+          raise "#{__FILE__}:#{__LINE__} should not happen"
         end
 
-        # now handle the form
+        # now handle the form -------------------------------------------------
         if the_form
           scope                 = the_form[:scope] || :extract
           editor_title          = %Q{#{editor_title} [#{I18n.t("Extract")} #{@systemstatus[:view]}]} if scope == :extract
@@ -759,9 +772,7 @@ class Controller
           newentry_handler      = the_form[:newentry_handler]
           quicksetting_commands = the_form[:quicksetting_commands] || []
         else # use the argument as key if there is no set.
-          editor_title          = %Q{#{args[:set]}}
-          quicksetting_commands = []
-          editable_keys         = [args[:set]] # use the parameter as key if there is no set.
+          raise "#{__FILE__}:#{__LINE__} should not happen"
         end
 
 

@@ -501,11 +501,11 @@ class ConfstackEditor
       @effective_value_raw  = Confstack.new(false)
       @default_value        = Confstack.new(false)
       @default_value.strict = false
-
       @value.push(value_handler_result[:current])
       @effective_value_raw.push(value_handler_result[:effective])
       #@default_value.push($log.benchmark("getvalues #{__FILE__} #{__LINE__}") { value_handler_result[:default] })
     end
+    
     # here we treat on childers and oneliners
     valuekeys = @value.keys
 
