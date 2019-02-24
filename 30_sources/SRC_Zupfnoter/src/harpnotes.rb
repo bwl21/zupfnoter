@@ -1551,8 +1551,8 @@ module Harpnotes
         else
           beat_layout = beat_layout || Proc.new do |beat|
             # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-            # assign to sanitizex %x string at end of function
-            r = %x{#{@y_size} - #{beat} * #{@beat_spacing} - #{@y_offset}}
+              # assign to sanitizex %x string at end of function
+            r = %x{#{@y_size} - #{beat} * #{@beat_spacing}}
           end
         end
 
