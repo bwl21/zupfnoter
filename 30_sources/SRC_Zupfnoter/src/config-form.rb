@@ -829,7 +829,7 @@ class ConfstackEditor
                     <table >
 
                     <tr>
-                      <th>X</th>
+                      <th>__</th>
                       <th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
                          <th>#{I18n.t("Value")}</th>
                          <th></th><th></th><th>#{I18n.t("Effective value")}</th>
@@ -878,13 +878,11 @@ class ConfstackEditor
       togglecommand = %Q{$('.#{key.split(".").join("_")}').toggle()}
 
       children      = @value.keys.select { |i| i.start_with? key }
-      toggle_button = children[2] ? %Q{<input type="checkbox" tabIndex="-1" checked  name="#{key}:toggle" onclick="#{togglecommand}"></button > &nbsp;} : ""
+      toggle_button = children[2] ? %Q{<input type="checkbox" tabIndex="-1" checked  name="#{key}:toggle" onclick="#{togglecommand}"></button >&nbsp;} : ""
 
       %Q{
          <tr class="#{_mk_classnames(key)}">
-           <td>
-             #{toggle_button}
-           </td>
+           <td>#{toggle_button}</td>
 
            <td  colspan="2" >
             #{first_indent}
