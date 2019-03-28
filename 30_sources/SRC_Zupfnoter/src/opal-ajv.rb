@@ -72,7 +72,7 @@ module Ajv
                                  :properties =>
                                      {:pos   => {:'$ref' => '#/definitions/pos'},
                                       :text  => {:type => "string"},
-                                      :align => {:'$ref' => '#/definitions/pos'},
+                                      :align => {:'$ref' => '#/definitions/align'},
                                       :style => {:type => "string"}}},
            :minc_entry       => {
                :type                 => "object",
@@ -345,7 +345,7 @@ module Ajv
                                                                    :properties =>
                                                                        {:spos  => {:"$ref" => "#/definitions/pos"},
                                                                         :pos   => {:"$ref" => "#/definitions/pos"},
-                                                                        :align => {:'$ref' => '#/definitions/notebound_pos'}, # this targets the header
+                                                                        :align => {:'$ref' => '#/definitions/align'}, # this targets the header
                                                                         :style => {:type => "string"}  # this targetsd the legend
                                                                        }
                                                  },
@@ -365,7 +365,7 @@ module Ajv
                                                      :properties           => {
                                                          :annotation   => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :barnumber    => {:'$ref' => '#/definitions/notebound_pos',
-                                                                           :align  => {:'$ref' => '#/definitions/notebound_pos'}},
+                                                                           :align  => {:'$ref' => '#/definitions/align'}},
                                                          :c_jumplines  => {:type => 'object', # configuratoin of jumpline distances
                                                                            :additionalProperties => false,
                                                                            :patternProperties    => {
