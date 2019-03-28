@@ -1499,6 +1499,12 @@ Parameter je eine Zeile mit den folgenden Elementen:
 
 Für die Bedienung der Masken ist noch wichtig
 
+-   In der Kopfzeile der Konfigurationsmaske gibt es ein Eingabefeld
+    "Suche". Wenn du dort etwas eingbist, dann sucht Zupfnoter nach passenden
+    Konfigurationsparametern. Dieses Suchfeld ist hilfreich, um schnell
+    einen Parameter zu finden. Z.B. führt die Eingeabe des Wortes `Farbe`
+    zu einer Maske in der alle Parameter angezeigt werden, die etwas mit
+    "Farbe" zu tun haben.
 -   Schaltfläche `Refresh`: Um sicher zu gehen, dass die
     Konfigurationsmaske wirklich die aktuellen Werte zeigt, kann mit
     `Refresh` die Maske neu aufgebaut werden. Dies ist z.B. dann

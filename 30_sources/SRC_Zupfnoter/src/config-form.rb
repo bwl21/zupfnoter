@@ -481,6 +481,7 @@ class ConfstackEditor
   def is_child_key?(parent, child)
     child.start_with?(parent + '.')
   end
+
   #
   #def initialize(title, editor, value_handler, refresh_handler)
   def initialize(editorparams)
@@ -505,12 +506,12 @@ class ConfstackEditor
       @effective_value_raw.push(value_handler_result[:effective])
       #@default_value.push($log.benchmark("getvalues #{__FILE__} #{__LINE__}") { value_handler_result[:default] })
     end
-    
+
     # here we treat on childers and oneliners
     valuekeys = @value.keys
 
-    onechilders = valuekeys.select { |parent| valuekeys.count { |child| is_child_key?(parent, child)} == 1 } # need to append "."
-    @oneliners   = valuekeys.select { |i| onechilders.include?(parent_key(i) )}
+    onechilders = valuekeys.select { |parent| valuekeys.count { |child| is_child_key?(parent, child) } == 1 } # need to append "."
+    @oneliners  = valuekeys.select { |i| onechilders.include?(parent_key(i)) }
     @formkeys   = valuekeys - onechilders
 
     @form   = nil # Form object to be passed to w2ui
@@ -791,7 +792,7 @@ class ConfstackEditor
                          {id: 'bt5', type: 'break'},
                          {type: 'html',
                           html: %Q{
-                         <input size="10" placeholder="search" onchange="zupfnoter.$handle_command('editconf &quot;' + this.value + '&quot;')"
+                         <input size="10" placeholder="#{I18n.t('search')}" onchange="zupfnoter.$handle_command('editconf &quot;' + this.value + '&quot;')"
                                style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
                               }
                          },
@@ -855,20 +856,16 @@ class ConfstackEditor
   # @param [String] key the key of the field
   # @param [Object] value - the current value from editor basically used to determin the icon on the delete button
   def mk_fieldHTML(key, value)
-    help_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
-    menu_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
-    delete_icon   = value.nil? ? 'fa-minus' : 'fa-trash'
-    delete_button = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
+    help_button     = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
+    menu_button     = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
+    delete_icon     = value.nil? ? 'fa-minus' : 'fa-trash'
+    delete_button   = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
 
-    if @oneliners.include? key
-      labelkey = key.rpartition(/\../).first
-    else
-      labelkey = key
-    end
+    label, labelkey = _mk_label_for_form(key)
 
-    padding       = 1.5 * (labelkey.split(".").count - 1)
-    first_indent  = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
-    last_indent   = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
+    padding      = 1.5 * (labelkey.split(".").count - 1)
+    first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
+    last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
 
 
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
@@ -888,7 +885,7 @@ class ConfstackEditor
             #{first_indent}
       #{delete_button}
       #{fillup_button}
-           <strong>#{ I18n.t_key(labelkey)}</strong>
+           <strong>#{label}</strong>
            </td>
            <td style="vertical-align: top;">#{menu_button}</td>
            <td style="vertical-align: top;">#{help_button}</td>
@@ -902,7 +899,7 @@ class ConfstackEditor
          <td style="vertical-align: top;">#{first_indent}
       #{delete_button}
       #{default_button}
-           <strong>#{ I18n.t_key(labelkey)}</strong>
+           <strong>#{ label }</strong>
         </td>
         <td style="vertical-align: top;">
          <div class="w2ui-field" style="padding:1pt;">
@@ -915,6 +912,33 @@ class ConfstackEditor
        </tr>
     }
     end
+  end
+
+  private
+
+  # this makes the label for a particular configuration parameter
+  # note that it takes in to account if the paramets is a online
+  # and then desparately tries to combint the beginning and end
+  # of the label to be as expressive as possible
+  #
+  # @param String key - the key for the parameter
+  def _mk_label_for_form(key)
+    if @oneliners.include? key
+      labelkey  = key.rpartition(/\../).first || ""
+      label1    = I18n.t_key(labelkey) || labelkey
+      label2    = I18n.t_key(key) || key
+      separator = " .. "
+      maxlen    = 20 - labelkey.split(".").count
+      all_len   = label1.length + label2.length
+
+      show1 = [label1.length, (label1.length * maxlen / all_len).floor].min
+      show2 = [label2.length, (label2.length * maxlen / all_len).floor].min
+      label = label1[0 .. show1] + separator + label2[-show2 .. -1]
+    else
+      labelkey = key
+      label    = I18n.t_key(key)
+    end
+    return label, labelkey
   end
 
 end

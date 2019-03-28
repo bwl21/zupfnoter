@@ -1,17 +1,24 @@
-# V 1.10.1
+
+# V 1.11
 
 ## fix
 
 * Bug Cannot read property '$first' of undefined #251
 * Addon dialog does not close #249
 * subflowlines are now dahed in 1.5 mm while synchlines are 3 mm #247
+* bottom up and beams now show the correct draing area #257
+* editconf extract.0.lyrics.1.pos fails #256
 
 ## enhancement
 
 * provide a dropbox path menu in the statusbar #252
+* collapse / expand configuration tree in editor #254
+* compact configuration tree #254
 * report jspdf version #241
 * now support align for title and notes #237
 * now have {{current_year}} placeholder #223
+* now have search field in configration # 248
+* Bug Cannot read property '$first' of undefined #251
 
 # V.1.10.0
 
