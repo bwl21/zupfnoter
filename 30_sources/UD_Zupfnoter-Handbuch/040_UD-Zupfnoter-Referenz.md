@@ -735,8 +735,16 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
 -   Schaltfläche **Einloggen**: TODO: -
     https://github.com/bwl21/zupfnoter/issues/75
 
-    Über diese Schaltfläche kannst du das Verzeichnis in der Dropbox
+    Über diese Schaltfläche kannst du das Speicherort in der Dropbox
     angeben, in die Zupfnoter dein Musikstück speichern soll.
+
+    > **Hinweis:** Wenn du in dem Eingabefeld etwas eingibst, zeigt
+    > Dropbox passende Speicherorte an, die zu zuletzt verwendet hast.
+
+    > **Hinweis:** Du kannst den Speicherort auch in der Statuszeile
+    > auswählen. Dort wird der aktuelle Speicherort angegeben. Rechts
+    > davon ist eine Menüknopf, der die zuletzt verwendeten Speicherorte
+    > aufrufbar macht.
 
 -   Schaltfläche **DL abc** (Download ABC): Hiermit kann man
     Zwischenstände oder fertige Musikstücke als ABC-Datei auf seinen
@@ -748,12 +756,10 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
     deiner Dropbox. Dort kannst du eine Datei auswählen und zur
     Bearbeitung im Zupfnoter öffnen.
 
-    TODO: anpassen auf kommenden Dialog
-
     > **Hinweis**: in der Statuszeile wird der Verbindungszustand zur
     > Dropbox und auch das aktuelle Verzeichnis in der Dropbox
     > angezeigt. "Not connected" bedeutet, das Zupfnoter nicht mit
-    > deiner Dropbox verbundn ist.
+    > deiner Dropbox verbunden ist.
 
 -   Schaltfläche **Speichern** (sichern): Das fertig gestellte
     Musikstück wird in deiner Dropbox gespeichert. Es wird eine
@@ -1044,7 +1050,9 @@ Einträgen
 
 -   Position der Schreibmarke im Editor
 -   Bedeutung des Symbols links von der Schreibmarke (Syntax Token)
--   Pfad zur Dropbox
+-   Speicherort in der Dropbox - Das ist ein Menü über welches du die
+    letzten Pfade wieder aufrufen kannst, um schnell den Speicherort für
+    deine Stücke auszuwählen.
 -   Aktiver Filter für Meldungen in der Konsole (Loglevel). Das Filter
     kann über deen Eingebbefehl`loglevel error` in der Konsole
     umgestellt werden [^040_UD-Zupfnoter-Referenz.md_5].
@@ -2332,10 +2340,8 @@ Benutzereingaben aufgelöst bzw. ausgefüllt werden. Folgende Platzhalter
 sind verfügbar:
 
 `{{song_id}}`
-:   Das ist die Identifikationsnummer des Stückes
-`{{filename}}`
-:   Das ist die Basis für den Dateinamen
-`{{song_title}}`
+:   Das ist die Identifikationsnummer des Stückes `{{filename}}`
+:   Das ist die Basis für den Dateinamen `{{song_title}}`
 :   Das ist der Titel des Stückes.
 
 > **Hinweis:** In den Seitenbeschrifungen gibt es weitere Platzhalter,

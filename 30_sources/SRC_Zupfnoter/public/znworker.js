@@ -34917,7 +34917,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-28-g1423556");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-29-ga97403f");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

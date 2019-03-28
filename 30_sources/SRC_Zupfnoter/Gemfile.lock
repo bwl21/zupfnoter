@@ -100,7 +100,7 @@ DEPENDENCIES
   redcarpet
   sass
   vector2d (~> 2.1.0)
-  wortsammler (~> 2.0.0.dev2)
+  wortsammler (~> 2.0.0.dev4)
   zip
 
 RUBY VERSION

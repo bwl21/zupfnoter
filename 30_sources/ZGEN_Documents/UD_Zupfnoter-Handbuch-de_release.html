@@ -959,12 +959,17 @@ noter als Werkzeug zur Erstellung des Unterlegnotenblattes, also Werbung in eige
 <li><p>Schaltfläche <strong>Zupfnoter</strong>: TODO: – Detailinfo als Popup darstellen</p></li>
 <li><p>Schaltfläche <strong>Neu</strong> (erstellen): Es wird ein leerer Bildschirm ohne Inhalte erstellt und man kann ein neues Musikstück erstellen (siehe Kapitel  <a href="#dein-erstes-musikstueck-eingeben">Dein erstes Musikstück eingeben</a>).</p></li>
 <li><p>Schaltfläche <strong>Einloggen</strong>: TODO: - https://github.com/bwl21/zupfnoter/issues/75</p>
-<p>Über diese Schaltfläche kannst du das Verzeichnis in der Dropbox angeben, in die Zupfnoter dein Musikstück speichern soll.</p></li>
+<p>Über diese Schaltfläche kannst du das Speicherort in der Dropbox angeben, in die Zupfnoter dein Musikstück speichern soll.</p>
+<blockquote>
+<p><strong>Hinweis:</strong> Wenn du in dem Eingabefeld etwas eingibst, zeigt Dropbox passende Speicherorte an, die zu zuletzt verwendet hast.</p>
+</blockquote>
+<blockquote>
+<p><strong>Hinweis:</strong> Du kannst den Speicherort auch in der Statuszeile auswählen. Dort wird der aktuelle Speicherort angegeben. Rechts davon ist eine Menüknopf, der die zuletzt verwendeten Speicherorte aufrufbar macht.</p>
+</blockquote></li>
 <li><p>Schaltfläche <strong>DL abc</strong> (Download ABC): Hiermit kann man Zwischenstände oder fertige Musikstücke als ABC-Datei auf seinen Rechner herunterladen. Abgelegte Dateien können mit der Maus wieder in den Zupfnoter in den linken Abschnitt gezogen werden und der Inhalt steht zur Bearbeitung im Zupfnoter wieder zur Verfügung.</p></li>
 <li><p>Schaltfläche <strong>Öffnen</strong>: Es öffnet sich ein Dateiauswahlfenster deiner Dropbox. Dort kannst du eine Datei auswählen und zur Bearbeitung im Zupfnoter öffnen.</p>
-<p>TODO: anpassen auf kommenden Dialog</p>
 <blockquote>
-<p><strong>Hinweis</strong>: in der Statuszeile wird der Verbindungszustand zur Dropbox und auch das aktuelle Verzeichnis in der Dropbox angezeigt. “Not connected” bedeutet, das Zupfnoter nicht mit deiner Dropbox verbundn ist.</p>
+<p><strong>Hinweis</strong>: in der Statuszeile wird der Verbindungszustand zur Dropbox und auch das aktuelle Verzeichnis in der Dropbox angezeigt. “Not connected” bedeutet, das Zupfnoter nicht mit deiner Dropbox verbunden ist.</p>
 </blockquote></li>
 <li><p>Schaltfläche <strong>Speichern</strong> (sichern): Das fertig gestellte Musikstück wird in deiner Dropbox gespeichert. Es wird eine ABC-Datei, jeweils eine Datei für A3 und A4 für Unterlegnoten pro Auszug gespeichert.</p>
 <blockquote>
@@ -1099,7 +1104,7 @@ Kapitel  <a href="#konfigurationsmasken">Konfigurationsmasken</a>.</p></li>
 <ul>
 <li>Position der Schreibmarke im Editor</li>
 <li>Bedeutung des Symbols links von der Schreibmarke (Syntax Token)</li>
-<li>Pfad zur Dropbox</li>
+<li>Speicherort in der Dropbox - Das ist ein Menü über welches du die letzten Pfade wieder aufrufen kannst, um schnell den Speicherort für deine Stücke auszuwählen.</li>
 <li>Aktiver Filter für Meldungen in der Konsole (Loglevel). Das Filter kann über deen Eingebbefehl<code>loglevel error</code> in der Konsole umgestellt werden <a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>.</li>
 <li>Aktueller Modus von Zupfnoter. Hier gibt es <code>work</code> und <code>demo</code>. im Demo-Modus sind einge Menüpunkte nicht aktiv.</li>
 <li>Menü zur Auswahl der Papierformate beim Speichern</li>
@@ -1794,12 +1799,10 @@ I:staffnonote 2</code></pre>
 <p>Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter eingefügt sind, welche beim erstellen eines neuen Stückes anhand der Benutzereingaben aufgelöst bzw. ausgefüllt werden. Folgende Platzhalter sind verfügbar:</p>
 <dl>
 <dt><code>{{song_id}}</code></dt>
-<dd>Das ist die Identifikationsnummer des Stückes
+<dd>Das ist die Identifikationsnummer des Stückes <code>{{filename}}</code>
 </dd>
-<dt><code>{{filename}}</code></dt>
-<dd>Das ist die Basis für den Dateinamen
+<dd>Das ist die Basis für den Dateinamen <code>{{song_title}}</code>
 </dd>
-<dt><code>{{song_title}}</code></dt>
 <dd>Das ist der Titel des Stückes.
 </dd>
 </dl>

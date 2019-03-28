@@ -39096,9 +39096,8 @@ if (g == null) g = nil;
             beat_layout = ($truthy($a = beat_layout) ? $a : $send(Opal.const_get_relative($nesting, 'Proc'), 'new', [], (TMP_132 = function(beat){var self = TMP_132.$$s || this, r = nil;
               if (self.y_size == null) self.y_size = nil;
               if (self.beat_spacing == null) self.beat_spacing = nil;
-              if (self.y_offset == null) self.y_offset = nil;
 if (beat == null) beat = nil;
-            return (r = self.y_size - beat * self.beat_spacing - self.y_offset)}, TMP_132.$$s = self, TMP_132.$$arity = 1, TMP_132)))
+            return (r = self.y_size - beat * self.beat_spacing)}, TMP_132.$$s = self, TMP_132.$$arity = 1, TMP_132)))
             } else {
             beat_layout = ($truthy($a = beat_layout) ? $a : $send(Opal.const_get_relative($nesting, 'Proc'), 'new', [], (TMP_133 = function(beat){var self = TMP_133.$$s || this, r = nil;
               if (self.beat_spacing == null) self.beat_spacing = nil;
@@ -39465,7 +39464,6 @@ if (playable == null) playable = nil;
             decoration_root.$more_conf_keys().$push($hash2(["conf_key", "text", "icon"], {"conf_key": "" + "extract." + (print_variant_nr) + ".notebound.minc." + (playable.$time()) + ".minc_f", "text": Opal.const_get_relative($nesting, 'I18n').$t("Edit Minc"), "icon": "fa fa-arrows-v"}));
             decoration_root.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + ".notebound.minc." + (playable.$time()) + ".minc_f", "text": Opal.const_get_relative($nesting, 'I18n').$t("increase Minc"), "icon": "fa fa-arrow-down", "value": 0.5}));
             decoration_root.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + ".notebound.minc." + (playable.$time()) + ".minc_f", "text": Opal.const_get_relative($nesting, 'I18n').$t("decrease Minc"), "icon": "fa fa-arrow-up", "value": -0.5}));
-            decoration_root.$more_conf_keys().$push($hash2(["conf_key", "text", "icon"], {"conf_key": "" + "t_" + (playable.$time()), "text": "" + (Opal.const_get_relative($nesting, 'I18n').$t("Edit Config for time:")) + " " + (playable.$time()), "icon": "fa fa-gear"}));
             return result.$shapes();}, TMP_165.$$s = self, TMP_165.$$arity = 1, TMP_165)).$flatten().$compact();
           res_decorations = res_decorations.$flatten().$compact();
           $b = $send($gvars.log, 'benchmark', ["countnotes / barnumbers"], (TMP_166 = function(){var self = TMP_166.$$s || this;
@@ -39776,7 +39774,7 @@ if (goto$ == null) goto$ = nil;
             from_anchor = ($truthy($c = goto$.$policy()['$[]']("from_anchor")) ? $c : "after");
             to_anchor = ($truthy($c = goto$.$policy()['$[]']("to_anchor")) ? $c : "before");
             vertical_anchor = ($truthy($c = goto$.$policy()['$[]']("vertical_anchor")) ? $c : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2135));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("harpnotes") + ":" + (2130));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -48519,7 +48517,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-23-g76630e3");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-29-ga97403f");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

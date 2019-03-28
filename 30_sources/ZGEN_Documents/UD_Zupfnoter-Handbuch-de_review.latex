@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.10.0-22-gbb4a7ef
+Version V\_1.10.0-29-ga97403f
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -1960,8 +1960,20 @@ Informationen in diesem Kapitel vorl\"{a}ufig.
   Schaltfl\"{a}che \textbf{Einloggen}: TODO:\marginpar{TODO} -
   https://github.com/bwl21/zupfnoter/issues/75
 
-  \"{U}ber diese Schaltfl\"{a}che kannst du das Verzeichnis in der
+  \"{U}ber diese Schaltfl\"{a}che kannst du das Speicherort in der
   Dropbox angeben, in die Zupfnoter dein Musikst\"{u}ck speichern soll.
+
+  \begin{quote}
+  \textbf{Hinweis:} Wenn du in dem Eingabefeld etwas eingibst, zeigt
+  Dropbox passende Speicherorte an, die zu zuletzt verwendet hast.
+  \end{quote}
+
+  \begin{quote}
+  \textbf{Hinweis:} Du kannst den Speicherort auch in der Statuszeile
+  ausw\"{a}hlen. Dort wird der aktuelle Speicherort angegeben. Rechts
+  davon ist eine Men\"{u}knopf, der die zuletzt verwendeten Speicherorte
+  aufrufbar macht.
+  \end{quote}
 \item
   Schaltfl\"{a}che \textbf{DL abc} (Download ABC): Hiermit kann man
   Zwischenst\"{a}nde oder fertige Musikst\"{u}cke als ABC-Datei auf
@@ -1974,13 +1986,11 @@ Informationen in diesem Kapitel vorl\"{a}ufig.
   Dateiauswahlfenster deiner Dropbox. Dort kannst du eine Datei
   ausw\"{a}hlen und zur Bearbeitung im Zupfnoter \"{o}ffnen.
 
-  TODO:\marginpar{TODO} anpassen auf kommenden Dialog
-
   \begin{quote}
   \textbf{Hinweis}: in der Statuszeile wird der Verbindungszustand zur
   Dropbox und auch das aktuelle Verzeichnis in der Dropbox angezeigt.
   ``Not connected'' bedeutet, das Zupfnoter nicht mit deiner Dropbox
-  verbundn ist.
+  verbunden ist.
   \end{quote}
 \item
   Schaltfl\"{a}che \textbf{Speichern} (sichern): Das fertig gestellte
@@ -2360,7 +2370,9 @@ Eintr\"{a}gen
 \item
   Bedeutung des Symbols links von der Schreibmarke (Syntax Token)
 \item
-  Pfad zur Dropbox
+  Speicherort in der Dropbox - Das ist ein Men\"{u} \"{u}ber welches du
+  die letzten Pfade wieder aufrufen kannst, um schnell den Speicherort
+  f\"{u}r deine St\"{u}cke auszuw\"{a}hlen.
 \item
   Aktiver Filter f\"{u}r Meldungen in der Konsole (Loglevel). Das Filter
   kann \"{u}ber deen Eingebbefehl\texttt{loglevel\ error} in der Konsole
@@ -4266,9 +4278,10 @@ Platzhalter sind verf\"{u}gbar:
 \tightlist
 \item[\texttt{\{\{song\_id\}\}}]
 Das ist die Identifikationsnummer des St\"{u}ckes
-\item[\texttt{\{\{filename\}\}}]
-Das ist die Basis f\"{u}r den Dateinamen
-\item[\texttt{\{\{song\_title\}\}}]
+\texttt{\{\{filename\}\}}
+
+Das ist die Basis f\"{u}r den Dateinamen \texttt{\{\{song\_title\}\}}
+
 Das ist der Titel des St\"{u}ckes.
 \end{description}
 
