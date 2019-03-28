@@ -19,6 +19,7 @@
 * now have {{current_year}} placeholder #223
 * now have search field in configration # 248
 * Bug Cannot read property '$first' of undefined #251
+* further improvement of barnumber/countnot position when libmit_a3 #226
 
 # V.1.10.0
 
