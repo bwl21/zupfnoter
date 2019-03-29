@@ -10,7 +10,7 @@ module Ajv
       else
         ajv = %x{Ajv}
       end
-      @root = `#{ajv}({allErrors: true, jsonPointers: true})`;
+      @root = `#{ajv}({allErrors: true, jsonPointers: true, extendRefs: true})`;
       add_schema(_schema, 'zupfnoter');
     end
 
@@ -408,7 +408,7 @@ module Ajv
                                                                                "v_\d*" => {
                                                                                    :type              => 'object',
                                                                                    :patternProperties => {
-                                                                                       "\d*" => {'$ref' => '#/definitions/annotated_bezier'}
+                                                                                       "\d*" => {:'$ref' => '#/definitions/annotated_bezier'}
                                                                                    }
                                                                                }
                                                                            }

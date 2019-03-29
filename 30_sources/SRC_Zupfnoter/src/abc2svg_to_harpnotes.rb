@@ -175,7 +175,7 @@ module Harpnotes
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
           voice_id = "v_#{voice_index + 1}" # to make it more intuitive fore the user
           result   = _transform_voice(voice_model, voice_id)
-          result   += _make_variant_ending_jumps(voice_id) if result
+          result   += _make_variant_ending_jumps(voice_id) unless result.empty?
           result
         end.compact
 
@@ -240,7 +240,7 @@ module Harpnotes
             # charpos_to_line_column(@score_statements.last[:iend] -1 )
             # )
           end
-          result = nil
+          #result = nil
         end
         result
       end

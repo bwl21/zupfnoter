@@ -1207,6 +1207,10 @@ class Controller
       end
     end
 
+    @worker.on_named_message(:error_alert) do |data|
+      call_consumers(:error_alert)
+    end
+
     @worker.on_named_message(:update_ui) do |data|
       @extracts = data[:payload][:extracts]
       call_consumers(:extracts)

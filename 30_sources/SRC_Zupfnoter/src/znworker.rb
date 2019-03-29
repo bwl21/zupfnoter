@@ -195,7 +195,7 @@ class WorkerController
   end
 
   def compute_harpnotes_preview
-    result = {svg: I18n.t("BUG: worker did not finsh"), interactive_elements: []}
+    result = {svg: I18n.t("BUG: worker did not finsh"), interactive_elements: [], error_alert: true}
     begin
       load_music_model
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
@@ -325,7 +325,12 @@ end
 
     # send results to the main script
     #
-    @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: controller.music_model.meta_data[:filename]})
+    if result[:error_alert]
+      @namedworker.post_named_message(:error_alert, nil)
+    else
+      document_title = controller.music_model.meta_data[:filename] rescue "error"
+      @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: document_title})
+    end
     @namedworker.post_named_message(:compute_harpnotes_preview, result)
     @namedworker.post_named_message(:load_abc_model, controller.abc_model)
 
