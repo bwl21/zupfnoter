@@ -75,7 +75,7 @@ module I18n
     # it might be that the phrases are not yet loaded
     # controller loads them by ajax, wich might not be ready
     # on the very first render tasks
-    @phrasesOpal[text] rescue text
+    @phrasesOpal[text] || text rescue text
   end
 
   def self.phrases

@@ -29740,7 +29740,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $send = Opal.send, $hash2 = Opal.hash2, $gvars = Opal.gvars, $truthy = Opal.truthy, $hash = Opal.hash, $range = Opal.range;
 
-  Opal.add_stubs(['$require', '$attr_reader', '$get', '$_reset_state', '$get_metadata', '$new', '$abcplay=', '$-', '$get_abcmodel', '$nil?', '$raise', '$t', '$_make_metadata', '$_transform_voices', '$meta_data=', '$_make_harpnote_options', '$harpnote_options=', '$[]', '$meta_data', '$empty?', '$error', '$[]=', '$compact', '$map', '$gsub', '$strip', '$+', '$_get_key_by_accidentals', '$first', '$==', '$/', '$to_i', '$join', '$>=', '$private', '$match', '$charpos_to_line_column', '$flatten', '$to_a', '$each_with_index', '$_transform_voice', '$_make_variant_ending_jumps', '$unshift', '$to_s', '$_investigate_first_bar', '$each', '$send', '$inject', '$<<', '$_make_jumplines', '$_make_notebound_annotations', '$count', '$last', '$select', '$!', '$=~', '$_extract_goto_info_from_bar', '$!=', '$length', '$push', '$_bar_is_repetition_end?', '$>', '$pop', '$_transform_bar_repeat_end', '$include?', '$_parse_origin', '$_parse_tuplet_info', '$_parse_decorations', '$_transform_measure_start', '$_convert_duration', '$decorations=', '$measure_count=', '$_transform_count_note', '$count_note=', '$time=', '$_mkznid', '$znid=', '$origin=', '$start_pos=', '$end_pos=', '$tuplet=', '$tuplet_start=', '$tuplet_end=', '$variant=', '$time', '$duration', '$duration=', '$origin', '$start_pos', '$end_pos', '$tuplet', '$tuplet_start', '$tuplet_end', '$tie_end=', '$tie_start=', '$_parse_slur', '$_push_slur', '$slur_starts=', '$_pop_slur', '$slur_ends=', '$measure_start=', '$_make_repeats_jumps_annotations', '$*', '$%', '$ceil', '$split', '$zip', '$min', '$round', '$floor', '$visible=', '$is_a?', '$prev_pitch', '$pitch=', '$znid', '$start_pos_to_s', '$_extract_chord_lines', '$===', '$shift=', '$notes', '$to_f', '$pitch', '$next_pitch=', '$next_playable=', '$next_first_in_part=', '$prev_pitch=', '$prev_playable=', '$first_in_part=', '$<', '$start_with?', '$to_sym', '$&', '$>>']);
+  Opal.add_stubs(['$require', '$attr_reader', '$get', '$_reset_state', '$get_metadata', '$new', '$abcplay=', '$-', '$get_abcmodel', '$nil?', '$raise', '$t', '$_make_metadata', '$_transform_voices', '$meta_data=', '$_make_harpnote_options', '$harpnote_options=', '$[]', '$meta_data', '$empty?', '$error', '$[]=', '$compact', '$map', '$gsub', '$strip', '$+', '$_get_key_by_accidentals', '$first', '$==', '$/', '$to_i', '$join', '$>=', '$private', '$match', '$charpos_to_line_column', '$flatten', '$to_a', '$each_with_index', '$_transform_voice', '$_make_variant_ending_jumps', '$unshift', '$to_s', '$_investigate_first_bar', '$each', '$send', '$inject', '$<<', '$_make_jumplines', '$_make_notebound_annotations', '$count', '$last', '$select', '$!', '$=~', '$_extract_goto_info_from_bar', '$!=', '$length', '$push', '$_bar_is_repetition_end?', '$>', '$pop', '$_transform_bar_repeat_end', '$include?', '$_parse_origin', '$_parse_tuplet_info', '$_parse_decorations', '$_transform_measure_start', '$_convert_duration', '$decorations=', '$measure_count=', '$_transform_count_note', '$count_note=', '$time=', '$_mkznid', '$znid=', '$origin=', '$start_pos=', '$end_pos=', '$tuplet=', '$tuplet_start=', '$tuplet_end=', '$variant=', '$time', '$duration', '$duration=', '$origin', '$start_pos', '$end_pos', '$tuplet', '$tuplet_start', '$tuplet_end', '$tie_end=', '$tie_start=', '$_parse_slur', '$_push_slur', '$slur_starts=', '$_pop_slur', '$slur_ends=', '$measure_start=', '$_make_repeats_jumps_annotations', '$*', '$%', '$ceil', '$split', '$zip', '$min', '$round', '$floor', '$visible=', '$is_a?', '$prev_pitch', '$pitch=', '$znid', '$warning', '$start_pos_to_s', '$_extract_chord_lines', '$===', '$shift=', '$notes', '$to_f', '$pitch', '$next_pitch=', '$next_playable=', '$next_first_in_part=', '$prev_pitch=', '$prev_playable=', '$first_in_part=', '$<', '$start_with?', '$to_sym', '$&', '$>>']);
   
   self.$require("native");
   return (function($base, $parent_nesting) {
@@ -30613,9 +30613,18 @@ if (pitch_note == null) pitch_note = nil;
         }, TMP_Abc2svgToHarpnotes__transform_key_44.$$arity = 1);
         
         Opal.defn(self, '$_transform_meter', TMP_Abc2svgToHarpnotes__transform_meter_45 = function $$_transform_meter(voice_element) {
-          var self = this;
+          var self = this, start_pos = nil, end_pos = nil;
+          if ($gvars.log == null) $gvars.log = nil;
 
           
+          if ($truthy(self.next_note_marks['$[]']("measure"))) {
+            } else {
+            
+            start_pos = self.$charpos_to_line_column(voice_element['$[]']("istart"));
+            end_pos = self.$charpos_to_line_column(voice_element['$[]']("iend"));
+            debugger;
+            $gvars.log.$warning($rb_plus("" + "abc:" + (start_pos.$first()) + ":" + (start_pos.$last()) + " Error: ", Opal.const_get_relative($nesting, 'I18n').$t("Meter change not at beginning of measure")), start_pos, end_pos);
+          };
           self.is_first_measure = true;
           self.wmeasure = voice_element['$[]']("wmeasure");
           self.countby = (function() { try {
@@ -34918,7 +34927,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-34-g806d7a7");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-34-g5da35c8");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
@@ -61444,7 +61453,7 @@ if (object == null) object = nil;
   function $rb_minus(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs - rhs : lhs['$-'](rhs);
   }
-  var TMP_perform_worker_task_34, TMP_35, TMP_36, TMP_38, TMP_40, TMP_41, TMP_43, self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $send = Opal.send, $hash2 = Opal.hash2, $gvars = Opal.gvars, $truthy = Opal.truthy, $writer = nil;
+  var TMP_perform_worker_task_34, TMP_35, TMP_36, TMP_38, TMP_40, TMP_41, TMP_43, self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $truthy = Opal.truthy, $klass = Opal.klass, $send = Opal.send, $hash2 = Opal.hash2, $gvars = Opal.gvars, $writer = nil;
   if (self.namedworker == null) self.namedworker = nil;
   if (self.worker == null) self.worker = nil;
   if ($gvars.log == null) $gvars.log = nil;
@@ -61490,11 +61499,11 @@ if (object == null) object = nil;
 
     
     Opal.defs(self, '$t', TMP_I18n_t_1 = function $$t(text) {
-      var self = this;
+      var $a, self = this;
       if (self.phrasesOpal == null) self.phrasesOpal = nil;
 
       try {
-        return self.phrasesOpal['$[]'](text)
+        return ($truthy($a = self.phrasesOpal['$[]'](text)) ? $a : text)
       } catch ($err) {
         if (Opal.rescue($err, [Opal.const_get_relative($nesting, 'StandardError')])) {
           try {

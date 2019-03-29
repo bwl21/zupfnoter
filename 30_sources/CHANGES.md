@@ -8,6 +8,7 @@
 * subflowlines are now dahed in 1.5 mm while synchlines are 3 mm #247
 * bottom up and beams now show the correct draing area #257
 * editconf extract.0.lyrics.1.pos fails #256
+* warn if change of meter is within a measure #217
 
 ## enhancement
 
