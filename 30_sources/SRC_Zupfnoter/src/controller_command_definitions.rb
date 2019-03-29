@@ -332,6 +332,15 @@ class Controller
       end
     end
 
+    @commands.add_command(:resettemplate) do |command|
+      command.undoable = false
+      command.set_help { "reset template to zufpnoter default" }
+      command.as_action do |args|
+        get_builtin_template
+        nil
+      end
+    end
+
     @commands.add_command(:settemplate) do |command|
       command.undoable = false
       command.set_help { "set the current editor content as template (has no F:{{}} - line" }
@@ -713,7 +722,7 @@ class Controller
 
         # see if we have a static form set  --------------------------------------------------
         the_form = form_sets[args[:set]]
-        editor_title=nil;
+        editor_title=args[:set];
 
         # see if we have a regular expression formset ----------------------------------------
         unless the_form

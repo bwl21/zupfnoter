@@ -506,6 +506,11 @@ function init_w2ui(uicontroller) {
               w2ui.layout_left_tabs.click('configtab');
               uicontroller.$handle_command('editconf template')
             }
+          },
+          {
+            text: 'resettemplate', icon: 'fa fa-support', onClick: function () {
+              uicontroller.$handle_command('resettemplate')
+            }
           }
         ]
       },
