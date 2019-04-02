@@ -1340,20 +1340,21 @@ module Harpnotes
         case $conf['layout.instrument']
 
         when "Zipino"
-          #                  G  A  B  C  D  E  F# G  A  B  C  D  E  F# G
-          pitches         = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79"
+          #                  F# G  A  B  C  D  E  F# G  A  B  C  D  E  F#
+          pitches         = "54 55 57 59 60 62 64 66 67 69 71 72 74 76 78"
           string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
 
           @pitch_to_xpos               = lambda { |pitch|
             #                           G        c        d        e        f        g        a        b        c'       D'
             pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
             result             = 0
-            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+            result             = (pitch_to_stringpos) * xspacing + xoffset unless pitch_to_stringpos.nil?
+            `debugger`
             result
           }
           @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
           @draw_instrument             = lambda {
-            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
+            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 20], ['L', xoffset + 190, 100], ['M', xoffset + 190, 200], ['L', xoffset + 30, 281]], :open)
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             [res]
           }

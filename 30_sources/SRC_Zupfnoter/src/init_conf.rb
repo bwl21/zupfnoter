@@ -270,13 +270,13 @@ module InitConf
                  'Zipino'              => {
                      layout:      {instrument:   'Zipino',
                                    limit_a3:     true,
-                                   beams:        false,
-                                   bottomup:     true,
+                                   beams:        true,
+                                   bottomup:     false,
                                    PITCH_OFFSET: 0,
-                                   X_SPACING:    14.50,
-                                   X_OFFSET:     215
+                                   X_SPACING:    12.50,
+                                   X_OFFSET:     230
                      },
-                     stringnames: {text:  'G A B C D E Fis G A B C D E Fis G ~ ~ ~ ~ ~ ~  ~',
+                     stringnames: {text:  'F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~',
                                    marks: {hpos: [55, 79]}
                      },
                      printer:     {a4_pages:  [2],
