@@ -517,7 +517,7 @@ class Controller
         if @harpnote_player.is_playing?
           call_consumers(:play_stopping)
           stop_play_abc
-        else
+        elsif @harpnote_player.is_stopped?
           call_consumers(:play_start)
           @harpnote_player.play_auto() if mode == :auto
           @harpnote_player.play_song() if mode == :music_model
