@@ -616,7 +616,7 @@ module Harpnotes
       #
       # @return Numeric the last beat of this song
       def last_beat
-        max_beat = @beat_maps.map { |map| map.keys.max || 0   }.max
+        max_beat = @beat_maps.map { |map| map.keys.max || 0 }.max
       end
 
       #
@@ -1349,7 +1349,6 @@ module Harpnotes
             pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
             result             = 0
             result             = (pitch_to_stringpos) * xspacing + xoffset unless pitch_to_stringpos.nil?
-            `debugger`
             result
           }
           @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
@@ -1358,6 +1357,7 @@ module Harpnotes
             res.line_width = $conf.get('layout.LINE_MEDIUM');
             [res]
           }
+          @instrument_orientation      = :horizontal
 
 
         when "saitenspiel"
@@ -2794,25 +2794,52 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Path]
       def layout_note_flags(x_offset, y_offset, size, shift, color, flag)
 
-        p_beam_x, p_beam_y = [0.1, 2 * size[1]]
-        p_flag_x, p_flag_y = [1.3 * size[1], 0.6 * size[1]]
+        #     |\        [ p_beam_x, p_beam_y ]  draw relative to end of beam
+        #     |\\       [ ]      draw realative to end of flag
+        #     | \
+        #     |
+        #     |         [fx, y_offset]   Start of beam
+        #   ()
 
-        linewidth = $conf.get('layout.LINE_MEDIUM')
-        f_x       = x_offset + shift + size[0] - linewidth / 2 # beam start: right border of beam shall be right border of note
-        f_delta_y = $conf.get('layout.LINE_MEDIUM') * 3
-        f_delta_y = p_flag_y
-
-        f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0
-
-        flagpath = ['l', p_flag_x, p_flag_y]
 
         # calulate the beam
-        path = [['M', f_x, y_offset],
-                ['l', p_beam_x, -p_beam_y], # hals
-        ]
+        if @instrument_orientation == :horizontal
+          p_beam_x, p_beam_y = [2 * size[1], 0.1, ] # end of beam
 
-        # add  the flags
-        flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y], flagpath] }
+          linewidth = $conf.get('layout.LINE_MEDIUM')
+
+          f_x      = x_offset + shift / 2            # beam start: right border of beam shall be right border of note
+          f_y      = y_offset + size[1] - linewidth/2
+          path     = [['M', f_x, f_y],
+                      ['l', p_beam_x, p_beam_y], # hals
+          ]
+
+          p_flag_x, p_flag_y = [ -0.6 * size[0], 0.6 * size[1]]  # end of flag
+          f_delta_x = p_flag_x                                   # flagend.y -flagstart.y
+          f_delta_y = p_beam_y * f_delta_x / p_beam_x rescue 0   # flagend.x -flagstart.x
+
+          flagpath = ['l', p_flag_x, p_flag_y]
+          flag.times { |i| path += [['M', f_x + p_beam_x + i * f_delta_x, f_y + p_beam_y], flagpath] }
+        else
+          p_beam_x, p_beam_y = [0.1, 2 * size[1]] # end of beam
+
+          linewidth = $conf.get('layout.LINE_MEDIUM')
+          f_x       = x_offset + shift + size[0] - linewidth / 2 # beam start: right border of beam shall be right border of note
+          f_y       = y_offset
+
+          path = [['M', f_x, f_y],
+                  ['l', p_beam_x, -p_beam_y], # hals
+          ]
+          # add  the flags
+          p_flag_x, p_flag_y = [1.3 * size[1], 0.6 * size[1]] # end of flag
+
+          f_delta_y = p_flag_y                                   # flagend.y -flagstart.y
+          f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0   # flagend.x -flagstart.x
+
+          flagpath = ['l', p_flag_x, p_flag_y]
+          flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y], flagpath] }
+        end
+
 
         res            = Harpnotes::Drawing::Path.new(path, :open)
         res.line_width = linewidth

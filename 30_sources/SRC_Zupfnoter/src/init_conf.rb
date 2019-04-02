@@ -274,10 +274,12 @@ module InitConf
                                    bottomup:     false,
                                    PITCH_OFFSET: 0,
                                    X_SPACING:    12.50,
-                                   X_OFFSET:     230
-                     },
+                                   X_OFFSET:     230,
+                                   ELLIPSE_SIZE:  [2,2],
+                                   REST_SIZE:  [2,2]
+                 },
                      stringnames: {text:  'F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~',
-                                   marks: {hpos: [55, 79]}
+                                   marks: {hpos: [54]}
                      },
                      printer:     {a4_pages:  [2],
                                    a3_offset: [0, 0],
