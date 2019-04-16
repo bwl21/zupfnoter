@@ -1658,8 +1658,7 @@ module Harpnotes
           s.draginfo = {handler: :annotation}
           s.align    = title_align
         end
-
-        if $conf["extract.#{print_variant_nr}.notes.T06_legend"].nil?
+        if print_options_raw["notes.T06_legend"].nil?
           annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, style, nil,
                                                             "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
         end
