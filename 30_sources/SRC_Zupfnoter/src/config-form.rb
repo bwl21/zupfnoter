@@ -720,13 +720,12 @@ class ConfstackEditor
             tooltip: "Edit presentation of stringanmes"
         },
         {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
-        {},
         {id: 'notebound', icon: 'fa fa-adjust', text: 'notebound', tooltip: "edit notebound settings"},
-        {},
         {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
         {},
         # {id: 'template', icon: 'fa fa-file-code-o', text: 'template', tooltip:"edit Template properties"},
-        {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'}
+        {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'},
+        {id: 'template', icon: 'fa fa-pencil-square-o ',text: 'configtemplate', tooltip: 'edit template configuration'}
     ]
   end
 
