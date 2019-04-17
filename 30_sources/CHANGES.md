@@ -21,6 +21,8 @@
 * now have search field in configration # 248
 * Bug Cannot read property '$first' of undefined #251
 * further improvement of barnumber/countnot position when libmit_a3 #226
+* improve handling of templates #253
+* imrove home button and dropbox-status #253
 
 # V.1.10.0
 
