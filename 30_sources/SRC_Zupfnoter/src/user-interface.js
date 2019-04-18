@@ -241,7 +241,7 @@ function init_w2ui(uicontroller) {
 
 
   // ensure that zoomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
-  const init_zoomlevel = [2200, 1400]
+  var init_zoomlevel = [2200, 1400]
   var zoomlevel = init_zoomlevel;
   scalehandlers = {
     'tb_scale:groß': function () {
@@ -486,32 +486,7 @@ function init_w2ui(uicontroller) {
           },
           {},
           // { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
-          {
-            text: 'stdextract', icon: 'fa fa-clipboard', onClick: function () {
-              uicontroller.$handle_command('stdextract')
-            }
-          },
-          {
-            text: 'settemplate', icon: 'fa fa-file-o', onClick: function () {
-              uicontroller.$handle_command('settemplate')
-            }
-          },
-          {
-            text: 'edittemplate', icon: 'fa fa-pencil', onClick: function () {
-              uicontroller.$handle_command('edittemplate')
-            }
-          },
-          {
-            text: 'configtemplate', icon: 'fa fa-pencil-square-o ', onClick: function () {
-              w2ui.layout_left_tabs.click('configtab');
-              uicontroller.$handle_command('editconf template')
-            }
-          },
-          {
-            text: 'resettemplate', icon: 'fa fa-support', onClick: function () {
-              uicontroller.$handle_command('resettemplate')
-            }
-          }
+
         ]
       },
 
@@ -801,7 +776,6 @@ function init_w2ui(uicontroller) {
       config_event2 = event.target.split(":")
       if (['edit_config'].includes(config_event2[0])) {
         if (config_event2[1]) {
-          w2ui.layout_left_tabs.click('configtab');
           uicontroller.$handle_command("editconf " + config_event2[1])
         }
       }
@@ -855,7 +829,6 @@ function init_w2ui(uicontroller) {
       config_event2 = event.target.split(":")
       if (['edit_config'].includes(config_event2[0])) {
         if (config_event2[1]) {
-          w2ui.layout_left_tabs.click('configtab');
           uicontroller.$handle_command("editconf " + config_event2[1])
         }
       }
@@ -1001,6 +974,38 @@ function init_w2ui(uicontroller) {
               uicontroller.$handle_command('autorefresh off')
 
             }
+          }
+        ]
+      },
+      {
+        type: 'menu',
+        id: 'sb_templatemenu',
+        text: "template",
+        items:[
+          {
+            text: 'stdextract', icon: 'fa fa-clipboard',
+            tooltip: "apply settings from template",
+            onClick: function () {
+              uicontroller.$handle_command('stdextract')
+            }
+          },
+          {
+            text: 'maketemplate', icon: 'fa fa-hand-o-right',
+            tooltip: "make tmmplate from current piece",
+            onClick: function () {
+              uicontroller.$handle_command('maketemplate')
+            }
+          },
+          {
+            text: 'resettemplate', icon: 'fa fa-support',
+            tooltip: "reset template to Zupfnoter defalts",
+            onClick: function () {uicontroller.$handle_command('resettemplate')
+            }
+          },
+          {
+            text: "load template from dropbox", icon: 'fa fa-dropbox',
+            tooltip: "load and apply template from dropbox",
+            onClick: function (event) {uicontroller.$handle_command('dchoose template');}
           }
         ]
       },
@@ -1192,6 +1197,9 @@ function update_localized_texts() {
  TODO: refactor this?
  */
 
+function show_config_tab() {
+  w2ui.layout_left_tabs.click('configtab');
+}
 
 function set_harp_preview_size(size) {
   $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
@@ -1223,6 +1231,8 @@ function update_settings_menu(settings) {
 
 function update_systemstatus_w2ui(systemstatus) {
   w2ui.layout_statusbar_main_toolbar.set("sb_dropbox_status", {text: systemstatus.dropbox})
+  w2ui.layout_statusbar_main_toolbar.set("sb_templatemenu", {text: systemstatus.templatename})
+
   w2ui.layout_top_toolbar.set('tb_home', {tooltip: "Zupfnoter" + " " + systemstatus.version})
 
   var tb_view_title = w2ui.layout_top_toolbar.get('tb_view:' + systemstatus.view)

@@ -337,6 +337,7 @@ class Controller
       command.set_help { "reset template to zufpnoter default" }
       command.as_action do |args|
         get_builtin_template
+        get_current_template
         nil
       end
     end
@@ -346,18 +347,7 @@ class Controller
       command.set_help { "set the current editor content as template (has no F:{{}} - line" }
       command.as_action do |args|
         template = @editor.get_text()
-
-        if template.empty?
-          `localStorage.removeItem(#{ZN_TEMPLATENAME})`
-        else
-          layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
-          unless @music_model.meta_data[:filename].include?('{{')
-            raise "current file is not a template. It does not have a placeholder in F: line e.g. F:{{song_id}}"
-          end
-          handle_command('setstdextract')
-          `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
-        end
-        nil
+        set_template(template)
       end
     end
 
@@ -368,6 +358,27 @@ class Controller
         args[:oldval] = @editor.get_text()
         template      = get_current_template
         @editor.set_text(template)
+        nil
+      end
+
+      command.as_inverse do |args|
+        @editor.set_text(args[:oldval])
+      end
+    end
+
+    @commands.add_command(:maketemplate) do |command|
+      command.undoable = true
+      command.set_help { "convert the current editor content to a template" }
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text()
+        template      = args[:oldval]
+                            .gsub(/^X:.*$/, "X:{{song_id}}")
+                            .gsub(/^F:.*$/, "F:{{song_id}}_{{filename}}")
+                            .gsub(/^T:.*$/, "T:{{song_title}}")
+        @editor.set_text(template)
+        @editor.delete_config_part('template')
+        JS.debugger
+        handle_command("editconf template")
         nil
       end
 
@@ -698,7 +709,7 @@ class Controller
             extract0:              {keys: ['extract.0'], scope: :global},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
             errors:                {keys: @validation_errors, scope: :global},
-            all_parameters:        {keys: ['.'], scope: :global}
+            all_parameters:        {keys: ['.'], scope: :global, quicksetting_commands: ['stdextract']}
         }
 
         # regular expression formsets match by a regular expression
@@ -835,7 +846,7 @@ class Controller
         #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
         @config_form_editor = ConfstackEditor.new(editorparams)
         @config_form_editor.generate_form
-
+        call_consumers(:show_config_tab)
         nil
       end
 
@@ -958,6 +969,20 @@ class Controller
 
   end
 
+  def set_template(template)
+    if template.empty?
+      `localStorage.removeItem(#{ZN_TEMPLATENAME})`
+    else
+      unless template.include?("\nF:{{")
+        raise "current file is not a template. It does not have a placeholder in F: line e.g. F:{{song_id}}"
+      end
+      handle_command('setstdextract')
+      `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
+    end
+    get_current_template # this sets the current template to systemstatus
+    nil
+  end
+
 
   def get_builtin_template
     result = I18n.t("no template found")
@@ -974,7 +999,8 @@ class Controller
     unless `result`
       result = get_builtin_template
     end
-
+    templatename = @editor.get_config_from_text(result).dig('template','filebase')
+    set_status(templatename: templatename)
     result
   end
 
@@ -1270,7 +1296,10 @@ class Controller
 
     @commands.add_command(:dchoose) do |command|
       command.undoable = false
-
+      command.add_parameter(:target, :string) do |parameter|
+        parameter.set_default { "editor" }
+        parameter.set_help { "target (editor|template" }
+      end
       command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
@@ -1285,7 +1314,11 @@ class Controller
           newpath = "#{path}"
           handle_command("dlogin full #{path}")
           $log.message("found #{path}#{filename}")
-          handle_command(%Q{dopenfn "#{filename}"})
+          if args[:target] == "template"
+            handle_command(%Q{dopentemplate "#{filename}"})
+          else
+            handle_command(%Q{dopenfn "#{filename}"})
+          end
           $log.message("opened #{path}#{filename}")
         end.fail do |message|
           $log.error message
@@ -1428,6 +1461,45 @@ class Controller
 
         end.fail do |err|
           _report_error_from_promise (%Q{could not load file with ID #{fileid}: #{err}})
+        end
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+    end
+
+
+    @commands.add_command(:dopentemplate) do |command|
+      command.add_parameter(:fileid, :string, "file id")
+      command.add_parameter(:path, :string) do |p|
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "read template with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        fileid        = args[:fileid]
+        rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
+        filename      = "#{rootpath}#{fileid}"
+        $log.message("get template from Dropbox path #{rootpath}#{fileid}_ ...:")
+
+        @dropboxclient.authenticate().then do |error, data|
+          call_consumers(:lock)
+          @dropboxclient.read_file(filename)
+        end.then do |abc_text|
+          $log.debug "loaded template #{fileid} (#{__FILE__} #{__LINE__})"
+
+          set_template(abc_text)
+          get_current_template
+          call_consumers(:unlock)
+        end.fail do |err|
+          call_consumers(:unlock)
+          _report_error_from_promise %Q{#{I18n.t('could not open file')}: #{err} : "#{filename}"}
+          nil
         end
       end
 

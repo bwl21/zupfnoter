@@ -32416,7 +32416,7 @@ Opal.modules["text_pane"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $truthy = Opal.truthy, $send = Opal.send, $gvars = Opal.gvars, $range = Opal.range;
 
-  Opal.add_stubs(['$attr_accessor', '$reset', '$push', '$[]', '$pop', '$empty?', '$reverse', '$flatten', '$lambda', '$new', '$_clean_models', '$create_lyrics_editor', '$from_lyrics', '$on', '$Native', '$getSession', '$save_to_localstorage', '$clear_markers', '$call', '$get_selection_positions', '$min', '$first', '$max', '$last', '$strip', '$_get_abc_from_editor', '$+', '$_get_config_json', '$_has_resources?', '$_get_resources_json', '$_split_parts', '$editor', '$map', '$-', '$set_markers', '$to_n', '$each', '$add_marker', '$join', '$split', '$<<', '$clear', '$_get_config_model', '$scan', '$to_s', '$[]=', '$==', '$do', '$_set_config_model', '$get', '$set_config_model', '$gsub', '$_set_config_json', '$token', '$get_selection_info', '$type', '$raise', '$replace_range', '$startpos', '$endpos', '$start_with?', '$delete', '$deep_dup', '$get_lyrics_raw', '$>', '$count', '$get_abc_part', '$error', '$clear_errors', '$get_lyrics', '$replace_text', '$call_consumers', '$nil?', '$_set_abc_to_editor', '$_set_resources_json', '$set_text', '$clean_localstorage', '$each_with_index', '$t', '$parse', '$benchmark', '$neat_generate', '$undo', '$info', '$dig', '$redo', '$undo_history', '$redo_history', '$!']);
+  Opal.add_stubs(['$attr_accessor', '$reset', '$push', '$[]', '$pop', '$empty?', '$reverse', '$flatten', '$lambda', '$new', '$_clean_models', '$create_lyrics_editor', '$from_lyrics', '$on', '$Native', '$getSession', '$save_to_localstorage', '$clear_markers', '$call', '$get_selection_positions', '$min', '$first', '$max', '$last', '$strip', '$_get_abc_from_editor', '$+', '$_get_config_json', '$_has_resources?', '$_get_resources_json', '$_split_parts', '$editor', '$map', '$-', '$set_markers', '$to_n', '$each', '$add_marker', '$join', '$split', '$<<', '$clear', '$_get_config_model', '$scan', '$to_s', '$[]=', '$==', '$do', '$_set_config_model', '$get', '$set_config_model', '$gsub', '$_set_config_json', '$token', '$get_selection_info', '$type', '$raise', '$replace_range', '$startpos', '$endpos', '$start_with?', '$delete', '$deep_dup', '$get_lyrics_raw', '$>', '$count', '$get_abc_part', '$error', '$clear_errors', '$get_lyrics', '$replace_text', '$call_consumers', '$nil?', '$_set_abc_to_editor', '$_set_resources_json', '$set_text', '$parse', '$select', '$clean_localstorage', '$each_with_index', '$t', '$benchmark', '$neat_generate', '$undo', '$info', '$dig', '$redo', '$undo_history', '$redo_history', '$!']);
   return (function($base, $parent_nesting) {
     var $Harpnotes, self = $Harpnotes = $module($base, 'Harpnotes');
 
@@ -32426,7 +32426,7 @@ Opal.modules["text_pane"] = function(Opal) {
       function $TextPane(){};
       var self = $TextPane = $klass($base, $super, 'TextPane', $TextPane);
 
-      var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_TextPane_initialize_9, TMP_TextPane_create_lyrics_editor_10, TMP_TextPane_on_change_11, TMP_TextPane_on_selection_change_13, TMP_TextPane_on_cursor_change_15, TMP_TextPane_clear_selection_17, TMP_TextPane_get_selection_positions_18, TMP_TextPane_get_selection_ranges_19, TMP_TextPane_get_selection_info_20, TMP_TextPane_select_range_by_position_21, TMP_TextPane_set_focus_22, TMP_TextPane_select_add_range_by_position_23, TMP_TextPane_get_text_24, TMP_TextPane_set_text_25, TMP_TextPane_replace_range_26, TMP_TextPane_replace_text_27, TMP_TextPane_set_annotations_29, TMP_TextPane_set_markers_31, TMP_TextPane_prepend_comment_33, TMP_TextPane_append_text_34, TMP_TextPane_add_marker_35, TMP_TextPane_clear_markers_37, TMP_TextPane_get_abc_part_38, TMP_TextPane_get_config_part_39, TMP_TextPane_get_config_model_40, TMP_TextPane_get_checksum_41, TMP_TextPane_resize_42, TMP_TextPane_set_config_model_43, TMP_TextPane_patch_config_part_44, TMP_TextPane_copy_config_part_to_extract_45, TMP_TextPane_neat_config_part_46, TMP_TextPane_patch_resources_47, TMP_TextPane_patch_token_48, TMP_TextPane_extend_config_part_49, TMP_TextPane_delete_config_part_50, TMP_TextPane_get_config_part_value_51, TMP_TextPane_get_lyrics_53, TMP_TextPane_get_lyrics_raw_54, TMP_TextPane_to_lyrics_55, TMP_TextPane_from_lyrics_57, TMP_TextPane_restore_from_localstorage_58, TMP_TextPane_save_to_localstorage_59, TMP_TextPane_clean_localstorage_60, TMP_TextPane__split_parts_62, TMP_TextPane__set_abc_to_editor_63, TMP_TextPane__get_abc_from_editor_64, TMP_TextPane__set_config_json_65, TMP_TextPane__get_config_json_67, TMP_TextPane__get_config_model_68, TMP_TextPane__set_config_model_69, TMP_TextPane_undo_config_70, TMP_TextPane_redo_config_71, TMP_TextPane_history_config_72, TMP_TextPane__set_resources_json_73, TMP_TextPane__get_resources_json_74, TMP_TextPane__has_resources$q_75, TMP_TextPane__clean_models_76;
+      var def = self.$$proto, $nesting = [self].concat($parent_nesting), TMP_TextPane_initialize_9, TMP_TextPane_create_lyrics_editor_10, TMP_TextPane_on_change_11, TMP_TextPane_on_selection_change_13, TMP_TextPane_on_cursor_change_15, TMP_TextPane_clear_selection_17, TMP_TextPane_get_selection_positions_18, TMP_TextPane_get_selection_ranges_19, TMP_TextPane_get_selection_info_20, TMP_TextPane_select_range_by_position_21, TMP_TextPane_set_focus_22, TMP_TextPane_select_add_range_by_position_23, TMP_TextPane_get_text_24, TMP_TextPane_set_text_25, TMP_TextPane_replace_range_26, TMP_TextPane_replace_text_27, TMP_TextPane_set_annotations_29, TMP_TextPane_set_markers_31, TMP_TextPane_prepend_comment_33, TMP_TextPane_append_text_34, TMP_TextPane_add_marker_35, TMP_TextPane_clear_markers_37, TMP_TextPane_get_abc_part_38, TMP_TextPane_get_config_part_39, TMP_TextPane_get_config_model_40, TMP_TextPane_get_checksum_41, TMP_TextPane_resize_42, TMP_TextPane_set_config_model_43, TMP_TextPane_patch_config_part_44, TMP_TextPane_copy_config_part_to_extract_45, TMP_TextPane_neat_config_part_46, TMP_TextPane_patch_resources_47, TMP_TextPane_patch_token_48, TMP_TextPane_extend_config_part_49, TMP_TextPane_delete_config_part_50, TMP_TextPane_get_config_part_value_51, TMP_TextPane_get_lyrics_53, TMP_TextPane_get_lyrics_raw_54, TMP_TextPane_to_lyrics_55, TMP_TextPane_from_lyrics_57, TMP_TextPane_restore_from_localstorage_58, TMP_TextPane_save_to_localstorage_59, TMP_TextPane_clean_localstorage_60, TMP_TextPane_get_config_from_text_62, TMP_TextPane__split_parts_64, TMP_TextPane__set_abc_to_editor_65, TMP_TextPane__get_abc_from_editor_66, TMP_TextPane__set_config_json_67, TMP_TextPane__get_config_json_69, TMP_TextPane__get_config_model_70, TMP_TextPane__set_config_model_71, TMP_TextPane_undo_config_72, TMP_TextPane_redo_config_73, TMP_TextPane_history_config_74, TMP_TextPane__set_resources_json_75, TMP_TextPane__get_resources_json_76, TMP_TextPane__has_resources$q_77, TMP_TextPane__clean_models_78;
 
       def.editor = def.range = def.config_separator = def.markers = def.config_models = def.dirty = def.config_undo = def.on_change = def.lyrics_editor = def.controller = def.handle_from_lyrics = nil;
       
@@ -33152,13 +33152,21 @@ if (l == null) l = nil;
         return nil;
       }, TMP_TextPane_clean_localstorage_60.$$arity = 0);
       
-      Opal.defn(self, '$_split_parts', TMP_TextPane__split_parts_62 = function $$_split_parts(fulltext) {
+      Opal.defn(self, '$get_config_from_text', TMP_TextPane_get_config_from_text_62 = function $$get_config_from_text(fulltext) {
         var TMP_61, self = this;
+
+        return Opal.const_get_relative($nesting, 'JSON').$parse($send(fulltext.$split(self.config_separator), 'select', [], (TMP_61 = function(i){var self = TMP_61.$$s || this;
+if (i == null) i = nil;
+        return i['$start_with?'](".config")}, TMP_61.$$s = self, TMP_61.$$arity = 1, TMP_61)).$first().$gsub(".config", ""))
+      }, TMP_TextPane_get_config_from_text_62.$$arity = 1);
+      
+      Opal.defn(self, '$_split_parts', TMP_TextPane__split_parts_64 = function $$_split_parts(fulltext) {
+        var TMP_63, self = this;
 
         
         self.$_clean_models();
         self.$clean_localstorage();
-        return $send(fulltext.$split(self.config_separator), 'each_with_index', [], (TMP_61 = function(part, i){var self = TMP_61.$$s || this;
+        return $send(fulltext.$split(self.config_separator), 'each_with_index', [], (TMP_63 = function(part, i){var self = TMP_63.$$s || this;
           if (self.config_undo == null) self.config_undo = nil;
           if ($gvars.log == null) $gvars.log = nil;
 if (part == null) part = nil;if (i == null) i = nil;
@@ -33172,10 +33180,10 @@ if (part == null) part = nil;if (i == null) i = nil;
             return self.$_set_resources_json(part.$split(".resources").$last())
             } else {
             return $gvars.log.$error($rb_plus(Opal.const_get_relative($nesting, 'I18n').$t("unsupported section found in abc file: "), part['$[]']($range(0, 10, false))))
-          }}, TMP_61.$$s = self, TMP_61.$$arity = 2, TMP_61));
-      }, TMP_TextPane__split_parts_62.$$arity = 1);
+          }}, TMP_63.$$s = self, TMP_63.$$arity = 2, TMP_63));
+      }, TMP_TextPane__split_parts_64.$$arity = 1);
       
-      Opal.defn(self, '$_set_abc_to_editor', TMP_TextPane__set_abc_to_editor_63 = function $$_set_abc_to_editor(abctext) {
+      Opal.defn(self, '$_set_abc_to_editor', TMP_TextPane__set_abc_to_editor_65 = function $$_set_abc_to_editor(abctext) {
         var self = this;
 
         
@@ -33183,17 +33191,17 @@ if (part == null) part = nil;if (i == null) i = nil;
         self.editor.getSession().setValue(abctext);;
         self.inhibit_callbacks = false;
         return self.$save_to_localstorage("zn_abc");
-      }, TMP_TextPane__set_abc_to_editor_63.$$arity = 1);
+      }, TMP_TextPane__set_abc_to_editor_65.$$arity = 1);
       
-      Opal.defn(self, '$_get_abc_from_editor', TMP_TextPane__get_abc_from_editor_64 = function $$_get_abc_from_editor() {
+      Opal.defn(self, '$_get_abc_from_editor', TMP_TextPane__get_abc_from_editor_66 = function $$_get_abc_from_editor() {
         var self = this;
 
         
         return self.editor.getSession().getValue();
         return nil;
-      }, TMP_TextPane__get_abc_from_editor_64.$$arity = 0);
+      }, TMP_TextPane__get_abc_from_editor_66.$$arity = 0);
       
-      Opal.defn(self, '$_set_config_json', TMP_TextPane__set_config_json_65 = function $$_set_config_json(json, desc, handleundo) {
+      Opal.defn(self, '$_set_config_json', TMP_TextPane__set_config_json_67 = function $$_set_config_json(json, desc, handleundo) {
         var self = this;
 
         if (desc == null) {
@@ -33203,28 +33211,28 @@ if (part == null) part = nil;if (i == null) i = nil;
           handleundo = true;
         }
         return self.$set_config_model(Opal.const_get_relative($nesting, 'JSON').$parse(json), desc, handleundo)
-      }, TMP_TextPane__set_config_json_65.$$arity = -2);
+      }, TMP_TextPane__set_config_json_67.$$arity = -2);
       
-      Opal.defn(self, '$_get_config_json', TMP_TextPane__get_config_json_67 = function $$_get_config_json() {
-        var TMP_66, self = this, options = nil, result = nil;
+      Opal.defn(self, '$_get_config_json', TMP_TextPane__get_config_json_69 = function $$_get_config_json() {
+        var TMP_68, self = this, options = nil, result = nil;
         if ($gvars.conf == null) $gvars.conf = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
         
         options = $gvars.conf['$[]']("neatjson");
-        result = $send($gvars.log, 'benchmark', ["neat_json", 710, "text_pane"], (TMP_66 = function(){var self = TMP_66.$$s || this;
+        result = $send($gvars.log, 'benchmark', ["neat_json", 715, "text_pane"], (TMP_68 = function(){var self = TMP_68.$$s || this;
 
-        return Opal.const_get_relative($nesting, 'JSON').$neat_generate(self.$_get_config_model(), options)}, TMP_66.$$s = self, TMP_66.$$arity = 0, TMP_66));
+        return Opal.const_get_relative($nesting, 'JSON').$neat_generate(self.$_get_config_model(), options)}, TMP_68.$$s = self, TMP_68.$$arity = 0, TMP_68));
         return result;
-      }, TMP_TextPane__get_config_json_67.$$arity = 0);
+      }, TMP_TextPane__get_config_json_69.$$arity = 0);
       
-      Opal.defn(self, '$_get_config_model', TMP_TextPane__get_config_model_68 = function $$_get_config_model() {
+      Opal.defn(self, '$_get_config_model', TMP_TextPane__get_config_model_70 = function $$_get_config_model() {
         var $a, self = this;
 
         return ($truthy($a = self.config_models['$[]']("config")) ? $a : $hash2([], {}))
-      }, TMP_TextPane__get_config_model_68.$$arity = 0);
+      }, TMP_TextPane__get_config_model_70.$$arity = 0);
       
-      Opal.defn(self, '$_set_config_model', TMP_TextPane__set_config_model_69 = function $$_set_config_model(object) {
+      Opal.defn(self, '$_set_config_model', TMP_TextPane__set_config_model_71 = function $$_set_config_model(object) {
         var self = this, $writer = nil;
 
         
@@ -33234,9 +33242,9 @@ if (part == null) part = nil;if (i == null) i = nil;
         $writer[$rb_minus($writer["length"], 1)];;
         self.$save_to_localstorage("zn_config");
         return self.on_change.$call(nil);
-      }, TMP_TextPane__set_config_model_69.$$arity = 1);
+      }, TMP_TextPane__set_config_model_71.$$arity = 1);
       
-      Opal.defn(self, '$undo_config', TMP_TextPane_undo_config_70 = function $$undo_config() {
+      Opal.defn(self, '$undo_config', TMP_TextPane_undo_config_72 = function $$undo_config() {
         var self = this, momento = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
@@ -33253,9 +33261,9 @@ if (part == null) part = nil;if (i == null) i = nil;
           } else {
           return nil
         };
-      }, TMP_TextPane_undo_config_70.$$arity = 0);
+      }, TMP_TextPane_undo_config_72.$$arity = 0);
       
-      Opal.defn(self, '$redo_config', TMP_TextPane_redo_config_71 = function $$redo_config() {
+      Opal.defn(self, '$redo_config', TMP_TextPane_redo_config_73 = function $$redo_config() {
         var self = this, momento = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
@@ -33272,24 +33280,24 @@ if (part == null) part = nil;if (i == null) i = nil;
           } else {
           return nil
         };
-      }, TMP_TextPane_redo_config_71.$$arity = 0);
+      }, TMP_TextPane_redo_config_73.$$arity = 0);
       
-      Opal.defn(self, '$history_config', TMP_TextPane_history_config_72 = function $$history_config() {
+      Opal.defn(self, '$history_config', TMP_TextPane_history_config_74 = function $$history_config() {
         var self = this;
 
         return $hash2(["undo", "redo"], {"undo": self.config_undo.$undo_history(), "redo": self.config_undo.$redo_history()})
-      }, TMP_TextPane_history_config_72.$$arity = 0);
+      }, TMP_TextPane_history_config_74.$$arity = 0);
       
-      Opal.defn(self, '$_set_resources_json', TMP_TextPane__set_resources_json_73 = function $$_set_resources_json(json) {
+      Opal.defn(self, '$_set_resources_json', TMP_TextPane__set_resources_json_75 = function $$_set_resources_json(json) {
         var self = this;
 
         
         $gvars.resources = Opal.const_get_relative($nesting, 'JSON').$parse(json);
         self.$save_to_localstorage("zn_resources");
         return self.on_change.$call(nil);
-      }, TMP_TextPane__set_resources_json_73.$$arity = 1);
+      }, TMP_TextPane__set_resources_json_75.$$arity = 1);
       
-      Opal.defn(self, '$_get_resources_json', TMP_TextPane__get_resources_json_74 = function $$_get_resources_json() {
+      Opal.defn(self, '$_get_resources_json', TMP_TextPane__get_resources_json_76 = function $$_get_resources_json() {
         var self = this, result = nil;
         if ($gvars.resources == null) $gvars.resources = nil;
         if ($gvars.conf == null) $gvars.conf = nil;
@@ -33297,22 +33305,22 @@ if (part == null) part = nil;if (i == null) i = nil;
         
         result = Opal.const_get_relative($nesting, 'JSON').$neat_generate($gvars.resources, $gvars.conf['$[]']("neatjson"));
         return result;
-      }, TMP_TextPane__get_resources_json_74.$$arity = 0);
+      }, TMP_TextPane__get_resources_json_76.$$arity = 0);
       
-      Opal.defn(self, '$_has_resources?', TMP_TextPane__has_resources$q_75 = function() {
+      Opal.defn(self, '$_has_resources?', TMP_TextPane__has_resources$q_77 = function() {
         var self = this;
         if ($gvars.resources == null) $gvars.resources = nil;
 
         return $gvars.resources['$empty?']()['$!']()
-      }, TMP_TextPane__has_resources$q_75.$$arity = 0);
-      return (Opal.defn(self, '$_clean_models', TMP_TextPane__clean_models_76 = function $$_clean_models() {
+      }, TMP_TextPane__has_resources$q_77.$$arity = 0);
+      return (Opal.defn(self, '$_clean_models', TMP_TextPane__clean_models_78 = function $$_clean_models() {
         var self = this;
 
         
         $gvars.resources = $hash2([], {});
         self.config_models = $hash2([], {});
         return (self.dirty = $hash2([], {}));
-      }, TMP_TextPane__clean_models_76.$$arity = 0), nil) && '_clean_models';
+      }, TMP_TextPane__clean_models_78.$$arity = 0), nil) && '_clean_models';
     })($nesting[0], null, $nesting)
   })($nesting[0], $nesting)
 };
@@ -34927,7 +34935,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-35-ga88392d");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.10.0-39-g5fdc887");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

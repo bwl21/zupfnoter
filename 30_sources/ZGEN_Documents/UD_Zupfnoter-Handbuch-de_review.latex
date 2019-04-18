@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.10.0-29-ga97403f
+Version V\_1.10.0-39-g5fdc887
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -1790,11 +1790,13 @@ gegeben:
   \protect\hyperlink{elemente-fuer-das-ganze-blatt}{Elemente f\"{u}r das
   gesamte Musikst\"{u}ck}).
 
-  In den Seitenbeschrifungen k\"{o}nnen Informationen eingef\"{u}gt
-  werden, welche in Zupfnoter schon vorhanden sind. Hierzu werden
-  Platzhalter eingef\"{u}gt, welche bei der Ausgabe durch die
+  \begin{quote}
+  \textbf{Hinweis} In den Seitenbeschrifungen k\"{o}nnen Informationen
+  eingef\"{u}gt werden, welche in Zupfnoter schon vorhanden sind. Hierzu
+  werden Platzhalter eingef\"{u}gt, welche bei der Ausgabe durch die
   entsprechende Information ersetzt werden. Die m\"{o}glichen
   Platzhalter findest du in der Hilfe zu den Parametern.
+  \end{quote}
 \item
   \textbf{Liedtexte}
 
@@ -3045,6 +3047,13 @@ F\"{u}r die Bedienung der Masken ist noch wichtig
 \begin{itemize}
 \tightlist
 \item
+  In der Kopfzeile der Konfigurationsmaske gibt es ein Eingabefeld
+  ``Suche''. Wenn du dort etwas eingbist, dann sucht Zupfnoter nach
+  passenden Konfigurationsparametern. Dieses Suchfeld ist hilfreich, um
+  schnell einen Parameter zu finden. Z.B. f\"{u}hrt die Eingeabe des
+  Wortes \texttt{Farbe} zu einer Maske in der alle Parameter angezeigt
+  werden, die etwas mit ``Farbe'' zu tun haben.
+\item
   Schaltfl\"{a}che \texttt{Refresh}: Um sicher zu gehen, dass die
   Konfigurationsmaske wirklich die aktuellen Werte zeigt, kann mit
   \texttt{Refresh} die Maske neu aufgebaut werden. Dies ist z.B. dann
@@ -4220,54 +4229,8 @@ Vorgehen bei der Erstellung von Ausz\"{u}gen} beschrieben ist.
 Wenn man z.B. f\"{u}r eine Notenmappe mehrere St\"{u}cke mit
 \"{a}hnlichen Einstellungen schreiben will, ist es sinnvoll, die
 eingebaute Vorlage durch eine projektspezifische Vorlage zu ersetzen, in
-der schon eineige Parameter (z.B. Blattbeschriftungen) vorausgef\"{u}llt
+der schon einige Parameter (z.B. Blattbeschriftungen) vorausgef\"{u}llt
 sind.
-
-Zupfnoter bietet eine experimentelle Unterst\"{u}tzung \"{u}ber die
-\protect\hyperlink{konsole-fenster}{Konsole}. In folgenden Schritten
-kann ein eigene Vorlage eingerichtet werden:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  \texttt{edittemplate}: Damit wird das aktuell aktive Template in den
-  Editor geladen und kann angepasst werden.
-\item
-  \texttt{editconf\ template}: Damit werde die Template-spezifischen
-  Eigenschaften (Dateiname und Titel) eingstellt.
-
-  \begin{quote}
-  \textbf{Hinweis}: Man muss von Hand auf den Reiter ``Konfiguration''
-  schalten um die Konfigurationsmaske zu sehen.
-
-  \textbf{Hinweis}: mit diesem Befehl kann man auch feststellen, welche
-  Vorlage gerade aktiv ist.
-  \end{quote}
-\item
-  \texttt{settemplate}: Damit wird der aktuelle Editor-Inhalt als
-  Template hinterlegt
-\item
-  Men\"{u}punkt `Speichern': Damit wird der Editorinhalt gespeichert.
-
-  \begin{quote}
-  \textbf{Hinweis}: Dabei ist es wichtig, dass die Kopfzeile \texttt{F:}
-  einen Platzhalter - Zeichen \texttt{\{\{} enth\"{a}lt. Dadurch wird im
-  ``Template\_modus'' gespeichert, d.h. der Dateiname wird nicht aus der
-  \texttt{F:} - Zeile entnommen sondern aus dem Konfigurationsparameter
-  \texttt{template.filebase} entnommen.
-  \end{quote}
-\end{enumerate}
-
-\begin{quote}
-\textbf{Hinweis}: Diese Schritte sind auch im Men\"{u} \texttt{Extras}
-erreichbar
-\end{quote}
-
-\begin{quote}
-\textbf{Hinweis}: Die Konfigurationsparameter \texttt{template.filebase}
-werden auch in die neuen St\"{u}cke kopiert, haben dort aber keine
-Wirkung mehr. Sie sind jedoch als Dokumentation hilfreich.
-\end{quote}
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingef\"{u}gt sind, welche beim erstellen eines neuen St\"{u}ckes anhand
@@ -4278,10 +4241,9 @@ Platzhalter sind verf\"{u}gbar:
 \tightlist
 \item[\texttt{\{\{song\_id\}\}}]
 Das ist die Identifikationsnummer des St\"{u}ckes
-\texttt{\{\{filename\}\}}
-
-Das ist die Basis f\"{u}r den Dateinamen \texttt{\{\{song\_title\}\}}
-
+\item[\texttt{\{\{filename\}\}}]
+Das ist die Basis f\"{u}r den Dateinamen
+\item[\texttt{\{\{song\_title\}\}}]
 Das ist der Titel des St\"{u}ckes.
 \end{description}
 
@@ -4290,6 +4252,75 @@ Das ist der Titel des St\"{u}ckes.
 Platzhalter, welche jedoch erst bei der Erzeugung der Unterlegnoten
 aufgel\"{o}st werden. Die m\"{o}glichen Platzhalter werden in der Hilfe
 bei den Konfigurationsparametern angezeigt.
+\end{quote}
+
+Es gibt in der Statuszeile ein Vorlagenmen\"{u}. Dieses ist beschriftet
+mit der aktuell eingestellten Vorlage.
+
+F\"{u}r Projektarbeit mit Vorlagen wird folgendes Vorgehen empfohlen:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Erstelle ein Beispielst\"{u}ck mit der gew\"{u}nschen Konfiguration.
+
+  \begin{quote}
+  \textbf{Hinweis}: Verwende f\"{u}r die Seitenbeschriftung die
+  Platzhalter
+  \end{quote}
+\item
+  Konvertiere das Beispielst\"{u}ck in eine Vorlage. Dazu gibt es in
+  Vorlagenmen\"{u} der Statuszeile eine Funktion (beschriftet mit der
+  aktuellen Vorlage).
+
+  Dabei werden die Kopfzeilen X: F: T: durch Platzhalter ersetzt.
+  Weiterhin wird das Konfigurationsmaske f\"{u}r die Vorlage aufgerufen.
+  Dort musst du einen Dateinamen f\"{u}r die Vorlage eintragen.
+\item
+  Speichere nun die Vorlage \"{u}ber \texttt{Speichern}
+
+  \begin{quote}
+  \textbf{Hinweis}: Dabei ist es wichtig, dass die Kopfzeile \texttt{F:}
+  einen Platzhalter - Zeichen \texttt{\{\{} enth\"{a}lt. Dadurch wird im
+  "Vorlagen
+
+  \begin{itemize}
+  \tightlist
+  \item
+    modus" gespeichert, d.h. der Dateiname wird nicht aus der
+    \texttt{F:} - Zeile entnommen sondern aus dem
+    Konfigurationsparameter \texttt{template.filebase}.
+  \end{itemize}
+  \end{quote}
+\item
+  Aktiviere die so erstellte Vorlage nun \"{u}ber das Vorlagenmen\"{u}
+  der Statuszeile.
+
+  \begin{quote}
+  \textbf{Hinweis} Wenn due die Vorlage im Verzeichnis des neuen
+  Projektes speicherst, kannst du in einem Schitt die Vorlage wieder
+  laden und den aktuellen Speicherort auf das Projektverzeichniss
+  stellen. So kannst du einfach zwischen den Projekten wechseln
+  \end{quote}
+\item
+  Wenn du nun ein neues St\"{u}ck erstellst oder eine XML-Datei
+  importierst, werden die Einstellungen der Vorlage automatisch
+  \"{u}bernommen.
+\item
+  Du kannst die aktuelle Vorlage auch auf ein vorhandenes St\"{u}ck
+  anwenden. Dazu gibt es im Vorlagenmen\"{u} der Statuszeile den
+  Men\"{u}eintrag \texttt{Auszüge\ aus\ Vorlage\ übernehmen}
+\item
+  Du kannst die aktuelle Vorlage auch auf die Zupfnoter-Voreinstellung
+  zur\"{u}cksetzen.
+\end{enumerate}
+
+\begin{quote}
+\textbf{Hinweis}: Die Konfigurationsparameter \texttt{template.filebase}
+werden auch in die neuen St\"{u}cke kopiert, haben dort aber keine
+Wirkung mehr weil die \texttt{F:} - zeile nun keinen Platzhalter mehr
+enth\"{a}lt. Sie sind jedoch als Dokumentation hilfreich, welche Vorlage
+bei der Erstellung des St\"{u}ckes verwendet wurde.
 \end{quote}
 
 \hypertarget{parameter-in-der-zupfnoter-url}{%

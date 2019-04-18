@@ -1,5 +1,5 @@
 
-Version V_1.10.0-29-ga97403f
+Version V_1.10.0-39-g5fdc887
 
     © 2019 https://www.zupfnoter.de
     

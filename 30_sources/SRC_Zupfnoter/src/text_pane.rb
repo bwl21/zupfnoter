@@ -666,11 +666,16 @@ module Harpnotes
       nil
     end
 
+
+    def get_config_from_text(fulltext)
+      JSON.parse(fulltext.split(@config_separator).select{|i| i.start_with? ".config"}.first.gsub(".config", ""))
+    end
+
     #####################################################################################
     #private
 
     # this method splits the parts out of the given text
-    def _split_parts(fulltext)
+    def   _split_parts(fulltext)
 
       _clean_models
       clean_localstorage

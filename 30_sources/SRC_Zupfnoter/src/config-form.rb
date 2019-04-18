@@ -716,7 +716,7 @@ class ConfstackEditor
         {
             id:      'stringnames',
             icon:    'fa fa-ellipsis-h',
-            text:    'Stringnames',
+            text:    'stringnames',
             tooltip: "Edit presentation of stringanmes"
         },
         {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},

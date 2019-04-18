@@ -904,7 +904,9 @@ noter als Werkzeug zur Erstellung des Unterlegnotenblattes, also Werbung in eige
 </blockquote></li>
 <li><p><strong>Seitenbeschriftung</strong></p>
 <p>Die Seitenbeschriftungen werden ausschliesslich über die Konfiguration hinzugefügt (Kapitel  <a href="#extract.0.notes">extract.x.notes</a>. Ihre Anordnung bezieht sich auf den Seitenrand. Der Schriftstil kann gewählt werden (siehe auch Kapitel  <a href="#elemente-fuer-das-ganze-blatt">Elemente für das gesamte Musikstück</a>).</p>
-<p>In den Seitenbeschrifungen können Informationen eingefügt werden, welche in Zupfnoter schon vorhanden sind. Hierzu werden Platzhalter eingefügt, welche bei der Ausgabe durch die entsprechende Information ersetzt werden. Die möglichen Platzhalter findest du in der Hilfe zu den Parametern.</p></li>
+<blockquote>
+<p><strong>Hinweis</strong> In den Seitenbeschrifungen können Informationen eingefügt werden, welche in Zupfnoter schon vorhanden sind. Hierzu werden Platzhalter eingefügt, welche bei der Ausgabe durch die entsprechende Information ersetzt werden. Die möglichen Platzhalter findest du in der Hilfe zu den Parametern.</p>
+</blockquote></li>
 <li><p><strong>Liedtexte</strong></p>
 <p>Liedtexte werden in den <code>W:</code> - Zeilen in der ABC-Notation erfasst und über die Konfiguration (Kapitel  <a href="#templates.lyrics">extract.x.lyrics.x</a>) auf dem Blatt positioniert.</p>
 <p>Für weitere Einzelheiten siehe auch Kapitel  <a href="#elemente-fuer-das-ganze-blatt">Elemente für das ganze Blatt</a>.</p></li>
@@ -1363,6 +1365,7 @@ setstdextract  : configure stdc onfig in localstore</code></pre></li>
 </blockquote>
 <p>Für die Bedienung der Masken ist noch wichtig</p>
 <ul>
+<li>In der Kopfzeile der Konfigurationsmaske gibt es ein Eingabefeld “Suche”. Wenn du dort etwas eingbist, dann sucht Zupfnoter nach passenden Konfigurationsparametern. Dieses Suchfeld ist hilfreich, um schnell einen Parameter zu finden. Z.B. führt die Eingeabe des Wortes <code>Farbe</code> zu einer Maske in der alle Parameter angezeigt werden, die etwas mit “Farbe” zu tun haben.</li>
 <li>Schaltfläche <code>Refresh</code>: Um sicher zu gehen, dass die Konfigurationsmaske wirklich die aktuellen Werte zeigt, kann mit <code>Refresh</code> die Maske neu aufgebaut werden. Dies ist z.B. dann notwendigWenn der Konfigurationsparameer außerhalb der Maske geändert wird (z.B. im Texteditor).</li>
 <li>Schaltfläche <code>Neuer Eintrag</code>: Diese Taste fügt eine neue Instanz eines Parameters ein. Sie ist nur aktiv, wenn es für einen Parameter mehrere Instanzen geben kann (z.B. Liedtexte [lyrics.x], Seitenbeschriftung [notes.x])</li>
 <li>Schaltfläche <code>Schnelleinst.</code>: Diese Taste (Schnelleinstellungen) öffnet ein Menü, aus dem du für die aktuelle Maske eine Voreinstellung auswählen kannst. Eine solche Voreinstellung ist eine sinnvolle Kombination von Parametern für einen bestimmten Fall (z.B. für ein “kompaktes Layout”). Diese Schaltfläche ist nur für solche Masken aktiv, für die es auch Voreinstellungen gibt.</li>
@@ -1775,39 +1778,48 @@ I:linewarn 0
 I:staffnonote 2</code></pre>
 <h3 id="filetemplates"><span class="header-section-number">4.8.14</span> Arbeiten mit Dateivorlagen (Templates)</h3>
 <p>Erstellt man über das Menü “Neu” ein neues Stück, fügt Zupfnoter eine Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges Stück. Dieses legt auch die Konfiguration an welche in Kapitel <a href="#bestPracticeExtract">Praktisches Vorgehen bei der Erstellung von Auszügen</a> beschrieben ist.</p>
-<p>Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage durch eine projektspezifische Vorlage zu ersetzen, in der schon eineige Parameter (z.B. Blattbeschriftungen) vorausgefüllt sind.</p>
-<p>Zupfnoter bietet eine experimentelle Unterstützung über die <a href="#konsole-fenster">Konsole</a>. In folgenden Schritten kann ein eigene Vorlage eingerichtet werden:</p>
-<ol type="1">
-<li><p><code>edittemplate</code>: Damit wird das aktuell aktive Template in den Editor geladen und kann angepasst werden.</p></li>
-<li><p><code>editconf template</code>: Damit werde die Template-spezifischen Eigenschaften (Dateiname und Titel) eingstellt.</p>
-<blockquote>
-<p><strong>Hinweis</strong>: Man muss von Hand auf den Reiter “Konfiguration” schalten um die Konfigurationsmaske zu sehen.</p>
-<p><strong>Hinweis</strong>: mit diesem Befehl kann man auch feststellen, welche Vorlage gerade aktiv ist.</p>
-</blockquote></li>
-<li><p><code>settemplate</code>: Damit wird der aktuelle Editor-Inhalt als Template hinterlegt</p></li>
-<li><p>Menüpunkt ‘Speichern’: Damit wird der Editorinhalt gespeichert.</p>
-<blockquote>
-<p><strong>Hinweis</strong>: Dabei ist es wichtig, dass die Kopfzeile <code>F:</code> einen Platzhalter - Zeichen <code>{{</code> enthält. Dadurch wird im “Template_modus” gespeichert, d.h. der Dateiname wird nicht aus der <code>F:</code> - Zeile entnommen sondern aus dem Konfigurationsparameter <code>template.filebase</code> entnommen.</p>
-</blockquote></li>
-</ol>
-<blockquote>
-<p><strong>Hinweis</strong>: Diese Schritte sind auch im Menü <code>Extras</code> erreichbar</p>
-</blockquote>
-<blockquote>
-<p><strong>Hinweis</strong>: Die Konfigurationsparameter <code>template.filebase</code> werden auch in die neuen Stücke kopiert, haben dort aber keine Wirkung mehr. Sie sind jedoch als Dokumentation hilfreich.</p>
-</blockquote>
+<p>Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage durch eine projektspezifische Vorlage zu ersetzen, in der schon einige Parameter (z.B. Blattbeschriftungen) vorausgefüllt sind.</p>
 <p>Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter eingefügt sind, welche beim erstellen eines neuen Stückes anhand der Benutzereingaben aufgelöst bzw. ausgefüllt werden. Folgende Platzhalter sind verfügbar:</p>
 <dl>
 <dt><code>{{song_id}}</code></dt>
-<dd>Das ist die Identifikationsnummer des Stückes <code>{{filename}}</code>
+<dd>Das ist die Identifikationsnummer des Stückes
 </dd>
-<dd>Das ist die Basis für den Dateinamen <code>{{song_title}}</code>
+<dt><code>{{filename}}</code></dt>
+<dd>Das ist die Basis für den Dateinamen
 </dd>
+<dt><code>{{song_title}}</code></dt>
 <dd>Das ist der Titel des Stückes.
 </dd>
 </dl>
 <blockquote>
 <p><strong>Hinweis:</strong> In den Seitenbeschrifungen gibt es weitere Platzhalter, welche jedoch erst bei der Erzeugung der Unterlegnoten aufgelöst werden. Die möglichen Platzhalter werden in der Hilfe bei den Konfigurationsparametern angezeigt.</p>
+</blockquote>
+<p>Es gibt in der Statuszeile ein Vorlagenmenü. Dieses ist beschriftet mit der aktuell eingestellten Vorlage.</p>
+<p>Für Projektarbeit mit Vorlagen wird folgendes Vorgehen empfohlen:</p>
+<ol type="1">
+<li><p>Erstelle ein Beispielstück mit der gewünschen Konfiguration.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Verwende für die Seitenbeschriftung die Platzhalter</p>
+</blockquote></li>
+<li><p>Konvertiere das Beispielstück in eine Vorlage. Dazu gibt es in Vorlagenmenü der Statuszeile eine Funktion (beschriftet mit der aktuellen Vorlage).</p>
+<p>Dabei werden die Kopfzeilen X: F: T: durch Platzhalter ersetzt. Weiterhin wird das Konfigurationsmaske für die Vorlage aufgerufen. Dort musst du einen Dateinamen für die Vorlage eintragen.</p></li>
+<li><p>Speichere nun die Vorlage über <code>Speichern</code></p>
+<blockquote>
+<strong>Hinweis</strong>: Dabei ist es wichtig, dass die Kopfzeile <code>F:</code> einen Platzhalter - Zeichen <code>{{</code> enthält. Dadurch wird im &quot;Vorlagen
+<ul>
+<li>modus&quot; gespeichert, d.h. der Dateiname wird nicht aus der <code>F:</code> - Zeile entnommen sondern aus dem Konfigurationsparameter <code>template.filebase</code>.</li>
+</ul>
+</blockquote></li>
+<li><p>Aktiviere die so erstellte Vorlage nun über das Vorlagenmenü der Statuszeile.</p>
+<blockquote>
+<p><strong>Hinweis</strong> Wenn due die Vorlage im Verzeichnis des neuen Projektes speicherst, kannst du in einem Schitt die Vorlage wieder laden und den aktuellen Speicherort auf das Projektverzeichniss stellen. So kannst du einfach zwischen den Projekten wechseln</p>
+</blockquote></li>
+<li><p>Wenn du nun ein neues Stück erstellst oder eine XML-Datei importierst, werden die Einstellungen der Vorlage automatisch übernommen.</p></li>
+<li><p>Du kannst die aktuelle Vorlage auch auf ein vorhandenes Stück anwenden. Dazu gibt es im Vorlagenmenü der Statuszeile den Menüeintrag <code>Auszüge aus Vorlage übernehmen</code></p></li>
+<li><p>Du kannst die aktuelle Vorlage auch auf die Zupfnoter-Voreinstellung zurücksetzen.</p></li>
+</ol>
+<blockquote>
+<p><strong>Hinweis</strong>: Die Konfigurationsparameter <code>template.filebase</code> werden auch in die neuen Stücke kopiert, haben dort aber keine Wirkung mehr weil die <code>F:</code> - zeile nun keinen Platzhalter mehr enthält. Sie sind jedoch als Dokumentation hilfreich, welche Vorlage bei der Erstellung des Stückes verwendet wurde.</p>
 </blockquote>
 <h3 id="parameter-in-der-zupfnoter-url"><span class="header-section-number">4.8.15</span> Parameter in der Zupfnoter-URL</h3>
 <p>In der Adressleiste des Browsers können Parameter übergeben wreden. Das ist für den Benutzer meist nicht erforderlich. Die Parameter werden hier zur Vollständigkeit aufgeführt.</p>

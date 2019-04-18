@@ -208,6 +208,7 @@ class Controller
 
     set_status(saveformat: "A3-A4") unless @systemstatus[:saveformat]
 
+    get_current_template
     #
     # load from previous session
 
@@ -289,7 +290,9 @@ class Controller
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }],
                                harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
-                               render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }]
+                               render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }],
+                               show_config_tab:   [lambda { %x{show_config_tab()}} ]
+
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
