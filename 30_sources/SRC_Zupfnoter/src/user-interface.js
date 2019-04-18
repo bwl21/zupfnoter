@@ -35,11 +35,8 @@ function init_w2ui(uicontroller) {
 
     var result = vertaal(xmldata, options);
 
-
     uicontroller.dropped_abc = result[0]
-
     uicontroller.$handle_command('drop')
-    uicontroller.$handle_command('stdextract')
   }
 
   function pasteMxl(text) {

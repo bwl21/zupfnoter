@@ -255,8 +255,10 @@ class Controller
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
+        config = @editor.get_config_from_text(get_current_template)
         @editor.set_text(@dropped_abc)
-        render_previews
+        @editor.set_config_model(config, "pasted XML", false )
+        set_status(music_model: "new")
       end
 
       command.as_inverse do |args|
@@ -326,7 +328,8 @@ class Controller
       command.set_help { "configure stdconfig in localstore" }
 
       command.as_action do |args|
-        template = @editor.get_config_part_value('extract').to_json
+        result = get_current_template
+        template = @editor.get_config_from_text(result).dig("extract").to_json
         `localStorage.setItem('standardextract', #{template})`
         nil
       end
@@ -1005,7 +1008,6 @@ class Controller
   end
 
   def create_from_current_template(parameters)
-
     result = get_current_template
 
     parameters.each do |name, value|
