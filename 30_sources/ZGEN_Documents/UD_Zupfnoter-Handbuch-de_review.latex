@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.10.0-39-g5fdc887
+Version V\_1.10.0-39-g139c6d5
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -7947,11 +7947,67 @@ erh\"{o}hen.
 \hypertarget{aux308nderungsgeschichte}{%
 \section{\"{A}nderungsgeschichte}\label{aux308nderungsgeschichte}}
 
+\hypertarget{v-1.11-18.4.2019}{%
+\section{V 1.11 18.4.2019}\label{v-1.11-18.4.2019}}
+
+\hypertarget{fix}{%
+\subsection{fix}\label{fix}}
+
+\begin{itemize}
+\tightlist
+\item
+  Meldung ``Cannot read property `\$first' of undefined'' behoben \#251
+\item
+  Dialog f\"{u}r ``Zus\"{a}tze'' schliesst nun wieder \#249
+\item
+  Hilfsemlodielienen sind nun gestrichelt mit 1.5mm,
+  Synchronistaionslienien mit 3mm \#247
+\item
+  Bei ``aufw\"{a}rs spielen'' und ``notenh\"{a}lse'' wird nun die
+  korrekte Zeichenfl\"{a}che benutzt \#257
+\item
+  editconf extract.0.lyrics.1.pos bringt keine Fehlermeldung mehr \#256
+\item
+  Warunung wenn die Taktarkt innerhalb eines Taktes ge\"{a}ndert wird
+  \#217
+\end{itemize}
+
+\hypertarget{enhancement}{%
+\subsection{enhancement}\label{enhancement}}
+
+\begin{itemize}
+\tightlist
+\item
+  Men\"{u} f\"{u}r die bisher benutzten Dropbox-Pfade in der Statuszeile
+  \#252
+\item
+  Ein- / Aufklappen von Abschnitten in der Konfigurationsmaske \#254
+\item
+  Kompaktere Darstellung der Konfigurationsmaske \#254
+\item
+  Anzeige der jspdf version \#241
+\item
+  Ausrichtung (linksb\"{u}ndig, rechtsb\"{u}ndig) f\"{u}r Titel und
+  Beschriftungen \#237
+\item
+  Platzhalter \{\{current\_year\}\} \#223
+\item
+  In der Konfigurationsmaske kann man nun suchen\# 248
+\item
+  Weitere Verbesserung der Platzierung von Taknummer/Z\"{a}hlmarken
+  \#226
+\item
+  Unterst\"{u}tzung von Darteivorlagen \#253
+\item
+  Men\"{u} verkleinert, Zurpnoger-Versionanzeige nun hinter einer
+  kleinen Home-Taste verborgen \#253
+\end{itemize}
+
 \hypertarget{v.1.10-nov-2018}{%
 \subsection{V.1.10 Nov 2018}\label{v.1.10-nov-2018}}
 
-\hypertarget{fix}{%
-\subsubsection{fix}\label{fix}}
+\hypertarget{fix-1}{%
+\subsubsection{fix}\label{fix-1}}
 
 \begin{itemize}
 \tightlist
@@ -7967,8 +8023,8 @@ erh\"{o}hen.
   \#239
 \end{itemize}
 
-\hypertarget{enhancement}{%
-\subsubsection{enhancement}\label{enhancement}}
+\hypertarget{enhancement-1}{%
+\subsubsection{enhancement}\label{enhancement-1}}
 
 \begin{itemize}
 \tightlist
@@ -8262,8 +8318,8 @@ internal release
 \hypertarget{v-1.7.1}{%
 \subsection{v 1.7.1}\label{v-1.7.1}}
 
-\hypertarget{fix-1}{%
-\subsubsection{fix}\label{fix-1}}
+\hypertarget{fix-2}{%
+\subsubsection{fix}\label{fix-2}}
 
 \begin{itemize}
 \tightlist
@@ -8279,8 +8335,8 @@ internal release
 \hypertarget{v-1.7}{%
 \subsection{v 1.7}\label{v-1.7}}
 
-\hypertarget{fix-2}{%
-\subsubsection{fix}\label{fix-2}}
+\hypertarget{fix-3}{%
+\subsubsection{fix}\label{fix-3}}
 
 \begin{itemize}
 \tightlist
@@ -8324,8 +8380,8 @@ internal release
   BWC: no longer show (Original in ) in case of transpositions (\#174)
 \end{itemize}
 
-\hypertarget{enhancement-1}{%
-\subsubsection{enhancement}\label{enhancement-1}}
+\hypertarget{enhancement-2}{%
+\subsubsection{enhancement}\label{enhancement-2}}
 
 \begin{itemize}
 \tightlist
@@ -8552,8 +8608,8 @@ issues}\label{backward-compatibility-issues}}
   in configuration \#95
 \end{itemize}
 
-\hypertarget{fix-3}{%
-\subsubsection{Fix}\label{fix-3}}
+\hypertarget{fix-4}{%
+\subsubsection{Fix}\label{fix-4}}
 
 \begin{itemize}
 \tightlist
@@ -8589,8 +8645,8 @@ issues}\label{backward-compatibility-issues}}
   Now yield 1.50 instead of 1.49999999 to minimize rounding effects \#95
 \end{itemize}
 
-\hypertarget{enhancement-2}{%
-\subsubsection{Enhancement}\label{enhancement-2}}
+\hypertarget{enhancement-3}{%
+\subsubsection{Enhancement}\label{enhancement-3}}
 
 \begin{itemize}
 \tightlist
@@ -8623,8 +8679,8 @@ issues}\label{backward-compatibility-issues}}
 \hypertarget{v-1.4.2}{%
 \subsection{V 1.4.2}\label{v-1.4.2}}
 
-\hypertarget{fix-4}{%
-\subsubsection{Fix}\label{fix-4}}
+\hypertarget{fix-5}{%
+\subsubsection{Fix}\label{fix-5}}
 
 \begin{itemize}
 \tightlist
@@ -8641,8 +8697,8 @@ issues}\label{backward-compatibility-issues}}
 \hypertarget{v-1.4.2-1}{%
 \subsection{V 1.4.2}\label{v-1.4.2-1}}
 
-\hypertarget{fix-5}{%
-\subsubsection{Fix}\label{fix-5}}
+\hypertarget{fix-6}{%
+\subsubsection{Fix}\label{fix-6}}
 
 \begin{itemize}
 \tightlist
@@ -8650,8 +8706,8 @@ issues}\label{backward-compatibility-issues}}
   remove copyright note from sheet annotation \#69
 \end{itemize}
 
-\hypertarget{enhancement-3}{%
-\subsubsection{enhancement}\label{enhancement-3}}
+\hypertarget{enhancement-4}{%
+\subsubsection{enhancement}\label{enhancement-4}}
 
 \begin{itemize}
 \tightlist

@@ -2,6 +2,36 @@
 
 # Änderungsgeschichte
 
+# V 1.11 18.4.2019
+
+## fix
+
+-   Meldung "Cannot read property '\$first' of undefined" behoben \#251
+-   Dialog für "Zusätze" schliesst nun wieder \#249
+-   Hilfsemlodielienen sind nun gestrichelt mit 1.5mm,
+    Synchronistaionslienien mit 3mm \#247
+-   Bei "aufwärs spielen" und "notenhälse" wird nun die korrekte
+    Zeichenfläche benutzt \#257
+-   editconf extract.0.lyrics.1.pos bringt keine Fehlermeldung mehr
+    \#256
+-   Warunung wenn die Taktarkt innerhalb eines Taktes geändert wird
+    \#217
+
+## enhancement
+
+-   Menü für die bisher benutzten Dropbox-Pfade in der Statuszeile \#252
+-   Ein- / Aufklappen von Abschnitten in der Konfigurationsmaske \#254
+-   Kompaktere Darstellung der Konfigurationsmaske \#254
+-   Anzeige der jspdf version \#241
+-   Ausrichtung (linksbündig, rechtsbündig) für Titel und Beschriftungen
+    \#237
+-   Platzhalter {{current\_year}} \#223
+-   In der Konfigurationsmaske kann man nun suchen\# 248
+-   Weitere Verbesserung der Platzierung von Taknummer/Zählmarken \#226
+-   Unterstützung von Darteivorlagen \#253
+-   Menü verkleinert, Zurpnoger-Versionanzeige nun hinter einer kleinen
+    Home-Taste verborgen \#253
+
 ## V.1.10 Nov 2018
 
 ### fix
