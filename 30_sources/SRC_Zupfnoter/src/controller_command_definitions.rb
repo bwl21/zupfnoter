@@ -978,8 +978,8 @@ class Controller
       unless template.include?("\nF:{{")
         raise "current file is not a template. It does not have a placeholder in F: line e.g. F:{{song_id}}"
       end
-      handle_command('setstdextract')
       `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
+      handle_command('setstdextract')
     end
     get_current_template # this sets the current template to systemstatus
     nil
@@ -992,6 +992,7 @@ class Controller
     HTTP.get(url, {async: false}) do |response|
       result = response.body
       `localStorage.setItem(#{ZN_TEMPLATENAME}, #{result})`
+      handle_command('setstdextract')
     end
     result
   end
