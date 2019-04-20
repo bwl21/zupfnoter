@@ -70,6 +70,7 @@ ABC-Notation:
     abgesetzt ist.
 
 <!-- das erstellte blatt in Vorschau drehen und als PDF wieder exportieren -->
+
 ![Zupfnoter Elemente](../ZAUX_images/3015_reference_sheet_doc_a3.pdf)
 
 ## Elemente der von Zupfnoter erstellten Unterlegnoten
@@ -239,7 +240,7 @@ man sie "notenbezogene Elemente":
 
 -   **(28) countnotes - Zählhilfen**: Zupfnoter kann die Noten
     automatisch mit Zählhilfen beschriften. Die Zählweise ergibt sich
-    aus der Taktangabe. Beispiel siehe Abbildung [Zupfnoter Elemente].
+    aus der Taktangabe. Beispiel siehe Abbildung \[Zupfnoter Elemente\].
     Diese Ausgabe (für welche Stimmen, Position) ist
     konfigurationsabhängig (`extract.0.countnotes`).
 
@@ -431,7 +432,7 @@ und das Einelgen in das Instrument zu vereinfachen:
 -   **(37) stringnames - Saitennamen**: Zupfnoter kann die Namen der
     Saiten auf den Unterlegnoten ausgeben.
 
-    > **Hinweis**: Über die [Einstellungen in der Konfiguration] kann
+    > **Hinweis**: Über die \[Einstellungen in der Konfiguration\] kann
     > die Ausgabe von Saitennamen eingestellt werden (siehe Kapitel
     > \ref{extract.0.stringnames}
     > [extract.0.stringnames](#extract.0.stringnames)).
@@ -445,7 +446,7 @@ und das Einelgen in das Instrument zu vereinfachen:
     muss so in die Tischharfe eingelegt werden, dass die Marken unter
     den G-Saiten liegen.
 
-    > **Hinweis:** Über die [Einstellungen in der Konfiguration] kann
+    > **Hinweis:** Über die \[Einstellungen in der Konfiguration\] kann
     > die Ausgabe der Saitenmarken beeinflusst werden (siehe Kapitel
     > \ref{extract.0.stringnames.marks}
     > [extract.0.stringnames.marks](#extract.0.stringnames.marks)).
@@ -472,6 +473,7 @@ und das Einelgen in das Instrument zu vereinfachen:
         "*C*entral *E*uropean *S*ummer *T*ime")
     -   Software-Version von Zupfnoter
     -   Server von welchem der Zupfnoter geladen wurde
+
 -   **(72) reference to zupfnoter website - Referenz auf Zupfnoter
     Website**: Dies ist die Referenz auf Zupf-\
     noter als Werkzeug zur Erstellung des Unterlegnotenblattes, also
@@ -508,15 +510,15 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
 
 -   **(74) T04 to order - zu beziehen bei**: Hier kann man angeben, über
     welche Adresse das Unterlegnotenblatt bezogen werden kann
-    (Konfiguration siehe Kapitel
-    \ref{presets.notes.T04ux5ftoux5forder}[presets.notes.T04_to_order](#presets.notes.T04_to_order)).
-    Das ist natürlich nur sinnvoll, wenn es für die erstellen
-    Unterlegnoten einen Vertriebsweg gibt.
+    (Konfiguration siehe Kapitel \ref{presets.notes.T04_fto_forder}
+    [presets.notes.T04\_to\_order](#presets.notes.T04_to_order)). Das
+    ist natürlich nur sinnvoll, wenn es für die erstellen Unterlegnoten
+    einen Vertriebsweg gibt.
 
 -   **(75) T02 Copryright music - Urheberrechte für das Stück**: Hier
     kann mam die Urheberrechte für das Musikstück angeben (Konfiguration
-    siehe Kapitel
-    \ref{presets.notes.T02ux5fcopyrightux5fmusic}[presets.notes.T02_copyright_music](#presets.notes.T02_copyright_music)).
+    siehe Kapitel \ref{presets.notes.T02_fcopyright_fmusic}
+    [presets.notes.T02\_copyright\_music](#presets.notes.T02_copyright_music)).
     Es wird empfohlen, diese Rechte immer anzugeben und den Satz
     "Privatkopie" hinzuzufügen, wenn mit dem Rechteinhaber keine
     Vereinbarung geschlossen wurde.
@@ -529,20 +531,22 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
     von den Urheberrechten am Stück entsteht auch ein Urheberrecht an
     den erstellen Unterlegnoten. Hier kannst du diese Rechte
     beanspruchen (Konfiguration siehe Kapitel
-    \ref{presets.notes.T03ux5fcopyrightux5fharpnotes}[extract.0.synchlines](#presets.notes.T03_copyright_harpnotes)).
+    \ref{presets.notes.T03_fcopyright_fharpnotes}
+    [extract.0.synchlines](#presets.notes.T03_copyright_harpnotes)).
 
 -   **(77) T99 do not copy - Bitte nicht kopieren**: Diese Beschriftung
     soll den Blick dafür schärfen, das die erstellen Unterlegnoten nicht
     einfach wild kopiert werden dürfen, sondern die Urheberrechte zu
     bachten sind (Konfiguration siehe Kapitel
-    \ref{presets.notes.T99ux5fdoux5fnotux5fcopy}[presets.notes.T99_do_not_copy](#presets.notes.T99_do_not_copy)).
+    \ref{presets.notes.T99_fdo_fnot_fcopy}
+    [presets.notes.T99\_do\_not\_copy](#presets.notes.T99_do_not_copy)).
 
 -   **(78) T01 Number - Nummer**: Hier kannst du eine Nummer angeben,
     welche das Unterlegnotenblatt eindeutig und schnell identifizierbar
-    macht(Konfiguration siehe Kapitel
-    \ref{presets.notes.T01ux5fnumber}[presets.notes.T01_number](#presets.notes.T01_number)).
-    Im Grunde ist das wie eine Bestellnummer. Es wird empfohlen, die
-    Nummer nach folgendem Schema zu gestalten:
+    macht(Konfiguration siehe Kapitel \ref{presets.notes.T01_fnumber}
+    [presets.notes.T01\_number](#presets.notes.T01_number)). Im Grunde
+    ist das wie eine Bestellnummer. Es wird empfohlen, die Nummer nach
+    folgendem Schema zu gestalten:
 
     `XXX-999` darin ist
 
@@ -557,7 +561,8 @@ Vorgabewerte für die Position und Schriftart dieser Beschriftungen.
 
 -   **(79) T01 Number extract - Kürzel für den Auszug**: Hier kannst du
     ein Kürzel für den Auszug angebeen (Konfiguration siehe Kapitel
-    \ref{presets.notes.T01ux5fnumberux5fextract}[presets.notes.T01_number_extract](#presets.notes.T01_number_extract))
+    \ref{presets.notes.T01_fnumber_fextract}
+    [presets.notes.T01\_number\_extract](#presets.notes.T01_number_extract))
 
 ### Zusammenfassung der Beschriftungen in Zupfnoter
 
@@ -603,7 +608,7 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
     > Konfiguration gespeichert und ist an die die Startzeit der Note
     > gebunden, solange keine Verschiebemarke \index{Verschiebemarke} in
     > der ABC-Notation eingefügt ist
-    > ([extract.x.notebound.annotation.v\_{voice}.{time}]).
+    > (\[extract.x.notebound.annotation.v\_{voice}.{time}\]).
 
 -   **Seitenbeschriftung**
 
@@ -614,11 +619,11 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
     Kapitel \ref{elemente-fuer-das-ganze-blatt} [Elemente für das
     gesamte Musikstück](#elemente-fuer-das-ganze-blatt)).
 
-    In den Seitenbeschrifungen können Informationen eingefügt werden,
-    welche in Zupfnoter schon vorhanden sind. Hierzu werden Platzhalter
-    eingefügt, welche bei der Ausgabe durch die entsprechende
-    Information ersetzt werden. Die möglichen Platzhalter findest du in
-    der Hilfe zu den Parametern.
+    > **Hinweis** In den Seitenbeschrifungen können Informationen
+    > eingefügt werden, welche in Zupfnoter schon vorhanden sind. Hierzu
+    > werden Platzhalter eingefügt, welche bei der Ausgabe durch die
+    > entsprechende Information ersetzt werden. Die möglichen
+    > Platzhalter findest du in der Hilfe zu den Parametern.
 
 -   **Liedtexte**
 
@@ -658,6 +663,7 @@ Zupfnoter kennt drei Fenster[^040_UD-Zupfnoter-Referenz.md_4]:
     -   `Liedtexte` für die Erfassung der Liedtexte
     -   `Konfiguration` für die formulargeführte Bearbeitung der
         Zupfnoter-Konfiguration.
+
 -   Im **rechten oberen Fenster** (Kapitel \ref{notenvorschau}
     [Eingabe](#notenvorschau)) wird in der herkömmlichen Notenschrift
     das Musikstück gezeigt, und kann somit musikalisch überprüft wreden.
@@ -719,18 +725,26 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
 > Zupfnoter verbessert. Daher sind die Informationen in diesem Kapitel
 > vorläufig.
 
--   Schaltfläche **Zupfnoter**: TODO: – Detailinfo als Popup darstellen
+-   Schaltfläche **Zupfnoter**: TODO: -- Detailinfo als Popup darstellen
 
 -   Schaltfläche **Neu** (erstellen): Es wird ein leerer Bildschirm ohne
     Inhalte erstellt und man kann ein neues Musikstück erstellen (siehe
-    Kapitel \ref{dein-erstes-musikstueck-eingeben}[Dein erstes
+    Kapitel \ref{dein-erstes-musikstueck-eingeben} [Dein erstes
     Musikstück eingeben](#dein-erstes-musikstueck-eingeben)).
 
 -   Schaltfläche **Einloggen**: TODO: -
     https://github.com/bwl21/zupfnoter/issues/75
 
-    Über diese Schaltfläche kannst du das Verzeichnis in der Dropbox
+    Über diese Schaltfläche kannst du das Speicherort in der Dropbox
     angeben, in die Zupfnoter dein Musikstück speichern soll.
+
+    > **Hinweis:** Wenn du in dem Eingabefeld etwas eingibst, zeigt
+    > Dropbox passende Speicherorte an, die zu zuletzt verwendet hast.
+
+    > **Hinweis:** Du kannst den Speicherort auch in der Statuszeile
+    > auswählen. Dort wird der aktuelle Speicherort angegeben. Rechts
+    > davon ist eine Menüknopf, der die zuletzt verwendeten Speicherorte
+    > aufrufbar macht.
 
 -   Schaltfläche **DL abc** (Download ABC): Hiermit kann man
     Zwischenstände oder fertige Musikstücke als ABC-Datei auf seinen
@@ -742,12 +756,10 @@ erreichbar (siehe Kapitel \ref{shortcuts} [Shortcuts](#shortcuts))
     deiner Dropbox. Dort kannst du eine Datei auswählen und zur
     Bearbeitung im Zupfnoter öffnen.
 
-    TODO: anpassen auf kommenden Dialog
-
     > **Hinweis**: in der Statuszeile wird der Verbindungszustand zur
     > Dropbox und auch das aktuelle Verzeichnis in der Dropbox
     > angezeigt. "Not connected" bedeutet, das Zupfnoter nicht mit
-    > deiner Dropbox verbundn ist.
+    > deiner Dropbox verbunden ist.
 
 -   Schaltfläche **Speichern** (sichern): Das fertig gestellte
     Musikstück wird in deiner Dropbox gespeichert. Es wird eine
@@ -1038,7 +1050,9 @@ Einträgen
 
 -   Position der Schreibmarke im Editor
 -   Bedeutung des Symbols links von der Schreibmarke (Syntax Token)
--   Pfad zur Dropbox
+-   Speicherort in der Dropbox - Das ist ein Menü über welches du die
+    letzten Pfade wieder aufrufen kannst, um schnell den Speicherort für
+    deine Stücke auszuwählen.
 -   Aktiver Filter für Meldungen in der Konsole (Loglevel). Das Filter
     kann über deen Eingebbefehl`loglevel error` in der Konsole
     umgestellt werden [^040_UD-Zupfnoter-Referenz.md_5].
@@ -1485,6 +1499,12 @@ Parameter je eine Zeile mit den folgenden Elementen:
 
 Für die Bedienung der Masken ist noch wichtig
 
+-   In der Kopfzeile der Konfigurationsmaske gibt es ein Eingabefeld
+    "Suche". Wenn du dort etwas eingbist, dann sucht Zupfnoter nach
+    passenden Konfigurationsparametern. Dieses Suchfeld ist hilfreich,
+    um schnell einen Parameter zu finden. Z.B. führt die Eingeabe des
+    Wortes `Farbe` zu einer Maske in der alle Parameter angezeigt
+    werden, die etwas mit "Farbe" zu tun haben.
 -   Schaltfläche `Refresh`: Um sicher zu gehen, dass die
     Konfigurationsmaske wirklich die aktuellen Werte zeigt, kann mit
     `Refresh` die Maske neu aufgebaut werden. Dies ist z.B. dann
@@ -1493,7 +1513,8 @@ Für die Bedienung der Masken ist noch wichtig
 -   Schaltfläche `Neuer Eintrag`: Diese Taste fügt eine neue Instanz
     eines Parameters ein. Sie ist nur aktiv, wenn es für einen Parameter
     mehrere Instanzen geben kann (z.B. \index{Liedtexte}Liedtexte
-    [lyrics.x], \index{Seitenbeschriftung}Seitenbeschriftung [notes.x])
+    \[lyrics.x\], \index{Seitenbeschriftung}Seitenbeschriftung
+    \[notes.x\])
 -   Schaltfläche `Schnelleinst.`: Diese Taste (Schnelleinstellungen)
     öffnet ein Menü, aus dem du für die aktuelle Maske eine
     Voreinstellung auswählen kannst. Eine solche Voreinstellung ist eine
@@ -1747,10 +1768,12 @@ In diesem Beispiel kannst du die Zusammenhänge sehen:
     -   Aufteilung der Liedtexte auf zwei Blöcke
         -   Block 1: Strophe 1 und 2
         -   Block 2: Strophe 3 und 4
+
 -   Auszug 1 hat gegenüber Auszug 0:
 
     -   nur Stimme 1 und 2
     -   andere Position der Liedtexte
+
 -   Auszug 2 gat gegenüber Auszug 0:
 
     -   nur Stimme 3 und 4 Voreinstellung in Zupfnoter entspricht.)
@@ -2281,41 +2304,8 @@ Auszügen](#bestPracticeExtract) beschrieben ist.
 
 Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen
 Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage
-durch eine projektspezifische Vorlage zu ersetzen, in der schon eineige
+durch eine projektspezifische Vorlage zu ersetzen, in der schon einige
 Parameter (z.B. Blattbeschriftungen) vorausgefüllt sind.
-
-Zupfnoter bietet eine experimentelle Unterstützung über die
-[Konsole](#konsole-fenster). In folgenden Schritten kann ein eigene
-Vorlage eingerichtet werden:
-
-1.  `edittemplate`: Damit wird das aktuell aktive Template in den Editor
-    geladen und kann angepasst werden.
-
-2.  `editconf template`: Damit werde die Template-spezifischen
-    Eigenschaften (Dateiname und Titel) eingstellt.
-
-    > **Hinweis**: Man muss von Hand auf den Reiter "Konfiguration"
-    > schalten um die Konfigurationsmaske zu sehen.
-    >
-    > **Hinweis**: mit diesem Befehl kann man auch feststellen, welche
-    > Vorlage gerade aktiv ist.
-
-3.  `settemplate`: Damit wird der aktuelle Editor-Inhalt als Template
-    hinterlegt
-
-4.  Menüpunkt 'Speichern': Damit wird der Editorinhalt gespeichert.
-
-    > **Hinweis**: Dabei ist es wichtig, dass die Kopfzeile `F:` einen
-    > Platzhalter - Zeichen `{{` enthält. Dadurch wird im
-    > "Template_modus" gespeichert, d.h. der Dateiname wird nicht aus
-    > der `F:` - Zeile entnommen sondern aus dem Konfigurationsparameter
-    > `template.filebase` entnommen.
-
-> **Hinweis**: Diese Schritte sind auch im Menü `Extras` erreichbar
-
-> **Hinweis**: Die Konfigurationsparameter `template.filebase` werden
-> auch in die neuen Stücke kopiert, haben dort aber keine Wirkung mehr.
-> Sie sind jedoch als Dokumentation hilfreich.
 
 Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter
 eingefügt sind, welche beim erstellen eines neuen Stückes anhand der
@@ -2324,10 +2314,8 @@ sind verfügbar:
 
 `{{song_id}}`
 :   Das ist die Identifikationsnummer des Stückes
-
 `{{filename}}`
 :   Das ist die Basis für den Dateinamen
-
 `{{song_title}}`
 :   Das ist der Titel des Stückes.
 
@@ -2335,6 +2323,56 @@ sind verfügbar:
 > welche jedoch erst bei der Erzeugung der Unterlegnoten aufgelöst
 > werden. Die möglichen Platzhalter werden in der Hilfe bei den
 > Konfigurationsparametern angezeigt.
+
+Es gibt in der Statuszeile ein Vorlagenmenü. Dieses ist beschriftet mit
+der aktuell eingestellten Vorlage.
+
+Für Projektarbeit mit Vorlagen wird folgendes Vorgehen empfohlen:
+
+1.  Erstelle ein Beispielstück mit der gewünschen Konfiguration.
+
+    > **Hinweis**: Verwende für die Seitenbeschriftung die Platzhalter
+
+2.  Konvertiere das Beispielstück in eine Vorlage. Dazu gibt es in
+    Vorlagenmenü der Statuszeile eine Funktion (beschriftet mit der
+    aktuellen Vorlage).
+
+    Dabei werden die Kopfzeilen X: F: T: durch Platzhalter ersetzt.
+    Weiterhin wird das Konfigurationsmaske für die Vorlage aufgerufen.
+    Dort musst du einen Dateinamen für die Vorlage eintragen.
+
+3.  Speichere nun die Vorlage über `Speichern`
+
+    > **Hinweis**: Dabei ist es wichtig, dass die Kopfzeile `F:` einen
+    > Platzhalter - Zeichen `{{` enthält. Dadurch wird im "Vorlagen -
+    > modus" gespeichert, d.h. der Dateiname wird nicht aus der `F:` -
+    > Zeile entnommen sondern aus dem Konfigurationsparameter
+    > `template.filebase`.
+
+4.  Aktiviere die so erstellte Vorlage nun über das Vorlagenmenü der
+    Statuszeile.
+
+    > **Hinweis** Wenn due die Vorlage im Verzeichnis des neuen
+    > Projektes speicherst, kannst du in einem Schitt die Vorlage wieder
+    > laden und den aktuellen Speicherort auf das Projektverzeichniss
+    > stellen. So kannst du einfach zwischen den Projekten wechseln
+
+5.  Wenn du nun ein neues Stück erstellst oder eine XML-Datei
+    importierst, werden die Einstellungen der Vorlage automatisch
+    übernommen.
+
+6.  Du kannst die aktuelle Vorlage auch auf ein vorhandenes Stück
+    anwenden. Dazu gibt es im Vorlagenmenü der Statuszeile den
+    Menüeintrag `Auszüge aus Vorlage übernehmen`
+
+7.  Du kannst die aktuelle Vorlage auch auf die Zupfnoter-Voreinstellung
+    zurücksetzen.
+
+> **Hinweis**: Die Konfigurationsparameter `template.filebase` werden
+> auch in die neuen Stücke kopiert, haben dort aber keine Wirkung mehr
+> weil die `F:` - zeile nun keinen Platzhalter mehr enthält. Sie sind
+> jedoch als Dokumentation hilfreich, welche Vorlage bei der Erstellung
+> des Stückes verwendet wurde.
 
 ### Parameter in der Zupfnoter-URL
 

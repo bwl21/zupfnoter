@@ -1,0 +1,275 @@
+X:42
+F:zndemo_42_Ich_steh_an_deiner_krippen_hier
+T:Ich steh an deiner Krippen hier
+C:Nr. 59 aus dem Weihnachtsoratorium
+C:Joh. Seb. Bach
+C:Kirchenchor Mattighofen
+%%score ( 1 2 ) ( 3 4 )
+L:1/4
+Q:1/4=80.00
+M:4/4
+I:linebreak $
+K:G
+V:1 treble nm="Sopran Alt"
+V:2 treble
+V:3 bass nm="Tenor Bass"
+V:4 bass
+V:1
+G | G/A/ B A G | A A !fermata!B G/A/ |
+B c d c/B/ | A/G/ A !fermata!G :| B | B A G F |
+G/A/ B !fermata!A A | G F G D | G A !fermata!B G/A/ |
+B c d c/B/ | A/G/ A !fermata!G z |]
+V:2
+D | E/F/ G G/F/ G | G F G E/F/ |
+G/ B A/4G/4 F G | G F D :| z | G3/2 F/ F/E/ E/^D/ |
+E D D D | D/C/ D D/C/ B, | B, E ^D B, |
+E E D/E/2 G | G F D z |]
+V:3
+B, | B, E E/D/ D | E/C/ A,/D/ !fermata!D E |
+D G,/A,/ B,/C/ D | D C/B,/ !fermata!B, :| D | D D/C/ B,/C/ F,/B,/ |
+B,/A,/ A,/G,/ !fermata!F, F, | G,/A,/ B,/C/ B,/A,/ G, | G, F,/E,/ !fermata!F, E,/F,/ |
+G,3/2 A,/ B,/C/ D | D C/B,/ !fermata!B, z |]
+V:4
+G,/F,/ | E,3/2 D,/ C,3/2 B,,/ | C,/A,,/ D, G,, C, |
+G,/F,/ E, B,/A,/ G, | D D, G, :| z | B,/C/ D/2-D/2 G,/A,/ B, |
+E,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |
+E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
+%
+W: 
+W: 1. Ich steh' an deiner Krippe hier,
+W: o Jesu, du mein Leben;
+W: ich komme, bring' und schenke dir,
+W: was du mir hast gegeben.
+W: Nimm hin, es ist mein Geist und Sinn,
+W: Herz, Seel' und Mut, nimm alles hin
+W: und laß dir's wohl gefallen.
+W: 
+W: 2. Da ich noch nicht geboren war,
+W: da bist du mir geboren
+W: und hast dich mir zu eigen gar,
+W: eh’ ich dich kannt’, erkoren.
+W: Eh’ ich durch deine Hand gemacht,
+W: da hast du schon bei dir bedacht,
+W: wie du mein wolltest werden.
+W: 
+W: 3. Ich lag in tiefer Todesnacht,
+W: du warest meine Sonne,
+W: die Sonne, die mir zugebracht
+W: Licht, Leben, Freud’ und Wonne.
+W: O Sonne, die das werte Licht
+W: des Glaubens in mir zugericht’,
+W: wie schön sind deine Strahlen.
+W: 
+W: 4. Ich sehe dich mit Freuden an
+W: und kann mich nicht satt sehen;
+W: und weil ich nun nichts weiter kann,
+W: bleib’ ich anbetend stehen.
+W: O daß mein Sinn ein Abgrund wär’
+W: und meine Seel’ ein weites Meer,
+W: daß ich dich möchte fassen.
+%
+%
+
+%%%%zupfnoter.config
+
+{
+  "produce"     : [1, 2, 3],
+  "annotations" : {
+    "refn" : {
+      "pos"  : [20, 10],
+      "text" : "referenced note",
+      "id"   : "refn"
+    }
+  },
+  "extract"     : {
+    "0" : {
+      "title"        : "Bearbeitungsansicht",
+      "filenamepart" : "-X",
+      "voices"       : [1, 2, 3, 4],
+      "flowlines"    : [1, 3],
+      "repeatsigns"  : {
+        "voices" : [1, 3],
+        "left"   : {"style": "large"},
+        "right"  : {"style": "large"}
+      },
+      "layoutlines"  : [1, 2, 3, 4],
+      "barnumbers"   : {
+        "voices"   : [1, 3],
+        "pos"      : [6, -4],
+        "autopos"  : true,
+        "apbase"   : [1, 0.30],
+        "style"    : "small_bold",
+        "apanchor" : "center",
+        "prefix"   : ""
+      },
+      "countnotes"   : {
+        "voices"   : [1, 3],
+        "pos"      : [3, -2],
+        "autopos"  : true,
+        "apbase"   : [1, 0],
+        "style"    : "smaller",
+        "apanchor" : "center"
+      },
+      "legend"       : {"pos": [410, 8], "spos": [338, 30], "align": "l"},
+      "lyrics"       : {
+        "1" : {"verses": [1, 2], "pos": [344, 99]},
+        "2" : {"verses": [3, 4], "pos": [344, 173]}
+      },
+      "notes"        : {
+        "T01_number"              : {
+          "pos"   : [410, 17],
+          "text"  : "XXX-{{number}}",
+          "style" : "bold",
+          "align" : "l"
+        },
+        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
+        "T02_copyright_music"     : {"pos": [325, 280], "text": "", "style": "small"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [325, 284],
+          "text"  : "© 2018 Notenbild: Bernhard Weichel",
+          "style" : "small"
+        },
+        "T04_to_order"            : {"pos": [391, 261], "text": "\n", "style": "small"},
+        "T05_printed_extracts"    : {
+          "pos"   : [410, 22],
+          "text"  : "{{printed_extracts}}",
+          "style" : "smaller",
+          "align" : "l"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "tuplets"      : {"text": "- {{tuplet}} -", "style": "small"},
+      "layout"       : {
+        "limit_a3"     : true,
+        "instrument"   : "37-strings-g-g",
+        "bottomup"     : false,
+        "beams"        : false,
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset"   : [0, 0],
+        "a4_offset"   : [-5, 0],
+        "a4_pages"    : [0, 1, 2],
+        "show_border" : false
+      },
+      "stringnames"  : {
+        "vpos"  : [4],
+        "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "style" : "small",
+        "marks" : {"hpos": [43, 79], "vpos": [290]}
+      },
+      "notebound"    : {
+        "decoration"   : {
+          "v_3" : {
+            "t_14976" : {"0": {"pos": [-5, -3]}},
+            "t_5760"  : {"0": {"pos": [-5, -3]}}
+          }
+        },
+        "flowline"     : {
+          "v_1" : {
+            "13440" : {"cp1": [-2.65, 10.01], "cp2": [3.50, -8.36]}
+          }
+        },
+        "barnumber"    : {"v_3": {"t_8064": {"align": "r"}}},
+        "repeat_begin" : {
+          "v_1" : {"0": {"pos": [-9, -8]}},
+          "v_3" : {"0": {"pos": [-10, -8]}}
+        },
+        "repeat_end"   : {
+          "v_1" : {"5760": {"pos": [-14, 1]}},
+          "v_3" : {"5760": {"pos": [5, 0]}}
+        }
+      }
+    },
+    "1" : {
+      "filenamepart" : "-A",
+      "legend"       : {"spos": [338, 30]},
+      "lyrics"       : {},
+      "notes"        : {"T01_number_extract": {"text": "-A"}},
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "style" : "small",
+        "marks" : {"hpos": [43, 55, 79]}
+      }
+    },
+    "2" : {
+      "filenamepart" : "-B",
+      "voices"       : [1, 3, 4],
+      "notes"        : {"T01_number_extract": {"text": "-B"}},
+      "layout"       : {
+        "limit_a3"     : true,
+        "instrument"   : "37-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [0, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [0, 1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [43, 79]}
+      }
+    },
+    "3" : {
+      "filenamepart" : "-M",
+      "notes"        : {
+        "T01_number_extract" : {"text": "{{extract_filename}}"}
+      },
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [55, 79]}
+      }
+    },
+    "4" : {
+      "filenamepart" : "A2",
+      "notes"        : {
+        "T01_number_extract" : {
+          "pos"   : [411, 17],
+          "text"  : "{{extract_filename}}",
+          "style" : "bold"
+        }
+      }
+    },
+    "5" : {
+      "filenamepart" : "B2",
+      "notes"        : {
+        "T01_number_extract" : {"text": "{{extract_filename}}"}
+      }
+    }
+  },
+  "$schema"     : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version"    : "1.4.0 beta 2"
+}

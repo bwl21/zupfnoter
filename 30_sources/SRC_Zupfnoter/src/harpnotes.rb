@@ -616,7 +616,7 @@ module Harpnotes
       #
       # @return Numeric the last beat of this song
       def last_beat
-        max_beat = @beat_maps.map { |map| map.keys.max }.max
+        max_beat = @beat_maps.map { |map| map.keys.max || 0 }.max
       end
 
       #
@@ -1324,7 +1324,7 @@ module Harpnotes
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
         @draw_instrument      = nil
-        @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholde=
+        @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholder=
         set_instrument_handlers
       end
 
@@ -1338,76 +1338,97 @@ module Harpnotes
 
         case $conf['layout.instrument']
 
-          when "saitenspiel"
-            @pitch_to_xpos               = lambda { |pitch|
-              #          G        c        d        e        f        g        a        b        c'       D'
-              pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
-              pitch_to_stringpos = pitch_to_stringpos[pitch + pitchoffset]
-              result             = 0
-              result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
-              result
-            }
-            @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
-            @draw_instrument             = lambda {
-              res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
-              res.line_width = $conf.get('layout.LINE_MEDIUM');
-              [res]
-            }
+        when "Zipino"
+          #                  F# G  A  B  C  D  E  F# G  A  B  C  D  E  F#
+          pitches         = "54 55 57 59 60 62 64 66 67 69 71 72 74 76 78"
+          string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
 
-          when "okon-f", "okon-g", "okon-c", "okon-d"
+          @pitch_to_xpos               = lambda { |pitch|
+            #                           G        c        d        e        f        g        a        b        c'       D'
+            pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
+            result             = 0
+            result             = (pitch_to_stringpos) * xspacing + xoffset unless pitch_to_stringpos.nil?
+            result
+          }
+          @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+          @draw_instrument             = lambda {
+            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 20], ['L', xoffset + 190, 100], ['M', xoffset + 190, 200], ['L', xoffset + 30, 281]], :open)
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
+            [res]
+          }
+          @instrument_orientation      = :horizontal
+
+
+        when "saitenspiel"
+          @pitch_to_xpos               = lambda { |pitch|
+            #          G        c        d        e        f        g        a        b        c'       D'
+            pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
+            pitch_to_stringpos = pitch_to_stringpos[pitch + pitchoffset]
+            result             = 0
+            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+            result
+          }
+          @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+          @draw_instrument             = lambda {
+            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
+            [res]
+          }
+
+        when "okon-f", "okon-g", "okon-c", "okon-d"
+          flaps   = ""
+          pitches = ""
+          case $conf['layout.instrument']
+          when "okon-f"
+            #          G  A Bb C  D  E  F  G  A   Bb C  D  E  F  G  A  Bb C   D E F G
+            pitches = "55 57 58 60 62 64 65 67 69 70 72 74 76 77 79 81 82 84"
             flaps   = ""
-            pitches = ""
-            case $conf['layout.instrument']
-              when "okon-f"
-                #          G  A Bb C  D  E  F  G  A   Bb C  D  E  F  G  A  Bb C   D E F G
-                pitches = "55 57 58 60 62 64 65 67 69 70 72 74 76 77 79 81 82 84"
-                flaps   = ""
-              when "okon-g"
-                #          G  A  B  C  D  E  F# G  A  B  C  D  E  F# G  A  Bb C   D E F G
-                pitches = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79 81 83 84"
-                flaps   = "      59          66       71          78       83 "
-              when "okon-c"
-                #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
-                pitches = "55 57 59 60 62 64 65 67 69 71 72 74 76 77 79 81 83 84"
-                flaps   = "      59                   71                   83"
-              when "okon-d"
-                #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
-                pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
-                flaps   = "      59 61       66       71 73       78       83"
+          when "okon-g"
+            #          G  A  B  C  D  E  F# G  A  B  C  D  E  F# G  A  Bb C   D E F G
+            pitches = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79 81 83 84"
+            flaps   = "      59          66       71          78       83 "
+          when "okon-c"
+            #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+            pitches = "55 57 59 60 62 64 65 67 69 71 72 74 76 77 79 81 83 84"
+            flaps   = "      59                   71                   83"
+          when "okon-d"
+            #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+            pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
+            flaps   = "      59 61       66       71 73       78       83"
+          end
+
+          flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
+
+          string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
+          flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
+
+          @pitch_to_xpos               = lambda { |pitch|
+            #                           G        c        d        e        f        g        a        b        c'       D'
+            pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
+            result             = 0
+            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+            result
+          }
+          @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
+
+          @draw_instrument = lambda {
+            result = []
+            flaps_by_pitch.each do |f|
+              result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
             end
 
-            flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
+            res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
+            result.push(res)
+          }
 
-            string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
-            flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
-
-            @pitch_to_xpos               = lambda { |pitch|
-              #                           G        c        d        e        f        g        a        b        c'       D'
-              pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
-              result             = 0
-              result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
-              result
-            }
-            @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
-
-            @draw_instrument = lambda {
-              result = []
-              flaps_by_pitch.each do |f|
-                result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
-              end
-
-              res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)
-              res.line_width = $conf.get('layout.LINE_MEDIUM');
-              result.push(res)
-            }
-
-          when "21-strings-a-f"
-            @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
+        when "21-strings-a-f"
+          @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
 
 
-          when "18-strings-b-e"
-            @bottom_annotation_positions = [[210, 287], [210, 290], [280, 290]]
-          else
+        when "18-strings-b-e"
+          @bottom_annotation_positions = [[210, 287], [210, 290], [280, 290]]
+        else
         end
       end
 
@@ -1622,13 +1643,22 @@ module Harpnotes
         tempo               = music.meta_data[:tempo_display]
         print_variant_title = print_options_hash[:title]
 
-        title_pos  = print_options_hash[:legend][:pos]
+        title_pos = print_options_hash[:legend][:pos]
+
+        title_align = @print_options_raw.get("legend.align") || :r
+        title_align = (title_align == :l) ? :right : :left
+
         legend_pos = print_options_hash[:legend][:spos]
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         style      = @print_options_raw.get("legend.style") || :regular
-        annotations << Harpnotes::Drawing::Annotation.new(title_pos, title, :large, nil,
-                                                          "extract.#{print_variant_nr}.legend.pos", title_pos).tap { |s| s.draginfo = {handler: :annotation} }
-        if $conf["extract.#{print_variant_nr}.notes.T06_legend"].nil?
+        annotations << Harpnotes::Drawing::Annotation.new(
+            title_pos, title, :large, nil,
+            "extract.#{print_variant_nr}.legend.pos",
+            title_pos).tap do |s|
+          s.draginfo = {handler: :annotation}
+          s.align    = title_align
+        end
+        if print_options_raw["notes.T06_legend"].nil?
           annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, style, nil,
                                                             "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
         end
@@ -1672,10 +1702,16 @@ module Harpnotes
           print_options_hash[:notes].each do |k, note|
             #note is an array [center, text, style] todo: refactor this
             conf_key = "extract.#{print_variant_nr}.notes.#{k}"
+            align    = note[:align] || :r
+            align    = (align == :r) ? :left : :right;
             raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
             raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
-            annotations << Harpnotes::Drawing::Annotation.new(note[:pos], resolve_placeholder(note[:text], conf_key), note[:style], nil,
-                                                              "#{conf_key}.pos", note[:pos]).tap { |s| s.draginfo = {handler: :annotation} }
+            annotations << Harpnotes::Drawing::Annotation.new(
+                note[:pos], resolve_placeholder(note[:text], conf_key), note[:style], nil,
+                "#{conf_key}.pos", note[:pos]).tap do |s|
+              s.align    = align
+              s.draginfo = {handler: :annotation}
+            end
           end
         rescue Exception => e
           $log.error e.message
@@ -2375,10 +2411,10 @@ module Harpnotes
               bn_conf_key  = "extract.#{print_variant_nr}.#{bn_pos_key}"
               barnumber    = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
 
-              bn_dsize_y  = (:center == bn_apanchor) ? 0 : dsize_y
+              bn_dsize_y = (:center == bn_apanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
-              bn_offset   = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
-              bn_side = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
+              bn_offset  = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
+              bn_side    = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
 
               # if we have autopos, we need to compute the align
               # even if there is a cnoffset, we need to consider the side of the note
@@ -2757,25 +2793,52 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Path]
       def layout_note_flags(x_offset, y_offset, size, shift, color, flag)
 
-        p_beam_x, p_beam_y = [0.1, 2 * size[1]]
-        p_flag_x, p_flag_y = [1.3 * size[1], 0.6 * size[1]]
+        #     |\        [ p_beam_x, p_beam_y ]  draw relative to end of beam
+        #     |\\       [ ]      draw realative to end of flag
+        #     | \
+        #     |
+        #     |         [fx, y_offset]   Start of beam
+        #   ()
 
-        linewidth = $conf.get('layout.LINE_MEDIUM')
-        f_x       = x_offset + shift + size[0] - linewidth / 2 # beam start: right border of beam shall be right border of note
-        f_delta_y = $conf.get('layout.LINE_MEDIUM') * 3
-        f_delta_y = p_flag_y
-
-        f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0
-
-        flagpath = ['l', p_flag_x, p_flag_y]
 
         # calulate the beam
-        path = [['M', f_x, y_offset],
-                ['l', p_beam_x, -p_beam_y], # hals
-        ]
+        if @instrument_orientation == :horizontal
+          p_beam_x, p_beam_y = [2 * size[1], 0.1, ] # end of beam
 
-        # add  the flags
-        flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y], flagpath] }
+          linewidth = $conf.get('layout.LINE_MEDIUM')
+
+          f_x      = x_offset + shift / 2            # beam start: right border of beam shall be right border of note
+          f_y      = y_offset + size[1] - linewidth/2
+          path     = [['M', f_x, f_y],
+                      ['l', p_beam_x, p_beam_y], # hals
+          ]
+
+          p_flag_x, p_flag_y = [ -0.6 * size[0], 0.6 * size[1]]  # end of flag
+          f_delta_x = p_flag_x                                   # flagend.y -flagstart.y
+          f_delta_y = p_beam_y * f_delta_x / p_beam_x rescue 0   # flagend.x -flagstart.x
+
+          flagpath = ['l', p_flag_x, p_flag_y]
+          flag.times { |i| path += [['M', f_x + p_beam_x + i * f_delta_x, f_y + p_beam_y], flagpath] }
+        else
+          p_beam_x, p_beam_y = [0.1, 2 * size[1]] # end of beam
+
+          linewidth = $conf.get('layout.LINE_MEDIUM')
+          f_x       = x_offset + shift + size[0] - linewidth / 2 # beam start: right border of beam shall be right border of note
+          f_y       = y_offset
+
+          path = [['M', f_x, f_y],
+                  ['l', p_beam_x, -p_beam_y], # hals
+          ]
+          # add  the flags
+          p_flag_x, p_flag_y = [1.3 * size[1], 0.6 * size[1]] # end of flag
+
+          f_delta_y = p_flag_y                                   # flagend.y -flagstart.y
+          f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0   # flagend.x -flagstart.x
+
+          flagpath = ['l', p_flag_x, p_flag_y]
+          flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y], flagpath] }
+        end
+
 
         res            = Harpnotes::Drawing::Path.new(path, :open)
         res.line_width = linewidth

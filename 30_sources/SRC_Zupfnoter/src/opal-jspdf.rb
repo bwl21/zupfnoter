@@ -16,6 +16,10 @@ class JsPDF
     @native_jspdf = `new jsPDF(orientation, unit, format)`
   end
 
+  def self.jspdfversion()
+    %x{jsPDF.version}
+  end
+
   def line(from, to)
     nfrom = apply_offset_to_point(from)
     nto   = apply_offset_to_point(to)
@@ -48,7 +52,7 @@ class JsPDF
 
   def line_dash=(dist = 3)
     dist = `undefined` if dist.nil?
-    `#{@native_jspdf}.setLineDash([#{dist}, #{dist}], 0)`
+    `#{@native_jspdf}.setLineDash([#{dist}, #{dist}], #{dist})`
   end
 
 

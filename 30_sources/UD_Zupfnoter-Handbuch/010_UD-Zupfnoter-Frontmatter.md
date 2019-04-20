@@ -16,7 +16,7 @@ abstract: |
 author:
 - 'www.zupfnoter.de'
 title: Zupfnoter Benutzerhandbuch
-...
+---
 
 # Über dieses Handbuch
 
@@ -43,7 +43,7 @@ Zielgruppen im Blick:
 
 Dieses Handbuch wurde von Verena Hinzmann und Bernhard Weichel erstellt.
 
-> **Hinweis**: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff. sind
+> **Hinweis**: Dieses Handbuch ist noch nicht fertig; Kapitel 5 ff. sind
 > nur rudimentär. Wir veröffentlichen daher die Vorabversionen mit TODOs
 > und Zeilennummern.
 >

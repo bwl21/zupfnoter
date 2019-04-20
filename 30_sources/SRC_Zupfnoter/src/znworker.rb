@@ -75,7 +75,7 @@ module I18n
     # it might be that the phrases are not yet loaded
     # controller loads them by ajax, wich might not be ready
     # on the very first render tasks
-    @phrasesOpal[text] rescue text
+    @phrasesOpal[text] || text rescue text
   end
 
   def self.phrases
@@ -146,6 +146,8 @@ class WorkerController
   end
 
 
+  ## todo: this is not DRY, we define this method
+  # in controller.rb as well
   def get_placeholder_replacers(print_variant_nr)
     # keys for musid_model see _mk_meta_data
     # @meta_data = {number:        (@info_fields[:X]),
@@ -170,7 +172,8 @@ class WorkerController
         extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
         extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
         printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") },
-        watermark:        lambda { $settings[:watermark] || "" }
+        watermark:        lambda { $settings[:watermark] || "" },
+        current_year:     lambda { Time.now.year.to_s }
     }
   end
 
@@ -192,7 +195,7 @@ class WorkerController
   end
 
   def compute_harpnotes_preview
-    result = {svg: I18n.t("BUG: worker did not finsh"), interactive_elements: []}
+    result = {svg: I18n.t("BUG: worker did not finsh"), interactive_elements: [], error_alert: true}
     begin
       load_music_model
       $log.debug("viewid: #{@systemstatus[:view]} #{__FILE__} #{__LINE__}")
@@ -322,7 +325,12 @@ end
 
     # send results to the main script
     #
-    @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: controller.music_model.meta_data[:filename]})
+    if result[:error_alert]
+      @namedworker.post_named_message(:error_alert, nil)
+    else
+      document_title = controller.music_model.meta_data[:filename] rescue "error"
+      @namedworker.post_named_message(:update_ui, {extracts: controller.extracts, document_title: document_title})
+    end
     @namedworker.post_named_message(:compute_harpnotes_preview, result)
     @namedworker.post_named_message(:load_abc_model, controller.abc_model)
 

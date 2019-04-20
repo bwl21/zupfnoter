@@ -26,20 +26,37 @@
 \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
 % Add ',fontsize=\small' for more characters per line
 \newenvironment{Shaded}{}{}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
-\newcommand{\RegionMarkerTok}[1]{{#1}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
-\newcommand{\NormalTok}[1]{{#1}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
 \usepackage{longtable}
 \usepackage{float} % provides the H option for float placement
 \usepackage{graphicx}
@@ -88,14 +105,13 @@
 \setcounter{secnumdepth}{5}
 \ifxetex
   \usepackage{polyglossia}
-  \setmainlanguage{german}
+  \setmainlanguage{}
 \else
   \usepackage[german]{babel}
 \fi
 
 \author{}
 \date{}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -159,9 +175,9 @@
 \setlength{\oddsidemargin}{-0.5cm}
 \setlength{\evensidemargin}{-0.5cm}
 \setlength{\textwidth}{17cm}
-\setlength{\topmargin}{-2.0cm}
-\setlength{\headheight}{53pt}
-\setlength{\headsep}{0.5cm}
+\setlength{\topmargin}{-2.5cm}
+\setlength{\headheight}{2cm}
+\setlength{\headsep}{1cm}
 \setlength{\textheight}{25cm}
 \setlength{\footskip}{1cm}
 
@@ -196,10 +212,11 @@
 \raggedbottom
 %
 
-
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \usepackage{makeidx}
 \makeindex
-
+%
 %
 %\renewcommand{Befehl der Gliederungsebene z.B. \chapter}{\@startsection{Name z.B. chapter}{Ebene z.B. 0}{Einrückung z.B. 0pt}{Abstand zum vorigen Text z.B. 3.5ex plus 1ex minus 0pt\relax}{Abstand zum nachfolgenden Text z.B. 2.5ex plus 0.5ex minus 0pt\relax}{Schrift z.B. \normalfont\Large\bfseries}}
 %
@@ -215,17 +232,18 @@
 
 {
 \hypersetup{linkcolor=black}
-\setcounter{tocdepth}{3}
+\setcounter{tocdepth}{1}
 \tableofcontents
 \newpage
 }
 
-\section{Basic architecture}\label{basic-architecture}
+\hypertarget{basic-architecture}{%
+\section{Basic architecture}\label{basic-architecture}}
 
 Zupfnoter applies the following models
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   \textbf{abctext} this is entered by user and maintained in textpane.rb
 \item
@@ -246,10 +264,11 @@ Zupfnoter applies the following models
   \textbf{harpnoteplayer} created from musicmodel
 \end{itemize}
 
-\subsection{Handling google analytics}\label{handling-google-analytics}
+\hypertarget{handling-google-analytics}{%
+\subsection{Handling google analytics}\label{handling-google-analytics}}
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   Analytics ia applied for webserver-installation only, not for
   localhost nor desktop
@@ -261,7 +280,8 @@ Zupfnoter applies the following models
   does not include the script
 \end{itemize}
 
-\subsection{handling drag and drop}\label{handling-drag-and-drop}
+\hypertarget{handling-drag-and-drop}{%
+\subsection{handling drag and drop}\label{handling-drag-and-drop}}
 
 Drag and drop is implemented by opal\_svg. There is a global
 drag\_end-Handler installed in controller.rb ()
@@ -277,20 +297,24 @@ we get the nodes by SVG.get which itself finds them by id an
 subsequently adopts them. This allows to produce SVG using string
 operations.
 
-\subsection{Render flow}\label{render-flow}
+\hypertarget{render-flow}{%
+\subsection{Render flow}\label{render-flow}}
 
-\begin{figure}[htbp]
+\begin{figure}
 \centering
 \includegraphics{../ZGEN_uml/zn_render-and-select.png}
 \caption{Render Flor}
 \end{figure}
 
-\section{build environments}\label{build-environments}
+\hypertarget{build-environments}{%
+\section{build environments}\label{build-environments}}
 
-\subsection{rvm ruby homebrew etc}\label{rvm-ruby-homebrew-etc}
+\hypertarget{rvm-ruby-homebrew-etc}{%
+\subsection{rvm ruby homebrew etc}\label{rvm-ruby-homebrew-etc}}
 
+\hypertarget{having-some-trouble-with-sip}{%
 \subsubsection{having some trouble with
-SIP}\label{having-some-trouble-with-sip}
+SIP}\label{having-some-trouble-with-sip}}
 
 \begin{verbatim}
 https://digitizor.com/fix-homebrew-permissions-osx-el-capitan/
@@ -300,7 +324,8 @@ https://www.computersnyou.com/5307/setup-homebrew-and-rvm-on-mac-osx-10-11-ei-ca
 http://stackoverflow.com/questions/22459944/ruby-2-1-1-with-rvm-getting-libyaml-errors
 \end{verbatim}
 
-\subsubsection{my setup on osx}\label{my-setup-on-osx}
+\hypertarget{my-setup-on-osx}{%
+\subsubsection{my setup on osx}\label{my-setup-on-osx}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -314,9 +339,10 @@ http://stackoverflow.com/questions/22459944/ruby-2-1-1-with-rvm-getting-libyaml-
 \item
   update \textasciitilde{}/.bashrc
 
+  \hypertarget{add-rvm-to-path-for-scripting.-make-sure-this-is-the-last-path-variable-change.}{%
   \section{Add RVM to PATH for scripting. Make sure this is the last
   PATH variable
-  change.}\label{add-rvm-to-path-for-scripting.-make-sure-this-is-the-last-path-variable-change.}
+  change.}\label{add-rvm-to-path-for-scripting.-make-sure-this-is-the-last-path-variable-change.}}
 
   export PATH=\({HOME}/brew/bin:\)\{PATH\} export
   PATH=``\(PATH:\)HOME/.rvm/bin''
@@ -326,28 +352,31 @@ http://stackoverflow.com/questions/22459944/ruby-2-1-1-with-rvm-getting-libyaml-
   https://rvm.io/rvm/install
 \end{enumerate}
 
-\subsection{project documentation}\label{project-documentation}
+\hypertarget{project-documentation}{%
+\subsection{project documentation}\label{project-documentation}}
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   goto \texttt{30\_source/ZSUPP\_Tools}
 \item
   \texttt{rake}
 \end{itemize}
 
-\subsection{maintain the application}\label{maintain-the-application}
+\hypertarget{maintain-the-application}{%
+\subsection{maintain the application}\label{maintain-the-application}}
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   goto \texttt{30\_source/SRC\_Zupfnoter/src}
 \item
   \texttt{rake}
 \end{itemize}
 
+\hypertarget{updating-syntax-highlighting}{%
 \subsection{updating syntax
-highlighting}\label{updating-syntax-highlighting}
+highlighting}\label{updating-syntax-highlighting}}
 
 \begin{itemize}
 \item
@@ -372,7 +401,8 @@ highlighting}\label{updating-syntax-highlighting}
   to \texttt{30\_sources/SRC\_Zupfnoter/vendor/ace}
 \end{itemize}
 
-\section{preparing a release}\label{preparing-a-release}
+\hypertarget{preparing-a-release}{%
+\section{preparing a release}\label{preparing-a-release}}
 
 Zupfnoter uses gitflow
 http://nvie.com/posts/a-successful-git-branching-model/
@@ -381,7 +411,7 @@ Before preparing a release, everything that should go to this release
 shall be committed to the develop branch.
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   Gitflow: Start new release Pattern: V\_1.4.0\_RC2
 \item
@@ -396,7 +426,8 @@ shall be committed to the develop branch.
   bump version in src/version.rb, add ``.dev''
 \end{itemize}
 
-\section{building the desktop app}\label{building-the-desktop-app}
+\hypertarget{building-the-desktop-app}{%
+\section{building the desktop app}\label{building-the-desktop-app}}
 
 The desktop app is built based on node-webkit. The major steps to build
 it are described in
@@ -407,7 +438,7 @@ Approach follows nodebob but uses rake to do this.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   create the webapp
 \item
@@ -416,8 +447,9 @@ Approach follows nodebob but uses rake to do this.
   create the binaries for windows and osx
 \end{enumerate}
 
+\hypertarget{notes-how-to-include-javascript-files}{%
 \section{notes how to include Javascript
-files}\label{notes-how-to-include-javascript-files}
+files}\label{notes-how-to-include-javascript-files}}
 
 Javascript files can be included on following ways:
 
@@ -465,12 +497,13 @@ If you want to run it really standalone, then we need to use browserify.
 
 This thing resolves the requrires.
 
-\section{building soundfonts}\label{building-soundfonts}
+\hypertarget{building-soundfonts}{%
+\section{building soundfonts}\label{building-soundfonts}}
 
 Tools:
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   polyphone http://polyphone-soundfonts.com/en/
 \item
@@ -481,7 +514,7 @@ The following steps creates the soundfonts
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   download from https://stash.reaper.fm/v/23360/Scc1t2.sf2
 \item
@@ -512,7 +545,7 @@ To create a soundfont from our own recording:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   create wav files
 \item

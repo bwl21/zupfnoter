@@ -162,19 +162,19 @@ class Controller
 
       c.as_action do |argument|
         case argument[:range]
-          when "auto"
-            play_abc(:auto)
+        when "auto"
+          play_abc(:auto)
 
-          when "sel"
-            play_abc(:selection)
+        when "sel"
+          play_abc(:selection)
 
-          when "ff"
-            play_abc(:selection_ff)
+        when "ff"
+          play_abc(:selection_ff)
 
-          when "all"
-            play_abc
-          else
-            $log.error("wrong range to play")
+        when "all"
+          play_abc
+        else
+          $log.error("wrong range to play")
         end
       end
     end
@@ -255,8 +255,10 @@ class Controller
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
+        config = @editor.get_config_from_text(get_current_template)
         @editor.set_text(@dropped_abc)
-        render_previews
+        @editor.set_config_model(config, "pasted XML", false )
+        set_status(music_model: "new")
       end
 
       command.as_inverse do |args|
@@ -326,8 +328,19 @@ class Controller
       command.set_help { "configure stdconfig in localstore" }
 
       command.as_action do |args|
-        template = @editor.get_config_part_value('extract').to_json
+        result = get_current_template
+        template = @editor.get_config_from_text(result).dig("extract").to_json
         `localStorage.setItem('standardextract', #{template})`
+        nil
+      end
+    end
+
+    @commands.add_command(:resettemplate) do |command|
+      command.undoable = false
+      command.set_help { "reset template to zufpnoter default" }
+      command.as_action do |args|
+        get_builtin_template
+        get_current_template
         nil
       end
     end
@@ -337,18 +350,7 @@ class Controller
       command.set_help { "set the current editor content as template (has no F:{{}} - line" }
       command.as_action do |args|
         template = @editor.get_text()
-
-        if template.empty?
-          `localStorage.removeItem(#{ZN_TEMPLATENAME})`
-        else
-          layout_harpnotes # todo: this uses a side-effect to get the @music_model populated
-          unless @music_model.meta_data[:filename].include?('{{')
-            raise "current file is not a template. It does not have a placeholder in F: line e.g. F:{{song_id}}"
-          end
-          handle_command('setstdextract')
-          `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
-        end
-        nil
+        set_template(template)
       end
     end
 
@@ -367,6 +369,26 @@ class Controller
       end
     end
 
+    @commands.add_command(:maketemplate) do |command|
+      command.undoable = true
+      command.set_help { "convert the current editor content to a template" }
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text()
+        template      = args[:oldval]
+                            .gsub(/^X:.*$/, "X:{{song_id}}")
+                            .gsub(/^F:.*$/, "F:{{song_id}}_{{filename}}")
+                            .gsub(/^T:.*$/, "T:{{song_title}}")
+        @editor.set_text(template)
+        @editor.delete_config_part('template')
+        JS.debugger
+        handle_command("editconf template")
+        nil
+      end
+
+      command.as_inverse do |args|
+        @editor.set_text(args[:oldval])
+      end
+    end
 
     @commands.add_command(:setsetting) do |command|
       command.undoable = false
@@ -466,8 +488,8 @@ class Controller
 
             'restpos_1.3'      => lambda { {key: "restposition", value: {default: :next, repeatstart: :next, repeatend: :previous}} },
             # see https://github.com/bwl21/zupfnoter/issues/239
-            'standardnotes'    => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`) || {} } },
-            'stdextract'       => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`) || {}} }
+            'standardnotes' => lambda { {key: "extract.#{@systemstatus[:view]}", value: JSON.parse(`localStorage.getItem('standardnotes')`) || {}} },
+            'stdextract'    => lambda { {key: "extract", value: JSON.parse(`localStorage.getItem('standardextract')`) || {}} }
         }
 
         # create the add_conf parameters for presets aka quicksettings
@@ -488,10 +510,11 @@ class Controller
         end
 
         $conf['presets.notes'].each do |key, preset_value|
+          puts key
           entry  = $conf["presets.notes.#{key}"]
           to_key = entry[:key] || key
           value  = entry[:value]
-          unless key == :T01_T99
+          unless [:T01_T99, :T01_number_extract_value].include? key # do not override T01_number_extract by the alternative preset T01_number_extract_value
             all_value[to_key]             = entry[:value]
             values["preset.notes.#{key}"] = lambda { {key: "extract.#{@systemstatus[:view]}.notes.#{to_key}", value: value, method: :patch} }
           end
@@ -673,7 +696,8 @@ class Controller
             printer:               {keys: expand_extract_keys([:printer, 'printer.show_border', 'layout.limit_a3']), quicksetting_commands: _get_quicksetting_commands('printer')},
             repeatsigns:           {keys: expand_extract_keys(['repeatsigns.voices',
                                                                'repeatsigns.left.pos', 'repeatsigns.left.text', 'repeatsigns.left.style',
-                                                               'repeatsigns.right.pos', 'repeatsigns.right.text', 'repeatsigns.right.style'
+                                                               'repeatsigns.right.pos', 'repeatsigns.right.text', 'repeatsigns.right.style',
+                                                               'layout.jumpline_anchor'
                                                               ])},
 
 
@@ -687,49 +711,82 @@ class Controller
             extract0:              {keys: ['extract.0'], scope: :global},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
             errors:                {keys: @validation_errors, scope: :global},
-            all_parameters:        {keys: ['.'], scope: :global}
+            all_parameters:        {keys: ['.'], scope: :global, quicksetting_commands: ['stdextract']}
         }
-
 
         # regular expression formsets match by a regular expression
         # this supports forms which start with a variable key.
         # it is useful for extracts, notes, morincs etc.
-        # todo: implement a more flexible replacement thatn simply prefixing
+        # note that we need to match the entire key such that
+        # search-keys are not covered by accident
+        # todo: implement a more flexible replacement that simplifies prefixing
         regexp_form_sets = {
-            /extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)/   => {keys: ["show", "pos", "style", "align"]},
-            /extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)/ => {keys: ["pos", "align"]},
-            /extract\.(\d+)\.notebound\.minc\.(\d+)/                              => {keys: ["minc_f"]},
-            /extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)/                 => {keys: ["cp1", "cp2"]},
-            /extract\.(\d+)\.legend/                                              => {keys: ["pos", "spos", "style"]},
-            /extract\.(\d+)\.lyrics\.(\d)/                                        => {keys: ["verses", "pos", "style"]},
-            /extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)/                 => {keys: ['text', 'pos', 'style']},
-            /extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)/           => {keys: ["nshift"]
-            }
+            /^extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)$/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
+            /^extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)$/   => {keys: ["show", "pos", "style", "align"]},
+            /^extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)$/ => {keys: ["pos", "align"]},
+            /^extract\.(\d+)\.notebound\.minc\.(\d+)$/                              => {keys: ["minc_f"]},
+            /^extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)$/                 => {keys: ["cp1", "cp2"]},
+            /^extract\.(\d+)\.legend$/                                              => {keys: ["pos", "align", "spos", "style"]},
+            /^extract\.(\d+)\.lyrics\.(\d)$/                                        => {keys: ["verses", "pos", "style"]},
+            /^extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)$/                 => {keys: ['text', 'pos', 'style']},
+            /^extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)$/           => {keys: ["nshift"]},
+            /^extract\.(\d+)\.notes\.(\w+)$/                                        => {keys: ["pos", "text", "style", "align"]}
         }
 
-        # see if we have a static form set
+        # see if we have a static form set  --------------------------------------------------
         the_form = form_sets[args[:set]]
+        editor_title=args[:set];
 
-        # see if we have a regular expression formset
+        # see if we have a regular expression formset ----------------------------------------
         unless the_form
           regexp_form_sets.each do |pattern, entry|
             if (match = args[:set].match(pattern))
               the_form        = entry
+              editor_title    = args[:set]
               the_form[:keys] = the_form[:keys].map { |inner_key| "#{args[:set]}.#{inner_key}" }
             end
           end
         end
 
-        editor_title = ConfstackEditor.get_config_form_menu_entries.select { |i| i[:id] == args[:set] }.first
+        # see if we have a search form set ---------------------------------------------------
+        unless the_form
+          econf = Confstack.new
+          econf.push(get_config_from_editor)
+
+          keys = [$conf.keys, econf.keys].flatten.reject { |i| i.match(/^(templates|defaults|presets|neatjson|wrap|layout)/) }
+          keys = keys.select do |k|
+            pattern = "Auszug.*#{args[:set]}.*".downcase
+            tk      = k.split(".").map { |k| I18n.t(k) }.join(".").downcase
+            k.match("^extract.*#{args[:set]}.*") || tk.match(pattern) || I18n.t_help(k).downcase.match(".*#{args[:set]}.*")
+          end
+
+          keys = keys.map { |k| k.gsub("extract.0", "extract.#{@systemstatus[:view]}") }
+
+          editor_title = {text: %Q{#{I18n.t("wildcard")}: #{args[:set]}}}
+          unless keys.empty?
+            the_form = {keys: keys}
+          end
+        end
+
+        # use the given key as form -----------------------------------------------------------
+
+        unless the_form
+          the_form              = {keys: [args[:set]]}
+          editor_title          = %Q{#{args[:set]}}
+          quicksetting_commands = []
+          editable_keys         = [args[:set]] # use the parameter as key if there is no set.
+        end
+
+        # get the form title from the config_form_memu
+        editor_title = ConfstackEditor.get_config_form_menu_entries.select { |i| i[:id] == args[:set] }.first || editor_title
 
         if editor_title
           editor_title = I18n.t(editor_title[:text])
         else
-          editor_title = I18n.t(args[:set])
+          raise "#{__FILE__}:#{__LINE__} should not happen"
         end
 
-        # now handle the form
+        # now handle the form -------------------------------------------------
         if the_form
           scope                 = the_form[:scope] || :extract
           editor_title          = %Q{#{editor_title} [#{I18n.t("Extract")} #{@systemstatus[:view]}]} if scope == :extract
@@ -737,9 +794,7 @@ class Controller
           newentry_handler      = the_form[:newentry_handler]
           quicksetting_commands = the_form[:quicksetting_commands] || []
         else # use the argument as key if there is no set.
-          editor_title          = %Q{#{args[:set]}}
-          quicksetting_commands = []
-          editable_keys         = [args[:set]] # use the parameter as key if there is no set.
+          raise "#{__FILE__}:#{__LINE__} should not happen"
         end
 
 
@@ -793,7 +848,7 @@ class Controller
         #config_form_editor = ConfstackEditor.new(editor_title, @editor, get_configvalues, refresh_editor)
         @config_form_editor = ConfstackEditor.new(editorparams)
         @config_form_editor.generate_form
-
+        call_consumers(:show_config_tab)
         nil
       end
 
@@ -916,96 +971,42 @@ class Controller
 
   end
 
+  def set_template(template)
+    if template.empty?
+      `localStorage.removeItem(#{ZN_TEMPLATENAME})`
+    else
+      unless template.include?("\nF:{{")
+        raise "current file is not a template. It does not have a placeholder in F: line e.g. F:{{song_id}}"
+      end
+      handle_command('setstdextract')
+      `localStorage.setItem(#{ZN_TEMPLATENAME}, #{template})`
+    end
+    get_current_template # this sets the current template to systemstatus
+    nil
+  end
+
+
+  def get_builtin_template
+    result = I18n.t("no template found")
+    url    = "public/demos/9999_Zupfnoter_standard-template.abc"
+    HTTP.get(url, {async: false}) do |response|
+      result = response.body
+      `localStorage.setItem(#{ZN_TEMPLATENAME}, #{result})`
+    end
+    result
+  end
 
   def get_current_template
     result = Native(`localStorage.getItem(#{ZN_TEMPLATENAME})`)
     unless `result`
-      result = %Q{X:{{song_id}}
-F:{{song_id}}_{{filename}}
-T:{{song_title}}
-C:
-S:
-M:4/4
-L:1/4
-Q:1/4=120
-K:C
-%
-%
-%%score 1
-%
-V:1 clef=treble name="Sopran" snm="S"
-C
-
-%%%%zupfnoter.config
-
-{
-  "produce"  : [1, 2],
-  "extract"  : {
-    "0" : {
-      "voices"      : [1, 2, 3, 4],
-      "flowlines"   : [1, 3],
-      "repeatsigns" : {"voices": [1, 2, 3, 4]},
-      "layoutlines" : [1, 2, 3, 4],
-      "barnumbers"  : {
-        "voices"  : [1, 3],
-        "pos"     : [6, -4],
-        "autopos" : true,
-        "style"   : "small_bold",
-        "prefix"  : ""
-      },
-      "legend"      : {"pos": [310, 8], "spos": [337, 17]},
-      "lyrics"      : {
-        "1" : {"verses": [1, 2], "pos": [8, 102]},
-        "2" : {"verses": [3, 4], "pos": [347, 118]}
-      },
-      "notes"       : {
-        "T01_number"              : {
-          "pos"   : [393, 17],
-          "text"  : "XXX-{{song_id}}",
-          "style" : "bold"
-        },
-        "T01_number_extract"      : {"pos": [411, 17], "text": "-S", "style": "bold"},
-        "T03_copyright_harpnotes" : {
-          "pos"   : [340, 272],
-          "text"  : "© 2017 Notenbild: ",
-          "style" : "small"
-        },
-        "T04_to_order"            : {
-          "pos"   : [340, 242],
-          "text"  : "zu beziehen bei",
-          "style" : "small"
-        },
-        "T05_printed_extracts"    : {"pos": [393, 22], "text": "-A -B", "style": "smaller"},
-        "T99_do_not_copy"         : {
-          "pos"   : [380, 284],
-          "text"  : "Bitte nicht kopieren",
-          "style" : "small_bold"
-        }
-      },
-      "countnotes"  : {
-        "voices"  : [1, 3],
-        "pos"     : [3, -2],
-        "autopos" : true,
-        "style"   : "smaller"
-      },
-      "stringnames" : {"vpos": [4]}
-    },
-    "1" : {"notes": {"T01_number_extract": {"text": "-A"}}},
-    "2" : {"notes": {"T01_number_extract": {"text": "-B"}}},
-    "3" : {"notes": {"T01_number_extract": {"text": "-M"}}}
-  },
-  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
-  "$version" : "{{version}}",
-  "template" : {"title": "Zupfnoter-default"}
- }
-}
+      result = get_builtin_template
     end
-
+    templatename = @editor.get_config_from_text(result).dig('template','filebase')
+    set_status(templatename: templatename)
     result
   end
 
   def create_from_current_template(parameters)
-
     result = get_current_template
 
     parameters.each do |name, value|
@@ -1149,20 +1150,20 @@ C
 
         unless @dropboxclient.is_authenticated?
           case args[:scope]
-            when "full"
-              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_FULL)
-              @dropboxclient.app_name = "DrBx"
-              @dropboxclient.app_id   = "full"
-              @dropboxpath            = path
+          when "full"
+            @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_FULL)
+            @dropboxclient.app_name = "DrBx"
+            @dropboxclient.app_id   = "full"
+            @dropboxpath            = path
 
-            when "app"
-              @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_APP)
-              @dropboxclient.app_name = "App"
-              @dropboxclient.app_id   = "app"
-              @dropboxpath            = path
+          when "app"
+            @dropboxclient          = Opal::DropboxJs::Client.new(DBX_APIKEY_APP)
+            @dropboxclient.app_name = "App"
+            @dropboxclient.app_id   = "app"
+            @dropboxpath            = path
 
-            else
-              $log.error("select app | full")
+          else
+            $log.error("select app | full")
           end
         else
           @dropboxpath = path
@@ -1170,6 +1171,8 @@ C
             raise I18n.t("you need to logout if you want to change the application scope")
           end
         end
+
+        push_to_dropboxpathlist
 
 
         # notes
@@ -1268,6 +1271,8 @@ C
         args[:oldval] = @dropboxpath
         @dropboxpath  = rootpath
 
+        push_to_dropboxpathlist
+
         set_status_dropbox_status
         $log.message("dropbox path changed to #{@dropboxpath}")
       end
@@ -1292,7 +1297,10 @@ C
 
     @commands.add_command(:dchoose) do |command|
       command.undoable = false
-
+      command.add_parameter(:target, :string) do |parameter|
+        parameter.set_default { "editor" }
+        parameter.set_help { "target (editor|template" }
+      end
       command.set_help { "choose File from Dropbox" }
 
       command.as_action do |args|
@@ -1307,7 +1315,11 @@ C
           newpath = "#{path}"
           handle_command("dlogin full #{path}")
           $log.message("found #{path}#{filename}")
-          handle_command(%Q{dopenfn "#{filename}"})
+          if args[:target] == "template"
+            handle_command(%Q{dopentemplate "#{filename}"})
+          else
+            handle_command(%Q{dopenfn "#{filename}"})
+          end
           $log.message("opened #{path}#{filename}")
         end.fail do |message|
           $log.error message
@@ -1450,6 +1462,45 @@ C
 
         end.fail do |err|
           _report_error_from_promise (%Q{could not load file with ID #{fileid}: #{err}})
+        end
+      end
+
+      command.as_inverse do |args|
+        # todo maintain editor status
+        @editor.set_text(args[:oldval])
+      end
+    end
+
+
+    @commands.add_command(:dopentemplate) do |command|
+      command.add_parameter(:fileid, :string, "file id")
+      command.add_parameter(:path, :string) do |p|
+        p.set_default { @dropboxpath }
+        p.set_help { "path to save in #{@dropboxclient.app_name}" }
+      end
+
+      command.set_help { "read template with #{command.parameter_help(0)}, from dropbox #{command.parameter_help(1)}" }
+
+      command.as_action do |args|
+        args[:oldval] = @editor.get_text
+        fileid        = args[:fileid]
+        rootpath      = args[:path] # command_tokens[2] || @dropboxpath || "/"
+        filename      = "#{rootpath}#{fileid}"
+        $log.message("get template from Dropbox path #{rootpath}#{fileid}_ ...:")
+
+        @dropboxclient.authenticate().then do |error, data|
+          call_consumers(:lock)
+          @dropboxclient.read_file(filename)
+        end.then do |abc_text|
+          $log.debug "loaded template #{fileid} (#{__FILE__} #{__LINE__})"
+
+          set_template(abc_text)
+          get_current_template
+          call_consumers(:unlock)
+        end.fail do |err|
+          call_consumers(:unlock)
+          _report_error_from_promise %Q{#{I18n.t('could not open file')}: #{err} : "#{filename}"}
+          nil
         end
       end
 

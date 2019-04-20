@@ -175,7 +175,7 @@ module Harpnotes
         hn_voices = @abc_model[:voices].each_with_index.map do |voice_model, voice_index|
           voice_id = "v_#{voice_index + 1}" # to make it more intuitive fore the user
           result   = _transform_voice(voice_model, voice_id)
-          result   += _make_variant_ending_jumps(voice_id) if result
+          result   += _make_variant_ending_jumps(voice_id) unless result.empty?
           result
         end.compact
 
@@ -240,7 +240,7 @@ module Harpnotes
             # charpos_to_line_column(@score_statements.last[:iend] -1 )
             # )
           end
-          result = nil
+          #result = nil
         end
         result
       end
@@ -653,6 +653,13 @@ module Harpnotes
       # * meter changes within ia measure - ensure that countnotes are computed correctly
       # * meter changes before a in measuer repeat - so we have a bar which is not a relevant one
       def _transform_meter(voice_element)
+        unless @next_note_marks[:measure]
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos   = charpos_to_line_column(voice_element[:iend])
+          JS.debugger
+          $log.warning("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Meter change not at beginning of measure"), start_pos, end_pos)
+        end
+
         @is_first_measure = true
 
         @wmeasure = voice_element[:wmeasure]
@@ -752,20 +759,20 @@ module Harpnotes
               pos_x    = match[4] if match[4]
               pos_y    = match[5] if match[5]
               case semantic
-                when "#"
-                  annotation = @annotations[text]
+              when "#"
+                annotation = @annotations[text]
 
-                  $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
-                when "!"
-                  annotation = {text: text, style: :regular}
-                when "<"
-                  entity.shift = {dir: -1, size: text, style: :regular}
-                  entity.notes.each { |note| note.shift = {dir: -1, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
-                when ">"
-                  entity.shift = {dir: 1, size: text, style: :regular}
-                  entity.notes.each { |note| note.shift = {dir: 1, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
-                else
-                  annotation = nil # it is not an annotation
+                $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
+              when "!"
+                annotation = {text: text, style: :regular}
+              when "<"
+                entity.shift = {dir: -1, size: text, style: :regular}
+                entity.notes.each { |note| note.shift = {dir: -1, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
+              when ">"
+                entity.shift = {dir: 1, size: text, style: :regular}
+                entity.notes.each { |note| note.shift = {dir: 1, size: text, style: :regular} } if entity.is_a? Harpnotes::Music::SynchPoint
+              else
+                annotation = nil # it is not an annotation
               end
 
               if annotation

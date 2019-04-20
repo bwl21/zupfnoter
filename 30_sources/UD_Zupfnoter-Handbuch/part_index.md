@@ -1,4 +1,3 @@
-\index{Rauchmelder|see{Brandmelder}}
-
+\cleardoublepage
 \addcontentsline{toc}{chapter}{\indexname}
 \printindex

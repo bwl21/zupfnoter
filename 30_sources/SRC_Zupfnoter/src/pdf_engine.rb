@@ -94,6 +94,7 @@ module Harpnotes
       # + style ... we shift it up by the fontsize converted from point to mm by mm_per_point
       text = root.text.gsub(/(\\?)(~)/) { |m| m[0] == '\\' ? m[1] : ' ' }
       text = text.split("\n")
+      text = [""] if text.empty?
       @pdf.text(root.center.first, root.center.last + style[:font_size] * mm_per_point, text, {align:align})
     end
 
@@ -247,9 +248,10 @@ module Harpnotes
     def draw_flowline(root)
       color          = COLORS[root.color]
       @pdf.stroke    = color
-      #@pdf.draw = (0...3).map { root.dashed? ? 128 : 0 }
-      @pdf.line_dash = 2 if root.dashed?
-      @pdf.line_dash = 1 if root.dotted?
+
+      # these numbers ensure the same layout as before 1.10
+      @pdf.line_dash = 3/2.84 if root.dashed?
+      @pdf.line_dash = 1.5/2.84 if root.dotted?
       @pdf.line(root.from.center, root.to.center)
       @pdf.use_solid_lines #if root.dashed? # reset dashing
     end
@@ -297,7 +299,7 @@ module Harpnotes
       lines         = []
       scale         = [1, 1]
       start         = []
-      style         = root.filled? ? :FD : ""
+      style         = root.filled? ? :FD : "S"
       color         = COLORS[root.color]
       @pdf.fill     = root.filled? ? color : COLORS['white']
       @pdf.stroke   = color

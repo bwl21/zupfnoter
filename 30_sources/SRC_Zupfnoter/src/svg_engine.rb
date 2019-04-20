@@ -89,10 +89,16 @@ module Harpnotes
       @preview_container.html(svg_and_positions[:svg])
       @interactive_elements = svg_and_positions[:interactive_elements]
 
-      %x{
-      #{@preview_container}.scrollLeft(#{@preview_scroll.first});
-      #{@preview_container}.scrollTop(#{@preview_scroll.last});
-      }
+      # todo: tehre are cases where @preview_scroll is empty
+      if @preview_scroll
+        %x{
+        #{@preview_container}.scrollLeft(#{@preview_scroll.first});
+        #{@preview_container}.scrollTop(#{@preview_scroll.last});
+        }
+      else
+        $log.warn("BUG: preview Scroll empty")
+      end
+
       nil
     end
 
@@ -269,12 +275,12 @@ module Harpnotes
       if draginfo
         conf_value = drawing_element[:conf_value]
         case draginfo[:handler]
-          when :annotation
-            @paper.set_draggable_pos(svg_id, conf_key, conf_value) # annotations do not have a ddraghandler
-          when :jumpline
-            @paper.set_draggable_jumpline(svg_id, conf_key, conf_value, draginfo)
-          when :tuplet
-            @paper.set_draggable_tuplet(svg_id, conf_key, conf_value, draginfo)
+        when :annotation
+          @paper.set_draggable_pos(svg_id, conf_key, conf_value) # annotations do not have a ddraghandler
+        when :jumpline
+          @paper.set_draggable_jumpline(svg_id, conf_key, conf_value, draginfo)
+        when :tuplet
+          @paper.set_draggable_tuplet(svg_id, conf_key, conf_value, draginfo)
         end
       end
 
@@ -425,8 +431,9 @@ module Harpnotes
     def draw_flowline(root)
       color                    = COLORS[root.color]
       attr                     = {stroke: color}
-      attr["stroke-dasharray"] = "2 2" if root.style == :dashed
-      attr["stroke-dasharray"] = "1 1" if root.style == :dotted
+      # these numbers ensure the same layout as before 1.10 for dashed
+      attr["stroke-dasharray"] = "#{3 / 2.84} #{3 / 2.84}" if root.style == :dashed
+      attr["stroke-dasharray"] = "#{1.5 / 2.84} #{1.5 / 2.84}" if root.style == :dotted
       e                        = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
       #push_element(root, e)
       e
@@ -510,18 +517,18 @@ module Harpnotes
       if draginfo
         draginfo[:target_id] = e
         case draginfo[:handler]
-          when :jumpline
-            push_element(root, e)
-          when :tuplet
-            attr = {stroke: :grey, class: "zncontrol", "stroke-width" => "1"}.merge(@attr_for_on_contextmenu)
+        when :jumpline
+          push_element(root, e)
+        when :tuplet
+          attr = {stroke: :grey, class: "zncontrol", "stroke-width" => "1"}.merge(@attr_for_on_contextmenu)
 
-            e = @paper.line(draginfo[:p1][0], draginfo[:p1][1], draginfo[:cp1][0], draginfo[:cp1][1], attr.merge({'data-cp' => 'cp1'}))
-            push_element(root, e)
+          e = @paper.line(draginfo[:p1][0], draginfo[:p1][1], draginfo[:cp1][0], draginfo[:cp1][1], attr.merge({'data-cp' => 'cp1'}))
+          push_element(root, e)
 
-            e = @paper.line(draginfo[:p2][0], draginfo[:p2][1], draginfo[:cp2][0], draginfo[:cp2][1], attr.merge({'data-cp' => 'cp2'}))
-            push_element(root, e)
+          e = @paper.line(draginfo[:p2][0], draginfo[:p2][1], draginfo[:cp2][0], draginfo[:cp2][1], attr.merge({'data-cp' => 'cp2'}))
+          push_element(root, e)
 
-            nil
+          nil
         end
       end
     end

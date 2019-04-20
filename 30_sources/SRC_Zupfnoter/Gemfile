@@ -19,10 +19,11 @@ gem 'bundler'
 gem 'redcarpet'
 gem 'json-schema-generator'
 gem 'neatjson'
+gem 'rb-readline'	
 
 
 # had trouble to install nokogiri on windows
 # so I build the manual on mac os only
 install_if -> { RUBY_PLATFORM =~ /darwin/ } do
-  gem 'wortsammler', "~> 1.0.3"
-end
+  gem 'wortsammler', "~> 2.0.0.dev4"
+  end

@@ -352,8 +352,8 @@ module Harpnotes
     # @param [String] text
     def replace_range(startpos, endpos, text)
       %x{
-      therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1])
-      #{editor}.getSession().replace(therange, #{text})
+      therange = new #{@range}(#{startpos}[0], #{startpos}[1], #{endpos}[0], #{endpos}[1]);
+      #{editor}.getSession().replace(therange, #{text});
       }
     end
 
@@ -521,7 +521,6 @@ module Harpnotes
       oldtoken = get_selection_info.token
       raise "cannot patch token if there is a name mismatch '#{oldtoken.type}' - '#{token}'" unless oldtoken.type.to_s == token.to_s
       #raise "cannot patch token if in wrong position" if oldtoken.endpos != endpos
-
       replace_range(oldtoken.startpos, oldtoken.endpos, newvalue)
     end
 
@@ -633,7 +632,7 @@ module Harpnotes
     def restore_from_localstorage
       abc = Native(`localStorage.getItem('abc_data')`)
       unless abc.nil?
-        `localStorage.removeItem('abc_data')` # we convert localstorage so store abc, config and resoucres as three items
+        `localStorage.removeItem('abc_data')` # we convert localstorage so store abc, config and resources as three items
         set_text(abc) unless abc.nil?
       else
         abctext = Native(`localStorage.getItem('zn_abc')`)
@@ -667,11 +666,16 @@ module Harpnotes
       nil
     end
 
+
+    def get_config_from_text(fulltext)
+      JSON.parse(fulltext.split(@config_separator).select{|i| i.start_with? ".config"}.first.gsub(".config", ""))
+    end
+
     #####################################################################################
     #private
 
     # this method splits the parts out of the given text
-    def _split_parts(fulltext)
+    def   _split_parts(fulltext)
 
       _clean_models
       clean_localstorage

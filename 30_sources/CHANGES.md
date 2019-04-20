@@ -73,6 +73,107 @@ internal release
 * change default for barnumber ap_base #218
 * configuration of variation lines is not recognized by earlier Versions of Zupfnoter
 
+# V 1.11
+
+## fix
+
+* Bug Cannot read property '$first' of undefined #251
+* Addon dialog does not close #249
+* subflowlines are now dahed in 1.5 mm while synchlines are 3 mm #247
+* bottom up and beams now show the correct draing area #257
+* editconf extract.0.lyrics.1.pos fails #256
+* warn if change of meter is within a measure #217
+* improve synchronisation of player and ui #258
+
+## enhancement
+
+* provide a dropbox path menu in the statusbar #252
+* collapse / expand configuration tree in editor #254
+* compact configuration tree #254
+* report jspdf version #241
+* now support align for title and notes #237
+* now have {{current_year}} placeholder #223
+* now have search field in configration # 248
+* Bug Cannot read property '$first' of undefined #251
+* further improvement of barnumber/countnot position when libmit_a3 #226
+* improve handling of templates #253
+* imrove home button and dropbox-status #253
+
+# V.1.10.0
+
+## fix
+
+* rests in tuplets no longer throw "unsupported duration" #240
+* select in all voices now works if there are grace notes #243
+* replace unicode characters with ascii equivalents #238
+* import in a fresh zupfnoter without user defined templats see #239
+* update jspdf 1.4.++ #247
+
+## enhancement
+
+* BWC: Barnumbers / countnotes are now aligned relative to the center of the note #237
+* loglevel can be changed by click in statusbar #242
+* Performance: tune preview and harpreview can be rendered in background #241
+* moved some Menus from "Extras" to Statusbar #242
+* Improve "message of the day" handling #244
+
+## BWC
+
+* Edit Configuration / "Barnumbers / and countnotes" , choose "anchor_at_box"
+
+# V 1.9.2
+
+## fix
+
+* increase white border around dot #224
+* Support generation of a watermark #231
+* allow to refine generated repeat marks #232
+* BWC lyrics size and position is different in svg resp. pdf #235
+* improve deferred rendering on editor change #223
+* improve behavior when switching perspectives #230
+* mprove buttons in config forms for chrome / firefox
+* some performance optimizations #225
+
+## enhancement
+
+* allow to control which files are saved #229
+* Improve configuration of annotations #227
+* allow to refine generated repeat marks #232
+* Apply current template after dropping an xml file 
+* copy parameters from/to extract 0   #228
+
+## experimental
+
+* modify configuration when generating pdf with cli - eg. for watermark #231
+
+
+## BWC
+
+* BWC lyrics size and position is different in svg resp. pdf #235
+
+# v 1.9.1
+
+internal release
+
+# v 1.9.0
+
+## fix
+
+* supress bar in in measure repeats even after a meter change #216
+* improve behavior when switching perspectives #230
+
+## enhancement
+
+* make variation lines more flexible #215
+* change default for barnumber ap_base #218
+* show currently selected notes in status bar #220
+* supress jumplines by configuration #222
+* disable autoscroll trhough setsetting #221
+* now support placeholders in page annotations #223
+* improve configuration of tuplets #225
+* change default for barnumber ap_base #218
+* configuration of variation lines is not recognized by earlier Versions of Zupfnoter
+
 # v 1.8
 
 ## fix

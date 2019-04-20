@@ -1,0 +1,189 @@
+X:{{song_id}}
+F:{{song_id}}_{{filename}}
+T:{{song_title}}
+C:
+S:
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%
+%
+%%score 1 2 3 4
+%
+V:1 clef=treble name="Sopran" snm="S"
+c
+V:2 clef=treble name="Alto" snm="A"
+B
+V:3 clef=bass name="Tenor" snm="T"
+C
+V:4 clef=bass name="Bass" snm="B"
+B,
+
+%%%%zupfnoter.config
+
+{
+  "produce"  : [],
+  "extract"  : {
+    "0" : {
+      "title"        : "Bearbeitungsansicht",
+      "filenamepart" : "-X",
+      "voices"       : [1, 2, 3, 4],
+      "flowlines"    : [1, 3],
+      "repeatsigns"  : {
+        "voices" : [1, 2, 3, 4],
+        "left"   : {"style": "large"},
+        "right"  : {"style": "large"}
+      },
+      "layoutlines"  : [99],
+      "barnumbers"   : {
+        "voices"   : [1, 3],
+        "pos"      : [6, -4],
+        "autopos"  : true,
+        "apbase"   : [1, 0.30],
+        "style"    : "small_bold",
+        "apanchor" : "center",
+        "prefix"   : ""
+      },
+      "countnotes"   : {
+        "voices"   : [1, 2, 3, 4],
+        "pos"      : [3, -2],
+        "autopos"  : true,
+        "apbase"   : [1, 0],
+        "style"    : "smaller",
+        "apanchor" : "center"
+      },
+      "legend"       : {"pos": [410, 8], "spos": [361, 30], "align": "l"},
+      "lyrics"       : {
+        "1" : {"verses": [1, 2], "pos": [8, 102]},
+        "2" : {"verses": [3, 4], "pos": [347, 118]}
+      },
+      "notes"        : {
+        "T01_number"              : {
+          "pos"   : [410, 17],
+          "text"  : "XXX-{{number}}",
+          "style" : "bold",
+          "align" : "l"
+        },
+        "T01_number_extract"      : {
+          "pos"   : [411, 17],
+          "text"  : "{{extract_filename}}",
+          "style" : "bold"
+        },
+        "T02_copyright_music"     : {"pos": [325, 280], "text": "", "style": "small"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [325, 284],
+          "text"  : "© {{current_year}} Notenbild: ",
+          "style" : "small"
+        },
+        "T04_to_order"            : {
+          "pos"   : [381, 275],
+          "text"  : "Privatkopie\n",
+          "style" : "small"
+        },
+        "T05_printed_extracts"    : {
+          "pos"   : [410, 22],
+          "text"  : "{{printed_extracts}}",
+          "style" : "smaller",
+          "align" : "l"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "tuplets"      : {"text": "- {{tuplet}} -", "style": "small"},
+      "printer"      : {"show_border": false},
+      "stringnames"  : {"vpos": [4], "marks": {"vpos": [290]}}
+    },
+    "1" : {
+      "filenamepart" : "-A",
+      "notes"        : {
+        "T01_number_extract" : {"text": "{{extract_filename}}"}
+      },
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [55, 79]}
+      }
+    },
+    "2" : {
+      "filenamepart" : "-B",
+      "notes"        : {
+        "T01_number_extract" : {"text": "{{extract_filename}}"}
+      },
+      "layout"       : {
+        "limit_a3"     : true,
+        "instrument"   : "37-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [0, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [0, 1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [43, 79]}
+      }
+    },
+    "3" : {
+      "filenamepart" : "-M",
+      "notes"        : {
+        "T01_number_extract" : {"text": "{{extract_filename}}"}
+      },
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [55, 79]}
+      }
+    },
+    "4" : {
+      "filenamepart" : "A2",
+      "notes"        : {
+        "T01_number_extract" : {
+          "pos"   : [411, 17],
+          "text"  : "{{extract_filename}}",
+          "style" : "bold"
+        }
+      }
+    },
+    "5" : {
+      "filenamepart" : "B2",
+      "notes"        : {
+        "T01_number_extract" : {"text": "{{extract_filename}}"}
+      }
+    }
+  },
+  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version" : "{{version}}",
+  "template" : {
+    "title"    : "Zupfnoter Standardvorlage",
+    "filebase" : "9999_Zupfnoter_standard-template"
+  }
+}
