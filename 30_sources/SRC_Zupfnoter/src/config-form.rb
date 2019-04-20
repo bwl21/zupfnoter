@@ -349,7 +349,7 @@ class ConfstackEditor
       def self.to_w2uifield(key)
         {field:       key,
          type:        'list',
-         options:     {items: ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel',
+         options:     {items: ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel', 'Zipino',
                                'okon-f', 'okon-g', 'okon-c', 'okon-d']},
          required:    true,
          text:        I18n.t("#{key}.text"),
@@ -410,7 +410,7 @@ class ConfstackEditor
           FloatPair       => ['apbase', 'pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', "DRAWING_AREA_SIZE", 'cp1', 'cp2', 'a3_offset', 'a4_offset', 'jumpline_anchor'],
           IntegerList     => ['a4_pages', 'voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
           Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow', 'PITCH_OFFSET'],
-          OneLineString   => ['title', 'filenamepart', 'url', 'filebase', 'imagename'],
+          OneLineString   => ['title', 'filenamepart', 'url', 'filebase', 'imagename', 'prefix'],
           MultiLineString => ['text'],
           NoteAlign       => ['align'],
           NoteAnchor      => ['apanchor'],
@@ -471,6 +471,17 @@ class ConfstackEditor
     end
   end
 
+  # compute the parent of a key appended with '.'
+  # foo.bar.foobar -> foo.bar.
+  def parent_key(key)
+    key.rpartition(/\..+/).first
+  end
+
+  #investigate if child is a child of parent
+  def is_child_key?(parent, child)
+    child.start_with?(parent + '.')
+  end
+
   #
   #def initialize(title, editor, value_handler, refresh_handler)
   def initialize(editorparams)
@@ -491,11 +502,17 @@ class ConfstackEditor
       @effective_value_raw  = Confstack.new(false)
       @default_value        = Confstack.new(false)
       @default_value.strict = false
-
       @value.push(value_handler_result[:current])
       @effective_value_raw.push(value_handler_result[:effective])
       #@default_value.push($log.benchmark("getvalues #{__FILE__} #{__LINE__}") { value_handler_result[:default] })
     end
+
+    # here we treat on childers and oneliners
+    valuekeys = @value.keys
+
+    onechilders = valuekeys.select { |parent| valuekeys.count { |child| is_child_key?(parent, child) } == 1 } # need to append "."
+    @oneliners  = valuekeys.select { |i| onechilders.include?(parent_key(i)) }
+    @formkeys   = valuekeys - onechilders
 
     @form   = nil # Form object to be passed to w2ui
     @helper = ConfHelper.new # helper to convert input to model and vice vversa
@@ -699,25 +716,50 @@ class ConfstackEditor
         {
             id:      'stringnames',
             icon:    'fa fa-ellipsis-h',
-            text:    'Stringnames',
+            text:    'stringnames',
             tooltip: "Edit presentation of stringanmes"
         },
         {id: 'printer', icon: 'fa fa-print', text: 'Printer adapt', tooltip: "Edit printer correction paerameters"},
-        {},
         {id: 'notebound', icon: 'fa fa-adjust', text: 'notebound', tooltip: "edit notebound settings"},
-        {},
         {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
         {},
         # {id: 'template', icon: 'fa fa-file-code-o', text: 'template', tooltip:"edit Template properties"},
-        {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'}
+        {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'},
+        {id: 'template', icon: 'fa fa-pencil-square-o ',text: 'configtemplate', tooltip: 'edit template configuration'}
     ]
   end
 
   def generate_form
 
-    presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
-                  items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
-    }
+    undo_history = @editor.history_config[:undo]
+    if undo_history.count > 2
+      undo_button = {id:       'undo', type: 'button', icon: 'fa fa-undo',
+                     disabled: false,
+                     tooltip:  %Q{#{I18n.t("undo")} #{undo_history.first[:title]} },
+                     onClick:  lambda { |e| @controller.handle_command(%Q{undoconfig}); refresh_form }
+      }
+    else
+      undo_button = {id: 'un do', tooltip: "", type: 'button', icon: 'fa fa-undo', disabled: true}
+    end
+
+    redo_history = @editor.history_config[:redo]
+    unless redo_history.empty?
+      redo_button = {id:       'redo', type: 'button', icon: 'fa fa-repeat',
+                     disabled: false,
+                     tooltip:  %Q{#{I18n.t("redo")} #{redo_history.first[:title]} },
+                     onClick:  lambda { |e| @controller.handle_command(%Q{redoconfig}); refresh_form }
+      }
+    else
+      redo_button = {id: 'redo', tooltip: "", type: 'button', icon: 'fa fa-repeat', disabled: true}
+    end
+
+
+    unless false #@quicksetting_commands.empty?
+      presetmenu = {id:    'presets', text: I18n.t('Quick Setting'), type: :menu, icon: 'fa fa-star-o', disabled: @quicksetting_commands.empty?,
+                    items: @quicksetting_commands.map { |i| {id: i, text: i.split(".").last} }
+      }
+    end
+
 
     undo_history = @editor.history_config[:undo]
     if undo_history.count > 2
@@ -767,7 +809,14 @@ class ConfstackEditor
                          {id: 'bt4', type: 'break'},
                          undo_button,
                          redo_button,
+
                          {id: 'bt5', type: 'break'},
+                         {type: 'html',
+                          html: %Q{
+                         <input size="10" placeholder="#{I18n.t('search')}" onchange="zupfnoter.$handle_command('editconf &quot;' + this.value + '&quot;')"
+                               style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
+                              }
+                         },
                          {
                              type:    'menu',
                              text:    "Edit Config",
@@ -777,10 +826,9 @@ class ConfstackEditor
                              items:   self.class.get_config_form_menu_entries
                          },
 
-
                          presetmenu,
                          {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), icon: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
-                         {id: 'refresh', type: 'button', caption: 'Refresh', icon: 'fa fa-refresh'},
+                         {id: 'refresh', type: 'button', caption: '', icon: 'fa fa-refresh'},
                      ],
             onClick: lambda do |event|
               the_target = Native(event).target
@@ -801,11 +849,14 @@ class ConfstackEditor
         onValidate: nil,
         formHTML:   %Q{
                     <table >
-                    <tr><th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
+
+                    <tr>
+                      <th>__</th>
+                      <th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
                          <th>#{I18n.t("Value")}</th>
                          <th></th><th></th><th>#{I18n.t("Effective value")}</th>
                     </tr>
-                    #{@value.keys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
+                    #{@formkeys.map { |key| mk_fieldHTML(key, @value[key]) }.join}
                     </table>
                     }
     }
@@ -817,28 +868,45 @@ class ConfstackEditor
     $log.benchmark("refreshing form #{__FILE__}:#{__LINE__}") { @refresh_handler.call }
   end
 
+  def _mk_classnames(key)
+    parts  = key.split(".")
+    result = (0 .. parts.length - 2).map { |i| parts[0 .. i].join("_") }.join(" ")
+    return result
+  end
 
   # @param [String] key the key of the field
   # @param [Object] value - the current value from editor basically used to determin the icon on the delete button
   def mk_fieldHTML(key, value)
-    help_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
-    menu_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
-    delete_icon   = value.nil? ? 'fa-minus' : 'fa-trash'
-    delete_button = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
-    padding       = 1.5 * (key.split(".").count - 1)
-    first_indent  = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
-    last_indent   = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
+    help_button     = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
+    menu_button     = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
+    delete_icon     = value.nil? ? 'fa-minus' : 'fa-trash'
+    delete_button   = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
+
+    label, labelkey = _mk_label_for_form(key)
+
+    padding      = 1.5 * (labelkey.split(".").count - 1)
+    first_indent = %Q{<span style="padding-left:#{padding}em;"><span>} # "<td>&nbsp;</td>" * (key.split(".").count + 2)
+    last_indent  = "" #"<td>&nbsp;</td>" * (15 - key.split(".").count)
+
 
     if @helper.to_type(key) == ConfstackEditor::ConfHelper::ZnUnknown
+
+
       fillup_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{I18n.t('Add missing entries')}" name="#{key}:fillup"></button>} if @helper.to_template(key)
+      togglecommand = %Q{$('.#{key.split(".").join("_")}').toggle()}
+
+      children      = @value.keys.select { |i| i.start_with? key }
+      toggle_button = children[2] ? %Q{<input type="checkbox" tabIndex="-1" checked  name="#{key}:toggle" onclick="#{togglecommand}"></button >&nbsp;} : ""
+
       %Q{
-         <tr style="border:1pt solid blue;">
+         <tr class="#{_mk_classnames(key)}">
+           <td>#{toggle_button}</td>
 
            <td  colspan="2" >
             #{first_indent}
       #{delete_button}
       #{fillup_button}
-           <strong>#{ I18n.t_key(key)}</strong>
+           <strong>#{label}</strong>
            </td>
            <td style="vertical-align: top;">#{menu_button}</td>
            <td style="vertical-align: top;">#{help_button}</td>
@@ -847,11 +915,12 @@ class ConfstackEditor
     else
       default_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{@effective_value[key]}" name="#{key}:fillup"></button>}
       %Q{
-        <tr>
+        <tr class="#{_mk_classnames(key)}">
+         <td></td>
          <td style="vertical-align: top;">#{first_indent}
       #{delete_button}
       #{default_button}
-           <strong>#{ I18n.t_key(key)}</strong>
+           <strong>#{ label }</strong>
         </td>
         <td style="vertical-align: top;">
          <div class="w2ui-field" style="padding:1pt;">
@@ -864,6 +933,33 @@ class ConfstackEditor
        </tr>
     }
     end
+  end
+
+  private
+
+  # this makes the label for a particular configuration parameter
+  # note that it takes in to account if the paramets is a online
+  # and then desparately tries to combint the beginning and end
+  # of the label to be as expressive as possible
+  #
+  # @param String key - the key for the parameter
+  def _mk_label_for_form(key)
+    if @oneliners.include? key
+      labelkey  = key.rpartition(/\../).first || ""
+      label1    = I18n.t_key(labelkey) || labelkey
+      label2    = I18n.t_key(key) || key
+      separator = " .. "
+      maxlen    = 20 - labelkey.split(".").count
+      all_len   = label1.length + label2.length
+
+      show1 = [label1.length, (label1.length * maxlen / all_len).floor].min
+      show2 = [label2.length, (label2.length * maxlen / all_len).floor].min
+      label = label1[0 .. show1] + separator + label2[-show2 .. -1]
+    else
+      labelkey = key
+      label    = I18n.t_key(key)
+    end
+    return label, labelkey
   end
 
 end

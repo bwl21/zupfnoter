@@ -2,7 +2,6 @@ function init_w2ui(uicontroller) {
 
   w2popup.defaults.speed = 0;
 
-  // var zoomlevel = [2200, 1400];   // initialize zoomlevel; todo: should be done by scalehandlers
   var current_perspective = 'tb_perspective:Alle';
   var isFullScreen = false;
 
@@ -36,9 +35,7 @@ function init_w2ui(uicontroller) {
 
     var result = vertaal(xmldata, options);
 
-
     uicontroller.dropped_abc = result[0]
-
     uicontroller.$handle_command('drop')
     uicontroller.$handle_command('stdextract')
   }
@@ -239,9 +236,14 @@ function init_w2ui(uicontroller) {
       zoomHarpPreview(zoomlevel);
     }
   }
+
+
+  // ensure that zoomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
+  var init_zoomlevel = [2200, 1400]
+  var zoomlevel = init_zoomlevel;
   scalehandlers = {
     'tb_scale:groß': function () {
-      zoomlevel = [2200, 1400];
+      zoomlevel = init_zoomlevel;
       zoomHarpPreview(zoomlevel);
     },
     'tb_scale:mittel': function () {
@@ -257,9 +259,6 @@ function init_w2ui(uicontroller) {
       zoomHarpPreview(zoomlevel);
     }
   }
-
-  // ensure that oomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
-  zoomlevel = scalehandlers['tb_scale:groß'].zoomlevel
 
   // where we create an object with tooblarhandlers
   // this approach does not splash the menu definition
@@ -338,7 +337,13 @@ function init_w2ui(uicontroller) {
         fields: [
           {
             field: 'folder',
-            type: 'text',
+            type: 'combo',
+            options: {
+              items: uicontroller.systemstatus.$to_n().dropboxpathlist,
+              compare: function (a, b) {
+                return a.text.includes(b)
+              }
+            },
             required: true,
             html: {caption: 'Folder in Dropbox', attr: 'style="width: 300px"'}
           },
@@ -384,8 +389,8 @@ function init_w2ui(uicontroller) {
     name: 'toolbar',
     style: tbstyle,
     items: [
-      {type: 'button', id: 'tb_home', icon: 'fa fa-home', text: 'Zupfnoter'},
-      {type: 'html', html: '<div style="width:25px"/>'},
+      {type: 'button', id: 'tb_home', icon: 'fa fa-info-circle', text: ''},
+     // {type: 'html', html: '<div style="width:25px"/>'},
       {
         type: 'menu',
         id: 'tb_file',
@@ -479,27 +484,7 @@ function init_w2ui(uicontroller) {
           },
           {},
           // { text: 'hconfig',icon: 'fa fa-history', onClick: function(){uicontroller.$show_console(); uicontroller.$handle_command('hconfig')}},
-          {
-            text: 'stdextract', icon: 'fa fa-clipboard', onClick: function () {
-              uicontroller.$handle_command('stdextract')
-            }
-          },
-          {
-            text: 'settemplate', icon: 'fa fa-file-o', onClick: function () {
-              uicontroller.$handle_command('settemplate')
-            }
-          },
-          {
-            text: 'edittemplate', icon: 'fa fa-pencil', onClick: function () {
-              uicontroller.$handle_command('edittemplate')
-            }
-          },
-          {
-            text: 'configtemplate', icon: 'fa fa-pencil-square-o ', onClick: function () {
-              w2ui.layout_left_tabs.click('configtab');
-              uicontroller.$handle_command('editconf template')
-            }
-          }
+
         ]
       },
 
@@ -700,7 +685,10 @@ function init_w2ui(uicontroller) {
         window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
       }
       if (event.target == "tbHelp:tbDemo") {
-        window.open("?mode=demo&load=public/demos/21_Ich_steh_an_deiner_krippen_hier.abc")
+        window.open("?mode=demo&load=public/demos/zndemo_42_Ich_steh_an_deiner_krippen_hier.abc")
+      }
+      if (event.subItem && event.subItem.onClick) {
+        event.subItem.onClick();
       }
       if (event.subItem && event.subItem.onClick) {
         event.subItem.onClick();
@@ -789,7 +777,6 @@ function init_w2ui(uicontroller) {
       config_event2 = event.target.split(":")
       if (['edit_config'].includes(config_event2[0])) {
         if (config_event2[1]) {
-          w2ui.layout_left_tabs.click('configtab');
           uicontroller.$handle_command("editconf " + config_event2[1])
         }
       }
@@ -843,7 +830,6 @@ function init_w2ui(uicontroller) {
       config_event2 = event.target.split(":")
       if (['edit_config'].includes(config_event2[0])) {
         if (config_event2[1]) {
-          w2ui.layout_left_tabs.click('configtab');
           uicontroller.$handle_command("editconf " + config_event2[1])
         }
       }
@@ -860,6 +846,13 @@ function init_w2ui(uicontroller) {
         event.preventDefault();
         event.subItem.onClick();
       }
+      if (event.item && event.item.onClick) {  // used to handle dropbox path
+        event.preventDefault
+        if (event.subItem) {
+          event.item.onClick(event)
+        }
+      }
+      ;
     },
     items: [
       {
@@ -878,10 +871,17 @@ function init_w2ui(uicontroller) {
         id: 'sb_mode',
         text: '<div style="padding: 0px !important;"><span class="sb-mode"></span></div>'
       },
+
       {
-        type: 'button',
-        id: 'sb_dropbox-status',
-        text: '<div style="padding: 0px !important;"><span class="dropbox-status"></span></div>'
+        type: 'menu',
+        id: 'sb_dropbox_status',
+        tooltip: "choose drobox path",
+        onClick: function (event) {
+          if (event.subItem) {
+            uicontroller.$handle_command("dcd \"" + event.subItem.text + "\"")
+          }
+        },
+        items: []
       },
       {
         type: 'menu',
@@ -975,6 +975,38 @@ function init_w2ui(uicontroller) {
               uicontroller.$handle_command('autorefresh off')
 
             }
+          }
+        ]
+      },
+      {
+        type: 'menu',
+        id: 'sb_templatemenu',
+        text: "template",
+        items:[
+          {
+            text: 'stdextract', icon: 'fa fa-clipboard',
+            tooltip: "apply settings from template",
+            onClick: function () {
+              uicontroller.$handle_command('stdextract')
+            }
+          },
+          {
+            text: 'maketemplate', icon: 'fa fa-hand-o-right',
+            tooltip: "make tmmplate from current piece",
+            onClick: function () {
+              uicontroller.$handle_command('maketemplate')
+            }
+          },
+          {
+            text: 'resettemplate', icon: 'fa fa-support',
+            tooltip: "reset template to Zupfnoter defalts",
+            onClick: function () {uicontroller.$handle_command('resettemplate')
+            }
+          },
+          {
+            text: "load template from dropbox", icon: 'fa fa-dropbox',
+            tooltip: "load and apply template from dropbox",
+            onClick: function (event) {uicontroller.$handle_command('dchoose template');}
           }
         ]
       },
@@ -1166,6 +1198,9 @@ function update_localized_texts() {
  TODO: refactor this?
  */
 
+function show_config_tab() {
+  w2ui.layout_left_tabs.click('configtab');
+}
 
 function set_harp_preview_size(size) {
   $("#harpPreview svg").attr('height', size[1]).attr('width', size[0]);
@@ -1196,8 +1231,10 @@ function update_settings_menu(settings) {
 
 
 function update_systemstatus_w2ui(systemstatus) {
-  $(".dropbox-status").html(systemstatus.dropbox);
-  w2ui.layout_top_toolbar.set('tb_home', {text: "Zupfnoter" + " " + systemstatus.version})
+  w2ui.layout_statusbar_main_toolbar.set("sb_dropbox_status", {text: systemstatus.dropbox})
+  w2ui.layout_statusbar_main_toolbar.set("sb_templatemenu", {text: systemstatus.templatename})
+
+  w2ui.layout_top_toolbar.set('tb_home', {tooltip: "Zupfnoter" + " " + systemstatus.version})
 
   var tb_view_title = w2ui.layout_top_toolbar.get('tb_view:' + systemstatus.view)
   tb_view_title = (tb_view_title ? tb_view_title.text : systemstatus.view)
@@ -1235,6 +1272,13 @@ function update_systemstatus_w2ui(systemstatus) {
   }
   ;
 
+// update dropbox path menu
+
+  var dropbox_path_menu_items = systemstatus.dropboxpathlist.map(function (i) {
+    return {text: i}
+  });
+
+  w2ui.layout_statusbar_main_toolbar.get("sb_dropbox_status").items = dropbox_path_menu_items;
 
 }
 

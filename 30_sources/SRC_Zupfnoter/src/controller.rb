@@ -94,7 +94,7 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath,  :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
 
   def initialize
 
@@ -149,6 +149,7 @@ class Controller
     $log.info ("Opal:     #{RUBY_ENGINE_VERSION}")
     $log.info ("Ruby:     #{RUBY_VERSION}")
     $log.info ("Abc2svg:  #{%x{abc2svg.version}}")
+    $log.info ("JsPdf:    #{JsPDF.jspdfversion}")
     $log.info ("Browser:  #{`bowser.name`}  #{`bowser.version`}");
     $log.info ("Language: #{zupfnoter_language}");
     check_suppoerted_browser
@@ -174,9 +175,10 @@ class Controller
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
-    @dropboxclient = Opal::DropboxJs::NilClient.new()
+    @dropboxclient   = Opal::DropboxJs::NilClient.new()
 
-    @systemstatus = {version: VERSION}
+    # initialize the sytemstatus entries which are absolutely necessary
+    @systemstatus = {version: VERSION, dropboxpathlist: []}
 
     # initialize the commandstack
     # note that CommandController has methods __ic_01 etc. to register the commands
@@ -206,6 +208,7 @@ class Controller
 
     set_status(saveformat: "A3-A4") unless @systemstatus[:saveformat]
 
+    get_current_template
     #
     # load from previous session
 
@@ -254,6 +257,7 @@ class Controller
           <tr><td>Ruby:</td><td>#{RUBY_VERSION}</td></tr>
           <tr><td><a target="_blank" href="http://moinejf.free.fr/js/index.html">abc2svg</a>:</td><td>#{%x{abc2svg.version}}</td></tr>
           <tr><td><a target="_blank" href="https://wim.vree.org/js/xml2abc-js_index.html">xml2abc.js</a>:</td><td>#{%x{xml2abc_VERSION}}</td></tr>
+          <tr><td><a target="_blank" href="https://parall.ax/products/jspdf">jsPDF</a>:</td><td>#{JsPDF.jspdfversion}</td></tr>
          </tbody>
         </table>
         <p>© #{Time.now.year} Bernhard Weichel - info@zupfnoter.de</p>
@@ -286,7 +290,9 @@ class Controller
                                call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }],
                                harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
-                               render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }]
+                               render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }],
+                               show_config_tab:   [lambda { %x{show_config_tab()}} ]
+
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -333,7 +339,7 @@ class Controller
   def save_to_localstorage
     # todo. better maintenance of persistent keys
     systemstatus = @systemstatus.select { |key, _| [:last_read_info_id, :zndropboxlogincmd, :music_model, :view, :autorefresh,
-                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxloginstate, :perspective, :saveformat, :zoom].include?(key)
+                                                    :loglevel, :nwworkingdir, :dropboxapp, :dropboxpath, :dropboxpathlist, :dropboxloginstate, :perspective, :saveformat, :zoom].include?(key)
     }.to_json
     if @systemstatus[:mode] == :work
       `localStorage.setItem('systemstatus', #{systemstatus});`
@@ -341,6 +347,12 @@ class Controller
     @editor.save_to_localstorage
   end
 
+  def push_to_dropboxpathlist()
+    dropboxpathlist = systemstatus[:dropboxpathlist] || []
+    dropboxpathlist.push(@dropboxpath)
+    dropboxpathlist = dropboxpathlist.uniq.last(10) # get the last 10 elements
+    set_status(dropboxpathlist: dropboxpathlist)
+  end
 
   def load_from_uri(url)
     HTTP.get(url).then do |response|
@@ -381,80 +393,14 @@ class Controller
 
 # this loads a demo song
   def load_demo_tune
-    abc = %Q{X:21
-F:21_Ich_steh_an_deiner_krippen_hier
-T:Ich steh an deiner Krippen hier
-C:Nr. 59 aus dem Weihnachtsoratorium
-C:Joh. Seb. Bach
-C:Kirchenchor Mattighofen
-%%score ( 1 2 ) ( 3 4 )
-L:1/4
-Q:1/4=80.00
-M:4/4
-I:linebreak $
-K:G
-V:1 treble nm="Sopran Alt"
-V:2 treble
-V:3 bass nm="Tenor Bass"
-V:4 bass
-V:1
-G | G/A/ B A G | A A !fermata!B G/A/ |
-B c d c/B/ | A/G/ A !fermata!G :| B | B A G F |
-G/A/ B !fermata!A A | G F G D | G A !fermata!B G/A/ |
-B c d c/B/ | A/G/ A !fermata!G z |]
-V:2
-D | E/F/ G G/F/ G | G F G E/F/ |
-G/ B A/4G/4 F G | G F D :| z | G3/2 F/ F/E/ E/^D/ |
-E D D D | D/C/ D D/C/ B, | B, E ^D B, |
-E E D/E/2 G | G F D z |]
-V:3
-B, | B, E E/D/ D | E/C/ A,/D/ !fermata!D E |
-D G,/A,/ B,/C/ D | D C/B,/ !fermata!B, :| D | D D/C/ B,/C/ F,/B,/ |
-B,/A,/ A,/G,/ !fermata!F, F, | G,/A,/ B,/C/ B,/A,/ G, | G, F,/E,/ !fermata!F, E,/F,/ |
-G,3/2 A,/ B,/C/ D | D C/B,/ !fermata!B, z |]
-V:4
-G,/F,/ | E,3/2 D,/ C,3/2 B,,/ | C,/A,,/ D, G,, C, |
-G,/F,/ E, B,/A,/ G, | D D, G, :| z | B,/C/ D/2-D/2 G,/A,/ B, |
-E,/F,/ G, D, D/C/ | B,3/2 A,/ G,3/2 F,/ | E,/D,/ C, B,, E,/-E,/ |
-E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
+    url = "public/demos/zndemo_42_Ich_steh_an_deiner_krippen_hier.abc"
+    HTTP.get(url, {async: false}) do |response|
+      @editor.set_text(response.body)
 
-%%%%zupfnoter.config
+      result = response.body
+    end
 
-{
-  "produce"     : [1],
-  "annotations" : {
-    "refn" : {
-      "pos"  : [20, 10],
-      "text" : "referenced note",
-      "id"   : "refn"
-    }
-  },
-  "extract"     : {
-    "0" : {
-      "voices"      : [1, 2, 3, 4],
-      "flowlines"   : [1, 3],
-      "layoutlines" : [1, 2, 3, 4],
-      "legend"      : {"pos": [310, 175], "spos": [310, 182]},
-      "notes"       : {
-        "1" : {
-          "pos"   : [340, 10],
-          "text"  : "Ich steh an deiner Krippen hier",
-          "style" : "strong"
-        }
-      },
-      "lyrics"      : {
-        "1" : {
-          "verses" : [1, 2, 3, 4, 5, 6, 7, 8],
-          "pos"    : [10, 100]
-        }
-      }
-    }
-  },
-  "$schema"     : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
-  "$version"    : "1.4.0 beta 2"
-}
-}
-    @editor.set_text(abc)
+
   end
 
 # render the harpnotes to a3
@@ -571,7 +517,7 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         if @harpnote_player.is_playing?
           call_consumers(:play_stopping)
           stop_play_abc
-        else
+        elsif @harpnote_player.is_stopped?
           call_consumers(:play_start)
           @harpnote_player.play_auto() if mode == :auto
           @harpnote_player.play_song() if mode == :music_model
@@ -827,6 +773,9 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     result
   end
 
+
+## todo: this is not DRY, we define this method
+# in controller.rb as well
   def get_placeholder_replacers(print_variant_nr)
     # keys for musid_model see _mk_meta_data
     # @meta_data = {number:        (@info_fields[:X]),
@@ -851,7 +800,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         extract_title:    lambda { $conf["extract.#{print_variant_nr}.title"] },
         extract_filename: lambda { $conf["extract.#{print_variant_nr}.filenamepart"] },
         printed_extracts: lambda { $conf[:produce].map { |k| $conf["extract.#{k}.filenamepart"] }.join(" ") },
-        watermark:        lambda { $settings[:watermark] || "" }
+        watermark:        lambda { $settings[:watermark] || "" },
+        current_year:     lambda { Time.now.year.to_s }
     }
   end
 
@@ -1072,6 +1022,18 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
     end
   end
 
+  def set_extracts_menu
+    $log.benchmark("prepare extract menu") do
+      printed_extracts = $conf['produce']
+      @extracts        = $conf.get('extract').inject([]) do |r, entry|
+        extract_number = entry.last.dig(:filenamepart)
+        print          = (printed_extracts.include?(entry.first.to_i) ? '*  ' : ' ')
+        title          = %Q{#{print}#{extract_number} #{entry.last[:title]} }
+        r.push([entry.first, title])
+      end
+      call_consumers(:extracts)
+    end
+  end
 
 # setup the harpnote prviewer
   def setup_harpnote_preview
@@ -1258,6 +1220,10 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
 
         nil
       end
+    end
+
+    @worker.on_named_message(:error_alert) do |data|
+      call_consumers(:error_alert)
     end
 
     @worker.on_named_message(:update_ui) do |data|
@@ -1474,8 +1440,8 @@ E,/D,/ C, B,,/A,,/ G,, | D,2 G,, z |]
         title: I18n.t('There is new unread information'),
         width: 600, # width of the dialog
         height: 200, # height of the dialog
-        modal:       true,
-        btn_yes:     {
+        modal:    true,
+        btn_yes:  {
             text: I18n.t('already read'), # text for yes button (or yes_text)
             class: '', # class for yes button (or yes_class)
             style: '', # style for yes button (or yes_style)

@@ -267,6 +267,24 @@ module InitConf
                                    a3_offset: [0, 0],
                                    a4_offset: [35, 0]}
                  },
+                 'Zipino'              => {
+                     layout:      {instrument:   'Zipino',
+                                   limit_a3:     true,
+                                   beams:        true,
+                                   bottomup:     false,
+                                   PITCH_OFFSET: 0,
+                                   X_SPACING:    12.50,
+                                   X_OFFSET:     230,
+                                   ELLIPSE_SIZE:  [2,2],
+                                   REST_SIZE:  [2,2]
+                 },
+                     stringnames: {text:  'F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~',
+                                   marks: {hpos: [54]}
+                     },
+                     printer:     {a4_pages:  [2],
+                                   a3_offset: [0, 0],
+                                   a4_offset: [35, 0]}
+                 },
                  'Okon-Harfe'          => {
                      layout:      {instrument:   'okon-f',
                                    beams:        true,
@@ -289,9 +307,10 @@ module InitConf
 
                  T01_number:               {
                      value: {
-                         pos:   [393, 17],
+                         pos:   [410, 17],
                          text:  "XXX-{{number}}",
-                         style: "bold"
+                         style: "bold",
+                         align: "l"
                      }},
                  T01_number_extract:       {
                      value: {
@@ -324,9 +343,16 @@ module InitConf
                      }},
                  T05_printed_extracts:     {
                      value: {
-                         pos:   [393, 22],
+                         pos:   [410, 22],
                          text:  "{{printed_extracts}}",
-                         style: "smaller"
+                         style: "smaller",
+                         align: "l"
+                     }},
+                 T06_legend:               {
+                     value: {
+                         pos:   [360, 30],
+                         text:  %Q{{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}},
+                         style: "small"
                      }},
                  T06_legend:               {
                      value: {

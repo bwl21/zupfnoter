@@ -19,7 +19,7 @@ module Harpnotes
            #{@abcplay}.set_sft('js')
            #{@abcplay}.set_vol(1.0)
         } # the player engine
-        @isplaying        = false
+        @status           = :stopped
         @selection        = []
         @voices_to_play   = [1, 2, 3, 4, 5, 6, 7, 8]
         @voice_elements   = []
@@ -29,7 +29,11 @@ module Harpnotes
       end
 
       def is_playing?
-        @isplaying
+        @status == :playing
+      end
+
+      def is_stopped?
+        @status == :stopped
       end
 
       def call_on_note(index, on, custom = nil)
@@ -40,10 +44,13 @@ module Harpnotes
         end
       end
 
+      # this is the callback for end of playing
+      # we use setTimeout to free the ui thread
       def call_on_songoff
         %x{
            setTimeout(function(){#{@songoff_callback.call}}, 10)
           }
+        nil
       end
 
       def on_noteon(&block)
@@ -54,8 +61,12 @@ module Harpnotes
         @noteoff_callback = block
       end
 
+      # this eventually registers the callback for end of playing
       def on_songoff(&block)
-        @songoff_callback = block
+        @songoff_callback = lambda do
+          block.call
+          @status = :stopped
+        end
       end
 
       def play_auto
@@ -93,7 +104,7 @@ module Harpnotes
         %x{
         #{@abcplay}.play(0, 1000000, #{@player_model_abc})
           }
-        @isplaying = true
+        @status = :playing
       end
 
       # this does the ultimate playing of the notes
@@ -124,7 +135,7 @@ module Harpnotes
           }
           ## todo add the player logic here
 
-          @isplaying = true
+          @status = :playing
         else
           $log.warning("nothing selected to play")
         end
@@ -137,8 +148,8 @@ module Harpnotes
       end
 
       def stop()
-        %x{#{@abcplay}.stop()} if @isplaying
-        @isplaying = false
+        %x{#{@abcplay}.stop()} if is_playing?
+        @status == :stopping
         nil # no %x at the end of the method
       end
 

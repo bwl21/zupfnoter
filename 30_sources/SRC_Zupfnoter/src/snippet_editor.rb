@@ -80,7 +80,7 @@ class SnippetEditor
               Cancel: lambda { `w2popup.close()` },
               Save:   lambda do
                 if `this.validate()`.empty?
-                  @saveblock.call(to_string(Native::Hash.new(`this.record`)))
+                  @saveblock.call(to_string(Hash.new(`this.record`)))
                   `w2popup.close()`
                 else
                   $log.error(I18n.t('There is an error in the data you have entered'))

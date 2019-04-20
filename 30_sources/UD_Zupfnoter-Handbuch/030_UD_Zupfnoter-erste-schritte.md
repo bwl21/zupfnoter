@@ -27,8 +27,8 @@ Zupfnoters einsteigen.
 
 Anhand der schriftlichen Anleitungen unter dem Hilfemenü und mit den
 mündlichen Unterweisungen in den Tutorial-Videos (Selbstlerneinheiten)
-lassen sich gut die einzelnen Schritte für die Erstellung “Alle meine
-Entchen” nachvollziehen.
+lassen sich gut die einzelnen Schritte für die Erstellung "Alle meine
+Entchen" nachvollziehen.
 
 ## Dein erstes Musikstück eingeben {#dein-erstes-musikstueck-eingeben}
 
@@ -69,7 +69,6 @@ findet man eine deutsche Anleitung für die ABC-Notation.
     und die Meldungen im linken Fenster zu aktualisieren.
 
     \needspace{15cm}
-
 6.  im Fenster rechts unten siehst du nun eine Vorschau der
     Unterlegnoten:
 
@@ -196,7 +195,6 @@ Beispiel kannst du zunächst einen Liedtext hinzufügen:
           },
 
     \needspace{15cm}
-
 7.  klicke auf die Schaltfläche "Rendern", um die Unterlegnoten zu
     aktualisieren.
 
@@ -371,7 +369,7 @@ verwendetem Browser** mit diesem Dropbox-Konto verbinden:
 Zupfnoter hat nun im Prinzip Zugriff alle Dateien in deiner Dropbox.
 Zupfnoter verwendet jedoch nur folgende Dateitypen in deiner Dropbox:
 
--   schreibt "abc", "pdf", "html""
+-   schreibt "abc", "pdf", "html"\"
 -   liest "abc"
 
 > **Hinweis zur Sicherheit** z.B. bei Verwendung fremder Computer (z.B.

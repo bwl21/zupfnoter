@@ -3,7 +3,7 @@
 Zupfnoter ist ein freies Programm, um selbst Unterlegnoten für
 Tischharfen zu erstellen. Die mit Zupfnoter erstellten Unterlegnoten
 eignen sich für alle gängigen Tischharfen (Zauberharfe, Veeh-Harfe®,
-Tischharfen von "Instrumentenbau Franz Bauer“). Somit kannst du alles
+Tischharfen von \"Instrumentenbau Franz Bauer\"). Somit kannst du alles
 auf deiner Tischharfe spielen, was du willst.
 
 Zupfnoter ist so flexibel, dass man Noten für alle chromatischen
@@ -16,7 +16,7 @@ dass Zupfnoter auch für Instumente mit einem Saitenabstand ungleich
 Der Zupfnoter wird über die Homepage <https://www.zupfnoter.de>
 aufgerufen und kann ohne die Installation einer Software auf deinem PC
 sofort angewendet werden. Er läuft unabhängig vom Betriebssystem des
-PC’s und ist für Mac, Linux und sogar für Windows geeignet.
+PC's und ist für Mac, Linux und sogar für Windows geeignet.
 
 Zupfnoter unterstützt vier grundlegende Schritte zur Erstellung von
 Unterlegnoten:
@@ -68,5 +68,5 @@ Unterlegnoten:
 
 [^020_UD_Zupfnoter-Einfuehrung.md_1]: In diesem Handbuch wird
     "Musikstück" als Oberbegriff zu Musik bzw. Lied verwendet. Lied (aus
-    mhd. liet, „Strophe“) ist der Sammelbegriff für kleinere, knapp
+    mhd. liet, „Strophe\") ist der Sammelbegriff für kleinere, knapp
     gegliederte gesungene Kompositionen aus Musik und Liedtext.
