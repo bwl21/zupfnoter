@@ -546,7 +546,12 @@ module Harpnotes
         end
 
         _transform_measure_start(voice_element)
-        duration = _convert_duration(voice_element[:notes].first[:dur])
+
+        # get duration
+        # note there are not :notes in case of full mesasure rests like X or Z
+        duration = voice_element[:notes]
+        duration = duration ? duration.first[:dur] : voice_element[:dur]
+        duration = _convert_duration(duration)
 
         tuplet, tuplet_end, tuplet_start = _parse_tuplet_info(voice_element)
 
