@@ -725,7 +725,7 @@ class ConfstackEditor
         {},
         # {id: 'template', icon: 'fa fa-file-code-o', text: 'template', tooltip:"edit Template properties"},
         {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'},
-        {id: 'template', icon: 'fa fa-pencil-square-o ',text: 'configtemplate', tooltip: 'edit template configuration'}
+        {id: 'template', icon: 'fa fa-pencil-square-o ', text: 'configtemplate', tooltip: 'edit template configuration'}
     ]
   end
 
@@ -843,7 +843,10 @@ class ConfstackEditor
   end
 
   def refresh_form
-    $log.benchmark("refreshing form #{__FILE__}:#{__LINE__}") { @refresh_handler.call }
+    # todo: find another approach to see if form is visible
+    if (%x{window.w2ui.layout_left_tabs.active == 'configtab'})
+      $log.benchmark("refreshing form #{__FILE__}:#{__LINE__}") { @refresh_handler.call }
+    end
   end
 
   def _mk_classnames(key)
@@ -855,10 +858,10 @@ class ConfstackEditor
   # @param [String] key the key of the field
   # @param [Object] value - the current value from editor basically used to determin the icon on the delete button
   def mk_fieldHTML(key, value)
-    help_button     = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
-    menu_button     = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
-    delete_icon     = value.nil? ? 'fa-minus' : 'fa-trash'
-    delete_button   = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
+    help_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-question-circle-o"  name="#{key}:help"></button></div>}
+    menu_button   = %Q{<div class="w2ui-field" style="padding:2pt;"><button tabIndex="-1" class="znconfig-button fa fa-bars" name="#{key}:menu"></button></div>}
+    delete_icon   = value.nil? ? 'fa-minus' : 'fa-trash'
+    delete_button = %Q{<button tabIndex="-1" class="znconfig-button fa #{delete_icon}" name="#{key}:delete"></button >}
 
     label, labelkey = _mk_label_for_form(key)
 
