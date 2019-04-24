@@ -52,6 +52,19 @@ module Ajv
       resconf.push({'extract' => conf.get('extract')}) # push extract-specific paramters
       x = resconf.get
       validate('zupfnoter', resconf.get)
+      validate_filenameparts(resconf)
+    end
+
+
+    def validate_filenameparts(conf)
+      filenamekeys        = conf.keys.select { |i| i.include? 'filenamepart' }
+      filenames           = filenamekeys.map { |i| conf[i] }
+      duplicate_filenames = filenames.group_by { |e| e }.keep_if { |_, e| e.length > 1 }.keys
+      unless duplicate_filenames.empty?
+        message = I18n.t("duplicate filenameparts") + %Q{: #{duplicate_filenames.map{|i| %Q{"#{i}"}}.join(", ")}}
+        $log.error(message)
+      end
+      nil
     end
 
     def _schema
@@ -346,7 +359,7 @@ module Ajv
                                                                        {:spos  => {:"$ref" => "#/definitions/pos"},
                                                                         :pos   => {:"$ref" => "#/definitions/pos"},
                                                                         :align => {:'$ref' => '#/definitions/align'}, # this targets the header
-                                                                        :style => {:type => "string"}  # this targetsd the legend
+                                                                        :style => {:type => "string"} # this targets the legend
                                                                        }
                                                  },
                                                  :lyrics       => {:type              => "object",
