@@ -41,7 +41,7 @@ function init_w2ui(uicontroller) {
 
   function pasteMxl(text) {
     zip = new JSZip(text)
-    text = zip.file(/^[^/ ]*\.xml$/)[0].asText();
+    text = zip.file(/^[^/]*\.xml$/)[0].asText();
     pasteXml(text);
   }
 
