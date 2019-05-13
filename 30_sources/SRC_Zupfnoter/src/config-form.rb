@@ -485,6 +485,7 @@ class ConfstackEditor
   #
   #def initialize(title, editor, value_handler, refresh_handler)
   def initialize(editorparams)
+    @focusable             = [] # array to keep the focusable fields
     @title                 = editorparams[:title]
     @editor                = editorparams[:editor]
     @refresh_handler       = editorparams[:refresh_handler]
@@ -770,9 +771,22 @@ class ConfstackEditor
         focus:      -1,
         onChange:   lambda { |event|
           a = lambda {
-            push_config_to_editor(%Q{edit #{`#{event}.target`}})
+            current_key = `#{event}.target`
+            push_config_to_editor(%Q{edit #{current_key}})
+
+            # push_config_to_editor refreshes the form, so we need to reestablish the focus
+            current_element_index = @focusable.index(current_key)
+
+            # todo. Keep focus in checkboxes and selectors
+            if false # @helper.to_w2uifield(current_key)[:type] == 'list'
+              next_element_id = current_key
+            else
+              next_element_index = (current_element_index + 1) % @focusable.length
+              next_element_id    = @focusable[next_element_index]
+            end
             %x{
-               document.getElementById(#{event}.target).focus()
+            debugger;
+               $(document.getElementById(#{next_element_id})).focus();
               }
             nil
           }
@@ -791,7 +805,7 @@ class ConfstackEditor
                          {id: 'bt5', type: 'break'},
                          {type: 'html',
                           html: %Q{
-                         <input size="10" placeholder="#{I18n.t('search')}" onchange="zupfnoter.$handle_command('editconf &quot;' + this.value + '&quot;')"
+                         <input size="10" placeholder="#{I18n.t('search')}" tabindex="-1" onchange="zupfnoter.$handle_command('editconf &quot;' + this.value + '&quot;')"
                                style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
                               }
                          },
@@ -894,6 +908,7 @@ class ConfstackEditor
          </tr>
         }
     else
+      @focusable.push(key)
       default_button = %Q{<button tabIndex="-1" class="znconfig-button fa fa-circle-o" title="#{@effective_value[key]}" name="#{key}:fillup"></button>}
       %Q{
         <tr class="#{_mk_classnames(key)}">
