@@ -1,3 +1,13 @@
+# V 1.11.2
+
+## fix
+
+*  set template no also sets the standard notes #253
+*  no longer switch to config from when drag & drop or switch view #253
+*  Bug with duration of X or Z #259
+*  let validate check duplicate filenames #260
+*  accept files with spaces in filename within mxl files #263
+*  Improve handling of form  - fix tab handling #267
 
 # V 1.11
 
