@@ -401,6 +401,7 @@ module Harpnotes
     class Pause < Playable
       # note that the pitch is used to support layout ...
       attr_accessor :duration, :pitch
+      attr_accessor :invisible # indicates if we have an invisble rest from abc
 
       #
       # Constructor
@@ -419,13 +420,12 @@ module Harpnotes
         @prev_playable = self
       end
 
-
       def visible=(visible)
         @visible = visible
       end
 
       def visible?
-        @visible
+        @visible && ! @invisible
       end
 
     end
@@ -1866,7 +1866,8 @@ module Harpnotes
             # turn previous note visible if the current playable is visible but not synchronized
             # which in turn means that it is part of a subflowline
             if not show_options[:flowline] and c.visible and not show_options[:synched_notes].include?(c.proxy_note)
-              previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
+              ## todo: this turns on the visibility of invisbile (X) rests
+             previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
             end
             previous_note = c
           end

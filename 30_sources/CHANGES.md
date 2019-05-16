@@ -1,5 +1,9 @@
 # upcoming
 
+## fix
+
+* fix handling of inivisble rests in subflowlines #265
+
 ## enhancement
 
 * now support unlimited extracts #268
