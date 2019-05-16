@@ -636,6 +636,12 @@ class Controller
         extracts.product(keys).map { |number, key| "extract.#{number}.#{key}" }
       end
 
+      def expand_lyrics_keys(keys)
+        @editor.get_config_model.first.dig(:extract, '0', :lyrics).keys.map do|lkey|
+          expand_extract_keys(keys.map{|key| "lyrics.#{lkey}.#{key}"})
+        end.flatten
+      end
+
       command.undoable = false
 
       command.add_parameter(:set, :string) do |parameter|
@@ -670,9 +676,9 @@ class Controller
                                                                                 "tuplets.text", "tuplets.style"]),
                                     quicksetting_commands: _get_quicksetting_commands('barnumbers_countnotes')},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
-            notes:                 {keys:                  expand_extract_keys([:notes]), newentry_handler: lambda { handle_command("addconf notes") },
+            notes:                 {keys:                  expand_extract_keys(['legend.pos', 'legend.align', 'legend.spos', :notes]), newentry_handler: lambda { handle_command("addconf notes") },
                                     quicksetting_commands: _get_quicksetting_commands('notes')},
-            lyrics:                {keys:             expand_extract_keys([:lyrics]),
+            lyrics:                {keys:             expand_lyrics_keys([:verses, :pos, :style]),
                                     newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf lyrics") } : nil)
             },
             images:                {keys:             $resources.keys.map { |i| "$resources.#{i}" } + mk_image_edit_keys,
