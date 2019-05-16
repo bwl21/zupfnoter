@@ -1,3 +1,13 @@
+# upcoming
+
+## enhancement
+
+* now support unlimited extracts #268
+
+## Compatibility
+
+* no more default configuration for extract 1 .. extract 5
+
 # V 1.11.2
 
 ## fix

@@ -284,10 +284,10 @@ class Controller
                                document_title:    [lambda { `document.title = #{@document_title}` }],
                                current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
                                settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
-                               extracts:          [lambda { @extracts.each { |entry|
-                                 title = "#{entry.first}: #{entry.last}"
-                                 `set_extract_menu(#{entry.first}, #{title})` }
-                               call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
+                               extracts: [lambda {
+                                 items = @extracts.map { |id, entry| {id: id, text: "#{id}: #{entry}"} }
+                                 `set_extract_menu(#{items.to_n})`
+                                 call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }],
                                harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
                                render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }],

@@ -17,6 +17,11 @@ edit resources
 edittemplate
 end-of-translagion
 enter a page bound annotation
+Extract 1
+Extract 2
+Extract 3
+Extract 4
+Extract 5
 Flowline
 global settings
 Id

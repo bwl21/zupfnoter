@@ -380,7 +380,6 @@ class Controller
                             .gsub(/^T:.*$/, "T:{{song_title}}")
         @editor.set_text(template)
         @editor.delete_config_part('template')
-        JS.debugger
         handle_command("editconf template")
         nil
       end
@@ -471,6 +470,7 @@ class Controller
             'subflowlines'     => lambda { {key: "extract.#{@systemstatus[:view]}.subflowlines", value: $conf['extract.0.subflowlines']} },
             'produce'          => lambda { {key: "produce", value: $conf['produce']} },
             'annotations'      => lambda { {key: "annotations.x", value: $conf['templates.annotations']} },
+            'extracts'         => lambda { {key: "extract.x", value: $conf['templates.extracts']} },
             'layout'           => lambda { {key:   "extract.#{@systemstatus[:view]}.layout",
                                             value: $conf['extract.0.layout']} }, # radii of the largest Rest Glyph} },
             'printer' => lambda { {key:   "extract.#{@systemstatus[:view]}.printer",
@@ -631,7 +631,9 @@ class Controller
       # the inital array specifies the available
       # extracts
       def expand_extractnumbering(keys)
-        [0, 1, 2, 3, 4, 5].product(keys).map { |number, key| "extract.#{number}.#{key}" }
+        extract_from_editor = @editor.get_config_model.first[:extract] || {}
+        extracts = (extract_from_editor.keys + $conf[:extract].keys).map{|i|i.to_i}.uniq.sort
+        extracts.product(keys).map { |number, key| "extract.#{number}.#{key}" }
       end
 
       command.undoable = false
@@ -644,7 +646,6 @@ class Controller
 
       command.as_action do |args|
         $log.timestamp("editconf #{args[:set]}  #{__FILE__} #{__LINE__}")
-
         # this is the set of predefined configuration pages
         # it is the argument of editconf {set}
         #
@@ -659,10 +660,9 @@ class Controller
                                                                             'stringnames.vpos', 'sortmark.show',
                                                                            ]) + [:restposition]},
             extract_annotation:    {keys:                  [:produce,
-                                                            'extract.0.notes.T05_printed_extracts.text',
-                                                            'extract.0.notes.T01_number.text',
-                                                            expand_extractnumbering(['title', 'filenamepart', 'notes.T01_number_extract.text'])].flatten,
+                                                            expand_extractnumbering(['title', 'voices', 'filenamepart'])].flatten,
                                     quicksetting_commands: ['stdextract'],
+                                    newentry_handler:      lambda { handle_command("addconf extracts")},
                                     scope:                 :global
             },
             barnumbers_countnotes: {keys:                  expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apanchor', 'barnumbers.apbase', 'barnumbers.style',
@@ -748,7 +748,6 @@ class Controller
             end
           end
         end
-
         # see if we have a search form set ---------------------------------------------------
         unless the_form
           econf = Confstack.new

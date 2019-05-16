@@ -241,12 +241,7 @@ Auszug 1 usw.
             "title"        : "alle Stimmen",
             "tuplets"      : {"text": "{{tuplet}}"},
             "voices"       : [1, 2, 3, 4]
-          },
-          "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
-          "2" : {"title": "Tenor, Bass", "voices": [3, 4]},
-          "3" : {"title": "Melodie", "voices": [1]},
-          "4" : {"title": "Extract 4", "voices": [1]},
-          "5" : {"title": "Extract 5", "voices": [1]}
+          }
         }
           
 
@@ -1915,6 +1910,11 @@ Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.
 
         "templates": {
           "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
+          "extracts"    : {
+            "filenamepart" : "-",
+            "notes"        : {"T01_number_extract": {"text": "{{extract_filename}}"}},
+            "title"        : ""
+          },
           "images"      : {
             "height"    : 100,
             "imagename" : "",
@@ -1974,6 +1974,75 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     `setsettings wartermark "wasserzeichen"` eingestellt)
 
         "text": "_vorlage_"
+
+## `templates.extracts` - Auszüge {#templates.extracts}
+
+TODO: Helptext für templates.extracts einfügen
+
+        "extracts": {
+          "filenamepart" : "-",
+          "notes"        : {"T01_number_extract": {"text": "{{extract_filename}}"}},
+          "title"        : ""
+        }
+          
+
+## `templates.extracts.filenamepart` - Filename-Zusatz {#templates.extracts.filenamepart}
+
+TODO: Helptext für templates.extracts.filenamepart einfügen
+
+        "filenamepart": "-"
+          
+
+## `templates.extracts.notes` - Seitenbeschriftungen {#templates.extracts.notes}
+
+Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
+Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
+
+> **Hinweis**: Es kann aber auch sinnvoll sein eine sprechende
+> Bezeichnung für die Beschriftung manuell vorzugeben um ihrer
+> spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
+> allerdings nur in der Textansicht möglich.
+
+        "notes": {"T01_number_extract": {"text": "{{extract_filename}}"}}
+          
+
+## `templates.extracts.notes.T01_number_extract` - T01 Auszug-Nummer {#templates.extracts.notes.T01_number_extract}
+
+TODO: Helptext für templates.extracts.notes.T01\_number\_extract
+einfügen
+
+        "T01_number_extract": {"text": "{{extract_filename}}"}
+          
+
+## `templates.extracts.notes.T01_number_extract.text` - Text {#templates.extracts.notes.T01_number_extract.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
+
+        "text": "{{extract_filename}}"
+
+## `templates.extracts.title` - Titel {#templates.extracts.title}
+
+TODO: Helptext für templates.extracts.title einfügen
+
+        "title": ""
+          
 
 ## `templates.images` - Bilder {#templates.images}
 

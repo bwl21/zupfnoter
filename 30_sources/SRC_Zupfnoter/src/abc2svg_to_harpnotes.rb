@@ -661,7 +661,6 @@ module Harpnotes
         unless @next_note_marks[:measure]
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
-          JS.debugger
           $log.warning("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Meter change not at beginning of measure"), start_pos, end_pos)
         end
 

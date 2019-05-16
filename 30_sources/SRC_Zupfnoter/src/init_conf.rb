@@ -76,7 +76,8 @@ module InitConf
              lyrics:      {verses: [1], pos: [350, 70], style: :regular},
              images:      {imagename: "", show: true, pos: [10, 10], height: 100, },
              tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
-             annotations: {text: "_vorlage_", pos: [-5, -6]} # Notenbeschriftungsvorlage
+             annotations: {text: "_vorlage_", pos: [-5, -6]}, # Notenbeschriftungsvorlage
+             extracts:    {title: "", filenamepart: "-", notes:{T01_number_extract:{text: "{{extract_filename}}"}}}
          },
 
          # this is used to populate a QuickSettings menu
@@ -470,25 +471,6 @@ module InitConf
                      a4_pages:    [0, 1, 2],
                      show_border: false
                  }
-             },
-             "1" => {
-                 title:  "Sopran, Alt",
-                 voices: [1, 2]
-             },
-             "2" => {
-                 title:  "Tenor, Bass",
-                 voices: [3, 4]
-             },
-             "3" => {
-                 title:  "Melodie",
-                 voices: [1]
-             },
-             "4" => {
-                 title:  "Extract 4",
-                 voices: [1]
-             },
-             "5" => {
-                 title: "Extract 5", voices: [1]
              }
          },
 

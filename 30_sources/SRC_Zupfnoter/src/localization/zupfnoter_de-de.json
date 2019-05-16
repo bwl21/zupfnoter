@@ -146,6 +146,7 @@
     "Draggable": "Verschiebemarke",
     "DRAWING_AREA_SIZE": "Zeichenfl.Größe",
     "Dropbox": "Dropbox",
+    "duplicate filenameparts": "Filename-Zusatz ist nicht eindeutig",
     "DURATION_TO_BEAMS": "Notenstile mit Hälsen",
     "DURATION_TO_STYLE": "Notenstile",
     "Edit addon on cursor position": "Zusatzinformation bearbeiten",
@@ -197,6 +198,7 @@
     "Extract": "Auszug",
     "extract": "Auszug",
     "Extract-Annotation": "Auszugsbeschriftung",
+    "extracts": "Auszüge",
     "Extras": "Extras",
     "File": "Datei",
     "filebase": "Filename-Basis",
@@ -373,7 +375,7 @@
     "printer_left": "Druck nach links schieben",
     "printer_right": "Druck nach rechts schieben",
     "Private copy": "Privatkopie",
-    "produce": "Auszüge",
+    "produce": "PDF für Auszüge",
     "provided by\n": "zu beziehen bei\n",
     "push to extract 0": "nach Auszug 0 schieben",
     "Quick Setting": "Schnelleinst.",
@@ -527,6 +529,7 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
+
 
 
     "_ende_der_liste": ""

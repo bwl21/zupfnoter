@@ -445,6 +445,10 @@ module Harpnotes
       @config_models[:config]
     end
 
+    # get the config model
+    # return arry of [config_model, status]
+    # status indicates if we got a model from editor
+    # todo: cleant this up
     def get_config_model
       config_model = _get_config_model
       config_model ? [_get_config_model, true] : [{}, false]

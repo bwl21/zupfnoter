@@ -277,24 +277,6 @@ function init_w2ui(uicontroller) {
       toggle_full_screen();
     },
 
-    'tb_view:0': function () {
-      uicontroller.$handle_command("view 0")
-    },
-    'tb_view:1': function () {
-      uicontroller.$handle_command("view 1")
-    },
-    'tb_view:2': function () {
-      uicontroller.$handle_command("view 2")
-    },
-    'tb_view:3': function () {
-      uicontroller.$handle_command("view 3")
-    },
-    'tb_view:4': function () {
-      uicontroller.$handle_command("view 4")
-    },
-    'tb_view:5': function () {
-      uicontroller.$handle_command("view 5")
-    },
     'tbPlay': function () {
       uicontroller.$play_abc('auto');
     },
@@ -326,7 +308,6 @@ function init_w2ui(uicontroller) {
     'tb_logout': function () { // tbDropbox:tb_logout
       uicontroller.$handle_command("dlogout")
     },
-
 
     'tb_login': function () {
       openPopup({
@@ -360,6 +341,39 @@ function init_w2ui(uicontroller) {
           }
         }
       })
+    },
+
+
+    "tb_home": function () {
+      w2popup.open({title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
+    },
+    "tbHelp:tbVersionInfo": function () {
+      window.open(uicontroller.$info_url())
+    },
+    "tbHelp:tbTutorials": function () {
+      window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
+    },
+    "tbHelp:tbAbcTutorial": function () {
+      window.open("http://penzeng.de/Geige/Abc.htm")
+    },
+    "tbHelp:tbAbcTutorialSchacherl": function () {
+      window.open("http://kurs.schacherl.info/ABC-Musiknotation/abc_syntax/abc_syntax.html")
+    },
+    "tbHelp:tbAbcStandard": function () {
+      window.open("http://abcnotation.com/wiki/abc:standard:v2.2")
+    },
+
+    "tbHelp:tbHomepage": function () {
+      window.open("http://www.zupfnoter.de")
+    },
+    "tbHelp:tbManual": function () {
+      window.open("/public/UD_Zupfnoter-Handbuch-de_review.pdf")
+    },
+    "tbHelp:tbReference": function () {
+      window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
+    },
+    "tbHelp:tbDemo": function () {
+      window.open("?mode=demo&load=public/demos/zndemo_42_Ich_steh_an_deiner_krippen_hier.abc")
     }
   }
 
@@ -560,13 +574,7 @@ function init_w2ui(uicontroller) {
         icon: 'fa fa-shopping-basket',
         tooltip: "Choose extract",
         items: [
-          {text: 'Extract 0', icon: 'fa fa-asterisk', id: "0"},
-          {},
-          {text: 'Extract 1', icon: 'fa fa-tags', id: "1"},
-          {text: 'Extract 2', icon: 'fa fa-tags', id: "2"},
-          {text: 'Extract 3', icon: 'fa fa-tags', id: "3"},
-          {text: 'Extract 4', icon: 'fa fa-tags', id: "4"},
-          {text: 'Extract 5', icon: 'fa fa-tags', id: "5"}
+          {text: 'Extract 0', icon: 'fa fa-asterisk', id: "0"}
         ]
       },
       {type: 'break'},
@@ -641,9 +649,13 @@ function init_w2ui(uicontroller) {
         previews[event.target]();
       }
 
-      // handle config
+      // handle view
       config_event = event.target.split(":")
-
+      if (config_event[0] = "tb_View"){
+        if (config_event[1]){
+          uicontroller.$handle_command("view " + config_event[1])
+        }
+      }
 
       // this matches the dropbox - menus
       // to the dropbox buttons
@@ -656,36 +668,7 @@ function init_w2ui(uicontroller) {
 
 
       // todo: move these entries to toolbarhandlers
-      if (event.target == "tb_home") {
-        w2popup.open({title: 'About Zupfnoter', body: uicontroller.$about_zupfnoter()})
-      }
-      if (event.target == "tbHelp:tbVersionInfo") {
-        window.open(uicontroller.$info_url())
-      }
-      if (event.target == "tbHelp:tbTutorials") {
-        window.open("https://www.youtube.com/channel/UCNwzBbzhyHJOn9eHHl_guHg")
-      }
-      if (event.target == "tbHelp:tbAbcTutorial") {
-        window.open("http://penzeng.de/Geige/Abc.htm")
-      }
-      if (event.target == "tbHelp:tbAbcTutorialSchacherl") {
-        window.open("http://kurs.schacherl.info/ABC-Musiknotation/abc_syntax/abc_syntax.html")
-      }
-      if (event.target == "tbHelp:tbAbcStandard") {
-        window.open("http://abcnotation.com/wiki/abc:standard:v2.2")
-      }
-      if (event.target == "tbHelp:tbHomepage") {
-        window.open("http://www.zupfnoter.de")
-      }
-      if (event.target == "tbHelp:tbManual") {
-        window.open("/public/UD_Zupfnoter-Handbuch-de_review.pdf")
-      }
-      if (event.target == "tbHelp:tbReference") {
-        window.open("?mode=demo&load=public/demos/3015_reference_sheet.abc")
-      }
-      if (event.target == "tbHelp:tbDemo") {
-        window.open("?mode=demo&load=public/demos/zndemo_42_Ich_steh_an_deiner_krippen_hier.abc")
-      }
+
       if (event.subItem && event.subItem.onClick) {
         event.subItem.onClick();
       }
@@ -1353,7 +1336,12 @@ function before_open() {
   w2ui.layout_left_tabs.click('abceditortab')
 };
 
-function set_extract_menu(id, text) {
+function set_extract_menu(items){
+  debugger;
+  w2ui.layout_top_toolbar.set('tb_view', {items: items})
+}
+
+function set_extract_menua(id, text) {
   w2ui.layout_top_toolbar.set('tb_view:' + id, {text: text});
   // w2ui.layout_top_toolbar.refresh();  we do not need this, in the reas application as we subsequentlcy  redraw the toolbar
   // by call_consumers(:extracts)
