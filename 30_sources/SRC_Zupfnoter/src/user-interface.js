@@ -1337,7 +1337,6 @@ function before_open() {
 };
 
 function set_extract_menu(items){
-  debugger;
   w2ui.layout_top_toolbar.set('tb_view', {items: items})
 }
 
