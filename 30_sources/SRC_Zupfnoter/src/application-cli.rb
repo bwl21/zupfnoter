@@ -13,8 +13,8 @@
   global.navigator = {};
 
   // polyfills from https://gist.github.com/jmshal/b14199f7402c8f3a4568733d8bed0f25
-  global.btoa = function btoa(b) {return new Buffer(b).toString('base64');};
-  global.atob = function atob(a) {return new Buffer(a, 'base64').toString('binary');};
+  global.btoa = function btoa(b) {return Buffer.from(b).toString('base64');};
+  global.atob = function atob(a) {return Buffer.from(a, 'base64').toString('binary');};
 
   jsPDF = require ("../vendor/jspdf.node.debug.js")   // adapt in opal-jspdf.rb
   Ajv = require("ajv")        // adapt in opal-ajv.rb

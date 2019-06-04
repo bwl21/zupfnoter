@@ -785,7 +785,6 @@ class ConfstackEditor
               next_element_id    = @focusable[next_element_index]
             end
             %x{
-            debugger;
                $(document.getElementById(#{next_element_id})).focus();
               }
             nil
