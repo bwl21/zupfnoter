@@ -102,11 +102,11 @@ I:stretchlast 1
 
     def scroll_into_view(element)
 
-      %x{
-         if (#{element}.parents){
-          #{element}.parents('.svg_block').get(0).scrollIntoView(true)
-         }
-       }
+      unless element.nil?
+        %x{
+          #{element}.parents('.svg_block').get(0).scrollIntoView(true);
+        }
+      end
     end
 
     def range_highlight_more(from, to)
