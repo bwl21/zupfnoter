@@ -342,6 +342,14 @@ verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
 an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
 gesagt, das umhüllende Rechteck) der entsprechende Note.
 
+## layout.jumpline\_vcut
+
+Hier kannst du die Länge der vertikalen Sprungslinienandeutung
+einstellen. Der wert wird in mm gerechnet.
+
+**Hinweis:** wenn du den Wert "0" angibst, wird die Sprunglinie komplett
+gezeichnet.
+
 ## layout.limit\_a3
 
 Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das

@@ -251,7 +251,7 @@
 <li><a href="#presets.notes.T99_do_not_copy.value.pos"><span class="toc-section-number">8.142</span> <code>presets.notes.T99_do_not_copy.value.pos</code> - Position</a></li>
 <li><a href="#presets.notes.T99_do_not_copy.value.style"><span class="toc-section-number">8.143</span> <code>presets.notes.T99_do_not_copy.value.style</code> - Stil</a></li>
 <li><a href="#presets.notes.T99_do_not_copy.value.text"><span class="toc-section-number">8.144</span> <code>presets.notes.T99_do_not_copy.value.text</code> - Text</a></li>
-<li><a href="#produce"><span class="toc-section-number">8.145</span> <code>produce</code> - Auszüge</a></li>
+<li><a href="#produce"><span class="toc-section-number">8.145</span> <code>produce</code> - PDF für Auszüge</a></li>
 <li><a href="#restposition"><span class="toc-section-number">8.146</span> <code>restposition</code> - Position der Pausen</a></li>
 <li><a href="#restposition.default"><span class="toc-section-number">8.147</span> <code>restposition.default</code> - Vorgabewert</a></li>
 <li><a href="#restposition.repeatend"><span class="toc-section-number">8.148</span> <code>restposition.repeatend</code> - Wiederholungsende</a></li>
@@ -263,25 +263,31 @@
 <li><a href="#templates.annotations"><span class="toc-section-number">8.154</span> <code>templates.annotations</code> - Notenbeschriftungsvorlagen</a></li>
 <li><a href="#templates.annotations.pos"><span class="toc-section-number">8.155</span> <code>templates.annotations.pos</code> - Position</a></li>
 <li><a href="#templates.annotations.text"><span class="toc-section-number">8.156</span> <code>templates.annotations.text</code> - Text</a></li>
-<li><a href="#templates.images"><span class="toc-section-number">8.157</span> <code>templates.images</code> - Bilder</a></li>
-<li><a href="#templates.images.height"><span class="toc-section-number">8.158</span> <code>templates.images.height</code> - Bildhöhe</a></li>
-<li><a href="#templates.images.imagename"><span class="toc-section-number">8.159</span> <code>templates.images.imagename</code> - Bildname</a></li>
-<li><a href="#templates.images.pos"><span class="toc-section-number">8.160</span> <code>templates.images.pos</code> - Position</a></li>
-<li><a href="#templates.images.show"><span class="toc-section-number">8.161</span> <code>templates.images.show</code> - anzeigen</a></li>
-<li><a href="#templates.lyrics"><span class="toc-section-number">8.162</span> <code>templates.lyrics</code> - Liedtexte</a></li>
-<li><a href="#templates.lyrics.pos"><span class="toc-section-number">8.163</span> <code>templates.lyrics.pos</code> - Position</a></li>
-<li><a href="#templates.lyrics.style"><span class="toc-section-number">8.164</span> <code>templates.lyrics.style</code> - Stil</a></li>
-<li><a href="#templates.lyrics.verses"><span class="toc-section-number">8.165</span> <code>templates.lyrics.verses</code> - Strophen</a></li>
-<li><a href="#templates.notes"><span class="toc-section-number">8.166</span> <code>templates.notes</code> - Seitenbeschriftungen</a></li>
-<li><a href="#templates.notes.pos"><span class="toc-section-number">8.167</span> <code>templates.notes.pos</code> - Position</a></li>
-<li><a href="#templates.notes.style"><span class="toc-section-number">8.168</span> <code>templates.notes.style</code> - Stil</a></li>
-<li><a href="#templates.notes.text"><span class="toc-section-number">8.169</span> <code>templates.notes.text</code> - Text</a></li>
-<li><a href="#templates.tuplet"><span class="toc-section-number">8.170</span> <code>templates.tuplet</code> - n-Tole</a></li>
-<li><a href="#templates.tuplet.cp1"><span class="toc-section-number">8.171</span> <code>templates.tuplet.cp1</code> - cp1</a></li>
-<li><a href="#templates.tuplet.cp2"><span class="toc-section-number">8.172</span> <code>templates.tuplet.cp2</code> - cp2</a></li>
-<li><a href="#templates.tuplet.shape"><span class="toc-section-number">8.173</span> <code>templates.tuplet.shape</code> - Linienform</a></li>
-<li><a href="#templates.tuplet.show"><span class="toc-section-number">8.174</span> <code>templates.tuplet.show</code> - anzeigen</a></li>
-<li><a href="#wrap"><span class="toc-section-number">8.175</span> <code>wrap</code> - wrap</a></li>
+<li><a href="#templates.extracts"><span class="toc-section-number">8.157</span> <code>templates.extracts</code> - Auszüge</a></li>
+<li><a href="#templates.extracts.filenamepart"><span class="toc-section-number">8.158</span> <code>templates.extracts.filenamepart</code> - Filename-Zusatz</a></li>
+<li><a href="#templates.extracts.notes"><span class="toc-section-number">8.159</span> <code>templates.extracts.notes</code> - Seitenbeschriftungen</a></li>
+<li><a href="#templates.extracts.notes.T01_number_extract"><span class="toc-section-number">8.160</span> <code>templates.extracts.notes.T01_number_extract</code> - T01 Auszug-Nummer</a></li>
+<li><a href="#templates.extracts.notes.T01_number_extract.text"><span class="toc-section-number">8.161</span> <code>templates.extracts.notes.T01_number_extract.text</code> - Text</a></li>
+<li><a href="#templates.extracts.title"><span class="toc-section-number">8.162</span> <code>templates.extracts.title</code> - Titel</a></li>
+<li><a href="#templates.images"><span class="toc-section-number">8.163</span> <code>templates.images</code> - Bilder</a></li>
+<li><a href="#templates.images.height"><span class="toc-section-number">8.164</span> <code>templates.images.height</code> - Bildhöhe</a></li>
+<li><a href="#templates.images.imagename"><span class="toc-section-number">8.165</span> <code>templates.images.imagename</code> - Bildname</a></li>
+<li><a href="#templates.images.pos"><span class="toc-section-number">8.166</span> <code>templates.images.pos</code> - Position</a></li>
+<li><a href="#templates.images.show"><span class="toc-section-number">8.167</span> <code>templates.images.show</code> - anzeigen</a></li>
+<li><a href="#templates.lyrics"><span class="toc-section-number">8.168</span> <code>templates.lyrics</code> - Liedtexte</a></li>
+<li><a href="#templates.lyrics.pos"><span class="toc-section-number">8.169</span> <code>templates.lyrics.pos</code> - Position</a></li>
+<li><a href="#templates.lyrics.style"><span class="toc-section-number">8.170</span> <code>templates.lyrics.style</code> - Stil</a></li>
+<li><a href="#templates.lyrics.verses"><span class="toc-section-number">8.171</span> <code>templates.lyrics.verses</code> - Strophen</a></li>
+<li><a href="#templates.notes"><span class="toc-section-number">8.172</span> <code>templates.notes</code> - Seitenbeschriftungen</a></li>
+<li><a href="#templates.notes.pos"><span class="toc-section-number">8.173</span> <code>templates.notes.pos</code> - Position</a></li>
+<li><a href="#templates.notes.style"><span class="toc-section-number">8.174</span> <code>templates.notes.style</code> - Stil</a></li>
+<li><a href="#templates.notes.text"><span class="toc-section-number">8.175</span> <code>templates.notes.text</code> - Text</a></li>
+<li><a href="#templates.tuplet"><span class="toc-section-number">8.176</span> <code>templates.tuplet</code> - n-Tole</a></li>
+<li><a href="#templates.tuplet.cp1"><span class="toc-section-number">8.177</span> <code>templates.tuplet.cp1</code> - cp1</a></li>
+<li><a href="#templates.tuplet.cp2"><span class="toc-section-number">8.178</span> <code>templates.tuplet.cp2</code> - cp2</a></li>
+<li><a href="#templates.tuplet.shape"><span class="toc-section-number">8.179</span> <code>templates.tuplet.shape</code> - Linienform</a></li>
+<li><a href="#templates.tuplet.show"><span class="toc-section-number">8.180</span> <code>templates.tuplet.show</code> - anzeigen</a></li>
+<li><a href="#wrap"><span class="toc-section-number">8.181</span> <code>wrap</code> - wrap</a></li>
 </ul></li>
 <li><a href="#änderungsgeschichte"><span class="toc-section-number">9</span> Änderungsgeschichte</a></li>
 <li><a href="#v-1.11-18.4.2019"><span class="toc-section-number">10</span> V 1.11 18.4.2019</a><ul>
@@ -3082,7 +3088,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: null</code></pre></li>
 </ul>
-<h2 id="produce"><span class="header-section-number">8.145</span> <code>produce</code> - Auszüge</h2>
+<h2 id="produce"><span class="header-section-number">8.145</span> <code>produce</code> - PDF für Auszüge</h2>
 <p>Hier kannst du eine Liste der Auszuüge angeben, für welche eine PDF-DAtei mit erzeugt werden soll.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Manchmal ist es sinnvoll, Auszüge nur zur Bearbeitung anzulegen, diese aber nicht zu drucken. Es kommt auch vor, dass Auszug 0 nur verwendet wird, um Vorgaben für die anderen Auszüge zu machen, nicht aber um ihn wirklich auszudrucken.</p>
@@ -3136,6 +3142,11 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <p>Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.</p>
 <pre><code>    &quot;templates&quot;: {
       &quot;annotations&quot; : {&quot;pos&quot;: [-5, -6], &quot;text&quot;: &quot;_vorlage_&quot;},
+      &quot;extracts&quot;    : {
+        &quot;filenamepart&quot; : &quot;-&quot;,
+        &quot;notes&quot;        : {&quot;T01_number_extract&quot;: {&quot;text&quot;: &quot;{{extract_filename}}&quot;}},
+        &quot;title&quot;        : &quot;&quot;
+      },
       &quot;images&quot;      : {
         &quot;height&quot;    : 100,
         &quot;imagename&quot; : &quot;&quot;,
@@ -3179,7 +3190,51 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;_vorlage_&quot;</code></pre></li>
 </ul>
-<h2 id="templates.images"><span class="header-section-number">8.157</span> <code>templates.images</code> - Bilder</h2>
+<h2 id="templates.extracts"><span class="header-section-number">8.157</span> <code>templates.extracts</code> - Auszüge</h2>
+<p>TODO: Helptext für templates.extracts einfügen</p>
+<pre><code>    &quot;extracts&quot;: {
+      &quot;filenamepart&quot; : &quot;-&quot;,
+      &quot;notes&quot;        : {&quot;T01_number_extract&quot;: {&quot;text&quot;: &quot;{{extract_filename}}&quot;}},
+      &quot;title&quot;        : &quot;&quot;
+    }
+      </code></pre>
+<h2 id="templates.extracts.filenamepart"><span class="header-section-number">8.158</span> <code>templates.extracts.filenamepart</code> - Filename-Zusatz</h2>
+<p>TODO: Helptext für templates.extracts.filenamepart einfügen</p>
+<pre><code>    &quot;filenamepart&quot;: &quot;-&quot;
+      </code></pre>
+<h2 id="templates.extracts.notes"><span class="header-section-number">8.159</span> <code>templates.extracts.notes</code> - Seitenbeschriftungen</h2>
+<p>Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>.</p>
+<blockquote>
+<p><strong>Hinweis</strong>: Es kann aber auch sinnvoll sein eine sprechende Bezeichnung für die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht möglich.</p>
+</blockquote>
+<pre><code>    &quot;notes&quot;: {&quot;T01_number_extract&quot;: {&quot;text&quot;: &quot;{{extract_filename}}&quot;}}
+      </code></pre>
+<h2 id="templates.extracts.notes.T01_number_extract"><span class="header-section-number">8.160</span> <code>templates.extracts.notes.T01_number_extract</code> - T01 Auszug-Nummer</h2>
+<p>TODO: Helptext für templates.extracts.notes.T01_number_extract einfügen</p>
+<pre><code>    &quot;T01_number_extract&quot;: {&quot;text&quot;: &quot;{{extract_filename}}&quot;}
+      </code></pre>
+<h2 id="templates.extracts.notes.T01_number_extract.text"><span class="header-section-number">8.161</span> <code>templates.extracts.notes.T01_number_extract.text</code> - Text</h2>
+<p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
+<ul>
+<li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
+<li><code>{{current_year}}</code>: das aktuelle Jahr</li>
+<li><code>{{key}}</code>: Tonart aus <code>K:</code> Zeile</li>
+<li><code>{{meter}}</code>: Taktart aus <code>M:</code> Zeile</li>
+<li><code>{{number}}</code>: Nummer aus <code>X:</code> Zeile</li>
+<li><code>{{o_key}}</code>: Originaltonart</li>
+<li><code>{{tempo}}</code>: Tempo aus <code>Q:</code>Zeile</li>
+<li><code>{{title}}</code>: Titel aus <code>T:</code> Zeilen</li>
+<li><code>{{extract_title}}</code>: titel des auszgs aus “extract.*.title”,</li>
+<li><code>{{extract_filename}}</code>: Filenamenszusatz aus “extract.*.filenamepart”},</li>
+<li><code>{{printed_extracts}}</code>: erstellte Auszüge aus “produce”. Es werden die entsprechneden Filenamenzusätze ausgegeben.</li>
+<li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
+<pre><code>&quot;text&quot;: &quot;{{extract_filename}}&quot;</code></pre></li>
+</ul>
+<h2 id="templates.extracts.title"><span class="header-section-number">8.162</span> <code>templates.extracts.title</code> - Titel</h2>
+<p>TODO: Helptext für templates.extracts.title einfügen</p>
+<pre><code>    &quot;title&quot;: &quot;&quot;
+      </code></pre>
+<h2 id="templates.images"><span class="header-section-number">8.163</span> <code>templates.images</code> - Bilder</h2>
 <p>TODO: Helptext für templates.images einfügen</p>
 <pre><code>    &quot;images&quot;: {
       &quot;height&quot;    : 100,
@@ -3188,55 +3243,55 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;show&quot;      : true
     }
       </code></pre>
-<h2 id="templates.images.height"><span class="header-section-number">8.158</span> <code>templates.images.height</code> - Bildhöhe</h2>
+<h2 id="templates.images.height"><span class="header-section-number">8.164</span> <code>templates.images.height</code> - Bildhöhe</h2>
 <p>TODO: Helptext für templates.images.height einfügen</p>
 <pre><code>    &quot;height&quot;: 100
       </code></pre>
-<h2 id="templates.images.imagename"><span class="header-section-number">8.159</span> <code>templates.images.imagename</code> - Bildname</h2>
+<h2 id="templates.images.imagename"><span class="header-section-number">8.165</span> <code>templates.images.imagename</code> - Bildname</h2>
 <p>Hier kannst du das Bild auswählen, welches eingefügt werden soll. Die Auswahlliste zeigt die Zupfnoter-internen Namen an. Es werden nur Bilder gelistet, die dem ABC-File hinzugefügt wurde.</p>
 <pre><code>    &quot;imagename&quot;: &quot;&quot;
       </code></pre>
-<h2 id="templates.images.pos"><span class="header-section-number">8.160</span> <code>templates.images.pos</code> - Position</h2>
+<h2 id="templates.images.pos"><span class="header-section-number">8.166</span> <code>templates.images.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [10, 10]
       </code></pre>
-<h2 id="templates.images.show"><span class="header-section-number">8.161</span> <code>templates.images.show</code> - anzeigen</h2>
+<h2 id="templates.images.show"><span class="header-section-number">8.167</span> <code>templates.images.show</code> - anzeigen</h2>
 <p>Dieser Eisntellung steuert, ob das Objekt (z.B. das Bild) in der Ausgabe angezeigt werden soll.</p>
 <pre><code>    &quot;show&quot;: true
       </code></pre>
-<h2 id="templates.lyrics"><span class="header-section-number">8.162</span> <code>templates.lyrics</code> - Liedtexte</h2>
+<h2 id="templates.lyrics"><span class="header-section-number">8.168</span> <code>templates.lyrics</code> - Liedtexte</h2>
 <p>Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den Liedtext auf mehrer Blöcke aufteilen.</p>
 <p>Ein einzelner Block listet die Strophen auf, die er enthält, und die gemeinsam poitioniert werden.</p>
 <pre><code>    &quot;lyrics&quot;: {&quot;pos&quot;: [350, 70], &quot;style&quot;: &quot;regular&quot;, &quot;verses&quot;: [1]}
       </code></pre>
-<h2 id="templates.lyrics.pos"><span class="header-section-number">8.163</span> <code>templates.lyrics.pos</code> - Position</h2>
+<h2 id="templates.lyrics.pos"><span class="header-section-number">8.169</span> <code>templates.lyrics.pos</code> - Position</h2>
 <p>Dies ist die Vorgabe für Position, an welcher der Liedtext-Block ausgegeben werden soll. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [350, 70]
       </code></pre>
-<h2 id="templates.lyrics.style"><span class="header-section-number">8.164</span> <code>templates.lyrics.style</code> - Stil</h2>
+<h2 id="templates.lyrics.style"><span class="header-section-number">8.170</span> <code>templates.lyrics.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;regular&quot;
       </code></pre>
-<h2 id="templates.lyrics.verses"><span class="header-section-number">8.165</span> <code>templates.lyrics.verses</code> - Strophen</h2>
+<h2 id="templates.lyrics.verses"><span class="header-section-number">8.171</span> <code>templates.lyrics.verses</code> - Strophen</h2>
 <p>Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block ausgegeben werden.</p>
 <pre><code>    &quot;verses&quot;: [1]
       </code></pre>
-<h2 id="templates.notes"><span class="header-section-number">8.166</span> <code>templates.notes</code> - Seitenbeschriftungen</h2>
+<h2 id="templates.notes"><span class="header-section-number">8.172</span> <code>templates.notes</code> - Seitenbeschriftungen</h2>
 <p>Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Es kann aber auch sinnvoll sein eine sprechende Bezeichnung für die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht möglich.</p>
 </blockquote>
 <pre><code>    &quot;notes&quot;: {&quot;pos&quot;: [320, 6], &quot;style&quot;: &quot;large&quot;, &quot;text&quot;: &quot;ENTER_NOTE&quot;}
       </code></pre>
-<h2 id="templates.notes.pos"><span class="header-section-number">8.167</span> <code>templates.notes.pos</code> - Position</h2>
+<h2 id="templates.notes.pos"><span class="header-section-number">8.173</span> <code>templates.notes.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [320, 6]
       </code></pre>
-<h2 id="templates.notes.style"><span class="header-section-number">8.168</span> <code>templates.notes.style</code> - Stil</h2>
+<h2 id="templates.notes.style"><span class="header-section-number">8.174</span> <code>templates.notes.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;large&quot;
       </code></pre>
-<h2 id="templates.notes.text"><span class="header-section-number">8.169</span> <code>templates.notes.text</code> - Text</h2>
+<h2 id="templates.notes.text"><span class="header-section-number">8.175</span> <code>templates.notes.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -3253,7 +3308,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;ENTER_NOTE&quot;</code></pre></li>
 </ul>
-<h2 id="templates.tuplet"><span class="header-section-number">8.170</span> <code>templates.tuplet</code> - n-Tole</h2>
+<h2 id="templates.tuplet"><span class="header-section-number">8.176</span> <code>templates.tuplet</code> - n-Tole</h2>
 <p>Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen) steuern.</p>
 <blockquote>
 <p><strong>Hinweis</strong>:</p>
@@ -3267,15 +3322,15 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;show&quot;  : true
     }
       </code></pre>
-<h2 id="templates.tuplet.cp1"><span class="header-section-number">8.171</span> <code>templates.tuplet.cp1</code> - cp1</h2>
+<h2 id="templates.tuplet.cp1"><span class="header-section-number">8.177</span> <code>templates.tuplet.cp1</code> - cp1</h2>
 <p>Hier gibst du den Kontrollpunkt für die erste Note an.</p>
 <pre><code>    &quot;cp1&quot;: [5, 2]
       </code></pre>
-<h2 id="templates.tuplet.cp2"><span class="header-section-number">8.172</span> <code>templates.tuplet.cp2</code> - cp2</h2>
+<h2 id="templates.tuplet.cp2"><span class="header-section-number">8.178</span> <code>templates.tuplet.cp2</code> - cp2</h2>
 <p>Hier gibst du den Kontrollpunkt für die letzte Note an.</p>
 <pre><code>    &quot;cp2&quot;: [5, -2]
       </code></pre>
-<h2 id="templates.tuplet.shape"><span class="header-section-number">8.173</span> <code>templates.tuplet.shape</code> - Linienform</h2>
+<h2 id="templates.tuplet.shape"><span class="header-section-number">8.179</span> <code>templates.tuplet.shape</code> - Linienform</h2>
 <p>Hier gibst du eine Liste von Linienformen für die n-tole an.</p>
 <ul>
 <li><code>c</code>: Kurve</li>
@@ -3286,11 +3341,11 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;shape&quot;: [&quot;c&quot;]
       </code></pre>
-<h2 id="templates.tuplet.show"><span class="header-section-number">8.174</span> <code>templates.tuplet.show</code> - anzeigen</h2>
+<h2 id="templates.tuplet.show"><span class="header-section-number">8.180</span> <code>templates.tuplet.show</code> - anzeigen</h2>
 <p>Hier gibst du an, ob die n-Tole ausgegeben werden soll.</p>
 <pre><code>    &quot;show&quot;: true
       </code></pre>
-<h2 id="wrap"><span class="header-section-number">8.175</span> <code>wrap</code> - wrap</h2>
+<h2 id="wrap"><span class="header-section-number">8.181</span> <code>wrap</code> - wrap</h2>
 <p>Hier kannst du angeben, in welcher Spalte der Zeilenumbruch im Konfigurationsabschnitt erfolgen soll. Das kann bei komplexen Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.</p>
 <pre><code>    &quot;wrap&quot;: 60</code></pre>
 

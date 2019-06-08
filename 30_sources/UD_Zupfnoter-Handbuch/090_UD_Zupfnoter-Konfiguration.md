@@ -241,7 +241,12 @@ Auszug 1 usw.
             "title"        : "alle Stimmen",
             "tuplets"      : {"text": "{{tuplet}}"},
             "voices"       : [1, 2, 3, 4]
-          }
+          },
+          "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
+          "2" : {"title": "Tenor, Bass", "voices": [3, 4]},
+          "3" : {"title": "Melodie", "voices": [1]},
+          "4" : {"title": "Extract 4", "voices": [1]},
+          "5" : {"title": "Extract 5", "voices": [1]}
         }
           
 
@@ -1815,7 +1820,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
         "text": null
 
-## `produce` - Auszüge {#produce}
+## `produce` - PDF für Auszüge {#produce}
 
 Hier kannst du eine Liste der Auszuüge angeben, für welche eine
 PDF-DAtei mit erzeugt werden soll.

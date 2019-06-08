@@ -425,7 +425,7 @@ module Harpnotes
       end
 
       def visible?
-        @visible && ! @invisible
+        @visible && !@invisible
       end
 
     end
@@ -1867,7 +1867,7 @@ module Harpnotes
             # which in turn means that it is part of a subflowline
             if not show_options[:flowline] and c.visible and not show_options[:synched_notes].include?(c.proxy_note)
               ## todo: this turns on the visibility of invisbile (X) rests
-             previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
+              previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
             end
             previous_note = c
           end
@@ -2143,12 +2143,17 @@ module Harpnotes
             to_anchor   = swap[to_anchor]
           end
 
+
+          verticalcut = compute_vertical_cut(from, to)
+
           jumpline_info = {from:            {center: from.center, size: from.size, anchor: from_anchor},
                            to:              {center: to.center, size: to.size, anchor: to_anchor},
-                           vertical:        vertical, vertical_anchor: vertical_anchor,
+                           vertical:        vertical,
+                           vertical_anchor: vertical_anchor,
                            padding:         goto.policy[:padding],
                            xspacing:        $conf['layout.X_SPACING'],
-                           jumpline_anchor: $conf['layout.jumpline_anchor']
+                           jumpline_anchor: $conf['layout.jumpline_anchor'],
+                           verticalcut:     verticalcut,
           }
 
           path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
@@ -2157,7 +2162,9 @@ module Harpnotes
           if is_visible
             unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
               [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
-               Harpnotes::Drawing::Path.new(path[1], :filled, goto.from)]
+               Harpnotes::Drawing::Path.new(path[1], :filled, goto.from),
+               Harpnotes::Drawing::Path.new(path[2], :filled, goto.from)
+              ]
             end
           end
         end.flatten.compact
@@ -2294,6 +2301,23 @@ module Harpnotes
 
 
       private
+
+
+      # compute the size of a varticaul cutof of a jumpline
+      # if from and to ar adjacent, it returns 0 otherwise the value configured
+      # @param [drawable] from
+      # @param [Object] to
+      def compute_vertical_cut(from, to)
+        verticalcut = $conf['layout.jumpline_vcut'] || 0
+        xf          = [from.origin.prev_playable, from.origin.next_playable] - [from.origin]
+        xt          = [to.origin.prev_playable, to.origin.next_playable] - [to.origin]
+        y           = [from.origin, to.origin].compact
+        z           = (xf + xt) & y
+        unless z.empty?
+          verticalcut = 0
+        end
+        verticalcut
+      end
 
       # This creates countnotes and barnumbers
       def layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)
@@ -2805,19 +2829,19 @@ module Harpnotes
 
         # calulate the beam
         if @instrument_orientation == :horizontal
-          p_beam_x, p_beam_y = [2 * size[1], 0.1, ] # end of beam
+          p_beam_x, p_beam_y = [2 * size[1], 0.1,] # end of beam
 
           linewidth = $conf.get('layout.LINE_MEDIUM')
 
-          f_x      = x_offset + shift / 2            # beam start: right border of beam shall be right border of note
-          f_y      = y_offset + size[1] - linewidth/2
-          path     = [['M', f_x, f_y],
-                      ['l', p_beam_x, p_beam_y], # hals
+          f_x  = x_offset + shift / 2 # beam start: right border of beam shall be right border of note
+          f_y  = y_offset + size[1] - linewidth / 2
+          path = [['M', f_x, f_y],
+                  ['l', p_beam_x, p_beam_y], # hals
           ]
 
-          p_flag_x, p_flag_y = [ -0.6 * size[0], 0.6 * size[1]]  # end of flag
-          f_delta_x = p_flag_x                                   # flagend.y -flagstart.y
-          f_delta_y = p_beam_y * f_delta_x / p_beam_x rescue 0   # flagend.x -flagstart.x
+          p_flag_x, p_flag_y = [-0.6 * size[0], 0.6 * size[1]] # end of flag
+          f_delta_x          = p_flag_x # flagend.y -flagstart.y
+          f_delta_y = p_beam_y * f_delta_x / p_beam_x rescue 0 # flagend.x -flagstart.x
 
           flagpath = ['l', p_flag_x, p_flag_y]
           flag.times { |i| path += [['M', f_x + p_beam_x + i * f_delta_x, f_y + p_beam_y], flagpath] }
@@ -2834,8 +2858,8 @@ module Harpnotes
           # add  the flags
           p_flag_x, p_flag_y = [1.3 * size[1], 0.6 * size[1]] # end of flag
 
-          f_delta_y = p_flag_y                                   # flagend.y -flagstart.y
-          f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0   # flagend.x -flagstart.x
+          f_delta_y = p_flag_y # flagend.y -flagstart.y
+          f_delta_x = p_beam_x * f_delta_y / p_beam_y rescue 0 # flagend.x -flagstart.x
 
           flagpath = ['l', p_flag_x, p_flag_y]
           flag.times { |i| path += [['M', f_x + p_beam_x - i * f_delta_x, y_offset -p_beam_y + i * f_delta_y], flagpath] }
@@ -3005,6 +3029,7 @@ module Harpnotes
         to_anchor = arg[:to][:anchor] == :before ? -1 : 1
 
         verticalpos = arg[:vertical]
+        verticalcut = arg[:verticalcut]
 
         vertical_anchor = from # the endpoint to which the varticalpos relates to
         vertical_anchor = to if arg[:vertical_anchor] == :to
@@ -3014,6 +3039,7 @@ module Harpnotes
 
         start_orientation = Vector2d((((start_of_vertical - from) * [1, 0]).normalize).x, 0)
         end_orientation   = Vector2d((((end_of_vertical - to) * [1, 0]).normalize).x, 0)
+        vert_orientation  = Vector2d(0, (((start_of_vertical - end_of_vertical) * [0, 1]).normalize).y)
 
         start_offset = from_offset * [start_orientation.x, from_anchor] # 1 start after -1 start before
         # offset of array top
@@ -3026,40 +3052,73 @@ module Harpnotes
         #start_of_jumpline = from + [start_offset.x * from_offset.x, +from_offset.y]
         #end_of_jumpline   = to + [end_offset.x * to_offset.x, -to_offset.y]
 
+        #
+        #  p4 <------------------p3
+        #                         |
+        #                        vp3
+        #
+        #
+        #                        vp3
+        #                         |
+        #   p1 ------------------p2
+        #
+        #
+
+
+
         # line points
         p1      = from + start_offset
         p2      = start_of_vertical
         p3      = end_of_vertical
         p4      = to + end_offset
-        p4_line = to + end_offset + end_orientation * [2, 0] # end of line such that it ends inside of the arrow
+        p4_line = to + end_offset + end_orientation * [2, 0]    # end of line such that it ends inside of the arrow
 
         # arrow points
+        # arrow path is p4 a1 a2 p4
         a1 = p4 + end_orientation * 2.5 + [0, 1]
         a2 = p4 + end_orientation * 2.5 - [0, 1]
-        a3 = p4
 
-        # covert path to relative
-        # relative line points
-        rp2 = p2 - p1
-        rp3 = p3 - p2
-        rp4 = p4_line - p3
+        dy = (p3.y - p2.y)
+        verticalcuty = dy > 0 ? verticalcut: -verticalcut
+        verticalcuty = dy if verticalcut == 0
 
-        # relative array points
-        ra1 = a1 - p4
-        ra2 = a2 - a1
-        ra3 = p4 - a2
+        vcp2 = p2 + [0, verticalcuty]
+        vcp2_line = vcp2 + vert_orientation
 
+        vcp3 = p3 - [0, verticalcuty]
+
+        # points for vertical arrows
+        a3 = vcp2 + vert_orientation * 1.5 + [0.5, 0]
+        a4 = vcp2 + vert_orientation * 1.5 - [0.5, 0]
+
+        if verticalcut == 0
+          vcutarrow = []
+        else
+          vcutarrow = [["M", vcp2.x, vcp2.y],
+                      ["L", a3.x, a3.y],
+                      ["L", a4.x, a4.y],
+                      ["L", vcp2.x, vcp2.y],
+                      ['Z']
+                     ]
+        end
         path = [
-            [["M", p1.x, p1.y],
-             ['l', rp2.x, rp2.y],
-             ['l', rp3.x, rp3.y],
-             ['l', rp4.x, rp4.y]],
-            [['M', p4.x, p4.y],
-             ['l', ra1.x, ra1.y],
-             ['l', ra2.x, ra2.y],
-             ['l', ra3.x, ra3.y],
-             ['z']]
+            [["M", *p1],   # horizontal
+             ['l', *(p2-p1)],
+             ['l', *(vcp2_line-p2) ], # vertical1
+
+             ['M', *vcp3 ], # vertical2
+             ['L', *p3],
+
+             ['L', *p4_line]], # horzontal
+
+            [['M', *p4],  # arrow of jumpline
+             ['l', *(a1-p4)],
+             ['l', *(a2-a1)],
+             ['l', *(p4-a2)],
+             ['z']],
+            vcutarrow
         ]
+
         path
       end
 
