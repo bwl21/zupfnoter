@@ -637,7 +637,8 @@ class Controller
       end
 
       def expand_lyrics_keys(keys)
-        @editor.get_config_model.first.dig(:extract, '0', :lyrics).keys.map do|lkey|
+        lyrics  = @editor.get_config_model.first.dig(:extract, '0', :lyrics) || {}
+        lyrics.keys.map do|lkey|
           expand_extract_keys(keys.map{|key| "lyrics.#{lkey}.#{key}"})
         end.flatten
       end
