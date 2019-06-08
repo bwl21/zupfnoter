@@ -1825,9 +1825,9 @@ module Harpnotes
         a = (xp <=> x) + 2
         b = (xn <=> x) + 2
 
-        if limit_a3 && x < 10
+        if x < 10
           [:r, :r]
-        elsif limit_a3 && x > 410
+        elsif  x > 410
           [:l, :l]
         else
           NOTE_POSITION_LOOKUP["#{a}#{b}"]
