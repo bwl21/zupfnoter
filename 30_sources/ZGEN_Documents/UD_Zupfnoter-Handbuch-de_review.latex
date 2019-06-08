@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version v\_1.11.2
+Version v\_1.11.2-9-g5aea38b
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -7406,8 +7406,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \end{itemize}
 
 \hypertarget{produce}{%
-\subsection{\texorpdfstring{\texttt{produce} -
-Ausz\"{u}ge}{produce - Ausz\"{u}ge}}\label{produce}}
+\subsection{\texorpdfstring{\texttt{produce} - PDF f\"{u}r
+Ausz\"{u}ge}{produce - PDF f\"{u}r Ausz\"{u}ge}}\label{produce}}
 
 Hier kannst du eine Liste der Auszu\"{u}ge angeben, f\"{u}r welche eine
 PDF-DAtei mit erzeugt werden soll.
@@ -7548,6 +7548,11 @@ Er ist hier aufgef\"{u}hrt, um die Vorlagen selbst zu dokumentieren.
 \begin{verbatim}
     "templates": {
       "annotations" : {"pos": [-5, -6], "text": "_vorlage_"},
+      "extracts"    : {
+        "filenamepart" : "-",
+        "notes"        : {"T01_number_extract": {"text": "{{extract_filename}}"}},
+        "title"        : ""
+      },
       "images"      : {
         "height"    : 100,
         "imagename" : "",
@@ -7636,6 +7641,122 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 "text": "_vorlage_"
 \end{verbatim}
 \end{itemize}
+
+\hypertarget{templates.extracts}{%
+\subsection{\texorpdfstring{\texttt{templates.extracts} -
+Ausz\"{u}ge}{templates.extracts - Ausz\"{u}ge}}\label{templates.extracts}}
+
+TODO:\marginpar{TODO} Helptext f\"{u}r templates.extracts einf\"{u}gen
+
+\begin{verbatim}
+    "extracts": {
+      "filenamepart" : "-",
+      "notes"        : {"T01_number_extract": {"text": "{{extract_filename}}"}},
+      "title"        : ""
+    }
+      
+\end{verbatim}
+
+\hypertarget{templates.extracts.filenamepart}{%
+\subsection{\texorpdfstring{\texttt{templates.extracts.filenamepart} -
+Filename-Zusatz}{templates.extracts.filenamepart - Filename-Zusatz}}\label{templates.extracts.filenamepart}}
+
+TODO:\marginpar{TODO} Helptext f\"{u}r templates.extracts.filenamepart
+einf\"{u}gen
+
+\begin{verbatim}
+    "filenamepart": "-"
+      
+\end{verbatim}
+
+\hypertarget{templates.extracts.notes}{%
+\subsection{\texorpdfstring{\texttt{templates.extracts.notes} -
+Seitenbeschriftungen}{templates.extracts.notes - Seitenbeschriftungen}}\label{templates.extracts.notes}}
+
+Hier kannst du eine Seitenbeschriftungen hinzuf\"{u}gen. Beim
+Einf\"{u}gen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer
+anstelle der \texttt{.0}.
+
+\begin{quote}
+\textbf{Hinweis}: Es kann aber auch sinnvoll sein eine sprechende
+Bezeichnung f\"{u}r die Beschriftung manuell vorzugeben um ihrer
+spezifische Verwendung hervorzuheben z.B. \texttt{notes.T\_Copyright}.
+Das ist allerdings nur in der Textansicht m\"{o}glich.
+\end{quote}
+
+\begin{verbatim}
+    "notes": {"T01_number_extract": {"text": "{{extract_filename}}"}}
+      
+\end{verbatim}
+
+\hypertarget{templates.extracts.notes.T01_number_extract}{%
+\subsection{\texorpdfstring{\texttt{templates.extracts.notes.T01\_number\_extract}
+- T01
+Auszug-Nummer}{templates.extracts.notes.T01\_number\_extract - T01 Auszug-Nummer}}\label{templates.extracts.notes.T01_number_extract}}
+
+TODO:\marginpar{TODO} Helptext f\"{u}r
+templates.extracts.notes.T01\_number\_extract einf\"{u}gen
+
+\begin{verbatim}
+    "T01_number_extract": {"text": "{{extract_filename}}"}
+      
+\end{verbatim}
+
+\hypertarget{templates.extracts.notes.T01_number_extract.text}{%
+\subsection{\texorpdfstring{\texttt{templates.extracts.notes.T01\_number\_extract.text}
+-
+Text}{templates.extracts.notes.T01\_number\_extract.text - Text}}\label{templates.extracts.notes.T01_number_extract.text}}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
+  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
+  ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
+
+\begin{verbatim}
+"text": "{{extract_filename}}"
+\end{verbatim}
+\end{itemize}
+
+\hypertarget{templates.extracts.title}{%
+\subsection{\texorpdfstring{\texttt{templates.extracts.title} -
+Titel}{templates.extracts.title - Titel}}\label{templates.extracts.title}}
+
+TODO:\marginpar{TODO} Helptext f\"{u}r templates.extracts.title
+einf\"{u}gen
+
+\begin{verbatim}
+    "title": ""
+      
+\end{verbatim}
 
 \hypertarget{templates.images}{%
 \subsection{\texorpdfstring{\texttt{templates.images} -

@@ -251,6 +251,9 @@
     "jumpline_anchor_close": "Sprungl.Anker nah",
     "jumpline_anchor_medium": "Sprungl.Anker mittel",
     "jumpline_anchor_wide": "Sprungl.Anker weit",
+    "jumpline_close": "Sprunglinien geschlossen",
+    "jumpline_open": "Sprunglinien offen",
+    "jumpline_vcut": "Sprungl.vert.länge",
     "jumplines": "Sprunglinien",
     "jumptarget": "Sprungziel",
     "Jumptarget": "Sprungziel",
@@ -529,7 +532,6 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
-
 
 
     "_ende_der_liste": ""

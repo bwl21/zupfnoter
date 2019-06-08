@@ -694,7 +694,7 @@ class Controller
                                                'layout.limit_a3', 'layout.DRAWING_AREA_SIZE',
 
                                                'layout.packer.pack_method', 'layout.packer.pack_max_spreadfactor', 'layout.packer.pack_min_increment',
-                                               'layout.jumpline_anchor',
+                                               'layout.jumpline_anchor', 'layout.jumpline_vcut',
                                                'layout.color.color_default', 'layout.color.color_variant1', 'layout.color.color_variant2',
                                                'layout.bottomup', 'layout.beams'
 
@@ -705,7 +705,7 @@ class Controller
             repeatsigns:           {keys: expand_extract_keys(['repeatsigns.voices',
                                                                'repeatsigns.left.pos', 'repeatsigns.left.text', 'repeatsigns.left.style',
                                                                'repeatsigns.right.pos', 'repeatsigns.right.text', 'repeatsigns.right.style',
-                                                               'layout.jumpline_anchor'
+                                                               'layout.jumpline_anchor', 'layout.jumpline_vcut'
                                                               ])},
 
 
@@ -734,6 +734,7 @@ class Controller
             /^extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)$/ => {keys: ["pos", "align"]},
             /^extract\.(\d+)\.notebound\.minc\.(\d+)$/                              => {keys: ["minc_f"]},
             /^extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)$/                 => {keys: ["cp1", "cp2"]},
+##            /^extract\.(\d+)\.notebound\.c_jumplines\.v_(\d+)\.(\d+)$/              => {keys: ["p_repeat", "from.jumpline_vcut", "to.jumpline_vcut"]},
             /^extract\.(\d+)\.legend$/                                              => {keys: ["pos", "align", "spos", "style"]},
             /^extract\.(\d+)\.lyrics\.(\d)$/                                        => {keys: ["verses", "pos", "style"]},
             /^extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)$/                 => {keys: ['text', 'pos', 'style']},

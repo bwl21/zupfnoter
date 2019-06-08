@@ -28,7 +28,7 @@ module InitConf
                      :limit_a3, :LINE_THIN, :LINE_MEDIUM, :LINE_THICK, :ELLIPSE_SIZE, :REST_SIZE,
                      :DRAWING_AREA_SIZE,
                      :instrument, :bottomup, :beams, :packer, :pack_method, :pack_max_spreadfactor, :pack_min_increment,
-                     :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING, :jumpline_anchor,
+                     :sortmark, :show, :fill, :size, :PITCH_OFFSET, :X_OFFSET, :X_SPACING, :jumpline_anchor, :jumpline_vcut,
                      # sort within printer
                      :a3_offset, :a4_offset, :a4_pages, # sort within layout
 
@@ -165,6 +165,8 @@ module InitConf
                  jumpline_anchor_close:  {jumpline_anchor: [3, 1]},
                  jumpline_anchor_medium: {jumpline_anchor: [5, 1]},
                  jumpline_anchor_wide:   {jumpline_anchor: [10, 1]},
+                 jumpline_open:          {jumpline_vcut: 3},
+                 jumpline_close:         {jumpline_vcut: 0},
              },
 
              instrument: {

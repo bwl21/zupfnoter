@@ -158,7 +158,8 @@ module Ajv
                    {:limit_a3        => {:type => "boolean"},
                     :beams           => {:type => "boolean"},
                     :bottomup        => {:type => "boolean"},
-                    :jumpline_anchor => {:'$ref' => '#/definitions/pos'}, # todo: remove this it is there again below
+                    :jumpline_anchor => {:'$ref' => '#/definitions/pos'},
+                    :jumpline_vcut   => {:type => 'number'},
                     :LINE_THIN         => {:type => "number"},
                     :LINE_MEDIUM       => {:type => "number"},
                     :LINE_THICK        => {:type => "number"},
