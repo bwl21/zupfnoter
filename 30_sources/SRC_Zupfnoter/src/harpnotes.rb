@@ -3094,27 +3094,27 @@ module Harpnotes
         if verticalcut == 0
           vcutarrow = []
         else
-          vcutarrow = [["M", vcp2.x, vcp2.y],
-                      ["L", a3.x, a3.y],
-                      ["L", a4.x, a4.y],
-                      ["L", vcp2.x, vcp2.y],
-                      ['Z']
-                     ]
+          vcutarrow = [["M", *(vcp2)],
+                       ["l", *(a3 - vcp2)],
+                       ["l", *(a4 - a3)],
+                       ["l", *(vcp2 - a4)],
+                       ['z']
+          ]
         end
         path = [
-            [["M", *p1],   # horizontal
-             ['l', *(p2-p1)],
-             ['l', *(vcp2_line-p2) ], # vertical1
+            [["M", *p1], # horizontal
+             ['l', *(p2 - p1)],
+             ['l', *(vcp2_line - p2)], # vertical1
 
-             ['M', *vcp3 ], # vertical2
+             ['M', *vcp3], # vertical2
              ['L', *p3],
 
              ['L', *p4_line]], # horzontal
 
-            [['M', *p4],  # arrow of jumpline
-             ['l', *(a1-p4)],
-             ['l', *(a2-a1)],
-             ['l', *(p4-a2)],
+            [['M', *p4], # arrow of jumpline
+             ['l', *(a1 - p4)],
+             ['l', *(a2 - a1)],
+             ['l', *(p4 - a2)],
              ['z']],
             vcutarrow
         ]
