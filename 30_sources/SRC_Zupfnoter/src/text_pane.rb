@@ -204,6 +204,23 @@ module Harpnotes
     end
 
 
+    def edit_unisons(mode)
+      selectionrange = %x{#{@editor}.selection.getRange()};
+      oldvalue = `#{@editor}.getSession().doc.getTextRange(#{editor}.selection.getRange());`
+      if oldvalue.empty?
+        raise I18n.t("Selection is empty")
+      else
+        regexp = /\[([\^\_=]?[a-zA-Z][',]?)\s*(([\^\_=]?[a-zA-Z][',]?\s*)*)([\^\_=]?[a-zA-Z][',]?)+\]/
+        newvalue = oldvalue
+        newvalue = oldvalue.gsub(regexp){|i| "#{$1}"} if mode=="replaceByFirst"
+        newvalue = oldvalue.gsub(regexp){|i| "#{$4}"} if mode=="replaceByLast"
+        newvalue = oldvalue.gsub(regexp){|i| "[#{$4}#{$2}#{$1}]"} if mode=="swapFirstWithLast"
+
+        %x{#{editor}.session.replace(#{selectionrange}, #{newvalue});}
+      end
+      nil
+    end
+
     #
     # Get the border of the current selection
     #

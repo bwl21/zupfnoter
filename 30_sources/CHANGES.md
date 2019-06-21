@@ -10,6 +10,7 @@
 * now support unlimited extracts #268
 * improve configuration of legend and lyrics #270
 * support open jmplines #271
+* refactoring of unisons #272
 
 ## Compatibility
 

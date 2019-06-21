@@ -2374,6 +2374,31 @@ Für Projektarbeit mit Vorlagen wird folgendes Vorgehen empfohlen:
 > jedoch als Dokumentation hilfreich, welche Vorlage bei der Erstellung
 > des Stückes verwendet wurde.
 
+### Auflösen von Akkorden
+
+Manchmal bekommt man XML-Dateien bei denen Mehrklänge nicht auf einzelne
+Stimmen aufgeteilt sind, ondern in Mehrklängen dargestellt werden. Für
+Tischharfen kann es vorteilhaft sein, diese Mehrklänge aufzulösen.
+Hierfür ist folgendes Vorgehen sinnvoll:
+
+1.  Die Stimme mit den Mehrklängen kopieren, neu Einfügen und eine neue
+    Stimmnummer vergeben.
+
+2.  Alle Noten der neuen Stimme selektieren
+
+3.  Im Menü `Bearbeiten / Mehrklang zu erster Note` bzw.
+    `Bearbeiten / Mehrklang zu letzter Note` aufrufen.
+
+Es kann auch sein, dass die Flusslinie bei Mehrklängen am "falschen
+Ende" anschließt. Bei Sopran sollte die Flußlinie an der höchsten Noten
+anschließen. Bei den Bass-Stimmen möchte man dagegen dass die Flußlinie
+and der tiefsten Noten anschließt. Mit folgenden Schritten kann man die
+erste und letzte Note eines Mehrklanges vertauschen:
+
+2.  Alle Noten der Stimme selektieren
+
+3.  Im Menü `Bearbeiten / Noten` in Mehrklang tauschen\` aufrufen.
+
 ### Parameter in der Zupfnoter-URL
 
 In der Adressleiste des Browsers können Parameter übergeben wreden. Das

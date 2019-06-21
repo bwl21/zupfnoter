@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version v\_1.11.2-9-g5aea38b
+Version v\_1.11.2-11-g1ce13d9
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -4322,6 +4322,45 @@ Wirkung mehr weil die \texttt{F:} - zeile nun keinen Platzhalter mehr
 enth\"{a}lt. Sie sind jedoch als Dokumentation hilfreich, welche Vorlage
 bei der Erstellung des St\"{u}ckes verwendet wurde.
 \end{quote}
+
+\hypertarget{aufloux308sen-von-akkorden}{%
+\subsubsection{Aufl\"{o}sen von
+Akkorden}\label{aufloux308sen-von-akkorden}}
+
+Manchmal bekommt man XML-Dateien bei denen Mehrkl\"{a}nge nicht auf
+einzelne Stimmen aufgeteilt sind, ondern in Mehrkl\"{a}ngen dargestellt
+werden. F\"{u}r Tischharfen kann es vorteilhaft sein, diese
+Mehrkl\"{a}nge aufzul\"{o}sen. Hierf\"{u}r ist folgendes Vorgehen
+sinnvoll:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Die Stimme mit den Mehrkl\"{a}ngen kopieren, neu Einf\"{u}gen und eine
+  neue Stimmnummer vergeben.
+\item
+  Alle Noten der neuen Stimme selektieren
+\item
+  Im Men\"{u} \texttt{Bearbeiten\ /\ Mehrklang\ zu\ erster\ Note} bzw.
+  \texttt{Bearbeiten\ /\ Mehrklang\ zu\ letzter\ Note} aufrufen.
+\end{enumerate}
+
+Es kann auch sein, dass die Flusslinie bei Mehrkl\"{a}ngen am ``falschen
+Ende'' anschlie\ss t. Bei Sopran sollte die Flu\ss linie an der
+h\"{o}chsten Noten anschlie\ss en. Bei den Bass-Stimmen m\"{o}chte man
+dagegen dass die Flu\ss linie and der tiefsten Noten anschlie\ss t. Mit
+folgenden Schritten kann man die erste und letzte Note eines Mehrklanges
+vertauschen:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Alle Noten der Stimme selektieren
+\item
+  Im Men\"{u} \texttt{Bearbeiten\ /\ Noten} in Mehrklang tauschen`
+  aufrufen.
+\end{enumerate}
 
 \hypertarget{parameter-in-der-zupfnoter-url}{%
 \subsubsection{Parameter in der

@@ -149,6 +149,18 @@ class Controller
         $log.benchmark("set_segments") { select_by_time_segments(time_ranges) }
       end
     end
+
+    @commands.add_command(:editunison) do |c|
+      c.undoable = false
+      c.add_parameter(:mode, :string) do |parameter|
+        parameter.set_default { :false }
+        parameter.set_help { "select intended operation (replaceByFirst | replaceByLast | swapFirstWithLast)" }
+      end
+      c.set_help { "edit unison" }
+      c.as_action do |args|
+        @editor.edit_unisons(args[:mode])
+      end
+    end
   end
 
   def __ic_02_play_commands

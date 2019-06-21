@@ -688,6 +688,24 @@ function init_w2ui(uicontroller) {
             text: "Select in all voices",
             icon: "fa fa-bars",
             tooltip: "select the current notes in all voices"
+          },
+          {
+            id: "editunison:replaceByFirst",
+            text: "Replace unison by first note",
+            icon: "fa fa-bars",
+            tooltip: "Replace all unisons in the selection by the first note"
+          },
+          {
+            id: "editunison:replaceByLast",
+            text: "Replace unison by last note",
+            icon: "fa fa-bars",
+            tooltip: "Replace all unisons in the selection by the last note"
+          },
+          {
+            id: "editunison:swapFirstWithLast",
+            text: "Swap fist and last note in unison",
+            icon: "fa fa-bars",
+            tooltip: "Swap first and last note of all unisons in the selection"
           }
         ]
       },
@@ -746,7 +764,12 @@ function init_w2ui(uicontroller) {
       config_event = event.target.split(":")
       if (['edit_actions'].includes(config_event[0])) {
         if (config_event[1]) {
-          uicontroller.$handle_command(event.target.split(":")[1])
+          if (config_event[2]) {
+            uicontroller.$handle_command(config_event[1] + " " + config_event[2]) ; // this is for command with arguments such as editunison
+          }
+          else {
+            uicontroller.$handle_command(config_event[1])
+          }
         }
       }
 
