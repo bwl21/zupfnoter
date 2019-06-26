@@ -27626,11 +27626,17 @@ if (goto$ == null) goto$ = nil;
               return [endbar, startbar];}, TMP_189.$$s = self, TMP_189.$$arity = 1, TMP_189)).$flatten()};
           res_annotations = $send($send(voice, 'select', [], (TMP_190 = function(c){var self = TMP_190.$$s || this;
 if (c == null) c = nil;
-          return c['$is_a?'](Opal.const_get_relative($nesting, 'NoteBoundAnnotation'))}, TMP_190.$$s = self, TMP_190.$$arity = 1, TMP_190)), 'map', [], (TMP_191 = function(annotation){var self = TMP_191.$$s || this, $c, TMP_192, notebound_pos_key = nil, show = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
+          return c['$is_a?'](Opal.const_get_relative($nesting, 'NoteBoundAnnotation'))}, TMP_190.$$s = self, TMP_190.$$arity = 1, TMP_190)), 'map', [], (TMP_191 = function(annotation){var self = TMP_191.$$s || this, $c, TMP_192, notebound_pos_key = nil, show_from_config = nil, show = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
 if (annotation == null) annotation = nil;
           
             notebound_pos_key = $rb_plus(annotation.$conf_key(), ".pos");
-            show = ($truthy($c = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".show"))) ? $c : true);
+            show_from_config = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".show"));
+            debugger;
+            show = (function() {if ($truthy(show_from_config['$nil?']())) {
+              return true
+              } else {
+              return show_from_config
+            }; return nil; })();
             if ($truthy(notebound_pos_key)) {
               
               conf_key = "" + "extract." + (print_variant_nr) + "." + (notebound_pos_key);
@@ -32750,7 +32756,7 @@ if (e == null) e = nil;
           self.$raise(Opal.const_get_relative($nesting, 'I18n').$t("Selection is empty"))
           } else {
           
-          regexp = /\[([\^\_=]?[a-zA-Z][',]?)\s*(([\^\_=]?[a-zA-Z][',]?\s*)*)([\^\_=]?[a-zA-Z][',]?)+\]/;
+          regexp = /\[([\^\_=]?[a-zA-Z][',]*)\s*(([\^\_=]?[a-zA-Z][',]*\s*)*)([\^\_=]?[a-zA-Z][',]*)+\]/;
           newvalue = oldvalue;
           if (mode['$==']("replaceByFirst")) {
             newvalue = $send(oldvalue, 'gsub', [regexp], (TMP_18 = function(i){var self = TMP_18.$$s || this, $a;
@@ -35085,7 +35091,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-11-g1ce13d9");
+  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-12-g22d48c28");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + (Opal.const_get_relative($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

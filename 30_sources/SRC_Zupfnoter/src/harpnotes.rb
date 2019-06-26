@@ -2193,7 +2193,9 @@ module Harpnotes
 
         res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           notebound_pos_key = annotation.conf_key + ".pos"
-          show              = show_options[:print_options_raw].get(annotation.conf_key + ".show") || true
+          show_from_config = show_options[:print_options_raw].get(annotation.conf_key + ".show")
+          debugger
+          show              = show_from_config.nil? ? true : show_from_config
           if notebound_pos_key
             conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
             annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
