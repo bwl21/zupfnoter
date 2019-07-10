@@ -39175,10 +39175,14 @@ Opal.modules["version-prod"] = function(Opal) {
   Opal.add_stubs(['$year', '$now']);
   
 <<<<<<< HEAD
+<<<<<<< HEAD
   Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-22-g3930171e");
 =======
   Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-15-g26561a5f");
 >>>>>>> first  compliation with opal 1.0
+=======
+  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-17-ga8ec3f5e");
+>>>>>>> see #274 now made it work with opal 1.0
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
