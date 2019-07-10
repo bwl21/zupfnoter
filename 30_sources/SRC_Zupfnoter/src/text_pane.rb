@@ -210,7 +210,7 @@ module Harpnotes
       if oldvalue.empty?
         raise I18n.t("Selection is empty")
       else
-        regexp = /\[([\^\_=]?[a-zA-Z][',]?)\s*(([\^\_=]?[a-zA-Z][',]?\s*)*)([\^\_=]?[a-zA-Z][',]?)+\]/
+        regexp = /\[([\^\_=]?[a-zA-Z][',]*)\s*(([\^\_=]?[a-zA-Z][',]*\s*)*)([\^\_=]?[a-zA-Z][',]*)+\]/
         newvalue = oldvalue
         newvalue = oldvalue.gsub(regexp){|i| "#{$1}"} if mode=="replaceByFirst"
         newvalue = oldvalue.gsub(regexp){|i| "#{$4}"} if mode=="replaceByLast"
