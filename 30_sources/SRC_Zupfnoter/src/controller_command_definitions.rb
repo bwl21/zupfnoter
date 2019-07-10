@@ -691,6 +691,8 @@ class Controller
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
             notes:                 {keys:                  expand_extract_keys(['legend.pos', 'legend.align', 'legend.spos', :notes]), newentry_handler: lambda { handle_command("addconf notes") },
                                     quicksetting_commands: _get_quicksetting_commands('notes')},
+            tcl:                   {keys: expand_extract_keys(['legend','notes.T01_number.pos', 'notes.T01_number_extract.pos', 'notes.T01_number.text', 'notes.T05_printed_extracts.pos',
+                                                               'stringnames.marks.vpos'])},
             lyrics:                {keys:             expand_lyrics_keys([:verses, :pos, :style]),
                                     newentry_handler: (@systemstatus[:view] == 0 ? lambda { handle_command("addconf lyrics") } : nil)
             },
