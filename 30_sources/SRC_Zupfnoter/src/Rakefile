@@ -162,7 +162,7 @@ def git_describe
 end
 
 desc "Build a distribution for the server"
-task :deploy => [:build, :build_worker, :buildUserManual] do
+task :deploy => [:build, :build_worker, :buildUserManual, :build_cli] do
 
 
   # prepare all requested folders
@@ -188,7 +188,7 @@ task :deploy => [:build, :build_worker, :buildUserManual] do
   ['w2ui.min.css', 'w2ui.min.js'].each { |f| cp "../vendor/w2ui/dist/#{f}", "#{OUTFOLDER}/webserver/vendor/w2ui/dist/#{f}" }
 
 
-  cp "../public/index.css", "#{OUTFOLDER}/webserver/public/index.css"
+  cp("../public/index.css", "#{OUTFOLDER}/webserver/public/index.css")
   cp("../public/icons/favicon.png", "#{OUTFOLDER}/webserver/public/icons/favicon.png")
   cp("../public/icons/underline.gif", "#{OUTFOLDER}/webserver/public/icons/underline.gif")
   Dir["../public/demos/*.abc"].each do |f|
