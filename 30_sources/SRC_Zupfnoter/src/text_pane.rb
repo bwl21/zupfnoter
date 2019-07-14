@@ -198,9 +198,8 @@ module Harpnotes
 
 
     def clear_selection
-      %x{
-      #{@editor}.selection.clearSelection()
-      }
+      %x{#{@editor}.selection.clearSelection()}
+      niil
     end
 
 
@@ -723,8 +722,9 @@ module Harpnotes
     end
 
     def _get_abc_from_editor
-      %x{return self.editor.getSession().getValue()}
-      nil
+      result = ""
+      %x{#{result} = self.editor.getSession().getValue()}
+      result
     end
 
     def _set_config_json(json, desc = "no desc", handleundo = true)
