@@ -651,7 +651,7 @@ function init_w2ui(uicontroller) {
 
       // handle view
       config_event = event.target.split(":")
-      if (config_event[0] = "tb_View"){
+      if (config_event[0] == "tb_View"){
         if (config_event[1]){
           uicontroller.$handle_command("view " + config_event[1])
         }
