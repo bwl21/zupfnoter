@@ -432,8 +432,7 @@ module Harpnotes
       color                    = COLORS[root.color]
       attr                     = {stroke: color}
       # these numbers ensure the same layout as before 1.10 for dashed
-      attr["stroke-dasharray"] = "#{3 / 2.84} #{3 / 2.84}" if root.style == :dashed
-      attr["stroke-dasharray"] = "#{1.5 / 2.84} #{1.5 / 2.84}" if root.style == :dotted
+      set_stroke_dasharray(attr, root)
       e                        = @paper.line(root.from.center[0], root.from.center[1], root.to.center[0], root.to.center[1], attr)
       #push_element(root, e)
       e
@@ -507,6 +506,8 @@ module Harpnotes
     def draw_path(root)
       color                  = COLORS[root.color]
       attr                   = {stroke: color, fill: 'none'}
+      set_stroke_dasharray(attr, root)
+
       attr[:fill]            = color if root.filled?
       attr['stroke-linecap'] = :round
       attr                   = attr.merge(@attr_for_on_contextmenu) # this is necessary for jumplines
@@ -531,6 +532,14 @@ module Harpnotes
           nil
         end
       end
+    end
+
+
+    # this sets the srokedash-array attribute depending on the style attribute of a drawable
+    # todo: make this configurable ...
+    def set_stroke_dasharray(attr, root)
+      attr["stroke-dasharray"] = "#{3 / 2.84} #{3 / 2.84}" if root.style == :dashed
+      attr["stroke-dasharray"] = "#{1.5 / 2.84} #{1.5 / 2.84}" if root.style == :dotted
     end
   end
 

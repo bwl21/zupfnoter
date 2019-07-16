@@ -964,11 +964,12 @@ module Harpnotes
       # @param [Array] path see class description for details
       # @param [Symbol] fill :filled makes the path to be filled
       # @param [Object] origin Reference to the origin object for tracing purposes
-      def initialize(path, fill = nil, origin = nil)
+      def initialize(path, fill = nil, origin = nil, style = :solid)
         super()
         @path   = path
         @fill   = fill
         @origin = origin
+        @style  = style
       end
 
       def filled?
@@ -1938,7 +1939,7 @@ module Harpnotes
         res_flow = voice.select { |c| c.is_a? Playable }.map do |playable|
           res = nil
           unless previous_note.nil?
-            # todo: remove this if clause or set to fals to turn flowline configuration off at all
+            # todo: remove this if clause or set to false to turn flowline configuration off at all
             if true # do_flowconf == true
               flowline_conf_key = "#{playable.znid}"
               conf_from_options = flowlines_conf[flowline_conf_key]
@@ -1990,7 +1991,35 @@ module Harpnotes
 
             # draw subflowline if both ends are visible
             if not previous_note.nil? and previous_note.visible and playable.visible
-              res = FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable, :dotted)
+
+              flowlines_conf_key     = "notebound.flowline.v_#{voice_nr}"
+              flowlines_conf         = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines
+
+              flowline_conf_key = "#{playable.znid}"
+              conf_from_options = flowlines_conf[flowline_conf_key]
+              if conf_from_options or do_flowconf == true
+                conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
+                conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+
+                p1 = Vector2d(previous_note.sheet_drawable.center)
+                p2 = Vector2d(playable.sheet_drawable.center)
+
+                ## note we use the name tuplet_options since we steal the code from tuplet - handling
+                tuplet_options = Confstack.new()
+                tuplet_options.push(default_tuplet_options)
+                tuplet_options.push(conf_from_options) rescue nil
+
+                tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
+
+                if do_flowconf == true
+                  draginfo = {handler: :tuplet, p1: p1.to_a, p2: p2.to_a, cp1: cp1.to_a, cp2: cp2.to_a, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
+                else
+                  draginfo = nil
+                end
+                res = Harpnotes::Drawing::Path.new(tiepath,nil, nil,:dotted).tap { |d| d.conf_key = conf_key_edit; d.draginfo = draginfo}
+              else
+                res = FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable, :dotted)
+              end
               #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
             end
 
@@ -2194,7 +2223,6 @@ module Harpnotes
         res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
           notebound_pos_key = annotation.conf_key + ".pos"
           show_from_config = show_options[:print_options_raw].get(annotation.conf_key + ".show")
-          debugger
           show              = show_from_config.nil? ? true : show_from_config
           if notebound_pos_key
             conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
