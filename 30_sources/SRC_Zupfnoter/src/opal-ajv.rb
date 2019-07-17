@@ -120,7 +120,9 @@ module Ajv
                                                          :additionalProperties => false,
                                                          :properties           => {
                                                              pos:   {:'$ref' => '#/definitions/pos'},
-                                                             align: {:'$ref' => '#/definitions/align'}
+                                                             align: {:'$ref' => '#/definitions/align'},
+                                                             show:  {:type => 'boolean'},
+                                                             text:  {:type => 'string'}
                                                          }
                                                      }
                                                  }
@@ -230,11 +232,12 @@ module Ajv
                                                                       :properties =>
                                                                           {:pos   => {:'$ref' => '#/definitions/pos'},
                                                                            :style => {:type => "string"}}},
-                                                      :partname   => {:type       => "object",
-                                                                      :required   => ["pos"],
-                                                                      :properties =>
-                                                                          {:pos   => {:'$ref' => '#/definitions/pos'},
-                                                                           :style => {:type => "string"}}},
+                                                      :partname => {:type       => "object",
+                                                                    :required   => ["pos"],
+                                                                    :properties =>
+                                                                        {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                         :style => {:type => "string"},
+                                                                         :show  => {:type => 'boolean'}}},
                                                       :variantend => {:type       => "object",
                                                                       :required   => ["pos"],
                                                                       :properties =>
