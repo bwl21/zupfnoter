@@ -11,6 +11,7 @@
 * improve configuration of legend and lyrics #270
 * support open jmplines #271
 * refactoring of unisons #272
+* subflowlines can now be reshaped #275
 
 ## Compatibility
 
