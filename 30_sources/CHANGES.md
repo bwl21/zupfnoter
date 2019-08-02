@@ -12,6 +12,7 @@
 * support open jmplines #271
 * refactoring of unisons #272
 * subflowlines can now be reshaped #275
+* improve visibility of ties #276
 
 ## Compatibility
 

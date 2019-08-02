@@ -2099,23 +2099,30 @@ module Harpnotes
           # so first we pick the ties
 
           if playable.tie_end?
-            p1      = Vector2d(tie_start.sheet_drawable.center) + [3, 0]
-            p2      = Vector2d(playable.sheet_drawable.center) + [3, 0]
+            tweak = $conf.get('layout.LINE_THICK')
+            dx = [tie_start.sheet_drawable.size[0], playable.sheet_drawable.size[0]].max + tweak
+            p1      = Vector2d(tie_start.sheet_drawable.center) + [dx, -tweak] #- tie_start.sheet_drawable.size[1]]
+            p2      = Vector2d(playable.sheet_drawable.center) + [dx, tweak] #+ playable.sheet_drawable.size[1]]
             tiepath = $conf['layout.bottomup'] ? make_slur_path(p2, p1) : make_slur_path(p1, p2)
-            result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
             if playable.is_a? Harpnotes::Music::SynchPoint
               playable.notes.each_with_index do |n, index|
                 begin
+
                   p1      = tie_start.notes[index]
-                  p1      = Vector2d(p1.sheet_drawable.center) + [3, 0]
-                  p2      = Vector2d(n.sheet_drawable.center) + [3, 0]
+                  dx = [p1.sheet_drawable.size[0], n.sheet_drawable.size[0]].max + tweak
+
+                  p1      = Vector2d(p1.sheet_drawable.center) + [dx, -tweak]# - p1.sheet_drawable.size[1]]
+                  p2      = Vector2d(n.sheet_drawable.center) + [dx, tweak]#n.sheet_drawable.size[1]]
                   tiepath = make_slur_path(p1, p2)
-                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') })
+                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THICK') })
                 rescue Exception => e
-                  $log.error("tied chords which doesn't have same number of notes", n.start_pos)
+                  $log.error(I18n.t("tied chords which don't have same number of notes"), n.start_pos)
                 end
               end
+            else
+              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THICK') })
             end
+
           end
           tie_start = playable if playable.tie_start?
 
