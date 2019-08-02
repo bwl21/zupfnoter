@@ -40376,26 +40376,27 @@ Opal.modules["consolelogger"] = function(Opal) {
   function $rb_gt(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs > rhs : lhs['$>'](rhs);
   }
-  function $rb_le(lhs, rhs) {
-    return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs <= rhs : lhs['$<='](rhs);
-  }
   function $rb_plus(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs + rhs : lhs['$+'](rhs);
   }
+  function $rb_le(lhs, rhs) {
+    return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs <= rhs : lhs['$<='](rhs);
+  }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $hash2 = Opal.hash2, $klass = Opal.klass, $send = Opal.send, $truthy = Opal.truthy, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$attr_reader', '$[]', '$now', '$clear_errors', '$clear_annotations', '$send', '$push', '$add_annotation', '$==', '$loglevel', '$join', '$write', '$loglevel?', '$info', '$-', '$>', '$count', '$call', '$to_sym', '$message', '$invert', '$<=', '$keys', '$private', '$first', '$+', '$last', '$<<', '$strftime', '$puts', '$write_html']);
+  Opal.add_stubs(['$attr_reader', '$attr', '$[]', '$now', '$clear_errors', '$clear_annotations', '$send', '$push', '$add_annotation', '$==', '$loglevel', '$join', '$write', '$loglevel?', '$info', '$-', '$>', '$count', '$+', '$call', '$to_sym', '$message', '$invert', '$<=', '$keys', '$private', '$first', '$last', '$<<', '$strftime', '$puts', '$write_html']);
   
   Opal.const_set($nesting[0], 'LOGLEVELS', $hash2(["message", "error", "warning", "info", "debug"], {"message": 0, "error": 1, "warning": 2, "info": 3, "debug": 4}));
   Opal.const_set($nesting[0], 'LOGICONS', $hash2(["message", "error", "warning", "info", "debug"], {"message": "icon-info-circled", "error": "icon-error-alt", "warning": "icon-attention", "info": "icon-info-circled", "debug": "icon-minus-squared"}));
   (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'Logger');
 
-    var $nesting = [self].concat($parent_nesting), $Logger_clear_annotations$1, $Logger_initialize$2, $Logger_clear_annotations$3, $Logger_log_from_worker$4, $Logger_error$5, $Logger_warning$6, $Logger_info$7, $Logger_debug$8, $Logger_message$9, $Logger_timestamp$10, $Logger_timestamp_start$11, $Logger_clear_errors$12, $Logger_has_errors$ques$13, $Logger_get_errors$14, $Logger_get_status$15, $Logger_set_status$16, $Logger_benchmark$17, $Logger_loglevel$eq$18, $Logger_loglevel$19, $Logger_loglevel$ques$20, $Logger_loglevels$21, $Logger_add_annotation$22, $Logger_write$23;
+    var $nesting = [self].concat($parent_nesting), $Logger_clear_annotations$1, $Logger_initialize$2, $Logger_clear_annotations$3, $Logger_log_from_worker$4, $Logger_error$5, $Logger_warning$6, $Logger_info$7, $Logger_debug$8, $Logger_message$9, $Logger_timestamp$10, $Logger_timestamp_start$11, $Logger_clear_errors$12, $Logger_has_errors$ques$13, $Logger_get_errors$14, $Logger_get_status$15, $Logger_set_status$16, $Logger_benchmark$17, $Logger_console_log$18, $Logger_loglevel$eq$19, $Logger_loglevel$20, $Logger_loglevel$ques$21, $Logger_loglevels$22, $Logger_add_annotation$23, $Logger_write$24;
 
-    self.$$prototype.captured_errors = self.$$prototype.timestamp = self.$$prototype.annotations = self.$$prototype.loglevel = nil;
+    self.$$prototype.captured_errors = self.$$prototype.timestamp = self.$$prototype.annotations = self.$$prototype.benchmarkstack = self.$$prototype.loglevel = nil;
     
     self.$attr_reader("annotations");
+    self.$attr("benchmarkstack");
     
     Opal.def(self, '$clear_annotations', $Logger_clear_annotations$1 = function $$clear_annotations() {
       var self = this;
@@ -40410,6 +40411,7 @@ Opal.modules["consolelogger"] = function(Opal) {
       self.console = element_id;
       self.loglevel = $$($nesting, 'LOGLEVELS')['$[]']("info");
       self.timestamp = $$($nesting, 'Time').$now();
+      self.benchmarkstack = 0;
       self.$clear_errors();
       return self.$clear_annotations();
     }, $Logger_initialize$2.$$arity = 1);
@@ -40577,40 +40579,48 @@ Opal.modules["consolelogger"] = function(Opal) {
       
       if ($iter) $Logger_benchmark$17.$$p = null;;
       s = $$($nesting, 'Time').$now();
+      self.benchmarkstack = $rb_plus(self.benchmarkstack, 1);
       result = block.$call();
-      $gvars.log.$info("" + "  elapsed " + ($rb_minus($$($nesting, 'Time').$now(), s)) + " sec for " + (msg));
+      $gvars.log.$info("" + (self.benchmarkstack) + "  elapsed " + ($rb_minus($$($nesting, 'Time').$now(), s)) + " sec for " + (msg));
+      self.benchmarkstack = $rb_minus(self.benchmarkstack, 1);
       return result;
     }, $Logger_benchmark$17.$$arity = 1);
     
-    Opal.def(self, '$loglevel=', $Logger_loglevel$eq$18 = function(level) {
+    Opal.def(self, '$console_log', $Logger_console_log$18 = function $$console_log(msg) {
+      var self = this;
+
+      return console.log(msg)
+    }, $Logger_console_log$18.$$arity = 1);
+    
+    Opal.def(self, '$loglevel=', $Logger_loglevel$eq$19 = function(level) {
       var $a, self = this;
       if ($gvars.log == null) $gvars.log = nil;
 
       
       self.loglevel = ($truthy($a = $$($nesting, 'LOGLEVELS')['$[]'](level.$to_sym())) ? $a : $$($nesting, 'LOGLEVELS')['$[]']("debug"));
       return $gvars.log.$message("" + "logging messages up to " + ($$($nesting, 'LOGLEVELS').$invert()['$[]'](self.loglevel)));
-    }, $Logger_loglevel$eq$18.$$arity = 1);
+    }, $Logger_loglevel$eq$19.$$arity = 1);
     
-    Opal.def(self, '$loglevel', $Logger_loglevel$19 = function $$loglevel() {
+    Opal.def(self, '$loglevel', $Logger_loglevel$20 = function $$loglevel() {
       var self = this;
 
       return $$($nesting, 'LOGLEVELS').$invert()['$[]'](self.loglevel)
-    }, $Logger_loglevel$19.$$arity = 0);
+    }, $Logger_loglevel$20.$$arity = 0);
     
-    Opal.def(self, '$loglevel?', $Logger_loglevel$ques$20 = function(type) {
+    Opal.def(self, '$loglevel?', $Logger_loglevel$ques$21 = function(type) {
       var $a, self = this;
 
       return $rb_le(($truthy($a = $$($nesting, 'LOGLEVELS')['$[]'](type)) ? $a : $$($nesting, 'LOGLEVELS')['$[]']("warning")), self.loglevel)
-    }, $Logger_loglevel$ques$20.$$arity = 1);
+    }, $Logger_loglevel$ques$21.$$arity = 1);
     
-    Opal.def(self, '$loglevels', $Logger_loglevels$21 = function $$loglevels() {
+    Opal.def(self, '$loglevels', $Logger_loglevels$22 = function $$loglevels() {
       var self = this;
 
       return $$($nesting, 'LOGLEVELS').$keys()
-    }, $Logger_loglevels$21.$$arity = 0);
+    }, $Logger_loglevels$22.$$arity = 0);
     self.$private();
     
-    Opal.def(self, '$add_annotation', $Logger_add_annotation$22 = function $$add_annotation(msg, start_pos, end_pos, type) {
+    Opal.def(self, '$add_annotation', $Logger_add_annotation$23 = function $$add_annotation(msg, start_pos, end_pos, type) {
       var $a, self = this, the_start = nil, the_end = nil;
 
       
@@ -40620,8 +40630,8 @@ Opal.modules["consolelogger"] = function(Opal) {
         the_end = ($truthy($a = end_pos) ? $a : [the_start.$first(), $rb_plus(the_start.$last(), 1)]);
         self.annotations['$<<']($hash2(["start_pos", "end_pos", "text", "type"], {"start_pos": the_start, "end_pos": the_end, "text": msg, "type": type}));};
       return nil;
-    }, $Logger_add_annotation$22.$$arity = 4);
-    return (Opal.def(self, '$write', $Logger_write$23 = function $$write(type, msg) {
+    }, $Logger_add_annotation$23.$$arity = 4);
+    return (Opal.def(self, '$write', $Logger_write$24 = function $$write(type, msg) {
       var self = this, time = nil;
 
       if ($truthy(self['$loglevel?'](type))) {
@@ -40631,15 +40641,15 @@ Opal.modules["consolelogger"] = function(Opal) {
       } else {
         return nil
       }
-    }, $Logger_write$23.$$arity = 2), nil) && 'write';
+    }, $Logger_write$24.$$arity = 2), nil) && 'write';
   })($nesting[0], null, $nesting);
   (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'NodeLogger');
 
-    var $nesting = [self].concat($parent_nesting), $NodeLogger_write$24;
+    var $nesting = [self].concat($parent_nesting), $NodeLogger_write$25;
 
     self.$$prototype.loglevel = nil;
-    return (Opal.def(self, '$write', $NodeLogger_write$24 = function $$write(type, msg) {
+    return (Opal.def(self, '$write', $NodeLogger_write$25 = function $$write(type, msg) {
       var $a, self = this, current_level = nil, time = nil;
 
       
@@ -40651,29 +40661,29 @@ Opal.modules["consolelogger"] = function(Opal) {
       } else {
         return nil
       };
-    }, $NodeLogger_write$24.$$arity = 2), nil) && 'write'
+    }, $NodeLogger_write$25.$$arity = 2), nil) && 'write'
   })($nesting[0], $$($nesting, 'Logger'), $nesting);
   return (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'ConsoleLogger');
 
-    var $nesting = [self].concat($parent_nesting), $ConsoleLogger_initialize$25, $ConsoleLogger_write$26;
+    var $nesting = [self].concat($parent_nesting), $ConsoleLogger_initialize$26, $ConsoleLogger_write$27;
 
     self.$$prototype.loglevel = self.$$prototype.console = nil;
     
     
-    Opal.def(self, '$initialize', $ConsoleLogger_initialize$25 = function $$initialize(element_id) {
-      var $iter = $ConsoleLogger_initialize$25.$$p, $yield = $iter || nil, self = this, $zuper = nil, $zuper_i = nil, $zuper_ii = nil;
+    Opal.def(self, '$initialize', $ConsoleLogger_initialize$26 = function $$initialize(element_id) {
+      var $iter = $ConsoleLogger_initialize$26.$$p, $yield = $iter || nil, self = this, $zuper = nil, $zuper_i = nil, $zuper_ii = nil;
 
-      if ($iter) $ConsoleLogger_initialize$25.$$p = null;
+      if ($iter) $ConsoleLogger_initialize$26.$$p = null;
       // Prepare super implicit arguments
       for($zuper_i = 0, $zuper_ii = arguments.length, $zuper = new Array($zuper_ii); $zuper_i < $zuper_ii; $zuper_i++) {
         $zuper[$zuper_i] = arguments[$zuper_i];
       }
       
-      $send(self, Opal.find_super_dispatcher(self, 'initialize', $ConsoleLogger_initialize$25, false), $zuper, $iter);
+      $send(self, Opal.find_super_dispatcher(self, 'initialize', $ConsoleLogger_initialize$26, false), $zuper, $iter);
       return (self.console = element_id);
-    }, $ConsoleLogger_initialize$25.$$arity = 1);
-    return (Opal.def(self, '$write', $ConsoleLogger_write$26 = function $$write(type, msg) {
+    }, $ConsoleLogger_initialize$26.$$arity = 1);
+    return (Opal.def(self, '$write', $ConsoleLogger_write$27 = function $$write(type, msg) {
       var $a, self = this, current_level = nil, time = nil;
 
       
@@ -40686,7 +40696,7 @@ Opal.modules["consolelogger"] = function(Opal) {
       } else {
         return nil
       };
-    }, $ConsoleLogger_write$26.$$arity = 2), nil) && 'write';
+    }, $ConsoleLogger_write$27.$$arity = 2), nil) && 'write';
   })($nesting[0], $$($nesting, 'Logger'), $nesting);
 };
 
@@ -43158,7 +43168,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           $send(self.slur_index, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           tie_start = playables.$first();
-          res_slurs = $send(playables, 'inject', [[]], ($$179 = function(result, playable){var self = $$179.$$s || this, $$180, $$181, $$183, $$184, p1 = nil, p2 = nil, tiepath = nil;
+          res_slurs = $send(playables, 'inject', [[]], ($$179 = function(result, playable){var self = $$179.$$s || this, $$180, $$182, $$183, $$184, tweak = nil, dx = nil, p1 = nil, p2 = nil, tiepath = nil;
             if (self.slur_index == null) self.slur_index = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -43173,26 +43183,17 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             if ($truthy(playable['$tie_end?']())) {
               
-              p1 = $rb_plus(self.$Vector2d(tie_start.$sheet_drawable().$center()), [3, 0]);
-              p2 = $rb_plus(self.$Vector2d(playable.$sheet_drawable().$center()), [3, 0]);
+              tweak = $gvars.conf.$get("layout.LINE_THICK");
+              dx = $rb_plus([tie_start.$sheet_drawable().$size()['$[]'](0), playable.$sheet_drawable().$size()['$[]'](0)].$max(), tweak);
+              p1 = $rb_plus(self.$Vector2d(tie_start.$sheet_drawable().$center()), [dx, tweak['$-@']()]);
+              p2 = $rb_plus(self.$Vector2d(playable.$sheet_drawable().$center()), [dx, tweak]);
               tiepath = (function() {if ($truthy($gvars.conf['$[]']("layout.bottomup"))) {
                 return self.$make_slur_path(p2, p1)
               } else {
                 return self.$make_slur_path(p1, p2)
               }; return nil; })();
-              result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$180 = function(d){var self = $$180.$$s || this;
-                if ($gvars.conf == null) $gvars.conf = nil;
-
-              
-                
-                if (d == null) {
-                  d = nil;
-                };
-                $writer = [$gvars.conf.$get("layout.LINE_MEDIUM")];
-                $send(d, 'line_width=', Opal.to_a($writer));
-                return $writer[$rb_minus($writer["length"], 1)];}, $$180.$$s = self, $$180.$$arity = 1, $$180)));
               if ($truthy(playable['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint')))) {
-                $send(playable.$notes(), 'each_with_index', [], ($$181 = function(n, index){var self = $$181.$$s || this, $$182, e = nil;
+                $send(playable.$notes(), 'each_with_index', [], ($$180 = function(n, index){var self = $$180.$$s || this, $$181, e = nil;
                   if ($gvars.log == null) $gvars.log = nil;
 
                 
@@ -43207,10 +43208,11 @@ Opal.modules["harpnotes"] = function(Opal) {
                   try {
                     
                     p1 = tie_start.$notes()['$[]'](index);
-                    p1 = $rb_plus(self.$Vector2d(p1.$sheet_drawable().$center()), [3, 0]);
-                    p2 = $rb_plus(self.$Vector2d(n.$sheet_drawable().$center()), [3, 0]);
+                    dx = $rb_plus([p1.$sheet_drawable().$size()['$[]'](0), n.$sheet_drawable().$size()['$[]'](0)].$max(), tweak);
+                    p1 = $rb_plus(self.$Vector2d(p1.$sheet_drawable().$center()), [dx, tweak['$-@']()]);
+                    p2 = $rb_plus(self.$Vector2d(n.$sheet_drawable().$center()), [dx, tweak]);
                     tiepath = self.$make_slur_path(p1, p2);
-                    return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$182 = function(d){var self = $$182.$$s || this;
+                    return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$181 = function(d){var self = $$181.$$s || this;
                       if ($gvars.conf == null) $gvars.conf = nil;
 
                     
@@ -43218,16 +43220,29 @@ Opal.modules["harpnotes"] = function(Opal) {
                       if (d == null) {
                         d = nil;
                       };
-                      $writer = [$gvars.conf.$get("layout.LINE_MEDIUM")];
+                      $writer = [$gvars.conf.$get("layout.LINE_THICK")];
                       $send(d, 'line_width=', Opal.to_a($writer));
-                      return $writer[$rb_minus($writer["length"], 1)];}, $$182.$$s = self, $$182.$$arity = 1, $$182)));
+                      return $writer[$rb_minus($writer["length"], 1)];}, $$181.$$s = self, $$181.$$arity = 1, $$181)));
                   } catch ($err) {
                     if (Opal.rescue($err, [$$($nesting, 'Exception')])) {e = $err;
                       try {
-                        return $gvars.log.$error("tied chords which doesn't have same number of notes", n.$start_pos())
+                        return $gvars.log.$error($$($nesting, 'I18n').$t("tied chords which don't have same number of notes"), n.$start_pos())
                       } finally { Opal.pop_exception() }
                     } else { throw $err; }
-                  };}, $$181.$$s = self, $$181.$$arity = 2, $$181))};};
+                  };}, $$180.$$s = self, $$180.$$arity = 2, $$180))
+              } else {
+                result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$182 = function(d){var self = $$182.$$s || this;
+                  if ($gvars.conf == null) $gvars.conf = nil;
+
+                
+                  
+                  if (d == null) {
+                    d = nil;
+                  };
+                  $writer = [$gvars.conf.$get("layout.LINE_THICK")];
+                  $send(d, 'line_width=', Opal.to_a($writer));
+                  return $writer[$rb_minus($writer["length"], 1)];}, $$182.$$s = self, $$182.$$arity = 1, $$182)))
+              };};
             if ($truthy(playable['$tie_start?']())) {
               tie_start = playable};
             $send(playable.$slur_starts(), 'each', [], ($$183 = function(s){var self = $$183.$$s || this;
@@ -43318,7 +43333,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($c = goto$.$policy()['$[]']("from_anchor")) ? $c : "after");
             to_anchor = ($truthy($c = goto$.$policy()['$[]']("to_anchor")) ? $c : "before");
             vertical_anchor = ($truthy($c = goto$.$policy()['$[]']("vertical_anchor")) ? $c : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2160));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2167));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -53670,7 +53685,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-26-g1e91fd76");
+  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-29-g706f11ef");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
