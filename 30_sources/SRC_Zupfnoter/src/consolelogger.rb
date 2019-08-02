@@ -15,6 +15,7 @@ LOGICONS  = {
 class Logger
 
   attr_reader :annotations
+  attr :benchmarkstack
 
   def clear_annotations
     @annotations = []
@@ -24,6 +25,7 @@ class Logger
     @console   = element_id # Element.find("##{element_id}")
     @loglevel  = LOGLEVELS[:info]
     @timestamp = Time.now
+    @benchmarkstack = 0
     clear_errors
     clear_annotations
   end
@@ -112,9 +114,15 @@ class Logger
   # returns the result of the block
   def benchmark(msg, &block)
     s      = Time.now
+    @benchmarkstack  +=1
     result = block.call
-    $log.info("  elapsed #{Time.now() - s} sec for #{msg}")
+    $log.info("#{@benchmarkstack}  elapsed #{Time.now() - s} sec for #{msg}")
+    @benchmarkstack -=1
     result
+  end
+
+  def console_log(msg)
+    %x{console.log(#{msg})}
   end
 
   # adjust the level to filter the messages
