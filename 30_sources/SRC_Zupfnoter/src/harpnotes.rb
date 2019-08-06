@@ -2099,24 +2099,23 @@ module Harpnotes
           # so first we pick the ties
 
           if playable.tie_end?
-            tweak = $conf.get('layout.LINE_THICK')
-            dx = [tie_start.sheet_drawable.size[0], playable.sheet_drawable.size[0]].max + tweak
-            p1      = Vector2d(tie_start.sheet_drawable.center) + [dx, -tweak] #- tie_start.sheet_drawable.size[1]]
-            p2      = Vector2d(playable.sheet_drawable.center) + [dx, tweak] #+ playable.sheet_drawable.size[1]]
+            dx = [tie_start.sheet_drawable.size[0], playable.sheet_drawable.size[0]].max + 0.5
+            p1      = Vector2d(tie_start.sheet_drawable.center) + [dx, -0.5] #- tie_start.sheet_drawable.size[1]]
+            p2      = Vector2d(playable.sheet_drawable.center) + [dx, 0.5] #+ playable.sheet_drawable.size[1]]
             tiepath = $conf['layout.bottomup'] ? make_slur_path(p2, p1) : make_slur_path(p1, p2)
             if playable.is_a? Harpnotes::Music::SynchPoint
               playable.notes.each_with_index do |n, index|
                 begin
 
                   p1      = tie_start.notes[index]
-                  dx = [p1.sheet_drawable.size[0], n.sheet_drawable.size[0]].max + tweak
+                  dx = [p1.sheet_drawable.size[0], n.sheet_drawable.size[0]].max + 0.5
 
-                  p1      = Vector2d(p1.sheet_drawable.center) + [dx, -tweak]# - p1.sheet_drawable.size[1]]
-                  p2      = Vector2d(n.sheet_drawable.center) + [dx, tweak]#n.sheet_drawable.size[1]]
+                  p1      = Vector2d(p1.sheet_drawable.center) + [dx, -0.5]# - p1.sheet_drawable.size[1]]
+                  p2      = Vector2d(n.sheet_drawable.center) + [dx, 0.5]#n.sheet_drawable.size[1]]
                   tiepath = make_slur_path(p1, p2)
                   result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THICK') })
                 rescue Exception => e
-                  $log.error(I18n.t("tied chords which don't have same number of notes"), n.start_pos)
+                  $log.error("#{e.message} tied chords which doesn't have same number of notes", n.start_pos)
                 end
               end
             else
@@ -2429,7 +2428,7 @@ module Harpnotes
 
               unless cn_offset # unless no offest is specified in config
                 if cn_autopos == true # global autopositioning
-                  cn_tie_x = (cn_side == :r and playable.tie_start?) ? 1.5 : 0 # 1: this size of tie bow see line 1961
+                  cn_tie_x = (cn_side == :r and (playable.tie_start? || playable.tie_end?)) ? 1 : 0 # 1: this size of tie bow see line 1961
                   auto_x   = cn_tie_x + (cn_side == :l ? -(dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
                   # todo: remove dependency of cn_fontsize_y
                   auto_y    = bottomup ? -(cn_dsize_y + cn_apbase_y + cn_fontsize_y) : cn_dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
@@ -2473,7 +2472,9 @@ module Harpnotes
               bn_align_key = "#{bn_base_key}.align"
               bn_conf_key  = "extract.#{print_variant_nr}.#{bn_pos_key}"
               barnumber    = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
-
+              if barnumber == "47"
+                `debugger`
+              end
               bn_dsize_y = (:center == bn_apanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
               bn_offset  = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
@@ -2487,7 +2488,7 @@ module Harpnotes
 
               unless bn_offset
                 if bn_autopos == true
-                  bn_tie_x = (bn_side == :r and playable.tie_start?) ? 1 : 0
+                  bn_tie_x = (bn_side == :r and (playable.tie_start? || playable.tie_end?)) ? 1 : 0
                   # todo: the literals are determined by try and error to fine tune the posiition.
                   # todo: in case of left: barnumber.length is just a heuristic to geht the thing right justified
                   bn_auto_x = bn_tie_x + (bn_side == :l ? -(dsize_x + bn_apbase_x) : dsize_d_x + bn_apbase_x)
