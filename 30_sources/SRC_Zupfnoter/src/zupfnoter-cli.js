@@ -43168,7 +43168,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           $send(self.slur_index, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           tie_start = playables.$first();
-          res_slurs = $send(playables, 'inject', [[]], ($$179 = function(result, playable){var self = $$179.$$s || this, $$180, $$182, $$183, $$184, tweak = nil, dx = nil, p1 = nil, p2 = nil, tiepath = nil;
+          res_slurs = $send(playables, 'inject', [[]], ($$179 = function(result, playable){var self = $$179.$$s || this, $$180, $$182, $$183, $$184, dx = nil, p1 = nil, p2 = nil, tiepath = nil;
             if (self.slur_index == null) self.slur_index = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -43183,10 +43183,9 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             if ($truthy(playable['$tie_end?']())) {
               
-              tweak = $gvars.conf.$get("layout.LINE_THICK");
-              dx = $rb_plus([tie_start.$sheet_drawable().$size()['$[]'](0), playable.$sheet_drawable().$size()['$[]'](0)].$max(), tweak);
-              p1 = $rb_plus(self.$Vector2d(tie_start.$sheet_drawable().$center()), [dx, tweak['$-@']()]);
-              p2 = $rb_plus(self.$Vector2d(playable.$sheet_drawable().$center()), [dx, tweak]);
+              dx = $rb_plus([tie_start.$sheet_drawable().$size()['$[]'](0), playable.$sheet_drawable().$size()['$[]'](0)].$max(), 0.5);
+              p1 = $rb_plus(self.$Vector2d(tie_start.$sheet_drawable().$center()), [dx, -0.5]);
+              p2 = $rb_plus(self.$Vector2d(playable.$sheet_drawable().$center()), [dx, 0.5]);
               tiepath = (function() {if ($truthy($gvars.conf['$[]']("layout.bottomup"))) {
                 return self.$make_slur_path(p2, p1)
               } else {
@@ -43208,9 +43207,9 @@ Opal.modules["harpnotes"] = function(Opal) {
                   try {
                     
                     p1 = tie_start.$notes()['$[]'](index);
-                    dx = $rb_plus([p1.$sheet_drawable().$size()['$[]'](0), n.$sheet_drawable().$size()['$[]'](0)].$max(), tweak);
-                    p1 = $rb_plus(self.$Vector2d(p1.$sheet_drawable().$center()), [dx, tweak['$-@']()]);
-                    p2 = $rb_plus(self.$Vector2d(n.$sheet_drawable().$center()), [dx, tweak]);
+                    dx = $rb_plus([p1.$sheet_drawable().$size()['$[]'](0), n.$sheet_drawable().$size()['$[]'](0)].$max(), 0.5);
+                    p1 = $rb_plus(self.$Vector2d(p1.$sheet_drawable().$center()), [dx, -0.5]);
+                    p2 = $rb_plus(self.$Vector2d(n.$sheet_drawable().$center()), [dx, 0.5]);
                     tiepath = self.$make_slur_path(p1, p2);
                     return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$181 = function(d){var self = $$181.$$s || this;
                       if ($gvars.conf == null) $gvars.conf = nil;
@@ -43226,7 +43225,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                   } catch ($err) {
                     if (Opal.rescue($err, [$$($nesting, 'Exception')])) {e = $err;
                       try {
-                        return $gvars.log.$error($$($nesting, 'I18n').$t("tied chords which don't have same number of notes"), n.$start_pos())
+                        return $gvars.log.$error("" + (e.$message()) + " tied chords which doesn't have same number of notes", n.$start_pos())
                       } finally { Opal.pop_exception() }
                     } else { throw $err; }
                   };}, $$180.$$s = self, $$180.$$arity = 2, $$180))
@@ -43333,7 +43332,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($c = goto$.$policy()['$[]']("from_anchor")) ? $c : "after");
             to_anchor = ($truthy($c = goto$.$policy()['$[]']("to_anchor")) ? $c : "before");
             vertical_anchor = ($truthy($c = goto$.$policy()['$[]']("vertical_anchor")) ? $c : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2167));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2166));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -43709,8 +43708,8 @@ Opal.modules["harpnotes"] = function(Opal) {
                 if ($truthy(cn_offset)) {
                 } else if (cn_autopos['$=='](true)) {
                   
-                  cn_tie_x = (function() {if ($truthy((($c = cn_side['$==']("r")) ? playable['$tie_start?']() : cn_side['$==']("r")))) {
-                    return 1.5
+                  cn_tie_x = (function() {if ($truthy((($c = cn_side['$==']("r")) ? ($truthy($d = playable['$tie_start?']()) ? $d : playable['$tie_end?']()) : cn_side['$==']("r")))) {
+                    return 1
                   } else {
                     return 0
                   }; return nil; })();
@@ -43758,6 +43757,8 @@ Opal.modules["harpnotes"] = function(Opal) {
                 bn_align_key = "" + (bn_base_key) + ".align";
                 bn_conf_key = "" + "extract." + (print_variant_nr) + "." + (bn_pos_key);
                 barnumber = ($truthy($c = "" + (bn_prefix) + (playable.$measure_count().$to_s())) ? $c : "");
+                if (barnumber['$==']("47")) {
+                  debugger};
                 bn_dsize_y = (function() {if ($truthy("center"['$=='](bn_apanchor))) {
                   return 0
                 } else {
@@ -43780,7 +43781,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                 if ($truthy(bn_offset)) {
                 } else if (bn_autopos['$=='](true)) {
                   
-                  bn_tie_x = (function() {if ($truthy((($c = bn_side['$==']("r")) ? playable['$tie_start?']() : bn_side['$==']("r")))) {
+                  bn_tie_x = (function() {if ($truthy((($c = bn_side['$==']("r")) ? ($truthy($d = playable['$tie_start?']()) ? $d : playable['$tie_end?']()) : bn_side['$==']("r")))) {
                     return 1
                   } else {
                     return 0
@@ -53685,7 +53686,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-29-g706f11ef");
+  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-32-g8c817d01");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
