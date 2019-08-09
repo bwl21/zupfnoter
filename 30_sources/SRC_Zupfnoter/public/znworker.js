@@ -34437,7 +34437,6 @@ Opal.modules["opal-svg"] = function(Opal) {
         
         id = self['$new_id!']();
         attrs = self.$_attr_to_xml(attributes);
-        debugger;
         self.svgbuffer.$push("" + "  <image id = " + (id) + " x=\"" + (x) + "\" y=\"" + (y) + "\" height=\"" + (height) + "\"  " + (attrs) + "\n" + "    preserveAspectRatio=\"none\"\n" + "    xlink:href=\"" + (url) + "\">\n" + "  </image>");
         return id;
       }, $Paper_image$28.$$arity = 5);
@@ -35033,8 +35032,6 @@ Opal.modules["svg_engine"] = function(Opal) {
       Opal.def(self, '$bind_elements', $SvgEngine_bind_elements$37 = function $$bind_elements() {
         var $$38, self = this;
 
-        
-        debugger;
         return $send(self.interactive_elements, 'each', [], ($$38 = function(svg_id, drawing_element){var self = $$38.$$s || this;
 
         
@@ -35046,7 +35043,7 @@ Opal.modules["svg_engine"] = function(Opal) {
           if (drawing_element == null) {
             drawing_element = nil;
           };
-          return self.$bind_the_element(svg_id);}, $$38.$$s = self, $$38.$$arity = 2, $$38));
+          return self.$bind_the_element(svg_id);}, $$38.$$s = self, $$38.$$arity = 2, $$38))
       }, $SvgEngine_bind_elements$37.$$arity = 0);
       
       Opal.def(self, '$bind_the_element', $SvgEngine_bind_the_element$39 = function $$bind_the_element(svg_id) {
@@ -38571,7 +38568,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-33-g19ec81c7");
+  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-34-g011e85c5");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
