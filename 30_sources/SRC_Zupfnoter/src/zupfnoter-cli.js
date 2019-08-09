@@ -43757,8 +43757,6 @@ Opal.modules["harpnotes"] = function(Opal) {
                 bn_align_key = "" + (bn_base_key) + ".align";
                 bn_conf_key = "" + "extract." + (print_variant_nr) + "." + (bn_pos_key);
                 barnumber = ($truthy($c = "" + (bn_prefix) + (playable.$measure_count().$to_s())) ? $c : "");
-                if (barnumber['$==']("47")) {
-                  debugger};
                 bn_dsize_y = (function() {if ($truthy("center"['$=='](bn_apanchor))) {
                   return 0
                 } else {
@@ -53686,7 +53684,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-34-g011e85c5");
+  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-37-gb98f4d37");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

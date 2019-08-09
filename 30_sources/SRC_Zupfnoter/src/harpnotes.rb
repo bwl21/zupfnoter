@@ -2472,9 +2472,6 @@ module Harpnotes
               bn_align_key = "#{bn_base_key}.align"
               bn_conf_key  = "extract.#{print_variant_nr}.#{bn_pos_key}"
               barnumber    = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
-              if barnumber == "47"
-                `debugger`
-              end
               bn_dsize_y = (:center == bn_apanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
               bn_offset  = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
