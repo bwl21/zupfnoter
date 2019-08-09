@@ -356,9 +356,10 @@ module ZnSvg
     end
 
 
-    def image(url, x, y, height)
+    def image(url, x, y, height, attributes)
       id = new_id!
-      @svgbuffer.push(%Q{  <image id = #{id} x="#{x}" y="#{y}" height="#{height}"
+      attrs  = _attr_to_xml(attributes)
+      @svgbuffer.push(%Q{  <image id = #{id} x="#{x}" y="#{y}" height="#{height}"  #{attrs}
     preserveAspectRatio="none"
     xlink:href="#{url}">
   </image>})

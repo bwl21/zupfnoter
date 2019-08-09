@@ -492,7 +492,9 @@ module Harpnotes
 
     def draw_image(root)
       position = Vector2d([0, 0]) + root.llpos + [0, root.height]
-      e        = @paper.image(root.url, position.x, position.y, root.height)
+      attr = {}
+      attr    = attr.merge(@attr_for_on_contextmenu).merge(@attr_for_draggable)
+      e        = @paper.image(root.url, position.x, position.y, root.height, attr)
 
       draginfo = root.draginfo
       if draginfo
