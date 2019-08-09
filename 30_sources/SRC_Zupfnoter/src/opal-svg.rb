@@ -359,8 +359,9 @@ module ZnSvg
     def image(url, x, y, height, attributes)
       id = new_id!
       attrs  = _attr_to_xml(attributes)
-      @svgbuffer.push(%Q{  <image id = #{id} x="#{x}" y="#{y}" height="#{height}"  #{attrs}
-    preserveAspectRatio="none"
+      # firefox requires height and width to be specified https://stackoverflow.com/questions/54263136/svg-image-not-loading-in-firefox
+      @svgbuffer.push(%Q{  <image id = #{id} x="#{x}" y="#{y}" width="#{5000}" height="#{height}"  #{attrs}
+    preserveAspectRatio="xMinYMin"
     xlink:href="#{url}">
   </image>})
 
