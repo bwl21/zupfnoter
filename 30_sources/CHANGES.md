@@ -14,6 +14,7 @@
 * refactoring of unisons #272
 * subflowlines can now be reshaped #275
 * improve visibility of ties #276
+* improve visibility of overlapping annotations #279
 
 ## Compatibility
 
