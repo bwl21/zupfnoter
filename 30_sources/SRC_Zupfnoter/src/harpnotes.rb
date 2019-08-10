@@ -1069,9 +1069,9 @@ module Harpnotes
             $log.error("unsupported style for annotation: #{@style}")
           end
           ysize = font_size * $conf.get("layout.MM_PER_POINT").to_f
-          xsize = @text.length * ysize # todo: this needs improvement (multiline texts, monospace fonts.)
+          xsize = @text.length * ysize * 0.6# todo: this needs improvement (multiline texts, monospace fonts.)
         else
-          xsize, ysize = 1.5, 2 # todo: this is pretty heuristic
+          xsize, ysize = 1.5, 2 # todo: this is pretty heuristic in fact this should not happen ...
         end
         [xsize, ysize]
       end
@@ -2250,8 +2250,15 @@ module Harpnotes
         end
 
 
+        res_barnumber_backgrounds = res_barnumbers.map { |i| create_annotation_background_rect(i) }
+        res_countnote_backgrounds = res_countnotes.map { |i| create_annotation_background_rect(i) }
+
         # return all drawing primitives
-        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables + res_countnotes + res_barnumbers + res_decorations + res_gotos + res_annotations + res_repeatmarks).compact
+        (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables +
+            res_countnote_backgrounds + res_countnotes +
+            res_barnumber_backgrounds + res_barnumbers +
+            res_decorations + res_gotos +
+            res_annotations + res_repeatmarks).compact
       end
 
 
@@ -2440,7 +2447,7 @@ module Harpnotes
               cn_position = Vector2d(dcenter) + cn_offset
 
               # todo: pass more attributes by an object instead of using tap
-              res_countnotes.push Harpnotes::Drawing::Annotation.new(cn_position.to_a,
+              annotation =  Harpnotes::Drawing::Annotation.new(cn_position.to_a,
                                                                      count_note, cn_style, playable.origin,
                                                                      "extract.#{print_variant_nr}.#{cn_pos_key}", cn_offset)
                                       .tap { |s| s.align = cn_align; s.draginfo = {handler: :annotation}
@@ -2455,6 +2462,10 @@ module Harpnotes
                                                              value:    "r"
                                                             })
                                       }
+
+              res_countnotes.push(annotation)
+
+
             end
 
             #### now handle barnumbers
@@ -2497,7 +2508,8 @@ module Harpnotes
               end
 
               bn_position = Vector2d(dcenter) + bn_offset
-              res_barnumbers.push Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
+
+              annotation = Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
                                                                      "extract.#{print_variant_nr}.#{bn_pos_key}", bn_offset)
                                       .tap { |s| s.align = bn_align; s.draginfo = {handler: :annotation}
                                       s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{bn_align_key}",
@@ -2510,10 +2522,22 @@ module Harpnotes
                                                              icon:     "fa fa-arrow-right",
                                                              value:    "r"
                                                             }) }
+
+              res_barnumbers.push(annotation)
             end
           end
         end
         return res_barnumbers, res_countnotes
+      end
+
+      def create_annotation_background_rect(annotation)
+        bn_position = bn_position = Vector2d(annotation.center)
+        bgsize           = annotation.size.map { |i| i * 0.5 }
+        bgsize1          = [bgsize.first*1.3,bgsize.last]
+        bgx              = (annotation.align == :left) ? bgsize.first : -bgsize.first
+        background       = Ellipse.new((bn_position +[bgx, bgsize.last]).to_a, bgsize1, :filled, false, nil, true)
+        background.color = 'white'
+        background
       end
 
 
