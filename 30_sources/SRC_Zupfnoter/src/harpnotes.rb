@@ -1061,6 +1061,17 @@ module Harpnotes
       end
 
       # this estimates the size of an annotation
+      # todo: use jspdf to compute the exeact size.
+      #
+      #
+      # # @@pdf = JsPDF.new(:l, :mm, :a3)   unless @@pdf   # we need this to compute string width
+      #
+      #           #@@pdf.font_size = font_size
+      #           #@@pdf.font_style = font_style
+      #           xsize = 10# @@pdf.get_text_width(text)
+      #
+      #
+      # todo: adapt top font style (bold italic)
       def size
         if @text and @text.strip.length > 0
           font_size = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size")
@@ -1069,7 +1080,7 @@ module Harpnotes
             $log.error("unsupported style for annotation: #{@style}")
           end
           ysize = font_size * $conf.get("layout.MM_PER_POINT").to_f
-          xsize = @text.length * ysize * 0.6# todo: this needs improvement (multiline texts, monospace fonts.)
+          xsize = @text.length * ysize * 0.55# todo: found 0.55 by try and error this needs improvement (multiline texts, monospace fonts.)
         else
           xsize, ysize = 1.5, 2 # todo: this is pretty heuristic in fact this should not happen ...
         end
@@ -2533,8 +2544,8 @@ module Harpnotes
       def create_annotation_background_rect(annotation)
         bn_position = bn_position = Vector2d(annotation.center)
         bgsize           = annotation.size.map { |i| i * 0.5 }
-        bgsize1          = [bgsize.first*1.3,bgsize.last]
-        bgx              = (annotation.align == :left) ? bgsize.first : -bgsize.first
+        bgsize1          = [bgsize.first + 0.1, bgsize.last + 0.1]
+        bgx              = (annotation.align == :left) ? bgsize1.first :  -bgsize1.first
         background       = Ellipse.new((bn_position +[bgx, bgsize.last]).to_a, bgsize1, :filled, false, nil, true)
         background.color = 'white'
         background
