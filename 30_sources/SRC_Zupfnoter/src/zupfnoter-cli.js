@@ -41925,7 +41925,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               $gvars.log.$error("" + "unsupported style for annotation: " + (self.style));
             };
             ysize = $rb_times(font_size, $gvars.conf.$get("layout.MM_PER_POINT").$to_f());
-            xsize = $rb_times($rb_times(self.text.$length(), ysize), 0.6);
+            xsize = $rb_times($rb_times(self.text.$length(), ysize), 0.55);
           } else {
             $a = [1.5, 2], (xsize = $a[0]), (ysize = $a[1]), $a
           };
@@ -43332,7 +43332,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($c = goto$.$policy()['$[]']("from_anchor")) ? $c : "after");
             to_anchor = ($truthy($c = goto$.$policy()['$[]']("to_anchor")) ? $c : "before");
             vertical_anchor = ($truthy($c = goto$.$policy()['$[]']("vertical_anchor")) ? $c : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2166));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2177));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -43853,11 +43853,11 @@ Opal.modules["harpnotes"] = function(Opal) {
               i = nil;
             };
             return $rb_times(i, 0.5);}, $$210.$$s = self, $$210.$$arity = 1, $$210));
-          bgsize1 = [$rb_times(bgsize.$first(), 1.3), bgsize.$last()];
+          bgsize1 = [$rb_plus(bgsize.$first(), 0.1), $rb_plus(bgsize.$last(), 0.1)];
           bgx = (function() {if ($truthy(annotation.$align()['$==']("left"))) {
-            return bgsize.$first()
+            return bgsize1.$first()
           } else {
-            return bgsize.$first()['$-@']()
+            return bgsize1.$first()['$-@']()
           }; return nil; })();
           background = $$($nesting, 'Ellipse').$new($rb_plus(bn_position, [bgx, bgsize.$last()]).$to_a(), bgsize1, "filled", false, nil, true);
           
@@ -53729,7 +53729,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-39-gce5bd46f");
+  Opal.const_set($nesting[0], 'VERSION', "v_1.11.2-41-g5aa4eadd");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
