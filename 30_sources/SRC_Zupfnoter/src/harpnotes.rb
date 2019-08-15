@@ -1039,7 +1039,7 @@ module Harpnotes
     #
     class Annotation < Drawable
       attr_reader :center, :text, :style, :origin
-      attr_accessor :conf_key, :conf_value, :align, :baseline
+      attr_accessor :conf_key, :conf_value, :align, :baseline, :shift_eu
 
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
@@ -1058,6 +1058,7 @@ module Harpnotes
         @origin     = origin
         @conf_key   = conf_key
         @conf_value = conf_value
+        @shift_eu   = false         # this indicates that it should be repostioned for countnotes e u
       end
 
       # this estimates the size of an annotation
@@ -1085,6 +1086,13 @@ module Harpnotes
           xsize, ysize = 1.5, 2 # todo: this is pretty heuristic in fact this should not happen ...
         end
         [xsize, ysize]
+      end
+
+      def shift_eu
+        if /^[eu]$/.match(@text)
+          @shift_eu  = true
+          @center[1] = @center[1] - $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size") * $conf.get("layout.MM_PER_POINT").to_f  * 0.25   # todo: 0.03 ?? try error
+        end
       end
     end
 
@@ -2254,7 +2262,7 @@ module Harpnotes
 
           position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, style, annotation.companion.origin,
-                                                        conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
+                                                        conf_key, annotationoffset).tap { |s|  s.draginfo = {handler: :annotation} }
           result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
           result   = nil if show == false
           result
@@ -2449,7 +2457,7 @@ module Harpnotes
                   cn_tie_x = (cn_side == :r and (playable.tie_start? || playable.tie_end?)) ? 1 : 0 # 1: this size of tie bow see line 1961
                   auto_x   = cn_tie_x + (cn_side == :l ? -(dsize_x + cn_apbase_x) : dsize_d_x + cn_apbase_x)
                   # todo: remove dependency of cn_fontsize_y
-                  auto_y    = bottomup ? -(cn_dsize_y + cn_apbase_y + cn_fontsize_y) : cn_dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
+                  auto_y    = bottomup ? -(cn_dsize_y + cn_apbase_y + cn_fontsize_y * 2) : cn_dsize_y + cn_apbase_y # -1 move it a bit upwords depend on font size
                   cn_offset = [auto_x, auto_y]
                 else
                   cn_offset = cn_fixedpos
@@ -2461,7 +2469,7 @@ module Harpnotes
               annotation =  Harpnotes::Drawing::Annotation.new(cn_position.to_a,
                                                                      count_note, cn_style, playable.origin,
                                                                      "extract.#{print_variant_nr}.#{cn_pos_key}", cn_offset)
-                                      .tap { |s| s.align = cn_align; s.draginfo = {handler: :annotation}
+                                      .tap { |s| s.shift_eu = true, s.align = cn_align; s.draginfo = {handler: :annotation}
                                       s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{cn_align_key}",
                                                              text:     I18n.t("countnote left"),
                                                              icon:     "fa fa-arrow-left",
@@ -2542,11 +2550,18 @@ module Harpnotes
       end
 
       def create_annotation_background_rect(annotation)
+        # notes to literals
+        # literals are basically determined by try and error
+        # make backgroung bigger by 0.1
+        # adjust the position of background such that it does not overlap synchlines
         bn_position = bn_position = Vector2d(annotation.center)
         bgsize           = annotation.size.map { |i| i * 0.5 }
-        bgsize1          = [bgsize.first + 0.1, bgsize.last + 0.1]
+
+        bgsize1          = [bgsize.first + 0.1, bgsize.last ]
+        bgsize1[1]        = bgsize1[1] * 0.8 if annotation.shift_eu  # this is to optimize countnote backgground for e | u
+
         bgx              = (annotation.align == :left) ? bgsize1.first :  -bgsize1.first
-        background       = Ellipse.new((bn_position +[bgx, bgsize.last]).to_a, bgsize1, :filled, false, nil, true)
+        background       = Ellipse.new((bn_position + [bgx, bgsize.last ]).to_a, bgsize1, :filled, false, nil, true)
         background.color = 'white'
         background
       end
