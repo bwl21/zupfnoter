@@ -1089,7 +1089,7 @@ module Harpnotes
       end
 
       def shift_eu
-        if /^[eu]$/.match(@text)
+        if /^[aoveu]$/.match(@text)
           @shift_eu  = true
           @center[1] = @center[1] - $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size") * $conf.get("layout.MM_PER_POINT").to_f  * 0.25   # todo: 0.03 ?? try error
         end
@@ -2271,13 +2271,14 @@ module Harpnotes
 
         res_barnumber_backgrounds = res_barnumbers.map { |i| create_annotation_background_rect(i) }
         res_countnote_backgrounds = res_countnotes.map { |i| create_annotation_background_rect(i) }
+        res_annotation_backgrounds = (res_annotations + res_repeatmarks).compact.map{|i| create_annotation_background_rect(i) }
 
         # return all drawing primitives
         (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables +
             res_countnote_backgrounds + res_countnotes +
             res_barnumber_backgrounds + res_barnumbers +
             res_decorations + res_gotos +
-            res_annotations + res_repeatmarks).compact
+            res_annotation_backgrounds + res_annotations + res_repeatmarks).compact
       end
 
 
