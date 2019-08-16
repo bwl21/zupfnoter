@@ -829,7 +829,7 @@ module Harpnotes
           position = $conf['defaults.notebound.partname.pos']
 
           harpnote_elements.first.first_in_part = true
-          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {style: :regular, pos: position, text: part_label}, conf_key)
+          harpnote_elements << Harpnotes::Music::NoteBoundAnnotation.new(harpnote_elements.first, {style: :bold, pos: position, text: part_label}, conf_key)
         end
 
         # handle repeats

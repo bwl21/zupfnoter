@@ -14,7 +14,8 @@
 * refactoring of unisons #272
 * subflowlines can now be reshaped #275
 * improve visibility of ties #276
-* improve visibility of overlapping annotations #279
+* white background for barnumbers, counthints, notebound annotations etc. #279
+* partnumbers are now bold by default #280
 
 ## Compatibility
 
