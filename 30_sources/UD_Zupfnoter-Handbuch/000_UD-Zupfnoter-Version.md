@@ -1,5 +1,5 @@
 
-Version v_1.11.2-48-gc48a0b37
+Version 1.12
 
     © 2019 https://www.zupfnoter.de
     

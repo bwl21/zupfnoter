@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version v\_1.11.2-48-gc48a0b37
+Version 1.12
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -8107,11 +8107,61 @@ erh\"{o}hen.
 \hypertarget{aux308nderungsgeschichte}{%
 \section{\"{A}nderungsgeschichte}\label{aux308nderungsgeschichte}}
 
+\hypertarget{v-1.12-august-2019}{%
+\subsection{V 1.12 August 2019}\label{v-1.12-august-2019}}
+
+\hypertarget{fehlerbehebung}{%
+\subsubsection{Fehlerbehebung}\label{fehlerbehebung}}
+
+\begin{itemize}
+\tightlist
+\item
+  Verarbeitung unsichtbarer Pausen in Unterflusslinien korrigiert \#265
+\item
+  Fehlermeldung in der Konsole wen unsichtbare Noten gespielt werden
+  \#262
+\item
+  Probleme mit Grafiken \#278
+\end{itemize}
+
+\hypertarget{erweiterung}{%
+\subsubsection{Erweiterung}\label{erweiterung}}
+
+\begin{itemize}
+\tightlist
+\item
+  beliebig vile Ausz\"{u}ge \#268
+\item
+  Konfiguration von Legende und Liedtexten verbessert
+\item
+  Unterst\"{u}tzung f\"{u}r offene Sprunglinien \#268
+\item
+  Mehrkl\"{a}nge k\"{o}nnen refaktoriert werden \#272
+\item
+  Unterflusslinien k\"{o}nnen nun auch bearbeitet werden \#276
+\item
+  Sichtbarkeit von \"{U}berbindungen verbessert \#276
+\item
+  Taktzahlen, Z\"{a}hlmarken und notenbezogene Anmerkungen haben nun
+  einen wei\ss en Hintergrund \#279
+\item
+  Beschriftung von Abschntten und standardm\"{a}ssig fett gedruckt \#280
+\end{itemize}
+
+\hypertarget{kompatibilitaux308t}{%
+\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t}}
+
+\begin{itemize}
+\tightlist
+\item
+  keine Standardkonfiguration f\"{u}r auszug 1 .. auszug 5
+\end{itemize}
+
 \hypertarget{v-1.11-18.4.2019}{%
-\section{V 1.11 18.4.2019}\label{v-1.11-18.4.2019}}
+\subsection{V 1.11 18.4.2019}\label{v-1.11-18.4.2019}}
 
 \hypertarget{fix}{%
-\subsection{fix}\label{fix}}
+\subsubsection{fix}\label{fix}}
 
 \begin{itemize}
 \tightlist
@@ -8133,7 +8183,7 @@ erh\"{o}hen.
 \end{itemize}
 
 \hypertarget{enhancement}{%
-\subsection{enhancement}\label{enhancement}}
+\subsubsection{enhancement}\label{enhancement}}
 
 \begin{itemize}
 \tightlist
@@ -8201,8 +8251,8 @@ erh\"{o}hen.
   Dialog ``Es gibt neue Informationen'' verbessert \#244
 \end{itemize}
 
-\hypertarget{kompatibilitaux308t}{%
-\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t}}
+\hypertarget{kompatibilitaux308t-1}{%
+\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t-1}}
 
 \begin{itemize}
 \tightlist
@@ -8261,8 +8311,8 @@ erh\"{o}hen.
   \#231
 \end{itemize}
 
-\hypertarget{kompatibilitaux308t-1}{%
-\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t-1}}
+\hypertarget{kompatibilitaux308t-2}{%
+\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t-2}}
 
 \begin{itemize}
 \tightlist
@@ -8313,8 +8363,8 @@ internal release
   mehrfach eingegeben werden m\"{u}ssen \#223
 \end{itemize}
 
-\hypertarget{kompatibilitaux308t-2}{%
-\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t-2}}
+\hypertarget{kompatibilitaux308t-3}{%
+\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t-3}}
 
 \begin{itemize}
 \tightlist
@@ -8465,8 +8515,8 @@ internal release
   Men\"{u} ``Extras'' \#71
 \end{itemize}
 
-\hypertarget{kompatibilitaux308t-3}{%
-\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t-3}}
+\hypertarget{kompatibilitaux308t-4}{%
+\subsubsection{Kompatibilit\"{a}t}\label{kompatibilitaux308t-4}}
 
 \begin{itemize}
 \tightlist
@@ -8674,8 +8724,8 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
   Referenz erzeugt nun keine Fehlermehr
 \end{itemize}
 
-\hypertarget{erweiterung}{%
-\subsubsection{Erweiterung}\label{erweiterung}}
+\hypertarget{erweiterung-1}{%
+\subsubsection{Erweiterung}\label{erweiterung-1}}
 
 \begin{itemize}
 \tightlist
