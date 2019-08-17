@@ -2,9 +2,35 @@
 
 # Änderungsgeschichte
 
-# V 1.11 18.4.2019
+## V 1.12 August 2019
 
-## fix
+### Fehlerbehebung
+
+-   Verarbeitung unsichtbarer Pausen in Unterflusslinien korrigiert
+    \#265
+-   Fehlermeldung in der Konsole wen unsichtbare Noten gespielt werden
+    \#262
+-   Probleme mit Grafiken \#278
+
+### Erweiterung
+
+-   beliebig vile Auszüge \#268
+-   Konfiguration von Legende und Liedtexten verbessert
+-   Unterstützung für offene Sprunglinien \#268
+-   Mehrklänge können refaktoriert werden \#272
+-   Unterflusslinien können nun auch bearbeitet werden \#276
+-   Sichtbarkeit von Überbindungen verbessert \#276
+-   Taktzahlen, Zählmarken und notenbezogene Anmerkungen haben nun einen
+    weißen Hintergrund \#279
+-   Beschriftung von Abschntten und standardmässig fett gedruckt \#280
+
+### Kompatibilität
+
+-   keine Standardkonfiguration für auszug 1 .. auszug 5
+
+## V 1.11 18.4.2019
+
+### fix
 
 -   Meldung "Cannot read property '\$first' of undefined" behoben \#251
 -   Dialog für "Zusätze" schliesst nun wieder \#249
@@ -17,7 +43,7 @@
 -   Warunung wenn die Taktarkt innerhalb eines Taktes geändert wird
     \#217
 
-## enhancement
+### enhancement
 
 -   Menü für die bisher benutzten Dropbox-Pfade in der Statuszeile \#252
 -   Ein- / Aufklappen von Abschnitten in der Konfigurationsmaske \#254
