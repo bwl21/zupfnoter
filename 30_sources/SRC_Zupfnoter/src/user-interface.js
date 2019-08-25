@@ -67,28 +67,22 @@ function init_w2ui(uicontroller) {
       text = e.target.result;
       if (text[0] == '<') {
         pasteXml(text);
-      }
-      else if (files[0].type.startsWith("image/jpeg")) {
+      } else if (files[0].type.startsWith("image/jpeg")) {
         pasteDatauri(files[0].name, text)
-      }
-      else if (files[0].name.endsWith(".mxl")) {
+      } else if (files[0].name.endsWith(".mxl")) {
         pasteMxl(text)
-      }
-      else if (files[0].name.endsWith(".abc")) {
+      } else if (files[0].name.endsWith(".abc")) {
         pasteAbc(text);
-      }
-      else {
+      } else {
         w2alert("import file format not supported", "error")
       }
     }
 
     if (files[0].type.startsWith("image")) {
       reader.readAsDataURL(files[0]);
-    }
-    else if (files[0].name.endsWith('.mxl')) {
+    } else if (files[0].name.endsWith('.mxl')) {
       reader.readAsBinaryString(files[0]);
-    }
-    else {
+    } else {
       reader.readAsText(files[0], "UTF-8");
     }
   }
@@ -240,6 +234,7 @@ function init_w2ui(uicontroller) {
   // ensure that zoomelevel is initialized upon loading. such that tooggle_fullscreen is properly initialized
   var init_zoomlevel = [2200, 1400]
   var zoomlevel = init_zoomlevel;
+  var savedSVG = ""
   scalehandlers = {
     'tb_scale:groß': function () {
       zoomlevel = init_zoomlevel;
@@ -256,7 +251,31 @@ function init_w2ui(uicontroller) {
     'tb_scale:fit': function () {
       zoomlevel = ['100%', '100%'];
       zoomHarpPreview(zoomlevel);
+    },
+    'tb_scale:pdf': function () {
+      zoomlevel = ['100%', '100%'];
+      //zoomHarpPreview(zoomlevel);
+      var pdfDiv = document.getElementById("harpPreviewPdf");
+      _showPdfDiv();
+      pdfDiv.innerHTML = "<p>computing pdf<p>";
+      setTimeout(function () {
+        url = uicontroller.$render_a3().$output('datauristring')
+        var url_with_name = url.replace("data:application/pdf;", "data:application/pdf;name=myname.pdf;")
+
+        PDFObject.embed(url_with_name, pdfDiv);
+
+      }, 0)
     }
+  }
+
+  function _showPdfDiv() {
+    $(document.getElementById("harpPreview")).hide();
+    $(document.getElementById("harpPreviewPdf")).show();
+  }
+
+  function _hidePdfdiv() {
+    $(document.getElementById("harpPreview")).show();
+    $(document.getElementById("harpPreviewPdf")).hide();
   }
 
   // where we create an object with tooblarhandlers
@@ -1087,7 +1106,8 @@ function init_w2ui(uicontroller) {
         tooltip: "medium view\nmost commonly used\nautoscroll works"
       },
       {text: 'small', id: 'klein', icon: 'fa fa-compress', tooltip: "small view\nto get an overview"},
-      {text: 'fit', id: 'fit', icon: 'fa fa-arrows-alt', tooltip: "fit to viewport"}
+      {text: 'fit', id: 'fit', icon: 'fa fa-arrows-alt', tooltip: "fit to viewport"},
+      {text: 'pdf', id: 'pdf', icon: 'fa fa-arrows-alt', tooltip: "Display pdfs" }
 
       // {id: 'groß', text: w2utils.lang('large'), icon: ''},
       // {id: 'mittel', text: w2utils.lang('medium')},
@@ -1095,6 +1115,7 @@ function init_w2ui(uicontroller) {
       // {id: 'fit', text: w2utils.lang('fit')}
     ],
     onClick: function (event) {
+      _hidePdfdiv();
       $('#harpPreview .tab').hide();
       scalehandlers['tb_scale:' + event.target]();
       $('#harpPreview #' + event.target).show();
@@ -1146,7 +1167,7 @@ function init_w2ui(uicontroller) {
         hidden: false,
         style: pstyle,
         tabs: zoomtabsconfig,
-        content: '<div id="harpPreview" style="height:100%"></div>'
+        content: '<div id="harpPreview" style="height:100%"></div><div id="harpPreviewPdf" style="height:100%"></div>'
       },
       {
         type: 'right',

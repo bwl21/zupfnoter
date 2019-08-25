@@ -2,6 +2,14 @@
 
 ## fix
 
+## enhancement
+
+* integrate pdf preview in harpnote preview #281
+
+# 1.12 August 2019
+
+## fix
+
 * fix handling of inivisble rests in subflowlines #265
 * console errors when playin invisible notes #262
 * Trouble with images #278
