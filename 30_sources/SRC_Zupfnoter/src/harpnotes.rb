@@ -1073,7 +1073,7 @@ module Harpnotes
       #
       #
       # todo: adapt top font style (bold italic)
-      def size
+      def size_estimate
         if @text and @text.strip.length > 0
           font_size = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size")
           unless font_size
@@ -1085,6 +1085,30 @@ module Harpnotes
         else
           xsize, ysize = 1.5, 2 # todo: this is pretty heuristic in fact this should not happen ...
         end
+        [xsize, ysize]
+      end
+
+      def size
+        # todo: use jspdf to compute the exeact size.
+        #
+        #
+        if @@pdf.nil?
+          @@pdf = JsPDF.new(:l, :mm, :a3) # we need this to compute string width
+        end
+
+        font_size = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size")
+        font_style = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_style")
+
+        unless font_size
+          font_size = 10
+          $log.error("unsupported style for annotation: #{@style}")
+        end
+        @@pdf.font_size  = font_size
+        @@pdf.font_style = font_style
+        xsize           = @@pdf.get_text_width(text)
+        ysize           = font_size * $conf.get("layout.MM_PER_POINT").to_f
+
+        # todo: adapt top font style (bold italic)
         [xsize, ysize]
       end
 

@@ -20,6 +20,7 @@
   // these requires are required by nodejs/dir, nodejs/file
   // fs = require('fs')
   // glob = require("glob")      // don't know who needs this
+   window={};
 }
 
 
@@ -43,7 +44,7 @@ require 'abc2svg_to_harpnotes'
 
 #require 'node_modules/jspdf/dist/jspdf.min'
 #require 'jspdf-cli.js'
-#require 'opal-jspdf'
+require 'opal-jspdf'
 #require 'opal-jszip'
 #require 'opal-musicaljs'
 require 'svg_engine'
@@ -68,6 +69,8 @@ require 'version-prod'
 # require 'snippet_editor'
 require 'abc2svg-1.js'
 require 'opal-webworker'
+require 'jspdf.worker.debug.js'
+
 
 
 module I18n
