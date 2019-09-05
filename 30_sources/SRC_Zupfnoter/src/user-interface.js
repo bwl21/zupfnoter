@@ -1,3 +1,5 @@
+
+
 function init_w2ui(uicontroller) {
 
   w2popup.defaults.speed = 0;
@@ -255,16 +257,8 @@ function init_w2ui(uicontroller) {
     'tb_scale:pdf': function () {
       zoomlevel = ['100%', '100%'];
       //zoomHarpPreview(zoomlevel);
-      var pdfDiv = document.getElementById("harpPreviewPdf");
       _showPdfDiv();
-      pdfDiv.innerHTML = "<p>computing pdf<p>";
-      setTimeout(function () {
-        url = uicontroller.$render_a3().$output('datauristring')
-        var url_with_name = url.replace("data:application/pdf;", "data:application/pdf;name=myname.pdf;")
-
-        PDFObject.embed(url_with_name, pdfDiv);
-
-      }, 0)
+      update_pdf_preview(uicontroller);
     }
   }
 
@@ -1236,7 +1230,16 @@ function set_tbitem_caption(item, caption) {
 function set_sbitem_caption(item, caption) {
   w2ui.layout_statusbar_main_toolbar.set(item, {text: caption});
 }
+function update_pdf_preview(uicontroller) {
+  var pdfDiv = document.getElementById("harpPreviewPdf");
+  pdfDiv.innerHTML = "<p>computing pdf<p>";
+  setTimeout(function () {
+    url = uicontroller.$pdf_preview_string()
+    var url_with_name = uicontroller.$pdf_preview_string();//.replace("data:application/pdf;base64,", "data:application/pdf;filename=foo.pdf;name=myname.pdf;");
+    PDFObject.embed(url_with_name, pdfDiv);
 
+  }, 0)
+}
 function update_settings_menu(settings) {
   settings_menu_items = w2ui.layout_top_toolbar.get('tbExtras').items.filter(function (item) {
     return item.setting

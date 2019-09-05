@@ -94,7 +94,8 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath,  :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath,  :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui,
+                :pdf_preview_string
 
   def initialize
 
@@ -291,7 +292,8 @@ class Controller
                                }],
                                harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
                                render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }],
-                               show_config_tab:   [lambda { %x{show_config_tab()}} ]
+                               show_config_tab:    [lambda { %x{show_config_tab()} }],
+                               update_pdf_preview: [lambda {%x{update_pdf_preview(#{self})}  }]
 
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
@@ -655,7 +657,9 @@ class Controller
     if @systemstatus[:autorefresh] == :on
       render_previews_in_worker()
     else
-      render_previews_in_uithread()
+      render_previews_in_uithread().then do
+        call_consumers(:update_pdf_preview)
+      end
     end
   end
 
@@ -716,6 +720,12 @@ class Controller
         call_consumers(:error_alert)
         @editor.set_annotations($log.annotations)
         LastRenderMonitor.new.clear
+        promise.resolve()
+      end
+    end.then do
+      Promise.new.tap do |promise|
+        engine              = Harpnotes::PDFEngine.new
+        @pdf_preview_string = engine.draw(@song_harpnotes).output('datauristring')
         promise.resolve()
       end
     end
@@ -1210,6 +1220,16 @@ class Controller
       end
     end
 
+    # this retrieves the abc model from worker
+    # required for select in multiple voices
+    @worker.on_named_message(:compute_pdf_preview) do |data|
+      $log.benchmark("preocessing reply from compute_pdf_preview") do
+        @pdf_preview_string = data[:payload]
+        call_consumers(:update_pdf_preview)
+      end
+    end
+
+
     @worker.on_named_message(:error_alert) do |data|
       call_consumers(:error_alert)
     end
@@ -1257,6 +1277,8 @@ class Controller
       call_consumers(:render_status)
     end
   end
+
+
 
 # this registers the listeners to ui-elements.
   def setup_ui_listener

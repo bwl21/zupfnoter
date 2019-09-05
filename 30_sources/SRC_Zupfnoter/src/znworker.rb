@@ -48,7 +48,7 @@ require 'opal-jspdf'
 #require 'opal-jszip'
 #require 'opal-musicaljs'
 require 'svg_engine'
-#require 'pdf_engine'
+require 'pdf_engine'
 #require 'i18n'
 require 'init_conf'
 require 'text_pane'
@@ -137,7 +137,7 @@ $log = WorkerLogger.new(nil)
 
 class WorkerController
 
-  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus, :harpnote_player, :abc_model, :extracts, :music_model, :checksum
+  attr_accessor :config_from_editor, :abc_part_from_editor, :systemstatus, :harpnote_player, :abc_model, :extracts, :music_model, :checksum, :song_harpnotes
 
   def initialize
     $conf        = Confstack.new(nil)
@@ -220,6 +220,18 @@ class WorkerController
     result
   end
 
+  def render_a3(index = @systemstatus[:view])
+    flowconf = $settings[:flowconf]
+    # turn of flowconf:  otherwise very short unconfigured undconfigured flowlines are
+    # longer because of the default values of the handles whihc make the curve from    +-+  to -+-+-
+    $settings[:flowconf] = false
+    sheet = layout_harpnotes(index, 'A3')
+    engine = Harpnotes::PDFEngine.new
+    result               = engine.draw(sheet)
+    $settings[:flowconf] = flowconf
+    result
+  end
+
   def layout_harpnotes(print_variant = 0, page_format = 'A4')
 
     $image_list = $conf.get['resources'].keys rescue nil
@@ -242,7 +254,7 @@ class WorkerController
     rescue Exception => e
       $log.error(%Q{#{e.message}}, nil, nil, e.backtrace)
     ensure
-      $conf.pop
+    # $conf.pop
     end
     result
   end
@@ -339,6 +351,13 @@ end
 
     @namedworker.post_named_message(:load_player_model_abc, `JSON.stringify(#{controller.harpnote_player.player_model_abc})`)
     @namedworker.post_named_message(:load_player_from_worker, controller.harpnote_player.get_worker_model)
+
+    engine = Harpnotes::PDFEngine.new
+
+    result = engine.draw(controller.song_harpnotes).output('datauristring')
+
+    @namedworker.post_named_message(:compute_pdf_preview, result)
+
   end
 end
 

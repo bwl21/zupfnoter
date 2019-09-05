@@ -1108,7 +1108,6 @@ module Harpnotes
         xsize           = @@pdf.get_text_width(text)
         ysize           = font_size * $conf.get("layout.MM_PER_POINT").to_f
 
-        # todo: adapt top font style (bold italic)
         [xsize, ysize]
       end
 

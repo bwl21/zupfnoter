@@ -3,8 +3,8 @@
 /** @license
  *
  * jsPDF - PDF Document creation from JavaScript
- * Version 1.5.3 Built on 2019-09-02T12:30:40.075Z
- *                      CommitID e59f251537
+ * Version 1.5.3 Built on 2019-09-04T13:52:13.528Z
+ *                      CommitID dbd88b981b
  *
  * Copyright (c) 2010-2018 James Hall <james@parall.ax>, https://github.com/MrRio/jsPDF
  *               2015-2018 yWorks GmbH, http://www.yworks.com
@@ -32,6 +32,12 @@
  *    siefkenj, ahwolf, rickygu, Midnith, saintclair, eaparango,
  *    kim3er, mfo, alnorth, Flamenco
  */
+
+/**
+ * polyfill to make jsped work in a webworker
+ * @type {{}}
+ */
+window = {};
 
 function _typeof(obj) {
   if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -5407,7 +5413,7 @@ var jsPDF = function (global) {
 /*rollup-keeper-start*/
 
 
-//window.tmp = jsPDF;
+window.tmp = jsPDF;
 /*rollup-keeper-end*/
 
 /* global jsPDF */
@@ -25235,7 +25241,7 @@ var FlateStream = globalObject.FlateStream = function () {
 /*rollup-keeper-start*/
 
 
-// window.tmp = FlateStream;
+window.tmp = FlateStream;
 /*rollup-keeper-end*/
 
 try {
