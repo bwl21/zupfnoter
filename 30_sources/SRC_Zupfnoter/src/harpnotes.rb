@@ -2155,13 +2155,19 @@ module Harpnotes
                   p1      = Vector2d(p1.sheet_drawable.center) + [dx, -0.5]# - p1.sheet_drawable.size[1]]
                   p2      = Vector2d(n.sheet_drawable.center) + [dx, 0.5]#n.sheet_drawable.size[1]]
                   tiepath = make_slur_path(p1, p2)
-                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THICK') })
+                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d|
+                    d.line_width = $conf.get('layout.LINE_THICK')
+                    d.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize ties
+                  })
                 rescue Exception => e
                   $log.error("#{e.message} tied chords which doesn't have same number of notes", n.start_pos)
                 end
               end
             else
-              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.line_width = $conf.get('layout.LINE_THICK') })
+              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d|
+                d.line_width = $conf.get('layout.LINE_THICK')
+                d.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize ties
+              })
             end
 
           end
