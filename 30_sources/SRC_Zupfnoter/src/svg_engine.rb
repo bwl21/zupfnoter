@@ -480,7 +480,7 @@ module Harpnotes
       attr[:transform]     = "scale(1.05, 1) translate(0,#{-style[:font_size] / 8})" # literal by try and error
       attr[:"font-weight"] = "bold" if style[:font_style].to_s.include? "bold"
       attr[:"font-style"]  = "italic" if style[:font_style].to_s.include? "italic"
-      attr[:"text-anchor"] = (root.align == 'right') ? "end" : 'start '
+      attr[:"text-anchor"] = {right: :end, left: :start, center: :middle}[root.align]
 
       attr    = attr.merge(@attr_for_on_contextmenu).merge(@attr_for_draggable)
       element = @paper.text(root.center.first / 1.05, root.center.last, text, attr) # literal by try and error

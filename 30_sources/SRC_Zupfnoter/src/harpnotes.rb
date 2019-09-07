@@ -1835,12 +1835,12 @@ module Harpnotes
           vpos        = print_options_hash[:stringnames][:vpos]
           style       = print_options_hash[:stringnames][:style]
           x_spacing   = $conf.get('layout.X_SPACING')
-          x_offset    = $conf.get('layout.X_OFFSET') - 1
+          x_offset    = $conf.get('layout.X_OFFSET')
 
           sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
             x = (-start_scale + pitch) * x_spacing + x_offset
             vpos.each do |vpos|
-              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style, nil, conf_key)
+              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style, nil, conf_key).tap{|d| d.align=:center}
             end
             result
           end
