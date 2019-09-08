@@ -1548,222 +1548,53 @@ module Harpnotes
       # @return [Harpnotes::Drawing::Sheet] Sheet to be provided to the rendering engine
       def layout(music, beat_layout = nil, print_variant_nr = 0, page_format = 'A4')
 
-        print_options_raw  = get_print_options(print_variant_nr)
-        @print_options_raw = print_options_raw # todo refactor handling of print_options_raw
-        print_options_hash = print_options_raw.get
-
-        # push view specific configuration
-        layout_options = print_options_hash[:layout] || {}
-        $conf.push({layout: layout_options})
-        $conf.push({printer: print_options_hash[:printer] || {}})
-
-
-        initialize
-
-        debug_grid = [];
-        debug_grid = layout_debug_grid() if $conf['layout.grid']
-        res_images = layout_images(print_options_hash, print_variant_nr)
-
-
-        @layout_minc = print_options_raw['notebound.minc'] || {}
-
-        @y_offset = print_options_hash[:startpos]
-        @y_size   = $conf.get('layout.DRAWING_AREA_SIZE').last
-
-        beat_compression_map = nil
-        $log.benchmark("compute beat compression map") do
-          layoutlines          = print_options_hash[:voices] + print_options_hash[:layoutlines].uniq
-          beat_compression_map = compute_beat_compression(music, layoutlines)
-        end
-        maximal_beat      = beat_compression_map.values.max || 0
-        full_beat_spacing = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
-
-        if full_beat_spacing < @beat_spacing
-          factor = (@beat_spacing / full_beat_spacing)
-          $log.warning("note distance too small (factor #{factor})")
-        end
-        @beat_spacing = [full_beat_spacing, $conf.get('layout.packer.pack_max_spreadfactor') * @beat_spacing].min # limit beat spacing to twice of optimal spacing
-
-        # first optimize the vertical arrangement of the notes
-        # by analyzing the beat layout
-        unless $conf.get('layout.bottomup')
-          beat_layout = beat_layout || Proc.new do |beat|
-            # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-            # assign to sanitizex %x string at end of function
-            r = %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
-          end
-        else
-          beat_layout = beat_layout || Proc.new do |beat|
-            # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
-            # assign to sanitizex %x string at end of function
-            r = %x{#{@y_size} - #{beat} * #{@beat_spacing}}
-          end
-        end
-
-
-        compressed_beat_layout_proc = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
-
-        # configure which synclines are required from-voice to-voice
-        # also filter such synchlines which have points in the displayed voices
-        required_synchlines = print_options_hash[:synchlines].select { |sl|
-          print_options_hash[:voices].include?(sl.first) && print_options_hash[:voices].include?(sl.last)
-        }
-
-        # determine the synchronized notes
-        synched_notes = []
-        $log.benchmark("build_syncpoints") {
-          synched_notes = required_synchlines.map do |selector|
-            synch_points_to_show = music.build_synch_points(selector)
-            synch_points_to_show.map do |sp|
-              sp.synched_notes
-            end
-          end.flatten
-        }
-
-        # sheet_elements derived from the voices
-        active_voices  = print_options_hash[:voices]
-        voice_elements = music.voices.each_with_index.map { |v, index|
-          if active_voices.include?(index) ## todo add control for jumpline right border
-            countnotes_options = print_options_hash[:countnotes]
-            countnotes_options = nil unless countnotes_options[:voices].include?(index)
-            barnumbers_options = print_options_hash[:barnumbers]
-            barnumbers_options = nil unless barnumbers_options[:voices].include?(index)
-
-            layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
-                         voice_nr:      index,
-                         nonflowrest:   print_options_hash[:nonflowrest],
-                         flowline:      print_options_hash[:flowlines].include?(index),
-                         subflowline:   print_options_hash[:subflowlines].include?(index),
-                         jumpline:      print_options_hash[:jumplines].include?(index),
-                         repeatsigns:   print_options_hash[:repeatsigns],
-                         synched_notes: synched_notes, # synchronized notes to determine subflowlines
-                         countnotes:        countnotes_options,
-                         barnumbers:        barnumbers_options,
-                         print_options_raw: print_options_raw
-            )
-          end
-        }.flatten.compact # note that we get three nil objects bcause of the voice filter
-
-        if $log.loglevel? :warning
-          collisiondetector = CollisionDetector.new
-          collisiondetector.check_annotations(voice_elements)
-        end
-
-        # build synchlines between voices
-        synch_lines = required_synchlines.map do |selector|
-          synch_points_to_show = music.build_synch_points(selector)
-          synch_points_to_show.map do |sp|
-            res       = FlowLine.new(sp.notes.first.sheet_drawable, sp.notes.last.sheet_drawable, :dashed)
-            res.color = compute_color_by_variant_no(sp.notes.first.variant)
-            res
-          end
-        end.flatten
-
-
-        # build Scalebar
-        sheet_marks = layout_stringnames(print_options_hash, print_variant_nr)
-
-        # build cutmarks
-        if page_format == 'A4' and $conf['printer.a4_pages'].length > 1
-          delta = 12.0 * $conf.get('layout.X_SPACING') # cut in octaves
-          (1 .. 2).each do |i| # number rof cutmarks
-            [4, 290].each do |y| # the y  Coordinates
-              # 0.25 Fragment of string distance to place the cutmark
-              sheet_marks << Harpnotes::Drawing::Annotation.new([0.25 * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') + delta * i, y], "x", :small, nil)
-            end
-          end
-        end
-
-        # now generate legend
-
-        annotations = []
-
+        _layout_prepare_options(print_variant_nr)
         title               = music.meta_data[:title] || "untitled"
         filename            = music.meta_data[:filename]
-        meter               = music.meta_data[:meter]
-        meter               = meter.last.split("=").first if meter
-        key                 = music.meta_data[:key]
-        composer            = music.meta_data[:composer]
-        tempo               = music.meta_data[:tempo_display]
-        print_variant_title = print_options_hash[:title]
 
-        title_pos = print_options_hash[:legend][:pos]
+        ### layout debug grid
+        res_debug_grid = $conf['layout.grid'] ? layout_debug_grid() : []
 
-        title_align = @print_options_raw.get("legend.align") || :r
-        title_align = (title_align == :l) ? :right : :left
+        ### layout imabes
+        res_images = layout_images(@print_options_hash, print_variant_nr)
 
-        legend_pos = print_options_hash[:legend][:spos]
-        legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
-        style      = @print_options_raw.get("legend.style") || :regular
-        annotations << Harpnotes::Drawing::Annotation.new(
-            title_pos, title, :large, nil,
-            "extract.#{print_variant_nr}.legend.pos",
-            title_pos).tap do |s|
-          s.draginfo = {handler: :annotation}
-          s.align    = title_align
-        end
-        if print_options_raw["notes.T06_legend"].nil?
-          annotations << Harpnotes::Drawing::Annotation.new(legend_pos, legend, style, nil,
-                                                            "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
-        end
-        datestring = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{@uri[:hostname]}]", :smaller)
-        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[1], "Zupfnoter: https://www.zupfnoter.de", :smaller)
-        annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[2], music.checksum, :smaller)
+        ### layout voices
+        active_voices, required_synchlines, res_voice_elements = _layout_voices(beat_layout, music, print_variant_nr)
 
-        lyrics     = print_options_hash[:lyrics]
-        lyric_text = music.harpnote_options[:lyrics][:text]
-        if lyric_text
-          text = lyric_text.join("\n")
+        ### build synchlines between voices
+        res_synch_lines = _layout_synclines(music, required_synchlines)
 
-          if lyrics
-            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map { |i| i.strip }
-            lyrics.delete("versepos")
-            lyrics.each do |key, entry|
-              pos       = entry[:pos]
-              the_text  = (entry[:verses] || []).map do |i|
-                j = 9999 if i == 0 # this is a workaround, assuming that we do not have 1000 verses
-                j = i if i < 0
-                j = i - 1 if i > 0
-                verses[j]
-              end.join("\n\n")
-              conf_key  = "lyrics.#{key}"
-              conf_base = "extract.#{print_variant_nr}.#{conf_key}"
-              style     = @print_options_raw.get("#{conf_key}.style") || :regular
-              annotations << Harpnotes::Drawing::Annotation.new(pos, the_text, style, nil,
-                                                                "#{conf_base}.pos", pos).tap { |s| s.draginfo = {handler: :annotation} }
-            end
-          end
-        end
+        ### build Scalebar stringmarks, sortmark
+        res_sheetmarks = _layout_sheetmarks(@print_options_hash, print_variant_nr)
+        sortmark_options = @print_options_hash['sortmark']
+        res_sheetmarks << _layout_sortmark(title, sortmark_options) if sortmark_options['show']
 
-        # build sortmarks
-        sortmark_options = print_options_hash['sortmark']
-        sheet_marks << layout_sortmark(title, sortmark_options) if sortmark_options['show']
+        ### layout_instrument
+        res_instrument = _layout_instrument
 
-        #sheet based annotations
+        ### build cutmarks
+        res_cutmarks = _layout_cutmarks(page_format)
+
+        ### laoyut legend
+        res_legend = _layout_legend(music, print_variant_nr, title)
+
+        ### layout zn_annotations aka zupfnoter hardcoded annotations
+        res_zn_annotations = _layout_zn_annotations(filename, music)
+
+        ### layout lyrics
+        res_lyrics = _layout_lyrics(music, print_variant_nr)
+
+
+        ### sheet based annotations
         # todo: implement a proper strategy for validateion of conf
-        begin
-          print_options_hash[:notes].each do |k, note|
-            #note is an array [center, text, style] todo: refactor this
-            conf_key = "extract.#{print_variant_nr}.notes.#{k}"
-            align    = note[:align] || :r
-            align    = (align == :r) ? :left : :right;
-            raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
-            raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
-            annotations << Harpnotes::Drawing::Annotation.new(
-                note[:pos], resolve_placeholder(note[:text], conf_key), note[:style], nil,
-                "#{conf_key}.pos", note[:pos]).tap do |s|
-              s.align    = align
-              s.draginfo = {handler: :annotation}
-            end
-          end
-        rescue Exception => e
-          $log.error e.message
-        end
+        res_annotations = _layout_sheet_annotations(print_variant_nr)
 
-        @draw_instrument.call.each { |r| sheet_marks.push(r) } if @draw_instrument
 
-        sheet_elements        = res_images + debug_grid + synch_lines + voice_elements + annotations + sheet_marks
+        ### collect the result
+        # todo: handle priorities
+        sheet_elements        = res_images + res_debug_grid + res_synch_lines + res_voice_elements +
+            res_legend + res_annotations + res_zn_annotations + res_lyrics +
+            res_sheetmarks + res_cutmarks + res_instrument
         result                = Harpnotes::Drawing::Sheet.new(sheet_elements, active_voices)
         result.printer_config = $conf[:printer]
 
@@ -1794,59 +1625,7 @@ module Harpnotes
       end
 
 
-      def layout_sortmark(title, options)
-        sortname = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
-        b        = (sortname + "AAAA").split('').map { |i| i.ord - "A".ord }
-        a        = b[0] + (0.1 * b[1] + 0.01 * b[2] + 0.001 * b[3]) * 0.5 / 2.4 # 0.5 cover half the stringdistance; 2.4 - 24 positions
-        w, h     = options['size']
-        fill     = options['fill'] ? :filled : :open
-        markpos  = (12.5 + a) * $conf.get('layout.X_SPACING') # 12 - 12 strings fro mleft border
 
-        markpath = [['M', markpos, 0], ['l', -w / 2, h], ['l', w, 0], ['l', -w / 2, -h], ['l', 0, h], ['l', 0, -h], ['z']]
-        Harpnotes::Drawing::Path.new(markpath, fill)
-      end
-
-      # this creates a scale bar
-      # todo: make it moveaeable by mouse
-      def layout_stringnames(print_options_hash, print_variant_nr)
-        vpos     = print_options_hash[:stringnames][:vpos]
-        marks    = print_options_hash[:stringnames][:marks][:hpos]
-        conf_key = "stringnames"
-
-        sheet_marks = []
-        unless marks.empty?
-          sheet_marks += marks.inject([]) do |result, pitch|
-
-            print_options_hash[:stringnames][:marks][:vpos].each do |mark_vpos|
-              markpath = make_sheetmark_path([(@pitch_to_xpos.call(pitch)), mark_vpos])
-              result << Harpnotes::Drawing::Path.new(markpath, :filled)
-            end
-            result
-          end
-        end
-
-        unless vpos.empty?
-          no_of_names = 37
-          scale       = print_options_hash[:stringnames][:text].split(' ')
-          scale       = scale * ((no_of_names) / scale.length + 1)
-
-          start_scale = -$conf.get('layout.PITCH_OFFSET')
-          end_scale   = start_scale + no_of_names - 1
-          vpos        = print_options_hash[:stringnames][:vpos]
-          style       = print_options_hash[:stringnames][:style]
-          x_spacing   = $conf.get('layout.X_SPACING')
-          x_offset    = $conf.get('layout.X_OFFSET')
-
-          sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
-            x = (-start_scale + pitch) * x_spacing + x_offset
-            vpos.each do |vpos|
-              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style, nil, conf_key).tap{|d| d.align=:center}
-            end
-            result
-          end
-        end
-        sheet_marks
-      end
 
       NOTE_POSITION_LOOKUP = {
           #         t   C
@@ -1896,406 +1675,51 @@ module Harpnotes
         voice_nr  = show_options[:voice_nr]
         playables = voice.select { |c| c.is_a? Playable }
 
-        # handle visibility of rests in nonflows
-        unless show_options[:nonflowrest]
-          previous_note = nil
+        ### handle visibility of rests in nonflows
+        _layout_voice_handle_visibility(playables, show_options)
 
-          playables.each do |c|
-            # if no flowline and synched -> not visible
-            c.visible = false if c.is_a? Pause and not show_options[:flowline]
-            # if neither flowline or subflowline -> not visible
-            c.visible = false if c.is_a? Pause and not show_options[:subflowline] and not show_options[:flowline]
-
-            # turn previous note visible if the current playable is visible but not synchronized
-            # which in turn means that it is part of a subflowline
-            if not show_options[:flowline] and c.visible and not show_options[:synched_notes].include?(c.proxy_note)
-              ## todo: this turns on the visibility of invisbile (X) rests
-              previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
-            end
-            previous_note = c
-          end
-
-        end
-
-        # now we layout the playables
+        ### now we layout the playables
         # thereby we collect decorations (!fermata! etc.)
-        res_decorations = []
-        res_playables   = playables.map do |playable|
-          note_conf_base_tail = %Q{notebound.nconf.v_#{voice_nr}.t_#{playable.time}}
-          note_conf_base      = %Q{extract.#{print_variant_nr}.#{note_conf_base_tail}}
-          result              = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
-          decoration_root     = result.proxy
+        res_decorations, res_playables = _layout_voice_playables(beat_layout, playables, print_variant_nr, show_options, voice_nr)
 
-          res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
-
-          # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
-
-          decoration_root.more_conf_keys.push({conf_key: %Q{#{decoration_root.conf_key.gsub(/\.[^\.]+$/, '')}.nshift},
-                                               text:     I18n.t("shift left"),
-                                               icon:     "fa fa-arrow-left",
-                                               value:    -0.5
-                                              })
-          decoration_root.more_conf_keys.push({conf_key: %Q{#{decoration_root.conf_key.gsub(/\.[^\.]+$/, '')}.nshift},
-                                               text:     I18n.t("shift right"),
-                                               icon:     "fa fa-arrow-right",
-                                               value:    0.5
-                                              })
-          decoration_root.more_conf_keys.push({
-                                                  text:  "---",
-                                                  icon:  "fa fa-arrows-v",
-                                                  value: 0.5
-                                              })
-          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
-                                               text:     I18n.t("Edit Minc"),
-                                               icon:     "fa fa-arrows-v"
-                                              })
-          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
-                                               text:     I18n.t("increase Minc"),
-                                               icon:     "fa fa-arrow-down",
-                                               value:    0.5
-                                              })
-          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
-                                               text:     I18n.t("decrease Minc"),
-                                               icon:     "fa fa-arrow-up",
-                                               value:    -0.5
-                                              })
-
-
-          result.shapes
-        end.flatten.compact
-
-        # flatten the list of decorations
-        # it might be that there is more than one decoration per playable
-        res_decorations = res_decorations.flatten.compact
-
-        # draw barnumbers and countnotes
+        ### draw barnumbers and countnotes
         res_barnumbers, res_countnotes = $log.benchmark("countnotes / barnumbers") { layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr) }
 
-        # draw the flowlines
-        previous_note          = nil
+        ### draw the flowlines
         do_flowconf            = $settings["flowconf"] == 'true' # this parameter turns flowconfiguraiton on/off
         default_tuplet_options = $conf['defaults.notebound.flowline']
-        flowlines_conf_key     = "notebound.flowline.v_#{voice_nr}"
-        flowlines_conf         = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines
 
-        res_flow = voice.select { |c| c.is_a? Playable }.map do |playable|
-          res = nil
-          unless previous_note.nil?
-            # todo: remove this if clause or set to false to turn flowline configuration off at all
-            if true # do_flowconf == true
-              flowline_conf_key = "#{playable.znid}"
-              conf_from_options = flowlines_conf[flowline_conf_key]
-              if conf_from_options or do_flowconf == true
-                conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
-                conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+        res_flow = _layout_voice_flowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr)
 
-                p1 = Vector2d(previous_note.sheet_drawable.center)
-                p2 = Vector2d(playable.sheet_drawable.center)
-
-                ## note we use the name tuplet_options since we steal the code from tuplet - handling
-                tuplet_options = Confstack.new()
-                tuplet_options.push(default_tuplet_options)
-                tuplet_options.push(conf_from_options) rescue nil
-
-                tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
-
-                if do_flowconf == true
-                  draginfo = {handler: :tuplet, p1: p1.to_a, p2: p2.to_a, cp1: cp1.to_a, cp2: cp2.to_a, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
-                else
-                  draginfo = nil
-                end
-                res = Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.draginfo = draginfo }
-              else
-                # draw the flowline as line if it is not a path
-                res = Harpnotes::Drawing::FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable)
-              end
-            end
-
-            #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
-            res.line_width = $conf.get('layout.LINE_MEDIUM');
-            res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
-          end
-          res = nil if playable.first_in_part? # interrupt flowline at begin of a part
-          res = nil unless playable.visible? # interupt flowing if one of the ends is not visible
-
-          previous_note = playable
-          res
-        end.compact
-
-
-        # draw the subflowlines
+        ### draw the subflowlines
         # note that invisible rests make no sense and therefore do not interrupt subflowlines
-        previous_note  = nil
-        res_sub_flow   = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
+        res_sub_flow   = _layout_voice_subflowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr)
 
-          unless show_options[:synched_notes].include?(playable.proxy_note)
-            res = nil
-
-            # draw subflowline if both ends are visible
-            if not previous_note.nil? and previous_note.visible and playable.visible
-
-              flowlines_conf_key     = "notebound.flowline.v_#{voice_nr}"
-              flowlines_conf         = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines
-
-              flowline_conf_key = "#{playable.znid}"
-              conf_from_options = flowlines_conf[flowline_conf_key]
-              if conf_from_options or do_flowconf == true
-                conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
-                conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
-
-                p1 = Vector2d(previous_note.sheet_drawable.center)
-                p2 = Vector2d(playable.sheet_drawable.center)
-
-                ## note we use the name tuplet_options since we steal the code from tuplet - handling
-                tuplet_options = Confstack.new()
-                tuplet_options.push(default_tuplet_options)
-                tuplet_options.push(conf_from_options) rescue nil
-
-                tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
-
-                if do_flowconf == true
-                  draginfo = {handler: :tuplet, p1: p1.to_a, p2: p2.to_a, cp1: cp1.to_a, cp2: cp2.to_a, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
-                else
-                  draginfo = nil
-                end
-                res = Harpnotes::Drawing::Path.new(tiepath,nil, nil,:dotted).tap { |d| d.conf_key = conf_key_edit; d.draginfo = draginfo}
-              else
-                res = FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable, :dotted)
-              end
-              #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
-            end
-
-            # this supports the case that synclines are entirely turned off and also no flowlines show up.
-            res = nil if playable.first_in_part?
-          end
-
-          previous_note = playable
-          res
-        end.compact
-
-        # kill the flowlines / subflowlines if they shall not be shown
+        ### cleanup the flowlines / subflowlines if they shall not be shown
+        # todo: refactor this such that we do not call the methods at all
         res_sub_flow   = [] unless show_options[:subflowline]
         res_flow       = [] unless show_options[:flowline]
         res_countnotes = [] unless show_options[:countnotes]
         res_barnumbers = [] unless show_options[:barnumbers]
 
+        ### layout tuplets
+        res_tuplets = _layout_voice_tuplets(playables, print_variant_nr, show_options, voice_nr)
 
-        # layout tuplets
+        ### layout the slurs and ties
+        res_slurs = _layout_voice_slurs(playables)
 
-        tuplet_start = playables.first
-        tuplet_notes = []
-
-        res_tuplets = playables.inject([]) do |result, playable|
-          tuplet_start = playable if playable.tuplet_start?
-          tuplet_notes.push playable.time if tuplet_start
-
-          if playable.tuplet_end?
-            tuplet_conf_key = "notebound.tuplet.v_#{voice_nr}.#{tuplet_start.znid}" # "tuplet.#{tuplet_start.znid}"
-            conf_key        = "extract.#{print_variant_nr}.#{tuplet_conf_key}"
-            conf_key_pos    = 'pos'
-
-            tuplet_options = Confstack.new()
-            tuplet_options.push($conf['defaults.notebound.tuplet'])
-            tuplet_options.push(show_options[:print_options_raw][tuplet_conf_key]) rescue nil
-
-
-            p1 = Vector2d(tuplet_start.sheet_drawable.center)
-            p2 = Vector2d(playable.sheet_drawable.center)
-
-            tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
-            pos_from_conf = tuplet_options['pos'] rescue [0, 0]
-            configured_anchor = (bezier_anchor + pos_from_conf)
-            conf_value        = (configured_anchor - bezier_anchor).to_a.map { |i| i.round(0) }
-
-            shape_drag_callback = lambda do |the_tuplet_options|
-              nil
-            end
-
-            unless tuplet_options[:show] == false
-              conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
-              style         = show_options[:print_options_raw]["tuplets.style"] || :small
-              draginfo      = {handler: :tuplet, p1: p1.to_a, p2: p2.to_a, cp1: cp1.to_a, cp2: cp2.to_a, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
-              text          = show_options[:print_options_raw]["tuplets.text"] || playable.tuplet.to_s
-              text          = text.gsub('{{tuplet}}', playable.tuplet.to_s)
-              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
-              result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, text,
-                                                             style,
-                                                             tuplet_start.origin,
-                                                             conf_key + ".#{conf_key_pos}",
-                                                             conf_value.to_a)
-                              .tap { |s| s.draginfo = {handler: :annotation} }
-              )
-            end
-            tuplet_notes = []
-            tuplet_start = nil
-            # compute the position
-          end
-          result
-        end
-
-        # layout the slurs and ties
-        @slur_index[:first_playable] = playables.first # prepare default
-        tie_start                    = playables.first # prepare default
-        res_slurs                    = playables.inject([]) do |result, playable|
-          # note that there is a semantic difference between tie and slur
-          # so first we pick the ties
-
-          if playable.tie_end?
-            dx = [tie_start.sheet_drawable.size[0], playable.sheet_drawable.size[0]].max + 0.5
-            p1      = Vector2d(tie_start.sheet_drawable.center) + [dx, -0.5] #- tie_start.sheet_drawable.size[1]]
-            p2      = Vector2d(playable.sheet_drawable.center) + [dx, 0.5] #+ playable.sheet_drawable.size[1]]
-            tiepath = $conf['layout.bottomup'] ? make_slur_path(p2, p1) : make_slur_path(p1, p2)
-            if playable.is_a? Harpnotes::Music::SynchPoint
-              playable.notes.each_with_index do |n, index|
-                begin
-
-                  p1      = tie_start.notes[index]
-                  dx = [p1.sheet_drawable.size[0], n.sheet_drawable.size[0]].max + 0.5
-
-                  p1      = Vector2d(p1.sheet_drawable.center) + [dx, -0.5]# - p1.sheet_drawable.size[1]]
-                  p2      = Vector2d(n.sheet_drawable.center) + [dx, 0.5]#n.sheet_drawable.size[1]]
-                  tiepath = make_slur_path(p1, p2)
-                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d|
-                    d.line_width = $conf.get('layout.LINE_THICK')
-                    d.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize ties
-                  })
-                rescue Exception => e
-                  $log.error("#{e.message} tied chords which doesn't have same number of notes", n.start_pos)
-                end
-              end
-            else
-              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d|
-                d.line_width = $conf.get('layout.LINE_THICK')
-                d.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize ties
-              })
-            end
-
-          end
-          tie_start = playable if playable.tie_start?
-
-          # then we pick the slurs
-          playable.slur_starts.each { |s| @slur_index[s] = playable }
-          @slur_index[playable.slur_starts.first] = playable
-
-          playable.slur_ends.each do |id|
-            begin_slur = @slur_index[id] || @slur_index[:first_playable]
-
-            p1       = Vector2d(begin_slur.sheet_drawable.center) + [3, 0] # todo make tie configurable
-            p2       = Vector2d(playable.sheet_drawable.center) + [3, 0]
-            slurpath = make_slur_path(p1, p2)
-            result.push(Harpnotes::Drawing::Path.new(slurpath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') }) if $conf.get('layout.SHOW_SLUR')
-          end
-
-          result
-        end
-
-        # draw the jumplines
-        res_gotos     = voice.select { |c| c.is_a? Goto }.map do |goto|
-          if goto.conf_key
-            conf_key = "extract.#{print_variant_nr}.#{goto.conf_key}"
-            distance = show_options[:print_options_raw][goto.conf_key]
-
-            unless distance
-              old_conf_key = conf_key.gsub(/(.*)\.(\d+)\.(\d+)\.(\w+)/, '\1.\2.\4')
-              distance     = show_options[:print_options_raw][old_conf_key]
-            end
-
-          end
-
-          distance   = goto.policy[:distance] unless distance
-          distance   = 1 unless distance
-          is_visible = distance == 0 ? false : true;
-          distance   = distance - 1 if distance > 0 # make distancebeh  symmetric  -1 0 1
-
-          from_anchor     = goto.policy[:from_anchor] || :after # after -> reight
-          to_anchor       = goto.policy[:to_anchor] || :before # before -> left
-          vertical_anchor = goto.policy[:vertical_anchor] || :from
-
-          $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
-
-          vertical = (distance + 0.5) * $conf.get('layout.X_SPACING')
-
-
-          from = goto.from.sheet_drawable
-          to   = goto.to.sheet_drawable
-
-          # now swap before / after in case of bottomup
-          if $conf['layout.bottomup']
-            swap        = {before: :after, after: :before}
-            from_anchor = swap[from_anchor]
-            to_anchor   = swap[to_anchor]
-          end
-
-
-          verticalcut = compute_vertical_cut(from, to)
-
-          jumpline_info = {from:            {center: from.center, size: from.size, anchor: from_anchor},
-                           to:              {center: to.center, size: to.size, anchor: to_anchor},
-                           vertical:        vertical,
-                           vertical_anchor: vertical_anchor,
-                           padding:         goto.policy[:padding],
-                           xspacing:        $conf['layout.X_SPACING'],
-                           jumpline_anchor: $conf['layout.jumpline_anchor'],
-                           verticalcut:     verticalcut,
-          }
-
-          path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
-          draginfo = {handler: :jumpline, jumpline: jumpline_info, xspacing: $conf.get('layout.X_SPACING')}
-
-          if is_visible
-            unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
-              [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
-               Harpnotes::Drawing::Path.new(path[1], :filled, goto.from),
-               Harpnotes::Drawing::Path.new(path[2], :filled, goto.from)
-              ]
-            end
-          end
-        end.flatten.compact
-
+        ### layout the jumplines
+        res_gotos     = _layout_voice_gotos(print_variant_nr, show_options, voice)
         res_gotos     = [] unless show_options[:jumpline]
+
         color_default = @color_default
         res_gotos.each { |the_goto| the_goto.color = color_default }
 
+        ### draw the repeatmarks
+        res_repeatmarks = _laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr)
 
-        # draw the repeatmarks
-
-        res_repeatmarks = []
-        if show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
-          res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
-
-            startbar = make_repeatsign_annotation(goto, :begin, print_variant_nr, show_options, voice_nr)
-            endbar   = make_repeatsign_annotation(goto, :end, print_variant_nr, show_options, voice_nr)
-
-            [endbar, startbar]
-          end.flatten
-        end
-
-
-        ###
-        # draw note bound annotations
-
-        res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
-          notebound_pos_key = annotation.conf_key + ".pos"
-          show_from_config = show_options[:print_options_raw].get(annotation.conf_key + ".show")
-          show              = show_from_config.nil? ? true : show_from_config
-          if notebound_pos_key
-            conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
-            annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
-            annotationoffset = annotation.position unless annotationoffset
-          else
-            annotationoffset = annotation.position
-            conf_key         = nil
-          end
-
-          style = show_options[:print_options_raw].get(annotation.conf_key + ".style") || annotation.style
-
-          position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
-          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, style, annotation.companion.origin,
-                                                        conf_key, annotationoffset).tap { |s|  s.draginfo = {handler: :annotation} }
-          result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
-          result   = nil if show == false
-          result
-        end
+        ### draw note bound annotations
+        res_annotations = _layout_voice_notebound_annotations(print_variant_nr, show_options, voice)
 
 
         res_barnumber_backgrounds = res_barnumbers.map { |i| create_annotation_background_rect(i) }
@@ -2393,6 +1817,671 @@ module Harpnotes
 
 
       private
+
+      def _layout_voice_notebound_annotations(print_variant_nr, show_options, voice)
+        res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
+          notebound_pos_key = annotation.conf_key + ".pos"
+          show_from_config  = show_options[:print_options_raw].get(annotation.conf_key + ".show")
+          show              = show_from_config.nil? ? true : show_from_config
+          if notebound_pos_key
+            conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
+            annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
+            annotationoffset = annotation.position unless annotationoffset
+          else
+            annotationoffset = annotation.position
+            conf_key         = nil
+          end
+
+          style = show_options[:print_options_raw].get(annotation.conf_key + ".style") || annotation.style
+
+          position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
+          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, style, annotation.companion.origin,
+                                                        conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
+          result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
+          result   = nil if show == false
+          result
+        end
+      end
+
+      def _laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr)
+        res_repeatmarks = []
+        if show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
+          res_repeatmarks = voice.select { |c| c.is_a? Goto and c.policy[:is_repeat] }.map do |goto|
+
+            startbar = make_repeatsign_annotation(goto, :begin, print_variant_nr, show_options, voice_nr)
+            endbar   = make_repeatsign_annotation(goto, :end, print_variant_nr, show_options, voice_nr)
+
+            [endbar, startbar]
+          end.flatten
+        end
+        res_repeatmarks
+      end
+
+      def _layout_voice_gotos(print_variant_nr, show_options, voice)
+        res_gotos = voice.select { |c| c.is_a? Goto }.map do |goto|
+          if goto.conf_key
+            conf_key = "extract.#{print_variant_nr}.#{goto.conf_key}"
+            distance = show_options[:print_options_raw][goto.conf_key]
+
+            unless distance
+              old_conf_key = conf_key.gsub(/(.*)\.(\d+)\.(\d+)\.(\w+)/, '\1.\2.\4')
+              distance     = show_options[:print_options_raw][old_conf_key]
+            end
+
+          end
+
+          distance   = goto.policy[:distance] unless distance
+          distance   = 1 unless distance
+          is_visible = distance == 0 ? false : true;
+          distance   = distance - 1 if distance > 0 # make distancebeh  symmetric  -1 0 1
+
+          from_anchor     = goto.policy[:from_anchor] || :after # after -> reight
+          to_anchor       = goto.policy[:to_anchor] || :before # before -> left
+          vertical_anchor = goto.policy[:vertical_anchor] || :from
+
+          $log.debug("vertical line x offset: #{distance} #{__FILE__}:#{__LINE__}")
+
+          vertical = (distance + 0.5) * $conf.get('layout.X_SPACING')
+
+
+          from = goto.from.sheet_drawable
+          to   = goto.to.sheet_drawable
+
+          # now swap before / after in case of bottomup
+          if $conf['layout.bottomup']
+            swap        = {before: :after, after: :before}
+            from_anchor = swap[from_anchor]
+            to_anchor   = swap[to_anchor]
+          end
+
+          verticalcut = compute_vertical_cut(from, to)
+
+          jumpline_info = {from:            {center: from.center, size: from.size, anchor: from_anchor},
+                           to:              {center: to.center, size: to.size, anchor: to_anchor},
+                           vertical:        vertical,
+                           vertical_anchor: vertical_anchor,
+                           padding:         goto.policy[:padding],
+                           xspacing:        $conf['layout.X_SPACING'],
+                           jumpline_anchor: $conf['layout.jumpline_anchor'],
+                           verticalcut:     verticalcut,
+          }
+
+          path     = Harpnotes::Layout::Default.make_path_from_jumpline(jumpline_info)
+          draginfo = {handler: :jumpline, jumpline: jumpline_info, xspacing: $conf.get('layout.X_SPACING')}
+
+          if is_visible
+            unless goto.policy[:is_repeat] and show_options[:repeatsigns][:voices].include? show_options[:voice_nr]
+              [Harpnotes::Drawing::Path.new(path[0], nil, goto.from).tap { |s| s.conf_key = conf_key; s.conf_value = distance; s.line_width = $conf.get('layout.LINE_THICK'); s.draginfo = draginfo },
+               Harpnotes::Drawing::Path.new(path[1], :filled, goto.from),
+               Harpnotes::Drawing::Path.new(path[2], :filled, goto.from)
+              ]
+            end
+          end
+        end.flatten.compact
+      end
+
+      def _layout_voice_slurs(playables)
+        @slur_index[:first_playable] = playables.first # prepare default
+        tie_start                    = playables.first # prepare default
+        res_slurs                    = playables.inject([]) do |result, playable|
+          # note that there is a semantic difference between tie and slur
+          # so first we pick the ties
+
+          if playable.tie_end?
+            dx      = [tie_start.sheet_drawable.size[0], playable.sheet_drawable.size[0]].max + 0.5
+            p1      = Vector2d(tie_start.sheet_drawable.center) + [dx, -0.5] #- tie_start.sheet_drawable.size[1]]
+            p2      = Vector2d(playable.sheet_drawable.center) + [dx, 0.5] #+ playable.sheet_drawable.size[1]]
+            tiepath = $conf['layout.bottomup'] ? make_slur_path(p2, p1) : make_slur_path(p1, p2)
+            if playable.is_a? Harpnotes::Music::SynchPoint
+              playable.notes.each_with_index do |n, index|
+                begin
+
+                  p1 = tie_start.notes[index]
+                  dx = [p1.sheet_drawable.size[0], n.sheet_drawable.size[0]].max + 0.5
+
+                  p1      = Vector2d(p1.sheet_drawable.center) + [dx, -0.5] # - p1.sheet_drawable.size[1]]
+                  p2      = Vector2d(n.sheet_drawable.center) + [dx, 0.5] #n.sheet_drawable.size[1]]
+                  tiepath = make_slur_path(p1, p2)
+                  result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d|
+                    d.line_width = $conf.get('layout.LINE_THICK')
+                    d.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize ties
+                  })
+                rescue Exception => e
+                  $log.error("#{e.message} tied chords which doesn't have same number of notes", n.start_pos)
+                end
+              end
+            else
+              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d|
+                d.line_width = $conf.get('layout.LINE_THICK')
+                d.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize ties
+              })
+            end
+
+          end
+          tie_start = playable if playable.tie_start?
+
+          # then we pick the slurs
+          playable.slur_starts.each { |s| @slur_index[s] = playable }
+          @slur_index[playable.slur_starts.first] = playable
+
+          playable.slur_ends.each do |id|
+            begin_slur = @slur_index[id] || @slur_index[:first_playable]
+
+            p1       = Vector2d(begin_slur.sheet_drawable.center) + [3, 0] # todo make tie configurable
+            p2       = Vector2d(playable.sheet_drawable.center) + [3, 0]
+            slurpath = make_slur_path(p1, p2)
+            result.push(Harpnotes::Drawing::Path.new(slurpath).tap { |d| d.line_width = $conf.get('layout.LINE_MEDIUM') }) if $conf.get('layout.SHOW_SLUR')
+          end
+
+          result
+        end
+      end
+
+      def _layout_voice_tuplets(playables, print_variant_nr, show_options, voice_nr)
+        tuplet_start = playables.first
+        tuplet_notes = []
+
+        res_tuplets = playables.inject([]) do |result, playable|
+          tuplet_start = playable if playable.tuplet_start?
+          tuplet_notes.push playable.time if tuplet_start
+
+          if playable.tuplet_end?
+            tuplet_conf_key = "notebound.tuplet.v_#{voice_nr}.#{tuplet_start.znid}" # "tuplet.#{tuplet_start.znid}"
+            conf_key        = "extract.#{print_variant_nr}.#{tuplet_conf_key}"
+            conf_key_pos    = 'pos'
+
+            tuplet_options = Confstack.new()
+            tuplet_options.push($conf['defaults.notebound.tuplet'])
+            tuplet_options.push(show_options[:print_options_raw][tuplet_conf_key]) rescue nil
+
+
+            p1 = Vector2d(tuplet_start.sheet_drawable.center)
+            p2 = Vector2d(playable.sheet_drawable.center)
+
+            tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
+            pos_from_conf = tuplet_options['pos'] rescue [0, 0]
+            configured_anchor = (bezier_anchor + pos_from_conf)
+            conf_value        = (configured_anchor - bezier_anchor).to_a.map { |i| i.round(0) }
+
+            shape_drag_callback = lambda do |the_tuplet_options|
+              nil
+            end
+
+            unless tuplet_options[:show] == false
+              conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+              style         = show_options[:print_options_raw]["tuplets.style"] || :small
+              draginfo      = {handler: :tuplet, p1: p1.to_a, p2: p2.to_a, cp1: cp1.to_a, cp2: cp2.to_a, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: shape_drag_callback}
+              text          = show_options[:print_options_raw]["tuplets.text"] || playable.tuplet.to_s
+              text          = text.gsub('{{tuplet}}', playable.tuplet.to_s)
+              result.push(Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.line_width = $conf.get('layout.LINE_THIN'); d.draginfo = draginfo })
+              result.push(Harpnotes::Drawing::Annotation.new(configured_anchor.to_a, text,
+                                                             style,
+                                                             tuplet_start.origin,
+                                                             conf_key + ".#{conf_key_pos}",
+                                                             conf_value.to_a)
+                              .tap { |s| s.draginfo = {handler: :annotation} }
+              )
+            end
+            tuplet_notes = []
+            tuplet_start = nil
+            # compute the position
+          end
+          result
+        end
+      end
+
+      def _layout_voice_subflowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr)
+        previous_note = nil
+        res_sub_flow  = voice.select { |c| c.is_a? Playable or c.is_a? SynchPoint }.map do |playable|
+
+          unless show_options[:synched_notes].include?(playable.proxy_note)
+            res = nil
+
+            # draw subflowline if both ends are visible
+            if not previous_note.nil? and previous_note.visible and playable.visible
+
+              flowlines_conf_key = "notebound.flowline.v_#{voice_nr}"
+              flowlines_conf     = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines
+
+              flowline_conf_key = "#{playable.znid}"
+              conf_from_options = flowlines_conf[flowline_conf_key]
+              if conf_from_options or do_flowconf == true
+                conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
+                conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+
+                p1 = Vector2d(previous_note.sheet_drawable.center)
+                p2 = Vector2d(playable.sheet_drawable.center)
+
+                ## note we use the name tuplet_options since we steal the code from tuplet - handling
+                tuplet_options = Confstack.new()
+                tuplet_options.push(default_tuplet_options)
+                tuplet_options.push(conf_from_options) rescue nil
+
+                tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
+
+                if do_flowconf == true
+                  draginfo = {handler: :tuplet, p1: p1.to_a, p2: p2.to_a, cp1: cp1.to_a, cp2: cp2.to_a, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
+                else
+                  draginfo = nil
+                end
+                res = Harpnotes::Drawing::Path.new(tiepath, nil, nil, :dotted).tap { |d| d.conf_key = conf_key_edit; d.draginfo = draginfo }
+              else
+                res = FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable, :dotted)
+              end
+              #res.color = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
+            end
+
+            # this supports the case that synclines are entirely turned off and also no flowlines show up.
+            res = nil if playable.first_in_part?
+          end
+
+          previous_note = playable
+          res
+        end.compact
+      end
+
+      def _layout_voice_flowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr)
+        previous_note      = nil
+        flowlines_conf_key = "notebound.flowline.v_#{voice_nr}"
+        flowlines_conf     = show_options[:print_options_raw][flowlines_conf_key] || {} # here we cache the configuration of flowlines
+
+        res_flow = voice.select { |c| c.is_a? Playable }.map do |playable|
+          res = nil
+          unless previous_note.nil?
+            # todo: remove this if clause or set to false to turn flowline configuration off at all
+            if true # do_flowconf == true
+              flowline_conf_key = "#{playable.znid}"
+              conf_from_options = flowlines_conf[flowline_conf_key]
+              if conf_from_options or do_flowconf == true
+                conf_key      = "extract.#{print_variant_nr}.#{flowlines_conf_key}.#{flowline_conf_key}"
+                conf_key_edit = conf_key + ".*" # "Edit conf strips the last element of conf_key"
+
+                p1 = Vector2d(previous_note.sheet_drawable.center)
+                p2 = Vector2d(playable.sheet_drawable.center)
+
+                ## note we use the name tuplet_options since we steal the code from tuplet - handling
+                tuplet_options = Confstack.new()
+                tuplet_options.push(default_tuplet_options)
+                tuplet_options.push(conf_from_options) rescue nil
+
+                tiepath, bezier_anchor, cp1, cp2 = make_annotated_bezier_path([p1, p2], tuplet_options)
+
+                if do_flowconf == true
+                  draginfo = {handler: :tuplet, p1: p1.to_a, p2: p2.to_a, cp1: cp1.to_a, cp2: cp2.to_a, mp: bezier_anchor, tuplet_options: tuplet_options, conf_key: conf_key, callback: nil}
+                else
+                  draginfo = nil
+                end
+                res = Harpnotes::Drawing::Path.new(tiepath).tap { |d| d.conf_key = conf_key_edit; d.draginfo = draginfo }
+              else
+                # draw the flowline as line if it is not a path
+                res = Harpnotes::Drawing::FlowLine.new(previous_note.sheet_drawable, playable.sheet_drawable)
+              end
+            end
+
+            #res.color      = compute_color_by_variant_no(playable.variant) # todo: uncomment to colorize flowlines
+            res.line_width = $conf.get('layout.LINE_MEDIUM');
+            res            = nil unless previous_note.visible? # interupt flowing if one of the ends is not visible
+          end
+          res = nil if playable.first_in_part? # interrupt flowline at begin of a part
+          res = nil unless playable.visible? # interupt flowing if one of the ends is not visible
+
+          previous_note = playable
+          res
+        end.compact
+      end
+
+      def _layout_voice_playables(beat_layout, playables, print_variant_nr, show_options, voice_nr)
+        res_decorations = []
+        res_playables   = playables.map do |playable|
+          note_conf_base_tail = %Q{notebound.nconf.v_#{voice_nr}.t_#{playable.time}}
+          note_conf_base      = %Q{extract.#{print_variant_nr}.#{note_conf_base_tail}}
+          result              = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
+          decoration_root     = result.proxy
+
+          res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
+
+          # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
+
+          decoration_root.more_conf_keys.push({conf_key: %Q{#{decoration_root.conf_key.gsub(/\.[^\.]+$/, '')}.nshift},
+                                               text:     I18n.t("shift left"),
+                                               icon:     "fa fa-arrow-left",
+                                               value:    -0.5
+                                              })
+          decoration_root.more_conf_keys.push({conf_key: %Q{#{decoration_root.conf_key.gsub(/\.[^\.]+$/, '')}.nshift},
+                                               text:     I18n.t("shift right"),
+                                               icon:     "fa fa-arrow-right",
+                                               value:    0.5
+                                              })
+          decoration_root.more_conf_keys.push({
+                                                  text:  "---",
+                                                  icon:  "fa fa-arrows-v",
+                                                  value: 0.5
+                                              })
+          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
+                                               text:     I18n.t("Edit Minc"),
+                                               icon:     "fa fa-arrows-v"
+                                              })
+          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
+                                               text:     I18n.t("increase Minc"),
+                                               icon:     "fa fa-arrow-down",
+                                               value:    0.5
+                                              })
+          decoration_root.more_conf_keys.push({conf_key: %Q{extract.#{print_variant_nr}.notebound.minc.#{playable.time}.minc_f},
+                                               text:     I18n.t("decrease Minc"),
+                                               icon:     "fa fa-arrow-up",
+                                               value:    -0.5
+                                              })
+
+
+          result.shapes
+        end.flatten.compact
+
+        # flatten the list of decorations
+        # it might be that there is more than one decoration per playable
+        res_decorations = res_decorations.flatten.compact
+        return res_decorations, res_playables
+      end
+
+      def _layout_voice_handle_visibility(playables, show_options)
+        unless show_options[:nonflowrest]
+          previous_note = nil
+
+          playables.each do |c|
+            # if no flowline and synched -> not visible
+            c.visible = false if c.is_a? Pause and not show_options[:flowline]
+            # if neither flowline or subflowline -> not visible
+            c.visible = false if c.is_a? Pause and not show_options[:subflowline] and not show_options[:flowline]
+
+            # turn previous note visible if the current playable is visible but not synchronized
+            # which in turn means that it is part of a subflowline
+            if not show_options[:flowline] and c.visible and not show_options[:synched_notes].include?(c.proxy_note)
+              ## todo: this turns on the visibility of invisbile (X) rests
+              previous_note.visible = true unless previous_note.nil? # this handles the very first note which has previous_note
+            end
+            previous_note = c
+          end
+        end
+      end
+
+      def _layout_sheet_annotations(print_variant_nr)
+        res_annotations = []
+        begin
+          @print_options_hash[:notes].each do |k, note|
+            #note is an array [center, text, style] todo: refactor this
+            conf_key = "extract.#{print_variant_nr}.notes.#{k}"
+            align    = note[:align] || :r
+            align    = (align == :r) ? :left : :right;
+            raise %Q{#{I18n.t("missing pos")} in #{conf_key}} unless note[:pos]
+            raise %Q{#{I18n.t("missing text")} in #{conf_key}} unless note[:text]
+            res_annotations << Harpnotes::Drawing::Annotation.new(
+                note[:pos], resolve_placeholder(note[:text], conf_key), note[:style], nil,
+                "#{conf_key}.pos", note[:pos]).tap do |s|
+              s.align    = align
+              s.draginfo = {handler: :annotation}
+            end
+          end
+        rescue Exception => e
+          $log.error e.message
+        end
+        res_annotations
+      end
+
+      def _layout_instrument
+        res_instrument = []
+        @draw_instrument.call.each { |r| res_instrument.push(r) } if @draw_instrument
+        res_instrument
+      end
+
+      def _layout_lyrics(music, print_variant_nr)
+        res_lyrics = []
+        lyrics     = @print_options_hash[:lyrics]
+        lyric_text = music.harpnote_options[:lyrics][:text]
+        if lyric_text
+          text = lyric_text.join("\n")
+
+          if lyrics
+            verses = text.gsub("\t", " ").squeeze(" ").split(/\n\n+/).map { |i| i.strip }
+            lyrics.delete("versepos")
+            lyrics.each do |key, entry|
+              pos       = entry[:pos]
+              the_text  = (entry[:verses] || []).map do |i|
+                j = 9999 if i == 0 # this is a workaround, assuming that we do not have 1000 verses
+                j = i if i < 0
+                j = i - 1 if i > 0
+                verses[j]
+              end.join("\n\n")
+              conf_key  = "lyrics.#{key}"
+              conf_base = "extract.#{print_variant_nr}.#{conf_key}"
+              style     = @print_options_raw.get("#{conf_key}.style") || :regular
+              res_lyrics << Harpnotes::Drawing::Annotation.new(pos, the_text, style, nil,
+                                                               "#{conf_base}.pos", pos).tap { |s| s.draginfo = {handler: :annotation} }
+            end
+          end
+        end
+        res_lyrics
+      end
+
+      def _layout_zn_annotations(filename, music)
+        res_zn_annotations = []
+        datestring         = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+        res_zn_annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[0], "#{filename} - created #{datestring} by Zupfnoter #{VERSION} [#{@uri[:hostname]}]", :smaller)
+        res_zn_annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[1], "Zupfnoter: https://www.zupfnoter.de", :smaller)
+        res_zn_annotations << Harpnotes::Drawing::Annotation.new(@bottom_annotation_positions[2], music.checksum, :smaller)
+        res_zn_annotations
+      end
+
+      def _layout_legend(music, print_variant_nr, title)
+        res_legend = []
+
+        meter               = music.meta_data[:meter]
+        meter               = meter.last.split("=").first if meter
+        key                 = music.meta_data[:key]
+        composer            = music.meta_data[:composer]
+        tempo               = music.meta_data[:tempo_display]
+        print_variant_title = @print_options_hash[:title]
+
+        title_pos = @print_options_hash[:legend][:pos]
+
+        title_align = @print_options_raw.get("legend.align") || :r
+        title_align = (title_align == :l) ? :right : :left
+
+        legend_pos = @print_options_hash[:legend][:spos]
+        legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
+        style      = @print_options_raw.get("legend.style") || :regular
+        res_legend << Harpnotes::Drawing::Annotation.new(
+            title_pos, title, :large, nil,
+            "extract.#{print_variant_nr}.legend.pos",
+            title_pos).tap do |s|
+          s.draginfo = {handler: :annotation}
+          s.align    = title_align
+        end
+        if @print_options_raw["notes.T06_legend"].nil?
+          res_legend << Harpnotes::Drawing::Annotation.new(legend_pos, legend, style, nil,
+                                                           "extract.#{print_variant_nr}.legend.spos", legend_pos).tap { |s| s.draginfo = {handler: :annotation} }
+        end
+        res_legend
+      end
+
+      def _layout_cutmarks(page_format)
+        res_cutmarks = []
+        if page_format == 'A4' and $conf['printer.a4_pages'].length > 1
+          delta = 12.0 * $conf.get('layout.X_SPACING') # cut in octaves
+          (1 .. 2).each do |i| # number rof cutmarks
+            [4, 290].each do |y| # the y  Coordinates
+              # 0.25 Fragment of string distance to place the cutmark
+              res_cutmarks << Harpnotes::Drawing::Annotation.new([0.25 * $conf.get('layout.X_SPACING') + $conf.get('layout.X_OFFSET') + delta * i, y], "x", :small, nil)
+            end
+          end
+        end
+        res_cutmarks
+      end
+
+      def _layout_sortmark(title, options)
+        sortname = title.upcase.gsub(/[ÄÖÜYZß]/, {'Ä' => 'AE', 'Ö' => 'OE', 'Ü' => 'UE', 'ß' => 'ss', 'Y' => "X", 'Z' => "X"}).gsub(/[^A-Za-z]/, "")
+        b        = (sortname + "AAAA").split('').map { |i| i.ord - "A".ord }
+        a        = b[0] + (0.1 * b[1] + 0.01 * b[2] + 0.001 * b[3]) * 0.5 / 2.4 # 0.5 cover half the stringdistance; 2.4 - 24 positions
+        w, h     = options['size']
+        fill     = options['fill'] ? :filled : :open
+        markpos  = (12.5 + a) * $conf.get('layout.X_SPACING') # 12 - 12 strings fro mleft border
+
+        markpath = [['M', markpos, 0], ['l', -w / 2, h], ['l', w, 0], ['l', -w / 2, -h], ['l', 0, h], ['l', 0, -h], ['z']]
+        Harpnotes::Drawing::Path.new(markpath, fill)
+      end
+
+      def _layout_synclines(music, required_synchlines)
+        res_synch_lines = required_synchlines.map do |selector|
+          synch_points_to_show = music.build_synch_points(selector)
+          synch_points_to_show.map do |sp|
+            res       = FlowLine.new(sp.notes.first.sheet_drawable, sp.notes.last.sheet_drawable, :dashed)
+            res.color = compute_color_by_variant_no(sp.notes.first.variant)
+            res
+          end
+        end.flatten
+      end
+
+      # this creates a scale bar
+      # todo: make it moveaeable by mouse
+      def _layout_sheetmarks(print_options_hash, print_variant_nr)
+        vpos     = print_options_hash[:stringnames][:vpos]
+        marks    = print_options_hash[:stringnames][:marks][:hpos]
+        conf_key = "stringnames"
+
+        sheet_marks = []
+        unless marks.empty?
+          sheet_marks += marks.inject([]) do |result, pitch|
+
+            print_options_hash[:stringnames][:marks][:vpos].each do |mark_vpos|
+              markpath = make_sheetmark_path([(@pitch_to_xpos.call(pitch)), mark_vpos])
+              result << Harpnotes::Drawing::Path.new(markpath, :filled)
+            end
+            result
+          end
+        end
+
+        unless vpos.empty?
+          no_of_names = 37
+          scale       = print_options_hash[:stringnames][:text].split(' ')
+          scale       = scale * ((no_of_names) / scale.length + 1)
+
+          start_scale = -$conf.get('layout.PITCH_OFFSET')
+          end_scale   = start_scale + no_of_names - 1
+          vpos        = print_options_hash[:stringnames][:vpos]
+          style       = print_options_hash[:stringnames][:style]
+          x_spacing   = $conf.get('layout.X_SPACING')
+          x_offset    = $conf.get('layout.X_OFFSET')
+
+          sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
+            x = (-start_scale + pitch) * x_spacing + x_offset
+            vpos.each do |vpos|
+              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style, nil, conf_key).tap{|d| d.align=:center}
+            end
+            result
+          end
+        end
+
+        sheet_marks
+      end
+
+
+      def _layout_voices(beat_layout, music, print_variant_nr)
+        beat_compression_map = nil
+        $log.benchmark("compute beat compression map") do
+          layoutlines          = @print_options_hash[:voices] + @print_options_hash[:layoutlines].uniq
+          beat_compression_map = compute_beat_compression(music, layoutlines)
+        end
+        maximal_beat      = beat_compression_map.values.max || 0
+        full_beat_spacing = ($conf.get('layout.DRAWING_AREA_SIZE').last - @y_offset) / maximal_beat
+
+        if full_beat_spacing < @beat_spacing
+          factor = (@beat_spacing / full_beat_spacing)
+          $log.warning("note distance too small (factor #{factor})")
+        end
+        @beat_spacing = [full_beat_spacing, $conf.get('layout.packer.pack_max_spreadfactor') * @beat_spacing].min # limit beat spacing to twice of optimal spacing
+
+        # first optimize the vertical arrangement of the notes
+        # by analyzing the beat layout
+        unless $conf.get('layout.bottomup')
+          beat_layout = beat_layout || Proc.new do |beat|
+            # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
+            # assign to sanitizex %x string at end of function
+            r = %x{#{beat} * #{@beat_spacing} + #{@y_offset}}
+          end
+        else
+          beat_layout = beat_layout || Proc.new do |beat|
+            # $log.debug("using default layout verticalpos #{beat}:#{@y_offset} #{__FILE__} #{__LINE__}")
+            # assign to sanitizex %x string at end of function
+            r = %x{#{@y_size} - #{beat} * #{@beat_spacing}}
+          end
+        end
+
+
+        compressed_beat_layout_proc = Proc.new { |beat| beat_layout.call(beat_compression_map[beat]) }
+
+        # configure which synclines are required from-voice to-voice
+        # also filter such synchlines which have points in the displayed voices
+        required_synchlines = @print_options_hash[:synchlines].select { |sl|
+          @print_options_hash[:voices].include?(sl.first) && @print_options_hash[:voices].include?(sl.last)
+        }
+
+        # determine the synchronized notes
+        synched_notes = []
+        $log.benchmark("build_syncpoints") {
+          synched_notes = required_synchlines.map do |selector|
+            synch_points_to_show = music.build_synch_points(selector)
+            synch_points_to_show.map do |sp|
+              sp.synched_notes
+            end
+          end.flatten
+        }
+
+
+        # sheet_elements derived from the voices
+        active_voices      = @print_options_hash[:voices]
+        res_voice_elements = music.voices.each_with_index.map { |v, index|
+          if active_voices.include?(index) ## todo add control for jumpline right border
+            countnotes_options = @print_options_hash[:countnotes]
+            countnotes_options = nil unless countnotes_options[:voices].include?(index)
+            barnumbers_options = @print_options_hash[:barnumbers]
+            barnumbers_options = nil unless barnumbers_options[:voices].include?(index)
+
+            layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
+                         voice_nr:      index,
+                         nonflowrest:   @print_options_hash[:nonflowrest],
+                         flowline:      @print_options_hash[:flowlines].include?(index),
+                         subflowline:   @print_options_hash[:subflowlines].include?(index),
+                         jumpline:      @print_options_hash[:jumplines].include?(index),
+                         repeatsigns:   @print_options_hash[:repeatsigns],
+                         synched_notes: synched_notes, # synchronized notes to determine subflowlines
+                         countnotes:        countnotes_options,
+                         barnumbers:        barnumbers_options,
+                         print_options_raw: @print_options_raw
+            )
+          end
+        }.flatten.compact # note that we get three nil objects bcause of the voice filter
+
+        if $log.loglevel? :warning
+          collisiondetector = CollisionDetector.new
+          collisiondetector.check_annotations(res_voice_elements)
+        end
+        return active_voices, required_synchlines, res_voice_elements
+      end
+
+      def _layout_prepare_options(print_variant_nr)
+        @print_options_raw  = get_print_options(print_variant_nr) # todo refactor handling of print_options_raw
+        @print_options_hash = @print_options_raw.get
+
+        # push view specific configuration
+        layout_options = @print_options_hash[:layout] || {}
+        $conf.push({layout: layout_options})
+        $conf.push({printer: @print_options_hash[:printer] || {}})
+
+        initialize
+
+        @layout_minc = @print_options_raw['notebound.minc'] || {}
+
+        @y_offset = @print_options_hash[:startpos]
+        @y_size   = $conf.get('layout.DRAWING_AREA_SIZE').last
+      end
 
 
       # compute the size of a varticaul cutof of a jumpline
