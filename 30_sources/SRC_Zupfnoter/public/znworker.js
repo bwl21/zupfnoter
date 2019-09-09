@@ -29707,9 +29707,14 @@ Opal.modules["harpnotes"] = function(Opal) {
                       if (d == null) {
                         d = nil;
                       };
+                      
                       $writer = [$gvars.conf.$get("layout.LINE_THICK")];
                       $send(d, 'line_width=', Opal.to_a($writer));
-                      return $writer[$rb_minus($writer["length"], 1)];}, $$183.$$s = self, $$183.$$arity = 1, $$183)));
+                      $writer[$rb_minus($writer["length"], 1)];;
+                      
+                      $writer = [self.$compute_color_by_variant_no(playable.$variant())];
+                      $send(d, 'color=', Opal.to_a($writer));
+                      return $writer[$rb_minus($writer["length"], 1)];;}, $$183.$$s = self, $$183.$$arity = 1, $$183)));
                   } catch ($err) {
                     if (Opal.rescue($err, [$$($nesting, 'Exception')])) {e = $err;
                       try {
@@ -29726,9 +29731,14 @@ Opal.modules["harpnotes"] = function(Opal) {
                   if (d == null) {
                     d = nil;
                   };
+                  
                   $writer = [$gvars.conf.$get("layout.LINE_THICK")];
                   $send(d, 'line_width=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];}, $$184.$$s = self, $$184.$$arity = 1, $$184)))
+                  $writer[$rb_minus($writer["length"], 1)];;
+                  
+                  $writer = [self.$compute_color_by_variant_no(playable.$variant())];
+                  $send(d, 'color=', Opal.to_a($writer));
+                  return $writer[$rb_minus($writer["length"], 1)];;}, $$184.$$s = self, $$184.$$arity = 1, $$184)))
               };};
             if ($truthy(playable['$tie_start?']())) {
               tie_start = playable};
@@ -29820,7 +29830,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($c = goto$.$policy()['$[]']("from_anchor")) ? $c : "after");
             to_anchor = ($truthy($c = goto$.$policy()['$[]']("to_anchor")) ? $c : "before");
             vertical_anchor = ($truthy($c = goto$.$policy()['$[]']("vertical_anchor")) ? $c : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2208));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2214));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -39487,7 +39497,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "1.12-3-g582cfa0a");
+  Opal.const_set($nesting[0], 'VERSION', "1.12-5-gddbadeb8");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
@@ -91565,7 +91575,7 @@ Opal.loaded(["./jspdf.worker.debug.js"]);
     }, $WorkerController_compute_harpnotes_preview$26.$$arity = 0);
     
     Opal.def(self, '$render_a3', $WorkerController_render_a3$28 = function $$render_a3(index) {
-      var self = this, flowconf = nil, $writer = nil, sheet = nil, engine = nil, result = nil, e = nil;
+      var self = this, flowconf = nil, $writer = nil, sheet = nil, engine = nil, result = nil;
       if ($gvars.settings == null) $gvars.settings = nil;
 
       
@@ -91580,16 +91590,7 @@ Opal.loaded(["./jspdf.worker.debug.js"]);
       $writer[$rb_minus($writer["length"], 1)];;
       sheet = self.$layout_harpnotes(index, "A3");
       engine = $$$($$($nesting, 'Harpnotes'), 'PDFEngine').$new();
-      
-      try {
-        result = engine.$draw(sheet)
-      } catch ($err) {
-        if (Opal.rescue($err, [$$($nesting, 'Exception')])) {e = $err;
-          try {
-            debugger
-          } finally { Opal.pop_exception() }
-        } else { throw $err; }
-      };;
+      result = engine.$draw(sheet);
       
       $writer = ["flowconf", flowconf];
       $send($gvars.settings, '[]=', Opal.to_a($writer));
