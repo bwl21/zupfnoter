@@ -1105,10 +1105,10 @@ module Harpnotes
         end
         @@pdf.font_size  = font_size
         @@pdf.font_style = font_style
-        xsize           = @@pdf.get_text_width(text)
-        ysize           = font_size * $conf.get("layout.MM_PER_POINT").to_f
 
-        [xsize, ysize]
+        size = @@pdf.get_text_dimensions(@text.split("\n"))
+
+        [size[:w], size[:h]]
       end
 
       def shift_eu
