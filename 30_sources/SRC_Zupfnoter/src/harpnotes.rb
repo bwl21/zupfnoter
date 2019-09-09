@@ -1586,7 +1586,6 @@ module Harpnotes
 
 
         ### sheet based annotations
-        # todo: implement a proper strategy for validateion of conf
         res_annotations = _layout_sheet_annotations(print_variant_nr)
 
 
@@ -2223,6 +2222,10 @@ module Harpnotes
         rescue Exception => e
           $log.error e.message
         end
+
+        #todo uncomment if you want background under sheet annotations
+        #res_annotations = res_annotations.map { |i| create_annotation_background_rect(i) } + res_annotations
+
         res_annotations
       end
 
@@ -2258,6 +2261,9 @@ module Harpnotes
             end
           end
         end
+        # todo: uncomment if you want background under lyrics
+        # res_lyrics = res_lyrics.map { |i| create_annotation_background_rect(i) } + res_lyrics
+
         res_lyrics
       end
 
