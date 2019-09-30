@@ -203,18 +203,49 @@ module Harpnotes
     end
 
 
+    # this returns an array of notes in a chord
+    # it is used to implement edits of chords sucht as first, last, second, secondLast, swapFirstWithLast, innerpart, reverse
+    # if there is no proper result, it returns the matching sting
+    def _get_unison_edit_replacement(chordmatch, noteregex, mode)
+
+      notes  = chordmatch[1].scan(Regexp.new(noteregex))
+      result = "[" + chordmatch[1] + "]"
+      case mode
+      when "replaceByFirst"
+        result = notes[0]
+      when "replaceByLast"
+        result = notes[-1]
+      when "replaceBySecond"
+        result = notes[1] if notes[1]
+      when "replaceBySecondLast"
+        result = notes[-2] if notes[1]
+      when "replaceByInnerPart"
+        result = "[" + notes[1 .. -2].join + "]" if notes[2]
+      when "swapFirstWithLast"
+        result = "[" + [notes[-1], notes[1 .. -2], notes[0]].flatten.join + "]" if notes[1]
+      when "revert"
+        result = "[" + notes.reverse.join + "]"
+      else
+
+      end
+
+      result
+    end
+
     def edit_unisons(mode)
       selectionrange = %x{#{@editor}.selection.getRange()};
       oldvalue = `#{@editor}.getSession().doc.getTextRange(#{editor}.selection.getRange());`
       if oldvalue.empty?
         raise I18n.t("Selection is empty")
       else
-        regexp = /\[([\^\_=]?[a-zA-Z][',]*)\s*(([\^\_=]?[a-zA-Z][',]*\s*)*)([\^\_=]?[a-zA-Z][',]*)+\]/
-        newvalue = oldvalue
-        newvalue = oldvalue.gsub(regexp){|i| "#{$1}"} if mode=="replaceByFirst"
-        newvalue = oldvalue.gsub(regexp){|i| "#{$4}"} if mode=="replaceByLast"
-        newvalue = oldvalue.gsub(regexp){|i| "[#{$4}#{$2}#{$1}]"} if mode=="swapFirstWithLast"
+        note = %Q{[\\^\\_=]?[a-zA-Z][',]*}
+        #regexp = /\[([\^\_=]?[a-zA-Z][',]*)\s*([\^\_=]?[a-zA-Z][',]*)\s*(([\^\_=]?[a-zA-Z][',]*\s*)*)([\^\_=]?[a-zA-Z][',]*)+\]/
+        regexp = Regexp.new(%Q{\\[(#{note})\\s*(#{note})?\\s*((#{note}\\s*)*)(#{note})?\\]})
+        regexp = Regexp.new(%Q{\\[\\s*((#{note}\\s*)+)\\]})
 
+        #regexp = /\[([\^\_=]?[a-zA-Z][',]*)\s*(([\^\_=]?[a-zA-Z][',]*\s*)*)([\^\_=]?[a-zA-Z][',]*)+\]/
+        newvalue = oldvalue
+        newvalue = oldvalue.gsub(regexp) { |i| _get_unison_edit_replacement(Regexp.last_match, note, mode)  } #if mode == "replaceByFirst"
         %x{#{editor}.session.replace(#{selectionrange}, #{newvalue});}
       end
       nil
